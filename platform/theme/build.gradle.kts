@@ -48,5 +48,6 @@ dependencies {
     api(Dependencies.COMPOSE_MATERIAL_3)
     api(Dependencies.COMPOSE_UI_TOOLING)
 
+    implementation(Dependencies.ACCOMPANIST_PLACEHOLDER_MATERIAL)
     implementation(Dependencies.MATERIAL)
 }

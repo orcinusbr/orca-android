@@ -1,25 +1,25 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13007903732487981974.xml:2:13-83
-INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13007903732487981974.xml:2:13-83
-INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13007903732487981974.xml:2:13-83
+ADDED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11176002654956837205.xml:2:13-83
+INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11176002654956837205.xml:2:13-83
+INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11176002654956837205.xml:2:13-83
 	package
-		INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13007903732487981974.xml
-		ADDED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13007903732487981974.xml:2:13-83
-		INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13007903732487981974.xml
+		INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11176002654956837205.xml
+		ADDED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11176002654956837205.xml:2:13-83
+		INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11176002654956837205.xml
 	xmlns:android
-		ADDED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13007903732487981974.xml:2:23-81
+		ADDED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11176002654956837205.xml:2:23-81
 uses-sdk
-INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13007903732487981974.xml reason: use-sdk injection requested
-INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13007903732487981974.xml
-INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13007903732487981974.xml
-INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13007903732487981974.xml
-INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13007903732487981974.xml
+INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11176002654956837205.xml reason: use-sdk injection requested
+INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11176002654956837205.xml
+INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11176002654956837205.xml
+INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11176002654956837205.xml
+INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11176002654956837205.xml
 	android:targetSdkVersion
-		INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13007903732487981974.xml
-		ADDED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13007903732487981974.xml
-		INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13007903732487981974.xml
+		INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11176002654956837205.xml
+		ADDED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11176002654956837205.xml
+		INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11176002654956837205.xml
 	android:minSdkVersion
-		INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13007903732487981974.xml
-		ADDED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13007903732487981974.xml
-		INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13007903732487981974.xml
+		INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11176002654956837205.xml
+		ADDED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11176002654956837205.xml
+		INJECTED from /Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11176002654956837205.xml

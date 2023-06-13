@@ -2,6 +2,9 @@ object Dependencies {
     const val ACCOMPANIST_NAVIGATION_MATERIAL =
         "com.google.accompanist:accompanist-navigation-material:${Versions.ACCOMPANIST}"
 
+    const val ACCOMPANIST_PLACEHOLDER_MATERIAL =
+        "com.google.accompanist:accompanist-placeholder-material:${Versions.ACCOMPANIST}"
+
     @Suppress("SpellCheckingInspection")
     const val COMPOSE_DESTINATIONS_ANIMATIONS =
         "io.github.raamcosta.compose-destinations:animations-core:${Versions.COMPOSE_DESTINATIONS}"

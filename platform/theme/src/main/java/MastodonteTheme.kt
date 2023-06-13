@@ -1,8 +1,6 @@
 package com.jeanbarrossilva.mastodonte.platform.theme
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +21,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocal
 import androidx.compose.runtime.CompositionLocalProvider
@@ -57,12 +54,6 @@ private const val SHAPES_PREVIEW_HEIGHT = 898
 
 /** Height of [TypographyPreview]. **/
 private const val TYPOGRAPHY_PREVIEW_HEIGHT = 1_130
-
-/** [ColorScheme] for when the system theme is dark. **/
-private val DarkColorScheme = darkColorScheme()
-
-/** [ColorScheme] for when the system theme is light. **/
-private val LightColorScheme = lightColorScheme()
 
 /** [android.R.attr.colorControlNormal] with medium visibility. **/
 private val fadedContentColor
@@ -105,7 +96,13 @@ object MastodonteTheme {
 @Composable
 fun MastodonteTheme(content: @Composable () -> Unit) {
     MaterialTheme(
-        colorScheme = if (isSystemInDarkTheme()) DarkColorScheme else LightColorScheme,
+        colorScheme = darkColorScheme(
+            primaryContainer = Color(0xFF1A1A1A),
+            onPrimaryContainer = Color(0xFFB388FF),
+            background = Color.Black,
+            surface = Color(0xFF3D3D3D),
+            surfaceVariant = Color(0xFF202020)
+        ),
         typography = with(Typography() with FontFamily.Rubik) {
             copy(
                 displayLarge = displayLarge.copy(
@@ -136,7 +133,6 @@ fun MastodonteTheme(content: @Composable () -> Unit) {
 /** Preview of [MastodonteTheme]'s [ColorScheme]. **/
 @Composable
 @Preview(heightDp = COLOR_SCHEME_PREVIEW_HEIGHT)
-@Preview(heightDp = COLOR_SCHEME_PREVIEW_HEIGHT, uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun ColorSchemePreview() {
     MastodonteTheme {
         Column(Modifier.fillMaxWidth()) {
@@ -217,7 +213,6 @@ private fun ColorSchemePreview() {
 /** Preview of [MastodonteTheme]'s [Overlays]. **/
 @Composable
 @Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun OverlaysPreview() {
     MastodonteTheme {
         Surface(color = MastodonteTheme.colorScheme.background) {
@@ -229,7 +224,6 @@ private fun OverlaysPreview() {
 /** Preview of [MastodonteTheme]'s [Shapes]. **/
 @Composable
 @Preview(heightDp = SHAPES_PREVIEW_HEIGHT)
-@Preview(heightDp = SHAPES_PREVIEW_HEIGHT, uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun ShapesPreview() {
     MastodonteTheme {
         Surface(Modifier.fillMaxWidth(), color = MastodonteTheme.colorScheme.background) {
@@ -247,7 +241,6 @@ private fun ShapesPreview() {
 /** Preview of [MastodonteTheme]'s [Spacings]. **/
 @Composable
 @Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun SpacingsPreview() {
     MastodonteTheme {
         Surface(Modifier.fillMaxWidth()) {
@@ -265,7 +258,6 @@ private fun SpacingsPreview() {
 /** Preview of [MastodonteTheme]'s [Typography]. **/
 @Composable
 @Preview(heightDp = TYPOGRAPHY_PREVIEW_HEIGHT)
-@Preview(heightDp = TYPOGRAPHY_PREVIEW_HEIGHT, uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun TypographyPreview() {
     MastodonteTheme {
         Surface(Modifier.fillMaxWidth(), color = MastodonteTheme.colorScheme.background) {
