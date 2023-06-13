@@ -1,0 +1,8 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.jeanbarrossilva.mastodonte.platform.theme" >
+4
+5    <uses-sdk android:minSdkVersion="21" />
+5-->/Users/jeanbarrossilva/Developer/jeanbarrossilva/Mastodonte/platform/theme/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest13007903732487981974.xml
+6
+7</manifest>
