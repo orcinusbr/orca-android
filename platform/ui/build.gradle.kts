@@ -45,5 +45,10 @@ android {
 }
 
 dependencies {
+    api(Dependencies.LOADABLE)
+
+    implementation(project(":core"))
     implementation(project(":platform:theme"))
+    implementation(Dependencies.COIL_COMPOSE)
+    implementation(Dependencies.COMPOSE_MATERIAL_ICONS_EXTENDED)
 }

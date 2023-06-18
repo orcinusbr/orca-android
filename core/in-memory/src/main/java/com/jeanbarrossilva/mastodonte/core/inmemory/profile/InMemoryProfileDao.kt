@@ -1,9 +1,9 @@
 package com.jeanbarrossilva.mastodonte.core.inmemory.profile
 
-import com.jeanbarrossilva.mastodonte.core.profile.Account
 import com.jeanbarrossilva.mastodonte.core.profile.Follow
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.profile.ProfileRepository
+import com.jeanbarrossilva.mastodonte.core.profile.toot.Account
 import java.net.URL
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

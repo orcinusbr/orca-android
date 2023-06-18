@@ -70,6 +70,23 @@ abstract class Placeholder protected constructor() {
 }
 
 /**
+ * Returns the result of the given [transform] if the [condition] is `true`; otherwise, returns the
+ * receiver [Modifier].
+ *
+ * @param condition Determines whether the result of [transform] will get returned.
+ * @param transform Transformation to be made to this [Modifier].
+ **/
+fun Modifier.`if`(
+    condition: @Composable Modifier.() -> Boolean,
+    transform: @Composable Modifier.() -> Modifier
+): Modifier {
+    @Suppress("UnnecessaryComposedModifier")
+    return composed {
+        if (condition()) transform() else this
+    }
+}
+
+/**
  * Indicates that the content is being loaded.
  *
  * @param placeholder [Placeholder] to be applied.
@@ -112,22 +129,5 @@ fun Modifier.placeholder(
         placeholder(isVisible, color, shape, PlaceholderHighlight.shimmer()).`if`({ isVisible }) {
             then(placeholder.modifier)
         }
-    }
-}
-
-/**
- * Returns the result of the given [transform] if the [condition] is `true`; otherwise, returns the
- * receiver [Modifier].
- *
- * @param condition Determines whether the result of [transform] will get returned.
- * @param transform Transformation to be made to this [Modifier].
- **/
-private fun Modifier.`if`(
-    condition: @Composable Modifier.() -> Boolean,
-    transform: @Composable Modifier.() -> Modifier
-): Modifier {
-    @Suppress("UnnecessaryComposedModifier")
-    return composed {
-        if (condition()) transform() else this
     }
 }

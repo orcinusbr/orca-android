@@ -1,13 +1,16 @@
 package com.jeanbarrossilva.mastodonte.core.profile
 
+import com.jeanbarrossilva.mastodonte.core.profile.toot.Account
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
+import java.io.Serializable
 import java.net.URL
+import kotlinx.coroutines.flow.Flow
 
 /** [Profile] whose [Follow] status type is not taken into consideration. **/
 typealias AnyProfile = Profile<*>
 
 /** A user's profile. **/
-abstract class Profile<T : Follow> protected constructor() {
+abstract class Profile<T : Follow> protected constructor() : Serializable {
     /** Unique identifier. **/
     abstract val id: String
 
@@ -44,7 +47,7 @@ abstract class Profile<T : Follow> protected constructor() {
         onChangeFollowTo(matchingToggledFollow)
     }
 
-    abstract suspend fun getToots(page: Int): List<Toot>
+    abstract fun getToots(page: Int): Flow<List<Toot>>
 
     /**
      * Callback run whenever the [Follow] status is changed to [follow].
@@ -52,4 +55,6 @@ abstract class Profile<T : Follow> protected constructor() {
      * @param follow Changed [Follow] status.
      **/
     protected abstract suspend fun onChangeFollowTo(follow: T)
+
+    companion object
 }

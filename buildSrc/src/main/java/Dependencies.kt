@@ -1,9 +1,9 @@
 object Dependencies {
     const val ACCOMPANIST_NAVIGATION_MATERIAL =
         "com.google.accompanist:accompanist-navigation-material:${Versions.ACCOMPANIST}"
-
     const val ACCOMPANIST_PLACEHOLDER_MATERIAL =
         "com.google.accompanist:accompanist-placeholder-material:${Versions.ACCOMPANIST}"
+    const val COIL_COMPOSE = "io.coil-kt:coil-compose:${Versions.COIL}"
 
     @Suppress("SpellCheckingInspection")
     const val COMPOSE_DESTINATIONS_ANIMATIONS =
@@ -15,12 +15,14 @@ object Dependencies {
 
     const val COMPOSE_MATERIAL_3 =
         "androidx.compose.material3:material3-android:${Versions.COMPOSE_MATERIAL_3}"
+    const val COMPOSE_MATERIAL_ICONS_EXTENDED =
+        "androidx.compose.material:material-icons-extended:" +
+            Versions.COMPOSE_MATERIAL_ICONS_EXTENDED
     const val COMPOSE_UI_TOOLING = "androidx.compose.ui:ui-tooling:${Versions.COMPOSE_UI_TOOLING}"
     const val COROUTINES_CORE =
         "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.COROUTINES}"
     const val COROUTINES_TEST =
         "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.COROUTINES}"
-
     const val KOIN = "io.insert-koin:koin-androidx-compose:${Versions.KOIN}"
     const val LOADABLE = "com.jeanbarrossilva.loadable:loadable:${Versions.LOADABLE}"
     const val LOADABLE_LIST = "com.jeanbarrossilva.loadable:loadable-list:${Versions.LOADABLE}"

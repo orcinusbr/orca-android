@@ -1,7 +1,9 @@
 package com.jeanbarrossilva.mastodonte.core.profile
 
+import java.io.Serializable
+
 /** Status that indicates in which "following" state a user is related to another. **/
-abstract class Follow private constructor() {
+abstract class Follow private constructor() : Serializable {
     /** Name that describes the visibility for which this [Follow] status is intended. **/
     protected abstract val visibilityName: String
 

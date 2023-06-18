@@ -1,10 +1,12 @@
 package com.jeanbarrossilva.mastodonte.platform.theme.extensions
 
+import android.content.res.TypedArray
+import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import com.google.android.material.color.MaterialColors
 
 /**
  * Loads the [Color] from the given attribute.
@@ -13,6 +15,11 @@ import com.google.android.material.color.MaterialColors
  **/
 @Composable
 internal fun colorAttribute(@AttrRes id: Int): Color {
-    val value = MaterialColors.getColor(LocalContext.current, id, 0)
+    val theme = LocalContext.current.theme
+    val typedValue = TypedValue()
+    theme.resolveAttribute(id, typedValue, /*resolveRefs =*/ false)
+    val typedArray: TypedArray = theme.obtainStyledAttributes(typedValue.data, intArrayOf(id))
+    val defaultValue = Color.Unspecified.toArgb()
+    val value = typedArray.getColor(/*index =*/ 0, defaultValue)
     return Color(value)
 }

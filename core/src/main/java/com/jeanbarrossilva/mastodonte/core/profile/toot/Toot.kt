@@ -1,7 +1,9 @@
 package com.jeanbarrossilva.mastodonte.core.profile.toot
 
+import java.io.Serializable
+
 /** Content that's been posted by a user, the [author]. **/
-abstract class Toot {
+abstract class Toot : Serializable {
     /** Unique identifier. **/
     abstract val id: String
 
@@ -10,4 +12,6 @@ abstract class Toot {
 
     /** What's actually been written. **/
     abstract val content: String
+
+    companion object
 }

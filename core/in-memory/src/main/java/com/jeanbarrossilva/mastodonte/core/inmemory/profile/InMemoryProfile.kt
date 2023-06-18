@@ -1,11 +1,13 @@
 package com.jeanbarrossilva.mastodonte.core.inmemory.profile
 
 import com.jeanbarrossilva.mastodonte.core.inmemory.profile.toot.InMemoryTootDao
-import com.jeanbarrossilva.mastodonte.core.profile.Account
 import com.jeanbarrossilva.mastodonte.core.profile.Follow
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
+import com.jeanbarrossilva.mastodonte.core.profile.toot.Account
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import java.net.URL
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
 /** [InMemoryProfile] whose [Follow] status type is not taken into consideration. **/
 typealias AnyInMemoryProfile = InMemoryProfile<*>
@@ -29,7 +31,7 @@ class InMemoryProfile<T : Follow>(
         InMemoryProfileDao.updateFollow(id, follow)
     }
 
-    override suspend fun getToots(page: Int): List<Toot> {
-        return InMemoryTootDao.selectAll().windowed(50)[page]
+    override fun getToots(page: Int): Flow<List<Toot>> {
+        return flowOf(InMemoryTootDao.selectAll().windowed(50)[page])
     }
 }

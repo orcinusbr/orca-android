@@ -45,6 +45,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":core"))
     implementation(project(":platform:theme"))
     implementation(project(":platform:ui"))
+    implementation(Dependencies.LOADABLE_LIST)
 }

@@ -53,11 +53,11 @@ private const val COLOR_SCHEME_PREVIEW_HEIGHT = 1_884
 private const val SHAPES_PREVIEW_HEIGHT = 898
 
 /** Height of [TypographyPreview]. **/
-private const val TYPOGRAPHY_PREVIEW_HEIGHT = 1_130
+private const val TYPOGRAPHY_PREVIEW_HEIGHT = 1_117
 
-/** [android.R.attr.colorControlNormal] with medium visibility. **/
-private val fadedContentColor
-    @Composable get() = colorAttribute(android.R.attr.colorControlNormal).copy(alpha = .5f)
+/** [Color] for non-highlighted content. **/
+private val defaultContentColor
+    @Composable get() = colorAttribute(android.R.attr.textColorSecondaryInverse)
 
 /** Provider of [MastodonteTheme]'s configurations. **/
 object MastodonteTheme {
@@ -101,20 +101,20 @@ fun MastodonteTheme(content: @Composable () -> Unit) {
             onPrimaryContainer = Color(0xFFB388FF),
             background = Color.Black,
             surface = Color(0xFF3D3D3D),
-            surfaceVariant = Color(0xFF202020)
+            surfaceVariant = Color(0xFF202020),
+            onSurfaceVariant = Color(0xFFF5F5F5)
         ),
         typography = with(Typography() with FontFamily.Rubik) {
             copy(
-                displayLarge = displayLarge.copy(
-                    color = fadedContentColor,
-                    fontWeight = FontWeight.Black
-                ),
-                titleLarge = titleLarge.copy(fontWeight = FontWeight.ExtraBold),
+                displayLarge = displayLarge.copy(fontWeight = FontWeight.Black),
+                headlineLarge = headlineLarge.copy(fontWeight = FontWeight.Black),
+                titleLarge = titleLarge.copy(fontSize = 18.sp, fontWeight = FontWeight.ExtraBold),
                 titleMedium = titleSmall.copy(fontSize = 18.sp, fontWeight = FontWeight.Bold),
-                titleSmall = titleSmall.copy(color = fadedContentColor, fontSize = 18.sp),
+                titleSmall = titleSmall.copy(color = defaultContentColor, fontSize = 18.sp),
                 bodyLarge = bodyLarge.copy(fontWeight = FontWeight.Bold),
+                bodyMedium = bodyMedium.copy(fontSize = 16.sp),
                 labelLarge = labelMedium.copy(
-                    color = fadedContentColor,
+                    color = defaultContentColor,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
                 )
