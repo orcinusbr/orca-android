@@ -112,12 +112,7 @@ fun MastodonteTheme(content: @Composable () -> Unit) {
                 titleMedium = titleSmall.copy(fontSize = 18.sp, fontWeight = FontWeight.Bold),
                 titleSmall = titleSmall.copy(color = defaultContentColor, fontSize = 18.sp),
                 bodyLarge = bodyLarge.copy(fontWeight = FontWeight.Bold),
-                bodyMedium = bodyMedium.copy(fontSize = 16.sp),
-                labelLarge = labelMedium.copy(
-                    color = defaultContentColor,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
-                )
+                bodyMedium = bodyMedium.copy(fontSize = 16.sp)
             )
         }
     ) {
