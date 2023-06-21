@@ -21,8 +21,8 @@ import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.EmptyMutableInteractionSource
+import com.jeanbarrossilva.mastodonte.platform.ui.html.HtmlAnnotatedString
 import com.jeanbarrossilva.mastodonte.platform.ui.profile.SmallAvatar
-import com.jeanbarrossilva.mastodonte.platform.ui.profile.html.HtmlAnnotatedString
 import com.jeanbarrossilva.mastodonte.platform.ui.profile.sample
 
 private val nameTextStyle

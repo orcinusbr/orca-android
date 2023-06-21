@@ -1,9 +1,9 @@
-package com.jeanbarrossilva.mastodonte.platform.ui.profile.html.span.converter
+package com.jeanbarrossilva.mastodonte.platform.ui.html.span.converter
 
 import android.text.style.UnderlineSpan
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.style.TextDecoration
-import com.jeanbarrossilva.mastodonte.platform.ui.profile.html.span.SpanConverter
+import com.jeanbarrossilva.mastodonte.platform.ui.html.span.SpanConverter
 
 /** [SpanConverter] that converts an [UnderlineSpan] into a [SpanStyle]. **/
 internal class UnderlineSpanConverter(override val next: SpanConverter?) : SpanConverter() {

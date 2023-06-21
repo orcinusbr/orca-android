@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.ui.profile.html.span
+package com.jeanbarrossilva.mastodonte.platform.ui.html.span
 
 import androidx.compose.ui.text.SpanStyle
 

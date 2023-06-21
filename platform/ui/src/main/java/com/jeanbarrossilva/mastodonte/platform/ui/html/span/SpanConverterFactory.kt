@@ -1,7 +1,7 @@
-package com.jeanbarrossilva.mastodonte.platform.ui.profile.html.span
+package com.jeanbarrossilva.mastodonte.platform.ui.html.span
 
-import com.jeanbarrossilva.mastodonte.platform.ui.profile.html.span.converter.StyleSpanConverter
-import com.jeanbarrossilva.mastodonte.platform.ui.profile.html.span.converter.UnderlineSpanConverter
+import com.jeanbarrossilva.mastodonte.platform.ui.html.span.converter.StyleSpanConverter
+import com.jeanbarrossilva.mastodonte.platform.ui.html.span.converter.UnderlineSpanConverter
 
 /** Factory that creates a [SpanConverter] through [create]. **/
 internal object SpanConverterFactory {

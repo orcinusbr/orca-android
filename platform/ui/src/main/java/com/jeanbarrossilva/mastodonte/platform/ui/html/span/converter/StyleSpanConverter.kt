@@ -1,11 +1,11 @@
-package com.jeanbarrossilva.mastodonte.platform.ui.profile.html.span.converter
+package com.jeanbarrossilva.mastodonte.platform.ui.html.span.converter
 
 import android.graphics.Typeface
 import android.text.style.StyleSpan
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import com.jeanbarrossilva.mastodonte.platform.ui.profile.html.span.SpanConverter
+import com.jeanbarrossilva.mastodonte.platform.ui.html.span.SpanConverter
 
 /** [SpanConverter] that converts a [StyleSpan] into a [SpanStyle]. **/
 internal class StyleSpanConverter(override val next: SpanConverter?) : SpanConverter() {
