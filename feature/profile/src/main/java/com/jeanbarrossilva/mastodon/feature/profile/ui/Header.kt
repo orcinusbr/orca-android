@@ -4,39 +4,48 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.jeanbarrossilva.loadable.Loadable
-import com.jeanbarrossilva.loadable.ifLoaded
-import com.jeanbarrossilva.loadable.map
+import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
+import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.mastodonte.core.profile.AnyProfile
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
-import com.jeanbarrossilva.mastodonte.platform.theme.extensions.Placeholder
-import com.jeanbarrossilva.mastodonte.platform.theme.extensions.`if`
-import com.jeanbarrossilva.mastodonte.platform.theme.extensions.placeholder
-import com.jeanbarrossilva.mastodonte.platform.ui.profile.Avatar
 import com.jeanbarrossilva.mastodonte.platform.ui.profile.LargeAvatar
 import com.jeanbarrossilva.mastodonte.platform.ui.profile.sample
 
 @Composable
-internal fun Header(profileLoadable: Loadable<AnyProfile>, modifier: Modifier = Modifier) {
-    val avatarLoadable = remember(profileLoadable) {
-        profileLoadable.map {
-            Avatar(it.name, it.avatarURL)
-        }
-    }
-    val titleStyle = MastodonteTheme.typography.headlineLarge
-    val accountStyle = MastodonteTheme.typography.titleSmall
-    val isLoading = remember(profileLoadable) { profileLoadable is Loadable.Loading }
+internal fun Header(modifier: Modifier = Modifier) {
+    Header(
+        avatar = { LargeAvatar() },
+        name = { MediumTextualPlaceholder() },
+        account = { LargeTextualPlaceholder() },
+        modifier
+    )
+}
 
+@Composable
+internal fun Header(profile: AnyProfile, modifier: Modifier = Modifier) {
+    Header(
+        avatar = { LargeAvatar(profile.name, profile.avatarURL) },
+        name = { Text(profile.name) },
+        account = { Text("${profile.account.username}@${profile.account.instance}") },
+        modifier
+    )
+}
+
+@Composable
+private fun Header(
+    avatar: @Composable () -> Unit,
+    name: @Composable () -> Unit,
+    account: @Composable () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier
             .padding(MastodonteTheme.spacings.extraLarge)
@@ -44,31 +53,24 @@ internal fun Header(profileLoadable: Loadable<AnyProfile>, modifier: Modifier = 
         Arrangement.spacedBy(MastodonteTheme.spacings.extraLarge),
         Alignment.CenterHorizontally
     ) {
-        LargeAvatar(avatarLoadable)
+        avatar()
 
         Column(
             verticalArrangement = Arrangement.spacedBy(MastodonteTheme.spacings.extraSmall),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                profileLoadable.ifLoaded(AnyProfile::name).orEmpty(),
-                Modifier
-                    .placeholder(Placeholder.Text { titleStyle }, isVisible = isLoading)
-                    .`if`({ isLoading }) { width(256.dp) },
-                style = titleStyle
-            )
+            ProvideTextStyle(MastodonteTheme.typography.headlineLarge, name)
+            ProvideTextStyle(MastodonteTheme.typography.titleSmall, account)
+        }
+    }
+}
 
-            Text(
-                profileLoadable.ifLoaded { "${account.username}@${account.instance}" }.orEmpty(),
-                Modifier
-                    .placeholder(
-                        Placeholder.Text { accountStyle },
-                        MastodonteTheme.shapes.small,
-                        isVisible = isLoading
-                    )
-                    .`if`({ isLoading }) { width(128.dp) },
-                style = accountStyle
-            )
+@Composable
+@Preview
+private fun LoadingHeaderPreview() {
+    MastodonteTheme {
+        Surface(color = MastodonteTheme.colorScheme.background) {
+            Header()
         }
     }
 }
@@ -78,7 +80,7 @@ internal fun Header(profileLoadable: Loadable<AnyProfile>, modifier: Modifier = 
 private fun HeaderPreview() {
     MastodonteTheme {
         Surface(color = MastodonteTheme.colorScheme.background) {
-            Header(Loadable.Loaded(Profile.sample))
+            Header(Profile.sample)
         }
     }
 }

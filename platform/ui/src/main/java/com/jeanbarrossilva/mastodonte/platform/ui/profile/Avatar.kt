@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
-import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.placeholder.Placeholder
 import com.jeanbarrossilva.loadable.placeholder.PlaceholderDefaults
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
@@ -52,28 +51,11 @@ fun SmallAvatar(name: String, url: URL, modifier: Modifier = Modifier) {
 
 @Composable
 fun LargeAvatar(modifier: Modifier = Modifier) {
-    LargeAvatar(modifier) {
-    }
+    Avatar(LargeSize, largeShape, modifier)
 }
 
 @Composable
-fun LargeAvatar(loadable: Loadable<Avatar>, modifier: Modifier = Modifier) {
-    when (loadable) {
-        is Loadable.Loading -> LargeAvatar(modifier)
-        is Loadable.Loaded -> LargeAvatar(loadable.content.name, loadable.content.url)
-        is Loadable.Failed -> LargeAvatar(modifier) {
-            UnavailableContent(LargeSize)
-        }
-    }
-}
-
-@Composable
-private fun LargeAvatar(modifier: Modifier = Modifier, content: @Composable BoxScope.() -> Unit) {
-    Avatar(LargeSize, largeShape, modifier, content = content)
-}
-
-@Composable
-private fun LargeAvatar(name: String, url: URL, modifier: Modifier = Modifier) {
+fun LargeAvatar(name: String, url: URL, modifier: Modifier = Modifier) {
     Avatar(name, url, LargeSize, largeShape, modifier)
 }
 
@@ -150,15 +132,7 @@ private fun LoadingLargeAvatarPreview() {
 @Preview
 private fun LoadedLargeAvatarPreview() {
     MastodonteTheme {
-        LargeAvatar(Loadable.Loaded(Avatar(Toot.sample.author.name, Toot.sample.author.avatarURL)))
-    }
-}
-
-@Composable
-@Preview
-private fun FailedLargeAvatarPreview() {
-    MastodonteTheme {
-        LargeAvatar(Loadable.Failed(Exception()))
+        LargeAvatar(Toot.sample.author.name, Toot.sample.author.avatarURL)
     }
 }
 
@@ -167,5 +141,13 @@ private fun FailedLargeAvatarPreview() {
 private fun LoadingSmallAvatarPreview() {
     MastodonteTheme {
         SmallAvatar()
+    }
+}
+
+@Composable
+@Preview
+private fun LoadedSmallAvatarPreview() {
+    MastodonteTheme {
+        SmallAvatar(Toot.sample.author.name, Toot.sample.author.avatarURL)
     }
 }

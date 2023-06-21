@@ -5,6 +5,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.rounded.Edit
@@ -28,8 +29,7 @@ import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.serialize
 import com.jeanbarrossilva.loadable.list.toListLoadable
-import com.jeanbarrossilva.loadable.map
-import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
+import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.mastodon.feature.profile.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.mastodon.feature.profile.navigation.Content
 import com.jeanbarrossilva.mastodon.feature.profile.ui.Header
@@ -46,7 +46,93 @@ import kotlinx.coroutines.flow.map
 @Composable
 internal fun Profile(
     loadable: Loadable<AnyProfile>,
+    onNavigationToTootDetails: (Toot) -> Unit,
     onEdit: () -> Unit,
+    backwardsNavigationState: BackwardsNavigationState,
+    modifier: Modifier = Modifier
+) {
+    when (loadable) {
+        is Loadable.Loading ->
+            Profile(backwardsNavigationState, modifier)
+        is Loadable.Loaded ->
+            Profile(
+                loadable.content,
+                onNavigationToTootDetails,
+                onEdit,
+                backwardsNavigationState,
+                modifier
+            )
+        is Loadable.Failed ->
+            Unit
+    }
+}
+
+@Composable
+private fun Profile(
+    backwardsNavigationState: BackwardsNavigationState,
+    modifier: Modifier = Modifier
+) {
+    Profile(
+        title = { MediumTextualPlaceholder() },
+        header = { Header() },
+        toots = { loadingToots() },
+        floatingActionButton = { },
+        backwardsNavigationState,
+        modifier
+    )
+}
+
+@Composable
+private fun Profile(
+    profile: AnyProfile,
+    onNavigationToTootDetails: (Toot) -> Unit,
+    onEdit: () -> Unit,
+    backwardsNavigationState: BackwardsNavigationState,
+    modifier: Modifier = Modifier
+) {
+    var tootsLoadable by remember {
+        mutableStateOf<ListLoadable<Toot>>(ListLoadable.Loading())
+    }
+
+    LaunchedEffect(profile) {
+        tootsLoadable =
+            profile.getToots(page = 0).map(List<Toot>::serialize).first().toListLoadable()
+    }
+
+    Profile(
+        title = { Text("@${profile.account.username}") },
+        header = { Header(profile) },
+        toots = {
+            when (
+                @Suppress("NAME_SHADOWING")
+                val tootsLoadable = tootsLoadable
+            ) {
+                is ListLoadable.Populated ->
+                    items(tootsLoadable.content) {
+                        TootPreview(it, onClick = { onNavigationToTootDetails(it) })
+                    }
+                is ListLoadable.Loading ->
+                    loadingToots()
+                is ListLoadable.Empty, is ListLoadable.Failed ->
+                    Unit
+            }
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = onEdit) {
+                Icon(MastodonteTheme.Icons.Edit, contentDescription = "Edit")
+            }
+        },
+        backwardsNavigationState,
+        modifier
+    )
+}
+
+@Composable
+private fun Profile(
+    title: @Composable () -> Unit,
+    header: @Composable () -> Unit,
+    toots: LazyListScope.() -> Unit,
+    floatingActionButton: @Composable () -> Unit,
     backwardsNavigationState: BackwardsNavigationState,
     modifier: Modifier = Modifier
 ) {
@@ -56,60 +142,15 @@ internal fun Profile(
             lazyListState.firstVisibleItemIndex > 0
         }
     }
-    var tootsLoadable by remember { mutableStateOf<ListLoadable<Toot>>(ListLoadable.Loading()) }
-    val usernameLoadable = remember(loadable) {
-        loadable.map {
-            "@${it.account.username}"
-        }
-    }
-
-    LaunchedEffect(loadable) {
-        tootsLoadable = when (loadable) {
-            is Loadable.Loading -> ListLoadable.Loading()
-            is Loadable.Loaded ->
-                loadable
-                    .content
-                    .getToots(0)
-                    .map(List<Toot>::serialize)
-                    .first()
-                    .toListLoadable()
-            is Loadable.Failed -> ListLoadable.Failed(loadable.error)
-        }
-    }
 
     Box(modifier) {
         Scaffold(
-            floatingActionButton = {
-                FloatingActionButton(onClick = onEdit) {
-                    Icon(MastodonteTheme.Icons.Edit, contentDescription = "Edit")
-                }
-            },
+            floatingActionButton = floatingActionButton,
             floatingActionButtonPosition = FabPosition.Center
-        ) { padding ->
-            LazyColumn(
-                state = lazyListState,
-                contentPadding = padding + MastodonteTheme.overlays.fab
-            ) {
-                item {
-                    Header(loadable)
-                }
-
-                when (
-                    @Suppress("NAME_SHADOWING")
-                    val tootsLoadable = tootsLoadable
-                ) {
-                    is ListLoadable.Loading -> {
-                        items(24) {
-                            TootPreview()
-                        }
-                    }
-                    is ListLoadable.Populated -> {
-                        items(tootsLoadable.content) {
-                            TootPreview(it, onClick = { })
-                        }
-                    }
-                    else -> { }
-                }
+        ) {
+            LazyColumn(state = lazyListState, contentPadding = it + MastodonteTheme.overlays.fab) {
+                item { header() }
+                toots()
             }
         }
 
@@ -120,21 +161,36 @@ internal fun Profile(
         ) {
             @OptIn(ExperimentalMaterial3Api::class)
             CenterAlignedTopAppBar(
-                title = {
-                    SmallTextualPlaceholder(usernameLoadable) {
-                        Text(it)
-                    }
-                },
+                title = title,
                 navigationIcon = { backwardsNavigationState.Content() }
             )
         }
     }
 }
 
+private fun LazyListScope.loadingToots() {
+    items(128) {
+        TootPreview()
+    }
+}
+
 @Composable
 @Preview
-private fun ProfilePreview() {
+private fun LoadingProfilePreview() {
     MastodonteTheme {
-        Profile(Loadable.Loaded(Profile.sample), onEdit = { }, BackwardsNavigationState.Unavailable)
+        Profile(BackwardsNavigationState.Unavailable)
+    }
+}
+
+@Composable
+@Preview
+private fun LoadedProfilePreview() {
+    MastodonteTheme {
+        Profile(
+            Profile.sample,
+            onNavigationToTootDetails = { },
+            onEdit = { },
+            BackwardsNavigationState.Unavailable
+        )
     }
 }
