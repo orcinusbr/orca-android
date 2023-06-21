@@ -14,7 +14,7 @@ object Dependencies {
         "io.github.raamcosta.compose-destinations:core:${Versions.COMPOSE_DESTINATIONS}"
 
     const val COMPOSE_MATERIAL_3 =
-        "androidx.compose.material3:material3-android:${Versions.COMPOSE_MATERIAL_3}"
+        "androidx.compose.material3:material3:${Versions.COMPOSE_MATERIAL_3}"
     const val COMPOSE_MATERIAL_ICONS_EXTENDED =
         "androidx.compose.material:material-icons-extended:" +
             Versions.COMPOSE_MATERIAL_ICONS_EXTENDED
@@ -26,6 +26,8 @@ object Dependencies {
     const val KOIN = "io.insert-koin:koin-androidx-compose:${Versions.KOIN}"
     const val LOADABLE = "com.jeanbarrossilva.loadable:loadable:${Versions.LOADABLE}"
     const val LOADABLE_LIST = "com.jeanbarrossilva.loadable:loadable-list:${Versions.LOADABLE}"
+    const val LOADABLE_PLACEHOLDER =
+        "com.jeanbarrossilva.loadable:loadable-placeholder:${Versions.LOADABLE}"
     const val MATERIAL = "com.google.android.material:material:${Versions.MATERIAL}"
     const val VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.VIEWMODEL}"
 }

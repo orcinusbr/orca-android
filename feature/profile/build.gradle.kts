@@ -49,4 +49,5 @@ dependencies {
     implementation(project(":platform:theme"))
     implementation(project(":platform:ui"))
     implementation(Dependencies.LOADABLE_LIST)
+    implementation(Dependencies.LOADABLE_PLACEHOLDER)
 }

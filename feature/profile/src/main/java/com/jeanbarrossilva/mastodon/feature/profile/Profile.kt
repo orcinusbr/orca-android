@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -25,24 +24,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.Loadable
-import com.jeanbarrossilva.loadable.ifLoaded
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.serialize
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.map
+import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
 import com.jeanbarrossilva.mastodon.feature.profile.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.mastodon.feature.profile.navigation.Content
 import com.jeanbarrossilva.mastodon.feature.profile.ui.Header
 import com.jeanbarrossilva.mastodonte.core.profile.AnyProfile
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
-import com.jeanbarrossilva.mastodonte.core.profile.toot.Account
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
-import com.jeanbarrossilva.mastodonte.platform.theme.extensions.Placeholder
-import com.jeanbarrossilva.mastodonte.platform.theme.extensions.`if`
-import com.jeanbarrossilva.mastodonte.platform.theme.extensions.placeholder
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.plus
 import com.jeanbarrossilva.mastodonte.platform.ui.profile.sample
 import com.jeanbarrossilva.mastodonte.platform.ui.timeline.TootPreview
@@ -63,7 +57,11 @@ internal fun Profile(
         }
     }
     var tootsLoadable by remember { mutableStateOf<ListLoadable<Toot>>(ListLoadable.Loading()) }
-    val accountLoadable = remember(loadable) { loadable.map(AnyProfile::account) }
+    val usernameLoadable = remember(loadable) {
+        loadable.map {
+            "@${it.account.username}"
+        }
+    }
 
     LaunchedEffect(loadable) {
         tootsLoadable = when (loadable) {
@@ -102,12 +100,12 @@ internal fun Profile(
                 ) {
                     is ListLoadable.Loading -> {
                         items(24) {
-                            TootPreview(Loadable.Loading(), onClick = { })
+                            TootPreview()
                         }
                     }
                     is ListLoadable.Populated -> {
                         items(tootsLoadable.content) {
-                            TootPreview(Loadable.Loaded(it), onClick = { })
+                            TootPreview(it, onClick = { })
                         }
                     }
                     else -> { }
@@ -122,25 +120,15 @@ internal fun Profile(
         ) {
             @OptIn(ExperimentalMaterial3Api::class)
             CenterAlignedTopAppBar(
-                title = { Title(accountLoadable) },
+                title = {
+                    SmallTextualPlaceholder(usernameLoadable) {
+                        Text(it)
+                    }
+                },
                 navigationIcon = { backwardsNavigationState.Content() }
             )
         }
     }
-}
-
-@Composable
-private fun Title(loadable: Loadable<Account>, modifier: Modifier = Modifier) {
-    val isLoading = remember(loadable) {
-        loadable is Loadable.Loading
-    }
-
-    Text(
-        loadable.ifLoaded { "@$username" }.orEmpty(),
-        modifier
-            .placeholder(Placeholder.Text(), MastodonteTheme.shapes.small, isVisible = isLoading)
-            .`if`({ isLoading }) { width(64.dp) }
-    )
 }
 
 @Composable

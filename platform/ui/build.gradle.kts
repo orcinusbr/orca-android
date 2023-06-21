@@ -51,4 +51,5 @@ dependencies {
     implementation(project(":platform:theme"))
     implementation(Dependencies.COIL_COMPOSE)
     implementation(Dependencies.COMPOSE_MATERIAL_ICONS_EXTENDED)
+    implementation(Dependencies.LOADABLE_PLACEHOLDER)
 }
