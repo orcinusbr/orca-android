@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Surface
@@ -15,12 +16,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
+import com.jeanbarrossilva.mastodonte.core.inmemory.profile.sample
 import com.jeanbarrossilva.mastodonte.core.profile.AnyProfile
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.ui.html.HtmlAnnotatedString
 import com.jeanbarrossilva.mastodonte.platform.ui.profile.LargeAvatar
-import com.jeanbarrossilva.mastodonte.platform.ui.profile.sample
 
 @Composable
 internal fun Header(modifier: Modifier = Modifier) {
@@ -37,17 +38,27 @@ internal fun Header(modifier: Modifier = Modifier) {
                 MediumTextualPlaceholder()
             }
         },
+        followToggleButton = { },
         modifier
     )
 }
 
 @Composable
-internal fun Header(profile: AnyProfile, modifier: Modifier = Modifier) {
+internal fun Header(
+    profile: AnyProfile,
+    onFollowToggle: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Header(
         avatar = { LargeAvatar(profile.name, profile.avatarURL) },
         name = { Text(profile.name) },
         account = { Text("${profile.account.username}@${profile.account.instance}") },
         bio = { Text(HtmlAnnotatedString(profile.bio)) },
+        followToggleButton = {
+            Button(onClick = onFollowToggle) {
+                Text(profile.follow.label)
+            }
+        },
         modifier
     )
 }
@@ -58,6 +69,7 @@ private fun Header(
     name: @Composable () -> Unit,
     account: @Composable () -> Unit,
     bio: @Composable () -> Unit,
+    followToggleButton: @Composable () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -78,6 +90,7 @@ private fun Header(
         }
 
         ProvideTextStyle(LocalTextStyle.current.copy(textAlign = TextAlign.Center), bio)
+        followToggleButton()
     }
 }
 
@@ -96,7 +109,7 @@ private fun LoadingHeaderPreview() {
 private fun HeaderPreview() {
     MastodonteTheme {
         Surface(color = MastodonteTheme.colorScheme.background) {
-            Header(Profile.sample)
+            Header(Profile.sample, onFollowToggle = { })
         }
     }
 }

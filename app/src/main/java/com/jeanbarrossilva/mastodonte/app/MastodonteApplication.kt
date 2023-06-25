@@ -35,6 +35,7 @@ internal open class MastodonteApplication : Application(), Launchable {
     private fun inject() {
         startKoin {
             androidContext(this@MastodonteApplication)
+            modules(MastodonteModule())
         }
     }
 

@@ -100,9 +100,10 @@ fun MastodonteTheme(content: @Composable () -> Unit) {
             primaryContainer = Color(0xFF1A1A1A),
             onPrimaryContainer = Color(0xFFB388FF),
             background = Color.Black,
-            surface = Color(0xFF3D3D3D),
+            surface = Color.Black,
             surfaceVariant = Color(0xFF202020),
-            onSurfaceVariant = Color(0xFFF5F5F5)
+            onSurfaceVariant = Color(0xFFF5F5F5),
+            outlineVariant = Color(0xFF1A1A1A)
         ),
         typography = with(Typography() with FontFamily.Rubik) {
             copy(

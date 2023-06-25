@@ -24,6 +24,8 @@ object Dependencies {
     const val COROUTINES_TEST =
         "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.COROUTINES}"
     const val KOIN = "io.insert-koin:koin-androidx-compose:${Versions.KOIN}"
+    const val LIFECYCLE_VIEWMODEL =
+        "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.LIFECYCLE}"
     const val LOADABLE = "com.jeanbarrossilva.loadable:loadable:${Versions.LOADABLE}"
     const val LOADABLE_LIST = "com.jeanbarrossilva.loadable:loadable-list:${Versions.LOADABLE}"
     const val LOADABLE_PLACEHOLDER =

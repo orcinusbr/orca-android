@@ -48,8 +48,11 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:in-memory"))
+    implementation(project(":feature:profile"))
     implementation(project(":platform:launchable"))
     implementation(project(":platform:theme"))
+    implementation(project(":platform:ui"))
     implementation(Dependencies.ACCOMPANIST_NAVIGATION_MATERIAL)
     implementation(Dependencies.COMPOSE_DESTINATIONS_ANIMATIONS)
     implementation(Dependencies.COMPOSE_DESTINATIONS_CORE)

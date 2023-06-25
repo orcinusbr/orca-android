@@ -9,12 +9,18 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.runtime.Composable
@@ -28,9 +34,14 @@ import androidx.navigation.plusAssign
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
+import com.jeanbarrossilva.mastodonte.app.destination.NavGraphs
+import com.jeanbarrossilva.mastodonte.app.destination.destinations.ProfileDestination
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
+import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
+import com.ramcosta.composedestinations.navigation.dependency
+import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.utils.currentDestinationAsState
 
 @Composable
@@ -62,10 +73,6 @@ internal fun Mastodonte(modifier: Modifier = Modifier) {
     val navController =
         engine.rememberNavController().apply { navigatorProvider += bottomSheetNavigator }
     val destination by navController.currentDestinationAsState()
-    val isAtTop = remember(destination) {
-        val route = destination?.route
-        route == null || '/' !in route
-    }
     val onBottomAreaAvailabilityChangeListener =
         remember(::MastodonteOnBottomAreaAvailabilityChangeListener)
     val bottomBarTonalElevation by animateDpAsState(
@@ -85,7 +92,21 @@ internal fun Mastodonte(modifier: Modifier = Modifier) {
             Scaffold(
                 modifier,
                 bottomBar = {
-                    BottomAppBar(tonalElevation = bottomBarTonalElevation) {
+                    Column {
+                        Divider()
+
+                        BottomAppBar(tonalElevation = bottomBarTonalElevation) {
+                            NavigationBarItem(
+                                selected = destination in ProfileDestination,
+                                onClick = { navController.navigate(ProfileDestination) },
+                                icon = {
+                                    Icon(
+                                        MastodonteTheme.Icons.AccountCircle,
+                                        contentDescription = "Profile"
+                                    )
+                                }
+                            )
+                        }
                     }
                 },
                 containerColor = Color.Transparent,
@@ -95,15 +116,15 @@ internal fun Mastodonte(modifier: Modifier = Modifier) {
                     .only(WindowInsetsSides.End)
                     .only(WindowInsetsSides.Bottom)
             ) {
-//                DestinationsNavHost(
-//                    NavGraphs.root,
-//                    Modifier.padding(padding),
-//                    engine = engine,
-//                    navController = navController,
-//                    dependenciesContainerBuilder = {
-//                        dependency(onBottomAreaAvailabilityChangeListener)
-//                    }
-//                )
+                DestinationsNavHost(
+                    NavGraphs.root,
+                    Modifier.padding(it),
+                    engine = engine,
+                    navController = navController,
+                    dependenciesContainerBuilder = {
+                        dependency(onBottomAreaAvailabilityChangeListener)
+                    }
+                )
             }
         }
     }

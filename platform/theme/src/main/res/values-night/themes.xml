@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <bool name="is_system_in_light_theme">false</bool>
     <color name="normal_control_color">@android:color/white</color>
 </resources>

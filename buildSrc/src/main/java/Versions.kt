@@ -9,6 +9,7 @@ object Versions {
     const val COMPOSE_MATERIAL_ICONS_EXTENDED = "1.4.3"
     const val COMPOSE_UI_TOOLING = "1.4.3"
     const val COROUTINES = "1.7.1"
+    const val LIFECYCLE = "2.6.1"
     const val LOADABLE = "1.6.3"
     const val GRADLE = "8.0.2"
     const val KOIN = "3.4.4"

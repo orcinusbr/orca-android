@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
@@ -17,7 +18,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,33 +36,61 @@ import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.mastodon.feature.profile.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.mastodon.feature.profile.navigation.Content
 import com.jeanbarrossilva.mastodon.feature.profile.ui.Header
+import com.jeanbarrossilva.mastodon.feature.profile.viewmodel.ProfileViewModel
+import com.jeanbarrossilva.mastodonte.core.inmemory.profile.sample
 import com.jeanbarrossilva.mastodonte.core.profile.AnyProfile
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.plus
-import com.jeanbarrossilva.mastodonte.platform.ui.profile.sample
+import com.jeanbarrossilva.mastodonte.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.mastodonte.platform.ui.timeline.TootPreview
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 @Composable
-internal fun Profile(
-    loadable: Loadable<AnyProfile>,
+fun Profile(
+    viewModel: ProfileViewModel,
     onNavigationToTootDetails: (Toot) -> Unit,
     onEdit: () -> Unit,
     backwardsNavigationState: BackwardsNavigationState,
+    onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
+    modifier: Modifier = Modifier
+) {
+    val loadable by viewModel.loadableFlow.collectAsState()
+
+    Profile(
+        loadable,
+        onFollowToggle = viewModel::toggleFollow,
+        onNavigationToTootDetails,
+        onEdit,
+        backwardsNavigationState,
+        onBottomAreaAvailabilityChangeListener,
+        modifier
+    )
+}
+
+@Composable
+private fun Profile(
+    loadable: Loadable<AnyProfile>,
+    onFollowToggle: () -> Unit,
+    onNavigationToTootDetails: (Toot) -> Unit,
+    onEdit: () -> Unit,
+    backwardsNavigationState: BackwardsNavigationState,
+    onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
     when (loadable) {
         is Loadable.Loading ->
-            Profile(backwardsNavigationState, modifier)
+            Profile(backwardsNavigationState, onBottomAreaAvailabilityChangeListener, modifier)
         is Loadable.Loaded ->
             Profile(
                 loadable.content,
+                onFollowToggle,
                 onNavigationToTootDetails,
                 onEdit,
                 backwardsNavigationState,
+                onBottomAreaAvailabilityChangeListener,
                 modifier
             )
         is Loadable.Failed ->
@@ -70,6 +101,7 @@ internal fun Profile(
 @Composable
 private fun Profile(
     backwardsNavigationState: BackwardsNavigationState,
+    onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
     Profile(
@@ -78,6 +110,7 @@ private fun Profile(
         toots = { loadingToots() },
         floatingActionButton = { },
         backwardsNavigationState,
+        onBottomAreaAvailabilityChangeListener,
         modifier
     )
 }
@@ -85,9 +118,11 @@ private fun Profile(
 @Composable
 private fun Profile(
     profile: AnyProfile,
+    onFollowToggle: () -> Unit,
     onNavigationToTootDetails: (Toot) -> Unit,
     onEdit: () -> Unit,
     backwardsNavigationState: BackwardsNavigationState,
+    onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
     var tootsLoadable by remember {
@@ -101,7 +136,7 @@ private fun Profile(
 
     Profile(
         title = { Text("@${profile.account.username}") },
-        header = { Header(profile) },
+        header = { Header(profile, onFollowToggle) },
         toots = {
             when (
                 @Suppress("NAME_SHADOWING")
@@ -123,6 +158,7 @@ private fun Profile(
             }
         },
         backwardsNavigationState,
+        onBottomAreaAvailabilityChangeListener,
         modifier
     )
 }
@@ -134,6 +170,7 @@ private fun Profile(
     toots: LazyListScope.() -> Unit,
     floatingActionButton: @Composable () -> Unit,
     backwardsNavigationState: BackwardsNavigationState,
+    onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
     val lazyListState = rememberLazyListState()
@@ -142,13 +179,27 @@ private fun Profile(
             lazyListState.firstVisibleItemIndex > 0
         }
     }
+    val isBottomAreaAvailable by remember {
+        derivedStateOf {
+            lazyListState.canScrollForward
+        }
+    }
+
+    DisposableEffect(isBottomAreaAvailable) {
+        onBottomAreaAvailabilityChangeListener.onBottomAreaAvailabilityChange(isBottomAreaAvailable)
+        onDispose { }
+    }
 
     Box(modifier) {
         Scaffold(
             floatingActionButton = floatingActionButton,
             floatingActionButtonPosition = FabPosition.Center
         ) {
-            LazyColumn(state = lazyListState, contentPadding = it + MastodonteTheme.overlays.fab) {
+            LazyColumn(
+                Modifier.statusBarsPadding(),
+                lazyListState,
+                contentPadding = it + MastodonteTheme.overlays.fab
+            ) {
                 item { header() }
                 toots()
             }
@@ -178,7 +229,7 @@ private fun LazyListScope.loadingToots() {
 @Preview
 private fun LoadingProfilePreview() {
     MastodonteTheme {
-        Profile(BackwardsNavigationState.Unavailable)
+        Profile(BackwardsNavigationState.Unavailable, OnBottomAreaAvailabilityChangeListener.empty)
     }
 }
 
@@ -188,9 +239,11 @@ private fun LoadedProfilePreview() {
     MastodonteTheme {
         Profile(
             Profile.sample,
+            onFollowToggle = { },
             onNavigationToTootDetails = { },
             onEdit = { },
-            BackwardsNavigationState.Unavailable
+            BackwardsNavigationState.Unavailable,
+            onBottomAreaAvailabilityChangeListener = OnBottomAreaAvailabilityChangeListener.empty
         )
     }
 }

@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.ui.profile
+package com.jeanbarrossilva.mastodonte.core.inmemory.profile
 
 import com.jeanbarrossilva.mastodonte.core.profile.AnyProfile
 import com.jeanbarrossilva.mastodonte.core.profile.Follow
@@ -9,16 +9,19 @@ import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
+/** [sample]'s [ID][Profile.id]. **/
+private val sampleID = UUID.randomUUID().toString()
+
 /** A sample [Profile]. **/
 val Profile.Companion.sample: AnyProfile
     get() = object : Profile<Follow.Public>() {
-        override val id = UUID.randomUUID().toString()
+        override val id = sampleID
         override val account = Author.sample.account
         override val avatarURL = Author.sample.avatarURL
         override val name = Author.sample.name
 
         @Suppress("SpellCheckingInspection")
-        override val bio = "Engenheiro de software, autor, escritor e criador de conteúdo;" +
+        override val bio = "Engenheiro de software, autor, escritor e criador de conteúdo; " +
             "entusiasta da neurociência, da física quântica e da filosofia."
 
         override val follow = Follow.Public.unfollowed()

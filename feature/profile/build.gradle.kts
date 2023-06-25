@@ -45,9 +45,12 @@ android {
 }
 
 dependencies {
+    debugImplementation(project(":core:in-memory"))
+
     implementation(project(":core"))
     implementation(project(":platform:theme"))
     implementation(project(":platform:ui"))
+    implementation(Dependencies.LIFECYCLE_VIEWMODEL)
     implementation(Dependencies.LOADABLE_LIST)
     implementation(Dependencies.LOADABLE_PLACEHOLDER)
 }

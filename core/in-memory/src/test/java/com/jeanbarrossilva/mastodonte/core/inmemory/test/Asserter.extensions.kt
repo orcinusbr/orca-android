@@ -2,8 +2,8 @@ package com.jeanbarrossilva.mastodonte.core.inmemory.test
 
 import com.jeanbarrossilva.mastodonte.core.inmemory.profile.InMemoryProfile
 import com.jeanbarrossilva.mastodonte.core.inmemory.profile.InMemoryProfileDao
-import com.jeanbarrossilva.mastodonte.core.profile.`@`
 import com.jeanbarrossilva.mastodonte.core.profile.Follow
+import com.jeanbarrossilva.mastodonte.core.profile.toot.at
 import java.net.URL
 import java.util.UUID
 import kotlin.test.assertEquals
@@ -24,7 +24,7 @@ internal fun <T : Follow> assertTogglingEquals(before: T, after: T) {
     val id = UUID.randomUUID().toString()
     InMemoryProfileDao.add(
         id,
-        account = "john" `@` "appleseed.com",
+        account = "john" at "appleseed.com",
         avatarURL = URL("https://appleseed.john.com/avatar.png"),
         name = "John Appleseed",
         bio = "Not a real person.",

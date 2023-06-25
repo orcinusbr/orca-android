@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.ui.profile
+package com.jeanbarrossilva.mastodonte.core.inmemory.profile
 
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Author
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
