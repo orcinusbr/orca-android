@@ -1,9 +1,10 @@
-package com.jeanbarrossilva.mastodonte.app.destination
+package com.jeanbarrossilva.mastodonte.app.feature.profile
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jeanbarrossilva.mastodon.feature.profile.Profile
+import com.jeanbarrossilva.mastodon.feature.profile.ProfileNavigator
 import com.jeanbarrossilva.mastodon.feature.profile.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.mastodon.feature.profile.viewmodel.ProfileViewModel
 import com.jeanbarrossilva.mastodonte.core.inmemory.profile.sample
@@ -24,10 +25,11 @@ internal fun Profile(
     val repository = koinInject<ProfileRepository>()
     val viewModelFactory = ProfileViewModel.createFactory(repository, Profile.sample.id)
     val viewModel = viewModel<ProfileViewModel>(factory = viewModelFactory)
+    val navigator = koinInject<ProfileNavigator>()
 
     Profile(
         viewModel,
-        onNavigationToTootDetails = { },
+        navigator,
         onEdit = { },
         BackwardsNavigationState.Unavailable,
         onBottomAreaAvailabilityChangeListener,

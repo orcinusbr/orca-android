@@ -4,17 +4,23 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material.icons.rounded.OpenInBrowser
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,13 +50,14 @@ import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.plus
 import com.jeanbarrossilva.mastodonte.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.mastodonte.platform.ui.timeline.TootPreview
+import java.net.URL
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 @Composable
 fun Profile(
     viewModel: ProfileViewModel,
-    onNavigationToTootDetails: (Toot) -> Unit,
+    navigator: ProfileNavigator,
     onEdit: () -> Unit,
     backwardsNavigationState: BackwardsNavigationState,
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
@@ -61,9 +68,10 @@ fun Profile(
     Profile(
         loadable,
         onFollowToggle = viewModel::toggleFollow,
-        onNavigationToTootDetails,
+        navigator::navigateToTootDetails,
         onEdit,
         backwardsNavigationState,
+        navigator::navigateToWebpage,
         onBottomAreaAvailabilityChangeListener,
         modifier
     )
@@ -73,9 +81,10 @@ fun Profile(
 private fun Profile(
     loadable: Loadable<Profile>,
     onFollowToggle: () -> Unit,
-    onNavigationToTootDetails: (Toot) -> Unit,
+    onNavigationToTootDetails: (id: String) -> Unit,
     onEdit: () -> Unit,
     backwardsNavigationState: BackwardsNavigationState,
+    onNavigateToWebpage: (URL) -> Unit,
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
@@ -89,6 +98,7 @@ private fun Profile(
                 onNavigationToTootDetails,
                 onEdit,
                 backwardsNavigationState,
+                onNavigateToWebpage,
                 onBottomAreaAvailabilityChangeListener,
                 modifier
             )
@@ -105,6 +115,7 @@ private fun Profile(
 ) {
     Profile(
         title = { MediumTextualPlaceholder() },
+        actions = { },
         header = { Header() },
         toots = { loadingToots() },
         floatingActionButton = { },
@@ -118,15 +129,15 @@ private fun Profile(
 private fun Profile(
     profile: Profile,
     onFollowToggle: () -> Unit,
-    onNavigationToTootDetails: (Toot) -> Unit,
+    onNavigationToTootDetails: (id: String) -> Unit,
     onEdit: () -> Unit,
     backwardsNavigationState: BackwardsNavigationState,
+    onNavigateToWebpage: (URL) -> Unit,
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
-    var tootsLoadable by remember {
-        mutableStateOf<ListLoadable<Toot>>(ListLoadable.Loading())
-    }
+    var isTopBarDropdownExpanded by remember { mutableStateOf(false) }
+    var tootsLoadable by remember { mutableStateOf<ListLoadable<Toot>>(ListLoadable.Loading()) }
 
     LaunchedEffect(profile) {
         tootsLoadable =
@@ -135,6 +146,29 @@ private fun Profile(
 
     Profile(
         title = { Text("@${profile.account.username}") },
+        actions = {
+            Box {
+                IconButton(onClick = { isTopBarDropdownExpanded = true }) {
+                    Icon(MastodonteTheme.Icons.MoreVert, contentDescription = "More")
+                }
+
+                DropdownMenu(
+                    isTopBarDropdownExpanded,
+                    onDismissRequest = { isTopBarDropdownExpanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Open in browser") },
+                        onClick = { onNavigateToWebpage(profile.url) },
+                        leadingIcon = {
+                            Icon(
+                                MastodonteTheme.Icons.OpenInBrowser,
+                                contentDescription = "Open in browser"
+                            )
+                        }
+                    )
+                }
+            }
+        },
         header = { Header(profile, onFollowToggle) },
         toots = {
             when (
@@ -143,7 +177,7 @@ private fun Profile(
             ) {
                 is ListLoadable.Populated ->
                     items(tootsLoadable.content) {
-                        TootPreview(it, onClick = { onNavigationToTootDetails(it) })
+                        TootPreview(it, onClick = { onNavigationToTootDetails(it.id) })
                     }
                 is ListLoadable.Loading ->
                     loadingToots()
@@ -165,6 +199,7 @@ private fun Profile(
 @Composable
 private fun Profile(
     title: @Composable () -> Unit,
+    actions: @Composable RowScope.() -> Unit,
     header: @Composable () -> Unit,
     toots: LazyListScope.() -> Unit,
     floatingActionButton: @Composable () -> Unit,
@@ -212,7 +247,8 @@ private fun Profile(
             @OptIn(ExperimentalMaterial3Api::class)
             CenterAlignedTopAppBar(
                 title = title,
-                navigationIcon = { backwardsNavigationState.Content() }
+                navigationIcon = { backwardsNavigationState.Content() },
+                actions = actions
             )
         }
     }
@@ -242,6 +278,7 @@ private fun LoadedProfilePreview() {
             onNavigationToTootDetails = { },
             onEdit = { },
             BackwardsNavigationState.Unavailable,
+            onNavigateToWebpage = { },
             onBottomAreaAvailabilityChangeListener = OnBottomAreaAvailabilityChangeListener.empty
         )
     }

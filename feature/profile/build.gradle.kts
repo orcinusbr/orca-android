@@ -50,6 +50,7 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":platform:theme"))
     implementation(project(":platform:ui"))
+    implementation(Dependencies.COMPOSE_MATERIAL_ICONS_EXTENDED)
     implementation(Dependencies.LIFECYCLE_VIEWMODEL)
     implementation(Dependencies.LOADABLE_LIST)
     implementation(Dependencies.LOADABLE_PLACEHOLDER)

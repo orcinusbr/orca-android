@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.annotation.Discouraged
 import androidx.core.content.edit
+import com.jeanbarrossilva.mastodonte.app.feature.profile.ProfileModule
 import com.jeanbarrossilva.mastodonte.platform.launchable.Launchable
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -35,7 +36,7 @@ internal open class MastodonteApplication : Application(), Launchable {
     private fun inject() {
         startKoin {
             androidContext(this@MastodonteApplication)
-            modules(MastodonteModule())
+            modules(MastodonteModule(), ProfileModule())
         }
     }
 
