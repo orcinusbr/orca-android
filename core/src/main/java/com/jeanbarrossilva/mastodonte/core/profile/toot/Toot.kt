@@ -17,5 +17,14 @@ abstract class Toot : Serializable {
     /** Zoned moment in time in which this [Toot] was published. **/
     abstract val publicationDateTime: ZonedDateTime
 
+    /** Number of comments made in response to this [Toot]. **/
+    abstract val commentCount: Int
+
+    /** Number of favorites given by users to this [Toot]. **/
+    abstract val favoriteCount: Int
+
+    /** Number of times this [Toot] has been re-blogged. **/
+    abstract val reblogCount: Int
+
     companion object
 }

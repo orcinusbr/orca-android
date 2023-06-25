@@ -9,5 +9,8 @@ data class InMemoryToot(
     override val id: String,
     override val author: Author,
     override val content: String,
-    override val publicationDateTime: ZonedDateTime
+    override val publicationDateTime: ZonedDateTime,
+    override val commentCount: Int,
+    override val favoriteCount: Int,
+    override val reblogCount: Int
 ) : Toot()

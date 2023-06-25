@@ -23,6 +23,9 @@ val Toot.Companion.sample
             /*nanoOfSecond =*/ 0,
             /*zone =*/ ZoneId.of("GMT-3")
         )
+        override val commentCount = 12
+        override val favoriteCount = 56
+        override val reblogCount = 2
     }
 
 /**
