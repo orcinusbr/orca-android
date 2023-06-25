@@ -24,7 +24,7 @@ object Versions {
         const val CODE = 1
         const val NAME = "1.0.0"
         const val SDK_COMPILE = 33
-        const val SDK_MIN = 24
+        const val SDK_MIN = 26
         const val SDK_TARGET = SDK_COMPILE
     }
 }
