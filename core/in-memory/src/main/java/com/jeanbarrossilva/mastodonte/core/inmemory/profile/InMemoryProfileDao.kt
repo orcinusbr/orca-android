@@ -1,9 +1,10 @@
 package com.jeanbarrossilva.mastodonte.core.inmemory.profile
 
-import com.jeanbarrossilva.mastodonte.core.profile.AnyProfile
-import com.jeanbarrossilva.mastodonte.core.profile.Follow
+import com.jeanbarrossilva.mastodonte.core.inmemory.profile.follow.InMemoryFollowableProfile
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.profile.ProfileRepository
+import com.jeanbarrossilva.mastodonte.core.profile.follow.Follow
+import com.jeanbarrossilva.mastodonte.core.profile.follow.FollowableProfile
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Account
 import java.net.URL
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +15,7 @@ import kotlinx.coroutines.flow.map
 object InMemoryProfileDao : ProfileRepository {
     private var profilesFlow = MutableStateFlow(listOf(Profile.sample))
 
-    override suspend fun get(id: String): Flow<AnyProfile?> {
+    override suspend fun get(id: String): Flow<Profile?> {
         return profilesFlow.map { profiles ->
             profiles.find { profile ->
                 profile.id == id
@@ -23,7 +24,7 @@ object InMemoryProfileDao : ProfileRepository {
     }
 
     /**
-     * Adds a [Profile].
+     * Inserts a [Profile].
      *
      * @param id Unique identifier.
      * @param account Unique identifier within an instance.
@@ -36,7 +37,7 @@ object InMemoryProfileDao : ProfileRepository {
      * @param url [URL] that leads to the webpage of the instance through which the [Profile] can
      * be accessed.
      **/
-    fun <T : Follow> add(
+    fun <T : Follow> insert(
         id: String,
         account: Account,
         avatarURL: URL,
@@ -47,32 +48,32 @@ object InMemoryProfileDao : ProfileRepository {
         followingCount: Int,
         url: URL
     ) {
-        val profile = InMemoryProfile(
-            id,
-            account,
-            avatarURL,
-            name,
-            bio,
-            follow,
-            followerCount,
-            followingCount,
-            url
-        )
-        add(profile)
+        val profile = object : InMemoryFollowableProfile<T>() {
+            override val id = id
+            override val account = account
+            override val avatarURL = avatarURL
+            override val name = name
+            override val bio = bio
+            override val followerCount = followerCount
+            override val followingCount = followingCount
+            override val url = url
+            override var follow: T = follow
+        }
+        insert(profile)
     }
 
     /**
-     * Updates the [Profile.follow] of the [Profile] whose [ID][Profile.id] is equal to the given
-     * [profileID].
+     * Updates the [FollowableProfile.follow] of the [Profile] whose [ID][FollowableProfile.id] is
+     * equal the given [profileID].
      *
-     * @param profileID [Profile]'s [ID][Profile.id].
-     * @param follow [Follow] to update the [Profile.follow] to.
+     * @param profileID [Profile]'s [ID][FollowableProfile.id].
+     * @param follow [Follow] to update the [FollowableProfile.follow] to.
      **/
     fun updateFollow(profileID: String, follow: Follow) {
         profilesFlow.value = profilesFlow.value.replacingOnceBy({
             apply {
                 @Suppress("UNCHECKED_CAST")
-                (this as InMemoryProfile<Follow>).follow = follow
+                (this as InMemoryFollowableProfile<Follow>).follow = follow
             }
         }) {
             it.id == profileID
@@ -80,11 +81,11 @@ object InMemoryProfileDao : ProfileRepository {
     }
 
     /**
-     * Adds the given [profile].
+     * Inserts the given [profile].
      *
      * @param profile [Profile] to be added.
      **/
-    private fun add(profile: AnyProfile) {
+    private fun insert(profile: Profile) {
         profilesFlow.value = profilesFlow.value + profile
     }
 }

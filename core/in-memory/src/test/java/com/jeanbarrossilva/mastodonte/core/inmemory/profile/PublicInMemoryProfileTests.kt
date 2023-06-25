@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.mastodonte.core.inmemory.profile
 
 import com.jeanbarrossilva.mastodonte.core.inmemory.test.assertTogglingEquals
-import com.jeanbarrossilva.mastodonte.core.profile.Follow
+import com.jeanbarrossilva.mastodonte.core.profile.follow.Follow
 import kotlin.test.Test
 
 internal class PublicInMemoryProfileTests {

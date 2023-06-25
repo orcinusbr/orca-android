@@ -38,7 +38,6 @@ import com.jeanbarrossilva.mastodon.feature.profile.navigation.Content
 import com.jeanbarrossilva.mastodon.feature.profile.ui.Header
 import com.jeanbarrossilva.mastodon.feature.profile.viewmodel.ProfileViewModel
 import com.jeanbarrossilva.mastodonte.core.inmemory.profile.sample
-import com.jeanbarrossilva.mastodonte.core.profile.AnyProfile
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
@@ -72,7 +71,7 @@ fun Profile(
 
 @Composable
 private fun Profile(
-    loadable: Loadable<AnyProfile>,
+    loadable: Loadable<Profile>,
     onFollowToggle: () -> Unit,
     onNavigationToTootDetails: (Toot) -> Unit,
     onEdit: () -> Unit,
@@ -117,7 +116,7 @@ private fun Profile(
 
 @Composable
 private fun Profile(
-    profile: AnyProfile,
+    profile: Profile,
     onFollowToggle: () -> Unit,
     onNavigationToTootDetails: (Toot) -> Unit,
     onEdit: () -> Unit,

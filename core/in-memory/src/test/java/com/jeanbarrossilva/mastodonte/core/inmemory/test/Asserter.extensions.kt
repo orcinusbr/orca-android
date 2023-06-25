@@ -2,7 +2,7 @@ package com.jeanbarrossilva.mastodonte.core.inmemory.test
 
 import com.jeanbarrossilva.mastodonte.core.inmemory.profile.InMemoryProfile
 import com.jeanbarrossilva.mastodonte.core.inmemory.profile.InMemoryProfileDao
-import com.jeanbarrossilva.mastodonte.core.profile.Follow
+import com.jeanbarrossilva.mastodonte.core.profile.follow.Follow
 import com.jeanbarrossilva.mastodonte.core.profile.toot.at
 import java.net.URL
 import java.util.UUID
@@ -22,7 +22,7 @@ import kotlinx.coroutines.test.runTest
 internal fun <T : Follow> assertTogglingEquals(before: T, after: T) {
     val matchingAfter = Follow.requireVisibilityMatch(before, after)
     val id = UUID.randomUUID().toString()
-    InMemoryProfileDao.add(
+    InMemoryProfileDao.insert(
         id,
         account = "john" at "appleseed.com",
         avatarURL = URL("https://appleseed.john.com/avatar.png"),

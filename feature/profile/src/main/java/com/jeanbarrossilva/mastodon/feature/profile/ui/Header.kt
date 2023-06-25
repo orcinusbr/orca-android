@@ -17,8 +17,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.mastodonte.core.inmemory.profile.sample
-import com.jeanbarrossilva.mastodonte.core.profile.AnyProfile
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
+import com.jeanbarrossilva.mastodonte.core.profile.follow.FollowableProfile
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.ui.html.HtmlAnnotatedString
 import com.jeanbarrossilva.mastodonte.platform.ui.profile.LargeAvatar
@@ -45,7 +45,7 @@ internal fun Header(modifier: Modifier = Modifier) {
 
 @Composable
 internal fun Header(
-    profile: AnyProfile,
+    profile: Profile,
     onFollowToggle: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -55,8 +55,10 @@ internal fun Header(
         account = { Text("${profile.account.username}@${profile.account.instance}") },
         bio = { Text(HtmlAnnotatedString(profile.bio)) },
         followToggleButton = {
-            Button(onClick = onFollowToggle) {
-                Text(profile.follow.label)
+            if (profile is FollowableProfile<*>) {
+                Button(onClick = onFollowToggle) {
+                    Text(profile.follow.label)
+                }
             }
         },
         modifier

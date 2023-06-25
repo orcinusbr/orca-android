@@ -6,55 +6,35 @@ import java.io.Serializable
 import java.net.URL
 import kotlinx.coroutines.flow.Flow
 
-/** [Profile] whose [Follow] status type is not taken into consideration. **/
-typealias AnyProfile = Profile<*>
-
 /** A user's profile. **/
-abstract class Profile<T : Follow> protected constructor() : Serializable {
+interface Profile : Serializable {
     /** Unique identifier. **/
-    abstract val id: String
+    val id: String
 
     /** Unique identifier within an instance. **/
-    abstract val account: Account
+    val account: Account
 
     /** [URL] that leads to the avatar image. **/
-    abstract val avatarURL: URL
+    val avatarURL: URL
 
     /** Name to be displayed. **/
-    abstract val name: String
+    val name: String
 
     /** Describes who the owner is and/or provides information regarding this [Profile]. **/
-    abstract val bio: String
-
-    /** Current [Follow] status. **/
-    abstract val follow: T
+    val bio: String
 
     /** Amount of followers. **/
-    abstract val followerCount: Int
+    val followerCount: Int
 
     /** Amount of following. **/
-    abstract val followingCount: Int
+    val followingCount: Int
 
     /**
      * [URL] that leads to the webpage of the instance through which this [Profile] can be accessed.
      **/
-    abstract val url: URL
+    val url: URL
 
-    /** Toggles the [follow] status. **/
-    suspend fun toggleFollow() {
-        val toggledFollow = follow.toggled()
-        val matchingToggledFollow = Follow.requireVisibilityMatch(follow, toggledFollow)
-        onChangeFollowTo(matchingToggledFollow)
-    }
-
-    abstract fun getToots(page: Int): Flow<List<Toot>>
-
-    /**
-     * Callback run whenever the [Follow] status is changed to [follow].
-     *
-     * @param follow Changed [Follow] status.
-     **/
-    protected abstract suspend fun onChangeFollowTo(follow: T)
+    fun getToots(page: Int): Flow<List<Toot>>
 
     companion object
 }

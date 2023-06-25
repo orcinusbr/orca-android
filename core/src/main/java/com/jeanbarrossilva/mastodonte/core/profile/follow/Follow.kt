@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.core.profile
+package com.jeanbarrossilva.mastodonte.core.profile.follow
 
 import java.io.Serializable
 

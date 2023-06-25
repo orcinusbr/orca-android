@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.mastodon.feature.profile.ui
 
-import com.jeanbarrossilva.mastodonte.core.profile.Follow
+import com.jeanbarrossilva.mastodonte.core.profile.follow.Follow
 
 /**
  * Describes this status or the action that involves toggling this [Follow] status.

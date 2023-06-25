@@ -11,5 +11,5 @@ fun interface ProfileRepository {
      * @return The requested [Profile], or `null` if one with such [id] doesn't exist.
      * @see Profile.id
      **/
-    suspend fun get(id: String): Flow<AnyProfile?>
+    suspend fun get(id: String): Flow<Profile?>
 }
