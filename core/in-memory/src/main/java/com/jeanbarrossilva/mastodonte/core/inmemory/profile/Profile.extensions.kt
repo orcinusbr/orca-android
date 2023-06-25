@@ -3,6 +3,8 @@ package com.jeanbarrossilva.mastodonte.core.inmemory.profile
 import com.jeanbarrossilva.mastodonte.core.inmemory.profile.toot.sample
 import com.jeanbarrossilva.mastodonte.core.inmemory.profile.toot.samples
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
+import com.jeanbarrossilva.mastodonte.core.profile.edit.EditableProfile
+import com.jeanbarrossilva.mastodonte.core.profile.edit.Editor
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Author
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import java.util.UUID
@@ -14,7 +16,7 @@ private val sampleID = UUID.randomUUID().toString()
 
 /** A sample [Profile]. **/
 val Profile.Companion.sample: Profile
-    get() = object : Profile {
+    get() = object : EditableProfile() {
         override val id = sampleID
         override val account = Author.sample.account
         override val avatarURL = Author.sample.avatarURL
@@ -27,6 +29,7 @@ val Profile.Companion.sample: Profile
         override val followerCount = 0
         override val followingCount = 5
         override val url = Author.sample.profileURL
+        override val editor = Editor.empty
 
         override fun getToots(page: Int): Flow<List<Toot>> {
             return flowOf(Toot.samples)

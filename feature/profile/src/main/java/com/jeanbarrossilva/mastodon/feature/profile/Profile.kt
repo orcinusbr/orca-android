@@ -45,6 +45,7 @@ import com.jeanbarrossilva.mastodon.feature.profile.ui.Header
 import com.jeanbarrossilva.mastodon.feature.profile.viewmodel.ProfileViewModel
 import com.jeanbarrossilva.mastodonte.core.inmemory.profile.sample
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
+import com.jeanbarrossilva.mastodonte.core.profile.edit.EditableProfile
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.plus
@@ -199,8 +200,10 @@ private fun Profile(
             }
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = onEdit) {
-                Icon(MastodonteTheme.Icons.Edit, contentDescription = "Edit")
+            if (profile is EditableProfile) {
+                FloatingActionButton(onClick = onEdit) {
+                    Icon(MastodonteTheme.Icons.Edit, contentDescription = "Edit")
+                }
             }
         },
         backwardsNavigationState,
