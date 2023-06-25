@@ -31,5 +31,6 @@ object Dependencies {
     const val LOADABLE_PLACEHOLDER =
         "com.jeanbarrossilva.loadable:loadable-placeholder:${Versions.LOADABLE}"
     const val MATERIAL = "com.google.android.material:material:${Versions.MATERIAL}"
+    const val TIME4J = "net.time4j:time4j-android:${Versions.TIME4A}"
     const val VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.VIEWMODEL}"
 }

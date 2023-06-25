@@ -55,6 +55,10 @@ private const val SHAPES_PREVIEW_HEIGHT = 898
 /** Height of [TypographyPreview]. **/
 private const val TYPOGRAPHY_PREVIEW_HEIGHT = 1_117
 
+/** [Color] for hierarchically lower non-highlighted content. **/
+private val fadedContentColor
+    @Composable get() = colorAttribute(android.R.attr.textColorTertiaryInverse)
+
 /** [Color] for non-highlighted content. **/
 private val defaultContentColor
     @Composable get() = colorAttribute(android.R.attr.textColorSecondaryInverse)
@@ -100,20 +104,23 @@ fun MastodonteTheme(content: @Composable () -> Unit) {
             primaryContainer = Color(0xFF1A1A1A),
             onPrimaryContainer = Color(0xFFB388FF),
             background = Color.Black,
-            surface = Color.Black,
+            surface = Color(0xFF252525),
             surfaceVariant = Color(0xFF202020),
             onSurfaceVariant = Color(0xFFF5F5F5),
+            outline = fadedContentColor,
             outlineVariant = Color(0xFF1A1A1A)
         ),
         typography = with(Typography() with FontFamily.Rubik) {
             copy(
                 displayLarge = displayLarge.copy(fontWeight = FontWeight.Black),
                 headlineLarge = headlineLarge.copy(fontWeight = FontWeight.Black),
-                titleLarge = titleLarge.copy(fontSize = 18.sp, fontWeight = FontWeight.ExtraBold),
-                titleMedium = titleSmall.copy(fontSize = 18.sp, fontWeight = FontWeight.Bold),
-                titleSmall = titleSmall.copy(color = defaultContentColor, fontSize = 18.sp),
+                titleLarge = titleLarge.copy(fontSize = 16.sp, fontWeight = FontWeight.ExtraBold),
+                titleMedium = titleSmall.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold),
+                titleSmall = titleSmall.copy(color = defaultContentColor, fontSize = 16.sp),
                 bodyLarge = bodyLarge.copy(fontWeight = FontWeight.Bold),
-                bodyMedium = bodyMedium.copy(fontSize = 16.sp)
+                bodyMedium = bodyMedium.copy(fontSize = 14.sp),
+                bodySmall = bodySmall
+                    .copy(color = fadedContentColor, fontWeight = FontWeight.Medium)
             )
         }
     ) {

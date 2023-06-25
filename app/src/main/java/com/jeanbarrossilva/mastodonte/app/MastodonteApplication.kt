@@ -6,6 +6,7 @@ import androidx.annotation.Discouraged
 import androidx.core.content.edit
 import com.jeanbarrossilva.mastodonte.app.feature.profile.ProfileModule
 import com.jeanbarrossilva.mastodonte.platform.launchable.Launchable
+import net.time4j.android.ApplicationStarter
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -20,6 +21,7 @@ internal open class MastodonteApplication : Application(), Launchable {
         markAsLaunched()
 
         inject()
+        ApplicationStarter.initialize(this, /*prefetch =*/ true)
     }
 
     override fun count(): Int {

@@ -54,4 +54,5 @@ dependencies {
     implementation(Dependencies.COIL_COMPOSE)
     implementation(Dependencies.COMPOSE_MATERIAL_ICONS_EXTENDED)
     implementation(Dependencies.LOADABLE_PLACEHOLDER)
+    implementation(Dependencies.TIME4J)
 }

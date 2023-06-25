@@ -29,6 +29,12 @@ class ProfileViewModel private constructor(repository: ProfileRepository, id: St
         }
     }
 
+    internal fun favorite(tootID: String) {
+    }
+
+    internal fun reblog(tootID: String) {
+    }
+
     companion object {
         fun createFactory(repository: ProfileRepository, id: String): ViewModelProvider.Factory {
             return viewModelFactory {

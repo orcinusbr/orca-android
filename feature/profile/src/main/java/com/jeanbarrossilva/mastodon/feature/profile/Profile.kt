@@ -49,7 +49,7 @@ import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.plus
 import com.jeanbarrossilva.mastodonte.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
-import com.jeanbarrossilva.mastodonte.platform.ui.timeline.TootPreview
+import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.TootPreview
 import java.net.URL
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -68,6 +68,8 @@ fun Profile(
     Profile(
         loadable,
         onFollowToggle = viewModel::toggleFollow,
+        onFavorite = viewModel::favorite,
+        onReblog = viewModel::reblog,
         navigator::navigateToTootDetails,
         onEdit,
         backwardsNavigationState,
@@ -81,6 +83,8 @@ fun Profile(
 private fun Profile(
     loadable: Loadable<Profile>,
     onFollowToggle: () -> Unit,
+    onFavorite: (tootID: String) -> Unit,
+    onReblog: (tootID: String) -> Unit,
     onNavigationToTootDetails: (id: String) -> Unit,
     onEdit: () -> Unit,
     backwardsNavigationState: BackwardsNavigationState,
@@ -95,6 +99,8 @@ private fun Profile(
             Profile(
                 loadable.content,
                 onFollowToggle,
+                onFavorite,
+                onReblog,
                 onNavigationToTootDetails,
                 onEdit,
                 backwardsNavigationState,
@@ -129,6 +135,8 @@ private fun Profile(
 private fun Profile(
     profile: Profile,
     onFollowToggle: () -> Unit,
+    onFavorite: (tootID: String) -> Unit,
+    onReblog: (tootID: String) -> Unit,
     onNavigationToTootDetails: (id: String) -> Unit,
     onEdit: () -> Unit,
     backwardsNavigationState: BackwardsNavigationState,
@@ -177,7 +185,12 @@ private fun Profile(
             ) {
                 is ListLoadable.Populated ->
                     items(tootsLoadable.content) {
-                        TootPreview(it, onClick = { onNavigationToTootDetails(it.id) })
+                        TootPreview(
+                            it,
+                            onFavorite = { onFavorite(it.id) },
+                            onReblog = { onReblog(it.id) },
+                            onClick = { onNavigationToTootDetails(it.id) }
+                        )
                     }
                 is ListLoadable.Loading ->
                     loadingToots()
@@ -275,6 +288,8 @@ private fun LoadedProfilePreview() {
         Profile(
             Profile.sample,
             onFollowToggle = { },
+            onFavorite = { },
+            onReblog = { },
             onNavigationToTootDetails = { },
             onEdit = { },
             BackwardsNavigationState.Unavailable,
