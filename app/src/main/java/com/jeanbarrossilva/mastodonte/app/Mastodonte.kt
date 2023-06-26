@@ -3,10 +3,7 @@ package com.jeanbarrossilva.mastodonte.app
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.AnimationConstants.DefaultDurationMillis
-import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Column
@@ -27,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.plusAssign
@@ -59,18 +55,16 @@ internal fun Mastodonte(modifier: Modifier = Modifier) {
     val engine = rememberAnimatedNavHostEngine(
         rootDefaultAnimations = RootNavGraphDefaultAnimations(
             enterTransition = {
-                fadeIn(enterTransitionAnimationSpec()) + slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Up,
-                    enterTransitionAnimationSpec(),
-                    initialOffset = ::transitionOffset
-                )
+                fadeIn() + slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
             },
             exitTransition = {
-                fadeOut(exitTransitionAnimationSpec()) + slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Down,
-                    exitTransitionAnimationSpec(),
-                    targetOffset = ::transitionOffset
-                )
+                fadeOut() + slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+            },
+            popEnterTransition = {
+                fadeIn() + slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+            },
+            popExitTransition = {
+                fadeOut() + slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
             }
         )
     )
@@ -114,7 +108,7 @@ internal fun Mastodonte(modifier: Modifier = Modifier) {
                         }
                     }
                 },
-                containerColor = Color.Transparent,
+                containerColor = MastodonteTheme.colorScheme.background,
                 contentWindowInsets = ScaffoldDefaults
                     .contentWindowInsets
                     .only(WindowInsetsSides.Start)
@@ -135,23 +129,6 @@ internal fun Mastodonte(modifier: Modifier = Modifier) {
             }
         }
     }
-}
-
-private fun <T> enterTransitionAnimationSpec(): FiniteAnimationSpec<T> {
-    return transitionAnimationSpec()
-}
-
-private fun <T> exitTransitionAnimationSpec(): FiniteAnimationSpec<T> {
-    return transitionAnimationSpec(DefaultDurationMillis / 2)
-}
-
-private fun <T> transitionAnimationSpec(durationInMillis: Int = DefaultDurationMillis):
-    FiniteAnimationSpec<T> {
-    return tween(durationInMillis)
-}
-
-private fun transitionOffset(full: Int): Int {
-    return full / 4
 }
 
 private fun DestinationScopeWithNoDependencies<*>.injectNavigator() {
