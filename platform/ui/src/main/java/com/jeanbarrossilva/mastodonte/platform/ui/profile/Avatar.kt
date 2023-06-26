@@ -27,6 +27,7 @@ import com.jeanbarrossilva.loadable.placeholder.PlaceholderDefaults
 import com.jeanbarrossilva.mastodonte.core.inmemory.profile.toot.sample
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
+import com.jeanbarrossilva.mastodonte.platform.ui.Samples
 import java.io.Serializable
 import java.net.URL
 
@@ -38,7 +39,11 @@ private val smallShape
 private val largeShape
     @Composable get() = MastodonteTheme.shapes.large
 
-data class Avatar(val name: String, val url: URL) : Serializable
+data class Avatar(val name: String, val url: URL) : Serializable {
+    companion object {
+        val sample = Avatar(Samples.NAME, Samples.avatarURL)
+    }
+}
 
 @Composable
 fun SmallAvatar(modifier: Modifier = Modifier) {
@@ -133,7 +138,7 @@ private fun LoadingLargeAvatarPreview() {
 @Preview
 private fun LoadedLargeAvatarPreview() {
     MastodonteTheme {
-        LargeAvatar(Toot.sample.author.name, Toot.sample.author.avatarURL)
+        LargeAvatar(Avatar.sample.name, Avatar.sample.url)
     }
 }
 

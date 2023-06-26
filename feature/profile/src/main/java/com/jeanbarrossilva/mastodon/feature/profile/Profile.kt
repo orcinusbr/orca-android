@@ -55,6 +55,8 @@ import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.plus
 import com.jeanbarrossilva.mastodonte.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.TootPreview
+import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.loadingTootPreviews
+import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.toTootPreview
 import java.net.URL
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -131,7 +133,7 @@ private fun Profile(
         title = { MediumTextualPlaceholder() },
         actions = { },
         header = { Header() },
-        toots = { loadingToots() },
+        toots = { loadingTootPreviews() },
         floatingActionButton = { },
         backwardsNavigationState,
         onBottomAreaAvailabilityChangeListener,
@@ -221,7 +223,7 @@ private fun Profile(
                 is ListLoadable.Populated ->
                     items(tootsLoadable.content) {
                         TootPreview(
-                            it,
+                            it.toTootPreview(),
                             onFavorite = { onFavorite(it.id) },
                             onReblog = { onReblog(it.id) },
                             onShare = { onShare(it.url) },
@@ -229,7 +231,7 @@ private fun Profile(
                         )
                     }
                 is ListLoadable.Loading ->
-                    loadingToots()
+                    loadingTootPreviews()
                 is ListLoadable.Empty, is ListLoadable.Failed ->
                     Unit
             }
@@ -302,12 +304,6 @@ private fun Profile(
                 actions = actions
             )
         }
-    }
-}
-
-private fun LazyListScope.loadingToots() {
-    items(128) {
-        TootPreview()
     }
 }
 

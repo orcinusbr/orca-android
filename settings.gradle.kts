@@ -4,6 +4,7 @@ include(
     ":core",
     ":core:in-memory",
     ":feature:profile",
+    ":feature:toot-details",
     ":platform:launchable",
     ":platform:theme",
     ":platform:ui"

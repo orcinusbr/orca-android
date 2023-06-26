@@ -6,6 +6,8 @@ import java.net.URL
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.UUID
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
 /** A sample [Toot]. **/
 val Toot.Companion.sample
@@ -30,6 +32,10 @@ val Toot.Companion.sample
 
         @Suppress("SpellCheckingInspection")
         override val url = URL("https://mastodon.social/@christianselig/110492858891694580")
+
+        override suspend fun getComments(page: Int): Flow<List<Toot>> {
+            return flowOf(emptyList())
+        }
     }
 
 /**

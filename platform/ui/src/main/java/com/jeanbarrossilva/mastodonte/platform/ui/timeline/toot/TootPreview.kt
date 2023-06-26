@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.rounded.Comment
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Repeat
@@ -21,22 +22,66 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
-import com.jeanbarrossilva.mastodonte.core.inmemory.profile.toot.sample
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.EmptyMutableInteractionSource
+import com.jeanbarrossilva.mastodonte.platform.ui.Samples
 import com.jeanbarrossilva.mastodonte.platform.ui.html.HtmlAnnotatedString
 import com.jeanbarrossilva.mastodonte.platform.ui.profile.SmallAvatar
+import java.net.URL
 
 private val nameTextStyle
     @Composable get() = MastodonteTheme.typography.bodyLarge
 private val spacing
     @Composable get() = MastodonteTheme.spacings.large
+
+/**
+ * Information to be displayed on a [Toot]'s preview.
+ *
+ * @param avatarURL [URL] that leads to the author's avatar.
+ * @param name Name of the author.
+ * @param username Username of the author.
+ * @param timeSincePublication How much time has passed since publication.
+ * @param body Content written by the author.
+ * @param commentCount Amount of comments.
+ * @param favoriteCount Amount of times it's been marked as favorite.
+ * @param reblogCount Amount of times it's been reblogged.
+ **/
+data class TootPreview(
+    val avatarURL: URL,
+    val name: String,
+    val username: String,
+    val timeSincePublication: String,
+    val body: AnnotatedString,
+    val commentCount: String,
+    val favoriteCount: String,
+    val reblogCount: String
+) {
+    companion object {
+        /** [TootPreview] sample. **/
+        val sample = TootPreview(
+            Samples.avatarURL,
+            Samples.NAME,
+            username = "@jeanbarrossilva",
+            timeSincePublication = "19 years ago",
+            body = HtmlAnnotatedString("<p><b>Hello</b>, <i>world</i>!</p>"),
+            commentCount = "1K",
+            favoriteCount = "2K",
+            reblogCount = "512"
+        )
+    }
+}
+
+fun LazyListScope.loadingTootPreviews() {
+    items(128) {
+        TootPreview()
+    }
+}
 
 @Composable
 fun TootPreview(modifier: Modifier = Modifier) {
@@ -60,22 +105,20 @@ fun TootPreview(modifier: Modifier = Modifier) {
 
 @Composable
 fun TootPreview(
-    toot: Toot,
+    preview: TootPreview,
     onFavorite: () -> Unit,
     onReblog: () -> Unit,
     onShare: () -> Unit,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val context = LocalContext.current
-
     TootPreview(
-        avatar = { SmallAvatar(toot.author.name, toot.author.avatarURL) },
-        name = { Text(toot.author.name, style = nameTextStyle) },
+        avatar = { SmallAvatar(preview.name, preview.avatarURL) },
+        name = { Text(preview.name, style = nameTextStyle) },
         metadata = {
-            Text("@${toot.author.account.username} • ${toot.publicationDateTime.relative}")
+            Text("${preview.username} • ${preview.timeSincePublication}")
         },
-        body = { Text(HtmlAnnotatedString(toot.content)) },
+        body = { Text(preview.body) },
         stats = {
             Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
                 Stat(
@@ -83,7 +126,7 @@ fun TootPreview(
                     contentDescription = "Comments",
                     onClick = { }
                 ) {
-                    Text(toot.commentCount.formatted)
+                    Text(preview.commentCount)
                 }
 
                 Stat(
@@ -91,7 +134,7 @@ fun TootPreview(
                     contentDescription = "Favorites",
                     onClick = onFavorite
                 ) {
-                    Text(toot.favoriteCount.formatted)
+                    Text(preview.favoriteCount)
                 }
 
                 Stat(
@@ -99,7 +142,7 @@ fun TootPreview(
                     contentDescription = "Reblogs",
                     onClick = onReblog
                 ) {
-                    Text(toot.reblogCount.formatted)
+                    Text(preview.reblogCount)
                 }
 
                 Stat(
@@ -177,7 +220,13 @@ private fun LoadingTootPreviewPreview() {
 private fun LoadedTootPreviewPreview() {
     MastodonteTheme {
         Surface(color = MastodonteTheme.colorScheme.background) {
-            TootPreview(Toot.sample, onFavorite = { }, onReblog = { }, onShare = { }, onClick = { })
+            TootPreview(
+                TootPreview.sample,
+                onFavorite = { },
+                onReblog = { },
+                onShare = { },
+                onClick = { }
+            )
         }
     }
 }

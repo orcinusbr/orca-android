@@ -1,0 +1,18 @@
+package com.jeanbarrossilva.mastodonte.feature.tootdetails.ui.header
+
+import java.text.DateFormat
+import java.time.Instant
+import java.time.ZonedDateTime
+import java.util.Date
+
+internal val ZonedDateTime.formatted
+    get() = DateFormat
+        .getDateTimeInstance(/*dateFormat =*/ DateFormat.MEDIUM, /*timeFormat =*/ DateFormat.SHORT)
+        .format(toDate())
+
+/** Converts this [ZonedDateTime] into a [Date]. **/
+private fun ZonedDateTime.toDate(): Date {
+    val epochSecond = toEpochSecond()
+    val instant = Instant.ofEpochSecond(epochSecond)
+    return Date.from(instant)
+}

@@ -3,6 +3,7 @@ package com.jeanbarrossilva.mastodonte.core.profile.toot
 import java.io.Serializable
 import java.net.URL
 import java.time.ZonedDateTime
+import kotlinx.coroutines.flow.Flow
 
 /** Content that's been posted by a user, the [author]. **/
 abstract class Toot : Serializable {
@@ -29,6 +30,8 @@ abstract class Toot : Serializable {
 
     /** [URL] that leads to this [Toot]. **/
     abstract val url: URL
+
+    abstract suspend fun getComments(page: Int): Flow<List<Toot>>
 
     companion object
 }

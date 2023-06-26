@@ -1,17 +1,17 @@
 package com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot
 
-import java.time.ZoneOffset
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.Locale
 import net.time4j.PrettyTime
 import net.time4j.base.UnixTime
 
 /** Format in which this [ZonedDateTime] is presented in a relative way. **/
-internal val ZonedDateTime.relative: String
+val ZonedDateTime.relative: String
     get() {
         val locale = Locale.getDefault()
         val unixTime = toUnixTime()
-        val timeZoneID = ZoneOffset.systemDefault().id
+        val timeZoneID = ZoneId.systemDefault().id
         return PrettyTime.of(locale).printRelative(unixTime, timeZoneID)
     }
 
