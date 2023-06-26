@@ -4,13 +4,17 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import com.jeanbarrossilva.mastodon.feature.profile.ProfileNavigator
+import com.jeanbarrossilva.mastodonte.app.feature.destinations.TootDetailsDestination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import java.lang.ref.WeakReference
 import java.net.URL
 
 internal class DefaultProfileNavigator private constructor(
-    private val contextRef: WeakReference<Context>
+    private val contextRef: WeakReference<Context>,
+    private val destinationsNavigator: DestinationsNavigator
 ) : ProfileNavigator {
-    constructor(context: Context) : this(WeakReference(context))
+    constructor(context: Context, destinationsNavigator: DestinationsNavigator) :
+        this(WeakReference(context), destinationsNavigator)
 
     override fun navigateToWebpage(url: URL) {
         val context = contextRef.get() ?: return
@@ -21,5 +25,7 @@ internal class DefaultProfileNavigator private constructor(
     }
 
     override fun navigateToTootDetails(id: String) {
+        val destination = TootDetailsDestination(id)
+        destinationsNavigator.navigate(destination)
     }
 }

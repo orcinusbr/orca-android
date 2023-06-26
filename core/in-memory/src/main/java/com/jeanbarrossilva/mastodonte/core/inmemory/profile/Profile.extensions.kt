@@ -31,7 +31,7 @@ val Profile.Companion.sample: Profile
         override val url = Author.sample.profileURL
         override val editor = Editor.empty
 
-        override fun getToots(page: Int): Flow<List<Toot>> {
+        override suspend fun getToots(page: Int): Flow<List<Toot>> {
             return flowOf(Toot.samples)
         }
     }

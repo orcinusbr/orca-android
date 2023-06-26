@@ -6,7 +6,6 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -27,7 +26,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -41,25 +39,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.serialize
-import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.mastodon.feature.profile.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.mastodon.feature.profile.navigation.Content
 import com.jeanbarrossilva.mastodon.feature.profile.ui.Header
 import com.jeanbarrossilva.mastodon.feature.profile.viewmodel.ProfileViewModel
 import com.jeanbarrossilva.mastodonte.core.inmemory.profile.sample
+import com.jeanbarrossilva.mastodonte.core.inmemory.profile.toot.samples
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.profile.edit.EditableProfile
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.plus
 import com.jeanbarrossilva.mastodonte.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
+import com.jeanbarrossilva.mastodonte.platform.ui.timeline.Timeline
 import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.TootPreview
 import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.loadingTootPreviews
 import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.toTootPreview
 import java.net.URL
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 
 @Composable
 fun Profile(
@@ -70,14 +67,17 @@ fun Profile(
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
-    val loadable by viewModel.loadableFlow.collectAsState()
+    val profileLoadable by viewModel.profileLoadableFlow.collectAsState()
+    val tootsLoadable by viewModel.tootsLoadableFlow.collectAsState()
 
     Profile(
-        loadable,
+        profileLoadable,
+        tootsLoadable,
         onFollowToggle = viewModel::toggleFollow,
         onFavorite = viewModel::favorite,
         onReblog = viewModel::reblog,
         navigator::navigateToTootDetails,
+        onNext = viewModel::loadTootsAt,
         onEdit,
         backwardsNavigationState,
         navigator::navigateToWebpage,
@@ -89,11 +89,13 @@ fun Profile(
 
 @Composable
 private fun Profile(
-    loadable: Loadable<Profile>,
+    profileLoadable: Loadable<Profile>,
+    tootsLoadable: ListLoadable<Toot>,
     onFollowToggle: () -> Unit,
     onFavorite: (tootID: String) -> Unit,
     onReblog: (tootID: String) -> Unit,
     onNavigationToTootDetails: (id: String) -> Unit,
+    onNext: (index: Int) -> Unit,
     onEdit: () -> Unit,
     backwardsNavigationState: BackwardsNavigationState,
     onNavigateToWebpage: (URL) -> Unit,
@@ -101,16 +103,18 @@ private fun Profile(
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
-    when (loadable) {
+    when (profileLoadable) {
         is Loadable.Loading ->
             Profile(backwardsNavigationState, onBottomAreaAvailabilityChangeListener, modifier)
         is Loadable.Loaded ->
             Profile(
-                loadable.content,
+                profileLoadable.content,
+                tootsLoadable,
                 onFollowToggle,
                 onFavorite,
                 onReblog,
                 onNavigationToTootDetails,
+                onNext,
                 onEdit,
                 backwardsNavigationState,
                 onNavigateToWebpage,
@@ -134,6 +138,7 @@ private fun Profile(
         actions = { },
         header = { Header() },
         toots = { loadingTootPreviews() },
+        onNext = { },
         floatingActionButton = { },
         backwardsNavigationState,
         onBottomAreaAvailabilityChangeListener,
@@ -144,10 +149,12 @@ private fun Profile(
 @Composable
 private fun Profile(
     profile: Profile,
+    tootsLoadable: ListLoadable<Toot>,
     onFollowToggle: () -> Unit,
     onFavorite: (tootID: String) -> Unit,
     onReblog: (tootID: String) -> Unit,
     onNavigationToTootDetails: (id: String) -> Unit,
+    onNext: (index: Int) -> Unit,
     onEdit: () -> Unit,
     backwardsNavigationState: BackwardsNavigationState,
     onNavigateToWebpage: (URL) -> Unit,
@@ -157,12 +164,6 @@ private fun Profile(
 ) {
     val clipboardManager = LocalClipboardManager.current
     var isTopBarDropdownExpanded by remember { mutableStateOf(false) }
-    var tootsLoadable by remember { mutableStateOf<ListLoadable<Toot>>(ListLoadable.Loading()) }
-
-    LaunchedEffect(profile) {
-        tootsLoadable =
-            profile.getToots(page = 0).map(List<Toot>::serialize).first().toListLoadable()
-    }
 
     Profile(
         title = { Text("@${profile.account.username}") },
@@ -236,6 +237,7 @@ private fun Profile(
                     Unit
             }
         },
+        onNext,
         floatingActionButton = {
             if (profile is EditableProfile) {
                 FloatingActionButton(onClick = onEdit) {
@@ -255,6 +257,7 @@ private fun Profile(
     actions: @Composable RowScope.() -> Unit,
     header: @Composable () -> Unit,
     toots: LazyListScope.() -> Unit,
+    onNext: (index: Int) -> Unit,
     floatingActionButton: @Composable () -> Unit,
     backwardsNavigationState: BackwardsNavigationState,
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
@@ -282,7 +285,8 @@ private fun Profile(
             floatingActionButton = floatingActionButton,
             floatingActionButtonPosition = FabPosition.Center
         ) {
-            LazyColumn(
+            Timeline(
+                onNext,
                 Modifier.statusBarsPadding(),
                 lazyListState,
                 contentPadding = it + MastodonteTheme.overlays.fab
@@ -321,10 +325,12 @@ private fun LoadedProfilePreview() {
     MastodonteTheme {
         Profile(
             Profile.sample,
+            ListLoadable.Populated(Toot.samples.serialize()),
             onFollowToggle = { },
             onFavorite = { },
             onReblog = { },
             onNavigationToTootDetails = { },
+            onNext = { },
             onEdit = { },
             BackwardsNavigationState.Unavailable,
             onNavigateToWebpage = { },

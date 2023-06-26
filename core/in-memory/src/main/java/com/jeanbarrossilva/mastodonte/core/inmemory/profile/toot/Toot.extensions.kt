@@ -9,10 +9,13 @@ import java.util.UUID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
+/** [sample]'s ID. **/
+private val sampleID = UUID.randomUUID().toString()
+
 /** A sample [Toot]. **/
 val Toot.Companion.sample
     get() = object : Toot() {
-        override val id = UUID.randomUUID().toString()
+        override val id = sampleID
         override val author = Author.sample
         override val content = "<p>This is a <b>sample</b> <i>toot</i> that has the sole purpose " +
             "of allowing one to see how it would look like in <u>Mastodonte</u>.</p>"

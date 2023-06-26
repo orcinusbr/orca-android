@@ -34,15 +34,20 @@ import androidx.navigation.plusAssign
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
-import com.jeanbarrossilva.mastodonte.app.feature.profile.NavGraphs
-import com.jeanbarrossilva.mastodonte.app.feature.profile.destinations.ProfileDestination
+import com.jeanbarrossilva.mastodonte.app.feature.NavGraphs
+import com.jeanbarrossilva.mastodonte.app.feature.destinations.ProfileDestination
+import com.jeanbarrossilva.mastodonte.app.feature.profile.ProfileModule
+import com.jeanbarrossilva.mastodonte.app.feature.tootdetails.TootDetailsModule
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.animations.rememberAnimatedNavHostEngine
 import com.ramcosta.composedestinations.navigation.dependency
 import com.ramcosta.composedestinations.navigation.navigate
+import com.ramcosta.composedestinations.scope.DestinationScopeWithNoDependencies
 import com.ramcosta.composedestinations.utils.currentDestinationAsState
+import org.koin.core.context.loadKoinModules
+import org.koin.dsl.module
 
 @Composable
 @OptIn(
@@ -122,6 +127,8 @@ internal fun Mastodonte(modifier: Modifier = Modifier) {
                     engine = engine,
                     navController = navController,
                     dependenciesContainerBuilder = {
+                        injectNavigator()
+                        injectFeatureModules()
                         dependency(onBottomAreaAvailabilityChangeListener)
                     }
                 )
@@ -145,6 +152,20 @@ private fun <T> transitionAnimationSpec(durationInMillis: Int = DefaultDurationM
 
 private fun transitionOffset(full: Int): Int {
     return full / 4
+}
+
+private fun DestinationScopeWithNoDependencies<*>.injectNavigator() {
+    val module = module {
+        single {
+            destinationsNavigator
+        }
+    }
+    loadKoinModules(module)
+}
+
+private fun injectFeatureModules() {
+    val modules = listOf(ProfileModule(), TootDetailsModule())
+    loadKoinModules(modules)
 }
 
 @Composable
