@@ -2,6 +2,7 @@ package com.jeanbarrossilva.mastodonte.core.inmemory.profile.toot
 
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Author
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
+import java.net.URL
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.UUID
@@ -26,6 +27,9 @@ val Toot.Companion.sample
         override val commentCount = 12
         override val favoriteCount = 56
         override val reblogCount = 2
+
+        @Suppress("SpellCheckingInspection")
+        override val url = URL("https://mastodon.social/@christianselig/110492858891694580")
     }
 
 /**

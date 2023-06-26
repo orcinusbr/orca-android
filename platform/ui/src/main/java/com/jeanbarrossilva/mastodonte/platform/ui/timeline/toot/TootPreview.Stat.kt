@@ -28,9 +28,9 @@ import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 internal fun Stat(
     vector: ImageVector,
     contentDescription: String,
-    label: @Composable () -> Unit,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    label: @Composable () -> Unit = { }
 ) {
     @OptIn(ExperimentalMaterial3Api::class)
     Card(
@@ -68,12 +68,9 @@ internal fun Stat(
 internal fun StatPreview() {
     MastodonteTheme {
         Surface(color = MastodonteTheme.colorScheme.background) {
-            Stat(
-                MastodonteTheme.Icons.ThumbUp,
-                contentDescription = "Like",
-                label = { Text("8") },
-                onClick = { }
-            )
+            Stat(MastodonteTheme.Icons.ThumbUp, contentDescription = "Like", onClick = { }) {
+                Text("8")
+            }
         }
     }
 }

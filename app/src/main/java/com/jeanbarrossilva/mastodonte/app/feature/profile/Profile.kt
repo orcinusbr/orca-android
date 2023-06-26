@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.mastodonte.app.feature.profile
 
+import android.app.Application
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -22,8 +23,10 @@ internal fun Profile(
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
+    val application = koinInject<Application>()
     val repository = koinInject<ProfileRepository>()
-    val viewModelFactory = ProfileViewModel.createFactory(repository, Profile.sample.id)
+    val viewModelFactory =
+        ProfileViewModel.createFactory(application, repository, Profile.sample.id)
     val viewModel = viewModel<ProfileViewModel>(factory = viewModelFactory)
     val navigator = koinInject<ProfileNavigator>()
 

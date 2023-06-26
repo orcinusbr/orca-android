@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.mastodonte.core.profile.toot
 
 import java.io.Serializable
+import java.net.URL
 import java.time.ZonedDateTime
 
 /** Content that's been posted by a user, the [author]. **/
@@ -25,6 +26,9 @@ abstract class Toot : Serializable {
 
     /** Number of times this [Toot] has been re-blogged. **/
     abstract val reblogCount: Int
+
+    /** [URL] that leads to this [Toot]. **/
+    abstract val url: URL
 
     companion object
 }

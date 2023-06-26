@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.rounded.Comment
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Repeat
+import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
@@ -61,9 +63,12 @@ fun TootPreview(
     toot: Toot,
     onFavorite: () -> Unit,
     onReblog: () -> Unit,
+    onShare: () -> Unit,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+
     TootPreview(
         avatar = { SmallAvatar(toot.author.name, toot.author.avatarURL) },
         name = { Text(toot.author.name, style = nameTextStyle) },
@@ -76,22 +81,31 @@ fun TootPreview(
                 Stat(
                     MastodonteTheme.Icons.Comment,
                     contentDescription = "Comments",
-                    label = { Text(toot.commentCount.formatted) },
                     onClick = { }
-                )
+                ) {
+                    Text(toot.commentCount.formatted)
+                }
 
                 Stat(
                     MastodonteTheme.Icons.Favorite,
                     contentDescription = "Favorites",
-                    label = { Text(toot.favoriteCount.formatted) },
                     onClick = onFavorite
-                )
+                ) {
+                    Text(toot.favoriteCount.formatted)
+                }
 
                 Stat(
                     MastodonteTheme.Icons.Repeat,
                     contentDescription = "Reblogs",
-                    label = { Text(toot.reblogCount.formatted) },
                     onClick = onReblog
+                ) {
+                    Text(toot.reblogCount.formatted)
+                }
+
+                Stat(
+                    MastodonteTheme.Icons.Share,
+                    contentDescription = "Share",
+                    onClick = onShare
                 )
             }
         },
@@ -163,7 +177,7 @@ private fun LoadingTootPreviewPreview() {
 private fun LoadedTootPreviewPreview() {
     MastodonteTheme {
         Surface(color = MastodonteTheme.colorScheme.background) {
-            TootPreview(Toot.sample, onFavorite = { }, onReblog = { }, onClick = { })
+            TootPreview(Toot.sample, onFavorite = { }, onReblog = { }, onShare = { }, onClick = { })
         }
     }
 }

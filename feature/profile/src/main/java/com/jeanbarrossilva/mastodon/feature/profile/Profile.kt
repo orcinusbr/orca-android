@@ -11,8 +11,10 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.Link
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.OpenInBrowser
+import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -33,6 +35,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
@@ -75,6 +79,7 @@ fun Profile(
         onEdit,
         backwardsNavigationState,
         navigator::navigateToWebpage,
+        onShare = viewModel::share,
         onBottomAreaAvailabilityChangeListener,
         modifier
     )
@@ -90,6 +95,7 @@ private fun Profile(
     onEdit: () -> Unit,
     backwardsNavigationState: BackwardsNavigationState,
     onNavigateToWebpage: (URL) -> Unit,
+    onShare: (URL) -> Unit,
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
@@ -106,6 +112,7 @@ private fun Profile(
                 onEdit,
                 backwardsNavigationState,
                 onNavigateToWebpage,
+                onShare,
                 onBottomAreaAvailabilityChangeListener,
                 modifier
             )
@@ -142,9 +149,11 @@ private fun Profile(
     onEdit: () -> Unit,
     backwardsNavigationState: BackwardsNavigationState,
     onNavigateToWebpage: (URL) -> Unit,
+    onShare: (URL) -> Unit,
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
+    val clipboardManager = LocalClipboardManager.current
     var isTopBarDropdownExpanded by remember { mutableStateOf(false) }
     var tootsLoadable by remember { mutableStateOf<ListLoadable<Toot>>(ListLoadable.Loading()) }
 
@@ -167,12 +176,37 @@ private fun Profile(
                 ) {
                     DropdownMenuItem(
                         text = { Text("Open in browser") },
-                        onClick = { onNavigateToWebpage(profile.url) },
+                        onClick = {
+                            onNavigateToWebpage(profile.url)
+                            isTopBarDropdownExpanded = false
+                        },
                         leadingIcon = {
                             Icon(
                                 MastodonteTheme.Icons.OpenInBrowser,
                                 contentDescription = "Open in browser"
                             )
+                        }
+                    )
+
+                    DropdownMenuItem(
+                        text = { Text("Copy URL") },
+                        onClick = {
+                            clipboardManager.setText(AnnotatedString("${profile.url}"))
+                            isTopBarDropdownExpanded = false
+                        },
+                        leadingIcon = {
+                            Icon(MastodonteTheme.Icons.Link, contentDescription = "Share")
+                        }
+                    )
+
+                    DropdownMenuItem(
+                        text = { Text("Share") },
+                        onClick = {
+                            onShare(profile.url)
+                            isTopBarDropdownExpanded = false
+                        },
+                        leadingIcon = {
+                            Icon(MastodonteTheme.Icons.Share, contentDescription = "Share")
                         }
                     )
                 }
@@ -190,6 +224,7 @@ private fun Profile(
                             it,
                             onFavorite = { onFavorite(it.id) },
                             onReblog = { onReblog(it.id) },
+                            onShare = { onShare(it.url) },
                             onClick = { onNavigationToTootDetails(it.id) }
                         )
                     }
@@ -297,6 +332,7 @@ private fun LoadedProfilePreview() {
             onEdit = { },
             BackwardsNavigationState.Unavailable,
             onNavigateToWebpage = { },
+            onShare = { },
             onBottomAreaAvailabilityChangeListener = OnBottomAreaAvailabilityChangeListener.empty
         )
     }
