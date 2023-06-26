@@ -20,8 +20,8 @@ import com.jeanbarrossilva.mastodonte.core.inmemory.profile.sample
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.profile.follow.FollowableProfile
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
+import com.jeanbarrossilva.mastodonte.platform.ui.LargeAvatar
 import com.jeanbarrossilva.mastodonte.platform.ui.html.HtmlAnnotatedString
-import com.jeanbarrossilva.mastodonte.platform.ui.profile.LargeAvatar
 
 @Composable
 internal fun Header(modifier: Modifier = Modifier) {

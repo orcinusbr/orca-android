@@ -31,8 +31,8 @@ import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.EmptyMutableInteractionSource
 import com.jeanbarrossilva.mastodonte.platform.ui.Samples
+import com.jeanbarrossilva.mastodonte.platform.ui.SmallAvatar
 import com.jeanbarrossilva.mastodonte.platform.ui.html.HtmlAnnotatedString
-import com.jeanbarrossilva.mastodonte.platform.ui.profile.SmallAvatar
 import java.net.URL
 
 private val nameTextStyle

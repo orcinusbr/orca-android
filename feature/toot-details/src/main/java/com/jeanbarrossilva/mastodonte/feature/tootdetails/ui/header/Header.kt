@@ -25,7 +25,7 @@ import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
 import com.jeanbarrossilva.mastodonte.feature.tootdetails.Toot
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
-import com.jeanbarrossilva.mastodonte.platform.ui.profile.SmallAvatar
+import com.jeanbarrossilva.mastodonte.platform.ui.SmallAvatar
 
 @Composable
 internal fun Header(modifier: Modifier = Modifier) {

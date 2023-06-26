@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.ui.profile
+package com.jeanbarrossilva.mastodonte.platform.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -27,7 +27,6 @@ import com.jeanbarrossilva.loadable.placeholder.PlaceholderDefaults
 import com.jeanbarrossilva.mastodonte.core.inmemory.profile.toot.sample
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
-import com.jeanbarrossilva.mastodonte.platform.ui.Samples
 import java.io.Serializable
 import java.net.URL
 
