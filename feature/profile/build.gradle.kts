@@ -45,9 +45,8 @@ android {
 }
 
 dependencies {
-    debugImplementation(project(":core:in-memory"))
-
     implementation(project(":core"))
+    implementation(project(":core:in-memory"))
     implementation(project(":platform:theme"))
     implementation(project(":platform:ui"))
     implementation(Dependencies.COMPOSE_MATERIAL_ICONS_EXTENDED)
