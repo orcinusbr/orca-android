@@ -3,11 +3,12 @@ package com.jeanbarrossilva.mastodonte.core.inmemory.test
 import com.jeanbarrossilva.mastodonte.core.inmemory.profile.InMemoryProfile
 import com.jeanbarrossilva.mastodonte.core.inmemory.profile.InMemoryProfileDao
 import com.jeanbarrossilva.mastodonte.core.profile.follow.Follow
+import com.jeanbarrossilva.mastodonte.core.profile.follow.FollowableProfile
 import com.jeanbarrossilva.mastodonte.core.profile.toot.at
 import java.net.URL
 import java.util.UUID
 import kotlin.test.assertEquals
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.test.runTest
@@ -38,7 +39,7 @@ internal fun <T : Follow> assertTogglingEquals(before: T, after: T) {
             matchingAfter,
             InMemoryProfileDao
                 .get(id)
-                .filterNotNull()
+                .filterIsInstance<FollowableProfile<T>>()
                 .onEach { it.toggleFollow() }
                 .first()
                 .follow
