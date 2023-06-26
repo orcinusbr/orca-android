@@ -47,8 +47,6 @@ android {
 dependencies {
     api(Dependencies.LOADABLE)
 
-    debugImplementation(project(":core:in-memory"))
-
     implementation(project(":core"))
     implementation(project(":platform:theme"))
     implementation(Dependencies.COIL_COMPOSE)

@@ -24,8 +24,6 @@ import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import com.jeanbarrossilva.loadable.placeholder.Placeholder
 import com.jeanbarrossilva.loadable.placeholder.PlaceholderDefaults
-import com.jeanbarrossilva.mastodonte.core.inmemory.profile.toot.sample
-import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import java.io.Serializable
 import java.net.URL
@@ -153,6 +151,6 @@ private fun LoadingSmallAvatarPreview() {
 @Preview
 private fun LoadedSmallAvatarPreview() {
     MastodonteTheme {
-        SmallAvatar(Toot.sample.author.name, Toot.sample.author.avatarURL)
+        SmallAvatar(Avatar.sample.name, Avatar.sample.url)
     }
 }
