@@ -34,7 +34,7 @@ interface Profile : Serializable {
      **/
     val url: URL
 
-    fun getToots(page: Int): Flow<List<Toot>>
+    suspend fun getToots(page: Int): Flow<List<Toot>>
 
     companion object
 }
