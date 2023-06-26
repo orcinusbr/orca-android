@@ -111,7 +111,7 @@ private fun Header(
             Column(
                 verticalArrangement = Arrangement.spacedBy(MastodonteTheme.spacings.extraSmall)
             ) {
-                name()
+                ProvideTextStyle(MastodonteTheme.typography.bodyLarge, name)
                 ProvideTextStyle(MastodonteTheme.typography.bodySmall, username)
             }
         }

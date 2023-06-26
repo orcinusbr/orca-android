@@ -35,11 +35,6 @@ import com.jeanbarrossilva.mastodonte.platform.ui.SmallAvatar
 import com.jeanbarrossilva.mastodonte.platform.ui.html.HtmlAnnotatedString
 import java.net.URL
 
-private val nameTextStyle
-    @Composable get() = MastodonteTheme.typography.bodyLarge
-private val spacing
-    @Composable get() = MastodonteTheme.spacings.large
-
 /**
  * Information to be displayed on a [Toot]'s preview.
  *
@@ -114,7 +109,7 @@ fun TootPreview(
 ) {
     TootPreview(
         avatar = { SmallAvatar(preview.name, preview.avatarURL) },
-        name = { Text(preview.name, style = nameTextStyle) },
+        name = { Text(preview.name) },
         metadata = {
             Text("${preview.username} • ${preview.timeSincePublication}")
         },
@@ -170,6 +165,7 @@ private fun TootPreview(
     val interactionSource = remember(onClick) {
         onClick?.let { MutableInteractionSource() } ?: EmptyMutableInteractionSource()
     }
+    val spacing = MastodonteTheme.spacings.large
 
     @OptIn(ExperimentalMaterial3Api::class)
     Card(
@@ -193,7 +189,7 @@ private fun TootPreview(
                         verticalArrangement = Arrangement
                             .spacedBy(MastodonteTheme.spacings.extraSmall)
                     ) {
-                        name()
+                        ProvideTextStyle(MastodonteTheme.typography.bodyLarge, name)
                         ProvideTextStyle(MastodonteTheme.typography.bodySmall, metadata)
                     }
 
