@@ -21,7 +21,7 @@ internal open class MastodonteApplication : Application(), Launchable {
         markAsLaunched()
 
         inject()
-        ApplicationStarter.initialize(this, /*prefetch =*/ true)
+        ApplicationStarter.initialize(this, true)
     }
 
     override fun count(): Int {

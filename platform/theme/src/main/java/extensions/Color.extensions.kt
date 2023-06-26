@@ -17,9 +17,9 @@ import androidx.compose.ui.platform.LocalContext
 internal fun colorAttribute(@AttrRes id: Int): Color {
     val theme = LocalContext.current.theme
     val typedValue = TypedValue()
-    theme.resolveAttribute(id, typedValue, /*resolveRefs =*/ false)
+    theme.resolveAttribute(id, typedValue, false)
     val typedArray: TypedArray = theme.obtainStyledAttributes(typedValue.data, intArrayOf(id))
     val defaultValue = Color.Unspecified.toArgb()
-    val value = typedArray.getColor(/*index =*/ 0, defaultValue)
+    val value = typedArray.getColor(0, defaultValue)
     return Color(value)
 }

@@ -6,9 +6,7 @@ import java.time.ZonedDateTime
 import java.util.Date
 
 internal val ZonedDateTime.formatted
-    get() = DateFormat
-        .getDateTimeInstance(/*dateFormat =*/ DateFormat.MEDIUM, /*timeFormat =*/ DateFormat.SHORT)
-        .format(toDate())
+    get() = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(toDate())
 
 /** Converts this [ZonedDateTime] into a [Date]. **/
 private fun ZonedDateTime.toDate(): Date {

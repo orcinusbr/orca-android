@@ -56,16 +56,8 @@ internal data class Toot(
 
     companion object {
         /** [sample]'s [publicationDateTime]. **/
-        private val samplePublicationDateTime = ZonedDateTime.of(
-            /*year =*/ 2003,
-            /*month =*/ 10,
-            /*dayOfMonth =*/ 8,
-            /*hour =*/ 8,
-            /*minute =*/ 0,
-            /*second =*/ 0,
-            /*nanoOfSecond =*/ 0,
-            ZoneId.of("GMT-3")
-        )
+        private val samplePublicationDateTime =
+            ZonedDateTime.of(2003, 10, 8, 8, 0, 0, 0, ZoneId.of("GMT-3"))
 
         /** Sample [Toot]. **/
         @Suppress("SpellCheckingInspection")
