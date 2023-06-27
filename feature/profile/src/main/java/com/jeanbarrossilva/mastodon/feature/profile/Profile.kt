@@ -71,7 +71,7 @@ internal sealed class ProfileDetails : Serializable {
     val formattedAccount
         get() = "${account.username}@${account.instance}"
     val username
-        get() = "@${account.instance}"
+        get() = "@${account.username}"
 
     data class Default(
         override val id: String,
