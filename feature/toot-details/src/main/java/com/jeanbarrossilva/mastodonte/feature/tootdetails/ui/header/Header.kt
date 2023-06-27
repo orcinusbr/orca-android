@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.rounded.Comment
-import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Repeat
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.Divider
@@ -25,6 +24,7 @@ import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
 import com.jeanbarrossilva.mastodonte.feature.tootdetails.Toot
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
+import com.jeanbarrossilva.mastodonte.platform.ui.FavoriteIcon
 import com.jeanbarrossilva.mastodonte.platform.ui.SmallAvatar
 
 @Composable
@@ -65,7 +65,7 @@ internal fun Header(toot: Toot, onShare: () -> Unit, modifier: Modifier = Modifi
                 }
 
                 Stat {
-                    Icon(MastodonteTheme.Icons.Favorite, contentDescription = "Favorites")
+                    FavoriteIcon(isActive = false, onToggle = { })
                     Text(toot.favoriteCount)
                 }
 

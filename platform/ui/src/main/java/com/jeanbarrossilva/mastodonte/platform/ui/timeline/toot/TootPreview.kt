@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.rounded.Comment
-import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Repeat
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.Card
@@ -30,6 +30,8 @@ import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.EmptyMutableInteractionSource
+import com.jeanbarrossilva.mastodonte.platform.ui.FavoriteIcon
+import com.jeanbarrossilva.mastodonte.platform.ui.FavoriteIconDefaults
 import com.jeanbarrossilva.mastodonte.platform.ui.Samples
 import com.jeanbarrossilva.mastodonte.platform.ui.SmallAvatar
 import com.jeanbarrossilva.mastodonte.platform.ui.html.HtmlAnnotatedString
@@ -124,11 +126,15 @@ fun TootPreview(
                     Text(preview.commentCount)
                 }
 
-                Stat(
-                    MastodonteTheme.Icons.Favorite,
-                    contentDescription = "Favorites",
-                    onClick = onFavorite
-                ) {
+                Stat(onClick = onFavorite) {
+                    FavoriteIcon(
+                        isActive = false,
+                        onToggle = { onFavorite() },
+                        Modifier.size(StatDefaults.IconSize),
+                        FavoriteIconDefaults
+                            .colors(activeColor = MastodonteTheme.colorScheme.onErrorContainer)
+                    )
+
                     Text(preview.favoriteCount)
                 }
 

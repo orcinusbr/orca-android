@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.rounded.ThumbUp
@@ -24,6 +25,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 
+internal object StatDefaults {
+    val IconSize = 18.dp
+}
+
 @Composable
 internal fun Stat(
     vector: ImageVector,
@@ -31,6 +36,27 @@ internal fun Stat(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     label: @Composable () -> Unit = { }
+) {
+    Stat(onClick, modifier) {
+        Icon(
+            vector,
+            contentDescription,
+            Modifier
+                .clickable(onClick = onClick)
+                .size(StatDefaults.IconSize)
+        )
+
+        ProvideTextStyle(MastodonteTheme.typography.bodySmall) {
+            label()
+        }
+    }
+}
+
+@Composable
+internal fun Stat(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable RowScope.() -> Unit
 ) {
     @OptIn(ExperimentalMaterial3Api::class)
     Card(
@@ -44,21 +70,10 @@ internal fun Stat(
         ) {
             Row(
                 Modifier.padding(MastodonteTheme.spacings.small),
-                horizontalArrangement = Arrangement.spacedBy(MastodonteTheme.spacings.small),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    vector,
-                    contentDescription,
-                    Modifier
-                        .clickable(onClick = onClick)
-                        .size(18.dp)
-                )
-
-                ProvideTextStyle(MastodonteTheme.typography.bodySmall) {
-                    label()
-                }
-            }
+                Arrangement.spacedBy(MastodonteTheme.spacings.small),
+                Alignment.CenterVertically,
+                content
+            )
         }
     }
 }

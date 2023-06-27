@@ -107,6 +107,9 @@ fun MastodonteTheme(content: @Composable () -> Unit) {
             surface = Color(0xFF252525),
             surfaceVariant = Color(0xFF202020),
             onSurfaceVariant = Color(0xFFF5F5F5),
+            error = Color(0xFFD32F2F),
+            errorContainer = Color(0xFFD32F2F),
+            onErrorContainer = Color.White,
             outline = fadedContentColor,
             outlineVariant = Color(0xFF1A1A1A)
         ),
