@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Surface
@@ -16,9 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
-import com.jeanbarrossilva.mastodonte.core.inmemory.profile.sample
-import com.jeanbarrossilva.mastodonte.core.profile.Profile
-import com.jeanbarrossilva.mastodonte.core.profile.follow.FollowableProfile
+import com.jeanbarrossilva.mastodon.feature.profile.ProfileDetails
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.ui.LargeAvatar
 import com.jeanbarrossilva.mastodonte.platform.ui.html.HtmlAnnotatedString
@@ -44,23 +41,13 @@ internal fun Header(modifier: Modifier = Modifier) {
 }
 
 @Composable
-internal fun Header(
-    profile: Profile,
-    onFollowToggle: () -> Unit,
-    modifier: Modifier = Modifier
-) {
+internal fun Header(details: ProfileDetails, modifier: Modifier = Modifier) {
     Header(
-        avatar = { LargeAvatar(profile.name, profile.avatarURL) },
-        name = { Text(profile.name) },
-        account = { Text("${profile.account.username}@${profile.account.instance}") },
-        bio = { Text(HtmlAnnotatedString(profile.bio)) },
-        followToggleButton = {
-            if (profile is FollowableProfile<*>) {
-                Button(onClick = onFollowToggle) {
-                    Text(profile.follow.label)
-                }
-            }
-        },
+        avatar = { LargeAvatar(details.name, details.avatarURL) },
+        name = { Text(details.name) },
+        account = { Text(details.formattedAccount) },
+        bio = { Text(HtmlAnnotatedString(details.bio)) },
+        followToggleButton = { details.MainActionButton() },
         modifier
     )
 }
@@ -111,7 +98,7 @@ private fun LoadingHeaderPreview() {
 private fun HeaderPreview() {
     MastodonteTheme {
         Surface(color = MastodonteTheme.colorScheme.background) {
-            Header(Profile.sample, onFollowToggle = { })
+            Header(ProfileDetails.sample)
         }
     }
 }

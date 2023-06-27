@@ -14,6 +14,7 @@ import androidx.compose.material.icons.rounded.Link
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.OpenInBrowser
 import androidx.compose.material.icons.rounded.Share
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -44,10 +45,8 @@ import com.jeanbarrossilva.mastodon.feature.profile.navigation.BackwardsNavigati
 import com.jeanbarrossilva.mastodon.feature.profile.navigation.Content
 import com.jeanbarrossilva.mastodon.feature.profile.ui.Header
 import com.jeanbarrossilva.mastodon.feature.profile.viewmodel.ProfileViewModel
-import com.jeanbarrossilva.mastodonte.core.inmemory.profile.sample
 import com.jeanbarrossilva.mastodonte.core.inmemory.profile.toot.samples
-import com.jeanbarrossilva.mastodonte.core.profile.Profile
-import com.jeanbarrossilva.mastodonte.core.profile.edit.EditableProfile
+import com.jeanbarrossilva.mastodonte.core.profile.toot.Account
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.plus
@@ -56,29 +55,124 @@ import com.jeanbarrossilva.mastodonte.platform.ui.timeline.Timeline
 import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.TootPreview
 import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.loadingTootPreviews
 import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.toTootPreview
+import java.io.Serializable
 import java.net.URL
+import java.util.UUID
+
+internal sealed class ProfileDetails : Serializable {
+    protected abstract val account: Account
+
+    abstract val id: String
+    abstract val avatarURL: URL
+    abstract val name: String
+    abstract val bio: String
+    abstract val url: URL
+
+    val formattedAccount
+        get() = "${account.username}@${account.instance}"
+    val username
+        get() = "@${account.instance}"
+
+    data class Default(
+        override val id: String,
+        override val avatarURL: URL,
+        override val name: String,
+        override val account: Account,
+        override val bio: String,
+        override val url: URL
+    ) : ProfileDetails()
+
+    data class Editable(
+        override val id: String,
+        override val avatarURL: URL,
+        override val name: String,
+        override val account: Account,
+        override val bio: String,
+        override val url: URL
+    ) : ProfileDetails() {
+        @Composable
+        override fun FloatingActionButton(navigator: ProfileNavigator, modifier: Modifier) {
+            FloatingActionButton(onClick = { }) {
+                Icon(MastodonteTheme.Icons.Edit, contentDescription = "Edit")
+            }
+        }
+    }
+
+    data class Followable(
+        override val id: String,
+        override val avatarURL: URL,
+        override val name: String,
+        override val account: Account,
+        override val bio: String,
+        override val url: URL,
+        val follow: Follow,
+        val onToggleFollow: () -> Unit
+    ) : ProfileDetails() {
+        enum class Follow {
+            UNFOLLOWED {
+                override val label = "Follow"
+            },
+            REQUESTED {
+                override val label = "Requested"
+            },
+            FOLLOWING {
+                override val label = "Unfollow"
+            };
+
+            abstract val label: String
+        }
+
+        @Composable
+        override fun MainActionButton(modifier: Modifier) {
+            Button(onClick = onToggleFollow) {
+                Text(follow.label)
+            }
+        }
+    }
+
+    @Composable
+    open fun MainActionButton(modifier: Modifier = Modifier) {
+    }
+
+    @Composable
+    open fun FloatingActionButton(navigator: ProfileNavigator, modifier: Modifier = Modifier) {
+    }
+
+    companion object {
+        @Suppress("SpellCheckingInspection")
+        val sample = Default(
+            "${UUID.randomUUID()}",
+            TootPreview.sample.avatarURL,
+            TootPreview.sample.name,
+            TootPreview.sampleAccount,
+            bio = "Co-founder @ Grupo Estoa, software engineer, author, writer and content " +
+                "creator; neuroscience, quantum physics and philosophy enthusiast.",
+            URL(
+                "https://en.gravatar.com/userimage/153558542/08942ba9443ce68bf66345a2e6db656e.png"
+            )
+        )
+    }
+}
 
 @Composable
 fun Profile(
     viewModel: ProfileViewModel,
     navigator: ProfileNavigator,
-    onEdit: () -> Unit,
     backwardsNavigationState: BackwardsNavigationState,
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
-    val profileLoadable by viewModel.profileLoadableFlow.collectAsState()
+    val detailsLoadable by viewModel.detailsLoadableFlow.collectAsState()
     val tootsLoadable by viewModel.tootsLoadableFlow.collectAsState()
 
     Profile(
-        profileLoadable,
+        navigator,
+        detailsLoadable,
         tootsLoadable,
-        onFollowToggle = viewModel::toggleFollow,
         onFavorite = viewModel::favorite,
         onReblog = viewModel::reblog,
         navigator::navigateToTootDetails,
         onNext = viewModel::loadTootsAt,
-        onEdit,
         backwardsNavigationState,
         navigator::navigateToWebpage,
         onShare = viewModel::share,
@@ -89,33 +183,31 @@ fun Profile(
 
 @Composable
 private fun Profile(
-    profileLoadable: Loadable<Profile>,
+    navigator: ProfileNavigator,
+    detailsLoadable: Loadable<ProfileDetails>,
     tootsLoadable: ListLoadable<Toot>,
-    onFollowToggle: () -> Unit,
     onFavorite: (tootID: String) -> Unit,
     onReblog: (tootID: String) -> Unit,
     onNavigationToTootDetails: (id: String) -> Unit,
     onNext: (index: Int) -> Unit,
-    onEdit: () -> Unit,
     backwardsNavigationState: BackwardsNavigationState,
     onNavigateToWebpage: (URL) -> Unit,
     onShare: (URL) -> Unit,
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
-    when (profileLoadable) {
+    when (detailsLoadable) {
         is Loadable.Loading ->
             Profile(backwardsNavigationState, onBottomAreaAvailabilityChangeListener, modifier)
         is Loadable.Loaded ->
             Profile(
-                profileLoadable.content,
+                navigator,
+                detailsLoadable.content,
                 tootsLoadable,
-                onFollowToggle,
                 onFavorite,
                 onReblog,
                 onNavigationToTootDetails,
                 onNext,
-                onEdit,
                 backwardsNavigationState,
                 onNavigateToWebpage,
                 onShare,
@@ -148,14 +240,13 @@ private fun Profile(
 
 @Composable
 private fun Profile(
-    profile: Profile,
+    navigator: ProfileNavigator,
+    details: ProfileDetails,
     tootsLoadable: ListLoadable<Toot>,
-    onFollowToggle: () -> Unit,
     onFavorite: (tootID: String) -> Unit,
     onReblog: (tootID: String) -> Unit,
     onNavigationToTootDetails: (id: String) -> Unit,
     onNext: (index: Int) -> Unit,
-    onEdit: () -> Unit,
     backwardsNavigationState: BackwardsNavigationState,
     onNavigateToWebpage: (URL) -> Unit,
     onShare: (URL) -> Unit,
@@ -166,7 +257,7 @@ private fun Profile(
     var isTopBarDropdownExpanded by remember { mutableStateOf(false) }
 
     Profile(
-        title = { Text("@${profile.account.username}") },
+        title = { Text(details.username) },
         actions = {
             Box {
                 IconButton(onClick = { isTopBarDropdownExpanded = true }) {
@@ -180,7 +271,7 @@ private fun Profile(
                     DropdownMenuItem(
                         text = { Text("Open in browser") },
                         onClick = {
-                            onNavigateToWebpage(profile.url)
+                            onNavigateToWebpage(details.url)
                             isTopBarDropdownExpanded = false
                         },
                         leadingIcon = {
@@ -194,7 +285,7 @@ private fun Profile(
                     DropdownMenuItem(
                         text = { Text("Copy URL") },
                         onClick = {
-                            clipboardManager.setText(AnnotatedString("${profile.url}"))
+                            clipboardManager.setText(AnnotatedString("${details.url}"))
                             isTopBarDropdownExpanded = false
                         },
                         leadingIcon = {
@@ -205,7 +296,7 @@ private fun Profile(
                     DropdownMenuItem(
                         text = { Text("Share") },
                         onClick = {
-                            onShare(profile.url)
+                            onShare(details.url)
                             isTopBarDropdownExpanded = false
                         },
                         leadingIcon = {
@@ -215,7 +306,7 @@ private fun Profile(
                 }
             }
         },
-        header = { Header(profile, onFollowToggle) },
+        header = { Header(details) },
         toots = {
             when (
                 @Suppress("NAME_SHADOWING")
@@ -238,13 +329,7 @@ private fun Profile(
             }
         },
         onNext,
-        floatingActionButton = {
-            if (profile is EditableProfile) {
-                FloatingActionButton(onClick = onEdit) {
-                    Icon(MastodonteTheme.Icons.Edit, contentDescription = "Edit")
-                }
-            }
-        },
+        floatingActionButton = { details.FloatingActionButton(navigator) },
         backwardsNavigationState,
         onBottomAreaAvailabilityChangeListener,
         modifier
@@ -324,14 +409,13 @@ private fun LoadingProfilePreview() {
 private fun LoadedProfilePreview() {
     MastodonteTheme {
         Profile(
-            Profile.sample,
+            ProfileNavigator.empty,
+            ProfileDetails.sample,
             ListLoadable.Populated(Toot.samples.serialize()),
-            onFollowToggle = { },
             onFavorite = { },
             onReblog = { },
             onNavigationToTootDetails = { },
             onNext = { },
-            onEdit = { },
             BackwardsNavigationState.Unavailable,
             onNavigateToWebpage = { },
             onShare = { },

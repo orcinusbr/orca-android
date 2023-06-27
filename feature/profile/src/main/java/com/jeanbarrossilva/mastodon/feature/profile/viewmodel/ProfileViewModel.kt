@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jeanbarrossilva.loadable.flow.loadable
-import com.jeanbarrossilva.loadable.ifLoaded
 import com.jeanbarrossilva.loadable.list.flow.listLoadable
 import com.jeanbarrossilva.loadable.list.serialize
+import com.jeanbarrossilva.mastodon.feature.profile.toProfileDetails
 import com.jeanbarrossilva.mastodonte.core.profile.ProfileRepository
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import java.net.URL
@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
 class ProfileViewModel private constructor(
     application: Application,
@@ -29,10 +28,13 @@ class ProfileViewModel private constructor(
     id: String
 ) : AndroidViewModel(application) {
     private val profileFlow = flow { emitAll(repository.get(id).filterNotNull()) }
-    private val loadableMutableFlow = profileFlow.loadable().mutableStateIn(viewModelScope)
+    private val detailsLoadableMutableFlow = profileFlow
+        .map { it.toProfileDetails(viewModelScope) }
+        .loadable()
+        .mutableStateIn(viewModelScope)
     private val tootsIndexFlow = MutableStateFlow(0)
 
-    internal val profileLoadableFlow = loadableMutableFlow.asStateFlow()
+    internal val detailsLoadableFlow = detailsLoadableMutableFlow.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     internal val tootsLoadableFlow = tootsIndexFlow
@@ -45,14 +47,6 @@ class ProfileViewModel private constructor(
 
     internal fun share(url: URL) {
         getApplication<Application>().share("$url")
-    }
-
-    internal fun toggleFollow() {
-        profileLoadableFlow.value.ifLoaded {
-            viewModelScope.launch {
-                toggleFollow()
-            }
-        }
     }
 
     internal fun favorite(tootID: String) {

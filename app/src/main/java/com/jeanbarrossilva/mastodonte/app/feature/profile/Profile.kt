@@ -33,7 +33,6 @@ internal fun Profile(
     Profile(
         viewModel,
         navigator,
-        onEdit = { },
         BackwardsNavigationState.Unavailable,
         onBottomAreaAvailabilityChangeListener,
         modifier
