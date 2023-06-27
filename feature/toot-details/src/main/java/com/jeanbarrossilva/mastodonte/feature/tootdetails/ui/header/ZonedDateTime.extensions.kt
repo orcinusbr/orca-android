@@ -5,7 +5,7 @@ import java.time.Instant
 import java.time.ZonedDateTime
 import java.util.Date
 
-internal val ZonedDateTime.formatted
+internal val ZonedDateTime.formatted: String
     get() = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(toDate())
 
 /** Converts this [ZonedDateTime] into a [Date]. **/

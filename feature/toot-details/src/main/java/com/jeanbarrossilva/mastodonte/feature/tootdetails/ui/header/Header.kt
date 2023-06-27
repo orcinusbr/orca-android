@@ -52,7 +52,7 @@ internal fun Header(details: TootDetails, onShare: () -> Unit, modifier: Modifie
     Header(
         avatar = { SmallAvatar(details.name, details.avatarURL) },
         name = { Text(details.name) },
-        username = { Text(details.username) },
+        username = { Text(details.formattedUsername) },
         body = { Text(details.body) },
         metadata = { Text(details.formattedPublicationDateTime) },
         stats = {
@@ -61,17 +61,17 @@ internal fun Header(details: TootDetails, onShare: () -> Unit, modifier: Modifie
             Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
                 Stat {
                     Icon(MastodonteTheme.Icons.Comment, contentDescription = "Comments")
-                    Text(details.commentCount)
+                    Text(details.formattedCommentCount)
                 }
 
                 Stat {
                     FavoriteIcon(isActive = false, onToggle = { })
-                    Text(details.favoriteCount)
+                    Text(details.formattedFavoriteCount)
                 }
 
                 Stat {
                     Icon(MastodonteTheme.Icons.Repeat, contentDescription = "Reblog")
-                    Text(details.reblogCount)
+                    Text(details.formattedReblogCount)
                 }
 
                 Stat {
