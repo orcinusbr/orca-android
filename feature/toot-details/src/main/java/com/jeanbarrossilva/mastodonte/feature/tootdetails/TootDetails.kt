@@ -12,17 +12,71 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.mastodonte.feature.tootdetails.ui.header.Header
+import com.jeanbarrossilva.mastodonte.feature.tootdetails.ui.header.formatted
 import com.jeanbarrossilva.mastodonte.feature.tootdetails.viewmodel.TootDetailsViewModel
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.backwardsNavigationArrow
 import com.jeanbarrossilva.mastodonte.platform.ui.timeline.Timeline
 import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.TootPreview
 import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.loadingTootPreviews
+import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.relative
+import java.io.Serializable
 import java.net.URL
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.util.UUID
+
+internal data class TootDetails(
+    val id: String,
+    val avatarURL: URL,
+    val name: String,
+    val username: String,
+    val body: AnnotatedString,
+    private val publicationDateTime: ZonedDateTime,
+    val formattedPublicationDateTime: String,
+    val commentCount: String,
+    val favoriteCount: String,
+    val reblogCount: String,
+    val url: URL
+) : Serializable {
+    fun toTootPreview(): TootPreview {
+        return TootPreview(
+            avatarURL,
+            name,
+            username,
+            timeSincePublication = publicationDateTime.relative,
+            body,
+            commentCount,
+            favoriteCount,
+            reblogCount
+        )
+    }
+
+    companion object {
+        private val samplePublicationDateTime =
+            ZonedDateTime.of(2003, 10, 8, 8, 0, 0, 0, ZoneId.of("GMT-3"))
+
+        @Suppress("SpellCheckingInspection")
+        val sample = TootDetails(
+            id = "${UUID.randomUUID()}",
+            TootPreview.sample.avatarURL,
+            TootPreview.sample.name,
+            TootPreview.sample.username,
+            TootPreview.sample.body,
+            samplePublicationDateTime,
+            samplePublicationDateTime.formatted,
+            commentCount = TootPreview.sample.commentCount,
+            favoriteCount = TootPreview.sample.favoriteCount,
+            reblogCount = TootPreview.sample.reblogCount,
+            URL("https://mastodon.social/@christianselig/110492858891694580")
+        )
+    }
+}
 
 @Composable
 fun TootDetails(
@@ -30,7 +84,7 @@ fun TootDetails(
     navigator: TootDetailsNavigator,
     modifier: Modifier = Modifier
 ) {
-    val tootLoadable by viewModel.tootLoadableFlow.collectAsState()
+    val tootLoadable by viewModel.detailsLoadableFlow.collectAsState()
     val commentsLoadable by viewModel.commentsLoadableFlow.collectAsState()
 
     TootDetails(
@@ -48,8 +102,8 @@ fun TootDetails(
 
 @Composable
 private fun TootDetails(
-    tootLoadable: Loadable<Toot>,
-    commentsLoadable: ListLoadable<Toot>,
+    detailsLoadable: Loadable<TootDetails>,
+    commentsLoadable: ListLoadable<TootDetails>,
     onFavorite: (id: String) -> Unit,
     onReblog: (id: String) -> Unit,
     onShare: (URL) -> Unit,
@@ -58,12 +112,12 @@ private fun TootDetails(
     onBackwardsNavigation: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    when (tootLoadable) {
+    when (detailsLoadable) {
         is Loadable.Loading ->
             TootDetails(onBackwardsNavigation, modifier)
         is Loadable.Loaded ->
             TootDetails(
-                tootLoadable.content,
+                detailsLoadable.content,
                 commentsLoadable,
                 onFavorite,
                 onReblog,
@@ -91,8 +145,8 @@ private fun TootDetails(onBackwardsNavigation: () -> Unit, modifier: Modifier = 
 
 @Composable
 private fun TootDetails(
-    toot: Toot,
-    commentsLoadable: ListLoadable<Toot>,
+    details: TootDetails,
+    commentsLoadable: ListLoadable<TootDetails>,
     onFavorite: (id: String) -> Unit,
     onReblog: (id: String) -> Unit,
     onShare: (URL) -> Unit,
@@ -102,7 +156,7 @@ private fun TootDetails(
     modifier: Modifier = Modifier
 ) {
     TootDetails(
-        header = { Header(toot, onShare = { onShare(toot.url) }) },
+        header = { Header(details, onShare = { onShare(details.url) }) },
         comments = {
             when (
                 @Suppress("NAME_SHADOWING")
@@ -175,7 +229,7 @@ private fun LoadingTootDetailsPreview() {
 private fun LoadedTootDetailsPreview() {
     MastodonteTheme {
         TootDetails(
-            Toot.sample,
+            TootDetails.sample,
             commentsLoadable = ListLoadable.Loading(),
             onFavorite = { },
             onReblog = { },

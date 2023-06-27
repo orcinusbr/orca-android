@@ -10,8 +10,8 @@ import com.jeanbarrossilva.loadable.list.flow.listLoadable
 import com.jeanbarrossilva.loadable.list.serialize
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.core.profile.toot.TootRepository
-import com.jeanbarrossilva.mastodonte.feature.tootdetails.Toot as _Toot
-import com.jeanbarrossilva.mastodonte.feature.tootdetails.toDomainToot
+import com.jeanbarrossilva.mastodonte.feature.tootdetails.TootDetails
+import com.jeanbarrossilva.mastodonte.feature.tootdetails.toTootDetails
 import java.net.URL
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -28,16 +28,15 @@ class TootDetailsViewModel private constructor(
     repository: TootRepository,
     id: String
 ) : AndroidViewModel(application) {
-    private val coreTootLoadableFlow = flow { emitAll(repository.get(id).filterNotNull()) }
+    private val tootLoadableFlow = flow { emitAll(repository.get(id).filterNotNull()) }
     private val commentsIndexFlow = MutableStateFlow(0)
 
-    internal val tootLoadableFlow = loadableFlow(viewModelScope) {
-        coreTootLoadableFlow.map(Toot::toDomainToot).collect(::load)
-    }
+    internal val detailsLoadableFlow =
+        loadableFlow(viewModelScope) { tootLoadableFlow.map(Toot::toTootDetails).collect(::load) }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     internal val commentsLoadableFlow = commentsIndexFlow
-        .flatMapConcat { coreTootLoadableFlow.flatMapToComments(it).map(List<_Toot>::serialize) }
+        .flatMapConcat { tootLoadableFlow.flatMapToComments(it).map(List<TootDetails>::serialize) }
         .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
 
     internal fun favorite(id: String) {
@@ -54,16 +53,17 @@ class TootDetailsViewModel private constructor(
         commentsIndexFlow.value = index
     }
 
-    private fun Flow<Toot>.flatMapToComments(commentsPage: Int): Flow<List<_Toot>> {
+    private fun Flow<Toot>.flatMapToComments(commentsPage: Int): Flow<List<TootDetails>> {
         @OptIn(ExperimentalCoroutinesApi::class)
         return flatMapConcat {
             getCommentsFlow(it, commentsPage)
         }
     }
 
-    private suspend fun getCommentsFlow(coreToot: Toot, commentsPage: Int): Flow<List<_Toot>> {
+    private suspend fun getCommentsFlow(coreToot: Toot, commentsPage: Int):
+        Flow<List<TootDetails>> {
         return coreToot.getComments(commentsPage).map {
-            it.map(Toot::toDomainToot)
+            it.map(Toot::toTootDetails)
         }
     }
 

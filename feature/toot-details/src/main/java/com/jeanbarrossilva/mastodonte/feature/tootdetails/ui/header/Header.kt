@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
-import com.jeanbarrossilva.mastodonte.feature.tootdetails.Toot
+import com.jeanbarrossilva.mastodonte.feature.tootdetails.TootDetails
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.ui.FavoriteIcon
 import com.jeanbarrossilva.mastodonte.platform.ui.SmallAvatar
@@ -48,30 +48,30 @@ internal fun Header(modifier: Modifier = Modifier) {
 }
 
 @Composable
-internal fun Header(toot: Toot, onShare: () -> Unit, modifier: Modifier = Modifier) {
+internal fun Header(details: TootDetails, onShare: () -> Unit, modifier: Modifier = Modifier) {
     Header(
-        avatar = { SmallAvatar(toot.name, toot.avatarURL) },
-        name = { Text(toot.name) },
-        username = { Text(toot.username) },
-        body = { Text(toot.body) },
-        metadata = { Text(toot.formattedPublicationDateTime) },
+        avatar = { SmallAvatar(details.name, details.avatarURL) },
+        name = { Text(details.name) },
+        username = { Text(details.username) },
+        body = { Text(details.body) },
+        metadata = { Text(details.formattedPublicationDateTime) },
         stats = {
             Divider()
 
             Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
                 Stat {
                     Icon(MastodonteTheme.Icons.Comment, contentDescription = "Comments")
-                    Text(toot.commentCount)
+                    Text(details.commentCount)
                 }
 
                 Stat {
                     FavoriteIcon(isActive = false, onToggle = { })
-                    Text(toot.favoriteCount)
+                    Text(details.favoriteCount)
                 }
 
                 Stat {
                     Icon(MastodonteTheme.Icons.Repeat, contentDescription = "Reblog")
-                    Text(toot.reblogCount)
+                    Text(details.reblogCount)
                 }
 
                 Stat {
@@ -144,7 +144,7 @@ private fun LoadingHeaderPreview() {
 private fun LoadedHeaderPreview() {
     MastodonteTheme {
         Surface(color = MastodonteTheme.colorScheme.background) {
-            Header(Toot.sample, onShare = { })
+            Header(TootDetails.sample, onShare = { })
         }
     }
 }
