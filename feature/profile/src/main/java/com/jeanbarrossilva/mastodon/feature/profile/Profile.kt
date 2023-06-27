@@ -131,11 +131,21 @@ internal sealed class ProfileDetails : Serializable {
     }
 
     @Composable
-    open fun MainActionButton(modifier: Modifier = Modifier) {
+    fun MainActionButton() {
+        MainActionButton(Modifier)
     }
 
     @Composable
-    open fun FloatingActionButton(navigator: ProfileNavigator, modifier: Modifier = Modifier) {
+    open fun MainActionButton(modifier: Modifier) {
+    }
+
+    @Composable
+    fun FloatingActionButton(navigator: ProfileNavigator) {
+        FloatingActionButton(navigator, Modifier)
+    }
+
+    @Composable
+    open fun FloatingActionButton(navigator: ProfileNavigator, modifier: Modifier) {
     }
 
     companion object {
