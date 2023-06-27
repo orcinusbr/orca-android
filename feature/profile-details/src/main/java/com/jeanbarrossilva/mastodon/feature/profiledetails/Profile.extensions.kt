@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodon.feature.profile
+package com.jeanbarrossilva.mastodon.feature.profiledetails
 
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.profile.edit.EditableProfile
@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
- * Converts this core [Profile] into [ProfileDetails].
+ * Converts this core [ProfileDetails] into [ProfileDetails].
  *
  * @param coroutineScope [CoroutineScope] through which suspending operations, such as editing or
  * follow-toggling, will be performed.

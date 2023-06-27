@@ -1,14 +1,14 @@
-package com.jeanbarrossilva.mastodon.feature.profile
+package com.jeanbarrossilva.mastodon.feature.profiledetails
 
 import java.net.URL
 
-interface ProfileNavigator {
+interface ProfileDetailsNavigator {
     fun navigateToWebpage(url: URL)
 
     fun navigateToTootDetails(id: String)
 
     companion object {
-        internal val empty = object : ProfileNavigator {
+        internal val empty = object : ProfileDetailsNavigator {
             override fun navigateToWebpage(url: URL) {
             }
 

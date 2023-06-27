@@ -31,7 +31,7 @@ import com.google.accompanist.navigation.material.ExperimentalMaterialNavigation
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
 import com.jeanbarrossilva.mastodonte.app.feature.NavGraphs
-import com.jeanbarrossilva.mastodonte.app.feature.destinations.ProfileDestination
+import com.jeanbarrossilva.mastodonte.app.feature.destinations.ProfileDetailsDestination
 import com.jeanbarrossilva.mastodonte.app.feature.profile.ProfileModule
 import com.jeanbarrossilva.mastodonte.app.feature.tootdetails.TootDetailsModule
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
@@ -96,8 +96,8 @@ internal fun Mastodonte(modifier: Modifier = Modifier) {
 
                         BottomAppBar(tonalElevation = bottomBarTonalElevation) {
                             NavigationBarItem(
-                                selected = destination in ProfileDestination,
-                                onClick = { navController.navigate(ProfileDestination) },
+                                selected = destination in ProfileDetailsDestination,
+                                onClick = { navController.navigate(ProfileDetailsDestination) },
                                 icon = {
                                     Icon(
                                         MastodonteTheme.Icons.AccountCircle,

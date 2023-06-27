@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodon.feature.profile.viewmodel
+package com.jeanbarrossilva.mastodon.feature.profiledetails.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -8,7 +8,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jeanbarrossilva.loadable.flow.loadable
 import com.jeanbarrossilva.loadable.list.flow.listLoadable
 import com.jeanbarrossilva.loadable.list.serialize
-import com.jeanbarrossilva.mastodon.feature.profile.toProfileDetails
+import com.jeanbarrossilva.mastodon.feature.profiledetails.toProfileDetails
 import com.jeanbarrossilva.mastodonte.core.profile.ProfileRepository
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import java.net.URL
@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
-class ProfileViewModel private constructor(
+class ProfileDetailsViewModel private constructor(
     application: Application,
     repository: ProfileRepository,
     id: String
@@ -66,8 +66,8 @@ class ProfileViewModel private constructor(
             id: String
         ): ViewModelProvider.Factory {
             return viewModelFactory {
-                addInitializer(ProfileViewModel::class) {
-                    ProfileViewModel(application, repository, id)
+                addInitializer(ProfileDetailsViewModel::class) {
+                    ProfileDetailsViewModel(application, repository, id)
                 }
             }
         }

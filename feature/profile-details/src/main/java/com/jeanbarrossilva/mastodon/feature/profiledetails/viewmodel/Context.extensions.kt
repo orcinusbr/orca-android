@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodon.feature.profile.viewmodel
+package com.jeanbarrossilva.mastodon.feature.profiledetails.viewmodel
 
 import android.content.Context
 import android.content.Intent

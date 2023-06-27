@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodon.feature.profile.navigation
+package com.jeanbarrossilva.mastodon.feature.profiledetails.navigation
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton

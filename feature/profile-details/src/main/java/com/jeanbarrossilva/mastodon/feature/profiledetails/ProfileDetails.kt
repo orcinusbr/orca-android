@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodon.feature.profile
+package com.jeanbarrossilva.mastodon.feature.profiledetails
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
@@ -41,10 +41,10 @@ import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.serialize
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
-import com.jeanbarrossilva.mastodon.feature.profile.navigation.BackwardsNavigationState
-import com.jeanbarrossilva.mastodon.feature.profile.navigation.Content
-import com.jeanbarrossilva.mastodon.feature.profile.ui.Header
-import com.jeanbarrossilva.mastodon.feature.profile.viewmodel.ProfileViewModel
+import com.jeanbarrossilva.mastodon.feature.profiledetails.navigation.BackwardsNavigationState
+import com.jeanbarrossilva.mastodon.feature.profiledetails.navigation.Content
+import com.jeanbarrossilva.mastodon.feature.profiledetails.ui.Header
+import com.jeanbarrossilva.mastodon.feature.profiledetails.viewmodel.ProfileDetailsViewModel
 import com.jeanbarrossilva.mastodonte.core.inmemory.profile.toot.samples
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Account
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
@@ -91,7 +91,7 @@ internal sealed class ProfileDetails : Serializable {
         override val url: URL
     ) : ProfileDetails() {
         @Composable
-        override fun FloatingActionButton(navigator: ProfileNavigator, modifier: Modifier) {
+        override fun FloatingActionButton(navigator: ProfileDetailsNavigator, modifier: Modifier) {
             FloatingActionButton(onClick = { }) {
                 Icon(MastodonteTheme.Icons.Edit, contentDescription = "Edit")
             }
@@ -140,12 +140,12 @@ internal sealed class ProfileDetails : Serializable {
     }
 
     @Composable
-    fun FloatingActionButton(navigator: ProfileNavigator) {
+    fun FloatingActionButton(navigator: ProfileDetailsNavigator) {
         FloatingActionButton(navigator, Modifier)
     }
 
     @Composable
-    open fun FloatingActionButton(navigator: ProfileNavigator, modifier: Modifier) {
+    open fun FloatingActionButton(navigator: ProfileDetailsNavigator, modifier: Modifier) {
     }
 
     companion object {
@@ -165,9 +165,9 @@ internal sealed class ProfileDetails : Serializable {
 }
 
 @Composable
-fun Profile(
-    viewModel: ProfileViewModel,
-    navigator: ProfileNavigator,
+fun ProfileDetails(
+    viewModel: ProfileDetailsViewModel,
+    navigator: ProfileDetailsNavigator,
     backwardsNavigationState: BackwardsNavigationState,
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
@@ -175,7 +175,7 @@ fun Profile(
     val detailsLoadable by viewModel.detailsLoadableFlow.collectAsState()
     val tootsLoadable by viewModel.tootsLoadableFlow.collectAsState()
 
-    Profile(
+    ProfileDetails(
         navigator,
         detailsLoadable,
         tootsLoadable,
@@ -192,8 +192,8 @@ fun Profile(
 }
 
 @Composable
-private fun Profile(
-    navigator: ProfileNavigator,
+private fun ProfileDetails(
+    navigator: ProfileDetailsNavigator,
     detailsLoadable: Loadable<ProfileDetails>,
     tootsLoadable: ListLoadable<Toot>,
     onFavorite: (tootID: String) -> Unit,
@@ -208,9 +208,13 @@ private fun Profile(
 ) {
     when (detailsLoadable) {
         is Loadable.Loading ->
-            Profile(backwardsNavigationState, onBottomAreaAvailabilityChangeListener, modifier)
+            ProfileDetails(
+                backwardsNavigationState,
+                onBottomAreaAvailabilityChangeListener,
+                modifier
+            )
         is Loadable.Loaded ->
-            Profile(
+            ProfileDetails(
                 navigator,
                 detailsLoadable.content,
                 tootsLoadable,
@@ -230,12 +234,12 @@ private fun Profile(
 }
 
 @Composable
-private fun Profile(
+private fun ProfileDetails(
     backwardsNavigationState: BackwardsNavigationState,
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
-    Profile(
+    ProfileDetails(
         title = { MediumTextualPlaceholder() },
         actions = { },
         header = { Header() },
@@ -249,8 +253,8 @@ private fun Profile(
 }
 
 @Composable
-private fun Profile(
-    navigator: ProfileNavigator,
+private fun ProfileDetails(
+    navigator: ProfileDetailsNavigator,
     details: ProfileDetails,
     tootsLoadable: ListLoadable<Toot>,
     onFavorite: (tootID: String) -> Unit,
@@ -266,7 +270,7 @@ private fun Profile(
     val clipboardManager = LocalClipboardManager.current
     var isTopBarDropdownExpanded by remember { mutableStateOf(false) }
 
-    Profile(
+    ProfileDetails(
         title = { Text(details.username) },
         actions = {
             Box {
@@ -347,7 +351,7 @@ private fun Profile(
 }
 
 @Composable
-private fun Profile(
+private fun ProfileDetails(
     title: @Composable () -> Unit,
     actions: @Composable RowScope.() -> Unit,
     header: @Composable () -> Unit,
@@ -408,18 +412,21 @@ private fun Profile(
 
 @Composable
 @Preview
-private fun LoadingProfilePreview() {
+private fun LoadingProfileDetailsPreview() {
     MastodonteTheme {
-        Profile(BackwardsNavigationState.Unavailable, OnBottomAreaAvailabilityChangeListener.empty)
+        ProfileDetails(
+            BackwardsNavigationState.Unavailable,
+            OnBottomAreaAvailabilityChangeListener.empty
+        )
     }
 }
 
 @Composable
 @Preview
-private fun LoadedProfilePreview() {
+private fun LoadedProfileDetailsPreview() {
     MastodonteTheme {
-        Profile(
-            ProfileNavigator.empty,
+        ProfileDetails(
+            ProfileDetailsNavigator.empty,
             ProfileDetails.sample,
             ListLoadable.Populated(Toot.samples.serialize()),
             onFavorite = { },

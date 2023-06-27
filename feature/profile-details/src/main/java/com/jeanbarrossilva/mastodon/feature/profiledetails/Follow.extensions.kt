@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodon.feature.profile
+package com.jeanbarrossilva.mastodon.feature.profiledetails
 
 import com.jeanbarrossilva.mastodonte.core.profile.follow.Follow
 

@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodon.feature.profile.ui
+package com.jeanbarrossilva.mastodon.feature.profiledetails.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,7 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
-import com.jeanbarrossilva.mastodon.feature.profile.ProfileDetails
+import com.jeanbarrossilva.mastodon.feature.profiledetails.ProfileDetails
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.ui.LargeAvatar
 import com.jeanbarrossilva.mastodonte.platform.ui.html.HtmlAnnotatedString
