@@ -9,11 +9,11 @@ fun Toot.toTootPreview(): TootPreview {
     return TootPreview(
         author.avatarURL,
         author.name,
-        username = "@${author.account.username}",
-        timeSincePublication = publicationDateTime.relative,
+        author.account,
         body,
-        commentCount.formatted,
-        favoriteCount.formatted,
-        reblogCount.formatted
+        publicationDateTime,
+        commentCount,
+        favoriteCount,
+        reblogCount
     )
 }

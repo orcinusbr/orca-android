@@ -18,6 +18,7 @@ import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,49 +28,86 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
+import com.jeanbarrossilva.mastodonte.core.profile.toot.Account
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
+import com.jeanbarrossilva.mastodonte.core.profile.toot.at
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.EmptyMutableInteractionSource
+import com.jeanbarrossilva.mastodonte.platform.ui.AccountFormatter
 import com.jeanbarrossilva.mastodonte.platform.ui.FavoriteIcon
 import com.jeanbarrossilva.mastodonte.platform.ui.FavoriteIconDefaults
 import com.jeanbarrossilva.mastodonte.platform.ui.Samples
 import com.jeanbarrossilva.mastodonte.platform.ui.SmallAvatar
 import com.jeanbarrossilva.mastodonte.platform.ui.html.HtmlAnnotatedString
 import java.net.URL
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 /**
  * Information to be displayed on a [Toot]'s preview.
  *
  * @param avatarURL [URL] that leads to the author's avatar.
  * @param name Name of the author.
- * @param username Username of the author.
- * @param timeSincePublication How much time has passed since publication.
+ * @param account [Account] of the author.
  * @param body Content written by the author.
+ * @param publicationDateTime Zoned moment in time in which it was published.
  * @param commentCount Amount of comments.
  * @param favoriteCount Amount of times it's been marked as favorite.
  * @param reblogCount Amount of times it's been reblogged.
  **/
+@Immutable
 data class TootPreview(
     val avatarURL: URL,
     val name: String,
-    val username: String,
-    val timeSincePublication: String,
+    private val account: Account,
     val body: AnnotatedString,
-    val commentCount: String,
-    val favoriteCount: String,
-    val reblogCount: String
+    private val publicationDateTime: ZonedDateTime,
+    private val commentCount: Int,
+    private val favoriteCount: Int,
+    private val reblogCount: Int
 ) {
+    /** Displayable username of the author. **/
+    val username = AccountFormatter.username(account)
+
+    /** Formatted, displayable version of [commentCount]. **/
+    val formattedCommentCount = commentCount.formatted
+
+    /** Formatted, displayable version of [favoriteCount]. **/
+    val formattedFavoriteCount = favoriteCount.formatted
+
+    /** Formatted, displayable version of [reblogCount]. **/
+    val formattedReblogCount = reblogCount.formatted
+
+    /** How much time has passed since publication. **/
+    val timeSincePublication = publicationDateTime.relative
+
     companion object {
+        /** [sample]'s [commentCount]. **/
+        const val SAMPLE_COMMENT_COUNT = 1_024
+
+        /** [sample]'s [favoriteCount]. **/
+        const val SAMPLE_FAVORITE_COUNT = 2_048
+
+        /** [sample]'s [reblogCount]. **/
+        const val SAMPLE_REBLOG_COUNT = 512
+
+        /** [sample]'s [account]. **/
+        val sampleAccount = "jeanbarrossilva" at "mastodon.social"
+
+        /** [sample]'s [publicationDateTime]. **/
+        val samplePublicationDateTime: ZonedDateTime =
+            ZonedDateTime.of(2003, 10, 8, 8, 0, 0, 0, ZoneId.of("GMT-3"))
+
         /** [TootPreview] sample. **/
         val sample = TootPreview(
             Samples.avatarURL,
             Samples.NAME,
-            username = "@jeanbarrossilva",
-            timeSincePublication = "19 years ago",
+            sampleAccount,
             body = HtmlAnnotatedString("<p><b>Hello</b>, <i>world</i>!</p>"),
-            commentCount = "1K",
-            favoriteCount = "2K",
-            reblogCount = "512"
+            samplePublicationDateTime,
+            SAMPLE_COMMENT_COUNT,
+            SAMPLE_FAVORITE_COUNT,
+            SAMPLE_REBLOG_COUNT
         )
     }
 }
@@ -123,7 +161,7 @@ fun TootPreview(
                     contentDescription = "Comments",
                     onClick = { }
                 ) {
-                    Text(preview.commentCount)
+                    Text(preview.formattedCommentCount)
                 }
 
                 Stat(onClick = onFavorite) {
@@ -135,7 +173,7 @@ fun TootPreview(
                             .colors(activeColor = MastodonteTheme.colorScheme.onErrorContainer)
                     )
 
-                    Text(preview.favoriteCount)
+                    Text(preview.formattedFavoriteCount)
                 }
 
                 Stat(
@@ -143,7 +181,7 @@ fun TootPreview(
                     contentDescription = "Reblogs",
                     onClick = onReblog
                 ) {
-                    Text(preview.reblogCount)
+                    Text(preview.formattedReblogCount)
                 }
 
                 Stat(

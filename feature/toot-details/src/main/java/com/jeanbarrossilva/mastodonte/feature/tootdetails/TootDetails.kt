@@ -9,6 +9,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -17,24 +18,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Account
-import com.jeanbarrossilva.mastodonte.core.profile.toot.at
 import com.jeanbarrossilva.mastodonte.feature.tootdetails.ui.header.Header
 import com.jeanbarrossilva.mastodonte.feature.tootdetails.ui.header.formatted
 import com.jeanbarrossilva.mastodonte.feature.tootdetails.viewmodel.TootDetailsViewModel
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.backwardsNavigationArrow
+import com.jeanbarrossilva.mastodonte.platform.ui.AccountFormatter
 import com.jeanbarrossilva.mastodonte.platform.ui.timeline.Timeline
 import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.TootPreview
 import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.formatted
 import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.loadingTootPreviews
-import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.relative
 import java.io.Serializable
 import java.net.URL
-import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.util.Objects
 import java.util.UUID
 
+@Immutable
 internal data class TootDetails(
     val id: String,
     val avatarURL: URL,
@@ -48,18 +47,13 @@ internal data class TootDetails(
     val url: URL
 ) : Serializable {
     val formattedPublicationDateTime = publicationDateTime.formatted
-    val formattedUsername = "@${account.username}"
+    val formattedUsername = AccountFormatter.username(account)
     val formattedCommentCount = commentCount.formatted
     val formattedFavoriteCount = favoriteCount.formatted
     val formattedReblogCount = reblogCount.formatted
 
-    override fun equals(other: Any?): Boolean {
-        return Objects.equals(this, other)
-    }
-
-    override fun hashCode(): Int {
-        return Objects.hash(
-            id,
+    fun toTootPreview(): TootPreview {
+        return TootPreview(
             avatarURL,
             name,
             account,
@@ -67,39 +61,22 @@ internal data class TootDetails(
             publicationDateTime,
             commentCount,
             favoriteCount,
-            reblogCount,
-            url
-        )
-    }
-
-    fun toTootPreview(): TootPreview {
-        return TootPreview(
-            avatarURL,
-            name,
-            formattedUsername,
-            timeSincePublication = publicationDateTime.relative,
-            body,
-            formattedCommentCount,
-            formattedFavoriteCount,
-            formattedReblogCount
+            reblogCount
         )
     }
 
     companion object {
-        private val samplePublicationDateTime =
-            ZonedDateTime.of(2003, 10, 8, 8, 0, 0, 0, ZoneId.of("GMT-3"))
-
         @Suppress("SpellCheckingInspection")
         val sample = TootDetails(
             id = "${UUID.randomUUID()}",
             TootPreview.sample.avatarURL,
             TootPreview.sample.name,
-            "jeanbarrossilva" at "mastodon.social",
+            TootPreview.sampleAccount,
             TootPreview.sample.body,
-            samplePublicationDateTime,
-            commentCount = 1_024,
-            favoriteCount = 2_048,
-            reblogCount = 512,
+            TootPreview.samplePublicationDateTime,
+            TootPreview.SAMPLE_COMMENT_COUNT,
+            TootPreview.SAMPLE_FAVORITE_COUNT,
+            TootPreview.SAMPLE_REBLOG_COUNT,
             URL("https://mastodon.social/@christianselig/110492858891694580")
         )
     }
