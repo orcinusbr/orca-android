@@ -60,9 +60,8 @@ class TootDetailsViewModel private constructor(
         }
     }
 
-    private suspend fun getCommentsFlow(coreToot: Toot, commentsPage: Int):
-        Flow<List<TootDetails>> {
-        return coreToot.getComments(commentsPage).map {
+    private suspend fun getCommentsFlow(toot: Toot, commentsPage: Int): Flow<List<TootDetails>> {
+        return toot.getComments(commentsPage).map {
             it.map(Toot::toTootDetails)
         }
     }
