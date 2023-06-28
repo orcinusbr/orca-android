@@ -105,10 +105,10 @@ internal sealed class ProfileDetails : Serializable {
         override val account: Account,
         override val bio: String,
         override val url: URL,
-        val follow: Follow,
-        val onToggleFollow: () -> Unit
+        val status: Status,
+        val onStatusToggle: () -> Unit
     ) : ProfileDetails() {
-        enum class Follow {
+        enum class Status {
             UNFOLLOWED {
                 override val label = "Follow"
             },
@@ -124,8 +124,8 @@ internal sealed class ProfileDetails : Serializable {
 
         @Composable
         override fun MainActionButton(modifier: Modifier) {
-            Button(onClick = onToggleFollow) {
-                Text(follow.label)
+            Button(onClick = onStatusToggle) {
+                Text(status.label)
             }
         }
     }

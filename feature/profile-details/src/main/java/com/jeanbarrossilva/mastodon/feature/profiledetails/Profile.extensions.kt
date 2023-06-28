@@ -24,8 +24,8 @@ internal fun Profile.toProfileDetails(coroutineScope: CoroutineScope): ProfileDe
                 account,
                 bio,
                 url,
-                follow.toHeaderFollow(),
-                onToggleFollow = {
+                follow.toStatus(),
+                onStatusToggle = {
                     coroutineScope.launch {
                         toggleFollow()
                     }
