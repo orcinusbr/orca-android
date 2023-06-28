@@ -35,7 +35,7 @@ internal fun Header(modifier: Modifier = Modifier) {
                 MediumTextualPlaceholder()
             }
         },
-        followToggleButton = { },
+        mainActionButton = { },
         modifier
     )
 }
@@ -47,7 +47,7 @@ internal fun Header(details: ProfileDetails, modifier: Modifier = Modifier) {
         name = { Text(details.name) },
         account = { Text(details.formattedAccount) },
         bio = { Text(HtmlAnnotatedString(details.bio)) },
-        followToggleButton = { details.MainActionButton() },
+        mainActionButton = { details.MainActionButton() },
         modifier
     )
 }
@@ -58,7 +58,7 @@ private fun Header(
     name: @Composable () -> Unit,
     account: @Composable () -> Unit,
     bio: @Composable () -> Unit,
-    followToggleButton: @Composable () -> Unit,
+    mainActionButton: @Composable () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -79,7 +79,7 @@ private fun Header(
         }
 
         ProvideTextStyle(LocalTextStyle.current.copy(textAlign = TextAlign.Center), bio)
-        followToggleButton()
+        mainActionButton()
     }
 }
 
