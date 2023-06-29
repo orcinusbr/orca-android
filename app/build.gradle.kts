@@ -57,7 +57,7 @@ dependencies {
     implementation(Dependencies.ACCOMPANIST_NAVIGATION_MATERIAL)
     implementation(Dependencies.COMPOSE_DESTINATIONS_ANIMATIONS)
     implementation(Dependencies.COMPOSE_DESTINATIONS_CORE)
-    implementation(Dependencies.KOIN)
+    implementation(Dependencies.KOIN_COMPOSE)
     implementation(Dependencies.TIME4J)
 
     ksp(Plugins.COMPOSE_DESTINATIONS)

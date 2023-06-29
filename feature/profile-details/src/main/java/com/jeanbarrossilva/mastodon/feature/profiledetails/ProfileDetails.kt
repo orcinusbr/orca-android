@@ -162,7 +162,7 @@ internal sealed class ProfileDetails : Serializable {
 }
 
 @Composable
-fun ProfileDetails(
+internal fun ProfileDetails(
     viewModel: ProfileDetailsViewModel,
     navigator: ProfileDetailsNavigator,
     backwardsNavigationState: BackwardsNavigationState,

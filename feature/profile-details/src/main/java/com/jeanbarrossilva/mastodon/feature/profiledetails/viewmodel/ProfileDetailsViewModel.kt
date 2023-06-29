@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
-class ProfileDetailsViewModel private constructor(
+internal class ProfileDetailsViewModel private constructor(
     application: Application,
     repository: ProfileRepository,
     id: String

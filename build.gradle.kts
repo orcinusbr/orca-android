@@ -7,6 +7,7 @@ buildscript {
     dependencies {
         classpath(Plugins.GRADLE)
         classpath(Plugins.KOTLIN)
+        classpath(Plugins.NAVIGATION_SAFE_ARGS)
     }
 }
 

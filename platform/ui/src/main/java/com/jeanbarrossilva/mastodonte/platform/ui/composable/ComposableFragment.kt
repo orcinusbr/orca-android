@@ -14,7 +14,7 @@ import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
  *
  * @see Content
  **/
-internal abstract class ComposableFragment : Fragment() {
+abstract class ComposableFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

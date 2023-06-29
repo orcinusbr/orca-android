@@ -9,7 +9,7 @@ import org.koin.dsl.module
 internal fun ProfileModule(): Module {
     return module {
         single<ProfileDetailsNavigator> {
-            DefaultProfileDetailsNavigator(androidContext(), destinationsNavigator = get())
+            DefaultProfileDetailsNavigator(androidContext())
         }
     }
 }

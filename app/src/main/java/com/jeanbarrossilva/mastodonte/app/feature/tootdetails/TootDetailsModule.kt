@@ -8,7 +8,7 @@ import org.koin.dsl.module
 internal fun TootDetailsModule(): Module {
     return module {
         single<TootDetailsNavigator> {
-            DefaultTootDetailsNavigator(destinationsNavigator = get())
+            DefaultTootDetailsNavigator()
         }
     }
 }
