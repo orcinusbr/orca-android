@@ -20,10 +20,12 @@ abstract class ComposableFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return ComposeView(requireContext()).apply {
-            setContent {
-                MastodonteTheme {
-                    Content()
+        return context?.let {
+            ComposeView(it).apply {
+                setContent {
+                    MastodonteTheme {
+                        this@ComposableFragment.Content()
+                    }
                 }
             }
         }

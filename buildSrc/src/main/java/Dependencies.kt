@@ -1,17 +1,8 @@
 object Dependencies {
-    const val ACCOMPANIST_NAVIGATION_MATERIAL =
-        "com.google.accompanist:accompanist-navigation-material:${Versions.ACCOMPANIST}"
     const val ACCOMPANIST_PLACEHOLDER_MATERIAL =
         "com.google.accompanist:accompanist-placeholder-material:${Versions.ACCOMPANIST}"
+    const val APPCOMPAT = "androidx.appcompat:appcompat:${Versions.APPCOMPAT}"
     const val COIL_COMPOSE = "io.coil-kt:coil-compose:${Versions.COIL}"
-
-    @Suppress("SpellCheckingInspection")
-    const val COMPOSE_DESTINATIONS_ANIMATIONS =
-        "io.github.raamcosta.compose-destinations:animations-core:${Versions.COMPOSE_DESTINATIONS}"
-
-    @Suppress("SpellCheckingInspection")
-    const val COMPOSE_DESTINATIONS_CORE =
-        "io.github.raamcosta.compose-destinations:core:${Versions.COMPOSE_DESTINATIONS}"
 
     const val COMPOSE_MATERIAL_3 =
         "androidx.compose.material3:material3:${Versions.COMPOSE_MATERIAL_3}"
@@ -19,6 +10,8 @@ object Dependencies {
         "androidx.compose.material:material-icons-extended:" +
             Versions.COMPOSE_MATERIAL_ICONS_EXTENDED
     const val COMPOSE_UI_TOOLING = "androidx.compose.ui:ui-tooling:${Versions.COMPOSE_UI_TOOLING}"
+    const val CONSTRAINTLAYOUT =
+        "androidx.constraintlayout:constraintlayout:${Versions.CONSTRAINTLAYOUT}"
     const val COROUTINES_CORE =
         "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.COROUTINES}"
     const val COROUTINES_TEST =

@@ -1,5 +1,6 @@
 plugins {
     id("com.android.application")
+    id("androidx.navigation.safeargs")
     id("com.google.devtools.ksp") version Versions.KSP
     id("kotlin-android")
 }
@@ -31,6 +32,7 @@ android {
     @Suppress("UnstableApiUsage")
     buildFeatures {
         compose = true
+        viewBinding = true
     }
 
     compileOptions {
@@ -54,11 +56,11 @@ dependencies {
     implementation(project(":platform:launchable"))
     implementation(project(":platform:theme"))
     implementation(project(":platform:ui"))
-    implementation(Dependencies.ACCOMPANIST_NAVIGATION_MATERIAL)
-    implementation(Dependencies.COMPOSE_DESTINATIONS_ANIMATIONS)
-    implementation(Dependencies.COMPOSE_DESTINATIONS_CORE)
-    implementation(Dependencies.KOIN_COMPOSE)
+    implementation(Dependencies.APPCOMPAT)
+    implementation(Dependencies.CONSTRAINTLAYOUT)
+    implementation(Dependencies.KOIN)
+    implementation(Dependencies.MATERIAL)
+    implementation(Dependencies.NAVIGATION_FRAGMENT)
+    implementation(Dependencies.NAVIGATION_UI)
     implementation(Dependencies.TIME4J)
-
-    ksp(Plugins.COMPOSE_DESTINATIONS)
 }
