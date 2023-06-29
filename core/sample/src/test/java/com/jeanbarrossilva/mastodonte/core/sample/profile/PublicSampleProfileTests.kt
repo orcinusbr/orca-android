@@ -12,7 +12,7 @@ internal class PublicSampleProfileTests {
     }
 
     @Test
-    fun `GIVEN a public unfollowed profile WHEN toggling its follow status THEN it's followed`() { // ktlint-disable max-line-length
+    fun `GIVEN a public unfollowed profile WHEN toggling its follow status THEN it's followed`() {
         assertTogglingEquals(Follow.Public.unfollowed(), Follow.Public.following())
     }
 
