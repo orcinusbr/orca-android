@@ -17,7 +17,7 @@ import com.jeanbarrossilva.mastodonte.platform.theme.extensions.backwardsNavigat
  * @see Unavailable
  * @see Available
  **/
-sealed class BackwardsNavigationState {
+internal sealed class BackwardsNavigationState {
     /** Defines that backwards navigation is not available. **/
     object Unavailable : BackwardsNavigationState() {
         @Composable
