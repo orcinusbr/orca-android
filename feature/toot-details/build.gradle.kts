@@ -47,7 +47,7 @@ android {
 }
 
 dependencies {
-    debugImplementation(project(":core:in-memory"))
+    debugImplementation(project(":core:sample"))
 
     implementation(project(":core"))
     implementation(project(":platform:theme"))

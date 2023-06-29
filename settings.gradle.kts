@@ -2,7 +2,7 @@ rootProject.name = "Mastodonte"
 include(
     ":app",
     ":core",
-    ":core:in-memory",
+    ":core:sample",
     ":feature:profile-details",
     ":feature:toot-details",
     ":platform:launchable",

@@ -18,6 +18,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Account
+import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
+import com.jeanbarrossilva.mastodonte.core.sample.profile.toot.sample
 import com.jeanbarrossilva.mastodonte.feature.tootdetails.ui.header.Header
 import com.jeanbarrossilva.mastodonte.feature.tootdetails.ui.header.formatted
 import com.jeanbarrossilva.mastodonte.feature.tootdetails.viewmodel.TootDetailsViewModel
@@ -31,7 +33,6 @@ import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.loadingTootPrevi
 import java.io.Serializable
 import java.net.URL
 import java.time.ZonedDateTime
-import java.util.UUID
 
 @Immutable
 internal data class TootDetails(
@@ -66,9 +67,8 @@ internal data class TootDetails(
     }
 
     companion object {
-        @Suppress("SpellCheckingInspection")
         val sample = TootDetails(
-            id = "${UUID.randomUUID()}",
+            Toot.sample.id,
             TootPreview.sample.avatarURL,
             TootPreview.sample.name,
             TootPreview.sampleAccount,
@@ -77,7 +77,7 @@ internal data class TootDetails(
             TootPreview.SAMPLE_COMMENT_COUNT,
             TootPreview.SAMPLE_FAVORITE_COUNT,
             TootPreview.SAMPLE_REBLOG_COUNT,
-            URL("https://mastodon.social/@christianselig/110492858891694580")
+            Toot.sample.url
         )
     }
 }

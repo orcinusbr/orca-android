@@ -45,9 +45,11 @@ import com.jeanbarrossilva.mastodon.feature.profiledetails.navigation.BackwardsN
 import com.jeanbarrossilva.mastodon.feature.profiledetails.navigation.Content
 import com.jeanbarrossilva.mastodon.feature.profiledetails.ui.Header
 import com.jeanbarrossilva.mastodon.feature.profiledetails.viewmodel.ProfileDetailsViewModel
-import com.jeanbarrossilva.mastodonte.core.inmemory.profile.toot.samples
+import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Account
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
+import com.jeanbarrossilva.mastodonte.core.sample.profile.sample
+import com.jeanbarrossilva.mastodonte.core.sample.profile.toot.samples
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.plus
 import com.jeanbarrossilva.mastodonte.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
@@ -57,7 +59,6 @@ import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.loadingTootPrevi
 import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.toTootPreview
 import java.io.Serializable
 import java.net.URL
-import java.util.UUID
 
 internal sealed class ProfileDetails : Serializable {
     protected abstract val account: Account
@@ -149,17 +150,13 @@ internal sealed class ProfileDetails : Serializable {
     }
 
     companion object {
-        @Suppress("SpellCheckingInspection")
         val sample = Default(
-            "${UUID.randomUUID()}",
+            Profile.sample.id,
             TootPreview.sample.avatarURL,
             TootPreview.sample.name,
             TootPreview.sampleAccount,
-            bio = "Co-founder @ Grupo Estoa, software engineer, author, writer and content " +
-                "creator; neuroscience, quantum physics and philosophy enthusiast.",
-            URL(
-                "https://en.gravatar.com/userimage/153558542/08942ba9443ce68bf66345a2e6db656e.png"
-            )
+            Profile.sample.bio,
+            Profile.sample.url
         )
     }
 }

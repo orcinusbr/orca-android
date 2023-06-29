@@ -48,7 +48,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:in-memory"))
+    implementation(project(":core:sample"))
     implementation(project(":feature:profile-details"))
     implementation(project(":feature:toot-details"))
     implementation(project(":platform:launchable"))

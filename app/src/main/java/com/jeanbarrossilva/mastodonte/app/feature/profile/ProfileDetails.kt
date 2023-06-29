@@ -8,9 +8,9 @@ import com.jeanbarrossilva.mastodon.feature.profiledetails.ProfileDetails
 import com.jeanbarrossilva.mastodon.feature.profiledetails.ProfileDetailsNavigator
 import com.jeanbarrossilva.mastodon.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.mastodon.feature.profiledetails.viewmodel.ProfileDetailsViewModel
-import com.jeanbarrossilva.mastodonte.core.inmemory.profile.sample
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.profile.ProfileRepository
+import com.jeanbarrossilva.mastodonte.core.sample.profile.sample
 import com.jeanbarrossilva.mastodonte.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph

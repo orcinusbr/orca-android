@@ -1,13 +1,15 @@
 package com.jeanbarrossilva.mastodonte.core.profile.edit
 
+import java.net.URL
+
 /** Edits an [EditableProfile]. **/
 interface Editor {
     /**
-     * Sets the avatar to the base-64-encoded [avatar].
+     * Sets [avatarURL] as the [EditableProfile]'s [avatarURL][EditableProfile.avatarURL].
      *
-     * @param avatar Base 64 [String] version of the avatar.
+     * @param avatarURL Avatar [URL] to be set to the [EditableProfile]..
      **/
-    suspend fun setAvatar(avatar: String)
+    suspend fun setAvatarURL(avatarURL: URL)
 
     /**
      * Sets [name] as the [EditableProfile]'s [name][EditableProfile.name].
@@ -23,26 +25,16 @@ interface Editor {
      **/
     suspend fun setBio(bio: String)
 
-    /**
-     * Makes the [EditableProfile] public or private according to [isPrivate].
-     *
-     * @param isPrivate Whether the [EditableProfile] is private.
-     **/
-    suspend fun setPrivate(isPrivate: Boolean)
-
     companion object {
         /** No-op, empty [Editor]. **/
         val empty = object : Editor {
-            override suspend fun setAvatar(avatar: String) {
+            override suspend fun setAvatarURL(avatarURL: URL) {
             }
 
             override suspend fun setName(name: String) {
             }
 
             override suspend fun setBio(bio: String) {
-            }
-
-            override suspend fun setPrivate(isPrivate: Boolean) {
             }
         }
     }
