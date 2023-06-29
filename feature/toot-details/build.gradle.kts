@@ -1,5 +1,6 @@
 plugins {
     id("com.android.library")
+    id("androidx.navigation.safeargs")
     id("org.jetbrains.kotlin.android")
 }
 
@@ -55,4 +56,7 @@ dependencies {
     implementation(Dependencies.LIFECYCLE_VIEWMODEL)
     implementation(Dependencies.LOADABLE_LIST)
     implementation(Dependencies.LOADABLE_PLACEHOLDER)
+    implementation(Dependencies.NAVIGATION_FRAGMENT)
+    implementation(Dependencies.NAVIGATION_UI)
+    implementation(Dependencies.KOIN)
 }

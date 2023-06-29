@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
-class TootDetailsViewModel private constructor(
+internal class TootDetailsViewModel private constructor(
     application: Application,
     repository: TootRepository,
     id: String
@@ -31,25 +31,25 @@ class TootDetailsViewModel private constructor(
     private val tootLoadableFlow = flow { emitAll(repository.get(id).filterNotNull()) }
     private val commentsIndexFlow = MutableStateFlow(0)
 
-    internal val detailsLoadableFlow =
+    val detailsLoadableFlow =
         loadableFlow(viewModelScope) { tootLoadableFlow.map(Toot::toTootDetails).collect(::load) }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    internal val commentsLoadableFlow = commentsIndexFlow
+    val commentsLoadableFlow = commentsIndexFlow
         .flatMapConcat { tootLoadableFlow.flatMapToComments(it).map(List<TootDetails>::serialize) }
         .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
 
-    internal fun favorite(id: String) {
+    fun favorite(id: String) {
     }
 
-    internal fun reblog(id: String) {
+    fun reblog(id: String) {
     }
 
-    internal fun share(url: URL) {
+    fun share(url: URL) {
         getApplication<Application>().share("$url")
     }
 
-    internal fun loadCommentsAt(index: Int) {
+    fun loadCommentsAt(index: Int) {
         commentsIndexFlow.value = index
     }
 

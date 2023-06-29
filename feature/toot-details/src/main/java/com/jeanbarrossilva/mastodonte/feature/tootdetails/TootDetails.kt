@@ -83,7 +83,7 @@ internal data class TootDetails(
 }
 
 @Composable
-fun TootDetails(
+internal fun TootDetails(
     viewModel: TootDetailsViewModel,
     navigator: TootDetailsNavigator,
     modifier: Modifier = Modifier
