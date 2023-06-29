@@ -45,6 +45,7 @@ android {
 }
 
 dependencies {
+    api(Dependencies.FRAGMENT)
     api(Dependencies.LOADABLE)
 
     implementation(project(":core"))

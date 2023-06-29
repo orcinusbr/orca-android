@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot
+package com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot
 
 import java.time.ZoneId
 import java.time.ZonedDateTime

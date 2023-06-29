@@ -26,10 +26,10 @@ import com.jeanbarrossilva.mastodonte.feature.tootdetails.viewmodel.TootDetailsV
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.backwardsNavigationArrow
 import com.jeanbarrossilva.mastodonte.platform.ui.AccountFormatter
-import com.jeanbarrossilva.mastodonte.platform.ui.timeline.Timeline
-import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.TootPreview
-import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.formatted
-import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.loadingTootPreviews
+import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.Timeline
+import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.TootPreview
+import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.formatted
+import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.loadingTootPreviews
 import java.io.Serializable
 import java.net.URL
 import java.time.ZonedDateTime

@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.ui.timeline
+package com.jeanbarrossilva.mastodonte.platform.ui.component.timeline
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,7 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
-import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.loadingTootPreviews
+import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.loadingTootPreviews
 
 @Composable
 fun Timeline(

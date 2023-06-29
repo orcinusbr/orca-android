@@ -53,10 +53,10 @@ import com.jeanbarrossilva.mastodonte.core.sample.profile.toot.samples
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.plus
 import com.jeanbarrossilva.mastodonte.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
-import com.jeanbarrossilva.mastodonte.platform.ui.timeline.Timeline
-import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.TootPreview
-import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.loadingTootPreviews
-import com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot.toTootPreview
+import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.Timeline
+import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.TootPreview
+import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.loadingTootPreviews
+import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.toTootPreview
 import java.io.Serializable
 import java.net.URL
 

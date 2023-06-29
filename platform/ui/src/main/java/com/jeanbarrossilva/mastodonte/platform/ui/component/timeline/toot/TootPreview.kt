@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot
+package com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -34,10 +34,10 @@ import com.jeanbarrossilva.mastodonte.core.profile.toot.at
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.EmptyMutableInteractionSource
 import com.jeanbarrossilva.mastodonte.platform.ui.AccountFormatter
-import com.jeanbarrossilva.mastodonte.platform.ui.FavoriteIcon
-import com.jeanbarrossilva.mastodonte.platform.ui.FavoriteIconDefaults
 import com.jeanbarrossilva.mastodonte.platform.ui.Samples
-import com.jeanbarrossilva.mastodonte.platform.ui.SmallAvatar
+import com.jeanbarrossilva.mastodonte.platform.ui.component.FavoriteIcon
+import com.jeanbarrossilva.mastodonte.platform.ui.component.FavoriteIconDefaults
+import com.jeanbarrossilva.mastodonte.platform.ui.component.SmallAvatar
 import com.jeanbarrossilva.mastodonte.platform.ui.html.HtmlAnnotatedString
 import java.net.URL
 import java.time.ZoneId

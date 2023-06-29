@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot
+package com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot
 
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.platform.ui.html.HtmlAnnotatedString

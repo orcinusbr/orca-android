@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.ui
+package com.jeanbarrossilva.mastodonte.platform.ui.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -25,6 +25,7 @@ import coil.compose.AsyncImagePainter
 import com.jeanbarrossilva.loadable.placeholder.Placeholder
 import com.jeanbarrossilva.loadable.placeholder.PlaceholderDefaults
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
+import com.jeanbarrossilva.mastodonte.platform.ui.Samples
 import java.io.Serializable
 import java.net.URL
 

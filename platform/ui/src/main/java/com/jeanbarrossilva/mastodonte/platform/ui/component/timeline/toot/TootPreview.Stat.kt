@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.ui.timeline.toot
+package com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable

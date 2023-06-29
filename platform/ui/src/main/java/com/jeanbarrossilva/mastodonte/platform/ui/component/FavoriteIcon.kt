@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.ui
+package com.jeanbarrossilva.mastodonte.platform.ui.component
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
