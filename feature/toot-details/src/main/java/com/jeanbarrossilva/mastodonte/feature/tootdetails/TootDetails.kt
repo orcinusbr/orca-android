@@ -85,7 +85,7 @@ internal data class TootDetails(
 @Composable
 internal fun TootDetails(
     viewModel: TootDetailsViewModel,
-    navigator: TootDetailsNavigator,
+    navigator: TootDetailsBoundary,
     modifier: Modifier = Modifier
 ) {
     val tootLoadable by viewModel.detailsLoadableFlow.collectAsState()

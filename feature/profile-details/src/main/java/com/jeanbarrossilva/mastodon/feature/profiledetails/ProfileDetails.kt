@@ -92,7 +92,7 @@ internal sealed class ProfileDetails : Serializable {
         override val url: URL
     ) : ProfileDetails() {
         @Composable
-        override fun FloatingActionButton(navigator: ProfileDetailsNavigator, modifier: Modifier) {
+        override fun FloatingActionButton(navigator: ProfileDetailsBoundary, modifier: Modifier) {
             FloatingActionButton(onClick = { }) {
                 Icon(MastodonteTheme.Icons.Edit, contentDescription = "Edit")
             }
@@ -141,12 +141,12 @@ internal sealed class ProfileDetails : Serializable {
     }
 
     @Composable
-    fun FloatingActionButton(navigator: ProfileDetailsNavigator) {
+    fun FloatingActionButton(navigator: ProfileDetailsBoundary) {
         FloatingActionButton(navigator, Modifier)
     }
 
     @Composable
-    open fun FloatingActionButton(navigator: ProfileDetailsNavigator, modifier: Modifier) {
+    open fun FloatingActionButton(navigator: ProfileDetailsBoundary, modifier: Modifier) {
     }
 
     companion object {
@@ -164,7 +164,7 @@ internal sealed class ProfileDetails : Serializable {
 @Composable
 internal fun ProfileDetails(
     viewModel: ProfileDetailsViewModel,
-    navigator: ProfileDetailsNavigator,
+    navigator: ProfileDetailsBoundary,
     backwardsNavigationState: BackwardsNavigationState,
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
@@ -190,7 +190,7 @@ internal fun ProfileDetails(
 
 @Composable
 private fun ProfileDetails(
-    navigator: ProfileDetailsNavigator,
+    navigator: ProfileDetailsBoundary,
     detailsLoadable: Loadable<ProfileDetails>,
     tootsLoadable: ListLoadable<Toot>,
     onFavorite: (tootID: String) -> Unit,
@@ -251,7 +251,7 @@ private fun ProfileDetails(
 
 @Composable
 private fun ProfileDetails(
-    navigator: ProfileDetailsNavigator,
+    navigator: ProfileDetailsBoundary,
     details: ProfileDetails,
     tootsLoadable: ListLoadable<Toot>,
     onFavorite: (tootID: String) -> Unit,
@@ -423,7 +423,7 @@ private fun LoadingProfileDetailsPreview() {
 private fun LoadedProfileDetailsPreview() {
     MastodonteTheme {
         ProfileDetails(
-            ProfileDetailsNavigator.empty,
+            ProfileDetailsBoundary.empty,
             ProfileDetails.sample,
             ListLoadable.Populated(Toot.samples.serialize()),
             onFavorite = { },

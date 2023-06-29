@@ -3,13 +3,13 @@ package com.jeanbarrossilva.mastodonte.app.feature.profile
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import com.jeanbarrossilva.mastodon.feature.profiledetails.ProfileDetailsNavigator
+import com.jeanbarrossilva.mastodon.feature.profiledetails.ProfileDetailsBoundary
 import java.lang.ref.WeakReference
 import java.net.URL
 
-internal class DefaultProfileDetailsNavigator private constructor(
+internal class DefaultProfileDetailsBoundary private constructor(
     private val contextRef: WeakReference<Context>
-) : ProfileDetailsNavigator {
+) : ProfileDetailsBoundary {
     constructor(context: Context) : this(WeakReference(context))
 
     override fun navigateToWebpage(url: URL) {

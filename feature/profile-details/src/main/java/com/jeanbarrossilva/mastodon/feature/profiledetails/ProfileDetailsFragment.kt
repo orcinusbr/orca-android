@@ -17,7 +17,7 @@ internal class ProfileDetailsFragment : ComposableFragment() {
     private val viewModel by viewModels<ProfileDetailsViewModel> {
         ProfileDetailsViewModel.createFactory(requireActivity().application, repository, navArgs.id)
     }
-    private val navigator by inject<ProfileDetailsNavigator>()
+    private val navigator by inject<ProfileDetailsBoundary>()
     private val onBottomAreaAvailabilityChangeListener by
         inject<OnBottomAreaAvailabilityChangeListener>()
 

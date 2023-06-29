@@ -14,7 +14,7 @@ internal class TootDetailsFragment : ComposableFragment() {
     private val viewModel by viewModels<TootDetailsViewModel> {
         TootDetailsViewModel.createFactory(requireActivity().application, repository, navArgs.id)
     }
-    private val navigator by inject<TootDetailsNavigator>()
+    private val navigator by inject<TootDetailsBoundary>()
 
     @Composable
     override fun Content() {

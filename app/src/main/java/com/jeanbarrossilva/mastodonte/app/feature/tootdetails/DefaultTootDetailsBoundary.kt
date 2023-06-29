@@ -1,8 +1,8 @@
 package com.jeanbarrossilva.mastodonte.app.feature.tootdetails
 
-import com.jeanbarrossilva.mastodonte.feature.tootdetails.TootDetailsNavigator
+import com.jeanbarrossilva.mastodonte.feature.tootdetails.TootDetailsBoundary
 
-internal class DefaultTootDetailsNavigator : TootDetailsNavigator {
+internal class DefaultTootDetailsBoundary : TootDetailsBoundary {
     override fun navigateToTootDetails(id: String) {
     }
 
