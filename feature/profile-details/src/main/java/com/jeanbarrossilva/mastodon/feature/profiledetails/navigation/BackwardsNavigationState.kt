@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.backwardsNavigationArrow
+import java.io.Serializable
 
 /**
  * Defines the availability of backwards navigation.
@@ -13,11 +14,11 @@ import com.jeanbarrossilva.mastodonte.platform.theme.extensions.backwardsNavigat
  * @see Unavailable
  * @see Available
  **/
-sealed class BackwardsNavigationState {
+sealed class BackwardsNavigationState : Serializable {
     /** Defines that backwards navigation is not available. **/
     object Unavailable : BackwardsNavigationState() {
         @Composable
-        override fun Content(modifier: Modifier) {
+        override fun NavigationButton(modifier: Modifier) {
         }
     }
 
@@ -27,7 +28,7 @@ sealed class BackwardsNavigationState {
      **/
     abstract class Available private constructor() : BackwardsNavigationState() {
         @Composable
-        override fun Content(modifier: Modifier) {
+        override fun NavigationButton(modifier: Modifier) {
             IconButton(onClick = ::navigateBackwards) {
                 Icon(
                     MastodonteTheme.Icons.backwardsNavigationArrow,
@@ -62,11 +63,11 @@ sealed class BackwardsNavigationState {
      * @param modifier [Modifier] to be applied to the underlying [Composable].
      **/
     @Composable
-    internal abstract fun Content(modifier: Modifier)
+    internal abstract fun NavigationButton(modifier: Modifier)
 }
 
 /** [Composable] that represents the action that can be performed. **/
 @Composable
-internal fun BackwardsNavigationState.Content() {
-    Content(Modifier)
+internal fun BackwardsNavigationState.NavigationButton() {
+    NavigationButton(Modifier)
 }

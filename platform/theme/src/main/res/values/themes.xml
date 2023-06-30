@@ -1,6 +1,6 @@
-    <resources xmlns:tools="http://schemas.android.com/tools">
-    <color name="normal_control_color">@android:color/black</color>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Theme.Mastodonte" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:fontFamily">@font/rubik</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item
@@ -8,6 +8,16 @@
             tools:targetApi="27">
             true
         </item>
-        <item name="colorControlNormal">@color/normal_control_color</item>
+        <item name="colorPrimaryContainer">#1A1A1A</item>
+        <item name="colorOnPrimaryContainer">#B388FF</item>
+        <item name="backgroundColor">@android:color/black</item>
+        <item name="colorSurface">#252525</item>
+        <item name="colorSurfaceVariant">#202020</item>
+        <item name="colorOnSurfaceVariant">#F5F5F5</item>
+        <item name="colorError">#D32F2F</item>
+        <item name="colorErrorContainer">#D32F2F</item>
+        <item name="colorOnErrorContainer">@android:color/white</item>
+        <item name="colorOutline">?android:attr/textColorTertiaryInverse</item>
+        <item name="colorOutlineVariant">#1A1A1A</item>
     </style>
 </resources>

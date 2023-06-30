@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.mastodonte.feature.tootdetails
 
-interface TootDetailsNavigator {
+interface TootDetailsBoundary {
     fun navigateToTootDetails(id: String)
 
     fun pop()

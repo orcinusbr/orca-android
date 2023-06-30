@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.ui.composable
+package com.jeanbarrossilva.mastodonte.platform.ui.core.composable
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,16 +14,18 @@ import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
  *
  * @see Content
  **/
-internal abstract class ComposableFragment : Fragment() {
+abstract class ComposableFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return ComposeView(requireContext()).apply {
-            setContent {
-                MastodonteTheme {
-                    Content()
+        return context?.let {
+            ComposeView(it).apply {
+                setContent {
+                    MastodonteTheme {
+                        this@ComposableFragment.Content()
+                    }
                 }
             }
         }

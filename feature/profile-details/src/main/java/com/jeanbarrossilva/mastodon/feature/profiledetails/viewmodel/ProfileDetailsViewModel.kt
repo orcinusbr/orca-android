@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
-class ProfileDetailsViewModel private constructor(
+internal class ProfileDetailsViewModel private constructor(
     application: Application,
     repository: ProfileRepository,
     id: String
@@ -34,10 +34,10 @@ class ProfileDetailsViewModel private constructor(
         .mutableStateIn(viewModelScope)
     private val tootsIndexFlow = MutableStateFlow(0)
 
-    internal val detailsLoadableFlow = detailsLoadableMutableFlow.asStateFlow()
+    val detailsLoadableFlow = detailsLoadableMutableFlow.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    internal val tootsLoadableFlow = tootsIndexFlow
+    val tootsLoadableFlow = tootsIndexFlow
         .flatMapConcat { tootsIndex ->
             profileFlow.flatMapConcat {
                 it.getToots(tootsIndex).map(List<Toot>::serialize)
@@ -45,17 +45,17 @@ class ProfileDetailsViewModel private constructor(
         }
         .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
 
-    internal fun share(url: URL) {
+    fun share(url: URL) {
         getApplication<Application>().share("$url")
     }
 
-    internal fun favorite(tootID: String) {
+    fun favorite(tootID: String) {
     }
 
-    internal fun reblog(tootID: String) {
+    fun reblog(tootID: String) {
     }
 
-    internal fun loadTootsAt(index: Int) {
+    fun loadTootsAt(index: Int) {
         tootsIndexFlow.value = index
     }
 

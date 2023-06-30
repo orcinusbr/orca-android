@@ -19,7 +19,7 @@ internal open class MastodonteApplication : Application(), Launchable {
         @Suppress("DiscouragedApi")
         markAsLaunched()
 
-        inject()
+        setUpInjection()
         ApplicationStarter.initialize(this, true)
     }
 
@@ -34,10 +34,9 @@ internal open class MastodonteApplication : Application(), Launchable {
         }
     }
 
-    private fun inject() {
+    private fun setUpInjection() {
         startKoin {
             androidContext(this@MastodonteApplication)
-            modules(MastodonteModule())
         }
     }
 
