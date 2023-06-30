@@ -18,7 +18,6 @@ object Dependencies {
         "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.COROUTINES}"
     const val FRAGMENT = "androidx.fragment:fragment-ktx:${Versions.FRAGMENT}"
     const val KOIN = "io.insert-koin:koin-android:${Versions.KOIN}"
-    const val KOIN_COMPOSE = "io.insert-koin:koin-androidx-compose:${Versions.KOIN_COMPOSE}"
     const val LIFECYCLE_VIEWMODEL =
         "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.LIFECYCLE}"
     const val LOADABLE = "com.jeanbarrossilva.loadable:loadable:${Versions.LOADABLE}"

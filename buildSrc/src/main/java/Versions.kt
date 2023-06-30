@@ -15,7 +15,6 @@ object Versions {
     const val LOADABLE = "1.6.3"
     const val GRADLE = "8.0.2"
     const val KOIN = "3.4.2"
-    const val KOIN_COMPOSE = "3.4.4"
     const val KOTLIN = "1.8.21"
     const val KSP = "1.8.21-1.0.11"
     const val MATERIAL = "1.9.0"
