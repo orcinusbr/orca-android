@@ -100,7 +100,7 @@ fun MastodonteTheme(content: @Composable () -> Unit) {
     }
 
     /*
-     * Since MdcTheme doesn't work with previews' default current local Context theme (because it
+     * Since Mdc3Theme doesn't work with previews' default current local Context theme (because it
      * isn't a Material 3 one), it's replaced by a MastodonContextThemeWrapper, that has the same
      * configurations as LocalContext.current except for the theme.
      *
