@@ -4,12 +4,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
-import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.backwardsNavigationArrow
+import java.io.Serializable
 
 /**
  * Defines the availability of backwards navigation.
@@ -17,11 +14,11 @@ import com.jeanbarrossilva.mastodonte.platform.theme.extensions.backwardsNavigat
  * @see Unavailable
  * @see Available
  **/
-internal sealed class BackwardsNavigationState {
+sealed class BackwardsNavigationState : Serializable {
     /** Defines that backwards navigation is not available. **/
     object Unavailable : BackwardsNavigationState() {
         @Composable
-        override fun Content(modifier: Modifier) {
+        override fun NavigationButton(modifier: Modifier) {
         }
     }
 
@@ -31,7 +28,7 @@ internal sealed class BackwardsNavigationState {
      **/
     abstract class Available private constructor() : BackwardsNavigationState() {
         @Composable
-        override fun Content(modifier: Modifier) {
+        override fun NavigationButton(modifier: Modifier) {
             IconButton(onClick = ::navigateBackwards) {
                 Icon(
                     MastodonteTheme.Icons.backwardsNavigationArrow,
@@ -66,29 +63,11 @@ internal sealed class BackwardsNavigationState {
      * @param modifier [Modifier] to be applied to the underlying [Composable].
      **/
     @Composable
-    internal abstract fun Content(modifier: Modifier)
-
-    companion object {
-        /**
-         * Creates a [BackwardsNavigationState] with the [navController], with its availability
-         * depending on whether the current [NavDestination] is at the root of the [NavGraph].
-         *
-         * @param navController [NavController] with which the [BackwardsNavigationState] will be
-         * created.
-         **/
-        fun from(navController: NavController): BackwardsNavigationState {
-            val isAtRoot = navController.currentDestination?.hierarchy?.count() == 1
-            return if (isAtRoot) {
-                Unavailable
-            } else {
-                Available.createInstance(navController::popBackStack)
-            }
-        }
-    }
+    internal abstract fun NavigationButton(modifier: Modifier)
 }
 
 /** [Composable] that represents the action that can be performed. **/
 @Composable
-internal fun BackwardsNavigationState.Content() {
-    Content(Modifier)
+internal fun BackwardsNavigationState.NavigationButton() {
+    NavigationButton(Modifier)
 }

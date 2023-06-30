@@ -5,12 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/container_view"
-        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/mastodonte" />
+        android:layout_height="match_parent" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation_view"

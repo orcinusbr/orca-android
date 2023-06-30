@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.ui.composable
+package com.jeanbarrossilva.mastodonte.platform.ui.core.composable
 
 import android.os.Bundle
 import android.view.LayoutInflater

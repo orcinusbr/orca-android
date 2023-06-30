@@ -1,6 +1,5 @@
 plugins {
     id("com.android.application")
-    id("androidx.navigation.safeargs")
     id("com.google.devtools.ksp") version Versions.KSP
     id("kotlin-android")
 }
@@ -58,9 +57,8 @@ dependencies {
     implementation(project(":platform:ui"))
     implementation(Dependencies.APPCOMPAT)
     implementation(Dependencies.CONSTRAINTLAYOUT)
+    implementation(Dependencies.FRAGMENT)
     implementation(Dependencies.KOIN)
     implementation(Dependencies.MATERIAL)
-    implementation(Dependencies.NAVIGATION_FRAGMENT)
-    implementation(Dependencies.NAVIGATION_UI)
     implementation(Dependencies.TIME4J)
 }

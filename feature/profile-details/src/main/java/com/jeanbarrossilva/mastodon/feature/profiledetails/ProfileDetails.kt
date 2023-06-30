@@ -42,7 +42,7 @@ import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.serialize
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.mastodon.feature.profiledetails.navigation.BackwardsNavigationState
-import com.jeanbarrossilva.mastodon.feature.profiledetails.navigation.Content
+import com.jeanbarrossilva.mastodon.feature.profiledetails.navigation.NavigationButton
 import com.jeanbarrossilva.mastodon.feature.profiledetails.ui.Header
 import com.jeanbarrossilva.mastodon.feature.profiledetails.viewmodel.ProfileDetailsViewModel
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
@@ -165,7 +165,7 @@ internal sealed class ProfileDetails : Serializable {
 internal fun ProfileDetails(
     viewModel: ProfileDetailsViewModel,
     navigator: ProfileDetailsBoundary,
-    backwardsNavigationState: BackwardsNavigationState,
+    origin: BackwardsNavigationState,
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
@@ -180,7 +180,7 @@ internal fun ProfileDetails(
         onReblog = viewModel::reblog,
         navigator::navigateToTootDetails,
         onNext = viewModel::loadTootsAt,
-        backwardsNavigationState,
+        origin,
         navigator::navigateToWebpage,
         onShare = viewModel::share,
         onBottomAreaAvailabilityChangeListener,
@@ -197,7 +197,7 @@ private fun ProfileDetails(
     onReblog: (tootID: String) -> Unit,
     onNavigationToTootDetails: (id: String) -> Unit,
     onNext: (index: Int) -> Unit,
-    backwardsNavigationState: BackwardsNavigationState,
+    origin: BackwardsNavigationState,
     onNavigateToWebpage: (URL) -> Unit,
     onShare: (URL) -> Unit,
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
@@ -206,7 +206,7 @@ private fun ProfileDetails(
     when (detailsLoadable) {
         is Loadable.Loading ->
             ProfileDetails(
-                backwardsNavigationState,
+                origin,
                 onBottomAreaAvailabilityChangeListener,
                 modifier
             )
@@ -219,7 +219,7 @@ private fun ProfileDetails(
                 onReblog,
                 onNavigationToTootDetails,
                 onNext,
-                backwardsNavigationState,
+                origin,
                 onNavigateToWebpage,
                 onShare,
                 onBottomAreaAvailabilityChangeListener,
@@ -232,7 +232,7 @@ private fun ProfileDetails(
 
 @Composable
 private fun ProfileDetails(
-    backwardsNavigationState: BackwardsNavigationState,
+    origin: BackwardsNavigationState,
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
@@ -243,7 +243,7 @@ private fun ProfileDetails(
         toots = { loadingTootPreviews() },
         onNext = { },
         floatingActionButton = { },
-        backwardsNavigationState,
+        origin,
         onBottomAreaAvailabilityChangeListener,
         modifier
     )
@@ -258,7 +258,7 @@ private fun ProfileDetails(
     onReblog: (tootID: String) -> Unit,
     onNavigationToTootDetails: (id: String) -> Unit,
     onNext: (index: Int) -> Unit,
-    backwardsNavigationState: BackwardsNavigationState,
+    origin: BackwardsNavigationState,
     onNavigateToWebpage: (URL) -> Unit,
     onShare: (URL) -> Unit,
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
@@ -341,7 +341,7 @@ private fun ProfileDetails(
         },
         onNext,
         floatingActionButton = { details.FloatingActionButton(navigator) },
-        backwardsNavigationState,
+        origin,
         onBottomAreaAvailabilityChangeListener,
         modifier
     )
@@ -355,7 +355,7 @@ private fun ProfileDetails(
     toots: LazyListScope.() -> Unit,
     onNext: (index: Int) -> Unit,
     floatingActionButton: @Composable () -> Unit,
-    backwardsNavigationState: BackwardsNavigationState,
+    origin: BackwardsNavigationState,
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
@@ -400,7 +400,7 @@ private fun ProfileDetails(
             @OptIn(ExperimentalMaterial3Api::class)
             CenterAlignedTopAppBar(
                 title = title,
-                navigationIcon = { backwardsNavigationState.Content() },
+                navigationIcon = { origin.NavigationButton() },
                 actions = actions
             )
         }

@@ -19,7 +19,6 @@ object Versions {
     const val KOTLIN = "1.8.21"
     const val KSP = "1.8.21-1.0.11"
     const val MATERIAL = "1.9.0"
-    const val NAVIGATION = "2.6.0"
     const val TIME4A = "4.8-2021a"
     const val VIEWMODEL = "2.6.1"
 

@@ -1,31 +1,27 @@
 package com.jeanbarrossilva.mastodonte.app
 
 import android.os.Bundle
+import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
 import com.jeanbarrossilva.mastodonte.app.databinding.ActivityMastodonteBinding
 import com.jeanbarrossilva.mastodonte.app.feature.profiledetails.ProfileDetailsModule
 import com.jeanbarrossilva.mastodonte.app.feature.tootdetails.TootDetailsModule
+import com.jeanbarrossilva.mastodonte.app.navigation.BottomNavigationItemNavigatorFactory
 import com.jeanbarrossilva.mastodonte.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import org.koin.core.context.loadKoinModules
 
 internal class MastodonteActivity : AppCompatActivity(), OnBottomAreaAvailabilityChangeListener {
     private var binding: ActivityMastodonteBinding? = null
-
-    private val navController
-        get() = supportFragmentManager
-            .findFragmentById(R.id.container_view)
-            .let { it as NavHostFragment }
-            .navController
+    private val containerID = R.id.container
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         binding = ActivityMastodonteBinding.inflate(layoutInflater)
         setContentView(binding?.root)
-        binding?.bottomNavigationView?.setupWithNavController(navController)
+        navigateOnBottomNavigationItemSelection()
+        navigateToDefaultDestination()
         inject()
     }
 
@@ -38,11 +34,29 @@ internal class MastodonteActivity : AppCompatActivity(), OnBottomAreaAvailabilit
         binding?.bottomNavigationView?.setTonallyElevated(!isAvailable)
     }
 
+    private fun navigateOnBottomNavigationItemSelection() {
+        binding?.bottomNavigationView?.setOnItemSelectedListener {
+            navigateTo(it.itemId)
+            true
+        }
+    }
+
+    private fun navigateTo(@IdRes itemID: Int) {
+        BottomNavigationItemNavigatorFactory.create().navigate(
+            supportFragmentManager,
+            containerID,
+            itemID
+        )
+    }
+
+    private fun navigateToDefaultDestination() {
+        binding?.bottomNavigationView?.selectedItemId = R.id.profile_details
+    }
+
     private fun inject() {
-        val mastodonteModule =
-            MastodonteModule(navController, onBottomAreaAvailabilityChangeListener = this)
-        val profileDetailsModule = ProfileDetailsModule()
-        val tootDetailsModule = TootDetailsModule()
+        val mastodonteModule = MastodonteModule(onBottomAreaAvailabilityChangeListener = this)
+        val profileDetailsModule = ProfileDetailsModule(supportFragmentManager, containerID)
+        val tootDetailsModule = TootDetailsModule(supportFragmentManager, containerID)
         val modules = listOf(mastodonteModule, profileDetailsModule, tootDetailsModule)
         loadKoinModules(modules)
     }
