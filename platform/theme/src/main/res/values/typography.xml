@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="font_weight_light">300</integer>
+    <integer name="font_weight_normal">400</integer>
+    <integer name="font_weight_medium">500</integer>
+    <integer name="font_weight_semi_bold">600</integer>
+    <integer name="font_weight_bold">700</integer>
+    <integer name="font_weight_extra_bold">800</integer>
+    <integer name="font_weight_black">900</integer>
+
+    <style
+        name="Theme.Mastodonte.Typography.DisplayLarge"
+        parent="TextAppearance.Material3.DisplayLarge">
+        <item name="android:textFontWeight">@integer/font_weight_black</item>
+    </style>
+
+    <style
+        name="Theme.Mastodonte.Typography.HeadlineLarge"
+        parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="android:textFontWeight">@integer/font_weight_black</item>
+    </style>
+
+    <style
+        name="Theme.Mastodonte.Typography.TitleLarge"
+        parent="TextAppearance.Material3.TitleLarge">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textFontWeight">@integer/font_weight_extra_bold</item>
+    </style>
+
+    <style
+        name="Theme.Mastodonte.Typography.TitleSmall"
+        parent="TextAppearance.Material3.TitleSmall">
+        <item name="android:textColor">?android:textColorSecondary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textFontWeight">@integer/font_weight_bold</item>
+    </style>
+
+    <style
+        name="Theme.Mastodonte.Typography.BodyLarge"
+        parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textFontWeight">@integer/font_weight_bold</item>
+    </style>
+
+    <style
+        name="Theme.Mastodonte.Typography.BodyMedium"
+        parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style
+        name="Theme.Mastodonte.Typography.BodySmall"
+        parent="TextAppearance.Material3.BodySmall">
+        <item name="android:textColor">?android:textColorTertiary</item>
+        <item name="android:textFontWeight">@integer/font_weight_medium</item>
+    </style>
+</resources>
