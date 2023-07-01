@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -38,10 +39,13 @@ import com.jeanbarrossilva.mastodonte.platform.theme.configuration.LocalOverlays
 import com.jeanbarrossilva.mastodonte.platform.theme.configuration.LocalSpacings
 import com.jeanbarrossilva.mastodonte.platform.theme.configuration.Overlays
 import com.jeanbarrossilva.mastodonte.platform.theme.configuration.Spacings
+import com.jeanbarrossilva.mastodonte.platform.theme.extensions.LocalTypography
+import com.jeanbarrossilva.mastodonte.platform.theme.extensions.Rubik
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.bottom
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.end
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.start
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.top
+import com.jeanbarrossilva.mastodonte.platform.theme.extensions.with
 
 /** Height of [ColorSchemePreview]. **/
 private const val COLOR_SCHEME_PREVIEW_HEIGHT = 1_868
@@ -88,14 +92,29 @@ object MastodonteTheme {
  **/
 @Composable
 fun MastodonteTheme(content: @Composable () -> Unit) {
+    val view = LocalView.current
+    val isPreviewing = remember(view) { view.isInEditMode }
     val themedContent = @Composable {
         Mdc3Theme(setTextColors = true, setDefaultFontFamily = true) {
             CompositionLocalProvider(
                 LocalOverlays provides Overlays.Default,
                 LocalSpacings provides Spacings.default,
-                LocalTextStyle provides MastodonteTheme.typography.bodyMedium,
-                content = content
-            )
+                LocalTextStyle provides MastodonteTheme.typography.bodyMedium
+            ) {
+                /*
+                 * Mdc3Theme doesn't apply the font family specified in XML when previewing, so it
+                 * has to be set here. This isn't ideal because it requires us to do so twice, but
+                 * isn't a huge deal also, since it (hopefully) won't be changed that often.
+                 */
+                if (isPreviewing) {
+                    CompositionLocalProvider(
+                        LocalTypography provides LocalTypography.current.with(FontFamily.Rubik),
+                        content = content
+                    )
+                } else {
+                    content()
+                }
+            }
         }
     }
 
@@ -109,7 +128,7 @@ fun MastodonteTheme(content: @Composable () -> Unit) {
      *
      * https://issuetracker.google.com/issues/209652365
      */
-    if (LocalView.current.isInEditMode) {
+    if (isPreviewing) {
         CompositionLocalProvider(
             LocalContext provides with(LocalContext.current) {
                 remember {

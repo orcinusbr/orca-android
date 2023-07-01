@@ -9,7 +9,7 @@ import androidx.compose.ui.text.font.FontFamily
  *
  * @param fontFamily [FontFamily] to be applied.
  **/
-internal infix fun Typography.with(fontFamily: FontFamily): Typography {
+internal fun Typography.with(fontFamily: FontFamily): Typography {
     return copy(
         displayLarge.copy(fontFamily = fontFamily),
         displayMedium.copy(fontFamily = fontFamily),
