@@ -3,6 +3,7 @@ object Dependencies {
         "com.google.accompanist:accompanist-placeholder-material:${Versions.ACCOMPANIST}"
     const val ACCOMPANIST_THEME_ADAPTER_MATERIAL_3 =
         "com.google.accompanist:accompanist-themeadapter-material3:${Versions.ACCOMPANIST}"
+    const val ACTIVITY = "androidx.activity:activity-ktx:${Versions.ACTIVITY}"
     const val APPCOMPAT = "androidx.appcompat:appcompat:${Versions.APPCOMPAT}"
     const val COIL_COMPOSE = "io.coil-kt:coil-compose:${Versions.COIL}"
 
@@ -32,6 +33,8 @@ object Dependencies {
     const val LOADABLE_PLACEHOLDER_TEST =
         "com.jeanbarrossilva.loadable:loadable-placeholder-test:${Versions.LOADABLE}"
     const val MATERIAL = "com.google.android.material:material:${Versions.MATERIAL}"
+    const val TEST_CORE = "androidx.test:core-ktx:${Versions.TEST_CORE}"
+    const val TEST_ESPRESSO_CORE = "androidx.test.espresso:espresso-core:${Versions.TEST_ESPRESSO}"
     const val TIME4J = "net.time4j:time4j-android:${Versions.TIME4A}"
     const val VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.VIEWMODEL}"
 }

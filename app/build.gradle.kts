@@ -49,6 +49,12 @@ android {
 }
 
 dependencies {
+    androidTestImplementation(project(":platform:ui-test"))
+    androidTestImplementation(Dependencies.ACTIVITY)
+    androidTestImplementation(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
+    androidTestImplementation(Dependencies.TEST_CORE)
+    androidTestImplementation(Dependencies.TEST_ESPRESSO_CORE)
+
     implementation(project(":core:sample"))
     implementation(project(":feature:profile-details"))
     implementation(project(":feature:toot-details"))

@@ -2,6 +2,7 @@ import org.gradle.api.JavaVersion
 
 object Versions {
     const val ACCOMPANIST = "0.31.3-beta"
+    const val ACTIVITY = "1.7.0"
     const val APPCOMPAT = "1.6.1"
     const val COIL = "2.4.0"
     const val COMPOSE_COMPILER = "1.4.7"
@@ -18,6 +19,8 @@ object Versions {
     const val KOTLIN = "1.8.21"
     const val KSP = "1.8.21-1.0.11"
     const val MATERIAL = "1.9.0"
+    const val TEST_CORE = "1.5.0"
+    const val TEST_ESPRESSO = "3.5.0"
     const val TIME4A = "4.8-2021a"
     const val VIEWMODEL = "2.6.1"
 
