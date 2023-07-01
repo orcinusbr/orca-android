@@ -1,6 +1,8 @@
 object Dependencies {
     const val ACCOMPANIST_PLACEHOLDER_MATERIAL =
         "com.google.accompanist:accompanist-placeholder-material:${Versions.ACCOMPANIST}"
+    const val ACCOMPANIST_THEME_ADAPTER_MATERIAL_3 =
+        "com.google.accompanist:accompanist-themeadapter-material3:${Versions.ACCOMPANIST}"
     const val APPCOMPAT = "androidx.appcompat:appcompat:${Versions.APPCOMPAT}"
     const val COIL_COMPOSE = "io.coil-kt:coil-compose:${Versions.COIL}"
 

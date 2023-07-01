@@ -1,23 +1,39 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <style name="Theme.Mastodonte" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:colorBackground">@android:color/black</item>
+        <item name="android:colorControlNormal">@android:color/white</item>
         <item name="android:fontFamily">@font/rubik</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item
-            name="android:windowLightNavigationBar"
-            tools:targetApi="27">
-            true
-        </item>
-        <item name="colorPrimaryContainer">#1A1A1A</item>
+        <item name="android:textColorPrimary">@android:color/primary_text_dark</item>
+        <item name="android:textColorPrimaryInverse">@android:color/primary_text_light</item>
+        <item name="android:textColorSecondary">@android:color/secondary_text_dark</item>
+        <item name="android:textColorSecondaryInverse">@android:color/secondary_text_light</item>
+        <item name="android:textColorTertiary">@android:color/tertiary_text_dark</item>
+        <item name="android:textColorTertiaryInverse">@android:color/tertiary_text_light</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="colorOnBackground">@android:color/white</item>
         <item name="colorOnPrimaryContainer">#B388FF</item>
-        <item name="backgroundColor">@android:color/black</item>
+        <item name="colorPrimaryContainer">#1A1A1A</item>
         <item name="colorSurface">#252525</item>
+        <item name="colorOnSurface">@android:color/white</item>
         <item name="colorSurfaceVariant">#202020</item>
         <item name="colorOnSurfaceVariant">#F5F5F5</item>
         <item name="colorError">#D32F2F</item>
         <item name="colorErrorContainer">#D32F2F</item>
         <item name="colorOnErrorContainer">@android:color/white</item>
-        <item name="colorOutline">?android:attr/textColorTertiaryInverse</item>
+        <item name="colorOutline">?android:attr/textColorTertiary</item>
         <item name="colorOutlineVariant">#1A1A1A</item>
+        <item name="textAppearanceDisplayLarge">
+            @style/Theme.Mastodonte.Typography.DisplayLarge
+        </item>
+        <item name="textAppearanceHeadlineLarge">
+            @style/Theme.Mastodonte.Typography.HeadlineLarge
+        </item>
+        <item name="textAppearanceTitleLarge">@style/Theme.Mastodonte.Typography.TitleLarge</item>
+        <item name="textAppearanceTitleSmall">@style/Theme.Mastodonte.Typography.TitleSmall</item>
+        <item name="textAppearanceBodyLarge">@style/Theme.Mastodonte.Typography.BodyLarge</item>
+        <item name="textAppearanceBodyMedium">@style/Theme.Mastodonte.Typography.BodyMedium</item>
+        <item name="textAppearanceBodySmall">@style/Theme.Mastodonte.Typography.BodySmall</item>
     </style>
 </resources>
