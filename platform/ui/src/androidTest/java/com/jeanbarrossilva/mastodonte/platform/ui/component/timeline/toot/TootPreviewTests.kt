@@ -15,6 +15,26 @@ internal class TootPreviewTests {
     val composeRule = createComposeRule()
 
     @Test
+    fun isShownWhenLoading() {
+        composeRule.setContent {
+            MastodonteTheme {
+                TootPreview()
+            }
+        }
+        composeRule.onTootPreview().assertIsDisplayed()
+    }
+
+    @Test
+    fun isShownWhenLoaded() {
+        composeRule.setContent {
+            MastodonteTheme {
+                TestTootPreview()
+            }
+        }
+        composeRule.onTootPreview().assertIsDisplayed()
+    }
+
+    @Test
     fun nameIsLoadingWhenLoading() {
         composeRule.setContent {
             MastodonteTheme {

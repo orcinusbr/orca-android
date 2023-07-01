@@ -52,6 +52,9 @@ import java.net.URL
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
+/** Tag that identifies a [TootPreview] for testing purposes. **/
+const val TOOT_PREVIEW_TAG = "toot-preview"
+
 /** Tag that identifies a [TootPreview]'s name for testing purposes. **/
 const val TOOT_PREVIEW_NAME_TAG = "toot-preview-name"
 
@@ -269,7 +272,7 @@ private fun TootPreview(
     @OptIn(ExperimentalMaterial3Api::class)
     Card(
         onClick ?: { },
-        modifier,
+        modifier.testTag(TOOT_PREVIEW_TAG),
         shape = RectangleShape,
         colors = CardDefaults.cardColors(containerColor = Color.Transparent),
         interactionSource = interactionSource

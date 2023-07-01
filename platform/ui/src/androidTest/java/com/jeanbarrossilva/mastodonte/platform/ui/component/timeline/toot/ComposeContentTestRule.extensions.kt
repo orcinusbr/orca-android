@@ -4,6 +4,11 @@ import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.onNodeWithTag
 
+/** [SemanticsNodeInteraction] of a [TootPreview] node. **/
+internal fun ComposeContentTestRule.onTootPreview(): SemanticsNodeInteraction {
+    return onNodeWithTag(TOOT_PREVIEW_TAG)
+}
+
 /** [SemanticsNodeInteraction] of [TootPreview]'s body node. **/
 internal fun ComposeContentTestRule.onTootPreviewBody(): SemanticsNodeInteraction {
     return onNodeWithTag(TOOT_PREVIEW_BODY_TAG, useUnmergedTree = true)
