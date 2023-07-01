@@ -17,7 +17,7 @@ import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.mastodon.feature.profiledetails.ProfileDetails
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
-import com.jeanbarrossilva.mastodonte.platform.ui.component.LargeAvatar
+import com.jeanbarrossilva.mastodonte.platform.ui.component.avatar.LargeAvatar
 import com.jeanbarrossilva.mastodonte.platform.ui.html.HtmlAnnotatedString
 
 @Composable

@@ -37,7 +37,7 @@ import com.jeanbarrossilva.mastodonte.platform.ui.AccountFormatter
 import com.jeanbarrossilva.mastodonte.platform.ui.Samples
 import com.jeanbarrossilva.mastodonte.platform.ui.component.FavoriteIcon
 import com.jeanbarrossilva.mastodonte.platform.ui.component.FavoriteIconDefaults
-import com.jeanbarrossilva.mastodonte.platform.ui.component.SmallAvatar
+import com.jeanbarrossilva.mastodonte.platform.ui.component.avatar.SmallAvatar
 import com.jeanbarrossilva.mastodonte.platform.ui.html.HtmlAnnotatedString
 import java.net.URL
 import java.time.ZoneId

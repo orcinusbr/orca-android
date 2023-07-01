@@ -55,4 +55,8 @@ dependencies {
     implementation(Dependencies.LOADABLE_PLACEHOLDER)
     implementation(Dependencies.MATERIAL)
     implementation(Dependencies.TIME4J)
+
+    androidTestImplementation(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
+    androidTestImplementation(Dependencies.COMPOSE_UI_TEST_MANIFEST)
+    androidTestImplementation(Dependencies.LOADABLE_PLACEHOLDER_TEST)
 }
