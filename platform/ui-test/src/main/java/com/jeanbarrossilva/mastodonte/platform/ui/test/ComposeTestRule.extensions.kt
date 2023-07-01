@@ -14,6 +14,6 @@ fun ComposeTestRule.onTootPreviews(): SemanticsNodeInteractionCollection {
 }
 
 /** [SemanticsNodeInteraction] of a [TootPreview] node. **/
-internal fun ComposeTestRule.onTootPreview(): SemanticsNodeInteraction {
+fun ComposeTestRule.onTootPreview(): SemanticsNodeInteraction {
     return onNodeWithTag(TOOT_PREVIEW_TAG)
 }

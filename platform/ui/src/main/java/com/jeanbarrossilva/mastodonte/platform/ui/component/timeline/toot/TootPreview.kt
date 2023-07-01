@@ -52,29 +52,29 @@ import java.net.URL
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-/** Tag that identifies a [TootPreview] for testing purposes. **/
-const val TOOT_PREVIEW_TAG = "toot-preview"
-
 /** Tag that identifies a [TootPreview]'s name for testing purposes. **/
-const val TOOT_PREVIEW_NAME_TAG = "toot-preview-name"
+internal const val TOOT_PREVIEW_NAME_TAG = "toot-preview-name"
 
 /** Tag that identifies [TootPreview]'s metadata for testing purposes. **/
-const val TOOT_PREVIEW_METADATA_TAG = "toot-preview-metadata"
+internal const val TOOT_PREVIEW_METADATA_TAG = "toot-preview-metadata"
 
 /** Tag that identifies a [TootPreview]'s body for testing purposes. **/
-const val TOOT_PREVIEW_BODY_TAG = "toot-preview-body"
+internal const val TOOT_PREVIEW_BODY_TAG = "toot-preview-body"
 
 /** Tag that identifies a [TootPreview]'s comment count stat for testing purposes. **/
-const val TOOT_PREVIEW_COMMENT_COUNT_STAT_TAG = "toot-preview-comments-stat"
+internal const val TOOT_PREVIEW_COMMENT_COUNT_STAT_TAG = "toot-preview-comments-stat"
 
 /** Tag that identifies a [TootPreview]'s favorite count stat for testing purposes. **/
-const val TOOT_PREVIEW_FAVORITE_COUNT_STAT_TAG = "toot-preview-favorites-stat"
+internal const val TOOT_PREVIEW_FAVORITE_COUNT_STAT_TAG = "toot-preview-favorites-stat"
 
 /** Tag that identifies a [TootPreview]'s reblog count stat for testing purposes. **/
-const val TOOT_PREVIEW_REBLOG_COUNT_STAT_TAG = "toot-preview-reblogs-stat"
+internal const val TOOT_PREVIEW_REBLOG_COUNT_STAT_TAG = "toot-preview-reblogs-stat"
 
 /** Tag that identifies a [TootPreview]'s share action for testing purposes. **/
-const val TOOT_PREVIEW_SHARE_ACTION_TAG = "toot-preview-share-action"
+internal const val TOOT_PREVIEW_SHARE_ACTION_TAG = "toot-preview-share-action"
+
+/** Tag that identifies a [TootPreview] for testing purposes. **/
+const val TOOT_PREVIEW_TAG = "toot-preview"
 
 /** [Modifier] to be applied to a [TootPreview]'s name. **/
 private val nameModifier = Modifier.testTag(TOOT_PREVIEW_NAME_TAG)
