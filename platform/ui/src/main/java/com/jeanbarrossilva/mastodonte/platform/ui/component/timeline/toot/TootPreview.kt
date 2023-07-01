@@ -23,14 +23,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
+import com.jeanbarrossilva.loadable.placeholder.test.Loading
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Account
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.core.profile.toot.at
+import com.jeanbarrossilva.mastodonte.core.sample.profile.toot.sample
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.EmptyMutableInteractionSource
 import com.jeanbarrossilva.mastodonte.platform.ui.AccountFormatter
@@ -38,10 +43,44 @@ import com.jeanbarrossilva.mastodonte.platform.ui.Samples
 import com.jeanbarrossilva.mastodonte.platform.ui.component.FavoriteIcon
 import com.jeanbarrossilva.mastodonte.platform.ui.component.FavoriteIconDefaults
 import com.jeanbarrossilva.mastodonte.platform.ui.component.avatar.SmallAvatar
+import com.jeanbarrossilva.mastodonte.platform.ui.component.avatar.provider.AvatarImageProvider
+import com.jeanbarrossilva.mastodonte.platform.ui.component.avatar.provider.rememberAvatarImageProvider
+import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.time.RelativeTimeProvider
+import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.time.rememberRelativeTimeProvider
 import com.jeanbarrossilva.mastodonte.platform.ui.html.HtmlAnnotatedString
 import java.net.URL
 import java.time.ZoneId
 import java.time.ZonedDateTime
+
+/** Tag that identifies a [TootPreview]'s name for testing purposes. **/
+const val TOOT_PREVIEW_NAME_TAG = "toot-preview-name"
+
+/** Tag that identifies [TootPreview]'s metadata for testing purposes. **/
+const val TOOT_PREVIEW_METADATA_TAG = "toot-preview-metadata"
+
+/** Tag that identifies a [TootPreview]'s body for testing purposes. **/
+const val TOOT_PREVIEW_BODY_TAG = "toot-preview-body"
+
+/** Tag that identifies a [TootPreview]'s comment count stat for testing purposes. **/
+const val TOOT_PREVIEW_COMMENT_COUNT_STAT_TAG = "toot-preview-comments-stat"
+
+/** Tag that identifies a [TootPreview]'s favorite count stat for testing purposes. **/
+const val TOOT_PREVIEW_FAVORITE_COUNT_STAT_TAG = "toot-preview-favorites-stat"
+
+/** Tag that identifies a [TootPreview]'s reblog count stat for testing purposes. **/
+const val TOOT_PREVIEW_REBLOG_COUNT_STAT_TAG = "toot-preview-reblogs-stat"
+
+/** Tag that identifies a [TootPreview]'s share action for testing purposes. **/
+const val TOOT_PREVIEW_SHARE_ACTION_TAG = "toot-preview-share-action"
+
+/** [Modifier] to be applied to a [TootPreview]'s name. **/
+private val nameModifier = Modifier.testTag(TOOT_PREVIEW_NAME_TAG)
+
+/** [Modifier] to be applied to [TootPreview]'s metadata. **/
+private val metadataModifier = Modifier.testTag(TOOT_PREVIEW_METADATA_TAG)
+
+/** [Modifier] to be applied to a [TootPreview]'s body. **/
+private val bodyModifier = Modifier.testTag(TOOT_PREVIEW_BODY_TAG)
 
 /**
  * Information to be displayed on a [Toot]'s preview.
@@ -66,9 +105,6 @@ data class TootPreview(
     private val favoriteCount: Int,
     private val reblogCount: Int
 ) {
-    /** Displayable username of the author. **/
-    val username = AccountFormatter.username(account)
-
     /** Formatted, displayable version of [commentCount]. **/
     val formattedCommentCount = commentCount.formatted
 
@@ -78,8 +114,17 @@ data class TootPreview(
     /** Formatted, displayable version of [reblogCount]. **/
     val formattedReblogCount = reblogCount.formatted
 
-    /** How much time has passed since publication. **/
-    val timeSincePublication = publicationDateTime.relative
+    /**
+     * Gets information about the author and how much time it's been since it was published.
+     *
+     * @param relativeTimeProvider [RelativeTimeProvider] for providing relative time of
+     * publication.
+     **/
+    fun getMetadata(relativeTimeProvider: RelativeTimeProvider): String {
+        val username = AccountFormatter.username(account)
+        val timeSincePublication = relativeTimeProvider.provide(publicationDateTime)
+        return "$username • $timeSincePublication"
+    }
 
     companion object {
         /** [sample]'s [commentCount]. **/
@@ -103,7 +148,7 @@ data class TootPreview(
             Samples.avatarURL,
             Samples.NAME,
             sampleAccount,
-            body = HtmlAnnotatedString("<p><b>Hello</b>, <i>world</i>!</p>"),
+            body = HtmlAnnotatedString(Toot.sample.content),
             samplePublicationDateTime,
             SAMPLE_COMMENT_COUNT,
             SAMPLE_FAVORITE_COUNT,
@@ -122,11 +167,12 @@ fun LazyListScope.loadingTootPreviews() {
 fun TootPreview(modifier: Modifier = Modifier) {
     TootPreview(
         avatar = { SmallAvatar() },
-        name = { SmallTextualPlaceholder() },
-        metadata = { MediumTextualPlaceholder() },
+        name = { SmallTextualPlaceholder(nameModifier) },
+        metadata = { MediumTextualPlaceholder(metadataModifier) },
         body = {
             Column(
-                verticalArrangement = Arrangement.spacedBy(MastodonteTheme.spacings.extraSmall)
+                bodyModifier.semantics { set(SemanticsProperties.Loading, true) },
+                Arrangement.spacedBy(MastodonteTheme.spacings.extraSmall)
             ) {
                 repeat(3) { LargeTextualPlaceholder() }
                 MediumTextualPlaceholder()
@@ -145,26 +191,33 @@ fun TootPreview(
     onReblog: () -> Unit,
     onShare: () -> Unit,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    avatarImageProvider: AvatarImageProvider = rememberAvatarImageProvider(),
+    relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider()
 ) {
+    val metadata = remember(preview, relativeTimeProvider) {
+        preview.getMetadata(relativeTimeProvider)
+    }
+
     TootPreview(
-        avatar = { SmallAvatar(preview.name, preview.avatarURL) },
-        name = { Text(preview.name) },
-        metadata = {
-            Text("${preview.username} • ${preview.timeSincePublication}")
+        avatar = {
+            SmallAvatar(preview.name, preview.avatarURL, imageProvider = avatarImageProvider)
         },
-        body = { Text(preview.body) },
+        name = { Text(preview.name, nameModifier) },
+        metadata = { Text(metadata, metadataModifier) },
+        body = { Text(preview.body, bodyModifier) },
         stats = {
             Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
                 Stat(
                     MastodonteTheme.Icons.Comment,
                     contentDescription = "Comments",
-                    onClick = { }
+                    onClick = { },
+                    Modifier.testTag(TOOT_PREVIEW_COMMENT_COUNT_STAT_TAG)
                 ) {
                     Text(preview.formattedCommentCount)
                 }
 
-                Stat(onClick = onFavorite) {
+                Stat(onClick = onFavorite, Modifier.testTag(TOOT_PREVIEW_FAVORITE_COUNT_STAT_TAG)) {
                     FavoriteIcon(
                         isActive = false,
                         onToggle = { onFavorite() },
@@ -179,7 +232,8 @@ fun TootPreview(
                 Stat(
                     MastodonteTheme.Icons.Repeat,
                     contentDescription = "Reblogs",
-                    onClick = onReblog
+                    onClick = onReblog,
+                    Modifier.testTag(TOOT_PREVIEW_REBLOG_COUNT_STAT_TAG)
                 ) {
                     Text(preview.formattedReblogCount)
                 }
@@ -187,7 +241,8 @@ fun TootPreview(
                 Stat(
                     MastodonteTheme.Icons.Share,
                     contentDescription = "Share",
-                    onClick = onShare
+                    onClick = onShare,
+                    Modifier.testTag(TOOT_PREVIEW_SHARE_ACTION_TAG)
                 )
             }
         },
