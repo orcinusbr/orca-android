@@ -7,6 +7,7 @@ import com.jeanbarrossilva.loadable.placeholder.test.assertIsLoading
 import com.jeanbarrossilva.loadable.placeholder.test.assertIsNotLoading
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.time.test.TestRelativeTimeProvider
+import com.jeanbarrossilva.mastodonte.platform.ui.test.onTootPreview
 import org.junit.Rule
 import org.junit.Test
 

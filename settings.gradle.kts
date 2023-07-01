@@ -7,5 +7,6 @@ include(
     ":feature:toot-details",
     ":platform:launchable",
     ":platform:theme",
-    ":platform:ui"
+    ":platform:ui",
+    ":platform:ui-test"
 )
