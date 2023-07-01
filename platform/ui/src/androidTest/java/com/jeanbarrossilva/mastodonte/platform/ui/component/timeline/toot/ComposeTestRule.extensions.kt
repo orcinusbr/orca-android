@@ -1,40 +1,40 @@
 package com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot
 
 import androidx.compose.ui.test.SemanticsNodeInteraction
-import androidx.compose.ui.test.junit4.ComposeContentTestRule
+import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithTag
 
 /** [SemanticsNodeInteraction] of [TootPreview]'s body node. **/
-internal fun ComposeContentTestRule.onTootPreviewBody(): SemanticsNodeInteraction {
+internal fun ComposeTestRule.onTootPreviewBody(): SemanticsNodeInteraction {
     return onNodeWithTag(TOOT_PREVIEW_BODY_TAG, useUnmergedTree = true)
 }
 
 /** [SemanticsNodeInteraction] of [TootPreview]'s comment count stat node. **/
-internal fun ComposeContentTestRule.onTootPreviewCommentCountStat(): SemanticsNodeInteraction {
+internal fun ComposeTestRule.onTootPreviewCommentCountStat(): SemanticsNodeInteraction {
     return onNodeWithTag(TOOT_PREVIEW_COMMENT_COUNT_STAT_TAG, useUnmergedTree = true)
 }
 
 /** [SemanticsNodeInteraction] of [TootPreview]'s favorite count stat node. **/
-internal fun ComposeContentTestRule.onTootPreviewFavoriteCountStat(): SemanticsNodeInteraction {
+internal fun ComposeTestRule.onTootPreviewFavoriteCountStat(): SemanticsNodeInteraction {
     return onNodeWithTag(TOOT_PREVIEW_FAVORITE_COUNT_STAT_TAG, useUnmergedTree = true)
 }
 
 /** [SemanticsNodeInteraction] of [TootPreview]'s metadata node. **/
-internal fun ComposeContentTestRule.onTootPreviewMetadata(): SemanticsNodeInteraction {
+internal fun ComposeTestRule.onTootPreviewMetadata(): SemanticsNodeInteraction {
     return onNodeWithTag(TOOT_PREVIEW_METADATA_TAG, useUnmergedTree = true)
 }
 
 /** [SemanticsNodeInteraction] of [TootPreview]'s name node. **/
-internal fun ComposeContentTestRule.onTootPreviewName(): SemanticsNodeInteraction {
+internal fun ComposeTestRule.onTootPreviewName(): SemanticsNodeInteraction {
     return onNodeWithTag(TOOT_PREVIEW_NAME_TAG, useUnmergedTree = true)
 }
 
 /** [SemanticsNodeInteraction] of [TootPreview]'s reblog count stat node. **/
-internal fun ComposeContentTestRule.onTootPreviewReblogCountStat(): SemanticsNodeInteraction {
+internal fun ComposeTestRule.onTootPreviewReblogCountStat(): SemanticsNodeInteraction {
     return onNodeWithTag(TOOT_PREVIEW_REBLOG_COUNT_STAT_TAG, useUnmergedTree = true)
 }
 
 /** [SemanticsNodeInteraction] of [TootPreview]'s share action node. **/
-internal fun ComposeContentTestRule.onTootPreviewShareAction(): SemanticsNodeInteraction {
+internal fun ComposeTestRule.onTootPreviewShareAction(): SemanticsNodeInteraction {
     return onNodeWithTag(TOOT_PREVIEW_SHARE_ACTION_TAG, useUnmergedTree = true)
 }
