@@ -45,5 +45,7 @@ class ProfileDetailsFragment private constructor() : ComposableFragment() {
     companion object {
         private const val ID_KEY = "id"
         private const val BACKWARDS_NAVIGATION_STATE_KEY = "backwards-navigation-state"
+
+        const val TAG = "profile-details-fragment"
     }
 }

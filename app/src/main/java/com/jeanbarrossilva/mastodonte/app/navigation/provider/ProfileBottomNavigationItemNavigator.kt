@@ -11,6 +11,8 @@ import com.jeanbarrossilva.mastodonte.core.sample.profile.sample
 internal class ProfileBottomNavigationItemNavigator(
     override val next: BottomNavigationItemNavigator?
 ) : BottomNavigationItemNavigator() {
+    override val tag = ProfileDetailsFragment.TAG
+
     override fun getFragment(itemID: Int): Fragment? {
         return if (itemID == R.id.profile_details) {
             ProfileDetailsFragment(BackwardsNavigationState.Unavailable, Profile.sample.id)

@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 
 abstract class BottomNavigationItemNavigator {
+    protected abstract val tag: String
     protected abstract val next: BottomNavigationItemNavigator?
 
     fun navigate(fragmentManager: FragmentManager, @IdRes containerID: Int, @IdRes itemID: Int) {
@@ -13,7 +14,7 @@ abstract class BottomNavigationItemNavigator {
             ?: next?.getFragment(itemID)
             ?: throw IllegalArgumentException("No provider for item identified as $itemID.")
         fragmentManager.commit {
-            add(containerID, fragment)
+            add(containerID, fragment, tag)
         }
     }
 

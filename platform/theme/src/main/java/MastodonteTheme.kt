@@ -119,27 +119,18 @@ fun MastodonteTheme(content: @Composable () -> Unit) {
     }
 
     /*
-     * Since Mdc3Theme doesn't work with previews' default current local Context theme (because it
-     * isn't a Material 3 one), it's replaced by a MastodonContextThemeWrapper, that has the same
-     * configurations as LocalContext.current except for the theme.
-     *
-     * This is a known issue that won't be fixed neither by Accompanist nor Android Studio teams,
-     * for they say it's the intended behavior.
-     *
-     * https://issuetracker.google.com/issues/209652365
+     * Since Mdc3Theme doesn't work with non-Material-3-themed Context instances, we replace the
+     * current local one by a MastodonContextThemeWrapper that has the same configurations as
+     * LocalContext.current but with Theme.Mastodonte as its theme.
      */
-    if (isPreviewing) {
-        CompositionLocalProvider(
-            LocalContext provides with(LocalContext.current) {
-                remember {
-                    MastodonteContextThemeWrapper(this)
-                }
-            },
-            content = themedContent
-        )
-    } else {
-        themedContent()
-    }
+    CompositionLocalProvider(
+        LocalContext provides with(LocalContext.current) {
+            remember {
+                MastodonteContextThemeWrapper(this)
+            }
+        },
+        content = themedContent
+    )
 }
 
 /** Preview of [MastodonteTheme]'s [ColorScheme]. **/

@@ -25,20 +25,22 @@ import androidx.fragment.app.commit
 private annotation class Transit
 
 /**
- * Navigates to the given [destination] by adding it to the container.
+ * Navigates to the [Fragment] that's the result of [destination] by adding it to the container.
  *
  * @param containerID ID of the [Fragment] container.
  * @param transition Indicates how the transition will be animated.
+ * @param tag Tag to be assigned to the destination [Fragment].
  * @param destination Callback that provides the [Fragment] that'll get navigated to.
  **/
 fun FragmentManager.navigate(
     @IdRes containerID: Int,
+    tag: String,
     @Transit transition: Int = FragmentTransaction.TRANSIT_FRAGMENT_OPEN,
     destination: () -> Fragment
 ) {
     commit {
         addToBackStack(null)
         setTransition(transition)
-        add(containerID, destination())
+        add(containerID, destination(), tag)
     }
 }

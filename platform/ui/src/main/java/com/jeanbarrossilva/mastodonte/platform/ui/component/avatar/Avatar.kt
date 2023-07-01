@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.ui.component
+package com.jeanbarrossilva.mastodonte.platform.ui.component.avatar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -17,17 +17,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
 import com.jeanbarrossilva.loadable.placeholder.Placeholder
 import com.jeanbarrossilva.loadable.placeholder.PlaceholderDefaults
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.ui.Samples
+import com.jeanbarrossilva.mastodonte.platform.ui.component.avatar.provider.AvatarImageProvider
+import com.jeanbarrossilva.mastodonte.platform.ui.component.avatar.provider.rememberAvatarImageProvider
 import java.io.Serializable
 import java.net.URL
+
+internal const val AVATAR_TAG = "avatar"
 
 private val SmallSize = 42.dp
 private val LargeSize = 128.dp
@@ -49,8 +52,13 @@ fun SmallAvatar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SmallAvatar(name: String, url: URL, modifier: Modifier = Modifier) {
-    Avatar(name, url, SmallSize, smallShape, modifier)
+fun SmallAvatar(
+    name: String,
+    url: URL,
+    modifier: Modifier = Modifier,
+    imageProvider: AvatarImageProvider = rememberAvatarImageProvider()
+) {
+    Avatar(name, url, SmallSize, smallShape, modifier, imageProvider)
 }
 
 @Composable
@@ -59,8 +67,13 @@ fun LargeAvatar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun LargeAvatar(name: String, url: URL, modifier: Modifier = Modifier) {
-    Avatar(name, url, LargeSize, largeShape, modifier)
+fun LargeAvatar(
+    name: String,
+    url: URL,
+    modifier: Modifier = Modifier,
+    imageProvider: AvatarImageProvider = rememberAvatarImageProvider()
+) {
+    Avatar(name, url, LargeSize, largeShape, modifier, imageProvider)
 }
 
 @Composable
@@ -69,21 +82,22 @@ private fun Avatar(
     url: URL,
     size: Dp,
     shape: Shape,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    imageProvider: AvatarImageProvider = rememberAvatarImageProvider()
 ) {
     val view = LocalView.current
-    var state by remember { mutableStateOf<AsyncImagePainter.State>(AsyncImagePainter.State.Empty) }
+    var state by remember { mutableStateOf(AvatarImageProvider.State.EMPTY) }
     val isPreviewing = remember(view) { view.isInEditMode }
 
-    Avatar(size, shape, modifier, state is AsyncImagePainter.State.Loading) {
-        AsyncImage(
-            "$url",
-            contentDescription = "$name's avatar",
-            Modifier.size(size),
-            onState = { state = it }
-        )
-
-        if (isPreviewing || state is AsyncImagePainter.State.Error) {
+    Avatar(
+        size,
+        shape,
+        modifier.testTag(AVATAR_TAG),
+        isLoading = state == AvatarImageProvider.State.LOADING
+    ) {
+        if (!isPreviewing && state != AvatarImageProvider.State.FAILED) {
+            imageProvider.provide(name, url, onStateChange = { state = it }, Modifier.size(size))
+        } else {
             UnavailableContent(size)
         }
     }
@@ -100,7 +114,8 @@ private fun Avatar(
     Placeholder(
         modifier
             .clip(shape)
-            .requiredSize(size),
+            .requiredSize(size)
+            .testTag(AVATAR_TAG),
         isLoading,
         shape,
         content = content

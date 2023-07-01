@@ -33,12 +33,14 @@ class TootDetailsFragment private constructor() : ComposableFragment() {
     companion object {
         private const val ID_KEY = "id"
 
+        const val TAG = "toot-details-fragment"
+
         fun navigate(
             fragmentManager: FragmentManager,
             @IdRes containerID: Int,
             id: String
         ) {
-            fragmentManager.navigate(containerID) {
+            fragmentManager.navigate(containerID, TAG) {
                 TootDetailsFragment(id)
             }
         }
