@@ -106,7 +106,7 @@ abstract class SingleFragmentActivity : FragmentActivity() {
      * [NavDestination].
      * @see SingleFragmentActivity.route
      **/
-    class InequivalentDestinationRoute internal constructor(route: String) :
+    class InequivalentDestinationRouteException internal constructor(route: String) :
         IllegalStateException("Destination route doesn't match SingleFragmentActivity's ($route).")
 
     /**
@@ -181,7 +181,7 @@ abstract class SingleFragmentActivity : FragmentActivity() {
      * this [SingleFragmentActivity]'s.
      **/
     internal open fun onInequivalentDestinationRoute() {
-        throw InequivalentDestinationRoute(route)
+        throw InequivalentDestinationRouteException(route)
     }
 
     /**
@@ -244,7 +244,7 @@ abstract class SingleFragmentActivity : FragmentActivity() {
      * Ensures that [navGraph]'s [NavDestination]'s [route][NavDestination.route] matches this
      * [SingleFragmentActivity]'s.
      *
-     * @throws InequivalentDestinationRoute If the [NavDestination]'s [route][NavDestination.route]
+     * @throws InequivalentDestinationRouteException If the [NavDestination]'s [route][NavDestination.route]
      * doesn't match this [SingleFragmentActivity]'s.
      * @see SingleFragmentActivity.route
      **/
