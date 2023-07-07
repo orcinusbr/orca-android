@@ -102,6 +102,8 @@ abstract class SingleFragmentActivity : FragmentActivity() {
      * [IllegalStateException] thrown if the added [NavDestination]'s [route][NavDestination.route]
      * doesn't match the [SingleFragmentActivity]'s.
      *
+     * @param route Inequivalent [route][NavDestination.route] that's been assigned to the
+     * [NavDestination].
      * @see SingleFragmentActivity.route
      **/
     class InequivalentDestinationRoute internal constructor(route: String) :
@@ -224,7 +226,7 @@ abstract class SingleFragmentActivity : FragmentActivity() {
     /**
      * Ensures that the [navGraph] has exactly one [NavDestination].
      *
-     * @param navGraph [ListenableNavGraph] to perform the insurance on.
+     * @param navGraph [NavGraph] to perform the insurance on.
      * @throws NoDestinationException If no [NavDestination] has been added through [add].
      * @throws MultipleDestinationsException If multiple [NavDestination]s have been added through
      * [add].
