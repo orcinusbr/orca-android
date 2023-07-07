@@ -37,6 +37,9 @@ android {
 
     kotlinOptions {
         jvmTarget = Versions.java.toString()
+
+        @Suppress("SpellCheckingInspection")
+        freeCompilerArgs = listOf("-Xcontext-receivers")
     }
 
     composeOptions {
@@ -45,6 +48,12 @@ android {
 }
 
 dependencies {
+    androidTestImplementation(project(":core:sample-test"))
+    androidTestImplementation(project(":platform:ui-test"))
+    androidTestImplementation(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
+    androidTestImplementation(Dependencies.FRAGMENT_TESTING)
+    androidTestImplementation(Dependencies.KOIN_TEST)
+
     implementation(project(":core"))
     implementation(project(":core:sample"))
     implementation(project(":platform:theme"))
@@ -53,5 +62,7 @@ dependencies {
     implementation(Dependencies.LIFECYCLE_VIEWMODEL)
     implementation(Dependencies.LOADABLE_LIST)
     implementation(Dependencies.LOADABLE_PLACEHOLDER)
-    implementation(Dependencies.KOIN)
+    implementation(Dependencies.KOIN_ANDROID)
+
+    testImplementation(Dependencies.JUNIT)
 }

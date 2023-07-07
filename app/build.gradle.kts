@@ -64,7 +64,7 @@ dependencies {
     implementation(Dependencies.APPCOMPAT)
     implementation(Dependencies.CONSTRAINTLAYOUT)
     implementation(Dependencies.FRAGMENT)
-    implementation(Dependencies.KOIN)
+    implementation(Dependencies.KOIN_ANDROID)
     implementation(Dependencies.MATERIAL)
     implementation(Dependencies.TIME4J)
 }
