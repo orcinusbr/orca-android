@@ -6,7 +6,7 @@ import com.jeanbarrossilva.mastodonte.core.profile.follow.FollowableProfile
 import com.jeanbarrossilva.mastodonte.core.sample.profile.sample
 
 /** [FollowableProfile] that's returned by [sample]'s getter. **/
-private val sampleFollowableProfile: FollowableProfile<*> = SampleFollowableProfile.createInstance(
+private val sampleFollowableProfile: FollowableProfile<*> = SampleFollowableProfile(
     Profile.sample.id,
     Profile.sample.account,
     Profile.sample.avatarURL,

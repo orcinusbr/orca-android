@@ -42,7 +42,7 @@ internal class SampleProfileTests {
     @Test
     fun `GIVEN a private followed profile WHEN toggling its follow status THEN it's unfollowed`() {
         runTest {
-            assertTogglingEquals(Follow.Private.unfollowed(), Follow.Private.requested())
+            assertTogglingEquals(Follow.Private.unfollowed(), Follow.Private.following())
         }
     }
 }

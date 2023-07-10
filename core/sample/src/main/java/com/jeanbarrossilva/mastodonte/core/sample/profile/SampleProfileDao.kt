@@ -10,6 +10,7 @@ import com.jeanbarrossilva.mastodonte.core.sample.profile.follow.sample
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 
 /** Central for all [Profile]-related reading and writing operations. **/
 object SampleProfileDao : ProfileRepository {
@@ -61,8 +62,9 @@ object SampleProfileDao : ProfileRepository {
      * @param follow [Follow] to update the [FollowableProfile.follow] to.
      **/
     internal fun <T : Follow> updateFollow(id: String, follow: T) {
-        update<SampleFollowableProfile<T>>(id) {
-            copy(follow = follow)
+        update(id) {
+            @Suppress("UNCHECKED_CAST")
+            (this as SampleFollowableProfile<T>).copy(follow = follow)
         }
     }
 
@@ -90,10 +92,13 @@ object SampleProfileDao : ProfileRepository {
      * @param update Changes to be made to the existing [Profile].
      * @throws IllegalArgumentException If no [Profile] with such ID exists.
      **/
-    private inline fun <reified T : Profile> update(id: String, noinline update: T.() -> T) {
+    private fun update(id: String, update: Profile.() -> Profile) {
         if (contains(id)) {
-            profilesFlow.value =
-                profilesFlow.value.filterIsInstance<T>().replacingOnceBy(update) { it.id == id }
+            profilesFlow.update { profiles ->
+                profiles.replacingOnceBy(update) { profile ->
+                    profile.id == id
+                }
+            }
         } else {
             throw IllegalArgumentException("Profile $id found.")
         }
