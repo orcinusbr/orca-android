@@ -25,6 +25,7 @@ object Versions {
     const val TEST_CORE = "1.5.0"
     const val TEST_ESPRESSO = "3.5.0"
     const val TIME4A = "4.8-2021a"
+    const val TURBINE = "1.0.0"
     const val VIEWMODEL = "2.6.1"
 
     val java = JavaVersion.VERSION_17

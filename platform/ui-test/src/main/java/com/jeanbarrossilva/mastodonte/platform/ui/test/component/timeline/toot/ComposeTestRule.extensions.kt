@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.ui.test
+package com.jeanbarrossilva.mastodonte.platform.ui.test.component.timeline.toot
 
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionCollection

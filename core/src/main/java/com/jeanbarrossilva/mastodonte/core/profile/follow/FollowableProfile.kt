@@ -20,4 +20,6 @@ abstract class FollowableProfile<T : Follow> : Profile {
      * @param follow Changed [Follow] status.
      **/
     protected abstract suspend fun onChangeFollowTo(follow: T)
+
+    companion object
 }

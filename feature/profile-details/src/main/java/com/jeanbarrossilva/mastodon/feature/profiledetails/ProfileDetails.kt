@@ -35,19 +35,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.serialize
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
+import com.jeanbarrossilva.mastodon.feature.profiledetails.conversion.converter.followable.toStatus
 import com.jeanbarrossilva.mastodon.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.mastodon.feature.profiledetails.navigation.NavigationButton
 import com.jeanbarrossilva.mastodon.feature.profiledetails.ui.Header
 import com.jeanbarrossilva.mastodon.feature.profiledetails.viewmodel.ProfileDetailsViewModel
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
+import com.jeanbarrossilva.mastodonte.core.profile.edit.EditableProfile
+import com.jeanbarrossilva.mastodonte.core.profile.follow.FollowableProfile
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Account
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
+import com.jeanbarrossilva.mastodonte.core.sample.profile.edit.sample
+import com.jeanbarrossilva.mastodonte.core.sample.profile.follow.sample
 import com.jeanbarrossilva.mastodonte.core.sample.profile.sample
 import com.jeanbarrossilva.mastodonte.core.sample.profile.toot.samples
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
@@ -81,7 +87,18 @@ internal sealed class ProfileDetails : Serializable {
         override val account: Account,
         override val bio: String,
         override val url: URL
-    ) : ProfileDetails()
+    ) : ProfileDetails() {
+        companion object {
+            val sample = Default(
+                Profile.sample.id,
+                Profile.sample.avatarURL,
+                Profile.sample.name,
+                Profile.sample.account,
+                Profile.sample.bio,
+                Profile.sample.url
+            )
+        }
+    }
 
     data class Editable(
         override val id: String,
@@ -97,6 +114,17 @@ internal sealed class ProfileDetails : Serializable {
                 Icon(MastodonteTheme.Icons.Edit, contentDescription = "Edit")
             }
         }
+
+        companion object {
+            val sample = Editable(
+                EditableProfile.sample.id,
+                EditableProfile.sample.avatarURL,
+                EditableProfile.sample.name,
+                EditableProfile.sample.account,
+                EditableProfile.sample.bio,
+                EditableProfile.sample.url
+            )
+        }
     }
 
     data class Followable(
@@ -107,7 +135,7 @@ internal sealed class ProfileDetails : Serializable {
         override val bio: String,
         override val url: URL,
         val status: Status,
-        val onStatusToggle: () -> Unit
+        private val onStatusToggle: () -> Unit
     ) : ProfileDetails() {
         enum class Status {
             UNFOLLOWED {
@@ -125,8 +153,25 @@ internal sealed class ProfileDetails : Serializable {
 
         @Composable
         override fun MainActionButton(modifier: Modifier) {
-            Button(onClick = onStatusToggle) {
+            Button(onClick = onStatusToggle, modifier.testTag(MAIN_ACTION_BUTTON_TAG)) {
                 Text(status.label)
+            }
+        }
+
+        companion object {
+            const val MAIN_ACTION_BUTTON_TAG = "followable-profile-details-main-action-button"
+
+            fun createSample(onStatusToggle: () -> Unit): Followable {
+                return Followable(
+                    FollowableProfile.sample.id,
+                    FollowableProfile.sample.avatarURL,
+                    FollowableProfile.sample.name,
+                    FollowableProfile.sample.account,
+                    FollowableProfile.sample.bio,
+                    FollowableProfile.sample.url,
+                    FollowableProfile.sample.follow.toStatus(),
+                    onStatusToggle
+                )
             }
         }
     }
@@ -150,14 +195,13 @@ internal sealed class ProfileDetails : Serializable {
     }
 
     companion object {
-        val sample = Default(
-            Profile.sample.id,
-            TootPreview.sample.avatarURL,
-            TootPreview.sample.name,
-            TootPreview.sampleAccount,
-            Profile.sample.bio,
-            Profile.sample.url
-        )
+        /*
+         * It's referenced lazily because doing so directly causes an
+         * ExceptionInitializationException to be thrown; this seems to be a bug in the language.
+         */
+        val sample by lazy {
+            Default.sample
+        }
     }
 }
 

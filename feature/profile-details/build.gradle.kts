@@ -53,6 +53,7 @@ dependencies {
     androidTestImplementation(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
     androidTestImplementation(Dependencies.FRAGMENT_TESTING)
     androidTestImplementation(Dependencies.KOIN_TEST)
+    androidTestImplementation(Dependencies.TURBINE)
 
     implementation(project(":core"))
     implementation(project(":core:sample"))

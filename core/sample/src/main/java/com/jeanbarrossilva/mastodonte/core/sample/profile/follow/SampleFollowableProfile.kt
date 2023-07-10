@@ -14,11 +14,53 @@ import java.net.URL
  **/
 internal abstract class SampleFollowableProfile<T : Follow> :
     SampleProfile, FollowableProfile<T>() {
-    abstract override var follow: T
-        internal set
-
     override suspend fun onChangeFollowTo(follow: T) {
         SampleProfileDao.updateFollow(id, follow)
+    }
+
+    override fun toString(): String {
+        return "SampleFollowableProfile(id=$id, account=$account, avatarURL=$avatarURL, " +
+            "name=$name, bio=$bio, follow=$follow, followerCount=$followerCount, " +
+            "followingCount=$followingCount, url=$url)"
+    }
+
+    /**
+     * Copies this [SampleFollowableProfile] into another one.
+     *
+     * @param id Unique identifier.
+     * @param account Unique identifier within an instance.
+     * @param avatarURL [URL] that leads to the avatar image.
+     * @param name Name to be displayed.
+     * @param bio Describes who the owner is and/or provides information regarding this
+     * [SampleFollowableProfile].
+     * @param follow Current [Follow] status.
+     * @param followerCount Amount of followers.
+     * @param followingCount Amount of following.
+     * @param url [URL] that leads to the webpage of the instance through which this
+     * [SampleFollowableProfile] can be accessed.
+     **/
+    fun copy(
+        id: String = this.id,
+        account: Account = this.account,
+        avatarURL: URL = this.avatarURL,
+        name: String = this.name,
+        bio: String = this.bio,
+        follow: T = this.follow,
+        followerCount: Int = this.followerCount,
+        followingCount: Int = this.followingCount,
+        url: URL = this.url
+    ): SampleFollowableProfile<T> {
+        return createInstance(
+            id,
+            account,
+            avatarURL,
+            name,
+            bio,
+            follow,
+            followerCount,
+            followingCount,
+            url
+        )
     }
 
     companion object {

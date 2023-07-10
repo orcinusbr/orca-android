@@ -8,7 +8,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.jeanbarrossilva.mastodonte.feature.tootdetails.TootDetailsFragment
-import com.jeanbarrossilva.mastodonte.platform.ui.test.onTootPreviews
+import com.jeanbarrossilva.mastodonte.platform.ui.test.component.timeline.toot.onTootPreviews
 import org.junit.Assert.assertNotNull
 import org.junit.Rule
 import org.junit.Test

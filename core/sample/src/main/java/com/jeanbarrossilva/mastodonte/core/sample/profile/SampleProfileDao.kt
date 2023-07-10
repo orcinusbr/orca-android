@@ -4,19 +4,20 @@ import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.profile.ProfileRepository
 import com.jeanbarrossilva.mastodonte.core.profile.follow.Follow
 import com.jeanbarrossilva.mastodonte.core.profile.follow.FollowableProfile
-import com.jeanbarrossilva.mastodonte.core.profile.toot.Account
 import com.jeanbarrossilva.mastodonte.core.sample.profile.edit.replacingOnceBy
 import com.jeanbarrossilva.mastodonte.core.sample.profile.follow.SampleFollowableProfile
-import java.net.URL
+import com.jeanbarrossilva.mastodonte.core.sample.profile.follow.sample
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 /** Central for all [Profile]-related reading and writing operations. **/
 object SampleProfileDao : ProfileRepository {
+    /** [Profile]s present that are present by default. **/
+    private val defaultProfiles = listOf<Profile>(FollowableProfile.sample)
+
     /** [MutableStateFlow] that provides the [Profile]s. **/
-    val profilesFlow = MutableStateFlow(listOf(Profile.sample))
+    val profilesFlow = MutableStateFlow(defaultProfiles)
 
     override suspend fun get(id: String): Flow<Profile?> {
         return profilesFlow.map { profiles ->
@@ -27,62 +28,19 @@ object SampleProfileDao : ProfileRepository {
     }
 
     /**
-     * Inserts a [Profile].
+     * Inserts the given [profile], replacing the existing one that has the same [ID][Profile.id] if
+     * it's there.
      *
-     * @param id Unique identifier.
-     * @param account Unique identifier within an instance.
-     * @param avatarURL [URL] that leads to the avatar image.
-     * @param name Name to be displayed.
-     * @param bio Describes who the owner is and/or provides information regarding the [Profile].
-     * @param follow Current [Follow] status.
-     * @param followerCount Amount of followers.
-     * @param followingCount Amount of following.
-     * @param url [URL] that leads to the webpage of the instance through which the [Profile] can
-     * be accessed.
+     * @param profile [Profile] to be added.
      **/
-    fun <T : Follow> insert(
-        id: String,
-        account: Account,
-        avatarURL: URL,
-        name: String,
-        bio: String,
-        follow: T,
-        followerCount: Int,
-        followingCount: Int,
-        url: URL
-    ) {
-        val profile = SampleFollowableProfile.createInstance(
-            id,
-            account,
-            avatarURL,
-            name,
-            bio,
-            follow,
-            followerCount,
-            followingCount,
-            url
-        )
-        insert(profile)
+    fun insert(profile: Profile) {
+        delete(profile.id)
+        profilesFlow.value = profilesFlow.value + profile
     }
 
-    /**
-     * Updates the [FollowableProfile.follow] of the [Profile] whose [ID][FollowableProfile.id] is
-     * equal the given [profileID].
-     *
-     * @param profileID [Profile]'s [ID][FollowableProfile.id].
-     * @param follow [Follow] to update the [FollowableProfile.follow] to.
-     **/
-    fun updateFollow(profileID: String, follow: Follow) {
-        profilesFlow.value = profilesFlow
-            .value
-            .filterIsInstance<SampleFollowableProfile<Follow>>()
-            .replacingOnceBy({
-                apply {
-                    this.follow = follow
-                }
-            }) {
-                it.id == profileID
-            }
+    /** Resets this [SampleProfileDao] to its default state. **/
+    fun reset() {
+        profilesFlow.value = defaultProfiles
     }
 
     /**
@@ -90,21 +48,54 @@ object SampleProfileDao : ProfileRepository {
      *
      * @param id ID of the [Profile] whose presence will be checked.
      **/
-    internal suspend fun contains(id: String): Boolean {
-        return get(id).first() != null
-    }
-
-    /** Removes all [Profile]s. **/
-    internal fun clear() {
-        profilesFlow.value = emptyList()
+    internal operator fun contains(id: String): Boolean {
+        val ids = profilesFlow.value.map(Profile::id)
+        return id in ids
     }
 
     /**
-     * Inserts the given [profile].
+     * Updates the [FollowableProfile.follow] of the [Profile] whose [ID][FollowableProfile.id] is
+     * equal the given [id].
      *
-     * @param profile [Profile] to be added.
+     * @param id [Profile]'s [ID][FollowableProfile.id].
+     * @param follow [Follow] to update the [FollowableProfile.follow] to.
      **/
-    private fun insert(profile: Profile) {
-        profilesFlow.value = profilesFlow.value + profile
+    internal fun <T : Follow> updateFollow(id: String, follow: T) {
+        update<SampleFollowableProfile<T>>(id) {
+            copy(follow = follow)
+        }
+    }
+
+    /**
+     * Deletes the [Profile] whose [ID][Profile.id] equals to the given one.
+     *
+     * @param id ID of the [Profile] to be deleted.
+     **/
+    private fun delete(id: String) {
+        profilesFlow.value = profilesFlow
+            .value
+            .toMutableList()
+            .apply {
+                removeIf {
+                    it.id == id
+                }
+            }
+            .toList()
+    }
+
+    /**
+     * Replaces the currently existing [Profile] identified as [id] by its updated version.
+     *
+     * @param id ID of the [Profile] to be updated.
+     * @param update Changes to be made to the existing [Profile].
+     * @throws IllegalArgumentException If no [Profile] with such ID exists.
+     **/
+    private inline fun <reified T : Profile> update(id: String, noinline update: T.() -> T) {
+        if (contains(id)) {
+            profilesFlow.value =
+                profilesFlow.value.filterIsInstance<T>().replacingOnceBy(update) { it.id == id }
+        } else {
+            throw IllegalArgumentException("Profile $id found.")
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.mastodonte.core.sample.profile.edit
 
 import com.jeanbarrossilva.mastodonte.core.profile.edit.EditableProfile
+import com.jeanbarrossilva.mastodonte.core.profile.edit.Editor
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Account
 import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfile
 import java.net.URL
@@ -10,13 +11,12 @@ import java.net.URL
  *
  * @see EditableProfile
  **/
-internal abstract class SampleEditableProfile private constructor() :
-    SampleProfile, EditableProfile() {
+abstract class SampleEditableProfile private constructor() : SampleProfile, EditableProfile() {
     abstract override var avatarURL: URL
     abstract override var name: String
     abstract override var bio: String
 
-    override val editor by lazy {
+    override val editor: Editor by lazy {
         SampleEditor(id)
     }
 
