@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.mastodonte.core.sample.profile
 
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
-import com.jeanbarrossilva.mastodonte.core.profile.ProfileRepository
+import com.jeanbarrossilva.mastodonte.core.profile.ProfileProvider
 import com.jeanbarrossilva.mastodonte.core.profile.follow.Follow
 import com.jeanbarrossilva.mastodonte.core.profile.follow.FollowableProfile
 import com.jeanbarrossilva.mastodonte.core.sample.profile.edit.replacingOnceBy
@@ -13,16 +13,21 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
 /** Central for all [Profile]-related reading and writing operations. **/
-object SampleProfileDao : ProfileRepository {
+object SampleProfileDao : ProfileProvider() {
     /** [Profile]s present that are present by default. **/
     private val defaultProfiles = listOf<Profile>(FollowableProfile.sample)
 
     /** [MutableStateFlow] that provides the [Profile]s. **/
     val profilesFlow = MutableStateFlow(defaultProfiles)
 
-    override suspend fun get(id: String): Flow<Profile?> {
+    override suspend fun contains(id: String): Boolean {
+        val ids = profilesFlow.value.map(Profile::id)
+        return id in ids
+    }
+
+    override suspend fun onProvide(id: String): Flow<Profile> {
         return profilesFlow.map { profiles ->
-            profiles.find { profile ->
+            profiles.first { profile ->
                 profile.id == id
             }
         }
@@ -45,23 +50,13 @@ object SampleProfileDao : ProfileRepository {
     }
 
     /**
-     * Whether a [Profile] whose [ID][Profile.id] equals to the given one is present.
-     *
-     * @param id ID of the [Profile] whose presence will be checked.
-     **/
-    internal operator fun contains(id: String): Boolean {
-        val ids = profilesFlow.value.map(Profile::id)
-        return id in ids
-    }
-
-    /**
      * Updates the [FollowableProfile.follow] of the [Profile] whose [ID][FollowableProfile.id] is
      * equal the given [id].
      *
      * @param id [Profile]'s [ID][FollowableProfile.id].
      * @param follow [Follow] to update the [FollowableProfile.follow] to.
      **/
-    internal fun <T : Follow> updateFollow(id: String, follow: T) {
+    internal suspend fun <T : Follow> updateFollow(id: String, follow: T) {
         update(id) {
             @Suppress("UNCHECKED_CAST")
             (this as SampleFollowableProfile<T>).copy(follow = follow)
@@ -92,7 +87,7 @@ object SampleProfileDao : ProfileRepository {
      * @param update Changes to be made to the existing [Profile].
      * @throws IllegalArgumentException If no [Profile] with such ID exists.
      **/
-    private fun update(id: String, update: Profile.() -> Profile) {
+    private suspend fun update(id: String, update: Profile.() -> Profile) {
         if (contains(id)) {
             profilesFlow.update { profiles ->
                 profiles.replacingOnceBy(update) { profile ->

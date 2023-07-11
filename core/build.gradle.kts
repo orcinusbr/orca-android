@@ -11,5 +11,7 @@ java {
 dependencies {
     api(Dependencies.COROUTINES_CORE)
 
+    testImplementation(project(":core:sample"))
     testImplementation(kotlin("test"))
+    testImplementation(Dependencies.COROUTINES_TEST)
 }

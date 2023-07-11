@@ -28,7 +28,7 @@ internal suspend fun <T : Follow> assertTogglingEquals(after: T, before: T) {
     assertEquals(
         matchingAfter,
         SampleProfileDao
-            .get(profile.id)
+            .onProvide(profile.id)
             .filterIsInstance<FollowableProfile<T>>()
             .onEach(FollowableProfile<T>::toggleFollow)
             .drop(1)

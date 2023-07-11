@@ -8,18 +8,17 @@ import androidx.fragment.app.viewModels
 import com.jeanbarrossilva.mastodon.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.mastodon.feature.profiledetails.viewmodel.ContextProvider
 import com.jeanbarrossilva.mastodon.feature.profiledetails.viewmodel.ProfileDetailsViewModel
-import com.jeanbarrossilva.mastodonte.core.profile.ProfileRepository
+import com.jeanbarrossilva.mastodonte.core.profile.ProfileProvider
 import com.jeanbarrossilva.mastodonte.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
-import com.jeanbarrossilva.mastodonte.platform.ui.core.application
 import com.jeanbarrossilva.mastodonte.platform.ui.core.argument
 import com.jeanbarrossilva.mastodonte.platform.ui.core.composable.ComposableFragment
 import org.koin.android.ext.android.inject
 
 class ProfileDetailsFragment internal constructor() : ComposableFragment(), ContextProvider {
-    private val repository by inject<ProfileRepository>()
+    private val provider by inject<ProfileProvider>()
     private val id by argument<String>(ID_KEY)
     private val viewModel by viewModels<ProfileDetailsViewModel> {
-        ProfileDetailsViewModel.createFactory(contextProvider = this, repository, id)
+        ProfileDetailsViewModel.createFactory(contextProvider = this, provider, id)
     }
     private val navigator by inject<ProfileDetailsBoundary>()
     private val onBottomAreaAvailabilityChangeListener by

@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.mastodonte.app
 
-import com.jeanbarrossilva.mastodonte.core.profile.ProfileRepository
+import com.jeanbarrossilva.mastodonte.core.profile.ProfileProvider
 import com.jeanbarrossilva.mastodonte.core.profile.toot.TootRepository
 import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfileDao
 import com.jeanbarrossilva.mastodonte.core.sample.profile.toot.SampleTootDao
@@ -13,7 +13,7 @@ internal fun MastodonteModule(
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener
 ): Module {
     return module {
-        single<ProfileRepository> { SampleProfileDao }
+        single<ProfileProvider> { SampleProfileDao }
         single<TootRepository> { SampleTootDao }
         single { onBottomAreaAvailabilityChangeListener }
     }

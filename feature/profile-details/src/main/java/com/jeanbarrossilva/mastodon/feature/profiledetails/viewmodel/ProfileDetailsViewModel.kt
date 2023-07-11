@@ -9,7 +9,7 @@ import com.jeanbarrossilva.loadable.list.SerializableList
 import com.jeanbarrossilva.loadable.list.flow.listLoadable
 import com.jeanbarrossilva.loadable.list.serialize
 import com.jeanbarrossilva.mastodon.feature.profiledetails.toProfileDetails
-import com.jeanbarrossilva.mastodonte.core.profile.ProfileRepository
+import com.jeanbarrossilva.mastodonte.core.profile.ProfileProvider
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import java.net.URL
 import kotlinx.coroutines.CoroutineDispatcher
@@ -27,15 +27,12 @@ import kotlinx.coroutines.plus
 
 internal class ProfileDetailsViewModel(
     private val contextProvider: ContextProvider,
-    private val repository: ProfileRepository,
-    coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
+    private val provider: ProfileProvider,
+    coroutineDispatcher: CoroutineDispatcher,
     private val id: String
 ) : ViewModel() {
     private val coroutineScope = viewModelScope + coroutineDispatcher
-    private val profileFlow = flow {
-        // repository.get(id) doesn't emit FollowableProfile with an unfollowed Follow status.
-        emitAll(repository.get(id).filterNotNull())
-    }
+    private val profileFlow = flow { emitAll(provider.provide(id).filterNotNull()) }
     private val tootsIndexFlow = MutableStateFlow(0)
 
     val detailsLoadableFlow =
@@ -68,16 +65,13 @@ internal class ProfileDetailsViewModel(
     }
 
     companion object {
-        fun createFactory(
-            contextProvider: ContextProvider,
-            repository: ProfileRepository,
-            id: String
-        ): ViewModelProvider.Factory {
+        fun createFactory(contextProvider: ContextProvider, provider: ProfileProvider, id: String):
+            ViewModelProvider.Factory {
             return viewModelFactory {
                 addInitializer(ProfileDetailsViewModel::class) {
                     ProfileDetailsViewModel(
                         contextProvider,
-                        repository,
+                        provider,
                         Dispatchers.Main.immediate,
                         id
                     )
