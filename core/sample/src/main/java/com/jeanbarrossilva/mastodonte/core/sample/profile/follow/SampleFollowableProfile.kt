@@ -12,53 +12,18 @@ import java.net.URL
  *
  * @see FollowableProfile
  **/
-internal abstract class SampleFollowableProfile<T : Follow> :
-    SampleProfile, FollowableProfile<T>() {
-    abstract override var follow: T
-        internal set
-
+internal data class SampleFollowableProfile<T : Follow>(
+    override val id: String,
+    override val account: Account,
+    override val avatarURL: URL,
+    override val name: String,
+    override val bio: String,
+    override val follow: T,
+    override val followerCount: Int,
+    override val followingCount: Int,
+    override val url: URL
+) : SampleProfile, FollowableProfile<T>() {
     override suspend fun onChangeFollowTo(follow: T) {
         SampleProfileDao.updateFollow(id, follow)
-    }
-
-    companion object {
-        /**
-         * Creates an instance of a [SampleFollowableProfile].
-         *
-         * @param id Unique identifier.
-         * @param account Unique identifier within an instance.
-         * @param avatarURL [URL] that leads to the avatar image.
-         * @param name Name to be displayed.
-         * @param bio Describes who the owner is and/or provides information regarding this
-         * [SampleFollowableProfile].
-         * @param follow Current [Follow] status.
-         * @param followerCount Amount of followers.
-         * @param followingCount Amount of following.
-         * @param url [URL] that leads to the webpage of the instance through which this
-         * [SampleFollowableProfile] can be accessed.
-         **/
-        fun <T : Follow> createInstance(
-            id: String,
-            account: Account,
-            avatarURL: URL,
-            name: String,
-            bio: String,
-            follow: T,
-            followerCount: Int,
-            followingCount: Int,
-            url: URL
-        ): SampleFollowableProfile<T> {
-            return object : SampleFollowableProfile<T>() {
-                override val id = id
-                override val account = account
-                override var avatarURL = avatarURL
-                override var name = name
-                override var bio = bio
-                override var follow = follow
-                override val followerCount = followerCount
-                override val followingCount = followingCount
-                override val url = url
-            }
-        }
     }
 }

@@ -21,7 +21,10 @@ object Dependencies {
     const val COROUTINES_TEST =
         "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.COROUTINES}"
     const val FRAGMENT = "androidx.fragment:fragment-ktx:${Versions.FRAGMENT}"
-    const val KOIN = "io.insert-koin:koin-android:${Versions.KOIN}"
+    const val FRAGMENT_TESTING = "androidx.fragment:fragment-testing:${Versions.FRAGMENT}"
+    const val JUNIT = "junit:junit:${Versions.JUNIT}"
+    const val KOIN_ANDROID = "io.insert-koin:koin-android:${Versions.KOIN_ANDROID}"
+    const val KOIN_TEST = "io.insert-koin:koin-test-junit4:${Versions.KOIN}"
     const val LIFECYCLE_VIEWMODEL =
         "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.LIFECYCLE}"
     const val LOADABLE = "com.jeanbarrossilva.loadable:loadable:${Versions.LOADABLE}"
@@ -31,8 +34,10 @@ object Dependencies {
     const val LOADABLE_PLACEHOLDER_TEST =
         "com.jeanbarrossilva.loadable:loadable-placeholder-test:${Versions.LOADABLE}"
     const val MATERIAL = "com.google.android.material:material:${Versions.MATERIAL}"
+    const val NAVIGATION_FRAGMENT = "androidx.navigation:navigation-fragment:${Versions.NAVIGATION}"
     const val TEST_CORE = "androidx.test:core-ktx:${Versions.TEST_CORE}"
     const val TEST_ESPRESSO_CORE = "androidx.test.espresso:espresso-core:${Versions.TEST_ESPRESSO}"
     const val TIME4J = "net.time4j:time4j-android:${Versions.TIME4A}"
+    const val TURBINE = "app.cash.turbine:turbine:${Versions.TURBINE}"
     const val VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.VIEWMODEL}"
 }

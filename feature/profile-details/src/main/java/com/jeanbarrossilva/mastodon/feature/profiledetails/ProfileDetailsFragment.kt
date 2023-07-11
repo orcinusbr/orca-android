@@ -1,10 +1,12 @@
 package com.jeanbarrossilva.mastodon.feature.profiledetails
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import com.jeanbarrossilva.mastodon.feature.profiledetails.navigation.BackwardsNavigationState
+import com.jeanbarrossilva.mastodon.feature.profiledetails.viewmodel.ContextProvider
 import com.jeanbarrossilva.mastodon.feature.profiledetails.viewmodel.ProfileDetailsViewModel
 import com.jeanbarrossilva.mastodonte.core.profile.ProfileRepository
 import com.jeanbarrossilva.mastodonte.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
@@ -13,11 +15,11 @@ import com.jeanbarrossilva.mastodonte.platform.ui.core.argument
 import com.jeanbarrossilva.mastodonte.platform.ui.core.composable.ComposableFragment
 import org.koin.android.ext.android.inject
 
-class ProfileDetailsFragment private constructor() : ComposableFragment() {
+class ProfileDetailsFragment internal constructor() : ComposableFragment(), ContextProvider {
     private val repository by inject<ProfileRepository>()
     private val id by argument<String>(ID_KEY)
     private val viewModel by viewModels<ProfileDetailsViewModel> {
-        ProfileDetailsViewModel.createFactory(application, repository, id)
+        ProfileDetailsViewModel.createFactory(contextProvider = this, repository, id)
     }
     private val navigator by inject<ProfileDetailsBoundary>()
     private val onBottomAreaAvailabilityChangeListener by
@@ -42,9 +44,13 @@ class ProfileDetailsFragment private constructor() : ComposableFragment() {
         )
     }
 
+    override fun provide(): Context {
+        return requireContext()
+    }
+
     companion object {
-        private const val ID_KEY = "id"
-        private const val BACKWARDS_NAVIGATION_STATE_KEY = "backwards-navigation-state"
+        internal const val ID_KEY = "id"
+        internal const val BACKWARDS_NAVIGATION_STATE_KEY = "backwards-navigation-state"
 
         const val TAG = "profile-details-fragment"
     }

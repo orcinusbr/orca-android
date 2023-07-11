@@ -28,6 +28,7 @@ android {
     @Suppress("UnstableApiUsage")
     buildFeatures {
         compose = true
+        viewBinding = true
     }
 
     compileOptions {
@@ -37,6 +38,9 @@ android {
 
     kotlinOptions {
         jvmTarget = Versions.java.toString()
+
+        @Suppress("SpellCheckingInspection")
+        freeCompilerArgs = listOf("-Xcontext-receivers")
     }
 
     composeOptions {
@@ -45,6 +49,11 @@ android {
 }
 
 dependencies {
+    api(Dependencies.NAVIGATION_FRAGMENT)
+
+    androidTestImplementation(Dependencies.TEST_CORE)
+
     implementation(project(":platform:ui"))
     implementation(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
+    implementation(Dependencies.TIME4J)
 }
