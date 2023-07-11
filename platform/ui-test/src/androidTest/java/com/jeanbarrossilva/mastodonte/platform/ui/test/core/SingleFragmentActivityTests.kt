@@ -31,23 +31,13 @@ internal class SingleFragmentActivityTests {
 
         override fun onNoDestination() {
             calledNavGraphIntegrityCallback = NavGraphIntegrityCallback.NO_DESTINATION
-            runTest {
-                /**
-                 * Cancelling navGraphIntegrityInsuranceScope's Job prevents the NavGraph from being
-                 * set to the empty one we've built, since the initial route given to it has to be
-                 * that of an existing destination. If it isn't, which is when this callback is
-                 * called, an IllegalArgumentException stating that the route should point to a
-                 * direct child of the NavGraph is thrown.
-                 *
-                 * https://android.googlesource.com/platform/frameworks/support/+/27daece9174f19f73e32b13d4f431bec940b03fd/navigation/navigation-common/src/main/java/androidx/navigation/NavGraphNavigator.kt#59
-                 **/
-                navGraphIntegrityInsuranceScope.coroutineContext[Job]?.cancelAndJoin()
-            }
+            cancelNavGraphIntegrityInsuranceJob()
         }
 
         override fun onInequivalentDestinationRoute() {
             calledNavGraphIntegrityCallback =
                 NavGraphIntegrityCallback.INEQUIVALENT_DESTINATION_ROUTE
+            cancelNavGraphIntegrityInsuranceJob()
         }
 
         override fun onNonFragmentDestination() {
@@ -56,6 +46,12 @@ internal class SingleFragmentActivityTests {
 
         override fun onMultipleDestinations() {
             calledNavGraphIntegrityCallback = NavGraphIntegrityCallback.MULTIPLE_DESTINATIONS
+        }
+
+        private fun cancelNavGraphIntegrityInsuranceJob() {
+            runTest {
+                navGraphIntegrityInsuranceScope.coroutineContext[Job]?.cancelAndJoin()
+            }
         }
     }
 
