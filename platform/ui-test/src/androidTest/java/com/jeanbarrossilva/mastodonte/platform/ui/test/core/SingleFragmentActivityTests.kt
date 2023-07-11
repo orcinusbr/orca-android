@@ -11,6 +11,7 @@ import androidx.navigation.fragment.dialog
 import androidx.navigation.fragment.fragment
 import androidx.navigation.get
 import androidx.test.core.app.launchActivity
+import java.util.concurrent.atomic.AtomicReference
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.test.runTest
@@ -19,8 +20,7 @@ import org.junit.Test
 
 internal class SingleFragmentActivityTests {
     abstract class TestActivity : SingleFragmentActivity() {
-        var calledNavGraphIntegrityCallback: NavGraphIntegrityCallback? = null
-            private set
+        val calledNavGraphIntegrityCallbackRef = AtomicReference<NavGraphIntegrityCallback>(null)
 
         enum class NavGraphIntegrityCallback {
             NO_DESTINATION,
@@ -30,22 +30,23 @@ internal class SingleFragmentActivityTests {
         }
 
         override fun onNoDestination() {
-            calledNavGraphIntegrityCallback = NavGraphIntegrityCallback.NO_DESTINATION
+            calledNavGraphIntegrityCallbackRef.set(NavGraphIntegrityCallback.NO_DESTINATION)
             cancelNavGraphIntegrityInsuranceJob()
         }
 
         override fun onInequivalentDestinationRoute() {
-            calledNavGraphIntegrityCallback =
-                NavGraphIntegrityCallback.INEQUIVALENT_DESTINATION_ROUTE
+            calledNavGraphIntegrityCallbackRef
+                .set(NavGraphIntegrityCallback.INEQUIVALENT_DESTINATION_ROUTE)
             cancelNavGraphIntegrityInsuranceJob()
         }
 
         override fun onNonFragmentDestination() {
-            calledNavGraphIntegrityCallback = NavGraphIntegrityCallback.NON_FRAGMENT_DESTINATION
+            calledNavGraphIntegrityCallbackRef
+                .set(NavGraphIntegrityCallback.NON_FRAGMENT_DESTINATION)
         }
 
         override fun onMultipleDestinations() {
-            calledNavGraphIntegrityCallback = NavGraphIntegrityCallback.MULTIPLE_DESTINATIONS
+            calledNavGraphIntegrityCallbackRef.set(NavGraphIntegrityCallback.MULTIPLE_DESTINATIONS)
         }
 
         private fun cancelNavGraphIntegrityInsuranceJob() {
@@ -126,7 +127,7 @@ internal class SingleFragmentActivityTests {
         launchActivity<NoDestinationActivity>().onActivity {
             assertEquals(
                 TestActivity.NavGraphIntegrityCallback.NO_DESTINATION,
-                it.calledNavGraphIntegrityCallback
+                it.calledNavGraphIntegrityCallbackRef.get()
             )
         }
     }
@@ -136,7 +137,7 @@ internal class SingleFragmentActivityTests {
         launchActivity<InequivalentlyRoutedDestinationActivity>().onActivity {
             assertEquals(
                 TestActivity.NavGraphIntegrityCallback.INEQUIVALENT_DESTINATION_ROUTE,
-                it.calledNavGraphIntegrityCallback
+                it.calledNavGraphIntegrityCallbackRef.get()
             )
         }
     }
@@ -146,7 +147,7 @@ internal class SingleFragmentActivityTests {
         launchActivity<NonFragmentDestinationActivity>().onActivity {
             assertEquals(
                 TestActivity.NavGraphIntegrityCallback.NON_FRAGMENT_DESTINATION,
-                it.calledNavGraphIntegrityCallback
+                it.calledNavGraphIntegrityCallbackRef.get()
             )
         }
     }
@@ -156,7 +157,7 @@ internal class SingleFragmentActivityTests {
         launchActivity<MultipleDestinationsActivity>().onActivity {
             assertEquals(
                 TestActivity.NavGraphIntegrityCallback.MULTIPLE_DESTINATIONS,
-                it.calledNavGraphIntegrityCallback
+                it.calledNavGraphIntegrityCallbackRef.get()
             )
         }
     }
@@ -166,7 +167,7 @@ internal class SingleFragmentActivityTests {
         launchActivity<PosteriorlyAddedDestinationActivity>().onActivity {
             assertEquals(
                 TestActivity.NavGraphIntegrityCallback.MULTIPLE_DESTINATIONS,
-                it.calledNavGraphIntegrityCallback
+                it.calledNavGraphIntegrityCallbackRef.get()
             )
         }
     }
