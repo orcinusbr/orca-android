@@ -4,7 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.annotation.IdRes
 import androidx.fragment.app.FragmentManager
-import com.jeanbarrossilva.mastodon.feature.profiledetails.ProfileDetailsBoundary
+import com.jeanbarrossilva.mastodonte.feature.profiledetails.ProfileDetailsBoundary
 import com.jeanbarrossilva.mastodonte.feature.tootdetails.TootDetailsFragment
 import java.net.URL
 
