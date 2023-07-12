@@ -18,31 +18,35 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 internal class TootDetailsViewModel private constructor(
     application: Application,
     provider: TootProvider,
     id: String
 ) : AndroidViewModel(application) {
-    private val tootLoadableFlow = flow { emitAll(provider.provide(id).filterNotNull()) }
+    private val tootFlow = flow { emitAll(provider.provide(id)) }
     private val commentsIndexFlow = MutableStateFlow(0)
 
     val detailsLoadableFlow =
-        loadableFlow(viewModelScope) { tootLoadableFlow.map(Toot::toTootDetails).collect(::load) }
+        loadableFlow(viewModelScope) { tootFlow.map(Toot::toTootDetails).collect(::load) }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val commentsLoadableFlow = commentsIndexFlow
-        .flatMapConcat { tootLoadableFlow.flatMapToComments(it).map(List<TootDetails>::serialize) }
+        .flatMapConcat { tootFlow.flatMapToComments(it).map(List<TootDetails>::serialize) }
         .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
 
-    fun favorite(id: String) {
+    fun favorite() {
+        viewModelScope.launch {
+            tootFlow.first().toggleFavorite()
+        }
     }
 
-    fun reblog(id: String) {
+    fun reblog() {
     }
 
     fun share(url: URL) {

@@ -15,7 +15,7 @@ object SampleTootProvider : TootProvider {
         IllegalArgumentException("Author identified as \"$id\" doesn't exist.")
 
     /** [MutableStateFlow] that provides the [Toot]s. **/
-    private val tootsFlow = MutableStateFlow(Toot.samples)
+    internal val tootsFlow = MutableStateFlow(Toot.samples)
 
     override suspend fun provide(id: String): Flow<Toot> {
         return tootsFlow.map { toots ->

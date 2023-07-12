@@ -6,6 +6,7 @@ import androidx.compose.runtime.remember
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import com.jeanbarrossilva.mastodonte.core.profile.ProfileProvider
+import com.jeanbarrossilva.mastodonte.core.profile.toot.TootProvider
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.viewmodel.ContextProvider
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.viewmodel.ProfileDetailsViewModel
@@ -15,10 +16,12 @@ import com.jeanbarrossilva.mastodonte.platform.ui.core.composable.ComposableFrag
 import org.koin.android.ext.android.inject
 
 class ProfileDetailsFragment internal constructor() : ComposableFragment(), ContextProvider {
-    private val provider by inject<ProfileProvider>()
+    private val profileProvider by inject<ProfileProvider>()
+    private val tootProvider by inject<TootProvider>()
     private val id by argument<String>(ID_KEY)
     private val viewModel by viewModels<ProfileDetailsViewModel> {
-        ProfileDetailsViewModel.createFactory(contextProvider = this, provider, id)
+        ProfileDetailsViewModel
+            .createFactory(contextProvider = this, profileProvider, tootProvider, id)
     }
     private val navigator by inject<ProfileDetailsBoundary>()
     private val onBottomAreaAvailabilityChangeListener by
