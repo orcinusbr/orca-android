@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 
-/** Central for all [Toot]-related reading and writing operations. **/
-object SampleTootDao : TootProvider {
+/** [TootProvider] that provides sample [Toot]s. **/
+object SampleTootProvider : TootProvider {
     /** [IllegalArgumentException] thrown if a nonexistent [Author]'s [Toot]s are requested. **/
     class NonexistentAuthorException internal constructor(id: String) :
         IllegalArgumentException("Author identified as \"$id\" doesn't exist.")

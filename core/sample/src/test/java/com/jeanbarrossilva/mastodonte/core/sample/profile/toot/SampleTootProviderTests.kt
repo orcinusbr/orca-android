@@ -6,12 +6,12 @@ import kotlin.test.assertEquals
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 
-internal class SampleTootDaoTests {
+internal class SampleTootProviderTests {
     @Test
     fun `GIVEN all toot samples WHEN getting them by their IDs THEN they're returned`() {
         runTest {
             Toot.samples.forEach {
-                assertEquals(it, SampleTootDao.provide(it.id).first())
+                assertEquals(it, SampleTootProvider.provide(it.id).first())
             }
         }
     }
