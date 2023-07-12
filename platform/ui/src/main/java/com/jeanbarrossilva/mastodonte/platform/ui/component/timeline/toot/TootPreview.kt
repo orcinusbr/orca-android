@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
@@ -204,7 +205,12 @@ fun TootPreview(
                     Text(preview.formattedCommentCount)
                 }
 
-                Stat(onClick = onFavorite, Modifier.testTag(TOOT_PREVIEW_FAVORITE_COUNT_STAT_TAG)) {
+                Stat(
+                    onClick = onFavorite,
+                    Modifier
+                        .testTag(TOOT_PREVIEW_FAVORITE_COUNT_STAT_TAG)
+                        .semantics { selected = preview.isFavorite }
+                ) {
                     FavoriteIcon(
                         isActive = preview.isFavorite,
                         onToggle = { onFavorite() },
