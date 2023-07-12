@@ -2,7 +2,8 @@ package com.jeanbarrossilva.mastodonte.core.sample.test
 
 import com.jeanbarrossilva.mastodonte.core.profile.follow.Follow
 import com.jeanbarrossilva.mastodonte.core.profile.follow.FollowableProfile
-import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfileDao
+import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfileProvider
+import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfileWriter
 import com.jeanbarrossilva.mastodonte.core.sample.profile.follow.SampleFollowableProfile
 import com.jeanbarrossilva.mastodonte.core.sample.profile.follow.sample
 import kotlin.test.assertEquals
@@ -24,11 +25,11 @@ internal suspend fun <T : Follow> assertTogglingEquals(after: T, before: T) {
         @Suppress("UNCHECKED_CAST")
         (FollowableProfile.sample as SampleFollowableProfile<T>).copy(follow = before)
 
-    SampleProfileDao.insert(profile)
+    SampleProfileWriter.insert(profile)
     assertEquals(
         matchingAfter,
-        SampleProfileDao
-            .get(profile.id)
+        SampleProfileProvider
+            .provide(profile.id)
             .filterIsInstance<FollowableProfile<T>>()
             .onEach(FollowableProfile<T>::toggleFollow)
             .drop(1)

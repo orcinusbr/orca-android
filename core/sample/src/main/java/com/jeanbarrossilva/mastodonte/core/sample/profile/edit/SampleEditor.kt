@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.mastodonte.core.sample.profile.edit
 
 import com.jeanbarrossilva.mastodonte.core.profile.edit.Editor
-import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfileDao
+import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfileProvider
 import java.net.URL
 
 /** [Editor] that edits [SampleEditableProfile]s. **/
@@ -31,7 +31,7 @@ internal class SampleEditor(private val id: String) : Editor {
      * @param edit Editing to be made to the matching [SampleEditableProfile].
      **/
     private inline fun edit(crossinline edit: SampleEditableProfile.() -> Unit) {
-        SampleProfileDao.profilesFlow.value = SampleProfileDao
+        SampleProfileProvider.profilesFlow.value = SampleProfileProvider
             .profilesFlow
             .value
             .filterIsInstance<SampleEditableProfile>()

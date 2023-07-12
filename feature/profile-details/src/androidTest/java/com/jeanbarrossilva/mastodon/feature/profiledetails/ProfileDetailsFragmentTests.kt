@@ -7,16 +7,16 @@ import androidx.compose.ui.test.performClick
 import com.jeanbarrossilva.mastodon.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.mastodon.feature.profiledetails.test.ProfileDetailsActivityScenarioRule
 import com.jeanbarrossilva.mastodonte.core.profile.follow.FollowableProfile
-import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfileDao
+import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfileWriter
 import com.jeanbarrossilva.mastodonte.core.sample.profile.follow.sample
-import com.jeanbarrossilva.mastodonte.core.sample.profile.test.SampleProfileDaoTestRule
+import com.jeanbarrossilva.mastodonte.core.sample.profile.test.SampleProfileWriterTestRule
 import com.jeanbarrossilva.mastodonte.platform.ui.test.component.timeline.toot.time.Time4JTestRule
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.RuleChain
 
 internal class ProfileDetailsFragmentTests {
-    private val sampleProfileDaoRule = SampleProfileDaoTestRule()
+    private val sampleProfileDaoRule = SampleProfileWriterTestRule()
     private val time4JRule = Time4JTestRule()
     private val activityScenarioRule = ProfileDetailsActivityScenarioRule(
         BackwardsNavigationState.Unavailable,
@@ -33,7 +33,7 @@ internal class ProfileDetailsFragmentTests {
 
     @Test
     fun togglesFollowStatusOnButtonClick() {
-        SampleProfileDao.insert(FollowableProfile.sample)
+        SampleProfileWriter.insert(FollowableProfile.sample)
         composeRule
             .onNodeWithTag(ProfileDetails.Followable.MAIN_ACTION_BUTTON_TAG)
             .performClick()
