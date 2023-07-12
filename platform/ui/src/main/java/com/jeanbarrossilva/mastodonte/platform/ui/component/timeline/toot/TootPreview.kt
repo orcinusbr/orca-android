@@ -208,9 +208,7 @@ fun TootPreview(
                     FavoriteIcon(
                         isActive = preview.isFavorite,
                         onToggle = { onFavorite() },
-                        Modifier
-                            .size(StatDefaults.IconSize)
-                            .semantics { set(SemanticsProperties.Favorite, preview.isFavorite) },
+                        Modifier.size(StatDefaults.IconSize),
                         FavoriteIconDefaults
                             .colors(activeColor = MastodonteTheme.colorScheme.onErrorContainer)
                     )

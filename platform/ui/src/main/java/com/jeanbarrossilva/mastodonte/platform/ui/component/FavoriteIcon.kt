@@ -20,8 +20,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
+import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.Favorite
 
 object FavoriteIconDefaults {
     @Composable
@@ -71,7 +74,8 @@ fun FavoriteIcon(
                     }
                 )
             }
-            .scale(scale),
+            .scale(scale)
+            .semantics { set(SemanticsProperties.Favorite, isActive) },
         tint
     )
 }
