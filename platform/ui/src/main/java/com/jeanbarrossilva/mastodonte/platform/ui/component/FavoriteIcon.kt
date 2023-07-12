@@ -20,11 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
-import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.Favorite
+
+/** Tag that identifies a [FavoriteIcon] for testing purposes. **/
+const val FAVORITE_ICON_TAG = "favorite-icon"
 
 object FavoriteIconDefaults {
     @Composable
@@ -75,7 +78,8 @@ fun FavoriteIcon(
                 )
             }
             .scale(scale)
-            .semantics { set(SemanticsProperties.Favorite, isActive) },
+            .testTag(FAVORITE_ICON_TAG)
+            .semantics { set(SemanticsProperties.Selected, isActive) },
         tint
     )
 }

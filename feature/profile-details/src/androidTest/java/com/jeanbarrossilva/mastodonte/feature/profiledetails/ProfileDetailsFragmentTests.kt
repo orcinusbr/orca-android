@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.mastodonte.feature.profiledetails
 
+import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.filterToOne
 import androidx.compose.ui.test.hasTestTag
@@ -15,7 +16,6 @@ import com.jeanbarrossilva.mastodonte.core.sample.profile.test.SampleProfileWrit
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.test.ProfileDetailsActivityScenarioRule
 import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.TOOT_PREVIEW_FAVORITE_COUNT_STAT_TAG
-import com.jeanbarrossilva.mastodonte.platform.ui.test.component.timeline.toot.assertIsFavorite
 import com.jeanbarrossilva.mastodonte.platform.ui.test.component.timeline.toot.onTootPreviews
 import com.jeanbarrossilva.mastodonte.platform.ui.test.component.timeline.toot.time.Time4JTestRule
 import org.junit.Rule
@@ -55,6 +55,6 @@ internal class ProfileDetailsFragmentTests {
             .onChildren()
             .filterToOne(hasTestTag(TOOT_PREVIEW_FAVORITE_COUNT_STAT_TAG))
             .performClick()
-            .assertIsFavorite()
+            .assertIsSelected()
     }
 }
