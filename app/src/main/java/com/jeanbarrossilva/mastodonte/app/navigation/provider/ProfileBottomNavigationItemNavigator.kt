@@ -1,12 +1,12 @@
 package com.jeanbarrossilva.mastodonte.app.navigation.provider
 
 import androidx.fragment.app.Fragment
-import com.jeanbarrossilva.mastodon.feature.profiledetails.ProfileDetailsFragment
-import com.jeanbarrossilva.mastodon.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.mastodonte.app.R
 import com.jeanbarrossilva.mastodonte.app.navigation.BottomNavigationItemNavigator
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.sample.profile.sample
+import com.jeanbarrossilva.mastodonte.feature.profiledetails.ProfileDetailsFragment
+import com.jeanbarrossilva.mastodonte.feature.profiledetails.navigation.BackwardsNavigationState
 
 internal class ProfileBottomNavigationItemNavigator(
     override val next: BottomNavigationItemNavigator?
