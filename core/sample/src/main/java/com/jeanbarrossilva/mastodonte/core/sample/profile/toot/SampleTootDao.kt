@@ -3,7 +3,7 @@ package com.jeanbarrossilva.mastodonte.core.sample.profile.toot
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Author
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.core.profile.toot.TootProvider
-import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfileDao
+import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfileProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -31,7 +31,7 @@ object SampleTootDao : TootProvider {
      * @param authorID ID of the author whose [Toot]s will be provided.
      **/
     internal suspend fun provideBy(authorID: String): Flow<List<Toot>> {
-        return if (SampleProfileDao.contains(authorID)) {
+        return if (SampleProfileProvider.contains(authorID)) {
             tootsFlow.map { toots ->
                 toots.filter { toot ->
                     toot.author.id == authorID

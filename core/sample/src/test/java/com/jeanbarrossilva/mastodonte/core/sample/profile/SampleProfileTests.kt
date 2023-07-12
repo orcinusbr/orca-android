@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.mastodonte.core.sample.profile
 
 import com.jeanbarrossilva.mastodonte.core.profile.follow.Follow
-import com.jeanbarrossilva.mastodonte.core.sample.profile.test.SampleProfileDaoTestRule
+import com.jeanbarrossilva.mastodonte.core.sample.profile.test.SampleProfileWriterTestRule
 import com.jeanbarrossilva.mastodonte.core.sample.test.assertTogglingEquals
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
@@ -9,7 +9,7 @@ import org.junit.Rule
 
 internal class SampleProfileTests {
     @get:Rule
-    val sampleProfileDaoRule = SampleProfileDaoTestRule()
+    val sampleProfileDaoRule = SampleProfileWriterTestRule()
 
     @Test
     fun `GIVEN a public unfollowed profile WHEN toggling its follow status THEN it's followed`() {

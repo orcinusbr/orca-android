@@ -4,7 +4,7 @@ import com.jeanbarrossilva.mastodonte.core.profile.follow.Follow
 import com.jeanbarrossilva.mastodonte.core.profile.follow.FollowableProfile
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Account
 import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfile
-import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfileDao
+import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfileWriter
 import java.net.URL
 
 /**
@@ -24,6 +24,6 @@ internal data class SampleFollowableProfile<T : Follow>(
     override val url: URL
 ) : SampleProfile, FollowableProfile<T>() {
     override suspend fun onChangeFollowTo(follow: T) {
-        SampleProfileDao.updateFollow(id, follow)
+        SampleProfileWriter.updateFollow(id, follow)
     }
 }

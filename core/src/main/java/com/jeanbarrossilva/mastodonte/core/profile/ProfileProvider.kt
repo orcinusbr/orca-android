@@ -10,14 +10,14 @@ abstract class ProfileProvider {
      *
      * @param id ID of the [Profile] requested to be provided.
      **/
-    class NonexistentProfileException internal constructor(id: String) : IllegalArgumentException(
-        "Profile identified as \"$id\" doesn't exist."
-    )
+    class NonexistentProfileException(id: String) :
+        IllegalArgumentException("Profile identified as \"$id\" doesn't exist.")
 
     /**
      * Gets the [Profile] identified as [id].
      *
      * @param id ID of the [Profile] to be provided.
+     * @throws NonexistentProfileException If no [Profile] with such [ID][Profile.id] exists.
      * @see Profile.id
      **/
     suspend fun provide(id: String): Flow<Profile> {
