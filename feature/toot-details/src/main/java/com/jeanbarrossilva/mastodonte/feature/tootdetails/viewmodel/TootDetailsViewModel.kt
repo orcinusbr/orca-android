@@ -9,7 +9,7 @@ import com.jeanbarrossilva.loadable.flow.loadableFlow
 import com.jeanbarrossilva.loadable.list.flow.listLoadable
 import com.jeanbarrossilva.loadable.list.serialize
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
-import com.jeanbarrossilva.mastodonte.core.profile.toot.TootRepository
+import com.jeanbarrossilva.mastodonte.core.profile.toot.TootProvider
 import com.jeanbarrossilva.mastodonte.feature.tootdetails.TootDetails
 import com.jeanbarrossilva.mastodonte.feature.tootdetails.toTootDetails
 import java.net.URL
@@ -25,10 +25,10 @@ import kotlinx.coroutines.flow.map
 
 internal class TootDetailsViewModel private constructor(
     application: Application,
-    repository: TootRepository,
+    provider: TootProvider,
     id: String
 ) : AndroidViewModel(application) {
-    private val tootLoadableFlow = flow { emitAll(repository.get(id).filterNotNull()) }
+    private val tootLoadableFlow = flow { emitAll(provider.provide(id).filterNotNull()) }
     private val commentsIndexFlow = MutableStateFlow(0)
 
     val detailsLoadableFlow =
@@ -67,7 +67,7 @@ internal class TootDetailsViewModel private constructor(
     }
 
     companion object {
-        fun createFactory(application: Application, repository: TootRepository, id: String):
+        fun createFactory(application: Application, repository: TootProvider, id: String):
             ViewModelProvider.Factory {
             return viewModelFactory {
                 addInitializer(TootDetailsViewModel::class) {

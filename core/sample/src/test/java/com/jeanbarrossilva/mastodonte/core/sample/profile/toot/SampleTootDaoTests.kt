@@ -11,7 +11,7 @@ internal class SampleTootDaoTests {
     fun `GIVEN all toot samples WHEN getting them by their IDs THEN they're returned`() {
         runTest {
             Toot.samples.forEach {
-                assertEquals(it, SampleTootDao.get(it.id).first())
+                assertEquals(it, SampleTootDao.provide(it.id).first())
             }
         }
     }

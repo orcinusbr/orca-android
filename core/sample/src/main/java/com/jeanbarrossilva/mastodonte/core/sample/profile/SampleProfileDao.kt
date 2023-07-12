@@ -20,7 +20,7 @@ object SampleProfileDao : ProfileProvider() {
     /** [MutableStateFlow] that provides the [Profile]s. **/
     val profilesFlow = MutableStateFlow(defaultProfiles)
 
-    override suspend fun contains(id: String): Boolean {
+    public override suspend fun contains(id: String): Boolean {
         val ids = profilesFlow.value.map(Profile::id)
         return id in ids
     }
