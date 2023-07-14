@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.mastodonte.feature.profiledetails
 
-import androidx.compose.ui.test.assertIsSelected
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.filterToOne
 import androidx.compose.ui.test.hasTestTag
@@ -55,6 +55,10 @@ internal class ProfileDetailsFragmentTests {
             .onChildren()
             .filterToOne(hasTestTag(TOOT_PREVIEW_FAVORITE_COUNT_STAT_TAG))
             .performClick()
-            .assertIsSelected()
+            .run {
+                composeRule.waitUntil {
+                    fetchSemanticsNode().config[SemanticsProperties.Selected]
+                }
+            }
     }
 }
