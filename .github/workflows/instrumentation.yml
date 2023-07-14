@@ -52,12 +52,12 @@ jobs:
           api-level: ${{ matrix.api-level }}
           arch: ${{ matrix.arch }}
           force-avd-creation: false
-          disk-size: 2000M
-          heap-size: 600M
+          disk-size: 2048M
+          heap-size: 512M
           script: ./gradlew connectedCheck
           target: ${{ matrix.target }}
     strategy:
       matrix:
-        api-level: [34]
+        api-level: [28]
         arch: [x86_64]
         target: [google_apis]
