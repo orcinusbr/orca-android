@@ -16,6 +16,7 @@ import com.jeanbarrossilva.mastodonte.core.sample.profile.test.SampleProfileWrit
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.test.ProfileDetailsActivityScenarioRule
 import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.TOOT_PREVIEW_FAVORITE_COUNT_STAT_TAG
+import com.jeanbarrossilva.mastodonte.platform.ui.test.AWAIT_TIMEOUT_DURATION_IN_MILLISECONDS
 import com.jeanbarrossilva.mastodonte.platform.ui.test.component.timeline.toot.onTootPreviews
 import com.jeanbarrossilva.mastodonte.platform.ui.test.component.timeline.toot.time.Time4JTestRule
 import org.junit.Rule
@@ -56,7 +57,7 @@ internal class ProfileDetailsFragmentTests {
             .filterToOne(hasTestTag(TOOT_PREVIEW_FAVORITE_COUNT_STAT_TAG))
             .performClick()
             .run {
-                composeRule.waitUntil {
+                composeRule.waitUntil(AWAIT_TIMEOUT_DURATION_IN_MILLISECONDS) {
                     fetchSemanticsNode().config[SemanticsProperties.Selected]
                 }
             }
