@@ -58,6 +58,6 @@ jobs:
           target: ${{ matrix.target }}
     strategy:
       matrix:
-        api-level: [28]
+        api-level: [29]
         arch: [x86]
         target: [google_apis]
