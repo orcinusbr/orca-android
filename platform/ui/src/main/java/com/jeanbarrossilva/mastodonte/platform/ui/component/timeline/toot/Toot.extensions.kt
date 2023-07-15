@@ -13,6 +13,7 @@ fun Toot.toTootPreview(): TootPreview {
         body,
         publicationDateTime,
         commentCount,
+        isFavorite,
         favoriteCount,
         reblogCount
     )

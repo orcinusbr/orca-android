@@ -43,6 +43,7 @@ internal data class TootDetails(
     val body: AnnotatedString,
     private val publicationDateTime: ZonedDateTime,
     private val commentCount: Int,
+    val isFavorite: Boolean,
     private val favoriteCount: Int,
     private val reblogCount: Int,
     val url: URL
@@ -61,6 +62,7 @@ internal data class TootDetails(
             body,
             publicationDateTime,
             commentCount,
+            isFavorite,
             favoriteCount,
             reblogCount
         )
@@ -69,14 +71,15 @@ internal data class TootDetails(
     companion object {
         val sample = TootDetails(
             Toot.sample.id,
-            TootPreview.sample.avatarURL,
-            TootPreview.sample.name,
-            TootPreview.sampleAccount,
+            Toot.sample.author.avatarURL,
+            Toot.sample.author.name,
+            Toot.sample.author.account,
             TootPreview.sample.body,
-            TootPreview.samplePublicationDateTime,
-            TootPreview.SAMPLE_COMMENT_COUNT,
-            TootPreview.SAMPLE_FAVORITE_COUNT,
-            TootPreview.SAMPLE_REBLOG_COUNT,
+            Toot.sample.publicationDateTime,
+            Toot.sample.commentCount,
+            Toot.sample.isFavorite,
+            Toot.sample.favoriteCount,
+            Toot.sample.reblogCount,
             Toot.sample.url
         )
     }
@@ -108,8 +111,8 @@ internal fun TootDetails(
 private fun TootDetails(
     detailsLoadable: Loadable<TootDetails>,
     commentsLoadable: ListLoadable<TootDetails>,
-    onFavorite: (id: String) -> Unit,
-    onReblog: (id: String) -> Unit,
+    onFavorite: () -> Unit,
+    onReblog: () -> Unit,
     onShare: (URL) -> Unit,
     onNavigateToDetails: (id: String) -> Unit,
     onNext: (index: Int) -> Unit,
@@ -151,8 +154,8 @@ private fun TootDetails(onBackwardsNavigation: () -> Unit, modifier: Modifier = 
 private fun TootDetails(
     details: TootDetails,
     commentsLoadable: ListLoadable<TootDetails>,
-    onFavorite: (id: String) -> Unit,
-    onReblog: (id: String) -> Unit,
+    onFavorite: () -> Unit,
+    onReblog: () -> Unit,
     onShare: (URL) -> Unit,
     onNavigateToDetails: (id: String) -> Unit,
     onNext: (index: Int) -> Unit,
@@ -160,7 +163,7 @@ private fun TootDetails(
     modifier: Modifier = Modifier
 ) {
     TootDetails(
-        header = { Header(details, onShare = { onShare(details.url) }) },
+        header = { Header(details, onFavorite, onShare = { onShare(details.url) }) },
         comments = {
             when (
                 @Suppress("NAME_SHADOWING")
@@ -172,8 +175,8 @@ private fun TootDetails(
                     items(commentsLoadable.content) {
                         TootPreview(
                             it.toTootPreview(),
-                            onFavorite = { onFavorite(it.id) },
-                            onReblog = { onReblog(it.id) },
+                            onFavorite,
+                            onReblog,
                             onShare = { onShare(it.url) },
                             onClick = { onNavigateToDetails(it.id) }
                         )

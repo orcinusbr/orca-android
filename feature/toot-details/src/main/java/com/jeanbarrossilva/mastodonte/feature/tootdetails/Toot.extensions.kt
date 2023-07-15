@@ -13,6 +13,7 @@ internal fun Toot.toTootDetails(): TootDetails {
         body = HtmlAnnotatedString(content),
         publicationDateTime,
         commentCount,
+        isFavorite,
         favoriteCount,
         reblogCount,
         url

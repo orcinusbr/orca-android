@@ -22,6 +22,9 @@ abstract class Toot : Serializable {
     /** Number of comments made in response to this [Toot]. **/
     abstract val commentCount: Int
 
+    /** Whether this [Toot] is marked as favorite. **/
+    abstract val isFavorite: Boolean
+
     /** Number of favorites given by users to this [Toot]. **/
     abstract val favoriteCount: Int
 
@@ -31,7 +34,23 @@ abstract class Toot : Serializable {
     /** [URL] that leads to this [Toot]. **/
     abstract val url: URL
 
+    /**
+     * Toggles the "favorite" state of this [Toot].
+     *
+     * @see isFavorite
+     **/
+    suspend fun toggleFavorite() {
+        setFavorite(!isFavorite)
+    }
+
     abstract suspend fun getComments(page: Int): Flow<List<Toot>>
+
+    /**
+     * Defines whether this [Toot] is marked as favorite.
+     *
+     * @param isFavorite Whether it's marked as favorite.
+     **/
+    protected abstract suspend fun setFavorite(isFavorite: Boolean)
 
     companion object
 }

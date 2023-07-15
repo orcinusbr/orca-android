@@ -9,6 +9,7 @@ import com.jeanbarrossilva.mastodonte.feature.profiledetails.ProfileDetailsFragm
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.mastodonte.platform.ui.test.core.SingleFragmentActivity
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 
 internal class ProfileDetailsActivity : SingleFragmentActivity() {
     override val route = "profile-details"
@@ -16,6 +17,11 @@ internal class ProfileDetailsActivity : SingleFragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         inject()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopKoin()
     }
 
     override fun NavGraphBuilder.add() {

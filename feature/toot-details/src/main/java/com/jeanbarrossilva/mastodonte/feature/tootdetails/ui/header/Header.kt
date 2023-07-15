@@ -48,7 +48,12 @@ internal fun Header(modifier: Modifier = Modifier) {
 }
 
 @Composable
-internal fun Header(details: TootDetails, onShare: () -> Unit, modifier: Modifier = Modifier) {
+internal fun Header(
+    details: TootDetails,
+    onFavorite: () -> Unit,
+    onShare: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Header(
         avatar = { SmallAvatar(details.name, details.avatarURL) },
         name = { Text(details.name) },
@@ -65,7 +70,7 @@ internal fun Header(details: TootDetails, onShare: () -> Unit, modifier: Modifie
                 }
 
                 Stat {
-                    FavoriteIcon(isActive = false, onToggle = { })
+                    FavoriteIcon(isActive = details.isFavorite, onToggle = { onFavorite() })
                     Text(details.formattedFavoriteCount)
                 }
 
@@ -144,7 +149,7 @@ private fun LoadingHeaderPreview() {
 private fun LoadedHeaderPreview() {
     MastodonteTheme {
         Surface(color = MastodonteTheme.colorScheme.background) {
-            Header(TootDetails.sample, onShare = { })
+            Header(TootDetails.sample, onFavorite = { }, onShare = { })
         }
     }
 }

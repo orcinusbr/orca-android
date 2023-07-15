@@ -34,12 +34,10 @@ import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.test.Loading
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Account
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
-import com.jeanbarrossilva.mastodonte.core.profile.toot.at
 import com.jeanbarrossilva.mastodonte.core.sample.profile.toot.sample
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.EmptyMutableInteractionSource
 import com.jeanbarrossilva.mastodonte.platform.ui.AccountFormatter
-import com.jeanbarrossilva.mastodonte.platform.ui.Samples
 import com.jeanbarrossilva.mastodonte.platform.ui.component.FavoriteIcon
 import com.jeanbarrossilva.mastodonte.platform.ui.component.FavoriteIconDefaults
 import com.jeanbarrossilva.mastodonte.platform.ui.component.avatar.SmallAvatar
@@ -49,7 +47,6 @@ import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.time.R
 import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.time.rememberRelativeTimeProvider
 import com.jeanbarrossilva.mastodonte.platform.ui.html.HtmlAnnotatedString
 import java.net.URL
-import java.time.ZoneId
 import java.time.ZonedDateTime
 
 /** Tag that identifies a [TootPreview]'s name for testing purposes. **/
@@ -64,14 +61,14 @@ internal const val TOOT_PREVIEW_BODY_TAG = "toot-preview-body"
 /** Tag that identifies a [TootPreview]'s comment count stat for testing purposes. **/
 internal const val TOOT_PREVIEW_COMMENT_COUNT_STAT_TAG = "toot-preview-comments-stat"
 
-/** Tag that identifies a [TootPreview]'s favorite count stat for testing purposes. **/
-internal const val TOOT_PREVIEW_FAVORITE_COUNT_STAT_TAG = "toot-preview-favorites-stat"
-
 /** Tag that identifies a [TootPreview]'s reblog count stat for testing purposes. **/
 internal const val TOOT_PREVIEW_REBLOG_COUNT_STAT_TAG = "toot-preview-reblogs-stat"
 
 /** Tag that identifies a [TootPreview]'s share action for testing purposes. **/
 internal const val TOOT_PREVIEW_SHARE_ACTION_TAG = "toot-preview-share-action"
+
+/** Tag that identifies a [TootPreview]'s favorite count stat for testing purposes. **/
+const val TOOT_PREVIEW_FAVORITE_COUNT_STAT_TAG = "toot-preview-favorites-stat"
 
 /** Tag that identifies a [TootPreview] for testing purposes. **/
 const val TOOT_PREVIEW_TAG = "toot-preview"
@@ -94,6 +91,7 @@ private val bodyModifier = Modifier.testTag(TOOT_PREVIEW_BODY_TAG)
  * @param body Content written by the author.
  * @param publicationDateTime Zoned moment in time in which it was published.
  * @param commentCount Amount of comments.
+ * @param isFavorite Whether it's marked as favorite.
  * @param favoriteCount Amount of times it's been marked as favorite.
  * @param reblogCount Amount of times it's been reblogged.
  **/
@@ -105,6 +103,7 @@ data class TootPreview(
     val body: AnnotatedString,
     private val publicationDateTime: ZonedDateTime,
     private val commentCount: Int,
+    val isFavorite: Boolean,
     private val favoriteCount: Int,
     private val reblogCount: Int
 ) {
@@ -130,32 +129,17 @@ data class TootPreview(
     }
 
     companion object {
-        /** [sample]'s [commentCount]. **/
-        const val SAMPLE_COMMENT_COUNT = 1_024
-
-        /** [sample]'s [favoriteCount]. **/
-        const val SAMPLE_FAVORITE_COUNT = 2_048
-
-        /** [sample]'s [reblogCount]. **/
-        const val SAMPLE_REBLOG_COUNT = 512
-
-        /** [sample]'s [account]. **/
-        val sampleAccount = "jeanbarrossilva" at "mastodon.social"
-
-        /** [sample]'s [publicationDateTime]. **/
-        val samplePublicationDateTime: ZonedDateTime =
-            ZonedDateTime.of(2003, 10, 8, 8, 0, 0, 0, ZoneId.of("GMT-3"))
-
         /** [TootPreview] sample. **/
         val sample = TootPreview(
-            Samples.avatarURL,
-            Samples.NAME,
-            sampleAccount,
+            Toot.sample.author.avatarURL,
+            Toot.sample.author.name,
+            Toot.sample.author.account,
             body = HtmlAnnotatedString(Toot.sample.content),
-            samplePublicationDateTime,
-            SAMPLE_COMMENT_COUNT,
-            SAMPLE_FAVORITE_COUNT,
-            SAMPLE_REBLOG_COUNT
+            Toot.sample.publicationDateTime,
+            Toot.sample.commentCount,
+            Toot.sample.isFavorite,
+            Toot.sample.favoriteCount,
+            Toot.sample.reblogCount
         )
     }
 }
@@ -220,9 +204,12 @@ fun TootPreview(
                     Text(preview.formattedCommentCount)
                 }
 
-                Stat(onClick = onFavorite, Modifier.testTag(TOOT_PREVIEW_FAVORITE_COUNT_STAT_TAG)) {
+                Stat(
+                    onClick = onFavorite,
+                    Modifier.testTag(TOOT_PREVIEW_FAVORITE_COUNT_STAT_TAG)
+                ) {
                     FavoriteIcon(
-                        isActive = false,
+                        isActive = preview.isFavorite,
                         onToggle = { onFavorite() },
                         Modifier.size(StatDefaults.IconSize),
                         FavoriteIconDefaults
