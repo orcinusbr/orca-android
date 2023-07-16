@@ -10,7 +10,10 @@ import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.time.t
 import com.jeanbarrossilva.mastodonte.platform.ui.test.component.timeline.toot.onTootPreview
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class TootPreviewTests {
     @get:Rule
     val composeRule = createComposeRule()
