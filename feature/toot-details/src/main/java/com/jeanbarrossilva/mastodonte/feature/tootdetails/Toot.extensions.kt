@@ -15,6 +15,7 @@ internal fun Toot.toTootDetails(): TootDetails {
         commentCount,
         isFavorite,
         favoriteCount,
+        isReblogged,
         reblogCount,
         url
     )

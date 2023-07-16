@@ -3,6 +3,7 @@ package com.jeanbarrossilva.mastodonte.platform.ui.component
 import androidx.compose.ui.test.assertIsNotSelected
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.createComposeRule
+import com.jeanbarrossilva.mastodonte.platform.ui.component.stat.FavoriteStatIcon
 import org.junit.Rule
 import org.junit.Test
 
@@ -13,7 +14,7 @@ internal class FavoriteIconTests {
     @Test
     fun isUnselectedWhenInactive() {
         composeRule.setContent {
-            FavoriteIcon(isActive = false, onToggle = { })
+            FavoriteStatIcon(isActive = false, onToggle = { })
         }
         composeRule.onFavoriteIcon().assertIsNotSelected()
     }
@@ -21,7 +22,7 @@ internal class FavoriteIconTests {
     @Test
     fun isSelectedWhenActive() {
         composeRule.setContent {
-            FavoriteIcon(isActive = true, onToggle = { })
+            FavoriteStatIcon(isActive = true, onToggle = { })
         }
         composeRule.onFavoriteIcon().assertIsSelected()
     }

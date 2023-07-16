@@ -15,6 +15,7 @@ fun Toot.toTootPreview(): TootPreview {
         commentCount,
         isFavorite,
         favoriteCount,
+        isReblogged,
         reblogCount
     )
 }

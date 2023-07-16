@@ -19,9 +19,6 @@
         <item name="colorOnSurface">@android:color/white</item>
         <item name="colorSurfaceVariant">#202020</item>
         <item name="colorOnSurfaceVariant">#F5F5F5</item>
-        <item name="colorError">#D32F2F</item>
-        <item name="colorErrorContainer">#D32F2F</item>
-        <item name="colorOnErrorContainer">@android:color/white</item>
         <item name="colorOutline">?android:attr/textColorTertiary</item>
         <item name="colorOutlineVariant">#1A1A1A</item>
         <item name="textAppearanceDisplayLarge">

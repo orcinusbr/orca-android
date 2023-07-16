@@ -16,11 +16,16 @@ internal data class SampleToot(
     override val commentCount: Int,
     override val isFavorite: Boolean,
     override val favoriteCount: Int,
+    override val isReblogged: Boolean,
     override val reblogCount: Int,
     override val url: URL
 ) : Toot() {
     override suspend fun setFavorite(isFavorite: Boolean) {
         SampleTootWriter.updateFavorite(id, isFavorite)
+    }
+
+    override suspend fun setReblogged(isReblogged: Boolean) {
+        SampleTootWriter.updateReblogged(id, isReblogged)
     }
 
     override suspend fun getComments(page: Int): Flow<List<Toot>> {

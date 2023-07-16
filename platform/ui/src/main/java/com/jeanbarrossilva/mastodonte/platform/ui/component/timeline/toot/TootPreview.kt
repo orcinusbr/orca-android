@@ -6,10 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.rounded.Comment
-import androidx.compose.material.icons.rounded.Repeat
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -38,8 +36,6 @@ import com.jeanbarrossilva.mastodonte.core.sample.profile.toot.sample
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.EmptyMutableInteractionSource
 import com.jeanbarrossilva.mastodonte.platform.ui.AccountFormatter
-import com.jeanbarrossilva.mastodonte.platform.ui.component.FavoriteIcon
-import com.jeanbarrossilva.mastodonte.platform.ui.component.FavoriteIconDefaults
 import com.jeanbarrossilva.mastodonte.platform.ui.component.avatar.SmallAvatar
 import com.jeanbarrossilva.mastodonte.platform.ui.component.avatar.provider.AvatarImageProvider
 import com.jeanbarrossilva.mastodonte.platform.ui.component.avatar.provider.rememberAvatarImageProvider
@@ -67,9 +63,6 @@ internal const val TOOT_PREVIEW_REBLOG_COUNT_STAT_TAG = "toot-preview-reblogs-st
 /** Tag that identifies a [TootPreview]'s share action for testing purposes. **/
 internal const val TOOT_PREVIEW_SHARE_ACTION_TAG = "toot-preview-share-action"
 
-/** Tag that identifies a [TootPreview]'s favorite count stat for testing purposes. **/
-const val TOOT_PREVIEW_FAVORITE_COUNT_STAT_TAG = "toot-preview-favorites-stat"
-
 /** Tag that identifies a [TootPreview] for testing purposes. **/
 const val TOOT_PREVIEW_TAG = "toot-preview"
 
@@ -93,6 +86,7 @@ private val bodyModifier = Modifier.testTag(TOOT_PREVIEW_BODY_TAG)
  * @param commentCount Amount of comments.
  * @param isFavorite Whether it's marked as favorite.
  * @param favoriteCount Amount of times it's been marked as favorite.
+ * @param isReblogged Whether it's reblogged.
  * @param reblogCount Amount of times it's been reblogged.
  **/
 @Immutable
@@ -105,6 +99,7 @@ data class TootPreview(
     private val commentCount: Int,
     val isFavorite: Boolean,
     private val favoriteCount: Int,
+    val isReblogged: Boolean,
     private val reblogCount: Int
 ) {
     /** Formatted, displayable version of [commentCount]. **/
@@ -139,6 +134,7 @@ data class TootPreview(
             Toot.sample.commentCount,
             Toot.sample.isFavorite,
             Toot.sample.favoriteCount,
+            Toot.sample.isReblogged,
             Toot.sample.reblogCount
         )
     }
@@ -204,29 +200,8 @@ fun TootPreview(
                     Text(preview.formattedCommentCount)
                 }
 
-                Stat(
-                    onClick = onFavorite,
-                    Modifier.testTag(TOOT_PREVIEW_FAVORITE_COUNT_STAT_TAG)
-                ) {
-                    FavoriteIcon(
-                        isActive = preview.isFavorite,
-                        onToggle = { onFavorite() },
-                        Modifier.size(StatDefaults.IconSize),
-                        FavoriteIconDefaults
-                            .colors(activeColor = MastodonteTheme.colorScheme.onErrorContainer)
-                    )
-
-                    Text(preview.formattedFavoriteCount)
-                }
-
-                Stat(
-                    MastodonteTheme.Icons.Repeat,
-                    contentDescription = "Reblogs",
-                    onClick = onReblog,
-                    Modifier.testTag(TOOT_PREVIEW_REBLOG_COUNT_STAT_TAG)
-                ) {
-                    Text(preview.formattedReblogCount)
-                }
+                FavoriteStat(preview, onClick = onFavorite)
+                ReblogStat(preview, onClick = onReblog)
 
                 Stat(
                     MastodonteTheme.Icons.Share,
@@ -302,16 +277,25 @@ private fun LoadingTootPreviewPreview() {
 
 @Composable
 @Preview
-private fun LoadedTootPreviewPreview() {
+private fun LoadedInactiveTootPreviewPreview() {
     MastodonteTheme {
         Surface(color = MastodonteTheme.colorScheme.background) {
-            TootPreview(
-                TootPreview.sample,
-                onFavorite = { },
-                onReblog = { },
-                onShare = { },
-                onClick = { }
-            )
+            TootPreview(TootPreview.sample.copy(isFavorite = false, isReblogged = false))
         }
     }
+}
+
+@Composable
+@Preview
+private fun LoadedActiveTootPreviewPreview() {
+    MastodonteTheme {
+        Surface(color = MastodonteTheme.colorScheme.background) {
+            TootPreview(TootPreview.sample.copy(isFavorite = true, isReblogged = true))
+        }
+    }
+}
+
+@Composable
+private fun TootPreview(preview: TootPreview, modifier: Modifier = Modifier) {
+    TootPreview(preview, onFavorite = { }, onReblog = { }, onShare = { }, onClick = { }, modifier)
 }

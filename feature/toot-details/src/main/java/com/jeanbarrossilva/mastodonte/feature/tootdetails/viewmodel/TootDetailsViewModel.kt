@@ -47,6 +47,9 @@ internal class TootDetailsViewModel private constructor(
     }
 
     fun reblog() {
+        viewModelScope.launch {
+            tootFlow.first().toggleReblogged()
+        }
     }
 
     fun share(url: URL) {

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.rounded.Comment
-import androidx.compose.material.icons.rounded.Repeat
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -24,8 +23,10 @@ import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
 import com.jeanbarrossilva.mastodonte.feature.tootdetails.TootDetails
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
-import com.jeanbarrossilva.mastodonte.platform.ui.component.FavoriteIcon
+import com.jeanbarrossilva.mastodonte.platform.ui.component.ActivateableStatIconInteractiveness
 import com.jeanbarrossilva.mastodonte.platform.ui.component.avatar.SmallAvatar
+import com.jeanbarrossilva.mastodonte.platform.ui.component.stat.FavoriteStatIcon
+import com.jeanbarrossilva.mastodonte.platform.ui.component.stat.ReblogStatIcon
 
 @Composable
 internal fun Header(modifier: Modifier = Modifier) {
@@ -51,6 +52,7 @@ internal fun Header(modifier: Modifier = Modifier) {
 internal fun Header(
     details: TootDetails,
     onFavorite: () -> Unit,
+    onReblog: () -> Unit,
     onShare: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -70,12 +72,20 @@ internal fun Header(
                 }
 
                 Stat {
-                    FavoriteIcon(isActive = details.isFavorite, onToggle = { onFavorite() })
+                    FavoriteStatIcon(
+                        isActive = details.isFavorite,
+                        ActivateableStatIconInteractiveness.Interactive { onFavorite() }
+                    )
+
                     Text(details.formattedFavoriteCount)
                 }
 
                 Stat {
-                    Icon(MastodonteTheme.Icons.Repeat, contentDescription = "Reblog")
+                    ReblogStatIcon(
+                        isActive = details.isReblogged,
+                        ActivateableStatIconInteractiveness.Interactive { onReblog() }
+                    )
+
                     Text(details.formattedReblogCount)
                 }
 
@@ -149,7 +159,7 @@ private fun LoadingHeaderPreview() {
 private fun LoadedHeaderPreview() {
     MastodonteTheme {
         Surface(color = MastodonteTheme.colorScheme.background) {
-            Header(TootDetails.sample, onFavorite = { }, onShare = { })
+            Header(TootDetails.sample, onFavorite = { }, onReblog = { }, onShare = { })
         }
     }
 }

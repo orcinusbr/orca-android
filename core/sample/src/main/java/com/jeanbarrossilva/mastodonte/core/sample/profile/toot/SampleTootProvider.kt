@@ -14,6 +14,10 @@ object SampleTootProvider : TootProvider {
     class NonexistentAuthorException internal constructor(id: String) :
         IllegalArgumentException("Author identified as \"$id\" doesn't exist.")
 
+    /** [IllegalArgumentException] thrown if a nonexistent [Toot] is requested. **/
+    class NonexistentTootException internal constructor(id: String) :
+        IllegalArgumentException("Toot identified as \"$id\" doesn't exist.")
+
     /** [MutableStateFlow] that provides the [Toot]s. **/
     internal val tootsFlow = MutableStateFlow(Toot.samples)
 

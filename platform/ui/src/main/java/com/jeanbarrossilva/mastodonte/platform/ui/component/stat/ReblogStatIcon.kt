@@ -1,0 +1,80 @@
+package com.jeanbarrossilva.mastodonte.platform.ui.component.stat
+
+import androidx.compose.material.icons.rounded.Repeat
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.tooling.preview.Preview
+import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
+import com.jeanbarrossilva.mastodonte.platform.ui.component.ActivateableStatIcon
+import com.jeanbarrossilva.mastodonte.platform.ui.component.ActivateableStatIconColors
+import com.jeanbarrossilva.mastodonte.platform.ui.component.ActivateableStatIconInteractiveness
+
+/** Tag that identifies a [ReblogStatIcon] for testing purposes. **/
+const val REBLOG_STAT_ICON_TAG = "reblog-stat-icon"
+
+/** Default values of a [ReblogStatIcon]. **/
+object ReblogStatIconDefaults {
+    /**
+     * [ActivateableStatIconColors] by which a [ReblogStatIcon] is colored by default.
+     *
+     * @param inactiveColor [Color] to color it with when it's inactive.
+     * @param activeColor [Color] to color it with when it's active.
+     **/
+    @Composable
+    fun colors(
+        inactiveColor: Color = LocalContentColor.current,
+        activeColor: Color = Color(0xFF81C784)
+    ): ActivateableStatIconColors {
+        return ActivateableStatIconColors(inactiveColor, activeColor)
+    }
+}
+
+/**
+ * [ActivateableStatIcon] that represents a "reblog" stat.
+ *
+ * @param isActive Whether the state it represents is enabled.
+ * @param interactiveness [ActivateableStatIconInteractiveness] that indicates whether this
+ * [ActivateableStatIcon] can be interacted with.
+ * @param colors [ActivateableStatIconColors] that defines the [Color]s to color it.
+ * @param modifier [Modifier] to be applied to the underlying [ActivateableStatIcon].
+ **/
+@Composable
+fun ReblogStatIcon(
+    isActive: Boolean,
+    interactiveness: ActivateableStatIconInteractiveness,
+    modifier: Modifier = Modifier,
+    colors: ActivateableStatIconColors = ReblogStatIconDefaults.colors()
+) {
+    ActivateableStatIcon(
+        MastodonteTheme.Icons.Repeat,
+        contentDescription = "Reblog",
+        isActive,
+        interactiveness,
+        colors,
+        modifier.testTag(REBLOG_STAT_ICON_TAG)
+    )
+}
+
+@Composable
+@Preview
+private fun InactiveReblogStatIconPreview() {
+    MastodonteTheme {
+        Surface(color = MastodonteTheme.colorScheme.background) {
+            ReblogStatIcon(isActive = false, ActivateableStatIconInteractiveness.Still)
+        }
+    }
+}
+
+@Composable
+@Preview
+private fun ActiveReblogStatIconPreview() {
+    MastodonteTheme {
+        Surface(color = MastodonteTheme.colorScheme.background) {
+            ReblogStatIcon(isActive = true, ActivateableStatIconInteractiveness.Still)
+        }
+    }
+}
