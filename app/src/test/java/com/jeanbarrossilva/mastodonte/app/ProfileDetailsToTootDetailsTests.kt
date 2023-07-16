@@ -12,7 +12,10 @@ import com.jeanbarrossilva.mastodonte.platform.ui.test.component.timeline.toot.o
 import org.junit.Assert.assertNotNull
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class ProfileDetailsToTootDetailsTests {
     @get:Rule
     val composeRule = createEmptyComposeRule()
