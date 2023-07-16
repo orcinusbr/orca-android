@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.ui.component
+package com.jeanbarrossilva.mastodonte.platform.ui.component.stat
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
@@ -21,12 +21,14 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.role
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
+
+/** Tag for identifying an [ActivateableStatIcon] for testing purposes. **/
+const val ACTIVATEABLE_STAT_ICON_TAG = "activateable-stat-icon"
 
 /** Determines whether a [ActivateableStatIcon] is interactive. **/
 sealed class ActivateableStatIconInteractiveness {
@@ -121,10 +123,8 @@ internal fun ActivateableStatIcon(
                 )
             }
             .scale(scale)
-            .semantics {
-                role = Role.Switch
-                selected = isActive
-            },
+            .testTag(ACTIVATEABLE_STAT_ICON_TAG)
+            .semantics { selected = isActive },
         tint
     )
 }

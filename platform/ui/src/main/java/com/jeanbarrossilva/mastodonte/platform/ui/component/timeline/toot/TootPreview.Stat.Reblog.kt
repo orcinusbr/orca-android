@@ -9,9 +9,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
-import com.jeanbarrossilva.mastodonte.platform.ui.component.ActivateableStatIconInteractiveness
-import com.jeanbarrossilva.mastodonte.platform.ui.component.stat.ReblogStatIcon
-import com.jeanbarrossilva.mastodonte.platform.ui.component.stat.ReblogStatIconDefaults
+import com.jeanbarrossilva.mastodonte.platform.ui.component.stat.ActivateableStatIconInteractiveness
+import com.jeanbarrossilva.mastodonte.platform.ui.component.stat.reblog.ReblogStatIcon
+import com.jeanbarrossilva.mastodonte.platform.ui.component.stat.reblog.ReblogStatIconDefaults
 
 @Composable
 internal fun ReblogStat(preview: TootPreview, onClick: () -> Unit, modifier: Modifier = Modifier) {

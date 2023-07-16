@@ -11,9 +11,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
-import com.jeanbarrossilva.mastodonte.platform.ui.component.ActivateableStatIconInteractiveness
-import com.jeanbarrossilva.mastodonte.platform.ui.component.stat.FavoriteStatIcon
-import com.jeanbarrossilva.mastodonte.platform.ui.component.stat.FavoriteStatIconDefaults
+import com.jeanbarrossilva.mastodonte.platform.ui.component.stat.ActivateableStatIconInteractiveness
+import com.jeanbarrossilva.mastodonte.platform.ui.component.stat.favorite.FavoriteStatIcon
+import com.jeanbarrossilva.mastodonte.platform.ui.component.stat.favorite.FavoriteStatIconDefaults
 
 /** Tag that identifies a [TootPreview]'s favorite count stat for testing purposes. **/
 const val TOOT_PREVIEW_FAVORITE_STAT_TAG = "toot-preview-favorites-stat"

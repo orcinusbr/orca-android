@@ -23,10 +23,10 @@ import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
 import com.jeanbarrossilva.mastodonte.feature.tootdetails.TootDetails
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
-import com.jeanbarrossilva.mastodonte.platform.ui.component.ActivateableStatIconInteractiveness
 import com.jeanbarrossilva.mastodonte.platform.ui.component.avatar.SmallAvatar
-import com.jeanbarrossilva.mastodonte.platform.ui.component.stat.FavoriteStatIcon
-import com.jeanbarrossilva.mastodonte.platform.ui.component.stat.ReblogStatIcon
+import com.jeanbarrossilva.mastodonte.platform.ui.component.stat.ActivateableStatIconInteractiveness
+import com.jeanbarrossilva.mastodonte.platform.ui.component.stat.favorite.FavoriteStatIcon
+import com.jeanbarrossilva.mastodonte.platform.ui.component.stat.reblog.ReblogStatIcon
 
 @Composable
 internal fun Header(modifier: Modifier = Modifier) {

@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.ui.component.stat
+package com.jeanbarrossilva.mastodonte.platform.ui.component.stat.reblog
 
 import androidx.compose.material.icons.rounded.Repeat
 import androidx.compose.material3.LocalContentColor
@@ -9,9 +9,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
-import com.jeanbarrossilva.mastodonte.platform.ui.component.ActivateableStatIcon
-import com.jeanbarrossilva.mastodonte.platform.ui.component.ActivateableStatIconColors
-import com.jeanbarrossilva.mastodonte.platform.ui.component.ActivateableStatIconInteractiveness
+import com.jeanbarrossilva.mastodonte.platform.ui.component.stat.ActivateableStatIcon
+import com.jeanbarrossilva.mastodonte.platform.ui.component.stat.ActivateableStatIconColors
+import com.jeanbarrossilva.mastodonte.platform.ui.component.stat.ActivateableStatIconInteractiveness
 
 /** Tag that identifies a [ReblogStatIcon] for testing purposes. **/
 const val REBLOG_STAT_ICON_TAG = "reblog-stat-icon"
