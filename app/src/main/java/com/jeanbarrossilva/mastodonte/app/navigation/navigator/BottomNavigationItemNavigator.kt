@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.app.navigation
+package com.jeanbarrossilva.mastodonte.app.navigation.navigator
 
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment

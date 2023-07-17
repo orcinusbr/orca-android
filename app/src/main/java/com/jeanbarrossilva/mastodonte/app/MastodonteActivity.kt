@@ -7,7 +7,7 @@ import androidx.core.view.WindowCompat
 import com.jeanbarrossilva.mastodonte.app.databinding.ActivityMastodonteBinding
 import com.jeanbarrossilva.mastodonte.app.feature.profiledetails.ProfileDetailsModule
 import com.jeanbarrossilva.mastodonte.app.feature.tootdetails.TootDetailsModule
-import com.jeanbarrossilva.mastodonte.app.navigation.BottomNavigationItemNavigatorFactory
+import com.jeanbarrossilva.mastodonte.app.navigation.navigator.BottomNavigationItemNavigatorFactory
 import com.jeanbarrossilva.mastodonte.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import org.koin.core.context.loadKoinModules
 
