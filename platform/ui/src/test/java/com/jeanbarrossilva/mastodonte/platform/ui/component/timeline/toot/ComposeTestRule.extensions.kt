@@ -16,7 +16,7 @@ internal fun ComposeTestRule.onTootPreviewCommentCountStat(): SemanticsNodeInter
 
 /** [SemanticsNodeInteraction] of [TootPreview]'s favorite count stat node. **/
 internal fun ComposeTestRule.onTootPreviewFavoriteCountStat(): SemanticsNodeInteraction {
-    return onNodeWithTag(TOOT_PREVIEW_FAVORITE_COUNT_STAT_TAG, useUnmergedTree = true)
+    return onNodeWithTag(TOOT_PREVIEW_FAVORITE_STAT_TAG, useUnmergedTree = true)
 }
 
 /** [SemanticsNodeInteraction] of [TootPreview]'s metadata node. **/

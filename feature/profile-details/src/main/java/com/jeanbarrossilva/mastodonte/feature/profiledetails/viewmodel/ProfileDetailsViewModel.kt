@@ -58,6 +58,9 @@ internal class ProfileDetailsViewModel(
     }
 
     fun reblog(tootID: String) {
+        coroutineScope.launch {
+            tootProvider.provide(tootID).first().toggleReblogged()
+        }
     }
 
     fun loadTootsAt(index: Int) {

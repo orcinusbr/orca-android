@@ -34,6 +34,7 @@ private fun createSample(): Toot {
         commentCount = 1_024,
         isFavorite = false,
         favoriteCount = 2_048,
+        isReblogged = false,
         reblogCount = 512,
         URL("https://mastodon.social/@christianselig/110492858891694580")
     )

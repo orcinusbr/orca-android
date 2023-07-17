@@ -16,14 +16,21 @@ internal class TestToot(
     override val commentCount: Int = Toot.sample.commentCount,
     isLiked: Boolean = Toot.sample.isFavorite,
     override val favoriteCount: Int = Toot.sample.favoriteCount,
+    isReblogged: Boolean = Toot.sample.isReblogged,
     override val reblogCount: Int = Toot.sample.reblogCount,
     override val url: URL = Toot.sample.url
 ) : Toot() {
     override var isFavorite = isLiked
         private set
+    override var isReblogged = isReblogged
+        private set
 
     override suspend fun setFavorite(isFavorite: Boolean) {
         this.isFavorite = isFavorite
+    }
+
+    override suspend fun setReblogged(isReblogged: Boolean) {
+        this.isReblogged = isReblogged
     }
 
     override suspend fun getComments(page: Int): Flow<List<Toot>> {

@@ -24,4 +24,22 @@ internal class TootTests {
             assertFalse(toot.isFavorite)
         }
     }
+
+    @Test
+    fun `GIVEN a non-reblogged toot WHEN reblogging it THEN it's reblogged`() {
+        val toot = TestToot(isReblogged = false)
+        runTest {
+            toot.toggleReblogged()
+            assertTrue(toot.isReblogged)
+        }
+    }
+
+    @Test
+    fun `GIVEN a reblogged toot WHEN un-reblogging it THEN it isn't reblogged`() {
+        val toot = TestToot(isReblogged = true)
+        runTest {
+            toot.toggleReblogged()
+            assertFalse(toot.isReblogged)
+        }
+    }
 }

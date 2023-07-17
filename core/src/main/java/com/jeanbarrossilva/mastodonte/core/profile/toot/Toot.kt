@@ -28,6 +28,9 @@ abstract class Toot : Serializable {
     /** Number of favorites given by users to this [Toot]. **/
     abstract val favoriteCount: Int
 
+    /** Whether this [Toot] is reblogged. **/
+    abstract val isReblogged: Boolean
+
     /** Number of times this [Toot] has been re-blogged. **/
     abstract val reblogCount: Int
 
@@ -43,6 +46,15 @@ abstract class Toot : Serializable {
         setFavorite(!isFavorite)
     }
 
+    /**
+     * Toggles the "reblogged" state of this [Toot].
+     *
+     * @see isReblogged
+     **/
+    suspend fun toggleReblogged() {
+        setReblogged(!isReblogged)
+    }
+
     abstract suspend fun getComments(page: Int): Flow<List<Toot>>
 
     /**
@@ -51,6 +63,13 @@ abstract class Toot : Serializable {
      * @param isFavorite Whether it's marked as favorite.
      **/
     protected abstract suspend fun setFavorite(isFavorite: Boolean)
+
+    /**
+     * Defines whether this [Toot] is reblogged.
+     *
+     * @param isReblogged Whether it's reblogged.
+     **/
+    protected abstract suspend fun setReblogged(isReblogged: Boolean)
 
     companion object
 }

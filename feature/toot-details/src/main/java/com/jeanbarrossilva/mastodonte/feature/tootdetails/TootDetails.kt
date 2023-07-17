@@ -45,6 +45,7 @@ internal data class TootDetails(
     private val commentCount: Int,
     val isFavorite: Boolean,
     private val favoriteCount: Int,
+    val isReblogged: Boolean,
     private val reblogCount: Int,
     val url: URL
 ) : Serializable {
@@ -64,6 +65,7 @@ internal data class TootDetails(
             commentCount,
             isFavorite,
             favoriteCount,
+            isReblogged,
             reblogCount
         )
     }
@@ -79,6 +81,7 @@ internal data class TootDetails(
             Toot.sample.commentCount,
             Toot.sample.isFavorite,
             Toot.sample.favoriteCount,
+            Toot.sample.isReblogged,
             Toot.sample.reblogCount,
             Toot.sample.url
         )
@@ -163,7 +166,7 @@ private fun TootDetails(
     modifier: Modifier = Modifier
 ) {
     TootDetails(
-        header = { Header(details, onFavorite, onShare = { onShare(details.url) }) },
+        header = { Header(details, onFavorite, onReblog, onShare = { onShare(details.url) }) },
         comments = {
             when (
                 @Suppress("NAME_SHADOWING")
