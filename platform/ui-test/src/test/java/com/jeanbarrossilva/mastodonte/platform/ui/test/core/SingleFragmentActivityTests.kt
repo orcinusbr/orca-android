@@ -1,9 +1,11 @@
 package com.jeanbarrossilva.mastodonte.platform.ui.test.core
 
 import android.app.Activity
+import android.os.Bundle
 import android.os.Looper
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.activity
 import androidx.navigation.fragment.FragmentNavigator
@@ -11,8 +13,8 @@ import androidx.navigation.fragment.FragmentNavigatorDestinationBuilder
 import androidx.navigation.fragment.dialog
 import androidx.navigation.fragment.fragment
 import androidx.navigation.get
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -55,7 +57,7 @@ internal class SingleFragmentActivityTests {
 
         private fun cancelNavGraphIntegrityInsuranceJob() {
             runTest {
-                navGraphIntegrityInsuranceScope.coroutineContext[Job]?.cancelAndJoin()
+                navGraphIntegrityInsuranceJob?.cancelAndJoin()
             }
         }
     }
@@ -91,7 +93,7 @@ internal class SingleFragmentActivityTests {
         override val route = "multiple-destinations"
 
         override fun NavGraphBuilder.add() {
-            fragment<Fragment>(this@MultipleDestinationsActivity.route)
+            fragment<Fragment>()
             dialog<DialogFragment>("dialog")
         }
     }
@@ -106,23 +108,27 @@ internal class SingleFragmentActivityTests {
 
         override fun NavGraphBuilder.add() {
             navigator = provider[FragmentNavigator::class]
-            fragment<Fragment>(this@PosteriorlyAddedDestinationActivity.route)
+            fragment<Fragment>()
         }
 
-        override fun onAttachedToWindow() {
-            super.onAttachedToWindow()
-            addPosteriorDestination()
-            navController.navigate(posteriorDestinationRoute)
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            navigateToPosteriorDestination()
         }
 
-        private fun addPosteriorDestination() {
+        private fun navigateToPosteriorDestination() {
             val destination = FragmentNavigatorDestinationBuilder(
                 navigator,
                 posteriorDestinationRoute,
                 Fragment::class
             )
                 .build()
-            navController.graph.addDestination(destination)
+            lifecycleScope.launch {
+                navGraphIntegrityInsuranceJob?.join()
+                shadowOf(Looper.getMainLooper()).idle()
+                navController.graph.addDestination(destination)
+                navController.navigate(posteriorDestinationRoute)
+            }
         }
     }
 
@@ -159,7 +165,6 @@ internal class SingleFragmentActivityTests {
     @Test
     fun callsOnMultipleDestinationsCallback() {
         Robolectric.buildActivity(MultipleDestinationsActivity::class.java).setup().use {
-            shadowOf(Looper.getMainLooper()).idle()
             assertEquals(
                 TestActivity.NavGraphIntegrityCallback.MULTIPLE_DESTINATIONS,
                 it.get().calledNavGraphIntegrityCallback
