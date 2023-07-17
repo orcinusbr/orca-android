@@ -35,6 +35,7 @@ object Dependencies {
         "com.jeanbarrossilva.loadable:loadable-placeholder-test:${Versions.LOADABLE}"
     const val MATERIAL = "com.google.android.material:material:${Versions.MATERIAL}"
     const val NAVIGATION_FRAGMENT = "androidx.navigation:navigation-fragment:${Versions.NAVIGATION}"
+    const val ROBOLECTRIC = "org.robolectric:robolectric:${Versions.ROBOLECTRIC}"
     const val TEST_CORE = "androidx.test:core-ktx:${Versions.TEST_CORE}"
     const val TEST_ESPRESSO_CORE = "androidx.test.espresso:espresso-core:${Versions.TEST_ESPRESSO}"
     const val TIME4J = "net.time4j:time4j-android:${Versions.TIME4A}"

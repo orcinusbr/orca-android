@@ -9,7 +9,6 @@ android {
 
     defaultConfig {
         minSdk = Versions.Mastodonte.SDK_MIN
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -30,6 +29,13 @@ android {
         compose = true
     }
 
+    @Suppress("UnstableApiUsage")
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
+
     compileOptions {
         sourceCompatibility = Versions.java
         targetCompatibility = Versions.java
@@ -48,13 +54,6 @@ android {
 }
 
 dependencies {
-    androidTestImplementation(project(":core:sample-test"))
-    androidTestImplementation(project(":platform:ui-test"))
-    androidTestImplementation(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
-    androidTestImplementation(Dependencies.FRAGMENT_TESTING)
-    androidTestImplementation(Dependencies.KOIN_TEST)
-    androidTestImplementation(Dependencies.TURBINE)
-
     implementation(project(":core"))
     implementation(project(":core:sample"))
     implementation(project(":platform:theme"))
@@ -65,5 +64,12 @@ dependencies {
     implementation(Dependencies.LOADABLE_PLACEHOLDER)
     implementation(Dependencies.KOIN_ANDROID)
 
-    testImplementation(Dependencies.JUNIT)
+    testImplementation(project(":core:sample-test"))
+    testImplementation(project(":platform:ui-test"))
+    testImplementation(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
+    testImplementation(Dependencies.FRAGMENT_TESTING)
+    testImplementation(Dependencies.KOIN_TEST)
+    testImplementation(Dependencies.ROBOLECTRIC)
+    testImplementation(Dependencies.TEST_CORE)
+    testImplementation(Dependencies.TURBINE)
 }

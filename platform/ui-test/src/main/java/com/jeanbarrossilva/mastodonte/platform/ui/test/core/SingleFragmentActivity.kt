@@ -20,6 +20,7 @@ import androidx.navigation.get
 import com.jeanbarrossilva.mastodonte.platform.ui.test.R
 import com.jeanbarrossilva.mastodonte.platform.ui.test.databinding.ActivitySingleDestinationBinding
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -39,9 +40,12 @@ abstract class SingleFragmentActivity : FragmentActivity() {
     private var navGraph
         get() = navController.graph
         set(navGraph) {
-            ensureIntegrity(navGraph).invokeOnCompletion {
-                lifecycleScope.launch {
-                    navController.graph = navGraph
+            ensureIntegrity(navGraph)
+            navGraphIntegrityInsuranceJob?.invokeOnCompletion { cause ->
+                if (cause == null) {
+                    lifecycleScope.launch {
+                        navController.graph = navGraph
+                    }
                 }
             }
         }
@@ -73,8 +77,16 @@ abstract class SingleFragmentActivity : FragmentActivity() {
     private val navHostFragment
         get() = requireNotNull(binding?.root).getFragment<NavHostFragment>()
 
-    /** [CoroutineScope] in which the [navGraph]'s integrity is ensured. **/
-    internal val navGraphIntegrityInsuranceScope = CoroutineScope(Job())
+    /** [Job] that ensures the [navGraph]'s integrity. **/
+    internal var navGraphIntegrityInsuranceJob: Job? = null
+        private set
+
+    /**
+     * [CoroutineScope] in which the [navGraph]'s integrity is ensured.
+     *
+     * @see navGraphIntegrityInsuranceJob
+     **/
+    private val navGraphIntegrityInsuranceScope = CoroutineScope(Dispatchers.Default)
 
     /** [navHostFragment]'s [navController][NavHostFragment.navController]. **/
     internal val navController
@@ -208,19 +220,24 @@ abstract class SingleFragmentActivity : FragmentActivity() {
      * All operations are run in the [navGraphIntegrityInsuranceScope].
      *
      * @param navGraph [NavGraph] to perform the insurance on.
-     * @return [Job] that's initiated in the [navGraphIntegrityInsuranceScope].
      * @throws NoDestinationException If no [NavDestination] has been added through [add].
      * @throws MultipleDestinationsException If multiple [NavDestination]s have been added through
      * [add].
      * @throws NonFragmentDestinationException If the [NavDestination] doesn't point to a
      * [Fragment].
      **/
-    private fun ensureIntegrity(navGraph: NavGraph): Job {
-        return navGraphIntegrityInsuranceScope.launch {
-            ensureHasSingleDestination(navGraph)
-            ensureDestinationRouteIsEquivalent(navGraph)
-            ensureDestinationPointsToFragment(navGraph)
-        }
+    private fun ensureIntegrity(navGraph: NavGraph) {
+        navGraphIntegrityInsuranceJob = navGraphIntegrityInsuranceScope
+            .launch {
+                ensureHasSingleDestination(navGraph)
+                ensureDestinationRouteIsEquivalent(navGraph)
+                ensureDestinationPointsToFragment(navGraph)
+            }
+            .also {
+                it.invokeOnCompletion {
+                    navGraphIntegrityInsuranceJob = null
+                }
+            }
     }
 
     /**

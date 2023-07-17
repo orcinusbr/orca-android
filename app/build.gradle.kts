@@ -4,7 +4,6 @@ plugins {
     id("kotlin-android")
 }
 
-@Suppress("UnstableApiUsage")
 android {
     namespace = Metadata.namespace("app")
     compileSdk = Versions.Mastodonte.SDK_COMPILE
@@ -21,6 +20,8 @@ android {
     buildTypes {
         getByName(Variants.RELEASE) {
             isMinifyEnabled = true
+
+            @Suppress("UnstableApiUsage")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -32,6 +33,13 @@ android {
     buildFeatures {
         compose = true
         viewBinding = true
+    }
+
+    @Suppress("UnstableApiUsage")
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
     }
 
     compileOptions {
@@ -49,12 +57,6 @@ android {
 }
 
 dependencies {
-    androidTestImplementation(project(":platform:ui-test"))
-    androidTestImplementation(Dependencies.ACTIVITY)
-    androidTestImplementation(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
-    androidTestImplementation(Dependencies.TEST_CORE)
-    androidTestImplementation(Dependencies.TEST_ESPRESSO_CORE)
-
     implementation(project(":core:sample"))
     implementation(project(":feature:profile-details"))
     implementation(project(":feature:toot-details"))
@@ -67,4 +69,11 @@ dependencies {
     implementation(Dependencies.KOIN_ANDROID)
     implementation(Dependencies.MATERIAL)
     implementation(Dependencies.TIME4J)
+
+    testImplementation(project(":platform:ui-test"))
+    testImplementation(Dependencies.ACTIVITY)
+    testImplementation(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
+    testImplementation(Dependencies.ROBOLECTRIC)
+    testImplementation(Dependencies.TEST_CORE)
+    testImplementation(Dependencies.TEST_ESPRESSO_CORE)
 }
