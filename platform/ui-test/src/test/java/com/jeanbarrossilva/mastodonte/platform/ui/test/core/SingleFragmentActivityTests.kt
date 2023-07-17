@@ -165,6 +165,7 @@ internal class SingleFragmentActivityTests {
     @Test
     fun callsOnMultipleDestinationsCallback() {
         Robolectric.buildActivity(MultipleDestinationsActivity::class.java).setup().use {
+            shadowOf(Looper.getMainLooper()).idle()
             assertEquals(
                 TestActivity.NavGraphIntegrityCallback.MULTIPLE_DESTINATIONS,
                 it.get().calledNavGraphIntegrityCallback
