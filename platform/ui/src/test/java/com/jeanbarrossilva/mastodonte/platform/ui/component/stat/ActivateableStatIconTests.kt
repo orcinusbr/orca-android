@@ -8,7 +8,10 @@ import com.jeanbarrossilva.mastodonte.platform.ui.component.onActivateableStatIc
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class ActivateableStatIconTests {
     @get:Rule
     val composeRule = createComposeRule()
