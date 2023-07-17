@@ -1,9 +1,9 @@
 package com.jeanbarrossilva.mastodonte.app
 
+import android.os.Looper
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.performClick
-import androidx.test.core.app.launchActivity
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -13,7 +13,9 @@ import org.junit.Assert.assertNotNull
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 
 @RunWith(RobolectricTestRunner::class)
 internal class ProfileDetailsToTootDetailsTests {
@@ -22,14 +24,13 @@ internal class ProfileDetailsToTootDetailsTests {
 
     @Test
     fun navigatesToTootDetailsOnTootPreviewClick() {
-        launchActivity<MastodonteActivity>().use { scenario ->
+        Robolectric.buildActivity(MastodonteActivity::class.java).setup().use {
             onView(withId(R.id.profile_details)).perform(click())
             composeRule.onTootPreviews().onFirst().performClick()
-            scenario.onActivity { activity ->
-                assertNotNull(
-                    activity.supportFragmentManager.findFragmentByTag(TootDetailsFragment.TAG)
-                )
-            }
+            shadowOf(Looper.getMainLooper()).idle()
+            assertNotNull(
+                it.get().supportFragmentManager.findFragmentByTag(TootDetailsFragment.TAG)
+            )
         }
     }
 }

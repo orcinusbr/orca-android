@@ -9,12 +9,13 @@ import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfileWriter
 import com.jeanbarrossilva.mastodonte.core.sample.profile.follow.sample
 import com.jeanbarrossilva.mastodonte.core.sample.profile.test.SampleProfileWriterTestRule
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.navigation.BackwardsNavigationState
-import com.jeanbarrossilva.mastodonte.feature.profiledetails.test.launchProfileDetailsActivity
+import com.jeanbarrossilva.mastodonte.feature.profiledetails.test.ProfileDetailsActivity
 import com.jeanbarrossilva.mastodonte.platform.ui.test.component.timeline.toot.time.Time4JTestRule
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.RuleChain
 import org.junit.runner.RunWith
+import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
@@ -32,14 +33,18 @@ internal class ProfileDetailsFragmentTests {
     @Test
     fun `GIVEN a followed profile button WHEN clicking the toggle follow button THEN it's unfollowed`() { // ktlint-disable max-line-length
         SampleProfileWriter.insert(FollowableProfile.sample)
-        launchProfileDetailsActivity(
-            BackwardsNavigationState.Unavailable,
-            FollowableProfile.sample.id
-        ).use {
-            composeRule
-                .onNodeWithTag(ProfileDetails.Followable.MAIN_ACTION_BUTTON_TAG)
-                .performClick()
-                .assertTextEquals(ProfileDetails.Followable.Status.UNFOLLOWED.label)
-        }
+        Robolectric
+            .buildActivity(
+                ProfileDetailsActivity::class.java,
+                ProfileDetailsActivity
+                    .getIntent(BackwardsNavigationState.Unavailable, FollowableProfile.sample.id)
+            )
+            .setup()
+            .use {
+                composeRule
+                    .onNodeWithTag(ProfileDetails.Followable.MAIN_ACTION_BUTTON_TAG)
+                    .performClick()
+                    .assertTextEquals(ProfileDetails.Followable.Status.UNFOLLOWED.label)
+            }
     }
 }

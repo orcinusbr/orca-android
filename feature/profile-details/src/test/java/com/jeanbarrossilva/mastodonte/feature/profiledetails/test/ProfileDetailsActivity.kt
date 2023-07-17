@@ -1,10 +1,10 @@
 package com.jeanbarrossilva.mastodonte.feature.profiledetails.test
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.navigation.NavGraphBuilder
+import androidx.test.platform.app.InstrumentationRegistry
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.ProfileDetailsFragment
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.mastodonte.platform.ui.test.core.SingleFragmentActivity
@@ -35,10 +35,10 @@ internal class ProfileDetailsActivity : SingleFragmentActivity() {
 
     companion object {
         fun getIntent(
-            context: Context,
             backwardsNavigationState: BackwardsNavigationState,
             id: String
         ): Intent {
+            val context = InstrumentationRegistry.getInstrumentation().context
             val extras = bundleOf(
                 ProfileDetailsFragment.BACKWARDS_NAVIGATION_STATE_KEY to backwardsNavigationState,
                 ProfileDetailsFragment.ID_KEY to id

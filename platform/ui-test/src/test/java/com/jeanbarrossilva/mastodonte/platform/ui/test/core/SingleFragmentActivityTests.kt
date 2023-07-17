@@ -10,13 +10,13 @@ import androidx.navigation.fragment.FragmentNavigatorDestinationBuilder
 import androidx.navigation.fragment.dialog
 import androidx.navigation.fragment.fragment
 import androidx.navigation.get
-import androidx.test.core.app.launchActivity
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
@@ -126,50 +126,50 @@ internal class SingleFragmentActivityTests {
 
     @Test
     fun callsOnNoDestinationCallback() {
-        launchActivity<NoDestinationActivity>().onActivity {
+        Robolectric.buildActivity(NoDestinationActivity::class.java).setup().use {
             assertEquals(
                 TestActivity.NavGraphIntegrityCallback.NO_DESTINATION,
-                it.calledNavGraphIntegrityCallback
+                it.get().calledNavGraphIntegrityCallback
             )
         }
     }
 
     @Test
     fun callsOnInequivalentDestinationRouteCallback() {
-        launchActivity<InequivalentlyRoutedDestinationActivity>().onActivity {
+        Robolectric.buildActivity(InequivalentlyRoutedDestinationActivity::class.java).setup().use {
             assertEquals(
                 TestActivity.NavGraphIntegrityCallback.INEQUIVALENT_DESTINATION_ROUTE,
-                it.calledNavGraphIntegrityCallback
+                it.get().calledNavGraphIntegrityCallback
             )
         }
     }
 
     @Test
     fun callsOnNonFragmentDestinationCallback() {
-        launchActivity<NonFragmentDestinationActivity>().onActivity {
+        Robolectric.buildActivity(NonFragmentDestinationActivity::class.java).setup().use {
             assertEquals(
                 TestActivity.NavGraphIntegrityCallback.NON_FRAGMENT_DESTINATION,
-                it.calledNavGraphIntegrityCallback
+                it.get().calledNavGraphIntegrityCallback
             )
         }
     }
 
     @Test
     fun callsOnMultipleDestinationsCallback() {
-        launchActivity<MultipleDestinationsActivity>().onActivity {
+        Robolectric.buildActivity(MultipleDestinationsActivity::class.java).setup().use {
             assertEquals(
                 TestActivity.NavGraphIntegrityCallback.MULTIPLE_DESTINATIONS,
-                it.calledNavGraphIntegrityCallback
+                it.get().calledNavGraphIntegrityCallback
             )
         }
     }
 
     @Test
     fun callsOnMultipleDestinationsCallbackWhenNavigatingToAnotherPosteriorlyAddedDestination() {
-        launchActivity<PosteriorlyAddedDestinationActivity>().onActivity {
+        Robolectric.buildActivity(MultipleDestinationsActivity::class.java).setup().use {
             assertEquals(
                 TestActivity.NavGraphIntegrityCallback.MULTIPLE_DESTINATIONS,
-                it.calledNavGraphIntegrityCallback
+                it.get().calledNavGraphIntegrityCallback
             )
         }
     }
