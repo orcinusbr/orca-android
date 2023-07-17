@@ -166,7 +166,7 @@ internal class SingleFragmentActivityTests {
 
     @Test
     fun callsOnMultipleDestinationsCallbackWhenNavigatingToAnotherPosteriorlyAddedDestination() {
-        Robolectric.buildActivity(MultipleDestinationsActivity::class.java).setup().use {
+        Robolectric.buildActivity(PosteriorlyAddedDestinationActivity::class.java).setup().use {
             assertEquals(
                 TestActivity.NavGraphIntegrityCallback.MULTIPLE_DESTINATIONS,
                 it.get().calledNavGraphIntegrityCallback
