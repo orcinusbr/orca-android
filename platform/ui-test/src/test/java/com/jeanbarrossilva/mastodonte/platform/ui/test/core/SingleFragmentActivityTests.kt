@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.mastodonte.platform.ui.test.core
 
 import android.app.Activity
+import android.os.Looper
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavGraphBuilder
@@ -18,6 +19,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 
 @RunWith(RobolectricTestRunner::class)
 internal class SingleFragmentActivityTests {
@@ -157,6 +159,7 @@ internal class SingleFragmentActivityTests {
     @Test
     fun callsOnMultipleDestinationsCallback() {
         Robolectric.buildActivity(MultipleDestinationsActivity::class.java).setup().use {
+            shadowOf(Looper.getMainLooper()).idle()
             assertEquals(
                 TestActivity.NavGraphIntegrityCallback.MULTIPLE_DESTINATIONS,
                 it.get().calledNavGraphIntegrityCallback
