@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.feature.profiledetails.viewmodel
+package com.jeanbarrossilva.mastodonte.platform.ui.core.context
 
 import android.content.Context
 import android.content.Intent
@@ -8,7 +8,7 @@ import android.content.Intent
  *
  * @param text Text to be shared.
  **/
-internal fun Context.share(text: String) {
+fun Context.share(text: String) {
     val intent = Intent(Intent.ACTION_SEND).apply {
         flags = Intent.FLAG_ACTIVITY_NEW_TASK
         type = "text/plain"

@@ -55,7 +55,6 @@ import com.jeanbarrossilva.mastodonte.feature.profiledetails.conversion.converte
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.navigation.NavigationButton
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.ui.Header
-import com.jeanbarrossilva.mastodonte.feature.profiledetails.viewmodel.ProfileDetailsViewModel
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.plus
 import com.jeanbarrossilva.mastodonte.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener

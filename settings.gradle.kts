@@ -4,6 +4,7 @@ include(
     ":core",
     ":core:sample",
     ":core:sample-test",
+    ":feature:feed",
     ":feature:profile-details",
     ":feature:toot-details",
     ":platform:launchable",

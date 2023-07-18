@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.feature.profiledetails.viewmodel
+package com.jeanbarrossilva.mastodonte.feature.profiledetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -11,7 +11,8 @@ import com.jeanbarrossilva.loadable.list.serialize
 import com.jeanbarrossilva.mastodonte.core.profile.ProfileProvider
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.core.profile.toot.TootProvider
-import com.jeanbarrossilva.mastodonte.feature.profiledetails.toProfileDetails
+import com.jeanbarrossilva.mastodonte.platform.ui.core.context.ContextProvider
+import com.jeanbarrossilva.mastodonte.platform.ui.core.context.share
 import java.net.URL
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
