@@ -13,12 +13,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
@@ -32,6 +36,21 @@ import com.jeanbarrossilva.mastodonte.platform.ui.component.action.PrimaryButton
 import com.jeanbarrossilva.mastodonte.platform.ui.component.input.TextField
 
 @Composable
+internal fun Auth(viewModel: AuthViewModel, modifier: Modifier = Modifier) {
+    val username by viewModel.usernameFlow.collectAsState()
+    val instance by viewModel.instanceFlow.collectAsState()
+
+    Auth(
+        username,
+        onUsernameChange = viewModel::setUsername,
+        instance,
+        onInstanceChange = viewModel::setInstance,
+        onNext = viewModel::authenticate,
+        modifier
+    )
+}
+
+@Composable
 private fun Auth(
     username: String,
     onUsernameChange: (username: String) -> Unit,
@@ -42,6 +61,7 @@ private fun Auth(
 ) {
     val density = LocalDensity.current
     val spacing = MastodonteTheme.spacings.extraLarge
+    val usernameFocusRequester = remember(::FocusRequester)
     var nextButtonHeight by remember { mutableStateOf(Dp.Unspecified) }
     val contentPadding = remember(nextButtonHeight) {
         if (nextButtonHeight.isSpecified) {
@@ -49,6 +69,10 @@ private fun Auth(
         } else {
             PaddingValues()
         }
+    }
+
+    LaunchedEffect(Unit) {
+        usernameFocusRequester.requestFocus()
     }
 
     Box(
@@ -95,7 +119,9 @@ private fun Auth(
                                 onUsernameChange(it)
                             }
                         },
-                        Modifier.fillMaxWidth(.45f),
+                        Modifier
+                            .focusRequester(usernameFocusRequester)
+                            .fillMaxWidth(.45f),
                         isSingleLined = true
                     ) {
                         Text("Username")

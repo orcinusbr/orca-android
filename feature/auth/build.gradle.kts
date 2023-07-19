@@ -48,4 +48,5 @@ dependencies {
     implementation(project(":core:sample"))
     implementation(project(":platform:theme"))
     implementation(project(":platform:ui"))
+    implementation(Dependencies.KOIN_ANDROID)
 }

@@ -9,6 +9,7 @@ import com.jeanbarrossilva.mastodonte.app.feature.feed.FeedModule
 import com.jeanbarrossilva.mastodonte.app.feature.profiledetails.ProfileDetailsModule
 import com.jeanbarrossilva.mastodonte.app.feature.tootdetails.TootDetailsModule
 import com.jeanbarrossilva.mastodonte.app.navigation.navigator.BottomNavigationItemNavigatorFactory
+import com.jeanbarrossilva.mastodonte.feature.auth.AuthActivity
 import com.jeanbarrossilva.mastodonte.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import org.koin.core.context.loadKoinModules
 
@@ -23,6 +24,7 @@ internal class MastodonteActivity : AppCompatActivity(), OnBottomAreaAvailabilit
         setContentView(binding?.root)
         navigateOnBottomNavigationItemSelection()
         navigateToDefaultDestination()
+        navigateToAuth()
         inject()
     }
 
@@ -52,6 +54,10 @@ internal class MastodonteActivity : AppCompatActivity(), OnBottomAreaAvailabilit
 
     private fun navigateToDefaultDestination() {
         binding?.bottomNavigationView?.selectedItemId = R.id.feed
+    }
+
+    private fun navigateToAuth() {
+        AuthActivity.start(this)
     }
 
     private fun inject() {
