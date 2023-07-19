@@ -2,8 +2,8 @@ package com.jeanbarrossilva.mastodonte.core.sample.profile.edit
 
 import com.jeanbarrossilva.mastodonte.core.profile.edit.EditableProfile
 import com.jeanbarrossilva.mastodonte.core.profile.edit.Editor
-import com.jeanbarrossilva.mastodonte.core.profile.toot.Account
 import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfile
+import com.jeanbarrossilva.mastodonte.core.toot.Account
 import java.net.URL
 
 /**

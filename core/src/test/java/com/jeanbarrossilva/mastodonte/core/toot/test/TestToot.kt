@@ -1,8 +1,8 @@
-package com.jeanbarrossilva.mastodonte.core.profile.toot.test
+package com.jeanbarrossilva.mastodonte.core.toot.test
 
-import com.jeanbarrossilva.mastodonte.core.profile.toot.Author
-import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
-import com.jeanbarrossilva.mastodonte.core.sample.profile.toot.sample
+import com.jeanbarrossilva.mastodonte.core.sample.toot.sample
+import com.jeanbarrossilva.mastodonte.core.toot.Author
+import com.jeanbarrossilva.mastodonte.core.toot.Toot
 import java.net.URL
 import java.time.ZonedDateTime
 import kotlinx.coroutines.flow.Flow

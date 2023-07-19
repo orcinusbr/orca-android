@@ -3,8 +3,8 @@ package com.jeanbarrossilva.mastodonte.feature.feed
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jeanbarrossilva.loadable.list.ListLoadable
-import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
-import com.jeanbarrossilva.mastodonte.core.profile.toot.TootProvider
+import com.jeanbarrossilva.mastodonte.core.toot.Toot
+import com.jeanbarrossilva.mastodonte.core.toot.TootProvider
 import com.jeanbarrossilva.mastodonte.platform.ui.core.context.ContextProvider
 import com.jeanbarrossilva.mastodonte.platform.ui.core.context.share
 import java.net.URL

@@ -1,7 +1,7 @@
-package com.jeanbarrossilva.mastodonte.core.sample.profile.toot
+package com.jeanbarrossilva.mastodonte.core.sample.toot
 
-import com.jeanbarrossilva.mastodonte.core.profile.toot.Author
-import com.jeanbarrossilva.mastodonte.core.profile.toot.at
+import com.jeanbarrossilva.mastodonte.core.toot.Author
+import com.jeanbarrossilva.mastodonte.core.toot.at
 import java.net.URL
 import java.util.UUID
 

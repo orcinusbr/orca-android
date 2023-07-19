@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.core.profile.toot
+package com.jeanbarrossilva.mastodonte.core.toot
 
 import kotlin.test.Test
 import kotlin.test.assertFailsWith

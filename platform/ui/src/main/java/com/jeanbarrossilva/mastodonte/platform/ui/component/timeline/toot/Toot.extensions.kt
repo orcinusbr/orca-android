@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot
 
-import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
+import com.jeanbarrossilva.mastodonte.core.toot.Toot
 import com.jeanbarrossilva.mastodonte.platform.ui.html.HtmlAnnotatedString
 
 /** Converts this [Toot] into a [TootPreview]. **/

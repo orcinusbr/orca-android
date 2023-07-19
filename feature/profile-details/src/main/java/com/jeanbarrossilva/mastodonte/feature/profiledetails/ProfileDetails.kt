@@ -46,11 +46,11 @@ import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.profile.edit.EditableProfile
 import com.jeanbarrossilva.mastodonte.core.profile.follow.FollowableProfile
 import com.jeanbarrossilva.mastodonte.core.profile.toot.Account
-import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.core.sample.profile.edit.sample
 import com.jeanbarrossilva.mastodonte.core.sample.profile.follow.sample
 import com.jeanbarrossilva.mastodonte.core.sample.profile.sample
-import com.jeanbarrossilva.mastodonte.core.sample.profile.toot.samples
+import com.jeanbarrossilva.mastodonte.core.sample.toot.samples
+import com.jeanbarrossilva.mastodonte.core.toot.Toot
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.conversion.converter.followable.toStatus
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.navigation.NavigationButton
