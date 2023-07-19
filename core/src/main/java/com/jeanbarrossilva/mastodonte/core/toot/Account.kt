@@ -33,17 +33,16 @@ data class Account internal constructor(val username: String, val instance: Stri
     class IllegalInstanceException internal constructor(illegalCharacters: List<Char>) :
         IllegalArgumentException("Instance cannot contain: $illegalCharacters")
 
-    /** [IllegalArgumentException] thrown if the [instance]'s TLD is invalid. **/
-    inner class InvalidInstanceTldException internal constructor() : IllegalArgumentException(
-        "The instance \"$instance\" doesn't have a valid top-level domain (TLD)."
-    )
+    /** [IllegalArgumentException] thrown if the [instance] doesn't have a domain. **/
+    inner class InstanceWithoutDomainException internal constructor() :
+        IllegalArgumentException("The instance \"$instance\" doesn't have a domain.")
 
     init {
         ensureUsernameNonBlankness()
         ensureUsernameLegality()
         ensureInstanceNonBlankness()
         ensureInstanceLegality()
-        ensureInstanceTldValidity()
+        ensureInstanceDomainPresence()
     }
 
     override fun toString(): String {
@@ -90,13 +89,13 @@ data class Account internal constructor(val username: String, val instance: Stri
     }
 
     /**
-     * Ensures that the [instance] ends with a valid TLD.
+     * Ensures that the [instance] has a domain.
      *
-     * @throws InvalidInstanceTldException If the [instance] doesn't end with a valid TLD.
+     * @throws InstanceWithoutDomainException If the [instance] doesn't have a domain.
      **/
-    private fun ensureInstanceTldValidity() {
-        if (!instance.endsWithValidTld) {
-            throw InvalidInstanceTldException()
+    private fun ensureInstanceDomainPresence() {
+        if (!instance.containsDomain) {
+            throw InstanceWithoutDomainException()
         }
     }
 
@@ -104,9 +103,9 @@ data class Account internal constructor(val username: String, val instance: Stri
         /** [Char]s that neither the [username] nor the [instance] should contain. **/
         private val illegalCharacters = arrayOf('@')
 
-        /** Whether this [String] ends with a valid TLD. **/
-        private val String.endsWithValidTld
-            get() = matches(Regex("(\\.[A-Z]{2,})?"))
+        /** Whether the [String] contains a domain. **/
+        private val String.containsDomain
+            get() = split('.').getOrNull(1)?.isNotBlank() ?: false
 
         /** Whether this [String] contains none of the [illegalCharacters]. **/
         private val String.isLegal
@@ -127,10 +126,7 @@ data class Account internal constructor(val username: String, val instance: Stri
          * @param instance Instance whose validity will be verified.
          **/
         fun isInstanceValid(instance: String): Boolean {
-            return instance.isNotBlank() &&
-                instance.isLegal &&
-                instance matches Regex("[A-Z0-9.-]+") &&
-                instance.endsWithValidTld
+            return instance.isNotBlank() && instance.isLegal && instance.containsDomain
         }
 
         /**

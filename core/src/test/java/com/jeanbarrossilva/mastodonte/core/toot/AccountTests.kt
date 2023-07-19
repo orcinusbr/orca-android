@@ -55,8 +55,13 @@ internal class AccountTests {
 
     @Test
     fun `GIVEN an instance without a TLD WHEN creating an account with it THEN it throws`() {
-        assertFailsWith<Account.InvalidInstanceTldException> {
+        assertFailsWith<Account.InstanceWithoutDomainException> {
             "john" at "appleseed."
         }
+    }
+
+    @Test
+    fun `GIVEN a valid username and a valid instance WHEN creating an account with them THEN it's created`() { // ktlint-disable max-line-length
+        "john" at "appleseed.com"
     }
 }
