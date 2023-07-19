@@ -141,7 +141,7 @@ data class Account internal constructor(val username: String, val instance: Stri
          **/
         private fun ensureLegalityOf(
             string: String,
-            onIllegality: (illegal: List<Char>) -> String
+            onIllegality: (illegal: List<Char>) -> Unit
         ) {
             val illegal = illegalCharacters.filter { it in string }
             val isIllegal = illegal.any { it in string }
