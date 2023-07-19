@@ -40,16 +40,16 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
-import com.jeanbarrossilva.loadable.list.serialize
+import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.profile.edit.EditableProfile
 import com.jeanbarrossilva.mastodonte.core.profile.follow.FollowableProfile
-import com.jeanbarrossilva.mastodonte.core.profile.toot.Account
 import com.jeanbarrossilva.mastodonte.core.sample.profile.edit.sample
 import com.jeanbarrossilva.mastodonte.core.sample.profile.follow.sample
 import com.jeanbarrossilva.mastodonte.core.sample.profile.sample
 import com.jeanbarrossilva.mastodonte.core.sample.toot.samples
+import com.jeanbarrossilva.mastodonte.core.toot.Account
 import com.jeanbarrossilva.mastodonte.core.toot.Toot
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.conversion.converter.followable.toStatus
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.navigation.BackwardsNavigationState
@@ -468,7 +468,7 @@ private fun LoadedProfileDetailsPreview() {
         ProfileDetails(
             ProfileDetailsBoundary.empty,
             ProfileDetails.sample,
-            ListLoadable.Populated(Toot.samples.serialize()),
+            ListLoadable.Populated(Toot.samples.toSerializableList()),
             onFavorite = { },
             onReblog = { },
             onNavigationToTootDetails = { },

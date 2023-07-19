@@ -58,6 +58,7 @@ android {
 
 dependencies {
     implementation(project(":core:sample"))
+    implementation(project(":feature:feed"))
     implementation(project(":feature:profile-details"))
     implementation(project(":feature:toot-details"))
     implementation(project(":platform:launchable"))

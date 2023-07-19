@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jeanbarrossilva.loadable.flow.loadableFlow
 import com.jeanbarrossilva.loadable.list.flow.listLoadable
-import com.jeanbarrossilva.loadable.list.serialize
+import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.mastodonte.core.toot.Toot
 import com.jeanbarrossilva.mastodonte.core.toot.TootProvider
 import com.jeanbarrossilva.mastodonte.feature.tootdetails.TootDetails
@@ -37,7 +37,7 @@ internal class TootDetailsViewModel private constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val commentsLoadableFlow = commentsIndexFlow
-        .flatMapConcat { tootFlow.flatMapToComments(it).map(List<TootDetails>::serialize) }
+        .flatMapConcat { tootFlow.flatMapToComments(it).map(List<TootDetails>::toSerializableList) }
         .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
 
     fun favorite() {

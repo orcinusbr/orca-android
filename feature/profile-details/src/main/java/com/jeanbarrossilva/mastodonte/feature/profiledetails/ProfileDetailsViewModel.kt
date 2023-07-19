@@ -7,7 +7,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jeanbarrossilva.loadable.flow.loadable
 import com.jeanbarrossilva.loadable.list.SerializableList
 import com.jeanbarrossilva.loadable.list.flow.listLoadable
-import com.jeanbarrossilva.loadable.list.serialize
+import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.mastodonte.core.profile.ProfileProvider
 import com.jeanbarrossilva.mastodonte.core.toot.Toot
 import com.jeanbarrossilva.mastodonte.core.toot.TootProvider
@@ -71,7 +71,7 @@ internal class ProfileDetailsViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun getTootsAt(index: Int): Flow<SerializableList<Toot>> {
         return profileFlow.filterNotNull().flatMapConcat {
-            it.getToots(index).map(List<Toot>::serialize)
+            it.getToots(index).map(List<Toot>::toSerializableList)
         }
     }
 

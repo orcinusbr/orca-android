@@ -33,22 +33,20 @@ import java.net.URL
 @Composable
 internal fun Feed(
     viewModel: FeedViewModel,
-    onSearch: () -> Unit,
-    onTootClick: (tootID: String) -> Unit,
-    onComposition: () -> Unit,
+    boundary: FeedBoundary,
     modifier: Modifier = Modifier
 ) {
     val tootsLoadable by viewModel.tootsLoadableFlow.collectAsState()
 
     Feed(
         tootsLoadable,
-        onSearch,
+        onSearch = boundary::navigateToSearch,
         onFavorite = viewModel::favorite,
         onReblog = viewModel::reblog,
         onShare = viewModel::share,
-        onTootClick,
+        onTootClick = boundary::navigateToTootDetails,
         onNext = viewModel::loadTootsAt,
-        onComposition,
+        onComposition = boundary::navigateToComposer,
         modifier
     )
 }
