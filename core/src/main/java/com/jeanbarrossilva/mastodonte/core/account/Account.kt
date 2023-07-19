@@ -82,6 +82,11 @@ data class Account internal constructor(val username: String, val instance: Stri
         }
     }
 
+    /**
+     * Ensures that the [instance] is legal.
+     *
+     * @throws IllegalInstanceException If the [instance] is illegal.
+     **/
     private fun ensureInstanceLegality() {
         ensureLegalityOf(instance) {
             throw IllegalInstanceException(it)
