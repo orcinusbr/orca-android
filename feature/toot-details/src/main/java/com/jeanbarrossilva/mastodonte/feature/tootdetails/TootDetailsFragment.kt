@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
-import com.jeanbarrossilva.mastodonte.core.profile.toot.TootProvider
+import com.jeanbarrossilva.mastodonte.core.toot.TootProvider
 import com.jeanbarrossilva.mastodonte.feature.tootdetails.viewmodel.TootDetailsViewModel
 import com.jeanbarrossilva.mastodonte.platform.ui.core.application
 import com.jeanbarrossilva.mastodonte.platform.ui.core.argument

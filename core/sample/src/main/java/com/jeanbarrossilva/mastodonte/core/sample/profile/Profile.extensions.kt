@@ -1,8 +1,8 @@
 package com.jeanbarrossilva.mastodonte.core.sample.profile
 
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
-import com.jeanbarrossilva.mastodonte.core.profile.toot.Author
-import com.jeanbarrossilva.mastodonte.core.sample.profile.toot.sample
+import com.jeanbarrossilva.mastodonte.core.sample.toot.sample
+import com.jeanbarrossilva.mastodonte.core.toot.Author
 
 /** [Profile] returned by [sample]'s getter. **/
 @Suppress("SpellCheckingInspection")

@@ -5,9 +5,10 @@ import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import com.jeanbarrossilva.mastodonte.app.databinding.ActivityMastodonteBinding
+import com.jeanbarrossilva.mastodonte.app.feature.feed.FeedModule
 import com.jeanbarrossilva.mastodonte.app.feature.profiledetails.ProfileDetailsModule
 import com.jeanbarrossilva.mastodonte.app.feature.tootdetails.TootDetailsModule
-import com.jeanbarrossilva.mastodonte.app.navigation.BottomNavigationItemNavigatorFactory
+import com.jeanbarrossilva.mastodonte.app.navigation.navigator.BottomNavigationItemNavigatorFactory
 import com.jeanbarrossilva.mastodonte.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import org.koin.core.context.loadKoinModules
 
@@ -50,14 +51,15 @@ internal class MastodonteActivity : AppCompatActivity(), OnBottomAreaAvailabilit
     }
 
     private fun navigateToDefaultDestination() {
-        binding?.bottomNavigationView?.selectedItemId = R.id.profile_details
+        binding?.bottomNavigationView?.selectedItemId = R.id.feed
     }
 
     private fun inject() {
         val mastodonteModule = MastodonteModule(onBottomAreaAvailabilityChangeListener = this)
+        val feedModule = FeedModule(supportFragmentManager, containerID)
         val profileDetailsModule = ProfileDetailsModule(supportFragmentManager, containerID)
         val tootDetailsModule = TootDetailsModule(supportFragmentManager, containerID)
-        val modules = listOf(mastodonteModule, profileDetailsModule, tootDetailsModule)
+        val modules = listOf(mastodonteModule, feedModule, profileDetailsModule, tootDetailsModule)
         loadKoinModules(modules)
     }
 }

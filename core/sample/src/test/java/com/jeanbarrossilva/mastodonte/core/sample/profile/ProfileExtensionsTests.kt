@@ -1,8 +1,8 @@
 package com.jeanbarrossilva.mastodonte.core.sample.profile
 
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
-import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
-import com.jeanbarrossilva.mastodonte.core.sample.profile.toot.samples
+import com.jeanbarrossilva.mastodonte.core.sample.toot.samples
+import com.jeanbarrossilva.mastodonte.core.toot.Toot
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlinx.coroutines.flow.first
