@@ -18,7 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.mastodonte.core.account.Account
-import com.jeanbarrossilva.mastodonte.core.sample.account.sample
+import com.jeanbarrossilva.mastodonte.core.sample.toot.sample
 import com.jeanbarrossilva.mastodonte.core.toot.Toot
 import com.jeanbarrossilva.mastodonte.feature.tootdetails.ui.header.Header
 import com.jeanbarrossilva.mastodonte.feature.tootdetails.ui.header.formatted
