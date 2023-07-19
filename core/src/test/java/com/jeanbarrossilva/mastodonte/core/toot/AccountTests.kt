@@ -1,5 +1,7 @@
 package com.jeanbarrossilva.mastodonte.core.toot
 
+import com.jeanbarrossilva.mastodonte.core.account.Account
+import com.jeanbarrossilva.mastodonte.core.account.at
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse

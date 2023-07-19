@@ -1,7 +1,7 @@
-package com.jeanbarrossilva.mastodonte.core.sample.toot
+package com.jeanbarrossilva.mastodonte.core.sample.account
 
-import com.jeanbarrossilva.mastodonte.core.toot.Account
-import com.jeanbarrossilva.mastodonte.core.toot.at
+import com.jeanbarrossilva.mastodonte.core.account.Account
+import com.jeanbarrossilva.mastodonte.core.account.at
 
 /** [Account] returned by [sample]. **/
 private val sampleAccount = "jeanbarrossilva" at "mastodon.social"

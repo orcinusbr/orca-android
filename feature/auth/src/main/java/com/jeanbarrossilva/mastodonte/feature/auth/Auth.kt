@@ -25,8 +25,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.isSpecified
-import com.jeanbarrossilva.mastodonte.core.sample.toot.sample
-import com.jeanbarrossilva.mastodonte.core.toot.Account
+import com.jeanbarrossilva.mastodonte.core.account.Account
+import com.jeanbarrossilva.mastodonte.core.sample.account.sample
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.ui.component.action.PrimaryButton
 import com.jeanbarrossilva.mastodonte.platform.ui.component.input.TextField
