@@ -11,24 +11,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.layout.onPlaced
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.isSpecified
 import com.jeanbarrossilva.mastodonte.core.account.Account
 import com.jeanbarrossilva.mastodonte.core.sample.account.sample
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
@@ -45,7 +42,7 @@ internal fun Auth(viewModel: AuthViewModel, modifier: Modifier = Modifier) {
         onUsernameChange = viewModel::setUsername,
         instance,
         onInstanceChange = viewModel::setInstance,
-        onNext = viewModel::authenticate,
+        onSignIn = viewModel::signIn,
         modifier
     )
 }
@@ -56,20 +53,12 @@ private fun Auth(
     onUsernameChange: (username: String) -> Unit,
     instance: String,
     onInstanceChange: (instance: String) -> Unit,
-    onNext: () -> Unit,
+    onSignIn: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val density = LocalDensity.current
     val spacing = MastodonteTheme.spacings.extraLarge
     val usernameFocusRequester = remember(::FocusRequester)
-    var nextButtonHeight by remember { mutableStateOf(Dp.Unspecified) }
-    val contentPadding = remember(nextButtonHeight) {
-        if (nextButtonHeight.isSpecified) {
-            PaddingValues(bottom = nextButtonHeight)
-        } else {
-            PaddingValues()
-        }
-    }
+    val nextButtonFocusRequester = remember(::FocusRequester)
 
     LaunchedEffect(Unit) {
         usernameFocusRequester.requestFocus()
@@ -79,13 +68,13 @@ private fun Auth(
         modifier
             .background(MastodonteTheme.colorScheme.background)
             .imePadding()
-            .padding(PaddingValues(spacing))
+            .padding(spacing)
             .fillMaxSize()
     ) {
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(spacing),
             horizontalAlignment = Alignment.CenterHorizontally,
-            contentPadding = contentPadding
+            contentPadding = PaddingValues(bottom = spacing)
         ) {
             item {
                 Column(
@@ -114,14 +103,11 @@ private fun Auth(
                 ) {
                     TextField(
                         username,
-                        onTextChange = {
-                            if (Account.isUsernameValid(it)) {
-                                onUsernameChange(it)
-                            }
-                        },
+                        onUsernameChange,
                         Modifier
                             .focusRequester(usernameFocusRequester)
                             .fillMaxWidth(.45f),
+                        KeyboardOptions(imeAction = ImeAction.Next),
                         isSingleLined = true
                     ) {
                         Text("Username")
@@ -131,12 +117,10 @@ private fun Auth(
 
                     TextField(
                         instance,
-                        onTextChange = {
-                            if (Account.isInstanceValid(it)) {
-                                onInstanceChange(it)
-                            }
-                        },
+                        onInstanceChange,
                         Modifier.fillMaxWidth(),
+                        KeyboardOptions(imeAction = ImeAction.Done),
+                        KeyboardActions(onDone = { nextButtonFocusRequester.requestFocus() }),
                         isSingleLined = true
                     ) {
                         Text("Instance")
@@ -146,17 +130,13 @@ private fun Auth(
         }
 
         PrimaryButton(
-            onClick = onNext,
+            onClick = onSignIn,
             Modifier
                 .align(Alignment.BottomStart)
-                .onPlaced {
-                    nextButtonHeight = with(density) {
-                        it.size.height.toDp()
-                    }
-                }
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            isEnabled = Account.isUsernameValid(username) && Account.isInstanceValid(instance)
         ) {
-            Text("Next")
+            Text("Sign in")
         }
     }
 }
@@ -170,7 +150,7 @@ private fun AuthPreview() {
             onUsernameChange = { },
             Account.sample.instance,
             onInstanceChange = { },
-            onNext = { }
+            onSignIn = { }
         )
     }
 }

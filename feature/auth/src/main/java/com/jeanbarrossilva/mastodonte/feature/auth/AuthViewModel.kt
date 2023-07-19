@@ -29,7 +29,7 @@ internal class AuthViewModel private constructor(
         instanceMutableFlow.value = instance
     }
 
-    fun authenticate() {
+    fun signIn() {
         viewModelScope.launch {
             authenticator.authenticate(authorizer)
         }

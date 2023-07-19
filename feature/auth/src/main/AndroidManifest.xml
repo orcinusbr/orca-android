@@ -3,6 +3,7 @@
     <application>
         <activity
             android:name=".AuthActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 </manifest>

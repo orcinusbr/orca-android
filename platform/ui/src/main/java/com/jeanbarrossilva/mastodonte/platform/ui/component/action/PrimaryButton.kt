@@ -15,6 +15,7 @@ import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
  *
  * @param onClick Callback called whenever it's clicked.
  * @param modifier [Modifier] to be applied to the underlying [ElevatedButton].
+ * @param isEnabled Whether it can be interacted with.
  * @param content Content to be placed inside of it; generally a [Text] that shortly explains the
  * action performed by [onClick].
  **/
@@ -22,11 +23,13 @@ import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 fun PrimaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    isEnabled: Boolean = true,
     content: @Composable () -> Unit
 ) {
     ElevatedButton(
         onClick,
         modifier,
+        isEnabled,
         shape = MastodonteTheme.shapes.medium,
         colors = ButtonDefaults
             .elevatedButtonColors(containerColor = MastodonteTheme.colorScheme.primary),
