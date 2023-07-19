@@ -58,6 +58,7 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":core:sample"))
     implementation(project(":platform:theme"))
+    implementation(Dependencies.ACTIVITY_COMPOSE)
     implementation(Dependencies.COIL_COMPOSE)
     implementation(Dependencies.COMPOSE_MATERIAL_ICONS_EXTENDED)
     implementation(Dependencies.LOADABLE_PLACEHOLDER)

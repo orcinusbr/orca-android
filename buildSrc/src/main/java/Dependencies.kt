@@ -2,6 +2,7 @@ object Dependencies {
     const val ACCOMPANIST_THEME_ADAPTER_MATERIAL_3 =
         "com.google.accompanist:accompanist-themeadapter-material3:${Versions.ACCOMPANIST}"
     const val ACTIVITY = "androidx.activity:activity-ktx:${Versions.ACTIVITY}"
+    const val ACTIVITY_COMPOSE = "androidx.activity:activity-compose:${Versions.ACTIVITY}"
     const val APPCOMPAT = "androidx.appcompat:appcompat:${Versions.APPCOMPAT}"
     const val COIL_COMPOSE = "io.coil-kt:coil-compose:${Versions.COIL}"
 
