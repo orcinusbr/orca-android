@@ -36,9 +36,6 @@ android {
 
     kotlinOptions {
         jvmTarget = Versions.java.toString()
-
-        @Suppress("SpellCheckingInspection")
-        freeCompilerArgs = listOf("-Xcontext-receivers")
     }
 
     composeOptions {
