@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,6 +32,15 @@ import com.jeanbarrossilva.mastodonte.core.sample.account.sample
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.ui.component.action.PrimaryButton
 import com.jeanbarrossilva.mastodonte.platform.ui.component.input.TextField
+
+/** Tag that identifies the username field for testing purposes. **/
+internal const val AUTH_USERNAME_FIELD_TAG = "auth-username-field"
+
+/** Tag that identifies the instance field for testing purposes. **/
+internal const val AUTH_INSTANCE_FIELD_TAG = "auth-instance-field"
+
+/** Tag that identifies the sign-in button for testing purposes. **/
+internal const val AUTH_SIGN_IN_BUTTON_TAG = "auth-sign-in-button"
 
 @Composable
 internal fun Auth(viewModel: AuthViewModel, modifier: Modifier = Modifier) {
@@ -48,7 +58,7 @@ internal fun Auth(viewModel: AuthViewModel, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun Auth(
+internal fun Auth(
     username: String,
     onUsernameChange: (username: String) -> Unit,
     instance: String,
@@ -61,7 +71,7 @@ private fun Auth(
     val nextButtonFocusRequester = remember(::FocusRequester)
 
     LaunchedEffect(Unit) {
-        usernameFocusRequester.requestFocus()
+        usernameFocusRequester.tryToRequestFocus()
     }
 
     Box(
@@ -106,7 +116,8 @@ private fun Auth(
                         onUsernameChange,
                         Modifier
                             .focusRequester(usernameFocusRequester)
-                            .fillMaxWidth(.45f),
+                            .fillMaxWidth(.45f)
+                            .testTag(AUTH_USERNAME_FIELD_TAG),
                         KeyboardOptions(imeAction = ImeAction.Next),
                         isSingleLined = true
                     ) {
@@ -118,7 +129,9 @@ private fun Auth(
                     TextField(
                         instance,
                         onInstanceChange,
-                        Modifier.fillMaxWidth(),
+                        Modifier
+                            .fillMaxWidth()
+                            .testTag(AUTH_INSTANCE_FIELD_TAG),
                         KeyboardOptions(imeAction = ImeAction.Done),
                         KeyboardActions(onDone = { nextButtonFocusRequester.requestFocus() }),
                         isSingleLined = true
@@ -133,7 +146,8 @@ private fun Auth(
             onClick = onSignIn,
             Modifier
                 .align(Alignment.BottomStart)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .testTag(AUTH_SIGN_IN_BUTTON_TAG),
             isEnabled = Account.isUsernameValid(username) && Account.isInstanceValid(instance)
         ) {
             Text("Sign in")

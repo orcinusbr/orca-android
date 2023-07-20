@@ -9,7 +9,7 @@ abstract class Authenticator {
      * @return Access token to be used in operations that require authentication.
      **/
     suspend fun authenticate(authorizer: Authorizer): String {
-        val authorizationCode = authorizer.authorize()
+        val authorizationCode = authorizer._authorize()
         return onAuthenticate(authorizationCode)
     }
 
