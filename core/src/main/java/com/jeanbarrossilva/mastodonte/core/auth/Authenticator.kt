@@ -13,8 +13,10 @@ abstract class Authenticator {
      **/
     suspend fun authenticate(authorizer: Authorizer): Actor {
         return when (val lastActor = lastActor) {
-            is Actor.Unauthenticated -> authenticateThroughAuthorizer(authorizer)
-            is Actor.Authenticated -> lastActor
+            is Actor.Unauthenticated ->
+                authenticateThroughAuthorizer(authorizer).also { this.lastActor = it }
+            is Actor.Authenticated ->
+                lastActor
         }
     }
 
