@@ -26,6 +26,7 @@ class AuthActivity internal constructor() : ComposableActivity() {
         STARTED,
         RESUMED,
         PAUSED,
+        STOPPED,
         DESTROYED
     }
 
