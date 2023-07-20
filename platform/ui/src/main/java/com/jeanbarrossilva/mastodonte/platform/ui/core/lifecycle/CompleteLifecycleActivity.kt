@@ -15,7 +15,7 @@ import com.jeanbarrossilva.mastodonte.platform.ui.core.lifecycle.state.next
  *
  * @see CompleteLifecycleState
  **/
-abstract class CompleteLifecycleActivity : ComponentActivity() {
+open class CompleteLifecycleActivity : ComponentActivity() {
     /** [CompleteLifecycleState] in which this [CompleteLifecycleActivity] currently is. **/
     var completeLifecycleState: CompleteLifecycleState? = null
         private set
