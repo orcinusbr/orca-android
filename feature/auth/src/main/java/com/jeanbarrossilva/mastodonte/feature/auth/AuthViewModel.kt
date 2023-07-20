@@ -13,7 +13,8 @@ import kotlinx.coroutines.launch
 
 internal class AuthViewModel private constructor(
     private val authorizer: Authorizer,
-    private val authenticator: Authenticator
+    private val authenticator: Authenticator,
+    private val listener: OnAuthenticationListener
 ) : ViewModel() {
     private val usernameMutableFlow = MutableStateFlow("")
     private val instanceMutableFlow = MutableStateFlow("")
@@ -32,15 +33,19 @@ internal class AuthViewModel private constructor(
     fun signIn() {
         viewModelScope.launch {
             authenticator.authenticate(authorizer)
+            listener.onAuthentication()
         }
     }
 
     companion object {
-        fun createFactory(authorizer: Authorizer, authenticator: Authenticator):
-            ViewModelProvider.Factory {
+        fun createFactory(
+            authorizer: Authorizer,
+            authenticator: Authenticator,
+            listener: OnAuthenticationListener
+        ): ViewModelProvider.Factory {
             return viewModelFactory {
                 initializer {
-                    AuthViewModel(authorizer, authenticator)
+                    AuthViewModel(authorizer, authenticator, listener)
                 }
             }
         }

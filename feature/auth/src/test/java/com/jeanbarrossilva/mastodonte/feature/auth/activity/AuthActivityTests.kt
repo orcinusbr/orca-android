@@ -5,11 +5,12 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import com.jeanbarrossilva.mastodonte.core.account.Account
 import com.jeanbarrossilva.mastodonte.core.sample.account.sample
-import com.jeanbarrossilva.mastodonte.feature.auth.test.AuthModule
+import com.jeanbarrossilva.mastodonte.feature.auth.activity.test.AuthModule
 import com.jeanbarrossilva.mastodonte.feature.auth.test.onInstanceField
 import com.jeanbarrossilva.mastodonte.feature.auth.test.onSignInButton
 import com.jeanbarrossilva.mastodonte.feature.auth.test.onUsernameField
-import kotlin.test.assertTrue
+import com.jeanbarrossilva.mastodonte.platform.ui.core.lifecycle.state.CompleteLifecycleState
+import com.jeanbarrossilva.mastodonte.platform.ui.test.core.lifecycle.state.assertIsAtLeast
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -31,7 +32,7 @@ internal class AuthActivityTests {
             composeRule.onUsernameField().performTextInput(Account.sample.username)
             composeRule.onInstanceField().performTextInput(Account.sample.instance)
             composeRule.onSignInButton().performClick()
-            assertTrue(it.get().lifecycleState.isAtLeast(AuthActivity.LifecycleState.PAUSED))
+            assertIsAtLeast(CompleteLifecycleState.PAUSED, it.get().completeLifecycleState)
         }
     }
 }

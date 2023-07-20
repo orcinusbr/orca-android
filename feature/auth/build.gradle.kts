@@ -57,8 +57,10 @@ dependencies {
     implementation(project(":platform:ui"))
     implementation(Dependencies.KOIN_ANDROID)
 
+    testImplementation(project(":platform:ui-test"))
     testImplementation(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
     testImplementation(Dependencies.COMPOSE_UI_TEST_MANIFEST)
     testImplementation(Dependencies.KOIN_TEST)
     testImplementation(Dependencies.ROBOLECTRIC)
+    testImplementation(Dependencies.TEST_CORE)
 }
