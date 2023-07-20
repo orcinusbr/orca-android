@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.lifecycle.Lifecycle
 import com.jeanbarrossilva.mastodonte.platform.ui.core.composable.ComposableActivity
 import com.jeanbarrossilva.mastodonte.platform.ui.core.lifecycle.state.CompleteLifecycleState
+import com.jeanbarrossilva.mastodonte.platform.ui.core.lifecycle.state.compareTo
+import com.jeanbarrossilva.mastodonte.platform.ui.core.lifecycle.state.next
 
 /**
  * [ComposableActivity] that provides a complete version of [Lifecycle.State], containing missing
@@ -61,8 +63,8 @@ abstract class CompleteLifecycleActivity : ComposableActivity() {
     private fun sideEffectlesslyMoveTo(
         @Suppress("SameParameterValue") state: CompleteLifecycleState
     ) {
-        var current = completeLifecycleState ?: CompleteLifecycleState.CREATED
-        if (current > state) {
+        var current = completeLifecycleState
+        if (current < state) {
             while (current != state) {
                 /*
                  * The only scenario in which this call would return null is when both the

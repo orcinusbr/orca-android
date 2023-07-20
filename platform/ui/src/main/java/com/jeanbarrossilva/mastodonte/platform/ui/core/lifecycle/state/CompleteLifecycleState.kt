@@ -27,7 +27,7 @@ enum class CompleteLifecycleState {
     DESTROYED;
 
     /** Provides the [CompleteLifecycleState] that succeeds this one. **/
-    fun next(): CompleteLifecycleState? {
+    internal fun next(): CompleteLifecycleState? {
         val index = values().indexOf(this) + 1
         return values().getOrNull(index)
     }

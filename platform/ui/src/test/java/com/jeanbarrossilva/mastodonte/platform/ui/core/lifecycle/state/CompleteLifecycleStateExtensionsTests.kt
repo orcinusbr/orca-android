@@ -1,13 +1,49 @@
 package com.jeanbarrossilva.mastodonte.platform.ui.core.lifecycle.state
 
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 internal class CompleteLifecycleStateExtensionsTests {
     @Test
+    fun `GIVEN a null state WHEN comparing it to the created state THEN it's less`() {
+        assertTrue(null compareTo CompleteLifecycleState.CREATED < 0)
+    }
+
+    @Test
+    fun `GIVEN a null state WHEN comparing it to the started state THEN it's less`() {
+        assertTrue(null compareTo CompleteLifecycleState.STARTED < 0)
+    }
+
+    @Test
+    fun `GIVEN a null state WHEN comparing it to the resumed state THEN it's less`() {
+        assertTrue(null compareTo CompleteLifecycleState.RESUMED < 0)
+    }
+
+    @Test
+    fun `GIVEN a null state WHEN comparing it to the paused state THEN it's less`() {
+        assertTrue(null compareTo CompleteLifecycleState.PAUSED < 0)
+    }
+
+    @Test
+    fun `GIVEN a null state WHEN comparing it to the stopped state THEN it's less`() {
+        assertTrue(null compareTo CompleteLifecycleState.STOPPED < 0)
+    }
+
+    @Test
+    fun `GIVEN a null state WHEN comparing it to the destroyed state THEN it's less`() {
+        assertTrue(null compareTo CompleteLifecycleState.DESTROYED < 0)
+    }
+
+    @Test
     fun `GIVEN a null state WHEN checking if it's at least created THEN it isn't`() {
         assertFalse((null as CompleteLifecycleState?).isAtLeast(CompleteLifecycleState.CREATED))
+    }
+
+    @Test
+    fun `GIVEN a null state WHEN getting the next one THEN it's created`() {
+        assertEquals(CompleteLifecycleState.CREATED, null.next())
     }
 
     @Test
