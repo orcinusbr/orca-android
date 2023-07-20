@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.mastodonte.core.auth.test
 
+import com.jeanbarrossilva.mastodonte.core.auth.Actor
 import com.jeanbarrossilva.mastodonte.core.auth.Authenticator
 
 /**
@@ -10,8 +11,8 @@ import com.jeanbarrossilva.mastodonte.core.auth.Authenticator
 internal class TestAuthenticator(
     private val onOnAuthenticate: suspend (authorizationCode: String) -> Unit = { }
 ) : Authenticator() {
-    override suspend fun onAuthenticate(authorizationCode: String): String {
+    override suspend fun onAuthenticate(authorizationCode: String): Actor.Authenticated {
         onOnAuthenticate(authorizationCode)
-        return "access-token"
+        return Actor.Authenticated("access-token")
     }
 }
