@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.mastodonte.platform.ui.core.lifecycle
 
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.lifecycle.Lifecycle
 import com.jeanbarrossilva.mastodonte.platform.ui.core.composable.ComposableActivity
 import com.jeanbarrossilva.mastodonte.platform.ui.core.lifecycle.state.CompleteLifecycleState
@@ -14,7 +15,7 @@ import com.jeanbarrossilva.mastodonte.platform.ui.core.lifecycle.state.next
  *
  * @see CompleteLifecycleState
  **/
-abstract class CompleteLifecycleActivity : ComposableActivity() {
+abstract class CompleteLifecycleActivity : ComponentActivity() {
     /** [CompleteLifecycleState] in which this [CompleteLifecycleActivity] currently is. **/
     var completeLifecycleState: CompleteLifecycleState? = null
         private set

@@ -8,10 +8,10 @@ import com.jeanbarrossilva.mastodonte.core.auth.Authenticator
 import com.jeanbarrossilva.mastodonte.core.auth.Authorizer
 import com.jeanbarrossilva.mastodonte.feature.auth.Auth
 import com.jeanbarrossilva.mastodonte.feature.auth.AuthViewModel
-import com.jeanbarrossilva.mastodonte.platform.ui.core.lifecycle.CompleteLifecycleActivity
+import com.jeanbarrossilva.mastodonte.platform.ui.core.composable.ComposableActivity
 import org.koin.android.ext.android.inject
 
-class AuthActivity internal constructor() : CompleteLifecycleActivity() {
+class AuthActivity internal constructor() : ComposableActivity() {
     private val authorizer by inject<Authorizer>()
     private val authenticator by inject<Authenticator>()
     private val viewModel by viewModels<AuthViewModel> {
