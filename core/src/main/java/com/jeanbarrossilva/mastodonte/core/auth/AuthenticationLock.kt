@@ -9,14 +9,12 @@ import com.jeanbarrossilva.mastodonte.core.auth.actor.ActorProvider
  * - ...an [unauthenticated][Actor.Unauthenticated] [Actor], through [lock];
  * - ...an [authenticated][Actor.Authenticated] [Actor], through [unlock].
  *
- * @param authorizer [Authorizer] by which [authenticator]'s authentication will be authorized.
  * @param authenticator [Authenticator] through which the [Actor] will be authenticated if it isn't
  * and [unlock] is called.
  * @param actorProvider [ActorProvider] whose provided [Actor] will be ensured to be either
  * [unauthenticated][Actor.Unauthenticated] or [authenticated][Actor.Authenticated].
  **/
 class AuthenticationLock(
-    private val authorizer: Authorizer,
     private val authenticator: Authenticator,
     private val actorProvider: ActorProvider
 ) {
@@ -79,7 +77,7 @@ class AuthenticationLock(
      * [authenticated][Actor.Authenticated].
      **/
     private suspend fun authenticateAndNotify(listener: OnUnlockListener) {
-        val actor = authenticator.authenticate(authorizer)
+        val actor = authenticator.authenticate()
         if (actor is Actor.Authenticated) {
             listener.onUnlock(actor)
         }

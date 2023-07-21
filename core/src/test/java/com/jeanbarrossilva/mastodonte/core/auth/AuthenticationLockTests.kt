@@ -25,10 +25,10 @@ internal class AuthenticationLockTests {
     fun `GIVEN an authenticated actor WHEN locking THEN the listener isn't notified`() {
         val authorizer = TestAuthorizer()
         val actorProvider = TestActorProvider()
-        val authenticator = TestAuthenticator(actorProvider)
+        val authenticator = TestAuthenticator(authorizer, actorProvider)
         var hasListenerBeenNotified = false
         runTest {
-            authenticator.authenticate(authorizer)
+            authenticator.authenticate()
             TestAuthenticationLock(authorizer, actorProvider, authenticator).lock {
                 hasListenerBeenNotified = true
             }
