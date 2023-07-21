@@ -4,12 +4,11 @@ plugins {
 }
 
 android {
-    namespace = Metadata.namespace("platform.ui")
+    namespace = Metadata.namespace("feature.auth")
     compileSdk = Versions.Mastodonte.SDK_COMPILE
 
     defaultConfig {
         minSdk = Versions.Mastodonte.SDK_MIN
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -52,22 +51,17 @@ android {
 }
 
 dependencies {
-    api(Dependencies.FRAGMENT)
-    api(Dependencies.LOADABLE)
-
     implementation(project(":core"))
     implementation(project(":core:sample"))
     implementation(project(":platform:theme"))
-    implementation(Dependencies.ACTIVITY_COMPOSE)
-    implementation(Dependencies.COIL_COMPOSE)
-    implementation(Dependencies.COMPOSE_MATERIAL_ICONS_EXTENDED)
-    implementation(Dependencies.LOADABLE_PLACEHOLDER)
-    implementation(Dependencies.LOADABLE_PLACEHOLDER_TEST)
-    implementation(Dependencies.MATERIAL)
-    implementation(Dependencies.TIME4J)
+    implementation(project(":platform:ui"))
+    implementation(Dependencies.KOIN_ANDROID)
 
+    testImplementation(project(":core-test"))
     testImplementation(project(":platform:ui-test"))
     testImplementation(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
     testImplementation(Dependencies.COMPOSE_UI_TEST_MANIFEST)
+    testImplementation(Dependencies.KOIN_TEST)
     testImplementation(Dependencies.ROBOLECTRIC)
+    testImplementation(Dependencies.TEST_CORE)
 }
