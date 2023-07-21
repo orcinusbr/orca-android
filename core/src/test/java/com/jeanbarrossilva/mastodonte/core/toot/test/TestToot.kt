@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.mastodonte.core.toot.test
 
+import com.jeanbarrossilva.mastodonte.core.sample.account.sample
 import com.jeanbarrossilva.mastodonte.core.sample.toot.sample
 import com.jeanbarrossilva.mastodonte.core.toot.Author
 import com.jeanbarrossilva.mastodonte.core.toot.Toot
