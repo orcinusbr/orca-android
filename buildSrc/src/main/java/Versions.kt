@@ -23,7 +23,7 @@ object Versions {
     const val KSP = "1.8.21-1.0.11"
     const val MATERIAL = "1.9.0"
     const val NAVIGATION = "2.6.0"
-    const val ROBOLECTRIC = "4.9"
+    const val ROBOLECTRIC = "4.10.3"
     const val SERIALIZATION = "1.5.1"
     const val TEST_CORE = "1.5.0"
     const val TEST_ESPRESSO = "3.5.0"
