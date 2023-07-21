@@ -20,7 +20,7 @@ class SharedPreferencesActorProvider(
     private val preferences: SharedPreferences =
         context.getSharedPreferences("shared-preferences-actor-provider", Context.MODE_PRIVATE)
 
-    override suspend fun remember(actor: Actor.Authenticated) {
+    override suspend fun remember(actor: Actor) {
         val unstableActor = actor.toMirroredActor()
         val unstableActorAsJson = Json.encodeToString(unstableActor)
         preferences.edit { putString(UNSTABLE_ACTOR_KEY, unstableActorAsJson) }

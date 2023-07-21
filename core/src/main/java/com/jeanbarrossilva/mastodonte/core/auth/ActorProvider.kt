@@ -16,7 +16,7 @@ abstract class ActorProvider {
      *
      * @see retrieve
      **/
-    suspend fun provide(): Actor.Authenticated {
+    suspend fun provide(): Actor {
         return when (val retrieved = retrieve()) {
             is Actor.Unauthenticated -> authenticator.authenticate(authorizer).also { remember(it) }
             is Actor.Authenticated -> retrieved
@@ -28,7 +28,7 @@ abstract class ActorProvider {
      *
      * @see retrieve
      **/
-    protected abstract suspend fun remember(actor: Actor.Authenticated)
+    protected abstract suspend fun remember(actor: Actor)
 
     /** Retrieves an [Actor]. **/
     protected abstract suspend fun retrieve(): Actor
