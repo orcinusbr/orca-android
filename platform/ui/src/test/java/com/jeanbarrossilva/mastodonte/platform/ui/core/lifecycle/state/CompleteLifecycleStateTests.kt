@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.mastodonte.platform.ui.core.lifecycle.state
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Test
 
 internal class CompleteLifecycleStateTests {
@@ -27,5 +28,10 @@ internal class CompleteLifecycleStateTests {
     @Test
     fun `GIVEN a stopped state WHEN getting the next one THEN it's destroyed`() {
         assertEquals(CompleteLifecycleState.DESTROYED, CompleteLifecycleState.STOPPED.next())
+    }
+
+    @Test
+    fun `GIVEN a destroyed state WHEN getting the next one THEN it's null`() {
+        assertNull(CompleteLifecycleState.DESTROYED.next())
     }
 }
