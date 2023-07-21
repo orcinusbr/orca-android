@@ -14,7 +14,6 @@ android {
         targetSdk = Versions.Mastodonte.SDK_TARGET
         versionCode = Versions.Mastodonte.CODE
         versionName = Versions.Mastodonte.NAME
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -58,6 +57,8 @@ android {
 
 dependencies {
     implementation(project(":core:sample"))
+    implementation(project(":core:shared-preferences"))
+    implementation(project(":feature:auth"))
     implementation(project(":feature:feed"))
     implementation(project(":feature:profile-details"))
     implementation(project(":feature:toot-details"))

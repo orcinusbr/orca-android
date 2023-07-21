@@ -2,7 +2,7 @@ import org.gradle.api.JavaVersion
 
 object Versions {
     const val ACCOMPANIST = "0.31.3-beta"
-    const val ACTIVITY = "1.7.0"
+    const val ACTIVITY = "1.7.2"
     const val APPCOMPAT = "1.6.1"
     const val COIL = "2.4.0"
     const val COMPOSE_COMPILER = "1.4.7"

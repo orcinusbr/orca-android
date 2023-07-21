@@ -6,6 +6,7 @@ include(
     ":core:sample-test",
     ":core:shared-preferences",
     ":core-test",
+    ":feature:auth",
     ":feature:feed",
     ":feature:profile-details",
     ":feature:toot-details",
