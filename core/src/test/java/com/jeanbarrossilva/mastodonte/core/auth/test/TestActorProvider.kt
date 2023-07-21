@@ -2,6 +2,8 @@ package com.jeanbarrossilva.mastodonte.core.auth.test
 
 import com.jeanbarrossilva.mastodonte.core.auth.Actor
 import com.jeanbarrossilva.mastodonte.core.auth.ActorProvider
+import com.jeanbarrossilva.mastodonte.core.test.TestAuthenticator
+import com.jeanbarrossilva.mastodonte.core.test.TestAuthorizer
 
 /**
  * [ActorProvider] that provides an [authenticated][Actor.Authenticated] [Actor] through a

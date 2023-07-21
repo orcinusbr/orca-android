@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.core.auth.test
+package com.jeanbarrossilva.mastodonte.core.test
 
 import com.jeanbarrossilva.mastodonte.core.auth.Authorizer
 
@@ -8,7 +8,7 @@ import com.jeanbarrossilva.mastodonte.core.auth.Authorizer
  * @param onAuthorize Operation to be performed when [authorize] is called.
  * @see AUTHORIZATION_CODE
  **/
-internal class TestAuthorizer(private val onAuthorize: () -> Unit = { }) : Authorizer() {
+class TestAuthorizer(private val onAuthorize: () -> Unit = { }) : Authorizer() {
     override suspend fun authorize(): String {
         onAuthorize()
         return AUTHORIZATION_CODE

@@ -22,10 +22,10 @@ internal class MastodonteActivity : AppCompatActivity(), OnBottomAreaAvailabilit
         WindowCompat.setDecorFitsSystemWindows(window, false)
         binding = ActivityMastodonteBinding.inflate(layoutInflater)
         setContentView(binding?.root)
+        inject()
         navigateOnBottomNavigationItemSelection()
         navigateToDefaultDestination()
         navigateToAuth()
-        inject()
     }
 
     override fun onDestroy() {

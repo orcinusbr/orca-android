@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.mastodonte.core.auth
 
-import com.jeanbarrossilva.mastodonte.core.auth.test.TestAuthenticator
-import com.jeanbarrossilva.mastodonte.core.auth.test.TestAuthorizer
+import com.jeanbarrossilva.mastodonte.core.test.TestAuthenticator
+import com.jeanbarrossilva.mastodonte.core.test.TestAuthorizer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
