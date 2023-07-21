@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.mastodonte.platform.ui
 
-import com.jeanbarrossilva.mastodonte.core.toot.Account
+import com.jeanbarrossilva.mastodonte.core.account.Account
 
 /** Deals with [Account]-related formatting. **/
 object AccountFormatter {
