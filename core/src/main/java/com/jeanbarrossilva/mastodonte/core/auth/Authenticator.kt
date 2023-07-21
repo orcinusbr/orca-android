@@ -1,5 +1,8 @@
 package com.jeanbarrossilva.mastodonte.core.auth
 
+import com.jeanbarrossilva.mastodonte.core.auth.actor.Actor
+import com.jeanbarrossilva.mastodonte.core.auth.actor.ActorProvider
+
 /** Authenticates a user through [authenticate]. **/
 abstract class Authenticator {
     /**

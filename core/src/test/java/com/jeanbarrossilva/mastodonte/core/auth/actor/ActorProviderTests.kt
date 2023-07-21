@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.core.auth
+package com.jeanbarrossilva.mastodonte.core.auth.actor
 
 import com.jeanbarrossilva.mastodonte.core.test.TestActorProvider
 import com.jeanbarrossilva.mastodonte.core.test.TestAuthenticator

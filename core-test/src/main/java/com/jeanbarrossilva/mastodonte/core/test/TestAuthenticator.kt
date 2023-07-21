@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.mastodonte.core.test
 
-import com.jeanbarrossilva.mastodonte.core.auth.Actor
 import com.jeanbarrossilva.mastodonte.core.auth.Authenticator
+import com.jeanbarrossilva.mastodonte.core.auth.actor.Actor
 
 /**
  * [Authenticator] that switches the [Actor] locally on authentication.

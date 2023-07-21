@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.mastodonte.core.auth
 
+import com.jeanbarrossilva.mastodonte.core.auth.actor.Actor
 import com.jeanbarrossilva.mastodonte.core.test.TestAuthenticator
 import com.jeanbarrossilva.mastodonte.core.test.TestAuthorizer
 import kotlin.test.Test

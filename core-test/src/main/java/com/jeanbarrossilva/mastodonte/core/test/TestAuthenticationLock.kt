@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.mastodonte.core.test
 
-import com.jeanbarrossilva.mastodonte.core.auth.Actor
 import com.jeanbarrossilva.mastodonte.core.auth.AuthenticationLock
+import com.jeanbarrossilva.mastodonte.core.auth.actor.Actor
 
 /**
  * [AuthenticationLock] with test-specific default structures.

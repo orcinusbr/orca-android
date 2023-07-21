@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.core.auth
+package com.jeanbarrossilva.mastodonte.core.auth.actor
 
 /** Agent that can perform operations throughout the application. **/
 sealed interface Actor {

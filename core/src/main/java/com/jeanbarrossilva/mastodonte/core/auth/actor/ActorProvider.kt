@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.core.auth
+package com.jeanbarrossilva.mastodonte.core.auth.actor
 
 /** Provides an [Actor] through [provide]. **/
 abstract class ActorProvider {

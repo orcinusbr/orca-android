@@ -1,5 +1,8 @@
 package com.jeanbarrossilva.mastodonte.core.auth
 
+import com.jeanbarrossilva.mastodonte.core.auth.actor.Actor
+import com.jeanbarrossilva.mastodonte.core.auth.actor.ActorProvider
+
 /**
  * Ensures that an operation is only performed either by...
  *

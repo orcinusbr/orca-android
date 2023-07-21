@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.core.sharedpreferences
+package com.jeanbarrossilva.mastodonte.core.sharedpreferences.actor
 
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
