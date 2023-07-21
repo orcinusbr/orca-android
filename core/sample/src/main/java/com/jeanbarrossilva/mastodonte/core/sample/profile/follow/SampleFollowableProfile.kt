@@ -1,10 +1,10 @@
 package com.jeanbarrossilva.mastodonte.core.sample.profile.follow
 
+import com.jeanbarrossilva.mastodonte.core.account.Account
 import com.jeanbarrossilva.mastodonte.core.profile.follow.Follow
 import com.jeanbarrossilva.mastodonte.core.profile.follow.FollowableProfile
 import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfile
 import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfileWriter
-import com.jeanbarrossilva.mastodonte.core.toot.Account
 import java.net.URL
 
 /**

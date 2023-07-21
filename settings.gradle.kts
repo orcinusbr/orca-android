@@ -4,6 +4,8 @@ include(
     ":core",
     ":core:sample",
     ":core:sample-test",
+    ":core:shared-preferences",
+    ":core-test",
     ":feature:feed",
     ":feature:profile-details",
     ":feature:toot-details",

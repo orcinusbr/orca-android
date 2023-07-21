@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.mastodonte.core.toot
 
+import com.jeanbarrossilva.mastodonte.core.account.Account
 import java.io.Serializable
 import java.net.URL
 
