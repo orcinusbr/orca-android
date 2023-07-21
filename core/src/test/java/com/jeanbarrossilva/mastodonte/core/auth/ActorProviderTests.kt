@@ -1,30 +1,21 @@
 package com.jeanbarrossilva.mastodonte.core.auth
 
-import com.jeanbarrossilva.mastodonte.core.auth.test.TestActorProvider
+import com.jeanbarrossilva.mastodonte.core.test.TestActorProvider
 import com.jeanbarrossilva.mastodonte.core.test.TestAuthenticator
-import kotlin.test.Test
+import com.jeanbarrossilva.mastodonte.core.test.TestAuthorizer
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
+import org.junit.Test
 
 internal class ActorProviderTests {
     @Test
-    fun `GIVEN a remembered unauthenticated actor WHEN providing THEN it authenticates`() {
-        var hasAuthenticated = false
-        val authenticator = TestAuthenticator { hasAuthenticated = true }
+    fun `GIVEN a provider WHEN authenticating THEN it provides the resulting actor`() {
+        val actorProvider = TestActorProvider()
+        val authorizer = TestAuthorizer()
+        val authenticator = TestAuthenticator(actorProvider)
         runTest {
-            TestActorProvider(authenticator = authenticator).provide()
-            assertTrue(hasAuthenticated)
-        }
-    }
-
-    @Test
-    fun `GIVEN a remembered authenticated actor WHEN providing THEN it's the one that's provided`() { // ktlint-disable max-line-length
-        val authenticator = TestAuthenticator()
-        val actorProvider = TestActorProvider(authenticator = authenticator)
-        runTest {
-            actorProvider.provide()
-            assertEquals(actorProvider.rememberedActor, actorProvider.provide())
+            val actor = authenticator.authenticate(authorizer)
+            assertEquals(actor, actorProvider.provide())
         }
     }
 }

@@ -4,13 +4,17 @@ import android.os.Bundle
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
 import com.jeanbarrossilva.mastodonte.app.databinding.ActivityMastodonteBinding
 import com.jeanbarrossilva.mastodonte.app.feature.feed.FeedModule
 import com.jeanbarrossilva.mastodonte.app.feature.profiledetails.ProfileDetailsModule
 import com.jeanbarrossilva.mastodonte.app.feature.tootdetails.TootDetailsModule
 import com.jeanbarrossilva.mastodonte.app.navigation.navigator.BottomNavigationItemNavigatorFactory
+import com.jeanbarrossilva.mastodonte.core.auth.AuthenticationLock
 import com.jeanbarrossilva.mastodonte.feature.auth.activity.AuthActivity
 import com.jeanbarrossilva.mastodonte.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.get
 import org.koin.core.context.loadKoinModules
 
 internal class MastodonteActivity : AppCompatActivity(), OnBottomAreaAvailabilityChangeListener {
@@ -25,7 +29,7 @@ internal class MastodonteActivity : AppCompatActivity(), OnBottomAreaAvailabilit
         inject()
         navigateOnBottomNavigationItemSelection()
         navigateToDefaultDestination()
-        navigateToAuth()
+        navigateToAuthIfLocked()
     }
 
     override fun onDestroy() {
@@ -56,8 +60,12 @@ internal class MastodonteActivity : AppCompatActivity(), OnBottomAreaAvailabilit
         binding?.bottomNavigationView?.selectedItemId = R.id.feed
     }
 
-    private fun navigateToAuth() {
-        AuthActivity.start(this)
+    private fun navigateToAuthIfLocked() {
+        lifecycleScope.launch {
+            get<AuthenticationLock>().lock {
+                AuthActivity.start(this@MastodonteActivity)
+            }
+        }
     }
 
     private fun inject() {

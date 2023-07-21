@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.mastodonte.app
 
 import com.jeanbarrossilva.mastodonte.core.auth.ActorProvider
+import com.jeanbarrossilva.mastodonte.core.auth.AuthenticationLock
 import com.jeanbarrossilva.mastodonte.core.auth.Authenticator
 import com.jeanbarrossilva.mastodonte.core.auth.Authorizer
 import com.jeanbarrossilva.mastodonte.core.feed.FeedProvider
@@ -22,14 +23,11 @@ internal fun MastodonteModule(
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener
 ): Module {
     return module {
+        single<ActorProvider> { SharedPreferencesActorProvider(androidContext()) }
         single<Authorizer> { SampleAuthorizer }
-        single<Authenticator> { SampleAuthenticator }
-        single<ActorProvider> {
-            SharedPreferencesActorProvider(
-                androidContext(),
-                authorizer = get(),
-                authenticator = get()
-            )
+        single<Authenticator> { SampleAuthenticator(actorProvider = get()) }
+        single {
+            AuthenticationLock(authorizer = get(), authenticator = get(), actorProvider = get())
         }
         single<FeedProvider> { SampleFeedProvider }
         single<ProfileProvider> { SampleProfileProvider }

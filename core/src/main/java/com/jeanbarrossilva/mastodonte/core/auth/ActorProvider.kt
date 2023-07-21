@@ -2,25 +2,19 @@ package com.jeanbarrossilva.mastodonte.core.auth
 
 /** Provides an [Actor] through [provide]. **/
 abstract class ActorProvider {
-    /** [Authorizer] that will authorize authentication through the [authorizer]. **/
-    protected abstract val authorizer: Authorizer
+    /** Provides an [Actor]. **/
+    suspend fun provide(): Actor {
+        return retrieve()
+    }
 
     /**
-     * [Authenticator] that enables falling back to authentication in order to provide the [Actor].
-     **/
-    protected abstract val authenticator: Authenticator
-
-    /**
-     * Authenticates the user and provides the resulting [authenticated][Actor.Authenticated]
-     * [Actor] or retrieves the previous one.
+     * Remembers the given [actor] so that it can be retrieved later.
      *
      * @see retrieve
      **/
-    suspend fun provide(): Actor {
-        return when (val retrieved = retrieve()) {
-            is Actor.Unauthenticated -> authenticator.authenticate(authorizer).also { remember(it) }
-            is Actor.Authenticated -> retrieved
-        }
+    @Suppress("FunctionName")
+    internal suspend fun _remember(actor: Actor) {
+        remember(actor)
     }
 
     /**
@@ -30,6 +24,10 @@ abstract class ActorProvider {
      **/
     protected abstract suspend fun remember(actor: Actor)
 
-    /** Retrieves an [Actor]. **/
+    /**
+     * Retrieves a remembered [Actor].
+     *
+     * @see remember
+     **/
     protected abstract suspend fun retrieve(): Actor
 }
