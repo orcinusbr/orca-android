@@ -29,7 +29,7 @@ internal class MastodonteActivity : AppCompatActivity(), OnBottomAreaAvailabilit
         inject()
         navigateOnBottomNavigationItemSelection()
         navigateToDefaultDestination()
-        navigateToAuthIfLocked()
+        navigateToAuth()
     }
 
     override fun onDestroy() {
@@ -60,7 +60,7 @@ internal class MastodonteActivity : AppCompatActivity(), OnBottomAreaAvailabilit
         binding?.bottomNavigationView?.selectedItemId = R.id.feed
     }
 
-    private fun navigateToAuthIfLocked() {
+    private fun navigateToAuth() {
         lifecycleScope.launch {
             get<AuthenticationLock>().lock {
                 AuthActivity.start(this@MastodonteActivity)
