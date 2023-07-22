@@ -58,5 +58,4 @@ dependencies {
     implementation(Dependencies.TIME4J)
 
     testImplementation(Dependencies.ROBOLECTRIC)
-    testImplementation(Dependencies.TEST_CORE)
 }
