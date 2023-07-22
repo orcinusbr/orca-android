@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.os.Looper
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.activity
 import androidx.navigation.fragment.FragmentNavigator
@@ -14,7 +13,6 @@ import androidx.navigation.fragment.dialog
 import androidx.navigation.fragment.fragment
 import androidx.navigation.get
 import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -123,7 +121,7 @@ internal class SingleFragmentActivityTests {
                 Fragment::class
             )
                 .build()
-            lifecycleScope.launch {
+            runTest {
                 navGraphIntegrityInsuranceJob?.join()
                 shadowOf(Looper.getMainLooper()).idle()
                 navController.graph.addDestination(destination)
