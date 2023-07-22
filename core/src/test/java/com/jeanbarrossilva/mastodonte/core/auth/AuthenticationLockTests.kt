@@ -3,7 +3,6 @@ package com.jeanbarrossilva.mastodonte.core.auth
 import com.jeanbarrossilva.mastodonte.core.test.TestActorProvider
 import com.jeanbarrossilva.mastodonte.core.test.TestAuthenticationLock
 import com.jeanbarrossilva.mastodonte.core.test.TestAuthenticator
-import com.jeanbarrossilva.mastodonte.core.test.TestAuthorizer
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -23,13 +22,12 @@ internal class AuthenticationLockTests {
 
     @Test
     fun `GIVEN an authenticated actor WHEN locking THEN the listener isn't notified`() {
-        val authorizer = TestAuthorizer()
         val actorProvider = TestActorProvider()
-        val authenticator = TestAuthenticator(authorizer, actorProvider)
+        val authenticator = TestAuthenticator(actorProvider = actorProvider)
         var hasListenerBeenNotified = false
         runTest {
             authenticator.authenticate()
-            TestAuthenticationLock(authorizer, actorProvider, authenticator).lock {
+            TestAuthenticationLock(actorProvider, authenticator).lock {
                 hasListenerBeenNotified = true
             }
         }
