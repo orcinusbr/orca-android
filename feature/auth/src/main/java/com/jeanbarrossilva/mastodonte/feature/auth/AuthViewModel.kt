@@ -6,13 +6,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jeanbarrossilva.mastodonte.core.auth.Authenticator
-import com.jeanbarrossilva.mastodonte.core.auth.Authorizer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 internal class AuthViewModel private constructor(
-    private val authorizer: Authorizer,
     private val authenticator: Authenticator,
     private val listener: OnAuthenticationListener
 ) : ViewModel() {
@@ -32,20 +30,17 @@ internal class AuthViewModel private constructor(
 
     fun signIn() {
         viewModelScope.launch {
-            authenticator.authenticate(authorizer)
+            authenticator.authenticate()
             listener.onAuthentication()
         }
     }
 
     companion object {
-        fun createFactory(
-            authorizer: Authorizer,
-            authenticator: Authenticator,
-            listener: OnAuthenticationListener
-        ): ViewModelProvider.Factory {
+        fun createFactory(authenticator: Authenticator, listener: OnAuthenticationListener):
+            ViewModelProvider.Factory {
             return viewModelFactory {
                 initializer {
-                    AuthViewModel(authorizer, authenticator, listener)
+                    AuthViewModel(authenticator, listener)
                 }
             }
         }

@@ -14,7 +14,7 @@ internal class AuthenticatorTests {
     fun `GIVEN an authentication WHEN verifying if the actor is authorized THEN it is`() {
         var isAuthorized = false
         val authorizer = TestAuthorizer { isAuthorized = true }
-        runTest { TestAuthenticator().authenticate(authorizer) }
+        runTest { TestAuthenticator(authorizer).authenticate() }
         assertTrue(isAuthorized)
     }
 
@@ -23,7 +23,7 @@ internal class AuthenticatorTests {
         lateinit var providedAuthorizationCode: String
         val authorizer = TestAuthorizer()
         val authenticator = TestAuthenticator { providedAuthorizationCode = it }
-        runTest { authenticator.authenticate(authorizer) }
+        runTest { authenticator.authenticate() }
         assertEquals(TestAuthorizer.AUTHORIZATION_CODE, providedAuthorizationCode)
     }
 
@@ -32,7 +32,7 @@ internal class AuthenticatorTests {
         val authorizer = TestAuthorizer()
         val authenticator = TestAuthenticator()
         runTest {
-            assertIs<Actor.Authenticated>(authenticator.authenticate(authorizer))
+            assertIs<Actor.Authenticated>(authenticator.authenticate())
         }
     }
 }

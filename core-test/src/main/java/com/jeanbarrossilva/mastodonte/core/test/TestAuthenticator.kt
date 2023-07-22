@@ -6,11 +6,15 @@ import com.jeanbarrossilva.mastodonte.core.auth.actor.Actor
 /**
  * [Authenticator] that switches the [Actor] locally on authentication.
  *
+ * @param authorizer [TestAuthorizer] with which the user will be authorized.
+ * @param actorProvider [TestActorProvider] to which the [authenticated][Actor.Authenticated]
+ * [Actor] will be sent to be remembered when authentication occurs.
  * @param onOnAuthenticate Operation to be performed when [onAuthenticate] is called.
  * @see currentActor
  * @see switchCurrentActor
  **/
 class TestAuthenticator(
+    override val authorizer: TestAuthorizer = TestAuthorizer(),
     override val actorProvider: TestActorProvider = TestActorProvider(),
     private val onOnAuthenticate: suspend (authorizationCode: String) -> Unit = { }
 ) : Authenticator() {

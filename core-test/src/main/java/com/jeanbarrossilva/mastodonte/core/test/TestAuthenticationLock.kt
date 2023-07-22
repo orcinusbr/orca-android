@@ -6,7 +6,6 @@ import com.jeanbarrossilva.mastodonte.core.auth.actor.Actor
 /**
  * [AuthenticationLock] with test-specific default structures.
  *
- * @param authorizer [TestAuthorizer] by which [authenticator]'s authentication will be authorized.
  * @param authenticator [TestAuthenticator] through which the [Actor] will be authenticated if it
  * isn't and [unlock][AuthenticationLock.unlock] is called.
  * @param actorProvider [TestActorProvider] whose provided [Actor] will be ensured to be either
@@ -14,9 +13,8 @@ import com.jeanbarrossilva.mastodonte.core.auth.actor.Actor
  **/
 @Suppress("FunctionName")
 fun TestAuthenticationLock(
-    authorizer: TestAuthorizer = TestAuthorizer(),
     actorProvider: TestActorProvider = TestActorProvider(),
-    authenticator: TestAuthenticator = TestAuthenticator(actorProvider)
+    authenticator: TestAuthenticator = TestAuthenticator(actorProvider = actorProvider)
 ): AuthenticationLock {
-    return AuthenticationLock(authorizer, authenticator, actorProvider)
+    return AuthenticationLock(authenticator, actorProvider)
 }
