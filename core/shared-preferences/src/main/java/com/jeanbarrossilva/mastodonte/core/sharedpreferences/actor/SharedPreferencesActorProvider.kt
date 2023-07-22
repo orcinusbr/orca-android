@@ -15,13 +15,14 @@ class SharedPreferencesActorProvider(context: Context) : ActorProvider() {
         context.getSharedPreferences("shared-preferences-actor-provider", Context.MODE_PRIVATE)
 
     override suspend fun remember(actor: Actor) {
-        val unstableActor = actor.toMirroredActor()
-        val unstableActorAsJson = Json.encodeToString(unstableActor)
-        preferences.edit { putString(UNSTABLE_ACTOR_KEY, unstableActorAsJson) }
+        val mirroredActor = actor.toMirroredActor()
+        val mirroredActorAsJson = Json.encodeToString(mirroredActor)
+        preferences.edit { putString(MIRRORED_ACTOR_KEY, mirroredActorAsJson) }
     }
 
     override suspend fun retrieve(): Actor {
-        return preferences.getString(UNSTABLE_ACTOR_KEY, null)
+        return preferences
+            .getString(MIRRORED_ACTOR_KEY, null)
             ?.let { Json.decodeFromString<MirroredActor>(it) }
             ?.toActor()
             ?: Actor.Unauthenticated
@@ -29,11 +30,11 @@ class SharedPreferencesActorProvider(context: Context) : ActorProvider() {
 
     internal fun reset() {
         preferences.edit {
-            remove(UNSTABLE_ACTOR_KEY)
+            remove(MIRRORED_ACTOR_KEY)
         }
     }
 
     companion object {
-        private const val UNSTABLE_ACTOR_KEY = "unstable-actor"
+        private const val MIRRORED_ACTOR_KEY = "mirrored-actor"
     }
 }
