@@ -17,6 +17,7 @@
     <style
         name="Theme.Mastodonte.Typography.HeadlineLarge"
         parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="android:textColor">?android:textColorPrimary</item>
         <item name="android:textFontWeight">@integer/font_weight_black</item>
     </style>
 
