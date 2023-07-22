@@ -9,7 +9,6 @@ android {
 
     defaultConfig {
         minSdk = Versions.Mastodonte.SDK_MIN
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
