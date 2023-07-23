@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.mastodonte.feature.feed
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -36,14 +35,6 @@ internal class FeedViewModel(
     val tootsLoadableFlow = indexMutableFlow
         .flatMapConcat { getTootsAt(it) }
         .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
-
-    init {
-        viewModelScope.launch {
-            tootsLoadableFlow.collect {
-                Log.d("FeedViewModel", "tootsLoadableFlow: $it")
-            }
-        }
-    }
 
     fun favorite(tootID: String) {
         viewModelScope.launch {
