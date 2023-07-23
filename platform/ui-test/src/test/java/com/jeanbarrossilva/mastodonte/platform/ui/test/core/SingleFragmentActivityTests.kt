@@ -13,6 +13,7 @@ import androidx.navigation.fragment.dialog
 import androidx.navigation.fragment.fragment
 import androidx.navigation.get
 import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -35,22 +36,30 @@ internal class SingleFragmentActivityTests {
         }
 
         override fun onNoDestination() {
-            calledNavGraphIntegrityCallback = NavGraphIntegrityCallback.NO_DESTINATION
-            cancelNavGraphIntegrityInsuranceJob()
+            runBlocking {
+                calledNavGraphIntegrityCallback = NavGraphIntegrityCallback.NO_DESTINATION
+                cancelNavGraphIntegrityInsuranceJob()
+            }
         }
 
         override fun onInequivalentDestinationRoute() {
-            calledNavGraphIntegrityCallback =
-                NavGraphIntegrityCallback.INEQUIVALENT_DESTINATION_ROUTE
-            cancelNavGraphIntegrityInsuranceJob()
+            runBlocking {
+                calledNavGraphIntegrityCallback =
+                    NavGraphIntegrityCallback.INEQUIVALENT_DESTINATION_ROUTE
+                cancelNavGraphIntegrityInsuranceJob()
+            }
         }
 
         override fun onNonFragmentDestination() {
-            calledNavGraphIntegrityCallback = NavGraphIntegrityCallback.NON_FRAGMENT_DESTINATION
+            runBlocking {
+                calledNavGraphIntegrityCallback = NavGraphIntegrityCallback.NON_FRAGMENT_DESTINATION
+            }
         }
 
         override fun onMultipleDestinations() {
-            calledNavGraphIntegrityCallback = NavGraphIntegrityCallback.MULTIPLE_DESTINATIONS
+            runBlocking {
+                calledNavGraphIntegrityCallback = NavGraphIntegrityCallback.MULTIPLE_DESTINATIONS
+            }
         }
 
         private fun cancelNavGraphIntegrityInsuranceJob() {
@@ -121,7 +130,7 @@ internal class SingleFragmentActivityTests {
                 Fragment::class
             )
                 .build()
-            runTest {
+            runBlocking {
                 navGraphIntegrityInsuranceJob?.join()
                 shadowOf(Looper.getMainLooper()).idle()
                 navController.graph.addDestination(destination)
