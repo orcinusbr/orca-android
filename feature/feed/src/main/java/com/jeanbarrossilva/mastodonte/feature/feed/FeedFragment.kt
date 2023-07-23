@@ -34,7 +34,7 @@ class FeedFragment internal constructor() : ComposableFragment(), ContextProvide
     }
 
     companion object {
-        private const val USER_ID_KEY = "user-id"
+        internal const val USER_ID_KEY = "user-id"
 
         const val TAG = "feed-fragment"
     }
