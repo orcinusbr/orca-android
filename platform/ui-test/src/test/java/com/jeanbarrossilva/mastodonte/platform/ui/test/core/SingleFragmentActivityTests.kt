@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Looper
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.activity
 import androidx.navigation.fragment.FragmentNavigator
@@ -13,7 +14,7 @@ import androidx.navigation.fragment.dialog
 import androidx.navigation.fragment.fragment
 import androidx.navigation.get
 import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -36,30 +37,22 @@ internal class SingleFragmentActivityTests {
         }
 
         override fun onNoDestination() {
-            runBlocking {
-                calledNavGraphIntegrityCallback = NavGraphIntegrityCallback.NO_DESTINATION
-                cancelNavGraphIntegrityInsuranceJob()
-            }
+            calledNavGraphIntegrityCallback = NavGraphIntegrityCallback.NO_DESTINATION
+            cancelNavGraphIntegrityInsuranceJob()
         }
 
         override fun onInequivalentDestinationRoute() {
-            runBlocking {
-                calledNavGraphIntegrityCallback =
-                    NavGraphIntegrityCallback.INEQUIVALENT_DESTINATION_ROUTE
-                cancelNavGraphIntegrityInsuranceJob()
-            }
+            calledNavGraphIntegrityCallback =
+                NavGraphIntegrityCallback.INEQUIVALENT_DESTINATION_ROUTE
+            cancelNavGraphIntegrityInsuranceJob()
         }
 
         override fun onNonFragmentDestination() {
-            runBlocking {
-                calledNavGraphIntegrityCallback = NavGraphIntegrityCallback.NON_FRAGMENT_DESTINATION
-            }
+            calledNavGraphIntegrityCallback = NavGraphIntegrityCallback.NON_FRAGMENT_DESTINATION
         }
 
         override fun onMultipleDestinations() {
-            runBlocking {
-                calledNavGraphIntegrityCallback = NavGraphIntegrityCallback.MULTIPLE_DESTINATIONS
-            }
+            calledNavGraphIntegrityCallback = NavGraphIntegrityCallback.MULTIPLE_DESTINATIONS
         }
 
         private fun cancelNavGraphIntegrityInsuranceJob() {
@@ -130,7 +123,7 @@ internal class SingleFragmentActivityTests {
                 Fragment::class
             )
                 .build()
-            runBlocking {
+            lifecycleScope.launch {
                 navGraphIntegrityInsuranceJob?.join()
                 shadowOf(Looper.getMainLooper()).idle()
                 navController.graph.addDestination(destination)

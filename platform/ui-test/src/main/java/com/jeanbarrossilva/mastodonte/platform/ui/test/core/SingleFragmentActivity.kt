@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentOnAttachListener
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph
@@ -42,7 +43,7 @@ abstract class SingleFragmentActivity : FragmentActivity() {
             ensureIntegrity(navGraph)
             navGraphIntegrityInsuranceJob?.invokeOnCompletion { cause ->
                 if (cause == null) {
-                    navGraphIntegrityInsuranceScope.launch(Dispatchers.Main) {
+                    lifecycleScope.launch {
                         navController.graph = navGraph
                     }
                 }
