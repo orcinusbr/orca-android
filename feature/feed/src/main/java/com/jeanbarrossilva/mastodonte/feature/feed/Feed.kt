@@ -52,6 +52,42 @@ internal fun Feed(
 }
 
 @Composable
+internal fun Feed(
+    toots: List<Toot>,
+    onSearch: () -> Unit,
+    onFavorite: (tootID: String) -> Unit,
+    onReblog: (tootID: String) -> Unit,
+    onShare: (URL) -> Unit,
+    onTootClick: (tootID: String) -> Unit,
+    onNext: (index: Int) -> Unit,
+    onComposition: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Feed(
+        onSearch,
+        timelineContentPadding = MastodonteTheme.overlays.fab,
+        toots = {
+            items(toots) {
+                TootPreview(
+                    it.toTootPreview(),
+                    onFavorite = { onFavorite(it.id) },
+                    onReblog = { onReblog(it.id) },
+                    onShare = { onShare(it.url) },
+                    onClick = { onTootClick(it.id) }
+                )
+            }
+        },
+        onNext,
+        floatingActionButton = {
+            FloatingActionButton(onClick = onComposition) {
+                Icon(MastodonteTheme.Icons.Create, contentDescription = "Compose")
+            }
+        },
+        modifier
+    )
+}
+
+@Composable
 private fun Feed(
     tootsLoadable: ListLoadable<Toot>,
     onSearch: () -> Unit,
@@ -91,42 +127,6 @@ private fun Feed(onSearch: () -> Unit, modifier: Modifier = Modifier) {
         toots = LazyListScope::loadingTootPreviews,
         onNext = { },
         floatingActionButton = { },
-        modifier
-    )
-}
-
-@Composable
-private fun Feed(
-    toots: List<Toot>,
-    onSearch: () -> Unit,
-    onFavorite: (tootID: String) -> Unit,
-    onReblog: (tootID: String) -> Unit,
-    onShare: (URL) -> Unit,
-    onTootClick: (tootID: String) -> Unit,
-    onNext: (index: Int) -> Unit,
-    onComposition: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Feed(
-        onSearch,
-        timelineContentPadding = MastodonteTheme.overlays.fab,
-        toots = {
-            items(toots) {
-                TootPreview(
-                    it.toTootPreview(),
-                    onFavorite = { onFavorite(it.id) },
-                    onReblog = { onReblog(it.id) },
-                    onShare = { onShare(it.url) },
-                    onClick = { onTootClick(it.id) }
-                )
-            }
-        },
-        onNext,
-        floatingActionButton = {
-            FloatingActionButton(onClick = onComposition) {
-                Icon(MastodonteTheme.Icons.Create, contentDescription = "Compose")
-            }
-        },
         modifier
     )
 }

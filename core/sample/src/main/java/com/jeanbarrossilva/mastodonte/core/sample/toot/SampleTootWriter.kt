@@ -5,7 +5,7 @@ import com.jeanbarrossilva.mastodonte.core.toot.Toot
 import kotlinx.coroutines.flow.update
 
 /** Performs [Toot]-related writing operations. **/
-internal object SampleTootWriter {
+object SampleTootWriter {
     /**
      * Defines whether the [Toot] identified as [id] is marked as favorite.
      *

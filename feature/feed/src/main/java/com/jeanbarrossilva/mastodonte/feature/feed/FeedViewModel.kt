@@ -1,12 +1,13 @@
 package com.jeanbarrossilva.mastodonte.feature.feed
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.jeanbarrossilva.loadable.list.ListLoadable
-import com.jeanbarrossilva.loadable.list.flow.listLoadableFlow
+import com.jeanbarrossilva.loadable.list.SerializableList
+import com.jeanbarrossilva.loadable.list.flow.listLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.mastodonte.core.feed.FeedProvider
 import com.jeanbarrossilva.mastodonte.core.toot.Toot
@@ -15,12 +16,12 @@ import com.jeanbarrossilva.mastodonte.platform.ui.core.context.ContextProvider
 import com.jeanbarrossilva.mastodonte.platform.ui.core.context.share
 import java.net.URL
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 internal class FeedViewModel(
@@ -33,12 +34,16 @@ internal class FeedViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val tootsLoadableFlow = indexMutableFlow
-        .flatMapConcat {
-            listLoadableFlow {
-                feedProvider.provide(userID, it).map(List<Toot>::toSerializableList).collect(::load)
+        .flatMapConcat { getTootsAt(it) }
+        .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
+
+    init {
+        viewModelScope.launch {
+            tootsLoadableFlow.collect {
+                Log.d("FeedViewModel", "tootsLoadableFlow: $it")
             }
         }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), ListLoadable.Loading())
+    }
 
     fun favorite(tootID: String) {
         viewModelScope.launch {
@@ -58,6 +63,10 @@ internal class FeedViewModel(
 
     fun loadTootsAt(index: Int) {
         indexMutableFlow.value = index
+    }
+
+    private suspend fun getTootsAt(index: Int): Flow<SerializableList<Toot>> {
+        return feedProvider.provide(userID, index).map(List<Toot>::toSerializableList)
     }
 
     companion object {
