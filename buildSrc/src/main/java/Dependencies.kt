@@ -27,6 +27,11 @@ object Dependencies {
     const val JUNIT = "junit:junit:${Versions.JUNIT}"
     const val KOIN_ANDROID = "io.insert-koin:koin-android:${Versions.KOIN_ANDROID}"
     const val KOIN_TEST = "io.insert-koin:koin-test-junit4:${Versions.KOIN}"
+    const val KTOR_CONTENT_NEGOTIATION = "io.ktor:ktor-client-content-negotiation:${Versions.KTOR}"
+    const val KTOR_CORE = "io.ktor:ktor-client-core:${Versions.KTOR}"
+    const val KTOR_CIO = "io.ktor:ktor-client-cio:${Versions.KTOR}"
+    const val KTOR_SERIALIZATION_KOTLINX_JSON =
+        "io.ktor:ktor-serialization-kotlinx-json:${Versions.KTOR}"
     const val LIFECYCLE_VIEWMODEL =
         "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.LIFECYCLE}"
     const val LOADABLE = "com.jeanbarrossilva.loadable:loadable:${Versions.LOADABLE}"
