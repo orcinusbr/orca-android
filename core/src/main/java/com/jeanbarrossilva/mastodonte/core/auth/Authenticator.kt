@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.mastodonte.core.auth
 
+import com.jeanbarrossilva.mastodonte.core.account.Account
 import com.jeanbarrossilva.mastodonte.core.auth.actor.Actor
 import com.jeanbarrossilva.mastodonte.core.auth.actor.ActorProvider
 
@@ -14,18 +15,24 @@ abstract class Authenticator {
      **/
     protected abstract val actorProvider: ActorProvider
 
-    /** Authorizes the user with the [authorizer] and then tries to authenticates them. **/
-    suspend fun authenticate(): Actor {
+    /**
+     * Authorizes with the [authorizer] and then tries to authenticates the [account].
+     *
+     * @param account [Account] to authenticate.
+     **/
+    suspend fun authenticate(account: Account): Actor {
         val authorizationCode = authorizer._authorize()
-        val actor = onAuthenticate(authorizationCode)
+        val actor = onAuthenticate(account, authorizationCode)
         actorProvider._remember(actor)
         return actor
     }
 
     /**
-     * Tries to authenticate the user.
+     * Tries to authenticate the [account].
      *
+     * @param account [Account] to authenticate.
      * @param authorizationCode Code that resulted from authorizing the user.
      **/
-    protected abstract suspend fun onAuthenticate(authorizationCode: String): Actor
+    protected abstract suspend fun onAuthenticate(account: Account, authorizationCode: String):
+        Actor
 }

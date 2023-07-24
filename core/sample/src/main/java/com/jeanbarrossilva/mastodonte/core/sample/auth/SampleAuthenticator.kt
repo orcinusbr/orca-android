@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.mastodonte.core.sample.auth
 
+import com.jeanbarrossilva.mastodonte.core.account.Account
 import com.jeanbarrossilva.mastodonte.core.auth.Authenticator
 import com.jeanbarrossilva.mastodonte.core.auth.Authorizer
 import com.jeanbarrossilva.mastodonte.core.auth.actor.Actor
@@ -16,7 +17,7 @@ class SampleAuthenticator(
 ) : Authenticator() {
     override val authorizer: Authorizer = SampleAuthorizer
 
-    override suspend fun onAuthenticate(authorizationCode: String): Actor {
+    override suspend fun onAuthenticate(account: Account, authorizationCode: String): Actor {
         return Actor.Authenticated("sample-access-token")
     }
 }
