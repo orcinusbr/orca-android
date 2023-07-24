@@ -5,10 +5,27 @@ import java.io.Serializable
 /**
  * Identifies the user within an [instance].
  *
+ * An [Account] can be instantiated either through the [at] extension function or by parsing a given
+ * [String] with [of].
+ *
  * @param username Unique name that can be modified.
  * @param instance Mastodon instance from which the user is.
+ * @throws BlankUsernameException If the [username] is blank.
+ * @throws IllegalUsernameException If the [username] contains any of the [illegalCharacters].
+ * @throws BlankInstanceException If the [instance] is blank.
+ * @throws IllegalInstanceException If the [instance] contains any of the [illegalCharacters].
+ * @throws InstanceWithoutDomainException If the [instance] doesn't have a domain.
  **/
 data class Account internal constructor(val username: String, val instance: String) : Serializable {
+    /**
+     * [IllegalArgumentException] thrown if an empty [String] is given when parsing it into an
+     * [Account].
+     *
+     * @see of
+     **/
+    class EmptyStringException internal constructor() :
+        IllegalArgumentException("Cannot parse a blank String.")
+
     /** [IllegalArgumentException] thrown if the [username] is blank. **/
     class BlankUsernameException internal constructor() :
         IllegalArgumentException("An account cannot have a blank username.")
@@ -46,7 +63,7 @@ data class Account internal constructor(val username: String, val instance: Stri
     }
 
     override fun toString(): String {
-        return "$username@$instance"
+        return username + SEPARATOR + instance
     }
 
     /**
@@ -105,8 +122,11 @@ data class Account internal constructor(val username: String, val instance: Stri
     }
 
     companion object {
+        /** [Char] that separates the [username] from the [instance]. **/
+        private const val SEPARATOR = '@'
+
         /** [Char]s that neither the [username] nor the [instance] should contain. **/
-        private val illegalCharacters = arrayOf('@')
+        private val illegalCharacters = arrayOf(' ', SEPARATOR)
 
         /** Whether the [String] contains a domain. **/
         private val String.containsDomain
@@ -115,6 +135,37 @@ data class Account internal constructor(val username: String, val instance: Stri
         /** Whether this [String] contains none of the [illegalCharacters]. **/
         private val String.isLegal
             get() = illegalCharacters.none { it in this }
+
+        /**
+         * Parses the [string] into an [Account].
+         *
+         * It should be formatted as `"{username}@{instance}"`, with "{username}" and "{instance}"
+         * replaced by the actual data they represent; it can also be given as `"{username}"`,
+         * without the instance, if a [fallbackInstance] is specified.
+         *
+         * Any leading or trailing whitespace in both the [string] and the [fallbackInstance] will
+         * be ignored.
+         *
+         * @param string [String] to be parsed.
+         * @param fallbackInstance Instance to fallback to if the [string] only has a username.
+         * @throws BlankUsernameException If the username is blank.
+         * @throws IllegalUsernameException If the username contains any of the
+         * [illegalCharacters].
+         * @throws BlankInstanceException If the instance is not specified in the [string] and the
+         * [fallbackInstance] is `null`.
+         * @throws IllegalInstanceException If the instance contains any of the
+         * [illegalCharacters].
+         * @throws InstanceWithoutDomainException If the instance doesn't have a domain.
+         **/
+        fun of(string: String, fallbackInstance: String? = null): Account {
+            val formattedString = string.trim().ifEmpty { throw EmptyStringException() }
+            val split = formattedString.split(SEPARATOR)
+            val username = split.first()
+            val containsInstance = split.size > 1
+            val formattedFallbackInstance = fallbackInstance?.trim().orEmpty()
+            val instance = if (containsInstance) split[1].trim() else formattedFallbackInstance
+            return Account(username, instance)
+        }
 
         /**
          * Verifies whether the username is valid.
