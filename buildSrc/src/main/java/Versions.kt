@@ -24,6 +24,7 @@ object Versions {
     const val KTOR = "2.3.2"
     const val MATERIAL = "1.9.0"
     const val NAVIGATION = "2.6.0"
+    const val PAGINATE = "0.3.0"
     const val ROBOLECTRIC = "4.10.3"
     const val SERIALIZATION = "1.5.1"
     const val TEST_CORE = "1.5.0"

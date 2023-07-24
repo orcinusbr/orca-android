@@ -1,23 +1,24 @@
-package com.jeanbarrossilva.mastodonte.core.mastodon.toot
+package com.jeanbarrossilva.mastodonte.core.mastodon.toot.status
 
 import com.jeanbarrossilva.mastodonte.core.auth.AuthenticationLock
 import com.jeanbarrossilva.mastodonte.core.mastodon.account.MastodonAccount
+import com.jeanbarrossilva.mastodonte.core.mastodon.toot.MastodonToot
 import java.net.URL
 import java.time.ZonedDateTime
 
-internal data class Status(
-    val id: String,
-    val createdAt: String,
-    val account: MastodonAccount,
-    val reblogsCount: Int,
-    val favouritesCount: Int,
-    val repliesCount: Int,
-    val url: String,
-    val text: String,
-    @Suppress("SpellCheckingInspection") val favourited: Boolean?,
-    val reblogged: Boolean?
+data class Status internal constructor(
+    internal val id: String,
+    internal val createdAt: String,
+    internal val account: MastodonAccount,
+    internal val reblogsCount: Int,
+    internal val favouritesCount: Int,
+    internal val repliesCount: Int,
+    internal val url: String,
+    internal val text: String,
+    @Suppress("SpellCheckingInspection") internal val favourited: Boolean?,
+    internal val reblogged: Boolean?
 ) {
-    fun toToot(authenticationLock: AuthenticationLock): MastodonToot {
+    internal fun toToot(authenticationLock: AuthenticationLock): MastodonToot {
         val author = account.toAuthor()
         val publicationDateTime = ZonedDateTime.parse(createdAt)
         val url = URL(url)

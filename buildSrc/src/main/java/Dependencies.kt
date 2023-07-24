@@ -42,6 +42,7 @@ object Dependencies {
         "com.jeanbarrossilva.loadable:loadable-placeholder-test:${Versions.LOADABLE}"
     const val MATERIAL = "com.google.android.material:material:${Versions.MATERIAL}"
     const val NAVIGATION_FRAGMENT = "androidx.navigation:navigation-fragment:${Versions.NAVIGATION}"
+    const val PAGINATE = "com.chrynan.paginate:paginate-core:${Versions.PAGINATE}"
     const val ROBOLECTRIC = "org.robolectric:robolectric:${Versions.ROBOLECTRIC}"
     const val SERIALIZATION_JSON =
         "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.SERIALIZATION}"
