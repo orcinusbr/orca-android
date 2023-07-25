@@ -14,7 +14,6 @@ import io.ktor.http.Url
 
 abstract class StatusPaginateSource : BasePaginateSource<Url, Status>() {
     private var index = 0
-    private val urls = hashSetOf<Url>()
 
     protected abstract val authenticationLock: AuthenticationLock
     protected abstract val route: String
@@ -38,7 +37,6 @@ abstract class StatusPaginateSource : BasePaginateSource<Url, Status>() {
             lastKey = nextUrl
         )
         updateIndex(direction)
-        key?.run(urls::add)
         return PagedResult(pageInfo, statuses)
     }
 
