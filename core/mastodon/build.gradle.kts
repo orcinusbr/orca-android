@@ -1,17 +1,37 @@
 plugins {
     kotlin("plugin.serialization") version Versions.KOTLIN
-    id("java-library")
-    id("org.jetbrains.kotlin.jvm")
+    id("com.android.library")
+    id("org.jetbrains.kotlin.android")
 }
 
-java {
-    sourceCompatibility = Versions.java
-    targetCompatibility = Versions.java
-}
+android {
+    namespace = Metadata.namespace("core.mastodon")
+    compileSdk = Versions.Mastodonte.SDK_TARGET
 
-repositories {
-    maven {
-        url = uri("https://repo.repsy.io/mvn/chrynan/public")
+    defaultConfig {
+        minSdk = Versions.Mastodonte.SDK_MIN
+        consumerProguardFiles("consumer-rules.pro")
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = true
+
+            @Suppress("UnstableApiUsage")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = Versions.java
+        targetCompatibility = Versions.java
+    }
+
+    kotlinOptions {
+        jvmTarget = Versions.java.toString()
     }
 }
 
