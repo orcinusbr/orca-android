@@ -5,8 +5,8 @@ import com.jeanbarrossilva.mastodonte.core.mastodon.Mastodon
 import com.jeanbarrossilva.mastodonte.core.toot.Author
 import com.jeanbarrossilva.mastodonte.core.toot.Toot
 import io.ktor.client.call.body
+import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.get
-import io.ktor.client.request.header
 import io.ktor.client.request.post
 import java.net.URL
 import java.time.ZonedDateTime
@@ -31,9 +31,9 @@ data class MastodonToot(
         val route =
             if (isFavorite) "/api/v1/statuses/$id/favourite" else "/api/v1/statuses/$id/unfavourite"
 
-        authenticationLock.unlock {
-            Mastodon.HttpClient.post(route) {
-                header("Authorization", it.accessToken)
+        Mastodon.HttpClient.post(route) {
+            authenticationLock.unlock {
+                bearerAuth(it.accessToken)
             }
         }
     }
@@ -43,24 +43,26 @@ data class MastodonToot(
         val route =
             if (isReblogged) "/api/v1/statuses/:id/reblog" else "/api/v1/statuses/:id/unreblog"
 
-        authenticationLock.unlock {
-            Mastodon.HttpClient.post(route) {
-                header("Authorization", it.accessToken)
+        Mastodon.HttpClient.post(route) {
+            authenticationLock.unlock {
+                bearerAuth(it.accessToken)
             }
         }
     }
 
     override suspend fun getComments(page: Int): Flow<List<Toot>> {
         return flow {
-            authenticationLock.unlock {
-                Mastodon
-                    .HttpClient
-                    .get("/api/v1/statuses/$id/context") { header("Authorization", it.accessToken) }
-                    .body<Context>()
-                    .descendants
-                    .map { it.toToot(authenticationLock) }
-                    .also { emit(it) }
-            }
+            Mastodon
+                .HttpClient
+                .get("/api/v1/statuses/$id/context") {
+                    authenticationLock.unlock {
+                        bearerAuth(it.accessToken)
+                    }
+                }
+                .body<Context>()
+                .descendants
+                .map { it.toToot(authenticationLock) }
+                .also { emit(it) }
         }
     }
 }

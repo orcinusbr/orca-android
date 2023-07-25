@@ -6,9 +6,8 @@ import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.Status
 import com.jeanbarrossilva.mastodonte.core.toot.Toot
 import com.jeanbarrossilva.mastodonte.core.toot.TootProvider
 import io.ktor.client.call.body
+import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.get
-import io.ktor.client.request.header
-import io.ktor.http.HttpHeaders
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -19,7 +18,7 @@ class MastodonTootProvider(private val authenticationLock: AuthenticationLock) :
                 .HttpClient
                 .get("/api/v1/statuses/$id") {
                     authenticationLock.unlock {
-                        header(HttpHeaders.Authorization, it.accessToken)
+                        bearerAuth(it.accessToken)
                     }
                 }
                 .body<Status>()

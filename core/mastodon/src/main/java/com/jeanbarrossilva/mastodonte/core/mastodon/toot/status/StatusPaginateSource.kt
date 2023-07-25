@@ -7,10 +7,9 @@ import com.chrynan.paginate.core.PagedResult
 import com.jeanbarrossilva.mastodonte.core.auth.AuthenticationLock
 import com.jeanbarrossilva.mastodonte.core.mastodon.Mastodon
 import io.ktor.client.call.body
+import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.get
-import io.ktor.client.request.header
 import io.ktor.client.statement.HttpResponse
-import io.ktor.http.HttpHeaders
 import io.ktor.http.Url
 
 abstract class StatusPaginateSource : BasePaginateSource<Url, Status>() {
@@ -53,7 +52,7 @@ abstract class StatusPaginateSource : BasePaginateSource<Url, Status>() {
     private suspend fun getStatusesResponse(url: Url?): HttpResponse {
         return Mastodon.HttpClient.get(url ?: Url(route)) {
             authenticationLock.unlock {
-                header(HttpHeaders.Authorization, it.accessToken)
+                bearerAuth(it.accessToken)
             }
         }
     }
