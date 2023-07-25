@@ -18,7 +18,7 @@ internal object Mastodon {
     val clientSecret: String
         get() = System.getenv("MASTODON_CLIENT_SECRET")
 
-    val HttpClient = HttpClient(CIO) {
+    val httpClient = HttpClient(CIO) {
         defaultRequest { url("https://mastodon.social") }
         install(ContentNegotiation) {
             json(

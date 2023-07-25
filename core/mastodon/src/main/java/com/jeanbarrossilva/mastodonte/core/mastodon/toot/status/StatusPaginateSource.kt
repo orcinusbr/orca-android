@@ -48,7 +48,7 @@ abstract class StatusPaginateSource : BasePaginateSource<Url, Status>() {
     }
 
     private suspend fun getStatusesResponse(url: Url?): HttpResponse {
-        return Mastodon.HttpClient.get(url ?: Url(route)) {
+        return Mastodon.httpClient.get(url ?: Url(route)) {
             authenticationLock.unlock {
                 bearerAuth(it.accessToken)
             }

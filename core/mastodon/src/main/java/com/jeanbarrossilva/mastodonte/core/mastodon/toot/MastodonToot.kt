@@ -31,7 +31,7 @@ data class MastodonToot(
         val route =
             if (isFavorite) "/api/v1/statuses/$id/favourite" else "/api/v1/statuses/$id/unfavourite"
 
-        Mastodon.HttpClient.post(route) {
+        Mastodon.httpClient.post(route) {
             authenticationLock.unlock {
                 bearerAuth(it.accessToken)
             }
@@ -43,7 +43,7 @@ data class MastodonToot(
         val route =
             if (isReblogged) "/api/v1/statuses/:id/reblog" else "/api/v1/statuses/:id/unreblog"
 
-        Mastodon.HttpClient.post(route) {
+        Mastodon.httpClient.post(route) {
             authenticationLock.unlock {
                 bearerAuth(it.accessToken)
             }
@@ -53,7 +53,7 @@ data class MastodonToot(
     override suspend fun getComments(page: Int): Flow<List<Toot>> {
         return flow {
             Mastodon
-                .HttpClient
+                .httpClient
                 .get("/api/v1/statuses/$id/context") {
                     authenticationLock.unlock {
                         bearerAuth(it.accessToken)

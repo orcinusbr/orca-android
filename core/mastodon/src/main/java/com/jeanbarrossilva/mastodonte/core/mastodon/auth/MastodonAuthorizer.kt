@@ -13,7 +13,7 @@ class MastodonAuthorizer : Authorizer() {
 
     override suspend fun authorize(): String {
         return Mastodon
-            .HttpClient
+            .httpClient
             .get("/oauth/authorize") {
                 parameter("response_type", "code")
                 parameter("client_id", Mastodon.CLIENT_ID)

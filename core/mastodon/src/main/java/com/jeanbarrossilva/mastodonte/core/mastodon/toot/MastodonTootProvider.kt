@@ -15,7 +15,7 @@ class MastodonTootProvider(private val authenticationLock: AuthenticationLock) :
     override suspend fun provide(id: String): Flow<Toot> {
         return flow {
             Mastodon
-                .HttpClient
+                .httpClient
                 .get("/api/v1/statuses/$id") {
                     authenticationLock.unlock {
                         bearerAuth(it.accessToken)

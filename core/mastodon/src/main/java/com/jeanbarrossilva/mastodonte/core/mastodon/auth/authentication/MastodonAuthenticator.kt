@@ -15,7 +15,7 @@ class MastodonAuthenticator(
 ) : Authenticator() {
     override suspend fun onAuthenticate(authorizationCode: String): Actor {
         val authentication = Mastodon
-            .HttpClient
+            .httpClient
             .get("/oauth/token") {
                 parameter("grant_type", "authorization_code")
                 parameter("code", authorizationCode)
