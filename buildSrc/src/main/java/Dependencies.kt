@@ -4,6 +4,7 @@ object Dependencies {
     const val ACTIVITY = "androidx.activity:activity-ktx:${Versions.ACTIVITY}"
     const val ACTIVITY_COMPOSE = "androidx.activity:activity-compose:${Versions.ACTIVITY}"
     const val APPCOMPAT = "androidx.appcompat:appcompat:${Versions.APPCOMPAT}"
+    const val BROWSER = "androidx.browser:browser:${Versions.BROWSER}"
     const val COIL_COMPOSE = "io.coil-kt:coil-compose:${Versions.COIL}"
 
     const val COMPOSE_MATERIAL_3 =
@@ -27,6 +28,7 @@ object Dependencies {
     const val JUNIT = "junit:junit:${Versions.JUNIT}"
     const val KOIN_ANDROID = "io.insert-koin:koin-android:${Versions.KOIN_ANDROID}"
     const val KOIN_TEST = "io.insert-koin:koin-test-junit4:${Versions.KOIN}"
+    const val KOTLINX_HTML = "org.jetbrains.kotlinx:kotlinx-html:${Versions.KOTLINX_HTML}"
     const val KTOR_CONTENT_NEGOTIATION = "io.ktor:ktor-client-content-negotiation:${Versions.KTOR}"
     const val KTOR_CORE = "io.ktor:ktor-client-core:${Versions.KTOR}"
     const val KTOR_CIO = "io.ktor:ktor-client-cio:${Versions.KTOR}"

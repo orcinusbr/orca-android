@@ -4,7 +4,7 @@ import com.jeanbarrossilva.mastodonte.core.auth.Authenticator
 import com.jeanbarrossilva.mastodonte.core.auth.actor.Actor
 import com.jeanbarrossilva.mastodonte.core.auth.actor.ActorProvider
 import com.jeanbarrossilva.mastodonte.core.mastodon.Mastodon
-import com.jeanbarrossilva.mastodonte.core.mastodon.auth.MastodonAuthorizer
+import com.jeanbarrossilva.mastodonte.core.mastodon.auth.authorization.MastodonAuthorizer
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter

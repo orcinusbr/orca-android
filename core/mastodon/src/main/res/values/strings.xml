@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string
+        name="mastodon_provider"
+        translatable="false">
+        com.jeanbarrossilva.mastodonte.core.mastodon.provider
+    </string>
+
+    <string
+        name="mastodon_authorization_redirect_uri"
+        translatable="false">
+        %s://authorized
+    </string>
+
+    <string name="mastodon_scheme">mastodonte</string>
+</resources>
