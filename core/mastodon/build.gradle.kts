@@ -43,6 +43,10 @@ android {
         jvmTarget = Versions.java.toString()
     }
 
+    secrets {
+        defaultPropertiesFileName = "public.properties"
+    }
+
     composeOptions {
         kotlinCompilerExtensionVersion = Versions.COMPOSE_COMPILER
     }
