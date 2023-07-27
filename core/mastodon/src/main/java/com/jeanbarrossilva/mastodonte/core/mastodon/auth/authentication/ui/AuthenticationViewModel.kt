@@ -47,8 +47,10 @@ internal class AuthenticationViewModel private constructor(
     }
 
     companion object {
-        fun createFactory(application: Application, authorizationCode: String):
-            ViewModelProvider.Factory {
+        fun createFactory(
+            application: Application,
+            authorizationCode: String
+        ): ViewModelProvider.Factory {
             return viewModelFactory {
                 initializer {
                     AuthenticationViewModel(application, authorizationCode)
