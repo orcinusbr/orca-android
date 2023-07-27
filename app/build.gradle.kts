@@ -56,6 +56,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:mastodon"))
     implementation(project(":core:sample"))
     implementation(project(":core:shared-preferences"))
     implementation(project(":feature:auth"))

@@ -12,10 +12,9 @@ import com.jeanbarrossilva.mastodonte.core.auth.actor.ActorProvider
  * will be sent to be remembered when authentication occurs.
  **/
 class SampleAuthenticator(
-    override val actorProvider: ActorProvider
-) : Authenticator() {
+    override val actorProvider: ActorProvider,
     override val authorizer: Authorizer = SampleAuthorizer
-
+) : Authenticator() {
     override suspend fun onAuthenticate(authorizationCode: String): Actor {
         return Actor.Authenticated("sample-access-token")
     }
