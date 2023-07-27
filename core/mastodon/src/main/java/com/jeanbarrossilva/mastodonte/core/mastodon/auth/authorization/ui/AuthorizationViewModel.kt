@@ -15,14 +15,14 @@ internal class AuthorizationViewModel private constructor(application: Applicati
         get() {
             val application = getApplication<Application>()
             val scheme = application.getString(R.string.mastodon_scheme)
-            val redirectUri =
-                application.getString(R.string.mastodon_authorization_redirect_uri, scheme)
+            val redirectUri = application.getString(R.string.mastodon_redirect_uri, scheme)
+            val scopes = Mastodon.getScopes(Mastodon.ScopeProvisionSite.QUERY_PARAMETER)
             return Url(
                 "${Mastodon.baseUrl}/oauth/authorize?" +
                     "response_type=code&" +
                     "client_id=${Mastodon.CLIENT_ID}&" +
                     "redirect_uri=$redirectUri&" +
-                    "scope=${Mastodon.scopes}"
+                    "scope=$scopes"
             )
         }
 

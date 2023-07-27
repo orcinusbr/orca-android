@@ -36,6 +36,7 @@ internal class AuthorizationActivity : ComposableActivity() {
     private fun sendAccessTokenToAuthorizer(uri: Uri) {
         val accessToken = uri.getQueryParameter("code") ?: throw UnavailableAccessTokenException()
         authorizer.receive(accessToken)
+        finish()
     }
 
     private fun requestAccessToken() {

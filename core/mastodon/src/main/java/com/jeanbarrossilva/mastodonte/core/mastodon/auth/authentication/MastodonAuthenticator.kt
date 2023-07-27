@@ -1,30 +1,30 @@
 package com.jeanbarrossilva.mastodonte.core.mastodon.auth.authentication
 
+import android.content.Context
 import com.jeanbarrossilva.mastodonte.core.auth.Authenticator
 import com.jeanbarrossilva.mastodonte.core.auth.actor.Actor
 import com.jeanbarrossilva.mastodonte.core.auth.actor.ActorProvider
-import com.jeanbarrossilva.mastodonte.core.mastodon.Mastodon
+import com.jeanbarrossilva.mastodonte.core.mastodon.auth.authentication.ui.AuthenticationActivity
 import com.jeanbarrossilva.mastodonte.core.mastodon.auth.authorization.MastodonAuthorizer
-import io.ktor.client.call.body
-import io.ktor.client.request.get
-import io.ktor.client.request.parameter
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class MastodonAuthenticator(
+    private val context: Context,
     override val authorizer: MastodonAuthorizer,
     override val actorProvider: ActorProvider
 ) : Authenticator() {
+    private var continuation: Continuation<Actor>? = null
+
     override suspend fun onAuthenticate(authorizationCode: String): Actor {
-        val authentication = Mastodon
-            .httpClient
-            .get("/oauth/token") {
-                parameter("grant_type", "authorization_code")
-                parameter("code", authorizationCode)
-                parameter("client_id", Mastodon.CLIENT_ID)
-                parameter("client_secret", Mastodon.clientSecret)
-                parameter("redirect_uri", "mastodonte://authenticated")
-                parameter("scope", Mastodon.scopes)
-            }
-            .body<Authentication>()
-        return Actor.Authenticated(authentication.accessToken)
+        return suspendCoroutine {
+            continuation = it
+            AuthenticationActivity.start(context, authorizationCode)
+        }
+    }
+
+    internal fun receive(actor: Actor) {
+        continuation?.resume(actor)
     }
 }

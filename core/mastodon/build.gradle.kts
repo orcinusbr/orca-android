@@ -2,6 +2,9 @@ plugins {
     kotlin("plugin.serialization") version Versions.KOTLIN
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+
+    @Suppress("SpellCheckingInspection")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -27,6 +30,7 @@ android {
 
     @Suppress("UnstableApiUsage")
     buildFeatures {
+        buildConfig = true
         compose = true
     }
 

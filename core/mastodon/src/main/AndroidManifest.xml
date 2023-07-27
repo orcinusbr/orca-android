@@ -10,5 +10,9 @@
                 <data android:scheme="@string/mastodon_scheme" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".auth.authentication.ui.AuthenticationActivity"
+            android:exported="false" />
     </application>
 </manifest>
