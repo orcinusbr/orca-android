@@ -8,14 +8,14 @@ import kotlin.test.assertFalse
 internal class AccountTests {
     @Test
     fun `GIVEN a blank string WHEN parsing it THEN it throws`() {
-        assertFailsWith<Account.EmptyStringException> {
+        assertFailsWith<Account.Companion.BlankStringException> {
             Account.of(" ")
         }
     }
 
     @Test
     fun `GIVEN a blank string with a fallback instance WHEN parsing it THEN it throws`() {
-        assertFailsWith<Account.EmptyStringException> {
+        assertFailsWith<Account.Companion.BlankStringException> {
             Account.of(" ", "appleseed.com")
         }
     }
