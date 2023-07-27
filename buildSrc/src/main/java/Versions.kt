@@ -16,7 +16,7 @@ object Versions {
     const val FRAGMENT = "1.6.0"
     const val LIFECYCLE = "2.6.1"
     const val LOADABLE = "1.6.4"
-    const val GRADLE = "8.0.2"
+    const val GRADLE = "8.1.0"
     const val JUNIT = "4.13.2"
     const val KOIN = "3.4.1"
     const val KOIN_ANDROID = "3.4.2"

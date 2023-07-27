@@ -24,7 +24,7 @@ internal object Mastodon {
     @Suppress("SpellCheckingInspection")
     const val CLIENT_ID = "F2Rx9d7C3x45KRVJ9rU4IjIJgrsjzaq74bSLo__VUG0"
 
-    const val CLIENT_SECRET = BuildConfig.mastodonclientsecret
+    const val CLIENT_SECRET = BuildConfig.mastodonclientSecret
 
     val baseUrl = Url("https://mastodon.social")
 

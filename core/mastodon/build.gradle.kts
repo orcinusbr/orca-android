@@ -19,8 +19,6 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
-
-            @Suppress("UnstableApiUsage")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -28,7 +26,6 @@ android {
         }
     }
 
-    @Suppress("UnstableApiUsage")
     buildFeatures {
         buildConfig = true
         compose = true
@@ -45,6 +42,7 @@ android {
 
     secrets {
         defaultPropertiesFileName = "public.properties"
+        ignoreList += "^(?!mastodon\\.clientSecret).*$"
     }
 
     composeOptions {
