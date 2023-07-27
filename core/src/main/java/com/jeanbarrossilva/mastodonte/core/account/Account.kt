@@ -17,15 +17,6 @@ import java.io.Serializable
  * @throws InstanceWithoutDomainException If the [instance] doesn't have a domain.
  **/
 data class Account internal constructor(val username: String, val instance: String) : Serializable {
-    /**
-     * [IllegalArgumentException] thrown if an empty [String] is given when parsing it into an
-     * [Account].
-     *
-     * @see of
-     **/
-    class EmptyStringException internal constructor() :
-        IllegalArgumentException("Cannot parse a blank String.")
-
     /** [IllegalArgumentException] thrown if the [username] is blank. **/
     class BlankUsernameException internal constructor() :
         IllegalArgumentException("An account cannot have a blank username.")
@@ -137,6 +128,15 @@ data class Account internal constructor(val username: String, val instance: Stri
             get() = illegalCharacters.none { it in this }
 
         /**
+         * [IllegalArgumentException] thrown if a blank [String] is given when parsing it into an
+         * [Account].
+         *
+         * @see of
+         **/
+        class BlankStringException internal constructor() :
+            IllegalArgumentException("Cannot parse a blank String.")
+
+        /**
          * Parses the [string] into an [Account].
          *
          * It should be formatted as `"{username}@{instance}"`, with "{username}" and "{instance}"
@@ -148,6 +148,7 @@ data class Account internal constructor(val username: String, val instance: Stri
          *
          * @param string [String] to be parsed.
          * @param fallbackInstance Instance to fallback to if the [string] only has a username.
+         * @throws BlankStringException If the [string] is blank.
          * @throws BlankUsernameException If the username is blank.
          * @throws IllegalUsernameException If the username contains any of the
          * [illegalCharacters].
@@ -158,7 +159,7 @@ data class Account internal constructor(val username: String, val instance: Stri
          * @throws InstanceWithoutDomainException If the instance doesn't have a domain.
          **/
         fun of(string: String, fallbackInstance: String? = null): Account {
-            val formattedString = string.trim().ifEmpty { throw EmptyStringException() }
+            val formattedString = string.trim().ifEmpty { throw BlankStringException() }
             val split = formattedString.split(SEPARATOR)
             val username = split.first()
             val containsInstance = split.size > 1
