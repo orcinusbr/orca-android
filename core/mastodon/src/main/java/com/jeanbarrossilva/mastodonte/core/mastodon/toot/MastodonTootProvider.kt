@@ -1,27 +1,21 @@
 package com.jeanbarrossilva.mastodonte.core.mastodon.toot
 
-import com.jeanbarrossilva.mastodonte.core.auth.AuthenticationLock
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.MastodonHttpClient
+import com.jeanbarrossilva.mastodonte.core.mastodon.client.authenticateAndGet
 import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.Status
 import com.jeanbarrossilva.mastodonte.core.toot.Toot
 import com.jeanbarrossilva.mastodonte.core.toot.TootProvider
 import io.ktor.client.call.body
-import io.ktor.client.request.bearerAuth
-import io.ktor.client.request.get
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class MastodonTootProvider(private val authenticationLock: AuthenticationLock) : TootProvider {
+class MastodonTootProvider : TootProvider {
     override suspend fun provide(id: String): Flow<Toot> {
         return flow {
             MastodonHttpClient
-                .get("/api/v1/statuses/$id") {
-                    authenticationLock.unlock {
-                        bearerAuth(it.accessToken)
-                    }
-                }
+                .authenticateAndGet("/api/v1/statuses/$id")
                 .body<Status>()
-                .toToot(authenticationLock)
+                .toToot()
                 .also { emit(it) }
         }
     }

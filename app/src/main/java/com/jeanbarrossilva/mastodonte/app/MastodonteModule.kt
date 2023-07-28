@@ -36,9 +36,7 @@ internal fun MastodonteModule(
         }
             .binds(arrayOf(Authenticator::class, MastodonAuthenticator::class))
         single { AuthenticationLock(authenticator = get(), actorProvider = get()) }
-        single(named(tootPaginateSourceName)) {
-            MastodonFeedProvider.PaginateSource(authenticationLock = get())
-        }
+        single(named(tootPaginateSourceName)) { MastodonFeedProvider.PaginateSource() }
             .binds(arrayOf(TootPaginateSource::class, MastodonFeedProvider.PaginateSource::class))
         single<FeedProvider> {
             MastodonFeedProvider(
@@ -46,13 +44,8 @@ internal fun MastodonteModule(
                 paginateSource = get(named(tootPaginateSourceName))
             )
         }
-        single<ProfileProvider> {
-            MastodonProfileProvider(
-                authenticationLock = get(),
-                tootPaginateSource = get(named(tootPaginateSourceName))
-            )
-        }
-        single<TootProvider> { MastodonTootProvider(authenticationLock = get()) }
+        single<ProfileProvider> { MastodonProfileProvider(get(named(tootPaginateSourceName))) }
+        single<TootProvider> { MastodonTootProvider() }
         single { onBottomAreaAvailabilityChangeListener }
     }
 }

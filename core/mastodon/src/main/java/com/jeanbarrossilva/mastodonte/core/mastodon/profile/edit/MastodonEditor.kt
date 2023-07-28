@@ -1,13 +1,11 @@
 package com.jeanbarrossilva.mastodonte.core.mastodon.profile.edit
 
-import com.jeanbarrossilva.mastodonte.core.auth.AuthenticationLock
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.MastodonHttpClient
+import com.jeanbarrossilva.mastodonte.core.mastodon.client.authenticateAndSubmitForm
+import com.jeanbarrossilva.mastodonte.core.mastodon.client.authenticateAndSubmitFormWithBinaryData
 import com.jeanbarrossilva.mastodonte.core.profile.edit.Editor
-import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.forms.InputProvider
 import io.ktor.client.request.forms.formData
-import io.ktor.client.request.forms.submitForm
-import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.parametersOf
@@ -16,7 +14,7 @@ import java.net.URL
 import java.nio.file.Path
 import kotlin.io.path.name
 
-internal class MastodonEditor(private val authenticationLock: AuthenticationLock) : Editor {
+internal class MastodonEditor : Editor {
     @Suppress("UNREACHABLE_CODE", "UNUSED_VARIABLE")
     override suspend fun setAvatarURL(avatarURL: URL) {
         val file: Path = TODO()
@@ -26,27 +24,15 @@ internal class MastodonEditor(private val authenticationLock: AuthenticationLock
         val contentDisposition = "form-data; name=\"avatar\" filename=\"${file.name}\""
         val headers = Headers.build { append(HttpHeaders.ContentDisposition, contentDisposition) }
         val formData = formData { append("avatar", inputProvider, headers) }
-        MastodonHttpClient.submitFormWithBinaryData(ROUTE, formData) {
-            authenticationLock.unlock {
-                bearerAuth(it.accessToken)
-            }
-        }
+        MastodonHttpClient.authenticateAndSubmitFormWithBinaryData(ROUTE, formData)
     }
 
     override suspend fun setName(name: String) {
-        authenticationLock.unlock {
-            MastodonHttpClient.submitForm(ROUTE, parametersOf("display_name", name)) {
-                bearerAuth(it.accessToken)
-            }
-        }
+        MastodonHttpClient.authenticateAndSubmitForm(ROUTE, parametersOf("display_name", name))
     }
 
     override suspend fun setBio(bio: String) {
-        authenticationLock.unlock {
-            MastodonHttpClient.submitForm(ROUTE, parametersOf("note", bio)) {
-                bearerAuth(it.accessToken)
-            }
-        }
+        MastodonHttpClient.authenticateAndSubmitForm(ROUTE, parametersOf("note", bio))
     }
 
     companion object {

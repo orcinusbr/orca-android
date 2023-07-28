@@ -4,19 +4,16 @@ import com.chrynan.paginate.core.BasePaginateSource
 import com.chrynan.paginate.core.PageDirection
 import com.chrynan.paginate.core.PageInfo
 import com.chrynan.paginate.core.PagedResult
-import com.jeanbarrossilva.mastodonte.core.auth.AuthenticationLock
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.MastodonHttpClient
+import com.jeanbarrossilva.mastodonte.core.mastodon.client.authenticateAndGet
 import com.jeanbarrossilva.mastodonte.core.toot.Toot
 import io.ktor.client.call.body
-import io.ktor.client.request.bearerAuth
-import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.Url
 
 abstract class TootPaginateSource internal constructor() : BasePaginateSource<Url, Toot>() {
     private var index = 0
 
-    protected abstract val authenticationLock: AuthenticationLock
     protected abstract val route: String
 
     override suspend fun fetch(
@@ -29,7 +26,7 @@ abstract class TootPaginateSource internal constructor() : BasePaginateSource<Ur
         val headerLinks = response.headers.links
         val previousUrl = headerLinks?.first()?.uri?.let(::Url)
         val nextUrl = headerLinks?.get(1)?.uri?.let(::Url)
-        val statuses = response.body<List<Status>>().map { it.toToot(authenticationLock) }
+        val statuses = response.body<List<Status>>().map { it.toToot() }
         val pageInfo = PageInfo(
             index,
             hasPreviousPage = index > 0,
@@ -62,11 +59,7 @@ abstract class TootPaginateSource internal constructor() : BasePaginateSource<Ur
     }
 
     private suspend fun getStatusesResponse(url: Url?): HttpResponse {
-        return MastodonHttpClient.get(url ?: Url(route)) {
-            authenticationLock.unlock {
-                bearerAuth(it.accessToken)
-            }
-        }
+        return MastodonHttpClient.authenticateAndGet(url?.toString() ?: route)
     }
 
     companion object {

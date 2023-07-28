@@ -1,7 +1,6 @@
 package com.jeanbarrossilva.mastodonte.core.mastodon.profile.edit
 
 import com.jeanbarrossilva.mastodonte.core.account.Account
-import com.jeanbarrossilva.mastodonte.core.auth.AuthenticationLock
 import com.jeanbarrossilva.mastodonte.core.mastodon.profile.MastodonProfile
 import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.TootPaginateSource
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
@@ -9,7 +8,6 @@ import com.jeanbarrossilva.mastodonte.core.profile.edit.EditableProfile
 import java.net.URL
 
 internal data class MastodonEditableProfile(
-    private val authenticationLock: AuthenticationLock,
     private val tootPaginateSource: TootPaginateSource,
     override val id: String,
     override val account: Account,
@@ -32,5 +30,5 @@ internal data class MastodonEditableProfile(
         url
     ),
     EditableProfile() {
-    override val editor = MastodonEditor(authenticationLock)
+    override val editor = MastodonEditor()
 }

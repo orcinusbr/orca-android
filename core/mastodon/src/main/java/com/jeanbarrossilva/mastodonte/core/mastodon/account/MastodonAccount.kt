@@ -1,8 +1,8 @@
 package com.jeanbarrossilva.mastodonte.core.mastodon.account
 
 import com.jeanbarrossilva.mastodonte.core.account.Account
-import com.jeanbarrossilva.mastodonte.core.auth.AuthenticationLock
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.MastodonHttpClient
+import com.jeanbarrossilva.mastodonte.core.mastodon.client.authenticateAndGet
 import com.jeanbarrossilva.mastodonte.core.mastodon.profile.edit.MastodonEditableProfile
 import com.jeanbarrossilva.mastodonte.core.mastodon.profile.follow.MastodonFollowableProfile
 import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.TootPaginateSource
@@ -10,8 +10,6 @@ import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.profile.follow.Follow
 import com.jeanbarrossilva.mastodonte.core.toot.Author
 import io.ktor.client.call.body
-import io.ktor.client.request.bearerAuth
-import io.ktor.client.request.get
 import io.ktor.http.parametersOf
 import java.net.URL
 import kotlinx.serialization.Serializable
@@ -35,15 +33,11 @@ internal data class MastodonAccount(
         return Author(id, avatarURL, displayName, account, profileURL)
     }
 
-    suspend fun toProfile(
-        authenticationLock: AuthenticationLock,
-        tootPaginateSource: TootPaginateSource
-    ): Profile {
-        val isOwner = isOwner(authenticationLock)
-        return if (isOwner) {
-            toEditableProfile(authenticationLock, tootPaginateSource)
+    suspend fun toProfile(tootPaginateSource: TootPaginateSource): Profile {
+        return if (isOwner()) {
+            toEditableProfile(tootPaginateSource)
         } else {
-            toFollowableProfile(authenticationLock, tootPaginateSource)
+            toFollowableProfile(tootPaginateSource)
         }
     }
 
@@ -51,26 +45,18 @@ internal data class MastodonAccount(
         return Account.of(acct, "mastodon.social")
     }
 
-    private suspend fun isOwner(authenticationLock: AuthenticationLock): Boolean {
+    private suspend fun isOwner(): Boolean {
         val credentialAccount = MastodonHttpClient
-            .get("/api/v1/accounts/verify_credentials") {
-                authenticationLock.unlock {
-                    bearerAuth(it.accessToken)
-                }
-            }
+            .authenticateAndGet("/api/v1/accounts/verify_credentials")
             .body<CredentialAccount>()
         return id == credentialAccount.id
     }
 
-    private fun toEditableProfile(
-        authenticationLock: AuthenticationLock,
-        tootPaginateSource: TootPaginateSource
-    ): MastodonEditableProfile {
+    private fun toEditableProfile(tootPaginateSource: TootPaginateSource): MastodonEditableProfile {
         val account = toAccount()
         val avatarURL = URL(avatar)
         val url = URL(url)
         return MastodonEditableProfile(
-            authenticationLock,
             tootPaginateSource,
             id,
             account,
@@ -83,16 +69,13 @@ internal data class MastodonAccount(
         )
     }
 
-    private suspend fun toFollowableProfile(
-        authenticationLock: AuthenticationLock,
-        tootPaginateSource: TootPaginateSource
-    ): MastodonFollowableProfile<Follow> {
+    private suspend fun toFollowableProfile(tootPaginateSource: TootPaginateSource):
+        MastodonFollowableProfile<Follow> {
         val account = toAccount()
         val avatarURL = URL(avatar)
         val url = URL(url)
-        val follow = getFollow(authenticationLock)
+        val follow = getFollow()
         return MastodonFollowableProfile(
-            authenticationLock,
             tootPaginateSource,
             id,
             account,
@@ -106,12 +89,9 @@ internal data class MastodonAccount(
         )
     }
 
-    private suspend fun getFollow(authenticationLock: AuthenticationLock): Follow {
+    private suspend fun getFollow(): Follow {
         return MastodonHttpClient
-            .get("/api/v1/accounts/relationships") {
-                authenticationLock.unlock { bearerAuth(it.accessToken) }
-                parametersOf("id", listOf(id))
-            }
+            .authenticateAndGet("/api/v1/accounts/relationships") { parametersOf("id", listOf(id)) }
             .body<List<Relationship>>()
             .first()
             .toFollow(this)

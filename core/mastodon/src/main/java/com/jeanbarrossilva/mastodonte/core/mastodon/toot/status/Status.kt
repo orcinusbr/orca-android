@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.mastodonte.core.mastodon.toot.status
 
-import com.jeanbarrossilva.mastodonte.core.auth.AuthenticationLock
 import com.jeanbarrossilva.mastodonte.core.mastodon.account.MastodonAccount
 import com.jeanbarrossilva.mastodonte.core.mastodon.toot.MastodonToot
 import java.net.URL
@@ -18,12 +17,11 @@ data class Status internal constructor(
     @Suppress("SpellCheckingInspection") internal val favourited: Boolean?,
     internal val reblogged: Boolean?
 ) {
-    internal fun toToot(authenticationLock: AuthenticationLock): MastodonToot {
+    internal fun toToot(): MastodonToot {
         val author = account.toAuthor()
         val publicationDateTime = ZonedDateTime.parse(createdAt)
         val url = URL(url)
         return MastodonToot(
-            authenticationLock,
             id,
             author,
             text,

@@ -1,19 +1,16 @@
 package com.jeanbarrossilva.mastodonte.core.mastodon.profile.follow
 
 import com.jeanbarrossilva.mastodonte.core.account.Account
-import com.jeanbarrossilva.mastodonte.core.auth.AuthenticationLock
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.MastodonHttpClient
+import com.jeanbarrossilva.mastodonte.core.mastodon.client.authenticateAndPost
 import com.jeanbarrossilva.mastodonte.core.mastodon.profile.MastodonProfile
 import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.TootPaginateSource
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.profile.follow.Follow
 import com.jeanbarrossilva.mastodonte.core.profile.follow.FollowableProfile
-import io.ktor.client.request.bearerAuth
-import io.ktor.client.request.post
 import java.net.URL
 
 internal data class MastodonFollowableProfile<T : Follow>(
-    private val authenticationLock: AuthenticationLock,
     private val tootPaginateSource: TootPaginateSource,
     override val id: String,
     override val account: Account,
@@ -39,10 +36,6 @@ internal data class MastodonFollowableProfile<T : Follow>(
     FollowableProfile<Follow>() {
     override suspend fun onChangeFollowTo(follow: Follow) {
         val toggledRoute = follow.getToggledRoute(this)
-        MastodonHttpClient.post(toggledRoute) {
-            authenticationLock.unlock {
-                bearerAuth(it.accessToken)
-            }
-        }
+        MastodonHttpClient.authenticateAndPost(toggledRoute)
     }
 }
