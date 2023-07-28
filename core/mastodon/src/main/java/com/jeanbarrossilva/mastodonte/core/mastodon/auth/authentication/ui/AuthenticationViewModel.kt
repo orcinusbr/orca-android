@@ -39,7 +39,7 @@ internal class AuthenticationViewModel private constructor(
                     append("grant_type", "authorization_code")
                     append("code", authorizationCode)
                     append("client_id", Mastodon.CLIENT_ID)
-                    append("client_secret", Mastodon.CLIENT_SECRET)
+                    append("client_secret", Mastodon.clientSecret)
                     append("redirect_uri", redirectUri)
                     append("scope", scopes)
                 }
