@@ -2,11 +2,11 @@ package com.jeanbarrossilva.mastodonte.feature.profiledetails.test
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.core.os.bundleOf
 import androidx.navigation.NavGraphBuilder
 import androidx.test.platform.app.InstrumentationRegistry
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.ProfileDetailsFragment
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.navigation.BackwardsNavigationState
+import com.jeanbarrossilva.mastodonte.platform.ui.core.Intent
 import com.jeanbarrossilva.mastodonte.platform.ui.test.core.SingleFragmentActivity
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -39,13 +39,11 @@ internal class ProfileDetailsActivity : SingleFragmentActivity() {
             id: String
         ): Intent {
             val context = InstrumentationRegistry.getInstrumentation().context
-            val extras = bundleOf(
+            return Intent<ProfileDetailsActivity>(
+                context,
                 ProfileDetailsFragment.BACKWARDS_NAVIGATION_STATE_KEY to backwardsNavigationState,
                 ProfileDetailsFragment.ID_KEY to id
             )
-            return Intent(context, ProfileDetailsActivity::class.java).apply {
-                putExtras(extras)
-            }
         }
     }
 }

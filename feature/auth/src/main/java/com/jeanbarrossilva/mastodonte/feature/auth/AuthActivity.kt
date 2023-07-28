@@ -1,11 +1,11 @@
 package com.jeanbarrossilva.mastodonte.feature.auth
 
 import android.content.Context
-import android.content.Intent
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import com.jeanbarrossilva.mastodonte.core.auth.Authenticator
 import com.jeanbarrossilva.mastodonte.platform.ui.core.composable.ComposableActivity
+import com.jeanbarrossilva.mastodonte.platform.ui.core.Intent
 import org.koin.android.ext.android.inject
 
 class AuthActivity internal constructor() : ComposableActivity() {
@@ -21,7 +21,7 @@ class AuthActivity internal constructor() : ComposableActivity() {
 
     companion object {
         fun start(context: Context) {
-            val intent = Intent(context, AuthActivity::class.java)
+            val intent = Intent<AuthActivity>(context)
             context.startActivity(intent)
         }
     }
