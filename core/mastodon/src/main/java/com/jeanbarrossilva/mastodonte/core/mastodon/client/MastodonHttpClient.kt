@@ -34,7 +34,7 @@ import kotlinx.serialization.json.JsonNamingStrategy
 import org.koin.java.KoinJavaComponent
 
 /** Tag with which [HttpResponse]s sent to the [MastodonHttpClient] will be logged. **/
-private const val HTTP_CLIENT_TAG = "MastodonHttpClient"
+private const val TAG = "MastodonHttpClient"
 
 /**
  * [AuthenticationLock] through which an [authenticated][Actor.Authenticated] [Actor] will be
@@ -142,9 +142,9 @@ private fun HttpClientConfig<*>.setUpDefaultRequest() {
 private fun HttpClientConfig<*>.setUpResponseLogging() {
     ResponseObserver {
         if (it.status.isSuccess()) {
-            Log.i(HTTP_CLIENT_TAG, it.format())
+            Log.i(TAG, it.format())
         } else {
-            Log.e(HTTP_CLIENT_TAG, it.format())
+            Log.e(TAG, it.format())
         }
     }
 }
