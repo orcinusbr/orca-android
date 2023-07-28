@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.mastodonte.platform.ui.core.context
 
 import android.content.Context
-import com.jeanbarrossilva.mastodonte.platform.ui.core.ShareIntent
+import com.jeanbarrossilva.mastodonte.platform.ui.core.Intent
 
 /**
  * Opens the share sheet so that the [text] can be shared.
@@ -9,6 +9,6 @@ import com.jeanbarrossilva.mastodonte.platform.ui.core.ShareIntent
  * @param text Text to be shared.
  **/
 fun Context.share(text: String) {
-    val intent = ShareIntent(text)
+    val intent = Intent(text)
     startActivity(intent)
 }

@@ -21,12 +21,11 @@ inline fun <reified T : Activity> Intent(
 }
 
 /**
- * [Intent] that opens the system share sheet and allows the user to share the [text] externally.
+ * [Intent] that allows the user to share the [text] externally.
  *
  * @param text Content to be shared.
  **/
-@Suppress("FunctionName")
-fun ShareIntent(text: String): Intent {
+fun Intent(text: String): Intent {
     return Intent(Intent.ACTION_SEND).apply {
         flags = Intent.FLAG_ACTIVITY_NEW_TASK
         type = "text/plain"
