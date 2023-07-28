@@ -2,7 +2,7 @@ package com.jeanbarrossilva.mastodonte.core.mastodon.profile.follow
 
 import com.jeanbarrossilva.mastodonte.core.account.Account
 import com.jeanbarrossilva.mastodonte.core.auth.AuthenticationLock
-import com.jeanbarrossilva.mastodonte.core.mastodon.Mastodon
+import com.jeanbarrossilva.mastodonte.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.mastodonte.core.mastodon.profile.MastodonProfile
 import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.TootPaginateSource
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
@@ -39,7 +39,7 @@ internal data class MastodonFollowableProfile<T : Follow>(
     FollowableProfile<Follow>() {
     override suspend fun onChangeFollowTo(follow: Follow) {
         val toggledRoute = follow.getToggledRoute(this)
-        Mastodon.httpClient.post(toggledRoute) {
+        MastodonHttpClient.post(toggledRoute) {
             authenticationLock.unlock {
                 bearerAuth(it.accessToken)
             }

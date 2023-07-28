@@ -2,7 +2,7 @@ package com.jeanbarrossilva.mastodonte.core.mastodon.account
 
 import com.jeanbarrossilva.mastodonte.core.account.Account
 import com.jeanbarrossilva.mastodonte.core.auth.AuthenticationLock
-import com.jeanbarrossilva.mastodonte.core.mastodon.Mastodon
+import com.jeanbarrossilva.mastodonte.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.mastodonte.core.mastodon.profile.edit.MastodonEditableProfile
 import com.jeanbarrossilva.mastodonte.core.mastodon.profile.follow.MastodonFollowableProfile
 import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.TootPaginateSource
@@ -52,8 +52,7 @@ internal data class MastodonAccount(
     }
 
     private suspend fun isOwner(authenticationLock: AuthenticationLock): Boolean {
-        val credentialAccount = Mastodon
-            .httpClient
+        val credentialAccount = MastodonHttpClient
             .get("/api/v1/accounts/verify_credentials") {
                 authenticationLock.unlock {
                     bearerAuth(it.accessToken)
@@ -108,8 +107,7 @@ internal data class MastodonAccount(
     }
 
     private suspend fun getFollow(authenticationLock: AuthenticationLock): Follow {
-        return Mastodon
-            .httpClient
+        return MastodonHttpClient
             .get("/api/v1/accounts/relationships") {
                 authenticationLock.unlock { bearerAuth(it.accessToken) }
                 parametersOf("id", listOf(id))

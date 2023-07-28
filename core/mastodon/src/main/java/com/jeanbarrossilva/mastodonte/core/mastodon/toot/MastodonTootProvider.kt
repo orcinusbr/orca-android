@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.mastodonte.core.mastodon.toot
 
 import com.jeanbarrossilva.mastodonte.core.auth.AuthenticationLock
-import com.jeanbarrossilva.mastodonte.core.mastodon.Mastodon
+import com.jeanbarrossilva.mastodonte.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.Status
 import com.jeanbarrossilva.mastodonte.core.toot.Toot
 import com.jeanbarrossilva.mastodonte.core.toot.TootProvider
@@ -14,8 +14,7 @@ import kotlinx.coroutines.flow.flow
 class MastodonTootProvider(private val authenticationLock: AuthenticationLock) : TootProvider {
     override suspend fun provide(id: String): Flow<Toot> {
         return flow {
-            Mastodon
-                .httpClient
+            MastodonHttpClient
                 .get("/api/v1/statuses/$id") {
                     authenticationLock.unlock {
                         bearerAuth(it.accessToken)

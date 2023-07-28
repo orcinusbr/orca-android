@@ -1,8 +1,8 @@
 package com.jeanbarrossilva.mastodonte.core.mastodon.profile
 
 import com.jeanbarrossilva.mastodonte.core.auth.AuthenticationLock
-import com.jeanbarrossilva.mastodonte.core.mastodon.Mastodon
 import com.jeanbarrossilva.mastodonte.core.mastodon.account.MastodonAccount
+import com.jeanbarrossilva.mastodonte.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.TootPaginateSource
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.profile.ProfileProvider
@@ -20,8 +20,7 @@ class MastodonProfileProvider(
     private val pool = hashMapOf<String, Profile>()
 
     override suspend fun contains(id: String): Boolean {
-        return Mastodon
-            .httpClient
+        return MastodonHttpClient
             .get("/api/v1/accounts/$id") {
                 authenticationLock.unlock {
                     bearerAuth(it.accessToken)
@@ -33,8 +32,7 @@ class MastodonProfileProvider(
 
     override suspend fun onProvide(id: String): Flow<Profile> {
         return flow {
-            Mastodon
-                .httpClient
+            MastodonHttpClient
                 .get("/api/v1/accounts/$id") {
                     authenticationLock.unlock {
                         bearerAuth(it.accessToken)

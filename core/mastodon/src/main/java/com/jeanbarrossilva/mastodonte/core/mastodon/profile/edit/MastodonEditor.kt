@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.mastodonte.core.mastodon.profile.edit
 
 import com.jeanbarrossilva.mastodonte.core.auth.AuthenticationLock
-import com.jeanbarrossilva.mastodonte.core.mastodon.Mastodon
+import com.jeanbarrossilva.mastodonte.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.mastodonte.core.profile.edit.Editor
 import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.forms.InputProvider
@@ -26,7 +26,7 @@ internal class MastodonEditor(private val authenticationLock: AuthenticationLock
         val contentDisposition = "form-data; name=\"avatar\" filename=\"${file.name}\""
         val headers = Headers.build { append(HttpHeaders.ContentDisposition, contentDisposition) }
         val formData = formData { append("avatar", inputProvider, headers) }
-        Mastodon.httpClient.submitFormWithBinaryData(ROUTE, formData) {
+        MastodonHttpClient.submitFormWithBinaryData(ROUTE, formData) {
             authenticationLock.unlock {
                 bearerAuth(it.accessToken)
             }
@@ -35,7 +35,7 @@ internal class MastodonEditor(private val authenticationLock: AuthenticationLock
 
     override suspend fun setName(name: String) {
         authenticationLock.unlock {
-            Mastodon.httpClient.submitForm(ROUTE, parametersOf("display_name", name)) {
+            MastodonHttpClient.submitForm(ROUTE, parametersOf("display_name", name)) {
                 bearerAuth(it.accessToken)
             }
         }
@@ -43,7 +43,7 @@ internal class MastodonEditor(private val authenticationLock: AuthenticationLock
 
     override suspend fun setBio(bio: String) {
         authenticationLock.unlock {
-            Mastodon.httpClient.submitForm(ROUTE, parametersOf("note", bio)) {
+            MastodonHttpClient.submitForm(ROUTE, parametersOf("note", bio)) {
                 bearerAuth(it.accessToken)
             }
         }

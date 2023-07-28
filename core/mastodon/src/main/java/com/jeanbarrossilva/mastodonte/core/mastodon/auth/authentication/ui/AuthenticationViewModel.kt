@@ -10,6 +10,7 @@ import com.jeanbarrossilva.mastodonte.core.auth.actor.Actor
 import com.jeanbarrossilva.mastodonte.core.mastodon.Mastodon
 import com.jeanbarrossilva.mastodonte.core.mastodon.R
 import com.jeanbarrossilva.mastodonte.core.mastodon.auth.authentication.Token
+import com.jeanbarrossilva.mastodonte.core.mastodon.client.MastodonHttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.statement.HttpResponse
@@ -31,19 +32,17 @@ internal class AuthenticationViewModel private constructor(
         val scheme = application.getString(R.string.mastodon_scheme)
         val redirectUri = application.getString(R.string.mastodon_redirect_uri, scheme)
         val scopes = Mastodon.getScopes(Mastodon.ScopeProvisionSite.FORM)
-        return Mastodon
-            .httpClient
-            .submitForm(
-                "/oauth/token",
-                Parameters.build {
-                    append("grant_type", "authorization_code")
-                    append("code", authorizationCode)
-                    append("client_id", Mastodon.CLIENT_ID)
-                    append("client_secret", Mastodon.clientSecret)
-                    append("redirect_uri", redirectUri)
-                    append("scope", scopes)
-                }
-            )
+        return MastodonHttpClient.submitForm(
+            "/oauth/token",
+            Parameters.build {
+                append("grant_type", "authorization_code")
+                append("code", authorizationCode)
+                append("client_id", Mastodon.CLIENT_ID)
+                append("client_secret", Mastodon.clientSecret)
+                append("redirect_uri", redirectUri)
+                append("scope", scopes)
+            }
+        )
     }
 
     companion object {

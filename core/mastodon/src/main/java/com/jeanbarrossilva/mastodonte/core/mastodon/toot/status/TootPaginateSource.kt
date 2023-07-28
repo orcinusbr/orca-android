@@ -5,7 +5,7 @@ import com.chrynan.paginate.core.PageDirection
 import com.chrynan.paginate.core.PageInfo
 import com.chrynan.paginate.core.PagedResult
 import com.jeanbarrossilva.mastodonte.core.auth.AuthenticationLock
-import com.jeanbarrossilva.mastodonte.core.mastodon.Mastodon
+import com.jeanbarrossilva.mastodonte.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.mastodonte.core.toot.Toot
 import io.ktor.client.call.body
 import io.ktor.client.request.bearerAuth
@@ -62,7 +62,7 @@ abstract class TootPaginateSource internal constructor() : BasePaginateSource<Ur
     }
 
     private suspend fun getStatusesResponse(url: Url?): HttpResponse {
-        return Mastodon.httpClient.get(url ?: Url(route)) {
+        return MastodonHttpClient.get(url ?: Url(route)) {
             authenticationLock.unlock {
                 bearerAuth(it.accessToken)
             }

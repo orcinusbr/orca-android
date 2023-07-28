@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.mastodonte.core.mastodon.toot
 
 import com.jeanbarrossilva.mastodonte.core.auth.AuthenticationLock
-import com.jeanbarrossilva.mastodonte.core.mastodon.Mastodon
+import com.jeanbarrossilva.mastodonte.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.mastodonte.core.toot.Author
 import com.jeanbarrossilva.mastodonte.core.toot.Toot
 import io.ktor.client.call.body
@@ -31,7 +31,7 @@ data class MastodonToot(
         val route =
             if (isFavorite) "/api/v1/statuses/$id/favourite" else "/api/v1/statuses/$id/unfavourite"
 
-        Mastodon.httpClient.post(route) {
+        MastodonHttpClient.post(route) {
             authenticationLock.unlock {
                 bearerAuth(it.accessToken)
             }
@@ -43,7 +43,7 @@ data class MastodonToot(
         val route =
             if (isReblogged) "/api/v1/statuses/:id/reblog" else "/api/v1/statuses/:id/unreblog"
 
-        Mastodon.httpClient.post(route) {
+        MastodonHttpClient.post(route) {
             authenticationLock.unlock {
                 bearerAuth(it.accessToken)
             }
@@ -52,8 +52,7 @@ data class MastodonToot(
 
     override suspend fun getComments(page: Int): Flow<List<Toot>> {
         return flow {
-            Mastodon
-                .httpClient
+            MastodonHttpClient
                 .get("/api/v1/statuses/$id/context") {
                     authenticationLock.unlock {
                         bearerAuth(it.accessToken)
