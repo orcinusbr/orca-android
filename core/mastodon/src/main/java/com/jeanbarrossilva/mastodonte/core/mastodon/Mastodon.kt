@@ -4,6 +4,7 @@ import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.observer.ResponseObserver
@@ -40,8 +41,10 @@ internal object Mastodon {
 
     /** [HttpClient] through which [HttpRequest]s will be performed. **/
     val httpClient = HttpClient(CIO) {
+        developmentMode = BuildConfig.DEBUG
         setUpDefaultRequest()
         setUpResponseLogging()
+        setUpCaching()
         setUpContentNegotiation()
     }
 
@@ -101,6 +104,11 @@ internal object Mastodon {
             if (requestContent is FormDataContent) " (${requestContent.formData})" else ""
         return "${status.value} on ${request.method.value} ${request.url}" +
             "$requestFormDataParamsAsString:\n${bodyAsText()}"
+    }
+
+    /** Configures caching of [HttpResponse]s. **/
+    private fun HttpClientConfig<*>.setUpCaching() {
+        install(HttpCache)
     }
 
     /** Configures the behavior [ContentNegotiation]-related operations. **/
