@@ -6,13 +6,14 @@ import com.chrynan.paginate.core.PageInfo
 import com.chrynan.paginate.core.PagedResult
 import com.jeanbarrossilva.mastodonte.core.auth.AuthenticationLock
 import com.jeanbarrossilva.mastodonte.core.mastodon.Mastodon
+import com.jeanbarrossilva.mastodonte.core.toot.Toot
 import io.ktor.client.call.body
 import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.Url
 
-abstract class StatusPaginateSource : BasePaginateSource<Url, Status>() {
+abstract class TootPaginateSource internal constructor() : BasePaginateSource<Url, Toot>() {
     private var index = 0
 
     protected abstract val authenticationLock: AuthenticationLock
@@ -23,12 +24,12 @@ abstract class StatusPaginateSource : BasePaginateSource<Url, Status>() {
         key: Url?,
         direction: PageDirection,
         currentPageCount: Int
-    ): PagedResult<Url, Status> {
+    ): PagedResult<Url, Toot> {
         val response = getStatusesResponse(key)
         val headerLinks = response.headers.links
         val previousUrl = headerLinks?.first()?.uri?.let(::Url)
         val nextUrl = headerLinks?.get(1)?.uri?.let(::Url)
-        val statuses = response.body<List<Status>>()
+        val statuses = response.body<List<Status>>().map { it.toToot(authenticationLock) }
         val pageInfo = PageInfo(
             index,
             hasPreviousPage = index > 0,
@@ -38,6 +39,19 @@ abstract class StatusPaginateSource : BasePaginateSource<Url, Status>() {
         )
         updateIndex(direction)
         return PagedResult(pageInfo, statuses)
+    }
+
+    internal suspend fun paginateTo(page: Int, count: Int = DEFAULT_COUNT) {
+        var current = currentPage?.info?.index ?: -1
+        while (current != page) {
+            if (current < page) {
+                next(count)
+                current++
+            } else {
+                previous(count)
+                current--
+            }
+        }
     }
 
     private fun updateIndex(direction: PageDirection) {
@@ -53,5 +67,9 @@ abstract class StatusPaginateSource : BasePaginateSource<Url, Status>() {
                 bearerAuth(it.accessToken)
             }
         }
+    }
+
+    companion object {
+        internal const val DEFAULT_COUNT = 20
     }
 }

@@ -4,11 +4,10 @@ import com.jeanbarrossilva.mastodonte.core.account.Account
 import com.jeanbarrossilva.mastodonte.core.sample.account.sample
 import com.jeanbarrossilva.mastodonte.core.toot.Author
 import java.net.URL
-import java.util.UUID
 
 /** [Author] returned by [sample]'s getter. **/
 private val sampleAuthor = Author(
-    "${UUID.randomUUID()}",
+    "422924",
     avatarURL = URL(
         "https://en.gravatar.com/userimage/153558542/08942ba9443ce68bf66345a2e6db656e.png"
     ),

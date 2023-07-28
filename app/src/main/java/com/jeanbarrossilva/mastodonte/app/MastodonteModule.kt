@@ -7,15 +7,18 @@ import com.jeanbarrossilva.mastodonte.core.auth.actor.ActorProvider
 import com.jeanbarrossilva.mastodonte.core.feed.FeedProvider
 import com.jeanbarrossilva.mastodonte.core.mastodon.auth.authentication.MastodonAuthenticator
 import com.jeanbarrossilva.mastodonte.core.mastodon.auth.authorization.MastodonAuthorizer
+import com.jeanbarrossilva.mastodonte.core.mastodon.feed.MastodonFeedProvider
+import com.jeanbarrossilva.mastodonte.core.mastodon.profile.MastodonProfileProvider
+import com.jeanbarrossilva.mastodonte.core.mastodon.toot.MastodonTootProvider
+import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.TootPaginateSource
 import com.jeanbarrossilva.mastodonte.core.profile.ProfileProvider
-import com.jeanbarrossilva.mastodonte.core.sample.feed.SampleFeedProvider
-import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfileProvider
-import com.jeanbarrossilva.mastodonte.core.sample.toot.SampleTootProvider
 import com.jeanbarrossilva.mastodonte.core.sharedpreferences.actor.SharedPreferencesActorProvider
 import com.jeanbarrossilva.mastodonte.core.toot.TootProvider
 import com.jeanbarrossilva.mastodonte.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
+import java.util.UUID
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
+import org.koin.core.qualifier.named
 import org.koin.dsl.binds
 import org.koin.dsl.module
 
@@ -23,6 +26,7 @@ import org.koin.dsl.module
 internal fun MastodonteModule(
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener
 ): Module {
+    val tootPaginateSourceName = UUID.randomUUID().toString()
     return module {
         single<ActorProvider> { SharedPreferencesActorProvider(androidContext()) }
         single { MastodonAuthorizer(androidContext()) }
@@ -32,9 +36,23 @@ internal fun MastodonteModule(
         }
             .binds(arrayOf(Authenticator::class, MastodonAuthenticator::class))
         single { AuthenticationLock(authenticator = get(), actorProvider = get()) }
-        single<FeedProvider> { SampleFeedProvider }
-        single<ProfileProvider> { SampleProfileProvider }
-        single<TootProvider> { SampleTootProvider }
+        single(named(tootPaginateSourceName)) {
+            MastodonFeedProvider.PaginateSource(authenticationLock = get())
+        }
+            .binds(arrayOf(TootPaginateSource::class, MastodonFeedProvider.PaginateSource::class))
+        single<FeedProvider> {
+            MastodonFeedProvider(
+                actorProvider = get(),
+                paginateSource = get(named(tootPaginateSourceName))
+            )
+        }
+        single<ProfileProvider> {
+            MastodonProfileProvider(
+                authenticationLock = get(),
+                tootPaginateSource = get(named(tootPaginateSourceName))
+            )
+        }
+        single<TootProvider> { MastodonTootProvider(authenticationLock = get()) }
         single { onBottomAreaAvailabilityChangeListener }
     }
 }

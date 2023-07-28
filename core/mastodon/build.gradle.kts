@@ -51,6 +51,8 @@ android {
 }
 
 dependencies {
+    api(Dependencies.PAGINATE)
+
     implementation(project(":core"))
     implementation(project(":platform:theme"))
     implementation(project(":platform:ui"))
@@ -61,6 +63,5 @@ dependencies {
     implementation(Dependencies.KTOR_CONTENT_NEGOTIATION)
     implementation(Dependencies.KTOR_CORE)
     implementation(Dependencies.KTOR_SERIALIZATION_KOTLINX_JSON)
-    implementation(Dependencies.PAGINATE)
     implementation(Dependencies.VIEWMODEL)
 }
