@@ -3,7 +3,9 @@ package com.jeanbarrossilva.mastodonte.platform.ui.core
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import androidx.core.os.bundleOf
+import java.net.URL
 
 /**
  * [Intent] through which the [Activity] can be started.
@@ -31,4 +33,14 @@ fun Intent(text: String): Intent {
         type = "text/plain"
         putExtra(Intent.EXTRA_TEXT, text)
     }
+}
+
+/**
+ * [Intent] for requesting or directly opening the [url] in a web browser.
+ *
+ * @param url [URL] to be accessed externally.
+ **/
+fun Intent(url: URL): Intent {
+    val uri = Uri.parse("$url")
+    return Intent(Intent.ACTION_VIEW, uri).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK }
 }
