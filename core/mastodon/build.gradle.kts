@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     kotlin("plugin.serialization") version Versions.KOTLIN
     id("com.android.library")
@@ -8,12 +6,6 @@ plugins {
 
     @Suppress("SpellCheckingInspection")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = Versions.java.toString()
-    }
 }
 
 android {
