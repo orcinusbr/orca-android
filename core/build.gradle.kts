@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id("java-library")
     kotlin("jvm")
@@ -6,6 +8,12 @@ plugins {
 java {
     sourceCompatibility = Versions.java
     targetCompatibility = Versions.java
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = Versions.java.toString()
+    }
 }
 
 dependencies {
