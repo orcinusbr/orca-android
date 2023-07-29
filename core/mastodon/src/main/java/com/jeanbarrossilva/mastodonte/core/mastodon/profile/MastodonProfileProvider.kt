@@ -7,8 +7,8 @@ import com.jeanbarrossilva.loadable.flow.unwrap
 import com.jeanbarrossilva.mastodonte.core.mastodon.profile.cache.MastodonProfileStore
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.profile.ProfileProvider
-import kotlinx.coroutines.flow.Flow
 import kotlin.jvm.optionals.getOrNull
+import kotlinx.coroutines.flow.Flow
 
 class MastodonProfileProvider(private val store: MastodonProfileStore) : ProfileProvider() {
     private val loadableProfileFlow = loadableFlow<Profile>()

@@ -2,9 +2,9 @@ package com.jeanbarrossilva.mastodonte.core.mastodon.profile.cache.persistence.e
 
 import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.TootPaginateSource
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
+import java.util.Optional
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.util.Optional
 
 /**
  * Returns a [Flow] with each emitted [MastodonProfileEntity] converted into a [Profile].
@@ -20,4 +20,3 @@ internal fun Flow<MastodonProfileEntity?>.mapToProfileOptional(
         Optional.ofNullable(profile)
     }
 }
-
