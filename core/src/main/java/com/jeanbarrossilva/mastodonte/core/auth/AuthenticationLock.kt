@@ -18,6 +18,10 @@ class AuthenticationLock(
     private val authenticator: Authenticator,
     private val actorProvider: ActorProvider
 ) {
+    /** [IllegalStateException] thrown if authentication fails. **/
+    class FailedAuthenticationException internal constructor() :
+        IllegalStateException("Could not authenticate properly.")
+
     /** Listens to a lock. **/
     fun interface OnLockListener {
         /**
@@ -29,15 +33,19 @@ class AuthenticationLock(
         fun onLock(actor: Actor.Unauthenticated)
     }
 
-    /** Listens to an unlock. **/
-    fun interface OnUnlockListener {
+    /**
+     * Listens to an unlock.
+     *
+     * @param T Value returned by [onUnlock].
+     **/
+    fun interface OnUnlockListener<T> {
         /**
          * Callback called when the [Actor] provided by the [actorProvider] is
          * [authenticated][Actor.Authenticated].
          *
          * @param actor Provided [authenticated][Actor.Authenticated] [Actor].
          **/
-        fun onUnlock(actor: Actor.Authenticated)
+        suspend fun onUnlock(actor: Actor.Authenticated): T
     }
 
     /**
@@ -59,11 +67,14 @@ class AuthenticationLock(
      * is only performed if the [Actor] is [authenticated][Actor.Authenticated]; if it isn't, then
      * authentication is requested and, if it succeeds, the operation is performed.
      *
+     * @param T Value returned by the [listener]'s [onUnlock][OnUnlockListener.onUnlock].
      * @param listener [OnUnlockListener] to be notified if the [Actor] is
      * [authenticated][Actor.Authenticated].
+     * @return Result of the [listener]'s [onUnlock][OnUnlockListener.onUnlock].
+     * @throws FailedAuthenticationException If authentication fails.
      **/
-    suspend fun unlock(listener: OnUnlockListener) {
-        when (val actor = actorProvider.provide()) {
+    suspend fun <T> unlock(listener: OnUnlockListener<T>): T {
+        return when (val actor = actorProvider.provide()) {
             is Actor.Unauthenticated -> authenticateAndNotify(listener)
             is Actor.Authenticated -> listener.onUnlock(actor)
         }
@@ -73,13 +84,17 @@ class AuthenticationLock(
      * Authenticates and notifies the [listener] if the resulting [Actor] is
      * [authenticated][Actor.Authenticated].
      *
+     * @param T Value returned by the [listener]'s [onUnlock][OnUnlockListener.onUnlock].
      * @param listener [OnUnlockListener] to be notified if the [Actor] is
      * [authenticated][Actor.Authenticated].
+     * @throws FailedAuthenticationException If authentication fails.
      **/
-    private suspend fun authenticateAndNotify(listener: OnUnlockListener) {
+    private suspend fun <T> authenticateAndNotify(listener: OnUnlockListener<T>): T {
         val actor = authenticator.authenticate()
-        if (actor is Actor.Authenticated) {
+        return if (actor is Actor.Authenticated) {
             listener.onUnlock(actor)
+        } else {
+            throw FailedAuthenticationException()
         }
     }
 }
