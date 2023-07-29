@@ -4,7 +4,7 @@ import android.content.Context
 import com.jeanbarrossilva.mastodonte.core.auth.Authenticator
 import com.jeanbarrossilva.mastodonte.core.auth.actor.Actor
 import com.jeanbarrossilva.mastodonte.core.auth.actor.ActorProvider
-import com.jeanbarrossilva.mastodonte.core.mastodon.auth.authentication.ui.AuthenticationActivity
+import com.jeanbarrossilva.mastodonte.core.mastodon.auth.authentication.ui.activity.AuthenticationActivity
 import com.jeanbarrossilva.mastodonte.core.mastodon.auth.authorization.MastodonAuthorizer
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
