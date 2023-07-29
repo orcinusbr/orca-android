@@ -3,6 +3,13 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 
+/** Adds [chRyNaN](https://github.com/chRyNaN)'s repository. **/
+fun RepositoryHandler.chrynan(): MavenArtifactRepository {
+    return maven {
+        url = URI.create("https://repo.repsy.io/mvn/chrynan/public")
+    }
+}
+
 /**
  * Adds the repository in which [Loadable](https://github.com/jeanbarrossilva/Aurelius) is located.
  *

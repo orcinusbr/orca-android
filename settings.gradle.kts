@@ -2,6 +2,7 @@ rootProject.name = "Mastodonte"
 include(
     ":app",
     ":core",
+    ":core:mastodon",
     ":core:sample",
     ":core:sample-test",
     ":core:shared-preferences",
