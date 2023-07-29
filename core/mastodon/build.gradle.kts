@@ -1,6 +1,7 @@
 plugins {
     kotlin("plugin.serialization") version Versions.KOTLIN
     id("com.android.library")
+    id("com.google.devtools.ksp") version Versions.KSP
     id("org.jetbrains.kotlin.android")
 
     @Suppress("SpellCheckingInspection")
@@ -52,6 +53,8 @@ android {
 
 dependencies {
     api(Dependencies.PAGINATE)
+    api(Dependencies.ROOM)
+    api(Dependencies.STORE)
 
     implementation(project(":core"))
     implementation(project(":platform:theme"))
@@ -64,4 +67,6 @@ dependencies {
     implementation(Dependencies.KTOR_CORE)
     implementation(Dependencies.KTOR_SERIALIZATION_KOTLINX_JSON)
     implementation(Dependencies.VIEWMODEL)
+
+    ksp(Plugins.ROOM)
 }

@@ -1,29 +1,28 @@
 package com.jeanbarrossilva.mastodonte.core.mastodon.profile
 
-import com.jeanbarrossilva.mastodonte.core.mastodon.account.MastodonAccount
-import com.jeanbarrossilva.mastodonte.core.mastodon.client.MastodonHttpClient
-import com.jeanbarrossilva.mastodonte.core.mastodon.client.authenticateAndGet
-import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.TootPaginateSource
+import com.jeanbarrossilva.mastodonte.core.mastodon.profile.cache.MastodonProfileStore
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.profile.ProfileProvider
-import io.ktor.client.call.body
-import io.ktor.http.isSuccess
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.first
+import org.mobilenativefoundation.store.store5.impl.extensions.fresh
+import org.mobilenativefoundation.store.store5.impl.extensions.get
+import kotlin.jvm.optionals.getOrNull
 
-class MastodonProfileProvider(private val tootPaginateSource: TootPaginateSource) :
-    ProfileProvider() {
+class MastodonProfileProvider(private val store: MastodonProfileStore) : ProfileProvider() {
+    private val profileFlow = MutableSharedFlow<Profile>()
+
     override suspend fun contains(id: String): Boolean {
-        return MastodonHttpClient.authenticateAndGet("/api/v1/accounts/$id").status.isSuccess()
+        val optional = store.get(id)
+        val provided = optional.getOrNull()
+        if (provided != null && provided != profileFlow.first()) {
+            profileFlow.emit(optional.get())
+        }
+        return optional.isPresent
     }
 
     override suspend fun onProvide(id: String): Flow<Profile> {
-        return flow {
-            MastodonHttpClient
-                .authenticateAndGet("/api/v1/accounts/$id")
-                .body<MastodonAccount>()
-                .toProfile(tootPaginateSource)
-                .let { emit(it) }
-        }
+        return profileFlow
     }
 }

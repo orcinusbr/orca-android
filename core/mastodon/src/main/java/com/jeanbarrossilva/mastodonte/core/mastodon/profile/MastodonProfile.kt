@@ -4,9 +4,9 @@ import com.jeanbarrossilva.mastodonte.core.account.Account
 import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.TootPaginateSource
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.toot.Toot
-import java.net.URL
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.net.URL
 
 internal data class MastodonProfile(
     private val tootPaginateSource: TootPaginateSource,

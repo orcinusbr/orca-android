@@ -8,7 +8,9 @@ import com.jeanbarrossilva.mastodonte.core.feed.FeedProvider
 import com.jeanbarrossilva.mastodonte.core.mastodon.auth.authentication.MastodonAuthenticator
 import com.jeanbarrossilva.mastodonte.core.mastodon.auth.authorization.MastodonAuthorizer
 import com.jeanbarrossilva.mastodonte.core.mastodon.feed.MastodonFeedProvider
+import com.jeanbarrossilva.mastodonte.core.mastodon.mastodonDatabase
 import com.jeanbarrossilva.mastodonte.core.mastodon.profile.MastodonProfileProvider
+import com.jeanbarrossilva.mastodonte.core.mastodon.profile.cache.MastodonProfileStore
 import com.jeanbarrossilva.mastodonte.core.mastodon.toot.MastodonTootProvider
 import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.TootPaginateSource
 import com.jeanbarrossilva.mastodonte.core.profile.ProfileProvider
@@ -44,7 +46,14 @@ internal fun MastodonteModule(
                 paginateSource = get(named(tootPaginateSourceName))
             )
         }
-        single<ProfileProvider> { MastodonProfileProvider(get(named(tootPaginateSourceName))) }
+        single<ProfileProvider> {
+            MastodonProfileProvider(
+                store = MastodonProfileStore(
+                    get(named(tootPaginateSourceName)),
+                    mastodonDatabase.profileEntityDao
+                )
+            )
+        }
         single<TootProvider> { MastodonTootProvider() }
         single { onBottomAreaAvailabilityChangeListener }
     }
