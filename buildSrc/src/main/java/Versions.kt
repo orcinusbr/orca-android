@@ -31,7 +31,7 @@ object Versions {
     const val ROOM = "2.5.2"
     const val SECRETS = "2.0.1"
     const val SERIALIZATION = "1.5.1"
-    const val STORE = "5.0.0-beta02"
+    const val STORE = "4.0.5"
     const val TEST_CORE = "1.5.0"
     const val TEST_ESPRESSO = "3.5.0"
     const val TIME4A = "4.8-2021a"

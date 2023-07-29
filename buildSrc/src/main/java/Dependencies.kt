@@ -49,7 +49,7 @@ object Dependencies {
     const val SERIALIZATION_JSON =
         "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.SERIALIZATION}"
     const val ROOM = "androidx.room:room-ktx:${Versions.ROOM}"
-    const val STORE = "org.mobilenativefoundation.store:store5:${Versions.STORE}"
+    const val STORE = "com.dropbox.mobile.store:store4:${Versions.STORE}"
     const val TEST_CORE = "androidx.test:core-ktx:${Versions.TEST_CORE}"
     const val TEST_ESPRESSO_CORE = "androidx.test.espresso:espresso-core:${Versions.TEST_ESPRESSO}"
     const val TIME4J = "net.time4j:time4j-android:${Versions.TIME4A}"

@@ -20,3 +20,4 @@ internal fun Flow<MastodonProfileEntity?>.mapToProfileOptional(
         Optional.ofNullable(profile)
     }
 }
+

@@ -1,5 +1,11 @@
 package com.jeanbarrossilva.mastodonte.core.mastodon.profile.cache
 
+import com.dropbox.android.external.store4.Fetcher
+import com.dropbox.android.external.store4.MemoryPolicy
+import com.dropbox.android.external.store4.SourceOfTruth
+import com.dropbox.android.external.store4.Store
+import com.dropbox.android.external.store4.StoreBuilder
+import com.jeanbarrossilva.mastodonte.core.mastodon.account.MastodonAccount
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.authenticateAndGet
 import com.jeanbarrossilva.mastodonte.core.mastodon.profile.cache.persistence.MastodonProfileEntityDao
@@ -8,13 +14,9 @@ import com.jeanbarrossilva.mastodonte.core.mastodon.profile.cache.persistence.en
 import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.TootPaginateSource
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import io.ktor.client.call.body
-import org.mobilenativefoundation.store.store5.Fetcher
-import org.mobilenativefoundation.store.store5.MemoryPolicy
-import org.mobilenativefoundation.store.store5.SourceOfTruth
-import org.mobilenativefoundation.store.store5.Store
-import org.mobilenativefoundation.store.store5.StoreBuilder
 import java.util.Optional
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.ExperimentalTime
 
 /** [MastodonProfileStore]'s [Fetcher]. **/
 private typealias MastodonProfileFetcher = Fetcher<String, MastodonProfileEntity>
@@ -29,27 +31,32 @@ internal typealias MastodonProfileStore = Store<String, Optional<Profile>>
 /**
  * [Store] that manages requests to retrieve [Profile]s.
  *
- * @param tootPaginateSource [TootPaginateSource] with which a [MastodonProfileSourceOfTruth] will be
+ * @param tootPaginateSource [TootPaginateSource] with which the underlying structures will be
  * created.
  * @param entityDao [MastodonProfileEntityDao] with which a [MastodonProfileSourceOfTruth] will be created.
  **/
+@OptIn(ExperimentalTime::class)
 fun MastodonProfileStore(
     tootPaginateSource: TootPaginateSource,
     entityDao: MastodonProfileEntityDao
 ): MastodonProfileStore {
-    val fetcher = MastodonProfileFetcher()
+    val fetcher = MastodonProfileFetcher(tootPaginateSource)
     val sourceOfTruth = MastodonProfileSourceOfTruth(tootPaginateSource, entityDao)
     val memoryPolicy = MemoryPolicy
         .MemoryPolicyBuilder<String, Optional<Profile>>()
-        .setExpireAfterWrite(2.minutes)
+        .setExpireAfterWrite(1.minutes)
         .build()
     return StoreBuilder.from(fetcher, sourceOfTruth).cachePolicy(memoryPolicy).build()
 }
 
 /** [Fetcher] by which the HTTP request to obtain a [Profile] will be performed. **/
-private fun MastodonProfileFetcher(): MastodonProfileFetcher {
+private fun MastodonProfileFetcher(tootPaginateSource: TootPaginateSource): MastodonProfileFetcher {
     return Fetcher.of {
-        MastodonHttpClient.authenticateAndGet("/api/v1/accounts/$it").body()
+        MastodonHttpClient
+            .authenticateAndGet("/api/v1/accounts/$it")
+            .body<MastodonAccount>()
+            .toProfile(tootPaginateSource)
+            .toMastodonProfileEntity()
     }
 }
 
@@ -67,7 +74,7 @@ private fun MastodonProfileSourceOfTruth(
 ): MastodonProfileSourceOfTruth {
     return SourceOfTruth.of(
         reader = { entityDao.getByID(it).mapToProfileOptional(tootPaginateSource) },
-        writer = { _, entity -> entity.toProfile(tootPaginateSource) },
+        writer = { _, entity -> entityDao.insert(entity) },
         entityDao::delete,
         entityDao::deleteAll
     )
