@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 buildscript {
     repositories {
         google()
@@ -13,12 +11,6 @@ buildscript {
 }
 
 allprojects {
-    tasks.withType<KotlinCompile>().configureEach {
-        kotlinOptions {
-            jvmTarget = Versions.java.toString()
-        }
-    }
-
     repositories {
         google()
         loadable(project)
