@@ -2,8 +2,7 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <application
-        android:name=".demo.DemoMastodonteApplication"
-        tools:ignore="MissingApplicationIcon"
-        tools:replace="android:name" />
+    <application tools:ignore="MissingApplicationIcon">
+        <activity android:name=".demo.DemoMastodonteActivity" />
+    </application>
 </manifest>

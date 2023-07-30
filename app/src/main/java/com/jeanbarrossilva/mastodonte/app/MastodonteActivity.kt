@@ -6,9 +6,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.jeanbarrossilva.mastodonte.app.databinding.ActivityMastodonteBinding
-import com.jeanbarrossilva.mastodonte.app.feature.feed.FeedModule
-import com.jeanbarrossilva.mastodonte.app.feature.profiledetails.ProfileDetailsModule
-import com.jeanbarrossilva.mastodonte.app.feature.tootdetails.TootDetailsModule
+import com.jeanbarrossilva.mastodonte.app.module.core.MainCoreModule
+import com.jeanbarrossilva.mastodonte.app.module.feature.feed.MainFeedModule
+import com.jeanbarrossilva.mastodonte.app.module.feature.profiledetails.MainProfileDetailsModule
+import com.jeanbarrossilva.mastodonte.app.module.feature.tootdetails.MainTootDetailsModule
 import com.jeanbarrossilva.mastodonte.app.navigation.navigator.BottomNavigationItemNavigatorFactory
 import com.jeanbarrossilva.mastodonte.core.auth.AuthenticationLock
 import com.jeanbarrossilva.mastodonte.feature.auth.AuthActivity
@@ -17,9 +18,14 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.core.context.loadKoinModules
 
-internal class MastodonteActivity : AppCompatActivity(), OnBottomAreaAvailabilityChangeListener {
+internal open class MastodonteActivity :
+    AppCompatActivity(), OnBottomAreaAvailabilityChangeListener {
     private var binding: ActivityMastodonteBinding? = null
     private val containerID = R.id.container
+
+    protected open val coreModule by lazy {
+        MainCoreModule(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,11 +75,10 @@ internal class MastodonteActivity : AppCompatActivity(), OnBottomAreaAvailabilit
     }
 
     private fun inject() {
-        val mastodonteModule = MastodonteModule(onBottomAreaAvailabilityChangeListener = this)
-        val feedModule = FeedModule(supportFragmentManager, containerID)
-        val profileDetailsModule = ProfileDetailsModule(supportFragmentManager, containerID)
-        val tootDetailsModule = TootDetailsModule(supportFragmentManager, containerID)
-        val modules = listOf(mastodonteModule, feedModule, profileDetailsModule, tootDetailsModule)
+        val feedModule = MainFeedModule(supportFragmentManager, containerID)
+        val profileDetailsModule = MainProfileDetailsModule(supportFragmentManager, containerID)
+        val tootDetailsModule = MainTootDetailsModule(supportFragmentManager, containerID)
+        val modules = listOf(coreModule, feedModule, profileDetailsModule, tootDetailsModule)
         loadKoinModules(modules)
     }
 }

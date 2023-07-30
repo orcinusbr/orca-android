@@ -7,6 +7,7 @@ plugins {
 android {
     namespace = Metadata.namespace("app")
     compileSdk = Versions.Mastodonte.SDK_COMPILE
+    flavorDimensions += Dimensions.VERSION
 
     defaultConfig {
         applicationId = Metadata.GROUP
@@ -34,6 +35,14 @@ android {
         viewBinding = true
     }
 
+    productFlavors {
+        create("demo") {
+            dimension = Dimensions.VERSION
+            applicationIdSuffix = ".demo"
+            versionNameSuffix = "-demo"
+        }
+    }
+
     @Suppress("UnstableApiUsage")
     testOptions {
         unitTests {
@@ -56,6 +65,15 @@ android {
 }
 
 dependencies {
+    "demoImplementation"(project(":core-test"))
+
+    "testDemoImplementation"(project(":platform:ui-test"))
+    "testDemoImplementation"(Dependencies.ACTIVITY)
+    "testDemoImplementation"(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
+    "testDemoImplementation"(Dependencies.ROBOLECTRIC)
+    "testDemoImplementation"(Dependencies.TEST_CORE)
+    "testDemoImplementation"(Dependencies.TEST_ESPRESSO_CORE)
+
     implementation(project(":core:mastodon"))
     implementation(project(":core:sample"))
     implementation(project(":core:shared-preferences"))
@@ -72,11 +90,4 @@ dependencies {
     implementation(Dependencies.KOIN_ANDROID)
     implementation(Dependencies.MATERIAL)
     implementation(Dependencies.TIME4J)
-
-    testImplementation(project(":platform:ui-test"))
-    testImplementation(Dependencies.ACTIVITY)
-    testImplementation(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
-    testImplementation(Dependencies.ROBOLECTRIC)
-    testImplementation(Dependencies.TEST_CORE)
-    testImplementation(Dependencies.TEST_ESPRESSO_CORE)
 }
