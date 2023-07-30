@@ -59,3 +59,7 @@ dependencies {
 
     testImplementation(Dependencies.ROBOLECTRIC)
 }
+
+tasks.getByName("testReleaseUnitTest") {
+    enabled = false
+}
