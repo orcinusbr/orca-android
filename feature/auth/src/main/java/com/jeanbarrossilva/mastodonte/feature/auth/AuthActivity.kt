@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import com.jeanbarrossilva.mastodonte.core.auth.Authenticator
-import com.jeanbarrossilva.mastodonte.platform.ui.core.composable.ComposableActivity
 import com.jeanbarrossilva.mastodonte.platform.ui.core.Intent
+import com.jeanbarrossilva.mastodonte.platform.ui.core.composable.ComposableActivity
 import org.koin.android.ext.android.inject
 
 class AuthActivity internal constructor() : ComposableActivity() {
