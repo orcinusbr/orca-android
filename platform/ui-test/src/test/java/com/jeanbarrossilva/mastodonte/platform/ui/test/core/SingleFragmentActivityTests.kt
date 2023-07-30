@@ -22,9 +22,7 @@ import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.annotation.GraphicsMode
 
-@GraphicsMode(GraphicsMode.Mode.NATIVE)
 @RunWith(RobolectricTestRunner::class)
 internal class SingleFragmentActivityTests {
     abstract class TestActivity : SingleFragmentActivity() {
