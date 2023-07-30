@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.app.feature.feed
+package com.jeanbarrossilva.mastodonte.app.module.feature.feed
 
 import androidx.annotation.IdRes
 import androidx.fragment.app.FragmentManager

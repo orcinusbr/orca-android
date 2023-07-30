@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.app.feature.tootdetails
+package com.jeanbarrossilva.mastodonte.app.module.feature.tootdetails
 
 import androidx.annotation.IdRes
 import androidx.fragment.app.FragmentManager

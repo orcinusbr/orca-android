@@ -77,4 +77,8 @@ dependencies {
     implementation(Dependencies.VIEWMODEL)
 
     ksp(Plugins.ROOM)
+
+    releaseImplementation(Dependencies.SLF4J) {
+        because("Ktor references \"StaticLoggerBinder\" and it is missing on minification.")
+    }
 }

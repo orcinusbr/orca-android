@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.app.feature.profiledetails
+package com.jeanbarrossilva.mastodonte.app.module.feature.profiledetails
 
 import androidx.annotation.IdRes
 import androidx.fragment.app.FragmentManager

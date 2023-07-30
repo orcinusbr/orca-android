@@ -1,21 +1,19 @@
-package com.jeanbarrossilva.mastodonte.app.feature.feed
+package com.jeanbarrossilva.mastodonte.app.module.feature.tootdetails
 
 import androidx.annotation.IdRes
 import androidx.fragment.app.FragmentManager
-import com.jeanbarrossilva.mastodonte.feature.feed.FeedBoundary
+import com.jeanbarrossilva.mastodonte.feature.tootdetails.TootDetailsBoundary
 import com.jeanbarrossilva.mastodonte.feature.tootdetails.TootDetailsFragment
 
-internal class FragmentManagerFeedBoundary(
+internal class FragmentManagerTootDetailsBoundary(
     private val fragmentManager: FragmentManager,
     @IdRes private val containerID: Int
-) : FeedBoundary {
-    override fun navigateToSearch() {
-    }
-
+) : TootDetailsBoundary {
     override fun navigateToTootDetails(id: String) {
         TootDetailsFragment.navigate(fragmentManager, containerID, id)
     }
 
-    override fun navigateToComposer() {
+    override fun pop() {
+        fragmentManager.popBackStack()
     }
 }
