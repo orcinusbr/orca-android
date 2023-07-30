@@ -11,10 +11,10 @@ import com.jeanbarrossilva.mastodonte.core.mastodon.auth.authorization.MastodonA
 import com.jeanbarrossilva.mastodonte.core.mastodon.feed.MastodonFeedProvider
 import com.jeanbarrossilva.mastodonte.core.mastodon.profile.MastodonProfileProvider
 import com.jeanbarrossilva.mastodonte.core.mastodon.profile.cache.MastodonProfileStore
-import com.jeanbarrossilva.mastodonte.core.mastodon.toot.MastodonTootProvider
+import com.jeanbarrossilva.mastodonte.core.mastodon.profile.toot.MastodonTootProvider
 import com.jeanbarrossilva.mastodonte.core.profile.ProfileProvider
+import com.jeanbarrossilva.mastodonte.core.profile.toot.TootProvider
 import com.jeanbarrossilva.mastodonte.core.sharedpreferences.actor.SharedPreferencesActorProvider
-import com.jeanbarrossilva.mastodonte.core.toot.TootProvider
 import com.jeanbarrossilva.mastodonte.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.definition.Definition

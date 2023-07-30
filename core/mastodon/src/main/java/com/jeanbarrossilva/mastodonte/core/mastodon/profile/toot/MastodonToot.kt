@@ -1,10 +1,10 @@
-package com.jeanbarrossilva.mastodonte.core.mastodon.toot
+package com.jeanbarrossilva.mastodonte.core.mastodon.profile.toot
 
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.authenticateAndGet
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.authenticateAndPost
-import com.jeanbarrossilva.mastodonte.core.toot.Author
-import com.jeanbarrossilva.mastodonte.core.toot.Toot
+import com.jeanbarrossilva.mastodonte.core.profile.toot.Author
+import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import io.ktor.client.call.body
 import java.net.URL
 import java.time.ZonedDateTime

@@ -6,7 +6,7 @@ import androidx.compose.runtime.remember
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import com.jeanbarrossilva.mastodonte.core.profile.ProfileProvider
-import com.jeanbarrossilva.mastodonte.core.toot.TootProvider
+import com.jeanbarrossilva.mastodonte.core.profile.toot.TootProvider
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.mastodonte.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.mastodonte.platform.ui.core.argument

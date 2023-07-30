@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.core.mastodon.toot.status
+package com.jeanbarrossilva.mastodonte.core.mastodon.profile.toot.status
 
 import com.chrynan.paginate.core.BasePaginateSource
 import com.chrynan.paginate.core.PageDirection
@@ -6,7 +6,7 @@ import com.chrynan.paginate.core.PageInfo
 import com.chrynan.paginate.core.PagedResult
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.authenticateAndGet
-import com.jeanbarrossilva.mastodonte.core.toot.Toot
+import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.Url

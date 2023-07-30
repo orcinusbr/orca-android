@@ -2,7 +2,7 @@ package com.jeanbarrossilva.mastodonte.core.mastodon.profile.type.editable
 
 import com.jeanbarrossilva.mastodonte.core.account.Account
 import com.jeanbarrossilva.mastodonte.core.mastodon.profile.MastodonProfile
-import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.TootPaginateSource
+import com.jeanbarrossilva.mastodonte.core.mastodon.profile.toot.status.TootPaginateSource
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.profile.type.editable.EditableProfile
 import java.net.URL

@@ -1,7 +1,7 @@
-package com.jeanbarrossilva.mastodonte.core.sample.toot
+package com.jeanbarrossilva.mastodonte.core.sample.profile.toot
 
-import com.jeanbarrossilva.mastodonte.core.toot.Author
-import com.jeanbarrossilva.mastodonte.core.toot.Toot
+import com.jeanbarrossilva.mastodonte.core.profile.toot.Author
+import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import java.net.URL
 import java.time.ZoneId
 import java.time.ZonedDateTime

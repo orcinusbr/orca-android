@@ -1,9 +1,9 @@
-package com.jeanbarrossilva.mastodonte.core.sample.toot
+package com.jeanbarrossilva.mastodonte.core.sample.profile.toot
 
+import com.jeanbarrossilva.mastodonte.core.profile.toot.Author
+import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
+import com.jeanbarrossilva.mastodonte.core.profile.toot.TootProvider
 import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfileProvider
-import com.jeanbarrossilva.mastodonte.core.toot.Author
-import com.jeanbarrossilva.mastodonte.core.toot.Toot
-import com.jeanbarrossilva.mastodonte.core.toot.TootProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map

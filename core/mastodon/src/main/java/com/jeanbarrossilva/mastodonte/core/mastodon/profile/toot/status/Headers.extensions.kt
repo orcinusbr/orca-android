@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.core.mastodon.toot.status
+package com.jeanbarrossilva.mastodonte.core.mastodon.profile.toot.status
 
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders

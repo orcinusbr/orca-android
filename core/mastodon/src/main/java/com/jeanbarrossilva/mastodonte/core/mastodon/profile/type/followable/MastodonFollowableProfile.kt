@@ -4,7 +4,7 @@ import com.jeanbarrossilva.mastodonte.core.account.Account
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.authenticateAndPost
 import com.jeanbarrossilva.mastodonte.core.mastodon.profile.MastodonProfile
-import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.TootPaginateSource
+import com.jeanbarrossilva.mastodonte.core.mastodon.profile.toot.status.TootPaginateSource
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.profile.type.followable.Follow
 import com.jeanbarrossilva.mastodonte.core.profile.type.followable.FollowableProfile

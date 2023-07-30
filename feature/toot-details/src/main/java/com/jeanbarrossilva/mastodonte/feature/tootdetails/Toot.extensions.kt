@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.mastodonte.feature.tootdetails
 
-import com.jeanbarrossilva.mastodonte.core.toot.Toot
+import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.platform.ui.html.HtmlAnnotatedString
 
 /** Converts this core [Toot] into [TootDetails]. **/

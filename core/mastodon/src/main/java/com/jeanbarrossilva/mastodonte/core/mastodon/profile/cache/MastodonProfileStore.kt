@@ -11,7 +11,7 @@ import com.jeanbarrossilva.mastodonte.core.mastodon.client.authenticateAndGet
 import com.jeanbarrossilva.mastodonte.core.mastodon.profile.cache.persistence.MastodonProfileEntityDao
 import com.jeanbarrossilva.mastodonte.core.mastodon.profile.cache.persistence.entity.MastodonProfileEntity
 import com.jeanbarrossilva.mastodonte.core.mastodon.profile.cache.persistence.entity.mapToProfileOptional
-import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.TootPaginateSource
+import com.jeanbarrossilva.mastodonte.core.mastodon.profile.toot.status.TootPaginateSource
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import io.ktor.client.call.body
 import java.util.Optional

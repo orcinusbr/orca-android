@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.core.toot
+package com.jeanbarrossilva.mastodonte.core.profile.toot
 
 import kotlinx.coroutines.flow.Flow
 

@@ -1,7 +1,7 @@
-package com.jeanbarrossilva.mastodonte.core.sample.toot
+package com.jeanbarrossilva.mastodonte.core.sample.profile.toot
 
+import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.core.sample.profile.type.editable.replacingOnceBy
-import com.jeanbarrossilva.mastodonte.core.toot.Toot
 import kotlinx.coroutines.flow.update
 
 /** Performs [Toot]-related writing operations. **/

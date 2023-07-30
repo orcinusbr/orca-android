@@ -1,8 +1,8 @@
 package com.jeanbarrossilva.mastodonte.core.sample.profile
 
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
-import com.jeanbarrossilva.mastodonte.core.sample.toot.SampleTootProvider
-import com.jeanbarrossilva.mastodonte.core.toot.Toot
+import com.jeanbarrossilva.mastodonte.core.sample.profile.toot.SampleTootProvider
+import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map

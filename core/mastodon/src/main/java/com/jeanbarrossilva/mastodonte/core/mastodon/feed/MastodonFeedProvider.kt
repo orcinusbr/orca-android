@@ -3,8 +3,8 @@ package com.jeanbarrossilva.mastodonte.core.mastodon.feed
 import com.jeanbarrossilva.mastodonte.core.auth.actor.Actor
 import com.jeanbarrossilva.mastodonte.core.auth.actor.ActorProvider
 import com.jeanbarrossilva.mastodonte.core.feed.FeedProvider
-import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.TootPaginateSource
-import com.jeanbarrossilva.mastodonte.core.toot.Toot
+import com.jeanbarrossilva.mastodonte.core.mastodon.profile.toot.status.TootPaginateSource
+import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

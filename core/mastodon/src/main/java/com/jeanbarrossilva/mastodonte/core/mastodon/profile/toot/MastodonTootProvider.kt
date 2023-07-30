@@ -1,10 +1,10 @@
-package com.jeanbarrossilva.mastodonte.core.mastodon.toot
+package com.jeanbarrossilva.mastodonte.core.mastodon.profile.toot
 
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.authenticateAndGet
-import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.Status
-import com.jeanbarrossilva.mastodonte.core.toot.Toot
-import com.jeanbarrossilva.mastodonte.core.toot.TootProvider
+import com.jeanbarrossilva.mastodonte.core.mastodon.profile.toot.status.Status
+import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
+import com.jeanbarrossilva.mastodonte.core.profile.toot.TootProvider
 import io.ktor.client.call.body
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

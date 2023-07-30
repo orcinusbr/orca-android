@@ -5,9 +5,9 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.jeanbarrossilva.mastodonte.core.account.Account
+import com.jeanbarrossilva.mastodonte.core.mastodon.profile.toot.status.TootPaginateSource
 import com.jeanbarrossilva.mastodonte.core.mastodon.profile.type.editable.MastodonEditableProfile
 import com.jeanbarrossilva.mastodonte.core.mastodon.profile.type.followable.MastodonFollowableProfile
-import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.TootPaginateSource
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.profile.type.followable.Follow
 import java.net.URL

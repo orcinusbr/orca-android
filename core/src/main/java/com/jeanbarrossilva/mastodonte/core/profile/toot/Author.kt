@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.core.toot
+package com.jeanbarrossilva.mastodonte.core.profile.toot
 
 import com.jeanbarrossilva.mastodonte.core.account.Account
 import java.io.Serializable

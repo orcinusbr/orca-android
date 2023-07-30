@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.mastodonte.core.mastodon.profile.cache.persistence.entity
 
-import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.TootPaginateSource
+import com.jeanbarrossilva.mastodonte.core.mastodon.profile.toot.status.TootPaginateSource
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import java.util.Optional
 import kotlinx.coroutines.flow.Flow

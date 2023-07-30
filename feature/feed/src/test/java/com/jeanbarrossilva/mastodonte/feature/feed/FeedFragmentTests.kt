@@ -9,7 +9,7 @@ import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.performClick
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.sample.profile.sample
-import com.jeanbarrossilva.mastodonte.core.sample.toot.SampleTootWriter
+import com.jeanbarrossilva.mastodonte.core.sample.profile.toot.SampleTootWriter
 import com.jeanbarrossilva.mastodonte.feature.feed.test.FeedActivity
 import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.TOOT_PREVIEW_FAVORITE_STAT_TAG
 import com.jeanbarrossilva.mastodonte.platform.ui.test.component.timeline.toot.onTootPreviews

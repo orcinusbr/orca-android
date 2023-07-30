@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.core.toot
+package com.jeanbarrossilva.mastodonte.core.profile.toot
 
 import java.io.Serializable
 import java.net.URL
