@@ -21,3 +21,13 @@ allprojects {
 tasks.register<Delete>("clean") {
     delete(rootProject.buildDir)
 }
+
+afterEvaluate {
+    allprojects {
+        if (isAndroidLibrary) {
+            tasks.named("testReleaseUnitTest") {
+                enabled = false
+            }
+        }
+    }
+}

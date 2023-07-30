@@ -59,9 +59,3 @@ dependencies {
 
     testImplementation(Dependencies.ROBOLECTRIC)
 }
-
-afterEvaluate {
-    tasks.getByName("testReleaseUnitTest") {
-        enabled = false
-    }
-}
