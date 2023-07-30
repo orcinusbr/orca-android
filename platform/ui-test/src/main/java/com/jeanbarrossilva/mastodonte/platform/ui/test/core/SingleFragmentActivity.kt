@@ -163,7 +163,8 @@ abstract class SingleFragmentActivity : FragmentActivity() {
      *
      * @see SingleFragmentActivity.route
      **/
-    protected inline fun <reified T : Fragment> NavGraphBuilder.fragment() {
+    context(NavGraphBuilder)
+    protected inline fun <reified T : Fragment> fragment() {
         fragment<T>(this@SingleFragmentActivity.route) {
         }
     }

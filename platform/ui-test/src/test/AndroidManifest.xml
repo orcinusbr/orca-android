@@ -1,1 +1,16 @@
-<manifest />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <activity
+            android:name="com.jeanbarrossilva.mastodonte.platform.ui.test.core.SingleFragmentActivityTests$NoDestinationActivity" />
+        <activity
+            android:name="com.jeanbarrossilva.mastodonte.platform.ui.test.core.SingleFragmentActivityTests$InequivalentlyRoutedDestinationActivity" />
+        <activity
+            android:name="com.jeanbarrossilva.mastodonte.platform.ui.test.core.SingleFragmentActivityTests$NonFragmentDestinationActivity" />
+        <activity
+            android:name="com.jeanbarrossilva.mastodonte.platform.ui.test.core.SingleFragmentActivityTests$NonFragmentDestinationActivity$DestinationActivity" />
+        <activity
+            android:name="com.jeanbarrossilva.mastodonte.platform.ui.test.core.SingleFragmentActivityTests$MultipleDestinationsActivity" />
+        <activity
+            android:name="com.jeanbarrossilva.mastodonte.platform.ui.test.core.SingleFragmentActivityTests$PosteriorlyAddedDestinationActivity" />
+    </application>
+</manifest>

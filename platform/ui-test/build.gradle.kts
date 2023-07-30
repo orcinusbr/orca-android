@@ -9,6 +9,7 @@ android {
 
     defaultConfig {
         minSdk = Versions.Mastodonte.SDK_MIN
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -26,6 +27,7 @@ android {
 
     @Suppress("UnstableApiUsage")
     buildFeatures {
+        compose = true
         viewBinding = true
     }
 
@@ -43,6 +45,9 @@ android {
 
     kotlinOptions {
         jvmTarget = Versions.java.toString()
+
+        @Suppress("SpellCheckingInspection")
+        freeCompilerArgs = listOf("-Xcontext-receivers")
     }
 
     composeOptions {
@@ -58,4 +63,5 @@ dependencies {
     implementation(Dependencies.TIME4J)
 
     testImplementation(Dependencies.ROBOLECTRIC)
+    testImplementation(Dependencies.TEST_CORE)
 }
