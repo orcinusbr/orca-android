@@ -14,7 +14,7 @@ abstract class MastodonDatabase internal constructor() : RoomDatabase() {
     companion object {
         private lateinit var instance: MastodonDatabase
 
-        internal fun getInstance(context: Context): MastodonDatabase {
+        fun getInstance(context: Context): MastodonDatabase {
             return if (Companion::instance.isInitialized) {
                 instance
             } else {
