@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.core.sample.profile.edit
+package com.jeanbarrossilva.mastodonte.core.sample.profile.type.edit
 
 import kotlin.test.Test
 import kotlin.test.assertContentEquals

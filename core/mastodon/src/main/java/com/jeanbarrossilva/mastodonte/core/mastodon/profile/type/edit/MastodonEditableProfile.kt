@@ -1,10 +1,10 @@
-package com.jeanbarrossilva.mastodonte.core.mastodon.profile.edit
+package com.jeanbarrossilva.mastodonte.core.mastodon.profile.type.edit
 
 import com.jeanbarrossilva.mastodonte.core.account.Account
 import com.jeanbarrossilva.mastodonte.core.mastodon.profile.MastodonProfile
 import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.TootPaginateSource
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
-import com.jeanbarrossilva.mastodonte.core.profile.edit.EditableProfile
+import com.jeanbarrossilva.mastodonte.core.profile.type.edit.EditableProfile
 import java.net.URL
 
 internal data class MastodonEditableProfile(

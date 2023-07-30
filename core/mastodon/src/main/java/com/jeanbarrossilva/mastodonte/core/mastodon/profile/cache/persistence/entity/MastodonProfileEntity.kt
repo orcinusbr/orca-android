@@ -5,11 +5,11 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.jeanbarrossilva.mastodonte.core.account.Account
-import com.jeanbarrossilva.mastodonte.core.mastodon.profile.edit.MastodonEditableProfile
-import com.jeanbarrossilva.mastodonte.core.mastodon.profile.follow.MastodonFollowableProfile
+import com.jeanbarrossilva.mastodonte.core.mastodon.profile.type.edit.MastodonEditableProfile
+import com.jeanbarrossilva.mastodonte.core.mastodon.profile.type.follow.MastodonFollowableProfile
 import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.TootPaginateSource
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
-import com.jeanbarrossilva.mastodonte.core.profile.follow.Follow
+import com.jeanbarrossilva.mastodonte.core.profile.type.follow.Follow
 import java.net.URL
 
 @Entity(tableName = "profiles")
@@ -37,7 +37,7 @@ data class MastodonProfileEntity internal constructor(
     }
 
     private fun toMastodonEditableProfile(tootPaginateSource: TootPaginateSource):
-        MastodonEditableProfile {
+            MastodonEditableProfile {
         val account = Account.of(account)
         val avatarURL = URL(avatarURL)
         val url = URL(url)
@@ -55,7 +55,7 @@ data class MastodonProfileEntity internal constructor(
     }
 
     private fun toMastodonFollowableProfile(tootPaginateSource: TootPaginateSource):
-        MastodonFollowableProfile<Follow> {
+            MastodonFollowableProfile<Follow> {
         val account = Account.of(account)
         val avatarURL = URL(avatarURL)
         val follow = when (follow) {

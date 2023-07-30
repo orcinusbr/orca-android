@@ -3,11 +3,11 @@ package com.jeanbarrossilva.mastodonte.core.mastodon.account
 import com.jeanbarrossilva.mastodonte.core.account.Account
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.authenticateAndGet
-import com.jeanbarrossilva.mastodonte.core.mastodon.profile.edit.MastodonEditableProfile
-import com.jeanbarrossilva.mastodonte.core.mastodon.profile.follow.MastodonFollowableProfile
+import com.jeanbarrossilva.mastodonte.core.mastodon.profile.type.edit.MastodonEditableProfile
+import com.jeanbarrossilva.mastodonte.core.mastodon.profile.type.follow.MastodonFollowableProfile
 import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.TootPaginateSource
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
-import com.jeanbarrossilva.mastodonte.core.profile.follow.Follow
+import com.jeanbarrossilva.mastodonte.core.profile.type.follow.Follow
 import com.jeanbarrossilva.mastodonte.core.toot.Author
 import io.ktor.client.call.body
 import io.ktor.http.parametersOf
@@ -70,7 +70,7 @@ internal data class MastodonAccount(
     }
 
     private suspend fun toFollowableProfile(tootPaginateSource: TootPaginateSource):
-        MastodonFollowableProfile<Follow> {
+            MastodonFollowableProfile<Follow> {
         val account = toAccount()
         val avatarURL = URL(avatar)
         val url = URL(url)

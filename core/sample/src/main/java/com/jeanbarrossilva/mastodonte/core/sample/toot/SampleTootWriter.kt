@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.mastodonte.core.sample.toot
 
-import com.jeanbarrossilva.mastodonte.core.sample.profile.edit.replacingOnceBy
+import com.jeanbarrossilva.mastodonte.core.sample.profile.type.edit.replacingOnceBy
 import com.jeanbarrossilva.mastodonte.core.toot.Toot
 import kotlinx.coroutines.flow.update
 

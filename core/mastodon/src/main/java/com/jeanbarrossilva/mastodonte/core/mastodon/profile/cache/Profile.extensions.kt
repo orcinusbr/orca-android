@@ -2,8 +2,8 @@ package com.jeanbarrossilva.mastodonte.core.mastodon.profile.cache
 
 import com.jeanbarrossilva.mastodonte.core.mastodon.profile.cache.persistence.entity.MastodonProfileEntity
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
-import com.jeanbarrossilva.mastodonte.core.profile.edit.EditableProfile
-import com.jeanbarrossilva.mastodonte.core.profile.follow.FollowableProfile
+import com.jeanbarrossilva.mastodonte.core.profile.type.edit.EditableProfile
+import com.jeanbarrossilva.mastodonte.core.profile.type.follow.FollowableProfile
 
 /**
  * Converts this [Profile] into a [MastodonProfileEntity].

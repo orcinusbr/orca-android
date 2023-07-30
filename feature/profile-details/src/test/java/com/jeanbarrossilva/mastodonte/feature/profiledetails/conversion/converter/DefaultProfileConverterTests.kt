@@ -1,11 +1,11 @@
 package com.jeanbarrossilva.mastodonte.feature.profiledetails.conversion.converter
 
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
-import com.jeanbarrossilva.mastodonte.core.profile.edit.EditableProfile
-import com.jeanbarrossilva.mastodonte.core.profile.follow.FollowableProfile
-import com.jeanbarrossilva.mastodonte.core.sample.profile.edit.sample
-import com.jeanbarrossilva.mastodonte.core.sample.profile.follow.sample
+import com.jeanbarrossilva.mastodonte.core.profile.type.edit.EditableProfile
+import com.jeanbarrossilva.mastodonte.core.profile.type.follow.FollowableProfile
 import com.jeanbarrossilva.mastodonte.core.sample.profile.sample
+import com.jeanbarrossilva.mastodonte.core.sample.profile.type.edit.sample
+import com.jeanbarrossilva.mastodonte.core.sample.profile.type.follow.sample
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.ProfileDetails
 import org.junit.Assert.assertEquals
 import org.junit.Test

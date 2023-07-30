@@ -1,8 +1,8 @@
-package com.jeanbarrossilva.mastodonte.core.sample.profile.follow
+package com.jeanbarrossilva.mastodonte.core.sample.profile.type.follow
 
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
-import com.jeanbarrossilva.mastodonte.core.profile.follow.Follow
-import com.jeanbarrossilva.mastodonte.core.profile.follow.FollowableProfile
+import com.jeanbarrossilva.mastodonte.core.profile.type.follow.Follow
+import com.jeanbarrossilva.mastodonte.core.profile.type.follow.FollowableProfile
 import com.jeanbarrossilva.mastodonte.core.sample.profile.sample
 
 /** [FollowableProfile] that's returned by [sample]'s getter. **/

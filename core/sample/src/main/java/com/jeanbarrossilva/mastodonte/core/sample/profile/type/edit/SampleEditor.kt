@@ -1,6 +1,6 @@
-package com.jeanbarrossilva.mastodonte.core.sample.profile.edit
+package com.jeanbarrossilva.mastodonte.core.sample.profile.type.edit
 
-import com.jeanbarrossilva.mastodonte.core.profile.edit.Editor
+import com.jeanbarrossilva.mastodonte.core.profile.type.edit.Editor
 import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfileProvider
 import java.net.URL
 

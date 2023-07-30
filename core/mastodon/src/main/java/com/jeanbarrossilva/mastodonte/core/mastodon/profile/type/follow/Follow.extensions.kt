@@ -1,7 +1,7 @@
-package com.jeanbarrossilva.mastodonte.core.mastodon.profile.follow
+package com.jeanbarrossilva.mastodonte.core.mastodon.profile.type.follow
 
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
-import com.jeanbarrossilva.mastodonte.core.profile.follow.Follow
+import com.jeanbarrossilva.mastodonte.core.profile.type.follow.Follow
 
 /**
  * Gets the route to which a call would equate to this [Follow]'s [toggled][Follow.toggled] state.

@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.mastodonte.core.sample.profile
 
-import com.jeanbarrossilva.mastodonte.core.profile.follow.Follow
+import com.jeanbarrossilva.mastodonte.core.profile.type.follow.Follow
 import com.jeanbarrossilva.mastodonte.core.sample.profile.test.SampleProfileWriterTestRule
 import com.jeanbarrossilva.mastodonte.core.sample.test.assertTogglingEquals
 import kotlin.test.Test

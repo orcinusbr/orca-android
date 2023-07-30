@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.core.sample.profile.edit
+package com.jeanbarrossilva.mastodonte.core.sample.profile.type.edit
 
 /**
  * Returns a [List] containing exactly the same elements of this [Collection], except for the ones
