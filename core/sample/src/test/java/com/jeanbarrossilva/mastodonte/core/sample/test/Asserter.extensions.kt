@@ -1,11 +1,11 @@
 package com.jeanbarrossilva.mastodonte.core.sample.test
 
-import com.jeanbarrossilva.mastodonte.core.profile.type.follow.Follow
-import com.jeanbarrossilva.mastodonte.core.profile.type.follow.FollowableProfile
+import com.jeanbarrossilva.mastodonte.core.profile.type.followable.Follow
+import com.jeanbarrossilva.mastodonte.core.profile.type.followable.FollowableProfile
 import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfileProvider
 import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfileWriter
-import com.jeanbarrossilva.mastodonte.core.sample.profile.type.follow.SampleFollowableProfile
-import com.jeanbarrossilva.mastodonte.core.sample.profile.type.follow.sample
+import com.jeanbarrossilva.mastodonte.core.sample.profile.type.followable.SampleFollowableProfile
+import com.jeanbarrossilva.mastodonte.core.sample.profile.type.followable.sample
 import kotlin.test.assertEquals
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filterIsInstance

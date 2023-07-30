@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.core.profile.type.follow
+package com.jeanbarrossilva.mastodonte.core.profile.type.followable
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

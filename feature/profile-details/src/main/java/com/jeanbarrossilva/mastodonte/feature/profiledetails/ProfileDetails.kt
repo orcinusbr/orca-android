@@ -45,10 +45,10 @@ import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.mastodonte.core.account.Account
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.profile.type.editable.EditableProfile
-import com.jeanbarrossilva.mastodonte.core.profile.type.follow.FollowableProfile
+import com.jeanbarrossilva.mastodonte.core.profile.type.followable.FollowableProfile
 import com.jeanbarrossilva.mastodonte.core.sample.profile.sample
 import com.jeanbarrossilva.mastodonte.core.sample.profile.type.editable.sample
-import com.jeanbarrossilva.mastodonte.core.sample.profile.type.follow.sample
+import com.jeanbarrossilva.mastodonte.core.sample.profile.type.followable.sample
 import com.jeanbarrossilva.mastodonte.core.sample.toot.samples
 import com.jeanbarrossilva.mastodonte.core.toot.Toot
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.conversion.converter.followable.toStatus

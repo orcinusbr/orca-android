@@ -1,8 +1,8 @@
-package com.jeanbarrossilva.mastodonte.core.sample.profile.type.follow
+package com.jeanbarrossilva.mastodonte.core.sample.profile.type.followable
 
 import com.jeanbarrossilva.mastodonte.core.account.Account
-import com.jeanbarrossilva.mastodonte.core.profile.type.follow.Follow
-import com.jeanbarrossilva.mastodonte.core.profile.type.follow.FollowableProfile
+import com.jeanbarrossilva.mastodonte.core.profile.type.followable.Follow
+import com.jeanbarrossilva.mastodonte.core.profile.type.followable.FollowableProfile
 import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfile
 import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfileWriter
 import java.net.URL

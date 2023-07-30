@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.core.profile.type.follow
+package com.jeanbarrossilva.mastodonte.core.profile.type.followable
 
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 

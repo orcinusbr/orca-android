@@ -4,10 +4,10 @@ import com.jeanbarrossilva.mastodonte.core.account.Account
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.authenticateAndGet
 import com.jeanbarrossilva.mastodonte.core.mastodon.profile.type.editable.MastodonEditableProfile
-import com.jeanbarrossilva.mastodonte.core.mastodon.profile.type.follow.MastodonFollowableProfile
+import com.jeanbarrossilva.mastodonte.core.mastodon.profile.type.followable.MastodonFollowableProfile
 import com.jeanbarrossilva.mastodonte.core.mastodon.toot.status.TootPaginateSource
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
-import com.jeanbarrossilva.mastodonte.core.profile.type.follow.Follow
+import com.jeanbarrossilva.mastodonte.core.profile.type.followable.Follow
 import com.jeanbarrossilva.mastodonte.core.toot.Author
 import io.ktor.client.call.body
 import io.ktor.http.parametersOf
