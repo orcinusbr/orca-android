@@ -72,7 +72,7 @@ private inline fun <reified A1 : Authorizer, reified A2 : Authenticator> CoreMod
     noinline feedProvider: Definition<FeedProvider>,
     noinline profileProvider: Definition<ProfileProvider>,
     noinline tootProvider: Definition<TootProvider>,
-    noinline onBottomAreaAvailabilityChangeListener: Definition<OnBottomAreaAvailabilityChangeListener> // ktlint-disable max-line-length
+    noinline onBottomAreaAvailabilityChangeListener: Definition<OnBottomAreaAvailabilityChangeListener> // ktlint-disable max-line-length parameter-wrapping
 ): Module {
     return module {
         authorizer?.let { single(definition = it) binds arrayOf(Authorizer::class, A1::class) }
