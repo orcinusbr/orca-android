@@ -1,7 +1,15 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id("com.android.application")
     id("com.google.devtools.ksp") version Versions.KSP
     id("kotlin-android")
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = Versions.java.toString()
+    }
 }
 
 android {

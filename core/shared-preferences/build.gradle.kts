@@ -1,7 +1,15 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     kotlin("plugin.serialization") version Versions.KOTLIN
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = Versions.java.toString()
+    }
 }
 
 android {

@@ -31,7 +31,7 @@ object Versions {
     const val TURBINE = "1.0.0"
     const val VIEWMODEL = "2.6.1"
 
-    val java = JavaVersion.VERSION_17
+    val java = JavaVersion.VERSION_11
 
     object Mastodonte {
         const val CODE = 1
