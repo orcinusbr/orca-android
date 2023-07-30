@@ -1,10 +1,10 @@
 package com.jeanbarrossilva.mastodonte.feature.profiledetails.conversion.converter.followable
 
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
-import com.jeanbarrossilva.mastodonte.core.profile.type.edit.EditableProfile
+import com.jeanbarrossilva.mastodonte.core.profile.type.editable.EditableProfile
 import com.jeanbarrossilva.mastodonte.core.profile.type.follow.FollowableProfile
 import com.jeanbarrossilva.mastodonte.core.sample.profile.sample
-import com.jeanbarrossilva.mastodonte.core.sample.profile.type.edit.sample
+import com.jeanbarrossilva.mastodonte.core.sample.profile.type.editable.sample
 import com.jeanbarrossilva.mastodonte.core.sample.profile.type.follow.sample
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.ProfileDetails
 import kotlinx.coroutines.test.TestScope

@@ -1,7 +1,7 @@
-package com.jeanbarrossilva.mastodonte.core.sample.profile.type.edit
+package com.jeanbarrossilva.mastodonte.core.sample.profile.type.editable
 
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
-import com.jeanbarrossilva.mastodonte.core.profile.type.edit.EditableProfile
+import com.jeanbarrossilva.mastodonte.core.profile.type.editable.EditableProfile
 import com.jeanbarrossilva.mastodonte.core.sample.profile.sample
 
 /** [EditableProfile] returned by [sample]'s getter. **/

@@ -1,8 +1,8 @@
-package com.jeanbarrossilva.mastodonte.core.sample.profile.type.edit
+package com.jeanbarrossilva.mastodonte.core.sample.profile.type.editable
 
 import com.jeanbarrossilva.mastodonte.core.account.Account
-import com.jeanbarrossilva.mastodonte.core.profile.type.edit.EditableProfile
-import com.jeanbarrossilva.mastodonte.core.profile.type.edit.Editor
+import com.jeanbarrossilva.mastodonte.core.profile.type.editable.EditableProfile
+import com.jeanbarrossilva.mastodonte.core.profile.type.editable.Editor
 import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfile
 import java.net.URL
 

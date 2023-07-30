@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.core.profile.type.edit
+package com.jeanbarrossilva.mastodonte.core.profile.type.editable
 
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 

@@ -3,7 +3,7 @@ package com.jeanbarrossilva.mastodonte.core.sample.profile
 import com.jeanbarrossilva.mastodonte.core.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.profile.ProfileProvider
 import com.jeanbarrossilva.mastodonte.core.profile.type.follow.Follow
-import com.jeanbarrossilva.mastodonte.core.sample.profile.type.edit.replacingOnceBy
+import com.jeanbarrossilva.mastodonte.core.sample.profile.type.editable.replacingOnceBy
 import com.jeanbarrossilva.mastodonte.core.sample.profile.type.follow.SampleFollowableProfile
 import kotlinx.coroutines.flow.update
 

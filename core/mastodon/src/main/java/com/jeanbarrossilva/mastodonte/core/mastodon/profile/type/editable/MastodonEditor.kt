@@ -1,9 +1,9 @@
-package com.jeanbarrossilva.mastodonte.core.mastodon.profile.type.edit
+package com.jeanbarrossilva.mastodonte.core.mastodon.profile.type.editable
 
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.authenticateAndSubmitForm
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.authenticateAndSubmitFormWithBinaryData
-import com.jeanbarrossilva.mastodonte.core.profile.type.edit.Editor
+import com.jeanbarrossilva.mastodonte.core.profile.type.editable.Editor
 import io.ktor.client.request.forms.InputProvider
 import io.ktor.client.request.forms.formData
 import io.ktor.http.Headers
