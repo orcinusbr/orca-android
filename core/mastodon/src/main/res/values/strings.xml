@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string
+        name="mastodon_redirect_uri"
+        translatable="false">
+        %s://sign-in
+    </string>
+
+    <string
+        name="mastodon_scheme"
+        translatable="false">
+        mastodonte
+    </string>
+</resources>

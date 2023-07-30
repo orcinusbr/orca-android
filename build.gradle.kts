@@ -7,11 +7,13 @@ buildscript {
     dependencies {
         classpath(Plugins.GRADLE)
         classpath(Plugins.KOTLIN)
+        classpath(Plugins.SECRETS)
     }
 }
 
 allprojects {
     repositories {
+        chrynan()
         google()
         loadable(project)
         mavenCentral()
