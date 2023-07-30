@@ -131,6 +131,51 @@ abstract class Follow private constructor() : Serializable {
 
     companion object {
         /**
+         * [IllegalArgumentException] thrown if a blank [String] is given when parsing it into a
+         * [Follow].
+         *
+         * @see of
+         **/
+        class BlankStringException internal constructor() :
+            IllegalArgumentException("Cannot parse a blank String.")
+
+        /**
+         * [IllegalArgumentException] thrown if the given [String] is not a valid [Follow]
+         * representation.
+         *
+         * @param string [Follow] representation that's invalid.
+         **/
+        class InvalidFollowString internal constructor(string: String) : IllegalArgumentException(
+            "\"$string\" does not match any of the available Follow String representations."
+        )
+
+        /**
+         * Parses the [string] into a [Follow].
+         *
+         * [string] must be the result of calling [toString] on one of the existing [Follow]s
+         * (e. g., `Follow.of("${Follow.Public.unfollowed()}")` returns [Public.unfollowed]). Any
+         * leading or trailing whitespace it may contain will be ignored.
+         *
+         * @param string [String] to be parsed into a [Follow].
+         * @return [Follow] whose result of [toString] equals to the [string] (minus surrounding
+         * whitespaces).
+         * @throws BlankStringException If the [string] is blank.
+         * @throws InvalidFollowString If the [string] is not a valid [Follow] representation.
+         **/
+        fun of(string: String): Follow {
+            val formattedString = string.trim()
+            formattedString.ifBlank { throw BlankStringException() }
+            return when (formattedString) {
+                Public.unfollowed().toString() -> Public.unfollowed()
+                Public.following().toString() -> Public.following()
+                Private.unfollowed().toString() -> Private.unfollowed()
+                Private.requested().toString() -> Private.requested()
+                Private.following().toString() -> Private.following()
+                else -> throw InvalidFollowString(formattedString)
+            }
+        }
+
+        /**
          * Requires both statuses to have the same visibility: either [public][Follow.Public] or
          * [private][Follow.Private].
          *
