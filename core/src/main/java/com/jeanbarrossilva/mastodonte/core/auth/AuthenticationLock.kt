@@ -9,8 +9,8 @@ import com.jeanbarrossilva.mastodonte.core.auth.actor.ActorProvider
  * - ...an [unauthenticated][Actor.Unauthenticated] [Actor], through [requestLock];
  * - ...an [authenticated][Actor.Authenticated] [Actor], through [requestUnlock].
  *
- * @param authenticator [Authenticator] through which the [Actor] will be requested to be either
- * [authenticated][Actor.Authenticated] or [unauthenticated][Actor.Unauthenticated].
+ * @param authenticator [Authenticator] through which the [Actor] will be requested to be
+ * [authenticated][Actor.Authenticated].
  * @param actorProvider [ActorProvider] whose provided [Actor] will be ensured to be either
  * [unauthenticated][Actor.Unauthenticated] or [authenticated][Actor.Authenticated].
  **/
