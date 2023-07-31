@@ -45,7 +45,7 @@ internal fun Feed(
 }
 
 @Composable
-private fun Feed(
+internal fun Feed(
     tootPreviewsLoadable: ListLoadable<TootPreview>,
     onSearch: () -> Unit,
     onFavorite: (tootID: String) -> Unit,
