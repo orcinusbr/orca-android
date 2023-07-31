@@ -42,8 +42,8 @@ import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
-import com.jeanbarrossilva.mastodonte.core.account.Account
 import com.jeanbarrossilva.mastodonte.core.feed.profile.Profile
+import com.jeanbarrossilva.mastodonte.core.feed.profile.account.Account
 import com.jeanbarrossilva.mastodonte.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.core.feed.profile.type.editable.EditableProfile
 import com.jeanbarrossilva.mastodonte.core.feed.profile.type.followable.FollowableProfile

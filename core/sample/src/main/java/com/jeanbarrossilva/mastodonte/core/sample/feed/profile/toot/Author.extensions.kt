@@ -1,8 +1,8 @@
 package com.jeanbarrossilva.mastodonte.core.sample.feed.profile.toot
 
-import com.jeanbarrossilva.mastodonte.core.account.Account
+import com.jeanbarrossilva.mastodonte.core.feed.profile.account.Account
 import com.jeanbarrossilva.mastodonte.core.feed.profile.toot.Author
-import com.jeanbarrossilva.mastodonte.core.sample.account.sample
+import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.account.sample
 import java.net.URL
 
 /** [Author] returned by [sample]'s getter. **/

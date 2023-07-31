@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.mastodonte.core.feed.profile.toot
 
-import com.jeanbarrossilva.mastodonte.core.account.Account
+import com.jeanbarrossilva.mastodonte.core.feed.profile.account.Account
 import java.io.Serializable
 import java.net.URL
 

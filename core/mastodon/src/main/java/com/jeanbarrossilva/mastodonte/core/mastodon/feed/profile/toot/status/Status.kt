@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.mastodonte.core.mastodon.feed.profile.toot.status
 
-import com.jeanbarrossilva.mastodonte.core.mastodon.account.MastodonAccount
+import com.jeanbarrossilva.mastodonte.core.mastodon.feed.profile.account.MastodonAccount
 import com.jeanbarrossilva.mastodonte.core.mastodon.feed.profile.toot.MastodonToot
 import java.net.URL
 import java.time.ZonedDateTime

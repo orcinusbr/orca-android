@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.mastodonte.core.sample.feed.profile.type.followable
 
-import com.jeanbarrossilva.mastodonte.core.account.Account
+import com.jeanbarrossilva.mastodonte.core.feed.profile.account.Account
 import com.jeanbarrossilva.mastodonte.core.feed.profile.type.followable.Follow
 import com.jeanbarrossilva.mastodonte.core.feed.profile.type.followable.FollowableProfile
 import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.SampleProfile

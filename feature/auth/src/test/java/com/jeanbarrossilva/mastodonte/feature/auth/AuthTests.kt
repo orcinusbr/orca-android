@@ -4,8 +4,8 @@ import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performTextInput
-import com.jeanbarrossilva.mastodonte.core.account.Account
-import com.jeanbarrossilva.mastodonte.core.sample.account.sample
+import com.jeanbarrossilva.mastodonte.core.feed.profile.account.Account
+import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.account.sample
 import com.jeanbarrossilva.mastodonte.feature.auth.test.TestAuth
 import com.jeanbarrossilva.mastodonte.feature.auth.test.onInstanceField
 import com.jeanbarrossilva.mastodonte.feature.auth.test.onSignInButton

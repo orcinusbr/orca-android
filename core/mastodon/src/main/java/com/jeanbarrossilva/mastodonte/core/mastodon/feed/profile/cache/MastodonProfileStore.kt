@@ -6,9 +6,9 @@ import com.dropbox.android.external.store4.SourceOfTruth
 import com.dropbox.android.external.store4.Store
 import com.dropbox.android.external.store4.StoreBuilder
 import com.jeanbarrossilva.mastodonte.core.feed.profile.Profile
-import com.jeanbarrossilva.mastodonte.core.mastodon.account.MastodonAccount
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.authenticateAndGet
+import com.jeanbarrossilva.mastodonte.core.mastodon.feed.profile.account.MastodonAccount
 import com.jeanbarrossilva.mastodonte.core.mastodon.feed.profile.cache.persistence.MastodonProfileEntityDao
 import com.jeanbarrossilva.mastodonte.core.mastodon.feed.profile.cache.persistence.entity.MastodonProfileEntity
 import com.jeanbarrossilva.mastodonte.core.mastodon.feed.profile.cache.persistence.entity.mapToProfileOptional

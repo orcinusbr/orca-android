@@ -1,9 +1,9 @@
 package com.jeanbarrossilva.mastodonte.core.sample.feed.profile
 
 import com.jeanbarrossilva.mastodonte.core.feed.profile.Profile
-import com.jeanbarrossilva.mastodonte.core.sample.account.sample
-import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.toot.sample
 import com.jeanbarrossilva.mastodonte.core.feed.profile.toot.Author
+import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.account.sample
+import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.toot.sample
 
 /** [Profile] returned by [sample]'s getter. **/
 @Suppress("SpellCheckingInspection")

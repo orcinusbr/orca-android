@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.mastodonte.core.mastodon.feed.profile.type.editable
 
-import com.jeanbarrossilva.mastodonte.core.account.Account
 import com.jeanbarrossilva.mastodonte.core.feed.profile.Profile
+import com.jeanbarrossilva.mastodonte.core.feed.profile.account.Account
 import com.jeanbarrossilva.mastodonte.core.feed.profile.type.editable.EditableProfile
 import com.jeanbarrossilva.mastodonte.core.mastodon.feed.profile.MastodonProfile
 import com.jeanbarrossilva.mastodonte.core.mastodon.feed.profile.toot.status.TootPaginateSource

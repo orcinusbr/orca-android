@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.core.mastodon.account
+package com.jeanbarrossilva.mastodonte.core.mastodon.feed.profile.account
 
 import com.jeanbarrossilva.mastodonte.core.feed.profile.type.followable.Follow
 import kotlinx.serialization.Serializable
