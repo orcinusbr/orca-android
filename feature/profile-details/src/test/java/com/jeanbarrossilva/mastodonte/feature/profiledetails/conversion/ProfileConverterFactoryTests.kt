@@ -1,11 +1,11 @@
 package com.jeanbarrossilva.mastodonte.feature.profiledetails.conversion
 
-import com.jeanbarrossilva.mastodonte.core.profile.Profile
-import com.jeanbarrossilva.mastodonte.core.profile.type.editable.EditableProfile
-import com.jeanbarrossilva.mastodonte.core.profile.type.followable.FollowableProfile
-import com.jeanbarrossilva.mastodonte.core.sample.profile.sample
-import com.jeanbarrossilva.mastodonte.core.sample.profile.type.editable.sample
-import com.jeanbarrossilva.mastodonte.core.sample.profile.type.followable.sample
+import com.jeanbarrossilva.mastodonte.core.feed.profile.Profile
+import com.jeanbarrossilva.mastodonte.core.feed.profile.type.editable.EditableProfile
+import com.jeanbarrossilva.mastodonte.core.feed.profile.type.followable.FollowableProfile
+import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.sample
+import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.type.editable.sample
+import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.type.followable.sample
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.ProfileDetails
 import kotlinx.coroutines.test.TestScope
 import org.junit.Assert.assertEquals

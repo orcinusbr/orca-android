@@ -1,14 +1,14 @@
 package com.jeanbarrossilva.mastodonte.core.mastodon.account
 
 import com.jeanbarrossilva.mastodonte.core.account.Account
+import com.jeanbarrossilva.mastodonte.core.feed.profile.Profile
+import com.jeanbarrossilva.mastodonte.core.feed.profile.toot.Author
+import com.jeanbarrossilva.mastodonte.core.feed.profile.type.followable.Follow
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.mastodonte.core.mastodon.client.authenticateAndGet
-import com.jeanbarrossilva.mastodonte.core.mastodon.profile.toot.status.TootPaginateSource
-import com.jeanbarrossilva.mastodonte.core.mastodon.profile.type.editable.MastodonEditableProfile
-import com.jeanbarrossilva.mastodonte.core.mastodon.profile.type.followable.MastodonFollowableProfile
-import com.jeanbarrossilva.mastodonte.core.profile.Profile
-import com.jeanbarrossilva.mastodonte.core.profile.toot.Author
-import com.jeanbarrossilva.mastodonte.core.profile.type.followable.Follow
+import com.jeanbarrossilva.mastodonte.core.mastodon.feed.profile.toot.status.TootPaginateSource
+import com.jeanbarrossilva.mastodonte.core.mastodon.feed.profile.type.editable.MastodonEditableProfile
+import com.jeanbarrossilva.mastodonte.core.mastodon.feed.profile.type.followable.MastodonFollowableProfile
 import io.ktor.client.call.body
 import io.ktor.http.parametersOf
 import java.net.URL

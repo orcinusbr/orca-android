@@ -1,11 +1,11 @@
 package com.jeanbarrossilva.mastodonte.core.sample.feed
 
 import com.jeanbarrossilva.mastodonte.core.feed.FeedProvider
-import com.jeanbarrossilva.mastodonte.core.profile.Profile
-import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfile
-import com.jeanbarrossilva.mastodonte.core.sample.profile.sample
-import com.jeanbarrossilva.mastodonte.core.sample.profile.toot.SampleTootProvider
-import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
+import com.jeanbarrossilva.mastodonte.core.feed.profile.Profile
+import com.jeanbarrossilva.mastodonte.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.SampleProfile
+import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.sample
+import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.toot.SampleTootProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map

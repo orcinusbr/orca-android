@@ -31,8 +31,8 @@ import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.test.Loading
 import com.jeanbarrossilva.mastodonte.core.account.Account
-import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
-import com.jeanbarrossilva.mastodonte.core.sample.profile.toot.sample
+import com.jeanbarrossilva.mastodonte.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.toot.sample
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.EmptyMutableInteractionSource
 import com.jeanbarrossilva.mastodonte.platform.ui.AccountFormatter

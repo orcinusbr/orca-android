@@ -1,9 +1,9 @@
 package com.jeanbarrossilva.mastodonte.feature.feed.test
 
 import com.jeanbarrossilva.mastodonte.core.feed.FeedProvider
-import com.jeanbarrossilva.mastodonte.core.profile.toot.TootProvider
+import com.jeanbarrossilva.mastodonte.core.feed.profile.toot.TootProvider
 import com.jeanbarrossilva.mastodonte.core.sample.feed.SampleFeedProvider
-import com.jeanbarrossilva.mastodonte.core.sample.profile.toot.SampleTootProvider
+import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.toot.SampleTootProvider
 import com.jeanbarrossilva.mastodonte.feature.feed.FeedBoundary
 import org.koin.core.module.Module
 import org.koin.dsl.module

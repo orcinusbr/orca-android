@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.mastodonte.core.feed
 
-import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
+import com.jeanbarrossilva.mastodonte.core.feed.profile.toot.Toot
 import kotlinx.coroutines.flow.Flow
 
 /**

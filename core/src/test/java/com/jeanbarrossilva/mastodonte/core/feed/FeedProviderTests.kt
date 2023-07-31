@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.mastodonte.core.feed
 
-import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
-import com.jeanbarrossilva.mastodonte.core.sample.profile.toot.samples
+import com.jeanbarrossilva.mastodonte.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.toot.samples
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertFailsWith

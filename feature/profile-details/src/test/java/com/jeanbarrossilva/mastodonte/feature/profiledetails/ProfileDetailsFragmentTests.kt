@@ -4,10 +4,10 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import com.jeanbarrossilva.mastodonte.core.profile.type.followable.FollowableProfile
-import com.jeanbarrossilva.mastodonte.core.sample.profile.SampleProfileWriter
-import com.jeanbarrossilva.mastodonte.core.sample.profile.test.SampleProfileWriterTestRule
-import com.jeanbarrossilva.mastodonte.core.sample.profile.type.followable.sample
+import com.jeanbarrossilva.mastodonte.core.feed.profile.type.followable.FollowableProfile
+import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.SampleProfileWriter
+import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.test.SampleProfileWriterTestRule
+import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.type.followable.sample
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.test.ProfileDetailsActivity
 import com.jeanbarrossilva.mastodonte.platform.ui.test.component.timeline.toot.time.Time4JTestRule

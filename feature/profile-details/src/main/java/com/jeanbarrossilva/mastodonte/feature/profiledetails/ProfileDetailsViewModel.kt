@@ -8,9 +8,9 @@ import com.jeanbarrossilva.loadable.flow.loadable
 import com.jeanbarrossilva.loadable.list.SerializableList
 import com.jeanbarrossilva.loadable.list.flow.listLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
-import com.jeanbarrossilva.mastodonte.core.profile.ProfileProvider
-import com.jeanbarrossilva.mastodonte.core.profile.toot.Toot
-import com.jeanbarrossilva.mastodonte.core.profile.toot.TootProvider
+import com.jeanbarrossilva.mastodonte.core.feed.profile.ProfileProvider
+import com.jeanbarrossilva.mastodonte.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.mastodonte.core.feed.profile.toot.TootProvider
 import com.jeanbarrossilva.mastodonte.platform.ui.core.context.ContextProvider
 import com.jeanbarrossilva.mastodonte.platform.ui.core.context.share
 import java.net.URL
