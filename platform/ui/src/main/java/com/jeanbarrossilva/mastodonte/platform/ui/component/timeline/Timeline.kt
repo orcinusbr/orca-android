@@ -1,6 +1,11 @@
 package com.jeanbarrossilva.mastodonte.platform.ui.component.timeline
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
@@ -8,17 +13,25 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.mastodonte.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
+import com.jeanbarrossilva.mastodonte.platform.ui.R
 import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.TootPreview
 import java.net.URL
 
@@ -34,7 +47,7 @@ private enum class TimelineContentType {
 }
 
 /**
- * [LazyColumn] for displaying paged [TootPreview]s.
+ * Displays [TootPreview]s in a paginated way.
  *
  * @param tootPreviewsLoadable [ListLoadable] of [TootPreview]s to be lazily shown.
  * @param onFavorite Callback run whenever the [TootPreview] associated to the given ID requests the
@@ -64,6 +77,8 @@ fun Timeline(
     header: (@Composable LazyItemScope.() -> Unit)? = null
 ) {
     when (tootPreviewsLoadable) {
+        is ListLoadable.Empty ->
+            EmptyTimelineMessage(header, modifier)
         is ListLoadable.Loading ->
             Timeline(modifier, contentPadding, header)
         is ListLoadable.Populated ->
@@ -79,7 +94,7 @@ fun Timeline(
                 contentPadding,
                 header
             )
-        is ListLoadable.Empty, is ListLoadable.Failed ->
+        is ListLoadable.Failed ->
             Unit
     }
 }
@@ -134,19 +149,23 @@ fun Timeline(
     contentPadding: PaddingValues = PaddingValues(),
     header: (@Composable LazyItemScope.() -> Unit)? = null
 ) {
-    Timeline(onNext, header, modifier, state, contentPadding) {
-        items(
-            tootPreviews,
-            key = TootPreview::id,
-            contentType = { TimelineContentType.TOOT_PREVIEW }
-        ) {
-            TootPreview(
-                it,
-                onFavorite = { onFavorite(it.id) },
-                onReblog = { onReblog(it.id) },
-                onShare = { onShare(it.url) },
-                onClick = { onClick(it.id) }
-            )
+    if (tootPreviews.isEmpty()) {
+        EmptyTimelineMessage(header, modifier)
+    } else {
+        Timeline(onNext, header, modifier, state, contentPadding) {
+            items(
+                tootPreviews,
+                key = TootPreview::id,
+                contentType = { TimelineContentType.TOOT_PREVIEW }
+            ) {
+                TootPreview(
+                    it,
+                    onFavorite = { onFavorite(it.id) },
+                    onReblog = { onReblog(it.id) },
+                    onShare = { onShare(it.url) },
+                    onClick = { onClick(it.id) }
+                )
+            }
         }
     }
 }
@@ -187,6 +206,51 @@ private fun Timeline(
     }
 }
 
+/**
+ * Message stating that the [Timeline] is empty.
+ *
+ * @param header [Composable] to be shown above the message.
+ * @param modifier [Modifier] to be applied to the underlying [Column].
+ **/
+@Composable
+private fun EmptyTimelineMessage(
+    header: (@Composable LazyItemScope.() -> Unit)?,
+    modifier: Modifier = Modifier
+) {
+    val spacing = MastodonteTheme.spacings.extraLarge
+    val spec = remember { LottieCompositionSpec.RawRes(R.raw.illustration_timeline_empty) }
+    val lottieComposition by rememberLottieComposition(spec)
+
+    LazyColumn(
+        modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(spacing, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        header?.let {
+            item(content = it)
+        }
+
+        item {
+            LottieAnimation(
+                lottieComposition,
+                Modifier
+                    .padding(start = spacing, top = spacing, end = spacing)
+                    .size(256.dp),
+                clipToCompositionBounds = true
+            )
+        }
+
+        item {
+            Text(
+                "Seems a bit empty in here...",
+                Modifier.padding(start = spacing, end = spacing, bottom = spacing),
+                textAlign = TextAlign.Center,
+                style = MastodonteTheme.typography.headlineMedium
+            )
+        }
+    }
+}
+
 /** Preview of a loading [Timeline]. **/
 @Composable
 @Preview
@@ -198,10 +262,28 @@ private fun LoadingTimelinePreview() {
     }
 }
 
-/** Preview of a loaded [Timeline]. **/
+/** Preview of an empty [Timeline]. **/
 @Composable
 @Preview
-private fun LoadedTimelinePreview() {
+private fun EmptyTimelinePreview() {
+    MastodonteTheme {
+        Surface(color = MastodonteTheme.colorScheme.background) {
+            Timeline(
+                ListLoadable.Empty(),
+                onFavorite = { },
+                onReblog = { },
+                onShare = { },
+                onClick = { },
+                onNext = { }
+            )
+        }
+    }
+}
+
+/** Preview of a populated [Timeline]. **/
+@Composable
+@Preview
+private fun PopulatedTimelinePreview() {
     MastodonteTheme {
         Surface(color = MastodonteTheme.colorScheme.background) {
             Timeline(

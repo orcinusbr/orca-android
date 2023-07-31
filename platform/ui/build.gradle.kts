@@ -64,6 +64,7 @@ dependencies {
     implementation(Dependencies.LOADABLE_LIST)
     implementation(Dependencies.LOADABLE_PLACEHOLDER)
     implementation(Dependencies.LOADABLE_PLACEHOLDER_TEST)
+    implementation(Dependencies.LOTTIE_COMPOSE)
     implementation(Dependencies.MATERIAL)
     implementation(Dependencies.TIME4J)
 

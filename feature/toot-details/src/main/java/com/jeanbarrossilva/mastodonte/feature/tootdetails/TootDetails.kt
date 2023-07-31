@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.mastodonte.feature.tootdetails
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -167,36 +166,18 @@ private fun TootDetails(
 }
 
 @Composable
-private fun TootDetails(
-    onBackwardsNavigation: () -> Unit,
-    modifier: Modifier = Modifier,
-    timeline: @Composable (padding: PaddingValues) -> Unit
-) {
-    Scaffold(
-        modifier,
-        topBar = {
-            @OptIn(ExperimentalMaterial3Api::class)
-            CenterAlignedTopAppBar(
-                title = { Text("Toot") },
-                navigationIcon = {
-                    IconButton(onClick = onBackwardsNavigation) {
-                        Icon(
-                            MastodonteTheme.Icons.backwardsNavigationArrow,
-                            contentDescription = "Back"
-                        )
-                    }
-                }
-            )
-        },
-        content = timeline
-    )
-}
-
-@Composable
 @Preview
 private fun LoadingTootDetailsPreview() {
     MastodonteTheme {
         TootDetails(Loadable.Loading(), commentsLoadable = ListLoadable.Loading())
+    }
+}
+
+@Composable
+@Preview
+private fun LoadedTootDetailsWithoutComments() {
+    MastodonteTheme {
+        TootDetails(Loadable.Loaded(TootDetails.sample), commentsLoadable = ListLoadable.Empty())
     }
 }
 

@@ -440,7 +440,18 @@ private fun LoadingProfileDetailsPreview() {
 
 @Composable
 @Preview
-private fun LoadedProfileDetailsPreview() {
+private fun LoadedProfileDetailsWithoutTootsPreview() {
+    MastodonteTheme {
+        ProfileDetails(
+            Loadable.Loaded(ProfileDetails.sample),
+            tootPreviewsLoadable = ListLoadable.Empty()
+        )
+    }
+}
+
+@Composable
+@Preview
+private fun LoadedProfileDetailsWithTootsPreview() {
     MastodonteTheme {
         ProfileDetails(
             Loadable.Loaded(ProfileDetails.sample),

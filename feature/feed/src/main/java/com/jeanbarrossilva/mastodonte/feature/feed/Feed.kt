@@ -103,7 +103,15 @@ private fun LoadingFeedPreview() {
 
 @Composable
 @Preview
-private fun LoadedFeedPreview() {
+private fun EmptyFeedPreview() {
+    MastodonteTheme {
+        Feed(ListLoadable.Empty())
+    }
+}
+
+@Composable
+@Preview
+private fun PopulatedFeedPreview() {
     MastodonteTheme {
         Feed(TootPreview.samples.toSerializableList().toListLoadable())
     }
