@@ -27,8 +27,8 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import com.jeanbarrossilva.mastodonte.core.account.Account
-import com.jeanbarrossilva.mastodonte.core.sample.account.sample
+import com.jeanbarrossilva.mastodonte.core.feed.profile.account.Account
+import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.account.sample
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.ui.component.action.PrimaryButton
 import com.jeanbarrossilva.mastodonte.platform.ui.component.input.TextField

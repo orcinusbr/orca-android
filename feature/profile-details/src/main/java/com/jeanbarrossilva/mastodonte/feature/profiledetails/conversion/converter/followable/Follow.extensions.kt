@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.mastodonte.feature.profiledetails.conversion.converter.followable
 
-import com.jeanbarrossilva.mastodonte.core.profile.follow.Follow
+import com.jeanbarrossilva.mastodonte.core.feed.profile.type.followable.Follow
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.ProfileDetails
 
 /** Converts this [Follow] into a [ProfileDetails.Followable.Status]. **/

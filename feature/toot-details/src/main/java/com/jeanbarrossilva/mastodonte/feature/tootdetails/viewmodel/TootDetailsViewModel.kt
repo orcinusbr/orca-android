@@ -8,8 +8,8 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jeanbarrossilva.loadable.flow.loadableFlow
 import com.jeanbarrossilva.loadable.list.flow.listLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
-import com.jeanbarrossilva.mastodonte.core.toot.Toot
-import com.jeanbarrossilva.mastodonte.core.toot.TootProvider
+import com.jeanbarrossilva.mastodonte.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.mastodonte.core.feed.profile.toot.TootProvider
 import com.jeanbarrossilva.mastodonte.feature.tootdetails.TootDetails
 import com.jeanbarrossilva.mastodonte.feature.tootdetails.toTootDetails
 import com.jeanbarrossilva.mastodonte.platform.ui.core.context.share

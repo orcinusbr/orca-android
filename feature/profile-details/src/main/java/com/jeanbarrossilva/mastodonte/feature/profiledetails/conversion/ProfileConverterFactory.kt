@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.mastodonte.feature.profiledetails.conversion
 
-import com.jeanbarrossilva.mastodonte.core.profile.Profile
+import com.jeanbarrossilva.mastodonte.core.feed.profile.Profile
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.conversion.converter.DefaultProfileConverter
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.conversion.converter.EditableProfileConverter
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.conversion.converter.followable.FollowableProfileConverter

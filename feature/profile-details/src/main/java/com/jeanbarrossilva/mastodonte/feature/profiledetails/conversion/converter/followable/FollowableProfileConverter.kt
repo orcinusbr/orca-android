@@ -1,8 +1,8 @@
 package com.jeanbarrossilva.mastodonte.feature.profiledetails.conversion.converter.followable
 
-import com.jeanbarrossilva.mastodonte.core.profile.Profile
-import com.jeanbarrossilva.mastodonte.core.profile.follow.Follow
-import com.jeanbarrossilva.mastodonte.core.profile.follow.FollowableProfile
+import com.jeanbarrossilva.mastodonte.core.feed.profile.Profile
+import com.jeanbarrossilva.mastodonte.core.feed.profile.type.followable.Follow
+import com.jeanbarrossilva.mastodonte.core.feed.profile.type.followable.FollowableProfile
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.ProfileDetails
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.conversion.ProfileConverter
 import kotlinx.coroutines.CoroutineScope

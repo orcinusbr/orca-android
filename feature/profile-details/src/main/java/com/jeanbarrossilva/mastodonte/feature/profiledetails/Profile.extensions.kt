@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.mastodonte.feature.profiledetails
 
-import com.jeanbarrossilva.mastodonte.core.profile.Profile
+import com.jeanbarrossilva.mastodonte.core.feed.profile.Profile
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.conversion.ProfileConverterFactory
 import kotlinx.coroutines.CoroutineScope
 
