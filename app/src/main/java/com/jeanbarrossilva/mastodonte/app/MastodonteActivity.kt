@@ -68,7 +68,7 @@ internal open class MastodonteActivity :
 
     private fun lockByNavigatingToAuth() {
         lifecycleScope.launch {
-            get<AuthenticationLock>().lock {
+            get<AuthenticationLock>().requestLock {
                 AuthActivity.start(this@MastodonteActivity)
             }
         }

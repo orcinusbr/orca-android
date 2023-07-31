@@ -100,7 +100,7 @@ internal suspend inline fun HttpClient.authenticateAndSubmitForm(
     parameters: Parameters,
     crossinline build: HttpRequestBuilder.() -> Unit = { }
 ) {
-    authenticationLock.unlock {
+    authenticationLock.requestUnlock {
         submitForm(route, parameters) {
             bearerAuth(it.accessToken)
             build.invoke(this)
@@ -182,7 +182,7 @@ private fun ContentNegotiation.Config.setUpJsonSerialization() {
  * [Authorization][HttpHeaders.Authorization] header through the [authenticationLock].
  **/
 private suspend fun HttpMessageBuilder.authenticate() {
-    authenticationLock.unlock {
+    authenticationLock.requestUnlock {
         bearerAuth(it.accessToken)
     }
 }

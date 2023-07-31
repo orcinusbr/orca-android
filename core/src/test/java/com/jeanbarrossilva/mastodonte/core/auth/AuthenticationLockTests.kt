@@ -13,7 +13,7 @@ internal class AuthenticationLockTests {
     fun `GIVEN an unauthenticated actor WHEN locking THEN the listener is notified`() {
         var hasListenerBeenNotified = false
         runTest {
-            TestAuthenticationLock().lock {
+            TestAuthenticationLock().requestLock {
                 hasListenerBeenNotified = true
             }
         }
@@ -27,7 +27,7 @@ internal class AuthenticationLockTests {
         var hasListenerBeenNotified = false
         runTest {
             authenticator.authenticate()
-            TestAuthenticationLock(actorProvider, authenticator).lock {
+            TestAuthenticationLock(actorProvider, authenticator).requestLock {
                 hasListenerBeenNotified = true
             }
         }
@@ -39,7 +39,7 @@ internal class AuthenticationLockTests {
         var hasBeenAuthenticated = false
         val authenticator = TestAuthenticator { hasBeenAuthenticated = true }
         runTest {
-            TestAuthenticationLock(authenticator = authenticator).unlock {
+            TestAuthenticationLock(authenticator = authenticator).requestUnlock {
             }
         }
         assertTrue(hasBeenAuthenticated)
@@ -49,7 +49,7 @@ internal class AuthenticationLockTests {
     fun `GIVEN an authenticated actor WHEN unlocking THEN the listener is notified`() {
         var hasListenerBeenNotified = false
         runTest {
-            TestAuthenticationLock().lock {
+            TestAuthenticationLock().requestLock {
                 hasListenerBeenNotified = true
             }
         }
