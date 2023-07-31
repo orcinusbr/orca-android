@@ -4,10 +4,9 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Link
@@ -40,15 +39,14 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
+import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.mastodonte.core.feed.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.feed.profile.account.Account
-import com.jeanbarrossilva.mastodonte.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.core.feed.profile.type.editable.EditableProfile
 import com.jeanbarrossilva.mastodonte.core.feed.profile.type.followable.FollowableProfile
 import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.sample
-import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.toot.samples
 import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.type.editable.sample
 import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.type.followable.sample
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.conversion.converter.followable.toStatus
@@ -56,12 +54,9 @@ import com.jeanbarrossilva.mastodonte.feature.profiledetails.navigation.Backward
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.navigation.NavigationButton
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.ui.Header
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
-import com.jeanbarrossilva.mastodonte.platform.theme.extensions.plus
 import com.jeanbarrossilva.mastodonte.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.TootPreview
-import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.loadingTootPreviews
-import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.toTootPreview
 import java.io.Serializable
 import java.net.URL
 
@@ -213,7 +208,7 @@ internal fun ProfileDetails(
     modifier: Modifier = Modifier
 ) {
     val detailsLoadable by viewModel.detailsLoadableFlow.collectAsState()
-    val tootsLoadable by viewModel.tootsLoadableFlow.collectAsState()
+    val tootsLoadable by viewModel.tootPreviewsLoadableFlow.collectAsState()
 
     ProfileDetails(
         navigator,
@@ -235,7 +230,7 @@ internal fun ProfileDetails(
 private fun ProfileDetails(
     navigator: ProfileDetailsBoundary,
     detailsLoadable: Loadable<ProfileDetails>,
-    tootsLoadable: ListLoadable<Toot>,
+    tootPreviewsLoadable: ListLoadable<TootPreview>,
     onFavorite: (tootID: String) -> Unit,
     onReblog: (tootID: String) -> Unit,
     onNavigationToTootDetails: (id: String) -> Unit,
@@ -257,7 +252,7 @@ private fun ProfileDetails(
             ProfileDetails(
                 navigator,
                 detailsLoadable.content,
-                tootsLoadable,
+                tootPreviewsLoadable,
                 onFavorite,
                 onReblog,
                 onNavigationToTootDetails,
@@ -282,9 +277,11 @@ private fun ProfileDetails(
     ProfileDetails(
         title = { MediumTextualPlaceholder() },
         actions = { },
-        header = { Header() },
-        toots = { loadingTootPreviews() },
-        onNext = { },
+        timeline = {
+            Timeline {
+                Header()
+            }
+        },
         floatingActionButton = { },
         origin,
         onBottomAreaAvailabilityChangeListener,
@@ -296,7 +293,7 @@ private fun ProfileDetails(
 private fun ProfileDetails(
     navigator: ProfileDetailsBoundary,
     details: ProfileDetails,
-    tootsLoadable: ListLoadable<Toot>,
+    tootsLoadable: ListLoadable<TootPreview>,
     onFavorite: (tootID: String) -> Unit,
     onReblog: (tootID: String) -> Unit,
     onNavigationToTootDetails: (id: String) -> Unit,
@@ -360,29 +357,20 @@ private fun ProfileDetails(
                 }
             }
         },
-        header = { Header(details) },
-        toots = {
-            when (
-                @Suppress("NAME_SHADOWING")
-                val tootsLoadable = tootsLoadable
+        timeline = {
+            Timeline(
+                tootsLoadable,
+                onFavorite,
+                onReblog,
+                onShare,
+                onClick = onNavigationToTootDetails,
+                onNext,
+                Modifier.statusBarsPadding(),
+                contentPadding = it
             ) {
-                is ListLoadable.Populated ->
-                    items(tootsLoadable.content) {
-                        TootPreview(
-                            it.toTootPreview(),
-                            onFavorite = { onFavorite(it.id) },
-                            onReblog = { onReblog(it.id) },
-                            onShare = { onShare(it.url) },
-                            onClick = { onNavigationToTootDetails(it.id) }
-                        )
-                    }
-                is ListLoadable.Loading ->
-                    loadingTootPreviews()
-                is ListLoadable.Empty, is ListLoadable.Failed ->
-                    Unit
+                Header(details)
             }
         },
-        onNext,
         floatingActionButton = { details.FloatingActionButton(navigator) },
         origin,
         onBottomAreaAvailabilityChangeListener,
@@ -394,9 +382,7 @@ private fun ProfileDetails(
 private fun ProfileDetails(
     title: @Composable () -> Unit,
     actions: @Composable RowScope.() -> Unit,
-    header: @Composable () -> Unit,
-    toots: LazyListScope.() -> Unit,
-    onNext: (index: Int) -> Unit,
+    timeline: @Composable (padding: PaddingValues) -> Unit,
     floatingActionButton: @Composable () -> Unit,
     origin: BackwardsNavigationState,
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
@@ -422,18 +408,9 @@ private fun ProfileDetails(
     Box(modifier) {
         Scaffold(
             floatingActionButton = floatingActionButton,
-            floatingActionButtonPosition = FabPosition.Center
-        ) {
-            Timeline(
-                onNext,
-                Modifier.statusBarsPadding(),
-                lazyListState,
-                contentPadding = it + MastodonteTheme.overlays.fab
-            ) {
-                item { header() }
-                toots()
-            }
-        }
+            floatingActionButtonPosition = FabPosition.Center,
+            content = timeline
+        )
 
         AnimatedVisibility(
             visible = isHeaderHidden,
@@ -466,17 +443,30 @@ private fun LoadingProfileDetailsPreview() {
 private fun LoadedProfileDetailsPreview() {
     MastodonteTheme {
         ProfileDetails(
-            ProfileDetailsBoundary.empty,
-            ProfileDetails.sample,
-            ListLoadable.Populated(Toot.samples.toSerializableList()),
-            onFavorite = { },
-            onReblog = { },
-            onNavigationToTootDetails = { },
-            onNext = { },
-            BackwardsNavigationState.Unavailable,
-            onNavigateToWebpage = { },
-            onShare = { },
-            onBottomAreaAvailabilityChangeListener = OnBottomAreaAvailabilityChangeListener.empty
+            Loadable.Loaded(ProfileDetails.sample),
+            tootPreviewsLoadable = TootPreview.samples.toSerializableList().toListLoadable()
         )
     }
+}
+
+@Composable
+private fun ProfileDetails(
+    detailsLoadable: Loadable<ProfileDetails>,
+    tootPreviewsLoadable: ListLoadable<TootPreview>,
+    modifier: Modifier = Modifier
+) {
+    ProfileDetails(
+        ProfileDetailsBoundary.empty,
+        detailsLoadable,
+        tootPreviewsLoadable,
+        onFavorite = { },
+        onReblog = { },
+        onNavigationToTootDetails = { },
+        onNext = { },
+        BackwardsNavigationState.Unavailable,
+        onNavigateToWebpage = { },
+        onShare = { },
+        onBottomAreaAvailabilityChangeListener = OnBottomAreaAvailabilityChangeListener.empty,
+        modifier
+    )
 }
