@@ -58,14 +58,7 @@ data class MastodonProfileEntity internal constructor(
         MastodonFollowableProfile<Follow> {
         val account = Account.of(account)
         val avatarURL = URL(avatarURL)
-        val follow = when (follow) {
-            Follow.Public.unfollowed().toString() -> Follow.Public.unfollowed()
-            Follow.Public.following().toString() -> Follow.Public.following()
-            Follow.Private.unfollowed().toString() -> Follow.Private.unfollowed()
-            Follow.Private.requested().toString() -> Follow.Private.requested()
-            Follow.Private.following().toString() -> Follow.Private.following()
-            else -> throw IllegalStateException("No Follow matches \"$follow\".")
-        }
+        val follow = Follow.of(checkNotNull(follow))
         val url = URL(url)
         return MastodonFollowableProfile(
             tootPaginateSource,
