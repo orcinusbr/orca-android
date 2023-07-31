@@ -37,7 +37,7 @@ data class MastodonProfileEntity internal constructor(
     }
 
     private fun toMastodonEditableProfile(tootPaginateSource: TootPaginateSource):
-            MastodonEditableProfile {
+        MastodonEditableProfile {
         val account = Account.of(account)
         val avatarURL = URL(avatarURL)
         val url = URL(url)
@@ -55,7 +55,7 @@ data class MastodonProfileEntity internal constructor(
     }
 
     private fun toMastodonFollowableProfile(tootPaginateSource: TootPaginateSource):
-            MastodonFollowableProfile<Follow> {
+        MastodonFollowableProfile<Follow> {
         val account = Account.of(account)
         val avatarURL = URL(avatarURL)
         val follow = when (follow) {

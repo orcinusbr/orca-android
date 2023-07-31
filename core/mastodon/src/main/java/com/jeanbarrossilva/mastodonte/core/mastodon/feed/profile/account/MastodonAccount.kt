@@ -70,7 +70,7 @@ internal data class MastodonAccount(
     }
 
     private suspend fun toFollowableProfile(tootPaginateSource: TootPaginateSource):
-            MastodonFollowableProfile<Follow> {
+        MastodonFollowableProfile<Follow> {
         val account = toAccount()
         val avatarURL = URL(avatar)
         val url = URL(url)
