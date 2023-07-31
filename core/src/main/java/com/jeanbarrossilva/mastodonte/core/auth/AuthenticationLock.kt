@@ -6,11 +6,11 @@ import com.jeanbarrossilva.mastodonte.core.auth.actor.ActorProvider
 /**
  * Ensures that an operation is only performed either by...
  *
- * - ...an [unauthenticated][Actor.Unauthenticated] [Actor], through [lock];
- * - ...an [authenticated][Actor.Authenticated] [Actor], through [unlock].
+ * - ...an [unauthenticated][Actor.Unauthenticated] [Actor], through [requestLock];
+ * - ...an [authenticated][Actor.Authenticated] [Actor], through [requestUnlock].
  *
- * @param authenticator [Authenticator] through which the [Actor] will be authenticated if it isn't
- * and [unlock] is called.
+ * @param authenticator [Authenticator] through which the [Actor] will be requested to be either
+ * [authenticated][Actor.Authenticated] or [unauthenticated][Actor.Unauthenticated].
  * @param actorProvider [ActorProvider] whose provided [Actor] will be ensured to be either
  * [unauthenticated][Actor.Unauthenticated] or [authenticated][Actor.Authenticated].
  **/
@@ -55,7 +55,7 @@ class AuthenticationLock(
      * @param listener [OnLockListener] to be notified if the [Actor] is
      * [unauthenticated][Actor.Unauthenticated].
      **/
-    suspend fun lock(listener: OnLockListener) {
+    suspend fun requestLock(listener: OnLockListener) {
         val actor = actorProvider.provide()
         if (actor is Actor.Unauthenticated) {
             listener.onLock(actor)
@@ -73,7 +73,7 @@ class AuthenticationLock(
      * @return Result of the [listener]'s [onUnlock][OnUnlockListener.onUnlock].
      * @throws FailedAuthenticationException If authentication fails.
      **/
-    suspend fun <T> unlock(listener: OnUnlockListener<T>): T {
+    suspend fun <T> requestUnlock(listener: OnUnlockListener<T>): T {
         return when (val actor = actorProvider.provide()) {
             is Actor.Unauthenticated -> authenticateAndNotify(listener)
             is Actor.Authenticated -> listener.onUnlock(actor)
