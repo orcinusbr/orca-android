@@ -30,7 +30,7 @@ class AuthenticationLock(
          *
          * @param actor Provided [unauthenticated][Actor.Unauthenticated] [Actor].
          **/
-        fun onLock(actor: Actor.Unauthenticated)
+        suspend fun onLock(actor: Actor.Unauthenticated)
     }
 
     /**
