@@ -1,5 +1,6 @@
-package com.jeanbarrossilva.orca.core.feed.profile
+package com.jeanbarrossilva.orca.core.feed.profile.search
 
+import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow

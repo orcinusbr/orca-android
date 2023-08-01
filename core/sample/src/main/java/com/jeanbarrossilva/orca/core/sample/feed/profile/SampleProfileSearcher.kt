@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.orca.core.sample.feed.profile
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
-import com.jeanbarrossilva.orca.core.feed.profile.ProfileSearcher
+import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

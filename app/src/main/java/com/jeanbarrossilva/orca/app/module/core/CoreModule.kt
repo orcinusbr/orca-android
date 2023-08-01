@@ -6,7 +6,7 @@ import com.jeanbarrossilva.orca.core.auth.Authenticator
 import com.jeanbarrossilva.orca.core.auth.Authorizer
 import com.jeanbarrossilva.orca.core.feed.FeedProvider
 import com.jeanbarrossilva.orca.core.feed.profile.ProfileProvider
-import com.jeanbarrossilva.orca.core.feed.profile.ProfileSearcher
+import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearcher
 import com.jeanbarrossilva.orca.core.feed.profile.toot.TootProvider
 import com.jeanbarrossilva.orca.core.mastodon.MastodonDatabase
 import com.jeanbarrossilva.orca.core.mastodon.auth.authentication.MastodonAuthenticator
