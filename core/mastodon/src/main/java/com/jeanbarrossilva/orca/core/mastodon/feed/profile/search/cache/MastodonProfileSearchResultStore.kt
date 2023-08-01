@@ -35,7 +35,7 @@ typealias MastodonProfileSearchResultsStore = Store<String, List<ProfileSearchRe
  * [Store] that manages requests to retrieve [ProfileSearchResult]s.
  *
  * @param tootPaginateSource [TootPaginateSource] with which the underlying structures will be
-  created.
+ * created.
  * @param entityDao [ProfileSearchResultEntityDao] with which a
  * [MastodonProfileSearchResultsSourceOfTruth] will be created.
  **/
