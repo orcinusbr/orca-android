@@ -6,6 +6,7 @@ import com.dropbox.android.external.store4.SourceOfTruth
 import com.dropbox.android.external.store4.Store
 import com.dropbox.android.external.store4.StoreBuilder
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
+import com.jeanbarrossilva.orca.core.mastodon.Mastodon
 import com.jeanbarrossilva.orca.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.account.MastodonAccount
@@ -15,7 +16,6 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.persistence.ent
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.status.TootPaginateSource
 import io.ktor.client.call.body
 import java.util.Optional
-import kotlin.time.Duration.Companion.minutes
 import kotlin.time.ExperimentalTime
 
 /** [MastodonProfileStore]'s [Fetcher]. **/
@@ -44,7 +44,7 @@ fun MastodonProfileStore(
     val sourceOfTruth = MastodonProfileSourceOfTruth(tootPaginateSource, entityDao)
     val memoryPolicy = MemoryPolicy
         .MemoryPolicyBuilder<String, Optional<Profile>>()
-        .setExpireAfterWrite(1.minutes)
+        .setExpireAfterWrite(Mastodon.cacheExpirationTime)
         .build()
     return StoreBuilder.from(fetcher, sourceOfTruth).cachePolicy(memoryPolicy).build()
 }

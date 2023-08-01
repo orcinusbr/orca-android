@@ -74,6 +74,7 @@ dependencies {
     implementation(Dependencies.KTOR_CONTENT_NEGOTIATION)
     implementation(Dependencies.KTOR_CORE)
     implementation(Dependencies.KTOR_SERIALIZATION_KOTLINX_JSON)
+    implementation(Dependencies.LOADABLE_LIST)
     implementation(Dependencies.VIEWMODEL)
 
     ksp(Plugins.ROOM)
