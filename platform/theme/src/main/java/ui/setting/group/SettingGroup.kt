@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.theme.ui.setting.group
+package com.jeanbarrossilva.orca.platform.theme.ui.setting.group
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
@@ -13,11 +13,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
-import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
-import com.jeanbarrossilva.mastodonte.platform.theme.extensions.forwardsNavigationArrow
-import com.jeanbarrossilva.mastodonte.platform.theme.extensions.reversed
-import com.jeanbarrossilva.mastodonte.platform.theme.ui.setting.Setting
-import com.jeanbarrossilva.mastodonte.platform.theme.ui.setting.SettingDefaults
+import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.extensions.forwardsNavigationArrow
+import com.jeanbarrossilva.orca.platform.theme.extensions.reversed
+import com.jeanbarrossilva.orca.platform.theme.ui.setting.Setting
+import com.jeanbarrossilva.orca.platform.theme.ui.setting.SettingDefaults
 
 /**
  * [Setting] that holds various other [Setting]s that are related to it.
@@ -75,7 +75,7 @@ fun SettingGroup(
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun SettingGroupPreview() {
-    MastodonteTheme {
+    OrcaTheme {
         SettingGroup(
             text = { Text("Expand") },
             isExpanded = true,
@@ -89,7 +89,7 @@ private fun SettingGroupPreview() {
                     text = { Text("#$index") },
                     action = {
                         Icon(
-                            MastodonteTheme.Icons.forwardsNavigationArrow,
+                            OrcaTheme.Icons.forwardsNavigationArrow,
                             contentDescription = "Navigate"
                         )
                     },

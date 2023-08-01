@@ -7,10 +7,10 @@ android {
     @Suppress("SpellCheckingInspection")
     namespace = Metadata.namespace("feature.tootdetails")
 
-    compileSdk = Versions.Mastodonte.SDK_COMPILE
+    compileSdk = Versions.Orca.SDK_COMPILE
 
     defaultConfig {
-        minSdk = Versions.Mastodonte.SDK_MIN
+        minSdk = Versions.Orca.SDK_MIN
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }

@@ -1,9 +1,9 @@
-package com.jeanbarrossilva.mastodonte.platform.theme.ui.setting.group
+package com.jeanbarrossilva.orca.platform.theme.ui.setting.group
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.jeanbarrossilva.mastodonte.platform.theme.ui.setting.Setting
+import com.jeanbarrossilva.orca.platform.theme.ui.setting.Setting
 import java.util.Objects
 
 /**

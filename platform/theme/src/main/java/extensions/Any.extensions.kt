@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.theme.extensions
+package com.jeanbarrossilva.orca.platform.theme.extensions
 
 /**
  * Returns the result of the given [transform] if the [condition] is `true`; otherwise, returns the

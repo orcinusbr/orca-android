@@ -1,4 +1,4 @@
-rootProject.name = "Mastodonte"
+rootProject.name = "Orca"
 include(
     ":app",
     ":core",

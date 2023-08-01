@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.theme.extensions
+package com.jeanbarrossilva.orca.platform.theme.extensions
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding

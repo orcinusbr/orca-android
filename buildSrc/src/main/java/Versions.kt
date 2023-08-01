@@ -42,7 +42,7 @@ object Versions {
 
     val java = JavaVersion.VERSION_17
 
-    object Mastodonte {
+    object Orca {
         const val CODE = 1
         const val NAME = "1.0.0"
         const val SDK_COMPILE = 33

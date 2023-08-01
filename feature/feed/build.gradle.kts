@@ -5,10 +5,10 @@ plugins {
 
 android {
     namespace = Metadata.namespace("feature.feed")
-    compileSdk = Versions.Mastodonte.SDK_COMPILE
+    compileSdk = Versions.Orca.SDK_COMPILE
 
     defaultConfig {
-        minSdk = Versions.Mastodonte.SDK_MIN
+        minSdk = Versions.Orca.SDK_MIN
         consumerProguardFiles("consumer-rules.pro")
     }
 

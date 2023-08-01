@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.theme.reactivity
+package com.jeanbarrossilva.orca.platform.theme.reactivity
 
 /**
  * Listens to changes on the availability of the utmost bottom portion of the displayed content.

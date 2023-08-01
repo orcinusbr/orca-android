@@ -1,10 +1,10 @@
-package com.jeanbarrossilva.mastodonte.platform.theme.extensions
+package com.jeanbarrossilva.orca.platform.theme.extensions
 
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import com.jeanbarrossilva.mastodonte.platform.theme.R
+import com.jeanbarrossilva.orca.platform.theme.R
 
 /** [FontFamily] of the Rubik typeface. **/
 internal val FontFamily.Companion.Rubik
