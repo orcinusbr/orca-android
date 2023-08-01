@@ -70,10 +70,7 @@ internal fun Feed(
             )
         },
         floatingActionButton = {
-            if (
-                tootPreviewsLoadable is ListLoadable.Empty ||
-                tootPreviewsLoadable is ListLoadable.Populated
-            ) {
+            if (tootPreviewsLoadable.isLoaded) {
                 FloatingActionButton(onClick = onComposition) {
                     Icon(MastodonteTheme.Icons.Create, contentDescription = "Compose")
                 }
