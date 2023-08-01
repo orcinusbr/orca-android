@@ -13,8 +13,8 @@ import com.jeanbarrossilva.orca.core.mastodon.auth.authentication.MastodonAuthen
 import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.MastodonAuthorizer
 import com.jeanbarrossilva.orca.core.mastodon.feed.MastodonFeedProvider
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfileProvider
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfileSearcher
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.MastodonProfileStore
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.MastodonProfileSearcher
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonTootProvider
 import com.jeanbarrossilva.orca.core.sharedpreferences.actor.SharedPreferencesActorProvider
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
