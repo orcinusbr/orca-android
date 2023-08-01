@@ -5,7 +5,7 @@ import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.sample.auth.SampleAuthenticator
 import com.jeanbarrossilva.orca.core.sample.feed.SampleFeedProvider
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileProvider
-import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileSearcher
+import com.jeanbarrossilva.orca.core.sample.feed.profile.search.SampleProfileSearcher
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.SampleTootProvider
 import com.jeanbarrossilva.orca.core.test.TestActorProvider
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
