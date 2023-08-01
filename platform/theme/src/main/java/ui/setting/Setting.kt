@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.theme.ui.setting
+package com.jeanbarrossilva.orca.platform.theme.ui.setting
 
 import android.content.res.Configuration
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -26,10 +26,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
-import com.jeanbarrossilva.mastodonte.platform.theme.extensions.EmptyMutableInteractionSource
-import com.jeanbarrossilva.mastodonte.platform.theme.extensions.forwardsNavigationArrow
-import com.jeanbarrossilva.mastodonte.platform.theme.extensions.`if`
+import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.extensions.EmptyMutableInteractionSource
+import com.jeanbarrossilva.orca.platform.theme.extensions.forwardsNavigationArrow
+import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
 
 /** Default values of a [Setting]. **/
 internal object SettingDefaults {
@@ -57,7 +57,7 @@ fun Setting(
     action: @Composable () -> Unit,
     onClick: (() -> Unit)?,
     modifier: Modifier = Modifier,
-    containerColor: Color = MastodonteTheme.colorScheme.surfaceVariant,
+    containerColor: Color = OrcaTheme.colorScheme.surfaceVariant,
     label: (@Composable () -> Unit)? = null,
     shape: Shape = SettingDefaults.shape
 ) {
@@ -72,7 +72,7 @@ fun Setting(
         modifier,
         shape = shape,
         colors = ButtonDefaults.buttonColors(containerColor, contentColor),
-        contentPadding = PaddingValues(MastodonteTheme.spacings.medium),
+        contentPadding = PaddingValues(OrcaTheme.spacings.medium),
         interactionSource = interactionSource
     ) {
         ProvideTextStyle(textStyle.copy(color = contentColor)) {
@@ -82,7 +82,7 @@ fun Setting(
                 Alignment.CenterVertically
             ) {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(MastodonteTheme.spacings.extraSmall)
+                    verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall)
                 ) {
                     ProvideTextStyle(
                         LocalTextStyle.current.`if`(label != null) {
@@ -98,7 +98,7 @@ fun Setting(
                     )
                 }
 
-                Spacer(Modifier.width(MastodonteTheme.spacings.medium))
+                Spacer(Modifier.width(OrcaTheme.spacings.medium))
                 action()
             }
         }
@@ -110,7 +110,7 @@ fun Setting(
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun UnlabeledSettingPreview() {
-    MastodonteTheme {
+    OrcaTheme {
         Setting(label = null)
     }
 }
@@ -120,7 +120,7 @@ private fun UnlabeledSettingPreview() {
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LabeledSettingPreview() {
-    MastodonteTheme {
+    OrcaTheme {
         Setting(label = { Text("Label") })
     }
 }
@@ -135,7 +135,7 @@ private fun Setting(label: (@Composable () -> Unit)?, modifier: Modifier = Modif
     Setting(
         text = { Text("Setting") },
         action = {
-            Icon(MastodonteTheme.Icons.forwardsNavigationArrow, contentDescription = "Navigate")
+            Icon(OrcaTheme.Icons.forwardsNavigationArrow, contentDescription = "Navigate")
         },
         onClick = { },
         modifier,

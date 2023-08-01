@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.theme.configuration
+package com.jeanbarrossilva.orca.platform.theme.configuration
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.CompositionLocal

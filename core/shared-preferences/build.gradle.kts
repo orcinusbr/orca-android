@@ -6,10 +6,10 @@ plugins {
 
 android {
     namespace = Metadata.namespace("core.sharedpreferences")
-    compileSdk = Versions.Mastodonte.SDK_TARGET
+    compileSdk = Versions.Orca.SDK_TARGET
 
     defaultConfig {
-        minSdk = Versions.Mastodonte.SDK_MIN
+        minSdk = Versions.Orca.SDK_MIN
         consumerProguardFiles("consumer-rules.pro")
     }
 

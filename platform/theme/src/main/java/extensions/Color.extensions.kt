@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.theme.extensions
+package com.jeanbarrossilva.orca.platform.theme.extensions
 
 import android.content.res.TypedArray
 import android.util.TypedValue

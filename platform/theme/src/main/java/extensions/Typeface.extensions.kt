@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.theme.extensions
+package com.jeanbarrossilva.orca.platform.theme.extensions
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

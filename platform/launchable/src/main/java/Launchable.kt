@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.mastodonte.platform.launchable
+package com.jeanbarrossilva.orca.platform.launchable
 
 import android.app.Application
 import android.content.Context

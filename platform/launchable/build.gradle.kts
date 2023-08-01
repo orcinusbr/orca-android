@@ -5,10 +5,10 @@ plugins {
 
 android {
     namespace = Metadata.namespace("platform.launchable")
-    compileSdk = Versions.Mastodonte.SDK_TARGET
+    compileSdk = Versions.Orca.SDK_TARGET
 
     defaultConfig {
-        minSdk = Versions.Mastodonte.SDK_MIN
+        minSdk = Versions.Orca.SDK_MIN
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }

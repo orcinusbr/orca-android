@@ -6,15 +6,15 @@ plugins {
 
 android {
     namespace = Metadata.namespace("app")
-    compileSdk = Versions.Mastodonte.SDK_COMPILE
+    compileSdk = Versions.Orca.SDK_COMPILE
     flavorDimensions += Dimensions.VERSION
 
     defaultConfig {
         applicationId = Metadata.GROUP
-        minSdk = Versions.Mastodonte.SDK_MIN
-        targetSdk = Versions.Mastodonte.SDK_TARGET
-        versionCode = Versions.Mastodonte.CODE
-        versionName = Versions.Mastodonte.NAME
+        minSdk = Versions.Orca.SDK_MIN
+        targetSdk = Versions.Orca.SDK_TARGET
+        versionCode = Versions.Orca.CODE
+        versionName = Versions.Orca.NAME
     }
 
     buildTypes {

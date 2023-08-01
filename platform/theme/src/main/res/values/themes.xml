@@ -1,5 +1,5 @@
 <resources>
-    <style name="Theme.Mastodonte" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.Orca" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:colorBackground">@android:color/black</item>
         <item name="android:colorControlNormal">@android:color/white</item>
         <item name="android:fontFamily">@font/rubik</item>
@@ -21,19 +21,19 @@
         <item name="colorOnSurfaceVariant">#F5F5F5</item>
         <item name="colorOutline">?android:attr/textColorTertiary</item>
         <item name="colorOutlineVariant">#1A1A1A</item>
-        <item name="textAppearanceBodyLarge">@style/Theme.Mastodonte.Typography.BodyLarge</item>
-        <item name="textAppearanceBodyMedium">@style/Theme.Mastodonte.Typography.BodyMedium</item>
-        <item name="textAppearanceBodySmall">@style/Theme.Mastodonte.Typography.BodySmall</item>
+        <item name="textAppearanceBodyLarge">@style/Theme.Orca.Typography.BodyLarge</item>
+        <item name="textAppearanceBodyMedium">@style/Theme.Orca.Typography.BodyMedium</item>
+        <item name="textAppearanceBodySmall">@style/Theme.Orca.Typography.BodySmall</item>
         <item name="textAppearanceDisplayLarge">
-            @style/Theme.Mastodonte.Typography.DisplayLarge
+            @style/Theme.Orca.Typography.DisplayLarge
         </item>
         <item name="textAppearanceHeadlineLarge">
-            @style/Theme.Mastodonte.Typography.HeadlineLarge
+            @style/Theme.Orca.Typography.HeadlineLarge
         </item>
         <item name="textAppearanceHeadlineMedium">
-            @style/Theme.Mastodonte.Typography.HeadlineMedium
+            @style/Theme.Orca.Typography.HeadlineMedium
         </item>
-        <item name="textAppearanceTitleLarge">@style/Theme.Mastodonte.Typography.TitleLarge</item>
-        <item name="textAppearanceTitleSmall">@style/Theme.Mastodonte.Typography.TitleSmall</item>
+        <item name="textAppearanceTitleLarge">@style/Theme.Orca.Typography.TitleLarge</item>
+        <item name="textAppearanceTitleSmall">@style/Theme.Orca.Typography.TitleSmall</item>
     </style>
 </resources>
