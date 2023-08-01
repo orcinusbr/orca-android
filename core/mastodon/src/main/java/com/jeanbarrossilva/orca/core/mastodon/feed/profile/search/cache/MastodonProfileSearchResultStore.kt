@@ -20,16 +20,16 @@ import io.ktor.client.call.body
 import io.ktor.client.request.parameter
 import kotlin.time.ExperimentalTime
 
-/** [MastodonProfileSearchResultsStore]'s [Fetcher]. **/
-private typealias MastodonProfileSearchResultsFetcher =
+/** [ProfileSearchResultsStore]'s [Fetcher]. **/
+private typealias ProfileSearchResultsFetcher =
     Fetcher<String, List<ProfileSearchResultEntity>>
 
-/** [MastodonProfileSearchResultsStore]'s [SourceOfTruth]. **/
-private typealias MastodonProfileSearchResultsSourceOfTruth =
+/** [ProfileSearchResultsStore]'s [SourceOfTruth]. **/
+private typealias ProfileSearchResultsSourceOfTruth =
     SourceOfTruth<String, List<ProfileSearchResultEntity>, List<ProfileSearchResult>>
 
 /** [Store] for [ProfileSearchResult]s. **/
-typealias MastodonProfileSearchResultsStore = Store<String, List<ProfileSearchResult>>
+typealias ProfileSearchResultsStore = Store<String, List<ProfileSearchResult>>
 
 /**
  * [Store] that manages requests to retrieve [ProfileSearchResult]s.
@@ -37,15 +37,15 @@ typealias MastodonProfileSearchResultsStore = Store<String, List<ProfileSearchRe
  * @param tootPaginateSource [TootPaginateSource] with which the underlying structures will be
  * created.
  * @param entityDao [ProfileSearchResultEntityDao] with which a
- * [MastodonProfileSearchResultsSourceOfTruth] will be created.
+ * [ProfileSearchResultsSourceOfTruth] will be created.
  **/
 @OptIn(ExperimentalTime::class)
-fun MastodonProfileSearchResultsStore(
+fun ProfileSearchResultsStore(
     tootPaginateSource: TootPaginateSource,
     entityDao: ProfileSearchResultEntityDao
-): MastodonProfileSearchResultsStore {
-    val fetcher = MastodonProfileSearchResultsFetcher(tootPaginateSource)
-    val sourceOfTruth = MastodonProfileSearchResultsSourceOfTruth(entityDao)
+): ProfileSearchResultsStore {
+    val fetcher = ProfileSearchResultsFetcher(tootPaginateSource)
+    val sourceOfTruth = ProfileSearchResultsSourceOfTruth(entityDao)
     val memoryPolicy = MemoryPolicy
         .MemoryPolicyBuilder<String, List<ProfileSearchResult>>()
         .setExpireAfterWrite(Mastodon.cacheExpirationTime)
@@ -61,8 +61,8 @@ fun MastodonProfileSearchResultsStore(
  *
  * @see ProfileSearchResultEntity
  **/
-private fun MastodonProfileSearchResultsFetcher(tootPaginateSource: TootPaginateSource):
-    MastodonProfileSearchResultsFetcher {
+private fun ProfileSearchResultsFetcher(tootPaginateSource: TootPaginateSource):
+    ProfileSearchResultsFetcher {
     return Fetcher.of { query ->
         MastodonHttpClient
             .authenticateAndGet("/api/v1/accounts/search") { parameter("q", query) }
@@ -83,8 +83,8 @@ private fun MastodonProfileSearchResultsFetcher(tootPaginateSource: TootPaginate
  * performed.
  * @see ProfileSearchResultEntity.toProfileSearchResult
  **/
-private fun MastodonProfileSearchResultsSourceOfTruth(entityDao: ProfileSearchResultEntityDao):
-    MastodonProfileSearchResultsSourceOfTruth {
+private fun ProfileSearchResultsSourceOfTruth(entityDao: ProfileSearchResultEntityDao):
+    ProfileSearchResultsSourceOfTruth {
     return SourceOfTruth.of(
         reader = { entityDao.selectByQuery(it).mapToProfileSearchResults() },
         writer = { _, entities -> entityDao.insert(entities) },

@@ -15,7 +15,7 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.MastodonFeedProvider
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfileProvider
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.MastodonProfileStore
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.MastodonProfileSearcher
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.MastodonProfileSearchResultsStore
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.ProfileSearchResultsStore
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonTootProvider
 import com.jeanbarrossilva.orca.core.sharedpreferences.actor.SharedPreferencesActorProvider
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
@@ -36,7 +36,7 @@ internal fun MainCoreModule(
     val database = MastodonDatabase.getInstance(context)
     val profileStore = MastodonProfileStore(tootPaginateSource, database.profileEntityDao)
     val profileSearchResultsStore =
-        MastodonProfileSearchResultsStore(tootPaginateSource, database.profileSearchResultEntityDao)
+        ProfileSearchResultsStore(tootPaginateSource, database.profileSearchResultEntityDao)
     return CoreModule(
         { MastodonAuthorizer(androidContext()) },
         { MastodonAuthenticator(context, authorizer = get(), actorProvider) },
