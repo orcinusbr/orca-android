@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.emptyFlow
 
-/** Searches for profiles through [onSearch]. **/
+/** Searches for profiles through [search]. **/
 abstract class ProfileSearcher {
     /**
      * Searches for profiles that match the [query].
