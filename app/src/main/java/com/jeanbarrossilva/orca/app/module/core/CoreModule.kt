@@ -6,12 +6,14 @@ import com.jeanbarrossilva.orca.core.auth.Authenticator
 import com.jeanbarrossilva.orca.core.auth.Authorizer
 import com.jeanbarrossilva.orca.core.feed.FeedProvider
 import com.jeanbarrossilva.orca.core.feed.profile.ProfileProvider
+import com.jeanbarrossilva.orca.core.feed.profile.ProfileSearcher
 import com.jeanbarrossilva.orca.core.feed.profile.toot.TootProvider
 import com.jeanbarrossilva.orca.core.mastodon.MastodonDatabase
 import com.jeanbarrossilva.orca.core.mastodon.auth.authentication.MastodonAuthenticator
 import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.MastodonAuthorizer
 import com.jeanbarrossilva.orca.core.mastodon.feed.MastodonFeedProvider
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfileProvider
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfileSearcher
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.MastodonProfileStore
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonTootProvider
 import com.jeanbarrossilva.orca.core.sharedpreferences.actor.SharedPreferencesActorProvider
@@ -38,6 +40,7 @@ internal fun MainCoreModule(
         { AuthenticationLock(authenticator = get(), actorProvider) },
         { MastodonFeedProvider(actorProvider, tootPaginateSource) },
         { MastodonProfileProvider(profileStore) },
+        { MastodonProfileSearcher(tootPaginateSource) },
         { MastodonTootProvider() }
     ) {
         onBottomAreaAvailabilityChangeListener
@@ -50,6 +53,7 @@ internal fun CoreModule(
     authenticationLock: Definition<AuthenticationLock>,
     feedProvider: Definition<FeedProvider>,
     profileProvider: Definition<ProfileProvider>,
+    profileSearcher: Definition<ProfileSearcher>,
     tootProvider: Definition<TootProvider>,
     onBottomAreaAvailabilityChangeListener: Definition<OnBottomAreaAvailabilityChangeListener>
 ): Module {
@@ -59,6 +63,7 @@ internal fun CoreModule(
         authenticationLock,
         feedProvider,
         profileProvider,
+        profileSearcher,
         tootProvider,
         onBottomAreaAvailabilityChangeListener
     )
@@ -71,6 +76,7 @@ private inline fun <reified A1 : Authorizer, reified A2 : Authenticator> CoreMod
     noinline authenticationLock: Definition<AuthenticationLock>,
     noinline feedProvider: Definition<FeedProvider>,
     noinline profileProvider: Definition<ProfileProvider>,
+    noinline profileSearcher: Definition<ProfileSearcher>,
     noinline tootProvider: Definition<TootProvider>,
     noinline onBottomAreaAvailabilityChangeListener: Definition<OnBottomAreaAvailabilityChangeListener> // ktlint-disable max-line-length parameter-wrapping
 ): Module {
@@ -80,6 +86,7 @@ private inline fun <reified A1 : Authorizer, reified A2 : Authenticator> CoreMod
         single(definition = authenticationLock)
         single(definition = feedProvider)
         single(definition = profileProvider)
+        single(definition = profileSearcher)
         single(definition = tootProvider)
         single(definition = onBottomAreaAvailabilityChangeListener)
     }
