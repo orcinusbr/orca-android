@@ -10,12 +10,14 @@ import java.net.URL
  * @param account Unique identifier within an instance.
  * @param avatarURL [URL] that leads to the avatar image.
  * @param name Name to be displayed.
+ * @param url [URL] that leads to the profile.
  **/
 data class ProfileSearchResult(
     val id: String,
     val account: Account,
     val avatarURL: URL,
-    val name: String
+    val name: String,
+    val url: URL
 ) {
     companion object
 }

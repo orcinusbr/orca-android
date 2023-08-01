@@ -10,5 +10,6 @@ val ProfileSearchResult.Companion.sample
         Author.sample.id,
         Author.sample.account,
         Author.sample.avatarURL,
-        Author.sample.name
+        Author.sample.name,
+        Author.sample.profileURL
     )
