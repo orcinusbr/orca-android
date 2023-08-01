@@ -61,7 +61,7 @@ fun MastodonProfileSearchResultsStore(
  *
  * @see ProfileSearchResultEntity
  **/
-fun MastodonProfileSearchResultsFetcher(tootPaginateSource: TootPaginateSource):
+private fun MastodonProfileSearchResultsFetcher(tootPaginateSource: TootPaginateSource):
     MastodonProfileSearchResultsFetcher {
     return Fetcher.of { query ->
         MastodonHttpClient
