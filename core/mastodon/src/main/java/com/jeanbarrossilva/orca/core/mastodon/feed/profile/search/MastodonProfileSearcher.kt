@@ -1,26 +1,23 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.search
 
+import com.dropbox.android.external.store4.get
+import com.jeanbarrossilva.loadable.Loadable
+import com.jeanbarrossilva.loadable.flow.loadableFlow
+import com.jeanbarrossilva.loadable.flow.unwrap
+import com.jeanbarrossilva.loadable.list.SerializableList
+import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearcher
-import com.jeanbarrossilva.orca.core.feed.profile.search.toProfileSearchResult
-import com.jeanbarrossilva.orca.core.mastodon.client.MastodonHttpClient
-import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndGet
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.account.MastodonAccount
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.status.TootPaginateSource
-import io.ktor.client.call.body
-import io.ktor.client.request.parameter
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.MastodonProfileSearchResultsStore
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
-class MastodonProfileSearcher(private val tootPaginateSource: TootPaginateSource) :
+class MastodonProfileSearcher(private val store: MastodonProfileSearchResultsStore) :
     ProfileSearcher() {
+    private val searchResultsFlow = loadableFlow<SerializableList<ProfileSearchResult>>()
+
     override suspend fun onSearch(query: String): Flow<List<ProfileSearchResult>> {
-        return flow {
-            MastodonHttpClient
-                .authenticateAndGet("/api/v1/accounts/search") { parameter("q", query) }
-                .body<List<MastodonAccount>>()
-                .map { it.toProfile(tootPaginateSource).toProfileSearchResult() }
-                .also { emit(it) }
-        }
+        val searchResults = store.get(query).toSerializableList()
+        searchResultsFlow.value = Loadable.Loaded(searchResults)
+        return searchResultsFlow.unwrap()
     }
 }

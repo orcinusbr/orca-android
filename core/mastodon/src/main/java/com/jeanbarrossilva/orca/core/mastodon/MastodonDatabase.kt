@@ -6,10 +6,12 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.persistence.MastodonProfileEntityDao
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.persistence.entity.MastodonProfileEntity
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.persistence.ProfileSearchResultEntityDao
 
 @Database(entities = [MastodonProfileEntity::class], version = 1)
 abstract class MastodonDatabase internal constructor() : RoomDatabase() {
     abstract val profileEntityDao: MastodonProfileEntityDao
+    abstract val profileSearchResultEntityDao: ProfileSearchResultEntityDao
 
     companion object {
         private lateinit var instance: MastodonDatabase

@@ -2,6 +2,7 @@ package com.jeanbarrossilva.orca.core.mastodon
 
 import io.ktor.client.request.HttpRequest
 import io.ktor.http.Url
+import kotlin.time.Duration.Companion.minutes
 
 /** Mastodon-API-related keys and configurations. **/
 internal object Mastodon {
@@ -18,6 +19,9 @@ internal object Mastodon {
 
     /** [Url] to which [HttpRequest] routes will be concatenated. **/
     val baseUrl = Url("https://mastodon.social")
+
+    /** Amount of time for the stored cache to be considered valid. **/
+    val cacheExpirationTime = 1.minutes
 
     /** Denotes the site through which scopes are being provided. **/
     enum class ScopeProvisionSite {
