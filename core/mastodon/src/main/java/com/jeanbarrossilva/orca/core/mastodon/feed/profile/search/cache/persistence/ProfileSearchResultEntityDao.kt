@@ -8,7 +8,7 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.persiste
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-abstract class ProfileSearchResultEntityDao {
+abstract class ProfileSearchResultEntityDao internal constructor() {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     internal abstract suspend fun insert(entities: List<ProfileSearchResultEntity>)
 
