@@ -61,6 +61,8 @@ import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.TootPr
 import java.io.Serializable
 import java.net.URL
 
+internal const val PROFILE_DETAILS_TOP_BAR_TAG = "profile-details-top-bar"
+
 internal sealed class ProfileDetails : Serializable {
     protected abstract val account: Account
 
@@ -228,6 +230,28 @@ internal fun ProfileDetails(
 }
 
 @Composable
+internal fun ProfileDetails(
+    detailsLoadable: Loadable<ProfileDetails>,
+    tootPreviewsLoadable: ListLoadable<TootPreview>,
+    modifier: Modifier = Modifier
+) {
+    ProfileDetails(
+        ProfileDetailsBoundary.empty,
+        detailsLoadable,
+        tootPreviewsLoadable,
+        onFavorite = { },
+        onReblog = { },
+        onNavigationToTootDetails = { },
+        onNext = { },
+        BackwardsNavigationState.Unavailable,
+        onNavigateToWebpage = { },
+        onShare = { },
+        onBottomAreaAvailabilityChangeListener = OnBottomAreaAvailabilityChangeListener.empty,
+        modifier
+    )
+}
+
+@Composable
 private fun ProfileDetails(
     navigator: ProfileDetailsBoundary,
     detailsLoadable: Loadable<ProfileDetails>,
@@ -370,6 +394,7 @@ private fun ProfileDetails(
                 onClick = onNavigationToTootDetails,
                 onNext,
                 Modifier.statusBarsPadding(),
+                timelineState,
                 contentPadding = it
             ) {
                 Header(details)
@@ -424,8 +449,9 @@ private fun ProfileDetails(
             @OptIn(ExperimentalMaterial3Api::class)
             CenterAlignedTopAppBar(
                 title = title,
+                Modifier.testTag(PROFILE_DETAILS_TOP_BAR_TAG),
                 navigationIcon = { origin.NavigationButton() },
-                actions = actions
+                actions
             )
         }
     }
@@ -462,26 +488,4 @@ private fun LoadedProfileDetailsWithTootsPreview() {
             tootPreviewsLoadable = TootPreview.samples.toSerializableList().toListLoadable()
         )
     }
-}
-
-@Composable
-private fun ProfileDetails(
-    detailsLoadable: Loadable<ProfileDetails>,
-    tootPreviewsLoadable: ListLoadable<TootPreview>,
-    modifier: Modifier = Modifier
-) {
-    ProfileDetails(
-        ProfileDetailsBoundary.empty,
-        detailsLoadable,
-        tootPreviewsLoadable,
-        onFavorite = { },
-        onReblog = { },
-        onNavigationToTootDetails = { },
-        onNext = { },
-        BackwardsNavigationState.Unavailable,
-        onNavigateToWebpage = { },
-        onShare = { },
-        onBottomAreaAvailabilityChangeListener = OnBottomAreaAvailabilityChangeListener.empty,
-        modifier
-    )
 }

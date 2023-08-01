@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.mastodonte.platform.ui.component.timeline
 
+import androidx.annotation.RestrictTo
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -38,6 +39,10 @@ import java.net.URL
 
 /** Tag that identifies an [EmptyTimelineMessage] for testing purposes. **/
 internal const val EMPTY_TIMELINE_MESSAGE_TAG = "empty-timeline-tag"
+
+/** Tag that identifies a [Timeline] for testing purposes. **/
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP_PREFIX)
+const val TIMELINE_TAG = "timeline"
 
 /**
  * [Timeline] content types for Compose to reuse the [Composable]s while lazily displaying them.
@@ -223,7 +228,7 @@ private fun Timeline(
         onDispose { }
     }
 
-    LazyColumn(modifier, state, contentPadding) {
+    LazyColumn(modifier.testTag(TIMELINE_TAG), state, contentPadding) {
         header?.let {
             item(contentType = { TimelineContentType.HEADER }, content = it)
         }
