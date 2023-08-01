@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,6 +35,9 @@ import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.ui.R
 import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.TootPreview
 import java.net.URL
+
+/** Tag that identifies an [EmptyTimelineMessage] for testing purposes. **/
+internal const val EMPTY_TIMELINE_MESSAGE_TAG = "empty-timeline-tag"
 
 /**
  * [Timeline] content types for Compose to reuse the [Composable]s while lazily displaying them.
@@ -171,6 +175,28 @@ fun Timeline(
 }
 
 /**
+ * Displays [TootPreview]s in a paginated way.
+ *
+ * @param tootPreviewsLoadable [ListLoadable] of [TootPreview]s to be lazily shown.
+ * @param modifier [Modifier] to be applied to the underlying [Timeline].
+ */
+@Composable
+internal fun Timeline(
+    tootPreviewsLoadable: ListLoadable<TootPreview>,
+    modifier: Modifier = Modifier
+) {
+    Timeline(
+        tootPreviewsLoadable,
+        onFavorite = { },
+        onReblog = { },
+        onShare = { },
+        onClick = { },
+        onNext = { },
+        modifier
+    )
+}
+
+/**
  * [LazyColumn] for displaying paged content.
  *
  * @param onNext Callback run whenever the user reaches the bottom.
@@ -222,7 +248,9 @@ private fun EmptyTimelineMessage(
     val lottieComposition by rememberLottieComposition(spec)
 
     LazyColumn(
-        modifier.fillMaxSize(),
+        modifier
+            .testTag(EMPTY_TIMELINE_MESSAGE_TAG)
+            .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(spacing, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

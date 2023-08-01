@@ -7,9 +7,16 @@ import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.SampleProfileProv
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 
 /** [TootProvider] that provides sample [Toot]s. **/
 object SampleTootProvider : TootProvider {
+    /** [Toot]s that are present by default. **/
+    internal val defaultToots = Toot.samples
+
+    /** [MutableStateFlow] that provides the [Toot]s. **/
+    internal val tootsFlow = MutableStateFlow(defaultToots)
+
     /** [IllegalArgumentException] thrown if a nonexistent [Author]'s [Toot]s are requested. **/
     class NonexistentAuthorException internal constructor(id: String) :
         IllegalArgumentException("Author identified as \"$id\" doesn't exist.")
@@ -18,12 +25,9 @@ object SampleTootProvider : TootProvider {
     class NonexistentTootException internal constructor(id: String) :
         IllegalArgumentException("Toot identified as \"$id\" doesn't exist.")
 
-    /** [MutableStateFlow] that provides the [Toot]s. **/
-    internal val tootsFlow = MutableStateFlow(Toot.samples)
-
     override suspend fun provide(id: String): Flow<Toot> {
-        return tootsFlow.map { toots ->
-            toots.first { toot ->
+        return tootsFlow.mapNotNull { toots ->
+            toots.find { toot ->
                 toot.id == id
             }
         }

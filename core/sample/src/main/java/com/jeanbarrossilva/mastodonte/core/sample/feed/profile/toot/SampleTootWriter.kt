@@ -30,6 +30,18 @@ object SampleTootWriter {
         }
     }
 
+    /** Clears all added [Toot]s, including the default ones. **/
+    fun clear() {
+        SampleTootProvider.tootsFlow.update {
+            emptyList()
+        }
+    }
+
+    /** Resets this [SampleTootWriter] to its default state. **/
+    fun reset() {
+        SampleTootProvider.tootsFlow.value = SampleTootProvider.defaultToots
+    }
+
     /**
      * Replaces the currently existing [Toot] identified as [id] by its updated version.
      *

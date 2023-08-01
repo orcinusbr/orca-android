@@ -11,7 +11,9 @@ import kotlinx.coroutines.flow.map
 internal interface SampleProfile : Profile {
     override suspend fun getToots(page: Int): Flow<List<Toot>> {
         return SampleTootProvider.provideBy(id).filterNotNull().map {
-            it.windowed(TOOTS_PER_PAGE, partialWindows = true)[page]
+            it.windowed(TOOTS_PER_PAGE, partialWindows = true).getOrElse(page) {
+                emptyList()
+            }
         }
     }
 

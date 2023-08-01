@@ -6,7 +6,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.jeanbarrossilva.mastodonte.core.feed.profile.type.followable.FollowableProfile
 import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.SampleProfileWriter
-import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.test.SampleProfileWriterTestRule
+import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.test.SampleTestRule
 import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.type.followable.sample
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.mastodonte.feature.profiledetails.test.ProfileDetailsActivity
@@ -20,13 +20,13 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class ProfileDetailsFragmentTests {
-    private val sampleProfileDaoRule = SampleProfileWriterTestRule()
+    private val sampleRule = SampleTestRule()
     private val time4JRule = Time4JTestRule()
     private val composeRule = createEmptyComposeRule()
 
     @get:Rule
     val ruleChain: RuleChain = RuleChain
-        .outerRule(sampleProfileDaoRule)
+        .outerRule(sampleRule)
         .around(time4JRule)
         .around(composeRule)
 

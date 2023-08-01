@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Link
@@ -277,6 +278,7 @@ private fun ProfileDetails(
     ProfileDetails(
         title = { MediumTextualPlaceholder() },
         actions = { },
+        timelineState = rememberLazyListState(),
         timeline = {
             Timeline {
                 Header()
@@ -306,6 +308,7 @@ private fun ProfileDetails(
 ) {
     val clipboardManager = LocalClipboardManager.current
     var isTopBarDropdownExpanded by remember { mutableStateOf(false) }
+    val timelineState = rememberLazyListState()
 
     ProfileDetails(
         title = { Text(details.username) },
@@ -357,6 +360,7 @@ private fun ProfileDetails(
                 }
             }
         },
+        timelineState,
         timeline = {
             Timeline(
                 tootsLoadable,
@@ -382,21 +386,21 @@ private fun ProfileDetails(
 private fun ProfileDetails(
     title: @Composable () -> Unit,
     actions: @Composable RowScope.() -> Unit,
+    timelineState: LazyListState,
     timeline: @Composable (padding: PaddingValues) -> Unit,
     floatingActionButton: @Composable () -> Unit,
     origin: BackwardsNavigationState,
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
-    val lazyListState = rememberLazyListState()
-    val isHeaderHidden by remember(lazyListState) {
+    val isHeaderHidden by remember(timelineState) {
         derivedStateOf {
-            lazyListState.firstVisibleItemIndex > 0
+            timelineState.firstVisibleItemIndex > 0
         }
     }
     val isBottomAreaAvailable by remember {
         derivedStateOf {
-            lazyListState.canScrollForward
+            timelineState.canScrollForward
         }
     }
 
