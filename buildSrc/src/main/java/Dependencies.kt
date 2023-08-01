@@ -42,6 +42,7 @@ object Dependencies {
         "com.jeanbarrossilva.loadable:loadable-placeholder:${Versions.LOADABLE}"
     const val LOADABLE_PLACEHOLDER_TEST =
         "com.jeanbarrossilva.loadable:loadable-placeholder-test:${Versions.LOADABLE}"
+    const val LOTTIE_COMPOSE = "com.airbnb.android:lottie-compose:${Versions.LOTTIE}"
     const val MATERIAL = "com.google.android.material:material:${Versions.MATERIAL}"
     const val NAVIGATION_FRAGMENT = "androidx.navigation:navigation-fragment:${Versions.NAVIGATION}"
     const val PAGINATE = "com.chrynan.paginate:paginate-core:${Versions.PAGINATE}"

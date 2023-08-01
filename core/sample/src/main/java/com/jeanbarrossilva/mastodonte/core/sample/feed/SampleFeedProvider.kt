@@ -17,7 +17,9 @@ object SampleFeedProvider : FeedProvider() {
 
     override suspend fun onProvide(userID: String, page: Int): Flow<List<Toot>> {
         return tootsFlow.map {
-            it.chunked(SampleProfile.TOOTS_PER_PAGE)[page]
+            it.chunked(SampleProfile.TOOTS_PER_PAGE).getOrElse(page) {
+                emptyList()
+            }
         }
     }
 

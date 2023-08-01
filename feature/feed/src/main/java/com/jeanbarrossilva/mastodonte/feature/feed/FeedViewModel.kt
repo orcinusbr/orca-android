@@ -11,6 +11,8 @@ import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.mastodonte.core.feed.FeedProvider
 import com.jeanbarrossilva.mastodonte.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.core.feed.profile.toot.TootProvider
+import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.TootPreview
+import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.toTootPreview
 import com.jeanbarrossilva.mastodonte.platform.ui.core.context.ContextProvider
 import com.jeanbarrossilva.mastodonte.platform.ui.core.context.share
 import java.net.URL
@@ -32,8 +34,8 @@ internal class FeedViewModel(
     private val indexMutableFlow = MutableStateFlow(0)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val tootsLoadableFlow = indexMutableFlow
-        .flatMapConcat { getTootsAt(it) }
+    val tootPreviewsLoadableFlow = indexMutableFlow
+        .flatMapConcat { getTootPreviewsAt(it) }
         .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
 
     fun favorite(tootID: String) {
@@ -56,8 +58,10 @@ internal class FeedViewModel(
         indexMutableFlow.value = index
     }
 
-    private suspend fun getTootsAt(index: Int): Flow<SerializableList<Toot>> {
-        return feedProvider.provide(userID, index).map(List<Toot>::toSerializableList)
+    private suspend fun getTootPreviewsAt(index: Int): Flow<SerializableList<TootPreview>> {
+        return feedProvider.provide(userID, index).map { it.map(Toot::toTootPreview) }.map(
+            List<TootPreview>::toSerializableList
+        )
     }
 
     companion object {

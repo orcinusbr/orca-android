@@ -4,11 +4,11 @@ import com.jeanbarrossilva.mastodonte.core.feed.profile.Profile
 import com.jeanbarrossilva.mastodonte.core.feed.profile.ProfileProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 
 /** [ProfileProvider] that provides sample [Profile]s. **/
 object SampleProfileProvider : ProfileProvider() {
-    /** [Profile]s present that are present by default. **/
+    /** [Profile]s that are present by default. **/
     internal val defaultProfiles = listOf(Profile.sample)
 
     /** [MutableStateFlow] that provides the [Profile]s. **/
@@ -20,8 +20,8 @@ object SampleProfileProvider : ProfileProvider() {
     }
 
     override suspend fun onProvide(id: String): Flow<Profile> {
-        return profilesFlow.map { profiles ->
-            profiles.first { profile ->
+        return profilesFlow.mapNotNull { profiles ->
+            profiles.find { profile ->
                 profile.id == id
             }
         }

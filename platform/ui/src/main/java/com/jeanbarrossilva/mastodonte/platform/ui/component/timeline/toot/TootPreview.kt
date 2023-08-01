@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.rounded.Comment
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.Card
@@ -33,6 +32,7 @@ import com.jeanbarrossilva.loadable.placeholder.test.Loading
 import com.jeanbarrossilva.mastodonte.core.feed.profile.account.Account
 import com.jeanbarrossilva.mastodonte.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.toot.sample
+import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.toot.samples
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.theme.extensions.EmptyMutableInteractionSource
 import com.jeanbarrossilva.mastodonte.platform.ui.AccountFormatter
@@ -41,7 +41,7 @@ import com.jeanbarrossilva.mastodonte.platform.ui.component.avatar.provider.Avat
 import com.jeanbarrossilva.mastodonte.platform.ui.component.avatar.provider.rememberAvatarImageProvider
 import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.time.RelativeTimeProvider
 import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.time.rememberRelativeTimeProvider
-import com.jeanbarrossilva.mastodonte.platform.ui.html.HtmlAnnotatedString
+import java.io.Serializable
 import java.net.URL
 import java.time.ZonedDateTime
 
@@ -78,6 +78,7 @@ private val bodyModifier = Modifier.testTag(TOOT_PREVIEW_BODY_TAG)
 /**
  * Information to be displayed on a [Toot]'s preview.
  *
+ * @param id Unique identifier.
  * @param avatarURL [URL] that leads to the author's avatar.
  * @param name Name of the author.
  * @param account [Account] of the author.
@@ -88,9 +89,11 @@ private val bodyModifier = Modifier.testTag(TOOT_PREVIEW_BODY_TAG)
  * @param favoriteCount Amount of times it's been marked as favorite.
  * @param isReblogged Whether it's reblogged.
  * @param reblogCount Amount of times it's been reblogged.
+ * @param url [URL] that leads to the [Toot].
  **/
 @Immutable
 data class TootPreview(
+    internal val id: String,
     val avatarURL: URL,
     val name: String,
     private val account: Account,
@@ -100,8 +103,9 @@ data class TootPreview(
     val isFavorite: Boolean,
     private val favoriteCount: Int,
     val isReblogged: Boolean,
-    private val reblogCount: Int
-) {
+    private val reblogCount: Int,
+    internal val url: URL
+) : Serializable {
     /** Formatted, displayable version of [commentCount]. **/
     val formattedCommentCount = commentCount.formatted
 
@@ -125,24 +129,10 @@ data class TootPreview(
 
     companion object {
         /** [TootPreview] sample. **/
-        val sample = TootPreview(
-            Toot.sample.author.avatarURL,
-            Toot.sample.author.name,
-            Toot.sample.author.account,
-            body = HtmlAnnotatedString(Toot.sample.content),
-            Toot.sample.publicationDateTime,
-            Toot.sample.commentCount,
-            Toot.sample.isFavorite,
-            Toot.sample.favoriteCount,
-            Toot.sample.isReblogged,
-            Toot.sample.reblogCount
-        )
-    }
-}
+        val sample = Toot.sample.toTootPreview()
 
-fun LazyListScope.loadingTootPreviews() {
-    items(128) {
-        TootPreview()
+        /** [TootPreview] samples. **/
+        val samples = Toot.samples.map(Toot::toTootPreview)
     }
 }
 

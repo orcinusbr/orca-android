@@ -6,10 +6,12 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.performClick
-import com.jeanbarrossilva.mastodonte.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.loadable.list.toListLoadable
+import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.toot.samples
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
 import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.TOOT_PREVIEW_FAVORITE_STAT_TAG
+import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.TootPreview
 import com.jeanbarrossilva.mastodonte.platform.ui.test.component.timeline.toot.onTootPreviews
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -28,7 +30,7 @@ internal class FeedTests {
         composeRule.setContent {
             MastodonteTheme {
                 Feed(
-                    Toot.samples,
+                    TootPreview.samples.toSerializableList().toListLoadable(),
                     onSearch = { },
                     onFavorite = { hasCallbackBeenCalled = true },
                     onReblog = { },

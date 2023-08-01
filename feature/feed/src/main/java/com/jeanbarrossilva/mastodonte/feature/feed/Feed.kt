@@ -1,8 +1,5 @@
 package com.jeanbarrossilva.mastodonte.feature.feed
 
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.rounded.Create
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -18,16 +15,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.list.ListLoadable
-import com.jeanbarrossilva.mastodonte.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.toot.samples
+import com.jeanbarrossilva.loadable.list.toListLoadable
+import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.mastodonte.platform.theme.MastodonteTheme
-import com.jeanbarrossilva.mastodonte.platform.theme.extensions.plus
 import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.TootPreview
-import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.loadingTootPreviews
-import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.toTootPreview
 import java.net.URL
 
 @Composable
@@ -36,10 +29,10 @@ internal fun Feed(
     boundary: FeedBoundary,
     modifier: Modifier = Modifier
 ) {
-    val tootsLoadable by viewModel.tootsLoadableFlow.collectAsState()
+    val tootPreviewsLoadable by viewModel.tootPreviewsLoadableFlow.collectAsState()
 
     Feed(
-        tootsLoadable,
+        tootPreviewsLoadable,
         onSearch = boundary::navigateToSearch,
         onFavorite = viewModel::favorite,
         onReblog = viewModel::reblog,
@@ -53,7 +46,7 @@ internal fun Feed(
 
 @Composable
 internal fun Feed(
-    toots: List<Toot>,
+    tootPreviewsLoadable: ListLoadable<TootPreview>,
     onSearch: () -> Unit,
     onFavorite: (tootID: String) -> Unit,
     onReblog: (tootID: String) -> Unit,
@@ -61,83 +54,6 @@ internal fun Feed(
     onTootClick: (tootID: String) -> Unit,
     onNext: (index: Int) -> Unit,
     onComposition: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Feed(
-        onSearch,
-        timelineContentPadding = MastodonteTheme.overlays.fab,
-        toots = {
-            items(toots) {
-                TootPreview(
-                    it.toTootPreview(),
-                    onFavorite = { onFavorite(it.id) },
-                    onReblog = { onReblog(it.id) },
-                    onShare = { onShare(it.url) },
-                    onClick = { onTootClick(it.id) }
-                )
-            }
-        },
-        onNext,
-        floatingActionButton = {
-            FloatingActionButton(onClick = onComposition) {
-                Icon(MastodonteTheme.Icons.Create, contentDescription = "Compose")
-            }
-        },
-        modifier
-    )
-}
-
-@Composable
-private fun Feed(
-    tootsLoadable: ListLoadable<Toot>,
-    onSearch: () -> Unit,
-    onFavorite: (tootID: String) -> Unit,
-    onReblog: (tootID: String) -> Unit,
-    onShare: (URL) -> Unit,
-    onTootClick: (tootID: String) -> Unit,
-    onNext: (index: Int) -> Unit,
-    onComposition: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    when (tootsLoadable) {
-        is ListLoadable.Loading ->
-            Feed(onSearch, modifier)
-        is ListLoadable.Populated ->
-            Feed(
-                tootsLoadable.content,
-                onSearch,
-                onFavorite,
-                onReblog,
-                onShare,
-                onTootClick,
-                onNext,
-                onComposition,
-                modifier
-            )
-        is ListLoadable.Empty, is ListLoadable.Failed ->
-            Unit
-    }
-}
-
-@Composable
-private fun Feed(onSearch: () -> Unit, modifier: Modifier = Modifier) {
-    Feed(
-        onSearch,
-        timelineContentPadding = PaddingValues(0.dp),
-        toots = LazyListScope::loadingTootPreviews,
-        onNext = { },
-        floatingActionButton = { },
-        modifier
-    )
-}
-
-@Composable
-private fun Feed(
-    onSearch: () -> Unit,
-    timelineContentPadding: PaddingValues,
-    toots: LazyListScope.() -> Unit,
-    onNext: (index: Int) -> Unit,
-    floatingActionButton: @Composable () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -153,12 +69,24 @@ private fun Feed(
                 }
             )
         },
-        floatingActionButton = floatingActionButton,
+        floatingActionButton = {
+            if (tootPreviewsLoadable.isLoaded) {
+                FloatingActionButton(onClick = onComposition) {
+                    Icon(MastodonteTheme.Icons.Create, contentDescription = "Compose")
+                }
+            }
+        },
         floatingActionButtonPosition = FabPosition.Center
     ) {
-        Timeline(onNext, contentPadding = it + timelineContentPadding) {
-            toots()
-        }
+        Timeline(
+            tootPreviewsLoadable,
+            onFavorite,
+            onReblog,
+            onShare,
+            onTootClick,
+            onNext,
+            contentPadding = it
+        )
     }
 }
 
@@ -166,23 +94,37 @@ private fun Feed(
 @Preview
 private fun LoadingFeedPreview() {
     MastodonteTheme {
-        Feed(onSearch = { })
+        Feed(ListLoadable.Loading())
     }
 }
 
 @Composable
 @Preview
-private fun LoadedFeedPreview() {
+private fun EmptyFeedPreview() {
     MastodonteTheme {
-        Feed(
-            Toot.samples,
-            onSearch = { },
-            onFavorite = { },
-            onReblog = { },
-            onShare = { },
-            onTootClick = { },
-            onNext = { },
-            onComposition = { }
-        )
+        Feed(ListLoadable.Empty())
     }
+}
+
+@Composable
+@Preview
+private fun PopulatedFeedPreview() {
+    MastodonteTheme {
+        Feed(TootPreview.samples.toSerializableList().toListLoadable())
+    }
+}
+
+@Composable
+private fun Feed(tootPreviewsLoadable: ListLoadable<TootPreview>, modifier: Modifier = Modifier) {
+    Feed(
+        tootPreviewsLoadable,
+        onSearch = { },
+        onFavorite = { },
+        onReblog = { },
+        onShare = { },
+        onTootClick = { },
+        onNext = { },
+        onComposition = { },
+        modifier
+    )
 }

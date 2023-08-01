@@ -61,8 +61,10 @@ dependencies {
     implementation(Dependencies.ACTIVITY_COMPOSE)
     implementation(Dependencies.COIL_COMPOSE)
     implementation(Dependencies.COMPOSE_MATERIAL_ICONS_EXTENDED)
+    implementation(Dependencies.LOADABLE_LIST)
     implementation(Dependencies.LOADABLE_PLACEHOLDER)
     implementation(Dependencies.LOADABLE_PLACEHOLDER_TEST)
+    implementation(Dependencies.LOTTIE_COMPOSE)
     implementation(Dependencies.MATERIAL)
     implementation(Dependencies.TIME4J)
 

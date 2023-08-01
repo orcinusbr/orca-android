@@ -1,7 +1,5 @@
 package com.jeanbarrossilva.mastodonte.feature.tootdetails
 
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -17,6 +15,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
+import com.jeanbarrossilva.loadable.list.mapNotNull
 import com.jeanbarrossilva.mastodonte.core.feed.profile.account.Account
 import com.jeanbarrossilva.mastodonte.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.core.sample.feed.profile.toot.sample
@@ -29,7 +28,6 @@ import com.jeanbarrossilva.mastodonte.platform.ui.AccountFormatter
 import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.TootPreview
 import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.formatted
-import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.loadingTootPreviews
 import java.io.Serializable
 import java.net.URL
 import java.time.ZonedDateTime
@@ -57,6 +55,7 @@ internal data class TootDetails(
 
     fun toTootPreview(): TootPreview {
         return TootPreview(
+            id,
             avatarURL,
             name,
             account,
@@ -66,7 +65,8 @@ internal data class TootDetails(
             isFavorite,
             favoriteCount,
             isReblogged,
-            reblogCount
+            reblogCount,
+            url
         )
     }
 
@@ -112,92 +112,12 @@ internal fun TootDetails(
 
 @Composable
 private fun TootDetails(
-    detailsLoadable: Loadable<TootDetails>,
+    tootLoadable: Loadable<TootDetails>,
     commentsLoadable: ListLoadable<TootDetails>,
-    onFavorite: () -> Unit,
-    onReblog: () -> Unit,
+    onFavorite: (tootID: String) -> Unit,
+    onReblog: (tootID: String) -> Unit,
     onShare: (URL) -> Unit,
-    onNavigateToDetails: (id: String) -> Unit,
-    onNext: (index: Int) -> Unit,
-    onBackwardsNavigation: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    when (detailsLoadable) {
-        is Loadable.Loading ->
-            TootDetails(onBackwardsNavigation, modifier)
-        is Loadable.Loaded ->
-            TootDetails(
-                detailsLoadable.content,
-                commentsLoadable,
-                onFavorite,
-                onReblog,
-                onShare,
-                onNavigateToDetails,
-                onNext,
-                onBackwardsNavigation,
-                modifier
-            )
-        is Loadable.Failed ->
-            Unit
-    }
-}
-
-@Composable
-private fun TootDetails(onBackwardsNavigation: () -> Unit, modifier: Modifier = Modifier) {
-    TootDetails(
-        header = { Header() },
-        comments = { loadingTootPreviews() },
-        onNext = { },
-        onBackwardsNavigation,
-        modifier
-    )
-}
-
-@Composable
-private fun TootDetails(
-    details: TootDetails,
-    commentsLoadable: ListLoadable<TootDetails>,
-    onFavorite: () -> Unit,
-    onReblog: () -> Unit,
-    onShare: (URL) -> Unit,
-    onNavigateToDetails: (id: String) -> Unit,
-    onNext: (index: Int) -> Unit,
-    onBackwardsNavigation: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    TootDetails(
-        header = { Header(details, onFavorite, onReblog, onShare = { onShare(details.url) }) },
-        comments = {
-            when (
-                @Suppress("NAME_SHADOWING")
-                val commentsLoadable = commentsLoadable
-            ) {
-                is ListLoadable.Loading ->
-                    loadingTootPreviews()
-                is ListLoadable.Populated ->
-                    items(commentsLoadable.content) {
-                        TootPreview(
-                            it.toTootPreview(),
-                            onFavorite,
-                            onReblog,
-                            onShare = { onShare(it.url) },
-                            onClick = { onNavigateToDetails(it.id) }
-                        )
-                    }
-                is ListLoadable.Empty, is ListLoadable.Failed ->
-                    Unit
-            }
-        },
-        onNext,
-        onBackwardsNavigation,
-        modifier
-    )
-}
-
-@Composable
-private fun TootDetails(
-    header: @Composable () -> Unit,
-    comments: LazyListScope.() -> Unit,
+    onNavigateToDetails: (tootID: String) -> Unit,
     onNext: (index: Int) -> Unit,
     onBackwardsNavigation: () -> Unit,
     modifier: Modifier = Modifier
@@ -219,9 +139,28 @@ private fun TootDetails(
             )
         }
     ) {
-        Timeline(onNext, contentPadding = it) {
-            item { header() }
-            comments()
+        Timeline(
+            commentsLoadable.mapNotNull(TootDetails::toTootPreview),
+            onFavorite,
+            onReblog,
+            onShare,
+            onClick = onNavigateToDetails,
+            onNext,
+            contentPadding = it
+        ) {
+            when (tootLoadable) {
+                is Loadable.Loading ->
+                    Header()
+                is Loadable.Loaded ->
+                    Header(
+                        tootLoadable.content,
+                        onFavorite = { onFavorite(tootLoadable.content.id) },
+                        onReblog = { onReblog(tootLoadable.content.id) },
+                        onShare = { onShare(tootLoadable.content.url) }
+                    )
+                is Loadable.Failed ->
+                    Unit
+            }
         }
     }
 }
@@ -230,7 +169,15 @@ private fun TootDetails(
 @Preview
 private fun LoadingTootDetailsPreview() {
     MastodonteTheme {
-        TootDetails(onBackwardsNavigation = { })
+        TootDetails(Loadable.Loading(), commentsLoadable = ListLoadable.Loading())
+    }
+}
+
+@Composable
+@Preview
+private fun LoadedTootDetailsWithoutComments() {
+    MastodonteTheme {
+        TootDetails(Loadable.Loaded(TootDetails.sample), commentsLoadable = ListLoadable.Empty())
     }
 }
 
@@ -238,15 +185,25 @@ private fun LoadingTootDetailsPreview() {
 @Preview
 private fun LoadedTootDetailsPreview() {
     MastodonteTheme {
-        TootDetails(
-            TootDetails.sample,
-            commentsLoadable = ListLoadable.Loading(),
-            onFavorite = { },
-            onReblog = { },
-            onShare = { },
-            onNavigateToDetails = { },
-            onNext = { },
-            onBackwardsNavigation = { }
-        )
+        TootDetails(Loadable.Loaded(TootDetails.sample), commentsLoadable = ListLoadable.Loading())
     }
+}
+
+@Composable
+private fun TootDetails(
+    tootLoadable: Loadable<TootDetails>,
+    commentsLoadable: ListLoadable<TootDetails>,
+    modifier: Modifier = Modifier
+) {
+    TootDetails(
+        tootLoadable,
+        commentsLoadable,
+        onFavorite = { },
+        onReblog = { },
+        onShare = { },
+        onNavigateToDetails = { },
+        onNext = { },
+        onBackwardsNavigation = { },
+        modifier
+    )
 }

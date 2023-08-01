@@ -11,6 +11,8 @@ import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.mastodonte.core.feed.profile.ProfileProvider
 import com.jeanbarrossilva.mastodonte.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.mastodonte.core.feed.profile.toot.TootProvider
+import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.TootPreview
+import com.jeanbarrossilva.mastodonte.platform.ui.component.timeline.toot.toTootPreview
 import com.jeanbarrossilva.mastodonte.platform.ui.core.context.ContextProvider
 import com.jeanbarrossilva.mastodonte.platform.ui.core.context.share
 import java.net.URL
@@ -44,8 +46,8 @@ internal class ProfileDetailsViewModel(
         profileFlow.map { it.toProfileDetails(coroutineScope) }.loadable(coroutineScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val tootsLoadableFlow = tootsIndexFlow
-        .flatMapConcat { getTootsAt(it) }
+    val tootPreviewsLoadableFlow = tootsIndexFlow
+        .flatMapConcat { getTootPreviewsAt(it) }
         .listLoadable(coroutineScope, SharingStarted.WhileSubscribed())
 
     fun share(url: URL) {
@@ -69,9 +71,11 @@ internal class ProfileDetailsViewModel(
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private fun getTootsAt(index: Int): Flow<SerializableList<Toot>> {
-        return profileFlow.filterNotNull().flatMapConcat {
-            it.getToots(index).map(List<Toot>::toSerializableList)
+    private fun getTootPreviewsAt(index: Int): Flow<SerializableList<TootPreview>> {
+        return profileFlow.filterNotNull().flatMapConcat { profile ->
+            profile.getToots(index).map { toots -> toots.map(Toot::toTootPreview) }.map(
+                List<TootPreview>::toSerializableList
+            )
         }
     }
 

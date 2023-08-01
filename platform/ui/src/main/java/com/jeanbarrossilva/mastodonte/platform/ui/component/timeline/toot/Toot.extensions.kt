@@ -7,6 +7,7 @@ import com.jeanbarrossilva.mastodonte.platform.ui.html.HtmlAnnotatedString
 fun Toot.toTootPreview(): TootPreview {
     val body = HtmlAnnotatedString(content)
     return TootPreview(
+        id,
         author.avatarURL,
         author.name,
         author.account,
@@ -16,6 +17,7 @@ fun Toot.toTootPreview(): TootPreview {
         isFavorite,
         favoriteCount,
         isReblogged,
-        reblogCount
+        reblogCount,
+        url
     )
 }

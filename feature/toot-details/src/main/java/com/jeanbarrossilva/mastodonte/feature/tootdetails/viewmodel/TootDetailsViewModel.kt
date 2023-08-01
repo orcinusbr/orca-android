@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 
 internal class TootDetailsViewModel private constructor(
     application: Application,
-    provider: TootProvider,
+    private val provider: TootProvider,
     id: String
 ) : AndroidViewModel(application) {
     private val tootFlow = flow { emitAll(provider.provide(id)) }
@@ -41,15 +41,15 @@ internal class TootDetailsViewModel private constructor(
         .flatMapConcat { tootFlow.flatMapToComments(it).map(List<TootDetails>::toSerializableList) }
         .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
 
-    fun favorite() {
+    fun favorite(id: String) {
         viewModelScope.launch {
-            tootFlow.first().toggleFavorite()
+            provider.provide(id).first().toggleFavorite()
         }
     }
 
-    fun reblog() {
+    fun reblog(id: String) {
         viewModelScope.launch {
-            tootFlow.first().toggleReblogged()
+            provider.provide(id).first().toggleReblogged()
         }
     }
 
