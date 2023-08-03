@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.orca.core.feed.profile.search
 
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
+import java.io.Serializable
 import java.net.URL
 
 /**
@@ -18,6 +19,6 @@ data class ProfileSearchResult(
     val avatarURL: URL,
     val name: String,
     val url: URL
-) {
+) : Serializable {
     companion object
 }
