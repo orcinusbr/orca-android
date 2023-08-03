@@ -20,12 +20,6 @@ android {
     buildTypes {
         getByName(Variants.RELEASE) {
             isMinifyEnabled = true
-
-            @Suppress("UnstableApiUsage")
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
         }
     }
 

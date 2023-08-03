@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "com.jeanbarrossilva.orca.feature.search-merged_res-66:/layout-land/mtrl_picker_header_dialog.xml",
+        "source": "com.jeanbarrossilva.orca.feature.search-material-1.9.0-24:/layout-land/mtrl_picker_header_dialog.xml"
+    },
+    {
+        "merged": "com.jeanbarrossilva.orca.feature.search-merged_res-66:/layout-land/material_timepicker.xml",
+        "source": "com.jeanbarrossilva.orca.feature.search-material-1.9.0-24:/layout-land/material_timepicker.xml"
+    },
+    {
+        "merged": "com.jeanbarrossilva.orca.feature.search-merged_res-66:/layout-land/material_clock_period_toggle_land.xml",
+        "source": "com.jeanbarrossilva.orca.feature.search-material-1.9.0-24:/layout-land/material_clock_period_toggle_land.xml"
+    }
+]

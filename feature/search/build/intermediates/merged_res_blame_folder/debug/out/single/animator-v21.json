@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "com.jeanbarrossilva.orca.feature.search-merged_res-66:/animator-v21/design_appbar_state_list_animator.xml",
+        "source": "com.jeanbarrossilva.orca.feature.search-material-1.9.0-24:/animator-v21/design_appbar_state_list_animator.xml"
+    },
+    {
+        "merged": "com.jeanbarrossilva.orca.feature.search-merged_res-66:/animator-v21/m3_appbar_state_list_animator.xml",
+        "source": "com.jeanbarrossilva.orca.feature.search-material-1.9.0-24:/animator-v21/m3_appbar_state_list_animator.xml"
+    }
+]

@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "com.jeanbarrossilva.orca.feature.search-merged_res-66:/mipmap-mdpi-v4/ic_launcher_round.png",
+        "source": "com.jeanbarrossilva.orca.feature.search-packaged_res-70:/mipmap-mdpi-v4/ic_launcher_round.png"
+    },
+    {
+        "merged": "com.jeanbarrossilva.orca.feature.search-merged_res-66:/mipmap-mdpi-v4/ic_launcher.png",
+        "source": "com.jeanbarrossilva.orca.feature.search-packaged_res-70:/mipmap-mdpi-v4/ic_launcher.png"
+    }
+]

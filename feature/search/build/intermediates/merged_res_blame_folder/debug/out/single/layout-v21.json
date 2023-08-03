@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "com.jeanbarrossilva.orca.feature.search-merged_res-66:/layout-v21/notification_template_custom_big.xml",
+        "source": "com.jeanbarrossilva.orca.feature.search-core-1.11.0-beta01-34:/layout-v21/notification_template_custom_big.xml"
+    },
+    {
+        "merged": "com.jeanbarrossilva.orca.feature.search-merged_res-66:/layout-v21/notification_template_icon_group.xml",
+        "source": "com.jeanbarrossilva.orca.feature.search-core-1.11.0-beta01-34:/layout-v21/notification_template_icon_group.xml"
+    },
+    {
+        "merged": "com.jeanbarrossilva.orca.feature.search-merged_res-66:/layout-v21/notification_action_tombstone.xml",
+        "source": "com.jeanbarrossilva.orca.feature.search-core-1.11.0-beta01-34:/layout-v21/notification_action_tombstone.xml"
+    },
+    {
+        "merged": "com.jeanbarrossilva.orca.feature.search-merged_res-66:/layout-v21/notification_action.xml",
+        "source": "com.jeanbarrossilva.orca.feature.search-core-1.11.0-beta01-34:/layout-v21/notification_action.xml"
+    }
+]

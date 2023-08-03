@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "com.jeanbarrossilva.orca.feature.search-merged_res-66:/layout-v26/mtrl_calendar_month.xml",
+        "source": "com.jeanbarrossilva.orca.feature.search-material-1.9.0-24:/layout-v26/mtrl_calendar_month.xml"
+    },
+    {
+        "merged": "com.jeanbarrossilva.orca.feature.search-merged_res-66:/layout-v26/abc_screen_toolbar.xml",
+        "source": "com.jeanbarrossilva.orca.feature.search-appcompat-1.6.1-50:/layout-v26/abc_screen_toolbar.xml"
+    }
+]

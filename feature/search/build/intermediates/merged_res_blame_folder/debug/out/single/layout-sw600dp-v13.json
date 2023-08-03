@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "com.jeanbarrossilva.orca.feature.search-merged_res-66:/layout-sw600dp-v13/design_layout_snackbar.xml",
+        "source": "com.jeanbarrossilva.orca.feature.search-material-1.9.0-24:/layout-sw600dp-v13/design_layout_snackbar.xml"
+    },
+    {
+        "merged": "com.jeanbarrossilva.orca.feature.search-merged_res-66:/layout-sw600dp-v13/mtrl_layout_snackbar.xml",
+        "source": "com.jeanbarrossilva.orca.feature.search-material-1.9.0-24:/layout-sw600dp-v13/mtrl_layout_snackbar.xml"
+    }
+]

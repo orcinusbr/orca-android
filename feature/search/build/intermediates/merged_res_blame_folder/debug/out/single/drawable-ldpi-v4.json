@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "com.jeanbarrossilva.orca.feature.search-merged_res-66:/drawable-ldpi-v4/ic_call_answer.png",
+        "source": "com.jeanbarrossilva.orca.feature.search-core-1.11.0-beta01-34:/drawable-ldpi-v4/ic_call_answer.png"
+    },
+    {
+        "merged": "com.jeanbarrossilva.orca.feature.search-merged_res-66:/drawable-ldpi-v4/ic_call_answer_video_low.png",
+        "source": "com.jeanbarrossilva.orca.feature.search-core-1.11.0-beta01-34:/drawable-ldpi-v4/ic_call_answer_video_low.png"
+    },
+    {
+        "merged": "com.jeanbarrossilva.orca.feature.search-merged_res-66:/drawable-ldpi-v4/ic_call_decline_low.png",
+        "source": "com.jeanbarrossilva.orca.feature.search-core-1.11.0-beta01-34:/drawable-ldpi-v4/ic_call_decline_low.png"
+    },
+    {
+        "merged": "com.jeanbarrossilva.orca.feature.search-merged_res-66:/drawable-ldpi-v4/ic_call_decline.png",
+        "source": "com.jeanbarrossilva.orca.feature.search-core-1.11.0-beta01-34:/drawable-ldpi-v4/ic_call_decline.png"
+    },
+    {
+        "merged": "com.jeanbarrossilva.orca.feature.search-merged_res-66:/drawable-ldpi-v4/ic_call_answer_low.png",
+        "source": "com.jeanbarrossilva.orca.feature.search-core-1.11.0-beta01-34:/drawable-ldpi-v4/ic_call_answer_low.png"
+    },
+    {
+        "merged": "com.jeanbarrossilva.orca.feature.search-merged_res-66:/drawable-ldpi-v4/ic_call_answer_video.png",
+        "source": "com.jeanbarrossilva.orca.feature.search-core-1.11.0-beta01-34:/drawable-ldpi-v4/ic_call_answer_video.png"
+    }
+]
