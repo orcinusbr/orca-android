@@ -23,7 +23,6 @@ android {
         }
     }
 
-    @Suppress("UnstableApiUsage")
     buildFeatures {
         compose = true
         viewBinding = true
