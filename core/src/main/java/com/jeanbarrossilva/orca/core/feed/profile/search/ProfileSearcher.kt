@@ -4,7 +4,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOf
 
 /** Searches for profiles through [search]. **/
 abstract class ProfileSearcher {
@@ -18,7 +18,7 @@ abstract class ProfileSearcher {
 
         @OptIn(FlowPreview::class)
         return if (formattedQuery.isBlank()) {
-            emptyFlow()
+            flowOf(emptyList())
         } else {
             onSearch(formattedQuery).debounce(500.milliseconds)
         }

@@ -10,6 +10,7 @@ include(
     ":feature:auth",
     ":feature:feed",
     ":feature:profile-details",
+    ":feature:search",
     ":feature:toot-details",
     ":platform:launchable",
     ":platform:theme",

@@ -1,9 +1,11 @@
 package com.jeanbarrossilva.orca.feature.profiledetails
 
 import android.content.Context
+import androidx.annotation.IdRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.core.os.bundleOf
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.jeanbarrossilva.orca.core.feed.profile.ProfileProvider
 import com.jeanbarrossilva.orca.core.feed.profile.toot.TootProvider
@@ -12,6 +14,7 @@ import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabili
 import com.jeanbarrossilva.orca.platform.ui.core.argument
 import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableFragment
 import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
+import com.jeanbarrossilva.orca.platform.ui.core.navigate
 import org.koin.android.ext.android.inject
 
 class ProfileDetailsFragment internal constructor() : ComposableFragment(), ContextProvider {
@@ -54,5 +57,13 @@ class ProfileDetailsFragment internal constructor() : ComposableFragment(), Cont
         internal const val BACKWARDS_NAVIGATION_STATE_KEY = "backwards-navigation-state"
 
         const val TAG = "profile-details-fragment"
+
+        fun navigate(fragmentManager: FragmentManager, @IdRes containerID: Int, id: String) {
+            fragmentManager.navigate(containerID, TAG) {
+                val backwardsNavigationState =
+                    BackwardsNavigationState.Available.createInstance(fragmentManager::popBackStack)
+                ProfileDetailsFragment(backwardsNavigationState, id)
+            }
+        }
     }
 }
