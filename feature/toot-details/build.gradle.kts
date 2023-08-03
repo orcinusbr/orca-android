@@ -29,10 +29,6 @@ android {
         targetCompatibility = Versions.java
     }
 
-    kotlinOptions {
-        jvmTarget = Versions.java.toString()
-    }
-
     composeOptions {
         kotlinCompilerExtensionVersion = Versions.COMPOSE_COMPILER
     }

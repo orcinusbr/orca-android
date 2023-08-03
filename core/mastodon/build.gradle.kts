@@ -40,10 +40,6 @@ android {
         targetCompatibility = Versions.java
     }
 
-    kotlinOptions {
-        jvmTarget = Versions.java.toString()
-    }
-
     secrets {
         defaultPropertiesFileName = "public.properties"
         ignoreList += "^(?!mastodon\\.clientSecret).*$"
