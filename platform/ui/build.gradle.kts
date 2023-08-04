@@ -59,5 +59,6 @@ dependencies {
     testImplementation(project(":platform:ui-test"))
     testImplementation(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
     testImplementation(Dependencies.COMPOSE_UI_TEST_MANIFEST)
+    testImplementation(Dependencies.MOCKITO)
     testImplementation(Dependencies.ROBOLECTRIC)
 }

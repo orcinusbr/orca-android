@@ -9,6 +9,7 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.runtime.Composable
 import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.MastodonAuthorizer
 import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableActivity
+import com.jeanbarrossilva.orca.platform.ui.core.on
 import org.koin.android.ext.android.inject
 
 internal class AuthorizationActivity : ComposableActivity() {
@@ -46,9 +47,7 @@ internal class AuthorizationActivity : ComposableActivity() {
 
     companion object {
         fun start(context: Context) {
-            val intent = Intent(context, AuthorizationActivity::class.java)
-                .apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK }
-            context.startActivity(intent)
+            context.on<AuthorizationActivity>().asNewTask().start()
         }
     }
 }
