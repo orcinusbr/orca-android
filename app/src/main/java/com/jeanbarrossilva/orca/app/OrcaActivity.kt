@@ -9,6 +9,7 @@ import com.jeanbarrossilva.orca.app.databinding.ActivityOrcaBinding
 import com.jeanbarrossilva.orca.app.module.core.MainCoreModule
 import com.jeanbarrossilva.orca.app.module.feature.feed.FeedModule
 import com.jeanbarrossilva.orca.app.module.feature.profiledetails.ProfileDetailsModule
+import com.jeanbarrossilva.orca.app.module.feature.search.SearchModule
 import com.jeanbarrossilva.orca.app.module.feature.tootdetails.TootDetailsModule
 import com.jeanbarrossilva.orca.app.navigation.navigator.BottomNavigationItemNavigatorFactory
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
@@ -76,8 +77,10 @@ internal open class OrcaActivity : AppCompatActivity(), OnBottomAreaAvailability
     private fun inject() {
         val feedModule = FeedModule(supportFragmentManager, containerID)
         val profileDetailsModule = ProfileDetailsModule(supportFragmentManager, containerID)
+        val searchModule = SearchModule(supportFragmentManager, containerID)
         val tootDetailsModule = TootDetailsModule(supportFragmentManager, containerID)
-        val modules = listOf(coreModule, feedModule, profileDetailsModule, tootDetailsModule)
+        val modules =
+            listOf(coreModule, feedModule, profileDetailsModule, searchModule, tootDetailsModule)
         loadKoinModules(modules)
     }
 }

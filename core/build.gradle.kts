@@ -15,5 +15,4 @@ dependencies {
     testImplementation(project(":core-test"))
     testImplementation(kotlin("test"))
     testImplementation(Dependencies.COROUTINES_TEST)
-    testImplementation(Dependencies.TURBINE)
 }
