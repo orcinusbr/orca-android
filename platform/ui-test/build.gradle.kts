@@ -10,22 +10,14 @@ android {
     defaultConfig {
         minSdk = Versions.Orca.SDK_MIN
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
-
-            @Suppress("UnstableApiUsage")
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
         }
     }
 
-    @Suppress("UnstableApiUsage")
     buildFeatures {
         compose = true
         viewBinding = true
@@ -44,8 +36,6 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = Versions.java.toString()
-
         @Suppress("SpellCheckingInspection")
         freeCompilerArgs = listOf("-Xcontext-receivers")
     }

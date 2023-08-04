@@ -40,7 +40,7 @@ object Versions {
     const val TURBINE = "1.0.0"
     const val VIEWMODEL = "2.6.1"
 
-    val java = JavaVersion.VERSION_17
+    val java = JavaVersion.toVersion(System.getProperty("JAVA_VERSION"))
 
     object Orca {
         const val CODE = 1

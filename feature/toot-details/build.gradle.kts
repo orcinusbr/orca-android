@@ -12,22 +12,14 @@ android {
     defaultConfig {
         minSdk = Versions.Orca.SDK_MIN
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
-
-            @Suppress("UnstableApiUsage")
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
         }
     }
 
-    @Suppress("UnstableApiUsage")
     buildFeatures {
         compose = true
     }
@@ -35,10 +27,6 @@ android {
     compileOptions {
         sourceCompatibility = Versions.java
         targetCompatibility = Versions.java
-    }
-
-    kotlinOptions {
-        jvmTarget = Versions.java.toString()
     }
 
     composeOptions {

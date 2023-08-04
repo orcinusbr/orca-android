@@ -22,16 +22,11 @@ android {
 
     defaultConfig {
         minSdk = Versions.Orca.SDK_MIN
-        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
         }
     }
 
@@ -43,10 +38,6 @@ android {
     compileOptions {
         sourceCompatibility = Versions.java
         targetCompatibility = Versions.java
-    }
-
-    kotlinOptions {
-        jvmTarget = Versions.java.toString()
     }
 
     secrets {

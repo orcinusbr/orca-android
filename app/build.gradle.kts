@@ -20,16 +20,9 @@ android {
     buildTypes {
         getByName(Variants.RELEASE) {
             isMinifyEnabled = true
-
-            @Suppress("UnstableApiUsage")
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
         }
     }
 
-    @Suppress("UnstableApiUsage")
     buildFeatures {
         compose = true
         viewBinding = true
@@ -53,10 +46,6 @@ android {
     compileOptions {
         sourceCompatibility = Versions.java
         targetCompatibility = Versions.java
-    }
-
-    kotlinOptions {
-        jvmTarget = Versions.java.toString()
     }
 
     composeOptions {
