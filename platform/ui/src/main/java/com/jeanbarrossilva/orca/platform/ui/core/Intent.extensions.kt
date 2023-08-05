@@ -4,8 +4,18 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.core.os.bundleOf
+import android.os.Bundle
 import java.net.URL
+
+/**
+ * Puts [extras] into this [Intent] if it isn't `null`.
+ *
+ * @param extras Extras [Bundle] to be put.
+ **/
+@PublishedApi
+internal fun Intent.putExtras(extras: Bundle?): Intent {
+    return extras?.let(::putExtras) ?: this
+}
 
 /**
  * [Intent] through which the [Activity] can be started.

@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import com.jeanbarrossilva.orca.core.auth.Authenticator
-import com.jeanbarrossilva.orca.platform.ui.core.Intent
 import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableActivity
+import com.jeanbarrossilva.orca.platform.ui.core.on
 import org.koin.android.ext.android.inject
 
 class AuthActivity internal constructor() : ComposableActivity() {
@@ -21,8 +21,7 @@ class AuthActivity internal constructor() : ComposableActivity() {
 
     companion object {
         fun start(context: Context) {
-            val intent = Intent<AuthActivity>(context)
-            context.startActivity(intent)
+            context.on<AuthActivity>().start()
         }
     }
 }

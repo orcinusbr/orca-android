@@ -26,6 +26,7 @@ object Versions {
     const val LOADABLE = "1.6.5"
     const val LOTTIE = "6.1.0"
     const val MATERIAL = "1.9.0"
+    const val MOCKITO = "5.4.0"
     const val NAVIGATION = "2.6.0"
     const val PAGINATE = "0.3.0"
     const val ROBOLECTRIC = "4.10.3"
