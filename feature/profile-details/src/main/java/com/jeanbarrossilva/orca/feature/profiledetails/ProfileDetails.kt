@@ -24,9 +24,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -34,6 +36,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.AnnotatedString
@@ -55,10 +58,11 @@ import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavig
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.NavigationButton
 import com.jeanbarrossilva.orca.feature.profiledetails.ui.Header
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.ui.component.menu.DropdownMenu
 import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBar
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBarDefaults
+import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBarDefaults as _TopAppBarDefaults
 import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
@@ -313,11 +317,11 @@ private fun ProfileDetails(
 ) {
     @OptIn(ExperimentalMaterial3Api::class)
     ProfileDetails(
-        TopAppBarDefaults.scrollBehavior,
+        _TopAppBarDefaults.scrollBehavior,
         title = { MediumTextualPlaceholder() },
         actions = { },
         timelineState = rememberLazyListState(),
-        timeline = {
+        timeline = { _, _ ->
             Timeline {
                 Header()
             }
@@ -348,7 +352,7 @@ private fun ProfileDetails(
     initialFirstVisibleTimelineItemIndex: Int = 0
 ) {
     val clipboardManager = LocalClipboardManager.current
-    val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
+    val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     var isTopBarDropdownExpanded by remember(isTopBarDropdownMenuExpanded) {
         mutableStateOf(isTopBarDropdownMenuExpanded)
     }
@@ -406,7 +410,7 @@ private fun ProfileDetails(
             }
         },
         timelineState,
-        timeline = {
+        timeline = { shouldNestScroll, padding ->
             Timeline(
                 tootsLoadable,
                 onFavorite,
@@ -414,9 +418,13 @@ private fun ProfileDetails(
                 onShare,
                 onClick = onNavigationToTootDetails,
                 onNext,
-                Modifier.statusBarsPadding(),
+                Modifier
+                    .statusBarsPadding()
+                    .`if`(shouldNestScroll) {
+                        nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
+                    },
                 timelineState,
-                contentPadding = it
+                contentPadding = padding
             ) {
                 Header(details)
             }
@@ -435,7 +443,7 @@ private fun ProfileDetails(
     title: @Composable () -> Unit,
     actions: @Composable RowScope.() -> Unit,
     timelineState: LazyListState,
-    timeline: @Composable (padding: PaddingValues) -> Unit,
+    timeline: @Composable (shouldNestScroll: Boolean, padding: PaddingValues) -> Unit,
     floatingActionButton: @Composable () -> Unit,
     origin: BackwardsNavigationState,
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
@@ -452,6 +460,12 @@ private fun ProfileDetails(
         }
     }
 
+    LaunchedEffect(isHeaderHidden) {
+        if (!isHeaderHidden) {
+            timelineState.animateScrollToItem(0)
+        }
+    }
+
     DisposableEffect(isBottomAreaAvailable) {
         onBottomAreaAvailabilityChangeListener.onBottomAreaAvailabilityChange(isBottomAreaAvailable)
         onDispose { }
@@ -460,9 +474,10 @@ private fun ProfileDetails(
     Box(modifier) {
         Scaffold(
             floatingActionButton = floatingActionButton,
-            floatingActionButtonPosition = FabPosition.Center,
-            content = timeline
-        )
+            floatingActionButtonPosition = FabPosition.Center
+        ) {
+            timeline(isHeaderHidden, it)
+        }
 
         AnimatedVisibility(
             visible = isHeaderHidden,
