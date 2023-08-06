@@ -45,7 +45,7 @@ import com.jeanbarrossilva.orca.feature.search.ui.SearchResultCard
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.backwardsNavigationArrow
 import com.jeanbarrossilva.orca.platform.ui.component.input.TextField
-import com.jeanbarrossilva.orca.platform.ui.core.tryToRequestFocus
+import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 
 internal object SearchDefaults {
     val VerticalArrangement = Arrangement.Top
@@ -163,7 +163,7 @@ private fun Search(
     val spacing = OrcaTheme.spacings.medium
 
     LaunchedEffect(Unit) {
-        focusRequester.tryToRequestFocus()
+        focusRequester.requestFocusWithDelay()
     }
 
     Scaffold(

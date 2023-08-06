@@ -4,12 +4,8 @@ import androidx.compose.ui.focus.FocusRequester
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 
-/** Requests focus, trying again if it fails. **/
-suspend fun FocusRequester.tryToRequestFocus() {
-    try {
-        requestFocus()
-    } catch (_: IllegalStateException) {
-        delay(100.milliseconds)
-        tryToRequestFocus()
-    }
+/** Requests focus with an initial delay. **/
+suspend fun FocusRequester.requestFocusWithDelay() {
+    delay(256.milliseconds)
+    requestFocus()
 }

@@ -33,7 +33,7 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.account.sample
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.action.PrimaryButton
 import com.jeanbarrossilva.orca.platform.ui.component.input.TextField
-import com.jeanbarrossilva.orca.platform.ui.core.tryToRequestFocus
+import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 
 /** Tag that identifies the username field for testing purposes. **/
 internal const val AUTH_USERNAME_FIELD_TAG = "auth-username-field"
@@ -73,7 +73,7 @@ internal fun Auth(
     val nextButtonFocusRequester = remember(::FocusRequester)
 
     LaunchedEffect(Unit) {
-        usernameFocusRequester.tryToRequestFocus()
+        usernameFocusRequester.requestFocusWithDelay()
     }
 
     Box(
