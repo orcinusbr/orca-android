@@ -17,7 +17,6 @@ import androidx.compose.material.icons.rounded.OpenInBrowser
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -57,6 +56,7 @@ import com.jeanbarrossilva.orca.feature.profiledetails.navigation.NavigationButt
 import com.jeanbarrossilva.orca.feature.profiledetails.ui.Header
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
+import com.jeanbarrossilva.orca.platform.ui.component.menu.DropdownMenu
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import java.io.Serializable
@@ -234,7 +234,9 @@ internal fun ProfileDetails(
 internal fun ProfileDetails(
     detailsLoadable: Loadable<ProfileDetails>,
     tootPreviewsLoadable: ListLoadable<TootPreview>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isTopBarDropdownMenuExpanded: Boolean = false,
+    initialFirstVisibleTimelineItemIndex: Int = 0
 ) {
     ProfileDetails(
         ProfileDetailsBoundary.empty,
@@ -248,7 +250,9 @@ internal fun ProfileDetails(
         onNavigateToWebpage = { },
         onShare = { },
         onBottomAreaAvailabilityChangeListener = OnBottomAreaAvailabilityChangeListener.empty,
-        modifier
+        modifier,
+        isTopBarDropdownMenuExpanded,
+        initialFirstVisibleTimelineItemIndex
     )
 }
 
@@ -265,7 +269,9 @@ private fun ProfileDetails(
     onNavigateToWebpage: (URL) -> Unit,
     onShare: (URL) -> Unit,
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isTopBarDropdownMenuExpanded: Boolean = false,
+    initialFirstVisibleTimelineItemIndex: Int = 0
 ) {
     when (detailsLoadable) {
         is Loadable.Loading ->
@@ -287,7 +293,9 @@ private fun ProfileDetails(
                 onNavigateToWebpage,
                 onShare,
                 onBottomAreaAvailabilityChangeListener,
-                modifier
+                modifier,
+                isTopBarDropdownMenuExpanded,
+                initialFirstVisibleTimelineItemIndex
             )
         is Loadable.Failed ->
             Unit
@@ -329,11 +337,15 @@ private fun ProfileDetails(
     onNavigateToWebpage: (URL) -> Unit,
     onShare: (URL) -> Unit,
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isTopBarDropdownMenuExpanded: Boolean = false,
+    initialFirstVisibleTimelineItemIndex: Int = 0
 ) {
     val clipboardManager = LocalClipboardManager.current
-    var isTopBarDropdownExpanded by remember { mutableStateOf(false) }
-    val timelineState = rememberLazyListState()
+    var isTopBarDropdownExpanded by remember(isTopBarDropdownMenuExpanded) {
+        mutableStateOf(isTopBarDropdownMenuExpanded)
+    }
+    val timelineState = rememberLazyListState(initialFirstVisibleTimelineItemIndex)
 
     ProfileDetails(
         title = { Text(details.username) },
@@ -345,7 +357,7 @@ private fun ProfileDetails(
 
                 DropdownMenu(
                     isTopBarDropdownExpanded,
-                    onDismissRequest = { isTopBarDropdownExpanded = false }
+                    onDismissal = { isTopBarDropdownExpanded = false }
                 ) {
                     DropdownMenuItem(
                         text = { Text("Open in browser") },
@@ -490,6 +502,20 @@ private fun LoadedProfileDetailsWithTootsPreview() {
         ProfileDetails(
             Loadable.Loaded(ProfileDetails.sample),
             tootPreviewsLoadable = TootPreview.samples.toSerializableList().toListLoadable()
+        )
+    }
+}
+
+@Composable
+@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun LoadedProfileDetailsWithExpandedTopBarDropdownMenuPreview() {
+    OrcaTheme {
+        ProfileDetails(
+            Loadable.Loaded(ProfileDetails.sample),
+            tootPreviewsLoadable = TootPreview.samples.toSerializableList().toListLoadable(),
+            isTopBarDropdownMenuExpanded = true,
+            initialFirstVisibleTimelineItemIndex = 1
         )
     }
 }
