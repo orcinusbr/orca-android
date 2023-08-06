@@ -16,10 +16,11 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:textColorSecondary">@color/secondaryText</item>
+        <item name="android:windowLightStatusBar">@bool/is_system_in_light_theme</item>
         <item name="colorControlNormal">@color/normalControl</item>
         <item name="colorOnPrimaryContainer">@android:color/white</item>
         <item name="colorOnSecondaryContainer">@color/onSecondaryContainer</item>
-        <item name="colorOnSurface">@android:color/white</item>
+        <item name="colorOnSurface">?colorControlNormal</item>
         <item name="colorOnSurfaceVariant">?attr/colorControlNormal</item>
         <item name="colorOutline">?android:attr/textColorTertiary</item>
         <item name="colorOutlineVariant">@color/outlineVariant</item>
@@ -42,6 +43,5 @@
         </item>
         <item name="textAppearanceTitleLarge">@style/Theme.Orca.Typography.TitleLarge</item>
         <item name="textAppearanceTitleSmall">@style/Theme.Orca.Typography.TitleSmall</item>
-        <item name="android:windowLightStatusBar">@bool/is_system_in_light_theme</item>
     </style>
 </resources>

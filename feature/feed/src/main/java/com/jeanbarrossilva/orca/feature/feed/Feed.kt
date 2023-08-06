@@ -3,23 +3,25 @@ package com.jeanbarrossilva.orca.feature.feed
 import android.content.res.Configuration
 import androidx.compose.material.icons.rounded.Create
 import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBar
+import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBarDefaults
+import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import java.net.URL
@@ -46,6 +48,7 @@ internal fun Feed(
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 internal fun Feed(
     tootPreviewsLoadable: ListLoadable<TootPreview>,
     onSearch: () -> Unit,
@@ -57,17 +60,20 @@ internal fun Feed(
     onComposition: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
+
     Scaffold(
         modifier,
         topBar = {
             @OptIn(ExperimentalMaterial3Api::class)
-            CenterAlignedTopAppBar(
-                title = { Text("Feed") },
+            TopAppBar(
+                title = { AutoSizeText("Feed") },
                 actions = {
                     IconButton(onClick = onSearch) {
                         Icon(OrcaTheme.Icons.Search, contentDescription = "Search")
                     }
-                }
+                },
+                scrollBehavior = topAppBarScrollBehavior
             )
         },
         floatingActionButton = {
@@ -86,6 +92,7 @@ internal fun Feed(
             onShare,
             onTootClick,
             onNext,
+            Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
             contentPadding = it
         )
     }

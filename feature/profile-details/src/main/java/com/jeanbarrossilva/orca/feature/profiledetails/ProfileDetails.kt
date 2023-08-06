@@ -16,7 +16,6 @@ import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.OpenInBrowser
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.Button
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -25,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
@@ -57,6 +57,9 @@ import com.jeanbarrossilva.orca.feature.profiledetails.ui.Header
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.ui.component.menu.DropdownMenu
+import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBar
+import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBarDefaults
+import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import java.io.Serializable
@@ -308,7 +311,9 @@ private fun ProfileDetails(
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
+    @OptIn(ExperimentalMaterial3Api::class)
     ProfileDetails(
+        TopAppBarDefaults.scrollBehavior,
         title = { MediumTextualPlaceholder() },
         actions = { },
         timelineState = rememberLazyListState(),
@@ -325,6 +330,7 @@ private fun ProfileDetails(
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 private fun ProfileDetails(
     navigator: ProfileDetailsBoundary,
     details: ProfileDetails,
@@ -342,13 +348,15 @@ private fun ProfileDetails(
     initialFirstVisibleTimelineItemIndex: Int = 0
 ) {
     val clipboardManager = LocalClipboardManager.current
+    val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
     var isTopBarDropdownExpanded by remember(isTopBarDropdownMenuExpanded) {
         mutableStateOf(isTopBarDropdownMenuExpanded)
     }
     val timelineState = rememberLazyListState(initialFirstVisibleTimelineItemIndex)
 
     ProfileDetails(
-        title = { Text(details.username) },
+        topAppBarScrollBehavior,
+        title = { AutoSizeText(details.username) },
         actions = {
             Box {
                 IconButton(onClick = { isTopBarDropdownExpanded = true }) {
@@ -421,7 +429,9 @@ private fun ProfileDetails(
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 private fun ProfileDetails(
+    topAppBarScrollBehavior: TopAppBarScrollBehavior,
     title: @Composable () -> Unit,
     actions: @Composable RowScope.() -> Unit,
     timelineState: LazyListState,
@@ -460,11 +470,12 @@ private fun ProfileDetails(
             exit = slideOutVertically { -it }
         ) {
             @OptIn(ExperimentalMaterial3Api::class)
-            CenterAlignedTopAppBar(
-                title = title,
+            TopAppBar(
                 Modifier.testTag(PROFILE_DETAILS_TOP_BAR_TAG),
                 navigationIcon = { origin.NavigationButton() },
-                actions
+                actions,
+                topAppBarScrollBehavior,
+                title
             )
         }
     }

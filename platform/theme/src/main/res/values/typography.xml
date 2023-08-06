@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="largeDisplayText">@android:color/black</color>
+
     <integer name="font_weight_light">300</integer>
     <integer name="font_weight_normal">400</integer>
     <integer name="font_weight_medium">500</integer>
@@ -11,7 +13,10 @@
     <style
         name="Theme.Orca.Typography.DisplayLarge"
         parent="TextAppearance.Material3.DisplayLarge">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/largeDisplayText</item>
         <item name="android:textFontWeight">@integer/font_weight_black</item>
+        <item name="android:textSize">56sp</item>
     </style>
 
     <style
