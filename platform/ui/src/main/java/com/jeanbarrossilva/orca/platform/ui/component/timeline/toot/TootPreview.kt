@@ -220,7 +220,7 @@ private fun TootPreview(
     val interactionSource = remember(onClick) {
         onClick?.let { MutableInteractionSource() } ?: EmptyMutableInteractionSource()
     }
-    val spacing = OrcaTheme.spacings.large
+    val spacing = OrcaTheme.spacings.medium
 
     @OptIn(ExperimentalMaterial3Api::class)
     Card(
@@ -237,9 +237,7 @@ private fun TootPreview(
             Row(horizontalArrangement = Arrangement.spacedBy(spacing)) {
                 avatar()
 
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.small)
-                ) {
+                Column(verticalArrangement = Arrangement.spacedBy(spacing)) {
                     Column(
                         verticalArrangement = Arrangement
                             .spacedBy(OrcaTheme.spacings.extraSmall)

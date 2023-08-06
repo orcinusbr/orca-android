@@ -27,14 +27,11 @@ internal fun FavoriteStat(
 ) {
     val isActive = remember(preview) { preview.isFavorite }
     val containerColor by animateColorAsState(
-        if (isActive) FavoriteStatIconDefaults.ActiveColor else StatDefaults.containerColor
+        if (isActive) FavoriteStatIconDefaults.ActiveColor else StatDefaults.containerColor,
+        label = "ContainerColor"
     )
 
-    Stat(
-        onClick,
-        modifier.testTag(TOOT_PREVIEW_FAVORITE_STAT_TAG),
-        containerColor
-    ) {
+    Stat(onClick, modifier.testTag(TOOT_PREVIEW_FAVORITE_STAT_TAG), containerColor) {
         FavoriteStatIcon(
             isActive,
             ActivateableStatIconInteractiveness.Interactive { onClick() },

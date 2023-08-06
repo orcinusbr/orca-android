@@ -52,12 +52,13 @@
         name="Theme.Orca.Typography.BodyLarge"
         parent="TextAppearance.Material3.BodyLarge">
         <item name="android:textFontWeight">@integer/font_weight_bold</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style
         name="Theme.Orca.Typography.BodyMedium"
         parent="TextAppearance.Material3.BodyMedium">
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style
@@ -65,5 +66,6 @@
         parent="TextAppearance.Material3.BodySmall">
         <item name="android:textColor">?android:textColorTertiary</item>
         <item name="android:textFontWeight">@integer/font_weight_medium</item>
+        <item name="android:textSize">14sp</item>
     </style>
 </resources>

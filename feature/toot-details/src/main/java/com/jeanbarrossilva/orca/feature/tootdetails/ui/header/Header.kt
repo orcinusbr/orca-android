@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.rounded.Comment
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.Divider
@@ -18,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
@@ -74,7 +76,8 @@ internal fun Header(
                 Stat {
                     FavoriteStatIcon(
                         isActive = details.isFavorite,
-                        ActivateableStatIconInteractiveness.Interactive { onFavorite() }
+                        ActivateableStatIconInteractiveness.Interactive { onFavorite() },
+                        Modifier.size(24.dp)
                     )
 
                     Text(details.formattedFavoriteCount)
@@ -83,7 +86,8 @@ internal fun Header(
                 Stat {
                     ReblogStatIcon(
                         isActive = details.isReblogged,
-                        ActivateableStatIconInteractiveness.Interactive { onReblog() }
+                        ActivateableStatIconInteractiveness.Interactive { onReblog() },
+                        Modifier.size(24.dp)
                     )
 
                     Text(details.formattedReblogCount)

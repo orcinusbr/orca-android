@@ -5,6 +5,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
@@ -16,17 +17,15 @@ import com.jeanbarrossilva.orca.platform.ui.component.stat.reblog.ReblogStatIcon
 
 @Composable
 internal fun ReblogStat(preview: TootPreview, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val isActive = remember(preview, preview::isReblogged)
     val containerColor by animateColorAsState(
-        if (preview.isReblogged) Color(0xFF81C784) else StatDefaults.containerColor
+        if (isActive) Color(0xFF81C784) else StatDefaults.containerColor,
+        label = "ContainerColor"
     )
 
-    Stat(
-        onClick,
-        modifier.testTag(TOOT_PREVIEW_REBLOG_COUNT_STAT_TAG),
-        containerColor
-    ) {
+    Stat(onClick, modifier.testTag(TOOT_PREVIEW_REBLOG_COUNT_STAT_TAG), containerColor) {
         ReblogStatIcon(
-            isActive = preview.isReblogged,
+            isActive,
             ActivateableStatIconInteractiveness.Interactive { onClick() },
             colors = ReblogStatIconDefaults.colors(activeColor = Color.White)
         )
