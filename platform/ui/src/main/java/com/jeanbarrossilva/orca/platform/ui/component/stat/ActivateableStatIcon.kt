@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.platform.ui.component.stat
 
+import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -131,6 +132,7 @@ internal fun ActivateableStatIcon(
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun InactiveActivateableStatIconPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colorScheme.background) {

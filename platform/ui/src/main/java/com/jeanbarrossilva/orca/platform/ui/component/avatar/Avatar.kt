@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.platform.ui.component.avatar
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -141,6 +142,7 @@ private fun BoxScope.UnavailableContent(size: Dp, modifier: Modifier = Modifier)
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadingLargeAvatarPreview() {
     OrcaTheme {
         LargeAvatar()
@@ -149,6 +151,7 @@ private fun LoadingLargeAvatarPreview() {
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadedLargeAvatarPreview() {
     OrcaTheme {
         LargeAvatar(Avatar.sample.name, Avatar.sample.url)
@@ -157,6 +160,7 @@ private fun LoadedLargeAvatarPreview() {
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadingSmallAvatarPreview() {
     OrcaTheme {
         SmallAvatar()
@@ -165,6 +169,7 @@ private fun LoadingSmallAvatarPreview() {
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadedSmallAvatarPreview() {
     OrcaTheme {
         SmallAvatar(Avatar.sample.name, Avatar.sample.url)

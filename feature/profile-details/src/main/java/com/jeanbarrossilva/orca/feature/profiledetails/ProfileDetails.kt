@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.feature.profiledetails
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -459,6 +460,7 @@ private fun ProfileDetails(
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadingProfileDetailsPreview() {
     OrcaTheme {
         ProfileDetails(
@@ -470,6 +472,7 @@ private fun LoadingProfileDetailsPreview() {
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadedProfileDetailsWithoutTootsPreview() {
     OrcaTheme {
         ProfileDetails(
@@ -481,6 +484,7 @@ private fun LoadedProfileDetailsWithoutTootsPreview() {
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadedProfileDetailsWithTootsPreview() {
     OrcaTheme {
         ProfileDetails(

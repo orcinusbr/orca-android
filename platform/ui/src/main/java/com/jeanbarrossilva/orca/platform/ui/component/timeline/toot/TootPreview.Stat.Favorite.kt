@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.platform.ui.component.timeline.toot
 
+import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
@@ -47,6 +48,7 @@ internal fun FavoriteStat(
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun InactiveFavoriteStatPreview() {
     OrcaTheme {
         FavoriteStat(TootPreview.sample.copy(isFavorite = false), onClick = { })

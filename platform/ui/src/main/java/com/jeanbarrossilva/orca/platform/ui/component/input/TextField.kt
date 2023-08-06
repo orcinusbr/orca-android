@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.platform.ui.component.input
 
+import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.border
@@ -119,6 +120,7 @@ private fun TextField(
  **/
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun EmptyTextFieldPreview() {
     OrcaTheme {
         TextField(text = "")
@@ -131,6 +133,7 @@ private fun EmptyTextFieldPreview() {
  **/
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun UnfocusedTextFieldPreview() {
     OrcaTheme {
         TextField(isFocused = false)
@@ -143,6 +146,7 @@ private fun UnfocusedTextFieldPreview() {
  **/
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun FocusedTextFieldPreview() {
     OrcaTheme {
         TextField(isFocused = true)

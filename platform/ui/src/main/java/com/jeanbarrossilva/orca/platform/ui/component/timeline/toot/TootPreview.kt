@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.platform.ui.component.timeline.toot
 
+import android.content.res.Configuration
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -257,6 +258,7 @@ private fun TootPreview(
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadingTootPreviewPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colorScheme.background) {
@@ -267,6 +269,7 @@ private fun LoadingTootPreviewPreview() {
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadedInactiveTootPreviewPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colorScheme.background) {
@@ -277,6 +280,7 @@ private fun LoadedInactiveTootPreviewPreview() {
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadedActiveTootPreviewPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colorScheme.background) {

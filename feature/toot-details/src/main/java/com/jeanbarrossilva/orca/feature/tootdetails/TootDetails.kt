@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.feature.tootdetails
 
+import android.content.res.Configuration
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -167,6 +168,7 @@ private fun TootDetails(
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadingTootDetailsPreview() {
     OrcaTheme {
         TootDetails(Loadable.Loading(), commentsLoadable = ListLoadable.Loading())
@@ -175,6 +177,7 @@ private fun LoadingTootDetailsPreview() {
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadedTootDetailsWithoutComments() {
     OrcaTheme {
         TootDetails(Loadable.Loaded(TootDetails.sample), commentsLoadable = ListLoadable.Empty())
@@ -183,6 +186,7 @@ private fun LoadedTootDetailsWithoutComments() {
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadedTootDetailsPreview() {
     OrcaTheme {
         TootDetails(Loadable.Loaded(TootDetails.sample), commentsLoadable = ListLoadable.Loading())

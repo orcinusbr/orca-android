@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.platform.ui.component.timeline
 
+import android.content.res.Configuration
 import androidx.annotation.RestrictTo
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -287,6 +288,7 @@ private fun EmptyTimelineMessage(
 /** Preview of a loading [Timeline]. **/
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadingTimelinePreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colorScheme.background) {
@@ -298,6 +300,7 @@ private fun LoadingTimelinePreview() {
 /** Preview of an empty [Timeline]. **/
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun EmptyTimelinePreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colorScheme.background) {
@@ -316,6 +319,7 @@ private fun EmptyTimelinePreview() {
 /** Preview of a populated [Timeline]. **/
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun PopulatedTimelinePreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colorScheme.background) {

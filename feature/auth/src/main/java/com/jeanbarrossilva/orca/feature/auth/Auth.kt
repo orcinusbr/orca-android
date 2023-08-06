@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.feature.auth
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -158,14 +159,30 @@ internal fun Auth(
 
 @Composable
 @Preview
-private fun AuthPreview() {
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun InvalidAuthPreview() {
     OrcaTheme {
-        Auth(
-            Account.sample.username,
-            onUsernameChange = { },
-            Account.sample.instance,
-            onInstanceChange = { },
-            onSignIn = { }
-        )
+        Auth(username = "", instance = "")
     }
+}
+
+@Composable
+@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun ValidAuthPreview() {
+    OrcaTheme {
+        Auth(Account.sample.username, Account.sample.instance)
+    }
+}
+
+@Composable
+private fun Auth(username: String, instance: String, modifier: Modifier = Modifier) {
+    Auth(
+        username,
+        onUsernameChange = { },
+        instance,
+        onInstanceChange = { },
+        onSignIn = { },
+        modifier
+    )
 }

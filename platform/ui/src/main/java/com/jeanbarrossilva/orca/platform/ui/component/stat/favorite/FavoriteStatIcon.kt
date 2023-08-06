@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.platform.ui.component.stat.favorite
 
+import android.content.res.Configuration
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Surface
@@ -62,6 +63,7 @@ fun FavoriteStatIcon(
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun InactiveFavoriteStatIconPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colorScheme.background) {

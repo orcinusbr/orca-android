@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.platform.ui.component.stat.reblog
 
+import android.content.res.Configuration
 import androidx.compose.material.icons.rounded.Repeat
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Surface
@@ -61,6 +62,7 @@ fun ReblogStatIcon(
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun InactiveReblogStatIconPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colorScheme.background) {

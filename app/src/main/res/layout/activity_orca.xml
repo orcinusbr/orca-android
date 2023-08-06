@@ -16,8 +16,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:menu="@menu/bottom_navigation"
+        app:labelVisibilityMode="selected"
         app:itemIconTint="@color/bottom_navigation_item_icon"
         app:itemTextColor="@color/bottom_navigation_item_text"
+        app:elevation="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

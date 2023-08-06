@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.platform.theme
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -48,13 +49,13 @@ import com.jeanbarrossilva.orca.platform.theme.extensions.top
 import com.jeanbarrossilva.orca.platform.theme.extensions.with
 
 /** Height of [ColorSchemePreview]. **/
-private const val COLOR_SCHEME_PREVIEW_HEIGHT = 1_868
+private const val COLOR_SCHEME_PREVIEW_HEIGHT = 1_843
 
 /** Height of [ShapesPreview]. **/
 private const val SHAPES_PREVIEW_HEIGHT = 909
 
 /** Height of [TypographyPreview]. **/
-private const val TYPOGRAPHY_PREVIEW_HEIGHT = 1_135
+private const val TYPOGRAPHY_PREVIEW_HEIGHT = 1_090
 
 /** Provider of [OrcaTheme]'s configurations. **/
 object OrcaTheme {
@@ -136,6 +137,7 @@ fun OrcaTheme(content: @Composable () -> Unit) {
 /** Preview of [OrcaTheme]'s [ColorScheme]. **/
 @Composable
 @Preview(heightDp = COLOR_SCHEME_PREVIEW_HEIGHT)
+@Preview(heightDp = COLOR_SCHEME_PREVIEW_HEIGHT, uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun ColorSchemePreview() {
     OrcaTheme {
         Column(Modifier.fillMaxWidth()) {
@@ -216,6 +218,7 @@ private fun ColorSchemePreview() {
 /** Preview of [OrcaTheme]'s [Overlays]. **/
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun OverlaysPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colorScheme.background) {
@@ -227,6 +230,7 @@ private fun OverlaysPreview() {
 /** Preview of [OrcaTheme]'s [Shapes]. **/
 @Composable
 @Preview(heightDp = SHAPES_PREVIEW_HEIGHT)
+@Preview(heightDp = SHAPES_PREVIEW_HEIGHT, uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun ShapesPreview() {
     OrcaTheme {
         Surface(Modifier.fillMaxWidth(), color = OrcaTheme.colorScheme.background) {
@@ -244,6 +248,7 @@ private fun ShapesPreview() {
 /** Preview of [OrcaTheme]'s [Spacings]. **/
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun SpacingsPreview() {
     OrcaTheme {
         Surface(Modifier.fillMaxWidth()) {
@@ -261,6 +266,7 @@ private fun SpacingsPreview() {
 /** Preview of [OrcaTheme]'s [Typography]. **/
 @Composable
 @Preview(heightDp = TYPOGRAPHY_PREVIEW_HEIGHT)
+@Preview(heightDp = TYPOGRAPHY_PREVIEW_HEIGHT, uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun TypographyPreview() {
     OrcaTheme {
         Surface(Modifier.fillMaxWidth(), color = OrcaTheme.colorScheme.background) {

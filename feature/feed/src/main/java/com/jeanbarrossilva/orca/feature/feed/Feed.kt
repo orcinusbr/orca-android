@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.feature.feed
 
+import android.content.res.Configuration
 import androidx.compose.material.icons.rounded.Create
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -92,6 +93,7 @@ internal fun Feed(
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadingFeedPreview() {
     OrcaTheme {
         Feed(ListLoadable.Loading())

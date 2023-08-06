@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.feature.search
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -224,6 +225,7 @@ private fun EmptyResultsMessage(modifier: Modifier = Modifier) {
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadingSearchPreview() {
     OrcaTheme {
         Search(query = "", onQueryChange = { }, onBackwardsNavigation = { })
@@ -232,6 +234,7 @@ private fun LoadingSearchPreview() {
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun EmptyResultsPreview() {
     OrcaTheme {
         Search(
@@ -246,6 +249,7 @@ private fun EmptyResultsPreview() {
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadedSearchPreview() {
     OrcaTheme {
         Search(

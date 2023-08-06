@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.platform.ui.component.timeline.toot
 
+import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,6 +37,7 @@ internal fun ReblogStat(preview: TootPreview, onClick: () -> Unit, modifier: Mod
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun InactiveReblogStatPreview() {
     OrcaTheme {
         ReblogStat(TootPreview.sample.copy(isReblogged = false), onClick = { })
