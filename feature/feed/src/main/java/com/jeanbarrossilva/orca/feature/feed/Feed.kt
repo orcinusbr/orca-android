@@ -19,6 +19,7 @@ import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.extensions.plus
 import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBar
 import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBarDefaults
 import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.text.AutoSizeText
@@ -93,7 +94,7 @@ internal fun Feed(
             onTootClick,
             onNext,
             Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-            contentPadding = it
+            contentPadding = it + OrcaTheme.overlays.fab
         )
     }
 }
