@@ -30,9 +30,6 @@
         <item name="colorSecondaryContainer">#D6F0FF</item>
         <item name="colorSurface">@color/surface</item>
         <item name="colorSurfaceVariant">@color/surfaceVariant</item>
-        <item name="itemActiveIndicatorStyle">
-            @style/Theme.Orca.Component.Scaffold.BottomAppBar.Indicator
-        </item>
         <item name="textAppearanceBodyLarge">@style/Theme.Orca.Typography.BodyLarge</item>
         <item name="textAppearanceBodyMedium">@style/Theme.Orca.Typography.BodyMedium</item>
         <item name="textAppearanceBodySmall">@style/Theme.Orca.Typography.BodySmall</item>
