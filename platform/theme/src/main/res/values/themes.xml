@@ -3,6 +3,7 @@
 
     <color name="background">@android:color/white</color>
     <color name="brand">#10A9FF</color>
+    <color name="onBrand">@android:color/white</color>
     <color name="normalControl">#050505</color>
     <color name="onSecondaryContainer">@android:color/secondary_text_light</color>
     <color name="outlineVariant">#E5E5E5</color>
@@ -18,7 +19,7 @@
         <item name="android:textColorSecondary">@color/secondaryText</item>
         <item name="android:windowLightStatusBar">@bool/is_system_in_light_theme</item>
         <item name="colorControlNormal">@color/normalControl</item>
-        <item name="colorOnPrimaryContainer">@android:color/white</item>
+        <item name="colorOnPrimaryContainer">@color/onBrand</item>
         <item name="colorOnSecondaryContainer">@color/onSecondaryContainer</item>
         <item name="colorOnSurface">?colorControlNormal</item>
         <item name="colorOnSurfaceVariant">?attr/colorControlNormal</item>
@@ -29,6 +30,9 @@
         <item name="colorSecondaryContainer">#D6F0FF</item>
         <item name="colorSurface">@color/surface</item>
         <item name="colorSurfaceVariant">@color/surfaceVariant</item>
+        <item name="itemActiveIndicatorStyle">
+            @style/Theme.Orca.Component.Scaffold.BottomAppBar.Indicator
+        </item>
         <item name="textAppearanceBodyLarge">@style/Theme.Orca.Typography.BodyLarge</item>
         <item name="textAppearanceBodyMedium">@style/Theme.Orca.Typography.BodyMedium</item>
         <item name="textAppearanceBodySmall">@style/Theme.Orca.Typography.BodySmall</item>
