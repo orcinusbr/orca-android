@@ -12,7 +12,9 @@ import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabili
 import org.koin.core.module.Module
 
 @Suppress("FunctionName")
-internal fun DemoCoreModule(): Module {
+internal fun DemoCoreModule(
+    onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener
+): Module {
     val actorProvider = TestActorProvider()
     return CoreModule(
         { SampleAuthenticator(actorProvider) },
@@ -22,6 +24,6 @@ internal fun DemoCoreModule(): Module {
         { SampleProfileSearcher },
         { SampleTootProvider }
     ) {
-        OnBottomAreaAvailabilityChangeListener.empty
+        onBottomAreaAvailabilityChangeListener
     }
 }

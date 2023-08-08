@@ -10,11 +10,11 @@ import androidx.fragment.app.viewModels
 import com.jeanbarrossilva.orca.core.feed.profile.ProfileProvider
 import com.jeanbarrossilva.orca.core.feed.profile.toot.TootProvider
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState
-import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.ui.core.argument
 import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableFragment
 import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
 import com.jeanbarrossilva.orca.platform.ui.core.navigate
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
 class ProfileDetailsFragment internal constructor() : ComposableFragment(), ContextProvider {
@@ -26,8 +26,6 @@ class ProfileDetailsFragment internal constructor() : ComposableFragment(), Cont
             .createFactory(contextProvider = this, profileProvider, tootProvider, id)
     }
     private val navigator by inject<ProfileDetailsBoundary>()
-    private val onBottomAreaAvailabilityChangeListener by
-        inject<OnBottomAreaAvailabilityChangeListener>()
 
     constructor(backwardsNavigationState: BackwardsNavigationState, id: String) : this() {
         arguments =
@@ -44,7 +42,7 @@ class ProfileDetailsFragment internal constructor() : ComposableFragment(), Cont
             viewModel,
             navigator,
             backwardsNavigationState,
-            onBottomAreaAvailabilityChangeListener
+            onBottomAreaAvailabilityChangeListener = get()
         )
     }
 

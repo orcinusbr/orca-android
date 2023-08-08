@@ -20,6 +20,9 @@ import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.plus
+import com.jeanbarrossilva.orca.platform.theme.reactivity.BottomAreaAvailabilityNestedScrollConnection
+import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
+import com.jeanbarrossilva.orca.platform.theme.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBar
 import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBarDefaults
 import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.text.AutoSizeText
@@ -31,9 +34,12 @@ import java.net.URL
 internal fun Feed(
     viewModel: FeedViewModel,
     boundary: FeedBoundary,
+    onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
     val tootPreviewsLoadable by viewModel.tootPreviewsLoadableFlow.collectAsState()
+    val bottomAreaAvailabilityNestedScrollConnection =
+        rememberBottomAreaAvailabilityNestedScrollConnection(onBottomAreaAvailabilityChangeListener)
 
     Feed(
         tootPreviewsLoadable,
@@ -44,6 +50,7 @@ internal fun Feed(
         onTootClick = boundary::navigateToTootDetails,
         onNext = viewModel::loadTootsAt,
         onComposition = boundary::navigateToComposer,
+        bottomAreaAvailabilityNestedScrollConnection,
         modifier
     )
 }
@@ -59,6 +66,7 @@ internal fun Feed(
     onTootClick: (tootID: String) -> Unit,
     onNext: (index: Int) -> Unit,
     onComposition: () -> Unit,
+    bottomAreaAvailabilityNestedScrollConnection: BottomAreaAvailabilityNestedScrollConnection,
     modifier: Modifier = Modifier
 ) {
     val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
@@ -93,7 +101,9 @@ internal fun Feed(
             onShare,
             onTootClick,
             onNext,
-            Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+            Modifier
+                .nestedScroll(bottomAreaAvailabilityNestedScrollConnection)
+                .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
             contentPadding = it + OrcaTheme.overlays.fab
         )
     }
@@ -135,6 +145,7 @@ private fun Feed(tootPreviewsLoadable: ListLoadable<TootPreview>, modifier: Modi
         onTootClick = { },
         onNext = { },
         onComposition = { },
+        BottomAreaAvailabilityNestedScrollConnection.empty,
         modifier
     )
 }

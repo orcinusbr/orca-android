@@ -11,6 +11,7 @@ import com.jeanbarrossilva.orca.platform.ui.core.application
 import com.jeanbarrossilva.orca.platform.ui.core.argument
 import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableFragment
 import com.jeanbarrossilva.orca.platform.ui.core.navigate
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
 class TootDetailsFragment private constructor() : ComposableFragment() {
@@ -27,7 +28,7 @@ class TootDetailsFragment private constructor() : ComposableFragment() {
 
     @Composable
     override fun Content() {
-        TootDetails(viewModel, navigator)
+        TootDetails(viewModel, navigator, onBottomAreaAvailabilityChangeListener = get())
     }
 
     companion object {

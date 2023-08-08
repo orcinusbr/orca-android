@@ -24,6 +24,9 @@ import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.formatted
 import com.jeanbarrossilva.orca.feature.tootdetails.viewmodel.TootDetailsViewModel
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.backwardsNavigationArrow
+import com.jeanbarrossilva.orca.platform.theme.reactivity.BottomAreaAvailabilityNestedScrollConnection
+import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
+import com.jeanbarrossilva.orca.platform.theme.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
 import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBar
 import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBarDefaults
@@ -95,10 +98,13 @@ internal data class TootDetails(
 internal fun TootDetails(
     viewModel: TootDetailsViewModel,
     navigator: TootDetailsBoundary,
+    onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
     val tootLoadable by viewModel.detailsLoadableFlow.collectAsState()
     val commentsLoadable by viewModel.commentsLoadableFlow.collectAsState()
+    val bottomAreaAvailabilityNestedScrollConnection =
+        rememberBottomAreaAvailabilityNestedScrollConnection(onBottomAreaAvailabilityChangeListener)
 
     TootDetails(
         tootLoadable,
@@ -109,6 +115,7 @@ internal fun TootDetails(
         onNavigateToDetails = navigator::navigateToTootDetails,
         onNext = viewModel::loadCommentsAt,
         onBackwardsNavigation = navigator::pop,
+        bottomAreaAvailabilityNestedScrollConnection,
         modifier
     )
 }
@@ -124,6 +131,7 @@ private fun TootDetails(
     onNavigateToDetails: (tootID: String) -> Unit,
     onNext: (index: Int) -> Unit,
     onBackwardsNavigation: () -> Unit,
+    bottomAreaAvailabilityNestedScrollConnection: BottomAreaAvailabilityNestedScrollConnection,
     modifier: Modifier = Modifier
 ) {
     val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
@@ -154,7 +162,9 @@ private fun TootDetails(
             onShare,
             onClick = onNavigateToDetails,
             onNext,
-            Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+            Modifier
+                .nestedScroll(bottomAreaAvailabilityNestedScrollConnection)
+                .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
             contentPadding = it
         ) {
             when (tootLoadable) {
@@ -216,6 +226,7 @@ private fun TootDetails(
         onNavigateToDetails = { },
         onNext = { },
         onBackwardsNavigation = { },
+        BottomAreaAvailabilityNestedScrollConnection.empty,
         modifier
     )
 }

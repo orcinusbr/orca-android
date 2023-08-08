@@ -3,6 +3,7 @@ package com.jeanbarrossilva.orca.app
 import android.os.Bundle
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.jeanbarrossilva.orca.app.databinding.ActivityOrcaBinding
@@ -21,16 +22,21 @@ import org.koin.core.context.loadKoinModules
 
 internal open class OrcaActivity : AppCompatActivity(), OnBottomAreaAvailabilityChangeListener {
     private var binding: ActivityOrcaBinding? = null
+    private var constraintSet: ConstraintSet? = null
     private val containerID = R.id.container
 
     protected open val coreModule by lazy {
         MainCoreModule(this)
     }
 
+    override val height: Int
+        get() = binding?.bottomNavigationView?.height ?: 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         binding = ActivityOrcaBinding.inflate(layoutInflater)
+        constraintSet = ConstraintSet().apply { clone(binding?.root) }
         inject()
         setContentView(binding?.root)
         navigateOnBottomNavigationItemSelection()
@@ -40,11 +46,41 @@ internal open class OrcaActivity : AppCompatActivity(), OnBottomAreaAvailability
 
     override fun onDestroy() {
         super.onDestroy()
+        constraintSet = null
         binding = null
     }
 
-    override fun onBottomAreaAvailabilityChange(isAvailable: Boolean) {
-        binding?.bottomNavigationView?.setTonallyElevated(!isAvailable)
+    override fun getCurrentOffsetY(): Float {
+        return constraintSet
+            ?.getConstraint(R.id.bottom_navigation_view)
+            ?.transform
+            ?.translationY
+            ?: 0f
+    }
+
+    override fun onBottomAreaAvailabilityChange(offsetY: Float) {
+        constraintSet?.apply {
+            getConstraint(R.id.container).layout.bottomMargin = -offsetY.toInt()
+            getConstraint(R.id.bottom_navigation_view).transform.translationY = offsetY
+            connect(
+                R.id.bottom_navigation_card,
+                ConstraintSet.TOP,
+                R.id.bottom_navigation_view,
+                ConstraintSet.TOP,
+                offsetY.toInt()
+            )
+            applyTo(binding?.root)
+        }
+    }
+
+    private fun inject() {
+        val feedModule = FeedModule(supportFragmentManager, containerID)
+        val profileDetailsModule = ProfileDetailsModule(supportFragmentManager, containerID)
+        val searchModule = SearchModule(supportFragmentManager, containerID)
+        val tootDetailsModule = TootDetailsModule(supportFragmentManager, containerID)
+        val modules =
+            listOf(coreModule, feedModule, profileDetailsModule, searchModule, tootDetailsModule)
+        loadKoinModules(modules)
     }
 
     private fun navigateOnBottomNavigationItemSelection() {
@@ -72,15 +108,5 @@ internal open class OrcaActivity : AppCompatActivity(), OnBottomAreaAvailability
                 AuthActivity.start(this@OrcaActivity)
             }
         }
-    }
-
-    private fun inject() {
-        val feedModule = FeedModule(supportFragmentManager, containerID)
-        val profileDetailsModule = ProfileDetailsModule(supportFragmentManager, containerID)
-        val searchModule = SearchModule(supportFragmentManager, containerID)
-        val tootDetailsModule = TootDetailsModule(supportFragmentManager, containerID)
-        val modules =
-            listOf(coreModule, feedModule, profileDetailsModule, searchModule, tootDetailsModule)
-        loadKoinModules(modules)
     }
 }
