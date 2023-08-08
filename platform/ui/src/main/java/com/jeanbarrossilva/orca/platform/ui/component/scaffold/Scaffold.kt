@@ -13,11 +13,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,8 +24,8 @@ import com.jeanbarrossilva.orca.platform.theme.extensions.plus
 import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBar
 import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.ui.component.scaffold.snackbar.orcaVisuals
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.snackbar.showErrorSnackbar
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.snackbar.showInfoSnackbar
+import com.jeanbarrossilva.orca.platform.ui.component.scaffold.snackbar.presenter.SnackbarPresenter
+import com.jeanbarrossilva.orca.platform.ui.component.scaffold.snackbar.presenter.rememberSnackbarPresenter
 
 /**
  * Orca-specific [Scaffold].
@@ -36,10 +34,7 @@ import com.jeanbarrossilva.orca.platform.ui.component.scaffold.snackbar.showInfo
  * @param floatingActionButton [FloatingActionButton] to be placed at the bottom, horizontally
  * centered.
  * @param topAppBar [TopAppBar] to be placed at the top.
- * @param snackbarHostState [SnackbarHostState] through which a [Snackbar] can be shown. Note that
- * simply utilizing [SnackbarHostState.showSnackbar] will not work, so it should be requested to be
- * made visible via extensions provided by this module (such as [SnackbarHostState.showInfoSnackbar]
- * and [SnackbarHostState.showErrorSnackbar]).
+ * @param snackbarPresenter [SnackbarPresenter] through which [Snackbar]s can be presented.
  * @param content Main content of the current context.
  **/
 @Composable
@@ -47,14 +42,14 @@ fun Scaffold(
     modifier: Modifier = Modifier,
     floatingActionButton: @Composable () -> Unit,
     topAppBar: @Composable () -> Unit = { },
-    snackbarHostState: SnackbarHostState = remember(::SnackbarHostState),
+    snackbarPresenter: SnackbarPresenter = rememberSnackbarPresenter(),
     content: @Composable (padding: PaddingValues) -> Unit
 ) {
     Scaffold(
         modifier,
         topAppBar,
         snackbarHost = {
-            SnackbarHost(snackbarHostState) {
+            SnackbarHost(snackbarPresenter.hostState) {
                 Snackbar(
                     it,
                     shape = OrcaTheme.shapes.medium,
@@ -74,11 +69,11 @@ fun Scaffold(
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun ScaffoldPreview() {
-    val snackbarHostState = remember(::SnackbarHostState)
+    val snackbarPresenter = rememberSnackbarPresenter()
 
-    LaunchedEffect(snackbarHostState) {
-        snackbarHostState.showInfoSnackbar("Info")
-        snackbarHostState.showErrorSnackbar("Error")
+    LaunchedEffect(snackbarPresenter) {
+        snackbarPresenter.presentInfo("Info")
+        snackbarPresenter.presentError("Error")
     }
 
     OrcaTheme {
@@ -95,7 +90,7 @@ private fun ScaffoldPreview() {
                     AutoSizeText("Scaffold")
                 }
             },
-            snackbarHostState = snackbarHostState
+            snackbarPresenter = snackbarPresenter
         ) {
             LazyColumn(
                 Modifier.fillMaxSize(),
