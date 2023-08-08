@@ -7,6 +7,6 @@ package com.jeanbarrossilva.orca.platform.theme.extensions
  * @param condition Determines whether or not the result of [transform] will get returned.
  * @param transform Transformation to be made to the receiver.
  **/
-internal inline fun <T> T.`if`(condition: Boolean, transform: T.() -> T): T {
+inline fun <T> T.`if`(condition: Boolean, transform: T.() -> T): T {
     return if (condition) transform() else this
 }

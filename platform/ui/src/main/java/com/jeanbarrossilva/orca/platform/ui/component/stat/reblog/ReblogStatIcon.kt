@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.platform.ui.component.stat.reblog
 
+import android.content.res.Configuration
 import androidx.compose.material.icons.rounded.Repeat
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Surface
@@ -11,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIcon
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconColors
+import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconDefaults
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconInteractiveness
 
 /** Tag that identifies a [ReblogStatIcon] for testing purposes. **/
@@ -34,13 +36,13 @@ object ReblogStatIconDefaults {
 }
 
 /**
- * [ActivateableStatIcon] that represents a "reblog" stat.
+ * [ActivateableStatIconDefaults] that represents a "reblog" stat.
  *
  * @param isActive Whether the state it represents is enabled.
  * @param interactiveness [ActivateableStatIconInteractiveness] that indicates whether this
- * [ActivateableStatIcon] can be interacted with.
+ * [ActivateableStatIconDefaults] can be interacted with.
  * @param colors [ActivateableStatIconColors] that defines the [Color]s to color it.
- * @param modifier [Modifier] to be applied to the underlying [ActivateableStatIcon].
+ * @param modifier [Modifier] to be applied to the underlying [ActivateableStatIconDefaults].
  **/
 @Composable
 fun ReblogStatIcon(
@@ -61,6 +63,7 @@ fun ReblogStatIcon(
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun InactiveReblogStatIconPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colorScheme.background) {

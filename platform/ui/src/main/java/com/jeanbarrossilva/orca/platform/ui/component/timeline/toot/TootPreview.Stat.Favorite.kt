@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.platform.ui.component.timeline.toot
 
+import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
@@ -26,14 +27,11 @@ internal fun FavoriteStat(
 ) {
     val isActive = remember(preview) { preview.isFavorite }
     val containerColor by animateColorAsState(
-        if (isActive) FavoriteStatIconDefaults.ActiveColor else StatDefaults.containerColor
+        if (isActive) FavoriteStatIconDefaults.ActiveColor else StatDefaults.containerColor,
+        label = "ContainerColor"
     )
 
-    Stat(
-        onClick,
-        modifier.testTag(TOOT_PREVIEW_FAVORITE_STAT_TAG),
-        containerColor
-    ) {
+    Stat(onClick, modifier.testTag(TOOT_PREVIEW_FAVORITE_STAT_TAG), containerColor) {
         FavoriteStatIcon(
             isActive,
             ActivateableStatIconInteractiveness.Interactive { onClick() },
@@ -47,6 +45,7 @@ internal fun FavoriteStat(
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun InactiveFavoriteStatPreview() {
     OrcaTheme {
         FavoriteStat(TootPreview.sample.copy(isFavorite = false), onClick = { })

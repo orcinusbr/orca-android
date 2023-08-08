@@ -1,11 +1,13 @@
 package com.jeanbarrossilva.orca.platform.ui.component.stat
 
+import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.gestures.GestureCancellationException
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.rounded.WifiOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
@@ -25,12 +27,19 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 
-/** Tag for identifying an [ActivateableStatIcon] for testing purposes. **/
+/** Tag for identifying an [ActivateableStatIconDefaults] for testing purposes. **/
 const val ACTIVATEABLE_STAT_ICON_TAG = "activateable-stat-icon"
 
-/** Determines whether a [ActivateableStatIcon] is interactive. **/
+/** Default values of an [ActivateableStatIconDefaults]. **/
+internal object ActivateableStatIconDefaults {
+    /** Default size of an [ActivateableStatIconDefaults]. **/
+    val Size = 18.dp
+}
+
+/** Determines whether a [ActivateableStatIconDefaults] is interactive. **/
 sealed class ActivateableStatIconInteractiveness {
     /** Mode of non-interactivity. **/
     object Still : ActivateableStatIconInteractiveness() {
@@ -39,10 +48,10 @@ sealed class ActivateableStatIconInteractiveness {
     }
 
     /**
-     * Mode of interactivity in which the [ActivateableStatIcon] can be toggled.
+     * Mode of interactivity in which the [ActivateableStatIconDefaults] can be toggled.
      *
      * @param onInteraction Callback run whenever it's clicked, signalling a request for the state this
-     * [ActivateableStatIcon] represents to be switched.
+     * [ActivateableStatIconDefaults] represents to be switched.
      **/
     class Interactive(private val onInteraction: (isActive: Boolean) -> Unit) :
         ActivateableStatIconInteractiveness() {
@@ -54,16 +63,16 @@ sealed class ActivateableStatIconInteractiveness {
     /**
      * Performs an action based on the received interaction.
      *
-     * @param isActive Whether the [ActivateableStatIcon] is active.
+     * @param isActive Whether the [ActivateableStatIconDefaults] is active.
      **/
     internal abstract fun onInteraction(isActive: Boolean)
 }
 
 /**
- * Provides [Color]s for coloring a [ActivateableStatIcon].
+ * Provides [Color]s for coloring a [ActivateableStatIconDefaults].
  *
- * @param inactiveColor [Color] by which the [ActivateableStatIcon] is colored when it's inactive.
- * @param activeColor [Color] by which the [ActivateableStatIcon] is colored when it's active.
+ * @param inactiveColor [Color] by which the [ActivateableStatIconDefaults] is colored when it's inactive.
+ * @param activeColor [Color] by which the [ActivateableStatIconDefaults] is colored when it's active.
  **/
 @Immutable
 class ActivateableStatIconColors internal constructor(
@@ -71,10 +80,10 @@ class ActivateableStatIconColors internal constructor(
     private val activeColor: Color
 ) {
     /**
-     * Provides the [Color] that matches the activeness of the [ActivateableStatIcon] represented by
+     * Provides the [Color] that matches the activeness of the [ActivateableStatIconDefaults] represented by
      * [isActive].
      *
-     * @param isActive Whether the [ActivateableStatIcon] is active.
+     * @param isActive Whether the [ActivateableStatIconDefaults] is active.
      **/
     internal fun color(isActive: Boolean): Color {
         return if (isActive) activeColor else inactiveColor
@@ -85,10 +94,10 @@ class ActivateableStatIconColors internal constructor(
  * A stat [Icon] that can be in an active state.
  *
  * @param vector [ImageVector] that's the icon to be displayed.
- * @param contentDescription Shortly describes the operation this [ActivateableStatIcon] represents.
+ * @param contentDescription Shortly describes the operation this [ActivateableStatIconDefaults] represents.
  * @param isActive Whether the state it represents is enabled.
  * @param interactiveness [ActivateableStatIconInteractiveness] that indicates whether this
- * [ActivateableStatIcon] can be interacted with.
+ * [ActivateableStatIconDefaults] can be interacted with.
  * @param colors [ActivateableStatIconColors] that defines the [Color]s to color it.
  * @param modifier [Modifier] to be applied to the underlying [Icon].
  **/
@@ -104,9 +113,10 @@ internal fun ActivateableStatIcon(
     var isPressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
         if (isPressed) 1.5f else 1f,
-        spring(Spring.DampingRatioMediumBouncy)
+        spring(Spring.DampingRatioMediumBouncy),
+        label = "Scale"
     )
-    val tint by animateColorAsState(colors.color(isActive))
+    val tint by animateColorAsState(colors.color(isActive), label = "Tint")
 
     Icon(
         vector,
@@ -123,6 +133,7 @@ internal fun ActivateableStatIcon(
                 )
             }
             .scale(scale)
+            .size(ActivateableStatIconDefaults.Size)
             .testTag(ACTIVATEABLE_STAT_ICON_TAG)
             .semantics { selected = isActive },
         tint
@@ -131,6 +142,7 @@ internal fun ActivateableStatIcon(
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun InactiveActivateableStatIconPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colorScheme.background) {

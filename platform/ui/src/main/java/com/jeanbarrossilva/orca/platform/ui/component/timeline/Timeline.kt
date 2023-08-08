@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.platform.ui.component.timeline
 
+import android.content.res.Configuration
 import androidx.annotation.RestrictTo
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -87,7 +88,7 @@ fun Timeline(
 ) {
     when (tootPreviewsLoadable) {
         is ListLoadable.Empty ->
-            EmptyTimelineMessage(header, modifier)
+            EmptyTimelineMessage(header, contentPadding, modifier)
         is ListLoadable.Loading ->
             Timeline(modifier, contentPadding, header)
         is ListLoadable.Populated ->
@@ -159,7 +160,7 @@ fun Timeline(
     header: (@Composable LazyItemScope.() -> Unit)? = null
 ) {
     if (tootPreviews.isEmpty()) {
-        EmptyTimelineMessage(header, modifier)
+        EmptyTimelineMessage(header, contentPadding, modifier)
     } else {
         Timeline(onNext, header, modifier, state, contentPadding) {
             items(
@@ -241,11 +242,13 @@ private fun Timeline(
  * Message stating that the [Timeline] is empty.
  *
  * @param header [Composable] to be shown above the message.
+ * @param contentPadding [PaddingValues] to pad the contents with.
  * @param modifier [Modifier] to be applied to the underlying [Column].
  **/
 @Composable
 private fun EmptyTimelineMessage(
     header: (@Composable LazyItemScope.() -> Unit)?,
+    contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
     val spacing = OrcaTheme.spacings.extraLarge
@@ -256,6 +259,7 @@ private fun EmptyTimelineMessage(
         modifier
             .testTag(EMPTY_TIMELINE_MESSAGE_TAG)
             .fillMaxSize(),
+        contentPadding = contentPadding,
         verticalArrangement = Arrangement.spacedBy(spacing, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -287,6 +291,7 @@ private fun EmptyTimelineMessage(
 /** Preview of a loading [Timeline]. **/
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadingTimelinePreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colorScheme.background) {
@@ -298,6 +303,7 @@ private fun LoadingTimelinePreview() {
 /** Preview of an empty [Timeline]. **/
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun EmptyTimelinePreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colorScheme.background) {
@@ -316,6 +322,7 @@ private fun EmptyTimelinePreview() {
 /** Preview of a populated [Timeline]. **/
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun PopulatedTimelinePreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colorScheme.background) {

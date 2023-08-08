@@ -8,7 +8,6 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileProvider
 import com.jeanbarrossilva.orca.core.sample.feed.profile.search.SampleProfileSearcher
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.SampleTootProvider
 import com.jeanbarrossilva.orca.core.test.TestActorProvider
-import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import org.koin.core.module.Module
 
 @Suppress("FunctionName")
@@ -19,9 +18,8 @@ internal fun DemoCoreModule(): Module {
         { AuthenticationLock(authenticator = get(), actorProvider) },
         { SampleFeedProvider },
         { SampleProfileProvider },
-        { SampleProfileSearcher },
-        { SampleTootProvider }
+        { SampleProfileSearcher }
     ) {
-        OnBottomAreaAvailabilityChangeListener.empty
+        SampleTootProvider
     }
 }

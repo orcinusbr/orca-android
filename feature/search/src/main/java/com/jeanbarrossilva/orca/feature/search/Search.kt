@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.feature.search
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -44,7 +45,7 @@ import com.jeanbarrossilva.orca.feature.search.ui.SearchResultCard
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.backwardsNavigationArrow
 import com.jeanbarrossilva.orca.platform.ui.component.input.TextField
-import com.jeanbarrossilva.orca.platform.ui.core.tryToRequestFocus
+import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 
 internal object SearchDefaults {
     val VerticalArrangement = Arrangement.Top
@@ -162,7 +163,7 @@ private fun Search(
     val spacing = OrcaTheme.spacings.medium
 
     LaunchedEffect(Unit) {
-        focusRequester.tryToRequestFocus()
+        focusRequester.requestFocusWithDelay()
     }
 
     Scaffold(
@@ -224,6 +225,7 @@ private fun EmptyResultsMessage(modifier: Modifier = Modifier) {
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadingSearchPreview() {
     OrcaTheme {
         Search(query = "", onQueryChange = { }, onBackwardsNavigation = { })
@@ -232,6 +234,7 @@ private fun LoadingSearchPreview() {
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun EmptyResultsPreview() {
     OrcaTheme {
         Search(
@@ -246,6 +249,7 @@ private fun EmptyResultsPreview() {
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadedSearchPreview() {
     OrcaTheme {
         Search(

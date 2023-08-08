@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.feature.auth
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,7 +33,7 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.account.sample
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.action.PrimaryButton
 import com.jeanbarrossilva.orca.platform.ui.component.input.TextField
-import com.jeanbarrossilva.orca.platform.ui.core.tryToRequestFocus
+import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 
 /** Tag that identifies the username field for testing purposes. **/
 internal const val AUTH_USERNAME_FIELD_TAG = "auth-username-field"
@@ -72,7 +73,7 @@ internal fun Auth(
     val nextButtonFocusRequester = remember(::FocusRequester)
 
     LaunchedEffect(Unit) {
-        usernameFocusRequester.tryToRequestFocus()
+        usernameFocusRequester.requestFocusWithDelay()
     }
 
     Box(
@@ -158,14 +159,30 @@ internal fun Auth(
 
 @Composable
 @Preview
-private fun AuthPreview() {
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun InvalidAuthPreview() {
     OrcaTheme {
-        Auth(
-            Account.sample.username,
-            onUsernameChange = { },
-            Account.sample.instance,
-            onInstanceChange = { },
-            onSignIn = { }
-        )
+        Auth(username = "", instance = "")
     }
+}
+
+@Composable
+@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun ValidAuthPreview() {
+    OrcaTheme {
+        Auth(Account.sample.username, Account.sample.instance)
+    }
+}
+
+@Composable
+private fun Auth(username: String, instance: String, modifier: Modifier = Modifier) {
+    Auth(
+        username,
+        onUsernameChange = { },
+        instance,
+        onInstanceChange = { },
+        onSignIn = { },
+        modifier
+    )
 }

@@ -9,6 +9,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.TootProvider
 import com.jeanbarrossilva.orca.platform.ui.core.argument
 import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableFragment
 import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
+import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
 class FeedFragment internal constructor() : ComposableFragment(), ContextProvider {
@@ -26,7 +27,7 @@ class FeedFragment internal constructor() : ComposableFragment(), ContextProvide
 
     @Composable
     override fun Content() {
-        Feed(viewModel, boundary)
+        Feed(viewModel, boundary, onBottomAreaAvailabilityChangeListener = get())
     }
 
     override fun provide(): Context {

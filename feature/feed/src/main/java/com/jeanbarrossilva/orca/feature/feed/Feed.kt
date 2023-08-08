@@ -1,24 +1,31 @@
 package com.jeanbarrossilva.orca.feature.feed
 
+import android.content.res.Configuration
 import androidx.compose.material.icons.rounded.Create
 import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.extensions.plus
+import com.jeanbarrossilva.orca.platform.theme.reactivity.BottomAreaAvailabilityNestedScrollConnection
+import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
+import com.jeanbarrossilva.orca.platform.theme.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
+import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBar
+import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBarDefaults
+import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import java.net.URL
@@ -27,9 +34,12 @@ import java.net.URL
 internal fun Feed(
     viewModel: FeedViewModel,
     boundary: FeedBoundary,
+    onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
     val tootPreviewsLoadable by viewModel.tootPreviewsLoadableFlow.collectAsState()
+    val bottomAreaAvailabilityNestedScrollConnection =
+        rememberBottomAreaAvailabilityNestedScrollConnection(onBottomAreaAvailabilityChangeListener)
 
     Feed(
         tootPreviewsLoadable,
@@ -40,12 +50,34 @@ internal fun Feed(
         onTootClick = boundary::navigateToTootDetails,
         onNext = viewModel::loadTootsAt,
         onComposition = boundary::navigateToComposer,
+        bottomAreaAvailabilityNestedScrollConnection,
         modifier
     )
 }
 
 @Composable
 internal fun Feed(
+    tootPreviewsLoadable: ListLoadable<TootPreview>,
+    modifier: Modifier = Modifier,
+    onFavorite: (tootID: String) -> Unit = { }
+) {
+    Feed(
+        tootPreviewsLoadable,
+        onSearch = { },
+        onFavorite,
+        onReblog = { },
+        onShare = { },
+        onTootClick = { },
+        onNext = { },
+        onComposition = { },
+        BottomAreaAvailabilityNestedScrollConnection.empty,
+        modifier
+    )
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun Feed(
     tootPreviewsLoadable: ListLoadable<TootPreview>,
     onSearch: () -> Unit,
     onFavorite: (tootID: String) -> Unit,
@@ -54,19 +86,23 @@ internal fun Feed(
     onTootClick: (tootID: String) -> Unit,
     onNext: (index: Int) -> Unit,
     onComposition: () -> Unit,
+    bottomAreaAvailabilityNestedScrollConnection: BottomAreaAvailabilityNestedScrollConnection,
     modifier: Modifier = Modifier
 ) {
+    val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
+
     Scaffold(
         modifier,
         topBar = {
             @OptIn(ExperimentalMaterial3Api::class)
-            CenterAlignedTopAppBar(
-                title = { Text("Feed") },
+            TopAppBar(
+                title = { AutoSizeText("Feed") },
                 actions = {
                     IconButton(onClick = onSearch) {
                         Icon(OrcaTheme.Icons.Search, contentDescription = "Search")
                     }
-                }
+                },
+                scrollBehavior = topAppBarScrollBehavior
             )
         },
         floatingActionButton = {
@@ -85,13 +121,17 @@ internal fun Feed(
             onShare,
             onTootClick,
             onNext,
-            contentPadding = it
+            Modifier
+                .nestedScroll(bottomAreaAvailabilityNestedScrollConnection)
+                .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+            contentPadding = it + OrcaTheme.overlays.fab
         )
     }
 }
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadingFeedPreview() {
     OrcaTheme {
         Feed(ListLoadable.Loading())
@@ -112,19 +152,4 @@ private fun PopulatedFeedPreview() {
     OrcaTheme {
         Feed(TootPreview.samples.toSerializableList().toListLoadable())
     }
-}
-
-@Composable
-private fun Feed(tootPreviewsLoadable: ListLoadable<TootPreview>, modifier: Modifier = Modifier) {
-    Feed(
-        tootPreviewsLoadable,
-        onSearch = { },
-        onFavorite = { },
-        onReblog = { },
-        onShare = { },
-        onTootClick = { },
-        onNext = { },
-        onComposition = { },
-        modifier
-    )
 }

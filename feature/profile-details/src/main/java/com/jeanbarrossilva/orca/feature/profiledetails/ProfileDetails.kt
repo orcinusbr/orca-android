@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.feature.profiledetails
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -15,8 +16,6 @@ import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.OpenInBrowser
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.Button
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -25,8 +24,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -34,6 +35,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.AnnotatedString
@@ -55,7 +57,14 @@ import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavig
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.NavigationButton
 import com.jeanbarrossilva.orca.feature.profiledetails.ui.Header
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
+import com.jeanbarrossilva.orca.platform.theme.reactivity.BottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
+import com.jeanbarrossilva.orca.platform.theme.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
+import com.jeanbarrossilva.orca.platform.ui.component.menu.DropdownMenu
+import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBar
+import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBarDefaults as _TopAppBarDefaults
+import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import java.io.Serializable
@@ -212,6 +221,8 @@ internal fun ProfileDetails(
 ) {
     val detailsLoadable by viewModel.detailsLoadableFlow.collectAsState()
     val tootsLoadable by viewModel.tootPreviewsLoadableFlow.collectAsState()
+    val bottomAreaAvailabilityNestedScrollConnection =
+        rememberBottomAreaAvailabilityNestedScrollConnection(onBottomAreaAvailabilityChangeListener)
 
     ProfileDetails(
         navigator,
@@ -224,7 +235,7 @@ internal fun ProfileDetails(
         origin,
         navigator::navigateToWebpage,
         onShare = viewModel::share,
-        onBottomAreaAvailabilityChangeListener,
+        bottomAreaAvailabilityNestedScrollConnection,
         modifier
     )
 }
@@ -233,7 +244,9 @@ internal fun ProfileDetails(
 internal fun ProfileDetails(
     detailsLoadable: Loadable<ProfileDetails>,
     tootPreviewsLoadable: ListLoadable<TootPreview>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isTopBarDropdownMenuExpanded: Boolean = false,
+    initialFirstVisibleTimelineItemIndex: Int = 0
 ) {
     ProfileDetails(
         ProfileDetailsBoundary.empty,
@@ -246,8 +259,10 @@ internal fun ProfileDetails(
         BackwardsNavigationState.Unavailable,
         onNavigateToWebpage = { },
         onShare = { },
-        onBottomAreaAvailabilityChangeListener = OnBottomAreaAvailabilityChangeListener.empty,
-        modifier
+        BottomAreaAvailabilityNestedScrollConnection.empty,
+        modifier,
+        isTopBarDropdownMenuExpanded,
+        initialFirstVisibleTimelineItemIndex
     )
 }
 
@@ -263,16 +278,14 @@ private fun ProfileDetails(
     origin: BackwardsNavigationState,
     onNavigateToWebpage: (URL) -> Unit,
     onShare: (URL) -> Unit,
-    onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
-    modifier: Modifier = Modifier
+    bottomAreaAvailabilityNestedScrollConnection: BottomAreaAvailabilityNestedScrollConnection,
+    modifier: Modifier = Modifier,
+    isTopBarDropdownMenuExpanded: Boolean = false,
+    initialFirstVisibleTimelineItemIndex: Int = 0
 ) {
     when (detailsLoadable) {
         is Loadable.Loading ->
-            ProfileDetails(
-                origin,
-                onBottomAreaAvailabilityChangeListener,
-                modifier
-            )
+            ProfileDetails(origin, bottomAreaAvailabilityNestedScrollConnection, modifier)
         is Loadable.Loaded ->
             ProfileDetails(
                 navigator,
@@ -285,8 +298,10 @@ private fun ProfileDetails(
                 origin,
                 onNavigateToWebpage,
                 onShare,
-                onBottomAreaAvailabilityChangeListener,
-                modifier
+                bottomAreaAvailabilityNestedScrollConnection,
+                modifier,
+                isTopBarDropdownMenuExpanded,
+                initialFirstVisibleTimelineItemIndex
             )
         is Loadable.Failed ->
             Unit
@@ -296,26 +311,37 @@ private fun ProfileDetails(
 @Composable
 private fun ProfileDetails(
     origin: BackwardsNavigationState,
-    onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
+    bottomAreaAvailabilityNestedScrollConnection: BottomAreaAvailabilityNestedScrollConnection,
     modifier: Modifier = Modifier
 ) {
+    @OptIn(ExperimentalMaterial3Api::class)
+    val topAppBarScrollBehavior = _TopAppBarDefaults.scrollBehavior
+
+    @OptIn(ExperimentalMaterial3Api::class)
     ProfileDetails(
+        topAppBarScrollBehavior,
         title = { MediumTextualPlaceholder() },
         actions = { },
         timelineState = rememberLazyListState(),
-        timeline = {
-            Timeline {
+        timeline = { shouldNestScrollToTopAppBar, _ ->
+            Timeline(
+                Modifier
+                    .nestedScroll(bottomAreaAvailabilityNestedScrollConnection)
+                    .`if`(shouldNestScrollToTopAppBar) {
+                        nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
+                    }
+            ) {
                 Header()
             }
         },
         floatingActionButton = { },
         origin,
-        onBottomAreaAvailabilityChangeListener,
         modifier
     )
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 private fun ProfileDetails(
     navigator: ProfileDetailsBoundary,
     details: ProfileDetails,
@@ -327,15 +353,21 @@ private fun ProfileDetails(
     origin: BackwardsNavigationState,
     onNavigateToWebpage: (URL) -> Unit,
     onShare: (URL) -> Unit,
-    onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
-    modifier: Modifier = Modifier
+    bottomAreaAvailabilityNestedScrollConnection: BottomAreaAvailabilityNestedScrollConnection,
+    modifier: Modifier = Modifier,
+    isTopBarDropdownMenuExpanded: Boolean = false,
+    initialFirstVisibleTimelineItemIndex: Int = 0
 ) {
     val clipboardManager = LocalClipboardManager.current
-    var isTopBarDropdownExpanded by remember { mutableStateOf(false) }
-    val timelineState = rememberLazyListState()
+    val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    var isTopBarDropdownExpanded by remember(isTopBarDropdownMenuExpanded) {
+        mutableStateOf(isTopBarDropdownMenuExpanded)
+    }
+    val timelineState = rememberLazyListState(initialFirstVisibleTimelineItemIndex)
 
     ProfileDetails(
-        title = { Text(details.username) },
+        topAppBarScrollBehavior,
+        title = { AutoSizeText(details.username) },
         actions = {
             Box {
                 IconButton(onClick = { isTopBarDropdownExpanded = true }) {
@@ -344,7 +376,7 @@ private fun ProfileDetails(
 
                 DropdownMenu(
                     isTopBarDropdownExpanded,
-                    onDismissRequest = { isTopBarDropdownExpanded = false }
+                    onDismissal = { isTopBarDropdownExpanded = false }
                 ) {
                     DropdownMenuItem(
                         text = { Text("Open in browser") },
@@ -385,7 +417,7 @@ private fun ProfileDetails(
             }
         },
         timelineState,
-        timeline = {
+        timeline = { shouldNestScrollToTopAppBar, padding ->
             Timeline(
                 tootsLoadable,
                 onFavorite,
@@ -393,29 +425,34 @@ private fun ProfileDetails(
                 onShare,
                 onClick = onNavigationToTootDetails,
                 onNext,
-                Modifier.statusBarsPadding(),
+                Modifier
+                    .statusBarsPadding()
+                    .nestedScroll(bottomAreaAvailabilityNestedScrollConnection)
+                    .`if`(shouldNestScrollToTopAppBar) {
+                        nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
+                    },
                 timelineState,
-                contentPadding = it
+                contentPadding = padding
             ) {
                 Header(details)
             }
         },
         floatingActionButton = { details.FloatingActionButton(navigator) },
         origin,
-        onBottomAreaAvailabilityChangeListener,
         modifier
     )
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 private fun ProfileDetails(
+    topAppBarScrollBehavior: TopAppBarScrollBehavior,
     title: @Composable () -> Unit,
     actions: @Composable RowScope.() -> Unit,
     timelineState: LazyListState,
-    timeline: @Composable (padding: PaddingValues) -> Unit,
+    timeline: @Composable (shouldNestScrollToTopAppBar: Boolean, padding: PaddingValues) -> Unit,
     floatingActionButton: @Composable () -> Unit,
     origin: BackwardsNavigationState,
-    onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
     val isHeaderHidden by remember(timelineState) {
@@ -423,23 +460,20 @@ private fun ProfileDetails(
             timelineState.firstVisibleItemIndex > 0
         }
     }
-    val isBottomAreaAvailable by remember {
-        derivedStateOf {
-            timelineState.canScrollForward
-        }
-    }
 
-    DisposableEffect(isBottomAreaAvailable) {
-        onBottomAreaAvailabilityChangeListener.onBottomAreaAvailabilityChange(isBottomAreaAvailable)
-        onDispose { }
+    LaunchedEffect(isHeaderHidden) {
+        if (!isHeaderHidden) {
+            timelineState.animateScrollToItem(0)
+        }
     }
 
     Box(modifier) {
         Scaffold(
             floatingActionButton = floatingActionButton,
-            floatingActionButtonPosition = FabPosition.Center,
-            content = timeline
-        )
+            floatingActionButtonPosition = FabPosition.Center
+        ) {
+            timeline(isHeaderHidden, it)
+        }
 
         AnimatedVisibility(
             visible = isHeaderHidden,
@@ -447,11 +481,12 @@ private fun ProfileDetails(
             exit = slideOutVertically { -it }
         ) {
             @OptIn(ExperimentalMaterial3Api::class)
-            CenterAlignedTopAppBar(
-                title = title,
+            TopAppBar(
                 Modifier.testTag(PROFILE_DETAILS_TOP_BAR_TAG),
                 navigationIcon = { origin.NavigationButton() },
-                actions
+                actions,
+                topAppBarScrollBehavior,
+                title
             )
         }
     }
@@ -459,17 +494,19 @@ private fun ProfileDetails(
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadingProfileDetailsPreview() {
     OrcaTheme {
         ProfileDetails(
             BackwardsNavigationState.Unavailable,
-            OnBottomAreaAvailabilityChangeListener.empty
+            BottomAreaAvailabilityNestedScrollConnection.empty
         )
     }
 }
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadedProfileDetailsWithoutTootsPreview() {
     OrcaTheme {
         ProfileDetails(
@@ -481,11 +518,26 @@ private fun LoadedProfileDetailsWithoutTootsPreview() {
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadedProfileDetailsWithTootsPreview() {
     OrcaTheme {
         ProfileDetails(
             Loadable.Loaded(ProfileDetails.sample),
             tootPreviewsLoadable = TootPreview.samples.toSerializableList().toListLoadable()
+        )
+    }
+}
+
+@Composable
+@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun LoadedProfileDetailsWithExpandedTopBarDropdownMenuPreview() {
+    OrcaTheme {
+        ProfileDetails(
+            Loadable.Loaded(ProfileDetails.sample),
+            tootPreviewsLoadable = TootPreview.samples.toSerializableList().toListLoadable(),
+            isTopBarDropdownMenuExpanded = true,
+            initialFirstVisibleTimelineItemIndex = 1
         )
     }
 }

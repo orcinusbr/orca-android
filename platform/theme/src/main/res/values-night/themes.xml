@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="is_system_in_light_theme">false</bool>
+
+    <color name="background">#0B0B0B</color>
+    <color name="normalControl">#F5F5F5</color>
+    <color name="onSecondaryContainer">@android:color/secondary_text_light</color>
+    <color name="outlineVariant">#353535</color>
+    <color name="secondaryText">#A0A0A0</color>
+    <color name="surfaceVariant">#3E3E3E</color>
+    <color name="surface">#1A1A1A</color>
+</resources>

@@ -1,16 +1,16 @@
 package com.jeanbarrossilva.orca.feature.tootdetails
 
-import androidx.compose.material3.CenterAlignedTopAppBar
+import android.content.res.Configuration
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.Loadable
@@ -24,7 +24,13 @@ import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.formatted
 import com.jeanbarrossilva.orca.feature.tootdetails.viewmodel.TootDetailsViewModel
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.backwardsNavigationArrow
+import com.jeanbarrossilva.orca.platform.theme.reactivity.BottomAreaAvailabilityNestedScrollConnection
+import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
+import com.jeanbarrossilva.orca.platform.theme.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
+import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBar
+import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBarDefaults
+import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.formatted
@@ -92,10 +98,13 @@ internal data class TootDetails(
 internal fun TootDetails(
     viewModel: TootDetailsViewModel,
     navigator: TootDetailsBoundary,
+    onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
     val tootLoadable by viewModel.detailsLoadableFlow.collectAsState()
     val commentsLoadable by viewModel.commentsLoadableFlow.collectAsState()
+    val bottomAreaAvailabilityNestedScrollConnection =
+        rememberBottomAreaAvailabilityNestedScrollConnection(onBottomAreaAvailabilityChangeListener)
 
     TootDetails(
         tootLoadable,
@@ -106,11 +115,13 @@ internal fun TootDetails(
         onNavigateToDetails = navigator::navigateToTootDetails,
         onNext = viewModel::loadCommentsAt,
         onBackwardsNavigation = navigator::pop,
+        bottomAreaAvailabilityNestedScrollConnection,
         modifier
     )
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 private fun TootDetails(
     tootLoadable: Loadable<TootDetails>,
     commentsLoadable: ListLoadable<TootDetails>,
@@ -120,14 +131,16 @@ private fun TootDetails(
     onNavigateToDetails: (tootID: String) -> Unit,
     onNext: (index: Int) -> Unit,
     onBackwardsNavigation: () -> Unit,
+    bottomAreaAvailabilityNestedScrollConnection: BottomAreaAvailabilityNestedScrollConnection,
     modifier: Modifier = Modifier
 ) {
+    val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
+
     Scaffold(
         modifier,
         topBar = {
             @OptIn(ExperimentalMaterial3Api::class)
-            CenterAlignedTopAppBar(
-                title = { Text("Toot") },
+            TopAppBar(
                 navigationIcon = {
                     IconButton(onClick = onBackwardsNavigation) {
                         Icon(
@@ -135,8 +148,11 @@ private fun TootDetails(
                             contentDescription = "Back"
                         )
                     }
-                }
-            )
+                },
+                scrollBehavior = topAppBarScrollBehavior
+            ) {
+                AutoSizeText("Toot")
+            }
         }
     ) {
         Timeline(
@@ -146,6 +162,9 @@ private fun TootDetails(
             onShare,
             onClick = onNavigateToDetails,
             onNext,
+            Modifier
+                .nestedScroll(bottomAreaAvailabilityNestedScrollConnection)
+                .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
             contentPadding = it
         ) {
             when (tootLoadable) {
@@ -167,6 +186,7 @@ private fun TootDetails(
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadingTootDetailsPreview() {
     OrcaTheme {
         TootDetails(Loadable.Loading(), commentsLoadable = ListLoadable.Loading())
@@ -175,6 +195,7 @@ private fun LoadingTootDetailsPreview() {
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadedTootDetailsWithoutComments() {
     OrcaTheme {
         TootDetails(Loadable.Loaded(TootDetails.sample), commentsLoadable = ListLoadable.Empty())
@@ -183,6 +204,7 @@ private fun LoadedTootDetailsWithoutComments() {
 
 @Composable
 @Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadedTootDetailsPreview() {
     OrcaTheme {
         TootDetails(Loadable.Loaded(TootDetails.sample), commentsLoadable = ListLoadable.Loading())
@@ -204,6 +226,7 @@ private fun TootDetails(
         onNavigateToDetails = { },
         onNext = { },
         onBackwardsNavigation = { },
+        BottomAreaAvailabilityNestedScrollConnection.empty,
         modifier
     )
 }
