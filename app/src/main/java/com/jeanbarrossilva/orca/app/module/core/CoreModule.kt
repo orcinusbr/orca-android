@@ -18,7 +18,6 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.MastodonProfil
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.ProfileSearchResultsStore
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonTootProvider
 import com.jeanbarrossilva.orca.core.sharedpreferences.actor.SharedPreferencesActorProvider
-import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.definition.Definition
 import org.koin.core.module.Module
@@ -27,9 +26,7 @@ import org.koin.dsl.module
 import org.koin.java.KoinJavaComponent
 
 @Suppress("FunctionName")
-internal fun MainCoreModule(
-    onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener
-): Module {
+internal fun MainCoreModule(): Module {
     val context = KoinJavaComponent.get<Context>(Context::class.java)
     val actorProvider = SharedPreferencesActorProvider(context)
     val tootPaginateSource = MastodonFeedProvider.PaginateSource()
@@ -45,9 +42,7 @@ internal fun MainCoreModule(
         { MastodonProfileProvider(profileStore) },
         { MastodonProfileSearcher(profileSearchResultsStore) },
         { MastodonTootProvider() }
-    ) {
-        onBottomAreaAvailabilityChangeListener
-    }
+    )
 }
 
 @Suppress("FunctionName")
@@ -57,8 +52,7 @@ internal fun CoreModule(
     feedProvider: Definition<FeedProvider>,
     profileProvider: Definition<ProfileProvider>,
     profileSearcher: Definition<ProfileSearcher>,
-    tootProvider: Definition<TootProvider>,
-    onBottomAreaAvailabilityChangeListener: Definition<OnBottomAreaAvailabilityChangeListener>
+    tootProvider: Definition<TootProvider>
 ): Module {
     return CoreModule<Authorizer, Authenticator>(
         authorizer = null,
@@ -67,8 +61,7 @@ internal fun CoreModule(
         feedProvider,
         profileProvider,
         profileSearcher,
-        tootProvider,
-        onBottomAreaAvailabilityChangeListener
+        tootProvider
     )
 }
 
@@ -80,8 +73,7 @@ private inline fun <reified A1 : Authorizer, reified A2 : Authenticator> CoreMod
     noinline feedProvider: Definition<FeedProvider>,
     noinline profileProvider: Definition<ProfileProvider>,
     noinline profileSearcher: Definition<ProfileSearcher>,
-    noinline tootProvider: Definition<TootProvider>,
-    noinline onBottomAreaAvailabilityChangeListener: Definition<OnBottomAreaAvailabilityChangeListener> // ktlint-disable max-line-length parameter-wrapping
+    noinline tootProvider: Definition<TootProvider>
 ): Module {
     return module {
         authorizer?.let { single(definition = it) binds arrayOf(Authorizer::class, A1::class) }
@@ -91,6 +83,5 @@ private inline fun <reified A1 : Authorizer, reified A2 : Authenticator> CoreMod
         single(definition = profileProvider)
         single(definition = profileSearcher)
         single(definition = tootProvider)
-        single(definition = onBottomAreaAvailabilityChangeListener)
     }
 }

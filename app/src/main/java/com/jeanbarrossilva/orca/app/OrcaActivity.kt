@@ -7,6 +7,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.jeanbarrossilva.orca.app.databinding.ActivityOrcaBinding
+import com.jeanbarrossilva.orca.app.module.AppModule
 import com.jeanbarrossilva.orca.app.module.core.MainCoreModule
 import com.jeanbarrossilva.orca.app.module.feature.feed.FeedModule
 import com.jeanbarrossilva.orca.app.module.feature.profiledetails.ProfileDetailsModule
@@ -25,9 +26,8 @@ internal open class OrcaActivity : AppCompatActivity(), OnBottomAreaAvailability
     private var constraintSet: ConstraintSet? = null
     private val containerID = R.id.container
 
-    protected open val coreModule by lazy {
-        MainCoreModule(this)
-    }
+    protected open val coreModule = MainCoreModule()
+    protected open val appModule by lazy { AppModule(this) }
 
     override val height: Int
         get() = binding?.bottomNavigationView?.height ?: 0
@@ -78,8 +78,14 @@ internal open class OrcaActivity : AppCompatActivity(), OnBottomAreaAvailability
         val profileDetailsModule = ProfileDetailsModule(supportFragmentManager, containerID)
         val searchModule = SearchModule(supportFragmentManager, containerID)
         val tootDetailsModule = TootDetailsModule(supportFragmentManager, containerID)
-        val modules =
-            listOf(coreModule, feedModule, profileDetailsModule, searchModule, tootDetailsModule)
+        val modules = listOf(
+            appModule,
+            coreModule,
+            feedModule,
+            profileDetailsModule,
+            searchModule,
+            tootDetailsModule
+        )
         loadKoinModules(modules)
     }
 
