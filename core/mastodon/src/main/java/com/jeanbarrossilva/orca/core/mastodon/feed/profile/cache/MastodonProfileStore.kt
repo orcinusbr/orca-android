@@ -22,8 +22,7 @@ import kotlin.time.ExperimentalTime
 private typealias MastodonProfileFetcher = Fetcher<String, MastodonProfileEntity>
 
 /** [MastodonProfileStore]'s [SourceOfTruth]. **/
-private typealias MastodonProfileSourceOfTruth =
-    SourceOfTruth<String, MastodonProfileEntity, Optional<Profile>>
+private typealias MastodonProfileSourceOfTruth = SourceOfTruth<String, MastodonProfileEntity, Optional<Profile>> // ktlint-disable max-line-length
 
 /** [Store] for storing [Profile]s. **/
 internal typealias MastodonProfileStore = Store<String, Optional<Profile>>

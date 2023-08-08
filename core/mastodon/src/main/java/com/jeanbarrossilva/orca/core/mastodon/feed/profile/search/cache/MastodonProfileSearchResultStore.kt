@@ -21,12 +21,10 @@ import io.ktor.client.request.parameter
 import kotlin.time.ExperimentalTime
 
 /** [ProfileSearchResultsStore]'s [Fetcher]. **/
-private typealias ProfileSearchResultsFetcher =
-    Fetcher<String, List<ProfileSearchResultEntity>>
+private typealias ProfileSearchResultsFetcher = Fetcher<String, List<ProfileSearchResultEntity>>
 
 /** [ProfileSearchResultsStore]'s [SourceOfTruth]. **/
-private typealias ProfileSearchResultsSourceOfTruth =
-    SourceOfTruth<String, List<ProfileSearchResultEntity>, List<ProfileSearchResult>>
+private typealias ProfileSearchResultsSourceOfTruth = SourceOfTruth<String, List<ProfileSearchResultEntity>, List<ProfileSearchResult>> // ktlint-disable max-line-length
 
 /** [Store] for [ProfileSearchResult]s. **/
 typealias ProfileSearchResultsStore = Store<String, List<ProfileSearchResult>>
