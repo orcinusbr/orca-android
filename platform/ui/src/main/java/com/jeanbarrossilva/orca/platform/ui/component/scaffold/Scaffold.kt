@@ -73,7 +73,7 @@ private fun ScaffoldPreview() {
 
     LaunchedEffect(snackbarPresenter) {
         snackbarPresenter.presentInfo("Info")
-        snackbarPresenter.presentError("Error")
+        snackbarPresenter.presentError("Error") { }
     }
 
     OrcaTheme {
