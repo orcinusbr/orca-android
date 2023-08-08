@@ -30,13 +30,7 @@ internal class FeedTests {
             OrcaTheme {
                 Feed(
                     TootPreview.samples.toSerializableList().toListLoadable(),
-                    onSearch = { },
-                    onFavorite = { hasCallbackBeenCalled = true },
-                    onReblog = { },
-                    onShare = { },
-                    onTootClick = { },
-                    onNext = { },
-                    onComposition = { }
+                    onFavorite = { hasCallbackBeenCalled = true }
                 )
             }
         }

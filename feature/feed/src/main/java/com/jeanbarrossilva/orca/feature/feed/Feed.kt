@@ -56,8 +56,28 @@ internal fun Feed(
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 internal fun Feed(
+    tootPreviewsLoadable: ListLoadable<TootPreview>,
+    modifier: Modifier = Modifier,
+    onFavorite: (tootID: String) -> Unit = { }
+) {
+    Feed(
+        tootPreviewsLoadable,
+        onSearch = { },
+        onFavorite,
+        onReblog = { },
+        onShare = { },
+        onTootClick = { },
+        onNext = { },
+        onComposition = { },
+        BottomAreaAvailabilityNestedScrollConnection.empty,
+        modifier
+    )
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun Feed(
     tootPreviewsLoadable: ListLoadable<TootPreview>,
     onSearch: () -> Unit,
     onFavorite: (tootID: String) -> Unit,
@@ -132,20 +152,4 @@ private fun PopulatedFeedPreview() {
     OrcaTheme {
         Feed(TootPreview.samples.toSerializableList().toListLoadable())
     }
-}
-
-@Composable
-private fun Feed(tootPreviewsLoadable: ListLoadable<TootPreview>, modifier: Modifier = Modifier) {
-    Feed(
-        tootPreviewsLoadable,
-        onSearch = { },
-        onFavorite = { },
-        onReblog = { },
-        onShare = { },
-        onTootClick = { },
-        onNext = { },
-        onComposition = { },
-        BottomAreaAvailabilityNestedScrollConnection.empty,
-        modifier
-    )
 }
