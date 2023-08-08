@@ -1,7 +1,6 @@
 package com.jeanbarrossilva.orca.core.mastodon.auth.authorization.ui
 
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.viewModels
