@@ -4,11 +4,9 @@ import android.content.res.Configuration
 import androidx.compose.material.icons.rounded.Create
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -23,6 +21,7 @@ import com.jeanbarrossilva.orca.platform.theme.extensions.plus
 import com.jeanbarrossilva.orca.platform.theme.reactivity.BottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.theme.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
+import com.jeanbarrossilva.orca.platform.ui.component.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBar
 import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBarDefaults
 import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.text.AutoSizeText
@@ -93,7 +92,7 @@ private fun Feed(
 
     Scaffold(
         modifier,
-        topBar = {
+        topAppBar = {
             @OptIn(ExperimentalMaterial3Api::class)
             TopAppBar(
                 title = { AutoSizeText("Feed") },
@@ -111,8 +110,7 @@ private fun Feed(
                     Icon(OrcaTheme.Icons.Create, contentDescription = "Compose")
                 }
             }
-        },
-        floatingActionButtonPosition = FabPosition.Center
+        }
     ) {
         Timeline(
             tootPreviewsLoadable,
