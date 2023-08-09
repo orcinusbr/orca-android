@@ -86,7 +86,7 @@ private fun SearchResultCard(
 @Preview
 private fun LoadingSearchResultCardPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colorScheme.background) {
+        Surface(color = OrcaTheme.colors.background) {
             SearchResultCard()
         }
     }
@@ -96,7 +96,7 @@ private fun LoadingSearchResultCardPreview() {
 @Preview
 private fun LoadedSearchResultCardPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colorScheme.background) {
+        Surface(color = OrcaTheme.colors.background) {
             SearchResultCard(ProfileSearchResult.sample, onClick = { })
         }
     }

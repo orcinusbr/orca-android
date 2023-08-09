@@ -135,7 +135,7 @@ private fun BoxScope.UnavailableContent(size: Dp, modifier: Modifier = Modifier)
             OrcaTheme.Icons.BrokenImage,
             contentDescription = "Unavailable avatar",
             Modifier.size(size / 2),
-            tint = OrcaTheme.colorScheme.onSurfaceVariant
+            tint = OrcaTheme.colors.surface.content
         )
     }
 }

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="largeDisplayText">@android:color/black</color>
-
     <integer name="font_weight_light">300</integer>
     <integer name="font_weight_normal">400</integer>
     <integer name="font_weight_medium">500</integer>
@@ -14,7 +12,7 @@
         name="Theme.Orca.Typography.DisplayLarge"
         parent="TextAppearance.Material3.DisplayLarge">
         <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">@color/largeDisplayText</item>
+        <item name="android:textColor">@color/primary</item>
         <item name="android:textFontWeight">@integer/font_weight_black</item>
         <item name="android:textSize">56sp</item>
     </style>
@@ -22,14 +20,14 @@
     <style
         name="Theme.Orca.Typography.HeadlineLarge"
         parent="TextAppearance.Material3.HeadlineLarge">
-        <item name="android:textColor">?android:textColorPrimary</item>
+        <item name="android:textColor">@color/primary</item>
         <item name="android:textFontWeight">@integer/font_weight_black</item>
     </style>
 
     <style
         name="Theme.Orca.Typography.HeadlineMedium"
         parent="TextAppearance.Material3.HeadlineMedium">
-        <item name="android:textColor">?android:textColorSecondary</item>
+        <item name="android:textColor">@color/secondary</item>
         <item name="android:textFontWeight">@integer/font_weight_black</item>
     </style>
 
@@ -43,7 +41,7 @@
     <style
         name="Theme.Orca.Typography.TitleSmall"
         parent="TextAppearance.Material3.TitleSmall">
-        <item name="android:textColor">?android:textColorSecondary</item>
+        <item name="android:textColor">@color/secondary</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textFontWeight">@integer/font_weight_bold</item>
     </style>
@@ -63,7 +61,7 @@
     <style
         name="Theme.Orca.Typography.BodySmall"
         parent="TextAppearance.Material3.BodySmall">
-        <item name="android:textColor">?android:textColorTertiary</item>
+        <item name="android:textColor">@color/tertiary</item>
         <item name="android:textFontWeight">@integer/font_weight_medium</item>
     </style>
 </resources>

@@ -33,7 +33,7 @@ internal sealed class OrcaSnackbarVisuals : SnackbarVisuals {
         override val duration = SnackbarDuration.Short
 
         override val containerColor
-            @Composable get() = OrcaTheme.colorScheme.surface
+            @Composable get() = OrcaTheme.colors.surface.container
     }
 
     /**
@@ -45,6 +45,6 @@ internal sealed class OrcaSnackbarVisuals : SnackbarVisuals {
         override val duration = SnackbarDuration.Indefinite
 
         override val containerColor
-            @Composable get() = OrcaTheme.colorScheme.errorContainer
+            @Composable get() = OrcaTheme.colors.error.container
     }
 }

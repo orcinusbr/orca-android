@@ -18,7 +18,7 @@ import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 
 @Composable
 internal fun Authentication(modifier: Modifier = Modifier) {
-    Surface(modifier, color = OrcaTheme.colorScheme.background) {
+    Surface(modifier, color = OrcaTheme.colors.background) {
         Column(
             Modifier.fillMaxSize(),
             Arrangement.spacedBy(OrcaTheme.spacings.medium, Alignment.CenterVertically),

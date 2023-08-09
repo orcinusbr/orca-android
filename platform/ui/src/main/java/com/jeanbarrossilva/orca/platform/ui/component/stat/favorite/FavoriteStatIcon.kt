@@ -67,7 +67,7 @@ fun FavoriteStatIcon(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun InactiveFavoriteStatIconPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colorScheme.background) {
+        Surface(color = OrcaTheme.colors.background) {
             FavoriteStatIcon(isActive = false, ActivateableStatIconInteractiveness.Still)
         }
     }
@@ -77,7 +77,7 @@ private fun InactiveFavoriteStatIconPreview() {
 @Preview
 private fun ActiveFavoriteStatIconPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colorScheme.background) {
+        Surface(color = OrcaTheme.colors.background) {
             FavoriteStatIcon(isActive = true, ActivateableStatIconInteractiveness.Still)
         }
     }

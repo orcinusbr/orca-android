@@ -87,7 +87,7 @@ private fun Header(
 @Preview
 private fun LoadingHeaderPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colorScheme.background) {
+        Surface(color = OrcaTheme.colors.background) {
             Header()
         }
     }
@@ -97,7 +97,7 @@ private fun LoadingHeaderPreview() {
 @Preview
 private fun HeaderPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colorScheme.background) {
+        Surface(color = OrcaTheme.colors.background) {
             Header(ProfileDetails.sample)
         }
     }

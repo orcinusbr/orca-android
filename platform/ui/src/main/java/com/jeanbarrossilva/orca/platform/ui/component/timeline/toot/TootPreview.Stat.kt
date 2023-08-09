@@ -34,7 +34,7 @@ internal object StatDefaults {
     val IconSize = ActivateableStatIconDefaults.Size
 
     val containerColor
-        @Composable get() = OrcaTheme.colorScheme.surface
+        @Composable get() = OrcaTheme.colors.surface.container
 }
 
 @Composable
@@ -69,7 +69,7 @@ internal fun Stat(
     val shape = CardDefaults.shape
     val spacing = OrcaTheme.spacings.small
     val contentColor = if (containerColor == StatDefaults.containerColor) {
-        OrcaTheme.colorScheme.outline
+        OrcaTheme.colors.secondary
     } else {
         fallbackContentColorFor(containerColor)
     }
@@ -102,7 +102,7 @@ private fun fallbackContentColorFor(containerColor: Color): Color {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 internal fun StatPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colorScheme.background) {
+        Surface(color = OrcaTheme.colors.background) {
             Stat(OrcaTheme.Icons.ThumbUp, contentDescription = "Like", onClick = { }) {
                 Text("8")
             }

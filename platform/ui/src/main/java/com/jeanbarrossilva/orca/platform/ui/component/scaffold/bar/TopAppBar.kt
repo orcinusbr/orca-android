@@ -60,7 +60,7 @@ fun TopAppBar(
     scrollBehavior: TopAppBarScrollBehavior = _TopAppBarDefaults.scrollBehavior,
     title: @Composable () -> Unit
 ) {
-    val containerColor = OrcaTheme.colorScheme.surface
+    val containerColor = OrcaTheme.colors.surface.container
     val overlap = scrollBehavior.state.overlappedFraction
     val isOverlapping = remember(overlap) { overlap > 0f }
     val spacing = OrcaTheme.spacings.medium - OrcaTheme.spacings.small

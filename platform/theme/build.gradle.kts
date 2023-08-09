@@ -37,5 +37,6 @@ dependencies {
     api(Dependencies.COMPOSE_UI_TOOLING)
 
     implementation(Dependencies.ACCOMPANIST_THEME_ADAPTER_MATERIAL_3)
+    implementation(Dependencies.LOMBOK)
     implementation(Dependencies.MATERIAL)
 }

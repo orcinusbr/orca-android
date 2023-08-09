@@ -33,7 +33,7 @@ fun DropdownMenu(
     DropdownMenu(
         isExpanded,
         onDismissal,
-        modifier.background(OrcaTheme.colorScheme.surface),
+        modifier.background(OrcaTheme.colors.surface.container),
         content = content
     )
 }

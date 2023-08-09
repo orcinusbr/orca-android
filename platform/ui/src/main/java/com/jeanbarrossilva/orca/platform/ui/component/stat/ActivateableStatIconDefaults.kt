@@ -145,7 +145,7 @@ internal fun ActivateableStatIcon(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun InactiveActivateableStatIconPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colorScheme.background) {
+        Surface(color = OrcaTheme.colors.background) {
             ActivateableStatIcon(isActive = false)
         }
     }
@@ -155,7 +155,7 @@ private fun InactiveActivateableStatIconPreview() {
 @Preview
 private fun ActiveActivateableStatIconPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colorScheme.background) {
+        Surface(color = OrcaTheme.colors.background) {
             ActivateableStatIcon(isActive = true)
         }
     }

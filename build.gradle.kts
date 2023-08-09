@@ -20,6 +20,7 @@ allprojects {
         google()
         loadable(project)
         mavenCentral()
+        projectLombok()
     }
 }
 

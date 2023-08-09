@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
@@ -40,6 +39,8 @@ import com.jeanbarrossilva.orca.platform.theme.configuration.LocalOverlays
 import com.jeanbarrossilva.orca.platform.theme.configuration.LocalSpacings
 import com.jeanbarrossilva.orca.platform.theme.configuration.Overlays
 import com.jeanbarrossilva.orca.platform.theme.configuration.Spacings
+import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
+import com.jeanbarrossilva.orca.platform.theme.configuration.colors.LocalColors
 import com.jeanbarrossilva.orca.platform.theme.extensions.LocalTypography
 import com.jeanbarrossilva.orca.platform.theme.extensions.Rubik
 import com.jeanbarrossilva.orca.platform.theme.extensions.bottom
@@ -48,8 +49,8 @@ import com.jeanbarrossilva.orca.platform.theme.extensions.start
 import com.jeanbarrossilva.orca.platform.theme.extensions.top
 import com.jeanbarrossilva.orca.platform.theme.extensions.with
 
-/** Height of [ColorSchemePreview]. **/
-private const val COLOR_SCHEME_PREVIEW_HEIGHT = 1_843
+/** Height of [ColorsPreview]. **/
+private const val COLORS_PREVIEW_HEIGHT = 1_843
 
 /** Height of [ShapesPreview]. **/
 private const val SHAPES_PREVIEW_HEIGHT = 909
@@ -65,9 +66,9 @@ object OrcaTheme {
      **/
     val Icons = androidx.compose.material.icons.Icons.Rounded
 
-    /** [Current][CompositionLocal.current] [ColorScheme] from the underlying [MaterialTheme]. **/
-    val colorScheme
-        @Composable get() = MaterialTheme.colorScheme
+    /** [Current][CompositionLocal.current] [Colors] from [LocalColors]. **/
+    val colors
+        @Composable get() = LocalColors.current
 
     /** [Current][CompositionLocal.current] [Overlays] from [LocalOverlays]. **/
     val overlays
@@ -98,6 +99,7 @@ fun OrcaTheme(content: @Composable () -> Unit) {
     val themedContent = @Composable {
         Mdc3Theme(setTextColors = true, setDefaultFontFamily = true) {
             CompositionLocalProvider(
+                LocalColors provides Colors.default,
                 LocalOverlays provides Overlays.Default,
                 LocalSpacings provides Spacings.default,
                 LocalTextStyle provides OrcaTheme.typography.bodyMedium
@@ -134,82 +136,54 @@ fun OrcaTheme(content: @Composable () -> Unit) {
     )
 }
 
-/** Preview of [OrcaTheme]'s [ColorScheme]. **/
+/** Preview of [OrcaTheme]'s [Colors]. **/
 @Composable
-@Preview(heightDp = COLOR_SCHEME_PREVIEW_HEIGHT)
-@Preview(heightDp = COLOR_SCHEME_PREVIEW_HEIGHT, uiMode = Configuration.UI_MODE_NIGHT_YES)
-private fun ColorSchemePreview() {
+@Preview(heightDp = COLORS_PREVIEW_HEIGHT)
+@Preview(heightDp = COLORS_PREVIEW_HEIGHT, uiMode = Configuration.UI_MODE_NIGHT_YES)
+private fun ColorsPreview() {
     OrcaTheme {
         Column(Modifier.fillMaxWidth()) {
-            ColorSchemeSection("Primary") {
-                Color(OrcaTheme.colorScheme.primary)
-                Color(OrcaTheme.colorScheme.inversePrimary)
-                Color(OrcaTheme.colorScheme.onPrimary)
+            ColorsSection("Activation") {
+                ColorsSection("Favorite") {
+                    Color(OrcaTheme.colors.activation.favorite.container)
+                    Color(OrcaTheme.colors.activation.favorite.content)
+                }
+
+                ColorsSection("Reblog") {
+                    Color(OrcaTheme.colors.activation.reblog.container)
+                    Color(OrcaTheme.colors.activation.reblog.content)
+                }
             }
 
-            ColorSchemeSection("Primary container") {
-                Color(OrcaTheme.colorScheme.primaryContainer)
-                Color(OrcaTheme.colorScheme.onPrimaryContainer)
+            ColorsSection("Background") {
+                Color(OrcaTheme.colors.background)
             }
 
-            ColorSchemeSection("Secondary") {
-                Color(OrcaTheme.colorScheme.secondary)
-                Color(OrcaTheme.colorScheme.onSecondary)
+            ColorsSection("Brand") {
+                Color(OrcaTheme.colors.brand.container)
+                Color(OrcaTheme.colors.brand.content)
             }
 
-            ColorSchemeSection("Secondary container") {
-                Color(OrcaTheme.colorScheme.secondaryContainer)
-                Color(OrcaTheme.colorScheme.onSecondaryContainer)
+            ColorsSection("Error") {
+                Color(OrcaTheme.colors.error.container)
+                Color(OrcaTheme.colors.error.content)
             }
 
-            ColorSchemeSection("Tertiary") {
-                Color(OrcaTheme.colorScheme.tertiary)
-                Color(OrcaTheme.colorScheme.onTertiary)
+            ColorsSection("Placeholder") {
+                Color(OrcaTheme.colors.placeholder)
             }
 
-            ColorSchemeSection("Tertiary container") {
-                Color(OrcaTheme.colorScheme.tertiaryContainer)
-                Color(OrcaTheme.colorScheme.onTertiaryContainer)
+            ColorsSection("Secondary") {
+                Color(OrcaTheme.colors.secondary)
             }
 
-            ColorSchemeSection("Background") {
-                Color(OrcaTheme.colorScheme.background)
-                Color(OrcaTheme.colorScheme.onBackground)
+            ColorsSection("Surface") {
+                Color(OrcaTheme.colors.surface.container)
+                Color(OrcaTheme.colors.surface.content)
             }
 
-            ColorSchemeSection("Surface") {
-                Color(OrcaTheme.colorScheme.surface)
-                Color(OrcaTheme.colorScheme.inverseSurface)
-                Color(OrcaTheme.colorScheme.onSurface)
-                Color(OrcaTheme.colorScheme.inverseOnSurface)
-                Color(OrcaTheme.colorScheme.surfaceTint)
-            }
-
-            ColorSchemeSection("Surface variant") {
-                Color(OrcaTheme.colorScheme.surfaceVariant)
-                Color(OrcaTheme.colorScheme.onSurfaceVariant)
-            }
-
-            ColorSchemeSection("Error") {
-                Color(OrcaTheme.colorScheme.error)
-                Color(OrcaTheme.colorScheme.onError)
-            }
-
-            ColorSchemeSection("Error container") {
-                Color(OrcaTheme.colorScheme.errorContainer)
-                Color(OrcaTheme.colorScheme.onErrorContainer)
-            }
-
-            ColorSchemeSection("Outline") {
-                Color(OrcaTheme.colorScheme.outline)
-            }
-
-            ColorSchemeSection("Outline variant") {
-                Color(OrcaTheme.colorScheme.outlineVariant)
-            }
-
-            ColorSchemeSection("Scrim") {
-                Color(OrcaTheme.colorScheme.scrim)
+            ColorsSection("Tertiary") {
+                Color(OrcaTheme.colors.tertiary)
             }
         }
     }
@@ -221,7 +195,7 @@ private fun ColorSchemePreview() {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun OverlaysPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colorScheme.background) {
+        Surface(color = OrcaTheme.colors.background) {
             OverlaySection("FAB", OrcaTheme.overlays.fab)
         }
     }
@@ -233,7 +207,7 @@ private fun OverlaysPreview() {
 @Preview(heightDp = SHAPES_PREVIEW_HEIGHT, uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun ShapesPreview() {
     OrcaTheme {
-        Surface(Modifier.fillMaxWidth(), color = OrcaTheme.colorScheme.background) {
+        Surface(Modifier.fillMaxWidth(), color = OrcaTheme.colors.background) {
             Column {
                 ShapeSection("Extra large", OrcaTheme.shapes.extraLarge)
                 ShapeSection("Large", OrcaTheme.shapes.large)
@@ -269,7 +243,7 @@ private fun SpacingsPreview() {
 @Preview(heightDp = TYPOGRAPHY_PREVIEW_HEIGHT, uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun TypographyPreview() {
     OrcaTheme {
-        Surface(Modifier.fillMaxWidth(), color = OrcaTheme.colorScheme.background) {
+        Surface(Modifier.fillMaxWidth(), color = OrcaTheme.colors.background) {
             Column {
                 TypographySection("Display") {
                     Text("D1", style = OrcaTheme.typography.displayLarge)
@@ -314,7 +288,7 @@ private fun TypographyPreview() {
  * @param content [Color][com.jeanbarrossilva.orca.platform.theme.Color]s to be shown.
  **/
 @Composable
-private fun ColorSchemeSection(
+private fun ColorsSection(
     title: String,
     modifier: Modifier = Modifier,
     content: @Composable RowScope.() -> Unit
@@ -370,7 +344,7 @@ private fun ShapeSection(title: String, shape: Shape, modifier: Modifier = Modif
             Modifier
                 .padding(it)
                 .clip(shape)
-                .background(OrcaTheme.colorScheme.primaryContainer)
+                .background(OrcaTheme.colors.brand.container)
                 .height(64.dp)
                 .fillMaxWidth()
         )
@@ -437,10 +411,10 @@ private fun Section(
         Text(
             title,
             Modifier
-                .background(OrcaTheme.colorScheme.surfaceVariant)
+                .background(OrcaTheme.colors.surface.content)
                 .padding(padding)
                 .fillMaxWidth(),
-            OrcaTheme.colorScheme.onSurfaceVariant,
+            OrcaTheme.colors.surface.content,
             style = OrcaTheme.typography.titleMedium
         )
 

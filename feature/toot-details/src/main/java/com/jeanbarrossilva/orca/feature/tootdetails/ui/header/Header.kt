@@ -152,7 +152,7 @@ private fun Header(
 @Preview
 private fun LoadingHeaderPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colorScheme.background) {
+        Surface(color = OrcaTheme.colors.background) {
             Header()
         }
     }
@@ -162,7 +162,7 @@ private fun LoadingHeaderPreview() {
 @Preview
 private fun LoadedHeaderPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colorScheme.background) {
+        Surface(color = OrcaTheme.colors.background) {
             Header(TootDetails.sample, onFavorite = { }, onReblog = { }, onShare = { })
         }
     }
