@@ -24,7 +24,6 @@ object Versions {
     const val KTOR = "2.3.2"
     const val LIFECYCLE = "2.6.1"
     const val LOADABLE = "1.6.5"
-    const val LOMBOK = "0.9.2"
     const val LOTTIE = "6.1.0"
     const val MATERIAL = "1.9.0"
     const val MOCKITO = "5.4.0"

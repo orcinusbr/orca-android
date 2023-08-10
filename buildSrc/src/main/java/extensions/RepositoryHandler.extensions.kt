@@ -27,10 +27,3 @@ fun RepositoryHandler.loadable(project: Project): MavenArtifactRepository {
         }
     }
 }
-
-/** Adds [Project Lombok](https://projectlombok.org)'s repository. **/
-fun RepositoryHandler.projectLombok(): MavenArtifactRepository {
-    return maven {
-        url = URI.create("https://projectlombok.org/mavenrepo")
-    }
-}

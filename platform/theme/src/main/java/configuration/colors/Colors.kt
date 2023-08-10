@@ -7,9 +7,9 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import com.jeanbarrossilva.orca.platform.theme.R
+import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors.Activation
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.contrast.Contrast
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.contrast.and
-import lombok.EqualsAndHashCode
 
 /** [CompositionLocal] that provides [Colors]. **/
 internal val LocalColors = compositionLocalOf {
@@ -49,9 +49,8 @@ data class Colors internal constructor(
      * @param favorite [Contrast] for a "favorited" state.
      * @param reblog [Contrast] for a "reblogged" state.
      **/
-    @EqualsAndHashCode
     @Immutable
-    class Activation private constructor(val favorite: Contrast, val reblog: Contrast) {
+    data class Activation internal constructor(val favorite: Contrast, val reblog: Contrast) {
         companion object {
             /** [Activation] with [Contrast.Unspecified] values. **/
             val Unspecified =
