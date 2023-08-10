@@ -53,11 +53,11 @@ data class Colors internal constructor(
     data class Activation internal constructor(val favorite: Contrast, val reblog: Contrast) {
         companion object {
             /** [Activation] with [Contrast.Unspecified] values. **/
-            val Unspecified =
+            internal val Unspecified =
                 Activation(favorite = Contrast.Unspecified, reblog = Contrast.Unspecified)
 
             /** [Activation] that's provided by default. **/
-            val default
+            internal val default
                 @Composable get() =
                     Activation(Color(0xFFD32F2F) and Color.White, Color(0xFF81C784) and Color.White)
         }
@@ -65,7 +65,7 @@ data class Colors internal constructor(
 
     companion object {
         /** [Colors] with unspecified values. **/
-        val Unspecified = Colors(
+        internal val Unspecified = Colors(
             Activation.Unspecified,
             background = Color.Unspecified,
             brand = Contrast.Unspecified,
@@ -79,7 +79,7 @@ data class Colors internal constructor(
         )
 
         /** [Colors] that are provided by default. **/
-        val default
+        internal val default
             @Composable get() = Colors(
                 Activation.default,
                 colorResource(R.color.background),
