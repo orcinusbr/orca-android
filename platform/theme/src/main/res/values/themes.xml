@@ -2,46 +2,47 @@
     <bool name="is_system_in_light_theme">true</bool>
 
     <color name="background">@android:color/white</color>
-    <color name="brand">#10A9FF</color>
-    <color name="onBrand">@android:color/white</color>
-    <color name="normalControl">#050505</color>
-    <color name="onSecondaryContainer">@android:color/secondary_text_light</color>
-    <color name="outlineVariant">#E5E5E5</color>
-    <color name="secondaryText">#6B6B6B</color>
-    <color name="surfaceVariant">#EDEDED</color>
-    <color name="surface">@android:color/white</color>
+    <color name="brandContainer">#10A9FF</color>
+    <color name="brandContent">@android:color/white</color>
+    <color name="disabledContainer">#EDEDED</color>
+    <color name="disabledContent">#050505</color>
+    <color name="errorContainer">#E15050</color>
+    <color name="errorContent">@android:color/white</color>
+    <color name="placeholder">#F5F5F5</color>
+    <color name="primary">@android:color/black</color>
+    <color name="secondary">#5B5B5B</color>
+    <color name="surfaceContainer">@android:color/white</color>
+    <color name="surfaceContent">@color/secondary</color>
+    <color name="tertiary">#808080</color>
 
     <style name="Theme.Orca" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:colorBackground">@color/background</item>
         <item name="android:fontFamily">@font/rubik</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:textColorSecondary">@color/secondaryText</item>
+        <item name="android:textColorPrimary">@color/primary</item>
+        <item name="android:textColorSecondary">@color/secondary</item>
+        <item name="android:textColorTertiary">@color/tertiary</item>
         <item name="android:windowLightStatusBar">@bool/is_system_in_light_theme</item>
-        <item name="colorControlNormal">@color/normalControl</item>
-        <item name="colorOnPrimaryContainer">@color/onBrand</item>
-        <item name="colorOnSecondaryContainer">@color/onSecondaryContainer</item>
-        <item name="colorOnSurface">?colorControlNormal</item>
-        <item name="colorOnSurfaceVariant">?attr/colorControlNormal</item>
-        <item name="colorOutline">?android:attr/textColorTertiary</item>
-        <item name="colorOutlineVariant">@color/outlineVariant</item>
-        <item name="colorPrimary">@color/brand</item>
-        <item name="colorPrimaryContainer">@color/brand</item>
-        <item name="colorSecondaryContainer">#D6F0FF</item>
-        <item name="colorSurface">@color/surface</item>
-        <item name="colorSurfaceVariant">@color/surfaceVariant</item>
+        <item name="colorControlNormal">@color/secondary</item>
+        <item name="colorErrorContainer">@color/errorContainer</item>
+        <item name="colorOnErrorContainer">@color/errorContent</item>
+        <item name="colorOnPrimaryContainer">@color/brandContent</item>
+        <item name="colorOnSecondaryContainer">@color/secondary</item>
+        <item name="colorOnSurface">@color/surfaceContent</item>
+        <item name="colorOnSurfaceVariant">@color/secondary</item>
+        <item name="colorOutline">@color/tertiary</item>
+        <item name="colorOutlineVariant">@color/placeholder</item>
+        <item name="colorPrimary">@color/brandContainer</item>
+        <item name="colorPrimaryContainer">@color/brandContainer</item>
+        <item name="colorSurface">@color/surfaceContainer</item>
+        <item name="colorSurfaceVariant">@color/placeholder</item>
         <item name="textAppearanceBodyLarge">@style/Theme.Orca.Typography.BodyLarge</item>
         <item name="textAppearanceBodyMedium">@style/Theme.Orca.Typography.BodyMedium</item>
         <item name="textAppearanceBodySmall">@style/Theme.Orca.Typography.BodySmall</item>
-        <item name="textAppearanceDisplayLarge">
-            @style/Theme.Orca.Typography.DisplayLarge
-        </item>
-        <item name="textAppearanceHeadlineLarge">
-            @style/Theme.Orca.Typography.HeadlineLarge
-        </item>
-        <item name="textAppearanceHeadlineMedium">
-            @style/Theme.Orca.Typography.HeadlineMedium
-        </item>
+        <item name="textAppearanceDisplayLarge">@style/Theme.Orca.Typography.DisplayLarge</item>
+        <item name="textAppearanceHeadlineLarge">@style/Theme.Orca.Typography.HeadlineLarge</item>
+        <item name="textAppearanceHeadlineMedium">@style/Theme.Orca.Typography.HeadlineMedium</item>
         <item name="textAppearanceTitleLarge">@style/Theme.Orca.Typography.TitleLarge</item>
         <item name="textAppearanceTitleSmall">@style/Theme.Orca.Typography.TitleSmall</item>
     </style>

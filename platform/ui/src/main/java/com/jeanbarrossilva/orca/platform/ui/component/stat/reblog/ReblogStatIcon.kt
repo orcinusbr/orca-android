@@ -66,7 +66,7 @@ fun ReblogStatIcon(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun InactiveReblogStatIconPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colorScheme.background) {
+        Surface(color = OrcaTheme.colors.background) {
             ReblogStatIcon(isActive = false, ActivateableStatIconInteractiveness.Still)
         }
     }
@@ -76,7 +76,7 @@ private fun InactiveReblogStatIconPreview() {
 @Preview
 private fun ActiveReblogStatIconPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colorScheme.background) {
+        Surface(color = OrcaTheme.colors.background) {
             ReblogStatIcon(isActive = true, ActivateableStatIconInteractiveness.Still)
         }
     }

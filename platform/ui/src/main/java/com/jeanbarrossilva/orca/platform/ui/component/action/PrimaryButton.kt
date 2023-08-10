@@ -30,8 +30,8 @@ fun PrimaryButton(
     isEnabled: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val enabledContentColor = OrcaTheme.colorScheme.onPrimaryContainer
-    val disabledContentColor = OrcaTheme.colorScheme.onSurfaceVariant
+    val enabledContentColor = OrcaTheme.colors.brand.content
+    val disabledContentColor = OrcaTheme.colors.disabled.content
     val contentColor =
         remember(isEnabled) { if (isEnabled) enabledContentColor else disabledContentColor }
 
@@ -41,9 +41,9 @@ fun PrimaryButton(
         isEnabled,
         shape = OrcaTheme.shapes.medium,
         colors = ButtonDefaults.elevatedButtonColors(
-            containerColor = OrcaTheme.colorScheme.primaryContainer,
+            OrcaTheme.colors.brand.container,
             enabledContentColor,
-            disabledContainerColor = OrcaTheme.colorScheme.surfaceVariant,
+            OrcaTheme.colors.disabled.container,
             disabledContentColor
         ),
         contentPadding = PaddingValues(OrcaTheme.spacings.large)

@@ -78,7 +78,7 @@ internal fun Auth(
 
     Box(
         modifier
-            .background(OrcaTheme.colorScheme.background)
+            .background(OrcaTheme.colors.background)
             .imePadding()
             .padding(spacing)
             .fillMaxSize()

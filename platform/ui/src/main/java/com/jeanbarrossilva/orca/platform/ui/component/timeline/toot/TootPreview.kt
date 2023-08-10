@@ -259,7 +259,7 @@ private fun TootPreview(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadingTootPreviewPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colorScheme.background) {
+        Surface(color = OrcaTheme.colors.background) {
             TootPreview()
         }
     }
@@ -270,7 +270,7 @@ private fun LoadingTootPreviewPreview() {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadedInactiveTootPreviewPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colorScheme.background) {
+        Surface(color = OrcaTheme.colors.background) {
             TootPreview(TootPreview.sample.copy(isFavorite = false, isReblogged = false))
         }
     }
@@ -281,7 +281,7 @@ private fun LoadedInactiveTootPreviewPreview() {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadedActiveTootPreviewPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colorScheme.background) {
+        Surface(color = OrcaTheme.colors.background) {
             TootPreview(TootPreview.sample.copy(isFavorite = true, isReblogged = true))
         }
     }

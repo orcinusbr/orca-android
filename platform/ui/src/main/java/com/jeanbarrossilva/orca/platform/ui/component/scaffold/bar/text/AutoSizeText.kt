@@ -62,7 +62,7 @@ fun AutoSizeText(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun AutoSizeTextPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colorScheme.background) {
+        Surface(color = OrcaTheme.colors.background) {
             AutoSizeText("Text")
         }
     }

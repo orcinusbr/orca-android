@@ -57,7 +57,7 @@ fun Setting(
     action: @Composable () -> Unit,
     onClick: (() -> Unit)?,
     modifier: Modifier = Modifier,
-    containerColor: Color = OrcaTheme.colorScheme.surfaceVariant,
+    containerColor: Color = OrcaTheme.colors.surface.container,
     label: (@Composable () -> Unit)? = null,
     shape: Shape = SettingDefaults.shape
 ) {

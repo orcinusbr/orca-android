@@ -171,7 +171,7 @@ private fun Search(
         topBar = {
             Row(
                 Modifier
-                    .background(OrcaTheme.colorScheme.background)
+                    .background(OrcaTheme.colors.background)
                     .padding(top = spacing, end = spacing, bottom = spacing)
                     .statusBarsPadding(),
                 verticalAlignment = Alignment.CenterVertically

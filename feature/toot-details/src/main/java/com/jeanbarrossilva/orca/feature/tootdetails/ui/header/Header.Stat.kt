@@ -24,7 +24,7 @@ internal fun Stat(modifier: Modifier = Modifier, content: @Composable RowScope.(
         Alignment.CenterVertically
     ) {
         CompositionLocalProvider(
-            LocalContentColor provides OrcaTheme.colorScheme.outline,
+            LocalContentColor provides OrcaTheme.colors.secondary,
             LocalTextStyle provides OrcaTheme.typography.bodySmall
         ) {
             content()
@@ -36,7 +36,7 @@ internal fun Stat(modifier: Modifier = Modifier, content: @Composable RowScope.(
 @Preview
 private fun StatPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colorScheme.background) {
+        Surface(color = OrcaTheme.colors.background) {
             Stat {
                 Icon(OrcaTheme.Icons.ThumbUp, contentDescription = "Likes")
                 Text("8")

@@ -2,7 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:state_selected="true"
-        android:color="@color/onBrand" />
+        android:color="@color/brandContent" />
 
     <item android:color="?android:textColorSecondary" />
 </selector>

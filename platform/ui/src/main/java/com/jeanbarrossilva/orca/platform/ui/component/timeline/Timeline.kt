@@ -294,7 +294,7 @@ private fun EmptyTimelineMessage(
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun LoadingTimelinePreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colorScheme.background) {
+        Surface(color = OrcaTheme.colors.background) {
             Timeline()
         }
     }
@@ -306,7 +306,7 @@ private fun LoadingTimelinePreview() {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun EmptyTimelinePreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colorScheme.background) {
+        Surface(color = OrcaTheme.colors.background) {
             Timeline(
                 ListLoadable.Empty(),
                 onFavorite = { },
@@ -325,7 +325,7 @@ private fun EmptyTimelinePreview() {
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun PopulatedTimelinePreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colorScheme.background) {
+        Surface(color = OrcaTheme.colors.background) {
             Timeline(
                 TootPreview.samples,
                 onFavorite = { },
