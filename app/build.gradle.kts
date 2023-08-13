@@ -80,5 +80,5 @@ dependencies {
     "testDemoImplementation"(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
     "testDemoImplementation"(Dependencies.ROBOLECTRIC)
     "testDemoImplementation"(Dependencies.TEST_CORE)
-    "testDemoImplementation"(Dependencies.TEST_ESPRESSO_CORE)
+    "testDemoImplementation"(Dependencies.TEST_ESPRESSO_INTENTS)
 }
