@@ -8,6 +8,8 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import com.jeanbarrossilva.orca.feature.composer.ComposerActivity
 import com.jeanbarrossilva.orca.feature.feed.FEED_FLOATING_ACTION_BUTTON_TAG
+import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,10 +21,19 @@ internal class FeedToComposerTests {
     @get:Rule
     val composeRule = createEmptyComposeRule()
 
+    @Before
+    fun setUp() {
+        Intents.init()
+    }
+
+    @After
+    fun tearDown() {
+        Intents.release()
+    }
+
     @Test
     fun navigatesToComposerOnFabClick() {
         Robolectric.buildActivity(DemoOrcaActivity::class.java).setup().use {
-            Intents.init()
             composeRule.onNodeWithTag(FEED_FLOATING_ACTION_BUTTON_TAG).performClick()
             intended(hasComponent(ComposerActivity::class.qualifiedName))
         }
