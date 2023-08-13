@@ -32,6 +32,7 @@ internal fun FormatIconButton(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
+    val role = Role.Switch
     val contentColor by animateColorAsState(
         if (isEnabled) OrcaTheme.colors.brand.container else LocalContentColor.current,
         label = "ContentColor"
@@ -40,11 +41,11 @@ internal fun FormatIconButton(
     Box(
         modifier
             .clip(OrcaTheme.shapes.small)
-            .clickable(role = Role.Button, onClick = onClick)
+            .clickable(role = role, onClick = onClick)
             .padding(4.dp)
             .size(24.dp)
             .semantics {
-                role = Role.Switch
+                this.role = role
                 toggleableState = if (isEnabled) ToggleableState.On else ToggleableState.Off
             },
         Alignment.Center
