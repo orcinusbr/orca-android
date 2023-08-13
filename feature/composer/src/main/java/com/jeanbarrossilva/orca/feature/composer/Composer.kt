@@ -190,8 +190,8 @@ private fun Composer(
                  * or paragraph styles given in the previous recomposition.
                  *
                  * This is an issue known since 2019, so I don't know how likely it is that the
-                 * Compose team going to fix it any time soon. Multi-style text editing has been on
-                 * the roadmap since October 2022.
+                 * Compose team is going to fix it any time soon. Multi-style text editing has been
+                 * on the roadmap since October 2022.
                  *
                  * https://issuetracker.google.com/issues/199754661
                  * https://developer.android.com/jetpack/androidx/compose-roadmap
