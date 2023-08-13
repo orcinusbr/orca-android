@@ -5,7 +5,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -89,8 +88,7 @@ private fun Composer(
     val density = LocalDensity.current
     val focusRequester = remember(::FocusRequester)
     val style = OrcaTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Normal)
-    val hitAreaInteractionSource = remember(::MutableInteractionSource)
-    val textFieldInteractionSource = remember(::MutableInteractionSource)
+    val interactionSource = remember(::MutableInteractionSource)
     val brushColor = OrcaTheme.colors.brand.container
     val cursorBrush = remember(brushColor) { SolidColor(brushColor) }
     var isToolbarVisible by remember { mutableStateOf(isToolbarInitiallyVisible) }
@@ -135,17 +133,11 @@ private fun Composer(
         },
         floatingActionButtonPosition = floatingActionButtonPosition
     ) { padding ->
-        Box(Modifier.padding(padding)) {
-            Box(
-                Modifier
-                    .clickable(
-                        hitAreaInteractionSource,
-                        indication = null,
-                        onClick = focusRequester::requestFocus
-                    )
-                    .fillMaxSize()
-            )
-
+        Box(
+            Modifier
+                .padding(padding)
+                .fillMaxSize()
+        ) {
             LazyColumn(
                 contentPadding = PaddingValues(OrcaTheme.spacings.large) + OrcaTheme.overlays.fab
             ) {
@@ -158,7 +150,7 @@ private fun Composer(
                             .focusRequester(focusRequester)
                             .testTag(COMPOSER_FIELD),
                         textStyle = style,
-                        interactionSource = textFieldInteractionSource,
+                        interactionSource = interactionSource,
                         cursorBrush = cursorBrush
                     ) { innerTextField ->
                         @OptIn(ExperimentalMaterial3Api::class)
@@ -168,7 +160,7 @@ private fun Composer(
                             enabled = true,
                             singleLine = false,
                             VisualTransformation.None,
-                            textFieldInteractionSource,
+                            interactionSource,
                             placeholder = {
                                 Text(
                                     "What's on your mind?",
@@ -184,10 +176,10 @@ private fun Composer(
             }
 
             AnimatedVisibility(
-                visible = isToolbarVisible,
+                isToolbarVisible,
                 Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(start = toolbarSpacing, end = toolbarSpacing, bottom = toolbarSpacing),
+                    .padding(start = toolbarSpacing, end = toolbarSpacing, bottom = toolbarSpacing)
+                    .align(Alignment.BottomStart),
                 enter = slideInVertically { height -> height },
                 exit = fadeOut() + slideOutVertically { height -> height }
             ) {
