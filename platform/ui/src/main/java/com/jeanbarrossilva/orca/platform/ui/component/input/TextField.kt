@@ -10,6 +10,7 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,6 +23,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.ui.component.input.TextField as _TextField
+import com.jeanbarrossilva.orca.platform.ui.component.input.TextFieldDefaults as _TextFieldDefaults
+
+/** Default values used by a [TextField][_TextField]. **/
+object TextFieldDefaults {
+    /**
+     * [TextFieldColors] by which a [TextField][_TextField] is colored by default.
+     *
+     * @param enabledContainerColor [Color] to color the container with when the
+     * [TextField][_TextField] is enabled.
+     **/
+    @Composable
+    fun colors(enabledContainerColor: Color = OrcaTheme.colors.surface.container): TextFieldColors {
+        return TextFieldDefaults.colors(
+            focusedContainerColor = enabledContainerColor,
+            unfocusedContainerColor = enabledContainerColor,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent
+        )
+    }
+}
 
 /**
  * Orca-specific [TextField].
@@ -47,7 +71,7 @@ fun TextField(
         mutableStateOf(false)
     }
 
-    TextField(
+    _TextField(
         text,
         onTextChange,
         isFocused,
@@ -105,51 +129,37 @@ private fun TextField(
         keyboardActions = keyboardActions,
         singleLine = isSingleLined,
         shape = shape,
-        colors = TextFieldDefaults.colors(
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent,
-            errorIndicatorColor = Color.Transparent
-        )
+        colors = _TextFieldDefaults.colors()
     )
 }
 
-/**
- * Preview of an empty
- * [TextField][com.jeanbarrossilva.orca.platform.ui.component.input.TextField].
- **/
+/** Preview of an empty [TextField][_TextField]. **/
 @Composable
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun EmptyTextFieldPreview() {
     OrcaTheme {
-        TextField(text = "")
+        _TextField(text = "")
     }
 }
 
-/**
- * Preview of an unfocused
- * [TextField][com.jeanbarrossilva.orca.platform.ui.component.input.TextField].
- **/
+/** Preview of an unfocused [TextField][_TextField]. **/
 @Composable
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun UnfocusedTextFieldPreview() {
     OrcaTheme {
-        TextField(isFocused = false)
+        _TextField(isFocused = false)
     }
 }
 
-/**
- * Preview of a focused
- * [TextField][com.jeanbarrossilva.orca.platform.ui.component.input.TextField].
- **/
+/** Preview of a focused [TextField][_TextField]. **/
 @Composable
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun FocusedTextFieldPreview() {
     OrcaTheme {
-        TextField(isFocused = true)
+        _TextField(isFocused = true)
     }
 }
 
@@ -166,7 +176,7 @@ private fun TextField(
     text: String = "Text",
     isFocused: Boolean = false
 ) {
-    TextField(text, onTextChange = { }, isFocused, modifier) {
+    _TextField(text, onTextChange = { }, isFocused, modifier) {
         Text("Label")
     }
 }

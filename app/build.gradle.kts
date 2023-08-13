@@ -60,6 +60,7 @@ dependencies {
     implementation(project(":core:sample"))
     implementation(project(":core:shared-preferences"))
     implementation(project(":feature:auth"))
+    implementation(project(":feature:composer"))
     implementation(project(":feature:feed"))
     implementation(project(":feature:profile-details"))
     implementation(project(":feature:search"))

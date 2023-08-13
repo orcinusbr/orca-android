@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.jeanbarrossilva.orca.app.databinding.ActivityOrcaBinding
 import com.jeanbarrossilva.orca.app.module.AppModule
 import com.jeanbarrossilva.orca.app.module.core.MainCoreModule
+import com.jeanbarrossilva.orca.app.module.feature.composer.ComposerModule
 import com.jeanbarrossilva.orca.app.module.feature.feed.FeedModule
 import com.jeanbarrossilva.orca.app.module.feature.profiledetails.ProfileDetailsModule
 import com.jeanbarrossilva.orca.app.module.feature.search.SearchModule
@@ -74,12 +75,14 @@ internal open class OrcaActivity : AppCompatActivity(), OnBottomAreaAvailability
     }
 
     private fun inject() {
+        val composerModule = ComposerModule(supportFragmentManager)
         val feedModule = FeedModule(supportFragmentManager, containerID)
         val profileDetailsModule = ProfileDetailsModule(supportFragmentManager, containerID)
         val searchModule = SearchModule(supportFragmentManager, containerID)
         val tootDetailsModule = TootDetailsModule(supportFragmentManager, containerID)
         val modules = listOf(
             appModule,
+            composerModule,
             coreModule,
             feedModule,
             profileDetailsModule,

@@ -8,6 +8,7 @@ include(
     ":core:shared-preferences",
     ":core-test",
     ":feature:auth",
+    ":feature:composer",
     ":feature:feed",
     ":feature:profile-details",
     ":feature:search",

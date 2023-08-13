@@ -34,6 +34,8 @@ import com.jeanbarrossilva.orca.platform.ui.component.scaffold.snackbar.presente
  * @param floatingActionButton [FloatingActionButton] to be placed at the bottom, horizontally
  * centered.
  * @param topAppBar [TopAppBar] to be placed at the top.
+ * @param floatingActionButtonPosition [FabPosition] that determines where the
+ * [floatingActionButton] will be placed.
  * @param snackbarPresenter [SnackbarPresenter] through which [Snackbar]s can be presented.
  * @param content Main content of the current context.
  **/
@@ -42,6 +44,7 @@ fun Scaffold(
     modifier: Modifier = Modifier,
     floatingActionButton: @Composable () -> Unit,
     topAppBar: @Composable () -> Unit = { },
+    floatingActionButtonPosition: FabPosition = FabPosition.Center,
     snackbarPresenter: SnackbarPresenter = rememberSnackbarPresenter(),
     content: @Composable (padding: PaddingValues) -> Unit
 ) {
@@ -59,7 +62,7 @@ fun Scaffold(
             }
         },
         floatingActionButton = floatingActionButton,
-        floatingActionButtonPosition = FabPosition.Center,
+        floatingActionButtonPosition = floatingActionButtonPosition,
         content = content
     )
 }
