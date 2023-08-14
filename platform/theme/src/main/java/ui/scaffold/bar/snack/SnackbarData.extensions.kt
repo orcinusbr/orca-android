@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.ui.component.scaffold.snackbar
+package com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.snack
 
 import androidx.compose.material3.SnackbarData
 

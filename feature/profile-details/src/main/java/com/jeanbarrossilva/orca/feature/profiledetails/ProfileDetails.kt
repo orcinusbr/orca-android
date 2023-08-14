@@ -59,11 +59,11 @@ import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
 import com.jeanbarrossilva.orca.platform.theme.reactivity.BottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.theme.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
+import com.jeanbarrossilva.orca.platform.theme.ui.scaffold.Scaffold
+import com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.top.TopAppBar
+import com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.top.TopAppBarDefaults as _TopAppBarDefaults
+import com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.top.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.ui.component.menu.DropdownMenu
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.Scaffold
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBar
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBarDefaults as _TopAppBarDefaults
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import java.io.Serializable
@@ -477,12 +477,14 @@ private fun ProfileDetails(
             exit = slideOutVertically { -it }
         ) {
             @OptIn(ExperimentalMaterial3Api::class)
-            TopAppBar(
-                Modifier.testTag(PROFILE_DETAILS_TOP_BAR_TAG),
-                navigationIcon = { origin.NavigationButton() },
-                actions,
-                topAppBarScrollBehavior,
-                title
+            (
+                TopAppBar(
+        Modifier.testTag(PROFILE_DETAILS_TOP_BAR_TAG),
+        navigationIcon = { origin.NavigationButton() },
+        actions,
+        topAppBarScrollBehavior,
+        title
+    )
             )
         }
     }

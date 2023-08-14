@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar
+package com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.top
 
 import android.content.res.Configuration
 import androidx.compose.animation.core.animateDpAsState
@@ -27,8 +27,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.backwardsNavigationArrow
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBar as _TopAppBar
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBarDefaults as _TopAppBarDefaults
+import com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.top.TopAppBar as _TopAppBar
+import com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.top.TopAppBarDefaults as _TopAppBarDefaults
 
 /** Default values of a [TopAppBar][_TopAppBar]. **/
 object TopAppBarDefaults {

@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.text
+package com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.top.text
 
 import android.content.res.Configuration
 import androidx.compose.material3.LocalTextStyle
@@ -15,9 +15,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.text.size.AutoSizeRange
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.text.size.AutoSizer
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.text.size.rememberAutoSizeRange
+import com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.top.text.size.AutoSizeRange
+import com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.top.text.size.AutoSizer
+import com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.top.text.size.rememberAutoSizeRange
 
 /**
  * [Text] that is sized automatically based on the specified [range].

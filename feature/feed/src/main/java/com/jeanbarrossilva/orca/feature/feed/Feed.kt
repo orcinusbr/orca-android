@@ -22,10 +22,10 @@ import com.jeanbarrossilva.orca.platform.theme.extensions.plus
 import com.jeanbarrossilva.orca.platform.theme.reactivity.BottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.theme.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.Scaffold
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBar
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBarDefaults
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.text.AutoSizeText
+import com.jeanbarrossilva.orca.platform.theme.ui.scaffold.Scaffold
+import com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.top.TopAppBar
+import com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.top.TopAppBarDefaults
+import com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.top.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import java.net.URL
@@ -97,14 +97,16 @@ private fun Feed(
         modifier,
         topAppBar = {
             @OptIn(ExperimentalMaterial3Api::class)
-            TopAppBar(
-                title = { AutoSizeText("Feed") },
-                actions = {
-                    IconButton(onClick = onSearch) {
-                        Icon(OrcaTheme.Icons.Search, contentDescription = "Search")
-                    }
-                },
-                scrollBehavior = topAppBarScrollBehavior
+            (
+                TopAppBar(
+        title = { AutoSizeText("Feed") },
+        actions = {
+            IconButton(onClick = onSearch) {
+                Icon(OrcaTheme.Icons.Search, contentDescription = "Search")
+            }
+        },
+        scrollBehavior = topAppBarScrollBehavior
+    )
             )
         },
         floatingActionButton = {
