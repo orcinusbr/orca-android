@@ -50,8 +50,8 @@ dependencies {
 
     implementation(project(":platform:ui"))
     implementation(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
+    implementation(Dependencies.ROBOLECTRIC)
     implementation(Dependencies.TIME4J)
 
-    testImplementation(Dependencies.ROBOLECTRIC)
     testImplementation(Dependencies.TEST_CORE)
 }
