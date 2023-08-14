@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.ui.component.menu
+package com.jeanbarrossilva.orca.platform.theme.ui.menu
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
