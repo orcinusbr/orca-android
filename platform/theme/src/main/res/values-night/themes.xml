@@ -9,5 +9,5 @@
     <color name="primary">@android:color/white</color>
     <color name="secondary">#A0A0A0</color>
     <color name="surfaceContainer">#1A1A1A</color>
-    <color name="tertiary">#323232</color>
+    <color name="tertiary">#757575</color>
 </resources>

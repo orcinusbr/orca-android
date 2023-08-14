@@ -13,7 +13,7 @@
     <color name="secondary">#5B5B5B</color>
     <color name="surfaceContainer">@android:color/white</color>
     <color name="surfaceContent">@color/secondary</color>
-    <color name="tertiary">#808080</color>
+    <color name="tertiary">#AFAFAF</color>
 
     <style name="Theme.Orca" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:colorBackground">@color/background</item>
@@ -30,7 +30,7 @@
         <item name="colorOnPrimaryContainer">@color/brandContent</item>
         <item name="colorOnSecondaryContainer">@color/secondary</item>
         <item name="colorOnSurface">@color/surfaceContent</item>
-        <item name="colorOnSurfaceVariant">@color/secondary</item>
+        <item name="colorOnSurfaceVariant">@color/tertiary</item>
         <item name="colorOutline">@color/tertiary</item>
         <item name="colorOutlineVariant">@color/placeholder</item>
         <item name="colorPrimary">@color/brandContainer</item>

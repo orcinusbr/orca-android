@@ -12,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.toListLoadable
@@ -28,6 +29,8 @@ import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.text.AutoSize
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import java.net.URL
+
+const val FEED_FLOATING_ACTION_BUTTON_TAG = "feed-floating-action-button"
 
 @Composable
 internal fun Feed(
@@ -106,7 +109,10 @@ private fun Feed(
         },
         floatingActionButton = {
             if (tootPreviewsLoadable.isLoaded) {
-                FloatingActionButton(onClick = onComposition) {
+                FloatingActionButton(
+                    onClick = onComposition,
+                    Modifier.testTag(FEED_FLOATING_ACTION_BUTTON_TAG)
+                ) {
                     Icon(OrcaTheme.Icons.Create, contentDescription = "Compose")
                 }
             }

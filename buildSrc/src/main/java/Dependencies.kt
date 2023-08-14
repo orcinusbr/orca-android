@@ -54,7 +54,8 @@ object Dependencies {
     const val SLF4J = "org.slf4j:slf4j-api:${Versions.SLF4J}"
     const val STORE = "com.dropbox.mobile.store:store4:${Versions.STORE}"
     const val TEST_CORE = "androidx.test:core-ktx:${Versions.TEST_CORE}"
-    const val TEST_ESPRESSO_CORE = "androidx.test.espresso:espresso-core:${Versions.TEST_ESPRESSO}"
+    const val TEST_ESPRESSO_INTENTS =
+        "androidx.test.espresso:espresso-intents:${Versions.TEST_ESPRESSO}"
     const val TIME4J = "net.time4j:time4j-android:${Versions.TIME4A}"
     const val TURBINE = "app.cash.turbine:turbine:${Versions.TURBINE}"
     const val VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.VIEWMODEL}"
