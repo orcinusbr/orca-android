@@ -97,16 +97,14 @@ private fun Feed(
         modifier,
         topAppBar = {
             @OptIn(ExperimentalMaterial3Api::class)
-            (
-                TopAppBar(
-        title = { AutoSizeText("Feed") },
-        actions = {
-            IconButton(onClick = onSearch) {
-                Icon(OrcaTheme.Icons.Search, contentDescription = "Search")
-            }
-        },
-        scrollBehavior = topAppBarScrollBehavior
-    )
+            TopAppBar(
+                title = { AutoSizeText("Feed") },
+                actions = {
+                    IconButton(onClick = onSearch) {
+                        Icon(OrcaTheme.Icons.Search, contentDescription = "Search")
+                    }
+                },
+                scrollBehavior = topAppBarScrollBehavior
             )
         },
         floatingActionButton = {

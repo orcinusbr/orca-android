@@ -89,11 +89,9 @@ private fun ScaffoldPreview() {
             },
             topAppBar = {
                 @OptIn(ExperimentalMaterial3Api::class)
-                (
-                    TopAppBar {
-        AutoSizeText("Scaffold")
-    }
-                )
+                TopAppBar {
+                    AutoSizeText("Scaffold")
+                }
             },
             snackbarPresenter = snackbarPresenter
         ) {
@@ -104,7 +102,7 @@ private fun ScaffoldPreview() {
                 contentPadding = it + OrcaTheme.overlays.fab
             ) {
                 item {
-                    Text("Content")
+                    Text("Content", style = OrcaTheme.typography.bodyMedium)
                 }
             }
         }

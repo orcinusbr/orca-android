@@ -477,14 +477,12 @@ private fun ProfileDetails(
             exit = slideOutVertically { -it }
         ) {
             @OptIn(ExperimentalMaterial3Api::class)
-            (
-                TopAppBar(
-        Modifier.testTag(PROFILE_DETAILS_TOP_BAR_TAG),
-        navigationIcon = { origin.NavigationButton() },
-        actions,
-        topAppBarScrollBehavior,
-        title
-    )
+            TopAppBar(
+                Modifier.testTag(PROFILE_DETAILS_TOP_BAR_TAG),
+                navigationIcon = { origin.NavigationButton() },
+                actions,
+                topAppBarScrollBehavior,
+                title
             )
         }
     }

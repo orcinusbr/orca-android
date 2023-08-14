@@ -105,17 +105,15 @@ private fun Composer(
         modifier,
         topAppBar = {
             @OptIn(ExperimentalMaterial3Api::class)
-            (
-                TopAppBar(
-        navigationIcon = {
-            IconButton(onClick = onBackwardsNavigation) {
-                Icon(OrcaTheme.Icons.backwardsNavigationArrow, contentDescription = "Back")
+            TopAppBar(
+                navigationIcon = {
+                    IconButton(onClick = onBackwardsNavigation) {
+                        Icon(OrcaTheme.Icons.backwardsNavigationArrow, contentDescription = "Back")
+                    }
+                }
+            ) {
+                AutoSizeText("Compose")
             }
-        }
-    ) {
-        AutoSizeText("Compose")
-    }
-            )
         },
         floatingActionButton = {
             FloatingActionButton(

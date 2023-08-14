@@ -140,21 +140,19 @@ private fun TootDetails(
         modifier,
         topBar = {
             @OptIn(ExperimentalMaterial3Api::class)
-            (
-                TopAppBar(
-        navigationIcon = {
-            IconButton(onClick = onBackwardsNavigation) {
-                Icon(
-                    OrcaTheme.Icons.backwardsNavigationArrow,
-                    contentDescription = "Back"
-                )
+            TopAppBar(
+                navigationIcon = {
+                    IconButton(onClick = onBackwardsNavigation) {
+                        Icon(
+                            OrcaTheme.Icons.backwardsNavigationArrow,
+                            contentDescription = "Back"
+                        )
+                    }
+                },
+                scrollBehavior = topAppBarScrollBehavior
+            ) {
+                AutoSizeText("Toot")
             }
-        },
-        scrollBehavior = topAppBarScrollBehavior
-    ) {
-        AutoSizeText("Toot")
-    }
-            )
         }
     ) {
         Timeline(
