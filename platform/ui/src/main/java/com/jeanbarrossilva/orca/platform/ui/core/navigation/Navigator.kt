@@ -14,7 +14,10 @@ import kotlin.reflect.KClass
  * @param fragmentManager [FragmentManager] that adds [Fragment]s to the [FragmentContainerView].
  * @param containerID ID of the [FragmentContainerView] to which [Fragment]s will be added.
  **/
-class Navigator(private val fragmentManager: FragmentManager, @IdRes private val containerID: Int) {
+class Navigator internal constructor(
+    private val fragmentManager: FragmentManager,
+    @IdRes private val containerID: Int
+) {
     /**
      * Defines the [DestinationProvider] that will provide the [Fragment] destination through [to].
      **/
