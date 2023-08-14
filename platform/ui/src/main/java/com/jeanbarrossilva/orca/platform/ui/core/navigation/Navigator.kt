@@ -51,16 +51,6 @@ class Navigator internal constructor(
             private val instances = hashMapOf<KClass<out Fragment>, Navigation<out Fragment>>()
 
             /**
-             * Gets an existent instance of [Navigation] for the given [Fragment] or creates a new
-             * one and returns it.
-             *
-             * @param T [Fragment] for which the [Navigation] is.
-             **/
-            internal inline fun <reified T : Fragment> `for`(): Navigation<T> {
-                return `for`(T::class)
-            }
-
-            /**
              * Gets an existent instance of [Navigation] for the given [fragmentClass] or creates a
              * new one and returns it.
              *
