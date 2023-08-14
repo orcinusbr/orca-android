@@ -12,9 +12,9 @@ value class Transition internal constructor(internal val value: Int) {
     init {
         require(
             value == FragmentTransaction.TRANSIT_NONE ||
-            value == FragmentTransaction.TRANSIT_FRAGMENT_FADE ||
-            value == FragmentTransaction.TRANSIT_FRAGMENT_OPEN ||
-            value == FragmentTransaction.TRANSIT_FRAGMENT_CLOSE
+                value == FragmentTransaction.TRANSIT_FRAGMENT_FADE ||
+                value == FragmentTransaction.TRANSIT_FRAGMENT_OPEN ||
+                value == FragmentTransaction.TRANSIT_FRAGMENT_CLOSE
         ) {
             "Unknown value: $value."
         }
