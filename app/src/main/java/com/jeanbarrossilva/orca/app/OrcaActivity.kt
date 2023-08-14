@@ -37,8 +37,8 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
         WindowCompat.setDecorFitsSystemWindows(window, false)
         binding = ActivityOrcaBinding.inflate(layoutInflater)
         constraintSet = ConstraintSet().apply { clone(binding?.root) }
-        inject()
         setContentView(binding?.root)
+        inject()
         navigateOnBottomNavigationItemSelection()
         navigateToDefaultDestination()
         lockByNavigatingToAuth()
