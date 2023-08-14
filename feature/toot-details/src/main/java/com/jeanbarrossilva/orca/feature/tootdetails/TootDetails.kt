@@ -24,13 +24,13 @@ import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.formatted
 import com.jeanbarrossilva.orca.feature.tootdetails.viewmodel.TootDetailsViewModel
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.backwardsNavigationArrow
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBarDefaults
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.theme.reactivity.BottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.theme.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBar
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBarDefaults
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.formatted

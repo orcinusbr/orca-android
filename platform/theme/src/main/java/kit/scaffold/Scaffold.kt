@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.ui.component.scaffold
+package com.jeanbarrossilva.orca.platform.theme.kit.scaffold
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
@@ -21,11 +21,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.plus
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.TopAppBar
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.text.AutoSizeText
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.snackbar.orcaVisuals
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.snackbar.presenter.SnackbarPresenter
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.snackbar.presenter.rememberSnackbarPresenter
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold as _Scaffold
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.snack.orcaVisuals
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.snack.presenter.SnackbarPresenter
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.snack.presenter.rememberSnackbarPresenter
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
 
 /**
  * Orca-specific [Scaffold].
@@ -67,7 +68,7 @@ fun Scaffold(
     )
 }
 
-/** Preview of a [Scaffold][com.jeanbarrossilva.orca.platform.ui.component.scaffold.Scaffold]. **/
+/** Preview of a [Scaffold][_Scaffold]. **/
 @Composable
 @Preview
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
@@ -80,8 +81,7 @@ private fun ScaffoldPreview() {
     }
 
     OrcaTheme {
-        @Suppress("UnusedMaterial3ScaffoldPaddingParameter")
-        Scaffold(
+        _Scaffold(
             floatingActionButton = {
                 FloatingActionButton(onClick = { }) {
                     Icon(OrcaTheme.Icons.Add, contentDescription = "Add")
@@ -102,7 +102,7 @@ private fun ScaffoldPreview() {
                 contentPadding = it + OrcaTheme.overlays.fab
             ) {
                 item {
-                    Text("Content")
+                    Text("Content", style = OrcaTheme.typography.bodyMedium)
                 }
             }
         }

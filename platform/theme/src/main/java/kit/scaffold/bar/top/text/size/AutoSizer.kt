@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.text.size
+package com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.size
 
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -8,7 +8,7 @@ import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.sp
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.bar.text.AutoSizeText
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
 
 /**
  * Provides [fontSizeInPx], that changes according to the last sizing operation that has been

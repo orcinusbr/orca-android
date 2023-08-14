@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.ui.component.scaffold.snackbar.presenter
+package com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.snack.presenter
 
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -8,5 +8,5 @@ import androidx.compose.runtime.remember
 @Composable
 fun rememberSnackbarPresenter(): SnackbarPresenter {
     val hostState = remember(::SnackbarHostState)
-    return remember { SnackbarPresenter(hostState) }
+    return remember(hostState) { SnackbarPresenter(hostState) }
 }

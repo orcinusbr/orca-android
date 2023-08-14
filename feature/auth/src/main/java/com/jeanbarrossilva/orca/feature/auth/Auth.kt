@@ -31,8 +31,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.sample.feed.profile.account.sample
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.ui.component.action.PrimaryButton
-import com.jeanbarrossilva.orca.platform.ui.component.input.TextField
+import com.jeanbarrossilva.orca.platform.theme.kit.action.PrimaryButton
+import com.jeanbarrossilva.orca.platform.theme.kit.input.TextField
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 
 /** Tag that identifies the username field for testing purposes. **/

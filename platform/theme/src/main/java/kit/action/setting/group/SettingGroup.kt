@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.theme.ui.setting.group
+package com.jeanbarrossilva.orca.platform.theme.kit.action.setting.group
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
@@ -16,8 +16,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.forwardsNavigationArrow
 import com.jeanbarrossilva.orca.platform.theme.extensions.reversed
-import com.jeanbarrossilva.orca.platform.theme.ui.setting.Setting
-import com.jeanbarrossilva.orca.platform.theme.ui.setting.SettingDefaults
+import com.jeanbarrossilva.orca.platform.theme.kit.action.setting.Setting
+import com.jeanbarrossilva.orca.platform.theme.kit.action.setting.SettingDefaults
 
 /**
  * [Setting] that holds various other [Setting]s that are related to it.

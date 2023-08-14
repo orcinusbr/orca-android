@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.ui.component.input
+package com.jeanbarrossilva.orca.platform.theme.kit.input
 
 import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
@@ -23,8 +23,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.ui.component.input.TextField as _TextField
-import com.jeanbarrossilva.orca.platform.ui.component.input.TextFieldDefaults as _TextFieldDefaults
+import com.jeanbarrossilva.orca.platform.theme.kit.input.TextField as _TextField
+import com.jeanbarrossilva.orca.platform.theme.kit.input.TextFieldDefaults as _TextFieldDefaults
 
 /** Default values used by a [TextField][_TextField]. **/
 object TextFieldDefaults {
@@ -105,9 +105,12 @@ private fun TextField(
     isSingleLined: Boolean = false,
     label: @Composable () -> Unit
 ) {
-    val borderWidth by animateDpAsState(if (isFocused) 2.dp else 0.dp)
+    val borderWidth by animateDpAsState(if (isFocused) 2.dp else 0.dp, label = "BorderWidth")
     val highlightColor = OrcaTheme.colors.brand.container
-    val borderColor by animateColorAsState(if (isFocused) highlightColor else Color.Transparent)
+    val borderColor by animateColorAsState(
+        if (isFocused) highlightColor else Color.Transparent,
+        label = "BorderColor"
+    )
     val shape = OrcaTheme.shapes.medium
 
     TextField(
@@ -116,7 +119,8 @@ private fun TextField(
         modifier.border(borderWidth, borderColor, shape),
         label = {
             val color by animateColorAsState(
-                if (isFocused) highlightColor else LocalTextStyle.current.color
+                if (isFocused) highlightColor else LocalTextStyle.current.color,
+                label = "LabelColor"
             )
 
             ProvideTextStyle(

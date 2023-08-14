@@ -1,9 +1,9 @@
-package com.jeanbarrossilva.orca.platform.ui.component.scaffold.snackbar.presenter
+package com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.snack.presenter
 
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
-import com.jeanbarrossilva.orca.platform.ui.component.scaffold.snackbar.OrcaSnackbarVisuals
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.snack.OrcaSnackbarVisuals
 
 /** Presents various types of [Snackbar]s. **/
 class SnackbarPresenter internal constructor(internal val hostState: SnackbarHostState) {
