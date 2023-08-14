@@ -9,8 +9,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.jeanbarrossilva.orca.app.R
 import com.jeanbarrossilva.orca.feature.tootdetails.TootDetailsFragment
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
-import com.jeanbarrossilva.orca.platform.ui.test.assertIsAtFragment
+import com.jeanbarrossilva.orca.platform.ui.test.assertIsAt
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.onTootPreviews
 import org.junit.Rule
 import org.junit.Test
@@ -30,7 +29,7 @@ internal class ProfileDetailsToTootDetailsTests {
             onView(withId(R.id.profile_details)).perform(click())
             composeRule.onTootPreviews().onFirst().performClick()
             shadowOf(Looper.getMainLooper()).idle()
-            assertIsAtFragment(it.get(), Navigator.tagFor<TootDetailsFragment>())
+            assertIsAt<TootDetailsFragment>(it.get())
         }
     }
 }

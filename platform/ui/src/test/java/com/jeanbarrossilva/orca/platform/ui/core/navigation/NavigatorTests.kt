@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentContainerView
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.closing
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.opening
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.suddenly
-import com.jeanbarrossilva.orca.platform.ui.test.assertIsAtFragment
+import com.jeanbarrossilva.orca.platform.ui.test.assertIsAt
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
@@ -28,7 +28,7 @@ internal class NavigatorTests {
         Robolectric.buildActivity(TestNavigationActivity::class.java).setup().use {
             val activity = it.get()
             activity.navigator.navigate(suddenly()) { to(::DestinationFragment) }
-            assertIsAtFragment(activity, Navigator.tagFor<DestinationFragment>())
+            assertIsAt<DestinationFragment>(activity)
         }
     }
 
@@ -37,7 +37,7 @@ internal class NavigatorTests {
         Robolectric.buildActivity(TestNavigationActivity::class.java).setup().use {
             val activity = it.get()
             activity.navigator.navigate(opening()) { to(::DestinationFragment) }
-            assertIsAtFragment(activity, Navigator.tagFor<DestinationFragment>())
+            assertIsAt<DestinationFragment>(activity)
         }
     }
 
@@ -46,7 +46,7 @@ internal class NavigatorTests {
         Robolectric.buildActivity(TestNavigationActivity::class.java).setup().use {
             val activity = it.get()
             activity.navigator.navigate(closing()) { to(::DestinationFragment) }
-            assertIsAtFragment(activity, Navigator.tagFor<DestinationFragment>())
+            assertIsAt<DestinationFragment>(activity)
         }
     }
 }
