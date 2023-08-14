@@ -35,8 +35,10 @@ internal open class OrcaApplication : Application(), Launchable {
     }
 
     private fun setUpInjection() {
-        startKoin {
-            androidContext(this@OrcaApplication)
+        if (!isKoinInitialized) {
+            startKoin {
+                androidContext(this@OrcaApplication)
+            }
         }
     }
 
