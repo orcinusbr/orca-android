@@ -1,10 +1,10 @@
-package com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.top.text.size
+package com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.size
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
-import com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.top.text.AutoSizeText
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
 
 /**
  * Range within which an [AutoSizeText] should be sized.

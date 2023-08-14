@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.theme.ui.action.setting
+package com.jeanbarrossilva.orca.platform.theme.kit.action.setting
 
 import android.content.res.Configuration
 import androidx.compose.foundation.interaction.MutableInteractionSource

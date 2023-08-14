@@ -19,13 +19,13 @@ import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.plus
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBarDefaults
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.theme.reactivity.BottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.theme.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
-import com.jeanbarrossilva.orca.platform.theme.ui.scaffold.Scaffold
-import com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.top.TopAppBar
-import com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.top.TopAppBarDefaults
-import com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.top.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import java.net.URL

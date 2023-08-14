@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.top.text.size
+package com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.size
 
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable

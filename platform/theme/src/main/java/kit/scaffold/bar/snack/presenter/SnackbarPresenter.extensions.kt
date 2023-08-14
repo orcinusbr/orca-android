@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.snack.presenter
+package com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.snack.presenter
 
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable

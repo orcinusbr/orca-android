@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.theme.ui.scaffold
+package com.jeanbarrossilva.orca.platform.theme.kit.scaffold
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
@@ -21,12 +21,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.plus
-import com.jeanbarrossilva.orca.platform.theme.ui.scaffold.Scaffold as _Scaffold
-import com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.snack.orcaVisuals
-import com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.snack.presenter.SnackbarPresenter
-import com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.snack.presenter.rememberSnackbarPresenter
-import com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.top.TopAppBar
-import com.jeanbarrossilva.orca.platform.theme.ui.scaffold.bar.top.text.AutoSizeText
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold as _Scaffold
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.snack.orcaVisuals
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.snack.presenter.SnackbarPresenter
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.snack.presenter.rememberSnackbarPresenter
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
 
 /**
  * Orca-specific [Scaffold].
@@ -89,9 +89,11 @@ private fun ScaffoldPreview() {
             },
             topAppBar = {
                 @OptIn(ExperimentalMaterial3Api::class)
-                TopAppBar {
-                    AutoSizeText("Scaffold")
-                }
+                (
+                    TopAppBar {
+        AutoSizeText("Scaffold")
+    }
+                )
             },
             snackbarPresenter = snackbarPresenter
         ) {

@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.theme.ui.action
+package com.jeanbarrossilva.orca.platform.theme.kit.action
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.PaddingValues

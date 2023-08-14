@@ -44,7 +44,7 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.search.samples
 import com.jeanbarrossilva.orca.feature.search.ui.SearchResultCard
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.backwardsNavigationArrow
-import com.jeanbarrossilva.orca.platform.theme.ui.input.TextField
+import com.jeanbarrossilva.orca.platform.theme.kit.input.TextField
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 
 internal object SearchDefaults {

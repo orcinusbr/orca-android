@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.theme.ui.input
+package com.jeanbarrossilva.orca.platform.theme.kit.input
 
 import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
@@ -23,8 +23,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.ui.input.TextField as _TextField
-import com.jeanbarrossilva.orca.platform.theme.ui.input.TextFieldDefaults as _TextFieldDefaults
+import com.jeanbarrossilva.orca.platform.theme.kit.input.TextField as _TextField
+import com.jeanbarrossilva.orca.platform.theme.kit.input.TextFieldDefaults as _TextFieldDefaults
 
 /** Default values used by a [TextField][_TextField]. **/
 object TextFieldDefaults {
