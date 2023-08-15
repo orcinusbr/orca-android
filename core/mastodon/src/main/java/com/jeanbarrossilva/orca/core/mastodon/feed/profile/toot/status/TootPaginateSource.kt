@@ -24,8 +24,8 @@ abstract class TootPaginateSource internal constructor() : BasePaginateSource<Ur
     ): PagedResult<Url, Toot> {
         val response = getStatusesResponse(key)
         val headerLinks = response.headers.links
-        val previousUrl = headerLinks?.first()?.uri?.let(::Url)
-        val nextUrl = headerLinks?.get(1)?.uri?.let(::Url)
+        val previousUrl = headerLinks.firstOrNull()?.uri?.let(::Url)
+        val nextUrl = headerLinks.getOrNull(1)?.uri?.let(::Url)
         val statuses = response.body<List<Status>>().map { it.toToot() }
         val pageInfo = PageInfo(
             index,

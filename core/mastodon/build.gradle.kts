@@ -73,4 +73,6 @@ dependencies {
     releaseImplementation(Dependencies.SLF4J) {
         because("Ktor references \"StaticLoggerBinder\" and it is missing on minification.")
     }
+
+    testImplementation(Dependencies.JUNIT)
 }
