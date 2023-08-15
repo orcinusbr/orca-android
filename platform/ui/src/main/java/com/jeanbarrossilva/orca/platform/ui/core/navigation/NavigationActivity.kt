@@ -18,6 +18,9 @@ open class NavigationActivity : FragmentActivity() {
      * **NOTE**: Because the [FragmentContainerView] that this [NavigationActivity] holds needs to
      * have an ID for the [Navigator] to work properly, one is automatically generated and assigned
      * to it if it doesn't already have one.
+     *
+     * @throws IllegalStateException If a [FragmentContainerView] is not found within the [View]
+     * tree.
      **/
     val navigator
         get() = view
