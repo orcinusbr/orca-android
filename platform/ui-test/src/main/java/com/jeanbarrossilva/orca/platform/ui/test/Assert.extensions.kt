@@ -19,7 +19,7 @@ inline fun <reified T : Fragment> assertIsAt(activity: FragmentActivity) {
     Shadows.shadowOf(Looper.getMainLooper()).idle()
     assertNotNull(
         "$fragmentName not found. Make sure, if it has been navigated to, that its tag is the " +
-            "result of Navigator.tagFor<$$fragmentName>().",
+            "result of Navigator.tagFor<$fragmentName>().",
         activity.supportFragmentManager.findFragmentByTag(tag)
     )
 }
