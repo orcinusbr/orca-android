@@ -76,7 +76,6 @@ internal class NavigatorTests {
                 }
             }
             Shadows.shadowOf(Looper.getMainLooper()).idle()
-            println(activity.supportFragmentManager.fragments)
             assertEquals(1, activity.supportFragmentManager.fragments.size)
         }
     }

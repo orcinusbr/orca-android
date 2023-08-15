@@ -21,9 +21,6 @@ class Navigator internal constructor(
     private val fragmentManager: FragmentManager,
     @IdRes private val containerID: Int
 ) {
-    /** [Navigation] that has been scheduled to be performed at last. **/
-    private var lastScheduledNavigation: Navigation<*>? = null
-
     /**
      * Defines the [DestinationProvider] that will provide the [Fragment] destination through [to].
      **/
@@ -113,7 +110,8 @@ class Navigator internal constructor(
         duplication: Duplication,
         navigation: Navigation<T>.() -> Navigation.DestinationProvider<T>
     ) {
-        val canNavigate = true
+        val currentFragment = fragmentManager.fragments.lastOrNull()
+        val canNavigate = duplication.canNavigateTo(fragmentClass, currentFragment)
         if (canNavigate) {
             unconditionallyNavigate(fragmentClass, transition, navigation)
         }
@@ -140,6 +138,7 @@ class Navigator internal constructor(
             setTransition(transition.value)
             add(containerID, destination, destination.tag ?: tagFor(fragmentClass))
         }
+        fragmentManager.executePendingTransactions()
     }
 
     companion object {
