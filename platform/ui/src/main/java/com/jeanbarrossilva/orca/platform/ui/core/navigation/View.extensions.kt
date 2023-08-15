@@ -22,6 +22,13 @@ internal inline fun <reified T : View> View.get(isInclusive: Boolean = true): T 
     return get(T::class, isInclusive)
 }
 
+/** Assigns a generated ID to this [View] if it doesn't already have one. **/
+internal fun View.identify() {
+    if (id == View.NO_ID) {
+        id = View.generateViewId()
+    }
+}
+
 /**
  * Verifies if this [View]'s (if [isInclusive]) or one of its children's [KClass] equal to the given
  * [viewClass].

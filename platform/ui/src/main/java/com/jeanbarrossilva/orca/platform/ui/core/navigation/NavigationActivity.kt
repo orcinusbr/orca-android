@@ -7,11 +7,6 @@ import androidx.fragment.app.FragmentContainerView
 
 /** [FragmentActivity] through which [Navigator]-based navigation can be performed. **/
 open class NavigationActivity : FragmentActivity() {
-    /** Root [View] of this [NavigationActivity]. **/
-    private val view by lazy {
-        requireViewById<ViewGroup>(android.R.id.content)
-    }
-
     /**
      * [Navigator] through which navigation can be performed.
      *
@@ -23,8 +18,8 @@ open class NavigationActivity : FragmentActivity() {
      * tree.
      **/
     val navigator
-        get() = view
-            .get<FragmentContainerView>()
-            .apply { if (id == View.NO_ID) id = View.generateViewId() }
+        get() = requireViewById<ViewGroup>(android.R.id.content)
+            .get<FragmentContainerView>(isInclusive = false)
+            .also(View::identify)
             .let { Navigator(supportFragmentManager, it.id) }
 }
