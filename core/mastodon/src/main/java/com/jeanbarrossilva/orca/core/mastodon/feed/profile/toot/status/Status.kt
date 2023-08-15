@@ -4,7 +4,9 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.account.MastodonAccou
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonToot
 import java.net.URL
 import java.time.ZonedDateTime
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Status internal constructor(
     internal val id: String,
     internal val createdAt: String,
@@ -13,7 +15,7 @@ data class Status internal constructor(
     internal val favouritesCount: Int,
     internal val repliesCount: Int,
     internal val url: String,
-    internal val text: String,
+    internal val content: String,
     @Suppress("SpellCheckingInspection") internal val favourited: Boolean?,
     internal val reblogged: Boolean?
 ) {
@@ -24,7 +26,7 @@ data class Status internal constructor(
         return MastodonToot(
             id,
             author,
-            text,
+            content,
             publicationDateTime,
             repliesCount,
             favourited == true,
