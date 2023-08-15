@@ -2,7 +2,6 @@ package com.jeanbarrossilva.orca.app
 
 import android.os.Bundle
 import androidx.annotation.IdRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
@@ -18,14 +17,14 @@ import com.jeanbarrossilva.orca.app.navigation.navigator.BottomNavigationItemNav
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.feature.auth.AuthActivity
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
+import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.core.context.loadKoinModules
 
-internal open class OrcaActivity : AppCompatActivity(), OnBottomAreaAvailabilityChangeListener {
+internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilityChangeListener {
     private var binding: ActivityOrcaBinding? = null
     private var constraintSet: ConstraintSet? = null
-    private val containerID = R.id.container
 
     protected open val coreModule = MainCoreModule()
     protected open val appModule by lazy { AppModule(this) }
@@ -38,8 +37,8 @@ internal open class OrcaActivity : AppCompatActivity(), OnBottomAreaAvailability
         WindowCompat.setDecorFitsSystemWindows(window, false)
         binding = ActivityOrcaBinding.inflate(layoutInflater)
         constraintSet = ConstraintSet().apply { clone(binding?.root) }
-        inject()
         setContentView(binding?.root)
+        inject()
         navigateOnBottomNavigationItemSelection()
         navigateToDefaultDestination()
         lockByNavigatingToAuth()
@@ -75,11 +74,11 @@ internal open class OrcaActivity : AppCompatActivity(), OnBottomAreaAvailability
     }
 
     private fun inject() {
-        val composerModule = ComposerModule(supportFragmentManager)
-        val feedModule = FeedModule(supportFragmentManager, containerID)
-        val profileDetailsModule = ProfileDetailsModule(supportFragmentManager, containerID)
-        val searchModule = SearchModule(supportFragmentManager, containerID)
-        val tootDetailsModule = TootDetailsModule(supportFragmentManager, containerID)
+        val composerModule = ComposerModule(navigator)
+        val feedModule = FeedModule(navigator)
+        val profileDetailsModule = ProfileDetailsModule(navigator)
+        val searchModule = SearchModule(navigator)
+        val tootDetailsModule = TootDetailsModule(navigator)
         val modules = listOf(
             appModule,
             composerModule,
@@ -100,11 +99,7 @@ internal open class OrcaActivity : AppCompatActivity(), OnBottomAreaAvailability
     }
 
     private fun navigateTo(@IdRes itemID: Int) {
-        BottomNavigationItemNavigatorFactory.create().navigate(
-            supportFragmentManager,
-            containerID,
-            itemID
-        )
+        BottomNavigationItemNavigatorFactory.create().navigate(navigator, itemID)
     }
 
     private fun navigateToDefaultDestination() {

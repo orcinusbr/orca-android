@@ -2,19 +2,19 @@ package com.jeanbarrossilva.orca.app.navigation.navigator
 
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.commit
+import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
+import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.suddenly
 
 abstract class BottomNavigationItemNavigator {
-    protected abstract val tag: String
     protected abstract val next: BottomNavigationItemNavigator?
 
-    fun navigate(fragmentManager: FragmentManager, @IdRes containerID: Int, @IdRes itemID: Int) {
-        val fragment = getFragment(itemID)
-            ?: next?.getFragment(itemID)
-            ?: throw IllegalArgumentException("No provider for item identified as $itemID.")
-        fragmentManager.commit {
-            add(containerID, fragment, tag)
+    fun navigate(navigator: Navigator, @IdRes itemID: Int) {
+        navigator.navigate(suddenly()) {
+            to {
+                getFragment(itemID)
+                    ?: next?.getFragment(itemID)
+                    ?: throw IllegalArgumentException("No provider for item identified as $itemID.")
+            }
         }
     }
 

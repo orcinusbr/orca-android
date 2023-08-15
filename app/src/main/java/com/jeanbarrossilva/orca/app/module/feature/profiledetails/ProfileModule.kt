@@ -1,17 +1,16 @@
 package com.jeanbarrossilva.orca.app.module.feature.profiledetails
 
-import androidx.annotation.IdRes
-import androidx.fragment.app.FragmentManager
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetailsBoundary
+import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 @Suppress("FunctionName")
-internal fun ProfileDetailsModule(fragmentManager: FragmentManager, @IdRes containerID: Int):
-    Module {
+internal fun ProfileDetailsModule(navigator: Navigator): Module {
     return module {
         single<ProfileDetailsBoundary> {
-            FragmentManagerProfileDetailsBoundary(fragmentManager, containerID)
+            NavigatorProfileDetailsBoundary(androidContext(), navigator)
         }
     }
 }
