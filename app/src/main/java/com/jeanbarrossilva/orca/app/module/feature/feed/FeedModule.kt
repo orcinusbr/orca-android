@@ -10,7 +10,7 @@ import org.koin.dsl.module
 internal fun FeedModule(navigator: Navigator): Module {
     return module {
         single<FeedBoundary> {
-            FragmentManagerFeedBoundary(androidContext(), navigator)
+            NavigatorFeedBoundary(androidContext(), navigator)
         }
     }
 }

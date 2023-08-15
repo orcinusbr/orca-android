@@ -9,7 +9,7 @@ import org.koin.dsl.module
 internal fun TootDetailsModule(navigator: Navigator): Module {
     return module {
         single<TootDetailsBoundary> {
-            FragmentManagerTootDetailsBoundary(navigator)
+            NavigatorTootDetailsBoundary(navigator)
         }
     }
 }

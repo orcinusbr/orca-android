@@ -7,7 +7,7 @@ import com.jeanbarrossilva.orca.platform.ui.core.Intent
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
 import java.net.URL
 
-internal class FragmentManagerProfileDetailsBoundary(
+internal class NavigatorProfileDetailsBoundary(
     private val context: Context,
     private val navigator: Navigator
 ) : ProfileDetailsBoundary {

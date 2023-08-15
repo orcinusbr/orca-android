@@ -10,7 +10,7 @@ import org.koin.dsl.module
 internal fun ProfileDetailsModule(navigator: Navigator): Module {
     return module {
         single<ProfileDetailsBoundary> {
-            FragmentManagerProfileDetailsBoundary(androidContext(), navigator)
+            NavigatorProfileDetailsBoundary(androidContext(), navigator)
         }
     }
 }

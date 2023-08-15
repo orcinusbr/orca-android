@@ -9,7 +9,7 @@ import org.koin.dsl.module
 internal fun ComposerModule(navigator: Navigator): Module {
     return module {
         single<ComposerBoundary> {
-            FragmentManagerComposerBoundary(navigator)
+            NavigatorComposerBoundary(navigator)
         }
     }
 }

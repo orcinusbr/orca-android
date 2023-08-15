@@ -7,7 +7,7 @@ import com.jeanbarrossilva.orca.feature.search.SearchFragment
 import com.jeanbarrossilva.orca.feature.tootdetails.TootDetailsFragment
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
 
-internal class FragmentManagerFeedBoundary(
+internal class NavigatorFeedBoundary(
     private val context: Context,
     private val navigator: Navigator
 ) : FeedBoundary {
