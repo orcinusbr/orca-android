@@ -96,14 +96,14 @@ class Navigator internal constructor(
     }
 
     /**
-     * Navigates to the [Fragment] destination provided by the result of [provision].
+     * Navigates to the [Fragment] destination provided by the result of [navigation].
      *
      * @param T [Fragment] to navigate to.
      * @param fragmentClass [KClass] of the [Fragment].
      * @param transition [Transition] with which the navigation will be animated.
      * @param duplication Indicates whether the navigation should be performed even if the
      * current [Fragment]'s and the destination's types are the same.
-     * @param provision Defines where to navigate to.
+     * @param navigation Defines where to navigate to.
      * @see Navigation.to
      **/
     @PublishedApi
@@ -111,12 +111,11 @@ class Navigator internal constructor(
         fragmentClass: KClass<T>,
         transition: Transition,
         duplication: Duplication,
-        provision: Navigation<T>.() -> Navigation.DestinationProvider<T>
+        navigation: Navigation<T>.() -> Navigation.DestinationProvider<T>
     ) {
-        val navigation = Navigation.`for`(fragmentClass)
-        val canNavigate = duplication.canNavigate(lastScheduledNavigation, navigation)
+        val canNavigate = true
         if (canNavigate) {
-            unconditionallyNavigate(navigation, fragmentClass, transition, provision)
+            unconditionallyNavigate(fragmentClass, transition, navigation)
         }
     }
 
@@ -125,25 +124,22 @@ class Navigator internal constructor(
      * checking if we're allowed to do so.
      *
      * @param T [Fragment] to navigate to.
-     * @param navigation Metadata of the navigation to be performed.
      * @param fragmentClass [KClass] of the [Fragment].
      * @param transition [Transition] with which the navigation will be animated.
      * @param provision Defines where to navigate to.
      * @see Navigation.to
      **/
     private fun <T : Fragment> unconditionallyNavigate(
-        navigation: Navigation<T>,
         fragmentClass: KClass<T>,
         transition: Transition,
         provision: Navigation<T>.() -> Navigation.DestinationProvider<T>
     ) {
-        val destination = navigation.provision().provide()
         fragmentManager.commit {
+            val destination = Navigation.`for`(fragmentClass).provision().provide()
             addToBackStack(null)
             setTransition(transition.value)
             add(containerID, destination, destination.tag ?: tagFor(fragmentClass))
         }
-        lastScheduledNavigation = navigation
     }
 
     companion object {
