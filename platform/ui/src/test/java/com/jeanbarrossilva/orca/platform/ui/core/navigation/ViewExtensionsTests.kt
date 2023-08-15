@@ -1,10 +1,13 @@
 package com.jeanbarrossilva.orca.platform.ui.core.navigation
 
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.test.platform.app.InstrumentationRegistry
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotSame
 import org.junit.Assert.assertSame
 import org.junit.Test
@@ -15,6 +18,19 @@ import org.robolectric.RobolectricTestRunner
 internal class ViewExtensionsTests {
     private val context
         get() = InstrumentationRegistry.getInstrumentation().context
+
+    @Test
+    fun `GIVEN an unidentified View WHEN identifying it THEN it's identified`() {
+        val view = View(context).apply(View::identify)
+        assertNotEquals(View.NO_ID, view.id)
+    }
+
+    @Test
+    fun `GIVEN an identified View WHEN identifying it THEN its ID remains unchanged`() {
+        val id = View.generateViewId()
+        val view = View(context).apply { this.id = id }.also(View::identify)
+        assertEquals(id, view.id)
+    }
 
     @Test
     fun `GIVEN a View WHEN searching for it from itself inclusively THEN it's returned`() {
