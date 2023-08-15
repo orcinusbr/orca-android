@@ -6,7 +6,6 @@ import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.suddenly
 
 abstract class BottomNavigationItemNavigator {
-    protected abstract val tag: String
     protected abstract val next: BottomNavigationItemNavigator?
 
     fun navigate(navigator: Navigator, @IdRes itemID: Int) {
