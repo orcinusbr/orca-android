@@ -1,7 +1,6 @@
 package com.jeanbarrossilva.orca.platform.ui.core.navigation
 
 import android.os.Bundle
-import android.os.Looper
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.duplication.disallowingDuplication
@@ -14,7 +13,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.Shadows
 
 @RunWith(RobolectricTestRunner::class)
 internal class NavigatorTests {
@@ -61,7 +59,6 @@ internal class NavigatorTests {
             repeat(2) {
                 activity.navigator.navigate(suddenly()) { to(::DestinationFragment) }
             }
-            Shadows.shadowOf(Looper.getMainLooper()).idle()
             assertEquals(2, activity.supportFragmentManager.fragments.size)
         }
     }
@@ -75,7 +72,6 @@ internal class NavigatorTests {
                     to(::DestinationFragment)
                 }
             }
-            Shadows.shadowOf(Looper.getMainLooper()).idle()
             assertEquals(1, activity.supportFragmentManager.fragments.size)
         }
     }
