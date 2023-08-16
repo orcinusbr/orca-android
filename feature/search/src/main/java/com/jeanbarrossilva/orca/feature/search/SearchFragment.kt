@@ -21,7 +21,7 @@ class SearchFragment : ComposableFragment() {
     companion object {
         fun navigate(navigator: Navigator) {
             navigator.navigate(opening()) {
-                to(::SearchFragment)
+                to("search", ::SearchFragment)
             }
         }
     }

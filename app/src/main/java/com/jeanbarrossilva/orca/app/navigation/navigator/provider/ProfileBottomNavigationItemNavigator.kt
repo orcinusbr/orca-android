@@ -11,9 +11,13 @@ import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavig
 internal class ProfileBottomNavigationItemNavigator(
     override val next: BottomNavigationItemNavigator?
 ) : BottomNavigationItemNavigator() {
+    private val id = Profile.sample.id
+
+    override val route = ProfileDetailsFragment.createRoute(id)
+
     override fun getFragment(itemID: Int): Fragment? {
         return if (itemID == R.id.profile_details) {
-            ProfileDetailsFragment(BackwardsNavigationState.Unavailable, Profile.sample.id)
+            ProfileDetailsFragment(BackwardsNavigationState.Unavailable, id)
         } else {
             null
         }

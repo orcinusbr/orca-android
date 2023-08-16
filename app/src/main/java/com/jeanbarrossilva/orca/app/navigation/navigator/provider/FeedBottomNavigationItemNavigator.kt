@@ -10,6 +10,8 @@ import com.jeanbarrossilva.orca.feature.feed.FeedFragment
 internal class FeedBottomNavigationItemNavigator(
     override val next: BottomNavigationItemNavigator?
 ) : BottomNavigationItemNavigator() {
+    override val route = "feed"
+
     override fun getFragment(itemID: Int): Fragment? {
         return if (itemID == R.id.feed) FeedFragment(Profile.sample.id) else null
     }

@@ -1,40 +1,28 @@
 package com.jeanbarrossilva.orca.platform.ui.core.navigation.duplication
 
-import androidx.fragment.app.Fragment
-import kotlin.reflect.KClass
+import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
 
 /** Indicates the approval or lack thereof of duplicate navigation. **/
 sealed class Duplication {
     /** Indicates that duplicate navigation is disallowed. **/
     internal object Disallowed : Duplication() {
-        override fun <T : Fragment> canNavigateTo(
-            fragmentClass: KClass<T>,
-            currentFragment: Fragment?
-        ): Boolean {
-            return currentFragment == null || currentFragment::class != fragmentClass
+        override fun canNavigate(previousRoute: String?, currentRoute: String): Boolean {
+            return previousRoute == null || currentRoute != previousRoute
         }
     }
 
     /** Indicates that duplicate navigation is allowed. **/
     internal object Allowed : Duplication() {
-        override fun <T : Fragment> canNavigateTo(
-            fragmentClass: KClass<T>,
-            currentFragment: Fragment?
-        ): Boolean {
+        override fun canNavigate(previousRoute: String?, currentRoute: String): Boolean {
             return true
         }
     }
 
     /**
-     * Determines whether navigation to a [Fragment] whose [KClass] equals to the given
-     * [fragmentClass] can be performed.
+     * Determines whether navigation can be performed.
      *
-     * @param T [Fragment] to which navigation has been requested to be performed.
-     * @param fragmentClass [KClass] of the [Fragment].
-     * @param currentFragment [Fragment] that's the current one.
+     * @param previousRoute Route of the previous [Navigator.Navigation.Destination].
+     * @param currentRoute Route to which navigation has been requested.
      **/
-    internal abstract fun <T : Fragment> canNavigateTo(
-        fragmentClass: KClass<T>,
-        currentFragment: Fragment?
-    ): Boolean
+    internal abstract fun canNavigate(previousRoute: String?, currentRoute: String): Boolean
 }

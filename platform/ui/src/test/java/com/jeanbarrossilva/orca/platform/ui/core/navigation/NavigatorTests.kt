@@ -7,7 +7,7 @@ import com.jeanbarrossilva.orca.platform.ui.core.navigation.duplication.disallow
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.closing
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.opening
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.suddenly
-import com.jeanbarrossilva.orca.platform.ui.test.assertIsAt
+import com.jeanbarrossilva.orca.platform.ui.test.assertIsAtFragment
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,14 +23,20 @@ internal class NavigatorTests {
         }
     }
 
-    class DestinationFragment : Fragment()
+    class DestinationFragment : Fragment() {
+        companion object {
+            const val ROUTE = "destination"
+        }
+    }
 
     @Test
     fun `GIVEN a destination WHEN navigating to it suddenly THEN it's navigated to`() {
         Robolectric.buildActivity(TestNavigationActivity::class.java).setup().use {
             val activity = it.get()
-            activity.navigator.navigate(suddenly()) { to(::DestinationFragment) }
-            assertIsAt<DestinationFragment>(activity)
+            activity.navigator.navigate(suddenly()) {
+                to(DestinationFragment.ROUTE, ::DestinationFragment)
+            }
+            assertIsAtFragment(activity, DestinationFragment.ROUTE)
         }
     }
 
@@ -38,8 +44,10 @@ internal class NavigatorTests {
     fun `GIVEN a destination WHEN navigating to it with an open transition THEN it's navigated to`() { // ktlint-disable max-line-length
         Robolectric.buildActivity(TestNavigationActivity::class.java).setup().use {
             val activity = it.get()
-            activity.navigator.navigate(opening()) { to(::DestinationFragment) }
-            assertIsAt<DestinationFragment>(activity)
+            activity.navigator.navigate(opening()) {
+                to(DestinationFragment.ROUTE, ::DestinationFragment)
+            }
+            assertIsAtFragment(activity, DestinationFragment.ROUTE)
         }
     }
 
@@ -47,8 +55,10 @@ internal class NavigatorTests {
     fun `GIVEN a destination WHEN navigating to it with a closing transition THEN it's navigated to`() { // ktlint-disable max-line-length
         Robolectric.buildActivity(TestNavigationActivity::class.java).setup().use {
             val activity = it.get()
-            activity.navigator.navigate(closing()) { to(::DestinationFragment) }
-            assertIsAt<DestinationFragment>(activity)
+            activity.navigator.navigate(closing()) {
+                to(DestinationFragment.ROUTE, ::DestinationFragment)
+            }
+            assertIsAtFragment(activity, DestinationFragment.ROUTE)
         }
     }
 
@@ -57,7 +67,9 @@ internal class NavigatorTests {
         Robolectric.buildActivity(TestNavigationActivity::class.java).setup().use {
             val activity = it.get()
             repeat(2) {
-                activity.navigator.navigate(suddenly()) { to(::DestinationFragment) }
+                activity.navigator.navigate(suddenly()) {
+                    to(DestinationFragment.ROUTE, ::DestinationFragment)
+                }
             }
             assertEquals(2, activity.supportFragmentManager.fragments.size)
         }
@@ -69,7 +81,7 @@ internal class NavigatorTests {
             val activity = it.get()
             repeat(2) {
                 activity.navigator.navigate(suddenly(), disallowingDuplication()) {
-                    to(::DestinationFragment)
+                    to(DestinationFragment.ROUTE, ::DestinationFragment)
                 }
             }
             assertEquals(1, activity.supportFragmentManager.fragments.size)

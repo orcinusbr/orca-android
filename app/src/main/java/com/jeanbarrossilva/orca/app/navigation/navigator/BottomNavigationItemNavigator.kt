@@ -7,11 +7,12 @@ import com.jeanbarrossilva.orca.platform.ui.core.navigation.duplication.disallow
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.suddenly
 
 abstract class BottomNavigationItemNavigator {
+    protected abstract val route: String
     protected abstract val next: BottomNavigationItemNavigator?
 
     fun navigate(navigator: Navigator, @IdRes itemID: Int) {
         navigator.navigate(suddenly(), disallowingDuplication()) {
-            to {
+            to(route) {
                 getFragment(itemID)
                     ?: next?.getFragment(itemID)
                     ?: throw IllegalArgumentException("No provider for item identified as $itemID.")

@@ -53,9 +53,13 @@ class ProfileDetailsFragment internal constructor() : ComposableFragment(), Cont
         internal const val ID_KEY = "id"
         internal const val BACKWARDS_NAVIGATION_STATE_KEY = "backwards-navigation-state"
 
+        fun createRoute(id: String): String {
+            return "profile/$id"
+        }
+
         fun navigate(navigator: Navigator, id: String) {
             navigator.navigate(opening()) {
-                to {
+                to(createRoute(id)) {
                     ProfileDetailsFragment(
                         BackwardsNavigationState.Available.createInstance(navigator::pop),
                         id
