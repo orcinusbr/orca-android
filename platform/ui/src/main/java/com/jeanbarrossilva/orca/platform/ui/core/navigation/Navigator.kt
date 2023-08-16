@@ -21,7 +21,7 @@ class Navigator internal constructor(
     @IdRes private val containerID: Int
 ) {
     /**
-     * Defines the [DestinationProvider] that will provide the [Fragment] destination through [to].
+     * Defines the [Destination.Provider] that will provide the [Fragment] destination through [to].
      **/
     class Navigation<T : Fragment> internal constructor() {
         /**
@@ -31,27 +31,27 @@ class Navigator internal constructor(
          * @param route Path by which the [fragment] can be retrieved.
          * @param fragment [Fragment] to be navigated to.
          **/
-        class Destination<T : Fragment> internal constructor(val route: String, val fragment: T)
-
-        /**
-         * Provides the [Destination] to navigate to through [provide]. Can be instantiated via
-         * [to].
-         *
-         * @param T [Fragment] to navigate to.
-         **/
-        abstract class DestinationProvider<T : Fragment> internal constructor() {
-            /** Provides the [Destination] to navigate to. **/
-            internal abstract fun provide(): Destination<T>
+        class Destination<T : Fragment> internal constructor(val route: String, val fragment: T) {
+            /**
+             * Provides the [Destination] to navigate to through [provide]. Can be instantiated via
+             * [to].
+             *
+             * @param T [Fragment] to navigate to.
+             **/
+            abstract class Provider<T : Fragment> internal constructor() {
+                /** Provides the [Destination] to navigate to. **/
+                internal abstract fun provide(): Destination<T>
+            }
         }
 
         /**
-         * Creates a [DestinationProvider].
+         * Creates a [Destination.Provider].
          *
          * @param route Path by which the result of [target] can be retrieved.
          * @param target Returns the [Fragment] to navigate to.
          **/
-        fun to(route: String, target: () -> T): DestinationProvider<T> {
-            return object : DestinationProvider<T>() {
+        fun to(route: String, target: () -> T): Destination.Provider<T> {
+            return object : Destination.Provider<T>() {
                 override fun provide(): Destination<T> {
                     return Destination(route, target())
                 }
@@ -75,7 +75,7 @@ class Navigator internal constructor(
     fun <T : Fragment> navigate(
         transition: Transition,
         duplication: Duplication = allowingDuplication(),
-        navigation: Navigation<T>.() -> Navigation.DestinationProvider<T>
+        navigation: Navigation<T>.() -> Navigation.Destination.Provider<T>
     ) {
         val previousRoute = fragmentManager.fragments.lastOrNull()?.tag
         val destination = Navigation<T>().navigation().provide()
