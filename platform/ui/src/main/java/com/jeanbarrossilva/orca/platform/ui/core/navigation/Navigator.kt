@@ -31,7 +31,7 @@ class Navigator internal constructor(
          * @param route Path by which the [fragment] can be retrieved.
          * @param fragment [Fragment] to be navigated to.
          **/
-        class Destination<T : Fragment>(val route: String, val fragment: T) {
+        data class Destination<T : Fragment>(val route: String, val fragment: T) {
             /**
              * Provides the [Destination] to navigate to through [provide]. Can be instantiated via
              * [to].
