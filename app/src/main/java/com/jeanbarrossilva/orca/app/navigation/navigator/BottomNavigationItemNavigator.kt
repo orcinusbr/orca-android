@@ -9,11 +9,10 @@ abstract class BottomNavigationItemNavigator {
     protected abstract val next: BottomNavigationItemNavigator?
 
     fun navigate(navigator: Navigator, @IdRes itemID: Int) {
-        val destination =
-            getDestination(itemID) ?: next?.getDestination(itemID) ?: throw IllegalStateException(
-                "No destination found for item $itemID."
-            )
         navigator.navigate(suddenly(), disallowingDuplication()) {
+            val destination = getDestination(itemID)
+                ?: next?.getDestination(itemID)
+                ?: throw IllegalStateException("No destination found for item $itemID.")
             to(destination.route, destination.target)
         }
     }
