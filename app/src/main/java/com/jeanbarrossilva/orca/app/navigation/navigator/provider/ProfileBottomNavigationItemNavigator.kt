@@ -1,23 +1,25 @@
 package com.jeanbarrossilva.orca.app.navigation.navigator.provider
 
-import androidx.fragment.app.Fragment
 import com.jeanbarrossilva.orca.app.R
 import com.jeanbarrossilva.orca.app.navigation.navigator.BottomNavigationItemNavigator
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.sample.feed.profile.sample
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetailsFragment
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState
+import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
 
 internal class ProfileBottomNavigationItemNavigator(
     override val next: BottomNavigationItemNavigator?
 ) : BottomNavigationItemNavigator() {
     private val id = Profile.sample.id
 
-    override val route = ProfileDetailsFragment.createRoute(id)
-
-    override fun getFragment(itemID: Int): Fragment? {
+    override fun getDestination(itemID: Int):
+        Navigator.Navigation.Destination<ProfileDetailsFragment>? {
         return if (itemID == R.id.profile_details) {
-            ProfileDetailsFragment(BackwardsNavigationState.Unavailable, id)
+            Navigator.Navigation.Destination(
+                ProfileDetailsFragment.createRoute(id),
+                ProfileDetailsFragment(BackwardsNavigationState.Unavailable, id)
+            )
         } else {
             null
         }

@@ -23,9 +23,15 @@ internal class NavigatorTests {
         }
     }
 
-    class DestinationFragment : Fragment() {
+    class FirstDestinationFragment : Fragment() {
         companion object {
-            const val ROUTE = "destination"
+            const val ROUTE = "first-destination"
+        }
+    }
+
+    class SecondDestinationFragment : Fragment() {
+        companion object {
+            const val ROUTE = "second-destination"
         }
     }
 
@@ -34,9 +40,9 @@ internal class NavigatorTests {
         Robolectric.buildActivity(TestNavigationActivity::class.java).setup().use {
             val activity = it.get()
             activity.navigator.navigate(suddenly()) {
-                to(DestinationFragment.ROUTE, ::DestinationFragment)
+                to(FirstDestinationFragment.ROUTE, ::FirstDestinationFragment)
             }
-            assertIsAtFragment(activity, DestinationFragment.ROUTE)
+            assertIsAtFragment(activity, FirstDestinationFragment.ROUTE)
         }
     }
 
@@ -45,9 +51,9 @@ internal class NavigatorTests {
         Robolectric.buildActivity(TestNavigationActivity::class.java).setup().use {
             val activity = it.get()
             activity.navigator.navigate(opening()) {
-                to(DestinationFragment.ROUTE, ::DestinationFragment)
+                to(FirstDestinationFragment.ROUTE, ::FirstDestinationFragment)
             }
-            assertIsAtFragment(activity, DestinationFragment.ROUTE)
+            assertIsAtFragment(activity, FirstDestinationFragment.ROUTE)
         }
     }
 
@@ -56,9 +62,9 @@ internal class NavigatorTests {
         Robolectric.buildActivity(TestNavigationActivity::class.java).setup().use {
             val activity = it.get()
             activity.navigator.navigate(closing()) {
-                to(DestinationFragment.ROUTE, ::DestinationFragment)
+                to(FirstDestinationFragment.ROUTE, ::FirstDestinationFragment)
             }
-            assertIsAtFragment(activity, DestinationFragment.ROUTE)
+            assertIsAtFragment(activity, FirstDestinationFragment.ROUTE)
         }
     }
 
@@ -68,7 +74,7 @@ internal class NavigatorTests {
             val activity = it.get()
             repeat(2) {
                 activity.navigator.navigate(suddenly()) {
-                    to(DestinationFragment.ROUTE, ::DestinationFragment)
+                    to(FirstDestinationFragment.ROUTE, ::FirstDestinationFragment)
                 }
             }
             assertEquals(2, activity.supportFragmentManager.fragments.size)
@@ -81,10 +87,26 @@ internal class NavigatorTests {
             val activity = it.get()
             repeat(2) {
                 activity.navigator.navigate(suddenly(), disallowingDuplication()) {
-                    to(DestinationFragment.ROUTE, ::DestinationFragment)
+                    to(FirstDestinationFragment.ROUTE, ::FirstDestinationFragment)
                 }
             }
             assertEquals(1, activity.supportFragmentManager.fragments.size)
+        }
+    }
+
+    @Test
+    fun `GIVEN a destination WHEN navigating to it after navigating to another one THEN it's navigated to`() { // ktlint-disable max-line-length
+        Robolectric.buildActivity(TestNavigationActivity::class.java).setup().use {
+            val activity = it.get()
+            with(activity.navigator) {
+                navigate(suddenly()) {
+                    to(FirstDestinationFragment.ROUTE, ::FirstDestinationFragment)
+                }
+                navigate(suddenly()) {
+                    to(SecondDestinationFragment.ROUTE, ::SecondDestinationFragment)
+                }
+            }
+            assertIsAtFragment(activity, SecondDestinationFragment.ROUTE)
         }
     }
 }

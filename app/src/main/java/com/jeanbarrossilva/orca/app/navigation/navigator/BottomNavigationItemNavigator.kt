@@ -1,24 +1,22 @@
 package com.jeanbarrossilva.orca.app.navigation.navigator
 
 import androidx.annotation.IdRes
-import androidx.fragment.app.Fragment
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.duplication.disallowingDuplication
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.suddenly
 
 abstract class BottomNavigationItemNavigator {
-    protected abstract val route: String
     protected abstract val next: BottomNavigationItemNavigator?
 
     fun navigate(navigator: Navigator, @IdRes itemID: Int) {
+        val destination =
+            getDestination(itemID) ?: next?.getDestination(itemID) ?: throw IllegalStateException(
+                "No destination found for item $itemID."
+            )
         navigator.navigate(suddenly(), disallowingDuplication()) {
-            to(route) {
-                getFragment(itemID)
-                    ?: next?.getFragment(itemID)
-                    ?: throw IllegalArgumentException("No provider for item identified as $itemID.")
-            }
+            to(destination.route, destination::fragment)
         }
     }
 
-    protected abstract fun getFragment(@IdRes itemID: Int): Fragment?
+    protected abstract fun getDestination(@IdRes itemID: Int): Navigator.Navigation.Destination<*>?
 }
