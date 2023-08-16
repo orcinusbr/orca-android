@@ -28,10 +28,10 @@ class Navigator internal constructor(
          * Target navigation site.
          *
          * @param T [Fragment] to be navigated to.
-         * @param route Path by which the [fragment] can be retrieved.
-         * @param fragment [Fragment] to be navigated to.
+         * @param route Path by which the [target] can be retrieved.
+         * @param target Returns the [Fragment] of this [Destination].
          **/
-        data class Destination<T : Fragment>(val route: String, val fragment: T) {
+        data class Destination<T : Fragment>(val route: String, val target: () -> T) {
             /**
              * Provides the [Destination] to navigate to through [provide]. Can be instantiated via
              * [to].
@@ -53,7 +53,7 @@ class Navigator internal constructor(
         fun to(route: String, target: () -> T): Destination.Provider<T> {
             return object : Destination.Provider<T>() {
                 override fun provide(): Destination<T> {
-                    return Destination(route, target())
+                    return Destination(route, target)
                 }
             }
         }
@@ -103,7 +103,7 @@ class Navigator internal constructor(
         fragmentManager.commit {
             addToBackStack(null)
             setTransition(transition.value)
-            add(containerID, destination.fragment, destination.route)
+            add(containerID, destination.target(), destination.route)
         }
         fragmentManager.executePendingTransactions()
     }

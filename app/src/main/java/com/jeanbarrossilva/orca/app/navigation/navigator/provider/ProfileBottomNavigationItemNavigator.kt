@@ -16,10 +16,9 @@ internal class ProfileBottomNavigationItemNavigator(
     override fun getDestination(itemID: Int):
         Navigator.Navigation.Destination<ProfileDetailsFragment>? {
         return if (itemID == R.id.profile_details) {
-            Navigator.Navigation.Destination(
-                ProfileDetailsFragment.createRoute(id),
+            Navigator.Navigation.Destination(ProfileDetailsFragment.createRoute(id)) {
                 ProfileDetailsFragment(BackwardsNavigationState.Unavailable, id)
-            )
+            }
         } else {
             null
         }

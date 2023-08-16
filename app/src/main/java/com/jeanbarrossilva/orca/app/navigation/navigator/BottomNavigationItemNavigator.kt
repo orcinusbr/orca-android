@@ -14,7 +14,7 @@ abstract class BottomNavigationItemNavigator {
                 "No destination found for item $itemID."
             )
         navigator.navigate(suddenly(), disallowingDuplication()) {
-            to(destination.route, destination::fragment)
+            to(destination.route, destination.target)
         }
     }
 

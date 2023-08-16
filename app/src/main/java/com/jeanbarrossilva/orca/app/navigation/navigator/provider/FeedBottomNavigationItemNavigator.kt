@@ -12,10 +12,9 @@ internal class FeedBottomNavigationItemNavigator(
 ) : BottomNavigationItemNavigator() {
     override fun getDestination(itemID: Int): Navigator.Navigation.Destination<FeedFragment>? {
         return if (itemID == R.id.feed) {
-            Navigator.Navigation.Destination(
-                "feed",
+            Navigator.Navigation.Destination("feed") {
                 FeedFragment(Profile.sample.id)
-            )
+            }
         } else {
             null
         }
