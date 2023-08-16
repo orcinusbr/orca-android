@@ -33,9 +33,13 @@ class TootDetailsFragment private constructor() : ComposableFragment() {
     companion object {
         private const val ID_KEY = "id"
 
+        fun getRoute(id: String): String {
+            return "toot/$id"
+        }
+
         fun navigate(navigator: Navigator, id: String) {
             navigator.navigate(opening()) {
-                to {
+                to(getRoute(id)) {
                     TootDetailsFragment(id)
                 }
             }
