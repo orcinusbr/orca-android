@@ -17,7 +17,9 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.ProfileCache
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.ProfileFetcher
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.ProfileStorage
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.MastodonProfileSearcher
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.ProfileSearchResultsStore
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.ProfileSearchResultsCache
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.ProfileSearchResultsFetcher
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.storage.ProfileSearchResultsStorage
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonTootProvider
 import com.jeanbarrossilva.orca.core.sharedpreferences.actor.SharedPreferencesActorProvider
 import org.koin.android.ext.koin.androidContext
@@ -36,15 +38,18 @@ internal fun MainCoreModule(): Module {
     val profileFetcher = ProfileFetcher(tootPaginateSource)
     val profileStorage = ProfileStorage(tootPaginateSource, database.profileEntityDao)
     val profileCache = ProfileCache(profileFetcher, profileStorage)
-    val profileSearchResultsStore =
-        ProfileSearchResultsStore(tootPaginateSource, database.profileSearchResultEntityDao)
+    val profileSearchResultsFetcher = ProfileSearchResultsFetcher(tootPaginateSource)
+    val profileSearchResultsStorage =
+        ProfileSearchResultsStorage(database.profileSearchResultEntityDao)
+    val profileSearchResultsCache =
+        ProfileSearchResultsCache(profileSearchResultsFetcher, profileSearchResultsStorage)
     return CoreModule(
         { MastodonAuthorizer(androidContext()) },
         { MastodonAuthenticator(context, authorizer = get(), actorProvider) },
         { AuthenticationLock(authenticator = get(), actorProvider) },
         { MastodonFeedProvider(actorProvider, tootPaginateSource) },
         { MastodonProfileProvider(profileCache) },
-        { MastodonProfileSearcher(profileSearchResultsStore) },
+        { MastodonProfileSearcher(profileSearchResultsCache) },
         { MastodonTootProvider() }
     )
 }

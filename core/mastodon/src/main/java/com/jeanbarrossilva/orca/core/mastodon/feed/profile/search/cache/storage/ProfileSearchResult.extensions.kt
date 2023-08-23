@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.persistence.entity
+package com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.storage
 
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
 
@@ -8,6 +8,6 @@ import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
  * @param query Query with which this [ProfileSearchResult] this [ProfileSearchResult] was obtained.
  **/
 internal fun ProfileSearchResult.toProfileSearchResultEntity(query: String):
-    ProfileSearchResultEntity {
+        ProfileSearchResultEntity {
     return ProfileSearchResultEntity(query, id, "$account", "$avatarURL", name, "$url")
 }

@@ -6,8 +6,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.ProfileEntity
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.ProfileEntityDao
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.persistence.ProfileSearchResultEntityDao
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.persistence.entity.ProfileSearchResultEntity
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.storage.ProfileSearchResultEntity
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.storage.ProfileSearchResultEntityDao
 
 @Database(entities = [ProfileEntity::class, ProfileSearchResultEntity::class], version = 1)
 abstract class MastodonDatabase internal constructor() : RoomDatabase() {
