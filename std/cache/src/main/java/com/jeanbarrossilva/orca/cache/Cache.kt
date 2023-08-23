@@ -6,7 +6,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 
 /** Decides whether values should be fetched or have their cached version retrieved. **/
-abstract class Cache<K, V> {
+abstract class Cache<K, V> internal constructor() {
     /**
      * Holds the keys of values that are currently idle, associated to the current [elapsedTime] of
      * the moment in which the idling was performed.
@@ -31,7 +31,7 @@ abstract class Cache<K, V> {
     /** [ElapsedTimeProvider] for accessing the current elapsed time. **/
     internal open val elapsedTimeProvider = ElapsedTimeProvider.system
 
-    /** [Fetcher] through which values will be obtained from their source, normally the network. **/
+    /** [Fetcher] through which values will be obtained from their source (normally the network). **/
     protected abstract val fetcher: Fetcher<K, V>
 
     /** [Storage] for fetched values to be stored in and retrieved from. **/
@@ -61,7 +61,7 @@ abstract class Cache<K, V> {
 
     /**
      * Gets the value bound to the given [key] either by retrieving it from the [storage] if it's
-     * been cached or fetches them through the [fetcher] if it hasn't, respecting both the
+     * been cached or fetches it through the [fetcher] if it hasn't, respecting both the
      * [timeToIdle] and the [timeToLive].
      *
      * @param key Unique identifier to which the value to be obtained is associated to.
@@ -159,5 +159,21 @@ abstract class Cache<K, V> {
         markAsIdle(key)
         markAsAlive(key)
         return value
+    }
+
+    companion object {
+        /**
+         * Creates a [Cache].
+         *
+         * @param fetcher [Fetcher] through which values will be obtained from their source
+         * (normally the network).
+         * @param storage [Storage] for fetched values to be stored in and retrieved from.
+         **/
+        fun <K, V> of(fetcher: Fetcher<K, V>, storage: Storage<K, V>): Cache<K, V> {
+            return object : Cache<K, V>() {
+                override val fetcher = fetcher
+                override val storage = storage
+            }
+        }
     }
 }

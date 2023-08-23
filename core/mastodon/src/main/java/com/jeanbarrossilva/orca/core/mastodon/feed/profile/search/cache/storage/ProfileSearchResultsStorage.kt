@@ -6,13 +6,13 @@ import kotlinx.coroutines.flow.first
 
 class ProfileSearchResultsStorage(private val entityDao: ProfileSearchResultEntityDao) :
     Storage<String, List<ProfileSearchResult>>() {
-    override suspend fun onContains(key: String): Boolean {
-        return entityDao.count(key) > 0
-    }
-
     override suspend fun onStore(key: String, value: List<ProfileSearchResult>) {
         val entities = value.map { it.toProfileSearchResultEntity(key) }
         entityDao.insert(entities)
+    }
+
+    override suspend fun onContains(key: String): Boolean {
+        return entityDao.count(key) > 0
     }
 
     override suspend fun onGet(key: String): List<ProfileSearchResult> {

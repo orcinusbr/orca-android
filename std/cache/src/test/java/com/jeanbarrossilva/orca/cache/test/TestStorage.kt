@@ -5,15 +5,15 @@ import com.jeanbarrossilva.orca.cache.Storage
 internal class TestStorage : Storage<Int, Char>() {
     private var stored = ""
 
-    override suspend fun onContains(key: Int): Boolean {
-        return key in 0..stored.lastIndex
-    }
-
     override suspend fun onStore(key: Int, value: Char) {
         stored = buildString {
             append(stored)
             insert(key, value)
         }
+    }
+
+    override suspend fun onContains(key: Int): Boolean {
+        return key in 0..stored.lastIndex
     }
 
     override suspend fun onGet(key: Int): Char {

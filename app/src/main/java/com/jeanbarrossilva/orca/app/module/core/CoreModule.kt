@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.orca.app.module.core
 
 import android.content.Context
+import com.jeanbarrossilva.orca.cache.Cache
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.Authenticator
 import com.jeanbarrossilva.orca.core.auth.Authorizer
@@ -13,11 +14,9 @@ import com.jeanbarrossilva.orca.core.mastodon.auth.authentication.MastodonAuthen
 import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.MastodonAuthorizer
 import com.jeanbarrossilva.orca.core.mastodon.feed.MastodonFeedProvider
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfileProvider
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.ProfileCache
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.ProfileFetcher
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.ProfileStorage
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.MastodonProfileSearcher
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.ProfileSearchResultsCache
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.ProfileSearchResultsFetcher
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.storage.ProfileSearchResultsStorage
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonTootProvider
@@ -37,12 +36,12 @@ internal fun MainCoreModule(): Module {
     val database = MastodonDatabase.getInstance(context)
     val profileFetcher = ProfileFetcher(tootPaginateSource)
     val profileStorage = ProfileStorage(tootPaginateSource, database.profileEntityDao)
-    val profileCache = ProfileCache(profileFetcher, profileStorage)
+    val profileCache = Cache.of(profileFetcher, profileStorage)
     val profileSearchResultsFetcher = ProfileSearchResultsFetcher(tootPaginateSource)
     val profileSearchResultsStorage =
         ProfileSearchResultsStorage(database.profileSearchResultEntityDao)
     val profileSearchResultsCache =
-        ProfileSearchResultsCache(profileSearchResultsFetcher, profileSearchResultsStorage)
+        Cache.of(profileSearchResultsFetcher, profileSearchResultsStorage)
     return CoreModule(
         { MastodonAuthorizer(androidContext()) },
         { MastodonAuthenticator(context, authorizer = get(), actorProvider) },

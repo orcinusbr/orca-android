@@ -45,6 +45,15 @@ abstract class Storage<K, V> {
     }
 
     /**
+     * Operation to be performed whenever the [value] is requested to be stored while associated to
+     * the given [key].
+     *
+     * @param key Unique identifier of the value that has been requested to be stored.
+     * @param value Value that is associated to the [key] and has been requested to be stored.
+     **/
+    protected abstract suspend fun onStore(key: K, value: V)
+
+    /**
      * Returns whether a value associated to the [key] has been stored.
      *
      * @param key Unique identifier of the value whose presence will be checked.
@@ -67,13 +76,4 @@ abstract class Storage<K, V> {
 
     /** Removes all stored values. **/
     protected abstract suspend fun onClear()
-
-    /**
-     * Operation to be performed whenever the [value] is requested to be stored while associated to
-     * the given [key].
-     *
-     * @param key Unique identifier of the value that has been requested to be stored.
-     * @param value Value that is associated to the [key] and has been requested to be stored.
-     **/
-    protected abstract suspend fun onStore(key: K, value: V)
 }
