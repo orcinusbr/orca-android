@@ -1,9 +1,9 @@
 package com.jeanbarrossilva.orca.cache
 
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 /** Decides whether values should be fetched or have their cached version retrieved. **/
 abstract class Cache<K, V> internal constructor() {
@@ -41,10 +41,10 @@ abstract class Cache<K, V> internal constructor() {
      * Time-to-idle is the expiration threshold related to the last time a value has been read or
      * written.
      **/
-    protected open val timeToIdle: Duration = 1.days
+    protected open val timeToIdle: Duration = 1.minutes
 
     /** Time-to-live is similar to [timeToIdle], but only considers write operations. **/
-    protected open val timeToLive: Duration = 30.minutes
+    protected open val timeToLive: Duration = 30.seconds
 
     /** Provides the amount of time that has passed through [provide]. **/
     internal fun interface ElapsedTimeProvider {
