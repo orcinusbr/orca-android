@@ -66,7 +66,7 @@ abstract class Cache<K, V> {
      *
      * @param key Unique identifier to which the value to be obtained is associated to.
      **/
-    internal suspend fun get(key: K): V {
+    suspend fun get(key: K): V {
         val isUpToDate = isIdle(key) && isAlive(key)
         return if (isUpToDate) storage.get(key) else remember(key)
     }
