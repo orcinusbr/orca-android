@@ -10,13 +10,13 @@ class ProfileStorage(
     private val tootPaginateSource: TootPaginateSource,
     private val entityDao: ProfileEntityDao
 ) : Storage<String, Profile>() {
-    override suspend fun onContains(key: String): Boolean {
-        return entityDao.count(key) > 0
-    }
-
     override suspend fun onStore(key: String, value: Profile) {
         val entity = value.toMastodonProfileEntity().copy(id = key)
         entityDao.insert(entity)
+    }
+
+    override suspend fun onContains(key: String): Boolean {
+        return entityDao.count(key) > 0
     }
 
     override suspend fun onGet(key: String): Profile {
