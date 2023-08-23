@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.persistence.entity
+package com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage
 
 import androidx.annotation.IntDef
 import androidx.room.ColumnInfo
@@ -13,7 +13,7 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.type.followable.Masto
 import java.net.URL
 
 @Entity(tableName = "profiles")
-data class MastodonProfileEntity internal constructor(
+data class ProfileEntity internal constructor(
     @PrimaryKey internal val id: String,
     internal val account: String,
     @ColumnInfo(name = "avatar_url") internal val avatarURL: String,

@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.persistence.entity
+package com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.storage
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

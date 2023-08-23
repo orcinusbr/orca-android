@@ -52,7 +52,6 @@ object Dependencies {
         "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.SERIALIZATION}"
     const val ROOM = "androidx.room:room-ktx:${Versions.ROOM}"
     const val SLF4J = "org.slf4j:slf4j-api:${Versions.SLF4J}"
-    const val STORE = "com.dropbox.mobile.store:store4:${Versions.STORE}"
     const val TEST_CORE = "androidx.test:core-ktx:${Versions.TEST_CORE}"
     const val TEST_ESPRESSO_INTENTS =
         "androidx.test.espresso:espresso-intents:${Versions.TEST_ESPRESSO}"

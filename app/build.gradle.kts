@@ -29,6 +29,10 @@ android {
     }
 
     productFlavors {
+        create("default") {
+            dimension = Dimensions.VERSION
+        }
+
         create("demo") {
             dimension = Dimensions.VERSION
             applicationIdSuffix = ".demo"

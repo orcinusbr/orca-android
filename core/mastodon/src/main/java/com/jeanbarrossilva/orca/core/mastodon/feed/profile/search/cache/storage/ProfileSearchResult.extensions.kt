@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.persistence.entity
+package com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.storage
 
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
 
