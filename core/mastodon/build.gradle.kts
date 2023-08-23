@@ -58,6 +58,7 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":platform:theme"))
     implementation(project(":platform:ui"))
+    implementation(project(":std:cache"))
     implementation(Dependencies.BROWSER)
     implementation(Dependencies.COMPOSE_MATERIAL_ICONS_EXTENDED)
     implementation(Dependencies.KOIN_ANDROID)

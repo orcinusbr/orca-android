@@ -1,41 +1,18 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile
 
-import com.dropbox.android.external.store4.get
-import com.jeanbarrossilva.loadable.Loadable
-import com.jeanbarrossilva.loadable.flow.loadableFlow
-import com.jeanbarrossilva.loadable.flow.unwrap
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.ProfileProvider
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.MastodonProfileStore
-import kotlin.jvm.optionals.getOrNull
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.ProfileCache
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
-class MastodonProfileProvider(private val store: MastodonProfileStore) : ProfileProvider() {
-    private val loadableProfileFlow = loadableFlow<Profile>()
-
-    /*
-     * Since `contains` is called before `onProvide` each time, we reuse the obtained profile by
-     * emitting it to `loadableProfileFlow` and later returning it at `onProvide`.
-     */
+class MastodonProfileProvider(private val cache: ProfileCache) : ProfileProvider() {
     override suspend fun contains(id: String): Boolean {
-        val optional = store.get(id)
-        val provided = optional.getOrNull()
-        val contains = provided != null
-        if (contains) {
-            loadableProfileFlow.emit(
-                /*
-                 * Null-asserting is safe because of `contains`, that is solely a check on whether
-                 * `provided` is null; since that condition has to be met for us to reach this
-                 * block, it is highly unlikely (I'd like to say impossible, but who knows 🫠)
-                 * that a NullPointerException will get thrown.
-                 */
-                Loadable.Loaded(provided!!)
-            )
-        }
-        return contains
+        return true
     }
 
     override suspend fun onProvide(id: String): Flow<Profile> {
-        return loadableProfileFlow.unwrap()
+        val profile = cache.get(id)
+        return flowOf(profile)
     }
 }
