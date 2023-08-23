@@ -61,7 +61,7 @@ abstract class Cache<K, V> {
 
     /**
      * Gets the value bound to the given [key] either by retrieving it from the [storage] if it's
-     * been cached or fetches them through the [fetcher] if it hasn't, respecting both the
+     * been cached or fetches it through the [fetcher] if it hasn't, respecting both the
      * [timeToIdle] and the [timeToLive].
      *
      * @param key Unique identifier to which the value to be obtained is associated to.
