@@ -16,5 +16,6 @@ include(
     ":platform:launchable",
     ":platform:theme",
     ":platform:ui",
-    ":platform:ui-test"
+    ":platform:ui-test",
+    ":std:cache"
 )
