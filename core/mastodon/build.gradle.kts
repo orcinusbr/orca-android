@@ -53,7 +53,6 @@ android {
 dependencies {
     api(Dependencies.PAGINATE)
     api(Dependencies.ROOM)
-    api(Dependencies.STORE)
 
     implementation(project(":core"))
     implementation(project(":platform:theme"))
