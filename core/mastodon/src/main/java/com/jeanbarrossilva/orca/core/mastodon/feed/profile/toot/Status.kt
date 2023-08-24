@@ -1,7 +1,6 @@
-package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.status
+package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot
 
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.account.MastodonAccount
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonToot
 import java.net.URL
 import java.time.ZonedDateTime
 import kotlinx.serialization.Serializable
