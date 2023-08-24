@@ -1,13 +1,13 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.ProfileTootPaginateSource
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.toMastodonProfileEntity
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.status.TootPaginateSource
 import com.jeanbarrossilva.orca.std.cache.Storage
 import kotlinx.coroutines.flow.first
 
 class ProfileStorage(
-    private val tootPaginateSource: TootPaginateSource,
+    private val tootPaginateSourceProvider: ProfileTootPaginateSource.Provider,
     private val entityDao: ProfileEntityDao
 ) : Storage<String, Profile>() {
     override suspend fun onStore(key: String, value: Profile) {
@@ -20,7 +20,7 @@ class ProfileStorage(
     }
 
     override suspend fun onGet(key: String): Profile {
-        return entityDao.getByID(key).first().toProfile(tootPaginateSource)
+        return entityDao.getByID(key).first().toProfile(tootPaginateSourceProvider)
     }
 
     override suspend fun onRemove(key: String) {

@@ -8,6 +8,7 @@ import com.jeanbarrossilva.orca.core.mastodon.Mastodon
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.observer.ResponseObserver
@@ -145,6 +146,11 @@ private fun HttpClientConfig<*>.setUpResponseLogging() {
             Log.i(TAG, it.format())
         } else {
             Log.e(TAG, it.format())
+        }
+    }
+    HttpResponseValidator {
+        handleResponseExceptionWithRequest { cause, _ ->
+            Log.e(TAG, cause.message, cause)
         }
     }
 }

@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.status.TootPaginateSource
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.ProfileTootPaginateSource
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.type.editable.MastodonEditableProfile
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.type.followable.MastodonFollowableProfile
 import java.net.URL
@@ -28,21 +28,24 @@ data class ProfileEntity internal constructor(
     @IntDef(EDITABLE_TYPE, FOLLOWABLE_TYPE)
     internal annotation class Type
 
-    internal fun toProfile(tootPaginateSource: TootPaginateSource): Profile {
+    internal fun toProfile(
+        tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
+    ): Profile {
         return when (type) {
-            EDITABLE_TYPE -> toMastodonEditableProfile(tootPaginateSource)
-            FOLLOWABLE_TYPE -> toMastodonFollowableProfile(tootPaginateSource)
+            EDITABLE_TYPE -> toMastodonEditableProfile(tootPaginateSourceProvider)
+            FOLLOWABLE_TYPE -> toMastodonFollowableProfile(tootPaginateSourceProvider)
             else -> throw IllegalStateException("Unknown profile entity type: $type.")
         }
     }
 
-    private fun toMastodonEditableProfile(tootPaginateSource: TootPaginateSource):
-        MastodonEditableProfile {
+    private fun toMastodonEditableProfile(
+        tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
+    ): MastodonEditableProfile {
         val account = Account.of(account)
         val avatarURL = URL(avatarURL)
         val url = URL(url)
         return MastodonEditableProfile(
-            tootPaginateSource,
+            tootPaginateSourceProvider,
             id,
             account,
             avatarURL,
@@ -54,14 +57,15 @@ data class ProfileEntity internal constructor(
         )
     }
 
-    private fun toMastodonFollowableProfile(tootPaginateSource: TootPaginateSource):
-        MastodonFollowableProfile<Follow> {
+    private fun toMastodonFollowableProfile(
+        tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
+    ): MastodonFollowableProfile<Follow> {
         val account = Account.of(account)
         val avatarURL = URL(avatarURL)
         val follow = Follow.of(checkNotNull(follow))
         val url = URL(url)
         return MastodonFollowableProfile(
-            tootPaginateSource,
+            tootPaginateSourceProvider,
             id,
             account,
             avatarURL,

@@ -6,7 +6,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
 import com.jeanbarrossilva.orca.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndGet
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.status.TootPaginateSource
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.ProfileTootPaginateSource
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.type.editable.MastodonEditableProfile
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.type.followable.MastodonFollowableProfile
 import io.ktor.client.call.body
@@ -33,11 +33,11 @@ internal data class MastodonAccount(
         return Author(id, avatarURL, displayName, account, profileURL)
     }
 
-    suspend fun toProfile(tootPaginateSource: TootPaginateSource): Profile {
+    suspend fun toProfile(tootPaginateSourceProvider: ProfileTootPaginateSource.Provider): Profile {
         return if (isOwner()) {
-            toEditableProfile(tootPaginateSource)
+            toEditableProfile(tootPaginateSourceProvider)
         } else {
-            toFollowableProfile(tootPaginateSource)
+            toFollowableProfile(tootPaginateSourceProvider)
         }
     }
 
@@ -52,12 +52,13 @@ internal data class MastodonAccount(
         return id == credentialAccount.id
     }
 
-    private fun toEditableProfile(tootPaginateSource: TootPaginateSource): MastodonEditableProfile {
+    private fun toEditableProfile(tootPaginateSourceProvider: ProfileTootPaginateSource.Provider):
+        MastodonEditableProfile {
         val account = toAccount()
         val avatarURL = URL(avatar)
         val url = URL(url)
         return MastodonEditableProfile(
-            tootPaginateSource,
+            tootPaginateSourceProvider,
             id,
             account,
             avatarURL,
@@ -69,8 +70,9 @@ internal data class MastodonAccount(
         )
     }
 
-    private suspend fun toFollowableProfile(tootPaginateSource: TootPaginateSource):
-        MastodonFollowableProfile<Follow> {
+    private suspend fun toFollowableProfile(
+        tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
+    ): MastodonFollowableProfile<Follow> {
         val account = toAccount()
         val avatarURL = URL(avatar)
         val url = URL(url)
@@ -80,7 +82,7 @@ internal data class MastodonAccount(
             .first()
             .toFollow(this)
         return MastodonFollowableProfile(
-            tootPaginateSource,
+            tootPaginateSourceProvider,
             id,
             account,
             avatarURL,

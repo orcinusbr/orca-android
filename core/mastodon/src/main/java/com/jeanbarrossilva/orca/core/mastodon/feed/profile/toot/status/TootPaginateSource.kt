@@ -24,29 +24,29 @@ abstract class TootPaginateSource internal constructor() : BasePaginateSource<Ur
     ): PagedResult<Url, Toot> {
         val response = getStatusesResponse(key)
         val headerLinks = response.headers.links
-        val previousUrl = headerLinks?.first()?.uri?.let(::Url)
-        val nextUrl = headerLinks?.get(1)?.uri?.let(::Url)
-        val statuses = response.body<List<Status>>().map { it.toToot() }
+        val nextUrl = headerLinks.getOrNull(1)?.uri?.let(::Url)
+        val toots = response.body<List<Status>>().map(Status::toToot)
+        val firstKey = toots.firstOrNull()?.url?.toString()?.let(::Url)
+        val lastKey = toots.lastOrNull()?.url?.toString()?.let(::Url)
         val pageInfo = PageInfo(
             index,
             hasPreviousPage = index > 0,
             hasNextPage = nextUrl != null,
-            firstKey = previousUrl,
-            lastKey = nextUrl
+            firstKey,
+            lastKey
         )
         updateIndex(direction)
-        return PagedResult(pageInfo, statuses)
+        return PagedResult(pageInfo, toots)
     }
 
     internal suspend fun paginateTo(page: Int, count: Int = DEFAULT_COUNT) {
-        var current = currentPage?.info?.index ?: -1
-        while (current != page) {
-            if (current < page) {
+        while (index != page) {
+            if (index < page) {
                 next(count)
-                current++
+                index++
             } else {
                 previous(count)
-                current--
+                index--
             }
         }
     }
