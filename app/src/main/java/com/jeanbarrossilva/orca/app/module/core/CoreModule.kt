@@ -20,6 +20,8 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.MastodonProfil
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.ProfileSearchResultsFetcher
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.storage.ProfileSearchResultsStorage
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonTootProvider
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.MastodonTootFetcher
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.MastodonTootStorage
 import com.jeanbarrossilva.orca.core.sharedpreferences.actor.SharedPreferencesActorProvider
 import com.jeanbarrossilva.orca.std.cache.Cache
 import org.koin.android.ext.koin.androidContext
@@ -45,6 +47,8 @@ internal fun MainCoreModule(): Module {
         ProfileSearchResultsStorage(database.profileSearchResultEntityDao)
     val profileSearchResultsCache =
         Cache.of(profileSearchResultsFetcher, profileSearchResultsStorage)
+    val tootStorage = MastodonTootStorage(profileCache, database.tootEntityDao)
+    val tootCache = Cache.of(MastodonTootFetcher, tootStorage)
     return CoreModule(
         { MastodonAuthorizer(androidContext()) },
         { MastodonAuthenticator(context, authorizer = get(), actorProvider) },
@@ -52,7 +56,7 @@ internal fun MainCoreModule(): Module {
         { MastodonFeedProvider(actorProvider) },
         { MastodonProfileProvider(profileCache) },
         { MastodonProfileSearcher(profileSearchResultsCache) },
-        { MastodonTootProvider() }
+        { MastodonTootProvider(tootCache) }
     )
 }
 

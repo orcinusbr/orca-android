@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.status
+package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.pagination
 
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders

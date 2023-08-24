@@ -5,7 +5,7 @@ import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.auth.actor.ActorProvider
 import com.jeanbarrossilva.orca.core.feed.FeedProvider
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.status.TootPaginateSource
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.pagination.TootPaginateSource
 import kotlinx.coroutines.flow.Flow
 
 class MastodonFeedProvider(private val actorProvider: ActorProvider) : FeedProvider() {

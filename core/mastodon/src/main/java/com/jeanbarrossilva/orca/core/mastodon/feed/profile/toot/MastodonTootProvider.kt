@@ -2,21 +2,13 @@ package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.TootProvider
-import com.jeanbarrossilva.orca.core.mastodon.client.MastodonHttpClient
-import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndGet
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.status.Status
-import io.ktor.client.call.body
+import com.jeanbarrossilva.orca.std.cache.Cache
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 
-class MastodonTootProvider : TootProvider {
+class MastodonTootProvider(private val cache: Cache<String, MastodonToot>) : TootProvider {
     override suspend fun provide(id: String): Flow<Toot> {
-        return flow {
-            MastodonHttpClient
-                .authenticateAndGet("/api/v1/statuses/$id")
-                .body<Status>()
-                .toToot()
-                .also { emit(it) }
-        }
+        val toot = cache.get(id)
+        return flowOf(toot)
     }
 }
