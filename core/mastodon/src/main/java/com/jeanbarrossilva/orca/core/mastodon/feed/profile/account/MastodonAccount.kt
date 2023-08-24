@@ -10,7 +10,7 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.ProfileTootPaginateSo
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.type.editable.MastodonEditableProfile
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.type.followable.MastodonFollowableProfile
 import io.ktor.client.call.body
-import io.ktor.http.parametersOf
+import io.ktor.client.request.parameter
 import java.net.URL
 import kotlinx.serialization.Serializable
 
@@ -77,7 +77,7 @@ internal data class MastodonAccount(
         val avatarURL = URL(avatar)
         val url = URL(url)
         val follow = MastodonHttpClient
-            .authenticateAndGet("/api/v1/accounts/relationships") { parametersOf("id", listOf(id)) }
+            .authenticateAndGet("/api/v1/accounts/relationships") { parameter("id", id) }
             .body<List<Relationship>>()
             .first()
             .toFollow(this)
