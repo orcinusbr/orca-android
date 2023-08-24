@@ -28,8 +28,9 @@ data class ProfileEntity internal constructor(
     @IntDef(EDITABLE_TYPE, FOLLOWABLE_TYPE)
     internal annotation class Type
 
-    internal fun toProfile(tootPaginateSourceProvider: ProfileTootPaginateSource.Provider):
-        Profile {
+    internal fun toProfile(
+        tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
+    ): Profile {
         return when (type) {
             EDITABLE_TYPE -> toMastodonEditableProfile(tootPaginateSourceProvider)
             FOLLOWABLE_TYPE -> toMastodonFollowableProfile(tootPaginateSourceProvider)
