@@ -72,26 +72,6 @@ abstract class Cache<K, V> internal constructor() {
     }
 
     /**
-     * Adds the [key] to [idling], bound to the current [elapsedTime].
-     *
-     * @param key Unique identifier of the value to be marked as idle.
-     * @see timeToIdle
-     **/
-    private fun markAsIdle(key: K) {
-        idling[key] = elapsedTime
-    }
-
-    /**
-     * Adds the [key] to [living], bound to the current [elapsedTime].
-     *
-     * @param key Unique identifier of the value to be marked as idle.
-     * @see timeToLive
-     **/
-    private fun markAsAlive(key: K) {
-        living[key] = elapsedTime
-    }
-
-    /**
      * Returns whether the value associated to the given [key] is idle, and also unmarks it as such
      * if it isn't.
      *
@@ -156,9 +136,29 @@ abstract class Cache<K, V> internal constructor() {
     private suspend fun remember(key: K): V {
         val value = fetcher.fetch(key)
         storage.store(key, value)
-        markAsIdle(key)
         markAsAlive(key)
+        markAsIdle(key)
         return value
+    }
+
+    /**
+     * Adds the [key] to [living], bound to the current [elapsedTime].
+     *
+     * @param key Unique identifier of the value to be marked as idle.
+     * @see timeToLive
+     **/
+    private fun markAsAlive(key: K) {
+        living[key] = elapsedTime
+    }
+
+    /**
+     * Adds the [key] to [idling], bound to the current [elapsedTime].
+     *
+     * @param key Unique identifier of the value to be marked as idle.
+     * @see timeToIdle
+     **/
+    private fun markAsIdle(key: K) {
+        idling[key] = elapsedTime
     }
 
     companion object {
