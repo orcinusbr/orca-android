@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.status
+package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.pagination
 
 import com.chrynan.paginate.core.BasePaginateSource
 import com.chrynan.paginate.core.PageDirection
@@ -7,6 +7,7 @@ import com.chrynan.paginate.core.PagedResult
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndGet
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.status.Status
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.Url

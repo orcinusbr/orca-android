@@ -4,7 +4,7 @@ import com.chrynan.paginate.core.loadAllPagesItems
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.status.TootPaginateSource
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.pagination.TootPaginateSource
 import java.net.URL
 import kotlinx.coroutines.flow.Flow
 
