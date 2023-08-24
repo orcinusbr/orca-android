@@ -1,7 +1,6 @@
 package com.jeanbarrossilva.orca.app.module.core
 
 import android.content.Context
-import com.jeanbarrossilva.orca.cache.Cache
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.Authenticator
 import com.jeanbarrossilva.orca.core.auth.Authorizer
@@ -21,6 +20,7 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.ProfileS
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.storage.ProfileSearchResultsStorage
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonTootProvider
 import com.jeanbarrossilva.orca.core.sharedpreferences.actor.SharedPreferencesActorProvider
+import com.jeanbarrossilva.orca.std.cache.Cache
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.definition.Definition
 import org.koin.core.module.Module

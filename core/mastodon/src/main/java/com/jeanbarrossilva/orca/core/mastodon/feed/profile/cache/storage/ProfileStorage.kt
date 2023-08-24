@@ -1,9 +1,9 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage
 
-import com.jeanbarrossilva.orca.cache.Storage
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.toMastodonProfileEntity
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.status.TootPaginateSource
+import com.jeanbarrossilva.orca.std.cache.Storage
 import kotlinx.coroutines.flow.first
 
 class ProfileStorage(

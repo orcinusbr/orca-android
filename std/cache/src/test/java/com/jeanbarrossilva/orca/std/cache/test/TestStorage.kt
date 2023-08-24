@@ -1,6 +1,6 @@
-package com.jeanbarrossilva.orca.cache.test
+package com.jeanbarrossilva.orca.std.cache.test
 
-import com.jeanbarrossilva.orca.cache.Storage
+import com.jeanbarrossilva.orca.std.cache.Storage
 
 internal class TestStorage : Storage<Int, Char>() {
     private var stored = ""

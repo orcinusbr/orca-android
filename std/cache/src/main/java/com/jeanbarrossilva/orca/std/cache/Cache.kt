@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.cache
+package com.jeanbarrossilva.orca.std.cache
 
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds

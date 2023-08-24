@@ -1,11 +1,11 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache
 
-import com.jeanbarrossilva.orca.cache.Fetcher
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.account.MastodonAccount
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.status.TootPaginateSource
+import com.jeanbarrossilva.orca.std.cache.Fetcher
 import io.ktor.client.call.body
 
 class ProfileFetcher(private val tootPaginateSource: TootPaginateSource) :

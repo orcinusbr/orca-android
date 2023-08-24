@@ -1,8 +1,8 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile
 
-import com.jeanbarrossilva.orca.cache.Cache
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.ProfileProvider
+import com.jeanbarrossilva.orca.std.cache.Cache
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
