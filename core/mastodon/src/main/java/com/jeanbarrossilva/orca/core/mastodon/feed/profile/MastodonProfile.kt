@@ -9,7 +9,7 @@ import java.net.URL
 import kotlinx.coroutines.flow.Flow
 
 internal data class MastodonProfile(
-    private val tootPaginateSource: TootPaginateSource,
+    private val tootPaginateSourceProvider: ProfileTootPaginateSource.Provider,
     override val id: String,
     override val account: Account,
     override val avatarURL: URL,
@@ -19,6 +19,7 @@ internal data class MastodonProfile(
     override val followingCount: Int,
     override val url: URL
 ) : Profile {
+    private val tootPaginateSource = tootPaginateSourceProvider.provide(id)
     private val tootsFlow = tootPaginateSource.loadAllPagesItems(TootPaginateSource.DEFAULT_COUNT)
 
     override suspend fun getToots(page: Int): Flow<List<Toot>> {

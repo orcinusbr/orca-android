@@ -7,23 +7,23 @@ import com.jeanbarrossilva.orca.core.feed.profile.type.followable.FollowableProf
 import com.jeanbarrossilva.orca.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndPost
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfile
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.status.TootPaginateSource
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.ProfileTootPaginateSource
 import java.net.URL
 
 internal data class MastodonFollowableProfile<T : Follow>(
-    private val tootPaginateSource: TootPaginateSource,
+    private val tootPaginateSourceProvider: ProfileTootPaginateSource.Provider,
     override val id: String,
     override val account: Account,
     override val avatarURL: URL,
     override val name: String,
     override val bio: String,
-    override val follow: Follow,
+    override val follow: T,
     override val followerCount: Int,
     override val followingCount: Int,
     override val url: URL
 ) :
     Profile by MastodonProfile(
-        tootPaginateSource,
+        tootPaginateSourceProvider,
         id,
         account,
         avatarURL,
@@ -33,8 +33,8 @@ internal data class MastodonFollowableProfile<T : Follow>(
         followingCount,
         url
     ),
-    FollowableProfile<Follow>() {
-    override suspend fun onChangeFollowTo(follow: Follow) {
+    FollowableProfile<T>() {
+    override suspend fun onChangeFollowTo(follow: T) {
         val toggledRoute = follow.getToggledRoute(this)
         MastodonHttpClient.authenticateAndPost(toggledRoute)
     }

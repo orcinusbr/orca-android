@@ -4,11 +4,11 @@ import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.type.editable.EditableProfile
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfile
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.status.TootPaginateSource
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.ProfileTootPaginateSource
 import java.net.URL
 
 internal data class MastodonEditableProfile(
-    private val tootPaginateSource: TootPaginateSource,
+    private val tootPaginateSourceProvider: ProfileTootPaginateSource.Provider,
     override val id: String,
     override val account: Account,
     override val avatarURL: URL,
@@ -19,7 +19,7 @@ internal data class MastodonEditableProfile(
     override val url: URL
 ) :
     Profile by MastodonProfile(
-        tootPaginateSource,
+        tootPaginateSourceProvider,
         id,
         account,
         avatarURL,

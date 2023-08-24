@@ -13,6 +13,7 @@ import com.jeanbarrossilva.orca.core.mastodon.auth.authentication.MastodonAuthen
 import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.MastodonAuthorizer
 import com.jeanbarrossilva.orca.core.mastodon.feed.MastodonFeedProvider
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfileProvider
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.ProfileTootPaginateSource
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.ProfileFetcher
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.ProfileStorage
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.MastodonProfileSearcher
@@ -32,12 +33,14 @@ import org.koin.java.KoinJavaComponent
 internal fun MainCoreModule(): Module {
     val context = KoinJavaComponent.get<Context>(Context::class.java)
     val actorProvider = SharedPreferencesActorProvider(context)
-    val tootPaginateSource = MastodonFeedProvider.PaginateSource()
     val database = MastodonDatabase.getInstance(context)
-    val profileFetcher = ProfileFetcher(tootPaginateSource)
-    val profileStorage = ProfileStorage(tootPaginateSource, database.profileEntityDao)
+    val profileTootPaginateSourceProvider =
+        ProfileTootPaginateSource.Provider(::ProfileTootPaginateSource)
+    val profileFetcher = ProfileFetcher(profileTootPaginateSourceProvider)
+    val profileStorage =
+        ProfileStorage(profileTootPaginateSourceProvider, database.profileEntityDao)
     val profileCache = Cache.of(profileFetcher, profileStorage)
-    val profileSearchResultsFetcher = ProfileSearchResultsFetcher(tootPaginateSource)
+    val profileSearchResultsFetcher = ProfileSearchResultsFetcher(profileTootPaginateSourceProvider)
     val profileSearchResultsStorage =
         ProfileSearchResultsStorage(database.profileSearchResultEntityDao)
     val profileSearchResultsCache =
@@ -46,7 +49,7 @@ internal fun MainCoreModule(): Module {
         { MastodonAuthorizer(androidContext()) },
         { MastodonAuthenticator(context, authorizer = get(), actorProvider) },
         { AuthenticationLock(authenticator = get(), actorProvider) },
-        { MastodonFeedProvider(actorProvider, tootPaginateSource) },
+        { MastodonFeedProvider(actorProvider) },
         { MastodonProfileProvider(profileCache) },
         { MastodonProfileSearcher(profileSearchResultsCache) },
         { MastodonTootProvider() }

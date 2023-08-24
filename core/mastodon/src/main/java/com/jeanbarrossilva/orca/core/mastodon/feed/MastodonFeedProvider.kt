@@ -8,18 +8,10 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.status.TootPaginateSource
 import kotlinx.coroutines.flow.Flow
 
-class MastodonFeedProvider(
-    private val actorProvider: ActorProvider,
-    private val paginateSource: PaginateSource
-) : FeedProvider() {
-    private val flow = paginateSource.loadAllPagesItems(TootPaginateSource.DEFAULT_COUNT)
-
-    class PaginateSource : TootPaginateSource() {
-        override val route = "/api/v1/timelines/home"
-    }
-
+class MastodonFeedProvider(private val actorProvider: ActorProvider) : FeedProvider() {
+    private val flow = FeedTootPaginateSource.loadAllPagesItems(TootPaginateSource.DEFAULT_COUNT)
     override suspend fun onProvide(userID: String, page: Int): Flow<List<Toot>> {
-        paginateSource.paginateTo(page)
+        FeedTootPaginateSource.paginateTo(page)
         return flow
     }
 
