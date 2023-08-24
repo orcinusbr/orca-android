@@ -4,7 +4,7 @@ import com.jeanbarrossilva.orca.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonToot
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.Status
-import com.jeanbarrossilva.orca.std.cache.Fetcher
+import com.jeanbarrossilva.orca.platform.cache.Fetcher
 import io.ktor.client.call.body
 
 object MastodonTootFetcher : Fetcher<String, MastodonToot>() {

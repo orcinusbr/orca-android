@@ -7,7 +7,7 @@ import com.jeanbarrossilva.loadable.list.SerializableList
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearcher
-import com.jeanbarrossilva.orca.std.cache.Cache
+import com.jeanbarrossilva.orca.platform.cache.Cache
 import kotlinx.coroutines.flow.Flow
 
 class MastodonProfileSearcher(private val cache: Cache<String, List<ProfileSearchResult>>) :

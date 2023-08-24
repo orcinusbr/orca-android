@@ -1,8 +1,8 @@
-package com.jeanbarrossilva.orca.std.cache
+package com.jeanbarrossilva.orca.platform.cache
 
-import com.jeanbarrossilva.orca.std.cache.test.TestCache
-import com.jeanbarrossilva.orca.std.cache.test.TestFetcher
-import com.jeanbarrossilva.orca.std.cache.test.TestStorage
+import com.jeanbarrossilva.orca.platform.cache.test.TestCache
+import com.jeanbarrossilva.orca.platform.cache.test.TestFetcher
+import com.jeanbarrossilva.orca.platform.cache.test.TestStorage
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.days

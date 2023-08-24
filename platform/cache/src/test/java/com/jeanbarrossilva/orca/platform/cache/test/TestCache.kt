@@ -1,6 +1,6 @@
-package com.jeanbarrossilva.orca.std.cache.test
+package com.jeanbarrossilva.orca.platform.cache.test
 
-import com.jeanbarrossilva.orca.std.cache.Cache
+import com.jeanbarrossilva.orca.platform.cache.Cache
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds

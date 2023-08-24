@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.std.cache
+package com.jeanbarrossilva.orca.platform.cache
 
 /** Fetches values from an external source (normally the network) through [onFetch]. **/
 abstract class Fetcher<K, V> {

@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.storage
 
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
-import com.jeanbarrossilva.orca.std.cache.Storage
+import com.jeanbarrossilva.orca.platform.cache.Storage
 import kotlinx.coroutines.flow.first
 
 class ProfileSearchResultsStorage(private val entityDao: ProfileSearchResultEntityDao) :

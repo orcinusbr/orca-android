@@ -51,7 +51,7 @@ android {
 }
 
 dependencies {
-    api(project(":std:cache"))
+    api(project(":platform:cache"))
     api(Dependencies.PAGINATE)
     api(Dependencies.ROOM)
 

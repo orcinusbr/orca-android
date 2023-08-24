@@ -5,7 +5,7 @@ import com.jeanbarrossilva.orca.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.ProfileTootPaginateSource
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.account.MastodonAccount
-import com.jeanbarrossilva.orca.std.cache.Fetcher
+import com.jeanbarrossilva.orca.platform.cache.Fetcher
 import io.ktor.client.call.body
 
 class ProfileFetcher(private val tootPaginateSourceProvider: ProfileTootPaginateSource.Provider) :

@@ -23,7 +23,7 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonTootProv
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.MastodonTootFetcher
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.MastodonTootStorage
 import com.jeanbarrossilva.orca.core.sharedpreferences.actor.SharedPreferencesActorProvider
-import com.jeanbarrossilva.orca.std.cache.Cache
+import com.jeanbarrossilva.orca.platform.cache.Cache
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.definition.Definition
 import org.koin.core.module.Module
