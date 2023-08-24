@@ -1,6 +1,6 @@
-package com.jeanbarrossilva.orca.cache.test
+package com.jeanbarrossilva.orca.std.cache.test
 
-import com.jeanbarrossilva.orca.cache.Fetcher
+import com.jeanbarrossilva.orca.std.cache.Fetcher
 
 internal class TestFetcher : Fetcher<Int, Char>() {
     override suspend fun onFetch(key: Int): Char {

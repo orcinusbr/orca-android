@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.cache
+package com.jeanbarrossilva.orca.std.cache
 
 /** Stores values that have been fetched for later retrieval. **/
 abstract class Storage<K, V> {
