@@ -14,8 +14,7 @@ internal class CacheTestRule(private val coroutineScope: TestScope) : ExternalRe
 
     override fun before() {
         val context = InstrumentationRegistry.getInstrumentation().context
-        database =
-            Room.databaseBuilder(context, CacheDatabase::class.java, CacheDatabase.NAME).build()
+        database = Room.databaseBuilder(context, CacheDatabase::class.java, TestCache.NAME).build()
     }
 
     override fun after() {

@@ -13,7 +13,7 @@ import kotlinx.coroutines.test.TestCoroutineScheduler
 internal class TestCache(
     private val coroutineScheduler: TestCoroutineScheduler,
     override val databaseProvider: CacheDatabase.Provider
-) : Cache<Char>(InstrumentationRegistry.getInstrumentation().context, "test-cache") {
+) : Cache<Char>(InstrumentationRegistry.getInstrumentation().context, NAME) {
     override var fetcher = TestFetcher()
         private set
 
@@ -53,5 +53,9 @@ internal class TestCache(
         return apply {
             this.timeToLive = timeToLive
         }
+    }
+
+    companion object {
+        const val NAME = "test-cache"
     }
 }
