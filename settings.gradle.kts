@@ -13,9 +13,9 @@ include(
     ":feature:profile-details",
     ":feature:search",
     ":feature:toot-details",
+    ":platform:cache",
     ":platform:launchable",
     ":platform:theme",
     ":platform:ui",
-    ":platform:ui-test",
-    ":std:cache"
+    ":platform:ui-test"
 )

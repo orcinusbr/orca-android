@@ -1,13 +1,13 @@
-package com.jeanbarrossilva.orca.std.cache
+package com.jeanbarrossilva.orca.platform.cache
 
 /** Fetches values from an external source (normally the network) through [onFetch]. **/
-abstract class Fetcher<K, V> {
+abstract class Fetcher<T> {
     /**
      * Fetches a value associated to the given [key].
      *
      * @param key Unique identifier of the value to be fetched.
      **/
-    internal suspend fun fetch(key: K): V {
+    internal suspend fun fetch(key: String): T {
         return onFetch(key)
     }
 
@@ -16,5 +16,5 @@ abstract class Fetcher<K, V> {
      *
      * @param key Unique identifier of the value to be fetched.
      **/
-    protected abstract suspend fun onFetch(key: K): V
+    protected abstract suspend fun onFetch(key: String): T
 }

@@ -2,13 +2,13 @@ package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonToot
-import com.jeanbarrossilva.orca.std.cache.Cache
-import com.jeanbarrossilva.orca.std.cache.Storage
+import com.jeanbarrossilva.orca.platform.cache.Cache
+import com.jeanbarrossilva.orca.platform.cache.Storage
 
 class MastodonTootStorage(
-    private val profileCache: Cache<String, Profile>,
+    private val profileCache: Cache<Profile>,
     private val entityDao: MastodonTootEntityDao
-) : Storage<String, MastodonToot>() {
+) : Storage<MastodonToot>() {
     override suspend fun onStore(key: String, value: MastodonToot) {
         val entity = MastodonTootEntity.from(value)
         entityDao.insert(entity)

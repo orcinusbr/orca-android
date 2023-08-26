@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonToot
-import com.jeanbarrossilva.orca.std.cache.Cache
+import com.jeanbarrossilva.orca.platform.cache.Cache
 import java.net.URL
 import java.time.ZonedDateTime
 
@@ -22,7 +22,7 @@ internal data class MastodonTootEntity(
     @ColumnInfo(name = "reblog_count") val reblogCount: Int,
     @ColumnInfo(name = "url") val url: String
 ) {
-    suspend fun toMastodonToot(profileCache: Cache<String, Profile>): MastodonToot {
+    suspend fun toMastodonToot(profileCache: Cache<Profile>): MastodonToot {
         val author = profileCache.get(authorID).toAuthor()
         val publicationDateTime = ZonedDateTime.parse(publicationDateTime)
         val url = URL(url)
