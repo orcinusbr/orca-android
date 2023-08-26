@@ -173,8 +173,12 @@ abstract class Cache<T> internal constructor(context: Context, name: String) {
          * (normally the network).
          * @param storage [Storage] for fetched values to be stored in and retrieved from.
          **/
-        fun <T> of(context: Context, name: String, fetcher: Fetcher<T>, storage: Storage<T>):
-            Cache<T> {
+        fun <T> of(
+            context: Context,
+            name: String,
+            fetcher: Fetcher<T>,
+            storage: Storage<T>
+        ): Cache<T> {
             return object : Cache<T>(context, name) {
                 override val fetcher = fetcher
                 override val storage = storage
