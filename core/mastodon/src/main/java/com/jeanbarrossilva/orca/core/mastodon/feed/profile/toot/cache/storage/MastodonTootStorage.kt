@@ -6,9 +6,9 @@ import com.jeanbarrossilva.orca.platform.cache.Cache
 import com.jeanbarrossilva.orca.platform.cache.Storage
 
 class MastodonTootStorage(
-    private val profileCache: Cache<String, Profile>,
+    private val profileCache: Cache<Profile>,
     private val entityDao: MastodonTootEntityDao
-) : Storage<String, MastodonToot>() {
+) : Storage<MastodonToot>() {
     override suspend fun onStore(key: String, value: MastodonToot) {
         val entity = MastodonTootEntity.from(value)
         entityDao.insert(entity)

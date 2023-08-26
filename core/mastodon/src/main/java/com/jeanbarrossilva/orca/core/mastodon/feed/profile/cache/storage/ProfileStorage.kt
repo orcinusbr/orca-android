@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.first
 class ProfileStorage(
     private val tootPaginateSourceProvider: ProfileTootPaginateSource.Provider,
     private val entityDao: ProfileEntityDao
-) : Storage<String, Profile>() {
+) : Storage<Profile>() {
     override suspend fun onStore(key: String, value: Profile) {
         val entity = value.toMastodonProfileEntity().copy(id = key)
         entityDao.insert(entity)

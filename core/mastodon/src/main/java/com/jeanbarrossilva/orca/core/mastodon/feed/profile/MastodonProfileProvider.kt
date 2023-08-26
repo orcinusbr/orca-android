@@ -6,7 +6,7 @@ import com.jeanbarrossilva.orca.platform.cache.Cache
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-class MastodonProfileProvider(private val cache: Cache<String, Profile>) : ProfileProvider() {
+class MastodonProfileProvider(private val cache: Cache<Profile>) : ProfileProvider() {
     override suspend fun contains(id: String): Boolean {
         return true
     }

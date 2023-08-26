@@ -22,7 +22,7 @@ internal data class MastodonTootEntity(
     @ColumnInfo(name = "reblog_count") val reblogCount: Int,
     @ColumnInfo(name = "url") val url: String
 ) {
-    suspend fun toMastodonToot(profileCache: Cache<String, Profile>): MastodonToot {
+    suspend fun toMastodonToot(profileCache: Cache<Profile>): MastodonToot {
         val author = profileCache.get(authorID).toAuthor()
         val publicationDateTime = ZonedDateTime.parse(publicationDateTime)
         val url = URL(url)

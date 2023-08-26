@@ -41,14 +41,18 @@ internal fun MainCoreModule(): Module {
     val profileFetcher = ProfileFetcher(profileTootPaginateSourceProvider)
     val profileStorage =
         ProfileStorage(profileTootPaginateSourceProvider, database.profileEntityDao)
-    val profileCache = Cache.of(profileFetcher, profileStorage)
+    val profileCache = Cache.of(context, name = "profile-cache", profileFetcher, profileStorage)
     val profileSearchResultsFetcher = ProfileSearchResultsFetcher(profileTootPaginateSourceProvider)
     val profileSearchResultsStorage =
         ProfileSearchResultsStorage(database.profileSearchResultEntityDao)
-    val profileSearchResultsCache =
-        Cache.of(profileSearchResultsFetcher, profileSearchResultsStorage)
+    val profileSearchResultsCache = Cache.of(
+        context,
+        name = "profile-search-results-cache",
+        profileSearchResultsFetcher,
+        profileSearchResultsStorage
+    )
     val tootStorage = MastodonTootStorage(profileCache, database.tootEntityDao)
-    val tootCache = Cache.of(MastodonTootFetcher, tootStorage)
+    val tootCache = Cache.of(context, name = "toot-cache", MastodonTootFetcher, tootStorage)
     return CoreModule(
         { MastodonAuthorizer(androidContext()) },
         { MastodonAuthenticator(context, authorizer = get(), actorProvider) },

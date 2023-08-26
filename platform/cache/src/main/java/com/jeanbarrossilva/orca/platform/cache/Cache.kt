@@ -1,41 +1,45 @@
 package com.jeanbarrossilva.orca.platform.cache
 
+import android.content.Context
+import com.jeanbarrossilva.orca.platform.cache.database.Access
+import com.jeanbarrossilva.orca.platform.cache.database.AccessDao
+import com.jeanbarrossilva.orca.platform.cache.database.CacheDatabase
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-/** Decides whether values should be fetched or have their cached version retrieved. **/
-abstract class Cache<K, V> internal constructor() {
-    /**
-     * Holds the keys of values that are currently idle, associated to the current [elapsedTime] of
-     * the moment in which the idling was performed.
-     *
-     * @see timeToIdle
-     **/
-    private val idling = HashMap<K, Duration>()
+/**
+ * Decides whether values should be fetched or have their cached version retrieved.
+ *
+ * @param context [Context] through which an instance of the underlying [CacheDatabase] will be
+ * obtained.
+ * @param name Identifier for this [Cache].
+ **/
+abstract class Cache<T> internal constructor(context: Context, name: String) {
+    /** [CacheDatabase] provided by the [databaseProvider]. **/
+    private val database
+        get() = databaseProvider.provide()
 
-    /**
-     * Holds the keys of values that are currently alive, associated to the current [elapsedTime] of
-     * the moment in which they were marked as alive.
-     *
-     * @see timeToLive
-     * @see markAsAlive
-     **/
-    private val living = HashMap<K, Duration>()
+    /** [AccessDao] from which living and idling [Access]es are read and written to. **/
+    private val accessDao
+        get() = database.accessDao
 
     /** Elapsed time provided by the [elapsedTimeProvider]. **/
     private val elapsedTime
         get() = elapsedTimeProvider.provide()
 
+    /** [CacheDatabase.Provider] by which a [CacheDatabase] will be provided. **/
+    internal open val databaseProvider = CacheDatabase.Provider { CacheDatabase.of(context, name) }
+
     /** [ElapsedTimeProvider] for accessing the current elapsed time. **/
     internal open val elapsedTimeProvider = ElapsedTimeProvider.system
 
     /** [Fetcher] through which values will be obtained from their source (normally the network). **/
-    protected abstract val fetcher: Fetcher<K, V>
+    protected abstract val fetcher: Fetcher<T>
 
     /** [Storage] for fetched values to be stored in and retrieved from. **/
-    protected abstract val storage: Storage<K, V>
+    protected abstract val storage: Storage<T>
 
     /**
      * Time-to-idle is the expiration threshold related to the last time a value has been read or
@@ -66,62 +70,58 @@ abstract class Cache<K, V> internal constructor() {
      *
      * @param key Unique identifier to which the value to be obtained is associated to.
      **/
-    suspend fun get(key: K): V {
-        val isUpToDate = isIdle(key) && isAlive(key)
-        return if (isUpToDate) storage.get(key) else remember(key)
+    suspend fun get(key: String): T {
+        val isActive = isIdle(key) || isAlive(key)
+        return if (isActive) retrieve(key) else remember(key)
+    }
+
+    /** Removes all [Access]es and stored values and closes the [database]. **/
+    internal suspend fun terminate() {
+        storage.clear()
+        database.clearAllTables()
+        database.close()
     }
 
     /**
-     * Returns whether the value associated to the given [key] is idle, and also unmarks it as such
-     * if it isn't.
+     * Returns whether the value associated to the given [key] is idle.
      *
      * @param key Unique identifier of the value.
      * @see timeToIdle
      **/
-    private suspend fun isIdle(key: K): Boolean {
-        val isStored = storage.contains(key)
-        val isPastTimeToIdle = isStored && elapsedTime since idling.getValue(key) >= timeToIdle
-        if (isPastTimeToIdle) {
-            unmarkAsIdle(key)
-        }
-        return isStored && !isPastTimeToIdle
+    private suspend fun isIdle(key: String): Boolean {
+        return storage.contains(key) && getTimeSinceLastAccessTo(key, Access.Type.IDLE) < timeToIdle
     }
 
     /**
-     * Removes the [key] and its associated value from [idling].
-     *
-     * @param key Unique identifier of the value to be unmarked as idle.
-     * @see timeToIdle
-     **/
-    private fun unmarkAsIdle(key: K) {
-        idling.remove(key)
-    }
-
-    /**
-     * Returns whether the value associated to the given [key] is alive, and also unmarks it as such
-     * if it isn't.
+     * Returns whether the value associated to the given [key] is alive.
      *
      * @param key Unique identifier of the value.
      * @see timeToLive
      **/
-    private suspend fun isAlive(key: K): Boolean {
-        val isStored = storage.contains(key)
-        val isPastTimeToLive = isStored && elapsedTime since living.getValue(key) >= timeToLive
-        if (isPastTimeToLive) {
-            unmarkAsAlive(key)
-        }
-        return isStored && !isPastTimeToLive
+    private suspend fun isAlive(key: String): Boolean {
+        return storage.contains(key) &&
+            getTimeSinceLastAccessTo(key, Access.Type.ALIVE) < timeToLive
     }
 
     /**
-     * Removes the [key] and its associated value from both [living] and the [storage].
+     * Gets the amount of time that has passed since the value associated to the [key] was accessed.
      *
-     * @param key Unique identifier of the value to be unmarked as alive.
-     * @see timeToLive
+     * @param key Unique identifier of the value that has been accessed.
+     * @param type [Access.Type] that indicates how the value was accessed.
      **/
-    private suspend fun unmarkAsAlive(key: K) {
-        storage.remove(key)
-        living.remove(key)
+    private suspend fun getTimeSinceLastAccessTo(key: String, type: Access.Type): Duration {
+        return elapsedTime - accessDao.select(key, type).time.milliseconds
+    }
+
+    /**
+     * Marks the value to which the [key] is associated as idle and gets its previously stored
+     * value.
+     *
+     * @param key Unique identifier of the value to be retrieved.
+     **/
+    private suspend fun retrieve(key: String): T {
+        markAsIdle(key)
+        return storage.get(key)
     }
 
     /**
@@ -133,7 +133,7 @@ abstract class Cache<K, V> internal constructor() {
      * @see markAsIdle
      * @see markAsAlive
      **/
-    private suspend fun remember(key: K): V {
+    private suspend fun remember(key: String): T {
         val value = fetcher.fetch(key)
         storage.store(key, value)
         markAsAlive(key)
@@ -142,35 +142,40 @@ abstract class Cache<K, V> internal constructor() {
     }
 
     /**
-     * Adds the [key] to [living], bound to the current [elapsedTime].
+     * Adds an alive access keyed as [key], bound to the current [elapsedTime].
      *
      * @param key Unique identifier of the value to be marked as idle.
      * @see timeToLive
      **/
-    private fun markAsAlive(key: K) {
-        living[key] = elapsedTime
+    private suspend fun markAsAlive(key: String) {
+        val access = Access.of(key, Access.Type.ALIVE, elapsedTime.inWholeMilliseconds)
+        accessDao.insert(access)
     }
 
     /**
-     * Adds the [key] to [idling], bound to the current [elapsedTime].
+     * Adds an idle access keyed as [key], bound to the current [elapsedTime].
      *
      * @param key Unique identifier of the value to be marked as idle.
      * @see timeToIdle
      **/
-    private fun markAsIdle(key: K) {
-        idling[key] = elapsedTime
+    private suspend fun markAsIdle(key: String) {
+        val access = Access.of(key, Access.Type.IDLE, elapsedTime.inWholeMilliseconds)
+        accessDao.insert(access)
     }
 
     companion object {
         /**
          * Creates a [Cache].
          *
+         * @param context [Context] through which an instance of the underlying [CacheDatabase] will
+         * be obtained.
          * @param fetcher [Fetcher] through which values will be obtained from their source
          * (normally the network).
          * @param storage [Storage] for fetched values to be stored in and retrieved from.
          **/
-        fun <K, V> of(fetcher: Fetcher<K, V>, storage: Storage<K, V>): Cache<K, V> {
-            return object : Cache<K, V>() {
+        fun <T> of(context: Context, name: String, fetcher: Fetcher<T>, storage: Storage<T>):
+            Cache<T> {
+            return object : Cache<T>(context, name) {
                 override val fetcher = fetcher
                 override val storage = storage
             }

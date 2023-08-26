@@ -5,7 +5,7 @@ import com.jeanbarrossilva.orca.platform.cache.Storage
 import kotlinx.coroutines.flow.first
 
 class ProfileSearchResultsStorage(private val entityDao: ProfileSearchResultEntityDao) :
-    Storage<String, List<ProfileSearchResult>>() {
+    Storage<List<ProfileSearchResult>>() {
     override suspend fun onStore(key: String, value: List<ProfileSearchResult>) {
         val entities = value.map { it.toProfileSearchResultEntity(key) }
         entityDao.insert(entities)

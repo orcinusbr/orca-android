@@ -6,7 +6,7 @@ import com.jeanbarrossilva.orca.platform.cache.Cache
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-class MastodonTootProvider(private val cache: Cache<String, MastodonToot>) : TootProvider {
+class MastodonTootProvider(private val cache: Cache<MastodonToot>) : TootProvider {
     override suspend fun provide(id: String): Flow<Toot> {
         val toot = cache.get(id)
         return flowOf(toot)

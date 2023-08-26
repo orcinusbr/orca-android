@@ -9,7 +9,7 @@ import com.jeanbarrossilva.orca.platform.cache.Fetcher
 import io.ktor.client.call.body
 
 class ProfileFetcher(private val tootPaginateSourceProvider: ProfileTootPaginateSource.Provider) :
-    Fetcher<String, Profile>() {
+    Fetcher<Profile>() {
     override suspend fun onFetch(key: String): Profile {
         return MastodonHttpClient
             .authenticateAndGet("/api/v1/accounts/$key")

@@ -1,5 +1,6 @@
 plugins {
     id("com.android.library")
+    id("com.google.devtools.ksp") version Versions.KSP
     id("org.jetbrains.kotlin.android")
 }
 
@@ -31,7 +32,10 @@ android {
 }
 
 dependencies {
+    ksp(Plugins.ROOM)
+
     implementation(Dependencies.COROUTINES_CORE)
+    implementation(Dependencies.ROOM)
 
     testImplementation(kotlin("test"))
     testImplementation(Dependencies.COROUTINES_TEST)

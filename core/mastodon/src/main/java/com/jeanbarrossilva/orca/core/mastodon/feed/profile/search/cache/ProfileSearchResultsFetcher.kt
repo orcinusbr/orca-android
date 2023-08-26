@@ -12,7 +12,7 @@ import io.ktor.client.request.parameter
 
 class ProfileSearchResultsFetcher(
     private val tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
-) : Fetcher<String, List<ProfileSearchResult>>() {
+) : Fetcher<List<ProfileSearchResult>>() {
     override suspend fun onFetch(key: String): List<ProfileSearchResult> {
         return MastodonHttpClient
             .authenticateAndGet("/api/v1/accounts/search") { parameter("q", key) }
