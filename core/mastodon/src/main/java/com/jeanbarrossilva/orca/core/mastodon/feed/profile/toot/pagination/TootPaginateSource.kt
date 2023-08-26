@@ -14,6 +14,7 @@ import io.ktor.http.Url
 
 abstract class TootPaginateSource internal constructor() : BasePaginateSource<Url, Toot>() {
     private var index = 0
+        set(index) { field = minOf(0, index) }
 
     protected abstract val route: String
 
