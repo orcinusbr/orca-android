@@ -148,7 +148,7 @@ abstract class Cache<T> internal constructor(context: Context, name: String) {
      * @see timeToLive
      **/
     private suspend fun markAsAlive(key: String) {
-        val access = Access.of(key, Access.Type.ALIVE, elapsedTime.inWholeMilliseconds)
+        val access = Access(key, Access.Type.ALIVE, elapsedTime.inWholeMilliseconds)
         accessDao.insert(access)
     }
 
@@ -159,7 +159,7 @@ abstract class Cache<T> internal constructor(context: Context, name: String) {
      * @see timeToIdle
      **/
     private suspend fun markAsIdle(key: String) {
-        val access = Access.of(key, Access.Type.IDLE, elapsedTime.inWholeMilliseconds)
+        val access = Access(key, Access.Type.IDLE, elapsedTime.inWholeMilliseconds)
         accessDao.insert(access)
     }
 
@@ -169,6 +169,7 @@ abstract class Cache<T> internal constructor(context: Context, name: String) {
          *
          * @param context [Context] through which an instance of the underlying [CacheDatabase] will
          * be obtained.
+         * @param name Identifier of the [Cache] to be created.
          * @param fetcher [Fetcher] through which values will be obtained from their source
          * (normally the network).
          * @param storage [Storage] for fetched values to be stored in and retrieved from.
