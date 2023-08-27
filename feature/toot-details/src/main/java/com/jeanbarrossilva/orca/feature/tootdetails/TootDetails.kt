@@ -15,7 +15,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
-import com.jeanbarrossilva.loadable.list.mapNotNull
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
@@ -59,38 +58,22 @@ internal data class TootDetails(
     val formattedFavoriteCount = favoriteCount.formatted
     val formattedReblogCount = reblogCount.formatted
 
-    fun toTootPreview(): TootPreview {
-        return TootPreview(
-            id,
-            avatarURL,
-            name,
-            account,
-            body,
-            publicationDateTime,
-            commentCount,
-            isFavorite,
-            favoriteCount,
-            isReblogged,
-            reblogCount,
-            url
-        )
-    }
-
     companion object {
-        val sample = TootDetails(
-            Toot.sample.id,
-            Toot.sample.author.avatarURL,
-            Toot.sample.author.name,
-            Toot.sample.author.account,
-            TootPreview.sample.body,
-            Toot.sample.publicationDateTime,
-            Toot.sample.commentCount,
-            Toot.sample.isFavorite,
-            Toot.sample.favoriteCount,
-            Toot.sample.isReblogged,
-            Toot.sample.reblogCount,
-            Toot.sample.url
-        )
+        val sample
+            @Composable get() = TootDetails(
+                Toot.sample.id,
+                Toot.sample.author.avatarURL,
+                Toot.sample.author.name,
+                Toot.sample.author.account,
+                TootPreview.sample.body,
+                Toot.sample.publicationDateTime,
+                Toot.sample.commentCount,
+                Toot.sample.isFavorite,
+                Toot.sample.favoriteCount,
+                Toot.sample.isReblogged,
+                Toot.sample.reblogCount,
+                Toot.sample.url
+            )
     }
 }
 
@@ -124,7 +107,7 @@ internal fun TootDetails(
 @OptIn(ExperimentalMaterial3Api::class)
 private fun TootDetails(
     tootLoadable: Loadable<TootDetails>,
-    commentsLoadable: ListLoadable<TootDetails>,
+    commentsLoadable: ListLoadable<TootPreview>,
     onFavorite: (tootID: String) -> Unit,
     onReblog: (tootID: String) -> Unit,
     onShare: (URL) -> Unit,
@@ -156,7 +139,7 @@ private fun TootDetails(
         }
     ) {
         Timeline(
-            commentsLoadable.mapNotNull(TootDetails::toTootPreview),
+            commentsLoadable,
             onFavorite,
             onReblog,
             onShare,
@@ -214,7 +197,7 @@ private fun LoadedTootDetailsPreview() {
 @Composable
 private fun TootDetails(
     tootLoadable: Loadable<TootDetails>,
-    commentsLoadable: ListLoadable<TootDetails>,
+    commentsLoadable: ListLoadable<TootPreview>,
     modifier: Modifier = Modifier
 ) {
     TootDetails(

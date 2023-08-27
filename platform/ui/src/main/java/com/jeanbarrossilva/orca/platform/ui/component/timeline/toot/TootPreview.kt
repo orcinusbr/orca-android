@@ -130,10 +130,12 @@ data class TootPreview(
 
     companion object {
         /** [TootPreview] sample. **/
-        val sample = Toot.sample.toTootPreview()
+        val sample
+            @Composable get() = Toot.sample.toTootPreview()
 
         /** [TootPreview] samples. **/
-        val samples = Toot.samples.map(Toot::toTootPreview)
+        val samples
+            @Composable get() = Toot.samples.map { it.toTootPreview() }
     }
 }
 
