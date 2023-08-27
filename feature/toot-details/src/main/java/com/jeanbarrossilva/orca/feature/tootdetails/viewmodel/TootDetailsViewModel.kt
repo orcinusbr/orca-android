@@ -1,85 +1,76 @@
 package com.jeanbarrossilva.orca.feature.tootdetails.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.jeanbarrossilva.loadable.flow.loadableFlow
+import com.jeanbarrossilva.loadable.flow.loadable
 import com.jeanbarrossilva.loadable.list.flow.listLoadable
-import com.jeanbarrossilva.loadable.list.toSerializableList
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.TootProvider
-import com.jeanbarrossilva.orca.feature.tootdetails.TootDetails
 import com.jeanbarrossilva.orca.feature.tootdetails.toTootDetails
+import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.toTootPreview
+import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
 import com.jeanbarrossilva.orca.platform.ui.core.context.share
+import com.jeanbarrossilva.orca.platform.ui.core.mapEach
 import java.net.URL
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 internal class TootDetailsViewModel private constructor(
-    application: Application,
-    private val provider: TootProvider,
+    private val contextProvider: ContextProvider,
+    private val tootProvider: TootProvider,
     id: String
-) : AndroidViewModel(application) {
-    private val tootFlow = flow { emitAll(provider.provide(id)) }
+) : ViewModel() {
+    private val tootFlow = flow { emitAll(tootProvider.provide(id)) }
     private val commentsIndexFlow = MutableStateFlow(0)
 
-    val detailsLoadableFlow =
-        loadableFlow(viewModelScope) { tootFlow.map(Toot::toTootDetails).collect(::load) }
+    private val colors
+        get() = Colors.getDefault(context)
+    private val context
+        get() = contextProvider.provide()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val commentsLoadableFlow = commentsIndexFlow
-        .flatMapConcat { tootFlow.flatMapToComments(it).map(List<TootDetails>::toSerializableList) }
-        .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
+    val detailsLoadableFlow = tootFlow.map { it.toTootDetails(colors) }.loadable(viewModelScope)
+
+    val commentsLoadableFlow =
+        flatMapCombine(commentsIndexFlow, tootFlow) { commentsIndex, toot ->
+            toot.getComments(commentsIndex).mapEach {
+                it.toTootPreview(colors)
+            }
+        }
+            .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
 
     fun favorite(id: String) {
         viewModelScope.launch {
-            provider.provide(id).first().toggleFavorite()
+            tootProvider.provide(id).first().toggleFavorite()
         }
     }
 
     fun reblog(id: String) {
         viewModelScope.launch {
-            provider.provide(id).first().toggleReblogged()
+            tootProvider.provide(id).first().toggleReblogged()
         }
     }
 
     fun share(url: URL) {
-        getApplication<Application>().share("$url")
+        context.share("$url")
     }
 
     fun loadCommentsAt(index: Int) {
         commentsIndexFlow.value = index
     }
 
-    private fun Flow<Toot>.flatMapToComments(commentsPage: Int): Flow<List<TootDetails>> {
-        @OptIn(ExperimentalCoroutinesApi::class)
-        return flatMapConcat {
-            getCommentsFlow(it, commentsPage)
-        }
-    }
-
-    private suspend fun getCommentsFlow(toot: Toot, commentsPage: Int): Flow<List<TootDetails>> {
-        return toot.getComments(commentsPage).map {
-            it.map(Toot::toTootDetails)
-        }
-    }
-
     companion object {
-        fun createFactory(application: Application, repository: TootProvider, id: String):
+        fun createFactory(contextProvider: ContextProvider, tootProvider: TootProvider, id: String):
             ViewModelProvider.Factory {
             return viewModelFactory {
                 addInitializer(TootDetailsViewModel::class) {
-                    TootDetailsViewModel(application, repository, id)
+                    TootDetailsViewModel(contextProvider, tootProvider, id)
                 }
             }
         }

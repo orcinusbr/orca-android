@@ -9,8 +9,8 @@ import com.jeanbarrossilva.loadable.list.SerializableList
 import com.jeanbarrossilva.loadable.list.flow.listLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.orca.core.feed.profile.ProfileProvider
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.TootProvider
+import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.toTootPreview
 import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
@@ -20,8 +20,10 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -31,7 +33,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 
-internal class ProfileDetailsViewModel(
+internal class ProfileDetailsViewModel private constructor(
     private val contextProvider: ContextProvider,
     private val profileProvider: ProfileProvider,
     private val tootProvider: TootProvider,
@@ -39,6 +41,7 @@ internal class ProfileDetailsViewModel(
     private val id: String
 ) : ViewModel() {
     private val coroutineScope = viewModelScope + coroutineDispatcher
+    private val colorsFlow = MutableSharedFlow<Colors>()
     private val profileFlow = flow { emitAll(profileProvider.provide(id).filterNotNull()) }
     private val tootsIndexFlow = MutableStateFlow(0)
 
@@ -47,8 +50,14 @@ internal class ProfileDetailsViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val tootPreviewsLoadableFlow = tootsIndexFlow
-        .flatMapConcat { getTootPreviewsAt(it) }
+        .flatMapConcat(::getTootPreviewsAt)
         .listLoadable(coroutineScope, SharingStarted.WhileSubscribed())
+
+    fun setColors(colors: Colors) {
+        viewModelScope.launch {
+            colorsFlow.emit(colors)
+        }
+    }
 
     fun share(url: URL) {
         contextProvider.provide().share("$url")
@@ -73,9 +82,9 @@ internal class ProfileDetailsViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun getTootPreviewsAt(index: Int): Flow<SerializableList<TootPreview>> {
         return profileFlow.filterNotNull().flatMapConcat { profile ->
-            profile.getToots(index).map { toots -> toots.map(Toot::toTootPreview) }.map(
-                List<TootPreview>::toSerializableList
-            )
+            combine(colorsFlow, profile.getToots(index)) { colors, toots ->
+                toots.map { it.toTootPreview(colors) }.toSerializableList()
+            }
         }
     }
 

@@ -25,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -218,10 +219,16 @@ internal fun ProfileDetails(
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
+    val colors = OrcaTheme.colors
     val detailsLoadable by viewModel.detailsLoadableFlow.collectAsState()
     val tootsLoadable by viewModel.tootPreviewsLoadableFlow.collectAsState()
     val bottomAreaAvailabilityNestedScrollConnection =
         rememberBottomAreaAvailabilityNestedScrollConnection(onBottomAreaAvailabilityChangeListener)
+
+    DisposableEffect(colors) {
+        viewModel.setColors(colors)
+        onDispose { }
+    }
 
     ProfileDetails(
         navigator,

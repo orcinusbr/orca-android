@@ -1,15 +1,17 @@
 package com.jeanbarrossilva.orca.platform.theme.configuration.colors
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocal
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.platform.LocalContext
 import com.jeanbarrossilva.orca.platform.theme.R
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors.Activation
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.contrast.Contrast
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.contrast.and
+import com.jeanbarrossilva.orca.platform.theme.extensions.of
 
 /** [CompositionLocal] that provides [Colors]. **/
 internal val LocalColors = compositionLocalOf {
@@ -57,9 +59,8 @@ data class Colors internal constructor(
                 Activation(favorite = Contrast.Unspecified, reblog = Contrast.Unspecified)
 
             /** [Activation] that's provided by default. **/
-            internal val default
-                @Composable get() =
-                    Activation(Color(0xFFD32F2F) and Color.White, Color(0xFF81C784) and Color.White)
+            internal val Default =
+                Activation(Color(0xFFD32F2F) and Color.White, Color(0xFF81C784) and Color.White)
         }
     }
 
@@ -80,17 +81,38 @@ data class Colors internal constructor(
 
         /** [Colors] that are provided by default. **/
         internal val default
-            @Composable get() = Colors(
-                Activation.default,
-                colorResource(R.color.background),
-                colorResource(R.color.brandContainer) and colorResource(R.color.brandContent),
-                colorResource(R.color.disabledContainer) and colorResource(R.color.disabledContent),
-                colorResource(R.color.errorContainer) and colorResource(R.color.errorContent),
-                colorResource(R.color.placeholder),
-                colorResource(R.color.primary),
-                colorResource(R.color.secondary),
-                colorResource(R.color.surfaceContainer) and colorResource(R.color.surfaceContent),
-                colorResource(R.color.tertiary)
+            @Composable get() = getDefault(LocalContext.current)
+
+        /**
+         * Gets the [Colors] that are provided by default.
+         *
+         * @param context [Context] from which the [Color]s will be obtained.
+         **/
+        fun getDefault(context: Context): Colors {
+            return Colors(
+                Activation.Default,
+                Color.of(context, R.color.background),
+                Color.of(context, R.color.brandContainer) and Color.of(
+                    context,
+                    R.color.brandContent
+                ),
+                Color.of(context, R.color.disabledContainer) and Color.of(
+                    context,
+                    R.color.disabledContent
+                ),
+                Color.of(context, R.color.errorContainer) and Color.of(
+                    context,
+                    R.color.errorContent
+                ),
+                Color.of(context, R.color.placeholder),
+                Color.of(context, R.color.primary),
+                Color.of(context, R.color.secondary),
+                Color.of(context, R.color.surfaceContainer) and Color.of(
+                    context,
+                    R.color.surfaceContent
+                ),
+                Color.of(context, R.color.tertiary)
             )
+        }
     }
 }

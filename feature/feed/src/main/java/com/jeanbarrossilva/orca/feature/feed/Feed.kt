@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
+import com.jeanbarrossilva.orca.feature.feed.viewmodel.FeedViewModel
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.plus
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
