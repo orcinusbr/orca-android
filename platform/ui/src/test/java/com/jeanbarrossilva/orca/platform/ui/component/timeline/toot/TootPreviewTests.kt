@@ -3,9 +3,11 @@ package com.jeanbarrossilva.orca.platform.ui.component.timeline.toot
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.test.platform.app.InstrumentationRegistry
 import com.jeanbarrossilva.loadable.placeholder.test.assertIsLoading
 import com.jeanbarrossilva.loadable.placeholder.test.assertIsNotLoading
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.test.TestRelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.onTootPreview
 import org.junit.Rule
@@ -17,6 +19,11 @@ import org.robolectric.RobolectricTestRunner
 internal class TootPreviewTests {
     @get:Rule
     val composeRule = createComposeRule()
+
+    private val sampleTootPreview
+        get() = TootPreview.getSample(
+            Colors.getDefault(InstrumentationRegistry.getInstrumentation().context)
+        )
 
     @Test
     fun isShownWhenLoading() {
@@ -56,7 +63,7 @@ internal class TootPreviewTests {
             }
         }
         composeRule.onTootPreviewName().assertIsNotLoading()
-        composeRule.onTootPreviewName().assertTextEquals(TootPreview.sample.name)
+        composeRule.onTootPreviewName().assertTextEquals(sampleTootPreview.name)
     }
 
     @Test
@@ -79,7 +86,7 @@ internal class TootPreviewTests {
         }
         composeRule.onTootPreviewMetadata().assertIsNotLoading()
         composeRule.onTootPreviewMetadata().assertTextEquals(
-            TootPreview.sample.getMetadata(relativeTimeProvider)
+            sampleTootPreview.getMetadata(relativeTimeProvider)
         )
     }
 
@@ -101,7 +108,7 @@ internal class TootPreviewTests {
             }
         }
         composeRule.onTootPreviewBody().assertIsNotLoading()
-        composeRule.onTootPreviewBody().assertTextEquals(TootPreview.sample.body.text)
+        composeRule.onTootPreviewBody().assertTextEquals(sampleTootPreview.body.text)
     }
 
     @Test
@@ -123,7 +130,7 @@ internal class TootPreviewTests {
         }
         composeRule.onTootPreviewCommentCountStat().assertIsDisplayed()
         composeRule.onTootPreviewCommentCountStat().onStatLabel().assertTextEquals(
-            TootPreview.sample.formattedCommentCount
+            sampleTootPreview.formattedCommentCount
         )
     }
 
@@ -146,7 +153,7 @@ internal class TootPreviewTests {
         }
         composeRule.onTootPreviewFavoriteCountStat().assertIsDisplayed()
         composeRule.onTootPreviewFavoriteCountStat().onStatLabel().assertTextEquals(
-            TootPreview.sample.formattedFavoriteCount
+            sampleTootPreview.formattedFavoriteCount
         )
     }
 
@@ -169,7 +176,7 @@ internal class TootPreviewTests {
         }
         composeRule.onTootPreviewReblogCountStat().assertIsDisplayed()
         composeRule.onTootPreviewReblogCountStat().onStatLabel().assertTextEquals(
-            TootPreview.sample.formattedReblogCount
+            sampleTootPreview.formattedReblogCount
         )
     }
 
