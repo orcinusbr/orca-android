@@ -35,6 +35,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.samples
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import com.jeanbarrossilva.orca.platform.theme.extensions.EmptyMutableInteractionSource
 import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.SmallAvatar
@@ -131,11 +132,16 @@ data class TootPreview(
     companion object {
         /** [TootPreview] sample. **/
         val sample
-            @Composable get() = Toot.sample.toTootPreview()
+            @Composable get() = getSample(OrcaTheme.colors)
 
         /** [TootPreview] samples. **/
         val samples
             @Composable get() = Toot.samples.map { it.toTootPreview() }
+
+        /** Gets a sample [TootPreview]. **/
+        fun getSample(colors: Colors): TootPreview {
+            return Toot.sample.toTootPreview(colors)
+        }
     }
 }
 
