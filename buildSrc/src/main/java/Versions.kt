@@ -14,7 +14,7 @@ object Versions {
     const val CORE = "1.10.1"
     const val COROUTINES = "1.7.1"
     const val FRAGMENT = "1.6.0"
-    const val GRADLE = "8.1.0"
+    const val GRADLE = "8.1.1"
     const val JUNIT = "4.13.2"
     const val KOIN = "3.4.1"
     const val KOIN_ANDROID = "3.4.2"
