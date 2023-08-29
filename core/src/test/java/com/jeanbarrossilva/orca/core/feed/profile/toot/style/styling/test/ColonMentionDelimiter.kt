@@ -1,6 +1,6 @@
-package com.jeanbarrossilva.orca.core.feed.profile.toot.style.test
+package com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.test
 
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.Mention
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.Mention
 
 internal object ColonMentionDelimiter : Mention.Delimiter() {
     override fun getRegex(): Regex {

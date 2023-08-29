@@ -1,8 +1,9 @@
-package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.style
+package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.style.styling
 
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.Mention
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.Mention
 import com.jeanbarrossilva.orca.core.mastodon.Mastodon
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.Status
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.style.isMention
 import java.net.URL
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element

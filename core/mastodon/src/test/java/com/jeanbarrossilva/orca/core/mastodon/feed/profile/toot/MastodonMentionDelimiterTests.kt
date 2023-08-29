@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.style.MastodonMentionDelimiter
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.style.styling.MastodonMentionDelimiter
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.test.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.sample
 import org.junit.Assert.assertEquals

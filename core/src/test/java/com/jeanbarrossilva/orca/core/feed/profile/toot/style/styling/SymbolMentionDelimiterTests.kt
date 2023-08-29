@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.feed.profile.toot.style
+package com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling
 
 import kotlin.test.Test
 import kotlin.test.assertFalse
