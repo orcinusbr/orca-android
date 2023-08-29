@@ -18,7 +18,7 @@ fun Toot.toTootPreview(): TootPreview {
  * @param colors [Colors] by which the resulting [TootPreview]'s [TootPreview.body] can be colored.
  **/
 fun Toot.toTootPreview(colors: Colors): TootPreview {
-    val body = HtmlAnnotatedString(colors, content)
+    val body = HtmlAnnotatedString(colors, "$content")
     return TootPreview(
         id,
         author.avatarURL,

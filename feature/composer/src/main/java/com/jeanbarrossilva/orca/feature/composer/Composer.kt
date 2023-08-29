@@ -238,7 +238,7 @@ private fun EmptyWithToolbarComposerPreview() {
 private fun PopulatedWithoutToolbarComposerPreview() {
     OrcaTheme {
         Composer(
-            TextFieldValue(HtmlAnnotatedString(Toot.sample.content)),
+            TextFieldValue(HtmlAnnotatedString("${Toot.sample.content}")),
             isInitiallyFocused = false
         )
     }
@@ -250,7 +250,7 @@ private fun PopulatedWithoutToolbarComposerPreview() {
 private fun PopulatedWithToolbarComposerPreview() {
     OrcaTheme {
         Composer(
-            TextFieldValue(HtmlAnnotatedString(Toot.sample.content)),
+            TextFieldValue(HtmlAnnotatedString("${Toot.sample.content}")),
             isInitiallyFocused = true
         )
     }

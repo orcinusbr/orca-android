@@ -2,6 +2,7 @@ package com.jeanbarrossilva.orca.core.sample.feed.profile.toot
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.orca.core.feed.profile.toot.mention.MentionableString
 import java.net.URL
 import java.time.ZonedDateTime
 import kotlinx.coroutines.flow.Flow
@@ -11,7 +12,7 @@ import kotlinx.coroutines.flow.flowOf
 internal data class SampleToot(
     override val id: String,
     override val author: Author,
-    override val content: String,
+    override val content: MentionableString,
     override val publicationDateTime: ZonedDateTime,
     override val commentCount: Int,
     override val isFavorite: Boolean,

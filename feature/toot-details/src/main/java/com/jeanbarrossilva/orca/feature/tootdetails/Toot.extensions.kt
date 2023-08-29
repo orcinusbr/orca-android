@@ -15,7 +15,7 @@ internal fun Toot.toTootDetails(colors: Colors): TootDetails {
         author.avatarURL,
         author.name,
         author.account,
-        body = HtmlAnnotatedString(colors, content),
+        body = HtmlAnnotatedString(colors, "$content"),
         publicationDateTime,
         commentCount,
         isFavorite,

@@ -10,6 +10,9 @@ internal object Mastodon {
     @Suppress("SpellCheckingInspection")
     const val CLIENT_ID = "F2Rx9d7C3x45KRVJ9rU4IjIJgrsjzaq74bSLo__VUG0"
 
+    /** Mastodon's official instance. **/
+    const val INSTANCE = "mastodon.social"
+
     /**
      * Client secret that, unlike the [CLIENT_ID], is private and is mainly used to obtain an access
      * token.

@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot
 
+import com.jeanbarrossilva.orca.core.feed.profile.toot.mention.MentionableString
 import java.io.Serializable
 import java.net.URL
 import java.time.ZonedDateTime
@@ -14,7 +15,7 @@ abstract class Toot : Serializable {
     abstract val author: Author
 
     /** What's actually been written. **/
-    abstract val content: String
+    abstract val content: MentionableString
 
     /** Zoned moment in time in which this [Toot] was published. **/
     abstract val publicationDateTime: ZonedDateTime

@@ -1,6 +1,9 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot
 
+import android.util.Log
+import com.jeanbarrossilva.orca.core.feed.profile.toot.mention.toMentionableString
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.account.MastodonAccount
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.mention.MastodonMentionDelimiter
 import java.net.URL
 import java.time.ZonedDateTime
 import kotlinx.serialization.Serializable
@@ -18,8 +21,13 @@ data class Status internal constructor(
     @Suppress("SpellCheckingInspection") internal val favourited: Boolean?,
     internal val reblogged: Boolean?
 ) {
+
     internal fun toToot(): MastodonToot {
-        val author = account.toAuthor()
+        val author = this.account.toAuthor()
+        val mentionDelimiter = MastodonMentionDelimiter(this)
+        val content =
+            content.toMentionableString(mentionDelimiter) { mentionDelimiter.getNextURL() }
+        Log.d("Status", "toToot content: $content")
         val publicationDateTime = ZonedDateTime.parse(createdAt)
         val url = URL(url)
         return MastodonToot(

@@ -4,11 +4,16 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 
 @Dao
 abstract class MastodonTootEntityDao internal constructor() {
     @Query("SELECT * FROM toots WHERE id = :id")
     internal abstract suspend fun selectByID(id: String): MastodonTootEntity
+
+    @Query("SELECT * FROM toots WHERE id = :id")
+    @Transaction
+    internal abstract suspend fun selectWithMentionsByID(id: String): MastodonTootWithMentions
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     internal abstract suspend fun insert(entity: MastodonTootEntity)

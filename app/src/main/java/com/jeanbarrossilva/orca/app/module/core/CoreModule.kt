@@ -51,7 +51,8 @@ internal fun MainCoreModule(): Module {
         profileSearchResultsFetcher,
         profileSearchResultsStorage
     )
-    val tootStorage = MastodonTootStorage(profileCache, database.tootEntityDao)
+    val tootStorage =
+        MastodonTootStorage(profileCache, database.tootEntityDao, database.mentionEntityDao)
     val tootCache = Cache.of(context, name = "toot-cache", MastodonTootFetcher, tootStorage)
     return CoreModule(
         { MastodonAuthorizer(androidContext()) },

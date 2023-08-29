@@ -5,9 +5,9 @@ import androidx.compose.ui.text.SpanStyle
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 
 /** Handles the conversion of a span into a [SpanStyle]. **/
-internal abstract class SpanConverter internal constructor() {
-    /**  **/
-    abstract val next: SpanConverter?
+abstract class SpanConverter internal constructor() {
+    /** [SpanConverter] through which the given span will be converted if this one can't do it. **/
+    internal abstract val next: SpanConverter?
 
     /**
      * Converts the [span] into a [SpanStyle].
@@ -17,7 +17,7 @@ internal abstract class SpanConverter internal constructor() {
      * @throws IllegalStateException If no [SpanConverter] is available for converting the given
      * [span].
      **/
-    fun convert(colors: Colors, span: Any): SpanStyle {
+    internal fun convert(colors: Colors, span: Any): SpanStyle {
         return onConvert(colors, span)
             ?: next?.convert(colors, span)
             ?: throw IllegalStateException("No converter found for $span.")

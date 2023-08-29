@@ -25,6 +25,7 @@ object Dependencies {
         "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.COROUTINES}"
     const val FRAGMENT = "androidx.fragment:fragment-ktx:${Versions.FRAGMENT}"
     const val FRAGMENT_TESTING = "androidx.fragment:fragment-testing:${Versions.FRAGMENT}"
+    const val JSOUP = "org.jsoup:jsoup:${Versions.JSOUP}"
     const val JUNIT = "junit:junit:${Versions.JUNIT}"
     const val KOIN_ANDROID = "io.insert-koin:koin-android:${Versions.KOIN_ANDROID}"
     const val KOIN_TEST = "io.insert-koin:koin-test-junit4:${Versions.KOIN}"
