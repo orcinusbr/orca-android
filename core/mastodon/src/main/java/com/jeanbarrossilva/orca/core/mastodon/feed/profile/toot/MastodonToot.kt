@@ -2,7 +2,7 @@ package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.feed.profile.toot.mention.MentionableString
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.StyledString
 import com.jeanbarrossilva.orca.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndPost
@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.flow
 data class MastodonToot(
     override val id: String,
     override val author: Author,
-    override val content: MentionableString,
+    override val content: StyledString,
     override val publicationDateTime: ZonedDateTime,
     override val commentCount: Int,
     override val isFavorite: Boolean,

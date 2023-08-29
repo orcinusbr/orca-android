@@ -1,6 +1,6 @@
-package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.mention
+package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.style
 
-import com.jeanbarrossilva.orca.core.feed.profile.toot.mention.Mention
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.Mention
 import com.jeanbarrossilva.orca.core.mastodon.Mastodon
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.Status
 import java.net.URL

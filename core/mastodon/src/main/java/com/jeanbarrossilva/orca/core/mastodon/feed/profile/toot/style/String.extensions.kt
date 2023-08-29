@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.mention
+package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.style
 
 /**
  * Trims indents of all lengths.

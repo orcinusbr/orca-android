@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
-import com.jeanbarrossilva.orca.core.feed.profile.toot.mention.toMentionableString
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.toStyledString
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonToot
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.mention.startingAt
 import com.jeanbarrossilva.orca.platform.cache.Cache
@@ -28,7 +28,7 @@ internal data class MastodonTootEntity(
         MastodonToot {
         val author = profileCache.get(authorID).toAuthor()
         val mentions = dao.selectWithMentionsByID(id).mentions
-        val content = content.toMentionableString { URL(mentions.startingAt(it).url) }
+        val content = content.toStyledString { URL(mentions.startingAt(it).url) }
         val publicationDateTime = ZonedDateTime.parse(publicationDateTime)
         val url = URL(url)
         return MastodonToot(

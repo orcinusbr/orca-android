@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.feed.profile.toot.mention
+package com.jeanbarrossilva.orca.core.feed.profile.toot.style
 
 import java.io.Serializable
 import java.net.URL

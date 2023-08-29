@@ -1,17 +1,17 @@
-package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.mention
+package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.style
 
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString
-import com.jeanbarrossilva.orca.core.feed.profile.toot.mention.MentionableString
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.StyledString
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import com.jeanbarrossilva.orca.platform.ui.html.span.converter.URLSpanConverter
 
 /**
- * Converts this [MentionableString] into an [AnnotatedString].
+ * Converts this [StyledString] into an [AnnotatedString].
  *
  * @param colors [Colors] by which the [AnnotatedString] can be colored.
  **/
-fun MentionableString.toAnnotatedString(colors: Colors): AnnotatedString {
+fun StyledString.toAnnotatedString(colors: Colors): AnnotatedString {
     return buildAnnotatedString {
         append(this@toAnnotatedString)
         mentions.forEach {

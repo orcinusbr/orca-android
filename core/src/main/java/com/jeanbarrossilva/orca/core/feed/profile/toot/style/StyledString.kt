@@ -1,23 +1,23 @@
-package com.jeanbarrossilva.orca.core.feed.profile.toot.mention
+package com.jeanbarrossilva.orca.core.feed.profile.toot.style
 
 import java.io.Serializable
 import java.net.URL
 import java.util.Objects
 
 /**
- * [CharSequence] that supports references to others' usernames.
+ * [CharSequence] that supports stylization.
  *
  * @param text Underlying [String] that's been built.
  * @param mentions [Mention]s in the [text].
  **/
-class MentionableString internal constructor(
+class StyledString internal constructor(
     private val text: String,
     val mentions: List<Mention>
 ) : CharSequence by text, Serializable {
     constructor(text: String) : this(text, mentions = emptyList())
 
     /**
-     * Allows text and [Mention]s to be appended and for a [MentionableString] to be built.
+     * Allows text and [Mention]s to be appended and for a [StyledString] to be built.
      *
      * @see append
      * @see mention
@@ -25,15 +25,15 @@ class MentionableString internal constructor(
      **/
     class Builder @PublishedApi internal constructor() {
         /**
-         * [String] to be the [text][MentionableString.text] of the [MentionableString] being built.
+         * [String] to be the [text][StyledString.text] of the [StyledString] being built.
          **/
         private var text = ""
 
         /** [Mention]s associated to the [text]. **/
-        private var mentions = mutableListOf<Mention>()
+        private val mentions = mutableListOf<Mention>()
 
         /**
-         * Appends the [text] to that of the [MentionableString] being built.
+         * Appends the [text] to that of the [StyledString] being built.
          *
          * @param text [Char] to be appended.
          **/
@@ -42,7 +42,7 @@ class MentionableString internal constructor(
         }
 
         /**
-         * Appends the [text] to that of the [MentionableString] being built.
+         * Appends the [text] to that of the [StyledString] being built.
          *
          * @param text [String] to be appended.
          **/
@@ -65,17 +65,17 @@ class MentionableString internal constructor(
             mentions.add(mention)
         }
 
-        /** Builds a [MentionableString] with the provided configuration. **/
+        /** Builds a [StyledString] with the provided styles. **/
         @PublishedApi
-        internal fun build(): MentionableString {
+        internal fun build(): StyledString {
             val mentionsAsList = mentions.toList()
-            return MentionableString(text, mentionsAsList)
+            return StyledString(text, mentionsAsList)
         }
     }
 
     override fun equals(other: Any?): Boolean {
         return other is String && toString() == other ||
-            other is MentionableString &&
+            other is StyledString &&
             text == other.text &&
             mentions == other.mentions
     }

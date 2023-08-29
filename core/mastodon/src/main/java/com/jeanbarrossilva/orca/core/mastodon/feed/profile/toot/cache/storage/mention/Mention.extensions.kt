@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.mention
 
-import com.jeanbarrossilva.orca.core.feed.profile.toot.mention.Mention
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.Mention
 
 /**
  * Converts this [Mention] into a [MentionEntity].

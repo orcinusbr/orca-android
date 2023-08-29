@@ -1,8 +1,8 @@
-package com.jeanbarrossilva.orca.core.feed.profile.toot.mention
+package com.jeanbarrossilva.orca.core.feed.profile.toot.style
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
-import com.jeanbarrossilva.orca.core.feed.profile.toot.mention.test.ColonMentionDelimiter
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.test.ColonMentionDelimiter
 import com.jeanbarrossilva.orca.core.sample.feed.profile.account.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.sample
 import java.net.URL
@@ -10,18 +10,18 @@ import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
-internal class MentionableStringTests {
+internal class StyledStringTests {
     @Test
     fun `GIVEN a string with mentions delimited differently WHEN normalizing it THEN they're delimited by the mention symbol`() { // ktlint-disable max-line-length
         assertEquals(
-            buildMentionableString {
+            buildStyledString {
                 mention(Account.sample.username, Profile.sample.url)
                 append(", ")
                 mention("_inside", URL("https://mastodon.social/@_inside"))
                 append(", hello!")
             }
                 .toString(),
-            MentionableString.normalize(
+            StyledString.normalize(
                 ":${Account.sample.username}, :_inside, hello!",
                 ColonMentionDelimiter
             )
@@ -32,7 +32,7 @@ internal class MentionableStringTests {
     fun `GIVEN a mention WHEN appending it THEN it's been placed correctly`() {
         assertEquals(
             Mention(indices = 7..(7 + Account.sample.username.length), Profile.sample.url),
-            buildMentionableString {
+            buildStyledString {
                 append("Hello, ")
                 mention(Account.sample.username, Profile.sample.url)
                 append("!")
@@ -43,10 +43,10 @@ internal class MentionableStringTests {
     }
 
     @Test
-    fun `GIVEN a mentionable string WHEN getting its string representation THEN it has the mentions`() { // ktlint-disable max-line-length
+    fun `GIVEN a styled string WHEN getting its string representation THEN it has the mentions`() { // ktlint-disable max-line-length
         assertEquals(
             "Olá, @jeanbarrossilva!",
-            buildMentionableString {
+            buildStyledString {
                 append("Olá, ")
                 mention(Account.sample.username, Profile.sample.url)
                 append("!")
@@ -59,7 +59,7 @@ internal class MentionableStringTests {
     fun `GIVEN a mention put directly in the underlying string WHEN getting the mentions THEN it's not found`() { // ktlint-disable max-line-length
         assertContentEquals(
             emptyList(),
-            MentionableString("안녕하세요, " + Mention.SYMBOL + Account.sample.username + '!')
+            StyledString("안녕하세요, " + Mention.SYMBOL + Account.sample.username + '!')
                 .mentions
         )
     }

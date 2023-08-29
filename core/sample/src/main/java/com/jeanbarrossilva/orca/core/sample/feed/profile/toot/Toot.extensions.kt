@@ -2,7 +2,7 @@ package com.jeanbarrossilva.orca.core.sample.feed.profile.toot
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.feed.profile.toot.mention.MentionableString
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.StyledString
 import java.net.URL
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -29,7 +29,7 @@ private fun createSample(): Toot {
     return SampleToot(
         "${UUID.randomUUID()}",
         Author.sample,
-        content = MentionableString(
+        content = StyledString(
             "<p>This is a <b>sample</b> <i>toot</i> that has the sole purpose of allowing one to " +
                 "see how it would look like in <u>Orca</u>.</p>"
         ),

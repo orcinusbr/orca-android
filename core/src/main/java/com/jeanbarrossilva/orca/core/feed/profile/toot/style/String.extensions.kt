@@ -1,19 +1,19 @@
-package com.jeanbarrossilva.orca.core.feed.profile.toot.mention
+package com.jeanbarrossilva.orca.core.feed.profile.toot.style
 
 import java.net.URL
 
 /**
- * Converts this [String] into a [MentionableString].
+ * Converts this [String] into a [StyledString].
  *
  * @param delimiter [Mention.Delimiter] for determining where a [Mention] starts and where it ends.
  * @param link Given its start index, maps each mention to a username to a [URL].
  * @see Mention.indices
  **/
-fun String.toMentionableString(
+fun String.toStyledString(
     delimiter: Mention.Delimiter = Mention.Delimiter.Symbol,
     link: (startIndex: Int) -> URL? = { null }
-): MentionableString {
-    val text = MentionableString.normalize(this, delimiter)
+): StyledString {
+    val text = StyledString.normalize(this, delimiter)
     val mentions = Mention
         .Delimiter
         .Symbol
@@ -26,5 +26,5 @@ fun String.toMentionableString(
                 Mention(range, url)
             }
         }
-    return MentionableString(text, mentions)
+    return StyledString(text, mentions)
 }
