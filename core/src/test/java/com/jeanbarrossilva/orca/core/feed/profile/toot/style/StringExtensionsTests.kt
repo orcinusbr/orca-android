@@ -2,7 +2,7 @@ package com.jeanbarrossilva.orca.core.feed.profile.toot.style
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.test.ColonMentionDelimiter
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.test.ColonMentionDelimiter
 import com.jeanbarrossilva.orca.core.sample.feed.profile.account.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.sample
 import java.net.URL

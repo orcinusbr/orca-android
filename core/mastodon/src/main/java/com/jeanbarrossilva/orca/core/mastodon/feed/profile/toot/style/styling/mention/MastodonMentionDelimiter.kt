@@ -1,6 +1,6 @@
-package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.style.styling
+package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.style.styling.mention
 
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.Mention
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.Mention
 import com.jeanbarrossilva.orca.core.mastodon.Mastodon
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.Status
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.style.isMention

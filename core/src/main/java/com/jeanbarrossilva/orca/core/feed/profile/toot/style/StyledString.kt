@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot.style
 
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.Mention
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.Mention
 import java.io.Serializable
 import java.net.URL
 import java.util.Objects
