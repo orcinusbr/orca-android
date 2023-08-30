@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot.style
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Bold
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Hashtag
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Link
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Mention
 import java.io.Serializable
@@ -65,9 +66,22 @@ class StyledString internal constructor(private val text: String, val styles: Li
         }
 
         /**
-         * Appends the [url].
+         * Appends the [text].
          *
-         * @param url [URL] to be appended.
+         * @param text [String] to be appended as a [Hashtag].
+         **/
+        fun hashtag(text: String) {
+            val hashTagged = Hashtag.Delimiter.Parent.instance.target(text)
+            val indices = calculateIndicesFor(hashTagged)
+            val hashtag = Hashtag(indices)
+            this.text += hashTagged
+            styles.add(hashtag)
+        }
+
+        /**
+         * Links to the [url].
+         *
+         * @param url [URL] to be appended and linked to.
          **/
         fun linkTo(url: URL) {
             val linked = Link.Delimiter.Parent.instance.target("$url")

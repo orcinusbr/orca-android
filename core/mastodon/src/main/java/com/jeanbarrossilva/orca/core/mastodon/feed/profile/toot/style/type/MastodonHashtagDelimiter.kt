@@ -1,18 +1,14 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.style.type
 
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Hashtag
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Link
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Mention
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.Status
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.style.URLFinder
-import java.net.URL
 
-internal class MastodonMentionDelimiter(status: Status) : Mention.Delimiter.Child() {
+internal class MastodonHashtagDelimiter(status: Status) : Hashtag.Delimiter.Child() {
     private val urlFinder = URLFinder(status.content)
 
-    public override val regex = Regex(
-        "<a href=\"${Link.regex}\" class=\"u-url mention\">$TARGET_IMMEDIATE_PREFIX[a-zA-Z0-9._%+" +
-            "-]+$TARGET_IMMEDIATE_SUFFIX</a>"
-    )
+    public override val regex = Regex(tag(url = "${Link.regex}", target = "${Hashtag.targetRegex}"))
 
     override fun onGetTarget(match: String): String {
         return match.substringAfter(TARGET_IMMEDIATE_PREFIX).substringBefore(
@@ -25,17 +21,13 @@ internal class MastodonMentionDelimiter(status: Status) : Mention.Delimiter.Chil
         return tag(url, target)
     }
 
-    fun getNextURL(): URL? {
-        return urlFinder.next()
-    }
-
     companion object {
-        private const val TARGET_IMMEDIATE_PREFIX = "@<span>"
+        private const val TARGET_IMMEDIATE_PREFIX = "#<span>"
         private const val TARGET_IMMEDIATE_SUFFIX = "</span>"
 
-        fun tag(url: String, username: String): String {
-            return "<a href=\"$url\" class=\"u-url mention\">$TARGET_IMMEDIATE_PREFIX$username" +
-                "$TARGET_IMMEDIATE_SUFFIX</a>"
+        fun tag(url: String, target: String): String {
+            return "<a href=\"$url\" class=\"mention hashtag\" rel=\"tag\">" +
+                "$TARGET_IMMEDIATE_PREFIX$target$TARGET_IMMEDIATE_SUFFIX</a>"
         }
     }
 }
