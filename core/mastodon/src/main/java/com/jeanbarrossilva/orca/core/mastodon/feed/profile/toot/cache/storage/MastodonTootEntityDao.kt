@@ -13,7 +13,7 @@ abstract class MastodonTootEntityDao internal constructor() {
 
     @Query("SELECT * FROM toots WHERE id = :id")
     @Transaction
-    internal abstract suspend fun selectWithMentionsByID(id: String): MastodonTootWithMentions
+    internal abstract suspend fun selectWithStylesByID(id: String): MastodonTootWithStyles
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     internal abstract suspend fun insert(entity: MastodonTootEntity)

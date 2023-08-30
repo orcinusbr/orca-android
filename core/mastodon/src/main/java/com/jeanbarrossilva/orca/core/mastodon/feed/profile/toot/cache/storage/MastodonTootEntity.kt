@@ -29,7 +29,7 @@ internal data class MastodonTootEntity(
         dao: MastodonTootEntityDao
     ): MastodonToot {
         val author = profileCache.get(authorID).toAuthor()
-        val mentions = dao.selectWithMentionsByID(id).mentions
+        val mentions = dao.selectWithStylesByID(id).mentions
         val content = content.toStyledString { URL(mentions.startingAt(it).url) }
         val publicationDateTime = ZonedDateTime.parse(publicationDateTime)
         val url = URL(url)
