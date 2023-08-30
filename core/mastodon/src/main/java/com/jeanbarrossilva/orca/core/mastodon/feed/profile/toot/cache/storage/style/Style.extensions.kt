@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.mention
+package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.style
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.Style

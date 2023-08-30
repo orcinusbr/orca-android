@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.mention
+package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.style
 
 /**
  * Gets the [StyleEntity] that starts at the given [index].

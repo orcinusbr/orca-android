@@ -10,8 +10,8 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.storage.
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.storage.ProfileSearchResultEntityDao
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.MastodonTootEntity
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.MastodonTootEntityDao
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.mention.StyleEntity
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.mention.StyleEntityDao
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.style.StyleEntity
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.style.StyleEntityDao
 
 @Database(
     entities = [

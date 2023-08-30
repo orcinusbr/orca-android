@@ -2,8 +2,8 @@ package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonToot
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.mention.StyleEntityDao
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.mention.toMentionEntity
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.style.StyleEntityDao
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.style.toMentionEntity
 import com.jeanbarrossilva.orca.platform.cache.Cache
 import com.jeanbarrossilva.orca.platform.cache.Storage
 
