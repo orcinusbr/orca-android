@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot.style
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Bold
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Link
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Mention
 import java.io.Serializable
 import java.net.URL
@@ -61,6 +62,19 @@ class StyledString internal constructor(private val text: String, val styles: Li
             val bold = Bold(indices)
             this.text += emboldened
             styles.add(bold)
+        }
+
+        /**
+         * Appends the [url].
+         *
+         * @param url [URL] to be appended.
+         **/
+        fun linkTo(url: URL) {
+            val linked = Link.Delimiter.Parent.instance.target("$url")
+            val indices = calculateIndicesFor(linked)
+            val link = Link(indices)
+            this.text += linked
+            styles.add(link)
         }
 
         /**

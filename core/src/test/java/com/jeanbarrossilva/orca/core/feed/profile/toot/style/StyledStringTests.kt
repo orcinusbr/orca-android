@@ -28,6 +28,32 @@ internal class StyledStringTests {
     }
 
     @Test
+    fun `GIVEN a string with a link WHEN converting it into a styled string THEN it's styled accordingly`() { // ktlint-disable max-line-length
+        assertEquals(
+            buildStyledString {
+                append("Check out ")
+                linkTo(URL("https://pudim.com.br"))
+                append('!')
+            },
+            "Check out https://pudim.com.br!".toStyledString()
+        )
+    }
+
+    @Test
+    fun `GIVEN a string with multiple links WHEN converting it into a styled string THEN it's styled accordingly`() { // ktlint-disable max-line-length
+        assertEquals(
+            buildStyledString {
+                append("Check both ")
+                linkTo(URL("https://rambo.codes"))
+                append(" and ")
+                linkTo(URL("https://hackingwithswift.com"))
+                append(" out!")
+            },
+            "Check both https://rambo.codes and https://hackingwithswift.com out!".toStyledString()
+        )
+    }
+
+    @Test
     fun `GIVEN a string with mentions delimited differently WHEN normalizing it THEN they're delimited by the mention symbol`() { // ktlint-disable max-line-length
         assertEquals(
             buildStyledString {

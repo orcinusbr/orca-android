@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.style.type
 
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Link
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Mention
 import com.jeanbarrossilva.orca.core.mastodon.Mastodon
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.Status
@@ -19,8 +20,7 @@ internal class MastodonMentionDelimiter(status: Status) : Mention.Delimiter.Chil
     private val urlIterator = urls.iterator()
 
     public override val regex = Regex(
-        "<a href=\"https?://(?:www.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b[-a-zA-Z" +
-            "0-9()@:%_+.~#?&/=]*\" class=\"u-url mention\">$TARGET_IMMEDIATE_PREFIX[a-zA-Z0-9._%+" +
+        "<a href=\"${Link.regex}\" class=\"u-url mention\">$TARGET_IMMEDIATE_PREFIX[a-zA-Z0-9._%+" +
             "-]+$TARGET_IMMEDIATE_SUFFIX</a>"
     )
 
