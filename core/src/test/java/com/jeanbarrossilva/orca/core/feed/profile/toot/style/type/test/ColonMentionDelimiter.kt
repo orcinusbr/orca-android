@@ -1,6 +1,6 @@
-package com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.test
+package com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.test
 
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.Mention
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Mention
 
 internal object ColonMentionDelimiter : Mention.Delimiter.Child() {
     override val regex = Regex(":[a-zA-Z0-9._%+-]+")

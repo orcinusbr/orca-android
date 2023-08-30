@@ -1,6 +1,6 @@
-package com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention
+package com.jeanbarrossilva.orca.core.feed.profile.toot.style.type
 
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.Style
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.Style
 import java.net.URL
 
 /**
@@ -19,14 +19,14 @@ data class Mention(override val indices: IntRange, val url: URL) : Style() {
          **/
         class Parent private constructor() : Delimiter() {
             override val parent = null
-            override val regex = Regex("${Mention.SYMBOL}[a-zA-Z0-9._%+-]+")
+            override val regex = Regex("$SYMBOL[a-zA-Z0-9._%+-]+")
 
             override fun onGetTarget(match: String): String {
-                return match.removePrefix("${Mention.SYMBOL}")
+                return match.removePrefix("$SYMBOL")
             }
 
             override fun onTarget(target: String): String {
-                return Mention.SYMBOL + target
+                return SYMBOL + target
             }
 
             companion object {

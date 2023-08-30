@@ -1,6 +1,6 @@
-package com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.bold.test
+package com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.test
 
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.bold.Bold
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Bold
 
 internal object ColonBoldDelimiter : Bold.Delimiter.Child() {
     override val regex = Regex(":(.*?):")

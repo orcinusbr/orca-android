@@ -1,8 +1,8 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.mention
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.Style
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.Mention
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.Style
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Mention
 
 /**
  * Converts this [Style] into a [StyleEntity].
