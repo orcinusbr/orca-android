@@ -1,8 +1,10 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot.style
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.Style
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.bold.Bold
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.bold.BoldDelimiter
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.Mention
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.SymbolMentionDelimiter
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.MentionDelimiter
 import java.io.Serializable
 import java.net.URL
 import java.util.Objects
@@ -11,13 +13,11 @@ import java.util.Objects
  * [CharSequence] that supports stylization.
  *
  * @param text Underlying [String] that's been built.
- * @param mentions [Mention]s in the [text].
+ * @param styles [Style]s applied to the [text].
  **/
-class StyledString internal constructor(
-    private val text: String,
-    val mentions: List<Mention>
-) : CharSequence by text, Serializable {
-    constructor(text: String) : this(text, mentions = emptyList())
+class StyledString internal constructor(private val text: String, val styles: List<Style>) :
+    CharSequence by text, Serializable {
+    constructor(text: String) : this(text, styles = emptyList())
 
     /**
      * Allows text and [Mention]s to be appended and for a [StyledString] to be built.
@@ -32,8 +32,8 @@ class StyledString internal constructor(
          **/
         private var text = ""
 
-        /** [Mention]s associated to the [text]. **/
-        private val mentions = mutableListOf<Mention>()
+        /** [Style]s applied to the [text]. **/
+        private val styles = mutableListOf<Style>()
 
         /**
          * Appends the [text] to that of the [StyledString] being built.
@@ -54,6 +54,19 @@ class StyledString internal constructor(
         }
 
         /**
+         * Emboldens the [text].
+         *
+         * @param text [String] to be emboldened and appended.
+         **/
+        fun embolden(text: String) {
+            val emboldened = BoldDelimiter.symbol.target(text)
+            val indices = calculateIndicesFor(emboldened)
+            val bold = Bold(indices)
+            this.text += emboldened
+            styles.add(bold)
+        }
+
+        /**
          * Mentions a [username] whose owner can be found by the [url].
          *
          * @param username Username to mention.
@@ -61,18 +74,23 @@ class StyledString internal constructor(
          * @see Mention
          **/
         fun mention(username: String, url: URL) {
-            val text = Mention.SYMBOL + username
-            val indices = this.text.length..(this.text.length + text.lastIndex)
-            val mention = Mention(SymbolMentionDelimiter, indices, url)
-            this.text += text
-            mentions.add(mention)
+            val mentioned = MentionDelimiter.symbol.target(username)
+            val indices = calculateIndicesFor(mentioned)
+            val mention = Mention(indices, url)
+            this.text += mentioned
+            styles.add(mention)
         }
 
         /** Builds a [StyledString] with the provided styles. **/
         @PublishedApi
         internal fun build(): StyledString {
-            val mentionsAsList = mentions.toList()
+            val mentionsAsList = styles.toList()
             return StyledString(text, mentionsAsList)
+        }
+
+        /** Calculates the indices at which the [text] will be when appended. **/
+        private fun calculateIndicesFor(text: String): IntRange {
+            return this.text.length..(this.text.length + text.lastIndex)
         }
     }
 
@@ -80,11 +98,11 @@ class StyledString internal constructor(
         return other is String && toString() == other ||
             other is StyledString &&
             text == other.text &&
-            mentions == other.mentions
+            styles.containsAll(other.styles)
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(text, mentions)
+        return Objects.hash(text, styles)
     }
 
     override fun toString(): String {
@@ -93,23 +111,35 @@ class StyledString internal constructor(
 
     companion object {
         /**
-         * Normalizes the [string] whose [Mention]s are delimited by the specified
-         * [mentionDelimiter]; that is, formats its [Mention]s so that they match the default
-         * format.
+         * Normalizes the [string] whose [Style]s are delimited by the specified [delimiters].
          *
          * @param string [String] to be normalized.
-         * @param mentionDelimiter [Style.Delimiter] by which the [string]'s [Mention]s are
-         * delimited.
-         * @see SymbolMentionDelimiter
+         * @param delimiters [Style.Delimiter] by which the [String]'s [Style]s are delimited.
          **/
-        internal fun normalize(string: String, mentionDelimiter: Style.Delimiter): String {
+        internal fun normalize(string: String, vararg delimiters: Style.Delimiter): String {
+            var normalized = string
+            val delimiterIterator = delimiters.iterator()
+            while (delimiterIterator.hasNext()) {
+                normalized = normalize(normalized, delimiterIterator.next())
+            }
+            return normalized
+        }
+
+        /**
+         * Normalizes the [string] whose respective [Style] is delimited by the specified
+         * [delimiter].
+         *
+         * @param string [String] to be normalized.
+         * @param delimiter [Style.Delimiter] by which the [String]'s [Style] is delimited.
+         **/
+        internal fun normalize(string: String, delimiter: Style.Delimiter): String {
             return buildString {
                 append(string)
-                mentionDelimiter.regex.findAll(this).forEach {
+                delimiter.delimit(string).forEach {
                     replace(
                         it.range.first,
                         it.range.last.inc(),
-                        Mention.SYMBOL + mentionDelimiter.getTarget(it.value)
+                        delimiter.root.target(delimiter.getTarget(it.value))
                     )
                 }
             }

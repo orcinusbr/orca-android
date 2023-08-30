@@ -14,7 +14,7 @@ import com.jeanbarrossilva.orca.platform.ui.html.span.converter.URLSpanConverter
 fun StyledString.toAnnotatedString(colors: Colors): AnnotatedString {
     return buildAnnotatedString {
         append(this@toAnnotatedString)
-        mentions.forEach {
+        styles.forEach {
             addStyle(URLSpanConverter.getSpanStyle(colors), it.indices.first, it.indices.last)
         }
     }

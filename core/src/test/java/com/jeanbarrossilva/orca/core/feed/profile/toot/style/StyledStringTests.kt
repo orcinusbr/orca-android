@@ -2,6 +2,7 @@ package com.jeanbarrossilva.orca.core.feed.profile.toot.style
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.bold.test.ColonBoldDelimiter
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.Mention
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.test.ColonMentionDelimiter
 import com.jeanbarrossilva.orca.core.sample.feed.profile.account.sample
@@ -12,6 +13,20 @@ import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
 internal class StyledStringTests {
+    @Test
+    fun `GIVEN a string with bold portions delimited differently WHEN normalizing it THEN they're delimited by the bold symbol`() { // ktlint-disable max-line-length
+        assertEquals(
+            buildStyledString {
+                embolden("Hi")
+                append(", ")
+                embolden("hello")
+                append('!')
+            }
+                .toString(),
+            StyledString.normalize(":Hi:, :hello:!", ColonBoldDelimiter)
+        )
+    }
+
     @Test
     fun `GIVEN a string with mentions delimited differently WHEN normalizing it THEN they're delimited by the mention symbol`() { // ktlint-disable max-line-length
         assertEquals(
@@ -32,13 +47,13 @@ internal class StyledStringTests {
     @Test
     fun `GIVEN a mention WHEN appending it THEN it's been placed correctly`() {
         assertEquals(
-            Mention(_indices = 7..(7 + Account.sample.username.length), Profile.sample.url),
+            Mention(indices = 7..(7 + Account.sample.username.length), Profile.sample.url),
             buildStyledString {
                 append("Hello, ")
                 mention(Account.sample.username, Profile.sample.url)
                 append("!")
             }
-                .mentions
+                .styles
                 .single()
         )
     }
@@ -61,7 +76,7 @@ internal class StyledStringTests {
         assertContentEquals(
             emptyList(),
             StyledString("안녕하세요, " + Mention.SYMBOL + Account.sample.username + '!')
-                .mentions
+                .styles
         )
     }
 }

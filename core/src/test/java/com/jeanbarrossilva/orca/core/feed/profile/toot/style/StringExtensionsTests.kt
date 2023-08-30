@@ -2,6 +2,7 @@ package com.jeanbarrossilva.orca.core.feed.profile.toot.style
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.Mention
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.test.ColonMentionDelimiter
 import com.jeanbarrossilva.orca.core.sample.feed.profile.account.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.sample
@@ -26,11 +27,12 @@ internal class StringExtensionsTests {
     fun `GIVEN a string with a mention containing two delimiters WHEN converting it into a styled string THEN the leading delimiter is ignored`() { // ktlint-disable max-line-length
         assertEquals(
             buildStyledString {
-                append("Hello, @")
+                append("Hello, " + Mention.SYMBOL)
                 mention(Account.sample.username, Profile.sample.url)
                 append('!')
             },
-            "Hello, @@${Account.sample.username}!".toStyledString { Profile.sample.url }
+            ("Hello, " + Mention.SYMBOL + Mention.SYMBOL + Account.sample.username + '!')
+                .toStyledString { Profile.sample.url }
         )
     }
 
@@ -57,9 +59,9 @@ internal class StringExtensionsTests {
     @Test
     fun `GIVEN a string with a different mention delimiter WHEN converting it into a styled string THEN the mentions start with their default symbol`() { // ktlint-disable max-line-length
         assertEquals(
-            "Hello, @${Account.sample.username}!",
+            "Hello, " + Mention.SYMBOL + Account.sample.username + '!',
             "Hello, :${Account.sample.username}!"
-                .toStyledString(ColonMentionDelimiter)
+                .toStyledString(mentionDelimiter = ColonMentionDelimiter)
                 .toString()
         )
     }

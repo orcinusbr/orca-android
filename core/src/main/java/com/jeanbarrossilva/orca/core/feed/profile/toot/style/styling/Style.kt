@@ -1,10 +1,9 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling
 
-/** Indicates where and how a target has been stylized. **/
-abstract class Style {
-    /** [Delimiter] by which this [Style] is delimited. **/
-    internal val delimiter by lazy(::getDelimiter)
+import java.io.Serializable
 
+/** Indicates where and how a target has been stylized. **/
+abstract class Style : Serializable {
     /** Indices at which both the style symbols and the target are in the whole [String]. **/
     abstract val indices: IntRange
 
@@ -13,8 +12,28 @@ abstract class Style {
      * been applied onto.
      **/
     abstract class Delimiter {
+        /** Previously applied delimitations to [String]s. **/
+        private val delimitations = HashMap<String, List<MatchResult>>()
+
+        /** [Delimiter] that's the root one of this' category. **/
+        internal val root by lazy { parent ?: this }
+
+        /** [Delimiter] that's this one's parent. **/
+        protected abstract val parent: Delimiter?
+
         /** [Regex] that matches a styled target. **/
-        internal val regex by lazy(::getRegex)
+        protected abstract val regex: Regex
+
+        /**
+         * Delimits the whole [string].
+         *
+         * @param string [String] with targets to be delimited.
+         **/
+        internal fun delimit(string: String): List<MatchResult> {
+            return delimitations.getOrPut(string) {
+                regex.findAll(string).toList()
+            }
+        }
 
         /**
          * Gets the target from the [String] region that matches the [regex].
@@ -25,8 +44,14 @@ abstract class Style {
             return onGetTarget(match)
         }
 
-        /** Gets the [Regex] that matches a styled target. **/
-        protected abstract fun getRegex(): Regex
+        /**
+         * Adds the [Style]'s symbols to the [target].
+         *
+         * @param target [String] to be targeted.
+         **/
+        internal fun target(target: String): String {
+            return onTarget(target)
+        }
 
         /**
          * Gets the target from the [String] region that matches the [regex].
@@ -34,8 +59,12 @@ abstract class Style {
          * @param match Part of the [String] in which the target has been found.
          **/
         protected abstract fun onGetTarget(match: String): String
-    }
 
-    /** Gets the [Delimiter] by which this [Style] is delimited. **/
-    protected abstract fun getDelimiter(): Delimiter
+        /**
+         * Adds the [Style]'s symbols to the [target].
+         *
+         * @param target [String] to be targeted.
+         **/
+        protected abstract fun onTarget(target: String): String
+    }
 }
