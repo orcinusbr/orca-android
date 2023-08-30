@@ -3,7 +3,7 @@ package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot
 import android.util.Log
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.toStyledString
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.account.MastodonAccount
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.style.styling.mention.MastodonMentionDelimiter
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.style.styling.mention.MastodonMentionStyle
 import java.net.URL
 import java.time.ZonedDateTime
 import kotlinx.serialization.Serializable
@@ -24,7 +24,7 @@ data class Status internal constructor(
 
     internal fun toToot(): MastodonToot {
         val author = this.account.toAuthor()
-        val mentionDelimiter = MastodonMentionDelimiter(this)
+        val mentionDelimiter = MastodonMentionStyle(this)
         val content =
             content.toStyledString(mentionDelimiter) { mentionDelimiter.getNextURL() }
         Log.d("Status", "toToot content: $content")

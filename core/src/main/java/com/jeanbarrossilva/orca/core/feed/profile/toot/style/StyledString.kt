@@ -1,6 +1,8 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot.style
 
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.Style
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.Mention
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.SymbolMentionStyle
 import java.io.Serializable
 import java.net.URL
 import java.util.Objects
@@ -91,21 +93,21 @@ class StyledString internal constructor(
 
     companion object {
         /**
-         * Normalizes the [string] whose [Mention]s are delimited by the specified [delimiter]; that
-         * is, formats its [Mention]s so that they match the default format.
+         * Normalizes the [string] whose [Mention]s are delimited by the specified [mentionStyle];
+         * that is, formats its [Mention]s so that they match the default format.
          *
          * @param string [String] to be normalized.
-         * @param delimiter [Mention.Delimiter] by which the [string]'s [Mention]s are delimited.
-         * @see Mention.Delimiter.Symbol
+         * @param mentionStyle [Style] by which the [string]'s [Mention]s are stylized.
+         * @see SymbolMentionStyle
          **/
-        internal fun normalize(string: String, delimiter: Mention.Delimiter): String {
+        internal fun normalize(string: String, mentionStyle: Style): String {
             return buildString {
                 append(string)
-                delimiter.regex.findAll(this).forEach {
+                mentionStyle.regex.findAll(this).forEach {
                     replace(
                         it.range.first,
                         it.range.last.inc(),
-                        Mention.SYMBOL + delimiter.getUsername(it.value)
+                        Mention.SYMBOL + mentionStyle.getTarget(it.value)
                     )
                 }
             }
