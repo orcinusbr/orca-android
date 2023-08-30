@@ -24,8 +24,10 @@ internal data class MastodonTootEntity(
     @ColumnInfo(name = "reblog_count") val reblogCount: Int,
     @ColumnInfo(name = "url") val url: String
 ) {
-    suspend fun toMastodonToot(profileCache: Cache<Profile>, dao: MastodonTootEntityDao):
-        MastodonToot {
+    suspend fun toMastodonToot(
+        profileCache: Cache<Profile>,
+        dao: MastodonTootEntityDao
+    ): MastodonToot {
         val author = profileCache.get(authorID).toAuthor()
         val mentions = dao.selectWithMentionsByID(id).mentions
         val content = content.toStyledString { URL(mentions.startingAt(it).url) }
