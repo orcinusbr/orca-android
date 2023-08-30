@@ -2,7 +2,7 @@ package com.jeanbarrossilva.orca.core.feed.profile.toot.style
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.Style
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.Mention
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.SymbolMentionStyle
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.SymbolMentionDelimiter
 import java.io.Serializable
 import java.net.URL
 import java.util.Objects
@@ -63,7 +63,7 @@ class StyledString internal constructor(
         fun mention(username: String, url: URL) {
             val text = Mention.SYMBOL + username
             val indices = this.text.length..(this.text.length + text.lastIndex)
-            val mention = Mention(indices, url)
+            val mention = Mention(SymbolMentionDelimiter, indices, url)
             this.text += text
             mentions.add(mention)
         }
@@ -93,21 +93,23 @@ class StyledString internal constructor(
 
     companion object {
         /**
-         * Normalizes the [string] whose [Mention]s are delimited by the specified [mentionStyle];
-         * that is, formats its [Mention]s so that they match the default format.
+         * Normalizes the [string] whose [Mention]s are delimited by the specified
+         * [mentionDelimiter]; that is, formats its [Mention]s so that they match the default
+         * format.
          *
          * @param string [String] to be normalized.
-         * @param mentionStyle [Style] by which the [string]'s [Mention]s are stylized.
-         * @see SymbolMentionStyle
+         * @param mentionDelimiter [Style.Delimiter] by which the [string]'s [Mention]s are
+         * delimited.
+         * @see SymbolMentionDelimiter
          **/
-        internal fun normalize(string: String, mentionStyle: Style): String {
+        internal fun normalize(string: String, mentionDelimiter: Style.Delimiter): String {
             return buildString {
                 append(string)
-                mentionStyle.regex.findAll(this).forEach {
+                mentionDelimiter.regex.findAll(this).forEach {
                     replace(
                         it.range.first,
                         it.range.last.inc(),
-                        Mention.SYMBOL + mentionStyle.getTarget(it.value)
+                        Mention.SYMBOL + mentionDelimiter.getTarget(it.value)
                     )
                 }
             }

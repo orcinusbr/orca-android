@@ -2,29 +2,29 @@ package com.jeanbarrossilva.orca.core.feed.profile.toot.style
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.Style
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.Mention
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.SymbolMentionStyle
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.SymbolMentionDelimiter
 import java.net.URL
 
 /**
  * Converts this [String] into a [StyledString].
  *
- * @param mentionStyle [Style] for determining where a [Mention] starts and where it ends.
+ * @param mentionDelimiter [Style.Delimiter] by which this [String]'s [Mention]s are delimited.
  * @param mentioning Given its start index, maps each mention to a username to a [URL].
- * @see Mention.indices
+ * @see indices
  **/
 fun String.toStyledString(
-    mentionStyle: Style = SymbolMentionStyle,
+    mentionDelimiter: Style.Delimiter = SymbolMentionDelimiter,
     mentioning: (startIndex: Int) -> URL? = { null }
 ): StyledString {
-    val text = StyledString.normalize(this, mentionStyle)
-    val mentions = SymbolMentionStyle
+    val text = StyledString.normalize(this, mentionDelimiter)
+    val mentions = SymbolMentionDelimiter
         .regex
         .findAll(text)
         .toList()
         .map(MatchResult::range)
         .mapNotNull { range ->
             mentioning(range.first)?.let { url ->
-                Mention(range, url)
+                Mention(mentionDelimiter, range, url)
             }
         }
     return StyledString(text, mentions)

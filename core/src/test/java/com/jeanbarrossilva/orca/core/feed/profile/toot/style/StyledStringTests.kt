@@ -3,7 +3,7 @@ package com.jeanbarrossilva.orca.core.feed.profile.toot.style
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.Mention
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.test.ColonMentionStyle
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.test.ColonMentionDelimiter
 import com.jeanbarrossilva.orca.core.sample.feed.profile.account.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.sample
 import java.net.URL
@@ -24,7 +24,7 @@ internal class StyledStringTests {
                 .toString(),
             StyledString.normalize(
                 ":${Account.sample.username}, :_inside, hello!",
-                ColonMentionStyle
+                ColonMentionDelimiter
             )
         )
     }
@@ -32,7 +32,7 @@ internal class StyledStringTests {
     @Test
     fun `GIVEN a mention WHEN appending it THEN it's been placed correctly`() {
         assertEquals(
-            Mention(indices = 7..(7 + Account.sample.username.length), Profile.sample.url),
+            Mention(_indices = 7..(7 + Account.sample.username.length), Profile.sample.url),
             buildStyledString {
                 append("Hello, ")
                 mention(Account.sample.username, Profile.sample.url)

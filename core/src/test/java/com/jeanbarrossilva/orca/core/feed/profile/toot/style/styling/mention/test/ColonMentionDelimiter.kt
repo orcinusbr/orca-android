@@ -2,7 +2,7 @@ package com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.te
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.Style
 
-internal object ColonMentionStyle : Style() {
+internal object ColonMentionDelimiter : Style.Delimiter() {
     override fun getRegex(): Regex {
         return Regex(":[a-zA-Z0-9._%+-]+")
     }
