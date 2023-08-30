@@ -2,7 +2,7 @@ package com.jeanbarrossilva.orca.feature.tootdetails
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
-import com.jeanbarrossilva.orca.platform.ui.html.HtmlAnnotatedString
+import com.jeanbarrossilva.orca.platform.ui.core.toAnnotatedString
 
 /**
  * Converts this core [Toot] into [TootDetails].
@@ -15,7 +15,7 @@ internal fun Toot.toTootDetails(colors: Colors): TootDetails {
         author.avatarURL,
         author.name,
         author.account,
-        body = HtmlAnnotatedString(colors, "$content"),
+        body = content.toAnnotatedString(colors),
         publicationDateTime,
         commentCount,
         isFavorite,
