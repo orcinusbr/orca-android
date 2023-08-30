@@ -15,11 +15,11 @@ abstract class Style : Serializable {
         /** Previously applied delimitations to [String]s. **/
         private val delimitations = HashMap<String, List<MatchResult>>()
 
-        /** [Delimiter] that's the root one of this' category. **/
-        internal val root by lazy { parent ?: this }
+        /** [Delimiter] that's the root one. **/
+        internal val root: Delimiter by lazy { parent?.root ?: this }
 
         /** [Delimiter] that's this one's parent. **/
-        protected open val parent: Delimiter? = null
+        protected abstract val parent: Delimiter?
 
         /** [Regex] that matches a styled target. **/
         protected abstract val regex: Regex
