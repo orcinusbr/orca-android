@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.style.styling.mention
 
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.MentionDelimiter
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.Mention
 import com.jeanbarrossilva.orca.core.mastodon.Mastodon
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.Status
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.style.isMention
@@ -8,7 +8,7 @@ import java.net.URL
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 
-internal class MastodonMentionDelimiter(status: Status) : MentionDelimiter.Child() {
+internal class MastodonMentionDelimiter(status: Status) : Mention.Delimiter.Child() {
     private val urls = Jsoup
         .parse(status.content, "${Mastodon.baseUrl}")
         .allElements

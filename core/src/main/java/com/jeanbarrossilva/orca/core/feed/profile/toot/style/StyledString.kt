@@ -2,9 +2,7 @@ package com.jeanbarrossilva.orca.core.feed.profile.toot.style
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.Style
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.bold.Bold
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.bold.BoldDelimiter
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.Mention
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.styling.mention.MentionDelimiter
 import java.io.Serializable
 import java.net.URL
 import java.util.Objects
@@ -59,7 +57,7 @@ class StyledString internal constructor(private val text: String, val styles: Li
          * @param text [String] to be emboldened and appended.
          **/
         fun embolden(text: String) {
-            val emboldened = BoldDelimiter.Parent.instance.target(text)
+            val emboldened = Bold.Delimiter.Parent.instance.target(text)
             val indices = calculateIndicesFor(emboldened)
             val bold = Bold(indices)
             this.text += emboldened
@@ -74,7 +72,7 @@ class StyledString internal constructor(private val text: String, val styles: Li
          * @see Mention
          **/
         fun mention(username: String, url: URL) {
-            val mentioned = MentionDelimiter.Parent.instance.target(username)
+            val mentioned = Mention.Delimiter.Parent.instance.target(username)
             val indices = calculateIndicesFor(mentioned)
             val mention = Mention(indices, url)
             this.text += mentioned
@@ -139,7 +137,7 @@ class StyledString internal constructor(private val text: String, val styles: Li
                     replace(
                         it.range.first,
                         it.range.last.inc(),
-                        delimiter.parent?.target(delimiter.getTarget(it.value))
+                        (delimiter.parent ?: delimiter).target(delimiter.getTarget(it.value))
                     )
                 }
             }
