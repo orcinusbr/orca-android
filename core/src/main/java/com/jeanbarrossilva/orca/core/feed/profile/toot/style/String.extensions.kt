@@ -17,13 +17,13 @@ import java.net.URL
  * @see indices
  **/
 fun String.toStyledString(
-    boldDelimiter: Style.Delimiter = BoldDelimiter.symbol,
-    mentionDelimiter: Style.Delimiter = MentionDelimiter.symbol,
+    boldDelimiter: BoldDelimiter = BoldDelimiter.Parent.instance,
+    mentionDelimiter: Style.Delimiter = MentionDelimiter.Parent.instance,
     mentioning: (startIndex: Int) -> URL? = { null }
 ): StyledString {
     val text = StyledString.normalize(this, boldDelimiter, mentionDelimiter)
-    val emboldened = BoldDelimiter.symbol.delimit(text).map { Bold(indices = it.range) }
-    val mentions = MentionDelimiter.symbol.delimit(text).mapNotNull { match ->
+    val emboldened = BoldDelimiter.Parent.instance.delimit(text).map { Bold(indices = it.range) }
+    val mentions = MentionDelimiter.Parent.instance.delimit(text).mapNotNull { match ->
         mentioning(match.range.first)?.let { url ->
             Mention(match.range, url)
         }

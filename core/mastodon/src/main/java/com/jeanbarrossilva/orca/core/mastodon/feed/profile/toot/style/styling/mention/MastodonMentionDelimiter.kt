@@ -8,7 +8,7 @@ import java.net.URL
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 
-internal class MastodonMentionDelimiter(status: Status) : MentionDelimiter() {
+internal class MastodonMentionDelimiter(status: Status) : MentionDelimiter.Child() {
     private val urls = Jsoup
         .parse(status.content, "${Mastodon.baseUrl}")
         .allElements

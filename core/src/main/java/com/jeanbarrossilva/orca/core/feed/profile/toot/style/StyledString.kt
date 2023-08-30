@@ -59,7 +59,7 @@ class StyledString internal constructor(private val text: String, val styles: Li
          * @param text [String] to be emboldened and appended.
          **/
         fun embolden(text: String) {
-            val emboldened = BoldDelimiter.symbol.target(text)
+            val emboldened = BoldDelimiter.Parent.instance.target(text)
             val indices = calculateIndicesFor(emboldened)
             val bold = Bold(indices)
             this.text += emboldened
@@ -74,7 +74,7 @@ class StyledString internal constructor(private val text: String, val styles: Li
          * @see Mention
          **/
         fun mention(username: String, url: URL) {
-            val mentioned = MentionDelimiter.symbol.target(username)
+            val mentioned = MentionDelimiter.Parent.instance.target(username)
             val indices = calculateIndicesFor(mentioned)
             val mention = Mention(indices, url)
             this.text += mentioned
@@ -139,7 +139,7 @@ class StyledString internal constructor(private val text: String, val styles: Li
                     replace(
                         it.range.first,
                         it.range.last.inc(),
-                        delimiter.root.target(delimiter.getTarget(it.value))
+                        delimiter.parent?.target(delimiter.getTarget(it.value))
                     )
                 }
             }

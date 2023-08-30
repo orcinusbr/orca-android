@@ -25,8 +25,9 @@ data class Status internal constructor(
     internal fun toToot(): MastodonToot {
         val author = this.account.toAuthor()
         val mentionDelimiter = MastodonMentionDelimiter(this)
-        val content =
-            content.toStyledString(mentionDelimiter) { mentionDelimiter.getNextURL() }
+        val content = content.toStyledString(mentionDelimiter = mentionDelimiter) {
+            mentionDelimiter.getNextURL()
+        }
         Log.d("Status", "toToot content: $content")
         val publicationDateTime = ZonedDateTime.parse(createdAt)
         val url = URL(url)
