@@ -19,7 +19,7 @@ abstract class Style : Serializable {
         internal val root by lazy { parent ?: this }
 
         /** [Delimiter] that's this one's parent. **/
-        protected abstract val parent: Delimiter?
+        protected open val parent: Delimiter? = null
 
         /** [Regex] that matches a styled target. **/
         protected abstract val regex: Regex

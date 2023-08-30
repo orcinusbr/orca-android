@@ -1,11 +1,11 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.mention
 
 /**
- * Gets the [MentionEntity] that starts at the given [index].
+ * Gets the [StyleEntity] that starts at the given [index].
  *
- * @param index Index at which the [MentionEntity] to be obtained starts.
+ * @param index Index at which the [StyleEntity] to be obtained starts.
  **/
-internal fun Collection<MentionEntity>.startingAt(index: Int): MentionEntity {
+internal fun Collection<StyleEntity>.startingAt(index: Int): StyleEntity {
     return first {
         it.startIndex == index
     }

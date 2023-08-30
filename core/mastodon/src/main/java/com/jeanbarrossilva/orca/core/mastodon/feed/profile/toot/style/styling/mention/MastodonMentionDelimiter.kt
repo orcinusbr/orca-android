@@ -16,33 +16,40 @@ internal class MastodonMentionDelimiter(status: Status) : Style.Delimiter() {
         .map { it.attr("abs:href") }
         .map { it.removeSuffix("@${Mastodon.INSTANCE}") }
         .map(::URL)
-        .iterator()
+    private val urlIterator = urls.iterator()
 
-    public override fun getRegex(): Regex {
-        return Regex(
-            "<a href=\"https?://(?:www.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b[-a-" +
-                "zA-Z0-9()@:%_+.~#?&/=]*\" class=\"u-url mention\">$START[a-zA-Z0-9._%+-]+$END</a>"
+    public override val regex = Regex(
+        "<a href=\"https?://(?:www.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b[-a-zA-Z" +
+            "0-9()@:%_+.~#?&/=]*\" class=\"u-url mention\">$TARGET_IMMEDIATE_PREFIX[a-zA-Z0-9._%+" +
+            "-]+$TARGET_IMMEDIATE_SUFFIX</a>"
+    )
+
+    override fun onGetTarget(match: String): String {
+        return match.substringAfter(TARGET_IMMEDIATE_PREFIX).substringBefore(
+            TARGET_IMMEDIATE_SUFFIX
         )
     }
 
-    override fun onGetTarget(match: String): String {
-        return match.substringAfter(START).substringBefore(END)
+    override fun onTarget(target: String): String {
+        val url = urls.map(URL::toString).first { target in it }
+        return tag(url, target)
     }
 
     fun getNextURL(): URL? {
-        return if (urls.hasNext()) {
-            urls.next()
+        return if (urlIterator.hasNext()) {
+            urlIterator.next()
         } else {
             null
         }
     }
 
     companion object {
-        private const val START = "@<span>"
-        private const val END = "</span>"
+        private const val TARGET_IMMEDIATE_PREFIX = "@<span>"
+        private const val TARGET_IMMEDIATE_SUFFIX = "</span>"
 
         fun tag(url: String, username: String): String {
-            return "<a href=\"$url\" class=\"u-url mention\">$START$username$END</a>"
+            return "<a href=\"$url\" class=\"u-url mention\">$TARGET_IMMEDIATE_PREFIX$username" +
+                "$TARGET_IMMEDIATE_SUFFIX</a>"
         }
     }
 }

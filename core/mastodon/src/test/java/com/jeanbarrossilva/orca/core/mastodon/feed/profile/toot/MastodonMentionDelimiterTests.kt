@@ -14,7 +14,7 @@ internal class MastodonMentionDelimiterTests {
         assertTrue(
             MastodonMentionDelimiter
                 .tag("${Profile.sample.url}", Profile.sample.account.username)
-                .matches(MastodonMentionDelimiter(Status.sample).getRegex())
+                .matches(MastodonMentionDelimiter(Status.sample).regex)
         )
     }
 

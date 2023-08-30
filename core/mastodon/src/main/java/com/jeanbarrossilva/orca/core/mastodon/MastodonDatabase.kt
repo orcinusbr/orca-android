@@ -10,12 +10,12 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.storage.
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.storage.ProfileSearchResultEntityDao
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.MastodonTootEntity
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.MastodonTootEntityDao
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.mention.MentionEntity
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.mention.MentionEntityDao
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.mention.StyleEntity
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.mention.StyleEntityDao
 
 @Database(
     entities = [
-        MentionEntity::class,
+        StyleEntity::class,
         ProfileEntity::class,
         ProfileSearchResultEntity::class,
         MastodonTootEntity::class
@@ -23,7 +23,7 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.me
     version = 1
 )
 abstract class MastodonDatabase internal constructor() : RoomDatabase() {
-    abstract val mentionEntityDao: MentionEntityDao
+    abstract val styleEntityDao: StyleEntityDao
     abstract val profileEntityDao: ProfileEntityDao
     abstract val profileSearchResultEntityDao: ProfileSearchResultEntityDao
     abstract val tootEntityDao: MastodonTootEntityDao
