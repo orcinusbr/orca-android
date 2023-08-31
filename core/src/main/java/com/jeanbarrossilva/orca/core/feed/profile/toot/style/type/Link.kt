@@ -13,7 +13,7 @@ data class Link(override val indices: IntRange) : Style() {
          **/
         class Parent private constructor() : Delimiter() {
             override val parent = null
-            override val regex = Link.regex
+            override val regex = protocoledRegex
 
             override fun onGetTarget(match: String): String {
                 return match
@@ -36,10 +36,21 @@ data class Link(override val indices: IntRange) : Style() {
     }
 
     companion object {
-        /** [Regex] that matches [String]s with a [URL] format. **/
-        val regex = Regex(
-            "https?://(?:www.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b[-a-zA-Z0-9()@" +
-                ":%_+.~#?&/=]*"
+        /** [Regex] that matches the [protocol][URL.getProtocol] of a [URL]. **/
+        val protocolRegex = Regex("https?://")
+
+        /** [Regex] that matches the [path][URL.path] of a [URL]. **/
+        val pathRegex = Regex("[-a-zA-Z0-9()@:%_+.~#?&/=]+")
+
+        /** [Regex] that matches the subdomain of a URL. **/
+        val subdomainRegex = Regex("www\\.")
+
+        /** [Regex] that matches [String]s with an unprotocoled [URL] format. **/
+        val unprotocoledRegex = Regex(
+            "($subdomainRegex)?[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}$pathRegex"
         )
+
+        /** [Regex] that matches [String]s with a [URL] format. **/
+        val protocoledRegex = Regex("$protocolRegex" + "$unprotocoledRegex")
     }
 }

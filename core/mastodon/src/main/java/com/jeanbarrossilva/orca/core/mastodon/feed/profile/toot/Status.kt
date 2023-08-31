@@ -1,9 +1,10 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot
 
-import android.util.Log
+import android.text.Html
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.toStyledString
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.account.MastodonAccount
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.style.type.MastodonHashtagDelimiter
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.style.type.MastodonLinkDelimiter
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.style.type.MastodonMentionDelimiter
 import java.net.URL
 import java.time.ZonedDateTime
@@ -25,15 +26,18 @@ data class Status internal constructor(
 
     internal fun toToot(): MastodonToot {
         val author = this.account.toAuthor()
-        val hashtagDelimiter = MastodonHashtagDelimiter(this)
         val mentionDelimiter = MastodonMentionDelimiter(this)
-        val content = content.replace("<p>", "").replace("</p>", "").toStyledString(
-            hashtagDelimiter = hashtagDelimiter,
-            mentionDelimiter = mentionDelimiter
+        val encodedContent = content.replace("<p>", "").replace("</p>", "").toStyledString(
+            hashtagDelimiter = MastodonHashtagDelimiter(this),
+            mentionDelimiter = mentionDelimiter,
+            linkDelimiter = MastodonLinkDelimiter
         ) {
             mentionDelimiter.getNextURL()
         }
-        Log.d("Status", "toToot content.styles: ${content.styles}")
+        val content = Html
+            .fromHtml("$encodedContent", Html.FROM_HTML_MODE_COMPACT)
+            .toString()
+            .toStyledString()
         val publicationDateTime = ZonedDateTime.parse(createdAt)
         val url = URL(url)
         return MastodonToot(

@@ -13,7 +13,9 @@ import org.jsoup.Jsoup
 internal class MastodonMentionDelimiter(status: Status) : Mention.Delimiter.Child() {
     private val urlFinder = URLFinder(status.content)
 
-    public override val regex = Regex(tag("${Link.regex}", username = "${Mention.targetRegex}"))
+    public override val regex = Regex(
+        tag("${Link.protocoledRegex}", username = "${Mention.targetRegex}")
+    )
 
     override fun onGetTarget(match: String): String {
         return Jsoup
@@ -38,7 +40,7 @@ internal class MastodonMentionDelimiter(status: Status) : Mention.Delimiter.Chil
     companion object {
         fun tag(url: String, username: String): String {
             return createHTML().span(classes = "h-card") {
-                translate(false)
+                translate = false
                 a(href = url, classes = "u-url mention") {
                     +"@"
                     span { +username }

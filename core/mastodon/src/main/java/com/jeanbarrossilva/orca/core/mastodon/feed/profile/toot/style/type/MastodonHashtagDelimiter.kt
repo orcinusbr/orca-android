@@ -12,7 +12,9 @@ import org.jsoup.Jsoup
 internal class MastodonHashtagDelimiter(status: Status) : Hashtag.Delimiter.Child() {
     private val urlFinder = URLFinder(status.content)
 
-    public override val regex = Regex(tag(url = "${Link.regex}", target = "${Hashtag.targetRegex}"))
+    public override val regex = Regex(
+        tag(url = "${Link.protocoledRegex}", target = "${Hashtag.targetRegex}")
+    )
 
     override fun onGetTarget(match: String): String {
         return Jsoup.parse(match).selectFirst("span")?.text() ?: throw TargetNotFoundException(

@@ -2,11 +2,11 @@ package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.style.type
 
 import kotlinx.html.Tag
 
-/**
- * Sets the `translate` attribute to this [Tag].
- *
- * @param isTranslatable Whether its contents are translatable.
- **/
-internal fun Tag.translate(isTranslatable: Boolean) {
-    attributes["translate"] = if (isTranslatable) "yes" else "no"
-}
+/** `translate` attribute of this [Tag]. **/
+internal var Tag.translate: Boolean?
+    get() = attributes["translate"]?.let { it != "no" }
+    set(isTranslatable) {
+        isTranslatable?.let {
+            attributes["translate"] = if (it) "yes" else "no"
+        }
+    }
