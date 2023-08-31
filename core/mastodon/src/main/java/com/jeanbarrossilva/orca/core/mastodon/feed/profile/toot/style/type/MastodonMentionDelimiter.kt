@@ -9,10 +9,7 @@ import java.net.URL
 internal class MastodonMentionDelimiter(status: Status) : Mention.Delimiter.Child() {
     private val urlFinder = URLFinder(status.content)
 
-    public override val regex = Regex(
-        "<a href=\"${Link.regex}\" class=\"u-url mention\">$TARGET_IMMEDIATE_PREFIX[a-zA-Z0-9._%+" +
-            "-]+$TARGET_IMMEDIATE_SUFFIX</a>"
-    )
+    public override val regex = Regex(tag("${Link.regex}", username = "[a-zA-Z0-9._%+-]+"))
 
     override fun onGetTarget(match: String): String {
         return match.substringAfter(TARGET_IMMEDIATE_PREFIX).substringBefore(
