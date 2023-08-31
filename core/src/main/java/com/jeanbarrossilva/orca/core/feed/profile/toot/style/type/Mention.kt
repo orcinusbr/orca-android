@@ -19,7 +19,7 @@ data class Mention(override val indices: IntRange, val url: URL) : Style() {
          **/
         class Parent private constructor() : Delimiter() {
             override val parent = null
-            override val regex = Regex("$SYMBOL[a-zA-Z0-9._%+-]+")
+            override val regex = Regex(SYMBOL + "$targetRegex")
 
             override fun onGetTarget(match: String): String {
                 return match.removePrefix("$SYMBOL")
@@ -44,5 +44,8 @@ data class Mention(override val indices: IntRange, val url: URL) : Style() {
     companion object {
         /** [Char] that indicates the start of a [Mention] by default. **/
         internal const val SYMBOL = '@'
+
+        /** [Regex] that matches a [Mention]'s target. **/
+        val targetRegex = Regex("[a-zA-Z0-9._%+-]+")
     }
 }

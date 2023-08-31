@@ -13,7 +13,7 @@ import org.jsoup.Jsoup
 internal class MastodonMentionDelimiter(status: Status) : Mention.Delimiter.Child() {
     private val urlFinder = URLFinder(status.content)
 
-    public override val regex = Regex(tag("${Link.regex}", username = "[a-zA-Z0-9._%+-]+"))
+    public override val regex = Regex(tag("${Link.regex}", username = "${Mention.targetRegex}"))
 
     override fun onGetTarget(match: String): String {
         return Jsoup
