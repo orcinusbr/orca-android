@@ -156,9 +156,9 @@ class StyledString internal constructor(private val text: String, val styles: Li
          * @param string [String] to be normalized.
          * @param delimiters [Style.Delimiter] by which the [String]'s [Style]s are delimited.
          **/
-        internal fun normalize(string: String, vararg delimiters: Style.Delimiter): String {
+        internal fun normalize(string: String, vararg delimiters: Style.Delimiter?): String {
             var normalized = string
-            val delimiterIterator = delimiters.iterator()
+            val delimiterIterator = delimiters.filterNotNull().iterator()
             while (delimiterIterator.hasNext()) {
                 normalized = normalize(normalized, delimiterIterator.next())
             }

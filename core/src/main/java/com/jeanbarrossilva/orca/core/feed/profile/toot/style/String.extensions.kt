@@ -18,10 +18,10 @@ import java.net.URL
  * @see indices
  **/
 fun String.toStyledString(
-    boldDelimiter: Bold.Delimiter = Bold.Delimiter.Parent.instance,
-    hashtagDelimiter: Hashtag.Delimiter = Hashtag.Delimiter.Parent.instance,
-    linkDelimiter: Link.Delimiter = Link.Delimiter.Parent.instance,
-    mentionDelimiter: Mention.Delimiter = Mention.Delimiter.Parent.instance,
+    boldDelimiter: Bold.Delimiter? = Bold.Delimiter.Parent.instance,
+    hashtagDelimiter: Hashtag.Delimiter? = Hashtag.Delimiter.Parent.instance,
+    linkDelimiter: Link.Delimiter? = Link.Delimiter.Parent.instance,
+    mentionDelimiter: Mention.Delimiter? = Mention.Delimiter.Parent.instance,
     mentioning: (startIndex: Int) -> URL? = { null }
 ): StyledString {
     val text = StyledString.normalize(

@@ -12,7 +12,7 @@ data class Bold(override val indices: IntRange) : Style() {
          **/
         class Parent private constructor() : Delimiter() {
             override val parent = null
-            override val regex = Regex("$ESCAPED_SYMBOL(.*?)$ESCAPED_SYMBOL")
+            override val regex = Regex("\\$SYMBOL.+\\$SYMBOL")
 
             override fun onGetTarget(match: String): String {
                 return match.substringAfter(SYMBOL).substringBefore(SYMBOL)
@@ -37,8 +37,5 @@ data class Bold(override val indices: IntRange) : Style() {
     companion object {
         /** [Char] that indicates the start and the end of a bold target. **/
         internal const val SYMBOL = '*'
-
-        /** Escaped [Regex]-specific version of [SYMBOL]. **/
-        internal const val ESCAPED_SYMBOL = "\\*"
     }
 }
