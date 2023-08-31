@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot.style
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Bold
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Email
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Hashtag
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Link
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Mention
@@ -50,6 +51,20 @@ class StyledString internal constructor(private val text: String, val styles: Li
          **/
         fun append(text: String) {
             this.text += text
+        }
+
+        /**
+         * Links to the [text].
+         *
+         * @param text E-mail to be appended and linked to.
+         **/
+        fun email(text: String) {
+            require(text matches Email.regex) { "Appended text is not an e-mail." }
+            val emailed = Email.Delimiter.Parent.instance.target(text)
+            val indices = calculateIndicesFor(emailed)
+            val email = Email(indices)
+            this.text += emailed
+            styles.add(email)
         }
 
         /**

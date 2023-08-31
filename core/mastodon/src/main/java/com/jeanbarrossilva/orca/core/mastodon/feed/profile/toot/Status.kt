@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot
 
-import android.text.Html
+import android.util.Log
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.toStyledString
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.account.MastodonAccount
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.style.type.MastodonHashtagDelimiter
@@ -27,16 +27,13 @@ data class Status internal constructor(
         val author = this.account.toAuthor()
         val hashtagDelimiter = MastodonHashtagDelimiter(this)
         val mentionDelimiter = MastodonMentionDelimiter(this)
-        val paragraphLessContent = content.replace("<p>", "").replace("</p>", "")
-        val content = Html
-            .fromHtml(paragraphLessContent, Html.FROM_HTML_MODE_COMPACT)
-            .toString()
-            .toStyledString(
-                hashtagDelimiter = hashtagDelimiter,
-                mentionDelimiter = mentionDelimiter
-            ) {
-                mentionDelimiter.getNextURL()
-            }
+        val content = content.replace("<p>", "").replace("</p>", "").toStyledString(
+            hashtagDelimiter = hashtagDelimiter,
+            mentionDelimiter = mentionDelimiter
+        ) {
+            mentionDelimiter.getNextURL()
+        }
+        Log.d("Status", "toToot content.styles: ${content.styles}")
         val publicationDateTime = ZonedDateTime.parse(createdAt)
         val url = URL(url)
         return MastodonToot(

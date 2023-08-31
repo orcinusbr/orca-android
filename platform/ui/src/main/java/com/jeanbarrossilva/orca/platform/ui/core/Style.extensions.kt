@@ -4,6 +4,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.Style
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Bold
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Email
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Hashtag
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Link
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Mention
@@ -19,7 +20,7 @@ import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 internal fun Style.toSpanStyle(colors: Colors): SpanStyle {
     return when (this) {
         is Bold -> SpanStyle(fontWeight = FontWeight.Bold)
-        is Hashtag, is Link, is Mention -> SpanStyle(colors.brand.container)
+        is Email, is Hashtag, is Link, is Mention -> SpanStyle(colors.brand.container)
         else -> throw IllegalArgumentException("Cannot convert an unknown $this style.")
     }
 }

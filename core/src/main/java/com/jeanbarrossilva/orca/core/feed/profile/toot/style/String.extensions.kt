@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot.style
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Bold
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Email
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Hashtag
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Link
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Mention
@@ -23,8 +24,15 @@ fun String.toStyledString(
     mentionDelimiter: Mention.Delimiter = Mention.Delimiter.Parent.instance,
     mentioning: (startIndex: Int) -> URL? = { null }
 ): StyledString {
-    val text = StyledString
-        .normalize(this, boldDelimiter, hashtagDelimiter, linkDelimiter, mentionDelimiter)
+    val text = StyledString.normalize(
+        this,
+        boldDelimiter,
+        Email.Delimiter.Parent.instance,
+        hashtagDelimiter,
+        linkDelimiter,
+        mentionDelimiter
+    )
+    val emails = Email.Delimiter.Parent.instance.delimit(text).map { Email(indices = it.range) }
     val emboldened = Bold.Delimiter.Parent.instance.delimit(text).map { Bold(indices = it.range) }
     val hashtags =
         Hashtag.Delimiter.Parent.instance.delimit(text).map { Hashtag(indices = it.range) }
@@ -34,5 +42,5 @@ fun String.toStyledString(
             Mention(indices = match.range, url)
         }
     }
-    return StyledString(text, emboldened + hashtags + links + mentions)
+    return StyledString(text, emails + emboldened + hashtags + links + mentions)
 }
