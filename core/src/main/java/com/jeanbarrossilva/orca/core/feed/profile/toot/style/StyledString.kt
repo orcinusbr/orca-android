@@ -70,6 +70,19 @@ class StyledString internal constructor(private val text: String, val styles: Li
         }
 
         /**
+         * Emboldens the [text].
+         *
+         * @param text [String] to be emboldened and appended.
+         **/
+        fun appendBold(text: String) {
+            val emboldened = Bold.Delimiter.Parent.instance.target(text)
+            val indices = calculateIndicesFor(emboldened)
+            val bold = Bold(indices)
+            this.text += emboldened
+            styles.add(bold)
+        }
+
+        /**
          * Links to the [text].
          *
          * @param text E-mail to be appended and linked to.
@@ -81,19 +94,6 @@ class StyledString internal constructor(private val text: String, val styles: Li
             val email = Email(indices)
             this.text += emailed
             styles.add(email)
-        }
-
-        /**
-         * Emboldens the [text].
-         *
-         * @param text [String] to be emboldened and appended.
-         **/
-        fun appendBold(text: String) {
-            val emboldened = Bold.Delimiter.Parent.instance.target(text)
-            val indices = calculateIndicesFor(emboldened)
-            val bold = Bold(indices)
-            this.text += emboldened
-            styles.add(bold)
         }
 
         /**
