@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.style.type
 
-import android.util.Log
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Link
 import java.net.URL
 import kotlinx.html.A
@@ -49,7 +48,6 @@ internal object MastodonLinkDelimiter : Link.Delimiter.Child() {
                 }
             }
         }
-            .also { Log.d("MastodonLinkDelimiter", "tag($url): $it") }
     }
 
     private fun tag(href: String, tag: A.() -> Unit): String {
