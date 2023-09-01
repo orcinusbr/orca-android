@@ -11,6 +11,7 @@ import java.net.URL
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 internal class StyledStringTests {
     @Test
@@ -28,6 +29,15 @@ internal class StyledStringTests {
     }
 
     @Test
+    fun `GIVEN an invalid e-mail WHEN appending it THEN it throws`() {
+        assertFailsWith<IllegalArgumentException> {
+            buildStyledString {
+                email("john@@appleseed.com")
+            }
+        }
+    }
+
+    @Test
     fun `GIVEN a string with an e-mail WHEN converting it into a styled string THEN it's styled accordingly`() { // ktlint-disable max-line-length
         assertEquals(
             buildStyledString {
@@ -37,6 +47,15 @@ internal class StyledStringTests {
             },
             "Send a message to john@appleseed.com!".toStyledString()
         )
+    }
+
+    @Test
+    fun `GIVEN an invalid subject WHEN appending a hashtag THEN it throws`() {
+        assertFailsWith<IllegalArgumentException> {
+            buildStyledString {
+                hashtag("subjects - cannot - have - whitespaces")
+            }
+        }
     }
 
     @Test

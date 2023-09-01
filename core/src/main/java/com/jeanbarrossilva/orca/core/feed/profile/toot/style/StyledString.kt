@@ -86,6 +86,7 @@ class StyledString internal constructor(private val text: String, val styles: Li
          * @param text [String] to be appended as a [Hashtag].
          **/
         fun hashtag(text: String) {
+            require(text matches Hashtag.targetRegex) { "Appended text is not a subject." }
             val hashTagged = Hashtag.Delimiter.Parent.instance.target(text)
             val indices = calculateIndicesFor(hashTagged)
             val hashtag = Hashtag(indices)
