@@ -19,7 +19,7 @@ abstract class Style : Serializable {
         internal abstract val parent: Delimiter?
 
         /** [Regex] that matches a styled target. **/
-        protected abstract val regex: Regex
+        internal val regex by lazy(::getRegex)
 
         /**
          * Delimits the whole [string].
@@ -50,6 +50,9 @@ abstract class Style : Serializable {
             return onTarget(target)
         }
 
+        /** Gets the [Regex] that matches a styled target. **/
+        protected abstract fun getRegex(): Regex
+
         /**
          * Gets the target from the [String] region that matches the [regex].
          *
@@ -63,5 +66,32 @@ abstract class Style : Serializable {
          * @param target [String] to be targeted.
          **/
         protected abstract fun onTarget(target: String): String
+
+        companion object {
+            /**
+             * Creates a [Delimiter] that delimits a target by surrounding it with the given
+             * [symbol].
+             *
+             * @param symbol [Char] by which targets will be surrounded.
+             **/
+            internal fun surroundedBy(symbol: Char): Delimiter {
+                return object : Delimiter() {
+                    override val parent = null
+
+                    override fun getRegex(): Regex {
+                        val escapedSymbol = Regex.escape("$symbol")
+                        return Regex("$escapedSymbol.+?$escapedSymbol")
+                    }
+
+                    override fun onGetTarget(match: String): String {
+                        return match.substringAfter(symbol).substringBefore(symbol)
+                    }
+
+                    override fun onTarget(target: String): String {
+                        return symbol + target + symbol
+                    }
+                }
+            }
+        }
     }
 }

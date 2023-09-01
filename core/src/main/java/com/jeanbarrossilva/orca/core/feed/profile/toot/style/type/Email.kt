@@ -9,7 +9,10 @@ data class Email(override val indices: IntRange) : Style() {
         /** [Delimiter] that's the [parent] of all [Child] instances. **/
         class Parent private constructor() : Delimiter() {
             override val parent = null
-            override val regex = Email.regex
+
+            override fun getRegex(): Regex {
+                return Email.regex
+            }
 
             override fun onGetTarget(match: String): String {
                 return match

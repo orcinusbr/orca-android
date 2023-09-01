@@ -11,13 +11,15 @@ import org.jsoup.Jsoup
 internal object MastodonLinkDelimiter : Link.Delimiter.Child() {
     private const val VISIBLE_UNPROTOCOLED_URL_THRESHOLD = 30
 
-    public override val regex = Regex(
-        tag(href = "${Link.protocoledRegex}") {
-            span(classes = "invisible") { +"${Link.protocolRegex}(?:${Link.subdomainRegex})?" }
-            span(classes = "(ellipsis)?") { +Link.unprotocoledRegex.toString() }
-            span(classes = "invisible") { +"(${Link.unprotocoledRegex}|${Link.pathRegex})?" }
-        }
-    )
+    public override fun getRegex(): Regex {
+        return Regex(
+            tag(href = "${Link.protocoledRegex}") {
+                span(classes = "invisible") { +"${Link.protocolRegex}(?:${Link.subdomainRegex})?" }
+                span(classes = "(ellipsis)?") { +Link.unprotocoledRegex.toString() }
+                span(classes = "invisible") { +"(${Link.unprotocoledRegex}|${Link.pathRegex})?" }
+            }
+        )
+    }
 
     override fun onGetTarget(match: String): String {
         return Jsoup.parse(match).selectFirst("a")?.wholeText() ?: throw TargetNotFoundException(

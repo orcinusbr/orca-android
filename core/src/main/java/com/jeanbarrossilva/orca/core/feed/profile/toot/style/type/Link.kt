@@ -13,7 +13,10 @@ data class Link(override val indices: IntRange) : Style() {
          **/
         class Parent private constructor() : Delimiter() {
             override val parent = null
-            override val regex = protocoledRegex
+
+            override fun getRegex(): Regex {
+                return protocoledRegex
+            }
 
             override fun onGetTarget(match: String): String {
                 return match

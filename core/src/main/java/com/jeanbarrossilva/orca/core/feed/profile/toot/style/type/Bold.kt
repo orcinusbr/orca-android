@@ -11,15 +11,21 @@ data class Bold(override val indices: IntRange) : Style() {
          * parts of a [String] surrounded by a [Bold.SYMBOL].
          **/
         class Parent private constructor() : Delimiter() {
-            override val parent = null
-            override val regex = Regex("\\$SYMBOL.+\\$SYMBOL")
+            /** [Delimiter] to which overridden functionality will be delegated. **/
+            private val delegate = surroundedBy(SYMBOL)
+
+            override val parent = delegate.parent
+
+            override fun getRegex(): Regex {
+                return delegate.regex
+            }
 
             override fun onGetTarget(match: String): String {
-                return match.substringAfter(SYMBOL).substringBefore(SYMBOL)
+                return delegate.getTarget(match)
             }
 
             override fun onTarget(target: String): String {
-                return SYMBOL + target + SYMBOL
+                return delegate.target(target)
             }
 
             companion object {

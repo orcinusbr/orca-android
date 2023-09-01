@@ -10,7 +10,7 @@ internal class MastodonHashtagDelimiterTests {
     fun `GIVEN a target surrounded by hashtag tags WHEN checking if it's a hashtag THEN it is`() {
         assertTrue(
             MastodonHashtagDelimiter.tag("https://pudim.com.br", "pudim").matches(
-                MastodonHashtagDelimiter(Status.sample).regex
+                MastodonHashtagDelimiter(Status.sample).getRegex()
             )
         )
     }

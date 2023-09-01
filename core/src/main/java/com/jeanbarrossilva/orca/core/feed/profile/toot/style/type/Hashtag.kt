@@ -13,7 +13,10 @@ data class Hashtag(override val indices: IntRange) : Style() {
          **/
         class Parent private constructor() : Delimiter() {
             override val parent = null
-            override val regex = Hashtag.regex
+
+            override fun getRegex(): Regex {
+                return Hashtag.regex
+            }
 
             override fun onGetTarget(match: String): String {
                 return match.removePrefix("$SYMBOL")

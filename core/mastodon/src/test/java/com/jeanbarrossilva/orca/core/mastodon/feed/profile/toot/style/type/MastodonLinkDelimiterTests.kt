@@ -40,7 +40,7 @@ internal class MastodonLinkDelimiterTests {
                 span(classes = "ellipsis") { +"nsscreencast.com/series/61-mac" }
                 span(classes = "invisible") { +"os-mastodon-client" }
             }
-                .matches(MastodonLinkDelimiter.regex)
+                .matches(MastodonLinkDelimiter.getRegex())
         )
     }
 }

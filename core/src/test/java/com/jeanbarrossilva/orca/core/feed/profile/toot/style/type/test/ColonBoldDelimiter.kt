@@ -3,13 +3,17 @@ package com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.test
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Bold
 
 internal object ColonBoldDelimiter : Bold.Delimiter.Child() {
-    override val regex = Regex(":(.*?):")
+    private val delegate = surroundedBy(':')
+
+    override fun getRegex(): Regex {
+        return delegate.regex
+    }
 
     override fun onGetTarget(match: String): String {
-        return match.substringAfter(':').substringBeforeLast(':')
+        return delegate.getTarget(match)
     }
 
     override fun onTarget(target: String): String {
-        return ":$target:"
+        return delegate.target(target)
     }
 }
