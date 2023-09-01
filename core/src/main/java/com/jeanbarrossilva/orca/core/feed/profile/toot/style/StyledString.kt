@@ -10,7 +10,14 @@ import java.net.URL
 import java.util.Objects
 
 /**
- * [CharSequence] that supports stylization.
+ * [CharSequence] that supports stylization such as `*bold*`, e-mails (`orca@jeanbarrossilva.com`),
+ * `#hashtags`, links (`https://orca.jeanbarrossilva.com`) and `@mentions`.
+ *
+ * Those can either be added through the [buildStyledString] builder method or by converting a
+ * [String] properly delimited with the [Style]s' [delimiter][Style.Delimiter]s into a
+ * [StyledString] with [String.toStyledString]. When converting, custom
+ * [delimiter][Style.Delimiter]s can be provided if the [String] contains a
+ * [delimiter][Style.Delimiter] for any of the [Style]s that's different from the default ones.
  *
  * @param text Underlying [String] that's been built.
  * @param styles [Style]s applied to the [text].
