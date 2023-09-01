@@ -20,10 +20,14 @@ class StyledString internal constructor(private val text: String, val styles: Li
     constructor(text: String) : this(text, styles = emptyList())
 
     /**
-     * Allows text and [Mention]s to be appended and for a [StyledString] to be built.
+     * Allows text and [Style]s to be appended and for a [StyledString] to be built.
      *
      * @see append
-     * @see mention
+     * @see appendBold
+     * @see appendEmail
+     * @see appendHashtag
+     * @see appendLink
+     * @see appendMention
      * @see build
      **/
     class Builder @PublishedApi internal constructor() {
@@ -58,7 +62,7 @@ class StyledString internal constructor(private val text: String, val styles: Li
          *
          * @param text E-mail to be appended and linked to.
          **/
-        fun email(text: String) {
+        fun appendEmail(text: String) {
             require(text matches Email.regex) { "Appended text is not an e-mail." }
             val emailed = Email.Delimiter.Parent.instance.target(text)
             val indices = calculateIndicesFor(emailed)
@@ -72,7 +76,7 @@ class StyledString internal constructor(private val text: String, val styles: Li
          *
          * @param text [String] to be emboldened and appended.
          **/
-        fun embolden(text: String) {
+        fun appendBold(text: String) {
             val emboldened = Bold.Delimiter.Parent.instance.target(text)
             val indices = calculateIndicesFor(emboldened)
             val bold = Bold(indices)
@@ -85,7 +89,7 @@ class StyledString internal constructor(private val text: String, val styles: Li
          *
          * @param text [String] to be appended as a [Hashtag].
          **/
-        fun hashtag(text: String) {
+        fun appendHashtag(text: String) {
             require(text matches Hashtag.targetRegex) { "Appended text is not a subject." }
             val hashTagged = Hashtag.Delimiter.Parent.instance.target(text)
             val indices = calculateIndicesFor(hashTagged)
@@ -99,7 +103,7 @@ class StyledString internal constructor(private val text: String, val styles: Li
          *
          * @param url [URL] to be appended and linked to.
          **/
-        fun linkTo(url: URL) {
+        fun appendLink(url: URL) {
             val linked = Link.Delimiter.Parent.instance.target("$url")
             val indices = calculateIndicesFor(linked)
             val link = Link(indices)
@@ -114,7 +118,7 @@ class StyledString internal constructor(private val text: String, val styles: Li
          * @param url [URL] that leads to the [username]'s owner.
          * @see Mention
          **/
-        fun mention(username: String, url: URL) {
+        fun appendMention(username: String, url: URL) {
             val mentioned = Mention.Delimiter.Parent.instance.target(username)
             val indices = calculateIndicesFor(mentioned)
             val mention = Mention(indices, url)
@@ -136,7 +140,8 @@ class StyledString internal constructor(private val text: String, val styles: Li
     }
 
     override fun equals(other: Any?): Boolean {
-        return other is String && toString() == other ||
+        return other is String &&
+            toString() == other ||
             other is StyledString &&
             text == other.text &&
             styles.containsAll(other.styles)

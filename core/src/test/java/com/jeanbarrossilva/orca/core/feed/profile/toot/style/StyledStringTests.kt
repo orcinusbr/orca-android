@@ -18,9 +18,9 @@ internal class StyledStringTests {
     fun `GIVEN a string with bold portions delimited differently WHEN normalizing it THEN they're delimited by the bold symbol`() { // ktlint-disable max-line-length
         assertEquals(
             buildStyledString {
-                embolden("Hi")
+                appendBold("Hi")
                 append(", ")
-                embolden("hello")
+                appendBold("hello")
                 append('!')
             }
                 .toString(),
@@ -32,7 +32,7 @@ internal class StyledStringTests {
     fun `GIVEN an invalid e-mail WHEN appending it THEN it throws`() {
         assertFailsWith<IllegalArgumentException> {
             buildStyledString {
-                email("john@@appleseed.com")
+                appendEmail("john@@appleseed.com")
             }
         }
     }
@@ -42,7 +42,7 @@ internal class StyledStringTests {
         assertEquals(
             buildStyledString {
                 append("Send a message to ")
-                email("john@appleseed.com")
+                appendEmail("john@appleseed.com")
                 append('!')
             },
             "Send a message to john@appleseed.com!".toStyledString()
@@ -53,7 +53,7 @@ internal class StyledStringTests {
     fun `GIVEN an invalid subject WHEN appending a hashtag THEN it throws`() {
         assertFailsWith<IllegalArgumentException> {
             buildStyledString {
-                hashtag("subjects - cannot - have - whitespaces")
+                appendHashtag("subjects - cannot - have - whitespaces")
             }
         }
     }
@@ -63,7 +63,7 @@ internal class StyledStringTests {
         assertEquals(
             buildStyledString {
                 append("Check out ")
-                linkTo(URL("https://pudim.com.br"))
+                appendLink(URL("https://pudim.com.br"))
                 append('!')
             },
             "Check out https://pudim.com.br!".toStyledString()
@@ -75,9 +75,9 @@ internal class StyledStringTests {
         assertEquals(
             buildStyledString {
                 append("Check both ")
-                linkTo(URL("https://rambo.codes"))
+                appendLink(URL("https://rambo.codes"))
                 append(" and ")
-                linkTo(URL("https://hackingwithswift.com"))
+                appendLink(URL("https://hackingwithswift.com"))
                 append(" out!")
             },
             "Check both https://rambo.codes and https://hackingwithswift.com out!".toStyledString()
@@ -88,9 +88,9 @@ internal class StyledStringTests {
     fun `GIVEN a string with mentions delimited differently WHEN normalizing it THEN they're delimited by the mention symbol`() { // ktlint-disable max-line-length
         assertEquals(
             buildStyledString {
-                mention(Account.sample.username, Profile.sample.url)
+                appendMention(Account.sample.username, Profile.sample.url)
                 append(", ")
-                mention("_inside", URL("https://mastodon.social/@_inside"))
+                appendMention("_inside", URL("https://mastodon.social/@_inside"))
                 append(", hello!")
             }
                 .toString(),
@@ -107,7 +107,7 @@ internal class StyledStringTests {
             Mention(indices = 7..(7 + Account.sample.username.length), Profile.sample.url),
             buildStyledString {
                 append("Hello, ")
-                mention(Account.sample.username, Profile.sample.url)
+                appendMention(Account.sample.username, Profile.sample.url)
                 append("!")
             }
                 .styles
@@ -121,7 +121,7 @@ internal class StyledStringTests {
             "Olá, @jeanbarrossilva!",
             buildStyledString {
                 append("Olá, ")
-                mention(Account.sample.username, Profile.sample.url)
+                appendMention(Account.sample.username, Profile.sample.url)
                 append("!")
             }
                 .toString()
