@@ -17,6 +17,11 @@ import java.util.Objects
  **/
 class StyledString internal constructor(private val text: String, val styles: List<Style>) :
     CharSequence by text, Serializable {
+    /**
+     * [StyledString] without [Style]s.
+     *
+     * @param text [String] without any [Style]s attached to it.
+     **/
     constructor(text: String) : this(text, styles = emptyList())
 
     /**
