@@ -3,6 +3,7 @@ package com.jeanbarrossilva.orca.core.feed.profile.toot.style
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Bold
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Email
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Hashtag
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Italic
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Link
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Mention
 import java.io.Serializable
@@ -11,7 +12,7 @@ import java.util.Objects
 
 /**
  * [CharSequence] that supports stylization such as `*bold*`, e-mails (`orca@jeanbarrossilva.com`),
- * `#hashtags`, links (`https://orca.jeanbarrossilva.com`) and `@mentions`.
+ * `#hashtags`, `_italic_`, links (`https://orca.jeanbarrossilva.com`) and `@mentions`.
  *
  * Those can either be added through the [buildStyledString] builder method or by converting a
  * [String] properly delimited with the [Style]s' [delimiter][Style.Delimiter]s into a
@@ -108,6 +109,19 @@ class StyledString internal constructor(private val text: String, val styles: Li
             val hashtag = Hashtag(indices)
             this.text += hashTagged
             styles.add(hashtag)
+        }
+
+        /**
+         * Appends the italicized [text].
+         *
+         * @param text [String] to be appended.
+         **/
+        fun appendItalic(text: String) {
+            val italicized = Italic.Delimiter.Parent.instance.target(text)
+            val indices = calculateIndicesFor(italicized)
+            val italic = Italic(indices)
+            this.text += italicized
+            styles.add(italic)
         }
 
         /**

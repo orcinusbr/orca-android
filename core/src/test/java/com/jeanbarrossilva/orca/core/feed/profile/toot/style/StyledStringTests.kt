@@ -2,6 +2,7 @@ package com.jeanbarrossilva.orca.core.feed.profile.toot.style
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Italic
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Mention
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.test.ColonBoldDelimiter
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.test.ColonMentionDelimiter
@@ -56,6 +57,18 @@ internal class StyledStringTests {
                 appendHashtag("subjects - cannot - have - whitespaces")
             }
         }
+    }
+
+    @Test
+    fun `GIVEN a string with italicized portions WHEN converting it into a styled string THEN the italic style is preserved`() { // ktlint-disable max-line-length
+        assertEquals(
+            buildStyledString {
+                append("Hello, ")
+                appendItalic("world")
+                append('!')
+            },
+            ("Hello, " + Italic.SYMBOL + "world" + Italic.SYMBOL + '!').toStyledString()
+        )
     }
 
     @Test
