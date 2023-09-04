@@ -15,9 +15,9 @@ internal class StringExtensionsTests {
     fun `GIVEN a string with a mention WHEN converting it into a styled string THEN the mention is preserved`() { // ktlint-disable max-line-length
         assertEquals(
             buildStyledString {
-                append("Hello, ")
-                mention(Profile.sample.url) { append(Account.sample.username) }
-                append('!')
+                +"Hello, "
+                mention(Profile.sample.url) { +Account.sample.username }
+                +('!')
             },
             "Hello, @${Account.sample.username}!".toStyledString { Profile.sample.url }
         )
@@ -27,9 +27,9 @@ internal class StringExtensionsTests {
     fun `GIVEN a string with a mention containing two delimiters WHEN converting it into a styled string THEN the leading delimiter is ignored`() { // ktlint-disable max-line-length
         assertEquals(
             buildStyledString {
-                append("Hello, " + Mention.SYMBOL)
-                mention(Profile.sample.url) { append(Account.sample.username) }
-                append('!')
+                +"Hello, ${Mention.SYMBOL}"
+                mention(Profile.sample.url) { +Account.sample.username }
+                +'!'
             },
             ("Hello, " + Mention.SYMBOL + Mention.SYMBOL + Account.sample.username + '!')
                 .toStyledString { Profile.sample.url }
@@ -40,11 +40,11 @@ internal class StringExtensionsTests {
     fun `GIVEN a string with multiple mentions WHEN converting it into a styled string THEN the mentions are preserved`() { // ktlint-disable max-line-length
         assertEquals(
             buildStyledString {
-                append("Hello, ")
-                mention(Profile.sample.url) { append(Account.sample.username) }
-                append(" and ")
-                mention(URL("https://mastodon.social/@christianselig")) { append("christianselig") }
-                append('!')
+                +"Hello, "
+                mention(Profile.sample.url) { +Account.sample.username }
+                +" and "
+                mention(URL("https://mastodon.social/@christianselig")) { +"christianselig" }
+                +'!'
             },
             "Hello, @${Account.sample.username} and @christianselig!".toStyledString {
                 when (it) {

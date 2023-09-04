@@ -66,17 +66,23 @@ class StyledString internal constructor(private val text: String, val styles: Li
             private val style: (indices: IntRange) -> Style
         ) {
             /**
-             * Appends the [text], stylizing it with the result of [style] and the [Style]s of
+             * Appends this [Char], stylizing it with the result of [style] and the [Style]s of
              * [Appender]s that are currently active.
-             *
-             * @param text [String] to be appended.
              **/
-            fun append(text: String) {
-                val stylized = delimiter.target(text)
+            operator fun Char.unaryPlus() {
+                +toString()
+            }
+
+            /**
+             * Appends this [String], stylizing it with the result of [style] and the [Style]s of
+             * [Appender]s that are currently active.
+             **/
+            operator fun String.unaryPlus() {
+                val stylized = delimiter.target(this)
                 require(stylized matches delimiter.regex) { "\"$stylized\" is invalid." }
                 val indices = calculateIndicesFor(stylized)
                 val styles = activeAppenders.map { it.style(indices) }
-                this@Builder.append(stylized)
+                with(this@Builder) { +stylized }
                 this@Builder.styles.addAll(styles)
             }
 
@@ -87,23 +93,19 @@ class StyledString internal constructor(private val text: String, val styles: Li
         }
 
         /**
-         * Appends the [text] to that of the [StyledString] being built.
-         *
-         * @param text [Char] to be appended.
+         * Appends this [Char] to the [text][StyledString.text] of the [StyledString] being built.
          **/
-        fun append(text: Char) {
-            this.text += text
+        operator fun Char.unaryPlus() {
+            text += this
         }
 
         /**
-         * Appends the [text] to that of the [StyledString] being built.
-         *
-         * @param text [String] to be appended.
+         * Appends this [String] to the [text][StyledString.text] of the [StyledString] being built.
          **/
-        fun append(text: String) {
+        operator fun String.unaryPlus() {
             val emails = text.stylize(Email.Delimiter.Default, ::Email)
             val links = text.stylize(Link.Delimiter.Default, ::Link)
-            this.text += text
+            text += this
             styles.addAll(emails + links)
         }
 
