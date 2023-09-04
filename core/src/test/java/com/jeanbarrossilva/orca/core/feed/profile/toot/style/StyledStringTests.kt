@@ -2,6 +2,7 @@ package com.jeanbarrossilva.orca.core.feed.profile.toot.style
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Bold
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Italic
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Mention
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.test.ColonBoldDelimiter
@@ -19,9 +20,9 @@ internal class StyledStringTests {
     fun `GIVEN a string with bold portions delimited differently WHEN normalizing it THEN they're delimited by the bold symbol`() { // ktlint-disable max-line-length
         assertEquals(
             buildStyledString {
-                appendBold("Hi")
+                bold { append("Hi") }
                 append(", ")
-                appendBold("hello")
+                bold { append("hello") }
                 append('!')
             }
                 .toString(),
@@ -30,22 +31,14 @@ internal class StyledStringTests {
     }
 
     @Test
-    fun `GIVEN an invalid e-mail WHEN appending it THEN it throws`() {
-        assertFailsWith<IllegalArgumentException> {
-            buildStyledString {
-                appendEmail("john@@appleseed.com")
-            }
-        }
+    fun `GIVEN an invalid e-mail WHEN appending it THEN it isn't stylized as an e-mail`() {
+        assertContentEquals(buildStyledString { append("john@@appleseed.com") }.styles, emptyList())
     }
 
     @Test
     fun `GIVEN a string with an e-mail WHEN converting it into a styled string THEN it's styled accordingly`() { // ktlint-disable max-line-length
         assertEquals(
-            buildStyledString {
-                append("Send a message to ")
-                appendEmail("john@appleseed.com")
-                append('!')
-            },
+            buildStyledString { append("Send a message to john@appleseed.com!") },
             "Send a message to john@appleseed.com!".toStyledString()
         )
     }
@@ -54,7 +47,9 @@ internal class StyledStringTests {
     fun `GIVEN an invalid subject WHEN appending a hashtag THEN it throws`() {
         assertFailsWith<IllegalArgumentException> {
             buildStyledString {
-                appendHashtag("subjects - cannot - have - whitespaces")
+                hashtag {
+                    append("subjects - cannot - have - whitespaces")
+                }
             }
         }
     }
@@ -64,7 +59,7 @@ internal class StyledStringTests {
         assertEquals(
             buildStyledString {
                 append("Hello, ")
-                appendItalic("world")
+                italic { append("world") }
                 append('!')
             },
             ("Hello, " + Italic.SYMBOL + "world" + Italic.SYMBOL + '!').toStyledString()
@@ -74,11 +69,7 @@ internal class StyledStringTests {
     @Test
     fun `GIVEN a string with a link WHEN converting it into a styled string THEN it's styled accordingly`() { // ktlint-disable max-line-length
         assertEquals(
-            buildStyledString {
-                append("Check out ")
-                appendLink(URL("https://pudim.com.br"))
-                append('!')
-            },
+            buildStyledString { append("Check out https://pudim.com.br!") },
             "Check out https://pudim.com.br!".toStyledString()
         )
     }
@@ -87,11 +78,7 @@ internal class StyledStringTests {
     fun `GIVEN a string with multiple links WHEN converting it into a styled string THEN it's styled accordingly`() { // ktlint-disable max-line-length
         assertEquals(
             buildStyledString {
-                append("Check both ")
-                appendLink(URL("https://rambo.codes"))
-                append(" and ")
-                appendLink(URL("https://hackingwithswift.com"))
-                append(" out!")
+                append("Check both https://rambo.codes and https://hackingwithswift.com out!")
             },
             "Check both https://rambo.codes and https://hackingwithswift.com out!".toStyledString()
         )
@@ -101,16 +88,14 @@ internal class StyledStringTests {
     fun `GIVEN a string with mentions delimited differently WHEN normalizing it THEN they're delimited by the mention symbol`() { // ktlint-disable max-line-length
         assertEquals(
             buildStyledString {
-                appendMention(Account.sample.username, Profile.sample.url)
+                mention(Profile.sample.url) { append(Account.sample.username) }
                 append(", ")
-                appendMention("_inside", URL("https://mastodon.social/@_inside"))
+                mention(URL("https://mastodon.social/@_inside")) { append("_inside") }
                 append(", hello!")
             }
                 .toString(),
-            StyledString.normalize(
-                ":${Account.sample.username}, :_inside, hello!",
-                ColonMentionDelimiter
-            )
+            StyledString
+                .normalize(":${Account.sample.username}, :_inside, hello!", ColonMentionDelimiter)
         )
     }
 
@@ -120,7 +105,7 @@ internal class StyledStringTests {
             Mention(indices = 7..(7 + Account.sample.username.length), Profile.sample.url),
             buildStyledString {
                 append("Hello, ")
-                appendMention(Account.sample.username, Profile.sample.url)
+                mention(Profile.sample.url) { append(Account.sample.username) }
                 append("!")
             }
                 .styles
@@ -134,7 +119,7 @@ internal class StyledStringTests {
             "Olá, @jeanbarrossilva!",
             buildStyledString {
                 append("Olá, ")
-                appendMention(Account.sample.username, Profile.sample.url)
+                mention(Profile.sample.url) { append(Account.sample.username) }
                 append("!")
             }
                 .toString()
@@ -146,6 +131,22 @@ internal class StyledStringTests {
         assertContentEquals(
             emptyList(),
             StyledString("안녕하세요, " + Mention.SYMBOL + Account.sample.username + '!')
+                .styles
+        )
+    }
+
+    @Test
+    fun `GIVEN nested styles WHEN appending text with them THEN they've been applied`() {
+        assertContentEquals(
+            listOf(Bold(0..6), Italic(0..6)),
+            buildStyledString {
+                bold {
+                    italic {
+                        append("Hello")
+                    }
+                }
+                append('!')
+            }
                 .styles
         )
     }

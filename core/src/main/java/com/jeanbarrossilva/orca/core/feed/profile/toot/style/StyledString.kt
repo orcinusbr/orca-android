@@ -36,11 +36,10 @@ class StyledString internal constructor(private val text: String, val styles: Li
      * Allows text and [Style]s to be appended and for a [StyledString] to be built.
      *
      * @see append
-     * @see appendBold
-     * @see appendEmail
-     * @see appendHashtag
-     * @see appendLink
-     * @see appendMention
+     * @see bold
+     * @see hashtag
+     * @see italic
+     * @see mention
      * @see build
      **/
     class Builder @PublishedApi internal constructor() {
@@ -51,6 +50,41 @@ class StyledString internal constructor(private val text: String, val styles: Li
 
         /** [Style]s applied to the [text]. **/
         private val styles = mutableListOf<Style>()
+
+        /** [Appender]s that are currently active. **/
+        private val activeAppenders = mutableListOf<Appender>()
+
+        /**
+         * Appends text with the result of [style] applied to it through [append].
+         *
+         * @param delimiter [Style.Delimiter] by which the result of [style] applied to the text
+         * will be delimited.
+         * @param style Creates a [Style] based on the given indices at which it'll be applied.
+         **/
+        inner class Appender internal constructor(
+            private val delimiter: Style.Delimiter,
+            private val style: (indices: IntRange) -> Style
+        ) {
+            /**
+             * Appends the [text], stylizing it with the result of [style] and the [Style]s of
+             * [Appender]s that are currently active.
+             *
+             * @param text [String] to be appended.
+             **/
+            fun append(text: String) {
+                val stylized = delimiter.target(text)
+                require(stylized matches delimiter.regex) { "\"$stylized\" is invalid." }
+                val indices = calculateIndicesFor(stylized)
+                val styles = activeAppenders.map { it.style(indices) }
+                this@Builder.append(stylized)
+                this@Builder.styles.addAll(styles)
+            }
+
+            /** Calculates the indices at which the [text] will be when appended. **/
+            private fun calculateIndicesFor(text: String): IntRange {
+                return this@Builder.text.length..(this@Builder.text.length + text.lastIndex)
+            }
+        }
 
         /**
          * Appends the [text] to that of the [StyledString] being built.
@@ -67,89 +101,53 @@ class StyledString internal constructor(private val text: String, val styles: Li
          * @param text [String] to be appended.
          **/
         fun append(text: String) {
+            val emails = text.stylize(Email.Delimiter.Default, ::Email)
+            val links = text.stylize(Link.Delimiter.Default, ::Link)
             this.text += text
+            styles.addAll(emails + links)
         }
 
         /**
-         * Emboldens the [text].
+         * Emboldens the text to be appended.
          *
-         * @param text [String] to be emboldened and appended.
+         * @param appendix Additionally stylizes the bold text to be appended or solely appends it.
+         * @see Bold
          **/
-        fun appendBold(text: String) {
-            val emboldened = Bold.Delimiter.Default.target(text)
-            val indices = calculateIndicesFor(emboldened)
-            val bold = Bold(indices)
-            this.text += emboldened
-            styles.add(bold)
+        fun bold(appendix: Appender.() -> Unit) {
+            append(Bold.Delimiter.Default, appendix, ::Bold)
         }
 
         /**
-         * Links to the [text].
+         * Turns the text to be appended into a hashtag.
          *
-         * @param text E-mail to be appended and linked to.
+         * @param appendix Additionally stylizes the hashtag to be appended or solely appends it.
+         * @see Hashtag
          **/
-        fun appendEmail(text: String) {
-            require(text matches Email.regex) { "Appended text is not an e-mail." }
-            val emailed = Email.Delimiter.Default.target(text)
-            val indices = calculateIndicesFor(emailed)
-            val email = Email(indices)
-            this.text += emailed
-            styles.add(email)
+        fun hashtag(appendix: Appender.() -> Unit) {
+            append(Hashtag.Delimiter.Default, appendix, ::Hashtag)
         }
 
         /**
-         * Appends the [text].
+         * Italicizes the text to be appended.
          *
-         * @param text [String] to be appended as a [Hashtag].
+         * @param appendix Additionally stylizes the italic text to be appended or solely appends
+         * it.
+         * @see Italic
          **/
-        fun appendHashtag(text: String) {
-            require(text matches Hashtag.targetRegex) { "Appended text is not a subject." }
-            val hashTagged = Hashtag.Delimiter.Default.target(text)
-            val indices = calculateIndicesFor(hashTagged)
-            val hashtag = Hashtag(indices)
-            this.text += hashTagged
-            styles.add(hashtag)
+        fun italic(appendix: Appender.() -> Unit) {
+            append(Italic.Delimiter.Default, appendix, ::Italic)
         }
 
         /**
-         * Appends the italicized [text].
+         * Turns the text to be appended into a mention.
          *
-         * @param text [String] to be appended.
-         **/
-        fun appendItalic(text: String) {
-            val italicized = Italic.Delimiter.Default.target(text)
-            val indices = calculateIndicesFor(italicized)
-            val italic = Italic(indices)
-            this.text += italicized
-            styles.add(italic)
-        }
-
-        /**
-         * Links to the [url].
-         *
-         * @param url [URL] to be appended and linked to.
-         **/
-        fun appendLink(url: URL) {
-            val linked = Link.Delimiter.Default.target("$url")
-            val indices = calculateIndicesFor(linked)
-            val link = Link(indices)
-            this.text += linked
-            styles.add(link)
-        }
-
-        /**
-         * Mentions a [username] whose owner can be found by the [url].
-         *
-         * @param username Username to mention.
-         * @param url [URL] that leads to the [username]'s owner.
+         * @param appendix Additionally stylizes the mention to be appended or solely appends it.
          * @see Mention
          **/
-        fun appendMention(username: String, url: URL) {
-            val mentioned = Mention.Delimiter.Default.target(username)
-            val indices = calculateIndicesFor(mentioned)
-            val mention = Mention(indices, url)
-            this.text += mentioned
-            styles.add(mention)
+        fun mention(url: URL, appendix: Appender.() -> Unit) {
+            append(Mention.Delimiter.Default, appendix) {
+                Mention(it, url)
+            }
         }
 
         /** Builds a [StyledString] with the provided styles. **/
@@ -159,9 +157,25 @@ class StyledString internal constructor(private val text: String, val styles: Li
             return StyledString(text, mentionsAsList)
         }
 
-        /** Calculates the indices at which the [text] will be when appended. **/
-        private fun calculateIndicesFor(text: String): IntRange {
-            return this.text.length..(this.text.length + text.lastIndex)
+        /**
+         * Creates an [Appender] and runs [appendix] on it, making it active for as long as it's
+         * being used.
+         *
+         * @param delimiter [Style.Delimiter] by which the result of [style] applied to the text
+         * will be delimited.
+         * @param appendix Additionally stylizes the text to be appended or solely appends it.
+         * @param style Creates the [Style] to be applied to the appended text at the specified
+         * indices.
+         **/
+        private fun append(
+            delimiter: Style.Delimiter,
+            appendix: Appender.() -> Unit,
+            style: (IntRange) -> Style
+        ) {
+            val appender = Appender(delimiter, style)
+            activeAppenders.add(appender)
+            appender.appendix()
+            activeAppenders.remove(appender)
         }
     }
 
@@ -205,16 +219,14 @@ class StyledString internal constructor(private val text: String, val styles: Li
          * @param delimiter [Style.Delimiter] by which the [String]'s [Style] is delimited.
          **/
         internal fun normalize(string: String, delimiter: Style.Delimiter): String {
-            return buildString {
-                append(string)
-                delimiter.delimit(string).forEach {
-                    replace(
-                        it.range.first,
-                        it.range.last.inc(),
-                        delimiter.root.target(delimiter.root.getTarget(it.value))
-                    )
-                }
+            var normalized = string
+            delimiter.delimit(normalized).forEach {
+                normalized = normalized.replaceRange(
+                    it.range.first..it.range.last,
+                    delimiter.root.target(delimiter.getTarget(it.value))
+                )
             }
+            return normalized
         }
     }
 }

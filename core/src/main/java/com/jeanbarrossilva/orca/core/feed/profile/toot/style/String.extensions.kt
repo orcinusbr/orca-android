@@ -63,7 +63,7 @@ fun String.toStyledString(
  * @param delimiter [Style.Delimiter] by which the [Style]s to be obtained are delimited.
  * @param style Returns the respective [Style] applied to the given [indices] of this [String].
  **/
-private fun <T : Style> String.stylize(
+internal fun <T : Style> String.stylize(
     delimiter: Style.Delimiter?,
     style: (indices: IntRange) -> T?
 ): List<T> {

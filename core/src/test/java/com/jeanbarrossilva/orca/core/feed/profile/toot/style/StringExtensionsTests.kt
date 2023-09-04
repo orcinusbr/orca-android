@@ -16,7 +16,7 @@ internal class StringExtensionsTests {
         assertEquals(
             buildStyledString {
                 append("Hello, ")
-                appendMention(Account.sample.username, Profile.sample.url)
+                mention(Profile.sample.url) { append(Account.sample.username) }
                 append('!')
             },
             "Hello, @${Account.sample.username}!".toStyledString { Profile.sample.url }
@@ -28,7 +28,7 @@ internal class StringExtensionsTests {
         assertEquals(
             buildStyledString {
                 append("Hello, " + Mention.SYMBOL)
-                appendMention(Account.sample.username, Profile.sample.url)
+                mention(Profile.sample.url) { append(Account.sample.username) }
                 append('!')
             },
             ("Hello, " + Mention.SYMBOL + Mention.SYMBOL + Account.sample.username + '!')
@@ -41,9 +41,9 @@ internal class StringExtensionsTests {
         assertEquals(
             buildStyledString {
                 append("Hello, ")
-                appendMention(Account.sample.username, Profile.sample.url)
+                mention(Profile.sample.url) { append(Account.sample.username) }
                 append(" and ")
-                appendMention("christianselig", URL("https://mastodon.social/@christianselig"))
+                mention(URL("https://mastodon.social/@christianselig")) { append("christianselig") }
                 append('!')
             },
             "Hello, @${Account.sample.username} and @christianselig!".toStyledString {
