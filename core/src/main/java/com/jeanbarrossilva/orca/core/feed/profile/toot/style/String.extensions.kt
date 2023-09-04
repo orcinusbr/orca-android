@@ -12,17 +12,23 @@ import java.net.URL
  * Converts this [String] into a [StyledString].
  *
  * @param boldDelimiter [Bold.Delimiter] by which this [String]'s emboldened portions are delimited.
- * @param hashtagDelimiter [Hashtag.Delimiter] by which this [String]'s [Hashtag]s are delimited.
+ * @param emailDelimiter [Email.Delimiter] by which this [String]'s e-mails are delimited.
+ * @param hashtagDelimiter [Hashtag.Delimiter] by which this [String]'s hashtags are delimited.
  * @param italicDelimiter [Italic.Delimiter] by which this [String]'s italicized portions are
  * delimited.
- * @param linkDelimiter [Link.Delimiter] by which this [String]'s [Link]s are delimited.
- * @param mentionDelimiter [Mention.Delimiter] by which this [String]'s [Mention]s are delimited.
+ * @param linkDelimiter [Link.Delimiter] by which this [String]'s links are delimited.
+ * @param mentionDelimiter [Mention.Delimiter] by which this [String]'s mentions are delimited.
  * @param mentioning Given its start index, maps each mention to a username to a [URL].
  * @see Bold
+ * @see Email
+ * @see Hashtag
  * @see Italic
+ * @see Link
+ * @see Mention
  **/
 fun String.toStyledString(
     boldDelimiter: Bold.Delimiter? = Bold.Delimiter.Default,
+    emailDelimiter: Email.Delimiter = Email.Delimiter.Default,
     hashtagDelimiter: Hashtag.Delimiter? = Hashtag.Delimiter.Default,
     italicDelimiter: Italic.Delimiter? = Italic.Delimiter.Default,
     linkDelimiter: Link.Delimiter? = Link.Delimiter.Default,
@@ -32,7 +38,7 @@ fun String.toStyledString(
     val text = StyledString.normalize(
         this,
         boldDelimiter,
-        Email.Delimiter.Default,
+        emailDelimiter,
         hashtagDelimiter,
         italicDelimiter,
         linkDelimiter,

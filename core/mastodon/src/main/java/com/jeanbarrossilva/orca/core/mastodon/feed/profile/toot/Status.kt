@@ -29,8 +29,8 @@ data class Status internal constructor(
         val mentionDelimiter = MastodonMentionDelimiter(this)
         val encodedContent = content.replace("<p>", "").replace("</p>", "").toStyledString(
             hashtagDelimiter = MastodonHashtagDelimiter(this),
-            mentionDelimiter = mentionDelimiter,
-            linkDelimiter = MastodonLinkDelimiter
+            linkDelimiter = MastodonLinkDelimiter,
+            mentionDelimiter = mentionDelimiter
         ) {
             mentionDelimiter.getNextURL()
         }
