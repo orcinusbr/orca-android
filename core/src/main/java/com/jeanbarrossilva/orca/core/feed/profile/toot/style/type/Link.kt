@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot.style.type
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.Style
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Bold.Delimiter.Default
 import java.net.URL
 
 /** [Style] for [URL]s. **/
@@ -11,7 +12,7 @@ data class Link(override val indices: IntRange) : Style() {
          * [Delimiter] that's the [parent] of all [Child] instances and considers [Link]s parts of a
          * [String] conforming to a [URL] format.
          **/
-        class Parent private constructor() : Delimiter() {
+        class Default private constructor() : Delimiter() {
             override val parent = null
 
             override fun getRegex(): Regex {
@@ -27,14 +28,14 @@ data class Link(override val indices: IntRange) : Style() {
             }
 
             companion object {
-                /** Single instance of a [Parent]. **/
-                internal val instance = Parent()
+                /** Single [Default] instance. **/
+                internal val instance = Default()
             }
         }
 
-        /** [Delimiter] that's a child of [Parent]. **/
+        /** [Delimiter] that's a child of [Default]. **/
         abstract class Child : Delimiter() {
-            final override val parent = Parent.instance
+            final override val parent = Default.instance
         }
     }
 

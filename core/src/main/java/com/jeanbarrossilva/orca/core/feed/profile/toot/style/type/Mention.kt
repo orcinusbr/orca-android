@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot.style.type
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.Style
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Bold.Delimiter.Default
 import java.net.URL
 
 /**
@@ -17,7 +18,7 @@ data class Mention(override val indices: IntRange, val url: URL) : Style() {
          * parts of a [String] starting with a [Mention.SYMBOL] and determines its end by the absence of
          * alphanumeric or some other special characters.
          **/
-        class Parent private constructor() : Delimiter() {
+        class Default private constructor() : Delimiter() {
             override val parent = null
 
             override fun getRegex(): Regex {
@@ -33,14 +34,14 @@ data class Mention(override val indices: IntRange, val url: URL) : Style() {
             }
 
             companion object {
-                /** Single instance of a [Parent]. **/
-                internal val instance = Parent()
+                /** Single [Default] instance. **/
+                internal val instance = Default()
             }
         }
 
-        /** [Delimiter] that's a child of [Parent]. **/
+        /** [Delimiter] that's a child of [Default]. **/
         abstract class Child : Delimiter() {
-            final override val parent = Parent.instance
+            final override val parent = Default.instance
         }
     }
 

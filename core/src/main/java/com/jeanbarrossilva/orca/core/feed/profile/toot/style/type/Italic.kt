@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot.style.type
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.Style
+import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Bold.Delimiter.Default
 
 /** [Style] that slightly slants the target [String] to the right. **/
 data class Italic(override val indices: IntRange) : Style() {
@@ -10,7 +11,7 @@ data class Italic(override val indices: IntRange) : Style() {
          * [Delimiter] that's the [parent] of all [Delimiter.Child] instances and considers [Italic]
          * parts of a [String] surrounded by a [SYMBOL].
          **/
-        class Parent private constructor() : Delimiter() {
+        class Default private constructor() : Delimiter() {
             /** [Delimiter] to which overridden functionality will be delegated. **/
             private val delegate = surroundedBy(SYMBOL)
 
@@ -29,14 +30,14 @@ data class Italic(override val indices: IntRange) : Style() {
             }
 
             companion object {
-                /** Single instance of a [Parent]. **/
-                internal val instance = Parent()
+                /** Single [Default] instance. **/
+                internal val instance = Default()
             }
         }
 
-        /** [Delimiter] that's a child of [Parent]. **/
+        /** [Delimiter] that's a child of [Default]. **/
         abstract class Child : Delimiter() {
-            final override val parent = Parent.instance
+            final override val parent = Default.instance
         }
     }
 

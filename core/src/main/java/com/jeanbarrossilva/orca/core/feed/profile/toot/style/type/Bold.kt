@@ -10,7 +10,7 @@ data class Bold(override val indices: IntRange) : Style() {
          * [Delimiter] that's the [parent] of all [Delimiter.Child] instances and considers [Bold]
          * parts of a [String] surrounded by a [Bold.SYMBOL].
          **/
-        class Parent private constructor() : Delimiter() {
+        class Default private constructor() : Delimiter() {
             /** [Delimiter] to which overridden functionality will be delegated. **/
             private val delegate = surroundedBy(SYMBOL)
 
@@ -29,14 +29,14 @@ data class Bold(override val indices: IntRange) : Style() {
             }
 
             companion object {
-                /** Single instance of a [Parent]. **/
-                internal val instance = Parent()
+                /** Single [Default] instance. **/
+                internal val instance = Default()
             }
         }
 
-        /** [Delimiter] that's a child of [Parent]. **/
+        /** [Delimiter] that's a child of [Default]. **/
         abstract class Child : Delimiter() {
-            final override val parent = Parent.instance
+            final override val parent = Default.instance
         }
     }
 

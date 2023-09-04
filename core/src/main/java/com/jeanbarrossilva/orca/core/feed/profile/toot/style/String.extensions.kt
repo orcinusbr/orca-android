@@ -22,28 +22,28 @@ import java.net.URL
  * @see Italic
  **/
 fun String.toStyledString(
-    boldDelimiter: Bold.Delimiter? = Bold.Delimiter.Parent.instance,
-    hashtagDelimiter: Hashtag.Delimiter? = Hashtag.Delimiter.Parent.instance,
-    italicDelimiter: Italic.Delimiter? = Italic.Delimiter.Parent.instance,
-    linkDelimiter: Link.Delimiter? = Link.Delimiter.Parent.instance,
-    mentionDelimiter: Mention.Delimiter? = Mention.Delimiter.Parent.instance,
+    boldDelimiter: Bold.Delimiter? = Bold.Delimiter.Default.instance,
+    hashtagDelimiter: Hashtag.Delimiter? = Hashtag.Delimiter.Default.instance,
+    italicDelimiter: Italic.Delimiter? = Italic.Delimiter.Default.instance,
+    linkDelimiter: Link.Delimiter? = Link.Delimiter.Default.instance,
+    mentionDelimiter: Mention.Delimiter? = Mention.Delimiter.Default.instance,
     mentioning: (startIndex: Int) -> URL? = { null }
 ): StyledString {
     val text = StyledString.normalize(
         this,
         boldDelimiter,
-        Email.Delimiter.Parent.instance,
+        Email.Delimiter.Default.instance,
         hashtagDelimiter,
         italicDelimiter,
         linkDelimiter,
         mentionDelimiter
     )
-    val emboldened = text.stylize(Bold.Delimiter.Parent.instance, ::Bold)
-    val emails = text.stylize(Email.Delimiter.Parent.instance, ::Email)
-    val hashtags = text.stylize(Hashtag.Delimiter.Parent.instance, ::Hashtag)
-    val italicized = text.stylize(Italic.Delimiter.Parent.instance, ::Italic)
-    val links = text.stylize(Link.Delimiter.Parent.instance, ::Link)
-    val mentions = text.stylize(Mention.Delimiter.Parent.instance) {
+    val emboldened = text.stylize(Bold.Delimiter.Default.instance, ::Bold)
+    val emails = text.stylize(Email.Delimiter.Default.instance, ::Email)
+    val hashtags = text.stylize(Hashtag.Delimiter.Default.instance, ::Hashtag)
+    val italicized = text.stylize(Italic.Delimiter.Default.instance, ::Italic)
+    val links = text.stylize(Link.Delimiter.Default.instance, ::Link)
+    val mentions = text.stylize(Mention.Delimiter.Default.instance) {
         mentioning(it.first)?.let { url ->
             Mention(indices = it, url)
         }

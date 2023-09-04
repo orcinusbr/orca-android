@@ -76,7 +76,7 @@ class StyledString internal constructor(private val text: String, val styles: Li
          * @param text [String] to be emboldened and appended.
          **/
         fun appendBold(text: String) {
-            val emboldened = Bold.Delimiter.Parent.instance.target(text)
+            val emboldened = Bold.Delimiter.Default.instance.target(text)
             val indices = calculateIndicesFor(emboldened)
             val bold = Bold(indices)
             this.text += emboldened
@@ -90,7 +90,7 @@ class StyledString internal constructor(private val text: String, val styles: Li
          **/
         fun appendEmail(text: String) {
             require(text matches Email.regex) { "Appended text is not an e-mail." }
-            val emailed = Email.Delimiter.Parent.instance.target(text)
+            val emailed = Email.Delimiter.Default.instance.target(text)
             val indices = calculateIndicesFor(emailed)
             val email = Email(indices)
             this.text += emailed
@@ -104,7 +104,7 @@ class StyledString internal constructor(private val text: String, val styles: Li
          **/
         fun appendHashtag(text: String) {
             require(text matches Hashtag.targetRegex) { "Appended text is not a subject." }
-            val hashTagged = Hashtag.Delimiter.Parent.instance.target(text)
+            val hashTagged = Hashtag.Delimiter.Default.instance.target(text)
             val indices = calculateIndicesFor(hashTagged)
             val hashtag = Hashtag(indices)
             this.text += hashTagged
@@ -117,7 +117,7 @@ class StyledString internal constructor(private val text: String, val styles: Li
          * @param text [String] to be appended.
          **/
         fun appendItalic(text: String) {
-            val italicized = Italic.Delimiter.Parent.instance.target(text)
+            val italicized = Italic.Delimiter.Default.instance.target(text)
             val indices = calculateIndicesFor(italicized)
             val italic = Italic(indices)
             this.text += italicized
@@ -130,7 +130,7 @@ class StyledString internal constructor(private val text: String, val styles: Li
          * @param url [URL] to be appended and linked to.
          **/
         fun appendLink(url: URL) {
-            val linked = Link.Delimiter.Parent.instance.target("$url")
+            val linked = Link.Delimiter.Default.instance.target("$url")
             val indices = calculateIndicesFor(linked)
             val link = Link(indices)
             this.text += linked
@@ -145,7 +145,7 @@ class StyledString internal constructor(private val text: String, val styles: Li
          * @see Mention
          **/
         fun appendMention(username: String, url: URL) {
-            val mentioned = Mention.Delimiter.Parent.instance.target(username)
+            val mentioned = Mention.Delimiter.Default.instance.target(username)
             val indices = calculateIndicesFor(mentioned)
             val mention = Mention(indices, url)
             this.text += mentioned
