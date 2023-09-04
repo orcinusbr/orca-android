@@ -55,7 +55,7 @@ import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
-import com.jeanbarrossilva.orca.platform.ui.html.HtmlAnnotatedString
+import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
 
 internal const val COMPOSER_FIELD = "composer-field"
 
@@ -238,7 +238,7 @@ private fun EmptyWithToolbarComposerPreview() {
 private fun PopulatedWithoutToolbarComposerPreview() {
     OrcaTheme {
         Composer(
-            TextFieldValue(HtmlAnnotatedString(Toot.sample.content)),
+            TextFieldValue(Toot.sample.content.toAnnotatedString()),
             isInitiallyFocused = false
         )
     }
@@ -250,7 +250,7 @@ private fun PopulatedWithoutToolbarComposerPreview() {
 private fun PopulatedWithToolbarComposerPreview() {
     OrcaTheme {
         Composer(
-            TextFieldValue(HtmlAnnotatedString(Toot.sample.content)),
+            TextFieldValue(Toot.sample.content.toAnnotatedString()),
             isInitiallyFocused = true
         )
     }

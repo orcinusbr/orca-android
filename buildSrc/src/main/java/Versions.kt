@@ -16,6 +16,7 @@ object Versions {
     const val FRAGMENT = "1.6.0"
     const val GRADLE = "8.1.1"
     const val JUNIT = "4.13.2"
+    const val JSOUP = "1.16.1"
     const val KOIN = "3.4.1"
     const val KOIN_ANDROID = "3.4.2"
     const val KOTLIN = "1.8.21"

@@ -17,6 +17,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class MastodonAccount(
     val id: String,
+    val username: String,
     val acct: String,
     val url: String,
     val displayName: String,
@@ -33,16 +34,16 @@ internal data class MastodonAccount(
         return Author(id, avatarURL, displayName, account, profileURL)
     }
 
+    fun toAccount(): Account {
+        return Account.of(acct, fallbackInstance = "mastodon.social")
+    }
+
     suspend fun toProfile(tootPaginateSourceProvider: ProfileTootPaginateSource.Provider): Profile {
         return if (isOwner()) {
             toEditableProfile(tootPaginateSourceProvider)
         } else {
             toFollowableProfile(tootPaginateSourceProvider)
         }
-    }
-
-    private fun toAccount(): Account {
-        return Account.of(acct, "mastodon.social")
     }
 
     private suspend fun isOwner(): Boolean {

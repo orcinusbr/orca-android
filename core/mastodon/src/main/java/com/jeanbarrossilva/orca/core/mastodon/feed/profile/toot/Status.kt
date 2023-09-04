@@ -1,6 +1,8 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot
 
+import android.text.Html
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.account.MastodonAccount
+import com.jeanbarrossilva.orca.platform.ui.core.style.toStyledString
 import java.net.URL
 import java.time.ZonedDateTime
 import kotlinx.serialization.Serializable
@@ -18,8 +20,12 @@ data class Status internal constructor(
     @Suppress("SpellCheckingInspection") internal val favourited: Boolean?,
     internal val reblogged: Boolean?
 ) {
+
     internal fun toToot(): MastodonToot {
-        val author = account.toAuthor()
+        val author = this.account.toAuthor()
+        val paragraphLessContent = content.replace("<p>", "").replace("</p>", "")
+        val content =
+            Html.fromHtml(paragraphLessContent, Html.FROM_HTML_MODE_COMPACT).toStyledString()
         val publicationDateTime = ZonedDateTime.parse(createdAt)
         val url = URL(url)
         return MastodonToot(

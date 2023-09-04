@@ -60,7 +60,9 @@ dependencies {
     implementation(project(":platform:ui"))
     implementation(Dependencies.BROWSER)
     implementation(Dependencies.COMPOSE_MATERIAL_ICONS_EXTENDED)
+    implementation(Dependencies.JSOUP)
     implementation(Dependencies.KOIN_ANDROID)
+    implementation(Dependencies.KOTLINX_HTML)
     implementation(Dependencies.KTOR_CIO)
     implementation(Dependencies.KTOR_CONTENT_NEGOTIATION)
     implementation(Dependencies.KTOR_CORE)
@@ -74,5 +76,6 @@ dependencies {
         because("Ktor references \"StaticLoggerBinder\" and it is missing on minification.")
     }
 
+    testImplementation(project(":core:sample"))
     testImplementation(Dependencies.JUNIT)
 }

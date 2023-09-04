@@ -2,31 +2,38 @@ package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonToot
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.style.StyleEntityDao
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.style.toMentionEntity
 import com.jeanbarrossilva.orca.platform.cache.Cache
 import com.jeanbarrossilva.orca.platform.cache.Storage
 
 class MastodonTootStorage(
     private val profileCache: Cache<Profile>,
-    private val entityDao: MastodonTootEntityDao
+    private val tootEntityDao: MastodonTootEntityDao,
+    private val styleEntityDao: StyleEntityDao
 ) : Storage<MastodonToot>() {
     override suspend fun onStore(key: String, value: MastodonToot) {
-        val entity = MastodonTootEntity.from(value)
-        entityDao.insert(entity)
+        val tootEntity = MastodonTootEntity.from(value)
+        val styleEntities = value.content.styles.map { it.toMentionEntity(value.id) }
+        tootEntityDao.insert(tootEntity)
+        styleEntityDao.insert(styleEntities)
     }
 
     override suspend fun onContains(key: String): Boolean {
-        return entityDao.count(key) > 0
+        return tootEntityDao.count(key) > 0
     }
 
     override suspend fun onGet(key: String): MastodonToot {
-        return entityDao.selectByID(key).toMastodonToot(profileCache)
+        return tootEntityDao.selectByID(key).toMastodonToot(profileCache, tootEntityDao)
     }
 
     override suspend fun onRemove(key: String) {
-        entityDao.delete(key)
+        val mentionEntities = styleEntityDao.selectByTootID(key)
+        styleEntityDao.remove(mentionEntities)
+        tootEntityDao.delete(key)
     }
 
     override suspend fun onClear() {
-        entityDao.deleteAll()
+        tootEntityDao.deleteAll()
     }
 }
