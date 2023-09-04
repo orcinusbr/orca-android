@@ -11,7 +11,7 @@ data class Link(override val indices: IntRange) : Style() {
          * [Delimiter] that's the [parent] of all [Variant]s and considers [Link]s parts of a
          * [String] conforming to a [URL] format.
          **/
-        class Default private constructor() : Delimiter() {
+        internal object Default : Delimiter() {
             override val parent = null
 
             override fun getRegex(): Regex {
@@ -25,16 +25,11 @@ data class Link(override val indices: IntRange) : Style() {
             override fun onTarget(target: String): String {
                 return target
             }
-
-            companion object {
-                /** Single [Default] instance. **/
-                internal val instance = Default()
-            }
         }
 
         /** [Delimiter] that's a child of [Default]. **/
         abstract class Variant : Delimiter() {
-            final override val parent = Default.instance
+            final override val parent = Default
         }
     }
 

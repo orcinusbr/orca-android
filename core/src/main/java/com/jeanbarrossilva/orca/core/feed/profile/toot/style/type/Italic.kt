@@ -10,7 +10,7 @@ data class Italic(override val indices: IntRange) : Style() {
          * [Delimiter] that's the [parent] of all [Delimiter.Variant]s and considers [Italic] parts
          * of a [String] surrounded by a [SYMBOL].
          **/
-        class Default private constructor() : Delimiter() {
+        internal object Default : Delimiter() {
             /** [Delimiter] to which overridden functionality will be delegated. **/
             private val delegate = surroundedBy(SYMBOL)
 
@@ -27,16 +27,11 @@ data class Italic(override val indices: IntRange) : Style() {
             override fun onTarget(target: String): String {
                 return delegate.target(target)
             }
-
-            companion object {
-                /** Single [Default] instance. **/
-                internal val instance = Default()
-            }
         }
 
         /** [Delimiter] that's a child of [Default]. **/
         abstract class Variant : Delimiter() {
-            final override val parent = Default.instance
+            final override val parent = Default
         }
     }
 

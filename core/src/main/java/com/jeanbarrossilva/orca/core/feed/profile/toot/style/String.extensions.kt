@@ -22,28 +22,28 @@ import java.net.URL
  * @see Italic
  **/
 fun String.toStyledString(
-    boldDelimiter: Bold.Delimiter? = Bold.Delimiter.Default.instance,
-    hashtagDelimiter: Hashtag.Delimiter? = Hashtag.Delimiter.Default.instance,
-    italicDelimiter: Italic.Delimiter? = Italic.Delimiter.Default.instance,
-    linkDelimiter: Link.Delimiter? = Link.Delimiter.Default.instance,
-    mentionDelimiter: Mention.Delimiter? = Mention.Delimiter.Default.instance,
+    boldDelimiter: Bold.Delimiter? = Bold.Delimiter.Default,
+    hashtagDelimiter: Hashtag.Delimiter? = Hashtag.Delimiter.Default,
+    italicDelimiter: Italic.Delimiter? = Italic.Delimiter.Default,
+    linkDelimiter: Link.Delimiter? = Link.Delimiter.Default,
+    mentionDelimiter: Mention.Delimiter? = Mention.Delimiter.Default,
     mentioning: (startIndex: Int) -> URL? = { null }
 ): StyledString {
     val text = StyledString.normalize(
         this,
         boldDelimiter,
-        Email.Delimiter.Default.instance,
+        Email.Delimiter.Default,
         hashtagDelimiter,
         italicDelimiter,
         linkDelimiter,
         mentionDelimiter
     )
-    val emboldened = text.stylize(Bold.Delimiter.Default.instance, ::Bold)
-    val emails = text.stylize(Email.Delimiter.Default.instance, ::Email)
-    val hashtags = text.stylize(Hashtag.Delimiter.Default.instance, ::Hashtag)
-    val italicized = text.stylize(Italic.Delimiter.Default.instance, ::Italic)
-    val links = text.stylize(Link.Delimiter.Default.instance, ::Link)
-    val mentions = text.stylize(Mention.Delimiter.Default.instance) {
+    val emboldened = text.stylize(Bold.Delimiter.Default, ::Bold)
+    val emails = text.stylize(Email.Delimiter.Default, ::Email)
+    val hashtags = text.stylize(Hashtag.Delimiter.Default, ::Hashtag)
+    val italicized = text.stylize(Italic.Delimiter.Default, ::Italic)
+    val links = text.stylize(Link.Delimiter.Default, ::Link)
+    val mentions = text.stylize(Mention.Delimiter.Default) {
         mentioning(it.first)?.let { url ->
             Mention(indices = it, url)
         }

@@ -17,7 +17,7 @@ data class Mention(override val indices: IntRange, val url: URL) : Style() {
          * [String] starting with a [Mention.SYMBOL] and determines its end by the absence of
          * alphanumeric or some other special characters.
          **/
-        class Default private constructor() : Delimiter() {
+        internal object Default : Delimiter() {
             override val parent = null
 
             override fun getRegex(): Regex {
@@ -31,16 +31,11 @@ data class Mention(override val indices: IntRange, val url: URL) : Style() {
             override fun onTarget(target: String): String {
                 return SYMBOL + target
             }
-
-            companion object {
-                /** Single [Default] instance. **/
-                internal val instance = Default()
-            }
         }
 
         /** [Delimiter] that's a child of [Default]. **/
         abstract class Variant : Delimiter() {
-            final override val parent = Default.instance
+            final override val parent = Default
         }
     }
 

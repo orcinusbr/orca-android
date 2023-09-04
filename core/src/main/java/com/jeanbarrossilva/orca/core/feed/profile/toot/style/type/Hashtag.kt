@@ -11,7 +11,7 @@ data class Hashtag(override val indices: IntRange) : Style() {
          * [String] starting with a [SYMBOL] and determines its end by the absence of alphanumeric
          * or some other special characters.
          **/
-        class Default private constructor() : Delimiter() {
+        internal object Default : Delimiter() {
             override val parent = null
 
             override fun getRegex(): Regex {
@@ -25,16 +25,11 @@ data class Hashtag(override val indices: IntRange) : Style() {
             override fun onTarget(target: String): String {
                 return SYMBOL + target
             }
-
-            companion object {
-                /** Single [Default] instance. **/
-                internal val instance = Default()
-            }
         }
 
         /** [Delimiter] that's a child of [Default]. **/
         abstract class Variant : Delimiter() {
-            final override val parent = Default.instance
+            final override val parent = Default
         }
     }
 
