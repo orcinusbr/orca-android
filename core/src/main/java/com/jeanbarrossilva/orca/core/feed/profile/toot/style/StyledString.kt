@@ -103,10 +103,7 @@ class StyledString internal constructor(private val text: String, val styles: Li
          * Appends this [String] to the [text][StyledString.text] of the [StyledString] being built.
          **/
         operator fun String.unaryPlus() {
-            val emails = text.stylize(Email.Delimiter.Default, ::Email)
-            val links = text.stylize(Link.Delimiter.Default, ::Link)
             text += this
-            styles.addAll(emails + links)
         }
 
         /**
@@ -155,8 +152,10 @@ class StyledString internal constructor(private val text: String, val styles: Li
         /** Builds a [StyledString] with the provided styles. **/
         @PublishedApi
         internal fun build(): StyledString {
-            val mentionsAsList = styles.toList()
-            return StyledString(text, mentionsAsList)
+            val emails = text.stylize(Email.Delimiter.Default, ::Email)
+            val links = text.stylize(Link.Delimiter.Default, ::Link)
+            val stylesAsList = styles.apply { addAll(emails + links) }.toList()
+            return StyledString(text, stylesAsList)
         }
 
         /**
