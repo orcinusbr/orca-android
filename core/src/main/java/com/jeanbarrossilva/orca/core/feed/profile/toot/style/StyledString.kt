@@ -211,7 +211,7 @@ class StyledString internal constructor(private val text: String, val styles: Li
                     replace(
                         it.range.first,
                         it.range.last.inc(),
-                        (delimiter.parent ?: delimiter).target(delimiter.getTarget(it.value))
+                        delimiter.root.target(delimiter.root.getTarget(it.value))
                     )
                 }
             }

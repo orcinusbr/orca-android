@@ -8,12 +8,15 @@ abstract class Style : Serializable {
     abstract val indices: IntRange
 
     /**
-     * Describes how a portion of a whole [String] is stylized is applied and identifies the target it's
-     * been applied onto.
+     * Describes how a portion of a whole [String] is stylized is applied and identifies the target
+     * it's been applied onto.
      **/
     abstract class Delimiter {
         /** Previously applied delimitations to [String]s. **/
         private val delimitations = HashMap<String, List<MatchResult>>()
+
+        /** Root [Delimiter] in the tree. **/
+        internal val root: Delimiter by lazy { parent?.root ?: this }
 
         /** [Delimiter] that's this one's parent. **/
         internal abstract val parent: Delimiter?
