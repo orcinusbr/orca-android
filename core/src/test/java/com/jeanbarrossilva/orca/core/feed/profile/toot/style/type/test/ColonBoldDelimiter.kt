@@ -2,7 +2,7 @@ package com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.test
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Bold
 
-internal object ColonBoldDelimiter : Bold.Delimiter.Child() {
+internal object ColonBoldDelimiter : Bold.Delimiter.Variant() {
     private val delegate = surroundedBy(':')
 
     override fun getRegex(): Regex {

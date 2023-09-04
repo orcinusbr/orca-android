@@ -9,7 +9,7 @@ import kotlinx.html.span
 import kotlinx.html.stream.createHTML
 import org.jsoup.Jsoup
 
-internal class MastodonHashtagDelimiter(status: Status) : Hashtag.Delimiter.Child() {
+internal class MastodonHashtagDelimiter(status: Status) : Hashtag.Delimiter.Variant() {
     private val urlFinder = URLFinder(status.content)
 
     public override fun getRegex(): Regex {

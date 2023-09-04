@@ -1,7 +1,6 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot.style.type
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.Style
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Bold.Delimiter.Default
 import java.net.URL
 
 /**
@@ -14,8 +13,8 @@ data class Mention(override val indices: IntRange, val url: URL) : Style() {
     /** [Style.Delimiter] for [Mention]s. **/
     sealed class Delimiter : Style.Delimiter() {
         /**
-         * [Delimiter] that's the [parent] of all [Child] instances and considers [Mention]s
-         * parts of a [String] starting with a [Mention.SYMBOL] and determines its end by the absence of
+         * [Delimiter] that's the [parent] of all [Variant]s and considers [Mention]s parts of a
+         * [String] starting with a [Mention.SYMBOL] and determines its end by the absence of
          * alphanumeric or some other special characters.
          **/
         class Default private constructor() : Delimiter() {
@@ -40,7 +39,7 @@ data class Mention(override val indices: IntRange, val url: URL) : Style() {
         }
 
         /** [Delimiter] that's a child of [Default]. **/
-        abstract class Child : Delimiter() {
+        abstract class Variant : Delimiter() {
             final override val parent = Default.instance
         }
     }

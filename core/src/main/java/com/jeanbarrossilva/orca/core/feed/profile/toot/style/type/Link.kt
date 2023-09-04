@@ -1,7 +1,6 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot.style.type
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.Style
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Bold.Delimiter.Default
 import java.net.URL
 
 /** [Style] for [URL]s. **/
@@ -9,7 +8,7 @@ data class Link(override val indices: IntRange) : Style() {
     /** [Style.Delimiter] for [Link]s. **/
     sealed class Delimiter : Style.Delimiter() {
         /**
-         * [Delimiter] that's the [parent] of all [Child] instances and considers [Link]s parts of a
+         * [Delimiter] that's the [parent] of all [Variant]s and considers [Link]s parts of a
          * [String] conforming to a [URL] format.
          **/
         class Default private constructor() : Delimiter() {
@@ -34,7 +33,7 @@ data class Link(override val indices: IntRange) : Style() {
         }
 
         /** [Delimiter] that's a child of [Default]. **/
-        abstract class Child : Delimiter() {
+        abstract class Variant : Delimiter() {
             final override val parent = Default.instance
         }
     }

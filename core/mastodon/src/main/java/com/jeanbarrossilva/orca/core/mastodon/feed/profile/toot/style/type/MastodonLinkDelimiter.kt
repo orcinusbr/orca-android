@@ -8,7 +8,7 @@ import kotlinx.html.span
 import kotlinx.html.stream.createHTML
 import org.jsoup.Jsoup
 
-internal object MastodonLinkDelimiter : Link.Delimiter.Child() {
+internal object MastodonLinkDelimiter : Link.Delimiter.Variant() {
     private const val VISIBLE_UNPROTOCOLED_URL_THRESHOLD = 30
 
     public override fun getRegex(): Regex {

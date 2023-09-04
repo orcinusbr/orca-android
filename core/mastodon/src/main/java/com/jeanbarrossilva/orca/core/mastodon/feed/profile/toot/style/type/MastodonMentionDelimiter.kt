@@ -10,7 +10,7 @@ import kotlinx.html.span
 import kotlinx.html.stream.createHTML
 import org.jsoup.Jsoup
 
-internal class MastodonMentionDelimiter(status: Status) : Mention.Delimiter.Child() {
+internal class MastodonMentionDelimiter(status: Status) : Mention.Delimiter.Variant() {
     private val urlFinder = URLFinder(status.content)
 
     public override fun getRegex(): Regex {

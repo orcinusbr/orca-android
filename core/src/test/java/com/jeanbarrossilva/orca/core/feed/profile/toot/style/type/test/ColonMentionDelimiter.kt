@@ -2,7 +2,7 @@ package com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.test
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Mention
 
-internal object ColonMentionDelimiter : Mention.Delimiter.Child() {
+internal object ColonMentionDelimiter : Mention.Delimiter.Variant() {
     override fun getRegex(): Regex {
         return Regex(":[a-zA-Z0-9._%+-]+")
     }
