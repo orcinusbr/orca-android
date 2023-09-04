@@ -55,7 +55,7 @@ import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
-import com.jeanbarrossilva.orca.platform.ui.core.toAnnotatedString
+import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
 
 internal const val COMPOSER_FIELD = "composer-field"
 

@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.ui.core
+package com.jeanbarrossilva.orca.platform.ui.core.style
 
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight

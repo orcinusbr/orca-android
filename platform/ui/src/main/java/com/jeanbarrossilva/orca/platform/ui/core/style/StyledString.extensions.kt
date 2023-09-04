@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.ui.core
+package com.jeanbarrossilva.orca.platform.ui.core.style
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.AnnotatedString

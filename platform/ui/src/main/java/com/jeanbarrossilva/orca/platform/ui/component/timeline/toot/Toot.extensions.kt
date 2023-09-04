@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
-import com.jeanbarrossilva.orca.platform.ui.core.toAnnotatedString
+import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
 
 /** Converts this [Toot] into a [TootPreview]. **/
 @Composable
