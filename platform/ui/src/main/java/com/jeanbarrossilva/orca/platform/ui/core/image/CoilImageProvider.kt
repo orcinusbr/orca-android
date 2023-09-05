@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.ui.component.avatar.provider
+package com.jeanbarrossilva.orca.platform.ui.core.image
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -7,20 +7,20 @@ import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import java.net.URL
 
-/** [AvatarImageProvider] that provides an asynchronously-loaded image with Coil. **/
+/** [ImageProvider] that provides an asynchronously-loaded image with Coil. **/
 @Immutable
-internal class CoilAvatarImageProvider : AvatarImageProvider() {
+internal class CoilImageProvider : ImageProvider() {
     @Composable
     @Suppress("ComposableNaming")
     override fun provide(
-        name: String,
         url: URL,
+        contentDescription: String,
         onStateChange: (State) -> Unit,
         modifier: Modifier
     ) {
         AsyncImage(
             "$url",
-            contentDescription = "$name's avatar",
+            contentDescription,
             modifier,
             onState = {
                 when (it) {
