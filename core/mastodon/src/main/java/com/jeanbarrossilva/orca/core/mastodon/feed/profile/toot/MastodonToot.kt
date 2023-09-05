@@ -2,10 +2,10 @@ package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.StyledString
 import com.jeanbarrossilva.orca.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndPost
+import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import io.ktor.client.call.body
 import java.net.URL
 import java.time.ZonedDateTime

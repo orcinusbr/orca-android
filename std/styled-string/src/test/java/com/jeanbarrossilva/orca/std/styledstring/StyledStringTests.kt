@@ -1,14 +1,12 @@
-package com.jeanbarrossilva.orca.core.feed.profile.toot.style
+package com.jeanbarrossilva.orca.std.styledstring
 
-import com.jeanbarrossilva.orca.core.feed.profile.Profile
-import com.jeanbarrossilva.orca.core.feed.profile.account.Account
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Bold
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Italic
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Mention
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.test.ColonBoldDelimiter
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.test.ColonMentionDelimiter
-import com.jeanbarrossilva.orca.core.sample.feed.profile.account.sample
-import com.jeanbarrossilva.orca.core.sample.feed.profile.sample
+import com.jeanbarrossilva.orca.std.styledstring.type.Bold
+import com.jeanbarrossilva.orca.std.styledstring.type.Italic
+import com.jeanbarrossilva.orca.std.styledstring.type.Mention
+import com.jeanbarrossilva.orca.std.styledstring.type.test.ColonBoldDelimiter
+import com.jeanbarrossilva.orca.std.styledstring.type.test.mention.ColonMentionDelimiter
+import com.jeanbarrossilva.orca.std.styledstring.type.test.mention.url
+import com.jeanbarrossilva.orca.std.styledstring.type.test.mention.username
 import java.net.URL
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
@@ -88,24 +86,24 @@ internal class StyledStringTests {
     fun `GIVEN a string with mentions delimited differently WHEN normalizing it THEN they're delimited by the mention symbol`() { // ktlint-disable max-line-length
         assertEquals(
             buildStyledString {
-                mention(Profile.sample.url) { +Account.sample.username }
+                mention(Mention.url) { +Mention.username }
                 +", "
                 mention(URL("https://mastodon.social/@_inside")) { +"_inside" }
                 +", hello!"
             }
                 .toString(),
             StyledString
-                .normalize(":${Account.sample.username}, :_inside, hello!", ColonMentionDelimiter)
+                .normalize(":${Mention.username}, :_inside, hello!", ColonMentionDelimiter)
         )
     }
 
     @Test
     fun `GIVEN a mention WHEN appending it THEN it's been placed correctly`() {
         assertEquals(
-            Mention(indices = 7..(7 + Account.sample.username.length), Profile.sample.url),
+            Mention(indices = 7..(7 + Mention.username.length), Mention.url),
             buildStyledString {
                 +"Hello, "
-                mention(Profile.sample.url) { +Account.sample.username }
+                mention(Mention.url) { +Mention.username }
                 +"!"
             }
                 .styles
@@ -119,7 +117,7 @@ internal class StyledStringTests {
             "Olá, @jeanbarrossilva!",
             buildStyledString {
                 +"Olá, "
-                mention(Profile.sample.url) { +Account.sample.username }
+                mention(Mention.url) { +Mention.username }
                 +"!"
             }
                 .toString()
@@ -130,7 +128,7 @@ internal class StyledStringTests {
     fun `GIVEN a mention put directly in the underlying string WHEN getting the mentions THEN it's not found`() { // ktlint-disable max-line-length
         assertContentEquals(
             emptyList(),
-            StyledString("안녕하세요, " + Mention.SYMBOL + Account.sample.username + '!')
+            StyledString("안녕하세요, " + Mention.SYMBOL + Mention.username + '!')
                 .styles
         )
     }

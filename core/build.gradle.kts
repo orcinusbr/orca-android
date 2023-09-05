@@ -9,6 +9,7 @@ java {
 }
 
 dependencies {
+    api(project(":std:styled-string"))
     api(Dependencies.COROUTINES_CORE)
 
     testImplementation(project(":core:sample"))

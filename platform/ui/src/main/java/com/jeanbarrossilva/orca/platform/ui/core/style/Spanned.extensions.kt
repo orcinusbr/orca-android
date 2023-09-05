@@ -2,8 +2,8 @@ package com.jeanbarrossilva.orca.platform.ui.core.style
 
 import android.text.Spanned
 import androidx.core.text.getSpans
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.StyledString
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.buildStyledString
+import com.jeanbarrossilva.orca.std.styledstring.StyledString
+import com.jeanbarrossilva.orca.std.styledstring.buildStyledString
 
 /** Converts this [Spanned] into a [StyledString]. **/
 fun Spanned.toStyledString(): StyledString {

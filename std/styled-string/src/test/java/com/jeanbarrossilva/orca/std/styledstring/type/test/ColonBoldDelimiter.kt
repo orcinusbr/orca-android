@@ -1,6 +1,6 @@
-package com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.test
+package com.jeanbarrossilva.orca.std.styledstring.type.test
 
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Bold
+import com.jeanbarrossilva.orca.std.styledstring.type.Bold
 
 internal object ColonBoldDelimiter : Bold.Delimiter.Variant() {
     private val delegate = surroundedBy(':')

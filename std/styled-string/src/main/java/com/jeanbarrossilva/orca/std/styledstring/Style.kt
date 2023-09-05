@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.feed.profile.toot.style
+package com.jeanbarrossilva.orca.std.styledstring
 
 import java.io.Serializable
 

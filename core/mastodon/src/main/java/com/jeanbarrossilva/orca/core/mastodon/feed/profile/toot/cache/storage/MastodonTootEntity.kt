@@ -4,10 +4,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.toStyledString
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonToot
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.style.startingAt
 import com.jeanbarrossilva.orca.platform.cache.Cache
+import com.jeanbarrossilva.orca.std.styledstring.toStyledString
 import java.net.URL
 import java.time.ZonedDateTime
 

@@ -1,6 +1,6 @@
-package com.jeanbarrossilva.orca.core.feed.profile.toot.style.type
+package com.jeanbarrossilva.orca.std.styledstring.type
 
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.Style
+import com.jeanbarrossilva.orca.std.styledstring.Style
 import java.net.URL
 
 /** [Style] for [URL]s. **/

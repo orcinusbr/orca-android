@@ -1,6 +1,6 @@
-package com.jeanbarrossilva.orca.core.feed.profile.toot.style.type
+package com.jeanbarrossilva.orca.std.styledstring.type
 
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.Style
+import com.jeanbarrossilva.orca.std.styledstring.Style
 
 /** [Style] for a specific subject. **/
 data class Hashtag(override val indices: IntRange) : Style() {

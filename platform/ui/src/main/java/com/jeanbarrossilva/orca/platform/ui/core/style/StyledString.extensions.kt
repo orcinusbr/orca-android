@@ -4,10 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.Style
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.StyledString
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
+import com.jeanbarrossilva.orca.std.styledstring.Style
+import com.jeanbarrossilva.orca.std.styledstring.StyledString
 
 /** Converts this [StyledString] into an [AnnotatedString]. **/
 @Composable
