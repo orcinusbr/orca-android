@@ -1,6 +1,8 @@
-package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot
+package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.status
 
+import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.account.MastodonAccount
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonToot
 import com.jeanbarrossilva.orca.platform.ui.core.style.fromHtml
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
@@ -16,6 +18,7 @@ data class Status internal constructor(
     internal val favouritesCount: Int,
     internal val repliesCount: Int,
     internal val url: String,
+    internal val card: Card?,
     internal val content: String,
     @Suppress("SpellCheckingInspection") internal val favourited: Boolean?,
     internal val reblogged: Boolean?
@@ -23,7 +26,8 @@ data class Status internal constructor(
 
     internal fun toToot(): MastodonToot {
         val author = this.account.toAuthor()
-        val content = StyledString.fromHtml(content)
+        val text = StyledString.fromHtml(content)
+        val content = Content.from(text) { card?.toHeadline() }
         val publicationDateTime = ZonedDateTime.parse(createdAt)
         val url = URL(url)
         return MastodonToot(

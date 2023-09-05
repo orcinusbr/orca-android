@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot
 
-import com.jeanbarrossilva.orca.std.styledstring.StyledString
+import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
 import java.io.Serializable
 import java.net.URL
 import java.time.ZonedDateTime
@@ -14,8 +14,8 @@ abstract class Toot : Serializable {
     /** [Author] that has authored this [Toot]. **/
     abstract val author: Author
 
-    /** What's actually been written. **/
-    abstract val content: StyledString
+    /** [Content] that's been composed by the [author]. **/
+    abstract val content: Content
 
     /** Zoned moment in time in which this [Toot] was published. **/
     abstract val publicationDateTime: ZonedDateTime

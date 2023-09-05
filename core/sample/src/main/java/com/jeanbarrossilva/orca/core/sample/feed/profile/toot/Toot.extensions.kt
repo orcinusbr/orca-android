@@ -2,7 +2,8 @@ package com.jeanbarrossilva.orca.core.sample.feed.profile.toot
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.std.styledstring.StyledString
+import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
+import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.sample
 import java.net.URL
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -29,10 +30,7 @@ private fun createSample(): Toot {
     return SampleToot(
         "${UUID.randomUUID()}",
         Author.sample,
-        content = StyledString(
-            "<p>This is a <b>sample</b> <i>toot</i> that has the sole purpose of allowing one to " +
-                "see how it would look like in <u>Orca</u>.</p>"
-        ),
+        Content.sample,
         publicationDateTime = ZonedDateTime.of(2_003, 10, 8, 8, 0, 0, 0, ZoneId.of("GMT-3")),
         commentCount = 1_024,
         isFavorite = false,

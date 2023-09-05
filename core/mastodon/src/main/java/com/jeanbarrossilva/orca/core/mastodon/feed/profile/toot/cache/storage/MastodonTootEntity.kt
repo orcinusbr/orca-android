@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
+import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
+import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Headline
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonToot
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.style.startingAt
 import com.jeanbarrossilva.orca.platform.cache.Cache
@@ -15,7 +17,10 @@ import java.time.ZonedDateTime
 internal data class MastodonTootEntity(
     @PrimaryKey val id: String,
     @ColumnInfo(name = "author_id") val authorID: String,
-    val content: String,
+    val text: String,
+    @ColumnInfo(name = "headline_title") val headlineTitle: String?,
+    @ColumnInfo(name = "headline_subtitle") val headlineSubtitle: String?,
+    @ColumnInfo(name = "headline_cover_url") val headlineCoverURL: String?,
     @ColumnInfo(name = "publication_date_time") val publicationDateTime: String,
     @ColumnInfo(name = "comment_count") val commentCount: Int,
     @ColumnInfo(name = "is_favorite") val isFavorite: Boolean,
@@ -30,7 +35,14 @@ internal data class MastodonTootEntity(
     ): MastodonToot {
         val author = profileCache.get(authorID).toAuthor()
         val mentions = dao.selectWithStylesByID(id).mentions
-        val content = content.toStyledString { URL(mentions.startingAt(it).url) }
+        val text = text.toStyledString { URL(mentions.startingAt(it).url) }
+        val content = Content.from(text) {
+            if (headlineTitle != null && headlineCoverURL != null) {
+                Headline(headlineTitle, headlineSubtitle, URL(headlineCoverURL))
+            } else {
+                null
+            }
+        }
         val publicationDateTime = ZonedDateTime.parse(publicationDateTime)
         val url = URL(url)
         return MastodonToot(
@@ -52,7 +64,10 @@ internal data class MastodonTootEntity(
             return MastodonTootEntity(
                 toot.id,
                 toot.author.id,
-                "${toot.content}",
+                "${toot.content.text}",
+                toot.content.highlight?.headline?.title,
+                toot.content.highlight?.headline?.subtitle,
+                "${toot.content.highlight?.headline?.coverURL}",
                 "${toot.publicationDateTime}",
                 toot.commentCount,
                 toot.isFavorite,

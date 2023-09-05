@@ -15,7 +15,7 @@ internal fun Toot.toTootDetails(colors: Colors): TootDetails {
         author.avatarURL,
         author.name,
         author.account,
-        body = content.toAnnotatedString(colors),
+        body = content.text.toAnnotatedString(colors),
         publicationDateTime,
         commentCount,
         isFavorite,
