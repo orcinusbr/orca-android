@@ -18,7 +18,6 @@ import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetails
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.LargeAvatar
-import com.jeanbarrossilva.orca.platform.ui.html.HtmlAnnotatedString
 
 @Composable
 internal fun Header(modifier: Modifier = Modifier) {
@@ -46,7 +45,7 @@ internal fun Header(details: ProfileDetails, modifier: Modifier = Modifier) {
         avatar = { LargeAvatar(details.name, details.avatarURL) },
         name = { Text(details.name) },
         account = { Text(details.formattedAccount) },
-        bio = { Text(HtmlAnnotatedString(details.bio)) },
+        bio = { Text(details.bio) },
         mainActionButton = { details.MainActionButton() },
         modifier
     )

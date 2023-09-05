@@ -65,8 +65,12 @@ data class Colors internal constructor(
     }
 
     companion object {
+        /** [Colors] that are provided by default. **/
+        internal val default
+            @Composable get() = getDefault(LocalContext.current)
+
         /** [Colors] with unspecified values. **/
-        internal val Unspecified = Colors(
+        val Unspecified = Colors(
             Activation.Unspecified,
             background = Color.Unspecified,
             brand = Contrast.Unspecified,
@@ -78,10 +82,6 @@ data class Colors internal constructor(
             surface = Contrast.Unspecified,
             tertiary = Color.Unspecified
         )
-
-        /** [Colors] that are provided by default. **/
-        internal val default
-            @Composable get() = getDefault(LocalContext.current)
 
         /**
          * Gets the [Colors] that are provided by default.

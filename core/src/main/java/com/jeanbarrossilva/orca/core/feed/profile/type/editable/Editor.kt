@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.core.feed.profile.type.editable
 
+import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
 
 /** Edits an [EditableProfile]. **/
@@ -23,7 +24,7 @@ interface Editor {
      *
      * @param bio Bio to be set to the [EditableProfile].
      **/
-    suspend fun setBio(bio: String)
+    suspend fun setBio(bio: StyledString)
 
     companion object {
         /** No-op, empty [Editor]. **/
@@ -34,7 +35,7 @@ interface Editor {
             override suspend fun setName(name: String) {
             }
 
-            override suspend fun setBio(bio: String) {
+            override suspend fun setBio(bio: StyledString) {
             }
         }
     }

@@ -8,6 +8,7 @@ import com.jeanbarrossilva.orca.core.mastodon.client.MastodonHttpClient
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndPost
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfile
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.ProfileTootPaginateSource
+import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
 
 internal data class MastodonFollowableProfile<T : Follow>(
@@ -16,7 +17,7 @@ internal data class MastodonFollowableProfile<T : Follow>(
     override val account: Account,
     override val avatarURL: URL,
     override val name: String,
-    override val bio: String,
+    override val bio: StyledString,
     override val follow: T,
     override val followerCount: Int,
     override val followingCount: Int,

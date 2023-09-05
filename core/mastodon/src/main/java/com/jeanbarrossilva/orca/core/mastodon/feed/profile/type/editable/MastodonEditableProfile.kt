@@ -5,6 +5,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.type.editable.EditableProfile
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfile
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.ProfileTootPaginateSource
+import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
 
 internal data class MastodonEditableProfile(
@@ -13,7 +14,7 @@ internal data class MastodonEditableProfile(
     override val account: Account,
     override val avatarURL: URL,
     override val name: String,
-    override val bio: String,
+    override val bio: StyledString,
     override val followerCount: Int,
     override val followingCount: Int,
     override val url: URL

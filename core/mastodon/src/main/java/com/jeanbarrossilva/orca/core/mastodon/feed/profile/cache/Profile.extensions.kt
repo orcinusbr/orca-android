@@ -18,7 +18,7 @@ internal fun Profile.toMastodonProfileEntity(): ProfileEntity {
         "$account",
         "$avatarURL",
         name,
-        bio,
+        "$bio",
         type = when (this) {
             is EditableProfile -> ProfileEntity.EDITABLE_TYPE
             is FollowableProfile<*> -> ProfileEntity.FOLLOWABLE_TYPE

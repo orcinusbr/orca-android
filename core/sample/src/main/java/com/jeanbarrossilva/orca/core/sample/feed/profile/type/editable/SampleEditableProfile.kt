@@ -4,6 +4,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.type.editable.EditableProfile
 import com.jeanbarrossilva.orca.core.feed.profile.type.editable.Editor
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfile
+import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
 
 /**
@@ -14,7 +15,7 @@ import java.net.URL
 abstract class SampleEditableProfile private constructor() : SampleProfile, EditableProfile() {
     abstract override var avatarURL: URL
     abstract override var name: String
-    abstract override var bio: String
+    abstract override var bio: StyledString
 
     override val editor: Editor by lazy {
         SampleEditor(id)
@@ -46,7 +47,7 @@ abstract class SampleEditableProfile private constructor() : SampleProfile, Edit
             account: Account,
             avatarURL: URL,
             name: String,
-            bio: String,
+            bio: StyledString,
             followerCount: Int,
             followingCount: Int,
             url: URL

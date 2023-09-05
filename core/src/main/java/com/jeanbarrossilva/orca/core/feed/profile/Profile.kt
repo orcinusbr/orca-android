@@ -2,6 +2,7 @@ package com.jeanbarrossilva.orca.core.feed.profile
 
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.io.Serializable
 import java.net.URL
 import kotlinx.coroutines.flow.Flow
@@ -21,7 +22,7 @@ interface Profile : Serializable {
     val name: String
 
     /** Describes who the owner is and/or provides information regarding this [Profile]. **/
-    val bio: String
+    val bio: StyledString
 
     /** Amount of followers. **/
     val followerCount: Int

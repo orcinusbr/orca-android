@@ -7,6 +7,7 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.type.editable.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.type.followable.sample
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetails
+import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -15,16 +16,25 @@ internal class DefaultProfileConverterTests {
 
     @Test
     fun convertsDefaultProfile() {
-        assertEquals(ProfileDetails.Default.sample, converter.convert(Profile.sample))
+        assertEquals(
+            ProfileDetails.Default.createSample(Colors.Unspecified),
+            converter.convert(Profile.sample, Colors.Unspecified)
+        )
     }
 
     @Test
     fun convertsEditableProfile() {
-        assertEquals(ProfileDetails.Default.sample, converter.convert(EditableProfile.sample))
+        assertEquals(
+            ProfileDetails.Default.createSample(Colors.Unspecified),
+            converter.convert(EditableProfile.sample, Colors.Unspecified)
+        )
     }
 
     @Test
     fun convertsFollowableProfile() {
-        assertEquals(ProfileDetails.Default.sample, converter.convert(FollowableProfile.sample))
+        assertEquals(
+            ProfileDetails.Default.createSample(Colors.Unspecified),
+            converter.convert(FollowableProfile.sample, Colors.Unspecified)
+        )
     }
 }
