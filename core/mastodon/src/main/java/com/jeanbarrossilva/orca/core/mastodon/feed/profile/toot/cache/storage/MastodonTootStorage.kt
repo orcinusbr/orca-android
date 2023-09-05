@@ -14,7 +14,7 @@ class MastodonTootStorage(
 ) : Storage<MastodonToot>() {
     override suspend fun onStore(key: String, value: MastodonToot) {
         val tootEntity = MastodonTootEntity.from(value)
-        val styleEntities = value.content.styles.map { it.toMentionEntity(value.id) }
+        val styleEntities = value.content.text.styles.map { it.toMentionEntity(value.id) }
         tootEntityDao.insert(tootEntity)
         styleEntityDao.insert(styleEntities)
     }
