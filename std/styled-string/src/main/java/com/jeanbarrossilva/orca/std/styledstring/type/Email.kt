@@ -1,6 +1,6 @@
-package com.jeanbarrossilva.orca.core.feed.profile.toot.style.type
+package com.jeanbarrossilva.orca.std.styledstring.type
 
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.Style
+import com.jeanbarrossilva.orca.std.styledstring.Style
 
 /** [Style] for referencing an e-mail, such as "john@appleseed.com". **/
 data class Email(override val indices: IntRange) : Style() {

@@ -1,11 +1,11 @@
-package com.jeanbarrossilva.orca.core.feed.profile.toot.style
+package com.jeanbarrossilva.orca.std.styledstring
 
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Bold
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Email
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Hashtag
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Italic
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Link
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Mention
+import com.jeanbarrossilva.orca.std.styledstring.type.Bold
+import com.jeanbarrossilva.orca.std.styledstring.type.Email
+import com.jeanbarrossilva.orca.std.styledstring.type.Hashtag
+import com.jeanbarrossilva.orca.std.styledstring.type.Italic
+import com.jeanbarrossilva.orca.std.styledstring.type.Link
+import com.jeanbarrossilva.orca.std.styledstring.type.Mention
 import java.net.URL
 
 /**

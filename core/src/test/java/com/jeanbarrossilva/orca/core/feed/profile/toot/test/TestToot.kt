@@ -2,8 +2,8 @@ package com.jeanbarrossilva.orca.core.feed.profile.toot.test
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.StyledString
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
+import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
 import java.time.ZonedDateTime
 import kotlinx.coroutines.flow.Flow

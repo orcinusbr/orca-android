@@ -2,7 +2,7 @@ package com.jeanbarrossilva.orca.platform.ui.core.style
 
 import android.graphics.Typeface
 import android.text.style.StyleSpan
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.StyledString
+import com.jeanbarrossilva.orca.std.styledstring.StyledString
 
 /**
  * Appends the [text] to the [StyledString] being built.

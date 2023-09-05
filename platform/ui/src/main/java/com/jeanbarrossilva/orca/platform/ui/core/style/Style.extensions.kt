@@ -2,13 +2,13 @@ package com.jeanbarrossilva.orca.platform.ui.core.style
 
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.Style
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Bold
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Email
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Hashtag
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Link
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.type.Mention
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
+import com.jeanbarrossilva.orca.std.styledstring.Style
+import com.jeanbarrossilva.orca.std.styledstring.type.Bold
+import com.jeanbarrossilva.orca.std.styledstring.type.Email
+import com.jeanbarrossilva.orca.std.styledstring.type.Hashtag
+import com.jeanbarrossilva.orca.std.styledstring.type.Link
+import com.jeanbarrossilva.orca.std.styledstring.type.Mention
 
 /**
  * Converts this [Style] into a [SpanStyle].

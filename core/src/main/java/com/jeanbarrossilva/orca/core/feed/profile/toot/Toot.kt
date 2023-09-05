@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot
 
-import com.jeanbarrossilva.orca.core.feed.profile.toot.style.StyledString
+import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.io.Serializable
 import java.net.URL
 import java.time.ZonedDateTime
