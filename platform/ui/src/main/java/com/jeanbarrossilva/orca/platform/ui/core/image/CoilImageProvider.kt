@@ -3,6 +3,7 @@ package com.jeanbarrossilva.orca.platform.ui.core.image
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import java.net.URL
@@ -29,7 +30,8 @@ internal class CoilImageProvider : ImageProvider() {
                     is AsyncImagePainter.State.Success -> onStateChange(State.LOADED)
                     is AsyncImagePainter.State.Error -> onStateChange(State.FAILED)
                 }
-            }
+            },
+            contentScale = ContentScale.Crop
         )
     }
 }

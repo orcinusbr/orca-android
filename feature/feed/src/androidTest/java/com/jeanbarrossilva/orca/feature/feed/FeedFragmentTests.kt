@@ -12,7 +12,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.sample.feed.profile.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.SampleTootWriter
 import com.jeanbarrossilva.orca.feature.feed.test.FeedActivity
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TOOT_PREVIEW_FAVORITE_STAT_TAG
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.TOOT_PREVIEW_FAVORITE_STAT_TAG
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.onTootPreviews
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.time.Time4JTestRule
 import kotlinx.coroutines.flow.first

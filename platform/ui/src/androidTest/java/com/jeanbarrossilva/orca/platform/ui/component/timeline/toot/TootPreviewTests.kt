@@ -114,7 +114,7 @@ internal class TootPreviewTests {
             }
         }
         composeRule.onTootPreviewBody().assertIsNotLoading()
-        composeRule.onTootPreviewBody().assertTextEquals(sampleTootPreview.body.text)
+        composeRule.onTootPreviewBody().assertTextEquals(sampleTootPreview.text.text)
     }
 
     @Test

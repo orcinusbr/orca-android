@@ -7,7 +7,7 @@ import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
 /**
  * Converts this core [Toot] into [TootDetails].
  *
- * @param colors [Colors] by which the resulting [TootDetails]' [TootDetails.body] can be colored.
+ * @param colors [Colors] by which the resulting [TootDetails]' [TootDetails.text] can be colored.
  **/
 internal fun Toot.toTootDetails(colors: Colors): TootDetails {
     return TootDetails(
@@ -15,7 +15,8 @@ internal fun Toot.toTootDetails(colors: Colors): TootDetails {
         author.avatarURL,
         author.name,
         author.account,
-        body = content.text.toAnnotatedString(colors),
+        content.text.toAnnotatedString(colors),
+        content.highlight,
         publicationDateTime,
         commentCount,
         isFavorite,

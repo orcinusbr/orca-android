@@ -233,7 +233,7 @@ internal fun ProfileDetails(
         navigator::navigateToTootDetails,
         onNext = viewModel::loadTootsAt,
         origin,
-        navigator::navigateToWebpage,
+        navigator::navigateTo,
         onShare = viewModel::share,
         bottomAreaAvailabilityNestedScrollConnection,
         modifier
@@ -268,7 +268,7 @@ internal fun ProfileDetails(
 
 @Composable
 private fun ProfileDetails(
-    navigator: ProfileDetailsBoundary,
+    boundary: ProfileDetailsBoundary,
     detailsLoadable: Loadable<ProfileDetails>,
     tootPreviewsLoadable: ListLoadable<TootPreview>,
     onFavorite: (tootID: String) -> Unit,
@@ -288,9 +288,10 @@ private fun ProfileDetails(
             ProfileDetails(origin, bottomAreaAvailabilityNestedScrollConnection, modifier)
         is Loadable.Loaded ->
             ProfileDetails(
-                navigator,
+                boundary,
                 detailsLoadable.content,
                 tootPreviewsLoadable,
+                onHighlightClick = boundary::navigateTo,
                 onFavorite,
                 onReblog,
                 onNavigationToTootDetails,
@@ -343,9 +344,10 @@ private fun ProfileDetails(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun ProfileDetails(
-    navigator: ProfileDetailsBoundary,
+    boundary: ProfileDetailsBoundary,
     details: ProfileDetails,
     tootsLoadable: ListLoadable<TootPreview>,
+    onHighlightClick: (URL) -> Unit,
     onFavorite: (tootID: String) -> Unit,
     onReblog: (tootID: String) -> Unit,
     onNavigationToTootDetails: (id: String) -> Unit,
@@ -420,6 +422,7 @@ private fun ProfileDetails(
         timeline = { shouldNestScrollToTopAppBar, padding ->
             Timeline(
                 tootsLoadable,
+                onHighlightClick,
                 onFavorite,
                 onReblog,
                 onShare,
@@ -437,7 +440,7 @@ private fun ProfileDetails(
                 Header(details)
             }
         },
-        floatingActionButton = { details.FloatingActionButton(navigator) },
+        floatingActionButton = { details.FloatingActionButton(boundary) },
         origin,
         modifier
     )

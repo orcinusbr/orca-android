@@ -15,7 +15,7 @@ fun Toot.toTootPreview(): TootPreview {
 /**
  * Converts this [Toot] into a [TootPreview].
  *
- * @param colors [Colors] by which the resulting [TootPreview]'s [TootPreview.body] can be colored.
+ * @param colors [Colors] by which the resulting [TootPreview]'s [TootPreview.text] can be colored.
  **/
 fun Toot.toTootPreview(colors: Colors): TootPreview {
     val body = content.text.toAnnotatedString(colors)
@@ -25,6 +25,7 @@ fun Toot.toTootPreview(colors: Colors): TootPreview {
         author.name,
         author.account,
         body,
+        content.highlight,
         publicationDateTime,
         commentCount,
         isFavorite,

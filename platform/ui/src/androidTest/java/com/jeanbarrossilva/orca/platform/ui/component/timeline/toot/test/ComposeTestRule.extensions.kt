@@ -5,11 +5,12 @@ import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithTag
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TOOT_PREVIEW_BODY_TAG
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TOOT_PREVIEW_COMMENT_COUNT_STAT_TAG
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TOOT_PREVIEW_FAVORITE_STAT_TAG
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TOOT_PREVIEW_METADATA_TAG
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TOOT_PREVIEW_NAME_TAG
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TOOT_PREVIEW_REBLOG_COUNT_STAT_TAG
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TOOT_PREVIEW_SHARE_ACTION_TAG
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.TOOT_PREVIEW_FAVORITE_STAT_TAG
 
 /** [SemanticsNodeInteraction] of [TootPreview]'s body node. **/
 internal fun ComposeTestRule.onTootPreviewBody(): SemanticsNodeInteraction {

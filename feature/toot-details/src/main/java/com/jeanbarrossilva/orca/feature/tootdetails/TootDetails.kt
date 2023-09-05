@@ -17,6 +17,8 @@ import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
+import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.highlight.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
 import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.Header
 import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.formatted
@@ -43,7 +45,8 @@ internal data class TootDetails(
     val avatarURL: URL,
     val name: String,
     private val account: Account,
-    val body: AnnotatedString,
+    val text: AnnotatedString,
+    val highlight: Highlight?,
     private val publicationDateTime: ZonedDateTime,
     private val commentCount: Int,
     val isFavorite: Boolean,
@@ -65,7 +68,8 @@ internal data class TootDetails(
                 Toot.sample.author.avatarURL,
                 Toot.sample.author.name,
                 Toot.sample.author.account,
-                TootPreview.sample.body,
+                TootPreview.sample.text,
+                TootPreview.sample.highlight,
                 Toot.sample.publicationDateTime,
                 Toot.sample.commentCount,
                 Toot.sample.isFavorite,
@@ -80,7 +84,7 @@ internal data class TootDetails(
 @Composable
 internal fun TootDetails(
     viewModel: TootDetailsViewModel,
-    navigator: TootDetailsBoundary,
+    boundary: TootDetailsBoundary,
     onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
     modifier: Modifier = Modifier
 ) {
@@ -92,12 +96,13 @@ internal fun TootDetails(
     TootDetails(
         tootLoadable,
         commentsLoadable,
+        onHighlightClick = boundary::navigateTo,
         onFavorite = viewModel::favorite,
         onReblog = viewModel::reblog,
         onShare = viewModel::share,
-        onNavigateToDetails = navigator::navigateToTootDetails,
+        onNavigateToDetails = boundary::navigateToTootDetails,
         onNext = viewModel::loadCommentsAt,
-        onBackwardsNavigation = navigator::pop,
+        onBackwardsNavigation = boundary::pop,
         bottomAreaAvailabilityNestedScrollConnection,
         modifier
     )
@@ -108,6 +113,7 @@ internal fun TootDetails(
 private fun TootDetails(
     tootLoadable: Loadable<TootDetails>,
     commentsLoadable: ListLoadable<TootPreview>,
+    onHighlightClick: (URL) -> Unit,
     onFavorite: (tootID: String) -> Unit,
     onReblog: (tootID: String) -> Unit,
     onShare: (URL) -> Unit,
@@ -140,6 +146,7 @@ private fun TootDetails(
     ) {
         Timeline(
             commentsLoadable,
+            onHighlightClick,
             onFavorite,
             onReblog,
             onShare,
@@ -156,6 +163,9 @@ private fun TootDetails(
                 is Loadable.Loaded ->
                     Header(
                         tootLoadable.content,
+                        onHighlightClick = {
+                            tootLoadable.content.highlight?.url?.run(onHighlightClick)
+                        },
                         onFavorite = { onFavorite(tootLoadable.content.id) },
                         onReblog = { onReblog(tootLoadable.content.id) },
                         onShare = { onShare(tootLoadable.content.url) }
@@ -203,6 +213,7 @@ private fun TootDetails(
     TootDetails(
         tootLoadable,
         commentsLoadable,
+        onHighlightClick = { },
         onFavorite = { },
         onReblog = { },
         onShare = { },

@@ -29,6 +29,7 @@ import com.jeanbarrossilva.orca.platform.ui.component.SmallAvatar
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconInteractiveness
 import com.jeanbarrossilva.orca.platform.ui.component.stat.favorite.FavoriteStatIcon
 import com.jeanbarrossilva.orca.platform.ui.component.stat.reblog.ReblogStatIcon
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.headline.HeadlineCard
 
 @Composable
 internal fun Header(modifier: Modifier = Modifier) {
@@ -36,7 +37,7 @@ internal fun Header(modifier: Modifier = Modifier) {
         avatar = { SmallAvatar() },
         name = { SmallTextualPlaceholder() },
         username = { MediumTextualPlaceholder() },
-        body = {
+        content = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall)
             ) {
@@ -53,6 +54,7 @@ internal fun Header(modifier: Modifier = Modifier) {
 @Composable
 internal fun Header(
     details: TootDetails,
+    onHighlightClick: () -> Unit,
     onFavorite: () -> Unit,
     onReblog: () -> Unit,
     onShare: () -> Unit,
@@ -62,7 +64,15 @@ internal fun Header(
         avatar = { SmallAvatar(details.name, details.avatarURL) },
         name = { Text(details.name) },
         username = { Text(details.formattedUsername) },
-        body = { Text(details.body) },
+        content = {
+            Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.medium)) {
+                Text(details.text)
+
+                details.highlight?.headline?.let {
+                    HeadlineCard(it, onHighlightClick)
+                }
+            }
+        },
         metadata = { Text(details.formattedPublicationDateTime) },
         stats = {
             Divider()
@@ -113,7 +123,7 @@ private fun Header(
     avatar: @Composable () -> Unit,
     name: @Composable () -> Unit,
     username: @Composable () -> Unit,
-    body: @Composable () -> Unit,
+    content: @Composable () -> Unit,
     metadata: @Composable () -> Unit,
     stats: @Composable ColumnScope.() -> Unit,
     modifier: Modifier = Modifier
@@ -136,7 +146,7 @@ private fun Header(
         }
 
         Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.medium)) {
-            body()
+            content()
             ProvideTextStyle(OrcaTheme.typography.bodySmall, metadata)
         }
 
@@ -163,7 +173,13 @@ private fun LoadingHeaderPreview() {
 private fun LoadedHeaderPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colors.background) {
-            Header(TootDetails.sample, onFavorite = { }, onReblog = { }, onShare = { })
+            Header(
+                TootDetails.sample,
+                onHighlightClick = { },
+                onFavorite = { },
+                onReblog = { },
+                onShare = { }
+            )
         }
     }
 }

@@ -15,6 +15,7 @@ internal fun TestTootPreview(
 ) {
     TootPreview(
         TootPreview.sample,
+        onHighlightClick = { },
         onFavorite = { },
         onReblog = { },
         onShare = { },

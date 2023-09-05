@@ -60,6 +60,8 @@ private enum class TimelineContentType {
  * Displays [TootPreview]s in a paginated way.
  *
  * @param tootPreviewsLoadable [ListLoadable] of [TootPreview]s to be lazily shown.
+ * @param onHighlightClick Callback run whenever the [TootPreview]'s [TootPreview.highlight] is
+ * clicked.
  * @param onFavorite Callback run whenever the [TootPreview] associated to the given ID requests the
  * [Toot] to have its "favorited" state toggled.
  * @param onReblog Callback run whenever the [TootPreview] associated to the given ID requests the
@@ -76,6 +78,7 @@ private enum class TimelineContentType {
 @Composable
 fun Timeline(
     tootPreviewsLoadable: ListLoadable<TootPreview>,
+    onHighlightClick: (URL) -> Unit,
     onFavorite: (id: String) -> Unit,
     onReblog: (id: String) -> Unit,
     onShare: (URL) -> Unit,
@@ -94,6 +97,7 @@ fun Timeline(
         is ListLoadable.Populated ->
             Timeline(
                 tootPreviewsLoadable.content,
+                onHighlightClick,
                 onFavorite,
                 onReblog,
                 onShare,
@@ -133,6 +137,8 @@ fun Timeline(
  * [LazyColumn] for displaying paged [TootPreview]s.
  *
  * @param tootPreviews [TootPreview]s to be lazily shown.
+ * @param onHighlightClick Callback run whenever the [TootPreview]'s [TootPreview.highlight] is
+ * clicked.
  * @param onFavorite Callback run whenever the [TootPreview] associated to the given ID requests the
  * [Toot] to have its "favorited" state toggled.
  * @param onReblog Callback run whenever the [TootPreview] associated to the given ID requests the
@@ -149,6 +155,7 @@ fun Timeline(
 @Composable
 fun Timeline(
     tootPreviews: List<TootPreview>,
+    onHighlightClick: (URL) -> Unit,
     onFavorite: (id: String) -> Unit,
     onReblog: (id: String) -> Unit,
     onShare: (URL) -> Unit,
@@ -170,6 +177,7 @@ fun Timeline(
             ) {
                 TootPreview(
                     it,
+                    onHighlightClick = { it.highlight?.url?.run(onHighlightClick) },
                     onFavorite = { onFavorite(it.id) },
                     onReblog = { onReblog(it.id) },
                     onShare = { onShare(it.url) },
@@ -193,6 +201,7 @@ internal fun Timeline(
 ) {
     Timeline(
         tootPreviewsLoadable,
+        onHighlightClick = { },
         onFavorite = { },
         onReblog = { },
         onShare = { },
@@ -309,6 +318,7 @@ private fun EmptyTimelinePreview() {
         Surface(color = OrcaTheme.colors.background) {
             Timeline(
                 ListLoadable.Empty(),
+                onHighlightClick = { },
                 onFavorite = { },
                 onReblog = { },
                 onShare = { },
@@ -328,6 +338,7 @@ private fun PopulatedTimelinePreview() {
         Surface(color = OrcaTheme.colors.background) {
             Timeline(
                 TootPreview.samples,
+                onHighlightClick = { },
                 onFavorite = { },
                 onReblog = { },
                 onShare = { },
