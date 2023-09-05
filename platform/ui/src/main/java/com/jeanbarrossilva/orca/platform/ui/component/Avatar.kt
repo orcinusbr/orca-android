@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.ui.component.avatar
+package com.jeanbarrossilva.orca.platform.ui.component
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -26,8 +26,8 @@ import com.jeanbarrossilva.loadable.placeholder.Placeholder
 import com.jeanbarrossilva.loadable.placeholder.PlaceholderDefaults
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.Samples
-import com.jeanbarrossilva.orca.platform.ui.component.avatar.provider.AvatarImageProvider
-import com.jeanbarrossilva.orca.platform.ui.component.avatar.provider.rememberAvatarImageProvider
+import com.jeanbarrossilva.orca.platform.ui.core.image.ImageProvider
+import com.jeanbarrossilva.orca.platform.ui.core.image.rememberImageProvider
 import java.io.Serializable
 import java.net.URL
 
@@ -57,7 +57,7 @@ fun SmallAvatar(
     name: String,
     url: URL,
     modifier: Modifier = Modifier,
-    imageProvider: AvatarImageProvider = rememberAvatarImageProvider()
+    imageProvider: ImageProvider = rememberImageProvider()
 ) {
     Avatar(name, url, SmallSize, smallShape, modifier, imageProvider)
 }
@@ -72,7 +72,7 @@ fun LargeAvatar(
     name: String,
     url: URL,
     modifier: Modifier = Modifier,
-    imageProvider: AvatarImageProvider = rememberAvatarImageProvider()
+    imageProvider: ImageProvider = rememberImageProvider()
 ) {
     Avatar(name, url, LargeSize, largeShape, modifier, imageProvider)
 }
@@ -84,20 +84,25 @@ private fun Avatar(
     size: Dp,
     shape: Shape,
     modifier: Modifier = Modifier,
-    imageProvider: AvatarImageProvider = rememberAvatarImageProvider()
+    imageProvider: ImageProvider = rememberImageProvider()
 ) {
     val view = LocalView.current
-    var state by remember { mutableStateOf(AvatarImageProvider.State.EMPTY) }
+    var state by remember { mutableStateOf(ImageProvider.State.EMPTY) }
     val isPreviewing = remember(view) { view.isInEditMode }
 
     Avatar(
         size,
         shape,
         modifier.testTag(AVATAR_TAG),
-        isLoading = state == AvatarImageProvider.State.LOADING
+        isLoading = state == ImageProvider.State.LOADING
     ) {
-        if (!isPreviewing && state != AvatarImageProvider.State.FAILED) {
-            imageProvider.provide(name, url, onStateChange = { state = it }, Modifier.size(size))
+        if (!isPreviewing && state != ImageProvider.State.FAILED) {
+            imageProvider.provide(
+                url,
+                contentDescription = "$name's avatar",
+                onStateChange = { state = it },
+                Modifier.size(size)
+            )
         } else {
             UnavailableContent(size)
         }

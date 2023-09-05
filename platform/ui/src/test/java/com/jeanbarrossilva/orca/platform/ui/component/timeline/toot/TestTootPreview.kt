@@ -2,9 +2,9 @@ package com.jeanbarrossilva.orca.platform.ui.component.timeline.toot
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.jeanbarrossilva.orca.platform.ui.component.avatar.provider.test.rememberTestAvatarImageProvider
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.RelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.test.rememberTestRelativeTimeProvider
+import com.jeanbarrossilva.orca.platform.ui.core.image.test.rememberTestImageProvider
 
 @Composable
 @Suppress("TestFunctionName")
@@ -19,7 +19,7 @@ internal fun TestTootPreview(
         onShare = { },
         onClick = { },
         modifier,
-        rememberTestAvatarImageProvider(),
+        rememberTestImageProvider(),
         relativeTimeProvider
     )
 }

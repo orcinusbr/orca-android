@@ -38,11 +38,11 @@ import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import com.jeanbarrossilva.orca.platform.theme.extensions.EmptyMutableInteractionSource
 import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
-import com.jeanbarrossilva.orca.platform.ui.component.avatar.SmallAvatar
-import com.jeanbarrossilva.orca.platform.ui.component.avatar.provider.AvatarImageProvider
-import com.jeanbarrossilva.orca.platform.ui.component.avatar.provider.rememberAvatarImageProvider
+import com.jeanbarrossilva.orca.platform.ui.component.SmallAvatar
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.RelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.rememberRelativeTimeProvider
+import com.jeanbarrossilva.orca.platform.ui.core.image.ImageProvider
+import com.jeanbarrossilva.orca.platform.ui.core.image.rememberImageProvider
 import java.io.Serializable
 import java.net.URL
 import java.time.ZonedDateTime
@@ -174,7 +174,7 @@ fun TootPreview(
     onShare: () -> Unit,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    avatarImageProvider: AvatarImageProvider = rememberAvatarImageProvider(),
+    imageProvider: ImageProvider = rememberImageProvider(),
     relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider()
 ) {
     val metadata = remember(preview, relativeTimeProvider) {
@@ -183,7 +183,7 @@ fun TootPreview(
 
     TootPreview(
         avatar = {
-            SmallAvatar(preview.name, preview.avatarURL, imageProvider = avatarImageProvider)
+            SmallAvatar(preview.name, preview.avatarURL, imageProvider = imageProvider)
         },
         name = { Text(preview.name, nameModifier) },
         metadata = { Text(metadata, metadataModifier) },
