@@ -2,6 +2,7 @@ package com.jeanbarrossilva.orca.feature.profiledetails.conversion
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetails
+import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 
 /** Converts a [Profile] into a [ProfileDetails] through [convert]. **/
 internal abstract class ProfileConverter {
@@ -12,9 +13,10 @@ internal abstract class ProfileConverter {
      * Converts the given [profile] into [ProfileDetails].
      *
      * @param profile [Profile] to convert into [ProfileDetails].
+     * @param colors [Colors] by which visuals can be colored.
      **/
-    fun convert(profile: Profile): ProfileDetails? {
-        return onConvert(profile) ?: next?.convert(profile)
+    fun convert(profile: Profile, colors: Colors): ProfileDetails? {
+        return onConvert(profile, colors) ?: next?.convert(profile, colors)
     }
 
     /**
@@ -24,6 +26,7 @@ internal abstract class ProfileConverter {
      * the operation should be delegated to the [next] one.
      *
      * @param profile [Profile] to convert into [ProfileDetails].
+     * @param colors [Colors] by which visuals can be colored.
      **/
-    protected abstract fun onConvert(profile: Profile): ProfileDetails?
+    protected abstract fun onConvert(profile: Profile, colors: Colors): ProfileDetails?
 }

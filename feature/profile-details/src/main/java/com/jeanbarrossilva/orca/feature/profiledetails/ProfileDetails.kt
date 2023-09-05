@@ -55,6 +55,7 @@ import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavig
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.NavigationButton
 import com.jeanbarrossilva.orca.feature.profiledetails.ui.Header
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
 import com.jeanbarrossilva.orca.platform.theme.kit.menu.DropdownMenu
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
@@ -66,6 +67,7 @@ import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabili
 import com.jeanbarrossilva.orca.platform.theme.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
+import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
 import java.io.Serializable
 import java.net.URL
 
@@ -77,7 +79,7 @@ internal sealed class ProfileDetails : Serializable {
     abstract val id: String
     abstract val avatarURL: URL
     abstract val name: String
-    abstract val bio: String
+    abstract val bio: AnnotatedString
     abstract val url: URL
 
     val formattedAccount
@@ -90,18 +92,20 @@ internal sealed class ProfileDetails : Serializable {
         override val avatarURL: URL,
         override val name: String,
         override val account: Account,
-        override val bio: String,
+        override val bio: AnnotatedString,
         override val url: URL
     ) : ProfileDetails() {
         companion object {
-            val sample = Default(
-                Profile.sample.id,
-                Profile.sample.avatarURL,
-                Profile.sample.name,
-                Profile.sample.account,
-                Profile.sample.bio,
-                Profile.sample.url
-            )
+            fun createSample(colors: Colors): Default {
+                return Default(
+                    Profile.sample.id,
+                    Profile.sample.avatarURL,
+                    Profile.sample.name,
+                    Profile.sample.account,
+                    Profile.sample.bio.toAnnotatedString(colors),
+                    Profile.sample.url
+                )
+            }
         }
     }
 
@@ -110,7 +114,7 @@ internal sealed class ProfileDetails : Serializable {
         override val avatarURL: URL,
         override val name: String,
         override val account: Account,
-        override val bio: String,
+        override val bio: AnnotatedString,
         override val url: URL
     ) : ProfileDetails() {
         @Composable
@@ -121,14 +125,16 @@ internal sealed class ProfileDetails : Serializable {
         }
 
         companion object {
-            val sample = Editable(
-                EditableProfile.sample.id,
-                EditableProfile.sample.avatarURL,
-                EditableProfile.sample.name,
-                EditableProfile.sample.account,
-                EditableProfile.sample.bio,
-                EditableProfile.sample.url
-            )
+            fun createSample(colors: Colors): Editable {
+                return Editable(
+                    EditableProfile.sample.id,
+                    EditableProfile.sample.avatarURL,
+                    EditableProfile.sample.name,
+                    EditableProfile.sample.account,
+                    EditableProfile.sample.bio.toAnnotatedString(colors),
+                    EditableProfile.sample.url
+                )
+            }
         }
     }
 
@@ -137,7 +143,7 @@ internal sealed class ProfileDetails : Serializable {
         override val avatarURL: URL,
         override val name: String,
         override val account: Account,
-        override val bio: String,
+        override val bio: AnnotatedString,
         override val url: URL,
         val status: Status,
         private val onStatusToggle: () -> Unit
@@ -166,13 +172,13 @@ internal sealed class ProfileDetails : Serializable {
         companion object {
             const val MAIN_ACTION_BUTTON_TAG = "followable-profile-details-main-action-button"
 
-            fun createSample(onStatusToggle: () -> Unit): Followable {
+            fun createSample(colors: Colors, onStatusToggle: () -> Unit): Followable {
                 return Followable(
                     FollowableProfile.sample.id,
                     FollowableProfile.sample.avatarURL,
                     FollowableProfile.sample.name,
                     FollowableProfile.sample.account,
-                    FollowableProfile.sample.bio,
+                    FollowableProfile.sample.bio.toAnnotatedString(colors),
                     FollowableProfile.sample.url,
                     FollowableProfile.sample.follow.toStatus(),
                     onStatusToggle
@@ -200,13 +206,8 @@ internal sealed class ProfileDetails : Serializable {
     }
 
     companion object {
-        /*
-         * It's referenced lazily because doing so directly causes an
-         * ExceptionInitializationException to be thrown; this seems to be a bug in the language.
-         */
-        val sample by lazy {
-            Default.sample
-        }
+        val sample
+            @Composable get() = Default.createSample(OrcaTheme.colors)
     }
 }
 

@@ -5,6 +5,8 @@ import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.FollowableProfile
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetails
 import com.jeanbarrossilva.orca.feature.profiledetails.conversion.ProfileConverter
+import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
+import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -18,14 +20,14 @@ internal class FollowableProfileConverter(
     private val coroutineScope: CoroutineScope,
     override val next: ProfileConverter?
 ) : ProfileConverter() {
-    override fun onConvert(profile: Profile): ProfileDetails? {
+    override fun onConvert(profile: Profile, colors: Colors): ProfileDetails? {
         return if (profile is FollowableProfile<*>) {
             ProfileDetails.Followable(
                 profile.id,
                 profile.avatarURL,
                 profile.name,
                 profile.account,
-                profile.bio,
+                profile.bio.toAnnotatedString(colors),
                 profile.url,
                 profile.follow.toStatus()
             ) {

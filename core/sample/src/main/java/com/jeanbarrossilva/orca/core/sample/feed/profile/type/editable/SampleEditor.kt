@@ -2,6 +2,7 @@ package com.jeanbarrossilva.orca.core.sample.feed.profile.type.editable
 
 import com.jeanbarrossilva.orca.core.feed.profile.type.editable.Editor
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileProvider
+import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
 
 /** [Editor] that edits [SampleEditableProfile]s. **/
@@ -18,7 +19,7 @@ internal class SampleEditor(private val id: String) : Editor {
         }
     }
 
-    override suspend fun setBio(bio: String) {
+    override suspend fun setBio(bio: StyledString) {
         edit {
             this.bio = bio
         }

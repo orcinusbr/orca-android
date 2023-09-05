@@ -9,6 +9,8 @@ import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.ProfileTootPaginateSource
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.type.editable.MastodonEditableProfile
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.type.followable.MastodonFollowableProfile
+import com.jeanbarrossilva.orca.platform.ui.core.style.fromHtml
+import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import io.ktor.client.call.body
 import io.ktor.client.request.parameter
 import java.net.URL
@@ -57,6 +59,7 @@ internal data class MastodonAccount(
         MastodonEditableProfile {
         val account = toAccount()
         val avatarURL = URL(avatar)
+        val bio = StyledString.fromHtml(note)
         val url = URL(url)
         return MastodonEditableProfile(
             tootPaginateSourceProvider,
@@ -64,7 +67,7 @@ internal data class MastodonAccount(
             account,
             avatarURL,
             displayName,
-            bio = note,
+            bio,
             followersCount,
             followingCount,
             url
@@ -76,6 +79,7 @@ internal data class MastodonAccount(
     ): MastodonFollowableProfile<Follow> {
         val account = toAccount()
         val avatarURL = URL(avatar)
+        val bio = StyledString.fromHtml(note)
         val url = URL(url)
         val follow = MastodonHttpClient
             .authenticateAndGet("/api/v1/accounts/relationships") { parameter("id", id) }
@@ -88,7 +92,7 @@ internal data class MastodonAccount(
             account,
             avatarURL,
             displayName,
-            bio = note,
+            bio,
             follow,
             followersCount,
             followingCount,

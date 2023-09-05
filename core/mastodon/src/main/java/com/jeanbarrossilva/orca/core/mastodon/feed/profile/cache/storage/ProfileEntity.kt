@@ -10,6 +10,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.ProfileTootPaginateSource
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.type.editable.MastodonEditableProfile
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.type.followable.MastodonFollowableProfile
+import com.jeanbarrossilva.orca.std.styledstring.toStyledString
 import java.net.URL
 
 @Entity(tableName = "profiles")
@@ -43,6 +44,7 @@ data class ProfileEntity internal constructor(
     ): MastodonEditableProfile {
         val account = Account.of(account)
         val avatarURL = URL(avatarURL)
+        val bio = bio.toStyledString()
         val url = URL(url)
         return MastodonEditableProfile(
             tootPaginateSourceProvider,
@@ -62,6 +64,7 @@ data class ProfileEntity internal constructor(
     ): MastodonFollowableProfile<Follow> {
         val account = Account.of(account)
         val avatarURL = URL(avatarURL)
+        val bio = bio.toStyledString()
         val follow = Follow.of(checkNotNull(follow))
         val url = URL(url)
         return MastodonFollowableProfile(

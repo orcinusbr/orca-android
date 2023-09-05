@@ -44,8 +44,9 @@ internal class ProfileDetailsViewModel private constructor(
     private val context
         get() = contextProvider.provide()
 
-    val detailsLoadableFlow =
-        profileFlow.map { it.toProfileDetails(coroutineScope) }.loadable(coroutineScope)
+    val detailsLoadableFlow = profileFlow
+        .map { it.toProfileDetails(coroutineScope, Colors.getDefault(context)) }
+        .loadable(coroutineScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val tootPreviewsLoadableFlow = tootsIndexFlow
