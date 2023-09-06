@@ -36,20 +36,6 @@ abstract class SingleFragmentActivity : FragmentActivity() {
      **/
     private var binding: ActivitySingleDestinationBinding? = null
 
-    /** [NavGraph] to which the [NavDestination] pointing to the [Fragment] is added. **/
-    private var navGraph
-        get() = navController.graph
-        set(navGraph) {
-            ensureIntegrity(navGraph)
-            navGraphIntegrityInsuranceJob?.invokeOnCompletion { cause ->
-                if (cause == null) {
-                    lifecycleScope.launch {
-                        navController.graph = navGraph
-                    }
-                }
-            }
-        }
-
     /** [FragmentOnAttachListener] that sets [arguments] as the [Fragment]'s. **/
     private val fragmentArgumentsSettingOnAttachListener =
         FragmentOnAttachListener { _, fragment -> fragment.arguments = arguments }
@@ -77,6 +63,23 @@ abstract class SingleFragmentActivity : FragmentActivity() {
     private val navHostFragment
         get() = requireNotNull(binding?.root).getFragment<NavHostFragment>()
 
+    /** [NavGraph] to which the [NavDestination] pointing to the [Fragment] is added. **/
+    private var navGraph
+        get() = navController.graph
+        set(navGraph) {
+            ensureIntegrity(navGraph)
+            navGraphIntegrityInsuranceJob?.invokeOnCompletion { cause ->
+                if (cause == null) {
+                    lifecycleScope.launch {
+                        navController.graph = navGraph
+                        onNavGraphChangeListeners
+                            .onEach(OnNavGraphChangeListener::onNavGraphChange)
+                            .clear()
+                    }
+                }
+            }
+        }
+
     /** [Job] that ensures the [navGraph]'s integrity. **/
     internal var navGraphIntegrityInsuranceJob: Job? = null
         private set
@@ -87,6 +90,9 @@ abstract class SingleFragmentActivity : FragmentActivity() {
      * @see navGraphIntegrityInsuranceJob
      **/
     private val navGraphIntegrityInsuranceScope = CoroutineScope(Dispatchers.Default)
+
+    /** Currently active [OnNavGraphChangeListener]s. **/
+    private val onNavGraphChangeListeners = mutableListOf<OnNavGraphChangeListener>()
 
     /** [navHostFragment]'s [navController][NavHostFragment.navController]. **/
     internal val navController
@@ -101,6 +107,12 @@ abstract class SingleFragmentActivity : FragmentActivity() {
 
     /** [Route][NavDestination.route] of the [NavDestination]. **/
     protected abstract val route: String
+
+    /** Listener that's notified whenever the [navGraph] changes. **/
+    internal fun interface OnNavGraphChangeListener {
+        /** Callback run whenever the [navGraph] changes. **/
+        fun onNavGraphChange()
+    }
 
     /**
      * [IllegalStateException] thrown if a destination isn't added to this [SingleFragmentActivity].
@@ -212,6 +224,19 @@ abstract class SingleFragmentActivity : FragmentActivity() {
      **/
     internal open fun onNonFragmentDestination() {
         throw NonFragmentDestinationException()
+    }
+
+    /**
+     * Notifies the [listener] when the [navGraph] is changed.
+     *
+     * @param listener [OnNavGraphChangeListener] to be notified.
+     **/
+    internal fun doOnNavGraphChange(listener: OnNavGraphChangeListener) {
+        if (navController.hasNavGraph) {
+            listener.onNavGraphChange()
+        } else {
+            onNavGraphChangeListeners.add(listener)
+        }
     }
 
     /**

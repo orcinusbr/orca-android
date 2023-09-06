@@ -22,13 +22,6 @@ android {
         compose = true
     }
 
-    @Suppress("UnstableApiUsage")
-    testOptions {
-        unitTests {
-            isIncludeAndroidResources = true
-        }
-    }
-
     compileOptions {
         sourceCompatibility = Versions.java
         targetCompatibility = Versions.java
@@ -37,9 +30,20 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = Versions.COMPOSE_COMPILER
     }
+
+    packagingOptions.resources.excludes +=
+        arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
 }
 
 dependencies {
+    androidTestImplementation(kotlin("reflect"))
+    androidTestImplementation(project(":platform:ui-test"))
+    androidTestImplementation(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
+    androidTestImplementation(Dependencies.COMPOSE_UI_TEST_MANIFEST)
+    androidTestImplementation(Dependencies.MOCKK)
+    androidTestImplementation(Dependencies.TEST_CORE)
+    androidTestImplementation(Dependencies.TEST_RUNNER)
+
     api(Dependencies.FRAGMENT)
     api(Dependencies.LOADABLE)
 
@@ -56,9 +60,5 @@ dependencies {
     implementation(Dependencies.MATERIAL)
     implementation(Dependencies.TIME4J)
 
-    testImplementation(project(":platform:ui-test"))
-    testImplementation(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
-    testImplementation(Dependencies.COMPOSE_UI_TEST_MANIFEST)
-    testImplementation(Dependencies.MOCKITO)
-    testImplementation(Dependencies.ROBOLECTRIC)
+    testImplementation(Dependencies.JUNIT)
 }

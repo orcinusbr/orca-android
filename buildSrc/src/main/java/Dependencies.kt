@@ -6,7 +6,6 @@ object Dependencies {
     const val APPCOMPAT = "androidx.appcompat:appcompat:${Versions.APPCOMPAT}"
     const val BROWSER = "androidx.browser:browser:${Versions.BROWSER}"
     const val COIL_COMPOSE = "io.coil-kt:coil-compose:${Versions.COIL}"
-
     const val COMPOSE_MATERIAL_3 =
         "androidx.compose.material3:material3:${Versions.COMPOSE_MATERIAL_3}"
     const val COMPOSE_MATERIAL_ICONS_EXTENDED =
@@ -49,7 +48,6 @@ object Dependencies {
     const val MOCKK = "io.mockk:mockk-android:${Versions.MOCKK}"
     const val NAVIGATION_FRAGMENT = "androidx.navigation:navigation-fragment:${Versions.NAVIGATION}"
     const val PAGINATE = "com.chrynan.paginate:paginate-core:${Versions.PAGINATE}"
-    const val ROBOLECTRIC = "org.robolectric:robolectric:${Versions.ROBOLECTRIC}"
     const val SERIALIZATION_JSON =
         "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.SERIALIZATION}"
     const val ROOM = "androidx.room:room-ktx:${Versions.ROOM}"

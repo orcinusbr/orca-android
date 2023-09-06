@@ -31,7 +31,6 @@ object Versions {
     const val MOCKK = "1.13.7"
     const val NAVIGATION = "2.6.0"
     const val PAGINATE = "0.3.0"
-    const val ROBOLECTRIC = "4.10.3"
     const val ROOM = "2.5.2"
     const val SECRETS = "2.0.1"
     const val SERIALIZATION = "1.5.1"

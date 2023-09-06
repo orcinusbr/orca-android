@@ -8,7 +8,7 @@ import com.jeanbarrossilva.orca.platform.ui.core.lifecycle.state.compareTo
 import com.jeanbarrossilva.orca.platform.ui.core.lifecycle.state.next
 
 /**
- * [ComposableActivity] that provides a complete version of [Lifecycle.State], containing missing
+ * [ComponentActivity] that provides a complete version of [Lifecycle.State], containing missing
  * states such as the [paused][CompleteLifecycleState.PAUSED] and
  * [stopped][CompleteLifecycleState.STOPPED] ones.
  *
@@ -20,18 +20,18 @@ open class CompleteLifecycleActivity : ComponentActivity() {
         private set
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         completeLifecycleState = CompleteLifecycleState.CREATED
+        super.onCreate(savedInstanceState)
     }
 
     override fun onStart() {
-        super.onStart()
         completeLifecycleState = CompleteLifecycleState.STARTED
+        super.onStart()
     }
 
     override fun onResume() {
-        super.onResume()
         completeLifecycleState = CompleteLifecycleState.RESUMED
+        super.onResume()
     }
 
     override fun finish() {
@@ -41,18 +41,18 @@ open class CompleteLifecycleActivity : ComponentActivity() {
     }
 
     override fun onPause() {
-        super.onPause()
         completeLifecycleState = CompleteLifecycleState.PAUSED
+        super.onPause()
     }
 
     override fun onStop() {
-        super.onStop()
         completeLifecycleState = CompleteLifecycleState.STOPPED
+        super.onStop()
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         completeLifecycleState = CompleteLifecycleState.DESTROYED
+        super.onDestroy()
     }
 
     /**

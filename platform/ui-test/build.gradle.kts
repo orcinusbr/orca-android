@@ -39,11 +39,11 @@ android {
 }
 
 dependencies {
+    androidTestImplementation(Dependencies.TEST_CORE)
+
     api(Dependencies.NAVIGATION_FRAGMENT)
 
     implementation(project(":platform:ui"))
     implementation(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
     implementation(Dependencies.TIME4J)
-
-    testImplementation(Dependencies.TEST_CORE)
 }
