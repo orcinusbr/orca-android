@@ -55,6 +55,21 @@ open class CompleteLifecycleActivity : ComponentActivity() {
         super.onDestroy()
     }
 
+    /** Calls [onStart]. **/
+    internal fun callOnStart() {
+        onStart()
+    }
+
+    /** Calls [onPause]. **/
+    internal fun callOnPause() {
+        onPause()
+    }
+
+    /** Calls [onStop]. **/
+    internal fun callOnStop() {
+        onStop()
+    }
+
     /**
      * Iteratively moves [completeLifecycleState] to the given [state].
      *

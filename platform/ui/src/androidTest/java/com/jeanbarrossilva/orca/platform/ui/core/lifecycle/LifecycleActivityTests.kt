@@ -4,9 +4,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.launchActivity
 import com.jeanbarrossilva.orca.platform.ui.core.lifecycle.state.CompleteLifecycleState
 import com.jeanbarrossilva.orca.platform.ui.core.lifecycle.test.doOnDestroy
-import com.jeanbarrossilva.orca.platform.ui.core.lifecycle.test.onStart
-import kotlin.reflect.full.declaredMemberFunctions
-import kotlin.reflect.jvm.isAccessible
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -25,7 +22,7 @@ internal class LifecycleActivityTests {
     fun completeLifecycleStateIsStartedWhenActivityIsStarted() {
         launchActivity<CompleteLifecycleActivity>().use { scenario ->
             scenario.onActivity { activity ->
-                activity.onStart()
+                activity.callOnStart()
                 assertEquals(CompleteLifecycleState.STARTED, activity.completeLifecycleState)
             }
         }
@@ -44,13 +41,8 @@ internal class LifecycleActivityTests {
     @Test
     fun completeLifecycleStateIsPausedWhenActivityIsPaused() {
         launchActivity<CompleteLifecycleActivity>().use { scenario ->
-            scenario.moveToState(Lifecycle.State.STARTED)
             scenario.onActivity { activity ->
-                CompleteLifecycleActivity::class
-                    .declaredMemberFunctions
-                    .first { it.name == "onPause" }
-                    .apply { isAccessible = true }
-                    .call(activity)
+                activity.callOnPause()
                 assertEquals(CompleteLifecycleState.PAUSED, activity.completeLifecycleState)
             }
         }
@@ -59,13 +51,8 @@ internal class LifecycleActivityTests {
     @Test
     fun completeLifecycleStateIsStoppedWhenActivityIsStopped() {
         launchActivity<CompleteLifecycleActivity>().use { scenario ->
-            scenario.moveToState(Lifecycle.State.CREATED)
             scenario.onActivity { activity ->
-                CompleteLifecycleActivity::class
-                    .declaredMemberFunctions
-                    .first { it.name == "onStop" }
-                    .apply { isAccessible = true }
-                    .call(activity)
+                activity.callOnStop()
                 assertEquals(CompleteLifecycleState.STOPPED, activity.completeLifecycleState)
             }
         }
