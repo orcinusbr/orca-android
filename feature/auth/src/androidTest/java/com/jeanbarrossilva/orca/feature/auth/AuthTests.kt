@@ -13,18 +13,13 @@ import com.jeanbarrossilva.orca.feature.auth.test.onUsernameField
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.GraphicsMode
 
-@GraphicsMode(GraphicsMode.Mode.NATIVE)
-@RunWith(RobolectricTestRunner::class)
 internal class AuthTests {
     @get:Rule
     val composeRule = createComposeRule()
 
     @Test
-    fun `GIVEN an invalid username and a valid instance WHEN inputting them THEN the sign-in button is disabled`() { // ktlint-disable max-line-length
+    fun disablesSignInButtonWhenUsernameIsInvalidAndInstanceIsValid() { // ktlint-disable max-line-length
         composeRule.setContent {
             OrcaTheme {
                 TestAuth()
@@ -36,7 +31,7 @@ internal class AuthTests {
     }
 
     @Test
-    fun `GIVEN a valid username and an invalid instance WHEN inputting them THEN the sign-in button is disabled`() { // ktlint-disable max-line-length
+    fun disabledSignInButtonWhenUsernameIsValidAndInstanceIsInvalid() { // ktlint-disable max-line-length
         composeRule.setContent {
             OrcaTheme {
                 TestAuth()
@@ -48,7 +43,7 @@ internal class AuthTests {
     }
 
     @Test
-    fun `GIVEN a valid account WHEN inputting it THEN the sign-in button is enabled`() {
+    fun enablesSignInButtonWhenAccountIsValid() {
         composeRule.setContent {
             OrcaTheme {
                 TestAuth()

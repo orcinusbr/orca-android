@@ -23,13 +23,6 @@ android {
         viewBinding = true
     }
 
-    @Suppress("UnstableApiUsage")
-    testOptions {
-        unitTests {
-            isIncludeAndroidResources = true
-        }
-    }
-
     compileOptions {
         sourceCompatibility = Versions.java
         targetCompatibility = Versions.java
@@ -50,7 +43,6 @@ dependencies {
 
     implementation(project(":platform:ui"))
     implementation(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
-    implementation(Dependencies.ROBOLECTRIC)
     implementation(Dependencies.TIME4J)
 
     testImplementation(Dependencies.TEST_CORE)

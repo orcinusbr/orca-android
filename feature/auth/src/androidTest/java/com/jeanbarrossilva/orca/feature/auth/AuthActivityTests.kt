@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.orca.feature.auth
 
-import androidx.compose.ui.test.junit4.createEmptyComposeRule
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
@@ -13,26 +13,21 @@ import com.jeanbarrossilva.orca.platform.ui.core.lifecycle.state.CompleteLifecyc
 import com.jeanbarrossilva.orca.platform.ui.test.core.lifecycle.state.assertIsAtLeast
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.rules.RuleChain
 import org.koin.test.KoinTestRule
-import org.robolectric.Robolectric
-import org.robolectric.RobolectricTestRunner
 
-@RunWith(RobolectricTestRunner::class)
 internal class AuthActivityTests {
-    @get:Rule
-    val koinRule = KoinTestRule.create { modules(AuthModule()) }
+    private val koinRule = KoinTestRule.create { modules(AuthModule()) }
+    private val composeRule = createAndroidComposeRule<AuthActivity>()
 
     @get:Rule
-    val composeRule = createEmptyComposeRule()
+    val ruleChain: RuleChain? = RuleChain.outerRule(koinRule).around(composeRule)
 
     @Test
-    fun `GIVEN an account WHEN signing in with it THEN it signs in`() {
-        Robolectric.buildActivity(AuthActivity::class.java).setup().use {
-            composeRule.onUsernameField().performTextInput(Account.sample.username)
-            composeRule.onInstanceField().performTextInput(Account.sample.instance)
-            composeRule.onSignInButton().performClick()
-            assertIsAtLeast(CompleteLifecycleState.PAUSED, it.get().completeLifecycleState)
-        }
+    fun signsInWhenAccountIsValidAndSignInButtonIsClicked() {
+        composeRule.onUsernameField().performTextInput(Account.sample.username)
+        composeRule.onInstanceField().performTextInput(Account.sample.instance)
+        composeRule.onSignInButton().performClick()
+        assertIsAtLeast(CompleteLifecycleState.PAUSED, composeRule.activity.completeLifecycleState)
     }
 }

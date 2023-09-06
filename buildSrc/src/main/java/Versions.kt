@@ -38,7 +38,7 @@ object Versions {
     const val SLF4J = "2.0.7"
     const val TEST_CORE = "1.5.0"
     const val TEST_ESPRESSO = "3.5.0"
-    const val TEST_RUNNER = "1.5.2"
+    const val TEST_RUNNER = "1.5.0"
     const val TIME4A = "4.8-2021a"
     const val TURBINE = "1.0.0"
     const val VIEWMODEL = "2.6.1"
