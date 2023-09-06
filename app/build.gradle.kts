@@ -15,6 +15,7 @@ android {
         targetSdk = Versions.Orca.SDK_TARGET
         versionCode = Versions.Orca.CODE
         versionName = Versions.Orca.NAME
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -40,13 +41,6 @@ android {
         }
     }
 
-    @Suppress("UnstableApiUsage")
-    testOptions {
-        unitTests {
-            isIncludeAndroidResources = true
-        }
-    }
-
     compileOptions {
         sourceCompatibility = Versions.java
         targetCompatibility = Versions.java
@@ -58,6 +52,13 @@ android {
 }
 
 dependencies {
+    "androidTestDemoImplementation"(project(":platform:ui-test"))
+    "androidTestDemoImplementation"(Dependencies.ACTIVITY)
+    "androidTestDemoImplementation"(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
+    "androidTestDemoImplementation"(Dependencies.TEST_CORE)
+    "androidTestDemoImplementation"(Dependencies.TEST_ESPRESSO_INTENTS)
+    "androidTestDemoImplementation"(Dependencies.TEST_RUNNER)
+
     "demoImplementation"(project(":core-test"))
 
     implementation(project(":core:mastodon"))
@@ -78,11 +79,4 @@ dependencies {
     implementation(Dependencies.KOIN_ANDROID)
     implementation(Dependencies.MATERIAL)
     implementation(Dependencies.TIME4J)
-
-    "testDemoImplementation"(project(":platform:ui-test"))
-    "testDemoImplementation"(Dependencies.ACTIVITY)
-    "testDemoImplementation"(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
-    "testDemoImplementation"(Dependencies.ROBOLECTRIC)
-    "testDemoImplementation"(Dependencies.TEST_CORE)
-    "testDemoImplementation"(Dependencies.TEST_ESPRESSO_INTENTS)
 }
