@@ -9,24 +9,11 @@ android {
 
     defaultConfig {
         minSdk = Versions.Orca.SDK_MIN
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-        }
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildFeatures {
-        buildConfig = true
         compose = true
-    }
-
-    @Suppress("UnstableApiUsage")
-    testOptions {
-        unitTests {
-            isIncludeAndroidResources = true
-        }
     }
 
     compileOptions {
@@ -40,6 +27,10 @@ android {
 }
 
 dependencies {
+    androidTestImplementation(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
+    androidTestImplementation(Dependencies.KOIN_TEST)
+    androidTestImplementation(Dependencies.TEST_RUNNER)
+
     implementation(project(":core"))
     implementation(project(":core:sample"))
     implementation(project(":platform:theme"))
@@ -47,7 +38,5 @@ dependencies {
     implementation(Dependencies.COMPOSE_MATERIAL_ICONS_EXTENDED)
     implementation(Dependencies.KOIN_ANDROID)
 
-    testImplementation(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
-    testImplementation(Dependencies.KOIN_TEST)
-    testImplementation(Dependencies.ROBOLECTRIC)
+    testImplementation(Dependencies.JUNIT)
 }

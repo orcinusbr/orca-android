@@ -22,14 +22,9 @@ import com.jeanbarrossilva.orca.feature.composer.test.onToolbar
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.RuleChain
-import org.junit.runner.RunWith
 import org.koin.test.KoinTestRule
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.GraphicsMode
 
-@GraphicsMode(GraphicsMode.Mode.NATIVE)
 @OptIn(ExperimentalTestApi::class)
-@RunWith(RobolectricTestRunner::class)
 internal class ComposerActivityTests {
     private val koinRule = KoinTestRule.create { modules(ComposerModule()) }
     private val composeRule = createAndroidComposeRule<ComposerActivity>()
@@ -38,7 +33,7 @@ internal class ComposerActivityTests {
     val ruleChain: RuleChain? = RuleChain.outerRule(koinRule).around(composeRule)
 
     @Test
-    fun `GIVEN a composition WHEN selecting part of it and styling it THEN it's styled`() {
+    fun stylesSelectedComposition() {
         composeRule.onField().performTextInput("Hello, world!")
         composeRule.onField().performTextInputSelection(TextRange(0, 5))
         composeRule.onToolbar().onChildren().filterToOne(isBoldFormat()).performClick()
@@ -51,7 +46,7 @@ internal class ComposerActivityTests {
     }
 
     @Test
-    fun `GIVEN a composition WHEN styling part of it and changing the selection THEN it remains styled`() { // ktlint-disable max-line-length
+    fun keepsStylizationWhenUnselectingStylizedComposition() { // ktlint-disable max-line-length
         composeRule.onField().performTextInput("Hello, world!")
         composeRule.onField().performTextInputSelection(TextRange(7, 12))
         composeRule.onToolbar().onChildren().filterToOne(isItalicFormat()).performClick()
