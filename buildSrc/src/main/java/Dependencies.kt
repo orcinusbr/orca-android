@@ -59,6 +59,5 @@ object Dependencies {
         "androidx.test.espresso:espresso-intents:${Versions.TEST_ESPRESSO}"
     const val TEST_RUNNER = "androidx.test:runner:${Versions.TEST_RUNNER}"
     const val TIME4J = "net.time4j:time4j-android:${Versions.TIME4A}"
-    const val TURBINE = "app.cash.turbine:turbine:${Versions.TURBINE}"
     const val VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.VIEWMODEL}"
 }

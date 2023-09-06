@@ -42,8 +42,7 @@ internal class ProfileConverterFactoryTests {
         val onStatusToggle = { }
         assertEquals(
             ProfileDetails.Followable.createSample(Colors.Unspecified, onStatusToggle),
-            ProfileConverterFactory
-                .create(coroutineScope)
+            ProfileConverterFactory.create(coroutineScope)
                 .convert(FollowableProfile.sample, Colors.Unspecified)
                 .let { it as ProfileDetails.Followable }
                 .copy(onStatusToggle = onStatusToggle)
