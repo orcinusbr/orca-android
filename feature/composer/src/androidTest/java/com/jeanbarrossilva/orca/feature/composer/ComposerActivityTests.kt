@@ -19,6 +19,7 @@ import com.jeanbarrossilva.orca.feature.composer.test.isBoldFormat
 import com.jeanbarrossilva.orca.feature.composer.test.isItalicFormat
 import com.jeanbarrossilva.orca.feature.composer.test.onField
 import com.jeanbarrossilva.orca.feature.composer.test.onToolbar
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.RuleChain
@@ -45,8 +46,12 @@ internal class ComposerActivityTests {
         )
     }
 
+    @Ignore(
+        "androidx.compose.ui:ui-text:1.5.0 has a bug that prevents stylization from being kept " +
+            "across selection changes."
+    )
     @Test
-    fun keepsStylizationWhenUnselectingStylizedComposition() { // ktlint-disable max-line-length
+    fun keepsStylizationWhenUnselectingStylizedComposition() {
         composeRule.onField().performTextInput("Hello, world!")
         composeRule.onField().performTextInputSelection(TextRange(7, 12))
         composeRule.onToolbar().onChildren().filterToOne(isItalicFormat()).performClick()
