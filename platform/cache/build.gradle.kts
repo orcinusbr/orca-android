@@ -10,6 +10,7 @@ android {
 
     defaultConfig {
         minSdk = Versions.Orca.SDK_MIN
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -18,27 +19,24 @@ android {
         }
     }
 
-    @Suppress("UnstableApiUsage")
-    testOptions {
-        unitTests {
-            isIncludeAndroidResources = true
-        }
-    }
-
     compileOptions {
         sourceCompatibility = Versions.java
         targetCompatibility = Versions.java
     }
+
+    packagingOptions.resources.excludes +=
+        arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
 }
 
 dependencies {
+    androidTestImplementation(kotlin("test"))
+    androidTestImplementation(Dependencies.COROUTINES_TEST)
+    androidTestImplementation(Dependencies.MOCKK)
+    androidTestImplementation(Dependencies.TEST_CORE)
+    androidTestImplementation(Dependencies.TEST_RUNNER)
+
     ksp(Plugins.ROOM)
 
     implementation(Dependencies.COROUTINES_CORE)
     implementation(Dependencies.ROOM)
-
-    testImplementation(kotlin("test"))
-    testImplementation(Dependencies.COROUTINES_TEST)
-    testImplementation(Dependencies.MOCKITO)
-    testImplementation(Dependencies.ROBOLECTRIC)
 }
