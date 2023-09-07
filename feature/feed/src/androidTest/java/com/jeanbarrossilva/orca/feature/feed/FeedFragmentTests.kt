@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.feature.feed
 
-import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.filterToOne
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
@@ -12,6 +11,8 @@ import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.sample.feed.profile.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.SampleTootWriter
 import com.jeanbarrossilva.orca.feature.feed.test.FeedActivity
+import com.jeanbarrossilva.orca.feature.feed.test.isSelected
+import com.jeanbarrossilva.orca.feature.feed.test.waitUntil
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.TOOT_PREVIEW_FAVORITE_STAT_TAG
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.onTootPreviews
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.time.Time4JTestRule
@@ -40,7 +41,9 @@ internal class FeedFragmentTests {
                 .onChildren()
                 .filterToOne(hasTestTag(TOOT_PREVIEW_FAVORITE_STAT_TAG))
                 .performClick()
-                .assertIsSelected()
+                .let {
+                    waitUntil(it::isSelected)
+                }
         }
     }
 }
