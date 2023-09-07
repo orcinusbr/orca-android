@@ -51,12 +51,14 @@ internal abstract class TestSingleFragmentActivity : SingleFragmentActivity() {
         inline fun <reified T : TestSingleFragmentActivity> assertRunNavGraphCallbackEquals(
             expected: NavGraphIntegrityCallback
         ) {
+            var actual: NavGraphIntegrityCallback? = null
             launchActivity<T>().use { scenario ->
                 scenario.onActivity { activity ->
                     waitUntil { activity.runNavGraphIntegrityCallback != null }
-                    assertEquals(expected, activity.runNavGraphIntegrityCallback)
+                    actual = activity.runNavGraphIntegrityCallback
                 }
             }
+            assertEquals(expected, actual)
         }
     }
 }
