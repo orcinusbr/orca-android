@@ -7,16 +7,13 @@ import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.headlin
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 
-@RunWith(RobolectricTestRunner::class)
-internal class HighlightCardTests {
+internal class HeadlineCardTests {
     @get:Rule
     val composeRule = createComposeRule()
 
     @Test
-    fun `GIVEN a highlight card WHEN clicking on it THEN its callback is run`() {
+    fun runsCallbackWhenClicked() {
         var hasCallbackBeenRun = false
         composeRule.setContent {
             OrcaTheme {
