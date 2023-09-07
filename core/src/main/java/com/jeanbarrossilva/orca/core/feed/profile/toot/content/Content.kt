@@ -50,7 +50,6 @@ class Content private constructor(val text: StyledString, val highlight: Highlig
             val link = links.firstOrNull()
             val url = link?.indices?.let(text::substring)?.let(::URL)
             val headline = url?.let { headlineProvider.provide(it) }
-            ensureParity(link, headline)
             val highlight = headline?.let { Highlight(it, url) }
             val formattedText = if (links.size == 1 && text.trim().endsWith("$url")) {
                 "${text.replaceRange(link?.indices ?: IntRange.EMPTY, "")}"
@@ -71,6 +70,14 @@ class Content private constructor(val text: StyledString, val highlight: Highlig
          * @throws UnprovidedHeadlineException If the text has a [Highlight] while the [headline]
          * hasn't been specified.
          **/
+
+        /*
+         * There's a case in which the link will exist and a headline won't be provided: when the
+         * URL leads to an in-app resource (such as a toot or a profile). Because these links start
+         * with the instance base URL, a solution for obtaining instance-specific URL resources must
+         * be developed in order for parity between the link and the headline to be properly
+         * ensured.
+         */
         @Throws(UnprovidedHeadlineException::class)
         private fun ensureParity(link: Link?, headline: Headline?) {
             if (link != null && headline == null) {
