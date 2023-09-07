@@ -275,6 +275,7 @@ abstract class SingleFragmentActivity : FragmentActivity() {
      **/
     private fun ensureHasSingleDestination(navGraph: NavGraph) {
         val destinationCount = navGraph.count()
+        throw Exception("${navGraph.nodes}")
         if (destinationCount == 0) {
             onNoDestination()
         } else if (destinationCount != 1) {
