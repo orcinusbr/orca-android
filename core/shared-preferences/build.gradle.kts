@@ -10,18 +10,12 @@ android {
 
     defaultConfig {
         minSdk = Versions.Orca.SDK_MIN
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
             isMinifyEnabled = true
-        }
-    }
-
-    @Suppress("UnstableApiUsage")
-    testOptions {
-        unitTests {
-            isIncludeAndroidResources = true
         }
     }
 
@@ -32,12 +26,12 @@ android {
 }
 
 dependencies {
+    androidTestImplementation(project(":core-test"))
+    androidTestImplementation(Dependencies.COROUTINES_TEST)
+    androidTestImplementation(Dependencies.JUNIT)
+    androidTestImplementation(Dependencies.TEST_RUNNER)
+
     implementation(project(":core"))
     implementation(Dependencies.CORE)
     implementation(Dependencies.SERIALIZATION_JSON)
-
-    testImplementation(project(":core-test"))
-    testImplementation(Dependencies.COROUTINES_TEST)
-    testImplementation(Dependencies.JUNIT)
-    testImplementation(Dependencies.ROBOLECTRIC)
 }

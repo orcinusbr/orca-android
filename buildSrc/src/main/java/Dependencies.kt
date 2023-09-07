@@ -6,7 +6,6 @@ object Dependencies {
     const val APPCOMPAT = "androidx.appcompat:appcompat:${Versions.APPCOMPAT}"
     const val BROWSER = "androidx.browser:browser:${Versions.BROWSER}"
     const val COIL_COMPOSE = "io.coil-kt:coil-compose:${Versions.COIL}"
-
     const val COMPOSE_MATERIAL_3 =
         "androidx.compose.material3:material3:${Versions.COMPOSE_MATERIAL_3}"
     const val COMPOSE_MATERIAL_ICONS_EXTENDED =
@@ -45,10 +44,9 @@ object Dependencies {
         "com.jeanbarrossilva.loadable:loadable-placeholder-test:${Versions.LOADABLE}"
     const val LOTTIE_COMPOSE = "com.airbnb.android:lottie-compose:${Versions.LOTTIE}"
     const val MATERIAL = "com.google.android.material:material:${Versions.MATERIAL}"
-    const val MOCKITO = "org.mockito:mockito-core:${Versions.MOCKITO}"
+    const val MOCKK = "io.mockk:mockk-android:${Versions.MOCKK}"
     const val NAVIGATION_FRAGMENT = "androidx.navigation:navigation-fragment:${Versions.NAVIGATION}"
     const val PAGINATE = "com.chrynan.paginate:paginate-core:${Versions.PAGINATE}"
-    const val ROBOLECTRIC = "org.robolectric:robolectric:${Versions.ROBOLECTRIC}"
     const val SERIALIZATION_JSON =
         "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.SERIALIZATION}"
     const val ROOM = "androidx.room:room-ktx:${Versions.ROOM}"
@@ -56,7 +54,7 @@ object Dependencies {
     const val TEST_CORE = "androidx.test:core-ktx:${Versions.TEST_CORE}"
     const val TEST_ESPRESSO_INTENTS =
         "androidx.test.espresso:espresso-intents:${Versions.TEST_ESPRESSO}"
+    const val TEST_RUNNER = "androidx.test:runner:${Versions.TEST_RUNNER}"
     const val TIME4J = "net.time4j:time4j-android:${Versions.TIME4A}"
-    const val TURBINE = "app.cash.turbine:turbine:${Versions.TURBINE}"
     const val VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.VIEWMODEL}"
 }

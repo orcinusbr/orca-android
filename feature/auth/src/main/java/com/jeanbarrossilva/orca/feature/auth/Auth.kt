@@ -36,13 +36,13 @@ import com.jeanbarrossilva.orca.platform.theme.kit.input.TextField
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 
 /** Tag that identifies the username field for testing purposes. **/
-internal const val AUTH_USERNAME_FIELD_TAG = "auth-username-field"
+const val AUTH_USERNAME_FIELD_TAG = "auth-username-field"
 
 /** Tag that identifies the instance field for testing purposes. **/
-internal const val AUTH_INSTANCE_FIELD_TAG = "auth-instance-field"
+const val AUTH_INSTANCE_FIELD_TAG = "auth-instance-field"
 
 /** Tag that identifies the sign-in button for testing purposes. **/
-internal const val AUTH_SIGN_IN_BUTTON_TAG = "auth-sign-in-button"
+const val AUTH_SIGN_IN_BUTTON_TAG = "auth-sign-in-button"
 
 @Composable
 internal fun Auth(viewModel: AuthViewModel, modifier: Modifier = Modifier) {

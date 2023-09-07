@@ -11,7 +11,6 @@ android {
 
     defaultConfig {
         minSdk = Versions.Orca.SDK_MIN
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {

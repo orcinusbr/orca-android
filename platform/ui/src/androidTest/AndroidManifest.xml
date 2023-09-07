@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <activity
+            android:name="com.jeanbarrossilva.orca.platform.ui.core.ActivityStarterTests$TestActivity" />
+        <activity
+            android:name="com.jeanbarrossilva.orca.platform.ui.core.lifecycle.CompleteLifecycleActivity" />
+        <activity
+            android:name="com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivityTests$EphemeralFragmentContainerViewActivity" />
+        <activity
+            android:name="com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivityTests$NoFragmentContainerViewActivity" />
+        <activity
+            android:name="com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivityTests$UnidentifiedFragmentContainerViewActivity" />
+        <activity
+            android:name="com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigatorTests$TestNavigationActivity" />
+    </application>
+</manifest>

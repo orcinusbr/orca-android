@@ -9,6 +9,7 @@ android {
 
     defaultConfig {
         minSdk = Versions.Orca.SDK_MIN
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -44,15 +45,16 @@ android {
 }
 
 dependencies {
+    androidTestImplementation(project(":platform:ui-test"))
+    androidTestImplementation(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
+    androidTestImplementation(Dependencies.COMPOSE_UI_TEST_MANIFEST)
+    androidTestImplementation(Dependencies.TEST_CORE)
+    androidTestImplementation(Dependencies.TEST_RUNNER)
+
     implementation(project(":core"))
     implementation(project(":core:sample"))
     implementation(project(":platform:theme"))
     implementation(project(":platform:ui"))
     implementation(Dependencies.KOIN_ANDROID)
     implementation(Dependencies.LOADABLE_LIST)
-
-    testImplementation(project(":platform:ui-test"))
-    testImplementation(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
-    testImplementation(Dependencies.COMPOSE_UI_TEST_MANIFEST)
-    testImplementation(Dependencies.ROBOLECTRIC)
 }
