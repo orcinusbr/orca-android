@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import java.net.URL
 
 /**
@@ -26,5 +25,4 @@ fun Context.browseTo(url: URL) {
     val uri = Uri.parse("$url")
     val intent = Intent(Intent.ACTION_VIEW, uri).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK }
     startActivity(intent)
-    Log.d("Context.extensions", "Navigated to $uri.")
 }
