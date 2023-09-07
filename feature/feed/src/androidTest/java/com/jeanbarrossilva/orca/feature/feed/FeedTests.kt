@@ -8,12 +8,12 @@ import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.performClick
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
-import com.jeanbarrossilva.orca.feature.feed.test.waitUntil
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.TOOT_PREVIEW_FAVORITE_STAT_TAG
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.onTootPreviews
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.time.Time4JTestRule
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 
@@ -41,6 +41,6 @@ internal class FeedTests {
             .onChildren()
             .filterToOne(hasTestTag(TOOT_PREVIEW_FAVORITE_STAT_TAG))
             .performClick()
-        waitUntil { hasCallbackBeenRun }
+        assertTrue(hasCallbackBeenRun)
     }
 }
