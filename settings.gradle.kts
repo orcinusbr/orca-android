@@ -18,5 +18,6 @@ include(
     ":platform:theme",
     ":platform:ui",
     ":platform:ui-test",
+    ":std:image-loader",
     ":std:styled-string"
 )

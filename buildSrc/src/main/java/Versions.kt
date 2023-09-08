@@ -29,6 +29,7 @@ object Versions {
     const val NAVIGATION = "2.6.0"
     const val PAGINATE = "0.3.0"
     const val ROOM = "2.5.2"
+    const val SCRIMAGE = "4.0.39"
     const val SECRETS = "2.0.1"
     const val SERIALIZATION = "1.5.1"
     const val SLF4J = "2.0.7"
