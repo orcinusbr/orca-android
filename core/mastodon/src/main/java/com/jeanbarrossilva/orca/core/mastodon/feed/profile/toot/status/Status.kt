@@ -20,6 +20,7 @@ data class Status internal constructor(
     internal val url: String,
     internal val card: Card?,
     internal val content: String,
+    internal val mediaAttachments: List<MastodonAttachment>,
     @Suppress("SpellCheckingInspection") internal val favourited: Boolean?,
     internal val reblogged: Boolean?
 ) {
@@ -27,7 +28,8 @@ data class Status internal constructor(
     internal fun toToot(): MastodonToot {
         val author = this.account.toAuthor()
         val text = StyledString.fromHtml(content)
-        val content = Content.from(text) { card?.toHeadline() }
+        val attachments = mediaAttachments.map(MastodonAttachment::toAttachment)
+        val content = Content.from(text, attachments) { card?.toHeadline() }
         val publicationDateTime = ZonedDateTime.parse(createdAt)
         val url = URL(url)
         return MastodonToot(

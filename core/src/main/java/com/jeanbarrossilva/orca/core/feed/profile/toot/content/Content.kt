@@ -13,9 +13,14 @@ import java.util.Objects
  * Part that's been composed by the user.
  *
  * @param text Written content.
+ * @param attachments [Attachment]s containing the attached media.
  * @param highlight [Highlight] from the [text].
  **/
-class Content private constructor(val text: StyledString, val highlight: Highlight? = null) {
+class Content private constructor(
+    val text: StyledString,
+    val attachments: List<Attachment>,
+    val highlight: Highlight? = null
+) {
     /**
      * [IllegalArgumentException] thrown if the text has a [Highlight] while a [Headline] hasn't
      * been provided.
@@ -40,12 +45,17 @@ class Content private constructor(val text: StyledString, val highlight: Highlig
          * Creates [Content] from the given [text].
          *
          * @param text [String] from which [Content] will be created.
+         * @param attachments [Attachment]s containing the attached media.
          * @param headlineProvider [HeadlineProvider] that provides the [Headline].
          * @throws UnprovidedHeadlineException If the text has a [Highlight] while a
          * [HeadlineProvider] hasn't been specified.
          **/
         @Throws(UnprovidedHeadlineException::class)
-        fun from(text: StyledString, headlineProvider: HeadlineProvider): Content {
+        fun from(
+            text: StyledString,
+            attachments: List<Attachment> = emptyList(),
+            headlineProvider: HeadlineProvider
+        ): Content {
             val links = text.styles.filterIsInstance<Link>()
             val link = links.firstOrNull()
             val url = link?.indices?.let(text::substring)?.let(::URL)
@@ -58,7 +68,7 @@ class Content private constructor(val text: StyledString, val highlight: Highlig
             } else {
                 text
             }
-            return Content(formattedText, highlight)
+            return Content(formattedText, attachments, highlight)
         }
 
         /**
