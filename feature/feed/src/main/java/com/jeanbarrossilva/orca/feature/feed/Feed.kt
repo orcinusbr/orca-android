@@ -47,6 +47,7 @@ internal fun Feed(
     Feed(
         tootPreviewsLoadable,
         onSearch = boundary::navigateToSearch,
+        onHighlightClick = boundary::navigateTo,
         onFavorite = viewModel::favorite,
         onReblog = viewModel::reblog,
         onShare = viewModel::share,
@@ -67,6 +68,7 @@ internal fun Feed(
     Feed(
         tootPreviewsLoadable,
         onSearch = { },
+        onHighlightClick = { },
         onFavorite,
         onReblog = { },
         onShare = { },
@@ -83,6 +85,7 @@ internal fun Feed(
 private fun Feed(
     tootPreviewsLoadable: ListLoadable<TootPreview>,
     onSearch: () -> Unit,
+    onHighlightClick: (URL) -> Unit,
     onFavorite: (tootID: String) -> Unit,
     onReblog: (tootID: String) -> Unit,
     onShare: (URL) -> Unit,
@@ -121,6 +124,7 @@ private fun Feed(
     ) {
         Timeline(
             tootPreviewsLoadable,
+            onHighlightClick,
             onFavorite,
             onReblog,
             onShare,

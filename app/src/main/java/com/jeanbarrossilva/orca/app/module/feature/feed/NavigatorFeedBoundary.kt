@@ -5,7 +5,9 @@ import com.jeanbarrossilva.orca.feature.composer.ComposerActivity
 import com.jeanbarrossilva.orca.feature.feed.FeedBoundary
 import com.jeanbarrossilva.orca.feature.search.SearchFragment
 import com.jeanbarrossilva.orca.feature.tootdetails.TootDetailsFragment
+import com.jeanbarrossilva.orca.platform.ui.core.browseTo
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
+import java.net.URL
 
 internal class NavigatorFeedBoundary(
     private val context: Context,
@@ -13,6 +15,10 @@ internal class NavigatorFeedBoundary(
 ) : FeedBoundary {
     override fun navigateToSearch() {
         SearchFragment.navigate(navigator)
+    }
+
+    override fun navigateTo(url: URL) {
+        context.browseTo(url)
     }
 
     override fun navigateToTootDetails(id: String) {

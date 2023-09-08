@@ -5,11 +5,13 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlig
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.highlight.sample
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import com.jeanbarrossilva.orca.std.styledstring.buildStyledString
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 internal class ContentTests {
+    @Ignore("Depends on the implementation of instance-specific URL resources.")
     @Test
     fun `GIVEN a text with a URL without providing a headline WHEN creating content from it THEN it throws`() { // ktlint-disable max-line-length
         assertFailsWith<Content.UnprovidedHeadlineException> {

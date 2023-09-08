@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.ui.component.timeline.toot
+package com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat
 
 import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
@@ -14,6 +14,10 @@ import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconInteractiveness
 import com.jeanbarrossilva.orca.platform.ui.component.stat.reblog.ReblogStatIcon
 import com.jeanbarrossilva.orca.platform.ui.component.stat.reblog.ReblogStatIconDefaults
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.Stat
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.StatDefaults
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TOOT_PREVIEW_REBLOG_COUNT_STAT_TAG
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 
 @Composable
 internal fun ReblogStat(preview: TootPreview, onClick: () -> Unit, modifier: Modifier = Modifier) {

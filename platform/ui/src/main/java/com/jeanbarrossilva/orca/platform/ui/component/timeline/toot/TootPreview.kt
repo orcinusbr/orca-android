@@ -32,6 +32,7 @@ import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.test.Loading
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.samples
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
@@ -39,6 +40,9 @@ import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import com.jeanbarrossilva.orca.platform.theme.extensions.EmptyMutableInteractionSource
 import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
 import com.jeanbarrossilva.orca.platform.ui.component.SmallAvatar
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.headline.HeadlineCard
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.FavoriteStat
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.ReblogStat
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.RelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.rememberRelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.core.image.ImageProvider
@@ -84,7 +88,8 @@ private val bodyModifier = Modifier.testTag(TOOT_PREVIEW_BODY_TAG)
  * @param avatarURL [URL] that leads to the author's avatar.
  * @param name Name of the author.
  * @param account [Account] of the author.
- * @param body Content written by the author.
+ * @param text Content written by the author.
+ * @param highlight [Highlight] from the [text].
  * @param publicationDateTime Zoned moment in time in which it was published.
  * @param commentCount Amount of comments.
  * @param isFavorite Whether it's marked as favorite.
@@ -99,7 +104,8 @@ data class TootPreview(
     val avatarURL: URL,
     val name: String,
     private val account: Account,
-    val body: AnnotatedString,
+    val text: AnnotatedString,
+    val highlight: Highlight?,
     private val publicationDateTime: ZonedDateTime,
     private val commentCount: Int,
     val isFavorite: Boolean,
@@ -151,7 +157,7 @@ fun TootPreview(modifier: Modifier = Modifier) {
         avatar = { SmallAvatar() },
         name = { SmallTextualPlaceholder(nameModifier) },
         metadata = { MediumTextualPlaceholder(metadataModifier) },
-        body = {
+        content = {
             Column(
                 bodyModifier.semantics { set(SemanticsProperties.Loading, true) },
                 Arrangement.spacedBy(OrcaTheme.spacings.extraSmall)
@@ -169,6 +175,7 @@ fun TootPreview(modifier: Modifier = Modifier) {
 @Composable
 fun TootPreview(
     preview: TootPreview,
+    onHighlightClick: () -> Unit,
     onFavorite: () -> Unit,
     onReblog: () -> Unit,
     onShare: () -> Unit,
@@ -187,7 +194,15 @@ fun TootPreview(
         },
         name = { Text(preview.name, nameModifier) },
         metadata = { Text(metadata, metadataModifier) },
-        body = { Text(preview.body, bodyModifier) },
+        content = {
+            Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.medium)) {
+                Text(preview.text, bodyModifier)
+
+                preview.highlight?.headline?.let {
+                    HeadlineCard(it, onHighlightClick)
+                }
+            }
+        },
         stats = {
             Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
                 Stat(
@@ -220,7 +235,7 @@ private fun TootPreview(
     avatar: @Composable () -> Unit,
     name: @Composable () -> Unit,
     metadata: @Composable () -> Unit,
-    body: @Composable () -> Unit,
+    content: @Composable () -> Unit,
     stats: @Composable () -> Unit,
     onClick: (() -> Unit)?,
     modifier: Modifier = Modifier
@@ -254,7 +269,7 @@ private fun TootPreview(
                         ProvideTextStyle(OrcaTheme.typography.bodySmall, metadata)
                     }
 
-                    body()
+                    content()
                     stats()
                 }
             }
@@ -297,5 +312,13 @@ private fun LoadedActiveTootPreviewPreview() {
 
 @Composable
 private fun TootPreview(preview: TootPreview, modifier: Modifier = Modifier) {
-    TootPreview(preview, onFavorite = { }, onReblog = { }, onShare = { }, onClick = { }, modifier)
+    TootPreview(
+        preview,
+        onHighlightClick = { },
+        onFavorite = { },
+        onReblog = { },
+        onShare = { },
+        onClick = { },
+        modifier
+    )
 }

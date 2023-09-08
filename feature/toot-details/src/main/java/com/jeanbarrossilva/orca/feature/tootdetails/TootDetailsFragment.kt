@@ -18,7 +18,6 @@ class TootDetailsFragment private constructor() : ComposableFragment() {
     private val viewModel by viewModels<TootDetailsViewModel> {
         TootDetailsViewModel.createFactory(contextProvider = ::requireContext, provider, id)
     }
-    private val navigator by inject<TootDetailsBoundary>()
 
     private constructor(id: String) : this() {
         arguments = bundleOf(ID_KEY to id)
@@ -26,7 +25,7 @@ class TootDetailsFragment private constructor() : ComposableFragment() {
 
     @Composable
     override fun Content() {
-        TootDetails(viewModel, navigator, onBottomAreaAvailabilityChangeListener = get())
+        TootDetails(viewModel, boundary = get(), onBottomAreaAvailabilityChangeListener = get())
     }
 
     companion object {
