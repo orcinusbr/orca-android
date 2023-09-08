@@ -4,6 +4,7 @@ import androidx.test.core.app.launchActivity
 import com.jeanbarrossilva.orca.platform.ui.test.core.SingleFragmentActivity
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
 
 internal abstract class TestSingleFragmentActivity : SingleFragmentActivity() {
     var runNavGraphIntegrityCallback: NavGraphIntegrityCallback? = null
@@ -50,13 +51,14 @@ internal abstract class TestSingleFragmentActivity : SingleFragmentActivity() {
         inline fun <reified T : TestSingleFragmentActivity> assertRunNavGraphCallbackEquals(
             expected: NavGraphIntegrityCallback
         ) {
+            var actual: NavGraphIntegrityCallback? = null
             launchActivity<T>().use { scenario ->
                 scenario.onActivity { activity ->
-                    waitUntil {
-                        activity.runNavGraphIntegrityCallback == expected
-                    }
+                    waitUntil { activity.runNavGraphIntegrityCallback != null }
+                    actual = activity.runNavGraphIntegrityCallback
                 }
             }
+            assertEquals(expected, actual)
         }
     }
 }
