@@ -84,7 +84,9 @@ fun Image(
                         Image(
                             it.content,
                             contentDescription,
-                            Modifier.matchParentSize(),
+                            Modifier
+                                .clip(shape)
+                                .matchParentSize(),
                             contentScale = contentScale
                         )
                     } else if (it is Loadable.Failed) {
