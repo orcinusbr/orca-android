@@ -38,12 +38,14 @@ android {
 dependencies {
     androidTestImplementation(kotlin("reflect"))
     androidTestImplementation(project(":platform:ui-test"))
+    androidTestImplementation(project(":std:image-loader-test"))
     androidTestImplementation(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
     androidTestImplementation(Dependencies.COMPOSE_UI_TEST_MANIFEST)
     androidTestImplementation(Dependencies.MOCKK)
     androidTestImplementation(Dependencies.TEST_CORE)
     androidTestImplementation(Dependencies.TEST_RUNNER)
 
+    api(project(":std:image-loader:compose"))
     api(Dependencies.FRAGMENT)
     api(Dependencies.LOADABLE)
 
@@ -51,7 +53,6 @@ dependencies {
     implementation(project(":core:sample"))
     implementation(project(":platform:theme"))
     implementation(Dependencies.ACTIVITY_COMPOSE)
-    implementation(Dependencies.COIL_COMPOSE)
     implementation(Dependencies.COMPOSE_MATERIAL_ICONS_EXTENDED)
     implementation(Dependencies.LOADABLE_LIST)
     implementation(Dependencies.LOADABLE_PLACEHOLDER)

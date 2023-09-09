@@ -5,16 +5,16 @@ object Dependencies {
     const val ACTIVITY_COMPOSE = "androidx.activity:activity-compose:${Versions.ACTIVITY}"
     const val APPCOMPAT = "androidx.appcompat:appcompat:${Versions.APPCOMPAT}"
     const val BROWSER = "androidx.browser:browser:${Versions.BROWSER}"
-    const val COIL_COMPOSE = "io.coil-kt:coil-compose:${Versions.COIL}"
+    const val COIL = "io.coil-kt:coil:${Versions.COIL}"
     const val COMPOSE_MATERIAL_3 =
         "androidx.compose.material3:material3:${Versions.COMPOSE_MATERIAL_3}"
     const val COMPOSE_MATERIAL_ICONS_EXTENDED =
         "androidx.compose.material:material-icons-extended:" +
-            Versions.COMPOSE_MATERIAL_ICONS_EXTENDED
-    const val COMPOSE_UI_TEST_JUNIT_4 = "androidx.compose.ui:ui-test-junit4:${Versions.COMPOSE_UI}"
+            Versions.COMPOSE
+    const val COMPOSE_UI_TEST_JUNIT_4 = "androidx.compose.ui:ui-test-junit4:${Versions.COMPOSE}"
     const val COMPOSE_UI_TEST_MANIFEST =
-        "androidx.compose.ui:ui-test-manifest:${Versions.COMPOSE_UI}"
-    const val COMPOSE_UI_TOOLING = "androidx.compose.ui:ui-tooling:${Versions.COMPOSE_UI}"
+        "androidx.compose.ui:ui-test-manifest:${Versions.COMPOSE}"
+    const val COMPOSE_UI_TOOLING = "androidx.compose.ui:ui-tooling:${Versions.COMPOSE}"
     const val CONSTRAINTLAYOUT =
         "androidx.constraintlayout:constraintlayout:${Versions.CONSTRAINTLAYOUT}"
     const val CORE = "androidx.core:core-ktx:${Versions.CORE}"

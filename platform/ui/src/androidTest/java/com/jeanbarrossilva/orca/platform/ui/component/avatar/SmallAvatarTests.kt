@@ -7,7 +7,7 @@ import com.jeanbarrossilva.loadable.placeholder.test.assertIsNotLoading
 import com.jeanbarrossilva.orca.platform.ui.component.AVATAR_TAG
 import com.jeanbarrossilva.orca.platform.ui.component.Avatar
 import com.jeanbarrossilva.orca.platform.ui.component.SmallAvatar
-import com.jeanbarrossilva.orca.platform.ui.core.image.test.rememberTestImageProvider
+import com.jeanbarrossilva.orca.std.imageloader.test.TestImageLoader
 import org.junit.Rule
 import org.junit.Test
 
@@ -33,7 +33,7 @@ internal class SmallAvatarTests {
             SmallAvatar(
                 Avatar.sample.name,
                 Avatar.sample.url,
-                imageProvider = rememberTestImageProvider()
+                imageLoader = TestImageLoader
             )
         }
         composeRule.onNodeWithTag(AVATAR_TAG).assertExists()
@@ -45,7 +45,7 @@ internal class SmallAvatarTests {
             SmallAvatar(
                 Avatar.sample.name,
                 Avatar.sample.url,
-                imageProvider = rememberTestImageProvider()
+                imageLoader = TestImageLoader
             )
         }
         composeRule.onNodeWithTag(AVATAR_TAG).assertIsNotLoading()

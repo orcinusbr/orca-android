@@ -1,40 +1,25 @@
 package com.jeanbarrossilva.orca.platform.ui.component
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.rounded.BrokenImage
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.placeholder.Placeholder
-import com.jeanbarrossilva.loadable.placeholder.PlaceholderDefaults
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.Samples
-import com.jeanbarrossilva.orca.platform.ui.core.image.ImageProvider
-import com.jeanbarrossilva.orca.platform.ui.core.image.rememberImageProvider
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.imageloader.compose.Image
+import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
 import java.io.Serializable
 import java.net.URL
 
 internal const val AVATAR_TAG = "avatar"
 
-private val SmallSize = 42.dp
-private val LargeSize = 128.dp
+private val smallSize = 42.dp
+private val largeSize = 128.dp
 
 private val smallShape
     @Composable get() = OrcaTheme.shapes.small
@@ -49,7 +34,12 @@ data class Avatar(val name: String, val url: URL) : Serializable {
 
 @Composable
 fun SmallAvatar(modifier: Modifier = Modifier) {
-    Avatar(SmallSize, smallShape, modifier)
+    Placeholder(
+        modifier
+            .requiredSize(smallSize)
+            .testTag(AVATAR_TAG),
+        shape = smallShape
+    )
 }
 
 @Composable
@@ -57,14 +47,27 @@ fun SmallAvatar(
     name: String,
     url: URL,
     modifier: Modifier = Modifier,
-    imageProvider: ImageProvider = rememberImageProvider()
+    imageLoader: ImageLoader = rememberImageLoader()
 ) {
-    Avatar(name, url, SmallSize, smallShape, modifier, imageProvider)
+    Image(
+        url,
+        contentDescriptionFor(name),
+        modifier
+            .requiredSize(smallSize)
+            .testTag(AVATAR_TAG),
+        imageLoader,
+        smallShape
+    )
 }
 
 @Composable
 fun LargeAvatar(modifier: Modifier = Modifier) {
-    Avatar(LargeSize, largeShape, modifier)
+    Placeholder(
+        modifier
+            .requiredSize(largeSize)
+            .testTag(AVATAR_TAG),
+        shape = largeShape
+    )
 }
 
 @Composable
@@ -72,77 +75,21 @@ fun LargeAvatar(
     name: String,
     url: URL,
     modifier: Modifier = Modifier,
-    imageProvider: ImageProvider = rememberImageProvider()
+    imageLoader: ImageLoader = rememberImageLoader()
 ) {
-    Avatar(name, url, LargeSize, largeShape, modifier, imageProvider)
-}
-
-@Composable
-private fun Avatar(
-    name: String,
-    url: URL,
-    size: Dp,
-    shape: Shape,
-    modifier: Modifier = Modifier,
-    imageProvider: ImageProvider = rememberImageProvider()
-) {
-    val view = LocalView.current
-    var state by remember { mutableStateOf(ImageProvider.State.EMPTY) }
-    val isPreviewing = remember(view) { view.isInEditMode }
-
-    Avatar(
-        size,
-        shape,
-        modifier.testTag(AVATAR_TAG),
-        isLoading = state == ImageProvider.State.LOADING
-    ) {
-        if (!isPreviewing && state != ImageProvider.State.FAILED) {
-            imageProvider.provide(
-                url,
-                contentDescription = "$name's avatar",
-                onStateChange = { state = it },
-                Modifier.size(size)
-            )
-        } else {
-            UnavailableContent(size)
-        }
-    }
-}
-
-@Composable
-private fun Avatar(
-    size: Dp,
-    shape: Shape,
-    modifier: Modifier = Modifier,
-    isLoading: Boolean = true,
-    content: @Composable BoxScope.() -> Unit = { }
-) {
-    Placeholder(
+    Image(
+        url,
+        contentDescriptionFor(name),
         modifier
-            .clip(shape)
-            .requiredSize(size)
+            .requiredSize(largeSize)
             .testTag(AVATAR_TAG),
-        isLoading,
-        shape,
-        content = content
+        imageLoader,
+        largeShape
     )
 }
 
-@Composable
-private fun BoxScope.UnavailableContent(size: Dp, modifier: Modifier = Modifier) {
-    Box(
-        modifier
-            .background(PlaceholderDefaults.color)
-            .matchParentSize(),
-        Alignment.Center
-    ) {
-        Icon(
-            OrcaTheme.Icons.BrokenImage,
-            contentDescription = "Unavailable avatar",
-            Modifier.size(size / 2),
-            tint = OrcaTheme.colors.surface.content
-        )
-    }
+private fun contentDescriptionFor(name: String): String {
+    return "$name's avatar"
 }
 
 @Composable
