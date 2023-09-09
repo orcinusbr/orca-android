@@ -74,7 +74,7 @@ fun Image(
         )
     }
 
-    LaunchedEffect(url, canLoadImage, loader) {
+    LaunchedEffect(url, size, canLoadImage, loader) {
         if (canLoadImage) {
             size?.let {
                 bitmapLoadable =
