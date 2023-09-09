@@ -46,6 +46,7 @@ import java.net.URL
  * @param url [URL] of the image to be loaded.
  * @param contentDescription Description of what the image contains.
  * @param modifier [Modifier] to be applied to the underlying [Placeholder].
+ * @param loader [ImageLoader] by which the image will be loaded.
  * @param shape [Shape] by which this [Image][_Image] will be clipped.
  * @param contentScale Defines how the image will be scaled within this [Composable]'s bounds.
  **/
