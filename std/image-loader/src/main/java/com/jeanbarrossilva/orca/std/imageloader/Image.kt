@@ -43,7 +43,7 @@ class Image private constructor(val width: Int, val height: Int, val pixels: Lis
      * @param width How wide the [Image] is.
      * @param height How tall the [Image] is.
      **/
-    class Builder(private val width: Int, private val height: Int) {
+    class Builder internal constructor(private val width: Int, private val height: Int) {
         /** [Pixel]s by which the [Image] will be composed. **/
         private val pixels = mutableListOf<Pixel>()
 
