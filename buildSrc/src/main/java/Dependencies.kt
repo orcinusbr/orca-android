@@ -48,7 +48,6 @@ object Dependencies {
     const val SERIALIZATION_JSON =
         "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.SERIALIZATION}"
     const val ROOM = "androidx.room:room-ktx:${Versions.ROOM}"
-    const val SCRIMAGE = "com.sksamuel.scrimage:scrimage-core:${Versions.SCRIMAGE}"
     const val SLF4J = "org.slf4j:slf4j-api:${Versions.SLF4J}"
     const val TEST_CORE = "androidx.test:core-ktx:${Versions.TEST_CORE}"
     const val TEST_ESPRESSO_INTENTS =

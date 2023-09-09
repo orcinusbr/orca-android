@@ -32,7 +32,7 @@ android {
     }
 
     packagingOptions.resources.excludes +=
-        arrayOf("META-INF/INDEX.LIST", "META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
+        arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
 }
 
 dependencies {

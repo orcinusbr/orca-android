@@ -9,7 +9,5 @@ java {
 }
 
 dependencies {
-    implementation(Dependencies.SCRIMAGE)
-
     testImplementation(kotlin("test"))
 }
