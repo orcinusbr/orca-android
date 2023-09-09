@@ -19,5 +19,6 @@ include(
     ":platform:ui",
     ":platform:ui-test",
     ":std:image-loader",
+    ":std:image-loader:compose",
     ":std:styled-string"
 )
