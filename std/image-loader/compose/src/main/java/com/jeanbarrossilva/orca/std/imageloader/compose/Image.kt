@@ -115,8 +115,7 @@ fun Image(
                             contentDescription = "Unavailable image",
                             Modifier
                                 .height(maxHeight / 2)
-                                .width(maxWidth / 2),
-                            tint = OrcaTheme.colors.surface.content
+                                .width(maxWidth / 2)
                         )
                     }
                 }
