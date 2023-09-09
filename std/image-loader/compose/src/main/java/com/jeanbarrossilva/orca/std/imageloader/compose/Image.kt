@@ -27,8 +27,10 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.loadable
@@ -59,23 +61,33 @@ fun Image(
     shape: Shape = RectangleShape,
     contentScale: ContentScale = ContentScale.Fit
 ) {
-    var bitmapLoadable by remember { mutableStateOf<Loadable<ImageBitmap>>(Loadable.Loading()) }
     val isInspecting = LocalInspectionMode.current
+    var size by remember { mutableStateOf<IntSize?>(null) }
+    val canLoadImage = remember(isInspecting, size) { !isInspecting || size != null }
+    var bitmapLoadable by remember(canLoadImage) {
+        mutableStateOf<Loadable<ImageBitmap>>(
+            if (canLoadImage) {
+                Loadable.Loading()
+            } else {
+                Loadable.Failed(UnsupportedOperationException("Image cannot be loaded."))
+            }
+        )
+    }
 
-    LaunchedEffect(loader) {
-        bitmapLoadable = if (isInspecting) {
-            Loadable.Failed(UnsupportedOperationException("Cannot load image while inspecting."))
-        } else {
-            loader
-                .load(url)
-                ?.toBitmap()
-                ?.asImageBitmap()
-                .loadable()
-                ?: throw IllegalStateException()
+    LaunchedEffect(url, canLoadImage, loader) {
+        if (canLoadImage) {
+            size?.let {
+                bitmapLoadable =
+                    loader.load(it.width, it.height, url)?.toBitmap()?.asImageBitmap().loadable()!!
+            }
         }
     }
 
-    Placeholder(modifier, isLoading = bitmapLoadable is Loadable.Loading, shape) {
+    Placeholder(
+        modifier.onPlaced { size = it.size },
+        isLoading = bitmapLoadable is Loadable.Loading,
+        shape
+    ) {
         CompositionLocalProvider(
             LocalContentColor provides contentColorFor(PlaceholderDefaults.color)
         ) {

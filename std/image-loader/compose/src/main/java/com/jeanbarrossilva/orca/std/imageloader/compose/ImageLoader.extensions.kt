@@ -9,5 +9,5 @@ import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 @Composable
 fun rememberImageLoader(): ImageLoader {
     val context = LocalContext.current
-    return remember(context) { CoilImageLoader(context) }
+    return remember(context) { CoilImageLoader.getInstance(context) }
 }

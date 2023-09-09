@@ -7,7 +7,9 @@ interface ImageLoader {
     /**
      * Loads the [Image] to which the [url] leads.
      *
+     * @param width How wide the [Image] is.
+     * @param height How tall the [Image] is.
      * @param url [URL] of the [Image] to be loaded.
      **/
-    suspend fun load(url: URL): Image?
+    suspend fun load(width: Int, height: Int, url: URL): Image?
 }
