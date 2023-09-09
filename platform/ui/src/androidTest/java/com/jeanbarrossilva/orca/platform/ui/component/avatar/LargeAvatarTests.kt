@@ -7,7 +7,7 @@ import com.jeanbarrossilva.loadable.placeholder.test.assertIsNotLoading
 import com.jeanbarrossilva.orca.platform.ui.component.AVATAR_TAG
 import com.jeanbarrossilva.orca.platform.ui.component.Avatar
 import com.jeanbarrossilva.orca.platform.ui.component.LargeAvatar
-import com.jeanbarrossilva.orca.platform.ui.core.image.test.rememberTestImageProvider
+import com.jeanbarrossilva.orca.std.imageloader.test.TestImageLoader
 import org.junit.Rule
 import org.junit.Test
 
@@ -33,7 +33,7 @@ internal class LargeAvatarTests {
             LargeAvatar(
                 Avatar.sample.name,
                 Avatar.sample.url,
-                imageProvider = rememberTestImageProvider()
+                imageLoader = TestImageLoader
             )
         }
         composeRule.onNodeWithTag(AVATAR_TAG).assertExists()
@@ -42,11 +42,7 @@ internal class LargeAvatarTests {
     @Test
     fun isLoadedWhenPopulated() {
         composeRule.setContent {
-            LargeAvatar(
-                Avatar.sample.name,
-                Avatar.sample.url,
-                imageProvider = rememberTestImageProvider()
-            )
+            LargeAvatar(Avatar.sample.name, Avatar.sample.url, imageLoader = TestImageLoader)
         }
         composeRule.onNodeWithTag(AVATAR_TAG).assertIsNotLoading()
     }

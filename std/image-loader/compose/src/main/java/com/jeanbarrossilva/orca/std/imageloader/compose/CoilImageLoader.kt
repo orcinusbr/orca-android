@@ -10,14 +10,8 @@ import java.net.URL
 
 /** [ImageLoader] powered by the Coil library. **/
 internal class CoilImageLoader(private val context: Context) : ImageLoader {
-    override suspend fun load(url: URL): Image {
+    override suspend fun load(url: URL): Image? {
         val request = ImageRequest.Builder(context).data("$url").build()
-        return context
-            .imageLoader
-            .execute(request)
-            .drawable
-            ?.toBitmap()
-            ?.toImage()
-            ?: throw IllegalStateException("Could not load image at $url.")
+        return context.imageLoader.execute(request).drawable?.toBitmap()?.toImage()
     }
 }

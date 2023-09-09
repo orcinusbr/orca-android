@@ -37,7 +37,9 @@ dependencies {
     api(project(":std:image-loader"))
     api(Dependencies.COMPOSE_UI_TOOLING)
 
-    implementation(Dependencies.COIL_COMPOSE)
+    implementation(project(":platform:theme"))
+    implementation(Dependencies.COIL)
+    implementation(Dependencies.COMPOSE_MATERIAL_ICONS_EXTENDED)
     implementation(Dependencies.CORE)
     implementation(Dependencies.LOADABLE_PLACEHOLDER)
 }

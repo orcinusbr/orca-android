@@ -21,8 +21,9 @@ import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Headline
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.highlight.sample
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.ui.core.image.ImageProvider
-import com.jeanbarrossilva.orca.platform.ui.core.image.rememberImageProvider
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.imageloader.compose.Image
+import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
 
 /** Tag that identifies a [HeadlineCard] for testing purposes. **/
 const val HEADLINE_CARD_TAG = "headline-card"
@@ -32,25 +33,25 @@ fun HeadlineCard(
     headline: Headline,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    imageProvider: ImageProvider = rememberImageProvider()
+    imageLoader: ImageLoader = rememberImageLoader()
 ) {
     val shape = OrcaTheme.shapes.medium
 
     Column(
-        Modifier
+        modifier
             .shadow(2.dp, shape)
             .clip(shape)
             .clickable(onClick = onClick)
             .background(OrcaTheme.colors.surface.container)
             .testTag(HEADLINE_CARD_TAG)
     ) {
-        imageProvider.provide(
+        Image(
             headline.coverURL,
             contentDescription = "Cover of \"${headline.title}\"",
-            onStateChange = { },
-            modifier
+            Modifier
                 .aspectRatio(16f / 9f)
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            imageLoader
         )
 
         Column(

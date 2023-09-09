@@ -22,8 +22,8 @@ import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
 import com.jeanbarrossilva.orca.core.sample.feed.profile.search.sample
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.SmallAvatar
-import com.jeanbarrossilva.orca.platform.ui.core.image.ImageProvider
-import com.jeanbarrossilva.orca.platform.ui.core.image.rememberImageProvider
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
 
 @Composable
 internal fun SearchResultCard(modifier: Modifier = Modifier) {
@@ -41,12 +41,10 @@ internal fun SearchResultCard(
     searchResult: ProfileSearchResult,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    imageProvider: ImageProvider = rememberImageProvider()
+    imageLoader: ImageLoader = rememberImageLoader()
 ) {
     SearchResultCard(
-        avatar = {
-            SmallAvatar(searchResult.name, searchResult.url, imageProvider = imageProvider)
-        },
+        avatar = { SmallAvatar(searchResult.name, searchResult.url, imageLoader = imageLoader) },
         name = { Text(searchResult.name) },
         account = { Text("${searchResult.account}") },
         onClick,

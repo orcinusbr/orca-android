@@ -8,8 +8,7 @@ object Versions {
     const val COIL = "2.4.0"
     const val COMPOSE_COMPILER = "1.4.7"
     const val COMPOSE_MATERIAL_3 = "1.1.0"
-    const val COMPOSE_MATERIAL_ICONS_EXTENDED = "1.4.3"
-    const val COMPOSE_UI = "1.4.3"
+    const val COMPOSE = "1.5.1"
     const val CONSTRAINTLAYOUT = "2.1.4"
     const val CORE = "1.10.1"
     const val COROUTINES = "1.7.1"
@@ -44,7 +43,7 @@ object Versions {
     object Orca {
         const val CODE = 1
         const val NAME = "1.0.0"
-        const val SDK_COMPILE = 33
+        const val SDK_COMPILE = 34
         const val SDK_MIN = 28
         const val SDK_TARGET = SDK_COMPILE
     }

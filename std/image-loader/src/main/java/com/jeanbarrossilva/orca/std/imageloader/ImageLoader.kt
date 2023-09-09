@@ -9,5 +9,5 @@ interface ImageLoader {
      *
      * @param url [URL] of the [Image] to be loaded.
      **/
-    suspend fun load(url: URL): Image
+    suspend fun load(url: URL): Image?
 }
