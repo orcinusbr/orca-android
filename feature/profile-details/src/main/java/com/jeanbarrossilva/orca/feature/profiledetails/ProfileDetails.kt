@@ -10,11 +10,6 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material.icons.rounded.Link
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.OpenInBrowser
-import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -120,7 +115,7 @@ internal sealed class ProfileDetails : Serializable {
         @Composable
         override fun FloatingActionButton(navigator: ProfileDetailsBoundary, modifier: Modifier) {
             FloatingActionButton(onClick = { }) {
-                Icon(OrcaTheme.Icons.Edit, contentDescription = "Edit")
+                Icon(OrcaTheme.iconography.edit.filled, contentDescription = "Edit")
             }
         }
 
@@ -373,7 +368,7 @@ private fun ProfileDetails(
         actions = {
             Box {
                 IconButton(onClick = { isTopBarDropdownExpanded = true }) {
-                    Icon(OrcaTheme.Icons.MoreVert, contentDescription = "More")
+                    Icon(OrcaTheme.iconography.expand, contentDescription = "More")
                 }
 
                 DropdownMenu(
@@ -388,7 +383,7 @@ private fun ProfileDetails(
                         },
                         leadingIcon = {
                             Icon(
-                                OrcaTheme.Icons.OpenInBrowser,
+                                OrcaTheme.iconography.link,
                                 contentDescription = "Open in browser"
                             )
                         }
@@ -401,7 +396,7 @@ private fun ProfileDetails(
                             isTopBarDropdownExpanded = false
                         },
                         leadingIcon = {
-                            Icon(OrcaTheme.Icons.Link, contentDescription = "Share")
+                            Icon(OrcaTheme.iconography.link, contentDescription = "Share")
                         }
                     )
 
@@ -412,7 +407,7 @@ private fun ProfileDetails(
                             isTopBarDropdownExpanded = false
                         },
                         leadingIcon = {
-                            Icon(OrcaTheme.Icons.Share, contentDescription = "Share")
+                            Icon(OrcaTheme.iconography.share.outlined, contentDescription = "Share")
                         }
                     )
                 }

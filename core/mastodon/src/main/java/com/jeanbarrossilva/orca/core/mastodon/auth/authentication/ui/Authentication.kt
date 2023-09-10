@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.rounded.Login
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -24,7 +23,7 @@ internal fun Authentication(modifier: Modifier = Modifier) {
             Arrangement.spacedBy(OrcaTheme.spacings.medium, Alignment.CenterVertically),
             Alignment.CenterHorizontally
         ) {
-            Icon(OrcaTheme.Icons.Login, contentDescription = "Link", Modifier.size(64.dp))
+            Icon(OrcaTheme.iconography.login, contentDescription = "Link", Modifier.size(64.dp))
 
             Text(
                 "Authenticating...",

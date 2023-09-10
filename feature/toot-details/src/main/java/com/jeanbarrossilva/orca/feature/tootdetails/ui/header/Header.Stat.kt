@@ -3,7 +3,6 @@ package com.jeanbarrossilva.orca.feature.tootdetails.ui.header
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.material.icons.rounded.ThumbUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
@@ -38,7 +37,7 @@ private fun StatPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colors.background) {
             Stat {
-                Icon(OrcaTheme.Icons.ThumbUp, contentDescription = "Likes")
+                Icon(OrcaTheme.iconography.comment.outlined, contentDescription = "Comments")
                 Text("8")
             }
         }

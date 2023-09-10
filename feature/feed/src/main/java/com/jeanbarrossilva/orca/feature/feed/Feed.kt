@@ -1,8 +1,6 @@
 package com.jeanbarrossilva.orca.feature.feed
 
 import android.content.res.Configuration
-import androidx.compose.material.icons.rounded.Create
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -105,7 +103,7 @@ private fun Feed(
                 title = { AutoSizeText("Feed") },
                 actions = {
                     IconButton(onClick = onSearch) {
-                        Icon(OrcaTheme.Icons.Search, contentDescription = "Search")
+                        Icon(OrcaTheme.iconography.search, contentDescription = "Search")
                     }
                 },
                 scrollBehavior = topAppBarScrollBehavior
@@ -117,7 +115,7 @@ private fun Feed(
                     onClick = onComposition,
                     Modifier.testTag(FEED_FLOATING_ACTION_BUTTON_TAG)
                 ) {
-                    Icon(OrcaTheme.Icons.Create, contentDescription = "Compose")
+                    Icon(OrcaTheme.iconography.compose.filled, contentDescription = "Compose")
                 }
             }
         }

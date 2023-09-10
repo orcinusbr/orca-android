@@ -8,7 +8,6 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.gestures.GestureCancellationException
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.rounded.WifiOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Surface
@@ -164,7 +163,7 @@ private fun ActiveActivateableStatIconPreview() {
 @Composable
 private fun ActivateableStatIcon(isActive: Boolean, modifier: Modifier = Modifier) {
     ActivateableStatIcon(
-        OrcaTheme.Icons.WifiOff,
+        OrcaTheme.iconography.link,
         contentDescription = "Disconnect",
         isActive,
         ActivateableStatIconInteractiveness.Still,

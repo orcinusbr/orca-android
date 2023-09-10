@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.rounded.Comment
-import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ProvideTextStyle
@@ -79,7 +77,7 @@ internal fun Header(
 
             Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
                 Stat {
-                    Icon(OrcaTheme.Icons.Comment, contentDescription = "Comments")
+                    Icon(OrcaTheme.iconography.comment.outlined, contentDescription = "Comments")
                     Text(details.formattedCommentCount)
                 }
 
@@ -105,7 +103,7 @@ internal fun Header(
 
                 Stat {
                     Icon(
-                        OrcaTheme.Icons.Share,
+                        OrcaTheme.iconography.share.outlined,
                         contentDescription = "Share",
                         Modifier.clickable(onClick = onShare)
                     )

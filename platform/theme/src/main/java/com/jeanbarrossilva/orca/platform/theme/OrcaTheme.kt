@@ -41,6 +41,8 @@ import com.jeanbarrossilva.orca.platform.theme.configuration.Overlays
 import com.jeanbarrossilva.orca.platform.theme.configuration.Spacings
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.LocalColors
+import com.jeanbarrossilva.orca.platform.theme.configuration.iconography.Iconography
+import com.jeanbarrossilva.orca.platform.theme.configuration.iconography.LocalIconography
 import com.jeanbarrossilva.orca.platform.theme.extensions.LocalTypography
 import com.jeanbarrossilva.orca.platform.theme.extensions.Rubik
 import com.jeanbarrossilva.orca.platform.theme.extensions.bottom
@@ -69,6 +71,10 @@ object OrcaTheme {
     /** [Current][CompositionLocal.current] [Colors] from [LocalColors]. **/
     val colors
         @Composable get() = LocalColors.current
+
+    /** [Current][CompositionLocal.current] [Iconography] from [LocalIconography]. **/
+    val iconography
+        @Composable get() = LocalIconography.current
 
     /** [Current][CompositionLocal.current] [Overlays] from [LocalOverlays]. **/
     val overlays
@@ -100,6 +106,7 @@ fun OrcaTheme(content: @Composable () -> Unit) {
         Mdc3Theme(setTextColors = true, setDefaultFontFamily = true) {
             CompositionLocalProvider(
                 LocalColors provides Colors.default,
+                LocalIconography provides Iconography.default,
                 LocalOverlays provides Overlays.Default,
                 LocalSpacings provides Spacings.default,
                 LocalTextStyle provides OrcaTheme.typography.bodyMedium

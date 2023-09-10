@@ -1,7 +1,6 @@
 package com.jeanbarrossilva.orca.platform.ui.component.stat.favorite
 
 import android.content.res.Configuration
-import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -53,7 +52,11 @@ fun FavoriteStatIcon(
     colors: ActivateableStatIconColors = FavoriteStatIconDefaults.colors()
 ) {
     ActivateableStatIcon(
-        OrcaTheme.Icons.Favorite,
+        if (isActive) {
+            OrcaTheme.iconography.favorite.filled
+        } else {
+            OrcaTheme.iconography.favorite.outlined
+        },
         contentDescription = "Favorite",
         isActive,
         interactiveness,

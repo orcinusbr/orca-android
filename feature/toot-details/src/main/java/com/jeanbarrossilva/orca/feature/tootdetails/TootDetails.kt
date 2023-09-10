@@ -24,7 +24,6 @@ import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.Header
 import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.formatted
 import com.jeanbarrossilva.orca.feature.tootdetails.viewmodel.TootDetailsViewModel
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.extensions.backwardsNavigationArrow
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBarDefaults
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
@@ -132,10 +131,7 @@ private fun TootDetails(
             TopAppBar(
                 navigationIcon = {
                     IconButton(onClick = onBackwardsNavigation) {
-                        Icon(
-                            OrcaTheme.Icons.backwardsNavigationArrow,
-                            contentDescription = "Back"
-                        )
+                        Icon(OrcaTheme.iconography.back, contentDescription = "Back")
                     }
                 },
                 scrollBehavior = topAppBarScrollBehavior

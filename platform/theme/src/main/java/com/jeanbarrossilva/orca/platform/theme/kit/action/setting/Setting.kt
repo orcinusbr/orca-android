@@ -28,7 +28,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.EmptyMutableInteractionSource
-import com.jeanbarrossilva.orca.platform.theme.extensions.forwardsNavigationArrow
 import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
 
 /** Default values of a [Setting]. **/
@@ -134,9 +133,7 @@ private fun LabeledSettingPreview() {
 private fun Setting(label: (@Composable () -> Unit)?, modifier: Modifier = Modifier) {
     Setting(
         text = { Text("Setting") },
-        action = {
-            Icon(OrcaTheme.Icons.forwardsNavigationArrow, contentDescription = "Navigate")
-        },
+        action = { Icon(OrcaTheme.iconography.forward, contentDescription = "Navigate") },
         onClick = { },
         modifier,
         label = label

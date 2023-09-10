@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.rounded.Comment
-import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -204,7 +202,7 @@ fun TootPreview(
         stats = {
             Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
                 Stat(
-                    OrcaTheme.Icons.Comment,
+                    OrcaTheme.iconography.comment.outlined,
                     contentDescription = "Comments",
                     onClick = { },
                     Modifier.testTag(TOOT_PREVIEW_COMMENT_COUNT_STAT_TAG)
@@ -216,7 +214,7 @@ fun TootPreview(
                 ReblogStat(preview, onClick = onReblog)
 
                 Stat(
-                    OrcaTheme.Icons.Share,
+                    OrcaTheme.iconography.share.outlined,
                     contentDescription = "Share",
                     onClick = onShare,
                     Modifier.testTag(TOOT_PREVIEW_SHARE_ACTION_TAG)

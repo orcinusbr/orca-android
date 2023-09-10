@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -103,12 +102,12 @@ private fun TopAppBarPreview() {
         _TopAppBar(
             navigationIcon = {
                 IconButton(onClick = { }) {
-                    Icon(OrcaTheme.Icons.backwardsNavigationArrow, contentDescription = "Back")
+                    Icon(OrcaTheme.iconography.back, contentDescription = "Back")
                 }
             },
             actions = {
                 IconButton(onClick = { }) {
-                    Icon(OrcaTheme.Icons.Search, contentDescription = "Search")
+                    Icon(OrcaTheme.iconography.search, contentDescription = "Search")
                 }
             }
         ) {
