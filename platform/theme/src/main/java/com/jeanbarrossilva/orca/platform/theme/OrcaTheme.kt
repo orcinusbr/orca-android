@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
@@ -62,12 +61,6 @@ private const val TYPOGRAPHY_PREVIEW_HEIGHT = 1_090
 
 /** Provider of [OrcaTheme]'s configurations. **/
 object OrcaTheme {
-    /**
-     * [Icons][androidx.compose.material.icons.Icons] in the chosen style. Alias for
-     * [Icons.Rounded].
-     **/
-    val Icons = androidx.compose.material.icons.Icons.Rounded
-
     /** [Current][CompositionLocal.current] [Colors] from [LocalColors]. **/
     val colors
         @Composable get() = LocalColors.current
