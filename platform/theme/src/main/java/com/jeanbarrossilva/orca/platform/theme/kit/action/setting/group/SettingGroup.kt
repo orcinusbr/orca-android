@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.extensions.forwardsNavigationArrow
 import com.jeanbarrossilva.orca.platform.theme.extensions.reversed
 import com.jeanbarrossilva.orca.platform.theme.kit.action.setting.Setting
 import com.jeanbarrossilva.orca.platform.theme.kit.action.setting.SettingDefaults
@@ -88,10 +87,7 @@ private fun SettingGroupPreview() {
                     id = "$index",
                     text = { Text("#$index") },
                     action = {
-                        Icon(
-                            OrcaTheme.Icons.forwardsNavigationArrow,
-                            contentDescription = "Navigate"
-                        )
+                        Icon(OrcaTheme.iconography.forward, contentDescription = "Navigate")
                     },
                     onClick = { }
                 )

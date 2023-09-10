@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.rounded.BrokenImage
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.contentColorFor
@@ -111,7 +110,7 @@ fun Image(
                         )
 
                         Icon(
-                            OrcaTheme.Icons.BrokenImage,
+                            OrcaTheme.iconography.unavailable.filled,
                             contentDescription = "Unavailable image",
                             Modifier
                                 .height(maxHeight / 2)

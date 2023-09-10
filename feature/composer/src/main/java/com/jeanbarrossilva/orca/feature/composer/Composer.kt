@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.icons.rounded.Send
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
@@ -49,7 +48,6 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.highlight.
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
 import com.jeanbarrossilva.orca.feature.composer.ui.Toolbar
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.extensions.backwardsNavigationArrow
 import com.jeanbarrossilva.orca.platform.theme.extensions.plus
 import com.jeanbarrossilva.orca.platform.theme.kit.input.TextFieldDefaults as _TextFieldDefaults
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
@@ -109,7 +107,7 @@ private fun Composer(
             TopAppBar(
                 navigationIcon = {
                     IconButton(onClick = onBackwardsNavigation) {
-                        Icon(OrcaTheme.Icons.backwardsNavigationArrow, contentDescription = "Back")
+                        Icon(OrcaTheme.iconography.back, contentDescription = "Back")
                     }
                 }
             ) {
@@ -129,7 +127,7 @@ private fun Composer(
                     }
                 }
             ) {
-                Icon(OrcaTheme.Icons.Send, contentDescription = "Send")
+                Icon(OrcaTheme.iconography.send, contentDescription = "Send")
             }
         },
         floatingActionButtonPosition = floatingActionButtonPosition

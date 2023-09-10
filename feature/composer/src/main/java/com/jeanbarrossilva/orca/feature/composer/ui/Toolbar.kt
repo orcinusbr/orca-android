@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.FormatBold
 import androidx.compose.material.icons.rounded.FormatItalic
 import androidx.compose.material.icons.rounded.FormatUnderlined
@@ -58,7 +59,7 @@ internal fun Toolbar(
                     onClick = { onBoldToggle(!isBold) },
                     Modifier.testTag(COMPOSER_TOOLBAR_BOLD_FORMAT)
                 ) {
-                    Icon(OrcaTheme.Icons.FormatBold, contentDescription = "Bold")
+                    Icon(Icons.Rounded.FormatBold, contentDescription = "Bold")
                 }
             }
 
@@ -68,7 +69,7 @@ internal fun Toolbar(
                     onClick = { onItalicToggle(!isItalicized) },
                     Modifier.testTag(COMPOSER_TOOLBAR_ITALIC_FORMAT)
                 ) {
-                    Icon(OrcaTheme.Icons.FormatItalic, contentDescription = "Italic")
+                    Icon(Icons.Rounded.FormatItalic, contentDescription = "Italic")
                 }
             }
 
@@ -78,7 +79,7 @@ internal fun Toolbar(
                     onClick = { onUnderlineToggle(!isUnderlined) },
                     Modifier.testTag(COMPOSER_TOOLBAR_UNDERLINE_FORMAT)
                 ) {
-                    Icon(OrcaTheme.Icons.FormatUnderlined, contentDescription = "Underline")
+                    Icon(Icons.Rounded.FormatUnderlined, contentDescription = "Underline")
                 }
             }
         }

@@ -43,7 +43,6 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.search.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.search.samples
 import com.jeanbarrossilva.orca.feature.search.ui.SearchResultCard
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.extensions.backwardsNavigationArrow
 import com.jeanbarrossilva.orca.platform.theme.kit.input.TextField
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 
@@ -177,7 +176,7 @@ private fun Search(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onBackwardsNavigation, Modifier.fillMaxWidth(.2f)) {
-                    Icon(OrcaTheme.Icons.backwardsNavigationArrow, contentDescription = "Back")
+                    Icon(OrcaTheme.iconography.back, contentDescription = "Back")
                 }
 
                 TextField(
@@ -217,7 +216,7 @@ private fun EmptyResultsMessage(modifier: Modifier = Modifier) {
         CompositionLocalProvider(
             LocalContentColor provides OrcaTheme.typography.headlineMedium.color
         ) {
-            Icon(OrcaTheme.Icons.Search, contentDescription = "Search", Modifier.size(64.dp))
+            Icon(OrcaTheme.iconography.search, contentDescription = "Search", Modifier.size(64.dp))
             Text("No results found.", style = OrcaTheme.typography.headlineMedium)
         }
     }

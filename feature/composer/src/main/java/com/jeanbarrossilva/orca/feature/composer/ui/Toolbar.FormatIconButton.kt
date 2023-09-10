@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.rounded.AddAPhoto
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Surface
@@ -79,6 +78,13 @@ private fun EnabledFormatIconButtonPreview() {
 @Composable
 private fun FormatIconButton(isEnabled: Boolean, modifier: Modifier = Modifier) {
     FormatIconButton(isEnabled, onClick = { }, modifier) {
-        Icon(OrcaTheme.Icons.AddAPhoto, contentDescription = "Add photo")
+        Icon(
+            if (isEnabled) {
+                OrcaTheme.iconography.compose.filled
+            } else {
+                OrcaTheme.iconography.compose.outlined
+            },
+            contentDescription = "Compose"
+        )
     }
 }

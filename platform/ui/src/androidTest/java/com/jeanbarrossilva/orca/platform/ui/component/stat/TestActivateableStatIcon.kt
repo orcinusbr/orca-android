@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.platform.ui.component.stat
 
-import androidx.compose.material.icons.rounded.Forward
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,7 +13,7 @@ internal fun TestActivateableStatIcon(
     interactiveness: ActivateableStatIconInteractiveness = ActivateableStatIconInteractiveness.Still
 ) {
     ActivateableStatIcon(
-        OrcaTheme.Icons.Forward,
+        OrcaTheme.iconography.forward,
         contentDescription = "Proceed",
         isActive,
         interactiveness,

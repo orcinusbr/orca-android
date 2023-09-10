@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
@@ -41,6 +40,8 @@ import com.jeanbarrossilva.orca.platform.theme.configuration.Overlays
 import com.jeanbarrossilva.orca.platform.theme.configuration.Spacings
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.LocalColors
+import com.jeanbarrossilva.orca.platform.theme.configuration.iconography.Iconography
+import com.jeanbarrossilva.orca.platform.theme.configuration.iconography.LocalIconography
 import com.jeanbarrossilva.orca.platform.theme.extensions.LocalTypography
 import com.jeanbarrossilva.orca.platform.theme.extensions.Rubik
 import com.jeanbarrossilva.orca.platform.theme.extensions.bottom
@@ -60,15 +61,13 @@ private const val TYPOGRAPHY_PREVIEW_HEIGHT = 1_090
 
 /** Provider of [OrcaTheme]'s configurations. **/
 object OrcaTheme {
-    /**
-     * [Icons][androidx.compose.material.icons.Icons] in the chosen style. Alias for
-     * [Icons.Rounded].
-     **/
-    val Icons = androidx.compose.material.icons.Icons.Rounded
-
     /** [Current][CompositionLocal.current] [Colors] from [LocalColors]. **/
     val colors
         @Composable get() = LocalColors.current
+
+    /** [Current][CompositionLocal.current] [Iconography] from [LocalIconography]. **/
+    val iconography
+        @Composable get() = LocalIconography.current
 
     /** [Current][CompositionLocal.current] [Overlays] from [LocalOverlays]. **/
     val overlays
@@ -100,6 +99,7 @@ fun OrcaTheme(content: @Composable () -> Unit) {
         Mdc3Theme(setTextColors = true, setDefaultFontFamily = true) {
             CompositionLocalProvider(
                 LocalColors provides Colors.default,
+                LocalIconography provides Iconography.default,
                 LocalOverlays provides Overlays.Default,
                 LocalSpacings provides Spacings.default,
                 LocalTextStyle provides OrcaTheme.typography.bodyMedium

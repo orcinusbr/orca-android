@@ -1,7 +1,6 @@
 package com.jeanbarrossilva.orca.platform.ui.component.stat.reblog
 
 import android.content.res.Configuration
-import androidx.compose.material.icons.rounded.Repeat
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -52,7 +51,7 @@ fun ReblogStatIcon(
     colors: ActivateableStatIconColors = ReblogStatIconDefaults.colors()
 ) {
     ActivateableStatIcon(
-        OrcaTheme.Icons.Repeat,
+        OrcaTheme.iconography.reblog,
         contentDescription = "Reblog",
         isActive,
         interactiveness,

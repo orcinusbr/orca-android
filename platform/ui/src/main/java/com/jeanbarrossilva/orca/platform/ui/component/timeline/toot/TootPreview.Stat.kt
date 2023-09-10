@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.rounded.ThumbUp
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
@@ -103,7 +102,11 @@ private fun fallbackContentColorFor(containerColor: Color): Color {
 internal fun StatPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colors.background) {
-            Stat(OrcaTheme.Icons.ThumbUp, contentDescription = "Like", onClick = { }) {
+            Stat(
+                OrcaTheme.iconography.comment.outlined,
+                contentDescription = "Comment",
+                onClick = { }
+            ) {
                 Text("8")
             }
         }
