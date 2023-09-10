@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/feed"
-        android:icon="@drawable/icon_home_filled"
+        android:icon="@drawable/bottom_navigation_icon_home"
         android:title="@string/feed" />
 
     <item
         android:id="@+id/profile_details"
-        android:icon="@drawable/icon_profile_filled"
+        android:icon="@drawable/bottom_navigation_icon_profile_details"
         android:title="@string/profile_details" />
 </menu>
