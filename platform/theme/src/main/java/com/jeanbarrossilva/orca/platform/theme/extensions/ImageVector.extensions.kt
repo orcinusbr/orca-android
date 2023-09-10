@@ -8,9 +8,9 @@ internal val ImageVector.Companion.Empty
     get() = ImageVector
         .Builder(
             name = "ImageVector.Empty",
-            defaultWidth = 0.dp,
-            defaultHeight = 0.dp,
-            viewportWidth = 0f,
-            viewportHeight = 0f
+            defaultWidth = 1.dp,
+            defaultHeight = 1.dp,
+            viewportWidth = 1f,
+            viewportHeight = 1f
         )
         .build()
