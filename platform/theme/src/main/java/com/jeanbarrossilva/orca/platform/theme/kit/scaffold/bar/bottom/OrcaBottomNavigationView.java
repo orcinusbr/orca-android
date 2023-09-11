@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 /** Orca-specific {@link BottomNavigationView}. **/
-public class OrcaBottomNavigationView extends BottomNavigationView {
+public final class OrcaBottomNavigationView extends BottomNavigationView {
     /** {@link Paint} by which the divider will be painted. **/
     private final Paint dividerPaint = new Paint();
 
