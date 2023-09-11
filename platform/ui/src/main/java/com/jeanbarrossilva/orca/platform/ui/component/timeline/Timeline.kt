@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,14 +27,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.rememberLottieComposition
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import java.net.URL
 
@@ -260,8 +257,6 @@ private fun EmptyTimelineMessage(
     modifier: Modifier = Modifier
 ) {
     val spacing = OrcaTheme.spacings.extraLarge
-    val spec = remember { LottieCompositionSpec.RawRes(R.raw.illustration_timeline_empty) }
-    val lottieComposition by rememberLottieComposition(spec)
 
     LazyColumn(
         modifier
@@ -276,12 +271,13 @@ private fun EmptyTimelineMessage(
         }
 
         item {
-            LottieAnimation(
-                lottieComposition,
+            Icon(
+                OrcaTheme.iconography.empty,
+                contentDescription = "Empty",
                 Modifier
                     .padding(start = spacing, top = spacing, end = spacing)
-                    .size(256.dp),
-                clipToCompositionBounds = true
+                    .size(64.dp),
+                tint = OrcaTheme.colors.secondary
             )
         }
 

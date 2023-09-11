@@ -20,6 +20,7 @@ internal val LocalIconography = compositionLocalOf {
  * @param comment [Icon] of a comment.
  * @param compose [Icon] for creation scenarios.
  * @param edit [Icon] that implies editing.
+ * @param empty [ImageVector] that characterizes emptiness.
  * @param expand [ImageVector] for communicating possibility of expansion.
  * @param favorite [Icon] that signalizes a single or various "like" demonstrations.
  * @param forward [ImageVector] that represents forward navigation.
@@ -39,6 +40,7 @@ data class Iconography internal constructor(
     val comment: Icon,
     val compose: Icon,
     val edit: Icon,
+    val empty: ImageVector,
     val expand: ImageVector,
     val favorite: Icon,
     val forward: ImageVector,
@@ -59,6 +61,7 @@ data class Iconography internal constructor(
             comment = Icon.Empty,
             compose = Icon.Empty,
             edit = Icon.Empty,
+            empty = ImageVector.Empty,
             expand = ImageVector.Empty,
             favorite = Icon.Empty,
             forward = ImageVector.Empty,
@@ -89,6 +92,7 @@ data class Iconography internal constructor(
                     ImageVector.vectorResource(R.drawable.icon_edit_outlined),
                     ImageVector.vectorResource(R.drawable.icon_edit_filled)
                 ),
+                ImageVector.vectorResource(R.drawable.icon_empty),
                 ImageVector.vectorResource(R.drawable.icon_expand),
                 Icon(
                     ImageVector.vectorResource(R.drawable.icon_favorite_outlined),
