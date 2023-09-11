@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.feature.feed
 
-import android.content.res.Configuration
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -11,11 +10,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.orca.feature.feed.viewmodel.FeedViewModel
+import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.plus
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
@@ -137,8 +136,7 @@ private fun Feed(
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun LoadingFeedPreview() {
     OrcaTheme {
         Feed(ListLoadable.Loading())
@@ -146,7 +144,7 @@ private fun LoadingFeedPreview() {
 }
 
 @Composable
-@Preview
+@MultiThemePreview
 private fun EmptyFeedPreview() {
     OrcaTheme {
         Feed(ListLoadable.Empty())
@@ -154,7 +152,7 @@ private fun EmptyFeedPreview() {
 }
 
 @Composable
-@Preview
+@MultiThemePreview
 private fun PopulatedFeedPreview() {
     OrcaTheme {
         Feed(TootPreview.samples.toSerializableList().toListLoadable())

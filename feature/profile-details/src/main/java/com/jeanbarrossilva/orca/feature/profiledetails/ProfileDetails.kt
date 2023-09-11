@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.feature.profiledetails
 
-import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -32,7 +31,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.toListLoadable
@@ -49,6 +47,7 @@ import com.jeanbarrossilva.orca.feature.profiledetails.conversion.converter.foll
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.NavigationButton
 import com.jeanbarrossilva.orca.feature.profiledetails.ui.Header
+import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
@@ -488,8 +487,7 @@ private fun ProfileDetails(
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun LoadingProfileDetailsPreview() {
     OrcaTheme {
         ProfileDetails(
@@ -500,8 +498,7 @@ private fun LoadingProfileDetailsPreview() {
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun LoadedProfileDetailsWithoutTootsPreview() {
     OrcaTheme {
         ProfileDetails(
@@ -512,8 +509,7 @@ private fun LoadedProfileDetailsWithoutTootsPreview() {
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun LoadedProfileDetailsWithTootsPreview() {
     OrcaTheme {
         ProfileDetails(
@@ -524,8 +520,7 @@ private fun LoadedProfileDetailsWithTootsPreview() {
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun LoadedProfileDetailsWithExpandedTopBarDropdownMenuPreview() {
     OrcaTheme {
         ProfileDetails(

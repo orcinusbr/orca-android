@@ -15,11 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
 import com.jeanbarrossilva.orca.core.sample.feed.profile.search.sample
+import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.SmallAvatar
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
@@ -81,7 +81,7 @@ private fun SearchResultCard(
 }
 
 @Composable
-@Preview
+@MultiThemePreview
 private fun LoadingSearchResultCardPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colors.background) {
@@ -91,7 +91,7 @@ private fun LoadingSearchResultCardPreview() {
 }
 
 @Composable
-@Preview
+@MultiThemePreview
 private fun LoadedSearchResultCardPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colors.background) {

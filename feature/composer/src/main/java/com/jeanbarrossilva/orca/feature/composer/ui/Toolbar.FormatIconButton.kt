@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.feature.composer.ui
 
-import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -20,8 +19,8 @@ import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.toggleableState
 import androidx.compose.ui.state.ToggleableState
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 
 @Composable
@@ -54,8 +53,7 @@ internal fun FormatIconButton(
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun DisabledFormatIconButtonPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colors.background) {
@@ -65,8 +63,7 @@ private fun DisabledFormatIconButtonPreview() {
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun EnabledFormatIconButtonPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colors.background) {

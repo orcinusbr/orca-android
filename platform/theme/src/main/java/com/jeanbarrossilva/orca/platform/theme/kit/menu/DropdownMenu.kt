@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.platform.theme.kit.menu
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material3.DropdownMenu
@@ -8,8 +7,8 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Popup
+import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 
 /**
@@ -42,8 +41,7 @@ fun DropdownMenu(
  * Preview of a [DropdownMenu][com.jeanbarrossilva.orca.platform.ui.component.menu.DropdownMenu].
  **/
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun DropdownMenuPreview() {
     OrcaTheme {
         DropdownMenu(isExpanded = true, onDismissal = { }) {

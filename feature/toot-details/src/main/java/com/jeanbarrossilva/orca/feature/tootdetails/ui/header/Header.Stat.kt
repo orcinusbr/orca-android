@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 
 @Composable
@@ -32,7 +32,7 @@ internal fun Stat(modifier: Modifier = Modifier, content: @Composable RowScope.(
 }
 
 @Composable
-@Preview
+@MultiThemePreview
 private fun StatPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colors.background) {

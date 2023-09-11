@@ -16,12 +16,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
 import com.jeanbarrossilva.orca.feature.tootdetails.TootDetails
+import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.SmallAvatar
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconInteractiveness
@@ -157,7 +157,7 @@ private fun Header(
 }
 
 @Composable
-@Preview
+@MultiThemePreview
 private fun LoadingHeaderPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colors.background) {
@@ -167,7 +167,7 @@ private fun LoadingHeaderPreview() {
 }
 
 @Composable
-@Preview
+@MultiThemePreview
 private fun LoadedHeaderPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colors.background) {

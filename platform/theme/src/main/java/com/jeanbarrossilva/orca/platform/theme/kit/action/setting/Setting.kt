@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.platform.theme.kit.action.setting
 
-import android.content.res.Configuration
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.EmptyMutableInteractionSource
 import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
@@ -106,8 +105,7 @@ fun Setting(
 
 /** Preview of an unlabeled [Setting]. **/
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun UnlabeledSettingPreview() {
     OrcaTheme {
         Setting(label = null)
@@ -116,8 +114,7 @@ private fun UnlabeledSettingPreview() {
 
 /** Preview of a labeled [Setting]. **/
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun LabeledSettingPreview() {
     OrcaTheme {
         Setting(label = { Text("Label") })

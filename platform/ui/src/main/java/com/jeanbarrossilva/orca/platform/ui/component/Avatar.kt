@@ -1,13 +1,12 @@
 package com.jeanbarrossilva.orca.platform.ui.component
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.placeholder.Placeholder
+import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.Samples
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
@@ -93,8 +92,7 @@ private fun contentDescriptionFor(name: String): String {
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun LoadingLargeAvatarPreview() {
     OrcaTheme {
         LargeAvatar()
@@ -102,8 +100,7 @@ private fun LoadingLargeAvatarPreview() {
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun LoadedLargeAvatarPreview() {
     OrcaTheme {
         LargeAvatar(Avatar.sample.name, Avatar.sample.url)
@@ -111,8 +108,7 @@ private fun LoadedLargeAvatarPreview() {
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun LoadingSmallAvatarPreview() {
     OrcaTheme {
         SmallAvatar()
@@ -120,8 +116,7 @@ private fun LoadingSmallAvatarPreview() {
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun LoadedSmallAvatarPreview() {
     OrcaTheme {
         SmallAvatar(Avatar.sample.name, Avatar.sample.url)

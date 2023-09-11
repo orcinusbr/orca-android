@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.feature.composer
 
-import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -41,12 +40,12 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.highlight.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
 import com.jeanbarrossilva.orca.feature.composer.ui.Toolbar
+import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.plus
 import com.jeanbarrossilva.orca.platform.theme.kit.input.TextFieldDefaults as _TextFieldDefaults
@@ -214,8 +213,7 @@ private fun Composer(
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun EmptyWithoutToolbarComposerPreview() {
     OrcaTheme {
         Composer(TextFieldValue(AnnotatedString("")), isInitiallyFocused = false)
@@ -223,8 +221,7 @@ private fun EmptyWithoutToolbarComposerPreview() {
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun EmptyWithToolbarComposerPreview() {
     OrcaTheme {
         Composer(TextFieldValue(AnnotatedString("")), isInitiallyFocused = true)
@@ -232,8 +229,7 @@ private fun EmptyWithToolbarComposerPreview() {
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun PopulatedWithoutToolbarComposerPreview() {
     OrcaTheme {
         Composer(
@@ -244,8 +240,7 @@ private fun PopulatedWithoutToolbarComposerPreview() {
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun PopulatedWithToolbarComposerPreview() {
     OrcaTheme {
         Composer(
