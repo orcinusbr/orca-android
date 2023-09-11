@@ -276,7 +276,7 @@ private fun EmptyTimelineMessage(
                 contentDescription = "Empty",
                 Modifier
                     .padding(start = spacing, top = spacing, end = spacing)
-                    .size(64.dp),
+                    .size(32.dp),
                 tint = OrcaTheme.colors.secondary
             )
         }

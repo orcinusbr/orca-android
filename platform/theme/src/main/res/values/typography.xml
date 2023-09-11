@@ -28,7 +28,8 @@
         name="Theme.Orca.Typography.HeadlineMedium"
         parent="TextAppearance.Material3.HeadlineMedium">
         <item name="android:textColor">@color/secondary</item>
-        <item name="android:textFontWeight">@integer/font_weight_black</item>
+        <item name="android:textFontWeight">@integer/font_weight_medium</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
     <style
