@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.platform.theme.kit.action.setting.group
 
-import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Divider
@@ -12,7 +11,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.tooling.preview.Preview
+import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.reversed
 import com.jeanbarrossilva.orca.platform.theme.kit.action.setting.Setting
@@ -71,8 +70,7 @@ fun SettingGroup(
 
 /** Preview of a [SettingGroup]. **/
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun SettingGroupPreview() {
     OrcaTheme {
         SettingGroup(

@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.platform.theme.kit.action
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
@@ -10,7 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 
 /**
@@ -55,8 +54,7 @@ fun PrimaryButton(
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun DisabledPrimaryButtonPreview() {
     OrcaTheme {
         PrimaryButton(isEnabled = false)
@@ -65,7 +63,7 @@ private fun DisabledPrimaryButtonPreview() {
 
 /** Preview of an enabled [PrimaryButton]. **/
 @Composable
-@Preview
+@MultiThemePreview
 private fun EnabledPrimaryButtonPreview() {
     OrcaTheme {
         PrimaryButton(isEnabled = true)

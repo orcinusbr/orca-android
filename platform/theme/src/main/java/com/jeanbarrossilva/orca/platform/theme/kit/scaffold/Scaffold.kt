@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.platform.theme.kit.scaffold
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.plus
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold as _Scaffold
@@ -69,8 +68,7 @@ fun Scaffold(
 
 /** Preview of a [Scaffold][_Scaffold]. **/
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun ScaffoldPreview() {
     val snackbarPresenter = rememberSnackbarPresenter()
 

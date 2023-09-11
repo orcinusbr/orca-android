@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.platform.ui.component.timeline.toot
 
-import android.content.res.Configuration
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,7 +22,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
@@ -33,6 +31,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.samples
+import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import com.jeanbarrossilva.orca.platform.theme.extensions.EmptyMutableInteractionSource
@@ -274,8 +273,7 @@ private fun TootPreview(
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun LoadingTootPreviewPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colors.background) {
@@ -285,8 +283,7 @@ private fun LoadingTootPreviewPreview() {
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun LoadedInactiveTootPreviewPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colors.background) {
@@ -296,8 +293,7 @@ private fun LoadedInactiveTootPreviewPreview() {
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun LoadedActiveTootPreviewPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colors.background) {

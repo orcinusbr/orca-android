@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top
 
-import android.content.res.Configuration
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
@@ -22,8 +21,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.backwardsNavigationArrow
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar as _TopAppBar
@@ -94,8 +93,7 @@ fun TopAppBar(
 
 /** Preview of a [TopAppBar][_TopAppBar]. **/
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun TopAppBarPreview() {
     OrcaTheme {
         @OptIn(ExperimentalMaterial3Api::class)

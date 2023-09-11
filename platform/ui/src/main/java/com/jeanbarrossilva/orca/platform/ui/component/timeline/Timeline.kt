@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.platform.ui.component.timeline
 
-import android.content.res.Configuration
 import androidx.annotation.RestrictTo
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,13 +25,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
@@ -299,8 +298,7 @@ private fun EmptyTimelineMessage(
 
 /** Preview of a loading [Timeline]. **/
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun LoadingTimelinePreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colors.background) {
@@ -311,8 +309,7 @@ private fun LoadingTimelinePreview() {
 
 /** Preview of an empty [Timeline]. **/
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun EmptyTimelinePreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colors.background) {
@@ -331,8 +328,7 @@ private fun EmptyTimelinePreview() {
 
 /** Preview of a populated [Timeline]. **/
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun PopulatedTimelinePreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colors.background) {

@@ -12,10 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetails
+import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.LargeAvatar
 
@@ -83,7 +83,7 @@ private fun Header(
 }
 
 @Composable
-@Preview
+@MultiThemePreview
 private fun LoadingHeaderPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colors.background) {
@@ -93,7 +93,7 @@ private fun LoadingHeaderPreview() {
 }
 
 @Composable
-@Preview
+@MultiThemePreview
 private fun HeaderPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colors.background) {

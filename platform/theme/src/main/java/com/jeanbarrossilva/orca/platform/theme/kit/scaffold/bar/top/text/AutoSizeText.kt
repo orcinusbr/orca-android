@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text
 
-import android.content.res.Configuration
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -13,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
+import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.size.AutoSizeRange
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.size.AutoSizer
@@ -58,8 +57,7 @@ fun AutoSizeText(
 
 /** Preview of an [AutoSizeText]. **/
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun AutoSizeTextPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colors.background) {

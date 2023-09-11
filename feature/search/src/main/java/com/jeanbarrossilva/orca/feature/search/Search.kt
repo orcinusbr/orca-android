@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.feature.search
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,13 +34,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
 import com.jeanbarrossilva.orca.core.sample.feed.profile.search.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.search.samples
 import com.jeanbarrossilva.orca.feature.search.ui.SearchResultCard
+import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.kit.input.TextField
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
@@ -223,8 +222,7 @@ private fun EmptyResultsMessage(modifier: Modifier = Modifier) {
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun LoadingSearchPreview() {
     OrcaTheme {
         Search(query = "", onQueryChange = { }, onBackwardsNavigation = { })
@@ -232,8 +230,7 @@ private fun LoadingSearchPreview() {
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun EmptyResultsPreview() {
     OrcaTheme {
         Search(
@@ -247,8 +244,7 @@ private fun EmptyResultsPreview() {
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun LoadedSearchPreview() {
     OrcaTheme {
         Search(

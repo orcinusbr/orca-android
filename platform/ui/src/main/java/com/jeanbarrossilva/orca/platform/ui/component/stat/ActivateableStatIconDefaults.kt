@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.platform.ui.component.stat
 
-import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -25,8 +24,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 
 /** Tag for identifying an [ActivateableStatIconDefaults] for testing purposes. **/
@@ -140,8 +139,7 @@ internal fun ActivateableStatIcon(
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun InactiveActivateableStatIconPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colors.background) {
@@ -151,7 +149,7 @@ private fun InactiveActivateableStatIconPreview() {
 }
 
 @Composable
-@Preview
+@MultiThemePreview
 private fun ActiveActivateableStatIconPreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colors.background) {

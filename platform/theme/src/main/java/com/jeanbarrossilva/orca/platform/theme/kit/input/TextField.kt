@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.platform.theme.kit.input
 
-import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.border
@@ -20,8 +19,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.kit.input.TextField as _TextField
 import com.jeanbarrossilva.orca.platform.theme.kit.input.TextFieldDefaults as _TextFieldDefaults
@@ -139,8 +138,7 @@ private fun TextField(
 
 /** Preview of an empty [TextField][_TextField]. **/
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun EmptyTextFieldPreview() {
     OrcaTheme {
         _TextField(text = "")
@@ -149,8 +147,7 @@ private fun EmptyTextFieldPreview() {
 
 /** Preview of an unfocused [TextField][_TextField]. **/
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun UnfocusedTextFieldPreview() {
     OrcaTheme {
         _TextField(isFocused = false)
@@ -159,8 +156,7 @@ private fun UnfocusedTextFieldPreview() {
 
 /** Preview of a focused [TextField][_TextField]. **/
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun FocusedTextFieldPreview() {
     OrcaTheme {
         _TextField(isFocused = true)

@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.feature.auth
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,9 +26,9 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.sample.feed.profile.account.sample
+import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.kit.action.PrimaryButton
 import com.jeanbarrossilva.orca.platform.theme.kit.input.TextField
@@ -158,8 +157,7 @@ internal fun Auth(
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun InvalidAuthPreview() {
     OrcaTheme {
         Auth(username = "", instance = "")
@@ -167,8 +165,7 @@ private fun InvalidAuthPreview() {
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun ValidAuthPreview() {
     OrcaTheme {
         Auth(Account.sample.username, Account.sample.instance)

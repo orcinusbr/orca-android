@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.feature.tootdetails
 
-import android.content.res.Configuration
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -12,7 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
@@ -23,6 +21,7 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
 import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.Header
 import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.formatted
 import com.jeanbarrossilva.orca.feature.tootdetails.viewmodel.TootDetailsViewModel
+import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBarDefaults
@@ -174,8 +173,7 @@ private fun TootDetails(
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun LoadingTootDetailsPreview() {
     OrcaTheme {
         TootDetails(Loadable.Loading(), commentsLoadable = ListLoadable.Loading())
@@ -183,8 +181,7 @@ private fun LoadingTootDetailsPreview() {
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun LoadedTootDetailsWithoutComments() {
     OrcaTheme {
         TootDetails(Loadable.Loaded(TootDetails.sample), commentsLoadable = ListLoadable.Empty())
@@ -192,8 +189,7 @@ private fun LoadedTootDetailsWithoutComments() {
 }
 
 @Composable
-@Preview
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@MultiThemePreview
 private fun LoadedTootDetailsPreview() {
     OrcaTheme {
         TootDetails(Loadable.Loaded(TootDetails.sample), commentsLoadable = ListLoadable.Loading())
