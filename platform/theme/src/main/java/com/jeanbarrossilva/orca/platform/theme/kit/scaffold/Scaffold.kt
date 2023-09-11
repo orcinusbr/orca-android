@@ -43,7 +43,7 @@ fun Scaffold(
     modifier: Modifier = Modifier,
     floatingActionButton: @Composable () -> Unit,
     topAppBar: @Composable () -> Unit = { },
-    floatingActionButtonPosition: FabPosition = FabPosition.Center,
+    floatingActionButtonPosition: FabPosition = FabPosition.End,
     snackbarPresenter: SnackbarPresenter = rememberSnackbarPresenter(),
     content: @Composable (padding: PaddingValues) -> Unit
 ) {
