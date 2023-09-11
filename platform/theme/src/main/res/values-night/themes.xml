@@ -3,6 +3,7 @@
     <bool name="is_system_in_light_theme">false</bool>
 
     <color name="backgroundContainer">#0B0B0B</color>
+    <color name="backgroundContent">@android:color/white</color>
     <color name="disabledContainer">#3E3E3E</color>
     <color name="disabledContent">#E5E5E5</color>
     <color name="placeholder">#3E3E3E</color>
