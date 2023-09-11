@@ -142,7 +142,7 @@ internal fun ActivateableStatIcon(
 @MultiThemePreview
 private fun InactiveActivateableStatIconPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             ActivateableStatIcon(isActive = false)
         }
     }
@@ -152,7 +152,7 @@ private fun InactiveActivateableStatIconPreview() {
 @MultiThemePreview
 private fun ActiveActivateableStatIconPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             ActivateableStatIcon(isActive = true)
         }
     }

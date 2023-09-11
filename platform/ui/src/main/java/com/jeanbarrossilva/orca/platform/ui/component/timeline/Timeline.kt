@@ -301,7 +301,7 @@ private fun EmptyTimelineMessage(
 @MultiThemePreview
 private fun LoadingTimelinePreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             Timeline()
         }
     }
@@ -312,7 +312,7 @@ private fun LoadingTimelinePreview() {
 @MultiThemePreview
 private fun EmptyTimelinePreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             Timeline(
                 ListLoadable.Empty(),
                 onHighlightClick = { },
@@ -331,7 +331,7 @@ private fun EmptyTimelinePreview() {
 @MultiThemePreview
 private fun PopulatedTimelinePreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             Timeline(
                 TootPreview.samples,
                 onHighlightClick = { },

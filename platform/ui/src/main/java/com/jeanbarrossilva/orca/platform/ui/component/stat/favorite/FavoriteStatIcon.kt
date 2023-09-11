@@ -68,7 +68,7 @@ fun FavoriteStatIcon(
 @MultiThemePreview
 private fun InactiveFavoriteStatIconPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             FavoriteStatIcon(isActive = false, ActivateableStatIconInteractiveness.Still)
         }
     }
@@ -78,7 +78,7 @@ private fun InactiveFavoriteStatIconPreview() {
 @MultiThemePreview
 private fun ActiveFavoriteStatIconPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             FavoriteStatIcon(isActive = true, ActivateableStatIconInteractiveness.Still)
         }
     }

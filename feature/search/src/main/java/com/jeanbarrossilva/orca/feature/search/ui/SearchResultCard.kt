@@ -84,7 +84,7 @@ private fun SearchResultCard(
 @MultiThemePreview
 private fun LoadingSearchResultCardPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             SearchResultCard()
         }
     }
@@ -94,7 +94,7 @@ private fun LoadingSearchResultCardPreview() {
 @MultiThemePreview
 private fun LoadedSearchResultCardPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             SearchResultCard(ProfileSearchResult.sample, onClick = { })
         }
     }

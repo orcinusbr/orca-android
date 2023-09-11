@@ -87,7 +87,7 @@ private fun Composer(
     val focusRequester = remember(::FocusRequester)
     val style = OrcaTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Normal)
     val interactionSource = remember(::MutableInteractionSource)
-    val brushColor = OrcaTheme.colors.brand.container
+    val brushColor = OrcaTheme.colors.primary.container
     val cursorBrush = remember(brushColor) { SolidColor(brushColor) }
     var isToolbarVisible by remember { mutableStateOf(isToolbarInitiallyVisible) }
     val toolbarSpacing = OrcaTheme.spacings.medium

@@ -29,7 +29,7 @@ fun PrimaryButton(
     isEnabled: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val enabledContentColor = OrcaTheme.colors.brand.content
+    val enabledContentColor = OrcaTheme.colors.primary.content
     val disabledContentColor = OrcaTheme.colors.disabled.content
     val contentColor =
         remember(isEnabled) { if (isEnabled) enabledContentColor else disabledContentColor }
@@ -40,7 +40,7 @@ fun PrimaryButton(
         isEnabled,
         shape = OrcaTheme.shapes.medium,
         colors = ButtonDefaults.elevatedButtonColors(
-            OrcaTheme.colors.brand.container,
+            OrcaTheme.colors.primary.container,
             enabledContentColor,
             OrcaTheme.colors.disabled.container,
             disabledContentColor

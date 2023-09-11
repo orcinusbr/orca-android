@@ -1,40 +1,41 @@
 <resources>
     <bool name="is_system_in_light_theme">true</bool>
 
-    <color name="background">@android:color/white</color>
-    <color name="brandContainer">#10A9FF</color>
-    <color name="brandContent">@android:color/white</color>
+    <color name="backgroundContainer">@android:color/white</color>
+    <color name="backgroundContent">@android:color/black</color>
     <color name="disabledContainer">#EDEDED</color>
     <color name="disabledContent">#050505</color>
     <color name="errorContainer">#E15050</color>
     <color name="errorContent">@android:color/white</color>
+    <color name="link">#10A9FF</color>
     <color name="placeholder">#F5F5F5</color>
-    <color name="primary">@android:color/black</color>
+    <color name="primaryContainer">@android:color/black</color>
+    <color name="primaryContent">@android:color/white</color>
     <color name="secondary">#5B5B5B</color>
     <color name="surfaceContainer">@android:color/white</color>
     <color name="surfaceContent">@color/secondary</color>
     <color name="tertiary">#AFAFAF</color>
 
     <style name="Theme.Orca" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:colorBackground">@color/background</item>
+        <item name="android:colorBackground">@color/backgroundContainer</item>
         <item name="android:fontFamily">@font/rubik</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:textColorPrimary">@color/primary</item>
+        <item name="android:textColorPrimary">@color/backgroundContent</item>
         <item name="android:textColorSecondary">@color/secondary</item>
         <item name="android:textColorTertiary">@color/tertiary</item>
         <item name="android:windowLightStatusBar">@bool/is_system_in_light_theme</item>
         <item name="colorControlNormal">@color/secondary</item>
         <item name="colorErrorContainer">@color/errorContainer</item>
         <item name="colorOnErrorContainer">@color/errorContent</item>
-        <item name="colorOnPrimaryContainer">@color/brandContent</item>
+        <item name="colorOnPrimaryContainer">@color/primaryContent</item>
         <item name="colorOnSecondaryContainer">@color/secondary</item>
         <item name="colorOnSurface">@color/surfaceContent</item>
         <item name="colorOnSurfaceVariant">@color/tertiary</item>
         <item name="colorOutline">@color/tertiary</item>
         <item name="colorOutlineVariant">@color/placeholder</item>
-        <item name="colorPrimary">@color/brandContainer</item>
-        <item name="colorPrimaryContainer">@color/brandContainer</item>
+        <item name="colorPrimary">@color/primaryContent</item>
+        <item name="colorPrimaryContainer">@color/primaryContainer</item>
         <item name="colorSurface">@color/surfaceContainer</item>
         <item name="colorSurfaceVariant">@color/placeholder</item>
         <item name="textAppearanceBodyLarge">@style/Theme.Orca.Typography.BodyLarge</item>

@@ -99,7 +99,7 @@ private fun fallbackContentColorFor(containerColor: Color): Color {
 @MultiThemePreview
 internal fun StatPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             Stat(
                 OrcaTheme.iconography.comment.outlined,
                 contentDescription = "Comment",

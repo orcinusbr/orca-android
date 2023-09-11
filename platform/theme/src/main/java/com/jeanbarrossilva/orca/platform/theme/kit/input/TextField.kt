@@ -105,7 +105,7 @@ private fun TextField(
     label: @Composable () -> Unit
 ) {
     val borderWidth by animateDpAsState(if (isFocused) 2.dp else 0.dp, label = "BorderWidth")
-    val highlightColor = OrcaTheme.colors.brand.container
+    val highlightColor = OrcaTheme.colors.primary.container
     val borderColor by animateColorAsState(
         if (isFocused) highlightColor else Color.Transparent,
         label = "BorderColor"

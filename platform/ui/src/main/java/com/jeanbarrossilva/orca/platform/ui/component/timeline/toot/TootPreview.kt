@@ -276,7 +276,7 @@ private fun TootPreview(
 @MultiThemePreview
 private fun LoadingTootPreviewPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             TootPreview()
         }
     }
@@ -286,7 +286,7 @@ private fun LoadingTootPreviewPreview() {
 @MultiThemePreview
 private fun LoadedInactiveTootPreviewPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             TootPreview(TootPreview.sample.copy(isFavorite = false, isReblogged = false))
         }
     }
@@ -296,7 +296,7 @@ private fun LoadedInactiveTootPreviewPreview() {
 @MultiThemePreview
 private fun LoadedActiveTootPreviewPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             TootPreview(TootPreview.sample.copy(isFavorite = true, isReblogged = true))
         }
     }

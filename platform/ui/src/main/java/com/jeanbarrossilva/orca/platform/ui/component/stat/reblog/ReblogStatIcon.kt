@@ -63,7 +63,7 @@ fun ReblogStatIcon(
 @MultiThemePreview
 private fun InactiveReblogStatIconPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             ReblogStatIcon(isActive = false, ActivateableStatIconInteractiveness.Still)
         }
     }
@@ -73,7 +73,7 @@ private fun InactiveReblogStatIconPreview() {
 @MultiThemePreview
 private fun ActiveReblogStatIconPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             ReblogStatIcon(isActive = true, ActivateableStatIconInteractiveness.Still)
         }
     }

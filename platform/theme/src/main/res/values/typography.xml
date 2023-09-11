@@ -12,7 +12,7 @@
         name="Theme.Orca.Typography.DisplayLarge"
         parent="TextAppearance.Material3.DisplayLarge">
         <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">@color/primary</item>
+        <item name="android:textColor">@color/primaryContainer</item>
         <item name="android:textFontWeight">@integer/font_weight_black</item>
         <item name="android:textSize">56sp</item>
     </style>
@@ -20,7 +20,7 @@
     <style
         name="Theme.Orca.Typography.HeadlineLarge"
         parent="TextAppearance.Material3.HeadlineLarge">
-        <item name="android:textColor">@color/primary</item>
+        <item name="android:textColor">@color/primaryContainer</item>
         <item name="android:textFontWeight">@integer/font_weight_black</item>
     </style>
 

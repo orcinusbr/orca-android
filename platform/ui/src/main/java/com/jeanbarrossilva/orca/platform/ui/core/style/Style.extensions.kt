@@ -22,7 +22,7 @@ import com.jeanbarrossilva.orca.std.styledstring.type.Mention
 internal fun Style.toSpanStyle(colors: Colors): SpanStyle {
     return when (this) {
         is Bold -> SpanStyle(fontWeight = FontWeight.Bold)
-        is Email, is Hashtag, is Link, is Mention -> SpanStyle(colors.brand.container)
+        is Email, is Hashtag, is Link, is Mention -> SpanStyle(colors.link)
         is Italic -> SpanStyle(fontStyle = FontStyle.Italic)
         else -> throw IllegalArgumentException("Cannot convert an unknown $this style.")
     }

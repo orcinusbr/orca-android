@@ -32,7 +32,7 @@ internal fun FormatIconButton(
 ) {
     val role = Role.Switch
     val contentColor by animateColorAsState(
-        if (isEnabled) OrcaTheme.colors.brand.container else LocalContentColor.current,
+        if (isEnabled) OrcaTheme.colors.primary.container else LocalContentColor.current,
         label = "ContentColor"
     )
 
@@ -56,7 +56,7 @@ internal fun FormatIconButton(
 @MultiThemePreview
 private fun DisabledFormatIconButtonPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             FormatIconButton(isEnabled = false)
         }
     }
@@ -66,7 +66,7 @@ private fun DisabledFormatIconButtonPreview() {
 @MultiThemePreview
 private fun EnabledFormatIconButtonPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             FormatIconButton(isEnabled = true)
         }
     }

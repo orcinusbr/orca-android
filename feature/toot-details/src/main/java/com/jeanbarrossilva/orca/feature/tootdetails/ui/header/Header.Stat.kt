@@ -35,7 +35,7 @@ internal fun Stat(modifier: Modifier = Modifier, content: @Composable RowScope.(
 @MultiThemePreview
 private fun StatPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             Stat {
                 Icon(OrcaTheme.iconography.comment.outlined, contentDescription = "Comments")
                 Text("8")
