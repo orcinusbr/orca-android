@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -12,28 +13,32 @@ import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconInteractiveness
 import com.jeanbarrossilva.orca.platform.ui.component.stat.reblog.ReblogStatIcon
-import com.jeanbarrossilva.orca.platform.ui.component.stat.reblog.ReblogStatIconDefaults
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.Stat
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.StatDefaults
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.StatPosition
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TOOT_PREVIEW_REBLOG_COUNT_STAT_TAG
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 
 @Composable
-internal fun ReblogStat(preview: TootPreview, onClick: () -> Unit, modifier: Modifier = Modifier) {
+internal fun ReblogStat(
+    position: StatPosition,
+    preview: TootPreview,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     val isActive = remember(preview, preview::isReblogged)
-    val containerColor by animateColorAsState(
-        if (isActive) Color(0xFF81C784) else StatDefaults.containerColor,
-        label = "ContainerColor"
-    )
 
-    Stat(onClick, modifier.testTag(TOOT_PREVIEW_REBLOG_COUNT_STAT_TAG), containerColor) {
-        ReblogStatIcon(
-            isActive,
-            ActivateableStatIconInteractiveness.Interactive { onClick() },
-            colors = ReblogStatIconDefaults.colors(activeColor = Color.White)
+    Stat(position, onClick, modifier.testTag(TOOT_PREVIEW_REBLOG_COUNT_STAT_TAG)) {
+        val contentColor by animateColorAsState(
+            if (isActive) Color(0xFF81C784) else LocalContentColor.current,
+            label = "ContentColor"
         )
 
-        Text(preview.formattedReblogCount)
+        ReblogStatIcon(
+            isActive,
+            ActivateableStatIconInteractiveness.Interactive { onClick() }
+        )
+
+        Text(preview.formattedReblogCount, color = contentColor)
     }
 }
 
@@ -41,7 +46,11 @@ internal fun ReblogStat(preview: TootPreview, onClick: () -> Unit, modifier: Mod
 @MultiThemePreview
 private fun InactiveReblogStatPreview() {
     OrcaTheme {
-        ReblogStat(TootPreview.sample.copy(isReblogged = false), onClick = { })
+        ReblogStat(
+            StatPosition.SUBSEQUENT,
+            TootPreview.sample.copy(isReblogged = false),
+            onClick = { }
+        )
     }
 }
 
@@ -49,6 +58,10 @@ private fun InactiveReblogStatPreview() {
 @MultiThemePreview
 private fun ActiveReblogStatPreview() {
     OrcaTheme {
-        ReblogStat(TootPreview.sample.copy(isReblogged = true), onClick = { })
+        ReblogStat(
+            StatPosition.SUBSEQUENT,
+            TootPreview.sample.copy(isReblogged = true),
+            onClick = { }
+        )
     }
 }

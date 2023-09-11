@@ -19,7 +19,7 @@ import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 internal fun Stat(modifier: Modifier = Modifier, content: @Composable RowScope.() -> Unit) {
     Row(
         modifier,
-        Arrangement.spacedBy(OrcaTheme.spacings.small),
+        Arrangement.spacedBy(OrcaTheme.spacings.medium),
         Alignment.CenterVertically
     ) {
         CompositionLocalProvider(

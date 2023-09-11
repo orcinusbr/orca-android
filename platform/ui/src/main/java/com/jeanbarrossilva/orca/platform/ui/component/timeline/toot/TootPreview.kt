@@ -201,6 +201,7 @@ fun TootPreview(
         stats = {
             Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
                 Stat(
+                    StatPosition.LEADING,
                     OrcaTheme.iconography.comment.outlined,
                     contentDescription = "Comments",
                     onClick = { },
@@ -209,10 +210,11 @@ fun TootPreview(
                     Text(preview.formattedCommentCount)
                 }
 
-                FavoriteStat(preview, onClick = onFavorite)
-                ReblogStat(preview, onClick = onReblog)
+                FavoriteStat(StatPosition.SUBSEQUENT, preview, onClick = onFavorite)
+                ReblogStat(StatPosition.SUBSEQUENT, preview, onClick = onReblog)
 
                 Stat(
+                    StatPosition.TRAILING,
                     OrcaTheme.iconography.share.outlined,
                     contentDescription = "Share",
                     onClick = onShare,

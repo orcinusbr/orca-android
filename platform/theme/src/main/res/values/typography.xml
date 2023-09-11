@@ -62,7 +62,7 @@
     <style
         name="Theme.Orca.Typography.BodySmall"
         parent="TextAppearance.Material3.BodySmall">
-        <item name="android:textColor">@color/tertiary</item>
+        <item name="android:textColor">@color/secondary</item>
         <item name="android:textFontWeight">@integer/font_weight_medium</item>
     </style>
 </resources>
