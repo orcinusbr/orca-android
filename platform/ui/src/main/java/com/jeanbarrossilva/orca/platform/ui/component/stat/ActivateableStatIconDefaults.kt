@@ -4,12 +4,10 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.gestures.GestureCancellationException
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
@@ -124,11 +122,12 @@ internal fun ActivateableStatIcon(
                 detectTapGestures(
                     onPress = {
                         isPressed = true
-                        try { awaitRelease() } catch (_: GestureCancellationException) { }
+                        tryAwaitRelease()
                         isPressed = false
-                        interactiveness.onInteraction(!isActive)
                     }
-                )
+                ) {
+                    interactiveness.onInteraction(!isActive)
+                }
             }
             .scale(scale)
             .size(ActivateableStatIconDefaults.Size)
@@ -142,9 +141,7 @@ internal fun ActivateableStatIcon(
 @MultiThemePreview
 private fun InactiveActivateableStatIconPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background.container) {
-            ActivateableStatIcon(isActive = false)
-        }
+        ActivateableStatIcon(isActive = false)
     }
 }
 
@@ -152,9 +149,7 @@ private fun InactiveActivateableStatIconPreview() {
 @MultiThemePreview
 private fun ActiveActivateableStatIconPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background.container) {
-            ActivateableStatIcon(isActive = true)
-        }
+        ActivateableStatIcon(isActive = true)
     }
 }
 
@@ -165,7 +160,10 @@ private fun ActivateableStatIcon(isActive: Boolean, modifier: Modifier = Modifie
         contentDescription = "Disconnect",
         isActive,
         ActivateableStatIconInteractiveness.Still,
-        ActivateableStatIconColors(LocalContentColor.current, Color.Green),
+        ActivateableStatIconColors(
+            inactiveColor = LocalContentColor.current,
+            activeColor = OrcaTheme.colors.link
+        ),
         modifier
     )
 }
