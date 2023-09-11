@@ -11,8 +11,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,11 +32,15 @@ import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import java.net.URL
 
 /** Tag that identifies an [EmptyTimelineMessage] for testing purposes. **/
 internal const val EMPTY_TIMELINE_MESSAGE_TAG = "empty-timeline-tag"
+
+/** Tag that identifies dividers between [TootPreview]s in a [Timeline] for testing purposes. **/
+internal const val TIMELINE_DIVIDER_TAG = "timeline-divider"
 
 /** Tag that identifies a [Timeline] for testing purposes. **/
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP_PREFIX)
@@ -166,18 +171,22 @@ fun Timeline(
         EmptyTimelineMessage(header, contentPadding, modifier)
     } else {
         Timeline(onNext, header, modifier, state, contentPadding) {
-            items(
+            itemsIndexed(
                 tootPreviews,
-                key = TootPreview::id,
-                contentType = { TimelineContentType.TOOT_PREVIEW }
-            ) {
+                key = { _, preview -> preview.id },
+                contentType = { _, _ -> TimelineContentType.TOOT_PREVIEW }
+            ) { index, preview ->
+                if (index == 0 && header != null || index != 0 && index != tootPreviews.lastIndex) {
+                    Divider(Modifier.testTag(TIMELINE_DIVIDER_TAG))
+                }
+
                 TootPreview(
-                    it,
-                    onHighlightClick = { it.highlight?.url?.run(onHighlightClick) },
-                    onFavorite = { onFavorite(it.id) },
-                    onReblog = { onReblog(it.id) },
-                    onShare = { onShare(it.url) },
-                    onClick = { onClick(it.id) }
+                    preview,
+                    onHighlightClick = { preview.highlight?.url?.run(onHighlightClick) },
+                    onFavorite = { onFavorite(preview.id) },
+                    onReblog = { onReblog(preview.id) },
+                    onShare = { onShare(preview.url) },
+                    onClick = { onClick(preview.id) }
                 )
             }
         }
@@ -204,6 +213,33 @@ internal fun Timeline(
         onClick = { },
         onNext = { },
         modifier
+    )
+}
+
+/**
+ * [Timeline] that's populated with sample [TootPreview]s.
+ *
+ * @param modifier [Modifier] to be applied to the underlying [Timeline].
+ * @param tootPreviews [TootPreview]s to be lazily shown.
+ * @param header [Composable] to be shown above the [TootPreview]s.
+ * @see TootPreview.samples
+ */
+@Composable
+internal fun PopulatedTimeline(
+    modifier: Modifier = Modifier,
+    tootPreviews: List<TootPreview> = TootPreview.samples,
+    header: @Composable (LazyItemScope.() -> Unit)? = null
+) {
+    Timeline(
+        tootPreviews,
+        onHighlightClick = { },
+        onFavorite = { },
+        onReblog = { },
+        onShare = { },
+        onClick = { },
+        onNext = { },
+        modifier,
+        header = header
     )
 }
 
@@ -332,15 +368,29 @@ private fun EmptyTimelinePreview() {
 private fun PopulatedTimelinePreview() {
     OrcaTheme {
         Surface(color = OrcaTheme.colors.background.container) {
-            Timeline(
-                TootPreview.samples,
-                onHighlightClick = { },
-                onFavorite = { },
-                onReblog = { },
-                onShare = { },
-                onClick = { },
-                onNext = { }
-            )
+            PopulatedTimeline()
+        }
+    }
+}
+
+/** Preview of a populated [Timeline] with a header. **/
+@Composable
+@MultiThemePreview
+private fun PopulatedTimelineWithHeaderPreview() {
+    OrcaTheme {
+        Surface(color = OrcaTheme.colors.background.container) {
+            PopulatedTimeline {
+                AutoSizeText(
+                    "Header",
+                    Modifier.padding(
+                        start = OrcaTheme.spacings.large,
+                        top = OrcaTheme.spacings.large,
+                        end = OrcaTheme.spacings.large,
+                        bottom = OrcaTheme.spacings.medium
+                    ),
+                    style = OrcaTheme.typography.displayLarge
+                )
+            }
         }
     }
 }
