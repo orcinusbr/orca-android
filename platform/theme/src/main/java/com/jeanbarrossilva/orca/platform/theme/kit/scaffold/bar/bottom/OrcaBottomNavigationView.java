@@ -50,7 +50,7 @@ public final class OrcaBottomNavigationView extends BottomNavigationView {
         );
         setMeasuredDimension(
             MeasureSpec.getSize(widthMeasureSpec),
-            MeasureSpec.getSize(heightMeasureSpec) + dividerHeight
+            MeasureSpec.getSize(heightMeasureSpec)
         );
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
