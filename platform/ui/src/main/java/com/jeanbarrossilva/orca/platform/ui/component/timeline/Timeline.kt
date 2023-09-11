@@ -234,7 +234,11 @@ private fun Timeline(
         onDispose { }
     }
 
-    LazyColumn(modifier.testTag(TIMELINE_TAG), state, contentPadding) {
+    LazyColumn(
+        modifier.testTag(TIMELINE_TAG),
+        state,
+        contentPadding
+    ) {
         header?.let {
             item(contentType = { TimelineContentType.HEADER }, content = it)
         }
@@ -256,14 +260,14 @@ private fun EmptyTimelineMessage(
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
-    val spacing = OrcaTheme.spacings.extraLarge
+    val spacing = OrcaTheme.spacings.large
 
     LazyColumn(
         modifier
             .testTag(EMPTY_TIMELINE_MESSAGE_TAG)
             .fillMaxSize(),
         contentPadding = contentPadding,
-        verticalArrangement = Arrangement.spacedBy(spacing, Alignment.CenterVertically),
+        verticalArrangement = Arrangement.spacedBy(spacing),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         header?.let {
