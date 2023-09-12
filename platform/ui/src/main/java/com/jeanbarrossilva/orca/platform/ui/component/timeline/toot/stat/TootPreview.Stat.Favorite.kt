@@ -13,7 +13,6 @@ import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconInteractiveness
 import com.jeanbarrossilva.orca.platform.ui.component.stat.favorite.FavoriteStatIcon
-import com.jeanbarrossilva.orca.platform.ui.component.stat.favorite.FavoriteStatIconDefaults
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.Stat
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.StatDefaults
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.StatPosition
@@ -33,7 +32,7 @@ internal fun FavoriteStat(
 
     Stat(position, onClick, modifier.testTag(TOOT_PREVIEW_FAVORITE_STAT_TAG)) {
         val contentColor by animateColorAsState(
-            if (isActive) FavoriteStatIconDefaults.ActiveColor else LocalContentColor.current,
+            if (isActive) OrcaTheme.colors.activation.favorite else LocalContentColor.current,
             label = "ContentColor"
         )
 

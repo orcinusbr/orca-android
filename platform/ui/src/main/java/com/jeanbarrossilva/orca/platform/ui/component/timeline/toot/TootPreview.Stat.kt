@@ -54,14 +54,7 @@ internal fun Stat(
     label: @Composable () -> Unit = { }
 ) {
     Stat(position, onClick, modifier) {
-        Icon(
-            vector,
-            contentDescription,
-            Modifier
-                .clickable(onClick = onClick)
-                .size(StatDefaults.IconSize)
-        )
-
+        Icon(vector, contentDescription, Modifier.size(StatDefaults.IconSize))
         label()
     }
 }

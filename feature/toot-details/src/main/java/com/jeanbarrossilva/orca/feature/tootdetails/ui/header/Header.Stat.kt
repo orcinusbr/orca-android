@@ -12,19 +12,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 
+internal object StatDefaults {
+    val contentColor
+        @Composable get() = OrcaTheme.colors.secondary
+}
+
 @Composable
-internal fun Stat(modifier: Modifier = Modifier, content: @Composable RowScope.() -> Unit) {
+internal fun Stat(
+    modifier: Modifier = Modifier,
+    contentColor: Color = StatDefaults.contentColor,
+    content: @Composable RowScope.() -> Unit
+) {
     Row(
         modifier,
-        Arrangement.spacedBy(OrcaTheme.spacings.medium),
+        Arrangement.spacedBy(OrcaTheme.spacings.small),
         Alignment.CenterVertically
     ) {
         CompositionLocalProvider(
-            LocalContentColor provides OrcaTheme.colors.secondary,
-            LocalTextStyle provides OrcaTheme.typography.bodySmall
+            LocalContentColor provides contentColor,
+            LocalTextStyle provides OrcaTheme.typography.bodySmall.copy(color = contentColor)
         ) {
             content()
         }

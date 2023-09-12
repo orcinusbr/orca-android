@@ -52,15 +52,15 @@ data class Colors internal constructor(
      * @param reblog [Contrast] for a "reblogged" state.
      **/
     @Immutable
-    data class Activation internal constructor(val favorite: Contrast, val reblog: Contrast) {
+    data class Activation internal constructor(val favorite: Color, val reblog: Color) {
         companion object {
             /** [Activation] with [Contrast.Unspecified] values. **/
             internal val Unspecified =
-                Activation(favorite = Contrast.Unspecified, reblog = Contrast.Unspecified)
+                Activation(favorite = Color.Unspecified, reblog = Color.Unspecified)
 
             /** [Activation] that's provided by default. **/
             internal val Default =
-                Activation(Color(0xFFD32F2F) and Color.White, Color(0xFF81C784) and Color.White)
+                Activation(favorite = Color(0xFFD32F2F), reblog = Color(0xFF81C784))
         }
     }
 

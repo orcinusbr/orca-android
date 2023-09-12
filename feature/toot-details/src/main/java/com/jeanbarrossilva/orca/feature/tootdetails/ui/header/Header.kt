@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ProvideTextStyle
@@ -16,17 +15,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
 import com.jeanbarrossilva.orca.feature.tootdetails.TootDetails
+import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.stat.FavoriteStat
+import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.stat.ReblogStat
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.SmallAvatar
-import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconInteractiveness
-import com.jeanbarrossilva.orca.platform.ui.component.stat.favorite.FavoriteStatIcon
-import com.jeanbarrossilva.orca.platform.ui.component.stat.reblog.ReblogStatIcon
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.headline.HeadlineCard
 
 @Composable
@@ -81,25 +78,8 @@ internal fun Header(
                     Text(details.formattedCommentCount)
                 }
 
-                Stat {
-                    FavoriteStatIcon(
-                        isActive = details.isFavorite,
-                        ActivateableStatIconInteractiveness.Interactive { onFavorite() },
-                        Modifier.size(24.dp)
-                    )
-
-                    Text(details.formattedFavoriteCount)
-                }
-
-                Stat {
-                    ReblogStatIcon(
-                        isActive = details.isReblogged,
-                        ActivateableStatIconInteractiveness.Interactive { onReblog() },
-                        Modifier.size(24.dp)
-                    )
-
-                    Text(details.formattedReblogCount)
-                }
+                FavoriteStat(details, onClick = onFavorite)
+                ReblogStat(details, onClick = onReblog)
 
                 Stat {
                     Icon(
