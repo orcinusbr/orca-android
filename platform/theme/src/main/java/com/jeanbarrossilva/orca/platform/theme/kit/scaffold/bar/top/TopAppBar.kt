@@ -85,7 +85,12 @@ fun TopAppBar(
                 navigationIcon()
             }
         },
-        actions,
+        actions = {
+            Row {
+                actions()
+                Spacer(Modifier.width(spacing))
+            }
+        },
         colors = TopAppBarDefaults.topAppBarColors(
             scrolledContainerColor = containerColor,
             actionIconContentColor = OrcaTheme.colors.secondary
