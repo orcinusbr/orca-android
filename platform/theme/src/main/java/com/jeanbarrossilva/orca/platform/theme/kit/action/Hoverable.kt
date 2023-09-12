@@ -1,8 +1,6 @@
 package com.jeanbarrossilva.orca.platform.theme.kit.action
 
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -31,10 +29,7 @@ import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
  * @param content Content to be highlighted when hovered.
  **/
 @Composable
-fun Hoverable(
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
-) {
+fun Hoverable(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     val interactionSource = remember(::MutableInteractionSource)
     val isHovered by interactionSource.collectIsHoveredAsState()
 
@@ -56,7 +51,8 @@ private fun Hoverable(
     content: @Composable () -> Unit
 ) {
     val density = LocalDensity.current
-    val alpha by animateFloatAsState(if (isHighlighted) 1f else 0f, tween(), label = "Alpha")
+    val animationSpec = tween<Float>(durationMillis = 128)
+    val alpha by animateFloatAsState(if (isHighlighted) 1f else 0f, animationSpec, label = "Alpha")
     val containerColor = OrcaTheme.colors.placeholder
     val shape = OrcaTheme.shapes.large
     val spacing = OrcaTheme.spacings.small
@@ -67,12 +63,12 @@ private fun Hoverable(
     }
     val scale by animateFloatAsState(
         if (isHighlighted) .95f else 1f,
-        spring(Spring.DampingRatioHighBouncy),
+        animationSpec,
         label = "Scale"
     )
 
     Box(
-        modifier
+        Modifier
             .drawBehind {
                 drawRoundRect(
                     containerColor,
@@ -86,6 +82,7 @@ private fun Hoverable(
                 )
             }
             .scale(scale)
+            .then(modifier)
     ) {
         content()
     }
