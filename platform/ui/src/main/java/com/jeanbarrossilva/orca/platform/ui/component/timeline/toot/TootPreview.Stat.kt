@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.kit.action.Hoverable
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconDefaults
 
 internal object StatDefaults {
@@ -69,18 +70,20 @@ internal fun Stat(
     val spacing = OrcaTheme.spacings.small
     val contentColor = OrcaTheme.colors.secondary
 
-    Row(
-        modifier
-            .padding(position.padding)
-            .clickable(role = Role.Button, onClick = onClick),
-        Arrangement.spacedBy(spacing),
-        Alignment.CenterVertically
-    ) {
-        CompositionLocalProvider(
-            LocalContentColor provides contentColor,
-            LocalTextStyle provides OrcaTheme.typography.bodySmall.copy(color = contentColor)
+    Hoverable(modifier) {
+        Row(
+            Modifier
+                .padding(position.padding)
+                .clickable(role = Role.Button, onClick = onClick),
+            Arrangement.spacedBy(spacing),
+            Alignment.CenterVertically
         ) {
-            content()
+            CompositionLocalProvider(
+                LocalContentColor provides contentColor,
+                LocalTextStyle provides OrcaTheme.typography.bodySmall.copy(color = contentColor)
+            ) {
+                content()
+            }
         }
     }
 }

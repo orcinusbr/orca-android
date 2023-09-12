@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.theme.kit.action
+package com.jeanbarrossilva.orca.platform.theme.kit.action.button
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.size

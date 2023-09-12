@@ -2,7 +2,6 @@ package com.jeanbarrossilva.orca.feature.tootdetails
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -16,13 +15,13 @@ import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.highlight.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
 import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.Header
 import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.formatted
 import com.jeanbarrossilva.orca.feature.tootdetails.viewmodel.TootDetailsViewModel
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.kit.action.button.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBarDefaults
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
@@ -129,7 +128,7 @@ private fun TootDetails(
             @OptIn(ExperimentalMaterial3Api::class)
             TopAppBar(
                 navigationIcon = {
-                    IconButton(onClick = onBackwardsNavigation) {
+                    HoverableIconButton(onClick = onBackwardsNavigation) {
                         Icon(OrcaTheme.iconography.back, contentDescription = "Back")
                     }
                 },

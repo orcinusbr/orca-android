@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.kit.action.Hoverable
 
 internal object StatDefaults {
     val contentColor
@@ -27,16 +28,17 @@ internal fun Stat(
     contentColor: Color = StatDefaults.contentColor,
     content: @Composable RowScope.() -> Unit
 ) {
-    Row(
-        modifier,
-        Arrangement.spacedBy(OrcaTheme.spacings.small),
-        Alignment.CenterVertically
-    ) {
-        CompositionLocalProvider(
-            LocalContentColor provides contentColor,
-            LocalTextStyle provides OrcaTheme.typography.bodySmall.copy(color = contentColor)
+    Hoverable(modifier) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.small),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            content()
+            CompositionLocalProvider(
+                LocalContentColor provides contentColor,
+                LocalTextStyle provides OrcaTheme.typography.bodySmall.copy(color = contentColor)
+            ) {
+                content()
+            }
         }
     }
 }
