@@ -27,7 +27,7 @@ object ReblogStatIconDefaults {
     @Composable
     fun colors(
         inactiveColor: Color = LocalContentColor.current,
-        activeColor: Color = Color(0xFF81C784)
+        activeColor: Color = OrcaTheme.colors.activation.reblog
     ): ActivateableStatIconColors {
         return ActivateableStatIconColors(inactiveColor, activeColor)
     }
