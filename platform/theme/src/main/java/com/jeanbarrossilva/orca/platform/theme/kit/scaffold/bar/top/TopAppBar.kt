@@ -86,7 +86,10 @@ fun TopAppBar(
             }
         },
         actions,
-        colors = TopAppBarDefaults.topAppBarColors(scrolledContainerColor = containerColor),
+        colors = TopAppBarDefaults.topAppBarColors(
+            scrolledContainerColor = containerColor,
+            actionIconContentColor = OrcaTheme.colors.secondary
+        ),
         scrollBehavior = scrollBehavior
     )
 }
