@@ -16,11 +16,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Headline
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.highlight.sample
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.extensions.border
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.compose.Image
 import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
@@ -39,7 +39,7 @@ fun HeadlineCard(
 
     Column(
         modifier
-            .border(2.dp, OrcaTheme.colors.placeholder, shape)
+            .border(shape)
             .clip(shape)
             .clickable(onClick = onClick)
             .background(OrcaTheme.colors.surface.container)
