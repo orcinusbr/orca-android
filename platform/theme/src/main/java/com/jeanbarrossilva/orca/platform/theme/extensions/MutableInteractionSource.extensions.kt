@@ -28,7 +28,7 @@ fun EmptyMutableInteractionSource(): MutableInteractionSource {
  * @param ignored [KClass]es of the [Interaction]s to be ignored.
  **/
 @Suppress("FunctionName")
-internal fun IgnoringMutableInteractionSource(vararg ignored: KClass<out Interaction>):
+fun IgnoringMutableInteractionSource(vararg ignored: KClass<out Interaction>):
     MutableInteractionSource {
     return object : MutableInteractionSource {
         /** Whether this [Interaction] is ignored. **/

@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.orca.platform.ui.component.timeline.toot
 
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.HoverInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,6 +35,7 @@ import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import com.jeanbarrossilva.orca.platform.theme.extensions.EmptyMutableInteractionSource
+import com.jeanbarrossilva.orca.platform.theme.extensions.IgnoringMutableInteractionSource
 import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
 import com.jeanbarrossilva.orca.platform.ui.component.SmallAvatar
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.headline.HeadlineCard
@@ -238,7 +239,9 @@ private fun TootPreview(
     modifier: Modifier = Modifier
 ) {
     val interactionSource = remember(onClick) {
-        onClick?.let { MutableInteractionSource() } ?: EmptyMutableInteractionSource()
+        onClick
+            ?.let { IgnoringMutableInteractionSource(HoverInteraction::class) }
+            ?: EmptyMutableInteractionSource()
     }
     val spacing = OrcaTheme.spacings.medium
 
