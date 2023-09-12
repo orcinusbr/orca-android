@@ -37,7 +37,7 @@ internal fun Toolbar(
     onUnderlineToggle: (isUnderlined: Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val shape = OrcaTheme.shapes.medium
+    val shape = OrcaTheme.shapes.large
     val spacing = OrcaTheme.spacings.small
 
     CompositionLocalProvider(LocalContentColor provides OrcaTheme.colors.surface.content) {
