@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.orca.feature.tootdetails.ui.header
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -13,6 +14,7 @@ import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
@@ -85,7 +87,11 @@ internal fun Header(
                     Icon(
                         OrcaTheme.iconography.share.outlined,
                         contentDescription = "Share",
-                        Modifier.clickable(onClick = onShare)
+                        Modifier.clickable(
+                            remember(::MutableInteractionSource),
+                            indication = null,
+                            onClick = onShare
+                        )
                     )
                 }
             }
