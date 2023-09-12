@@ -61,7 +61,7 @@ fun TopAppBar(
     val containerColor = OrcaTheme.colors.surface.container
     val overlap = scrollBehavior.state.overlappedFraction
     val isOverlapping = remember(overlap) { overlap > 0f }
-    val spacing = OrcaTheme.spacings.medium - OrcaTheme.spacings.small
+    val spacing = OrcaTheme.spacings.medium
     val verticalSpacing by animateDpAsState(
         if (isOverlapping) 0.dp else spacing,
         label = "VerticalSpacing"
