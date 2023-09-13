@@ -70,13 +70,14 @@ internal fun Stat(
     val spacing = OrcaTheme.spacings.small
     val contentColor = OrcaTheme.colors.secondary
 
-    Hoverable(modifier) {
+    Hoverable(
+        modifier
+            .padding(position.padding)
+            .clickable(role = Role.Button, onClick = onClick)
+    ) {
         Row(
-            Modifier
-                .padding(position.padding)
-                .clickable(role = Role.Button, onClick = onClick),
-            Arrangement.spacedBy(spacing),
-            Alignment.CenterVertically
+            horizontalArrangement = Arrangement.spacedBy(spacing),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             CompositionLocalProvider(
                 LocalContentColor provides contentColor,
