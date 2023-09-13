@@ -18,9 +18,6 @@ const val FAVORITE_STAT_ICON_TAG = "favorite-stat-icon"
 
 /** Default values of a [FavoriteStatIcon]. **/
 object FavoriteStatIconDefaults {
-    /** [Color] by which a [FavoriteStatIcon] is colored by when it's active. **/
-    val ActiveColor = Color(0xFFD32F2F)
-
     /**
      * [ActivateableStatIconColors] by which a [FavoriteStatIcon] is colored by default.
      *
@@ -28,8 +25,10 @@ object FavoriteStatIconDefaults {
      * @param activeColor [Color] to color it with when it's active.
      **/
     @Composable
-    fun colors(inactiveColor: Color = LocalContentColor.current, activeColor: Color = ActiveColor):
-        ActivateableStatIconColors {
+    fun colors(
+        inactiveColor: Color = LocalContentColor.current,
+        activeColor: Color = OrcaTheme.colors.activation.favorite
+    ): ActivateableStatIconColors {
         return ActivateableStatIconColors(inactiveColor, activeColor)
     }
 }
@@ -68,7 +67,7 @@ fun FavoriteStatIcon(
 @MultiThemePreview
 private fun InactiveFavoriteStatIconPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             FavoriteStatIcon(isActive = false, ActivateableStatIconInteractiveness.Still)
         }
     }
@@ -78,7 +77,7 @@ private fun InactiveFavoriteStatIconPreview() {
 @MultiThemePreview
 private fun ActiveFavoriteStatIconPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             FavoriteStatIcon(isActive = true, ActivateableStatIconInteractiveness.Still)
         }
     }

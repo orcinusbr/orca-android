@@ -3,6 +3,7 @@ package com.jeanbarrossilva.orca.platform.theme.kit.scaffold
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -30,9 +31,9 @@ import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSiz
  * Orca-specific [Scaffold].
  *
  * @param modifier [Modifier] to be applied to the underlying [Scaffold].
+ * @param topAppBar [TopAppBar] to be placed at the top.
  * @param floatingActionButton [FloatingActionButton] to be placed at the bottom, horizontally
  * centered.
- * @param topAppBar [TopAppBar] to be placed at the top.
  * @param floatingActionButtonPosition [FabPosition] that determines where the
  * [floatingActionButton] will be placed.
  * @param snackbarPresenter [SnackbarPresenter] through which [Snackbar]s can be presented.
@@ -41,9 +42,9 @@ import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSiz
 @Composable
 fun Scaffold(
     modifier: Modifier = Modifier,
-    floatingActionButton: @Composable () -> Unit,
     topAppBar: @Composable () -> Unit = { },
-    floatingActionButtonPosition: FabPosition = FabPosition.Center,
+    floatingActionButton: @Composable () -> Unit = { },
+    floatingActionButtonPosition: FabPosition = FabPosition.End,
     snackbarPresenter: SnackbarPresenter = rememberSnackbarPresenter(),
     content: @Composable (padding: PaddingValues) -> Unit
 ) {
@@ -79,21 +80,23 @@ private fun ScaffoldPreview() {
 
     OrcaTheme {
         _Scaffold(
-            floatingActionButton = {
-                FloatingActionButton(onClick = { }) {
-                    Icon(OrcaTheme.iconography.compose.filled, contentDescription = "Compose")
-                }
-            },
             topAppBar = {
                 @OptIn(ExperimentalMaterial3Api::class)
                 TopAppBar {
                     AutoSizeText("Scaffold")
                 }
             },
+            floatingActionButton = {
+                FloatingActionButton(onClick = { }) {
+                    Icon(OrcaTheme.iconography.compose.filled, contentDescription = "Compose")
+                }
+            },
             snackbarPresenter = snackbarPresenter
         ) {
             LazyColumn(
-                Modifier.fillMaxSize(),
+                Modifier
+                    .padding(it)
+                    .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
                 contentPadding = it + OrcaTheme.overlays.fab

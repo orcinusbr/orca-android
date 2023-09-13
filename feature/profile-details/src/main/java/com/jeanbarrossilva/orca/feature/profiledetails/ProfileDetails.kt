@@ -14,7 +14,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
@@ -51,6 +50,7 @@ import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
+import com.jeanbarrossilva.orca.platform.theme.kit.action.button.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.theme.kit.menu.DropdownMenu
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
@@ -366,7 +366,7 @@ private fun ProfileDetails(
         title = { AutoSizeText(details.username) },
         actions = {
             Box {
-                IconButton(onClick = { isTopBarDropdownExpanded = true }) {
+                HoverableIconButton(onClick = { isTopBarDropdownExpanded = true }) {
                     Icon(OrcaTheme.iconography.expand, contentDescription = "More")
                 }
 

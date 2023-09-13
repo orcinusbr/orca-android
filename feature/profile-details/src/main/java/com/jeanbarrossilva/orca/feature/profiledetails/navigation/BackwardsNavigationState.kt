@@ -1,10 +1,12 @@
 package com.jeanbarrossilva.orca.feature.profiledetails.navigation
 
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState.Available
+import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState.Unavailable
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.kit.action.button.HoverableIconButton
 import java.io.Serializable
 
 /**
@@ -28,7 +30,7 @@ sealed class BackwardsNavigationState : Serializable {
     abstract class Available private constructor() : BackwardsNavigationState() {
         @Composable
         override fun NavigationButton(modifier: Modifier) {
-            IconButton(onClick = ::navigateBackwards) {
+            HoverableIconButton(onClick = ::navigateBackwards) {
                 Icon(OrcaTheme.iconography.back, contentDescription = "Back")
             }
         }

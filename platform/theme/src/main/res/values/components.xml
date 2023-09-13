@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style
-        name="Theme.Orca.Component.Scaffold.BottomAppBar.Indicator"
-        parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
-        <item name="android:color">@color/brandContainer</item>
-    </style>
-</resources>

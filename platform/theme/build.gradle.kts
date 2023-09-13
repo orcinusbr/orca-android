@@ -36,6 +36,8 @@ dependencies {
     api(Dependencies.COMPOSE_MATERIAL_3)
     api(Dependencies.COMPOSE_UI_TOOLING)
 
+    implementation(kotlin("stdlib"))
+    implementation(kotlin("reflect"))
     implementation(Dependencies.ACCOMPANIST_THEME_ADAPTER_MATERIAL_3)
     implementation(Dependencies.MATERIAL)
 }

@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +39,7 @@ object TextFieldDefaults {
         return TextFieldDefaults.colors(
             focusedContainerColor = enabledContainerColor,
             unfocusedContainerColor = enabledContainerColor,
+            cursorColor = contentColorFor(enabledContainerColor),
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent,
@@ -105,12 +107,12 @@ private fun TextField(
     label: @Composable () -> Unit
 ) {
     val borderWidth by animateDpAsState(if (isFocused) 2.dp else 0.dp, label = "BorderWidth")
-    val highlightColor = OrcaTheme.colors.brand.container
+    val highlightColor = OrcaTheme.colors.secondary
     val borderColor by animateColorAsState(
         if (isFocused) highlightColor else Color.Transparent,
         label = "BorderColor"
     )
-    val shape = OrcaTheme.shapes.medium
+    val shape = OrcaTheme.shapes.large
 
     TextField(
         text,

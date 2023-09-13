@@ -2,6 +2,7 @@ package com.jeanbarrossilva.orca.feature.search
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,11 +17,8 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -42,7 +40,9 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.search.samples
 import com.jeanbarrossilva.orca.feature.search.ui.SearchResultCard
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.kit.action.button.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.theme.kit.input.TextField
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 
 internal object SearchDefaults {
@@ -166,16 +166,22 @@ private fun Search(
 
     Scaffold(
         modifier,
-        topBar = {
+        topAppBar = {
             Row(
                 Modifier
-                    .background(OrcaTheme.colors.background)
+                    .background(OrcaTheme.colors.background.container)
                     .padding(top = spacing, end = spacing, bottom = spacing)
                     .statusBarsPadding(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = onBackwardsNavigation, Modifier.fillMaxWidth(.2f)) {
-                    Icon(OrcaTheme.iconography.back, contentDescription = "Back")
+                Box(Modifier.fillMaxWidth(.2f), Alignment.Center) {
+                    HoverableIconButton(onClick = onBackwardsNavigation) {
+                        Icon(
+                            OrcaTheme.iconography.back,
+                            contentDescription = "Back",
+                            tint = OrcaTheme.colors.background.content
+                        )
+                    }
                 }
 
                 TextField(

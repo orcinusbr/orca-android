@@ -2,12 +2,12 @@ package com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,14 +17,17 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.extensions.backwardsNavigationArrow
+import com.jeanbarrossilva.orca.platform.theme.configuration.Borders
+import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
+import com.jeanbarrossilva.orca.platform.theme.kit.action.button.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar as _TopAppBar
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBarDefaults as _TopAppBarDefaults
 
@@ -42,12 +45,11 @@ object TopAppBarDefaults {
  * related to the current context.
  *
  * @param modifier [Modifier] to be applied to the underlying [TopAppBar].
- * @param navigationIcon [IconButton] through which navigation can be performed, usually for popping
- * the back stack.
+ * @param navigationIcon [HoverableIconButton] through which navigation can be performed, usually
+ * for popping the back stack.
  * @param actions [IconButton]s with actions to be performed in this context.
  * @param scrollBehavior Defines how this [TopAppBar][_TopAppBar] behaves on scroll.
  * @param title Short explanation of what's being presented by the overall content.
- * @see Icons.Rounded.backwardsNavigationArrow
  **/
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,14 +61,26 @@ fun TopAppBar(
     title: @Composable () -> Unit
 ) {
     val containerColor = OrcaTheme.colors.surface.container
-    val overlap = scrollBehavior.state.overlappedFraction
+    val overlap by remember(scrollBehavior) {
+        derivedStateOf {
+            scrollBehavior.state.overlappedFraction
+        }
+    }
+    val heightOffset by remember(scrollBehavior) {
+        derivedStateOf {
+            scrollBehavior.state.heightOffset
+        }
+    }
     val isOverlapping = remember(overlap) { overlap > 0f }
-    val spacing = OrcaTheme.spacings.medium - OrcaTheme.spacings.small
+    val spacing = OrcaTheme.spacings.medium
     val verticalSpacing by animateDpAsState(
-        if (isOverlapping) 0.dp else spacing,
+        with(LocalDensity.current) { maxOf(0.dp, spacing + heightOffset.toDp()) },
         label = "VerticalSpacing"
     )
-    val elevation by animateDpAsState(if (isOverlapping) 4.dp else 0.dp, label = "Elevation")
+    val borderStrokeWidth by animateDpAsState(
+        if (isOverlapping) OrcaTheme.borders.default.width else 0.dp,
+        label = "BorderStrokeWidth"
+    )
 
     TopAppBar(
         title = {
@@ -76,7 +90,9 @@ fun TopAppBar(
             }
         },
         modifier
-            .shadow(elevation)
+            .`if`(Borders.areApplicable) {
+                border(OrcaTheme.borders.default.copy(width = borderStrokeWidth))
+            }
             .background(containerColor)
             .padding(vertical = verticalSpacing),
         navigationIcon = {
@@ -85,8 +101,16 @@ fun TopAppBar(
                 navigationIcon()
             }
         },
-        actions,
-        colors = TopAppBarDefaults.topAppBarColors(scrolledContainerColor = containerColor),
+        actions = {
+            Row {
+                actions()
+                Spacer(Modifier.width(spacing))
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            scrolledContainerColor = containerColor,
+            actionIconContentColor = OrcaTheme.colors.secondary
+        ),
         scrollBehavior = scrollBehavior
     )
 }
@@ -104,7 +128,7 @@ private fun TopAppBarPreview() {
                 }
             },
             actions = {
-                IconButton(onClick = { }) {
+                HoverableIconButton(onClick = { }) {
                     Icon(OrcaTheme.iconography.search, contentDescription = "Search")
                 }
             }

@@ -60,7 +60,7 @@ fun AutoSizeText(
 @MultiThemePreview
 private fun AutoSizeTextPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             AutoSizeText("Text")
         }
     }

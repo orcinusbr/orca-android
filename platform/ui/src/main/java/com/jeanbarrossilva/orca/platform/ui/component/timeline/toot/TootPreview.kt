@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.orca.platform.ui.component.timeline.toot
 
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.HoverInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,6 +35,7 @@ import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import com.jeanbarrossilva.orca.platform.theme.extensions.EmptyMutableInteractionSource
+import com.jeanbarrossilva.orca.platform.theme.extensions.IgnoringMutableInteractionSource
 import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
 import com.jeanbarrossilva.orca.platform.ui.component.SmallAvatar
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.headline.HeadlineCard
@@ -201,6 +202,7 @@ fun TootPreview(
         stats = {
             Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
                 Stat(
+                    StatPosition.LEADING,
                     OrcaTheme.iconography.comment.outlined,
                     contentDescription = "Comments",
                     onClick = { },
@@ -209,10 +211,11 @@ fun TootPreview(
                     Text(preview.formattedCommentCount)
                 }
 
-                FavoriteStat(preview, onClick = onFavorite)
-                ReblogStat(preview, onClick = onReblog)
+                FavoriteStat(StatPosition.SUBSEQUENT, preview, onClick = onFavorite)
+                ReblogStat(StatPosition.SUBSEQUENT, preview, onClick = onReblog)
 
                 Stat(
+                    StatPosition.TRAILING,
                     OrcaTheme.iconography.share.outlined,
                     contentDescription = "Share",
                     onClick = onShare,
@@ -236,7 +239,9 @@ private fun TootPreview(
     modifier: Modifier = Modifier
 ) {
     val interactionSource = remember(onClick) {
-        onClick?.let { MutableInteractionSource() } ?: EmptyMutableInteractionSource()
+        onClick
+            ?.let { IgnoringMutableInteractionSource(HoverInteraction::class) }
+            ?: EmptyMutableInteractionSource()
     }
     val spacing = OrcaTheme.spacings.medium
 
@@ -276,7 +281,7 @@ private fun TootPreview(
 @MultiThemePreview
 private fun LoadingTootPreviewPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             TootPreview()
         }
     }
@@ -286,7 +291,7 @@ private fun LoadingTootPreviewPreview() {
 @MultiThemePreview
 private fun LoadedInactiveTootPreviewPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             TootPreview(TootPreview.sample.copy(isFavorite = false, isReblogged = false))
         }
     }
@@ -296,7 +301,7 @@ private fun LoadedInactiveTootPreviewPreview() {
 @MultiThemePreview
 private fun LoadedActiveTootPreviewPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             TootPreview(TootPreview.sample.copy(isFavorite = true, isReblogged = true))
         }
     }

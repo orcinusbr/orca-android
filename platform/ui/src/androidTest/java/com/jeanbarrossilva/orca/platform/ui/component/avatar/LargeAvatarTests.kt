@@ -4,6 +4,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import com.jeanbarrossilva.loadable.placeholder.test.assertIsLoading
 import com.jeanbarrossilva.loadable.placeholder.test.assertIsNotLoading
+import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.AVATAR_TAG
 import com.jeanbarrossilva.orca.platform.ui.component.Avatar
 import com.jeanbarrossilva.orca.platform.ui.component.LargeAvatar
@@ -17,24 +18,34 @@ internal class LargeAvatarTests {
 
     @Test
     fun isTaggedWhenEmpty() {
-        composeRule.setContent { LargeAvatar() }
+        composeRule.setContent {
+            OrcaTheme {
+                LargeAvatar()
+            }
+        }
         composeRule.onNodeWithTag(AVATAR_TAG).assertExists()
     }
 
     @Test
     fun isLoadingWhenEmpty() {
-        composeRule.setContent { LargeAvatar() }
+        composeRule.setContent {
+            OrcaTheme {
+                LargeAvatar()
+            }
+        }
         composeRule.onNodeWithTag(AVATAR_TAG).assertIsLoading()
     }
 
     @Test
     fun isTaggedWhenPopulated() {
         composeRule.setContent {
-            LargeAvatar(
-                Avatar.sample.name,
-                Avatar.sample.url,
-                imageLoader = TestImageLoader
-            )
+            OrcaTheme {
+                LargeAvatar(
+                    Avatar.sample.name,
+                    Avatar.sample.url,
+                    imageLoader = TestImageLoader
+                )
+            }
         }
         composeRule.onNodeWithTag(AVATAR_TAG).assertExists()
     }
@@ -42,7 +53,9 @@ internal class LargeAvatarTests {
     @Test
     fun isLoadedWhenPopulated() {
         composeRule.setContent {
-            LargeAvatar(Avatar.sample.name, Avatar.sample.url, imageLoader = TestImageLoader)
+            OrcaTheme {
+                LargeAvatar(Avatar.sample.name, Avatar.sample.url, imageLoader = TestImageLoader)
+            }
         }
         composeRule.onNodeWithTag(AVATAR_TAG).assertIsNotLoading()
     }

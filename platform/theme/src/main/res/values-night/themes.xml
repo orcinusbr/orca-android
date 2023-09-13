@@ -2,11 +2,13 @@
 <resources>
     <bool name="is_system_in_light_theme">false</bool>
 
-    <color name="background">#0B0B0B</color>
+    <color name="backgroundContainer">#0B0B0B</color>
+    <color name="backgroundContent">@android:color/white</color>
     <color name="disabledContainer">#3E3E3E</color>
     <color name="disabledContent">#E5E5E5</color>
     <color name="placeholder">#3E3E3E</color>
-    <color name="primary">@android:color/white</color>
+    <color name="primaryContainer">@android:color/white</color>
+    <color name="primaryContent">@android:color/black</color>
     <color name="secondary">#A0A0A0</color>
     <color name="surfaceContainer">#1A1A1A</color>
     <color name="tertiary">#757575</color>

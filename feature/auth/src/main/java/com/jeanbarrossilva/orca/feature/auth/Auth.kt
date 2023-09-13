@@ -30,7 +30,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.sample.feed.profile.account.sample
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.kit.action.PrimaryButton
+import com.jeanbarrossilva.orca.platform.theme.kit.action.button.PrimaryButton
 import com.jeanbarrossilva.orca.platform.theme.kit.input.TextField
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 
@@ -77,7 +77,7 @@ internal fun Auth(
 
     Box(
         modifier
-            .background(OrcaTheme.colors.background)
+            .background(OrcaTheme.colors.background.container)
             .imePadding()
             .padding(spacing)
             .fillMaxSize()

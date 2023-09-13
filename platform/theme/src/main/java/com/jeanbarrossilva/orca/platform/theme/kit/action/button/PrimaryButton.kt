@@ -1,14 +1,21 @@
-package com.jeanbarrossilva.orca.platform.theme.kit.action
+package com.jeanbarrossilva.orca.platform.theme.kit.action.button
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 
@@ -29,18 +36,22 @@ fun PrimaryButton(
     isEnabled: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val enabledContentColor = OrcaTheme.colors.brand.content
+    val enabledContentColor = OrcaTheme.colors.primary.content
     val disabledContentColor = OrcaTheme.colors.disabled.content
     val contentColor =
         remember(isEnabled) { if (isEnabled) enabledContentColor else disabledContentColor }
+    var isLoading by remember { mutableStateOf(false) }
 
     ElevatedButton(
-        onClick,
+        onClick = {
+            isLoading = true
+            onClick()
+        },
         modifier,
         isEnabled,
         shape = OrcaTheme.shapes.medium,
         colors = ButtonDefaults.elevatedButtonColors(
-            OrcaTheme.colors.brand.container,
+            OrcaTheme.colors.primary.container,
             enabledContentColor,
             OrcaTheme.colors.disabled.container,
             disabledContentColor
@@ -48,7 +59,11 @@ fun PrimaryButton(
         contentPadding = PaddingValues(OrcaTheme.spacings.large)
     ) {
         ProvideTextStyle(LocalTextStyle.current.copy(color = contentColor)) {
-            content()
+            if (isLoading) {
+                CircularProgressIndicator(Modifier.size(17.4.dp), strokeCap = StrokeCap.Round)
+            } else {
+                content()
+            }
         }
     }
 }

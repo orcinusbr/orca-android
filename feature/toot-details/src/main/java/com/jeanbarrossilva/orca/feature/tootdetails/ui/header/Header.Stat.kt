@@ -12,21 +12,33 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.kit.action.Hoverable
+
+internal object StatDefaults {
+    val contentColor
+        @Composable get() = OrcaTheme.colors.secondary
+}
 
 @Composable
-internal fun Stat(modifier: Modifier = Modifier, content: @Composable RowScope.() -> Unit) {
-    Row(
-        modifier,
-        Arrangement.spacedBy(OrcaTheme.spacings.small),
-        Alignment.CenterVertically
-    ) {
-        CompositionLocalProvider(
-            LocalContentColor provides OrcaTheme.colors.secondary,
-            LocalTextStyle provides OrcaTheme.typography.bodySmall
+internal fun Stat(
+    modifier: Modifier = Modifier,
+    contentColor: Color = StatDefaults.contentColor,
+    content: @Composable RowScope.() -> Unit
+) {
+    Hoverable(modifier) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.small),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            content()
+            CompositionLocalProvider(
+                LocalContentColor provides contentColor,
+                LocalTextStyle provides OrcaTheme.typography.bodySmall.copy(color = contentColor)
+            ) {
+                content()
+            }
         }
     }
 }
@@ -35,7 +47,7 @@ internal fun Stat(modifier: Modifier = Modifier, content: @Composable RowScope.(
 @MultiThemePreview
 private fun StatPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             Stat {
                 Icon(OrcaTheme.iconography.comment.outlined, contentDescription = "Comments")
                 Text("8")

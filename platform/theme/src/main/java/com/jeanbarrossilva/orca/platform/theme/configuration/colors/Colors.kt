@@ -22,12 +22,12 @@ internal val LocalColors = compositionLocalOf {
  * [Contrast]s and [Color]s that compose the palette to be used by the application.
  *
  * @param activation [Activation] for representing various activation states.
- * @param background [Color] for the overall background.
- * @param brand [Contrast] that uses the primary [Color] of Orca.
+ * @param background [Contrast] for the overall background.
  * @param disabled [Contrast] for components in a disabled state.
  * @param error [Contrast] for error states.
+ * @param link [Color] for links.
  * @param placeholder [Color] for components that indicate loading content.
- * @param primary [Color] for primary components.
+ * @param primary [Contrast] for primary components.
  * @param secondary [Color] for secondary components.
  * @param surface [Contrast] for on-background or nested containers.
  * @param tertiary [Color] for tertiary components.
@@ -35,12 +35,12 @@ internal val LocalColors = compositionLocalOf {
 @Immutable
 data class Colors internal constructor(
     val activation: Activation,
-    val background: Color,
-    val brand: Contrast,
+    val background: Contrast,
     val disabled: Contrast,
     val error: Contrast,
+    val link: Color,
     val placeholder: Color,
-    val primary: Color,
+    val primary: Contrast,
     val secondary: Color,
     val surface: Contrast,
     val tertiary: Color
@@ -52,15 +52,15 @@ data class Colors internal constructor(
      * @param reblog [Contrast] for a "reblogged" state.
      **/
     @Immutable
-    data class Activation internal constructor(val favorite: Contrast, val reblog: Contrast) {
+    data class Activation internal constructor(val favorite: Color, val reblog: Color) {
         companion object {
             /** [Activation] with [Contrast.Unspecified] values. **/
             internal val Unspecified =
-                Activation(favorite = Contrast.Unspecified, reblog = Contrast.Unspecified)
+                Activation(favorite = Color.Unspecified, reblog = Color.Unspecified)
 
             /** [Activation] that's provided by default. **/
             internal val Default =
-                Activation(Color(0xFFD32F2F) and Color.White, Color(0xFF81C784) and Color.White)
+                Activation(favorite = Color(0xFFD32F2F), reblog = Color(0xFF81C784))
         }
     }
 
@@ -72,12 +72,12 @@ data class Colors internal constructor(
         /** [Colors] with unspecified values. **/
         val Unspecified = Colors(
             Activation.Unspecified,
-            background = Color.Unspecified,
-            brand = Contrast.Unspecified,
+            background = Contrast.Unspecified,
             disabled = Contrast.Unspecified,
             error = Contrast.Unspecified,
+            link = Color.Unspecified,
             placeholder = Color.Unspecified,
-            primary = Color.Unspecified,
+            primary = Contrast.Unspecified,
             secondary = Color.Unspecified,
             surface = Contrast.Unspecified,
             tertiary = Color.Unspecified
@@ -88,13 +88,13 @@ data class Colors internal constructor(
          *
          * @param context [Context] from which the [Color]s will be obtained.
          **/
+        @JvmStatic
         fun getDefault(context: Context): Colors {
             return Colors(
                 Activation.Default,
-                Color.of(context, R.color.background),
-                Color.of(context, R.color.brandContainer) and Color.of(
+                Color.of(context, R.color.backgroundContainer) and Color.of(
                     context,
-                    R.color.brandContent
+                    R.color.backgroundContent
                 ),
                 Color.of(context, R.color.disabledContainer) and Color.of(
                     context,
@@ -104,8 +104,12 @@ data class Colors internal constructor(
                     context,
                     R.color.errorContent
                 ),
+                Color.of(context, R.color.link),
                 Color.of(context, R.color.placeholder),
-                Color.of(context, R.color.primary),
+                Color.of(context, R.color.primaryContainer) and Color.of(
+                    context,
+                    R.color.primaryContent
+                ),
                 Color.of(context, R.color.secondary),
                 Color.of(context, R.color.surfaceContainer) and Color.of(
                     context,

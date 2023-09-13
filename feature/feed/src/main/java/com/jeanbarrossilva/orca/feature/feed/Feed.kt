@@ -3,7 +3,6 @@ package com.jeanbarrossilva.orca.feature.feed
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -17,6 +16,7 @@ import com.jeanbarrossilva.orca.feature.feed.viewmodel.FeedViewModel
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.plus
+import com.jeanbarrossilva.orca.platform.theme.kit.action.button.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBarDefaults
@@ -101,7 +101,7 @@ private fun Feed(
             TopAppBar(
                 title = { AutoSizeText("Feed") },
                 actions = {
-                    IconButton(onClick = onSearch) {
+                    HoverableIconButton(onClick = onSearch) {
                         Icon(OrcaTheme.iconography.search, contentDescription = "Search")
                     }
                 },

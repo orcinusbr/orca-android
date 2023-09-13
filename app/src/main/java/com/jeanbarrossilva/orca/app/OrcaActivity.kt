@@ -62,13 +62,6 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
         constraintSet?.apply {
             getConstraint(R.id.container).layout.bottomMargin = -offsetY.toInt()
             getConstraint(R.id.bottom_navigation_view).transform.translationY = offsetY
-            connect(
-                R.id.bottom_navigation_card,
-                ConstraintSet.TOP,
-                R.id.bottom_navigation_view,
-                ConstraintSet.TOP,
-                offsetY.toInt()
-            )
             applyTo(binding?.root)
         }
     }

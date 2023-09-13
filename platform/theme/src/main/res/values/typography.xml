@@ -12,7 +12,7 @@
         name="Theme.Orca.Typography.DisplayLarge"
         parent="TextAppearance.Material3.DisplayLarge">
         <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">@color/primary</item>
+        <item name="android:textColor">@color/backgroundContent</item>
         <item name="android:textFontWeight">@integer/font_weight_black</item>
         <item name="android:textSize">56sp</item>
     </style>
@@ -20,7 +20,7 @@
     <style
         name="Theme.Orca.Typography.HeadlineLarge"
         parent="TextAppearance.Material3.HeadlineLarge">
-        <item name="android:textColor">@color/primary</item>
+        <item name="android:textColor">@color/backgroundContent</item>
         <item name="android:textFontWeight">@integer/font_weight_black</item>
     </style>
 
@@ -28,7 +28,8 @@
         name="Theme.Orca.Typography.HeadlineMedium"
         parent="TextAppearance.Material3.HeadlineMedium">
         <item name="android:textColor">@color/secondary</item>
-        <item name="android:textFontWeight">@integer/font_weight_black</item>
+        <item name="android:textFontWeight">@integer/font_weight_medium</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
     <style
@@ -61,7 +62,13 @@
     <style
         name="Theme.Orca.Typography.BodySmall"
         parent="TextAppearance.Material3.BodySmall">
-        <item name="android:textColor">@color/tertiary</item>
+        <item name="android:textColor">@color/secondary</item>
         <item name="android:textFontWeight">@integer/font_weight_medium</item>
+    </style>
+
+    <style
+        name="Theme.Orca.Typography.LabelLarge"
+        parent="TextAppearance.Material3.LabelLarge">
+        <item name="android:textFontWeight">@integer/font_weight_bold</item>
     </style>
 </resources>

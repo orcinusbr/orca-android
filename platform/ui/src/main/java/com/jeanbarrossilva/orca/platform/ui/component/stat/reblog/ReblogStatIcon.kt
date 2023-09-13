@@ -27,7 +27,7 @@ object ReblogStatIconDefaults {
     @Composable
     fun colors(
         inactiveColor: Color = LocalContentColor.current,
-        activeColor: Color = Color(0xFF81C784)
+        activeColor: Color = OrcaTheme.colors.activation.reblog
     ): ActivateableStatIconColors {
         return ActivateableStatIconColors(inactiveColor, activeColor)
     }
@@ -63,7 +63,7 @@ fun ReblogStatIcon(
 @MultiThemePreview
 private fun InactiveReblogStatIconPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             ReblogStatIcon(isActive = false, ActivateableStatIconInteractiveness.Still)
         }
     }
@@ -73,7 +73,7 @@ private fun InactiveReblogStatIconPreview() {
 @MultiThemePreview
 private fun ActiveReblogStatIconPreview() {
     OrcaTheme {
-        Surface(color = OrcaTheme.colors.background) {
+        Surface(color = OrcaTheme.colors.background.container) {
             ReblogStatIcon(isActive = true, ActivateableStatIconInteractiveness.Still)
         }
     }
