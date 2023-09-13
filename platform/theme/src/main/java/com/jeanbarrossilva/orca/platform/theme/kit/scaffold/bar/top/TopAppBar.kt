@@ -16,10 +16,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
@@ -57,9 +59,22 @@ fun TopAppBar(
     title: @Composable () -> Unit
 ) {
     val containerColor = OrcaTheme.colors.surface.container
-    val overlap = scrollBehavior.state.overlappedFraction
+    val overlap by remember(scrollBehavior) {
+        derivedStateOf {
+            scrollBehavior.state.overlappedFraction
+        }
+    }
+    val heightOffset by remember(scrollBehavior) {
+        derivedStateOf {
+            scrollBehavior.state.heightOffset
+        }
+    }
     val isOverlapping = remember(overlap) { overlap > 0f }
     val spacing = OrcaTheme.spacings.medium
+    val verticalSpacing by animateDpAsState(
+        with(LocalDensity.current) { maxOf(0.dp, spacing + heightOffset.toDp()) },
+        label = "VerticalSpacing"
+    )
     val elevation by animateDpAsState(if (isOverlapping) 4.dp else 0.dp, label = "Elevation")
 
     TopAppBar(
@@ -72,7 +87,7 @@ fun TopAppBar(
         modifier
             .shadow(elevation)
             .background(containerColor)
-            .padding(vertical = spacing),
+            .padding(vertical = verticalSpacing),
         navigationIcon = {
             Row {
                 Spacer(Modifier.width(spacing))
