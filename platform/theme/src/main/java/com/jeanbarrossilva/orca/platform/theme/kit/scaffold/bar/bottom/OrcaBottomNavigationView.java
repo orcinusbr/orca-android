@@ -2,6 +2,8 @@ package com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.bottom;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.jeanbarrossilva.orca.platform.theme.R;
+import com.jeanbarrossilva.orca.platform.theme.configuration.Borders;
+import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -30,14 +32,22 @@ public final class OrcaBottomNavigationView extends BottomNavigationView {
         this(context, attrs, 0);
     }
 
+    @SuppressWarnings("PrivateFieldAccess")
     public OrcaBottomNavigationView(
         @NonNull Context context,
         @Nullable AttributeSet attrs,
         int defStyleAttr
     ) {
         super(context, attrs, defStyleAttr);
-        dividerPaint.setColor(context.getColor(R.color.placeholder));
-        dividerHeight = Themes.isLight(context) ? Units.dp(context, 2) : 0;
+        Colors colors = Colors.getDefault(context);
+
+        // noinspection deprecation
+        int defaultMediumBorderColor = Borders.getDefaultMediumColorInArgb(colors);
+
+        int defaultMediumBorderWidth = Borders.DefaultMediumWidth;
+        dividerPaint.setColor(defaultMediumBorderColor);
+        dividerHeight =
+            Borders.areApplicable(context) ? Units.dp(context, defaultMediumBorderWidth) : 0;
         setBackgroundColor(getContext().getColor(R.color.surfaceContainer));
         stylizeItems();
     }

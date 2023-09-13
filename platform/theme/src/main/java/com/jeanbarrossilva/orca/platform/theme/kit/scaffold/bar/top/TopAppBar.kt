@@ -2,6 +2,7 @@ package com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -20,11 +21,12 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.configuration.Borders
+import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
 import com.jeanbarrossilva.orca.platform.theme.kit.action.button.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar as _TopAppBar
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBarDefaults as _TopAppBarDefaults
@@ -75,7 +77,10 @@ fun TopAppBar(
         with(LocalDensity.current) { maxOf(0.dp, spacing + heightOffset.toDp()) },
         label = "VerticalSpacing"
     )
-    val elevation by animateDpAsState(if (isOverlapping) 4.dp else 0.dp, label = "Elevation")
+    val borderStrokeWidth by animateDpAsState(
+        if (isOverlapping) OrcaTheme.borders.medium.width else 0.dp,
+        label = "BorderStrokeWidth"
+    )
 
     TopAppBar(
         title = {
@@ -85,7 +90,9 @@ fun TopAppBar(
             }
         },
         modifier
-            .shadow(elevation)
+            .`if`(Borders.areApplicable) {
+                border(OrcaTheme.borders.medium.copy(width = borderStrokeWidth))
+            }
             .background(containerColor)
             .padding(vertical = verticalSpacing),
         navigationIcon = {

@@ -11,6 +11,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontFamily
 import com.google.accompanist.themeadapter.material3.Mdc3Theme
+import com.jeanbarrossilva.orca.platform.theme.configuration.Borders
+import com.jeanbarrossilva.orca.platform.theme.configuration.LocalBorders
 import com.jeanbarrossilva.orca.platform.theme.configuration.LocalOverlays
 import com.jeanbarrossilva.orca.platform.theme.configuration.LocalShapes
 import com.jeanbarrossilva.orca.platform.theme.configuration.LocalSpacings
@@ -27,6 +29,10 @@ import com.jeanbarrossilva.orca.platform.theme.extensions.with
 
 /** Provider of [OrcaTheme]'s configurations. **/
 object OrcaTheme {
+    /** [Current][CompositionLocal.current] [Borders] from [LocalBorders]. **/
+    val borders
+        @Composable get() = LocalBorders.current
+
     /** [Current][CompositionLocal.current] [Colors] from [LocalColors]. **/
     val colors
         @Composable get() = LocalColors.current
@@ -64,6 +70,7 @@ fun OrcaTheme(content: @Composable () -> Unit) {
     val themedContent = @Composable {
         Mdc3Theme(setTextColors = true, setDefaultFontFamily = true) {
             CompositionLocalProvider(
+                LocalBorders provides Borders.default,
                 LocalColors provides Colors.default,
                 LocalIconography provides Iconography.default,
                 LocalOverlays provides Overlays.Default,

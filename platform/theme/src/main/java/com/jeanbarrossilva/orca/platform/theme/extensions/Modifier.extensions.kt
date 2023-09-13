@@ -1,24 +1,21 @@
 package com.jeanbarrossilva.orca.platform.theme.extensions
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.configuration.Borders
 
 /**
- * Adds a border stroke, shaped by the given [shape], only when in the light theme.
+ * Applies a [BorderStroke], shaped by the given [shape], when they are applicable.
  *
- * @param shape [Shape] of the stroke to be added.
+ * @param shape [Shape] of the [BorderStroke] to be applied.
+ * @see Borders.areApplicable
  **/
 fun Modifier.border(shape: Shape): Modifier {
     return composed {
-        if (isSystemInDarkTheme()) {
-            this
-        } else {
-            border(2.dp, OrcaTheme.colors.placeholder, shape)
-        }
+        if (Borders.areApplicable) border(OrcaTheme.borders.medium, shape) else this
     }
 }

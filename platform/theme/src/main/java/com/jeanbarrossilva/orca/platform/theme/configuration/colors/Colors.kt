@@ -88,6 +88,7 @@ data class Colors internal constructor(
          *
          * @param context [Context] from which the [Color]s will be obtained.
          **/
+        @JvmStatic
         fun getDefault(context: Context): Colors {
             return Colors(
                 Activation.Default,
