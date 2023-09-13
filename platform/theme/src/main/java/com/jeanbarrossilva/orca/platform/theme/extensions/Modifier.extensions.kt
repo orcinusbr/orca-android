@@ -16,6 +16,6 @@ import com.jeanbarrossilva.orca.platform.theme.configuration.Borders
  **/
 fun Modifier.border(shape: Shape): Modifier {
     return composed {
-        if (Borders.areApplicable) border(OrcaTheme.borders.medium, shape) else this
+        if (Borders.areApplicable) border(OrcaTheme.borders.default, shape) else this
     }
 }

@@ -22,12 +22,12 @@ internal val LocalBorders = compositionLocalOf {
 /**
  * [BorderStroke]s by which components are bordered.
  *
- * @param medium [BorderStroke] that's the default one.
+ * @param default [BorderStroke] that's the default one.
  **/
 @Immutable
-data class Borders internal constructor(val medium: BorderStroke) {
+data class Borders internal constructor(val default: BorderStroke) {
     companion object {
-        /** Width of the default [medium] border. **/
+        /** Default width of the [default] border. **/
         @Deprecated(
             "Prefer referring to OrcaTheme when in Compose.",
             ReplaceWith(
@@ -35,20 +35,20 @@ data class Borders internal constructor(val medium: BorderStroke) {
                 "com.jeanbarrossilva.orca.platform.theme.OrcaTheme"
             )
         )
-        internal const val DefaultMediumWidth = 2
+        internal const val DefaultWidth = 2
 
         /** [Borders] with unspecified values. **/
         internal val Unspecified =
-            Borders(medium = BorderStroke(width = Dp.Unspecified, Color.Unspecified))
+            Borders(default = BorderStroke(width = Dp.Unspecified, Color.Unspecified))
 
         /** [Borders] that are provided by default. **/
         internal val default
             @Composable
             @Suppress("DEPRECATION")
             get() = Borders(
-                medium = BorderStroke(
-                    DefaultMediumWidth.dp,
-                    Color(getDefaultMediumColorInArgb(Colors.default))
+                default = BorderStroke(
+                    DefaultWidth.dp,
+                    Color(getDefaultColorInArgb(Colors.default))
                 )
             )
 
@@ -71,7 +71,7 @@ data class Borders internal constructor(val medium: BorderStroke) {
         }
 
         /**
-         * Gets the [Color] by which the default [medium] border is colored.
+         * Gets the [Color] by which the [default] border is colored by default.
          *
          * @param colors [Colors] by which it can be colored.
          **/
@@ -86,7 +86,7 @@ data class Borders internal constructor(val medium: BorderStroke) {
         )
         @JvmName("getDefaultMediumColorInArgb")
         @JvmStatic
-        internal fun getDefaultMediumColorInArgb(colors: Colors): Int {
+        internal fun getDefaultColorInArgb(colors: Colors): Int {
             return colors.placeholder.toArgb()
         }
     }

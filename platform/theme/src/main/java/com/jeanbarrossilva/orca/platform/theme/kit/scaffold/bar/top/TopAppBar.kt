@@ -78,7 +78,7 @@ fun TopAppBar(
         label = "VerticalSpacing"
     )
     val borderStrokeWidth by animateDpAsState(
-        if (isOverlapping) OrcaTheme.borders.medium.width else 0.dp,
+        if (isOverlapping) OrcaTheme.borders.default.width else 0.dp,
         label = "BorderStrokeWidth"
     )
 
@@ -91,7 +91,7 @@ fun TopAppBar(
         },
         modifier
             .`if`(Borders.areApplicable) {
-                border(OrcaTheme.borders.medium.copy(width = borderStrokeWidth))
+                border(OrcaTheme.borders.default.copy(width = borderStrokeWidth))
             }
             .background(containerColor)
             .padding(vertical = verticalSpacing),

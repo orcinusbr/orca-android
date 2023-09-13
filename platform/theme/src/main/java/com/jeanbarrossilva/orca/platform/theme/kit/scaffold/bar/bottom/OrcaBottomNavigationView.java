@@ -44,7 +44,7 @@ public final class OrcaBottomNavigationView extends BottomNavigationView {
         // noinspection deprecation
         int defaultMediumBorderColor = Borders.getDefaultMediumColorInArgb(colors);
 
-        int defaultMediumBorderWidth = Borders.DefaultMediumWidth;
+        int defaultMediumBorderWidth = Borders.DefaultWidth;
         dividerPaint.setColor(defaultMediumBorderColor);
         dividerHeight =
             Borders.areApplicable(context) ? Units.dp(context, defaultMediumBorderWidth) : 0;
