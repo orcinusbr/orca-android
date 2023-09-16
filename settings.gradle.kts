@@ -1,4 +1,9 @@
+pluginManagement {
+    includeBuild("build-src")
+}
+
 rootProject.name = "Orca"
+
 include(
     ":app",
     ":core",
