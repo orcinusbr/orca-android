@@ -1,11 +1,8 @@
 plugins {
+    // noinspection JavaPluginLanguageLevel
     id("java-library")
-    id("org.jetbrains.kotlin.jvm")
-}
 
-java {
-    sourceCompatibility = Versions.java
-    targetCompatibility = Versions.java
+    id("org.jetbrains.kotlin.jvm")
 }
 
 dependencies {
@@ -13,5 +10,5 @@ dependencies {
 
     testImplementation(project(":core:sample-test"))
     testImplementation(kotlin("test"))
-    testImplementation(Dependencies.COROUTINES_TEST)
+    testImplementation(libs.kotlin.coroutines.test)
 }

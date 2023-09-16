@@ -1,13 +1,8 @@
 plugins {
+    // noinspection JavaPluginLanguageLevel
     id("java-library")
+
     id("org.jetbrains.kotlin.jvm")
 }
 
-java {
-    sourceCompatibility = Versions.java
-    targetCompatibility = Versions.java
-}
-
-dependencies {
-    implementation(project(":core"))
-}
+dependencies.implementation(project(":core"))

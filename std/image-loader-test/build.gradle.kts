@@ -1,13 +1,8 @@
 plugins {
+    // noinspection JavaPluginLanguageLevel
     id("java-library")
-    id("org.jetbrains.kotlin.jvm")
+
+    kotlin("jvm")
 }
 
-java {
-    sourceCompatibility = Versions.java
-    targetCompatibility = Versions.java
-}
-
-dependencies {
-    implementation(project(":std:image-loader"))
-}
+dependencies.implementation(project(":std:image-loader"))

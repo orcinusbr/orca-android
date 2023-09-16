@@ -1,34 +1,12 @@
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+
+    kotlin("android")
 }
 
 android {
-    namespace = Metadata.namespace("feature.search")
-    compileSdk = Versions.Orca.SDK_COMPILE
-
-    defaultConfig {
-        minSdk = Versions.Orca.SDK_MIN
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-        }
-    }
-
-    buildFeatures {
-        compose = true
-    }
-
-    compileOptions {
-        sourceCompatibility = Versions.java
-        targetCompatibility = Versions.java
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = Versions.COMPOSE_COMPILER
-    }
+    buildFeatures.compose = true
+    composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
 }
 
 dependencies {
@@ -36,7 +14,7 @@ dependencies {
     implementation(project(":core:sample"))
     implementation(project(":platform:theme"))
     implementation(project(":platform:ui"))
-    implementation(Dependencies.KOIN_ANDROID)
-    implementation(Dependencies.LOADABLE_LIST)
-    implementation(Dependencies.LOADABLE_PLACEHOLDER)
+    implementation(libs.koin.android)
+    implementation(libs.loadable.list)
+    implementation(libs.loadable.placeholder)
 }
