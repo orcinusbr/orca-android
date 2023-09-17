@@ -4,6 +4,7 @@ import com.jeanbarrossilva.orca.namespaceFor
 
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
 
     id("build-src")
 }
@@ -40,11 +41,10 @@ android {
     }
 
     productFlavors {
-        create("default").dimension = Dimensions.VERSION
+        create("default")
 
         create("demo") {
             applicationIdSuffix = ".demo"
-            dimension = Dimensions.VERSION
             versionNameSuffix = "-demo"
         }
     }
