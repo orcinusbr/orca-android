@@ -1,6 +1,14 @@
 import com.android.build.gradle.LibraryExtension
+import com.jeanbarrossilva.orca.chrynan
+import com.jeanbarrossilva.orca.loadable
+import com.jeanbarrossilva.orca.namespace
+import com.jeanbarrossilva.orca.parentNamespaceCandidate
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+plugins {
+    id("build-src")
+}
 
 buildscript {
     repositories {

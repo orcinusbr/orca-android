@@ -1,3 +1,5 @@
+package com.jeanbarrossilva.orca
+
 import groovy.lang.MissingPropertyException
 import org.gradle.api.Project
 

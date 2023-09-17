@@ -1,3 +1,5 @@
+import com.jeanbarrossilva.orca.namespaceFor
+
 plugins {
     id("com.android.library")
 

@@ -1,6 +1,4 @@
-pluginManagement {
-    includeBuild("build-src")
-}
+import java.util.Properties
 
 dependencyResolutionManagement.versionCatalogs.create("libs") {
     library(
@@ -97,7 +95,7 @@ dependencyResolutionManagement.versionCatalogs.create("libs") {
     version("android-room", "2.5.2")
     version("android-sdk-min", "28")
     version("android-sdk-target", "34")
-    version("java", "17")
+    version("java", rootProject.projectDir.properties("gradle").getProperty("project.java"))
     version("kotlin", "1.8.21")
     version("kotlin-coroutines", "1.7.1")
     version("ktor", "2.3.2")
@@ -105,7 +103,7 @@ dependencyResolutionManagement.versionCatalogs.create("libs") {
 }
 
 rootProject.name = "Orca"
-
+includeBuild("build-src")
 include(
     ":app",
     ":core",
@@ -130,3 +128,35 @@ include(
     ":std:image-loader-test",
     ":std:styled-string"
 )
+
+/**
+ * Creates [Properties] according to the `.properties` file named [name] within this directory.
+ *
+ * @param name Name of the file.
+ **/
+fun File.properties(name: String): Properties {
+    val file = File(this, "$name.properties")
+    return Properties().apply { tryToLoad(file) }
+}
+
+/**
+ * Loads the given [file] into these [Properties].
+ *
+ * @param file [File] to be loaded.
+ **/
+fun Properties.load(file: File) {
+    file.inputStream().reader().use {
+        load(it)
+    }
+}
+
+/**
+ * Loads the given [file] into these [Properties] if it's a normal file.
+ *
+ * @param file [File] to be loaded.
+ **/
+fun Properties.tryToLoad(file: File) {
+    if (file.isFile) {
+        load(file)
+    }
+}

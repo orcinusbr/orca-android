@@ -1,3 +1,5 @@
+package com.jeanbarrossilva.orca
+
 import java.net.URI
 import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.RepositoryHandler
@@ -20,7 +22,7 @@ fun RepositoryHandler.loadable(project: Project): MavenArtifactRepository {
         url = URI.create("https://maven.pkg.github.com/jeanbarrossilva/loadable-android")
 
         credentials {
-            with(localProperties(project.rootDir)) {
+            with(project.projectDir.properties("local")) {
                 username = getProperty("github.username") ?: System.getenv("GITHUB_USERNAME")
                 password = getProperty("github.token") ?: System.getenv("GITHUB_TOKEN")
             }

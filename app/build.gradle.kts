@@ -1,4 +1,9 @@
+import com.jeanbarrossilva.orca.Dimensions
+import com.jeanbarrossilva.orca.namespace
+import com.jeanbarrossilva.orca.namespaceFor
+
 plugins {
+    id("build-src")
     id("com.android.application")
     id("kotlin-android")
 }
