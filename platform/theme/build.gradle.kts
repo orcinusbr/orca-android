@@ -1,7 +1,6 @@
 plugins {
-    id("com.android.library")
-
-    kotlin("android")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -14,7 +13,7 @@ dependencies {
     api(libs.android.compose.ui.tooling)
 
     implementation(kotlin("stdlib"))
-    implementation(kotlin("reflect"))
     implementation(libs.accompanist.adapter)
     implementation(libs.android.material)
+    implementation(libs.kotlin.reflect)
 }

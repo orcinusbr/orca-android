@@ -3,9 +3,9 @@ import com.jeanbarrossilva.orca.namespace
 import com.jeanbarrossilva.orca.namespaceFor
 
 plugins {
+    alias(libs.plugins.android.application)
+
     id("build-src")
-    id("com.android.application")
-    id("kotlin-android")
 }
 
 android {

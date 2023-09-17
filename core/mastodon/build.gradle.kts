@@ -1,10 +1,9 @@
 plugins {
-    id("com.android.library")
-    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
-    id("com.google.devtools.ksp")
-
-    kotlin("android")
-    kotlin("plugin.serialization")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.android.maps.secrets)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.symbolProcessor)
 }
 
 android {
@@ -38,7 +37,7 @@ dependencies {
     implementation(libs.ktor.serialization.json)
     implementation(libs.loadable.list)
 
-    ksp(libs.android.room.plugin)
+    ksp(libs.android.room.compiler)
 
     releaseImplementation(libs.slf4j) {
         because("Ktor references \"StaticLoggerBinder\" and it is missing on minification.")

@@ -1,8 +1,7 @@
 plugins {
-    // noinspection JavaPluginLanguageLevel
-    id("java-library")
+    alias(libs.plugins.kotlin.jvm)
 
-    kotlin("jvm")
+    `java-library`
 }
 
 dependencies {
@@ -11,6 +10,6 @@ dependencies {
 
     testImplementation(project(":core:sample"))
     testImplementation(project(":core-test"))
-    testImplementation(kotlin("test"))
     testImplementation(libs.kotlin.coroutines.test)
+    testImplementation(libs.kotlin.test)
 }

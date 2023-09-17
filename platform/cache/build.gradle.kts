@@ -1,8 +1,7 @@
 plugins {
-    id("com.android.library")
-    id("com.google.devtools.ksp")
-
-    kotlin("android")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.symbolProcessor)
 }
 
 android {
@@ -12,13 +11,13 @@ android {
 }
 
 dependencies {
-    androidTestImplementation(kotlin("test"))
     androidTestImplementation(libs.android.test.core)
     androidTestImplementation(libs.android.test.runner)
     androidTestImplementation(libs.kotlin.coroutines.test)
+    androidTestImplementation(libs.kotlin.test)
     androidTestImplementation(libs.mockk)
 
-    ksp(libs.android.room.plugin)
+    ksp(libs.android.room.compiler)
 
     implementation(libs.kotlin.coroutines.core)
     implementation(libs.android.room.ktx)

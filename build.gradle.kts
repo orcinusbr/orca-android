@@ -7,22 +7,15 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.android.maps.secrets) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.kotlin.symbolProcessor) apply false
+
     id("build-src")
-}
-
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath(libs.android.plugin)
-        classpath(libs.android.maps.secrets.plugin)
-        classpath(libs.kotlin.plugin)
-        classpath(libs.kotlin.symbolProcessor.plugin)
-        classpath(libs.kotlin.serialization.plugin)
-    }
 }
 
 subprojects subproject@{
