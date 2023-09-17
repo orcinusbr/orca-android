@@ -1,60 +1,34 @@
+import com.jeanbarrossilva.orca.namespaceFor
+
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
-    namespace = Metadata.namespace("feature.profile")
-    compileSdk = Versions.Orca.SDK_COMPILE
-
-    defaultConfig {
-        minSdk = Versions.Orca.SDK_MIN
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-        }
-    }
-
-    buildFeatures {
-        compose = true
-    }
-
-    compileOptions {
-        sourceCompatibility = Versions.java
-        targetCompatibility = Versions.java
-    }
-
-    kotlinOptions {
-        @Suppress("SpellCheckingInspection")
-        freeCompilerArgs = listOf("-Xcontext-receivers")
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = Versions.COMPOSE_COMPILER
-    }
+    buildFeatures.compose = true
+    composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
+    defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    namespace = namespaceFor("feature.profiledetails")
 }
 
 dependencies {
     androidTestImplementation(project(":core:sample-test"))
     androidTestImplementation(project(":platform:ui-test"))
-    androidTestImplementation(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
-    androidTestImplementation(Dependencies.FRAGMENT_TESTING)
-    androidTestImplementation(Dependencies.KOIN_TEST)
-    androidTestImplementation(Dependencies.TEST_CORE)
+    androidTestImplementation(libs.android.compose.ui.test.junit)
+    androidTestImplementation(libs.android.fragment.testing)
+    androidTestImplementation(libs.android.test.core)
+    androidTestImplementation(libs.koin.test)
 
     implementation(project(":core"))
     implementation(project(":core:sample"))
     implementation(project(":platform:theme"))
     implementation(project(":platform:ui"))
-    implementation(Dependencies.COMPOSE_MATERIAL_ICONS_EXTENDED)
-    implementation(Dependencies.LIFECYCLE_VIEWMODEL)
-    implementation(Dependencies.LOADABLE_LIST)
-    implementation(Dependencies.LOADABLE_PLACEHOLDER)
-    implementation(Dependencies.KOIN_ANDROID)
+    implementation(libs.android.lifecycle.viewmodel)
+    implementation(libs.loadable.list)
+    implementation(libs.loadable.placeholder)
+    implementation(libs.koin.android)
 
-    testImplementation(Dependencies.COROUTINES_TEST)
-    testImplementation(Dependencies.JUNIT)
+    testImplementation(libs.kotlin.coroutines.test)
+    testImplementation(libs.junit)
 }

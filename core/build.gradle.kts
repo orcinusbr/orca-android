@@ -1,19 +1,15 @@
 plugins {
-    id("java-library")
-    kotlin("jvm")
-}
+    alias(libs.plugins.kotlin.jvm)
 
-java {
-    sourceCompatibility = Versions.java
-    targetCompatibility = Versions.java
+    `java-library`
 }
 
 dependencies {
     api(project(":std:styled-string"))
-    api(Dependencies.COROUTINES_CORE)
+    api(libs.kotlin.coroutines.core)
 
     testImplementation(project(":core:sample"))
     testImplementation(project(":core-test"))
-    testImplementation(kotlin("test"))
-    testImplementation(Dependencies.COROUTINES_TEST)
+    testImplementation(libs.kotlin.coroutines.test)
+    testImplementation(libs.kotlin.test)
 }

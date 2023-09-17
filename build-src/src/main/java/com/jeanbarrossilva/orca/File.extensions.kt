@@ -1,13 +1,15 @@
+package com.jeanbarrossilva.orca
+
 import java.io.File
 import java.util.Properties
 
 /**
- * Creates [Properties] according to the `local.properties` file.
+ * Creates [Properties] according to the `.properties` file named [name] within this directory.
  *
- * @param root Directory in which the `local.properties` file is.
+ * @param name Name of the file.
  **/
-fun localProperties(root: File): Properties {
-    val file = File(root, "local.properties")
+fun File.properties(name: String): Properties {
+    val file = File(this, "$name.properties")
     return Properties().apply { tryToLoad(file) }
 }
 

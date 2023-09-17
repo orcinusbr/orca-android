@@ -1,4 +1,12 @@
 rootProject.name = "Orca"
+
+pluginManagement.repositories {
+    google()
+    gradlePluginPortal()
+    mavenCentral()
+}
+
+includeBuild("build-src")
 include(
     ":app",
     ":core",

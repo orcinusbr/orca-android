@@ -1,17 +1,13 @@
 plugins {
-    id("java-library")
-    id("org.jetbrains.kotlin.jvm")
-}
+    alias(libs.plugins.kotlin.jvm)
 
-java {
-    sourceCompatibility = Versions.java
-    targetCompatibility = Versions.java
+    `java-library`
 }
 
 dependencies {
     api(project(":core"))
 
     testImplementation(project(":core:sample-test"))
-    testImplementation(kotlin("test"))
-    testImplementation(Dependencies.COROUTINES_TEST)
+    testImplementation(libs.kotlin.coroutines.test)
+    testImplementation(libs.kotlin.test)
 }

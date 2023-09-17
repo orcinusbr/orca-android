@@ -1,63 +1,62 @@
+import com.jeanbarrossilva.orca.Dimensions
+import com.jeanbarrossilva.orca.namespace
+import com.jeanbarrossilva.orca.namespaceFor
+
 plugins {
-    id("com.android.application")
-    id("com.google.devtools.ksp") version Versions.KSP
-    id("kotlin-android")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+
+    id("build-src")
 }
 
 android {
-    namespace = Metadata.namespace("app")
-    compileSdk = Versions.Orca.SDK_COMPILE
+    compileSdk = libs.versions.android.sdk.target.get().toInt()
+    composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
     flavorDimensions += Dimensions.VERSION
-
-    defaultConfig {
-        applicationId = Metadata.GROUP
-        minSdk = Versions.Orca.SDK_MIN
-        targetSdk = Versions.Orca.SDK_TARGET
-        versionCode = Versions.Orca.CODE
-        versionName = Versions.Orca.NAME
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        getByName(Variants.RELEASE) {
-            isMinifyEnabled = true
-        }
-    }
+    namespace = namespaceFor("app")
 
     buildFeatures {
         compose = true
         viewBinding = true
     }
 
-    productFlavors {
-        create("default") {
-            dimension = Dimensions.VERSION
-        }
-
-        create("demo") {
-            dimension = Dimensions.VERSION
-            applicationIdSuffix = ".demo"
-            versionNameSuffix = "-demo"
+    buildTypes {
+        release {
+            isMinifyEnabled = true
         }
     }
 
     compileOptions {
-        sourceCompatibility = Versions.java
-        targetCompatibility = Versions.java
+        sourceCompatibility = JavaVersion.toVersion(libs.versions.java.get())
+        targetCompatibility = JavaVersion.toVersion(libs.versions.java.get())
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = Versions.COMPOSE_COMPILER
+    defaultConfig {
+        applicationId = project.namespace
+        minSdk = libs.versions.android.sdk.min.get().toInt()
+        targetSdk = libs.versions.android.sdk.target.get().toInt()
+        versionCode = 1
+        versionName = "1.0.0"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    productFlavors {
+        create("default")
+
+        create("demo") {
+            applicationIdSuffix = ".demo"
+            versionNameSuffix = "-demo"
+        }
     }
 }
 
 dependencies {
     "androidTestDemoImplementation"(project(":platform:ui-test"))
-    "androidTestDemoImplementation"(Dependencies.ACTIVITY)
-    "androidTestDemoImplementation"(Dependencies.COMPOSE_UI_TEST_JUNIT_4)
-    "androidTestDemoImplementation"(Dependencies.TEST_CORE)
-    "androidTestDemoImplementation"(Dependencies.TEST_ESPRESSO_INTENTS)
-    "androidTestDemoImplementation"(Dependencies.TEST_RUNNER)
+    "androidTestDemoImplementation"(libs.android.activity.ktx)
+    "androidTestDemoImplementation"(libs.android.compose.ui.test.junit)
+    "androidTestDemoImplementation"(libs.android.test.core)
+    "androidTestDemoImplementation"(libs.android.test.espresso.intents)
+    "androidTestDemoImplementation"(libs.android.test.runner)
 
     "demoImplementation"(project(":core-test"))
 
@@ -73,10 +72,10 @@ dependencies {
     implementation(project(":platform:launchable"))
     implementation(project(":platform:theme"))
     implementation(project(":platform:ui"))
-    implementation(Dependencies.APPCOMPAT)
-    implementation(Dependencies.CONSTRAINTLAYOUT)
-    implementation(Dependencies.FRAGMENT)
-    implementation(Dependencies.KOIN_ANDROID)
-    implementation(Dependencies.MATERIAL)
-    implementation(Dependencies.TIME4J)
+    implementation(libs.android.appcompat)
+    implementation(libs.android.constraintlayout)
+    implementation(libs.android.fragment.ktx)
+    implementation(libs.android.material)
+    implementation(libs.koin.android)
+    implementation(libs.time4j)
 }

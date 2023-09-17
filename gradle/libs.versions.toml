@@ -1,0 +1,69 @@
+[libraries]
+accompanist-adapter = { group = "com.google.accompanist", name = "accompanist-themeadapter-material3", version = "0.31.3-beta" }
+android-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "android-activity" }
+android-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "android-activity" }
+android-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.6.1" }
+android-browser = { group = "androidx.browser", name = "browser", version = "1.6.0" }
+android-compose-material = { group = "androidx.compose.material3", name = "material3", version = "1.1.1" }
+android-compose-material-icons = { group = "androidx.compose.material", name = "material-icons-extended", version = "1.5.1" }
+android-compose-ui-test-junit = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "android-compose" }
+android-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "android-compose" }
+android-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "android-compose" }
+android-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version = "2.1.4" }
+android-core = { group = "androidx.core", name = "core-ktx", version = "1.12.0" }
+android-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "android-fragment" }
+android-fragment-testing = { group = "androidx.fragment", name = "fragment-testing", version.ref = "android-fragment" }
+android-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version = "2.6.2" }
+android-material = { group = "com.google.android.material", name = "material", version = "1.9.0" }
+android-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version = "2.7.2" }
+android-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "android-room" }
+android-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "android-room" }
+android-test-core = { group = "androidx.test", name = "core-ktx", version = "1.5.0" }
+android-test-espresso-intents = { group = "androidx.test.espresso", name = "espresso-intents", version = "3.5.1" }
+android-test-runner = { group = "androidx.test", name = "runner", version = "1.5.0" }
+coil = { group = "io.coil-kt", name = "coil", version = "2.4.0" }
+junit = { group = "junit", name = "junit", version = "4.13.2" }
+koin-android = { group = "io.insert-koin", name = "koin-android", version = "3.4.2" }
+koin-test = { group = "io.insert-koin", name = "koin-test-junit4", version = "3.4.1" }
+kotlin-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlin-coroutines" }
+kotlin-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlin-coroutines" }
+kotlin-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlin-coroutines" }
+kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
+kotlin-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.5.1" }
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
+ktor-client-contentNegotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-serialization-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
+ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
+loadable = { group = "com.jeanbarrossilva.loadable", name = "loadable", version.ref = "loadable" }
+loadable-list = { group = "com.jeanbarrossilva.loadable", name = "loadable-list", version.ref = "loadable" }
+loadable-placeholder = { group = "com.jeanbarrossilva.loadable", name = "loadable-placeholder", version.ref = "loadable" }
+loadable-placeholder-test = { group = "com.jeanbarrossilva.loadable", name = "loadable-placeholder-test", version.ref = "loadable" }
+mockk = { group = "io.mockk", name = "mockk-android", version = "1.13.7" }
+paginate = { group = "com.chrynan.paginate", name = "paginate-core", version = "0.3.0" }
+slf4j = { group = "org.slf4j", name = "slf4j-api", version = "2.0.7" }
+time4j = { group = "net.time4j", name = "time4j-android", version = "4.8-2021a" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "android-plugin" }
+android-library = { id = "com.android.library", version.ref = "android-plugin" }
+android-maps-secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version = "2.0.1" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-symbolProcessor = { id = "com.google.devtools.ksp", version = "1.8.21-1.0.11" }
+
+[versions]
+android-activity = "1.7.2"
+android-compose = "1.5.1"
+android-compose-compiler = "1.4.7"
+android-fragment = "1.6.1"
+android-plugin = "8.1.1"
+android-room = "2.5.2"
+android-sdk-min = "28"
+android-sdk-target = "34"
+java = "17"
+kotlin = "1.8.21"
+kotlin-coroutines = "1.7.2"
+ktor = "2.3.2"
+loadable = "1.6.9"

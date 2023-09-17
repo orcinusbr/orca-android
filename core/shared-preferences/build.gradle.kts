@@ -1,37 +1,25 @@
+import com.jeanbarrossilva.orca.namespaceFor
+
 plugins {
-    kotlin("plugin.serialization") version Versions.KOTLIN
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+
+    kotlin("plugin.serialization")
 }
 
 android {
-    namespace = Metadata.namespace("core.sharedpreferences")
-    compileSdk = Versions.Orca.SDK_TARGET
-
-    defaultConfig {
-        minSdk = Versions.Orca.SDK_MIN
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = true
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility = Versions.java
-        targetCompatibility = Versions.java
-    }
+    namespace = namespaceFor("core.sharedpreferences")
+    defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 }
 
 dependencies {
     androidTestImplementation(project(":core-test"))
-    androidTestImplementation(Dependencies.COROUTINES_TEST)
-    androidTestImplementation(Dependencies.JUNIT)
-    androidTestImplementation(Dependencies.TEST_RUNNER)
+    androidTestImplementation(libs.android.test.runner)
+    androidTestImplementation(libs.junit)
+    androidTestImplementation(libs.kotlin.coroutines.test)
 
     implementation(project(":core"))
-    implementation(Dependencies.CORE)
-    implementation(Dependencies.SERIALIZATION_JSON)
+    implementation(libs.android.core)
+    implementation(libs.kotlin.coroutines.android)
+    implementation(libs.kotlin.serialization.json)
 }
