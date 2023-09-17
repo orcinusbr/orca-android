@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
@@ -106,10 +107,9 @@ private fun TextField(
     isSingleLined: Boolean = false,
     label: @Composable () -> Unit
 ) {
-    val borderWidth by animateDpAsState(if (isFocused) 2.dp else 0.dp, label = "BorderWidth")
     val highlightColor = OrcaTheme.colors.secondary
     val borderColor by animateColorAsState(
-        if (isFocused) highlightColor else Color.Transparent,
+        if (isFocused) highlightColor else (OrcaTheme.borders.default.brush as SolidColor).value,
         label = "BorderColor"
     )
     val shape = OrcaTheme.shapes.large
@@ -117,7 +117,7 @@ private fun TextField(
     TextField(
         text,
         onTextChange,
-        modifier.border(borderWidth, borderColor, shape),
+        modifier.border(OrcaTheme.borders.default.width, borderColor, shape),
         label = {
             val color by animateColorAsState(
                 if (isFocused) highlightColor else LocalTextStyle.current.color,
