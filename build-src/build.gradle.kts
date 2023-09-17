@@ -1,4 +1,4 @@
-import java.util.Properties
+
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -18,45 +18,57 @@ gradlePlugin {
     }
 }
 
-tasks.withType<KotlinCompile> {
-    with(rootDir.parentFile.properties("gradle").getProperty("project.java")) {
+withJavaVersionString {
+    tasks.withType<KotlinCompile> {
+        compilerOptions.jvmTarget.set(JvmTarget.fromTarget(this@withJavaVersionString))
+
         java {
-            sourceCompatibility = JavaVersion.toVersion(this@with)
-            targetCompatibility = JavaVersion.toVersion(this@with)
+            sourceCompatibility = JavaVersion.toVersion(this@withJavaVersionString)
+            targetCompatibility = JavaVersion.toVersion(this@withJavaVersionString)
         }
-
-        compilerOptions.jvmTarget.set(JvmTarget.fromTarget(this))
     }
 }
 
 /**
- * Creates [Properties] according to the `.properties` file named [name] within this directory.
+ * Extracts the Java version [String] from the `libs.versions.toml` [File] and runs the [action]
+ * with it.
  *
- * @param name Name of the file.
+ * @param action Operation to be performed with the extracted version.
  **/
-fun File.properties(name: String): Properties {
-    val file = File(this, "$name.properties")
-    return Properties().apply { tryToLoad(file) }
+fun withJavaVersionString(action: String.() -> Unit) {
+    rootDir
+        .parentFile
+        .listFiles { file, name -> file.isDirectory && name == "gradle" }
+        ?.first()
+        ?.listFiles { _, name -> name == "libs.versions.toml" }
+        ?.first()
+        ?.bufferedReader()
+        ?.useLines { lines ->
+            lines
+                .map(String::trim)
+                .dropUntil { it.replace(" ", "") == "[versions]" }
+                .first { it.split(' ').firstOrNull()?.startsWith("java") == true }
+                .split('=')
+                .last()
+                .replace('"', ' ')
+                .trim()
+                .run(action)
+        }
 }
 
 /**
- * Loads the given [file] into these [Properties].
+ * Drops all elements until the [predicate] is satisfied.
  *
- * @param file [File] to be loaded.
+ * @param predicate Condition to be met for a given element to not be dropped.
  **/
-fun Properties.load(file: File) {
-    file.inputStream().reader().use {
-        load(it)
+fun <T> Sequence<T>.dropUntil(predicate: (T) -> Boolean): Sequence<T> {
+    var toDrop = 0
+    filter { element ->
+        predicate(element).also { isMatch ->
+            if (!isMatch) {
+                ++toDrop
+            }
+        }
     }
-}
-
-/**
- * Loads the given [file] into these [Properties] if it's a normal file.
- *
- * @param file [File] to be loaded.
- **/
-fun Properties.tryToLoad(file: File) {
-    if (file.isFile) {
-        load(file)
-    }
+    return drop(toDrop)
 }
