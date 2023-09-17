@@ -22,7 +22,7 @@ subprojects subproject@{
     tasks.withType<KotlinCompile> {
         compilerOptions {
             jvmTarget.set(JvmTarget.fromTarget(libs.versions.java.get()))
-            freeCompilerArgs.add("-Xcontext-receivers")
+            freeCompilerArgs.addAll("-Xcontext-receivers", "-Xstring-concat=inline")
         }
     }
 
