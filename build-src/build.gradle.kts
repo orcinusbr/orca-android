@@ -1,6 +1,13 @@
-
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+/** Key of this TOML-"`key = value`"-formatted [String]. **/
+private val String.tomlKey
+    get() = replace(" ", "").split('=').first()
+
+/** Value of this TOML-"`key = value`"-formatted [String]. **/
+private val String.tomlValue
+    get() = split('=').last().replace('"', ' ').trim()
 
 plugins {
     `java-gradle-plugin`
@@ -42,16 +49,12 @@ fun withJavaVersionString(action: String.() -> Unit) {
         ?.first()
         ?.listFiles { _, name -> name == "libs.versions.toml" }
         ?.first()
-        ?.bufferedReader()
+        ?.reader()
         ?.useLines { lines ->
             lines
-                .map(String::trim)
-                .dropUntil { it.replace(" ", "") == "[versions]" }
-                .first { it.split(' ').firstOrNull()?.startsWith("java") == true }
-                .split('=')
-                .last()
-                .replace('"', ' ')
-                .trim()
+                .dropUntil { it.isTomlTableHeader("versions") }
+                .first { it.tomlKey == "java" }
+                .tomlValue
                 .run(action)
         }
 }
@@ -71,4 +74,17 @@ fun <T> Sequence<T>.dropUntil(predicate: (T) -> Boolean): Sequence<T> {
         }
     }
     return drop(toDrop)
+}
+
+/**
+ * Returns whether this [String] is a [TOML table header](https://toml.io/en/v1.0.0#table).
+ *
+ * @param tableName Name of the table to be checked if it's defined in the header.
+ **/
+fun String.isTomlTableHeader(tableName: String): Boolean {
+    return with(trim()) {
+        startsWith('[') &&
+            endsWith(']') &&
+            substringAfter('[').substringBefore(']').trim() == tableName
+    }
 }
