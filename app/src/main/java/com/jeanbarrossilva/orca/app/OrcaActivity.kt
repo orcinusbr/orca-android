@@ -19,10 +19,11 @@ import com.jeanbarrossilva.orca.feature.auth.AuthActivity
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.get
+import org.koin.android.ext.android.inject
 import org.koin.core.context.loadKoinModules
 
 internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilityChangeListener {
+    private val authenticationLock by inject<AuthenticationLock>()
     private var binding: ActivityOrcaBinding? = null
     private var constraintSet: ConstraintSet? = null
 
@@ -92,7 +93,12 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
     }
 
     private fun navigateTo(@IdRes itemID: Int) {
-        BottomNavigationItemNavigatorFactory.create().navigate(navigator, itemID)
+        lifecycleScope.launch {
+            BottomNavigationItemNavigatorFactory.create(authenticationLock).navigate(
+                navigator,
+                itemID
+            )
+        }
     }
 
     private fun navigateToDefaultDestination() {
@@ -101,7 +107,7 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
 
     private fun lockByNavigatingToAuth() {
         lifecycleScope.launch {
-            get<AuthenticationLock>().requestLock {
+            authenticationLock.requestLock {
                 AuthActivity.start(this@OrcaActivity)
             }
         }

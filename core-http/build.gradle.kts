@@ -25,6 +25,7 @@ dependencies {
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.contentNegotiation)
 
+    testImplementation(project(":core:sample"))
     testImplementation(project(":core-test"))
     testImplementation(libs.assertk)
     testImplementation(libs.junit)

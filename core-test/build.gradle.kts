@@ -4,4 +4,7 @@ plugins {
     `java-library`
 }
 
-dependencies.implementation(project(":core"))
+dependencies {
+    implementation(project(":core"))
+    implementation(project(":core:sample"))
+}
