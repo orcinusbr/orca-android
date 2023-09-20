@@ -25,16 +25,12 @@ dependencies {
     api(libs.paginate)
     api(libs.android.room.ktx)
 
-    implementation(project(":core"))
+    implementation(project(":core-http:android"))
     implementation(project(":platform:theme"))
     implementation(project(":platform:ui"))
     implementation(libs.android.browser)
     implementation(libs.android.lifecycle.viewmodel)
     implementation(libs.koin.android)
-    implementation(libs.ktor.client.cio)
-    implementation(libs.ktor.client.contentNegotiation)
-    implementation(libs.ktor.client.core)
-    implementation(libs.ktor.serialization.json)
     implementation(libs.loadable.list)
 
     ksp(libs.android.room.compiler)

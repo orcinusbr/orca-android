@@ -4,11 +4,12 @@ import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
+import com.jeanbarrossilva.orca.core.http.authenticateAndGet
 import com.jeanbarrossilva.orca.core.mastodon.client.MastodonHttpClient
-import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.ProfileTootPaginateSource
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.type.editable.MastodonEditableProfile
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.type.followable.MastodonFollowableProfile
+import com.jeanbarrossilva.orca.core.mastodon.get
 import com.jeanbarrossilva.orca.platform.ui.core.style.fromHtml
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import io.ktor.client.call.body
@@ -50,7 +51,7 @@ internal data class MastodonAccount(
 
     private suspend fun isOwner(): Boolean {
         val credentialAccount = MastodonHttpClient
-            .authenticateAndGet("/api/v1/accounts/verify_credentials")
+            .authenticateAndGet(authenticationLock = get(), "/api/v1/accounts/verify_credentials")
             .body<CredentialAccount>()
         return id == credentialAccount.id
     }
@@ -82,7 +83,9 @@ internal data class MastodonAccount(
         val bio = StyledString.fromHtml(note)
         val url = URL(url)
         val follow = MastodonHttpClient
-            .authenticateAndGet("/api/v1/accounts/relationships") { parameter("id", id) }
+            .authenticateAndGet(authenticationLock = get(), "/api/v1/accounts/relationships") {
+                parameter("id", id)
+            }
             .body<List<Relationship>>()
             .first()
             .toFollow(this)

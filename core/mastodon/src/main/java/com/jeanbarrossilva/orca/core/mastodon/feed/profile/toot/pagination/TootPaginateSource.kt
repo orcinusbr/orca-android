@@ -5,9 +5,10 @@ import com.chrynan.paginate.core.PageDirection
 import com.chrynan.paginate.core.PageInfo
 import com.chrynan.paginate.core.PagedResult
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.orca.core.http.authenticateAndGet
 import com.jeanbarrossilva.orca.core.mastodon.client.MastodonHttpClient
-import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.status.Status
+import com.jeanbarrossilva.orca.core.mastodon.get
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.Url
@@ -61,7 +62,10 @@ abstract class TootPaginateSource internal constructor() : BasePaginateSource<Ur
     }
 
     private suspend fun getStatusesResponse(url: Url?): HttpResponse {
-        return MastodonHttpClient.authenticateAndGet(url?.toString() ?: route)
+        return MastodonHttpClient.authenticateAndGet(
+            authenticationLock = get(),
+            url?.toString() ?: route
+        )
     }
 
     companion object {

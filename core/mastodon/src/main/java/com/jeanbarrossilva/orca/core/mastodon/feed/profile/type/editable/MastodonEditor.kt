@@ -1,9 +1,10 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.type.editable
 
 import com.jeanbarrossilva.orca.core.feed.profile.type.editable.Editor
+import com.jeanbarrossilva.orca.core.http.authenticateAndSubmitForm
+import com.jeanbarrossilva.orca.core.http.authenticateAndSubmitFormWithBinaryData
 import com.jeanbarrossilva.orca.core.mastodon.client.MastodonHttpClient
-import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndSubmitForm
-import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndSubmitFormWithBinaryData
+import com.jeanbarrossilva.orca.core.mastodon.get
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import io.ktor.client.request.forms.InputProvider
 import io.ktor.client.request.forms.formData
@@ -25,15 +26,27 @@ internal class MastodonEditor : Editor {
         val contentDisposition = "form-data; name=\"avatar\" filename=\"${file.name}\""
         val headers = Headers.build { append(HttpHeaders.ContentDisposition, contentDisposition) }
         val formData = formData { append("avatar", inputProvider, headers) }
-        MastodonHttpClient.authenticateAndSubmitFormWithBinaryData(ROUTE, formData)
+        MastodonHttpClient.authenticateAndSubmitFormWithBinaryData(
+            authenticationLock = get(),
+            ROUTE,
+            formData
+        )
     }
 
     override suspend fun setName(name: String) {
-        MastodonHttpClient.authenticateAndSubmitForm(ROUTE, parametersOf("display_name", name))
+        MastodonHttpClient.authenticateAndSubmitForm(
+            authenticationLock = get(),
+            ROUTE,
+            parametersOf("display_name", name)
+        )
     }
 
     override suspend fun setBio(bio: StyledString) {
-        MastodonHttpClient.authenticateAndSubmitForm(ROUTE, parametersOf("note", "$bio"))
+        MastodonHttpClient.authenticateAndSubmitForm(
+            authenticationLock = get(),
+            ROUTE,
+            parametersOf("note", "$bio")
+        )
     }
 
     companion object {

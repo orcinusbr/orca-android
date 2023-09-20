@@ -14,6 +14,8 @@ include(
     ":core:sample",
     ":core:sample-test",
     ":core:shared-preferences",
+    ":core-http",
+    ":core-http:android",
     ":core-test",
     ":feature:auth",
     ":feature:composer",
