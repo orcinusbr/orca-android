@@ -1,8 +1,13 @@
-plugins {
-    alias(libs.plugins.kotlin.jvm)
+import com.jeanbarrossilva.orca.namespaceFor
 
-    `java-library`
+plugins {
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+
+    id("build-src")
 }
+
+android.namespace = namespaceFor("core.http")
 
 dependencies {
     api(project(":core"))
@@ -14,7 +19,9 @@ dependencies {
 
     testImplementation(project(":core-test"))
     testImplementation(libs.assertk)
+    testImplementation(libs.junit)
     testImplementation(libs.kotlin.coroutines.test)
     testImplementation(libs.kotlin.test)
     testImplementation(libs.ktor.client.mock)
+    testImplementation(libs.mockito)
 }

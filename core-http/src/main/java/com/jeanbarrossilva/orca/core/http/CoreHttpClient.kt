@@ -36,13 +36,12 @@ import kotlinx.serialization.json.JsonNamingStrategy
 /**
  * [HttpClient] through which [HttpRequest]s can be performed.
  *
- * @param logger [Logger] by which received [HttpResponse]s will be logged.
  * @param config Additional configuration to be done on the [HttpClient].
  **/
 @Suppress("FunctionName")
-fun CoreHttpClient(logger: Logger, config: HttpClientConfig<CIOEngineConfig>.() -> Unit):
+fun CoreHttpClient(config: HttpClientConfig<CIOEngineConfig>.() -> Unit):
     HttpClient {
-    return CoreHttpClient(CIO, logger, config)
+    return CoreHttpClient(CIO, Logger.android, config)
 }
 
 /**

@@ -25,7 +25,7 @@ dependencies {
     api(libs.paginate)
     api(libs.android.room.ktx)
 
-    implementation(project(":core-http:android"))
+    implementation(project(":core-http"))
     implementation(project(":platform:theme"))
     implementation(project(":platform:ui"))
     implementation(libs.android.browser)
