@@ -12,7 +12,7 @@ class ComposerActivity internal constructor() : ComposableActivity() {
 
     @Composable
     override fun Content() {
-        Composer(viewModel, boundary = get())
+        Composer(viewModel, onBackwardsNavigation = ::finish)
     }
 
     companion object {
