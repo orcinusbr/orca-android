@@ -3,9 +3,10 @@ package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
+import com.jeanbarrossilva.orca.core.http.authenticateAndGet
+import com.jeanbarrossilva.orca.core.http.authenticateAndPost
 import com.jeanbarrossilva.orca.core.mastodon.client.MastodonHttpClient
-import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndGet
-import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndPost
+import com.jeanbarrossilva.orca.core.mastodon.get
 import io.ktor.client.call.body
 import java.net.URL
 import java.time.ZonedDateTime
@@ -29,7 +30,7 @@ data class MastodonToot(
         val route =
             if (isFavorite) "/api/v1/statuses/$id/favourite" else "/api/v1/statuses/$id/unfavourite"
 
-        MastodonHttpClient.authenticateAndPost(route)
+        MastodonHttpClient.authenticateAndPost(authenticationLock = get(), route)
     }
 
     override suspend fun setReblogged(isReblogged: Boolean) {
@@ -37,13 +38,13 @@ data class MastodonToot(
         val route =
             if (isReblogged) "/api/v1/statuses/:id/reblog" else "/api/v1/statuses/:id/unreblog"
 
-        MastodonHttpClient.authenticateAndPost(route)
+        MastodonHttpClient.authenticateAndPost(authenticationLock = get(), route)
     }
 
     override suspend fun getComments(page: Int): Flow<List<Toot>> {
         return flow {
             MastodonHttpClient
-                .authenticateAndGet("/api/v1/statuses/$id/context")
+                .authenticateAndGet(authenticationLock = get(), "/api/v1/statuses/$id/context")
                 .body<Context>()
                 .descendants
                 .map { it.toToot() }
