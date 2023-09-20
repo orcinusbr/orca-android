@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.mastodon.auth.authorization.ui
+package com.jeanbarrossilva.orca.core.http.auth.authorization
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,8 +15,13 @@ import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 
+/**
+ * Visually notifies that authorization that is running in the background.
+ *
+ * @param modifier [Modifier] to be applied to the underlying [Surface].
+ */
 @Composable
-internal fun Authorization(modifier: Modifier = Modifier) {
+internal fun HttpAuthorization(modifier: Modifier = Modifier) {
     Surface(modifier, color = OrcaTheme.colors.background.container) {
         Column(
             Modifier.fillMaxSize(),
@@ -34,10 +39,11 @@ internal fun Authorization(modifier: Modifier = Modifier) {
     }
 }
 
+/** Preview of an [HttpAuthorization]. **/
 @Composable
 @MultiThemePreview
-private fun AuthorizationPreview() {
+private fun HttpAuthorizationPreview() {
     OrcaTheme {
-        Authorization()
+        HttpAuthorization()
     }
 }

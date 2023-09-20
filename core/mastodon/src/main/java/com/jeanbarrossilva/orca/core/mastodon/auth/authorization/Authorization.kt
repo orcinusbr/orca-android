@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.mastodon.auth.authentication.ui
+package com.jeanbarrossilva.orca.core.mastodon.auth.authorization
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,7 +16,7 @@ import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 
 @Composable
-internal fun Authentication(modifier: Modifier = Modifier) {
+internal fun Authorization(modifier: Modifier = Modifier) {
     Surface(modifier, color = OrcaTheme.colors.background.container) {
         Column(
             Modifier.fillMaxSize(),
@@ -26,7 +26,7 @@ internal fun Authentication(modifier: Modifier = Modifier) {
             Icon(OrcaTheme.iconography.login, contentDescription = "Link", Modifier.size(64.dp))
 
             Text(
-                "Authenticating...",
+                "Authorizing...",
                 textAlign = TextAlign.Center,
                 style = OrcaTheme.typography.headlineLarge
             )
@@ -36,8 +36,8 @@ internal fun Authentication(modifier: Modifier = Modifier) {
 
 @Composable
 @MultiThemePreview
-private fun AuthenticationPreview() {
+private fun AuthorizationPreview() {
     OrcaTheme {
-        Authentication()
+        Authorization()
     }
 }

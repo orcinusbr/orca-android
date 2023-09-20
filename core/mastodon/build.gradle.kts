@@ -21,14 +21,12 @@ android {
 }
 
 dependencies {
+    api(project(":core-http"))
     api(project(":platform:cache"))
     api(libs.paginate)
     api(libs.android.room.ktx)
 
-    implementation(project(":core-http"))
     implementation(project(":platform:theme"))
-    implementation(project(":platform:ui"))
-    implementation(libs.android.browser)
     implementation(libs.android.lifecycle.viewmodel)
     implementation(libs.koin.android)
     implementation(libs.loadable.list)
