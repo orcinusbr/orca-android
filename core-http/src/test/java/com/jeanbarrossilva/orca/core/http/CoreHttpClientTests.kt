@@ -1,15 +1,11 @@
-package com.jeanbarrosilva.orca.core.http
+package com.jeanbarrossilva.orca.core.http
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
-import com.jeanbarrosilva.orca.core.http.test.assertThatRequestAuthorizationHeaderOf
-import com.jeanbarrosilva.orca.core.http.test.runAuthenticatedTest
-import com.jeanbarrosilva.orca.core.http.test.runUnauthenticatedTest
-import com.jeanbarrossilva.orca.core.http.authenticateAndGet
-import com.jeanbarrossilva.orca.core.http.authenticateAndPost
-import com.jeanbarrossilva.orca.core.http.authenticateAndSubmitForm
-import com.jeanbarrossilva.orca.core.http.authenticateAndSubmitFormWithBinaryData
+import com.jeanbarrossilva.orca.core.http.test.assertThatRequestAuthorizationHeaderOf
+import com.jeanbarrossilva.orca.core.http.test.runAuthenticatedTest
+import com.jeanbarrossilva.orca.core.http.test.runUnauthenticatedTest
 import io.ktor.http.parametersOf
 import kotlin.test.Test
 

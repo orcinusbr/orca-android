@@ -1,4 +1,4 @@
-package com.jeanbarrosilva.orca.core.http.test
+package com.jeanbarrossilva.orca.core.http.test
 
 import assertk.Assert
 import assertk.assertThat
