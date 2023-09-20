@@ -10,8 +10,9 @@ import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
 internal class FeedBottomNavigationItemNavigator(
     override val next: BottomNavigationItemNavigator?
 ) : BottomNavigationItemNavigator() {
-    override suspend fun getDestination(itemID: Int):
-        Navigator.Navigation.Destination<FeedFragment>? {
+    override suspend fun getDestination(
+        itemID: Int
+    ): Navigator.Navigation.Destination<FeedFragment>? {
         return if (itemID == R.id.feed) {
             Navigator.Navigation.Destination("feed") {
                 FeedFragment(Profile.sample.id)
