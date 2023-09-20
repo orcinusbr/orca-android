@@ -12,7 +12,6 @@ android {
 dependencies {
     androidTestImplementation(libs.android.compose.ui.test.junit)
     androidTestImplementation(libs.android.test.runner)
-    androidTestImplementation(libs.koin.test)
 
     implementation(project(":core"))
     implementation(project(":core:sample"))

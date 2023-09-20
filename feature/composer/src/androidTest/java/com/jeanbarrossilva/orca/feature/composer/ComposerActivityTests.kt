@@ -13,7 +13,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import com.jeanbarrossilva.orca.feature.composer.test.ComposerModule
 import com.jeanbarrossilva.orca.feature.composer.test.assertTextEquals
 import com.jeanbarrossilva.orca.feature.composer.test.isBoldFormat
 import com.jeanbarrossilva.orca.feature.composer.test.isItalicFormat
@@ -22,16 +21,11 @@ import com.jeanbarrossilva.orca.feature.composer.test.onToolbar
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.RuleChain
-import org.koin.test.KoinTestRule
 
 @OptIn(ExperimentalTestApi::class)
 internal class ComposerActivityTests {
-    private val koinRule = KoinTestRule.create { modules(ComposerModule()) }
-    private val composeRule = createAndroidComposeRule<ComposerActivity>()
-
     @get:Rule
-    val ruleChain: RuleChain? = RuleChain.outerRule(koinRule).around(composeRule)
+    val composeRule = createAndroidComposeRule<ComposerActivity>()
 
     @Test
     fun stylesSelectedComposition() {

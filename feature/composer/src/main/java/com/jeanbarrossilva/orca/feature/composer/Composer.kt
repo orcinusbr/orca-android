@@ -59,7 +59,7 @@ internal const val COMPOSER_FIELD = "composer-field"
 @Composable
 internal fun Composer(
     viewModel: ComposerViewModel,
-    boundary: ComposerBoundary,
+    onBackwardsNavigation: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val value by viewModel.textFieldValueFlow.collectAsState()
@@ -68,7 +68,7 @@ internal fun Composer(
         value,
         onValueChange = viewModel::setTextFieldValue,
         onCompose = viewModel::compose,
-        onBackwardsNavigation = boundary::pop,
+        onBackwardsNavigation,
         modifier
     )
 }
