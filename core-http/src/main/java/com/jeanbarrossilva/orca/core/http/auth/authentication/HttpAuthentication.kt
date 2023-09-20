@@ -16,7 +16,7 @@ import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 
 /**
- * Visually notifies that authentication that is running in the background.
+ * Visually notifies that authentication is running in the background.
  *
  * @param modifier [Modifier] to be applied to the underlying [Surface].
  */
