@@ -1,13 +1,14 @@
-package com.jeanbarrossilva.orca.core.http.test
+package com.jeanbarrossilva.orca.core.http.client.test
 
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.auth.actor.ActorProvider
-import com.jeanbarrossilva.orca.core.http.CoreHttpClient
-import com.jeanbarrossilva.orca.core.http.authenticateAndGet
-import com.jeanbarrossilva.orca.core.http.authenticateAndPost
-import com.jeanbarrossilva.orca.core.http.authenticateAndSubmitForm
-import com.jeanbarrossilva.orca.core.http.authenticateAndSubmitFormWithBinaryData
+import com.jeanbarrossilva.orca.core.http.client.CoreHttpClient
+import com.jeanbarrossilva.orca.core.http.client.Logger
+import com.jeanbarrossilva.orca.core.http.client.authenticateAndGet
+import com.jeanbarrossilva.orca.core.http.client.authenticateAndPost
+import com.jeanbarrossilva.orca.core.http.client.authenticateAndSubmitForm
+import com.jeanbarrossilva.orca.core.http.client.authenticateAndSubmitFormWithBinaryData
 import com.jeanbarrossilva.orca.core.test.TestAuthenticator
 import com.jeanbarrossilva.orca.core.test.TestAuthorizer
 import io.ktor.client.HttpClient
@@ -46,6 +47,20 @@ internal class CoreHttpClientTestScope<T : Actor>(
 ) : CoroutineScope by delegate
 
 /**
+ * [ActorProvider] that provides only the specified [actor].
+ *
+ * @param actor [Actor] to be provided unconditionally.
+ **/
+internal class FixedActorProvider(private val actor: Actor) : ActorProvider() {
+    override suspend fun remember(actor: Actor) {
+    }
+
+    override suspend fun retrieve(): Actor {
+        return actor
+    }
+}
+
+/**
  * Configures an environment for a [CoreHttpClient] test with an
  * [authenticated][Actor.Authenticated] [Actor], providing the proper [CoreHttpClientTestScope].
  *
@@ -68,7 +83,7 @@ internal fun runAuthenticatedTest(
  * used.
  **/
 internal fun runUnauthenticatedTest(
-    onAuthentication: () -> Unit = { },
+    onAuthentication: () -> Unit,
     body: suspend CoreHttpClientTestScope<Actor.Unauthenticated>.() -> Unit
 ) {
     runCoreHttpClientTest(Actor.Unauthenticated, onAuthentication, body)
@@ -78,14 +93,15 @@ internal fun runUnauthenticatedTest(
  * Configures an environment for a [CoreHttpClient] test, providing the proper
  * [CoreHttpClientTestScope].
  *
- * @param actor [Actor] to be fixedly returned by the underlying [ActorProvider]. Determines the
+ * @param T [Actor] to run the test with.
+ * @param actor [Actor] to be fixedly provided by the underlying [ActorProvider]. Determines the
  * behavior of `authenticateAnd*` calls done on the [CoreHttpClient] within the [body], given that
  * an [unauthenticated][Actor.Unauthenticated] [Actor] will be requested to be authenticated when
  * such invocations take place, while having an [authenticated][Actor.Authenticated] [Actor] would
  * simply mean that the operation derived from the [HttpMethod] will be performed.
  * @param onAuthentication Action run whenever the [Actor] is authenticated. At this point, the most
- * up-to-date [Actor] is probably different from the one in the [CoreHttpClientTestScope] given to
- * the [body].
+ * up-to-date [Actor] is probably different from the one with which the test has been configured and
+ * that is in the [CoreHttpClientTestScope] given to the [body].
  * @param body Callback run when the environment has been set up and is, therefore, ready to be
  * used.
  * @see HttpClient.authenticateAndGet
@@ -100,14 +116,15 @@ private fun <T : Actor> runCoreHttpClientTest(
 ) {
     val actorProvider = FixedActorProvider(actor)
     val authenticator = TestAuthenticator { onAuthentication() }
-    val engine = MockEngine { respondOk() }
     val engineFactory = object : HttpClientEngineFactory<MockEngineConfig> {
         override fun create(block: MockEngineConfig.() -> Unit): HttpClientEngine {
-            return engine
+            return MockEngine {
+                respondOk()
+            }
         }
     }
     val authenticationLock = AuthenticationLock(authenticator, actorProvider)
-    val client = CoreHttpClient(engineFactory, TestLogger)
+    val client = CoreHttpClient(engineFactory, Logger.test)
     runTest {
         CoreHttpClientTestScope(delegate = this, authenticationLock, client, actor).body()
     }

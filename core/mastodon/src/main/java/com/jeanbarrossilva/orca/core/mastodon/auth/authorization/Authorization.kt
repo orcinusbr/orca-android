@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.mastodon.auth.authorization.ui
+package com.jeanbarrossilva.orca.core.mastodon.auth.authorization
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

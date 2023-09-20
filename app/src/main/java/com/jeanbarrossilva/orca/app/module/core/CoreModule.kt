@@ -8,9 +8,11 @@ import com.jeanbarrossilva.orca.core.feed.FeedProvider
 import com.jeanbarrossilva.orca.core.feed.profile.ProfileProvider
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearcher
 import com.jeanbarrossilva.orca.core.feed.profile.toot.TootProvider
+import com.jeanbarrossilva.orca.core.http.auth.authentication.authenticator.HttpAuthenticator
+import com.jeanbarrossilva.orca.core.http.auth.authorization.HttpAuthorizer
 import com.jeanbarrossilva.orca.core.mastodon.MastodonDatabase
-import com.jeanbarrossilva.orca.core.mastodon.auth.authentication.MastodonAuthenticator
-import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.MastodonAuthorizer
+import com.jeanbarrossilva.orca.core.mastodon.auth.authentication.activity.MastodonAuthenticationActivity
+import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.MastodonAuthorizationActivity
 import com.jeanbarrossilva.orca.core.mastodon.feed.MastodonFeedProvider
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfileProvider
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.ProfileTootPaginateSource
@@ -24,7 +26,6 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.MastodonTo
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.MastodonTootStorage
 import com.jeanbarrossilva.orca.core.sharedpreferences.actor.SharedPreferencesActorProvider
 import com.jeanbarrossilva.orca.platform.cache.Cache
-import org.koin.android.ext.koin.androidContext
 import org.koin.core.definition.Definition
 import org.koin.core.module.Module
 import org.koin.dsl.binds
@@ -34,6 +35,7 @@ import org.koin.java.KoinJavaComponent
 @Suppress("FunctionName")
 internal fun MainCoreModule(): Module {
     val context = KoinJavaComponent.get<Context>(Context::class.java)
+    val authorizer = HttpAuthorizer.of<MastodonAuthorizationActivity>(context)
     val actorProvider = SharedPreferencesActorProvider(context)
     val database = MastodonDatabase.getInstance(context)
     val profileTootPaginateSourceProvider =
@@ -55,8 +57,12 @@ internal fun MainCoreModule(): Module {
         MastodonTootStorage(profileCache, database.tootEntityDao, database.styleEntityDao)
     val tootCache = Cache.of(context, name = "toot-cache", MastodonTootFetcher, tootStorage)
     return CoreModule(
-        { MastodonAuthorizer(androidContext()) },
-        { MastodonAuthenticator(context, authorizer = get(), actorProvider) },
+        { authorizer },
+        {
+            HttpAuthenticator.of(authorizer, actorProvider) {
+                MastodonAuthenticationActivity.getStarter(context, it)
+            }
+        },
         { AuthenticationLock(authenticator = get(), actorProvider) },
         { MastodonFeedProvider(actorProvider) },
         { MastodonProfileProvider(profileCache) },

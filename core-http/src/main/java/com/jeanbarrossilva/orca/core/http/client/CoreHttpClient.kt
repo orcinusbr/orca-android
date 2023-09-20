@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.http
+package com.jeanbarrossilva.orca.core.http.client
 
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
@@ -36,13 +36,11 @@ import kotlinx.serialization.json.JsonNamingStrategy
 /**
  * [HttpClient] through which [HttpRequest]s can be performed.
  *
- * @param logger [Logger] by which received [HttpResponse]s will be logged.
  * @param config Additional configuration to be done on the [HttpClient].
  **/
 @Suppress("FunctionName")
-fun CoreHttpClient(logger: Logger, config: HttpClientConfig<CIOEngineConfig>.() -> Unit):
-    HttpClient {
-    return CoreHttpClient(CIO, logger, config)
+fun CoreHttpClient(config: HttpClientConfig<CIOEngineConfig>.() -> Unit): HttpClient {
+    return CoreHttpClient(CIO, Logger.android, config)
 }
 
 /**

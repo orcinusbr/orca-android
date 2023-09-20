@@ -2,8 +2,8 @@ package com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache
 
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
 import com.jeanbarrossilva.orca.core.feed.profile.search.toProfileSearchResult
-import com.jeanbarrossilva.orca.core.http.authenticateAndGet
-import com.jeanbarrossilva.orca.core.mastodon.client.MastodonHttpClient
+import com.jeanbarrossilva.orca.core.http.client.authenticateAndGet
+import com.jeanbarrossilva.orca.core.mastodon.MastodonHttpClient
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.ProfileTootPaginateSource
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.account.MastodonAccount
 import com.jeanbarrossilva.orca.core.mastodon.get

@@ -5,8 +5,8 @@ import com.chrynan.paginate.core.PageDirection
 import com.chrynan.paginate.core.PageInfo
 import com.chrynan.paginate.core.PagedResult
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.http.authenticateAndGet
-import com.jeanbarrossilva.orca.core.mastodon.client.MastodonHttpClient
+import com.jeanbarrossilva.orca.core.http.client.authenticateAndGet
+import com.jeanbarrossilva.orca.core.mastodon.MastodonHttpClient
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.status.Status
 import com.jeanbarrossilva.orca.core.mastodon.get
 import io.ktor.client.call.body

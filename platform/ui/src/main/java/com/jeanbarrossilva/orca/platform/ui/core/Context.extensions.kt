@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import java.net.URL
+import kotlin.reflect.KClass
 
 /**
  * Creates an [ActivityStarter] for the [Activity], from which it can be set up and started.
@@ -13,7 +14,18 @@ import java.net.URL
  * @see ActivityStarter.start
  **/
 inline fun <reified T : Activity> Context.on(): ActivityStarter<T> {
-    return ActivityStarter(this, T::class)
+    return on(T::class)
+}
+
+/**
+ * Creates an [ActivityStarter] for the [Activity], from which it can be set up and started.
+ *
+ * @param T [Activity] whose start-up may be configured.
+ * @param activityClass [KClass] of the [Activity].
+ * @see ActivityStarter.start
+ **/
+fun <T : Activity> Context.on(activityClass: KClass<T>): ActivityStarter<T> {
+    return ActivityStarter(this, activityClass)
 }
 
 /**

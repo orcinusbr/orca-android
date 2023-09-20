@@ -4,8 +4,8 @@ import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.FollowableProfile
-import com.jeanbarrossilva.orca.core.http.authenticateAndPost
-import com.jeanbarrossilva.orca.core.mastodon.client.MastodonHttpClient
+import com.jeanbarrossilva.orca.core.http.client.authenticateAndPost
+import com.jeanbarrossilva.orca.core.mastodon.MastodonHttpClient
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfile
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.ProfileTootPaginateSource
 import com.jeanbarrossilva.orca.core.mastodon.get

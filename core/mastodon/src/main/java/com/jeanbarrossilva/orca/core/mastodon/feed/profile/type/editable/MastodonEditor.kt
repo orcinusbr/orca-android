@@ -1,9 +1,9 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.type.editable
 
 import com.jeanbarrossilva.orca.core.feed.profile.type.editable.Editor
-import com.jeanbarrossilva.orca.core.http.authenticateAndSubmitForm
-import com.jeanbarrossilva.orca.core.http.authenticateAndSubmitFormWithBinaryData
-import com.jeanbarrossilva.orca.core.mastodon.client.MastodonHttpClient
+import com.jeanbarrossilva.orca.core.http.client.authenticateAndSubmitForm
+import com.jeanbarrossilva.orca.core.http.client.authenticateAndSubmitFormWithBinaryData
+import com.jeanbarrossilva.orca.core.mastodon.MastodonHttpClient
 import com.jeanbarrossilva.orca.core.mastodon.get
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import io.ktor.client.request.forms.InputProvider

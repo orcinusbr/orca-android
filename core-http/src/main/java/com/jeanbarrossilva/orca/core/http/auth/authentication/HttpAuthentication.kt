@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.mastodon.auth.authentication.ui
+package com.jeanbarrossilva.orca.core.http.auth.authentication
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,8 +15,13 @@ import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 
+/**
+ * Visually notifies that authentication is running in the background.
+ *
+ * @param modifier [Modifier] to be applied to the underlying [Surface].
+ */
 @Composable
-internal fun Authentication(modifier: Modifier = Modifier) {
+internal fun HttpAuthentication(modifier: Modifier = Modifier) {
     Surface(modifier, color = OrcaTheme.colors.background.container) {
         Column(
             Modifier.fillMaxSize(),
@@ -34,10 +39,11 @@ internal fun Authentication(modifier: Modifier = Modifier) {
     }
 }
 
+/** Preview of an [HttpAuthentication]. **/
 @Composable
 @MultiThemePreview
-private fun AuthenticationPreview() {
+private fun HttpAuthenticationPreview() {
     OrcaTheme {
-        Authentication()
+        HttpAuthentication()
     }
 }
