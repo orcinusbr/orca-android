@@ -51,8 +51,9 @@ internal constructor() : Authorizer() {
          * @param T [HttpAuthorizationActivity] to be started.
          * @param context [Context] through which the [HttpAuthorizationActivity] will be started.
          **/
-        inline fun <reified T : HttpAuthorizationActivity<*>> of(context: Context):
-            HttpAuthorizer<T> {
+        inline fun <reified T : HttpAuthorizationActivity<*>> of(
+            context: Context
+        ): HttpAuthorizer<T> {
             return object : HttpAuthorizer<T>() {
                 override val context = context
                 override val activityClass = T::class

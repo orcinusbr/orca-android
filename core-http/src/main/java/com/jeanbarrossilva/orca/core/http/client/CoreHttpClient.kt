@@ -39,8 +39,7 @@ import kotlinx.serialization.json.JsonNamingStrategy
  * @param config Additional configuration to be done on the [HttpClient].
  **/
 @Suppress("FunctionName")
-fun CoreHttpClient(config: HttpClientConfig<CIOEngineConfig>.() -> Unit):
-    HttpClient {
+fun CoreHttpClient(config: HttpClientConfig<CIOEngineConfig>.() -> Unit): HttpClient {
     return CoreHttpClient(CIO, Logger.android, config)
 }
 

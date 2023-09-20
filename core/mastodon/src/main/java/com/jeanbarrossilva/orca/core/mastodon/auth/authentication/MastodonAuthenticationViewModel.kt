@@ -38,8 +38,10 @@ class MastodonAuthenticationViewModel private constructor(
     }
 
     companion object {
-        fun createFactory(application: Application, authorizationCode: String):
-            ViewModelProvider.Factory {
+        fun createFactory(
+            application: Application,
+            authorizationCode: String
+        ): ViewModelProvider.Factory {
             return viewModelFactory {
                 initializer {
                     MastodonAuthenticationViewModel(application, authorizationCode)
