@@ -9,8 +9,8 @@ import com.jeanbarrossilva.orca.core.http.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndPost
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndSubmitForm
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndSubmitFormWithBinaryData
+import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
 import com.jeanbarrossilva.orca.core.test.TestAuthenticator
-import com.jeanbarrossilva.orca.core.test.TestAuthorizer
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.HttpClientEngineFactory
@@ -70,8 +70,7 @@ internal class FixedActorProvider(private val actor: Actor) : ActorProvider() {
 internal fun runAuthenticatedTest(
     body: suspend CoreHttpClientTestScope<Actor.Authenticated>.() -> Unit
 ) {
-    val actor = Actor.Authenticated(TestAuthorizer.AUTHORIZATION_CODE)
-    runCoreHttpClientTest(actor, onAuthentication = { }, body)
+    runCoreHttpClientTest(Actor.Authenticated.sample, onAuthentication = { }, body)
 }
 
 /**

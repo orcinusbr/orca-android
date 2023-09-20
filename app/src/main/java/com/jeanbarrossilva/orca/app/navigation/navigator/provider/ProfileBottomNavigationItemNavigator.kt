@@ -2,22 +2,22 @@ package com.jeanbarrossilva.orca.app.navigation.navigator.provider
 
 import com.jeanbarrossilva.orca.app.R
 import com.jeanbarrossilva.orca.app.navigation.navigator.BottomNavigationItemNavigator
-import com.jeanbarrossilva.orca.core.feed.profile.Profile
-import com.jeanbarrossilva.orca.core.sample.feed.profile.sample
+import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetailsFragment
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
 
 internal class ProfileBottomNavigationItemNavigator(
+    private val authenticationLock: AuthenticationLock,
     override val next: BottomNavigationItemNavigator?
 ) : BottomNavigationItemNavigator() {
-    private val id = Profile.sample.id
-
-    override fun getDestination(itemID: Int):
+    override suspend fun getDestination(itemID: Int):
         Navigator.Navigation.Destination<ProfileDetailsFragment>? {
         return if (itemID == R.id.profile_details) {
-            Navigator.Navigation.Destination(ProfileDetailsFragment.createRoute(id)) {
-                ProfileDetailsFragment(BackwardsNavigationState.Unavailable, id)
+            authenticationLock.requestUnlock {
+                Navigator.Navigation.Destination(ProfileDetailsFragment.createRoute(it.id)) {
+                    ProfileDetailsFragment(BackwardsNavigationState.Unavailable, it.id)
+                }
             }
         } else {
             null

@@ -4,6 +4,7 @@ import com.jeanbarrossilva.orca.core.auth.Authenticator
 import com.jeanbarrossilva.orca.core.auth.Authorizer
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.auth.actor.ActorProvider
+import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
 
 /**
  * [Authenticator] that provides a sample [Actor].
@@ -17,6 +18,6 @@ class SampleAuthenticator(
     override val authorizer: Authorizer = SampleAuthorizer
 
     override suspend fun onAuthenticate(authorizationCode: String): Actor {
-        return Actor.Authenticated("sample-access-token")
+        return Actor.Authenticated.sample
     }
 }

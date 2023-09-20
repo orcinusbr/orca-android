@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.account
 
+import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
@@ -37,10 +38,6 @@ internal data class MastodonAccount(
         return Author(id, avatarURL, displayName, account, profileURL)
     }
 
-    fun toAccount(): Account {
-        return Account.of(acct, fallbackInstance = "mastodon.social")
-    }
-
     suspend fun toProfile(tootPaginateSourceProvider: ProfileTootPaginateSource.Provider): Profile {
         return if (isOwner()) {
             toEditableProfile(tootPaginateSourceProvider)
@@ -49,11 +46,14 @@ internal data class MastodonAccount(
         }
     }
 
+    private fun toAccount(): Account {
+        return Account.of(acct, fallbackInstance = "mastodon.social")
+    }
+
     private suspend fun isOwner(): Boolean {
-        val credentialAccount = MastodonHttpClient
-            .authenticateAndGet(authenticationLock = get(), "/api/v1/accounts/verify_credentials")
-            .body<CredentialAccount>()
-        return id == credentialAccount.id
+        return get<AuthenticationLock>().requestUnlock {
+            it.id == id
+        }
     }
 
     private fun toEditableProfile(tootPaginateSourceProvider: ProfileTootPaginateSource.Provider):

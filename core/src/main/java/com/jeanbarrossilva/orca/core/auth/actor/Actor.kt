@@ -8,7 +8,10 @@ sealed interface Actor {
     /**
      * [Actor] that's been properly authenticated and can use the application normally.
      *
+     * @param id Unique identifier within Mastodon.
      * @param accessToken Access token resulted from the authentication.
      **/
-    data class Authenticated(val accessToken: String) : Actor
+    data class Authenticated(val id: String, val accessToken: String) : Actor {
+        companion object
+    }
 }
