@@ -8,9 +8,9 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.mastodon.Mastodon
+import com.jeanbarrossilva.orca.core.mastodon.MastodonHttpClient
 import com.jeanbarrossilva.orca.core.mastodon.R
 import com.jeanbarrossilva.orca.core.mastodon.auth.authentication.Token
-import com.jeanbarrossilva.orca.core.mastodon.client.MastodonHttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.statement.HttpResponse

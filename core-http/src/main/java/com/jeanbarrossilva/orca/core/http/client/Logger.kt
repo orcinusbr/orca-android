@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.http
+package com.jeanbarrossilva.orca.core.http.client
 
 import android.util.Log
 

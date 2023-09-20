@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.http
+package com.jeanbarrossilva.orca.core.http.client
 
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
