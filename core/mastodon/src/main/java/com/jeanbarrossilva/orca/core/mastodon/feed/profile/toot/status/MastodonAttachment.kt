@@ -5,9 +5,9 @@ import java.net.URL
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class MastodonAttachment(val previewUrl: String, val description: String) {
+internal data class MastodonAttachment(val previewUrl: String, val description: String?) {
     private val coreAttachment by lazy {
-        Attachment(description.ifBlank { null }, URL(previewUrl))
+        Attachment(description?.ifBlank { null }, URL(previewUrl))
     }
 
     fun toAttachment(): Attachment {
