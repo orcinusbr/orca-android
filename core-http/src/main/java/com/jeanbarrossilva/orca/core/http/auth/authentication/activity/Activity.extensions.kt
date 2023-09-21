@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.mastodon.auth.authentication.activity
+package com.jeanbarrossilva.orca.core.http.auth.authentication.activity
 
 import android.app.Activity
 import android.content.Intent
