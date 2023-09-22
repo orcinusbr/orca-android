@@ -107,5 +107,4 @@ private fun <T : Actor> runCoreHttpClientTest(
     val instance = TestHttpInstance(authenticator, authenticationLock)
     HttpBridge.cross(instance)
     runTest { CoreHttpClientTestScope(delegate = this, instance.client, actor).body() }
-    HttpBridge.reset()
 }
