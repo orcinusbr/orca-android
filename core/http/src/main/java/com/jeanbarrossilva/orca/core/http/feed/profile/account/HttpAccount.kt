@@ -74,7 +74,7 @@ internal data class HttpAccount(
 
     /** Converts this [HttpAccount] into an [Account]. **/
     private fun toAccount(): Account {
-        return Account.of(acct, fallbackInstance = "mastodon.social")
+        return Account.of(acct, fallbackDomain = "mastodon.social")
     }
 
     /**

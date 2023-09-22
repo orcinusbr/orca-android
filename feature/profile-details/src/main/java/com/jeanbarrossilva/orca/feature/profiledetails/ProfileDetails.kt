@@ -77,7 +77,7 @@ internal sealed class ProfileDetails : Serializable {
     abstract val url: URL
 
     val formattedAccount
-        get() = "${account.username}@${account.instance}"
+        get() = "${account.username}@${account.domain}"
     val username
         get() = "@${account.username}"
 

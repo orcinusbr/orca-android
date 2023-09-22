@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
+import com.jeanbarrossilva.orca.core.instance.domain.Domain
 import com.jeanbarrossilva.orca.core.sample.feed.profile.account.sample
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
@@ -52,7 +53,7 @@ internal fun Auth(viewModel: AuthViewModel, modifier: Modifier = Modifier) {
         username,
         onUsernameChange = viewModel::setUsername,
         instance,
-        onInstanceChange = viewModel::setInstance,
+        onDomainChange = viewModel::setInstance,
         onSignIn = viewModel::signIn,
         modifier
     )
@@ -62,8 +63,8 @@ internal fun Auth(viewModel: AuthViewModel, modifier: Modifier = Modifier) {
 internal fun Auth(
     username: String,
     onUsernameChange: (username: String) -> Unit,
-    instance: String,
-    onInstanceChange: (instance: String) -> Unit,
+    domain: String,
+    onDomainChange: (domain: String) -> Unit,
     onSignIn: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -128,8 +129,8 @@ internal fun Auth(
                     Text("@")
 
                     TextField(
-                        instance,
-                        onInstanceChange,
+                        domain,
+                        onDomainChange,
                         Modifier
                             .fillMaxWidth()
                             .testTag(AUTH_INSTANCE_FIELD_TAG),
@@ -149,7 +150,7 @@ internal fun Auth(
                 .align(Alignment.BottomStart)
                 .fillMaxWidth()
                 .testTag(AUTH_SIGN_IN_BUTTON_TAG),
-            isEnabled = Account.isUsernameValid(username) && Account.isInstanceValid(instance)
+            isEnabled = Account.isUsernameValid(username) && Domain.isValid(domain)
         ) {
             Text("Sign in")
         }
@@ -168,7 +169,7 @@ private fun InvalidAuthPreview() {
 @MultiThemePreview
 private fun ValidAuthPreview() {
     OrcaTheme {
-        Auth(Account.sample.username, Account.sample.instance)
+        Auth(Account.sample.username, "${Account.sample.domain}")
     }
 }
 
@@ -178,7 +179,7 @@ private fun Auth(username: String, instance: String, modifier: Modifier = Modifi
         username,
         onUsernameChange = { },
         instance,
-        onInstanceChange = { },
+        onDomainChange = { },
         onSignIn = { },
         modifier
     )

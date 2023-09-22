@@ -18,7 +18,7 @@ internal fun TestAuth(modifier: Modifier = Modifier) {
         username,
         onUsernameChange = { username = it },
         instance,
-        onInstanceChange = { instance = it },
+        onDomainChange = { instance = it },
         onSignIn = { },
         modifier
     )

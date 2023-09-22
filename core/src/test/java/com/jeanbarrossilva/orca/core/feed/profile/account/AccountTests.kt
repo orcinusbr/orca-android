@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.core.feed.profile.account
 
+import com.jeanbarrossilva.orca.core.instance.domain.Domain
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -14,7 +15,7 @@ internal class AccountTests {
     }
 
     @Test
-    fun `GIVEN a blank string with a fallback instance WHEN parsing it THEN it throws`() {
+    fun `GIVEN a blank string with a fallback domain WHEN parsing it THEN it throws`() {
         assertFailsWith<Account.Companion.BlankStringException> {
             Account.of(" ", "appleseed.com")
         }
@@ -28,43 +29,43 @@ internal class AccountTests {
     }
 
     @Test
-    fun `GIVEN a string containing only a username without the separator without a fallback instance WHEN parsing it THEN it throws`() { // ktlint-disable max-line-length
-        assertFailsWith<Account.BlankInstanceException> {
+    fun `GIVEN a string containing only a username without the separator without a fallback domain WHEN parsing it THEN it throws`() { // ktlint-disable max-line-length
+        assertFailsWith<Domain.BlankValueException> {
             Account.of("john")
         }
     }
 
     @Test
-    fun `GIVEN a string containing only a username with the separator without a fallback instance WHEN parsing it THEN it throws`() { // ktlint-disable max-line-length
-        assertFailsWith<Account.BlankInstanceException> {
+    fun `GIVEN a string containing only a username with the separator without a fallback domain WHEN parsing it THEN it throws`() { // ktlint-disable max-line-length
+        assertFailsWith<Domain.BlankValueException> {
             Account.of("john@")
         }
     }
 
     @Test
-    fun `GIVEN a string containing a valid username and an instance with illegal characters WHEN parsing it THEN it throws`() { // ktlint-disable max-line-length
-        assertFailsWith<Account.IllegalInstanceException> {
+    fun `GIVEN a string containing a valid username and an domain with illegal characters WHEN parsing it THEN it throws`() { // ktlint-disable max-line-length
+        assertFailsWith<Domain.IllegalValueException> {
             Account.of("john@apple seed.com")
         }
     }
 
     @Test
-    fun `GIVEN a string containing a valid username without an instance with a fallback one with illegal characters WHEN parsing it THEN it throws`() { // ktlint-disable max-line-length
-        assertFailsWith<Account.IllegalInstanceException> {
-            Account.of("john", fallbackInstance = "apple seed.com")
+    fun `GIVEN a string containing a valid username without an domain with a fallback one with illegal characters WHEN parsing it THEN it throws`() { // ktlint-disable max-line-length
+        assertFailsWith<Domain.IllegalValueException> {
+            Account.of("john", fallbackDomain = "apple seed.com")
         }
     }
 
     @Test
-    fun `GIVEN a string containing a valid username and a valid instance WHEN parsing it THEN it creates an account`() { // ktlint-disable max-line-length
+    fun `GIVEN a string containing a valid username and a valid domain WHEN parsing it THEN it creates an account`() { // ktlint-disable max-line-length
         assertEquals("john" at "appleseed.com", Account.of("john@appleseed.com"))
     }
 
     @Test
-    fun `GIVEN a string containing only a username with a valid fallback instance WHEN parsing it THEN it creates an account`() { // ktlint-disable max-line-length
+    fun `GIVEN a string containing only a username with a valid fallback domain WHEN parsing it THEN it creates an account`() { // ktlint-disable max-line-length
         assertEquals(
             "john" at "appleseed.com",
-            Account.of("john", fallbackInstance = "appleseed.com")
+            Account.of("john", fallbackDomain = "appleseed.com")
         )
     }
 
@@ -76,15 +77,5 @@ internal class AccountTests {
     @Test
     fun `GIVEN a username with an illegal character WHEN verifying if it's valid THEN it isn't`() {
         assertFalse(Account.isUsernameValid("john@"))
-    }
-
-    @Test
-    fun `GIVEN a blank instance WHEN verifying if it's valid THEN it isn't`() {
-        assertFalse(Account.isInstanceValid(" "))
-    }
-
-    @Test
-    fun `GIVEN an instance with an illegal character WHEN verifying if it's valid THEN it isn't`() {
-        assertFalse(Account.isInstanceValid("@appleseed.com"))
     }
 }
