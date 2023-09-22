@@ -1,25 +1,13 @@
 package com.jeanbarrossilva.orca.app.demo.module.core
 
 import com.jeanbarrossilva.orca.app.module.core.CoreModule
-import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
-import com.jeanbarrossilva.orca.core.sample.auth.SampleAuthenticator
-import com.jeanbarrossilva.orca.core.sample.feed.SampleFeedProvider
-import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileProvider
-import com.jeanbarrossilva.orca.core.sample.feed.profile.search.SampleProfileSearcher
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.SampleTootProvider
-import com.jeanbarrossilva.orca.core.test.TestActorProvider
+import com.jeanbarrossilva.orca.core.instance.Instance
+import com.jeanbarrossilva.orca.core.sample.instance.sample
 import org.koin.core.module.Module
 
 @Suppress("FunctionName")
 internal fun DemoCoreModule(): Module {
-    val actorProvider = TestActorProvider()
-    return CoreModule(
-        { SampleAuthenticator(actorProvider) },
-        { AuthenticationLock(authenticator = get(), actorProvider) },
-        { SampleFeedProvider },
-        { SampleProfileProvider },
-        { SampleProfileSearcher }
-    ) {
-        SampleTootProvider
+    return CoreModule {
+        Instance.sample
     }
 }

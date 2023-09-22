@@ -3,19 +3,23 @@ package com.jeanbarrossilva.orca.core.auth
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.auth.actor.ActorProvider
 
+/** An [AuthenticationLock] with a generic [Authenticator]. **/
+typealias SomeAuthenticationLock = AuthenticationLock<*>
+
 /**
  * Ensures that an operation is only performed either by...
  *
  * - ...an [unauthenticated][Actor.Unauthenticated] [Actor], through [requestLock];
  * - ...an [authenticated][Actor.Authenticated] [Actor], through [requestUnlock].
  *
+ * @param T [Authenticator] to authenticate the [Actor] with.
  * @param authenticator [Authenticator] through which the [Actor] will be requested to be
  * [authenticated][Actor.Authenticated].
  * @param actorProvider [ActorProvider] whose provided [Actor] will be ensured to be either
  * [unauthenticated][Actor.Unauthenticated] or [authenticated][Actor.Authenticated].
  **/
-class AuthenticationLock(
-    private val authenticator: Authenticator,
+class AuthenticationLock<T : Authenticator>(
+    private val authenticator: T,
     private val actorProvider: ActorProvider
 ) {
     /** [IllegalStateException] thrown if authentication fails. **/

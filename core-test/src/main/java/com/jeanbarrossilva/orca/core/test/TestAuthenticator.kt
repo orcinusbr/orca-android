@@ -2,7 +2,6 @@ package com.jeanbarrossilva.orca.core.test
 
 import com.jeanbarrossilva.orca.core.auth.Authenticator
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
-import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
 
 /**
  * [Authenticator] that switches the [Actor] locally on authentication.
@@ -30,7 +29,7 @@ class TestAuthenticator(
      * [Authenticated][Actor.Authenticated] [Actor] to switch to when the [currentActor] is
      * [unauthenticated][Actor.Unauthenticated].
      **/
-    private val authenticatedActor = Actor.Authenticated.sample
+    private val authenticatedActor = Actor.Authenticated("test-id", "test-access-token")
 
     override suspend fun onAuthenticate(authorizationCode: String): Actor {
         onOnAuthenticate(authorizationCode)

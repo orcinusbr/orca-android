@@ -1,21 +1,19 @@
 package com.jeanbarrossilva.orca.core.http.feed.profile.account
 
-import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
+import com.jeanbarrossilva.orca.core.http.HttpBridge
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.ProfileTootPaginateSource
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.editable.HttpEditableProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.followable.HttpFollowableProfile
-import com.jeanbarrossilva.orca.core.http.get
 import com.jeanbarrossilva.orca.platform.ui.core.style.fromHtml
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
-import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.parameter
 import java.net.URL
@@ -82,7 +80,7 @@ internal data class HttpAccount(
      * [Account].
      **/
     private suspend fun isOwner(): Boolean {
-        return get<AuthenticationLock>().requestUnlock {
+        return HttpBridge.instance.authenticationLock.requestUnlock {
             it.id == id
         }
     }
@@ -127,10 +125,10 @@ internal data class HttpAccount(
         val avatarURL = URL(avatar)
         val bio = StyledString.fromHtml(note)
         val url = URL(url)
-        val follow = get<HttpClient>()
-            .authenticateAndGet(authenticationLock = get(), "/api/v1/accounts/relationships") {
-                parameter("id", id)
-            }
+        val follow = HttpBridge
+            .instance
+            .client
+            .authenticateAndGet("/api/v1/accounts/relationships") { parameter("id", id) }
             .body<List<HttpRelationship>>()
             .first()
             .toFollow(this)

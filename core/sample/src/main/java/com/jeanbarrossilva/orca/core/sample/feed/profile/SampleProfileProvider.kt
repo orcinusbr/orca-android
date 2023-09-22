@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.mapNotNull
 
 /** [ProfileProvider] that provides sample [Profile]s. **/
-object SampleProfileProvider : ProfileProvider() {
+internal object SampleProfileProvider : ProfileProvider() {
     /** [Profile]s that are present by default. **/
     internal val defaultProfiles = listOf(Profile.sample)
 

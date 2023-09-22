@@ -11,84 +11,73 @@ import kotlin.test.Test
 
 internal class CoreHttpClientTests {
     @Test
-    fun `GIVEN an authenticate-and-get request with an unauthenticated actor WHEN performing it THEN the actor is requested to be authenticated`() { // ktlint-disable max-line-length
+    fun requestsAuthenticationOnAuthenticateAndGetWithAnUnauthenticatedActor() {
         var isAuthenticated = false
         runUnauthenticatedTest(onAuthentication = { isAuthenticated = true }) {
-            client.authenticateAndGet(authenticationLock, route = "")
+            client.authenticateAndGet(route = "")
             assertThat(isAuthenticated).isTrue()
         }
     }
 
     @Test
-    fun `GIVEN an authenticate-and-get request with an authenticated actor WHEN performing it THEN the bearer auth header has been set`() { // ktlint-disable max-line-length
+    fun setsBearerAuthHeaderOnAuthenticateAndGetWithAnAuthenticatedActor() {
+        runAuthenticatedTest {
+            assertThatRequestAuthorizationHeaderOf(client.authenticateAndGet(route = "")).isEqualTo(
+                "Bearer ${actor.accessToken}"
+            )
+        }
+    }
+
+    @Test
+    fun requestsAuthenticationOnAuthenticateAndPostWithAnUnauthenticatedActor() {
+        var isAuthenticated = false
+        runUnauthenticatedTest(onAuthentication = { isAuthenticated = true }) {
+            client.authenticateAndPost(route = "")
+            assertThat(isAuthenticated).isTrue()
+        }
+    }
+
+    @Test
+    fun setsBearerAuthHeaderOnAuthenticateAndPostWithAnAuthenticatedActor() {
+        runAuthenticatedTest {
+            assertThatRequestAuthorizationHeaderOf(client.authenticateAndPost(route = ""))
+                .isEqualTo("Bearer ${actor.accessToken}")
+        }
+    }
+
+    @Test
+    fun requestsAuthenticationOnAuthenticateAndSubmitFormWithAnUnauthenticatedActor() {
+        var isAuthenticated = false
+        runUnauthenticatedTest(onAuthentication = { isAuthenticated = true }) {
+            client.authenticateAndSubmitForm(route = "", parametersOf())
+            assertThat(isAuthenticated).isTrue()
+        }
+    }
+
+    @Test
+    fun setsBearerAuthHeaderOnAuthenticateAndSubmitFormWithAnAuthenticatedActor() {
         runAuthenticatedTest {
             assertThatRequestAuthorizationHeaderOf(
-                client.authenticateAndGet(authenticationLock, route = "")
+                client.authenticateAndSubmitForm(route = "", parametersOf())
             )
                 .isEqualTo("Bearer ${actor.accessToken}")
         }
     }
 
     @Test
-    fun `GIVEN an authenticate-and-post request with an unauthenticated actor WHEN performing it THEN the actor is requested to be authenticated`() { // ktlint-disable max-line-length
+    fun requestsAuthenticationOnAuthenticateAndSubmitFormWithBinaryDataWithAnUnauthenticatedActor() { // ktlint-disable max-line-length
         var isAuthenticated = false
         runUnauthenticatedTest(onAuthentication = { isAuthenticated = true }) {
-            client.authenticateAndPost(authenticationLock, route = "")
+            client.authenticateAndSubmitFormWithBinaryData(route = "", formData = emptyList())
             assertThat(isAuthenticated).isTrue()
         }
     }
 
     @Test
-    fun `GIVEN an authenticate-and-post request with an authenticated actor WHEN performing it THEN the bearer auth header has been set`() { // ktlint-disable max-line-length
+    fun setsBearerAuthHeaderOnAuthenticateAndSubmitFormWithBinaryDataWithAnAuthenticatedActor() {
         runAuthenticatedTest {
             assertThatRequestAuthorizationHeaderOf(
-                client.authenticateAndPost(authenticationLock, route = "")
-            )
-                .isEqualTo("Bearer ${actor.accessToken}")
-        }
-    }
-
-    @Test
-    fun `GIVEN an authenticate-and-submit-form request with an unauthenticated actor WHEN performing it THEN the actor is requested to be authenticated`() { // ktlint-disable max-line-length
-        var isAuthenticated = false
-        runUnauthenticatedTest(onAuthentication = { isAuthenticated = true }) {
-            client.authenticateAndSubmitForm(authenticationLock, route = "", parametersOf())
-            assertThat(isAuthenticated).isTrue()
-        }
-    }
-
-    @Test
-    fun `GIVEN an authenticate-and-submit-form request with an authenticated actor WHEN performing it THEN the bearer auth header has been set`() { // ktlint-disable max-line-length
-        runAuthenticatedTest {
-            assertThatRequestAuthorizationHeaderOf(
-                client.authenticateAndSubmitForm(authenticationLock, route = "", parametersOf())
-            )
-                .isEqualTo("Bearer ${actor.accessToken}")
-        }
-    }
-
-    @Test
-    fun `GIVEN an authenticate-and-submit-form-with-binary-data request with an unauthenticated actor WHEN performing it THEN the actor is requested to be authenticated`() { // ktlint-disable max-line-length
-        var isAuthenticated = false
-        runUnauthenticatedTest(onAuthentication = { isAuthenticated = true }) {
-            client.authenticateAndSubmitFormWithBinaryData(
-                authenticationLock,
-                route = "",
-                formData = emptyList()
-            )
-            assertThat(isAuthenticated).isTrue()
-        }
-    }
-
-    @Test
-    fun `GIVEN an authenticate-and-submit-form-with-binary-data request with an authenticated actor WHEN performing it THEN the bearer auth header has been set`() { // ktlint-disable max-line-length
-        runAuthenticatedTest {
-            assertThatRequestAuthorizationHeaderOf(
-                client.authenticateAndSubmitFormWithBinaryData(
-                    authenticationLock,
-                    route = "",
-                    formData = emptyList()
-                )
+                client.authenticateAndSubmitFormWithBinaryData(route = "", formData = emptyList())
             )
                 .isEqualTo("Bearer ${actor.accessToken}")
         }

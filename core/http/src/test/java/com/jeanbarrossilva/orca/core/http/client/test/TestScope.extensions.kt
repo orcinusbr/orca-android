@@ -3,8 +3,8 @@ package com.jeanbarrossilva.orca.core.http.client.test
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.auth.actor.ActorProvider
+import com.jeanbarrossilva.orca.core.http.HttpBridge
 import com.jeanbarrossilva.orca.core.http.client.CoreHttpClient
-import com.jeanbarrossilva.orca.core.http.client.Logger
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndPost
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndSubmitForm
@@ -12,11 +12,6 @@ import com.jeanbarrossilva.orca.core.http.client.authenticateAndSubmitFormWithBi
 import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
 import com.jeanbarrossilva.orca.core.test.TestAuthenticator
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.HttpClientEngine
-import io.ktor.client.engine.HttpClientEngineFactory
-import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.MockEngineConfig
-import io.ktor.client.engine.mock.respondOk
 import io.ktor.client.request.HttpRequest
 import io.ktor.http.HttpMethod
 import kotlinx.coroutines.CoroutineScope
@@ -30,18 +25,11 @@ import kotlinx.coroutines.test.runTest
  * @param T Specified [Actor] for performing the testing.
  * @param delegate [TestScope] that's been launched and will provide [CoroutineScope]-like
  * functionality to this [CoreHttpClientTestScope].
- * @param authenticationLock [AuthenticationLock] with which `authenticateAnd*` [HttpClient]
- * extension methods can be called.
  * @param client [CoreHttpClient] for executing the intended [HttpRequest]s.
  * @param actor [Actor] used when running the test.
- * @see HttpClient.authenticateAndGet
- * @see HttpClient.authenticateAndPost
- * @see HttpClient.authenticateAndSubmitForm
- * @see HttpClient.authenticateAndSubmitFormWithBinaryData
  **/
 internal class CoreHttpClientTestScope<T : Actor>(
     delegate: TestScope,
-    val authenticationLock: AuthenticationLock,
     val client: HttpClient,
     val actor: T
 ) : CoroutineScope by delegate
@@ -115,16 +103,9 @@ private fun <T : Actor> runCoreHttpClientTest(
 ) {
     val actorProvider = FixedActorProvider(actor)
     val authenticator = TestAuthenticator { onAuthentication() }
-    val engineFactory = object : HttpClientEngineFactory<MockEngineConfig> {
-        override fun create(block: MockEngineConfig.() -> Unit): HttpClientEngine {
-            return MockEngine {
-                respondOk()
-            }
-        }
-    }
     val authenticationLock = AuthenticationLock(authenticator, actorProvider)
-    val client = CoreHttpClient(engineFactory, Logger.test)
-    runTest {
-        CoreHttpClientTestScope(delegate = this, authenticationLock, client, actor).body()
-    }
+    val instance = TestHttpInstance(authenticator, authenticationLock)
+    HttpBridge.cross(instance)
+    runTest { CoreHttpClientTestScope(delegate = this, instance.client, actor).body() }
+    HttpBridge.reset()
 }

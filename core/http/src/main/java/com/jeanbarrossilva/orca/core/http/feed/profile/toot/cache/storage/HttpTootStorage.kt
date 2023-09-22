@@ -18,7 +18,7 @@ import com.jeanbarrossilva.orca.platform.cache.Storage
  * @param styleEntityDao [HttpStyleEntityDao] for inserting and deleting
  * [HTTP style entities][HttpStyleEntity].
  **/
-class HttpTootStorage(
+internal class HttpTootStorage(
     private val profileCache: Cache<Profile>,
     private val tootEntityDao: HttpTootEntityDao,
     private val styleEntityDao: HttpStyleEntityDao

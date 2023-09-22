@@ -6,13 +6,13 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.jeanbarrossilva.orca.core.http.HttpBridge
 import com.jeanbarrossilva.orca.core.http.R
 import com.jeanbarrossilva.orca.core.http.auth.Mastodon
 import io.ktor.http.URLBuilder
 import io.ktor.http.Url
 import io.ktor.http.appendPathSegments
 import io.ktor.http.takeFrom
-import org.koin.android.ext.android.get
 
 /**
  * [AndroidViewModel] that provides the [url] to be opened in the browser for authenticating the
@@ -25,7 +25,7 @@ internal class HttpAuthorizationViewModel private constructor(application: Appli
     /** [Url] to be opened in order to authenticate. **/
     val url by lazy {
         URLBuilder()
-            .takeFrom(application.get<Url>())
+            .takeFrom(HttpBridge.instance.url)
             .appendPathSegments("oauth", "authorize")
             .apply {
                 with(application.getString(R.string.scheme)) {

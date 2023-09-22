@@ -12,7 +12,8 @@ import kotlinx.coroutines.flow.flowOf
  *
  * @param cache [Cache] of [HttpProfile] by which [HttpProfile]s will be obtained.
  **/
-class HttpProfileProvider(private val cache: Cache<Profile>) : ProfileProvider() {
+class HttpProfileProvider internal constructor(private val cache: Cache<Profile>) :
+    ProfileProvider() {
     override suspend fun contains(id: String): Boolean {
         return true
     }

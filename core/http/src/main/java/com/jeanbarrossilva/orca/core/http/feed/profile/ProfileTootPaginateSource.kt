@@ -8,7 +8,7 @@ import com.jeanbarrossilva.orca.core.http.feed.profile.toot.pagination.HttpTootP
  *
  * @param id ID of the [HttpProfile].
  **/
-class ProfileTootPaginateSource(id: String) : HttpTootPaginateSource() {
+internal class ProfileTootPaginateSource(id: String) : HttpTootPaginateSource() {
     override val route = "/api/v1/accounts/$id/statuses"
 
     /** Provides a [ProfileTootPaginateSource] through [provide]. **/

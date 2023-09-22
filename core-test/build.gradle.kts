@@ -6,5 +6,4 @@ plugins {
 
 dependencies {
     implementation(project(":core"))
-    implementation(project(":core:sample"))
 }

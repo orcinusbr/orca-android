@@ -15,7 +15,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
  *
  * @param cache [Cache] by which the [ProfileSearchResult]s will be cached.
  **/
-class HttpProfileSearcher(private val cache: Cache<List<ProfileSearchResult>>) : ProfileSearcher() {
+class HttpProfileSearcher internal constructor(
+    private val cache: Cache<List<ProfileSearchResult>>
+) : ProfileSearcher() {
     /**
      * [MutableStateFlow] to which searched [Loadable]s of [ProfileSearchResult] are emitted and
      * that is later unwrapped.

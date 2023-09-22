@@ -41,7 +41,6 @@ loadable = { group = "com.jeanbarrossilva.loadable", name = "loadable", version.
 loadable-list = { group = "com.jeanbarrossilva.loadable", name = "loadable-list", version.ref = "loadable" }
 loadable-placeholder = { group = "com.jeanbarrossilva.loadable", name = "loadable-placeholder", version.ref = "loadable" }
 loadable-placeholder-test = { group = "com.jeanbarrossilva.loadable", name = "loadable-placeholder-test", version.ref = "loadable" }
-mockito = { group = "org.mockito", name = "mockito-core", version = "5.5.0" }
 mockk = { group = "io.mockk", name = "mockk-android", version = "1.13.7" }
 paginate = { group = "com.chrynan.paginate", name = "paginate-core", version = "0.3.0" }
 slf4j = { group = "org.slf4j", name = "slf4j-api", version = "2.0.7" }

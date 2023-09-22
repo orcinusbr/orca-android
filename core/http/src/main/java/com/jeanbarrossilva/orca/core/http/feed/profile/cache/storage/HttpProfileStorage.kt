@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.first
  * @param entityDao [HttpProfileEntityDao] that will perform SQL transactions on
  * [HTTP profile entities][HttpProfileEntity].
  **/
-class HttpProfileStorage(
+internal class HttpProfileStorage(
     private val tootPaginateSourceProvider: ProfileTootPaginateSource.Provider,
     private val entityDao: HttpProfileEntityDao
 ) : Storage<Profile>() {

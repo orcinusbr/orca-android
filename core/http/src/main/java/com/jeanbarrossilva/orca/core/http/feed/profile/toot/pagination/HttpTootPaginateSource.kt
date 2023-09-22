@@ -5,18 +5,18 @@ import com.chrynan.paginate.core.PageDirection
 import com.chrynan.paginate.core.PageInfo
 import com.chrynan.paginate.core.PagedResult
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.orca.core.http.HttpBridge
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.status.HttpStatus
-import com.jeanbarrossilva.orca.core.http.get
-import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.HttpRequest
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.Url
 
 /** [BasePaginateSource] that requests and paginates through [Toot]s. **/
-abstract class HttpTootPaginateSource internal constructor() : BasePaginateSource<Url, HttpToot>() {
+internal abstract class HttpTootPaginateSource internal constructor() :
+    BasePaginateSource<Url, HttpToot>() {
     /** Index of the page that's the current one. **/
     private var page = 0
         set(index) { field = minOf(0, index) }
@@ -84,10 +84,7 @@ abstract class HttpTootPaginateSource internal constructor() : BasePaginateSourc
      * @param url [Url] to which the [HttpRequest] will be made.
      **/
     private suspend fun getStatusesResponse(url: Url?): HttpResponse {
-        return get<HttpClient>().authenticateAndGet(
-            authenticationLock = get(),
-            url?.toString() ?: route
-        )
+        return HttpBridge.instance.client.authenticateAndGet(url?.toString() ?: route)
     }
 
     companion object {

@@ -1,11 +1,10 @@
 package com.jeanbarrossilva.orca.core.http.feed.profile.type.editable
 
 import com.jeanbarrossilva.orca.core.feed.profile.type.editable.Editor
+import com.jeanbarrossilva.orca.core.http.HttpBridge
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndSubmitForm
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndSubmitFormWithBinaryData
-import com.jeanbarrossilva.orca.core.http.get
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
-import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequest
 import io.ktor.client.request.forms.InputProvider
 import io.ktor.client.request.forms.formData
@@ -28,27 +27,18 @@ internal class HttpEditor : Editor {
         val contentDisposition = "form-data; name=\"avatar\" filename=\"${file.name}\""
         val headers = Headers.build { append(HttpHeaders.ContentDisposition, contentDisposition) }
         val formData = formData { append("avatar", inputProvider, headers) }
-        get<HttpClient>().authenticateAndSubmitFormWithBinaryData(
-            authenticationLock = get(),
-            ROUTE,
-            formData
-        )
+        HttpBridge.instance.client.authenticateAndSubmitFormWithBinaryData(ROUTE, formData)
     }
 
     override suspend fun setName(name: String) {
-        get<HttpClient>().authenticateAndSubmitForm(
-            authenticationLock = get(),
+        HttpBridge.instance.client.authenticateAndSubmitForm(
             ROUTE,
             parametersOf("display_name", name)
         )
     }
 
     override suspend fun setBio(bio: StyledString) {
-        get<HttpClient>().authenticateAndSubmitForm(
-            authenticationLock = get(),
-            ROUTE,
-            parametersOf("note", "$bio")
-        )
+        HttpBridge.instance.client.authenticateAndSubmitForm(ROUTE, parametersOf("note", "$bio"))
     }
 
     companion object {
