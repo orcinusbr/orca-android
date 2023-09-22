@@ -15,6 +15,6 @@ import com.jeanbarrossilva.orca.core.auth.actor.Actor
 fun TestAuthenticationLock(
     actorProvider: TestActorProvider = TestActorProvider(),
     authenticator: TestAuthenticator = TestAuthenticator(actorProvider = actorProvider)
-): AuthenticationLock {
+): AuthenticationLock<TestAuthenticator> {
     return AuthenticationLock(authenticator, actorProvider)
 }

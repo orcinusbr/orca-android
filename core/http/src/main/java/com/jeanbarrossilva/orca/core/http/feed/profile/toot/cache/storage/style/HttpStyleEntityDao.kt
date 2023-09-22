@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 /** Performs SQL transactions regarding [HTTP style entities][HttpStyleEntity]. **/
 @Dao
-abstract class HttpStyleEntityDao internal constructor() {
+internal interface HttpStyleEntityDao {
     /**
      * Returns a [Flow] to which the [HttpStyleEntity] whose [Toot]'s identified as [tootID] will be
      * emitted or an empty one if none is found.
@@ -18,7 +18,7 @@ abstract class HttpStyleEntityDao internal constructor() {
      * @param tootID ID of the [Toot] to which the [HttpStyleEntity] to be obtained belongs.
      **/
     @Query("SELECT * FROM styles WHERE toot_id = :tootID")
-    internal abstract suspend fun selectByTootID(tootID: String): List<HttpStyleEntity>
+    suspend fun selectByTootID(tootID: String): List<HttpStyleEntity>
 
     /**
      * Inserts the [HTTP style entities][HttpStyleEntity].
@@ -26,7 +26,7 @@ abstract class HttpStyleEntityDao internal constructor() {
      * @param entities [HTTP style entities][HttpStyleEntity] to be inserted.
      **/
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    internal abstract suspend fun insert(entities: List<HttpStyleEntity>)
+    suspend fun insert(entities: List<HttpStyleEntity>)
 
     /**
      * Deletes the [HTTP style entities][HttpStyleEntity].
@@ -34,5 +34,5 @@ abstract class HttpStyleEntityDao internal constructor() {
      * @param entities [HTTP style entities][HttpStyleEntity] to be deleted.
      **/
     @Delete
-    internal abstract suspend fun delete(entities: List<HttpStyleEntity>)
+    suspend fun delete(entities: List<HttpStyleEntity>)
 }

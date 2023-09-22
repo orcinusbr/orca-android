@@ -13,6 +13,7 @@ plugins {
 android {
     buildFeatures.compose = true
     composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
+    defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     namespace = namespaceFor("core.http")
 
     buildFeatures {
@@ -24,9 +25,16 @@ android {
         defaultPropertiesFileName = "public.properties"
         ignoreList += "^(?!mastodon\\.clientSecret).*$"
     }
+
+    packagingOptions.resources.excludes +=
+        arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
 }
 
 dependencies {
+    androidTestImplementation(libs.android.test.core)
+    androidTestImplementation(libs.android.test.runner)
+    androidTestImplementation(libs.mockk)
+
     api(project(":core"))
     api(project(":platform:cache"))
     api(libs.android.room.ktx)
@@ -54,5 +62,4 @@ dependencies {
     testImplementation(libs.kotlin.coroutines.test)
     testImplementation(libs.kotlin.test)
     testImplementation(libs.ktor.client.mock)
-    testImplementation(libs.mockito)
 }

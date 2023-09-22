@@ -2,6 +2,7 @@ package com.jeanbarrossilva.orca.core.http.client
 
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
+import com.jeanbarrossilva.orca.core.http.HttpBridge
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngine
@@ -34,6 +35,18 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonNamingStrategy
 
 /**
+ * [AuthenticationLock] for requesting an unlock in `authenticateAnd*` methods.
+ *
+ * @see HttpClient.authenticateAndGet
+ * @see HttpClient.authenticateAndPost
+ * @see HttpClient.authenticateAndSubmitForm
+ * @see HttpClient.authenticateAndSubmitFormWithBinaryData
+ **/
+@PublishedApi
+internal val authenticationLock
+    get() = HttpBridge.instance.authenticationLock
+
+/**
  * [HttpClient] through which [HttpRequest]s can be performed.
  *
  * @param config Additional configuration to be done on the [HttpClient].
@@ -47,18 +60,15 @@ fun CoreHttpClient(config: HttpClientConfig<CIOEngineConfig>.() -> Unit): HttpCl
  * Performs a GET [HttpRequest] to the [route] that requires an [authenticated][Actor.Authenticated]
  * [Actor].
  *
- * @param authenticationLock [AuthenticationLock] by which the [authenticated][Actor.Authenticated]
- * [Actor] will be required.
  * @param route URL [String] to which the [HttpRequest] will be sent.
  * @param build Additional configuration for the [HttpResponse] to be performed.
  **/
 suspend inline fun HttpClient.authenticateAndGet(
-    authenticationLock: AuthenticationLock,
     route: String,
     crossinline build: HttpRequestBuilder.() -> Unit = { }
 ): HttpResponse {
     return get(route) {
-        authenticate(authenticationLock)
+        authenticate()
         build.invoke(this)
     }
 }
@@ -67,18 +77,15 @@ suspend inline fun HttpClient.authenticateAndGet(
  * Performs a POST [HttpRequest] to the [route] that requires an
  * [authenticated][Actor.Authenticated] [Actor].
  *
- * @param authenticationLock [AuthenticationLock] by which the [authenticated][Actor.Authenticated]
- * [Actor] will be required.
  * @param route URL [String] to which the [HttpRequest] will be sent.
  * @param build Additional configuration for the [HttpResponse] to be performed.
  **/
 suspend inline fun HttpClient.authenticateAndPost(
-    authenticationLock: AuthenticationLock,
     route: String,
     crossinline build: HttpRequestBuilder.() -> Unit = { }
 ): HttpResponse {
     return post(route) {
-        authenticate(authenticationLock)
+        authenticate()
         build.invoke(this)
     }
 }
@@ -87,14 +94,11 @@ suspend inline fun HttpClient.authenticateAndPost(
  * Performs a POST [HttpRequest] with the [parameters] included in the form to the [route] that
  * requires an [authenticated][Actor.Authenticated] [Actor].
  *
- * @param authenticationLock [AuthenticationLock] by which the [authenticated][Actor.Authenticated]
- * [Actor] will be required.
  * @param route URL [String] to which the [HttpRequest] will be sent.
  * @param parameters [Parameters] to be added to the form.
  * @param build Additional configuration for the [HttpResponse] to be performed.
  **/
 suspend inline fun HttpClient.authenticateAndSubmitForm(
-    authenticationLock: AuthenticationLock,
     route: String,
     parameters: Parameters,
     crossinline build: HttpRequestBuilder.() -> Unit = { }
@@ -112,20 +116,17 @@ suspend inline fun HttpClient.authenticateAndSubmitForm(
  * [authenticated][Actor.Authenticated] [Actor], encoding the provided [formData] with the
  * `multipart/form-data` format.
  *
- * @param authenticationLock [AuthenticationLock] by which the [authenticated][Actor.Authenticated]
- * [Actor] will be required.
  * @param route URL [String] to which the [HttpRequest] will be sent.
  * @param formData [List] with [PartData] to be included in the form.
  * @param build Additional configuration for the [HttpResponse] to be performed.
  **/
 suspend inline fun HttpClient.authenticateAndSubmitFormWithBinaryData(
-    authenticationLock: AuthenticationLock,
     route: String,
     formData: List<PartData>,
     crossinline build: HttpRequestBuilder.() -> Unit = { }
 ): HttpResponse {
     return submitFormWithBinaryData(route, formData) {
-        authenticate(authenticationLock)
+        authenticate()
         build.invoke(this)
     }
 }
@@ -158,11 +159,9 @@ internal fun <EC : HttpClientEngineConfig, CC : HttpClientConfig<EC>> CoreHttpCl
 /**
  * Provides the [authenticated][Actor.Authenticated] [Actor]'s access token to the
  * [Authorization][HttpHeaders.Authorization] header through the [authenticationLock].
- *
- * @param authenticationLock [AuthenticationLock] to be unlocked.
  **/
 @PublishedApi
-internal suspend fun HttpMessageBuilder.authenticate(authenticationLock: AuthenticationLock) {
+internal suspend fun HttpMessageBuilder.authenticate() {
     authenticationLock.requestUnlock {
         bearerAuth(it.accessToken)
     }

@@ -10,14 +10,14 @@ import kotlinx.coroutines.flow.Flow
 
 /** Performs SQL transactions regarding [HTTP toot entities][HttpTootEntity]. **/
 @Dao
-abstract class HttpTootEntityDao internal constructor() {
+internal interface HttpTootEntityDao {
     /**
      * Returns the amount of [HTTP toot entities][HttpTootEntity] identified as [id].
      *
      * @param id ID for which the counting will be performed.
      **/
     @Query("SELECT COUNT() FROM toots WHERE id = :id")
-    internal abstract suspend fun count(id: String): Int
+    suspend fun count(id: String): Int
 
     /**
      * Returns a [Flow] to which the [HttpTootEntity] identified as [id] will be emitted or an empty
@@ -26,7 +26,7 @@ abstract class HttpTootEntityDao internal constructor() {
      * @param id ID of the [HttpTootEntity] to be obtained.
      **/
     @Query("SELECT * FROM toots WHERE id = :id")
-    internal abstract suspend fun selectByID(id: String): HttpTootEntity
+    suspend fun selectByID(id: String): HttpTootEntity
 
     /**
      * Returns a [Flow] to which the [HttpTootEntity] identified as [id] alongside its associated
@@ -36,7 +36,7 @@ abstract class HttpTootEntityDao internal constructor() {
      **/
     @Query("SELECT * FROM toots WHERE id = :id")
     @Transaction
-    internal abstract suspend fun selectWithStylesByID(id: String): HttpTootWithStyles
+    suspend fun selectWithStylesByID(id: String): HttpTootWithStyles
 
     /**
      * Inserts the [entity].
@@ -44,7 +44,7 @@ abstract class HttpTootEntityDao internal constructor() {
      * @param entity [HttpTootEntity] to be inserted.
      **/
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    internal abstract suspend fun insert(entity: HttpTootEntity)
+    suspend fun insert(entity: HttpTootEntity)
 
     /**
      * Deletes the [HttpTootEntity] identified as [id].
@@ -52,9 +52,9 @@ abstract class HttpTootEntityDao internal constructor() {
      * @param id ID of the [HttpTootEntity] to be deleted.
      **/
     @Query("DELETE FROM toots WHERE id = :id")
-    internal abstract suspend fun delete(id: String)
+    suspend fun delete(id: String)
 
     /** Deletes all [HTTP toot entities][HttpTootEntity]. **/
     @Query("DELETE FROM toots")
-    internal abstract suspend fun deleteAll()
+    suspend fun deleteAll()
 }

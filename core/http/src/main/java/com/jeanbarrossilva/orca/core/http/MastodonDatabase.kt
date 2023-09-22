@@ -23,7 +23,7 @@ import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.style.
     ],
     version = 1
 )
-abstract class MastodonDatabase internal constructor() : RoomDatabase() {
+internal abstract class MastodonDatabase : RoomDatabase() {
     /** DAO for operating on [HTTP style entities][HttpStyleEntity]. **/
     abstract val styleEntityDao: HttpStyleEntityDao
 

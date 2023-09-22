@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.core.http.feed.profile.toot
 
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.TootProvider
 import com.jeanbarrossilva.orca.platform.cache.Cache
 import kotlinx.coroutines.flow.Flow
@@ -12,8 +11,8 @@ import kotlinx.coroutines.flow.flowOf
  *
  * @param cache [Cache] of [HttpToot]s by which [HttpToot]s will be obtained.
  **/
-class HttpTootProvider(private val cache: Cache<HttpToot>) : TootProvider {
-    override suspend fun provide(id: String): Flow<Toot> {
+class HttpTootProvider internal constructor(private val cache: Cache<HttpToot>) : TootProvider {
+    override suspend fun provide(id: String): Flow<HttpToot> {
         val toot = cache.get(id)
         return flowOf(toot)
     }

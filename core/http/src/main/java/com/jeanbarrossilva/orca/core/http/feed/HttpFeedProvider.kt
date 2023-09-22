@@ -9,7 +9,8 @@ import com.jeanbarrossilva.orca.core.http.feed.profile.toot.pagination.HttpTootP
 import kotlinx.coroutines.flow.Flow
 
 /** [FeedProvider] that requests the feed's [HttpToot]s to the API. **/
-class HttpFeedProvider(private val actorProvider: ActorProvider) : FeedProvider() {
+class HttpFeedProvider internal constructor(private val actorProvider: ActorProvider) :
+    FeedProvider() {
     /** [Flow] of paginated [HttpToot]s to be provided. **/
     private val flow =
         FeedTootPaginateSource.loadAllPagesItems(HttpTootPaginateSource.DEFAULT_COUNT)

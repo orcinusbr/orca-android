@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
  * [HTTP profile search result entities][HttpProfileSearchResultEntity].
  **/
 @Dao
-abstract class HttpProfileSearchResultEntityDao internal constructor() {
+internal interface HttpProfileSearchResultEntityDao {
     /**
      * Returns the amount of [HTTP profile search result entities][HttpProfileSearchResultEntity]
      * that have been previously found by searching with the given [query].
@@ -21,7 +21,7 @@ abstract class HttpProfileSearchResultEntityDao internal constructor() {
      * found.
      **/
     @Query("SELECT COUNT() FROM profile_search_results WHERE `query` = :query")
-    internal abstract suspend fun count(query: String): Int
+    suspend fun count(query: String): Int
 
     /**
      * Returns a [Flow] to which the [HttpProfileSearchResultEntity] that's been previously found by
@@ -33,7 +33,7 @@ abstract class HttpProfileSearchResultEntityDao internal constructor() {
      * been found.
      **/
     @Query("SELECT * FROM profile_search_results WHERE `query` = :query")
-    internal abstract fun selectByQuery(query: String): Flow<List<HttpProfileSearchResultEntity>>
+    fun selectByQuery(query: String): Flow<List<HttpProfileSearchResultEntity>>
 
     /**
      * Inserts the [entities].
@@ -42,7 +42,7 @@ abstract class HttpProfileSearchResultEntityDao internal constructor() {
      * inserted.
      **/
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    internal abstract suspend fun insert(entities: List<HttpProfileSearchResultEntity>)
+    suspend fun insert(entities: List<HttpProfileSearchResultEntity>)
 
     /**
      * Deletes [HTTP profile search result entities][HttpProfileSearchResultEntity] that have been
@@ -53,9 +53,9 @@ abstract class HttpProfileSearchResultEntityDao internal constructor() {
      * found.
      **/
     @Query("DELETE FROM profile_search_results WHERE `query` = :query")
-    internal abstract suspend fun delete(query: String)
+    suspend fun delete(query: String)
 
     /** Deletes all [HTTP profile search result entities][HttpProfileSearchResultEntity]. **/
     @Query("DELETE FROM profile_search_results")
-    internal abstract suspend fun deleteAll()
+    suspend fun deleteAll()
 }
