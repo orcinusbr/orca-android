@@ -73,6 +73,26 @@ internal fun MainCoreModule(): Module {
 }
 
 @Suppress("FunctionName")
+internal fun CoreModule(
+    authenticator: Definition<Authenticator>,
+    authenticationLock: Definition<AuthenticationLock>,
+    feedProvider: Definition<FeedProvider>,
+    profileProvider: Definition<ProfileProvider>,
+    profileSearcher: Definition<ProfileSearcher>,
+    tootProvider: Definition<TootProvider>
+): Module {
+    return CoreModule<Authorizer, Authenticator>(
+        authorizer = null,
+        authenticator,
+        authenticationLock,
+        feedProvider,
+        profileProvider,
+        profileSearcher,
+        tootProvider
+    )
+}
+
+@Suppress("FunctionName")
 private inline fun <reified A1 : Authorizer, reified A2 : Authenticator> CoreModule(
     noinline authorizer: Definition<A1>?,
     noinline authenticator: Definition<A2>,
