@@ -21,8 +21,8 @@ import com.jeanbarrossilva.orca.core.http.feed.profile.search.cache.storage.Http
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpTootProvider
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.HttpTootFetcher
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.HttpTootStorage
-import com.jeanbarrossilva.orca.core.mastodon.MastodonHttpClient
-import com.jeanbarrossilva.orca.core.mastodon.mastodonBaseURL
+import com.jeanbarrossilva.orca.core.mastodon.social.MastodonSocialHttpClient
+import com.jeanbarrossilva.orca.core.mastodon.social.mastodonSocialBaseURL
 import com.jeanbarrossilva.orca.core.sharedpreferences.actor.SharedPreferencesActorProvider
 import com.jeanbarrossilva.orca.platform.cache.Cache
 import org.koin.core.definition.Definition
@@ -67,8 +67,8 @@ internal fun MainCoreModule(): Module {
         { HttpTootProvider(tootCache) }
     )
         .apply {
-            single { mastodonBaseURL }
-            single { MastodonHttpClient }
+            single { mastodonSocialBaseURL }
+            single { MastodonSocialHttpClient }
         }
 }
 

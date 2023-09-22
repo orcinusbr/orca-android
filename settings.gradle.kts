@@ -10,11 +10,11 @@ includeBuild("build-src")
 include(
     ":app",
     ":core",
-    ":core:mastodon",
+    ":core:http",
+    ":core:http:mastodon-social",
     ":core:sample",
     ":core:sample-test",
     ":core:shared-preferences",
-    ":core-http",
     ":core-test",
     ":feature:auth",
     ":feature:composer",

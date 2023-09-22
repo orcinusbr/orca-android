@@ -1,6 +1,5 @@
-package com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot
+package com.jeanbarrossilva.orca.core.http.feed.profile.toot.pagination
 
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.pagination.links
 import io.ktor.http.HttpHeaders
 import io.ktor.http.headers
 import org.junit.Assert.assertEquals

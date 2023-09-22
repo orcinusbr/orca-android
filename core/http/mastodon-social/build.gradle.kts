@@ -11,9 +11,8 @@ plugins {
 }
 
 android {
-    buildFeatures.compose = true
     composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
-    namespace = namespaceFor("core.http")
+    namespace = namespaceFor("core.http.mastodon.social")
 
     buildFeatures {
         buildConfig = true
@@ -27,19 +26,15 @@ android {
 }
 
 dependencies {
-    api(project(":core"))
+    api(project(":core:http"))
     api(project(":platform:cache"))
-    api(project(":platform:ui"))
-    api(libs.android.room.ktx)
-    api(libs.ktor.client.core)
-    api(libs.ktor.serialization.json)
     api(libs.paginate)
+    api(libs.android.room.ktx)
 
     implementation(project(":platform:theme"))
-    implementation(libs.android.browser)
+    implementation(libs.android.lifecycle.viewmodel)
     implementation(libs.koin.android)
-    implementation(libs.ktor.client.cio)
-    implementation(libs.ktor.client.contentNegotiation)
+    implementation(libs.loadable.list)
 
     ksp(libs.android.room.compiler)
 
@@ -48,11 +43,5 @@ dependencies {
     }
 
     testImplementation(project(":core:sample"))
-    testImplementation(project(":core-test"))
-    testImplementation(libs.assertk)
     testImplementation(libs.junit)
-    testImplementation(libs.kotlin.coroutines.test)
-    testImplementation(libs.kotlin.test)
-    testImplementation(libs.ktor.client.mock)
-    testImplementation(libs.mockito)
 }
