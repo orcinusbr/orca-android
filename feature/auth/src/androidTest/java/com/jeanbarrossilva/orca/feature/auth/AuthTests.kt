@@ -19,19 +19,19 @@ internal class AuthTests {
     val composeRule = createComposeRule()
 
     @Test
-    fun disablesSignInButtonWhenUsernameIsInvalidAndInstanceIsValid() { // ktlint-disable max-line-length
+    fun disablesSignInButtonWhenUsernameIsInvalidAndInstanceIsValid() {
         composeRule.setContent {
             OrcaTheme {
                 TestAuth()
             }
         }
         composeRule.onUsernameField().performTextInput("john@")
-        composeRule.onInstanceField().performTextInput(Account.sample.instance)
+        composeRule.onInstanceField().performTextInput("${Account.sample.domain}")
         composeRule.onSignInButton().assertIsNotEnabled()
     }
 
     @Test
-    fun disabledSignInButtonWhenUsernameIsValidAndInstanceIsInvalid() { // ktlint-disable max-line-length
+    fun disabledSignInButtonWhenUsernameIsValidAndInstanceIsInvalid() {
         composeRule.setContent {
             OrcaTheme {
                 TestAuth()
@@ -50,7 +50,7 @@ internal class AuthTests {
             }
         }
         composeRule.onUsernameField().performTextInput(Account.sample.username)
-        composeRule.onInstanceField().performTextInput(Account.sample.instance)
+        composeRule.onInstanceField().performTextInput("${Account.sample.domain}")
         composeRule.onSignInButton().assertIsEnabled()
     }
 }

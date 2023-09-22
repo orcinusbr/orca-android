@@ -29,7 +29,7 @@ data class HttpProfileSearchResultEntity(
 ) {
     /** Converts this [HttpProfileSearchResultEntity] into a [ProfileSearchResult]. **/
     internal fun toProfileSearchResult(): ProfileSearchResult {
-        val account = Account.of(account, fallbackInstance = "mastodon.social")
+        val account = Account.of(account, fallbackDomain = "mastodon.social")
         val avatarURL = URL(avatarURL)
         val url = URL(url)
         return ProfileSearchResult(id, account, avatarURL, name, url)

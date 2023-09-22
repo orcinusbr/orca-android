@@ -26,7 +26,7 @@ internal class AuthActivityTests {
     @Test
     fun signsInWhenAccountIsValidAndSignInButtonIsClicked() {
         composeRule.onUsernameField().performTextInput(Account.sample.username)
-        composeRule.onInstanceField().performTextInput(Account.sample.instance)
+        composeRule.onInstanceField().performTextInput("${Account.sample.domain}")
         composeRule.onSignInButton().performClick()
         assertIsAtLeast(CompleteLifecycleState.PAUSED, composeRule.activity.completeLifecycleState)
     }

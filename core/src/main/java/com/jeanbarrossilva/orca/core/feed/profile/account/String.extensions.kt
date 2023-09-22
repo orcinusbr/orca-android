@@ -1,11 +1,13 @@
 package com.jeanbarrossilva.orca.core.feed.profile.account
 
+import com.jeanbarrossilva.orca.core.instance.domain.Domain
+
 /**
  * Creates an [Account] with the receiver [String] as the [username][Account.username] and
- * [instance] as the [Account.instance].
+ * [domain] as the [Account.domain].
  *
- * @param instance Mastodon instance from which the user is.
+ * @param domain Mastodon instance from which the user is.
  **/
-infix fun String.at(instance: String): Account {
-    return Account(username = this, instance)
+infix fun String.at(domain: String): Account {
+    return Account(username = this, Domain(domain))
 }

@@ -15,7 +15,9 @@ internal class AuthenticationTestRule(private val composeRule: ComposeTestRule) 
     ExternalResource() {
     override fun before() {
         composeRule.onNodeWithTag(AUTH_USERNAME_FIELD_TAG).performTextInput(Account.sample.username)
-        composeRule.onNodeWithTag(AUTH_INSTANCE_FIELD_TAG).performTextInput(Account.sample.instance)
+        composeRule.onNodeWithTag(AUTH_INSTANCE_FIELD_TAG).performTextInput(
+            "${Account.sample.domain}"
+        )
         composeRule.onNodeWithTag(AUTH_SIGN_IN_BUTTON_TAG).performClick()
     }
 }
