@@ -8,21 +8,20 @@ import com.jeanbarrossilva.orca.core.feed.FeedProvider
 import com.jeanbarrossilva.orca.core.feed.profile.ProfileProvider
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearcher
 import com.jeanbarrossilva.orca.core.feed.profile.toot.TootProvider
+import com.jeanbarrossilva.orca.core.http.MastodonDatabase
 import com.jeanbarrossilva.orca.core.http.auth.authentication.HttpAuthenticator
 import com.jeanbarrossilva.orca.core.http.auth.authorization.HttpAuthorizer
-import com.jeanbarrossilva.orca.core.mastodon.MastodonDatabase
+import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfileProvider
+import com.jeanbarrossilva.orca.core.http.feed.profile.ProfileTootPaginateSource
+import com.jeanbarrossilva.orca.core.http.feed.profile.cache.HttpProfileFetcher
+import com.jeanbarrossilva.orca.core.http.feed.profile.cache.storage.HttpProfileStorage
+import com.jeanbarrossilva.orca.core.http.feed.profile.search.HttpProfileSearcher
+import com.jeanbarrossilva.orca.core.http.feed.profile.search.cache.HttpProfileSearchResultsFetcher
+import com.jeanbarrossilva.orca.core.http.feed.profile.search.cache.storage.HttpProfileSearchResultsStorage
+import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpTootProvider
+import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.HttpTootFetcher
+import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.HttpTootStorage
 import com.jeanbarrossilva.orca.core.mastodon.MastodonHttpClient
-import com.jeanbarrossilva.orca.core.mastodon.feed.MastodonFeedProvider
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfileProvider
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.ProfileTootPaginateSource
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.ProfileFetcher
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.ProfileStorage
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.MastodonProfileSearcher
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.ProfileSearchResultsFetcher
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.storage.ProfileSearchResultsStorage
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonTootProvider
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.MastodonTootFetcher
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.MastodonTootStorage
 import com.jeanbarrossilva.orca.core.mastodon.mastodonBaseURL
 import com.jeanbarrossilva.orca.core.sharedpreferences.actor.SharedPreferencesActorProvider
 import com.jeanbarrossilva.orca.platform.cache.Cache
@@ -40,13 +39,15 @@ internal fun MainCoreModule(): Module {
     val database = MastodonDatabase.getInstance(context)
     val profileTootPaginateSourceProvider =
         ProfileTootPaginateSource.Provider(::ProfileTootPaginateSource)
-    val profileFetcher = ProfileFetcher(profileTootPaginateSourceProvider)
+    val profileFetcher = HttpProfileFetcher(profileTootPaginateSourceProvider)
     val profileStorage =
-        ProfileStorage(profileTootPaginateSourceProvider, database.profileEntityDao)
+        HttpProfileStorage(profileTootPaginateSourceProvider, database.profileEntityDao)
     val profileCache = Cache.of(context, name = "profile-cache", profileFetcher, profileStorage)
-    val profileSearchResultsFetcher = ProfileSearchResultsFetcher(profileTootPaginateSourceProvider)
+    val profileSearchResultsFetcher = HttpProfileSearchResultsFetcher(
+        profileTootPaginateSourceProvider
+    )
     val profileSearchResultsStorage =
-        ProfileSearchResultsStorage(database.profileSearchResultEntityDao)
+        HttpProfileSearchResultsStorage(database.profileSearchResultEntityDao)
     val profileSearchResultsCache = Cache.of(
         context,
         name = "profile-search-results-cache",
@@ -54,16 +55,16 @@ internal fun MainCoreModule(): Module {
         profileSearchResultsStorage
     )
     val tootStorage =
-        MastodonTootStorage(profileCache, database.tootEntityDao, database.styleEntityDao)
-    val tootCache = Cache.of(context, name = "toot-cache", MastodonTootFetcher, tootStorage)
+        HttpTootStorage(profileCache, database.tootEntityDao, database.styleEntityDao)
+    val tootCache = Cache.of(context, name = "toot-cache", HttpTootFetcher, tootStorage)
     return CoreModule(
         { authorizer },
         { HttpAuthenticator(context, authorizer, actorProvider) },
         { AuthenticationLock(authenticator = get(), actorProvider) },
-        { MastodonFeedProvider(actorProvider) },
-        { MastodonProfileProvider(profileCache) },
-        { MastodonProfileSearcher(profileSearchResultsCache) },
-        { MastodonTootProvider(tootCache) }
+        { com.jeanbarrossilva.orca.core.http.feed.HttpFeedProvider(actorProvider) },
+        { HttpProfileProvider(profileCache) },
+        { HttpProfileSearcher(profileSearchResultsCache) },
+        { HttpTootProvider(tootCache) }
     )
         .apply {
             single { mastodonBaseURL }
