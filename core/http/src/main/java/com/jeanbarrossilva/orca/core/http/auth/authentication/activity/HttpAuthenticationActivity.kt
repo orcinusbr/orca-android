@@ -5,22 +5,18 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
+import com.jeanbarrossilva.orca.core.http.HttpBridge
 import com.jeanbarrossilva.orca.core.http.auth.authentication.HttpAuthentication
 import com.jeanbarrossilva.orca.core.http.auth.authentication.HttpAuthenticationViewModel
-import com.jeanbarrossilva.orca.core.http.auth.authentication.HttpAuthenticator
+import com.jeanbarrossilva.orca.core.http.instance.ContextualHttpInstance
 import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableActivity
 import com.jeanbarrossilva.orca.platform.ui.core.on
-import org.koin.android.ext.android.get
-import org.koin.android.ext.android.inject
 
 /**
  * [ComposableActivity] that visually notifies the user of the background authentication process
  * that takes place when this is created and automatically finishes itself when it's done.
  **/
 class HttpAuthenticationActivity : ComposableActivity() {
-    /** [HttpAuthenticator] through which authentication will be performed. **/
-    private val authenticator by inject<HttpAuthenticator>()
-
     /** Code provided by the API when the user was authorized. **/
     private val authorizationCode by extra<String>(AUTHORIZATION_CODE_KEY)
 
@@ -29,7 +25,7 @@ class HttpAuthenticationActivity : ComposableActivity() {
      * be requested.
      **/
     private val viewModel by viewModels<HttpAuthenticationViewModel> {
-        HttpAuthenticationViewModel.createFactory(application, client = get(), authorizationCode)
+        HttpAuthenticationViewModel.createFactory(application, authorizationCode)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +44,7 @@ class HttpAuthenticationActivity : ComposableActivity() {
      **/
     private fun authenticate() {
         viewModel.request {
-            authenticator.receive(it)
+            (HttpBridge.instance as ContextualHttpInstance).authenticator.receive(it)
             finish()
         }
     }

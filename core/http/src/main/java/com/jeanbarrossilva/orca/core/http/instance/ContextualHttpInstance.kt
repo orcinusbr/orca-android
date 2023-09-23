@@ -32,10 +32,7 @@ import com.jeanbarrossilva.orca.platform.cache.Cache
  * the [authenticationLock].
  **/
 abstract class ContextualHttpInstance(context: Context, actorProvider: ActorProvider) :
-    HttpInstance<HttpAuthenticator> {
-    /** [HttpAuthorizer] that authorizes the user when the [authenticator] authenticates them. **/
-    private val authorizer = HttpAuthorizer(context)
-
+    HttpInstance<HttpAuthorizer, HttpAuthenticator> {
     /** [MastodonDatabase] in which cached structures will be persisted.  **/
     private val database = MastodonDatabase.getInstance(context)
 
@@ -83,6 +80,7 @@ abstract class ContextualHttpInstance(context: Context, actorProvider: ActorProv
     /** [Cache] that decides how to obtain [HttpToot]s. **/
     private val tootCache = Cache.of(context, name = "toot-cache", HttpTootFetcher, tootStorage)
 
+    final override val authorizer = HttpAuthorizer(context)
     final override val authenticator = HttpAuthenticator(context, authorizer, actorProvider)
     final override val authenticationLock = AuthenticationLock(authenticator, actorProvider)
     final override val feedProvider = HttpFeedProvider(actorProvider)

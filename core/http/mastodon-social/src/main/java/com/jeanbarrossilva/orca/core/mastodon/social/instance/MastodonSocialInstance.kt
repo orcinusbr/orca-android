@@ -13,7 +13,7 @@ class MastodonSocialInstance(context: Context, actorProvider: ActorProvider) :
     override val url = Url("https://mastodon.social")
     override val client = CoreHttpClient {
         defaultRequest {
-            url.takeFrom(url)
+            url.takeFrom(this@MastodonSocialInstance.url)
         }
     }
 }
