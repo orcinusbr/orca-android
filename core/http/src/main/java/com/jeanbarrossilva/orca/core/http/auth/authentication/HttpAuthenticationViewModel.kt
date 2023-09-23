@@ -8,11 +8,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
+import com.jeanbarrossilva.orca.core.http.HttpBridge
 import com.jeanbarrossilva.orca.core.http.R
 import com.jeanbarrossilva.orca.core.http.auth.Mastodon
-import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.request.HttpRequest
 import io.ktor.client.request.forms.submitForm
 import io.ktor.http.Parameters
 import kotlinx.coroutines.launch
@@ -21,13 +20,10 @@ import kotlinx.coroutines.launch
  * [AndroidViewModel] that requests an [Actor] through [request].
  *
  * @param application [Application] that allows [Context]-specific behavior.
- * @param client [HttpClient] by which the [HttpRequest] to authenticate the current user will be
- * performed.
  * @param authorizationCode Code provided by the API when authorization was granted to the user.
  **/
 internal class HttpAuthenticationViewModel private constructor(
     application: Application,
-    private val client: HttpClient,
     private val authorizationCode: String
 ) : AndroidViewModel(application) {
     /**
@@ -41,8 +37,8 @@ internal class HttpAuthenticationViewModel private constructor(
         val scheme = application.getString(R.string.scheme)
         val redirectUri = application.getString(R.string.redirect_uri, scheme)
         viewModelScope.launch {
-            client
-                .submitForm(
+            with(HttpBridge.instance.client) {
+                submitForm(
                     "/oauth/token",
                     Parameters.build {
                         set("grant_type", "authorization_code")
@@ -53,9 +49,10 @@ internal class HttpAuthenticationViewModel private constructor(
                         set("scope", Mastodon.SCOPES)
                     }
                 )
-                .body<HttpAuthenticationToken>()
-                .toActor(client)
-                .run(onAuthentication)
+                    .body<HttpAuthenticationToken>()
+                    .toActor(this)
+                    .run(onAuthentication)
+            }
         }
     }
 
@@ -64,16 +61,16 @@ internal class HttpAuthenticationViewModel private constructor(
          * Creates a [ViewModelProvider.Factory] that provides an [HttpAuthenticationViewModel].
          *
          * @param application [Application] that allows [Context]-specific behavior.
-         * @param client [HttpClient] by which the [HttpRequest] to authenticate the current user
-         * will be performed.
          * @param authorizationCode Code provided by the API when authorization was granted to the
          * user.
          **/
-        fun createFactory(application: Application, client: HttpClient, authorizationCode: String):
-            ViewModelProvider.Factory {
+        fun createFactory(
+            application: Application,
+            authorizationCode: String
+        ): ViewModelProvider.Factory {
             return viewModelFactory {
                 initializer {
-                    HttpAuthenticationViewModel(application, client, authorizationCode)
+                    HttpAuthenticationViewModel(application, authorizationCode)
                 }
             }
         }
