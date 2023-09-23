@@ -64,8 +64,10 @@ internal class HttpAuthenticationViewModel private constructor(
          * @param authorizationCode Code provided by the API when authorization was granted to the
          * user.
          **/
-        fun createFactory(application: Application, authorizationCode: String):
-            ViewModelProvider.Factory {
+        fun createFactory(
+            application: Application,
+            authorizationCode: String
+        ): ViewModelProvider.Factory {
             return viewModelFactory {
                 initializer {
                     HttpAuthenticationViewModel(application, authorizationCode)
