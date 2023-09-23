@@ -8,6 +8,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.ProfileProvider
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearcher
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.TootProvider
+import com.jeanbarrossilva.orca.core.instance.domain.Domain
 
 /** An [Instance] with a generic [Authenticator]. **/
 typealias SomeInstance = Instance<*>
@@ -17,27 +18,30 @@ typealias SomeInstance = Instance<*>
  *
  * @param T [Authenticator] to authenticate the user with.
  **/
-interface Instance<T : Authenticator> {
+abstract class Instance<T : Authenticator> {
+    /** Unique identifier of the server. **/
+    abstract val domain: Domain
+
     /** [Instance]-specific [Authenticator] through which authentication can be done. **/
-    val authenticator: T
+    abstract val authenticator: T
 
     /**
      * [Instance]-specific [AuthenticationLock] by which features can be locked or unlocked by an
      * authentication "wall".
      **/
-    val authenticationLock: AuthenticationLock<T>
+    abstract val authenticationLock: AuthenticationLock<T>
 
     /** [Instance]-specific [FeedProvider] that provides the [Toot]s in the timeline. **/
-    val feedProvider: FeedProvider
+    abstract val feedProvider: FeedProvider
 
     /** [Instance]-specific [ProfileProvider] for providing [Profile]s. **/
-    val profileProvider: ProfileProvider
+    abstract val profileProvider: ProfileProvider
 
     /** [Instance]-specific [ProfileSearcher] by which search for [Profile]s can be made. **/
-    val profileSearcher: ProfileSearcher
+    abstract val profileSearcher: ProfileSearcher
 
     /** [Instance]-specific [TootProvider] that provides [Toot]s. **/
-    val tootProvider: TootProvider
+    abstract val tootProvider: TootProvider
 
     companion object
 }

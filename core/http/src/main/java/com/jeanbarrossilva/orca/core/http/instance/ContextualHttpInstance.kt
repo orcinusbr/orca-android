@@ -21,6 +21,7 @@ import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpTootProvider
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.HttpTootFetcher
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.HttpTootStorage
+import com.jeanbarrossilva.orca.core.instance.domain.Domain
 import com.jeanbarrossilva.orca.platform.cache.Cache
 
 /**
@@ -30,54 +31,59 @@ import com.jeanbarrossilva.orca.platform.cache.Cache
  * @param context [Context] with which the [authenticator] will be created.
  * @param actorProvider [ActorProvider] that will provide [Actor]s to both the [authenticator] and
  * the [authenticationLock].
- **/
-abstract class ContextualHttpInstance(context: Context, actorProvider: ActorProvider) :
-    HttpInstance<HttpAuthorizer, HttpAuthenticator> {
-    /** [MastodonDatabase] in which cached structures will be persisted.  **/
+ * @param domain Unique identifier of the server.
+ */
+abstract class ContextualHttpInstance(
+    context: Context,
+    actorProvider: ActorProvider,
+    domain: Domain
+) : HttpInstance<HttpAuthorizer, HttpAuthenticator>(domain) {
+    /** [MastodonDatabase] in which cached structures will be persisted. */
     private val database = MastodonDatabase.getInstance(context)
 
     /**
      * [ProfileTootPaginateSource.Provider] that provides the [ProfileTootPaginateSource] to be used
      * by [profileFetcher], [profileStorage] and [profileSearchResultsFetcher].
-     **/
+     */
     private val profileTootPaginateSourceProvider =
         ProfileTootPaginateSource.Provider(::ProfileTootPaginateSource)
 
-    /** [HttpProfileFetcher] by which [HttpProfile]s will be fetched from the API. **/
+    /** [HttpProfileFetcher] by which [HttpProfile]s will be fetched from the API. */
     private val profileFetcher = HttpProfileFetcher(profileTootPaginateSourceProvider)
 
-    /** [HttpProfileStorage] that will store fetched [HttpProfile]s. **/
+    /** [HttpProfileStorage] that will store fetched [HttpProfile]s. */
     private val profileStorage =
         HttpProfileStorage(profileTootPaginateSourceProvider, database.profileEntityDao)
 
-    /** [Cache] that decides how to obtain [HttpProfile]s. **/
+    /** [Cache] that decides how to obtain [HttpProfile]s. */
     private val profileCache =
         Cache.of(context, name = "profile-cache", profileFetcher, profileStorage)
 
     /**
      * [HttpProfileSearchResultsFetcher] by which [ProfileSearchResult]s will be fetched from the
      * API.
-     **/
+     */
     private val profileSearchResultsFetcher =
         HttpProfileSearchResultsFetcher(profileTootPaginateSourceProvider)
 
-    /** [HttpProfileSearchResultsStorage] that will store fetched [ProfileSearchResult]s. **/
+    /** [HttpProfileSearchResultsStorage] that will store fetched [ProfileSearchResult]s. */
     private val profileSearchResultsStorage =
         HttpProfileSearchResultsStorage(database.profileSearchResultEntityDao)
 
-    /** [Cache] that decides how to obtain [ProfileSearchResult]s. **/
-    private val profileSearchResultsCache = Cache.of(
-        context,
-        name = "profile-search-results-cache",
-        profileSearchResultsFetcher,
-        profileSearchResultsStorage
-    )
+    /** [Cache] that decides how to obtain [ProfileSearchResult]s. */
+    private val profileSearchResultsCache =
+        Cache.of(
+            context,
+            name = "profile-search-results-cache",
+            profileSearchResultsFetcher,
+            profileSearchResultsStorage
+        )
 
-    /** [HttpTootStorage] that will store fetched [HttpToot]s. **/
+    /** [HttpTootStorage] that will store fetched [HttpToot]s. */
     private val tootStorage =
         HttpTootStorage(profileCache, database.tootEntityDao, database.styleEntityDao)
 
-    /** [Cache] that decides how to obtain [HttpToot]s. **/
+    /** [Cache] that decides how to obtain [HttpToot]s. */
     private val tootCache = Cache.of(context, name = "toot-cache", HttpTootFetcher, tootStorage)
 
     final override val authorizer = HttpAuthorizer(context)
