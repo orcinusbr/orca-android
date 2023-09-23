@@ -6,7 +6,7 @@ package com.jeanbarrossilva.orca.core.instance.domain
  * @param value [String] that represents this [Domain].
  **/
 @JvmInline
-value class Domain internal constructor(private val value: String) {
+value class Domain(private val value: String) {
     /** [IllegalArgumentException] thrown if the [value] is blank. **/
     class BlankValueException internal constructor() :
         IllegalArgumentException("Domain cannot be empty.")

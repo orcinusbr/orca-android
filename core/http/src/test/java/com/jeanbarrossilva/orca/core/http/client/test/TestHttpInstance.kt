@@ -14,7 +14,6 @@ import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.MockEngineConfig
 import io.ktor.client.engine.mock.respondOk
 import io.ktor.client.request.HttpRequest
-import io.ktor.http.Url
 
 /**
  * [HttpInstance] whose [client] responds OK to each sent [HttpRequest].
@@ -24,7 +23,7 @@ import io.ktor.http.Url
 internal class TestHttpInstance<T : Authenticator>(
     override val authenticator: T,
     override val authenticationLock: AuthenticationLock<T>
-) : HttpInstance<TestAuthorizer, T> {
+) : HttpInstance<TestAuthorizer, T>(Instance.sample.domain) {
     /**
      * [HttpClientEngineFactory] that creates a [MockEngine] that sends an OK response to each
      * [HttpRequest].
@@ -42,6 +41,5 @@ internal class TestHttpInstance<T : Authenticator>(
     override val profileProvider = Instance.sample.profileProvider
     override val profileSearcher = Instance.sample.profileSearcher
     override val tootProvider = Instance.sample.tootProvider
-    override val url = Url("")
     override val client = CoreHttpClient(clientEngineFactory, Logger.test)
 }
