@@ -14,6 +14,7 @@ dependencies {
     androidTestImplementation(libs.android.compose.ui.test.manifest)
     androidTestImplementation(libs.android.test.core)
     androidTestImplementation(libs.android.test.runner)
+    androidTestImplementation(libs.kotlin.test)
 
     api(libs.android.compose.material)
     api(libs.android.compose.ui.tooling)
