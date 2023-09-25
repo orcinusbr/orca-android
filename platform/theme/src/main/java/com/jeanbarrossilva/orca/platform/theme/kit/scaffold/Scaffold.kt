@@ -3,8 +3,8 @@ package com.jeanbarrossilva.orca.platform.theme.kit.scaffold
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
@@ -20,23 +20,25 @@ import androidx.compose.ui.Modifier
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.plus
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold as _Scaffold
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.button.ButtonBar
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.snack.orcaVisuals
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.snack.presenter.SnackbarPresenter
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.snack.presenter.rememberSnackbarPresenter
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold as _Scaffold
 
 /**
  * Orca-specific [Scaffold].
  *
  * @param modifier [Modifier] to be applied to the underlying [Scaffold].
  * @param topAppBar [TopAppBar] to be placed at the top.
- * @param floatingActionButton [FloatingActionButton] to be placed at the bottom, horizontally
- * centered.
+ * @param floatingActionButton [FloatingActionButton] to be placed at the bottom, above the
+ * [buttonBar] and below the [SnackbarHost], horizontally centered.
  * @param floatingActionButtonPosition [FabPosition] that determines where the
  * [floatingActionButton] will be placed.
  * @param snackbarPresenter [SnackbarPresenter] through which [Snackbar]s can be presented.
+ * @param buttonBar [ButtonBar] to be placed at the utmost bottom.
  * @param content Main content of the current context.
  **/
 @Composable
@@ -46,11 +48,13 @@ fun Scaffold(
     floatingActionButton: @Composable () -> Unit = { },
     floatingActionButtonPosition: FabPosition = FabPosition.End,
     snackbarPresenter: SnackbarPresenter = rememberSnackbarPresenter(),
+    buttonBar: @Composable () -> Unit = { },
     content: @Composable (padding: PaddingValues) -> Unit
 ) {
     Scaffold(
         modifier,
         topAppBar,
+        bottomBar = buttonBar,
         snackbarHost = {
             SnackbarHost(snackbarPresenter.hostState) {
                 Snackbar(
@@ -71,6 +75,7 @@ fun Scaffold(
 @Composable
 @MultiThemePreview
 private fun ScaffoldPreview() {
+    val lazyListState = rememberLazyListState()
     val snackbarPresenter = rememberSnackbarPresenter()
 
     LaunchedEffect(snackbarPresenter) {
@@ -91,18 +96,21 @@ private fun ScaffoldPreview() {
                     Icon(OrcaTheme.iconography.compose.filled, contentDescription = "Compose")
                 }
             },
-            snackbarPresenter = snackbarPresenter
+            snackbarPresenter = snackbarPresenter,
+            buttonBar = { ButtonBar(lazyListState) }
         ) {
             LazyColumn(
-                Modifier
-                    .padding(it)
-                    .fillMaxSize(),
+                Modifier.fillMaxSize(),
+                state = lazyListState,
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
                 contentPadding = it + OrcaTheme.overlays.fab
             ) {
                 item {
-                    Text("Content", style = OrcaTheme.typography.bodyMedium)
+                    Text(
+                        "Content",
+                        style = OrcaTheme.typography.bodyMedium
+                    )
                 }
             }
         }
