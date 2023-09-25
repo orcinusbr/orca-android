@@ -9,8 +9,7 @@ import androidx.compose.ui.unit.Constraints
  * @param constraints Measuring that will limit this [Measurable]'s measured size.
  * @param offset Amount in pixels by which the [Placement] will be offset.
  **/
-internal fun Measurable.toPlacement(constraints: Constraints, offset: Int):
-    Placement {
+internal fun Measurable.toPlacement(constraints: Constraints, offset: Int): Placement {
     val placeable = measure(constraints)
     return Placement(placeable, offset)
 }
