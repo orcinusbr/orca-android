@@ -29,13 +29,14 @@
         <item name="colorErrorContainer">@color/errorContainer</item>
         <item name="colorOnBackground">@color/backgroundContent</item>
         <item name="colorOnErrorContainer">@color/errorContent</item>
+        <item name="colorOnPrimary">@color/primaryContent</item>
         <item name="colorOnPrimaryContainer">@color/primaryContent</item>
         <item name="colorOnSecondaryContainer">@color/secondary</item>
         <item name="colorOnSurface">@color/surfaceContent</item>
         <item name="colorOnSurfaceVariant">@color/tertiary</item>
         <item name="colorOutline">@color/tertiary</item>
         <item name="colorOutlineVariant">@color/placeholder</item>
-        <item name="colorPrimary">@color/primaryContent</item>
+        <item name="colorPrimary">@color/primaryContainer</item>
         <item name="colorPrimaryContainer">@color/primaryContainer</item>
         <item name="colorSurface">@color/surfaceContainer</item>
         <item name="colorSurfaceVariant">@color/placeholder</item>

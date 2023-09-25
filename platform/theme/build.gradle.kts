@@ -6,9 +6,15 @@ plugins {
 android {
     buildFeatures.compose = true
     composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
+    defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 }
 
 dependencies {
+    androidTestImplementation(libs.android.compose.ui.test.junit)
+    androidTestImplementation(libs.android.compose.ui.test.manifest)
+    androidTestImplementation(libs.android.test.core)
+    androidTestImplementation(libs.android.test.runner)
+
     api(libs.android.compose.material)
     api(libs.android.compose.ui.tooling)
 
@@ -16,4 +22,5 @@ dependencies {
     implementation(libs.accompanist.adapter)
     implementation(libs.android.material)
     implementation(libs.kotlin.reflect)
+    implementation(libs.loadable.placeholder)
 }
