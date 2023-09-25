@@ -31,6 +31,7 @@ internal val LocalIconography = compositionLocalOf {
  * @param reblog [ImageVector] for a single or various reposts.
  * @param search [ImageVector] that indicates the ability to search or the performance of such
  * operation for elements in a given context.
+ * @param selected [ImageVector] for selected states.
  * @param send [ImageVector] that denotes a send operation.
  * @param share [Icon] for sharing.
  * @param unavailable [Icon] for unavailable resources.
@@ -50,6 +51,7 @@ data class Iconography internal constructor(
     val profile: Icon,
     val reblog: ImageVector,
     val search: ImageVector,
+    val selected: ImageVector,
     val send: ImageVector,
     val share: Icon,
     val unavailable: Icon
@@ -71,6 +73,7 @@ data class Iconography internal constructor(
             profile = Icon.Empty,
             reblog = ImageVector.Empty,
             search = ImageVector.Empty,
+            selected = ImageVector.Empty,
             send = ImageVector.Empty,
             share = Icon.Empty,
             unavailable = Icon.Empty
@@ -111,6 +114,7 @@ data class Iconography internal constructor(
                 ),
                 ImageVector.vectorResource(R.drawable.icon_reblog),
                 ImageVector.vectorResource(R.drawable.icon_search),
+                ImageVector.vectorResource(R.drawable.icon_selected),
                 ImageVector.vectorResource(R.drawable.icon_send),
                 Icon(
                     ImageVector.vectorResource(R.drawable.icon_share_outlined),

@@ -1,14 +1,15 @@
 package com.jeanbarrossilva.orca.platform.theme.configuration
 
+import android.content.Context
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocal
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import com.jeanbarrossilva.orca.platform.theme.R
-import com.jeanbarrossilva.orca.platform.theme.extensions.fractionResource
+import com.jeanbarrossilva.orca.platform.theme.extensions.getFraction
 
 /** [CompositionLocal] that provides [Shapes]. **/
 internal val LocalShapes = compositionLocalOf {
@@ -37,10 +38,21 @@ data class Shapes internal constructor(
 
         /** [Shapes] that are provided by default. **/
         internal val default
-            @Composable get() = Shapes(
-                RoundedCornerShape(dimensionResource(R.dimen.largeShapeCornerSize)),
-                RoundedCornerShape(dimensionResource(R.dimen.mediumShapeCornerSize)),
-                RoundedCornerShape((fractionResource(R.fraction.smallShapeCornerSize) ?: 0f) * 100)
+            @Composable get() = getDefault(LocalContext.current)
+
+        /**
+         * Gets the [Shapes] that are provided by default.
+         *
+         * @param context [Context] from which the [Shapes] will be obtained.
+         **/
+        internal fun getDefault(context: Context): Shapes {
+            return Shapes(
+                RoundedCornerShape(context.resources.getDimension(R.dimen.largeShapeCornerSize)),
+                RoundedCornerShape(context.resources.getDimension(R.dimen.mediumShapeCornerSize)),
+                RoundedCornerShape(
+                    (context.resources.getFraction(R.fraction.smallShapeCornerSize) ?: 0f) * 100f
+                )
             )
+        }
     }
 }
