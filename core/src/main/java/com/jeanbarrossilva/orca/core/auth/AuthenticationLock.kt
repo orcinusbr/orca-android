@@ -7,16 +7,14 @@ import com.jeanbarrossilva.orca.core.auth.actor.ActorProvider
 typealias SomeAuthenticationLock = AuthenticationLock<*>
 
 /**
- * Ensures that an operation is only performed either by...
- *
- * - ...an [unauthenticated][Actor.Unauthenticated] [Actor], through [requestLock];
- * - ...an [authenticated][Actor.Authenticated] [Actor], through [requestUnlock].
+ * Ensures that an operation is only performed by an [authenticated][Actor.Authenticated] [Actor],
+ * through [requestUnlock].
  *
  * @param T [Authenticator] to authenticate the [Actor] with.
  * @param authenticator [Authenticator] through which the [Actor] will be requested to be
  * [authenticated][Actor.Authenticated].
- * @param actorProvider [ActorProvider] whose provided [Actor] will be ensured to be either
- * [unauthenticated][Actor.Unauthenticated] or [authenticated][Actor.Authenticated].
+ * @param actorProvider [ActorProvider] whose provided [Actor] will be ensured to be
+ * [authenticated][Actor.Authenticated].
  **/
 class AuthenticationLock<T : Authenticator>(
     private val authenticator: T,
@@ -25,17 +23,6 @@ class AuthenticationLock<T : Authenticator>(
     /** [IllegalStateException] thrown if authentication fails. **/
     class FailedAuthenticationException internal constructor() :
         IllegalStateException("Could not authenticate properly.")
-
-    /** Listens to a lock. **/
-    fun interface OnLockListener {
-        /**
-         * Callback called when the [Actor] provided by the [actorProvider] is
-         * [unauthenticated][Actor.Unauthenticated].
-         *
-         * @param actor Provided [unauthenticated][Actor.Unauthenticated] [Actor].
-         **/
-        suspend fun onLock(actor: Actor.Unauthenticated)
-    }
 
     /**
      * Listens to an unlock.
@@ -50,20 +37,6 @@ class AuthenticationLock<T : Authenticator>(
          * @param actor Provided [authenticated][Actor.Authenticated] [Actor].
          **/
         suspend fun onUnlock(actor: Actor.Authenticated): T
-    }
-
-    /**
-     * Ensures that the operation in the [listener]'s [onLock][OnLockListener.onLock] callback is
-     * only performed if the [Actor] is [unauthenticated][Actor.Unauthenticated].
-     *
-     * @param listener [OnLockListener] to be notified if the [Actor] is
-     * [unauthenticated][Actor.Unauthenticated].
-     **/
-    suspend fun requestLock(listener: OnLockListener) {
-        val actor = actorProvider.provide()
-        if (actor is Actor.Unauthenticated) {
-            listener.onLock(actor)
-        }
     }
 
     /**
