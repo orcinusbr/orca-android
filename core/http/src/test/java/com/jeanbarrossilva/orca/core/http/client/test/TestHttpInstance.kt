@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.http.test.instance
+package com.jeanbarrossilva.orca.core.http.client.test
 
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.http.client.CoreHttpClient
@@ -6,8 +6,6 @@ import com.jeanbarrossilva.orca.core.http.client.Logger
 import com.jeanbarrossilva.orca.core.http.instance.HttpInstance
 import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.sample.instance.sample
-import com.jeanbarrossilva.orca.core.test.TestActorProvider
-import com.jeanbarrossilva.orca.core.test.TestAuthenticationLock
 import com.jeanbarrossilva.orca.core.test.TestAuthenticator
 import com.jeanbarrossilva.orca.core.test.TestAuthorizer
 import io.ktor.client.engine.HttpClientEngine
@@ -22,7 +20,7 @@ import io.ktor.client.request.HttpRequest
  *
  * @param authorizer [TestAuthorizer] with which the user will be authorized.
  **/
-class TestHttpInstance(
+internal class TestHttpInstance(
     authorizer: TestAuthorizer,
     override val authenticator: TestAuthenticator,
     override val authenticationLock: AuthenticationLock<TestAuthenticator>
@@ -44,18 +42,4 @@ class TestHttpInstance(
     override val profileSearcher = Instance.sample.profileSearcher
     override val tootProvider = Instance.sample.tootProvider
     override val client = CoreHttpClient(clientEngineFactory, Logger.test)
-
-    companion object {
-        /**
-         * Creates a [TestHttpInstance] with default [TestAuthorizer], [TestAuthenticator] and
-         * [TestAuthenticationLock] structures.
-         **/
-        fun create(): TestHttpInstance {
-            val authorizer = TestAuthorizer()
-            val actorProvider = TestActorProvider()
-            val authenticator = TestAuthenticator(authorizer, actorProvider)
-            val authenticationLock = TestAuthenticationLock(actorProvider, authenticator)
-            return TestHttpInstance(authorizer, authenticator, authenticationLock)
-        }
-    }
 }

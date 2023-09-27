@@ -31,7 +31,6 @@ android {
 }
 
 dependencies {
-    androidTestImplementation(project(":core:http-test"))
     androidTestImplementation(project(":platform:ui-test"))
     androidTestImplementation(libs.android.compose.ui.test.junit)
     androidTestImplementation(libs.android.test.core)
@@ -59,7 +58,6 @@ dependencies {
         because("Ktor references \"StaticLoggerBinder\" and it is missing on minification.")
     }
 
-    testImplementation(project(":core:http-test"))
     testImplementation(project(":core:sample"))
     testImplementation(project(":core-test"))
     testImplementation(libs.assertk)

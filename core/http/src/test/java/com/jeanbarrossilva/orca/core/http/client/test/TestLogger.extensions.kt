@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.http.test.instance
+package com.jeanbarrossilva.orca.core.http.client.test
 
 import com.jeanbarrossilva.orca.core.http.client.Logger
 
