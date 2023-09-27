@@ -57,6 +57,31 @@ fun CoreHttpClient(config: HttpClientConfig<CIOEngineConfig>.() -> Unit): HttpCl
 }
 
 /**
+ * [HttpClient] through which [HttpRequest]s can be performed.
+ *
+ * @param EC [HttpClientEngineConfig] through which the [HttpClientConfig] will be configured.
+ * @param CC [HttpClientConfig] that will configure the [HttpClient].
+ * @param engineFactory [HttpClientEngineFactory] for creating the [HttpClientEngine] that powers
+ * the resulting [HttpClient].
+ * @param logger [Logger] by which received [HttpResponse]s will be logged.
+ * @param config Additional configuration to be done on the [HttpClient].
+ **/
+@Suppress("FunctionName")
+fun <EC : HttpClientEngineConfig, CC : HttpClientConfig<EC>> CoreHttpClient(
+    engineFactory: HttpClientEngineFactory<EC>,
+    logger: Logger,
+    config: CC.() -> Unit = { }
+): HttpClient {
+    return HttpClient(engineFactory) {
+        setUpResponseLogging(logger)
+        setUpContentNegotiation()
+
+        @Suppress("UNCHECKED_CAST")
+        (this as CC).config()
+    }
+}
+
+/**
  * Performs a GET [HttpRequest] to the [route] that requires an [authenticated][Actor.Authenticated]
  * [Actor].
  *
@@ -128,31 +153,6 @@ suspend inline fun HttpClient.authenticateAndSubmitFormWithBinaryData(
     return submitFormWithBinaryData(route, formData) {
         authenticate()
         build.invoke(this)
-    }
-}
-
-/**
- * [HttpClient] through which [HttpRequest]s can be performed.
- *
- * @param EC [HttpClientEngineConfig] through which the [HttpClientConfig] will be configured.
- * @param CC [HttpClientConfig] that will configure the [HttpClient].
- * @param engineFactory [HttpClientEngineFactory] for creating the [HttpClientEngine] that powers
- * the resulting [HttpClient].
- * @param logger [Logger] by which received [HttpResponse]s will be logged.
- * @param config Additional configuration to be done on the [HttpClient].
- **/
-@Suppress("FunctionName")
-internal fun <EC : HttpClientEngineConfig, CC : HttpClientConfig<EC>> CoreHttpClient(
-    engineFactory: HttpClientEngineFactory<EC>,
-    logger: Logger,
-    config: CC.() -> Unit = { }
-): HttpClient {
-    return HttpClient(engineFactory) {
-        setUpResponseLogging(logger)
-        setUpContentNegotiation()
-
-        @Suppress("UNCHECKED_CAST")
-        (this as CC).config()
     }
 }
 

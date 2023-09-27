@@ -63,7 +63,6 @@ dependencies {
     implementation(project(":core:http:mastodon-social"))
     implementation(project(":core:sample"))
     implementation(project(":core:shared-preferences"))
-    implementation(project(":feature:auth"))
     implementation(project(":feature:composer"))
     implementation(project(":feature:feed"))
     implementation(project(":feature:profile-details"))

@@ -2,11 +2,11 @@ package com.jeanbarrossilva.orca.app.navigation.navigator
 
 import com.jeanbarrossilva.orca.app.navigation.navigator.provider.FeedBottomNavigationItemNavigator
 import com.jeanbarrossilva.orca.app.navigation.navigator.provider.ProfileBottomNavigationItemNavigator
-import com.jeanbarrossilva.orca.core.auth.SomeAuthenticationLock
+import com.jeanbarrossilva.orca.core.auth.actor.Actor
 
 internal object BottomNavigationItemNavigatorFactory {
-    fun create(authenticationLock: SomeAuthenticationLock): BottomNavigationItemNavigator {
+    fun create(actor: Actor.Authenticated): BottomNavigationItemNavigator {
         val feedNavigator = FeedBottomNavigationItemNavigator(next = null)
-        return ProfileBottomNavigationItemNavigator(authenticationLock, next = feedNavigator)
+        return ProfileBottomNavigationItemNavigator(actor, next = feedNavigator)
     }
 }

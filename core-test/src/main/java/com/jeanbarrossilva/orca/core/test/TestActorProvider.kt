@@ -4,7 +4,7 @@ import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.auth.actor.ActorProvider
 
 /** [ActorProvider] that remembers and retrieves [Actor]s locally. **/
-class TestActorProvider : ActorProvider() {
+open class TestActorProvider : ActorProvider() {
     /**
      * [Actor] that's been remembered.
      *

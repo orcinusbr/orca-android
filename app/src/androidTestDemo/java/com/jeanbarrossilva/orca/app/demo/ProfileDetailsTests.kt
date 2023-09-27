@@ -9,7 +9,6 @@ import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.rule.IntentsRule
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.jeanbarrossilva.orca.app.R
-import com.jeanbarrossilva.orca.app.demo.test.AuthenticationTestRule
 import com.jeanbarrossilva.orca.app.demo.test.browsesTo
 import com.jeanbarrossilva.orca.app.demo.test.ok
 import com.jeanbarrossilva.orca.app.demo.test.performStartClick
@@ -24,16 +23,13 @@ import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.onTootP
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.RuleChain
 
 internal class ProfileDetailsTests {
-    private val intentsRule = IntentsRule()
-    private val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
-    private val authenticationRule = AuthenticationTestRule(composeRule)
+    @get:Rule
+    val intentsRule = IntentsRule()
 
     @get:Rule
-    val ruleChain: RuleChain? =
-        RuleChain.outerRule(intentsRule).around(composeRule).around(authenticationRule)
+    val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
 
     @Test
     fun navigatesToTootHighlight() {

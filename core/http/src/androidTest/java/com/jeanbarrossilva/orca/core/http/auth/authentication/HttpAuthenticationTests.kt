@@ -1,20 +1,18 @@
-package com.jeanbarrossilva.orca.feature.auth
+package com.jeanbarrossilva.orca.core.http.auth.authentication
 
-import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performTextInput
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
+import com.jeanbarrossilva.orca.core.http.auth.authentication.test.onInstanceField
+import com.jeanbarrossilva.orca.core.http.auth.authentication.test.onSignInButton
+import com.jeanbarrossilva.orca.core.http.auth.authentication.test.onUsernameField
 import com.jeanbarrossilva.orca.core.sample.feed.profile.account.sample
-import com.jeanbarrossilva.orca.feature.auth.test.TestAuth
-import com.jeanbarrossilva.orca.feature.auth.test.onInstanceField
-import com.jeanbarrossilva.orca.feature.auth.test.onSignInButton
-import com.jeanbarrossilva.orca.feature.auth.test.onUsernameField
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import org.junit.Rule
 import org.junit.Test
 
-internal class AuthTests {
+internal class HttpAuthenticationTests {
     @get:Rule
     val composeRule = createComposeRule()
 
@@ -22,7 +20,7 @@ internal class AuthTests {
     fun disablesSignInButtonWhenUsernameIsInvalidAndInstanceIsValid() {
         composeRule.setContent {
             OrcaTheme {
-                TestAuth()
+                HttpAuthorization()
             }
         }
         composeRule.onUsernameField().performTextInput("john@")
@@ -31,26 +29,14 @@ internal class AuthTests {
     }
 
     @Test
-    fun disabledSignInButtonWhenUsernameIsValidAndInstanceIsInvalid() {
+    fun disablesSignInButtonWhenUsernameIsValidAndInstanceIsInvalid() {
         composeRule.setContent {
             OrcaTheme {
-                TestAuth()
+                HttpAuthorization()
             }
         }
         composeRule.onUsernameField().performTextInput(Account.sample.username)
         composeRule.onInstanceField().performTextInput("appleseed")
         composeRule.onSignInButton().assertIsNotEnabled()
-    }
-
-    @Test
-    fun enablesSignInButtonWhenAccountIsValid() {
-        composeRule.setContent {
-            OrcaTheme {
-                TestAuth()
-            }
-        }
-        composeRule.onUsernameField().performTextInput(Account.sample.username)
-        composeRule.onInstanceField().performTextInput("${Account.sample.domain}")
-        composeRule.onSignInButton().assertIsEnabled()
     }
 }

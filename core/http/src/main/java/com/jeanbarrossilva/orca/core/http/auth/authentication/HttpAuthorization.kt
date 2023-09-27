@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.feature.auth
+package com.jeanbarrossilva.orca.core.http.auth.authentication
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +18,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -27,6 +29,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
+import com.jeanbarrossilva.orca.core.http.auth.authorization.HttpAuthorizationViewModel
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
 import com.jeanbarrossilva.orca.core.sample.feed.profile.account.sample
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
@@ -36,31 +39,80 @@ import com.jeanbarrossilva.orca.platform.theme.kit.input.TextField
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 
 /** Tag that identifies the username field for testing purposes. **/
-const val AUTH_USERNAME_FIELD_TAG = "auth-username-field"
+const val HTTP_AUTHORIZATION_USERNAME_FIELD_TAG = "auth-username-field"
 
-/** Tag that identifies the instance field for testing purposes. **/
-const val AUTH_INSTANCE_FIELD_TAG = "auth-instance-field"
+/** Tag that identifies the instance [Domain] field for testing purposes. **/
+const val HTTP_AUTHORIZATION_INSTANCE_FIELD_TAG = "auth-instance-field"
 
 /** Tag that identifies the sign-in button for testing purposes. **/
-const val AUTH_SIGN_IN_BUTTON_TAG = "auth-sign-in-button"
+const val HTTP_AUTHORIZATION_SIGN_IN_BUTTON_TAG = "auth-sign-in-button"
 
+/**
+ * Screen that presents username and instance fields for the user to fill in order for them to be
+ * authenticated.
+ *
+ * @param viewModel [HttpAuthorizationViewModel] from which the username and the [String] version
+ * of the instance [Domain] will be obtained and to which updates regarding those will be sent.
+ * @param modifier [Modifier] to be applied to the underlying [Box].
+ **/
 @Composable
-internal fun Auth(viewModel: AuthViewModel, modifier: Modifier = Modifier) {
+internal fun HttpAuthorization(
+    viewModel: HttpAuthorizationViewModel,
+    modifier: Modifier = Modifier
+) {
     val username by viewModel.usernameFlow.collectAsState()
-    val instance by viewModel.instanceFlow.collectAsState()
+    val domain by viewModel.instanceFlow.collectAsState()
 
-    Auth(
+    HttpAuthorization(
         username,
         onUsernameChange = viewModel::setUsername,
-        instance,
+        domain,
         onDomainChange = viewModel::setInstance,
-        onSignIn = viewModel::signIn,
+        onSignIn = viewModel::authorize,
         modifier
     )
 }
 
+/**
+ * Screen that presents username and instance fields for the user to fill in order for them to be
+ * authenticated.
+ *
+ * @param modifier [Modifier] to be applied to the underlying [Box].
+ * @param initialUsername Username to be input to its respective [TextField].
+ * @param initialDomain Domain [String] to be input to its respective [TextField].
+ **/
 @Composable
-internal fun Auth(
+internal fun HttpAuthorization(
+    modifier: Modifier = Modifier,
+    initialUsername: String = "",
+    initialDomain: String = ""
+) {
+    var username by remember(initialUsername) { mutableStateOf(initialUsername) }
+    var domain by remember(initialDomain) { mutableStateOf(initialDomain) }
+
+    HttpAuthorization(
+        username,
+        onUsernameChange = { username = it },
+        initialDomain,
+        onDomainChange = { domain = it },
+        onSignIn = { },
+        modifier
+    )
+}
+
+/**
+ * Screen that presents username and instance fields for the user to fill in order for them to be
+ * authenticated.
+ *
+ * @param username Username to be input to its respective [TextField].
+ * @param onUsernameChange Callback run whenever the user inputs to the username [TextField].
+ * @param domain Domain [String] to be input to its respective [TextField].
+ * @param onDomainChange Callback run whenever the user inputs to the [Domain][Domain] [TextField].
+ * @param onSignIn Callback run whenever the sign-in [PrimaryButton] is clicked.
+ * @param modifier [Modifier] to be applied to the underlying [Box].
+ **/
+@Composable
+private fun HttpAuthorization(
     username: String,
     onUsernameChange: (username: String) -> Unit,
     domain: String,
@@ -119,7 +171,7 @@ internal fun Auth(
                         Modifier
                             .focusRequester(usernameFocusRequester)
                             .fillMaxWidth(.45f)
-                            .testTag(AUTH_USERNAME_FIELD_TAG),
+                            .testTag(HTTP_AUTHORIZATION_USERNAME_FIELD_TAG),
                         KeyboardOptions(imeAction = ImeAction.Next),
                         isSingleLined = true
                     ) {
@@ -133,7 +185,7 @@ internal fun Auth(
                         onDomainChange,
                         Modifier
                             .fillMaxWidth()
-                            .testTag(AUTH_INSTANCE_FIELD_TAG),
+                            .testTag(HTTP_AUTHORIZATION_INSTANCE_FIELD_TAG),
                         KeyboardOptions(imeAction = ImeAction.Done),
                         KeyboardActions(onDone = { nextButtonFocusRequester.requestFocus() }),
                         isSingleLined = true
@@ -149,7 +201,7 @@ internal fun Auth(
             Modifier
                 .align(Alignment.BottomStart)
                 .fillMaxWidth()
-                .testTag(AUTH_SIGN_IN_BUTTON_TAG),
+                .testTag(HTTP_AUTHORIZATION_SIGN_IN_BUTTON_TAG),
             isEnabled = Account.isUsernameValid(username) && Domain.isValid(domain)
         ) {
             Text("Sign in")
@@ -157,30 +209,23 @@ internal fun Auth(
     }
 }
 
+/** Preview of [HttpAuthorization] with invalid data. **/
 @Composable
 @MultiThemePreview
-private fun InvalidAuthPreview() {
+private fun InvalidHttpAuthorizationPreview() {
     OrcaTheme {
-        Auth(username = "", instance = "")
+        HttpAuthorization(initialUsername = "", initialDomain = "")
     }
 }
 
+/** Preview of [HttpAuthorization] with valid data. **/
 @Composable
 @MultiThemePreview
-private fun ValidAuthPreview() {
+private fun ValidHttpAuthorizationPreview() {
     OrcaTheme {
-        Auth(Account.sample.username, "${Account.sample.domain}")
+        HttpAuthorization(
+            initialUsername = Account.sample.username,
+            initialDomain = "${Account.sample.domain}"
+        )
     }
-}
-
-@Composable
-private fun Auth(username: String, instance: String, modifier: Modifier = Modifier) {
-    Auth(
-        username,
-        onUsernameChange = { },
-        instance,
-        onDomainChange = { },
-        onSignIn = { },
-        modifier
-    )
 }

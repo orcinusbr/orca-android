@@ -14,7 +14,6 @@ import com.jeanbarrossilva.orca.app.module.feature.search.SearchModule
 import com.jeanbarrossilva.orca.app.module.feature.tootdetails.TootDetailsModule
 import com.jeanbarrossilva.orca.app.navigation.navigator.BottomNavigationItemNavigatorFactory
 import com.jeanbarrossilva.orca.core.instance.SomeInstance
-import com.jeanbarrossilva.orca.feature.auth.AuthActivity
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
 import kotlinx.coroutines.launch
@@ -41,7 +40,6 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
         inject()
         navigateOnBottomNavigationItemSelection()
         navigateToDefaultDestination()
-        lockByNavigatingToAuth()
     }
 
     override fun onDestroy() {
@@ -91,22 +89,16 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
 
     private fun navigateTo(@IdRes itemID: Int) {
         lifecycleScope.launch {
-            BottomNavigationItemNavigatorFactory.create(instance.authenticationLock).navigate(
-                navigator,
-                itemID
-            )
+            instance.authenticationLock.requestUnlock {
+                BottomNavigationItemNavigatorFactory.create(it).navigate(
+                    navigator,
+                    itemID
+                )
+            }
         }
     }
 
     private fun navigateToDefaultDestination() {
         binding?.bottomNavigationView?.selectedItemId = R.id.feed
-    }
-
-    private fun lockByNavigatingToAuth() {
-        lifecycleScope.launch {
-            instance.authenticationLock.requestLock {
-                AuthActivity.start(this@OrcaActivity)
-            }
-        }
     }
 }

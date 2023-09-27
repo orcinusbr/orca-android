@@ -2,7 +2,8 @@
     <application>
         <activity
             android:name=".auth.authorization.HttpAuthorizationActivity"
-            android:exported="true">
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -11,8 +12,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".auth.authentication.activity.HttpAuthenticationActivity"
-            android:exported="false" />
+        <activity android:name=".auth.authentication.activity.HttpAuthenticationActivity" />
     </application>
 </manifest>

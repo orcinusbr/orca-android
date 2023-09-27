@@ -20,13 +20,13 @@ import androidx.compose.ui.Modifier
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.plus
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold as _Scaffold
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.button.ButtonBar
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.snack.orcaVisuals
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.snack.presenter.SnackbarPresenter
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.snack.presenter.rememberSnackbarPresenter
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold as _Scaffold
 
 /**
  * Orca-specific [Scaffold].
