@@ -9,8 +9,11 @@ import com.jeanbarrossilva.orca.core.http.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndPost
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndSubmitForm
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndSubmitFormWithBinaryData
+import com.jeanbarrossilva.orca.core.http.test.instance.TestHttpInstance
 import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
+import com.jeanbarrossilva.orca.core.test.TestActorProvider
 import com.jeanbarrossilva.orca.core.test.TestAuthenticator
+import com.jeanbarrossilva.orca.core.test.TestAuthorizer
 import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequest
 import io.ktor.http.HttpMethod
@@ -39,7 +42,7 @@ internal class CoreHttpClientTestScope<T : Actor>(
  *
  * @param actor [Actor] to be provided unconditionally.
  **/
-internal class FixedActorProvider(private val actor: Actor) : ActorProvider() {
+internal class FixedActorProvider(private val actor: Actor) : TestActorProvider() {
     override suspend fun remember(actor: Actor) {
     }
 
@@ -101,10 +104,11 @@ private fun <T : Actor> runCoreHttpClientTest(
     onAuthentication: () -> Unit,
     body: suspend CoreHttpClientTestScope<T>.() -> Unit
 ) {
+    val authorizer = TestAuthorizer()
     val actorProvider = FixedActorProvider(actor)
-    val authenticator = TestAuthenticator { onAuthentication() }
+    val authenticator = TestAuthenticator(authorizer, actorProvider) { onAuthentication() }
     val authenticationLock = AuthenticationLock(authenticator, actorProvider)
-    val instance = TestHttpInstance(authenticator, authenticationLock)
+    val instance = TestHttpInstance(authorizer, authenticator, authenticationLock)
     HttpBridge.cross(instance)
     runTest { CoreHttpClientTestScope(delegate = this, instance.client, actor).body() }
 }

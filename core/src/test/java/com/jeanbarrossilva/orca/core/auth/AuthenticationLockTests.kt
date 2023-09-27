@@ -3,9 +3,9 @@ package com.jeanbarrossilva.orca.core.auth
 import com.jeanbarrossilva.orca.core.test.TestActorProvider
 import com.jeanbarrossilva.orca.core.test.TestAuthenticationLock
 import com.jeanbarrossilva.orca.core.test.TestAuthenticator
-import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertTrue
+import kotlinx.coroutines.test.runTest
 
 internal class AuthenticationLockTests {
     @Test

@@ -31,23 +31,27 @@ android {
 }
 
 dependencies {
+    androidTestImplementation(project(":core:http-test"))
+    androidTestImplementation(project(":platform:ui-test"))
+    androidTestImplementation(libs.android.compose.ui.test.junit)
     androidTestImplementation(libs.android.test.core)
     androidTestImplementation(libs.android.test.runner)
     androidTestImplementation(libs.mockk)
 
     api(project(":core"))
-    api(project(":platform:cache"))
-    api(libs.android.room.ktx)
-    api(libs.ktor.client.core)
-    api(libs.ktor.serialization.json)
-    api(libs.paginate)
 
+    implementation(project(":core:sample"))
+    implementation(project(":platform:cache"))
     implementation(project(":platform:theme"))
     implementation(project(":platform:ui"))
     implementation(libs.android.browser)
+    implementation(libs.android.room.ktx)
     implementation(libs.koin.android)
     implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.contentNegotiation)
+    implementation(libs.ktor.serialization.json)
+    implementation(libs.paginate)
 
     ksp(libs.android.room.compiler)
 
@@ -55,6 +59,7 @@ dependencies {
         because("Ktor references \"StaticLoggerBinder\" and it is missing on minification.")
     }
 
+    testImplementation(project(":core:http-test"))
     testImplementation(project(":core:sample"))
     testImplementation(project(":core-test"))
     testImplementation(libs.assertk)

@@ -11,6 +11,7 @@ include(
     ":app",
     ":core",
     ":core:http",
+    ":core:http-test",
     ":core:http:mastodon-social",
     ":core:sample",
     ":core:sample-test",

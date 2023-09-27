@@ -100,7 +100,7 @@ class Navigator internal constructor(
         transition: Transition,
         destination: Navigation.Destination<*>
     ) {
-        fragmentManager.commit {
+        fragmentManager.commit(allowStateLoss = true) {
             addToBackStack(null)
             setTransition(transition.value)
             add(containerID, destination.target(), destination.route)

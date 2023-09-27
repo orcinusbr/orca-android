@@ -37,7 +37,7 @@ abstract class ContextualHttpInstance(
     context: Context,
     actorProvider: ActorProvider,
     domain: Domain
-) : HttpInstance<HttpAuthorizer, HttpAuthenticator>(domain) {
+) : HttpInstance<HttpAuthorizer, HttpAuthenticator>(domain, HttpAuthorizer(context)) {
     /** [MastodonDatabase] in which cached structures will be persisted. */
     private val database = MastodonDatabase.getInstance(context)
 
@@ -86,7 +86,6 @@ abstract class ContextualHttpInstance(
     /** [Cache] that decides how to obtain [HttpToot]s. */
     private val tootCache = Cache.of(context, name = "toot-cache", HttpTootFetcher, tootStorage)
 
-    final override val authorizer = HttpAuthorizer(context)
     final override val authenticator = HttpAuthenticator(context, authorizer, actorProvider)
     final override val authenticationLock = AuthenticationLock(authenticator, actorProvider)
     final override val feedProvider = HttpFeedProvider(actorProvider)
