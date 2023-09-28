@@ -38,14 +38,16 @@ fun PrimaryButton(
 ) {
     val enabledContentColor = OrcaTheme.colors.primary.content
     val disabledContentColor = OrcaTheme.colors.disabled.content
-    val contentColor =
-        remember(isEnabled) { if (isEnabled) enabledContentColor else disabledContentColor }
+    val contentColor = remember(isEnabled, enabledContentColor, disabledContentColor) {
+        if (isEnabled) enabledContentColor else disabledContentColor
+    }
     var isLoading by remember { mutableStateOf(false) }
 
     ElevatedButton(
         onClick = {
             isLoading = true
             onClick()
+            isLoading = false
         },
         modifier,
         isEnabled,
@@ -58,12 +60,14 @@ fun PrimaryButton(
         ),
         contentPadding = PaddingValues(OrcaTheme.spacings.large)
     ) {
-        ProvideTextStyle(LocalTextStyle.current.copy(color = contentColor)) {
-            if (isLoading) {
-                CircularProgressIndicator(Modifier.size(17.4.dp), strokeCap = StrokeCap.Round)
-            } else {
-                content()
-            }
+        if (isLoading) {
+            CircularProgressIndicator(
+                Modifier.size(17.4.dp),
+                contentColor,
+                strokeCap = StrokeCap.Round
+            )
+        } else {
+            ProvideTextStyle(LocalTextStyle.current.copy(color = contentColor), content)
         }
     }
 }
