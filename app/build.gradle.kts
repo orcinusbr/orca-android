@@ -60,7 +60,7 @@ dependencies {
 
     "demoImplementation"(project(":core-test"))
 
-    implementation(project(":core:http:mastodon-social"))
+    implementation(project(":core:http"))
     implementation(project(":core:sample"))
     implementation(project(":core:shared-preferences"))
     implementation(project(":feature:composer"))

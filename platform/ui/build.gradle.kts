@@ -33,6 +33,7 @@ dependencies {
     implementation(project(":platform:theme"))
     implementation(libs.android.activity.compose)
     implementation(libs.android.material)
+    implementation(libs.koin.android)
     implementation(libs.loadable.list)
     implementation(libs.loadable.placeholder)
     implementation(libs.loadable.placeholder.test)

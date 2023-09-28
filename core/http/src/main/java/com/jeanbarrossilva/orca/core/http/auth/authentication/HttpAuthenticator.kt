@@ -17,7 +17,7 @@ import kotlin.coroutines.suspendCoroutine
  * @param context [Context] in which the [HttpAuthenticationActivity] will be started.
  * @see receive
  **/
-class HttpAuthenticator internal constructor(
+class HttpAuthenticator(
     private val context: Context,
     override val authorizer: Authorizer,
     override val actorProvider: ActorProvider

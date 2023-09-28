@@ -4,7 +4,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.testTag
@@ -26,7 +29,7 @@ internal const val OPTIONS_DIVIDER_TAG = "options-divider"
  **/
 @Composable
 fun Options(modifier: Modifier = Modifier) {
-    Options(onSelectionToggle = { _, _ -> }, modifier) {
+    Options(onSelection = { }, modifier) {
         repeat(128) {
             option()
         }
@@ -36,30 +39,36 @@ fun Options(modifier: Modifier = Modifier) {
 /**
  * [Column] of [Option]s that are shaped according to their position and can be singly selected.
  *
- * @param onSelectionToggle Callback run whenever any of the [Option]s is toggled.
+ * @param onSelection Callback run whenever any of the [Option]s is selected.
  * @param modifier [Modifier] to be applied to the underlying [Column].
  * @param content Actions to be run on the given [OptionsScope].
  **/
 @Composable
 fun Options(
-    onSelectionToggle: (index: Int, isSelected: Boolean) -> Unit,
+    onSelection: (index: Int) -> Unit,
     modifier: Modifier = Modifier,
     content: OptionsScope.() -> Unit
 ) {
     val defaultOptionShape = OptionDefaults.shape
-    val scope =
-        remember(onSelectionToggle, content) { OptionsScope(onSelectionToggle).apply(content) }
+    var selectedOptionIndex by remember { mutableIntStateOf(0) }
+    val scope = remember(onSelection, content) {
+        OptionsScope {
+            selectedOptionIndex = it
+            onSelection(it)
+        }
+            .apply(content)
+    }
 
     Column(modifier.border(defaultOptionShape)) {
         scope.options.forEachIndexed { index, option ->
             when {
-                scope.options.size == 1 -> option(defaultOptionShape)
-                index == 0 -> option(defaultOptionShape.top)
+                scope.options.size == 1 -> option(selectedOptionIndex, defaultOptionShape)
+                index == 0 -> option(selectedOptionIndex, defaultOptionShape.top)
                 index == scope.options.lastIndex -> {
-                    option(defaultOptionShape.bottom)
+                    option(selectedOptionIndex, defaultOptionShape.bottom)
                     return@forEachIndexed
                 }
-                else -> option(RectangleShape)
+                else -> option(selectedOptionIndex, RectangleShape)
             }
 
             Divider(Modifier.testTag(OPTIONS_DIVIDER_TAG))
@@ -71,16 +80,16 @@ fun Options(
  * [Column] of [Option]s that are shaped according to their position.
  *
  * @param count Amount of sample [Option]s to be added.
- * @param onSelectionToggle Callback run whenever any of the [Option]s is toggled.
+ * @param onSelection Callback run whenever any of the [Option]s is selected.
  * @param modifier [Modifier] to be applied to the underlying [Column].
  **/
 @Composable
 internal fun SampleOptions(
     modifier: Modifier = Modifier,
     count: Int = 3,
-    onSelectionToggle: (index: Int, isSelected: Boolean) -> Unit = { _, _ -> }
+    onSelection: (index: Int) -> Unit = { _ -> }
 ) {
-    Options(onSelectionToggle, modifier) {
+    Options(onSelection, modifier) {
         repeat(count) {
             option {
                 Text("Label #$it")

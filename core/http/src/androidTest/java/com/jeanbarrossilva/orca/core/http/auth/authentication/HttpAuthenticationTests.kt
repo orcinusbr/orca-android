@@ -7,6 +7,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.http.auth.authentication.test.onInstanceField
 import com.jeanbarrossilva.orca.core.http.auth.authentication.test.onSignInButton
 import com.jeanbarrossilva.orca.core.http.auth.authentication.test.onUsernameField
+import com.jeanbarrossilva.orca.core.http.auth.authorization.HttpAuthorization
 import com.jeanbarrossilva.orca.core.sample.feed.profile.account.sample
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import org.junit.Rule

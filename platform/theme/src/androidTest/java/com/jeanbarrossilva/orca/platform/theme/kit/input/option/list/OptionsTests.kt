@@ -112,7 +112,7 @@ internal class OptionsTests {
         composeRule.setContent {
             OrcaTheme {
                 SampleOptions(
-                    onSelectionToggle = { index, isSelected ->
+                    onSelection = { index, isSelected ->
                         selection = IndexedValue(index, isSelected)
                     }
                 )
@@ -127,7 +127,7 @@ internal class OptionsTests {
         composeRule.setContent {
             OrcaTheme {
                 SampleOptions(
-                    onSelectionToggle = { index, _ ->
+                    onSelection = { index, _ ->
                         if (index == 0) {
                             count++
                         }

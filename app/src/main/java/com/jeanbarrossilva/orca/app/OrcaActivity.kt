@@ -13,7 +13,7 @@ import com.jeanbarrossilva.orca.app.module.feature.profiledetails.ProfileDetails
 import com.jeanbarrossilva.orca.app.module.feature.search.SearchModule
 import com.jeanbarrossilva.orca.app.module.feature.tootdetails.TootDetailsModule
 import com.jeanbarrossilva.orca.app.navigation.navigator.BottomNavigationItemNavigatorFactory
-import com.jeanbarrossilva.orca.core.instance.SomeInstance
+import com.jeanbarrossilva.orca.core.auth.SomeAuthenticationLock
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
 import kotlinx.coroutines.launch
@@ -21,7 +21,7 @@ import org.koin.android.ext.android.inject
 import org.koin.core.context.loadKoinModules
 
 internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilityChangeListener {
-    private val instance by inject<SomeInstance>()
+    private val authenticationLock by inject<SomeAuthenticationLock>()
     private var binding: ActivityOrcaBinding? = null
     private var constraintSet: ConstraintSet? = null
 
@@ -89,11 +89,8 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
 
     private fun navigateTo(@IdRes itemID: Int) {
         lifecycleScope.launch {
-            instance.authenticationLock.requestUnlock {
-                BottomNavigationItemNavigatorFactory.create(it).navigate(
-                    navigator,
-                    itemID
-                )
+            authenticationLock.requestUnlock {
+                BottomNavigationItemNavigatorFactory.create(it).navigate(navigator, itemID)
             }
         }
     }
