@@ -51,7 +51,7 @@ fun Options(
     content: OptionsScope.() -> Unit
 ) {
     val defaultOptionShape = OptionDefaults.shape
-    var selectedOptionIndex by remember(content) { mutableIntStateOf(0) }
+    var selectedOptionIndex by remember { mutableIntStateOf(0) }
     val scope = remember(onSelection, content) {
         OptionsScope { selectedOptionIndex = it }.apply(content)
     }
