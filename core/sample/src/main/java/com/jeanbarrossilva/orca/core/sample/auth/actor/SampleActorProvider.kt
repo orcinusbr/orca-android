@@ -4,7 +4,7 @@ import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.auth.actor.ActorProvider
 
 /** [ActorProvider] that always provides a sample [authenticated][Actor.Authenticated] [Actor]. **/
-object SampleActorProvider : ActorProvider() {
+internal object SampleActorProvider : ActorProvider() {
     override suspend fun remember(actor: Actor) {
     }
 
