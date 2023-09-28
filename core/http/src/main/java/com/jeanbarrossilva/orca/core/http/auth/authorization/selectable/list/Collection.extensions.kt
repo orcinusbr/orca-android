@@ -28,8 +28,7 @@ internal fun <T> Collection<T>.selectFirst(): SelectableList<T> {
  * @param selection Predicate that determines whether the element that's been given to it is
  * selected.
  **/
-private fun <T> Collection<T>.selectIf(selection: (index: Int, T) -> Boolean):
-    SelectableList<T> {
+private fun <T> Collection<T>.selectIf(selection: (index: Int, T) -> Boolean): SelectableList<T> {
     val elements = mapIndexed { index, element ->
         @Suppress("DiscouragedApi")
         (
