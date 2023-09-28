@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -50,13 +51,14 @@ fun Options(
     content: OptionsScope.() -> Unit
 ) {
     val defaultOptionShape = OptionDefaults.shape
-    var selectedOptionIndex by remember { mutableIntStateOf(0) }
+    var selectedOptionIndex by remember(content) { mutableIntStateOf(0) }
     val scope = remember(onSelection, content) {
-        OptionsScope {
-            selectedOptionIndex = it
-            onSelection(it)
-        }
-            .apply(content)
+        OptionsScope { selectedOptionIndex = it }.apply(content)
+    }
+
+    DisposableEffect(selectedOptionIndex) {
+        onSelection(selectedOptionIndex)
+        onDispose { }
     }
 
     Column(modifier.border(defaultOptionShape)) {
