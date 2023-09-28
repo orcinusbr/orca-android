@@ -31,12 +31,7 @@ internal fun <T> Collection<T>.selectFirst(): SelectableList<T> {
 private fun <T> Collection<T>.selectIf(selection: (index: Int, T) -> Boolean): SelectableList<T> {
     val elements = mapIndexed { index, element ->
         @Suppress("DiscouragedApi")
-        (
-            Selectable(
-                element,
-                selection(index, element)
-            )
-            )
+        Selectable(element, selection(index, element))
     }
 
     @Suppress("DiscouragedApi")
