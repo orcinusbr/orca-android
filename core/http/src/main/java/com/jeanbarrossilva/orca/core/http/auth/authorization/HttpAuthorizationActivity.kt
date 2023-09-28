@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.runtime.Composable
 import com.jeanbarrossilva.orca.core.http.HttpBridge
-import com.jeanbarrossilva.orca.core.http.auth.authentication.HttpAuthorization
+import com.jeanbarrossilva.orca.core.http.auth.authorization.viewmodel.HttpAuthorizationViewModel
 import com.jeanbarrossilva.orca.core.http.instance.ContextualHttpInstance
 import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableActivity
 import io.ktor.http.Url

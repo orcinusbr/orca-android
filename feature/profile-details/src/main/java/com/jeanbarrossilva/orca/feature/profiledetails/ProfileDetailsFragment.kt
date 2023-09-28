@@ -5,24 +5,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
-import com.jeanbarrossilva.orca.core.instance.SomeInstance
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.orca.platform.ui.core.argument
 import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableFragment
 import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
+import com.jeanbarrossilva.orca.platform.ui.core.instance
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.opening
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 
 class ProfileDetailsFragment internal constructor() : ComposableFragment(), ContextProvider {
-    private val instance by inject<SomeInstance>()
     private val id by argument<String>(ID_KEY)
     private val viewModel by viewModels<ProfileDetailsViewModel> {
         ProfileDetailsViewModel.createFactory(
             contextProvider = this,
-            instance.profileProvider,
-            instance.tootProvider,
+            instance().profileProvider,
+            instance().tootProvider,
             id
         )
     }

@@ -14,7 +14,7 @@ import kotlin.coroutines.suspendCoroutine
  * @param context [Context] through which the [HttpAuthorizationActivity] will be started.
  * @see receive
  **/
-class HttpAuthorizer internal constructor(private val context: Context) : Authorizer() {
+class HttpAuthorizer(private val context: Context) : Authorizer() {
     /** [Continuation] of the coroutine that's suspended on authorization. **/
     private var continuation: Continuation<String>? = null
 

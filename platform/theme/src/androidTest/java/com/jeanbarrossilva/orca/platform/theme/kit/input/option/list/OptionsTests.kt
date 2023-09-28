@@ -108,17 +108,17 @@ internal class OptionsTests {
 
     @Test
     fun runsCallbackWhenOptionIsSelectedByDefault() {
-        var selection = IndexedValue<Boolean?>(index = -1, null)
+        var index = -1
         composeRule.setContent {
             OrcaTheme {
                 SampleOptions(
-                    onSelectionToggle = { index, isSelected ->
-                        selection = IndexedValue(index, isSelected)
+                    onSelection = {
+                        index = it
                     }
                 )
             }
         }
-        assertEquals(IndexedValue(index = 0, true), selection)
+        assertEquals(0, index)
     }
 
     @Test
@@ -127,8 +127,8 @@ internal class OptionsTests {
         composeRule.setContent {
             OrcaTheme {
                 SampleOptions(
-                    onSelectionToggle = { index, _ ->
-                        if (index == 0) {
+                    onSelection = {
+                        if (it == 0) {
                             count++
                         }
                     }

@@ -1,5 +1,3 @@
-import com.jeanbarrossilva.orca.namespaceFor
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.android.maps.secrets)
@@ -14,7 +12,6 @@ android {
     buildFeatures.compose = true
     composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
     defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    namespace = namespaceFor("core.http")
 
     buildFeatures {
         buildConfig = true
@@ -23,7 +20,7 @@ android {
 
     secrets {
         defaultPropertiesFileName = "public.properties"
-        ignoreList += "^(?!mastodon\\.clientSecret).*$"
+        ignoreList += "^(?!(mastodon\\.clientSecret)|(instancesSocial\\.token)).*$"
     }
 
     packagingOptions.resources.excludes +=
