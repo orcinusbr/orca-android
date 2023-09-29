@@ -4,8 +4,8 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.orca.std.injector.test.InjectorTestRule
-import org.junit.Rule
 import kotlin.test.Test
+import org.junit.Rule
 
 internal class ModuleTests {
     @get:Rule
