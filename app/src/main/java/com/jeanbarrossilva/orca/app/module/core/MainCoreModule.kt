@@ -14,12 +14,12 @@ internal class MainCoreModule : CoreModule() {
     override val dependencies: Scope.() -> Unit = {
         inject { HttpAuthorizer(context = get()) }
         inject<ActorProvider> { SharedPreferencesActorProvider(context = get()) }
-        inject { HttpAuthenticator(context = get(), authorizer = get(), actorProvider = get()) }
+        inject { HttpAuthenticator(context = get(), get<HttpAuthorizer>(), actorProvider = get()) }
         super.dependencies(this)
     }
 
     override val authenticationLock = Injectable<SomeAuthenticationLock> {
-        AuthenticationLock(authenticator = get(), actorProvider = get())
+        AuthenticationLock(get<HttpAuthenticator>(), actorProvider = get())
     }
     override val instanceProvider =
         Injectable<InstanceProvider> { HttpInstanceProvider(context = get()) }
