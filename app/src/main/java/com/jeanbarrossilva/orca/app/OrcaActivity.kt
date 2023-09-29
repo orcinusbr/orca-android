@@ -68,7 +68,7 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
         appModule.inject()
         coreModule.inject()
         FeedModule(this).inject()
-        ProfileDetailsModule.inject(this)
+        ProfileDetailsModule(this).inject()
         SearchModule.inject(navigator)
         TootDetailsModule.inject(this)
     }
