@@ -24,7 +24,7 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
     private var binding: ActivityOrcaBinding? = null
     private var constraintSet: ConstraintSet? = null
 
-    protected open val coreModule: CoreModule = MainCoreModule()
+    protected open val coreModule: CoreModule by lazy { MainCoreModule() }
     protected open val appModule by lazy { AppModule(this) }
 
     override val height: Int
