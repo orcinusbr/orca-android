@@ -24,10 +24,12 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
     private var binding: ActivityOrcaBinding? = null
     private var constraintSet: ConstraintSet? = null
 
-    protected open val coreModule: CoreModule by lazy { MainCoreModule() }
-    protected open val appModule by lazy { AppModule(this) }
+    protected open val coreModule: CoreModule = MainCoreModule()
 
-    override val height: Int
+    @Suppress("LeakingThis")
+    protected open val appModule = AppModule(this)
+
+    final override val height: Int
         get() = binding?.bottomNavigationView?.height ?: 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +50,7 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
         Injector.clear()
     }
 
-    override fun getCurrentOffsetY(): Float {
+    final override fun getCurrentOffsetY(): Float {
         return constraintSet
             ?.getConstraint(R.id.bottom_navigation_view)
             ?.transform
@@ -56,7 +58,7 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
             ?: 0f
     }
 
-    override fun onBottomAreaAvailabilityChange(offsetY: Float) {
+    final override fun onBottomAreaAvailabilityChange(offsetY: Float) {
         constraintSet?.apply {
             getConstraint(R.id.container).layout.bottomMargin = -offsetY.toInt()
             getConstraint(R.id.bottom_navigation_view).transform.translationY = offsetY
