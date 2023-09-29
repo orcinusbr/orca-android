@@ -5,7 +5,7 @@ import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.auth.actor.ActorProvider
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
-import com.jeanbarrossilva.orca.core.http.MastodonDatabase
+import com.jeanbarrossilva.orca.core.http.HttpDatabase
 import com.jeanbarrossilva.orca.core.http.auth.authentication.HttpAuthenticator
 import com.jeanbarrossilva.orca.core.http.auth.authorization.HttpAuthorizer
 import com.jeanbarrossilva.orca.core.http.feed.HttpFeedProvider
@@ -42,8 +42,8 @@ class ContextualHttpInstance(
     actorProvider: ActorProvider,
     override val authenticationLock: AuthenticationLock<HttpAuthenticator>
 ) : HttpInstance<HttpAuthorizer, HttpAuthenticator>(domain, authorizer) {
-    /** [MastodonDatabase] in which cached structures will be persisted. */
-    private val database = MastodonDatabase.getInstance(context)
+    /** [HttpDatabase] in which cached structures will be persisted. */
+    private val database = HttpDatabase.getInstance(context)
 
     /**
      * [ProfileTootPaginateSource.Provider] that provides the [ProfileTootPaginateSource] to be used
