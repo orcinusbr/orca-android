@@ -4,7 +4,7 @@ android-activity-ktx = { group = "androidx.activity", name = "activity-ktx", ver
 android-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "android-activity" }
 android-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.6.1" }
 android-browser = { group = "androidx.browser", name = "browser", version = "1.6.0" }
-android-compose-material = { group = "androidx.compose.material3", name = "material3", version = "1.1.1" }
+android-compose-material = { group = "androidx.compose.material3", name = "material3", version = "1.1.2" }
 android-compose-material-icons = { group = "androidx.compose.material", name = "material-icons-extended", version = "1.5.1" }
 android-compose-ui-test-junit = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "android-compose" }
 android-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "android-compose" }
@@ -15,7 +15,7 @@ android-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", ver
 android-fragment-testing = { group = "androidx.fragment", name = "fragment-testing", version.ref = "android-fragment" }
 android-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version = "2.6.2" }
 android-material = { group = "com.google.android.material", name = "material", version = "1.9.0" }
-android-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version = "2.7.2" }
+android-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version = "2.7.3" }
 android-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "android-room" }
 android-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "android-room" }
 android-test-core = { group = "androidx.test", name = "core-ktx", version = "1.5.0" }
@@ -58,7 +58,7 @@ android-activity = "1.7.2"
 android-compose = "1.5.1"
 android-compose-compiler = "1.4.7"
 android-fragment = "1.6.1"
-android-plugin = "8.1.1"
+android-plugin = "8.1.2"
 android-room = "2.5.2"
 android-sdk-min = "28"
 android-sdk-target = "34"
