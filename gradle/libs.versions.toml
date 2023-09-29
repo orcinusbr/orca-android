@@ -24,8 +24,6 @@ android-test-runner = { group = "androidx.test", name = "runner", version = "1.5
 assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version = "0.27.0" }
 coil = { group = "io.coil-kt", name = "coil", version = "2.4.0" }
 junit = { group = "junit", name = "junit", version = "4.13.2" }
-koin-android = { group = "io.insert-koin", name = "koin-android", version = "3.4.2" }
-koin-test = { group = "io.insert-koin", name = "koin-test-junit4", version = "3.4.1" }
 kotlin-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlin-coroutines" }
 kotlin-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlin-coroutines" }
 kotlin-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlin-coroutines" }

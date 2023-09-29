@@ -5,9 +5,8 @@ import android.content.Context
 import androidx.annotation.Discouraged
 import androidx.core.content.edit
 import com.jeanbarrossilva.orca.platform.launchable.Launchable
+import com.jeanbarrossilva.orca.std.injector.Injector
 import net.time4j.android.ApplicationStarter
-import org.koin.android.ext.koin.androidContext
-import org.koin.core.context.startKoin
 
 internal open class OrcaApplication : Application(), Launchable {
     private val preferences
@@ -19,7 +18,7 @@ internal open class OrcaApplication : Application(), Launchable {
         @Suppress("DiscouragedApi")
         markAsLaunched()
 
-        setUpInjection()
+        Injector.inject<Context>(this)
         ApplicationStarter.initialize(this, true)
     }
 
@@ -31,14 +30,6 @@ internal open class OrcaApplication : Application(), Launchable {
     override fun markAsLaunched() {
         preferences.edit {
             putInt(LAUNCH_COUNT_PREFERENCE_KEY, count() + 1)
-        }
-    }
-
-    private fun setUpInjection() {
-        if (!isKoinInitialized) {
-            startKoin {
-                androidContext(this@OrcaApplication)
-            }
         }
     }
 

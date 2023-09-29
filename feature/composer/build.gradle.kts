@@ -18,7 +18,6 @@ dependencies {
     implementation(project(":platform:theme"))
     implementation(project(":platform:ui"))
     implementation(libs.android.compose.material.icons)
-    implementation(libs.koin.android)
 
     testImplementation(libs.junit)
 }

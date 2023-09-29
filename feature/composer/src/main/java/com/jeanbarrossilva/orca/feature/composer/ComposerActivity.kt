@@ -5,7 +5,6 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableActivity
 import com.jeanbarrossilva.orca.platform.ui.core.on
-import org.koin.android.ext.android.get
 
 class ComposerActivity internal constructor() : ComposableActivity() {
     private val viewModel by viewModels<ComposerViewModel>()

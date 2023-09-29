@@ -13,8 +13,8 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.TIMELINE_TAG
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline
 import java.util.UUID
-import kotlin.test.Test
 import org.junit.Rule
+import org.junit.Test
 
 internal class ProfileDetailsTests {
     @get:Rule

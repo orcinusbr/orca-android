@@ -23,6 +23,7 @@ import com.jeanbarrossilva.orca.core.http.instance.HttpInstanceProvider
 import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.instance.InstanceProvider
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
+import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.http.URLBuilder
 import io.ktor.http.Url
 import io.ktor.http.appendPathSegments
@@ -37,7 +38,6 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
-import org.koin.android.ext.android.get
 
 /**
  * [AndroidViewModel] that provides the [url] to be opened in the browser for authenticating the
@@ -133,7 +133,7 @@ internal class HttpAuthorizationViewModel private constructor(
          * Calling `provide` on an `HttpInstanceProvider` crosses the `HttpBridge` with the provided
          * `Instance`.
          */
-        (application.get<InstanceProvider>() as HttpInstanceProvider).provide()
+        (Injector.get<InstanceProvider>() as HttpInstanceProvider).provide()
 
         onAccessTokenRequestListener.onAccessTokenRequest()
     }

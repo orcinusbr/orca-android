@@ -5,27 +5,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.orca.platform.ui.core.argument
 import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableFragment
 import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
-import com.jeanbarrossilva.orca.platform.ui.core.instance
+import com.jeanbarrossilva.orca.platform.ui.core.injected
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.opening
-import org.koin.android.ext.android.get
-import org.koin.android.ext.android.inject
+import com.jeanbarrossilva.orca.std.injector.Injector
 
 class ProfileDetailsFragment internal constructor() : ComposableFragment(), ContextProvider {
     private val id by argument<String>(ID_KEY)
     private val viewModel by viewModels<ProfileDetailsViewModel> {
         ProfileDetailsViewModel.createFactory(
             contextProvider = this,
-            instance().profileProvider,
-            instance().tootProvider,
+            Instance.injected.profileProvider,
+            Instance.injected.tootProvider,
             id
         )
     }
-    private val navigator by inject<ProfileDetailsBoundary>()
 
     constructor(backwardsNavigationState: BackwardsNavigationState, id: String) : this() {
         arguments =
@@ -40,9 +39,9 @@ class ProfileDetailsFragment internal constructor() : ComposableFragment(), Cont
 
         ProfileDetails(
             viewModel,
-            navigator,
+            navigator = Injector.get(),
             backwardsNavigationState,
-            onBottomAreaAvailabilityChangeListener = get()
+            onBottomAreaAvailabilityChangeListener = Injector.get()
         )
     }
 

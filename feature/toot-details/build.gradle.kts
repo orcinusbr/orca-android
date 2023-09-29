@@ -16,8 +16,8 @@ dependencies {
     implementation(project(":core:sample"))
     implementation(project(":platform:theme"))
     implementation(project(":platform:ui"))
+    implementation(project(":std:injector"))
     implementation(libs.android.lifecycle.viewmodel)
-    implementation(libs.koin.android)
     implementation(libs.loadable.list)
     implementation(libs.loadable.placeholder)
 }

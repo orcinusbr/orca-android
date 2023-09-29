@@ -28,5 +28,7 @@ include(
     ":std:image-loader",
     ":std:image-loader:compose",
     ":std:image-loader-test",
+    ":std:injector",
+    ":std:injector-test",
     ":std:styled-string"
 )

@@ -1,16 +1,13 @@
 package com.jeanbarrossilva.orca.app.module.feature.feed
 
 import com.jeanbarrossilva.orca.feature.feed.FeedBoundary
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
-import org.koin.android.ext.koin.androidContext
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
+import com.jeanbarrossilva.orca.std.injector.module.Module
 
-@Suppress("FunctionName")
-internal fun FeedModule(navigator: Navigator): Module {
-    return module {
-        single<FeedBoundary> {
-            NavigatorFeedBoundary(androidContext(), navigator)
+internal class FeedModule(activity: NavigationActivity) : Module() {
+    override val dependencies: Scope.() -> Unit = {
+        inject<FeedBoundary> {
+            NavigatorFeedBoundary(activity, activity.navigator)
         }
     }
 }

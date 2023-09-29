@@ -6,10 +6,10 @@ import com.jeanbarrossilva.orca.core.auth.SomeAuthenticationLock
 import com.jeanbarrossilva.orca.core.http.HttpBridge
 import com.jeanbarrossilva.orca.core.http.auth.authentication.HttpAuthenticator
 import com.jeanbarrossilva.orca.core.http.auth.authorization.viewmodel.HttpAuthorizationViewModel
-import com.jeanbarrossilva.orca.core.http.get
 import com.jeanbarrossilva.orca.core.instance.InstanceProvider
 import com.jeanbarrossilva.orca.core.instance.SomeInstance
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
+import com.jeanbarrossilva.orca.std.injector.Injector
 
 /**
  * [InstanceProvider] that provides a [ContextualHttpInstance].
@@ -23,10 +23,10 @@ class HttpInstanceProvider(private val context: Context) : InstanceProvider {
         return ContextualHttpInstance(
             context,
             HttpAuthorizationViewModel.getInstanceDomain(context),
-            authorizer = get(),
-            authenticator = get(),
-            actorProvider = get(),
-            get<SomeAuthenticationLock>() as AuthenticationLock<HttpAuthenticator>
+            authorizer = Injector.get(),
+            authenticator = Injector.get(),
+            actorProvider = Injector.get(),
+            Injector.get<SomeAuthenticationLock>() as AuthenticationLock<HttpAuthenticator>
         )
             .also(HttpBridge::cross)
     }
