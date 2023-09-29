@@ -23,7 +23,7 @@ import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.style.
     ],
     version = 1
 )
-internal abstract class MastodonDatabase : RoomDatabase() {
+internal abstract class HttpDatabase : RoomDatabase() {
     /** DAO for operating on [HTTP style entities][HttpStyleEntity]. **/
     abstract val styleEntityDao: HttpStyleEntityDao
 
@@ -39,14 +39,14 @@ internal abstract class MastodonDatabase : RoomDatabase() {
     abstract val tootEntityDao: HttpTootEntityDao
 
     companion object {
-        private lateinit var instance: MastodonDatabase
+        private lateinit var instance: HttpDatabase
 
         /**
-         * Builds or retrieves the previously instantiated [MastodonDatabase].
+         * Builds or retrieves the previously instantiated [HttpDatabase].
          *
          * @param context [Context] to be used for building it.
          **/
-        fun getInstance(context: Context): MastodonDatabase {
+        fun getInstance(context: Context): HttpDatabase {
             return if (Companion::instance.isInitialized) {
                 instance
             } else {
@@ -56,14 +56,12 @@ internal abstract class MastodonDatabase : RoomDatabase() {
         }
 
         /**
-         * Builds a [MastodonDatabase].
+         * Builds a [HttpDatabase].
          *
          * @param context [Context] from which it will be built.
          **/
-        private fun build(context: Context): MastodonDatabase {
-            return Room
-                .databaseBuilder(context, MastodonDatabase::class.java, "mastodon-database")
-                .build()
+        private fun build(context: Context): HttpDatabase {
+            return Room.databaseBuilder(context, HttpDatabase::class.java, "http-database").build()
         }
     }
 }
