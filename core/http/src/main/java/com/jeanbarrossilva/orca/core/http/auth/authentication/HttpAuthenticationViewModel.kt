@@ -8,9 +8,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
-import com.jeanbarrossilva.orca.core.http.HttpBridge
 import com.jeanbarrossilva.orca.core.http.R
 import com.jeanbarrossilva.orca.core.http.auth.Mastodon
+import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
+import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.submitForm
 import io.ktor.http.Parameters
@@ -37,8 +38,10 @@ internal class HttpAuthenticationViewModel private constructor(
         val scheme = application.getString(R.string.scheme)
         val redirectUri = application.getString(R.string.redirect_uri, scheme)
         viewModelScope.launch {
-            with(HttpBridge.instance.client) {
-                submitForm(
+            Injector
+                .get<SomeHttpInstance>()
+                .client
+                .submitForm(
                     "/oauth/token",
                     Parameters.build {
                         set("grant_type", "authorization_code")
@@ -49,10 +52,9 @@ internal class HttpAuthenticationViewModel private constructor(
                         set("scope", Mastodon.SCOPES)
                     }
                 )
-                    .body<HttpAuthenticationToken>()
-                    .toActor(this)
-                    .run(onAuthentication)
-            }
+                .body<HttpAuthenticationToken>()
+                .toActor()
+                .run(onAuthentication)
         }
     }
 

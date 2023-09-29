@@ -3,10 +3,11 @@ package com.jeanbarrossilva.orca.core.http.feed.profile.toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
-import com.jeanbarrossilva.orca.core.http.HttpBridge
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndPost
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.status.HttpStatus
+import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
+import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.client.call.body
 import io.ktor.client.request.HttpRequest
 import java.net.URL
@@ -32,7 +33,7 @@ data class HttpToot internal constructor(
             @Suppress("SpellCheckingInspection")
             if (isFavorite) "/api/v1/statuses/$id/favourite" else "/api/v1/statuses/$id/unfavourite"
 
-        HttpBridge.instance.client.authenticateAndPost(route)
+        Injector.get<SomeHttpInstance>().client.authenticateAndPost(route)
     }
 
     override suspend fun setReblogged(isReblogged: Boolean) {
@@ -40,13 +41,13 @@ data class HttpToot internal constructor(
             @Suppress("SpellCheckingInspection")
             if (isReblogged) "/api/v1/statuses/:id/reblog" else "/api/v1/statuses/:id/unreblog"
 
-        HttpBridge.instance.client.authenticateAndPost(route)
+        Injector.get<SomeHttpInstance>().client.authenticateAndPost(route)
     }
 
     override suspend fun getComments(page: Int): Flow<List<Toot>> {
         return flow {
-            HttpBridge
-                .instance
+            Injector
+                .get<SomeHttpInstance>()
                 .client
                 .authenticateAndGet("/api/v1/statuses/$id/context")
                 .body<HttpContext>()

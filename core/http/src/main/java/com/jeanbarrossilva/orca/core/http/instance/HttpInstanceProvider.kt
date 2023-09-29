@@ -3,7 +3,6 @@ package com.jeanbarrossilva.orca.core.http.instance
 import android.content.Context
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.SomeAuthenticationLock
-import com.jeanbarrossilva.orca.core.http.HttpBridge
 import com.jeanbarrossilva.orca.core.http.auth.authentication.HttpAuthenticator
 import com.jeanbarrossilva.orca.core.http.auth.authorization.viewmodel.HttpAuthorizationViewModel
 import com.jeanbarrossilva.orca.core.instance.InstanceProvider
@@ -28,6 +27,5 @@ class HttpInstanceProvider(private val context: Context) : InstanceProvider {
             actorProvider = Injector.get(),
             Injector.get<SomeAuthenticationLock>() as AuthenticationLock<HttpAuthenticator>
         )
-            .also(HttpBridge::cross)
     }
 }

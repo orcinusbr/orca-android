@@ -4,11 +4,12 @@ import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.FollowableProfile
-import com.jeanbarrossilva.orca.core.http.HttpBridge
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndPost
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.ProfileTootPaginateSource
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
+import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
+import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
 
@@ -45,6 +46,6 @@ internal data class HttpFollowableProfile<T : Follow>(
     FollowableProfile<T>() {
     override suspend fun onChangeFollowTo(follow: T) {
         val toggledRoute = follow.getToggledRoute(this)
-        HttpBridge.instance.client.authenticateAndPost(toggledRoute)
+        Injector.get<SomeHttpInstance>().client.authenticateAndPost(toggledRoute)
     }
 }
