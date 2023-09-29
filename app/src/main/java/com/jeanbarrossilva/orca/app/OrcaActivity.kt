@@ -7,6 +7,7 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.jeanbarrossilva.orca.app.databinding.ActivityOrcaBinding
 import com.jeanbarrossilva.orca.app.module.AppModule
+import com.jeanbarrossilva.orca.app.module.core.CoreModule
 import com.jeanbarrossilva.orca.app.module.core.MainCoreModule
 import com.jeanbarrossilva.orca.app.module.feature.feed.FeedModule
 import com.jeanbarrossilva.orca.app.module.feature.profiledetails.ProfileDetailsModule
@@ -16,16 +17,14 @@ import com.jeanbarrossilva.orca.app.navigation.navigator.BottomNavigationItemNav
 import com.jeanbarrossilva.orca.core.auth.SomeAuthenticationLock
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
+import com.jeanbarrossilva.orca.std.injector.Injector
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
-import org.koin.core.context.loadKoinModules
 
 internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilityChangeListener {
-    private val authenticationLock by inject<SomeAuthenticationLock>()
     private var binding: ActivityOrcaBinding? = null
     private var constraintSet: ConstraintSet? = null
 
-    protected open val coreModule = MainCoreModule()
+    protected open val coreModule: CoreModule = MainCoreModule()
     protected open val appModule by lazy { AppModule(this) }
 
     override val height: Int
@@ -46,6 +45,7 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
         super.onDestroy()
         constraintSet = null
         binding = null
+        Injector.clear()
     }
 
     override fun getCurrentOffsetY(): Float {
@@ -65,19 +65,12 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
     }
 
     private fun inject() {
-        val feedModule = FeedModule(navigator)
-        val profileDetailsModule = ProfileDetailsModule(navigator)
-        val searchModule = SearchModule(navigator)
-        val tootDetailsModule = TootDetailsModule(navigator)
-        val modules = listOf(
-            appModule,
-            coreModule,
-            feedModule,
-            profileDetailsModule,
-            searchModule,
-            tootDetailsModule
-        )
-        loadKoinModules(modules)
+        appModule.inject()
+        coreModule.inject()
+        FeedModule.inject(this)
+        ProfileDetailsModule.inject(this)
+        SearchModule.inject(navigator)
+        TootDetailsModule.inject(this)
     }
 
     private fun navigateOnBottomNavigationItemSelection() {
@@ -89,7 +82,7 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
 
     private fun navigateTo(@IdRes itemID: Int) {
         lifecycleScope.launch {
-            authenticationLock.requestUnlock {
+            Injector.get<SomeAuthenticationLock>().requestUnlock {
                 BottomNavigationItemNavigatorFactory.create(it).navigate(navigator, itemID)
             }
         }

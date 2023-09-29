@@ -13,7 +13,7 @@ dependencies {
     implementation(project(":core:sample"))
     implementation(project(":platform:theme"))
     implementation(project(":platform:ui"))
-    implementation(libs.koin.android)
+    implementation(project(":std:injector"))
     implementation(libs.loadable.list)
     implementation(libs.loadable.placeholder)
 }

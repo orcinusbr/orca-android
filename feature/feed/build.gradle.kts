@@ -11,6 +11,7 @@ android {
 
 dependencies {
     androidTestImplementation(project(":platform:ui-test"))
+    androidTestImplementation(project(":std:injector-test"))
     androidTestImplementation(libs.android.compose.ui.test.junit)
     androidTestImplementation(libs.android.compose.ui.test.manifest)
     androidTestImplementation(libs.android.test.core)
@@ -20,6 +21,6 @@ dependencies {
     implementation(project(":core:sample"))
     implementation(project(":platform:theme"))
     implementation(project(":platform:ui"))
-    implementation(libs.koin.android)
+    implementation(project(":std:injector"))
     implementation(libs.loadable.list)
 }

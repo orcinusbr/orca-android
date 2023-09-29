@@ -1,16 +1,12 @@
 package com.jeanbarrossilva.orca.app.module
 
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
-import org.koin.core.module.Module
-import org.koin.dsl.module
+import com.jeanbarrossilva.orca.std.injector.Injector
 
-@Suppress("FunctionName")
-internal fun AppModule(
-    bottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener
-): Module {
-    return module {
-        single {
-            bottomAreaAvailabilityChangeListener
-        }
+internal class AppModule(
+    private val onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener
+) {
+    fun inject() {
+        Injector.inject(onBottomAreaAvailabilityChangeListener)
     }
 }

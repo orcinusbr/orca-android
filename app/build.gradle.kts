@@ -71,10 +71,10 @@ dependencies {
     implementation(project(":platform:launchable"))
     implementation(project(":platform:theme"))
     implementation(project(":platform:ui"))
+    implementation(project(":std:injector"))
     implementation(libs.android.appcompat)
     implementation(libs.android.constraintlayout)
     implementation(libs.android.fragment.ktx)
     implementation(libs.android.material)
-    implementation(libs.koin.android)
     implementation(libs.time4j)
 }

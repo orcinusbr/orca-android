@@ -3,7 +3,6 @@ package com.jeanbarrossilva.orca.core.http.auth.authorization
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.runtime.Composable
 import com.jeanbarrossilva.orca.core.http.HttpBridge
@@ -13,7 +12,7 @@ import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableActivity
 import io.ktor.http.Url
 
 /**
- * [AppCompatActivity] that visually notifies the user of the background authorization process that
+ * [ComposableActivity] that visually notifies the user of the background authorization process that
  * takes place when this is created and automatically finishes itself when it's done.
  **/
 class HttpAuthorizationActivity internal constructor() :
