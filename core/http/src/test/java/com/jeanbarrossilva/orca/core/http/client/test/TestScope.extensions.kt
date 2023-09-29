@@ -3,16 +3,17 @@ package com.jeanbarrossilva.orca.core.http.client.test
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.auth.actor.ActorProvider
-import com.jeanbarrossilva.orca.core.http.HttpBridge
 import com.jeanbarrossilva.orca.core.http.client.CoreHttpClient
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndPost
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndSubmitForm
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndSubmitFormWithBinaryData
+import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
 import com.jeanbarrossilva.orca.core.test.TestActorProvider
 import com.jeanbarrossilva.orca.core.test.TestAuthenticator
 import com.jeanbarrossilva.orca.core.test.TestAuthorizer
+import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequest
 import io.ktor.http.HttpMethod
@@ -108,6 +109,7 @@ private fun <T : Actor> runCoreHttpClientTest(
     val authenticator = TestAuthenticator(authorizer, actorProvider) { onAuthentication() }
     val authenticationLock = AuthenticationLock(authenticator, actorProvider)
     val instance = TestHttpInstance(authorizer, authenticator, authenticationLock)
-    HttpBridge.cross(instance)
+    Injector.inject<SomeHttpInstance>(instance)
     runTest { CoreHttpClientTestScope(delegate = this, instance.client, actor).body() }
+    Injector.clear()
 }

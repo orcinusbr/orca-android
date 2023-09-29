@@ -5,12 +5,13 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
-import com.jeanbarrossilva.orca.core.http.HttpBridge
 import com.jeanbarrossilva.orca.core.http.auth.authentication.HttpAuthentication
 import com.jeanbarrossilva.orca.core.http.auth.authentication.HttpAuthenticationViewModel
 import com.jeanbarrossilva.orca.core.http.instance.ContextualHttpInstance
+import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableActivity
 import com.jeanbarrossilva.orca.platform.ui.core.on
+import com.jeanbarrossilva.orca.std.injector.Injector
 
 /**
  * [ComposableActivity] that visually notifies the user of the background authentication process
@@ -44,7 +45,7 @@ class HttpAuthenticationActivity : ComposableActivity() {
      **/
     private fun authenticate() {
         viewModel.request {
-            (HttpBridge.instance as ContextualHttpInstance).authenticator.receive(it)
+            (Injector.get<SomeHttpInstance>() as ContextualHttpInstance).authenticator.receive(it)
             finish()
         }
     }
