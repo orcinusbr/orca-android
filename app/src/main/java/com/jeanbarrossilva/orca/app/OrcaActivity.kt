@@ -70,7 +70,7 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
         FeedModule(this).inject()
         ProfileDetailsModule(this).inject()
         SearchModule(navigator).inject()
-        TootDetailsModule.inject(this)
+        TootDetailsModule(this).inject()
     }
 
     private fun navigateOnBottomNavigationItemSelection() {
