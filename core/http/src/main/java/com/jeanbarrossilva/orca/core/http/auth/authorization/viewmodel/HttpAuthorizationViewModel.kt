@@ -18,7 +18,7 @@ import com.jeanbarrossilva.orca.core.http.auth.authorization.HttpDomainsProvider
 import com.jeanbarrossilva.orca.core.http.auth.authorization.OnAccessTokenRequestListener
 import com.jeanbarrossilva.orca.core.http.auth.authorization.selectable.list.SelectableList
 import com.jeanbarrossilva.orca.core.http.auth.authorization.selectable.list.selectFirst
-import com.jeanbarrossilva.orca.core.http.instance.ContextualHttpInstance
+import com.jeanbarrossilva.orca.core.http.instance.HttpInstance
 import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.instance.InstanceProvider
@@ -124,12 +124,12 @@ internal class HttpAuthorizationViewModel private constructor(
     }
 
     /**
-     * Persists the currently selected [Domain], injects the derived [ContextualHttpInstance] and
-     * notifies the [onAccessTokenRequestListener].
+     * Persists the currently selected [Domain], injects the derived [HttpInstance] and notifies the
+     * [onAccessTokenRequestListener].
      **/
     fun authorize() {
         persistSelectedDomain()
-        Injector.inject(Injector.get<InstanceProvider>().provide() as ContextualHttpInstance)
+        Injector.inject(Injector.get<InstanceProvider>().provide() as SomeHttpInstance)
         onAccessTokenRequestListener.onAccessTokenRequest()
     }
 
