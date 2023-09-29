@@ -1,10 +1,10 @@
 package com.jeanbarrossilva.orca.core.http.feed.profile
 
-import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
+import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.pagination.HttpTootPaginateSource
 
 /**
- * [HttpTootPaginateSource] that paginates through an [HttpProfile]'s [HttpToot]s.
+ * [HttpTootPaginateSource] that paginates through an [HttpProfile]'s [Toot]s.
  *
  * @param id ID of the [HttpProfile].
  **/
@@ -14,7 +14,7 @@ internal class ProfileTootPaginateSource(id: String) : HttpTootPaginateSource() 
     /** Provides a [ProfileTootPaginateSource] through [provide]. **/
     fun interface Provider {
         /**
-         * Provides a [ProfileTootPaginateSource] that paginates through the [HttpToot]s of an
+         * Provides a [ProfileTootPaginateSource] that paginates through the [Toot]s of an
          * [HttpProfile] identified as [id].
          *
          * id ID of the [HttpProfile].

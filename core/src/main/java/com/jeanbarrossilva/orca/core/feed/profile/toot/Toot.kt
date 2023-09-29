@@ -1,10 +1,10 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
+import kotlinx.coroutines.flow.Flow
 import java.io.Serializable
 import java.net.URL
 import java.time.ZonedDateTime
-import kotlinx.coroutines.flow.Flow
 
 /** Content that's been posted by a user, the [author]. **/
 abstract class Toot : Serializable {
@@ -54,6 +54,39 @@ abstract class Toot : Serializable {
      **/
     suspend fun toggleReblogged() {
         setReblogged(!isReblogged)
+    }
+
+    /**
+     * Converts this [Toot] into a [Boost], boosted by the [booster].
+     *
+     * @param booster [Author] by which this [Toot] has been boosted.
+     **/
+    fun toBoost(booster: Author): Boost {
+        return object : Boost() {
+            override val id = this@Toot.id
+            override val author = this@Toot.author
+            override val booster = booster
+            override val content = this@Toot.content
+            override val publicationDateTime = this@Toot.publicationDateTime
+            override val commentCount = this@Toot.commentCount
+            override val isFavorite = this@Toot.isFavorite
+            override val favoriteCount = this@Toot.favoriteCount
+            override val isReblogged = this@Toot.isReblogged
+            override val reblogCount = this@Toot.reblogCount
+            override val url = this@Toot.url
+
+            override suspend fun getComments(page: Int): Flow<List<Toot>> {
+                return this@Toot.getComments(page)
+            }
+
+            override suspend fun setFavorite(isFavorite: Boolean) {
+                this@Toot.setFavorite(isFavorite)
+            }
+
+            override suspend fun setReblogged(isReblogged: Boolean) {
+                this@Toot.setReblogged(isReblogged)
+            }
+        }
     }
 
     abstract suspend fun getComments(page: Int): Flow<List<Toot>>

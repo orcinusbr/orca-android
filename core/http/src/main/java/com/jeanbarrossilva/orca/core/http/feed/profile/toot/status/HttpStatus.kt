@@ -1,17 +1,21 @@
 package com.jeanbarrossilva.orca.core.http.feed.profile.toot.status
 
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
+import com.jeanbarrossilva.orca.core.feed.profile.toot.Boost
+import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
 import com.jeanbarrossilva.orca.core.http.feed.profile.account.HttpAccount
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
+import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
 import com.jeanbarrossilva.orca.platform.ui.core.style.fromHtml
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
+import kotlinx.serialization.Serializable
 import java.net.URL
 import java.time.ZonedDateTime
-import kotlinx.serialization.Serializable
 
 /**
- * Structure returned by the API that is the DTO version of an [HttpToot].
+ * Structure returned by the API that is the DTO version of either an [HttpToot] or a [Boost]; which
+ * one it represents is determined by [reblog]'s nullability.
  *
  * @param id Unique identifier.
  * @param createdAt ISO-8601-formatted [String] indicating the date and time of creation.
@@ -20,6 +24,7 @@ import kotlinx.serialization.Serializable
  * @param favouritesCount Amount of times it's been favorited.
  * @param repliesCount Amount of replies that's been received.
  * @param url String [URL] that leads to this [HttpStatus].
+ * @param reblog [HttpStatus] that's being reblogged in this one.
  * @param card [HttpCard] for the highlighted [URL] that's in the [content].
  * @param content Text that's been written.
  * @param mediaAttachments [HttpAttachment]s of attached media.
@@ -37,15 +42,16 @@ data class HttpStatus internal constructor(
     internal val favouritesCount: Int,
     internal val repliesCount: Int,
     internal val url: String,
+    internal val reblog: HttpStatus?,
     internal val card: HttpCard?,
     internal val content: String,
     internal val mediaAttachments: List<HttpAttachment>,
     internal val favourited: Boolean?,
     internal val reblogged: Boolean?
 ) {
-    /** Converts this [HttpStatus] into an [HttpToot]. **/
-    internal fun toToot(): HttpToot {
-        val author = this.account.toAuthor()
+    /** Converts this [HttpStatus] into a [Toot]. **/
+    internal fun toToot(): Toot {
+        val author = reblog?.account?.toAuthor() ?: this.account.toAuthor()
         val text = StyledString.fromHtml(content)
         val attachments = mediaAttachments.map(HttpAttachment::toAttachment)
         val content = Content.from(text, attachments) { card?.toHeadline() }
@@ -63,5 +69,8 @@ data class HttpStatus internal constructor(
             reblogsCount,
             url
         )
+            .`if`<Toot>(reblog != null) {
+                toBoost(booster = author)
+            }
     }
 }

@@ -6,10 +6,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
+import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.ProfileTootPaginateSource
-import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.editable.HttpEditableProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.followable.HttpFollowableProfile
 import com.jeanbarrossilva.orca.std.styledstring.toStyledString
@@ -51,8 +51,8 @@ data class HttpProfileEntity internal constructor(
      * Converts this [HttpProfileEntity] into a [Profile].
      *
      * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
-     * [ProfileTootPaginateSource] for paginating through the resulting [HttpProfile]'s [HttpToot]s
-     * will be provided.
+     * [ProfileTootPaginateSource] for paginating through the resulting [HttpProfile]'s [Toot]s will
+     * be provided.
      * @throws IllegalStateException If the [type] is unknown.
      **/
     @Throws(IllegalStateException::class)
@@ -71,7 +71,7 @@ data class HttpProfileEntity internal constructor(
      *
      * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
      * [ProfileTootPaginateSource] for paginating through the resulting [HttpEditableProfile]'s
-     * [HttpToot]s will be provided.
+     * [Toot]s will be provided.
      **/
     private fun toMastodonEditableProfile(
         tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
@@ -98,7 +98,7 @@ data class HttpProfileEntity internal constructor(
      *
      * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
      * [ProfileTootPaginateSource] for paginating through the resulting [HttpFollowableProfile]'s
-     * [HttpToot]s will be provided.
+     * [Toot]s will be provided.
      **/
     private fun toMastodonFollowableProfile(
         tootPaginateSourceProvider: ProfileTootPaginateSource.Provider

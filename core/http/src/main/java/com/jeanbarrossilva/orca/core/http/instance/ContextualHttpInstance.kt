@@ -5,6 +5,7 @@ import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.auth.actor.ActorProvider
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
+import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.http.HttpDatabase
 import com.jeanbarrossilva.orca.core.http.auth.authentication.HttpAuthenticator
 import com.jeanbarrossilva.orca.core.http.auth.authorization.HttpAuthorizer
@@ -17,7 +18,6 @@ import com.jeanbarrossilva.orca.core.http.feed.profile.cache.storage.HttpProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.search.HttpProfileSearcher
 import com.jeanbarrossilva.orca.core.http.feed.profile.search.cache.HttpProfileSearchResultsFetcher
 import com.jeanbarrossilva.orca.core.http.feed.profile.search.cache.storage.HttpProfileSearchResultsStorage
-import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpTootProvider
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.HttpTootFetcher
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.HttpTootStorage
@@ -83,11 +83,11 @@ class ContextualHttpInstance(
             profileSearchResultsStorage
         )
 
-    /** [HttpTootStorage] that will store fetched [HttpToot]s. */
+    /** [HttpTootStorage] that will store fetched [Toot]s. */
     private val tootStorage =
         HttpTootStorage(profileCache, database.tootEntityDao, database.styleEntityDao)
 
-    /** [Cache] that decides how to obtain [HttpToot]s. */
+    /** [Cache] that decides how to obtain [Toot]s. */
     private val tootCache = Cache.of(context, name = "toot-cache", HttpTootFetcher, tootStorage)
 
     override val feedProvider = HttpFeedProvider(actorProvider)

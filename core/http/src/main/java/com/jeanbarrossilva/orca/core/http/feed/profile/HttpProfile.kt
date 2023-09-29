@@ -4,18 +4,15 @@ import com.chrynan.paginate.core.loadAllPagesItems
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.pagination.HttpTootPaginateSource
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
-import java.net.URL
 import kotlinx.coroutines.flow.Flow
+import java.net.URL
 
 /**
- * [Profile] whose [HttpToot]s are obtained through pagination performed by the
- * [tootPaginateSource].
+ * [Profile] whose [Toot]s are obtained through pagination performed by the [tootPaginateSource].
  *
- * @param tootPaginateSourceProvider [ProfileTootPaginateSource] for paginating through the
- * [HttpToot]s.
+ * @param tootPaginateSourceProvider [ProfileTootPaginateSource] for paginating through the [Toot]s.
  **/
 internal data class HttpProfile(
     private val tootPaginateSourceProvider: ProfileTootPaginateSource.Provider,

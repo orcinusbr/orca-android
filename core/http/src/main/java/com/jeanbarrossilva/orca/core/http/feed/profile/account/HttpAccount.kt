@@ -4,11 +4,11 @@ import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
+import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.ProfileTootPaginateSource
-import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.editable.HttpEditableProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.followable.HttpFollowableProfile
 import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
@@ -17,8 +17,8 @@ import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import io.ktor.client.call.body
 import io.ktor.client.request.parameter
-import java.net.URL
 import kotlinx.serialization.Serializable
+import java.net.URL
 
 /**
  * Structure returned by the API when requesting a user's account.
@@ -60,8 +60,8 @@ internal data class HttpAccount(
      * Converts this [HttpAccount] into a [Profile].
      *
      * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
-     * [ProfileTootPaginateSource] for paginating through the resulting [HttpProfile]'s [HttpToot]s
-     * will be provided.
+     * [ProfileTootPaginateSource] for paginating through the resulting [HttpProfile]'s [Toot]s will
+     * be provided.
      **/
     suspend fun toProfile(tootPaginateSourceProvider: ProfileTootPaginateSource.Provider): Profile {
         return if (isOwner()) {
@@ -91,7 +91,7 @@ internal data class HttpAccount(
      *
      * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
      * [ProfileTootPaginateSource] for paginating through the resulting [HttpEditableProfile]'s
-     * [HttpToot]s will be provided.
+     * [Toot]s will be provided.
      **/
     private fun toEditableProfile(tootPaginateSourceProvider: ProfileTootPaginateSource.Provider):
         HttpEditableProfile {
@@ -117,7 +117,7 @@ internal data class HttpAccount(
      *
      * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
      * [ProfileTootPaginateSource] for paginating through the resulting [HttpFollowableProfile]'s
-     * [HttpToot]s will be provided.
+     * [Toot]s will be provided.
      **/
     private suspend fun toFollowableProfile(
         tootPaginateSourceProvider: ProfileTootPaginateSource.Provider

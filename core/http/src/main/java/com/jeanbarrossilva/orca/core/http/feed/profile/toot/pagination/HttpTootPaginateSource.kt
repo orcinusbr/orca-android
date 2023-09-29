@@ -6,7 +6,6 @@ import com.chrynan.paginate.core.PageInfo
 import com.chrynan.paginate.core.PagedResult
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndGet
-import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.status.HttpStatus
 import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.std.injector.Injector
@@ -17,7 +16,7 @@ import io.ktor.http.Url
 
 /** [BasePaginateSource] that requests and paginates through [Toot]s. **/
 internal abstract class HttpTootPaginateSource internal constructor() :
-    BasePaginateSource<Url, HttpToot>() {
+    BasePaginateSource<Url, Toot>() {
     /** Index of the page that's the current one. **/
     private var page = 0
         set(index) { field = minOf(0, index) }
@@ -30,7 +29,7 @@ internal abstract class HttpTootPaginateSource internal constructor() :
         key: Url?,
         direction: PageDirection,
         currentPageCount: Int
-    ): PagedResult<Url, HttpToot> {
+    ): PagedResult<Url, Toot> {
         val response = getStatusesResponse(key)
         val headerLinks = response.headers.links
         val nextUrl = headerLinks.getOrNull(1)?.uri?.let(::Url)
