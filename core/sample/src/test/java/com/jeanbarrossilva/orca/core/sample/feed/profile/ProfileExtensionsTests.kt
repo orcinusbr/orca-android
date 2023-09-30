@@ -13,7 +13,9 @@ internal class ProfileExtensionsTests {
     fun `GIVEN a sample profile WHEN getting its toots THEN they are the sample ones`() {
         runTest {
             assertContentEquals(
-                Toot.samples.take(SampleProfile.TOOTS_PER_PAGE),
+                Toot.samples.filter { it.author.profileURL == Profile.sample.url }.take(
+                    SampleProfile.TOOTS_PER_PAGE
+                ),
                 Profile.sample.getToots(0).first()
             )
         }

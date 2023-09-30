@@ -11,21 +11,18 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.UUID
 
-/** [Toot] returned by [sample]'s getter. **/
-private val sampleToot = createSample()
-
 /** [Toot]s returned by [samples]' getter. **/
-private val sampleToots = listOf(sampleToot) + List(31) { createSample() }
+private val sampleToots = listOf(Toot.sample) + List(31) { createSample() }
 
 /** A sample [Toot]. **/
 val Toot.Companion.sample: Toot
-    get() = sampleToot
+    get() = Reblog.sample
 
 /**
  * Sample [Toot]s.
  **/
 val Toot.Companion.samples
-    get() = sampleToots.toMutableList().apply { add(0, Reblog.sample) }.toList()
+    get() = sampleToots
 
 /** Creates a sample [Toot]. **/
 private fun createSample(): Toot {
