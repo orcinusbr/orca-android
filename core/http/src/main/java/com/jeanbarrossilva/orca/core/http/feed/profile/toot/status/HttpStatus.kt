@@ -14,8 +14,8 @@ import java.time.ZonedDateTime
 import kotlinx.serialization.Serializable
 
 /**
- * Structure returned by the API that is the DTO version of either an [HttpToot] or a [Reblog]; which
- * one it represents is determined by [reblog]'s nullability.
+ * Structure returned by the API that is the DTO version of either an [HttpToot] or a [Reblog];
+ * which one it represents is determined by [reblog]'s nullability.
  *
  * @param id Unique identifier.
  * @param createdAt ISO-8601-formatted [String] indicating the date and time of creation.
