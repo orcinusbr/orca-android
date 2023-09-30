@@ -45,4 +45,6 @@ abstract class Reblog internal constructor() : Toot() {
             "isFavorite=$isFavorite, favoriteCount=$favoriteCount, isReblogged=$isReblogged, " +
             "reblogCount=$reblogCount, url=$url)"
     }
+
+    companion object
 }

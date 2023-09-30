@@ -3,7 +3,9 @@ package com.jeanbarrossilva.orca.core.sample.feed.profile.toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
+import com.jeanbarrossilva.orca.core.feed.profile.toot.reblog.Reblog
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.sample
+import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.reblog.sample
 import java.net.URL
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -23,7 +25,7 @@ val Toot.Companion.sample: Toot
  * Sample [Toot]s.
  **/
 val Toot.Companion.samples
-    get() = sampleToots
+    get() = sampleToots.toMutableList().apply { add(0, Reblog.sample) }.toList()
 
 /** Creates a sample [Toot]. **/
 private fun createSample(): Toot {
