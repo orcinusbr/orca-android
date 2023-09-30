@@ -10,6 +10,7 @@ import java.net.URL
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.UUID
+import kotlinx.coroutines.flow.flowOf
 
 /** [Reblog] returned by [sample]. **/
 private val sampleReblog = Reblog(
@@ -32,7 +33,8 @@ private val sampleReblog = Reblog(
     favoriteCount = 151,
     isReblogged = true,
     reblogCount = 34,
-    url = URL("https://mastodon.social/@_inside/110900315644335855")
+    url = URL("https://mastodon.social/@_inside/110900315644335855"),
+    getComments = { flowOf(emptyList()) }
 )
 
 /** Sample [Reblog]. **/
