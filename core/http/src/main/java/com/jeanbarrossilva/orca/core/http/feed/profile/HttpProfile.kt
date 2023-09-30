@@ -6,8 +6,8 @@ import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.pagination.HttpTootPaginateSource
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
-import kotlinx.coroutines.flow.Flow
 import java.net.URL
+import kotlinx.coroutines.flow.Flow
 
 /**
  * [Profile] whose [Toot]s are obtained through pagination performed by the [tootPaginateSource].

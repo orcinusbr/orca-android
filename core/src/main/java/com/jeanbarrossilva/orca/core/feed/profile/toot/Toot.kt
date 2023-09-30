@@ -1,10 +1,10 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
-import kotlinx.coroutines.flow.Flow
 import java.io.Serializable
 import java.net.URL
 import java.time.ZonedDateTime
+import kotlinx.coroutines.flow.Flow
 
 /** Content that's been posted by a user, the [author]. **/
 abstract class Toot : Serializable {

@@ -17,8 +17,8 @@ import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import io.ktor.client.call.body
 import io.ktor.client.request.parameter
-import kotlinx.serialization.Serializable
 import java.net.URL
+import kotlinx.serialization.Serializable
 
 /**
  * Structure returned by the API when requesting a user's account.

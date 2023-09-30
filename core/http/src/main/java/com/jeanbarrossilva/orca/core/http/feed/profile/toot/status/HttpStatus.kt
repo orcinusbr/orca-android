@@ -9,9 +9,9 @@ import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
 import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
 import com.jeanbarrossilva.orca.platform.ui.core.style.fromHtml
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
-import kotlinx.serialization.Serializable
 import java.net.URL
 import java.time.ZonedDateTime
+import kotlinx.serialization.Serializable
 
 /**
  * Structure returned by the API that is the DTO version of either an [HttpToot] or a [Boost]; which

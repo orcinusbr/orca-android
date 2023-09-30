@@ -10,10 +10,10 @@ import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.client.call.body
 import io.ktor.client.request.HttpRequest
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import java.net.URL
 import java.time.ZonedDateTime
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 /** [Toot] whose actions perform an [HttpRequest] and communicate with the Mastodon API. **/
 data class HttpToot internal constructor(
