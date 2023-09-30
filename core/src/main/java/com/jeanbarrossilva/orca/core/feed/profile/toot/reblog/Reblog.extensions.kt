@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.emptyFlow
 /**
  * [Toot] that has been reblogged by someone else.
  *
- * @param original [Toot] from which the [Reblog] derives from.
+ * @param original [Toot] from which the [Reblog] derives.
  * @param reblogger [Author] by which the [Toot] has been reblogged.
  **/
 fun Reblog(original: Toot, reblogger: Author): Reblog {
