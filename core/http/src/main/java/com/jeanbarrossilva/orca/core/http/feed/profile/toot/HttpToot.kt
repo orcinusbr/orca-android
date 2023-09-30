@@ -56,4 +56,6 @@ data class HttpToot internal constructor(
                 .also { emit(it) }
         }
     }
+
+    companion object
 }

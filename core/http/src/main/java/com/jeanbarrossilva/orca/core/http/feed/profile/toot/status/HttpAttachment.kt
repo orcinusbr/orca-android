@@ -17,4 +17,6 @@ internal data class HttpAttachment(val previewUrl: String, val description: Stri
     fun toAttachment(): Attachment {
         return Attachment(description?.ifBlank { null }, URL(previewUrl))
     }
+
+    companion object
 }

@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
+import com.jeanbarrossilva.orca.core.feed.profile.toot.reblog.Reblog
 import java.io.Serializable
 import java.net.URL
 import java.time.ZonedDateTime
@@ -62,31 +63,7 @@ abstract class Toot : Serializable {
      * @param reblogger [Author] by which this [Toot] has been reblogged.
      **/
     fun toReblog(reblogger: Author): Reblog {
-        return object : Reblog() {
-            override val id = this@Toot.id
-            override val author = this@Toot.author
-            override val reblogger = reblogger
-            override val content = this@Toot.content
-            override val publicationDateTime = this@Toot.publicationDateTime
-            override val commentCount = this@Toot.commentCount
-            override val isFavorite = this@Toot.isFavorite
-            override val favoriteCount = this@Toot.favoriteCount
-            override val isReblogged = this@Toot.isReblogged
-            override val reblogCount = this@Toot.reblogCount
-            override val url = this@Toot.url
-
-            override suspend fun getComments(page: Int): Flow<List<Toot>> {
-                return this@Toot.getComments(page)
-            }
-
-            override suspend fun setFavorite(isFavorite: Boolean) {
-                this@Toot.setFavorite(isFavorite)
-            }
-
-            override suspend fun setReblogged(isReblogged: Boolean) {
-                this@Toot.setReblogged(isReblogged)
-            }
-        }
+        return Reblog(this, reblogger)
     }
 
     abstract suspend fun getComments(page: Int): Flow<List<Toot>>

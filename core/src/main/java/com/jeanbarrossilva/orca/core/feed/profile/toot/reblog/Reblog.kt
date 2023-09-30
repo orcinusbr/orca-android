@@ -1,5 +1,7 @@
-package com.jeanbarrossilva.orca.core.feed.profile.toot
+package com.jeanbarrossilva.orca.core.feed.profile.toot.reblog
 
+import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
+import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import java.util.Objects
 
 /** [Toot] that has been reblogged by someone else. **/
@@ -35,5 +37,12 @@ abstract class Reblog internal constructor() : Toot() {
             reblogCount,
             url
         )
+    }
+
+    override fun toString(): String {
+        return "Reblog(id=$id, author=$author, reblogger=$reblogger, content=$content, " +
+            "publicationDateTime=$publicationDateTime, commentCount=$commentCount, " +
+            "isFavorite=$isFavorite, favoriteCount=$favoriteCount, isReblogged=$isReblogged, " +
+            "reblogCount=$reblogCount, url=$url)"
     }
 }

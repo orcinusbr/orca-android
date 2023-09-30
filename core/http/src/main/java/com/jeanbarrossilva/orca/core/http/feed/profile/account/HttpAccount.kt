@@ -146,4 +146,6 @@ internal data class HttpAccount(
             url
         )
     }
+
+    companion object
 }

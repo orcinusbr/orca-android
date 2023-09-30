@@ -1,9 +1,9 @@
 package com.jeanbarrossilva.orca.core.http.feed.profile.toot.status
 
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Reblog
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
+import com.jeanbarrossilva.orca.core.feed.profile.toot.reblog.Reblog
 import com.jeanbarrossilva.orca.core.http.feed.profile.account.HttpAccount
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
 import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
@@ -51,26 +51,28 @@ data class HttpStatus internal constructor(
 ) {
     /** Converts this [HttpStatus] into a [Toot]. **/
     internal fun toToot(): Toot {
-        val author = reblog?.account?.toAuthor() ?: this.account.toAuthor()
-        val text = StyledString.fromHtml(content)
-        val attachments = mediaAttachments.map(HttpAttachment::toAttachment)
-        val content = Content.from(text, attachments) { card?.toHeadline() }
-        val publicationDateTime = ZonedDateTime.parse(createdAt)
-        val url = URL(url)
+        val status = reblog ?: this
+        val author = status.account.toAuthor()
+        val text = StyledString.fromHtml(status.content)
+        val attachments = status.mediaAttachments.map(HttpAttachment::toAttachment)
+        val content = Content.from(text, attachments) { status.card?.toHeadline() }
+        val publicationDateTime = ZonedDateTime.parse(status.createdAt)
+        val url = URL(status.url)
         return HttpToot(
-            id,
+            status.id,
             author,
             content,
             publicationDateTime,
-            repliesCount,
-            favourited == true,
-            favouritesCount,
-            reblogged == true,
-            reblogsCount,
+            status.repliesCount,
+            status.favourited == true,
+            status.favouritesCount,
+            status.reblogged == true,
+            status.reblogsCount,
             url
         )
             .`if`<Toot>(reblog != null) {
-                toReblog(reblogger = author)
+                val reblogger = this@HttpStatus.account.toAuthor()
+                toReblog(reblogger)
             }
     }
 }

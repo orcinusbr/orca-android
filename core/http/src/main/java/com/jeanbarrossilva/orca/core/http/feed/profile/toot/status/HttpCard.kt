@@ -29,4 +29,6 @@ internal data class HttpCard(
             Headline(title, subtitle = description.ifEmpty { null }, coverURL = URL(image))
         }
     }
+
+    companion object
 }
