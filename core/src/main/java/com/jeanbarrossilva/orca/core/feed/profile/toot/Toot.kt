@@ -57,15 +57,15 @@ abstract class Toot : Serializable {
     }
 
     /**
-     * Converts this [Toot] into a [Boost], boosted by the [booster].
+     * Converts this [Toot] into a [Reblog], reblogged by the [reblogger].
      *
-     * @param booster [Author] by which this [Toot] has been boosted.
+     * @param reblogger [Author] by which this [Toot] has been reblogged.
      **/
-    fun toBoost(booster: Author): Boost {
-        return object : Boost() {
+    fun toReblog(reblogger: Author): Reblog {
+        return object : Reblog() {
             override val id = this@Toot.id
             override val author = this@Toot.author
-            override val booster = booster
+            override val reblogger = reblogger
             override val content = this@Toot.content
             override val publicationDateTime = this@Toot.publicationDateTime
             override val commentCount = this@Toot.commentCount

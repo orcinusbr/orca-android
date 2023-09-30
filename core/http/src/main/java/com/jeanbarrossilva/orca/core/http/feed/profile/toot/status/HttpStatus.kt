@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.orca.core.http.feed.profile.toot.status
 
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Boost
+import com.jeanbarrossilva.orca.core.feed.profile.toot.Reblog
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
 import com.jeanbarrossilva.orca.core.http.feed.profile.account.HttpAccount
@@ -14,7 +14,7 @@ import java.time.ZonedDateTime
 import kotlinx.serialization.Serializable
 
 /**
- * Structure returned by the API that is the DTO version of either an [HttpToot] or a [Boost]; which
+ * Structure returned by the API that is the DTO version of either an [HttpToot] or a [Reblog]; which
  * one it represents is determined by [reblog]'s nullability.
  *
  * @param id Unique identifier.
@@ -70,7 +70,7 @@ data class HttpStatus internal constructor(
             url
         )
             .`if`<Toot>(reblog != null) {
-                toBoost(booster = author)
+                toReblog(reblogger = author)
             }
     }
 }

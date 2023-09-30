@@ -2,16 +2,16 @@ package com.jeanbarrossilva.orca.core.feed.profile.toot
 
 import java.util.Objects
 
-/** [Toot] that has been boosted by someone else. **/
-abstract class Boost internal constructor() : Toot() {
-    /** [Author] by which this [Boost] has been created. **/
-    abstract val booster: Author
+/** [Toot] that has been reblogged by someone else. **/
+abstract class Reblog internal constructor() : Toot() {
+    /** [Author] by which this [Reblog] has been created. **/
+    abstract val reblogger: Author
 
     override fun equals(other: Any?): Boolean {
-        return other is Boost &&
+        return other is Reblog &&
             id == other.id &&
             author == other.author &&
-            booster == other.booster &&
+            reblogger == other.reblogger &&
             content == other.content &&
             publicationDateTime == other.publicationDateTime &&
             commentCount == other.commentCount &&
@@ -25,7 +25,7 @@ abstract class Boost internal constructor() : Toot() {
     override fun hashCode(): Int {
         return Objects.hash(
             author,
-            booster,
+            reblogger,
             content,
             publicationDateTime,
             commentCount,

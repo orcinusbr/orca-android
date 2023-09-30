@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Boost
+import com.jeanbarrossilva.orca.core.feed.profile.toot.Reblog
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Headline
@@ -92,7 +92,7 @@ internal data class HttpTootEntity(
         )
             .`if`<Toot>(boosterID != null) {
                 val booster = profileCache.get(boosterID!!).toAuthor()
-                toBoost(booster)
+                toReblog(booster)
             }
     }
 
@@ -106,7 +106,7 @@ internal data class HttpTootEntity(
             return HttpTootEntity(
                 toot.id,
                 toot.author.id,
-                boosterID = if (toot is Boost) toot.booster.id else null,
+                boosterID = if (toot is Reblog) toot.reblogger.id else null,
                 "${toot.content.text}",
                 toot.content.highlight?.headline?.title,
                 toot.content.highlight?.headline?.subtitle,
