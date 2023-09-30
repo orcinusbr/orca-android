@@ -25,7 +25,7 @@ import java.time.ZonedDateTime
  *
  * @param id Unique identifier.
  * @param authorID ID of the [Author] that has authored the [Toot].
- * @param boosterID ID of the booster that has boosted the [Toot].
+ * @param rebloggerID ID of the [Author] that has reblogged the [Toot].
  * @param headlineTitle Title of the [Toot]'s [content][Toot.content]'s
  * [highlight][Content.highlight] [headline][Highlight.headline].
  * @param headlineSubtitle Subtitle of the [Toot]'s [content][Toot.content]'s
@@ -45,7 +45,7 @@ import java.time.ZonedDateTime
 internal data class HttpTootEntity(
     @PrimaryKey val id: String,
     @ColumnInfo(name = "author_id") val authorID: String,
-    @ColumnInfo(name = "booster_id") val boosterID: String?,
+    @ColumnInfo(name = "reblogger_id") val rebloggerID: String?,
     val text: String,
     @ColumnInfo(name = "headline_title") val headlineTitle: String?,
     @ColumnInfo(name = "headline_subtitle") val headlineSubtitle: String?,
@@ -90,8 +90,8 @@ internal data class HttpTootEntity(
             reblogCount,
             url
         )
-            .`if`<Toot>(boosterID != null) {
-                val reblogger = profileCache.get(boosterID!!).toAuthor()
+            .`if`<Toot>(rebloggerID != null) {
+                val reblogger = profileCache.get(rebloggerID!!).toAuthor()
                 Reblog(this, reblogger)
             }
     }
@@ -106,7 +106,7 @@ internal data class HttpTootEntity(
             return HttpTootEntity(
                 toot.id,
                 toot.author.id,
-                boosterID = if (toot is Reblog) toot.reblogger.id else null,
+                rebloggerID = if (toot is Reblog) toot.reblogger.id else null,
                 "${toot.content.text}",
                 toot.content.highlight?.headline?.title,
                 toot.content.highlight?.headline?.subtitle,
