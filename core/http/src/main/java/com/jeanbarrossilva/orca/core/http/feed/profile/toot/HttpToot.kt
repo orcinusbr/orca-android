@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 /** [Toot] whose actions perform an [HttpRequest] and communicate with the Mastodon API. **/
-data class HttpToot internal constructor(
+class HttpToot internal constructor(
     override val id: String,
     override val author: Author,
     override val content: Content,

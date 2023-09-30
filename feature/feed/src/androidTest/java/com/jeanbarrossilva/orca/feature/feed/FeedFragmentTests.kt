@@ -9,9 +9,11 @@ import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.launchActivity
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
+import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.instance.InstanceProvider
 import com.jeanbarrossilva.orca.core.sample.feed.profile.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.SampleTootWriter
+import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.samples
 import com.jeanbarrossilva.orca.core.sample.instance.sample
 import com.jeanbarrossilva.orca.feature.feed.test.FeedActivity
 import com.jeanbarrossilva.orca.feature.feed.test.TestFeedBoundary
@@ -20,7 +22,6 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.TOOT_PR
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.onTootPreviews
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.time.Time4JTestRule
 import com.jeanbarrossilva.orca.std.injector.test.InjectorTestRule
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -41,10 +42,7 @@ internal class FeedFragmentTests {
 
     @Test
     fun favoritesToot() {
-        runTest {
-            SampleTootWriter
-                .updateFavorite(Profile.sample.getToots(page = 0).first().first().id, false)
-        }
+        runTest { SampleTootWriter.updateFavorite(Toot.samples.first().id, false) }
         launchActivity<FeedActivity>(FeedActivity.getIntent(Profile.sample.id)).use {
             composeRule
                 .onTootPreviews()

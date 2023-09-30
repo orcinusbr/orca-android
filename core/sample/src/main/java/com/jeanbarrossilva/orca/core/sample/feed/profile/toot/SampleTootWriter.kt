@@ -14,7 +14,7 @@ object SampleTootWriter {
      **/
     fun updateFavorite(id: String, isFavorite: Boolean) {
         update(id) {
-            (this as SampleToot).copy(isFavorite = isFavorite)
+            copy(isFavorite = isFavorite)
         }
     }
 
@@ -26,7 +26,7 @@ object SampleTootWriter {
      **/
     fun updateReblogged(id: String, isReblogged: Boolean) {
         update(id) {
-            (this as SampleToot).copy(isReblogged = isReblogged)
+            copy(isReblogged = isReblogged)
         }
     }
 
