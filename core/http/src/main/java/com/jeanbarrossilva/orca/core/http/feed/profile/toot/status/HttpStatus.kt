@@ -72,7 +72,7 @@ data class HttpStatus internal constructor(
         )
             .`if`<Toot>(reblog != null) {
                 val reblogger = this@HttpStatus.account.toAuthor()
-                toReblog(reblogger)
+                Reblog(this, reblogger)
             }
     }
 }

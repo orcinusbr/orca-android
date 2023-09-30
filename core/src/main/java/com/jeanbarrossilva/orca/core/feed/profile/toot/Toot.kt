@@ -1,7 +1,6 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
-import com.jeanbarrossilva.orca.core.feed.profile.toot.reblog.Reblog
 import java.io.Serializable
 import java.net.URL
 import java.time.ZonedDateTime
@@ -55,15 +54,6 @@ abstract class Toot : Serializable {
      **/
     suspend fun toggleReblogged() {
         setReblogged(!isReblogged)
-    }
-
-    /**
-     * Converts this [Toot] into a [Reblog], reblogged by the [reblogger].
-     *
-     * @param reblogger [Author] by which this [Toot] has been reblogged.
-     **/
-    fun toReblog(reblogger: Author): Reblog {
-        return Reblog(this, reblogger)
     }
 
     abstract suspend fun getComments(page: Int): Flow<List<Toot>>

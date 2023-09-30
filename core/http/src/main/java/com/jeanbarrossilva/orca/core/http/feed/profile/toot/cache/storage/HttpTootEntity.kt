@@ -91,8 +91,8 @@ internal data class HttpTootEntity(
             url
         )
             .`if`<Toot>(boosterID != null) {
-                val booster = profileCache.get(boosterID!!).toAuthor()
-                toReblog(booster)
+                val reblogger = profileCache.get(boosterID!!).toAuthor()
+                Reblog(this, reblogger)
             }
     }
 
