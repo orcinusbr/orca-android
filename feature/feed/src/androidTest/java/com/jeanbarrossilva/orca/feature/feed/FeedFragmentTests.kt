@@ -11,7 +11,6 @@ import androidx.test.core.app.launchActivity
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.instance.InstanceProvider
 import com.jeanbarrossilva.orca.core.sample.feed.profile.sample
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.SampleTootWriter
 import com.jeanbarrossilva.orca.core.sample.instance.sample
 import com.jeanbarrossilva.orca.feature.feed.test.FeedActivity
 import com.jeanbarrossilva.orca.feature.feed.test.TestFeedBoundary
@@ -42,8 +41,10 @@ internal class FeedFragmentTests {
     @Test
     fun favoritesToot() {
         runTest {
-            SampleTootWriter
-                .updateFavorite(Profile.sample.getToots(page = 0).first().first().id, false)
+            val toot = Profile.sample.getToots(page = 0).first().first()
+            if (toot.favorite.isEnabled) {
+                toot.favorite.toggle()
+            }
         }
         launchActivity<FeedActivity>(FeedActivity.getIntent(Profile.sample.id)).use {
             composeRule

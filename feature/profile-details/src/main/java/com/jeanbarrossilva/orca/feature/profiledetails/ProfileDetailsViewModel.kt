@@ -10,10 +10,10 @@ import com.jeanbarrossilva.orca.core.feed.profile.ProfileProvider
 import com.jeanbarrossilva.orca.core.feed.profile.toot.TootProvider
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.toTootPreview
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.toTootPreviewFlow
 import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
 import com.jeanbarrossilva.orca.platform.ui.core.context.share
-import com.jeanbarrossilva.orca.platform.ui.core.mapEach
+import com.jeanbarrossilva.orca.platform.ui.core.flatMapEach
 import java.net.URL
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -59,13 +59,13 @@ internal class ProfileDetailsViewModel private constructor(
 
     fun favorite(tootID: String) {
         coroutineScope.launch {
-            tootProvider.provide(tootID).first().toggleFavorite()
+            tootProvider.provide(tootID).first().favorite.toggle()
         }
     }
 
     fun reblog(tootID: String) {
         coroutineScope.launch {
-            tootProvider.provide(tootID).first().toggleReblogged()
+            tootProvider.provide(tootID).first().reblog.toggle()
         }
     }
 
@@ -76,8 +76,8 @@ internal class ProfileDetailsViewModel private constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun getTootPreviewsAt(index: Int): Flow<List<TootPreview>> {
         return profileFlow.filterNotNull().flatMapConcat { profile ->
-            profile.getToots(index).mapEach { toot ->
-                toot.toTootPreview(Colors.getDefault(context))
+            profile.getToots(index).flatMapEach { toot ->
+                toot.toTootPreviewFlow(Colors.getDefault(context))
             }
         }
     }

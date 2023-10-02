@@ -56,10 +56,8 @@ data class HttpStatus internal constructor(
             author,
             content,
             publicationDateTime,
-            repliesCount,
-            favourited == true,
+            commentCount = repliesCount,
             favouritesCount,
-            reblogged == true,
             reblogsCount,
             url
         )

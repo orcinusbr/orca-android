@@ -60,21 +60,7 @@ internal data class TootDetails(
 
     companion object {
         val sample
-            @Composable get() = TootDetails(
-                Toot.sample.id,
-                Toot.sample.author.avatarURL,
-                Toot.sample.author.name,
-                Toot.sample.author.account,
-                TootPreview.sample.text,
-                TootPreview.sample.highlight,
-                Toot.sample.publicationDateTime,
-                Toot.sample.commentCount,
-                Toot.sample.isFavorite,
-                Toot.sample.favoriteCount,
-                Toot.sample.isReblogged,
-                Toot.sample.reblogCount,
-                Toot.sample.url
-            )
+            @Composable get() = Toot.sample.toTootDetails()
     }
 }
 

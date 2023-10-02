@@ -43,6 +43,7 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.Favorit
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.ReblogStat
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.RelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.rememberRelativeTimeProvider
+import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
 import java.io.Serializable
@@ -144,7 +145,21 @@ data class TootPreview(
 
         /** Gets a sample [TootPreview]. **/
         fun getSample(colors: Colors): TootPreview {
-            return Toot.sample.toTootPreview(colors)
+            return TootPreview(
+                Toot.sample.id,
+                Toot.sample.author.avatarURL,
+                Toot.sample.author.name,
+                Toot.sample.author.account,
+                Toot.sample.content.text.toAnnotatedString(colors),
+                Toot.sample.content.highlight,
+                Toot.sample.publicationDateTime,
+                Toot.sample.comment.countFlow.value,
+                Toot.sample.favorite.isEnabledFlow.value,
+                Toot.sample.favorite.countFlow.value,
+                Toot.sample.reblog.isEnabledFlow.value,
+                Toot.sample.reblog.countFlow.value,
+                Toot.sample.url
+            )
         }
     }
 }
