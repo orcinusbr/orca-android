@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot.stat
 
-import com.jeanbarrossilva.orca.core.feed.profile.toot.stat.test.isEmpty
+import app.cash.turbine.test
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -13,7 +13,12 @@ internal class StatExtensionsTests {
     fun buildsEmptyStat() {
         val stat = emptyStat<Int>()
         assertEquals(0, stat.count)
-        runTest { assertTrue(stat.get(0).isEmpty()) }
+        runTest {
+            stat.get(0).test {
+                assertTrue(awaitItem().isEmpty())
+                awaitComplete()
+            }
+        }
     }
 
     @Test
