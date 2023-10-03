@@ -15,8 +15,8 @@ import kotlinx.coroutines.flow.merge
 fun <I, O> Flow<Collection<I>>.flatMapEach(transform: suspend (I) -> Flow<O>): Flow<List<O>> {
     val elements = mutableListOf<O>()
     return flow {
-        mapEach(transform).map { flow ->
-            flow.merge().map { element ->
+        mapEach(transform).collect { flow ->
+            flow.merge().collect { element ->
                 elements.add(element)
                 emit(elements)
             }
