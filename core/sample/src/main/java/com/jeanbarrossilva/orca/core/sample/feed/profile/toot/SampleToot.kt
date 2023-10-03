@@ -4,8 +4,8 @@ import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
-import com.jeanbarrossilva.orca.core.feed.profile.toot.stat.emptyStat
-import com.jeanbarrossilva.orca.core.feed.profile.toot.stat.toggleable.emptyToggleableStat
+import com.jeanbarrossilva.orca.core.feed.profile.toot.stat.Stat
+import com.jeanbarrossilva.orca.core.feed.profile.toot.stat.toggleable.ToggleableStat
 import java.net.URL
 import java.time.ZonedDateTime
 
@@ -17,7 +17,7 @@ internal data class SampleToot(
     override val publicationDateTime: ZonedDateTime,
     override val url: URL
 ) : Toot() {
-    override val comment = emptyStat<Toot>()
-    override val favorite = emptyToggleableStat<Profile>()
-    override val reblog = emptyToggleableStat<Profile>()
+    override val comment = Stat<Toot>()
+    override val favorite = ToggleableStat<Profile>()
+    override val reblog = ToggleableStat<Profile>()
 }

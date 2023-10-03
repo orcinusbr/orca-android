@@ -1,10 +1,11 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot.stat.toggleable
 
+import com.jeanbarrossilva.orca.core.feed.profile.toot.stat.Stat
 import kotlinx.coroutines.flow.flowOf
 
-/** Creates an empty [ToggleableStat]. **/
-fun <T> emptyToggleableStat(): ToggleableStat<T> {
-    return buildToggleableStat(count = 0) {
+/** [Stat] that can have its enable-ability toggled. **/
+fun <T> ToggleableStat(): ToggleableStat<T> {
+    return ToggleableStat(count = 0) {
         get {
             flowOf(emptyList())
         }
@@ -12,12 +13,11 @@ fun <T> emptyToggleableStat(): ToggleableStat<T> {
 }
 
 /**
- * Builds a [ToggleableStat].
+ * [Stat] that can have its enable-ability toggled.
  *
  * @param count Initial amount of elements of the [ToggleableStat].
  * @param build Configuration for the [ToggleableStat].
  **/
-fun <T> buildToggleableStat(count: Int, build: ToggleableStat.Builder<T>.() -> Unit):
-    ToggleableStat<T> {
+fun <T> ToggleableStat(count: Int, build: ToggleableStat.Builder<T>.() -> Unit): ToggleableStat<T> {
     return ToggleableStat.Builder<T>(count).apply(build).build()
 }

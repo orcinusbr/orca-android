@@ -2,7 +2,6 @@ package com.jeanbarrossilva.orca.core.http.feed.profile.toot.stat
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.stat.Stat
-import com.jeanbarrossilva.orca.core.feed.profile.toot.stat.buildStat
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpContext
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
@@ -18,8 +17,9 @@ import kotlinx.coroutines.flow.flow
  * @param id ID of the [HttpToot] for which the [Stat] is.
  * @param count Amount of comments that the [HttpToot] has received.
  **/
-internal fun buildCommentStat(id: String, count: Int): Stat<Toot> {
-    return buildStat(count) {
+@Suppress("FunctionName")
+internal fun CommentStat(id: String, count: Int): Stat<Toot> {
+    return Stat(count) {
         get {
             flow {
                 Injector

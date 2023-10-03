@@ -9,7 +9,7 @@ internal class ToggleableStatExtensionsTests {
     fun buildsToggleableStatWithConfiguredSetEnabled() {
         var isEnabled = false
         runTest {
-            buildToggleableStat<Int>(count = 1) {
+            ToggleableStat<Int>(count = 1) {
                 setEnabled {
                     isEnabled = it
                 }

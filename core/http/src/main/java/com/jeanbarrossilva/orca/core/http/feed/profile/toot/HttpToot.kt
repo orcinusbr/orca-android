@@ -3,9 +3,9 @@ package com.jeanbarrossilva.orca.core.http.feed.profile.toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
-import com.jeanbarrossilva.orca.core.http.feed.profile.toot.stat.buildCommentStat
-import com.jeanbarrossilva.orca.core.http.feed.profile.toot.stat.buildFavoriteStat
-import com.jeanbarrossilva.orca.core.http.feed.profile.toot.stat.buildReblogStat
+import com.jeanbarrossilva.orca.core.http.feed.profile.toot.stat.CommentStat
+import com.jeanbarrossilva.orca.core.http.feed.profile.toot.stat.FavoriteStat
+import com.jeanbarrossilva.orca.core.http.feed.profile.toot.stat.ReblogStat
 import io.ktor.client.request.HttpRequest
 import java.net.URL
 import java.time.ZonedDateTime
@@ -27,7 +27,7 @@ data class HttpToot internal constructor(
     private val reblogCount: Int,
     override val url: URL
 ) : Toot() {
-    override val comment = buildCommentStat(id, commentCount)
-    override val favorite = buildFavoriteStat(id, favoriteCount)
-    override val reblog = buildReblogStat(id, reblogCount)
+    override val comment = CommentStat(id, commentCount)
+    override val favorite = FavoriteStat(id, favoriteCount)
+    override val reblog = ReblogStat(id, reblogCount)
 }

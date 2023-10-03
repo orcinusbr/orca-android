@@ -11,7 +11,7 @@ import kotlinx.coroutines.test.runTest
 internal class StatExtensionsTests {
     @Test
     fun buildsEmptyStat() {
-        val stat = emptyStat<Int>()
+        val stat = Stat<Int>()
         assertEquals(0, stat.count)
         runTest {
             stat.get(0).test {
@@ -23,7 +23,7 @@ internal class StatExtensionsTests {
 
     @Test
     fun buildsStatWithConfiguredCount() {
-        assertEquals(0, buildStat<Int>(count = 0) { }.count)
+        assertEquals(0, Stat<Int>(count = 0) { }.count)
     }
 
     @Test
@@ -31,7 +31,7 @@ internal class StatExtensionsTests {
         runTest {
             assertEquals(
                 listOf(0, 1),
-                buildStat(count = 2) {
+                Stat(count = 2) {
                     get {
                         flowOf(listOf(0, 1))
                     }

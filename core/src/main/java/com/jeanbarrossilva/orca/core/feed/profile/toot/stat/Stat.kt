@@ -7,12 +7,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 
 /**
- * Specific statistic whose amounts emitted to the [countFlow] doesn't necessarily reflect the
- * summed [size][List.size] of all [List]s emitted to the result of [get]. Although all core
- * variants should be as precise as possible when defining what the total amount of elements counted
- * by this [Stat] is, there is no precise and efficient way of guaranteeing parity.
+ * Specific statistic whose amounts emitted to the [count] doesn't necessarily reflect the summed
+ * [size][List.size] of all [List]s emitted to the result of [get]. Although all core variants
+ * should be as precise as possible when defining what the total amount of elements counted by this
+ * [Stat] is, there is no precise and efficient way of guaranteeing parity.
  *
- * An instance of this class can be created via the [Stat] method, through which it can be
+ * An instance of this class can be created via its factory methods, through which it can be
  * properly configured.
  *
  * @param count Initial amount of elements.
