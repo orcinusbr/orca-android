@@ -1,8 +1,13 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot.stat.toggleable
 
+import kotlinx.coroutines.flow.flowOf
+
 /** Creates an empty [ToggleableStat]. **/
 fun <T> emptyToggleableStat(): ToggleableStat<T> {
     return buildToggleableStat(count = 0) {
+        get {
+            flowOf(emptyList())
+        }
     }
 }
 

@@ -1,8 +1,13 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot.stat
 
+import kotlinx.coroutines.flow.flowOf
+
 /** Creates an empty [Stat]. **/
 fun <T> emptyStat(): Stat<T> {
     return buildStat(count = 0) {
+        get {
+            flowOf(emptyList())
+        }
     }
 }
 
