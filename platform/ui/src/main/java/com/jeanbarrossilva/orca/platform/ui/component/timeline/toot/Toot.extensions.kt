@@ -60,11 +60,11 @@ internal fun Toot.toTootPreview(colors: Colors): TootPreview {
         content.text.toAnnotatedString(colors),
         content.highlight,
         publicationDateTime,
-        comment.countFlow.value,
-        favorite.isEnabledFlow.value,
-        favorite.countFlow.value,
-        reblog.isEnabledFlow.value,
-        reblog.countFlow.value,
+        comment.count,
+        favorite.isEnabled,
+        favorite.count,
+        reblog.isEnabled,
+        reblog.count,
         url
     )
 }

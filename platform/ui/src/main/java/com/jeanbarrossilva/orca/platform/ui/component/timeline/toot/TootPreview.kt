@@ -153,11 +153,11 @@ data class TootPreview(
                 Toot.sample.content.text.toAnnotatedString(colors),
                 Toot.sample.content.highlight,
                 Toot.sample.publicationDateTime,
-                Toot.sample.comment.countFlow.value,
-                Toot.sample.favorite.isEnabledFlow.value,
-                Toot.sample.favorite.countFlow.value,
-                Toot.sample.reblog.isEnabledFlow.value,
-                Toot.sample.reblog.countFlow.value,
+                Toot.sample.comment.count,
+                Toot.sample.favorite.isEnabled,
+                Toot.sample.favorite.count,
+                Toot.sample.reblog.isEnabled,
+                Toot.sample.reblog.count,
                 Toot.sample.url
             )
         }

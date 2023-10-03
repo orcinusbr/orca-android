@@ -91,7 +91,7 @@ internal data class HttpTootEntity(
          *
          * @param toot [HttpToot] from which the [HttpTootEntity] will be created.
          **/
-        suspend fun from(toot: HttpToot): HttpTootEntity {
+        fun from(toot: HttpToot): HttpTootEntity {
             return HttpTootEntity(
                 toot.id,
                 toot.author.id,
@@ -101,10 +101,10 @@ internal data class HttpTootEntity(
                 "${toot.content.highlight?.headline?.coverURL}",
                 "${toot.publicationDateTime}",
                 toot.comment.countFlow.value,
-                toot.favorite.isEnabledFlow.value,
-                toot.favorite.countFlow.value,
-                toot.reblog.isEnabledFlow.value,
-                toot.reblog.countFlow.value,
+                toot.favorite.isEnabled,
+                toot.favorite.count,
+                toot.reblog.isEnabled,
+                toot.reblog.count,
                 "${toot.url}"
             )
         }
