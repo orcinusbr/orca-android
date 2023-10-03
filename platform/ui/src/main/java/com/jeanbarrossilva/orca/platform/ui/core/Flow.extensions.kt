@@ -1,9 +1,11 @@
 package com.jeanbarrossilva.orca.platform.ui.core
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.runningFold
 
 /**
  * Maps each element of the emitted [Collection]s to the resulting [Flow] of [transform], merging
@@ -12,14 +14,11 @@ import kotlinx.coroutines.flow.merge
  *
  * @param transform Transformation to be made to the currently iterated element.
  **/
+@OptIn(ExperimentalCoroutinesApi::class)
 fun <I, O> Flow<Collection<I>>.flatMapEach(transform: suspend (I) -> Flow<O>): Flow<List<O>> {
-    val elements = mutableListOf<O>()
-    return flow {
-        mapEach(transform).collect { flow ->
-            flow.merge().collect { element ->
-                elements.add(element)
-                emit(elements)
-            }
+    return mapEach(transform).flatMapLatest { flows ->
+        flows.merge().runningFold(emptyList()) { accumulator, element ->
+            accumulator + element
         }
     }
 }
