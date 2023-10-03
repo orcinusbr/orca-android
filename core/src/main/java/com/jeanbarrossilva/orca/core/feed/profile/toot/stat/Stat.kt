@@ -37,6 +37,7 @@ abstract class Stat<T> internal constructor(count: Int) {
      *
      * @param count Initial amount of elements of the [Stat].
      **/
+    @StatDsl
     open class Builder<T> internal constructor(protected val count: Int) {
         /** Lambda that provides the [Flow] to be returned by the built [Stat]'s [onGet] method. **/
         protected var onGet = { _: Int -> emptyFlow<List<T>>() }
