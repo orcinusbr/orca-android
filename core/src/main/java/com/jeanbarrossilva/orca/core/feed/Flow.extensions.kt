@@ -8,8 +8,10 @@ import kotlinx.coroutines.flow.map
  *
  * @param predicate Whether the currently iterated element should be in the filtered [List].
  **/
-internal fun <T> Flow<Collection<T>>.filterEach(predicate: (T) -> Boolean): Flow<List<T>> {
-    return map {
-        it.filter(predicate)
+internal fun <T> Flow<Collection<T>>.filterEach(predicate: suspend (T) -> Boolean): Flow<List<T>> {
+    return map { elements ->
+        elements.filter { element ->
+            predicate(element)
+        }
     }
 }

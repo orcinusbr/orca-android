@@ -17,6 +17,7 @@ dependencies {
     androidTestImplementation(libs.android.test.runner)
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.kotlin.coroutines.test)
+    androidTestImplementation(libs.turbine)
 
     implementation(project(":core"))
     implementation(libs.android.core)

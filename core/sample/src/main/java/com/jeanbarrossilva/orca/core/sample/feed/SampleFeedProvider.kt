@@ -6,6 +6,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfile
 import com.jeanbarrossilva.orca.core.sample.feed.profile.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.SampleTootProvider
+import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.muting.SampleTermMuter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
@@ -14,6 +15,8 @@ import kotlinx.coroutines.flow.map
 internal object SampleFeedProvider : FeedProvider() {
     /** [Flow] with the toots to be provided in the feed. **/
     private val tootsFlow = SampleTootProvider.tootsFlow.asStateFlow()
+
+    override val termMuter = SampleTermMuter()
 
     override suspend fun onProvide(userID: String, page: Int): Flow<List<Toot>> {
         return tootsFlow.map {

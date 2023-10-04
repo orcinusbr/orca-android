@@ -1,12 +1,16 @@
 package com.jeanbarrossilva.orca.core.feed
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.orca.core.feed.profile.toot.muting.TermMuter
 import kotlinx.coroutines.flow.Flow
 
 /**
  * Provides a user's feed (the [Toot]s shown to them based on who they follow) through [onProvide].
  **/
 abstract class FeedProvider {
+    /** [TermMuter] by which [Toot]s with muted terms will be filtered out. **/
+    protected abstract val termMuter: TermMuter
+
     /**
      * [IllegalArgumentException] thrown when a user that doesn't exist is requested to be provided.
      *
@@ -27,10 +31,7 @@ abstract class FeedProvider {
     suspend fun provide(userID: String, page: Int): Flow<List<Toot>> {
         ensureContainsUser(userID)
         ensurePageValidity(page)
-        return onProvide(userID, page).filterEach {
-            // TODO: Allow only toots that don't mention muted terms to be within the collections.
-            true
-        }
+        return onProvide(userID, page).filterEach { !termMuter.isMuted(it.content) }
     }
 
     /**

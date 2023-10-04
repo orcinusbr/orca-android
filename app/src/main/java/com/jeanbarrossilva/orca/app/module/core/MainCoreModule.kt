@@ -8,6 +8,7 @@ import com.jeanbarrossilva.orca.core.http.auth.authorization.HttpAuthorizer
 import com.jeanbarrossilva.orca.core.http.instance.HttpInstanceProvider
 import com.jeanbarrossilva.orca.core.instance.InstanceProvider
 import com.jeanbarrossilva.orca.core.sharedpreferences.actor.SharedPreferencesActorProvider
+import com.jeanbarrossilva.orca.core.sharedpreferences.feed.profile.toot.muting.SharedPreferencesTermMuter
 import com.jeanbarrossilva.orca.std.injector.Injectable
 
 internal class MainCoreModule : CoreModule() {
@@ -15,6 +16,7 @@ internal class MainCoreModule : CoreModule() {
         inject { HttpAuthorizer(context = get()) }
         inject<ActorProvider> { SharedPreferencesActorProvider(context = get()) }
         inject { HttpAuthenticator(context = get(), get<HttpAuthorizer>(), actorProvider = get()) }
+        inject { SharedPreferencesTermMuter(context = get()) }
         super.dependencies(this)
     }
 

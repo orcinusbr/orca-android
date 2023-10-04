@@ -25,7 +25,8 @@ class HttpInstanceProvider(private val context: Context) : InstanceProvider {
             authorizer = Injector.get(),
             authenticator = Injector.get(),
             actorProvider = Injector.get(),
-            Injector.get<SomeAuthenticationLock>() as AuthenticationLock<HttpAuthenticator>
+            Injector.get<SomeAuthenticationLock>() as AuthenticationLock<HttpAuthenticator>,
+            termMuter = Injector.get()
         )
     }
 }
