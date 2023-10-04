@@ -99,7 +99,7 @@ private val bodyModifier = Modifier.testTag(TOOT_PREVIEW_BODY_TAG)
  **/
 @Immutable
 data class TootPreview(
-    internal val id: String,
+    val id: String,
     val avatarURL: URL,
     val name: String,
     private val account: Account,

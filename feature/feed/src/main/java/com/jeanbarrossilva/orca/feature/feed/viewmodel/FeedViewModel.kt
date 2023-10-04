@@ -9,6 +9,7 @@ import com.jeanbarrossilva.loadable.list.flow.listLoadable
 import com.jeanbarrossilva.orca.core.feed.FeedProvider
 import com.jeanbarrossilva.orca.core.feed.profile.toot.TootProvider
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.toTootPreviewFlow
 import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
 import com.jeanbarrossilva.orca.platform.ui.core.context.share
@@ -28,6 +29,7 @@ internal class FeedViewModel(
     private val userID: String
 ) : ViewModel() {
     private val indexFlow = MutableStateFlow(0)
+    private val colors by lazy { Colors.getDefault(context) }
 
     private val context
         get() = contextProvider.provide()
@@ -35,7 +37,7 @@ internal class FeedViewModel(
     @OptIn(ExperimentalCoroutinesApi::class)
     val tootPreviewsLoadableFlow = indexFlow
         .flatMapLatest { feedProvider.provide(userID, it) }
-        .flatMapEach { it.toTootPreviewFlow(Colors.getDefault(context)) }
+        .flatMapEach(selector = TootPreview::id) { it.toTootPreviewFlow(colors) }
         .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
 
     fun favorite(tootID: String) {

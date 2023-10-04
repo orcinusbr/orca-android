@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.platform.ui.core
 
+import com.jeanbarrossilva.orca.platform.ui.core.replacement.emptyReplacementList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -14,11 +15,27 @@ import kotlinx.coroutines.flow.runningFold
  *
  * @param transform Transformation to be made to the currently iterated element.
  **/
-@OptIn(ExperimentalCoroutinesApi::class)
 fun <I, O> Flow<Collection<I>>.flatMapEach(transform: suspend (I) -> Flow<O>): Flow<List<O>> {
+    return flatMapEach(selector = { it }, transform)
+}
+
+/**
+ * Maps each element of the emitted [Collection]s to the resulting [Flow] of [transform], merging
+ * and folding them into an up-to-date [List] that gets emitted each time any of these [Flow]s
+ * receive an emission.
+ *
+ * @param selector Returns the value by which elements should be compared when replacing them.
+ * @param transform Transformation to be made to the currently iterated element.
+ **/
+@OptIn(ExperimentalCoroutinesApi::class)
+fun <I, O, S> Flow<Collection<I>>.flatMapEach(
+    selector: (O) -> S,
+    transform: suspend (I) -> Flow<O>
+): Flow<List<O>> {
     return mapEach(transform).flatMapLatest { flows ->
-        flows.merge().runningFold(emptyList()) { accumulator, element ->
-            accumulator + element
+        flows.merge().runningFold(emptyReplacementList(selector)) { accumulator, element ->
+            accumulator.add(element)
+            accumulator
         }
     }
 }
