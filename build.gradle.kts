@@ -14,6 +14,7 @@ plugins {
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.kotlin.symbolProcessor) apply false
+    alias(libs.plugins.moduleDependencyGraph)
 
     id("build-src")
 }
