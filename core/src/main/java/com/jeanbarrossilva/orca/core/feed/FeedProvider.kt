@@ -27,7 +27,10 @@ abstract class FeedProvider {
     suspend fun provide(userID: String, page: Int): Flow<List<Toot>> {
         ensureContainsUser(userID)
         ensurePageValidity(page)
-        return onProvide(userID, page)
+        return onProvide(userID, page).filterEach {
+            // TODO: Allow only toots that don't mention muted terms to be within the collections.
+            true
+        }
     }
 
     /**
