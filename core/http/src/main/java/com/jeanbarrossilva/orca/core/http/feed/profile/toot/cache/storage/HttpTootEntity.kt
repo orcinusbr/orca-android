@@ -79,9 +79,7 @@ internal data class HttpTootEntity(
             content,
             publicationDateTime,
             commentCount,
-            isFavorite,
             favoriteCount,
-            isReblogged,
             reblogCount,
             url
         )
@@ -102,11 +100,11 @@ internal data class HttpTootEntity(
                 toot.content.highlight?.headline?.subtitle,
                 "${toot.content.highlight?.headline?.coverURL}",
                 "${toot.publicationDateTime}",
-                toot.commentCount,
-                toot.isFavorite,
-                toot.favoriteCount,
-                toot.isReblogged,
-                toot.reblogCount,
+                toot.comment.countFlow.value,
+                toot.favorite.isEnabled,
+                toot.favorite.count,
+                toot.reblog.isEnabled,
+                toot.reblog.count,
                 "${toot.url}"
             )
         }

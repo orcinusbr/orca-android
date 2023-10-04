@@ -43,6 +43,7 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.Favorit
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.ReblogStat
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.RelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.rememberRelativeTimeProvider
+import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
 import java.io.Serializable
@@ -98,7 +99,7 @@ private val bodyModifier = Modifier.testTag(TOOT_PREVIEW_BODY_TAG)
  **/
 @Immutable
 data class TootPreview(
-    internal val id: String,
+    val id: String,
     val avatarURL: URL,
     val name: String,
     private val account: Account,
@@ -144,7 +145,21 @@ data class TootPreview(
 
         /** Gets a sample [TootPreview]. **/
         fun getSample(colors: Colors): TootPreview {
-            return Toot.sample.toTootPreview(colors)
+            return TootPreview(
+                Toot.sample.id,
+                Toot.sample.author.avatarURL,
+                Toot.sample.author.name,
+                Toot.sample.author.account,
+                Toot.sample.content.text.toAnnotatedString(colors),
+                Toot.sample.content.highlight,
+                Toot.sample.publicationDateTime,
+                Toot.sample.comment.count,
+                Toot.sample.favorite.isEnabled,
+                Toot.sample.favorite.count,
+                Toot.sample.reblog.isEnabled,
+                Toot.sample.reblog.count,
+                Toot.sample.url
+            )
         }
     }
 }

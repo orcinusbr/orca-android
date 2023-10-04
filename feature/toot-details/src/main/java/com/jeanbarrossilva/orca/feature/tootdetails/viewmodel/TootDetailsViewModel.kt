@@ -7,19 +7,20 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jeanbarrossilva.loadable.flow.loadable
 import com.jeanbarrossilva.loadable.list.flow.listLoadable
 import com.jeanbarrossilva.orca.core.feed.profile.toot.TootProvider
-import com.jeanbarrossilva.orca.feature.tootdetails.toTootDetails
+import com.jeanbarrossilva.orca.feature.tootdetails.toTootDetailsFlow
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.toTootPreview
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.toTootPreviewFlow
 import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
 import com.jeanbarrossilva.orca.platform.ui.core.context.share
-import com.jeanbarrossilva.orca.platform.ui.core.mapEach
+import com.jeanbarrossilva.orca.platform.ui.core.flatMapEach
 import java.net.URL
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 internal class TootDetailsViewModel private constructor(
@@ -35,25 +36,27 @@ internal class TootDetailsViewModel private constructor(
     private val context
         get() = contextProvider.provide()
 
-    val detailsLoadableFlow = tootFlow.map { it.toTootDetails(colors) }.loadable(viewModelScope)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val detailsLoadableFlow =
+        tootFlow.flatMapLatest { it.toTootDetailsFlow(colors) }.loadable(viewModelScope)
 
     val commentsLoadableFlow =
         flatMapCombine(commentsIndexFlow, tootFlow) { commentsIndex, toot ->
-            toot.getComments(commentsIndex).mapEach {
-                it.toTootPreview(colors)
+            toot.comment.get(commentsIndex).flatMapEach {
+                it.toTootPreviewFlow(colors)
             }
         }
             .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
 
     fun favorite(id: String) {
         viewModelScope.launch {
-            tootProvider.provide(id).first().toggleFavorite()
+            tootProvider.provide(id).first().favorite.toggle()
         }
     }
 
     fun reblog(id: String) {
         viewModelScope.launch {
-            tootProvider.provide(id).first().toggleReblogged()
+            tootProvider.provide(id).first().reblog.toggle()
         }
     }
 

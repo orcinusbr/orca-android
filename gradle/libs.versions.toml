@@ -43,6 +43,7 @@ mockk = { group = "io.mockk", name = "mockk-android", version = "1.13.7" }
 paginate = { group = "com.chrynan.paginate", name = "paginate-core", version = "0.3.0" }
 slf4j = { group = "org.slf4j", name = "slf4j-api", version = "2.0.7" }
 time4j = { group = "net.time4j", name = "time4j-android", version = "4.8-2021a" }
+turbine = { group = "app.cash.turbine", name = "turbine", version = "1.0.0" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-plugin" }

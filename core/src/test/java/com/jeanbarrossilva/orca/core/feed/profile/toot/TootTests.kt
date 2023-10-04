@@ -9,37 +9,41 @@ import kotlinx.coroutines.test.runTest
 internal class TootTests {
     @Test
     fun `GIVEN an unliked toot WHEN liking it THEN it's liked`() {
-        val toot = TestToot(isLiked = false)
+        val toot = TestToot()
         runTest {
-            toot.toggleFavorite()
-            assertTrue(toot.isFavorite)
+            toot.favorite.disable()
+            toot.favorite.enable()
+            assertTrue(toot.favorite.isEnabled)
         }
     }
 
     @Test
     fun `GIVEN a liked toot WHEN unliking it THEN it isn't liked`() {
-        val toot = TestToot(isLiked = true)
+        val toot = TestToot()
         runTest {
-            toot.toggleFavorite()
-            assertFalse(toot.isFavorite)
+            toot.favorite.enable()
+            toot.favorite.disable()
+            assertFalse(toot.favorite.isEnabled)
         }
     }
 
     @Test
     fun `GIVEN a non-reblogged toot WHEN reblogging it THEN it's reblogged`() {
-        val toot = TestToot(isReblogged = false)
+        val toot = TestToot()
         runTest {
-            toot.toggleReblogged()
-            assertTrue(toot.isReblogged)
+            toot.reblog.disable()
+            toot.reblog.enable()
+            assertTrue(toot.reblog.isEnabled)
         }
     }
 
     @Test
     fun `GIVEN a reblogged toot WHEN un-reblogging it THEN it isn't reblogged`() {
-        val toot = TestToot(isReblogged = true)
+        val toot = TestToot()
         runTest {
-            toot.toggleReblogged()
-            assertFalse(toot.isReblogged)
+            toot.reblog.enable()
+            toot.reblog.disable()
+            assertFalse(toot.reblog.isEnabled)
         }
     }
 }

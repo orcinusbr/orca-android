@@ -10,15 +10,7 @@ package com.jeanbarrossilva.orca.core.sample.feed.profile.type.editable
  * [replacement].
  **/
 fun <T> Collection<T>.replacingBy(replacement: T.() -> T, predicate: (T) -> Boolean): List<T> {
-    val iterator = iterator()
-    val accumulator = mutableListOf<T>()
-    while (iterator.hasNext()) {
-        val candidate = iterator.next()
-        val isReplaceable = predicate(candidate)
-        val accumulation = if (isReplaceable) candidate.replacement() else candidate
-        accumulator.add(accumulation)
-    }
-    return accumulator.toList()
+    return toMutableList().apply { replaceBy(replacement, predicate) }.toList()
 }
 
 /**
@@ -33,15 +25,5 @@ fun <T> Collection<T>.replacingBy(replacement: T.() -> T, predicate: (T) -> Bool
  **/
 internal fun <T> Collection<T>.replacingOnceBy(replacement: T.() -> T, predicate: (T) -> Boolean):
     List<T> {
-    var replaced: T? = null
-    return replacingBy(replacement) {
-        val isMatch = predicate(it)
-        if (isMatch && replaced != null) {
-            throw IllegalStateException("Multiple predicate matches: $replaced and $it.")
-        }
-        if (isMatch) {
-            replaced = it
-        }
-        isMatch
-    }
+    return toMutableList().apply { replaceOnceBy(replacement, predicate) }.toList()
 }

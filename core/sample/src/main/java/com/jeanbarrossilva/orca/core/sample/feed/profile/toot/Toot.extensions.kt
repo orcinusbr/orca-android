@@ -32,11 +32,6 @@ private fun createSample(): Toot {
         Author.sample,
         Content.sample,
         publicationDateTime = ZonedDateTime.of(2_003, 10, 8, 8, 0, 0, 0, ZoneId.of("GMT-3")),
-        commentCount = 1_024,
-        isFavorite = false,
-        favoriteCount = 2_048,
-        isReblogged = false,
-        reblogCount = 512,
         URL("https://mastodon.social/@christianselig/110492858891694580")
     )
 }
