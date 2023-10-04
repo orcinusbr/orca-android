@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.app
 
+import android.content.Context
 import android.os.Bundle
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintSet
@@ -67,6 +68,7 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
     }
 
     private fun inject() {
+        Injector.inject<Context>(this)
         appModule.inject()
         coreModule.inject()
         FeedModule(this).inject()

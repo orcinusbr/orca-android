@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.annotation.Discouraged
 import androidx.core.content.edit
 import com.jeanbarrossilva.orca.platform.launchable.Launchable
-import com.jeanbarrossilva.orca.std.injector.Injector
 import net.time4j.android.ApplicationStarter
 
 internal open class OrcaApplication : Application(), Launchable {
@@ -18,7 +17,6 @@ internal open class OrcaApplication : Application(), Launchable {
         @Suppress("DiscouragedApi")
         markAsLaunched()
 
-        Injector.inject<Context>(this)
         ApplicationStarter.initialize(this, true)
     }
 
