@@ -5,6 +5,8 @@ import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.auth.actor.ActorProvider
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
+import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.orca.core.feed.profile.toot.muting.TermMuter
 import com.jeanbarrossilva.orca.core.http.HttpDatabase
 import com.jeanbarrossilva.orca.core.http.auth.authentication.HttpAuthenticator
 import com.jeanbarrossilva.orca.core.http.auth.authorization.HttpAuthorizer
@@ -33,6 +35,7 @@ import com.jeanbarrossilva.orca.platform.cache.Cache
  * @param authorizer [HttpAuthorizer] by which the user will be authorized.
  * @param actorProvider [ActorProvider] that will provide [Actor]s to the [authenticator], the
  * [authenticationLock] and the [feedProvider].
+ * @param termMuter [TermMuter] by which [Toot]s with muted terms will be filtered out.
  */
 class ContextualHttpInstance(
     context: Context,
@@ -40,7 +43,8 @@ class ContextualHttpInstance(
     authorizer: HttpAuthorizer,
     override val authenticator: HttpAuthenticator,
     actorProvider: ActorProvider,
-    override val authenticationLock: AuthenticationLock<HttpAuthenticator>
+    override val authenticationLock: AuthenticationLock<HttpAuthenticator>,
+    termMuter: TermMuter
 ) : HttpInstance<HttpAuthorizer, HttpAuthenticator>(domain, authorizer) {
     /** [HttpDatabase] in which cached structures will be persisted. */
     private val database = HttpDatabase.getInstance(context)
@@ -90,7 +94,7 @@ class ContextualHttpInstance(
     /** [Cache] that decides how to obtain [HttpToot]s. */
     private val tootCache = Cache.of(context, name = "toot-cache", HttpTootFetcher, tootStorage)
 
-    override val feedProvider = HttpFeedProvider(actorProvider)
+    override val feedProvider = HttpFeedProvider(actorProvider, termMuter)
     override val profileProvider = HttpProfileProvider(profileCache)
     override val profileSearcher = HttpProfileSearcher(profileSearchResultsCache)
     override val tootProvider = HttpTootProvider(tootCache)
