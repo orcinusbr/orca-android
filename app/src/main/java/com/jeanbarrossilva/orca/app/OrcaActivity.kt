@@ -13,9 +13,9 @@ import com.jeanbarrossilva.orca.app.module.core.MainCoreModule
 import com.jeanbarrossilva.orca.app.module.feature.feed.FeedModule
 import com.jeanbarrossilva.orca.app.module.feature.profiledetails.ProfileDetailsModule
 import com.jeanbarrossilva.orca.app.module.feature.search.SearchModule
+import com.jeanbarrossilva.orca.app.module.feature.settings.MainSettingsModule
 import com.jeanbarrossilva.orca.app.module.feature.tootdetails.TootDetailsModule
-import com.jeanbarrossilva.orca.app.navigation.navigator.BottomNavigationItemNavigatorFactory
-import com.jeanbarrossilva.orca.core.auth.SomeAuthenticationLock
+import com.jeanbarrossilva.orca.app.navigation.BottomNavigation
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
 import com.jeanbarrossilva.orca.std.injector.Injector
@@ -74,6 +74,7 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
         FeedModule(this).inject()
         ProfileDetailsModule(this).inject()
         SearchModule(navigator).inject()
+        MainSettingsModule.inject()
         TootDetailsModule(this).inject()
     }
 
@@ -86,9 +87,7 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
 
     private fun navigateTo(@IdRes itemID: Int) {
         lifecycleScope.launch {
-            Injector.get<SomeAuthenticationLock>().requestUnlock {
-                BottomNavigationItemNavigatorFactory.create(it).navigate(navigator, itemID)
-            }
+            BottomNavigation.navigate(navigator, itemID)
         }
     }
 

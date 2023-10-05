@@ -19,6 +19,7 @@ include(
     ":feature:feed",
     ":feature:profile-details",
     ":feature:search",
+    ":feature:settings",
     ":feature:toot-details",
     ":platform:cache",
     ":platform:launchable",

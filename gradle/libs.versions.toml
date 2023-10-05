@@ -44,6 +44,8 @@ paginate = { group = "com.chrynan.paginate", name = "paginate-core", version = "
 slf4j = { group = "org.slf4j", name = "slf4j-api", version = "2.0.7" }
 time4j = { group = "net.time4j", name = "time4j-android", version = "4.8-2021a" }
 turbine = { group = "app.cash.turbine", name = "turbine", version = "1.0.0" }
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-plugin" }
@@ -69,3 +71,5 @@ kotlin = "1.8.21"
 kotlin-coroutines = "1.7.2"
 ktor = "2.3.2"
 loadable = "1.6.9"
+junit = "1.1.5"
+espresso-core = "3.5.1"
