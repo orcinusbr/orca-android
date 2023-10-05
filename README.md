@@ -14,7 +14,7 @@ Note that Orca isn't a fork of the official app. Its overall structure has been 
 ## Structure
 
 <div align="center">
-    <img src="https://github.com/jeanbarrossilva/Orca/assets/38408390/7906ef58-b5d8-4672-bcaa-ae95dd91800e" />
+    <img src="https://github.com/jeanbarrossilva/Orca/assets/38408390/f0aae76b-eb7f-438a-8539-184661b6a125" />
 </div>
 
 Each module represents the context to which its underlying structures are related. Some, such as `platform:ui`, are still a work in progress and should eventually be broken down into conciser, more specific modules.
