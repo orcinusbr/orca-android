@@ -35,19 +35,19 @@ internal object SettingDefaults {
 /**
  * A configuration.
  *
- * @param onClick Callback run whenever it's clicked.
  * @param label Short description of what it's for.
  * @param modifier [Modifier] to be applied to the underlying [Row].
  * @param shape [Shape] by which it will be clipped.
+ * @param onClick Callback run whenever it's clicked.
  * @param icon [Icon] that visually represents what it does.
  * @param action Portrays the result of invoking [onClick] or executes a related action.
  **/
 @Composable
 internal fun Setting(
-    onClick: () -> Unit,
     label: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     shape: Shape = SettingDefaults.shape,
+    onClick: () -> Unit = { },
     icon: @Composable () -> Unit = { },
     action: ActionScope.() -> Unit = { }
 ) {

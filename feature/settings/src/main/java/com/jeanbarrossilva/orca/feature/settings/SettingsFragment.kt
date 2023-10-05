@@ -12,6 +12,6 @@ class SettingsFragment : ComposableFragment() {
 
     @Composable
     override fun Content() {
-        Settings(viewModel)
+        Settings(viewModel, boundary = Injector.get())
     }
 }

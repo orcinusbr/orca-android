@@ -11,12 +11,8 @@ import com.jeanbarrossilva.orca.platform.theme.kit.action.setting.ActionScope
 import com.jeanbarrossilva.orca.platform.theme.kit.action.setting.Group
 import com.jeanbarrossilva.orca.platform.theme.kit.action.setting.Setting
 
-/**
- * Scope through which [Setting]s can be added.
- *
- * @param onClick Callback run whenever a [Setting] is clicked.
- **/
-class SettingsScope internal constructor(private val onClick: (index: Int) -> Unit) {
+/** Scope through which [Setting]s can be added. **/
+class SettingsScope internal constructor() {
     /** [Setting]s that have been added. **/
     private val mutableSettings = mutableStateListOf<@Composable (Modifier, Shape) -> Unit>()
 
@@ -42,7 +38,6 @@ class SettingsScope internal constructor(private val onClick: (index: Int) -> Un
         with(mutableSettings.size) index@{
             mutableSettings.add { parentModifier, shape ->
                 Group(
-                    onClick = { onClick(this@index) },
                     icon,
                     label,
                     parentModifier then modifier,
@@ -57,6 +52,7 @@ class SettingsScope internal constructor(private val onClick: (index: Int) -> Un
     /**
      * Adds a [Setting].
      *
+     * @param onClick Callback run whenever it's clicked.
      * @param label Short description of what it's for.
      * @param modifier [Modifier] to be applied to the [Setting].
      * @param icon [Icon] that visually represents what it does.
@@ -65,20 +61,19 @@ class SettingsScope internal constructor(private val onClick: (index: Int) -> Un
     fun setting(
         label: @Composable () -> Unit,
         modifier: Modifier = Modifier,
+        onClick: () -> Unit = { },
         icon: @Composable () -> Unit = { },
         action: ActionScope.() -> Unit = { }
     ) {
-        with(mutableSettings.size) index@{
-            mutableSettings.add { parentModifier, shape ->
-                Setting(
-                    onClick = { onClick(this@index) },
-                    label,
-                    parentModifier then modifier,
-                    shape,
-                    icon,
-                    action
-                )
-            }
+        mutableSettings.add { parentModifier, shape ->
+            Setting(
+                label,
+                parentModifier then modifier,
+                shape,
+                onClick,
+                icon,
+                action
+            )
         }
     }
 }

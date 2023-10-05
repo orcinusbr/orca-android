@@ -19,15 +19,26 @@ import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBarDef
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
 
 @Composable
-internal fun Settings(viewModel: SettingsViewModel, modifier: Modifier = Modifier) {
+internal fun Settings(
+    viewModel: SettingsViewModel,
+    boundary: SettingsBoundary,
+    modifier: Modifier = Modifier
+) {
     val mutedTerms by viewModel.mutedTermsFlow.collectAsState()
-    Settings(mutedTerms, onTermUnmute = viewModel::unmute, modifier)
+
+    Settings(
+        mutedTerms,
+        onNavigationToTermMuting = boundary::navigateToTermMuting,
+        onTermUnmute = viewModel::unmute,
+        modifier
+    )
 }
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun Settings(
     mutedTerms: List<String>,
+    onNavigationToTermMuting: () -> Unit,
     onTermUnmute: (term: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -48,8 +59,8 @@ private fun Settings(
             contentPadding = it + PaddingValues(OrcaTheme.spacings.medium)
         ) {
             item {
-                Section("General", onClick = { }) {
-                    muting(mutedTerms, onTermUnmute)
+                Section("General") {
+                    muting(mutedTerms, onNavigationToTermMuting, onTermUnmute)
                 }
             }
         }
@@ -60,6 +71,6 @@ private fun Settings(
 @MultiThemePreview
 private fun SettingsPreview() {
     OrcaTheme {
-        Settings(mutedTerms = listOf("Java"), onTermUnmute = { })
+        Settings(mutedTerms = listOf("Java"), onNavigationToTermMuting = { }, onTermUnmute = { })
     }
 }

@@ -68,6 +68,7 @@ dependencies {
     implementation(project(":feature:profile-details"))
     implementation(project(":feature:search"))
     implementation(project(":feature:settings"))
+    implementation(project(":feature:settings:term-muting"))
     implementation(project(":feature:toot-details"))
     implementation(project(":platform:launchable"))
     implementation(project(":platform:theme"))

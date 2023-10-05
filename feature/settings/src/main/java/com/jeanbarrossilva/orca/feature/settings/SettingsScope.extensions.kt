@@ -9,10 +9,13 @@ import com.jeanbarrossilva.orca.platform.theme.kit.action.setting.list.SettingsS
  * Adds a muting setting.
  *
  * @param mutedTerms Terms that have been muted.
+ * @param onNavigationToTermMuting Lambda that's invoked when navigation to term muting settings is
+ * requested to be performed.
  * @param onUnmute Callback run whenever one of the [mutedTerms] is requested to be unmuted.
  **/
 internal fun SettingsScope.muting(
     mutedTerms: List<String>,
+    onNavigationToTermMuting: () -> Unit,
     onUnmute: (term: String) -> Unit
 ) {
     group(
@@ -20,6 +23,7 @@ internal fun SettingsScope.muting(
         label = { Text("Muting") }
     ) {
         setting(
+            onClick = onNavigationToTermMuting,
             label = { Text("Add") },
             icon = { Icon(OrcaTheme.iconography.add, contentDescription = "Add") }
         )
