@@ -23,6 +23,7 @@ internal class MainCoreModule : CoreModule() {
     override val authenticationLock = Injectable<SomeAuthenticationLock> {
         AuthenticationLock(get<HttpAuthenticator>(), actorProvider = get())
     }
+    override val termMuter = Injectable { SharedPreferencesTermMuter(context = get()) }
     override val instanceProvider =
         Injectable<InstanceProvider> { HttpInstanceProvider(context = get()) }
 }

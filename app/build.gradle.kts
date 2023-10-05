@@ -67,6 +67,7 @@ dependencies {
     implementation(project(":feature:feed"))
     implementation(project(":feature:profile-details"))
     implementation(project(":feature:search"))
+    implementation(project(":feature:settings"))
     implementation(project(":feature:toot-details"))
     implementation(project(":platform:launchable"))
     implementation(project(":platform:theme"))

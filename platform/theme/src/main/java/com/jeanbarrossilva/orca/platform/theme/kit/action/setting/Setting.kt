@@ -1,138 +1,92 @@
 package com.jeanbarrossilva.orca.platform.theme.kit.action.setting
 
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CornerBasedShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.ProvideTextStyle
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.extensions.EmptyMutableInteractionSource
-import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
+import com.jeanbarrossilva.orca.platform.theme.configuration.iconography.Iconography
 
 /** Default values of a [Setting]. **/
 internal object SettingDefaults {
-    /** [Shape] by which a [Setting] is clipped by default. **/
+    /** [CornerBasedShape] that clips a [Setting] by default. **/
     val shape
-        @Composable get() = TextFieldDefaults.shape as CornerBasedShape
+        @Composable get() = OrcaTheme.shapes.large
+
+    /** Size in [Dp]s of the default spacing of a [Setting]. **/
+    val spacing
+        @Composable get() = OrcaTheme.spacings.large
 }
 
 /**
- * Represents configuration that can be made by the user.
+ * A configuration.
  *
- * @param text Secondary [Text] of the headline if the [Setting] has a [label]; otherwise, it's the
- * primary one.
- * @param action Content that may or may not be interactive that explicits the purpose or the
- * current state of the [Setting].
- * @param onClick Lambda to be run whenever a click occurs. The [Setting] becomes non-clickable if
- * it's `null`.
- * @param modifier [Modifier] to be applied to the underlying [Button].
- * @param shape [Shape] by which the [Setting] is clipped.
- * @param label Primary [Text] of the headline. Being `null` hands that role to the [text].
+ * @param onClick Callback run whenever it's clicked.
+ * @param label Short description of what it's for.
+ * @param modifier [Modifier] to be applied to the underlying [Row].
+ * @param shape [Shape] by which it will be clipped.
+ * @param icon [Icon] that visually represents what it does.
+ * @param action Portrays the result of invoking [onClick] or executes a related action.
  **/
 @Composable
-fun Setting(
-    text: @Composable () -> Unit,
-    action: @Composable () -> Unit,
-    onClick: (() -> Unit)?,
+internal fun Setting(
+    onClick: () -> Unit,
+    label: @Composable () -> Unit,
     modifier: Modifier = Modifier,
-    containerColor: Color = OrcaTheme.colors.surface.container,
-    label: (@Composable () -> Unit)? = null,
-    shape: Shape = SettingDefaults.shape
+    shape: Shape = SettingDefaults.shape,
+    icon: @Composable () -> Unit = { },
+    action: ActionScope.() -> Unit = { }
 ) {
-    val contentColor = contentColorFor(containerColor)
-    val interactionSource = remember(onClick) {
-        onClick?.let { MutableInteractionSource() } ?: EmptyMutableInteractionSource()
-    }
-    val textStyle = LocalTextStyle.current
-
-    Button(
-        onClick ?: { },
-        modifier,
-        shape = shape,
-        colors = ButtonDefaults.buttonColors(containerColor, contentColor),
-        contentPadding = PaddingValues(OrcaTheme.spacings.medium),
-        interactionSource = interactionSource
-    ) {
-        ProvideTextStyle(textStyle.copy(color = contentColor)) {
+    Surface(Modifier.fillMaxWidth(), shape) {
+        Row(
+            Modifier
+                .clickable(onClick = onClick)
+                .padding(SettingDefaults.spacing)
+                .then(modifier),
+            Arrangement.SpaceBetween,
+            Alignment.CenterVertically
+        ) {
             Row(
-                Modifier.fillMaxWidth(),
-                Arrangement.SpaceBetween,
-                Alignment.CenterVertically
+                horizontalArrangement = Arrangement.spacedBy(SettingDefaults.spacing),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall)
-                ) {
-                    ProvideTextStyle(
-                        LocalTextStyle.current.`if`(label != null) {
-                            copy(fontWeight = FontWeight.Medium)
-                        }
-                    ) {
-                        label?.invoke()
-                    }
-
-                    ProvideTextStyle(
-                        LocalTextStyle.current.`if`(label != null) { copy(color = contentColor) },
-                        text
-                    )
-                }
-
-                Spacer(Modifier.width(OrcaTheme.spacings.medium))
-                action()
+                icon()
+                ProvideTextStyle(OrcaTheme.typography.bodyLarge, label)
             }
+
+            Spacer(Modifier.width(SettingDefaults.spacing))
+            ActionScope().apply(action).content()
         }
     }
 }
 
-/** Preview of an unlabeled [Setting]. **/
+/** Preview of a [Setting]. **/
 @Composable
 @MultiThemePreview
-private fun UnlabeledSettingPreview() {
+private fun SettingPreview() {
     OrcaTheme {
-        Setting(label = null)
+        Setting(
+            onClick = { },
+            label = { Text("Label") },
+            icon = {
+                Icon(OrcaTheme.iconography.home.filled, contentDescription = "Setting")
+            }
+        ) {
+            icon(contentDescription = "Expand", vector = Iconography::forward)
+        }
     }
-}
-
-/** Preview of a labeled [Setting]. **/
-@Composable
-@MultiThemePreview
-private fun LabeledSettingPreview() {
-    OrcaTheme {
-        Setting(label = { Text("Label") })
-    }
-}
-
-/**
- * Sample, no-op [Setting].
- *
- * @param modifier [Modifier] to be applied to the underlying [Setting].
- **/
-@Composable
-private fun Setting(label: (@Composable () -> Unit)?, modifier: Modifier = Modifier) {
-    Setting(
-        text = { Text("Setting") },
-        action = { Icon(OrcaTheme.iconography.forward, contentDescription = "Navigate") },
-        onClick = { },
-        modifier,
-        label = label
-    )
 }

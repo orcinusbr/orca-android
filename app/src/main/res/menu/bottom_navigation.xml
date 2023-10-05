@@ -9,4 +9,9 @@
         android:id="@+id/profile_details"
         android:icon="@drawable/bottom_navigation_icon_profile_details"
         android:title="@string/profile_details" />
+
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/bottom_navigation_icon_settings"
+        android:title="@string/settings" />
 </menu>
