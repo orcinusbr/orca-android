@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="platform_ui_avatar">Foto de perfil de %s</string>
+    <string name="platform_ui_favorite_stat">Curtir</string>
+    <string name="platform_ui_headline_card_cover">Capa de %s</string>
+    <string name="platform_ui_reblog_stat">Repostar</string>
+    <string name="platform_ui_timeline_empty">Vazio</string>
+    <string name="platform_ui_timeline_empty_message">Parece que está meio vazio por aqui…</string>
+    <string name="platform_ui_toot_preview_comments">Comentários</string>
+    <string name="platform_ui_toot_preview_share">Compartilhar</string>
+</resources>
