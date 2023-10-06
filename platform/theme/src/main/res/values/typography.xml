@@ -62,4 +62,10 @@
         parent="TextAppearance.Material3.LabelLarge">
         <item name="android:textFontWeight">@integer/font_weight_bold</item>
     </style>
+
+    <style
+        name="Theme.Orca.Typography.LabelMedium"
+        parent="TextAppearance.Material3.LabelMedium">
+        <item name="android:textSize">14sp</item>
+    </style>
 </resources>
