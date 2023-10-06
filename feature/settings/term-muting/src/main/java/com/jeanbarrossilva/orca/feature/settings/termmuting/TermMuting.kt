@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
@@ -76,20 +77,25 @@ private fun TermMuting(
         modifier,
         topAppBar = {
             TopAppBar(
-                title = { Text("Mute") },
+                title = { Text(stringResource(R.string.settings_term_muting)) },
                 navigationIcon = {
                     IconButton(onClick = onPop) {
-                        Icon(OrcaTheme.iconography.back, contentDescription = "Back")
+                        Icon(
+                            OrcaTheme.iconography.back,
+                            contentDescription = stringResource(
+                                com.jeanbarrossilva.orca.platform.theme.R.string.platform_ui_top_app_bar_back_navigation
+                            )
+                        )
                     }
                 },
-                subtitle = { Text("Settings") },
+                subtitle = { Text(stringResource(R.string.settings_term_muting_settings)) },
                 scrollBehavior = topAppBarScrollBehavior
             )
         },
         buttonBar = {
             ButtonBar(lazyListState) {
                 PrimaryButton(onClick = muteAndPop) {
-                    Text("Mute")
+                    Text(stringResource(R.string.settings_term_muting_mute))
                 }
             }
         }
@@ -110,14 +116,13 @@ private fun TermMuting(
                     KeyboardOptions(imeAction = ImeAction.Done),
                     KeyboardActions(onDone = { muteAndPop() })
                 ) {
-                    Text("Term")
+                    Text(stringResource(R.string.settings_term_muting_term))
                 }
             }
 
             item {
                 Text(
-                    "Type in the term you would like to mute. Toots containing it won't be shown " +
-                        "in your feed or even delivered to you through notifications.",
+                    stringResource(R.string.settings_term_muting_explanation),
                     style = OrcaTheme.typography.bodySmall
                 )
             }
