@@ -476,11 +476,11 @@ private fun ProfileDetails(
         ) {
             @OptIn(ExperimentalMaterial3Api::class)
             TopAppBar(
+                title,
                 Modifier.testTag(PROFILE_DETAILS_TOP_BAR_TAG),
                 navigationIcon = { origin.NavigationButton() },
-                actions,
-                topAppBarScrollBehavior,
-                title
+                actions = actions,
+                scrollBehavior = topAppBarScrollBehavior
             )
         }
     }

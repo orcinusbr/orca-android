@@ -51,7 +51,6 @@
         <item name="textAppearanceBodyLarge">@style/Theme.Orca.Typography.BodyLarge</item>
         <item name="textAppearanceBodyMedium">@style/Theme.Orca.Typography.BodyMedium</item>
         <item name="textAppearanceBodySmall">@style/Theme.Orca.Typography.BodySmall</item>
-        <item name="textAppearanceDisplayLarge">@style/Theme.Orca.Typography.DisplayLarge</item>
         <item name="textAppearanceHeadlineLarge">@style/Theme.Orca.Typography.HeadlineLarge</item>
         <item name="textAppearanceHeadlineMedium">@style/Theme.Orca.Typography.HeadlineMedium</item>
         <item name="textAppearanceLabelLarge">@style/Theme.Orca.Typography.LabelLarge</item>

@@ -113,15 +113,14 @@ private fun TootDetails(
         topBar = {
             @OptIn(ExperimentalMaterial3Api::class)
             TopAppBar(
+                title = { AutoSizeText("Toot") },
                 navigationIcon = {
                     HoverableIconButton(onClick = onBackwardsNavigation) {
                         Icon(OrcaTheme.iconography.back, contentDescription = "Back")
                     }
                 },
                 scrollBehavior = topAppBarScrollBehavior
-            ) {
-                AutoSizeText("Toot")
-            }
+            )
         }
     ) {
         Timeline(
