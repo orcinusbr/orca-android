@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
@@ -178,7 +179,9 @@ private fun Search(
                     HoverableIconButton(onClick = onBackwardsNavigation) {
                         Icon(
                             OrcaTheme.iconography.back,
-                            contentDescription = "Back",
+                            contentDescription = stringResource(
+                                com.jeanbarrossilva.orca.platform.theme.R.string.platform_ui_top_app_bar_back_navigation
+                            ),
                             tint = OrcaTheme.colors.background.content
                         )
                     }
@@ -191,7 +194,7 @@ private fun Search(
                         .focusRequester(focusRequester)
                         .fillMaxWidth()
                 ) {
-                    Text("Search...")
+                    Text(stringResource(R.string.search_placeholder))
                 }
             }
         }
@@ -221,8 +224,16 @@ private fun EmptyResultsMessage(modifier: Modifier = Modifier) {
         CompositionLocalProvider(
             LocalContentColor provides OrcaTheme.typography.headlineMedium.color
         ) {
-            Icon(OrcaTheme.iconography.search, contentDescription = "Search", Modifier.size(64.dp))
-            Text("No results found.", style = OrcaTheme.typography.headlineMedium)
+            Icon(
+                OrcaTheme.iconography.search,
+                contentDescription = stringResource(R.string.search),
+                Modifier.size(64.dp)
+            )
+
+            Text(
+                stringResource(R.string.search_no_results_found),
+                style = OrcaTheme.typography.headlineMedium
+            )
         }
     }
 }
