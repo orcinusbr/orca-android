@@ -86,7 +86,7 @@ private fun SettingPreview() {
                 Icon(OrcaTheme.iconography.home.filled, contentDescription = "Setting")
             }
         ) {
-            icon(contentDescription = "Expand", vector = Iconography::forward)
+            icon(contentDescription = { "Expand" }, vector = Iconography::forward)
         }
     }
 }

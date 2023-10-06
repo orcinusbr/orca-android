@@ -91,7 +91,7 @@ internal fun Group(
                 icon = icon
             ) {
                 icon(
-                    contentDescription = "Expand",
+                    contentDescription = { "Expand" },
                     Modifier.rotate(actionRotationInDegrees),
                     Iconography::forward
                 )

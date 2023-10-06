@@ -27,7 +27,7 @@ internal val settingsPreviewContent: SettingsScope.() -> Unit = {
             label = { Text("Label #$it") },
             icon = { Icon(OrcaTheme.iconography.link, contentDescription = "Setting") }
         ) {
-            icon(contentDescription = "Navigate", vector = Iconography::forward)
+            icon(contentDescription = { "Navigate" }, vector = Iconography::forward)
         }
     }
 }

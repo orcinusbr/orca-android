@@ -9,6 +9,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.plus
@@ -49,7 +50,7 @@ private fun Settings(
         modifier,
         topAppBar = {
             TopAppBar(
-                title = { AutoSizeText("Settings") },
+                title = { AutoSizeText(stringResource(R.string.settings)) },
                 scrollBehavior = topAppBarScrollBehavior
             )
         }
@@ -60,7 +61,7 @@ private fun Settings(
             contentPadding = it + PaddingValues(OrcaTheme.spacings.medium)
         ) {
             item {
-                Section("General") {
+                Section(stringResource(R.string.settings_general)) {
                     muting(mutedTerms, onNavigationToTermMuting, onTermUnmute)
                 }
             }

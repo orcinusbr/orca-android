@@ -22,37 +22,39 @@ class ActionScope internal constructor() {
     /**
      * Adds an [Icon].
      *
-     * @param contentDescription Describes what the [Icon] represents.
+     * @param contentDescription Returns the description of what the [Icon] within the [IconButton]
+     * represents.
      * @param modifier [Modifier] to be applied to the [Icon].
      * @param vector Returns the [ImageVector] to be shown.
      **/
     fun icon(
-        contentDescription: String,
+        contentDescription: @Composable () -> String,
         modifier: Modifier = Modifier,
         vector: Iconography.() -> ImageVector
     ) {
         content = {
-            Icon(OrcaTheme.iconography.vector(), contentDescription, modifier)
+            Icon(OrcaTheme.iconography.vector(), contentDescription(), modifier)
         }
     }
 
     /**
      * Adds an [IconButton].
      *
-     * @param contentDescription Describes what the [Icon] within the [IconButton] represents.
+     * @param contentDescription Returns the description of what the [Icon] within the [IconButton]
+     * represents.
      * @param onClick Callback run whenever the [IconButton] is clicked.
      * @param modifier [Modifier] to be applied to the [IconButton].
      * @param vector Returns the [ImageVector] to be shown by the [Icon].
      **/
     fun button(
-        contentDescription: String,
+        contentDescription: @Composable () -> String,
         onClick: () -> Unit,
         modifier: Modifier = Modifier,
         vector: Iconography.() -> ImageVector
     ) {
         content = {
             IconButton(onClick, modifier.offset(x = 12.dp)) {
-                Icon(OrcaTheme.iconography.vector(), contentDescription)
+                Icon(OrcaTheme.iconography.vector(), contentDescription())
             }
         }
     }
