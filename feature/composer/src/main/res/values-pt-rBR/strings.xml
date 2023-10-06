@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="composer">Compor</string>
+    <string name="composer_placeholder">No que você está pensando?</string>
+    <string name="composer_send">Enviar</string>
+</resources>
