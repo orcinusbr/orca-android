@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="core_http_authentication_authenticating">Authenticating…</string>
+    <string name="core_http_authorization_account_origin">Where is your account from?</string>
+    <string name="core_http_authorization_search">Search…</string>
+    <string name="core_http_authorization_sign_in">Sign in</string>
+    <string name="core_http_authorization_welcome">Welcome!</string>
     <string
         name="redirect_uri"
         translatable="false">

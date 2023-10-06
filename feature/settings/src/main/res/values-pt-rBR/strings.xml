@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings">Configurações</string>
+    <string name="settings_add">Adicionar</string>
+    <string name="settings_general">Geral</string>
+    <string name="settings_muting">Silenciamento</string>
+    <string name="settings_remove">Remover</string>
+</resources>
