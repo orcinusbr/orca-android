@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
 object Injector {
     /** Dependencies that have been injected associated to their assigned types. **/
     @PublishedApi
-    internal val injections = hashMapOf<KClass<*>, Lazy<*>>()
+    internal val injections = hashMapOf<KClass<*>, () -> Any>()
 
     /**
      * Injects the given [dependency].
@@ -18,7 +18,7 @@ object Injector {
      **/
     inline fun <reified T : Any> inject(noinline dependency: Injector.() -> T) {
         if (T::class !in injections) {
-            injections[T::class] = lazy {
+            injections[T::class] = {
                 @Suppress("UNUSED_EXPRESSION")
                 dependency()
             }
@@ -33,7 +33,7 @@ object Injector {
      **/
     @Throws(NoSuchElementException::class)
     inline fun <reified T : Any> get(): T {
-        return injections[T::class]?.value as T? ?: throw dependencyNotInjected<T>()
+        return injections[T::class]?.invoke() as T? ?: throw dependencyNotInjected<T>()
     }
 
     /** Removes all injected dependencies. **/
