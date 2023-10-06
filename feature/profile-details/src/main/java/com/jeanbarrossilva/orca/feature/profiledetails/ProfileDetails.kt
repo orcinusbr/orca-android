@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
@@ -367,7 +368,10 @@ private fun ProfileDetails(
         actions = {
             Box {
                 HoverableIconButton(onClick = { isTopBarDropdownExpanded = true }) {
-                    Icon(OrcaTheme.iconography.expand, contentDescription = "More")
+                    Icon(
+                        OrcaTheme.iconography.expand,
+                        contentDescription = stringResource(R.string.profile_details_more)
+                    )
                 }
 
                 DropdownMenu(
@@ -375,7 +379,7 @@ private fun ProfileDetails(
                     onDismissal = { isTopBarDropdownExpanded = false }
                 ) {
                     DropdownMenuItem(
-                        text = { Text("Open in browser") },
+                        text = { Text(stringResource(R.string.profile_details_open_in_browser)) },
                         onClick = {
                             onNavigateToWebpage(details.url)
                             isTopBarDropdownExpanded = false
@@ -383,30 +387,38 @@ private fun ProfileDetails(
                         leadingIcon = {
                             Icon(
                                 OrcaTheme.iconography.link,
-                                contentDescription = "Open in browser"
+                                contentDescription = stringResource(
+                                    R.string.profile_details_external_link
+                                )
                             )
                         }
                     )
 
                     DropdownMenuItem(
-                        text = { Text("Copy URL") },
+                        text = { Text(stringResource(R.string.profile_details_copy_url)) },
                         onClick = {
                             clipboardManager.setText(AnnotatedString("${details.url}"))
                             isTopBarDropdownExpanded = false
                         },
                         leadingIcon = {
-                            Icon(OrcaTheme.iconography.link, contentDescription = "Share")
+                            Icon(
+                                OrcaTheme.iconography.link,
+                                contentDescription = stringResource(R.string.profile_details_share)
+                            )
                         }
                     )
 
                     DropdownMenuItem(
-                        text = { Text("Share") },
+                        text = { Text(stringResource(R.string.profile_details_share)) },
                         onClick = {
                             onShare(details.url)
                             isTopBarDropdownExpanded = false
                         },
                         leadingIcon = {
-                            Icon(OrcaTheme.iconography.share.outlined, contentDescription = "Share")
+                            Icon(
+                                OrcaTheme.iconography.share.outlined,
+                                contentDescription = stringResource(R.string.profile_details_share)
+                            )
                         }
                     )
                 }

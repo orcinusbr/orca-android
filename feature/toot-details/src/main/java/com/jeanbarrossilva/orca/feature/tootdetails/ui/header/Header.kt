@@ -17,9 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
+import com.jeanbarrossilva.orca.feature.tootdetails.R
 import com.jeanbarrossilva.orca.feature.tootdetails.TootDetails
 import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.stat.FavoriteStat
 import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.stat.ReblogStat
@@ -76,7 +78,10 @@ internal fun Header(
 
             Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
                 Stat {
-                    Icon(OrcaTheme.iconography.comment.outlined, contentDescription = "Comments")
+                    Icon(
+                        OrcaTheme.iconography.comment.outlined,
+                        contentDescription = stringResource(R.string.toot_details_comments)
+                    )
                     Text(details.formattedCommentCount)
                 }
 
@@ -86,7 +91,7 @@ internal fun Header(
                 Stat {
                     Icon(
                         OrcaTheme.iconography.share.outlined,
-                        contentDescription = "Share",
+                        contentDescription = stringResource(R.string.toot_details_share),
                         Modifier.clickable(
                             remember(::MutableInteractionSource),
                             indication = null,

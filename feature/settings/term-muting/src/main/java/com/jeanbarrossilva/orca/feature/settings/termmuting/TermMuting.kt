@@ -8,8 +8,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
@@ -29,8 +28,8 @@ import com.jeanbarrossilva.orca.platform.theme.kit.action.button.PrimaryButton
 import com.jeanbarrossilva.orca.platform.theme.kit.input.TextField
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.button.ButtonBar
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBarDefaults
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBarWithBackNavigation
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 
 @Composable
@@ -75,21 +74,17 @@ private fun TermMuting(
     Scaffold(
         modifier,
         topAppBar = {
-            TopAppBar(
-                title = { Text("Mute") },
-                navigationIcon = {
-                    IconButton(onClick = onPop) {
-                        Icon(OrcaTheme.iconography.back, contentDescription = "Back")
-                    }
-                },
-                subtitle = { Text("Settings") },
+            TopAppBarWithBackNavigation(
+                onNavigation = onPop,
+                title = { Text(stringResource(R.string.settings_term_muting)) },
+                subtitle = { Text(stringResource(R.string.settings_term_muting_settings)) },
                 scrollBehavior = topAppBarScrollBehavior
             )
         },
         buttonBar = {
             ButtonBar(lazyListState) {
                 PrimaryButton(onClick = muteAndPop) {
-                    Text("Mute")
+                    Text(stringResource(R.string.settings_term_muting_mute))
                 }
             }
         }
@@ -110,14 +105,13 @@ private fun TermMuting(
                     KeyboardOptions(imeAction = ImeAction.Done),
                     KeyboardActions(onDone = { muteAndPop() })
                 ) {
-                    Text("Term")
+                    Text(stringResource(R.string.settings_term_muting_term))
                 }
             }
 
             item {
                 Text(
-                    "Type in the term you would like to mute. Toots containing it won't be shown " +
-                        "in your feed or even delivered to you through notifications.",
+                    stringResource(R.string.settings_term_muting_explanation),
                     style = OrcaTheme.typography.bodySmall
                 )
             }

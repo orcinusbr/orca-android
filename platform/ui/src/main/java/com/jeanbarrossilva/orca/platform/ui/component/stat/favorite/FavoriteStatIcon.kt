@@ -6,8 +6,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIcon
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconColors
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconDefaults
@@ -55,7 +57,7 @@ fun FavoriteStatIcon(
         } else {
             OrcaTheme.iconography.favorite.outlined
         },
-        contentDescription = "Favorite",
+        contentDescription = stringResource(R.string.platform_ui_favorite_stat),
         isActive,
         interactiveness,
         colors,

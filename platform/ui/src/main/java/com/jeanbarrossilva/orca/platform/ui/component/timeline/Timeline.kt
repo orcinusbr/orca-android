@@ -26,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.list.ListLoadable
@@ -33,6 +34,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
+import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import java.net.URL
 
@@ -313,7 +315,7 @@ private fun EmptyTimelineMessage(
         item {
             Icon(
                 OrcaTheme.iconography.empty,
-                contentDescription = "Empty",
+                contentDescription = stringResource(R.string.platform_ui_timeline_empty),
                 Modifier
                     .padding(start = spacing, top = spacing, end = spacing)
                     .size(32.dp),
@@ -323,7 +325,7 @@ private fun EmptyTimelineMessage(
 
         item {
             Text(
-                "Seems a bit empty in here...",
+                stringResource(R.string.platform_ui_timeline_empty_message),
                 Modifier.padding(start = spacing, end = spacing, bottom = spacing),
                 textAlign = TextAlign.Center,
                 style = OrcaTheme.typography.headlineMedium

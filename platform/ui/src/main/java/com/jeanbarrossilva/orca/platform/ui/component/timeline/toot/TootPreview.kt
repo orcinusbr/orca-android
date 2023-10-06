@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
@@ -37,6 +38,7 @@ import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import com.jeanbarrossilva.orca.platform.theme.extensions.EmptyMutableInteractionSource
 import com.jeanbarrossilva.orca.platform.theme.extensions.IgnoringMutableInteractionSource
 import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
+import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.SmallAvatar
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.headline.HeadlineCard
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.FavoriteStat
@@ -219,7 +221,7 @@ fun TootPreview(
                 Stat(
                     StatPosition.LEADING,
                     OrcaTheme.iconography.comment.outlined,
-                    contentDescription = "Comments",
+                    contentDescription = stringResource(R.string.platform_ui_toot_preview_comments),
                     onClick = { },
                     Modifier.testTag(TOOT_PREVIEW_COMMENT_COUNT_STAT_TAG)
                 ) {
@@ -232,7 +234,7 @@ fun TootPreview(
                 Stat(
                     StatPosition.TRAILING,
                     OrcaTheme.iconography.share.outlined,
-                    contentDescription = "Share",
+                    contentDescription = stringResource(R.string.platform_ui_toot_preview_share),
                     onClick = onShare,
                     Modifier.testTag(TOOT_PREVIEW_SHARE_ACTION_TAG)
                 )

@@ -2,6 +2,7 @@ package com.jeanbarrossilva.orca.feature.settings
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.ui.res.stringResource
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.kit.action.setting.list.SettingsScope
 
@@ -19,17 +20,30 @@ internal fun SettingsScope.muting(
     onUnmute: (term: String) -> Unit
 ) {
     group(
-        icon = { Icon(OrcaTheme.iconography.mute.filled, contentDescription = "Muting") },
-        label = { Text("Muting") }
+        icon = {
+            Icon(
+                OrcaTheme.iconography.mute.filled,
+                contentDescription = stringResource(R.string.settings_muting)
+            )
+        },
+        label = { Text(stringResource(R.string.settings_muting)) }
     ) {
         setting(
             onClick = onNavigationToTermMuting,
-            label = { Text("Add") },
-            icon = { Icon(OrcaTheme.iconography.add, contentDescription = "Add") }
+            label = { Text(stringResource(R.string.settings_add)) },
+            icon = {
+                Icon(
+                    OrcaTheme.iconography.add,
+                    contentDescription = stringResource(R.string.settings_add)
+                )
+            }
         )
         mutedTerms.forEach {
             setting(label = { Text(it) }) {
-                button(contentDescription = "Remove", onClick = { onUnmute(it) }) {
+                button(
+                    contentDescription = { stringResource(R.string.settings_remove) },
+                    onClick = { onUnmute(it) }
+                ) {
                     delete.filled
                 }
             }

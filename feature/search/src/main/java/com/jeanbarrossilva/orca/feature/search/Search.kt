@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
@@ -40,9 +41,9 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.search.samples
 import com.jeanbarrossilva.orca.feature.search.ui.SearchResultCard
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.kit.action.button.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.theme.kit.input.TextField
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.BackAction
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 
 internal object SearchDefaults {
@@ -175,13 +176,7 @@ private fun Search(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(Modifier.fillMaxWidth(.2f), Alignment.Center) {
-                    HoverableIconButton(onClick = onBackwardsNavigation) {
-                        Icon(
-                            OrcaTheme.iconography.back,
-                            contentDescription = "Back",
-                            tint = OrcaTheme.colors.background.content
-                        )
-                    }
+                    BackAction(onClick = onBackwardsNavigation)
                 }
 
                 TextField(
@@ -191,7 +186,7 @@ private fun Search(
                         .focusRequester(focusRequester)
                         .fillMaxWidth()
                 ) {
-                    Text("Search...")
+                    Text(stringResource(R.string.search_placeholder))
                 }
             }
         }
@@ -221,8 +216,16 @@ private fun EmptyResultsMessage(modifier: Modifier = Modifier) {
         CompositionLocalProvider(
             LocalContentColor provides OrcaTheme.typography.headlineMedium.color
         ) {
-            Icon(OrcaTheme.iconography.search, contentDescription = "Search", Modifier.size(64.dp))
-            Text("No results found.", style = OrcaTheme.typography.headlineMedium)
+            Icon(
+                OrcaTheme.iconography.search,
+                contentDescription = stringResource(R.string.search),
+                Modifier.size(64.dp)
+            )
+
+            Text(
+                stringResource(R.string.search_no_results_found),
+                style = OrcaTheme.typography.headlineMedium
+            )
         }
     }
 }

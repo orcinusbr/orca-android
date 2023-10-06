@@ -4,10 +4,12 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.placeholder.Placeholder
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.Samples
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.compose.Image
@@ -87,8 +89,9 @@ fun LargeAvatar(
     )
 }
 
+@Composable
 private fun contentDescriptionFor(name: String): String {
-    return "$name's avatar"
+    return stringResource(R.string.platform_ui_avatar, name)
 }
 
 @Composable
