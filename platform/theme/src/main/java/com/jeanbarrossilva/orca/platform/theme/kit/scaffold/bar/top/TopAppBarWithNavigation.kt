@@ -54,7 +54,7 @@ fun BackAction(onClick: () -> Unit, modifier: Modifier = Modifier) {
         Icon(
             OrcaTheme.iconography.back,
             contentDescription = stringResource(
-                R.string.platform_ui_top_app_bar_with_navigation_back_action
+                R.string.platform_ui_top_app_bar_with_back_navigation_action
             )
         )
     }
