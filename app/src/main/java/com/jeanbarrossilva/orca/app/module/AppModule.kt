@@ -7,6 +7,8 @@ internal class AppModule(
     private val onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener
 ) {
     fun inject() {
-        Injector.inject(onBottomAreaAvailabilityChangeListener)
+        Injector.inject {
+            onBottomAreaAvailabilityChangeListener
+        }
     }
 }

@@ -129,7 +129,7 @@ internal class HttpAuthorizationViewModel private constructor(
      **/
     fun authorize() {
         persistSelectedDomain()
-        Injector.inject(Injector.get<InstanceProvider>().provide() as SomeHttpInstance)
+        Injector.inject { Injector.get<InstanceProvider>().provide() as SomeHttpInstance }
         onAccessTokenRequestListener.onAccessTokenRequest()
     }
 

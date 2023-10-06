@@ -69,7 +69,7 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
     }
 
     private fun inject() {
-        Injector.inject<Context>(this)
+        Injector.inject<Context> { this@OrcaActivity }
         appModule.inject()
         coreModule.inject()
         FeedModule(this).inject()
