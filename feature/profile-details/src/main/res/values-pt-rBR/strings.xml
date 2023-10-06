@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile_details">Perfil</string>
+    <string name="profile_details_copy_url">Copiar URL</string>
+    <string name="profile_details_external_link">Link externo</string>
+    <string name="profile_details_more">Mais</string>
+    <string name="profile_details_open_in_browser">Abrir no navegador</string>
+    <string name="profile_details_share">Compartilhar</string>
+</resources>
