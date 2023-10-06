@@ -8,8 +8,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,8 +28,8 @@ import com.jeanbarrossilva.orca.platform.theme.kit.action.button.PrimaryButton
 import com.jeanbarrossilva.orca.platform.theme.kit.input.TextField
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.button.ButtonBar
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBarDefaults
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBarWithBackNavigation
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 
 @Composable
@@ -76,18 +74,9 @@ private fun TermMuting(
     Scaffold(
         modifier,
         topAppBar = {
-            TopAppBar(
+            TopAppBarWithBackNavigation(
+                onNavigation = onPop,
                 title = { Text(stringResource(R.string.settings_term_muting)) },
-                navigationIcon = {
-                    IconButton(onClick = onPop) {
-                        Icon(
-                            OrcaTheme.iconography.back,
-                            contentDescription = stringResource(
-                                com.jeanbarrossilva.orca.platform.theme.R.string.platform_ui_top_app_bar_back_navigation
-                            )
-                        )
-                    }
-                },
                 subtitle = { Text(stringResource(R.string.settings_term_muting_settings)) },
                 scrollBehavior = topAppBarScrollBehavior
             )

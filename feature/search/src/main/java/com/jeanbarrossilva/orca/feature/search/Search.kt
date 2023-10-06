@@ -41,9 +41,9 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.search.samples
 import com.jeanbarrossilva.orca.feature.search.ui.SearchResultCard
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.kit.action.button.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.theme.kit.input.TextField
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.BackAction
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 
 internal object SearchDefaults {
@@ -176,15 +176,7 @@ private fun Search(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(Modifier.fillMaxWidth(.2f), Alignment.Center) {
-                    HoverableIconButton(onClick = onBackwardsNavigation) {
-                        Icon(
-                            OrcaTheme.iconography.back,
-                            contentDescription = stringResource(
-                                com.jeanbarrossilva.orca.platform.theme.R.string.platform_ui_top_app_bar_back_navigation
-                            ),
-                            tint = OrcaTheme.colors.background.content
-                        )
-                    }
+                    BackAction(onClick = onBackwardsNavigation)
                 }
 
                 TextField(

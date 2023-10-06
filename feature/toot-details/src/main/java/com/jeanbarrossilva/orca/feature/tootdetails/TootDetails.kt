@@ -1,7 +1,6 @@
 package com.jeanbarrossilva.orca.feature.tootdetails
 
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -22,9 +21,8 @@ import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.formatted
 import com.jeanbarrossilva.orca.feature.tootdetails.viewmodel.TootDetailsViewModel
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.kit.action.button.HoverableIconButton
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBarDefaults
+import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBarWithBackNavigation
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.theme.reactivity.BottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
@@ -113,18 +111,9 @@ private fun TootDetails(
         modifier,
         topBar = {
             @OptIn(ExperimentalMaterial3Api::class)
-            TopAppBar(
+            TopAppBarWithBackNavigation(
+                onNavigation = onBackwardsNavigation,
                 title = { AutoSizeText(stringResource(R.string.toot_details)) },
-                navigationIcon = {
-                    HoverableIconButton(onClick = onBackwardsNavigation) {
-                        Icon(
-                            OrcaTheme.iconography.back,
-                            contentDescription = stringResource(
-                                com.jeanbarrossilva.orca.platform.theme.R.string.platform_ui_top_app_bar_back_navigation
-                            )
-                        )
-                    }
-                },
                 scrollBehavior = topAppBarScrollBehavior
             )
         }
