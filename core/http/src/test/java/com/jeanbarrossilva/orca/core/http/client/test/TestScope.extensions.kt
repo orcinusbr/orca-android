@@ -109,7 +109,7 @@ private fun <T : Actor> runCoreHttpClientTest(
     val authenticator = TestAuthenticator(authorizer, actorProvider) { onAuthentication() }
     val authenticationLock = AuthenticationLock(authenticator, actorProvider)
     val instance = TestHttpInstance(authorizer, authenticator, authenticationLock)
-    Injector.inject<SomeHttpInstance>(instance)
+    Injector.inject<SomeHttpInstance> { instance }
     runTest { CoreHttpClientTestScope(delegate = this, instance.client, actor).body() }
     Injector.clear()
 }
