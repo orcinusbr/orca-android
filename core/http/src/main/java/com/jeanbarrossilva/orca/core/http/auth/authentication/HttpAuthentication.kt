@@ -10,8 +10,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.jeanbarrossilva.orca.core.http.R
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 
@@ -31,7 +33,7 @@ internal fun HttpAuthentication(modifier: Modifier = Modifier) {
             Icon(OrcaTheme.iconography.login, contentDescription = "Link", Modifier.size(64.dp))
 
             Text(
-                "Authenticating...",
+                stringResource(R.string.core_http_authentication_authenticating),
                 textAlign = TextAlign.Center,
                 style = OrcaTheme.typography.headlineLarge
             )
