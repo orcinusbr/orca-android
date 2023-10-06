@@ -3,7 +3,7 @@
     <string name="settings_term_muting">Silenciar</string>
     <string name="settings_term_muting_explanation">
         Digite o termo que você gostaria de silenciar. Publicações que o contém não serão exibidas
-        no seu feed ou mesmo entregues a você por meio de notificações.
+        no seu feed ou mesmo entregues por meio de notificações.
     </string>
     <string name="settings_term_muting_mute">Silenciar</string>
     <string name="settings_term_muting_term">Termo</string>
