@@ -20,6 +20,7 @@ include(
     ":feature:profile-details",
     ":feature:search",
     ":feature:settings",
+    ":feature:settings:term-muting",
     ":feature:toot-details",
     ":platform:cache",
     ":platform:launchable",

@@ -14,6 +14,7 @@ import com.jeanbarrossilva.orca.app.module.feature.feed.FeedModule
 import com.jeanbarrossilva.orca.app.module.feature.profiledetails.ProfileDetailsModule
 import com.jeanbarrossilva.orca.app.module.feature.search.SearchModule
 import com.jeanbarrossilva.orca.app.module.feature.settings.MainSettingsModule
+import com.jeanbarrossilva.orca.app.module.feature.settings.termmuting.MainTermMutingModule
 import com.jeanbarrossilva.orca.app.module.feature.tootdetails.TootDetailsModule
 import com.jeanbarrossilva.orca.app.navigation.BottomNavigation
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
@@ -74,7 +75,8 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
         FeedModule(this).inject()
         ProfileDetailsModule(this).inject()
         SearchModule(navigator).inject()
-        MainSettingsModule.inject()
+        MainSettingsModule(navigator).inject()
+        MainTermMutingModule(navigator).inject()
         TootDetailsModule(this).inject()
     }
 

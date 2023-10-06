@@ -13,18 +13,13 @@ import com.jeanbarrossilva.orca.platform.theme.kit.action.setting.list.SettingsS
 import com.jeanbarrossilva.orca.platform.theme.kit.action.setting.list.settingsPreviewContent
 
 @Composable
-fun Section(
-    title: String,
-    onClick: (index: Int) -> Unit,
-    modifier: Modifier = Modifier,
-    content: SettingsScope.() -> Unit
-) {
+fun Section(title: String, modifier: Modifier = Modifier, content: SettingsScope.() -> Unit) {
     Column(
         modifier.padding(top = OrcaTheme.spacings.medium),
         verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.small)
     ) {
         Text(title.uppercase(), style = OrcaTheme.typography.titleSmall)
-        Settings(onClick, modifier, content)
+        Settings(modifier, content)
     }
 }
 
@@ -32,6 +27,6 @@ fun Section(
 @MultiThemePreview
 private fun SectionPreview() {
     OrcaTheme {
-        Section(title = "Section", onClick = { }, content = settingsPreviewContent)
+        Section(title = "Section", content = settingsPreviewContent)
     }
 }

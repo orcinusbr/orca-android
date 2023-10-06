@@ -36,7 +36,6 @@ import com.jeanbarrossilva.orca.platform.theme.kit.action.setting.list.settingsP
 /**
  * A [Setting] that holds related child [Setting]s.
  *
- * @param onClick Callback run whenever a child [Setting] is clicked.
  * @param icon [Icon] that visually represents what it does.
  * @param label Short description of what it's for.
  * @param modifier [Modifier] to be applied to the underlying [Column].
@@ -45,7 +44,6 @@ import com.jeanbarrossilva.orca.platform.theme.kit.action.setting.list.settingsP
  **/
 @Composable
 internal fun Group(
-    onClick: (index: Int) -> Unit,
     icon: @Composable () -> Unit,
     label: @Composable () -> Unit,
     modifier: Modifier = Modifier,
@@ -86,10 +84,10 @@ internal fun Group(
                 remember(bottomStartCornerSizeInDp) { CornerSize(bottomStartCornerSizeInDp) }
 
             Setting(
-                onClick = { isExpanded = !isExpanded },
                 label,
                 shape = shape
                     .copy(bottomEnd = bottomEndCornerSize, bottomStart = bottomStartCornerSize),
+                onClick = { isExpanded = !isExpanded },
                 icon = icon
             ) {
                 icon(
@@ -107,7 +105,7 @@ internal fun Group(
             enter = slideInVertically { -it } + expandVertically(),
             exit = slideOutVertically { -it } + shrinkVertically()
         ) {
-            ChildSettings(onClick, content = content)
+            ChildSettings(content = content)
         }
     }
 }
@@ -139,7 +137,6 @@ private fun ExpandedGroupPreview() {
 @Composable
 private fun Group(isInitiallyExpanded: Boolean, modifier: Modifier = Modifier) {
     Group(
-        onClick = { },
         icon = { Icon(OrcaTheme.iconography.home.filled, contentDescription = "Setting") },
         label = { Text("Group") },
         modifier,

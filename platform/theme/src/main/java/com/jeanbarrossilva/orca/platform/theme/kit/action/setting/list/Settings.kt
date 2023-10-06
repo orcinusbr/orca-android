@@ -23,6 +23,7 @@ import com.jeanbarrossilva.orca.platform.theme.kit.action.setting.SettingDefault
 internal val settingsPreviewContent: SettingsScope.() -> Unit = {
     repeat(3) {
         setting(
+            onClick = { },
             label = { Text("Label #$it") },
             icon = { Icon(OrcaTheme.iconography.link, contentDescription = "Setting") }
         ) {
@@ -34,18 +35,12 @@ internal val settingsPreviewContent: SettingsScope.() -> Unit = {
 /**
  * [Column] of [Setting]s that are shaped according to their position.
  *
- * @param onClick Callback run whenever any of the [Setting]s is selected.
  * @param modifier [Modifier] to be applied to the underlying [Column].
  * @param content Actions to be run on the given [SettingsScope].
  **/
 @Composable
-fun Settings(
-    onClick: (index: Int) -> Unit,
-    modifier: Modifier = Modifier,
-    content: SettingsScope.() -> Unit
-) {
+fun Settings(modifier: Modifier = Modifier, content: SettingsScope.() -> Unit) {
     Settings(
-        onClick,
         settingModifier = Modifier,
         singleSettingShape = SettingDefaults.shape,
         firstSettingFollowedByOthersShape = SettingDefaults.shape.top,
@@ -57,18 +52,12 @@ fun Settings(
 /**
  * [Column] of child [Setting]s that are shaped according to their position.
  *
- * @param onClick Callback run whenever any of the [Setting]s is selected.
  * @param modifier [Modifier] to be applied to the underlying [Column].
  * @param content Actions to be run on the given [SettingsScope].
  **/
 @Composable
-internal fun ChildSettings(
-    onClick: (index: Int) -> Unit,
-    modifier: Modifier = Modifier,
-    content: SettingsScope.() -> Unit
-) {
+internal fun ChildSettings(modifier: Modifier = Modifier, content: SettingsScope.() -> Unit) {
     Settings(
-        onClick,
         settingModifier = Modifier.padding(start = SettingDefaults.spacing),
         singleSettingShape = SettingDefaults.shape.bottom,
         firstSettingFollowedByOthersShape = RectangleShape,
@@ -80,7 +69,6 @@ internal fun ChildSettings(
 /**
  * [Column] of [Setting]s that are shaped according to their position.
  *
- * @param onClick Callback run whenever any of the [Setting]s is selected.
  * @param settingModifier [Modifier] to be applied to each [Setting].
  * @param singleSettingShape [Shape] by which the single [Setting] will be shaped.
  * @param firstSettingFollowedByOthersShape [Shape] by which the first [Setting] will be shaped when
@@ -90,7 +78,6 @@ internal fun ChildSettings(
  **/
 @Composable
 private fun Settings(
-    onClick: (index: Int) -> Unit,
     @Suppress("ModifierParameter") settingModifier: Modifier,
     singleSettingShape: Shape,
     firstSettingFollowedByOthersShape: Shape,
@@ -98,7 +85,7 @@ private fun Settings(
     content: SettingsScope.() -> Unit
 ) {
     val defaultOptionShape = SettingDefaults.shape
-    val scope = remember(onClick, content) { SettingsScope(onClick).apply(content) }
+    val scope = remember(content) { SettingsScope().apply(content) }
 
     Column(modifier.border(defaultOptionShape)) {
         scope.settings.forEachIndexed { index, setting ->
@@ -125,7 +112,7 @@ private fun Settings(
 @MultiThemePreview
 private fun ParentSettingsPreview() {
     OrcaTheme {
-        Settings(onClick = { }, content = settingsPreviewContent)
+        Settings(content = settingsPreviewContent)
     }
 }
 
@@ -134,6 +121,6 @@ private fun ParentSettingsPreview() {
 @MultiThemePreview
 private fun ChildSettingsPreview() {
     OrcaTheme {
-        ChildSettings(onClick = { }, content = settingsPreviewContent)
+        ChildSettings(content = settingsPreviewContent)
     }
 }
