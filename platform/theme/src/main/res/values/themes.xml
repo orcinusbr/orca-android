@@ -54,6 +54,7 @@
         <item name="textAppearanceHeadlineLarge">@style/Theme.Orca.Typography.HeadlineLarge</item>
         <item name="textAppearanceHeadlineMedium">@style/Theme.Orca.Typography.HeadlineMedium</item>
         <item name="textAppearanceLabelLarge">@style/Theme.Orca.Typography.LabelLarge</item>
+        <item name="textAppearanceLabelMedium">@style/Theme.Orca.Typography.LabelMedium</item>
         <item name="textAppearanceTitleLarge">@style/Theme.Orca.Typography.TitleLarge</item>
         <item name="textAppearanceTitleSmall">@style/Theme.Orca.Typography.TitleSmall</item>
     </style>
