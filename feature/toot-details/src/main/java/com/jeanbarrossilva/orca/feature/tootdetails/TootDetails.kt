@@ -9,6 +9,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
@@ -113,10 +114,15 @@ private fun TootDetails(
         topBar = {
             @OptIn(ExperimentalMaterial3Api::class)
             TopAppBar(
-                title = { AutoSizeText("Toot") },
+                title = { AutoSizeText(stringResource(R.string.toot_details)) },
                 navigationIcon = {
                     HoverableIconButton(onClick = onBackwardsNavigation) {
-                        Icon(OrcaTheme.iconography.back, contentDescription = "Back")
+                        Icon(
+                            OrcaTheme.iconography.back,
+                            contentDescription = stringResource(
+                                com.jeanbarrossilva.orca.platform.theme.R.string.platform_ui_top_app_bar_back_navigation
+                            )
+                        )
                     }
                 },
                 scrollBehavior = topAppBarScrollBehavior

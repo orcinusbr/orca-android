@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="toot_details">Toot</string>
+    <string name="toot_details_comments">Comments</string>
+    <string name="toot_details_share">Share</string>
+</resources>
