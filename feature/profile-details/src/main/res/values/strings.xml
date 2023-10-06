@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="profile_details">Profile</string>
+    <string name="profile_details_copy_url">Copy URL</string>
+    <string name="profile_details_external_link">External link</string>
+    <string name="profile_details_more">More</string>
+    <string name="profile_details_open_in_browser">Open in browser</string>
+    <string name="profile_details_share">Share</string>
 </resources>
