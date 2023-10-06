@@ -23,9 +23,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import com.jeanbarrossilva.loadable.Loadable
+import com.jeanbarrossilva.orca.core.http.R
 import com.jeanbarrossilva.orca.core.http.auth.authorization.selectable.list.SelectableList
 import com.jeanbarrossilva.orca.core.http.auth.authorization.selectable.list.selectFirst
 import com.jeanbarrossilva.orca.core.http.auth.authorization.viewmodel.HttpAuthorizationViewModel
@@ -126,7 +128,7 @@ internal fun HttpAuthorization(
                 KeyboardOptions(imeAction = ImeAction.Search),
                 isSingleLined = true
             ) {
-                Text("Search...")
+                Text(stringResource(R.string.core_http_authorization_search))
             }
         },
         instanceDomains = {
@@ -162,7 +164,7 @@ internal fun HttpAuthorization(
             lazyListState.firstVisibleItemIndex > 0
         }
     }
-    val headerTitle = remember { "Where is your account from?" }
+    val headerTitle = stringResource(R.string.core_http_authorization_account_origin)
     val spacing = OrcaTheme.spacings.extraLarge
 
     Box(modifier) {
@@ -170,7 +172,7 @@ internal fun HttpAuthorization(
             buttonBar = {
                 ButtonBar(lazyListState) {
                     PrimaryButton(onClick = onSignIn, isEnabled = isSignInButtonEnabled) {
-                        Text("Sign in")
+                        Text(stringResource(R.string.core_http_authorization_sign_in))
                     }
                 }
             }
@@ -187,7 +189,7 @@ internal fun HttpAuthorization(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            "Welcome!",
+                            stringResource(R.string.core_http_authorization_welcome),
                             textAlign = TextAlign.Center,
                             style = OrcaTheme.typography.headlineLarge
                         )

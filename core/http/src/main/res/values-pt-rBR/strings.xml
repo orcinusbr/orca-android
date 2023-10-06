@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="core_http_authorization_account_origin">Where is your account from?</string>
+    <string name="core_http_authorization_search">Pesquisar…</string>
+    <string name="core_http_authorization_sign_in">Entrar</string>
+    <string name="core_http_authorization_welcome">Bem-vindo!</string>
+</resources>
