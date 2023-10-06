@@ -48,9 +48,10 @@ private fun Settings(
     Scaffold(
         modifier,
         topAppBar = {
-            TopAppBar(scrollBehavior = topAppBarScrollBehavior) {
-                AutoSizeText("Settings")
-            }
+            TopAppBar(
+                title = { AutoSizeText("Settings") },
+                scrollBehavior = topAppBarScrollBehavior
+            )
         }
     ) {
         LazyColumn(

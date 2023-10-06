@@ -87,9 +87,7 @@ private fun ScaffoldPreview() {
         _Scaffold(
             topAppBar = {
                 @OptIn(ExperimentalMaterial3Api::class)
-                TopAppBar {
-                    AutoSizeText("Scaffold")
-                }
+                TopAppBar(title = { AutoSizeText("Scaffold") })
             },
             floatingActionButton = {
                 FloatingActionButton(onClick = { }) {

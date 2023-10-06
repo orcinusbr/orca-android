@@ -212,9 +212,10 @@ internal fun HttpAuthorization(
         ) {
             Column {
                 @OptIn(ExperimentalMaterial3Api::class)
-                TopAppBar(scrollBehavior = topAppBarScrollBehavior) {
-                    AutoSizeText(headerTitle)
-                }
+                TopAppBar(
+                    title = { AutoSizeText(headerTitle) },
+                    scrollBehavior = topAppBarScrollBehavior
+                )
 
                 Divider()
             }

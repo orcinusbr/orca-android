@@ -76,15 +76,15 @@ private fun TermMuting(
         modifier,
         topAppBar = {
             TopAppBar(
+                title = { Text("Mute") },
                 navigationIcon = {
                     IconButton(onClick = onPop) {
                         Icon(OrcaTheme.iconography.back, contentDescription = "Back")
                     }
                 },
+                subtitle = { Text("Settings") },
                 scrollBehavior = topAppBarScrollBehavior
-            ) {
-                Text("Mute")
-            }
+            )
         },
         buttonBar = {
             ButtonBar(lazyListState) {
