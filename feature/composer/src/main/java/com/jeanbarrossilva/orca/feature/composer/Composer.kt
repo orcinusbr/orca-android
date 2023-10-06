@@ -35,6 +35,7 @@ import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -47,12 +48,12 @@ import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.plus
 import com.jeanbarrossilva.orca.platform.theme.kit.action.button.HoverableIconButton
+import com.jeanbarrossilva.orca.platform.theme.kit.input.TextFieldDefaults as _TextFieldDefaults
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
-import com.jeanbarrossilva.orca.platform.theme.kit.input.TextFieldDefaults as _TextFieldDefaults
 
 internal const val COMPOSER_FIELD = "composer-field"
 
@@ -103,7 +104,7 @@ private fun Composer(
         topAppBar = {
             @OptIn(ExperimentalMaterial3Api::class)
             TopAppBar(
-                title = { AutoSizeText("Compose") },
+                title = { AutoSizeText(stringResource(R.string.composer)) },
                 navigationIcon = {
                     HoverableIconButton(onClick = onBackwardsNavigation) {
                         Icon(OrcaTheme.iconography.back, contentDescription = "Back")
@@ -124,7 +125,10 @@ private fun Composer(
                     }
                 }
             ) {
-                Icon(OrcaTheme.iconography.send, contentDescription = "Send")
+                Icon(
+                    OrcaTheme.iconography.send,
+                    contentDescription = stringResource(R.string.composer_send)
+                )
             }
         },
         floatingActionButtonPosition = floatingActionButtonPosition
@@ -159,7 +163,7 @@ private fun Composer(
                             interactionSource,
                             placeholder = {
                                 Text(
-                                    "What's on your mind?",
+                                    stringResource(R.string.composer_placeholder),
                                     style = style.copy(color = OrcaTheme.colors.tertiary)
                                 )
                             },
