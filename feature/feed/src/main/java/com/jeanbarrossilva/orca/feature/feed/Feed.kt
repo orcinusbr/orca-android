@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
@@ -99,10 +100,13 @@ private fun Feed(
         topAppBar = {
             @OptIn(ExperimentalMaterial3Api::class)
             TopAppBar(
-                title = { AutoSizeText("Feed") },
+                title = { AutoSizeText(stringResource(R.string.feed)) },
                 actions = {
                     HoverableIconButton(onClick = onSearch) {
-                        Icon(OrcaTheme.iconography.search, contentDescription = "Search")
+                        Icon(
+                            OrcaTheme.iconography.search,
+                            contentDescription = stringResource(R.string.feed_search)
+                        )
                     }
                 },
                 scrollBehavior = topAppBarScrollBehavior
@@ -114,7 +118,10 @@ private fun Feed(
                     onClick = onComposition,
                     Modifier.testTag(FEED_FLOATING_ACTION_BUTTON_TAG)
                 ) {
-                    Icon(OrcaTheme.iconography.compose.filled, contentDescription = "Compose")
+                    Icon(
+                        OrcaTheme.iconography.compose.filled,
+                        contentDescription = stringResource(R.string.feed_compose)
+                    )
                 }
             }
         }

@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="feed">Feed</string>
+    <string name="feed_compose">Compose</string>
+    <string name="feed_search">Search</string>
 </resources>
