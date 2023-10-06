@@ -27,9 +27,9 @@ import org.junit.Test
 internal class FeedFragmentTests {
     @get:Rule
     val injectorRule = InjectorTestRule {
-        inject(InstanceProvider.sample)
-        inject<FeedBoundary>(TestFeedBoundary())
-        inject(OnBottomAreaAvailabilityChangeListener.empty)
+        inject { InstanceProvider.sample }
+        inject<FeedBoundary> { TestFeedBoundary() }
+        inject { OnBottomAreaAvailabilityChangeListener.empty }
     }
 
     @get:Rule

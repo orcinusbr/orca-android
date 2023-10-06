@@ -8,27 +8,21 @@ import kotlin.reflect.KClass
 object Injector {
     /** Dependencies that have been injected associated to their assigned types. **/
     @PublishedApi
-    internal val injections = hashMapOf<KClass<*>, Any>()
-
-    /**
-     * Injects the given [injectable].
-     *
-     * @param T Dependency to be injected.
-     * @param injectable [Injectable] to be injected.
-     **/
-    inline fun <reified T : Any> inject(injectable: Injectable<T>) {
-        val dependency = injectable.getDependency()
-        inject(dependency)
-    }
+    internal val injections = hashMapOf<KClass<*>, () -> Any>()
 
     /**
      * Injects the given [dependency].
      *
      * @param T Dependency to be injected.
-     * @param dependency Dependency to be injected.
+     * @param dependency Returns the dependency to be injected.
      **/
-    inline fun <reified T : Any> inject(dependency: T) {
-        injections[T::class] = dependency
+    inline fun <reified T : Any> inject(noinline dependency: Injector.() -> T) {
+        if (T::class !in injections) {
+            injections[T::class] = {
+                @Suppress("UNUSED_EXPRESSION")
+                dependency()
+            }
+        }
     }
 
     /**
@@ -39,7 +33,7 @@ object Injector {
      **/
     @Throws(NoSuchElementException::class)
     inline fun <reified T : Any> get(): T {
-        return injections[T::class] as T? ?: throw dependencyNotInjected<T>()
+        return injections[T::class]?.invoke() as T? ?: throw dependencyNotInjected<T>()
     }
 
     /** Removes all injected dependencies. **/
