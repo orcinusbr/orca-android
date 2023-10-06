@@ -65,7 +65,13 @@ internal fun Setting(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 icon()
-                ProvideTextStyle(OrcaTheme.typography.bodyLarge, label)
+
+                ProvideTextStyle(
+                    OrcaTheme.typography.labelMedium.copy(
+                        color = OrcaTheme.colors.background.content
+                    ),
+                    label
+                )
             }
 
             Spacer(Modifier.width(SettingDefaults.spacing))
