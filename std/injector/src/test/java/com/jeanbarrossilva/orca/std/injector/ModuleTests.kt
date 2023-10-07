@@ -2,6 +2,7 @@ package com.jeanbarrossilva.orca.std.injector
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import com.jeanbarrossilva.orca.std.injector.module.Module
 import com.jeanbarrossilva.orca.std.injector.test.InjectorTestRule
 import kotlin.test.Test
 import org.junit.Rule
@@ -16,7 +17,7 @@ internal class ModuleTests {
         assertThat(Injector.get<Int>()).isEqualTo(0)
     }
 
-    @Test(expected = NoSuchElementException::class)
+    @Test(expected = Module.DependencyNotInjectedException::class)
     fun throwsWhenGettingDependencyThatHasNotBeenInjected() {
         Injector.get<Int>()
     }
@@ -28,7 +29,7 @@ internal class ModuleTests {
         assertThat(Injector.get<Int>()).isEqualTo(0)
     }
 
-    @Test(NoSuchElementException::class)
+    @Test(Module.DependencyNotInjectedException::class)
     fun clears() {
         Injector.inject { 0 }
         Injector.clear()
