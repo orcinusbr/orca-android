@@ -1,6 +1,9 @@
 package com.jeanbarrossilva.orca.std.injector
 
+import com.jeanbarrossilva.orca.std.injector.module.Module
 import kotlin.reflect.KClass
+import kotlin.reflect.full.memberProperties
+import kotlin.reflect.jvm.isAccessible
 
 /** [Module] that enables global [Module] and dependency injection. **/
 object Injector : Module() {
@@ -32,13 +35,13 @@ object Injector : Module() {
     /**
      * Registers the given [module].
      *
-     * @param T [Module] to be registered.
+     * @param T [Module] to be associated to the given one.
      * @param module [Module] to be registered.
      * @throws SelfRegistrationException If the [module] is this [Injector].
      **/
     inline fun <reified T : Module> register(module: T) {
         if (module != this) {
-            modularization[T::class] = module
+            registerWithoutSelfRegistrationInsurance(module)
         } else {
             throw SelfRegistrationException()
         }
@@ -61,6 +64,39 @@ object Injector : Module() {
     }
 
     override fun onClear() {
+        modularization.values.forEach(Module::clear)
         modularization.clear()
+    }
+
+    /**
+     * Registers the given [module] without ensuring that this [Module] isn't injecting itself.
+     *
+     * @param T [Module] to be associated to the given one.
+     * @param module [Module] to be registered.
+     **/
+    @PublishedApi
+    internal inline fun <reified T : Module> registerWithoutSelfRegistrationInsurance(module: T) {
+        modularization[T::class] = module
+        injectDeclaredDependenciesOf(module)
+    }
+
+    /**
+     * Injects the dependencies declared within the given [module].
+     *
+     * @param T [Module] into which its dependencies will be injected.
+     * @param module [Module] whose dependencies will be injected into it.
+     **/
+    @PublishedApi
+    internal inline fun <reified T : Module> injectDeclaredDependenciesOf(module: T) {
+        T::class
+            .memberProperties
+            .filterIsInjection()
+            .associateBy { it.returnType.arguments.last().type?.classifier }
+            .mapKeys { (dependencyClassifier, _) -> dependencyClassifier as KClass<*> }
+            .onEach { (_, property) -> property.isAccessible = true }
+            .mapValues { (_, property) -> property.get(module) }
+            .forEach { (dependencyClass, injection) ->
+                module.inject(dependencyClass, injection.castTo())
+            }
     }
 }

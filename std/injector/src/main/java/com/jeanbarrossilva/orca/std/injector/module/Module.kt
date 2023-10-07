@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.std.injector
+package com.jeanbarrossilva.orca.std.injector.module
 
 import kotlin.reflect.KClass
 
@@ -29,11 +29,7 @@ abstract class Module {
      * @param injection Returns the dependency to be injected.
      **/
     inline fun <reified T : Any> inject(noinline injection: Module.() -> T) {
-        if (T::class !in injections) {
-            injections[T::class] = lazy {
-                injection()
-            }
-        }
+        inject(T::class, injection)
     }
 
     /**
@@ -60,6 +56,22 @@ abstract class Module {
     fun clear() {
         injections.clear()
         onClear()
+    }
+
+    /**
+     * Injects the dependency returned by the [injection].
+     *
+     * @param T Dependency to be injected.
+     * @param dependencyClass [KClass] to which the dependency will be associated.
+     * @param injection Returns the dependency to be injected.
+     **/
+    @PublishedApi
+    internal fun <T : Any> inject(dependencyClass: KClass<T>, injection: Module.() -> T) {
+        if (dependencyClass !in injections) {
+            injections[dependencyClass] = lazy {
+                injection()
+            }
+        }
     }
 
     /** Callback run whenever this [Module] is cleared. **/
