@@ -9,12 +9,12 @@ import com.jeanbarrossilva.orca.std.injector.Injector
 
 class TermMutingFragment internal constructor() : ComposableFragment() {
     private val viewModel by viewModels<TermMutingViewModel> {
-        TermMutingViewModel.createFactory(termMuter = Injector.get())
+        TermMutingViewModel.createFactory(termMuter = Injector.from<TermMutingModule>().get())
     }
 
     @Composable
     override fun Content() {
-        TermMuting(viewModel, boundary = Injector.get())
+        TermMuting(viewModel, boundary = Injector.from<TermMutingModule>().get())
     }
 
     companion object {

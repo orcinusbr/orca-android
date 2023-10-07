@@ -7,16 +7,21 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.jeanbarrossilva.orca.app.databinding.ActivityOrcaBinding
-import com.jeanbarrossilva.orca.app.module.AppModule
 import com.jeanbarrossilva.orca.app.module.core.CoreModule
 import com.jeanbarrossilva.orca.app.module.core.MainCoreModule
-import com.jeanbarrossilva.orca.app.module.feature.feed.FeedModule
-import com.jeanbarrossilva.orca.app.module.feature.profiledetails.ProfileDetailsModule
-import com.jeanbarrossilva.orca.app.module.feature.search.SearchModule
+import com.jeanbarrossilva.orca.app.module.feature.feed.MainFeedModule
+import com.jeanbarrossilva.orca.app.module.feature.profiledetails.MainProfileDetailsModule
+import com.jeanbarrossilva.orca.app.module.feature.search.MainSearchModule
 import com.jeanbarrossilva.orca.app.module.feature.settings.MainSettingsModule
 import com.jeanbarrossilva.orca.app.module.feature.settings.termmuting.MainTermMutingModule
-import com.jeanbarrossilva.orca.app.module.feature.tootdetails.TootDetailsModule
+import com.jeanbarrossilva.orca.app.module.feature.tootdetails.MainTootDetailsModule
 import com.jeanbarrossilva.orca.app.navigation.BottomNavigation
+import com.jeanbarrossilva.orca.feature.ProfileDetailsModule
+import com.jeanbarrossilva.orca.feature.feed.FeedModule
+import com.jeanbarrossilva.orca.feature.search.SearchModule
+import com.jeanbarrossilva.orca.feature.settings.SettingsModule
+import com.jeanbarrossilva.orca.feature.settings.termmuting.TermMutingModule
+import com.jeanbarrossilva.orca.feature.tootdetails.TootDetailsModule
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
 import com.jeanbarrossilva.orca.std.injector.Injector
@@ -27,9 +32,6 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
     private var constraintSet: ConstraintSet? = null
 
     protected open val coreModule: CoreModule = MainCoreModule()
-
-    @Suppress("LeakingThis")
-    protected open val appModule = AppModule(this)
 
     final override val height: Int
         get() = binding?.bottomNavigationView?.height ?: 0
@@ -69,15 +71,17 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
     }
 
     private fun inject() {
-        Injector.inject<Context> { this@OrcaActivity }
-        appModule.inject()
-        coreModule.inject()
-        FeedModule(this).inject()
-        ProfileDetailsModule(this).inject()
-        SearchModule(navigator).inject()
-        MainSettingsModule(navigator).inject()
-        MainTermMutingModule(navigator).inject()
-        TootDetailsModule(this).inject()
+        with(Injector) {
+            inject<Context> { this@OrcaActivity }
+            inject<OnBottomAreaAvailabilityChangeListener> { this@OrcaActivity }
+            register(coreModule)
+            register<FeedModule>(MainFeedModule(this@OrcaActivity))
+            register<ProfileDetailsModule>(MainProfileDetailsModule(this@OrcaActivity))
+            register<SearchModule>(MainSearchModule(navigator))
+            register<SettingsModule>(MainSettingsModule(navigator))
+            register<TermMutingModule>(MainTermMutingModule(navigator))
+            register<TootDetailsModule>(MainTootDetailsModule(this@OrcaActivity))
+        }
     }
 
     private fun navigateOnBottomNavigationItemSelection() {
