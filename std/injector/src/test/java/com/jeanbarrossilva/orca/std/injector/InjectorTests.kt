@@ -47,7 +47,7 @@ internal class InjectorTests {
         Injector.from<Module>()
     }
 
-    @Test(expected = Module.DependencyNotInjected::class)
+    @Test(expected = Module.DependencyNotInjectedException::class)
     fun doesNotInjectNonAnnotatedModuleDependenciesWhenRegisteringIt() {
         Injector
             .register<SuperModuleWithNonAnnotatedDependency>(SubModuleWithNonAnnotatedDependency())

@@ -14,7 +14,7 @@ abstract class Module {
      *
      * @param dependencyClass [KClass] of the requested dependency.
      **/
-    inner class DependencyNotInjected
+    inner class DependencyNotInjectedException
     @PublishedApi
     internal constructor(dependencyClass: KClass<*>) :
         NoSuchElementException(
@@ -45,11 +45,11 @@ abstract class Module {
      * Obtains the injected dependency whose type is [T].
      *
      * @param T Dependency to be obtained.
-     * @throws DependencyNotInjected If no dependency of type [T] has been injected.
+     * @throws DependencyNotInjectedException If no dependency of type [T] has been injected.
      **/
     @Throws(NoSuchElementException::class)
     inline fun <reified T : Any> get(): T {
-        return injections[T::class]?.value as T? ?: throw DependencyNotInjected(T::class)
+        return injections[T::class]?.value as T? ?: throw DependencyNotInjectedException(T::class)
     }
 
     /** Removes all injected dependencies. **/
