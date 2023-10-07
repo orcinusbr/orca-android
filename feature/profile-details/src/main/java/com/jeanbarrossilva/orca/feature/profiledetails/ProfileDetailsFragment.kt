@@ -15,12 +15,13 @@ import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.opening
 import com.jeanbarrossilva.orca.std.injector.Injector
 
 class ProfileDetailsFragment internal constructor() : ComposableFragment(), ContextProvider {
+    private val module by lazy { Injector.from<ProfileDetailsModule>() }
     private val id by argument<String>(ID_KEY)
     private val viewModel by viewModels<ProfileDetailsViewModel> {
         ProfileDetailsViewModel.createFactory(
             contextProvider = this,
-            profileProvider = Injector.from<ProfileDetailsModule>().get(),
-            tootProvider = Injector.from<ProfileDetailsModule>().get(),
+            profileProvider = module.get(),
+            tootProvider = module.get(),
             id
         )
     }
@@ -38,7 +39,7 @@ class ProfileDetailsFragment internal constructor() : ComposableFragment(), Cont
 
         ProfileDetails(
             viewModel,
-            navigator = Injector.from<ProfileDetailsModule>().get(),
+            navigator = module.get(),
             backwardsNavigationState,
             onBottomAreaAvailabilityChangeListener = Injector.get()
         )

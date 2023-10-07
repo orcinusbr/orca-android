@@ -11,13 +11,11 @@ import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.opening
 import com.jeanbarrossilva.orca.std.injector.Injector
 
 class TootDetailsFragment private constructor() : ComposableFragment() {
+    private val module by lazy { Injector.from<TootDetailsModule>() }
     private val id by argument<String>(ID_KEY)
     private val viewModel by viewModels<TootDetailsViewModel> {
-        TootDetailsViewModel.createFactory(
-            contextProvider = ::requireContext,
-            tootProvider = Injector.from<TootDetailsModule>().get(),
-            id
-        )
+        TootDetailsViewModel
+            .createFactory(contextProvider = ::requireContext, tootProvider = module.get(), id)
     }
 
     private constructor(id: String) : this() {
@@ -28,7 +26,7 @@ class TootDetailsFragment private constructor() : ComposableFragment() {
     override fun Content() {
         TootDetails(
             viewModel,
-            boundary = Injector.from<TootDetailsModule>().get(),
+            boundary = module.get(),
             onBottomAreaAvailabilityChangeListener = Injector.get()
         )
     }

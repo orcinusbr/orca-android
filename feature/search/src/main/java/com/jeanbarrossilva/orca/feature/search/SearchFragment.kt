@@ -8,13 +8,14 @@ import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.opening
 import com.jeanbarrossilva.orca.std.injector.Injector
 
 class SearchFragment : ComposableFragment() {
+    private val module by lazy { Injector.from<SearchModule>() }
     private val viewModel by viewModels<SearchViewModel> {
-        SearchViewModel.createFactory(searcher = Injector.from<SearchModule>().get())
+        SearchViewModel.createFactory(searcher = module.get())
     }
 
     @Composable
     override fun Content() {
-        Search(viewModel, boundary = Injector.from<SearchModule>().get())
+        Search(viewModel, boundary = module.get())
     }
 
     companion object {

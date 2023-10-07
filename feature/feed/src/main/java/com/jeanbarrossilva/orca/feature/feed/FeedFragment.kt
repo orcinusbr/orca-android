@@ -11,12 +11,13 @@ import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
 
 class FeedFragment internal constructor() : ComposableFragment(), ContextProvider {
+    private val module by lazy { Injector.from<FeedModule>() }
     private val userID by argument<String>(USER_ID_KEY)
     private val viewModel by viewModels<FeedViewModel> {
         FeedViewModel.createFactory(
             contextProvider = this,
-            feedProvider = Injector.from<FeedModule>().get(),
-            tootProvider = Injector.from<FeedModule>().get(),
+            feedProvider = module.get(),
+            tootProvider = module.get(),
             userID
         )
     }
@@ -29,7 +30,7 @@ class FeedFragment internal constructor() : ComposableFragment(), ContextProvide
     override fun Content() {
         Feed(
             viewModel,
-            boundary = Injector.from<FeedModule>().get(),
+            boundary = module.get(),
             onBottomAreaAvailabilityChangeListener = Injector.get()
         )
     }
