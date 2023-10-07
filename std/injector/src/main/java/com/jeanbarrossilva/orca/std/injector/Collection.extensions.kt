@@ -8,9 +8,9 @@ import kotlin.reflect.typeOf
 
 /**
  * Returns a [List] containing only [KProperty1]s that characterize an injection into a [Module].
- * Those are:
+ * Those:
  *
- * - Annotated with [Inject], denoting that the dependencies returned by their values should be
+ * - Are annotated with [Inject], denoting that the dependencies returned by their values should be
  * automatically injected into the [Module] in which they were declared;
  * - Have a return type of `Module.() -> Any`, which allows for operations to be performed within
  * the [Module] and returns a dependency of any non-`null` type.
