@@ -2,7 +2,7 @@ package com.jeanbarrossilva.orca.std.injector
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import com.jeanbarrossilva.orca.std.injector.module.Dependency
+import com.jeanbarrossilva.orca.std.injector.module.Inject
 import com.jeanbarrossilva.orca.std.injector.module.Module
 import com.jeanbarrossilva.orca.std.injector.test.InjectorTestRule
 import kotlin.test.Test
@@ -13,7 +13,7 @@ internal class InjectorTests {
     val injectorRule = InjectorTestRule()
 
     private abstract class SuperModuleWithAnnotatedDependency(
-        @Dependency private val dependency: Module.() -> Int
+        @Inject private val dependency: Module.() -> Int
     ) : Module()
 
     private abstract class SuperModuleWithNonAnnotatedDependency(
