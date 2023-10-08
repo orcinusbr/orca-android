@@ -11,5 +11,6 @@ abstract class ProfileDetailsModule(
     @Inject private val profileProvider: Module.() -> ProfileProvider,
     @Inject private val tootProvider: Module.() -> TootProvider,
     @Inject private val boundary: Module.() -> ProfileDetailsBoundary,
-    @Inject private val onBottomAreaAvailabilityChangeListener: Module.() -> OnBottomAreaAvailabilityChangeListener
+    @Inject private val onBottomAreaAvailabilityChangeListener:
+    Module.() -> OnBottomAreaAvailabilityChangeListener
 ) : Module()

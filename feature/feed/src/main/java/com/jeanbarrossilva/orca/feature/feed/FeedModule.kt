@@ -10,5 +10,6 @@ open class FeedModule(
     @Inject private val feedProvider: Module.() -> FeedProvider,
     @Inject private val tootProvider: Module.() -> TootProvider,
     @Inject private val boundary: Module.() -> FeedBoundary,
-    @Inject private val onBottomAreaAvailabilityChangeListener: Module.() -> OnBottomAreaAvailabilityChangeListener
+    @Inject private val onBottomAreaAvailabilityChangeListener:
+    Module.() -> OnBottomAreaAvailabilityChangeListener
 ) : Module()
