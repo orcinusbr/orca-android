@@ -6,11 +6,15 @@ import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
+import com.jeanbarrossilva.orca.std.injector.module.Inject
 import com.jeanbarrossilva.orca.std.injector.module.Module
 
 /**
  * [SymbolProcessor] for ensuring the integrity of [Inject]-annotated properties, reporting an error
- * if they're not part of a specific [Module].
+ * if:
+ *
+ * - They're not part of a specific [Module];
+ * - They have a return type different from `Module.() -> Any`.
  **/
 class InjectProcessor private constructor(private val environment: SymbolProcessorEnvironment) :
     SymbolProcessor {
@@ -23,7 +27,8 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val injections = resolver.getInjections().toList()
-        errorOnModuleUnrelatedInjections(injections)
+        reportErrorOnModuleUnrelatedInjections(injections)
+        reportErrorOnMismatchingType(injections)
         return emptyList()
     }
 
@@ -39,10 +44,29 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
      * ```
      *
      * In this case, the error would be reported on `incorrectlyDeclaredDependency`.
+     *
+     * @param injections Declared properties annotated with [Inject].
      **/
-    private fun errorOnModuleUnrelatedInjections(injections: List<KSPropertyDeclaration>) {
+    private fun reportErrorOnModuleUnrelatedInjections(injections: List<KSPropertyDeclaration>) {
         injections.filterNot { it.isWithin<Module>() }.forEach {
             environment.logger.error("An injection should be part of a Module.", symbol = it)
         }
+    }
+
+    /**
+     * Reports an error for each [KSPropertyDeclaration] within the [injections] that have a return
+     * type other than that of an injection, which is `Module.() -> Any`.
+     *
+     * @param injections Declared properties annotated with [Inject].
+     **/
+    private fun reportErrorOnMismatchingType(injections: List<KSPropertyDeclaration>) {
+        injections
+            .filterNot(KSPropertyDeclaration::isInjection)
+            .forEach {
+                environment.logger.error(
+                    "An injection should return have a return type of `Module.() -> Any`.",
+                    symbol = it
+                )
+            }
     }
 }
