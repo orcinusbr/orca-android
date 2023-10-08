@@ -73,7 +73,6 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
     private fun inject() {
         with(Injector) {
             inject<Context> { this@OrcaActivity }
-            inject<OnBottomAreaAvailabilityChangeListener> { this@OrcaActivity }
             register(coreModule)
             register<FeedModule>(MainFeedModule(this@OrcaActivity))
             register<ProfileDetailsModule>(MainProfileDetailsModule(this@OrcaActivity))

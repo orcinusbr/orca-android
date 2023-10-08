@@ -27,7 +27,7 @@ class TootDetailsFragment private constructor() : ComposableFragment() {
         TootDetails(
             viewModel,
             boundary = module.get(),
-            onBottomAreaAvailabilityChangeListener = Injector.get()
+            onBottomAreaAvailabilityChangeListener = module.get()
         )
     }
 

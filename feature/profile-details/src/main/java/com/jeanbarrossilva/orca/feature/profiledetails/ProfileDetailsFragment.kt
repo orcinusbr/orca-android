@@ -41,7 +41,7 @@ class ProfileDetailsFragment internal constructor() : ComposableFragment(), Cont
             viewModel,
             navigator = module.get(),
             backwardsNavigationState,
-            onBottomAreaAvailabilityChangeListener = Injector.get()
+            onBottomAreaAvailabilityChangeListener = module.get()
         )
     }
 

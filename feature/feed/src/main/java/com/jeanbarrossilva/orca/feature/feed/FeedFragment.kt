@@ -31,7 +31,7 @@ class FeedFragment internal constructor() : ComposableFragment(), ContextProvide
         Feed(
             viewModel,
             boundary = module.get(),
-            onBottomAreaAvailabilityChangeListener = Injector.get()
+            onBottomAreaAvailabilityChangeListener = module.get()
         )
     }
 
