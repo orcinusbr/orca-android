@@ -3,6 +3,7 @@ import com.jeanbarrossilva.orca.namespaceFor
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.symbolProcessor)
 }
 
 android {
@@ -12,6 +13,8 @@ android {
 }
 
 dependencies {
+    ksp(project(":std:injector-processor"))
+
     implementation(project(":core"))
     implementation(project(":core:sample"))
     implementation(project(":platform:theme"))
