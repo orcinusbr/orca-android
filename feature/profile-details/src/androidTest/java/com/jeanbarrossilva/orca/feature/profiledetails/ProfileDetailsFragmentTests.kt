@@ -23,9 +23,9 @@ import org.junit.rules.RuleChain
 
 internal class ProfileDetailsFragmentTests {
     private val injectorRule = InjectorTestRule {
-        register { InstanceProvider.sample }
+        inject { InstanceProvider.sample }
         inject<ProfileDetailsBoundary> { TestProfileDetailsBoundary() }
-        register { OnBottomAreaAvailabilityChangeListener.empty }
+        inject { OnBottomAreaAvailabilityChangeListener.empty }
     }
     private val sampleRule = SampleTestRule()
     private val time4JRule = Time4JTestRule()

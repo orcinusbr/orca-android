@@ -7,7 +7,7 @@ internal class InjectorTestRuleTests {
     @Test(expected = NoSuchElementException::class)
     fun clears() {
         InjectorTestRule().use {
-            Injector.register {
+            Injector.inject {
                 0
             }
         }
