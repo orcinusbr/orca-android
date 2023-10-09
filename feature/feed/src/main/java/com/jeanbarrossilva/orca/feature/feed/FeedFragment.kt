@@ -4,21 +4,20 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
-import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.feature.feed.viewmodel.FeedViewModel
 import com.jeanbarrossilva.orca.platform.ui.core.argument
 import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableFragment
 import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
-import com.jeanbarrossilva.orca.platform.ui.core.injected
 import com.jeanbarrossilva.orca.std.injector.Injector
 
 class FeedFragment internal constructor() : ComposableFragment(), ContextProvider {
+    private val module by lazy { Injector.from<FeedModule>() }
     private val userID by argument<String>(USER_ID_KEY)
     private val viewModel by viewModels<FeedViewModel> {
         FeedViewModel.createFactory(
             contextProvider = this,
-            Instance.injected.feedProvider,
-            Instance.injected.tootProvider,
+            feedProvider = module.get(),
+            tootProvider = module.get(),
             userID
         )
     }
@@ -31,8 +30,8 @@ class FeedFragment internal constructor() : ComposableFragment(), ContextProvide
     override fun Content() {
         Feed(
             viewModel,
-            boundary = Injector.get(),
-            onBottomAreaAvailabilityChangeListener = Injector.get()
+            boundary = module.get(),
+            onBottomAreaAvailabilityChangeListener = module.get()
         )
     }
 

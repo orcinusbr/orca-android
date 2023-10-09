@@ -7,11 +7,11 @@ import com.jeanbarrossilva.orca.std.injector.Injector
 
 class SettingsFragment : ComposableFragment() {
     private val viewModel by viewModels<SettingsViewModel> {
-        SettingsViewModel.createFactory(termMuter = Injector.get())
+        SettingsViewModel.createFactory(termMuter = Injector.from<SettingsModule>().get())
     }
 
     @Composable
     override fun Content() {
-        Settings(viewModel, boundary = Injector.get())
+        Settings(viewModel, boundary = Injector.from<SettingsModule>().get())
     }
 }

@@ -2,21 +2,20 @@ package com.jeanbarrossilva.orca.feature.search
 
 import androidx.compose.runtime.Composable
 import androidx.fragment.app.viewModels
-import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableFragment
-import com.jeanbarrossilva.orca.platform.ui.core.injected
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.opening
 import com.jeanbarrossilva.orca.std.injector.Injector
 
 class SearchFragment : ComposableFragment() {
+    private val module by lazy { Injector.from<SearchModule>() }
     private val viewModel by viewModels<SearchViewModel> {
-        SearchViewModel.createFactory(Instance.injected.profileSearcher)
+        SearchViewModel.createFactory(searcher = module.get())
     }
 
     @Composable
     override fun Content() {
-        Search(viewModel, boundary = Injector.get())
+        Search(viewModel, boundary = module.get())
     }
 
     companion object {

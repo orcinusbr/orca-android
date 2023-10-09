@@ -1,37 +1,80 @@
 package com.jeanbarrossilva.orca.std.injector.module
 
-import com.jeanbarrossilva.orca.std.injector.Injector
+import kotlin.reflect.KClass
 
-/** Container for related dependencies. **/
+/** Container in which dependencies within a given context can be injected. **/
 abstract class Module {
-    /** [Scope] within which injections to this [Module] will be done. **/
-    private val scope = Scope()
-
-    /** Injection operations registered within the [scope]. **/
+    /** Dependencies that have been injected associated to their assigned types. **/
     @PublishedApi
-    internal val injections = mutableListOf<() -> Unit>()
+    internal val injections = hashMapOf<KClass<*>, Lazy<Any>>()
 
-    /** Performs the injection of dependencies within the given [Scope]. **/
-    protected abstract val dependencies: Scope.() -> Unit
+    /**
+     * [NoSuchElementException] thrown if a dependency that hasn't been injected is requested to
+     * be obtained.
+     *
+     * @param dependencyClass [KClass] of the requested dependency.
+     **/
+    inner class DependencyNotInjectedException
+    @PublishedApi
+    internal constructor(dependencyClass: KClass<*>) :
+        NoSuchElementException(
+            "No dependency of type ${dependencyClass.qualifiedName} has been injected into " +
+                "${this::class.simpleName}."
+        )
 
-    /** Context through which injections can be made. **/
-    inner class Scope internal constructor() {
-        /**
-         * Registers the dependency of the given [injection] and injects it only when the [Module]'s
-         * [inject][Module.inject] method is called.
-         *
-         * @param injection Returns the dependency to be injected.
-         **/
-        inline fun <reified T : Any> inject(noinline injection: Injector.() -> T) {
-            injections.add {
-                Injector.inject(injection)
+    /**
+     * Injects the dependency returned by the [injection].
+     *
+     * @param T Dependency to be injected.
+     * @param injection Returns the dependency to be injected.
+     **/
+    inline fun <reified T : Any> inject(noinline injection: Module.() -> T) {
+        inject(T::class, injection)
+    }
+
+    /**
+     * Lazily obtains the injected dependency whose type is [T].
+     *
+     * @param T Dependency to be lazily obtained.
+     **/
+    inline fun <reified T : Any> lazy(): Lazy<T> {
+        return lazy(::get)
+    }
+
+    /**
+     * Obtains the injected dependency whose type is [T].
+     *
+     * @param T Dependency to be obtained.
+     * @throws DependencyNotInjectedException If no dependency of type [T] has been injected.
+     **/
+    @Throws(NoSuchElementException::class)
+    inline fun <reified T : Any> get(): T {
+        return injections[T::class]?.value as T? ?: throw DependencyNotInjectedException(T::class)
+    }
+
+    /** Removes all injected dependencies. **/
+    fun clear() {
+        injections.clear()
+        onClear()
+    }
+
+    /**
+     * Injects the dependency returned by the [injection].
+     *
+     * @param T Dependency to be injected.
+     * @param dependencyClass [KClass] to which the dependency will be associated.
+     * @param injection Returns the dependency to be injected.
+     **/
+    @PublishedApi
+    internal fun <T : Any> inject(dependencyClass: KClass<T>, injection: Module.() -> T) {
+        if (dependencyClass !in injections) {
+            injections[dependencyClass] = lazy {
+                injection()
             }
         }
     }
 
-    /** Injects all lazily registered dependencies. **/
-    fun inject() {
-        scope.apply(dependencies)
-        injections.forEach { it() }
+    /** Callback run whenever this [Module] is cleared. **/
+    internal open fun onClear() {
     }
 }

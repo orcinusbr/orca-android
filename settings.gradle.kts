@@ -31,6 +31,7 @@ include(
     ":std:image-loader:compose",
     ":std:image-loader-test",
     ":std:injector",
+    ":std:injector-processor",
     ":std:injector-test",
     ":std:styled-string"
 )

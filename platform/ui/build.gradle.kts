@@ -31,7 +31,6 @@ dependencies {
     implementation(project(":core"))
     implementation(project(":core:sample"))
     implementation(project(":platform:theme"))
-    implementation(project(":std:injector"))
     implementation(libs.android.activity.compose)
     implementation(libs.android.material)
     implementation(libs.loadable.list)

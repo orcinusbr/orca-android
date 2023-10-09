@@ -8,13 +8,14 @@ import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.opening
 import com.jeanbarrossilva.orca.std.injector.Injector
 
 class TermMutingFragment internal constructor() : ComposableFragment() {
+    private val module by lazy { Injector.from<TermMutingModule>() }
     private val viewModel by viewModels<TermMutingViewModel> {
-        TermMutingViewModel.createFactory(termMuter = Injector.get())
+        TermMutingViewModel.createFactory(termMuter = module.get())
     }
 
     @Composable
     override fun Content() {
-        TermMuting(viewModel, boundary = Injector.get())
+        TermMuting(viewModel, boundary = module.get())
     }
 
     companion object {
