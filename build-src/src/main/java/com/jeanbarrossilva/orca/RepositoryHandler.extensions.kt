@@ -12,6 +12,13 @@ fun RepositoryHandler.chrynan(): MavenArtifactRepository {
     }
 }
 
+/** Adds the [JitPack](https://jitpack.io) repository. **/
+fun RepositoryHandler.jitPack(): MavenArtifactRepository {
+    return maven {
+        url = URI.create("https://jitpack.io")
+    }
+}
+
 /**
  * Adds the repository in which [Loadable](https://github.com/jeanbarrossilva/Aurelius) is located.
  *

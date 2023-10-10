@@ -10,12 +10,12 @@ import com.jeanbarrossilva.orca.std.injector.Injector
 class SearchFragment : ComposableFragment() {
     private val module by lazy { Injector.from<SearchModule>() }
     private val viewModel by viewModels<SearchViewModel> {
-        SearchViewModel.createFactory(searcher = module.get())
+        SearchViewModel.createFactory(module.searcher)
     }
 
     @Composable
     override fun Content() {
-        Search(viewModel, boundary = module.get())
+        Search(viewModel, module.boundary)
     }
 
     companion object {

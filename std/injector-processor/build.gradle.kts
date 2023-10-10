@@ -6,6 +6,7 @@ plugins {
 
 dependencies {
     implementation(project(":std:injector"))
+    implementation(libs.kotlin.compiler.embeddable)
     implementation(libs.kotlin.symbolProcessor)
     implementation(libs.kotlinPoet)
     implementation(libs.kotlinPoet.ksp)

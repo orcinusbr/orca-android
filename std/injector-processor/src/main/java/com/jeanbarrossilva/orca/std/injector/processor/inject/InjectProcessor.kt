@@ -1,20 +1,34 @@
 package com.jeanbarrossilva.orca.std.injector.processor.inject
 
+import com.google.devtools.ksp.getVisibility
+import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.KSAnnotated
+import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
+import com.google.devtools.ksp.symbol.KSType
+import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.orca.std.injector.module.Inject
 import com.jeanbarrossilva.orca.std.injector.module.Module
+import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.ksp.toKModifier
+import com.squareup.kotlinpoet.ksp.toTypeName
+import com.squareup.kotlinpoet.ksp.writeTo
 
 /**
- * [SymbolProcessor] for ensuring the integrity of [Inject]-annotated properties, reporting an error
- * if:
+ * [SymbolProcessor] for ensuring the integrity of [Inject]-annotated properties and generating
+ * extension properties that retrieve the declared dependencies. Also reports an error if the
+ * injections...
  *
- * - They're not part of a specific [Module];
- * - They have a return type different from `Module.() -> Any`.
+ * - aren't part of a specific [Module]; or
+ * - have a return type different from `Module.() -> Any`.
  **/
 class InjectProcessor private constructor(private val environment: SymbolProcessorEnvironment) :
     SymbolProcessor {
@@ -29,6 +43,7 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
         val injections = resolver.getInjections().toList()
         reportErrorOnModuleUnrelatedInjections(injections)
         reportErrorOnMismatchingType(injections)
+        generateExtensionProperties(injections)
         return emptyList()
     }
 
@@ -68,5 +83,112 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
                     symbol = it
                 )
             }
+    }
+
+    /**
+     * Generates extension properties for each of the [injections] for them to be easily obtained
+     * instead of relying on the [Module.get]'s runtime type check.
+     *
+     * @param injections Injections for which the extension properties will be generated.
+     **/
+    private fun generateExtensionProperties(injections: List<KSPropertyDeclaration>) {
+        injections
+            .filter(KSPropertyDeclaration::isInjection)
+            .groupBy { it.parentDeclaration as KSClassDeclaration }
+            .forEach { (module, moduleInjections) ->
+                createExtensionsFileSpec(module, moduleInjections).writeTo(
+                    environment.codeGenerator,
+                    Dependencies(aggregating = true)
+                )
+            }
+    }
+
+    /**
+     * Creates a [FileSpec] of a file for the given [module] in which its [injections]' extension
+     * properties are declared.
+     *
+     * @param module [KSClassDeclaration] of the [Module] for which the [FileSpec] will be created.
+     * @param injections [KSPropertyDeclaration]s of the [module]'s injections.
+     * @throws IllegalStateException If the [module] isn't part of a [KSFile] or the [KSType] of an
+     * injected dependency cannot be resolved.
+     **/
+    @Throws(IllegalStateException::class)
+    private fun createExtensionsFileSpec(
+        module: KSClassDeclaration,
+        injections: List<KSPropertyDeclaration>
+    ): FileSpec {
+        val packageName = module.packageName.asString()
+        val fileName = module.simpleName.asString() + ".extensions"
+        val moduleFile = module.requireContainingFile()
+        val extensionPropertySpecs = injections.map { createExtensionPropertySpec(module, it) }
+        return FileSpec
+            .builder(packageName, fileName)
+            .addImports(moduleFile)
+            .addImport(Injector::class.java.packageName, Injector::class.java.simpleName)
+            .apply { extensionPropertySpecs.forEach(::addProperty) }
+            .build()
+    }
+
+    /**
+     * Creates a [PropertySpec] of an extension property for the given [injection] that's contained
+     * within the [module].
+     *
+     * @param module [KSClassDeclaration] of the [Module] in which the [injection] is.
+     * @param injection [KSPropertyDeclaration] of the injection for which the [PropertySpec] will
+     * be created.
+     * @throws IllegalStateException If the [KSType] of the injected dependency cannot be resolved.
+     **/
+    @Throws(IllegalStateException::class)
+    private fun createExtensionPropertySpec(
+        module: KSClassDeclaration,
+        injection: KSPropertyDeclaration
+    ): PropertySpec {
+        val name = injection.simpleName.asString()
+        val type = injection
+            .type
+            .resolve()
+            .arguments
+            .last()
+            .type
+            ?.resolve()
+            ?: throw IllegalStateException(
+                "Cannot create extension property for a dependency with an unresolved KSType."
+            )
+        val typeName = type.toTypeName()
+        val moduleType = module.asStarProjectedType()
+        val moduleTypeName = moduleType.toTypeName()
+        val typeDeclaration = type.declaration
+        val moduleVisibility = module.getVisibility()
+        val typeVisibility = type.declaration.getVisibility()
+        val visibility = minOf(moduleVisibility, typeVisibility).toKModifier() ?: KModifier.PUBLIC
+        val typeDeclarationName = typeDeclaration.simpleName.asString()
+        val moduleDeclarationName = moduleType.declaration.simpleName.asString()
+        val getterFunSpec = createExtensionPropertyGetterFunSpec(module, typeDeclarationName)
+        return PropertySpec
+            .builder(name, typeName)
+            .addKdoc(
+                "[$typeDeclarationName] that's been injected into this [$moduleDeclarationName]."
+            )
+            .addModifiers(visibility)
+            .receiver(moduleTypeName)
+            .getter(getterFunSpec)
+            .build()
+    }
+
+    /**
+     * Creates a [FunSpec] of a dependency's extension property getter.
+     *
+     * @param module [KSClassDeclaration] of the [Module] in which the injection has been declared.
+     * @param returnTypeSimpleName Simple name of the getter's return type declaration.
+     **/
+    private fun createExtensionPropertyGetterFunSpec(
+        module: KSClassDeclaration,
+        returnTypeSimpleName: String
+    ): FunSpec {
+        val moduleSimpleName = module.simpleName.asString()
+        return FunSpec
+            .getterBuilder()
+            .addStatement("return Injector.from<$moduleSimpleName>().get<$returnTypeSimpleName>()")
+            .build()
     }
 }

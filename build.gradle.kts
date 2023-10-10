@@ -1,5 +1,6 @@
 import com.android.build.gradle.LibraryExtension
 import com.jeanbarrossilva.orca.chrynan
+import com.jeanbarrossilva.orca.jitPack
 import com.jeanbarrossilva.orca.loadable
 import com.jeanbarrossilva.orca.namespace
 import com.jeanbarrossilva.orca.parentNamespaceCandidate
@@ -31,6 +32,7 @@ subprojects subproject@{
         chrynan()
         google()
         gradlePluginPortal()
+        jitPack()
         loadable(project)
         mavenCentral()
     }
