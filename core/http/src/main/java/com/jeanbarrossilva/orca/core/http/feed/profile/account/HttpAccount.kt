@@ -5,8 +5,6 @@ import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
-import com.jeanbarrossilva.orca.core.http.HttpModule
-import com.jeanbarrossilva.orca.core.http.authenticationLock
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.ProfileTootPaginateSource
@@ -14,7 +12,6 @@ import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.editable.HttpEditableProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.followable.HttpFollowableProfile
 import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
-import com.jeanbarrossilva.orca.core.http.instanceProvider
 import com.jeanbarrossilva.orca.platform.ui.core.style.fromHtml
 import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
@@ -84,7 +81,7 @@ internal data class HttpAccount(
      * [Account].
      **/
     private suspend fun isOwner(): Boolean {
-        return Injector.from<HttpModule>().authenticationLock.requestUnlock {
+        return Injector.get<SomeHttpInstance>().authenticationLock.requestUnlock {
             it.id == id
         }
     }
@@ -129,7 +126,8 @@ internal data class HttpAccount(
         val avatarURL = URL(avatar)
         val bio = StyledString.fromHtml(note)
         val url = URL(url)
-        val follow = (Injector.from<HttpModule>().instanceProvider.provide() as SomeHttpInstance)
+        val follow = Injector
+            .get<SomeHttpInstance>()
             .client
             .authenticateAndGet("/api/v1/accounts/relationships") { parameter("id", id) }
             .body<List<HttpRelationship>>()

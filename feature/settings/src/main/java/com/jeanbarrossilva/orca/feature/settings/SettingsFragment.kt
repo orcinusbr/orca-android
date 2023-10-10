@@ -6,13 +6,12 @@ import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableFragment
 import com.jeanbarrossilva.orca.std.injector.Injector
 
 class SettingsFragment : ComposableFragment() {
-    private val module by lazy { Injector.from<SettingsModule>() }
     private val viewModel by viewModels<SettingsViewModel> {
-        SettingsViewModel.createFactory(module.termMuter)
+        SettingsViewModel.createFactory(termMuter = Injector.from<SettingsModule>().get())
     }
 
     @Composable
     override fun Content() {
-        Settings(viewModel, module.boundary)
+        Settings(viewModel, boundary = Injector.from<SettingsModule>().get())
     }
 }

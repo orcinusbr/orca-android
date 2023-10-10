@@ -14,8 +14,12 @@ class FeedFragment internal constructor() : ComposableFragment(), ContextProvide
     private val module by lazy { Injector.from<FeedModule>() }
     private val userID by argument<String>(USER_ID_KEY)
     private val viewModel by viewModels<FeedViewModel> {
-        FeedViewModel
-            .createFactory(contextProvider = this, module.feedProvider, module.tootProvider, userID)
+        FeedViewModel.createFactory(
+            contextProvider = this,
+            feedProvider = module.get(),
+            tootProvider = module.get(),
+            userID
+        )
     }
 
     constructor(userID: String) : this() {

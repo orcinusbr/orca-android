@@ -18,6 +18,4 @@ abstract class Authorizer {
      * @return Resulting authorization code.
      **/
     protected abstract suspend fun authorize(): String
-
-    companion object
 }

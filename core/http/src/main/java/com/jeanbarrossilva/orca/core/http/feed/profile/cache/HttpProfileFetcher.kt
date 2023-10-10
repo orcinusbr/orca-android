@@ -1,13 +1,11 @@
 package com.jeanbarrossilva.orca.core.http.feed.profile.cache
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
-import com.jeanbarrossilva.orca.core.http.HttpModule
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.http.feed.profile.ProfileTootPaginateSource
 import com.jeanbarrossilva.orca.core.http.feed.profile.account.HttpAccount
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
 import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
-import com.jeanbarrossilva.orca.core.http.instanceProvider
 import com.jeanbarrossilva.orca.platform.cache.Fetcher
 import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.client.call.body
@@ -23,7 +21,8 @@ internal class HttpProfileFetcher(
     private val tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
 ) : Fetcher<Profile>() {
     override suspend fun onFetch(key: String): Profile {
-        return (Injector.from<HttpModule>().instanceProvider.provide() as SomeHttpInstance)
+        return Injector
+            .get<SomeHttpInstance>()
             .client
             .authenticateAndGet("/api/v1/accounts/$key")
             .body<HttpAccount>()

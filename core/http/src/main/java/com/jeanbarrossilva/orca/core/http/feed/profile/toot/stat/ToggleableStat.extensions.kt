@@ -2,11 +2,9 @@ package com.jeanbarrossilva.orca.core.http.feed.profile.toot.stat
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.toot.stat.toggleable.ToggleableStat
-import com.jeanbarrossilva.orca.core.http.HttpModule
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndPost
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
 import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
-import com.jeanbarrossilva.orca.core.http.instanceProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
 
 /**
@@ -25,9 +23,7 @@ internal fun FavoriteStat(id: String, count: Int): ToggleableStat<Profile> {
                 @Suppress("SpellCheckingInspection")
                 "/api/v1/statuses/$id/unfavourite"
             }
-            (Injector.from<HttpModule>().instanceProvider.provide() as SomeHttpInstance)
-                .client
-                .authenticateAndPost(route)
+            Injector.get<SomeHttpInstance>().client.authenticateAndPost(route)
         }
     }
 }
@@ -44,9 +40,7 @@ internal fun ReblogStat(id: String, count: Int): ToggleableStat<Profile> {
         setEnabled { isEnabled ->
             val route =
                 if (isEnabled) "/api/v1/statuses/$id/reblog" else "/api/v1/statuses/$id/unreblog"
-            (Injector.from<HttpModule>().instanceProvider.provide() as SomeHttpInstance)
-                .client
-                .authenticateAndPost(route)
+            Injector.get<SomeHttpInstance>().client.authenticateAndPost(route)
         }
     }
 }

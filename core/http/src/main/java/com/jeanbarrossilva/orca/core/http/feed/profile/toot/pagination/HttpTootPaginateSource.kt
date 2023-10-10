@@ -5,12 +5,10 @@ import com.chrynan.paginate.core.PageDirection
 import com.chrynan.paginate.core.PageInfo
 import com.chrynan.paginate.core.PagedResult
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.http.HttpModule
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.status.HttpStatus
 import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
-import com.jeanbarrossilva.orca.core.http.instanceProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.client.call.body
 import io.ktor.client.request.HttpRequest
@@ -87,9 +85,9 @@ internal abstract class HttpTootPaginateSource internal constructor() :
      * @param url [Url] to which the [HttpRequest] will be made.
      **/
     private suspend fun getStatusesResponse(url: Url?): HttpResponse {
-        return (Injector.from<HttpModule>().instanceProvider.provide() as SomeHttpInstance)
-            .client
-            .authenticateAndGet(url?.toString() ?: route)
+        return Injector.get<SomeHttpInstance>().client.authenticateAndGet(
+            url?.toString() ?: route
+        )
     }
 
     companion object {

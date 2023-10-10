@@ -1,11 +1,9 @@
 package com.jeanbarrossilva.orca.core.http.feed.profile.type.editable
 
 import com.jeanbarrossilva.orca.core.feed.profile.type.editable.Editor
-import com.jeanbarrossilva.orca.core.http.HttpModule
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndSubmitForm
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndSubmitFormWithBinaryData
 import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
-import com.jeanbarrossilva.orca.core.http.instanceProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import io.ktor.client.request.HttpRequest
@@ -30,24 +28,24 @@ internal class HttpEditor : Editor {
         val contentDisposition = "form-data; name=\"avatar\" filename=\"${file.name}\""
         val headers = Headers.build { append(HttpHeaders.ContentDisposition, contentDisposition) }
         val formData = formData { append("avatar", inputProvider, headers) }
-        (Injector.from<HttpModule>().instanceProvider.provide() as SomeHttpInstance)
-            .client
-            .authenticateAndSubmitFormWithBinaryData(ROUTE, formData)
+        Injector.get<SomeHttpInstance>().client.authenticateAndSubmitFormWithBinaryData(
+            ROUTE,
+            formData
+        )
     }
 
     override suspend fun setName(name: String) {
-        (Injector.from<HttpModule>().instanceProvider.provide() as SomeHttpInstance)
-            .client
-            .authenticateAndSubmitForm(ROUTE, parametersOf("display_name", name))
+        Injector.get<SomeHttpInstance>().client.authenticateAndSubmitForm(
+            ROUTE,
+            parametersOf("display_name", name)
+        )
     }
 
     override suspend fun setBio(bio: StyledString) {
-        (Injector.from<HttpModule>().instanceProvider.provide() as SomeHttpInstance)
-            .client
-            .authenticateAndSubmitForm(
-                ROUTE,
-                parametersOf("note", "$bio")
-            )
+        Injector.get<SomeHttpInstance>().client.authenticateAndSubmitForm(
+            ROUTE,
+            parametersOf("note", "$bio")
+        )
     }
 
     companion object {

@@ -12,7 +12,6 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.flow.loadable
 import com.jeanbarrossilva.loadable.ifLoaded
-import com.jeanbarrossilva.orca.core.http.HttpModule
 import com.jeanbarrossilva.orca.core.http.R
 import com.jeanbarrossilva.orca.core.http.auth.Mastodon
 import com.jeanbarrossilva.orca.core.http.auth.authorization.HttpDomainsProvider
@@ -21,8 +20,8 @@ import com.jeanbarrossilva.orca.core.http.auth.authorization.selectable.list.Sel
 import com.jeanbarrossilva.orca.core.http.auth.authorization.selectable.list.selectFirst
 import com.jeanbarrossilva.orca.core.http.instance.HttpInstance
 import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
-import com.jeanbarrossilva.orca.core.http.instanceProvider
 import com.jeanbarrossilva.orca.core.instance.Instance
+import com.jeanbarrossilva.orca.core.instance.InstanceProvider
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
 import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.http.URLBuilder
@@ -90,9 +89,7 @@ internal class HttpAuthorizationViewModel private constructor(
     /** [Url] to be opened in order to authenticate. **/
     val url
         get() = URLBuilder()
-            .takeFrom(
-                (Injector.from<HttpModule>().instanceProvider.provide() as SomeHttpInstance).url
-            )
+            .takeFrom(Injector.get<SomeHttpInstance>().url)
             .appendPathSegments("oauth", "authorize")
             .apply {
                 with(application.getString(R.string.scheme)) {
@@ -132,6 +129,7 @@ internal class HttpAuthorizationViewModel private constructor(
      **/
     fun authorize() {
         persistSelectedDomain()
+        Injector.inject { Injector.get<InstanceProvider>().provide() as SomeHttpInstance }
         onAccessTokenRequestListener.onAccessTokenRequest()
     }
 
