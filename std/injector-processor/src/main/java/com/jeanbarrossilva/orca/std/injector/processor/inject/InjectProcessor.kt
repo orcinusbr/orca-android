@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.orca.std.injector.processor.inject
 
 import com.google.devtools.ksp.getVisibility
+import com.google.devtools.ksp.isPrivate
 import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
@@ -23,11 +24,11 @@ import com.squareup.kotlinpoet.ksp.writeTo
 
 /**
  * [SymbolProcessor] for ensuring the integrity of [Inject]-annotated properties and generating
- * extension properties that retrieve the declared dependencies. Also reports an error if the
- * injections...
+ * extension properties that retrieve the declared dependencies. Also reports an error if...
  *
- * - aren't part of a specific [Module]; or
- * - have a return type different from `Module.() -> Any`.
+ * - injections aren't part of a specific [Module];
+ * - injections have a return type different from `Module.() -> Any`; or
+ * - a [Module] that declares injections is private.
  **/
 class InjectProcessor private constructor(private val environment: SymbolProcessorEnvironment) :
     SymbolProcessor {
@@ -43,6 +44,7 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
         val injections = resolver.getInjections().toList()
         reportErrorOnModuleUnrelatedInjections(injections)
         reportErrorOnMismatchingType(injections)
+        reportErrorOnPrivateModules(injections)
         generateExtensionProperties(injections)
         return emptyList()
     }
@@ -83,6 +85,21 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
                     symbol = it
                 )
             }
+    }
+
+    /**
+     * Reports an error for each private [Module] that contains injections. They should be visible
+     * to the extension properties that will be generated for their dependencies.
+     *
+     * @param injections Declared properties annotated with [Inject].
+     **/
+    private fun reportErrorOnPrivateModules(injections: List<KSPropertyDeclaration>) {
+        injections.filter { (it.parentDeclaration as KSClassDeclaration).isPrivate() }.forEach {
+            environment.logger.error(
+                "A Module with declared injections cannot be private.",
+                symbol = it
+            )
+        }
     }
 
     /**
