@@ -11,7 +11,6 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.google.devtools.ksp.symbol.KSType
-import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.orca.std.injector.module.Inject
 import com.jeanbarrossilva.orca.std.injector.module.Module
 import com.squareup.kotlinpoet.FileSpec
@@ -124,7 +123,6 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
         return FileSpec
             .builder(packageName, fileName)
             .addImports(moduleFile)
-            .addImport(Injector::class.java.packageName, Injector::class.java.simpleName)
             .apply { extensionPropertySpecs.forEach(::addProperty) }
             .build()
     }
@@ -163,7 +161,7 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
         val visibility = minOf(moduleVisibility, typeVisibility).toKModifier() ?: KModifier.PUBLIC
         val typeDeclarationName = typeDeclaration.simpleName.asString()
         val moduleDeclarationName = moduleType.declaration.simpleName.asString()
-        val getterFunSpec = createExtensionPropertyGetterFunSpec(module, typeDeclarationName)
+        val getterFunSpec = createExtensionPropertyGetterFunSpec(typeDeclarationName)
         return PropertySpec
             .builder(name, typeName)
             .addKdoc(
@@ -178,17 +176,12 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
     /**
      * Creates a [FunSpec] of a dependency's extension property getter.
      *
-     * @param module [KSClassDeclaration] of the [Module] in which the injection has been declared.
      * @param returnTypeSimpleName Simple name of the getter's return type declaration.
      **/
-    private fun createExtensionPropertyGetterFunSpec(
-        module: KSClassDeclaration,
-        returnTypeSimpleName: String
-    ): FunSpec {
-        val moduleSimpleName = module.simpleName.asString()
+    private fun createExtensionPropertyGetterFunSpec(returnTypeSimpleName: String): FunSpec {
         return FunSpec
             .getterBuilder()
-            .addStatement("return Injector.from<$moduleSimpleName>().get<$returnTypeSimpleName>()")
+            .addStatement("return get<$returnTypeSimpleName>()")
             .build()
     }
 }
