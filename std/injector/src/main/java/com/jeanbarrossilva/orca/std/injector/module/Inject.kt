@@ -1,10 +1,9 @@
 package com.jeanbarrossilva.orca.std.injector.module
 
 import com.jeanbarrossilva.orca.std.injector.Injector
-import kotlin.reflect.KProperty
 
 /**
- * Denotes that the dependency returned by the value of the annotated [KProperty] should be
+ * Denotes that the dependency returned by the value of the annotated property should be
  * automatically injected into the [Module] in which it was declared and that an extension property
  * for getting its result should be created for that same [Module].
  *
