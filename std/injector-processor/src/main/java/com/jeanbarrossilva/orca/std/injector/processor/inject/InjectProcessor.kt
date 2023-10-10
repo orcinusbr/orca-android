@@ -38,6 +38,7 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
         }
     }
 
+    @Throws(IllegalStateException::class)
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val injections = resolver.getInjections().toList()
         reportErrorOnModuleUnrelatedInjections(injections)
@@ -89,7 +90,10 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
      * instead of relying on the [Module.get]'s runtime type check.
      *
      * @param injections Injections for which the extension properties will be generated.
+     * @throws IllegalStateException If the [Module]s aren't part of a [KSFile] or the [KSType] of
+     * an injected dependency cannot be resolved.
      **/
+    @Throws(IllegalStateException::class)
     private fun generateExtensionProperties(injections: List<KSPropertyDeclaration>) {
         injections
             .filter(KSPropertyDeclaration::isInjection)
@@ -97,7 +101,13 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
             .forEach { (module, moduleInjections) ->
                 createExtensionsFileSpec(module, moduleInjections).writeTo(
                     environment.codeGenerator,
-                    Dependencies(aggregating = true)
+                    Dependencies(
+                        aggregating = true,
+                        module.requireContainingFile(),
+                        *moduleInjections
+                            .map(KSPropertyDeclaration::requireContainingFile)
+                            .toTypedArray()
+                    )
                 )
             }
     }
