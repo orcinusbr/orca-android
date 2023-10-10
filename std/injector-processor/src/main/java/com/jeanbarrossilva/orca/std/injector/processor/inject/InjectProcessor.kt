@@ -179,9 +179,6 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
      * @param returnTypeSimpleName Simple name of the getter's return type declaration.
      **/
     private fun createExtensionPropertyGetterFunSpec(returnTypeSimpleName: String): FunSpec {
-        return FunSpec
-            .getterBuilder()
-            .addStatement("return get<$returnTypeSimpleName>()")
-            .build()
+        return FunSpec.getterBuilder().addStatement("return get<$returnTypeSimpleName>()").build()
     }
 }
