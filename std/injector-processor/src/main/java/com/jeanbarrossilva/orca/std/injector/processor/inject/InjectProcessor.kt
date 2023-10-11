@@ -66,7 +66,9 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
      *
      * @param injectionDeclarations Declared properties annotated with [Inject].
      **/
-    private fun reportErrorOnModuleUnrelatedInjections(injectionDeclarations: List<KSPropertyDeclaration>) {
+    private fun reportErrorOnModuleUnrelatedInjections(
+        injectionDeclarations: List<KSPropertyDeclaration>
+    ) {
         injectionDeclarations.filterNot { it.isWithin<Module>() }.forEach {
             environment.logger.error("An injection should be part of a Module.", symbol = it)
         }
