@@ -8,9 +8,9 @@ import com.jeanbarrossilva.orca.std.injector.module.Inject
 import com.jeanbarrossilva.orca.std.injector.module.Module
 
 abstract class ProfileDetailsModule(
-    @Inject private val profileProvider: Module.() -> ProfileProvider,
-    @Inject private val tootProvider: Module.() -> TootProvider,
-    @Inject private val boundary: Module.() -> ProfileDetailsBoundary,
-    @Inject private val onBottomAreaAvailabilityChangeListener:
+    @Inject internal val profileProvider: Module.() -> ProfileProvider,
+    @Inject internal val tootProvider: Module.() -> TootProvider,
+    @Inject internal val boundary: Module.() -> ProfileDetailsBoundary,
+    @Inject internal val onBottomAreaAvailabilityChangeListener:
     Module.() -> OnBottomAreaAvailabilityChangeListener
 ) : Module()

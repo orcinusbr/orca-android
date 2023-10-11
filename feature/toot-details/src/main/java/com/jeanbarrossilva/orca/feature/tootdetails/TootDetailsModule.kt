@@ -6,8 +6,8 @@ import com.jeanbarrossilva.orca.std.injector.module.Inject
 import com.jeanbarrossilva.orca.std.injector.module.Module
 
 abstract class TootDetailsModule(
-    @Inject private val tootProvider: Module.() -> TootProvider,
-    @Inject private val boundary: Module.() -> TootDetailsBoundary,
-    @Inject private val onBottomAreaAvailabilityChangeListener:
+    @Inject internal val tootProvider: Module.() -> TootProvider,
+    @Inject internal val boundary: Module.() -> TootDetailsBoundary,
+    @Inject internal val onBottomAreaAvailabilityChangeListener:
     Module.() -> OnBottomAreaAvailabilityChangeListener
 ) : Module()

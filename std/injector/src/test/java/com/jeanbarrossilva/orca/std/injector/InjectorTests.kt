@@ -12,15 +12,15 @@ internal class InjectorTests {
     @get:Rule
     val injectorRule = InjectorTestRule()
 
-    private abstract class SuperModuleWithAnnotatedDependency(
-        @Inject private val dependency: Module.() -> Int
-    ) : Module()
-
     private abstract class SuperModuleWithNonAnnotatedDependency(
         @Suppress("unused") private val dependency: Module.() -> Int
     ) : Module()
 
     private class SubModuleWithAnnotatedDependency : SuperModuleWithAnnotatedDependency({ 0 })
+
+    internal abstract class SuperModuleWithAnnotatedDependency(
+        @Inject val dependency: Module.() -> Int
+    ) : Module()
 
     private class SubModuleWithNonAnnotatedDependency :
         SuperModuleWithNonAnnotatedDependency({ 0 })
