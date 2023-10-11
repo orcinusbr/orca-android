@@ -203,7 +203,7 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
         val visibility = minOf(moduleVisibility, typeVisibility).toKModifier() ?: KModifier.PUBLIC
         val typeDeclarationName = typeDeclaration.simpleName.asString()
         val moduleDeclarationName = moduleType.declaration.simpleName.asString()
-        val getterFunSpec = createExtensionPropertyGetterFunSpec(typeDeclarationName)
+        val getterFunSpec = createExtensionPropertyGetterFunSpec(name, typeDeclarationName)
         return PropertySpec
             .builder(name, typeName)
             .addKdoc(
@@ -218,9 +218,25 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
     /**
      * Creates a [FunSpec] of a dependency's extension property getter.
      *
+     * @param injectionName Name of the injection from which the extension derives, used for the
+     * sole purpose of referencing and suppressing the original property's "unused" warning.
      * @param returnTypeSimpleName Simple name of the getter's return type declaration.
      **/
-    private fun createExtensionPropertyGetterFunSpec(returnTypeSimpleName: String): FunSpec {
-        return FunSpec.getterBuilder().addStatement("return get<$returnTypeSimpleName>()").build()
+    private fun createExtensionPropertyGetterFunSpec(
+        injectionName: String,
+        returnTypeSimpleName: String
+    ): FunSpec {
+        return FunSpec
+            .getterBuilder()
+            .addStatement(
+                """
+                    return run {
+                        $injectionName
+                        get<$returnTypeSimpleName>()
+                    }
+                """
+                    .trimIndent()
+            )
+            .build()
     }
 }
