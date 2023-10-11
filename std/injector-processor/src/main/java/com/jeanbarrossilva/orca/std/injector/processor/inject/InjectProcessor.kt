@@ -23,7 +23,9 @@ import com.squareup.kotlinpoet.ksp.writeTo
 
 /**
  * [SymbolProcessor] for ensuring the integrity of [Inject]-annotated properties and generating
- * extension properties that retrieve the declared dependencies. Also reports an error if...
+ * extension functions that retrieve the declared dependencies.
+ *
+ * Reports an error if...
  *
  * - injections aren't part of a specific [Module];
  * - injections are private;
