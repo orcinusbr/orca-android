@@ -3,13 +3,16 @@ package com.jeanbarrossilva.orca.core.http.client.test
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.auth.actor.ActorProvider
+import com.jeanbarrossilva.orca.core.http.HttpModule
 import com.jeanbarrossilva.orca.core.http.client.CoreHttpClient
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndPost
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndSubmitForm
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndSubmitFormWithBinaryData
-import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
+import com.jeanbarrossilva.orca.core.http.client.test.instance.TestHttpInstance
+import com.jeanbarrossilva.orca.core.http.client.test.instance.TestHttpInstanceProvider
 import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
+import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.muting.SampleTermMuter
 import com.jeanbarrossilva.orca.core.test.TestActorProvider
 import com.jeanbarrossilva.orca.core.test.TestAuthenticator
 import com.jeanbarrossilva.orca.core.test.TestAuthorizer
@@ -109,7 +112,16 @@ private fun <T : Actor> runCoreHttpClientTest(
     val authenticator = TestAuthenticator(authorizer, actorProvider) { onAuthentication() }
     val authenticationLock = AuthenticationLock(authenticator, actorProvider)
     val instance = TestHttpInstance(authorizer, authenticator, authenticationLock)
-    Injector.inject<SomeHttpInstance> { instance }
+    val module = HttpModule(
+        { authorizer },
+        { authenticator },
+        { actorProvider },
+        { authenticationLock },
+        { SampleTermMuter() }
+    ) {
+        TestHttpInstanceProvider(authorizer, authenticator, authenticationLock)
+    }
+    Injector.register(module)
     runTest { CoreHttpClientTestScope(delegate = this, instance.client, actor).body() }
     Injector.clear()
 }

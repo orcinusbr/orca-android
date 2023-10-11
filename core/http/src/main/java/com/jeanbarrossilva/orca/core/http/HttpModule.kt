@@ -9,7 +9,7 @@ import com.jeanbarrossilva.orca.core.instance.InstanceProvider
 import com.jeanbarrossilva.orca.std.injector.module.Inject
 import com.jeanbarrossilva.orca.std.injector.module.Module
 
-abstract class HttpModule(
+open class HttpModule(
     @Inject internal val authorizer: Module.() -> Authorizer,
     @Inject internal val authenticator: Module.() -> Authenticator,
     @Inject internal val actorProvider: Module.() -> ActorProvider,
