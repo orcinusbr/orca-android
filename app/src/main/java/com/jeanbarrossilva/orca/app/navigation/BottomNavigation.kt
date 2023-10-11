@@ -3,7 +3,7 @@ package com.jeanbarrossilva.orca.app.navigation
 import androidx.annotation.IdRes
 import com.jeanbarrossilva.orca.app.R
 import com.jeanbarrossilva.orca.app.module.core.CoreModule
-import com.jeanbarrossilva.orca.core.auth.SomeAuthenticationLock
+import com.jeanbarrossilva.orca.app.module.core.authenticationLock
 import com.jeanbarrossilva.orca.feature.feed.FeedFragment
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetailsFragment
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState
@@ -18,7 +18,7 @@ internal enum class BottomNavigation {
         override val id = R.id.feed
 
         override suspend fun getDestination(): Navigator.Navigation.Destination<*> {
-            return Injector.from<CoreModule>().get<SomeAuthenticationLock>().requestUnlock {
+            return Injector.from<CoreModule>().authenticationLock().requestUnlock {
                 Navigator.Navigation.Destination("feed") {
                     FeedFragment(it.id)
                 }
@@ -29,7 +29,7 @@ internal enum class BottomNavigation {
         override val id = R.id.profile_details
 
         override suspend fun getDestination(): Navigator.Navigation.Destination<*> {
-            return Injector.from<CoreModule>().get<SomeAuthenticationLock>().requestUnlock {
+            return Injector.from<CoreModule>().authenticationLock().requestUnlock {
                 Navigator.Navigation.Destination(ProfileDetailsFragment.createRoute(it.id)) {
                     ProfileDetailsFragment(BackwardsNavigationState.Unavailable, it.id)
                 }
