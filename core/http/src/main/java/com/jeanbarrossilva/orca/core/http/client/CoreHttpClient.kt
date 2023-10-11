@@ -2,7 +2,8 @@ package com.jeanbarrossilva.orca.core.http.client
 
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
-import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
+import com.jeanbarrossilva.orca.core.http.HttpModule
+import com.jeanbarrossilva.orca.core.http.authenticationLock
 import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
@@ -45,7 +46,7 @@ import kotlinx.serialization.json.JsonNamingStrategy
  **/
 @PublishedApi
 internal val authenticationLock
-    get() = Injector.get<SomeHttpInstance>().authenticationLock
+    get() = Injector.from<HttpModule>().authenticationLock()
 
 /**
  * [HttpClient] through which [HttpRequest]s can be performed.

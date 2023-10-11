@@ -35,6 +35,8 @@ dependencies {
 
     api(project(":core"))
 
+    ksp(project(":std:injector-processor"))
+
     implementation(project(":core:sample"))
     implementation(project(":platform:cache"))
     implementation(project(":platform:theme"))
