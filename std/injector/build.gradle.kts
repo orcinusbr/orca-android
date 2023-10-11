@@ -8,8 +8,6 @@ plugins {
 dependencies {
     implementation(libs.kotlin.reflect)
 
-    kspTest(project(":std:injector-processor"))
-
     testImplementation(project(":std:injector-test"))
     testImplementation(libs.assertk)
     testImplementation(libs.kotlin.test)
