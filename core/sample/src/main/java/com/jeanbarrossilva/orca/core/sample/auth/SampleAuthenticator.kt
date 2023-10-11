@@ -12,10 +12,9 @@ import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
  * @param actorProvider [ActorProvider] to which the [authenticated][Actor.Authenticated] [Actor]
  * will be sent to be remembered when authentication occurs.
  **/
-class SampleAuthenticator(
-    override val actorProvider: ActorProvider
-) : Authenticator() {
-    override val authorizer: Authorizer = SampleAuthorizer
+internal object SampleAuthenticator : Authenticator() {
+    override val authorizer: Authorizer = Authorizer.sample
+    override val actorProvider = ActorProvider.sample
 
     override suspend fun onAuthenticate(authorizationCode: String): Actor {
         return Actor.Authenticated.sample

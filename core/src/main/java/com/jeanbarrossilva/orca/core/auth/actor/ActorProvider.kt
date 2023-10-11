@@ -30,4 +30,6 @@ abstract class ActorProvider {
      * @see remember
      **/
     protected abstract suspend fun retrieve(): Actor
+
+    companion object
 }
