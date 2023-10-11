@@ -16,8 +16,8 @@ class FeedFragment internal constructor() : ComposableFragment(), ContextProvide
     private val viewModel by viewModels<FeedViewModel> {
         FeedViewModel.createFactory(
             contextProvider = this,
-            feedProvider = module.get(),
-            tootProvider = module.get(),
+            module.feedProvider(),
+            module.tootProvider(),
             userID
         )
     }

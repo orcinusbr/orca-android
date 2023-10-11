@@ -9,10 +9,10 @@ import com.jeanbarrossilva.orca.std.injector.Injector
  *
  * For example, declaring `class MyModule(@Inject val dependency: Module.() -> Int)` and registering
  * it in the [Injector] injects `dependency` into `MyModule` and makes its provided `Int` accessible
- * via a `MyModule.dependency` extension.
+ * via a `MyModule.dependency()` extension function.
  *
  * Note that the annotated property should return a `Module.() -> Any`, which is how an injection
- * is recognized; otherwise, an error will be thrown at compile time.
+ * is recognized; otherwise, an error will be thrown at build time.
  *
  * @see Injector.register
  **/

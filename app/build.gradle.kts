@@ -5,6 +5,7 @@ import com.jeanbarrossilva.orca.namespaceFor
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.symbolProcessor)
 
     id("build-src")
 }
@@ -57,6 +58,8 @@ dependencies {
     "androidTestDemoImplementation"(libs.android.test.core)
     "androidTestDemoImplementation"(libs.android.test.espresso.intents)
     "androidTestDemoImplementation"(libs.android.test.runner)
+
+    ksp(project(":std:injector-processor"))
 
     "demoImplementation"(project(":core-test"))
 
