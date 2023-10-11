@@ -133,13 +133,7 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
             .forEach { (module, moduleInjections) ->
                 createExtensionsFileSpec(module, moduleInjections).writeTo(
                     environment.codeGenerator,
-                    Dependencies(
-                        aggregating = true,
-                        module.requireContainingFile(),
-                        *moduleInjections
-                            .map(KSPropertyDeclaration::requireContainingFile)
-                            .toTypedArray()
-                    )
+                    Dependencies(aggregating = true, module.requireContainingFile())
                 )
             }
     }
