@@ -42,18 +42,18 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
 
     @Throws(IllegalStateException::class)
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        val injections = resolver.getInjections().toList()
-        reportErrorOnModuleUnrelatedInjections(injections)
-        reportErrorOnMismatchingType(injections)
-        reportErrorOnPrivateModules(injections)
-        reportErrorOnPrivateInjections(injections)
-        generateExtensionProperties(injections)
+        val injectionDeclarations = resolver.getInjections().toList()
+        reportErrorOnModuleUnrelatedInjections(injectionDeclarations)
+        reportErrorOnMismatchingType(injectionDeclarations)
+        reportErrorOnPrivateModules(injectionDeclarations)
+        reportErrorOnPrivateInjections(injectionDeclarations)
+        generateExtensionProperties(injectionDeclarations)
         return emptyList()
     }
 
     /**
-     * Reports an error for each [KSPropertyDeclaration] within the [injections] that have been
-     * created outside of a [Module]. For example:
+     * Reports an error for each [KSPropertyDeclaration] within the [injectionDeclarations] that
+     * have been created outside of a [Module]. For example:
      *
      * ```
      * class MyModule(@Inject private val correctlyDeclaredDependency: Module.() -> Int) : Module()
@@ -64,22 +64,22 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
      *
      * In this case, the error would be reported on `incorrectlyDeclaredDependency`.
      *
-     * @param injections Declared properties annotated with [Inject].
+     * @param injectionDeclarations Declared properties annotated with [Inject].
      **/
-    private fun reportErrorOnModuleUnrelatedInjections(injections: List<KSPropertyDeclaration>) {
-        injections.filterNot { it.isWithin<Module>() }.forEach {
+    private fun reportErrorOnModuleUnrelatedInjections(injectionDeclarations: List<KSPropertyDeclaration>) {
+        injectionDeclarations.filterNot { it.isWithin<Module>() }.forEach {
             environment.logger.error("An injection should be part of a Module.", symbol = it)
         }
     }
 
     /**
-     * Reports an error for each [KSPropertyDeclaration] within the [injections] that have a return
-     * type other than that of an injection, which is `Module.() -> Any`.
+     * Reports an error for each [KSPropertyDeclaration] within the [injectionDeclarations] that
+     * have a return type other than that of an injection, which is `Module.() -> Any`.
      *
-     * @param injections Declared properties annotated with [Inject].
+     * @param injectionDeclarations Declared properties annotated with [Inject].
      **/
-    private fun reportErrorOnMismatchingType(injections: List<KSPropertyDeclaration>) {
-        injections
+    private fun reportErrorOnMismatchingType(injectionDeclarations: List<KSPropertyDeclaration>) {
+        injectionDeclarations
             .filterNot(KSPropertyDeclaration::isInjection)
             .forEach {
                 environment.logger.error(
@@ -93,15 +93,17 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
      * Reports an error for each private [Module] that contains injections. They should be visible
      * to the extension properties that will be generated for their dependencies.
      *
-     * @param injections Declared properties annotated with [Inject].
+     * @param injectionDeclarations Declared properties annotated with [Inject].
      **/
-    private fun reportErrorOnPrivateModules(injections: List<KSPropertyDeclaration>) {
-        injections.filter { (it.parentDeclaration as KSClassDeclaration).isPrivate() }.forEach {
-            environment.logger.error(
-                "A Module with declared injections cannot be private.",
-                symbol = it
-            )
-        }
+    private fun reportErrorOnPrivateModules(injectionDeclarations: List<KSPropertyDeclaration>) {
+        injectionDeclarations
+            .filter { (it.parentDeclaration as KSClassDeclaration).isPrivate() }
+            .forEach {
+                environment.logger.error(
+                    "A Module with declared injections cannot be private.",
+                    symbol = it
+                )
+            }
     }
 
     /**
@@ -109,25 +111,25 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
      * suppressing their "unused" warning by referencing them when returning the dependency from
      * their respective extension property on the [Module] in which they've been declared.
      *
-     * @param injections Declared properties with [Inject].
+     * @param injectionDeclarations Declared properties with [Inject].
      **/
-    private fun reportErrorOnPrivateInjections(injections: List<KSPropertyDeclaration>) {
-        injections.filter(KSPropertyDeclaration::isPrivate).forEach {
+    private fun reportErrorOnPrivateInjections(injectionDeclarations: List<KSPropertyDeclaration>) {
+        injectionDeclarations.filter(KSPropertyDeclaration::isPrivate).forEach {
             environment.logger.error("An injection cannot be private.", symbol = it)
         }
     }
 
     /**
-     * Generates extension properties for each of the [injections] for them to be easily obtained
-     * instead of relying on the [Module.get]'s runtime type check.
+     * Generates extension properties for each of the [injectionDeclarations] for them to be easily
+     * obtained instead of relying on the [Module.get]'s runtime type check.
      *
-     * @param injections Injections for which the extension properties will be generated.
+     * @param injectionDeclarations Injections for which the extension properties will be generated.
      * @throws IllegalStateException If the [Module]s aren't part of a [KSFile] or the [KSType] of
      * an injected dependency cannot be resolved.
      **/
     @Throws(IllegalStateException::class)
-    private fun generateExtensionProperties(injections: List<KSPropertyDeclaration>) {
-        injections
+    private fun generateExtensionProperties(injectionDeclarations: List<KSPropertyDeclaration>) {
+        injectionDeclarations
             .filter(KSPropertyDeclaration::isInjection)
             .groupBy { it.parentDeclaration as KSClassDeclaration }
             .forEach { (module, moduleInjections) ->
@@ -139,23 +141,26 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
     }
 
     /**
-     * Creates a [FileSpec] of a file for the given [module] in which its [injections]' extension
-     * properties are declared.
+     * Creates a [FileSpec] of a file for the given [moduleDeclaration] in which its
+     * [injectionDeclarations]' extension properties are declared.
      *
-     * @param module [KSClassDeclaration] of the [Module] for which the [FileSpec] will be created.
-     * @param injections [KSPropertyDeclaration]s of the [module]'s injections.
-     * @throws IllegalStateException If the [module] isn't part of a [KSFile] or the [KSType] of an
-     * injected dependency cannot be resolved.
+     * @param moduleDeclaration [KSClassDeclaration] of the [Module] for which the [FileSpec] will
+     * be created.
+     * @param injectionDeclarations [KSPropertyDeclaration]s of the [moduleDeclaration]'s
+     * injections.
+     * @throws IllegalStateException If the [moduleDeclaration] isn't part of a [KSFile] or the
+     * [KSType] of an injected dependency cannot be resolved.
      **/
     @Throws(IllegalStateException::class)
     private fun createExtensionsFileSpec(
-        module: KSClassDeclaration,
-        injections: List<KSPropertyDeclaration>
+        moduleDeclaration: KSClassDeclaration,
+        injectionDeclarations: List<KSPropertyDeclaration>
     ): FileSpec {
-        val packageName = module.packageName.asString()
-        val fileName = module.simpleName.asString() + ".extensions"
-        val moduleFile = module.requireContainingFile()
-        val extensionPropertySpecs = injections.map { createExtensionPropertySpec(module, it) }
+        val packageName = moduleDeclaration.packageName.asString()
+        val fileName = moduleDeclaration.simpleName.asString() + ".extensions"
+        val moduleFile = moduleDeclaration.requireContainingFile()
+        val extensionPropertySpecs =
+            injectionDeclarations.map { createExtensionPropertySpec(moduleDeclaration, it) }
         return FileSpec
             .builder(packageName, fileName)
             .addImports(moduleFile)
@@ -164,21 +169,22 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
     }
 
     /**
-     * Creates a [PropertySpec] of an extension property for the given [injection] that's contained
-     * within the [module].
+     * Creates a [PropertySpec] of an extension property for the given [injectionDeclaration] that's
+     * contained within the [moduleDeclaration].
      *
-     * @param module [KSClassDeclaration] of the [Module] in which the [injection] is.
-     * @param injection [KSPropertyDeclaration] of the injection for which the [PropertySpec] will
-     * be created.
+     * @param moduleDeclaration [KSClassDeclaration] of the [Module] in which the
+     * [injectionDeclaration] is.
+     * @param injectionDeclaration [KSPropertyDeclaration] of the injection for which the
+     * [PropertySpec] will be created.
      * @throws IllegalStateException If the [KSType] of the injected dependency cannot be resolved.
      **/
     @Throws(IllegalStateException::class)
     private fun createExtensionPropertySpec(
-        module: KSClassDeclaration,
-        injection: KSPropertyDeclaration
+        moduleDeclaration: KSClassDeclaration,
+        injectionDeclaration: KSPropertyDeclaration
     ): PropertySpec {
-        val name = injection.simpleName.asString()
-        val type = injection
+        val name = injectionDeclaration.simpleName.asString()
+        val type = injectionDeclaration
             .type
             .resolve()
             .arguments
@@ -189,10 +195,10 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
                 "Cannot create extension property for a dependency with an unresolved KSType."
             )
         val typeName = type.toTypeName()
-        val moduleType = module.asStarProjectedType()
+        val moduleType = moduleDeclaration.asStarProjectedType()
         val moduleTypeName = moduleType.toTypeName()
         val typeDeclaration = type.declaration
-        val moduleVisibility = module.getVisibility()
+        val moduleVisibility = moduleDeclaration.getVisibility()
         val typeVisibility = type.declaration.getVisibility()
         val visibility = minOf(moduleVisibility, typeVisibility).toKModifier() ?: KModifier.PUBLIC
         val typeDeclarationName = typeDeclaration.simpleName.asString()
