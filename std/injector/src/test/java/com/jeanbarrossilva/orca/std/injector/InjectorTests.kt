@@ -19,7 +19,7 @@ internal class InjectorTests {
     private class SubModuleWithAnnotatedDependency : SuperModuleWithAnnotatedDependency({ 0 })
 
     internal abstract class SuperModuleWithAnnotatedDependency(
-        @Inject private val dependency: Module.() -> Int
+        @Inject val dependency: Module.() -> Int
     ) : Module()
 
     private class SubModuleWithNonAnnotatedDependency :

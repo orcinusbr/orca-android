@@ -7,9 +7,9 @@ import com.jeanbarrossilva.orca.std.injector.module.Inject
 import com.jeanbarrossilva.orca.std.injector.module.Module
 
 open class FeedModule(
-    @Inject private val feedProvider: Module.() -> FeedProvider,
-    @Inject private val tootProvider: Module.() -> TootProvider,
-    @Inject private val boundary: Module.() -> FeedBoundary,
-    @Inject private val onBottomAreaAvailabilityChangeListener:
+    @Inject internal val feedProvider: Module.() -> FeedProvider,
+    @Inject internal val tootProvider: Module.() -> TootProvider,
+    @Inject internal val boundary: Module.() -> FeedBoundary,
+    @Inject internal val onBottomAreaAvailabilityChangeListener:
     Module.() -> OnBottomAreaAvailabilityChangeListener
 ) : Module()

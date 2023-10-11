@@ -27,6 +27,7 @@ import com.squareup.kotlinpoet.ksp.writeTo
  * extension properties that retrieve the declared dependencies. Also reports an error if...
  *
  * - injections aren't part of a specific [Module];
+ * - injections are private;
  * - injections have a return type different from `Module.() -> Any`; or
  * - a [Module] that declares injections is private.
  **/
@@ -45,6 +46,7 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
         reportErrorOnModuleUnrelatedInjections(injections)
         reportErrorOnMismatchingType(injections)
         reportErrorOnPrivateModules(injections)
+        reportErrorOnPrivateInjections(injections)
         generateExtensionProperties(injections)
         return emptyList()
     }
@@ -99,6 +101,19 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
                 "A Module with declared injections cannot be private.",
                 symbol = it
             )
+        }
+    }
+
+    /**
+     * Reports an error for each private injection. This is necessary for the workaround of
+     * suppressing their "unused" warning by referencing them when returning the dependency from
+     * their respective extension property on the [Module] in which they've been declared.
+     *
+     * @param injections Declared properties with [Inject].
+     **/
+    private fun reportErrorOnPrivateInjections(injections: List<KSPropertyDeclaration>) {
+        injections.filter(KSPropertyDeclaration::isPrivate).forEach {
+            environment.logger.error("An injection cannot be private.", symbol = it)
         }
     }
 
