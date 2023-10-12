@@ -1,14 +1,14 @@
 plugins {
-    alias(libs.plugins.kotlin.jvm)
+  alias(libs.plugins.kotlin.jvm)
 
-    `java-library`
+  `java-library`
 }
 
 dependencies {
-    api(libs.junit)
+  api(libs.junit)
 
-    implementation(project(":std:injector"))
+  implementation(project(":std:injector"))
 
-    testImplementation(libs.assertk)
-    testImplementation(libs.kotlin.test)
+  testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.test)
 }

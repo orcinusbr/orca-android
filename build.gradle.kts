@@ -23,7 +23,7 @@ plugins {
 allprojects { repositories.mavenCentral() }
 
 spotless.kotlin {
-  target("*.kt", "*.kts")
+  target("**\\/*.kt", "**\\/*.kts")
   ktfmt().googleStyle()
 }
 
@@ -31,7 +31,7 @@ subprojects subproject@{
   tasks.withType<KotlinCompile> {
     compilerOptions {
       jvmTarget.set(JvmTarget.fromTarget(libs.versions.java.get()))
-      freeCompilerArgs.addAll("-Xcontext-receivers", "-Xstring-concat=inline")
+      freeCompilerArgs.addAll("-Xstring-concat=inline")
     }
   }
 

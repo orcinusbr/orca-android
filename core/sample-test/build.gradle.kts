@@ -1,10 +1,10 @@
 plugins {
-    alias(libs.plugins.kotlin.jvm)
+  alias(libs.plugins.kotlin.jvm)
 
-    `java-library`
+  `java-library`
 }
 
 dependencies {
-    implementation(project(":core:sample"))
-    implementation(kotlin("test-junit"))
+  implementation(project(":core:sample"))
+  implementation(kotlin("test-junit"))
 }

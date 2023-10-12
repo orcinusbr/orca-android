@@ -13,10 +13,10 @@ import kotlinx.coroutines.flow.map
 
 /** [FeedProvider] that provides a feed for a sample [Profile]. */
 internal object SampleFeedProvider : FeedProvider() {
+  override val termMuter = SampleTermMuter()
+
   /** [Flow] with the toots to be provided in the feed. */
   private val tootsFlow = SampleTootProvider.tootsFlow.asStateFlow()
-
-  override val termMuter = SampleTermMuter()
 
   override suspend fun onProvide(userID: String, page: Int): Flow<List<Toot>> {
     return tootsFlow.map {

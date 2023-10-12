@@ -24,7 +24,8 @@ class SharedPreferencesActorProvider(context: Context) : ActorProvider() {
     return preferences
       .getString(MIRRORED_ACTOR_KEY, null)
       ?.let { Json.decodeFromString<MirroredActor>(it) }
-      ?.toActor() ?: Actor.Unauthenticated
+      ?.toActor()
+      ?: Actor.Unauthenticated
   }
 
   internal fun reset() {

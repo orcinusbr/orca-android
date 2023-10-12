@@ -33,5 +33,6 @@ private inline fun <reified T : Any> material3CompositionLocalOf(
     ?.getDeclaredField(fieldName)
     ?.apply { isAccessible = true }
     ?.get(null)
-    ?.let { it as ProvidableCompositionLocal<T> } ?: staticCompositionLocalOf { fallback }
+    ?.let { it as ProvidableCompositionLocal<T> }
+    ?: staticCompositionLocalOf { fallback }
 }

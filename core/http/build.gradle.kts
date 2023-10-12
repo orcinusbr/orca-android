@@ -1,66 +1,66 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.android.maps.secrets)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.kotlin.symbolProcessor)
+  alias(libs.plugins.android.library)
+  alias(libs.plugins.android.maps.secrets)
+  alias(libs.plugins.kotlin.android)
+  alias(libs.plugins.kotlin.serialization)
+  alias(libs.plugins.kotlin.symbolProcessor)
 
-    id("build-src")
+  id("build-src")
 }
 
 android {
-    buildFeatures.compose = true
-    composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.get()
-    defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  buildFeatures.compose = true
+  composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.get()
+  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-    buildFeatures {
-        buildConfig = true
-        compose = true
-    }
+  buildFeatures {
+    buildConfig = true
+    compose = true
+  }
 
-    secrets {
-        defaultPropertiesFileName = "public.properties"
-        ignoreList += "^(?!(mastodon\\.clientSecret)|(instancesSocial\\.token)).*$"
-    }
+  secrets {
+    defaultPropertiesFileName = "public.properties"
+    ignoreList += "^(?!(mastodon\\.clientSecret)|(instancesSocial\\.token)).*$"
+  }
 
-    packagingOptions.resources.excludes +=
-        arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
+  packagingOptions.resources.excludes +=
+    arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
 }
 
 dependencies {
-    androidTestImplementation(libs.android.compose.ui.test.junit)
-    androidTestImplementation(libs.android.test.core)
-    androidTestImplementation(libs.android.test.runner)
-    androidTestImplementation(libs.mockk)
+  androidTestImplementation(libs.android.compose.ui.test.junit)
+  androidTestImplementation(libs.android.test.core)
+  androidTestImplementation(libs.android.test.runner)
+  androidTestImplementation(libs.mockk)
 
-    api(project(":core"))
+  api(project(":core"))
 
-    ksp(project(":std:injector-processor"))
+  ksp(project(":std:injector-processor"))
 
-    implementation(project(":core:sample"))
-    implementation(project(":platform:cache"))
-    implementation(project(":platform:theme"))
-    implementation(project(":platform:ui"))
-    implementation(project(":std:injector"))
-    implementation(libs.android.browser)
-    implementation(libs.android.room.ktx)
-    implementation(libs.ktor.client.cio)
-    implementation(libs.ktor.client.core)
-    implementation(libs.ktor.client.contentNegotiation)
-    implementation(libs.ktor.serialization.json)
-    implementation(libs.paginate)
+  implementation(project(":core:sample"))
+  implementation(project(":platform:cache"))
+  implementation(project(":platform:theme"))
+  implementation(project(":platform:ui"))
+  implementation(project(":std:injector"))
+  implementation(libs.android.browser)
+  implementation(libs.android.room.ktx)
+  implementation(libs.ktor.client.cio)
+  implementation(libs.ktor.client.core)
+  implementation(libs.ktor.client.contentNegotiation)
+  implementation(libs.ktor.serialization.json)
+  implementation(libs.paginate)
 
-    ksp(libs.android.room.compiler)
+  ksp(libs.android.room.compiler)
 
-    releaseImplementation(libs.slf4j) {
-        because("Ktor references \"StaticLoggerBinder\" and it is missing on minification.")
-    }
+  releaseImplementation(libs.slf4j) {
+    because("Ktor references \"StaticLoggerBinder\" and it is missing on minification.")
+  }
 
-    testImplementation(project(":core:sample"))
-    testImplementation(project(":core-test"))
-    testImplementation(libs.assertk)
-    testImplementation(libs.junit)
-    testImplementation(libs.kotlin.coroutines.test)
-    testImplementation(libs.kotlin.test)
-    testImplementation(libs.ktor.client.mock)
+  testImplementation(project(":core:sample"))
+  testImplementation(project(":core-test"))
+  testImplementation(libs.assertk)
+  testImplementation(libs.junit)
+  testImplementation(libs.kotlin.coroutines.test)
+  testImplementation(libs.kotlin.test)
+  testImplementation(libs.ktor.client.mock)
 }

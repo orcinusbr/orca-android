@@ -1,14 +1,14 @@
 plugins {
-    alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.kotlin.symbolProcessor)
+  alias(libs.plugins.kotlin.jvm)
+  alias(libs.plugins.kotlin.symbolProcessor)
 
-    `java-library`
+  `java-library`
 }
 
 dependencies {
-    implementation(libs.kotlin.reflect)
+  implementation(libs.kotlin.reflect)
 
-    testImplementation(project(":std:injector-test"))
-    testImplementation(libs.assertk)
-    testImplementation(libs.kotlin.test)
+  testImplementation(project(":std:injector-test"))
+  testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.test)
 }

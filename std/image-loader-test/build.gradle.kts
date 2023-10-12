@@ -1,7 +1,7 @@
 plugins {
-    alias(libs.plugins.kotlin.jvm)
+  alias(libs.plugins.kotlin.jvm)
 
-    `java-library`
+  `java-library`
 }
 
 dependencies.implementation(project(":std:image-loader"))

@@ -1,13 +1,13 @@
 plugins {
-    alias(libs.plugins.kotlin.jvm)
+  alias(libs.plugins.kotlin.jvm)
 
-    `java-library`
+  `java-library`
 }
 
 dependencies {
-    api(project(":core"))
+  api(project(":core"))
 
-    testImplementation(project(":core:sample-test"))
-    testImplementation(libs.kotlin.coroutines.test)
-    testImplementation(libs.kotlin.test)
+  testImplementation(project(":core:sample-test"))
+  testImplementation(libs.kotlin.coroutines.test)
+  testImplementation(libs.kotlin.test)
 }

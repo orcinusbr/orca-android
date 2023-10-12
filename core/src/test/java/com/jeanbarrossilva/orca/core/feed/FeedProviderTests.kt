@@ -4,14 +4,14 @@ import app.cash.turbine.test
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.muting.SampleTermMuter
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.samples
+import kotlin.test.Test
+import kotlin.test.assertContentEquals
+import kotlin.test.assertFailsWith
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
-import kotlin.test.Test
-import kotlin.test.assertContentEquals
-import kotlin.test.assertFailsWith
 
 internal class FeedProviderTests {
   @Test

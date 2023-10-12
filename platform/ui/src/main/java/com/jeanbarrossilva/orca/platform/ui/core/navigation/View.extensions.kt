@@ -49,5 +49,6 @@ private fun <T : View> View.get(viewClass: KClass<T>, isInclusive: Boolean): T {
     isInclusive && this::class == viewClass -> this as T
     this is ViewGroup -> children.firstNotNullOfOrNull { it.get(viewClass, isInclusive = true) }
     else -> null
-  } ?: throw IllegalStateException("No ${viewClass.simpleName} found from $this.")
+  }
+    ?: throw IllegalStateException("No ${viewClass.simpleName} found from $this.")
 }
