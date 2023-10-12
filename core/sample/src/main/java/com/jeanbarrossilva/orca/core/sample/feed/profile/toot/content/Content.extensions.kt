@@ -8,26 +8,28 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.highlight.
 import com.jeanbarrossilva.orca.std.styledstring.buildStyledString
 import java.net.URL
 
-/** [Content] that's returned by [sample]'s getter. **/
-private val sampleContent = Content.from(
+/** [Content] that's returned by [sample]'s getter. */
+private val sampleContent =
+  Content.from(
     buildStyledString {
-        +"This is a "
-        bold { +"sample" }
-        italic { +"toot" }
-        +"that has the sole purpose of allowing one to see how it would look like in Orca."
-        +"\n".repeat(2)
-        +Highlight.sample.url.toString()
+      +"This is a "
+      bold { +"sample" }
+      italic { +"toot" }
+      +"that has the sole purpose of allowing one to see how it would look like in Orca."
+      +"\n".repeat(2)
+      +Highlight.sample.url.toString()
     },
-    attachments = listOf(
+    attachments =
+      listOf(
         Attachment(
-            description = "Abstract art",
-            URL("https://images.unsplash.com/photo-1692890846581-da1a95435f34")
+          description = "Abstract art",
+          URL("https://images.unsplash.com/photo-1692890846581-da1a95435f34")
         )
-    )
-) {
+      )
+  ) {
     Headline.sample
-}
+  }
 
-/** Sample [Content]. **/
+/** Sample [Content]. */
 val Content.Companion.sample
-    get() = sampleContent
+  get() = sampleContent

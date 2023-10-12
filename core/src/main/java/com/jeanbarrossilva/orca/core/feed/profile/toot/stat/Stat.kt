@@ -17,56 +17,54 @@ import kotlinx.coroutines.flow.emptyFlow
  *
  * @param count Initial amount of elements.
  * @see get
- **/
+ */
 abstract class Stat<T> internal constructor(count: Int) {
+  /**
+   * [MutableStateFlow] that keeps track of the total amount of elements comprehended by this
+   * [Stat].
+   */
+  internal val countMutableFlow = MutableStateFlow(count)
+
+  /** [StateFlow] to which the amount of elements will be emitted. */
+  val countFlow = countMutableFlow.asStateFlow()
+
+  /** Current amount of elements. */
+  val count
+    get() = countFlow.value
+
+  /**
+   * Allows for a [Stat] to be configured and built.
+   *
+   * @param count Initial amount of elements of the [Stat].
+   */
+  @StatDsl
+  open class Builder<T> internal constructor(protected val count: Int) {
+    /** Lambda that provides the [Flow] to be returned by the built [Stat]'s [onGet] method. */
+    protected var onGet = { _: Int -> emptyFlow<List<T>>() }
+
     /**
-     * [MutableStateFlow] that keeps track of the total amount of elements comprehended by this
-     * [Stat].
-     **/
-    internal val countMutableFlow = MutableStateFlow(count)
-
-    /** [StateFlow] to which the amount of elements will be emitted. **/
-    val countFlow = countMutableFlow.asStateFlow()
-
-    /** Current amount of elements. **/
-    val count
-        get() = countFlow.value
-
-    /**
-     * Allows for a [Stat] to be configured and built.
+     * Defines the [Flow] to be returned when the [Stat]'s [get] method is called.
      *
-     * @param count Initial amount of elements of the [Stat].
-     **/
-    @StatDsl
-    open class Builder<T> internal constructor(protected val count: Int) {
-        /** Lambda that provides the [Flow] to be returned by the built [Stat]'s [onGet] method. **/
-        protected var onGet = { _: Int -> emptyFlow<List<T>>() }
-
-        /**
-         * Defines the [Flow] to be returned when the [Stat]'s [get] method is called.
-         *
-         * @param get Provides the [Flow] to be returned.
-         **/
-        fun get(get: (page: Int) -> Flow<List<T>>): Builder<T> {
-            return apply {
-                onGet = get
-            }
-        }
-
-        /** Builds the [Stat] with the provided configuration. **/
-        internal open fun build(): Stat<T> {
-            return object : Stat<T>(count) {
-                override fun get(page: Int): Flow<List<T>> {
-                    return onGet.invoke(page)
-                }
-            }
-        }
+     * @param get Provides the [Flow] to be returned.
+     */
+    fun get(get: (page: Int) -> Flow<List<T>>): Builder<T> {
+      return apply { onGet = get }
     }
 
-    /**
-     * Gets the [Flow] to which the elements related to this [Stat] will be emitted.
-     *
-     * @param page Page at which the elements to be emitted are.
-     **/
-    abstract fun get(page: Int): Flow<List<T>>
+    /** Builds the [Stat] with the provided configuration. */
+    internal open fun build(): Stat<T> {
+      return object : Stat<T>(count) {
+        override fun get(page: Int): Flow<List<T>> {
+          return onGet.invoke(page)
+        }
+      }
+    }
+  }
+
+  /**
+   * Gets the [Flow] to which the elements related to this [Stat] will be emitted.
+   *
+   * @param page Page at which the elements to be emitted are.
+   */
+  abstract fun get(page: Int): Flow<List<T>>
 }

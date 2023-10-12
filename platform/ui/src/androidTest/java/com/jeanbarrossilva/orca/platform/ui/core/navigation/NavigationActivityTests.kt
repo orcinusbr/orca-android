@@ -9,78 +9,72 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Test
 
 internal class NavigationActivityTests {
-    class NoFragmentContainerViewActivity : NavigationActivity()
+  class NoFragmentContainerViewActivity : NavigationActivity()
 
-    class UnidentifiedFragmentContainerViewActivity : NavigationActivity() {
-        var view: FragmentContainerView? = null
+  class UnidentifiedFragmentContainerViewActivity : NavigationActivity() {
+    var view: FragmentContainerView? = null
 
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            view = FragmentContainerView(this)
-            setContentView(view)
-        }
-
-        override fun onDestroy() {
-            super.onDestroy()
-            view = null
-        }
+    override fun onCreate(savedInstanceState: Bundle?) {
+      super.onCreate(savedInstanceState)
+      view = FragmentContainerView(this)
+      setContentView(view)
     }
 
-    class EphemeralFragmentContainerViewActivity : NavigationActivity() {
-        private var view: FrameLayout? = null
+    override fun onDestroy() {
+      super.onDestroy()
+      view = null
+    }
+  }
 
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            view = FrameLayout(this).apply { addView(FragmentContainerView(context)) }
-            setContentView(view)
-            navigator
-        }
+  class EphemeralFragmentContainerViewActivity : NavigationActivity() {
+    private var view: FrameLayout? = null
 
-        override fun onStart() {
-            super.onStart()
-            view?.removeAllViews()
-        }
-
-        override fun onDestroy() {
-            super.onDestroy()
-            view = null
-        }
+    override fun onCreate(savedInstanceState: Bundle?) {
+      super.onCreate(savedInstanceState)
+      view = FrameLayout(this).apply { addView(FragmentContainerView(context)) }
+      setContentView(view)
+      navigator
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun throwsWhenNavigatorGetterIsCalledOnAnActivityWithoutFragmentContainerView() {
-        launchActivity<NoFragmentContainerViewActivity>().use { scenario ->
-            scenario.onActivity { activity ->
-                activity.navigator
-            }
-        }
+    override fun onStart() {
+      super.onStart()
+      view?.removeAllViews()
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun throwsWhenNavigatorGetterIsCalledOnAnActivityWithFragmentContainerViewAndAgainWithoutIt() {
-        launchActivity<EphemeralFragmentContainerViewActivity>().use { scenario ->
-            scenario.onActivity { activity ->
-                activity.navigator
-            }
-        }
+    override fun onDestroy() {
+      super.onDestroy()
+      view = null
     }
+  }
 
-    @Test
-    fun identifiesFragmentContainerViewIfNotIdentifiedWhenNavigatorGetterIsCalled() {
-        launchActivity<UnidentifiedFragmentContainerViewActivity>().use { scenario ->
-            scenario.onActivity { activity ->
-                activity.navigator
-                assertNotEquals(View.NO_ID, activity.view?.id)
-            }
-        }
+  @Test(expected = IllegalStateException::class)
+  fun throwsWhenNavigatorGetterIsCalledOnAnActivityWithoutFragmentContainerView() {
+    launchActivity<NoFragmentContainerViewActivity>().use { scenario ->
+      scenario.onActivity { activity -> activity.navigator }
     }
+  }
 
-    @Test
-    fun returnsNavigatorWhenItsGetterIsCalledOnAnActivityWithFragmentContainerView() {
-        launchActivity<UnidentifiedFragmentContainerViewActivity>().use { scenario ->
-            scenario.onActivity { activity ->
-                activity.navigator
-            }
-        }
+  @Test(expected = IllegalStateException::class)
+  fun throwsWhenNavigatorGetterIsCalledOnAnActivityWithFragmentContainerViewAndAgainWithoutIt() {
+    launchActivity<EphemeralFragmentContainerViewActivity>().use { scenario ->
+      scenario.onActivity { activity -> activity.navigator }
     }
+  }
+
+  @Test
+  fun identifiesFragmentContainerViewIfNotIdentifiedWhenNavigatorGetterIsCalled() {
+    launchActivity<UnidentifiedFragmentContainerViewActivity>().use { scenario ->
+      scenario.onActivity { activity ->
+        activity.navigator
+        assertNotEquals(View.NO_ID, activity.view?.id)
+      }
+    }
+  }
+
+  @Test
+  fun returnsNavigatorWhenItsGetterIsCalledOnAnActivityWithFragmentContainerView() {
+    launchActivity<UnidentifiedFragmentContainerViewActivity>().use { scenario ->
+      scenario.onActivity { activity -> activity.navigator }
+    }
+  }
 }

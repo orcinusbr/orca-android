@@ -12,59 +12,59 @@ import kotlinx.coroutines.flow.combine
  * Converts this [Toot] into a [Flow] of [TootPreview].
  *
  * @param colors [Colors] by which the emitted [TootPreview]s' [TootPreview.text] can be colored.
- **/
+ */
 fun Toot.toTootPreviewFlow(colors: Colors): Flow<TootPreview> {
-    val body = content.text.toAnnotatedString(colors)
-    return combine(
-        comment.countFlow,
-        favorite.isEnabledFlow,
-        favorite.countFlow,
-        reblog.isEnabledFlow,
-        reblog.countFlow
-    ) { commentCount, isFavorite, favoriteCount, isReblogged, reblogCount ->
-        TootPreview(
-            id,
-            author.avatarURL,
-            author.name,
-            author.account,
-            body,
-            content.highlight,
-            publicationDateTime,
-            commentCount,
-            isFavorite,
-            favoriteCount,
-            isReblogged,
-            reblogCount,
-            url
-        )
-    }
+  val body = content.text.toAnnotatedString(colors)
+  return combine(
+    comment.countFlow,
+    favorite.isEnabledFlow,
+    favorite.countFlow,
+    reblog.isEnabledFlow,
+    reblog.countFlow
+  ) { commentCount, isFavorite, favoriteCount, isReblogged, reblogCount ->
+    TootPreview(
+      id,
+      author.avatarURL,
+      author.name,
+      author.account,
+      body,
+      content.highlight,
+      publicationDateTime,
+      commentCount,
+      isFavorite,
+      favoriteCount,
+      isReblogged,
+      reblogCount,
+      url
+    )
+  }
 }
 
-/** Converts this [Toot] into a [TootPreview]. **/
+/** Converts this [Toot] into a [TootPreview]. */
 @Composable
 internal fun Toot.toTootPreview(): TootPreview {
-    return toTootPreview(OrcaTheme.colors)
+  return toTootPreview(OrcaTheme.colors)
 }
 
 /**
  * Converts this [Toot] into a [TootPreview].
  *
  * @param colors [Colors] by which the resulting [TootPreview]'s [TootPreview.text] can be colored.
- **/
+ */
 internal fun Toot.toTootPreview(colors: Colors): TootPreview {
-    return TootPreview(
-        id,
-        author.avatarURL,
-        author.name,
-        author.account,
-        content.text.toAnnotatedString(colors),
-        content.highlight,
-        publicationDateTime,
-        comment.count,
-        favorite.isEnabled,
-        favorite.count,
-        reblog.isEnabled,
-        reblog.count,
-        url
-    )
+  return TootPreview(
+    id,
+    author.avatarURL,
+    author.name,
+    author.account,
+    content.text.toAnnotatedString(colors),
+    content.highlight,
+    publicationDateTime,
+    comment.count,
+    favorite.isEnabled,
+    favorite.count,
+    reblog.isEnabled,
+    reblog.count,
+    url
+  )
 }

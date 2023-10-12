@@ -15,7 +15,7 @@ import java.net.URL
  * @param emailDelimiter [Email.Delimiter] by which this [String]'s e-mails are delimited.
  * @param hashtagDelimiter [Hashtag.Delimiter] by which this [String]'s hashtags are delimited.
  * @param italicDelimiter [Italic.Delimiter] by which this [String]'s italicized portions are
- * delimited.
+ *   delimited.
  * @param linkDelimiter [Link.Delimiter] by which this [String]'s links are delimited.
  * @param mentionDelimiter [Mention.Delimiter] by which this [String]'s mentions are delimited.
  * @param mentioning Given its start index, maps each mention to a username to a [URL].
@@ -25,36 +25,36 @@ import java.net.URL
  * @see Italic
  * @see Link
  * @see Mention
- **/
+ */
 fun String.toStyledString(
-    boldDelimiter: Bold.Delimiter? = Bold.Delimiter.Default,
-    emailDelimiter: Email.Delimiter = Email.Delimiter.Default,
-    hashtagDelimiter: Hashtag.Delimiter? = Hashtag.Delimiter.Default,
-    italicDelimiter: Italic.Delimiter? = Italic.Delimiter.Default,
-    linkDelimiter: Link.Delimiter? = Link.Delimiter.Default,
-    mentionDelimiter: Mention.Delimiter? = Mention.Delimiter.Default,
-    mentioning: (startIndex: Int) -> URL? = { null }
+  boldDelimiter: Bold.Delimiter? = Bold.Delimiter.Default,
+  emailDelimiter: Email.Delimiter = Email.Delimiter.Default,
+  hashtagDelimiter: Hashtag.Delimiter? = Hashtag.Delimiter.Default,
+  italicDelimiter: Italic.Delimiter? = Italic.Delimiter.Default,
+  linkDelimiter: Link.Delimiter? = Link.Delimiter.Default,
+  mentionDelimiter: Mention.Delimiter? = Mention.Delimiter.Default,
+  mentioning: (startIndex: Int) -> URL? = { null }
 ): StyledString {
-    val text = StyledString.normalize(
-        this,
-        boldDelimiter,
-        emailDelimiter,
-        hashtagDelimiter,
-        italicDelimiter,
-        linkDelimiter,
-        mentionDelimiter
+  val text =
+    StyledString.normalize(
+      this,
+      boldDelimiter,
+      emailDelimiter,
+      hashtagDelimiter,
+      italicDelimiter,
+      linkDelimiter,
+      mentionDelimiter
     )
-    val emboldened = text.stylize(Bold.Delimiter.Default, ::Bold)
-    val emails = text.stylize(Email.Delimiter.Default, ::Email)
-    val hashtags = text.stylize(Hashtag.Delimiter.Default, ::Hashtag)
-    val italicized = text.stylize(Italic.Delimiter.Default, ::Italic)
-    val links = text.stylize(Link.Delimiter.Default, ::Link)
-    val mentions = text.stylize(Mention.Delimiter.Default) {
-        mentioning(it.first)?.let { url ->
-            Mention(indices = it, url)
-        }
+  val emboldened = text.stylize(Bold.Delimiter.Default, ::Bold)
+  val emails = text.stylize(Email.Delimiter.Default, ::Email)
+  val hashtags = text.stylize(Hashtag.Delimiter.Default, ::Hashtag)
+  val italicized = text.stylize(Italic.Delimiter.Default, ::Italic)
+  val links = text.stylize(Link.Delimiter.Default, ::Link)
+  val mentions =
+    text.stylize(Mention.Delimiter.Default) {
+      mentioning(it.first)?.let { url -> Mention(indices = it, url) }
     }
-    return StyledString(text, emails + emboldened + hashtags + italicized + links + mentions)
+  return StyledString(text, emails + emboldened + hashtags + italicized + links + mentions)
 }
 
 /**
@@ -62,10 +62,10 @@ fun String.toStyledString(
  *
  * @param delimiter [Style.Delimiter] by which the [Style]s to be obtained are delimited.
  * @param style Returns the respective [Style] applied to the given [indices] of this [String].
- **/
+ */
 internal fun <T : Style> String.stylize(
-    delimiter: Style.Delimiter?,
-    style: (indices: IntRange) -> T?
+  delimiter: Style.Delimiter?,
+  style: (indices: IntRange) -> T?
 ): List<T> {
-    return delimiter?.delimit(this)?.mapNotNull { style(it.range) }.orEmpty()
+  return delimiter?.delimit(this)?.mapNotNull { style(it.range) }.orEmpty()
 }

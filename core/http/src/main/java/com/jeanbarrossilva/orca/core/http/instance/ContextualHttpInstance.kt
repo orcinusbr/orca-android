@@ -34,68 +34,67 @@ import com.jeanbarrossilva.orca.platform.cache.Cache
  * @param domain Unique identifier of the server.
  * @param authorizer [HttpAuthorizer] by which the user will be authorized.
  * @param actorProvider [ActorProvider] that will provide [Actor]s to the [authenticator], the
- * [authenticationLock] and the [feedProvider].
+ *   [authenticationLock] and the [feedProvider].
  * @param termMuter [TermMuter] by which [Toot]s with muted terms will be filtered out.
  */
 class ContextualHttpInstance(
-    context: Context,
-    domain: Domain,
-    authorizer: HttpAuthorizer,
-    override val authenticator: HttpAuthenticator,
-    actorProvider: ActorProvider,
-    override val authenticationLock: AuthenticationLock<HttpAuthenticator>,
-    termMuter: TermMuter
+  context: Context,
+  domain: Domain,
+  authorizer: HttpAuthorizer,
+  override val authenticator: HttpAuthenticator,
+  actorProvider: ActorProvider,
+  override val authenticationLock: AuthenticationLock<HttpAuthenticator>,
+  termMuter: TermMuter
 ) : HttpInstance<HttpAuthorizer, HttpAuthenticator>(domain, authorizer) {
-    /** [HttpDatabase] in which cached structures will be persisted. */
-    private val database = HttpDatabase.getInstance(context)
+  /** [HttpDatabase] in which cached structures will be persisted. */
+  private val database = HttpDatabase.getInstance(context)
 
-    /**
-     * [ProfileTootPaginateSource.Provider] that provides the [ProfileTootPaginateSource] to be used
-     * by [profileFetcher], [profileStorage] and [profileSearchResultsFetcher].
-     */
-    private val profileTootPaginateSourceProvider =
-        ProfileTootPaginateSource.Provider(::ProfileTootPaginateSource)
+  /**
+   * [ProfileTootPaginateSource.Provider] that provides the [ProfileTootPaginateSource] to be used
+   * by [profileFetcher], [profileStorage] and [profileSearchResultsFetcher].
+   */
+  private val profileTootPaginateSourceProvider =
+    ProfileTootPaginateSource.Provider(::ProfileTootPaginateSource)
 
-    /** [HttpProfileFetcher] by which [HttpProfile]s will be fetched from the API. */
-    private val profileFetcher = HttpProfileFetcher(profileTootPaginateSourceProvider)
+  /** [HttpProfileFetcher] by which [HttpProfile]s will be fetched from the API. */
+  private val profileFetcher = HttpProfileFetcher(profileTootPaginateSourceProvider)
 
-    /** [HttpProfileStorage] that will store fetched [HttpProfile]s. */
-    private val profileStorage =
-        HttpProfileStorage(profileTootPaginateSourceProvider, database.profileEntityDao)
+  /** [HttpProfileStorage] that will store fetched [HttpProfile]s. */
+  private val profileStorage =
+    HttpProfileStorage(profileTootPaginateSourceProvider, database.profileEntityDao)
 
-    /** [Cache] that decides how to obtain [HttpProfile]s. */
-    private val profileCache =
-        Cache.of(context, name = "profile-cache", profileFetcher, profileStorage)
+  /** [Cache] that decides how to obtain [HttpProfile]s. */
+  private val profileCache =
+    Cache.of(context, name = "profile-cache", profileFetcher, profileStorage)
 
-    /**
-     * [HttpProfileSearchResultsFetcher] by which [ProfileSearchResult]s will be fetched from the
-     * API.
-     */
-    private val profileSearchResultsFetcher =
-        HttpProfileSearchResultsFetcher(profileTootPaginateSourceProvider)
+  /**
+   * [HttpProfileSearchResultsFetcher] by which [ProfileSearchResult]s will be fetched from the API.
+   */
+  private val profileSearchResultsFetcher =
+    HttpProfileSearchResultsFetcher(profileTootPaginateSourceProvider)
 
-    /** [HttpProfileSearchResultsStorage] that will store fetched [ProfileSearchResult]s. */
-    private val profileSearchResultsStorage =
-        HttpProfileSearchResultsStorage(database.profileSearchResultEntityDao)
+  /** [HttpProfileSearchResultsStorage] that will store fetched [ProfileSearchResult]s. */
+  private val profileSearchResultsStorage =
+    HttpProfileSearchResultsStorage(database.profileSearchResultEntityDao)
 
-    /** [Cache] that decides how to obtain [ProfileSearchResult]s. */
-    private val profileSearchResultsCache =
-        Cache.of(
-            context,
-            name = "profile-search-results-cache",
-            profileSearchResultsFetcher,
-            profileSearchResultsStorage
-        )
+  /** [Cache] that decides how to obtain [ProfileSearchResult]s. */
+  private val profileSearchResultsCache =
+    Cache.of(
+      context,
+      name = "profile-search-results-cache",
+      profileSearchResultsFetcher,
+      profileSearchResultsStorage
+    )
 
-    /** [HttpTootStorage] that will store fetched [HttpToot]s. */
-    private val tootStorage =
-        HttpTootStorage(profileCache, database.tootEntityDao, database.styleEntityDao)
+  /** [HttpTootStorage] that will store fetched [HttpToot]s. */
+  private val tootStorage =
+    HttpTootStorage(profileCache, database.tootEntityDao, database.styleEntityDao)
 
-    /** [Cache] that decides how to obtain [HttpToot]s. */
-    private val tootCache = Cache.of(context, name = "toot-cache", HttpTootFetcher, tootStorage)
+  /** [Cache] that decides how to obtain [HttpToot]s. */
+  private val tootCache = Cache.of(context, name = "toot-cache", HttpTootFetcher, tootStorage)
 
-    override val feedProvider = HttpFeedProvider(actorProvider, termMuter)
-    override val profileProvider = HttpProfileProvider(profileCache)
-    override val profileSearcher = HttpProfileSearcher(profileSearchResultsCache)
-    override val tootProvider = HttpTootProvider(tootCache)
+  override val feedProvider = HttpFeedProvider(actorProvider, termMuter)
+  override val profileProvider = HttpProfileProvider(profileCache)
+  override val profileSearcher = HttpProfileSearcher(profileSearchResultsCache)
+  override val tootProvider = HttpTootProvider(tootCache)
 }

@@ -9,15 +9,14 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 
 internal class ProfileSearcherTests {
-    @Test
-    fun `GIVEN a blank query WHEN searching THEN it returns no results`() {
-        val searcher = object : ProfileSearcher() {
-            override suspend fun onSearch(query: String): Flow<List<ProfileSearchResult>> {
-                return flowOf(ProfileSearchResult.samples)
-            }
+  @Test
+  fun `GIVEN a blank query WHEN searching THEN it returns no results`() {
+    val searcher =
+      object : ProfileSearcher() {
+        override suspend fun onSearch(query: String): Flow<List<ProfileSearchResult>> {
+          return flowOf(ProfileSearchResult.samples)
         }
-        runTest {
-            assertContentEquals(emptyList(), searcher.search(" ").first())
-        }
-    }
+      }
+    runTest { assertContentEquals(emptyList(), searcher.search(" ").first()) }
+  }
 }

@@ -26,211 +26,200 @@ import com.squareup.kotlinpoet.ksp.writeTo
  * extension functions that retrieve the declared dependencies.
  *
  * Reports an error if...
- *
  * - injections aren't part of a specific [Module];
  * - injections are private;
  * - injections have a return type different from `Module.() -> Any`; or
  * - a [Module] that declares injections is private.
- **/
+ */
 class InjectProcessor private constructor(private val environment: SymbolProcessorEnvironment) :
-    SymbolProcessor {
-    /** [SymbolProcessorProvider] that provides an [InjectProcessor]. **/
-    class Provider : SymbolProcessorProvider {
-        override fun create(environment: SymbolProcessorEnvironment): InjectProcessor {
-            return InjectProcessor(environment)
-        }
+  SymbolProcessor {
+  /** [SymbolProcessorProvider] that provides an [InjectProcessor]. */
+  class Provider : SymbolProcessorProvider {
+    override fun create(environment: SymbolProcessorEnvironment): InjectProcessor {
+      return InjectProcessor(environment)
     }
+  }
 
-    @Throws(IllegalStateException::class)
-    override fun process(resolver: Resolver): List<KSAnnotated> {
-        val injectionDeclarations = resolver.getInjections().toList()
-        reportErrorOnModuleUnrelatedInjections(injectionDeclarations)
-        reportErrorOnMismatchingType(injectionDeclarations)
-        reportErrorOnPrivateModules(injectionDeclarations)
-        reportErrorOnPrivateInjections(injectionDeclarations)
-        generateExtensionFunctions(injectionDeclarations)
-        return emptyList()
+  @Throws(IllegalStateException::class)
+  override fun process(resolver: Resolver): List<KSAnnotated> {
+    val injectionDeclarations = resolver.getInjections().toList()
+    reportErrorOnModuleUnrelatedInjections(injectionDeclarations)
+    reportErrorOnMismatchingType(injectionDeclarations)
+    reportErrorOnPrivateModules(injectionDeclarations)
+    reportErrorOnPrivateInjections(injectionDeclarations)
+    generateExtensionFunctions(injectionDeclarations)
+    return emptyList()
+  }
+
+  /**
+   * Reports an error for each [KSPropertyDeclaration] within the [injectionDeclarations] that have
+   * been created outside of a [Module]. For example:
+   * ```
+   * class MyModule(@Inject private val correctlyDeclaredDependency: Module.() -> Int) : Module()
+   *
+   * @Inject
+   * val incorrectlyDeclaredDependency: Module.() -> Int = { 0 }
+   * ```
+   *
+   * In this case, the error would be reported on `incorrectlyDeclaredDependency`.
+   *
+   * @param injectionDeclarations Declared properties annotated with [Inject].
+   */
+  private fun reportErrorOnModuleUnrelatedInjections(
+    injectionDeclarations: List<KSPropertyDeclaration>
+  ) {
+    injectionDeclarations
+      .filterNot { it.isWithin<Module>() }
+      .forEach { environment.logger.error("An injection should be part of a Module.", symbol = it) }
+  }
+
+  /**
+   * Reports an error for each [KSPropertyDeclaration] within the [injectionDeclarations] that have
+   * a return type other than that of an injection, which is `Module.() -> Any`.
+   *
+   * @param injectionDeclarations Declared properties annotated with [Inject].
+   */
+  private fun reportErrorOnMismatchingType(injectionDeclarations: List<KSPropertyDeclaration>) {
+    injectionDeclarations.filterNot(KSPropertyDeclaration::isInjection).forEach {
+      environment.logger.error(
+        "An injection should return have a return type of `Module.() -> Any`.",
+        symbol = it
+      )
     }
+  }
 
-    /**
-     * Reports an error for each [KSPropertyDeclaration] within the [injectionDeclarations] that
-     * have been created outside of a [Module]. For example:
-     *
-     * ```
-     * class MyModule(@Inject private val correctlyDeclaredDependency: Module.() -> Int) : Module()
-     *
-     * @Inject
-     * val incorrectlyDeclaredDependency: Module.() -> Int = { 0 }
-     * ```
-     *
-     * In this case, the error would be reported on `incorrectlyDeclaredDependency`.
-     *
-     * @param injectionDeclarations Declared properties annotated with [Inject].
-     **/
-    private fun reportErrorOnModuleUnrelatedInjections(
-        injectionDeclarations: List<KSPropertyDeclaration>
-    ) {
-        injectionDeclarations.filterNot { it.isWithin<Module>() }.forEach {
-            environment.logger.error("An injection should be part of a Module.", symbol = it)
-        }
+  /**
+   * Reports an error for each private [Module] that contains injections. They should be visible to
+   * the extension properties that will be generated for their dependencies.
+   *
+   * @param injectionDeclarations Declared properties annotated with [Inject].
+   */
+  private fun reportErrorOnPrivateModules(injectionDeclarations: List<KSPropertyDeclaration>) {
+    injectionDeclarations
+      .filter { (it.parentDeclaration as KSClassDeclaration).isPrivate() }
+      .forEach {
+        environment.logger.error(
+          "A Module with declared injections cannot be private.",
+          symbol = it
+        )
+      }
+  }
+
+  /**
+   * Reports an error for each private injection. This is necessary for the workaround of
+   * suppressing their "unused" warning by referencing them when returning the dependency from their
+   * respective extension property on the [Module] in which they've been declared.
+   *
+   * @param injectionDeclarations Declared properties with [Inject].
+   */
+  private fun reportErrorOnPrivateInjections(injectionDeclarations: List<KSPropertyDeclaration>) {
+    injectionDeclarations.filter(KSPropertyDeclaration::isPrivate).forEach {
+      environment.logger.error("An injection cannot be private.", symbol = it)
     }
+  }
 
-    /**
-     * Reports an error for each [KSPropertyDeclaration] within the [injectionDeclarations] that
-     * have a return type other than that of an injection, which is `Module.() -> Any`.
-     *
-     * @param injectionDeclarations Declared properties annotated with [Inject].
-     **/
-    private fun reportErrorOnMismatchingType(injectionDeclarations: List<KSPropertyDeclaration>) {
-        injectionDeclarations
-            .filterNot(KSPropertyDeclaration::isInjection)
-            .forEach {
-                environment.logger.error(
-                    "An injection should return have a return type of `Module.() -> Any`.",
-                    symbol = it
-                )
-            }
-    }
+  /**
+   * Generates extension functions for each of the [injectionDeclarations] for them to be easily
+   * obtained instead of relying on the [Module.get]'s runtime type check.
+   *
+   * @param injectionDeclarations Injections for which the extension properties will be generated.
+   * @throws IllegalStateException If the [Module]s aren't part of a [KSFile] or the [KSType] of an
+   *   injected dependency cannot be resolved.
+   */
+  @Throws(IllegalStateException::class)
+  private fun generateExtensionFunctions(injectionDeclarations: List<KSPropertyDeclaration>) {
+    injectionDeclarations
+      .filter(KSPropertyDeclaration::isInjection)
+      .groupBy { it.parentDeclaration as KSClassDeclaration }
+      .forEach { (module, moduleInjections) ->
+        createExtensionsFileSpec(module, moduleInjections)
+          .writeTo(
+            environment.codeGenerator,
+            Dependencies(aggregating = true, module.requireContainingFile())
+          )
+      }
+  }
 
-    /**
-     * Reports an error for each private [Module] that contains injections. They should be visible
-     * to the extension properties that will be generated for their dependencies.
-     *
-     * @param injectionDeclarations Declared properties annotated with [Inject].
-     **/
-    private fun reportErrorOnPrivateModules(injectionDeclarations: List<KSPropertyDeclaration>) {
-        injectionDeclarations
-            .filter { (it.parentDeclaration as KSClassDeclaration).isPrivate() }
-            .forEach {
-                environment.logger.error(
-                    "A Module with declared injections cannot be private.",
-                    symbol = it
-                )
-            }
-    }
+  /**
+   * Creates a [FileSpec] of a file for the given [moduleDeclaration] in which its
+   * [injectionDeclarations]' extension properties are declared.
+   *
+   * @param moduleDeclaration [KSClassDeclaration] of the [Module] for which the [FileSpec] will be
+   *   created.
+   * @param injectionDeclarations [KSPropertyDeclaration]s of the [moduleDeclaration]'s injections.
+   * @throws IllegalStateException If the [moduleDeclaration] isn't part of a [KSFile] or the
+   *   [KSType] of an injected dependency cannot be resolved.
+   */
+  @Throws(IllegalStateException::class)
+  private fun createExtensionsFileSpec(
+    moduleDeclaration: KSClassDeclaration,
+    injectionDeclarations: List<KSPropertyDeclaration>
+  ): FileSpec {
+    val packageName = moduleDeclaration.packageName.asString()
+    val fileName = moduleDeclaration.simpleName.asString() + ".extensions"
+    val moduleFile = moduleDeclaration.requireContainingFile()
+    val extensionFunSpecs =
+      injectionDeclarations.map { createExtensionFunSpec(moduleDeclaration, it) }
+    return FileSpec.builder(packageName, fileName)
+      .addImports(moduleFile)
+      .apply { extensionFunSpecs.forEach(::addFunction) }
+      .build()
+  }
 
-    /**
-     * Reports an error for each private injection. This is necessary for the workaround of
-     * suppressing their "unused" warning by referencing them when returning the dependency from
-     * their respective extension property on the [Module] in which they've been declared.
-     *
-     * @param injectionDeclarations Declared properties with [Inject].
-     **/
-    private fun reportErrorOnPrivateInjections(injectionDeclarations: List<KSPropertyDeclaration>) {
-        injectionDeclarations.filter(KSPropertyDeclaration::isPrivate).forEach {
-            environment.logger.error("An injection cannot be private.", symbol = it)
-        }
-    }
-
-    /**
-     * Generates extension functions for each of the [injectionDeclarations] for them to be easily
-     * obtained instead of relying on the [Module.get]'s runtime type check.
-     *
-     * @param injectionDeclarations Injections for which the extension properties will be generated.
-     * @throws IllegalStateException If the [Module]s aren't part of a [KSFile] or the [KSType] of
-     * an injected dependency cannot be resolved.
-     **/
-    @Throws(IllegalStateException::class)
-    private fun generateExtensionFunctions(injectionDeclarations: List<KSPropertyDeclaration>) {
-        injectionDeclarations
-            .filter(KSPropertyDeclaration::isInjection)
-            .groupBy { it.parentDeclaration as KSClassDeclaration }
-            .forEach { (module, moduleInjections) ->
-                createExtensionsFileSpec(module, moduleInjections).writeTo(
-                    environment.codeGenerator,
-                    Dependencies(aggregating = true, module.requireContainingFile())
-                )
-            }
-    }
-
-    /**
-     * Creates a [FileSpec] of a file for the given [moduleDeclaration] in which its
-     * [injectionDeclarations]' extension properties are declared.
-     *
-     * @param moduleDeclaration [KSClassDeclaration] of the [Module] for which the [FileSpec] will
-     * be created.
-     * @param injectionDeclarations [KSPropertyDeclaration]s of the [moduleDeclaration]'s
-     * injections.
-     * @throws IllegalStateException If the [moduleDeclaration] isn't part of a [KSFile] or the
-     * [KSType] of an injected dependency cannot be resolved.
-     **/
-    @Throws(IllegalStateException::class)
-    private fun createExtensionsFileSpec(
-        moduleDeclaration: KSClassDeclaration,
-        injectionDeclarations: List<KSPropertyDeclaration>
-    ): FileSpec {
-        val packageName = moduleDeclaration.packageName.asString()
-        val fileName = moduleDeclaration.simpleName.asString() + ".extensions"
-        val moduleFile = moduleDeclaration.requireContainingFile()
-        val extensionFunSpecs =
-            injectionDeclarations.map { createExtensionFunSpec(moduleDeclaration, it) }
-        return FileSpec
-            .builder(packageName, fileName)
-            .addImports(moduleFile)
-            .apply { extensionFunSpecs.forEach(::addFunction) }
-            .build()
-    }
-
-    /**
-     * Creates a [FunSpec] of an extension property for the given [injectionDeclaration] that's
-     * contained within the [moduleDeclaration].
-     *
-     * @param moduleDeclaration [KSClassDeclaration] of the [Module] in which the
-     * [injectionDeclaration] is.
-     * @param injectionDeclaration [KSPropertyDeclaration] of the injection for which the [FunSpec]
-     * will be created.
-     * @throws IllegalStateException If the [KSType] of the injected dependency cannot be resolved.
-     **/
-    @Throws(IllegalStateException::class)
-    private fun createExtensionFunSpec(
-        moduleDeclaration: KSClassDeclaration,
-        injectionDeclaration: KSPropertyDeclaration
-    ): FunSpec {
-        val name = injectionDeclaration.simpleName.asString()
-        val type = injectionDeclaration
-            .type
-            .resolve()
-            .arguments
-            .last()
-            .type
-            ?.resolve()
-            ?: throw IllegalStateException(
-                "Cannot create extension property for a dependency with an unresolved KSType."
-            )
-        val moduleType = moduleDeclaration.asStarProjectedType()
-        val moduleTypeName = moduleType.toTypeName()
-        val typeDeclaration = type.declaration
-        val moduleVisibility = moduleDeclaration.getVisibility()
-        val typeVisibility = type.declaration.getVisibility()
-        val visibility = minOf(moduleVisibility, typeVisibility).toKModifier() ?: KModifier.PUBLIC
-        val typeDeclarationName = typeDeclaration.simpleName.asString()
-        val moduleDeclarationName = moduleType.declaration.simpleName.asString()
-        val parentAndModuleDeclarationName =
-            (moduleDeclaration.parentDeclaration as? KSClassDeclaration)
-                ?.simpleName
-                ?.asString()
-                ?.plus('.')
-                .orEmpty()
-                .plus(moduleDeclarationName)
-        val typeName = type.toTypeName()
-        return FunSpec
-            .builder(name)
-            .addKdoc(
-                "[$typeDeclarationName] that's been injected into this " +
-                    "[$parentAndModuleDeclarationName]."
-            )
-            .addModifiers(visibility)
-            .receiver(moduleTypeName)
-            .addStatement(
-                """
+  /**
+   * Creates a [FunSpec] of an extension property for the given [injectionDeclaration] that's
+   * contained within the [moduleDeclaration].
+   *
+   * @param moduleDeclaration [KSClassDeclaration] of the [Module] in which the
+   *   [injectionDeclaration] is.
+   * @param injectionDeclaration [KSPropertyDeclaration] of the injection for which the [FunSpec]
+   *   will be created.
+   * @throws IllegalStateException If the [KSType] of the injected dependency cannot be resolved.
+   */
+  @Throws(IllegalStateException::class)
+  private fun createExtensionFunSpec(
+    moduleDeclaration: KSClassDeclaration,
+    injectionDeclaration: KSPropertyDeclaration
+  ): FunSpec {
+    val name = injectionDeclaration.simpleName.asString()
+    val type =
+      injectionDeclaration.type.resolve().arguments.last().type?.resolve()
+        ?: throw IllegalStateException(
+          "Cannot create extension property for a dependency with an unresolved KSType."
+        )
+    val moduleType = moduleDeclaration.asStarProjectedType()
+    val moduleTypeName = moduleType.toTypeName()
+    val typeDeclaration = type.declaration
+    val moduleVisibility = moduleDeclaration.getVisibility()
+    val typeVisibility = type.declaration.getVisibility()
+    val visibility = minOf(moduleVisibility, typeVisibility).toKModifier() ?: KModifier.PUBLIC
+    val typeDeclarationName = typeDeclaration.simpleName.asString()
+    val moduleDeclarationName = moduleType.declaration.simpleName.asString()
+    val parentAndModuleDeclarationName =
+      (moduleDeclaration.parentDeclaration as? KSClassDeclaration)
+        ?.simpleName
+        ?.asString()
+        ?.plus('.')
+        .orEmpty()
+        .plus(moduleDeclarationName)
+    val typeName = type.toTypeName()
+    return FunSpec.builder(name)
+      .addKdoc(
+        "[$typeDeclarationName] that's been injected into this " +
+          "[$parentAndModuleDeclarationName]."
+      )
+      .addModifiers(visibility)
+      .receiver(moduleTypeName)
+      .addStatement(
+        """
                     return run {
                         $name
                         get()
                     }
                 """
-                    .trimIndent()
-            )
-            .returns(typeName)
-            .build()
-    }
+          .trimIndent()
+      )
+      .returns(typeName)
+      .build()
+  }
 }

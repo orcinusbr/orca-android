@@ -13,8 +13,9 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.search.SampleProfileSea
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.SampleTootProvider
 import com.jeanbarrossilva.orca.core.sample.instance.domain.sample
 
-/** [Instance] returned by [sample]. **/
-private val sampleInstance = object : Instance<Authenticator>() {
+/** [Instance] returned by [sample]. */
+private val sampleInstance =
+  object : Instance<Authenticator>() {
     override val domain = Domain.sample
     override val authenticator: Authenticator = SampleAuthenticator
     override val authenticationLock = AuthenticationLock(authenticator, ActorProvider.sample)
@@ -22,8 +23,8 @@ private val sampleInstance = object : Instance<Authenticator>() {
     override val profileProvider = SampleProfileProvider
     override val profileSearcher = SampleProfileSearcher
     override val tootProvider = SampleTootProvider
-}
+  }
 
-/** Sample [Instance]. **/
+/** Sample [Instance]. */
 val Instance.Companion.sample
-    get() = sampleInstance
+  get() = sampleInstance

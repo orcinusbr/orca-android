@@ -8,16 +8,16 @@ import com.jeanbarrossilva.orca.platform.ui.core.Intent
 import com.jeanbarrossilva.orca.platform.ui.test.core.SingleFragmentActivity
 
 internal class FeedActivity : SingleFragmentActivity() {
-    override val route = "feed"
+  override val route = "feed"
 
-    override fun NavGraphBuilder.add() {
-        fragment<FeedFragment>()
-    }
+  override fun NavGraphBuilder.add() {
+    fragment<FeedFragment>()
+  }
 
-    companion object {
-        fun getIntent(userID: String): Intent {
-            val context = InstrumentationRegistry.getInstrumentation().context
-            return Intent<FeedActivity>(context, FeedFragment.USER_ID_KEY to userID)
-        }
+  companion object {
+    fun getIntent(userID: String): Intent {
+      val context = InstrumentationRegistry.getInstrumentation().context
+      return Intent<FeedActivity>(context, FeedFragment.USER_ID_KEY to userID)
     }
+  }
 }

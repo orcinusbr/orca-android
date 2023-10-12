@@ -18,29 +18,27 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class FeedTests {
-    @get:Rule
-    val time4JRule = Time4JTestRule()
+  @get:Rule val time4JRule = Time4JTestRule()
 
-    @get:Rule
-    val composeRule = createComposeRule()
+  @get:Rule val composeRule = createComposeRule()
 
-    @Test
-    fun runsCallbackWhenClickingTootFavoriteStat() {
-        var hasCallbackBeenRun = false
-        composeRule.setContent {
-            OrcaTheme {
-                Feed(
-                    TootPreview.samples.toSerializableList().toListLoadable(),
-                    onFavorite = { hasCallbackBeenRun = true }
-                )
-            }
-        }
-        composeRule
-            .onTootPreviews()
-            .onFirst()
-            .onChildren()
-            .filterToOne(hasTestTag(TOOT_PREVIEW_FAVORITE_STAT_TAG))
-            .performClick()
-        assertTrue(hasCallbackBeenRun)
+  @Test
+  fun runsCallbackWhenClickingTootFavoriteStat() {
+    var hasCallbackBeenRun = false
+    composeRule.setContent {
+      OrcaTheme {
+        Feed(
+          TootPreview.samples.toSerializableList().toListLoadable(),
+          onFavorite = { hasCallbackBeenRun = true }
+        )
+      }
     }
+    composeRule
+      .onTootPreviews()
+      .onFirst()
+      .onChildren()
+      .filterToOne(hasTestTag(TOOT_PREVIEW_FAVORITE_STAT_TAG))
+      .performClick()
+    assertTrue(hasCallbackBeenRun)
+  }
 }

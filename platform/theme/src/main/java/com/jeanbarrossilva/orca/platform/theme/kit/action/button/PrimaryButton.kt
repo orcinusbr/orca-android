@@ -27,66 +27,60 @@ import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
  * @param modifier [Modifier] to be applied to the underlying [ElevatedButton].
  * @param isEnabled Whether it can be interacted with.
  * @param content Content to be placed inside of it; generally a [Text] that shortly explains the
- * action performed by [onClick].
- **/
+ *   action performed by [onClick].
+ */
 @Composable
 fun PrimaryButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    isEnabled: Boolean = true,
-    content: @Composable () -> Unit
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier,
+  isEnabled: Boolean = true,
+  content: @Composable () -> Unit
 ) {
-    val enabledContentColor = OrcaTheme.colors.primary.content
-    val disabledContentColor = OrcaTheme.colors.disabled.content
-    val contentColor = remember(isEnabled, enabledContentColor, disabledContentColor) {
-        if (isEnabled) enabledContentColor else disabledContentColor
+  val enabledContentColor = OrcaTheme.colors.primary.content
+  val disabledContentColor = OrcaTheme.colors.disabled.content
+  val contentColor =
+    remember(isEnabled, enabledContentColor, disabledContentColor) {
+      if (isEnabled) enabledContentColor else disabledContentColor
     }
-    var isLoading by remember { mutableStateOf(false) }
+  var isLoading by remember { mutableStateOf(false) }
 
-    ElevatedButton(
-        onClick = {
-            isLoading = true
-            onClick()
-            isLoading = false
-        },
-        modifier,
-        isEnabled,
-        shape = OrcaTheme.shapes.medium,
-        colors = ButtonDefaults.elevatedButtonColors(
-            OrcaTheme.colors.primary.container,
-            enabledContentColor,
-            OrcaTheme.colors.disabled.container,
-            disabledContentColor
-        ),
-        contentPadding = PaddingValues(OrcaTheme.spacings.large)
-    ) {
-        if (isLoading) {
-            CircularProgressIndicator(
-                Modifier.size(17.4.dp),
-                contentColor,
-                strokeCap = StrokeCap.Round
-            )
-        } else {
-            ProvideTextStyle(LocalTextStyle.current.copy(color = contentColor), content)
-        }
+  ElevatedButton(
+    onClick = {
+      isLoading = true
+      onClick()
+      isLoading = false
+    },
+    modifier,
+    isEnabled,
+    shape = OrcaTheme.shapes.medium,
+    colors =
+      ButtonDefaults.elevatedButtonColors(
+        OrcaTheme.colors.primary.container,
+        enabledContentColor,
+        OrcaTheme.colors.disabled.container,
+        disabledContentColor
+      ),
+    contentPadding = PaddingValues(OrcaTheme.spacings.large)
+  ) {
+    if (isLoading) {
+      CircularProgressIndicator(Modifier.size(17.4.dp), contentColor, strokeCap = StrokeCap.Round)
+    } else {
+      ProvideTextStyle(LocalTextStyle.current.copy(color = contentColor), content)
     }
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun DisabledPrimaryButtonPreview() {
-    OrcaTheme {
-        PrimaryButton(isEnabled = false)
-    }
+  OrcaTheme { PrimaryButton(isEnabled = false) }
 }
 
-/** Preview of an enabled [PrimaryButton]. **/
+/** Preview of an enabled [PrimaryButton]. */
 @Composable
 @MultiThemePreview
 private fun EnabledPrimaryButtonPreview() {
-    OrcaTheme {
-        PrimaryButton(isEnabled = true)
-    }
+  OrcaTheme { PrimaryButton(isEnabled = true) }
 }
 
 /**
@@ -95,10 +89,8 @@ private fun EnabledPrimaryButtonPreview() {
  *
  * @param isEnabled Whether it can be interacted with.
  * @param modifier [Modifier] to be applied to the underlying [ElevatedButton].
- **/
+ */
 @Composable
 private fun PrimaryButton(isEnabled: Boolean, modifier: Modifier = Modifier) {
-    PrimaryButton(onClick = { }, modifier, isEnabled) {
-        Text("Label")
-    }
+  PrimaryButton(onClick = {}, modifier, isEnabled) { Text("Label") }
 }

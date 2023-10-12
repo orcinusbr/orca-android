@@ -11,14 +11,14 @@ import com.jeanbarrossilva.orca.core.test.TestAuthorizer
  * @param authorizer [TestAuthorizer] with which the user will be authorized.
  * @param authenticator [TestAuthenticator] through which authentication can be done.
  * @param authenticationLock [AuthenticationLock] by which features can be locked or unlocked by an
- * authentication "wall".
- **/
+ *   authentication "wall".
+ */
 internal class TestHttpInstanceProvider(
-    private val authorizer: TestAuthorizer,
-    private val authenticator: TestAuthenticator,
-    private val authenticationLock: AuthenticationLock<TestAuthenticator>
+  private val authorizer: TestAuthorizer,
+  private val authenticator: TestAuthenticator,
+  private val authenticationLock: AuthenticationLock<TestAuthenticator>
 ) : InstanceProvider {
-    override fun provide(): TestHttpInstance {
-        return TestHttpInstance(authorizer, authenticator, authenticationLock)
-    }
+  override fun provide(): TestHttpInstance {
+    return TestHttpInstance(authorizer, authenticator, authenticationLock)
+  }
 }

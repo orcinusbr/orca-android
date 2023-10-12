@@ -15,46 +15,46 @@ import com.jeanbarrossilva.orca.feature.composer.ui.Toolbar
  * non-editable.
  *
  * @param values [AnnotatedString]s that the [SemanticsNode] is expected to have.
- **/
+ */
 internal fun hasTextExactly(vararg values: AnnotatedString): SemanticsMatcher {
-    val expected = values.toList()
-    return SemanticsMatcher(
-        "${SemanticsProperties.Text.name} + ${SemanticsProperties.EditableText.name} = $expected"
-    ) { node ->
-        with(node.config) {
-            getOrNull(SemanticsProperties.Text)
-                .orEmpty()
-                .plus(getOrNull(SemanticsProperties.EditableText))
-                .filterNotNull()
-                .let { texts -> texts.containsAll(expected) && expected.containsAll(texts) }
-        }
+  val expected = values.toList()
+  return SemanticsMatcher(
+    "${SemanticsProperties.Text.name} + ${SemanticsProperties.EditableText.name} = $expected"
+  ) { node ->
+    with(node.config) {
+      getOrNull(SemanticsProperties.Text)
+        .orEmpty()
+        .plus(getOrNull(SemanticsProperties.EditableText))
+        .filterNotNull()
+        .let { texts -> texts.containsAll(expected) && expected.containsAll(texts) }
     }
+  }
 }
 
 /**
  * [SemanticsMatcher] that indicates whether the [SemanticsNode] is of a [Toolbar]'s bold format.
- **/
+ */
 internal fun isBoldFormat(): SemanticsMatcher {
-    return SemanticsMatcher("is bold format") {
-        it.config.getOrNull(SemanticsProperties.TestTag) == COMPOSER_TOOLBAR_BOLD_FORMAT
-    }
+  return SemanticsMatcher("is bold format") {
+    it.config.getOrNull(SemanticsProperties.TestTag) == COMPOSER_TOOLBAR_BOLD_FORMAT
+  }
 }
 
 /**
  * [SemanticsMatcher] that indicates whether the [SemanticsNode] is of a [Toolbar]'s italic format.
- **/
+ */
 internal fun isItalicFormat(): SemanticsMatcher {
-    return SemanticsMatcher("is italic format") {
-        it.config.getOrNull(SemanticsProperties.TestTag) == COMPOSER_TOOLBAR_ITALIC_FORMAT
-    }
+  return SemanticsMatcher("is italic format") {
+    it.config.getOrNull(SemanticsProperties.TestTag) == COMPOSER_TOOLBAR_ITALIC_FORMAT
+  }
 }
 
 /**
  * [SemanticsMatcher] that indicates whether the [SemanticsNode] if of a [Toolbar]'s underline
  * format.
- **/
+ */
 internal fun isUnderlineFormat(): SemanticsMatcher {
-    return SemanticsMatcher("is underline format") {
-        it.config.getOrNull(SemanticsProperties.TestTag) == COMPOSER_TOOLBAR_UNDERLINE_FORMAT
-    }
+  return SemanticsMatcher("is underline format") {
+    it.config.getOrNull(SemanticsProperties.TestTag) == COMPOSER_TOOLBAR_UNDERLINE_FORMAT
+  }
 }

@@ -23,59 +23,58 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
-internal class TootDetailsViewModel private constructor(
-    private val contextProvider: ContextProvider,
-    private val tootProvider: TootProvider,
-    id: String
+internal class TootDetailsViewModel
+private constructor(
+  private val contextProvider: ContextProvider,
+  private val tootProvider: TootProvider,
+  id: String
 ) : ViewModel() {
-    private val tootFlow = flow { emitAll(tootProvider.provide(id)) }
-    private val commentsIndexFlow = MutableStateFlow(0)
+  private val tootFlow = flow { emitAll(tootProvider.provide(id)) }
+  private val commentsIndexFlow = MutableStateFlow(0)
 
-    private val colors
-        get() = Colors.getDefault(context)
-    private val context
-        get() = contextProvider.provide()
+  private val colors
+    get() = Colors.getDefault(context)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val detailsLoadableFlow =
-        tootFlow.flatMapLatest { it.toTootDetailsFlow(colors) }.loadable(viewModelScope)
+  private val context
+    get() = contextProvider.provide()
 
-    val commentsLoadableFlow =
-        flatMapCombine(commentsIndexFlow, tootFlow) { commentsIndex, toot ->
-            toot.comment.get(commentsIndex).flatMapEach {
-                it.toTootPreviewFlow(colors)
-            }
+  @OptIn(ExperimentalCoroutinesApi::class)
+  val detailsLoadableFlow =
+    tootFlow.flatMapLatest { it.toTootDetailsFlow(colors) }.loadable(viewModelScope)
+
+  val commentsLoadableFlow =
+    flatMapCombine(commentsIndexFlow, tootFlow) { commentsIndex, toot ->
+        toot.comment.get(commentsIndex).flatMapEach { it.toTootPreviewFlow(colors) }
+      }
+      .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
+
+  fun favorite(id: String) {
+    viewModelScope.launch { tootProvider.provide(id).first().favorite.toggle() }
+  }
+
+  fun reblog(id: String) {
+    viewModelScope.launch { tootProvider.provide(id).first().reblog.toggle() }
+  }
+
+  fun share(url: URL) {
+    context.share("$url")
+  }
+
+  fun loadCommentsAt(index: Int) {
+    commentsIndexFlow.value = index
+  }
+
+  companion object {
+    fun createFactory(
+      contextProvider: ContextProvider,
+      tootProvider: TootProvider,
+      id: String
+    ): ViewModelProvider.Factory {
+      return viewModelFactory {
+        addInitializer(TootDetailsViewModel::class) {
+          TootDetailsViewModel(contextProvider, tootProvider, id)
         }
-            .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
-
-    fun favorite(id: String) {
-        viewModelScope.launch {
-            tootProvider.provide(id).first().favorite.toggle()
-        }
+      }
     }
-
-    fun reblog(id: String) {
-        viewModelScope.launch {
-            tootProvider.provide(id).first().reblog.toggle()
-        }
-    }
-
-    fun share(url: URL) {
-        context.share("$url")
-    }
-
-    fun loadCommentsAt(index: Int) {
-        commentsIndexFlow.value = index
-    }
-
-    companion object {
-        fun createFactory(contextProvider: ContextProvider, tootProvider: TootProvider, id: String):
-            ViewModelProvider.Factory {
-            return viewModelFactory {
-                addInitializer(TootDetailsViewModel::class) {
-                    TootDetailsViewModel(contextProvider, tootProvider, id)
-                }
-            }
-        }
-    }
+  }
 }

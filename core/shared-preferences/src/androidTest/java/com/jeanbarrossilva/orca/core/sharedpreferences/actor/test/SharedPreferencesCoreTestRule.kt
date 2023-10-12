@@ -7,21 +7,22 @@ import com.jeanbarrossilva.orca.core.sharedpreferences.feed.profile.toot.muting.
 import org.junit.rules.ExternalResource
 
 internal class SharedPreferencesCoreTestRule : ExternalResource() {
-    private val context
-        get() = InstrumentationRegistry.getInstrumentation().context
+  private val context
+    get() = InstrumentationRegistry.getInstrumentation().context
 
-    lateinit var actorProvider: SharedPreferencesActorProvider
-        private set
-    lateinit var termMuter: TermMuter
-        private set
+  lateinit var actorProvider: SharedPreferencesActorProvider
+    private set
 
-    override fun before() {
-        actorProvider = SharedPreferencesActorProvider(context)
-        termMuter = SharedPreferencesTermMuter(context)
-    }
+  lateinit var termMuter: TermMuter
+    private set
 
-    override fun after() {
-        actorProvider.reset()
-        SharedPreferencesTermMuter.reset(context)
-    }
+  override fun before() {
+    actorProvider = SharedPreferencesActorProvider(context)
+    termMuter = SharedPreferencesTermMuter(context)
+  }
+
+  override fun after() {
+    actorProvider.reset()
+    SharedPreferencesTermMuter.reset(context)
+  }
 }

@@ -17,13 +17,16 @@ import com.jeanbarrossilva.orca.std.styledstring.type.Mention
  *
  * @param colors [Colors] by which the resulting [SpanStyle] can be colored.
  * @throws IllegalArgumentException If the [Style] is unknown.
- **/
+ */
 @Throws(IllegalArgumentException::class)
 internal fun Style.toSpanStyle(colors: Colors): SpanStyle {
-    return when (this) {
-        is Bold -> SpanStyle(fontWeight = FontWeight.Bold)
-        is Email, is Hashtag, is Link, is Mention -> SpanStyle(colors.link)
-        is Italic -> SpanStyle(fontStyle = FontStyle.Italic)
-        else -> throw IllegalArgumentException("Cannot convert an unknown $this style.")
-    }
+  return when (this) {
+    is Bold -> SpanStyle(fontWeight = FontWeight.Bold)
+    is Email,
+    is Hashtag,
+    is Link,
+    is Mention -> SpanStyle(colors.link)
+    is Italic -> SpanStyle(fontStyle = FontStyle.Italic)
+    else -> throw IllegalArgumentException("Cannot convert an unknown $this style.")
+  }
 }

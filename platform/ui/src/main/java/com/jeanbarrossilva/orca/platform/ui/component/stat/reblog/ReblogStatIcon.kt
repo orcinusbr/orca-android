@@ -15,24 +15,24 @@ import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconC
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconDefaults
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconInteractiveness
 
-/** Tag that identifies a [ReblogStatIcon] for testing purposes. **/
+/** Tag that identifies a [ReblogStatIcon] for testing purposes. */
 const val REBLOG_STAT_ICON_TAG = "reblog-stat-icon"
 
-/** Default values of a [ReblogStatIcon]. **/
+/** Default values of a [ReblogStatIcon]. */
 object ReblogStatIconDefaults {
-    /**
-     * [ActivateableStatIconColors] by which a [ReblogStatIcon] is colored by default.
-     *
-     * @param inactiveColor [Color] to color it with when it's inactive.
-     * @param activeColor [Color] to color it with when it's active.
-     **/
-    @Composable
-    fun colors(
-        inactiveColor: Color = LocalContentColor.current,
-        activeColor: Color = OrcaTheme.colors.activation.reblog
-    ): ActivateableStatIconColors {
-        return ActivateableStatIconColors(inactiveColor, activeColor)
-    }
+  /**
+   * [ActivateableStatIconColors] by which a [ReblogStatIcon] is colored by default.
+   *
+   * @param inactiveColor [Color] to color it with when it's inactive.
+   * @param activeColor [Color] to color it with when it's active.
+   */
+  @Composable
+  fun colors(
+    inactiveColor: Color = LocalContentColor.current,
+    activeColor: Color = OrcaTheme.colors.activation.reblog
+  ): ActivateableStatIconColors {
+    return ActivateableStatIconColors(inactiveColor, activeColor)
+  }
 }
 
 /**
@@ -40,43 +40,43 @@ object ReblogStatIconDefaults {
  *
  * @param isActive Whether the state it represents is enabled.
  * @param interactiveness [ActivateableStatIconInteractiveness] that indicates whether this
- * [ActivateableStatIconDefaults] can be interacted with.
+ *   [ActivateableStatIconDefaults] can be interacted with.
  * @param colors [ActivateableStatIconColors] that defines the [Color]s to color it.
  * @param modifier [Modifier] to be applied to the underlying [ActivateableStatIconDefaults].
- **/
+ */
 @Composable
 fun ReblogStatIcon(
-    isActive: Boolean,
-    interactiveness: ActivateableStatIconInteractiveness,
-    modifier: Modifier = Modifier,
-    colors: ActivateableStatIconColors = ReblogStatIconDefaults.colors()
+  isActive: Boolean,
+  interactiveness: ActivateableStatIconInteractiveness,
+  modifier: Modifier = Modifier,
+  colors: ActivateableStatIconColors = ReblogStatIconDefaults.colors()
 ) {
-    ActivateableStatIcon(
-        OrcaTheme.iconography.reblog,
-        contentDescription = stringResource(R.string.platform_ui_reblog_stat),
-        isActive,
-        interactiveness,
-        colors,
-        modifier.testTag(REBLOG_STAT_ICON_TAG)
-    )
+  ActivateableStatIcon(
+    OrcaTheme.iconography.reblog,
+    contentDescription = stringResource(R.string.platform_ui_reblog_stat),
+    isActive,
+    interactiveness,
+    colors,
+    modifier.testTag(REBLOG_STAT_ICON_TAG)
+  )
 }
 
 @Composable
 @MultiThemePreview
 private fun InactiveReblogStatIconPreview() {
-    OrcaTheme {
-        Surface(color = OrcaTheme.colors.background.container) {
-            ReblogStatIcon(isActive = false, ActivateableStatIconInteractiveness.Still)
-        }
+  OrcaTheme {
+    Surface(color = OrcaTheme.colors.background.container) {
+      ReblogStatIcon(isActive = false, ActivateableStatIconInteractiveness.Still)
     }
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun ActiveReblogStatIconPreview() {
-    OrcaTheme {
-        Surface(color = OrcaTheme.colors.background.container) {
-            ReblogStatIcon(isActive = true, ActivateableStatIconInteractiveness.Still)
-        }
+  OrcaTheme {
+    Surface(color = OrcaTheme.colors.background.container) {
+      ReblogStatIcon(isActive = true, ActivateableStatIconInteractiveness.Still)
     }
+  }
 }

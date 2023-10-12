@@ -15,23 +15,23 @@ import com.jeanbarrossilva.orca.platform.theme.kit.action.setting.list.settingsP
 
 @Composable
 fun Section(title: String, modifier: Modifier = Modifier, content: SettingsScope.() -> Unit) {
-    Column(modifier, verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.small)) {
-        Text(
-            title.uppercase(),
-            Modifier.offset(x = SettingDefaults.spacing),
-            style = OrcaTheme.typography.labelMedium
-        )
+  Column(modifier, verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.small)) {
+    Text(
+      title.uppercase(),
+      Modifier.offset(x = SettingDefaults.spacing),
+      style = OrcaTheme.typography.labelMedium
+    )
 
-        Settings(modifier, content)
-    }
+    Settings(modifier, content)
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun SectionPreview() {
-    OrcaTheme {
-        Surface(color = OrcaTheme.colors.background.container) {
-            Section(title = "Section", content = settingsPreviewContent)
-        }
+  OrcaTheme {
+    Surface(color = OrcaTheme.colors.background.container) {
+      Section(title = "Section", content = settingsPreviewContent)
     }
+  }
 }

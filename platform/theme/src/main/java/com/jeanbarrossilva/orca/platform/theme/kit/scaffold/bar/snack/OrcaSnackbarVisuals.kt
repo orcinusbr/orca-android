@@ -15,36 +15,35 @@ import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
  *
  * @see Info
  * @see Error
- **/
+ */
 internal sealed class OrcaSnackbarVisuals : SnackbarVisuals {
-    override val withDismissAction = false
+  override val withDismissAction = false
 
-    /** [Color] of the [Snackbar] container. **/
-    @get:Composable
-    abstract val containerColor: Color
+  /** [Color] of the [Snackbar] container. */
+  @get:Composable abstract val containerColor: Color
 
-    /** [Color] of the [Snackbar] content. **/
-    val contentColor
-        @Composable get() = contentColorFor(containerColor)
+  /** [Color] of the [Snackbar] content. */
+  val contentColor
+    @Composable get() = contentColorFor(containerColor)
 
-    /** Denotes that the [Snackbar] should be styled in a non-intrusive manner. **/
-    data class Info(override val message: String) : OrcaSnackbarVisuals() {
-        override val actionLabel = null
-        override val duration = SnackbarDuration.Short
+  /** Denotes that the [Snackbar] should be styled in a non-intrusive manner. */
+  data class Info(override val message: String) : OrcaSnackbarVisuals() {
+    override val actionLabel = null
+    override val duration = SnackbarDuration.Short
 
-        override val containerColor
-            @Composable get() = OrcaTheme.colors.surface.container
-    }
+    override val containerColor
+      @Composable get() = OrcaTheme.colors.surface.container
+  }
 
-    /**
-     * Denotes that the [Snackbar] should be styled in a way that attempts to draw the attention of
-     * the user to it, for notifying the occurrence of an error.
-     **/
-    data class Error(override val message: String) : OrcaSnackbarVisuals() {
-        override val actionLabel = "Retry"
-        override val duration = SnackbarDuration.Indefinite
+  /**
+   * Denotes that the [Snackbar] should be styled in a way that attempts to draw the attention of
+   * the user to it, for notifying the occurrence of an error.
+   */
+  data class Error(override val message: String) : OrcaSnackbarVisuals() {
+    override val actionLabel = "Retry"
+    override val duration = SnackbarDuration.Indefinite
 
-        override val containerColor
-            @Composable get() = OrcaTheme.colors.error.container
-    }
+    override val containerColor
+      @Composable get() = OrcaTheme.colors.error.container
+  }
 }

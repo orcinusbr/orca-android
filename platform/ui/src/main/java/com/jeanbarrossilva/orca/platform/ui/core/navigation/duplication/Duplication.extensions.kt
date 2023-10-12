@@ -1,11 +1,11 @@
 package com.jeanbarrossilva.orca.platform.ui.core.navigation.duplication
 
-/** Indicates that duplicate navigation is allowed. **/
+/** Indicates that duplicate navigation is allowed. */
 fun allowingDuplication(): Duplication {
-    return Duplication.Allowed
+  return Duplication.Allowed
 }
 
-/** Indicates that duplicate navigation is disallowed. **/
+/** Indicates that duplicate navigation is disallowed. */
 fun disallowingDuplication(): Duplication {
-    return Duplication.Disallowed
+  return Duplication.Disallowed
 }

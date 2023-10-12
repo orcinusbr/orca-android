@@ -14,9 +14,9 @@ import kotlinx.coroutines.flow.runningFold
  * receive an emission.
  *
  * @param transform Transformation to be made to the currently iterated element.
- **/
+ */
 fun <I, O> Flow<Collection<I>>.flatMapEach(transform: suspend (I) -> Flow<O>): Flow<List<O>> {
-    return flatMapEach(selector = { it }, transform)
+  return flatMapEach(selector = { it }, transform)
 }
 
 /**
@@ -26,29 +26,25 @@ fun <I, O> Flow<Collection<I>>.flatMapEach(transform: suspend (I) -> Flow<O>): F
  *
  * @param selector Returns the value by which elements should be compared when replacing them.
  * @param transform Transformation to be made to the currently iterated element.
- **/
+ */
 @OptIn(ExperimentalCoroutinesApi::class)
 fun <I, O, S> Flow<Collection<I>>.flatMapEach(
-    selector: (O) -> S,
-    transform: suspend (I) -> Flow<O>
+  selector: (O) -> S,
+  transform: suspend (I) -> Flow<O>
 ): Flow<List<O>> {
-    return mapEach(transform).flatMapLatest { flows ->
-        flows.merge().runningFold(emptyReplacementList(selector)) { accumulator, element ->
-            accumulator.add(element)
-            accumulator
-        }
+  return mapEach(transform).flatMapLatest { flows ->
+    flows.merge().runningFold(emptyReplacementList(selector)) { accumulator, element ->
+      accumulator.add(element)
+      accumulator
     }
+  }
 }
 
 /**
  * Maps each element of the emitted [Collection]s to the result of [transform].
  *
  * @param transform Transformation to be made to the currently iterated element.
- **/
+ */
 fun <I, O> Flow<Collection<I>>.mapEach(transform: suspend (I) -> O): Flow<List<O>> {
-    return map { elements ->
-        elements.map { element ->
-            transform(element)
-        }
-    }
+  return map { elements -> elements.map { element -> transform(element) } }
 }

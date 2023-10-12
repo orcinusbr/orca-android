@@ -23,186 +23,125 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class TootPreviewTests {
-    @get:Rule
-    val composeRule = createComposeRule()
+  @get:Rule val composeRule = createComposeRule()
 
-    private val sampleTootPreview
-        get() = TootPreview.getSample(
-            Colors.getDefault(InstrumentationRegistry.getInstrumentation().context)
-        )
+  private val sampleTootPreview
+    get() =
+      TootPreview.getSample(Colors.getDefault(InstrumentationRegistry.getInstrumentation().context))
 
-    @Test
-    fun isShownWhenLoading() {
-        composeRule.setContent {
-            OrcaTheme {
-                TootPreview()
-            }
-        }
-        composeRule.onTootPreview().assertIsDisplayed()
+  @Test
+  fun isShownWhenLoading() {
+    composeRule.setContent { OrcaTheme { TootPreview() } }
+    composeRule.onTootPreview().assertIsDisplayed()
+  }
+
+  @Test
+  fun isShownWhenLoaded() {
+    composeRule.setContent { OrcaTheme { TestTootPreview() } }
+    composeRule.onTootPreview().assertIsDisplayed()
+  }
+
+  @Test
+  fun nameIsLoadingWhenLoading() {
+    composeRule.setContent { OrcaTheme { TootPreview() } }
+    composeRule.onTootPreviewName().assertIsLoading()
+  }
+
+  @Test
+  fun nameIsShownWhenLoaded() {
+    composeRule.setContent { OrcaTheme { TestTootPreview() } }
+    composeRule.onTootPreviewName().assertIsNotLoading()
+    composeRule.onTootPreviewName().assertTextEquals(sampleTootPreview.name)
+  }
+
+  @Test
+  fun metadataIsLoadingWhenLoading() {
+    composeRule.setContent { OrcaTheme { TootPreview() } }
+    composeRule.onTootPreviewMetadata().assertIsLoading()
+  }
+
+  @Test
+  fun metadataIsShownWhenLoaded() {
+    val relativeTimeProvider = TestRelativeTimeProvider()
+    composeRule.setContent {
+      OrcaTheme { TestTootPreview(relativeTimeProvider = relativeTimeProvider) }
     }
+    composeRule.onTootPreviewMetadata().assertIsNotLoading()
+    composeRule
+      .onTootPreviewMetadata()
+      .assertTextEquals(sampleTootPreview.getMetadata(relativeTimeProvider))
+  }
 
-    @Test
-    fun isShownWhenLoaded() {
-        composeRule.setContent {
-            OrcaTheme {
-                TestTootPreview()
-            }
-        }
-        composeRule.onTootPreview().assertIsDisplayed()
-    }
+  @Test
+  fun bodyIsLoadingWhenLoading() {
+    composeRule.setContent { OrcaTheme { TootPreview() } }
+    composeRule.onTootPreviewBody().assertIsLoading()
+  }
 
-    @Test
-    fun nameIsLoadingWhenLoading() {
-        composeRule.setContent {
-            OrcaTheme {
-                TootPreview()
-            }
-        }
-        composeRule.onTootPreviewName().assertIsLoading()
-    }
+  @Test
+  fun bodyIsShownWhenLoaded() {
+    composeRule.setContent { OrcaTheme { TestTootPreview() } }
+    composeRule.onTootPreviewBody().assertIsNotLoading()
+    composeRule.onTootPreviewBody().assertTextEquals(sampleTootPreview.text.text)
+  }
 
-    @Test
-    fun nameIsShownWhenLoaded() {
-        composeRule.setContent {
-            OrcaTheme {
-                TestTootPreview()
-            }
-        }
-        composeRule.onTootPreviewName().assertIsNotLoading()
-        composeRule.onTootPreviewName().assertTextEquals(sampleTootPreview.name)
-    }
+  @Test
+  fun commentCountStatIsNonexistentWhenLoading() {
+    composeRule.setContent { OrcaTheme { TootPreview() } }
+    composeRule.onTootPreviewCommentCountStat().assertDoesNotExist()
+  }
 
-    @Test
-    fun metadataIsLoadingWhenLoading() {
-        composeRule.setContent {
-            OrcaTheme {
-                TootPreview()
-            }
-        }
-        composeRule.onTootPreviewMetadata().assertIsLoading()
-    }
+  @Test
+  fun commentCountStatIsShownWhenLoaded() {
+    composeRule.setContent { OrcaTheme { TestTootPreview() } }
+    composeRule.onTootPreviewCommentCountStat().assertIsDisplayed()
+    composeRule
+      .onTootPreviewCommentCountStat()
+      .onStatLabel()
+      .assertTextEquals(sampleTootPreview.formattedCommentCount)
+  }
 
-    @Test
-    fun metadataIsShownWhenLoaded() {
-        val relativeTimeProvider = TestRelativeTimeProvider()
-        composeRule.setContent {
-            OrcaTheme {
-                TestTootPreview(relativeTimeProvider = relativeTimeProvider)
-            }
-        }
-        composeRule.onTootPreviewMetadata().assertIsNotLoading()
-        composeRule.onTootPreviewMetadata().assertTextEquals(
-            sampleTootPreview.getMetadata(relativeTimeProvider)
-        )
-    }
+  @Test
+  fun favoriteCountStatIsNonexistentWhenLoading() {
+    composeRule.setContent { OrcaTheme { TootPreview() } }
+    composeRule.onTootPreviewFavoriteCountStat().assertDoesNotExist()
+  }
 
-    @Test
-    fun bodyIsLoadingWhenLoading() {
-        composeRule.setContent {
-            OrcaTheme {
-                TootPreview()
-            }
-        }
-        composeRule.onTootPreviewBody().assertIsLoading()
-    }
+  @Test
+  fun favoriteCountStatIsShownWhenLoaded() {
+    composeRule.setContent { OrcaTheme { TestTootPreview() } }
+    composeRule.onTootPreviewFavoriteCountStat().assertIsDisplayed()
+    composeRule
+      .onTootPreviewFavoriteCountStat()
+      .onStatLabel()
+      .assertTextEquals(sampleTootPreview.formattedFavoriteCount)
+  }
 
-    @Test
-    fun bodyIsShownWhenLoaded() {
-        composeRule.setContent {
-            OrcaTheme {
-                TestTootPreview()
-            }
-        }
-        composeRule.onTootPreviewBody().assertIsNotLoading()
-        composeRule.onTootPreviewBody().assertTextEquals(sampleTootPreview.text.text)
-    }
+  @Test
+  fun reblogCountStatIsNonexistentWhenLoading() {
+    composeRule.setContent { OrcaTheme { TootPreview() } }
+    composeRule.onTootPreviewReblogCountStat().assertDoesNotExist()
+  }
 
-    @Test
-    fun commentCountStatIsNonexistentWhenLoading() {
-        composeRule.setContent {
-            OrcaTheme {
-                TootPreview()
-            }
-        }
-        composeRule.onTootPreviewCommentCountStat().assertDoesNotExist()
-    }
+  @Test
+  fun reblogCountStatIsShownWhenLoaded() {
+    composeRule.setContent { OrcaTheme { TestTootPreview() } }
+    composeRule.onTootPreviewReblogCountStat().assertIsDisplayed()
+    composeRule
+      .onTootPreviewReblogCountStat()
+      .onStatLabel()
+      .assertTextEquals(sampleTootPreview.formattedReblogCount)
+  }
 
-    @Test
-    fun commentCountStatIsShownWhenLoaded() {
-        composeRule.setContent {
-            OrcaTheme {
-                TestTootPreview()
-            }
-        }
-        composeRule.onTootPreviewCommentCountStat().assertIsDisplayed()
-        composeRule.onTootPreviewCommentCountStat().onStatLabel().assertTextEquals(
-            sampleTootPreview.formattedCommentCount
-        )
-    }
+  @Test
+  fun shareActionIsNonexistentWhenLoading() {
+    composeRule.setContent { OrcaTheme { TootPreview() } }
+    composeRule.onTootPreviewShareAction().assertDoesNotExist()
+  }
 
-    @Test
-    fun favoriteCountStatIsNonexistentWhenLoading() {
-        composeRule.setContent {
-            OrcaTheme {
-                TootPreview()
-            }
-        }
-        composeRule.onTootPreviewFavoriteCountStat().assertDoesNotExist()
-    }
-
-    @Test
-    fun favoriteCountStatIsShownWhenLoaded() {
-        composeRule.setContent {
-            OrcaTheme {
-                TestTootPreview()
-            }
-        }
-        composeRule.onTootPreviewFavoriteCountStat().assertIsDisplayed()
-        composeRule.onTootPreviewFavoriteCountStat().onStatLabel().assertTextEquals(
-            sampleTootPreview.formattedFavoriteCount
-        )
-    }
-
-    @Test
-    fun reblogCountStatIsNonexistentWhenLoading() {
-        composeRule.setContent {
-            OrcaTheme {
-                TootPreview()
-            }
-        }
-        composeRule.onTootPreviewReblogCountStat().assertDoesNotExist()
-    }
-
-    @Test
-    fun reblogCountStatIsShownWhenLoaded() {
-        composeRule.setContent {
-            OrcaTheme {
-                TestTootPreview()
-            }
-        }
-        composeRule.onTootPreviewReblogCountStat().assertIsDisplayed()
-        composeRule.onTootPreviewReblogCountStat().onStatLabel().assertTextEquals(
-            sampleTootPreview.formattedReblogCount
-        )
-    }
-
-    @Test
-    fun shareActionIsNonexistentWhenLoading() {
-        composeRule.setContent {
-            OrcaTheme {
-                TootPreview()
-            }
-        }
-        composeRule.onTootPreviewShareAction().assertDoesNotExist()
-    }
-
-    @Test
-    fun shareActionIsShownWhenLoaded() {
-        composeRule.setContent {
-            OrcaTheme {
-                TestTootPreview()
-            }
-        }
-        composeRule.onTootPreviewShareAction().assertIsDisplayed()
-    }
+  @Test
+  fun shareActionIsShownWhenLoaded() {
+    composeRule.setContent { OrcaTheme { TestTootPreview() } }
+    composeRule.onTootPreviewShareAction().assertIsDisplayed()
+  }
 }

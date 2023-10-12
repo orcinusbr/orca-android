@@ -5,9 +5,9 @@ import java.time.ZonedDateTime
 
 /**
  * [RelativeTimeProvider] that provides the [String] representation of the given [ZonedDateTime].
- **/
+ */
 internal class TestRelativeTimeProvider : RelativeTimeProvider() {
-    override fun provide(dateTime: ZonedDateTime): String {
-        return dateTime.toString()
-    }
+  override fun provide(dateTime: ZonedDateTime): String {
+    return dateTime.toString()
+  }
 }

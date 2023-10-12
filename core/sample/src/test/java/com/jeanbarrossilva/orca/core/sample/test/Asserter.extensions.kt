@@ -18,22 +18,21 @@ import kotlinx.coroutines.flow.onEach
  *
  * @param before [Follow] status before the [toggle][SampleFollowableProfile.toggleFollow].
  * @param after [Follow] status after the [toggle][SampleFollowableProfile.toggleFollow].
- **/
+ */
 internal suspend fun <T : Follow> assertTogglingEquals(after: T, before: T) {
-    val matchingAfter = Follow.requireVisibilityMatch(before, after)
-    val profile =
-        @Suppress("UNCHECKED_CAST")
-        (FollowableProfile.sample as SampleFollowableProfile<T>).copy(follow = before)
+  val matchingAfter = Follow.requireVisibilityMatch(before, after)
+  val profile =
+    @Suppress("UNCHECKED_CAST")
+    (FollowableProfile.sample as SampleFollowableProfile<T>).copy(follow = before)
 
-    SampleProfileWriter.insert(profile)
-    assertEquals(
-        matchingAfter,
-        SampleProfileProvider
-            .provide(profile.id)
-            .filterIsInstance<FollowableProfile<T>>()
-            .onEach(FollowableProfile<T>::toggleFollow)
-            .drop(1)
-            .first()
-            .follow
-    )
+  SampleProfileWriter.insert(profile)
+  assertEquals(
+    matchingAfter,
+    SampleProfileProvider.provide(profile.id)
+      .filterIsInstance<FollowableProfile<T>>()
+      .onEach(FollowableProfile<T>::toggleFollow)
+      .drop(1)
+      .first()
+      .follow
+  )
 }

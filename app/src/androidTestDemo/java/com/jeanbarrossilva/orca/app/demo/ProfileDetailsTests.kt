@@ -25,24 +25,22 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class ProfileDetailsTests {
-    @get:Rule
-    val intentsRule = IntentsRule()
+  @get:Rule val intentsRule = IntentsRule()
 
-    @get:Rule
-    val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
+  @get:Rule val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
 
-    @Test
-    fun navigatesToTootHighlight() {
-        var hasNavigated = false
-        intending(browsesTo("${Highlight.sample.url}")).ok { hasNavigated = true }
-        composeRule.onHeadlineCards().onFirst().performClick()
-        assertTrue(hasNavigated)
-    }
+  @Test
+  fun navigatesToTootHighlight() {
+    var hasNavigated = false
+    intending(browsesTo("${Highlight.sample.url}")).ok { hasNavigated = true }
+    composeRule.onHeadlineCards().onFirst().performClick()
+    assertTrue(hasNavigated)
+  }
 
-    @Test
-    fun navigatesToTootDetailsOnTootPreviewClick() {
-        onView(withId(R.id.profile_details)).perform(click())
-        composeRule.onTootPreviews().onFirst().performStartClick()
-        assertIsAtFragment(composeRule.activity, TootDetailsFragment.getRoute(Toot.sample.id))
-    }
+  @Test
+  fun navigatesToTootDetailsOnTootPreviewClick() {
+    onView(withId(R.id.profile_details)).perform(click())
+    composeRule.onTootPreviews().onFirst().performStartClick()
+    assertIsAtFragment(composeRule.activity, TootDetailsFragment.getRoute(Toot.sample.id))
+  }
 }

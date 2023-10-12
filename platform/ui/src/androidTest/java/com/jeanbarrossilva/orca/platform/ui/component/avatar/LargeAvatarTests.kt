@@ -13,50 +13,37 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class LargeAvatarTests {
-    @get:Rule
-    val composeRule = createComposeRule()
+  @get:Rule val composeRule = createComposeRule()
 
-    @Test
-    fun isTaggedWhenEmpty() {
-        composeRule.setContent {
-            OrcaTheme {
-                LargeAvatar()
-            }
-        }
-        composeRule.onNodeWithTag(AVATAR_TAG).assertExists()
-    }
+  @Test
+  fun isTaggedWhenEmpty() {
+    composeRule.setContent { OrcaTheme { LargeAvatar() } }
+    composeRule.onNodeWithTag(AVATAR_TAG).assertExists()
+  }
 
-    @Test
-    fun isLoadingWhenEmpty() {
-        composeRule.setContent {
-            OrcaTheme {
-                LargeAvatar()
-            }
-        }
-        composeRule.onNodeWithTag(AVATAR_TAG).assertIsLoading()
-    }
+  @Test
+  fun isLoadingWhenEmpty() {
+    composeRule.setContent { OrcaTheme { LargeAvatar() } }
+    composeRule.onNodeWithTag(AVATAR_TAG).assertIsLoading()
+  }
 
-    @Test
-    fun isTaggedWhenPopulated() {
-        composeRule.setContent {
-            OrcaTheme {
-                LargeAvatar(
-                    Avatar.sample.name,
-                    Avatar.sample.url,
-                    imageLoader = TestImageLoader
-                )
-            }
-        }
-        composeRule.onNodeWithTag(AVATAR_TAG).assertExists()
+  @Test
+  fun isTaggedWhenPopulated() {
+    composeRule.setContent {
+      OrcaTheme {
+        LargeAvatar(Avatar.sample.name, Avatar.sample.url, imageLoader = TestImageLoader)
+      }
     }
+    composeRule.onNodeWithTag(AVATAR_TAG).assertExists()
+  }
 
-    @Test
-    fun isLoadedWhenPopulated() {
-        composeRule.setContent {
-            OrcaTheme {
-                LargeAvatar(Avatar.sample.name, Avatar.sample.url, imageLoader = TestImageLoader)
-            }
-        }
-        composeRule.onNodeWithTag(AVATAR_TAG).assertIsNotLoading()
+  @Test
+  fun isLoadedWhenPopulated() {
+    composeRule.setContent {
+      OrcaTheme {
+        LargeAvatar(Avatar.sample.name, Avatar.sample.url, imageLoader = TestImageLoader)
+      }
     }
+    composeRule.onNodeWithTag(AVATAR_TAG).assertIsNotLoading()
+  }
 }

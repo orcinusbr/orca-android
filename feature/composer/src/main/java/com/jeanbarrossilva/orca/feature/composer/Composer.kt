@@ -59,211 +59,200 @@ internal const val COMPOSER_FIELD = "composer-field"
 
 @Composable
 internal fun Composer(
-    viewModel: ComposerViewModel,
-    onBackwardsNavigation: () -> Unit,
-    modifier: Modifier = Modifier
+  viewModel: ComposerViewModel,
+  onBackwardsNavigation: () -> Unit,
+  modifier: Modifier = Modifier
 ) {
-    val value by viewModel.textFieldValueFlow.collectAsState()
+  val value by viewModel.textFieldValueFlow.collectAsState()
 
-    Composer(
-        value,
-        onValueChange = viewModel::setTextFieldValue,
-        onCompose = viewModel::compose,
-        onBackwardsNavigation,
-        modifier
-    )
+  Composer(
+    value,
+    onValueChange = viewModel::setTextFieldValue,
+    onCompose = viewModel::compose,
+    onBackwardsNavigation,
+    modifier
+  )
 }
 
 @Composable
 private fun Composer(
-    value: TextFieldValue,
-    onValueChange: (value: TextFieldValue) -> Unit,
-    onCompose: () -> Unit,
-    onBackwardsNavigation: () -> Unit,
-    modifier: Modifier = Modifier,
-    isToolbarInitiallyVisible: Boolean = false
+  value: TextFieldValue,
+  onValueChange: (value: TextFieldValue) -> Unit,
+  onCompose: () -> Unit,
+  onBackwardsNavigation: () -> Unit,
+  modifier: Modifier = Modifier,
+  isToolbarInitiallyVisible: Boolean = false
 ) {
-    val density = LocalDensity.current
-    val focusRequester = remember(::FocusRequester)
-    val style = OrcaTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Normal)
-    val interactionSource = remember(::MutableInteractionSource)
-    val brushColor = OrcaTheme.colors.primary.container
-    val cursorBrush = remember(brushColor) { SolidColor(brushColor) }
-    var isToolbarVisible by remember { mutableStateOf(isToolbarInitiallyVisible) }
-    val toolbarSpacing = OrcaTheme.spacings.medium
-    var toolbarSafeAreaPadding by remember { mutableStateOf(PaddingValues(end = 56.dp + 16.dp)) }
-    val floatingActionButtonPosition =
-        remember(isToolbarVisible) { if (isToolbarVisible) FabPosition.End else FabPosition.Center }
+  val density = LocalDensity.current
+  val focusRequester = remember(::FocusRequester)
+  val style = OrcaTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Normal)
+  val interactionSource = remember(::MutableInteractionSource)
+  val brushColor = OrcaTheme.colors.primary.container
+  val cursorBrush = remember(brushColor) { SolidColor(brushColor) }
+  var isToolbarVisible by remember { mutableStateOf(isToolbarInitiallyVisible) }
+  val toolbarSpacing = OrcaTheme.spacings.medium
+  var toolbarSafeAreaPadding by remember { mutableStateOf(PaddingValues(end = 56.dp + 16.dp)) }
+  val floatingActionButtonPosition =
+    remember(isToolbarVisible) { if (isToolbarVisible) FabPosition.End else FabPosition.Center }
 
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocusWithDelay()
-    }
+  LaunchedEffect(Unit) { focusRequester.requestFocusWithDelay() }
 
-    Scaffold(
-        modifier,
-        topAppBar = {
-            @OptIn(ExperimentalMaterial3Api::class)
-            TopAppBar(
-                title = { AutoSizeText(stringResource(R.string.composer)) },
-                navigationIcon = {
-                    HoverableIconButton(onClick = onBackwardsNavigation) {
-                        Icon(OrcaTheme.iconography.back, contentDescription = "Back")
-                    }
-                }
-            )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = onCompose,
-                Modifier.onPlaced {
-                    toolbarSafeAreaPadding = with(density) {
-                        PaddingValues(
-                            end = (it.parentCoordinates?.size?.width?.toFloat() ?: 0f)
-                                .minus(it.positionInParent().x)
-                                .toDp()
-                        )
-                    }
-                }
-            ) {
-                Icon(
-                    OrcaTheme.iconography.send,
-                    contentDescription = stringResource(R.string.composer_send)
-                )
-            }
-        },
-        floatingActionButtonPosition = floatingActionButtonPosition
-    ) { padding ->
-        Box(
-            Modifier
-                .padding(padding)
-                .fillMaxSize()
-        ) {
-            LazyColumn(
-                contentPadding = PaddingValues(OrcaTheme.spacings.large) + OrcaTheme.overlays.fab
-            ) {
-                item {
-                    BasicTextField(
-                        value,
-                        onValueChange,
-                        Modifier
-                            .onFocusChanged { isToolbarVisible = it.isFocused }
-                            .focusRequester(focusRequester)
-                            .testTag(COMPOSER_FIELD),
-                        textStyle = style,
-                        interactionSource = interactionSource,
-                        cursorBrush = cursorBrush
-                    ) { innerTextField ->
-                        @OptIn(ExperimentalMaterial3Api::class)
-                        TextFieldDefaults.DecorationBox(
-                            value.text,
-                            innerTextField,
-                            enabled = true,
-                            singleLine = false,
-                            VisualTransformation.None,
-                            interactionSource,
-                            placeholder = {
-                                Text(
-                                    stringResource(R.string.composer_placeholder),
-                                    style = style.copy(color = OrcaTheme.colors.tertiary)
-                                )
-                            },
-                            colors = _TextFieldDefaults
-                                .colors(enabledContainerColor = Color.Transparent),
-                            contentPadding = PaddingValues(0.dp)
-                        )
-                    }
-                }
-            }
-
-            AnimatedVisibility(
-                isToolbarVisible,
-                Modifier
-                    .padding(start = toolbarSpacing, end = toolbarSpacing, bottom = toolbarSpacing)
-                    .align(Alignment.BottomStart),
-                enter = slideInVertically { height -> height },
-                exit = fadeOut() + slideOutVertically { height -> height }
-            ) {
-                /*
-                 * There is a bug where the EditProcessor used by CoreTextField's state under the
-                 * hood creates a new instance of the AnnotatedString held by the TextFieldValue
-                 * (whenever selection changes) only with its text property set, ignoring any span
-                 * or paragraph styles given in the previous recomposition.
-                 *
-                 * This is an issue known since 2019, so I don't know how likely it is that the
-                 * Compose team is going to fix it any time soon. Multi-style text editing has been
-                 * on the roadmap since October 2022.
-                 *
-                 * https://issuetracker.google.com/issues/199754661
-                 * https://developer.android.com/jetpack/androidx/compose-roadmap
-                 */
-                Toolbar(
-                    value.isSelectionBold,
-                    onBoldToggle = { isBold -> onValueChange(value.withBoldSelection(isBold)) },
-                    value.isSelectionItalicized,
-                    onItalicToggle = { isItalicized ->
-                        onValueChange(value.withItalicizedSelection(isItalicized))
-                    },
-                    value.isSelectionUnderlined,
-                    onUnderlineToggle = { isUnderlined ->
-                        onValueChange(value.withUnderlinedSelection(isUnderlined))
-                    },
-                    Modifier.padding(toolbarSafeAreaPadding)
-                )
+  Scaffold(
+    modifier,
+    topAppBar = {
+      @OptIn(ExperimentalMaterial3Api::class)
+      TopAppBar(
+        title = { AutoSizeText(stringResource(R.string.composer)) },
+        navigationIcon = {
+          HoverableIconButton(onClick = onBackwardsNavigation) {
+            Icon(OrcaTheme.iconography.back, contentDescription = "Back")
+          }
+        }
+      )
+    },
+    floatingActionButton = {
+      FloatingActionButton(
+        onClick = onCompose,
+        Modifier.onPlaced {
+          toolbarSafeAreaPadding =
+            with(density) {
+              PaddingValues(
+                end =
+                  (it.parentCoordinates?.size?.width?.toFloat() ?: 0f)
+                    .minus(it.positionInParent().x)
+                    .toDp()
+              )
             }
         }
+      ) {
+        Icon(
+          OrcaTheme.iconography.send,
+          contentDescription = stringResource(R.string.composer_send)
+        )
+      }
+    },
+    floatingActionButtonPosition = floatingActionButtonPosition
+  ) { padding ->
+    Box(Modifier.padding(padding).fillMaxSize()) {
+      LazyColumn(
+        contentPadding = PaddingValues(OrcaTheme.spacings.large) + OrcaTheme.overlays.fab
+      ) {
+        item {
+          BasicTextField(
+            value,
+            onValueChange,
+            Modifier.onFocusChanged { isToolbarVisible = it.isFocused }
+              .focusRequester(focusRequester)
+              .testTag(COMPOSER_FIELD),
+            textStyle = style,
+            interactionSource = interactionSource,
+            cursorBrush = cursorBrush
+          ) { innerTextField ->
+            @OptIn(ExperimentalMaterial3Api::class)
+            TextFieldDefaults.DecorationBox(
+              value.text,
+              innerTextField,
+              enabled = true,
+              singleLine = false,
+              VisualTransformation.None,
+              interactionSource,
+              placeholder = {
+                Text(
+                  stringResource(R.string.composer_placeholder),
+                  style = style.copy(color = OrcaTheme.colors.tertiary)
+                )
+              },
+              colors = _TextFieldDefaults.colors(enabledContainerColor = Color.Transparent),
+              contentPadding = PaddingValues(0.dp)
+            )
+          }
+        }
+      }
+
+      AnimatedVisibility(
+        isToolbarVisible,
+        Modifier.padding(start = toolbarSpacing, end = toolbarSpacing, bottom = toolbarSpacing)
+          .align(Alignment.BottomStart),
+        enter = slideInVertically { height -> height },
+        exit = fadeOut() + slideOutVertically { height -> height }
+      ) {
+        /*
+         * There is a bug where the EditProcessor used by CoreTextField's state under the
+         * hood creates a new instance of the AnnotatedString held by the TextFieldValue
+         * (whenever selection changes) only with its text property set, ignoring any span
+         * or paragraph styles given in the previous recomposition.
+         *
+         * This is an issue known since 2019, so I don't know how likely it is that the
+         * Compose team is going to fix it any time soon. Multi-style text editing has been
+         * on the roadmap since October 2022.
+         *
+         * https://issuetracker.google.com/issues/199754661
+         * https://developer.android.com/jetpack/androidx/compose-roadmap
+         */
+        Toolbar(
+          value.isSelectionBold,
+          onBoldToggle = { isBold -> onValueChange(value.withBoldSelection(isBold)) },
+          value.isSelectionItalicized,
+          onItalicToggle = { isItalicized ->
+            onValueChange(value.withItalicizedSelection(isItalicized))
+          },
+          value.isSelectionUnderlined,
+          onUnderlineToggle = { isUnderlined ->
+            onValueChange(value.withUnderlinedSelection(isUnderlined))
+          },
+          Modifier.padding(toolbarSafeAreaPadding)
+        )
+      }
     }
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun EmptyWithoutToolbarComposerPreview() {
-    OrcaTheme {
-        Composer(TextFieldValue(AnnotatedString("")), isInitiallyFocused = false)
-    }
+  OrcaTheme { Composer(TextFieldValue(AnnotatedString("")), isInitiallyFocused = false) }
 }
 
 @Composable
 @MultiThemePreview
 private fun EmptyWithToolbarComposerPreview() {
-    OrcaTheme {
-        Composer(TextFieldValue(AnnotatedString("")), isInitiallyFocused = true)
-    }
+  OrcaTheme { Composer(TextFieldValue(AnnotatedString("")), isInitiallyFocused = true) }
 }
 
 @Composable
 @MultiThemePreview
 private fun PopulatedWithoutToolbarComposerPreview() {
-    OrcaTheme {
-        Composer(
-            TextFieldValue(Toot.sample.content.text.toAnnotatedString()),
-            isInitiallyFocused = false
-        )
-    }
+  OrcaTheme {
+    Composer(
+      TextFieldValue(Toot.sample.content.text.toAnnotatedString()),
+      isInitiallyFocused = false
+    )
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun PopulatedWithToolbarComposerPreview() {
-    OrcaTheme {
-        Composer(
-            TextFieldValue(Toot.sample.content.text.toAnnotatedString()),
-            isInitiallyFocused = true
-        )
-    }
+  OrcaTheme {
+    Composer(
+      TextFieldValue(Toot.sample.content.text.toAnnotatedString()),
+      isInitiallyFocused = true
+    )
+  }
 }
 
 @Composable
 private fun Composer(
-    value: TextFieldValue,
-    isInitiallyFocused: Boolean,
-    modifier: Modifier = Modifier
+  value: TextFieldValue,
+  isInitiallyFocused: Boolean,
+  modifier: Modifier = Modifier
 ) {
-    Composer(
-        value,
-        onValueChange = { },
-        onCompose = { },
-        onBackwardsNavigation = { },
-        modifier,
-        isInitiallyFocused
-    )
+  Composer(
+    value,
+    onValueChange = {},
+    onCompose = {},
+    onBackwardsNavigation = {},
+    modifier,
+    isInitiallyFocused
+  )
 }

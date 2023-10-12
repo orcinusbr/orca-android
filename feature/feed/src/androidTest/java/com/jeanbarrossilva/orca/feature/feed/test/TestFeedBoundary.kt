@@ -4,15 +4,11 @@ import com.jeanbarrossilva.orca.feature.feed.FeedBoundary
 import java.net.URL
 
 internal class TestFeedBoundary : FeedBoundary {
-    override fun navigateToSearch() {
-    }
+  override fun navigateToSearch() {}
 
-    override fun navigateTo(url: URL) {
-    }
+  override fun navigateTo(url: URL) {}
 
-    override fun navigateToTootDetails(id: String) {
-    }
+  override fun navigateToTootDetails(id: String) {}
 
-    override fun navigateToComposer() {
-    }
+  override fun navigateToComposer() {}
 }

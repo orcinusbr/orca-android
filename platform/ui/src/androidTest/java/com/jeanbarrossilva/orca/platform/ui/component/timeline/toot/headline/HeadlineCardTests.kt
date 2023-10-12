@@ -9,18 +9,13 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class HeadlineCardTests {
-    @get:Rule
-    val composeRule = createComposeRule()
+  @get:Rule val composeRule = createComposeRule()
 
-    @Test
-    fun runsCallbackWhenClicked() {
-        var hasCallbackBeenRun = false
-        composeRule.setContent {
-            OrcaTheme {
-                HeadlineCard(onClick = { hasCallbackBeenRun = true })
-            }
-        }
-        composeRule.onHeadlineCard().performClick()
-        assertTrue(hasCallbackBeenRun)
-    }
+  @Test
+  fun runsCallbackWhenClicked() {
+    var hasCallbackBeenRun = false
+    composeRule.setContent { OrcaTheme { HeadlineCard(onClick = { hasCallbackBeenRun = true }) } }
+    composeRule.onHeadlineCard().performClick()
+    assertTrue(hasCallbackBeenRun)
+  }
 }

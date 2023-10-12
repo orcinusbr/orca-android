@@ -13,23 +13,23 @@ import org.junit.Assert.assertNull
 import org.junit.Test
 
 internal class EditableProfileConverterTests {
-    private val converter = EditableProfileConverter(next = null)
+  private val converter = EditableProfileConverter(next = null)
 
-    @Test
-    fun convertsEditableProfile() {
-        assertEquals(
-            ProfileDetails.Editable.createSample(Colors.Unspecified),
-            converter.convert(EditableProfile.sample, Colors.Unspecified)
-        )
-    }
+  @Test
+  fun convertsEditableProfile() {
+    assertEquals(
+      ProfileDetails.Editable.createSample(Colors.Unspecified),
+      converter.convert(EditableProfile.sample, Colors.Unspecified)
+    )
+  }
 
-    @Test
-    fun doesNotConvertDefaultProfile() {
-        assertNull(converter.convert(Profile.sample, Colors.Unspecified))
-    }
+  @Test
+  fun doesNotConvertDefaultProfile() {
+    assertNull(converter.convert(Profile.sample, Colors.Unspecified))
+  }
 
-    @Test
-    fun doesNotConvertFollowableProfile() {
-        assertNull(converter.convert(FollowableProfile.sample, Colors.Unspecified))
-    }
+  @Test
+  fun doesNotConvertFollowableProfile() {
+    assertNull(converter.convert(FollowableProfile.sample, Colors.Unspecified))
+  }
 }

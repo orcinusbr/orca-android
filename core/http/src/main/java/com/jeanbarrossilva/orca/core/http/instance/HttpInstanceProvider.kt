@@ -20,23 +20,21 @@ import com.jeanbarrossilva.orca.std.injector.Injector
  * [InstanceProvider] that provides a [ContextualHttpInstance].
  *
  * @param context [Context] through which the [Domain] of the [ContextualHttpInstance] will
- * retrieved.
- **/
+ *   retrieved.
+ */
 class HttpInstanceProvider(private val context: Context) : InstanceProvider {
-    private val module by lazy {
-        Injector.from<HttpModule>()
-    }
+  private val module by lazy { Injector.from<HttpModule>() }
 
-    override fun provide(): SomeInstance {
-        @Suppress("UNCHECKED_CAST")
-        return ContextualHttpInstance(
-            context,
-            HttpAuthorizationViewModel.getInstanceDomain(context),
-            module.authorizer() as HttpAuthorizer,
-            module.authenticator() as HttpAuthenticator,
-            module.actorProvider(),
-            module.authenticationLock() as AuthenticationLock<HttpAuthenticator>,
-            module.termMuter()
-        )
-    }
+  override fun provide(): SomeInstance {
+    @Suppress("UNCHECKED_CAST")
+    return ContextualHttpInstance(
+      context,
+      HttpAuthorizationViewModel.getInstanceDomain(context),
+      module.authorizer() as HttpAuthorizer,
+      module.authenticator() as HttpAuthenticator,
+      module.actorProvider(),
+      module.authenticationLock() as AuthenticationLock<HttpAuthenticator>,
+      module.termMuter()
+    )
+  }
 }

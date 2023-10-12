@@ -7,12 +7,10 @@ import androidx.compose.runtime.remember
  * Remembers a [BottomAreaAvailabilityNestedScrollConnection].
  *
  * @param listener [OnBottomAreaAvailabilityChangeListener] to be notified.
- **/
+ */
 @Composable
 fun rememberBottomAreaAvailabilityNestedScrollConnection(
-    listener: OnBottomAreaAvailabilityChangeListener
+  listener: OnBottomAreaAvailabilityChangeListener
 ): BottomAreaAvailabilityNestedScrollConnection {
-    return remember(listener) {
-        BottomAreaAvailabilityNestedScrollConnection(listener)
-    }
+  return remember(listener) { BottomAreaAvailabilityNestedScrollConnection(listener) }
 }

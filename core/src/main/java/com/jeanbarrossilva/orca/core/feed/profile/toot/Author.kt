@@ -12,13 +12,13 @@ import java.net.URL
  * @param name Name to be displayed.
  * @param account Unique identifier within an instance.
  * @param profileURL [URL] that leads to this [Author]'s profile.
- **/
+ */
 data class Author(
-    val id: String,
-    val avatarURL: URL,
-    val name: String,
-    val account: Account,
-    val profileURL: URL
+  val id: String,
+  val avatarURL: URL,
+  val name: String,
+  val account: Account,
+  val profileURL: URL
 ) : Serializable {
-    companion object
+  companion object
 }

@@ -6,8 +6,9 @@ import com.jeanbarrossilva.orca.core.http.instanceProvider
 import com.jeanbarrossilva.orca.feature.tootdetails.TootDetailsModule
 import com.jeanbarrossilva.orca.std.injector.Injector
 
-internal class MainTootDetailsModule(activity: OrcaActivity) : TootDetailsModule(
+internal class MainTootDetailsModule(activity: OrcaActivity) :
+  TootDetailsModule(
     { Injector.from<HttpModule>().instanceProvider().provide().tootProvider },
     { NavigatorTootDetailsBoundary(activity, activity.navigator) },
     onBottomAreaAvailabilityChangeListener = { activity }
-)
+  )

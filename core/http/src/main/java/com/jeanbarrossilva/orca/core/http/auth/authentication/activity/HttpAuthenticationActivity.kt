@@ -17,61 +17,60 @@ import com.jeanbarrossilva.orca.std.injector.Injector
 /**
  * [ComposableActivity] that visually notifies the user of the background authentication process
  * that takes place when this is created and automatically finishes itself when it's done.
- **/
+ */
 class HttpAuthenticationActivity : ComposableActivity() {
-    /** [HttpModule] into which core-HTTP-related dependencies have been injected. **/
-    private val module by lazy { Injector.from<HttpModule>() }
+  /** [HttpModule] into which core-HTTP-related dependencies have been injected. */
+  private val module by lazy { Injector.from<HttpModule>() }
 
-    /** Code provided by the API when the user was authorized. **/
-    private val authorizationCode by extra<String>(AUTHORIZATION_CODE_KEY)
+  /** Code provided by the API when the user was authorized. */
+  private val authorizationCode by extra<String>(AUTHORIZATION_CODE_KEY)
+
+  /**
+   * [HttpAuthenticationViewModel] by which an [authenticated][Actor.Authenticated] [Actor] will be
+   * requested.
+   */
+  private val viewModel by
+    viewModels<HttpAuthenticationViewModel> {
+      HttpAuthenticationViewModel.createFactory(application, authorizationCode)
+    }
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    authenticate()
+  }
+
+  @Composable
+  override fun Content() {
+    HttpAuthentication()
+  }
+
+  /**
+   * Requests the user to be authenticated and finishes this [HttpAuthenticationActivity] when it's
+   * done.
+   */
+  private fun authenticate() {
+    viewModel.request {
+      (module.instanceProvider().provide() as ContextualHttpInstance).authenticator.receive(it)
+      finish()
+    }
+  }
+
+  companion object {
+    /** Key for retrieving the authorization code. */
+    private const val AUTHORIZATION_CODE_KEY = "authorization-code"
 
     /**
-     * [HttpAuthenticationViewModel] by which an [authenticated][Actor.Authenticated] [Actor] will
-     * be requested.
-     **/
-    private val viewModel by viewModels<HttpAuthenticationViewModel> {
-        HttpAuthenticationViewModel.createFactory(application, authorizationCode)
+     * Starts an [HttpAuthenticationActivity].
+     *
+     * @param context [Context] in which the [HttpAuthenticationActivity] will be started.
+     * @param authorizationCode Code provided by the API when the user was authorized.
+     */
+    internal fun start(context: Context, authorizationCode: String) {
+      context
+        .on<HttpAuthenticationActivity>()
+        .asNewTask()
+        .with(AUTHORIZATION_CODE_KEY to authorizationCode)
+        .start()
     }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        authenticate()
-    }
-
-    @Composable
-    override fun Content() {
-        HttpAuthentication()
-    }
-
-    /**
-     * Requests the user to be authenticated and finishes this [HttpAuthenticationActivity] when
-     * it's done.
-     **/
-    private fun authenticate() {
-        viewModel.request {
-            (module.instanceProvider().provide() as ContextualHttpInstance).authenticator.receive(
-                it
-            )
-            finish()
-        }
-    }
-
-    companion object {
-        /** Key for retrieving the authorization code. **/
-        private const val AUTHORIZATION_CODE_KEY = "authorization-code"
-
-        /**
-         * Starts an [HttpAuthenticationActivity].
-         *
-         * @param context [Context] in which the [HttpAuthenticationActivity] will be started.
-         * @param authorizationCode Code provided by the API when the user was authorized.
-         **/
-        internal fun start(context: Context, authorizationCode: String) {
-            context
-                .on<HttpAuthenticationActivity>()
-                .asNewTask()
-                .with(AUTHORIZATION_CODE_KEY to authorizationCode)
-                .start()
-        }
-    }
+  }
 }

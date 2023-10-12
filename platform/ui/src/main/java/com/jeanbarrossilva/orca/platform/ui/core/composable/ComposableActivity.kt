@@ -12,18 +12,13 @@ import com.jeanbarrossilva.orca.platform.ui.core.lifecycle.CompleteLifecycleActi
  * [Activity] that shows [Composable] content.
  *
  * @see Content
- **/
+ */
 abstract class ComposableActivity : CompleteLifecycleActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            OrcaTheme {
-                Content()
-            }
-        }
-    }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContent { OrcaTheme { Content() } }
+  }
 
-    /** Content to be shown inside the [ComposeView]. **/
-    @Composable
-    protected abstract fun Content()
+  /** Content to be shown inside the [ComposeView]. */
+  @Composable protected abstract fun Content()
 }

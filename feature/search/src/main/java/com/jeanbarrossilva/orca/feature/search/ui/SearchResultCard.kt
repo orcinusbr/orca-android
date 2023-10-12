@@ -27,75 +27,71 @@ import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
 
 @Composable
 internal fun SearchResultCard(modifier: Modifier = Modifier) {
-    SearchResultCard(
-        avatar = { SmallAvatar() },
-        name = { MediumTextualPlaceholder() },
-        account = { SmallTextualPlaceholder() },
-        onClick = { },
-        modifier
-    )
+  SearchResultCard(
+    avatar = { SmallAvatar() },
+    name = { MediumTextualPlaceholder() },
+    account = { SmallTextualPlaceholder() },
+    onClick = {},
+    modifier
+  )
 }
 
 @Composable
 internal fun SearchResultCard(
-    searchResult: ProfileSearchResult,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    imageLoader: ImageLoader = rememberImageLoader()
+  searchResult: ProfileSearchResult,
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier,
+  imageLoader: ImageLoader = rememberImageLoader()
 ) {
-    SearchResultCard(
-        avatar = { SmallAvatar(searchResult.name, searchResult.url, imageLoader = imageLoader) },
-        name = { Text(searchResult.name) },
-        account = { Text("${searchResult.account}") },
-        onClick,
-        modifier
-    )
+  SearchResultCard(
+    avatar = { SmallAvatar(searchResult.name, searchResult.url, imageLoader = imageLoader) },
+    name = { Text(searchResult.name) },
+    account = { Text("${searchResult.account}") },
+    onClick,
+    modifier
+  )
 }
 
 @Composable
 private fun SearchResultCard(
-    avatar: @Composable () -> Unit,
-    name: @Composable () -> Unit,
-    account: @Composable () -> Unit,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+  avatar: @Composable () -> Unit,
+  name: @Composable () -> Unit,
+  account: @Composable () -> Unit,
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier
 ) {
-    val horizontalSpacing = OrcaTheme.spacings.large
+  val horizontalSpacing = OrcaTheme.spacings.large
 
-    Row(
-        modifier
-            .padding(horizontalSpacing, vertical = OrcaTheme.spacings.medium)
-            .clickable(onClick = onClick)
-            .fillMaxWidth()
-            .semantics { role = Role.Button },
-        Arrangement.spacedBy(horizontalSpacing),
-        Alignment.CenterVertically
-    ) {
-        avatar()
+  Row(
+    modifier
+      .padding(horizontalSpacing, vertical = OrcaTheme.spacings.medium)
+      .clickable(onClick = onClick)
+      .fillMaxWidth()
+      .semantics { role = Role.Button },
+    Arrangement.spacedBy(horizontalSpacing),
+    Alignment.CenterVertically
+  ) {
+    avatar()
 
-        Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall)) {
-            ProvideTextStyle(OrcaTheme.typography.bodyLarge, content = name)
-            ProvideTextStyle(OrcaTheme.typography.bodyMedium, content = account)
-        }
+    Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall)) {
+      ProvideTextStyle(OrcaTheme.typography.bodyLarge, content = name)
+      ProvideTextStyle(OrcaTheme.typography.bodyMedium, content = account)
     }
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadingSearchResultCardPreview() {
-    OrcaTheme {
-        Surface(color = OrcaTheme.colors.background.container) {
-            SearchResultCard()
-        }
-    }
+  OrcaTheme { Surface(color = OrcaTheme.colors.background.container) { SearchResultCard() } }
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadedSearchResultCardPreview() {
-    OrcaTheme {
-        Surface(color = OrcaTheme.colors.background.container) {
-            SearchResultCard(ProfileSearchResult.sample, onClick = { })
-        }
+  OrcaTheme {
+    Surface(color = OrcaTheme.colors.background.container) {
+      SearchResultCard(ProfileSearchResult.sample, onClick = {})
     }
+  }
 }

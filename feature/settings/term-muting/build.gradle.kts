@@ -11,7 +11,7 @@ plugins {
 android {
     namespace = namespaceFor("feature.settings.termmuting")
     buildFeatures.compose = true
-    composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
+    composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.get()
 }
 
 dependencies {

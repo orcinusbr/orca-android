@@ -11,35 +11,35 @@ import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.opening
 import com.jeanbarrossilva.orca.std.injector.Injector
 
 class TootDetailsFragment private constructor() : ComposableFragment() {
-    private val module by lazy { Injector.from<TootDetailsModule>() }
-    private val id by argument<String>(ID_KEY)
-    private val viewModel by viewModels<TootDetailsViewModel> {
-        TootDetailsViewModel
-            .createFactory(contextProvider = ::requireContext, module.tootProvider(), id)
+  private val module by lazy { Injector.from<TootDetailsModule>() }
+  private val id by argument<String>(ID_KEY)
+  private val viewModel by
+    viewModels<TootDetailsViewModel> {
+      TootDetailsViewModel.createFactory(
+        contextProvider = ::requireContext,
+        module.tootProvider(),
+        id
+      )
     }
 
-    private constructor(id: String) : this() {
-        arguments = bundleOf(ID_KEY to id)
+  private constructor(id: String) : this() {
+    arguments = bundleOf(ID_KEY to id)
+  }
+
+  @Composable
+  override fun Content() {
+    TootDetails(viewModel, module.boundary(), module.onBottomAreaAvailabilityChangeListener())
+  }
+
+  companion object {
+    private const val ID_KEY = "id"
+
+    fun getRoute(id: String): String {
+      return "toot/$id"
     }
 
-    @Composable
-    override fun Content() {
-        TootDetails(viewModel, module.boundary(), module.onBottomAreaAvailabilityChangeListener())
+    fun navigate(navigator: Navigator, id: String) {
+      navigator.navigate(opening()) { to(getRoute(id)) { TootDetailsFragment(id) } }
     }
-
-    companion object {
-        private const val ID_KEY = "id"
-
-        fun getRoute(id: String): String {
-            return "toot/$id"
-        }
-
-        fun navigate(navigator: Navigator, id: String) {
-            navigator.navigate(opening()) {
-                to(getRoute(id)) {
-                    TootDetailsFragment(id)
-                }
-            }
-        }
-    }
+  }
 }

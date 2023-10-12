@@ -25,26 +25,26 @@ import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.kit.input.TextField as _TextField
 import com.jeanbarrossilva.orca.platform.theme.kit.input.TextFieldDefaults as _TextFieldDefaults
 
-/** Default values used by a [TextField][_TextField]. **/
+/** Default values used by a [TextField][_TextField]. */
 object TextFieldDefaults {
-    /**
-     * [TextFieldColors] by which a [TextField][_TextField] is colored by default.
-     *
-     * @param enabledContainerColor [Color] to color the container with when the
-     * [TextField][_TextField] is enabled.
-     **/
-    @Composable
-    fun colors(enabledContainerColor: Color = OrcaTheme.colors.surface.container): TextFieldColors {
-        return TextFieldDefaults.colors(
-            focusedContainerColor = enabledContainerColor,
-            unfocusedContainerColor = enabledContainerColor,
-            cursorColor = contentColorFor(enabledContainerColor),
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent,
-            errorIndicatorColor = Color.Transparent
-        )
-    }
+  /**
+   * [TextFieldColors] by which a [TextField][_TextField] is colored by default.
+   *
+   * @param enabledContainerColor [Color] to color the container with when the
+   *   [TextField][_TextField] is enabled.
+   */
+  @Composable
+  fun colors(enabledContainerColor: Color = OrcaTheme.colors.surface.container): TextFieldColors {
+    return TextFieldDefaults.colors(
+      focusedContainerColor = enabledContainerColor,
+      unfocusedContainerColor = enabledContainerColor,
+      cursorColor = contentColorFor(enabledContainerColor),
+      focusedIndicatorColor = Color.Transparent,
+      unfocusedIndicatorColor = Color.Transparent,
+      disabledIndicatorColor = Color.Transparent,
+      errorIndicatorColor = Color.Transparent
+    )
+  }
 }
 
 /**
@@ -56,31 +56,29 @@ object TextFieldDefaults {
  * @param keyboardOptions Software-IME-specific options.
  * @param keyboardActions Software-IME-specific actions.
  * @param isSingleLined Whether there can be multiple lines.
- **/
+ */
 @Composable
 fun TextField(
-    text: String,
-    onTextChange: (text: String) -> Unit,
-    modifier: Modifier = Modifier,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    keyboardActions: KeyboardActions = KeyboardActions.Default,
-    isSingleLined: Boolean = false,
-    label: @Composable () -> Unit
+  text: String,
+  onTextChange: (text: String) -> Unit,
+  modifier: Modifier = Modifier,
+  keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+  keyboardActions: KeyboardActions = KeyboardActions.Default,
+  isSingleLined: Boolean = false,
+  label: @Composable () -> Unit
 ) {
-    var isFocused by remember {
-        mutableStateOf(false)
-    }
+  var isFocused by remember { mutableStateOf(false) }
 
-    _TextField(
-        text,
-        onTextChange,
-        isFocused,
-        modifier.onFocusChanged { isFocused = it.isFocused },
-        keyboardOptions,
-        keyboardActions,
-        isSingleLined,
-        label
-    )
+  _TextField(
+    text,
+    onTextChange,
+    isFocused,
+    modifier.onFocusChanged { isFocused = it.isFocused },
+    keyboardOptions,
+    keyboardActions,
+    isSingleLined,
+    label
+  )
 }
 
 /**
@@ -93,74 +91,66 @@ fun TextField(
  * @param keyboardOptions Software-IME-specific options.
  * @param keyboardActions Software-IME-specific actions.
  * @param isSingleLined Whether there can be multiple lines.
- **/
+ */
 @Composable
 private fun TextField(
-    text: String,
-    onTextChange: (text: String) -> Unit,
-    isFocused: Boolean,
-    modifier: Modifier = Modifier,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    keyboardActions: KeyboardActions = KeyboardActions.Default,
-    isSingleLined: Boolean = false,
-    label: @Composable () -> Unit
+  text: String,
+  onTextChange: (text: String) -> Unit,
+  isFocused: Boolean,
+  modifier: Modifier = Modifier,
+  keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+  keyboardActions: KeyboardActions = KeyboardActions.Default,
+  isSingleLined: Boolean = false,
+  label: @Composable () -> Unit
 ) {
-    val highlightColor = OrcaTheme.colors.secondary
-    val borderColor by animateColorAsState(
-        if (isFocused) highlightColor else (OrcaTheme.borders.default.brush as SolidColor).value,
-        label = "BorderColor"
+  val highlightColor = OrcaTheme.colors.secondary
+  val borderColor by
+    animateColorAsState(
+      if (isFocused) highlightColor else (OrcaTheme.borders.default.brush as SolidColor).value,
+      label = "BorderColor"
     )
-    val shape = OrcaTheme.shapes.large
+  val shape = OrcaTheme.shapes.large
 
-    TextField(
-        text,
-        onTextChange,
-        modifier.border(OrcaTheme.borders.default.width, borderColor, shape),
-        label = {
-            val color by animateColorAsState(
-                if (isFocused) highlightColor else LocalTextStyle.current.color,
-                label = "LabelColor"
-            )
+  TextField(
+    text,
+    onTextChange,
+    modifier.border(OrcaTheme.borders.default.width, borderColor, shape),
+    label = {
+      val color by
+        animateColorAsState(
+          if (isFocused) highlightColor else LocalTextStyle.current.color,
+          label = "LabelColor"
+        )
 
-            ProvideTextStyle(
-                LocalTextStyle.current.copy(color = color)
-            ) {
-                label()
-            }
-        },
-        keyboardOptions = keyboardOptions,
-        keyboardActions = keyboardActions,
-        singleLine = isSingleLined,
-        shape = shape,
-        colors = _TextFieldDefaults.colors()
-    )
+      ProvideTextStyle(LocalTextStyle.current.copy(color = color)) { label() }
+    },
+    keyboardOptions = keyboardOptions,
+    keyboardActions = keyboardActions,
+    singleLine = isSingleLined,
+    shape = shape,
+    colors = _TextFieldDefaults.colors()
+  )
 }
 
-/** Preview of an empty [TextField][_TextField]. **/
+/** Preview of an empty [TextField][_TextField]. */
 @Composable
 @MultiThemePreview
 private fun EmptyTextFieldPreview() {
-    OrcaTheme {
-        _TextField(text = "")
-    }
+  OrcaTheme { _TextField(text = "") }
 }
 
-/** Preview of an unfocused [TextField][_TextField]. **/
+/** Preview of an unfocused [TextField][_TextField]. */
 @Composable
 @MultiThemePreview
 private fun UnfocusedTextFieldPreview() {
-    OrcaTheme {
-        _TextField(isFocused = false)
-    }
+  OrcaTheme { _TextField(isFocused = false) }
 }
 
-/** Preview of a focused [TextField][_TextField]. **/
+/** Preview of a focused [TextField][_TextField]. */
 @Composable
 @MultiThemePreview
 private fun FocusedTextFieldPreview() {
-    OrcaTheme {
-        _TextField(isFocused = true)
-    }
+  OrcaTheme { _TextField(isFocused = true) }
 }
 
 /**
@@ -169,14 +159,12 @@ private fun FocusedTextFieldPreview() {
  * @param text Text to be shown.
  * @param isFocused Whether it's focused.
  * @param modifier [Modifier] to be applied to the underlying [TextField].
- **/
+ */
 @Composable
 private fun TextField(
-    modifier: Modifier = Modifier,
-    text: String = "Text",
-    isFocused: Boolean = false
+  modifier: Modifier = Modifier,
+  text: String = "Text",
+  isFocused: Boolean = false
 ) {
-    _TextField(text, onTextChange = { }, isFocused, modifier) {
-        Text("Label")
-    }
+  _TextField(text, onTextChange = {}, isFocused, modifier) { Text("Label") }
 }

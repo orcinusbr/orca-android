@@ -47,221 +47,193 @@ import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.BackAction
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 
 internal object SearchDefaults {
-    val VerticalArrangement = Arrangement.Top
-    val HorizontalAlignment = Alignment.Start
+  val VerticalArrangement = Arrangement.Top
+  val HorizontalAlignment = Alignment.Start
 }
 
 @Composable
 internal fun Search(
-    viewModel: SearchViewModel,
-    boundary: SearchBoundary,
-    modifier: Modifier = Modifier
+  viewModel: SearchViewModel,
+  boundary: SearchBoundary,
+  modifier: Modifier = Modifier
 ) {
-    val query by viewModel.queryFlow.collectAsState()
-    val resultsLoadable by viewModel.resultsFlow.collectAsState()
+  val query by viewModel.queryFlow.collectAsState()
+  val resultsLoadable by viewModel.resultsFlow.collectAsState()
 
-    when (
-        @Suppress("NAME_SHADOWING")
-        val resultsLoadable = resultsLoadable
-    ) {
-        is Loadable.Loading ->
-            Search(
-                query,
-                onQueryChange = viewModel::setQuery,
-                onBackwardsNavigation = boundary::pop
-            )
-        is Loadable.Loaded ->
-            Search(
-                query,
-                onQueryChange = viewModel::setQuery,
-                resultsLoadable.content,
-                onNavigateToProfileDetails = boundary::navigateToProfileDetails,
-                onBackwardsNavigation = boundary::pop,
-                modifier
-            )
-        is Loadable.Failed ->
-            Unit
-    }
-}
-
-@Composable
-private fun Search(
-    query: String,
-    onQueryChange: (query: String) -> Unit,
-    onBackwardsNavigation: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Search(query, onQueryChange, onBackwardsNavigation, modifier) {
-        items(128) {
-            SearchResultCard()
-        }
-    }
-}
-
-@Composable
-private fun Search(
-    query: String,
-    onQueryChange: (query: String) -> Unit,
-    results: List<ProfileSearchResult>,
-    onNavigateToProfileDetails: (id: String) -> Unit,
-    onBackwardsNavigation: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    @OptIn(ExperimentalComposeUiApi::class)
-    val softwareKeyboardController = LocalSoftwareKeyboardController.current
-
-    val areResultsEmpty = remember(query, results) { query.isNotBlank() && results.isEmpty() }
-
-    Search(
+  when (@Suppress("NAME_SHADOWING") val resultsLoadable = resultsLoadable) {
+    is Loadable.Loading ->
+      Search(query, onQueryChange = viewModel::setQuery, onBackwardsNavigation = boundary::pop)
+    is Loadable.Loaded ->
+      Search(
         query,
-        onQueryChange,
-        onBackwardsNavigation,
-        modifier,
-        verticalArrangement = if (areResultsEmpty) {
-            Arrangement.spacedBy(OrcaTheme.spacings.medium, Alignment.CenterVertically)
-        } else {
-            SearchDefaults.VerticalArrangement
-        },
-        horizontalAlignment = if (areResultsEmpty) {
-            Alignment.CenterHorizontally
-        } else {
-            SearchDefaults.HorizontalAlignment
-        }
-    ) {
-        if (areResultsEmpty) {
-            item {
-                EmptyResultsMessage()
-            }
-        } else {
-            items(results) {
-                SearchResultCard(
-                    it,
-                    onClick = {
-                        onNavigateToProfileDetails(it.id)
-
-                        @OptIn(ExperimentalComposeUiApi::class)
-                        softwareKeyboardController?.hide()
-                    }
-                )
-            }
-        }
-    }
+        onQueryChange = viewModel::setQuery,
+        resultsLoadable.content,
+        onNavigateToProfileDetails = boundary::navigateToProfileDetails,
+        onBackwardsNavigation = boundary::pop,
+        modifier
+      )
+    is Loadable.Failed -> Unit
+  }
 }
 
 @Composable
 private fun Search(
-    query: String,
-    onQueryChange: (query: String) -> Unit,
-    onBackwardsNavigation: () -> Unit,
-    modifier: Modifier = Modifier,
-    verticalArrangement: Arrangement.Vertical = SearchDefaults.VerticalArrangement,
-    horizontalAlignment: Alignment.Horizontal = SearchDefaults.HorizontalAlignment,
-    content: LazyListScope.() -> Unit
+  query: String,
+  onQueryChange: (query: String) -> Unit,
+  onBackwardsNavigation: () -> Unit,
+  modifier: Modifier = Modifier
 ) {
-    val focusRequester = remember(::FocusRequester)
-    val spacing = OrcaTheme.spacings.medium
+  Search(query, onQueryChange, onBackwardsNavigation, modifier) {
+    items(128) { SearchResultCard() }
+  }
+}
 
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocusWithDelay()
-    }
+@Composable
+private fun Search(
+  query: String,
+  onQueryChange: (query: String) -> Unit,
+  results: List<ProfileSearchResult>,
+  onNavigateToProfileDetails: (id: String) -> Unit,
+  onBackwardsNavigation: () -> Unit,
+  modifier: Modifier = Modifier
+) {
+  @OptIn(ExperimentalComposeUiApi::class)
+  val softwareKeyboardController = LocalSoftwareKeyboardController.current
 
-    Scaffold(
-        modifier,
-        topAppBar = {
-            Row(
-                Modifier
-                    .background(OrcaTheme.colors.background.container)
-                    .padding(top = spacing, end = spacing, bottom = spacing)
-                    .statusBarsPadding(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(Modifier.fillMaxWidth(.2f), Alignment.Center) {
-                    BackAction(onClick = onBackwardsNavigation)
-                }
+  val areResultsEmpty = remember(query, results) { query.isNotBlank() && results.isEmpty() }
 
-                TextField(
-                    query,
-                    onQueryChange,
-                    Modifier
-                        .focusRequester(focusRequester)
-                        .fillMaxWidth()
-                ) {
-                    Text(stringResource(R.string.search_placeholder))
-                }
-            }
-        }
-    ) {
-        LazyColumn(
-            @OptIn(ExperimentalLayoutApi::class)
-            Modifier
-                // TODO: Add bottom bar overlay to Overlays.
-                .consumeWindowInsets(PaddingValues(104.dp))
-                .imePadding()
-                .fillMaxSize(),
-            verticalArrangement = verticalArrangement,
-            horizontalAlignment = horizontalAlignment,
-            contentPadding = it,
-            content = content
+  Search(
+    query,
+    onQueryChange,
+    onBackwardsNavigation,
+    modifier,
+    verticalArrangement =
+      if (areResultsEmpty) {
+        Arrangement.spacedBy(OrcaTheme.spacings.medium, Alignment.CenterVertically)
+      } else {
+        SearchDefaults.VerticalArrangement
+      },
+    horizontalAlignment =
+      if (areResultsEmpty) {
+        Alignment.CenterHorizontally
+      } else {
+        SearchDefaults.HorizontalAlignment
+      }
+  ) {
+    if (areResultsEmpty) {
+      item { EmptyResultsMessage() }
+    } else {
+      items(results) {
+        SearchResultCard(
+          it,
+          onClick = {
+            onNavigateToProfileDetails(it.id)
+
+            @OptIn(ExperimentalComposeUiApi::class) softwareKeyboardController?.hide()
+          }
         )
+      }
     }
+  }
+}
+
+@Composable
+private fun Search(
+  query: String,
+  onQueryChange: (query: String) -> Unit,
+  onBackwardsNavigation: () -> Unit,
+  modifier: Modifier = Modifier,
+  verticalArrangement: Arrangement.Vertical = SearchDefaults.VerticalArrangement,
+  horizontalAlignment: Alignment.Horizontal = SearchDefaults.HorizontalAlignment,
+  content: LazyListScope.() -> Unit
+) {
+  val focusRequester = remember(::FocusRequester)
+  val spacing = OrcaTheme.spacings.medium
+
+  LaunchedEffect(Unit) { focusRequester.requestFocusWithDelay() }
+
+  Scaffold(
+    modifier,
+    topAppBar = {
+      Row(
+        Modifier.background(OrcaTheme.colors.background.container)
+          .padding(top = spacing, end = spacing, bottom = spacing)
+          .statusBarsPadding(),
+        verticalAlignment = Alignment.CenterVertically
+      ) {
+        Box(Modifier.fillMaxWidth(.2f), Alignment.Center) {
+          BackAction(onClick = onBackwardsNavigation)
+        }
+
+        TextField(query, onQueryChange, Modifier.focusRequester(focusRequester).fillMaxWidth()) {
+          Text(stringResource(R.string.search_placeholder))
+        }
+      }
+    }
+  ) {
+    LazyColumn(
+      @OptIn(ExperimentalLayoutApi::class)
+      Modifier
+        // TODO: Add bottom bar overlay to Overlays.
+        .consumeWindowInsets(PaddingValues(104.dp))
+        .imePadding()
+        .fillMaxSize(),
+      verticalArrangement = verticalArrangement,
+      horizontalAlignment = horizontalAlignment,
+      contentPadding = it,
+      content = content
+    )
+  }
 }
 
 @Composable
 private fun EmptyResultsMessage(modifier: Modifier = Modifier) {
-    Column(
-        modifier,
-        Arrangement.spacedBy(OrcaTheme.spacings.medium),
-        Alignment.CenterHorizontally
-    ) {
-        CompositionLocalProvider(
-            LocalContentColor provides OrcaTheme.typography.headlineMedium.color
-        ) {
-            Icon(
-                OrcaTheme.iconography.search,
-                contentDescription = stringResource(R.string.search),
-                Modifier.size(64.dp)
-            )
+  Column(modifier, Arrangement.spacedBy(OrcaTheme.spacings.medium), Alignment.CenterHorizontally) {
+    CompositionLocalProvider(LocalContentColor provides OrcaTheme.typography.headlineMedium.color) {
+      Icon(
+        OrcaTheme.iconography.search,
+        contentDescription = stringResource(R.string.search),
+        Modifier.size(64.dp)
+      )
 
-            Text(
-                stringResource(R.string.search_no_results_found),
-                style = OrcaTheme.typography.headlineMedium
-            )
-        }
+      Text(
+        stringResource(R.string.search_no_results_found),
+        style = OrcaTheme.typography.headlineMedium
+      )
     }
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadingSearchPreview() {
-    OrcaTheme {
-        Search(query = "", onQueryChange = { }, onBackwardsNavigation = { })
-    }
+  OrcaTheme { Search(query = "", onQueryChange = {}, onBackwardsNavigation = {}) }
 }
 
 @Composable
 @MultiThemePreview
 private fun EmptyResultsPreview() {
-    OrcaTheme {
-        Search(
-            query = "${ProfileSearchResult.sample.account}",
-            onQueryChange = { },
-            results = emptyList(),
-            onNavigateToProfileDetails = { },
-            onBackwardsNavigation = { }
-        )
-    }
+  OrcaTheme {
+    Search(
+      query = "${ProfileSearchResult.sample.account}",
+      onQueryChange = {},
+      results = emptyList(),
+      onNavigateToProfileDetails = {},
+      onBackwardsNavigation = {}
+    )
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadedSearchPreview() {
-    OrcaTheme {
-        Search(
-            query = "",
-            onQueryChange = { },
-            ProfileSearchResult.samples,
-            onNavigateToProfileDetails = { },
-            onBackwardsNavigation = { }
-        )
-    }
+  OrcaTheme {
+    Search(
+      query = "",
+      onQueryChange = {},
+      ProfileSearchResult.samples,
+      onNavigateToProfileDetails = {},
+      onBackwardsNavigation = {}
+    )
+  }
 }

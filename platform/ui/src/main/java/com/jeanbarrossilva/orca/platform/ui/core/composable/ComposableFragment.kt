@@ -13,25 +13,18 @@ import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
  * [Fragment] that shows [Composable][Composable] content.
  *
  * @see Content
- **/
+ */
 abstract class ComposableFragment : Fragment() {
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return context?.let {
-            ComposeView(it).apply {
-                setContent {
-                    OrcaTheme {
-                        this@ComposableFragment.Content()
-                    }
-                }
-            }
-        }
+  override fun onCreateView(
+    inflater: LayoutInflater,
+    container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
+    return context?.let {
+      ComposeView(it).apply { setContent { OrcaTheme { this@ComposableFragment.Content() } } }
     }
+  }
 
-    /** Content to be shown inside the [ComposeView].  **/
-    @Composable
-    protected abstract fun Content()
+  /** Content to be shown inside the [ComposeView]. */
+  @Composable protected abstract fun Content()
 }

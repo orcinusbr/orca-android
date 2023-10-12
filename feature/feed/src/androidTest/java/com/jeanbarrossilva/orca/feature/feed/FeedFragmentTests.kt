@@ -22,31 +22,28 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class FeedFragmentTests {
-    @get:Rule
-    val injectorRule = InjectorTestRule { register<FeedModule>(TestFeedModule) }
+  @get:Rule val injectorRule = InjectorTestRule { register<FeedModule>(TestFeedModule) }
 
-    @get:Rule
-    val time4JRule = Time4JTestRule()
+  @get:Rule val time4JRule = Time4JTestRule()
 
-    @get:Rule
-    val composeRule = createEmptyComposeRule()
+  @get:Rule val composeRule = createEmptyComposeRule()
 
-    @Test
-    fun favoritesToot() {
-        runTest {
-            val toot = Profile.sample.getToots(page = 0).first().first()
-            if (toot.favorite.isEnabled) {
-                toot.favorite.toggle()
-            }
-        }
-        launchActivity<FeedActivity>(FeedActivity.getIntent(Profile.sample.id)).use {
-            composeRule
-                .onTootPreviews()
-                .onFirst()
-                .onChildren()
-                .filterToOne(hasTestTag(TOOT_PREVIEW_FAVORITE_STAT_TAG))
-                .performClick()
-                .assertIsSelected()
-        }
+  @Test
+  fun favoritesToot() {
+    runTest {
+      val toot = Profile.sample.getToots(page = 0).first().first()
+      if (toot.favorite.isEnabled) {
+        toot.favorite.toggle()
+      }
     }
+    launchActivity<FeedActivity>(FeedActivity.getIntent(Profile.sample.id)).use {
+      composeRule
+        .onTootPreviews()
+        .onFirst()
+        .onChildren()
+        .filterToOne(hasTestTag(TOOT_PREVIEW_FAVORITE_STAT_TAG))
+        .performClick()
+        .assertIsSelected()
+    }
+  }
 }

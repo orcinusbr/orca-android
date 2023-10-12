@@ -14,33 +14,33 @@ import com.jeanbarrossilva.orca.std.styledstring.StyledString
  * Creates a [StyledString] from the [html].
  *
  * @param html HTML-formatted [String] from which a [StyledString] will be created.
- **/
+ */
 fun StyledString.Companion.fromHtml(html: String): StyledString {
-    val paragraphLessHtml = html.replace("<p>", "").replace("</p>", "")
-    return Html.fromHtml(paragraphLessHtml, Html.FROM_HTML_MODE_COMPACT).toStyledString()
+  val paragraphLessHtml = html.replace("<p>", "").replace("</p>", "")
+  return Html.fromHtml(paragraphLessHtml, Html.FROM_HTML_MODE_COMPACT).toStyledString()
 }
 
-/** Converts this [StyledString] into an [AnnotatedString]. **/
+/** Converts this [StyledString] into an [AnnotatedString]. */
 @Composable
 fun StyledString.toAnnotatedString(): AnnotatedString {
-    return toAnnotatedString(OrcaTheme.colors)
+  return toAnnotatedString(OrcaTheme.colors)
 }
 
 /**
  * Converts this [StyledString] into an [AnnotatedString].
  *
  * @param colors [Colors] by which the [AnnotatedString] can be colored.
- **/
+ */
 fun StyledString.toAnnotatedString(colors: Colors): AnnotatedString {
-    val conversions = HashMap<Style, SpanStyle>()
-    return buildAnnotatedString {
-        append(this@toAnnotatedString)
-        styles.forEach {
-            addStyle(
-                conversions.getOrPut(it) { it.toSpanStyle(colors) },
-                it.indices.first,
-                it.indices.last.inc()
-            )
-        }
+  val conversions = HashMap<Style, SpanStyle>()
+  return buildAnnotatedString {
+    append(this@toAnnotatedString)
+    styles.forEach {
+      addStyle(
+        conversions.getOrPut(it) { it.toSpanStyle(colors) },
+        it.indices.first,
+        it.indices.last.inc()
+      )
     }
+  }
 }

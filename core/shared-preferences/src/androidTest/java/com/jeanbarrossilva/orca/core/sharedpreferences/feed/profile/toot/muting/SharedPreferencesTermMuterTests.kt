@@ -10,46 +10,42 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class SharedPreferencesTermMuterTests {
-    private val context
-        get() = InstrumentationRegistry.getInstrumentation().context
+  private val context
+    get() = InstrumentationRegistry.getInstrumentation().context
 
-    @get:Rule
-    val coreRule = SharedPreferencesCoreTestRule()
+  @get:Rule val coreRule = SharedPreferencesCoreTestRule()
 
-    @Test
-    fun persistsMutedTerm() {
-        runTest {
-            coreRule.termMuter.mute("🐝")
-            assertEquals(
-                "🐝",
-                SharedPreferencesTermMuter.getPreferences(context).getString("🐝", null)
-            )
-        }
+  @Test
+  fun persistsMutedTerm() {
+    runTest {
+      coreRule.termMuter.mute("🐝")
+      assertEquals("🐝", SharedPreferencesTermMuter.getPreferences(context).getString("🐝", null))
     }
+  }
 
-    @Test
-    fun emitsListWithMutedTerm() {
-        runTest {
-            coreRule.termMuter.mute("☠️")
-            coreRule.termMuter.getTerms().test { assertEquals(listOf("☠️"), awaitItem()) }
-        }
+  @Test
+  fun emitsListWithMutedTerm() {
+    runTest {
+      coreRule.termMuter.mute("☠️")
+      coreRule.termMuter.getTerms().test { assertEquals(listOf("☠️"), awaitItem()) }
     }
+  }
 
-    @Test
-    fun removesUnmutedTerm() {
-        runTest {
-            coreRule.termMuter.mute("👒")
-            coreRule.termMuter.unmute("👒")
-            assertNull(SharedPreferencesTermMuter.getPreferences(context).getString("👒", null))
-        }
+  @Test
+  fun removesUnmutedTerm() {
+    runTest {
+      coreRule.termMuter.mute("👒")
+      coreRule.termMuter.unmute("👒")
+      assertNull(SharedPreferencesTermMuter.getPreferences(context).getString("👒", null))
     }
+  }
 
-    @Test
-    fun emitsListWithoutUnmutedTerm() {
-        runTest {
-            coreRule.termMuter.mute("💀")
-            coreRule.termMuter.unmute("💀")
-            coreRule.termMuter.getTerms().test { assertEquals(emptyList<String>(), awaitItem()) }
-        }
+  @Test
+  fun emitsListWithoutUnmutedTerm() {
+    runTest {
+      coreRule.termMuter.mute("💀")
+      coreRule.termMuter.unmute("💀")
+      coreRule.termMuter.getTerms().test { assertEquals(emptyList<String>(), awaitItem()) }
     }
+  }
 }

@@ -9,11 +9,12 @@ import com.jeanbarrossilva.orca.core.sharedpreferences.actor.SharedPreferencesAc
 import com.jeanbarrossilva.orca.core.sharedpreferences.feed.profile.toot.muting.SharedPreferencesTermMuter
 import com.jeanbarrossilva.orca.std.injector.Injector
 
-internal class MainHttpModule : HttpModule(
+internal class MainHttpModule :
+  HttpModule(
     { HttpAuthorizer(context = Injector.get()) },
     { HttpAuthenticator(context = Injector.get(), authorizer = get(), actorProvider = get()) },
     { SharedPreferencesActorProvider(context = Injector.get()) },
     { AuthenticationLock(authenticator = get(), actorProvider = get()) },
     { SharedPreferencesTermMuter(context = Injector.get()) },
     { HttpInstanceProvider(context = Injector.get()) }
-)
+  )

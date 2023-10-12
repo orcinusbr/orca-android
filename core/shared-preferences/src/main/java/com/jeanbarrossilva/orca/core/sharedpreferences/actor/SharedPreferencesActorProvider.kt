@@ -11,30 +11,27 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class SharedPreferencesActorProvider(context: Context) : ActorProvider() {
-    private val preferences: SharedPreferences =
-        context.getSharedPreferences("shared-preferences-actor-provider", Context.MODE_PRIVATE)
+  private val preferences: SharedPreferences =
+    context.getSharedPreferences("shared-preferences-actor-provider", Context.MODE_PRIVATE)
 
-    override suspend fun remember(actor: Actor) {
-        val mirroredActor = actor.toMirroredActor()
-        val mirroredActorAsJson = Json.encodeToString(mirroredActor)
-        preferences.edit { putString(MIRRORED_ACTOR_KEY, mirroredActorAsJson) }
-    }
+  override suspend fun remember(actor: Actor) {
+    val mirroredActor = actor.toMirroredActor()
+    val mirroredActorAsJson = Json.encodeToString(mirroredActor)
+    preferences.edit { putString(MIRRORED_ACTOR_KEY, mirroredActorAsJson) }
+  }
 
-    override suspend fun retrieve(): Actor {
-        return preferences
-            .getString(MIRRORED_ACTOR_KEY, null)
-            ?.let { Json.decodeFromString<MirroredActor>(it) }
-            ?.toActor()
-            ?: Actor.Unauthenticated
-    }
+  override suspend fun retrieve(): Actor {
+    return preferences
+      .getString(MIRRORED_ACTOR_KEY, null)
+      ?.let { Json.decodeFromString<MirroredActor>(it) }
+      ?.toActor() ?: Actor.Unauthenticated
+  }
 
-    internal fun reset() {
-        preferences.edit {
-            remove(MIRRORED_ACTOR_KEY)
-        }
-    }
+  internal fun reset() {
+    preferences.edit { remove(MIRRORED_ACTOR_KEY) }
+  }
 
-    companion object {
-        private const val MIRRORED_ACTOR_KEY = "mirrored-actor"
-    }
+  companion object {
+    private const val MIRRORED_ACTOR_KEY = "mirrored-actor"
+  }
 }

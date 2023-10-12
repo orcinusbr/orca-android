@@ -27,13 +27,13 @@ import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
  *
  * @param modifier [Modifier] to be applied to the underlying [Box].
  * @param content Content to be highlighted when hovered.
- **/
+ */
 @Composable
 fun Hoverable(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
-    val interactionSource = remember(::MutableInteractionSource)
-    val isHovered by interactionSource.collectIsHoveredAsState()
+  val interactionSource = remember(::MutableInteractionSource)
+  val isHovered by interactionSource.collectIsHoveredAsState()
 
-    Hoverable(isHovered, modifier.hoverable(interactionSource), content)
+  Hoverable(isHovered, modifier.hoverable(interactionSource), content)
 }
 
 /**
@@ -43,69 +43,52 @@ fun Hoverable(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
  * @param isHighlighted Whether the [content] is highlighted.
  * @param modifier [Modifier] to be applied to the underlying [Box].
  * @param content Content to be highlighted.
- **/
+ */
 @Composable
 private fun Hoverable(
-    isHighlighted: Boolean,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+  isHighlighted: Boolean,
+  modifier: Modifier = Modifier,
+  content: @Composable () -> Unit
 ) {
-    val density = LocalDensity.current
-    val animationSpec = tween<Float>(durationMillis = 128)
-    val alpha by animateFloatAsState(if (isHighlighted) 1f else 0f, animationSpec, label = "Alpha")
-    val containerColor = OrcaTheme.colors.placeholder
-    val shape = OrcaTheme.shapes.large
-    val spacing = OrcaTheme.spacings.small
-    val spacingInPx = remember(density, spacing) {
-        with(density) {
-            spacing.toPx()
-        }
-    }
-    val scale by animateFloatAsState(
-        if (isHighlighted) .95f else 1f,
-        animationSpec,
-        label = "Scale"
-    )
+  val density = LocalDensity.current
+  val animationSpec = tween<Float>(durationMillis = 128)
+  val alpha by animateFloatAsState(if (isHighlighted) 1f else 0f, animationSpec, label = "Alpha")
+  val containerColor = OrcaTheme.colors.placeholder
+  val shape = OrcaTheme.shapes.large
+  val spacing = OrcaTheme.spacings.small
+  val spacingInPx = remember(density, spacing) { with(density) { spacing.toPx() } }
+  val scale by animateFloatAsState(if (isHighlighted) .95f else 1f, animationSpec, label = "Scale")
 
-    Box(
-        Modifier
-            .drawBehind {
-                drawRoundRect(
-                    containerColor,
-                    topLeft = Offset(x = -spacingInPx, y = -spacingInPx),
-                    size = size.copy(
-                        width = size.width + spacingInPx * 2,
-                        height = size.height + spacingInPx * 2
-                    ),
-                    cornerRadius = CornerRadius(shape.topStart.toPx(size, density)),
-                    alpha = alpha
-                )
-            }
-            .scale(scale)
-            .then(modifier)
-    ) {
-        content()
-    }
+  Box(
+    Modifier.drawBehind {
+        drawRoundRect(
+          containerColor,
+          topLeft = Offset(x = -spacingInPx, y = -spacingInPx),
+          size =
+            size.copy(width = size.width + spacingInPx * 2, height = size.height + spacingInPx * 2),
+          cornerRadius = CornerRadius(shape.topStart.toPx(size, density)),
+          alpha = alpha
+        )
+      }
+      .scale(scale)
+      .then(modifier)
+  ) {
+    content()
+  }
 }
 
-/** Preview of an idle [Hoverable]. **/
+/** Preview of an idle [Hoverable]. */
 @Composable
 @MultiThemePreview
 private fun IdleHoverablePreview() {
-    OrcaTheme {
-        Hoverable(isHighlighted = false)
-    }
+  OrcaTheme { Hoverable(isHighlighted = false) }
 }
 
-/** Preview of a highlighted [Hoverable]. **/
+/** Preview of a highlighted [Hoverable]. */
 @Composable
 @MultiThemePreview
 private fun HighlightedHoverablePreview() {
-    OrcaTheme {
-        Column {
-            Hoverable(isHighlighted = true)
-        }
-    }
+  OrcaTheme { Column { Hoverable(isHighlighted = true) } }
 }
 
 /**
@@ -114,12 +97,12 @@ private fun HighlightedHoverablePreview() {
  *
  * @param isHighlighted Whether the content is highlighted.
  * @param modifier [Modifier] to be applied to the underlying [Box].
- **/
+ */
 @Composable
 private fun Hoverable(isHighlighted: Boolean, modifier: Modifier = Modifier) {
-    Hoverable(isHighlighted, modifier) {
-        IconButton(onClick = { }) {
-            Icon(OrcaTheme.iconography.home.outlined, contentDescription = "Home")
-        }
+  Hoverable(isHighlighted, modifier) {
+    IconButton(onClick = {}) {
+      Icon(OrcaTheme.iconography.home.outlined, contentDescription = "Home")
     }
+  }
 }

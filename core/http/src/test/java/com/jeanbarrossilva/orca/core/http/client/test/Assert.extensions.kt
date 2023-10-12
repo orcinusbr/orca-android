@@ -10,7 +10,7 @@ import io.ktor.http.HttpHeaders
  * Creates an [Assert] on the [response]'s authorization [HttpHeader].
  *
  * @param response [HttpResponse] whose header will be the basis of the [Assert].
- **/
+ */
 internal fun assertThatRequestAuthorizationHeaderOf(response: HttpResponse): Assert<String?> {
-    return assertThat(response.request.headers[HttpHeaders.Authorization])
+  return assertThat(response.request.headers[HttpHeaders.Authorization])
 }

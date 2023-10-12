@@ -6,11 +6,11 @@ import java.time.ZonedDateTime
 import java.util.Date
 
 internal val ZonedDateTime.formatted: String
-    get() = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(toDate())
+  get() = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(toDate())
 
-/** Converts this [ZonedDateTime] into a [Date]. **/
+/** Converts this [ZonedDateTime] into a [Date]. */
 private fun ZonedDateTime.toDate(): Date {
-    val epochSecond = toEpochSecond()
-    val instant = Instant.ofEpochSecond(epochSecond)
-    return Date.from(instant)
+  val epochSecond = toEpochSecond()
+  val instant = Instant.ofEpochSecond(epochSecond)
+  return Date.from(instant)
 }

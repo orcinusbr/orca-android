@@ -15,26 +15,24 @@ import kotlinx.coroutines.flow.Flow
  * [tootPaginateSource].
  *
  * @param tootPaginateSourceProvider [ProfileTootPaginateSource] for paginating through the
- * [HttpToot]s.
- **/
+ *   [HttpToot]s.
+ */
 internal data class HttpProfile(
-    private val tootPaginateSourceProvider: ProfileTootPaginateSource.Provider,
-    override val id: String,
-    override val account: Account,
-    override val avatarURL: URL,
-    override val name: String,
-    override val bio: StyledString,
-    override val followerCount: Int,
-    override val followingCount: Int,
-    override val url: URL
+  private val tootPaginateSourceProvider: ProfileTootPaginateSource.Provider,
+  override val id: String,
+  override val account: Account,
+  override val avatarURL: URL,
+  override val name: String,
+  override val bio: StyledString,
+  override val followerCount: Int,
+  override val followingCount: Int,
+  override val url: URL
 ) : Profile {
-    private val tootPaginateSource = tootPaginateSourceProvider.provide(id)
-    private val tootsFlow = tootPaginateSource.loadAllPagesItems(
-        HttpTootPaginateSource.DEFAULT_COUNT
-    )
+  private val tootPaginateSource = tootPaginateSourceProvider.provide(id)
+  private val tootsFlow = tootPaginateSource.loadAllPagesItems(HttpTootPaginateSource.DEFAULT_COUNT)
 
-    override suspend fun getToots(page: Int): Flow<List<Toot>> {
-        tootPaginateSource.paginateTo(page)
-        return tootsFlow
-    }
+  override suspend fun getToots(page: Int): Flow<List<Toot>> {
+    tootPaginateSource.paginateTo(page)
+    return tootsFlow
+  }
 }

@@ -4,9 +4,7 @@ import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetailsBoundary
 import java.net.URL
 
 internal class TestProfileDetailsBoundary : ProfileDetailsBoundary {
-    override fun navigateTo(url: URL) {
-    }
+  override fun navigateTo(url: URL) {}
 
-    override fun navigateToTootDetails(id: String) {
-    }
+  override fun navigateToTootDetails(id: String) {}
 }

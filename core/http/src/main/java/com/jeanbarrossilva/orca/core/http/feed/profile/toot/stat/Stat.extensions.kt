@@ -18,20 +18,20 @@ import kotlinx.coroutines.flow.flow
  *
  * @param id ID of the [HttpToot] for which the [Stat] is.
  * @param count Amount of comments that the [HttpToot] has received.
- **/
+ */
 @Suppress("FunctionName")
 internal fun CommentStat(id: String, count: Int): Stat<Toot> {
-    return Stat(count) {
-        get {
-            flow {
-                (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
-                    .client
-                    .authenticateAndGet("/api/v1/statuses/$id/context")
-                    .body<HttpContext>()
-                    .descendants
-                    .map(HttpStatus::toToot)
-                    .also { emit(it) }
-            }
-        }
+  return Stat(count) {
+    get {
+      flow {
+        (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
+          .client
+          .authenticateAndGet("/api/v1/statuses/$id/context")
+          .body<HttpContext>()
+          .descendants
+          .map(HttpStatus::toToot)
+          .also { emit(it) }
+      }
     }
+  }
 }

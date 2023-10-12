@@ -6,7 +6,7 @@ package com.jeanbarrossilva.orca.std.imageloader
  *
  * @param min Minimum [Int] to be returned if this one exceeds [max].
  * @param max Maximum [Int] to be returned if this one is less than [min].
- **/
+ */
 internal fun Int.mirror(min: Int, max: Int): Int {
-    return if (this < min) max else if (this > max) min else this
+  return if (this < min) max else if (this > max) min else this
 }

@@ -9,10 +9,10 @@ import androidx.test.espresso.intent.OngoingStubbing
  *
  * @param action Operation to be performed before the response.
  * @see Activity.RESULT_OK
- **/
+ */
 internal fun OngoingStubbing.ok(action: () -> Unit) {
-    respondWithFunction {
-        action()
-        Instrumentation.ActivityResult(Activity.RESULT_OK, null)
-    }
+  respondWithFunction {
+    action()
+    Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+  }
 }

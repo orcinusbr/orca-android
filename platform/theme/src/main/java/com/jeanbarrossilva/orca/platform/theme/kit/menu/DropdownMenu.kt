@@ -20,34 +20,32 @@ import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
  * @param onDismissal Callback run when it is requested to be dismissed.
  * @param modifier [Modifier] to be applied to the underlying [DropdownMenu].
  * @param content [DropdownMenuItem]s contained by this
- * [DropdownMenu][com.jeanbarrossilva.orca.platform.ui.component.menu.DropdownMenu].
- **/
+ *   [DropdownMenu][com.jeanbarrossilva.orca.platform.ui.component.menu.DropdownMenu].
+ */
 @Composable
 fun DropdownMenu(
-    isExpanded: Boolean,
-    onDismissal: () -> Unit,
-    modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit
+  isExpanded: Boolean,
+  onDismissal: () -> Unit,
+  modifier: Modifier = Modifier,
+  content: @Composable ColumnScope.() -> Unit
 ) {
-    DropdownMenu(
-        isExpanded,
-        onDismissal,
-        modifier.background(OrcaTheme.colors.surface.container),
-        content = content
-    )
+  DropdownMenu(
+    isExpanded,
+    onDismissal,
+    modifier.background(OrcaTheme.colors.surface.container),
+    content = content
+  )
 }
 
 /**
  * Preview of a [DropdownMenu][com.jeanbarrossilva.orca.platform.ui.component.menu.DropdownMenu].
- **/
+ */
 @Composable
 @MultiThemePreview
 private fun DropdownMenuPreview() {
-    OrcaTheme {
-        DropdownMenu(isExpanded = true, onDismissal = { }) {
-            repeat(8) {
-                DropdownMenuItem(text = { Text("Item $it") }, onClick = { })
-            }
-        }
+  OrcaTheme {
+    DropdownMenu(isExpanded = true, onDismissal = {}) {
+      repeat(8) { DropdownMenuItem(text = { Text("Item $it") }, onClick = {}) }
     }
+  }
 }

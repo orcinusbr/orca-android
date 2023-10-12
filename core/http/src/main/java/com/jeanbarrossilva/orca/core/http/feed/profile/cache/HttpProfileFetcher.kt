@@ -16,17 +16,17 @@ import io.ktor.client.call.body
  * [Fetcher] for [Profile]s.
  *
  * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
- * [ProfileTootPaginateSource] for paginating through a [HttpProfile]'s [HttpToot]s will be
- * provided.
- **/
+ *   [ProfileTootPaginateSource] for paginating through a [HttpProfile]'s [HttpToot]s will be
+ *   provided.
+ */
 internal class HttpProfileFetcher(
-    private val tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
+  private val tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
 ) : Fetcher<Profile>() {
-    override suspend fun onFetch(key: String): Profile {
-        return (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
-            .client
-            .authenticateAndGet("/api/v1/accounts/$key")
-            .body<HttpAccount>()
-            .toProfile(tootPaginateSourceProvider)
-    }
+  override suspend fun onFetch(key: String): Profile {
+    return (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
+      .client
+      .authenticateAndGet("/api/v1/accounts/$key")
+      .body<HttpAccount>()
+      .toProfile(tootPaginateSourceProvider)
+  }
 }

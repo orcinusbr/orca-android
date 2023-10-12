@@ -14,22 +14,22 @@ import com.jeanbarrossilva.orca.std.injector.Injector
  *
  * @param id ID of the [HttpToot] for which the [ToggleableStat] is.
  * @param count Amount of times that the [HttpToot] has been marked as favorite.
- **/
+ */
 @Suppress("FunctionName")
 internal fun FavoriteStat(id: String, count: Int): ToggleableStat<Profile> {
-    return ToggleableStat(count) {
-        setEnabled { isEnabled ->
-            val route = if (isEnabled) {
-                "/api/v1/statuses/$id/favourite"
-            } else {
-                @Suppress("SpellCheckingInspection")
-                "/api/v1/statuses/$id/unfavourite"
-            }
-            (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
-                .client
-                .authenticateAndPost(route)
+  return ToggleableStat(count) {
+    setEnabled { isEnabled ->
+      val route =
+        if (isEnabled) {
+          "/api/v1/statuses/$id/favourite"
+        } else {
+          @Suppress("SpellCheckingInspection") "/api/v1/statuses/$id/unfavourite"
         }
+      (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
+        .client
+        .authenticateAndPost(route)
     }
+  }
 }
 
 /**
@@ -37,16 +37,15 @@ internal fun FavoriteStat(id: String, count: Int): ToggleableStat<Profile> {
  *
  * @param id ID of the [HttpToot] for which the [ToggleableStat] is.
  * @param count Amount of times that the [HttpToot] has been reblogged.
- **/
+ */
 @Suppress("FunctionName")
 internal fun ReblogStat(id: String, count: Int): ToggleableStat<Profile> {
-    return ToggleableStat(count) {
-        setEnabled { isEnabled ->
-            val route =
-                if (isEnabled) "/api/v1/statuses/$id/reblog" else "/api/v1/statuses/$id/unreblog"
-            (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
-                .client
-                .authenticateAndPost(route)
-        }
+  return ToggleableStat(count) {
+    setEnabled { isEnabled ->
+      val route = if (isEnabled) "/api/v1/statuses/$id/reblog" else "/api/v1/statuses/$id/unreblog"
+      (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
+        .client
+        .authenticateAndPost(route)
     }
+  }
 }

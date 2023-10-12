@@ -24,16 +24,12 @@ internal typealias SomeHttpInstance = HttpInstance<*, *>
  * @param authorizer [Authorizer] by which the user will be authorized.
  */
 abstract class HttpInstance<F : Authorizer, S : Authenticator>(
-    final override val domain: Domain,
-    internal val authorizer: F
+  final override val domain: Domain,
+  internal val authorizer: F
 ) : Instance<S>() {
-    /** [Url] to which routes will be appended when [HttpRequest]s are sent. */
-    internal val url = URLBuilder().apply { set(scheme = "https", host = "$domain") }.build()
+  /** [Url] to which routes will be appended when [HttpRequest]s are sent. */
+  internal val url = URLBuilder().apply { set(scheme = "https", host = "$domain") }.build()
 
-    /** [HttpClient] by which [HttpRequest]s will be sent. */
-    open val client = CoreHttpClient {
-        defaultRequest {
-            url.takeFrom(this@HttpInstance.url)
-        }
-    }
+  /** [HttpClient] by which [HttpRequest]s will be sent. */
+  open val client = CoreHttpClient { defaultRequest { url.takeFrom(this@HttpInstance.url) } }
 }

@@ -10,15 +10,16 @@ import io.ktor.util.toMap
  * Parametrized URIs present in the Link header, each represented by a [LinkHeader].
  *
  * @see HttpHeaders.Link
- **/
+ */
 internal val Headers.links
-    get() = filter { key, _ -> key == HttpHeaders.Link }
-        .toMap()
-        .values
-        .flatten()
-        .map {
-            LinkHeader(
-                uri = it.substringAfter('<').substringBefore('>'),
-                rel = it.substringAfter("rel=\"").substringBeforeLast('"')
-            )
-        }
+  get() =
+    filter { key, _ -> key == HttpHeaders.Link }
+      .toMap()
+      .values
+      .flatten()
+      .map {
+        LinkHeader(
+          uri = it.substringAfter('<').substringBefore('>'),
+          rel = it.substringAfter("rel=\"").substringBeforeLast('"')
+        )
+      }

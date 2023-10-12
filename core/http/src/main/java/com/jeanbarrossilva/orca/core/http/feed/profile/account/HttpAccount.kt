@@ -32,120 +32,120 @@ import kotlinx.serialization.Serializable
  * @param url URL [String] that leads to this [Account] within its instance.
  * @param displayName Name that's publicly displayed.
  * @param locked Whether its contents are private, meaning that they can only be seen by accepted
- * followers.
+ *   followers.
  * @param note Description provided by the owner.
  * @param avatar URL [String] that leads to the avatar image.
  * @param followersCount Amount of followers that this [Account] has.
  * @param followingCount Amount of other [Account]s that this one is following.
- **/
+ */
 @Serializable
 internal data class HttpAccount(
-    val id: String,
-    val username: String,
-    val acct: String,
-    val url: String,
-    val displayName: String,
-    val locked: Boolean,
-    val note: String,
-    val avatar: String,
-    val followersCount: Int,
-    val followingCount: Int
+  val id: String,
+  val username: String,
+  val acct: String,
+  val url: String,
+  val displayName: String,
+  val locked: Boolean,
+  val note: String,
+  val avatar: String,
+  val followersCount: Int,
+  val followingCount: Int
 ) {
-    /** Converts this [HttpAccount] into an [Author]. **/
-    fun toAuthor(): Author {
-        val avatarURL = URL(avatar)
-        val account = toAccount()
-        val profileURL = URL(url)
-        return Author(id, avatarURL, displayName, account, profileURL)
-    }
+  /** Converts this [HttpAccount] into an [Author]. */
+  fun toAuthor(): Author {
+    val avatarURL = URL(avatar)
+    val account = toAccount()
+    val profileURL = URL(url)
+    return Author(id, avatarURL, displayName, account, profileURL)
+  }
 
-    /**
-     * Converts this [HttpAccount] into a [Profile].
-     *
-     * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
-     * [ProfileTootPaginateSource] for paginating through the resulting [HttpProfile]'s [HttpToot]s
-     * will be provided.
-     **/
-    suspend fun toProfile(tootPaginateSourceProvider: ProfileTootPaginateSource.Provider): Profile {
-        return if (isOwner()) {
-            toEditableProfile(tootPaginateSourceProvider)
-        } else {
-            toFollowableProfile(tootPaginateSourceProvider)
-        }
+  /**
+   * Converts this [HttpAccount] into a [Profile].
+   *
+   * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
+   *   [ProfileTootPaginateSource] for paginating through the resulting [HttpProfile]'s [HttpToot]s
+   *   will be provided.
+   */
+  suspend fun toProfile(tootPaginateSourceProvider: ProfileTootPaginateSource.Provider): Profile {
+    return if (isOwner()) {
+      toEditableProfile(tootPaginateSourceProvider)
+    } else {
+      toFollowableProfile(tootPaginateSourceProvider)
     }
+  }
 
-    /** Converts this [HttpAccount] into an [Account]. **/
-    private fun toAccount(): Account {
-        return Account.of(acct, fallbackDomain = "mastodon.social")
-    }
+  /** Converts this [HttpAccount] into an [Account]. */
+  private fun toAccount(): Account {
+    return Account.of(acct, fallbackDomain = "mastodon.social")
+  }
 
-    /**
-     * Whether the currently [authenticated][Actor.Authenticated] [Actor] is the owner of this
-     * [Account].
-     **/
-    private suspend fun isOwner(): Boolean {
-        return Injector.from<HttpModule>().authenticationLock().requestUnlock {
-            it.id == id
-        }
-    }
+  /**
+   * Whether the currently [authenticated][Actor.Authenticated] [Actor] is the owner of this
+   * [Account].
+   */
+  private suspend fun isOwner(): Boolean {
+    return Injector.from<HttpModule>().authenticationLock().requestUnlock { it.id == id }
+  }
 
-    /**
-     * Converts this [HttpAccount] into an [HttpEditableProfile].
-     *
-     * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
-     * [ProfileTootPaginateSource] for paginating through the resulting [HttpEditableProfile]'s
-     * [HttpToot]s will be provided.
-     **/
-    private fun toEditableProfile(tootPaginateSourceProvider: ProfileTootPaginateSource.Provider):
-        HttpEditableProfile {
-        val account = toAccount()
-        val avatarURL = URL(avatar)
-        val bio = StyledString.fromHtml(note)
-        val url = URL(url)
-        return HttpEditableProfile(
-            tootPaginateSourceProvider,
-            id,
-            account,
-            avatarURL,
-            displayName,
-            bio,
-            followersCount,
-            followingCount,
-            url
-        )
-    }
+  /**
+   * Converts this [HttpAccount] into an [HttpEditableProfile].
+   *
+   * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
+   *   [ProfileTootPaginateSource] for paginating through the resulting [HttpEditableProfile]'s
+   *   [HttpToot]s will be provided.
+   */
+  private fun toEditableProfile(
+    tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
+  ): HttpEditableProfile {
+    val account = toAccount()
+    val avatarURL = URL(avatar)
+    val bio = StyledString.fromHtml(note)
+    val url = URL(url)
+    return HttpEditableProfile(
+      tootPaginateSourceProvider,
+      id,
+      account,
+      avatarURL,
+      displayName,
+      bio,
+      followersCount,
+      followingCount,
+      url
+    )
+  }
 
-    /**
-     * Converts this [HttpAccount] into an [HttpFollowableProfile].
-     *
-     * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
-     * [ProfileTootPaginateSource] for paginating through the resulting [HttpFollowableProfile]'s
-     * [HttpToot]s will be provided.
-     **/
-    private suspend fun toFollowableProfile(
-        tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
-    ): HttpFollowableProfile<Follow> {
-        val account = toAccount()
-        val avatarURL = URL(avatar)
-        val bio = StyledString.fromHtml(note)
-        val url = URL(url)
-        val follow = (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
-            .client
-            .authenticateAndGet("/api/v1/accounts/relationships") { parameter("id", id) }
-            .body<List<HttpRelationship>>()
-            .first()
-            .toFollow(this)
-        return HttpFollowableProfile(
-            tootPaginateSourceProvider,
-            id,
-            account,
-            avatarURL,
-            displayName,
-            bio,
-            follow,
-            followersCount,
-            followingCount,
-            url
-        )
-    }
+  /**
+   * Converts this [HttpAccount] into an [HttpFollowableProfile].
+   *
+   * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
+   *   [ProfileTootPaginateSource] for paginating through the resulting [HttpFollowableProfile]'s
+   *   [HttpToot]s will be provided.
+   */
+  private suspend fun toFollowableProfile(
+    tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
+  ): HttpFollowableProfile<Follow> {
+    val account = toAccount()
+    val avatarURL = URL(avatar)
+    val bio = StyledString.fromHtml(note)
+    val url = URL(url)
+    val follow =
+      (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
+        .client
+        .authenticateAndGet("/api/v1/accounts/relationships") { parameter("id", id) }
+        .body<List<HttpRelationship>>()
+        .first()
+        .toFollow(this)
+    return HttpFollowableProfile(
+      tootPaginateSourceProvider,
+      id,
+      account,
+      avatarURL,
+      displayName,
+      bio,
+      follow,
+      followersCount,
+      followingCount,
+      url
+    )
+  }
 }

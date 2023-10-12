@@ -23,105 +23,83 @@ private val smallSize = 42.dp
 private val largeSize = 128.dp
 
 private val smallShape
-    @Composable get() = OrcaTheme.shapes.small
+  @Composable get() = OrcaTheme.shapes.small
 private val largeShape
-    @Composable get() = OrcaTheme.shapes.large
+  @Composable get() = OrcaTheme.shapes.large
 
 data class Avatar(val name: String, val url: URL) : Serializable {
-    companion object {
-        val sample = Avatar(Samples.NAME, Samples.avatarURL)
-    }
+  companion object {
+    val sample = Avatar(Samples.NAME, Samples.avatarURL)
+  }
 }
 
 @Composable
 fun SmallAvatar(modifier: Modifier = Modifier) {
-    Placeholder(
-        modifier
-            .requiredSize(smallSize)
-            .testTag(AVATAR_TAG),
-        shape = smallShape
-    )
+  Placeholder(modifier.requiredSize(smallSize).testTag(AVATAR_TAG), shape = smallShape)
 }
 
 @Composable
 fun SmallAvatar(
-    name: String,
-    url: URL,
-    modifier: Modifier = Modifier,
-    imageLoader: ImageLoader = rememberImageLoader()
+  name: String,
+  url: URL,
+  modifier: Modifier = Modifier,
+  imageLoader: ImageLoader = rememberImageLoader()
 ) {
-    Image(
-        url,
-        contentDescriptionFor(name),
-        modifier
-            .requiredSize(smallSize)
-            .testTag(AVATAR_TAG),
-        imageLoader,
-        smallShape
-    )
+  Image(
+    url,
+    contentDescriptionFor(name),
+    modifier.requiredSize(smallSize).testTag(AVATAR_TAG),
+    imageLoader,
+    smallShape
+  )
 }
 
 @Composable
 fun LargeAvatar(modifier: Modifier = Modifier) {
-    Placeholder(
-        modifier
-            .requiredSize(largeSize)
-            .testTag(AVATAR_TAG),
-        shape = largeShape
-    )
+  Placeholder(modifier.requiredSize(largeSize).testTag(AVATAR_TAG), shape = largeShape)
 }
 
 @Composable
 fun LargeAvatar(
-    name: String,
-    url: URL,
-    modifier: Modifier = Modifier,
-    imageLoader: ImageLoader = rememberImageLoader()
+  name: String,
+  url: URL,
+  modifier: Modifier = Modifier,
+  imageLoader: ImageLoader = rememberImageLoader()
 ) {
-    Image(
-        url,
-        contentDescriptionFor(name),
-        modifier
-            .requiredSize(largeSize)
-            .testTag(AVATAR_TAG),
-        imageLoader,
-        largeShape
-    )
+  Image(
+    url,
+    contentDescriptionFor(name),
+    modifier.requiredSize(largeSize).testTag(AVATAR_TAG),
+    imageLoader,
+    largeShape
+  )
 }
 
 @Composable
 private fun contentDescriptionFor(name: String): String {
-    return stringResource(R.string.platform_ui_avatar, name)
+  return stringResource(R.string.platform_ui_avatar, name)
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadingLargeAvatarPreview() {
-    OrcaTheme {
-        LargeAvatar()
-    }
+  OrcaTheme { LargeAvatar() }
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadedLargeAvatarPreview() {
-    OrcaTheme {
-        LargeAvatar(Avatar.sample.name, Avatar.sample.url)
-    }
+  OrcaTheme { LargeAvatar(Avatar.sample.name, Avatar.sample.url) }
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadingSmallAvatarPreview() {
-    OrcaTheme {
-        SmallAvatar()
-    }
+  OrcaTheme { SmallAvatar() }
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadedSmallAvatarPreview() {
-    OrcaTheme {
-        SmallAvatar(Avatar.sample.name, Avatar.sample.url)
-    }
+  OrcaTheme { SmallAvatar(Avatar.sample.name, Avatar.sample.url) }
 }

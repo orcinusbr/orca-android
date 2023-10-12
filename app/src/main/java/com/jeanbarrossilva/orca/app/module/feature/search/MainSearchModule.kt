@@ -6,7 +6,8 @@ import com.jeanbarrossilva.orca.feature.search.SearchModule
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
 import com.jeanbarrossilva.orca.std.injector.Injector
 
-internal class MainSearchModule(navigator: Navigator) : SearchModule(
+internal class MainSearchModule(navigator: Navigator) :
+  SearchModule(
     { Injector.from<HttpModule>().instanceProvider().provide().profileSearcher },
     { NavigatorSearchBoundary(navigator) }
-)
+  )

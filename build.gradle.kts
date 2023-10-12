@@ -3,6 +3,7 @@ import com.jeanbarrossilva.orca.chrynan
 import com.jeanbarrossilva.orca.loadable
 import com.jeanbarrossilva.orca.namespace
 import com.jeanbarrossilva.orca.parentNamespaceCandidate
+import com.ncorti.ktfmt.gradle.KtfmtExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -14,6 +15,7 @@ plugins {
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.kotlin.symbolProcessor) apply false
+    alias(libs.plugins.ktfmtGradle) apply false
     alias(libs.plugins.moduleDependencyGraph)
 
     id("build-src")
@@ -36,6 +38,8 @@ subprojects subproject@{
     }
 
     afterEvaluate {
+        apply(plugin = libs.plugins.ktfmtGradle.get().pluginId)
+
         with(JavaVersion.toVersion(libs.versions.java.get())) java@{
             extensions.findByType<JavaPluginExtension>()?.apply {
                 sourceCompatibility = this@java
@@ -59,6 +63,8 @@ subprojects subproject@{
                 }
             }
         }
+
+        extensions.findByType<KtfmtExtension>()?.googleStyle()
     }
 }
 

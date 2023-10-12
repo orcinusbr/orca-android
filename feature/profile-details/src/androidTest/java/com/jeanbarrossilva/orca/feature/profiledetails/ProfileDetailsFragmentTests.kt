@@ -20,30 +20,31 @@ import org.junit.Test
 import org.junit.rules.RuleChain
 
 internal class ProfileDetailsFragmentTests {
-    private val injectorRule =
-        InjectorTestRule { register<ProfileDetailsModule>(TestProfileDetailsModule) }
-    private val sampleRule = SampleTestRule()
-    private val time4JRule = Time4JTestRule()
-    private val composeRule = createEmptyComposeRule()
+  private val injectorRule = InjectorTestRule {
+    register<ProfileDetailsModule>(TestProfileDetailsModule)
+  }
+  private val sampleRule = SampleTestRule()
+  private val time4JRule = Time4JTestRule()
+  private val composeRule = createEmptyComposeRule()
 
-    @get:Rule
-    val ruleChain: RuleChain = RuleChain
-        .outerRule(injectorRule)
-        .around(sampleRule)
-        .around(time4JRule)
-        .around(composeRule)
+  @get:Rule
+  val ruleChain: RuleChain =
+    RuleChain.outerRule(injectorRule).around(sampleRule).around(time4JRule).around(composeRule)
 
-    @Test
-    fun unfollowsFollowedProfileWhenClickingActionButton() { // ktlint-disable max-line-length
-        SampleProfileWriter.insert(FollowableProfile.sample)
-        launchActivity<ProfileDetailsActivity>(
-            ProfileDetailsActivity
-                .getIntent(BackwardsNavigationState.Unavailable, FollowableProfile.sample.id)
-        ).use {
-            composeRule
-                .onNodeWithTag(ProfileDetails.Followable.MAIN_ACTION_BUTTON_TAG)
-                .performClick()
-                .assertTextEquals(ProfileDetails.Followable.Status.UNFOLLOWED.label)
-        }
-    }
+  @Test
+  fun unfollowsFollowedProfileWhenClickingActionButton() {
+    SampleProfileWriter.insert(FollowableProfile.sample)
+    launchActivity<ProfileDetailsActivity>(
+        ProfileDetailsActivity.getIntent(
+          BackwardsNavigationState.Unavailable,
+          FollowableProfile.sample.id
+        )
+      )
+      .use {
+        composeRule
+          .onNodeWithTag(ProfileDetails.Followable.MAIN_ACTION_BUTTON_TAG)
+          .performClick()
+          .assertTextEquals(ProfileDetails.Followable.Status.UNFOLLOWED.label)
+      }
+  }
 }

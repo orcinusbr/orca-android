@@ -43,19 +43,19 @@ import kotlinx.serialization.json.JsonNamingStrategy
  * @see HttpClient.authenticateAndPost
  * @see HttpClient.authenticateAndSubmitForm
  * @see HttpClient.authenticateAndSubmitFormWithBinaryData
- **/
+ */
 @PublishedApi
 internal val authenticationLock
-    get() = Injector.from<HttpModule>().authenticationLock()
+  get() = Injector.from<HttpModule>().authenticationLock()
 
 /**
  * [HttpClient] through which [HttpRequest]s can be performed.
  *
  * @param config Additional configuration to be done on the [HttpClient].
- **/
+ */
 @Suppress("FunctionName")
 fun CoreHttpClient(config: HttpClientConfig<CIOEngineConfig>.() -> Unit): HttpClient {
-    return CoreHttpClient(CIO, Logger.android, config)
+  return CoreHttpClient(CIO, Logger.android, config)
 }
 
 /**
@@ -64,23 +64,22 @@ fun CoreHttpClient(config: HttpClientConfig<CIOEngineConfig>.() -> Unit): HttpCl
  * @param EC [HttpClientEngineConfig] through which the [HttpClientConfig] will be configured.
  * @param CC [HttpClientConfig] that will configure the [HttpClient].
  * @param engineFactory [HttpClientEngineFactory] for creating the [HttpClientEngine] that powers
- * the resulting [HttpClient].
+ *   the resulting [HttpClient].
  * @param logger [Logger] by which received [HttpResponse]s will be logged.
  * @param config Additional configuration to be done on the [HttpClient].
- **/
+ */
 @Suppress("FunctionName")
 fun <EC : HttpClientEngineConfig, CC : HttpClientConfig<EC>> CoreHttpClient(
-    engineFactory: HttpClientEngineFactory<EC>,
-    logger: Logger,
-    config: CC.() -> Unit = { }
+  engineFactory: HttpClientEngineFactory<EC>,
+  logger: Logger,
+  config: CC.() -> Unit = {}
 ): HttpClient {
-    return HttpClient(engineFactory) {
-        setUpResponseLogging(logger)
-        setUpContentNegotiation()
+  return HttpClient(engineFactory) {
+    setUpResponseLogging(logger)
+    setUpContentNegotiation()
 
-        @Suppress("UNCHECKED_CAST")
-        (this as CC).config()
-    }
+    @Suppress("UNCHECKED_CAST") (this as CC).config()
+  }
 }
 
 /**
@@ -89,15 +88,15 @@ fun <EC : HttpClientEngineConfig, CC : HttpClientConfig<EC>> CoreHttpClient(
  *
  * @param route URL [String] to which the [HttpRequest] will be sent.
  * @param build Additional configuration for the [HttpResponse] to be performed.
- **/
+ */
 suspend inline fun HttpClient.authenticateAndGet(
-    route: String,
-    crossinline build: HttpRequestBuilder.() -> Unit = { }
+  route: String,
+  crossinline build: HttpRequestBuilder.() -> Unit = {}
 ): HttpResponse {
-    return get(route) {
-        authenticate()
-        build.invoke(this)
-    }
+  return get(route) {
+    authenticate()
+    build.invoke(this)
+  }
 }
 
 /**
@@ -106,15 +105,15 @@ suspend inline fun HttpClient.authenticateAndGet(
  *
  * @param route URL [String] to which the [HttpRequest] will be sent.
  * @param build Additional configuration for the [HttpResponse] to be performed.
- **/
+ */
 suspend inline fun HttpClient.authenticateAndPost(
-    route: String,
-    crossinline build: HttpRequestBuilder.() -> Unit = { }
+  route: String,
+  crossinline build: HttpRequestBuilder.() -> Unit = {}
 ): HttpResponse {
-    return post(route) {
-        authenticate()
-        build.invoke(this)
-    }
+  return post(route) {
+    authenticate()
+    build.invoke(this)
+  }
 }
 
 /**
@@ -124,18 +123,18 @@ suspend inline fun HttpClient.authenticateAndPost(
  * @param route URL [String] to which the [HttpRequest] will be sent.
  * @param parameters [Parameters] to be added to the form.
  * @param build Additional configuration for the [HttpResponse] to be performed.
- **/
+ */
 suspend inline fun HttpClient.authenticateAndSubmitForm(
-    route: String,
-    parameters: Parameters,
-    crossinline build: HttpRequestBuilder.() -> Unit = { }
+  route: String,
+  parameters: Parameters,
+  crossinline build: HttpRequestBuilder.() -> Unit = {}
 ): HttpResponse {
-    return authenticationLock.requestUnlock {
-        submitForm(route, parameters) {
-            bearerAuth(it.accessToken)
-            build.invoke(this)
-        }
+  return authenticationLock.requestUnlock {
+    submitForm(route, parameters) {
+      bearerAuth(it.accessToken)
+      build.invoke(this)
     }
+  }
 }
 
 /**
@@ -146,77 +145,71 @@ suspend inline fun HttpClient.authenticateAndSubmitForm(
  * @param route URL [String] to which the [HttpRequest] will be sent.
  * @param formData [List] with [PartData] to be included in the form.
  * @param build Additional configuration for the [HttpResponse] to be performed.
- **/
+ */
 suspend inline fun HttpClient.authenticateAndSubmitFormWithBinaryData(
-    route: String,
-    formData: List<PartData>,
-    crossinline build: HttpRequestBuilder.() -> Unit = { }
+  route: String,
+  formData: List<PartData>,
+  crossinline build: HttpRequestBuilder.() -> Unit = {}
 ): HttpResponse {
-    return submitFormWithBinaryData(route, formData) {
-        authenticate()
-        build.invoke(this)
-    }
+  return submitFormWithBinaryData(route, formData) {
+    authenticate()
+    build.invoke(this)
+  }
 }
 
 /**
  * Provides the [authenticated][Actor.Authenticated] [Actor]'s access token to the
  * [Authorization][HttpHeaders.Authorization] header through the [authenticationLock].
- **/
+ */
 @PublishedApi
 internal suspend fun HttpMessageBuilder.authenticate() {
-    authenticationLock.requestUnlock {
-        bearerAuth(it.accessToken)
-    }
+  authenticationLock.requestUnlock { bearerAuth(it.accessToken) }
 }
 
 /**
  * Observes [HttpResponse]s sent to the [CoreHttpClient] to be built and logs them.
  *
  * @param logger [Logger] by which received [HttpResponse]s will be logged.
- **/
+ */
 private fun HttpClientConfig<*>.setUpResponseLogging(logger: Logger) {
-    ResponseObserver {
-        with(it.format()) {
-            if (it.status.isSuccess()) {
-                logger.info(this)
-            } else {
-                logger.error(this)
-            }
-        }
+  ResponseObserver {
+    with(it.format()) {
+      if (it.status.isSuccess()) {
+        logger.info(this)
+      } else {
+        logger.error(this)
+      }
     }
-    HttpResponseValidator {
-        handleResponseExceptionWithRequest { cause, _ ->
-            cause.message?.let { message ->
-                logger.error(message)
-            }
-        }
+  }
+  HttpResponseValidator {
+    handleResponseExceptionWithRequest { cause, _ ->
+      cause.message?.let { message -> logger.error(message) }
     }
+  }
 }
 
-/** Formats this [HttpResponse] so that it is more legible. **/
+/** Formats this [HttpResponse] so that it is more legible. */
 private suspend fun HttpResponse.format(): String {
-    val requestContent = request.content
-    val requestFormDataParamsAsString =
-        if (requestContent is FormDataContent) " (${requestContent.formData})" else ""
-    return "${status.value} on ${request.method.value} ${request.url}" +
-        "$requestFormDataParamsAsString:\n${bodyAsText()}"
+  val requestContent = request.content
+  val requestFormDataParamsAsString =
+    if (requestContent is FormDataContent) " (${requestContent.formData})" else ""
+  return "${status.value} on ${request.method.value} ${request.url}" +
+    "$requestFormDataParamsAsString:\n${bodyAsText()}"
 }
 
-/** Configures the behavior of [ContentNegotiation]-related operations. **/
+/** Configures the behavior of [ContentNegotiation]-related operations. */
 private fun HttpClientConfig<*>.setUpContentNegotiation() {
-    install(ContentNegotiation) {
-        setUpJsonSerialization()
-    }
+  install(ContentNegotiation) { setUpJsonSerialization() }
 }
 
-/** Configures [Json] serialization behavior. **/
+/** Configures [Json] serialization behavior. */
 private fun ContentNegotiation.Config.setUpJsonSerialization() {
-    json(
-        Json {
-            ignoreUnknownKeys = true
+  json(
+    Json {
+      ignoreUnknownKeys = true
 
-            @OptIn(ExperimentalSerializationApi::class)
-            namingStrategy = JsonNamingStrategy.SnakeCase
-        }
-    )
+      @OptIn(ExperimentalSerializationApi::class)
+      namingStrategy = JsonNamingStrategy.SnakeCase
+    }
+  )
 }

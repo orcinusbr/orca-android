@@ -9,15 +9,15 @@ import java.net.URL
  *
  * @see StyledString.Builder.mention
  * @see Mention
- **/
+ */
 internal val Mention.Companion.url
-    get() = URL("https://mastodon.social/@jeanbarrossilva")
+  get() = URL("https://mastodon.social/@jeanbarrossilva")
 
 /**
  * Sample username to mention.
  *
  * @see StyledString.Builder.mention
  * @see Mention
- **/
+ */
 internal val Mention.Companion.username
-    get() = "jeanbarrossilva"
+  get() = "jeanbarrossilva"

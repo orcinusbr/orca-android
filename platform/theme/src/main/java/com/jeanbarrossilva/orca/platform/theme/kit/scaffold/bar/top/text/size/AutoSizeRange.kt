@@ -10,28 +10,27 @@ import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSiz
  * Range within which an [AutoSizeText] should be sized.
  *
  * @param density [Density] through which sizes will be converted from [SP][TextUnitType.Sp] to
- * [Float] and vice-versa.
+ *   [Float] and vice-versa.
  * @param min Minimum size.
  * @param max Maximum, default size.
- **/
+ */
 @Immutable
-data class AutoSizeRange internal constructor(
-    private val density: Density,
-    private val min: TextUnit,
-    private val max: TextUnit
+data class AutoSizeRange
+internal constructor(
+  private val density: Density,
+  private val min: TextUnit,
+  private val max: TextUnit
 ) : ClosedFloatingPointRange<Float> {
-    override val start = with(density) { min.toPx() }
-    override val endInclusive = with(density) { max.toPx() }
+  override val start = with(density) { min.toPx() }
+  override val endInclusive = with(density) { max.toPx() }
 
-    init {
-        require(min.type == max.type) {
-            "Both minimum and maximum sizes should have the same TextUnitType."
-        }
+  init {
+    require(min.type == max.type) {
+      "Both minimum and maximum sizes should have the same TextUnitType."
     }
+  }
 
-    override fun lessThanOrEquals(a: Float, b: Float): Boolean {
-        return with(density) {
-            a.toSp() <= b.toSp()
-        }
-    }
+  override fun lessThanOrEquals(a: Float, b: Float): Boolean {
+    return with(density) { a.toSp() <= b.toSp() }
+  }
 }

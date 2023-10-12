@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.orca.feature.search
 
 interface SearchBoundary {
-    fun navigateToProfileDetails(id: String)
+  fun navigateToProfileDetails(id: String)
 
-    fun pop()
+  fun pop()
 }

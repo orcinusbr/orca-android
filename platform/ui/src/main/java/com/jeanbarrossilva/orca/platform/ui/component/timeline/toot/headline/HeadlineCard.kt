@@ -30,68 +30,60 @@ import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.compose.Image
 import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
 
-/** Tag that identifies a [HeadlineCard] for testing purposes. **/
+/** Tag that identifies a [HeadlineCard] for testing purposes. */
 const val HEADLINE_CARD_TAG = "headline-card"
 
 @Composable
 fun HeadlineCard(
-    headline: Headline,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    imageLoader: ImageLoader = rememberImageLoader()
+  headline: Headline,
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier,
+  imageLoader: ImageLoader = rememberImageLoader()
 ) {
-    val shape = OrcaTheme.shapes.large
-    val interactionSource = remember(::MutableInteractionSource)
+  val shape = OrcaTheme.shapes.large
+  val interactionSource = remember(::MutableInteractionSource)
 
-    Hoverable(
-        modifier
-            .border(shape)
-            .clip(shape)
-            .clickable(interactionSource, LocalIndication.current, onClick = onClick)
-            .background(OrcaTheme.colors.surface.container)
-            .testTag(HEADLINE_CARD_TAG)
-    ) {
-        Column {
-            Image(
-                headline.coverURL,
-                contentDescription = stringResource(
-                    R.string.platform_ui_headline_card_cover,
-                    headline.title
-                ),
-                Modifier
-                    .aspectRatio(16f / 9f)
-                    .fillMaxWidth(),
-                imageLoader,
-                contentScale = ContentScale.Crop
-            )
+  Hoverable(
+    modifier
+      .border(shape)
+      .clip(shape)
+      .clickable(interactionSource, LocalIndication.current, onClick = onClick)
+      .background(OrcaTheme.colors.surface.container)
+      .testTag(HEADLINE_CARD_TAG)
+  ) {
+    Column {
+      Image(
+        headline.coverURL,
+        contentDescription =
+          stringResource(R.string.platform_ui_headline_card_cover, headline.title),
+        Modifier.aspectRatio(16f / 9f).fillMaxWidth(),
+        imageLoader,
+        contentScale = ContentScale.Crop
+      )
 
-            Column(
-                Modifier.padding(OrcaTheme.spacings.medium),
-                Arrangement.spacedBy(OrcaTheme.spacings.small)
-            ) {
-                ProvideTextStyle(OrcaTheme.typography.bodyLarge) {
-                    Text(headline.title)
-                }
+      Column(
+        Modifier.padding(OrcaTheme.spacings.medium),
+        Arrangement.spacedBy(OrcaTheme.spacings.small)
+      ) {
+        ProvideTextStyle(OrcaTheme.typography.bodyLarge) { Text(headline.title) }
 
-                headline.subtitle?.let {
-                    ProvideTextStyle(OrcaTheme.typography.bodySmall) {
-                        Text(it, overflow = TextOverflow.Ellipsis, maxLines = 4)
-                    }
-                }
-            }
+        headline.subtitle?.let {
+          ProvideTextStyle(OrcaTheme.typography.bodySmall) {
+            Text(it, overflow = TextOverflow.Ellipsis, maxLines = 4)
+          }
         }
+      }
     }
+  }
 }
 
 @Composable
-internal fun HeadlineCard(modifier: Modifier = Modifier, onClick: () -> Unit = { }) {
-    HeadlineCard(Headline.sample, onClick, modifier)
+internal fun HeadlineCard(modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
+  HeadlineCard(Headline.sample, onClick, modifier)
 }
 
 @Composable
 @MultiThemePreview
 private fun HeadlineCardPreview() {
-    OrcaTheme {
-        HeadlineCard()
-    }
+  OrcaTheme { HeadlineCard() }
 }

@@ -28,125 +28,84 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class OptionsTests {
-    private val defaultOptionShape: CornerBasedShape
-        get() {
-            val context = InstrumentationRegistry.getInstrumentation().context
-            val shapes = Shapes.getDefault(context)
-            return OptionDefaults.getShape(shapes)
-        }
-
-    @get:Rule
-    val composeRule = createComposeRule()
-
-    @Test
-    fun shapesSingleOptionWithDefaultShape() {
-        composeRule.setContent {
-            OrcaTheme {
-                SampleOptions(count = 1)
-            }
-        }
-        composeRule.onOption().assertIsShapedBy(defaultOptionShape)
+  private val defaultOptionShape: CornerBasedShape
+    get() {
+      val context = InstrumentationRegistry.getInstrumentation().context
+      val shapes = Shapes.getDefault(context)
+      return OptionDefaults.getShape(shapes)
     }
 
-    @Test
-    fun shapesFirstOptionWithZeroedBottomCornerSizes() {
-        composeRule.setContent {
-            OrcaTheme {
-                Surface(color = Color.Transparent) {
-                    SampleOptions()
-                }
-            }
-        }
-        composeRule.onOptions().onFirst().assertIsShapedBy(defaultOptionShape.top)
-    }
+  @get:Rule val composeRule = createComposeRule()
 
-    @Test
-    fun shapesIntermediateOptionWithZeroedCornerSizes() {
-        composeRule.setContent {
-            OrcaTheme {
-                SampleOptions()
-            }
-        }
-        composeRule.onOptions()[1].assertIsShapedBy(RectangleShape)
-    }
+  @Test
+  fun shapesSingleOptionWithDefaultShape() {
+    composeRule.setContent { OrcaTheme { SampleOptions(count = 1) } }
+    composeRule.onOption().assertIsShapedBy(defaultOptionShape)
+  }
 
-    @Test
-    fun shapesLastOptionWithZeroedTopCornerSizes() {
-        composeRule.setContent {
-            OrcaTheme {
-                Surface(color = Color.Transparent) {
-                    SampleOptions()
-                }
-            }
-        }
-        composeRule.onOptions().onLast().assertIsShapedBy(defaultOptionShape.bottom)
-    }
+  @Test
+  fun shapesFirstOptionWithZeroedBottomCornerSizes() {
+    composeRule.setContent { OrcaTheme { Surface(color = Color.Transparent) { SampleOptions() } } }
+    composeRule.onOptions().onFirst().assertIsShapedBy(defaultOptionShape.top)
+  }
 
-    @Test
-    fun surroundsIntermediateOptionWithDividers() {
-        composeRule.setContent {
-            OrcaTheme {
-                SampleOptions()
-            }
-        }
-        composeRule
-            .onOptions()[1]
-            .onSiblings()
-            .filter(hasTestTag(OPTIONS_DIVIDER_TAG))
-            .assertCountEquals(2)
-    }
+  @Test
+  fun shapesIntermediateOptionWithZeroedCornerSizes() {
+    composeRule.setContent { OrcaTheme { SampleOptions() } }
+    composeRule.onOptions()[1].assertIsShapedBy(RectangleShape)
+  }
 
-    @Test
-    fun selectsFirstOptionByDefault() {
-        composeRule.setContent {
-            OrcaTheme {
-                SampleOptions()
-            }
-        }
-        composeRule.onOptions().onFirst().assertIsSelected()
-    }
+  @Test
+  fun shapesLastOptionWithZeroedTopCornerSizes() {
+    composeRule.setContent { OrcaTheme { Surface(color = Color.Transparent) { SampleOptions() } } }
+    composeRule.onOptions().onLast().assertIsShapedBy(defaultOptionShape.bottom)
+  }
 
-    @Test
-    fun runsCallbackWhenOptionIsSelectedByDefault() {
-        var index = -1
-        composeRule.setContent {
-            OrcaTheme {
-                SampleOptions(
-                    onSelection = {
-                        index = it
-                    }
-                )
-            }
-        }
-        assertEquals(0, index)
-    }
+  @Test
+  fun surroundsIntermediateOptionWithDividers() {
+    composeRule.setContent { OrcaTheme { SampleOptions() } }
+    composeRule
+      .onOptions()[1]
+      .onSiblings()
+      .filter(hasTestTag(OPTIONS_DIVIDER_TAG))
+      .assertCountEquals(2)
+  }
 
-    @Test
-    fun runsCallbackOnceWhenOptionIsSelectedMultipleTimes() {
-        var count = 0
-        composeRule.setContent {
-            OrcaTheme {
-                SampleOptions(
-                    onSelection = {
-                        if (it == 0) {
-                            count++
-                        }
-                    }
-                )
-            }
-        }
-        composeRule.onOptions().onFirst().performClick()
-        assertEquals(1, count)
-    }
+  @Test
+  fun selectsFirstOptionByDefault() {
+    composeRule.setContent { OrcaTheme { SampleOptions() } }
+    composeRule.onOptions().onFirst().assertIsSelected()
+  }
 
-    @Test
-    fun unselectsPreviouslySelectedOptionWhenAnotherOneIsSelected() {
-        composeRule.setContent {
-            OrcaTheme {
-                SampleOptions()
+  @Test
+  fun runsCallbackWhenOptionIsSelectedByDefault() {
+    var index = -1
+    composeRule.setContent { OrcaTheme { SampleOptions(onSelection = { index = it }) } }
+    assertEquals(0, index)
+  }
+
+  @Test
+  fun runsCallbackOnceWhenOptionIsSelectedMultipleTimes() {
+    var count = 0
+    composeRule.setContent {
+      OrcaTheme {
+        SampleOptions(
+          onSelection = {
+            if (it == 0) {
+              count++
             }
-        }
-        composeRule.onOptions().onLast().performClick()
-        composeRule.onOptions().onFirst().assertIsNotSelected()
+          }
+        )
+      }
     }
+    composeRule.onOptions().onFirst().performClick()
+    assertEquals(1, count)
+  }
+
+  @Test
+  fun unselectsPreviouslySelectedOptionWhenAnotherOneIsSelected() {
+    composeRule.setContent { OrcaTheme { SampleOptions() } }
+    composeRule.onOptions().onLast().performClick()
+    composeRule.onOptions().onFirst().assertIsNotSelected()
+  }
 }
