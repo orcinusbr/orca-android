@@ -9,16 +9,16 @@ import kotlinx.coroutines.launch
  * Converts this [Flow] into a [MutableStateFlow] that mirrors its emissions.
  *
  * @param scope [CoroutineScope] from which this [Flow] will be collected and its emissions will be
- * sent to the created [MutableStateFlow].
+ *   sent to the created [MutableStateFlow].
  * @param initialValue [Value][MutableStateFlow.value] that's initially held by the
- * [MutableStateFlow].
- **/
+ *   [MutableStateFlow].
+ */
 @Suppress("KDocUnresolvedReference")
-internal fun <T> Flow<T>.mutableStateIn(scope: CoroutineScope, initialValue: T):
-    MutableStateFlow<T> {
-    return MutableStateFlow(initialValue).apply {
-        scope.launch {
-            this@mutableStateIn.collect(this@apply)
-        }
-    }
+internal fun <T> Flow<T>.mutableStateIn(
+  scope: CoroutineScope,
+  initialValue: T
+): MutableStateFlow<T> {
+  return MutableStateFlow(initialValue).apply {
+    scope.launch { this@mutableStateIn.collect(this@apply) }
+  }
 }

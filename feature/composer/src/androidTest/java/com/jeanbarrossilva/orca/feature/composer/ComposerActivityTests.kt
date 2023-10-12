@@ -24,38 +24,41 @@ import org.junit.Test
 
 @OptIn(ExperimentalTestApi::class)
 internal class ComposerActivityTests {
-    @get:Rule
-    val composeRule = createAndroidComposeRule<ComposerActivity>()
+  @get:Rule val composeRule = createAndroidComposeRule<ComposerActivity>()
 
-    @Test
-    fun stylesSelectedComposition() {
-        composeRule.onField().performTextInput("Hello, world!")
-        composeRule.onField().performTextInputSelection(TextRange(0, 5))
-        composeRule.onToolbar().onChildren().filterToOne(isBoldFormat()).performClick()
-        composeRule.onField().assertTextEquals(
-            buildAnnotatedString {
-                withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append("Hello") }
-                append(", world!")
-            }
-        )
-    }
+  @Test
+  fun stylesSelectedComposition() {
+    composeRule.onField().performTextInput("Hello, world!")
+    composeRule.onField().performTextInputSelection(TextRange(0, 5))
+    composeRule.onToolbar().onChildren().filterToOne(isBoldFormat()).performClick()
+    composeRule
+      .onField()
+      .assertTextEquals(
+        buildAnnotatedString {
+          withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append("Hello") }
+          append(", world!")
+        }
+      )
+  }
 
-    @Ignore(
-        "androidx.compose.ui:ui-text:1.5.0 has a bug that prevents stylization from being kept " +
-            "across selection changes."
-    )
-    @Test
-    fun keepsStylizationWhenUnselectingStylizedComposition() {
-        composeRule.onField().performTextInput("Hello, world!")
-        composeRule.onField().performTextInputSelection(TextRange(7, 12))
-        composeRule.onToolbar().onChildren().filterToOne(isItalicFormat()).performClick()
-        repeat(64) { composeRule.onField().performTextInputSelection(TextRange((0..12).random())) }
-        composeRule.onField().assertTextEquals(
-            buildAnnotatedString {
-                append("Hello, ")
-                withStyle(SpanStyle(fontStyle = FontStyle.Italic)) { append("world") }
-                append('!')
-            }
-        )
-    }
+  @Ignore(
+    "androidx.compose.ui:ui-text:1.5.0 has a bug that prevents stylization from being kept " +
+      "across selection changes."
+  )
+  @Test
+  fun keepsStylizationWhenUnselectingStylizedComposition() {
+    composeRule.onField().performTextInput("Hello, world!")
+    composeRule.onField().performTextInputSelection(TextRange(7, 12))
+    composeRule.onToolbar().onChildren().filterToOne(isItalicFormat()).performClick()
+    repeat(64) { composeRule.onField().performTextInputSelection(TextRange((0..12).random())) }
+    composeRule
+      .onField()
+      .assertTextEquals(
+        buildAnnotatedString {
+          append("Hello, ")
+          withStyle(SpanStyle(fontStyle = FontStyle.Italic)) { append("world") }
+          append('!')
+        }
+      )
+  }
 }

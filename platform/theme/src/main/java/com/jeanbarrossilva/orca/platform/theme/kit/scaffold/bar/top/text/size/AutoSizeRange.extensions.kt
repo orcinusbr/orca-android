@@ -12,10 +12,10 @@ import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
  * [OrcaTheme.typography]'s [Typography.labelSmall]'s.
  *
  * @param max Maximum, default size.
- **/
+ */
 @Composable
 fun rememberAutoSizeRange(max: TextUnit): AutoSizeRange {
-    return rememberAutoSizeRange(min = OrcaTheme.typography.labelSmall.fontSize, max)
+  return rememberAutoSizeRange(min = OrcaTheme.typography.labelSmall.fontSize, max)
 }
 
 /**
@@ -23,9 +23,9 @@ fun rememberAutoSizeRange(max: TextUnit): AutoSizeRange {
  *
  * @param min Minimum size.
  * @param max Maximum, default size.
- **/
+ */
 @Composable
 fun rememberAutoSizeRange(min: TextUnit, max: TextUnit): AutoSizeRange {
-    val density = LocalDensity.current
-    return remember(density, min, max) { AutoSizeRange(density, min, max) }
+  val density = LocalDensity.current
+  return remember(density, min, max) { AutoSizeRange(density, min, max) }
 }

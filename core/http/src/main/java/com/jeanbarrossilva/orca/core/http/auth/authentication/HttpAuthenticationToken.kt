@@ -15,18 +15,19 @@ import kotlinx.serialization.Serializable
  * authorization was successfully granted to the user.
  *
  * @param accessToken Token that gives Orca user-level access to the API resources.
- **/
+ */
 @Serializable
 internal data class HttpAuthenticationToken(val accessToken: String) {
-    /**
-     * Converts this [HttpAuthenticationToken] into an [authenticated][Actor.Authenticated] [Actor].
-     **/
-    suspend fun toActor(): Actor.Authenticated {
-        val id = (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
-            .client
-            .get("/api/v1/accounts/verify_credentials") { bearerAuth(accessToken) }
-            .body<HttpAuthenticationVerification>()
-            .id
-        return Actor.Authenticated(id, accessToken)
-    }
+  /**
+   * Converts this [HttpAuthenticationToken] into an [authenticated][Actor.Authenticated] [Actor].
+   */
+  suspend fun toActor(): Actor.Authenticated {
+    val id =
+      (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
+        .client
+        .get("/api/v1/accounts/verify_credentials") { bearerAuth(accessToken) }
+        .body<HttpAuthenticationVerification>()
+        .id
+    return Actor.Authenticated(id, accessToken)
+  }
 }

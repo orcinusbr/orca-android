@@ -28,75 +28,69 @@ import com.jeanbarrossilva.orca.std.injector.Injector
 import kotlinx.coroutines.launch
 
 internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilityChangeListener {
-    private var binding: ActivityOrcaBinding? = null
-    private var constraintSet: ConstraintSet? = null
+  private var binding: ActivityOrcaBinding? = null
+  private var constraintSet: ConstraintSet? = null
 
-    protected open val httpModule: HttpModule = MainHttpModule()
+  protected open val httpModule: HttpModule = MainHttpModule()
 
-    final override val height: Int
-        get() = binding?.bottomNavigationView?.height ?: 0
+  final override val height: Int
+    get() = binding?.bottomNavigationView?.height ?: 0
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        binding = ActivityOrcaBinding.inflate(layoutInflater)
-        constraintSet = ConstraintSet().apply { clone(binding?.root) }
-        setContentView(binding?.root)
-        inject()
-        navigateOnBottomNavigationItemSelection()
-        navigateToDefaultDestination()
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    WindowCompat.setDecorFitsSystemWindows(window, false)
+    binding = ActivityOrcaBinding.inflate(layoutInflater)
+    constraintSet = ConstraintSet().apply { clone(binding?.root) }
+    setContentView(binding?.root)
+    inject()
+    navigateOnBottomNavigationItemSelection()
+    navigateToDefaultDestination()
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    constraintSet = null
+    binding = null
+    Injector.clear()
+  }
+
+  final override fun getCurrentOffsetY(): Float {
+    return constraintSet?.getConstraint(R.id.bottom_navigation_view)?.transform?.translationY ?: 0f
+  }
+
+  final override fun onBottomAreaAvailabilityChange(offsetY: Float) {
+    constraintSet?.apply {
+      getConstraint(R.id.container).layout.bottomMargin = -offsetY.toInt()
+      getConstraint(R.id.bottom_navigation_view).transform.translationY = offsetY
+      applyTo(binding?.root)
     }
+  }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        constraintSet = null
-        binding = null
-        Injector.clear()
+  private fun inject() {
+    with(Injector) {
+      inject<Context> { this@OrcaActivity }
+      register(httpModule)
+      register<FeedModule>(MainFeedModule(this@OrcaActivity))
+      register<ProfileDetailsModule>(MainProfileDetailsModule(this@OrcaActivity))
+      register<SearchModule>(MainSearchModule(navigator))
+      register<SettingsModule>(MainSettingsModule(navigator))
+      register<TermMutingModule>(MainTermMutingModule(navigator))
+      register<TootDetailsModule>(MainTootDetailsModule(this@OrcaActivity))
     }
+  }
 
-    final override fun getCurrentOffsetY(): Float {
-        return constraintSet
-            ?.getConstraint(R.id.bottom_navigation_view)
-            ?.transform
-            ?.translationY
-            ?: 0f
+  private fun navigateOnBottomNavigationItemSelection() {
+    binding?.bottomNavigationView?.setOnItemSelectedListener {
+      navigateTo(it.itemId)
+      true
     }
+  }
 
-    final override fun onBottomAreaAvailabilityChange(offsetY: Float) {
-        constraintSet?.apply {
-            getConstraint(R.id.container).layout.bottomMargin = -offsetY.toInt()
-            getConstraint(R.id.bottom_navigation_view).transform.translationY = offsetY
-            applyTo(binding?.root)
-        }
-    }
+  private fun navigateTo(@IdRes itemID: Int) {
+    lifecycleScope.launch { BottomNavigation.navigate(navigator, itemID) }
+  }
 
-    private fun inject() {
-        with(Injector) {
-            inject<Context> { this@OrcaActivity }
-            register(httpModule)
-            register<FeedModule>(MainFeedModule(this@OrcaActivity))
-            register<ProfileDetailsModule>(MainProfileDetailsModule(this@OrcaActivity))
-            register<SearchModule>(MainSearchModule(navigator))
-            register<SettingsModule>(MainSettingsModule(navigator))
-            register<TermMutingModule>(MainTermMutingModule(navigator))
-            register<TootDetailsModule>(MainTootDetailsModule(this@OrcaActivity))
-        }
-    }
-
-    private fun navigateOnBottomNavigationItemSelection() {
-        binding?.bottomNavigationView?.setOnItemSelectedListener {
-            navigateTo(it.itemId)
-            true
-        }
-    }
-
-    private fun navigateTo(@IdRes itemID: Int) {
-        lifecycleScope.launch {
-            BottomNavigation.navigate(navigator, itemID)
-        }
-    }
-
-    private fun navigateToDefaultDestination() {
-        binding?.bottomNavigationView?.selectedItemId = R.id.feed
-    }
+  private fun navigateToDefaultDestination() {
+    binding?.bottomNavigationView?.selectedItemId = R.id.feed
+  }
 }

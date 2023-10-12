@@ -21,58 +21,58 @@ import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSiz
 
 @Composable
 internal fun Settings(
-    viewModel: SettingsViewModel,
-    boundary: SettingsBoundary,
-    modifier: Modifier = Modifier
+  viewModel: SettingsViewModel,
+  boundary: SettingsBoundary,
+  modifier: Modifier = Modifier
 ) {
-    val mutedTerms by viewModel.mutedTermsFlow.collectAsState()
+  val mutedTerms by viewModel.mutedTermsFlow.collectAsState()
 
-    Settings(
-        mutedTerms,
-        onNavigationToTermMuting = boundary::navigateToTermMuting,
-        onTermUnmute = viewModel::unmute,
-        modifier
-    )
+  Settings(
+    mutedTerms,
+    onNavigationToTermMuting = boundary::navigateToTermMuting,
+    onTermUnmute = viewModel::unmute,
+    modifier
+  )
 }
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun Settings(
-    mutedTerms: List<String>,
-    onNavigationToTermMuting: () -> Unit,
-    onTermUnmute: (term: String) -> Unit,
-    modifier: Modifier = Modifier
+  mutedTerms: List<String>,
+  onNavigationToTermMuting: () -> Unit,
+  onTermUnmute: (term: String) -> Unit,
+  modifier: Modifier = Modifier
 ) {
-    val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
-    val lazyListState = rememberLazyListState()
+  val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
+  val lazyListState = rememberLazyListState()
 
-    Scaffold(
-        modifier,
-        topAppBar = {
-            TopAppBar(
-                title = { AutoSizeText(stringResource(R.string.settings)) },
-                scrollBehavior = topAppBarScrollBehavior
-            )
-        }
-    ) {
-        LazyColumn(
-            Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-            state = lazyListState,
-            contentPadding = it + PaddingValues(OrcaTheme.spacings.medium)
-        ) {
-            item {
-                Section(stringResource(R.string.settings_general)) {
-                    muting(mutedTerms, onNavigationToTermMuting, onTermUnmute)
-                }
-            }
-        }
+  Scaffold(
+    modifier,
+    topAppBar = {
+      TopAppBar(
+        title = { AutoSizeText(stringResource(R.string.settings)) },
+        scrollBehavior = topAppBarScrollBehavior
+      )
     }
+  ) {
+    LazyColumn(
+      Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+      state = lazyListState,
+      contentPadding = it + PaddingValues(OrcaTheme.spacings.medium)
+    ) {
+      item {
+        Section(stringResource(R.string.settings_general)) {
+          muting(mutedTerms, onNavigationToTermMuting, onTermUnmute)
+        }
+      }
+    }
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun SettingsPreview() {
-    OrcaTheme {
-        Settings(mutedTerms = listOf("Java"), onNavigationToTermMuting = { }, onTermUnmute = { })
-    }
+  OrcaTheme {
+    Settings(mutedTerms = listOf("Java"), onNavigationToTermMuting = {}, onTermUnmute = {})
+  }
 }

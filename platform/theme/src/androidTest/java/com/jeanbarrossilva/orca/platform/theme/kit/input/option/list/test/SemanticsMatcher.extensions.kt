@@ -11,16 +11,16 @@ import androidx.compose.ui.test.SemanticsMatcher
  * clipped is the given one.
  *
  * @param shape [Shape] to assert that it's the one by which the [SemanticsNode] is shaped.
- **/
+ */
 internal fun isShapedBy(shape: Shape): SemanticsMatcher {
-    return SemanticsMatcher("Shape = '$shape'") { node ->
-        shape == node
-            .layoutInfo
-            .getModifierInfo()
-            .map(ModifierInfo::modifier)
-            .filterIsInstance<ModifierNodeElement<*>>()
-            .flatMap(ModifierNodeElement<*>::inspectableElements)
-            .find { element -> element.name == "shape" }
-            ?.value
-    }
+  return SemanticsMatcher("Shape = '$shape'") { node ->
+    shape ==
+      node.layoutInfo
+        .getModifierInfo()
+        .map(ModifierInfo::modifier)
+        .filterIsInstance<ModifierNodeElement<*>>()
+        .flatMap(ModifierNodeElement<*>::inspectableElements)
+        .find { element -> element.name == "shape" }
+        ?.value
+  }
 }

@@ -16,52 +16,37 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class OptionTests {
-    @get:Rule
-    val composeRule = createComposeRule()
+  @get:Rule val composeRule = createComposeRule()
 
-    @Test
-    fun isSemanticallySelectedWhenSelected() {
-        composeRule.setContent {
-            OrcaTheme {
-                Option(isSelected = true)
-            }
-        }
-        composeRule.onOption().assertIsSelected()
-    }
+  @Test
+  fun isSemanticallySelectedWhenSelected() {
+    composeRule.setContent { OrcaTheme { Option(isSelected = true) } }
+    composeRule.onOption().assertIsSelected()
+  }
 
-    @Test
-    fun showsSelectionIconWhenSelected() {
-        composeRule.setContent {
-            OrcaTheme {
-                Option(isSelected = true)
-            }
-        }
-        composeRule
-            .onNodeWithTag(OPTION_SELECTION_ICON_TAG, useUnmergedTree = true)
-            .assertIsDisplayed()
-    }
+  @Test
+  fun showsSelectionIconWhenSelected() {
+    composeRule.setContent { OrcaTheme { Option(isSelected = true) } }
+    composeRule.onNodeWithTag(OPTION_SELECTION_ICON_TAG, useUnmergedTree = true).assertIsDisplayed()
+  }
 
-    @Test
-    fun runsCallbackWhenSelected() {
-        var isSelected by mutableStateOf(false)
-        composeRule.setContent {
-            OrcaTheme {
-                Option(isSelected, onSelectionToggle = { isSelected = it })
-            }
-        }
-        composeRule.onOption().performClick()
-        assertTrue(isSelected)
+  @Test
+  fun runsCallbackWhenSelected() {
+    var isSelected by mutableStateOf(false)
+    composeRule.setContent {
+      OrcaTheme { Option(isSelected, onSelectionToggle = { isSelected = it }) }
     }
+    composeRule.onOption().performClick()
+    assertTrue(isSelected)
+  }
 
-    @Test
-    fun runsCallbackWhenUnselected() {
-        var isSelected by mutableStateOf(true)
-        composeRule.setContent {
-            OrcaTheme {
-                Option(isSelected, onSelectionToggle = { isSelected = it })
-            }
-        }
-        composeRule.onOption().performClick()
-        assertFalse(isSelected)
+  @Test
+  fun runsCallbackWhenUnselected() {
+    var isSelected by mutableStateOf(true)
+    composeRule.setContent {
+      OrcaTheme { Option(isSelected, onSelectionToggle = { isSelected = it }) }
     }
+    composeRule.onOption().performClick()
+    assertFalse(isSelected)
+  }
 }

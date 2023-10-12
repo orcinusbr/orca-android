@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = namespaceFor("platform.ui.test")
-    composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
+    composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.get()
     defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
     buildFeatures {

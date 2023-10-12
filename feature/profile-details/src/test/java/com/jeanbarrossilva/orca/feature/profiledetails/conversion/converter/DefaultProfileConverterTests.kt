@@ -12,29 +12,29 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 internal class DefaultProfileConverterTests {
-    private val converter = DefaultProfileConverter(next = null)
+  private val converter = DefaultProfileConverter(next = null)
 
-    @Test
-    fun convertsDefaultProfile() {
-        assertEquals(
-            ProfileDetails.Default.createSample(Colors.Unspecified),
-            converter.convert(Profile.sample, Colors.Unspecified)
-        )
-    }
+  @Test
+  fun convertsDefaultProfile() {
+    assertEquals(
+      ProfileDetails.Default.createSample(Colors.Unspecified),
+      converter.convert(Profile.sample, Colors.Unspecified)
+    )
+  }
 
-    @Test
-    fun convertsEditableProfile() {
-        assertEquals(
-            ProfileDetails.Default.createSample(Colors.Unspecified),
-            converter.convert(EditableProfile.sample, Colors.Unspecified)
-        )
-    }
+  @Test
+  fun convertsEditableProfile() {
+    assertEquals(
+      ProfileDetails.Default.createSample(Colors.Unspecified),
+      converter.convert(EditableProfile.sample, Colors.Unspecified)
+    )
+  }
 
-    @Test
-    fun convertsFollowableProfile() {
-        assertEquals(
-            ProfileDetails.Default.createSample(Colors.Unspecified),
-            converter.convert(FollowableProfile.sample, Colors.Unspecified)
-        )
-    }
+  @Test
+  fun convertsFollowableProfile() {
+    assertEquals(
+      ProfileDetails.Default.createSample(Colors.Unspecified),
+      converter.convert(FollowableProfile.sample, Colors.Unspecified)
+    )
+  }
 }

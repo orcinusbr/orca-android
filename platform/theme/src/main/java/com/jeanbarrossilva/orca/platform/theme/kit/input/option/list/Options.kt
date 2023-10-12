@@ -20,21 +20,17 @@ import com.jeanbarrossilva.orca.platform.theme.extensions.top
 import com.jeanbarrossilva.orca.platform.theme.kit.input.option.Option
 import com.jeanbarrossilva.orca.platform.theme.kit.input.option.OptionDefaults
 
-/** Tag that identifies [Options]' [Divider]s for testing purposes. **/
+/** Tag that identifies [Options]' [Divider]s for testing purposes. */
 internal const val OPTIONS_DIVIDER_TAG = "options-divider"
 
 /**
  * [Column] of loading [Option]s that are shaped according to their position.
  *
  * @param modifier [Modifier] to be applied to the underlying [Column].
- **/
+ */
 @Composable
 fun Options(modifier: Modifier = Modifier) {
-    Options(onSelection = { }, modifier) {
-        repeat(128) {
-            option()
-        }
-    }
+  Options(onSelection = {}, modifier) { repeat(128) { option() } }
 }
 
 /**
@@ -43,39 +39,38 @@ fun Options(modifier: Modifier = Modifier) {
  * @param onSelection Callback run whenever any of the [Option]s is selected.
  * @param modifier [Modifier] to be applied to the underlying [Column].
  * @param content Actions to be run on the given [OptionsScope].
- **/
+ */
 @Composable
 fun Options(
-    onSelection: (index: Int) -> Unit,
-    modifier: Modifier = Modifier,
-    content: OptionsScope.() -> Unit
+  onSelection: (index: Int) -> Unit,
+  modifier: Modifier = Modifier,
+  content: OptionsScope.() -> Unit
 ) {
-    val defaultOptionShape = OptionDefaults.shape
-    var selectedOptionIndex by remember { mutableIntStateOf(0) }
-    val scope = remember(onSelection, content) {
-        OptionsScope { selectedOptionIndex = it }.apply(content)
-    }
+  val defaultOptionShape = OptionDefaults.shape
+  var selectedOptionIndex by remember { mutableIntStateOf(0) }
+  val scope =
+    remember(onSelection, content) { OptionsScope { selectedOptionIndex = it }.apply(content) }
 
-    DisposableEffect(selectedOptionIndex) {
-        onSelection(selectedOptionIndex)
-        onDispose { }
-    }
+  DisposableEffect(selectedOptionIndex) {
+    onSelection(selectedOptionIndex)
+    onDispose {}
+  }
 
-    Column(modifier.border(defaultOptionShape)) {
-        scope.options.forEachIndexed { index, option ->
-            when {
-                scope.options.size == 1 -> option(selectedOptionIndex, defaultOptionShape)
-                index == 0 -> option(selectedOptionIndex, defaultOptionShape.top)
-                index == scope.options.lastIndex -> {
-                    option(selectedOptionIndex, defaultOptionShape.bottom)
-                    return@forEachIndexed
-                }
-                else -> option(selectedOptionIndex, RectangleShape)
-            }
-
-            Divider(Modifier.testTag(OPTIONS_DIVIDER_TAG))
+  Column(modifier.border(defaultOptionShape)) {
+    scope.options.forEachIndexed { index, option ->
+      when {
+        scope.options.size == 1 -> option(selectedOptionIndex, defaultOptionShape)
+        index == 0 -> option(selectedOptionIndex, defaultOptionShape.top)
+        index == scope.options.lastIndex -> {
+          option(selectedOptionIndex, defaultOptionShape.bottom)
+          return@forEachIndexed
         }
+        else -> option(selectedOptionIndex, RectangleShape)
+      }
+
+      Divider(Modifier.testTag(OPTIONS_DIVIDER_TAG))
     }
+  }
 }
 
 /**
@@ -84,34 +79,24 @@ fun Options(
  * @param count Amount of sample [Option]s to be added.
  * @param onSelection Callback run whenever any of the [Option]s is selected.
  * @param modifier [Modifier] to be applied to the underlying [Column].
- **/
+ */
 @Composable
 internal fun SampleOptions(
-    modifier: Modifier = Modifier,
-    count: Int = 3,
-    onSelection: (index: Int) -> Unit = { _ -> }
+  modifier: Modifier = Modifier,
+  count: Int = 3,
+  onSelection: (index: Int) -> Unit = { _ -> }
 ) {
-    Options(onSelection, modifier) {
-        repeat(count) {
-            option {
-                Text("Label #$it")
-            }
-        }
-    }
+  Options(onSelection, modifier) { repeat(count) { option { Text("Label #$it") } } }
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadingOptionsPreview() {
-    OrcaTheme {
-        Options()
-    }
+  OrcaTheme { Options() }
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadedOptionsPreview() {
-    OrcaTheme {
-        SampleOptions()
-    }
+  OrcaTheme { SampleOptions() }
 }

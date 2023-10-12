@@ -8,16 +8,16 @@ import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 @Composable
 @Suppress("TestFunctionName")
 internal fun TestActivateableStatIcon(
-    modifier: Modifier = Modifier,
-    isActive: Boolean = false,
-    interactiveness: ActivateableStatIconInteractiveness = ActivateableStatIconInteractiveness.Still
+  modifier: Modifier = Modifier,
+  isActive: Boolean = false,
+  interactiveness: ActivateableStatIconInteractiveness = ActivateableStatIconInteractiveness.Still
 ) {
-    ActivateableStatIcon(
-        OrcaTheme.iconography.forward,
-        contentDescription = "Proceed",
-        isActive,
-        interactiveness,
-        ActivateableStatIconColors(LocalContentColor.current, LocalContentColor.current),
-        modifier
-    )
+  ActivateableStatIcon(
+    OrcaTheme.iconography.forward,
+    contentDescription = "Proceed",
+    isActive,
+    interactiveness,
+    ActivateableStatIconColors(LocalContentColor.current, LocalContentColor.current),
+    modifier
+  )
 }

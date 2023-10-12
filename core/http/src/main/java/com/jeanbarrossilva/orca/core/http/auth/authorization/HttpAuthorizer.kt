@@ -13,25 +13,25 @@ import kotlin.coroutines.suspendCoroutine
  *
  * @param context [Context] through which the [HttpAuthorizationActivity] will be started.
  * @see receive
- **/
+ */
 class HttpAuthorizer(private val context: Context) : Authorizer() {
-    /** [Continuation] of the coroutine that's suspended on authorization. **/
-    private var continuation: Continuation<String>? = null
+  /** [Continuation] of the coroutine that's suspended on authorization. */
+  private var continuation: Continuation<String>? = null
 
-    override suspend fun authorize(): String {
-        return suspendCoroutine {
-            continuation = it
-            context.on<HttpAuthorizationActivity>().asNewTask().start()
-        }
+  override suspend fun authorize(): String {
+    return suspendCoroutine {
+      continuation = it
+      context.on<HttpAuthorizationActivity>().asNewTask().start()
     }
+  }
 
-    /**
-     * Notifies this [HttpAuthorizer] that the [accessToken] has been successfully retrieved,
-     * consequently resuming the suspended coroutine.
-     *
-     * @param accessToken Access token to be received.
-     **/
-    internal fun receive(accessToken: String) {
-        continuation?.resume(accessToken)
-    }
+  /**
+   * Notifies this [HttpAuthorizer] that the [accessToken] has been successfully retrieved,
+   * consequently resuming the suspended coroutine.
+   *
+   * @param accessToken Access token to be received.
+   */
+  internal fun receive(accessToken: String) {
+    continuation?.resume(accessToken)
+  }
 }

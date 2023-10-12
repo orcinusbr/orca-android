@@ -12,7 +12,7 @@ plugins {
 
 android {
     compileSdk = libs.versions.android.sdk.target.get().toInt()
-    composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
+    composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.get()
     flavorDimensions += Dimensions.VERSION
     namespace = namespaceFor("app")
 

@@ -5,7 +5,7 @@ plugins {
 
 android {
     buildFeatures.compose = true
-    composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
+    composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.get()
     packagingOptions.resources.excludes +=
         arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
 

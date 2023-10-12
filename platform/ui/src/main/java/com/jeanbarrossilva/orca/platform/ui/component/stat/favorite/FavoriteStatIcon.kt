@@ -15,24 +15,24 @@ import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconC
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconDefaults
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconInteractiveness
 
-/** Tag that identifies a [FavoriteStatIcon] for testing purposes. **/
+/** Tag that identifies a [FavoriteStatIcon] for testing purposes. */
 const val FAVORITE_STAT_ICON_TAG = "favorite-stat-icon"
 
-/** Default values of a [FavoriteStatIcon]. **/
+/** Default values of a [FavoriteStatIcon]. */
 object FavoriteStatIconDefaults {
-    /**
-     * [ActivateableStatIconColors] by which a [FavoriteStatIcon] is colored by default.
-     *
-     * @param inactiveColor [Color] to color it with when it's inactive.
-     * @param activeColor [Color] to color it with when it's active.
-     **/
-    @Composable
-    fun colors(
-        inactiveColor: Color = LocalContentColor.current,
-        activeColor: Color = OrcaTheme.colors.activation.favorite
-    ): ActivateableStatIconColors {
-        return ActivateableStatIconColors(inactiveColor, activeColor)
-    }
+  /**
+   * [ActivateableStatIconColors] by which a [FavoriteStatIcon] is colored by default.
+   *
+   * @param inactiveColor [Color] to color it with when it's inactive.
+   * @param activeColor [Color] to color it with when it's active.
+   */
+  @Composable
+  fun colors(
+    inactiveColor: Color = LocalContentColor.current,
+    activeColor: Color = OrcaTheme.colors.activation.favorite
+  ): ActivateableStatIconColors {
+    return ActivateableStatIconColors(inactiveColor, activeColor)
+  }
 }
 
 /**
@@ -40,47 +40,47 @@ object FavoriteStatIconDefaults {
  *
  * @param isActive Whether the state it represents is enabled.
  * @param interactiveness [ActivateableStatIconInteractiveness] that indicates whether this
- * [ActivateableStatIconDefaults] can be interacted with.
+ *   [ActivateableStatIconDefaults] can be interacted with.
  * @param colors [ActivateableStatIconColors] that defines the [Color]s to color it.
  * @param modifier [Modifier] to be applied to the underlying [ActivateableStatIconDefaults].
- **/
+ */
 @Composable
 fun FavoriteStatIcon(
-    isActive: Boolean,
-    interactiveness: ActivateableStatIconInteractiveness,
-    modifier: Modifier = Modifier,
-    colors: ActivateableStatIconColors = FavoriteStatIconDefaults.colors()
+  isActive: Boolean,
+  interactiveness: ActivateableStatIconInteractiveness,
+  modifier: Modifier = Modifier,
+  colors: ActivateableStatIconColors = FavoriteStatIconDefaults.colors()
 ) {
-    ActivateableStatIcon(
-        if (isActive) {
-            OrcaTheme.iconography.favorite.filled
-        } else {
-            OrcaTheme.iconography.favorite.outlined
-        },
-        contentDescription = stringResource(R.string.platform_ui_favorite_stat),
-        isActive,
-        interactiveness,
-        colors,
-        modifier.testTag(FAVORITE_STAT_ICON_TAG)
-    )
+  ActivateableStatIcon(
+    if (isActive) {
+      OrcaTheme.iconography.favorite.filled
+    } else {
+      OrcaTheme.iconography.favorite.outlined
+    },
+    contentDescription = stringResource(R.string.platform_ui_favorite_stat),
+    isActive,
+    interactiveness,
+    colors,
+    modifier.testTag(FAVORITE_STAT_ICON_TAG)
+  )
 }
 
 @Composable
 @MultiThemePreview
 private fun InactiveFavoriteStatIconPreview() {
-    OrcaTheme {
-        Surface(color = OrcaTheme.colors.background.container) {
-            FavoriteStatIcon(isActive = false, ActivateableStatIconInteractiveness.Still)
-        }
+  OrcaTheme {
+    Surface(color = OrcaTheme.colors.background.container) {
+      FavoriteStatIcon(isActive = false, ActivateableStatIconInteractiveness.Still)
     }
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun ActiveFavoriteStatIconPreview() {
-    OrcaTheme {
-        Surface(color = OrcaTheme.colors.background.container) {
-            FavoriteStatIcon(isActive = true, ActivateableStatIconInteractiveness.Still)
-        }
+  OrcaTheme {
+    Surface(color = OrcaTheme.colors.background.container) {
+      FavoriteStatIcon(isActive = true, ActivateableStatIconInteractiveness.Still)
     }
+  }
 }

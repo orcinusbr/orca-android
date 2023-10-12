@@ -32,143 +32,133 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.headline.Hea
 
 @Composable
 internal fun Header(modifier: Modifier = Modifier) {
-    Header(
-        avatar = { SmallAvatar() },
-        name = { SmallTextualPlaceholder() },
-        username = { MediumTextualPlaceholder() },
-        content = {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall)
-            ) {
-                repeat(3) { LargeTextualPlaceholder() }
-                MediumTextualPlaceholder()
-            }
-        },
-        metadata = { SmallTextualPlaceholder() },
-        stats = { },
-        modifier
-    )
+  Header(
+    avatar = { SmallAvatar() },
+    name = { SmallTextualPlaceholder() },
+    username = { MediumTextualPlaceholder() },
+    content = {
+      Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall)) {
+        repeat(3) { LargeTextualPlaceholder() }
+        MediumTextualPlaceholder()
+      }
+    },
+    metadata = { SmallTextualPlaceholder() },
+    stats = {},
+    modifier
+  )
 }
 
 @Composable
 internal fun Header(
-    details: TootDetails,
-    onHighlightClick: () -> Unit,
-    onFavorite: () -> Unit,
-    onReblog: () -> Unit,
-    onShare: () -> Unit,
-    modifier: Modifier = Modifier
+  details: TootDetails,
+  onHighlightClick: () -> Unit,
+  onFavorite: () -> Unit,
+  onReblog: () -> Unit,
+  onShare: () -> Unit,
+  modifier: Modifier = Modifier
 ) {
-    Header(
-        avatar = { SmallAvatar(details.name, details.avatarURL) },
-        name = { Text(details.name) },
-        username = { Text(details.formattedUsername) },
-        content = {
-            Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.medium)) {
-                Text(details.text)
+  Header(
+    avatar = { SmallAvatar(details.name, details.avatarURL) },
+    name = { Text(details.name) },
+    username = { Text(details.formattedUsername) },
+    content = {
+      Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.medium)) {
+        Text(details.text)
 
-                details.highlight?.headline?.let {
-                    HeadlineCard(it, onHighlightClick)
-                }
-            }
-        },
-        metadata = { Text(details.formattedPublicationDateTime) },
-        stats = {
-            Divider()
+        details.highlight?.headline?.let { HeadlineCard(it, onHighlightClick) }
+      }
+    },
+    metadata = { Text(details.formattedPublicationDateTime) },
+    stats = {
+      Divider()
 
-            Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-                Stat {
-                    Icon(
-                        OrcaTheme.iconography.comment.outlined,
-                        contentDescription = stringResource(R.string.toot_details_comments)
-                    )
-                    Text(details.formattedCommentCount)
-                }
+      Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
+        Stat {
+          Icon(
+            OrcaTheme.iconography.comment.outlined,
+            contentDescription = stringResource(R.string.toot_details_comments)
+          )
+          Text(details.formattedCommentCount)
+        }
 
-                FavoriteStat(details, onClick = onFavorite)
-                ReblogStat(details, onClick = onReblog)
+        FavoriteStat(details, onClick = onFavorite)
+        ReblogStat(details, onClick = onReblog)
 
-                Stat {
-                    Icon(
-                        OrcaTheme.iconography.share.outlined,
-                        contentDescription = stringResource(R.string.toot_details_share),
-                        Modifier.clickable(
-                            remember(::MutableInteractionSource),
-                            indication = null,
-                            onClick = onShare
-                        )
-                    )
-                }
-            }
+        Stat {
+          Icon(
+            OrcaTheme.iconography.share.outlined,
+            contentDescription = stringResource(R.string.toot_details_share),
+            Modifier.clickable(
+              remember(::MutableInteractionSource),
+              indication = null,
+              onClick = onShare
+            )
+          )
+        }
+      }
 
-            Divider()
-        },
-        modifier
-    )
+      Divider()
+    },
+    modifier
+  )
 }
 
 @Composable
 private fun Header(
-    avatar: @Composable () -> Unit,
-    name: @Composable () -> Unit,
-    username: @Composable () -> Unit,
-    content: @Composable () -> Unit,
-    metadata: @Composable () -> Unit,
-    stats: @Composable ColumnScope.() -> Unit,
-    modifier: Modifier = Modifier
+  avatar: @Composable () -> Unit,
+  name: @Composable () -> Unit,
+  username: @Composable () -> Unit,
+  content: @Composable () -> Unit,
+  metadata: @Composable () -> Unit,
+  stats: @Composable ColumnScope.() -> Unit,
+  modifier: Modifier = Modifier
 ) {
-    val spacing = OrcaTheme.spacings.large
+  val spacing = OrcaTheme.spacings.large
 
-    Column(modifier.padding(spacing), Arrangement.spacedBy(spacing)) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(spacing),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            avatar()
+  Column(modifier.padding(spacing), Arrangement.spacedBy(spacing)) {
+    Row(
+      horizontalArrangement = Arrangement.spacedBy(spacing),
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      avatar()
 
-            Column(
-                verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall)
-            ) {
-                ProvideTextStyle(OrcaTheme.typography.bodyLarge, name)
-                ProvideTextStyle(OrcaTheme.typography.bodySmall, username)
-            }
-        }
-
-        Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.medium)) {
-            content()
-            ProvideTextStyle(OrcaTheme.typography.bodySmall, metadata)
-        }
-
-        Column(
-            verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.medium),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            content = stats
-        )
+      Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall)) {
+        ProvideTextStyle(OrcaTheme.typography.bodyLarge, name)
+        ProvideTextStyle(OrcaTheme.typography.bodySmall, username)
+      }
     }
+
+    Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.medium)) {
+      content()
+      ProvideTextStyle(OrcaTheme.typography.bodySmall, metadata)
+    }
+
+    Column(
+      verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.medium),
+      horizontalAlignment = Alignment.CenterHorizontally,
+      content = stats
+    )
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadingHeaderPreview() {
-    OrcaTheme {
-        Surface(color = OrcaTheme.colors.background.container) {
-            Header()
-        }
-    }
+  OrcaTheme { Surface(color = OrcaTheme.colors.background.container) { Header() } }
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadedHeaderPreview() {
-    OrcaTheme {
-        Surface(color = OrcaTheme.colors.background.container) {
-            Header(
-                TootDetails.sample,
-                onHighlightClick = { },
-                onFavorite = { },
-                onReblog = { },
-                onShare = { }
-            )
-        }
+  OrcaTheme {
+    Surface(color = OrcaTheme.colors.background.container) {
+      Header(
+        TootDetails.sample,
+        onHighlightClick = {},
+        onFavorite = {},
+        onReblog = {},
+        onShare = {}
+      )
     }
+  }
 }

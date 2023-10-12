@@ -16,29 +16,29 @@ import kotlin.coroutines.suspendCoroutine
  *
  * @param context [Context] in which the [HttpAuthenticationActivity] will be started.
  * @see receive
- **/
+ */
 class HttpAuthenticator(
-    private val context: Context,
-    override val authorizer: Authorizer,
-    override val actorProvider: ActorProvider
+  private val context: Context,
+  override val authorizer: Authorizer,
+  override val actorProvider: ActorProvider
 ) : Authenticator() {
-    /** [Continuation] of the coroutine that's suspended on authentication. **/
-    private var continuation: Continuation<Actor>? = null
+  /** [Continuation] of the coroutine that's suspended on authentication. */
+  private var continuation: Continuation<Actor>? = null
 
-    override suspend fun onAuthenticate(authorizationCode: String): Actor {
-        return suspendCoroutine {
-            continuation = it
-            HttpAuthenticationActivity.start(context, authorizationCode)
-        }
+  override suspend fun onAuthenticate(authorizationCode: String): Actor {
+    return suspendCoroutine {
+      continuation = it
+      HttpAuthenticationActivity.start(context, authorizationCode)
     }
+  }
 
-    /**
-     * Notifies this [HttpAuthenticator] that the [actor] has been successfully retrieved,
-     * consequently resuming the suspended coroutine.
-     *
-     * @param actor [Actor] to be received.
-     **/
-    internal fun receive(actor: Actor) {
-        continuation?.resume(actor)
-    }
+  /**
+   * Notifies this [HttpAuthenticator] that the [actor] has been successfully retrieved,
+   * consequently resuming the suspended coroutine.
+   *
+   * @param actor [Actor] to be received.
+   */
+  internal fun receive(actor: Actor) {
+    continuation?.resume(actor)
+  }
 }

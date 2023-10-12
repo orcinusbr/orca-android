@@ -26,10 +26,10 @@ import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.button.placement
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.button.placement.mapToPlacement
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.button.placement.place
 
-/** Tag that identifies a [ButtonBar] for testing purposes. **/
+/** Tag that identifies a [ButtonBar] for testing purposes. */
 internal const val BUTTON_BAR_TAG = "button-bar"
 
-/** Tag that identifies a [ButtonBar]'s [Divider] for testing purposes. **/
+/** Tag that identifies a [ButtonBar]'s [Divider] for testing purposes. */
 internal const val BUTTON_BAR_DIVIDER_TAG = "button-bar-divider"
 
 /**
@@ -38,15 +38,15 @@ internal const val BUTTON_BAR_DIVIDER_TAG = "button-bar-divider"
  * @param lazyListState [LazyListState] that will determine whether it gets highlighted.
  * @param modifier [Modifier] to be applied to the underlying [Layout].
  * @param content [PrimaryButton] to be shown.
- **/
+ */
 @Composable
 fun ButtonBar(
-    lazyListState: LazyListState,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+  lazyListState: LazyListState,
+  modifier: Modifier = Modifier,
+  content: @Composable () -> Unit
 ) {
-    val isHighlighted by remember(lazyListState) { derivedStateOf(lazyListState::canScrollForward) }
-    ButtonBar(isHighlighted, modifier, content)
+  val isHighlighted by remember(lazyListState) { derivedStateOf(lazyListState::canScrollForward) }
+  ButtonBar(isHighlighted, modifier, content)
 }
 
 /**
@@ -54,10 +54,10 @@ fun ButtonBar(
  *
  * @param modifier [Modifier] to be applied to the underlying [Layout].
  * @param content [PrimaryButton] to be shown.
- **/
+ */
 @Composable
 fun ButtonBar(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
-    ButtonBar(isHighlighted = false, modifier, content)
+  ButtonBar(isHighlighted = false, modifier, content)
 }
 
 /**
@@ -66,53 +66,45 @@ fun ButtonBar(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
  * @param isHighlighted Whether it should visually stand out.
  * @param modifier [Modifier] to be applied to the underlying [Layout].
  * @param content [PrimaryButton] to be shown.
- **/
+ */
 @Composable
 private fun ButtonBar(
-    isHighlighted: Boolean,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+  isHighlighted: Boolean,
+  modifier: Modifier = Modifier,
+  content: @Composable () -> Unit
 ) {
-    val density = LocalDensity.current
-    val border = OrcaTheme.borders.default
-    val borderStrokeWidth by animateDpAsState(
-        if (isHighlighted) border.width else (-1).dp,
-        label = "BorderStrokeWidth"
-    )
-    val spacing = OrcaTheme.spacings.medium
-    val spacingInPx = remember(density, spacing) {
-        with(density) {
-            spacing.roundToPx()
-        }
-    }
-    val containerColor by animateColorAsState(
-        if (isHighlighted) {
-            OrcaTheme.colors.surface.container
-        } else {
-            OrcaTheme.colors.background.container
-        },
-        label = "ContainerColor"
+  val density = LocalDensity.current
+  val border = OrcaTheme.borders.default
+  val borderStrokeWidth by
+    animateDpAsState(if (isHighlighted) border.width else (-1).dp, label = "BorderStrokeWidth")
+  val spacing = OrcaTheme.spacings.medium
+  val spacingInPx = remember(density, spacing) { with(density) { spacing.roundToPx() } }
+  val containerColor by
+    animateColorAsState(
+      if (isHighlighted) {
+        OrcaTheme.colors.surface.container
+      } else {
+        OrcaTheme.colors.background.container
+      },
+      label = "ContainerColor"
     )
 
-    Column(modifier) {
-        Divider(Modifier.testTag(BUTTON_BAR_DIVIDER_TAG), thickness = borderStrokeWidth)
+  Column(modifier) {
+    Divider(Modifier.testTag(BUTTON_BAR_DIVIDER_TAG), thickness = borderStrokeWidth)
 
-        Layout(
-            content,
-            Modifier
-                .drawBehind { drawRect(containerColor) }
-                .padding(spacing)
-                .fillMaxWidth()
-                .testTag(BUTTON_BAR_TAG)
-        ) { measurables, constraints ->
-            val orientation = Orientation.VERTICAL
-            val placements = measurables.mapToPlacement(constraints, orientation, spacingInPx)
+    Layout(
+      content,
+      Modifier.drawBehind { drawRect(containerColor) }
+        .padding(spacing)
+        .fillMaxWidth()
+        .testTag(BUTTON_BAR_TAG)
+    ) { measurables, constraints ->
+      val orientation = Orientation.VERTICAL
+      val placements = measurables.mapToPlacement(constraints, orientation, spacingInPx)
 
-            layout(constraints.maxWidth, placements.height) {
-                place(placements, orientation)
-            }
-        }
+      layout(constraints.maxWidth, placements.height) { place(placements, orientation) }
     }
+  }
 }
 
 /**
@@ -120,32 +112,24 @@ private fun ButtonBar(
  *
  * @param lazyListState [LazyListState] that will determine whether it gets highlighted.
  * @param modifier [Modifier] to be applied to the underlying [Layout].
- **/
+ */
 @Composable
 internal fun ButtonBar(lazyListState: LazyListState, modifier: Modifier = Modifier) {
-    ButtonBar(lazyListState, modifier) {
-        PrimaryButton(onClick = { }) {
-            Text("Label")
-        }
-    }
+  ButtonBar(lazyListState, modifier) { PrimaryButton(onClick = {}) { Text("Label") } }
 }
 
-/** Preview of an idle [ButtonBar]. **/
+/** Preview of an idle [ButtonBar]. */
 @Composable
 @MultiThemePreview
 private fun IdleButtonBarPreview() {
-    OrcaTheme {
-        ButtonBar(isHighlighted = false)
-    }
+  OrcaTheme { ButtonBar(isHighlighted = false) }
 }
 
-/** Preview of a highlighted [ButtonBar]. **/
+/** Preview of a highlighted [ButtonBar]. */
 @Composable
 @MultiThemePreview
 private fun HighlightedButtonBarPreview() {
-    OrcaTheme {
-        ButtonBar(isHighlighted = true)
-    }
+  OrcaTheme { ButtonBar(isHighlighted = true) }
 }
 
 /**
@@ -153,12 +137,8 @@ private fun HighlightedButtonBarPreview() {
  *
  * @param isHighlighted Whether it should visually stand out.
  * @param modifier [Modifier] to be applied to the underlying [Layout].
- **/
+ */
 @Composable
 private fun ButtonBar(isHighlighted: Boolean, modifier: Modifier = Modifier) {
-    ButtonBar(isHighlighted, modifier) {
-        PrimaryButton(onClick = { }) {
-            Text("Label")
-        }
-    }
+  ButtonBar(isHighlighted, modifier) { PrimaryButton(onClick = {}) { Text("Label") } }
 }

@@ -9,10 +9,10 @@ import org.junit.Assert.assertNotNull
  *
  * @param activity [FragmentActivity] in which the [Fragment] is supposed to be.
  * @param tag Tag of the [Fragment] that's supposed to be the current one.
- **/
+ */
 fun assertIsAtFragment(activity: FragmentActivity, tag: String) {
-    assertNotNull(
-        "Fragment tagged as \"$tag\" not found.",
-        activity.supportFragmentManager.findFragmentByTag(tag)
-    )
+  assertNotNull(
+    "Fragment tagged as \"$tag\" not found.",
+    activity.supportFragmentManager.findFragmentByTag(tag)
+  )
 }

@@ -34,95 +34,89 @@ import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 
 @Composable
 internal fun TermMuting(
-    viewModel: TermMutingViewModel,
-    boundary: TermMutingBoundary,
-    modifier: Modifier = Modifier
+  viewModel: TermMutingViewModel,
+  boundary: TermMutingBoundary,
+  modifier: Modifier = Modifier
 ) {
-    val term by viewModel.termFlow.collectAsState()
+  val term by viewModel.termFlow.collectAsState()
 
-    TermMuting(
-        term,
-        onTermChange = viewModel::setTerm,
-        onMute = viewModel::mute,
-        onPop = boundary::pop,
-        modifier
-    )
+  TermMuting(
+    term,
+    onTermChange = viewModel::setTerm,
+    onMute = viewModel::mute,
+    onPop = boundary::pop,
+    modifier
+  )
 }
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun TermMuting(
-    term: String,
-    onTermChange: (term: String) -> Unit,
-    onMute: () -> Unit,
-    onPop: () -> Unit,
-    modifier: Modifier = Modifier
+  term: String,
+  onTermChange: (term: String) -> Unit,
+  onMute: () -> Unit,
+  onPop: () -> Unit,
+  modifier: Modifier = Modifier
 ) {
-    val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
-    val lazyListState = rememberLazyListState()
-    val spacing = OrcaTheme.spacings.medium
-    val focusRequester = remember(::FocusRequester)
-    val muteAndPop by rememberUpdatedState {
-        onMute()
-        onPop()
-    }
+  val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
+  val lazyListState = rememberLazyListState()
+  val spacing = OrcaTheme.spacings.medium
+  val focusRequester = remember(::FocusRequester)
+  val muteAndPop by rememberUpdatedState {
+    onMute()
+    onPop()
+  }
 
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocusWithDelay()
-    }
+  LaunchedEffect(Unit) { focusRequester.requestFocusWithDelay() }
 
-    Scaffold(
-        modifier,
-        topAppBar = {
-            TopAppBarWithBackNavigation(
-                onNavigation = onPop,
-                title = { Text(stringResource(R.string.settings_term_muting)) },
-                subtitle = { Text(stringResource(R.string.settings_term_muting_settings)) },
-                scrollBehavior = topAppBarScrollBehavior
-            )
-        },
-        buttonBar = {
-            ButtonBar(lazyListState) {
-                PrimaryButton(onClick = muteAndPop) {
-                    Text(stringResource(R.string.settings_term_muting_mute))
-                }
-            }
+  Scaffold(
+    modifier,
+    topAppBar = {
+      TopAppBarWithBackNavigation(
+        onNavigation = onPop,
+        title = { Text(stringResource(R.string.settings_term_muting)) },
+        subtitle = { Text(stringResource(R.string.settings_term_muting_settings)) },
+        scrollBehavior = topAppBarScrollBehavior
+      )
+    },
+    buttonBar = {
+      ButtonBar(lazyListState) {
+        PrimaryButton(onClick = muteAndPop) {
+          Text(stringResource(R.string.settings_term_muting_mute))
         }
+      }
+    }
+  ) {
+    LazyColumn(
+      Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+      lazyListState,
+      verticalArrangement = Arrangement.spacedBy(spacing),
+      contentPadding = it + PaddingValues(spacing)
     ) {
-        LazyColumn(
-            Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-            lazyListState,
-            verticalArrangement = Arrangement.spacedBy(spacing),
-            contentPadding = it + PaddingValues(spacing)
+      item {
+        TextField(
+          term,
+          onTermChange,
+          Modifier.focusRequester(focusRequester).fillMaxWidth(),
+          KeyboardOptions(imeAction = ImeAction.Done),
+          KeyboardActions(onDone = { muteAndPop() })
         ) {
-            item {
-                TextField(
-                    term,
-                    onTermChange,
-                    Modifier
-                        .focusRequester(focusRequester)
-                        .fillMaxWidth(),
-                    KeyboardOptions(imeAction = ImeAction.Done),
-                    KeyboardActions(onDone = { muteAndPop() })
-                ) {
-                    Text(stringResource(R.string.settings_term_muting_term))
-                }
-            }
-
-            item {
-                Text(
-                    stringResource(R.string.settings_term_muting_explanation),
-                    style = OrcaTheme.typography.bodySmall
-                )
-            }
+          Text(stringResource(R.string.settings_term_muting_term))
         }
+      }
+
+      item {
+        Text(
+          stringResource(R.string.settings_term_muting_explanation),
+          style = OrcaTheme.typography.bodySmall
+        )
+      }
     }
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun TermMutingPreview() {
-    OrcaTheme {
-        TermMuting(term = "🐛", onTermChange = { }, onMute = { }, onPop = { })
-    }
+  OrcaTheme { TermMuting(term = "🐛", onTermChange = {}, onMute = {}, onPop = {}) }
 }

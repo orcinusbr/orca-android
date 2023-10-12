@@ -23,55 +23,50 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 
 internal class FeedViewModel(
-    private val contextProvider: ContextProvider,
-    private val feedProvider: FeedProvider,
-    private val tootProvider: TootProvider,
-    private val userID: String
+  private val contextProvider: ContextProvider,
+  private val feedProvider: FeedProvider,
+  private val tootProvider: TootProvider,
+  private val userID: String
 ) : ViewModel() {
-    private val indexFlow = MutableStateFlow(0)
-    private val colors by lazy { Colors.getDefault(context) }
+  private val indexFlow = MutableStateFlow(0)
+  private val colors by lazy { Colors.getDefault(context) }
 
-    private val context
-        get() = contextProvider.provide()
+  private val context
+    get() = contextProvider.provide()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val tootPreviewsLoadableFlow = indexFlow
-        .flatMapLatest { feedProvider.provide(userID, it) }
-        .flatMapEach(selector = TootPreview::id) { it.toTootPreviewFlow(colors) }
-        .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
+  @OptIn(ExperimentalCoroutinesApi::class)
+  val tootPreviewsLoadableFlow =
+    indexFlow
+      .flatMapLatest { feedProvider.provide(userID, it) }
+      .flatMapEach(selector = TootPreview::id) { it.toTootPreviewFlow(colors) }
+      .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
 
-    fun favorite(tootID: String) {
-        viewModelScope.launch {
-            tootProvider.provide(tootID).first().favorite.toggle()
-        }
+  fun favorite(tootID: String) {
+    viewModelScope.launch { tootProvider.provide(tootID).first().favorite.toggle() }
+  }
+
+  fun reblog(tootID: String) {
+    viewModelScope.launch { tootProvider.provide(tootID).first().reblog.toggle() }
+  }
+
+  fun share(url: URL) {
+    context.share("$url")
+  }
+
+  fun loadTootsAt(index: Int) {
+    indexFlow.value = index
+  }
+
+  companion object {
+    fun createFactory(
+      contextProvider: ContextProvider,
+      feedProvider: FeedProvider,
+      tootProvider: TootProvider,
+      userID: String
+    ): ViewModelProvider.Factory {
+      return viewModelFactory {
+        initializer { FeedViewModel(contextProvider, feedProvider, tootProvider, userID) }
+      }
     }
-
-    fun reblog(tootID: String) {
-        viewModelScope.launch {
-            tootProvider.provide(tootID).first().reblog.toggle()
-        }
-    }
-
-    fun share(url: URL) {
-        context.share("$url")
-    }
-
-    fun loadTootsAt(index: Int) {
-        indexFlow.value = index
-    }
-
-    companion object {
-        fun createFactory(
-            contextProvider: ContextProvider,
-            feedProvider: FeedProvider,
-            tootProvider: TootProvider,
-            userID: String
-        ): ViewModelProvider.Factory {
-            return viewModelFactory {
-                initializer {
-                    FeedViewModel(contextProvider, feedProvider, tootProvider, userID)
-                }
-            }
-        }
-    }
+  }
 }

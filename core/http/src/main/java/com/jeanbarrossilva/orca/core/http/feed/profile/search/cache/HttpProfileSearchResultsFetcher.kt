@@ -14,13 +14,13 @@ import io.ktor.client.call.body
 import io.ktor.client.request.parameter
 
 internal class HttpProfileSearchResultsFetcher(
-    private val tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
+  private val tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
 ) : Fetcher<List<ProfileSearchResult>>() {
-    override suspend fun onFetch(key: String): List<ProfileSearchResult> {
-        return (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
-            .client
-            .authenticateAndGet("/api/v1/accounts/search") { parameter("q", key) }
-            .body<List<HttpAccount>>()
-            .map { it.toProfile(tootPaginateSourceProvider).toProfileSearchResult() }
-    }
+  override suspend fun onFetch(key: String): List<ProfileSearchResult> {
+    return (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
+      .client
+      .authenticateAndGet("/api/v1/accounts/search") { parameter("q", key) }
+      .body<List<HttpAccount>>()
+      .map { it.toProfile(tootPaginateSourceProvider).toProfileSearchResult() }
+  }
 }

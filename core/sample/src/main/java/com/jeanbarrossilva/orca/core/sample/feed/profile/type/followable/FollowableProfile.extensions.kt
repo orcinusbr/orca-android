@@ -5,8 +5,9 @@ import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.FollowableProfile
 import com.jeanbarrossilva.orca.core.sample.feed.profile.sample
 
-/** [FollowableProfile] that's returned by [sample]'s getter. **/
-private val sampleFollowableProfile: FollowableProfile<*> = SampleFollowableProfile(
+/** [FollowableProfile] that's returned by [sample]'s getter. */
+private val sampleFollowableProfile: FollowableProfile<*> =
+  SampleFollowableProfile(
     Profile.sample.id,
     Profile.sample.account,
     Profile.sample.avatarURL,
@@ -16,8 +17,8 @@ private val sampleFollowableProfile: FollowableProfile<*> = SampleFollowableProf
     Profile.sample.followerCount,
     Profile.sample.followingCount,
     Profile.sample.url
-)
+  )
 
-/** A sample [FollowableProfile]. **/
+/** A sample [FollowableProfile]. */
 val FollowableProfile.Companion.sample
-    get() = sampleFollowableProfile
+  get() = sampleFollowableProfile

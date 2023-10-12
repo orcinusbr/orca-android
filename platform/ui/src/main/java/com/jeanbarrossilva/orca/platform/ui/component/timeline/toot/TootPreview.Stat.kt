@@ -24,110 +24,99 @@ import com.jeanbarrossilva.orca.platform.theme.kit.action.Hoverable
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconDefaults
 
 internal object StatDefaults {
-    val IconSize = ActivateableStatIconDefaults.Size
+  val IconSize = ActivateableStatIconDefaults.Size
 }
 
 internal enum class StatPosition {
-    LEADING {
-        override val padding
-            @Composable get() = PaddingValues(end = OrcaTheme.spacings.small)
-    },
-    SUBSEQUENT {
-        override val padding
-            @Composable get() = PaddingValues(horizontal = OrcaTheme.spacings.small)
-    },
-    TRAILING {
-        override val padding
-            @Composable get() = PaddingValues(start = OrcaTheme.spacings.small)
-    };
+  LEADING {
+    override val padding
+      @Composable get() = PaddingValues(end = OrcaTheme.spacings.small)
+  },
+  SUBSEQUENT {
+    override val padding
+      @Composable get() = PaddingValues(horizontal = OrcaTheme.spacings.small)
+  },
+  TRAILING {
+    override val padding
+      @Composable get() = PaddingValues(start = OrcaTheme.spacings.small)
+  };
 
-    @get:Composable
-    abstract val padding: PaddingValues
+  @get:Composable abstract val padding: PaddingValues
 }
 
 @Composable
 internal fun Stat(
-    position: StatPosition,
-    vector: ImageVector,
-    contentDescription: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    label: @Composable () -> Unit = { }
+  position: StatPosition,
+  vector: ImageVector,
+  contentDescription: String,
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier,
+  label: @Composable () -> Unit = {}
 ) {
-    Stat(position, onClick, modifier) {
-        Icon(vector, contentDescription, Modifier.size(StatDefaults.IconSize))
-        label()
-    }
+  Stat(position, onClick, modifier) {
+    Icon(vector, contentDescription, Modifier.size(StatDefaults.IconSize))
+    label()
+  }
 }
 
 @Composable
 internal fun Stat(
-    position: StatPosition,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    content: @Composable RowScope.() -> Unit
+  position: StatPosition,
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier,
+  content: @Composable RowScope.() -> Unit
 ) {
-    val spacing = OrcaTheme.spacings.small
-    val contentColor = OrcaTheme.colors.secondary
+  val spacing = OrcaTheme.spacings.small
+  val contentColor = OrcaTheme.colors.secondary
 
-    Hoverable(
-        modifier
-            .padding(position.padding)
-            .clickable(role = Role.Button, onClick = onClick)
+  Hoverable(modifier.padding(position.padding).clickable(role = Role.Button, onClick = onClick)) {
+    Row(
+      horizontalArrangement = Arrangement.spacedBy(spacing),
+      verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(spacing),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            CompositionLocalProvider(
-                LocalContentColor provides contentColor,
-                LocalTextStyle provides OrcaTheme.typography.bodySmall.copy(color = contentColor)
-            ) {
-                content()
-            }
-        }
+      CompositionLocalProvider(
+        LocalContentColor provides contentColor,
+        LocalTextStyle provides OrcaTheme.typography.bodySmall.copy(color = contentColor)
+      ) {
+        content()
+      }
     }
+  }
 }
 
 @Composable
 @MultiThemePreview
 internal fun LeadingStatPreview() {
-    OrcaTheme {
-        Surface(color = OrcaTheme.colors.background.container) {
-            Stat(StatPosition.LEADING)
-        }
-    }
+  OrcaTheme {
+    Surface(color = OrcaTheme.colors.background.container) { Stat(StatPosition.LEADING) }
+  }
 }
 
 @Composable
 @MultiThemePreview
 internal fun SubsequentStatPreview() {
-    OrcaTheme {
-        Surface(color = OrcaTheme.colors.background.container) {
-            Stat(StatPosition.SUBSEQUENT)
-        }
-    }
+  OrcaTheme {
+    Surface(color = OrcaTheme.colors.background.container) { Stat(StatPosition.SUBSEQUENT) }
+  }
 }
 
 @Composable
 @MultiThemePreview
 internal fun TrailingStatPreview() {
-    OrcaTheme {
-        Surface(color = OrcaTheme.colors.background.container) {
-            Stat(StatPosition.TRAILING)
-        }
-    }
+  OrcaTheme {
+    Surface(color = OrcaTheme.colors.background.container) { Stat(StatPosition.TRAILING) }
+  }
 }
 
 @Composable
 private fun Stat(position: StatPosition, modifier: Modifier = Modifier) {
-    Stat(
-        position,
-        OrcaTheme.iconography.comment.outlined,
-        contentDescription = "Comment",
-        onClick = { },
-        modifier
-    ) {
-        Text("8")
-    }
+  Stat(
+    position,
+    OrcaTheme.iconography.comment.outlined,
+    contentDescription = "Comment",
+    onClick = {},
+    modifier
+  ) {
+    Text("8")
+  }
 }

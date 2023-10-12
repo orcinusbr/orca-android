@@ -10,13 +10,13 @@ import com.jeanbarrossilva.orca.platform.cache.Fetcher
 import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.client.call.body
 
-/** [Fetcher] that requests [HttpToot]s to the API. **/
+/** [Fetcher] that requests [HttpToot]s to the API. */
 internal object HttpTootFetcher : Fetcher<HttpToot>() {
-    override suspend fun onFetch(key: String): HttpToot {
-        return (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
-            .client
-            .authenticateAndGet("/api/v1/statuses/$key")
-            .body<HttpStatus>()
-            .toToot()
-    }
+  override suspend fun onFetch(key: String): HttpToot {
+    return (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
+      .client
+      .authenticateAndGet("/api/v1/statuses/$key")
+      .body<HttpStatus>()
+      .toToot()
+  }
 }

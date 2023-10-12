@@ -11,22 +11,20 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 
-/** [FeedProvider] that provides a feed for a sample [Profile]. **/
+/** [FeedProvider] that provides a feed for a sample [Profile]. */
 internal object SampleFeedProvider : FeedProvider() {
-    /** [Flow] with the toots to be provided in the feed. **/
-    private val tootsFlow = SampleTootProvider.tootsFlow.asStateFlow()
+  /** [Flow] with the toots to be provided in the feed. */
+  private val tootsFlow = SampleTootProvider.tootsFlow.asStateFlow()
 
-    override val termMuter = SampleTermMuter()
+  override val termMuter = SampleTermMuter()
 
-    override suspend fun onProvide(userID: String, page: Int): Flow<List<Toot>> {
-        return tootsFlow.map {
-            it.chunked(SampleProfile.TOOTS_PER_PAGE).getOrElse(page) {
-                emptyList()
-            }
-        }
+  override suspend fun onProvide(userID: String, page: Int): Flow<List<Toot>> {
+    return tootsFlow.map {
+      it.chunked(SampleProfile.TOOTS_PER_PAGE).getOrElse(page) { emptyList() }
     }
+  }
 
-    override suspend fun containsUser(userID: String): Boolean {
-        return userID == Profile.sample.id
-    }
+  override suspend fun containsUser(userID: String): Boolean {
+    return userID == Profile.sample.id
+  }
 }

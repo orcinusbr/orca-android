@@ -19,17 +19,17 @@ import com.jeanbarrossilva.orca.platform.theme.extensions.top
 import com.jeanbarrossilva.orca.platform.theme.kit.action.setting.Setting
 import com.jeanbarrossilva.orca.platform.theme.kit.action.setting.SettingDefaults
 
-/** Content of [Settings] shown in previews. **/
+/** Content of [Settings] shown in previews. */
 internal val settingsPreviewContent: SettingsScope.() -> Unit = {
-    repeat(3) {
-        setting(
-            onClick = { },
-            label = { Text("Label #$it") },
-            icon = { Icon(OrcaTheme.iconography.link, contentDescription = "Setting") }
-        ) {
-            icon(contentDescription = { "Navigate" }, vector = Iconography::forward)
-        }
+  repeat(3) {
+    setting(
+      onClick = {},
+      label = { Text("Label #$it") },
+      icon = { Icon(OrcaTheme.iconography.link, contentDescription = "Setting") }
+    ) {
+      icon(contentDescription = { "Navigate" }, vector = Iconography::forward)
     }
+  }
 }
 
 /**
@@ -37,16 +37,16 @@ internal val settingsPreviewContent: SettingsScope.() -> Unit = {
  *
  * @param modifier [Modifier] to be applied to the underlying [Column].
  * @param content Actions to be run on the given [SettingsScope].
- **/
+ */
 @Composable
 fun Settings(modifier: Modifier = Modifier, content: SettingsScope.() -> Unit) {
-    Settings(
-        settingModifier = Modifier,
-        singleSettingShape = SettingDefaults.shape,
-        firstSettingFollowedByOthersShape = SettingDefaults.shape.top,
-        modifier,
-        content = content
-    )
+  Settings(
+    settingModifier = Modifier,
+    singleSettingShape = SettingDefaults.shape,
+    firstSettingFollowedByOthersShape = SettingDefaults.shape.top,
+    modifier,
+    content = content
+  )
 }
 
 /**
@@ -54,16 +54,16 @@ fun Settings(modifier: Modifier = Modifier, content: SettingsScope.() -> Unit) {
  *
  * @param modifier [Modifier] to be applied to the underlying [Column].
  * @param content Actions to be run on the given [SettingsScope].
- **/
+ */
 @Composable
 internal fun ChildSettings(modifier: Modifier = Modifier, content: SettingsScope.() -> Unit) {
-    Settings(
-        settingModifier = Modifier.padding(start = SettingDefaults.spacing),
-        singleSettingShape = SettingDefaults.shape.bottom,
-        firstSettingFollowedByOthersShape = RectangleShape,
-        modifier,
-        content = content
-    )
+  Settings(
+    settingModifier = Modifier.padding(start = SettingDefaults.spacing),
+    singleSettingShape = SettingDefaults.shape.bottom,
+    firstSettingFollowedByOthersShape = RectangleShape,
+    modifier,
+    content = content
+  )
 }
 
 /**
@@ -72,55 +72,47 @@ internal fun ChildSettings(modifier: Modifier = Modifier, content: SettingsScope
  * @param settingModifier [Modifier] to be applied to each [Setting].
  * @param singleSettingShape [Shape] by which the single [Setting] will be shaped.
  * @param firstSettingFollowedByOthersShape [Shape] by which the first [Setting] will be shaped when
- * it's followed by other ones.
+ *   it's followed by other ones.
  * @param modifier [Modifier] to be applied to the underlying [Column].
  * @param content Actions to be run on the given [SettingsScope].
- **/
+ */
 @Composable
 private fun Settings(
-    @Suppress("ModifierParameter") settingModifier: Modifier,
-    singleSettingShape: Shape,
-    firstSettingFollowedByOthersShape: Shape,
-    modifier: Modifier = Modifier,
-    content: SettingsScope.() -> Unit
+  @Suppress("ModifierParameter") settingModifier: Modifier,
+  singleSettingShape: Shape,
+  firstSettingFollowedByOthersShape: Shape,
+  modifier: Modifier = Modifier,
+  content: SettingsScope.() -> Unit
 ) {
-    val defaultOptionShape = SettingDefaults.shape
-    val scope = remember(content) { SettingsScope().apply(content) }
+  val defaultOptionShape = SettingDefaults.shape
+  val scope = remember(content) { SettingsScope().apply(content) }
 
-    Column(modifier.border(defaultOptionShape)) {
-        scope.settings.forEachIndexed { index, setting ->
-            when {
-                scope.settings.size == 1 ->
-                    setting(settingModifier, singleSettingShape)
-                index == 0 ->
-                    setting(settingModifier, firstSettingFollowedByOthersShape)
-                index == scope.settings.lastIndex ->
-                    setting(settingModifier, defaultOptionShape.bottom)
-                else ->
-                    setting(settingModifier, RectangleShape)
-            }
+  Column(modifier.border(defaultOptionShape)) {
+    scope.settings.forEachIndexed { index, setting ->
+      when {
+        scope.settings.size == 1 -> setting(settingModifier, singleSettingShape)
+        index == 0 -> setting(settingModifier, firstSettingFollowedByOthersShape)
+        index == scope.settings.lastIndex -> setting(settingModifier, defaultOptionShape.bottom)
+        else -> setting(settingModifier, RectangleShape)
+      }
 
-            if (index != scope.settings.lastIndex) {
-                Divider()
-            }
-        }
+      if (index != scope.settings.lastIndex) {
+        Divider()
+      }
     }
+  }
 }
 
-/** Preview of parent [Settings]. **/
+/** Preview of parent [Settings]. */
 @Composable
 @MultiThemePreview
 private fun ParentSettingsPreview() {
-    OrcaTheme {
-        Settings(content = settingsPreviewContent)
-    }
+  OrcaTheme { Settings(content = settingsPreviewContent) }
 }
 
-/** Preview of child [Settings]. **/
+/** Preview of child [Settings]. */
 @Composable
 @MultiThemePreview
 private fun ChildSettingsPreview() {
-    OrcaTheme {
-        ChildSettings(content = settingsPreviewContent)
-    }
+  OrcaTheme { ChildSettings(content = settingsPreviewContent) }
 }

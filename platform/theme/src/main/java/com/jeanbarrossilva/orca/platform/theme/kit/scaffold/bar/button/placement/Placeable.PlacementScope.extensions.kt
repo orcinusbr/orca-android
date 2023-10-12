@@ -7,11 +7,9 @@ import androidx.compose.ui.layout.Placeable
  *
  * @param placements [Placement]s to be placed.
  * @param orientation [Orientation] in which the [placements] will be placed.
- **/
+ */
 internal fun Placeable.PlacementScope.place(placements: List<Placement>, orientation: Orientation) {
-    placements.forEach {
-        place(it, orientation)
-    }
+  placements.forEach { place(it, orientation) }
 }
 
 /**
@@ -19,8 +17,8 @@ internal fun Placeable.PlacementScope.place(placements: List<Placement>, orienta
  *
  * @param placement [Placement] to be placed.
  * @param orientation [Orientation] in which the [placement] will be placed.
- **/
+ */
 internal fun Placeable.PlacementScope.place(placement: Placement, orientation: Orientation) {
-    val offset = orientation.getOffset(placement)
-    placement.placeable.place(offset)
+  val offset = orientation.getOffset(placement)
+  placement.placeable.place(offset)
 }

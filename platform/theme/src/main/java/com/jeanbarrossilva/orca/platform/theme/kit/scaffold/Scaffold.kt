@@ -34,83 +34,77 @@ import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSiz
  * @param modifier [Modifier] to be applied to the underlying [Scaffold].
  * @param topAppBar [TopAppBar] to be placed at the top.
  * @param floatingActionButton [FloatingActionButton] to be placed at the bottom, above the
- * [buttonBar] and below the [SnackbarHost], horizontally centered.
+ *   [buttonBar] and below the [SnackbarHost], horizontally centered.
  * @param floatingActionButtonPosition [FabPosition] that determines where the
- * [floatingActionButton] will be placed.
+ *   [floatingActionButton] will be placed.
  * @param snackbarPresenter [SnackbarPresenter] through which [Snackbar]s can be presented.
  * @param buttonBar [ButtonBar] to be placed at the utmost bottom.
  * @param content Main content of the current context.
- **/
+ */
 @Composable
 fun Scaffold(
-    modifier: Modifier = Modifier,
-    topAppBar: @Composable () -> Unit = { },
-    floatingActionButton: @Composable () -> Unit = { },
-    floatingActionButtonPosition: FabPosition = FabPosition.End,
-    snackbarPresenter: SnackbarPresenter = rememberSnackbarPresenter(),
-    buttonBar: @Composable () -> Unit = { },
-    content: @Composable (padding: PaddingValues) -> Unit
+  modifier: Modifier = Modifier,
+  topAppBar: @Composable () -> Unit = {},
+  floatingActionButton: @Composable () -> Unit = {},
+  floatingActionButtonPosition: FabPosition = FabPosition.End,
+  snackbarPresenter: SnackbarPresenter = rememberSnackbarPresenter(),
+  buttonBar: @Composable () -> Unit = {},
+  content: @Composable (padding: PaddingValues) -> Unit
 ) {
-    Scaffold(
-        modifier,
-        topAppBar,
-        bottomBar = buttonBar,
-        snackbarHost = {
-            SnackbarHost(snackbarPresenter.hostState) {
-                Snackbar(
-                    it,
-                    shape = OrcaTheme.shapes.medium,
-                    containerColor = it.orcaVisuals.containerColor,
-                    dismissActionContentColor = it.orcaVisuals.contentColor
-                )
-            }
-        },
-        floatingActionButton = floatingActionButton,
-        floatingActionButtonPosition = floatingActionButtonPosition,
-        content = content
-    )
+  Scaffold(
+    modifier,
+    topAppBar,
+    bottomBar = buttonBar,
+    snackbarHost = {
+      SnackbarHost(snackbarPresenter.hostState) {
+        Snackbar(
+          it,
+          shape = OrcaTheme.shapes.medium,
+          containerColor = it.orcaVisuals.containerColor,
+          dismissActionContentColor = it.orcaVisuals.contentColor
+        )
+      }
+    },
+    floatingActionButton = floatingActionButton,
+    floatingActionButtonPosition = floatingActionButtonPosition,
+    content = content
+  )
 }
 
-/** Preview of a [Scaffold][_Scaffold]. **/
+/** Preview of a [Scaffold][_Scaffold]. */
 @Composable
 @MultiThemePreview
 private fun ScaffoldPreview() {
-    val lazyListState = rememberLazyListState()
-    val snackbarPresenter = rememberSnackbarPresenter()
+  val lazyListState = rememberLazyListState()
+  val snackbarPresenter = rememberSnackbarPresenter()
 
-    LaunchedEffect(snackbarPresenter) {
-        snackbarPresenter.presentInfo("Info")
-        snackbarPresenter.presentError("Error") { }
-    }
+  LaunchedEffect(snackbarPresenter) {
+    snackbarPresenter.presentInfo("Info")
+    snackbarPresenter.presentError("Error") {}
+  }
 
-    OrcaTheme {
-        _Scaffold(
-            topAppBar = {
-                @OptIn(ExperimentalMaterial3Api::class)
-                TopAppBar(title = { AutoSizeText("Scaffold") })
-            },
-            floatingActionButton = {
-                FloatingActionButton(onClick = { }) {
-                    Icon(OrcaTheme.iconography.compose.filled, contentDescription = "Compose")
-                }
-            },
-            snackbarPresenter = snackbarPresenter,
-            buttonBar = { ButtonBar(lazyListState) }
-        ) {
-            LazyColumn(
-                Modifier.fillMaxSize(),
-                state = lazyListState,
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                contentPadding = it + OrcaTheme.overlays.fab
-            ) {
-                item {
-                    Text(
-                        "Content",
-                        style = OrcaTheme.typography.bodyMedium
-                    )
-                }
-            }
+  OrcaTheme {
+    _Scaffold(
+      topAppBar = {
+        @OptIn(ExperimentalMaterial3Api::class) TopAppBar(title = { AutoSizeText("Scaffold") })
+      },
+      floatingActionButton = {
+        FloatingActionButton(onClick = {}) {
+          Icon(OrcaTheme.iconography.compose.filled, contentDescription = "Compose")
         }
+      },
+      snackbarPresenter = snackbarPresenter,
+      buttonBar = { ButtonBar(lazyListState) }
+    ) {
+      LazyColumn(
+        Modifier.fillMaxSize(),
+        state = lazyListState,
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        contentPadding = it + OrcaTheme.overlays.fab
+      ) {
+        item { Text("Content", style = OrcaTheme.typography.bodyMedium) }
+      }
     }
+  }
 }

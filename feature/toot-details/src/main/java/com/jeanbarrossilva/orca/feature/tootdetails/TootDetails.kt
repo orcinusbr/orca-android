@@ -37,161 +37,154 @@ import java.time.ZonedDateTime
 
 @Immutable
 internal data class TootDetails(
-    val id: String,
-    val avatarURL: URL,
-    val name: String,
-    private val account: Account,
-    val text: AnnotatedString,
-    val highlight: Highlight?,
-    private val publicationDateTime: ZonedDateTime,
-    private val commentCount: Int,
-    val isFavorite: Boolean,
-    private val favoriteCount: Int,
-    val isReblogged: Boolean,
-    private val reblogCount: Int,
-    val url: URL
+  val id: String,
+  val avatarURL: URL,
+  val name: String,
+  private val account: Account,
+  val text: AnnotatedString,
+  val highlight: Highlight?,
+  private val publicationDateTime: ZonedDateTime,
+  private val commentCount: Int,
+  val isFavorite: Boolean,
+  private val favoriteCount: Int,
+  val isReblogged: Boolean,
+  private val reblogCount: Int,
+  val url: URL
 ) : Serializable {
-    val formattedPublicationDateTime = publicationDateTime.formatted
-    val formattedUsername = AccountFormatter.username(account)
-    val formattedCommentCount = commentCount.formatted
-    val formattedFavoriteCount = favoriteCount.formatted
-    val formattedReblogCount = reblogCount.formatted
+  val formattedPublicationDateTime = publicationDateTime.formatted
+  val formattedUsername = AccountFormatter.username(account)
+  val formattedCommentCount = commentCount.formatted
+  val formattedFavoriteCount = favoriteCount.formatted
+  val formattedReblogCount = reblogCount.formatted
 
-    companion object {
-        val sample
-            @Composable get() = Toot.sample.toTootDetails()
-    }
+  companion object {
+    val sample
+      @Composable get() = Toot.sample.toTootDetails()
+  }
 }
 
 @Composable
 internal fun TootDetails(
-    viewModel: TootDetailsViewModel,
-    boundary: TootDetailsBoundary,
-    onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
-    modifier: Modifier = Modifier
+  viewModel: TootDetailsViewModel,
+  boundary: TootDetailsBoundary,
+  onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
+  modifier: Modifier = Modifier
 ) {
-    val tootLoadable by viewModel.detailsLoadableFlow.collectAsState()
-    val commentsLoadable by viewModel.commentsLoadableFlow.collectAsState()
-    val bottomAreaAvailabilityNestedScrollConnection =
-        rememberBottomAreaAvailabilityNestedScrollConnection(onBottomAreaAvailabilityChangeListener)
+  val tootLoadable by viewModel.detailsLoadableFlow.collectAsState()
+  val commentsLoadable by viewModel.commentsLoadableFlow.collectAsState()
+  val bottomAreaAvailabilityNestedScrollConnection =
+    rememberBottomAreaAvailabilityNestedScrollConnection(onBottomAreaAvailabilityChangeListener)
 
-    TootDetails(
-        tootLoadable,
-        commentsLoadable,
-        onHighlightClick = boundary::navigateTo,
-        onFavorite = viewModel::favorite,
-        onReblog = viewModel::reblog,
-        onShare = viewModel::share,
-        onNavigateToDetails = boundary::navigateToTootDetails,
-        onNext = viewModel::loadCommentsAt,
-        onBackwardsNavigation = boundary::pop,
-        bottomAreaAvailabilityNestedScrollConnection,
-        modifier
-    )
+  TootDetails(
+    tootLoadable,
+    commentsLoadable,
+    onHighlightClick = boundary::navigateTo,
+    onFavorite = viewModel::favorite,
+    onReblog = viewModel::reblog,
+    onShare = viewModel::share,
+    onNavigateToDetails = boundary::navigateToTootDetails,
+    onNext = viewModel::loadCommentsAt,
+    onBackwardsNavigation = boundary::pop,
+    bottomAreaAvailabilityNestedScrollConnection,
+    modifier
+  )
 }
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun TootDetails(
-    tootLoadable: Loadable<TootDetails>,
-    commentsLoadable: ListLoadable<TootPreview>,
-    onHighlightClick: (URL) -> Unit,
-    onFavorite: (tootID: String) -> Unit,
-    onReblog: (tootID: String) -> Unit,
-    onShare: (URL) -> Unit,
-    onNavigateToDetails: (tootID: String) -> Unit,
-    onNext: (index: Int) -> Unit,
-    onBackwardsNavigation: () -> Unit,
-    bottomAreaAvailabilityNestedScrollConnection: BottomAreaAvailabilityNestedScrollConnection,
-    modifier: Modifier = Modifier
+  tootLoadable: Loadable<TootDetails>,
+  commentsLoadable: ListLoadable<TootPreview>,
+  onHighlightClick: (URL) -> Unit,
+  onFavorite: (tootID: String) -> Unit,
+  onReblog: (tootID: String) -> Unit,
+  onShare: (URL) -> Unit,
+  onNavigateToDetails: (tootID: String) -> Unit,
+  onNext: (index: Int) -> Unit,
+  onBackwardsNavigation: () -> Unit,
+  bottomAreaAvailabilityNestedScrollConnection: BottomAreaAvailabilityNestedScrollConnection,
+  modifier: Modifier = Modifier
 ) {
-    val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
+  val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
 
-    Scaffold(
-        modifier,
-        topBar = {
-            @OptIn(ExperimentalMaterial3Api::class)
-            TopAppBarWithBackNavigation(
-                onNavigation = onBackwardsNavigation,
-                title = { AutoSizeText(stringResource(R.string.toot_details)) },
-                scrollBehavior = topAppBarScrollBehavior
-            )
-        }
-    ) {
-        Timeline(
-            commentsLoadable,
-            onHighlightClick,
-            onFavorite,
-            onReblog,
-            onShare,
-            onClick = onNavigateToDetails,
-            onNext,
-            Modifier
-                .nestedScroll(bottomAreaAvailabilityNestedScrollConnection)
-                .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-            contentPadding = it
-        ) {
-            when (tootLoadable) {
-                is Loadable.Loading ->
-                    Header()
-                is Loadable.Loaded ->
-                    Header(
-                        tootLoadable.content,
-                        onHighlightClick = {
-                            tootLoadable.content.highlight?.url?.run(onHighlightClick)
-                        },
-                        onFavorite = { onFavorite(tootLoadable.content.id) },
-                        onReblog = { onReblog(tootLoadable.content.id) },
-                        onShare = { onShare(tootLoadable.content.url) }
-                    )
-                is Loadable.Failed ->
-                    Unit
-            }
-        }
+  Scaffold(
+    modifier,
+    topBar = {
+      @OptIn(ExperimentalMaterial3Api::class)
+      TopAppBarWithBackNavigation(
+        onNavigation = onBackwardsNavigation,
+        title = { AutoSizeText(stringResource(R.string.toot_details)) },
+        scrollBehavior = topAppBarScrollBehavior
+      )
     }
+  ) {
+    Timeline(
+      commentsLoadable,
+      onHighlightClick,
+      onFavorite,
+      onReblog,
+      onShare,
+      onClick = onNavigateToDetails,
+      onNext,
+      Modifier.nestedScroll(bottomAreaAvailabilityNestedScrollConnection)
+        .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+      contentPadding = it
+    ) {
+      when (tootLoadable) {
+        is Loadable.Loading -> Header()
+        is Loadable.Loaded ->
+          Header(
+            tootLoadable.content,
+            onHighlightClick = { tootLoadable.content.highlight?.url?.run(onHighlightClick) },
+            onFavorite = { onFavorite(tootLoadable.content.id) },
+            onReblog = { onReblog(tootLoadable.content.id) },
+            onShare = { onShare(tootLoadable.content.url) }
+          )
+        is Loadable.Failed -> Unit
+      }
+    }
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadingTootDetailsPreview() {
-    OrcaTheme {
-        TootDetails(Loadable.Loading(), commentsLoadable = ListLoadable.Loading())
-    }
+  OrcaTheme { TootDetails(Loadable.Loading(), commentsLoadable = ListLoadable.Loading()) }
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadedTootDetailsWithoutComments() {
-    OrcaTheme {
-        TootDetails(Loadable.Loaded(TootDetails.sample), commentsLoadable = ListLoadable.Empty())
-    }
+  OrcaTheme {
+    TootDetails(Loadable.Loaded(TootDetails.sample), commentsLoadable = ListLoadable.Empty())
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadedTootDetailsPreview() {
-    OrcaTheme {
-        TootDetails(Loadable.Loaded(TootDetails.sample), commentsLoadable = ListLoadable.Loading())
-    }
+  OrcaTheme {
+    TootDetails(Loadable.Loaded(TootDetails.sample), commentsLoadable = ListLoadable.Loading())
+  }
 }
 
 @Composable
 private fun TootDetails(
-    tootLoadable: Loadable<TootDetails>,
-    commentsLoadable: ListLoadable<TootPreview>,
-    modifier: Modifier = Modifier
+  tootLoadable: Loadable<TootDetails>,
+  commentsLoadable: ListLoadable<TootPreview>,
+  modifier: Modifier = Modifier
 ) {
-    TootDetails(
-        tootLoadable,
-        commentsLoadable,
-        onHighlightClick = { },
-        onFavorite = { },
-        onReblog = { },
-        onShare = { },
-        onNavigateToDetails = { },
-        onNext = { },
-        onBackwardsNavigation = { },
-        BottomAreaAvailabilityNestedScrollConnection.empty,
-        modifier
-    )
+  TootDetails(
+    tootLoadable,
+    commentsLoadable,
+    onHighlightClick = {},
+    onFavorite = {},
+    onReblog = {},
+    onShare = {},
+    onNavigateToDetails = {},
+    onNext = {},
+    onBackwardsNavigation = {},
+    BottomAreaAvailabilityNestedScrollConnection.empty,
+    modifier
+  )
 }

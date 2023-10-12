@@ -11,27 +11,19 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 internal class SettingsViewModel private constructor(private val termMuter: TermMuter) :
-    ViewModel() {
-    val mutedTermsFlow =
-        termMuter.getTerms().stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(),
-            initialValue = emptyList()
-        )
+  ViewModel() {
+  val mutedTermsFlow =
+    termMuter
+      .getTerms()
+      .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), initialValue = emptyList())
 
-    fun unmute(term: String) {
-        viewModelScope.launch {
-            termMuter.unmute(term)
-        }
-    }
+  fun unmute(term: String) {
+    viewModelScope.launch { termMuter.unmute(term) }
+  }
 
-    companion object {
-        fun createFactory(termMuter: TermMuter): ViewModelProvider.Factory {
-            return viewModelFactory {
-                initializer {
-                    SettingsViewModel(termMuter)
-                }
-            }
-        }
+  companion object {
+    fun createFactory(termMuter: TermMuter): ViewModelProvider.Factory {
+      return viewModelFactory { initializer { SettingsViewModel(termMuter) } }
     }
+  }
 }

@@ -10,17 +10,16 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 
 internal class SampleProfileProviderTests {
-    @get:Rule
-    val sampleRule = SampleTestRule()
+  @get:Rule val sampleRule = SampleTestRule()
 
-    @Test
-    fun `GIVEN a profile without toots WHEN providing it and getting them THEN they're obtained`() {
-        SampleTootWriter.clear()
-        runTest {
-            assertContentEquals(
-                emptyList(),
-                SampleProfileProvider.provide(Profile.sample.id).first().getToots(0).first()
-            )
-        }
+  @Test
+  fun `GIVEN a profile without toots WHEN providing it and getting them THEN they're obtained`() {
+    SampleTootWriter.clear()
+    runTest {
+      assertContentEquals(
+        emptyList(),
+        SampleProfileProvider.provide(Profile.sample.id).first().getToots(0).first()
+      )
     }
+  }
 }

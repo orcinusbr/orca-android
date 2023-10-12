@@ -15,17 +15,15 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class TootDetailsTests {
-    @get:Rule
-    val intentsRule = IntentsRule()
+  @get:Rule val intentsRule = IntentsRule()
 
-    @get:Rule
-    val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
+  @get:Rule val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
 
-    @Test
-    fun navigatesToTootHighlight() {
-        var hasNavigated = false
-        intending(browsesTo("${Highlight.sample.url}")).ok { hasNavigated = true }
-        composeRule.onHeadlineCards().onFirst().performClick()
-        assertTrue(hasNavigated)
-    }
+  @Test
+  fun navigatesToTootHighlight() {
+    var hasNavigated = false
+    intending(browsesTo("${Highlight.sample.url}")).ok { hasNavigated = true }
+    composeRule.onHeadlineCards().onFirst().performClick()
+    assertTrue(hasNavigated)
+  }
 }

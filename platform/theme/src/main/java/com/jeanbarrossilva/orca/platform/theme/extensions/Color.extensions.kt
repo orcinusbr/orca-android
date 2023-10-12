@@ -9,8 +9,8 @@ import androidx.compose.ui.graphics.Color
  *
  * @param context [Context] from which the [Color] will be obtained.
  * @param id Resource ID of the [Color].
- **/
+ */
 internal fun Color.Companion.of(context: Context, @ColorRes id: Int): Color {
-    val value = context.getColor(id)
-    return Color(value)
+  val value = context.getColor(id)
+  return Color(value)
 }

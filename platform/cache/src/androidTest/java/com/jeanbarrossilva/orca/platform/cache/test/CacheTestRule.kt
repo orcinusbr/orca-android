@@ -8,18 +8,16 @@ import kotlinx.coroutines.test.TestScope
 import org.junit.rules.ExternalResource
 
 internal class CacheTestRule(private val coroutineScope: TestScope) : ExternalResource() {
-    private lateinit var database: CacheDatabase
+  private lateinit var database: CacheDatabase
 
-    val cache = TestCache(coroutineScope.testScheduler, ::database)
+  val cache = TestCache(coroutineScope.testScheduler, ::database)
 
-    override fun before() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        database = Room.databaseBuilder(context, CacheDatabase::class.java, TestCache.NAME).build()
-    }
+  override fun before() {
+    val context = InstrumentationRegistry.getInstrumentation().context
+    database = Room.databaseBuilder(context, CacheDatabase::class.java, TestCache.NAME).build()
+  }
 
-    override fun after() {
-        coroutineScope.launch {
-            cache.terminate()
-        }
-    }
+  override fun after() {
+    coroutineScope.launch { cache.terminate() }
+  }
 }

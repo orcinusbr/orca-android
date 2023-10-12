@@ -21,25 +21,25 @@ import com.jeanbarrossilva.orca.platform.theme.kit.action.button.HoverableIconBu
  * @param subtitle Contextualizes the [title].
  * @param actions [IconButton]s with actions to be performed in this context.
  * @param scrollBehavior Defines how this [TopAppBar] behaves on scroll.
- **/
+ */
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun TopAppBarWithBackNavigation(
-    onNavigation: () -> Unit,
-    title: @Composable () -> Unit,
-    modifier: Modifier = Modifier,
-    subtitle: @Composable () -> Unit = { },
-    actions: @Composable RowScope.() -> Unit = { },
-    scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
+  onNavigation: () -> Unit,
+  title: @Composable () -> Unit,
+  modifier: Modifier = Modifier,
+  subtitle: @Composable () -> Unit = {},
+  actions: @Composable RowScope.() -> Unit = {},
+  scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
 ) {
-    TopAppBar(
-        title,
-        modifier,
-        navigationIcon = { BackAction(onClick = onNavigation) },
-        subtitle,
-        actions,
-        scrollBehavior
-    )
+  TopAppBar(
+    title,
+    modifier,
+    navigationIcon = { BackAction(onClick = onNavigation) },
+    subtitle,
+    actions,
+    scrollBehavior
+  )
 }
 
 /**
@@ -47,15 +47,14 @@ fun TopAppBarWithBackNavigation(
  *
  * @param onClick Callback run whenever the [HoverableIconButton] is clicked.
  * @param modifier [Modifier] to the underlying [HoverableIconButton].
- **/
+ */
 @Composable
 fun BackAction(onClick: () -> Unit, modifier: Modifier = Modifier) {
-    HoverableIconButton(onClick, modifier) {
-        Icon(
-            OrcaTheme.iconography.back,
-            contentDescription = stringResource(
-                R.string.platform_ui_top_app_bar_with_back_navigation_action
-            )
-        )
-    }
+  HoverableIconButton(onClick, modifier) {
+    Icon(
+      OrcaTheme.iconography.back,
+      contentDescription =
+        stringResource(R.string.platform_ui_top_app_bar_with_back_navigation_action)
+    )
+  }
 }

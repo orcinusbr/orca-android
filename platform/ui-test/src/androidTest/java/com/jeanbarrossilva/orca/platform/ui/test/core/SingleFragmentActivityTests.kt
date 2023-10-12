@@ -16,106 +16,102 @@ import com.jeanbarrossilva.orca.platform.ui.test.core.test.TestSingleFragmentAct
 import org.junit.Test
 
 internal class SingleFragmentActivityTests {
-    class NoDestinationActivity : TestSingleFragmentActivity() {
-        override val route = "no-destination"
+  class NoDestinationActivity : TestSingleFragmentActivity() {
+    override val route = "no-destination"
 
-        override fun NavGraphBuilder.add() {
-        }
+    override fun NavGraphBuilder.add() {}
+  }
+
+  class InequivalentlyRoutedDestinationActivity : TestSingleFragmentActivity() {
+    override val route = "inequivalently-routed-destination"
+
+    override fun NavGraphBuilder.add() {
+      fragment<Fragment>("🫠")
+    }
+  }
+
+  class NonFragmentDestinationActivity : TestSingleFragmentActivity() {
+    override val route = "non-fragment-destination"
+
+    class DestinationActivity : Activity()
+
+    override fun NavGraphBuilder.add() {
+      activity(this@NonFragmentDestinationActivity.route) {
+        activityClass = DestinationActivity::class
+      }
+    }
+  }
+
+  class MultipleDestinationsActivity : TestSingleFragmentActivity() {
+    override val route = "multiple-destinations"
+
+    override fun NavGraphBuilder.add() {
+      fragment<Fragment>()
+      dialog<DialogFragment>("dialog")
+    }
+  }
+
+  class PosteriorlyAddedDestinationActivity : TestSingleFragmentActivity() {
+    private lateinit var navigator: FragmentNavigator
+
+    private val posteriorDestinationRoute
+      get() = "$route/destination"
+
+    override val route = "posteriorly-added-destination"
+
+    override fun NavGraphBuilder.add() {
+      navigator = provider[FragmentNavigator::class]
+      fragment<Fragment>()
     }
 
-    class InequivalentlyRoutedDestinationActivity : TestSingleFragmentActivity() {
-        override val route = "inequivalently-routed-destination"
-
-        override fun NavGraphBuilder.add() {
-            fragment<Fragment>("🫠")
-        }
+    override fun onCreate(savedInstanceState: Bundle?) {
+      super.onCreate(savedInstanceState)
+      navigateToPosteriorDestination()
     }
 
-    class NonFragmentDestinationActivity : TestSingleFragmentActivity() {
-        override val route = "non-fragment-destination"
-
-        class DestinationActivity : Activity()
-
-        override fun NavGraphBuilder.add() {
-            activity(this@NonFragmentDestinationActivity.route) {
-                activityClass = DestinationActivity::class
-            }
-        }
+    private fun navigateToPosteriorDestination() {
+      doOnNavGraphChange {
+        val destination =
+          FragmentNavigatorDestinationBuilder(navigator, posteriorDestinationRoute, Fragment::class)
+            .build()
+        navController.graph.addDestination(destination)
+        navController.navigate(posteriorDestinationRoute)
+      }
     }
+  }
 
-    class MultipleDestinationsActivity : TestSingleFragmentActivity() {
-        override val route = "multiple-destinations"
+  @Test
+  fun runsOnNoDestinationCallback() {
+    assertRunNavGraphCallbackEquals<NoDestinationActivity>(
+      TestSingleFragmentActivity.NavGraphIntegrityCallback.NO_DESTINATION
+    )
+  }
 
-        override fun NavGraphBuilder.add() {
-            fragment<Fragment>()
-            dialog<DialogFragment>("dialog")
-        }
-    }
+  @Test
+  fun runsOnInequivalentDestinationRouteCallback() {
+    assertRunNavGraphCallbackEquals<InequivalentlyRoutedDestinationActivity>(
+      TestSingleFragmentActivity.NavGraphIntegrityCallback.INEQUIVALENT_DESTINATION_ROUTE
+    )
+  }
 
-    class PosteriorlyAddedDestinationActivity : TestSingleFragmentActivity() {
-        private lateinit var navigator: FragmentNavigator
+  @Test
+  fun runsOnNonFragmentDestinationCallback() {
+    assertRunNavGraphCallbackEquals<NonFragmentDestinationActivity>(
+      TestSingleFragmentActivity.NavGraphIntegrityCallback.NON_FRAGMENT_DESTINATION
+    )
+  }
 
-        private val posteriorDestinationRoute
-            get() = "$route/destination"
+  @Test
+  fun runsOnMultipleDestinationsCallback() {
+    assertRunNavGraphCallbackEquals<MultipleDestinationsActivity>(
+      TestSingleFragmentActivity.NavGraphIntegrityCallback.MULTIPLE_DESTINATIONS
+    )
+  }
 
-        override val route = "posteriorly-added-destination"
-
-        override fun NavGraphBuilder.add() {
-            navigator = provider[FragmentNavigator::class]
-            fragment<Fragment>()
-        }
-
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            navigateToPosteriorDestination()
-        }
-
-        private fun navigateToPosteriorDestination() {
-            doOnNavGraphChange {
-                val destination = FragmentNavigatorDestinationBuilder(
-                    navigator,
-                    posteriorDestinationRoute,
-                    Fragment::class
-                )
-                    .build()
-                navController.graph.addDestination(destination)
-                navController.navigate(posteriorDestinationRoute)
-            }
-        }
-    }
-
-    @Test
-    fun runsOnNoDestinationCallback() {
-        assertRunNavGraphCallbackEquals<NoDestinationActivity>(
-            TestSingleFragmentActivity.NavGraphIntegrityCallback.NO_DESTINATION
-        )
-    }
-
-    @Test
-    fun runsOnInequivalentDestinationRouteCallback() {
-        assertRunNavGraphCallbackEquals<InequivalentlyRoutedDestinationActivity>(
-            TestSingleFragmentActivity.NavGraphIntegrityCallback.INEQUIVALENT_DESTINATION_ROUTE
-        )
-    }
-
-    @Test
-    fun runsOnNonFragmentDestinationCallback() {
-        assertRunNavGraphCallbackEquals<NonFragmentDestinationActivity>(
-            TestSingleFragmentActivity.NavGraphIntegrityCallback.NON_FRAGMENT_DESTINATION
-        )
-    }
-
-    @Test
-    fun runsOnMultipleDestinationsCallback() {
-        assertRunNavGraphCallbackEquals<MultipleDestinationsActivity>(
-            TestSingleFragmentActivity.NavGraphIntegrityCallback.MULTIPLE_DESTINATIONS
-        )
-    }
-
-    @Test
-    fun runsOnMultipleDestinationsCallbackWhenNavigatingToAnotherPosteriorlyAddedDestination() {
-        assertRunNavGraphCallbackEquals<PosteriorlyAddedDestinationActivity>(
-            TestSingleFragmentActivity.NavGraphIntegrityCallback.MULTIPLE_DESTINATIONS
-        )
-    }
+  @Test
+  fun runsOnMultipleDestinationsCallbackWhenNavigatingToAnotherPosteriorlyAddedDestination() {
+    assertRunNavGraphCallbackEquals<PosteriorlyAddedDestinationActivity>(
+      TestSingleFragmentActivity.NavGraphIntegrityCallback.MULTIPLE_DESTINATIONS
+    )
+  }
 }

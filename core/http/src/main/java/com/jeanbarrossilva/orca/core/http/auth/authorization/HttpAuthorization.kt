@@ -44,7 +44,7 @@ import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.button.ButtonBar
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
 
-/** Tag that identifies the sign-in [PrimaryButton] for testing purposes. **/
+/** Tag that identifies the sign-in [PrimaryButton] for testing purposes. */
 const val HTTP_AUTHORIZATION_SIGN_IN_BUTTON_TAG = "http-authorization-sign-in-button"
 
 /**
@@ -52,52 +52,49 @@ const val HTTP_AUTHORIZATION_SIGN_IN_BUTTON_TAG = "http-authorization-sign-in-bu
  * authenticated.
  *
  * @param viewModel [HttpAuthorizationViewModel] by which the [Domain]s will be loaded and to which
- * updates to the search query and the selection will be sent.
+ *   updates to the search query and the selection will be sent.
  * @param modifier [Modifier] to be applied to the underlying [Box].
- **/
+ */
 @Composable
 internal fun HttpAuthorization(
-    viewModel: HttpAuthorizationViewModel,
-    modifier: Modifier = Modifier
+  viewModel: HttpAuthorizationViewModel,
+  modifier: Modifier = Modifier
 ) {
-    val searchQuery by viewModel.searchQueryFlow.collectAsState()
-    val instanceDomainSelectablesLoadable by viewModel
-        .instanceDomainSelectablesLoadableFlow
-        .collectAsState()
+  val searchQuery by viewModel.searchQueryFlow.collectAsState()
+  val instanceDomainSelectablesLoadable by
+    viewModel.instanceDomainSelectablesLoadableFlow.collectAsState()
 
-    when (
-        @Suppress("NAME_SHADOWING")
-        val instanceDomainSelectablesLoadable = instanceDomainSelectablesLoadable
-    ) {
-        is Loadable.Loading ->
-            HttpAuthorization(modifier)
-        is Loadable.Loaded ->
-            HttpAuthorization(
-                searchQuery,
-                onSearch = viewModel::search,
-                instanceDomainSelectablesLoadable.content,
-                onSelection = viewModel::select,
-                onSignIn = viewModel::authorize
-            )
-        is Loadable.Failed ->
-            Unit
-    }
+  when (
+    @Suppress("NAME_SHADOWING")
+    val instanceDomainSelectablesLoadable = instanceDomainSelectablesLoadable
+  ) {
+    is Loadable.Loading -> HttpAuthorization(modifier)
+    is Loadable.Loaded ->
+      HttpAuthorization(
+        searchQuery,
+        onSearch = viewModel::search,
+        instanceDomainSelectablesLoadable.content,
+        onSelection = viewModel::select,
+        onSignIn = viewModel::authorize
+      )
+    is Loadable.Failed -> Unit
+  }
 }
 
 /**
  * Screen that presents loading [Domain]s.
  *
  * @param modifier [Modifier] to be applied to the underlying [Box].
- **/
+ */
 @Composable
 internal fun HttpAuthorization(modifier: Modifier = Modifier) {
-    HttpAuthorization(
-        searchField = { },
-        instanceDomains = { Options() },
-        onSignIn = { },
-        isSignInButtonEnabled = false,
-        modifier
-    )
+  HttpAuthorization(
+    searchField = {},
+    instanceDomains = { Options() },
+    onSignIn = {},
+    isSignInButtonEnabled = false,
+    modifier
+  )
 }
 
 /**
@@ -109,142 +106,126 @@ internal fun HttpAuthorization(modifier: Modifier = Modifier) {
  * @param onSelection Callback run whenever a [Domain] is selected.
  * @param onSignIn Callback run whenever the sign-in [PrimaryButton] is clicked.
  * @param modifier [Modifier] to be applied to the underlying [Box].
- **/
+ */
 @Composable
 internal fun HttpAuthorization(
-    searchQuery: String,
-    onSearch: (query: String) -> Unit,
-    instanceDomains: SelectableList<Domain>,
-    onSelection: (Domain) -> Unit,
-    onSignIn: () -> Unit,
-    modifier: Modifier = Modifier
+  searchQuery: String,
+  onSearch: (query: String) -> Unit,
+  instanceDomains: SelectableList<Domain>,
+  onSelection: (Domain) -> Unit,
+  onSignIn: () -> Unit,
+  modifier: Modifier = Modifier
 ) {
-    HttpAuthorization(
-        searchField = {
-            TextField(
-                searchQuery,
-                onSearch,
-                Modifier.fillMaxWidth(),
-                KeyboardOptions(imeAction = ImeAction.Search),
-                isSingleLined = true
-            ) {
-                Text(stringResource(R.string.core_http_authorization_search))
-            }
-        },
-        instanceDomains = {
-            Options(onSelection = { onSelection(instanceDomains[it].value) }) {
-                instanceDomains.forEach {
-                    option {
-                        Text("${it.value}")
-                    }
-                }
-            }
-        },
-        onSignIn,
-        isSignInButtonEnabled = true,
-        modifier
-    )
+  HttpAuthorization(
+    searchField = {
+      TextField(
+        searchQuery,
+        onSearch,
+        Modifier.fillMaxWidth(),
+        KeyboardOptions(imeAction = ImeAction.Search),
+        isSingleLined = true
+      ) {
+        Text(stringResource(R.string.core_http_authorization_search))
+      }
+    },
+    instanceDomains = {
+      Options(onSelection = { onSelection(instanceDomains[it].value) }) {
+        instanceDomains.forEach { option { Text("${it.value}") } }
+      }
+    },
+    onSignIn,
+    isSignInButtonEnabled = true,
+    modifier
+  )
 }
 
 @Composable
 internal fun HttpAuthorization(
-    searchField: @Composable LazyItemScope.() -> Unit,
-    instanceDomains: @Composable LazyItemScope.() -> Unit,
-    onSignIn: () -> Unit,
-    isSignInButtonEnabled: Boolean,
-    modifier: Modifier = Modifier
+  searchField: @Composable LazyItemScope.() -> Unit,
+  instanceDomains: @Composable LazyItemScope.() -> Unit,
+  onSignIn: () -> Unit,
+  isSignInButtonEnabled: Boolean,
+  modifier: Modifier = Modifier
 ) {
-    val lazyListState = rememberLazyListState()
+  val lazyListState = rememberLazyListState()
 
-    @OptIn(ExperimentalMaterial3Api::class)
-    val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+  @OptIn(ExperimentalMaterial3Api::class)
+  val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
-    val isHeaderHidden by remember(lazyListState) {
-        derivedStateOf {
-            lazyListState.firstVisibleItemIndex > 0
+  val isHeaderHidden by
+    remember(lazyListState) { derivedStateOf { lazyListState.firstVisibleItemIndex > 0 } }
+  val headerTitle = stringResource(R.string.core_http_authorization_account_origin)
+  val spacing = OrcaTheme.spacings.extraLarge
+
+  Box(modifier) {
+    Scaffold(
+      buttonBar = {
+        ButtonBar(lazyListState) {
+          PrimaryButton(onClick = onSignIn, isEnabled = isSignInButtonEnabled) {
+            Text(stringResource(R.string.core_http_authorization_sign_in))
+          }
         }
+      }
+    ) {
+      LazyColumn(
+        state = lazyListState,
+        verticalArrangement = Arrangement.spacedBy(spacing),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        contentPadding = it + PaddingValues(spacing)
+      ) {
+        item {
+          Column(
+            verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.small),
+            horizontalAlignment = Alignment.CenterHorizontally
+          ) {
+            Text(
+              stringResource(R.string.core_http_authorization_welcome),
+              textAlign = TextAlign.Center,
+              style = OrcaTheme.typography.headlineLarge
+            )
+
+            Text(headerTitle, textAlign = TextAlign.Center, style = OrcaTheme.typography.titleSmall)
+          }
+        }
+
+        item(content = searchField)
+        item(content = instanceDomains)
+      }
     }
-    val headerTitle = stringResource(R.string.core_http_authorization_account_origin)
-    val spacing = OrcaTheme.spacings.extraLarge
 
-    Box(modifier) {
-        Scaffold(
-            buttonBar = {
-                ButtonBar(lazyListState) {
-                    PrimaryButton(onClick = onSignIn, isEnabled = isSignInButtonEnabled) {
-                        Text(stringResource(R.string.core_http_authorization_sign_in))
-                    }
-                }
-            }
-        ) {
-            LazyColumn(
-                state = lazyListState,
-                verticalArrangement = Arrangement.spacedBy(spacing),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                contentPadding = it + PaddingValues(spacing)
-            ) {
-                item {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.small),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            stringResource(R.string.core_http_authorization_welcome),
-                            textAlign = TextAlign.Center,
-                            style = OrcaTheme.typography.headlineLarge
-                        )
+    AnimatedVisibility(
+      visible = isHeaderHidden,
+      enter = slideInVertically { -it },
+      exit = slideOutVertically { -it }
+    ) {
+      Column {
+        @OptIn(ExperimentalMaterial3Api::class)
+        TopAppBar(title = { AutoSizeText(headerTitle) }, scrollBehavior = topAppBarScrollBehavior)
 
-                        Text(
-                            headerTitle,
-                            textAlign = TextAlign.Center,
-                            style = OrcaTheme.typography.titleSmall
-                        )
-                    }
-                }
-
-                item(content = searchField)
-                item(content = instanceDomains)
-            }
-        }
-
-        AnimatedVisibility(
-            visible = isHeaderHidden,
-            enter = slideInVertically { -it },
-            exit = slideOutVertically { -it }
-        ) {
-            Column {
-                @OptIn(ExperimentalMaterial3Api::class)
-                TopAppBar(
-                    title = { AutoSizeText(headerTitle) },
-                    scrollBehavior = topAppBarScrollBehavior
-                )
-
-                Divider()
-            }
-        }
+        Divider()
+      }
     }
+  }
 }
 
-/** Preview of a loading [HttpAuthorization] screen. **/
+/** Preview of a loading [HttpAuthorization] screen. */
 @Composable
 @MultiThemePreview
 private fun LoadingHttpAuthorizationPreview() {
-    OrcaTheme {
-        HttpAuthorization()
-    }
+  OrcaTheme { HttpAuthorization() }
 }
 
-/** Preview of a loaded [HttpAuthorization] screen. **/
+/** Preview of a loaded [HttpAuthorization] screen. */
 @Composable
 @MultiThemePreview
 private fun LoadedHttpAuthorizationPreview() {
-    OrcaTheme {
-        HttpAuthorization(
-            searchQuery = "",
-            onSearch = { },
-            instanceDomains = Domain.samples.selectFirst(),
-            onSelection = { },
-            onSignIn = { }
-        )
-    }
+  OrcaTheme {
+    HttpAuthorization(
+      searchQuery = "",
+      onSearch = {},
+      instanceDomains = Domain.samples.selectFirst(),
+      onSelection = {},
+      onSignIn = {}
+    )
+  }
 }

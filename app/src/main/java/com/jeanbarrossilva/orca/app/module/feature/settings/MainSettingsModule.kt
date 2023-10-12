@@ -6,7 +6,8 @@ import com.jeanbarrossilva.orca.feature.settings.SettingsModule
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
 import com.jeanbarrossilva.orca.std.injector.Injector
 
-internal class MainSettingsModule(private val navigator: Navigator) : SettingsModule(
+internal class MainSettingsModule(private val navigator: Navigator) :
+  SettingsModule(
     { Injector.from<HttpModule>().termMuter() },
     { NavigatorSettingsBoundary(navigator) }
-)
+  )

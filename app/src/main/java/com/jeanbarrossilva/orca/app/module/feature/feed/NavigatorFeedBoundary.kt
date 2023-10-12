@@ -10,22 +10,22 @@ import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
 import java.net.URL
 
 internal class NavigatorFeedBoundary(
-    private val context: Context,
-    private val navigator: Navigator
+  private val context: Context,
+  private val navigator: Navigator
 ) : FeedBoundary {
-    override fun navigateToSearch() {
-        SearchFragment.navigate(navigator)
-    }
+  override fun navigateToSearch() {
+    SearchFragment.navigate(navigator)
+  }
 
-    override fun navigateTo(url: URL) {
-        context.browseTo(url)
-    }
+  override fun navigateTo(url: URL) {
+    context.browseTo(url)
+  }
 
-    override fun navigateToTootDetails(id: String) {
-        TootDetailsFragment.navigate(navigator, id)
-    }
+  override fun navigateToTootDetails(id: String) {
+    TootDetailsFragment.navigate(navigator, id)
+  }
 
-    override fun navigateToComposer() {
-        ComposerActivity.start(context)
-    }
+  override fun navigateToComposer() {
+    ComposerActivity.start(context)
+  }
 }

@@ -5,9 +5,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 
-/** Remembers an [ImageLoader]. **/
+/** Remembers an [ImageLoader]. */
 @Composable
 fun rememberImageLoader(): ImageLoader {
-    val context = LocalContext.current
-    return remember(context) { CoilImageLoader.getInstance(context) }
+  val context = LocalContext.current
+  return remember(context) { CoilImageLoader.getInstance(context) }
 }

@@ -34,43 +34,43 @@ import com.jeanbarrossilva.orca.platform.theme.configuration.Shapes
 import com.jeanbarrossilva.orca.platform.theme.extensions.border
 import com.jeanbarrossilva.orca.platform.theme.kit.input.option.list.Options
 
-/** Tag that identifies an [Option] for testing purposes. **/
+/** Tag that identifies an [Option] for testing purposes. */
 internal const val OPTION_TAG = "option"
 
 /**
  * Tag that identifies the [Icon] of an [Option] that indicates that it's selected for testing
  * purposes.
- **/
+ */
 internal const val OPTION_SELECTION_ICON_TAG = "option-selection-icon"
 
-/** Default values of an [Option]. **/
+/** Default values of an [Option]. */
 internal object OptionDefaults {
-    /** [Modifier] that's applied to an [Option] by default. **/
-    val modifier
-        @Composable get() = Modifier.border(shape)
+  /** [Modifier] that's applied to an [Option] by default. */
+  val modifier
+    @Composable get() = Modifier.border(shape)
 
-    /** [CornerBasedShape] that clips an [Option] by default. **/
-    val shape
-        @Composable get() = getShape(OrcaTheme.shapes)
+  /** [CornerBasedShape] that clips an [Option] by default. */
+  val shape
+    @Composable get() = getShape(OrcaTheme.shapes)
 
-    /**
-     * Gets the [CornerBasedShape] that clips an [Option] by default.
-     *
-     * @param shapes [Shapes] from which the [CornerBasedShape] will be obtained.
-     **/
-    fun getShape(shapes: Shapes): CornerBasedShape {
-        return shapes.medium
-    }
+  /**
+   * Gets the [CornerBasedShape] that clips an [Option] by default.
+   *
+   * @param shapes [Shapes] from which the [CornerBasedShape] will be obtained.
+   */
+  fun getShape(shapes: Shapes): CornerBasedShape {
+    return shapes.medium
+  }
 }
 
 /**
  * A loading selectable configuration.
  *
  * @param modifier [Modifier] to be applied to the underlying [Row].
- **/
+ */
 @Composable
 fun Option(modifier: Modifier = Modifier) {
-    CoreOption(OptionDefaults.modifier then modifier)
+  CoreOption(OptionDefaults.modifier then modifier)
 }
 
 /**
@@ -80,20 +80,20 @@ fun Option(modifier: Modifier = Modifier) {
  * @param onSelectionToggle Callback run whenever it is toggled.
  * @param modifier [Modifier] to be applied to the underlying [Row].
  * @param content [Text] that's the label.
- **/
+ */
 @Composable
 fun Option(
-    isSelected: Boolean,
-    onSelectionToggle: (isSelected: Boolean) -> Unit,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+  isSelected: Boolean,
+  onSelectionToggle: (isSelected: Boolean) -> Unit,
+  modifier: Modifier = Modifier,
+  content: @Composable () -> Unit
 ) {
-    CoreOption(
-        isSelected,
-        onSelectionToggle,
-        OptionDefaults.modifier then modifier,
-        content = content
-    )
+  CoreOption(
+    isSelected,
+    onSelectionToggle,
+    OptionDefaults.modifier then modifier,
+    content = content
+  )
 }
 
 /**
@@ -102,16 +102,14 @@ fun Option(
  * @param isSelected Whether it is selected.
  * @param modifier [Modifier] to be applied to the underlying [Row].
  * @param onSelectionToggle Callback run whenever it is toggled.
- **/
+ */
 @Composable
 internal fun Option(
-    isSelected: Boolean,
-    modifier: Modifier = Modifier,
-    onSelectionToggle: (isSelected: Boolean) -> Unit = { }
+  isSelected: Boolean,
+  modifier: Modifier = Modifier,
+  onSelectionToggle: (isSelected: Boolean) -> Unit = {}
 ) {
-    Option(isSelected, onSelectionToggle, modifier) {
-        Text("Label")
-    }
+  Option(isSelected, onSelectionToggle, modifier) { Text("Label") }
 }
 
 /**
@@ -121,12 +119,12 @@ internal fun Option(
  *
  * @param modifier [Modifier] to be applied to the underlying [Row].
  * @param shape [Shape] by which it will be clipped.
- **/
+ */
 @Composable
 internal fun CoreOption(modifier: Modifier = Modifier, shape: Shape = OptionDefaults.shape) {
-    CoreOption(isSelected = false, onSelectionToggle = { }, modifier, shape) {
-        MediumTextualPlaceholder()
-    }
+  CoreOption(isSelected = false, onSelectionToggle = {}, modifier, shape) {
+    MediumTextualPlaceholder()
+  }
 }
 
 /**
@@ -139,76 +137,70 @@ internal fun CoreOption(modifier: Modifier = Modifier, shape: Shape = OptionDefa
  * @param modifier [Modifier] to be applied to the underlying [Row].
  * @param shape [Shape] by which it will be clipped.
  * @param content [Text] that's the label.
- **/
+ */
 @Composable
 internal fun CoreOption(
-    isSelected: Boolean,
-    onSelectionToggle: (isSelected: Boolean) -> Unit,
-    modifier: Modifier = Modifier,
-    shape: Shape = OptionDefaults.shape,
-    content: @Composable () -> Unit
+  isSelected: Boolean,
+  onSelectionToggle: (isSelected: Boolean) -> Unit,
+  modifier: Modifier = Modifier,
+  shape: Shape = OptionDefaults.shape,
+  content: @Composable () -> Unit
 ) {
-    val spacing = OrcaTheme.spacings.large
-    val selectedContainerColor = OrcaTheme.colors.primary.container
-    val containerColor =
-        if (isSelected) selectedContainerColor else OrcaTheme.colors.surface.container
-    val contentColor = contentColorFor(containerColor)
+  val spacing = OrcaTheme.spacings.large
+  val selectedContainerColor = OrcaTheme.colors.primary.container
+  val containerColor =
+    if (isSelected) selectedContainerColor else OrcaTheme.colors.surface.container
+  val contentColor = contentColorFor(containerColor)
 
-    Row(
-        modifier
-            .clip(shape)
-            .clickable(role = Role.Checkbox) { onSelectionToggle(!isSelected) }
-            .background(containerColor)
-            .padding(spacing)
-            .fillMaxWidth()
-            .testTag(OPTION_TAG)
-            .semantics { selected = isSelected },
-        Arrangement.SpaceBetween,
-        Alignment.CenterVertically
+  Row(
+    modifier
+      .clip(shape)
+      .clickable(role = Role.Checkbox) { onSelectionToggle(!isSelected) }
+      .background(containerColor)
+      .padding(spacing)
+      .fillMaxWidth()
+      .testTag(OPTION_TAG)
+      .semantics { selected = isSelected },
+    Arrangement.SpaceBetween,
+    Alignment.CenterVertically
+  ) {
+    CompositionLocalProvider(
+      LocalContentColor provides contentColor,
+      LocalTextStyle provides OrcaTheme.typography.labelLarge.copy(color = contentColor)
     ) {
-        CompositionLocalProvider(
-            LocalContentColor provides contentColor,
-            LocalTextStyle provides OrcaTheme.typography.labelLarge.copy(color = contentColor)
-        ) {
-            content()
-            Spacer(Modifier.width(spacing))
+      content()
+      Spacer(Modifier.width(spacing))
 
-            Box(Modifier.size(24.dp)) {
-                if (isSelected) {
-                    Icon(
-                        OrcaTheme.iconography.selected,
-                        contentDescription = "Selected",
-                        Modifier.testTag(OPTION_SELECTION_ICON_TAG)
-                    )
-                }
-            }
+      Box(Modifier.size(24.dp)) {
+        if (isSelected) {
+          Icon(
+            OrcaTheme.iconography.selected,
+            contentDescription = "Selected",
+            Modifier.testTag(OPTION_SELECTION_ICON_TAG)
+          )
         }
+      }
     }
+  }
 }
 
-/** Preview of a loading [Option]. **/
+/** Preview of a loading [Option]. */
 @Composable
 @MultiThemePreview
 private fun LoadingOptionPreview() {
-    OrcaTheme {
-        Option()
-    }
+  OrcaTheme { Option() }
 }
 
-/** Preview of an unselected [Option]. **/
+/** Preview of an unselected [Option]. */
 @Composable
 @MultiThemePreview
 private fun UnselectedOptionPreview() {
-    OrcaTheme {
-        Option(isSelected = false)
-    }
+  OrcaTheme { Option(isSelected = false) }
 }
 
-/** Preview of a selected [Option]. **/
+/** Preview of a selected [Option]. */
 @Composable
 @MultiThemePreview
 private fun SelectedOptionPreview() {
-    OrcaTheme {
-        Option(isSelected = true)
-    }
+  OrcaTheme { Option(isSelected = true) }
 }

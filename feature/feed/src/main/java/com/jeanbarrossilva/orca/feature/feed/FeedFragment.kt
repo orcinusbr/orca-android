@@ -11,35 +11,32 @@ import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
 
 class FeedFragment internal constructor() : ComposableFragment(), ContextProvider {
-    private val module by lazy { Injector.from<FeedModule>() }
-    private val userID by argument<String>(USER_ID_KEY)
-    private val viewModel by viewModels<FeedViewModel> {
-        FeedViewModel.createFactory(
-            contextProvider = this,
-            module.feedProvider(),
-            module.tootProvider(),
-            userID
-        )
+  private val module by lazy { Injector.from<FeedModule>() }
+  private val userID by argument<String>(USER_ID_KEY)
+  private val viewModel by
+    viewModels<FeedViewModel> {
+      FeedViewModel.createFactory(
+        contextProvider = this,
+        module.feedProvider(),
+        module.tootProvider(),
+        userID
+      )
     }
 
-    constructor(userID: String) : this() {
-        arguments = bundleOf(USER_ID_KEY to userID)
-    }
+  constructor(userID: String) : this() {
+    arguments = bundleOf(USER_ID_KEY to userID)
+  }
 
-    @Composable
-    override fun Content() {
-        Feed(
-            viewModel,
-            boundary = module.get(),
-            onBottomAreaAvailabilityChangeListener = module.get()
-        )
-    }
+  @Composable
+  override fun Content() {
+    Feed(viewModel, boundary = module.get(), onBottomAreaAvailabilityChangeListener = module.get())
+  }
 
-    override fun provide(): Context {
-        return requireContext()
-    }
+  override fun provide(): Context {
+    return requireContext()
+  }
 
-    companion object {
-        internal const val USER_ID_KEY = "user-id"
-    }
+  companion object {
+    internal const val USER_ID_KEY = "user-id"
+  }
 }

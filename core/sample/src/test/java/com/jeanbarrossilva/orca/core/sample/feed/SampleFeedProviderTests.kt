@@ -11,17 +11,13 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 
 internal class SampleFeedProviderTests {
-    @get:Rule
-    val sampleRule = SampleTestRule()
+  @get:Rule val sampleRule = SampleTestRule()
 
-    @Test
-    fun `GIVEN an empty list of toots WHEN providing it THEN it's provided`() {
-        SampleTootWriter.clear()
-        runTest {
-            assertContentEquals(
-                emptyList(),
-                SampleFeedProvider.provide(Profile.sample.id, 0).first()
-            )
-        }
+  @Test
+  fun `GIVEN an empty list of toots WHEN providing it THEN it's provided`() {
+    SampleTootWriter.clear()
+    runTest {
+      assertContentEquals(emptyList(), SampleFeedProvider.provide(Profile.sample.id, 0).first())
     }
+  }
 }

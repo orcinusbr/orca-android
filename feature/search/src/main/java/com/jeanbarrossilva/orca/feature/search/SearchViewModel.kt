@@ -16,30 +16,27 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 
 internal class SearchViewModel private constructor(private val searcher: ProfileSearcher) :
-    ViewModel() {
-    private val queryMutableFlow = MutableStateFlow("")
+  ViewModel() {
+  private val queryMutableFlow = MutableStateFlow("")
 
-    val queryFlow = queryMutableFlow.asStateFlow()
+  val queryFlow = queryMutableFlow.asStateFlow()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val resultsFlow = loadableFlow(viewModelScope) {
-        queryFlow
-            .flatMapLatest(searcher::search)
-            .map(List<ProfileSearchResult>::toSerializableList)
-            .collect(::load)
+  @OptIn(ExperimentalCoroutinesApi::class)
+  val resultsFlow =
+    loadableFlow(viewModelScope) {
+      queryFlow
+        .flatMapLatest(searcher::search)
+        .map(List<ProfileSearchResult>::toSerializableList)
+        .collect(::load)
     }
 
-    fun setQuery(query: String) {
-        queryMutableFlow.value = query
-    }
+  fun setQuery(query: String) {
+    queryMutableFlow.value = query
+  }
 
-    companion object {
-        fun createFactory(searcher: ProfileSearcher): ViewModelProvider.Factory {
-            return viewModelFactory {
-                initializer {
-                    SearchViewModel(searcher)
-                }
-            }
-        }
+  companion object {
+    fun createFactory(searcher: ProfileSearcher): ViewModelProvider.Factory {
+      return viewModelFactory { initializer { SearchViewModel(searcher) } }
     }
+  }
 }

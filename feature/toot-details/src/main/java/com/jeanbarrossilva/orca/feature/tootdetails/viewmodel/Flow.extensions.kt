@@ -11,14 +11,13 @@ import kotlinx.coroutines.flow.flow
  * @param firstFlow [Flow] to be [combine]d with [secondFlow].
  * @param secondFlow [Flow] to be [combine]d with [firstFlow].
  * @param transform Creates a [Flow] based on [firstFlow]'s and [secondFlow]'s emissions.
- **/
+ */
 internal fun <F, S, O> flatMapCombine(
-    firstFlow: Flow<F>,
-    secondFlow: Flow<S>,
-    transform: suspend (F, S) -> Flow<O>
+  firstFlow: Flow<F>,
+  secondFlow: Flow<S>,
+  transform: suspend (F, S) -> Flow<O>
 ): Flow<O> {
-    return flow {
-        combine(firstFlow, secondFlow) { first, second -> transform(first, second) }
-            .collect(::emitAll)
-    }
+  return flow {
+    combine(firstFlow, secondFlow) { first, second -> transform(first, second) }.collect(::emitAll)
+  }
 }

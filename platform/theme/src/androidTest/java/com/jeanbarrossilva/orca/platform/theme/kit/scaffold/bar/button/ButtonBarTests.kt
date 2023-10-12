@@ -16,44 +16,33 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class ButtonBarTests {
-    @get:Rule
-    val composeRule = createComposeRule()
+  @get:Rule val composeRule = createComposeRule()
 
-    @Test
-    fun hidesDividerWhenListCannotBeScrolled() {
-        val lazyListState = LazyListState()
-        composeRule.setContent {
-            OrcaTheme {
-                Scaffold(buttonBar = { ButtonBar(lazyListState) }) {
-                    LazyColumn(state = lazyListState) {
-                        item {
-                            Spacer(Modifier)
-                        }
-                    }
-                }
-            }
+  @Test
+  fun hidesDividerWhenListCannotBeScrolled() {
+    val lazyListState = LazyListState()
+    composeRule.setContent {
+      OrcaTheme {
+        Scaffold(buttonBar = { ButtonBar(lazyListState) }) {
+          LazyColumn(state = lazyListState) { item { Spacer(Modifier) } }
         }
-        composeRule.onNodeWithTag(BUTTON_BAR_DIVIDER_TAG).assertIsNotDisplayed()
+      }
     }
+    composeRule.onNodeWithTag(BUTTON_BAR_DIVIDER_TAG).assertIsNotDisplayed()
+  }
 
-    @Test
-    fun showsDividerWhenListCanBeScrolled() {
-        val lazyListState = LazyListState()
-        composeRule.setContent {
-            OrcaTheme {
-                Scaffold(buttonBar = { ButtonBar(lazyListState) }) {
-                    LazyColumn(state = lazyListState) {
-                        item {
-                            Spacer(
-                                Modifier
-                                    .padding(it)
-                                    .fillScreenSize()
-                            )
-                        }
-                    }
-                }
-            }
+  @Test
+  fun showsDividerWhenListCanBeScrolled() {
+    val lazyListState = LazyListState()
+    composeRule.setContent {
+      OrcaTheme {
+        Scaffold(buttonBar = { ButtonBar(lazyListState) }) {
+          LazyColumn(state = lazyListState) {
+            item { Spacer(Modifier.padding(it).fillScreenSize()) }
+          }
         }
-        composeRule.onNodeWithTag(BUTTON_BAR_DIVIDER_TAG).assertIsDisplayed()
+      }
     }
+    composeRule.onNodeWithTag(BUTTON_BAR_DIVIDER_TAG).assertIsDisplayed()
+  }
 }

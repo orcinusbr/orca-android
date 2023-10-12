@@ -6,24 +6,20 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.mapNotNull
 
-/** [ProfileProvider] that provides sample [Profile]s. **/
+/** [ProfileProvider] that provides sample [Profile]s. */
 internal object SampleProfileProvider : ProfileProvider() {
-    /** [Profile]s that are present by default. **/
-    internal val defaultProfiles = listOf(Profile.sample)
+  /** [Profile]s that are present by default. */
+  internal val defaultProfiles = listOf(Profile.sample)
 
-    /** [MutableStateFlow] that provides the [Profile]s. **/
-    internal val profilesFlow = MutableStateFlow(defaultProfiles)
+  /** [MutableStateFlow] that provides the [Profile]s. */
+  internal val profilesFlow = MutableStateFlow(defaultProfiles)
 
-    public override suspend fun contains(id: String): Boolean {
-        val ids = profilesFlow.value.map(Profile::id)
-        return id in ids
-    }
+  public override suspend fun contains(id: String): Boolean {
+    val ids = profilesFlow.value.map(Profile::id)
+    return id in ids
+  }
 
-    override suspend fun onProvide(id: String): Flow<Profile> {
-        return profilesFlow.mapNotNull { profiles ->
-            profiles.find { profile ->
-                profile.id == id
-            }
-        }
-    }
+  override suspend fun onProvide(id: String): Flow<Profile> {
+    return profilesFlow.mapNotNull { profiles -> profiles.find { profile -> profile.id == id } }
+  }
 }

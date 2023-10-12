@@ -21,15 +21,15 @@ import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.configuration.iconography.Iconography
 
-/** Default values of a [Setting]. **/
+/** Default values of a [Setting]. */
 internal object SettingDefaults {
-    /** [CornerBasedShape] that clips a [Setting] by default. **/
-    val shape
-        @Composable get() = OrcaTheme.shapes.large
+  /** [CornerBasedShape] that clips a [Setting] by default. */
+  val shape
+    @Composable get() = OrcaTheme.shapes.large
 
-    /** Size in [Dp]s of the default spacing of a [Setting]. **/
-    val spacing
-        @Composable get() = OrcaTheme.spacings.large
+  /** Size in [Dp]s of the default spacing of a [Setting]. */
+  val spacing
+    @Composable get() = OrcaTheme.spacings.large
 }
 
 /**
@@ -41,58 +41,51 @@ internal object SettingDefaults {
  * @param onClick Callback run whenever it's clicked.
  * @param icon [Icon] that visually represents what it does.
  * @param action Portrays the result of invoking [onClick] or executes a related action.
- **/
+ */
 @Composable
 internal fun Setting(
-    label: @Composable () -> Unit,
-    modifier: Modifier = Modifier,
-    shape: Shape = SettingDefaults.shape,
-    onClick: () -> Unit = { },
-    icon: @Composable () -> Unit = { },
-    action: ActionScope.() -> Unit = { }
+  label: @Composable () -> Unit,
+  modifier: Modifier = Modifier,
+  shape: Shape = SettingDefaults.shape,
+  onClick: () -> Unit = {},
+  icon: @Composable () -> Unit = {},
+  action: ActionScope.() -> Unit = {}
 ) {
-    Surface(Modifier.fillMaxWidth(), shape) {
-        Row(
-            Modifier
-                .clickable(onClick = onClick)
-                .padding(SettingDefaults.spacing)
-                .then(modifier),
-            Arrangement.SpaceBetween,
-            Alignment.CenterVertically
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(SettingDefaults.spacing),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                icon()
+  Surface(Modifier.fillMaxWidth(), shape) {
+    Row(
+      Modifier.clickable(onClick = onClick).padding(SettingDefaults.spacing).then(modifier),
+      Arrangement.SpaceBetween,
+      Alignment.CenterVertically
+    ) {
+      Row(
+        horizontalArrangement = Arrangement.spacedBy(SettingDefaults.spacing),
+        verticalAlignment = Alignment.CenterVertically
+      ) {
+        icon()
 
-                ProvideTextStyle(
-                    OrcaTheme.typography.labelMedium.copy(
-                        color = OrcaTheme.colors.background.content
-                    ),
-                    label
-                )
-            }
+        ProvideTextStyle(
+          OrcaTheme.typography.labelMedium.copy(color = OrcaTheme.colors.background.content),
+          label
+        )
+      }
 
-            Spacer(Modifier.width(SettingDefaults.spacing))
-            ActionScope().apply(action).content()
-        }
+      Spacer(Modifier.width(SettingDefaults.spacing))
+      ActionScope().apply(action).content()
     }
+  }
 }
 
-/** Preview of a [Setting]. **/
+/** Preview of a [Setting]. */
 @Composable
 @MultiThemePreview
 private fun SettingPreview() {
-    OrcaTheme {
-        Setting(
-            onClick = { },
-            label = { Text("Label") },
-            icon = {
-                Icon(OrcaTheme.iconography.home.filled, contentDescription = "Setting")
-            }
-        ) {
-            icon(contentDescription = { "Expand" }, vector = Iconography::forward)
-        }
+  OrcaTheme {
+    Setting(
+      onClick = {},
+      label = { Text("Label") },
+      icon = { Icon(OrcaTheme.iconography.home.filled, contentDescription = "Setting") }
+    ) {
+      icon(contentDescription = { "Expand" }, vector = Iconography::forward)
     }
+  }
 }

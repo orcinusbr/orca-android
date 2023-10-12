@@ -13,55 +13,54 @@ import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.HttpTo
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.style.HttpStyleEntity
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.style.HttpStyleEntityDao
 
-/** [RoomDatabase] in which core-HTTP-related persistence operations will take place. **/
+/** [RoomDatabase] in which core-HTTP-related persistence operations will take place. */
 @Database(
-    entities = [
-        HttpStyleEntity::class,
-        HttpProfileEntity::class,
-        HttpProfileSearchResultEntity::class,
-        HttpTootEntity::class
+  entities =
+    [
+      HttpStyleEntity::class,
+      HttpProfileEntity::class,
+      HttpProfileSearchResultEntity::class,
+      HttpTootEntity::class
     ],
-    version = 1
+  version = 1
 )
 internal abstract class HttpDatabase : RoomDatabase() {
-    /** DAO for operating on [HTTP style entities][HttpStyleEntity]. **/
-    abstract val styleEntityDao: HttpStyleEntityDao
+  /** DAO for operating on [HTTP style entities][HttpStyleEntity]. */
+  abstract val styleEntityDao: HttpStyleEntityDao
 
-    /** DAO for operating on [HTTP profile entities][HttpProfileEntity]. **/
-    abstract val profileEntityDao: HttpProfileEntityDao
+  /** DAO for operating on [HTTP profile entities][HttpProfileEntity]. */
+  abstract val profileEntityDao: HttpProfileEntityDao
+
+  /** DAO for operating on [HTTP profile search result entities][HttpProfileSearchResultEntity]. */
+  abstract val profileSearchResultEntityDao: HttpProfileSearchResultEntityDao
+
+  /** DAO for operating on [HTTP toot entities][HttpTootEntity]. */
+  abstract val tootEntityDao: HttpTootEntityDao
+
+  companion object {
+    private lateinit var instance: HttpDatabase
 
     /**
-     * DAO for operating on [HTTP profile search result entities][HttpProfileSearchResultEntity].
-     **/
-    abstract val profileSearchResultEntityDao: HttpProfileSearchResultEntityDao
-
-    /** DAO for operating on [HTTP toot entities][HttpTootEntity]. **/
-    abstract val tootEntityDao: HttpTootEntityDao
-
-    companion object {
-        private lateinit var instance: HttpDatabase
-
-        /**
-         * Builds or retrieves the previously instantiated [HttpDatabase].
-         *
-         * @param context [Context] to be used for building it.
-         **/
-        fun getInstance(context: Context): HttpDatabase {
-            return if (Companion::instance.isInitialized) {
-                instance
-            } else {
-                instance = build(context)
-                instance
-            }
-        }
-
-        /**
-         * Builds a [HttpDatabase].
-         *
-         * @param context [Context] from which it will be built.
-         **/
-        private fun build(context: Context): HttpDatabase {
-            return Room.databaseBuilder(context, HttpDatabase::class.java, "http-database").build()
-        }
+     * Builds or retrieves the previously instantiated [HttpDatabase].
+     *
+     * @param context [Context] to be used for building it.
+     */
+    fun getInstance(context: Context): HttpDatabase {
+      return if (Companion::instance.isInitialized) {
+        instance
+      } else {
+        instance = build(context)
+        instance
+      }
     }
+
+    /**
+     * Builds a [HttpDatabase].
+     *
+     * @param context [Context] from which it will be built.
+     */
+    private fun build(context: Context): HttpDatabase {
+      return Room.databaseBuilder(context, HttpDatabase::class.java, "http-database").build()
+    }
+  }
 }

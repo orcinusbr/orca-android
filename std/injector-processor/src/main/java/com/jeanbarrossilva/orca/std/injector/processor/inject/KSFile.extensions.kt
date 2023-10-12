@@ -13,25 +13,24 @@ import org.jetbrains.kotlin.idea.KotlinFileType
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.psi.KtImportDirective
 
-/** [Name]s imported within this [KSFile]. **/
+/** [Name]s imported within this [KSFile]. */
 internal val KSFile.imports: List<Name>
-    get() {
-        val disposable = Disposer.newDisposable()
-        return try {
-            val config = CompilerConfiguration()
-            val configFiles = EnvironmentConfigFiles.JVM_CONFIG_FILES
-            val env = KotlinCoreEnvironment.createForProduction(disposable, config, configFiles)
-            val path = Path.of(filePath)
-            val text = Files.readString(path)
-            val virtualFile = LightVirtualFile(fileName, KotlinFileType.INSTANCE, text)
-            PsiManager
-                .getInstance(env.project)
-                .findFile(virtualFile)
-                ?.children
-                ?.filterIsInstance<KtImportDirective>()
-                ?.mapNotNull(KtImportDirective::importedName)
-                .orEmpty()
-        } finally {
-            disposable.dispose()
-        }
+  get() {
+    val disposable = Disposer.newDisposable()
+    return try {
+      val config = CompilerConfiguration()
+      val configFiles = EnvironmentConfigFiles.JVM_CONFIG_FILES
+      val env = KotlinCoreEnvironment.createForProduction(disposable, config, configFiles)
+      val path = Path.of(filePath)
+      val text = Files.readString(path)
+      val virtualFile = LightVirtualFile(fileName, KotlinFileType.INSTANCE, text)
+      PsiManager.getInstance(env.project)
+        .findFile(virtualFile)
+        ?.children
+        ?.filterIsInstance<KtImportDirective>()
+        ?.mapNotNull(KtImportDirective::importedName)
+        .orEmpty()
+    } finally {
+      disposable.dispose()
     }
+  }

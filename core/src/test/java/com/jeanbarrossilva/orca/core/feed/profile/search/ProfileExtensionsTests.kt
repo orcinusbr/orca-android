@@ -7,8 +7,8 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class ProfileExtensionsTests {
-    @Test
-    fun `GIVEN a profile WHEN converting it into a search result THEN it's converted`() {
-        assertEquals(ProfileSearchResult.sample, Profile.sample.toProfileSearchResult())
-    }
+  @Test
+  fun `GIVEN a profile WHEN converting it into a search result THEN it's converted`() {
+    assertEquals(ProfileSearchResult.sample, Profile.sample.toProfileSearchResult())
+  }
 }

@@ -25,43 +25,35 @@ import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.size.re
  * @param modifier [Modifier] to be applied to the underlying [Text].
  * @param style [TextStyle] with which it will be styled.
  * @param range [AutoSizeRange] within which the font size should be.
- **/
+ */
 @Composable
 fun AutoSizeText(
-    text: String,
-    modifier: Modifier = Modifier,
-    style: TextStyle = LocalTextStyle.current,
-    range: AutoSizeRange = rememberAutoSizeRange(style.fontSize)
+  text: String,
+  modifier: Modifier = Modifier,
+  style: TextStyle = LocalTextStyle.current,
+  range: AutoSizeRange = rememberAutoSizeRange(style.fontSize)
 ) {
-    val density = LocalDensity.current
-    var canBeDrawn by remember { mutableStateOf(false) }
-    val sizer = remember(density, range) { AutoSizer(density, range) }
+  val density = LocalDensity.current
+  var canBeDrawn by remember { mutableStateOf(false) }
+  val sizer = remember(density, range) { AutoSizer(density, range) }
 
-    Text(
-        text,
-        modifier.drawWithContent {
-            if (canBeDrawn) {
-                drawContent()
-            }
-        },
-        fontSize = sizer.size,
-        onTextLayout = {
-            sizer.autoSize(it, canBeDrawn) {
-                canBeDrawn = true
-            }
-        },
-        maxLines = 1,
-        style = style
-    )
+  Text(
+    text,
+    modifier.drawWithContent {
+      if (canBeDrawn) {
+        drawContent()
+      }
+    },
+    fontSize = sizer.size,
+    onTextLayout = { sizer.autoSize(it, canBeDrawn) { canBeDrawn = true } },
+    maxLines = 1,
+    style = style
+  )
 }
 
-/** Preview of an [AutoSizeText]. **/
+/** Preview of an [AutoSizeText]. */
 @Composable
 @MultiThemePreview
 private fun AutoSizeTextPreview() {
-    OrcaTheme {
-        Surface(color = OrcaTheme.colors.background.container) {
-            AutoSizeText("Text")
-        }
-    }
+  OrcaTheme { Surface(color = OrcaTheme.colors.background.container) { AutoSizeText("Text") } }
 }

@@ -18,66 +18,53 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class TimelineTests {
-    @get:Rule
-    val time4JRule = Time4JTestRule()
+  @get:Rule val time4JRule = Time4JTestRule()
 
-    @get:Rule
-    val composeRule = createComposeRule()
+  @get:Rule val composeRule = createComposeRule()
 
-    @Test
-    fun showsEmptyMessageWhenListLoadableIsEmpty() {
-        composeRule.setContent {
-            OrcaTheme {
-                Timeline(ListLoadable.Empty())
-            }
-        }
-        composeRule.onNodeWithTag(EMPTY_TIMELINE_MESSAGE_TAG).assertIsDisplayed()
+  @Test
+  fun showsEmptyMessageWhenListLoadableIsEmpty() {
+    composeRule.setContent { OrcaTheme { Timeline(ListLoadable.Empty()) } }
+    composeRule.onNodeWithTag(EMPTY_TIMELINE_MESSAGE_TAG).assertIsDisplayed()
+  }
+
+  @Test
+  fun showsDividerWhenHeaderIsNotAddedOnTootPreviewBeforeLastOne() {
+    composeRule.setContent {
+      OrcaTheme { PopulatedTimeline(tootPreviews = TootPreview.samples.take(2)) }
     }
+    composeRule
+      .onNodeWithTag(TIMELINE_TAG)
+      .onChildren()
+      .onFirst()
+      .onSiblings()
+      .filter(hasTestTag(TIMELINE_DIVIDER_TAG))
+      .assertCountEquals(0)
+  }
 
-    @Test
-    fun showsDividerWhenHeaderIsNotAddedOnTootPreviewBeforeLastOne() {
-        composeRule.setContent {
-            OrcaTheme {
-                PopulatedTimeline(tootPreviews = TootPreview.samples.take(2))
-            }
-        }
-        composeRule
-            .onNodeWithTag(TIMELINE_TAG)
-            .onChildren()
-            .onFirst()
-            .onSiblings()
-            .filter(hasTestTag(TIMELINE_DIVIDER_TAG))
-            .assertCountEquals(0)
+  @Test
+  fun showsDividersWhenHeaderIsAddedOnTootPreviewBeforeLastOne() {
+    composeRule.setContent {
+      OrcaTheme { PopulatedTimeline(tootPreviews = TootPreview.samples.take(2)) {} }
     }
+    composeRule
+      .onNodeWithTag(TIMELINE_TAG)
+      .onChildren()[1]
+      .onSiblings()
+      .filter(hasTestTag(TIMELINE_DIVIDER_TAG))
+      .assertCountEquals(1)
+  }
 
-    @Test
-    fun showsDividersWhenHeaderIsAddedOnTootPreviewBeforeLastOne() {
-        composeRule.setContent {
-            OrcaTheme {
-                PopulatedTimeline(tootPreviews = TootPreview.samples.take(2)) {
-                }
-            }
-        }
-        composeRule
-            .onNodeWithTag(TIMELINE_TAG)
-            .onChildren()[1]
-            .onSiblings()
-            .filter(hasTestTag(TIMELINE_DIVIDER_TAG))
-            .assertCountEquals(1)
+  @Test
+  fun doesNotShowDividersOnLastTootPreview() {
+    composeRule.setContent {
+      OrcaTheme { PopulatedTimeline(tootPreviews = TootPreview.samples.take(1)) }
     }
-
-    @Test
-    fun doesNotShowDividersOnLastTootPreview() {
-        composeRule.setContent {
-            OrcaTheme {
-                PopulatedTimeline(tootPreviews = TootPreview.samples.take(1))
-            }
-        }
-        composeRule
-            .onNodeWithTag(TIMELINE_TAG)
-            .onChild()
-            .onSiblings()
-            .filter(hasTestTag(TIMELINE_DIVIDER_TAG))
-            .assertCountEquals(0)
-    }
+    composeRule
+      .onNodeWithTag(TIMELINE_TAG)
+      .onChild()
+      .onSiblings()
+      .filter(hasTestTag(TIMELINE_DIVIDER_TAG))
+      .assertCountEquals(0)
+  }
 }

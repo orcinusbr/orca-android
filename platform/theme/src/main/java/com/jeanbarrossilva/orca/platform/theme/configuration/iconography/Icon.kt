@@ -9,11 +9,11 @@ import com.jeanbarrossilva.orca.platform.theme.extensions.Empty
  *
  * @param outlined [ImageVector] that is outlined.
  * @param filled [ImageVector] that is filled.
- **/
+ */
 @Immutable
 data class Icon internal constructor(val outlined: ImageVector, val filled: ImageVector) {
-    companion object {
-        /** [Icon] with [ImageVector.Companion.Empty] values. **/
-        val Empty = Icon(outlined = ImageVector.Empty, filled = ImageVector.Empty)
-    }
+  companion object {
+    /** [Icon] with [ImageVector.Companion.Empty] values. */
+    val Empty = Icon(outlined = ImageVector.Empty, filled = ImageVector.Empty)
+  }
 }

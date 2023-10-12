@@ -24,28 +24,26 @@ import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
  */
 @Composable
 internal fun HttpAuthentication(modifier: Modifier = Modifier) {
-    Surface(modifier, color = OrcaTheme.colors.background.container) {
-        Column(
-            Modifier.fillMaxSize(),
-            Arrangement.spacedBy(OrcaTheme.spacings.medium, Alignment.CenterVertically),
-            Alignment.CenterHorizontally
-        ) {
-            Icon(OrcaTheme.iconography.login, contentDescription = "Link", Modifier.size(64.dp))
+  Surface(modifier, color = OrcaTheme.colors.background.container) {
+    Column(
+      Modifier.fillMaxSize(),
+      Arrangement.spacedBy(OrcaTheme.spacings.medium, Alignment.CenterVertically),
+      Alignment.CenterHorizontally
+    ) {
+      Icon(OrcaTheme.iconography.login, contentDescription = "Link", Modifier.size(64.dp))
 
-            Text(
-                stringResource(R.string.core_http_authentication_authenticating),
-                textAlign = TextAlign.Center,
-                style = OrcaTheme.typography.headlineLarge
-            )
-        }
+      Text(
+        stringResource(R.string.core_http_authentication_authenticating),
+        textAlign = TextAlign.Center,
+        style = OrcaTheme.typography.headlineLarge
+      )
     }
+  }
 }
 
-/** Preview of an [HttpAuthentication]. **/
+/** Preview of an [HttpAuthentication]. */
 @Composable
 @MultiThemePreview
 private fun HttpAuthenticationPreview() {
-    OrcaTheme {
-        HttpAuthentication()
-    }
+  OrcaTheme { HttpAuthentication() }
 }

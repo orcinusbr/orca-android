@@ -25,63 +25,60 @@ import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 
 @Composable
 internal fun FormatIconButton(
-    isEnabled: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+  isEnabled: Boolean,
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier,
+  content: @Composable () -> Unit
 ) {
-    val role = Role.Switch
-    val contentColor by animateColorAsState(
-        if (isEnabled) OrcaTheme.colors.primary.container else LocalContentColor.current,
-        label = "ContentColor"
+  val role = Role.Switch
+  val contentColor by
+    animateColorAsState(
+      if (isEnabled) OrcaTheme.colors.primary.container else LocalContentColor.current,
+      label = "ContentColor"
     )
 
-    Box(
-        modifier
-            .clip(OrcaTheme.shapes.small)
-            .clickable(role = role, onClick = onClick)
-            .padding(4.dp)
-            .size(24.dp)
-            .semantics {
-                this.role = role
-                toggleableState = if (isEnabled) ToggleableState.On else ToggleableState.Off
-            },
-        Alignment.Center
-    ) {
-        CompositionLocalProvider(LocalContentColor provides contentColor, content = content)
-    }
+  Box(
+    modifier
+      .clip(OrcaTheme.shapes.small)
+      .clickable(role = role, onClick = onClick)
+      .padding(4.dp)
+      .size(24.dp)
+      .semantics {
+        this.role = role
+        toggleableState = if (isEnabled) ToggleableState.On else ToggleableState.Off
+      },
+    Alignment.Center
+  ) {
+    CompositionLocalProvider(LocalContentColor provides contentColor, content = content)
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun DisabledFormatIconButtonPreview() {
-    OrcaTheme {
-        Surface(color = OrcaTheme.colors.background.container) {
-            FormatIconButton(isEnabled = false)
-        }
-    }
+  OrcaTheme {
+    Surface(color = OrcaTheme.colors.background.container) { FormatIconButton(isEnabled = false) }
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun EnabledFormatIconButtonPreview() {
-    OrcaTheme {
-        Surface(color = OrcaTheme.colors.background.container) {
-            FormatIconButton(isEnabled = true)
-        }
-    }
+  OrcaTheme {
+    Surface(color = OrcaTheme.colors.background.container) { FormatIconButton(isEnabled = true) }
+  }
 }
 
 @Composable
 private fun FormatIconButton(isEnabled: Boolean, modifier: Modifier = Modifier) {
-    FormatIconButton(isEnabled, onClick = { }, modifier) {
-        Icon(
-            if (isEnabled) {
-                OrcaTheme.iconography.compose.filled
-            } else {
-                OrcaTheme.iconography.compose.outlined
-            },
-            contentDescription = "Compose"
-        )
-    }
+  FormatIconButton(isEnabled, onClick = {}, modifier) {
+    Icon(
+      if (isEnabled) {
+        OrcaTheme.iconography.compose.filled
+      } else {
+        OrcaTheme.iconography.compose.outlined
+      },
+      contentDescription = "Compose"
+    )
+  }
 }

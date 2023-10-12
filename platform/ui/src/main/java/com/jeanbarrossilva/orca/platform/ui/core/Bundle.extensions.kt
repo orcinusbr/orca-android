@@ -8,9 +8,9 @@ import androidx.core.os.bundleOf
  *
  * @param pairs Elements to be put into the resulting [Bundle].
  * @return [Bundle], or `null` if [pairs] is empty.
- **/
+ */
 @PublishedApi
 internal fun bundleOf(vararg pairs: Pair<String, Any?>): Bundle? {
-    val hasArgs = pairs.isNotEmpty()
-    return if (hasArgs) bundleOf(*pairs) else null
+  val hasArgs = pairs.isNotEmpty()
+  return if (hasArgs) bundleOf(*pairs) else null
 }

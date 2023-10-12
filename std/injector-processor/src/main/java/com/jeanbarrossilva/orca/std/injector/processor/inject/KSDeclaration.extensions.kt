@@ -11,11 +11,11 @@ import com.squareup.kotlinpoet.typeNameOf
  * Whether this [KSDeclaration] is within [T]'s [KSClassDeclaration].
  *
  * @param T Structure whose ownership of this [KSDeclaration] will be verified.
- **/
+ */
 internal inline fun <reified T : Any> KSDeclaration.isWithin(): Boolean {
-    val parentDeclaration = parentDeclaration as? KSClassDeclaration ?: return false
-    val typeName = typeNameOf<T>()
-    return parentDeclaration.superTypes.map(KSTypeReference::toTypeName).any(typeName::equals)
+  val parentDeclaration = parentDeclaration as? KSClassDeclaration ?: return false
+  val typeName = typeNameOf<T>()
+  return parentDeclaration.superTypes.map(KSTypeReference::toTypeName).any(typeName::equals)
 }
 
 /**
@@ -23,7 +23,7 @@ internal inline fun <reified T : Any> KSDeclaration.isWithin(): Boolean {
  * doesn't have one.
  *
  * @throws IllegalStateException If this [KSDeclaration] isn't part of a [KSFile].
- **/
+ */
 internal fun KSDeclaration.requireContainingFile(): KSFile {
-    return containingFile ?: throw IllegalStateException("$this doesn't have a containing KSFile.")
+  return containingFile ?: throw IllegalStateException("$this doesn't have a containing KSFile.")
 }

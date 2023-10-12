@@ -5,7 +5,7 @@ import com.jeanbarrossilva.orca.feature.settings.termmuting.TermMutingFragment
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
 
 internal class NavigatorSettingsBoundary(private val navigator: Navigator) : SettingsBoundary {
-    override fun navigateToTermMuting() {
-        TermMutingFragment.navigate(navigator)
-    }
+  override fun navigateToTermMuting() {
+    TermMutingFragment.navigate(navigator)
+  }
 }

@@ -12,30 +12,29 @@ import java.net.URL
  * [ImageLoader] powered by the Coil library.
  *
  * @param context [Context] through which [ImageRequest]s will be performed.
- **/
+ */
 internal class CoilImageLoader private constructor(private val context: Context) : ImageLoader {
-    override suspend fun load(width: Int, height: Int, url: URL): Image? {
-        val request = ImageRequest.Builder(context).data("$url").size(width, height).build()
-        return context.imageLoader.execute(request).drawable?.toBitmap()?.toImage()
-    }
+  override suspend fun load(width: Int, height: Int, url: URL): Image? {
+    val request = ImageRequest.Builder(context).data("$url").size(width, height).build()
+    return context.imageLoader.execute(request).drawable?.toBitmap()?.toImage()
+  }
 
-    companion object {
-        /** Single [CoilImageLoader] instance. **/
-        @Suppress("StaticFieldLeak")
-        private lateinit var instance: CoilImageLoader
+  companion object {
+    /** Single [CoilImageLoader] instance. */
+    @Suppress("StaticFieldLeak") private lateinit var instance: CoilImageLoader
 
-        /**
-         * Creates or retrieves an existing instance of a [CoilImageLoader].
-         *
-         * @param context [Context] through which [ImageRequest]s will be performed.
-         **/
-        fun getInstance(context: Context): CoilImageLoader {
-            return if (::instance.isInitialized) {
-                instance
-            } else {
-                instance = CoilImageLoader(context)
-                instance
-            }
-        }
+    /**
+     * Creates or retrieves an existing instance of a [CoilImageLoader].
+     *
+     * @param context [Context] through which [ImageRequest]s will be performed.
+     */
+    fun getInstance(context: Context): CoilImageLoader {
+      return if (::instance.isInitialized) {
+        instance
+      } else {
+        instance = CoilImageLoader(context)
+        instance
+      }
     }
+  }
 }

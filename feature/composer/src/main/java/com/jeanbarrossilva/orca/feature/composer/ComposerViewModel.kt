@@ -6,14 +6,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 internal class ComposerViewModel : ViewModel() {
-    private val textFieldValueMutableFlow = MutableStateFlow(TextFieldValue())
+  private val textFieldValueMutableFlow = MutableStateFlow(TextFieldValue())
 
-    val textFieldValueFlow = textFieldValueMutableFlow.asStateFlow()
+  val textFieldValueFlow = textFieldValueMutableFlow.asStateFlow()
 
-    fun setTextFieldValue(textFieldValue: TextFieldValue) {
-        textFieldValueMutableFlow.value = textFieldValue
-    }
+  fun setTextFieldValue(textFieldValue: TextFieldValue) {
+    textFieldValueMutableFlow.value = textFieldValue
+  }
 
-    fun compose() {
-    }
+  fun compose() {}
 }

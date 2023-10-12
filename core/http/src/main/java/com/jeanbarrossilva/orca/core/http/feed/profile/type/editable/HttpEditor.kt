@@ -19,39 +19,36 @@ import java.net.URL
 import java.nio.file.Path
 import kotlin.io.path.name
 
-/** [Editor] whose actions send [HttpRequest]s to the API. **/
+/** [Editor] whose actions send [HttpRequest]s to the API. */
 internal class HttpEditor : Editor {
-    @Suppress("UNREACHABLE_CODE", "UNUSED_VARIABLE")
-    override suspend fun setAvatarURL(avatarURL: URL) {
-        val file: Path = TODO()
-        val fileAsFile = file.toFile()
-        val fileLength = fileAsFile.length()
-        val inputProvider = InputProvider(fileLength) { fileAsFile.inputStream().asInput() }
-        val contentDisposition = "form-data; name=\"avatar\" filename=\"${file.name}\""
-        val headers = Headers.build { append(HttpHeaders.ContentDisposition, contentDisposition) }
-        val formData = formData { append("avatar", inputProvider, headers) }
-        (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
-            .client
-            .authenticateAndSubmitFormWithBinaryData(ROUTE, formData)
-    }
+  @Suppress("UNREACHABLE_CODE", "UNUSED_VARIABLE")
+  override suspend fun setAvatarURL(avatarURL: URL) {
+    val file: Path = TODO()
+    val fileAsFile = file.toFile()
+    val fileLength = fileAsFile.length()
+    val inputProvider = InputProvider(fileLength) { fileAsFile.inputStream().asInput() }
+    val contentDisposition = "form-data; name=\"avatar\" filename=\"${file.name}\""
+    val headers = Headers.build { append(HttpHeaders.ContentDisposition, contentDisposition) }
+    val formData = formData { append("avatar", inputProvider, headers) }
+    (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
+      .client
+      .authenticateAndSubmitFormWithBinaryData(ROUTE, formData)
+  }
 
-    override suspend fun setName(name: String) {
-        (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
-            .client
-            .authenticateAndSubmitForm(ROUTE, parametersOf("display_name", name))
-    }
+  override suspend fun setName(name: String) {
+    (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
+      .client
+      .authenticateAndSubmitForm(ROUTE, parametersOf("display_name", name))
+  }
 
-    override suspend fun setBio(bio: StyledString) {
-        (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
-            .client
-            .authenticateAndSubmitForm(
-                ROUTE,
-                parametersOf("note", "$bio")
-            )
-    }
+  override suspend fun setBio(bio: StyledString) {
+    (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
+      .client
+      .authenticateAndSubmitForm(ROUTE, parametersOf("note", "$bio"))
+  }
 
-    companion object {
-        /** Route to which the [HttpRequest]s will be sent for editing an [HttpEditableProfile]. **/
-        private const val ROUTE = "api/v1/accounts/update_credentials"
-    }
+  companion object {
+    /** Route to which the [HttpRequest]s will be sent for editing an [HttpEditableProfile]. */
+    private const val ROUTE = "api/v1/accounts/update_credentials"
+  }
 }

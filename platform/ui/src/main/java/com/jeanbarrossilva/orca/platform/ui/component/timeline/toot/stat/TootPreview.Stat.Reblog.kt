@@ -20,48 +20,38 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 
 @Composable
 internal fun ReblogStat(
-    position: StatPosition,
-    preview: TootPreview,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+  position: StatPosition,
+  preview: TootPreview,
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier
 ) {
-    val isActive = remember(preview, preview::isReblogged)
+  val isActive = remember(preview, preview::isReblogged)
 
-    Stat(position, onClick, modifier.testTag(TOOT_PREVIEW_REBLOG_COUNT_STAT_TAG)) {
-        val contentColor by animateColorAsState(
-            if (isActive) Color(0xFF81C784) else LocalContentColor.current,
-            label = "ContentColor"
-        )
+  Stat(position, onClick, modifier.testTag(TOOT_PREVIEW_REBLOG_COUNT_STAT_TAG)) {
+    val contentColor by
+      animateColorAsState(
+        if (isActive) Color(0xFF81C784) else LocalContentColor.current,
+        label = "ContentColor"
+      )
 
-        ReblogStatIcon(
-            isActive,
-            ActivateableStatIconInteractiveness.Interactive { onClick() }
-        )
+    ReblogStatIcon(isActive, ActivateableStatIconInteractiveness.Interactive { onClick() })
 
-        Text(preview.formattedReblogCount, color = contentColor)
-    }
+    Text(preview.formattedReblogCount, color = contentColor)
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun InactiveReblogStatPreview() {
-    OrcaTheme {
-        ReblogStat(
-            StatPosition.SUBSEQUENT,
-            TootPreview.sample.copy(isReblogged = false),
-            onClick = { }
-        )
-    }
+  OrcaTheme {
+    ReblogStat(StatPosition.SUBSEQUENT, TootPreview.sample.copy(isReblogged = false), onClick = {})
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun ActiveReblogStatPreview() {
-    OrcaTheme {
-        ReblogStat(
-            StatPosition.SUBSEQUENT,
-            TootPreview.sample.copy(isReblogged = true),
-            onClick = { }
-        )
-    }
+  OrcaTheme {
+    ReblogStat(StatPosition.SUBSEQUENT, TootPreview.sample.copy(isReblogged = true), onClick = {})
+  }
 }

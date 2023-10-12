@@ -12,13 +12,13 @@ import java.net.URL
  * @param avatarURL [URL] that leads to the avatar image.
  * @param name Name to be displayed.
  * @param url [URL] that leads to the profile.
- **/
+ */
 data class ProfileSearchResult(
-    val id: String,
-    val account: Account,
-    val avatarURL: URL,
-    val name: String,
-    val url: URL
+  val id: String,
+  val account: Account,
+  val avatarURL: URL,
+  val name: String,
+  val url: URL
 ) : Serializable {
-    companion object
+  companion object
 }

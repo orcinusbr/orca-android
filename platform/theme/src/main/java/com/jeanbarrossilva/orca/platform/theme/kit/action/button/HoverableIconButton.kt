@@ -18,28 +18,28 @@ import com.jeanbarrossilva.orca.platform.theme.kit.action.Hoverable
  * @param onClick Callback run whenever this [HoverableIconButton] is clicked.
  * @param modifier [Modifier] to be applied to the underlying [Hoverable].
  * @param content [Icon] to be shown.
- **/
+ */
 @Composable
 fun HoverableIconButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier,
+  content: @Composable () -> Unit
 ) {
-    val interactionSource = remember {
-        IgnoringMutableInteractionSource(PressInteraction.Press::class, HoverInteraction::class)
-    }
+  val interactionSource = remember {
+    IgnoringMutableInteractionSource(PressInteraction.Press::class, HoverInteraction::class)
+  }
 
-    Hoverable(modifier) {
-        IconButton(onClick, interactionSource = interactionSource, content = content)
-    }
+  Hoverable(modifier) {
+    IconButton(onClick, interactionSource = interactionSource, content = content)
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun HoverableIconButtonPreview() {
-    OrcaTheme {
-        HoverableIconButton(onClick = { }) {
-            Icon(OrcaTheme.iconography.home.outlined, contentDescription = "Home")
-        }
+  OrcaTheme {
+    HoverableIconButton(onClick = {}) {
+      Icon(OrcaTheme.iconography.home.outlined, contentDescription = "Home")
     }
+  }
 }

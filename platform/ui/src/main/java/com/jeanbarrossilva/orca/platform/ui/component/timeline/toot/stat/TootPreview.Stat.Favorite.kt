@@ -18,54 +18,47 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.StatDefaults
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.StatPosition
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 
-/** Tag that identifies a [TootPreview]'s favorite count stat for testing purposes. **/
+/** Tag that identifies a [TootPreview]'s favorite count stat for testing purposes. */
 const val TOOT_PREVIEW_FAVORITE_STAT_TAG = "toot-preview-favorites-stat"
 
 @Composable
 internal fun FavoriteStat(
-    position: StatPosition,
-    preview: TootPreview,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+  position: StatPosition,
+  preview: TootPreview,
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier
 ) {
-    val isActive = remember(preview) { preview.isFavorite }
+  val isActive = remember(preview) { preview.isFavorite }
 
-    Stat(position, onClick, modifier.testTag(TOOT_PREVIEW_FAVORITE_STAT_TAG)) {
-        val contentColor by animateColorAsState(
-            if (isActive) OrcaTheme.colors.activation.favorite else LocalContentColor.current,
-            label = "ContentColor"
-        )
+  Stat(position, onClick, modifier.testTag(TOOT_PREVIEW_FAVORITE_STAT_TAG)) {
+    val contentColor by
+      animateColorAsState(
+        if (isActive) OrcaTheme.colors.activation.favorite else LocalContentColor.current,
+        label = "ContentColor"
+      )
 
-        FavoriteStatIcon(
-            isActive,
-            ActivateableStatIconInteractiveness.Interactive { onClick() },
-            Modifier.size(StatDefaults.IconSize)
-        )
+    FavoriteStatIcon(
+      isActive,
+      ActivateableStatIconInteractiveness.Interactive { onClick() },
+      Modifier.size(StatDefaults.IconSize)
+    )
 
-        Text(preview.formattedFavoriteCount, color = contentColor)
-    }
+    Text(preview.formattedFavoriteCount, color = contentColor)
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun InactiveFavoriteStatPreview() {
-    OrcaTheme {
-        FavoriteStat(
-            StatPosition.SUBSEQUENT,
-            TootPreview.sample.copy(isFavorite = false),
-            onClick = { }
-        )
-    }
+  OrcaTheme {
+    FavoriteStat(StatPosition.SUBSEQUENT, TootPreview.sample.copy(isFavorite = false), onClick = {})
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun ActiveFavoriteStatPreview() {
-    OrcaTheme {
-        FavoriteStat(
-            StatPosition.SUBSEQUENT,
-            TootPreview.sample.copy(isFavorite = true),
-            onClick = { }
-        )
-    }
+  OrcaTheme {
+    FavoriteStat(StatPosition.SUBSEQUENT, TootPreview.sample.copy(isFavorite = true), onClick = {})
+  }
 }

@@ -20,23 +20,21 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class FeedTests {
-    @get:Rule
-    val intentsRule = IntentsRule()
+  @get:Rule val intentsRule = IntentsRule()
 
-    @get:Rule
-    val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
+  @get:Rule val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
 
-    @Test
-    fun navigatesToTootHighlight() {
-        var hasNavigated = false
-        intending(browsesTo("${Highlight.sample.url}")).ok { hasNavigated = true }
-        composeRule.onHeadlineCards().onFirst().performClick()
-        assertTrue(hasNavigated)
-    }
+  @Test
+  fun navigatesToTootHighlight() {
+    var hasNavigated = false
+    intending(browsesTo("${Highlight.sample.url}")).ok { hasNavigated = true }
+    composeRule.onHeadlineCards().onFirst().performClick()
+    assertTrue(hasNavigated)
+  }
 
-    @Test
-    fun navigatesToComposerOnFabClick() {
-        composeRule.onNodeWithTag(FEED_FLOATING_ACTION_BUTTON_TAG).performClick()
-        intended(hasComponent(ComposerActivity::class.qualifiedName))
-    }
+  @Test
+  fun navigatesToComposerOnFabClick() {
+    composeRule.onNodeWithTag(FEED_FLOATING_ACTION_BUTTON_TAG).performClick()
+    intended(hasComponent(ComposerActivity::class.qualifiedName))
+  }
 }

@@ -16,18 +16,19 @@ import java.time.ZonedDateTime
  * @param commentCount Amount of comments that this [HttpToot] has received.
  * @param favoriteCount Amount of times that this [HttpToot] has been marked as favorite.
  * @param reblogCount Amount of times that this [HttpToot] has been reblogged.
- **/
-data class HttpToot internal constructor(
-    override val id: String,
-    override val author: Author,
-    override val content: Content,
-    override val publicationDateTime: ZonedDateTime,
-    private val commentCount: Int,
-    private val favoriteCount: Int,
-    private val reblogCount: Int,
-    override val url: URL
+ */
+data class HttpToot
+internal constructor(
+  override val id: String,
+  override val author: Author,
+  override val content: Content,
+  override val publicationDateTime: ZonedDateTime,
+  private val commentCount: Int,
+  private val favoriteCount: Int,
+  private val reblogCount: Int,
+  override val url: URL
 ) : Toot() {
-    override val comment = CommentStat(id, commentCount)
-    override val favorite = FavoriteStat(id, favoriteCount)
-    override val reblog = ReblogStat(id, reblogCount)
+  override val comment = CommentStat(id, commentCount)
+  override val favorite = FavoriteStat(id, favoriteCount)
+  override val reblog = ReblogStat(id, reblogCount)
 }

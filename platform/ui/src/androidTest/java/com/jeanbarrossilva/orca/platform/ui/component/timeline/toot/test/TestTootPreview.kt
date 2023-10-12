@@ -10,18 +10,18 @@ import com.jeanbarrossilva.orca.std.imageloader.test.TestImageLoader
 @Composable
 @Suppress("TestFunctionName")
 internal fun TestTootPreview(
-    modifier: Modifier = Modifier,
-    relativeTimeProvider: RelativeTimeProvider = rememberTestRelativeTimeProvider()
+  modifier: Modifier = Modifier,
+  relativeTimeProvider: RelativeTimeProvider = rememberTestRelativeTimeProvider()
 ) {
-    TootPreview(
-        TootPreview.sample,
-        onHighlightClick = { },
-        onFavorite = { },
-        onReblog = { },
-        onShare = { },
-        onClick = { },
-        modifier,
-        TestImageLoader,
-        relativeTimeProvider
-    )
+  TootPreview(
+    TootPreview.sample,
+    onHighlightClick = {},
+    onFavorite = {},
+    onReblog = {},
+    onShare = {},
+    onClick = {},
+    modifier,
+    TestImageLoader,
+    relativeTimeProvider
+  )
 }

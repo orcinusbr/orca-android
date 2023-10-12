@@ -18,40 +18,40 @@ import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.kit.action.Hoverable
 
 internal object StatDefaults {
-    val contentColor
-        @Composable get() = OrcaTheme.colors.secondary
+  val contentColor
+    @Composable get() = OrcaTheme.colors.secondary
 }
 
 @Composable
 internal fun Stat(
-    modifier: Modifier = Modifier,
-    contentColor: Color = StatDefaults.contentColor,
-    content: @Composable RowScope.() -> Unit
+  modifier: Modifier = Modifier,
+  contentColor: Color = StatDefaults.contentColor,
+  content: @Composable RowScope.() -> Unit
 ) {
-    Hoverable(modifier) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.small),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            CompositionLocalProvider(
-                LocalContentColor provides contentColor,
-                LocalTextStyle provides OrcaTheme.typography.bodySmall.copy(color = contentColor)
-            ) {
-                content()
-            }
-        }
+  Hoverable(modifier) {
+    Row(
+      horizontalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.small),
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      CompositionLocalProvider(
+        LocalContentColor provides contentColor,
+        LocalTextStyle provides OrcaTheme.typography.bodySmall.copy(color = contentColor)
+      ) {
+        content()
+      }
     }
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun StatPreview() {
-    OrcaTheme {
-        Surface(color = OrcaTheme.colors.background.container) {
-            Stat {
-                Icon(OrcaTheme.iconography.comment.outlined, contentDescription = "Comments")
-                Text("8")
-            }
-        }
+  OrcaTheme {
+    Surface(color = OrcaTheme.colors.background.container) {
+      Stat {
+        Icon(OrcaTheme.iconography.comment.outlined, contentDescription = "Comments")
+        Text("8")
+      }
     }
+  }
 }

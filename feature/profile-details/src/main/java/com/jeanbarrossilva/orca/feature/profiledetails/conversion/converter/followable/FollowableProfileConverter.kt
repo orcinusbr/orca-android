@@ -14,29 +14,27 @@ import kotlinx.coroutines.launch
  * [ProfileConverter] that converts a [FollowableProfile].
  *
  * @param coroutineScope [CoroutineScope] through which converted [Profile]'s [Follow] status toggle
- * will be performed.
- **/
+ *   will be performed.
+ */
 internal class FollowableProfileConverter(
-    private val coroutineScope: CoroutineScope,
-    override val next: ProfileConverter?
+  private val coroutineScope: CoroutineScope,
+  override val next: ProfileConverter?
 ) : ProfileConverter() {
-    override fun onConvert(profile: Profile, colors: Colors): ProfileDetails? {
-        return if (profile is FollowableProfile<*>) {
-            ProfileDetails.Followable(
-                profile.id,
-                profile.avatarURL,
-                profile.name,
-                profile.account,
-                profile.bio.toAnnotatedString(colors),
-                profile.url,
-                profile.follow.toStatus()
-            ) {
-                coroutineScope.launch {
-                    profile.toggleFollow()
-                }
-            }
-        } else {
-            null
-        }
+  override fun onConvert(profile: Profile, colors: Colors): ProfileDetails? {
+    return if (profile is FollowableProfile<*>) {
+      ProfileDetails.Followable(
+        profile.id,
+        profile.avatarURL,
+        profile.name,
+        profile.account,
+        profile.bio.toAnnotatedString(colors),
+        profile.url,
+        profile.follow.toStatus()
+      ) {
+        coroutineScope.launch { profile.toggleFollow() }
+      }
+    } else {
+      null
     }
+  }
 }

@@ -17,40 +17,33 @@ import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconI
 import com.jeanbarrossilva.orca.platform.ui.component.stat.reblog.ReblogStatIcon
 
 @Composable
-internal fun ReblogStat(
-    details: TootDetails,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val isActive = remember(details, details::isReblogged)
-    val contentColor by animateColorAsState(
-        if (isActive) OrcaTheme.colors.activation.reblog else StatDefaults.contentColor,
-        label = "ContentColor"
+internal fun ReblogStat(details: TootDetails, onClick: () -> Unit, modifier: Modifier = Modifier) {
+  val isActive = remember(details, details::isReblogged)
+  val contentColor by
+    animateColorAsState(
+      if (isActive) OrcaTheme.colors.activation.reblog else StatDefaults.contentColor,
+      label = "ContentColor"
     )
 
-    Stat(contentColor = contentColor) {
-        ReblogStatIcon(
-            isActive,
-            ActivateableStatIconInteractiveness.Interactive { onClick() },
-            modifier.size(24.dp)
-        )
+  Stat(contentColor = contentColor) {
+    ReblogStatIcon(
+      isActive,
+      ActivateableStatIconInteractiveness.Interactive { onClick() },
+      modifier.size(24.dp)
+    )
 
-        Text(details.formattedReblogCount)
-    }
+    Text(details.formattedReblogCount)
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun InactiveReblogStatPreview() {
-    OrcaTheme {
-        ReblogStat(TootDetails.sample.copy(isReblogged = false), onClick = { })
-    }
+  OrcaTheme { ReblogStat(TootDetails.sample.copy(isReblogged = false), onClick = {}) }
 }
 
 @Composable
 @MultiThemePreview
 private fun ActiveReblogStatPreview() {
-    OrcaTheme {
-        ReblogStat(TootDetails.sample.copy(isReblogged = true), onClick = { })
-    }
+  OrcaTheme { ReblogStat(TootDetails.sample.copy(isReblogged = true), onClick = {}) }
 }

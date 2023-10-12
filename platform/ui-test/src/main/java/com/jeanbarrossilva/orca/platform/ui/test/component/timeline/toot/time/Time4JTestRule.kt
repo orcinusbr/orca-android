@@ -9,10 +9,10 @@ import org.junit.rules.ExternalResource
  * [ExternalResource] that initializes the Time4J library before each test.
  *
  * @see ApplicationStarter.initialize
- **/
+ */
 class Time4JTestRule : ExternalResource() {
-    override fun before() {
-        val application = ApplicationProvider.getApplicationContext<Application>()
-        ApplicationStarter.initialize(application)
-    }
+  override fun before() {
+    val application = ApplicationProvider.getApplicationContext<Application>()
+    ApplicationStarter.initialize(application)
+  }
 }

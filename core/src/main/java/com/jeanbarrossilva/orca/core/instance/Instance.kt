@@ -10,38 +10,38 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.TootProvider
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
 
-/** An [Instance] with a generic [Authenticator]. **/
+/** An [Instance] with a generic [Authenticator]. */
 typealias SomeInstance = Instance<*>
 
 /**
  * Site at which the user is, from which all operations can be performed.
  *
  * @param T [Authenticator] to authenticate the user with.
- **/
+ */
 abstract class Instance<T : Authenticator> {
-    /** Unique identifier of the server. **/
-    abstract val domain: Domain
+  /** Unique identifier of the server. */
+  abstract val domain: Domain
 
-    /** [Instance]-specific [Authenticator] through which authentication can be done. **/
-    abstract val authenticator: T
+  /** [Instance]-specific [Authenticator] through which authentication can be done. */
+  abstract val authenticator: T
 
-    /**
-     * [Instance]-specific [AuthenticationLock] by which features can be locked or unlocked by an
-     * authentication "wall".
-     **/
-    abstract val authenticationLock: AuthenticationLock<T>
+  /**
+   * [Instance]-specific [AuthenticationLock] by which features can be locked or unlocked by an
+   * authentication "wall".
+   */
+  abstract val authenticationLock: AuthenticationLock<T>
 
-    /** [Instance]-specific [FeedProvider] that provides the [Toot]s in the timeline. **/
-    abstract val feedProvider: FeedProvider
+  /** [Instance]-specific [FeedProvider] that provides the [Toot]s in the timeline. */
+  abstract val feedProvider: FeedProvider
 
-    /** [Instance]-specific [ProfileProvider] for providing [Profile]s. **/
-    abstract val profileProvider: ProfileProvider
+  /** [Instance]-specific [ProfileProvider] for providing [Profile]s. */
+  abstract val profileProvider: ProfileProvider
 
-    /** [Instance]-specific [ProfileSearcher] by which search for [Profile]s can be made. **/
-    abstract val profileSearcher: ProfileSearcher
+  /** [Instance]-specific [ProfileSearcher] by which search for [Profile]s can be made. */
+  abstract val profileSearcher: ProfileSearcher
 
-    /** [Instance]-specific [TootProvider] that provides [Toot]s. **/
-    abstract val tootProvider: TootProvider
+  /** [Instance]-specific [TootProvider] that provides [Toot]s. */
+  abstract val tootProvider: TootProvider
 
-    companion object
+  companion object
 }

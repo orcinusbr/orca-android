@@ -13,9 +13,7 @@ import com.jeanbarrossilva.orca.platform.theme.configuration.Borders
  *
  * @param shape [Shape] of the [BorderStroke] to be applied.
  * @see Borders.areApplicable
- **/
+ */
 fun Modifier.border(shape: Shape): Modifier {
-    return composed {
-        if (Borders.areApplicable) border(OrcaTheme.borders.default, shape) else this
-    }
+  return composed { if (Borders.areApplicable) border(OrcaTheme.borders.default, shape) else this }
 }

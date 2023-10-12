@@ -60,20 +60,20 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-symbolProcessor = { id = "com.google.devtools.ksp", version.ref = "kotlin-symbolProcessor" }
 moduleDependencyGraph = { id = "com.savvasdalkitsis.module-dependency-graph", version = "0.10" }
+spotless = { id = "com.diffplug.spotless", version = "6.22.0" }
 
 [versions]
 android-activity = "1.7.2"
-android-compose = "1.5.1"
-android-compose-compiler = "1.4.7"
+android-compose = "1.5.3"
 android-fragment = "1.6.1"
 android-plugin = "8.1.2"
 android-room = "2.5.2"
 android-sdk-min = "28"
 android-sdk-target = "34"
 java = "17"
-kotlin = "1.8.21"
+kotlin = "1.9.10"
 kotlin-coroutines = "1.7.2"
-kotlin-symbolProcessor = "1.8.21-1.0.11"
+kotlin-symbolProcessor = "1.9.10-1.0.13"
 kotlinPoet = "1.14.2"
 ktor = "2.3.2"
 loadable = "1.6.9"

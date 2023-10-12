@@ -24,58 +24,54 @@ import kotlinx.coroutines.launch
  *
  * @param application [Application] that allows [Context]-specific behavior.
  * @param authorizationCode Code provided by the API when authorization was granted to the user.
- **/
-internal class HttpAuthenticationViewModel private constructor(
-    application: Application,
-    private val authorizationCode: String
-) : AndroidViewModel(application) {
-    /**
-     * Requests the API to authenticate the user and runs [onAuthentication] with the resulting
-     * [Actor].
-     *
-     * @param onAuthentication Callback run when the user has been successfully authenticated.
-     **/
-    internal fun request(onAuthentication: (Actor.Authenticated) -> Unit) {
-        val application = getApplication<Application>()
-        val scheme = application.getString(R.string.scheme)
-        val redirectUri = application.getString(R.string.redirect_uri, scheme)
-        viewModelScope.launch {
-            (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
-                .client
-                .submitForm(
-                    "/oauth/token",
-                    Parameters.build {
-                        set("grant_type", "authorization_code")
-                        set("code", authorizationCode)
-                        set("client_id", Mastodon.CLIENT_ID)
-                        set("client_secret", Mastodon.CLIENT_SECRET)
-                        set("redirect_uri", redirectUri)
-                        set("scope", Mastodon.SCOPES)
-                    }
-                )
-                .body<HttpAuthenticationToken>()
-                .toActor()
-                .run(onAuthentication)
-        }
+ */
+internal class HttpAuthenticationViewModel
+private constructor(application: Application, private val authorizationCode: String) :
+  AndroidViewModel(application) {
+  /**
+   * Requests the API to authenticate the user and runs [onAuthentication] with the resulting
+   * [Actor].
+   *
+   * @param onAuthentication Callback run when the user has been successfully authenticated.
+   */
+  internal fun request(onAuthentication: (Actor.Authenticated) -> Unit) {
+    val application = getApplication<Application>()
+    val scheme = application.getString(R.string.scheme)
+    val redirectUri = application.getString(R.string.redirect_uri, scheme)
+    viewModelScope.launch {
+      (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
+        .client
+        .submitForm(
+          "/oauth/token",
+          Parameters.build {
+            set("grant_type", "authorization_code")
+            set("code", authorizationCode)
+            set("client_id", Mastodon.CLIENT_ID)
+            set("client_secret", Mastodon.CLIENT_SECRET)
+            set("redirect_uri", redirectUri)
+            set("scope", Mastodon.SCOPES)
+          }
+        )
+        .body<HttpAuthenticationToken>()
+        .toActor()
+        .run(onAuthentication)
     }
+  }
 
-    companion object {
-        /**
-         * Creates a [ViewModelProvider.Factory] that provides an [HttpAuthenticationViewModel].
-         *
-         * @param application [Application] that allows [Context]-specific behavior.
-         * @param authorizationCode Code provided by the API when authorization was granted to the
-         * user.
-         **/
-        fun createFactory(
-            application: Application,
-            authorizationCode: String
-        ): ViewModelProvider.Factory {
-            return viewModelFactory {
-                initializer {
-                    HttpAuthenticationViewModel(application, authorizationCode)
-                }
-            }
-        }
+  companion object {
+    /**
+     * Creates a [ViewModelProvider.Factory] that provides an [HttpAuthenticationViewModel].
+     *
+     * @param application [Application] that allows [Context]-specific behavior.
+     * @param authorizationCode Code provided by the API when authorization was granted to the user.
+     */
+    fun createFactory(
+      application: Application,
+      authorizationCode: String
+    ): ViewModelProvider.Factory {
+      return viewModelFactory {
+        initializer { HttpAuthenticationViewModel(application, authorizationCode) }
+      }
     }
+  }
 }

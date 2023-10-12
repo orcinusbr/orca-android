@@ -10,11 +10,12 @@ import com.jeanbarrossilva.orca.core.sample.auth.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.muting.SampleTermMuter
 import com.jeanbarrossilva.orca.core.sample.instance.sample
 
-internal object DemoHttpModule : HttpModule(
+internal object DemoHttpModule :
+  HttpModule(
     { Authorizer.sample },
     { Instance.sample.authenticator },
     { ActorProvider.sample },
     { Instance.sample.authenticationLock },
     { SampleTermMuter() },
     { InstanceProvider.sample }
-)
+  )

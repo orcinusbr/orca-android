@@ -7,16 +7,16 @@ import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableActivity
 import com.jeanbarrossilva.orca.platform.ui.core.on
 
 class ComposerActivity internal constructor() : ComposableActivity() {
-    private val viewModel by viewModels<ComposerViewModel>()
+  private val viewModel by viewModels<ComposerViewModel>()
 
-    @Composable
-    override fun Content() {
-        Composer(viewModel, onBackwardsNavigation = ::finish)
-    }
+  @Composable
+  override fun Content() {
+    Composer(viewModel, onBackwardsNavigation = ::finish)
+  }
 
-    companion object {
-        fun start(context: Context) {
-            context.on<ComposerActivity>().asNewTask().start()
-        }
+  companion object {
+    fun start(context: Context) {
+      context.on<ComposerActivity>().asNewTask().start()
     }
+  }
 }

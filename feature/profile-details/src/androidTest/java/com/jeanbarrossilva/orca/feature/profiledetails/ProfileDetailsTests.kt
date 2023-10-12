@@ -17,30 +17,24 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class ProfileDetailsTests {
-    @get:Rule
-    val composeRule = createComposeRule()
+  @get:Rule val composeRule = createComposeRule()
 
-    @Test
-    fun showsUsernameWhenScrollingPastHeader() {
-        val screenHeightInPx = InstrumentationRegistry
-            .getInstrumentation()
-            .context
-            .resources
-            .displayMetrics
-            .heightPixels
-        composeRule.setContent {
-            OrcaTheme {
-                ProfileDetails(
-                    Loadable.Loaded(ProfileDetails.sample),
-                    tootPreviewsLoadable = List(size = screenHeightInPx) {
-                        TootPreview.sample.copy(id = "${UUID.randomUUID()}")
-                    }
-                        .toSerializableList()
-                        .toListLoadable()
-                )
-            }
-        }
-        composeRule.onTimeline().performScrollToIndex(1)
-        composeRule.onNodeWithTag(TIMELINE_TAG).assertIsDisplayed()
+  @Test
+  fun showsUsernameWhenScrollingPastHeader() {
+    val screenHeightInPx =
+      InstrumentationRegistry.getInstrumentation().context.resources.displayMetrics.heightPixels
+    composeRule.setContent {
+      OrcaTheme {
+        ProfileDetails(
+          Loadable.Loaded(ProfileDetails.sample),
+          tootPreviewsLoadable =
+            List(size = screenHeightInPx) { TootPreview.sample.copy(id = "${UUID.randomUUID()}") }
+              .toSerializableList()
+              .toListLoadable()
+        )
+      }
     }
+    composeRule.onTimeline().performScrollToIndex(1)
+    composeRule.onNodeWithTag(TIMELINE_TAG).assertIsDisplayed()
+  }
 }

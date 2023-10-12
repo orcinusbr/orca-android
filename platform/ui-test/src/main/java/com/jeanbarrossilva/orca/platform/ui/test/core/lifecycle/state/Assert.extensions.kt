@@ -10,10 +10,7 @@ import org.junit.Assert.assertTrue
  * @param expected [CompleteLifecycleState] that [actual] should at least be.
  * @param actual [CompleteLifecycleState] to be compared to the [expected] one.
  * @see CompleteLifecycleState.isAtLeast
- **/
-fun assertIsAtLeast(
-    expected: CompleteLifecycleState,
-    actual: CompleteLifecycleState?
-) {
-    assertTrue("$actual is < $expected.", actual.isAtLeast(expected))
+ */
+fun assertIsAtLeast(expected: CompleteLifecycleState, actual: CompleteLifecycleState?) {
+  assertTrue("$actual is < $expected.", actual.isAtLeast(expected))
 }

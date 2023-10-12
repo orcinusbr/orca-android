@@ -7,10 +7,10 @@ import org.junit.rules.ExternalResource
 /**
  * [ExternalResource] that resets the sample writers (such as [SampleProfileWriter] and
  * [SampleTootWriter]) at the end of each test.
- **/
+ */
 class SampleTestRule : ExternalResource() {
-    override fun after() {
-        SampleProfileWriter.reset()
-        SampleTootWriter.reset()
-    }
+  override fun after() {
+    SampleProfileWriter.reset()
+    SampleTootWriter.reset()
+  }
 }

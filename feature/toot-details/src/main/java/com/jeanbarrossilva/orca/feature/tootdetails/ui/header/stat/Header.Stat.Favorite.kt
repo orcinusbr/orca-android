@@ -18,39 +18,36 @@ import com.jeanbarrossilva.orca.platform.ui.component.stat.favorite.FavoriteStat
 
 @Composable
 internal fun FavoriteStat(
-    details: TootDetails,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+  details: TootDetails,
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier
 ) {
-    val isActive = remember(details, details::isFavorite)
-    val contentColor by animateColorAsState(
-        if (isActive) OrcaTheme.colors.activation.favorite else StatDefaults.contentColor,
-        label = "ContentColor"
+  val isActive = remember(details, details::isFavorite)
+  val contentColor by
+    animateColorAsState(
+      if (isActive) OrcaTheme.colors.activation.favorite else StatDefaults.contentColor,
+      label = "ContentColor"
     )
 
-    Stat(contentColor = contentColor) {
-        FavoriteStatIcon(
-            isActive,
-            ActivateableStatIconInteractiveness.Interactive { onClick() },
-            modifier.size(24.dp)
-        )
+  Stat(contentColor = contentColor) {
+    FavoriteStatIcon(
+      isActive,
+      ActivateableStatIconInteractiveness.Interactive { onClick() },
+      modifier.size(24.dp)
+    )
 
-        Text(details.formattedFavoriteCount)
-    }
+    Text(details.formattedFavoriteCount)
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun InactiveFavoriteStatPreview() {
-    OrcaTheme {
-        FavoriteStat(TootDetails.sample.copy(isFavorite = false), onClick = { })
-    }
+  OrcaTheme { FavoriteStat(TootDetails.sample.copy(isFavorite = false), onClick = {}) }
 }
 
 @Composable
 @MultiThemePreview
 private fun ActiveFavoriteStatPreview() {
-    OrcaTheme {
-        FavoriteStat(TootDetails.sample.copy(isFavorite = true), onClick = { })
-    }
+  OrcaTheme { FavoriteStat(TootDetails.sample.copy(isFavorite = true), onClick = {}) }
 }

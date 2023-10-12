@@ -33,135 +33,128 @@ const val FEED_FLOATING_ACTION_BUTTON_TAG = "feed-floating-action-button"
 
 @Composable
 internal fun Feed(
-    viewModel: FeedViewModel,
-    boundary: FeedBoundary,
-    onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
-    modifier: Modifier = Modifier
+  viewModel: FeedViewModel,
+  boundary: FeedBoundary,
+  onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
+  modifier: Modifier = Modifier
 ) {
-    val tootPreviewsLoadable by viewModel.tootPreviewsLoadableFlow.collectAsState()
-    val bottomAreaAvailabilityNestedScrollConnection =
-        rememberBottomAreaAvailabilityNestedScrollConnection(onBottomAreaAvailabilityChangeListener)
+  val tootPreviewsLoadable by viewModel.tootPreviewsLoadableFlow.collectAsState()
+  val bottomAreaAvailabilityNestedScrollConnection =
+    rememberBottomAreaAvailabilityNestedScrollConnection(onBottomAreaAvailabilityChangeListener)
 
-    Feed(
-        tootPreviewsLoadable,
-        onSearch = boundary::navigateToSearch,
-        onHighlightClick = boundary::navigateTo,
-        onFavorite = viewModel::favorite,
-        onReblog = viewModel::reblog,
-        onShare = viewModel::share,
-        onTootClick = boundary::navigateToTootDetails,
-        onNext = viewModel::loadTootsAt,
-        onComposition = boundary::navigateToComposer,
-        bottomAreaAvailabilityNestedScrollConnection,
-        modifier
-    )
+  Feed(
+    tootPreviewsLoadable,
+    onSearch = boundary::navigateToSearch,
+    onHighlightClick = boundary::navigateTo,
+    onFavorite = viewModel::favorite,
+    onReblog = viewModel::reblog,
+    onShare = viewModel::share,
+    onTootClick = boundary::navigateToTootDetails,
+    onNext = viewModel::loadTootsAt,
+    onComposition = boundary::navigateToComposer,
+    bottomAreaAvailabilityNestedScrollConnection,
+    modifier
+  )
 }
 
 @Composable
 internal fun Feed(
-    tootPreviewsLoadable: ListLoadable<TootPreview>,
-    modifier: Modifier = Modifier,
-    onFavorite: (tootID: String) -> Unit = { }
+  tootPreviewsLoadable: ListLoadable<TootPreview>,
+  modifier: Modifier = Modifier,
+  onFavorite: (tootID: String) -> Unit = {}
 ) {
-    Feed(
-        tootPreviewsLoadable,
-        onSearch = { },
-        onHighlightClick = { },
-        onFavorite,
-        onReblog = { },
-        onShare = { },
-        onTootClick = { },
-        onNext = { },
-        onComposition = { },
-        BottomAreaAvailabilityNestedScrollConnection.empty,
-        modifier
-    )
+  Feed(
+    tootPreviewsLoadable,
+    onSearch = {},
+    onHighlightClick = {},
+    onFavorite,
+    onReblog = {},
+    onShare = {},
+    onTootClick = {},
+    onNext = {},
+    onComposition = {},
+    BottomAreaAvailabilityNestedScrollConnection.empty,
+    modifier
+  )
 }
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun Feed(
-    tootPreviewsLoadable: ListLoadable<TootPreview>,
-    onSearch: () -> Unit,
-    onHighlightClick: (URL) -> Unit,
-    onFavorite: (tootID: String) -> Unit,
-    onReblog: (tootID: String) -> Unit,
-    onShare: (URL) -> Unit,
-    onTootClick: (tootID: String) -> Unit,
-    onNext: (index: Int) -> Unit,
-    onComposition: () -> Unit,
-    bottomAreaAvailabilityNestedScrollConnection: BottomAreaAvailabilityNestedScrollConnection,
-    modifier: Modifier = Modifier
+  tootPreviewsLoadable: ListLoadable<TootPreview>,
+  onSearch: () -> Unit,
+  onHighlightClick: (URL) -> Unit,
+  onFavorite: (tootID: String) -> Unit,
+  onReblog: (tootID: String) -> Unit,
+  onShare: (URL) -> Unit,
+  onTootClick: (tootID: String) -> Unit,
+  onNext: (index: Int) -> Unit,
+  onComposition: () -> Unit,
+  bottomAreaAvailabilityNestedScrollConnection: BottomAreaAvailabilityNestedScrollConnection,
+  modifier: Modifier = Modifier
 ) {
-    val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
+  val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
 
-    Scaffold(
-        modifier,
-        topAppBar = {
-            @OptIn(ExperimentalMaterial3Api::class)
-            TopAppBar(
-                title = { AutoSizeText(stringResource(R.string.feed)) },
-                actions = {
-                    HoverableIconButton(onClick = onSearch) {
-                        Icon(
-                            OrcaTheme.iconography.search,
-                            contentDescription = stringResource(R.string.feed_search)
-                        )
-                    }
-                },
-                scrollBehavior = topAppBarScrollBehavior
+  Scaffold(
+    modifier,
+    topAppBar = {
+      @OptIn(ExperimentalMaterial3Api::class)
+      TopAppBar(
+        title = { AutoSizeText(stringResource(R.string.feed)) },
+        actions = {
+          HoverableIconButton(onClick = onSearch) {
+            Icon(
+              OrcaTheme.iconography.search,
+              contentDescription = stringResource(R.string.feed_search)
             )
+          }
         },
-        floatingActionButton = {
-            if (tootPreviewsLoadable.isLoaded) {
-                FloatingActionButton(
-                    onClick = onComposition,
-                    Modifier.testTag(FEED_FLOATING_ACTION_BUTTON_TAG)
-                ) {
-                    Icon(
-                        OrcaTheme.iconography.compose.filled,
-                        contentDescription = stringResource(R.string.feed_compose)
-                    )
-                }
-            }
+        scrollBehavior = topAppBarScrollBehavior
+      )
+    },
+    floatingActionButton = {
+      if (tootPreviewsLoadable.isLoaded) {
+        FloatingActionButton(
+          onClick = onComposition,
+          Modifier.testTag(FEED_FLOATING_ACTION_BUTTON_TAG)
+        ) {
+          Icon(
+            OrcaTheme.iconography.compose.filled,
+            contentDescription = stringResource(R.string.feed_compose)
+          )
         }
-    ) {
-        Timeline(
-            tootPreviewsLoadable,
-            onHighlightClick,
-            onFavorite,
-            onReblog,
-            onShare,
-            onTootClick,
-            onNext,
-            Modifier
-                .nestedScroll(bottomAreaAvailabilityNestedScrollConnection)
-                .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-            contentPadding = it + OrcaTheme.overlays.fab
-        )
+      }
     }
+  ) {
+    Timeline(
+      tootPreviewsLoadable,
+      onHighlightClick,
+      onFavorite,
+      onReblog,
+      onShare,
+      onTootClick,
+      onNext,
+      Modifier.nestedScroll(bottomAreaAvailabilityNestedScrollConnection)
+        .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+      contentPadding = it + OrcaTheme.overlays.fab
+    )
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadingFeedPreview() {
-    OrcaTheme {
-        Feed(ListLoadable.Loading())
-    }
+  OrcaTheme { Feed(ListLoadable.Loading()) }
 }
 
 @Composable
 @MultiThemePreview
 private fun EmptyFeedPreview() {
-    OrcaTheme {
-        Feed(ListLoadable.Empty())
-    }
+  OrcaTheme { Feed(ListLoadable.Empty()) }
 }
 
 @Composable
 @MultiThemePreview
 private fun PopulatedFeedPreview() {
-    OrcaTheme {
-        Feed(TootPreview.samples.toSerializableList().toListLoadable())
-    }
+  OrcaTheme { Feed(TootPreview.samples.toSerializableList().toListLoadable()) }
 }

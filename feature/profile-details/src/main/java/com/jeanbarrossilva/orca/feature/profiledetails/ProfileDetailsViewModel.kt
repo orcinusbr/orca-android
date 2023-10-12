@@ -30,76 +30,75 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 
-internal class ProfileDetailsViewModel private constructor(
-    private val contextProvider: ContextProvider,
-    private val profileProvider: ProfileProvider,
-    private val tootProvider: TootProvider,
-    coroutineDispatcher: CoroutineDispatcher,
-    private val id: String
+internal class ProfileDetailsViewModel
+private constructor(
+  private val contextProvider: ContextProvider,
+  private val profileProvider: ProfileProvider,
+  private val tootProvider: TootProvider,
+  coroutineDispatcher: CoroutineDispatcher,
+  private val id: String
 ) : ViewModel() {
-    private val coroutineScope = viewModelScope + coroutineDispatcher
-    private val profileFlow = flow { emitAll(profileProvider.provide(id).filterNotNull()) }
-    private val tootsIndexFlow = MutableStateFlow(0)
+  private val coroutineScope = viewModelScope + coroutineDispatcher
+  private val profileFlow = flow { emitAll(profileProvider.provide(id).filterNotNull()) }
+  private val tootsIndexFlow = MutableStateFlow(0)
 
-    private val context
-        get() = contextProvider.provide()
+  private val context
+    get() = contextProvider.provide()
 
-    val detailsLoadableFlow = profileFlow
-        .map { it.toProfileDetails(coroutineScope, Colors.getDefault(context)) }
-        .loadable(coroutineScope)
+  val detailsLoadableFlow =
+    profileFlow
+      .map { it.toProfileDetails(coroutineScope, Colors.getDefault(context)) }
+      .loadable(coroutineScope)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val tootPreviewsLoadableFlow = tootsIndexFlow
-        .flatMapConcat(::getTootPreviewsAt)
-        .listLoadable(coroutineScope, SharingStarted.WhileSubscribed())
+  @OptIn(ExperimentalCoroutinesApi::class)
+  val tootPreviewsLoadableFlow =
+    tootsIndexFlow
+      .flatMapConcat(::getTootPreviewsAt)
+      .listLoadable(coroutineScope, SharingStarted.WhileSubscribed())
 
-    fun share(url: URL) {
-        context.share("$url")
+  fun share(url: URL) {
+    context.share("$url")
+  }
+
+  fun favorite(tootID: String) {
+    coroutineScope.launch { tootProvider.provide(tootID).first().favorite.toggle() }
+  }
+
+  fun reblog(tootID: String) {
+    coroutineScope.launch { tootProvider.provide(tootID).first().reblog.toggle() }
+  }
+
+  fun loadTootsAt(index: Int) {
+    tootsIndexFlow.value = index
+  }
+
+  @OptIn(ExperimentalCoroutinesApi::class)
+  private fun getTootPreviewsAt(index: Int): Flow<List<TootPreview>> {
+    return profileFlow.filterNotNull().flatMapConcat { profile ->
+      profile.getToots(index).flatMapEach { toot ->
+        toot.toTootPreviewFlow(Colors.getDefault(context))
+      }
     }
+  }
 
-    fun favorite(tootID: String) {
-        coroutineScope.launch {
-            tootProvider.provide(tootID).first().favorite.toggle()
+  companion object {
+    fun createFactory(
+      contextProvider: ContextProvider,
+      profileProvider: ProfileProvider,
+      tootProvider: TootProvider,
+      id: String
+    ): ViewModelProvider.Factory {
+      return viewModelFactory {
+        addInitializer(ProfileDetailsViewModel::class) {
+          ProfileDetailsViewModel(
+            contextProvider,
+            profileProvider,
+            tootProvider,
+            Dispatchers.Main.immediate,
+            id
+          )
         }
+      }
     }
-
-    fun reblog(tootID: String) {
-        coroutineScope.launch {
-            tootProvider.provide(tootID).first().reblog.toggle()
-        }
-    }
-
-    fun loadTootsAt(index: Int) {
-        tootsIndexFlow.value = index
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private fun getTootPreviewsAt(index: Int): Flow<List<TootPreview>> {
-        return profileFlow.filterNotNull().flatMapConcat { profile ->
-            profile.getToots(index).flatMapEach { toot ->
-                toot.toTootPreviewFlow(Colors.getDefault(context))
-            }
-        }
-    }
-
-    companion object {
-        fun createFactory(
-            contextProvider: ContextProvider,
-            profileProvider: ProfileProvider,
-            tootProvider: TootProvider,
-            id: String
-        ): ViewModelProvider.Factory {
-            return viewModelFactory {
-                addInitializer(ProfileDetailsViewModel::class) {
-                    ProfileDetailsViewModel(
-                        contextProvider,
-                        profileProvider,
-                        tootProvider,
-                        Dispatchers.Main.immediate,
-                        id
-                    )
-                }
-            }
-        }
-    }
+  }
 }

@@ -8,12 +8,12 @@ import androidx.compose.ui.test.onNodeWithTag
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TOOT_PREVIEW_TAG
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 
-/** [SemanticsNodeInteractionCollection] of [TootPreview] nodes. **/
+/** [SemanticsNodeInteractionCollection] of [TootPreview] nodes. */
 fun ComposeTestRule.onTootPreviews(): SemanticsNodeInteractionCollection {
-    return onAllNodesWithTag(TOOT_PREVIEW_TAG)
+  return onAllNodesWithTag(TOOT_PREVIEW_TAG)
 }
 
-/** [SemanticsNodeInteraction] of a [TootPreview] node. **/
+/** [SemanticsNodeInteraction] of a [TootPreview] node. */
 fun ComposeTestRule.onTootPreview(): SemanticsNodeInteraction {
-    return onNodeWithTag(TOOT_PREVIEW_TAG)
+  return onNodeWithTag(TOOT_PREVIEW_TAG)
 }

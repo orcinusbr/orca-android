@@ -2,9 +2,10 @@ package com.jeanbarrossilva.orca.core.sample.instance.domain
 
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
 
-/** [Domain]s returned by [sample]s. **/
+/** [Domain]s returned by [sample]s. */
 @Suppress("SpellCheckingInspection")
-private val sampleDomains = listOf(
+private val sampleDomains =
+  listOf(
     Domain("instance.sample"),
     Domain("kpop.social"),
     Domain("linuxrocks.online"),
@@ -18,12 +19,12 @@ private val sampleDomains = listOf(
     Domain("sciences.social"),
     Domain("techhub.social"),
     Domain("universeodon.com")
-)
+  )
 
-/** Sample [Domain]. **/
+/** Sample [Domain]. */
 val Domain.Companion.sample
-    get() = sampleDomains.first()
+  get() = sampleDomains.first()
 
-/** Sample [Domain]s. **/
+/** Sample [Domain]s. */
 val Domain.Companion.samples
-    get() = sampleDomains
+  get() = sampleDomains

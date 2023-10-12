@@ -49,88 +49,80 @@ import java.net.URL
  * @param loader [ImageLoader] by which the image will be loaded.
  * @param shape [Shape] by which this [Image][_Image] will be clipped.
  * @param contentScale Defines how the image will be scaled within this [Composable]'s bounds.
- **/
+ */
 @Composable
 fun Image(
-    url: URL,
-    contentDescription: String,
-    modifier: Modifier = Modifier,
-    loader: ImageLoader = rememberImageLoader(),
-    shape: Shape = RectangleShape,
-    contentScale: ContentScale = ContentScale.Fit
+  url: URL,
+  contentDescription: String,
+  modifier: Modifier = Modifier,
+  loader: ImageLoader = rememberImageLoader(),
+  shape: Shape = RectangleShape,
+  contentScale: ContentScale = ContentScale.Fit
 ) {
-    val isInspecting = LocalInspectionMode.current
-    var size by remember { mutableStateOf<IntSize?>(null) }
-    val canLoadImage = remember(isInspecting, size) { !isInspecting || size != null }
-    var bitmapLoadable by remember(canLoadImage) {
-        mutableStateOf<Loadable<ImageBitmap>>(
-            if (canLoadImage) {
-                Loadable.Loading()
-            } else {
-                Loadable.Failed(UnsupportedOperationException("Image cannot be loaded."))
-            }
-        )
-    }
-
-    LaunchedEffect(url, size, canLoadImage, loader) {
+  val isInspecting = LocalInspectionMode.current
+  var size by remember { mutableStateOf<IntSize?>(null) }
+  val canLoadImage = remember(isInspecting, size) { !isInspecting || size != null }
+  var bitmapLoadable by
+    remember(canLoadImage) {
+      mutableStateOf<Loadable<ImageBitmap>>(
         if (canLoadImage) {
-            size?.let {
-                bitmapLoadable =
-                    loader.load(it.width, it.height, url)?.toBitmap()?.asImageBitmap().loadable()!!
-            }
+          Loadable.Loading()
+        } else {
+          Loadable.Failed(UnsupportedOperationException("Image cannot be loaded."))
         }
+      )
     }
 
-    Placeholder(
-        modifier.onPlaced { size = it.size },
-        isLoading = bitmapLoadable is Loadable.Loading,
-        shape
+  LaunchedEffect(url, size, canLoadImage, loader) {
+    if (canLoadImage) {
+      size?.let {
+        bitmapLoadable =
+          loader.load(it.width, it.height, url)?.toBitmap()?.asImageBitmap().loadable()!!
+      }
+    }
+  }
+
+  Placeholder(
+    modifier.onPlaced { size = it.size },
+    isLoading = bitmapLoadable is Loadable.Loading,
+    shape
+  ) {
+    CompositionLocalProvider(
+      LocalContentColor provides contentColorFor(PlaceholderDefaults.color)
     ) {
-        CompositionLocalProvider(
-            LocalContentColor provides contentColorFor(PlaceholderDefaults.color)
-        ) {
-            BoxWithConstraints(Modifier.matchParentSize(), Alignment.Center) {
-                bitmapLoadable.let {
-                    if (it is Loadable.Loaded) {
-                        Image(
-                            it.content,
-                            contentDescription,
-                            Modifier
-                                .clip(shape)
-                                .matchParentSize(),
-                            contentScale = contentScale
-                        )
-                    } else if (it is Loadable.Failed) {
-                        Box(
-                            Modifier
-                                .clip(shape)
-                                .background(PlaceholderDefaults.color)
-                                .matchParentSize()
-                        )
+      BoxWithConstraints(Modifier.matchParentSize(), Alignment.Center) {
+        bitmapLoadable.let {
+          if (it is Loadable.Loaded) {
+            Image(
+              it.content,
+              contentDescription,
+              Modifier.clip(shape).matchParentSize(),
+              contentScale = contentScale
+            )
+          } else if (it is Loadable.Failed) {
+            Box(Modifier.clip(shape).background(PlaceholderDefaults.color).matchParentSize())
 
-                        Icon(
-                            OrcaTheme.iconography.unavailable.filled,
-                            contentDescription = "Unavailable image",
-                            Modifier
-                                .height(maxHeight / 2)
-                                .width(maxWidth / 2)
-                        )
-                    }
-                }
-            }
+            Icon(
+              OrcaTheme.iconography.unavailable.filled,
+              contentDescription = "Unavailable image",
+              Modifier.height(maxHeight / 2).width(maxWidth / 2)
+            )
+          }
         }
+      }
     }
+  }
 }
 
-/** Preview of an [Image][_Image]. **/
+/** Preview of an [Image][_Image]. */
 @Composable
 @MultiThemePreview
 private fun ImagePreview() {
-    OrcaTheme {
-        _Image(
-            URL("https://images.unsplash.com/photo-1692890846581-da1a95435f34"),
-            contentDescription = "Preview image",
-            Modifier.size(128.dp)
-        )
-    }
+  OrcaTheme {
+    _Image(
+      URL("https://images.unsplash.com/photo-1692890846581-da1a95435f34"),
+      contentDescription = "Preview image",
+      Modifier.size(128.dp)
+    )
+  }
 }

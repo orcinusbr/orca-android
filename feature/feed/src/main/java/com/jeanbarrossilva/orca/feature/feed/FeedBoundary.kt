@@ -3,11 +3,11 @@ package com.jeanbarrossilva.orca.feature.feed
 import java.net.URL
 
 interface FeedBoundary {
-    fun navigateToSearch()
+  fun navigateToSearch()
 
-    fun navigateTo(url: URL)
+  fun navigateTo(url: URL)
 
-    fun navigateToTootDetails(id: String)
+  fun navigateToTootDetails(id: String)
 
-    fun navigateToComposer()
+  fun navigateToComposer()
 }

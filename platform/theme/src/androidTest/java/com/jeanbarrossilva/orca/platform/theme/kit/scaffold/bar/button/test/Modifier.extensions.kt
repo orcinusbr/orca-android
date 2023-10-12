@@ -7,11 +7,11 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 
-/** Makes the content fill the screen size. **/
+/** Makes the content fill the screen size. */
 internal fun Modifier.fillScreenSize(): Modifier {
-    return composed {
-        with(LocalContext.current.resources.configuration) {
-            height(screenHeightDp.dp).width(screenWidthDp.dp)
-        }
+  return composed {
+    with(LocalContext.current.resources.configuration) {
+      height(screenHeightDp.dp).width(screenWidthDp.dp)
     }
+  }
 }

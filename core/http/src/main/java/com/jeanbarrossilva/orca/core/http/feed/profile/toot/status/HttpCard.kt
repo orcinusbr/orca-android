@@ -11,22 +11,22 @@ import kotlinx.serialization.Serializable
  * @param title Title of the webpage.
  * @param description Description of the webpage.
  * @param image URL [String] that leads to the cover image.
- **/
+ */
 @Serializable
 internal data class HttpCard(
-    val url: String,
-    val title: String,
-    val description: String,
-    val image: String?
+  val url: String,
+  val title: String,
+  val description: String,
+  val image: String?
 ) {
-    /**
-     * Converts this [HttpCard] into a [Headline].
-     *
-     * @return Resulting [Headline] or `null` if the [image] is unavailable.
-     **/
-    fun toHeadline(): Headline? {
-        return image?.let {
-            Headline(title, subtitle = description.ifEmpty { null }, coverURL = URL(image))
-        }
+  /**
+   * Converts this [HttpCard] into a [Headline].
+   *
+   * @return Resulting [Headline] or `null` if the [image] is unavailable.
+   */
+  fun toHeadline(): Headline? {
+    return image?.let {
+      Headline(title, subtitle = description.ifEmpty { null }, coverURL = URL(image))
     }
+  }
 }

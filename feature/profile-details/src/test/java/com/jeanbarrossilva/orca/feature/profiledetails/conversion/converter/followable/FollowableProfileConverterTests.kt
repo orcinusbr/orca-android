@@ -14,27 +14,28 @@ import org.junit.Assert.assertNull
 import org.junit.Test
 
 internal class FollowableProfileConverterTests {
-    private val coroutineScope = TestScope()
-    private val converter = FollowableProfileConverter(coroutineScope, next = null)
+  private val coroutineScope = TestScope()
+  private val converter = FollowableProfileConverter(coroutineScope, next = null)
 
-    @Test
-    fun convertsFollowableProfile() {
-        val onStatusToggle = { }
-        assertEquals(
-            ProfileDetails.Followable.createSample(Colors.Unspecified, onStatusToggle),
-            converter.convert(FollowableProfile.sample, Colors.Unspecified)
-                .let { it as ProfileDetails.Followable }
-                .copy(onStatusToggle = onStatusToggle)
-        )
-    }
+  @Test
+  fun convertsFollowableProfile() {
+    val onStatusToggle = {}
+    assertEquals(
+      ProfileDetails.Followable.createSample(Colors.Unspecified, onStatusToggle),
+      converter
+        .convert(FollowableProfile.sample, Colors.Unspecified)
+        .let { it as ProfileDetails.Followable }
+        .copy(onStatusToggle = onStatusToggle)
+    )
+  }
 
-    @Test
-    fun doesNotConvertDefaultProfile() {
-        assertNull(converter.convert(Profile.sample, Colors.Unspecified))
-    }
+  @Test
+  fun doesNotConvertDefaultProfile() {
+    assertNull(converter.convert(Profile.sample, Colors.Unspecified))
+  }
 
-    @Test
-    fun doesNotConvertEditableProfile() {
-        assertNull(converter.convert(EditableProfile.sample, Colors.Unspecified))
-    }
+  @Test
+  fun doesNotConvertEditableProfile() {
+    assertNull(converter.convert(EditableProfile.sample, Colors.Unspecified))
+  }
 }

@@ -11,28 +11,22 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 internal class TermMutingViewModel private constructor(private val termMuter: TermMuter) :
-    ViewModel() {
-    private val termMutableFlow = MutableStateFlow("")
+  ViewModel() {
+  private val termMutableFlow = MutableStateFlow("")
 
-    val termFlow = termMutableFlow.asStateFlow()
+  val termFlow = termMutableFlow.asStateFlow()
 
-    fun setTerm(term: String) {
-        termMutableFlow.value = term
+  fun setTerm(term: String) {
+    termMutableFlow.value = term
+  }
+
+  fun mute() {
+    viewModelScope.launch { termMuter.mute(termFlow.value) }
+  }
+
+  companion object {
+    fun createFactory(termMuter: TermMuter): ViewModelProvider.Factory {
+      return viewModelFactory { initializer { TermMutingViewModel(termMuter) } }
     }
-
-    fun mute() {
-        viewModelScope.launch {
-            termMuter.mute(termFlow.value)
-        }
-    }
-
-    companion object {
-        fun createFactory(termMuter: TermMuter): ViewModelProvider.Factory {
-            return viewModelFactory {
-                initializer {
-                    TermMutingViewModel(termMuter)
-                }
-            }
-        }
-    }
+  }
 }
