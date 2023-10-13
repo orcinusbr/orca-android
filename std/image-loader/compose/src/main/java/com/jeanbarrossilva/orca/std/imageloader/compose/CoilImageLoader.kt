@@ -7,6 +7,7 @@ import coil.request.ImageRequest
 import com.jeanbarrossilva.orca.std.imageloader.AsyncImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.Image
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.imageloader.local.toImage
 import java.net.URL
 
 /**
