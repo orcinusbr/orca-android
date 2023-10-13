@@ -52,10 +52,9 @@ import java.net.URL
  */
 @Composable
 fun Image(
-  url: URL,
+  loader: ImageLoader,
   contentDescription: String,
   modifier: Modifier = Modifier,
-  loader: ImageLoader = rememberImageLoader(),
   shape: Shape = RectangleShape,
   contentScale: ContentScale = ContentScale.Fit
 ) {
@@ -73,11 +72,10 @@ fun Image(
       )
     }
 
-  LaunchedEffect(url, size, canLoadImage, loader) {
+  LaunchedEffect(size, canLoadImage, loader) {
     if (canLoadImage) {
       size?.let {
-        bitmapLoadable =
-          loader.load(it.width, it.height, url)?.toBitmap()?.asImageBitmap().loadable()!!
+        bitmapLoadable = loader.load(it.width, it.height)?.toBitmap()?.asImageBitmap().loadable()!!
       }
     }
   }
@@ -120,7 +118,7 @@ fun Image(
 private fun ImagePreview() {
   OrcaTheme {
     _Image(
-      URL("https://images.unsplash.com/photo-1692890846581-da1a95435f34"),
+      rememberImageLoader(URL("https://images.unsplash.com/photo-1692890846581-da1a95435f34")),
       contentDescription = "Preview image",
       Modifier.size(128.dp)
     )

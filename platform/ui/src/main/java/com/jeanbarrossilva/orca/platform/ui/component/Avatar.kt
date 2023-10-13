@@ -39,17 +39,11 @@ fun SmallAvatar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SmallAvatar(
-  name: String,
-  url: URL,
-  modifier: Modifier = Modifier,
-  imageLoader: ImageLoader = rememberImageLoader()
-) {
+fun SmallAvatar(imageLoader: ImageLoader, name: String, modifier: Modifier = Modifier) {
   Image(
-    url,
+    imageLoader,
     contentDescriptionFor(name),
     modifier.requiredSize(smallSize).testTag(AVATAR_TAG),
-    imageLoader,
     smallShape
   )
 }
@@ -60,17 +54,11 @@ fun LargeAvatar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun LargeAvatar(
-  name: String,
-  url: URL,
-  modifier: Modifier = Modifier,
-  imageLoader: ImageLoader = rememberImageLoader()
-) {
+fun LargeAvatar(imageLoader: ImageLoader, name: String, modifier: Modifier = Modifier) {
   Image(
-    url,
+    imageLoader,
     contentDescriptionFor(name),
     modifier.requiredSize(largeSize).testTag(AVATAR_TAG),
-    imageLoader,
     largeShape
   )
 }
@@ -89,7 +77,7 @@ private fun LoadingLargeAvatarPreview() {
 @Composable
 @MultiThemePreview
 private fun LoadedLargeAvatarPreview() {
-  OrcaTheme { LargeAvatar(Avatar.sample.name, Avatar.sample.url) }
+  OrcaTheme { LargeAvatar(rememberImageLoader(Avatar.sample.url), Avatar.sample.name) }
 }
 
 @Composable
@@ -101,5 +89,5 @@ private fun LoadingSmallAvatarPreview() {
 @Composable
 @MultiThemePreview
 private fun LoadedSmallAvatarPreview() {
-  OrcaTheme { SmallAvatar(Avatar.sample.name, Avatar.sample.url) }
+  OrcaTheme { SmallAvatar(rememberImageLoader(Avatar.sample.url), Avatar.sample.name) }
 }

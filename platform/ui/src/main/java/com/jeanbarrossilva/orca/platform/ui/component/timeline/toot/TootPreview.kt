@@ -47,7 +47,6 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.ReblogS
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.RelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.rememberRelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
 import java.io.Serializable
 import java.net.URL
@@ -209,14 +208,14 @@ fun TootPreview(
   onShare: () -> Unit,
   onClick: () -> Unit,
   modifier: Modifier = Modifier,
-  imageLoader: ImageLoader = rememberImageLoader(),
   relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider()
 ) {
+  val avatarLoader = rememberImageLoader(preview.avatarURL)
   val metadata =
     remember(preview, relativeTimeProvider) { preview.getMetadata(relativeTimeProvider) }
 
   TootPreview(
-    avatar = { SmallAvatar(preview.name, preview.avatarURL, imageLoader = imageLoader) },
+    avatar = { SmallAvatar(avatarLoader, preview.name) },
     name = { Text(preview.name, nameModifier) },
     metadata = { Text(metadata, metadataModifier) },
     content = {
