@@ -9,9 +9,9 @@ import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
 import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
 import com.jeanbarrossilva.orca.platform.ui.core.style.fromHtml
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
+import kotlinx.serialization.Serializable
 import java.net.URL
 import java.time.ZonedDateTime
-import kotlinx.serialization.Serializable
 
 /**
  * Structure returned by the API that is the DTO version of either an [HttpToot] or a [Reblog];
@@ -52,18 +52,19 @@ internal constructor(
 ) {
   /** Converts this [HttpStatus] into an [Toot]. */
   internal fun toToot(): Toot {
-    val author = this.account.toAuthor()
-    val text = StyledString.fromHtml(content)
-    val attachments = mediaAttachments.map(HttpAttachment::toAttachment)
+    val author = reblog?.account?.toAuthor() ?: account.toAuthor()
+    val text = StyledString.fromHtml(reblog?.content ?: content)
+    val attachments =
+        (reblog?.mediaAttachments ?: mediaAttachments).map(HttpAttachment::toAttachment)
     val content = Content.from(text, attachments) { card?.toHeadline() }
-    val publicationDateTime = ZonedDateTime.parse(createdAt)
-    val url = URL(url)
+    val publicationDateTime = ZonedDateTime.parse(reblog?.createdAt ?: createdAt)
+    val url = URL(reblog?.url ?: url)
     return HttpToot(
         id,
         author,
         content,
         publicationDateTime,
-        commentCount = repliesCount,
+        commentCount = reblog?.repliesCount ?: repliesCount,
         favouritesCount,
         reblogsCount,
         url

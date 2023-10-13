@@ -3,12 +3,16 @@ package com.jeanbarrossilva.orca.platform.ui.component.timeline.toot
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onChildren
+import androidx.compose.ui.test.onLast
 import androidx.test.platform.app.InstrumentationRegistry
 import com.jeanbarrossilva.loadable.placeholder.test.assertIsLoading
 import com.jeanbarrossilva.loadable.placeholder.test.assertIsNotLoading
+import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
+import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.test.TestTootPreview
+import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.test.onStatLabel
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.test.onTootPreviewBody
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.test.onTootPreviewCommentCountStat
@@ -16,9 +20,11 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.test.onTootP
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.test.onTootPreviewMetadata
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.test.onTootPreviewName
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.test.onTootPreviewReblogCountStat
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.test.onTootPreviewReblogMetadata
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.test.onTootPreviewShareAction
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.test.TestRelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.onTootPreview
+import com.jeanbarrossilva.orca.std.imageloader.test.TestImageLoader
 import org.junit.Rule
 import org.junit.Test
 
@@ -37,7 +43,14 @@ internal class TootPreviewTests {
 
   @Test
   fun isShownWhenLoaded() {
-    composeRule.setContent { OrcaTheme { TestTootPreview() } }
+    composeRule.setContent {
+      OrcaTheme {
+        SampleTootPreview(
+          imageLoader = TestImageLoader,
+          relativeTimeProvider = TestRelativeTimeProvider()
+        )
+      }
+    }
     composeRule.onTootPreview().assertIsDisplayed()
   }
 
@@ -49,7 +62,14 @@ internal class TootPreviewTests {
 
   @Test
   fun nameIsShownWhenLoaded() {
-    composeRule.setContent { OrcaTheme { TestTootPreview() } }
+    composeRule.setContent {
+      OrcaTheme {
+        SampleTootPreview(
+          imageLoader = TestImageLoader,
+          relativeTimeProvider = TestRelativeTimeProvider()
+        )
+      }
+    }
     composeRule.onTootPreviewName().assertIsNotLoading()
     composeRule.onTootPreviewName().assertTextEquals(sampleTootPreview.name)
   }
@@ -64,12 +84,46 @@ internal class TootPreviewTests {
   fun metadataIsShownWhenLoaded() {
     val relativeTimeProvider = TestRelativeTimeProvider()
     composeRule.setContent {
-      OrcaTheme { TestTootPreview(relativeTimeProvider = relativeTimeProvider) }
+      OrcaTheme {
+        SampleTootPreview(
+          imageLoader = TestImageLoader,
+          relativeTimeProvider = relativeTimeProvider
+        )
+      }
     }
     composeRule.onTootPreviewMetadata().assertIsNotLoading()
     composeRule
       .onTootPreviewMetadata()
       .assertTextEquals(sampleTootPreview.getMetadata(relativeTimeProvider))
+  }
+
+  @Test
+  fun reblogMetadataIsNotShownWhenLoading() {
+    composeRule.setContent { OrcaTheme { TootPreview() } }
+    composeRule.onTootPreviewReblogMetadata().assertDoesNotExist()
+  }
+
+  @Test
+  fun reblogMetadataIndicatesThatTootHasBeenRebloggedBySomeone() {
+    composeRule.setContent {
+      OrcaTheme {
+        SampleTootPreview(
+          preview = TootPreview.sample.copy(rebloggerName = Author.sample.name),
+          imageLoader = TestImageLoader,
+          relativeTimeProvider = TestRelativeTimeProvider()
+        )
+      }
+    }
+    composeRule
+      .onTootPreviewReblogMetadata()
+      .onChildren()
+      .onLast()
+      .assertTextEquals(
+        InstrumentationRegistry
+          .getInstrumentation()
+          .context
+          .getString(R.string.platform_ui_toot_preview_reblogged, Author.sample.name)
+      )
   }
 
   @Test
@@ -80,7 +134,14 @@ internal class TootPreviewTests {
 
   @Test
   fun bodyIsShownWhenLoaded() {
-    composeRule.setContent { OrcaTheme { TestTootPreview() } }
+    composeRule.setContent {
+      OrcaTheme {
+        SampleTootPreview(
+          imageLoader = TestImageLoader,
+          relativeTimeProvider = TestRelativeTimeProvider()
+        )
+      }
+    }
     composeRule.onTootPreviewBody().assertIsNotLoading()
     composeRule.onTootPreviewBody().assertTextEquals(sampleTootPreview.text.text)
   }
@@ -93,7 +154,14 @@ internal class TootPreviewTests {
 
   @Test
   fun commentCountStatIsShownWhenLoaded() {
-    composeRule.setContent { OrcaTheme { TestTootPreview() } }
+    composeRule.setContent {
+      OrcaTheme {
+        SampleTootPreview(
+          imageLoader = TestImageLoader,
+          relativeTimeProvider = TestRelativeTimeProvider()
+        )
+      }
+    }
     composeRule.onTootPreviewCommentCountStat().assertIsDisplayed()
     composeRule
       .onTootPreviewCommentCountStat()
@@ -109,7 +177,14 @@ internal class TootPreviewTests {
 
   @Test
   fun favoriteCountStatIsShownWhenLoaded() {
-    composeRule.setContent { OrcaTheme { TestTootPreview() } }
+    composeRule.setContent {
+      OrcaTheme {
+        SampleTootPreview(
+          imageLoader = TestImageLoader,
+          relativeTimeProvider = TestRelativeTimeProvider()
+        )
+      }
+    }
     composeRule.onTootPreviewFavoriteCountStat().assertIsDisplayed()
     composeRule
       .onTootPreviewFavoriteCountStat()
@@ -125,7 +200,14 @@ internal class TootPreviewTests {
 
   @Test
   fun reblogCountStatIsShownWhenLoaded() {
-    composeRule.setContent { OrcaTheme { TestTootPreview() } }
+    composeRule.setContent {
+      OrcaTheme {
+        SampleTootPreview(
+          imageLoader = TestImageLoader,
+          relativeTimeProvider = TestRelativeTimeProvider()
+        )
+      }
+    }
     composeRule.onTootPreviewReblogCountStat().assertIsDisplayed()
     composeRule
       .onTootPreviewReblogCountStat()
@@ -141,7 +223,14 @@ internal class TootPreviewTests {
 
   @Test
   fun shareActionIsShownWhenLoaded() {
-    composeRule.setContent { OrcaTheme { TestTootPreview() } }
+    composeRule.setContent {
+      OrcaTheme {
+        SampleTootPreview(
+          imageLoader = TestImageLoader,
+          relativeTimeProvider = TestRelativeTimeProvider()
+        )
+      }
+    }
     composeRule.onTootPreviewShareAction().assertIsDisplayed()
   }
 }
