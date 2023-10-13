@@ -12,13 +12,14 @@ import java.time.ZonedDateTime
 import java.util.UUID
 
 /** [Toot] returned by [sample]'s getter. */
-private val sampleToot = SampleToot(
-  "${UUID.randomUUID()}",
-  Author.sample,
-  Content.sample,
-  publicationDateTime = ZonedDateTime.of(2_003, 10, 8, 8, 0, 0, 0, ZoneId.of("GMT-3")),
-  URL("https://mastodon.social/@christianselig/110492858891694580")
-)
+private val sampleToot =
+  SampleToot(
+    "${UUID.randomUUID()}",
+    Author.sample,
+    Content.sample,
+    publicationDateTime = ZonedDateTime.of(2_003, 10, 8, 8, 0, 0, 0, ZoneId.of("GMT-3")),
+    URL("https://mastodon.social/@christianselig/110492858891694580")
+  )
 
 /** [Toot]s returned by [samples]' getter. */
 private val sampleToots = listOf(Reblog.sample, sampleToot)

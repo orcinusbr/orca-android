@@ -5,10 +5,10 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.samples
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runTest
 
 internal class ProfileExtensionsTests {
   @Test

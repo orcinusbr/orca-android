@@ -119,8 +119,7 @@ internal class TootPreviewTests {
       .onChildren()
       .onLast()
       .assertTextEquals(
-        InstrumentationRegistry
-          .getInstrumentation()
+        InstrumentationRegistry.getInstrumentation()
           .context
           .getString(R.string.platform_ui_toot_preview_reblogged, Author.sample.name)
       )
