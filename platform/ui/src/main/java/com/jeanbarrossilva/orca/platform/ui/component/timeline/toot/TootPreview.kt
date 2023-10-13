@@ -28,6 +28,7 @@ import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.test.Loading
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
+import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
@@ -186,6 +187,19 @@ fun TootPreview(modifier: Modifier = Modifier) {
   )
 }
 
+/**
+ * Preview of a [Toot].
+ *
+ * @param preview [TootPreview] that holds the overall data to be displayed.
+ * @param onHighlightClick Callback run whenever the [HeadlineCard] (if displayed) is clicked.
+ * @param onFavorite Callback run whenever the [Toot] is requested to be favorited.
+ * @param onReblog Callback run whenever the [Toot] is requested to be reblogged.
+ * @param onShare Callback run whenever the [Toot] is requested to be externally shared.
+ * @param onClick Callback run whenever it's clicked.
+ * @param modifier [Modifier] to be applied to the underlying [Card].
+ * @param relativeTimeProvider [RelativeTimeProvider] that provides the time that's passed since the
+ *   [Toot] was published.
+ */
 @Composable
 fun TootPreview(
   preview: TootPreview,
@@ -241,6 +255,19 @@ fun TootPreview(
   )
 }
 
+/**
+ * Skeleton of the preview of a [Toot].
+ *
+ * @param avatar Slot in which the avatar of the [Author] should be placed.
+ * @param name Slot in which the name of the [Author] should be placed.
+ * @param metadata Slot in which the username and the time that's passed since the [Toot] was
+ *   published should be placed.
+ * @param content Actual content written by the [Author].
+ * @param stats [Stat]s for data and actions such as comments, favorites, reblogs and external
+ *   sharing.
+ * @param onClick Callback run whenever it's clicked.
+ * @param modifier [Modifier] to be applied to the underlying [Card].
+ */
 @Composable
 private fun TootPreview(
   avatar: @Composable () -> Unit,
@@ -284,15 +311,17 @@ private fun TootPreview(
   }
 }
 
+/** Preview of a loading [TootPreview]. */
 @Composable
 @MultiThemePreview
 private fun LoadingTootPreviewPreview() {
   OrcaTheme { Surface(color = OrcaTheme.colors.background.container) { TootPreview() } }
 }
 
+/** Preview of a loaded [TootPreview] with disabled [Stat]s. */
 @Composable
 @MultiThemePreview
-private fun LoadedInactiveTootPreviewPreview() {
+private fun LoadedTootPreviewWithDisabledStatsPreview() {
   OrcaTheme {
     Surface(color = OrcaTheme.colors.background.container) {
       TootPreview(TootPreview.sample.copy(isFavorite = false, isReblogged = false))
@@ -300,9 +329,10 @@ private fun LoadedInactiveTootPreviewPreview() {
   }
 }
 
+/** Preview of a loaded [TootPreview] with enabled [Stat]s. */
 @Composable
 @MultiThemePreview
-private fun LoadedActiveTootPreviewPreview() {
+private fun LoadedTootPreviewWithEnabledStatsPreview() {
   OrcaTheme {
     Surface(color = OrcaTheme.colors.background.container) {
       TootPreview(TootPreview.sample.copy(isFavorite = true, isReblogged = true))
@@ -310,6 +340,12 @@ private fun LoadedActiveTootPreviewPreview() {
   }
 }
 
+/**
+ * Preview of a [Toot].
+ *
+ * @param preview [TootPreview] that holds the overall data to be displayed.
+ * @param modifier [Modifier] to be applied to the underlying [Card].
+ */
 @Composable
 private fun TootPreview(preview: TootPreview, modifier: Modifier = Modifier) {
   TootPreview(
