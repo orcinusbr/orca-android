@@ -49,7 +49,7 @@ internal fun Feed(
         throw it.error
       }
     }
-    onDispose { }
+    onDispose {}
   }
 
   Feed(

@@ -21,9 +21,12 @@ android {
     viewBinding = true
   }
 
-  buildTypes { release { isMinifyEnabled = true
-    signingConfig = signingConfigs.getByName("debug")
-  } }
+  buildTypes {
+    release {
+      isMinifyEnabled = true
+      signingConfig = signingConfigs.getByName("debug")
+    }
+  }
 
   compileOptions {
     sourceCompatibility = JavaVersion.toVersion(libs.versions.java.get())
