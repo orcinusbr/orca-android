@@ -31,6 +31,7 @@ import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.formatted
+import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import java.io.Serializable
 import java.net.URL
 import java.time.ZonedDateTime
@@ -38,7 +39,7 @@ import java.time.ZonedDateTime
 @Immutable
 internal data class TootDetails(
   val id: String,
-  val avatarURL: URL,
+  val avatarLoader: SomeImageLoader,
   val name: String,
   private val account: Account,
   val text: AnnotatedString,

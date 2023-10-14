@@ -29,7 +29,6 @@ import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.SmallAvatar
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.headline.HeadlineCard
-import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
 
 @Composable
 internal fun Header(modifier: Modifier = Modifier) {
@@ -58,10 +57,8 @@ internal fun Header(
   onShare: () -> Unit,
   modifier: Modifier = Modifier
 ) {
-  val avatarLoader = rememberImageLoader(details.avatarURL)
-
   Header(
-    avatar = { SmallAvatar(avatarLoader, details.name) },
+    avatar = { SmallAvatar(details.avatarLoader, details.name) },
     name = { Text(details.name) },
     username = { Text(details.formattedUsername) },
     content = {

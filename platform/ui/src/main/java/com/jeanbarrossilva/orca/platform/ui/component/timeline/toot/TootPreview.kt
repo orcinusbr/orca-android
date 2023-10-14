@@ -47,7 +47,8 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.ReblogS
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.RelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.rememberRelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
-import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import java.io.Serializable
 import java.net.URL
 import java.time.ZonedDateTime
@@ -86,7 +87,7 @@ private val bodyModifier = Modifier.testTag(TOOT_PREVIEW_BODY_TAG)
  * Information to be displayed on a [Toot]'s preview.
  *
  * @param id Unique identifier.
- * @param avatarURL [URL] that leads to the author's avatar.
+ * @param avatarLoader [ImageLoader] that loads the author's avatar.
  * @param name Name of the author.
  * @param account [Account] of the author.
  * @param text Content written by the author.
@@ -102,7 +103,7 @@ private val bodyModifier = Modifier.testTag(TOOT_PREVIEW_BODY_TAG)
 @Immutable
 data class TootPreview(
   val id: String,
-  val avatarURL: URL,
+  val avatarLoader: SomeImageLoader,
   val name: String,
   private val account: Account,
   val text: AnnotatedString,
@@ -148,7 +149,7 @@ data class TootPreview(
     fun getSample(colors: Colors): TootPreview {
       return TootPreview(
         Toot.sample.id,
-        Toot.sample.author.avatarURL,
+        Toot.sample.author.avatarLoader,
         Toot.sample.author.name,
         Toot.sample.author.account,
         Toot.sample.content.text.toAnnotatedString(colors),
@@ -210,12 +211,11 @@ fun TootPreview(
   modifier: Modifier = Modifier,
   relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider()
 ) {
-  val avatarLoader = rememberImageLoader(preview.avatarURL)
   val metadata =
     remember(preview, relativeTimeProvider) { preview.getMetadata(relativeTimeProvider) }
 
   TootPreview(
-    avatar = { SmallAvatar(avatarLoader, preview.name) },
+    avatar = { SmallAvatar(preview.avatarLoader, preview.name) },
     name = { Text(preview.name, nameModifier) },
     metadata = { Text(metadata, metadataModifier) },
     content = {

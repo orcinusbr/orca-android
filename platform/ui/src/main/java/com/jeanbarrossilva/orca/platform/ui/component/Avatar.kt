@@ -11,7 +11,7 @@ import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.Samples
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.compose.Image
 import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
 import java.io.Serializable
@@ -39,7 +39,7 @@ fun SmallAvatar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SmallAvatar(imageLoader: ImageLoader, name: String, modifier: Modifier = Modifier) {
+fun SmallAvatar(imageLoader: SomeImageLoader, name: String, modifier: Modifier = Modifier) {
   Image(
     imageLoader,
     contentDescriptionFor(name),
@@ -54,7 +54,7 @@ fun LargeAvatar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun LargeAvatar(imageLoader: ImageLoader, name: String, modifier: Modifier = Modifier) {
+fun LargeAvatar(imageLoader: SomeImageLoader, name: String, modifier: Modifier = Modifier) {
   Image(
     imageLoader,
     contentDescriptionFor(name),

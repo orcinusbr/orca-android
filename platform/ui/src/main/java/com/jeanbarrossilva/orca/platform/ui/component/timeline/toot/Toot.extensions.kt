@@ -14,29 +14,14 @@ import kotlinx.coroutines.flow.combine
  * @param colors [Colors] by which the emitted [TootPreview]s' [TootPreview.text] can be colored.
  */
 fun Toot.toTootPreviewFlow(colors: Colors): Flow<TootPreview> {
-  val body = content.text.toAnnotatedString(colors)
   return combine(
     comment.countFlow,
     favorite.isEnabledFlow,
     favorite.countFlow,
     reblog.isEnabledFlow,
     reblog.countFlow
-  ) { commentCount, isFavorite, favoriteCount, isReblogged, reblogCount ->
-    TootPreview(
-      id,
-      author.avatarURL,
-      author.name,
-      author.account,
-      body,
-      content.highlight,
-      publicationDateTime,
-      commentCount,
-      isFavorite,
-      favoriteCount,
-      isReblogged,
-      reblogCount,
-      url
-    )
+  ) { _, _, _, _, _ ->
+    toTootPreview(colors)
   }
 }
 
@@ -54,7 +39,7 @@ internal fun Toot.toTootPreview(): TootPreview {
 internal fun Toot.toTootPreview(colors: Colors): TootPreview {
   return TootPreview(
     id,
-    author.avatarURL,
+    author.avatarLoader,
     author.name,
     author.account,
     content.text.toAnnotatedString(colors),

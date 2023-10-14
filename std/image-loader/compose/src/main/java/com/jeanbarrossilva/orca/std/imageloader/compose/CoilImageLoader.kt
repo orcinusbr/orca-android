@@ -15,10 +15,9 @@ import java.net.URL
  *
  * @param context [Context] through which [ImageRequest]s will be performed.
  */
-internal class CoilImageLoader(private val context: Context, override val url: URL) :
-  AsyncImageLoader() {
+class CoilImageLoader(private val context: Context, override val source: URL) : AsyncImageLoader() {
   override suspend fun load(width: Int, height: Int): Image? {
-    val request = ImageRequest.Builder(context).data("$url").size(width, height).build()
+    val request = ImageRequest.Builder(context).data("$source").size(width, height).build()
     return context.imageLoader.execute(request).drawable?.toBitmap()?.toImage()
   }
 }

@@ -36,14 +36,16 @@ import com.jeanbarrossilva.loadable.placeholder.PlaceholderDefaults
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.compose.Image as _Image
 import java.net.URL
 
 /**
- * [Composable] that asynchronously loads the image to which the [url] leads with the specified
- * [loader].
+ * [Composable] that loads an [Image][com.jeanbarrossilva.orca.std.imageloader.Image] with the
+ * specified [loader].
  *
- * @param url [URL] of the image to be loaded.
+ * @param loader [ImageLoader] by which the underlying
+ *   [Image][com.jeanbarrossilva.orca.std.imageloader.Image] will be loaded.
  * @param contentDescription Description of what the image contains.
  * @param modifier [Modifier] to be applied to the underlying [Placeholder].
  * @param loader [ImageLoader] by which the image will be loaded.
@@ -52,7 +54,7 @@ import java.net.URL
  */
 @Composable
 fun Image(
-  loader: ImageLoader,
+  loader: SomeImageLoader,
   contentDescription: String,
   modifier: Modifier = Modifier,
   shape: Shape = RectangleShape,

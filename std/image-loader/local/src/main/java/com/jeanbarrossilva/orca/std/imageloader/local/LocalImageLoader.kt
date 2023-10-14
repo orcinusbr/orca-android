@@ -1,20 +1,20 @@
 package com.jeanbarrossilva.orca.std.imageloader.local
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
 import androidx.core.graphics.drawable.toBitmap
 import com.jeanbarrossilva.orca.std.imageloader.Image
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 
 /**
- * [ImageLoader] that loads an [Image] locally through its [resourceID].
+ * [ImageLoader] that loads an [Image] locally through its resource ID.
  *
- * @param context [Context] through which the [Image] will be obtained.
- * @param resourceID ID of the resource of the [Image].
+ * @param context [Context] through which the underlying [Drawable] will be obtained.
  */
-class LocalImageLoader(private val context: Context, @DrawableRes private val resourceID: Int) :
-  ImageLoader {
+class LocalImageLoader(private val context: Context, @DrawableRes override val source: Int) :
+  ImageLoader<Int> {
   override suspend fun load(width: Int, height: Int): Image? {
-    return context.getDrawable(resourceID)?.toBitmap(width, height)?.toImage()
+    return context.getDrawable(source)?.toBitmap(width, height)?.toImage()
   }
 }
