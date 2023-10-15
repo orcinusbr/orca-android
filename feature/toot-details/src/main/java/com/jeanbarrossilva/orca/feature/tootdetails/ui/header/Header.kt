@@ -27,7 +27,7 @@ import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.stat.FavoriteStat
 import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.stat.ReblogStat
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.ui.component.SmallAvatar
+import com.jeanbarrossilva.orca.platform.ui.component.avatar.SmallAvatar
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.headline.HeadlineCard
 
 @Composable

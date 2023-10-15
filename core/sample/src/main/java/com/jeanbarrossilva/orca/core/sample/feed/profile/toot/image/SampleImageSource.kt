@@ -6,4 +6,7 @@ import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 /**
  * Source from which [Image]s will be loaded via an [ImageLoader] within the sample core variant.
  */
-sealed interface SampleImageSource
+sealed class SampleImageSource {
+  /** [SampleImageSource] that indicates a nonexistent source. */
+  data object None : SampleImageSource()
+}

@@ -40,7 +40,7 @@ import com.jeanbarrossilva.orca.platform.theme.extensions.EmptyMutableInteractio
 import com.jeanbarrossilva.orca.platform.theme.extensions.IgnoringMutableInteractionSource
 import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
 import com.jeanbarrossilva.orca.platform.ui.R
-import com.jeanbarrossilva.orca.platform.ui.component.SmallAvatar
+import com.jeanbarrossilva.orca.platform.ui.component.avatar.SmallAvatar
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.headline.HeadlineCard
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.FavoriteStat
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.ReblogStat
@@ -166,6 +166,11 @@ data class TootPreview(
   }
 }
 
+/**
+ * Preview of a loading [Toot].
+ *
+ * @param modifier [Modifier] to be applied to the underlying [Card].
+ */
 @Composable
 fun TootPreview(modifier: Modifier = Modifier) {
   TootPreview(
@@ -255,6 +260,32 @@ fun TootPreview(
 }
 
 /**
+ * Preview of a [Toot].
+ *
+ * @param modifier [Modifier] to be applied to the underlying [Card].
+ * @param preview [TootPreview] that holds the overall data to be displayed.
+ * @param relativeTimeProvider [RelativeTimeProvider] that provides the time that's passed since the
+ *   [Toot] was published.
+ */
+@Composable
+internal fun TootPreview(
+  modifier: Modifier = Modifier,
+  preview: TootPreview = TootPreview.sample,
+  relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider()
+) {
+  TootPreview(
+    preview,
+    onHighlightClick = {},
+    onFavorite = {},
+    onReblog = {},
+    onShare = {},
+    onClick = {},
+    modifier,
+    relativeTimeProvider
+  )
+}
+
+/**
  * Skeleton of the preview of a [Toot].
  *
  * @param avatar Slot in which the avatar of the [Author] should be placed.
@@ -323,7 +354,7 @@ private fun LoadingTootPreviewPreview() {
 private fun LoadedTootPreviewWithDisabledStatsPreview() {
   OrcaTheme {
     Surface(color = OrcaTheme.colors.background.container) {
-      TootPreview(TootPreview.sample.copy(isFavorite = false, isReblogged = false))
+      TootPreview(preview = TootPreview.sample.copy(isFavorite = false, isReblogged = false))
     }
   }
 }
@@ -334,26 +365,7 @@ private fun LoadedTootPreviewWithDisabledStatsPreview() {
 private fun LoadedTootPreviewWithEnabledStatsPreview() {
   OrcaTheme {
     Surface(color = OrcaTheme.colors.background.container) {
-      TootPreview(TootPreview.sample.copy(isFavorite = true, isReblogged = true))
+      TootPreview(preview = TootPreview.sample.copy(isFavorite = true, isReblogged = true))
     }
   }
-}
-
-/**
- * Preview of a [Toot].
- *
- * @param preview [TootPreview] that holds the overall data to be displayed.
- * @param modifier [Modifier] to be applied to the underlying [Card].
- */
-@Composable
-private fun TootPreview(preview: TootPreview, modifier: Modifier = Modifier) {
-  TootPreview(
-    preview,
-    onHighlightClick = {},
-    onFavorite = {},
-    onReblog = {},
-    onShare = {},
-    onClick = {},
-    modifier
-  )
 }

@@ -5,9 +5,6 @@ import androidx.compose.ui.test.onNodeWithTag
 import com.jeanbarrossilva.loadable.placeholder.test.assertIsLoading
 import com.jeanbarrossilva.loadable.placeholder.test.assertIsNotLoading
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.ui.component.AVATAR_TAG
-import com.jeanbarrossilva.orca.platform.ui.component.Avatar
-import com.jeanbarrossilva.orca.platform.ui.component.SmallAvatar
 import com.jeanbarrossilva.orca.std.imageloader.test.TestImageLoader
 import org.junit.Rule
 import org.junit.Test
@@ -31,7 +28,7 @@ internal class SmallAvatarTests {
   fun isTaggedWhenPopulated() {
     composeRule.setContent {
       OrcaTheme {
-        SmallAvatar(Avatar.sample.name, Avatar.sample.url, imageLoader = TestImageLoader)
+        SmallAvatar(TestImageLoader, Avatar.sample.name)
       }
     }
     composeRule.onNodeWithTag(AVATAR_TAG).assertExists()
@@ -41,7 +38,7 @@ internal class SmallAvatarTests {
   fun isLoadedWhenPopulated() {
     composeRule.setContent {
       OrcaTheme {
-        SmallAvatar(Avatar.sample.name, Avatar.sample.url, imageLoader = TestImageLoader)
+        SmallAvatar(TestImageLoader, Avatar.sample.name)
       }
     }
     composeRule.onNodeWithTag(AVATAR_TAG).assertIsNotLoading()

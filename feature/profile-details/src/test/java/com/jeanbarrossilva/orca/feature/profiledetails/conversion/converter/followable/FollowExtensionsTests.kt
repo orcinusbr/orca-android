@@ -1,11 +1,16 @@
 package com.jeanbarrossilva.orca.feature.profiledetails.conversion.converter.followable
 
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
+import com.jeanbarrossilva.orca.core.sample.rule.SampleCoreTestRule
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetails
 import org.junit.Assert.assertEquals
+import org.junit.Rule
 import org.junit.Test
 
 internal class FollowExtensionsTests {
+  @get:Rule
+  val sampleCoreRule = SampleCoreTestRule()
+
   @Test
   fun `GIVEN a public unfollowed Follow WHEN converting it into a Status THEN it's UNFOLLOWED`() {
     assertEquals(ProfileDetails.Followable.Status.UNFOLLOWED, Follow.Public.unfollowed().toStatus())

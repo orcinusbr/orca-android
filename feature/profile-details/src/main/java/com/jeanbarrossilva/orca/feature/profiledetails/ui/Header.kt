@@ -17,7 +17,7 @@ import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetails
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.ui.component.LargeAvatar
+import com.jeanbarrossilva.orca.platform.ui.component.avatar.LargeAvatar
 import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
 
 @Composable

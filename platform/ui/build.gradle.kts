@@ -14,6 +14,7 @@ android {
 
 dependencies {
   androidTestImplementation(kotlin("reflect"))
+  androidTestImplementation(project(":core:sample-test"))
   androidTestImplementation(project(":platform:ui-test"))
   androidTestImplementation(project(":std:image-loader-test"))
   androidTestImplementation(libs.android.compose.ui.test.junit)
@@ -29,6 +30,7 @@ dependencies {
   implementation(project(":core"))
   implementation(project(":core:sample"))
   implementation(project(":platform:theme"))
+  implementation(project(":std:image-loader:local"))
   implementation(libs.android.activity.compose)
   implementation(libs.android.material)
   implementation(libs.loadable.list)

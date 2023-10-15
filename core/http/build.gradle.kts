@@ -57,6 +57,7 @@ dependencies {
   }
 
   testImplementation(project(":core:sample"))
+  testImplementation(project(":core:sample-test"))
   testImplementation(project(":core-test"))
   testImplementation(libs.assertk)
   testImplementation(libs.junit)

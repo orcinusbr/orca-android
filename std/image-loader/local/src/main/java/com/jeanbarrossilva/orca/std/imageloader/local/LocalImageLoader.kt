@@ -12,8 +12,11 @@ import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
  *
  * @param context [Context] through which the underlying [Drawable] will be obtained.
  */
-class LocalImageLoader(private val context: Context, @DrawableRes override val source: Int) :
-  ImageLoader<Int> {
+abstract class LocalImageLoader : ImageLoader<Int> {
+  protected abstract val context: Context
+  @get:DrawableRes
+  abstract override val source: Int
+
   override suspend fun load(width: Int, height: Int): Image? {
     return context.getDrawable(source)?.toBitmap(width, height)?.toImage()
   }

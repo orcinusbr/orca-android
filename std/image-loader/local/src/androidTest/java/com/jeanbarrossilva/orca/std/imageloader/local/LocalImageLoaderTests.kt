@@ -11,8 +11,10 @@ import org.junit.Test
 internal class LocalImageLoaderTests {
   @Test
   fun loads() {
-    val context = InstrumentationRegistry.getInstrumentation().context
-    val imageLoader = LocalImageLoader(context, R.drawable.ic_white)
+    val imageLoader = object : LocalImageLoader() {
+      override val context = InstrumentationRegistry.getInstrumentation().context
+      override val source = R.drawable.ic_white
+    }
     runTest {
       assertThat(imageLoader.load(width = 1, height = 1))
         .isEqualTo(buildImage(width = 1, height = 1) { pixel(Color.WHITE) })

@@ -6,14 +6,19 @@ import com.jeanbarrossilva.orca.core.feed.profile.type.followable.FollowableProf
 import com.jeanbarrossilva.orca.core.sample.feed.profile.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.type.editable.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.type.followable.sample
+import com.jeanbarrossilva.orca.core.sample.rule.SampleCoreTestRule
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetails
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import kotlinx.coroutines.test.TestScope
 import org.junit.Assert.assertEquals
+import org.junit.Rule
 import org.junit.Test
 
 internal class ProfileConverterFactoryTests {
   private val coroutineScope = TestScope()
+
+  @get:Rule
+  val sampleCoreRule = SampleCoreTestRule()
 
   @Test
   fun createdConverterConvertsDefaultProfile() {

@@ -8,7 +8,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlig
  * [SampleImageSource] of [Toot]s' [content][Toot.content]s' [highlight][Content.highlight]s'
  * [headline][Highlight.headline]s' covers.
  */
-sealed interface CoverImageSource : SampleImageSource {
+sealed class CoverImageSource : SampleImageSource() {
   /** [CoverImageSource] of the default sample [Toot]. */
-  data object Default : CoverImageSource
+  data object Default : CoverImageSource()
 }
