@@ -26,21 +26,13 @@ internal class SmallAvatarTests {
 
   @Test
   fun isTaggedWhenPopulated() {
-    composeRule.setContent {
-      OrcaTheme {
-        SmallAvatar(TestImageLoader, Avatar.sample.name)
-      }
-    }
+    composeRule.setContent { OrcaTheme { SmallAvatar(TestImageLoader, Avatar.sample.name) } }
     composeRule.onNodeWithTag(AVATAR_TAG).assertExists()
   }
 
   @Test
   fun isLoadedWhenPopulated() {
-    composeRule.setContent {
-      OrcaTheme {
-        SmallAvatar(TestImageLoader, Avatar.sample.name)
-      }
-    }
+    composeRule.setContent { OrcaTheme { SmallAvatar(TestImageLoader, Avatar.sample.name) } }
     composeRule.onNodeWithTag(AVATAR_TAG).assertIsNotLoading()
   }
 }

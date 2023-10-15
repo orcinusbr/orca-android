@@ -27,7 +27,6 @@ import com.jeanbarrossilva.orca.platform.theme.extensions.border
 import com.jeanbarrossilva.orca.platform.theme.kit.action.Hoverable
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.std.imageloader.compose.Image
-import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
 
 /** Tag that identifies a [HeadlineCard] for testing purposes. */
 const val HEADLINE_CARD_TAG = "headline-card"
@@ -36,7 +35,6 @@ const val HEADLINE_CARD_TAG = "headline-card"
 fun HeadlineCard(headline: Headline, onClick: () -> Unit, modifier: Modifier = Modifier) {
   val shape = OrcaTheme.shapes.large
   val interactionSource = remember(::MutableInteractionSource)
-  val coverLoader = rememberImageLoader(headline.coverURL)
 
   Hoverable(
     modifier
@@ -47,13 +45,15 @@ fun HeadlineCard(headline: Headline, onClick: () -> Unit, modifier: Modifier = M
       .testTag(HEADLINE_CARD_TAG)
   ) {
     Column {
-      Image(
-        coverLoader,
-        contentDescription =
-          stringResource(R.string.platform_ui_headline_card_cover, headline.title),
-        Modifier.aspectRatio(16f / 9f).fillMaxWidth(),
-        contentScale = ContentScale.Crop
-      )
+      headline.coverLoader?.let {
+        Image(
+          it,
+          contentDescription =
+            stringResource(R.string.platform_ui_headline_card_cover, headline.title),
+          Modifier.aspectRatio(16f / 9f).fillMaxWidth(),
+          contentScale = ContentScale.Crop
+        )
+      }
 
       Column(
         Modifier.padding(OrcaTheme.spacings.medium),

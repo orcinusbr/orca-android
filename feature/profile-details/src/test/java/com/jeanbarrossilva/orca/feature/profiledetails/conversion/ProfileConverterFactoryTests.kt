@@ -17,8 +17,7 @@ import org.junit.Test
 internal class ProfileConverterFactoryTests {
   private val coroutineScope = TestScope()
 
-  @get:Rule
-  val sampleCoreRule = SampleCoreTestRule()
+  @get:Rule val sampleCoreRule = SampleCoreTestRule()
 
   @Test
   fun createdConverterConvertsDefaultProfile() {

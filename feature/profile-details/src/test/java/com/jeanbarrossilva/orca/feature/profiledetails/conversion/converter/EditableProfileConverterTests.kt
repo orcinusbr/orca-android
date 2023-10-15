@@ -17,8 +17,7 @@ import org.junit.Test
 internal class EditableProfileConverterTests {
   private val converter = EditableProfileConverter(next = null)
 
-  @get:Rule
-  val sampleCoreRule = SampleCoreTestRule()
+  @get:Rule val sampleCoreRule = SampleCoreTestRule()
 
   @Test
   fun convertsEditableProfile() {

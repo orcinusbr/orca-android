@@ -8,8 +8,7 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class FollowExtensionsTests {
-  @get:Rule
-  val sampleCoreRule = SampleCoreTestRule()
+  @get:Rule val sampleCoreRule = SampleCoreTestRule()
 
   @Test
   fun `GIVEN a public unfollowed Follow WHEN converting it into a Status THEN it's UNFOLLOWED`() {

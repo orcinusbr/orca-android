@@ -19,8 +19,7 @@ internal class FollowableProfileConverterTests {
   private val coroutineScope = TestScope()
   private val converter = FollowableProfileConverter(coroutineScope, next = null)
 
-  @get:Rule
-  val sampleCoreRule = SampleCoreTestRule()
+  @get:Rule val sampleCoreRule = SampleCoreTestRule()
 
   @Test
   fun convertsFollowableProfile() {

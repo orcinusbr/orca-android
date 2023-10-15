@@ -9,7 +9,9 @@ import com.jeanbarrossilva.orca.std.imageloader.local.LocalImageLoader
 
 /** [ImageLoader] that loads the sample avatar [Image]. */
 internal val ImageLoader.Companion.avatar
-    @Composable get() = object : LocalImageLoader() {
-        override val context = LocalContext.current
-        override val source = R.drawable.sample_avatar_default
+  @Composable
+  get() =
+    object : LocalImageLoader() {
+      override val context = LocalContext.current
+      override val source = R.drawable.sample_avatar_default
     }

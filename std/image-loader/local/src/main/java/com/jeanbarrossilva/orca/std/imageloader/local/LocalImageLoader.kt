@@ -14,8 +14,7 @@ import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
  */
 abstract class LocalImageLoader : ImageLoader<Int> {
   protected abstract val context: Context
-  @get:DrawableRes
-  abstract override val source: Int
+  @get:DrawableRes abstract override val source: Int
 
   override suspend fun load(width: Int, height: Int): Image? {
     return context.getDrawable(source)?.toBitmap(width, height)?.toImage()

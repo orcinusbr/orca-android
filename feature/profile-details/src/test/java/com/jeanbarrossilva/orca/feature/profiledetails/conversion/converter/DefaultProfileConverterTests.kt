@@ -16,8 +16,7 @@ import org.junit.Test
 internal class DefaultProfileConverterTests {
   private val converter = DefaultProfileConverter(next = null)
 
-  @get:Rule
-  val sampleCoreRule = SampleCoreTestRule()
+  @get:Rule val sampleCoreRule = SampleCoreTestRule()
 
   @Test
   fun convertsDefaultProfile() {
