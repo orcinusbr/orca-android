@@ -20,5 +20,6 @@ class SampleCoreTestRule : ExternalResource() {
   override fun after() {
     SampleProfileWriter.reset()
     SampleTootWriter.reset()
+    Injector.unregister<SampleCoreModule>()
   }
 }
