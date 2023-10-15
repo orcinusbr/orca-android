@@ -63,4 +63,16 @@ internal class InjectorTests {
     Injector.from<Module>().inject { 0 }
     assertThat(Injector.from<Module>().get<Int>()).isEqualTo(0)
   }
+
+  @Test(expected = Injector.ModuleNotRegisteredException::class)
+  fun throwsWhenUnregisteringUnregisteredModule() {
+    Injector.unregister<Module>()
+  }
+
+  @Test(expected = Injector.ModuleNotRegisteredException::class)
+  fun unregistersModule() {
+    Injector.register<Module>(object : Module() {})
+    Injector.unregister<Module>()
+    Injector.from<Module>()
+  }
 }

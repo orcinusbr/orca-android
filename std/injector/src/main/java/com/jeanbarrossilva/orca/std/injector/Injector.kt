@@ -20,7 +20,7 @@ object Injector : Module() {
 
   /**
    * [NoSuchElementException] thrown if a [Module] that hasn't been registered is requested to be
-   * obtained.
+   * obtained or unregistered.
    *
    * @param moduleClass [KClass] of the requested [Module].
    */
@@ -49,7 +49,7 @@ object Injector : Module() {
    *
    * @param T [Module] to be obtained.
    * @throws SelfRetrievalException If the [Module] is this [Injector].
-   * @throws ModuleNotRegisteredException If no [Module] of type [T] has been injected.
+   * @throws ModuleNotRegisteredException If no [Module] of type [T] has been registered.
    */
   @Throws(ModuleNotRegisteredException::class)
   inline fun <reified T : Module> from(): T {
@@ -57,6 +57,21 @@ object Injector : Module() {
       modularization[T::class] as T? ?: throw ModuleNotRegisteredException(T::class)
     } else {
       throw SelfRetrievalException()
+    }
+  }
+
+  /**
+   * Unregisters the given [Module].
+   *
+   * @param T [Module] to be unregistered.
+   * @throws ModuleNotRegisteredException If no [Module] of type [T] has been injected.
+   */
+  @Throws(ModuleNotRegisteredException::class)
+  inline fun <reified T : Module> unregister() {
+    if (T::class in modularization) {
+      modularization.remove(T::class)
+    } else {
+      throw ModuleNotRegisteredException(T::class)
     }
   }
 
