@@ -32,6 +32,7 @@ dependencies {
   implementation(libs.loadable.list)
   implementation(libs.loadable.placeholder)
 
+  testImplementation(project(":core:sample-test"))
   testImplementation(libs.kotlin.coroutines.test)
   testImplementation(libs.junit)
 }

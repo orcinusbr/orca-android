@@ -11,11 +11,14 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Headline
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
 import com.jeanbarrossilva.orca.core.feed.profile.toot.reblog.Reblog
+import com.jeanbarrossilva.orca.core.http.HttpModule
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.style.HttpStyleEntity
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.style.startingAt
 import com.jeanbarrossilva.orca.platform.cache.Cache
 import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.orca.std.styledstring.toStyledString
 import java.net.URL
 import java.time.ZonedDateTime
@@ -69,10 +72,14 @@ internal data class HttpTootEntity(
     val author = profileCache.get(authorID).toAuthor()
     val styles = dao.selectWithStylesByID(id).styles
     val text = text.toStyledString { URL(styles.startingAt(it).url) }
+    val coverLoader =
+      headlineCoverURL?.let {
+        Injector.from<HttpModule>().get<ImageLoader.Provider<URL>>().provide(URL(it))
+      }
     val content =
       Content.from(text) {
         if (headlineTitle != null && headlineCoverURL != null) {
-          Headline(headlineTitle, headlineSubtitle, URL(headlineCoverURL))
+          Headline(headlineTitle, headlineSubtitle, coverLoader)
         } else {
           null
         }
@@ -109,7 +116,7 @@ internal data class HttpTootEntity(
         "${toot.content.text}",
         toot.content.highlight?.headline?.title,
         toot.content.highlight?.headline?.subtitle,
-        "${toot.content.highlight?.headline?.coverURL}",
+        "${toot.content.highlight?.headline}",
         "${toot.publicationDateTime}",
         toot.comment.count,
         toot.favorite.isEnabled,

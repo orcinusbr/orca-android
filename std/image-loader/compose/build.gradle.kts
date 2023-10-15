@@ -18,6 +18,7 @@ dependencies {
   api(libs.android.compose.ui.tooling)
 
   implementation(project(":platform:theme"))
+  implementation(project(":std:image-loader:local"))
   implementation(libs.android.core)
   implementation(libs.coil)
   implementation(libs.loadable.placeholder)

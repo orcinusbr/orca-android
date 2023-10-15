@@ -1,15 +1,41 @@
 package com.jeanbarrossilva.orca.std.imageloader
 
-import java.net.URL
+/** [ImageLoader] with a generic source. */
+typealias SomeImageLoader = ImageLoader<*>
 
-/** Loads [Image]s asynchronously through [load]. */
-interface ImageLoader {
+/** [ImageLoader.Provider] with a generic source. */
+typealias SomeImageLoaderProvider = ImageLoader.Provider<*>
+
+/**
+ * Loads an [Image] through [load].
+ *
+ * @param T Source from which the [Image] will be obtained.
+ */
+interface ImageLoader<T : Any> {
+  /** Source from which the [Image] will be obtained. */
+  val source: T
+
   /**
-   * Loads the [Image] to which the [url] leads.
+   * Provides an [ImageLoader] through [provide].
+   *
+   * @param T Source from which the [Image] will be obtained.
+   */
+  fun interface Provider<T : Any> {
+    /**
+     * Provides an [ImageLoader].
+     *
+     * @param source Source from which the [Image] will be obtained.
+     */
+    fun provide(source: T): ImageLoader<T>
+  }
+
+  /**
+   * Loads an [Image].
    *
    * @param width How wide the [Image] is.
    * @param height How tall the [Image] is.
-   * @param url [URL] of the [Image] to be loaded.
    */
-  suspend fun load(width: Int, height: Int, url: URL): Image?
+  suspend fun load(width: Int, height: Int): Image?
+
+  companion object
 }

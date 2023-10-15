@@ -6,6 +6,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.jeanbarrossilva.loadable.placeholder.test.assertIsLoading
 import com.jeanbarrossilva.loadable.placeholder.test.assertIsNotLoading
+import com.jeanbarrossilva.orca.core.sample.rule.SampleCoreTestRule
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.test.TestTootPreview
@@ -23,6 +24,8 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class TootPreviewTests {
+  @get:Rule val coreSampleRule = SampleCoreTestRule()
+
   @get:Rule val composeRule = createComposeRule()
 
   private val sampleTootPreview

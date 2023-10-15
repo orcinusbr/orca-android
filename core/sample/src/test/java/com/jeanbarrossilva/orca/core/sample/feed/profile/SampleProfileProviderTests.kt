@@ -1,8 +1,8 @@
 package com.jeanbarrossilva.orca.core.sample.feed.profile
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
-import com.jeanbarrossilva.orca.core.sample.feed.profile.test.SampleTestRule
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.SampleTootWriter
+import com.jeanbarrossilva.orca.core.sample.rule.SampleCoreTestRule
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlinx.coroutines.flow.first
@@ -10,7 +10,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 
 internal class SampleProfileProviderTests {
-  @get:Rule val sampleRule = SampleTestRule()
+  @get:Rule val sampleCoreRule = SampleCoreTestRule()
 
   @Test
   fun `GIVEN a profile without toots WHEN providing it and getting them THEN they're obtained`() {

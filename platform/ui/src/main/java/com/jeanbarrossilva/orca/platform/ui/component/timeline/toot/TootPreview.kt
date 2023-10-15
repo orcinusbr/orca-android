@@ -40,7 +40,7 @@ import com.jeanbarrossilva.orca.platform.theme.extensions.EmptyMutableInteractio
 import com.jeanbarrossilva.orca.platform.theme.extensions.IgnoringMutableInteractionSource
 import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
 import com.jeanbarrossilva.orca.platform.ui.R
-import com.jeanbarrossilva.orca.platform.ui.component.SmallAvatar
+import com.jeanbarrossilva.orca.platform.ui.component.avatar.SmallAvatar
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.headline.HeadlineCard
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.FavoriteStat
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.ReblogStat
@@ -48,7 +48,7 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.Relativ
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.rememberRelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
-import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
+import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import java.io.Serializable
 import java.net.URL
 import java.time.ZonedDateTime
@@ -87,7 +87,7 @@ private val bodyModifier = Modifier.testTag(TOOT_PREVIEW_BODY_TAG)
  * Information to be displayed on a [Toot]'s preview.
  *
  * @param id Unique identifier.
- * @param avatarURL [URL] that leads to the author's avatar.
+ * @param avatarLoader [ImageLoader] that loads the author's avatar.
  * @param name Name of the author.
  * @param account [Account] of the author.
  * @param text Content written by the author.
@@ -103,7 +103,7 @@ private val bodyModifier = Modifier.testTag(TOOT_PREVIEW_BODY_TAG)
 @Immutable
 data class TootPreview(
   val id: String,
-  val avatarURL: URL,
+  val avatarLoader: SomeImageLoader,
   val name: String,
   private val account: Account,
   val text: AnnotatedString,
@@ -149,7 +149,7 @@ data class TootPreview(
     fun getSample(colors: Colors): TootPreview {
       return TootPreview(
         Toot.sample.id,
-        Toot.sample.author.avatarURL,
+        Toot.sample.author.avatarLoader,
         Toot.sample.author.name,
         Toot.sample.author.account,
         Toot.sample.content.text.toAnnotatedString(colors),
@@ -166,6 +166,11 @@ data class TootPreview(
   }
 }
 
+/**
+ * Preview of a loading [Toot].
+ *
+ * @param modifier [Modifier] to be applied to the underlying [Card].
+ */
 @Composable
 fun TootPreview(modifier: Modifier = Modifier) {
   TootPreview(
@@ -209,14 +214,13 @@ fun TootPreview(
   onShare: () -> Unit,
   onClick: () -> Unit,
   modifier: Modifier = Modifier,
-  imageLoader: ImageLoader = rememberImageLoader(),
   relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider()
 ) {
   val metadata =
     remember(preview, relativeTimeProvider) { preview.getMetadata(relativeTimeProvider) }
 
   TootPreview(
-    avatar = { SmallAvatar(preview.name, preview.avatarURL, imageLoader = imageLoader) },
+    avatar = { SmallAvatar(preview.avatarLoader, preview.name) },
     name = { Text(preview.name, nameModifier) },
     metadata = { Text(metadata, metadataModifier) },
     content = {
@@ -252,6 +256,32 @@ fun TootPreview(
     },
     onClick,
     modifier
+  )
+}
+
+/**
+ * Preview of a [Toot].
+ *
+ * @param modifier [Modifier] to be applied to the underlying [Card].
+ * @param preview [TootPreview] that holds the overall data to be displayed.
+ * @param relativeTimeProvider [RelativeTimeProvider] that provides the time that's passed since the
+ *   [Toot] was published.
+ */
+@Composable
+internal fun TootPreview(
+  modifier: Modifier = Modifier,
+  preview: TootPreview = TootPreview.sample,
+  relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider()
+) {
+  TootPreview(
+    preview,
+    onHighlightClick = {},
+    onFavorite = {},
+    onReblog = {},
+    onShare = {},
+    onClick = {},
+    modifier,
+    relativeTimeProvider
   )
 }
 
@@ -324,7 +354,7 @@ private fun LoadingTootPreviewPreview() {
 private fun LoadedTootPreviewWithDisabledStatsPreview() {
   OrcaTheme {
     Surface(color = OrcaTheme.colors.background.container) {
-      TootPreview(TootPreview.sample.copy(isFavorite = false, isReblogged = false))
+      TootPreview(preview = TootPreview.sample.copy(isFavorite = false, isReblogged = false))
     }
   }
 }
@@ -335,26 +365,7 @@ private fun LoadedTootPreviewWithDisabledStatsPreview() {
 private fun LoadedTootPreviewWithEnabledStatsPreview() {
   OrcaTheme {
     Surface(color = OrcaTheme.colors.background.container) {
-      TootPreview(TootPreview.sample.copy(isFavorite = true, isReblogged = true))
+      TootPreview(preview = TootPreview.sample.copy(isFavorite = true, isReblogged = true))
     }
   }
-}
-
-/**
- * Preview of a [Toot].
- *
- * @param preview [TootPreview] that holds the overall data to be displayed.
- * @param modifier [Modifier] to be applied to the underlying [Card].
- */
-@Composable
-private fun TootPreview(preview: TootPreview, modifier: Modifier = Modifier) {
-  TootPreview(
-    preview,
-    onHighlightClick = {},
-    onFavorite = {},
-    onReblog = {},
-    onShare = {},
-    onClick = {},
-    modifier
-  )
 }

@@ -21,7 +21,12 @@ android {
     viewBinding = true
   }
 
-  buildTypes { release { isMinifyEnabled = true } }
+  buildTypes {
+    release {
+      isMinifyEnabled = true
+      signingConfig = signingConfigs.getByName("debug")
+    }
+  }
 
   compileOptions {
     sourceCompatibility = JavaVersion.toVersion(libs.versions.java.get())
@@ -72,6 +77,7 @@ dependencies {
   implementation(project(":platform:launchable"))
   implementation(project(":platform:theme"))
   implementation(project(":platform:ui"))
+  implementation(project(":std:image-loader:local"))
   implementation(project(":std:injector"))
   implementation(libs.android.appcompat)
   implementation(libs.android.constraintlayout)

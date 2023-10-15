@@ -8,6 +8,7 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.jeanbarrossilva.orca.app.databinding.ActivityOrcaBinding
 import com.jeanbarrossilva.orca.app.module.core.MainHttpModule
+import com.jeanbarrossilva.orca.app.module.core.sample.MainSampleCoreModule
 import com.jeanbarrossilva.orca.app.module.feature.feed.MainFeedModule
 import com.jeanbarrossilva.orca.app.module.feature.profiledetails.MainProfileDetailsModule
 import com.jeanbarrossilva.orca.app.module.feature.search.MainSearchModule
@@ -16,6 +17,7 @@ import com.jeanbarrossilva.orca.app.module.feature.settings.termmuting.MainTermM
 import com.jeanbarrossilva.orca.app.module.feature.tootdetails.MainTootDetailsModule
 import com.jeanbarrossilva.orca.app.navigation.BottomNavigation
 import com.jeanbarrossilva.orca.core.http.HttpModule
+import com.jeanbarrossilva.orca.core.sample.SampleCoreModule
 import com.jeanbarrossilva.orca.feature.ProfileDetailsModule
 import com.jeanbarrossilva.orca.feature.feed.FeedModule
 import com.jeanbarrossilva.orca.feature.search.SearchModule
@@ -31,6 +33,7 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
   private var binding: ActivityOrcaBinding? = null
   private var constraintSet: ConstraintSet? = null
 
+  protected open val sampleCoreModule: SampleCoreModule = MainSampleCoreModule()
   protected open val httpModule: HttpModule = MainHttpModule()
 
   final override val height: Int
@@ -69,6 +72,7 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
   private fun inject() {
     with(Injector) {
       inject<Context> { this@OrcaActivity }
+      register(sampleCoreModule)
       register(httpModule)
       register<FeedModule>(MainFeedModule(this@OrcaActivity))
       register<ProfileDetailsModule>(MainProfileDetailsModule(this@OrcaActivity))

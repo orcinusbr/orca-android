@@ -16,6 +16,7 @@ import com.jeanbarrossilva.orca.core.http.feed.profile.type.followable.HttpFollo
 import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.core.http.instanceProvider
 import com.jeanbarrossilva.orca.platform.ui.core.style.fromHtml
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import io.ktor.client.call.body
@@ -54,9 +55,11 @@ internal data class HttpAccount(
   /** Converts this [HttpAccount] into an [Author]. */
   fun toAuthor(): Author {
     val avatarURL = URL(avatar)
+    val avatarLoader =
+      Injector.from<HttpModule>().get<ImageLoader.Provider<URL>>().provide(avatarURL)
     val account = toAccount()
     val profileURL = URL(url)
-    return Author(id, avatarURL, displayName, account, profileURL)
+    return Author(id, avatarLoader, displayName, account, profileURL)
   }
 
   /**
