@@ -18,7 +18,7 @@ internal class InjectorTests {
   private class SubModuleWithAnnotatedDependency : SuperModuleWithAnnotatedDependency({ 0 })
 
   internal abstract class SuperModuleWithAnnotatedDependency(
-    @Inject val dependency: Module.() -> Int
+    @Suppress("unused") @Inject val dependency: Module.() -> Int
   ) : Module()
 
   private class SubModuleWithNonAnnotatedDependency : SuperModuleWithNonAnnotatedDependency({ 0 })
@@ -62,5 +62,17 @@ internal class InjectorTests {
     Injector.register<Module>(object : Module() {})
     Injector.from<Module>().inject { 0 }
     assertThat(Injector.from<Module>().get<Int>()).isEqualTo(0)
+  }
+
+  @Test(expected = Injector.ModuleNotRegisteredException::class)
+  fun throwsWhenUnregisteringUnregisteredModule() {
+    Injector.unregister<Module>()
+  }
+
+  @Test(expected = Injector.ModuleNotRegisteredException::class)
+  fun unregistersModule() {
+    Injector.register<Module>(object : Module() {})
+    Injector.unregister<Module>()
+    Injector.from<Module>()
   }
 }
