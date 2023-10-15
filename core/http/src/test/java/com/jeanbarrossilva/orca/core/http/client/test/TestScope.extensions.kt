@@ -121,5 +121,5 @@ private fun <T : Actor> runCoreHttpClientTest(
     }
   Injector.register(module)
   runTest { CoreHttpClientTestScope(delegate = this, instance.client, actor).body() }
-  Injector.clear()
+  Injector.unregister<HttpModule>()
 }
