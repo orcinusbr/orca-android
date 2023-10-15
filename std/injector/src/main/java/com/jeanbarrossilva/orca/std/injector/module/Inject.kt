@@ -4,7 +4,7 @@ import com.jeanbarrossilva.orca.std.injector.Injector
 
 /**
  * Denotes that the dependency returned by the value of the annotated property should be
- * automatically injected into the [Module] in which it was declared and that an extension property
+ * automatically injected into the [Module] in which it was declared and that an extension function
  * for getting its result should be created for that same [Module].
  *
  * For example, declaring `class MyModule(@Inject val dependency: Module.() -> Int)` and registering
