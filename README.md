@@ -42,7 +42,7 @@ Each item links to a documentation explaining how to obtain the respective key, 
 
 ```properties
 github.username=your-username
-github.token=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
+github.token=your-token
 ```
 
 - [Mastodon](https://docs.joinmastodon.org/client/token) (replace the `mastodon.example` that's mentioned in the documentation by your instance):
