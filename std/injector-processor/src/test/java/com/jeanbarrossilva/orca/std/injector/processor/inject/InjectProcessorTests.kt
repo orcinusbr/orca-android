@@ -11,7 +11,7 @@ import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 internal class InjectProcessorTests {
   @OptIn(ExperimentalCompilerApi::class)
   @Test
-  fun doesNotReportErrorOnInjectionWithinModuleThatIsSubclassingAnotherOne() {
+  fun doesNotReportErrorOnInjectionWithinModuleThatIndirectlySubclassesTheBaseClass() {
     val source =
       SourceFile.kotlin(
         "Modules.kt",
