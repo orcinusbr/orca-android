@@ -5,12 +5,18 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.jeanbarrossilva.orca.app.R
+import com.jeanbarrossilva.orca.app.demo.test.PlatformDialogDismissalTestRule
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.RuleChain
 
 internal class BottomNavigationTests {
-  @get:Rule val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
+  private val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
+  private val platformDialogDismissalRule = PlatformDialogDismissalTestRule()
+
+  @get:Rule
+  val ruleChain: RuleChain? = RuleChain.outerRule(composeRule).around(platformDialogDismissalRule)
 
   @Test
   fun navigatesOnceWhenClickingFeedItemMultipleTimes() {
