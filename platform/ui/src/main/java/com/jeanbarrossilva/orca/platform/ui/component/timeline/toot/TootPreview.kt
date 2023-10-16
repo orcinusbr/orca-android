@@ -3,18 +3,25 @@ package com.jeanbarrossilva.orca.platform.ui.component.timeline.toot
 import androidx.compose.foundation.interaction.HoverInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -23,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
@@ -46,41 +54,43 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.Favorit
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.ReblogStat
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.RelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.rememberRelativeTimeProvider
-import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import java.io.Serializable
 import java.net.URL
 import java.time.ZonedDateTime
 
-/** Tag that identifies a [TootPreview]'s name for testing purposes. */
+/** Tag that identifies a [SampleTootPreview]'s name for testing purposes. */
 internal const val TOOT_PREVIEW_NAME_TAG = "toot-preview-name"
 
-/** Tag that identifies [TootPreview]'s metadata for testing purposes. */
+/** Tag that identifies [SampleTootPreview]'s metadata for testing purposes. */
 internal const val TOOT_PREVIEW_METADATA_TAG = "toot-preview-metadata"
 
-/** Tag that identifies a [TootPreview]'s body for testing purposes. */
+/** Tag that identifies a [SampleTootPreview]'s body for testing purposes. */
 internal const val TOOT_PREVIEW_BODY_TAG = "toot-preview-body"
 
-/** Tag that identifies a [TootPreview]'s comment count stat for testing purposes. */
+/** Tag that identifies a [SampleTootPreview]'s comment count stat for testing purposes. */
 internal const val TOOT_PREVIEW_COMMENT_COUNT_STAT_TAG = "toot-preview-comments-stat"
 
-/** Tag that identifies a [TootPreview]'s reblog count stat for testing purposes. */
+/** Tag that identifies a [SampleTootPreview]'s reblog count stat for testing purposes. */
 internal const val TOOT_PREVIEW_REBLOG_COUNT_STAT_TAG = "toot-preview-reblogs-stat"
 
-/** Tag that identifies a [TootPreview]'s share action for testing purposes. */
+/** Tag that identifies a [SampleTootPreview]'s reblog metadata for testing purposes. */
+internal const val TOOT_PREVIEW_REBLOG_METADATA_TAG = "toot-preview-reblog-metadata"
+
+/** Tag that identifies a [SampleTootPreview]'s share action for testing purposes. */
 internal const val TOOT_PREVIEW_SHARE_ACTION_TAG = "toot-preview-share-action"
 
-/** Tag that identifies a [TootPreview] for testing purposes. */
+/** Tag that identifies a [SampleTootPreview] for testing purposes. */
 const val TOOT_PREVIEW_TAG = "toot-preview"
 
-/** [Modifier] to be applied to a [TootPreview]'s name. */
+/** [Modifier] to be applied to a [SampleTootPreview]'s name. */
 private val nameModifier = Modifier.testTag(TOOT_PREVIEW_NAME_TAG)
 
-/** [Modifier] to be applied to [TootPreview]'s metadata. */
+/** [Modifier] to be applied to [SampleTootPreview]'s metadata. */
 private val metadataModifier = Modifier.testTag(TOOT_PREVIEW_METADATA_TAG)
 
-/** [Modifier] to be applied to a [TootPreview]'s body. */
+/** [Modifier] to be applied to a [SampleTootPreview]'s body. */
 private val bodyModifier = Modifier.testTag(TOOT_PREVIEW_BODY_TAG)
 
 /**
@@ -90,6 +100,7 @@ private val bodyModifier = Modifier.testTag(TOOT_PREVIEW_BODY_TAG)
  * @param avatarLoader [ImageLoader] that loads the author's avatar.
  * @param name Name of the author.
  * @param account [Account] of the author.
+ * @param rebloggerName Name of the [Author] that reblogged the [Toot].
  * @param text Content written by the author.
  * @param highlight [Highlight] from the [text].
  * @param publicationDateTime Zoned moment in time in which it was published.
@@ -106,6 +117,7 @@ data class TootPreview(
   val avatarLoader: SomeImageLoader,
   val name: String,
   private val account: Account,
+  val rebloggerName: String?,
   val text: AnnotatedString,
   val highlight: Highlight?,
   private val publicationDateTime: ZonedDateTime,
@@ -137,37 +149,23 @@ data class TootPreview(
   }
 
   companion object {
-    /** [TootPreview] sample. */
+    /** [SampleTootPreview] sample. */
     val sample
       @Composable get() = getSample(OrcaTheme.colors)
 
-    /** [TootPreview] samples. */
+    /** [SampleTootPreview] samples. */
     val samples
       @Composable get() = Toot.samples.map { it.toTootPreview() }
 
-    /** Gets a sample [TootPreview]. */
+    /** Gets a sample [SampleTootPreview]. */
     fun getSample(colors: Colors): TootPreview {
-      return TootPreview(
-        Toot.sample.id,
-        Toot.sample.author.avatarLoader,
-        Toot.sample.author.name,
-        Toot.sample.author.account,
-        Toot.sample.content.text.toAnnotatedString(colors),
-        Toot.sample.content.highlight,
-        Toot.sample.publicationDateTime,
-        Toot.sample.comment.count,
-        Toot.sample.favorite.isEnabled,
-        Toot.sample.favorite.count,
-        Toot.sample.reblog.isEnabled,
-        Toot.sample.reblog.count,
-        Toot.sample.url
-      )
+      return Toot.sample.toTootPreview(colors)
     }
   }
 }
 
 /**
- * Preview of a loading [Toot].
+ * Loading preview of a [Toot].
  *
  * @param modifier [Modifier] to be applied to the underlying [Card].
  */
@@ -195,7 +193,7 @@ fun TootPreview(modifier: Modifier = Modifier) {
 /**
  * Preview of a [Toot].
  *
- * @param preview [TootPreview] that holds the overall data to be displayed.
+ * @param preview [SampleTootPreview] that holds the overall data to be displayed.
  * @param onHighlightClick Callback run whenever the [HeadlineCard] (if displayed) is clicked.
  * @param onFavorite Callback run whenever the [Toot] is requested to be favorited.
  * @param onReblog Callback run whenever the [Toot] is requested to be reblogged.
@@ -222,7 +220,25 @@ fun TootPreview(
   TootPreview(
     avatar = { SmallAvatar(preview.avatarLoader, preview.name) },
     name = { Text(preview.name, nameModifier) },
-    metadata = { Text(metadata, metadataModifier) },
+    metadata = {
+      Text(metadata, metadataModifier)
+
+      preview.rebloggerName?.let {
+        Row(
+          Modifier.testTag(TOOT_PREVIEW_REBLOG_METADATA_TAG),
+          Arrangement.spacedBy(OrcaTheme.spacings.small),
+          Alignment.CenterVertically
+        ) {
+          Icon(
+            OrcaTheme.iconography.reblog,
+            contentDescription = stringResource(R.string.platform_ui_reblog_stat),
+            Modifier.size(14.dp)
+          )
+
+          Text(stringResource(R.string.platform_ui_toot_preview_reblogged, it))
+        }
+      }
+    },
     content = {
       Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.medium)) {
         Text(preview.text, bodyModifier)
@@ -268,7 +284,7 @@ fun TootPreview(
  *   [Toot] was published.
  */
 @Composable
-internal fun TootPreview(
+internal fun SampleTootPreview(
   modifier: Modifier = Modifier,
   preview: TootPreview = TootPreview.sample,
   relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider()
@@ -302,7 +318,7 @@ internal fun TootPreview(
 private fun TootPreview(
   avatar: @Composable () -> Unit,
   name: @Composable () -> Unit,
-  metadata: @Composable () -> Unit,
+  metadata: @Composable ColumnScope.() -> Unit,
   content: @Composable () -> Unit,
   stats: @Composable () -> Unit,
   onClick: (() -> Unit)?,
@@ -314,6 +330,7 @@ private fun TootPreview(
         ?: EmptyMutableInteractionSource()
     }
   val spacing = OrcaTheme.spacings.medium
+  val metadataTextStyle = OrcaTheme.typography.bodySmall
 
   @OptIn(ExperimentalMaterial3Api::class)
   Card(
@@ -330,7 +347,13 @@ private fun TootPreview(
         Column(verticalArrangement = Arrangement.spacedBy(spacing)) {
           Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall)) {
             ProvideTextStyle(OrcaTheme.typography.bodyLarge, name)
-            ProvideTextStyle(OrcaTheme.typography.bodySmall, metadata)
+
+            CompositionLocalProvider(
+              LocalContentColor provides metadataTextStyle.color,
+              LocalTextStyle provides metadataTextStyle
+            ) {
+              metadata()
+            }
           }
 
           content()
@@ -341,31 +364,31 @@ private fun TootPreview(
   }
 }
 
-/** Preview of a loading [TootPreview]. */
+/** Preview of a loading [SampleTootPreview]. */
 @Composable
 @MultiThemePreview
 private fun LoadingTootPreviewPreview() {
   OrcaTheme { Surface(color = OrcaTheme.colors.background.container) { TootPreview() } }
 }
 
-/** Preview of a loaded [TootPreview] with disabled [Stat]s. */
+/** Preview of a loaded [SampleTootPreview] with disabled [Stat]s. */
 @Composable
 @MultiThemePreview
 private fun LoadedTootPreviewWithDisabledStatsPreview() {
   OrcaTheme {
     Surface(color = OrcaTheme.colors.background.container) {
-      TootPreview(preview = TootPreview.sample.copy(isFavorite = false, isReblogged = false))
+      SampleTootPreview(preview = TootPreview.sample.copy(isFavorite = false, isReblogged = false))
     }
   }
 }
 
-/** Preview of a loaded [TootPreview] with enabled [Stat]s. */
+/** Preview of a loaded [SampleTootPreview] with enabled [Stat]s. */
 @Composable
 @MultiThemePreview
 private fun LoadedTootPreviewWithEnabledStatsPreview() {
   OrcaTheme {
     Surface(color = OrcaTheme.colors.background.container) {
-      TootPreview(preview = TootPreview.sample.copy(isFavorite = true, isReblogged = true))
+      SampleTootPreview(preview = TootPreview.sample.copy(isFavorite = true, isReblogged = true))
     }
   }
 }

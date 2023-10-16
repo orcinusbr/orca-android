@@ -7,5 +7,6 @@
     <string name="platform_ui_timeline_empty">Vazio</string>
     <string name="platform_ui_timeline_empty_message">Parece que está meio vazio por aqui…</string>
     <string name="platform_ui_toot_preview_comments">Comentários</string>
+    <string name="platform_ui_toot_preview_reblogged">Repostado por %s</string>
     <string name="platform_ui_toot_preview_share">Compartilhar</string>
 </resources>
