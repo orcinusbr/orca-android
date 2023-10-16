@@ -33,7 +33,7 @@ dependencies {
   androidTestImplementation(libs.android.test.runner)
   androidTestImplementation(libs.mockk)
 
-  api(project(":core"))
+  api(project(":core-module"))
 
   ksp(project(":std:injector-processor"))
 
@@ -41,7 +41,6 @@ dependencies {
   implementation(project(":platform:cache"))
   implementation(project(":platform:theme"))
   implementation(project(":platform:ui"))
-  implementation(project(":std:injector"))
   implementation(libs.android.browser)
   implementation(libs.android.room.ktx)
   implementation(libs.ktor.client.cio)

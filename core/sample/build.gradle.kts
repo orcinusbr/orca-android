@@ -6,8 +6,7 @@ plugins {
 }
 
 dependencies {
-  api(project(":core"))
-  api(project(":std:injector"))
+  api(project(":core-module"))
 
   ksp(project(":std:injector-processor"))
 
