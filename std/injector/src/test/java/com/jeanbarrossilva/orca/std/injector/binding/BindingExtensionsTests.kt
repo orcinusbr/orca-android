@@ -12,7 +12,8 @@ internal class BindingExtensionsTests {
 
   @Test
   fun binds() {
-    assertThat(bind<SuperModule, SubModule>())
-      .isEqualTo(Binding(SuperModule::class, SubModule::class))
+    val module = SubModule()
+    assertThat(module.boundTo<SuperModule, SubModule>())
+      .isEqualTo(Binding(SuperModule::class, SubModule::class, module))
   }
 }

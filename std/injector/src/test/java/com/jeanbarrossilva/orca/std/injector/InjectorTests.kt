@@ -2,7 +2,7 @@ package com.jeanbarrossilva.orca.std.injector
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import com.jeanbarrossilva.orca.std.injector.binding.bind
+import com.jeanbarrossilva.orca.std.injector.binding.boundTo
 import com.jeanbarrossilva.orca.std.injector.module.Inject
 import com.jeanbarrossilva.orca.std.injector.module.Module
 import com.jeanbarrossilva.orca.std.injector.test.InjectorTestRule
@@ -62,8 +62,7 @@ internal class InjectorTests {
   fun registersModuleBoundToBothItsActualAndBaseTypes() {
     val module = SubModuleWithAnnotatedDependency()
     Injector.register(
-      module,
-      bind<SuperModuleWithAnnotatedDependency, SubModuleWithAnnotatedDependency>()
+      module.boundTo<SuperModuleWithAnnotatedDependency, SubModuleWithAnnotatedDependency>()
     )
     assertThat(Injector.from<SuperModuleWithAnnotatedDependency>()).isEqualTo(module)
     assertThat(Injector.from<SubModuleWithAnnotatedDependency>()).isEqualTo(module)

@@ -2,7 +2,7 @@ package com.jeanbarrossilva.orca.std.injector
 
 import com.jeanbarrossilva.orca.std.injector.binding.Binding
 import com.jeanbarrossilva.orca.std.injector.binding.SomeBinding
-import com.jeanbarrossilva.orca.std.injector.binding.bind
+import com.jeanbarrossilva.orca.std.injector.binding.boundTo
 import com.jeanbarrossilva.orca.std.injector.module.Module
 import kotlin.reflect.KClass
 import kotlin.reflect.full.memberProperties
@@ -10,8 +10,8 @@ import kotlin.reflect.jvm.isAccessible
 
 /** [Module] that enables global [Module] and dependency injection. */
 object Injector : Module() {
-  /** [Binding]s that have been registered associated to their assigned types. */
-  @PublishedApi internal val modularization = hashMapOf<SomeBinding, Module>()
+  /** [Binding]s that have been registered. */
+  @PublishedApi internal val bindings = HashSet<SomeBinding>()
 
   /** [IllegalArgumentException] thrown if the [Injector] registers itself. */
   class SelfRegistrationException @PublishedApi internal constructor() :
@@ -40,28 +40,28 @@ object Injector : Module() {
    * @throws SelfRegistrationException If the [module] is this [Injector].
    */
   inline fun <reified T : Module> register(module: T) {
-    register(module, bind())
+    register(module.boundTo())
   }
 
   /**
-   * Registers the given [module], associating it to the [binding].
+   * Registers the given [binding].
    *
-   * @param B Base [Module] to which a [Module] is bound to.
-   * @param A [Module] at the utmost bottom of the inheritance tree to which a [Module] is bound to.
-   * @param module [Module] to be registered.
-   * @param binding [Binding] to which the [module] will be associated.
-   * @throws SelfRegistrationException If the [module] is this [Injector].
+   * @param B Base [Module] to which the [Module] is bound to.
+   * @param A [Module] at the utmost bottom of the inheritance tree to which the [Module] is bound
+   *   to.
+   * @param binding [Binding] that associates the [Module] to its [A] and [B] types.
+   * @throws SelfRegistrationException If the [Module] is this [Injector].
    */
-  inline fun <reified B : Module, reified A : B> register(module: B, binding: Binding<B, A>) {
-    if (module != this) {
-      registerWithoutSelfRegistrationInsurance(module, binding)
+  inline fun <reified B : Module, reified A : B> register(binding: Binding<B, A>) {
+    if (binding.target != this) {
+      registerWithoutSelfRegistrationInsurance(binding)
     } else {
       throw SelfRegistrationException()
     }
   }
 
   /**
-   * Gets the injected [Module] of type [T].
+   * Gets the registered [Module] of type [T].
    *
    * @param T [Module] to be obtained.
    * @throws SelfRetrievalException If the [Module] is this [Injector].
@@ -70,8 +70,7 @@ object Injector : Module() {
   @Throws(ModuleNotRegisteredException::class)
   inline fun <reified T : Module> from(): T {
     return if (T::class != Injector::class) {
-      modularization.filterKeys { T::class in it }.values.singleOrNull() as T?
-        ?: throw ModuleNotRegisteredException(T::class)
+      bindings.find { T::class in it }?.target as T? ?: throw ModuleNotRegisteredException(T::class)
     } else {
       throw SelfRetrievalException()
     }
@@ -85,30 +84,29 @@ object Injector : Module() {
    */
   @Throws(ModuleNotRegisteredException::class)
   inline fun <reified T : Module> unregister() {
-    modularization.keys.find { T::class in it }?.let(modularization::remove)
+    bindings.find { T::class in it }?.let(bindings::remove)
       ?: throw ModuleNotRegisteredException(T::class)
   }
 
   override fun onClear() {
-    modularization.values.forEach(Module::clear)
-    modularization.clear()
+    bindings.map(Binding<*, *>::target).forEach(Module::clear)
+    bindings.clear()
   }
 
   /**
-   * Registers the given [module] without ensuring that this [Module] isn't injecting itself,
-   * associating it to the [binding].
+   * Registers the given [binding] without ensuring that this [Module] isn't injecting itself.
    *
-   * @param B [Module] to be associated to the given one.
-   * @param module [Module] to be registered.
-   * @param binding [Binding] to which the [module] will be associated.
+   * @param B Base [Module] to which the [Module] is bound to.
+   * @param A [Module] at the utmost bottom of the inheritance tree to which the [Module] is bound
+   *   to.
+   * @param binding [Binding] that associates the [Module] to its [A] and [B] types.
    */
   @PublishedApi
   internal inline fun <reified B : Module, reified A : B> registerWithoutSelfRegistrationInsurance(
-    module: B,
     binding: Binding<B, A>
   ) {
-    modularization[binding] = module
-    injectDeclaredDependenciesOf(module)
+    bindings.add(binding)
+    injectDeclaredDependenciesOf(binding.target)
   }
 
   /**
