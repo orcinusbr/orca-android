@@ -13,7 +13,6 @@ import com.jeanbarrossilva.orca.app.demo.test.PlatformDialogDismissalTestRule
 import com.jeanbarrossilva.orca.app.demo.test.browsesTo
 import com.jeanbarrossilva.orca.app.demo.test.ok
 import com.jeanbarrossilva.orca.app.demo.test.performStartClick
-import com.jeanbarrossilva.orca.app.demo.test.waitUntil
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.highlight.sample
@@ -22,6 +21,7 @@ import com.jeanbarrossilva.orca.feature.tootdetails.TootDetailsFragment
 import com.jeanbarrossilva.orca.platform.ui.test.assertIsAtFragment
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.headline.onHeadlineCards
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.onTootPreviews
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.RuleChain
@@ -40,7 +40,7 @@ internal class ProfileDetailsTests {
     var hasNavigated = false
     intending(browsesTo("${Highlight.sample.url}")).ok { hasNavigated = true }
     composeRule.onHeadlineCards().onFirst().performClick()
-    waitUntil { hasNavigated }
+    assertTrue(hasNavigated)
   }
 
   @Test
