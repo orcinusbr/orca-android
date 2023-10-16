@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.std.injector.binding
+package com.jeanbarrossilva.orca.std.injector.module.binding
 
 import com.jeanbarrossilva.orca.std.injector.module.Module
 

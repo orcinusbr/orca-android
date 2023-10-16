@@ -3,6 +3,8 @@ package com.jeanbarrossilva.orca.std.injector.binding
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.jeanbarrossilva.orca.std.injector.module.Module
+import com.jeanbarrossilva.orca.std.injector.module.binding.Binding
+import com.jeanbarrossilva.orca.std.injector.module.binding.boundTo
 import kotlin.test.Test
 
 internal class BindingExtensionsTests {

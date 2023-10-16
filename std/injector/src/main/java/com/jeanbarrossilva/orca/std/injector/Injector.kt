@@ -1,9 +1,9 @@
 package com.jeanbarrossilva.orca.std.injector
 
-import com.jeanbarrossilva.orca.std.injector.binding.Binding
-import com.jeanbarrossilva.orca.std.injector.binding.SomeBinding
-import com.jeanbarrossilva.orca.std.injector.binding.boundTo
 import com.jeanbarrossilva.orca.std.injector.module.Module
+import com.jeanbarrossilva.orca.std.injector.module.binding.Binding
+import com.jeanbarrossilva.orca.std.injector.module.binding.SomeBinding
+import com.jeanbarrossilva.orca.std.injector.module.binding.boundTo
 import kotlin.reflect.KClass
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
