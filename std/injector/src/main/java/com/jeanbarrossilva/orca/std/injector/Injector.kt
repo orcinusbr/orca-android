@@ -89,7 +89,7 @@ object Injector : Module() {
   }
 
   override fun onClear() {
-    bindings.map(Binding<*, *>::target).forEach(Module::clear)
+    bindings.map(SomeBinding::target).forEach(Module::clear)
     bindings.clear()
   }
 
