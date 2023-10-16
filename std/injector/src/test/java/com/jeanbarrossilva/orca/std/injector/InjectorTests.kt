@@ -4,6 +4,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.jeanbarrossilva.orca.std.injector.module.Inject
 import com.jeanbarrossilva.orca.std.injector.module.Module
+import com.jeanbarrossilva.orca.std.injector.module.binding.boundTo
 import com.jeanbarrossilva.orca.std.injector.test.InjectorTestRule
 import kotlin.test.Test
 import org.junit.Rule
@@ -18,7 +19,7 @@ internal class InjectorTests {
   private class SubModuleWithAnnotatedDependency : SuperModuleWithAnnotatedDependency({ 0 })
 
   internal abstract class SuperModuleWithAnnotatedDependency(
-    @Inject val dependency: Module.() -> Int
+    @Suppress("unused") @Inject val dependency: Module.() -> Int
   ) : Module()
 
   private class SubModuleWithNonAnnotatedDependency : SuperModuleWithNonAnnotatedDependency({ 0 })
@@ -52,9 +53,19 @@ internal class InjectorTests {
   }
 
   @Test
-  fun injectsAnnotatedModuleDependenciesWhenRegisteringIt() {
+  fun registersAnnotatedModuleDependenciesWhenRegisteringIt() {
     Injector.register<SuperModuleWithAnnotatedDependency>(SubModuleWithAnnotatedDependency())
     assertThat(Injector.from<SuperModuleWithAnnotatedDependency>().get<Int>()).isEqualTo(0)
+  }
+
+  @Test
+  fun registersModuleBoundToBothItsActualAndBaseTypes() {
+    val module = SubModuleWithAnnotatedDependency()
+    Injector.register(
+      module.boundTo<SuperModuleWithAnnotatedDependency, SubModuleWithAnnotatedDependency>()
+    )
+    assertThat(Injector.from<SuperModuleWithAnnotatedDependency>()).isEqualTo(module)
+    assertThat(Injector.from<SubModuleWithAnnotatedDependency>()).isEqualTo(module)
   }
 
   @Test
@@ -62,5 +73,17 @@ internal class InjectorTests {
     Injector.register<Module>(object : Module() {})
     Injector.from<Module>().inject { 0 }
     assertThat(Injector.from<Module>().get<Int>()).isEqualTo(0)
+  }
+
+  @Test(expected = Injector.ModuleNotRegisteredException::class)
+  fun throwsWhenUnregisteringUnregisteredModule() {
+    Injector.unregister<Module>()
+  }
+
+  @Test(expected = Injector.ModuleNotRegisteredException::class)
+  fun unregistersModule() {
+    Injector.register<Module>(object : Module() {})
+    Injector.unregister<Module>()
+    Injector.from<Module>()
   }
 }

@@ -2,13 +2,13 @@ package com.jeanbarrossilva.orca.core.sample.feed.profile.type.editable
 
 import com.jeanbarrossilva.orca.core.feed.profile.type.editable.Editor
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileProvider
+import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
-import java.net.URL
 
 /** [Editor] that edits [SampleEditableProfile]s. */
 internal class SampleEditor(private val id: String) : Editor {
-  override suspend fun setAvatarURL(avatarURL: URL) {
-    edit { this.avatarURL = avatarURL }
+  override suspend fun setAvatarLoader(avatarLoader: SomeImageLoader) {
+    edit { this.avatarLoader = avatarLoader }
   }
 
   override suspend fun setName(name: String) {

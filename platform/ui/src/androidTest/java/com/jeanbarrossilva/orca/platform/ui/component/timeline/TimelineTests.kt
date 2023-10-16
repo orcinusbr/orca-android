@@ -11,6 +11,7 @@ import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onSiblings
 import com.jeanbarrossilva.loadable.list.ListLoadable
+import com.jeanbarrossilva.orca.core.sample.rule.SampleCoreTestRule
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.time.Time4JTestRule
@@ -18,6 +19,8 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class TimelineTests {
+  @get:Rule val sampleCoreRule = SampleCoreTestRule()
+
   @get:Rule val time4JRule = Time4JTestRule()
 
   @get:Rule val composeRule = createComposeRule()

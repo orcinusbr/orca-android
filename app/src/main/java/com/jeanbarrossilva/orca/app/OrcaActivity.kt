@@ -8,6 +8,7 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.jeanbarrossilva.orca.app.databinding.ActivityOrcaBinding
 import com.jeanbarrossilva.orca.app.module.core.MainHttpModule
+import com.jeanbarrossilva.orca.app.module.core.sample.MainSampleCoreModule
 import com.jeanbarrossilva.orca.app.module.feature.feed.MainFeedModule
 import com.jeanbarrossilva.orca.app.module.feature.profiledetails.MainProfileDetailsModule
 import com.jeanbarrossilva.orca.app.module.feature.search.MainSearchModule
@@ -16,6 +17,8 @@ import com.jeanbarrossilva.orca.app.module.feature.settings.termmuting.MainTermM
 import com.jeanbarrossilva.orca.app.module.feature.tootdetails.MainTootDetailsModule
 import com.jeanbarrossilva.orca.app.navigation.BottomNavigation
 import com.jeanbarrossilva.orca.core.http.HttpModule
+import com.jeanbarrossilva.orca.core.module.CoreModule
+import com.jeanbarrossilva.orca.core.sample.SampleCoreModule
 import com.jeanbarrossilva.orca.feature.ProfileDetailsModule
 import com.jeanbarrossilva.orca.feature.feed.FeedModule
 import com.jeanbarrossilva.orca.feature.search.SearchModule
@@ -25,13 +28,14 @@ import com.jeanbarrossilva.orca.feature.tootdetails.TootDetailsModule
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
 import com.jeanbarrossilva.orca.std.injector.Injector
+import com.jeanbarrossilva.orca.std.injector.module.binding.boundTo
 import kotlinx.coroutines.launch
 
 internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilityChangeListener {
   private var binding: ActivityOrcaBinding? = null
   private var constraintSet: ConstraintSet? = null
 
-  protected open val httpModule: HttpModule = MainHttpModule()
+  protected open val sampleCoreModule: SampleCoreModule = MainSampleCoreModule()
 
   final override val height: Int
     get() = binding?.bottomNavigationView?.height ?: 0
@@ -66,10 +70,16 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
     }
   }
 
+  protected open fun Injector.registerCoreModule() {
+    val coreModule = MainHttpModule()
+    register(coreModule.boundTo<CoreModule, HttpModule>())
+  }
+
   private fun inject() {
     with(Injector) {
       inject<Context> { this@OrcaActivity }
-      register(httpModule)
+      register(sampleCoreModule)
+      registerCoreModule()
       register<FeedModule>(MainFeedModule(this@OrcaActivity))
       register<ProfileDetailsModule>(MainProfileDetailsModule(this@OrcaActivity))
       register<SearchModule>(MainSearchModule(navigator))

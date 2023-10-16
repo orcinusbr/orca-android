@@ -9,6 +9,7 @@ import com.jeanbarrossilva.orca.core.http.client.test.instance.TestHttpInstance
 import com.jeanbarrossilva.orca.core.http.client.test.instance.TestHttpInstanceProvider
 import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.muting.SampleTermMuter
+import com.jeanbarrossilva.orca.core.sample.image.TestSampleImageLoader
 import com.jeanbarrossilva.orca.core.test.TestActorProvider
 import com.jeanbarrossilva.orca.core.test.TestAuthenticator
 import com.jeanbarrossilva.orca.core.test.TestAuthorizer
@@ -113,11 +114,12 @@ private fun <T : Actor> runCoreHttpClientTest(
       { authenticator },
       { actorProvider },
       { authenticationLock },
-      { SampleTermMuter() }
+      { SampleTermMuter() },
+      { TestHttpInstanceProvider(authorizer, authenticator, authenticationLock) }
     ) {
-      TestHttpInstanceProvider(authorizer, authenticator, authenticationLock)
+      TestHttpImageLoader.Provider
     }
   Injector.register(module)
   runTest { CoreHttpClientTestScope(delegate = this, instance.client, actor).body() }
-  Injector.clear()
+  Injector.unregister<HttpModule>()
 }

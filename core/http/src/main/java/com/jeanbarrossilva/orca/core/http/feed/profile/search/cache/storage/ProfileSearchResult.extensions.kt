@@ -10,5 +10,5 @@ import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
 internal fun ProfileSearchResult.toProfileSearchResultEntity(
   query: String
 ): HttpProfileSearchResultEntity {
-  return HttpProfileSearchResultEntity(query, id, "$account", "$avatarURL", name, "$url")
+  return HttpProfileSearchResultEntity(query, id, "$account", "$avatarLoader", name, "$url")
 }

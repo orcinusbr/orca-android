@@ -10,4 +10,8 @@ dependencies {
   implementation(libs.kotlin.symbolProcessor)
   implementation(libs.kotlinPoet)
   implementation(libs.kotlinPoet.ksp)
+
+  testImplementation(libs.assertk)
+  testImplementation(libs.kctfork.ksp)
+  testImplementation(libs.kotlin.test)
 }

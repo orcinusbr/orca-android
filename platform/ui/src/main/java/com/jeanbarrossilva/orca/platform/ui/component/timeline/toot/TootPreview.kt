@@ -38,7 +38,6 @@ import com.jeanbarrossilva.loadable.placeholder.test.Loading
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Attachment
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.samples
@@ -49,14 +48,14 @@ import com.jeanbarrossilva.orca.platform.theme.extensions.EmptyMutableInteractio
 import com.jeanbarrossilva.orca.platform.theme.extensions.IgnoringMutableInteractionSource
 import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
 import com.jeanbarrossilva.orca.platform.ui.R
-import com.jeanbarrossilva.orca.platform.ui.component.SmallAvatar
+import com.jeanbarrossilva.orca.platform.ui.component.avatar.SmallAvatar
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.headline.HeadlineCard
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.FavoriteStat
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.ReblogStat
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.RelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.rememberRelativeTimeProvider
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
-import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
+import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import java.io.Serializable
 import java.net.URL
 import java.time.ZonedDateTime
@@ -98,7 +97,7 @@ private val bodyModifier = Modifier.testTag(TOOT_PREVIEW_BODY_TAG)
  * Information to be displayed on a [Toot]'s preview.
  *
  * @param id Unique identifier.
- * @param avatarURL [URL] that leads to the author's avatar.
+ * @param avatarLoader [ImageLoader] that loads the author's avatar.
  * @param name Name of the author.
  * @param account [Account] of the author.
  * @param rebloggerName Name of the [Author] that reblogged the [Toot].
@@ -115,7 +114,7 @@ private val bodyModifier = Modifier.testTag(TOOT_PREVIEW_BODY_TAG)
 @Immutable
 data class TootPreview(
   val id: String,
-  val avatarURL: URL,
+  val avatarLoader: SomeImageLoader,
   val name: String,
   private val account: Account,
   val rebloggerName: String?,
@@ -201,8 +200,6 @@ fun TootPreview(modifier: Modifier = Modifier) {
  * @param onShare Callback run whenever the [Toot] is requested to be externally shared.
  * @param onClick Callback run whenever it's clicked.
  * @param modifier [Modifier] to be applied to the underlying [Card].
- * @param imageLoader [ImageLoader] by which images such as the avatar, [Attachment] thumbnails and
- *   the [HeadlineCard] cover will be loaded.
  * @param relativeTimeProvider [RelativeTimeProvider] that provides the time that's passed since the
  *   [Toot] was published.
  */
@@ -215,14 +212,13 @@ fun TootPreview(
   onShare: () -> Unit,
   onClick: () -> Unit,
   modifier: Modifier = Modifier,
-  imageLoader: ImageLoader = rememberImageLoader(),
   relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider()
 ) {
   val metadata =
     remember(preview, relativeTimeProvider) { preview.getMetadata(relativeTimeProvider) }
 
   TootPreview(
-    avatar = { SmallAvatar(preview.name, preview.avatarURL, imageLoader = imageLoader) },
+    avatar = { SmallAvatar(preview.avatarLoader, preview.name) },
     name = { Text(preview.name, nameModifier) },
     metadata = {
       Text(metadata, metadataModifier)
@@ -284,8 +280,6 @@ fun TootPreview(
  *
  * @param modifier [Modifier] to be applied to the underlying [Card].
  * @param preview [TootPreview] that holds the overall data to be displayed.
- * @param imageLoader [ImageLoader] by which images such as the avatar, [Attachment] thumbnails and
- *   the [HeadlineCard] cover will be loaded.
  * @param relativeTimeProvider [RelativeTimeProvider] that provides the time that's passed since the
  *   [Toot] was published.
  */
@@ -293,7 +287,6 @@ fun TootPreview(
 internal fun SampleTootPreview(
   modifier: Modifier = Modifier,
   preview: TootPreview = TootPreview.sample,
-  imageLoader: ImageLoader = rememberImageLoader(),
   relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider()
 ) {
   TootPreview(
@@ -304,7 +297,6 @@ internal fun SampleTootPreview(
     onShare = {},
     onClick = {},
     modifier,
-    imageLoader,
     relativeTimeProvider
   )
 }

@@ -9,6 +9,7 @@ import com.jeanbarrossilva.orca.core.http.client.authenticateAndPost
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.ProfileTootPaginateSource
 import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
+import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
@@ -24,7 +25,7 @@ internal data class HttpFollowableProfile<T : Follow>(
   private val tootPaginateSourceProvider: ProfileTootPaginateSource.Provider,
   override val id: String,
   override val account: Account,
-  override val avatarURL: URL,
+  override val avatarLoader: SomeImageLoader,
   override val name: String,
   override val bio: StyledString,
   override val follow: T,
@@ -36,7 +37,7 @@ internal data class HttpFollowableProfile<T : Follow>(
     tootPaginateSourceProvider,
     id,
     account,
-    avatarURL,
+    avatarLoader,
     name,
     bio,
     followerCount,

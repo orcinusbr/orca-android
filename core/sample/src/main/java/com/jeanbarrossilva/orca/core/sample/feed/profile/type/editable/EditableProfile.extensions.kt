@@ -9,7 +9,7 @@ private val sampleEditableProfile: EditableProfile =
   SampleEditableProfile.createInstance(
     Profile.sample.id,
     Profile.sample.account,
-    Profile.sample.avatarURL,
+    Profile.sample.avatarLoader,
     Profile.sample.name,
     Profile.sample.bio,
     Profile.sample.followerCount,

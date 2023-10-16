@@ -42,7 +42,7 @@ internal fun Toot.toTootPreview(): TootPreview {
 internal fun Toot.toTootPreview(colors: Colors): TootPreview {
   return TootPreview(
     id,
-    author.avatarURL,
+    author.avatarLoader,
     author.name,
     author.account,
     if (this is Reblog) reblogger.name else null,

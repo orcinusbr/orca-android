@@ -25,7 +25,7 @@ internal fun Toot.toTootDetailsFlow(colors: Colors): Flow<TootDetails> {
   ) { commentCount, isFavorite, favoriteCount, isReblogged, reblogCount ->
     TootDetails(
       id,
-      author.avatarURL,
+      author.avatarLoader,
       author.name,
       author.account,
       content.text.toAnnotatedString(colors),
@@ -51,7 +51,7 @@ internal fun Toot.toTootDetails(): TootDetails {
   val reblogCount by reblog.countFlow.collectAsState()
   return TootDetails(
     id,
-    author.avatarURL,
+    author.avatarLoader,
     author.name,
     author.account,
     content.text.toAnnotatedString(OrcaTheme.colors),

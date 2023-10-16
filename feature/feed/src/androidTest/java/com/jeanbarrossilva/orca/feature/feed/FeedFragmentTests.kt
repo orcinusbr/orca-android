@@ -10,6 +10,7 @@ import androidx.compose.ui.test.performClick
 import androidx.test.core.app.launchActivity
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.sample.feed.profile.sample
+import com.jeanbarrossilva.orca.core.sample.rule.SampleCoreTestRule
 import com.jeanbarrossilva.orca.feature.feed.test.FeedActivity
 import com.jeanbarrossilva.orca.feature.feed.test.TestFeedModule
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.TOOT_PREVIEW_FAVORITE_STAT_TAG
@@ -23,6 +24,8 @@ import org.junit.Test
 
 internal class FeedFragmentTests {
   @get:Rule val injectorRule = InjectorTestRule { register<FeedModule>(TestFeedModule) }
+
+  @get:Rule val sampleCoreRule = SampleCoreTestRule()
 
   @get:Rule val time4JRule = Time4JTestRule()
 

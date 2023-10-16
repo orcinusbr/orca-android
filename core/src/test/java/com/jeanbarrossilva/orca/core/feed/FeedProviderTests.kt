@@ -4,6 +4,7 @@ import app.cash.turbine.test
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.muting.SampleTermMuter
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.samples
+import com.jeanbarrossilva.orca.core.sample.rule.SampleCoreTestRule
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertFailsWith
@@ -12,8 +13,11 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import org.junit.Rule
 
 internal class FeedProviderTests {
+  @get:Rule val sampleCoreRule = SampleCoreTestRule()
+
   @Test
   fun `GIVEN a nonexistent user's ID WHEN requesting a feed to be provided with it THEN it throws`() {
     val provider =

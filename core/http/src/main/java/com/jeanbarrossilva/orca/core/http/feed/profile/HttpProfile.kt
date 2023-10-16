@@ -5,6 +5,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.pagination.HttpTootPaginateSource
+import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
 import kotlinx.coroutines.flow.Flow
@@ -18,7 +19,7 @@ internal data class HttpProfile(
   private val tootPaginateSourceProvider: ProfileTootPaginateSource.Provider,
   override val id: String,
   override val account: Account,
-  override val avatarURL: URL,
+  override val avatarLoader: SomeImageLoader,
   override val name: String,
   override val bio: StyledString,
   override val followerCount: Int,

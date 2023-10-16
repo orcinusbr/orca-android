@@ -13,9 +13,11 @@ import com.jeanbarrossilva.orca.core.http.feed.profile.ProfileTootPaginateSource
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.editable.HttpEditableProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.followable.HttpFollowableProfile
+import com.jeanbarrossilva.orca.core.http.imageLoaderProvider
 import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.core.http.instanceProvider
 import com.jeanbarrossilva.orca.platform.ui.core.style.fromHtml
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import io.ktor.client.call.body
@@ -54,9 +56,11 @@ internal data class HttpAccount(
   /** Converts this [HttpAccount] into an [Author]. */
   fun toAuthor(): Author {
     val avatarURL = URL(avatar)
+    val avatarLoader =
+      Injector.from<HttpModule>().get<ImageLoader.Provider<URL>>().provide(avatarURL)
     val account = toAccount()
     val profileURL = URL(url)
-    return Author(id, avatarURL, displayName, account, profileURL)
+    return Author(id, avatarLoader, displayName, account, profileURL)
   }
 
   /**
@@ -99,13 +103,14 @@ internal data class HttpAccount(
   ): HttpEditableProfile {
     val account = toAccount()
     val avatarURL = URL(avatar)
+    val avatarLoader = Injector.from<HttpModule>().imageLoaderProvider().provide(avatarURL)
     val bio = StyledString.fromHtml(note)
     val url = URL(url)
     return HttpEditableProfile(
       tootPaginateSourceProvider,
       id,
       account,
-      avatarURL,
+      avatarLoader,
       displayName,
       bio,
       followersCount,
@@ -126,6 +131,7 @@ internal data class HttpAccount(
   ): HttpFollowableProfile<Follow> {
     val account = toAccount()
     val avatarURL = URL(avatar)
+    val avatarLoader = Injector.from<HttpModule>().imageLoaderProvider().provide(avatarURL)
     val bio = StyledString.fromHtml(note)
     val url = URL(url)
     val follow =
@@ -139,7 +145,7 @@ internal data class HttpAccount(
       tootPaginateSourceProvider,
       id,
       account,
-      avatarURL,
+      avatarLoader,
       displayName,
       bio,
       follow,

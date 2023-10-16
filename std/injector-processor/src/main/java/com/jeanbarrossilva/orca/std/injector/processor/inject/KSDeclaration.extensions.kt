@@ -15,7 +15,9 @@ import com.squareup.kotlinpoet.typeNameOf
 internal inline fun <reified T : Any> KSDeclaration.isWithin(): Boolean {
   val parentDeclaration = parentDeclaration as? KSClassDeclaration ?: return false
   val typeName = typeNameOf<T>()
-  return parentDeclaration.superTypes.map(KSTypeReference::toTypeName).any(typeName::equals)
+  return parentDeclaration.flattenedSuperTypes
+    .map(KSTypeReference::toTypeName)
+    .any(typeName::equals)
 }
 
 /**

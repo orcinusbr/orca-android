@@ -7,8 +7,8 @@ import androidx.compose.ui.test.performClick
 import androidx.test.core.app.launchActivity
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.FollowableProfile
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileWriter
-import com.jeanbarrossilva.orca.core.sample.feed.profile.test.SampleTestRule
 import com.jeanbarrossilva.orca.core.sample.feed.profile.type.followable.sample
+import com.jeanbarrossilva.orca.core.sample.rule.SampleCoreTestRule
 import com.jeanbarrossilva.orca.feature.ProfileDetailsModule
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.orca.feature.profiledetails.test.ProfileDetailsActivity
@@ -23,13 +23,13 @@ internal class ProfileDetailsFragmentTests {
   private val injectorRule = InjectorTestRule {
     register<ProfileDetailsModule>(TestProfileDetailsModule)
   }
-  private val sampleRule = SampleTestRule()
+  private val sampleCoreRule = SampleCoreTestRule()
   private val time4JRule = Time4JTestRule()
   private val composeRule = createEmptyComposeRule()
 
   @get:Rule
   val ruleChain: RuleChain =
-    RuleChain.outerRule(injectorRule).around(sampleRule).around(time4JRule).around(composeRule)
+    RuleChain.outerRule(injectorRule).around(sampleCoreRule).around(time4JRule).around(composeRule)
 
   @Test
   fun unfollowsFollowedProfileWhenClickingActionButton() {

@@ -10,6 +10,7 @@ import com.jeanbarrossilva.loadable.placeholder.test.assertIsLoading
 import com.jeanbarrossilva.loadable.placeholder.test.assertIsNotLoading
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
+import com.jeanbarrossilva.orca.core.sample.rule.SampleCoreTestRule
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import com.jeanbarrossilva.orca.platform.ui.R
@@ -24,11 +25,12 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.test.onTootP
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.test.onTootPreviewShareAction
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.test.TestRelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.onTootPreview
-import com.jeanbarrossilva.orca.std.imageloader.test.TestImageLoader
 import org.junit.Rule
 import org.junit.Test
 
 internal class TootPreviewTests {
+  @get:Rule val coreSampleRule = SampleCoreTestRule()
+
   @get:Rule val composeRule = createComposeRule()
 
   private val sampleTootPreview
@@ -44,12 +46,7 @@ internal class TootPreviewTests {
   @Test
   fun isShownWhenLoaded() {
     composeRule.setContent {
-      OrcaTheme {
-        SampleTootPreview(
-          imageLoader = TestImageLoader,
-          relativeTimeProvider = TestRelativeTimeProvider()
-        )
-      }
+      OrcaTheme { SampleTootPreview(relativeTimeProvider = TestRelativeTimeProvider()) }
     }
     composeRule.onTootPreview().assertIsDisplayed()
   }
@@ -63,12 +60,7 @@ internal class TootPreviewTests {
   @Test
   fun nameIsShownWhenLoaded() {
     composeRule.setContent {
-      OrcaTheme {
-        SampleTootPreview(
-          imageLoader = TestImageLoader,
-          relativeTimeProvider = TestRelativeTimeProvider()
-        )
-      }
+      OrcaTheme { SampleTootPreview(relativeTimeProvider = TestRelativeTimeProvider()) }
     }
     composeRule.onTootPreviewName().assertIsNotLoading()
     composeRule.onTootPreviewName().assertTextEquals(sampleTootPreview.name)
@@ -84,12 +76,7 @@ internal class TootPreviewTests {
   fun metadataIsShownWhenLoaded() {
     val relativeTimeProvider = TestRelativeTimeProvider()
     composeRule.setContent {
-      OrcaTheme {
-        SampleTootPreview(
-          imageLoader = TestImageLoader,
-          relativeTimeProvider = relativeTimeProvider
-        )
-      }
+      OrcaTheme { SampleTootPreview(relativeTimeProvider = relativeTimeProvider) }
     }
     composeRule.onTootPreviewMetadata().assertIsNotLoading()
     composeRule
@@ -109,7 +96,6 @@ internal class TootPreviewTests {
       OrcaTheme {
         SampleTootPreview(
           preview = TootPreview.sample.copy(rebloggerName = Author.sample.name),
-          imageLoader = TestImageLoader,
           relativeTimeProvider = TestRelativeTimeProvider()
         )
       }
@@ -134,12 +120,7 @@ internal class TootPreviewTests {
   @Test
   fun bodyIsShownWhenLoaded() {
     composeRule.setContent {
-      OrcaTheme {
-        SampleTootPreview(
-          imageLoader = TestImageLoader,
-          relativeTimeProvider = TestRelativeTimeProvider()
-        )
-      }
+      OrcaTheme { SampleTootPreview(relativeTimeProvider = TestRelativeTimeProvider()) }
     }
     composeRule.onTootPreviewBody().assertIsNotLoading()
     composeRule.onTootPreviewBody().assertTextEquals(sampleTootPreview.text.text)
@@ -154,12 +135,7 @@ internal class TootPreviewTests {
   @Test
   fun commentCountStatIsShownWhenLoaded() {
     composeRule.setContent {
-      OrcaTheme {
-        SampleTootPreview(
-          imageLoader = TestImageLoader,
-          relativeTimeProvider = TestRelativeTimeProvider()
-        )
-      }
+      OrcaTheme { SampleTootPreview(relativeTimeProvider = TestRelativeTimeProvider()) }
     }
     composeRule.onTootPreviewCommentCountStat().assertIsDisplayed()
     composeRule
@@ -177,12 +153,7 @@ internal class TootPreviewTests {
   @Test
   fun favoriteCountStatIsShownWhenLoaded() {
     composeRule.setContent {
-      OrcaTheme {
-        SampleTootPreview(
-          imageLoader = TestImageLoader,
-          relativeTimeProvider = TestRelativeTimeProvider()
-        )
-      }
+      OrcaTheme { SampleTootPreview(relativeTimeProvider = TestRelativeTimeProvider()) }
     }
     composeRule.onTootPreviewFavoriteCountStat().assertIsDisplayed()
     composeRule
@@ -200,12 +171,7 @@ internal class TootPreviewTests {
   @Test
   fun reblogCountStatIsShownWhenLoaded() {
     composeRule.setContent {
-      OrcaTheme {
-        SampleTootPreview(
-          imageLoader = TestImageLoader,
-          relativeTimeProvider = TestRelativeTimeProvider()
-        )
-      }
+      OrcaTheme { SampleTootPreview(relativeTimeProvider = TestRelativeTimeProvider()) }
     }
     composeRule.onTootPreviewReblogCountStat().assertIsDisplayed()
     composeRule
@@ -223,12 +189,7 @@ internal class TootPreviewTests {
   @Test
   fun shareActionIsShownWhenLoaded() {
     composeRule.setContent {
-      OrcaTheme {
-        SampleTootPreview(
-          imageLoader = TestImageLoader,
-          relativeTimeProvider = TestRelativeTimeProvider()
-        )
-      }
+      OrcaTheme { SampleTootPreview(relativeTimeProvider = TestRelativeTimeProvider()) }
     }
     composeRule.onTootPreviewShareAction().assertIsDisplayed()
   }
