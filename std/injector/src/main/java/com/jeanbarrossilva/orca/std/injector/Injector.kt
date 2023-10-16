@@ -1,14 +1,17 @@
 package com.jeanbarrossilva.orca.std.injector
 
 import com.jeanbarrossilva.orca.std.injector.module.Module
+import com.jeanbarrossilva.orca.std.injector.module.binding.Binding
+import com.jeanbarrossilva.orca.std.injector.module.binding.SomeBinding
+import com.jeanbarrossilva.orca.std.injector.module.binding.boundTo
 import kotlin.reflect.KClass
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
 /** [Module] that enables global [Module] and dependency injection. */
 object Injector : Module() {
-  /** [Module]s that have been registered associated to their assigned types. */
-  @PublishedApi internal val modularization = hashMapOf<KClass<out Module>, Module>()
+  /** [Binding]s that have been registered. */
+  @PublishedApi internal val bindings = HashSet<SomeBinding>()
 
   /** [IllegalArgumentException] thrown if the [Injector] registers itself. */
   class SelfRegistrationException @PublishedApi internal constructor() :
@@ -37,15 +40,28 @@ object Injector : Module() {
    * @throws SelfRegistrationException If the [module] is this [Injector].
    */
   inline fun <reified T : Module> register(module: T) {
-    if (module != this) {
-      registerWithoutSelfRegistrationInsurance(module)
+    register(module.boundTo())
+  }
+
+  /**
+   * Registers the given [binding].
+   *
+   * @param B Base [Module] to which the [Module] is bound to.
+   * @param A [Module] at the utmost bottom of the inheritance tree to which the [Module] is bound
+   *   to.
+   * @param binding [Binding] that associates the [Module] to its [A] and [B] types.
+   * @throws SelfRegistrationException If the [Module] is this [Injector].
+   */
+  inline fun <reified B : Module, reified A : B> register(binding: Binding<B, A>) {
+    if (binding.target != this) {
+      registerWithoutSelfRegistrationInsurance(binding)
     } else {
       throw SelfRegistrationException()
     }
   }
 
   /**
-   * Gets the injected [Module] of type [T].
+   * Gets the registered [Module] of type [T].
    *
    * @param T [Module] to be obtained.
    * @throws SelfRetrievalException If the [Module] is this [Injector].
@@ -54,7 +70,7 @@ object Injector : Module() {
   @Throws(ModuleNotRegisteredException::class)
   inline fun <reified T : Module> from(): T {
     return if (T::class != Injector::class) {
-      modularization[T::class] as T? ?: throw ModuleNotRegisteredException(T::class)
+      bindings.find { T::class in it }?.target as T? ?: throw ModuleNotRegisteredException(T::class)
     } else {
       throw SelfRetrievalException()
     }
@@ -68,28 +84,29 @@ object Injector : Module() {
    */
   @Throws(ModuleNotRegisteredException::class)
   inline fun <reified T : Module> unregister() {
-    if (T::class in modularization) {
-      modularization.remove(T::class)
-    } else {
-      throw ModuleNotRegisteredException(T::class)
-    }
+    bindings.find { T::class in it }?.let(bindings::remove)
+      ?: throw ModuleNotRegisteredException(T::class)
   }
 
   override fun onClear() {
-    modularization.values.forEach(Module::clear)
-    modularization.clear()
+    bindings.map(SomeBinding::target).forEach(Module::clear)
+    bindings.clear()
   }
 
   /**
-   * Registers the given [module] without ensuring that this [Module] isn't injecting itself.
+   * Registers the given [binding] without ensuring that this [Module] isn't injecting itself.
    *
-   * @param T [Module] to be associated to the given one.
-   * @param module [Module] to be registered.
+   * @param B Base [Module] to which the [Module] is bound to.
+   * @param A [Module] at the utmost bottom of the inheritance tree to which the [Module] is bound
+   *   to.
+   * @param binding [Binding] that associates the [Module] to its [A] and [B] types.
    */
   @PublishedApi
-  internal inline fun <reified T : Module> registerWithoutSelfRegistrationInsurance(module: T) {
-    modularization[T::class] = module
-    injectDeclaredDependenciesOf(module)
+  internal inline fun <reified B : Module, reified A : B> registerWithoutSelfRegistrationInsurance(
+    binding: Binding<B, A>
+  ) {
+    bindings.add(binding)
+    injectDeclaredDependenciesOf(binding.target)
   }
 
   /**
