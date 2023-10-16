@@ -32,7 +32,9 @@ Standard  | Similarly to the platform context, provides utilities that facilitat
 
 - [Android Studio](https://developer.android.com/studio)
 
-#### API keys
+### Building
+
+[Clone the repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) to your machine and [open it in Android Studio](https://www.jetbrains.com/help/idea/import-project-or-module-wizard.html#open-project).
 
 In order to build the project, you have to first obtain a few API keys. Except for the GitHub personal access token, all of them are completely optional if you only intend to build the demo version of the application (which doesn't make any network calls, as stated in the [Structure](https://github.com/jeanbarrossilva/Orca#structure) section).
 
@@ -55,9 +57,7 @@ mastodon.clientSecret=your-token
 instancesSocial.token=your-token
 ```
 
-### Building
-
-[Clone the repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) to your machine, [open it in Android Studio](https://www.jetbrains.com/help/idea/import-project-or-module-wizard.html#open-project) and then [build it](https://www.jetbrains.com/help/idea/compiling-applications.html#compile_module). If the previous steps were followed, this process shouldn't throw any errors and the project should be built successfully.
+And... ready! You can now [build it](https://www.jetbrains.com/help/idea/compiling-applications.html#compile_module) and everything should work just fine.
 
 ### Code style
 
