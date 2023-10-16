@@ -1,4 +1,4 @@
-name: Java CI with Gradle
+name: Build
 on:
   push:
     branches: [ "main" ]
@@ -22,4 +22,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: build --stacktrace
+          arguments: build
