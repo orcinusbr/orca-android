@@ -5,6 +5,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.FollowableProfile
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfile
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileWriter
+import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
 
@@ -16,7 +17,7 @@ import java.net.URL
 internal data class SampleFollowableProfile<T : Follow>(
   override val id: String,
   override val account: Account,
-  override val avatarURL: URL,
+  override val avatarLoader: SomeImageLoader,
   override val name: String,
   override val bio: StyledString,
   override val follow: T,

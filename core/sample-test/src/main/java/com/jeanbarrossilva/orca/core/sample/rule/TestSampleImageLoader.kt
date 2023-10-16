@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.sample.image
+package com.jeanbarrossilva.orca.core.sample.rule
 
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.image.SampleImageSource
 import com.jeanbarrossilva.orca.std.imageloader.Image
@@ -6,7 +6,7 @@ import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.buildImage
 
 /** [ImageLoader] that loads an empty [Image] from a [SampleImageSource]. */
-object TestSampleImageLoader : ImageLoader<SampleImageSource> {
+internal object TestSampleImageLoader : ImageLoader<SampleImageSource> {
   override val source = SampleImageSource.None
 
   /** [ImageLoader.Provider] that provides a [TestSampleImageLoader]. */

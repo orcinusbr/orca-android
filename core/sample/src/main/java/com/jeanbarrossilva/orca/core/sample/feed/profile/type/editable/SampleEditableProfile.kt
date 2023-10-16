@@ -4,6 +4,8 @@ import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.type.editable.EditableProfile
 import com.jeanbarrossilva.orca.core.feed.profile.type.editable.Editor
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfile
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
 
@@ -13,14 +15,14 @@ import java.net.URL
  * @see EditableProfile
  */
 abstract class SampleEditableProfile private constructor() : SampleProfile, EditableProfile() {
-  abstract override var avatarURL: URL
+  abstract override var avatarLoader: SomeImageLoader
   abstract override var name: String
   abstract override var bio: StyledString
 
   override val editor: Editor by lazy { SampleEditor(id) }
 
   override fun toString(): String {
-    return "SampleEditableProfile(id=$id, account=$account, avatarURL=$avatarURL, " +
+    return "SampleEditableProfile(id=$id, account=$account, avatarLoader=$avatarLoader, " +
       "name=$name, bio=$bio, followerCount=$followerCount, followingCount=$followingCount, " +
       "url=$url)"
   }
@@ -31,7 +33,7 @@ abstract class SampleEditableProfile private constructor() : SampleProfile, Edit
      *
      * @param id Unique identifier.
      * @param account Unique identifier within an instance.
-     * @param avatarURL [URL] that leads to the avatar image.
+     * @param avatarLoader [ImageLoader] that loads the avatar.
      * @param name Name to be displayed.
      * @param bio Describes who the owner is and/or provides information regarding this
      *   [SampleEditableProfile].
@@ -43,7 +45,7 @@ abstract class SampleEditableProfile private constructor() : SampleProfile, Edit
     fun createInstance(
       id: String,
       account: Account,
-      avatarURL: URL,
+      avatarLoader: SomeImageLoader,
       name: String,
       bio: StyledString,
       followerCount: Int,
@@ -53,7 +55,7 @@ abstract class SampleEditableProfile private constructor() : SampleProfile, Edit
       return object : SampleEditableProfile() {
         override val id = id
         override val account = account
-        override var avatarURL = avatarURL
+        override var avatarLoader = avatarLoader
         override var name = name
         override var bio = bio
         override val followerCount = followerCount

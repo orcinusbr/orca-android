@@ -11,9 +11,9 @@ import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.instance.InstanceProvider
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
-import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoaderProvider
 import com.jeanbarrossilva.orca.std.injector.module.Inject
 import com.jeanbarrossilva.orca.std.injector.module.Module
+import java.net.URL
 
 /**
  * [CoreModule] into which core HTTP structures are injected.
@@ -35,7 +35,7 @@ open class HttpModule(
   @Inject internal val authenticationLock: Module.() -> SomeAuthenticationLock,
   @Inject internal val termMuter: Module.() -> TermMuter,
   @Inject internal val instanceProvider: Module.() -> InstanceProvider,
-  @Inject internal val imageLoaderProvider: Module.() -> SomeImageLoaderProvider
+  @Inject internal val imageLoaderProvider: Module.() -> ImageLoader.Provider<URL>
 ) :
   CoreModule(
     authorizer,

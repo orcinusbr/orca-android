@@ -13,7 +13,7 @@ internal class EditableProfileConverter(override val next: ProfileConverter?) : 
     return if (profile is EditableProfile) {
       ProfileDetails.Editable(
         profile.id,
-        profile.avatarURL,
+        profile.avatarLoader,
         profile.name,
         profile.account,
         profile.bio.toAnnotatedString(colors),

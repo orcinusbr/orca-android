@@ -13,6 +13,7 @@ import com.jeanbarrossilva.orca.core.http.feed.profile.ProfileTootPaginateSource
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.editable.HttpEditableProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.followable.HttpFollowableProfile
+import com.jeanbarrossilva.orca.core.http.imageLoaderProvider
 import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.core.http.instanceProvider
 import com.jeanbarrossilva.orca.platform.ui.core.style.fromHtml
@@ -102,13 +103,14 @@ internal data class HttpAccount(
   ): HttpEditableProfile {
     val account = toAccount()
     val avatarURL = URL(avatar)
+    val avatarLoader = Injector.from<HttpModule>().imageLoaderProvider().provide(avatarURL)
     val bio = StyledString.fromHtml(note)
     val url = URL(url)
     return HttpEditableProfile(
       tootPaginateSourceProvider,
       id,
       account,
-      avatarURL,
+      avatarLoader,
       displayName,
       bio,
       followersCount,
@@ -129,6 +131,7 @@ internal data class HttpAccount(
   ): HttpFollowableProfile<Follow> {
     val account = toAccount()
     val avatarURL = URL(avatar)
+    val avatarLoader = Injector.from<HttpModule>().imageLoaderProvider().provide(avatarURL)
     val bio = StyledString.fromHtml(note)
     val url = URL(url)
     val follow =
@@ -142,7 +145,7 @@ internal data class HttpAccount(
       tootPaginateSourceProvider,
       id,
       account,
-      avatarURL,
+      avatarLoader,
       displayName,
       bio,
       follow,

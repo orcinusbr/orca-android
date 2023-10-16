@@ -4,5 +4,5 @@ import com.jeanbarrossilva.orca.core.feed.profile.Profile
 
 /** Converts this [Profile] into a [ProfileSearchResult]. */
 fun Profile.toProfileSearchResult(): ProfileSearchResult {
-  return ProfileSearchResult(id, account, avatarURL, name, url)
+  return ProfileSearchResult(id, account, avatarLoader, name, url)
 }

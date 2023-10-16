@@ -2,6 +2,8 @@ package com.jeanbarrossilva.orca.core.feed.profile
 
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.io.Serializable
 import java.net.URL
@@ -15,8 +17,8 @@ interface Profile : Serializable {
   /** Unique identifier within an instance. */
   val account: Account
 
-  /** [URL] that leads to the avatar image. */
-  val avatarURL: URL
+  /** [ImageLoader] that loads the avatar. */
+  val avatarLoader: SomeImageLoader
 
   /** Name to be displayed. */
   val name: String

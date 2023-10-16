@@ -2,16 +2,19 @@ package com.jeanbarrossilva.orca.core.sample.feed.profile.search
 
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
+import com.jeanbarrossilva.orca.core.sample.SampleCoreModule
+import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.image.AuthorImageSource
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
-import java.net.URL
+import com.jeanbarrossilva.orca.core.sample.imageLoaderProvider
+import com.jeanbarrossilva.orca.std.injector.Injector
 
 /** [ProfileSearchResult] returned by [sample]'s getter. */
 private val sampleProfileSearchResult =
   ProfileSearchResult(
     Author.sample.id,
     Author.sample.account,
-    avatarURL =
-      URL("https://en.gravatar.com/userimage/153558542/08942ba9443ce68bf66345a2e6db656e.png"),
+    avatarLoader =
+      Injector.from<SampleCoreModule>().imageLoaderProvider().provide(AuthorImageSource.Default),
     Author.sample.name,
     Author.sample.profileURL
   )

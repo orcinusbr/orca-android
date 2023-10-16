@@ -2,9 +2,12 @@ package com.jeanbarrossilva.orca.core.sample.feed.profile
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
+import com.jeanbarrossilva.orca.core.sample.SampleCoreModule
+import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.image.AuthorImageSource
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
+import com.jeanbarrossilva.orca.core.sample.imageLoaderProvider
+import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
-import java.net.URL
 
 /** [Profile] returned by [sample]'s getter. */
 @Suppress("SpellCheckingInspection")
@@ -12,8 +15,8 @@ private val sampleProfile: Profile =
   object : SampleProfile {
     override val id = Author.sample.id
     override val account = Author.sample.account
-    override val avatarURL =
-      URL("https://en.gravatar.com/userimage/153558542/08942ba9443ce68bf66345a2e6db656e.png")
+    override val avatarLoader =
+      Injector.from<SampleCoreModule>().imageLoaderProvider().provide(AuthorImageSource.Default)
     override val name = Author.sample.name
     override val bio =
       StyledString(

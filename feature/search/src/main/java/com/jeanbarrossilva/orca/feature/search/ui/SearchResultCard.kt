@@ -22,7 +22,6 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.search.sample
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.SmallAvatar
-import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
 
 @Composable
 internal fun SearchResultCard(modifier: Modifier = Modifier) {
@@ -41,10 +40,8 @@ internal fun SearchResultCard(
   onClick: () -> Unit,
   modifier: Modifier = Modifier
 ) {
-  val avatarLoader = rememberImageLoader(searchResult.avatarURL)
-
   SearchResultCard(
-    avatar = { SmallAvatar(avatarLoader, searchResult.name) },
+    avatar = { SmallAvatar(searchResult.avatarLoader, searchResult.name) },
     name = { Text(searchResult.name) },
     account = { Text("${searchResult.account}") },
     onClick,

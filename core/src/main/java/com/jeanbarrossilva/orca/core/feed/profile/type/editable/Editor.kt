@@ -1,16 +1,17 @@
 package com.jeanbarrossilva.orca.core.feed.profile.type.editable
 
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
-import java.net.URL
 
 /** Edits an [EditableProfile]. */
 interface Editor {
   /**
-   * Sets [avatarURL] as the [EditableProfile]'s [avatarURL][EditableProfile.avatarURL].
+   * Sets [avatarLoader] as the [EditableProfile]'s [avatarLoader][EditableProfile.avatarLoader].
    *
-   * @param avatarURL Avatar [URL] to be set to the [EditableProfile]..
+   * @param avatarLoader Avatar [ImageLoader] to be set to the [EditableProfile].
    */
-  suspend fun setAvatarURL(avatarURL: URL)
+  suspend fun setAvatarLoader(avatarLoader: SomeImageLoader)
 
   /**
    * Sets [name] as the [EditableProfile]'s [name][EditableProfile.name].
@@ -30,7 +31,7 @@ interface Editor {
     /** No-op, empty [Editor]. */
     val empty =
       object : Editor {
-        override suspend fun setAvatarURL(avatarURL: URL) {}
+        override suspend fun setAvatarLoader(avatarLoader: SomeImageLoader) {}
 
         override suspend fun setName(name: String) {}
 

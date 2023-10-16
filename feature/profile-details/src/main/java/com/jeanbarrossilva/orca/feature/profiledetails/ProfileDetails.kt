@@ -63,6 +63,7 @@ import com.jeanbarrossilva.orca.platform.theme.reactivity.rememberBottomAreaAvai
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
+import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import java.io.Serializable
 import java.net.URL
 
@@ -72,7 +73,7 @@ internal sealed class ProfileDetails : Serializable {
   protected abstract val account: Account
 
   abstract val id: String
-  abstract val avatarURL: URL
+  abstract val avatarLoader: SomeImageLoader
   abstract val name: String
   abstract val bio: AnnotatedString
   abstract val url: URL
@@ -85,7 +86,7 @@ internal sealed class ProfileDetails : Serializable {
 
   data class Default(
     override val id: String,
-    override val avatarURL: URL,
+    override val avatarLoader: SomeImageLoader,
     override val name: String,
     override val account: Account,
     override val bio: AnnotatedString,
@@ -95,7 +96,7 @@ internal sealed class ProfileDetails : Serializable {
       fun createSample(colors: Colors): Default {
         return Default(
           Profile.sample.id,
-          Profile.sample.avatarURL,
+          Profile.sample.avatarLoader,
           Profile.sample.name,
           Profile.sample.account,
           Profile.sample.bio.toAnnotatedString(colors),
@@ -107,7 +108,7 @@ internal sealed class ProfileDetails : Serializable {
 
   data class Editable(
     override val id: String,
-    override val avatarURL: URL,
+    override val avatarLoader: SomeImageLoader,
     override val name: String,
     override val account: Account,
     override val bio: AnnotatedString,
@@ -124,7 +125,7 @@ internal sealed class ProfileDetails : Serializable {
       fun createSample(colors: Colors): Editable {
         return Editable(
           EditableProfile.sample.id,
-          EditableProfile.sample.avatarURL,
+          EditableProfile.sample.avatarLoader,
           EditableProfile.sample.name,
           EditableProfile.sample.account,
           EditableProfile.sample.bio.toAnnotatedString(colors),
@@ -136,7 +137,7 @@ internal sealed class ProfileDetails : Serializable {
 
   data class Followable(
     override val id: String,
-    override val avatarURL: URL,
+    override val avatarLoader: SomeImageLoader,
     override val name: String,
     override val account: Account,
     override val bio: AnnotatedString,
@@ -171,7 +172,7 @@ internal sealed class ProfileDetails : Serializable {
       fun createSample(colors: Colors, onStatusToggle: () -> Unit): Followable {
         return Followable(
           FollowableProfile.sample.id,
-          FollowableProfile.sample.avatarURL,
+          FollowableProfile.sample.avatarLoader,
           FollowableProfile.sample.name,
           FollowableProfile.sample.account,
           FollowableProfile.sample.bio.toAnnotatedString(colors),

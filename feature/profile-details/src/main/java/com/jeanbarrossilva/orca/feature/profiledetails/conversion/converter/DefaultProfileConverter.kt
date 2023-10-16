@@ -14,7 +14,7 @@ internal class DefaultProfileConverter(override val next: ProfileConverter?) : P
   override fun onConvert(profile: Profile, colors: Colors): ProfileDetails {
     return ProfileDetails.Default(
       profile.id,
-      profile.avatarURL,
+      profile.avatarLoader,
       profile.name,
       profile.account,
       profile.bio.toAnnotatedString(colors),

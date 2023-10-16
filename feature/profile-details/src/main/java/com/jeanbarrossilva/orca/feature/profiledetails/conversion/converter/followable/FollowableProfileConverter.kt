@@ -24,7 +24,7 @@ internal class FollowableProfileConverter(
     return if (profile is FollowableProfile<*>) {
       ProfileDetails.Followable(
         profile.id,
-        profile.avatarURL,
+        profile.avatarLoader,
         profile.name,
         profile.account,
         profile.bio.toAnnotatedString(colors),

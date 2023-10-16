@@ -15,7 +15,7 @@ internal fun Profile.toMastodonProfileEntity(): HttpProfileEntity {
   return HttpProfileEntity(
     id,
     "$account",
-    "$avatarURL",
+    avatarURL = "${avatarLoader.source}",
     name,
     "$bio",
     type =

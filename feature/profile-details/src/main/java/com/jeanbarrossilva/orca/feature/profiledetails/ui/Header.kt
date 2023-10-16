@@ -18,7 +18,6 @@ import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetails
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.LargeAvatar
-import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
 
 @Composable
 internal fun Header(modifier: Modifier = Modifier) {
@@ -42,10 +41,8 @@ internal fun Header(modifier: Modifier = Modifier) {
 
 @Composable
 internal fun Header(details: ProfileDetails, modifier: Modifier = Modifier) {
-  val avatarLoader = rememberImageLoader(details.avatarURL)
-
   Header(
-    avatar = { LargeAvatar(avatarLoader, details.name) },
+    avatar = { LargeAvatar(details.avatarLoader, details.name) },
     name = { Text(details.name) },
     account = { Text(details.formattedAccount) },
     bio = { Text(details.bio) },

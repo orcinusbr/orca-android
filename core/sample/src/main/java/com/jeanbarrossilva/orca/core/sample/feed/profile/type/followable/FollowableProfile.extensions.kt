@@ -10,7 +10,7 @@ private val sampleFollowableProfile: FollowableProfile<*> =
   SampleFollowableProfile(
     Profile.sample.id,
     Profile.sample.account,
-    Profile.sample.avatarURL,
+    Profile.sample.avatarLoader,
     Profile.sample.name,
     Profile.sample.bio,
     Follow.Public.following(),

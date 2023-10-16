@@ -8,10 +8,13 @@ import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
+import com.jeanbarrossilva.orca.core.http.HttpModule
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.ProfileTootPaginateSource
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.editable.HttpEditableProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.followable.HttpFollowableProfile
+import com.jeanbarrossilva.orca.core.http.imageLoaderProvider
+import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.orca.std.styledstring.toStyledString
 import java.net.URL
 
@@ -76,13 +79,14 @@ internal constructor(
   ): HttpEditableProfile {
     val account = Account.of(account)
     val avatarURL = URL(avatarURL)
+    val avatarLoader = Injector.from<HttpModule>().imageLoaderProvider().provide(avatarURL)
     val bio = bio.toStyledString()
     val url = URL(url)
     return HttpEditableProfile(
       tootPaginateSourceProvider,
       id,
       account,
-      avatarURL,
+      avatarLoader,
       name,
       bio,
       followerCount,
@@ -103,6 +107,7 @@ internal constructor(
   ): HttpFollowableProfile<Follow> {
     val account = Account.of(account)
     val avatarURL = URL(avatarURL)
+    val avatarLoader = Injector.from<HttpModule>().imageLoaderProvider().provide(avatarURL)
     val bio = bio.toStyledString()
     val follow = Follow.of(checkNotNull(follow))
     val url = URL(url)
@@ -110,7 +115,7 @@ internal constructor(
       tootPaginateSourceProvider,
       id,
       account,
-      avatarURL,
+      avatarLoader,
       name,
       bio,
       follow,

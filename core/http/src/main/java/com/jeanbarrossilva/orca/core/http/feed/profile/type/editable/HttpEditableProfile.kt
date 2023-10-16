@@ -6,6 +6,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.type.editable.EditableProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.ProfileTootPaginateSource
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
+import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
 
@@ -20,7 +21,7 @@ internal data class HttpEditableProfile(
   private val tootPaginateSourceProvider: ProfileTootPaginateSource.Provider,
   override val id: String,
   override val account: Account,
-  override val avatarURL: URL,
+  override val avatarLoader: SomeImageLoader,
   override val name: String,
   override val bio: StyledString,
   override val followerCount: Int,
@@ -31,7 +32,7 @@ internal data class HttpEditableProfile(
     tootPaginateSourceProvider,
     id,
     account,
-    avatarURL,
+    avatarLoader,
     name,
     bio,
     followerCount,
