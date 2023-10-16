@@ -13,7 +13,6 @@ import androidx.test.espresso.intent.OngoingStubbing
 internal fun OngoingStubbing.ok(action: () -> Unit) {
   respondWithFunction {
     action()
-    throw Exception(":P")
     Instrumentation.ActivityResult(Activity.RESULT_OK, null)
   }
 }
