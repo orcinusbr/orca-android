@@ -17,6 +17,7 @@ import com.jeanbarrossilva.orca.app.module.feature.settings.termmuting.MainTermM
 import com.jeanbarrossilva.orca.app.module.feature.tootdetails.MainTootDetailsModule
 import com.jeanbarrossilva.orca.app.navigation.BottomNavigation
 import com.jeanbarrossilva.orca.core.http.HttpModule
+import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.sample.SampleCoreModule
 import com.jeanbarrossilva.orca.feature.ProfileDetailsModule
 import com.jeanbarrossilva.orca.feature.feed.FeedModule
@@ -27,6 +28,7 @@ import com.jeanbarrossilva.orca.feature.tootdetails.TootDetailsModule
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
 import com.jeanbarrossilva.orca.std.injector.Injector
+import com.jeanbarrossilva.orca.std.injector.module.binding.boundTo
 import kotlinx.coroutines.launch
 
 internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilityChangeListener {
@@ -34,7 +36,6 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
   private var constraintSet: ConstraintSet? = null
 
   protected open val sampleCoreModule: SampleCoreModule = MainSampleCoreModule()
-  protected open val httpModule: HttpModule = MainHttpModule()
 
   final override val height: Int
     get() = binding?.bottomNavigationView?.height ?: 0
@@ -69,11 +70,16 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
     }
   }
 
+  protected open fun Injector.registerCoreModule() {
+    val coreModule = MainHttpModule()
+    register(coreModule.boundTo<CoreModule, HttpModule>())
+  }
+
   private fun inject() {
     with(Injector) {
       inject<Context> { this@OrcaActivity }
       register(sampleCoreModule)
-      register(httpModule)
+      registerCoreModule()
       register<FeedModule>(MainFeedModule(this@OrcaActivity))
       register<ProfileDetailsModule>(MainProfileDetailsModule(this@OrcaActivity))
       register<SearchModule>(MainSearchModule(navigator))

@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.http
+package com.jeanbarrossilva.orca.core.module
 
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.Authenticator
@@ -9,14 +9,13 @@ import com.jeanbarrossilva.orca.core.auth.actor.ActorProvider
 import com.jeanbarrossilva.orca.core.feed.profile.toot.muting.TermMuter
 import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.instance.InstanceProvider
-import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoaderProvider
 import com.jeanbarrossilva.orca.std.injector.module.Inject
 import com.jeanbarrossilva.orca.std.injector.module.Module
 
 /**
- * [CoreModule] into which core HTTP structures are injected.
+ * [Module] into which core-level structures are injected.
  *
  * @param authorizer [Authorizer] by which the user can be authorized.
  * @param authenticator [Authenticator] by which the user can be authenticated.
@@ -28,7 +27,7 @@ import com.jeanbarrossilva.orca.std.injector.module.Module
  *   currently [authenticated][Actor.Authenticated] [Actor] is.
  * @param imageLoaderProvider [ImageLoader.Provider] by which an [ImageLoader] will be provided.
  */
-open class HttpModule(
+open class CoreModule(
   @Inject internal val authorizer: Module.() -> Authorizer,
   @Inject internal val authenticator: Module.() -> Authenticator,
   @Inject internal val actorProvider: Module.() -> ActorProvider,
@@ -36,13 +35,4 @@ open class HttpModule(
   @Inject internal val termMuter: Module.() -> TermMuter,
   @Inject internal val instanceProvider: Module.() -> InstanceProvider,
   @Inject internal val imageLoaderProvider: Module.() -> SomeImageLoaderProvider
-) :
-  CoreModule(
-    authorizer,
-    authenticator,
-    actorProvider,
-    authenticationLock,
-    termMuter,
-    instanceProvider,
-    imageLoaderProvider
-  )
+) : Module()

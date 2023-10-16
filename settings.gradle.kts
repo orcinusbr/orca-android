@@ -15,6 +15,7 @@ include(
   ":core:sample",
   ":core:sample-test",
   ":core:shared-preferences",
+  ":core-module",
   ":core-test",
   ":feature:composer",
   ":feature:feed",
