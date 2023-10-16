@@ -1,8 +1,8 @@
 package com.jeanbarrossilva.orca.app.demo.test
 
-import kotlinx.coroutines.test.runTest
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+import kotlinx.coroutines.test.runTest
 
 /**
  * Waits indefinitely until the [condition] results into true.
