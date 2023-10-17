@@ -28,5 +28,5 @@ jobs:
           disable-animations: true
           disk-size: 2048M
           heap-size: 512M
-          profile: Pixel 7 Pro
+          profile: pixel_7_pro
           script: ./gradlew connectedAndroidTest
