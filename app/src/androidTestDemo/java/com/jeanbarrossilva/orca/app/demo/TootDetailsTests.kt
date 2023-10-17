@@ -7,6 +7,7 @@ import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.rule.IntentsRule
 import com.jeanbarrossilva.orca.app.demo.test.browsesTo
+import com.jeanbarrossilva.orca.app.demo.test.performTopStartClick
 import com.jeanbarrossilva.orca.app.demo.test.respondWithOK
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.highlight.sample
@@ -25,7 +26,7 @@ internal class TootDetailsTests {
   fun navigatesToTootHighlight() {
     val matcher = browsesTo("${Highlight.sample.url}")
     intending(matcher).respondWithOK()
-    composeRule.onHeadlineCards().onFirst().performClick()
+    composeRule.onHeadlineCards().onFirst().performTopStartClick()
     intended(matcher)
   }
 }
