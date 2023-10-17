@@ -7,6 +7,6 @@ import androidx.compose.ui.test.click
 import androidx.compose.ui.test.performTouchInput
 
 /** Performs a click on the portion located at [Offset.Zero] of this [SemanticsNode]. */
-internal fun SemanticsNodeInteraction.performTopStartClick() {
+internal fun SemanticsNodeInteraction.performStartClick() {
   performTouchInput { click(Offset.Zero) }
 }

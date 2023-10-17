@@ -9,7 +9,6 @@ import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.rule.IntentsRule
 import com.jeanbarrossilva.orca.app.demo.test.browsesTo
-import com.jeanbarrossilva.orca.app.demo.test.performTopStartClick
 import com.jeanbarrossilva.orca.app.demo.test.respondWithOK
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.highlight.sample
@@ -19,7 +18,6 @@ import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.headlin
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.RuleChain
-import kotlin.time.Duration.Companion.days
 
 internal class FeedTests {
   private val intentsRule = IntentsRule()
@@ -31,7 +29,7 @@ internal class FeedTests {
   fun navigatesToTootHighlight() {
     val matcher = browsesTo("${Highlight.sample.url}")
     intending(matcher).respondWithOK()
-    composeRule.onHeadlineCards().onFirst().performTopStartClick()
+    composeRule.onHeadlineCards().onFirst().performClick()
     intended(matcher)
   }
 
