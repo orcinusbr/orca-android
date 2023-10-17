@@ -36,7 +36,6 @@ internal class ProfileDetailsTests {
     val matcher = browsesTo("${Highlight.sample.url}")
     intending(matcher).respondWithOK()
     composeRule.onHeadlineCards().onFirst().performClick()
-    composeRule.waitForIdle()
     intended(matcher)
   }
 
