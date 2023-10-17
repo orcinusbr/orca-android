@@ -24,6 +24,7 @@ jobs:
         with:
           api-level: 34
           arch: x86_64
+          cores: 4
           disable-animations: true
           disk-size: 2048M
           heap-size: 512M
