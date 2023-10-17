@@ -35,13 +35,16 @@ import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.ui.R
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.SampleTootPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import java.net.URL
 
 /** Tag that identifies an [EmptyTimelineMessage] for testing purposes. */
 internal const val EMPTY_TIMELINE_MESSAGE_TAG = "empty-timeline-tag"
 
-/** Tag that identifies dividers between [TootPreview]s in a [Timeline] for testing purposes. */
+/**
+ * Tag that identifies dividers between [SampleTootPreview]s in a [Timeline] for testing purposes.
+ */
 internal const val TIMELINE_DIVIDER_TAG = "timeline-divider"
 
 /** Tag that identifies a [Timeline] for testing purposes. */
@@ -52,28 +55,29 @@ private enum class TimelineContentType {
   /** Content type for the header. */
   HEADER,
 
-  /** Content type for [TootPreview]s. */
+  /** Content type for [SampleTootPreview]s. */
   TOOT_PREVIEW
 }
 
 /**
- * Displays [TootPreview]s in a paginated way.
+ * Displays [SampleTootPreview]s in a paginated way.
  *
- * @param tootPreviewsLoadable [ListLoadable] of [TootPreview]s to be lazily shown.
- * @param onHighlightClick Callback run whenever the [TootPreview]'s [TootPreview.highlight] is
+ * @param tootPreviewsLoadable [ListLoadable] of [SampleTootPreview]s to be lazily shown.
+ * @param onHighlightClick Callback run whenever the [SampleTootPreview]'s
+ *   [SampleTootPreview.highlight] is clicked.
+ * @param onFavorite Callback run whenever the [SampleTootPreview] associated to the given ID
+ *   requests the [Toot] to have its "favorited" state toggled.
+ * @param onReblog Callback run whenever the [SampleTootPreview] associated to the given ID requests
+ *   the [Toot] to have its "reblogged" state toggled.
+ * @param onShare Callback run whenever a [SampleTootPreview] requests the [Toot]'s [URL] is
+ *   requested to be shared.
+ * @param onClick Callback run whenever the [SampleTootPreview] associated to the given ID is
  *   clicked.
- * @param onFavorite Callback run whenever the [TootPreview] associated to the given ID requests the
- *   [Toot] to have its "favorited" state toggled.
- * @param onReblog Callback run whenever the [TootPreview] associated to the given ID requests the
- *   [Toot] to have its "reblogged" state toggled.
- * @param onShare Callback run whenever a [TootPreview] requests the [Toot]'s [URL] is requested to
- *   be shared.
- * @param onClick Callback run whenever the [TootPreview] associated to the given ID is clicked.
  * @param onNext Callback run whenever the user reaches the bottom.
  * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
  * @param state [LazyListState] through which scroll will be observed.
  * @param contentPadding [PaddingValues] to pad the content with.
- * @param header [Composable] to be shown above the [TootPreview]s.
+ * @param header [Composable] to be shown above the [SampleTootPreview]s.
  */
 @Composable
 fun Timeline(
@@ -111,9 +115,9 @@ fun Timeline(
 }
 
 /**
- * [LazyColumn] for displaying loading [TootPreview]s.
+ * [LazyColumn] for displaying loading [SampleTootPreview]s.
  *
- * @param header [Composable] to be shown above the [TootPreview]s.
+ * @param header [Composable] to be shown above the [SampleTootPreview]s.
  * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
  * @param contentPadding [PaddingValues] to pad the content with.
  */
@@ -129,23 +133,24 @@ fun Timeline(
 }
 
 /**
- * [LazyColumn] for displaying paged [TootPreview]s.
+ * [LazyColumn] for displaying paged [SampleTootPreview]s.
  *
- * @param tootPreviews [TootPreview]s to be lazily shown.
- * @param onHighlightClick Callback run whenever the [TootPreview]'s [TootPreview.highlight] is
+ * @param tootPreviews [SampleTootPreview]s to be lazily shown.
+ * @param onHighlightClick Callback run whenever the [SampleTootPreview]'s
+ *   [SampleTootPreview.highlight] is clicked.
+ * @param onFavorite Callback run whenever the [SampleTootPreview] associated to the given ID
+ *   requests the [Toot] to have its "favorited" state toggled.
+ * @param onReblog Callback run whenever the [SampleTootPreview] associated to the given ID requests
+ *   the [Toot] to have its "reblogged" state toggled.
+ * @param onShare Callback run whenever a [SampleTootPreview] requests the [Toot]'s [URL] is
+ *   requested to be shared.
+ * @param onClick Callback run whenever the [SampleTootPreview] associated to the given ID is
  *   clicked.
- * @param onFavorite Callback run whenever the [TootPreview] associated to the given ID requests the
- *   [Toot] to have its "favorited" state toggled.
- * @param onReblog Callback run whenever the [TootPreview] associated to the given ID requests the
- *   [Toot] to have its "reblogged" state toggled.
- * @param onShare Callback run whenever a [TootPreview] requests the [Toot]'s [URL] is requested to
- *   be shared.
- * @param onClick Callback run whenever the [TootPreview] associated to the given ID is clicked.
  * @param onNext Callback run whenever the user reaches the bottom.
  * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
  * @param state [LazyListState] through which scroll will be observed.
  * @param contentPadding [PaddingValues] to pad the content with.
- * @param header [Composable] to be shown above the [TootPreview]s.
+ * @param header [Composable] to be shown above the [SampleTootPreview]s.
  */
 @Composable
 fun Timeline(
@@ -188,9 +193,9 @@ fun Timeline(
 }
 
 /**
- * Displays [TootPreview]s in a paginated way.
+ * Displays [SampleTootPreview]s in a paginated way.
  *
- * @param tootPreviewsLoadable [ListLoadable] of [TootPreview]s to be lazily shown.
+ * @param tootPreviewsLoadable [ListLoadable] of [SampleTootPreview]s to be lazily shown.
  * @param modifier [Modifier] to be applied to the underlying [Timeline].
  */
 @Composable
@@ -211,12 +216,12 @@ internal fun Timeline(
 }
 
 /**
- * [Timeline] that's populated with sample [TootPreview]s.
+ * [Timeline] that's populated with sample [SampleTootPreview]s.
  *
  * @param modifier [Modifier] to be applied to the underlying [Timeline].
- * @param tootPreviews [TootPreview]s to be lazily shown.
- * @param header [Composable] to be shown above the [TootPreview]s.
- * @see TootPreview.samples
+ * @param tootPreviews [SampleTootPreview]s to be lazily shown.
+ * @param header [Composable] to be shown above the [SampleTootPreview]s.
+ * @see SampleTootPreview.samples
  */
 @Composable
 internal fun PopulatedTimeline(

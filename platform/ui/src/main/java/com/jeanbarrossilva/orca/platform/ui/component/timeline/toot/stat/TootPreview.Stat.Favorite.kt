@@ -13,12 +13,13 @@ import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconInteractiveness
 import com.jeanbarrossilva.orca.platform.ui.component.stat.favorite.FavoriteStatIcon
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.SampleTootPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.Stat
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.StatDefaults
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.StatPosition
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 
-/** Tag that identifies a [TootPreview]'s favorite count stat for testing purposes. */
+/** Tag that identifies a [SampleTootPreview]'s favorite count stat for testing purposes. */
 const val TOOT_PREVIEW_FAVORITE_STAT_TAG = "toot-preview-favorites-stat"
 
 @Composable

@@ -7,5 +7,6 @@
     <string name="platform_ui_timeline_empty">Empty</string>
     <string name="platform_ui_timeline_empty_message">Seems a bit empty in here…</string>
     <string name="platform_ui_toot_preview_comments">Comments</string>
+    <string name="platform_ui_toot_preview_reblogged">Reblogged by %s</string>
     <string name="platform_ui_toot_preview_share">Share</string>
 </resources>

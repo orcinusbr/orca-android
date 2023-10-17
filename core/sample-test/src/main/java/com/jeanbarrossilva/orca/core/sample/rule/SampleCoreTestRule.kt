@@ -3,6 +3,7 @@ package com.jeanbarrossilva.orca.core.sample.rule
 import com.jeanbarrossilva.orca.core.sample.SampleCoreModule
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileWriter
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.SampleTootWriter
+import com.jeanbarrossilva.orca.core.sample.image.TestSampleImageLoader
 import com.jeanbarrossilva.orca.std.injector.Injector
 import org.junit.rules.ExternalResource
 
