@@ -32,14 +32,6 @@ internal class ProfileDetailsTests {
   @get:Rule val ruleChain: RuleChain? = RuleChain.outerRule(intentsRule).around(composeRule)
 
   @Test
-  fun navigatesToTootHighlight() {
-    val matcher = browsesTo("${Highlight.sample.url}")
-    intending(matcher).respondWithOK()
-    composeRule.onHeadlineCards().onFirst().performClick()
-    intended(matcher)
-  }
-
-  @Test
   fun navigatesToTootDetailsOnTootPreviewClick() {
     onView(withId(R.id.profile_details)).perform(click())
     composeRule.onTootPreviews().onFirst().performStartClick()

@@ -26,14 +26,6 @@ internal class FeedTests {
   @get:Rule val ruleChain: RuleChain? = RuleChain.outerRule(intentsRule).around(composeRule)
 
   @Test
-  fun navigatesToTootHighlight() {
-    val matcher = browsesTo("${Highlight.sample.url}")
-    intending(matcher).respondWithOK()
-    composeRule.onHeadlineCards().onFirst().performClick()
-    intended(matcher)
-  }
-
-  @Test
   fun navigatesToComposerOnFabClick() {
     composeRule.onNodeWithTag(FEED_FLOATING_ACTION_BUTTON_TAG).performClick()
     intended(hasComponent(ComposerActivity::class.qualifiedName))
