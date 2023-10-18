@@ -17,16 +17,12 @@ plugins {
   alias(libs.plugins.moduleDependencyGraph)
   alias(libs.plugins.spotless)
 
+  id(libs.plugins.orca.build.setup.formatting.get().pluginId)
   id(libs.plugins.orca.build.setup.java.get().pluginId) apply false
   id("build-src")
 }
 
 allprojects { repositories.mavenCentral() }
-
-spotless.kotlin {
-  target("**\\/*.kt", "**\\/*.kts")
-  ktfmt().googleStyle()
-}
 
 subprojects subproject@{
   tasks.withType<KotlinCompile> {

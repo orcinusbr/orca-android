@@ -47,10 +47,9 @@ loadable-placeholder-test = { group = "com.jeanbarrossilva.loadable", name = "lo
 mockk = { group = "io.mockk", name = "mockk-android", version = "1.13.7" }
 paginate = { group = "com.chrynan.paginate", name = "paginate-core", version = "0.3.0" }
 slf4j = { group = "org.slf4j", name = "slf4j-api", version = "2.0.7" }
+spotless = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
 time4j = { group = "net.time4j", name = "time4j-android", version = "4.8-2021a" }
 turbine = { group = "app.cash.turbine", name = "turbine", version = "1.0.0" }
-androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-plugin" }
@@ -62,8 +61,9 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-symbolProcessor = { id = "com.google.devtools.ksp", version.ref = "kotlin-symbolProcessor" }
 moduleDependencyGraph = { id = "com.savvasdalkitsis.module-dependency-graph", version = "0.10" }
+orca-build-setup-formatting = { id = "com.jeanbarrossilva.orca.build.setup.formatting" }
 orca-build-setup-java = { id = "com.jeanbarrossilva.orca.build.setup.java" }
-spotless = { id = "com.diffplug.spotless", version = "6.22.0" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [versions]
 android-activity = "1.7.2"
@@ -82,4 +82,4 @@ kotlinPoet = "1.14.2"
 ktor = "2.3.2"
 loadable = "1.6.9"
 orca = "1.0.0"
-espresso-core = "3.5.1"
+spotless = "6.22.0"
