@@ -5,32 +5,21 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers
-import java.util.concurrent.ExecutionException
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.future.asCompletableFuture
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.time.withTimeout
+import kotlinx.coroutines.withTimeout
 import org.junit.rules.ExternalResource
 
 class PlatformDialogDismissalTestRule : ExternalResource() {
   override fun before() {
-    runTest { dismissPlatformDialogInstantlyIfShown(this) }
+    runTest { dismissPlatformDialogInstantly() }
   }
 
-  private fun dismissPlatformDialogInstantlyIfShown(coroutineScope: CoroutineScope) {
+  private suspend fun dismissPlatformDialogInstantly() {
     try {
-      dismissPlatformDialogInstantly(coroutineScope)
-    } catch (_: TimeoutException) {} catch (_: ExecutionException) {}
-  }
-
-  private fun dismissPlatformDialogInstantly(coroutineScope: CoroutineScope) {
-    return coroutineScope
-      .launch { dismissPlatformDialog() }
-      .asCompletableFuture()
-      .orTimeout(0, TimeUnit.MILLISECONDS)
-      .get()
+      withTimeout(0) { dismissPlatformDialog() }
+    } catch (_: TimeoutCancellationException) {}
   }
 
   private fun dismissPlatformDialog() {
