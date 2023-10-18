@@ -14,19 +14,19 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          java-version: '17'
-          distribution: 'corretto'
+          distribution: corretto
+          java-version: 17
       - name: Run instrumented tests
         env:
           GITHUB_USERNAME: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: reactivecircus/android-emulator-runner@v2.28.0
         with:
-          api-level: 34
+          api-level: 29
           arch: x86_64
           cores: 4
           disable-animations: true
           disk-size: 2048M
+          emulator-options: -no-window
           heap-size: 512M
-          profile: pixel_3a
           script: ./gradlew connectedAndroidTest

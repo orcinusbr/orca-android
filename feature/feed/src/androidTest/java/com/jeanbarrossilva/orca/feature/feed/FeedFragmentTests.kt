@@ -7,9 +7,14 @@ import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.core.app.launchActivity
+import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
+import com.jeanbarrossilva.orca.core.instance.Instance
+import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.sample
+import com.jeanbarrossilva.orca.core.sample.instance.sample
 import com.jeanbarrossilva.orca.core.sample.rule.SampleCoreTestRule
 import com.jeanbarrossilva.orca.feature.feed.test.FeedActivity
 import com.jeanbarrossilva.orca.feature.feed.test.TestFeedModule
@@ -34,10 +39,12 @@ internal class FeedFragmentTests {
   @Test
   fun favoritesToot() {
     runTest {
-      val toot = Profile.sample.getToots(page = 0).first().first()
-      if (toot.favorite.isEnabled) {
-        toot.favorite.toggle()
-      }
+      Instance.sample.feedProvider
+        .provide(Actor.Authenticated.sample.id, page = 0)
+        .first()
+        .first()
+        .favorite
+        .disable()
     }
     launchActivity<FeedActivity>(FeedActivity.getIntent(Profile.sample.id)).use {
       composeRule
@@ -45,6 +52,7 @@ internal class FeedFragmentTests {
         .onFirst()
         .onChildren()
         .filterToOne(hasTestTag(TOOT_PREVIEW_FAVORITE_STAT_TAG))
+        .performScrollTo()
         .performClick()
         .assertIsSelected()
     }
