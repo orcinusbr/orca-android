@@ -18,7 +18,7 @@ plugins {
   alias(libs.plugins.spotless)
 
   id(libs.plugins.orca.build.setup.formatting.get().pluginId)
-  id(libs.plugins.orca.build.setup.java.get().pluginId) apply false
+  id(libs.plugins.orca.build.setup.java.get().pluginId)
   id("build-src")
 }
 
