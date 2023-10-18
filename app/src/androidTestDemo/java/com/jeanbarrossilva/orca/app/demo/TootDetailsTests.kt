@@ -6,7 +6,6 @@ import androidx.compose.ui.test.performClick
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.rule.IntentsRule
-import com.jeanbarrossilva.orca.app.demo.test.PlatformDialogDismissalTestRule
 import com.jeanbarrossilva.orca.app.demo.test.browsesTo
 import com.jeanbarrossilva.orca.app.demo.test.performScrollToTootPreviewWithHeadlineCard
 import com.jeanbarrossilva.orca.app.demo.test.respondWithOK
@@ -20,11 +19,8 @@ import org.junit.rules.RuleChain
 internal class TootDetailsTests {
   private val intentsRule = IntentsRule()
   private val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
-  private val platformDialogDismissalRule = PlatformDialogDismissalTestRule()
 
-  @get:Rule
-  val ruleChain: RuleChain? =
-    RuleChain.outerRule(intentsRule).around(composeRule).around(platformDialogDismissalRule)
+  @get:Rule val ruleChain: RuleChain? = RuleChain.outerRule(intentsRule).around(composeRule)
 
   @Test
   fun navigatesToTootHighlight() {
