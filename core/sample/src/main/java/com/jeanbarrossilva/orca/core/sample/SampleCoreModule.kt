@@ -7,8 +7,8 @@ import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.sample.auth.SampleAuthenticator
 import com.jeanbarrossilva.orca.core.sample.auth.SampleAuthorizer
 import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
+import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.muting.SampleTermMuter
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.image.SampleImageSource
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.muting.SampleTermMuter
 import com.jeanbarrossilva.orca.core.sample.instance.sample
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.injector.module.Inject

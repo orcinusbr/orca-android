@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.orca.core.feed
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.feed.profile.toot.muting.TermMuter
+import com.jeanbarrossilva.orca.core.feed.profile.toot.content.muting.TermMuter
 import kotlinx.coroutines.flow.Flow
 
 /**

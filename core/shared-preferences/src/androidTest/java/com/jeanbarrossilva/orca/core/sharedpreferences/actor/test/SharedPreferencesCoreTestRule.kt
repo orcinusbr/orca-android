@@ -1,9 +1,9 @@
 package com.jeanbarrossilva.orca.core.sharedpreferences.actor.test
 
 import androidx.test.platform.app.InstrumentationRegistry
-import com.jeanbarrossilva.orca.core.feed.profile.toot.muting.TermMuter
+import com.jeanbarrossilva.orca.core.feed.profile.toot.content.muting.TermMuter
 import com.jeanbarrossilva.orca.core.sharedpreferences.actor.SharedPreferencesActorProvider
-import com.jeanbarrossilva.orca.core.sharedpreferences.feed.profile.toot.muting.SharedPreferencesTermMuter
+import com.jeanbarrossilva.orca.core.sharedpreferences.feed.profile.toot.content.muting.SharedPreferencesTermMuter
 import org.junit.rules.ExternalResource
 
 internal class SharedPreferencesCoreTestRule : ExternalResource() {

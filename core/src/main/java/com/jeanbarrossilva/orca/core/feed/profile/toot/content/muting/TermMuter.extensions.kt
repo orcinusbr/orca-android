@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.feed.profile.toot.muting
+package com.jeanbarrossilva.orca.core.feed.profile.toot.content.muting
 
 /**
  * Mutes and retrieves terms that have been muted.

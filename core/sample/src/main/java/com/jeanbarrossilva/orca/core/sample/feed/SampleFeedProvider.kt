@@ -6,7 +6,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfile
 import com.jeanbarrossilva.orca.core.sample.feed.profile.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.SampleTootProvider
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.muting.SampleTermMuter
+import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.muting.SampleTermMuter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map

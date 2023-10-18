@@ -1,9 +1,9 @@
-package com.jeanbarrossilva.orca.core.sharedpreferences.feed.profile.toot.muting
+package com.jeanbarrossilva.orca.core.sharedpreferences.feed.profile.toot.content.muting
 
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.jeanbarrossilva.orca.core.feed.profile.toot.muting.TermMuter
+import com.jeanbarrossilva.orca.core.feed.profile.toot.content.muting.TermMuter
 import kotlinx.coroutines.flow.MutableStateFlow
 
 /** Provides and controls configurations of the [SharedPreferences]-specific [TermMuter]. */

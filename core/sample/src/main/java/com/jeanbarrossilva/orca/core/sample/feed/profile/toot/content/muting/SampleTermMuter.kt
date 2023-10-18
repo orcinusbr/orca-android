@@ -1,6 +1,6 @@
-package com.jeanbarrossilva.orca.core.sample.feed.profile.toot.muting
+package com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.muting
 
-import com.jeanbarrossilva.orca.core.feed.profile.toot.muting.TermMuter
+import com.jeanbarrossilva.orca.core.feed.profile.toot.content.muting.TermMuter
 import kotlinx.coroutines.flow.MutableStateFlow
 
 /** An in-memory [TermMuter]. */

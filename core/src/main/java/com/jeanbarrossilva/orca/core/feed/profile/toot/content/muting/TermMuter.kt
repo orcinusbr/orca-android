@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.feed.profile.toot.muting
+package com.jeanbarrossilva.orca.core.feed.profile.toot.content.muting
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
 import kotlinx.coroutines.flow.Flow
