@@ -12,10 +12,7 @@ plugins {
   alias(libs.plugins.moduleDependencyGraph)
   alias(libs.plugins.spotless)
 
-  id(libs.plugins.orca.build.setup.android.library.get().pluginId)
-  id(libs.plugins.orca.build.setup.formatting.get().pluginId)
-  id(libs.plugins.orca.build.setup.java.get().pluginId)
-  id(libs.plugins.orca.build.setup.kotlin.get().pluginId)
+  id(libs.plugins.orca.build.setup.java.get().pluginId) apply false
   id("build-src")
 }
 
@@ -27,6 +24,23 @@ subprojects {
     google()
     gradlePluginPortal()
     loadable(project)
+  }
+
+  afterEvaluate {
+    with(JavaVersion.toVersion(libs.versions.java.get())) java@{
+      extensions.findByType<LibraryExtension>()?.apply {
+        compileSdk = libs.versions.android.sdk.target.get().toInt()
+        defaultConfig.minSdk = libs.versions.android.sdk.min.get().toInt()
+        setDefaultNamespaceIfUnsetAndEligible(this@subproject)
+
+        buildTypes { release { isMinifyEnabled = true } }
+
+        compileOptions {
+          sourceCompatibility = this@java
+          targetCompatibility = this@java
+        }
+      }
+    }
   }
 }
 

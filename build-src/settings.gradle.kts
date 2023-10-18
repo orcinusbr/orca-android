@@ -1,4 +1,4 @@
-include(":setup:android-library", ":setup:formatting", ":setup:java", ":setup:kotlin")
+include(":setup:java")
 
 dependencyResolutionManagement.versionCatalogs {
   register("libs") { from(files("../gradle/libs.versions.toml")) }
