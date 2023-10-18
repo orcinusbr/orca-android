@@ -1,5 +1,7 @@
 import com.jeanbarrossilva.orca.chrynan
 import com.jeanbarrossilva.orca.loadable
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   alias(libs.plugins.android.application) apply false
@@ -12,6 +14,7 @@ plugins {
   alias(libs.plugins.moduleDependencyGraph)
   alias(libs.plugins.spotless)
 
+  id(libs.plugins.orca.build.setup.android.library.get().pluginId)
   id(libs.plugins.orca.build.setup.formatting.get().pluginId)
   id(libs.plugins.orca.build.setup.java.get().pluginId)
   id("build-src")
@@ -32,23 +35,6 @@ subprojects subproject@{
     google()
     gradlePluginPortal()
     loadable(project)
-  }
-
-  afterEvaluate {
-    with(JavaVersion.toVersion(libs.versions.java.get())) java@{
-      extensions.findByType<LibraryExtension>()?.apply {
-        compileSdk = libs.versions.android.sdk.target.get().toInt()
-        defaultConfig.minSdk = libs.versions.android.sdk.min.get().toInt()
-        setDefaultNamespaceIfUnsetAndEligible(this@subproject)
-
-        buildTypes { release { isMinifyEnabled = true } }
-
-        compileOptions {
-          sourceCompatibility = this@java
-          targetCompatibility = this@java
-        }
-      }
-    }
   }
 }
 
