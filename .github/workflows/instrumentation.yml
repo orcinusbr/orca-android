@@ -29,5 +29,4 @@ jobs:
           disk-size: 2048M
           emulator-options: -no-window
           heap-size: 512M
-          profile: 2.7in QVGA
           script: ./gradlew connectedAndroidTest

@@ -4,7 +4,6 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performScrollTo
 import androidx.test.core.app.launchActivity
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.FollowableProfile
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileWriter
@@ -44,7 +43,6 @@ internal class ProfileDetailsFragmentTests {
       .use {
         composeRule
           .onNodeWithTag(ProfileDetails.Followable.MAIN_ACTION_BUTTON_TAG)
-          .performScrollTo()
           .performClick()
           .assertTextEquals(ProfileDetails.Followable.Status.UNFOLLOWED.label)
       }
