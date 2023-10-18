@@ -4,11 +4,13 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.rule.IntentsRule
 import com.jeanbarrossilva.orca.app.demo.test.browsesTo
+import com.jeanbarrossilva.orca.app.demo.test.performScrollToTootPreviewWithHeadlineCard
 import com.jeanbarrossilva.orca.app.demo.test.respondWithOK
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.highlight.sample
@@ -29,6 +31,7 @@ internal class FeedTests {
   fun navigatesToTootHighlight() {
     val matcher = browsesTo("${Highlight.sample.url}")
     intending(matcher).respondWithOK()
+    composeRule.performScrollToTootPreviewWithHeadlineCard()
     composeRule.onHeadlineCards().onFirst().performClick()
     intended(matcher)
   }

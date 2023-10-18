@@ -6,6 +6,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
@@ -38,6 +39,7 @@ internal class FeedTests {
       .onFirst()
       .onChildren()
       .filterToOne(hasTestTag(TOOT_PREVIEW_FAVORITE_STAT_TAG))
+      .performScrollTo()
       .performClick()
     assertTrue(hasCallbackBeenRun)
   }
