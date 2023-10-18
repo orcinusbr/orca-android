@@ -16,6 +16,7 @@ android-fragment-testing = { group = "androidx.fragment", name = "fragment-testi
 android-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version = "2.6.2" }
 android-material = { group = "com.google.android.material", name = "material", version = "1.9.0" }
 android-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version = "2.7.3" }
+android-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android-plugin" }
 android-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "android-room" }
 android-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "android-room" }
 android-test-core = { group = "androidx.test", name = "core-ktx", version = "1.5.0" }
@@ -61,6 +62,7 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-symbolProcessor = { id = "com.google.devtools.ksp", version.ref = "kotlin-symbolProcessor" }
 moduleDependencyGraph = { id = "com.savvasdalkitsis.module-dependency-graph", version = "0.10" }
+orca-build-setup-android-library = { id = "com.jeanbarrossilva.orca.build.setup.android.library" }
 orca-build-setup-formatting = { id = "com.jeanbarrossilva.orca.build.setup.formatting" }
 orca-build-setup-java = { id = "com.jeanbarrossilva.orca.build.setup.java" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
