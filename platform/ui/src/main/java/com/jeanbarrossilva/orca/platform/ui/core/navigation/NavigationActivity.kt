@@ -1,9 +1,9 @@
 package com.jeanbarrossilva.orca.platform.ui.core.navigation
 
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentContainerView
+import com.jeanbarrossilva.orca.platform.ui.core.content
 
 /** [FragmentActivity] through which [Navigator]-based navigation can be performed. */
 open class NavigationActivity : FragmentActivity() {
@@ -18,8 +18,7 @@ open class NavigationActivity : FragmentActivity() {
    */
   val navigator
     get() =
-      requireViewById<ViewGroup>(android.R.id.content)
-        .get<FragmentContainerView>(isInclusive = false)
-        .also(View::identify)
-        .let { Navigator(supportFragmentManager, it.id) }
+      content.get<FragmentContainerView>(isInclusive = false).also(View::identify).let {
+        Navigator(supportFragmentManager, it.id)
+      }
 }
