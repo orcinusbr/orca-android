@@ -14,9 +14,10 @@ plugins {
   alias(libs.plugins.kotlin.jvm) apply false
   alias(libs.plugins.kotlin.serialization) apply false
   alias(libs.plugins.kotlin.symbolProcessor) apply false
-  alias(libs.plugins.spotless)
   alias(libs.plugins.moduleDependencyGraph)
+  alias(libs.plugins.spotless)
 
+  id(libs.plugins.orca.build.setup.java.get().pluginId) apply false
   id("build-src")
 }
 
@@ -44,11 +45,6 @@ subprojects subproject@{
 
   afterEvaluate {
     with(JavaVersion.toVersion(libs.versions.java.get())) java@{
-      extensions.findByType<JavaPluginExtension>()?.apply {
-        sourceCompatibility = this@java
-        targetCompatibility = this@java
-      }
-
       extensions.findByType<LibraryExtension>()?.apply {
         compileSdk = libs.versions.android.sdk.target.get().toInt()
         defaultConfig.minSdk = libs.versions.android.sdk.min.get().toInt()

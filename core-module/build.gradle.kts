@@ -2,6 +2,8 @@ plugins {
   alias(libs.plugins.kotlin.jvm)
   alias(libs.plugins.kotlin.symbolProcessor)
 
+  id(libs.plugins.orca.build.setup.java.get().pluginId)
+
   `java-library`
 }
 
