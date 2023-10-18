@@ -7,7 +7,6 @@ import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.time.withTimeout
 import kotlinx.coroutines.withTimeout
 import org.junit.rules.ExternalResource
 
