@@ -6,4 +6,4 @@ import android.view.ViewGroup
 
 /** [ViewGroup] in which this [Activity]'s [View] is. */
 val Activity.content
-    get() = requireViewById<ViewGroup>(android.R.id.content)
+  get() = requireViewById<ViewGroup>(android.R.id.content)

@@ -5,8 +5,8 @@ import com.jeanbarrossilva.orca.app.demo.DemoOrcaActivity
 import com.jeanbarrossilva.orca.platform.ui.core.content
 
 internal class TestDemoOrcaActivity : DemoOrcaActivity() {
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-        content.children.first().requestFocus()
-    }
+  override fun onWindowFocusChanged(hasFocus: Boolean) {
+    super.onWindowFocusChanged(hasFocus)
+    content.children.first().requestFocus()
+  }
 }
