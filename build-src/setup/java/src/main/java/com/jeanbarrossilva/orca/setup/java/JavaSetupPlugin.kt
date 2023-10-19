@@ -8,11 +8,10 @@ import org.gradle.api.plugins.JavaPluginExtension
 
 class JavaSetupPlugin : Plugin<Project> {
   override fun apply(target: Project) {
+    val javaVersion = JavaVersion.toVersion(BuildConfig.JAVA_VERSION)
     target.subprojects { subProject ->
       subProject.afterEvaluate { evaluatedSubProject ->
         evaluatedSubProject.extensions.findByType(JavaPluginExtension::class.java)?.apply {
-          val javaVersionAsString = BuildConfig.JAVA_VERSION
-          val javaVersion = JavaVersion.toVersion(javaVersionAsString)
           sourceCompatibility = javaVersion
           targetCompatibility = javaVersion
         }

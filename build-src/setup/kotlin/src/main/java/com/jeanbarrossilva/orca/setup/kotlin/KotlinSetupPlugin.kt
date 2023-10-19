@@ -8,10 +8,10 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 class KotlinSetupPlugin : Plugin<Project> {
   override fun apply(target: Project) {
+    val javaVersion = JvmTarget.fromTarget(BuildConfig.JAVA_VERSION)
     target.subprojects { subProject ->
       subProject.tasks.withType(KotlinCompile::class.java) { kotlinCompile ->
         kotlinCompile.compilerOptions {
-          val javaVersion = JvmTarget.fromTarget(BuildConfig.JAVA_VERSION)
           jvmTarget.set(javaVersion)
           freeCompilerArgs.addAll("-Xstring-concat=inline")
         }

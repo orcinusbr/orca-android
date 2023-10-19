@@ -11,6 +11,7 @@ class AndroidLibrarySetupPlugin : Plugin<Project> {
     get() = group.toString().removePrefix("${rootProject.name}.")
 
   override fun apply(target: Project) {
+    val javaVersion = JavaVersion.toVersion(BuildConfig.JAVA_VERSION)
     target.subprojects { subProjects ->
       subProjects.afterEvaluate { evaluatedSubProject ->
         evaluatedSubProject.extensions.findByType(LibraryExtension::class.java)?.apply {
@@ -21,7 +22,6 @@ class AndroidLibrarySetupPlugin : Plugin<Project> {
           buildTypes { release { isMinifyEnabled = true } }
 
           compileOptions {
-            val javaVersion = JavaVersion.toVersion(BuildConfig.JAVA_VERSION)
             sourceCompatibility = javaVersion
             targetCompatibility = javaVersion
           }
