@@ -12,10 +12,10 @@ plugins {
   alias(libs.plugins.moduleDependencyGraph)
   alias(libs.plugins.spotless)
 
-  id(libs.plugins.orca.build.setup.android.library.get().pluginId)
-  id(libs.plugins.orca.build.setup.formatting.get().pluginId)
-  id(libs.plugins.orca.build.setup.java.get().pluginId)
-  id(libs.plugins.orca.build.setup.kotlin.get().pluginId)
+  id(libs.plugins.orca.setup.android.library.get().pluginId)
+  id(libs.plugins.orca.setup.formatting.get().pluginId)
+  id(libs.plugins.orca.setup.java.get().pluginId)
+  id(libs.plugins.orca.setup.kotlin.get().pluginId)
   id("build-src")
 }
 

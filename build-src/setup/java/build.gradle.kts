@@ -11,6 +11,6 @@ buildConfig {
 }
 
 gradlePlugin.plugins.register("setup-java") {
-  id = libs.plugins.orca.build.setup.java.get().pluginId
-  implementationClass = "com.jeanbarrossilva.orca.build.setup.java.JavaSetupPlugin"
+  id = libs.plugins.orca.setup.java.get().pluginId
+  implementationClass = "com.jeanbarrossilva.orca.setup.java.JavaSetupPlugin"
 }

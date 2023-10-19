@@ -7,6 +7,6 @@ plugins {
 dependencies { implementation(libs.spotless) }
 
 gradlePlugin.plugins.register("setup-formatting") {
-  id = libs.plugins.orca.build.setup.formatting.get().pluginId
-  implementationClass = "com.jeanbarrossilva.orca.build.setup.formatting.FormattingSetupPlugin"
+  id = libs.plugins.orca.setup.formatting.get().pluginId
+  implementationClass = "com.jeanbarrossilva.orca.setup.formatting.FormattingSetupPlugin"
 }

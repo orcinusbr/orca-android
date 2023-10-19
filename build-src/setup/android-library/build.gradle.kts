@@ -15,9 +15,8 @@ buildConfig {
 dependencies { implementation(libs.android.plugin) }
 
 gradlePlugin.plugins.register("setup-android-library") {
-  id = libs.plugins.orca.build.setup.android.library.get().pluginId
-  implementationClass =
-    "com.jeanbarrossilva.orca.build.setup.android.library.AndroidLibrarySetupPlugin"
+  id = libs.plugins.orca.setup.android.library.get().pluginId
+  implementationClass = "com.jeanbarrossilva.orca.setup.android.library.AndroidLibrarySetupPlugin"
 }
 
 repositories.google()
