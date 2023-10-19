@@ -1,7 +1,5 @@
 import com.jeanbarrossilva.orca.chrynan
 import com.jeanbarrossilva.orca.loadable
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   alias(libs.plugins.android.application) apply false
@@ -17,19 +15,13 @@ plugins {
   id(libs.plugins.orca.build.setup.android.library.get().pluginId)
   id(libs.plugins.orca.build.setup.formatting.get().pluginId)
   id(libs.plugins.orca.build.setup.java.get().pluginId)
+  id(libs.plugins.orca.build.setup.kotlin.get().pluginId)
   id("build-src")
 }
 
 allprojects { repositories.mavenCentral() }
 
 subprojects subproject@{
-  tasks.withType<KotlinCompile> {
-    compilerOptions {
-      jvmTarget.set(JvmTarget.fromTarget(libs.versions.java.get()))
-      freeCompilerArgs.addAll("-Xstring-concat=inline")
-    }
-  }
-
   repositories {
     chrynan()
     google()
