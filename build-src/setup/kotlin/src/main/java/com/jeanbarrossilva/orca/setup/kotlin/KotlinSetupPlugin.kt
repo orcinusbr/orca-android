@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.setup.kotlin
 
-import com.jeanbarrossilva.orca.build.setup.kotlin.BuildConfig
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget

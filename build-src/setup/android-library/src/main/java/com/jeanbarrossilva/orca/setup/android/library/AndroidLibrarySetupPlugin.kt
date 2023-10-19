@@ -1,7 +1,6 @@
 package com.jeanbarrossilva.orca.setup.android.library
 
 import com.android.build.gradle.LibraryExtension
-import com.jeanbarrossilva.orca.build.setup.android.library.BuildConfig
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project

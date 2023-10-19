@@ -6,7 +6,7 @@ plugins {
 }
 
 buildConfig {
-  packageName("com.jeanbarrossilva.orca.build.setup.kotlin")
+  packageName("com.jeanbarrossilva.orca.setup.kotlin")
   buildConfigField("String", "JAVA_VERSION", "\"${libs.versions.java.get()}\"")
 }
 

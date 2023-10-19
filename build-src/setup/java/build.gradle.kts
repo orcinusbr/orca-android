@@ -6,7 +6,7 @@ plugins {
 }
 
 buildConfig {
-  packageName("com.jeanbarrossilva.orca.build.setup.java")
+  packageName("com.jeanbarrossilva.orca.setup.java")
   buildConfigField("String", "JAVA_VERSION", "\"${libs.versions.java.get()}\"")
 }
 

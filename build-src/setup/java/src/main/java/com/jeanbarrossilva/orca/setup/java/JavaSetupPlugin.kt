@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.setup.java
 
-import com.jeanbarrossilva.orca.build.setup.java.BuildConfig
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
