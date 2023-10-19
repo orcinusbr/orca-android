@@ -16,6 +16,7 @@ android-fragment-testing = { group = "androidx.fragment", name = "fragment-testi
 android-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version = "2.6.2" }
 android-material = { group = "com.google.android.material", name = "material", version = "1.9.0" }
 android-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version = "2.7.3" }
+android-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android-plugin" }
 android-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "android-room" }
 android-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "android-room" }
 android-test-core = { group = "androidx.test", name = "core-ktx", version = "1.5.0" }
@@ -28,6 +29,7 @@ kotlin-compiler-embeddable = { group = "org.jetbrains.kotlin", name = "kotlin-co
 kotlin-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlin-coroutines" }
 kotlin-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlin-coroutines" }
 kotlin-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlin-coroutines" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
 kotlin-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.5.1" }
 kotlin-symbolProcessor = { group = "com.google.devtools.ksp", name = "symbol-processing-api", version.ref = "kotlin-symbolProcessor" }
@@ -47,21 +49,25 @@ loadable-placeholder-test = { group = "com.jeanbarrossilva.loadable", name = "lo
 mockk = { group = "io.mockk", name = "mockk-android", version = "1.13.7" }
 paginate = { group = "com.chrynan.paginate", name = "paginate-core", version = "0.3.0" }
 slf4j = { group = "org.slf4j", name = "slf4j-api", version = "2.0.7" }
+spotless = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
 time4j = { group = "net.time4j", name = "time4j-android", version = "4.8-2021a" }
 turbine = { group = "app.cash.turbine", name = "turbine", version = "1.0.0" }
-androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-plugin" }
 android-library = { id = "com.android.library", version.ref = "android-plugin" }
 android-maps-secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version = "2.0.1" }
+buildconfig = { id = "com.github.gmazzo.buildconfig", version = "3.1.0" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-symbolProcessor = { id = "com.google.devtools.ksp", version.ref = "kotlin-symbolProcessor" }
 moduleDependencyGraph = { id = "com.savvasdalkitsis.module-dependency-graph", version = "0.10" }
-spotless = { id = "com.diffplug.spotless", version = "6.22.0" }
+orca-setup-android-library = { id = "com.jeanbarrossilva.orca.setup.android.library" }
+orca-setup-formatting = { id = "com.jeanbarrossilva.orca.setup.formatting" }
+orca-setup-java = { id = "com.jeanbarrossilva.orca.setup.java" }
+orca-setup-kotlin = { id = "com.jeanbarrossilva.orca.setup.kotlin" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [versions]
 android-activity = "1.7.2"
@@ -72,11 +78,11 @@ android-room = "2.5.2"
 android-sdk-min = "28"
 android-sdk-target = "34"
 java = "17"
+junit = "1.1.5"
 kotlin = "1.9.10"
 kotlin-coroutines = "1.7.2"
 kotlin-symbolProcessor = "1.9.10-1.0.13"
 kotlinPoet = "1.14.2"
 ktor = "2.3.2"
 loadable = "1.6.9"
-junit = "1.1.5"
-espresso-core = "3.5.1"
+spotless = "6.22.0"

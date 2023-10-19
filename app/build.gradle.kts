@@ -6,8 +6,6 @@ plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.android)
   alias(libs.plugins.kotlin.symbolProcessor)
-
-  id("build-src")
 }
 
 android {

@@ -10,27 +10,31 @@ private val String.tomlValue
   get() = split('=').last().replace('"', ' ').trim()
 
 plugins {
+  alias(libs.plugins.kotlin.jvm) apply false
+
   `java-gradle-plugin`
   `kotlin-dsl`
 }
 
-repositories { mavenCentral() }
+allprojects {
+  repositories.mavenCentral()
+
+  withJavaVersionString {
+    tasks.withType<KotlinCompile> {
+      compilerOptions.jvmTarget.set(JvmTarget.fromTarget(this@withJavaVersionString))
+
+      java {
+        sourceCompatibility = JavaVersion.toVersion(this@withJavaVersionString)
+        targetCompatibility = JavaVersion.toVersion(this@withJavaVersionString)
+      }
+    }
+  }
+}
 
 gradlePlugin {
   plugins.register(name) {
     id = name
     implementationClass = "com.jeanbarrossilva.orca.plugin.BuildSrcPlugin"
-  }
-}
-
-withJavaVersionString {
-  tasks.withType<KotlinCompile> {
-    compilerOptions.jvmTarget.set(JvmTarget.fromTarget(this@withJavaVersionString))
-
-    java {
-      sourceCompatibility = JavaVersion.toVersion(this@withJavaVersionString)
-      targetCompatibility = JavaVersion.toVersion(this@withJavaVersionString)
-    }
   }
 }
 

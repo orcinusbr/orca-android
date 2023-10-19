@@ -4,8 +4,6 @@ plugins {
   alias(libs.plugins.kotlin.android)
   alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.kotlin.symbolProcessor)
-
-  id("build-src")
 }
 
 android {
