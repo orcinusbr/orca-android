@@ -21,7 +21,7 @@ plugins {
 
 allprojects { repositories.mavenCentral() }
 
-subprojects subproject@{
+subprojects {
   repositories {
     chrynan()
     google()
