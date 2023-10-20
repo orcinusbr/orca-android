@@ -35,7 +35,7 @@ class IndefiniteArticle {
   /** Whether the given word should be preceded by {@link IndefiniteArticle#AN}. */
   private static boolean shouldWordBePrecededByAn(@NotNull String word, char initialLetter) {
     return shouldInitialLetterSoundBeChecked(word) && isLetterWithVowelSound(initialLetter)
-        || isExceptionalWord(word)
+        || startsWithVowelSoundingConsonant(word)
         || startsWithUnexceptionalVowel(removeDiacritics(word));
   }
 
@@ -76,16 +76,10 @@ class IndefiniteArticle {
         || letter == 'x';
   }
 
-  /**
-   * Returns whether the given word is an exceptional one; that is, even if its start sounds like a
-   * vowel, it should still be preceded by {@link IndefiniteArticle#AN}.
-   */
-  private static boolean isExceptionalWord(@NotNull String word) {
+  /** Returns whether the given word starts with a consonant that sounds like a vowel. */
+  private static boolean startsWithVowelSoundingConsonant(@NotNull String word) {
     word = word.toLowerCase();
-    return word.startsWith("euler")
-        || word.startsWith("heir")
-        || word.startsWith("hon")
-        || word.startsWith("hour");
+    return word.startsWith("heir") || word.startsWith("hon") || word.startsWith("hour");
   }
 
   /**
