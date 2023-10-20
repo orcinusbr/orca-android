@@ -11,5 +11,6 @@ dependencies {
   implementation(libs.kotlinPoet.ksp)
 
   testImplementation(libs.assertk)
+  testImplementation(libs.kctfork.ksp)
   testImplementation(libs.kotlin.test)
 }

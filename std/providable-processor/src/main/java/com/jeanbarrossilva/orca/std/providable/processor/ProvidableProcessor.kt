@@ -188,9 +188,9 @@ class ProvidableProcessor private constructor(private val environment: SymbolPro
 
   companion object {
     /** Name of the provider interface method. */
-    private const val PROVIDER_METHOD_NAME = "provide"
+    internal const val PROVIDER_METHOD_NAME = "provide"
 
     /** Name of the variable that represents the [Providable]-annotated type within its provider. */
-    private const val PROVIDER_CLASS_TYPE_VARIABLE_NAME = "T"
+    internal const val PROVIDER_CLASS_TYPE_VARIABLE_NAME = "T"
   }
 }
