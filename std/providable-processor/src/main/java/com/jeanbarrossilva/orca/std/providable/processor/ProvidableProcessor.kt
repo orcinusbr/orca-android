@@ -10,10 +10,8 @@ import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
-import com.google.devtools.ksp.symbol.KSName
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.google.devtools.ksp.symbol.KSTypeParameter
-import com.google.devtools.ksp.symbol.KSValueParameter
 import com.jeanbarrossilva.orca.std.providable.Providable
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
@@ -159,9 +157,8 @@ class ProvidableProcessor private constructor(private val environment: SymbolPro
     typeParameters: List<KSTypeParameter>,
     parameters: Sequence<KSPropertyDeclaration>
   ): FunSpec {
-    val parameterSpecs = parameters.map {
-      createProvideFunParameterSpec(it.docString, typeParameters, it)
-    }
+    val parameterSpecs =
+      parameters.map { createProvideFunParameterSpec(it.docString, typeParameters, it) }
     return FunSpec.builder(PROVIDER_METHOD_NAME)
       .addKdoc("Provides $typeDeclarationNameKDocReferencePrecededByIndefiniteArticle.")
       .addModifiers(KModifier.ABSTRACT)
