@@ -36,5 +36,7 @@ include(
   ":std:injector",
   ":std:injector-processor",
   ":std:injector-test",
+  ":std:providable",
+  ":std:providable-processor",
   ":std:styled-string"
 )
