@@ -14,8 +14,8 @@ public class MultilineCommentsIndices {
   private static final int EMPTY_INDEX_SLOT = -1;
 
   /** {@link IllegalStateException} thrown if a multiline comment body doesn't have a delimiter. */
-  static class NonDelimitedBodyException extends IllegalStateException {
-    NonDelimitedBodyException() {
+  public static class NonDelimitedBodyException extends IllegalStateException {
+    private NonDelimitedBodyException() {
       super("Multiline comment body doesn't start with a delimiter.");
     }
   }
