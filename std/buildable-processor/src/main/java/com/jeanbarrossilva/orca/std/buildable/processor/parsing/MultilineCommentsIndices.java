@@ -33,8 +33,7 @@ public class MultilineCommentsIndices {
     IntRange[] ranges = new IntRange[openingIndices.length / 2];
     int currentRangeIndex = 0;
     for (int openingIndex : openingIndices) {
-      if (openingIndex != EMPTY_INDEX_SLOT
-          && closingIndices[currentRangeIndex] != EMPTY_INDEX_SLOT) {
+      if (openingIndex != EMPTY_INDEX_SLOT) {
         ranges[currentRangeIndex] = new IntRange(openingIndex, closingIndices[currentRangeIndex]);
       }
       currentRangeIndex++;
