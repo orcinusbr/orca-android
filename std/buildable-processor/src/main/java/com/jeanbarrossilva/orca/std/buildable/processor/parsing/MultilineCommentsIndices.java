@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  * Extracts the indices of opening and closing delimiters of multiline comments within various lines
  * through {@link MultilineCommentsIndices#of}.
  */
-class MultilineCommentsIndices {
+public class MultilineCommentsIndices {
   /** Denotes that a slot of an {@link Array} of indices is empty. */
   private static final int EMPTY_INDEX_SLOT = -1;
 
@@ -25,7 +25,7 @@ class MultilineCommentsIndices {
    * lines.
    */
   @NotNull
-  static IntRange[] of(@NotNull String[] lines) {
+  public static IntRange[] of(@NotNull String[] lines) {
     int lineCount = lines.length;
     removeIndentation(lines, lineCount);
     int[] openingIndices = findOpeningIndices(lines, lineCount);
