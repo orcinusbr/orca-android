@@ -30,6 +30,7 @@ include(
   ":platform:ui",
   ":platform:ui-test",
   ":std:buildable",
+  ":std:buildable-processor",
   ":std:image-loader",
   ":std:image-loader:compose",
   ":std:image-loader:local",
