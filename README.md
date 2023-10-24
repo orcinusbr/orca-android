@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="https://github.com/jeanbarrossilva/Orca/assets/38408390/8f4a58e6-f67e-42af-95c4-b48c7f0ce341" />
+    <img src="https://github.com/jeanbarrossilva/Orca/assets/38408390/6854428c-62dc-419a-add0-2f2ef6d7622c" />
 </div>
 
 ## About
