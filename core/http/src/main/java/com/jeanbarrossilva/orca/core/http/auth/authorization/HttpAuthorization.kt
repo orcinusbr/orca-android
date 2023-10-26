@@ -37,8 +37,8 @@ import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.plus
 import com.jeanbarrossilva.orca.platform.theme.kit.action.button.PrimaryButton
-import com.jeanbarrossilva.orca.platform.theme.kit.input.TextField
 import com.jeanbarrossilva.orca.platform.theme.kit.input.option.list.Options
+import com.jeanbarrossilva.orca.platform.theme.kit.input.text.TextField
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.button.ButtonBar
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
