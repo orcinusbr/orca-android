@@ -15,7 +15,7 @@ internal class MainHttpModule :
     { HttpAuthenticator(context = Injector.get(), authorizer = get(), actorProvider = get()) },
     { SharedPreferencesActorProvider(context = Injector.get()) },
     { AuthenticationLock(authenticator = get(), actorProvider = get()) },
-    { SharedPreferencesTermMuter(context = get()) },
+    { SharedPreferencesTermMuter(context = Injector.get()) },
     { HttpInstanceProvider(context = Injector.get()) },
     { AsyncImageLoaderProvider(context = Injector.get()) }
   )
