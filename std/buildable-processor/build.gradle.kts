@@ -5,9 +5,9 @@ plugins {
 }
 
 dependencies {
+  implementation(project(":ext:processing"))
   implementation(project(":std:buildable"))
   implementation(libs.kotlin.symbolProcessor)
-  implementation(libs.kotlinPoet.ksp)
 
   testImplementation(libs.assertk)
   testImplementation(libs.kctfork.ksp)

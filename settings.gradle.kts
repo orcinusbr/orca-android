@@ -17,6 +17,7 @@ include(
   ":core:shared-preferences",
   ":core-module",
   ":core-test",
+  ":ext:processing",
   ":feature:composer",
   ":feature:feed",
   ":feature:profile-details",

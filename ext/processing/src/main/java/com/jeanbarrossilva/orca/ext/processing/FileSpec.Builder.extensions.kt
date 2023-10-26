@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.std.injector.processor.inject
+package com.jeanbarrossilva.orca.ext.processing
 
 import com.google.devtools.ksp.symbol.KSFile
 import com.squareup.kotlinpoet.FileSpec
@@ -8,6 +8,6 @@ import com.squareup.kotlinpoet.FileSpec
  *
  * @param file [KSFile] whose imported structures will be added.
  */
-internal fun FileSpec.Builder.addImports(file: KSFile): FileSpec.Builder {
+fun FileSpec.Builder.addImports(file: KSFile): FileSpec.Builder {
   return apply { file.imports.forEach { addImport(it.asString()) } }
 }
