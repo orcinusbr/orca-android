@@ -215,8 +215,8 @@ private fun InvalidTextFieldPreview() {
     _TextField(
       errorDispatcher =
         buildErrorDispatcher {
-            error("This is an error.") { true }
-            error("This is another error. 😛") { true }
+            errorUnconditionally("This is an error.")
+            errorUnconditionally("This is another error. 😛")
           }
           .apply(ErrorDispatcher::dispatch)
     )

@@ -50,6 +50,16 @@ class ErrorDispatcher private constructor(private val errors: List<Error>) {
       errors.add(error)
     }
 
+    /**
+     * Adds an error to be shown at all times when validating text, considering the input to always
+     * be invalid.
+     *
+     * @param message [String] that describes the error.
+     */
+    internal fun errorUnconditionally(message: String) {
+      error(message) { true }
+    }
+
     /** Builds an [ErrorDispatcher] with the provided configuration. */
     internal fun build(): ErrorDispatcher {
       val errorsAsList = errors.toList()
