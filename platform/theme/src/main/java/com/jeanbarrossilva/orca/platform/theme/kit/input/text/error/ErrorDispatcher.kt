@@ -21,7 +21,7 @@ class ErrorDispatcher private constructor(private val errors: List<Error>) {
    * @param message [String] that describes why the text is invalid.
    * @param condition Returns whether the given text is invalid.
    */
-  internal data class Error(val message: String, val condition: (text: String) -> Boolean)
+  private data class Error(val message: String, val condition: (text: String) -> Boolean)
 
   /** Listens to error announcements. */
   fun interface OnAnnouncementListener {
