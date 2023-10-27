@@ -33,7 +33,7 @@ internal val ErrorDispatcher.messages: SnapshotStateList<String>
  */
 @Composable
 fun rememberErrorDispatcher(build: ErrorDispatcher.Builder.() -> Unit = {}): ErrorDispatcher {
-  val errorDispatcher = remember { buildErrorDispatcher(build) }
+  val errorDispatcher = remember(build) { buildErrorDispatcher(build) }
   DisposableEffect(Unit) { onDispose(errorDispatcher::reset) }
   return errorDispatcher
 }
