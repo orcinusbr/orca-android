@@ -159,11 +159,11 @@ private fun TextField(
     onDispose {}
   }
 
-  Column(modifier, Arrangement.spacedBy(OrcaTheme.spacings.medium)) {
+  Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.medium)) {
     TextField(
       text,
       onTextChange,
-      Modifier.border(OrcaTheme.borders.default.width, borderColor, shape),
+      modifier.border(OrcaTheme.borders.default.width, borderColor, shape),
       label = {
         val color by
           animateColorAsState(
