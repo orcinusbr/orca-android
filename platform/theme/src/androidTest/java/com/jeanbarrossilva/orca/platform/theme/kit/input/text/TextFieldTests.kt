@@ -15,7 +15,7 @@ internal class TextFieldTests {
   @Test
   fun showsErrorsWhenTextIsInvalid() {
     val errorDispatcher =
-      buildErrorDispatcher { errorUnconditionally("🫵🏽") }.apply(ErrorDispatcher::dispatch)
+      buildErrorDispatcher { errorAlways("🫵🏽") }.apply(ErrorDispatcher::dispatch)
     composeRule.setContent { OrcaTheme { TextField(errorDispatcher = errorDispatcher) } }
     composeRule.onNodeWithTag(TEXT_FIELD_ERRORS_TAG).assertIsDisplayed()
   }

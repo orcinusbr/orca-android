@@ -56,7 +56,7 @@ class ErrorDispatcher private constructor(private val errors: List<Error>) {
      *
      * @param message [String] that describes the error.
      */
-    internal fun errorUnconditionally(message: String) {
+    internal fun errorAlways(message: String) {
       error(message) { true }
     }
 

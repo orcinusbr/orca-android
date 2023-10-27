@@ -14,7 +14,7 @@ internal class ErrorDispatcherExtensionsTests {
   fun addsMessagesOnErrorAnnouncements() {
     var messages = emptyList<String>()
     composeRule.setContent {
-      val dispatcher = rememberErrorDispatcher { errorUnconditionally("🦭") }
+      val dispatcher = rememberErrorDispatcher { errorAlways("🦭") }
 
       with(dispatcher.messages) messages@{
         DisposableEffect(this) {

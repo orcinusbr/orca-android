@@ -10,7 +10,7 @@ internal class ErrorDispatcherTests {
   fun doesNotAnnounceErrorsBeforeDispatch() {
     var hasBeenAnnounced = false
     val onAnnouncementListener = ErrorDispatcher.OnAnnouncementListener { hasBeenAnnounced = true }
-    buildErrorDispatcher { errorUnconditionally("⚠️") }
+    buildErrorDispatcher { errorAlways("⚠️") }
       .apply {
         use {
           listen(onAnnouncementListener)
@@ -35,7 +35,7 @@ internal class ErrorDispatcherTests {
     var hasErrorBeenAnnounced = false
     val onAnnouncementListener =
       ErrorDispatcher.OnAnnouncementListener { hasErrorBeenAnnounced = true }
-    buildErrorDispatcher { errorUnconditionally("😷") }
+    buildErrorDispatcher { errorAlways("😷") }
       .use { dispatcher ->
         dispatcher.listen(onAnnouncementListener)
         dispatcher.register("🐳")
@@ -47,7 +47,7 @@ internal class ErrorDispatcherTests {
   @Test
   fun resetsAfterUsage() {
     val dispatcher =
-      buildErrorDispatcher { errorUnconditionally("🇳🇦") }
+      buildErrorDispatcher { errorAlways("🇳🇦") }
         .apply {
           use {
             listen {}
