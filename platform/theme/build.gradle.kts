@@ -14,7 +14,7 @@ dependencies {
   androidTestImplementation(libs.android.compose.ui.test.manifest)
   androidTestImplementation(libs.android.test.core)
   androidTestImplementation(libs.android.test.runner)
-  androidTestImplementation(libs.kotlin.test)
+  androidTestImplementation(libs.assertk)
 
   api(libs.android.compose.material)
   api(libs.android.compose.ui.tooling)
@@ -24,4 +24,7 @@ dependencies {
   implementation(libs.android.material)
   implementation(libs.kotlin.reflect)
   implementation(libs.loadable.placeholder)
+
+  testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.test)
 }

@@ -1,7 +1,10 @@
-package com.jeanbarrossilva.orca.platform.theme.kit.input
+package com.jeanbarrossilva.orca.platform.theme.kit.input.text
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.LocalTextStyle
@@ -12,6 +15,7 @@ import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,10 +24,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.kit.input.TextField as _TextField
-import com.jeanbarrossilva.orca.platform.theme.kit.input.TextFieldDefaults as _TextFieldDefaults
+import com.jeanbarrossilva.orca.platform.theme.R
+import com.jeanbarrossilva.orca.platform.theme.kit.input.text.TextField as _TextField
+import com.jeanbarrossilva.orca.platform.theme.kit.input.text.TextFieldDefaults as _TextFieldDefaults
+import com.jeanbarrossilva.orca.platform.theme.kit.input.text.error.ErrorDispatcher
+import com.jeanbarrossilva.orca.platform.theme.kit.input.text.error.buildErrorDispatcher
+import com.jeanbarrossilva.orca.platform.theme.kit.input.text.error.messages
+import com.jeanbarrossilva.orca.platform.theme.kit.input.text.error.rememberErrorDispatcher
+
+/** Tag that identifies a [TextField]'s errors' [Text] for testing purposes. */
+internal const val TEXT_FIELD_ERRORS_TAG = "text-field-errors"
 
 /** Default values used by a [TextField][_TextField]. */
 object TextFieldDefaults {
@@ -53,6 +67,7 @@ object TextFieldDefaults {
  * @param text Text to be shown.
  * @param onTextChange Callback called whenever the text changes.
  * @param modifier [Modifier] to be applied to the underlying [TextField].
+ * @param errorDispatcher [ErrorDispatcher] to which invalid input state errors will be dispatched.
  * @param keyboardOptions Software-IME-specific options.
  * @param keyboardActions Software-IME-specific actions.
  * @param isSingleLined Whether there can be multiple lines.
@@ -62,6 +77,7 @@ fun TextField(
   text: String,
   onTextChange: (text: String) -> Unit,
   modifier: Modifier = Modifier,
+  errorDispatcher: ErrorDispatcher = rememberErrorDispatcher(),
   keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
   keyboardActions: KeyboardActions = KeyboardActions.Default,
   isSingleLined: Boolean = false,
@@ -74,6 +90,7 @@ fun TextField(
     onTextChange,
     isFocused,
     modifier.onFocusChanged { isFocused = it.isFocused },
+    errorDispatcher,
     keyboardOptions,
     keyboardActions,
     isSingleLined,
@@ -84,10 +101,29 @@ fun TextField(
 /**
  * Orca-specific [TextField].
  *
+ * @param modifier [Modifier] to be applied to the underlying [TextField].
+ * @param text Text to be shown.
+ * @param isFocused Whether it's focused.
+ * @param errorDispatcher [ErrorDispatcher] to which invalid input state errors will be dispatched.
+ */
+@Composable
+internal fun TextField(
+  modifier: Modifier = Modifier,
+  text: String = "Text",
+  isFocused: Boolean = false,
+  errorDispatcher: ErrorDispatcher = rememberErrorDispatcher()
+) {
+  _TextField(text, onTextChange = {}, isFocused, modifier, errorDispatcher) { Text("Label") }
+}
+
+/**
+ * Orca-specific [TextField].
+ *
  * @param text Text to be shown.
  * @param onTextChange Callback called whenever the text changes.
  * @param isFocused Whether it's focused.
  * @param modifier [Modifier] to be applied to the underlying [TextField].
+ * @param errorDispatcher [ErrorDispatcher] to which invalid input state errors will be dispatched.
  * @param keyboardOptions Software-IME-specific options.
  * @param keyboardActions Software-IME-specific actions.
  * @param isSingleLined Whether there can be multiple lines.
@@ -98,11 +134,13 @@ private fun TextField(
   onTextChange: (text: String) -> Unit,
   isFocused: Boolean,
   modifier: Modifier = Modifier,
+  errorDispatcher: ErrorDispatcher = rememberErrorDispatcher(),
   keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
   keyboardActions: KeyboardActions = KeyboardActions.Default,
   isSingleLined: Boolean = false,
   label: @Composable () -> Unit
 ) {
+  val context = LocalContext.current
   val highlightColor = OrcaTheme.colors.secondary
   val borderColor by
     animateColorAsState(
@@ -110,26 +148,42 @@ private fun TextField(
       label = "BorderColor"
     )
   val shape = OrcaTheme.shapes.large
+  val errorMessages =
+    errorDispatcher.messages.joinToString("\n") {
+      context.getString(R.string.platform_ui_text_field_consecutive_error_message, it)
+    }
+  val containsErrors = remember(errorMessages, errorMessages::isNotEmpty)
 
-  TextField(
-    text,
-    onTextChange,
-    modifier.border(OrcaTheme.borders.default.width, borderColor, shape),
-    label = {
-      val color by
-        animateColorAsState(
-          if (isFocused) highlightColor else LocalTextStyle.current.color,
-          label = "LabelColor"
-        )
+  DisposableEffect(text) {
+    errorDispatcher.register(text)
+    onDispose {}
+  }
 
-      ProvideTextStyle(LocalTextStyle.current.copy(color = color)) { label() }
-    },
-    keyboardOptions = keyboardOptions,
-    keyboardActions = keyboardActions,
-    singleLine = isSingleLined,
-    shape = shape,
-    colors = _TextFieldDefaults.colors()
-  )
+  Column(modifier, Arrangement.spacedBy(OrcaTheme.spacings.medium)) {
+    TextField(
+      text,
+      onTextChange,
+      Modifier.border(OrcaTheme.borders.default.width, borderColor, shape),
+      label = {
+        val color by
+          animateColorAsState(
+            if (isFocused) highlightColor else LocalTextStyle.current.color,
+            label = "LabelColor"
+          )
+
+        ProvideTextStyle(LocalTextStyle.current.copy(color = color)) { label() }
+      },
+      keyboardOptions = keyboardOptions,
+      keyboardActions = keyboardActions,
+      singleLine = isSingleLined,
+      shape = shape,
+      colors = _TextFieldDefaults.colors()
+    )
+
+    AnimatedVisibility(visible = containsErrors) {
+      Text(errorMessages, Modifier.testTag(TEXT_FIELD_ERRORS_TAG), OrcaTheme.colors.error.container)
+    }
+  }
 }
 
 /** Preview of an empty [TextField][_TextField]. */
@@ -153,18 +207,18 @@ private fun FocusedTextFieldPreview() {
   OrcaTheme { _TextField(isFocused = true) }
 }
 
-/**
- * Orca-specific [TextField].
- *
- * @param text Text to be shown.
- * @param isFocused Whether it's focused.
- * @param modifier [Modifier] to be applied to the underlying [TextField].
- */
+/** Preview of a [TextField] with errors. */
 @Composable
-private fun TextField(
-  modifier: Modifier = Modifier,
-  text: String = "Text",
-  isFocused: Boolean = false
-) {
-  _TextField(text, onTextChange = {}, isFocused, modifier) { Text("Label") }
+@MultiThemePreview
+private fun InvalidTextFieldPreview() {
+  OrcaTheme {
+    _TextField(
+      errorDispatcher =
+        buildErrorDispatcher {
+            errorAlways("This is an error.")
+            errorAlways("This is another error. 😛")
+          }
+          .apply(ErrorDispatcher::dispatch)
+    )
+  }
 }

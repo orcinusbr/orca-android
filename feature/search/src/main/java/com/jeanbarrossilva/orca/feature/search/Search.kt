@@ -41,7 +41,7 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.search.samples
 import com.jeanbarrossilva.orca.feature.search.ui.SearchResultCard
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.kit.input.TextField
+import com.jeanbarrossilva.orca.platform.theme.kit.input.text.TextField
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.BackAction
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay

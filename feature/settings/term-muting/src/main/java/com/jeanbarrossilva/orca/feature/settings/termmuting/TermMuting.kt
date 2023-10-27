@@ -25,7 +25,7 @@ import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.plus
 import com.jeanbarrossilva.orca.platform.theme.kit.action.button.PrimaryButton
-import com.jeanbarrossilva.orca.platform.theme.kit.input.TextField
+import com.jeanbarrossilva.orca.platform.theme.kit.input.text.TextField
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.button.ButtonBar
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBarDefaults
@@ -98,8 +98,8 @@ private fun TermMuting(
           term,
           onTermChange,
           Modifier.focusRequester(focusRequester).fillMaxWidth(),
-          KeyboardOptions(imeAction = ImeAction.Done),
-          KeyboardActions(onDone = { muteAndPop() })
+          keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+          keyboardActions = KeyboardActions(onDone = { muteAndPop() })
         ) {
           Text(stringResource(R.string.settings_term_muting_term))
         }
