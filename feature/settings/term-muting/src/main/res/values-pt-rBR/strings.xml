@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="settings_term_muting">Silenciar</string>
+    <string name="settings_term_muting_empty_error">O termo não pode estar vazio.</string>
     <string name="settings_term_muting_explanation">
         Digite o termo que você gostaria de silenciar. Publicações que o contém não serão exibidas
         no seu feed ou mesmo entregues por meio de notificações.

@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.platform.theme.kit.input.text
 
+import androidx.annotation.RestrictTo
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.border
@@ -33,11 +34,13 @@ import com.jeanbarrossilva.orca.platform.theme.kit.input.text.TextField as _Text
 import com.jeanbarrossilva.orca.platform.theme.kit.input.text.TextFieldDefaults as _TextFieldDefaults
 import com.jeanbarrossilva.orca.platform.theme.kit.input.text.error.ErrorDispatcher
 import com.jeanbarrossilva.orca.platform.theme.kit.input.text.error.buildErrorDispatcher
+import com.jeanbarrossilva.orca.platform.theme.kit.input.text.error.containsErrorsAsState
 import com.jeanbarrossilva.orca.platform.theme.kit.input.text.error.messages
 import com.jeanbarrossilva.orca.platform.theme.kit.input.text.error.rememberErrorDispatcher
 
 /** Tag that identifies a [TextField]'s errors' [Text] for testing purposes. */
-internal const val TEXT_FIELD_ERRORS_TAG = "text-field-errors"
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP_PREFIX)
+const val TEXT_FIELD_ERRORS_TAG = "text-field-errors"
 
 /** Default values used by a [TextField][_TextField]. */
 object TextFieldDefaults {
@@ -123,7 +126,7 @@ internal fun TextField(
  * @param onTextChange Callback called whenever the text changes.
  * @param isFocused Whether it's focused.
  * @param modifier [Modifier] to be applied to the underlying [TextField].
- * @param errorDispatcher [ErrorDispatcher] to which invalid input state errors will be dispatched.
+ * @param errorDispatcher [ErrorDispatcher] by which invalid input state errors will be dispatched.
  * @param keyboardOptions Software-IME-specific options.
  * @param keyboardActions Software-IME-specific actions.
  * @param isSingleLined Whether there can be multiple lines.
@@ -152,7 +155,7 @@ private fun TextField(
     errorDispatcher.messages.joinToString("\n") {
       context.getString(R.string.platform_ui_text_field_consecutive_error_message, it)
     }
-  val containsErrors = remember(errorMessages, errorMessages::isNotEmpty)
+  val containsErrors by errorDispatcher.containsErrorsAsState
 
   DisposableEffect(text) {
     errorDispatcher.register(text)

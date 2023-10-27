@@ -27,6 +27,7 @@ include(
   ":platform:cache",
   ":platform:launchable",
   ":platform:theme",
+  ":platform:theme-test",
   ":platform:ui",
   ":platform:ui-test",
   ":std:image-loader",
