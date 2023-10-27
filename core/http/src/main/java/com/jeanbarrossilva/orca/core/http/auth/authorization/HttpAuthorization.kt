@@ -122,7 +122,7 @@ internal fun HttpAuthorization(
         searchQuery,
         onSearch,
         Modifier.fillMaxWidth(),
-        KeyboardOptions(imeAction = ImeAction.Search),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         isSingleLined = true
       ) {
         Text(stringResource(R.string.core_http_authorization_search))

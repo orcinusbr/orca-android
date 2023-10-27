@@ -98,8 +98,8 @@ private fun TermMuting(
           term,
           onTermChange,
           Modifier.focusRequester(focusRequester).fillMaxWidth(),
-          KeyboardOptions(imeAction = ImeAction.Done),
-          KeyboardActions(onDone = { muteAndPop() })
+          keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+          keyboardActions = KeyboardActions(onDone = { muteAndPop() })
         ) {
           Text(stringResource(R.string.settings_term_muting_term))
         }
