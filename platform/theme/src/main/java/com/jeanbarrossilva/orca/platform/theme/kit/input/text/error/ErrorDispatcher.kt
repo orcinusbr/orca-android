@@ -1,5 +1,8 @@
 package com.jeanbarrossilva.orca.platform.theme.kit.input.text.error
 
+import android.content.Context
+import androidx.annotation.StringRes
+
 /**
  * Coordinates dynamic error triggering.
  *
@@ -14,6 +17,9 @@ class ErrorDispatcher private constructor(private val errors: List<Error>) {
 
   /** Whether the [errors] have already been dispatched. */
   internal var hasDispatched = false
+
+  /** Whether the most recently registered text contains errors. */
+  internal var containsErrors = false
 
   /**
    * Invalid text state.
@@ -33,10 +39,28 @@ class ErrorDispatcher private constructor(private val errors: List<Error>) {
     fun onAnnouncement(messages: List<String>)
   }
 
-  /** Configures and build an [ErrorDispatcher]. */
+  /** Configures and builds an [ErrorDispatcher]. */
   class Builder internal constructor() {
     /** [Error]s with which the [ErrorDispatcher] will be built. */
     private val errors = mutableListOf<Error>()
+
+    /**
+     * Adds an error to be shown when validating input text.
+     *
+     * @param context [Context] through which the message will be obtained through its
+     *   [messageResourceID].
+     * @param messageResourceID Resource ID of the [String] that describes the error.
+     * @param condition Returns whether the given text is invalid, and, therefore, that the error
+     *   should be shown.
+     */
+    fun error(
+      context: Context,
+      @StringRes messageResourceID: Int,
+      condition: (text: String) -> Boolean
+    ) {
+      val message = context.getString(messageResourceID)
+      error(message, condition)
+    }
 
     /**
      * Adds an error to be shown when validating input text.
@@ -138,6 +162,7 @@ class ErrorDispatcher private constructor(private val errors: List<Error>) {
    */
   private fun announceErrors(text: String) {
     val messages = errors.filter { it.condition(text) }.map(Error::message)
+    containsErrors = messages.isNotEmpty()
     onAnnouncementListeners.forEach { it.onAnnouncement(messages) }
   }
 }

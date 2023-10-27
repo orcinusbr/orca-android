@@ -7,12 +7,18 @@ plugins {
 }
 
 android {
-  namespace = namespaceFor("feature.settings.termmuting")
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.get()
+  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  namespace = namespaceFor("feature.settings.termmuting")
 }
 
 dependencies {
+  androidTestImplementation(project(":platform:theme-test"))
+  androidTestImplementation(libs.android.compose.ui.test.junit)
+  androidTestImplementation(libs.android.compose.ui.test.manifest)
+  androidTestImplementation(libs.android.test.runner)
+
   ksp(project(":std:injector-processor"))
 
   implementation(project(":core"))

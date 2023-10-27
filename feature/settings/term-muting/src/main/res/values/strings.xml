@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="settings_term_muting">Mute</string>
+    <string name="settings_term_muting_empty_error">Term cannot be empty.</string>
     <string name="settings_term_muting_explanation">
         Type in the term you would like to mute. Toots containing it won\'t be shown in your feed or
         even delivered to you through notifications.
