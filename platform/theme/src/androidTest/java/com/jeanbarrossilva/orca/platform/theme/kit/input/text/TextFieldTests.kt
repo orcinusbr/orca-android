@@ -5,6 +5,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.kit.input.text.error.ErrorDispatcher
+import com.jeanbarrossilva.orca.platform.theme.kit.input.text.error.buildErrorDispatcher
 import org.junit.Rule
 import org.junit.Test
 
@@ -14,10 +15,7 @@ internal class TextFieldTests {
   @Test
   fun showsErrorsWhenTextIsInvalid() {
     val errorDispatcher =
-      ErrorDispatcher().apply {
-        error("🫵🏽") { true }
-        dispatch()
-      }
+      buildErrorDispatcher { error("🫵🏽") { true } }.apply(ErrorDispatcher::dispatch)
     composeRule.setContent { OrcaTheme { TextField(errorDispatcher = errorDispatcher) } }
     composeRule.onNodeWithTag(TEXT_FIELD_ERRORS_TAG).assertIsDisplayed()
   }

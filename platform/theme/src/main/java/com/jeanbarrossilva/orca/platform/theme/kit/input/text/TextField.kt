@@ -32,6 +32,7 @@ import com.jeanbarrossilva.orca.platform.theme.R
 import com.jeanbarrossilva.orca.platform.theme.kit.input.text.TextField as _TextField
 import com.jeanbarrossilva.orca.platform.theme.kit.input.text.TextFieldDefaults as _TextFieldDefaults
 import com.jeanbarrossilva.orca.platform.theme.kit.input.text.error.ErrorDispatcher
+import com.jeanbarrossilva.orca.platform.theme.kit.input.text.error.buildErrorDispatcher
 import com.jeanbarrossilva.orca.platform.theme.kit.input.text.error.messages
 import com.jeanbarrossilva.orca.platform.theme.kit.input.text.error.rememberErrorDispatcher
 
@@ -213,11 +214,11 @@ private fun InvalidTextFieldPreview() {
   OrcaTheme {
     _TextField(
       errorDispatcher =
-        rememberErrorDispatcher().apply {
-          error("This is an error.") { true }
-          error("This is another error. 😛") { true }
-          dispatch()
-        }
+        buildErrorDispatcher {
+            error("This is an error.") { true }
+            error("This is another error. 😛") { true }
+          }
+          .apply(ErrorDispatcher::dispatch)
     )
   }
 }

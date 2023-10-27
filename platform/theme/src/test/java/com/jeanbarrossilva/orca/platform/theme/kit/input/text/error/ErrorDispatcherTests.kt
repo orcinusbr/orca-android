@@ -10,20 +10,20 @@ internal class ErrorDispatcherTests {
   fun doesNotAnnounceErrorsBeforeDispatch() {
     var hasBeenAnnounced = false
     val onAnnouncementListener = ErrorDispatcher.OnAnnouncementListener { hasBeenAnnounced = true }
-    ErrorDispatcher().apply {
-      use {
-        error("⚠️") { true }
-        listen(onAnnouncementListener)
-        register("🐋")
+    buildErrorDispatcher { error("⚠️") { true } }
+      .apply {
+        use {
+          listen(onAnnouncementListener)
+          register("🐋")
+        }
       }
-    }
     assertThat(hasBeenAnnounced).isFalse()
   }
 
   @Test
   fun dispatches() {
     val dispatcher =
-      ErrorDispatcher().apply {
+      buildErrorDispatcher().apply {
         register("🍨")
         dispatch()
       }
@@ -35,26 +35,26 @@ internal class ErrorDispatcherTests {
     var hasErrorBeenAnnounced = false
     val onAnnouncementListener =
       ErrorDispatcher.OnAnnouncementListener { hasErrorBeenAnnounced = true }
-    ErrorDispatcher().use { dispatcher ->
-      dispatcher.error("😷") { text -> text.length == 1 }
-      dispatcher.listen(onAnnouncementListener)
-      dispatcher.register("🐳")
-      dispatcher.dispatch()
-    }
+    buildErrorDispatcher { error("😷") { text -> text.length == 1 } }
+      .use { dispatcher ->
+        dispatcher.listen(onAnnouncementListener)
+        dispatcher.register("🐳")
+        dispatcher.dispatch()
+      }
     assertThat(hasErrorBeenAnnounced).isTrue()
   }
 
   @Test
   fun resetsAfterUsage() {
     val dispatcher =
-      ErrorDispatcher().apply {
-        use {
-          error("🇳🇦") { true }
-          listen {}
-          register("🍕")
-          dispatch()
+      buildErrorDispatcher { error("🇳🇦") { true } }
+        .apply {
+          use {
+            listen {}
+            register("🍕")
+            dispatch()
+          }
         }
-      }
     assertThat(dispatcher.hasDispatched).isFalse()
   }
 }

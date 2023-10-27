@@ -1,10 +1,11 @@
 package com.jeanbarrossilva.orca.platform.theme.kit.input.text.error
 
-/** Coordinates dynamic error triggering. */
-class ErrorDispatcher internal constructor() {
-  /** [Error]s that have been registered. */
-  private val errors = mutableListOf<Error>()
-
+/**
+ * Coordinates dynamic error triggering.
+ *
+ * @param errors [Error]s that have been registered.
+ */
+class ErrorDispatcher private constructor(private val errors: List<Error>) {
   /** [OnAnnouncementListener]s that are currently active. */
   private val onAnnouncementListeners = mutableListOf<OnAnnouncementListener>()
 
@@ -32,16 +33,28 @@ class ErrorDispatcher internal constructor() {
     fun onAnnouncement(messages: List<String>)
   }
 
-  /**
-   * Adds an error to be shown when validating input text.
-   *
-   * @param message [String] that describes the error.
-   * @param condition Returns whether the given text is invalid and, therefore, that the error
-   *   should be shown.
-   */
-  fun error(message: String, condition: (text: String) -> Boolean) {
-    val error = Error(message, condition)
-    errors.add(error)
+  /** Configures and build an [ErrorDispatcher]. */
+  class Builder {
+    /** [Error]s with which the [ErrorDispatcher] will be built. */
+    private val errors = mutableListOf<Error>()
+
+    /**
+     * Adds an error to be shown when validating input text.
+     *
+     * @param message [String] that describes the error.
+     * @param condition Returns whether the given text is invalid and, therefore, that the error
+     *   should be shown.
+     */
+    fun error(message: String, condition: (text: String) -> Boolean) {
+      val error = Error(message, condition)
+      errors.add(error)
+    }
+
+    /** Builds an [ErrorDispatcher] with the provided configuration. */
+    internal fun build(): ErrorDispatcher {
+      val errorsAsList = errors.toList()
+      return ErrorDispatcher(errorsAsList)
+    }
   }
 
   /**
@@ -94,7 +107,6 @@ class ErrorDispatcher internal constructor() {
 
   /** Sets this [ErrorDispatcher] to its initial state. */
   internal fun reset() {
-    errors.clear()
     onAnnouncementListeners.clear()
     preDispatchText = ""
     hasDispatched = false

@@ -25,10 +25,25 @@ internal val ErrorDispatcher.messages: SnapshotStateList<String>
     return errors
   }
 
-/** Remembers an [ErrorDispatcher]. */
+/**
+ * Remembers an [ErrorDispatcher].
+ *
+ * @param build Configures the [ErrorDispatcher] to be built and returned through its
+ *   [ErrorDispatcher.Builder].
+ */
 @Composable
-fun rememberErrorDispatcher(): ErrorDispatcher {
-  val errorDispatcher = remember(::ErrorDispatcher)
+fun rememberErrorDispatcher(build: ErrorDispatcher.Builder.() -> Unit = {}): ErrorDispatcher {
+  val errorDispatcher = remember { buildErrorDispatcher(build) }
   DisposableEffect(Unit) { onDispose(errorDispatcher::reset) }
   return errorDispatcher
+}
+
+/**
+ * Builds an [ErrorDispatcher].
+ *
+ * @param build Configures the [ErrorDispatcher] to be built and returned through its
+ *   [ErrorDispatcher.Builder].
+ */
+internal fun buildErrorDispatcher(build: ErrorDispatcher.Builder.() -> Unit = {}): ErrorDispatcher {
+  return ErrorDispatcher.Builder().apply(build).build()
 }
