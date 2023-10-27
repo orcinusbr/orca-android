@@ -34,7 +34,7 @@ class ErrorDispatcher private constructor(private val errors: List<Error>) {
   }
 
   /** Configures and build an [ErrorDispatcher]. */
-  class Builder {
+  class Builder internal constructor() {
     /** [Error]s with which the [ErrorDispatcher] will be built. */
     private val errors = mutableListOf<Error>()
 
