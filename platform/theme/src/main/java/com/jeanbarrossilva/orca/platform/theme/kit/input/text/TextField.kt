@@ -176,6 +176,7 @@ private fun TextField(
 
         ProvideTextStyle(LocalTextStyle.current.copy(color = color)) { label() }
       },
+      isError = containsErrors,
       keyboardOptions = keyboardOptions,
       keyboardActions = keyboardActions,
       singleLine = isSingleLined,
