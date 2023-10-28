@@ -24,12 +24,12 @@ internal class BuildableProcessorTests {
   fun reportsErrorOnBuildableAnnotatedPrivateClass() {
     val file =
       SourceFile.kotlin(
-        "PrivateClass.kt",
+        "MyClass.kt",
         """
           import com.jeanbarrossilva.orca.std.buildable.Buildable
 
           @Buildable
-          private abstract class PrivateClass
+          private abstract class MyClass
         """
       )
     assertThat(BuildableProcessor.process(file).messages)
@@ -41,12 +41,12 @@ internal class BuildableProcessorTests {
   fun reportsErrorOnBuildableAnnotatedConcreteClass() {
     val file =
       SourceFile.kotlin(
-        "ConcreteClass.kt",
+        "MyClass.kt",
         """
           import com.jeanbarrossilva.orca.std.buildable.Buildable
 
           @Buildable
-          class ConcreteClass
+          class MyClass
         """
       )
     assertThat(BuildableProcessor.process(file).messages)
