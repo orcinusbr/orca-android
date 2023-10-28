@@ -4,6 +4,7 @@ import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
+import assertk.assertions.isTrue
 import com.jeanbarrossilva.orca.std.buildable.processor.test.process
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
@@ -54,6 +55,28 @@ internal class BuildableProcessorTests {
 
   @OptIn(ExperimentalCompilerApi::class)
   @Test
+  fun generatesDslMarkerAnnotatedAnnotationClass() {
+    val file =
+      SourceFile.kotlin(
+        "MyClass.kt",
+        """
+          import com.jeanbarrossilva.orca.std.buildable.Buildable
+
+          @Buildable
+          abstract class MyClass
+        """
+      )
+    assertThat(
+        BuildableProcessor.process(file)
+          .classLoader
+          .loadClass(BuildableProcessor.createDslMarkerAnnotatedAnnotationClassName("MyClass"))
+          .isAnnotation
+      )
+      .isTrue()
+  }
+
+  @OptIn(ExperimentalCompilerApi::class)
+  @Test
   fun generatesBuilderWhoseFileImportsMatchThoseOfBuildableAnnotatedClass() {
     val file =
       SourceFile.kotlin(
@@ -83,7 +106,11 @@ internal class BuildableProcessorTests {
         """
       )
     assertThat(
-        BuildableProcessor.process(file).classLoader.loadClass("MyClassBuilder").kotlin.visibility
+        BuildableProcessor.process(file)
+          .classLoader
+          .loadClass(BuildableProcessor.createBuilderClassName("MyClass"))
+          .kotlin
+          .visibility
       )
       .isEqualTo(KVisibility.INTERNAL)
   }
@@ -104,7 +131,7 @@ internal class BuildableProcessorTests {
     val primaryConstructor =
       BuildableProcessor.process(file)
         .classLoader
-        .loadClass("MyClassBuilder")
+        .loadClass(BuildableProcessor.createBuilderClassName("MyClass"))
         .kotlin
         .primaryConstructor
     val primaryConstructorParameter = primaryConstructor?.parameters.orEmpty().single()
@@ -132,7 +159,7 @@ internal class BuildableProcessorTests {
     val callbackProperty =
       BuildableProcessor.process(file)
         .classLoader
-        .loadClass("MyClassBuilder")
+        .loadClass(BuildableProcessor.createBuilderClassName("MyClass"))
         .kotlin
         .declaredMemberProperties
         .single()
@@ -157,7 +184,7 @@ internal class BuildableProcessorTests {
     val buildFunction =
       BuildableProcessor.process(file)
         .classLoader
-        .loadClass("MyClassBuilder")
+        .loadClass(BuildableProcessor.createBuilderClassName("MyClass"))
         .kotlin
         .declaredMemberFunctions
         .first { it.name == BuildableProcessor.BUILDER_BUILD_METHOD_NAME }

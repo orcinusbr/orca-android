@@ -12,7 +12,6 @@ import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSValueParameter
 import com.jeanbarrossilva.orca.ext.processing.addImports
@@ -87,99 +86,66 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
    */
   private fun generateFiles(buildableDeclarations: Sequence<KSClassDeclaration>) {
     buildableDeclarations.forEach {
-      val packageName = it.packageName.asString()
-      val name = it.simpleName.asString()
-      val dslMarkerAnnotationClassName = name + "Dsl"
+      val codeGenerator = environment.codeGenerator
       val file = it.requireContainingFile()
       val dependencies = Dependencies(aggregating = true, file)
-      val codeGenerator = environment.codeGenerator
-      val visibility = it.getVisibility().toKModifier() ?: KModifier.PUBLIC
-      val builderClassName = name + "Builder"
-      val valueParameters = it.primaryConstructor?.parameters.orEmpty()
-      createDslMarkerAnnotationFileSpec(packageName, name, dslMarkerAnnotationClassName)
-        .writeTo(codeGenerator, dependencies)
-      createBuilderFileSpec(dslMarkerAnnotationClassName, file, it, builderClassName)
-        .writeTo(codeGenerator, dependencies)
-      createExtensionsFileSpec(
-          file,
-          it.docString,
-          visibility,
-          name,
-          valueParameters,
-          builderClassName,
-          packageName
-        )
-        .writeTo(codeGenerator, dependencies)
+      createDslMarkerAnnotatedAnnotationFileSpec(it).writeTo(codeGenerator, dependencies)
+      createBuilderFileSpec(it).writeTo(codeGenerator, dependencies)
+      createExtensionsFileSpec(it).writeTo(codeGenerator, dependencies)
     }
   }
 
   /**
    * Creates a [FileSpec] of a [DslMarker]-annotated annotation class for a [KSClassDeclaration].
    *
-   * @param packageName Name of the package in which the [Buildable]-annotated class'
-   *   [KSClassDeclaration] is.
-   * @param buildableDeclarationName Name of the [Buildable]-annotated class' [KSClassDeclaration].
-   * @param annotationClassName Name of the annotation class.
+   * @param buildableClassDeclaration [KSClassDeclaration] of the [Buildable]-annotated class for
+   *   which the DSL is.
    */
-  private fun createDslMarkerAnnotationFileSpec(
-    packageName: String,
-    buildableDeclarationName: String,
-    annotationClassName: String
+  private fun createDslMarkerAnnotatedAnnotationFileSpec(
+    buildableClassDeclaration: KSClassDeclaration
   ): FileSpec {
-    val annotationClassSpec =
-      createDslMarkerAnnotationClassSpec(buildableDeclarationName, annotationClassName)
+    val packageName = buildableClassDeclaration.packageName.asString()
+    val buildableClassName = buildableClassDeclaration.simpleName.asString()
+    val annotationClassName = createDslMarkerAnnotatedAnnotationClassName(buildableClassName)
+    val annotationClassSpec = createDslMarkerAnnotatedAnnotationClassSpec(buildableClassDeclaration)
     return FileSpec.builder(packageName, fileName = annotationClassName)
       .addType(annotationClassSpec)
       .build()
   }
 
   /**
-   * Creates a [TypeSpec] of a [DslMarker]-annotated annotation class named [annotationClassName].
+   * Creates a [TypeSpec] of a [DslMarker]-annotated annotation class.
    *
-   * @param buildableDeclarationName Name of the [Buildable]-annotated class' [KSClassDeclaration].
-   * @param annotationClassName Name of the annotation class.
+   * @param buildableClassDeclaration [KSClassDeclaration] of the [Buildable]-annotated class for
+   *   which the DSL is.
    */
-  private fun createDslMarkerAnnotationClassSpec(
-    buildableDeclarationName: String,
-    annotationClassName: String
+  private fun createDslMarkerAnnotatedAnnotationClassSpec(
+    buildableClassDeclaration: KSClassDeclaration
   ): TypeSpec {
+    val buildableClassName = buildableClassDeclaration.simpleName.asString()
+    val name = createDslMarkerAnnotatedAnnotationClassName(buildableClassName)
     val target = Target(AnnotationTarget.CLASS)
     @OptIn(DelicateKotlinPoetApi::class) val targetAnnotationSpec = AnnotationSpec.get(target)
-    return TypeSpec.annotationBuilder(annotationClassName)
-      .addKdoc(
-        "Denotes that the annotated structure belongs to the [$buildableDeclarationName] DSL."
-      )
+    return TypeSpec.annotationBuilder(name)
+      .addKdoc("Denotes that the annotated structure belongs to the [$buildableClassName] DSL.")
       .addModifiers(KModifier.INTERNAL)
       .addAnnotation(targetAnnotationSpec)
       .build()
   }
 
   /**
-   * Creates a [FileSpec] of the class that builds the one to which the [buildableDeclaration]
+   * Creates a [FileSpec] of the class that builds the one to which the [buildableClassDeclaration]
    * refers.
    *
-   * @param dslMarkerAnnotationClassName Name of the generated [DslMarker]-annotated class.
-   * @param file [KSFile] in which the [buildableDeclaration] is.
-   * @param buildableDeclaration [KSClassDeclaration] of the [Buildable]-annotated class for which
-   *   the builder is.
-   * @param builderClassName Name of the builder class.
+   * @param buildableClassDeclaration [KSClassDeclaration] of the [Buildable]-annotated class for
+   *   which the builder is.
    */
-  private fun createBuilderFileSpec(
-    dslMarkerAnnotationClassName: String,
-    file: KSFile,
-    buildableDeclaration: KSClassDeclaration,
-    builderClassName: String
-  ): FileSpec {
-    val packageName = buildableDeclaration.packageName.asString()
-    val buildableDeclarationName = buildableDeclaration.simpleName.asString()
-    val classTypeSpec =
-      createBuilderClassTypeSpec(
-        packageName,
-        builderClassName,
-        buildableDeclaration,
-        buildableDeclarationName,
-        dslMarkerAnnotationClassName
-      )
+  private fun createBuilderFileSpec(buildableClassDeclaration: KSClassDeclaration): FileSpec {
+    val packageName = buildableClassDeclaration.packageName.asString()
+    val buildableClassName = buildableClassDeclaration.simpleName.asString()
+    val builderClassName = createBuilderClassName(buildableClassName)
+    val file = buildableClassDeclaration.requireContainingFile()
+    val classTypeSpec = createBuilderClassTypeSpec(buildableClassDeclaration)
     return FileSpec.builder(packageName, fileName = builderClassName)
       .addImports(file)
       .addType(classTypeSpec)
@@ -187,34 +153,25 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
   }
 
   /**
-   * Creates a class [TypeSpec] of the builder for the [buildableDeclaration].
+   * Creates a class [TypeSpec] of the builder for the [buildableClassDeclaration].
    *
-   * @param packageName Name of the package in which the class will be created.
-   * @param className Name of the class.
-   * @param buildableDeclaration [KSClassDeclaration] of the [Buildable]-annotated class for which
-   *   the builder is.
-   * @param buildableDeclarationName Name of the [buildableDeclaration].
-   * @param dslMarkerAnnotationClassName Name of the generated [DslMarker]-annotated annotation
-   *   class.
+   * @param buildableClassDeclaration [KSClassDeclaration] of the [Buildable]-annotated class for
+   *   which the builder is.
    */
-  private fun createBuilderClassTypeSpec(
-    packageName: String,
-    className: String,
-    buildableDeclaration: KSClassDeclaration,
-    buildableDeclarationName: String,
-    dslMarkerAnnotationClassName: String
-  ): TypeSpec {
-    val dslMarkerAnnotationSpec =
-      createDslMarkerAnnotationSpec(packageName, dslMarkerAnnotationClassName)
-    val visibility = buildableDeclaration.getVisibility().toKModifier() ?: KModifier.PUBLIC
+  private fun createBuilderClassTypeSpec(buildableClassDeclaration: KSClassDeclaration): TypeSpec {
+    val buildableClassName = buildableClassDeclaration.simpleName.asString()
+    val className = createBuilderClassName(buildableClassName)
+    val dslMarkerAnnotatedAnnotationSpec =
+      createDslMarkerAnnotatedAnnotationSpec(buildableClassDeclaration)
+    val visibility = buildableClassDeclaration.getVisibility().toKModifier() ?: KModifier.PUBLIC
     val constructorPropertySpecs =
-      buildableDeclaration.primaryConstructor?.parameters.orEmpty().map {
+      buildableClassDeclaration.primaryConstructor?.parameters.orEmpty().map {
         createBuilderPrimaryConstructorPropertySpec(it)
       }
     val primaryConstructorFunSpec = createBuilderPrimaryConstructorFunSpec(constructorPropertySpecs)
     val memberConstructorPropertySpecs =
       constructorPropertySpecs.map { it.toBuilder().initializer(it.name).build() }
-    val functionDeclarations = buildableDeclaration.getAllFunctions()
+    val functionDeclarations = buildableClassDeclaration.getAllFunctions()
     val callbackPropertySpecs =
       functionDeclarations
         .filter {
@@ -223,7 +180,7 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
             it.simpleName.asString() != "hashCode" &&
             it.simpleName.asString() != "toString"
         }
-        .map { createBuilderCallbackPropertySpec(buildableDeclarationName, it) }
+        .map { createBuilderCallbackPropertySpec(buildableClassDeclaration, it) }
     val callbackSetterFunSpecs =
       callbackPropertySpecs
         .mapIndexed { index, propertySpec ->
@@ -235,12 +192,12 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
         .toList()
     val buildFunSpec =
       createBuilderBuildFunSpec(
-        buildableDeclaration,
+        buildableClassDeclaration,
         primaryConstructorFunSpec,
         callbackSetterFunSpecs
       )
     return TypeSpec.classBuilder(className)
-      .addAnnotation(dslMarkerAnnotationSpec)
+      .addAnnotation(dslMarkerAnnotatedAnnotationSpec)
       .addModifiers(visibility)
       .primaryConstructor(primaryConstructorFunSpec)
       .apply { (memberConstructorPropertySpecs + callbackPropertySpecs).forEach(::addProperty) }
@@ -252,28 +209,35 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
    * Creates an [AnnotationSpec] of the [DslMarker]-annotated annotation class that's been
    * generated.
    *
-   * @param packageName Name of the package in which the annotation class is.
-   * @param annotationClassName Name of the annotation class.
-   * @see createDslMarkerAnnotationClassSpec
+   * @param buildableClassDeclaration [KSClassDeclaration] of the [Buildable]-annotated class for
+   *   which the DSL is.
+   * @see createDslMarkerAnnotatedAnnotationClassSpec
    */
-  private fun createDslMarkerAnnotationSpec(
-    packageName: String,
-    annotationClassName: String
+  private fun createDslMarkerAnnotatedAnnotationSpec(
+    buildableClassDeclaration: KSClassDeclaration
   ): AnnotationSpec {
-    val className = ClassName(packageName, annotationClassName)
+    val buildableClassName =
+      buildableClassDeclaration.qualifiedName?.asString()
+        ?: throw IllegalStateException(
+          "Cannot determine $buildableClassDeclaration's qualified name."
+        )
+    val classNameAsString = createDslMarkerAnnotatedAnnotationClassName(buildableClassName)
+    val className = ClassName.bestGuess(classNameAsString)
     return AnnotationSpec.builder(className).build()
   }
 
   /**
    * Creates a builder [PropertySpec] of a callback property for the [functionDeclaration].
    *
-   * @param buildableDeclarationName Name of the [Buildable]-annotated class' [KSClassDeclaration].
+   * @param buildableClassDeclaration [KSClassDeclaration] of the [Buildable]-annotated class for
+   *   which the builder is..
    * @param functionDeclaration [KSFunctionDeclaration] for which the [PropertySpec] is.
    */
   private fun createBuilderCallbackPropertySpec(
-    buildableDeclarationName: String,
+    buildableClassDeclaration: KSClassDeclaration,
     functionDeclaration: KSFunctionDeclaration
   ): PropertySpec {
+    val buildableClassName = buildableClassDeclaration.simpleName.asString()
     val functionDeclarationName = functionDeclaration.simpleName.asString()
     val name = "on" + functionDeclarationName.capitalize()
     val returnType =
@@ -282,13 +246,12 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
     val returnTypeName = returnType.toTypeName()
     val typeName = LambdaTypeName.get(returnType = returnTypeName)
     val typeDeclarationName = returnType.resolve().declaration.simpleName.asString()
-    val buildableDeclarationNamePossessiveApostrophe =
-      PossessiveApostrophe.of(buildableDeclarationName)
+    val buildableDeclarationNamePossessiveApostrophe = PossessiveApostrophe.of(buildableClassName)
     return PropertySpec.builder(name, typeName)
       .addKdoc(
         "Lambda that provides the [$typeDeclarationName] to be returned by the built " +
-          "[$buildableDeclarationName]$buildableDeclarationNamePossessiveApostrophe " +
-          "[$functionDeclarationName][$buildableDeclarationName.$functionDeclarationName] method."
+          "[$buildableClassName]$buildableDeclarationNamePossessiveApostrophe " +
+          "[$functionDeclarationName][$buildableClassName.$functionDeclarationName] method."
       )
       .addModifiers(KModifier.PRIVATE)
       .mutable(true)
@@ -348,24 +311,24 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
 
   /**
    * Creates a [FunSpec] for the method that builds an instance of the class to which the
-   * [buildableDeclaration] refers to.
+   * [buildableClassDeclaration] refers to.
    *
-   * @param buildableDeclaration [KSClassDeclaration] of the [Buildable]-annotated class for which
-   *   the builder is.
+   * @param buildableClassDeclaration [KSClassDeclaration] of the [Buildable]-annotated class for
+   *   which the builder is.
    * @param primaryConstructorFunSpec [FunSpec] of the builder class' primary constructor.
    * @param memberFunSpecs [FunSpec]s of the member methods of the builder class.
    */
   private fun createBuilderBuildFunSpec(
-    buildableDeclaration: KSClassDeclaration,
+    buildableClassDeclaration: KSClassDeclaration,
     primaryConstructorFunSpec: FunSpec,
     memberFunSpecs: List<FunSpec>
   ): FunSpec {
-    val type = buildableDeclaration.asStarProjectedType()
+    val type = buildableClassDeclaration.asStarProjectedType()
     val simpleTypeName = type.declaration.simpleName.asString()
     val typeName = type.toTypeName()
     val anonymousClassTypeSpec =
       createAnonymousClassTypeSpec(
-        buildableDeclaration.classKind,
+        buildableClassDeclaration.classKind,
         primaryConstructorFunSpec,
         typeName,
         memberFunSpecs
@@ -411,37 +374,16 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
    * Creates a [FileSpec] of the file in which the factory method for instantiating the
    * [Buildable]-annotated class is.
    *
-   * @param buildableAnnotatedClassFile [KSFile] in which the [Buildable]-annotated class is.
-   * @param buildableAnnotatedClassDocumentation Documentation of the [Buildable]-annotated class.
-   * @param buildableAnnotatedClassVisibility [KModifier] that's the visibility of the
-   *   [Buildable]-annotated class.
-   * @param buildableAnnotatedClassName Name of the [Buildable]-annotated class.
-   * @param buildableAnnotatedClassValueParameters [KSValueParameter]s with which the
-   *   [Buildable]-annotated class should be constructed.
-   * @param builderClassName Name of the builder class of the [Buildable]-annotated class.
-   * @param packageName Name of the package in which the method is.
-   * @param buildableAnnotatedClassDocumentation Documentation of the factory method.
+   * @param buildableClassDeclaration [KSClassDeclaration] of the [Buildable]-annotated class for
+   *   which the [FileSpec] is.
    */
-  private fun createExtensionsFileSpec(
-    buildableAnnotatedClassFile: KSFile,
-    buildableAnnotatedClassDocumentation: String?,
-    buildableAnnotatedClassVisibility: KModifier,
-    buildableAnnotatedClassName: String,
-    buildableAnnotatedClassValueParameters: List<KSValueParameter>,
-    builderClassName: String,
-    packageName: String,
-  ): FileSpec {
-    val factoryFunSpec =
-      createFactoryFunSpec(
-        packageName,
-        buildableAnnotatedClassDocumentation,
-        buildableAnnotatedClassVisibility,
-        buildableAnnotatedClassName,
-        builderClassName,
-        buildableAnnotatedClassValueParameters
-      )
-    return FileSpec.builder(packageName, fileName = "$buildableAnnotatedClassName.extensions")
-      .addImports(buildableAnnotatedClassFile)
+  private fun createExtensionsFileSpec(buildableClassDeclaration: KSClassDeclaration): FileSpec {
+    val packageName = buildableClassDeclaration.packageName.asString()
+    val buildableClassName = buildableClassDeclaration.simpleName.asString()
+    val buildableClassFile = buildableClassDeclaration.requireContainingFile()
+    val factoryFunSpec = createFactoryFunSpec(buildableClassDeclaration)
+    return FileSpec.builder(packageName, fileName = "$buildableClassName.extensions")
+      .addImports(buildableClassFile)
       .addFunction(factoryFunSpec)
       .build()
   }
@@ -450,24 +392,18 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
    * Creates a [FunSpec] of the factory method through which a instance of the [Buildable]-annotated
    * class can be created.
    *
-   * @param packageName Name of the package in which the factory method is.
-   * @param documentation Documentation of the factory method.
-   * @param visibility [KModifier] that defines the visibility of the factory method.
-   * @param name Name of the factory method.
-   * @param builderClassName Name of the builder class of the [Buildable]-annotated class.
-   * @param valueParameters [KSValueParameter]s with which the [Buildable]-annotated class should be
-   *   constructed.
+   * @param buildableClassDeclaration [KSClassDeclaration] of the [Buildable]-annotated class for
+   *   which the factory is.
    */
-  private fun createFactoryFunSpec(
-    packageName: String,
-    documentation: String?,
-    visibility: KModifier,
-    name: String,
-    builderClassName: String,
-    valueParameters: List<KSValueParameter>
-  ): FunSpec {
+  private fun createFactoryFunSpec(buildableClassDeclaration: KSClassDeclaration): FunSpec {
+    val packageName = buildableClassDeclaration.packageName.asString()
+    val documentation = buildableClassDeclaration.docString
+    val name = buildableClassDeclaration.simpleName.asString()
     val buildableAnnotatedClassName = ClassName(packageName, name)
-    val builderClassNameAsClassName = ClassName(packageName, builderClassName)
+    val builderClassNameAsString = createBuilderClassName(name)
+    val builderClassNameAsClassName = ClassName(packageName, builderClassNameAsString)
+    val visibility = buildableClassDeclaration.getVisibility().toKModifier() ?: KModifier.PUBLIC
+    val valueParameters = buildableClassDeclaration.primaryConstructor?.parameters.orEmpty()
     val parameterSpecs =
       valueParameters.map(::createFactoryParameterSpec) +
         createBuildFactoryParameterSpec(builderClassNameAsClassName)
@@ -477,7 +413,7 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
       .addParameters(parameterSpecs)
       .returns(buildableAnnotatedClassName)
       .addStatement(
-        "return $builderClassName(${parameterSpecs.dropLast(1).map(ParameterSpec::name).joinToString(", ")}).apply($BUILDER_BUILD_METHOD_NAME).$BUILDER_BUILD_METHOD_NAME()"
+        "return $builderClassNameAsString(${parameterSpecs.dropLast(1).map(ParameterSpec::name).joinToString(", ")}).apply($BUILDER_BUILD_METHOD_NAME).$BUILDER_BUILD_METHOD_NAME()"
       )
       .build()
   }
@@ -517,5 +453,24 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
      * Name of a builder class' method that builds an instance of its respective configured object.
      */
     internal const val BUILDER_BUILD_METHOD_NAME = "build"
+
+    /**
+     * Creates the name of the builder class for a [Buildable]-annotated class named
+     * [buildableClassName].
+     *
+     * @param buildableClassName Name of the class to be built by the builder.
+     */
+    internal fun createBuilderClassName(buildableClassName: String): String {
+      return buildableClassName + "Builder"
+    }
+
+    /**
+     * Creates the name of the [DslMarker]-annotated annotation class.
+     *
+     * @param buildableClassName Name of the class for which the DSL is.
+     */
+    internal fun createDslMarkerAnnotatedAnnotationClassName(buildableClassName: String): String {
+      return buildableClassName + "Dsl"
+    }
   }
 }
