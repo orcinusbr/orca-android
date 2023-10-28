@@ -35,6 +35,7 @@ import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import com.squareup.kotlinpoet.ksp.writeTo
 import com.squareup.kotlinpoet.typeNameOf
+import org.jetbrains.kotlin.utils.addToStdlib.applyIf
 
 /**
  * [SymbolProcessor] that ensures the integrity of [Buildable]-annotated classes, generating their
@@ -368,10 +369,12 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
     typeName: TypeName,
     memberFunSpecs: List<FunSpec>,
   ): TypeSpec {
+    val isAbstractClass = kind == ClassKind.CLASS
     return TypeSpec.anonymousClassBuilder()
-      .superclass(typeName)
+      .applyIf(!isAbstractClass) { addSuperinterface(typeName) }
+      .applyIf(isAbstractClass) { superclass(typeName) }
       .apply {
-        if (kind == ClassKind.CLASS) {
+        if (isAbstractClass) {
           builderPrimaryConstructorFunSpec.parameters
             .map(ParameterSpec::name)
             .forEach(::addSuperclassConstructorParameter)

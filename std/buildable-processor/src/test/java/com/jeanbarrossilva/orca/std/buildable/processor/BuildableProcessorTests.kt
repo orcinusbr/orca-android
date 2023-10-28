@@ -221,6 +221,30 @@ internal class BuildableProcessorTests {
 
   @OptIn(ExperimentalCompilerApi::class)
   @Test
+  fun generatesFactoryMethodForBuildableAnnotatedInterface() {
+    val file =
+      SourceFile.kotlin(
+        "MyClass.kt",
+        """
+          import com.jeanbarrossilva.orca.std.buildable.Buildable
+
+          @Buildable
+          interface MyClass
+        """
+      )
+    assertThat(
+        BuildableProcessor.process(file)
+          .classLoader
+          .loadClass("MyClass_extensionsKt")
+          .getMethod("MyClass", Function1::class.java)
+          .returnType
+          .name
+      )
+      .isEqualTo("MyClass")
+  }
+
+  @OptIn(ExperimentalCompilerApi::class)
+  @Test
   fun generatesFactoryMethodForBuildableAnnotatedClass() {
     val file =
       SourceFile.kotlin(
