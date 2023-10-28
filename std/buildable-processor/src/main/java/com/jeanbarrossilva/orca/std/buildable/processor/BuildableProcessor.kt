@@ -40,6 +40,9 @@ import org.jetbrains.kotlin.utils.addToStdlib.applyIf
 /**
  * [SymbolProcessor] that ensures the integrity of [Buildable]-annotated classes, generating their
  * builders or reporting an error if they're either private or concrete.
+ *
+ * @param environment [SymbolProcessorEnvironment] in which errors can be reported and files can be
+ *   generated.
  */
 class BuildableProcessor private constructor(private val environment: SymbolProcessorEnvironment) :
   SymbolProcessor {
