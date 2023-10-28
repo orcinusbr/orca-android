@@ -195,6 +195,32 @@ internal class BuildableProcessorTests {
 
   @OptIn(ExperimentalCompilerApi::class)
   @Test
+  fun generatesBuilderForTypeParameterizedBuildableAnnotatedClass() {
+    val file =
+      SourceFile.kotlin(
+        "MyClass.kt",
+        """
+          import com.jeanbarrossilva.orca.std.buildable.Buildable
+
+          @Buildable
+          abstract class MyClass<T>
+        """
+      )
+    val builderClass =
+      BuildableProcessor.process(file)
+        .classLoader
+        .loadClass(BuildableProcessor.createBuilderClassName("MyClass"))
+    val buildMethod =
+      builderClass.declaredMethods.single {
+        it.name == "${BuildableProcessor.BUILDER_BUILD_METHOD_NAME}\$main"
+      }
+    assertThat(builderClass.typeParameters.single().name).isEqualTo("T")
+    assertThat(buildMethod.returnType.name).isEqualTo("MyClass")
+    assertThat(buildMethod.returnType.typeParameters.single().name).isEqualTo("T")
+  }
+
+  @OptIn(ExperimentalCompilerApi::class)
+  @Test
   fun generatesFactoryMethodForBuildableAnnotatedClass() {
     val file =
       SourceFile.kotlin(

@@ -29,8 +29,10 @@ import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toKModifier
 import com.squareup.kotlinpoet.ksp.toTypeName
+import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import com.squareup.kotlinpoet.ksp.writeTo
 import com.squareup.kotlinpoet.typeNameOf
 
@@ -164,6 +166,8 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
     val dslMarkerAnnotatedAnnotationSpec =
       createDslMarkerAnnotatedAnnotationSpec(buildableClassDeclaration)
     val visibility = buildableClassDeclaration.getVisibility().toKModifier() ?: KModifier.PUBLIC
+    val typeVariables =
+      buildableClassDeclaration.typeParameters.toTypeParameterResolver().parametersMap.values
     val constructorPropertySpecs =
       buildableClassDeclaration.primaryConstructor?.parameters.orEmpty().map {
         createBuilderPrimaryConstructorPropertySpec(it)
@@ -199,6 +203,7 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
     return TypeSpec.classBuilder(className)
       .addAnnotation(dslMarkerAnnotatedAnnotationSpec)
       .addModifiers(visibility)
+      .addTypeVariables(typeVariables)
       .primaryConstructor(primaryConstructorFunSpec)
       .apply { (memberConstructorPropertySpecs + callbackPropertySpecs).forEach(::addProperty) }
       .addFunctions(callbackSetterFunSpecs + buildFunSpec)
@@ -325,7 +330,13 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
   ): FunSpec {
     val type = buildableClassDeclaration.asStarProjectedType()
     val simpleTypeName = type.declaration.simpleName.asString()
-    val typeName = type.toTypeName()
+    val typeVariables =
+      buildableClassDeclaration.typeParameters
+        .toTypeParameterResolver()
+        .parametersMap
+        .values
+        .toList()
+    val typeName = type.toClassName().parameterizedOrNotBy(typeVariables)
     val anonymousClassTypeSpec =
       createAnonymousClassTypeSpec(
         buildableClassDeclaration.classKind,
@@ -396,24 +407,29 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
    *   which the factory is.
    */
   private fun createFactoryFunSpec(buildableClassDeclaration: KSClassDeclaration): FunSpec {
-    val packageName = buildableClassDeclaration.packageName.asString()
+    val buildableClassName = buildableClassDeclaration.simpleName.asString()
+    val builderClassName = createBuilderClassName(buildableClassName)
     val documentation = buildableClassDeclaration.docString
-    val name = buildableClassDeclaration.simpleName.asString()
-    val buildableAnnotatedClassName = ClassName(packageName, name)
-    val builderClassNameAsString = createBuilderClassName(name)
-    val builderClassNameAsClassName = ClassName(packageName, builderClassNameAsString)
     val visibility = buildableClassDeclaration.getVisibility().toKModifier() ?: KModifier.PUBLIC
+    val packageName = buildableClassDeclaration.packageName.asString()
+    val typeParameterResolver = buildableClassDeclaration.typeParameters.toTypeParameterResolver()
+    val typeVariables = typeParameterResolver.parametersMap.values.toList()
+    val builderTypeName =
+      ClassName(packageName, builderClassName).parameterizedOrNotBy(typeVariables)
+    val buildableClassTypeName =
+      buildableClassDeclaration.toClassName().parameterizedOrNotBy(typeVariables)
     val valueParameters = buildableClassDeclaration.primaryConstructor?.parameters.orEmpty()
     val parameterSpecs =
       valueParameters.map(::createFactoryParameterSpec) +
-        createBuildFactoryParameterSpec(builderClassNameAsClassName)
-    return FunSpec.builder(name)
+        createBuildFactoryParameterSpec(builderTypeName)
+    return FunSpec.builder(buildableClassName)
       .apply { documentation?.let(::addKdoc) }
       .addModifiers(visibility)
+      .addTypeVariables(typeVariables)
       .addParameters(parameterSpecs)
-      .returns(buildableAnnotatedClassName)
+      .returns(buildableClassTypeName)
       .addStatement(
-        "return $builderClassNameAsString(${parameterSpecs.dropLast(1).map(ParameterSpec::name).joinToString(", ")}).apply($BUILDER_BUILD_METHOD_NAME).$BUILDER_BUILD_METHOD_NAME()"
+        "return $builderTypeName(${parameterSpecs.dropLast(1).map(ParameterSpec::name).joinToString(", ")}).apply($BUILDER_BUILD_METHOD_NAME).$BUILDER_BUILD_METHOD_NAME()"
       )
       .build()
   }
@@ -435,10 +451,10 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
    * Creates a [ParameterSpec] of the [Buildable]-annotated class' factory method parameter that
    * configures the class to be built.
    *
-   * @param builderClassName [ClassName] of the [Buildable]-annotated class.
+   * @param builderTypeName [TypeName] of the [Buildable]-annotated class' builder.
    */
-  private fun createBuildFactoryParameterSpec(builderClassName: ClassName): ParameterSpec {
-    val typeName = LambdaTypeName.get(receiver = builderClassName, returnType = typeNameOf<Unit>())
+  private fun createBuildFactoryParameterSpec(builderTypeName: TypeName): ParameterSpec {
+    val typeName = LambdaTypeName.get(receiver = builderTypeName, returnType = typeNameOf<Unit>())
     return ParameterSpec.builder(BUILDER_BUILD_METHOD_NAME, typeName).defaultValue("{}").build()
   }
 
