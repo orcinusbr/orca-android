@@ -9,5 +9,5 @@ import com.squareup.kotlinpoet.FileSpec
  * @param file [KSFile] whose imported structures will be added.
  */
 fun FileSpec.Builder.addImports(file: KSFile): FileSpec.Builder {
-  return apply { file.imports.forEach { addImport(it.asString()) } }
+  return apply { file.imports.forEach { addImport(it, "") } }
 }

@@ -94,6 +94,32 @@ internal class BuildableProcessorTests {
 
   @OptIn(ExperimentalCompilerApi::class)
   @Test
+  fun generatesBuilderWhoseFileImportsMatchThoseOfBuildableAnnotatedSubclassSuperclass() {
+    val superclassFile =
+      SourceFile.kotlin(
+        "MySuperclass.kt",
+        """
+          import java.math.BigDecimal
+
+          abstract class MySuperclass(count: BigDecimal = BigDecimal.ZERO)
+        """
+      )
+    val subclassFile =
+      SourceFile.kotlin(
+        "MySubclass.kt",
+        """
+          import com.jeanbarrossilva.orca.std.buildable.Buildable
+
+          @Buildable
+          abstract class MySubclass : MySuperclass()
+        """
+      )
+    assertThat(BuildableProcessor.process(superclassFile, subclassFile).exitCode)
+      .isEqualTo(KotlinCompilation.ExitCode.OK)
+  }
+
+  @OptIn(ExperimentalCompilerApi::class)
+  @Test
   fun generatesBuilderWhoseVisibilityMatchesThatOfBuildableAnnotatedClass() {
     val file =
       SourceFile.kotlin(

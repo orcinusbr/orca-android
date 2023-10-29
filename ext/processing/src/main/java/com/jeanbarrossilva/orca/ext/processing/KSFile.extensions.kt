@@ -12,15 +12,16 @@ import org.jetbrains.kotlin.com.intellij.testFramework.LightVirtualFile
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.idea.KotlinFileType
 import org.jetbrains.kotlin.name.Name
-import org.jetbrains.kotlin.psi.KtImportDirective
+import org.jetbrains.kotlin.psi.KtImportList
 
 /** [Name]s imported within this [KSFile]. */
-internal val KSFile.imports: List<Name>
+internal val KSFile.imports: List<String>
   get() =
     compile()
       ?.children
-      ?.filterIsInstance<KtImportDirective>()
-      ?.mapNotNull(KtImportDirective::importedName)
+      ?.filterIsInstance<KtImportList>()
+      ?.flatMap(KtImportList::getImports)
+      ?.mapNotNull { it.importedReference?.text }
       .orEmpty()
 
 /** Compiles this [KSFile]. */

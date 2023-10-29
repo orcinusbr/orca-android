@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.std.buildable.processor
 
+import com.google.devtools.ksp.getAllSuperTypes
 import com.google.devtools.ksp.getVisibility
 import com.google.devtools.ksp.isAbstract
 import com.google.devtools.ksp.isOpen
@@ -154,6 +155,12 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
     val classTypeSpec = createBuilderClassTypeSpec(buildableClassDeclaration)
     return FileSpec.builder(packageName, fileName = builderClassName)
       .addImports(file)
+      .apply {
+        buildableClassDeclaration
+          .getAllSuperTypes()
+          .mapNotNull { it.declaration.containingFile }
+          .forEach(::addImports)
+      }
       .addType(classTypeSpec)
       .build()
   }
@@ -252,7 +259,8 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
     val returnType =
       functionDeclaration.returnType
         ?: throw IllegalArgumentException("A return type hasn't been specified.")
-    val returnTypeName = returnType.toTypeName()
+    val typeResolver = buildableClassDeclaration.typeParameters.toTypeParameterResolver()
+    val returnTypeName = returnType.toTypeName(typeResolver)
     val typeName = LambdaTypeName.get(returnType = returnTypeName)
     val typeDeclarationName = returnType.resolve().declaration.simpleName.asString()
     val buildableDeclarationNamePossessiveApostrophe = PossessiveApostrophe.of(buildableClassName)

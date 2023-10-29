@@ -10,18 +10,18 @@ import com.tschuchort.compiletesting.symbolProcessorProviders
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 
 /**
- * Processes the annotations by compiling the given [file].
+ * Processes the annotations by compiling the given [files].
  *
- * @param file [SourceFile] to be compiled.
+ * @param files [SourceFile]s to be compiled.
  */
 @OptIn(ExperimentalCompilerApi::class)
-internal fun BuildableProcessor.Companion.process(file: SourceFile): JvmCompilationResult {
+internal fun BuildableProcessor.Companion.process(vararg files: SourceFile): JvmCompilationResult {
   return KotlinCompilation()
     .apply {
       inheritClassPath = true
       kspIncremental = true
       kspWithCompilation = true
-      sources = listOf(file)
+      sources = files.toList()
       symbolProcessorProviders = listOf(BuildableProcessor.Provider())
     }
     .compile()
