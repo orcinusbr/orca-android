@@ -57,6 +57,25 @@ internal class BuildableProcessorTests {
 
   @OptIn(ExperimentalCompilerApi::class)
   @Test
+  fun reportsErrorOnBuildableAnnotatedClassWithAbstractField() {
+    val file =
+      SourceFile.kotlin(
+        "MyClass.kt",
+        """
+          import com.jeanbarrossilva.orca.std.buildable.Buildable
+
+          @Buildable
+          abstract class MyClass {
+            abstract fun count(): Int
+          }
+        """
+      )
+    assertThat(BuildableProcessor.process(file).messages)
+      .contains(BuildableProcessor.ABSTRACT_CLASS_WITH_ABSTRACT_FIELD_ERROR_MESSAGE)
+  }
+
+  @OptIn(ExperimentalCompilerApi::class)
+  @Test
   fun generatesDslMarkerAnnotatedAnnotationClass() {
     val file =
       SourceFile.kotlin(

@@ -14,6 +14,7 @@ import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSValueParameter
 import com.jeanbarrossilva.orca.ext.processing.addImports
@@ -61,6 +62,7 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
     val buildableDeclarations = resolver.getBuildableDeclarations()
     reportErrorOnPrivateClasses(buildableDeclarations)
     reportErrorOnConcreteClasses(buildableDeclarations)
+    reportErrorOnAbstractClassesWithAbstractField(buildableDeclarations)
     generateFiles(buildableDeclarations)
     return emptyList()
   }
@@ -85,6 +87,22 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
     buildableDeclarations.filterNot(KSClassDeclaration::isAbstract).forEach {
       environment.logger.error(CONCRETE_CLASS_ERROR_MESSAGE, symbol = it)
     }
+  }
+
+  /**
+   * Reports an error if any of the [buildableDeclarations] contains an abstract field.
+   *
+   * @param buildableDeclarations [KSClassDeclaration]s of [Buildable]-annotated classes.
+   */
+  private fun reportErrorOnAbstractClassesWithAbstractField(
+    buildableDeclarations: Sequence<KSClassDeclaration>
+  ) {
+    buildableDeclarations
+      .flatMap(KSClassDeclaration::declarations)
+      .filter(KSDeclaration::isAbstract)
+      .forEach {
+        environment.logger.error(ABSTRACT_CLASS_WITH_ABSTRACT_FIELD_ERROR_MESSAGE, symbol = it)
+      }
   }
 
   /**
@@ -515,6 +533,10 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
   }
 
   companion object {
+    /** Error message for a [Buildable]-annotated abstract class with an abstract field. */
+    internal const val ABSTRACT_CLASS_WITH_ABSTRACT_FIELD_ERROR_MESSAGE =
+      "A buildable class cannot have abstract fields."
+
     /** Error message for a [Buildable]-annotated concrete class. */
     internal const val CONCRETE_CLASS_ERROR_MESSAGE = "A concrete class cannot be buildable."
 
