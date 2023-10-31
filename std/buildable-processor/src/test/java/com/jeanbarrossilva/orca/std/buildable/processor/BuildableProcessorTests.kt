@@ -306,6 +306,33 @@ internal class BuildableProcessorTests {
 
   @OptIn(ExperimentalCompilerApi::class)
   @Test
+  fun generatesBuilderCallbackPropertySetterWithValueParametersForBuildableAnnotatedClass() {
+    val file =
+      SourceFile.kotlin(
+        "MyClass.kt",
+        """
+          import com.jeanbarrossilva.orca.std.buildable.Buildable
+
+          @Buildable
+          abstract class MyClass(private val count: Int) {
+            open fun multiplyCountBy(factor: Int): Int {
+              return count * factor
+            }
+          }
+        """
+      )
+    assertThat(
+        BuildableProcessor.process(file)
+          .classLoader
+          .loadClass(BuildableProcessor.createBuilderClassName("MyClass"))
+          .getDeclaredMethod("multiplyCountBy", Function1::class.java)
+          .returnType
+      )
+      .isEqualTo(Void.TYPE)
+  }
+
+  @OptIn(ExperimentalCompilerApi::class)
+  @Test
   fun generatesBuilderCallbackPropertySetterOfSuperclassMethodForBuildableAnnotatedSubclass() {
     val superclassFile =
       SourceFile.kotlin(
