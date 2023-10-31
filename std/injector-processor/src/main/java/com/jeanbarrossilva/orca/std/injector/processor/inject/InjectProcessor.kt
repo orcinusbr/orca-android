@@ -12,6 +12,8 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
 import com.google.devtools.ksp.symbol.KSType
+import com.jeanbarrossilva.orca.ext.processing.addImports
+import com.jeanbarrossilva.orca.ext.processing.requireContainingFile
 import com.jeanbarrossilva.orca.std.injector.module.Inject
 import com.jeanbarrossilva.orca.std.injector.module.Module
 import com.squareup.kotlinpoet.FileSpec

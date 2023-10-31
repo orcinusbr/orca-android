@@ -35,8 +35,7 @@ kotlin-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-s
 kotlin-symbolProcessor = { group = "com.google.devtools.ksp", name = "symbol-processing-api", version.ref = "kotlin-symbolProcessor" }
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 kctfork-ksp = { group = "dev.zacsweers.kctfork", name = "ksp", version = "0.3.2" }
-kotlinPoet = { group = "com.squareup", name = "kotlinpoet", version.ref = "kotlinPoet" }
-kotlinPoet-ksp = { group = "com.squareup", name = "kotlinpoet-ksp", version.ref = "kotlinPoet" }
+kotlinPoet-ksp = { group = "com.squareup", name = "kotlinpoet-ksp", version = "1.14.2" }
 ktor-client-contentNegotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-serialization-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
@@ -82,7 +81,6 @@ junit = "1.1.5"
 kotlin = "1.9.10"
 kotlin-coroutines = "1.7.2"
 kotlin-symbolProcessor = "1.9.10-1.0.13"
-kotlinPoet = "1.14.2"
 ktor = "2.3.2"
 loadable = "1.6.9"
 spotless = "6.22.0"
