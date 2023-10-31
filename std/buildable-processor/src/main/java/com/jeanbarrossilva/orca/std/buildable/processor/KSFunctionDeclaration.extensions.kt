@@ -8,11 +8,12 @@ import org.jetbrains.kotlin.psi.KtNamedFunction
 /** Body of this [KSFunctionDeclaration]. */
 internal val KSFunctionDeclaration.body: String?
   get() {
-    return requireContainingFile()
+    return (findOverridee() ?: this)
+      .requireContainingFile()
       .compile()
       ?.flattenChildren()
       ?.filterIsInstance<KtNamedFunction>()
-      ?.single { it.fqName?.asString() == qualifiedName?.asString() }
+      ?.first { it.name == simpleName.asString() }
       ?.bodyExpression
       ?.text
       ?.replaceLast("return ", "")

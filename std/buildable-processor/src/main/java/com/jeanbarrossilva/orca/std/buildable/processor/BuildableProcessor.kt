@@ -3,6 +3,7 @@ package com.jeanbarrossilva.orca.std.buildable.processor
 import com.google.devtools.ksp.getAllSuperTypes
 import com.google.devtools.ksp.getVisibility
 import com.google.devtools.ksp.isAbstract
+import com.google.devtools.ksp.isConstructor
 import com.google.devtools.ksp.isOpen
 import com.google.devtools.ksp.isPrivate
 import com.google.devtools.ksp.processing.Dependencies
@@ -186,16 +187,16 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
     val primaryConstructorFunSpec = createBuilderPrimaryConstructorFunSpec(constructorPropertySpecs)
     val memberConstructorPropertySpecs =
       constructorPropertySpecs.map { it.toBuilder().initializer(it.name).build() }
-    val functionDeclarations = buildableClassDeclaration.getAllFunctions()
+    val functionDeclarations =
+      buildableClassDeclaration
+        .getAllFunctions()
+        .filterNot(KSFunctionDeclaration::isConstructor)
+        .filter(KSFunctionDeclaration::isOpen)
+        .filterNot { it.simpleName.asString() == "equals" }
+        .filterNot { it.simpleName.asString() == "hashCode" }
+        .filterNot { it.simpleName.asString() == "toString" }
     val callbackPropertySpecs =
-      functionDeclarations
-        .filter {
-          it.isOpen() &&
-            it.simpleName.asString() != "equals" &&
-            it.simpleName.asString() != "hashCode" &&
-            it.simpleName.asString() != "toString"
-        }
-        .map { createBuilderCallbackPropertySpec(buildableClassDeclaration, it) }
+      functionDeclarations.map { createBuilderCallbackPropertySpec(buildableClassDeclaration, it) }
     val callbackSetterFunSpecs =
       callbackPropertySpecs
         .mapIndexed { index, propertySpec ->

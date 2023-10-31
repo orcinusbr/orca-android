@@ -196,6 +196,191 @@ internal class BuildableProcessorTests {
 
   @OptIn(ExperimentalCompilerApi::class)
   @Test
+  fun generatesBuilderCallbackPropertyOfSuperclassMethodForBuildableAnnotatedSubclass() {
+    val superclassFile =
+      SourceFile.kotlin(
+        "MySuperclass.kt",
+        """
+          abstract class MySuperclass {
+            open fun count(): Int {
+              return 0
+            }
+          }
+        """
+      )
+    val subclassFile =
+      SourceFile.kotlin(
+        "MySubclass.kt",
+        """
+          import com.jeanbarrossilva.orca.std.buildable.Buildable
+
+          @Buildable
+          abstract class MySubclass : MySuperclass()
+        """
+      )
+    val callbackProperty =
+      BuildableProcessor.process(superclassFile, subclassFile)
+        .classLoader
+        .loadClass(BuildableProcessor.createBuilderClassName("MySubclass"))
+        .kotlin
+        .declaredMemberProperties
+        .single()
+    assertThat(callbackProperty).isInstanceOf<KMutableProperty1<*, *>>()
+    assertThat(callbackProperty.visibility).isEqualTo(KVisibility.PRIVATE)
+    assertThat(callbackProperty.returnType.arguments.last().type).isEqualTo(typeOf<Int>())
+  }
+
+  @OptIn(ExperimentalCompilerApi::class)
+  @Test
+  fun generatesBuilderCallbackPropertyOfMethodOfBuildableAnnotatedSuperclassForBuildableAnnotatedSubclass() {
+    val superclassFile =
+      SourceFile.kotlin(
+        "MySuperclass.kt",
+        """
+          import com.jeanbarrossilva.orca.std.buildable.Buildable
+
+          @Buildable
+          abstract class MySuperclass {
+            open fun count(): Int {
+              return 0
+            }
+          }
+        """
+      )
+    val subclassFile =
+      SourceFile.kotlin(
+        "MySubclass.kt",
+        """
+          import com.jeanbarrossilva.orca.std.buildable.Buildable
+
+          @Buildable
+          abstract class MySubclass : MySuperclass()
+        """
+      )
+    val callbackProperty =
+      BuildableProcessor.process(superclassFile, subclassFile)
+        .classLoader
+        .loadClass(BuildableProcessor.createBuilderClassName("MySubclass"))
+        .kotlin
+        .declaredMemberProperties
+        .single()
+    assertThat(callbackProperty).isInstanceOf<KMutableProperty1<*, *>>()
+    assertThat(callbackProperty.visibility).isEqualTo(KVisibility.PRIVATE)
+    assertThat(callbackProperty.returnType.arguments.last().type).isEqualTo(typeOf<Int>())
+  }
+
+  @OptIn(ExperimentalCompilerApi::class)
+  @Test
+  fun generatesBuilderCallbackPropertySetterOfSuperclassMethodForBuildableAnnotatedSubclass() {
+    val superclassFile =
+      SourceFile.kotlin(
+        "MySuperclass.kt",
+        """
+          abstract class MySuperclass {
+            open fun count(): Int {
+              return 0
+            }
+          }
+        """
+      )
+    val subclassFile =
+      SourceFile.kotlin(
+        "MySubclass.kt",
+        """
+          import com.jeanbarrossilva.orca.std.buildable.Buildable
+
+          @Buildable
+          abstract class MySubclass : MySuperclass()
+        """
+      )
+    val callbackPropertySetterMethod =
+      BuildableProcessor.process(superclassFile, subclassFile)
+        .classLoader
+        .loadClass(BuildableProcessor.createBuilderClassName("MySubclass"))
+        .declaredMethods
+        .single { it.name == "count" }
+    assertThat(callbackPropertySetterMethod.parameters.single().type)
+      .isEqualTo(Function0::class.java)
+    assertThat(callbackPropertySetterMethod.returnType).isEqualTo(Void.TYPE)
+  }
+
+  @OptIn(ExperimentalCompilerApi::class)
+  @Test
+  fun generatesBuilderCallbackPropertySetterOfMethodOfBuildableAnnotatedSuperclassForBuildableAnnotatedSubclass() {
+    val superclassFile =
+      SourceFile.kotlin(
+        "MySuperclass.kt",
+        """
+          import com.jeanbarrossilva.orca.std.buildable.Buildable
+
+          @Buildable
+          abstract class MySuperclass {
+            open fun count(): Int {
+              return 0
+            }
+          }
+        """
+      )
+    val subclassFile =
+      SourceFile.kotlin(
+        "MySubclass.kt",
+        """
+          import com.jeanbarrossilva.orca.std.buildable.Buildable
+
+          @Buildable
+          abstract class MySubclass : MySuperclass()
+        """
+      )
+    val callbackPropertySetterMethod =
+      BuildableProcessor.process(superclassFile, subclassFile)
+        .classLoader
+        .loadClass(BuildableProcessor.createBuilderClassName("MySubclass"))
+        .declaredMethods
+        .single { it.name == "count" }
+    assertThat(callbackPropertySetterMethod.parameters.single().type)
+      .isEqualTo(Function0::class.java)
+    assertThat(callbackPropertySetterMethod.returnType).isEqualTo(Void.TYPE)
+  }
+
+  @OptIn(ExperimentalCompilerApi::class)
+  @Test
+  fun generatesBuilderCallbackPropertySetterMethodWhoseReturnStatementRequiresReferenceImportedBySuperclassForBuildableAnnotatedSubclass() {
+    val superclassFile =
+      SourceFile.kotlin(
+        "MySuperclass.kt",
+        """
+          import java.math.BigDecimal
+
+          abstract class MySuperclass {
+            open fun count(): BigDecimal {
+              return BigDecimal.ZERO
+            }
+          }
+        """
+      )
+    val subclassFile =
+      SourceFile.kotlin(
+        "MySubclass.kt",
+        """
+          import com.jeanbarrossilva.orca.std.buildable.Buildable
+
+          @Buildable
+          abstract class MySubclass : MySuperclass()
+        """
+      )
+    val callbackPropertySetterMethod =
+      BuildableProcessor.process(superclassFile, subclassFile)
+        .classLoader
+        .loadClass(BuildableProcessor.createBuilderClassName("MySubclass"))
+        .declaredMethods
+        .single { it.name == "count" }
+    assertThat(callbackPropertySetterMethod.parameters.single().type)
+      .isEqualTo(Function0::class.java)
+    assertThat(callbackPropertySetterMethod.returnType).isEqualTo(Void.TYPE)
+  }
+
+  @OptIn(ExperimentalCompilerApi::class)
+  @Test
   fun generatesBuilderBuildMethodForBuildableAnnotatedClass() {
     val file =
       SourceFile.kotlin(
