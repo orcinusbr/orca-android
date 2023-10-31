@@ -283,7 +283,7 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
           initializer(
             buildString {
               append(it, 0, 1)
-              append(valueParameterDeclarationsAsString)
+              append(" $valueParameterDeclarationsAsString")
               append(it, 1, it.length)
             }
           )
