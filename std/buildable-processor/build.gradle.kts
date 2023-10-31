@@ -7,7 +7,6 @@ plugins {
 dependencies {
   implementation(project(":ext:processing"))
   implementation(project(":std:buildable"))
-  implementation(libs.kotlin.reflect)
   implementation(libs.kotlin.symbolProcessor)
 
   testImplementation(libs.assertk)
