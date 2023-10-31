@@ -44,7 +44,7 @@ import org.jetbrains.kotlin.utils.addToStdlib.ifNotEmpty
 
 /**
  * [SymbolProcessor] that ensures the integrity of [Buildable]-annotated classes, generating their
- * builders or reporting an error if they're either private or concrete.
+ * builders or reporting an error if they're either private, concrete or contain abstract fields.
  *
  * @param environment [SymbolProcessorEnvironment] in which errors can be reported and files can be
  *   generated.
