@@ -385,6 +385,7 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
         """
           .trimIndent()
       )
+      .addModifiers(propertySpec.modifiers)
       .addParameter(originalPropertyName, propertySpec.type)
       .addStatement("${propertySpec.name} = $originalPropertyName")
       .build()

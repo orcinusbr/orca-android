@@ -382,6 +382,38 @@ internal class BuildableProcessorTests {
 
   @OptIn(ExperimentalCompilerApi::class)
   @Test
+  fun generatesBuilderCallbackPropertySetterWithSuspendingValueParameterForBuildableAnnotatedClass() {
+    val file =
+      SourceFile.kotlin(
+        "MyClass.kt",
+        """
+          import com.jeanbarrossilva.orca.std.buildable.Buildable
+
+          @Buildable
+          abstract class MyClass {
+            open suspend fun count(): Int {
+              return 0
+            }
+          }
+        """
+      )
+    assertThat(
+        BuildableProcessor.process(file)
+          .classLoader
+          .loadClass(BuildableProcessor.createBuilderClassName("MyClass"))
+          .kotlin
+          .declaredMemberFunctions
+          .single { it.name == "count" }
+          .parameters
+          .last()
+          .type
+          .toString()
+      )
+      .isEqualTo("suspend () -> ${Int::class.qualifiedName}")
+  }
+
+  @OptIn(ExperimentalCompilerApi::class)
+  @Test
   fun generatesBuilderCallbackPropertySetterOfSuperclassMethodForBuildableAnnotatedSubclass() {
     val superclassFile =
       SourceFile.kotlin(
