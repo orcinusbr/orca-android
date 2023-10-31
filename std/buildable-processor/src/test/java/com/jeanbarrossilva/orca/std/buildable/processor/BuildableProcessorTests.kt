@@ -355,6 +355,35 @@ internal class BuildableProcessorTests {
 
   @OptIn(ExperimentalCompilerApi::class)
   @Test
+  fun generatesBuilderCallbackPropertySetterWhoseVisibilityIsPublicForBuildableAnnotatedClass() {
+    val file =
+      SourceFile.kotlin(
+        "MyClass.kt",
+        """
+          import com.jeanbarrossilva.orca.std.buildable.Buildable
+
+          @Buildable
+          abstract class MyClass {
+            open fun count(): Int {
+              return 0
+            }
+          }
+        """
+      )
+    assertThat(
+        BuildableProcessor.process(file)
+          .classLoader
+          .loadClass(BuildableProcessor.createBuilderClassName("MyClass"))
+          .kotlin
+          .declaredMemberFunctions
+          .single { it.name == "count" }
+          .visibility
+      )
+      .isEqualTo(KVisibility.PUBLIC)
+  }
+
+  @OptIn(ExperimentalCompilerApi::class)
+  @Test
   fun generatesBuilderCallbackPropertySetterWithValueParametersForBuildableAnnotatedClass() {
     val file =
       SourceFile.kotlin(

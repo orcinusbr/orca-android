@@ -385,7 +385,7 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
         """
           .trimIndent()
       )
-      .addModifiers(propertySpec.modifiers)
+      .addModifiers(propertySpec.modifiers.filterNot(KModifier::isOfVisibility))
       .addParameter(originalPropertyName, propertySpec.type)
       .addStatement("${propertySpec.name} = $originalPropertyName")
       .build()
