@@ -19,6 +19,7 @@ import com.google.devtools.ksp.symbol.KSValueParameter
 import com.jeanbarrossilva.orca.ext.processing.addImports
 import com.jeanbarrossilva.orca.ext.processing.requireContainingFile
 import com.jeanbarrossilva.orca.std.buildable.Buildable
+import com.jeanbarrossilva.orca.std.buildable.processor.grammar.IndefiniteArticle
 import com.jeanbarrossilva.orca.std.buildable.processor.grammar.PossessiveApostrophe
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
@@ -175,6 +176,7 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
    */
   private fun createBuilderClassTypeSpec(buildableClassDeclaration: KSClassDeclaration): TypeSpec {
     val buildableClassName = buildableClassDeclaration.simpleName.asString()
+    val buildableClassNameIndefiniteArticle = IndefiniteArticle.of(buildableClassName)
     val className = createBuilderClassName(buildableClassName)
     val dslMarkerAnnotatedAnnotationSpec =
       createDslMarkerAnnotatedAnnotationSpec(buildableClassDeclaration)
@@ -214,6 +216,10 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
         callbackSetterFunSpecs
       )
     return TypeSpec.classBuilder(className)
+      .addKdoc(
+        "Allows for $buildableClassNameIndefiniteArticle [$buildableClassName] to be configured " +
+          "and built."
+      )
       .addAnnotation(dslMarkerAnnotatedAnnotationSpec)
       .addModifiers(visibility)
       .addTypeVariables(typeVariables)
@@ -350,6 +356,14 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
     originalPropertyName: String
   ): FunSpec {
     return FunSpec.builder(originalPropertyName)
+      .addKdoc(
+        """
+          Defines what will be done when [${propertySpec.name}] is invoked.
+
+          @param $originalPropertyName Operation to be performed.
+        """
+          .trimIndent()
+      )
       .addParameter(originalPropertyName, propertySpec.type)
       .addStatement("${propertySpec.name} = $originalPropertyName")
       .build()
@@ -409,12 +423,11 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
     typeName: TypeName,
     memberFunSpecs: List<FunSpec>,
   ): TypeSpec {
-    val isAbstractClass = kind == ClassKind.CLASS
     return TypeSpec.anonymousClassBuilder()
-      .applyIf(!isAbstractClass) { addSuperinterface(typeName) }
-      .applyIf(isAbstractClass) { superclass(typeName) }
+      .applyIf(kind == ClassKind.INTERFACE) { addSuperinterface(typeName) }
+      .applyIf(kind == ClassKind.CLASS) { superclass(typeName) }
       .apply {
-        if (isAbstractClass) {
+        if (kind == ClassKind.CLASS) {
           builderPrimaryConstructorFunSpec.parameters
             .map(ParameterSpec::name)
             .forEach(::addSuperclassConstructorParameter)
