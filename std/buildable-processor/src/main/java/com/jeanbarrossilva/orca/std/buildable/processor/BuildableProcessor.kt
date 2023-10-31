@@ -17,6 +17,7 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSDeclaration
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSValueParameter
+import com.google.devtools.ksp.symbol.Modifier
 import com.jeanbarrossilva.orca.ext.processing.addImports
 import com.jeanbarrossilva.orca.ext.processing.requireContainingFile
 import com.jeanbarrossilva.orca.std.buildable.Buildable
@@ -289,11 +290,13 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
     val parameterSpecs =
       functionDeclaration.parameters.map(::createBuilderCallbackPropertyParameterSpec)
     val returnTypeName = returnType.toTypeName(typeResolver)
-    val typeName = LambdaTypeName.get(parameters = parameterSpecs, returnType = returnTypeName)
+    val typeName =
+      LambdaTypeName.get(parameters = parameterSpecs, returnType = returnTypeName)
+        .copy(suspending = Modifier.SUSPEND in functionDeclaration.modifiers)
     val typeDeclarationName = returnType.resolve().declaration.simpleName.asString()
     val buildableDeclarationNamePossessiveApostrophe = PossessiveApostrophe.of(buildableClassName)
     val valueParameterDeclarationsAsString =
-      parameterSpecs.ifNotEmpty { joinToString(transform = ParameterSpec::name) + " ->" }
+      parameterSpecs.ifNotEmpty { joinToString(transform = ParameterSpec::name) + " ->" }.orEmpty()
     return PropertySpec.builder(name, typeName)
       .addKdoc(
         "Lambda that provides the [$typeDeclarationName] to be returned by the built " +
