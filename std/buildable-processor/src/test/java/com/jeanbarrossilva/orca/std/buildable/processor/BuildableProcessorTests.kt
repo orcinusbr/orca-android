@@ -2,6 +2,7 @@ package com.jeanbarrossilva.orca.std.buildable.processor
 
 import assertk.assertThat
 import assertk.assertions.contains
+import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isTrue
@@ -10,6 +11,7 @@ import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty1
+import kotlin.reflect.KTypeProjection
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.declaredMemberFunctions
 import kotlin.reflect.full.declaredMemberProperties
@@ -192,6 +194,39 @@ internal class BuildableProcessorTests {
     assertThat(callbackProperty).isInstanceOf<KMutableProperty1<*, *>>()
     assertThat(callbackProperty.visibility).isEqualTo(KVisibility.PRIVATE)
     assertThat(callbackProperty.returnType.arguments.last().type).isEqualTo(typeOf<Int>())
+  }
+
+  @OptIn(ExperimentalCompilerApi::class)
+  @Test
+  fun generatesBuilderCallbackPropertyWithValueParametersForBuildableAnnotatedClass() {
+    val file =
+      SourceFile.kotlin(
+        "MyClass.kt",
+        """
+          import com.jeanbarrossilva.orca.std.buildable.Buildable
+
+          @Buildable
+          abstract class MyClass(private val count: Int) {
+            open fun multiplyCountBy(factor: Int): Int {
+              return count * factor
+            }
+          }
+        """
+      )
+    assertThat(
+        BuildableProcessor.process(file)
+          .classLoader
+          .loadClass(BuildableProcessor.createBuilderClassName("MyClass"))
+          .kotlin
+          .declaredMemberProperties
+          .single {
+            it.name == BuildableProcessor.createBuilderCallbackPropertyName("multiplyCountBy")
+          }
+          .returnType
+          .arguments
+          .map(KTypeProjection::type)
+      )
+      .containsExactly(typeOf<Int>(), typeOf<Int>())
   }
 
   @OptIn(ExperimentalCompilerApi::class)

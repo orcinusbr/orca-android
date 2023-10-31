@@ -38,6 +38,7 @@ import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import com.squareup.kotlinpoet.ksp.writeTo
 import com.squareup.kotlinpoet.typeNameOf
 import org.jetbrains.kotlin.utils.addToStdlib.applyIf
+import org.jetbrains.kotlin.utils.addToStdlib.ifNotEmpty
 
 /**
  * [SymbolProcessor] that ensures the integrity of [Buildable]-annotated classes, generating their
@@ -256,15 +257,19 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
   ): PropertySpec {
     val buildableClassName = buildableClassDeclaration.simpleName.asString()
     val functionDeclarationName = functionDeclaration.simpleName.asString()
-    val name = "on" + functionDeclarationName.capitalize()
+    val name = createBuilderCallbackPropertyName(functionDeclarationName)
     val returnType =
       functionDeclaration.returnType
         ?: throw IllegalArgumentException("A return type hasn't been specified.")
     val typeResolver = buildableClassDeclaration.typeParameters.toTypeParameterResolver()
+    val parameterSpecs =
+      functionDeclaration.parameters.map(::createBuilderCallbackPropertyParameterSpec)
     val returnTypeName = returnType.toTypeName(typeResolver)
-    val typeName = LambdaTypeName.get(returnType = returnTypeName)
+    val typeName = LambdaTypeName.get(parameters = parameterSpecs, returnType = returnTypeName)
     val typeDeclarationName = returnType.resolve().declaration.simpleName.asString()
     val buildableDeclarationNamePossessiveApostrophe = PossessiveApostrophe.of(buildableClassName)
+    val valueParameterDeclarationsAsString =
+      parameterSpecs.ifNotEmpty { joinToString(transform = ParameterSpec::name) + " ->" }
     return PropertySpec.builder(name, typeName)
       .addKdoc(
         "Lambda that provides the [$typeDeclarationName] to be returned by the built " +
@@ -273,8 +278,31 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
       )
       .addModifiers(KModifier.PRIVATE)
       .mutable(true)
-      .apply { functionDeclaration.body?.let(::initializer) }
+      .apply {
+        functionDeclaration.body?.let {
+          initializer(
+            buildString {
+              append(it, 0, 1)
+              append(valueParameterDeclarationsAsString)
+              append(it, 1, it.length)
+            }
+          )
+        }
+      }
       .build()
+  }
+
+  /**
+   * Creates a [ParameterSpec] for the [valueParameter] of a callback property.
+   *
+   * @param valueParameter [KSValueParameter] for which the [ParameterSpec] is.
+   */
+  private fun createBuilderCallbackPropertyParameterSpec(
+    valueParameter: KSValueParameter
+  ): ParameterSpec {
+    val name = valueParameter.requireName().asString()
+    val typeName = valueParameter.type.toTypeName()
+    return ParameterSpec.builder(name, typeName).build()
   }
 
   /**
@@ -493,6 +521,15 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
      */
     internal fun createBuilderClassName(buildableClassName: String): String {
       return buildableClassName + "Builder"
+    }
+
+    /**
+     * Creates the name of a builder's callback property.
+     *
+     * @param methodName Name of the method for which the callback property is.
+     */
+    internal fun createBuilderCallbackPropertyName(methodName: String): String {
+      return "on" + methodName.capitalize()
     }
 
     /**
