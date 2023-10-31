@@ -250,7 +250,7 @@ internal class BuildableProcessorTests {
 
   @OptIn(ExperimentalCompilerApi::class)
   @Test
-  fun generatesSuspendingBuilderCallbackPropertyForBuildableAnnotatedClass() {
+  fun generatesBuilderCallbackPropertyWithSuspendingReturnTypeForBuildableAnnotatedClass() {
     val file =
       SourceFile.kotlin(
         "MyClass.kt",
