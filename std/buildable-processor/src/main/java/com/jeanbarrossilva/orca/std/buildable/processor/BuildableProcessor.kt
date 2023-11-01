@@ -232,6 +232,7 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
       createBuilderBuildFunSpec(
         buildableClassDeclaration,
         primaryConstructorFunSpec,
+        callbackPropertySpecs.toList(),
         callbackSetterFunSpecs
       )
     return TypeSpec.classBuilder(className)
@@ -259,11 +260,9 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
   private fun createDslMarkerAnnotatedAnnotationSpec(
     buildableClassDeclaration: KSClassDeclaration
   ): AnnotationSpec {
-    val buildableClassName =
-      buildableClassDeclaration.qualifiedName?.asString()
-        ?: throw IllegalStateException(
-          "Cannot determine $buildableClassDeclaration's qualified name."
-        )
+    val `package` = buildableClassDeclaration.packageName.asString()
+    val packagePrefix = if (`package`.isNotEmpty()) "$`package`." else `package`
+    val buildableClassName = packagePrefix + buildableClassDeclaration.simpleName.asString()
     val classNameAsString = createDslMarkerAnnotatedAnnotationClassName(buildableClassName)
     val className = ClassName.bestGuess(classNameAsString)
     return AnnotationSpec.builder(className).build()
@@ -398,12 +397,14 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
    * @param buildableClassDeclaration [KSClassDeclaration] of the [Buildable]-annotated class for
    *   which the builder is.
    * @param primaryConstructorFunSpec [FunSpec] of the builder class' primary constructor.
-   * @param memberFunSpecs [FunSpec]s of the member methods of the builder class.
+   * @param callbackPropertySpecs [PropertySpec]s of the callback properties.
+   * @param callbackPropertySetterFunSpecs [FunSpec]s of the callback property setter methods.
    */
   private fun createBuilderBuildFunSpec(
     buildableClassDeclaration: KSClassDeclaration,
     primaryConstructorFunSpec: FunSpec,
-    memberFunSpecs: List<FunSpec>
+    callbackPropertySpecs: List<PropertySpec>,
+    callbackPropertySetterFunSpecs: List<FunSpec>
   ): FunSpec {
     val type = buildableClassDeclaration.asStarProjectedType()
     val simpleTypeName = type.declaration.simpleName.asString()
@@ -419,7 +420,8 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
         buildableClassDeclaration.classKind,
         primaryConstructorFunSpec,
         typeName,
-        memberFunSpecs
+        callbackPropertySpecs,
+        callbackPropertySetterFunSpecs
       )
     return FunSpec.builder(BUILDER_BUILD_METHOD_NAME)
       .addKdoc("Builds a $simpleTypeName with the provided configuration.")
@@ -436,15 +438,23 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
    * @param kind [ClassKind] of the [Buildable]-annotated class.
    * @param builderPrimaryConstructorFunSpec [FunSpec] of the builder primary constructor.
    * @param typeName [TypeName] of the [Buildable]-annotated class.
-   * @param memberFunSpecs [FunSpec]s of the member methods declared within the [Buildable]-annoated
-   *   class.
+   * @param callbackPropertySpecs [PropertySpec]s of the callback properties.
+   * @param callbackPropertySetterFunSpecs [FunSpec]s of the callback property setter methods.
    */
   private fun createAnonymousClassTypeSpec(
     kind: ClassKind,
     builderPrimaryConstructorFunSpec: FunSpec,
     typeName: TypeName,
-    memberFunSpecs: List<FunSpec>,
+    callbackPropertySpecs: List<PropertySpec>,
+    callbackPropertySetterFunSpecs: List<FunSpec>,
   ): TypeSpec {
+    val memberFunSpecs =
+      callbackPropertySetterFunSpecs.mapIndexed { index, callbackPropertySetterFunSpec ->
+        createAnonymousClassMemberFunSpec(
+          callbackPropertySpecs[index],
+          callbackPropertySetterFunSpec
+        )
+      }
     return TypeSpec.anonymousClassBuilder()
       .applyIf(kind == ClassKind.INTERFACE) { addSuperinterface(typeName) }
       .applyIf(kind == ClassKind.CLASS) { superclass(typeName) }
@@ -456,6 +466,30 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
         }
       }
       .addFunctions(memberFunSpecs)
+      .build()
+  }
+
+  /**
+   * Creates a [FunSpec] for an anonymous class' member method.
+   *
+   * @param callbackPropertySpec [PropertySpec] of the callback property.
+   * @param callbackPropertySetterFunSpec [FunSpec] of the callback property setter method.
+   */
+  private fun createAnonymousClassMemberFunSpec(
+    callbackPropertySpec: PropertySpec,
+    callbackPropertySetterFunSpec: FunSpec
+  ): FunSpec {
+    val callbackPropertyLambdaTypeName = callbackPropertySpec.type as LambdaTypeName
+    return FunSpec.builder(callbackPropertySetterFunSpec.name)
+      .addModifiers(KModifier.OVERRIDE)
+      .applyIf(callbackPropertyLambdaTypeName.isSuspending) { addModifiers(KModifier.SUSPEND) }
+      .addParameters(callbackPropertyLambdaTypeName.parameters)
+      .returns(callbackPropertyLambdaTypeName.returnType)
+      .addStatement(
+        "return ${callbackPropertySpec.name}(" +
+          callbackPropertyLambdaTypeName.parameters.map(ParameterSpec::name).joinToString() +
+          ')'
+      )
       .build()
   }
 
@@ -488,7 +522,8 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
     val buildableClassName = buildableClassDeclaration.simpleName.asString()
     val builderClassName = createBuilderClassName(buildableClassName)
     val documentation = buildableClassDeclaration.docString
-    val visibility = buildableClassDeclaration.getVisibility().toKModifier() ?: KModifier.PUBLIC
+    val visibility =
+      buildableClassDeclaration.rootDeclarationVisibility.toKModifier() ?: KModifier.PUBLIC
     val packageName = buildableClassDeclaration.packageName.asString()
     val typeParameterResolver = buildableClassDeclaration.typeParameters.toTypeParameterResolver()
     val typeVariables = typeParameterResolver.parametersMap.values.toList()

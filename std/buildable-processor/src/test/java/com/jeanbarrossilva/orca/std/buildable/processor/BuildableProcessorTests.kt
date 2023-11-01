@@ -6,6 +6,7 @@ import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isTrue
+import com.jeanbarrossilva.orca.std.buildable.Buildable
 import com.jeanbarrossilva.orca.std.buildable.processor.test.process
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
@@ -21,6 +22,13 @@ import kotlin.test.Test
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 
 internal class BuildableProcessorTests {
+  @Buildable
+  abstract class MyClass {
+    open fun count(): Int {
+      return 0
+    }
+  }
+
   @OptIn(ExperimentalCompilerApi::class)
   @Test
   fun reportsErrorOnBuildableAnnotatedPrivateClass() {
@@ -648,5 +656,10 @@ internal class BuildableProcessorTests {
           .name
       )
       .isEqualTo("MyClass")
+  }
+
+  @Test
+  fun buildsBuildableAnnotatedClassWithProvidedConfiguration() {
+    assertThat(MyClass { count { 64 } }.count()).isEqualTo(64)
   }
 }
