@@ -8,7 +8,7 @@ import com.jeanbarrossilva.orca.core.http.client.CoreHttpClient
 import com.jeanbarrossilva.orca.core.http.client.test.instance.TestHttpInstance
 import com.jeanbarrossilva.orca.core.http.client.test.instance.TestHttpInstanceProvider
 import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.muting.SampleTermMuter
+import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.SampleTermMuter
 import com.jeanbarrossilva.orca.core.test.TestActorProvider
 import com.jeanbarrossilva.orca.core.test.TestAuthenticator
 import com.jeanbarrossilva.orca.core.test.TestAuthorizer

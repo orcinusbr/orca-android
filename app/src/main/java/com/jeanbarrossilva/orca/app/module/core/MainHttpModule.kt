@@ -6,7 +6,7 @@ import com.jeanbarrossilva.orca.core.http.auth.authentication.HttpAuthenticator
 import com.jeanbarrossilva.orca.core.http.auth.authorization.HttpAuthorizer
 import com.jeanbarrossilva.orca.core.http.instance.HttpInstanceProvider
 import com.jeanbarrossilva.orca.core.sharedpreferences.actor.SharedPreferencesActorProvider
-import com.jeanbarrossilva.orca.core.sharedpreferences.feed.profile.toot.content.muting.SharedPreferencesTermMuter
+import com.jeanbarrossilva.orca.core.sharedpreferences.feed.profile.toot.content.SharedPreferencesTermMuter
 import com.jeanbarrossilva.orca.std.injector.Injector
 
 internal class MainHttpModule :
@@ -15,7 +15,7 @@ internal class MainHttpModule :
     { HttpAuthenticator(context = Injector.get(), authorizer = get(), actorProvider = get()) },
     { SharedPreferencesActorProvider(context = Injector.get()) },
     { AuthenticationLock(authenticator = get(), actorProvider = get()) },
-    { SharedPreferencesTermMuter(context = Injector.get()) },
+    { SharedPreferencesTermMuter(context = get()) },
     { HttpInstanceProvider(context = Injector.get()) },
     { AsyncImageLoaderProvider(context = Injector.get()) }
   )

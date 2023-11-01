@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.sharedpreferences.feed.profile.toot.content.muting
+package com.jeanbarrossilva.orca.core.sharedpreferences.feed.profile.toot.content
 
 import androidx.test.platform.app.InstrumentationRegistry
 import app.cash.turbine.test
