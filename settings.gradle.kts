@@ -26,7 +26,6 @@ include(
   ":feature:settings:term-muting",
   ":feature:toot-details",
   ":platform:cache",
-  ":platform:launchable",
   ":platform:theme",
   ":platform:theme-test",
   ":platform:ui",

@@ -72,7 +72,6 @@ dependencies {
   implementation(project(":feature:settings"))
   implementation(project(":feature:settings:term-muting"))
   implementation(project(":feature:toot-details"))
-  implementation(project(":platform:launchable"))
   implementation(project(":platform:theme"))
   implementation(project(":platform:ui"))
   implementation(project(":std:image-loader:local"))
