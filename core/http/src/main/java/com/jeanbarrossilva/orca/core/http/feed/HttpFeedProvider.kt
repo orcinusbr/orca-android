@@ -5,7 +5,7 @@ import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.auth.actor.ActorProvider
 import com.jeanbarrossilva.orca.core.feed.FeedProvider
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.feed.profile.toot.content.muting.TermMuter
+import com.jeanbarrossilva.orca.core.feed.profile.toot.content.TermMuter
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.pagination.HttpTootPaginateSource
 import kotlinx.coroutines.flow.Flow
 

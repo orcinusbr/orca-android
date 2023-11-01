@@ -2,7 +2,7 @@ package com.jeanbarrossilva.orca.core.feed
 
 import app.cash.turbine.test
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.muting.SampleTermMuter
+import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.SampleTermMuter
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.samples
 import com.jeanbarrossilva.orca.core.sample.rule.SampleCoreTestRule
 import kotlin.test.Test

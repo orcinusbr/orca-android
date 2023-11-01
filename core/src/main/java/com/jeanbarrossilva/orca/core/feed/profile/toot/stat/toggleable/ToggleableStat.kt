@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.orca.core.feed.profile.toot.stat.toggleable
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.stat.Stat
-import kotlinx.coroutines.flow.Flow
+import com.jeanbarrossilva.orca.std.buildable.Buildable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,7 +11,8 @@ import kotlinx.coroutines.flow.asStateFlow
  *
  * @param count Initial amount of elements.
  */
-abstract class ToggleableStat<T> internal constructor(count: Int) : Stat<T>(count) {
+@Buildable
+abstract class ToggleableStat<T> internal constructor(count: Int = 0) : Stat<T>(count) {
   /** [MutableStateFlow] that gets emitted to whenever this [ToggleableStat] is toggled. */
   private val isEnabledMutableFlow = MutableStateFlow(false)
 
@@ -21,37 +22,6 @@ abstract class ToggleableStat<T> internal constructor(count: Int) : Stat<T>(coun
   /** Whether this [ToggleableStat] is currently enabled. */
   val isEnabled
     get() = isEnabledFlow.value
-
-  /**
-   * Allows for a [ToggleableStat] to be configured and built.
-   *
-   * @param count Initial amount of elements of the [ToggleableStat].
-   */
-  class Builder<T> internal constructor(count: Int) : Stat.Builder<T>(count) {
-    /** Lambda to be invoked when the [ToggleableStat]'s [setEnabled] method is called. */
-    private var onSetEnabled: suspend (isEnabled: Boolean) -> Unit = {}
-
-    /**
-     * Defines what will be done when the [ToggleableStat]'s [setEnabled] is called.
-     *
-     * @param setEnabled Callback to be run.
-     */
-    fun setEnabled(setEnabled: suspend (isEnabled: Boolean) -> Unit): Builder<T> {
-      return apply { onSetEnabled = setEnabled }
-    }
-
-    override fun build(): ToggleableStat<T> {
-      return object : ToggleableStat<T>(count) {
-        override fun get(page: Int): Flow<List<T>> {
-          return onGet.invoke(page)
-        }
-
-        override suspend fun setEnabled(isEnabled: Boolean) {
-          onSetEnabled(isEnabled)
-        }
-      }
-    }
-  }
 
   /** Toggles whether this [ToggleableStat] is enabled. */
   suspend fun toggle() {
@@ -83,5 +53,5 @@ abstract class ToggleableStat<T> internal constructor(count: Int) : Stat<T>(coun
    *
    * @param isEnabled Whether it's being enabled or disabled.
    */
-  protected abstract suspend fun setEnabled(isEnabled: Boolean)
+  protected open suspend fun setEnabled(isEnabled: Boolean) {}
 }
