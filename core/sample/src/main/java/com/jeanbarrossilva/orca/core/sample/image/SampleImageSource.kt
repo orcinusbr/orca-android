@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.core.sample.feed.profile.toot.image
+package com.jeanbarrossilva.orca.core.sample.image
 
 import com.jeanbarrossilva.orca.std.imageloader.Image
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader

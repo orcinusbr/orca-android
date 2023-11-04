@@ -10,10 +10,10 @@ import java.net.URL
 /**
  * Remembers an [ImageLoader].
  *
- * @param url [URL] of the [Image] to be loaded.
+ * @param source Source from which the [Image] will be obtained.
  */
 @Composable
-fun rememberImageLoader(url: URL): SomeImageLoader {
+internal fun rememberImageLoader(source: URL): SomeImageLoader {
   val context = LocalContext.current
-  return remember(context) { CoilImageLoader(context, url) }
+  return remember(context) { CoilImageLoader.Provider(context).provide(source) }
 }

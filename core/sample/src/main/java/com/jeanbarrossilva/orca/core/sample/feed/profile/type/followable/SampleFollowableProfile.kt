@@ -5,6 +5,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.FollowableProfile
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfile
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileWriter
+import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.SampleTootProvider
 import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
@@ -12,6 +13,7 @@ import java.net.URL
 /**
  * [SampleProfile] that's also followable.
  *
+ * @param writer [SampleProfileWriter] through which the [Follow] status can be updated.
  * @see FollowableProfile
  */
 internal data class SampleFollowableProfile<T : Follow>(
@@ -23,9 +25,11 @@ internal data class SampleFollowableProfile<T : Follow>(
   override val follow: T,
   override val followerCount: Int,
   override val followingCount: Int,
-  override val url: URL
+  override val url: URL,
+  val writer: SampleProfileWriter,
+  override val tootProvider: SampleTootProvider
 ) : SampleProfile, FollowableProfile<T>() {
   override suspend fun onChangeFollowTo(follow: T) {
-    SampleProfileWriter.updateFollow(id, follow)
+    writer.updateFollow(id, follow)
   }
 }

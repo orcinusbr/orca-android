@@ -10,7 +10,7 @@ import androidx.compose.ui.test.performTouchInput
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
-import com.jeanbarrossilva.orca.core.sample.instance.sample
+import com.jeanbarrossilva.orca.core.sample.test.instance.sample
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.headline.HeadlineCard
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline

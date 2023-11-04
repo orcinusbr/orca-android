@@ -7,14 +7,14 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.placeholder.Placeholder
+import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.R
-import com.jeanbarrossilva.orca.platform.ui.Samples
+import com.jeanbarrossilva.orca.platform.ui.core.createSample
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.compose.Image
-import java.io.Serializable
 
 internal const val AVATAR_TAG = "avatar"
 
@@ -25,12 +25,6 @@ private val smallShape
   @Composable get() = OrcaTheme.shapes.small
 private val largeShape
   @Composable get() = OrcaTheme.shapes.large
-
-data class Avatar(val name: String) : Serializable {
-  companion object {
-    val sample = Avatar(Samples.NAME)
-  }
-}
 
 @Composable
 fun SmallAvatar(modifier: Modifier = Modifier) {
@@ -76,7 +70,7 @@ private fun LoadingLargeAvatarPreview() {
 @Composable
 @MultiThemePreview
 private fun LoadedLargeAvatarPreview() {
-  OrcaTheme { LargeAvatar(ImageLoader.avatar, Avatar.sample.name) }
+  OrcaTheme { LargeAvatar(ImageLoader.forDefaultSampleAuthor(), Profile.createSample().name) }
 }
 
 @Composable
@@ -88,5 +82,5 @@ private fun LoadingSmallAvatarPreview() {
 @Composable
 @MultiThemePreview
 private fun LoadedSmallAvatarPreview() {
-  OrcaTheme { SmallAvatar(ImageLoader.avatar, Avatar.sample.name) }
+  OrcaTheme { SmallAvatar(ImageLoader.forDefaultSampleAuthor(), Profile.createSample().name) }
 }

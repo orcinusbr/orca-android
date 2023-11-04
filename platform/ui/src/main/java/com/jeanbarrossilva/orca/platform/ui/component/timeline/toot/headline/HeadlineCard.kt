@@ -20,12 +20,14 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Headline
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.highlight.sample
+import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.highlight.createSample
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.border
 import com.jeanbarrossilva.orca.platform.theme.kit.action.Hoverable
 import com.jeanbarrossilva.orca.platform.ui.R
+import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.compose.Image
 
 /** Tag that identifies a [HeadlineCard] for testing purposes. */
@@ -73,7 +75,7 @@ fun HeadlineCard(headline: Headline, onClick: () -> Unit, modifier: Modifier = M
 
 @Composable
 internal fun HeadlineCard(modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
-  HeadlineCard(Headline.sample, onClick, modifier)
+  HeadlineCard(Headline.createSample(ImageLoader.Provider.createSample()), onClick, modifier)
 }
 
 @Composable

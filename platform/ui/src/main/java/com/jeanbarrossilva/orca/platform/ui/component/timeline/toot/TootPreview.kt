@@ -1,5 +1,6 @@
 package com.jeanbarrossilva.orca.platform.ui.component.timeline.toot
 
+import android.content.Context
 import androidx.compose.foundation.interaction.HoverInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsProperties
@@ -39,8 +41,8 @@ import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.samples
+import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.createSample
+import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.createSamples
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
@@ -49,6 +51,7 @@ import com.jeanbarrossilva.orca.platform.theme.extensions.IgnoringMutableInterac
 import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.SmallAvatar
+import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.headline.HeadlineCard
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.FavoriteStat
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.ReblogStat
@@ -151,15 +154,22 @@ data class TootPreview(
   companion object {
     /** [SampleTootPreview] sample. */
     val sample
-      @Composable get() = getSample(OrcaTheme.colors)
+      @Composable get() = getSample(LocalContext.current, OrcaTheme.colors)
 
     /** [SampleTootPreview] samples. */
     val samples
-      @Composable get() = Toot.samples.map { it.toTootPreview() }
+      @Composable
+      get() = Toot.createSamples(ImageLoader.Provider.createSample()).map { it.toTootPreview() }
 
-    /** Gets a sample [SampleTootPreview]. */
-    fun getSample(colors: Colors): TootPreview {
-      return Toot.sample.toTootPreview(colors)
+    /**
+     * Gets a sample [SampleTootPreview].
+     *
+     * @param context [Context] through which a sample [ImageLoader.Provider] will be created.
+     * @param colors [Colors] by which the resulting [TootPreview]'s [text][TootPreview.text] can be
+     *   colored.
+     */
+    fun getSample(context: Context, colors: Colors): TootPreview {
+      return Toot.createSample(ImageLoader.Provider.createSample(context)).toTootPreview(colors)
     }
   }
 }

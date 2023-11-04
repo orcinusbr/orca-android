@@ -3,8 +3,9 @@ package com.jeanbarrossilva.orca.core.sample.feed.profile
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.samples
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.sample
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.toot.sample
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.toot.samples
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlinx.coroutines.flow.first

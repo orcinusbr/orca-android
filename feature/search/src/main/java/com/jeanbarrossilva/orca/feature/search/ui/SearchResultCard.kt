@@ -18,10 +18,12 @@ import androidx.compose.ui.semantics.semantics
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
-import com.jeanbarrossilva.orca.core.sample.feed.profile.search.sample
+import com.jeanbarrossilva.orca.core.sample.feed.profile.search.createSample
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.SmallAvatar
+import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 
 @Composable
 internal fun SearchResultCard(modifier: Modifier = Modifier) {
@@ -88,7 +90,10 @@ private fun LoadingSearchResultCardPreview() {
 private fun LoadedSearchResultCardPreview() {
   OrcaTheme {
     Surface(color = OrcaTheme.colors.background.container) {
-      SearchResultCard(ProfileSearchResult.sample, onClick = {})
+      SearchResultCard(
+        ProfileSearchResult.createSample(ImageLoader.Provider.createSample()),
+        onClick = {}
+      )
     }
   }
 }

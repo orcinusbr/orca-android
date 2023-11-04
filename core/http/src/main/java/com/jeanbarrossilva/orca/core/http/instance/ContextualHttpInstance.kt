@@ -25,6 +25,9 @@ import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.HttpTootFetche
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.HttpTootStorage
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
 import com.jeanbarrossilva.orca.platform.cache.Cache
+import com.jeanbarrossilva.orca.std.imageloader.Image
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import java.net.URL
 
 /**
  * [HttpInstance] that authorizes the user and caches all fetched structures through the given
@@ -36,6 +39,8 @@ import com.jeanbarrossilva.orca.platform.cache.Cache
  * @param actorProvider [ActorProvider] that will provide [Actor]s to the [authenticator], the
  *   [authenticationLock] and the [feedProvider].
  * @param termMuter [TermMuter] by which [Toot]s with muted terms will be filtered out.
+ * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
+ *   [Image]s will be loaded.
  */
 class ContextualHttpInstance(
   context: Context,
@@ -44,7 +49,8 @@ class ContextualHttpInstance(
   override val authenticator: HttpAuthenticator,
   actorProvider: ActorProvider,
   override val authenticationLock: AuthenticationLock<HttpAuthenticator>,
-  termMuter: TermMuter
+  termMuter: TermMuter,
+  imageLoaderProvider: ImageLoader.Provider<URL>
 ) : HttpInstance<HttpAuthorizer, HttpAuthenticator>(domain, authorizer) {
   /** [HttpDatabase] in which cached structures will be persisted. */
   private val database = HttpDatabase.getInstance(context)
@@ -57,11 +63,16 @@ class ContextualHttpInstance(
     ProfileTootPaginateSource.Provider(::ProfileTootPaginateSource)
 
   /** [HttpProfileFetcher] by which [HttpProfile]s will be fetched from the API. */
-  private val profileFetcher = HttpProfileFetcher(profileTootPaginateSourceProvider)
+  private val profileFetcher =
+    HttpProfileFetcher(imageLoaderProvider, profileTootPaginateSourceProvider)
 
   /** [HttpProfileStorage] that will store fetched [HttpProfile]s. */
   private val profileStorage =
-    HttpProfileStorage(profileTootPaginateSourceProvider, database.profileEntityDao)
+    HttpProfileStorage(
+      imageLoaderProvider,
+      profileTootPaginateSourceProvider,
+      database.profileEntityDao
+    )
 
   /** [Cache] that decides how to obtain [HttpProfile]s. */
   private val profileCache =
@@ -71,11 +82,11 @@ class ContextualHttpInstance(
    * [HttpProfileSearchResultsFetcher] by which [ProfileSearchResult]s will be fetched from the API.
    */
   private val profileSearchResultsFetcher =
-    HttpProfileSearchResultsFetcher(profileTootPaginateSourceProvider)
+    HttpProfileSearchResultsFetcher(imageLoaderProvider, profileTootPaginateSourceProvider)
 
   /** [HttpProfileSearchResultsStorage] that will store fetched [ProfileSearchResult]s. */
   private val profileSearchResultsStorage =
-    HttpProfileSearchResultsStorage(database.profileSearchResultEntityDao)
+    HttpProfileSearchResultsStorage(imageLoaderProvider, database.profileSearchResultEntityDao)
 
   /** [Cache] that decides how to obtain [ProfileSearchResult]s. */
   private val profileSearchResultsCache =

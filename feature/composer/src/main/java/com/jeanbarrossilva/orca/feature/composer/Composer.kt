@@ -42,7 +42,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
+import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.createSample
 import com.jeanbarrossilva.orca.feature.composer.ui.Toolbar
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
@@ -52,8 +52,10 @@ import com.jeanbarrossilva.orca.platform.theme.kit.input.text.TextFieldDefaults 
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
+import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 
 internal const val COMPOSER_FIELD = "composer-field"
 
@@ -224,7 +226,9 @@ private fun EmptyWithToolbarComposerPreview() {
 private fun PopulatedWithoutToolbarComposerPreview() {
   OrcaTheme {
     Composer(
-      TextFieldValue(Toot.sample.content.text.toAnnotatedString()),
+      TextFieldValue(
+        Toot.createSample(ImageLoader.Provider.createSample()).content.text.toAnnotatedString()
+      ),
       isInitiallyFocused = false
     )
   }
@@ -235,7 +239,9 @@ private fun PopulatedWithoutToolbarComposerPreview() {
 private fun PopulatedWithToolbarComposerPreview() {
   OrcaTheme {
     Composer(
-      TextFieldValue(Toot.sample.content.text.toAnnotatedString()),
+      TextFieldValue(
+        Toot.createSample(ImageLoader.Provider.createSample()).content.text.toAnnotatedString()
+      ),
       isInitiallyFocused = true
     )
   }

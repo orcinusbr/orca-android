@@ -10,7 +10,7 @@ import com.jeanbarrossilva.orca.app.demo.test.browsesTo
 import com.jeanbarrossilva.orca.app.demo.test.performScrollToTootPreviewWithHeadlineCard
 import com.jeanbarrossilva.orca.app.demo.test.respondWithOK
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.highlight.sample
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.toot.content.highlight.sample
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.headline.onHeadlineCards
 import org.junit.Rule
 import org.junit.Test

@@ -1,30 +1,22 @@
 package com.jeanbarrossilva.orca.core.sample.instance
 
-import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
-import com.jeanbarrossilva.orca.core.auth.Authenticator
-import com.jeanbarrossilva.orca.core.auth.actor.ActorProvider
+import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.instance.Instance
-import com.jeanbarrossilva.orca.core.instance.domain.Domain
-import com.jeanbarrossilva.orca.core.sample.auth.SampleAuthenticator
-import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
-import com.jeanbarrossilva.orca.core.sample.feed.SampleFeedProvider
-import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileProvider
-import com.jeanbarrossilva.orca.core.sample.feed.profile.search.SampleProfileSearcher
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.SampleTootProvider
-import com.jeanbarrossilva.orca.core.sample.instance.domain.sample
+import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.createSamples
+import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
+import com.jeanbarrossilva.orca.std.imageloader.Image
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 
-/** [Instance] returned by [sample]. */
-private val sampleInstance =
-  object : Instance<Authenticator>() {
-    override val domain = Domain.sample
-    override val authenticator: Authenticator = SampleAuthenticator
-    override val authenticationLock = AuthenticationLock(authenticator, ActorProvider.sample)
-    override val feedProvider = SampleFeedProvider
-    override val profileProvider = SampleProfileProvider
-    override val profileSearcher = SampleProfileSearcher
-    override val tootProvider = SampleTootProvider
-  }
-
-/** Sample [Instance]. */
-val Instance.Companion.sample
-  get() = sampleInstance
+/**
+ * Creates a [SampleInstance].
+ *
+ * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
+ *   [Image]s can be loaded from a [SampleImageSource].
+ * @param defaultToots [Toot]s that are provided by default within the [SampleInstance].
+ */
+fun Instance.Companion.createSample(
+  imageLoaderProvider: ImageLoader.Provider<SampleImageSource>,
+  defaultToots: List<Toot> = Toot.createSamples(imageLoaderProvider)
+): SampleInstance {
+  return SampleInstance(defaultToots, imageLoaderProvider)
+}

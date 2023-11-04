@@ -3,29 +3,26 @@ package com.jeanbarrossilva.orca.feature.profiledetails.conversion.converter.fol
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.type.editable.EditableProfile
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.FollowableProfile
-import com.jeanbarrossilva.orca.core.sample.feed.profile.sample
-import com.jeanbarrossilva.orca.core.sample.feed.profile.type.editable.sample
-import com.jeanbarrossilva.orca.core.sample.feed.profile.type.followable.sample
-import com.jeanbarrossilva.orca.core.sample.rule.SampleCoreTestRule
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.sample
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.type.sample
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetails
+import com.jeanbarrossilva.orca.feature.profiledetails.test.createSample
+import com.jeanbarrossilva.orca.feature.profiledetails.test.sample
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import kotlinx.coroutines.test.TestScope
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
-import org.junit.Rule
 import org.junit.Test
 
 internal class FollowableProfileConverterTests {
   private val coroutineScope = TestScope()
   private val converter = FollowableProfileConverter(coroutineScope, next = null)
 
-  @get:Rule val sampleCoreRule = SampleCoreTestRule()
-
   @Test
   fun convertsFollowableProfile() {
     val onStatusToggle = {}
     assertEquals(
-      ProfileDetails.Followable.createSample(Colors.Unspecified, onStatusToggle),
+      ProfileDetails.Followable.createSample(onStatusToggle),
       converter
         .convert(FollowableProfile.sample, Colors.Unspecified)
         .let { it as ProfileDetails.Followable }

@@ -6,13 +6,13 @@ import assertk.assertions.isTrue
 import com.jeanbarrossilva.orca.core.http.client.test.assertThatRequestAuthorizationHeaderOf
 import com.jeanbarrossilva.orca.core.http.client.test.runAuthenticatedTest
 import com.jeanbarrossilva.orca.core.http.client.test.runUnauthenticatedTest
-import com.jeanbarrossilva.orca.core.sample.rule.SampleCoreTestRule
+import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
 import io.ktor.http.parametersOf
 import kotlin.test.Test
 import org.junit.Rule
 
 internal class CoreHttpClientTests {
-  @get:Rule val sampleCoreRule = SampleCoreTestRule()
+  @get:Rule val sampleInstanceRule = SampleInstanceTestRule()
 
   @Test
   fun requestsAuthenticationOnAuthenticateAndGetWithAnUnauthenticatedActor() {

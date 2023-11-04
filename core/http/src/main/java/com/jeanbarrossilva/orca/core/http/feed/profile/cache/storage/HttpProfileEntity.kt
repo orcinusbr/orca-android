@@ -8,13 +8,11 @@ import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
-import com.jeanbarrossilva.orca.core.http.HttpModule
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.ProfileTootPaginateSource
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.editable.HttpEditableProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.followable.HttpFollowableProfile
-import com.jeanbarrossilva.orca.core.http.imageLoaderProvider
-import com.jeanbarrossilva.orca.std.injector.Injector
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.toStyledString
 import java.net.URL
 
@@ -53,16 +51,22 @@ internal constructor(
   /**
    * Converts this [HttpProfileEntity] into a [Profile].
    *
+   * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
+   *   [Profile]'s avatar will be loaded from a [URL].
    * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
    *   [ProfileTootPaginateSource] for paginating through the resulting [HttpProfile]'s [Toot]s will
    *   be provided.
    * @throws IllegalStateException If the [type] is unknown.
    */
   @Throws(IllegalStateException::class)
-  internal fun toProfile(tootPaginateSourceProvider: ProfileTootPaginateSource.Provider): Profile {
+  internal fun toProfile(
+    avatarLoaderProvider: ImageLoader.Provider<URL>,
+    tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
+  ): Profile {
     return when (type) {
-      EDITABLE_TYPE -> toMastodonEditableProfile(tootPaginateSourceProvider)
-      FOLLOWABLE_TYPE -> toMastodonFollowableProfile(tootPaginateSourceProvider)
+      EDITABLE_TYPE -> toMastodonEditableProfile(avatarLoaderProvider, tootPaginateSourceProvider)
+      FOLLOWABLE_TYPE ->
+        toMastodonFollowableProfile(avatarLoaderProvider, tootPaginateSourceProvider)
       else -> throw IllegalStateException("Unknown profile entity type: $type.")
     }
   }
@@ -70,16 +74,19 @@ internal constructor(
   /**
    * Converts this [HttpProfileEntity] into an [HttpEditableProfile].
    *
+   * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
+   *   [HttpEditableProfile]'s avatar will be loaded from a [URL].
    * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
    *   [ProfileTootPaginateSource] for paginating through the resulting [HttpEditableProfile]'s
    *   [Toot]s will be provided.
    */
   private fun toMastodonEditableProfile(
+    avatarLoaderProvider: ImageLoader.Provider<URL>,
     tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
   ): HttpEditableProfile {
     val account = Account.of(account)
     val avatarURL = URL(avatarURL)
-    val avatarLoader = Injector.from<HttpModule>().imageLoaderProvider().provide(avatarURL)
+    val avatarLoader = avatarLoaderProvider.provide(avatarURL)
     val bio = bio.toStyledString()
     val url = URL(url)
     return HttpEditableProfile(
@@ -98,16 +105,19 @@ internal constructor(
   /**
    * Converts this [HttpProfileEntity] into an [HttpFollowableProfile].
    *
+   * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
+   *   [HttpFollowableProfile]'s avatar will be loaded from a [URL].
    * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
    *   [ProfileTootPaginateSource] for paginating through the resulting [HttpFollowableProfile]'s
    *   [Toot]s will be provided.
    */
   private fun toMastodonFollowableProfile(
+    avatarLoaderProvider: ImageLoader.Provider<URL>,
     tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
   ): HttpFollowableProfile<Follow> {
     val account = Account.of(account)
     val avatarURL = URL(avatarURL)
-    val avatarLoader = Injector.from<HttpModule>().imageLoaderProvider().provide(avatarURL)
+    val avatarLoader = avatarLoaderProvider.provide(avatarURL)
     val bio = bio.toStyledString()
     val follow = Follow.of(checkNotNull(follow))
     val url = URL(url)

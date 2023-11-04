@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.orca.core.feed.profile
 
-import com.jeanbarrossilva.orca.core.sample.feed.profile.sample
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.sample
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

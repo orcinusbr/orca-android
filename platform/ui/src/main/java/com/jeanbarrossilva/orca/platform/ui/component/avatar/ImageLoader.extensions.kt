@@ -1,17 +1,13 @@
 package com.jeanbarrossilva.orca.platform.ui.component.avatar
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import com.jeanbarrossilva.orca.platform.ui.R
-import com.jeanbarrossilva.orca.std.imageloader.Image
+import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
+import com.jeanbarrossilva.orca.core.sample.image.AuthorImageSource
+import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
-import com.jeanbarrossilva.orca.std.imageloader.local.LocalImageLoader
 
-/** [ImageLoader] that loads the sample avatar [Image]. */
-internal val ImageLoader.Companion.avatar
-  @Composable
-  get() =
-    object : LocalImageLoader() {
-      override val context = LocalContext.current
-      override val source = R.drawable.sample_avatar_default
-    }
+/** Creates an [ImageLoader] that loads the avatar of a default sample [Author]. */
+@Composable
+internal fun ImageLoader.Companion.forDefaultSampleAuthor(): ImageLoader<SampleImageSource> {
+  return ImageLoader.Provider.createSample().provide(AuthorImageSource.Default)
+}

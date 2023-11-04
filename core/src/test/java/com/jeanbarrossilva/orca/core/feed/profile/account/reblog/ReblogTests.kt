@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.orca.core.feed.profile.account.reblog
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.reblog.Reblog
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.reblog.sample
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.toot.reblog.sample
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

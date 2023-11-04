@@ -2,39 +2,54 @@ package com.jeanbarrossilva.orca.core.http.instance
 
 import android.content.Context
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
+import com.jeanbarrossilva.orca.core.auth.actor.Actor
+import com.jeanbarrossilva.orca.core.auth.actor.ActorProvider
 import com.jeanbarrossilva.orca.core.http.HttpModule
-import com.jeanbarrossilva.orca.core.http.actorProvider
 import com.jeanbarrossilva.orca.core.http.auth.authentication.HttpAuthenticator
 import com.jeanbarrossilva.orca.core.http.auth.authorization.HttpAuthorizer
 import com.jeanbarrossilva.orca.core.http.auth.authorization.viewmodel.HttpAuthorizationViewModel
-import com.jeanbarrossilva.orca.core.http.authenticationLock
-import com.jeanbarrossilva.orca.core.http.authenticator
-import com.jeanbarrossilva.orca.core.http.authorizer
 import com.jeanbarrossilva.orca.core.http.termMuter
 import com.jeanbarrossilva.orca.core.instance.InstanceProvider
 import com.jeanbarrossilva.orca.core.instance.SomeInstance
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
+import com.jeanbarrossilva.orca.std.imageloader.Image
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.injector.Injector
+import java.net.URL
 
 /**
  * [InstanceProvider] that provides a [ContextualHttpInstance].
  *
  * @param context [Context] through which the [Domain] of the [ContextualHttpInstance] will
  *   retrieved.
+ * @param actorProvider [ActorProvider] that provides the [Actor].
+ * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
+ *   [Image] will be loaded.
  */
-class HttpInstanceProvider(private val context: Context) : InstanceProvider {
+class HttpInstanceProvider(
+  private val context: Context,
+  private val actorProvider: ActorProvider,
+  private val imageLoaderProvider: ImageLoader.Provider<URL>
+) : InstanceProvider {
   private val module by lazy { Injector.from<HttpModule>() }
+  private val domain by lazy { HttpAuthorizationViewModel.getInstanceDomain(context) }
+  private val authorizer by lazy { HttpAuthorizer(context) }
+  private val authenticator by lazy { HttpAuthenticator(context, authorizer, actorProvider) }
+  private val authenticationLock by lazy { AuthenticationLock(authenticator, actorProvider) }
+  private val instance by lazy {
+    ContextualHttpInstance(
+      context,
+      domain,
+      authorizer,
+      authenticator,
+      actorProvider,
+      authenticationLock,
+      module.termMuter(),
+      imageLoaderProvider
+    )
+  }
 
   override fun provide(): SomeInstance {
-    @Suppress("UNCHECKED_CAST")
-    return ContextualHttpInstance(
-      context,
-      HttpAuthorizationViewModel.getInstanceDomain(context),
-      module.authorizer() as HttpAuthorizer,
-      module.authenticator() as HttpAuthenticator,
-      module.actorProvider(),
-      module.authenticationLock() as AuthenticationLock<HttpAuthenticator>,
-      module.termMuter()
-    )
+    return instance
   }
 }

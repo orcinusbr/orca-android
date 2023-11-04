@@ -1,12 +1,21 @@
 package com.jeanbarrossilva.orca.core.sample.feed.profile.type.editable
 
+import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.type.editable.Editor
-import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileProvider
+import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileWriter
 import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 
-/** [Editor] that edits [SampleEditableProfile]s. */
-internal class SampleEditor(private val id: String) : Editor {
+/**
+ * [Editor] that edits [SampleEditableProfile]s.
+ *
+ * @param profileWriter [SampleProfileWriter] for performing write operations on the [Profile].
+ * @param id ID of the [Profile] to be edited.
+ */
+internal class SampleEditor(
+  private val profileWriter: SampleProfileWriter,
+  private val id: String
+) : Editor {
   override suspend fun setAvatarLoader(avatarLoader: SomeImageLoader) {
     edit { this.avatarLoader = avatarLoader }
   }
@@ -25,10 +34,7 @@ internal class SampleEditor(private val id: String) : Editor {
    *
    * @param edit Editing to be made to the matching [SampleEditableProfile].
    */
-  private inline fun edit(crossinline edit: SampleEditableProfile.() -> Unit) {
-    SampleProfileProvider.profilesFlow.value =
-      SampleProfileProvider.profilesFlow.value
-        .filterIsInstance<SampleEditableProfile>()
-        .replacingOnceBy({ apply(edit) }) { it.id == id }
+  private suspend inline fun edit(crossinline edit: SampleEditableProfile.() -> Unit) {
+    profileWriter.update(id) { (this as SampleEditableProfile).apply(edit) }
   }
 }
