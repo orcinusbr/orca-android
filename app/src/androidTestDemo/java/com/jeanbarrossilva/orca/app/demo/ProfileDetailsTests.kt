@@ -16,8 +16,8 @@ import com.jeanbarrossilva.orca.app.demo.test.performStartClick
 import com.jeanbarrossilva.orca.app.demo.test.respondWithOK
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.highlight.sample
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.toot.content.highlight.sample
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.toot.samples
 import com.jeanbarrossilva.orca.feature.tootdetails.TootDetailsFragment
 import com.jeanbarrossilva.orca.platform.ui.test.assertIsAtFragment
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.headline.onHeadlineCards
@@ -45,6 +45,6 @@ internal class ProfileDetailsTests {
   fun navigatesToTootDetailsOnTootPreviewClick() {
     onView(withId(R.id.profile_details)).perform(click())
     composeRule.onTootPreviews().onFirst().performStartClick()
-    assertIsAtFragment(composeRule.activity, TootDetailsFragment.getRoute(Toot.sample.id))
+    assertIsAtFragment(composeRule.activity, TootDetailsFragment.getRoute(Toot.samples.first().id))
   }
 }

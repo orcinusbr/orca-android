@@ -36,15 +36,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
-import com.jeanbarrossilva.orca.core.sample.feed.profile.search.sample
-import com.jeanbarrossilva.orca.core.sample.feed.profile.search.samples
+import com.jeanbarrossilva.orca.core.sample.feed.profile.search.createSample
 import com.jeanbarrossilva.orca.feature.search.ui.SearchResultCard
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.kit.input.text.TextField
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.BackAction
+import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 
 internal object SearchDefaults {
   val VerticalArrangement = Arrangement.Top
@@ -215,7 +216,7 @@ private fun LoadingSearchPreview() {
 private fun EmptyResultsPreview() {
   OrcaTheme {
     Search(
-      query = "${ProfileSearchResult.sample.account}",
+      query = "${ProfileSearchResult.createSample(ImageLoader.Provider.createSample()).account}",
       onQueryChange = {},
       results = emptyList(),
       onNavigateToProfileDetails = {},
@@ -231,7 +232,7 @@ private fun LoadedSearchPreview() {
     Search(
       query = "",
       onQueryChange = {},
-      ProfileSearchResult.samples,
+      listOf(ProfileSearchResult.createSample(ImageLoader.Provider.createSample())),
       onNavigateToProfileDetails = {},
       onBackwardsNavigation = {}
     )

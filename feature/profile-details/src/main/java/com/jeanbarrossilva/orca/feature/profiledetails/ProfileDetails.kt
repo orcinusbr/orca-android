@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -38,18 +39,14 @@ import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
-import com.jeanbarrossilva.orca.core.feed.profile.type.editable.EditableProfile
-import com.jeanbarrossilva.orca.core.feed.profile.type.followable.FollowableProfile
-import com.jeanbarrossilva.orca.core.sample.feed.profile.sample
-import com.jeanbarrossilva.orca.core.sample.feed.profile.type.editable.sample
-import com.jeanbarrossilva.orca.core.sample.feed.profile.type.followable.sample
-import com.jeanbarrossilva.orca.feature.profiledetails.conversion.converter.followable.toStatus
+import com.jeanbarrossilva.orca.core.instance.Instance
+import com.jeanbarrossilva.orca.core.sample.feed.profile.createSample
+import com.jeanbarrossilva.orca.core.sample.instance.createSample
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.NavigationButton
 import com.jeanbarrossilva.orca.feature.profiledetails.ui.Header
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
 import com.jeanbarrossilva.orca.platform.theme.kit.action.button.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.theme.kit.menu.DropdownMenu
@@ -60,9 +57,11 @@ import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSiz
 import com.jeanbarrossilva.orca.platform.theme.reactivity.BottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.theme.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
+import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import java.io.Serializable
 import java.net.URL
@@ -92,18 +91,7 @@ internal sealed class ProfileDetails : Serializable {
     override val bio: AnnotatedString,
     override val url: URL
   ) : ProfileDetails() {
-    companion object {
-      fun createSample(colors: Colors): Default {
-        return Default(
-          Profile.sample.id,
-          Profile.sample.avatarLoader,
-          Profile.sample.name,
-          Profile.sample.account,
-          Profile.sample.bio.toAnnotatedString(colors),
-          Profile.sample.url
-        )
-      }
-    }
+    companion object
   }
 
   data class Editable(
@@ -121,18 +109,7 @@ internal sealed class ProfileDetails : Serializable {
       }
     }
 
-    companion object {
-      fun createSample(colors: Colors): Editable {
-        return Editable(
-          EditableProfile.sample.id,
-          EditableProfile.sample.avatarLoader,
-          EditableProfile.sample.name,
-          EditableProfile.sample.account,
-          EditableProfile.sample.bio.toAnnotatedString(colors),
-          EditableProfile.sample.url
-        )
-      }
-    }
+    companion object
   }
 
   data class Followable(
@@ -168,19 +145,6 @@ internal sealed class ProfileDetails : Serializable {
 
     companion object {
       const val MAIN_ACTION_BUTTON_TAG = "followable-profile-details-main-action-button"
-
-      fun createSample(colors: Colors, onStatusToggle: () -> Unit): Followable {
-        return Followable(
-          FollowableProfile.sample.id,
-          FollowableProfile.sample.avatarLoader,
-          FollowableProfile.sample.name,
-          FollowableProfile.sample.account,
-          FollowableProfile.sample.bio.toAnnotatedString(colors),
-          FollowableProfile.sample.url,
-          FollowableProfile.sample.follow.toStatus(),
-          onStatusToggle
-        )
-      }
     }
   }
 
@@ -200,8 +164,21 @@ internal sealed class ProfileDetails : Serializable {
   open fun FloatingActionButton(navigator: ProfileDetailsBoundary, modifier: Modifier) {}
 
   companion object {
-    val sample
-      @Composable get() = Default.createSample(OrcaTheme.colors)
+    val sample: ProfileDetails
+      @Composable
+      get() {
+        val imageLoaderProvider = ImageLoader.Provider.createSample(LocalContext.current)
+        val tootProvider = Instance.createSample(imageLoaderProvider).tootProvider
+        val profile = Profile.createSample(tootProvider, imageLoaderProvider)
+        return Default(
+          profile.id,
+          profile.avatarLoader,
+          profile.name,
+          profile.account,
+          profile.bio.toAnnotatedString(OrcaTheme.colors),
+          profile.url
+        )
+      }
   }
 }
 

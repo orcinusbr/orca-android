@@ -8,7 +8,7 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.type.followable.SampleF
 import kotlinx.coroutines.flow.update
 
 /** Performs [Profile]-related writing operations. */
-object SampleProfileWriter {
+class SampleProfileWriter internal constructor(private val provider: SampleProfileProvider) {
   /**
    * Inserts the given [profile], replacing the existing one that has the same [ID][Profile.id] if
    * it's there.
@@ -17,12 +17,12 @@ object SampleProfileWriter {
    */
   fun insert(profile: Profile) {
     delete(profile.id)
-    SampleProfileProvider.profilesFlow.update { it + profile }
+    provider.profilesFlow.update { it + profile }
   }
 
   /** Resets this [SampleProfileProvider] to its default state. */
   fun reset() {
-    SampleProfileProvider.profilesFlow.value = SampleProfileProvider.defaultProfiles
+    provider.profilesFlow.value = provider.defaultProfiles
   }
 
   /**
@@ -32,7 +32,7 @@ object SampleProfileWriter {
    * @param id [Profile]'s [ID][SampleFollowableProfile.id].
    * @param follow [Follow] status to update the [SampleFollowableProfile.follow] to.
    */
-  internal suspend fun <T : Follow> updateFollow(id: String, follow: T) {
+  suspend fun <T : Follow> updateFollow(id: String, follow: T) {
     update(id) {
       @Suppress("UNCHECKED_CAST") (this as SampleFollowableProfile<T>).copy(follow = follow)
     }
@@ -43,8 +43,8 @@ object SampleProfileWriter {
    *
    * @param id ID of the [Profile] to be deleted.
    */
-  private fun delete(id: String) {
-    SampleProfileProvider.profilesFlow.update { profiles ->
+  internal fun delete(id: String) {
+    provider.profilesFlow.update { profiles ->
       profiles.toMutableList().apply { removeIf { profile -> profile.id == id } }.toList()
     }
   }
@@ -57,9 +57,9 @@ object SampleProfileWriter {
    * @throws ProfileProvider.NonexistentProfileException If no [Profile] with such [ID][Profile.id]
    *   exists.
    */
-  private suspend fun update(id: String, update: Profile.() -> Profile) {
-    if (SampleProfileProvider.contains(id)) {
-      SampleProfileProvider.profilesFlow.update { profiles ->
+  internal suspend fun update(id: String, update: Profile.() -> Profile) {
+    if (provider.contains(id)) {
+      provider.profilesFlow.update { profiles ->
         profiles.replacingOnceBy(update) { profile -> profile.id == id }
       }
     } else {

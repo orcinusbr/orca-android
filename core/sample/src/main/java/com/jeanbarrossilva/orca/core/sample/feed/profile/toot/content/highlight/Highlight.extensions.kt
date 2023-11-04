@@ -2,11 +2,18 @@ package com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.highlight
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Headline
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
+import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import java.net.URL
 
-/** [Highlight] that's returned by [sample]'s getter. */
-private val sampleHighlight = Highlight(Headline.sample, URL("https://mastodon.social"))
-
-/** Sample [Highlight]. */
-val Highlight.Companion.sample
-  get() = sampleHighlight
+/**
+ * Creates a sample [Highlight].
+ *
+ * @param coverLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
+ *   [Highlight]'s [headline][Highlight.headline]'s cover will be loaded from [SampleImageSource].
+ */
+fun Highlight.Companion.createSample(
+  coverLoaderProvider: ImageLoader.Provider<SampleImageSource>
+): Highlight {
+  return Highlight(Headline.createSample(coverLoaderProvider), URL("https://mastodon.social"))
+}

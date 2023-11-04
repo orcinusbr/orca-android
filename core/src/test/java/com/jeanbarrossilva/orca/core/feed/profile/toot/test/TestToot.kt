@@ -6,7 +6,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
 import com.jeanbarrossilva.orca.core.feed.profile.toot.stat.Stat
 import com.jeanbarrossilva.orca.core.feed.profile.toot.stat.toggleable.ToggleableStat
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.toot.sample
 import java.net.URL
 import java.time.ZonedDateTime
 

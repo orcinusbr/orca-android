@@ -2,22 +2,31 @@ package com.jeanbarrossilva.orca.core.sample.feed.profile
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
-import com.jeanbarrossilva.orca.core.sample.SampleCoreModule
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.image.AuthorImageSource
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
-import com.jeanbarrossilva.orca.core.sample.imageLoaderProvider
-import com.jeanbarrossilva.orca.std.injector.Injector
+import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.SampleTootProvider
+import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.createSample
+import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
+import com.jeanbarrossilva.orca.std.imageloader.Image
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 
-/** [Profile] returned by [sample]'s getter. */
-@Suppress("SpellCheckingInspection")
-private val sampleProfile: Profile =
-  object : SampleProfile {
-    override val id = Author.sample.id
-    override val account = Author.sample.account
-    override val avatarLoader =
-      Injector.from<SampleCoreModule>().imageLoaderProvider().provide(AuthorImageSource.Default)
-    override val name = Author.sample.name
+/**
+ * Creates a sample [Profile].
+ *
+ * @param tootProvider [SampleTootProvider] by which the [Profile]'s [Toot]s will be provided.
+ * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
+ *   [Image]s will be loaded from a [SampleImageSource].
+ */
+fun Profile.Companion.createSample(
+  tootProvider: SampleTootProvider,
+  imageLoaderProvider: ImageLoader.Provider<SampleImageSource>
+): Profile {
+  val author = Author.createSample(imageLoaderProvider)
+  return object : SampleProfile {
+    override val id = author.id
+    override val account = author.account
+    override val avatarLoader = author.avatarLoader
+    override val name = author.name
     override val bio =
       StyledString(
         "Co-founder @ Grupo Estoa, software engineer, author, writer and content creator; " +
@@ -25,9 +34,7 @@ private val sampleProfile: Profile =
       )
     override val followerCount = 1_024
     override val followingCount = 64
-    override val url = Author.sample.profileURL
+    override val url = author.profileURL
+    override val tootProvider = tootProvider
   }
-
-/** A sample [Profile]. */
-val Profile.Companion.sample
-  get() = sampleProfile
+}

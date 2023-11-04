@@ -10,16 +10,21 @@ import com.jeanbarrossilva.orca.core.http.feed.profile.account.HttpAccount
 import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.core.http.instanceProvider
 import com.jeanbarrossilva.orca.platform.cache.Fetcher
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.client.call.body
+import java.net.URL
 
 /**
  * [Fetcher] for [HttpProfile]s.
  *
+ * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
+ *   [Profile]s' avatars will be loaded from a [URL].
  * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
  *   [ProfileTootPaginateSource] for paginating through an [HttpProfile]'s [Toot]s will be provided.
  */
 internal class HttpProfileFetcher(
+  private val avatarLoaderProvider: ImageLoader.Provider<URL>,
   private val tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
 ) : Fetcher<Profile>() {
   override suspend fun onFetch(key: String): Profile {
@@ -27,6 +32,6 @@ internal class HttpProfileFetcher(
       .client
       .authenticateAndGet("/api/v1/accounts/$key")
       .body<HttpAccount>()
-      .toProfile(tootPaginateSourceProvider)
+      .toProfile(avatarLoaderProvider, tootPaginateSourceProvider)
   }
 }

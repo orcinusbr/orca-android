@@ -1,20 +1,22 @@
 package com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.highlight
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Headline
-import com.jeanbarrossilva.orca.core.sample.SampleCoreModule
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.image.CoverImageSource
-import com.jeanbarrossilva.orca.core.sample.imageLoaderProvider
-import com.jeanbarrossilva.orca.std.injector.Injector
+import com.jeanbarrossilva.orca.core.sample.image.CoverImageSource
+import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 
-/** [Headline] that's returned by [sample]'s getter. */
-private val sampleHeadline =
-  Headline(
+/**
+ * Creates a sample [Headline].
+ *
+ * @param coverLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
+ *   [Headline]'s cover will be loaded.
+ */
+fun Headline.Companion.createSample(
+  coverLoaderProvider: ImageLoader.Provider<SampleImageSource>
+): Headline {
+  return Headline(
     title = "Mastodon",
     subtitle = "The original server operated by the Mastodon gGmbH non-profit.",
-    coverLoader =
-      Injector.from<SampleCoreModule>().imageLoaderProvider().provide(CoverImageSource.Default)
+    coverLoaderProvider.provide(CoverImageSource.Default)
   )
-
-/** Sample [Headline]. */
-val Headline.Companion.sample
-  get() = sampleHeadline
+}

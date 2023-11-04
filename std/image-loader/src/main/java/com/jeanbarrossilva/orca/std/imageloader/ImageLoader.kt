@@ -27,6 +27,8 @@ interface ImageLoader<T : Any> {
      * @param source Source from which the [Image] will be obtained.
      */
     fun provide(source: T): ImageLoader<T>
+
+    companion object
   }
 
   /**

@@ -4,20 +4,33 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
 import com.jeanbarrossilva.orca.core.feed.profile.toot.reblog.Reblog
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.SampleToot
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.rambo
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
+import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.createRamboSample
+import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.createSample
+import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
+import com.jeanbarrossilva.orca.std.imageloader.Image
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.UUID
 
-/** [Reblog] returned by [sample]. */
-private val sampleReblog =
-  Reblog(
+/** ID of a [Reblog] created by [createSample]. */
+private val sampleReblogID = UUID.randomUUID().toString()
+
+/**
+ * Creates a sample [Reblog].
+ *
+ * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
+ *   [Image]s will be loaded from a [SampleImageSource].
+ */
+fun Reblog.Companion.createSample(
+  imageLoaderProvider: ImageLoader.Provider<SampleImageSource>
+): Reblog {
+  return Reblog(
     SampleToot(
-      "${UUID.randomUUID()}",
-      Author.rambo,
+      sampleReblogID,
+      Author.createRamboSample(imageLoaderProvider),
       Content.from(
         StyledString(
           "Programming life hack. Looking for real-world examples of how an API is used? Search " +
@@ -32,9 +45,6 @@ private val sampleReblog =
       publicationDateTime = ZonedDateTime.of(2023, 8, 16, 16, 48, 43, 384, ZoneId.of("GMT-3")),
       url = URL("https://mastodon.social/@_inside/110900315644335855")
     ),
-    reblogger = Author.sample
+    reblogger = Author.createSample(imageLoaderProvider)
   )
-
-/** Sample [Reblog]. */
-val Reblog.Companion.sample
-  get() = sampleReblog
+}

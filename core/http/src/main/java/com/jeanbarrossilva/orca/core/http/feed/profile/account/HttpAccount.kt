@@ -6,14 +6,12 @@ import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
 import com.jeanbarrossilva.orca.core.http.HttpModule
-import com.jeanbarrossilva.orca.core.http.authenticationLock
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.ProfileTootPaginateSource
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.editable.HttpEditableProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.followable.HttpFollowableProfile
-import com.jeanbarrossilva.orca.core.http.imageLoaderProvider
 import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.core.http.instanceProvider
 import com.jeanbarrossilva.orca.platform.ui.core.style.fromHtml
@@ -66,15 +64,20 @@ internal data class HttpAccount(
   /**
    * Converts this [HttpAccount] into a [Profile].
    *
+   * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
+   *   [Profile]'s avatar will be loaded from a [URL].
    * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
    *   [ProfileTootPaginateSource] for paginating through the resulting [HttpProfile]'s [HttpToot]s
    *   will be provided.
    */
-  suspend fun toProfile(tootPaginateSourceProvider: ProfileTootPaginateSource.Provider): Profile {
+  suspend fun toProfile(
+    avatarLoaderProvider: ImageLoader.Provider<URL>,
+    tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
+  ): Profile {
     return if (isOwner()) {
-      toEditableProfile(tootPaginateSourceProvider)
+      toEditableProfile(avatarLoaderProvider, tootPaginateSourceProvider)
     } else {
-      toFollowableProfile(tootPaginateSourceProvider)
+      toFollowableProfile(avatarLoaderProvider, tootPaginateSourceProvider)
     }
   }
 
@@ -88,22 +91,29 @@ internal data class HttpAccount(
    * [Account].
    */
   private suspend fun isOwner(): Boolean {
-    return Injector.from<HttpModule>().authenticationLock().requestUnlock { it.id == id }
+    return Injector.from<HttpModule>()
+      .instanceProvider()
+      .provide()
+      .authenticationLock
+      .requestUnlock { it.id == id }
   }
 
   /**
    * Converts this [HttpAccount] into an [HttpEditableProfile].
    *
+   * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
+   *   [HttpEditableProfile]'s avatar will be loaded from a [URL].
    * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
    *   [ProfileTootPaginateSource] for paginating through the resulting [HttpEditableProfile]'s
    *   [HttpToot]s will be provided.
    */
   private fun toEditableProfile(
+    avatarLoaderProvider: ImageLoader.Provider<URL>,
     tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
   ): HttpEditableProfile {
     val account = toAccount()
     val avatarURL = URL(avatar)
-    val avatarLoader = Injector.from<HttpModule>().imageLoaderProvider().provide(avatarURL)
+    val avatarLoader = avatarLoaderProvider.provide(avatarURL)
     val bio = StyledString.fromHtml(note)
     val url = URL(url)
     return HttpEditableProfile(
@@ -122,16 +132,19 @@ internal data class HttpAccount(
   /**
    * Converts this [HttpAccount] into an [HttpFollowableProfile].
    *
+   * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
+   *   [HttpFollowableProfile]'s avatar will be loaded from a [URL].
    * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
    *   [ProfileTootPaginateSource] for paginating through the resulting [HttpFollowableProfile]'s
    *   [HttpToot]s will be provided.
    */
   private suspend fun toFollowableProfile(
+    avatarLoaderProvider: ImageLoader.Provider<URL>,
     tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
   ): HttpFollowableProfile<Follow> {
     val account = toAccount()
     val avatarURL = URL(avatar)
-    val avatarLoader = Injector.from<HttpModule>().imageLoaderProvider().provide(avatarURL)
+    val avatarLoader = avatarLoaderProvider.provide(avatarURL)
     val bio = StyledString.fromHtml(note)
     val url = URL(url)
     val follow =

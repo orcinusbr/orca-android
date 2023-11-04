@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.orca.core.feed.profile.search
 
-import com.jeanbarrossilva.orca.core.sample.feed.profile.search.samples
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.search.sample
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +14,7 @@ internal class ProfileSearcherTests {
     val searcher =
       object : ProfileSearcher() {
         override suspend fun onSearch(query: String): Flow<List<ProfileSearchResult>> {
-          return flowOf(ProfileSearchResult.samples)
+          return flowOf(listOf(ProfileSearchResult.sample))
         }
       }
     runTest { assertContentEquals(emptyList(), searcher.search(" ").first()) }

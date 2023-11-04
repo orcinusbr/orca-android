@@ -15,7 +15,7 @@ import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
+import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.createSample
 import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.Header
 import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.formatted
 import com.jeanbarrossilva.orca.feature.tootdetails.viewmodel.TootDetailsViewModel
@@ -28,9 +28,11 @@ import com.jeanbarrossilva.orca.platform.theme.reactivity.BottomAreaAvailability
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.theme.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
+import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.formatted
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import java.io.Serializable
 import java.net.URL
@@ -60,7 +62,7 @@ internal data class TootDetails(
 
   companion object {
     val sample
-      @Composable get() = Toot.sample.toTootDetails()
+      @Composable get() = Toot.createSample(ImageLoader.Provider.createSample()).toTootDetails()
   }
 }
 

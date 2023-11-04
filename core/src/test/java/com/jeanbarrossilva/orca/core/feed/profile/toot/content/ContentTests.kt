@@ -2,7 +2,7 @@ package com.jeanbarrossilva.orca.core.feed.profile.toot.content
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Headline
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.highlight.sample
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.toot.content.highlight.sample
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import com.jeanbarrossilva.orca.std.styledstring.buildStyledString
 import kotlin.test.Ignore

@@ -9,8 +9,11 @@ import kotlinx.coroutines.flow.map
 
 /** [Profile] whose operations are performed in memory and serves as a sample. */
 internal interface SampleProfile : Profile {
+  /** [SampleTootProvider] by which this [SampleProfile]'s [Toot]s will be provided. */
+  val tootProvider: SampleTootProvider
+
   override suspend fun getToots(page: Int): Flow<List<Toot>> {
-    return SampleTootProvider.provideBy(id).filterNotNull().map {
+    return tootProvider.provideBy(id).filterNotNull().map {
       it.windowed(TOOTS_PER_PAGE, partialWindows = true).getOrElse(page) { emptyList() }
     }
   }

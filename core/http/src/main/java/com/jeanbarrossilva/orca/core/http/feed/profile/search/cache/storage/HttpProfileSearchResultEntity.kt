@@ -5,9 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
-import com.jeanbarrossilva.orca.core.http.HttpModule
-import com.jeanbarrossilva.orca.core.http.imageLoaderProvider
-import com.jeanbarrossilva.orca.std.injector.Injector
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import java.net.URL
 
 /**
@@ -30,11 +28,18 @@ data class HttpProfileSearchResultEntity(
   internal val name: String,
   internal val url: String
 ) {
-  /** Converts this [HttpProfileSearchResultEntity] into a [ProfileSearchResult]. */
-  internal fun toProfileSearchResult(): ProfileSearchResult {
+  /**
+   * Converts this [HttpProfileSearchResultEntity] into a [ProfileSearchResult].
+   *
+   * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
+   *   [ProfileSearchResult]'s avatar will be loaded from a [URL].
+   */
+  internal fun toProfileSearchResult(
+    avatarLoaderProvider: ImageLoader.Provider<URL>
+  ): ProfileSearchResult {
     val account = Account.of(account, fallbackDomain = "mastodon.social")
     val avatarURL = URL(avatarURL)
-    val avatarLoader = Injector.from<HttpModule>().imageLoaderProvider().provide(avatarURL)
+    val avatarLoader = avatarLoaderProvider.provide(avatarURL)
     val url = URL(url)
     return ProfileSearchResult(id, account, avatarLoader, name, url)
   }

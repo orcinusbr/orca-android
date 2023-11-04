@@ -5,7 +5,7 @@ import com.jeanbarrossilva.orca.core.http.client.CoreHttpClient
 import com.jeanbarrossilva.orca.core.http.client.Logger
 import com.jeanbarrossilva.orca.core.http.instance.HttpInstance
 import com.jeanbarrossilva.orca.core.instance.Instance
-import com.jeanbarrossilva.orca.core.sample.instance.sample
+import com.jeanbarrossilva.orca.core.sample.test.instance.sample
 import com.jeanbarrossilva.orca.core.test.TestAuthenticator
 import com.jeanbarrossilva.orca.core.test.TestAuthorizer
 import io.ktor.client.engine.HttpClientEngine

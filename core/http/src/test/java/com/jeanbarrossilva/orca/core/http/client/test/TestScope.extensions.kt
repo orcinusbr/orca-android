@@ -108,15 +108,8 @@ private fun <T : Actor> runCoreHttpClientTest(
   val authenticationLock = AuthenticationLock(authenticator, actorProvider)
   val instance = TestHttpInstance(authorizer, authenticator, authenticationLock)
   val module =
-    HttpModule(
-      { authorizer },
-      { authenticator },
-      { actorProvider },
-      { authenticationLock },
-      { SampleTermMuter() },
-      { TestHttpInstanceProvider(authorizer, authenticator, authenticationLock) }
-    ) {
-      TestHttpImageLoader.Provider
+    HttpModule({ TestHttpInstanceProvider(authorizer, authenticator, authenticationLock) }) {
+      SampleTermMuter()
     }
   Injector.register(module)
   runTest { CoreHttpClientTestScope(delegate = this, instance.client, actor).body() }

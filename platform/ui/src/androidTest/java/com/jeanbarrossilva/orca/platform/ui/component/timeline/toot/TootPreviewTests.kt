@@ -9,8 +9,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.jeanbarrossilva.loadable.placeholder.test.assertIsLoading
 import com.jeanbarrossilva.loadable.placeholder.test.assertIsNotLoading
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.sample
-import com.jeanbarrossilva.orca.core.sample.rule.SampleCoreTestRule
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.toot.sample
+import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import com.jeanbarrossilva.orca.platform.ui.R
@@ -29,13 +29,15 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class TootPreviewTests {
-  @get:Rule val coreSampleRule = SampleCoreTestRule()
+  @get:Rule val coreSampleRule = SampleInstanceTestRule()
 
   @get:Rule val composeRule = createComposeRule()
 
   private val sampleTootPreview
-    get() =
-      TootPreview.getSample(Colors.getDefault(InstrumentationRegistry.getInstrumentation().context))
+    get() = TootPreview.getSample(context, Colors.getDefault(context))
+
+  private val context
+    get() = InstrumentationRegistry.getInstrumentation().context
 
   @Test
   fun isShownWhenLoading() {
@@ -105,9 +107,7 @@ internal class TootPreviewTests {
       .onChildren()
       .onLast()
       .assertTextEquals(
-        InstrumentationRegistry.getInstrumentation()
-          .context
-          .getString(R.string.platform_ui_toot_preview_reblogged, Author.sample.name)
+        context.getString(R.string.platform_ui_toot_preview_reblogged, Author.sample.name)
       )
   }
 

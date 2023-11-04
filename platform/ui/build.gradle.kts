@@ -33,6 +33,7 @@ dependencies {
   implementation(project(":std:image-loader:local"))
   implementation(libs.android.activity.compose)
   implementation(libs.android.material)
+  implementation(libs.kotlin.reflect)
   implementation(libs.loadable.list)
   implementation(libs.loadable.placeholder)
   implementation(libs.loadable.placeholder.test)

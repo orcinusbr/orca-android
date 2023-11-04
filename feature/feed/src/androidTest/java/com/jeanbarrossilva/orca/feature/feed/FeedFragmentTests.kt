@@ -13,9 +13,10 @@ import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
-import com.jeanbarrossilva.orca.core.sample.feed.profile.sample
-import com.jeanbarrossilva.orca.core.sample.instance.sample
-import com.jeanbarrossilva.orca.core.sample.rule.SampleCoreTestRule
+import com.jeanbarrossilva.orca.core.sample.feed.profile.createSample
+import com.jeanbarrossilva.orca.core.sample.instance.createSample
+import com.jeanbarrossilva.orca.core.sample.test.image.TestSampleImageLoader
+import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
 import com.jeanbarrossilva.orca.feature.feed.test.FeedActivity
 import com.jeanbarrossilva.orca.feature.feed.test.TestFeedModule
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.TOOT_PREVIEW_FAVORITE_STAT_TAG
@@ -28,33 +29,36 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class FeedFragmentTests {
+  private val imageLoaderProvider = TestSampleImageLoader.Provider
+  private val instance = Instance.createSample(imageLoaderProvider)
+
   @get:Rule val injectorRule = InjectorTestRule { register<FeedModule>(TestFeedModule) }
-
-  @get:Rule val sampleCoreRule = SampleCoreTestRule()
-
+  @get:Rule val sampleInstanceRule = SampleInstanceTestRule(instance)
   @get:Rule val time4JRule = Time4JTestRule()
-
   @get:Rule val composeRule = createEmptyComposeRule()
 
   @Test
   fun favoritesToot() {
     runTest {
-      Instance.sample.feedProvider
+      instance.feedProvider
         .provide(Actor.Authenticated.sample.id, page = 0)
         .first()
         .first()
         .favorite
         .disable()
     }
-    launchActivity<FeedActivity>(FeedActivity.getIntent(Profile.sample.id)).use {
-      composeRule
-        .onTootPreviews()
-        .onFirst()
-        .onChildren()
-        .filterToOne(hasTestTag(TOOT_PREVIEW_FAVORITE_STAT_TAG))
-        .performScrollTo()
-        .performClick()
-        .assertIsSelected()
-    }
+    launchActivity<FeedActivity>(
+        FeedActivity.getIntent(Profile.createSample(instance.tootProvider, imageLoaderProvider).id)
+      )
+      .use {
+        composeRule
+          .onTootPreviews()
+          .onFirst()
+          .onChildren()
+          .filterToOne(hasTestTag(TOOT_PREVIEW_FAVORITE_STAT_TAG))
+          .performScrollTo()
+          .performClick()
+          .assertIsSelected()
+      }
   }
 }
