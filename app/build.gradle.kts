@@ -57,7 +57,9 @@ dependencies {
   "androidTestDemoImplementation"(libs.android.compose.ui.test.junit)
   "androidTestDemoImplementation"(libs.android.test.core)
   "androidTestDemoImplementation"(libs.android.test.espresso.intents)
-  "androidTestDemoImplementation"(libs.android.test.runner)
+
+  androidTestImplementation(libs.android.test.runner)
+  androidTestImplementation(libs.assertk)
 
   ksp(project(":std:injector-processor"))
 

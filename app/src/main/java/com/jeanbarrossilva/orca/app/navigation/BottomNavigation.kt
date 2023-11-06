@@ -3,7 +3,7 @@ package com.jeanbarrossilva.orca.app.navigation
 import androidx.annotation.IdRes
 import com.jeanbarrossilva.orca.app.R
 import com.jeanbarrossilva.orca.core.module.CoreModule
-import com.jeanbarrossilva.orca.core.module.instanceProvider
+import com.jeanbarrossilva.orca.core.module.authenticationLock
 import com.jeanbarrossilva.orca.feature.feed.FeedFragment
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetailsFragment
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState
@@ -45,7 +45,7 @@ internal enum class BottomNavigation {
   @get:IdRes protected abstract val id: Int
 
   protected val authenticationLock
-    get() = Injector.from<CoreModule>().instanceProvider().provide().authenticationLock
+    get() = Injector.from<CoreModule>().authenticationLock()
 
   protected abstract suspend fun getDestination(): Navigator.Navigation.Destination<*>
 

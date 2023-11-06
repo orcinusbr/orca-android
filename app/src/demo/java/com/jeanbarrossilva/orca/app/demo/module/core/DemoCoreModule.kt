@@ -11,10 +11,15 @@ import com.jeanbarrossilva.orca.std.injector.Injector
 
 internal object DemoCoreModule :
   CoreModule(
-    instanceProvider = {
-      val context = Injector.get<Context>()
-      val imageLoaderProvider = ImageLoader.Provider.createSample(context)
-      InstanceProvider.createSample(imageLoaderProvider)
-    },
+    { DemoCoreModule.instanceProvider },
+    { DemoCoreModule.instanceProvider.provide().authenticationLock },
     { SampleTermMuter() }
-  )
+  ) {
+  private val instanceProvider by lazy { InstanceProvider.createSample(imageLoaderProvider) }
+
+  private val imageLoaderProvider
+    get() = ImageLoader.Provider.createSample(context)
+
+  private val context
+    get() = Injector.get<Context>()
+}
