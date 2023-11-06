@@ -12,7 +12,6 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.flow.loadable
 import com.jeanbarrossilva.loadable.ifLoaded
-import com.jeanbarrossilva.orca.core.http.HttpModule
 import com.jeanbarrossilva.orca.core.http.R
 import com.jeanbarrossilva.orca.core.http.auth.Mastodon
 import com.jeanbarrossilva.orca.core.http.auth.authorization.HttpDomainsProvider
@@ -24,6 +23,8 @@ import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.core.http.instanceProvider
 import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
+import com.jeanbarrossilva.orca.core.module.CoreModule
+import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.http.URLBuilder
 import io.ktor.http.Url
@@ -90,7 +91,7 @@ private constructor(
     get() =
       URLBuilder()
         .takeFrom(
-          (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance).url
+          (Injector.from<CoreModule>().instanceProvider().provide() as SomeHttpInstance).url
         )
         .appendPathSegments("oauth", "authorize")
         .apply {

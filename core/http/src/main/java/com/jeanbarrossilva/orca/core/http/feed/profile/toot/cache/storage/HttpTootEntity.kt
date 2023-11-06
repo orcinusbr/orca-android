@@ -11,14 +11,13 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Headline
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
 import com.jeanbarrossilva.orca.core.feed.profile.toot.reblog.Reblog
-import com.jeanbarrossilva.orca.core.http.HttpModule
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.style.HttpStyleEntity
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.style.startingAt
 import com.jeanbarrossilva.orca.platform.cache.Cache
 import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
+import com.jeanbarrossilva.orca.std.imageloader.Image
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
-import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.orca.std.styledstring.toStyledString
 import java.net.URL
 import java.time.ZonedDateTime
@@ -67,15 +66,18 @@ internal data class HttpTootEntity(
    * @param profileCache [Cache] from which the [Author]'s [Profile] will be retrieved.
    * @param dao [HttpTootEntityDao] that will select the persisted
    *   [HTTP style entities][HttpStyleEntity].
+   * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by [Image]s
+   *   will be loaded from a [URL].
    */
-  suspend fun toToot(profileCache: Cache<Profile>, dao: HttpTootEntityDao): Toot {
+  suspend fun toToot(
+    profileCache: Cache<Profile>,
+    dao: HttpTootEntityDao,
+    imageLoaderProvider: ImageLoader.Provider<URL>
+  ): Toot {
     val author = profileCache.get(authorID).toAuthor()
     val styles = dao.selectWithStylesByID(id).styles
     val text = text.toStyledString { URL(styles.startingAt(it).url) }
-    val coverLoader =
-      headlineCoverURL?.let {
-        Injector.from<HttpModule>().get<ImageLoader.Provider<URL>>().provide(URL(it))
-      }
+    val coverLoader = headlineCoverURL?.let { imageLoaderProvider.provide(URL(it)) }
     val content =
       Content.from(text) {
         if (headlineTitle != null && headlineCoverURL != null) {
@@ -90,6 +92,7 @@ internal data class HttpTootEntity(
         id,
         author,
         content,
+        imageLoaderProvider,
         publicationDateTime,
         commentCount,
         favoriteCount,

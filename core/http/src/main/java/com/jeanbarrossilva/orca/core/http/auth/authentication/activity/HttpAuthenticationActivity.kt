@@ -5,11 +5,11 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
-import com.jeanbarrossilva.orca.core.http.HttpModule
 import com.jeanbarrossilva.orca.core.http.auth.authentication.HttpAuthentication
 import com.jeanbarrossilva.orca.core.http.auth.authentication.HttpAuthenticationViewModel
 import com.jeanbarrossilva.orca.core.http.instance.ContextualHttpInstance
-import com.jeanbarrossilva.orca.core.http.instanceProvider
+import com.jeanbarrossilva.orca.core.module.CoreModule
+import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableActivity
 import com.jeanbarrossilva.orca.platform.ui.core.on
 import com.jeanbarrossilva.orca.std.injector.Injector
@@ -19,8 +19,8 @@ import com.jeanbarrossilva.orca.std.injector.Injector
  * that takes place when this is created and automatically finishes itself when it's done.
  */
 class HttpAuthenticationActivity : ComposableActivity() {
-  /** [HttpModule] into which core-HTTP-related dependencies have been injected. */
-  private val module by lazy { Injector.from<HttpModule>() }
+  /** [CoreModule] into which core-HTTP-related dependencies have been injected. */
+  private val module by lazy { Injector.from<CoreModule>() }
 
   /** Code provided by the API when the user was authorized. */
   private val authorizationCode by extra<String>(AUTHORIZATION_CODE_KEY)

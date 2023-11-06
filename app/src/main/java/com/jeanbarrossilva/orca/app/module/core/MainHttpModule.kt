@@ -16,25 +16,22 @@ internal object MainHttpModule :
     {
       HttpInstanceProvider(
         context = Injector.get(),
+        MainHttpModule.authorizer,
+        MainHttpModule.authenticator,
         MainHttpModule.actorProvider,
         MainHttpModule.authenticationLock,
+        MainHttpModule.termMuter,
         CoilImageLoader.Provider(MainHttpModule.context)
       )
     },
     { MainHttpModule.authenticationLock },
-    { SharedPreferencesTermMuter(MainHttpModule.context) }
+    { MainHttpModule.termMuter }
   ) {
-  private val authenticationLock
-    get() = AuthenticationLock(authenticator, actorProvider)
-
-  private val authenticator
-    get() = HttpAuthenticator(context, authorizer, actorProvider)
-
-  private val actorProvider
-    get() = SharedPreferencesActorProvider(context)
-
-  private val authorizer
-    get() = HttpAuthorizer(context)
+  private val actorProvider by lazy { SharedPreferencesActorProvider(context) }
+  private val authorizer by lazy { HttpAuthorizer(context) }
+  private val authenticator by lazy { HttpAuthenticator(context, authorizer, actorProvider) }
+  private val authenticationLock by lazy { AuthenticationLock(authenticator, actorProvider) }
+  private val termMuter by lazy { SharedPreferencesTermMuter(context) }
 
   private val context
     get() = Injector.get<Context>()

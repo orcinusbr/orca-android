@@ -5,16 +5,19 @@ import com.chrynan.paginate.core.PageDirection
 import com.chrynan.paginate.core.PageInfo
 import com.chrynan.paginate.core.PagedResult
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.http.HttpModule
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.status.HttpStatus
 import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.core.http.instanceProvider
+import com.jeanbarrossilva.orca.core.module.CoreModule
+import com.jeanbarrossilva.orca.core.module.instanceProvider
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.client.call.body
 import io.ktor.client.request.HttpRequest
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.Url
+import java.net.URL
 
 /** [BasePaginateSource] that requests and paginates through [Toot]s. */
 internal abstract class HttpTootPaginateSource internal constructor() :
@@ -24,6 +27,12 @@ internal abstract class HttpTootPaginateSource internal constructor() :
     set(index) {
       field = minOf(0, index)
     }
+
+  /**
+   * [ImageLoader.Provider] that provides the [ImageLoader] by which [Image]s will be loaded from a
+   * [URL].
+   */
+  protected abstract val imageLoaderProvider: ImageLoader.Provider<URL>
 
   /** URL [String] to which the [HttpRequest] should be sent. */
   protected abstract val route: String
@@ -37,7 +46,7 @@ internal abstract class HttpTootPaginateSource internal constructor() :
     val response = getStatusesResponse(key)
     val headerLinks = response.headers.links
     val nextUrl = headerLinks.getOrNull(1)?.uri?.let(::Url)
-    val toots = response.body<List<HttpStatus>>().map(HttpStatus::toToot)
+    val toots = response.body<List<HttpStatus>>().map { it.toToot(imageLoaderProvider) }
     val firstKey = toots.firstOrNull()?.url?.toString()?.let(::Url)
     val lastKey = toots.lastOrNull()?.url?.toString()?.let(::Url)
     val pageInfo =
@@ -84,7 +93,7 @@ internal abstract class HttpTootPaginateSource internal constructor() :
    * @param url [Url] to which the [HttpRequest] will be made.
    */
   private suspend fun getStatusesResponse(url: Url?): HttpResponse {
-    return (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
+    return (Injector.from<CoreModule>().instanceProvider().provide() as SomeHttpInstance)
       .client
       .authenticateAndGet(url?.toString() ?: route)
   }
