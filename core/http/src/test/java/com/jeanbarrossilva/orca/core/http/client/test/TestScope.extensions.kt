@@ -108,7 +108,10 @@ private fun <T : Actor> runCoreHttpClientTest(
   val authenticationLock = AuthenticationLock(authenticator, actorProvider)
   val instance = TestHttpInstance(authorizer, authenticator, authenticationLock)
   val module =
-    HttpModule({ TestHttpInstanceProvider(authorizer, authenticator, authenticationLock) }) {
+    HttpModule(
+      { TestHttpInstanceProvider(authorizer, authenticator, authenticationLock) },
+      { authenticationLock }
+    ) {
       SampleTermMuter()
     }
   Injector.register(module)

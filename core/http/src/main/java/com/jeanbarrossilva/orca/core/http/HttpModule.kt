@@ -1,9 +1,9 @@
 package com.jeanbarrossilva.orca.core.http
 
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
+import com.jeanbarrossilva.orca.core.auth.SomeAuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.TermMuter
-import com.jeanbarrossilva.orca.core.http.auth.authentication.HttpAuthenticator
 import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.instance.InstanceProvider
 import com.jeanbarrossilva.orca.core.module.CoreModule
@@ -21,6 +21,6 @@ import com.jeanbarrossilva.orca.std.injector.module.Module
  */
 open class HttpModule(
   @Inject internal val instanceProvider: Module.() -> InstanceProvider,
-  @Inject internal val authenticationLock: Module.() -> AuthenticationLock<HttpAuthenticator>,
+  @Inject internal val authenticationLock: Module.() -> SomeAuthenticationLock,
   @Inject internal val termMuter: Module.() -> TermMuter
 ) : CoreModule(instanceProvider, authenticationLock, termMuter)
