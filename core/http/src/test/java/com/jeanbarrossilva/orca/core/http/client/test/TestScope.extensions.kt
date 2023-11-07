@@ -5,6 +5,7 @@ import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.auth.actor.ActorProvider
 import com.jeanbarrossilva.orca.core.http.HttpModule
 import com.jeanbarrossilva.orca.core.http.client.CoreHttpClient
+import com.jeanbarrossilva.orca.core.http.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.http.client.test.instance.TestHttpInstance
 import com.jeanbarrossilva.orca.core.http.client.test.instance.TestHttpInstanceProvider
 import com.jeanbarrossilva.orca.core.module.CoreModule
@@ -18,6 +19,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequest
 import io.ktor.http.HttpMethod
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 
@@ -115,6 +117,7 @@ private fun <T : Actor> runCoreHttpClientTest(
     ) {
       SampleTermMuter()
     }
+  runBlocking { instance.client.authenticateAndGet("") {} }
   Injector.register<CoreModule>(module)
   runTest { CoreHttpClientTestScope(delegate = this, instance.client, actor).body() }
   Injector.unregister<CoreModule>()

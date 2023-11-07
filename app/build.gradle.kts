@@ -55,15 +55,13 @@ dependencies {
   "androidTestDemoImplementation"(project(":platform:ui-test"))
   "androidTestDemoImplementation"(libs.android.activity.ktx)
   "androidTestDemoImplementation"(libs.android.compose.ui.test.junit)
-  "androidTestDemoImplementation"(libs.android.test.core)
-  "androidTestDemoImplementation"(libs.android.test.espresso.intents)
 
+  androidTestImplementation(libs.android.test.core)
   androidTestImplementation(libs.android.test.runner)
   androidTestImplementation(libs.assertk)
+  androidTestImplementation(libs.android.test.espresso.intents)
 
   ksp(project(":std:injector-processor"))
-
-  "demoImplementation"(project(":core-test"))
 
   implementation(project(":core:http"))
   implementation(project(":core:sample"))
