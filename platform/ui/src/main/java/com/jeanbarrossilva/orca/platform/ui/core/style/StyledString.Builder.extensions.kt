@@ -12,21 +12,21 @@ import com.jeanbarrossilva.orca.std.styledstring.StyledString
  */
 internal fun StyledString.Builder.append(span: Any, text: Char) {
   when (span) {
-    is StyleSpan -> append(span, text)
+    is StyleSpan -> appendStyledChar(span, text)
     else -> +text
   }
 }
 
 /**
- * Appends the [text] to the [StyledString] being built.
+ * Appends the [char] to the [StyledString] being built.
  *
- * @param span [StyleSpan] to be applied to the [text].
- * @param text [Char] to be appended.
+ * @param span [StyleSpan] that's been applied to the [char].
+ * @param char [Char] to be appended.
  */
-private fun StyledString.Builder.append(span: StyleSpan, text: Char) {
+private fun StyledString.Builder.appendStyledChar(span: StyleSpan, char: Char) {
   when (span.style) {
-    Typeface.BOLD -> bold { +text }
-    Typeface.BOLD_ITALIC -> bold { italic { +text } }
-    Typeface.ITALIC -> italic { +text }
+    Typeface.BOLD -> bold { +char }
+    Typeface.BOLD_ITALIC -> bold { italic { +char } }
+    Typeface.ITALIC -> italic { +char }
   }
 }
