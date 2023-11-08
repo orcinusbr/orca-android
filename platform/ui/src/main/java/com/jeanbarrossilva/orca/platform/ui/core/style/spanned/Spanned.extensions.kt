@@ -1,7 +1,8 @@
-package com.jeanbarrossilva.orca.platform.ui.core.style
+package com.jeanbarrossilva.orca.platform.ui.core.style.spanned
 
 import android.text.Spanned
 import androidx.core.text.getSpans
+import com.jeanbarrossilva.orca.platform.ui.core.style.append
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import com.jeanbarrossilva.orca.std.styledstring.buildStyledString
 
