@@ -10,6 +10,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.content.TermMuter
 import com.jeanbarrossilva.orca.core.http.HttpDatabase
 import com.jeanbarrossilva.orca.core.http.auth.authentication.HttpAuthenticator
 import com.jeanbarrossilva.orca.core.http.auth.authorization.HttpAuthorizer
+import com.jeanbarrossilva.orca.core.http.feed.FeedTootPaginateSource
 import com.jeanbarrossilva.orca.core.http.feed.HttpFeedProvider
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfileProvider
@@ -55,12 +56,21 @@ class ContextualHttpInstance(
   /** [HttpDatabase] in which cached structures will be persisted. */
   private val database = HttpDatabase.getInstance(context)
 
+  /** [HttpTootFetcher] by which [Toot]s will be fetched from the API. */
+  private val tootFetcher = HttpTootFetcher(imageLoaderProvider)
+
+  /**
+   * [FeedTootPaginateSource] with which pagination through the feed's [Toot]s that have been
+   * fetched from the API will be performed.
+   */
+  private val feedTootPaginateSource = FeedTootPaginateSource(imageLoaderProvider)
+
   /**
    * [ProfileTootPaginateSource.Provider] that provides the [ProfileTootPaginateSource] to be used
    * by [profileFetcher], [profileStorage] and [profileSearchResultsFetcher].
    */
   private val profileTootPaginateSourceProvider =
-    ProfileTootPaginateSource.Provider(::ProfileTootPaginateSource)
+    ProfileTootPaginateSource.Provider { ProfileTootPaginateSource(imageLoaderProvider, it) }
 
   /** [HttpProfileFetcher] by which [HttpProfile]s will be fetched from the API. */
   private val profileFetcher =
@@ -99,12 +109,17 @@ class ContextualHttpInstance(
 
   /** [HttpTootStorage] that will store fetched [HttpToot]s. */
   private val tootStorage =
-    HttpTootStorage(profileCache, database.tootEntityDao, database.styleEntityDao)
+    HttpTootStorage(
+      profileCache,
+      database.tootEntityDao,
+      database.styleEntityDao,
+      imageLoaderProvider
+    )
 
   /** [Cache] that decides how to obtain [HttpToot]s. */
-  private val tootCache = Cache.of(context, name = "toot-cache", HttpTootFetcher, tootStorage)
+  private val tootCache = Cache.of(context, name = "toot-cache", tootFetcher, tootStorage)
 
-  override val feedProvider = HttpFeedProvider(actorProvider, termMuter)
+  override val feedProvider = HttpFeedProvider(actorProvider, termMuter, feedTootPaginateSource)
   override val profileProvider = HttpProfileProvider(profileCache)
   override val profileSearcher = HttpProfileSearcher(profileSearchResultsCache)
   override val tootProvider = HttpTootProvider(tootCache)

@@ -8,11 +8,12 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
-import com.jeanbarrossilva.orca.core.http.HttpModule
 import com.jeanbarrossilva.orca.core.http.R
 import com.jeanbarrossilva.orca.core.http.auth.Mastodon
 import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.core.http.instanceProvider
+import com.jeanbarrossilva.orca.core.module.CoreModule
+import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.submitForm
@@ -39,7 +40,7 @@ private constructor(application: Application, private val authorizationCode: Str
     val scheme = application.getString(R.string.scheme)
     val redirectUri = application.getString(R.string.redirect_uri, scheme)
     viewModelScope.launch {
-      (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
+      (Injector.from<CoreModule>().instanceProvider().provide() as SomeHttpInstance)
         .client
         .submitForm(
           "/oauth/token",

@@ -9,15 +9,24 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.content.TermMuter
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.pagination.HttpTootPaginateSource
 import kotlinx.coroutines.flow.Flow
 
-/** [FeedProvider] that requests the feed's [Toot]s to the API. */
+/**
+ * [FeedProvider] that requests the feed's [Toot]s to the API.
+ *
+ * @param actorProvider [ActorProvider] by which the current [Actor] will be provided.
+ * @param tootPaginateSource [FeedTootPaginateSource] that will paginate through the [Toot]s in the
+ *   feed.
+ */
 class HttpFeedProvider
-internal constructor(private val actorProvider: ActorProvider, override val termMuter: TermMuter) :
-  FeedProvider() {
+internal constructor(
+  private val actorProvider: ActorProvider,
+  override val termMuter: TermMuter,
+  private val tootPaginateSource: FeedTootPaginateSource
+) : FeedProvider() {
   /** [Flow] of paginated [Toot]s to be provided. */
-  private val flow = FeedTootPaginateSource.loadAllPagesItems(HttpTootPaginateSource.DEFAULT_COUNT)
+  private val flow = tootPaginateSource.loadAllPagesItems(HttpTootPaginateSource.DEFAULT_COUNT)
 
   override suspend fun onProvide(userID: String, page: Int): Flow<List<Toot>> {
-    FeedTootPaginateSource.paginateTo(page)
+    tootPaginateSource.paginateTo(page)
     return flow
   }
 

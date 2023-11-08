@@ -8,6 +8,8 @@ import com.jeanbarrossilva.orca.core.http.feed.profile.account.HttpAccount
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
 import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
 import com.jeanbarrossilva.orca.platform.ui.core.style.fromHtml
+import com.jeanbarrossilva.orca.std.imageloader.Image
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
 import java.time.ZonedDateTime
@@ -50,19 +52,26 @@ internal constructor(
   internal val favourited: Boolean?,
   internal val reblogged: Boolean?
 ) {
-  /** Converts this [HttpStatus] into an [Toot]. */
-  internal fun toToot(): Toot {
-    val author = reblog?.account?.toAuthor() ?: account.toAuthor()
+  /**
+   * Converts this [HttpStatus] into an [Toot].
+   *
+   * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
+   *   [Image]s will be loaded from a [URL].
+   */
+  internal fun toToot(imageLoaderProvider: ImageLoader.Provider<URL>): Toot {
+    val author =
+      reblog?.account?.toAuthor(imageLoaderProvider) ?: account.toAuthor(imageLoaderProvider)
     val text = StyledString.fromHtml(reblog?.content ?: content)
     val attachments =
       (reblog?.mediaAttachments ?: mediaAttachments).map(HttpAttachment::toAttachment)
-    val content = Content.from(text, attachments) { card?.toHeadline() }
+    val content = Content.from(text, attachments) { card?.toHeadline(imageLoaderProvider) }
     val publicationDateTime = ZonedDateTime.parse(reblog?.createdAt ?: createdAt)
     val url = URL(reblog?.url ?: url)
     return HttpToot(
         id,
         author,
         content,
+        imageLoaderProvider,
         publicationDateTime,
         commentCount = reblog?.repliesCount ?: repliesCount,
         favouritesCount,
@@ -70,7 +79,7 @@ internal constructor(
         url
       )
       .`if`<Toot>(reblog != null) {
-        val reblogger = this@HttpStatus.account.toAuthor()
+        val reblogger = this@HttpStatus.account.toAuthor(imageLoaderProvider)
         Reblog(this, reblogger)
       }
   }

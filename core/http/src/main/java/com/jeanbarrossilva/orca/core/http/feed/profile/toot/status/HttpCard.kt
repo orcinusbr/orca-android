@@ -1,9 +1,7 @@
 package com.jeanbarrossilva.orca.core.http.feed.profile.toot.status
 
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Headline
-import com.jeanbarrossilva.orca.core.http.HttpModule
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
-import com.jeanbarrossilva.orca.std.injector.Injector
 import java.net.URL
 import kotlinx.serialization.Serializable
 
@@ -25,15 +23,16 @@ internal data class HttpCard(
   /**
    * Converts this [HttpCard] into a [Headline].
    *
+   * @param coverLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
+   *   cover will be loaded from a [URL].
    * @return Resulting [Headline] or `null` if the [image] is unavailable.
    */
-  fun toHeadline(): Headline? {
+  fun toHeadline(coverLoaderProvider: ImageLoader.Provider<URL>): Headline? {
     return image?.let {
       Headline(
         title,
         subtitle = description.ifEmpty { null },
-        coverLoader =
-          Injector.from<HttpModule>().get<ImageLoader.Provider<URL>>().provide(URL(image))
+        coverLoader = coverLoaderProvider.provide(URL(image))
       )
     }
   }

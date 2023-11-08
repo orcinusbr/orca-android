@@ -5,10 +5,11 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.runtime.Composable
-import com.jeanbarrossilva.orca.core.http.HttpModule
 import com.jeanbarrossilva.orca.core.http.auth.authorization.viewmodel.HttpAuthorizationViewModel
 import com.jeanbarrossilva.orca.core.http.instance.ContextualHttpInstance
 import com.jeanbarrossilva.orca.core.http.instanceProvider
+import com.jeanbarrossilva.orca.core.module.CoreModule
+import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableActivity
 import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.http.Url
@@ -60,7 +61,7 @@ class HttpAuthorizationActivity internal constructor() :
   @Throws(UnprovidedAccessTokenException::class)
   private fun sendAccessTokenToAuthorizer(deepLink: Uri) {
     val accessToken = deepLink.getQueryParameter("code") ?: throw UnprovidedAccessTokenException()
-    (Injector.from<HttpModule>().instanceProvider().provide() as ContextualHttpInstance)
+    (Injector.from<CoreModule>().instanceProvider().provide() as ContextualHttpInstance)
       .authorizer
       .receive(accessToken)
     finish()

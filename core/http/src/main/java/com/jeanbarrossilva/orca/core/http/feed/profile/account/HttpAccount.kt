@@ -5,7 +5,6 @@ import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
-import com.jeanbarrossilva.orca.core.http.HttpModule
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.ProfileTootPaginateSource
@@ -13,7 +12,8 @@ import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.editable.HttpEditableProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.followable.HttpFollowableProfile
 import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
-import com.jeanbarrossilva.orca.core.http.instanceProvider
+import com.jeanbarrossilva.orca.core.module.CoreModule
+import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.platform.ui.core.style.fromHtml
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.injector.Injector
@@ -51,11 +51,15 @@ internal data class HttpAccount(
   val followersCount: Int,
   val followingCount: Int
 ) {
-  /** Converts this [HttpAccount] into an [Author]. */
-  fun toAuthor(): Author {
+  /**
+   * Converts this [HttpAccount] into an [Author].
+   *
+   * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
+   *   [Author]'s avatar will be loaded from a [URL].
+   */
+  fun toAuthor(avatarLoaderProvider: ImageLoader.Provider<URL>): Author {
     val avatarURL = URL(avatar)
-    val avatarLoader =
-      Injector.from<HttpModule>().get<ImageLoader.Provider<URL>>().provide(avatarURL)
+    val avatarLoader = avatarLoaderProvider.provide(avatarURL)
     val account = toAccount()
     val profileURL = URL(url)
     return Author(id, avatarLoader, displayName, account, profileURL)
@@ -91,7 +95,7 @@ internal data class HttpAccount(
    * [Account].
    */
   private suspend fun isOwner(): Boolean {
-    return Injector.from<HttpModule>()
+    return Injector.from<CoreModule>()
       .instanceProvider()
       .provide()
       .authenticationLock
@@ -148,7 +152,7 @@ internal data class HttpAccount(
     val bio = StyledString.fromHtml(note)
     val url = URL(url)
     val follow =
-      (Injector.from<HttpModule>().instanceProvider().provide() as SomeHttpInstance)
+      (Injector.from<CoreModule>().instanceProvider().provide() as SomeHttpInstance)
         .client
         .authenticateAndGet("/api/v1/accounts/relationships") { parameter("id", id) }
         .body<List<HttpRelationship>>()
