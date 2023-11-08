@@ -25,6 +25,7 @@ android-test-runner = { group = "androidx.test", name = "runner", version = "1.5
 assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version = "0.27.0" }
 coil = { group = "io.coil-kt", name = "coil", version = "2.4.0" }
 junit = { group = "junit", name = "junit", version = "4.13.2" }
+jsoup = { group = "org.jsoup", name = "jsoup", version = "1.16.2" }
 kotlin-compiler-embeddable = { group = "org.jetbrains.kotlin", name = "kotlin-compiler-embeddable", version.ref = "kotlin" }
 kotlin-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlin-coroutines" }
 kotlin-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlin-coroutines" }
