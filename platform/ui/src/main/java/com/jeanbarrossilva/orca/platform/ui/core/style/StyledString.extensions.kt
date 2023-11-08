@@ -25,7 +25,7 @@ fun StyledString.Companion.fromHtml(html: String): StyledString {
            * Last paragraph is popped because `Html#fromHtml` would append trailing line breaks
            * otherwise.
            */
-          children().tagName("p").lastOrNull()?.pop()?.let(::appendChildren)
+          children().tagName("p").lastOrNull()?.pop()
         }
         .html(),
       Html.FROM_HTML_MODE_LEGACY

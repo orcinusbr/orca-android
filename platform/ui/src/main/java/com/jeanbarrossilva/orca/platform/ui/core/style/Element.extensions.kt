@@ -4,10 +4,15 @@ import org.jsoup.nodes.Element
 import org.jsoup.nodes.Node
 
 /**
- * Removes this [Element] and returns the child [Node]s that existed prior to its removal.
+ * Removes this [Element] and appends the child [Node]s that existed prior to its removal to its
+ * parent.
  *
  * @see Element.childNodes
+ * @see Element.parent
  */
-internal fun Element.pop(): List<Node> {
-  return childNodes().also { remove() }
+internal fun Element.pop() {
+  val parent = parent() ?: return
+  val childNodes = childNodes()
+  remove()
+  parent.appendChildren(childNodes)
 }
