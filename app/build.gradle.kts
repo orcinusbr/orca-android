@@ -19,12 +19,7 @@ android {
     viewBinding = true
   }
 
-  buildTypes {
-    release {
-      isMinifyEnabled = true
-      signingConfig = signingConfigs.getByName("debug")
-    }
-  }
+  buildTypes { release { isMinifyEnabled = true } }
 
   compileOptions {
     sourceCompatibility = JavaVersion.toVersion(libs.versions.java.get())
@@ -41,10 +36,11 @@ android {
   }
 
   productFlavors {
-    create("default")
+    register("default") { dimension = Dimensions.VERSION }
 
-    create("demo") {
+    register("demo") {
       applicationIdSuffix = ".demo"
+      dimension = Dimensions.VERSION
       versionNameSuffix = "-demo"
     }
   }
@@ -52,13 +48,14 @@ android {
 
 dependencies {
   "androidTestDemoImplementation"(project(":core:sample-test"))
-  "androidTestDemoImplementation"(project(":platform:ui-test"))
+  "androidTestDemoImplementation"(project(":platform:ui"))
   "androidTestDemoImplementation"(libs.android.activity.ktx)
   "androidTestDemoImplementation"(libs.android.compose.ui.test.junit)
+  "androidTestDemoImplementation"(libs.assertk)
 
+  androidTestImplementation(project(":platform:ui-test"))
   androidTestImplementation(libs.android.test.core)
   androidTestImplementation(libs.android.test.runner)
-  androidTestImplementation(libs.assertk)
   androidTestImplementation(libs.android.test.espresso.intents)
 
   ksp(project(":std:injector-processor"))
