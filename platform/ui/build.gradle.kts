@@ -21,6 +21,7 @@ dependencies {
   androidTestImplementation(libs.android.compose.ui.test.manifest)
   androidTestImplementation(libs.android.test.core)
   androidTestImplementation(libs.android.test.runner)
+  androidTestImplementation(libs.assertk)
   androidTestImplementation(libs.mockk)
 
   api(project(":std:image-loader:compose"))
@@ -33,6 +34,7 @@ dependencies {
   implementation(project(":std:image-loader:local"))
   implementation(libs.android.activity.compose)
   implementation(libs.android.material)
+  implementation(libs.jsoup)
   implementation(libs.kotlin.reflect)
   implementation(libs.loadable.list)
   implementation(libs.loadable.placeholder)

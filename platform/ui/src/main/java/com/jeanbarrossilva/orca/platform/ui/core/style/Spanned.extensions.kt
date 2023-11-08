@@ -9,7 +9,7 @@ import com.jeanbarrossilva.orca.std.styledstring.buildStyledString
 fun Spanned.toStyledString(): StyledString {
   return buildStyledString {
     forEachIndexed { index, char ->
-      getSpans<Any>(start = index, end = index).onEach { append(char, it) }.ifEmpty { +char }
+      getSpans<Any>(start = index, end = index).onEach { append(it, char) }.ifEmpty { +char }
     }
   }
 }

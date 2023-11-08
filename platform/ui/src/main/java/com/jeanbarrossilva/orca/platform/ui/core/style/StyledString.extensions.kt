@@ -9,6 +9,8 @@ import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import com.jeanbarrossilva.orca.std.styledstring.Style
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
+import org.jsoup.Jsoup
+import org.jsoup.parser.Parser
 
 /**
  * Creates a [StyledString] from the [html].
@@ -16,8 +18,19 @@ import com.jeanbarrossilva.orca.std.styledstring.StyledString
  * @param html HTML-formatted [String] from which a [StyledString] will be created.
  */
 fun StyledString.Companion.fromHtml(html: String): StyledString {
-  val paragraphLessHtml = html.replace("<p>", "").replace("</p>", "")
-  return Html.fromHtml(paragraphLessHtml, Html.FROM_HTML_MODE_COMPACT).toStyledString()
+  return Html.fromHtml(
+      Jsoup.parse(html, Parser.xmlParser())
+        .apply {
+          /*
+           * Last paragraph is popped because `Html#fromHtml` would append trailing line breaks
+           * otherwise.
+           */
+          children().tagName("p").lastOrNull()?.pop()?.let(::appendChildren)
+        }
+        .html(),
+      Html.FROM_HTML_MODE_LEGACY
+    )
+    .toStyledString()
 }
 
 /** Converts this [StyledString] into an [AnnotatedString]. */
