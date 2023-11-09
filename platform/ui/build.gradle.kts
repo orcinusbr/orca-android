@@ -41,5 +41,6 @@ dependencies {
   implementation(libs.loadable.placeholder.test)
   implementation(libs.time4j)
 
+  testImplementation(libs.assertk)
   testImplementation(libs.junit)
 }
