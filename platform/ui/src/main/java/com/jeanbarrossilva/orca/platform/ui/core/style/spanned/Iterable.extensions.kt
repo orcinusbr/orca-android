@@ -3,11 +3,10 @@ package com.jeanbarrossilva.orca.platform.ui.core.style.spanned
 import java.util.concurrent.atomic.AtomicReference
 
 /**
- * Groups [Int]s that are consecutive into [IntRange]s.
- *
- * @return Consecutively grouped [Int]s, sorted from lesser to greater first values.
+ * Groups [Int]s that are consecutive into [IntRange]s, sorting them by their first value
+ * ascendingly.
  */
-internal fun Iterable<Int>.groupByConsecutiveness(): List<IntRange> {
+internal fun Iterable<Int>.consecutively(): List<IntRange> {
   val count = count()
   if (count == 0) {
     return emptyList()

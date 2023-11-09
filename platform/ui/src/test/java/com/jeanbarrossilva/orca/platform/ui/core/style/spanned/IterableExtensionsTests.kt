@@ -7,17 +7,17 @@ import org.junit.Test
 
 internal class IterableExtensionsTests {
   @Test
-  fun returnsEmptyListWhenGroupingEmptyIterableOfIntsByConsecutiveness() {
-    assertThat(emptyList<Int>().groupByConsecutiveness()).isEmpty()
+  fun returnsEmptyListWhenConsecutivizingEmptyIterableOfInts() {
+    assertThat(emptyList<Int>().consecutively()).isEmpty()
   }
 
   @Test
-  fun groupsIntsByConsecutiveness() {
-    assertThat(listOf(0, 1, 2, 4, 5, 8).groupByConsecutiveness()).containsExactly(0..2, 4..5, 8..8)
+  fun consecutivizes() {
+    assertThat(listOf(0, 1, 2, 4, 5, 8).consecutively()).containsExactly(0..2, 4..5, 8..8)
   }
 
   @Test
-  fun sortsFromLesserToGreaterFirstValuesWhenGroupingIntsByConsecutiveness() {
-    assertThat(listOf(1, 2, 5, 6, 3, 4).groupByConsecutiveness()).containsExactly(1..2, 3..4, 5..6)
+  fun sortsByFirstValuesAscendinglyWhenConsecutivizing() {
+    assertThat(listOf(1, 2, 5, 6, 3, 4).consecutively()).containsExactly(1..2, 3..4, 5..6)
   }
 }
