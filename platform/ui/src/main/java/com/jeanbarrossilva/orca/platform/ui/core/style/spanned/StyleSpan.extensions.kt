@@ -9,6 +9,23 @@ import com.jeanbarrossilva.orca.std.styledstring.type.Bold
 import com.jeanbarrossilva.orca.std.styledstring.type.Italic
 
 /**
+ * Creates a [StyleSpan], defining its font weight adjustment if the version of Android currently
+ * being used supports it.
+ *
+ * @param style One of the constants defined by [Typeface] that determines the style of the
+ *   [StyleSpan].
+ * @param fontWeightAdjustment Adjustment to be made to the supplied font weight.
+ * @see StyleSpan.getFontWeightAdjustment
+ */
+internal fun StyleSpan(style: Int, fontWeightAdjustment: Int): StyleSpan {
+  return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    StyleSpan(style, fontWeightAdjustment)
+  } else {
+    StyleSpan(style)
+  }
+}
+
+/**
  * Whether this [StyleSpan] is structurally equal to the [other].
  *
  * @param other [StyleSpan] to which this one will be structurally compared.

@@ -16,7 +16,7 @@ internal class SpannedExtensionsTests {
       )
       .containsExactly(
         Part(0..4).span(StyleSpan(Typeface.ITALIC)),
-        Part(0..4).span(StyleSpan(Typeface.BOLD)),
+        Part(0..4).span(StyleSpan(Typeface.BOLD, fontWeightAdjustment = 0)),
         Part(5..6),
         Part(7..11).span(StyleSpan(Typeface.ITALIC))
       )
