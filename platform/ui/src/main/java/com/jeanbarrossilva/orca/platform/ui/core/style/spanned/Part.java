@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.orca.platform.ui.core.style.spanned;
 
 import androidx.annotation.NonNull;
+import java.util.List;
 import java.util.Objects;
 import kotlin.ranges.IntRange;
 
@@ -12,41 +13,41 @@ class Part {
   @NonNull private final IntRange indices;
 
   /**
-   * {@link Part} to which a span has been applied.
+   * {@link Part} to which spans have been applied.
    *
-   * @see Spanned#getSpan()
+   * @see Spanned#getSpans()
    */
   static class Spanned extends Part {
-    /** Span that's been applied to the specified {@link Part#indices}. */
-    @NonNull private final Object span;
+    /** Spans that have been applied to the specified {@link Part#indices}. */
+    @NonNull private final List<Object> spans;
 
-    Spanned(@NonNull IntRange indices, @NonNull Object span) {
+    private Spanned(@NonNull IntRange indices, @NonNull List<Object> spans) {
       super(indices);
-      this.span = span;
+      this.spans = spans;
     }
 
     @Override
     public boolean equals(Object other) {
       return other instanceof Spanned
           && getIndices().equals(((Spanned) other).getIndices())
-          && span == ((Spanned) other).span;
+          && spans.equals(((Spanned) other).spans);
     }
 
     @Override
     public int hashCode() {
-      return Objects.hash(getIndices(), span);
+      return Objects.hash(getIndices(), spans);
     }
 
     @NonNull
     @Override
     public String toString() {
-      return "Part.Spanned(indices=" + getIndices() + ", span=" + span + ')';
+      return "Part.Spanned(indices=" + getIndices() + ", spans=" + spans + ')';
     }
 
-    /** Gets the span that's been applied to the specified {@link Spanned#indices}. */
+    /** Gets the spans that have been applied to the specified {@link Spanned#indices}. */
     @NonNull
-    Object getSpan() {
-      return span;
+    Object getSpans() {
+      return spans;
     }
   }
 
@@ -74,5 +75,15 @@ class Part {
   @NonNull
   IntRange getIndices() {
     return indices;
+  }
+
+  /**
+   * Creates a {@link Part.Spanned} with the given spans.
+   *
+   * @param spans Spans that have been applied.
+   */
+  Spanned span(Object... spans) {
+    List<Object> spansAsList = List.of(spans);
+    return new Spanned(indices, spansAsList);
   }
 }
