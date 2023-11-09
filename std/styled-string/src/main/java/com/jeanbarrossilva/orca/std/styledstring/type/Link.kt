@@ -2,9 +2,17 @@ package com.jeanbarrossilva.orca.std.styledstring.type
 
 import com.jeanbarrossilva.orca.std.styledstring.Style
 import java.net.URL
+import java.util.Objects
 
-/** [Style] for [URL]s. */
-data class Link(override val indices: IntRange) : Style() {
+/**
+ * [Style] for [URL]s.
+ *
+ * @param url [URL] to which this [Link] links.
+ */
+abstract class Link internal constructor() : Style() {
+  /** [URL] to which this [Link] links. */
+  abstract val url: URL
+
   /** [Style.Delimiter] for [Link]s. */
   sealed class Delimiter : Style.Delimiter() {
     /**
@@ -33,6 +41,18 @@ data class Link(override val indices: IntRange) : Style() {
     }
   }
 
+  override fun equals(other: Any?): Boolean {
+    return other is Link && url == other.url && indices == other.indices
+  }
+
+  override fun hashCode(): Int {
+    return Objects.hash(url, indices)
+  }
+
+  override fun toString(): String {
+    return "Link(url=$url, indices=$indices)"
+  }
+
   companion object {
     /** [Regex] that matches the [protocol][URL.getProtocol] of a [URL]. */
     val protocolRegex = Regex("https?://")
@@ -49,5 +69,19 @@ data class Link(override val indices: IntRange) : Style() {
 
     /** [Regex] that matches [String]s with a [URL] format. */
     val protocoledRegex = Regex("$protocolRegex" + "$unprotocoledRegex")
+
+    /**
+     * Creates a [Link].
+     *
+     * @param url [URL] to which the [Link] links.
+     * @param indices Indices at which both the style symbols and the target are in the whole
+     *   [String].
+     */
+    fun to(url: URL, indices: IntRange): Link {
+      return object : Link() {
+        override val indices = indices
+        override val url = url
+      }
+    }
   }
 }

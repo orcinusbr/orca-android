@@ -2,9 +2,7 @@ package com.jeanbarrossilva.orca.platform.ui.core.style.spanned
 
 import android.text.Spanned
 import androidx.core.text.getSpans
-import com.jeanbarrossilva.orca.platform.ui.core.style.append
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
-import com.jeanbarrossilva.orca.std.styledstring.buildStyledString
 
 /** [Part]s by which this [Spanned] is composed. */
 internal val Spanned.parts
@@ -19,11 +17,9 @@ internal val Spanned.parts
 
 /** Converts this [Spanned] into a [StyledString]. */
 fun Spanned.toStyledString(): StyledString {
-  return buildStyledString {
-    forEachIndexed { index, char ->
-      getSpans<Any>(start = index, end = index).onEach { append(it, char) }.ifEmpty { +char }
-    }
-  }
+  val text = toString()
+  val styles = parts.filterIsInstance<Part.Spanned>().flatMap(Part.Spanned::toStyles)
+  return StyledString(text, styles)
 }
 
 /**

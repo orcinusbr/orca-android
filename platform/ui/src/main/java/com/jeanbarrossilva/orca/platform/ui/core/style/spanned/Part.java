@@ -1,6 +1,8 @@
 package com.jeanbarrossilva.orca.platform.ui.core.style.spanned;
 
 import androidx.annotation.NonNull;
+import com.jeanbarrossilva.orca.std.styledstring.Style;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import kotlin.ranges.IntRange;
@@ -48,6 +50,15 @@ class Part {
     @NonNull
     List<Object> getSpans() {
       return spans;
+    }
+
+    /** Converts this {@link Part} into a {@link Style}. */
+    List<Style> toStyles() {
+      ArrayList<Style> styles = new ArrayList<>();
+      for (Object span : spans) {
+        styles.addAll(AnyExtensions.toStyles(span, getIndices()));
+      }
+      return styles;
     }
 
     /**

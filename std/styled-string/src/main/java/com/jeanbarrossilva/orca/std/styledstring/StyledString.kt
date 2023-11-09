@@ -23,7 +23,7 @@ import java.util.Objects
  * @param text Underlying [String] that's been built.
  * @param styles [Style]s applied to the [text].
  */
-class StyledString internal constructor(private val text: String, val styles: List<Style>) :
+class StyledString(private val text: String, val styles: List<Style>) :
   CharSequence by text, Serializable {
   /**
    * [StyledString] without [Style]s.
@@ -144,8 +144,9 @@ class StyledString internal constructor(private val text: String, val styles: Li
     /** Builds a [StyledString] with the provided styles. */
     @PublishedApi
     internal fun build(): StyledString {
-      val emails = text.stylize(Email.Delimiter.Default, ::Email)
-      val links = text.stylize(Link.Delimiter.Default, ::Link)
+      val emails = text.stylize(Email.Delimiter.Default) { indices, _ -> Email(indices) }
+      val links =
+        text.stylize(Link.Delimiter.Default) { indices, target -> Link.to(URL(target), indices) }
       val stylesAsList = styles.apply { addAll(emails + links) }.toList()
       return StyledString(text, stylesAsList)
     }
