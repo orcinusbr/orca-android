@@ -30,7 +30,7 @@ class Part {
     public boolean equals(Object other) {
       return other instanceof Spanned
           && getIndices().equals(((Spanned) other).getIndices())
-          && spans.equals(((Spanned) other).spans);
+          && areSpansStructurallyEqual(((Spanned) other).spans);
     }
 
     @Override
@@ -46,8 +46,26 @@ class Part {
 
     /** Gets the spans that have been applied to the specified {@link Spanned#indices}. */
     @NonNull
-    Object getSpans() {
+    List<Object> getSpans() {
       return spans;
+    }
+
+    /**
+     * Returns whether the given spans are structurally equal to the ones that belong to this
+     * {@link Spanned}.
+     *
+     * @param others Spans to which those of this {@link Spanned} will be structurally compared.
+     */
+    private boolean areSpansStructurallyEqual(List<Object> others) {
+      if (spans.size() != others.size()) {
+        return false;
+      }
+      for (int index = 0; index < spans.size(); index++) {
+        if (!AnyExtensions.isStructurallyEqualTo(spans.get(index), others.get(index))) {
+          return false;
+        }
+      }
+      return true;
     }
   }
 
