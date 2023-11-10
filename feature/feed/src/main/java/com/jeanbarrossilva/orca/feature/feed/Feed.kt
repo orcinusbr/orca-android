@@ -4,6 +4,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -41,6 +42,15 @@ internal fun Feed(
   val tootPreviewsLoadable by viewModel.tootPreviewsLoadableFlow.collectAsState()
   val bottomAreaAvailabilityNestedScrollConnection =
     rememberBottomAreaAvailabilityNestedScrollConnection(onBottomAreaAvailabilityChangeListener)
+
+  DisposableEffect(tootPreviewsLoadable) {
+    tootPreviewsLoadable.let {
+      if (it is ListLoadable.Failed) {
+        throw it.error
+      }
+    }
+    onDispose {}
+  }
 
   Feed(
     tootPreviewsLoadable,

@@ -2,16 +2,43 @@ package com.jeanbarrossilva.orca.std.styledstring.type
 
 import com.jeanbarrossilva.orca.std.styledstring.Style
 import java.net.URL
+import java.util.Objects
 
-/** [Style] for [URL]s. */
-data class Link(override val indices: IntRange) : Style() {
+/**
+ * [Style] for [URL]s.
+ *
+ * @param url [URL] to which this [Link] links.
+ */
+abstract class Link internal constructor() : Style() {
+  /** [URL] to which this [Link] links. */
+  abstract val url: URL
+
   /** [Style.Delimiter] for [Link]s. */
   sealed class Delimiter : Style.Delimiter() {
     /**
-     * [Delimiter] that's the [parent] of all [Variant]s and considers [Link]s parts of a [String]
-     * conforming to a [URL] format.
+     * [Delimiter] that identifies as [Link]s parts of a [String] involved by "[" and "]" and
+     * followed by the [url] within parenthesis.
+     *
+     * @param url [URL] to which the target is linked.
      */
-    internal object Default : Delimiter() {
+    internal class Text(private val url: URL) : Delimiter() {
+      override val parent = null
+
+      override fun getRegex(): Regex {
+        return Regex("\\[.+]\\($url\\)")
+      }
+
+      override fun onGetTarget(match: String): String {
+        return match.substringAfter("[").substringBefore("]")
+      }
+
+      override fun onTarget(target: String): String {
+        return "[$target]($url)"
+      }
+    }
+
+    /** [Delimiter] that considers [Link]s parts of a [String] conforming to a [URL] format. */
+    internal data object Plain : Delimiter() {
       override val parent = null
 
       override fun getRegex(): Regex {
@@ -26,11 +53,18 @@ data class Link(override val indices: IntRange) : Style() {
         return target
       }
     }
+  }
 
-    /** [Delimiter] that's a child of [Default]. */
-    abstract class Variant : Delimiter() {
-      final override val parent = Default
-    }
+  override fun equals(other: Any?): Boolean {
+    return other is Link && url == other.url && indices == other.indices
+  }
+
+  override fun hashCode(): Int {
+    return Objects.hash(url, indices)
+  }
+
+  override fun toString(): String {
+    return "Link(url=$url, indices=$indices)"
   }
 
   companion object {
@@ -49,5 +83,19 @@ data class Link(override val indices: IntRange) : Style() {
 
     /** [Regex] that matches [String]s with a [URL] format. */
     val protocoledRegex = Regex("$protocolRegex" + "$unprotocoledRegex")
+
+    /**
+     * Creates a [Link].
+     *
+     * @param url [URL] to which the [Link] links.
+     * @param indices Indices at which both the style symbols and the target are in the whole
+     *   [String].
+     */
+    fun to(url: URL, indices: IntRange): Link {
+      return object : Link() {
+        override val indices = indices
+        override val url = url
+      }
+    }
   }
 }

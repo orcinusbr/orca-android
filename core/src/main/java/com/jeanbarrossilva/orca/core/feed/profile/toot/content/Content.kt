@@ -6,7 +6,6 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlig
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import com.jeanbarrossilva.orca.std.styledstring.toStyledString
 import com.jeanbarrossilva.orca.std.styledstring.type.Link
-import java.net.URL
 import java.util.Objects
 
 /**
@@ -59,7 +58,7 @@ private constructor(
     ): Content {
       val links = text.styles.filterIsInstance<Link>()
       val link = links.firstOrNull()
-      val url = link?.indices?.let(text::substring)?.let(::URL)
+      val url = link?.url
       val headline = url?.let { headlineProvider.provide(it) }
       val highlight = headline?.let { Highlight(it, url) }
       val formattedText =

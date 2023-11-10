@@ -31,7 +31,7 @@ fun String.toStyledString(
   emailDelimiter: Email.Delimiter = Email.Delimiter.Default,
   hashtagDelimiter: Hashtag.Delimiter? = Hashtag.Delimiter.Default,
   italicDelimiter: Italic.Delimiter? = Italic.Delimiter.Default,
-  linkDelimiter: Link.Delimiter? = Link.Delimiter.Default,
+  linkDelimiter: Link.Delimiter? = Link.Delimiter.Plain,
   mentionDelimiter: Mention.Delimiter? = Mention.Delimiter.Default,
   mentioning: (startIndex: Int) -> URL? = { null }
 ): StyledString {
@@ -45,14 +45,15 @@ fun String.toStyledString(
       linkDelimiter,
       mentionDelimiter
     )
-  val emboldened = text.stylize(Bold.Delimiter.Default, ::Bold)
-  val emails = text.stylize(Email.Delimiter.Default, ::Email)
-  val hashtags = text.stylize(Hashtag.Delimiter.Default, ::Hashtag)
-  val italicized = text.stylize(Italic.Delimiter.Default, ::Italic)
-  val links = text.stylize(Link.Delimiter.Default, ::Link)
+  val emboldened = text.stylize(Bold.Delimiter.Default) { indices, _ -> Bold(indices) }
+  val emails = text.stylize(Email.Delimiter.Default) { indices, _ -> Email(indices) }
+  val hashtags = text.stylize(Hashtag.Delimiter.Default) { indices, _ -> Hashtag(indices) }
+  val italicized = text.stylize(Italic.Delimiter.Default) { indices, _ -> Italic(indices) }
+  val links =
+    text.stylize(Link.Delimiter.Plain) { indices, target -> Link.to(URL(target), indices) }
   val mentions =
-    text.stylize(Mention.Delimiter.Default) {
-      mentioning(it.first)?.let { url -> Mention(indices = it, url) }
+    text.stylize(Mention.Delimiter.Default) { indices, _ ->
+      mentioning(indices.first)?.let { target -> Mention(indices, target) }
     }
   return StyledString(text, emails + emboldened + hashtags + italicized + links + mentions)
 }
@@ -65,7 +66,7 @@ fun String.toStyledString(
  */
 internal fun <T : Style> String.stylize(
   delimiter: Style.Delimiter?,
-  style: (indices: IntRange) -> T?
+  style: (indices: IntRange, target: String) -> T?
 ): List<T> {
-  return delimiter?.delimit(this)?.mapNotNull { style(it.range) }.orEmpty()
+  return delimiter?.delimit(this)?.mapNotNull { style(it.range, it.value) }.orEmpty()
 }

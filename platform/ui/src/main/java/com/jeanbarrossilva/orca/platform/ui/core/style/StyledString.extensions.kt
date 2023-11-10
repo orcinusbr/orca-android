@@ -7,6 +7,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
+import com.jeanbarrossilva.orca.platform.ui.core.style.spanned.toStyledString
 import com.jeanbarrossilva.orca.std.styledstring.Style
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import org.jsoup.Jsoup

@@ -28,6 +28,25 @@ internal class ContentTests {
   }
 
   @Test
+  fun `GIVEN a text with a trailing link WHEN creating content from it THEN `() {
+    assertEquals(
+      buildStyledString {
+        +"😗 "
+        link(Highlight.sample.url) { +"🔗" }
+      },
+      Content.from(
+          buildStyledString {
+            +"😗 "
+            link(Highlight.sample.url) { +"🔗" }
+          }
+        ) {
+          Headline.sample
+        }
+        .text
+    )
+  }
+
+  @Test
   fun `GIVEN a text with two trailing URLs WHEN creating content from it THEN they're kept`() {
     assertEquals(
       buildStyledString { +"🫨 ${Highlight.sample.url} ${Highlight.sample.url}" },
