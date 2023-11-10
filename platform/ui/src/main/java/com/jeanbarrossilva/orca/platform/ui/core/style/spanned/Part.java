@@ -62,8 +62,8 @@ class Part {
     }
 
     /**
-     * Returns whether the given spans are structurally equal to the ones that belong to this
-     * {@link Spanned}.
+     * Returns whether the given spans are structurally equal to the ones that belong to this {@link
+     * Spanned}.
      *
      * @param others Spans to which those of this {@link Spanned} will be structurally compared.
      */

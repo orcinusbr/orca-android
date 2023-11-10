@@ -6,9 +6,15 @@ import org.gradle.api.Project
 
 class FormattingSetupPlugin : Plugin<Project> {
   override fun apply(target: Project) {
-    target.extensions.getByType(SpotlessExtension::class.java).kotlin {
-      it.target("**\\/*.kt", "**\\/*.kts")
-      it.ktfmt().googleStyle()
+    target.extensions.getByType(SpotlessExtension::class.java).apply {
+      java {
+        it.target("**\\/*.java")
+        it.googleJavaFormat()
+      }
+      kotlin {
+        it.target("**\\/*.kt", "**\\/*.kts")
+        it.ktfmt().googleStyle()
+      }
     }
   }
 }
