@@ -2,6 +2,7 @@ package com.jeanbarrossilva.orca.std.styledstring
 
 import com.jeanbarrossilva.orca.std.styledstring.type.Bold
 import com.jeanbarrossilva.orca.std.styledstring.type.Italic
+import com.jeanbarrossilva.orca.std.styledstring.type.Link
 import com.jeanbarrossilva.orca.std.styledstring.type.Mention
 import com.jeanbarrossilva.orca.std.styledstring.type.test.ColonBoldDelimiter
 import com.jeanbarrossilva.orca.std.styledstring.type.test.mention.ColonMentionDelimiter
@@ -61,10 +62,23 @@ internal class StyledStringTests {
   }
 
   @Test
-  fun `GIVEN a string with a link WHEN converting it into a styled string THEN it's styled accordingly`() {
+  fun `GIVEN a string with a plain link WHEN converting it into a styled string THEN it's styled accordingly`() {
     assertEquals(
       buildStyledString { +"Check out https://pudim.com.br!" },
       "Check out https://pudim.com.br!".toStyledString()
+    )
+  }
+
+  @Test
+  fun `GIVEN a string with a text link WHEN converting it into a styled string THEN it's styled accordingly`() {
+    assertEquals(
+      buildStyledString {
+        +"Check "
+        link(URL("https://pudim.com.br")) { +"this" }
+        +" out!"
+      },
+      "Check [this](https://pudim.com.br) out!"
+        .toStyledString(linkDelimiter = Link.Delimiter.Text(URL("https://pudim.com.br")))
     )
   }
 

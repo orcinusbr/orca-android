@@ -31,7 +31,7 @@ fun String.toStyledString(
   emailDelimiter: Email.Delimiter = Email.Delimiter.Default,
   hashtagDelimiter: Hashtag.Delimiter? = Hashtag.Delimiter.Default,
   italicDelimiter: Italic.Delimiter? = Italic.Delimiter.Default,
-  linkDelimiter: Link.Delimiter? = Link.Delimiter.Default,
+  linkDelimiter: Link.Delimiter? = Link.Delimiter.Plain,
   mentionDelimiter: Mention.Delimiter? = Mention.Delimiter.Default,
   mentioning: (startIndex: Int) -> URL? = { null }
 ): StyledString {
@@ -50,7 +50,7 @@ fun String.toStyledString(
   val hashtags = text.stylize(Hashtag.Delimiter.Default) { indices, _ -> Hashtag(indices) }
   val italicized = text.stylize(Italic.Delimiter.Default) { indices, _ -> Italic(indices) }
   val links =
-    text.stylize(Link.Delimiter.Default) { indices, target -> Link.to(URL(target), indices) }
+    text.stylize(Link.Delimiter.Plain) { indices, target -> Link.to(URL(target), indices) }
   val mentions =
     text.stylize(Mention.Delimiter.Default) { indices, _ ->
       mentioning(indices.first)?.let { target -> Mention(indices, target) }

@@ -16,10 +16,29 @@ abstract class Link internal constructor() : Style() {
   /** [Style.Delimiter] for [Link]s. */
   sealed class Delimiter : Style.Delimiter() {
     /**
-     * [Delimiter] that's the [parent] of all [Variant]s and considers [Link]s parts of a [String]
-     * conforming to a [URL] format.
+     * [Delimiter] that identifies as [Link]s parts of a [String] involved by "[" and "]" and
+     * followed by the [url] within parenthesis.
+     *
+     * @param url [URL] to which the target is linked.
      */
-    internal object Default : Delimiter() {
+    internal class Text(private val url: URL) : Delimiter() {
+      override val parent = null
+
+      override fun getRegex(): Regex {
+        return Regex("\\[.+]\\($url\\)")
+      }
+
+      override fun onGetTarget(match: String): String {
+        return match.substringAfter("[").substringBefore("]")
+      }
+
+      override fun onTarget(target: String): String {
+        return "[$target]($url)"
+      }
+    }
+
+    /** [Delimiter] that considers [Link]s parts of a [String] conforming to a [URL] format. */
+    internal data object Plain : Delimiter() {
       override val parent = null
 
       override fun getRegex(): Regex {
@@ -33,11 +52,6 @@ abstract class Link internal constructor() : Style() {
       override fun onTarget(target: String): String {
         return target
       }
-    }
-
-    /** [Delimiter] that's a child of [Default]. */
-    abstract class Variant : Delimiter() {
-      final override val parent = Default
     }
   }
 

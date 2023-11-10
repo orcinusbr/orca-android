@@ -12,7 +12,7 @@ import java.util.Objects
 
 /**
  * [CharSequence] that supports stylization such as `*bold*`, e-mails (`orca@jeanbarrossilva.com`),
- * `#hashtags`, `_italic_`, links (`https://orca.jeanbarrossilva.com`) and `@mentions`.
+ * `#hashtags`, `_italic_`, `[links](https://orca.jeanbarrossilva.com)` and `@mentions`.
  *
  * Those can either be added through the [buildStyledString] builder method or by converting a
  * [String] properly delimited with the [Style]s' [delimiter][Style.Delimiter]s into a
@@ -132,6 +132,16 @@ class StyledString(private val text: String, val styles: List<Style>) :
     }
 
     /**
+     * Links the text to be appended to the [url].
+     *
+     * @param appendix Additionally stylizes the link to be appended or solely appends it.
+     * @see Link
+     */
+    fun link(url: URL, appendix: Appender.() -> Unit) {
+      append(Link.Delimiter.Text(url), appendix) { Link.to(url, it) }
+    }
+
+    /**
      * Turns the text to be appended into a mention.
      *
      * @param appendix Additionally stylizes the mention to be appended or solely appends it.
@@ -141,13 +151,13 @@ class StyledString(private val text: String, val styles: List<Style>) :
       append(Mention.Delimiter.Default, appendix) { Mention(it, url) }
     }
 
-    /** Builds a [StyledString] with the provided styles. */
+    /** Builds a [StyledString] with the provided [Style]s. */
     @PublishedApi
     internal fun build(): StyledString {
       val emails = text.stylize(Email.Delimiter.Default) { indices, _ -> Email(indices) }
-      val links =
-        text.stylize(Link.Delimiter.Default) { indices, target -> Link.to(URL(target), indices) }
-      val stylesAsList = styles.apply { addAll(emails + links) }.toList()
+      val plainLinks =
+        text.stylize(Link.Delimiter.Plain) { indices, target -> Link.to(URL(target), indices) }
+      val stylesAsList = styles.apply { addAll(emails + plainLinks) }.toList()
       return StyledString(text, stylesAsList)
     }
 
