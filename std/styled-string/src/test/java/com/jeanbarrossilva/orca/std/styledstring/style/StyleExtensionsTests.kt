@@ -1,12 +1,12 @@
-package com.jeanbarrossilva.orca.std.styledstring
+package com.jeanbarrossilva.orca.std.styledstring.style
 
 import assertk.assertThat
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
-import com.jeanbarrossilva.orca.std.styledstring.type.Bold
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Bold
 import kotlin.test.Test
 
-internal class StyleTests {
+internal class StyleExtensionsTests {
   @Test
   fun isWithin() {
     assertThat(Bold(0..4).isWithin("Hello!"))

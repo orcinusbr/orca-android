@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.std.styledstring
+package com.jeanbarrossilva.orca.std.styledstring.style
 
 /**
  * Returns whether this [Style] is chopped (that is, starts but overflows) by the [text].

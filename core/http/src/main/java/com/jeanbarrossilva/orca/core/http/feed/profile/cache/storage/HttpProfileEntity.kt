@@ -14,8 +14,8 @@ import com.jeanbarrossilva.orca.core.http.feed.profile.cache.storage.style.HttpS
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.editable.HttpEditableProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.followable.HttpFollowableProfile
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
-import com.jeanbarrossilva.orca.std.styledstring.Style
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
+import com.jeanbarrossilva.orca.std.styledstring.style.Style
 import java.net.URL
 
 /**

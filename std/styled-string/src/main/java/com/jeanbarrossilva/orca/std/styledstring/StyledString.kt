@@ -1,11 +1,14 @@
 package com.jeanbarrossilva.orca.std.styledstring
 
-import com.jeanbarrossilva.orca.std.styledstring.type.Bold
-import com.jeanbarrossilva.orca.std.styledstring.type.Email
-import com.jeanbarrossilva.orca.std.styledstring.type.Hashtag
-import com.jeanbarrossilva.orca.std.styledstring.type.Italic
-import com.jeanbarrossilva.orca.std.styledstring.type.Link
-import com.jeanbarrossilva.orca.std.styledstring.type.Mention
+import com.jeanbarrossilva.orca.std.styledstring.style.Style
+import com.jeanbarrossilva.orca.std.styledstring.style.isChoppedBy
+import com.jeanbarrossilva.orca.std.styledstring.style.isWithin
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Bold
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Email
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Hashtag
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Italic
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Link
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Mention
 import java.io.Serializable
 import java.net.URL
 import java.util.Objects

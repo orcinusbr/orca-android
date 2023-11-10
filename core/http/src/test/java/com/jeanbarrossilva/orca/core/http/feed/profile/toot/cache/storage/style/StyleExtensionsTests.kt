@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.style
 
 import com.jeanbarrossilva.orca.core.http.feed.profile.cache.storage.style.name
-import com.jeanbarrossilva.orca.std.styledstring.Style
+import com.jeanbarrossilva.orca.std.styledstring.style.Style
 import kotlin.test.Test
 
 internal class StyleExtensionsTests {

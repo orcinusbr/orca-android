@@ -4,7 +4,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Headlin
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.HeadlineProvider
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
-import com.jeanbarrossilva.orca.std.styledstring.type.Link
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Link
 import java.util.Objects
 
 /**

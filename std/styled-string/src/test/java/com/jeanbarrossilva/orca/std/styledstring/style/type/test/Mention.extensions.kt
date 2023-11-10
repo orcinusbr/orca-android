@@ -1,7 +1,7 @@
-package com.jeanbarrossilva.orca.std.styledstring.type.test
+package com.jeanbarrossilva.orca.std.styledstring.style.type.test
 
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
-import com.jeanbarrossilva.orca.std.styledstring.type.Mention
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Mention
 import java.net.URL
 
 /**

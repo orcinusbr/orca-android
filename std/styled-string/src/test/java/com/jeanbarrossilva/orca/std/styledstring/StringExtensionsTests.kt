@@ -2,7 +2,7 @@ package com.jeanbarrossilva.orca.std.styledstring
 
 import assertk.assertThat
 import assertk.assertions.containsExactly
-import com.jeanbarrossilva.orca.std.styledstring.type.Email
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Email
 import kotlin.test.Test
 
 internal class StringExtensionsTests {

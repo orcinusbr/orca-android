@@ -1,6 +1,6 @@
-package com.jeanbarrossilva.orca.std.styledstring.type
+package com.jeanbarrossilva.orca.std.styledstring.style.type
 
-import com.jeanbarrossilva.orca.std.styledstring.Style
+import com.jeanbarrossilva.orca.std.styledstring.style.Style
 
 /** [Style] for referencing an e-mail, such as "john@appleseed.com". */
 data class Email(override val indices: IntRange) : Style {

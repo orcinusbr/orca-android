@@ -4,9 +4,9 @@ import android.graphics.Typeface
 import android.os.Build
 import android.text.Spanned
 import android.text.style.StyleSpan
-import com.jeanbarrossilva.orca.std.styledstring.Style
-import com.jeanbarrossilva.orca.std.styledstring.type.Bold
-import com.jeanbarrossilva.orca.std.styledstring.type.Italic
+import com.jeanbarrossilva.orca.std.styledstring.style.Style
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Bold
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Italic
 
 /**
  * Creates a [StyleSpan], defining its font weight adjustment if the version of Android currently

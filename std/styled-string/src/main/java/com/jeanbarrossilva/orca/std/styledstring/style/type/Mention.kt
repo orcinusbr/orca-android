@@ -1,6 +1,6 @@
-package com.jeanbarrossilva.orca.std.styledstring.type
+package com.jeanbarrossilva.orca.std.styledstring.style.type
 
-import com.jeanbarrossilva.orca.std.styledstring.Style
+import com.jeanbarrossilva.orca.std.styledstring.style.Style
 import java.net.URL
 
 /** [Style] for referencing a username. */

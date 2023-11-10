@@ -7,9 +7,9 @@ import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
-import com.jeanbarrossilva.orca.std.styledstring.type.Bold
-import com.jeanbarrossilva.orca.std.styledstring.type.Italic
-import com.jeanbarrossilva.orca.std.styledstring.type.Link
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Bold
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Italic
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Link
 import java.net.URL
 import org.junit.Test
 

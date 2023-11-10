@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.std.styledstring
+package com.jeanbarrossilva.orca.std.styledstring.style
 
 import java.io.Serializable
 

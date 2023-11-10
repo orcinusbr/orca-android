@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.orca.platform.ui.core.style.spanned;
 
 import androidx.annotation.NonNull;
-import com.jeanbarrossilva.orca.std.styledstring.Style;
+import com.jeanbarrossilva.orca.std.styledstring.style.Style;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

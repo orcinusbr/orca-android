@@ -6,8 +6,8 @@ import android.text.ParcelableSpan
 import android.text.Spanned
 import android.text.style.StyleSpan
 import android.text.style.URLSpan
-import com.jeanbarrossilva.orca.std.styledstring.Style
-import com.jeanbarrossilva.orca.std.styledstring.type.Link
+import com.jeanbarrossilva.orca.std.styledstring.style.Style
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Link
 import java.net.URL
 
 /**

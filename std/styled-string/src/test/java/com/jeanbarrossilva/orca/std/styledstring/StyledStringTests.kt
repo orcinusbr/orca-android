@@ -1,10 +1,11 @@
 package com.jeanbarrossilva.orca.std.styledstring
 
-import com.jeanbarrossilva.orca.std.styledstring.type.Bold
-import com.jeanbarrossilva.orca.std.styledstring.type.Italic
-import com.jeanbarrossilva.orca.std.styledstring.type.Mention
-import com.jeanbarrossilva.orca.std.styledstring.type.test.url
-import com.jeanbarrossilva.orca.std.styledstring.type.test.username
+import com.jeanbarrossilva.orca.std.styledstring.style.Style
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Bold
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Italic
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Mention
+import com.jeanbarrossilva.orca.std.styledstring.style.type.test.url
+import com.jeanbarrossilva.orca.std.styledstring.style.type.test.username
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals

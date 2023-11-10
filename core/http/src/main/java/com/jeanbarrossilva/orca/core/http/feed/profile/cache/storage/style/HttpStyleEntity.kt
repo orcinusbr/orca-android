@@ -5,13 +5,13 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
-import com.jeanbarrossilva.orca.std.styledstring.Style
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
-import com.jeanbarrossilva.orca.std.styledstring.type.Bold
-import com.jeanbarrossilva.orca.std.styledstring.type.Hashtag
-import com.jeanbarrossilva.orca.std.styledstring.type.Italic
-import com.jeanbarrossilva.orca.std.styledstring.type.Link
-import com.jeanbarrossilva.orca.std.styledstring.type.Mention
+import com.jeanbarrossilva.orca.std.styledstring.style.Style
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Bold
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Hashtag
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Italic
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Link
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Mention
 import java.net.URL
 
 /**
