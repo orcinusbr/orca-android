@@ -4,9 +4,9 @@ import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
-import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.style.HttpStyleEntity
-import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.style.HttpStyleEntityDao
-import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.style.toHttpStyleEntity
+import com.jeanbarrossilva.orca.core.http.feed.profile.cache.storage.style.HttpStyleEntity
+import com.jeanbarrossilva.orca.core.http.feed.profile.cache.storage.style.HttpStyleEntityDao
+import com.jeanbarrossilva.orca.core.http.feed.profile.cache.storage.style.toHttpStyleEntity
 import com.jeanbarrossilva.orca.platform.cache.Cache
 import com.jeanbarrossilva.orca.platform.cache.Storage
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
@@ -47,7 +47,7 @@ internal class HttpTootStorage(
   }
 
   override suspend fun onRemove(key: String) {
-    val mentionEntities = styleEntityDao.selectByTootID(key)
+    val mentionEntities = styleEntityDao.selectByParentID(key)
     styleEntityDao.delete(mentionEntities)
     tootEntityDao.delete(key)
   }

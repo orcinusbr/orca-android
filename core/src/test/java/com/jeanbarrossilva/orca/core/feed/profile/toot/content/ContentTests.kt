@@ -30,10 +30,7 @@ internal class ContentTests {
   @Test
   fun `GIVEN a text with a trailing link WHEN creating content from it THEN `() {
     assertEquals(
-      buildStyledString {
-        +"😗 "
-        link(Highlight.sample.url) { +"🔗" }
-      },
+      StyledString("😗"),
       Content.from(
           buildStyledString {
             +"😗 "

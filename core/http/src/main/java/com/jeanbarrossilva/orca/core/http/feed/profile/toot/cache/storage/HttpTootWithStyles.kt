@@ -2,7 +2,7 @@ package com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.style.HttpStyleEntity
+import com.jeanbarrossilva.orca.core.http.feed.profile.cache.storage.style.HttpStyleEntity
 
 /**
  * Relationship between the [toot] and the [styles] applied to it.
@@ -12,5 +12,5 @@ import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.style.
  */
 internal data class HttpTootWithStyles(
   @Embedded val toot: HttpTootEntity,
-  @Relation(parentColumn = "id", entityColumn = "toot_id") val styles: List<HttpStyleEntity>
+  @Relation(parentColumn = "id", entityColumn = "parent_id") val styles: List<HttpStyleEntity>
 )

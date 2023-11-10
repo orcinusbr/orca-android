@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
 
 /** Performs SQL transactions regarding [HTTP profile entities][HttpProfileEntity]. */
@@ -24,6 +25,16 @@ internal interface HttpProfileEntityDao {
    */
   @Query("SELECT * FROM profiles WHERE id = :id LIMIT 1")
   fun selectByID(id: String): Flow<HttpProfileEntity>
+
+  /**
+   * Selects the [HttpProfileEntity] identified as [id] alongside the
+   * [HTTP style entities][HttpStyleEntity] associated to its [bio][HttpProfileEntity.bio].
+   *
+   * @param id ID of the [HttpProfileEntity].
+   */
+  @Query("SELECT * FROM profiles WHERE id = :id")
+  @Transaction
+  suspend fun selectWithBioStylesByID(id: String): HttpProfileWithBioStyles
 
   /**
    * Inserts the [entity].

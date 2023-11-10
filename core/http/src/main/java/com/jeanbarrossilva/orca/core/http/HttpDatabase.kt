@@ -6,12 +6,12 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.jeanbarrossilva.orca.core.http.feed.profile.cache.storage.HttpProfileEntity
 import com.jeanbarrossilva.orca.core.http.feed.profile.cache.storage.HttpProfileEntityDao
+import com.jeanbarrossilva.orca.core.http.feed.profile.cache.storage.style.HttpStyleEntity
+import com.jeanbarrossilva.orca.core.http.feed.profile.cache.storage.style.HttpStyleEntityDao
 import com.jeanbarrossilva.orca.core.http.feed.profile.search.cache.storage.HttpProfileSearchResultEntity
 import com.jeanbarrossilva.orca.core.http.feed.profile.search.cache.storage.HttpProfileSearchResultEntityDao
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.HttpTootEntity
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.HttpTootEntityDao
-import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.style.HttpStyleEntity
-import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.style.HttpStyleEntityDao
 
 /** [RoomDatabase] in which core-HTTP-related persistence operations will take place. */
 @Database(

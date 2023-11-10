@@ -4,7 +4,6 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Headlin
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.HeadlineProvider
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
-import com.jeanbarrossilva.orca.std.styledstring.toStyledString
 import com.jeanbarrossilva.orca.std.styledstring.type.Link
 import java.util.Objects
 
@@ -57,13 +56,17 @@ private constructor(
       headlineProvider: HeadlineProvider
     ): Content {
       val links = text.styles.filterIsInstance<Link>()
-      val link = links.firstOrNull()
-      val url = link?.url
-      val headline = url?.let { headlineProvider.provide(it) }
-      val highlight = headline?.let { Highlight(it, url) }
+      val highlightLink = links.firstOrNull()
+      val highlightUrl = highlightLink?.url
+      val headline = highlightUrl?.let { headlineProvider.provide(it) }
+      val highlight = headline?.let { Highlight(it, highlightUrl) }
       val formattedText =
-        if (links.size == 1 && text.trim().endsWith("$url")) {
-          "${text.replaceRange(link?.indices ?: IntRange.EMPTY, "")}".trimEnd().toStyledString()
+        if (
+          links.size == 1 &&
+            highlightLink != null &&
+            text.trimEnd().endsWith(text.substring(highlightLink.indices))
+        ) {
+          text.copy { removeRange(highlightLink.indices).trimEnd() }
         } else {
           text
         }

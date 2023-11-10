@@ -37,7 +37,7 @@ internal class HttpProfileStorage(
     return entityDao
       .selectByID(key)
       .first()
-      .toProfile(avatarLoaderProvider, tootPaginateSourceProvider)
+      .toProfile(avatarLoaderProvider, entityDao, tootPaginateSourceProvider)
   }
 
   override suspend fun onRemove(key: String) {

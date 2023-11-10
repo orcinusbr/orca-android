@@ -24,8 +24,9 @@ fun Content.Companion.createSample(
     buildStyledString {
       +"This is a "
       bold { +"sample" }
+      +" "
       italic { +"toot" }
-      +"that has the sole purpose of allowing one to see how it would look like in Orca."
+      +" that has the sole purpose of allowing one to see how it would look like in Orca."
       +"\n".repeat(2)
       +highlight.url.toString()
     },
