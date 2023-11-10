@@ -11,17 +11,18 @@ import java.net.URL
 import java.util.Objects
 
 /**
- * [CharSequence] that supports stylization such as `*bold*`, e-mails (`orca@jeanbarrossilva.com`),
- * `#hashtags`, `_italic_`, `[links](https://orca.jeanbarrossilva.com)` and `@mentions`.
+ * [CharSequence] that supports stylization such as emboldening, italicizing and linking (through
+ * plain [URL]s, e-mails, mentions and even simple text).
  *
- * Those can either be added through the [buildStyledString] builder method or by converting a
- * [String] properly delimited with the [Style]s' [delimiter][Style.Delimiter]s into a
- * [StyledString] with [String.toStyledString]. When converting, custom
- * [delimiter][Style.Delimiter]s can be provided if the [String] contains a
- * [delimiter][Style.Delimiter] for any of the [Style]s that's different from the default ones.
+ * A [StyledString] can be created either through its constructors, or through [buildStyledString].
  *
  * @param text Underlying [String] that's been built.
  * @param styles [Style]s applied to the [text].
+ * @see Builder.bold
+ * @see Builder.hashtag
+ * @see Builder.italic
+ * @see Builder.mention
+ * @see Builder.build
  */
 class StyledString(private val text: String, val styles: List<Style>) :
   CharSequence by text, Serializable {
@@ -32,16 +33,7 @@ class StyledString(private val text: String, val styles: List<Style>) :
    */
   constructor(text: String) : this(text, styles = emptyList())
 
-  /**
-   * Allows text and [Style]s to be appended and for a [StyledString] to be built.
-   *
-   * @see append
-   * @see bold
-   * @see hashtag
-   * @see italic
-   * @see mention
-   * @see build
-   */
+  /** Allows text and [Style]s to be appended and for a [StyledString] to be built. */
   class Builder @PublishedApi internal constructor() {
     /** [String] to be the [text][StyledString.text] of the [StyledString] being built. */
     private var text = ""
@@ -55,15 +47,9 @@ class StyledString(private val text: String, val styles: List<Style>) :
     /**
      * Appends text with the result of [style] applied to it through [append].
      *
-     * @param delimiter [Style.Delimiter] by which the result of [style] applied to the text will be
-     *   delimited.
      * @param style Creates a [Style] based on the given indices at which it'll be applied.
      */
-    inner class Appender
-    internal constructor(
-      private val delimiter: Style.Delimiter,
-      private val style: (indices: IntRange) -> Style
-    ) {
+    inner class Appender internal constructor(private val style: (indices: IntRange) -> Style) {
       /**
        * Appends this [Char], stylizing it with the result of [style] and the [Style]s of
        * [Appender]s that are currently active.
@@ -77,11 +63,9 @@ class StyledString(private val text: String, val styles: List<Style>) :
        * [Appender]s that are currently active.
        */
       operator fun String.unaryPlus() {
-        val stylized = delimiter.target(this)
-        require(stylized matches delimiter.regex) { "\"$stylized\" is invalid." }
-        val indices = calculateIndicesFor(stylized)
+        val indices = calculateIndicesFor(this)
         val styles = activeAppenders.map { it.style(indices) }
-        with(this@Builder) { +stylized }
+        with(this@Builder) { +this@unaryPlus }
         this@Builder.styles.addAll(styles)
       }
 
@@ -108,7 +92,7 @@ class StyledString(private val text: String, val styles: List<Style>) :
      * @see Bold
      */
     fun bold(appendix: Appender.() -> Unit) {
-      append(Bold.Delimiter.Default, appendix, ::Bold)
+      append(appendix, ::Bold)
     }
 
     /**
@@ -118,7 +102,7 @@ class StyledString(private val text: String, val styles: List<Style>) :
      * @see Hashtag
      */
     fun hashtag(appendix: Appender.() -> Unit) {
-      append(Hashtag.Delimiter.Default, appendix, ::Hashtag)
+      append(appendix, ::Hashtag)
     }
 
     /**
@@ -128,7 +112,7 @@ class StyledString(private val text: String, val styles: List<Style>) :
      * @see Italic
      */
     fun italic(appendix: Appender.() -> Unit) {
-      append(Italic.Delimiter.Default, appendix, ::Italic)
+      append(appendix, ::Italic)
     }
 
     /**
@@ -138,7 +122,7 @@ class StyledString(private val text: String, val styles: List<Style>) :
      * @see Link
      */
     fun link(url: URL, appendix: Appender.() -> Unit) {
-      append(Link.Delimiter.Text(url), appendix) { Link.to(url, it) }
+      append(appendix) { Link.to(url, it) }
     }
 
     /**
@@ -148,15 +132,21 @@ class StyledString(private val text: String, val styles: List<Style>) :
      * @see Mention
      */
     fun mention(url: URL, appendix: Appender.() -> Unit) {
-      append(Mention.Delimiter.Default, appendix) { Mention(it, url) }
+      append(appendix) { Mention(it, url) }
     }
 
-    /** Builds a [StyledString] with the provided [Style]s. */
+    /**
+     * Builds a [StyledString] with the provided [Style]s.
+     *
+     * @throws Style.Constrained.InvalidTargetException If a constrained [Style] is applied to an
+     *   invalid target.
+     */
     @PublishedApi
+    @Throws(Style.Constrained.InvalidTargetException::class)
     internal fun build(): StyledString {
-      val emails = text.stylize(Email.Delimiter.Default) { indices, _ -> Email(indices) }
-      val plainLinks =
-        text.stylize(Link.Delimiter.Plain) { indices, target -> Link.to(URL(target), indices) }
+      ensureStyleConstraints()
+      val emails = text.map(Email.regex) { indices, _ -> Email(indices) }
+      val plainLinks = text.map(Link.urlRegex) { indices, match -> Link.to(URL(match), indices) }
       val stylesAsList = styles.apply { addAll(emails + plainLinks) }.toList()
       return StyledString(text, stylesAsList)
     }
@@ -165,20 +155,35 @@ class StyledString(private val text: String, val styles: List<Style>) :
      * Creates an [Appender] and runs [appendix] on it, making it active for as long as it's being
      * used.
      *
-     * @param delimiter [Style.Delimiter] by which the result of [style] applied to the text will be
-     *   delimited.
      * @param appendix Additionally stylizes the text to be appended or solely appends it.
      * @param style Creates the [Style] to be applied to the appended text at the specified indices.
      */
-    private fun append(
-      delimiter: Style.Delimiter,
-      appendix: Appender.() -> Unit,
-      style: (IntRange) -> Style
-    ) {
-      val appender = Appender(delimiter, style)
+    private fun append(appendix: Appender.() -> Unit, style: (IntRange) -> Style) {
+      val appender = Appender(style)
       activeAppenders.add(appender)
       appender.appendix()
       activeAppenders.remove(appender)
+    }
+
+    /**
+     * Ensures that the applied constrained [Style]s' targets match their required format.
+     *
+     * @throws Style.Constrained.InvalidTargetException If a constrained [Style] is applied to an
+     *   invalid target.
+     * @see Style.Constrained
+     */
+    @Throws(Style.Constrained.InvalidTargetException::class)
+    private fun ensureStyleConstraints() {
+      styles
+        .filterIsInstance<Style.Constrained>()
+        .associateWith { text.substring(it.indices) }
+        .entries
+        .firstOrNull()
+        ?.let { (style, target) ->
+          if (!target.matches(style.regex)) {
+            throw style.InvalidTargetException(target)
+          }
+        }
     }
   }
 
@@ -195,38 +200,22 @@ class StyledString(private val text: String, val styles: List<Style>) :
     return text
   }
 
-  companion object {
-    /**
-     * Normalizes the [string] whose [Style]s are delimited by the specified [delimiters].
-     *
-     * @param string [String] to be normalized.
-     * @param delimiters [Style.Delimiter] by which the [String]'s [Style]s are delimited.
-     */
-    internal fun normalize(string: String, vararg delimiters: Style.Delimiter?): String {
-      var normalized = string
-      val delimiterIterator = delimiters.filterNotNull().iterator()
-      while (delimiterIterator.hasNext()) {
-        normalized = normalize(normalized, delimiterIterator.next())
-      }
-      return normalized
-    }
-
-    /**
-     * Normalizes the [string] whose respective [Style] is delimited by the specified [delimiter].
-     *
-     * @param string [String] to be normalized.
-     * @param delimiter [Style.Delimiter] by which the [String]'s [Style] is delimited.
-     */
-    internal fun normalize(string: String, delimiter: Style.Delimiter): String {
-      var normalized = string
-      delimiter.delimit(normalized).forEach {
-        normalized =
-          normalized.replaceRange(
-            it.range.first..it.range.last,
-            delimiter.root.target(delimiter.getTarget(it.value))
-          )
-      }
-      return normalized
-    }
+  /**
+   * Creates a [StyledString] with this one's [styles] (limited to those within the given [text]'s
+   * bounds).
+   *
+   * @param text Returns the underlying [String] created from the original [StyledString.text] to
+   *   which this [StyledString]'s applicable [styles] will be applied.
+   */
+  fun copy(text: String.() -> String): StyledString {
+    val updatedText = toString().text()
+    return StyledString(
+      updatedText,
+      styles
+        .filter { it.isWithin(updatedText) || it.isChoppedBy(updatedText) }
+        .map({ it.isChoppedBy(updatedText) }) { it.at(it.indices.first..updatedText.lastIndex) }
+    )
   }
+
+  companion object
 }

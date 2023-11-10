@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.std.styledstring.type.test.mention
+package com.jeanbarrossilva.orca.std.styledstring.type.test
 
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import com.jeanbarrossilva.orca.std.styledstring.type.Mention

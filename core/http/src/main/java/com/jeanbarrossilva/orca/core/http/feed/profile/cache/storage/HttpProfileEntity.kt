@@ -10,10 +10,12 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.ProfileTootPaginateSource
+import com.jeanbarrossilva.orca.core.http.feed.profile.cache.storage.style.HttpStyleEntity
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.editable.HttpEditableProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.followable.HttpFollowableProfile
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
-import com.jeanbarrossilva.orca.std.styledstring.toStyledString
+import com.jeanbarrossilva.orca.std.styledstring.Style
+import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
 
 /**
@@ -53,20 +55,24 @@ internal constructor(
    *
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
    *   [Profile]'s avatar will be loaded from a [URL].
+   * @param dao [HttpProfileEntityDao] that will select the persisted
+   *   [HTTP style entities][HttpStyleEntity].
    * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
    *   [ProfileTootPaginateSource] for paginating through the resulting [HttpProfile]'s [Toot]s will
    *   be provided.
    * @throws IllegalStateException If the [type] is unknown.
    */
   @Throws(IllegalStateException::class)
-  internal fun toProfile(
+  internal suspend fun toProfile(
     avatarLoaderProvider: ImageLoader.Provider<URL>,
+    dao: HttpProfileEntityDao,
     tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
   ): Profile {
     return when (type) {
-      EDITABLE_TYPE -> toMastodonEditableProfile(avatarLoaderProvider, tootPaginateSourceProvider)
+      EDITABLE_TYPE ->
+        toMastodonEditableProfile(avatarLoaderProvider, dao, tootPaginateSourceProvider)
       FOLLOWABLE_TYPE ->
-        toMastodonFollowableProfile(avatarLoaderProvider, tootPaginateSourceProvider)
+        toMastodonFollowableProfile(avatarLoaderProvider, dao, tootPaginateSourceProvider)
       else -> throw IllegalStateException("Unknown profile entity type: $type.")
     }
   }
@@ -76,18 +82,21 @@ internal constructor(
    *
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
    *   [HttpEditableProfile]'s avatar will be loaded from a [URL].
+   * @param dao [HttpProfileEntityDao] that will select the persisted
+   *   [HTTP style entities][HttpStyleEntity] applied to the [bio].
    * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
    *   [ProfileTootPaginateSource] for paginating through the resulting [HttpEditableProfile]'s
    *   [Toot]s will be provided.
    */
-  private fun toMastodonEditableProfile(
+  private suspend fun toMastodonEditableProfile(
     avatarLoaderProvider: ImageLoader.Provider<URL>,
+    dao: HttpProfileEntityDao,
     tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
   ): HttpEditableProfile {
     val account = Account.of(account)
     val avatarURL = URL(avatarURL)
     val avatarLoader = avatarLoaderProvider.provide(avatarURL)
-    val bio = bio.toStyledString()
+    val bio = getBioAsStyledString(dao)
     val url = URL(url)
     return HttpEditableProfile(
       tootPaginateSourceProvider,
@@ -107,18 +116,21 @@ internal constructor(
    *
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
    *   [HttpFollowableProfile]'s avatar will be loaded from a [URL].
+   * @param dao [HttpProfileEntityDao] that will select the persisted
+   *   [HTTP style entities][HttpStyleEntity].
    * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
    *   [ProfileTootPaginateSource] for paginating through the resulting [HttpFollowableProfile]'s
    *   [Toot]s will be provided.
    */
-  private fun toMastodonFollowableProfile(
+  private suspend fun toMastodonFollowableProfile(
     avatarLoaderProvider: ImageLoader.Provider<URL>,
+    dao: HttpProfileEntityDao,
     tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
   ): HttpFollowableProfile<Follow> {
     val account = Account.of(account)
     val avatarURL = URL(avatarURL)
     val avatarLoader = avatarLoaderProvider.provide(avatarURL)
-    val bio = bio.toStyledString()
+    val bio = getBioAsStyledString(dao)
     val follow = Follow.of(checkNotNull(follow))
     val url = URL(url)
     return HttpFollowableProfile(
@@ -133,6 +145,17 @@ internal constructor(
       followingCount,
       url
     )
+  }
+
+  /**
+   * Gets the [bio] as a [StyledString], with its [Style]s applied to it.
+   *
+   * @param dao [HttpProfileEntityDao] that will select the persisted
+   *   [HTTP style entities][HttpStyleEntity].
+   */
+  private suspend fun getBioAsStyledString(dao: HttpProfileEntityDao): StyledString {
+    val styles = dao.selectWithBioStylesByID(id).styles.map(HttpStyleEntity::toStyle)
+    return StyledString(bio, styles)
   }
 
   companion object {

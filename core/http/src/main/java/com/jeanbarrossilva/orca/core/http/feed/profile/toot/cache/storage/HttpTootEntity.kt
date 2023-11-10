@@ -11,14 +11,13 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Headline
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
 import com.jeanbarrossilva.orca.core.feed.profile.toot.reblog.Reblog
+import com.jeanbarrossilva.orca.core.http.feed.profile.cache.storage.style.HttpStyleEntity
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
-import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.style.HttpStyleEntity
-import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.style.startingAt
 import com.jeanbarrossilva.orca.platform.cache.Cache
 import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
 import com.jeanbarrossilva.orca.std.imageloader.Image
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
-import com.jeanbarrossilva.orca.std.styledstring.toStyledString
+import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
 import java.time.ZonedDateTime
 
@@ -75,8 +74,8 @@ internal data class HttpTootEntity(
     imageLoaderProvider: ImageLoader.Provider<URL>
   ): Toot {
     val author = profileCache.get(authorID).toAuthor()
-    val styles = dao.selectWithStylesByID(id).styles
-    val text = text.toStyledString { URL(styles.startingAt(it).url) }
+    val styles = dao.selectWithStylesByID(id).styles.map(HttpStyleEntity::toStyle)
+    val text = StyledString(text, styles)
     val coverLoader = headlineCoverURL?.let { imageLoaderProvider.provide(URL(it)) }
     val content =
       Content.from(text) {

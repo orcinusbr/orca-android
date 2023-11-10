@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.jeanbarrossilva.orca.core.http.feed.profile.toot.cache.storage.style.HttpStyleEntity
+import com.jeanbarrossilva.orca.core.http.feed.profile.cache.storage.style.HttpStyleEntity
 import kotlinx.coroutines.flow.Flow
 
 /** Performs SQL transactions regarding [HTTP toot entities][HttpTootEntity]. */
@@ -27,8 +27,8 @@ internal interface HttpTootEntityDao {
   @Query("SELECT * FROM toots WHERE id = :id") suspend fun selectByID(id: String): HttpTootEntity
 
   /**
-   * Returns a [Flow] to which the [HttpTootEntity] identified as [id] alongside its associated
-   * [HTTP style entities][HttpStyleEntity] will be emitted or an empty one if none is found.
+   * Selects the [HttpTootEntity] identified as [id] alongside its associated
+   * [HTTP style entities][HttpStyleEntity].
    *
    * @param id ID of the [HttpTootEntity].
    */
