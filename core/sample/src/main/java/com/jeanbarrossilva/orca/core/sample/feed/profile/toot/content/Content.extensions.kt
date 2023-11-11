@@ -3,8 +3,10 @@ package com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Attachment
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
+import com.jeanbarrossilva.orca.core.instance.domain.Domain
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.highlight.createSample
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
+import com.jeanbarrossilva.orca.core.sample.instance.domain.sample
 import com.jeanbarrossilva.orca.std.imageloader.Image
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.buildStyledString
@@ -21,6 +23,7 @@ fun Content.Companion.createSample(
 ): Content {
   val highlight = Highlight.createSample(imageLoaderProvider)
   return from(
+    Domain.sample,
     buildStyledString {
       +"This is a "
       bold { +"sample" }

@@ -1,5 +1,7 @@
 package com.jeanbarrossilva.orca.core.instance.domain
 
+import java.net.URL
+
 /**
  * An instance's unique identifier.
  *
@@ -7,6 +9,10 @@ package com.jeanbarrossilva.orca.core.instance.domain
  */
 @JvmInline
 value class Domain(private val value: String) {
+  /** [URL] that leads to this [Domain]. */
+  val url
+    get() = URL("https", value, "")
+
   /** [IllegalArgumentException] thrown if the [value] is blank. */
   class BlankValueException internal constructor() :
     IllegalArgumentException("Domain cannot be empty.")

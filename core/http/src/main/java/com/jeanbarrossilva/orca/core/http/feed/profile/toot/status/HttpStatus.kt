@@ -6,10 +6,13 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
 import com.jeanbarrossilva.orca.core.feed.profile.toot.reblog.Reblog
 import com.jeanbarrossilva.orca.core.http.feed.profile.account.HttpAccount
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
+import com.jeanbarrossilva.orca.core.module.CoreModule
+import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
 import com.jeanbarrossilva.orca.platform.ui.core.style.fromHtml
 import com.jeanbarrossilva.orca.std.imageloader.Image
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
 import java.time.ZonedDateTime
@@ -61,10 +64,11 @@ internal constructor(
   internal fun toToot(imageLoaderProvider: ImageLoader.Provider<URL>): Toot {
     val author =
       reblog?.account?.toAuthor(imageLoaderProvider) ?: account.toAuthor(imageLoaderProvider)
+    val domain = Injector.from<CoreModule>().instanceProvider().provide().domain
     val text = StyledString.fromHtml(reblog?.content ?: content)
     val attachments =
       (reblog?.mediaAttachments ?: mediaAttachments).map(HttpAttachment::toAttachment)
-    val content = Content.from(text, attachments) { card?.toHeadline(imageLoaderProvider) }
+    val content = Content.from(domain, text, attachments) { card?.toHeadline(imageLoaderProvider) }
     val publicationDateTime = ZonedDateTime.parse(reblog?.createdAt ?: createdAt)
     val url = URL(reblog?.url ?: url)
     return HttpToot(

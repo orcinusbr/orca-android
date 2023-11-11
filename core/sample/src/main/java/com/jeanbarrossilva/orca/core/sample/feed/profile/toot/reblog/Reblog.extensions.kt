@@ -3,10 +3,12 @@ package com.jeanbarrossilva.orca.core.sample.feed.profile.toot.reblog
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
 import com.jeanbarrossilva.orca.core.feed.profile.toot.reblog.Reblog
+import com.jeanbarrossilva.orca.core.instance.domain.Domain
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.SampleToot
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.createRamboSample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.createSample
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
+import com.jeanbarrossilva.orca.core.sample.instance.domain.sample
 import com.jeanbarrossilva.orca.std.imageloader.Image
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
@@ -32,6 +34,7 @@ fun Reblog.Companion.createSample(
       sampleReblogID,
       Author.createRamboSample(imageLoaderProvider),
       Content.from(
+        Domain.sample,
         StyledString(
           "Programming life hack. Looking for real-world examples of how an API is used? Search " +
             "for code on GitHub like so: “APINameHere path:*.extension”. Practical example for a " +

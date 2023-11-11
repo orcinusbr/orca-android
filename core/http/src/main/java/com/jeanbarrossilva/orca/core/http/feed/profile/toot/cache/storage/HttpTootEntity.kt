@@ -13,10 +13,13 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlig
 import com.jeanbarrossilva.orca.core.feed.profile.toot.reblog.Reblog
 import com.jeanbarrossilva.orca.core.http.feed.profile.cache.storage.style.HttpStyleEntity
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
+import com.jeanbarrossilva.orca.core.module.CoreModule
+import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.platform.cache.Cache
 import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
 import com.jeanbarrossilva.orca.std.imageloader.Image
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
 import java.time.ZonedDateTime
@@ -74,11 +77,12 @@ internal data class HttpTootEntity(
     imageLoaderProvider: ImageLoader.Provider<URL>
   ): Toot {
     val author = profileCache.get(authorID).toAuthor()
+    val domain = Injector.from<CoreModule>().instanceProvider().provide().domain
     val styles = dao.selectWithStylesByID(id).styles.map(HttpStyleEntity::toStyle)
     val text = StyledString(text, styles)
     val coverLoader = headlineCoverURL?.let { imageLoaderProvider.provide(URL(it)) }
     val content =
-      Content.from(text) {
+      Content.from(domain, text) {
         if (headlineTitle != null && headlineCoverURL != null) {
           Headline(headlineTitle, headlineSubtitle, coverLoader)
         } else {
