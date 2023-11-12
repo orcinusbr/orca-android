@@ -266,7 +266,7 @@ internal fun Timeline(
   var index by remember { mutableIntStateOf(0) }
 
   LazyColumn(modifier.testTag(TIMELINE_TAG), state, contentPadding) {
-    header?.let { item(contentType = { TimelineContentType.HEADER }, content = it) }
+    header?.let { item(contentType = TimelineContentType.HEADER, content = it) }
     content()
     item(contentType = TimelineContentType.RENDER_EFFECT) { RenderEffect { onNext(++index) } }
   }
