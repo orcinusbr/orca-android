@@ -193,6 +193,34 @@ fun Timeline(
 }
 
 /**
+ * [LazyColumn] for displaying paged content.
+ *
+ * @param onNext Callback run whenever the bottom is being reached.
+ * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
+ * @param header [Composable] to be shown above the [content].
+ * @param state [LazyListState] through which scroll will be observed.
+ * @param contentPadding [PaddingValues] to pad the contents ([header] + [content]) with.
+ * @param content Content to be lazily shown below the [header].
+ */
+@Composable
+fun Timeline(
+  onNext: (index: Int) -> Unit,
+  modifier: Modifier = Modifier,
+  header: (@Composable LazyItemScope.() -> Unit)? = null,
+  state: LazyListState = rememberLazyListState(),
+  contentPadding: PaddingValues = PaddingValues(),
+  content: LazyListScope.() -> Unit
+) {
+  var index by remember { mutableIntStateOf(0) }
+
+  LazyColumn(modifier.testTag(TIMELINE_TAG), state, contentPadding) {
+    header?.let { item(contentType = TimelineContentType.HEADER, content = it) }
+    content()
+    item(contentType = TimelineContentType.RENDER_EFFECT) { RenderEffect { onNext(++index) } }
+  }
+}
+
+/**
  * Displays [TootPreview]s in a paginated way.
  *
  * @param tootPreviewsLoadable [ListLoadable] of [TootPreview]s to be lazily shown.
@@ -242,34 +270,6 @@ internal fun PopulatedTimeline(
     modifier,
     header = header
   )
-}
-
-/**
- * [LazyColumn] for displaying paged content.
- *
- * @param onNext Callback run whenever the bottom is being reached.
- * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
- * @param header [Composable] to be shown above the [content].
- * @param state [LazyListState] through which scroll will be observed.
- * @param contentPadding [PaddingValues] to pad the contents ([header] + [content]) with.
- * @param content Content to be lazily shown below the [header].
- */
-@Composable
-internal fun Timeline(
-  onNext: (index: Int) -> Unit,
-  modifier: Modifier = Modifier,
-  header: (@Composable LazyItemScope.() -> Unit)? = null,
-  state: LazyListState = rememberLazyListState(),
-  contentPadding: PaddingValues = PaddingValues(),
-  content: LazyListScope.() -> Unit
-) {
-  var index by remember { mutableIntStateOf(0) }
-
-  LazyColumn(modifier.testTag(TIMELINE_TAG), state, contentPadding) {
-    header?.let { item(contentType = TimelineContentType.HEADER, content = it) }
-    content()
-    item(contentType = TimelineContentType.RENDER_EFFECT) { RenderEffect { onNext(++index) } }
-  }
 }
 
 /**

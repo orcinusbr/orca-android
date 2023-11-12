@@ -4,6 +4,7 @@ android-activity-ktx = { group = "androidx.activity", name = "activity-ktx", ver
 android-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "android-activity" }
 android-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.6.1" }
 android-browser = { group = "androidx.browser", name = "browser", version = "1.6.0" }
+android-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "android-compose" }
 android-compose-material = { group = "androidx.compose.material3", name = "material3", version = "1.1.2" }
 android-compose-material-icons = { group = "androidx.compose.material", name = "material-icons-extended", version = "1.5.1" }
 android-compose-ui-test-junit = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "android-compose" }

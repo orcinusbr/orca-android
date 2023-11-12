@@ -7,6 +7,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jeanbarrossilva.loadable.list.flow.listLoadable
 import com.jeanbarrossilva.orca.core.feed.FeedProvider
+import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.TootProvider
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.runningFold
 import kotlinx.coroutines.launch
 
 internal class FeedViewModel(
@@ -38,6 +40,7 @@ internal class FeedViewModel(
   val tootPreviewsLoadableFlow =
     indexFlow
       .flatMapLatest { feedProvider.provide(userID, it) }
+      .runningFold(emptyList<Toot>()) { accumulator, toots -> accumulator + toots }
       .flatMapEach(selector = TootPreview::id) { it.toTootPreviewFlow(colors) }
       .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
 
