@@ -44,8 +44,7 @@ internal abstract class HttpTootPaginateSource internal constructor() :
     currentPageCount: Int
   ): PagedResult<Url, Toot> {
     val response = getStatusesResponse(key)
-    val headerLinks = response.headers.links
-    val nextUrl = headerLinks.getOrNull(1)?.uri?.let(::Url)
+    val nextUrl = response.headers.links.firstOrNull()?.uri?.let(::Url)
     val toots = response.body<List<HttpStatus>>().map { it.toToot(imageLoaderProvider) }
     val firstKey = toots.firstOrNull()?.url?.toString()?.let(::Url)
     val lastKey = toots.lastOrNull()?.url?.toString()?.let(::Url)
