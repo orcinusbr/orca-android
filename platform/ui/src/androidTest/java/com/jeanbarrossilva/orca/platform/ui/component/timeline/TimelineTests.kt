@@ -12,7 +12,6 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.filter
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onChild
 import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
@@ -81,8 +80,7 @@ internal class TimelineTests {
     }
     composeRule
       .onNodeWithTag(TIMELINE_TAG)
-      .onChild()
-      .onSiblings()
+      .onChildren()
       .filter(hasTestTag(TIMELINE_DIVIDER_TAG))
       .assertCountEquals(0)
   }
