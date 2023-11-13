@@ -11,11 +11,11 @@ import kotlinx.coroutines.flow.Flow
 /**
  * [Profile] whose [Toot]s are obtained through pagination performed by the [tootPaginator].
  *
- * @param tootPaginatorProvider [ProfileTootPaginator.Provider] by which a [ProfileTootPaginator]
- *   for paginating through the [Toot]s will be provided.
+ * @param tootPaginatorProvider [HttpProfileTootPaginator.Provider] by which a
+ *   [HttpProfileTootPaginator] for paginating through the [Toot]s will be provided.
  */
 internal data class HttpProfile(
-  private val tootPaginatorProvider: ProfileTootPaginator.Provider,
+  private val tootPaginatorProvider: HttpProfileTootPaginator.Provider,
   override val id: String,
   override val account: Account,
   override val avatarLoader: SomeImageLoader,
@@ -25,7 +25,7 @@ internal data class HttpProfile(
   override val followingCount: Int,
   override val url: URL
 ) : Profile {
-  private lateinit var tootPaginator: ProfileTootPaginator
+  private lateinit var tootPaginator: HttpProfileTootPaginator
 
   override suspend fun getToots(page: Int): Flow<List<Toot>> {
     if (!::tootPaginator.isInitialized) {

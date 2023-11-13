@@ -14,7 +14,7 @@ import com.jeanbarrossilva.orca.core.http.feed.HttpFeedPaginator
 import com.jeanbarrossilva.orca.core.http.feed.HttpFeedProvider
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfileProvider
-import com.jeanbarrossilva.orca.core.http.feed.profile.ProfileTootPaginator
+import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfileTootPaginator
 import com.jeanbarrossilva.orca.core.http.feed.profile.cache.HttpProfileFetcher
 import com.jeanbarrossilva.orca.core.http.feed.profile.cache.storage.HttpProfileStorage
 import com.jeanbarrossilva.orca.core.http.feed.profile.search.HttpProfileSearcher
@@ -66,11 +66,11 @@ class ContextualHttpInstance(
   private val feedTootPaginator = HttpFeedPaginator(imageLoaderProvider)
 
   /**
-   * [ProfileTootPaginator.Provider] that provides the [ProfileTootPaginator] to be used by
+   * [HttpProfileTootPaginator.Provider] that provides the [HttpProfileTootPaginator] to be used by
    * [profileFetcher], [profileStorage] and [profileSearchResultsFetcher].
    */
   private val profileTootPaginatorProvider =
-    ProfileTootPaginator.Provider { ProfileTootPaginator(imageLoaderProvider, it) }
+    HttpProfileTootPaginator.Provider { HttpProfileTootPaginator(imageLoaderProvider, it) }
 
   /** [HttpProfileFetcher] by which [HttpProfile]s will be fetched from the API. */
   private val profileFetcher = HttpProfileFetcher(imageLoaderProvider, profileTootPaginatorProvider)

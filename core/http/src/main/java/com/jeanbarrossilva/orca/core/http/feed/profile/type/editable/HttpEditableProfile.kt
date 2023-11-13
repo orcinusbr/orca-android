@@ -4,7 +4,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.type.editable.EditableProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfile
-import com.jeanbarrossilva.orca.core.http.feed.profile.ProfileTootPaginator
+import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfileTootPaginator
 import com.jeanbarrossilva.orca.core.http.feed.profile.toot.HttpToot
 import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
@@ -13,11 +13,12 @@ import java.net.URL
 /**
  * [HttpProfile] that can be edited.
  *
- * @param tootPaginatorProvider [ProfileTootPaginator.Provider] by which a [ProfileTootPaginator]
- *   for paginating through the [HttpProfile]'s [HttpToot]s will be provided.
+ * @param tootPaginatorProvider [HttpProfileTootPaginator.Provider] by which a
+ *   [HttpProfileTootPaginator] for paginating through the [HttpProfile]'s [HttpToot]s will be
+ *   provided.
  */
 internal data class HttpEditableProfile(
-  private val tootPaginatorProvider: ProfileTootPaginator.Provider,
+  private val tootPaginatorProvider: HttpProfileTootPaginator.Provider,
   override val id: String,
   override val account: Account,
   override val avatarLoader: SomeImageLoader,

@@ -7,7 +7,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.FollowableProfile
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndPost
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfile
-import com.jeanbarrossilva.orca.core.http.feed.profile.ProfileTootPaginator
+import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfileTootPaginator
 import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.injector.Injector
@@ -17,11 +17,11 @@ import java.net.URL
 /**
  * [HttpProfile] that can be followed.
  *
- * @param tootPaginatorProvider [ProfileTootPaginator.Provider] by which a [ProfileTootPaginator]
- *   for paginating through the [HttpProfile]'s [Toot]s will be provided.
+ * @param tootPaginatorProvider [HttpProfileTootPaginator.Provider] by which a
+ *   [HttpProfileTootPaginator] for paginating through the [HttpProfile]'s [Toot]s will be provided.
  */
 internal data class HttpFollowableProfile<T : Follow>(
-  private val tootPaginatorProvider: ProfileTootPaginator.Provider,
+  private val tootPaginatorProvider: HttpProfileTootPaginator.Provider,
   override val id: String,
   override val account: Account,
   override val avatarLoader: SomeImageLoader,

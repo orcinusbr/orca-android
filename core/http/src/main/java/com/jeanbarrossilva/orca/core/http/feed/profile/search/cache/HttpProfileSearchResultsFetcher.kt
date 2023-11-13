@@ -5,7 +5,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.search.toProfileSearchResult
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.http.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfile
-import com.jeanbarrossilva.orca.core.http.feed.profile.ProfileTootPaginator
+import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfileTootPaginator
 import com.jeanbarrossilva.orca.core.http.feed.profile.account.HttpAccount
 import com.jeanbarrossilva.orca.core.http.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
@@ -22,12 +22,12 @@ import java.net.URL
  *
  * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
  *   [ProfileSearchResult]s' avatars will be loaded from a [URL].
- * @param tootPaginatorProvider [ProfileTootPaginator.Provider] by which a [ProfileTootPaginator]
- *   for paginating through an [HttpProfile]'s [Toot]s will be provided.
+ * @param tootPaginatorProvider [HttpProfileTootPaginator.Provider] by which a
+ *   [HttpProfileTootPaginator] for paginating through an [HttpProfile]'s [Toot]s will be provided.
  */
 internal class HttpProfileSearchResultsFetcher(
   private val avatarLoaderProvider: ImageLoader.Provider<URL>,
-  private val tootPaginatorProvider: ProfileTootPaginator.Provider
+  private val tootPaginatorProvider: HttpProfileTootPaginator.Provider
 ) : Fetcher<List<ProfileSearchResult>>() {
   override suspend fun onFetch(key: String): List<ProfileSearchResult> {
     return (Injector.from<CoreModule>().instanceProvider().provide() as SomeHttpInstance)

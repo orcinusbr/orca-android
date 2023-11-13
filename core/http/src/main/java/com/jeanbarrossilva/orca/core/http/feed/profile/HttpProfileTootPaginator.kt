@@ -10,20 +10,20 @@ import java.net.URL
  *
  * @param id ID of the [HttpProfile].
  */
-internal class ProfileTootPaginator(
+internal class HttpProfileTootPaginator(
   override val imageLoaderProvider: ImageLoader.Provider<URL>,
   id: String
 ) : HttpTootPaginator() {
   override val route = "/api/v1/accounts/$id/statuses"
 
-  /** Provides a [ProfileTootPaginator] through [provide]. */
+  /** Provides a [HttpProfileTootPaginator] through [provide]. */
   fun interface Provider {
     /**
-     * Provides a [ProfileTootPaginator] that paginates through the [Toot]s of an [HttpProfile]
+     * Provides a [HttpProfileTootPaginator] that paginates through the [Toot]s of an [HttpProfile]
      * identified as [id].
      *
      * @param id ID of the [HttpProfile].
      */
-    fun provide(id: String): ProfileTootPaginator
+    fun provide(id: String): HttpProfileTootPaginator
   }
 }

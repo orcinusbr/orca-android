@@ -3,7 +3,7 @@ package com.jeanbarrossilva.orca.core.http.feed.profile.cache.storage
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfile
-import com.jeanbarrossilva.orca.core.http.feed.profile.ProfileTootPaginator
+import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfileTootPaginator
 import com.jeanbarrossilva.orca.platform.cache.Storage
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import java.net.URL
@@ -14,14 +14,14 @@ import kotlinx.coroutines.flow.first
  *
  * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
  *   [Profile]'s avatar will be loaded from a [URL].
- * @param tootPaginatorProvider [ProfileTootPaginator.Provider] by which a [ProfileTootPaginator]
- *   for paginating through a [HttpProfile]'s [Toot]s will be provided.
+ * @param tootPaginatorProvider [HttpProfileTootPaginator.Provider] by which a
+ *   [HttpProfileTootPaginator] for paginating through a [HttpProfile]'s [Toot]s will be provided.
  * @param entityDao [HttpProfileEntityDao] that will perform SQL transactions on
  *   [HTTP profile entities][HttpProfileEntity].
  */
 internal class HttpProfileStorage(
   private val avatarLoaderProvider: ImageLoader.Provider<URL>,
-  private val tootPaginatorProvider: ProfileTootPaginator.Provider,
+  private val tootPaginatorProvider: HttpProfileTootPaginator.Provider,
   private val entityDao: HttpProfileEntityDao
 ) : Storage<Profile>() {
   override suspend fun onStore(key: String, value: Profile) {
