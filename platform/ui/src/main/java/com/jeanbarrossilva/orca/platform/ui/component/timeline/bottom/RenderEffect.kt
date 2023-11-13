@@ -37,7 +37,7 @@ internal fun LazyListScope.renderEffect(key: Any, contentType: Any, onEffect: ()
  *   when the [key] changes.
  */
 @Composable
-private fun RenderEffect(key: Any?, effect: () -> Unit) {
+private fun RenderEffect(key: Any, effect: () -> Unit) {
   DisposableEffect(key) {
     effect()
     onDispose {}
