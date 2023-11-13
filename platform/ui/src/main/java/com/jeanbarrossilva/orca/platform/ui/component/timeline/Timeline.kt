@@ -18,6 +18,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -207,8 +211,9 @@ fun Timeline(
   contentPadding: PaddingValues = PaddingValues(),
   content: LazyListScope.() -> Unit
 ) {
+  var index by rememberSaveable { mutableIntStateOf(0) }
+
   LazyColumn(modifier.testTag(TIMELINE_TAG), state, contentPadding) {
-    var index = 0
     header?.let { item(contentType = TimelineContentType.HEADER, content = it) }
     content()
     renderEffect(key = content, TimelineContentType.RENDER_EFFECT) { onNext(index++) }
