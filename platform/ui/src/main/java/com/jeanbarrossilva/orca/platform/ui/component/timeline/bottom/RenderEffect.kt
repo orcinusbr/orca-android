@@ -38,12 +38,12 @@ internal fun LazyListScope.renderEffect(key: Any, contentType: Any, onEffect: ()
  */
 @Composable
 private fun RenderEffect(key: Any, effect: () -> Unit) {
-  DisposableEffect(key) {
+  DisposableEffect(Unit) {
     effect()
     onDispose {}
   }
 
-  DisposableEffect(Unit) {
+  DisposableEffect(key) {
     effect()
     onDispose {}
   }
