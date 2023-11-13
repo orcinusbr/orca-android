@@ -70,7 +70,9 @@ internal abstract class HttpTootPaginator {
    * @param page Page until which pagination should be performed.
    * @return [Flow] that receives the [Toot]s of all the pages through which we've been through in
    *   the pagination process.
+   * @throws IllegalArgumentException If the given page is before the current one.
    */
+  @Throws(IllegalArgumentException::class)
   fun paginateTo(page: Int): Flow<List<Toot>> {
     iterate(page)
     return tootsFlow
@@ -80,14 +82,17 @@ internal abstract class HttpTootPaginator {
    * Goes through each page between the current and the given one.
    *
    * @param page Destination page.
+   * @throws IllegalArgumentException If the given [page] is before the current one.
    */
+  @Throws(IllegalArgumentException::class)
   private fun iterate(page: Int) {
-    while (this.page != page) {
-      if (this.page < page) {
-        this.page++
-      } else {
-        this.page--
-      }
+    if (page < this.page) {
+      throw IllegalArgumentException(
+        "Cannot iterate backwards (current page is ${this.page} and the given one is $page)."
+      )
+    }
+    while (page > this.page) {
+      this.page++
     }
   }
 }
