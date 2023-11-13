@@ -212,7 +212,7 @@ fun Timeline(
     var index = 0
     header?.let { item(contentType = TimelineContentType.HEADER, content = it) }
     content()
-    renderEffect(TimelineContentType.RENDER_EFFECT) { onNext(index++) }
+    renderEffect(key = content, TimelineContentType.RENDER_EFFECT) { onNext(index++) }
   }
 }
 

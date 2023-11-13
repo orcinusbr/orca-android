@@ -1,7 +1,6 @@
 package com.jeanbarrossilva.orca.platform.ui.component.timeline
 
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
@@ -87,7 +86,7 @@ internal class TimelineTests {
         items(itemCount) { Spacer(Modifier.fillParentMaxSize()) }
       }
     }
-    composeRule.onTimeline().performScrollToBottom()
-    assertThat(itemCount).isEqualTo(2)
+    composeRule.onTimeline().performScrollToBottom().performScrollToBottom()
+    assertThat(itemCount).isEqualTo(3)
   }
 }
