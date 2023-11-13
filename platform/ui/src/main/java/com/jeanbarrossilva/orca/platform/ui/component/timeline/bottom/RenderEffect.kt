@@ -32,7 +32,7 @@ internal fun LazyListScope.renderEffect(key: Any, contentType: Any, onEffect: ()
  * [Composable] that acts both as a marker and a trigger for the bottom of a [Timeline], running the
  * given [effect] for notifying when it's been reached.
  *
- * @param key Value to which a change indicate that the [effect] should be run.
+ * @param key Value to which a change indicates that the [effect] should be run.
  * @param effect Operation to be performed once this [Composable] is rendered for the first time and
  *   when the [key] changes.
  */
