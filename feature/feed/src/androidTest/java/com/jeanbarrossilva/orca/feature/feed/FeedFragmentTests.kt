@@ -10,7 +10,6 @@ import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
-import androidx.compose.ui.test.performScrollToNode
 import androidx.test.core.app.launchActivity
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
@@ -24,8 +23,8 @@ import com.jeanbarrossilva.orca.core.sample.test.instance.sample
 import com.jeanbarrossilva.orca.feature.feed.test.FeedActivity
 import com.jeanbarrossilva.orca.feature.feed.test.TestFeedModule
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.TOOT_PREVIEW_FAVORITE_STAT_TAG
-import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.isRenderEffect
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.performScrollToBottom
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.isTootPreview
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.onTootPreviews
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.time.Time4JTestRule
@@ -46,7 +45,7 @@ internal class FeedFragmentTests {
     launchActivity<FeedActivity>(FeedActivity.getIntent(Profile.sample.id)).use {
       composeRule
         .onTimeline()
-        .performScrollToNode(isRenderEffect())
+        .performScrollToBottom()
         .onChildren()
         .filter(isTootPreview())
         .assertCountEquals(Toot.samples.size)

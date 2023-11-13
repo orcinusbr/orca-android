@@ -18,10 +18,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -34,6 +30,7 @@ import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.ui.R
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.bottom.renderEffect
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import java.net.URL
 
@@ -211,12 +208,11 @@ fun Timeline(
   contentPadding: PaddingValues = PaddingValues(),
   content: LazyListScope.() -> Unit
 ) {
-  var index by remember { mutableIntStateOf(0) }
-
   LazyColumn(modifier.testTag(TIMELINE_TAG), state, contentPadding) {
+    var index = 0
     header?.let { item(contentType = TimelineContentType.HEADER, content = it) }
     content()
-    item(contentType = TimelineContentType.RENDER_EFFECT) { RenderEffect { onNext(++index) } }
+    renderEffect(TimelineContentType.RENDER_EFFECT) { onNext(index++) }
   }
 }
 

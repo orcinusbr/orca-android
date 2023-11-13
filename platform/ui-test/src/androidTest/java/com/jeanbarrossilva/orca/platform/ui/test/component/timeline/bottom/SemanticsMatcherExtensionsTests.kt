@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.ui.test.component.timeline
+package com.jeanbarrossilva.orca.platform.ui.test.component.timeline.bottom
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
@@ -9,8 +9,8 @@ internal class SemanticsMatcherExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun findsTimeline() {
+  fun findsRenderEffect() {
     composeRule.setContent { Timeline(onNext = {}) {} }
-    composeRule.onNode(isTimeline()).assertExists()
+    composeRule.onNode(isRenderEffect()).assertExists()
   }
 }
