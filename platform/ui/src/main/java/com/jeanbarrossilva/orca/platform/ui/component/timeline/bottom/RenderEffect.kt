@@ -24,11 +24,7 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
  *   reuse it.
  * @param onEffect Callback run when the [RenderEffect] is rendered.
  */
-internal fun LazyListScope.renderEffect(
-  key: Any? = null,
-  contentType: Any? = null,
-  onEffect: () -> Unit
-) {
+internal fun LazyListScope.renderEffect(key: Any, contentType: Any, onEffect: () -> Unit) {
   item(key = "render-effect", contentType) { RenderEffect(key) { onEffect() } }
 }
 
