@@ -52,8 +52,8 @@ private enum class TimelineContentType {
   TOOT_PREVIEW,
 
   /**
-   * Content type for [RenderEffect]s that act like a trigger for indicating that the bottom of a
-   * [Timeline] has been reached.
+   * Content type for the
+   * [com.jeanbarrossilva.orca.platform.ui.component.timeline.bottom.RenderEffect].
    */
   RENDER_EFFECT
 }
