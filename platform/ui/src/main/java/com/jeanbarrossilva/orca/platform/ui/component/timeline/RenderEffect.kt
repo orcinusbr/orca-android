@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.platform.testTag
 
 /** Tag that identifies a [RenderEffect] for testing purposes. */
@@ -19,10 +20,16 @@ import androidx.compose.ui.platform.testTag
  *   [RenderEffect] item to be added.
  * @param contentType Content type to be associated to the [RenderEffect] for Compose to be able to
  *   reuse it.
+ * @param onPlacement Lambda invoked when the [RenderEffect] is laid out.
  * @param onEffect Callback run when the [RenderEffect] is rendered.
  */
-internal fun LazyListScope.renderEffect(key: Any, contentType: Any, onEffect: () -> Unit) {
-  item(key = "render-effect", contentType) { RenderEffect(key) { onEffect() } }
+internal fun LazyListScope.renderEffect(
+  key: Any,
+  contentType: Any,
+  onPlacement: () -> Unit,
+  onEffect: () -> Unit
+) {
+  item(key = "render-effect", contentType) { RenderEffect(key, onPlacement) { onEffect() } }
 }
 
 /**
@@ -30,11 +37,12 @@ internal fun LazyListScope.renderEffect(key: Any, contentType: Any, onEffect: ()
  * given [effect] for notifying when it's been reached.
  *
  * @param key Value to which a change indicates that the [effect] should be run.
+ * @param onPlacement Lambda invoked when it's laid out.
  * @param effect Operation to be performed once this [Composable] is rendered for the first time and
  *   when the [key] changes.
  */
 @Composable
-private fun RenderEffect(key: Any, effect: () -> Unit) {
+private fun RenderEffect(key: Any, onPlacement: () -> Unit, effect: () -> Unit) {
   DisposableEffect(Unit) {
     effect()
     onDispose {}
@@ -45,5 +53,5 @@ private fun RenderEffect(key: Any, effect: () -> Unit) {
     onDispose {}
   }
 
-  Spacer(Modifier.testTag(RENDER_EFFECT_TAG))
+  Spacer(Modifier.onPlaced { onPlacement() }.testTag(RENDER_EFFECT_TAG))
 }

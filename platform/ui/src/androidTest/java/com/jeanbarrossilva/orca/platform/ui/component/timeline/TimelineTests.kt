@@ -1,8 +1,9 @@
 package com.jeanbarrossilva.orca.platform.ui.component.timeline
 
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertCountEquals
@@ -15,7 +16,7 @@ import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onSiblings
 import assertk.assertThat
-import assertk.assertions.isEqualTo
+import assertk.assertions.containsExactly
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
@@ -80,13 +81,13 @@ internal class TimelineTests {
 
   @Test
   fun providesNextIndexWhenReachingBottom() {
-    var itemCount by mutableIntStateOf(1)
+    val indices = mutableStateListOf<Int>()
     composeRule.setContent {
-      Timeline(onNext = { itemCount++ }) {
-        items(itemCount) { Spacer(Modifier.fillParentMaxSize()) }
+      Timeline(onNext = { indices += it }) {
+        items(indices) { Spacer(Modifier.fillParentMaxSize()) }
       }
     }
     composeRule.onTimeline().performScrollToBottom().performScrollToBottom()
-    assertThat(itemCount).isEqualTo(3)
+    assertThat(indices).containsExactly(0, 1, 2)
   }
 }
