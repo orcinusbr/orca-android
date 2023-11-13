@@ -9,6 +9,12 @@ internal class SemanticsMatcherExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
+  fun findsRenderEffect() {
+    composeRule.setContent { Timeline(onNext = {}) {} }
+    composeRule.onNode(isRenderEffect()).assertExists()
+  }
+
+  @Test
   fun findsTimeline() {
     composeRule.setContent { Timeline(onNext = {}) {} }
     composeRule.onNode(isTimeline()).assertExists()

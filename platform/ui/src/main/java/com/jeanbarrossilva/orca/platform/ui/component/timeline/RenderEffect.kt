@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.ui.component.timeline.bottom
+package com.jeanbarrossilva.orca.platform.ui.component.timeline
 
 import androidx.annotation.RestrictTo
 import androidx.compose.foundation.layout.Spacer
@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 
 /** Tag that identifies a [RenderEffect] for testing purposes. */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP_PREFIX) const val RENDER_EFFECT_TAG = "render-effect"

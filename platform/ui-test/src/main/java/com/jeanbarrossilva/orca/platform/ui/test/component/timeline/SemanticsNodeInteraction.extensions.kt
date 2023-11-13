@@ -5,7 +5,6 @@ import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.performScrollToNode
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
-import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.bottom.isRenderEffect
 
 /**
  * Scrolls to the bottom of the [Timeline] to which the [SemanticsNode] refers to.

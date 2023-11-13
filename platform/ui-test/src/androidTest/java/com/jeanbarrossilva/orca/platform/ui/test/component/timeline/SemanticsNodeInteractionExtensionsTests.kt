@@ -9,7 +9,6 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onRoot
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
-import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.bottom.isRenderEffect
 import org.junit.Rule
 import org.junit.Test
 
