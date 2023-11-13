@@ -6,7 +6,7 @@ import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import java.net.URL
 
 /** [HttpTootPaginator] that paginates through [HttpToot]s of the feed. */
-internal class FeedTootPaginator(override val imageLoaderProvider: ImageLoader.Provider<URL>) :
+internal class HttpFeedPaginator(override val imageLoaderProvider: ImageLoader.Provider<URL>) :
   HttpTootPaginator() {
   override val route = "/api/v1/timelines/home"
 }

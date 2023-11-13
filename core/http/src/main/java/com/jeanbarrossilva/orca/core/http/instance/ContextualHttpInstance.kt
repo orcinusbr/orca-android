@@ -10,7 +10,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.content.TermMuter
 import com.jeanbarrossilva.orca.core.http.HttpDatabase
 import com.jeanbarrossilva.orca.core.http.auth.authentication.HttpAuthenticator
 import com.jeanbarrossilva.orca.core.http.auth.authorization.HttpAuthorizer
-import com.jeanbarrossilva.orca.core.http.feed.FeedTootPaginator
+import com.jeanbarrossilva.orca.core.http.feed.HttpFeedPaginator
 import com.jeanbarrossilva.orca.core.http.feed.HttpFeedProvider
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfileProvider
@@ -60,10 +60,10 @@ class ContextualHttpInstance(
   private val tootFetcher = HttpTootFetcher(imageLoaderProvider)
 
   /**
-   * [FeedTootPaginator] with which pagination through the feed's [Toot]s that have been fetched
+   * [HttpFeedPaginator] with which pagination through the feed's [Toot]s that have been fetched
    * from the API will be performed.
    */
-  private val feedTootPaginator = FeedTootPaginator(imageLoaderProvider)
+  private val feedTootPaginator = HttpFeedPaginator(imageLoaderProvider)
 
   /**
    * [ProfileTootPaginator.Provider] that provides the [ProfileTootPaginator] to be used by

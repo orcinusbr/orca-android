@@ -11,13 +11,13 @@ import kotlinx.coroutines.flow.Flow
  * [FeedProvider] that requests the feed's [Toot]s to the API.
  *
  * @param actorProvider [ActorProvider] by which the current [Actor] will be provided.
- * @param tootPaginator [FeedTootPaginator] that will paginate through the [Toot]s in the feed.
+ * @param tootPaginator [HttpFeedPaginator] that will paginate through the [Toot]s in the feed.
  */
 class HttpFeedProvider
 internal constructor(
   private val actorProvider: ActorProvider,
   override val termMuter: TermMuter,
-  private val tootPaginator: FeedTootPaginator
+  private val tootPaginator: HttpFeedPaginator
 ) : FeedProvider() {
   override suspend fun onProvide(userID: String, page: Int): Flow<List<Toot>> {
     return tootPaginator.paginateTo(page)
