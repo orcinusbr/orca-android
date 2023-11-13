@@ -2,9 +2,7 @@ package com.jeanbarrossilva.orca.platform.ui.component.timeline
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.lazy.items
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
