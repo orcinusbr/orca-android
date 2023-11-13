@@ -10,11 +10,11 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.content.TermMuter
 import com.jeanbarrossilva.orca.core.http.HttpDatabase
 import com.jeanbarrossilva.orca.core.http.auth.authentication.HttpAuthenticator
 import com.jeanbarrossilva.orca.core.http.auth.authorization.HttpAuthorizer
-import com.jeanbarrossilva.orca.core.http.feed.FeedTootPaginateSource
+import com.jeanbarrossilva.orca.core.http.feed.FeedTootPaginator
 import com.jeanbarrossilva.orca.core.http.feed.HttpFeedProvider
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfileProvider
-import com.jeanbarrossilva.orca.core.http.feed.profile.ProfileTootPaginateSource
+import com.jeanbarrossilva.orca.core.http.feed.profile.ProfileTootPaginator
 import com.jeanbarrossilva.orca.core.http.feed.profile.cache.HttpProfileFetcher
 import com.jeanbarrossilva.orca.core.http.feed.profile.cache.storage.HttpProfileStorage
 import com.jeanbarrossilva.orca.core.http.feed.profile.search.HttpProfileSearcher
@@ -60,29 +60,24 @@ class ContextualHttpInstance(
   private val tootFetcher = HttpTootFetcher(imageLoaderProvider)
 
   /**
-   * [FeedTootPaginateSource] with which pagination through the feed's [Toot]s that have been
-   * fetched from the API will be performed.
+   * [FeedTootPaginator] with which pagination through the feed's [Toot]s that have been fetched
+   * from the API will be performed.
    */
-  private val feedTootPaginateSource = FeedTootPaginateSource(imageLoaderProvider)
+  private val feedTootPaginator = FeedTootPaginator(imageLoaderProvider)
 
   /**
-   * [ProfileTootPaginateSource.Provider] that provides the [ProfileTootPaginateSource] to be used
-   * by [profileFetcher], [profileStorage] and [profileSearchResultsFetcher].
+   * [ProfileTootPaginator.Provider] that provides the [ProfileTootPaginator] to be used by
+   * [profileFetcher], [profileStorage] and [profileSearchResultsFetcher].
    */
-  private val profileTootPaginateSourceProvider =
-    ProfileTootPaginateSource.Provider { ProfileTootPaginateSource(imageLoaderProvider, it) }
+  private val profileTootPaginatorProvider =
+    ProfileTootPaginator.Provider { ProfileTootPaginator(imageLoaderProvider, it) }
 
   /** [HttpProfileFetcher] by which [HttpProfile]s will be fetched from the API. */
-  private val profileFetcher =
-    HttpProfileFetcher(imageLoaderProvider, profileTootPaginateSourceProvider)
+  private val profileFetcher = HttpProfileFetcher(imageLoaderProvider, profileTootPaginatorProvider)
 
   /** [HttpProfileStorage] that will store fetched [HttpProfile]s. */
   private val profileStorage =
-    HttpProfileStorage(
-      imageLoaderProvider,
-      profileTootPaginateSourceProvider,
-      database.profileEntityDao
-    )
+    HttpProfileStorage(imageLoaderProvider, profileTootPaginatorProvider, database.profileEntityDao)
 
   /** [Cache] that decides how to obtain [HttpProfile]s. */
   private val profileCache =
@@ -92,7 +87,7 @@ class ContextualHttpInstance(
    * [HttpProfileSearchResultsFetcher] by which [ProfileSearchResult]s will be fetched from the API.
    */
   private val profileSearchResultsFetcher =
-    HttpProfileSearchResultsFetcher(imageLoaderProvider, profileTootPaginateSourceProvider)
+    HttpProfileSearchResultsFetcher(imageLoaderProvider, profileTootPaginatorProvider)
 
   /** [HttpProfileSearchResultsStorage] that will store fetched [ProfileSearchResult]s. */
   private val profileSearchResultsStorage =
@@ -119,7 +114,7 @@ class ContextualHttpInstance(
   /** [Cache] that decides how to obtain [HttpToot]s. */
   private val tootCache = Cache.of(context, name = "toot-cache", tootFetcher, tootStorage)
 
-  override val feedProvider = HttpFeedProvider(actorProvider, termMuter, feedTootPaginateSource)
+  override val feedProvider = HttpFeedProvider(actorProvider, termMuter, feedTootPaginator)
   override val profileProvider = HttpProfileProvider(profileCache)
   override val profileSearcher = HttpProfileSearcher(profileSearchResultsCache)
   override val tootProvider = HttpTootProvider(tootCache)

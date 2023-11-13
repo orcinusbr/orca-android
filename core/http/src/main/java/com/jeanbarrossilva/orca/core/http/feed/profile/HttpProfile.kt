@@ -1,22 +1,21 @@
 package com.jeanbarrossilva.orca.core.http.feed.profile
 
-import com.chrynan.paginate.core.loadAllPagesItems
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.http.feed.profile.toot.pagination.HttpTootPaginateSource
 import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
 import kotlinx.coroutines.flow.Flow
 
 /**
- * [Profile] whose [Toot]s are obtained through pagination performed by the [tootPaginateSource].
+ * [Profile] whose [Toot]s are obtained through pagination performed by the [tootPaginator].
  *
- * @param tootPaginateSourceProvider [ProfileTootPaginateSource] for paginating through the [Toot]s.
+ * @param tootPaginatorProvider [ProfileTootPaginator.Provider] by which a [ProfileTootPaginator]
+ *   for paginating through the [Toot]s will be provided.
  */
 internal data class HttpProfile(
-  private val tootPaginateSourceProvider: ProfileTootPaginateSource.Provider,
+  private val tootPaginatorProvider: ProfileTootPaginator.Provider,
   override val id: String,
   override val account: Account,
   override val avatarLoader: SomeImageLoader,
@@ -26,11 +25,12 @@ internal data class HttpProfile(
   override val followingCount: Int,
   override val url: URL
 ) : Profile {
-  private val tootPaginateSource = tootPaginateSourceProvider.provide(id)
-  private val tootsFlow = tootPaginateSource.loadAllPagesItems(HttpTootPaginateSource.DEFAULT_COUNT)
+  private lateinit var tootPaginator: ProfileTootPaginator
 
   override suspend fun getToots(page: Int): Flow<List<Toot>> {
-    tootPaginateSource.paginateTo(page)
-    return tootsFlow
+    if (!::tootPaginator.isInitialized) {
+      tootPaginator = tootPaginatorProvider.provide(id)
+    }
+    return tootPaginator.paginateTo(page)
   }
 }
