@@ -8,13 +8,13 @@ import androidx.compose.ui.unit.isSpecified
 /**
  * Swipe-to-refresh behavior configuration for a [Timeline].
  *
- * @param isActive Whether the [Timeline] is currently being refreshed.
+ * @param isInProgress Whether the [Timeline] is currently being refreshed.
  * @param indicatorOffset Amount of [Dp]s by which the refresh indicator should be offset in the
  *   y-axis.
  * @param listener [Listener] to be notified of refreshes.
  */
 @Immutable
-data class Refresh(val isActive: Boolean, val indicatorOffset: Dp, val listener: Listener) {
+data class Refresh(val isInProgress: Boolean, val indicatorOffset: Dp, val listener: Listener) {
   /**
    * Listens to refreshes.
    *
@@ -33,6 +33,6 @@ data class Refresh(val isActive: Boolean, val indicatorOffset: Dp, val listener:
 
   companion object {
     /** Never-active, no-op [Refresh]. */
-    internal val empty = Refresh(isActive = false, indicatorOffset = 0.dp) {}
+    internal val empty = Refresh(isInProgress = false, indicatorOffset = 0.dp) {}
   }
 }

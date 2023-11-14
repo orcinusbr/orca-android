@@ -227,7 +227,7 @@ fun Timeline(
   refresh: Refresh = Refresh.empty,
   content: LazyListScope.() -> Unit
 ) {
-  val pullRefreshState = rememberPullRefreshState(refresh.isActive, refresh.listener::onRefresh)
+  val pullRefreshState = rememberPullRefreshState(refresh.isInProgress, refresh.listener::onRefresh)
   var index by rememberSaveable { mutableIntStateOf(0) }
   var hasReachedRenderEffect by remember { mutableStateOf(false) }
 
@@ -266,7 +266,7 @@ fun Timeline(
     }
 
     PullRefreshIndicator(
-      refresh.isActive,
+      refresh.isInProgress,
       pullRefreshState,
       Modifier.offset(y = refresh.indicatorOffset).align(Alignment.TopCenter)
     )
