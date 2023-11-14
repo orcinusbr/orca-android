@@ -14,7 +14,6 @@ import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.client.call.body
 import io.ktor.client.request.HttpRequest
 import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.request
 import java.net.URL
 import kotlin.jvm.optionals.getOrNull
 import kotlinx.coroutines.flow.Flow
@@ -83,16 +82,6 @@ internal abstract class HttpTootPaginator {
   fun paginateTo(page: Int): Flow<List<Toot>> {
     iterate(page)
     return tootsFlow
-  }
-
-  /**
-   * Returns whether paginating to the given [url] denotes performing a refresh (that is, loading
-   * content from the URL that's the current one).
-   *
-   * @param url URL [String] to which pagination is being performed.
-   */
-  private fun isRefreshing(url: String): Boolean {
-    return url == lastResponse?.request?.url?.toString()
   }
 
   /**
