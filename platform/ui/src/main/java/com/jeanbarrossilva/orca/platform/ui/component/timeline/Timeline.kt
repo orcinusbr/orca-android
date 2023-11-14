@@ -268,7 +268,7 @@ fun Timeline(
     PullRefreshIndicator(
       refresh.isActive,
       pullRefreshState,
-      (Modifier as Modifier).offset(y = refresh.indicatorOffset).align(Alignment.TopCenter)
+      Modifier.offset(y = refresh.indicatorOffset).align(Alignment.TopCenter)
     )
   }
 }
