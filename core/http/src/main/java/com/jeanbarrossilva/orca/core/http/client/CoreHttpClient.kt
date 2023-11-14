@@ -194,8 +194,12 @@ private suspend fun HttpResponse.format(): String {
   val requestContent = request.content
   val requestFormDataParamsAsString =
     if (requestContent is FormDataContent) " (${requestContent.formData})" else ""
-  return "${status.value} on ${request.method.value} ${request.url}" +
-    "$requestFormDataParamsAsString:\n${bodyAsText()}"
+  return """
+    ${status.value} on ${request.method.value} ${request.url} $requestFormDataParamsAsString
+    $headers
+    ${bodyAsText()}
+  """
+    .trimIndent()
 }
 
 /** Configures the behavior of [ContentNegotiation]-related operations. */

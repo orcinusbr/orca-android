@@ -9,7 +9,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
 import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfile
-import com.jeanbarrossilva.orca.core.http.feed.profile.ProfileTootPaginateSource
+import com.jeanbarrossilva.orca.core.http.feed.profile.HttpProfileTootPaginator
 import com.jeanbarrossilva.orca.core.http.feed.profile.cache.storage.style.HttpStyleEntity
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.editable.HttpEditableProfile
 import com.jeanbarrossilva.orca.core.http.feed.profile.type.followable.HttpFollowableProfile
@@ -57,8 +57,8 @@ internal constructor(
    *   [Profile]'s avatar will be loaded from a [URL].
    * @param dao [HttpProfileEntityDao] that will select the persisted
    *   [HTTP style entities][HttpStyleEntity].
-   * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
-   *   [ProfileTootPaginateSource] for paginating through the resulting [HttpProfile]'s [Toot]s will
+   * @param tootPaginatorProvider [HttpProfileTootPaginator.Provider] by which a
+   *   [HttpProfileTootPaginator] for paginating through the resulting [HttpProfile]'s [Toot]s will
    *   be provided.
    * @throws IllegalStateException If the [type] is unknown.
    */
@@ -66,13 +66,12 @@ internal constructor(
   internal suspend fun toProfile(
     avatarLoaderProvider: ImageLoader.Provider<URL>,
     dao: HttpProfileEntityDao,
-    tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
+    tootPaginatorProvider: HttpProfileTootPaginator.Provider
   ): Profile {
     return when (type) {
-      EDITABLE_TYPE ->
-        toMastodonEditableProfile(avatarLoaderProvider, dao, tootPaginateSourceProvider)
+      EDITABLE_TYPE -> toMastodonEditableProfile(avatarLoaderProvider, dao, tootPaginatorProvider)
       FOLLOWABLE_TYPE ->
-        toMastodonFollowableProfile(avatarLoaderProvider, dao, tootPaginateSourceProvider)
+        toMastodonFollowableProfile(avatarLoaderProvider, dao, tootPaginatorProvider)
       else -> throw IllegalStateException("Unknown profile entity type: $type.")
     }
   }
@@ -84,14 +83,14 @@ internal constructor(
    *   [HttpEditableProfile]'s avatar will be loaded from a [URL].
    * @param dao [HttpProfileEntityDao] that will select the persisted
    *   [HTTP style entities][HttpStyleEntity] applied to the [bio].
-   * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
-   *   [ProfileTootPaginateSource] for paginating through the resulting [HttpEditableProfile]'s
+   * @param tootPaginatorProvider [HttpProfileTootPaginator.Provider] by which a
+   *   [HttpProfileTootPaginator] for paginating through the resulting [HttpEditableProfile]'s
    *   [Toot]s will be provided.
    */
   private suspend fun toMastodonEditableProfile(
     avatarLoaderProvider: ImageLoader.Provider<URL>,
     dao: HttpProfileEntityDao,
-    tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
+    tootPaginatorProvider: HttpProfileTootPaginator.Provider
   ): HttpEditableProfile {
     val account = Account.of(account)
     val avatarURL = URL(avatarURL)
@@ -99,7 +98,7 @@ internal constructor(
     val bio = getBioAsStyledString(dao)
     val url = URL(url)
     return HttpEditableProfile(
-      tootPaginateSourceProvider,
+      tootPaginatorProvider,
       id,
       account,
       avatarLoader,
@@ -118,14 +117,14 @@ internal constructor(
    *   [HttpFollowableProfile]'s avatar will be loaded from a [URL].
    * @param dao [HttpProfileEntityDao] that will select the persisted
    *   [HTTP style entities][HttpStyleEntity].
-   * @param tootPaginateSourceProvider [ProfileTootPaginateSource.Provider] by which a
-   *   [ProfileTootPaginateSource] for paginating through the resulting [HttpFollowableProfile]'s
+   * @param tootPaginatorProvider [HttpProfileTootPaginator.Provider] by which a
+   *   [HttpProfileTootPaginator] for paginating through the resulting [HttpFollowableProfile]'s
    *   [Toot]s will be provided.
    */
   private suspend fun toMastodonFollowableProfile(
     avatarLoaderProvider: ImageLoader.Provider<URL>,
     dao: HttpProfileEntityDao,
-    tootPaginateSourceProvider: ProfileTootPaginateSource.Provider
+    tootPaginatorProvider: HttpProfileTootPaginator.Provider
   ): HttpFollowableProfile<Follow> {
     val account = Account.of(account)
     val avatarURL = URL(avatarURL)
@@ -134,7 +133,7 @@ internal constructor(
     val follow = Follow.of(checkNotNull(follow))
     val url = URL(url)
     return HttpFollowableProfile(
-      tootPaginateSourceProvider,
+      tootPaginatorProvider,
       id,
       account,
       avatarLoader,

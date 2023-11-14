@@ -13,7 +13,7 @@ import io.ktor.util.toMap
  */
 internal val Headers.links
   get() =
-    filter { key, _ -> key == HttpHeaders.Link }
+    filter { key, _ -> key.equals(HttpHeaders.Link, ignoreCase = true) }
       .toMap()
       .values
       .flatten()

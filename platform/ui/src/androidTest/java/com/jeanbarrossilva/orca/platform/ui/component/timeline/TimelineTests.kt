@@ -1,19 +1,26 @@
 package com.jeanbarrossilva.orca.platform.ui.component.timeline
 
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.filter
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onChild
 import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onSiblings
+import assertk.assertThat
+import assertk.assertions.containsExactly
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.performScrollToBottom
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.time.Time4JTestRule
 import org.junit.Rule
 import org.junit.Test
@@ -64,10 +71,21 @@ internal class TimelineTests {
       OrcaTheme { PopulatedTimeline(tootPreviews = TootPreview.samples.take(1)) }
     }
     composeRule
-      .onNodeWithTag(TIMELINE_TAG)
-      .onChild()
-      .onSiblings()
+      .onTimeline()
+      .onChildren()
       .filter(hasTestTag(TIMELINE_DIVIDER_TAG))
       .assertCountEquals(0)
+  }
+
+  @Test
+  fun providesNextIndexWhenReachingBottom() {
+    val indices = mutableStateListOf<Int>()
+    composeRule.setContent {
+      Timeline(onNext = { indices += it }) {
+        items(indices) { Spacer(Modifier.fillParentMaxSize()) }
+      }
+    }
+    composeRule.onTimeline().performScrollToBottom().performScrollToBottom()
+    assertThat(indices).containsExactly(0, 1, 2)
   }
 }

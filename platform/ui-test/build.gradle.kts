@@ -17,6 +17,7 @@ android {
 }
 
 dependencies {
+  androidTestImplementation(project(":platform:theme"))
   androidTestImplementation(libs.android.test.core)
 
   api(libs.android.navigation.fragment)

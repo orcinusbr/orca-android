@@ -25,6 +25,7 @@ dependencies {
   androidTestImplementation(libs.mockk)
 
   api(project(":std:image-loader:compose"))
+  api(libs.android.compose.foundation)
   api(libs.android.fragment.ktx)
   api(libs.loadable)
 

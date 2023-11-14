@@ -21,7 +21,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,16 +37,13 @@ import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.ui.R
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.SampleTootPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import java.net.URL
 
 /** Tag that identifies an [EmptyTimelineMessage] for testing purposes. */
 internal const val EMPTY_TIMELINE_MESSAGE_TAG = "empty-timeline-tag"
 
-/**
- * Tag that identifies dividers between [SampleTootPreview]s in a [Timeline] for testing purposes.
- */
+/** Tag that identifies dividers between [TootPreview]s in a [Timeline] for testing purposes. */
 internal const val TIMELINE_DIVIDER_TAG = "timeline-divider"
 
 /** Tag that identifies a [Timeline] for testing purposes. */
@@ -55,29 +54,33 @@ private enum class TimelineContentType {
   /** Content type for the header. */
   HEADER,
 
-  /** Content type for [SampleTootPreview]s. */
-  TOOT_PREVIEW
+  /** Content type for [TootPreview]s. */
+  TOOT_PREVIEW,
+
+  /**
+   * Content type for the [com.jeanbarrossilva.orca.platform.ui.component.timeline.RenderEffect].
+   */
+  RENDER_EFFECT
 }
 
 /**
- * Displays [SampleTootPreview]s in a paginated way.
+ * Displays [TootPreview]s in a paginated way.
  *
- * @param tootPreviewsLoadable [ListLoadable] of [SampleTootPreview]s to be lazily shown.
- * @param onHighlightClick Callback run whenever the [SampleTootPreview]'s
- *   [SampleTootPreview.highlight] is clicked.
- * @param onFavorite Callback run whenever the [SampleTootPreview] associated to the given ID
- *   requests the [Toot] to have its "favorited" state toggled.
- * @param onReblog Callback run whenever the [SampleTootPreview] associated to the given ID requests
- *   the [Toot] to have its "reblogged" state toggled.
- * @param onShare Callback run whenever a [SampleTootPreview] requests the [Toot]'s [URL] is
- *   requested to be shared.
- * @param onClick Callback run whenever the [SampleTootPreview] associated to the given ID is
+ * @param tootPreviewsLoadable [ListLoadable] of [TootPreview]s to be lazily shown.
+ * @param onHighlightClick Callback run whenever the [TootPreview]'s [TootPreview.highlight] is
  *   clicked.
- * @param onNext Callback run whenever the user reaches the bottom.
+ * @param onFavorite Callback run whenever the [TootPreview] associated to the given ID requests the
+ *   [Toot] to have its "favorited" state toggled.
+ * @param onReblog Callback run whenever the [TootPreview] associated to the given ID requests the
+ *   [Toot] to have its "reblogged" state toggled.
+ * @param onShare Callback run whenever a [TootPreview] requests the [Toot]'s [URL] is requested to
+ *   be shared.
+ * @param onClick Callback run whenever the [TootPreview] associated to the given ID is clicked.
+ * @param onNext Callback run whenever the bottom is being reached.
  * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
  * @param state [LazyListState] through which scroll will be observed.
  * @param contentPadding [PaddingValues] to pad the content with.
- * @param header [Composable] to be shown above the [SampleTootPreview]s.
+ * @param header [Composable] to be shown above the [TootPreview]s.
  */
 @Composable
 fun Timeline(
@@ -115,9 +118,9 @@ fun Timeline(
 }
 
 /**
- * [LazyColumn] for displaying loading [SampleTootPreview]s.
+ * [LazyColumn] for displaying loading [TootPreview]s.
  *
- * @param header [Composable] to be shown above the [SampleTootPreview]s.
+ * @param header [Composable] to be shown above the [TootPreview]s.
  * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
  * @param contentPadding [PaddingValues] to pad the content with.
  */
@@ -127,30 +130,29 @@ fun Timeline(
   contentPadding: PaddingValues = PaddingValues(),
   header: @Composable (LazyItemScope.() -> Unit)? = null
 ) {
-  Timeline(onNext = {}, header, modifier, contentPadding = contentPadding) {
+  Timeline(onNext = {}, modifier, header, contentPadding = contentPadding) {
     items(128) { TootPreview() }
   }
 }
 
 /**
- * [LazyColumn] for displaying paged [SampleTootPreview]s.
+ * [LazyColumn] for displaying paged [TootPreview]s.
  *
- * @param tootPreviews [SampleTootPreview]s to be lazily shown.
- * @param onHighlightClick Callback run whenever the [SampleTootPreview]'s
- *   [SampleTootPreview.highlight] is clicked.
- * @param onFavorite Callback run whenever the [SampleTootPreview] associated to the given ID
- *   requests the [Toot] to have its "favorited" state toggled.
- * @param onReblog Callback run whenever the [SampleTootPreview] associated to the given ID requests
- *   the [Toot] to have its "reblogged" state toggled.
- * @param onShare Callback run whenever a [SampleTootPreview] requests the [Toot]'s [URL] is
- *   requested to be shared.
- * @param onClick Callback run whenever the [SampleTootPreview] associated to the given ID is
+ * @param tootPreviews [TootPreview]s to be lazily shown.
+ * @param onHighlightClick Callback run whenever the [TootPreview]'s [TootPreview.highlight] is
  *   clicked.
- * @param onNext Callback run whenever the user reaches the bottom.
+ * @param onFavorite Callback run whenever the [TootPreview] associated to the given ID requests the
+ *   [Toot] to have its "favorited" state toggled.
+ * @param onReblog Callback run whenever the [TootPreview] associated to the given ID requests the
+ *   [Toot] to have its "reblogged" state toggled.
+ * @param onShare Callback run whenever a [TootPreview] requests the [Toot]'s [URL] is requested to
+ *   be shared.
+ * @param onClick Callback run whenever the [TootPreview] associated to the given ID is clicked.
+ * @param onNext Callback run whenever the bottom is being reached.
  * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
  * @param state [LazyListState] through which scroll will be observed.
  * @param contentPadding [PaddingValues] to pad the content with.
- * @param header [Composable] to be shown above the [SampleTootPreview]s.
+ * @param header [Composable] to be shown above the [TootPreview]s.
  */
 @Composable
 fun Timeline(
@@ -169,7 +171,7 @@ fun Timeline(
   if (tootPreviews.isEmpty()) {
     EmptyTimelineMessage(header, contentPadding, modifier)
   } else {
-    Timeline(onNext, header, modifier, state, contentPadding) {
+    Timeline(onNext, modifier, header, state, contentPadding) {
       itemsIndexed(
         tootPreviews,
         key = { _, preview -> preview.id },
@@ -193,9 +195,65 @@ fun Timeline(
 }
 
 /**
- * Displays [SampleTootPreview]s in a paginated way.
+ * [LazyColumn] for displaying paged content.
  *
- * @param tootPreviewsLoadable [ListLoadable] of [SampleTootPreview]s to be lazily shown.
+ * @param onNext Callback run whenever the bottom is being reached.
+ * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
+ * @param header [Composable] to be shown above the [content].
+ * @param state [LazyListState] through which scroll will be observed.
+ * @param contentPadding [PaddingValues] to pad the contents ([header] + [content]) with.
+ * @param content Content to be lazily shown below the [header].
+ */
+@Composable
+fun Timeline(
+  onNext: (index: Int) -> Unit,
+  modifier: Modifier = Modifier,
+  header: (@Composable LazyItemScope.() -> Unit)? = null,
+  state: LazyListState = rememberLazyListState(),
+  contentPadding: PaddingValues = PaddingValues(),
+  content: LazyListScope.() -> Unit
+) {
+  var index by rememberSaveable { mutableIntStateOf(0) }
+  var hasReachedRenderEffect by remember { mutableStateOf(false) }
+
+  DisposableEffect(Unit) {
+    if (!hasReachedRenderEffect) {
+      onNext(index++)
+    }
+    onDispose {}
+  }
+
+  LazyColumn(modifier.testTag(TIMELINE_TAG), state, contentPadding) {
+    header?.let { item(contentType = TimelineContentType.HEADER, content = it) }
+    content()
+    renderEffect(
+      key = content,
+      TimelineContentType.RENDER_EFFECT,
+      onPlacement = { hasReachedRenderEffect = true }
+    ) {
+      /*
+       * If the content has filled the entirety of the height of the screen when the timeline was
+       * first composed, then the index has already been incremented by the disposable effect above;
+       * thus, invoking `onNext` with `++index` in the first branch prevents the same index from
+       * being provided twice to the callback.
+       *
+       * As for the contrary case in the "else" branch, if the content was short enough for the
+       * render effect to be visible, then the index hasn't been preemptively incremented, meaning
+       * that its current value should be the one to be provided.
+       */
+      if (hasReachedRenderEffect) {
+        onNext(++index)
+      } else {
+        onNext(index++)
+      }
+    }
+  }
+}
+
+/**
+ * Displays [TootPreview]s in a paginated way.
+ *
+ * @param tootPreviewsLoadable [ListLoadable] of [TootPreview]s to be lazily shown.
  * @param modifier [Modifier] to be applied to the underlying [Timeline].
  */
 @Composable
@@ -216,17 +274,19 @@ internal fun Timeline(
 }
 
 /**
- * [Timeline] that's populated with sample [SampleTootPreview]s.
+ * [Timeline] that's populated with sample [TootPreview]s.
  *
  * @param modifier [Modifier] to be applied to the underlying [Timeline].
- * @param tootPreviews [SampleTootPreview]s to be lazily shown.
- * @param header [Composable] to be shown above the [SampleTootPreview]s.
- * @see SampleTootPreview.samples
+ * @param tootPreviews [TootPreview]s to be lazily shown.
+ * @param onNext Callback run whenever the bottom is being reached.
+ * @param header [Composable] to be shown above the [TootPreview]s.
+ * @see TootPreview.samples
  */
 @Composable
 internal fun PopulatedTimeline(
   modifier: Modifier = Modifier,
   tootPreviews: List<TootPreview> = TootPreview.samples,
+  onNext: (index: Int) -> Unit = {},
   header: @Composable (LazyItemScope.() -> Unit)? = null
 ) {
   Timeline(
@@ -236,44 +296,10 @@ internal fun PopulatedTimeline(
     onReblog = {},
     onShare = {},
     onClick = {},
-    onNext = {},
+    onNext,
     modifier,
     header = header
   )
-}
-
-/**
- * [LazyColumn] for displaying paged content.
- *
- * @param onNext Callback run whenever the user reaches the bottom.
- * @param header [Composable] to be shown above the [content].
- * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
- * @param state [LazyListState] through which scroll will be observed.
- * @param contentPadding [PaddingValues] to pad the contents ([header] + [content]) with.
- * @param content Content to be lazily shown below the [header].
- */
-@Composable
-private fun Timeline(
-  onNext: (index: Int) -> Unit,
-  header: (@Composable LazyItemScope.() -> Unit)?,
-  modifier: Modifier = Modifier,
-  state: LazyListState = rememberLazyListState(),
-  contentPadding: PaddingValues = PaddingValues(),
-  content: LazyListScope.() -> Unit
-) {
-  val shouldLoad = remember(state) { !state.canScrollForward }
-  var index by remember { mutableIntStateOf(0) }
-
-  DisposableEffect(shouldLoad) {
-    onNext(index++)
-    onDispose {}
-  }
-
-  LazyColumn(modifier.testTag(TIMELINE_TAG), state, contentPadding) {
-    header?.let { item(contentType = { TimelineContentType.HEADER }, content = it) }
-
-    content()
-  }
 }
 
 /**
@@ -367,7 +393,7 @@ private fun PopulatedTimelineWithHeaderPreview() {
             end = OrcaTheme.spacings.large,
             bottom = OrcaTheme.spacings.medium
           ),
-          style = OrcaTheme.typography.displayLarge
+          style = OrcaTheme.typography.headlineLarge
         )
       }
     }
