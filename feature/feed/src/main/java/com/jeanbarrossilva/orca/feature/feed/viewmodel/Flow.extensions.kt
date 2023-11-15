@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.first
  *
  * @param T Value emitted to this [Flow].
  */
-internal suspend fun <T : Any> Flow<T>.await(): T {
+internal suspend fun <T> Flow<T>.await(): T {
   return if (this is StateFlow<T>) {
     value.let { existing -> first { emitted -> emitted != existing } }
   } else {
