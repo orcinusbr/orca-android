@@ -53,8 +53,7 @@ internal fun Feed(
     isTimelineRefreshing,
     onTimelineRefresh = {
       isTimelineRefreshing = true
-      viewModel.refresh()
-      isTimelineRefreshing = false
+      viewModel.requestRefresh { isTimelineRefreshing = false }
     },
     onHighlightClick = boundary::navigateTo,
     onFavorite = viewModel::favorite,

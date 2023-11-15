@@ -46,10 +46,14 @@ internal class FeedViewModel(
       .flatMapEach(selector = TootPreview::id) { it.toTootPreviewFlow(colors) }
       .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
 
-  fun refresh() {
+  fun requestRefresh(onRefresh: () -> Unit) {
     val index = indexFlow.value
     indexFlow.value = null
     indexFlow.value = index
+    viewModelScope.launch {
+      tootPreviewsLoadableFlow.await()
+      onRefresh()
+    }
   }
 
   fun favorite(tootID: String) {

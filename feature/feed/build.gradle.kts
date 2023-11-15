@@ -27,4 +27,8 @@ dependencies {
   implementation(project(":platform:ui"))
   implementation(project(":std:injector"))
   implementation(libs.loadable.list)
+
+  testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.coroutines.test)
+  testImplementation(libs.kotlin.test)
 }
