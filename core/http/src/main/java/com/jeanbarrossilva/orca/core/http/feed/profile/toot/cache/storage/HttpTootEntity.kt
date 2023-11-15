@@ -83,7 +83,7 @@ internal data class HttpTootEntity(
     val coverLoader = headlineCoverURL?.let { imageLoaderProvider.provide(URL(it)) }
     val content =
       Content.from(domain, text) {
-        if (headlineTitle != null && headlineCoverURL != null) {
+        if (headlineTitle != null) {
           Headline(headlineTitle, headlineSubtitle, coverLoader)
         } else {
           null
@@ -122,7 +122,8 @@ internal data class HttpTootEntity(
         "${toot.content.text}",
         toot.content.highlight?.headline?.title,
         toot.content.highlight?.headline?.subtitle,
-        "${toot.content.highlight?.headline}",
+        headlineCoverURL =
+          toot.content.highlight?.headline?.coverLoader?.source?.let { it as? URL }?.toString(),
         "${toot.publicationDateTime}",
         toot.comment.count,
         toot.favorite.isEnabled,

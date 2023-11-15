@@ -6,6 +6,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -29,6 +32,7 @@ import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabili
 import com.jeanbarrossilva.orca.platform.theme.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.Refresh
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.formatted
@@ -75,12 +79,18 @@ internal fun TootDetails(
 ) {
   val tootLoadable by viewModel.detailsLoadableFlow.collectAsState()
   val commentsLoadable by viewModel.commentsLoadableFlow.collectAsState()
+  var isTimelineRefreshing by remember { mutableStateOf(false) }
   val bottomAreaAvailabilityNestedScrollConnection =
     rememberBottomAreaAvailabilityNestedScrollConnection(onBottomAreaAvailabilityChangeListener)
 
   TootDetails(
     tootLoadable,
     commentsLoadable,
+    isTimelineRefreshing,
+    onTimelineRefresh = {
+      isTimelineRefreshing = true
+      viewModel.requestRefresh { isTimelineRefreshing = false }
+    },
     onHighlightClick = boundary::navigateTo,
     onFavorite = viewModel::favorite,
     onReblog = viewModel::reblog,
@@ -98,6 +108,8 @@ internal fun TootDetails(
 private fun TootDetails(
   tootLoadable: Loadable<TootDetails>,
   commentsLoadable: ListLoadable<TootPreview>,
+  isTimelineRefreshing: Boolean,
+  onTimelineRefresh: () -> Unit,
   onHighlightClick: (URL) -> Unit,
   onFavorite: (tootID: String) -> Unit,
   onReblog: (tootID: String) -> Unit,
@@ -131,7 +143,9 @@ private fun TootDetails(
       onNext,
       Modifier.nestedScroll(bottomAreaAvailabilityNestedScrollConnection)
         .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-      contentPadding = it
+      contentPadding = it,
+      refresh =
+        Refresh(isTimelineRefreshing, indicatorOffset = it.calculateTopPadding(), onTimelineRefresh)
     ) {
       when (tootLoadable) {
         is Loadable.Loading -> Header()
@@ -180,6 +194,8 @@ private fun TootDetails(
   TootDetails(
     tootLoadable,
     commentsLoadable,
+    isTimelineRefreshing = false,
+    onTimelineRefresh = {},
     onHighlightClick = {},
     onFavorite = {},
     onReblog = {},

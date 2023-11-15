@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jeanbarrossilva.loadable.flow.loadable
 import com.jeanbarrossilva.loadable.list.flow.listLoadable
+import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.TootProvider
 import com.jeanbarrossilva.orca.feature.tootdetails.toTootDetailsFlow
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
@@ -15,21 +16,23 @@ import com.jeanbarrossilva.orca.platform.ui.core.context.share
 import com.jeanbarrossilva.orca.platform.ui.core.flatMapEach
 import java.net.URL
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
 internal class TootDetailsViewModel
 private constructor(
   private val contextProvider: ContextProvider,
   private val tootProvider: TootProvider,
-  id: String
+  private val id: String
 ) : ViewModel() {
-  private val tootFlow = flow { emitAll(tootProvider.provide(id)) }
+  private val tootFlow =
+    MutableSharedFlow<Toot>().apply { viewModelScope.launch { emitAll(provideTootFlow()) } }
   private val commentsIndexFlow = MutableStateFlow(0)
 
   private val colors
@@ -48,6 +51,14 @@ private constructor(
       }
       .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
 
+  fun requestRefresh(onRefresh: () -> Unit) {
+    viewModelScope.launch {
+      val toot = provideTootFlow().first()
+      tootFlow.emit(toot)
+      onRefresh()
+    }
+  }
+
   fun favorite(id: String) {
     viewModelScope.launch { tootProvider.provide(id).first().favorite.toggle() }
   }
@@ -62,6 +73,10 @@ private constructor(
 
   fun loadCommentsAt(index: Int) {
     commentsIndexFlow.value = index
+  }
+
+  private suspend fun provideTootFlow(): Flow<Toot> {
+    return tootProvider.provide(id)
   }
 
   companion object {
