@@ -42,7 +42,8 @@ internal class FeedViewModel(
     indexFlow
       .filterNotNull()
       .flatMapLatest { feedProvider.provide(userID, it) }
-      .runningFold(emptyList<Toot>()) { accumulator, toots -> accumulator + toots }
+      .runningFold<_, List<Toot>?>(null) { accumulator, toots -> accumulator.orEmpty() + toots }
+      .filterNotNull()
       .flatMapEach(selector = TootPreview::id) { it.toTootPreviewFlow(colors) }
       .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
 
