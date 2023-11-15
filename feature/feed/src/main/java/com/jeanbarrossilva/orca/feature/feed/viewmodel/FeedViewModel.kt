@@ -19,6 +19,7 @@ import java.net.URL
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.runningFold
@@ -30,7 +31,7 @@ internal class FeedViewModel(
   private val tootProvider: TootProvider,
   private val userID: String
 ) : ViewModel() {
-  private val indexFlow = MutableStateFlow(0)
+  private val indexFlow = MutableStateFlow<Int?>(0)
   private val colors by lazy { Colors.getDefault(context) }
 
   private val context
@@ -39,10 +40,22 @@ internal class FeedViewModel(
   @OptIn(ExperimentalCoroutinesApi::class)
   val tootPreviewsLoadableFlow =
     indexFlow
+      .filterNotNull()
       .flatMapLatest { feedProvider.provide(userID, it) }
-      .runningFold(emptyList<Toot>()) { accumulator, toots -> accumulator + toots }
+      .runningFold<_, List<Toot>?>(null) { accumulator, toots -> accumulator.orEmpty() + toots }
+      .filterNotNull()
       .flatMapEach(selector = TootPreview::id) { it.toTootPreviewFlow(colors) }
       .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
+
+  fun requestRefresh(onRefresh: () -> Unit) {
+    val index = indexFlow.value
+    indexFlow.value = null
+    indexFlow.value = index
+    viewModelScope.launch {
+      tootPreviewsLoadableFlow.await()
+      onRefresh()
+    }
+  }
 
   fun favorite(tootID: String) {
     viewModelScope.launch { tootProvider.provide(tootID).first().favorite.toggle() }

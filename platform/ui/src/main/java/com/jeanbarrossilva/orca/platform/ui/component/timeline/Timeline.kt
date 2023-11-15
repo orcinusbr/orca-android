@@ -2,9 +2,11 @@ package com.jeanbarrossilva.orca.platform.ui.component.timeline
 
 import androidx.annotation.RestrictTo
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,6 +15,10 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
@@ -38,6 +44,8 @@ import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.RelativeTimeProvider
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.rememberRelativeTimeProvider
 import java.net.URL
 
 /** Tag that identifies an [EmptyTimelineMessage] for testing purposes. */
@@ -80,6 +88,9 @@ private enum class TimelineContentType {
  * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
  * @param state [LazyListState] through which scroll will be observed.
  * @param contentPadding [PaddingValues] to pad the content with.
+ * @param refresh Configuration for the swipe-to-refresh behavior to be adopted.
+ * @param relativeTimeProvider [RelativeTimeProvider] that provides the time that's passed since a
+ *   [Toot] was published.
  * @param header [Composable] to be shown above the [TootPreview]s.
  */
 @Composable
@@ -94,6 +105,8 @@ fun Timeline(
   modifier: Modifier = Modifier,
   state: LazyListState = rememberLazyListState(),
   contentPadding: PaddingValues = PaddingValues(),
+  refresh: Refresh = Refresh.Disabled,
+  relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider(),
   header: (@Composable LazyItemScope.() -> Unit)? = null
 ) {
   when (tootPreviewsLoadable) {
@@ -111,6 +124,8 @@ fun Timeline(
         modifier,
         state,
         contentPadding,
+        refresh,
+        relativeTimeProvider,
         header
       )
     is ListLoadable.Failed -> Unit
@@ -152,6 +167,9 @@ fun Timeline(
  * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
  * @param state [LazyListState] through which scroll will be observed.
  * @param contentPadding [PaddingValues] to pad the content with.
+ * @param refresh Configuration for the swipe-to-refresh behavior to be adopted.
+ * @param relativeTimeProvider [RelativeTimeProvider] that provides the time that's passed since a
+ *   [Toot] was published.
  * @param header [Composable] to be shown above the [TootPreview]s.
  */
 @Composable
@@ -166,12 +184,14 @@ fun Timeline(
   modifier: Modifier = Modifier,
   state: LazyListState = rememberLazyListState(),
   contentPadding: PaddingValues = PaddingValues(),
+  refresh: Refresh = Refresh.Disabled,
+  relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider(),
   header: (@Composable LazyItemScope.() -> Unit)? = null
 ) {
   if (tootPreviews.isEmpty()) {
     EmptyTimelineMessage(header, contentPadding, modifier)
   } else {
-    Timeline(onNext, modifier, header, state, contentPadding) {
+    Timeline(onNext, modifier, header, state, contentPadding, refresh) {
       itemsIndexed(
         tootPreviews,
         key = { _, preview -> preview.id },
@@ -187,7 +207,8 @@ fun Timeline(
           onFavorite = { onFavorite(preview.id) },
           onReblog = { onReblog(preview.id) },
           onShare = { onShare(preview.url) },
-          onClick = { onClick(preview.id) }
+          onClick = { onClick(preview.id) },
+          relativeTimeProvider = relativeTimeProvider
         )
       }
     }
@@ -202,17 +223,21 @@ fun Timeline(
  * @param header [Composable] to be shown above the [content].
  * @param state [LazyListState] through which scroll will be observed.
  * @param contentPadding [PaddingValues] to pad the contents ([header] + [content]) with.
+ * @param refresh Configuration for the swipe-to-refresh behavior to be adopted.
  * @param content Content to be lazily shown below the [header].
  */
 @Composable
+@OptIn(ExperimentalMaterialApi::class)
 fun Timeline(
   onNext: (index: Int) -> Unit,
   modifier: Modifier = Modifier,
   header: (@Composable LazyItemScope.() -> Unit)? = null,
   state: LazyListState = rememberLazyListState(),
   contentPadding: PaddingValues = PaddingValues(),
+  refresh: Refresh = Refresh.Disabled,
   content: LazyListScope.() -> Unit
 ) {
+  val pullRefreshState = rememberPullRefreshState(refresh.isInProgress, refresh.listener::onRefresh)
   var index by rememberSaveable { mutableIntStateOf(0) }
   var hasReachedRenderEffect by remember { mutableStateOf(false) }
 
@@ -223,30 +248,38 @@ fun Timeline(
     onDispose {}
   }
 
-  LazyColumn(modifier.testTag(TIMELINE_TAG), state, contentPadding) {
-    header?.let { item(contentType = TimelineContentType.HEADER, content = it) }
-    content()
-    renderEffect(
-      key = content,
-      TimelineContentType.RENDER_EFFECT,
-      onPlacement = { hasReachedRenderEffect = true }
-    ) {
-      /*
-       * If the content has filled the entirety of the height of the screen when the timeline was
-       * first composed, then the index has already been incremented by the disposable effect above;
-       * thus, invoking `onNext` with `++index` in the first branch prevents the same index from
-       * being provided twice to the callback.
-       *
-       * As for the contrary case in the "else" branch, if the content was short enough for the
-       * render effect to be visible, then the index hasn't been preemptively incremented, meaning
-       * that its current value should be the one to be provided.
-       */
-      if (hasReachedRenderEffect) {
-        onNext(++index)
-      } else {
-        onNext(index++)
+  Box(Modifier.pullRefresh(pullRefreshState)) {
+    LazyColumn(modifier.testTag(TIMELINE_TAG), state, contentPadding) {
+      header?.let { item(contentType = TimelineContentType.HEADER, content = it) }
+      content()
+      renderEffect(
+        key = content,
+        TimelineContentType.RENDER_EFFECT,
+        onPlacement = { hasReachedRenderEffect = true }
+      ) {
+        /*
+         * If the content has filled the entirety of the height of the screen when the timeline was
+         * first composed, then the index has already been incremented by the disposable effect
+         * above; thus, invoking `onNext` with `++index` in the first branch prevents the same index
+         * from being provided twice to the callback.
+         *
+         * As for the contrary case in the "else" branch, if the content was short enough for the
+         * render effect to be visible, then the index hasn't been preemptively incremented, meaning
+         * that its current value should be the one to be provided.
+         */
+        if (hasReachedRenderEffect) {
+          onNext(++index)
+        } else {
+          onNext(index++)
+        }
       }
     }
+
+    PullRefreshIndicator(
+      refresh.isInProgress,
+      pullRefreshState,
+      Modifier.offset(y = refresh.indicatorOffset).align(Alignment.TopCenter)
+    )
   }
 }
 

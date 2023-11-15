@@ -15,9 +15,11 @@ import io.ktor.client.call.body
 import io.ktor.client.request.HttpRequest
 import io.ktor.client.statement.HttpResponse
 import java.net.URL
+import kotlin.jvm.optionals.getOrNull
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 
 /** Requests and paginates through [Toot]s. */
@@ -35,7 +37,11 @@ internal abstract class HttpTootPaginator {
    */
   private val tootsFlow =
     pageFlow
-      .map { client.authenticateAndGet(lastResponse?.headers?.links?.firstOrNull()?.uri ?: route) }
+      .compareNotNull { previous, current -> previous.getOrNull()?.compareTo(current) ?: 0 }
+      .map { it == 0 }
+      .associateWith { lastResponse?.headers?.links?.firstOrNull()?.uri }
+      .map({ (url, isRefreshing) -> isRefreshing || url == null }) { route to it.second }
+      .mapNotNull { (url, _) -> url?.let { client.authenticateAndGet(it) } }
       .onEach { lastResponse = it }
       .map { it.body<List<HttpStatus>>() }
       .mapEach { it.toToot(imageLoaderProvider) }
@@ -61,7 +67,7 @@ internal abstract class HttpTootPaginator {
    */
   protected abstract val imageLoaderProvider: ImageLoader.Provider<URL>
 
-  /** URL [String] to which the [HttpRequest] should be sent. */
+  /** URL [String] to which the initial [HttpRequest] should be sent. */
   protected abstract val route: String
 
   /**

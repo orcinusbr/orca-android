@@ -8,7 +8,7 @@ import net.time4j.base.UnixTime
 
 /** [RelativeTimeProvider] that provides relative time with Time4J. */
 internal class Time4JRelativeTimeProvider : RelativeTimeProvider() {
-  override fun provide(dateTime: ZonedDateTime): String {
+  override fun onProvide(dateTime: ZonedDateTime): String {
     val locale = Locale.getDefault()
     val unixTime = dateTime.toUnixTime()
     val timeZoneID = ZoneId.systemDefault().id

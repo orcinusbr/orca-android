@@ -17,7 +17,7 @@ dependencies {
   androidTestImplementation(libs.android.test.runner)
   androidTestImplementation(libs.assertk)
 
-  api(libs.android.compose.material)
+  api(libs.android.compose.material3)
   api(libs.android.compose.ui.tooling)
 
   implementation(kotlin("stdlib"))

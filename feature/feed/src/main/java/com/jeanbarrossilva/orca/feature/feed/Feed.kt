@@ -6,6 +6,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.testTag
@@ -25,6 +28,7 @@ import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSiz
 import com.jeanbarrossilva.orca.platform.theme.reactivity.BottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.theme.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.Refresh
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import java.net.URL
@@ -38,6 +42,7 @@ internal fun Feed(
   onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
   modifier: Modifier = Modifier
 ) {
+  var isTimelineRefreshing by remember { mutableStateOf(false) }
   val tootPreviewsLoadable by viewModel.tootPreviewsLoadableFlow.collectAsState()
   val bottomAreaAvailabilityNestedScrollConnection =
     rememberBottomAreaAvailabilityNestedScrollConnection(onBottomAreaAvailabilityChangeListener)
@@ -45,6 +50,11 @@ internal fun Feed(
   Feed(
     tootPreviewsLoadable,
     onSearch = boundary::navigateToSearch,
+    isTimelineRefreshing,
+    onTimelineRefresh = {
+      isTimelineRefreshing = true
+      viewModel.requestRefresh { isTimelineRefreshing = false }
+    },
     onHighlightClick = boundary::navigateTo,
     onFavorite = viewModel::favorite,
     onReblog = viewModel::reblog,
@@ -66,6 +76,8 @@ internal fun Feed(
   Feed(
     tootPreviewsLoadable,
     onSearch = {},
+    isTimelineRefreshing = false,
+    onTimelineRefresh = {},
     onHighlightClick = {},
     onFavorite,
     onReblog = {},
@@ -83,6 +95,8 @@ internal fun Feed(
 private fun Feed(
   tootPreviewsLoadable: ListLoadable<TootPreview>,
   onSearch: () -> Unit,
+  isTimelineRefreshing: Boolean,
+  onTimelineRefresh: () -> Unit,
   onHighlightClick: (URL) -> Unit,
   onFavorite: (tootID: String) -> Unit,
   onReblog: (tootID: String) -> Unit,
@@ -136,7 +150,9 @@ private fun Feed(
       onNext,
       Modifier.nestedScroll(bottomAreaAvailabilityNestedScrollConnection)
         .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-      contentPadding = it + OrcaTheme.overlays.fab
+      contentPadding = it + OrcaTheme.overlays.fab,
+      refresh =
+        Refresh(isTimelineRefreshing, indicatorOffset = it.calculateTopPadding(), onTimelineRefresh)
     )
   }
 }

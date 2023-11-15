@@ -25,4 +25,7 @@ dependencies {
   implementation(project(":platform:ui"))
   implementation(libs.android.compose.ui.test.junit)
   implementation(libs.time4j)
+
+  testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.test)
 }

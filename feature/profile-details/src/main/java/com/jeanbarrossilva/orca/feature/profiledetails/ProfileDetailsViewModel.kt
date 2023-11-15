@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jeanbarrossilva.loadable.flow.loadable
 import com.jeanbarrossilva.loadable.list.flow.listLoadable
+import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.ProfileProvider
 import com.jeanbarrossilva.orca.core.feed.profile.toot.TootProvider
 import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
@@ -19,13 +20,13 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
@@ -39,7 +40,7 @@ private constructor(
   private val id: String
 ) : ViewModel() {
   private val coroutineScope = viewModelScope + coroutineDispatcher
-  private val profileFlow = flow { emitAll(profileProvider.provide(id).filterNotNull()) }
+  private val profileFlow = MutableSharedFlow<Profile>()
   private val tootsIndexFlow = MutableStateFlow(0)
 
   private val context
@@ -56,6 +57,17 @@ private constructor(
       .flatMapConcat(::getTootPreviewsAt)
       .listLoadable(coroutineScope, SharingStarted.WhileSubscribed())
 
+  init {
+    requestRefresh()
+  }
+
+  fun requestRefresh(onRefresh: () -> Unit = {}) {
+    viewModelScope.launch {
+      profileFlow.emitAll(provideProfileFlow())
+      onRefresh()
+    }
+  }
+
   fun share(url: URL) {
     context.share("$url")
   }
@@ -70,6 +82,10 @@ private constructor(
 
   fun loadTootsAt(index: Int) {
     tootsIndexFlow.value = index
+  }
+
+  private suspend fun provideProfileFlow(): Flow<Profile> {
+    return profileProvider.provide(id).filterNotNull()
   }
 
   @OptIn(ExperimentalCoroutinesApi::class)

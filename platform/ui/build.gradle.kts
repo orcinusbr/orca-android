@@ -34,6 +34,7 @@ dependencies {
   implementation(project(":platform:theme"))
   implementation(project(":std:image-loader:local"))
   implementation(libs.android.activity.compose)
+  implementation(libs.android.compose.material)
   implementation(libs.android.material)
   implementation(libs.jsoup)
   implementation(libs.kotlin.reflect)
