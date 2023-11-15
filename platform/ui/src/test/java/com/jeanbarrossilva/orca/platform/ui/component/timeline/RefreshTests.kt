@@ -6,6 +6,6 @@ import org.junit.Test
 internal class RefreshTests {
   @Test(expected = IllegalArgumentException::class)
   fun throwsWhenIndicatorOffsetIsUnspecified() {
-    @Suppress("UnusedDataClassCopyResult") Refresh.empty.copy(indicatorOffset = Dp.Unspecified)
+    @Suppress("UnusedDataClassCopyResult") Refresh.Disabled.copy(indicatorOffset = Dp.Unspecified)
   }
 }

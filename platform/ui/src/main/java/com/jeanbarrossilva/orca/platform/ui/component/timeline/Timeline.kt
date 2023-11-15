@@ -105,7 +105,7 @@ fun Timeline(
   modifier: Modifier = Modifier,
   state: LazyListState = rememberLazyListState(),
   contentPadding: PaddingValues = PaddingValues(),
-  refresh: Refresh = Refresh.empty,
+  refresh: Refresh = Refresh.Disabled,
   relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider(),
   header: (@Composable LazyItemScope.() -> Unit)? = null
 ) {
@@ -184,7 +184,7 @@ fun Timeline(
   modifier: Modifier = Modifier,
   state: LazyListState = rememberLazyListState(),
   contentPadding: PaddingValues = PaddingValues(),
-  refresh: Refresh = Refresh.empty,
+  refresh: Refresh = Refresh.Disabled,
   relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider(),
   header: (@Composable LazyItemScope.() -> Unit)? = null
 ) {
@@ -234,7 +234,7 @@ fun Timeline(
   header: (@Composable LazyItemScope.() -> Unit)? = null,
   state: LazyListState = rememberLazyListState(),
   contentPadding: PaddingValues = PaddingValues(),
-  refresh: Refresh = Refresh.empty,
+  refresh: Refresh = Refresh.Disabled,
   content: LazyListScope.() -> Unit
 ) {
   val pullRefreshState = rememberPullRefreshState(refresh.isInProgress, refresh.listener::onRefresh)

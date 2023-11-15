@@ -33,6 +33,6 @@ data class Refresh(val isInProgress: Boolean, val indicatorOffset: Dp, val liste
 
   companion object {
     /** Never-active, no-op [Refresh]. */
-    internal val empty = Refresh(isInProgress = false, indicatorOffset = 0.dp) {}
+    internal val Disabled = Refresh(isInProgress = false, indicatorOffset = 0.dp) {}
   }
 }
