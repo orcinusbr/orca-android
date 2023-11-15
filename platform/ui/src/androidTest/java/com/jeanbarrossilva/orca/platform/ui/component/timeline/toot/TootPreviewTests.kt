@@ -23,8 +23,8 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.test.onTootP
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.test.onTootPreviewReblogCountStat
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.test.onTootPreviewReblogMetadata
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.test.onTootPreviewShareAction
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.test.TestRelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.onTootPreview
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.time.TestRelativeTimeProvider
 import org.junit.Rule
 import org.junit.Test
 

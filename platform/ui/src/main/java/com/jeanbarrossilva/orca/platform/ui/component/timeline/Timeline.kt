@@ -44,6 +44,8 @@ import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.RelativeTimeProvider
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.rememberRelativeTimeProvider
 import java.net.URL
 
 /** Tag that identifies an [EmptyTimelineMessage] for testing purposes. */
@@ -87,6 +89,8 @@ private enum class TimelineContentType {
  * @param state [LazyListState] through which scroll will be observed.
  * @param contentPadding [PaddingValues] to pad the content with.
  * @param refresh Configuration for the swipe-to-refresh behavior to be adopted.
+ * @param relativeTimeProvider [RelativeTimeProvider] that provides the time that's passed since a
+ *   [Toot] was published.
  * @param header [Composable] to be shown above the [TootPreview]s.
  */
 @Composable
@@ -102,6 +106,7 @@ fun Timeline(
   state: LazyListState = rememberLazyListState(),
   contentPadding: PaddingValues = PaddingValues(),
   refresh: Refresh = Refresh.empty,
+  relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider(),
   header: (@Composable LazyItemScope.() -> Unit)? = null
 ) {
   when (tootPreviewsLoadable) {
@@ -120,6 +125,7 @@ fun Timeline(
         state,
         contentPadding,
         refresh,
+        relativeTimeProvider,
         header
       )
     is ListLoadable.Failed -> Unit
@@ -162,6 +168,8 @@ fun Timeline(
  * @param state [LazyListState] through which scroll will be observed.
  * @param contentPadding [PaddingValues] to pad the content with.
  * @param refresh Configuration for the swipe-to-refresh behavior to be adopted.
+ * @param relativeTimeProvider [RelativeTimeProvider] that provides the time that's passed since a
+ *   [Toot] was published.
  * @param header [Composable] to be shown above the [TootPreview]s.
  */
 @Composable
@@ -177,6 +185,7 @@ fun Timeline(
   state: LazyListState = rememberLazyListState(),
   contentPadding: PaddingValues = PaddingValues(),
   refresh: Refresh = Refresh.empty,
+  relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider(),
   header: (@Composable LazyItemScope.() -> Unit)? = null
 ) {
   if (tootPreviews.isEmpty()) {
@@ -198,7 +207,8 @@ fun Timeline(
           onFavorite = { onFavorite(preview.id) },
           onReblog = { onReblog(preview.id) },
           onShare = { onShare(preview.url) },
-          onClick = { onClick(preview.id) }
+          onClick = { onClick(preview.id) },
+          relativeTimeProvider = relativeTimeProvider
         )
       }
     }

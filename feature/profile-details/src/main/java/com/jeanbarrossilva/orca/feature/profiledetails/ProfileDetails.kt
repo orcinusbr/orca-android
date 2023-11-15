@@ -58,8 +58,11 @@ import com.jeanbarrossilva.orca.platform.theme.reactivity.BottomAreaAvailability
 import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.theme.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.Refresh
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.RelativeTimeProvider
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.rememberRelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
@@ -192,6 +195,7 @@ internal fun ProfileDetails(
 ) {
   val detailsLoadable by viewModel.detailsLoadableFlow.collectAsState()
   val tootsLoadable by viewModel.tootPreviewsLoadableFlow.collectAsState()
+  var isTimelineRefreshing by remember { mutableStateOf(false) }
   val bottomAreaAvailabilityNestedScrollConnection =
     rememberBottomAreaAvailabilityNestedScrollConnection(onBottomAreaAvailabilityChangeListener)
 
@@ -199,6 +203,11 @@ internal fun ProfileDetails(
     navigator,
     detailsLoadable,
     tootsLoadable,
+    isTimelineRefreshing,
+    onTimelineRefresh = {
+      isTimelineRefreshing = true
+      viewModel.requestRefresh { isTimelineRefreshing = false }
+    },
     onFavorite = viewModel::favorite,
     onReblog = viewModel::reblog,
     navigator::navigateToTootDetails,
@@ -213,16 +222,41 @@ internal fun ProfileDetails(
 
 @Composable
 internal fun ProfileDetails(
-  detailsLoadable: Loadable<ProfileDetails>,
   tootPreviewsLoadable: ListLoadable<TootPreview>,
   modifier: Modifier = Modifier,
   isTopBarDropdownMenuExpanded: Boolean = false,
-  initialFirstVisibleTimelineItemIndex: Int = 0
+  initialFirstVisibleTimelineItemIndex: Int = 0,
+  relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider()
+) {
+  ProfileDetails(
+    Loadable.Loaded(ProfileDetails.sample),
+    tootPreviewsLoadable,
+    isTimelineRefreshing = false,
+    onTimelineRefresh = {},
+    modifier,
+    isTopBarDropdownMenuExpanded,
+    initialFirstVisibleTimelineItemIndex,
+    relativeTimeProvider
+  )
+}
+
+@Composable
+internal fun ProfileDetails(
+  detailsLoadable: Loadable<ProfileDetails>,
+  tootPreviewsLoadable: ListLoadable<TootPreview>,
+  isTimelineRefreshing: Boolean,
+  onTimelineRefresh: () -> Unit,
+  modifier: Modifier = Modifier,
+  isTopBarDropdownMenuExpanded: Boolean = false,
+  initialFirstVisibleTimelineItemIndex: Int = 0,
+  relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider()
 ) {
   ProfileDetails(
     ProfileDetailsBoundary.empty,
     detailsLoadable,
     tootPreviewsLoadable,
+    isTimelineRefreshing,
+    onTimelineRefresh,
     onFavorite = {},
     onReblog = {},
     onNavigationToTootDetails = {},
@@ -233,7 +267,8 @@ internal fun ProfileDetails(
     BottomAreaAvailabilityNestedScrollConnection.empty,
     modifier,
     isTopBarDropdownMenuExpanded,
-    initialFirstVisibleTimelineItemIndex
+    initialFirstVisibleTimelineItemIndex,
+    relativeTimeProvider
   )
 }
 
@@ -242,6 +277,8 @@ private fun ProfileDetails(
   boundary: ProfileDetailsBoundary,
   detailsLoadable: Loadable<ProfileDetails>,
   tootPreviewsLoadable: ListLoadable<TootPreview>,
+  isTimelineRefreshing: Boolean,
+  onTimelineRefresh: () -> Unit,
   onFavorite: (tootID: String) -> Unit,
   onReblog: (tootID: String) -> Unit,
   onNavigationToTootDetails: (id: String) -> Unit,
@@ -252,7 +289,8 @@ private fun ProfileDetails(
   bottomAreaAvailabilityNestedScrollConnection: BottomAreaAvailabilityNestedScrollConnection,
   modifier: Modifier = Modifier,
   isTopBarDropdownMenuExpanded: Boolean = false,
-  initialFirstVisibleTimelineItemIndex: Int = 0
+  initialFirstVisibleTimelineItemIndex: Int = 0,
+  relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider()
 ) {
   when (detailsLoadable) {
     is Loadable.Loading ->
@@ -262,6 +300,8 @@ private fun ProfileDetails(
         boundary,
         detailsLoadable.content,
         tootPreviewsLoadable,
+        isTimelineRefreshing,
+        onTimelineRefresh,
         onHighlightClick = boundary::navigateTo,
         onFavorite,
         onReblog,
@@ -273,7 +313,8 @@ private fun ProfileDetails(
         bottomAreaAvailabilityNestedScrollConnection,
         modifier,
         isTopBarDropdownMenuExpanded,
-        initialFirstVisibleTimelineItemIndex
+        initialFirstVisibleTimelineItemIndex,
+        relativeTimeProvider
       )
     is Loadable.Failed -> Unit
   }
@@ -317,6 +358,8 @@ private fun ProfileDetails(
   boundary: ProfileDetailsBoundary,
   details: ProfileDetails,
   tootsLoadable: ListLoadable<TootPreview>,
+  isTimelineRefreshing: Boolean,
+  onTimelineRefresh: () -> Unit,
   onHighlightClick: (URL) -> Unit,
   onFavorite: (tootID: String) -> Unit,
   onReblog: (tootID: String) -> Unit,
@@ -328,7 +371,8 @@ private fun ProfileDetails(
   bottomAreaAvailabilityNestedScrollConnection: BottomAreaAvailabilityNestedScrollConnection,
   modifier: Modifier = Modifier,
   isTopBarDropdownMenuExpanded: Boolean = false,
-  initialFirstVisibleTimelineItemIndex: Int = 0
+  initialFirstVisibleTimelineItemIndex: Int = 0,
+  relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider()
 ) {
   val clipboardManager = LocalClipboardManager.current
   val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -409,7 +453,14 @@ private fun ProfileDetails(
             nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
           },
         timelineState,
-        contentPadding = padding
+        contentPadding = padding,
+        refresh =
+          Refresh(
+            isTimelineRefreshing,
+            indicatorOffset = padding.calculateTopPadding(),
+            onTimelineRefresh
+          ),
+        relativeTimeProvider = relativeTimeProvider
       ) {
         Header(details)
       }
@@ -475,22 +526,14 @@ private fun LoadingProfileDetailsPreview() {
 @Composable
 @MultiThemePreview
 private fun LoadedProfileDetailsWithoutTootsPreview() {
-  OrcaTheme {
-    ProfileDetails(
-      Loadable.Loaded(ProfileDetails.sample),
-      tootPreviewsLoadable = ListLoadable.Empty()
-    )
-  }
+  OrcaTheme { ProfileDetails(tootPreviewsLoadable = ListLoadable.Empty()) }
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadedProfileDetailsWithTootsPreview() {
   OrcaTheme {
-    ProfileDetails(
-      Loadable.Loaded(ProfileDetails.sample),
-      tootPreviewsLoadable = TootPreview.samples.toSerializableList().toListLoadable()
-    )
+    ProfileDetails(tootPreviewsLoadable = TootPreview.samples.toSerializableList().toListLoadable())
   }
 }
 
@@ -499,7 +542,6 @@ private fun LoadedProfileDetailsWithTootsPreview() {
 private fun LoadedProfileDetailsWithExpandedTopBarDropdownMenuPreview() {
   OrcaTheme {
     ProfileDetails(
-      Loadable.Loaded(ProfileDetails.sample),
       tootPreviewsLoadable = TootPreview.samples.toSerializableList().toListLoadable(),
       isTopBarDropdownMenuExpanded = true,
       initialFirstVisibleTimelineItemIndex = 1

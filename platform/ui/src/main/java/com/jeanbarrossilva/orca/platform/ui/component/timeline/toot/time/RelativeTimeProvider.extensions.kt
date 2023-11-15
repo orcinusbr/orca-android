@@ -5,6 +5,6 @@ import androidx.compose.runtime.remember
 
 /** [Remember][remember]s a [RelativeTimeProvider]. */
 @Composable
-internal fun rememberRelativeTimeProvider(): RelativeTimeProvider {
+fun rememberRelativeTimeProvider(): RelativeTimeProvider {
   return remember(::Time4JRelativeTimeProvider)
 }

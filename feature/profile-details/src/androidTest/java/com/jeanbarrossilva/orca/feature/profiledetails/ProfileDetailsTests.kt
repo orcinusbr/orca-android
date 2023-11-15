@@ -5,13 +5,13 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performScrollToIndex
 import androidx.test.platform.app.InstrumentationRegistry
-import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.TIMELINE_TAG
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.time.TestRelativeTimeProvider
 import java.util.UUID
 import org.junit.Rule
 import org.junit.Test
@@ -26,11 +26,11 @@ internal class ProfileDetailsTests {
     composeRule.setContent {
       OrcaTheme {
         ProfileDetails(
-          Loadable.Loaded(ProfileDetails.sample),
           tootPreviewsLoadable =
             List(size = screenHeightInPx) { TootPreview.sample.copy(id = "${UUID.randomUUID()}") }
               .toSerializableList()
-              .toListLoadable()
+              .toListLoadable(),
+          relativeTimeProvider = TestRelativeTimeProvider
         )
       }
     }
