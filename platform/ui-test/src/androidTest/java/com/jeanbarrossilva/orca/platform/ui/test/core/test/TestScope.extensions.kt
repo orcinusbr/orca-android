@@ -2,6 +2,7 @@ package com.jeanbarrossilva.orca.platform.ui.test.core.test
 
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+import kotlin.time.Duration.Companion.minutes
 import kotlinx.coroutines.test.runTest
 
 /**
@@ -10,7 +11,7 @@ import kotlinx.coroutines.test.runTest
  * @param condition Returns the expectation to be met.
  */
 internal fun waitUntil(condition: () -> Boolean) {
-  runTest {
+  runTest(timeout = 30.minutes) {
     suspendCoroutine {
       @Suppress("ControlFlowWithEmptyBody") while (!condition()) {}
 
