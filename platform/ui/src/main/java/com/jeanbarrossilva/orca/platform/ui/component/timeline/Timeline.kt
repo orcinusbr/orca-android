@@ -292,6 +292,7 @@ fun Timeline(
  *
  * @param tootPreviewsLoadable [ListLoadable] of [TootPreview]s to be lazily shown.
  * @param modifier [Modifier] to be applied to the underlying [Timeline].
+ * @param header [Composable] to be shown above the [TootPreview]s.
  */
 @Composable
 internal fun Timeline(
