@@ -36,7 +36,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.drawscope.translate
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -355,7 +354,6 @@ private fun EmptyTimelineMessage(
   contentPadding: PaddingValues,
   modifier: Modifier = Modifier
 ) {
-  val context = LocalContext.current
   val spacing = OrcaTheme.spacings.large
 
   LazyColumn(
