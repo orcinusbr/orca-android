@@ -8,6 +8,8 @@
         <activity
             android:name="com.jeanbarrossilva.orca.platform.ui.test.core.SingleFragmentActivityTests$NonFragmentDestinationActivity" />
         <activity
+            android:name="com.jeanbarrossilva.orca.platform.ui.test.core.SingleFragmentActivityTests$NonFragmentDestinationActivity$DestinationActivity" />
+        <activity
             android:name="com.jeanbarrossilva.orca.platform.ui.test.core.SingleFragmentActivityTests$MultipleDestinationsActivity" />
         <activity
             android:name="com.jeanbarrossilva.orca.platform.ui.test.core.SingleFragmentActivityTests$PosteriorlyAddedDestinationActivity" />
