@@ -18,7 +18,7 @@ internal class ImageTests {
   }
 
   @Test
-  fun addsPixelsToTheirPrecedingCoordinates() {
+  fun addsPixelsToTheCoordinateThatSucceedsThePreviousOne() {
     assertThat(buildImage(width = 2, height = 2) { repeat(4) { pixel(Color.BLACK.rgb) } }.pixels)
       .containsExactly(
         Image.Pixel(x = 0, y = 0, Color.BLACK.rgb),
