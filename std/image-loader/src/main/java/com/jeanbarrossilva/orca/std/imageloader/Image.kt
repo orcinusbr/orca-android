@@ -5,8 +5,6 @@ import java.util.Objects
 /**
  * An image.
  *
- * @param width How wide this [Image] is.
- * @param height How tall this [Image] is.
  * @param pixels [Pixel]s by which this [Image] is composed.
  */
 @JvmInline
