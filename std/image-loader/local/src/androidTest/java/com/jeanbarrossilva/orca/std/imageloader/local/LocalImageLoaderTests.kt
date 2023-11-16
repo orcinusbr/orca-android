@@ -2,9 +2,10 @@ package com.jeanbarrossilva.orca.std.imageloader.local
 
 import android.graphics.Color
 import androidx.test.platform.app.InstrumentationRegistry
+import assertk.all
 import assertk.assertThat
+import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
-import com.jeanbarrossilva.orca.std.imageloader.buildImage
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
@@ -17,8 +18,12 @@ internal class LocalImageLoaderTests {
         override val source = R.drawable.ic_white
       }
     runTest {
-      assertThat(imageLoader.load(width = 1, height = 1))
-        .isEqualTo(buildImage(width = 1, height = 1) { pixel(Color.WHITE) })
+      assertThat(imageLoader.load(width = 1, height = 1)?.pixels.orEmpty()).all {
+        hasSize(1)
+        given { assertThat(it.single().x).isEqualTo(0) }
+        given { assertThat(it.single().y).isEqualTo(0) }
+        given { assertThat(it.single().color).isEqualTo(Color.WHITE) }
+      }
     }
   }
 }
