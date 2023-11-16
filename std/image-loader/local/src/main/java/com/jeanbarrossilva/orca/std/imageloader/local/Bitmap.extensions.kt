@@ -5,7 +5,7 @@ import com.jeanbarrossilva.orca.std.imageloader.Image
 import com.jeanbarrossilva.orca.std.imageloader.buildImage
 
 /** Converts this [Bitmap] into an [Image]. */
-fun Bitmap.toImage(): Image {
+suspend fun Bitmap.toImage(): Image {
   return buildImage(width, height) {
     val nonHardwareBitmap =
       if (config == Bitmap.Config.HARDWARE) {
