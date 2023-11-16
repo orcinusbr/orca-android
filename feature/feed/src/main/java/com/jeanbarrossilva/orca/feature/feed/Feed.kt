@@ -114,12 +114,12 @@ private fun Feed(
     topAppBar = {
       @OptIn(ExperimentalMaterial3Api::class)
       TopAppBar(
-        title = { AutoSizeText(stringResource(R.string.feed)) },
+        title = { AutoSizeText(stringResource(R.string.feature_feed)) },
         actions = {
           HoverableIconButton(onClick = onSearch) {
             Icon(
               OrcaTheme.iconography.search,
-              contentDescription = stringResource(R.string.feed_search)
+              contentDescription = stringResource(R.string.feature_feed_search)
             )
           }
         },
@@ -134,7 +134,7 @@ private fun Feed(
         ) {
           Icon(
             OrcaTheme.iconography.compose.filled,
-            contentDescription = stringResource(R.string.feed_compose)
+            contentDescription = stringResource(R.string.feature_feed_compose)
           )
         }
       }

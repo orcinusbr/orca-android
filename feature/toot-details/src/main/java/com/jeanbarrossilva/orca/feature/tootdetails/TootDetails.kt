@@ -128,7 +128,7 @@ private fun TootDetails(
       @OptIn(ExperimentalMaterial3Api::class)
       TopAppBarWithBackNavigation(
         onNavigation = onBackwardsNavigation,
-        title = { AutoSizeText(stringResource(R.string.toot_details)) },
+        title = { AutoSizeText(stringResource(R.string.feature_toot_details)) },
         scrollBehavior = topAppBarScrollBehavior
       )
     }

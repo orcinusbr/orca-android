@@ -3,15 +3,15 @@
     <item
         android:id="@+id/feed"
         android:icon="@drawable/bottom_navigation_icon_home"
-        android:title="@string/feed" />
+        android:title="@string/feature_feed" />
 
     <item
         android:id="@+id/profile_details"
         android:icon="@drawable/bottom_navigation_icon_profile_details"
-        android:title="@string/profile_details" />
+        android:title="@string/feature_profile_details" />
 
     <item
         android:id="@+id/settings"
         android:icon="@drawable/bottom_navigation_icon_settings"
-        android:title="@string/settings" />
+        android:title="@string/feature_settings" />
 </menu>

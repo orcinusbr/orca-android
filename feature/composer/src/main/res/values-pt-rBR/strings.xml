@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="composer">Compor</string>
-    <string name="composer_placeholder">No que você está pensando?</string>
-    <string name="composer_send">Enviar</string>
+    <string name="feature_composer">Compor</string>
+    <string name="feature_composer_placeholder">No que você está pensando?</string>
+    <string name="feature_composer_send">Enviar</string>
 </resources>

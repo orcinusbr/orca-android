@@ -50,7 +50,7 @@ private fun Settings(
     modifier,
     topAppBar = {
       TopAppBar(
-        title = { AutoSizeText(stringResource(R.string.settings)) },
+        title = { AutoSizeText(stringResource(R.string.feature_settings)) },
         scrollBehavior = topAppBarScrollBehavior
       )
     }
@@ -61,7 +61,7 @@ private fun Settings(
       contentPadding = it + PaddingValues(OrcaTheme.spacings.medium)
     ) {
       item {
-        Section(stringResource(R.string.settings_general)) {
+        Section(stringResource(R.string.feature_settings_general)) {
           muting(mutedTerms, onNavigationToTermMuting, onTermUnmute)
         }
       }

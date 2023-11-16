@@ -76,7 +76,7 @@ internal fun Header(
         Stat {
           Icon(
             OrcaTheme.iconography.comment.outlined,
-            contentDescription = stringResource(R.string.toot_details_comments)
+            contentDescription = stringResource(R.string.feature_toot_details_comments)
           )
           Text(details.formattedCommentCount)
         }
@@ -87,7 +87,7 @@ internal fun Header(
         Stat {
           Icon(
             OrcaTheme.iconography.share.outlined,
-            contentDescription = stringResource(R.string.toot_details_share),
+            contentDescription = stringResource(R.string.feature_toot_details_share),
             Modifier.clickable(
               remember(::MutableInteractionSource),
               indication = null,

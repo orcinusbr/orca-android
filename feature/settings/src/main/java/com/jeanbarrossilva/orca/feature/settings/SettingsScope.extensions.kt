@@ -23,22 +23,25 @@ internal fun SettingsScope.muting(
     icon = {
       Icon(
         OrcaTheme.iconography.mute.filled,
-        contentDescription = stringResource(R.string.settings_muting)
+        contentDescription = stringResource(R.string.feature_settings_muting)
       )
     },
-    label = { Text(stringResource(R.string.settings_muting)) }
+    label = { Text(stringResource(R.string.feature_settings_muting)) }
   ) {
     setting(
       onClick = onNavigationToTermMuting,
-      label = { Text(stringResource(R.string.settings_add)) },
+      label = { Text(stringResource(R.string.feature_settings_add)) },
       icon = {
-        Icon(OrcaTheme.iconography.add, contentDescription = stringResource(R.string.settings_add))
+        Icon(
+          OrcaTheme.iconography.add,
+          contentDescription = stringResource(R.string.feature_settings_add)
+        )
       }
     )
     mutedTerms.forEach {
       setting(label = { Text(it) }) {
         button(
-          contentDescription = { stringResource(R.string.settings_remove) },
+          contentDescription = { stringResource(R.string.feature_settings_remove) },
           onClick = { onUnmute(it) }
         ) {
           delete.filled

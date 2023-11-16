@@ -167,7 +167,7 @@ private fun Search(
         }
 
         TextField(query, onQueryChange, Modifier.focusRequester(focusRequester).fillMaxWidth()) {
-          Text(stringResource(R.string.search_placeholder))
+          Text(stringResource(R.string.feature_search_placeholder))
         }
       }
     }
@@ -193,12 +193,12 @@ private fun EmptyResultsMessage(modifier: Modifier = Modifier) {
     CompositionLocalProvider(LocalContentColor provides OrcaTheme.typography.headlineMedium.color) {
       Icon(
         OrcaTheme.iconography.search,
-        contentDescription = stringResource(R.string.search),
+        contentDescription = stringResource(R.string.feature_search),
         Modifier.size(64.dp)
       )
 
       Text(
-        stringResource(R.string.search_no_results_found),
+        stringResource(R.string.feature_search_no_results_found),
         style = OrcaTheme.typography.headlineMedium
       )
     }

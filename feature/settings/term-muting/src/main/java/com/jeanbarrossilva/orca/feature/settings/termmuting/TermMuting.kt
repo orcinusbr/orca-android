@@ -16,7 +16,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -73,7 +72,7 @@ internal fun TermMuting(
   val spacing = OrcaTheme.spacings.medium
   val focusRequester = remember(::FocusRequester)
   val errorDispatcher = rememberErrorDispatcher {
-    error(context, R.string.settings_term_muting_empty_error, String::isBlank)
+    error(context, R.string.feature_settings_term_muting_empty_error, String::isBlank)
   }
   val containsErrors by errorDispatcher.containsErrorsAsState
   val onDone by rememberUpdatedState {
@@ -96,15 +95,15 @@ internal fun TermMuting(
     topAppBar = {
       TopAppBarWithBackNavigation(
         onNavigation = onPop,
-        title = { Text(stringResource(R.string.settings_term_muting)) },
-        subtitle = { Text(stringResource(R.string.settings_term_muting_settings)) },
+        title = { Text(stringResource(R.string.feature_settings_term_muting)) },
+        subtitle = { Text(stringResource(R.string.feature_settings_term_muting_settings)) },
         scrollBehavior = topAppBarScrollBehavior
       )
     },
     buttonBar = {
       ButtonBar(lazyListState) {
         PrimaryButton(onClick = onDone, Modifier.testTag(SETTINGS_TERM_MUTING_MUTE_BUTTON)) {
-          Text(stringResource(R.string.settings_term_muting_mute))
+          Text(stringResource(R.string.feature_settings_term_muting_mute))
         }
       }
     }
@@ -126,13 +125,13 @@ internal fun TermMuting(
           KeyboardOptions(imeAction = ImeAction.Done),
           KeyboardActions(onDone = { onDone() })
         ) {
-          Text(stringResource(R.string.settings_term_muting_term))
+          Text(stringResource(R.string.feature_settings_term_muting_term))
         }
       }
 
       item {
         Text(
-          stringResource(R.string.settings_term_muting_explanation),
+          stringResource(R.string.feature_settings_term_muting_explanation),
           style = OrcaTheme.typography.bodySmall
         )
       }

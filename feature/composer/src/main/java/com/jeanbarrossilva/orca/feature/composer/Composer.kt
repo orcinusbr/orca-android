@@ -104,7 +104,7 @@ private fun Composer(
     topAppBar = {
       @OptIn(ExperimentalMaterial3Api::class)
       TopAppBar(
-        title = { AutoSizeText(stringResource(R.string.composer)) },
+        title = { AutoSizeText(stringResource(R.string.feature_composer)) },
         navigationIcon = {
           HoverableIconButton(onClick = onBackwardsNavigation) {
             Icon(OrcaTheme.iconography.back, contentDescription = "Back")
@@ -129,7 +129,7 @@ private fun Composer(
       ) {
         Icon(
           OrcaTheme.iconography.send,
-          contentDescription = stringResource(R.string.composer_send)
+          contentDescription = stringResource(R.string.feature_composer_send)
         )
       }
     },
@@ -160,7 +160,7 @@ private fun Composer(
               interactionSource,
               placeholder = {
                 Text(
-                  stringResource(R.string.composer_placeholder),
+                  stringResource(R.string.feature_composer_placeholder),
                   style = style.copy(color = OrcaTheme.colors.tertiary)
                 )
               },

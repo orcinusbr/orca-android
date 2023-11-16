@@ -388,13 +388,13 @@ private fun ProfileDetails(
         HoverableIconButton(onClick = { isTopBarDropdownExpanded = true }) {
           Icon(
             OrcaTheme.iconography.expand,
-            contentDescription = stringResource(R.string.profile_details_more)
+            contentDescription = stringResource(R.string.feature_profile_details_more)
           )
         }
 
         DropdownMenu(isTopBarDropdownExpanded, onDismissal = { isTopBarDropdownExpanded = false }) {
           DropdownMenuItem(
-            text = { Text(stringResource(R.string.profile_details_open_in_browser)) },
+            text = { Text(stringResource(R.string.feature_profile_details_open_in_browser)) },
             onClick = {
               onNavigateToWebpage(details.url)
               isTopBarDropdownExpanded = false
@@ -402,13 +402,13 @@ private fun ProfileDetails(
             leadingIcon = {
               Icon(
                 OrcaTheme.iconography.link,
-                contentDescription = stringResource(R.string.profile_details_external_link)
+                contentDescription = stringResource(R.string.feature_profile_details_external_link)
               )
             }
           )
 
           DropdownMenuItem(
-            text = { Text(stringResource(R.string.profile_details_copy_url)) },
+            text = { Text(stringResource(R.string.feature_profile_details_copy_url)) },
             onClick = {
               clipboardManager.setText(AnnotatedString("${details.url}"))
               isTopBarDropdownExpanded = false
@@ -416,13 +416,13 @@ private fun ProfileDetails(
             leadingIcon = {
               Icon(
                 OrcaTheme.iconography.link,
-                contentDescription = stringResource(R.string.profile_details_share)
+                contentDescription = stringResource(R.string.feature_profile_details_share)
               )
             }
           )
 
           DropdownMenuItem(
-            text = { Text(stringResource(R.string.profile_details_share)) },
+            text = { Text(stringResource(R.string.feature_profile_details_share)) },
             onClick = {
               onShare(details.url)
               isTopBarDropdownExpanded = false
@@ -430,7 +430,7 @@ private fun ProfileDetails(
             leadingIcon = {
               Icon(
                 OrcaTheme.iconography.share.outlined,
-                contentDescription = stringResource(R.string.profile_details_share)
+                contentDescription = stringResource(R.string.feature_profile_details_share)
               )
             }
           )
