@@ -40,9 +40,7 @@ internal class TimelineTests {
 
   @Test
   fun showsDividerWhenHeaderIsNotAddedOnTootPreviewBeforeLastOne() {
-    composeRule.setContent {
-      OrcaTheme { PopulatedTimeline(tootPreviews = TootPreview.samples.take(2)) }
-    }
+    composeRule.setContent { OrcaTheme { Timeline(TootPreview.samples.take(2)) } }
     composeRule
       .onNodeWithTag(TIMELINE_TAG)
       .onChildren()
@@ -54,9 +52,7 @@ internal class TimelineTests {
 
   @Test
   fun showsDividersWhenHeaderIsAddedOnTootPreviewBeforeLastOne() {
-    composeRule.setContent {
-      OrcaTheme { PopulatedTimeline(tootPreviews = TootPreview.samples.take(2)) {} }
-    }
+    composeRule.setContent { OrcaTheme { Timeline(TootPreview.samples.take(2)) {} } }
     composeRule
       .onNodeWithTag(TIMELINE_TAG)
       .onChildren()[1]
@@ -67,9 +63,7 @@ internal class TimelineTests {
 
   @Test
   fun doesNotShowDividersOnLastTootPreview() {
-    composeRule.setContent {
-      OrcaTheme { PopulatedTimeline(tootPreviews = TootPreview.samples.take(1)) }
-    }
+    composeRule.setContent { OrcaTheme { Timeline(TootPreview.samples.take(1)) } }
     composeRule
       .onTimeline()
       .onChildren()
