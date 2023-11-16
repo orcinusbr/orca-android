@@ -22,7 +22,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: reactivecircus/android-emulator-runner@v2.28.0
         with:
-          api-level: 29
+          api-level: 33
           arch: x86_64
           cores: 4
           disable-animations: true
