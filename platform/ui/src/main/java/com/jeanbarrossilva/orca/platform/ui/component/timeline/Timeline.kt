@@ -3,6 +3,7 @@ package com.jeanbarrossilva.orca.platform.ui.component.timeline
 import androidx.annotation.RestrictTo
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,6 +34,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -107,11 +111,12 @@ fun Timeline(
   contentPadding: PaddingValues = PaddingValues(),
   refresh: Refresh = Refresh.Disabled,
   relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider(),
-  header: (@Composable LazyItemScope.() -> Unit)? = null
+  header: (@Composable () -> Unit)? = null
 ) {
   when (tootPreviewsLoadable) {
-    is ListLoadable.Empty -> EmptyTimelineMessage(header, contentPadding, modifier)
-    is ListLoadable.Loading -> Timeline(modifier, contentPadding, header)
+    is ListLoadable.Empty ->
+      EmptyTimelineMessage(header?.let { { it() } }, contentPadding, modifier)
+    is ListLoadable.Loading -> Timeline(modifier, contentPadding, header?.let { { it() } })
     is ListLoadable.Populated ->
       Timeline(
         tootPreviewsLoadable.content,
@@ -186,12 +191,12 @@ fun Timeline(
   contentPadding: PaddingValues = PaddingValues(),
   refresh: Refresh = Refresh.Disabled,
   relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider(),
-  header: (@Composable LazyItemScope.() -> Unit)? = null
+  header: (@Composable () -> Unit)? = null
 ) {
   if (tootPreviews.isEmpty()) {
-    EmptyTimelineMessage(header, contentPadding, modifier)
+    EmptyTimelineMessage(header?.let { { it() } }, contentPadding, modifier)
   } else {
-    Timeline(onNext, modifier, header, state, contentPadding, refresh) {
+    Timeline(onNext, modifier, header?.let { { it() } }, state, contentPadding, refresh) {
       itemsIndexed(
         tootPreviews,
         key = { _, preview -> preview.id },
@@ -292,7 +297,8 @@ fun Timeline(
 @Composable
 internal fun Timeline(
   tootPreviewsLoadable: ListLoadable<TootPreview>,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
+  header: @Composable (() -> Unit)? = null
 ) {
   Timeline(
     tootPreviewsLoadable,
@@ -302,25 +308,26 @@ internal fun Timeline(
     onShare = {},
     onClick = {},
     onNext = {},
-    modifier
+    modifier,
+    header = header
   )
 }
 
 /**
  * [Timeline] that's populated with sample [TootPreview]s.
  *
- * @param modifier [Modifier] to be applied to the underlying [Timeline].
  * @param tootPreviews [TootPreview]s to be lazily shown.
+ * @param modifier [Modifier] to be applied to the underlying [Timeline].
  * @param onNext Callback run whenever the bottom is being reached.
  * @param header [Composable] to be shown above the [TootPreview]s.
  * @see TootPreview.samples
  */
 @Composable
-internal fun PopulatedTimeline(
+internal fun Timeline(
+  tootPreviews: List<TootPreview>,
   modifier: Modifier = Modifier,
-  tootPreviews: List<TootPreview> = TootPreview.samples,
   onNext: (index: Int) -> Unit = {},
-  header: @Composable (LazyItemScope.() -> Unit)? = null
+  header: @Composable() (() -> Unit)? = null
 ) {
   Timeline(
     tootPreviews,
@@ -348,6 +355,7 @@ private fun EmptyTimelineMessage(
   contentPadding: PaddingValues,
   modifier: Modifier = Modifier
 ) {
+  val context = LocalContext.current
   val spacing = OrcaTheme.spacings.large
 
   LazyColumn(
@@ -359,21 +367,30 @@ private fun EmptyTimelineMessage(
     header?.let { item(content = it) }
 
     item {
-      Icon(
-        OrcaTheme.iconography.empty,
-        contentDescription = stringResource(R.string.platform_ui_timeline_empty),
-        Modifier.padding(start = spacing, top = spacing, end = spacing).size(32.dp),
-        tint = OrcaTheme.colors.secondary
-      )
-    }
+      BoxWithConstraints {
+        Column(
+          Modifier.fillParentMaxSize().drawWithContent {
+            translate(top = -(center.y / 2f + center.y - size.height / 2f)) {
+              this@drawWithContent.drawContent()
+            }
+          },
+          verticalArrangement = Arrangement.spacedBy(spacing, Alignment.CenterVertically),
+          horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+          Icon(
+            OrcaTheme.iconography.empty,
+            contentDescription = stringResource(R.string.platform_ui_timeline_empty),
+            Modifier.size(32.dp),
+            tint = OrcaTheme.colors.secondary
+          )
 
-    item {
-      Text(
-        stringResource(R.string.platform_ui_timeline_empty_message),
-        Modifier.padding(start = spacing, end = spacing, bottom = spacing),
-        textAlign = TextAlign.Center,
-        style = OrcaTheme.typography.headlineMedium
-      )
+          Text(
+            stringResource(R.string.platform_ui_timeline_empty_message),
+            textAlign = TextAlign.Center,
+            style = OrcaTheme.typography.headlineMedium
+          )
+        }
+      }
     }
   }
 }
@@ -390,16 +407,28 @@ private fun LoadingTimelinePreview() {
 @MultiThemePreview
 private fun EmptyTimelinePreview() {
   OrcaTheme {
+    Surface(color = OrcaTheme.colors.background.container) { Timeline(ListLoadable.Empty()) }
+  }
+}
+
+/** Preview of an empty [Timeline] with a header. */
+@Composable
+@MultiThemePreview
+private fun EmptyTimelineWithHeaderPreview() {
+  OrcaTheme {
     Surface(color = OrcaTheme.colors.background.container) {
-      Timeline(
-        ListLoadable.Empty(),
-        onHighlightClick = {},
-        onFavorite = {},
-        onReblog = {},
-        onShare = {},
-        onClick = {},
-        onNext = {}
-      )
+      Timeline(ListLoadable.Empty()) {
+        AutoSizeText(
+          "Header",
+          Modifier.padding(
+            start = OrcaTheme.spacings.large,
+            top = OrcaTheme.spacings.large,
+            end = OrcaTheme.spacings.large,
+            bottom = OrcaTheme.spacings.medium
+          ),
+          style = OrcaTheme.typography.headlineLarge
+        )
+      }
     }
   }
 }
@@ -408,7 +437,7 @@ private fun EmptyTimelinePreview() {
 @Composable
 @MultiThemePreview
 private fun PopulatedTimelinePreview() {
-  OrcaTheme { Surface(color = OrcaTheme.colors.background.container) { PopulatedTimeline() } }
+  OrcaTheme { Surface(color = OrcaTheme.colors.background.container) { Timeline() } }
 }
 
 /** Preview of a populated [Timeline] with a header. */
@@ -417,7 +446,7 @@ private fun PopulatedTimelinePreview() {
 private fun PopulatedTimelineWithHeaderPreview() {
   OrcaTheme {
     Surface(color = OrcaTheme.colors.background.container) {
-      PopulatedTimeline {
+      Timeline {
         AutoSizeText(
           "Header",
           Modifier.padding(
