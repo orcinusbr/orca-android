@@ -4,4 +4,7 @@ plugins {
   `java-library`
 }
 
-dependencies { testImplementation(kotlin("test")) }
+dependencies {
+  testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.test)
+}

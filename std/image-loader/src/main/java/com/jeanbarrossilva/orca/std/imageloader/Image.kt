@@ -9,7 +9,16 @@ import java.util.Objects
  * @param height How tall this [Image] is.
  * @param pixels [Pixel]s by which this [Image] is composed.
  */
-class Image private constructor(val width: Int, val height: Int, val pixels: Array<Pixel>) {
+@JvmInline
+value class Image private constructor(val pixels: Array<Pixel>) {
+  /** Amount of [Pixel]s in the x-axis. */
+  val width
+    get() = pixels.groupBy(Pixel::y)[0].orEmpty().size
+
+  /** Amount of [Pixel]s in the y-axis. */
+  val height
+    get() = pixels.groupBy(Pixel::x)[0].orEmpty().size
+
   /**
    * Smallest addressable element in an [Image].
    *
@@ -67,7 +76,7 @@ class Image private constructor(val width: Int, val height: Int, val pixels: Arr
     internal fun build(): Image {
       ensurePixelSufficiency()
       nextPixelIndex = 0
-      @Suppress("UNCHECKED_CAST") return Image(width, height, pixels as Array<Pixel>)
+      @Suppress("UNCHECKED_CAST") return Image(pixels as Array<Pixel>)
     }
 
     /**
@@ -81,20 +90,5 @@ class Image private constructor(val width: Int, val height: Int, val pixels: Arr
         throw IllegalArgumentException("Insufficient amount of pixels for $width x $height.")
       }
     }
-  }
-
-  override fun equals(other: Any?): Boolean {
-    return other is Image &&
-      width == other.width &&
-      height == other.height &&
-      pixels.contentEquals(other.pixels)
-  }
-
-  override fun hashCode(): Int {
-    return Objects.hash(width, height, pixels)
-  }
-
-  override fun toString(): String {
-    return "Image(width=$width, height=$height, pixels=$pixels)"
   }
 }
