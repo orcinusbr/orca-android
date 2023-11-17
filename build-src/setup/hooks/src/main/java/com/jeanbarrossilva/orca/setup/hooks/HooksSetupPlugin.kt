@@ -22,8 +22,8 @@ class HooksSetupPlugin : Plugin<Project> {
         while read local_ref local_oid remote_ref remote_oid; do
           has_changes=${'$'}([ "${'$'}local_oid" != "${'$'}zero" ]; echo ${'$'}?)
           if [ ${'$'}has_changes -eq 0 ]; then
-            ./gradlew build
-            ./gradlew connectedAndroidTest
+            ./gradlew build || { echo "Build failed, aborting push."; exit 1; }
+            ./gradlew connectedAndroidTest || { echo "Failed to run instrumentation tests, aborting push."; exit 1; }
           fi
         done
         exit 0
