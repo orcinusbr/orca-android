@@ -42,6 +42,9 @@ class HooksSetupPlugin : Plugin<Project> {
       """
           .trimIndent()
       )
-    ProcessBuilder().command("chmod", "+x", "$prePushHookPath").start()
+    ProcessBuilder()
+      .command("git", "config", "core.hooksPath", ".git/hooks")
+      .command("chmod", "+x", "$prePushHookPath")
+      .start()
   }
 }
