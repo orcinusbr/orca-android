@@ -30,6 +30,6 @@ class HooksSetupPlugin : Plugin<Project> {
       """
           .trimIndent()
       )
-    ProcessBuilder().command("chmod", "+x", "$prePushHookPath")
+    ProcessBuilder().command("chmod", "+x", "$prePushHookPath").start()
   }
 }
