@@ -34,6 +34,7 @@ class HooksSetupPlugin : Plugin<Project> {
           while read local_ref local_oid remote_ref remote_oid; do
             has_changes=${'$'}([ "${'$'}local_oid" != "${'$'}zero" ]; echo ${'$'}?)
             if [ ${'$'}has_changes -eq 0 ]; then
+              try_to_gradlew spotlessApply
               try_to_gradlew build
               try_to_gradlew connectedAndroidTest
             fi
