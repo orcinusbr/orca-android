@@ -2,11 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
         <activity
+            android:name="com.jeanbarrossilva.orca.platform.ui.test.core.ActivityExtensionsTests$AlwaysFocusedActivityWithContentView" />
+        <activity
+            android:name="com.jeanbarrossilva.orca.platform.ui.test.core.ActivityExtensionsTests$AlwaysFocusedActivityWithoutContentView" />
+        <activity
+            android:name="com.jeanbarrossilva.orca.platform.ui.test.core.ActivityExtensionsTests$WindowFocusStealerActivity" />
+        <activity
             android:name="com.jeanbarrossilva.orca.platform.ui.test.core.SingleFragmentActivityTests$NoDestinationActivity" />
         <activity
             android:name="com.jeanbarrossilva.orca.platform.ui.test.core.SingleFragmentActivityTests$InequivalentlyRoutedDestinationActivity" />
         <activity
             android:name="com.jeanbarrossilva.orca.platform.ui.test.core.SingleFragmentActivityTests$NonFragmentDestinationActivity" />
+        <activity
+            android:name="com.jeanbarrossilva.orca.platform.ui.test.core.SingleFragmentActivityTests$NonFragmentDestinationActivity$DestinationActivity" />
         <activity
             android:name="com.jeanbarrossilva.orca.platform.ui.test.core.SingleFragmentActivityTests$MultipleDestinationsActivity" />
         <activity

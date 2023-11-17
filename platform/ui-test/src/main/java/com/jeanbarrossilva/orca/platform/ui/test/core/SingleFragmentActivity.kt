@@ -24,6 +24,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 /** [FragmentActivity] that hosts a single [Fragment]. */
 abstract class SingleFragmentActivity : FragmentActivity() {
@@ -253,9 +255,11 @@ abstract class SingleFragmentActivity : FragmentActivity() {
     navGraphIntegrityInsuranceJob =
       navGraphIntegrityInsuranceScope
         .launch {
-          ensureHasSingleDestination(navGraph)
-          ensureDestinationRouteIsEquivalent(navGraph)
-          ensureDestinationPointsToFragment(navGraph)
+          Mutex().withLock(owner = navGraph) {
+            ensureHasSingleDestination(navGraph)
+            ensureDestinationRouteIsEquivalent(navGraph)
+            ensureDestinationPointsToFragment(navGraph)
+          }
         }
         .also { it.invokeOnCompletion { navGraphIntegrityInsuranceJob = null } }
   }
