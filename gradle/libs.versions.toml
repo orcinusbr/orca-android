@@ -67,6 +67,7 @@ kotlin-symbolProcessor = { id = "com.google.devtools.ksp", version.ref = "kotlin
 moduleDependencyGraph = { id = "com.savvasdalkitsis.module-dependency-graph", version = "0.10" }
 orca-setup-android-library = { id = "com.jeanbarrossilva.orca.setup.android.library" }
 orca-setup-formatting = { id = "com.jeanbarrossilva.orca.setup.formatting" }
+orca-setup-hooks = { id = "com.jeanbarrossilva.orca.setup.hooks" }
 orca-setup-java = { id = "com.jeanbarrossilva.orca.setup.java" }
 orca-setup-kotlin = { id = "com.jeanbarrossilva.orca.setup.kotlin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

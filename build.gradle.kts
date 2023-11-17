@@ -14,6 +14,7 @@ plugins {
 
   id(libs.plugins.orca.setup.android.library.get().pluginId)
   id(libs.plugins.orca.setup.formatting.get().pluginId)
+  id(libs.plugins.orca.setup.hooks.get().pluginId)
   id(libs.plugins.orca.setup.java.get().pluginId)
   id(libs.plugins.orca.setup.kotlin.get().pluginId)
   id("build-src")
