@@ -11,7 +11,7 @@ includeBuild("build-src")
 include(
   ":app",
   ":core",
-  ":core:http",
+  ":core:mastodon",
   ":core:sample",
   ":core:sample-test",
   ":core:shared-preferences",

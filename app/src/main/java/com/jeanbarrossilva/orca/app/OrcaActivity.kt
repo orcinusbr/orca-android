@@ -7,7 +7,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.jeanbarrossilva.orca.app.databinding.ActivityOrcaBinding
-import com.jeanbarrossilva.orca.app.module.core.MainHttpModule
+import com.jeanbarrossilva.orca.app.module.core.MainMastodonCoreModule
 import com.jeanbarrossilva.orca.app.module.feature.feed.MainFeedModule
 import com.jeanbarrossilva.orca.app.module.feature.profiledetails.MainProfileDetailsModule
 import com.jeanbarrossilva.orca.app.module.feature.search.MainSearchModule
@@ -31,7 +31,7 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
   private var binding: ActivityOrcaBinding? = null
   private var constraintSet: ConstraintSet? = null
 
-  protected open val coreModule: CoreModule = MainHttpModule
+  protected open val coreModule: CoreModule = MainMastodonCoreModule
 
   final override val height: Int
     get() = binding?.bottomNavigationView?.height ?: 0
