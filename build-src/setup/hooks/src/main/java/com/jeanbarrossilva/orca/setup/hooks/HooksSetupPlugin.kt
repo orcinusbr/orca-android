@@ -24,7 +24,9 @@ class HooksSetupPlugin : Plugin<Project> {
             local has_failed=0
              while IFS= read -r line; do
               echo "${'$'}line"
-              [[ "${'$'}line" == *"BUILD FAILED"* ]] && has_failed=1
+              if [[ "${'$'}line" == "BUILD FAILED"* ]]; then
+                has_failed=1
+              fi
             done < <(./gradlew "${'$'}1" 2>&1)
             if [ ${'$'}has_failed -eq 1 ]; then
               echo "Build failed, aborting push."
