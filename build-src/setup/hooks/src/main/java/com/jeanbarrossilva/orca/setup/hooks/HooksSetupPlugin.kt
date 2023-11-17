@@ -21,11 +21,13 @@ class HooksSetupPlugin : Plugin<Project> {
           zero=${'$'}(git hash-object --stdin </dev/null | tr '[0-9a-f]' '0')
 
           try_to_gradlew() {
-            local command="${'$'}1";
-            output=${'$'}(./gradlew "${'$'}command" 2>&1)
-            if [[ "${'$'}output" == *"BUILD FAILED in " ]]; then
+            local has_failed=0
+             while IFS= read -r line; do
+              echo "${'$'}line"
+              [[ "${'$'}line" == *"BUILD FAILED"* ]] && has_failed=1
+            done < <(./gradlew "${'$'}1" 2>&1)
+            if [ ${'$'}has_failed -eq 1 ]; then
               echo "Build failed, aborting push."
-              exit 1
             fi
           }
 
@@ -41,6 +43,5 @@ class HooksSetupPlugin : Plugin<Project> {
           .trimIndent()
       )
     ProcessBuilder().command("chmod", "+x", "$prePushHookPath").start()
-    throw Exception(":P")
   }
 }
