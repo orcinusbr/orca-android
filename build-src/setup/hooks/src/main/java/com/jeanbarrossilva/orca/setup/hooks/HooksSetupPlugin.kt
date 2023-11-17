@@ -14,22 +14,33 @@ class HooksSetupPlugin : Plugin<Project> {
     Files.createFile(prePushHookPath)
       .writeText(
         """
-        #!/bin/bash
+          #!/bin/bash
 
-        remote="${'$'}1"
-        url="${'$'}2"
-        zero=${'$'}(git hash-object --stdin </dev/null | tr '[0-9a-f]' '0')
-        while read local_ref local_oid remote_ref remote_oid; do
-          has_changes=${'$'}([ "${'$'}local_oid" != "${'$'}zero" ]; echo ${'$'}?)
-          if [ ${'$'}has_changes -eq 0 ]; then
-            ./gradlew build || { echo "Build failed, aborting push."; exit 1; }
-            ./gradlew connectedAndroidTest || { echo "Failed to run instrumentation tests, aborting push."; exit 1; }
-          fi
-        done
-        exit 0
+          remote="${'$'}1"
+          url="${'$'}2"
+          zero=${'$'}(git hash-object --stdin </dev/null | tr '[0-9a-f]' '0')
+
+          try_to_gradlew() {
+            local command="${'$'}1";
+            output=${'$'}(./gradlew "${'$'}command" 2>&1)
+            if [[ "${'$'}output" == *"BUILD FAILED in " ]]; then
+              echo "Build failed, aborting push."
+              exit 1
+            fi
+          }
+
+          while read local_ref local_oid remote_ref remote_oid; do
+            has_changes=${'$'}([ "${'$'}local_oid" != "${'$'}zero" ]; echo ${'$'}?)
+            if [ ${'$'}has_changes -eq 0 ]; then
+              try_to_gradlew build
+              try_to_gradlew connectedAndroidTest
+            fi
+          done
+          exit 0
       """
           .trimIndent()
       )
     ProcessBuilder().command("chmod", "+x", "$prePushHookPath").start()
+    throw Exception(":P")
   }
 }
