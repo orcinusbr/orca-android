@@ -17,13 +17,13 @@ import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.orca.feature.feed.viewmodel.FeedViewModel
-import com.jeanbarrossilva.orca.platform.autos.extensions.plus
 import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.plus
 import com.jeanbarrossilva.orca.platform.autos.overlays.asPaddingValues
 import com.jeanbarrossilva.orca.platform.autos.reactivity.BottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener

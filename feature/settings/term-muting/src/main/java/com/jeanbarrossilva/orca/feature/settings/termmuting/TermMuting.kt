@@ -25,7 +25,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.jeanbarrossilva.orca.platform.autos.extensions.plus
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.PrimaryButton
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TextField
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.error.containsErrorsAsState
@@ -34,6 +33,7 @@ import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.button.ButtonBar
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBarWithBackNavigation
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.plus
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay

@@ -34,7 +34,6 @@ import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.selectable.list
 import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.selectable.list.selectFirst
 import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.viewmodel.MastodonAuthorizationViewModel
 import com.jeanbarrossilva.orca.core.sample.instance.domain.samples
-import com.jeanbarrossilva.orca.platform.autos.extensions.plus
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.PrimaryButton
 import com.jeanbarrossilva.orca.platform.autos.kit.input.option.list.Options
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TextField
@@ -42,6 +41,7 @@ import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.button.ButtonBar
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.plus
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 
