@@ -10,10 +10,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
-import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.extensions.border
 import com.jeanbarrossilva.orca.platform.autos.extensions.bottom
 import com.jeanbarrossilva.orca.platform.autos.extensions.top
+import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.kit.action.setting.Setting
 import com.jeanbarrossilva.orca.platform.autos.kit.action.setting.SettingDefaults
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme

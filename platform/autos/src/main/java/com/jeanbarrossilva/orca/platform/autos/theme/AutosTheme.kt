@@ -21,13 +21,13 @@ import com.jeanbarrossilva.orca.autos.iconography.Iconography
 import com.jeanbarrossilva.orca.autos.overlays.Overlays
 import com.jeanbarrossilva.orca.platform.autos.borders.LocalBorders
 import com.jeanbarrossilva.orca.platform.autos.colors.LocalColors
+import com.jeanbarrossilva.orca.platform.autos.extensions.LocalTypography
+import com.jeanbarrossilva.orca.platform.autos.extensions.Rubik
+import com.jeanbarrossilva.orca.platform.autos.extensions.with
 import com.jeanbarrossilva.orca.platform.autos.forms.LocalForms
 import com.jeanbarrossilva.orca.platform.autos.iconography.LocalIconography
 import com.jeanbarrossilva.orca.platform.autos.overlays.LocalOverlays
 import com.jeanbarrossilva.orca.platform.autos.spacings.LocalSpacings
-import com.jeanbarrossilva.orca.platform.autos.extensions.LocalTypography
-import com.jeanbarrossilva.orca.platform.autos.extensions.Rubik
-import com.jeanbarrossilva.orca.platform.autos.extensions.with
 
 /** Provider of [AutosTheme]'s configurations. */
 object AutosTheme {
