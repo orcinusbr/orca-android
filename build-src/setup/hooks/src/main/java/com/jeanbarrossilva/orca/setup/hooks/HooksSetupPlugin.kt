@@ -30,6 +30,7 @@ class HooksSetupPlugin : Plugin<Project> {
             done < <(./gradlew "${'$'}1" 2>&1)
             if [ ${'$'}has_failed -eq 1 ]; then
               echo "Build failed, aborting push."
+              exit 1
             fi
           }
 
