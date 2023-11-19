@@ -1,3 +1,4 @@
+import com.jeanbarrossilva.orca.autos
 import com.jeanbarrossilva.orca.chrynan
 import com.jeanbarrossilva.orca.loadable
 
@@ -24,10 +25,11 @@ allprojects { repositories.mavenCentral() }
 
 subprojects {
   repositories {
+    autos(rootProject)
     chrynan()
     google()
     gradlePluginPortal()
-    loadable(project)
+    loadable(rootProject)
   }
 }
 

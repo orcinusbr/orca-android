@@ -18,8 +18,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.theme.kit.action.Hoverable
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconDefaults
 
@@ -30,15 +33,15 @@ internal object StatDefaults {
 internal enum class StatPosition {
   LEADING {
     override val padding
-      @Composable get() = PaddingValues(end = OrcaTheme.spacings.small)
+      @Composable get() = PaddingValues(end = OrcaTheme.spacings.small.dp)
   },
   SUBSEQUENT {
     override val padding
-      @Composable get() = PaddingValues(horizontal = OrcaTheme.spacings.small)
+      @Composable get() = PaddingValues(horizontal = OrcaTheme.spacings.small.dp)
   },
   TRAILING {
     override val padding
-      @Composable get() = PaddingValues(start = OrcaTheme.spacings.small)
+      @Composable get() = PaddingValues(start = OrcaTheme.spacings.small.dp)
   };
 
   @get:Composable abstract val padding: PaddingValues
@@ -66,8 +69,8 @@ internal fun Stat(
   modifier: Modifier = Modifier,
   content: @Composable RowScope.() -> Unit
 ) {
-  val spacing = OrcaTheme.spacings.small
-  val contentColor = OrcaTheme.colors.secondary
+  val spacing = OrcaTheme.spacings.small.dp
+  val contentColor = OrcaTheme.colors.secondary.asColor
 
   Hoverable(modifier.padding(position.padding).clickable(role = Role.Button, onClick = onClick)) {
     Row(
@@ -88,7 +91,7 @@ internal fun Stat(
 @MultiThemePreview
 internal fun LeadingStatPreview() {
   OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container) { Stat(StatPosition.LEADING) }
+    Surface(color = OrcaTheme.colors.background.container.asColor) { Stat(StatPosition.LEADING) }
   }
 }
 
@@ -96,7 +99,7 @@ internal fun LeadingStatPreview() {
 @MultiThemePreview
 internal fun SubsequentStatPreview() {
   OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container) { Stat(StatPosition.SUBSEQUENT) }
+    Surface(color = OrcaTheme.colors.background.container.asColor) { Stat(StatPosition.SUBSEQUENT) }
   }
 }
 
@@ -104,7 +107,7 @@ internal fun SubsequentStatPreview() {
 @MultiThemePreview
 internal fun TrailingStatPreview() {
   OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container) { Stat(StatPosition.TRAILING) }
+    Surface(color = OrcaTheme.colors.background.container.asColor) { Stat(StatPosition.TRAILING) }
   }
 }
 
@@ -112,7 +115,7 @@ internal fun TrailingStatPreview() {
 private fun Stat(position: StatPosition, modifier: Modifier = Modifier) {
   Stat(
     position,
-    OrcaTheme.iconography.comment.outlined,
+    OrcaTheme.iconography.comment.outlined.asImageVector,
     contentDescription = "Comment",
     onClick = {},
     modifier

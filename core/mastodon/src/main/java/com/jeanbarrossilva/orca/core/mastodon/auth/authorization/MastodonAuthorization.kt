@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
 import com.jeanbarrossilva.orca.core.mastodon.R
@@ -152,7 +153,7 @@ internal fun MastodonAuthorization(
   val isHeaderHidden by
     remember(lazyListState) { derivedStateOf { lazyListState.firstVisibleItemIndex > 0 } }
   val headerTitle = stringResource(R.string.core_http_authorization_account_origin)
-  val spacing = OrcaTheme.spacings.extraLarge
+  val spacing = OrcaTheme.spacings.extraLarge.dp
 
   Box(modifier) {
     Scaffold(
@@ -172,7 +173,7 @@ internal fun MastodonAuthorization(
       ) {
         item {
           Column(
-            verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.small),
+            verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.small.dp),
             horizontalAlignment = Alignment.CenterHorizontally
           ) {
             Text(

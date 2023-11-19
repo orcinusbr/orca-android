@@ -27,9 +27,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.R
+import com.jeanbarrossilva.orca.platform.theme.autos.borders.asBorderStroke
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.theme.autos.forms.asShape
 import com.jeanbarrossilva.orca.platform.theme.kit.input.text.TextField as _TextField
 import com.jeanbarrossilva.orca.platform.theme.kit.input.text.TextFieldDefaults as _TextFieldDefaults
 import com.jeanbarrossilva.orca.platform.theme.kit.input.text.error.ErrorDispatcher
@@ -51,7 +55,9 @@ object TextFieldDefaults {
    *   [TextField][_TextField] is enabled.
    */
   @Composable
-  fun colors(enabledContainerColor: Color = OrcaTheme.colors.surface.container): TextFieldColors {
+  fun colors(
+    enabledContainerColor: Color = OrcaTheme.colors.surface.container.asColor
+  ): TextFieldColors {
     return TextFieldDefaults.colors(
       focusedContainerColor = enabledContainerColor,
       unfocusedContainerColor = enabledContainerColor,
@@ -144,13 +150,14 @@ private fun TextField(
   label: @Composable () -> Unit
 ) {
   val context = LocalContext.current
-  val highlightColor = OrcaTheme.colors.secondary
+  val highlightColor = OrcaTheme.colors.secondary.asColor
   val borderColor by
     animateColorAsState(
-      if (isFocused) highlightColor else (OrcaTheme.borders.default.brush as SolidColor).value,
+      if (isFocused) highlightColor
+      else (OrcaTheme.borders.default.asBorderStroke.brush as SolidColor).value,
       label = "BorderColor"
     )
-  val shape = OrcaTheme.shapes.large
+  val shape = OrcaTheme.forms.large.asShape
   val errorMessages =
     errorDispatcher.messages.joinToString("\n") {
       context.getString(R.string.platform_ui_text_field_consecutive_error_message, it)
@@ -162,11 +169,11 @@ private fun TextField(
     onDispose {}
   }
 
-  Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.medium)) {
+  Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.medium.dp)) {
     TextField(
       text,
       onTextChange,
-      modifier.border(OrcaTheme.borders.default.width, borderColor, shape),
+      modifier.border(OrcaTheme.borders.default.asBorderStroke.width, borderColor, shape),
       label = {
         val color by
           animateColorAsState(
@@ -185,7 +192,11 @@ private fun TextField(
     )
 
     AnimatedVisibility(visible = containsErrors) {
-      Text(errorMessages, Modifier.testTag(TEXT_FIELD_ERRORS_TAG), OrcaTheme.colors.error.container)
+      Text(
+        errorMessages,
+        Modifier.testTag(TEXT_FIELD_ERRORS_TAG),
+        OrcaTheme.colors.error.container.asColor
+      )
     }
   }
 }

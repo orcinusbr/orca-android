@@ -10,8 +10,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.jeanbarrossilva.orca.autos.iconography.Iconography
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.configuration.iconography.Iconography
 
 /** Scope through which either an [icon] or a [button] action can be added. */
 class ActionScope internal constructor() {
@@ -30,7 +30,7 @@ class ActionScope internal constructor() {
   fun icon(
     contentDescription: @Composable () -> String,
     modifier: Modifier = Modifier,
-    vector: Iconography.() -> ImageVector
+    vector: @Composable Iconography.() -> ImageVector
   ) {
     content = { Icon(OrcaTheme.iconography.vector(), contentDescription(), modifier) }
   }
@@ -48,7 +48,7 @@ class ActionScope internal constructor() {
     contentDescription: @Composable () -> String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    vector: Iconography.() -> ImageVector
+    vector: @Composable Iconography.() -> ImageVector
   ) {
     content = {
       IconButton(onClick, modifier.offset(x = 12.dp)) {

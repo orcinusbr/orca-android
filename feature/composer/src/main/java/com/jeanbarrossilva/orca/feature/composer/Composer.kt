@@ -46,6 +46,9 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.createSample
 import com.jeanbarrossilva.orca.feature.composer.ui.Toolbar
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.theme.autos.overlays.asPaddingValues
 import com.jeanbarrossilva.orca.platform.theme.extensions.plus
 import com.jeanbarrossilva.orca.platform.theme.kit.action.button.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.theme.kit.input.text.TextFieldDefaults as _TextFieldDefaults
@@ -89,10 +92,10 @@ private fun Composer(
   val focusRequester = remember(::FocusRequester)
   val style = OrcaTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Normal)
   val interactionSource = remember(::MutableInteractionSource)
-  val brushColor = OrcaTheme.colors.primary.container
+  val brushColor = OrcaTheme.colors.primary.container.asColor
   val cursorBrush = remember(brushColor) { SolidColor(brushColor) }
   var isToolbarVisible by remember { mutableStateOf(isToolbarInitiallyVisible) }
-  val toolbarSpacing = OrcaTheme.spacings.medium
+  val toolbarSpacing = OrcaTheme.spacings.medium.dp
   var toolbarSafeAreaPadding by remember { mutableStateOf(PaddingValues(end = 56.dp + 16.dp)) }
   val floatingActionButtonPosition =
     remember(isToolbarVisible) { if (isToolbarVisible) FabPosition.End else FabPosition.Center }
@@ -107,7 +110,7 @@ private fun Composer(
         title = { AutoSizeText(stringResource(R.string.feature_composer)) },
         navigationIcon = {
           HoverableIconButton(onClick = onBackwardsNavigation) {
-            Icon(OrcaTheme.iconography.back, contentDescription = "Back")
+            Icon(OrcaTheme.iconography.back.asImageVector, contentDescription = "Back")
           }
         }
       )
@@ -128,7 +131,7 @@ private fun Composer(
         }
       ) {
         Icon(
-          OrcaTheme.iconography.send,
+          OrcaTheme.iconography.send.asImageVector,
           contentDescription = stringResource(R.string.feature_composer_send)
         )
       }
@@ -137,7 +140,8 @@ private fun Composer(
   ) { padding ->
     Box(Modifier.padding(padding).fillMaxSize()) {
       LazyColumn(
-        contentPadding = PaddingValues(OrcaTheme.spacings.large) + OrcaTheme.overlays.fab
+        contentPadding =
+          PaddingValues(OrcaTheme.spacings.large.dp) + OrcaTheme.overlays.fab.asPaddingValues
       ) {
         item {
           BasicTextField(
@@ -161,7 +165,7 @@ private fun Composer(
               placeholder = {
                 Text(
                   stringResource(R.string.feature_composer_placeholder),
-                  style = style.copy(color = OrcaTheme.colors.tertiary)
+                  style = style.copy(color = OrcaTheme.colors.tertiary.asColor)
                 )
               },
               colors = _TextFieldDefaults.colors(enabledContainerColor = Color.Transparent),

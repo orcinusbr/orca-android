@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.size.AutoSizeRange
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.size.AutoSizer
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.size.rememberAutoSizeRange
@@ -55,5 +56,7 @@ fun AutoSizeText(
 @Composable
 @MultiThemePreview
 private fun AutoSizeTextPreview() {
-  OrcaTheme { Surface(color = OrcaTheme.colors.background.container) { AutoSizeText("Text") } }
+  OrcaTheme {
+    Surface(color = OrcaTheme.colors.background.container.asColor) { AutoSizeText("Text") }
+  }
 }

@@ -9,6 +9,8 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIcon
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconColors
@@ -29,7 +31,7 @@ object ReblogStatIconDefaults {
   @Composable
   fun colors(
     inactiveColor: Color = LocalContentColor.current,
-    activeColor: Color = OrcaTheme.colors.activation.reblog
+    activeColor: Color = OrcaTheme.colors.activation.reposted.asColor
   ): ActivateableStatIconColors {
     return ActivateableStatIconColors(inactiveColor, activeColor)
   }
@@ -52,7 +54,7 @@ fun ReblogStatIcon(
   colors: ActivateableStatIconColors = ReblogStatIconDefaults.colors()
 ) {
   ActivateableStatIcon(
-    OrcaTheme.iconography.reblog,
+    OrcaTheme.iconography.repost.asImageVector,
     contentDescription = stringResource(R.string.platform_ui_reblog_stat),
     isActive,
     interactiveness,
@@ -65,7 +67,7 @@ fun ReblogStatIcon(
 @MultiThemePreview
 private fun InactiveReblogStatIconPreview() {
   OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container) {
+    Surface(color = OrcaTheme.colors.background.container.asColor) {
       ReblogStatIcon(isActive = false, ActivateableStatIconInteractiveness.Still)
     }
   }
@@ -75,7 +77,7 @@ private fun InactiveReblogStatIconPreview() {
 @MultiThemePreview
 private fun ActiveReblogStatIconPreview() {
   OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container) {
+    Surface(color = OrcaTheme.colors.background.container.asColor) {
       ReblogStatIcon(isActive = true, ActivateableStatIconInteractiveness.Still)
     }
   }

@@ -17,19 +17,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.configuration.iconography.Iconography
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.theme.autos.forms.asShape
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
 
 /** Default values of a [Setting]. */
 internal object SettingDefaults {
   /** [CornerBasedShape] that clips a [Setting] by default. */
   val shape
-    @Composable get() = OrcaTheme.shapes.large
+    @Composable get() = OrcaTheme.forms.large.asShape
 
   /** Size in [Dp]s of the default spacing of a [Setting]. */
   val spacing
-    @Composable get() = OrcaTheme.spacings.large
+    @Composable get() = OrcaTheme.spacings.large.dp
 }
 
 /**
@@ -64,7 +67,9 @@ internal fun Setting(
         icon()
 
         ProvideTextStyle(
-          OrcaTheme.typography.labelMedium.copy(color = OrcaTheme.colors.background.content),
+          OrcaTheme.typography.labelMedium.copy(
+            color = OrcaTheme.colors.background.content.asColor
+          ),
           label
         )
       }
@@ -83,9 +88,11 @@ private fun SettingPreview() {
     Setting(
       onClick = {},
       label = { Text("Label") },
-      icon = { Icon(OrcaTheme.iconography.home.filled, contentDescription = "Setting") }
+      icon = {
+        Icon(OrcaTheme.iconography.home.filled.asImageVector, contentDescription = "Setting")
+      }
     ) {
-      icon(contentDescription = { "Expand" }, vector = Iconography::forward)
+      icon(contentDescription = { "Expand" }, vector = { forward.asImageVector })
     }
   }
 }

@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.theme.extensions.IgnoringMutableInteractionSource
 import com.jeanbarrossilva.orca.platform.theme.kit.action.Hoverable
 
@@ -39,7 +40,7 @@ fun HoverableIconButton(
 private fun HoverableIconButtonPreview() {
   OrcaTheme {
     HoverableIconButton(onClick = {}) {
-      Icon(OrcaTheme.iconography.home.outlined, contentDescription = "Home")
+      Icon(OrcaTheme.iconography.home.outlined.asImageVector, contentDescription = "Home")
     }
   }
 }

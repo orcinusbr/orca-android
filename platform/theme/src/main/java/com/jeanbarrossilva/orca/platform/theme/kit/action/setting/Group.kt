@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.configuration.iconography.Iconography
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.theme.kit.action.setting.list.ChildSettings
 import com.jeanbarrossilva.orca.platform.theme.kit.action.setting.list.SettingsScope
 import com.jeanbarrossilva.orca.platform.theme.kit.action.setting.list.settingsPreviewContent
@@ -89,11 +89,9 @@ internal fun Group(
         onClick = { isExpanded = !isExpanded },
         icon = icon
       ) {
-        icon(
-          contentDescription = { "Expand" },
-          Modifier.rotate(actionRotationInDegrees),
-          Iconography::forward
-        )
+        icon(contentDescription = { "Expand" }, Modifier.rotate(actionRotationInDegrees)) {
+          forward.asImageVector
+        }
       }
     }
 
@@ -132,7 +130,9 @@ private fun ExpandedGroupPreview() {
 @Composable
 private fun Group(isInitiallyExpanded: Boolean, modifier: Modifier = Modifier) {
   Group(
-    icon = { Icon(OrcaTheme.iconography.home.filled, contentDescription = "Setting") },
+    icon = {
+      Icon(OrcaTheme.iconography.home.filled.asImageVector, contentDescription = "Setting")
+    },
     label = { Text("Group") },
     modifier,
     isInitiallyExpanded,

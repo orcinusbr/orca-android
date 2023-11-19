@@ -18,6 +18,8 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.theme.autos.forms.asShape
 
 /**
  * [ElevatedButton] that represents a primary action, performed or requested to be performed through
@@ -36,8 +38,8 @@ fun PrimaryButton(
   isEnabled: Boolean = true,
   content: @Composable () -> Unit
 ) {
-  val enabledContentColor = OrcaTheme.colors.primary.content
-  val disabledContentColor = OrcaTheme.colors.disabled.content
+  val enabledContentColor = OrcaTheme.colors.primary.content.asColor
+  val disabledContentColor = OrcaTheme.colors.disabled.content.asColor
   val contentColor =
     remember(isEnabled, enabledContentColor, disabledContentColor) {
       if (isEnabled) enabledContentColor else disabledContentColor
@@ -52,15 +54,15 @@ fun PrimaryButton(
     },
     modifier,
     isEnabled,
-    shape = OrcaTheme.shapes.medium,
+    shape = OrcaTheme.forms.medium.asShape,
     colors =
       ButtonDefaults.elevatedButtonColors(
-        OrcaTheme.colors.primary.container,
+        OrcaTheme.colors.primary.container.asColor,
         enabledContentColor,
-        OrcaTheme.colors.disabled.container,
+        OrcaTheme.colors.disabled.container.asColor,
         disabledContentColor
       ),
-    contentPadding = PaddingValues(OrcaTheme.spacings.large)
+    contentPadding = PaddingValues(OrcaTheme.spacings.large.dp)
   ) {
     if (isLoading) {
       CircularProgressIndicator(Modifier.size(17.4.dp), contentColor, strokeCap = StrokeCap.Round)

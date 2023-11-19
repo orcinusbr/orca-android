@@ -47,6 +47,7 @@ import com.jeanbarrossilva.orca.feature.profiledetails.navigation.NavigationButt
 import com.jeanbarrossilva.orca.feature.profiledetails.ui.Header
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
 import com.jeanbarrossilva.orca.platform.theme.kit.action.button.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.theme.kit.menu.DropdownMenu
@@ -108,7 +109,7 @@ internal sealed class ProfileDetails : Serializable {
     @Composable
     override fun FloatingActionButton(navigator: ProfileDetailsBoundary, modifier: Modifier) {
       FloatingActionButton(onClick = {}) {
-        Icon(OrcaTheme.iconography.edit.filled, contentDescription = "Edit")
+        Icon(OrcaTheme.iconography.edit.filled.asImageVector, contentDescription = "Edit")
       }
     }
 
@@ -387,7 +388,7 @@ private fun ProfileDetails(
       Box {
         HoverableIconButton(onClick = { isTopBarDropdownExpanded = true }) {
           Icon(
-            OrcaTheme.iconography.expand,
+            OrcaTheme.iconography.expand.asImageVector,
             contentDescription = stringResource(R.string.feature_profile_details_more)
           )
         }
@@ -401,7 +402,7 @@ private fun ProfileDetails(
             },
             leadingIcon = {
               Icon(
-                OrcaTheme.iconography.link,
+                OrcaTheme.iconography.link.asImageVector,
                 contentDescription = stringResource(R.string.feature_profile_details_external_link)
               )
             }
@@ -415,7 +416,7 @@ private fun ProfileDetails(
             },
             leadingIcon = {
               Icon(
-                OrcaTheme.iconography.link,
+                OrcaTheme.iconography.link.asImageVector,
                 contentDescription = stringResource(R.string.feature_profile_details_share)
               )
             }
@@ -429,7 +430,7 @@ private fun ProfileDetails(
             },
             leadingIcon = {
               Icon(
-                OrcaTheme.iconography.share.outlined,
+                OrcaTheme.iconography.share.outlined.asImageVector,
                 contentDescription = stringResource(R.string.feature_profile_details_share)
               )
             }

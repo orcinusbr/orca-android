@@ -13,6 +13,7 @@ import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.Stat
 import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.StatDefaults
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconInteractiveness
 import com.jeanbarrossilva.orca.platform.ui.component.stat.reblog.ReblogStatIcon
 
@@ -21,7 +22,7 @@ internal fun ReblogStat(details: TootDetails, onClick: () -> Unit, modifier: Mod
   val isActive = remember(details, details::isReblogged)
   val contentColor by
     animateColorAsState(
-      if (isActive) OrcaTheme.colors.activation.reblog else StatDefaults.contentColor,
+      if (isActive) OrcaTheme.colors.activation.reposted.asColor else StatDefaults.contentColor,
       label = "ContentColor"
     )
 

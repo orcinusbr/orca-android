@@ -40,6 +40,8 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.search.createSample
 import com.jeanbarrossilva.orca.feature.search.ui.SearchResultCard
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.theme.kit.input.text.TextField
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.BackAction
@@ -110,7 +112,7 @@ private fun Search(
     modifier,
     verticalArrangement =
       if (areResultsEmpty) {
-        Arrangement.spacedBy(OrcaTheme.spacings.medium, Alignment.CenterVertically)
+        Arrangement.spacedBy(OrcaTheme.spacings.medium.dp, Alignment.CenterVertically)
       } else {
         SearchDefaults.VerticalArrangement
       },
@@ -149,7 +151,7 @@ private fun Search(
   content: LazyListScope.() -> Unit
 ) {
   val focusRequester = remember(::FocusRequester)
-  val spacing = OrcaTheme.spacings.medium
+  val spacing = OrcaTheme.spacings.medium.dp
 
   LaunchedEffect(Unit) { focusRequester.requestFocusWithDelay() }
 
@@ -157,7 +159,7 @@ private fun Search(
     modifier,
     topAppBar = {
       Row(
-        Modifier.background(OrcaTheme.colors.background.container)
+        Modifier.background(OrcaTheme.colors.background.container.asColor)
           .padding(top = spacing, end = spacing, bottom = spacing)
           .statusBarsPadding(),
         verticalAlignment = Alignment.CenterVertically
@@ -189,10 +191,14 @@ private fun Search(
 
 @Composable
 private fun EmptyResultsMessage(modifier: Modifier = Modifier) {
-  Column(modifier, Arrangement.spacedBy(OrcaTheme.spacings.medium), Alignment.CenterHorizontally) {
+  Column(
+    modifier,
+    Arrangement.spacedBy(OrcaTheme.spacings.medium.dp),
+    Alignment.CenterHorizontally
+  ) {
     CompositionLocalProvider(LocalContentColor provides OrcaTheme.typography.headlineMedium.color) {
       Icon(
-        OrcaTheme.iconography.search,
+        OrcaTheme.iconography.search.asImageVector,
         contentDescription = stringResource(R.string.feature_search),
         Modifier.size(64.dp)
       )

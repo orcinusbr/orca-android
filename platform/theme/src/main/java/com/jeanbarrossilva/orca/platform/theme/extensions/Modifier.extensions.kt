@@ -5,8 +5,10 @@ import androidx.compose.foundation.border
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Shape
+import com.jeanbarrossilva.orca.autos.borders.Borders
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.configuration.Borders
+import com.jeanbarrossilva.orca.platform.theme.autos.borders.areApplicable
+import com.jeanbarrossilva.orca.platform.theme.autos.borders.asBorderStroke
 
 /**
  * Applies a [BorderStroke], shaped by the given [shape], when they are applicable.
@@ -15,5 +17,7 @@ import com.jeanbarrossilva.orca.platform.theme.configuration.Borders
  * @see Borders.areApplicable
  */
 fun Modifier.border(shape: Shape): Modifier {
-  return composed { if (Borders.areApplicable) border(OrcaTheme.borders.default, shape) else this }
+  return composed {
+    if (Borders.areApplicable) border(OrcaTheme.borders.default.asBorderStroke, shape) else this
+  }
 }

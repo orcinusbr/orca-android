@@ -1,6 +1,5 @@
 package com.jeanbarrossilva.orca.platform.theme.kit.input.option.list
 
-import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.material3.Surface
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -14,9 +13,8 @@ import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onLast
 import androidx.compose.ui.test.onSiblings
 import androidx.compose.ui.test.performClick
-import androidx.test.platform.app.InstrumentationRegistry
+import com.jeanbarrossilva.orca.autos.forms.Forms
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.configuration.Shapes
 import com.jeanbarrossilva.orca.platform.theme.extensions.bottom
 import com.jeanbarrossilva.orca.platform.theme.extensions.top
 import com.jeanbarrossilva.orca.platform.theme.kit.input.option.OptionDefaults
@@ -28,12 +26,7 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class OptionsTests {
-  private val defaultOptionShape: CornerBasedShape
-    get() {
-      val context = InstrumentationRegistry.getInstrumentation().context
-      val shapes = Shapes.getDefault(context)
-      return OptionDefaults.getShape(shapes)
-    }
+  private val defaultOptionShape = OptionDefaults.getShape(Forms.default)
 
   @get:Rule val composeRule = createComposeRule()
 

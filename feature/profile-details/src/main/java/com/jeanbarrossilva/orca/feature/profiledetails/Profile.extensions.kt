@@ -1,8 +1,8 @@
 package com.jeanbarrossilva.orca.feature.profiledetails
 
+import com.jeanbarrossilva.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.feature.profiledetails.conversion.ProfileConverterFactory
-import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import kotlinx.coroutines.CoroutineScope
 
 /**

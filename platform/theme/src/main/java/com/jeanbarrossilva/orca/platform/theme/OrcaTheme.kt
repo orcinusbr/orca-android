@@ -1,5 +1,7 @@
 package com.jeanbarrossilva.orca.platform.theme
 
+import android.content.Context
+import android.content.res.Configuration
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
@@ -11,18 +13,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontFamily
 import com.google.accompanist.themeadapter.material3.Mdc3Theme
-import com.jeanbarrossilva.orca.platform.theme.configuration.Borders
-import com.jeanbarrossilva.orca.platform.theme.configuration.LocalBorders
-import com.jeanbarrossilva.orca.platform.theme.configuration.LocalOverlays
-import com.jeanbarrossilva.orca.platform.theme.configuration.LocalShapes
-import com.jeanbarrossilva.orca.platform.theme.configuration.LocalSpacings
-import com.jeanbarrossilva.orca.platform.theme.configuration.Overlays
-import com.jeanbarrossilva.orca.platform.theme.configuration.Shapes
-import com.jeanbarrossilva.orca.platform.theme.configuration.Spacings
-import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
-import com.jeanbarrossilva.orca.platform.theme.configuration.colors.LocalColors
-import com.jeanbarrossilva.orca.platform.theme.configuration.iconography.Iconography
-import com.jeanbarrossilva.orca.platform.theme.configuration.iconography.LocalIconography
+import com.jeanbarrossilva.orca.autos.Spacings
+import com.jeanbarrossilva.orca.autos.borders.Borders
+import com.jeanbarrossilva.orca.autos.colors.Colors
+import com.jeanbarrossilva.orca.autos.forms.Forms
+import com.jeanbarrossilva.orca.autos.iconography.Iconography
+import com.jeanbarrossilva.orca.autos.overlays.Overlays
+import com.jeanbarrossilva.orca.platform.theme.autos.borders.LocalBorders
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.LocalColors
+import com.jeanbarrossilva.orca.platform.theme.autos.forms.LocalForms
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.LocalIconography
+import com.jeanbarrossilva.orca.platform.theme.autos.overlays.LocalOverlays
+import com.jeanbarrossilva.orca.platform.theme.autos.spacings.LocalSpacings
 import com.jeanbarrossilva.orca.platform.theme.extensions.LocalTypography
 import com.jeanbarrossilva.orca.platform.theme.extensions.Rubik
 import com.jeanbarrossilva.orca.platform.theme.extensions.with
@@ -45,9 +47,9 @@ object OrcaTheme {
   val overlays
     @Composable get() = LocalOverlays.current
 
-  /** [Current][CompositionLocal.current] [Shapes] from [LocalShapes]. */
-  val shapes
-    @Composable get() = LocalShapes.current
+  /** [Current][CompositionLocal.current] [Forms] from [LocalForms]. */
+  val forms
+    @Composable get() = LocalForms.current
 
   /** [Current][CompositionLocal.current] [Spacings] from [LocalSpacings]. */
   val spacings
@@ -56,6 +58,18 @@ object OrcaTheme {
   /** [Current][CompositionLocal.current] [Typography] from the underlying [MaterialTheme]. */
   val typography
     @Composable get() = MaterialTheme.typography
+
+  /**
+   * Gets the appropriate [Colors] based on the current system theme.
+   *
+   * @param context [Context] from which the theme will be checked.
+   */
+  fun getColors(context: Context): Colors {
+    val isInDarkTheme =
+      context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK ==
+        Configuration.UI_MODE_NIGHT_YES
+    return if (isInDarkTheme) Colors.DARK else Colors.LIGHT
+  }
 }
 
 /**
@@ -65,17 +79,21 @@ object OrcaTheme {
  */
 @Composable
 fun OrcaTheme(content: @Composable () -> Unit) {
+  val context = LocalContext.current
   val view = LocalView.current
   val isPreviewing = remember(view) { view.isInEditMode }
   val themedContent =
     @Composable {
+      val colors = remember(context) { OrcaTheme.getColors(context) }
+      val borders = remember(colors) { Borders.getDefault(colors) }
+
       Mdc3Theme(setTextColors = true, setDefaultFontFamily = true) {
         CompositionLocalProvider(
-          LocalBorders provides Borders.default,
-          LocalColors provides Colors.default,
+          LocalBorders provides borders,
+          LocalColors provides colors,
           LocalIconography provides Iconography.default,
-          LocalOverlays provides Overlays.Default,
-          LocalShapes provides Shapes.default,
+          LocalOverlays provides Overlays.default,
+          LocalForms provides Forms.default,
           LocalSpacings provides Spacings.default,
           LocalTextStyle provides OrcaTheme.typography.bodyMedium
         ) {

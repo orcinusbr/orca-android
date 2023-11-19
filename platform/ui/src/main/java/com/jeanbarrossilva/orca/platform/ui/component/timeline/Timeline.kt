@@ -44,6 +44,8 @@ import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
@@ -355,7 +357,7 @@ private fun EmptyTimelineMessage(
   contentPadding: PaddingValues,
   modifier: Modifier = Modifier
 ) {
-  val spacing = OrcaTheme.spacings.large
+  val spacing = OrcaTheme.spacings.large.dp
 
   LazyColumn(
     modifier.testTag(EMPTY_TIMELINE_MESSAGE_TAG).fillMaxSize(),
@@ -377,10 +379,10 @@ private fun EmptyTimelineMessage(
           horizontalAlignment = Alignment.CenterHorizontally
         ) {
           Icon(
-            OrcaTheme.iconography.empty,
+            OrcaTheme.iconography.empty.asImageVector,
             contentDescription = stringResource(R.string.platform_ui_timeline_empty),
             Modifier.size(32.dp),
-            tint = OrcaTheme.colors.secondary
+            tint = OrcaTheme.colors.secondary.asColor
           )
 
           Text(
@@ -398,7 +400,7 @@ private fun EmptyTimelineMessage(
 @Composable
 @MultiThemePreview
 private fun LoadingTimelinePreview() {
-  OrcaTheme { Surface(color = OrcaTheme.colors.background.container) { Timeline() } }
+  OrcaTheme { Surface(color = OrcaTheme.colors.background.container.asColor) { Timeline() } }
 }
 
 /** Preview of an empty [Timeline]. */
@@ -406,7 +408,9 @@ private fun LoadingTimelinePreview() {
 @MultiThemePreview
 private fun EmptyTimelinePreview() {
   OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container) { Timeline(ListLoadable.Empty()) }
+    Surface(color = OrcaTheme.colors.background.container.asColor) {
+      Timeline(ListLoadable.Empty())
+    }
   }
 }
 
@@ -415,15 +419,15 @@ private fun EmptyTimelinePreview() {
 @MultiThemePreview
 private fun EmptyTimelineWithHeaderPreview() {
   OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container) {
+    Surface(color = OrcaTheme.colors.background.container.asColor) {
       Timeline(ListLoadable.Empty()) {
         AutoSizeText(
           "Header",
           Modifier.padding(
-            start = OrcaTheme.spacings.large,
-            top = OrcaTheme.spacings.large,
-            end = OrcaTheme.spacings.large,
-            bottom = OrcaTheme.spacings.medium
+            start = OrcaTheme.spacings.large.dp,
+            top = OrcaTheme.spacings.large.dp,
+            end = OrcaTheme.spacings.large.dp,
+            bottom = OrcaTheme.spacings.medium.dp
           ),
           style = OrcaTheme.typography.headlineLarge
         )
@@ -436,7 +440,7 @@ private fun EmptyTimelineWithHeaderPreview() {
 @Composable
 @MultiThemePreview
 private fun PopulatedTimelinePreview() {
-  OrcaTheme { Surface(color = OrcaTheme.colors.background.container) { Timeline() } }
+  OrcaTheme { Surface(color = OrcaTheme.colors.background.container.asColor) { Timeline() } }
 }
 
 /** Preview of a populated [Timeline] with a header. */
@@ -444,15 +448,15 @@ private fun PopulatedTimelinePreview() {
 @MultiThemePreview
 private fun PopulatedTimelineWithHeaderPreview() {
   OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container) {
+    Surface(color = OrcaTheme.colors.background.container.asColor) {
       Timeline {
         AutoSizeText(
           "Header",
           Modifier.padding(
-            start = OrcaTheme.spacings.large,
-            top = OrcaTheme.spacings.large,
-            end = OrcaTheme.spacings.large,
-            bottom = OrcaTheme.spacings.medium
+            start = OrcaTheme.spacings.large.dp,
+            top = OrcaTheme.spacings.large.dp,
+            end = OrcaTheme.spacings.large.dp,
+            bottom = OrcaTheme.spacings.medium.dp
           ),
           style = OrcaTheme.typography.headlineLarge
         )

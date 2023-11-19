@@ -22,6 +22,9 @@ import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.theme.autos.forms.asShape
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
 
 @Composable
 internal fun FormatIconButton(
@@ -33,13 +36,13 @@ internal fun FormatIconButton(
   val role = Role.Switch
   val contentColor by
     animateColorAsState(
-      if (isEnabled) OrcaTheme.colors.primary.container else LocalContentColor.current,
+      if (isEnabled) OrcaTheme.colors.primary.container.asColor else LocalContentColor.current,
       label = "ContentColor"
     )
 
   Box(
     modifier
-      .clip(OrcaTheme.shapes.small)
+      .clip(OrcaTheme.forms.small.asShape)
       .clickable(role = role, onClick = onClick)
       .padding(4.dp)
       .size(24.dp)
@@ -57,7 +60,9 @@ internal fun FormatIconButton(
 @MultiThemePreview
 private fun DisabledFormatIconButtonPreview() {
   OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container) { FormatIconButton(isEnabled = false) }
+    Surface(color = OrcaTheme.colors.background.container.asColor) {
+      FormatIconButton(isEnabled = false)
+    }
   }
 }
 
@@ -65,7 +70,9 @@ private fun DisabledFormatIconButtonPreview() {
 @MultiThemePreview
 private fun EnabledFormatIconButtonPreview() {
   OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container) { FormatIconButton(isEnabled = true) }
+    Surface(color = OrcaTheme.colors.background.container.asColor) {
+      FormatIconButton(isEnabled = true)
+    }
   }
 }
 
@@ -74,9 +81,9 @@ private fun FormatIconButton(isEnabled: Boolean, modifier: Modifier = Modifier) 
   FormatIconButton(isEnabled, onClick = {}, modifier) {
     Icon(
       if (isEnabled) {
-        OrcaTheme.iconography.compose.filled
+        OrcaTheme.iconography.compose.filled.asImageVector
       } else {
-        OrcaTheme.iconography.compose.outlined
+        OrcaTheme.iconography.compose.outlined.asImageVector
       },
       contentDescription = "Compose"
     )

@@ -29,9 +29,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import com.jeanbarrossilva.orca.autos.borders.Borders
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.configuration.Borders
+import com.jeanbarrossilva.orca.platform.theme.autos.borders.areApplicable
+import com.jeanbarrossilva.orca.platform.theme.autos.borders.asBorderStroke
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
 import com.jeanbarrossilva.orca.platform.theme.kit.action.button.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar as _TopAppBar
@@ -73,8 +77,8 @@ fun TopAppBar(
   val heightOffset by
     remember(scrollBehavior) { derivedStateOf { scrollBehavior.state.heightOffset } }
   val isOverlapping = remember(overlap) { overlap > 0f }
-  val idleContainerColor = OrcaTheme.colors.background.container
-  val scrolledContainerColor = OrcaTheme.colors.surface.container
+  val idleContainerColor = OrcaTheme.colors.background.container.asColor
+  val scrolledContainerColor = OrcaTheme.colors.surface.container.asColor
   val containerColorTransitionFraction = remember(overlap) { if (overlap > 0.01f) 1f else 0f }
   val containerColor by
     animateColorAsState(
@@ -86,7 +90,7 @@ fun TopAppBar(
       animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
       label = "ContainerColor"
     )
-  val spacing = OrcaTheme.spacings.medium
+  val spacing = OrcaTheme.spacings.medium.dp
   val verticalSpacing by
     animateDpAsState(
       with(LocalDensity.current) { maxOf(0.dp, spacing + heightOffset.toDp()) },
@@ -94,7 +98,7 @@ fun TopAppBar(
     )
   val borderStrokeWidth by
     animateDpAsState(
-      if (isOverlapping) OrcaTheme.borders.default.width else 0.dp,
+      if (isOverlapping) OrcaTheme.borders.default.asBorderStroke.width else 0.dp,
       label = "BorderStrokeWidth"
     )
 
@@ -111,7 +115,7 @@ fun TopAppBar(
     },
     modifier
       .`if`(Borders.areApplicable) {
-        border(OrcaTheme.borders.default.copy(width = borderStrokeWidth))
+        border(OrcaTheme.borders.default.asBorderStroke.copy(width = borderStrokeWidth))
       }
       .background(containerColor)
       .padding(vertical = verticalSpacing),
@@ -131,7 +135,7 @@ fun TopAppBar(
       TopAppBarDefaults.topAppBarColors(
         containerColor = idleContainerColor,
         scrolledContainerColor,
-        actionIconContentColor = OrcaTheme.colors.secondary
+        actionIconContentColor = OrcaTheme.colors.secondary.asColor
       ),
     scrollBehavior = scrollBehavior
   )
@@ -146,12 +150,14 @@ private fun TopAppBarPreview() {
     _TopAppBar(
       title = { Text("Title") },
       navigationIcon = {
-        IconButton(onClick = {}) { Icon(OrcaTheme.iconography.back, contentDescription = "Back") }
+        IconButton(onClick = {}) {
+          Icon(OrcaTheme.iconography.back.asImageVector, contentDescription = "Back")
+        }
       },
       subtitle = { Text("Subtitle") },
       actions = {
         HoverableIconButton(onClick = {}) {
-          Icon(OrcaTheme.iconography.search, contentDescription = "Search")
+          Icon(OrcaTheme.iconography.search.asImageVector, contentDescription = "Search")
         }
       }
     )

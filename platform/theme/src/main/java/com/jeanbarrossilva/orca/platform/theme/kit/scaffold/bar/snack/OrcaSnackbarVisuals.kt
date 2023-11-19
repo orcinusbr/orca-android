@@ -7,6 +7,7 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
 
 /**
  * [SnackbarVisuals] encompassing multiple scenarios in which the [Snackbar] will be presented
@@ -32,7 +33,7 @@ internal sealed class OrcaSnackbarVisuals : SnackbarVisuals {
     override val duration = SnackbarDuration.Short
 
     override val containerColor
-      @Composable get() = OrcaTheme.colors.surface.container
+      @Composable get() = OrcaTheme.colors.surface.container.asColor
   }
 
   /**
@@ -44,6 +45,6 @@ internal sealed class OrcaSnackbarVisuals : SnackbarVisuals {
     override val duration = SnackbarDuration.Indefinite
 
     override val containerColor
-      @Composable get() = OrcaTheme.colors.error.container
+      @Composable get() = OrcaTheme.colors.error.container.asColor
   }
 }

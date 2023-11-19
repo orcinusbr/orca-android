@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
@@ -27,6 +28,8 @@ import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.stat.FavoriteStat
 import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.stat.ReblogStat
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.SmallAvatar
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.headline.HeadlineCard
 
@@ -37,7 +40,7 @@ internal fun Header(modifier: Modifier = Modifier) {
     name = { SmallTextualPlaceholder() },
     username = { MediumTextualPlaceholder() },
     content = {
-      Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall)) {
+      Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall.dp)) {
         repeat(3) { LargeTextualPlaceholder() }
         MediumTextualPlaceholder()
       }
@@ -62,7 +65,7 @@ internal fun Header(
     name = { Text(details.name) },
     username = { Text(details.formattedUsername) },
     content = {
-      Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.medium)) {
+      Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.medium.dp)) {
         Text(details.text)
 
         details.highlight?.headline?.let { HeadlineCard(it, onHighlightClick) }
@@ -75,7 +78,7 @@ internal fun Header(
       Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
         Stat {
           Icon(
-            OrcaTheme.iconography.comment.outlined,
+            OrcaTheme.iconography.comment.outlined.asImageVector,
             contentDescription = stringResource(R.string.feature_toot_details_comments)
           )
           Text(details.formattedCommentCount)
@@ -86,7 +89,7 @@ internal fun Header(
 
         Stat {
           Icon(
-            OrcaTheme.iconography.share.outlined,
+            OrcaTheme.iconography.share.outlined.asImageVector,
             contentDescription = stringResource(R.string.feature_toot_details_share),
             Modifier.clickable(
               remember(::MutableInteractionSource),
@@ -113,7 +116,7 @@ private fun Header(
   stats: @Composable ColumnScope.() -> Unit,
   modifier: Modifier = Modifier
 ) {
-  val spacing = OrcaTheme.spacings.large
+  val spacing = OrcaTheme.spacings.large.dp
 
   Column(modifier.padding(spacing), Arrangement.spacedBy(spacing)) {
     Row(
@@ -122,19 +125,19 @@ private fun Header(
     ) {
       avatar()
 
-      Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall)) {
+      Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall.dp)) {
         ProvideTextStyle(OrcaTheme.typography.bodyLarge, name)
         ProvideTextStyle(OrcaTheme.typography.bodySmall, username)
       }
     }
 
-    Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.medium)) {
+    Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.medium.dp)) {
       content()
       ProvideTextStyle(OrcaTheme.typography.bodySmall, metadata)
     }
 
     Column(
-      verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.medium),
+      verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.medium.dp),
       horizontalAlignment = Alignment.CenterHorizontally,
       content = stats
     )
@@ -144,14 +147,14 @@ private fun Header(
 @Composable
 @MultiThemePreview
 private fun LoadingHeaderPreview() {
-  OrcaTheme { Surface(color = OrcaTheme.colors.background.container) { Header() } }
+  OrcaTheme { Surface(color = OrcaTheme.colors.background.container.asColor) { Header() } }
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadedHeaderPreview() {
   OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container) {
+    Surface(color = OrcaTheme.colors.background.container.asColor) {
       Header(
         TootDetails.sample,
         onHighlightClick = {},
