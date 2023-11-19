@@ -29,8 +29,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.orca.autos.forms.Forms
+import com.jeanbarrossilva.orca.platform.autos.border
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
-import com.jeanbarrossilva.orca.platform.autos.extensions.border
 import com.jeanbarrossilva.orca.platform.autos.forms.asShape
 import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.kit.input.option.list.Options

@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.autos.extensions
+package com.jeanbarrossilva.orca.platform.autos
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
