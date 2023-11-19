@@ -17,8 +17,8 @@ import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.orca.feature.feed.viewmodel.FeedViewModel
-import com.jeanbarrossilva.orca.platform.autos.autos.iconography.asImageVector
-import com.jeanbarrossilva.orca.platform.autos.autos.overlays.asPaddingValues
+import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.overlays.asPaddingValues
 import com.jeanbarrossilva.orca.platform.autos.extensions.plus
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold

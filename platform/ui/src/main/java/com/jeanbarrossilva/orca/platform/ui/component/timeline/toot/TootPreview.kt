@@ -44,8 +44,8 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.createSample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.createSamples
-import com.jeanbarrossilva.orca.platform.autos.autos.colors.asColor
-import com.jeanbarrossilva.orca.platform.autos.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.extensions.EmptyMutableInteractionSource
 import com.jeanbarrossilva.orca.platform.autos.extensions.IgnoringMutableInteractionSource
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme

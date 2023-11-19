@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.autos.autos.forms
+package com.jeanbarrossilva.orca.platform.autos.forms
 
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape

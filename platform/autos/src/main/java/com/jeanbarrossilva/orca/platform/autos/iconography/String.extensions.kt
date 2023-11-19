@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.autos.autos.iconography
+package com.jeanbarrossilva.orca.platform.autos.iconography
 
 import android.content.res.Resources
 import androidx.compose.runtime.Composable

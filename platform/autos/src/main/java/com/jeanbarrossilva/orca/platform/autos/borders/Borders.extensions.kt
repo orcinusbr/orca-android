@@ -1,6 +1,6 @@
 @file:JvmName("BordersExtensions")
 
-package com.jeanbarrossilva.orca.platform.autos.autos.borders
+package com.jeanbarrossilva.orca.platform.autos.borders
 
 import android.content.Context
 import android.content.res.Configuration
@@ -10,7 +10,7 @@ import androidx.compose.runtime.CompositionLocal
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.platform.LocalContext
 import com.jeanbarrossilva.orca.autos.borders.Borders
-import com.jeanbarrossilva.orca.platform.autos.autos.noLocalProvidedFor
+import com.jeanbarrossilva.orca.platform.autos.noLocalProvidedFor
 
 /** [CompositionLocal] that provides [Borders]. */
 internal val LocalBorders = compositionLocalOf<Borders> { noLocalProvidedFor("LocalBorders") }

@@ -26,7 +26,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.jeanbarrossilva.orca.platform.autos.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.kit.action.setting.list.ChildSettings
 import com.jeanbarrossilva.orca.platform.autos.kit.action.setting.list.SettingsScope
 import com.jeanbarrossilva.orca.platform.autos.kit.action.setting.list.settingsPreviewContent

@@ -18,8 +18,8 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import com.jeanbarrossilva.orca.platform.autos.autos.borders.asBorderStroke
-import com.jeanbarrossilva.orca.platform.autos.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.borders.asBorderStroke
+import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.PrimaryButton
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.button.placement.Orientation
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.button.placement.height
