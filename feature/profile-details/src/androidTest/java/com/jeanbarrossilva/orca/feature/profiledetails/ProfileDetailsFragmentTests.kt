@@ -10,7 +10,6 @@ import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.type.sample
 import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
 import com.jeanbarrossilva.orca.core.sample.test.instance.sample
-import com.jeanbarrossilva.orca.feature.ProfileDetailsModule
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.orca.feature.profiledetails.test.ProfileDetailsActivity
 import com.jeanbarrossilva.orca.feature.profiledetails.test.TestProfileDetailsModule

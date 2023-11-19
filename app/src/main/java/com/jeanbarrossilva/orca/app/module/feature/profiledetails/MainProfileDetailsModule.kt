@@ -3,7 +3,7 @@ package com.jeanbarrossilva.orca.app.module.feature.profiledetails
 import com.jeanbarrossilva.orca.app.OrcaActivity
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
-import com.jeanbarrossilva.orca.feature.ProfileDetailsModule
+import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetailsModule
 import com.jeanbarrossilva.orca.std.injector.Injector
 
 internal class MainProfileDetailsModule(activity: OrcaActivity) :

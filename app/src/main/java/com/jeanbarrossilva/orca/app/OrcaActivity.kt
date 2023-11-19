@@ -16,8 +16,8 @@ import com.jeanbarrossilva.orca.app.module.feature.settings.termmuting.MainTermM
 import com.jeanbarrossilva.orca.app.module.feature.tootdetails.MainTootDetailsModule
 import com.jeanbarrossilva.orca.app.navigation.BottomNavigation
 import com.jeanbarrossilva.orca.core.module.CoreModule
-import com.jeanbarrossilva.orca.feature.ProfileDetailsModule
 import com.jeanbarrossilva.orca.feature.feed.FeedModule
+import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetailsModule
 import com.jeanbarrossilva.orca.feature.search.SearchModule
 import com.jeanbarrossilva.orca.feature.settings.SettingsModule
 import com.jeanbarrossilva.orca.feature.settings.termmuting.TermMutingModule

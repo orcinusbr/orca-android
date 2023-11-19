@@ -5,10 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
-import com.jeanbarrossilva.orca.feature.ProfileDetailsModule
-import com.jeanbarrossilva.orca.feature.profileProvider
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState
-import com.jeanbarrossilva.orca.feature.tootProvider
 import com.jeanbarrossilva.orca.platform.ui.core.argument
 import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableFragment
 import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
