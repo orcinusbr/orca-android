@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.autos.extensions
+package com.jeanbarrossilva.orca.platform.autos.theme
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
