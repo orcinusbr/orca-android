@@ -34,7 +34,7 @@ import com.jeanbarrossilva.orca.platform.autos.borders.areApplicable
 import com.jeanbarrossilva.orca.platform.autos.borders.asBorderStroke
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
-import com.jeanbarrossilva.orca.platform.autos.kit.action.button.HoverableIconButton
+import com.jeanbarrossilva.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBar as _TopAppBar
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults as _TopAppBarDefaults
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme

@@ -6,7 +6,7 @@ import androidx.compose.ui.Modifier
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState.Available
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState.Unavailable
 import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
-import com.jeanbarrossilva.orca.platform.autos.kit.action.button.HoverableIconButton
+import com.jeanbarrossilva.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import java.io.Serializable
 

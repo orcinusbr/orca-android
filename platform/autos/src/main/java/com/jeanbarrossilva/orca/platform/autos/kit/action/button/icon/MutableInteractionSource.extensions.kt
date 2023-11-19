@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.autos.extensions
+package com.jeanbarrossilva.orca.platform.autos.kit.action.button.icon
 
 import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
