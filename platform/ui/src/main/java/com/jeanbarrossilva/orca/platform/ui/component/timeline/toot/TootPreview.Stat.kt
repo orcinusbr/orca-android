@@ -19,11 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
-import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
-import com.jeanbarrossilva.orca.platform.theme.kit.action.Hoverable
+import com.jeanbarrossilva.orca.platform.autos.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.kit.action.Hoverable
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconDefaults
 
 internal object StatDefaults {
@@ -33,15 +33,15 @@ internal object StatDefaults {
 internal enum class StatPosition {
   LEADING {
     override val padding
-      @Composable get() = PaddingValues(end = OrcaTheme.spacings.small.dp)
+      @Composable get() = PaddingValues(end = AutosTheme.spacings.small.dp)
   },
   SUBSEQUENT {
     override val padding
-      @Composable get() = PaddingValues(horizontal = OrcaTheme.spacings.small.dp)
+      @Composable get() = PaddingValues(horizontal = AutosTheme.spacings.small.dp)
   },
   TRAILING {
     override val padding
-      @Composable get() = PaddingValues(start = OrcaTheme.spacings.small.dp)
+      @Composable get() = PaddingValues(start = AutosTheme.spacings.small.dp)
   };
 
   @get:Composable abstract val padding: PaddingValues
@@ -69,8 +69,8 @@ internal fun Stat(
   modifier: Modifier = Modifier,
   content: @Composable RowScope.() -> Unit
 ) {
-  val spacing = OrcaTheme.spacings.small.dp
-  val contentColor = OrcaTheme.colors.secondary.asColor
+  val spacing = AutosTheme.spacings.small.dp
+  val contentColor = AutosTheme.colors.secondary.asColor
 
   Hoverable(modifier.padding(position.padding).clickable(role = Role.Button, onClick = onClick)) {
     Row(
@@ -79,7 +79,7 @@ internal fun Stat(
     ) {
       CompositionLocalProvider(
         LocalContentColor provides contentColor,
-        LocalTextStyle provides OrcaTheme.typography.bodySmall.copy(color = contentColor)
+        LocalTextStyle provides AutosTheme.typography.bodySmall.copy(color = contentColor)
       ) {
         content()
       }
@@ -90,24 +90,26 @@ internal fun Stat(
 @Composable
 @MultiThemePreview
 internal fun LeadingStatPreview() {
-  OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container.asColor) { Stat(StatPosition.LEADING) }
+  AutosTheme {
+    Surface(color = AutosTheme.colors.background.container.asColor) { Stat(StatPosition.LEADING) }
   }
 }
 
 @Composable
 @MultiThemePreview
 internal fun SubsequentStatPreview() {
-  OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container.asColor) { Stat(StatPosition.SUBSEQUENT) }
+  AutosTheme {
+    Surface(color = AutosTheme.colors.background.container.asColor) {
+      Stat(StatPosition.SUBSEQUENT)
+    }
   }
 }
 
 @Composable
 @MultiThemePreview
 internal fun TrailingStatPreview() {
-  OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container.asColor) { Stat(StatPosition.TRAILING) }
+  AutosTheme {
+    Surface(color = AutosTheme.colors.background.container.asColor) { Stat(StatPosition.TRAILING) }
   }
 }
 
@@ -115,7 +117,7 @@ internal fun TrailingStatPreview() {
 private fun Stat(position: StatPosition, modifier: Modifier = Modifier) {
   Stat(
     position,
-    OrcaTheme.iconography.comment.outlined.asImageVector,
+    AutosTheme.iconography.comment.outlined.asImageVector,
     contentDescription = "Comment",
     onClick = {},
     modifier

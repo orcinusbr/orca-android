@@ -19,10 +19,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
-import com.jeanbarrossilva.orca.platform.theme.autos.forms.asShape
+import com.jeanbarrossilva.orca.platform.autos.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.autos.forms.asShape
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 
 internal const val COMPOSER_TOOLBAR = "composer-toolbar"
 internal const val COMPOSER_TOOLBAR_BOLD_FORMAT = "composer-toolbar-bold-format"
@@ -39,15 +39,15 @@ internal fun Toolbar(
   onUnderlineToggle: (isUnderlined: Boolean) -> Unit,
   modifier: Modifier = Modifier
 ) {
-  val shape = OrcaTheme.forms.large.asShape
-  val spacing = OrcaTheme.spacings.small.dp
+  val shape = AutosTheme.forms.large.asShape
+  val spacing = AutosTheme.spacings.small.dp
 
-  CompositionLocalProvider(LocalContentColor provides OrcaTheme.colors.surface.content.asColor) {
+  CompositionLocalProvider(LocalContentColor provides AutosTheme.colors.surface.content.asColor) {
     LazyRow(
       modifier
         .shadow(4.dp, shape)
         .clip(shape)
-        .background(OrcaTheme.colors.surface.container.asColor)
+        .background(AutosTheme.colors.surface.container.asColor)
         .height(56.dp)
         .testTag(COMPOSER_TOOLBAR),
       horizontalArrangement = Arrangement.spacedBy(spacing),
@@ -90,7 +90,7 @@ internal fun Toolbar(
 @Composable
 @MultiThemePreview
 private fun ToolbarPreview() {
-  OrcaTheme {
+  AutosTheme {
     Toolbar(
       isBold = true,
       onBoldToggle = {},

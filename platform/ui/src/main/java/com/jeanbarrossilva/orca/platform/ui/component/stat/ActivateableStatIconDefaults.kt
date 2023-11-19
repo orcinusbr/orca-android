@@ -23,10 +23,10 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
-import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 
 /** Tag for identifying an [ActivateableStatIconDefaults] for testing purposes. */
 const val ACTIVATEABLE_STAT_ICON_TAG = "activateable-stat-icon"
@@ -143,25 +143,25 @@ internal fun ActivateableStatIcon(
 @Composable
 @MultiThemePreview
 private fun InactiveActivateableStatIconPreview() {
-  OrcaTheme { ActivateableStatIcon(isActive = false) }
+  AutosTheme { ActivateableStatIcon(isActive = false) }
 }
 
 @Composable
 @MultiThemePreview
 private fun ActiveActivateableStatIconPreview() {
-  OrcaTheme { ActivateableStatIcon(isActive = true) }
+  AutosTheme { ActivateableStatIcon(isActive = true) }
 }
 
 @Composable
 private fun ActivateableStatIcon(isActive: Boolean, modifier: Modifier = Modifier) {
   ActivateableStatIcon(
-    OrcaTheme.iconography.link.asImageVector,
+    AutosTheme.iconography.link.asImageVector,
     contentDescription = "Disconnect",
     isActive,
     ActivateableStatIconInteractiveness.Still,
     ActivateableStatIconColors(
       inactiveColor = LocalContentColor.current,
-      activeColor = OrcaTheme.colors.link.asColor
+      activeColor = AutosTheme.colors.link.asColor
     ),
     modifier
   )

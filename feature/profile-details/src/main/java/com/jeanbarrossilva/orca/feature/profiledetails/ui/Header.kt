@@ -16,9 +16,9 @@ import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetails
-import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.LargeAvatar
 
 @Composable
@@ -29,7 +29,7 @@ internal fun Header(modifier: Modifier = Modifier) {
     account = { LargeTextualPlaceholder() },
     bio = {
       Column(
-        verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall.dp),
+        verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.extraSmall.dp),
         horizontalAlignment = Alignment.CenterHorizontally
       ) {
         repeat(3) { LargeTextualPlaceholder() }
@@ -63,18 +63,18 @@ private fun Header(
   modifier: Modifier = Modifier
 ) {
   Column(
-    modifier.padding(OrcaTheme.spacings.extraLarge.dp).fillMaxWidth(),
-    Arrangement.spacedBy(OrcaTheme.spacings.extraLarge.dp),
+    modifier.padding(AutosTheme.spacings.extraLarge.dp).fillMaxWidth(),
+    Arrangement.spacedBy(AutosTheme.spacings.extraLarge.dp),
     Alignment.CenterHorizontally
   ) {
     avatar()
 
     Column(
-      verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall.dp),
+      verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.extraSmall.dp),
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
-      ProvideTextStyle(OrcaTheme.typography.headlineLarge, name)
-      ProvideTextStyle(OrcaTheme.typography.titleSmall, account)
+      ProvideTextStyle(AutosTheme.typography.headlineLarge, name)
+      ProvideTextStyle(AutosTheme.typography.titleSmall, account)
     }
 
     ProvideTextStyle(LocalTextStyle.current.copy(textAlign = TextAlign.Center), bio)
@@ -85,13 +85,15 @@ private fun Header(
 @Composable
 @MultiThemePreview
 private fun LoadingHeaderPreview() {
-  OrcaTheme { Surface(color = OrcaTheme.colors.background.container.asColor) { Header() } }
+  AutosTheme { Surface(color = AutosTheme.colors.background.container.asColor) { Header() } }
 }
 
 @Composable
 @MultiThemePreview
 private fun HeaderPreview() {
-  OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container.asColor) { Header(ProfileDetails.sample) }
+  AutosTheme {
+    Surface(color = AutosTheme.colors.background.container.asColor) {
+      Header(ProfileDetails.sample)
+    }
   }
 }

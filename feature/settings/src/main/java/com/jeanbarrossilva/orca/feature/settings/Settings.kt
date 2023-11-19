@@ -11,14 +11,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.extensions.plus
-import com.jeanbarrossilva.orca.platform.theme.kit.action.setting.Section
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBarDefaults
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
+import com.jeanbarrossilva.orca.platform.autos.extensions.plus
+import com.jeanbarrossilva.orca.platform.autos.kit.action.setting.Section
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 
 @Composable
 internal fun Settings(
@@ -59,7 +59,7 @@ private fun Settings(
     LazyColumn(
       Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
       state = lazyListState,
-      contentPadding = it + PaddingValues(OrcaTheme.spacings.medium.dp)
+      contentPadding = it + PaddingValues(AutosTheme.spacings.medium.dp)
     ) {
       item {
         Section(stringResource(R.string.feature_settings_general)) {
@@ -73,7 +73,7 @@ private fun Settings(
 @Composable
 @MultiThemePreview
 private fun SettingsPreview() {
-  OrcaTheme {
+  AutosTheme {
     Settings(mutedTerms = listOf("Java"), onNavigationToTermMuting = {}, onTermUnmute = {})
   }
 }

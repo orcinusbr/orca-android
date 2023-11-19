@@ -3,8 +3,8 @@ package com.jeanbarrossilva.orca.platform.ui.component.stat
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 
 @Composable
 @Suppress("TestFunctionName")
@@ -14,7 +14,7 @@ internal fun TestActivateableStatIcon(
   interactiveness: ActivateableStatIconInteractiveness = ActivateableStatIconInteractiveness.Still
 ) {
   ActivateableStatIcon(
-    OrcaTheme.iconography.forward.asImageVector,
+    AutosTheme.iconography.forward.asImageVector,
     contentDescription = "Proceed",
     isActive,
     interactiveness,

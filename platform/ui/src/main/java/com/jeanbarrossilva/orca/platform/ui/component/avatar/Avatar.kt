@@ -8,9 +8,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.placeholder.Placeholder
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
-import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.autos.forms.asShape
+import com.jeanbarrossilva.orca.platform.autos.autos.forms.asShape
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.core.createSample
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
@@ -23,9 +23,9 @@ private val smallSize = 42.dp
 private val largeSize = 128.dp
 
 private val smallShape
-  @Composable get() = OrcaTheme.forms.small.asShape
+  @Composable get() = AutosTheme.forms.small.asShape
 private val largeShape
-  @Composable get() = OrcaTheme.forms.large.asShape
+  @Composable get() = AutosTheme.forms.large.asShape
 
 @Composable
 fun SmallAvatar(modifier: Modifier = Modifier) {
@@ -65,23 +65,23 @@ private fun contentDescriptionFor(name: String): String {
 @Composable
 @MultiThemePreview
 private fun LoadingLargeAvatarPreview() {
-  OrcaTheme { LargeAvatar() }
+  AutosTheme { LargeAvatar() }
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadedLargeAvatarPreview() {
-  OrcaTheme { LargeAvatar(ImageLoader.forDefaultSampleAuthor(), Profile.createSample().name) }
+  AutosTheme { LargeAvatar(ImageLoader.forDefaultSampleAuthor(), Profile.createSample().name) }
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadingSmallAvatarPreview() {
-  OrcaTheme { SmallAvatar() }
+  AutosTheme { SmallAvatar() }
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadedSmallAvatarPreview() {
-  OrcaTheme { SmallAvatar(ImageLoader.forDefaultSampleAuthor(), Profile.createSample().name) }
+  AutosTheme { SmallAvatar(ImageLoader.forDefaultSampleAuthor(), Profile.createSample().name) }
 }

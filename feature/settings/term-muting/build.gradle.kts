@@ -14,7 +14,7 @@ android {
 }
 
 dependencies {
-  androidTestImplementation(project(":platform:theme-test"))
+  androidTestImplementation(project(":platform:autos-test"))
   androidTestImplementation(libs.android.compose.ui.test.junit)
   androidTestImplementation(libs.android.compose.ui.test.manifest)
   androidTestImplementation(libs.android.test.runner)
@@ -22,7 +22,7 @@ dependencies {
   ksp(project(":std:injector-processor"))
 
   implementation(project(":core"))
-  implementation(project(":platform:theme"))
+  implementation(project(":platform:autos"))
   implementation(project(":platform:ui"))
   implementation(project(":std:injector"))
 }

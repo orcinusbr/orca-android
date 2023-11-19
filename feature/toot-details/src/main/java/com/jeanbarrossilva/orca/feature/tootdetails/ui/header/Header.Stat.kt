@@ -14,15 +14,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
-import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
-import com.jeanbarrossilva.orca.platform.theme.kit.action.Hoverable
+import com.jeanbarrossilva.orca.platform.autos.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.kit.action.Hoverable
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 
 internal object StatDefaults {
   val contentColor
-    @Composable get() = OrcaTheme.colors.secondary.asColor
+    @Composable get() = AutosTheme.colors.secondary.asColor
 }
 
 @Composable
@@ -33,12 +33,12 @@ internal fun Stat(
 ) {
   Hoverable(modifier) {
     Row(
-      horizontalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.small.dp),
+      horizontalArrangement = Arrangement.spacedBy(AutosTheme.spacings.small.dp),
       verticalAlignment = Alignment.CenterVertically
     ) {
       CompositionLocalProvider(
         LocalContentColor provides contentColor,
-        LocalTextStyle provides OrcaTheme.typography.bodySmall.copy(color = contentColor)
+        LocalTextStyle provides AutosTheme.typography.bodySmall.copy(color = contentColor)
       ) {
         content()
       }
@@ -49,10 +49,10 @@ internal fun Stat(
 @Composable
 @MultiThemePreview
 private fun StatPreview() {
-  OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container.asColor) {
+  AutosTheme {
+    Surface(color = AutosTheme.colors.background.container.asColor) {
       Stat {
-        Icon(OrcaTheme.iconography.comment.outlined.asImageVector, contentDescription = "Comments")
+        Icon(AutosTheme.iconography.comment.outlined.asImageVector, contentDescription = "Comments")
         Text("8")
       }
     }

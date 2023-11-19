@@ -14,10 +14,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.core.mastodon.R
-import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
-import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 
 /**
  * Visually notifies that authentication is running in the background.
@@ -26,14 +26,14 @@ import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
  */
 @Composable
 internal fun MastodonAuthentication(modifier: Modifier = Modifier) {
-  Surface(modifier, color = OrcaTheme.colors.background.container.asColor) {
+  Surface(modifier, color = AutosTheme.colors.background.container.asColor) {
     Column(
       Modifier.fillMaxSize(),
-      Arrangement.spacedBy(OrcaTheme.spacings.medium.dp, Alignment.CenterVertically),
+      Arrangement.spacedBy(AutosTheme.spacings.medium.dp, Alignment.CenterVertically),
       Alignment.CenterHorizontally
     ) {
       Icon(
-        OrcaTheme.iconography.login.asImageVector,
+        AutosTheme.iconography.login.asImageVector,
         contentDescription = "Link",
         Modifier.size(64.dp)
       )
@@ -41,7 +41,7 @@ internal fun MastodonAuthentication(modifier: Modifier = Modifier) {
       Text(
         stringResource(R.string.core_http_authentication_authenticating),
         textAlign = TextAlign.Center,
-        style = OrcaTheme.typography.headlineLarge
+        style = AutosTheme.typography.headlineLarge
       )
     }
   }
@@ -51,5 +51,5 @@ internal fun MastodonAuthentication(modifier: Modifier = Modifier) {
 @Composable
 @MultiThemePreview
 private fun MastodonAuthenticationPreview() {
-  OrcaTheme { MastodonAuthentication() }
+  AutosTheme { MastodonAuthentication() }
 }

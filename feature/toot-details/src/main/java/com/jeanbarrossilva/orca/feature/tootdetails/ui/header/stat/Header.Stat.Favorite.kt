@@ -11,9 +11,9 @@ import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.feature.tootdetails.TootDetails
 import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.Stat
 import com.jeanbarrossilva.orca.feature.tootdetails.ui.header.StatDefaults
-import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconInteractiveness
 import com.jeanbarrossilva.orca.platform.ui.component.stat.favorite.FavoriteStatIcon
 
@@ -26,7 +26,7 @@ internal fun FavoriteStat(
   val isActive = remember(details, details::isFavorite)
   val contentColor by
     animateColorAsState(
-      if (isActive) OrcaTheme.colors.activation.favorite.asColor else StatDefaults.contentColor,
+      if (isActive) AutosTheme.colors.activation.favorite.asColor else StatDefaults.contentColor,
       label = "ContentColor"
     )
 
@@ -44,11 +44,11 @@ internal fun FavoriteStat(
 @Composable
 @MultiThemePreview
 private fun InactiveFavoriteStatPreview() {
-  OrcaTheme { FavoriteStat(TootDetails.sample.copy(isFavorite = false), onClick = {}) }
+  AutosTheme { FavoriteStat(TootDetails.sample.copy(isFavorite = false), onClick = {}) }
 }
 
 @Composable
 @MultiThemePreview
 private fun ActiveFavoriteStatPreview() {
-  OrcaTheme { FavoriteStat(TootDetails.sample.copy(isFavorite = true), onClick = {}) }
+  AutosTheme { FavoriteStat(TootDetails.sample.copy(isFavorite = true), onClick = {}) }
 }

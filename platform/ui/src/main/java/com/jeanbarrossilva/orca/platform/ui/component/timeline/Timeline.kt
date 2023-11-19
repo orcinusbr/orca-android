@@ -42,11 +42,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
-import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
+import com.jeanbarrossilva.orca.platform.autos.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.RelativeTimeProvider
@@ -357,7 +357,7 @@ private fun EmptyTimelineMessage(
   contentPadding: PaddingValues,
   modifier: Modifier = Modifier
 ) {
-  val spacing = OrcaTheme.spacings.large.dp
+  val spacing = AutosTheme.spacings.large.dp
 
   LazyColumn(
     modifier.testTag(EMPTY_TIMELINE_MESSAGE_TAG).fillMaxSize(),
@@ -379,16 +379,16 @@ private fun EmptyTimelineMessage(
           horizontalAlignment = Alignment.CenterHorizontally
         ) {
           Icon(
-            OrcaTheme.iconography.empty.asImageVector,
+            AutosTheme.iconography.empty.asImageVector,
             contentDescription = stringResource(R.string.platform_ui_timeline_empty),
             Modifier.size(32.dp),
-            tint = OrcaTheme.colors.secondary.asColor
+            tint = AutosTheme.colors.secondary.asColor
           )
 
           Text(
             stringResource(R.string.platform_ui_timeline_empty_message),
             textAlign = TextAlign.Center,
-            style = OrcaTheme.typography.headlineMedium
+            style = AutosTheme.typography.headlineMedium
           )
         }
       }
@@ -400,15 +400,15 @@ private fun EmptyTimelineMessage(
 @Composable
 @MultiThemePreview
 private fun LoadingTimelinePreview() {
-  OrcaTheme { Surface(color = OrcaTheme.colors.background.container.asColor) { Timeline() } }
+  AutosTheme { Surface(color = AutosTheme.colors.background.container.asColor) { Timeline() } }
 }
 
 /** Preview of an empty [Timeline]. */
 @Composable
 @MultiThemePreview
 private fun EmptyTimelinePreview() {
-  OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container.asColor) {
+  AutosTheme {
+    Surface(color = AutosTheme.colors.background.container.asColor) {
       Timeline(ListLoadable.Empty())
     }
   }
@@ -418,18 +418,18 @@ private fun EmptyTimelinePreview() {
 @Composable
 @MultiThemePreview
 private fun EmptyTimelineWithHeaderPreview() {
-  OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container.asColor) {
+  AutosTheme {
+    Surface(color = AutosTheme.colors.background.container.asColor) {
       Timeline(ListLoadable.Empty()) {
         AutoSizeText(
           "Header",
           Modifier.padding(
-            start = OrcaTheme.spacings.large.dp,
-            top = OrcaTheme.spacings.large.dp,
-            end = OrcaTheme.spacings.large.dp,
-            bottom = OrcaTheme.spacings.medium.dp
+            start = AutosTheme.spacings.large.dp,
+            top = AutosTheme.spacings.large.dp,
+            end = AutosTheme.spacings.large.dp,
+            bottom = AutosTheme.spacings.medium.dp
           ),
-          style = OrcaTheme.typography.headlineLarge
+          style = AutosTheme.typography.headlineLarge
         )
       }
     }
@@ -440,25 +440,25 @@ private fun EmptyTimelineWithHeaderPreview() {
 @Composable
 @MultiThemePreview
 private fun PopulatedTimelinePreview() {
-  OrcaTheme { Surface(color = OrcaTheme.colors.background.container.asColor) { Timeline() } }
+  AutosTheme { Surface(color = AutosTheme.colors.background.container.asColor) { Timeline() } }
 }
 
 /** Preview of a populated [Timeline] with a header. */
 @Composable
 @MultiThemePreview
 private fun PopulatedTimelineWithHeaderPreview() {
-  OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container.asColor) {
+  AutosTheme {
+    Surface(color = AutosTheme.colors.background.container.asColor) {
       Timeline {
         AutoSizeText(
           "Header",
           Modifier.padding(
-            start = OrcaTheme.spacings.large.dp,
-            top = OrcaTheme.spacings.large.dp,
-            end = OrcaTheme.spacings.large.dp,
-            bottom = OrcaTheme.spacings.medium.dp
+            start = AutosTheme.spacings.large.dp,
+            top = AutosTheme.spacings.large.dp,
+            end = AutosTheme.spacings.large.dp,
+            bottom = AutosTheme.spacings.medium.dp
           ),
-          style = OrcaTheme.typography.headlineLarge
+          style = AutosTheme.typography.headlineLarge
         )
       }
     }

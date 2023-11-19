@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 
 /**
  * [Fragment] that shows [Composable][Composable] content.
@@ -21,7 +21,7 @@ abstract class ComposableFragment : Fragment() {
     savedInstanceState: Bundle?
   ): View? {
     return context?.let {
-      ComposeView(it).apply { setContent { OrcaTheme { this@ComposableFragment.Content() } } }
+      ComposeView(it).apply { setContent { AutosTheme { this@ComposableFragment.Content() } } }
     }
   }
 

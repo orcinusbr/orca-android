@@ -2,7 +2,7 @@ package com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.headline
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performClick
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.headline.onHeadlineCard
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -14,7 +14,7 @@ internal class HeadlineCardTests {
   @Test
   fun runsCallbackWhenClicked() {
     var hasCallbackBeenRun = false
-    composeRule.setContent { OrcaTheme { HeadlineCard(onClick = { hasCallbackBeenRun = true }) } }
+    composeRule.setContent { AutosTheme { HeadlineCard(onClick = { hasCallbackBeenRun = true }) } }
     composeRule.onHeadlineCard().performClick()
     assertTrue(hasCallbackBeenRun)
   }

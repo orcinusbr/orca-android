@@ -5,7 +5,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.jeanbarrossilva.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -54,7 +54,7 @@ internal fun Toot.toTootDetails(): TootDetails {
     author.avatarLoader,
     author.name,
     author.account,
-    content.text.toAnnotatedString(OrcaTheme.colors),
+    content.text.toAnnotatedString(AutosTheme.colors),
     content.highlight,
     publicationDateTime,
     commentCount,

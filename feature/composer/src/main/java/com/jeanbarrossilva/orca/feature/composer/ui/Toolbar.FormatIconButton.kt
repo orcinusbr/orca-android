@@ -20,11 +20,11 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.toggleableState
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.dp
-import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
-import com.jeanbarrossilva.orca.platform.theme.autos.forms.asShape
-import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.autos.forms.asShape
+import com.jeanbarrossilva.orca.platform.autos.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 
 @Composable
 internal fun FormatIconButton(
@@ -36,13 +36,13 @@ internal fun FormatIconButton(
   val role = Role.Switch
   val contentColor by
     animateColorAsState(
-      if (isEnabled) OrcaTheme.colors.primary.container.asColor else LocalContentColor.current,
+      if (isEnabled) AutosTheme.colors.primary.container.asColor else LocalContentColor.current,
       label = "ContentColor"
     )
 
   Box(
     modifier
-      .clip(OrcaTheme.forms.small.asShape)
+      .clip(AutosTheme.forms.small.asShape)
       .clickable(role = role, onClick = onClick)
       .padding(4.dp)
       .size(24.dp)
@@ -59,8 +59,8 @@ internal fun FormatIconButton(
 @Composable
 @MultiThemePreview
 private fun DisabledFormatIconButtonPreview() {
-  OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container.asColor) {
+  AutosTheme {
+    Surface(color = AutosTheme.colors.background.container.asColor) {
       FormatIconButton(isEnabled = false)
     }
   }
@@ -69,8 +69,8 @@ private fun DisabledFormatIconButtonPreview() {
 @Composable
 @MultiThemePreview
 private fun EnabledFormatIconButtonPreview() {
-  OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container.asColor) {
+  AutosTheme {
+    Surface(color = AutosTheme.colors.background.container.asColor) {
       FormatIconButton(isEnabled = true)
     }
   }
@@ -81,9 +81,9 @@ private fun FormatIconButton(isEnabled: Boolean, modifier: Modifier = Modifier) 
   FormatIconButton(isEnabled, onClick = {}, modifier) {
     Icon(
       if (isEnabled) {
-        OrcaTheme.iconography.compose.filled.asImageVector
+        AutosTheme.iconography.compose.filled.asImageVector
       } else {
-        OrcaTheme.iconography.compose.outlined.asImageVector
+        AutosTheme.iconography.compose.outlined.asImageVector
       },
       contentDescription = "Compose"
     )

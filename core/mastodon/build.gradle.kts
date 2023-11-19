@@ -36,8 +36,8 @@ dependencies {
   ksp(project(":std:injector-processor"))
 
   implementation(project(":core:sample"))
+  implementation(project(":platform:autos"))
   implementation(project(":platform:cache"))
-  implementation(project(":platform:theme"))
   implementation(project(":platform:ui"))
   implementation(libs.android.browser)
   implementation(libs.android.room.ktx)

@@ -38,13 +38,13 @@ import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
 import com.jeanbarrossilva.orca.core.sample.feed.profile.search.createSample
 import com.jeanbarrossilva.orca.feature.search.ui.SearchResultCard
-import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
-import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
-import com.jeanbarrossilva.orca.platform.theme.kit.input.text.TextField
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.BackAction
+import com.jeanbarrossilva.orca.platform.autos.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TextField
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.BackAction
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
@@ -112,7 +112,7 @@ private fun Search(
     modifier,
     verticalArrangement =
       if (areResultsEmpty) {
-        Arrangement.spacedBy(OrcaTheme.spacings.medium.dp, Alignment.CenterVertically)
+        Arrangement.spacedBy(AutosTheme.spacings.medium.dp, Alignment.CenterVertically)
       } else {
         SearchDefaults.VerticalArrangement
       },
@@ -151,7 +151,7 @@ private fun Search(
   content: LazyListScope.() -> Unit
 ) {
   val focusRequester = remember(::FocusRequester)
-  val spacing = OrcaTheme.spacings.medium.dp
+  val spacing = AutosTheme.spacings.medium.dp
 
   LaunchedEffect(Unit) { focusRequester.requestFocusWithDelay() }
 
@@ -159,7 +159,7 @@ private fun Search(
     modifier,
     topAppBar = {
       Row(
-        Modifier.background(OrcaTheme.colors.background.container.asColor)
+        Modifier.background(AutosTheme.colors.background.container.asColor)
           .padding(top = spacing, end = spacing, bottom = spacing)
           .statusBarsPadding(),
         verticalAlignment = Alignment.CenterVertically
@@ -193,19 +193,21 @@ private fun Search(
 private fun EmptyResultsMessage(modifier: Modifier = Modifier) {
   Column(
     modifier,
-    Arrangement.spacedBy(OrcaTheme.spacings.medium.dp),
+    Arrangement.spacedBy(AutosTheme.spacings.medium.dp),
     Alignment.CenterHorizontally
   ) {
-    CompositionLocalProvider(LocalContentColor provides OrcaTheme.typography.headlineMedium.color) {
+    CompositionLocalProvider(
+      LocalContentColor provides AutosTheme.typography.headlineMedium.color
+    ) {
       Icon(
-        OrcaTheme.iconography.search.asImageVector,
+        AutosTheme.iconography.search.asImageVector,
         contentDescription = stringResource(R.string.feature_search),
         Modifier.size(64.dp)
       )
 
       Text(
         stringResource(R.string.feature_search_no_results_found),
-        style = OrcaTheme.typography.headlineMedium
+        style = AutosTheme.typography.headlineMedium
       )
     }
   }
@@ -214,13 +216,13 @@ private fun EmptyResultsMessage(modifier: Modifier = Modifier) {
 @Composable
 @MultiThemePreview
 private fun LoadingSearchPreview() {
-  OrcaTheme { Search(query = "", onQueryChange = {}, onBackwardsNavigation = {}) }
+  AutosTheme { Search(query = "", onQueryChange = {}, onBackwardsNavigation = {}) }
 }
 
 @Composable
 @MultiThemePreview
 private fun EmptyResultsPreview() {
-  OrcaTheme {
+  AutosTheme {
     Search(
       query = "${ProfileSearchResult.createSample(ImageLoader.Provider.createSample()).account}",
       onQueryChange = {},
@@ -234,7 +236,7 @@ private fun EmptyResultsPreview() {
 @Composable
 @MultiThemePreview
 private fun LoadedSearchPreview() {
-  OrcaTheme {
+  AutosTheme {
     Search(
       query = "",
       onQueryChange = {},

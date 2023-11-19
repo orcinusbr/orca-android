@@ -44,17 +44,17 @@ import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.createSample
 import com.jeanbarrossilva.orca.feature.composer.ui.Toolbar
-import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
-import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
-import com.jeanbarrossilva.orca.platform.theme.autos.overlays.asPaddingValues
-import com.jeanbarrossilva.orca.platform.theme.extensions.plus
-import com.jeanbarrossilva.orca.platform.theme.kit.action.button.HoverableIconButton
-import com.jeanbarrossilva.orca.platform.theme.kit.input.text.TextFieldDefaults as _TextFieldDefaults
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
+import com.jeanbarrossilva.orca.platform.autos.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.autos.overlays.asPaddingValues
+import com.jeanbarrossilva.orca.platform.autos.extensions.plus
+import com.jeanbarrossilva.orca.platform.autos.kit.action.button.HoverableIconButton
+import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TextFieldDefaults as _TextFieldDefaults
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
@@ -90,12 +90,12 @@ private fun Composer(
 ) {
   val density = LocalDensity.current
   val focusRequester = remember(::FocusRequester)
-  val style = OrcaTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Normal)
+  val style = AutosTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Normal)
   val interactionSource = remember(::MutableInteractionSource)
-  val brushColor = OrcaTheme.colors.primary.container.asColor
+  val brushColor = AutosTheme.colors.primary.container.asColor
   val cursorBrush = remember(brushColor) { SolidColor(brushColor) }
   var isToolbarVisible by remember { mutableStateOf(isToolbarInitiallyVisible) }
-  val toolbarSpacing = OrcaTheme.spacings.medium.dp
+  val toolbarSpacing = AutosTheme.spacings.medium.dp
   var toolbarSafeAreaPadding by remember { mutableStateOf(PaddingValues(end = 56.dp + 16.dp)) }
   val floatingActionButtonPosition =
     remember(isToolbarVisible) { if (isToolbarVisible) FabPosition.End else FabPosition.Center }
@@ -110,7 +110,7 @@ private fun Composer(
         title = { AutoSizeText(stringResource(R.string.feature_composer)) },
         navigationIcon = {
           HoverableIconButton(onClick = onBackwardsNavigation) {
-            Icon(OrcaTheme.iconography.back.asImageVector, contentDescription = "Back")
+            Icon(AutosTheme.iconography.back.asImageVector, contentDescription = "Back")
           }
         }
       )
@@ -131,7 +131,7 @@ private fun Composer(
         }
       ) {
         Icon(
-          OrcaTheme.iconography.send.asImageVector,
+          AutosTheme.iconography.send.asImageVector,
           contentDescription = stringResource(R.string.feature_composer_send)
         )
       }
@@ -141,7 +141,7 @@ private fun Composer(
     Box(Modifier.padding(padding).fillMaxSize()) {
       LazyColumn(
         contentPadding =
-          PaddingValues(OrcaTheme.spacings.large.dp) + OrcaTheme.overlays.fab.asPaddingValues
+          PaddingValues(AutosTheme.spacings.large.dp) + AutosTheme.overlays.fab.asPaddingValues
       ) {
         item {
           BasicTextField(
@@ -165,7 +165,7 @@ private fun Composer(
               placeholder = {
                 Text(
                   stringResource(R.string.feature_composer_placeholder),
-                  style = style.copy(color = OrcaTheme.colors.tertiary.asColor)
+                  style = style.copy(color = AutosTheme.colors.tertiary.asColor)
                 )
               },
               colors = _TextFieldDefaults.colors(enabledContainerColor = Color.Transparent),
@@ -216,19 +216,19 @@ private fun Composer(
 @Composable
 @MultiThemePreview
 private fun EmptyWithoutToolbarComposerPreview() {
-  OrcaTheme { Composer(TextFieldValue(AnnotatedString("")), isInitiallyFocused = false) }
+  AutosTheme { Composer(TextFieldValue(AnnotatedString("")), isInitiallyFocused = false) }
 }
 
 @Composable
 @MultiThemePreview
 private fun EmptyWithToolbarComposerPreview() {
-  OrcaTheme { Composer(TextFieldValue(AnnotatedString("")), isInitiallyFocused = true) }
+  AutosTheme { Composer(TextFieldValue(AnnotatedString("")), isInitiallyFocused = true) }
 }
 
 @Composable
 @MultiThemePreview
 private fun PopulatedWithoutToolbarComposerPreview() {
-  OrcaTheme {
+  AutosTheme {
     Composer(
       TextFieldValue(
         Toot.createSample(ImageLoader.Provider.createSample()).content.text.toAnnotatedString()
@@ -241,7 +241,7 @@ private fun PopulatedWithoutToolbarComposerPreview() {
 @Composable
 @MultiThemePreview
 private fun PopulatedWithToolbarComposerPreview() {
-  OrcaTheme {
+  AutosTheme {
     Composer(
       TextFieldValue(
         Toot.createSample(ImageLoader.Provider.createSample()).content.text.toAnnotatedString()

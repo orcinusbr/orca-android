@@ -17,19 +17,19 @@ import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.orca.feature.feed.viewmodel.FeedViewModel
-import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
-import com.jeanbarrossilva.orca.platform.theme.autos.overlays.asPaddingValues
-import com.jeanbarrossilva.orca.platform.theme.extensions.plus
-import com.jeanbarrossilva.orca.platform.theme.kit.action.button.HoverableIconButton
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBarDefaults
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
-import com.jeanbarrossilva.orca.platform.theme.reactivity.BottomAreaAvailabilityNestedScrollConnection
-import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
-import com.jeanbarrossilva.orca.platform.theme.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
+import com.jeanbarrossilva.orca.platform.autos.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.autos.overlays.asPaddingValues
+import com.jeanbarrossilva.orca.platform.autos.extensions.plus
+import com.jeanbarrossilva.orca.platform.autos.kit.action.button.HoverableIconButton
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
+import com.jeanbarrossilva.orca.platform.autos.reactivity.BottomAreaAvailabilityNestedScrollConnection
+import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
+import com.jeanbarrossilva.orca.platform.autos.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Refresh
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
@@ -120,7 +120,7 @@ private fun Feed(
         actions = {
           HoverableIconButton(onClick = onSearch) {
             Icon(
-              OrcaTheme.iconography.search.asImageVector,
+              AutosTheme.iconography.search.asImageVector,
               contentDescription = stringResource(R.string.feature_feed_search)
             )
           }
@@ -135,7 +135,7 @@ private fun Feed(
           Modifier.testTag(FEED_FLOATING_ACTION_BUTTON_TAG)
         ) {
           Icon(
-            OrcaTheme.iconography.compose.filled.asImageVector,
+            AutosTheme.iconography.compose.filled.asImageVector,
             contentDescription = stringResource(R.string.feature_feed_compose)
           )
         }
@@ -152,7 +152,7 @@ private fun Feed(
       onNext,
       Modifier.nestedScroll(bottomAreaAvailabilityNestedScrollConnection)
         .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-      contentPadding = it + OrcaTheme.overlays.fab.asPaddingValues,
+      contentPadding = it + AutosTheme.overlays.fab.asPaddingValues,
       refresh =
         Refresh(isTimelineRefreshing, indicatorOffset = it.calculateTopPadding(), onTimelineRefresh)
     )
@@ -162,17 +162,17 @@ private fun Feed(
 @Composable
 @MultiThemePreview
 private fun LoadingFeedPreview() {
-  OrcaTheme { Feed(ListLoadable.Loading()) }
+  AutosTheme { Feed(ListLoadable.Loading()) }
 }
 
 @Composable
 @MultiThemePreview
 private fun EmptyFeedPreview() {
-  OrcaTheme { Feed(ListLoadable.Empty()) }
+  AutosTheme { Feed(ListLoadable.Empty()) }
 }
 
 @Composable
 @MultiThemePreview
 private fun PopulatedFeedPreview() {
-  OrcaTheme { Feed(TootPreview.samples.toSerializableList().toListLoadable()) }
+  AutosTheme { Feed(TootPreview.samples.toSerializableList().toListLoadable()) }
 }

@@ -44,12 +44,12 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.createSample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.createSamples
-import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
-import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
-import com.jeanbarrossilva.orca.platform.theme.extensions.EmptyMutableInteractionSource
-import com.jeanbarrossilva.orca.platform.theme.extensions.IgnoringMutableInteractionSource
+import com.jeanbarrossilva.orca.platform.autos.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.extensions.EmptyMutableInteractionSource
+import com.jeanbarrossilva.orca.platform.autos.extensions.IgnoringMutableInteractionSource
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.SmallAvatar
@@ -156,7 +156,7 @@ data class TootPreview(
   companion object {
     /** [SampleTootPreview] sample. */
     val sample
-      @Composable get() = getSample(LocalContext.current, OrcaTheme.colors)
+      @Composable get() = getSample(LocalContext.current, AutosTheme.colors)
 
     /** [SampleTootPreview] samples. */
     val samples
@@ -190,7 +190,7 @@ fun TootPreview(modifier: Modifier = Modifier) {
     content = {
       Column(
         bodyModifier.semantics { set(SemanticsProperties.Loading, true) },
-        Arrangement.spacedBy(OrcaTheme.spacings.extraSmall.dp)
+        Arrangement.spacedBy(AutosTheme.spacings.extraSmall.dp)
       ) {
         repeat(3) { LargeTextualPlaceholder() }
         MediumTextualPlaceholder()
@@ -238,11 +238,11 @@ fun TootPreview(
       preview.rebloggerName?.let {
         Row(
           Modifier.testTag(TOOT_PREVIEW_REBLOG_METADATA_TAG),
-          Arrangement.spacedBy(OrcaTheme.spacings.small.dp),
+          Arrangement.spacedBy(AutosTheme.spacings.small.dp),
           Alignment.CenterVertically
         ) {
           Icon(
-            OrcaTheme.iconography.repost.asImageVector,
+            AutosTheme.iconography.repost.asImageVector,
             contentDescription = stringResource(R.string.platform_ui_reblog_stat),
             Modifier.size(14.dp)
           )
@@ -252,7 +252,7 @@ fun TootPreview(
       }
     },
     content = {
-      Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.medium.dp)) {
+      Column(verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.medium.dp)) {
         Text(preview.text, bodyModifier)
 
         preview.highlight?.headline?.let { HeadlineCard(it, onHighlightClick) }
@@ -262,7 +262,7 @@ fun TootPreview(
       Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
         Stat(
           StatPosition.LEADING,
-          OrcaTheme.iconography.comment.outlined.asImageVector,
+          AutosTheme.iconography.comment.outlined.asImageVector,
           contentDescription = stringResource(R.string.platform_ui_toot_preview_comments),
           onClick = {},
           Modifier.testTag(TOOT_PREVIEW_COMMENT_COUNT_STAT_TAG)
@@ -275,7 +275,7 @@ fun TootPreview(
 
         Stat(
           StatPosition.TRAILING,
-          OrcaTheme.iconography.share.outlined.asImageVector,
+          AutosTheme.iconography.share.outlined.asImageVector,
           contentDescription = stringResource(R.string.platform_ui_toot_preview_share),
           onClick = onShare,
           Modifier.testTag(TOOT_PREVIEW_SHARE_ACTION_TAG)
@@ -341,8 +341,8 @@ private fun TootPreview(
       onClick?.let { IgnoringMutableInteractionSource(HoverInteraction::class) }
         ?: EmptyMutableInteractionSource()
     }
-  val spacing = OrcaTheme.spacings.medium.dp
-  val metadataTextStyle = OrcaTheme.typography.bodySmall
+  val spacing = AutosTheme.spacings.medium.dp
+  val metadataTextStyle = AutosTheme.typography.bodySmall
 
   @OptIn(ExperimentalMaterial3Api::class)
   Card(
@@ -357,8 +357,8 @@ private fun TootPreview(
         avatar()
 
         Column(verticalArrangement = Arrangement.spacedBy(spacing)) {
-          Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall.dp)) {
-            ProvideTextStyle(OrcaTheme.typography.bodyLarge, name)
+          Column(verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.extraSmall.dp)) {
+            ProvideTextStyle(AutosTheme.typography.bodyLarge, name)
 
             CompositionLocalProvider(
               LocalContentColor provides metadataTextStyle.color,
@@ -380,15 +380,15 @@ private fun TootPreview(
 @Composable
 @MultiThemePreview
 private fun LoadingTootPreviewPreview() {
-  OrcaTheme { Surface(color = OrcaTheme.colors.background.container.asColor) { TootPreview() } }
+  AutosTheme { Surface(color = AutosTheme.colors.background.container.asColor) { TootPreview() } }
 }
 
 /** Preview of a loaded [SampleTootPreview] with disabled [Stat]s. */
 @Composable
 @MultiThemePreview
 private fun LoadedTootPreviewWithDisabledStatsPreview() {
-  OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container.asColor) {
+  AutosTheme {
+    Surface(color = AutosTheme.colors.background.container.asColor) {
       SampleTootPreview(preview = TootPreview.sample.copy(isFavorite = false, isReblogged = false))
     }
   }
@@ -398,8 +398,8 @@ private fun LoadedTootPreviewWithDisabledStatsPreview() {
 @Composable
 @MultiThemePreview
 private fun LoadedTootPreviewWithEnabledStatsPreview() {
-  OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container.asColor) {
+  AutosTheme {
+    Surface(color = AutosTheme.colors.background.container.asColor) {
       SampleTootPreview(preview = TootPreview.sample.copy(isFavorite = true, isReblogged = true))
     }
   }
