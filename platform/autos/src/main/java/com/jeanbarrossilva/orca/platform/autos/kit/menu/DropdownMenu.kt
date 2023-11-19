@@ -8,7 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Popup
-import com.jeanbarrossilva.orca.platform.autos.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 

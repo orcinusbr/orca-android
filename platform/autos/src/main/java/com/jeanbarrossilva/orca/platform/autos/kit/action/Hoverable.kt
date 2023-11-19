@@ -19,9 +19,9 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import com.jeanbarrossilva.orca.platform.autos.autos.colors.asColor
-import com.jeanbarrossilva.orca.platform.autos.autos.forms.asShape
-import com.jeanbarrossilva.orca.platform.autos.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.forms.asShape
+import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 

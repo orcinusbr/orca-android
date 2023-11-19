@@ -30,10 +30,10 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.autos.borders.Borders
-import com.jeanbarrossilva.orca.platform.autos.autos.borders.areApplicable
-import com.jeanbarrossilva.orca.platform.autos.autos.borders.asBorderStroke
-import com.jeanbarrossilva.orca.platform.autos.autos.colors.asColor
-import com.jeanbarrossilva.orca.platform.autos.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.borders.areApplicable
+import com.jeanbarrossilva.orca.platform.autos.borders.asBorderStroke
+import com.jeanbarrossilva.orca.platform.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.extensions.`if`
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBar as _TopAppBar

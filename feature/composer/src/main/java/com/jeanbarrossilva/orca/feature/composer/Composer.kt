@@ -44,9 +44,9 @@ import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.createSample
 import com.jeanbarrossilva.orca.feature.composer.ui.Toolbar
-import com.jeanbarrossilva.orca.platform.autos.autos.colors.asColor
-import com.jeanbarrossilva.orca.platform.autos.autos.iconography.asImageVector
-import com.jeanbarrossilva.orca.platform.autos.autos.overlays.asPaddingValues
+import com.jeanbarrossilva.orca.platform.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.overlays.asPaddingValues
 import com.jeanbarrossilva.orca.platform.autos.extensions.plus
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TextFieldDefaults as _TextFieldDefaults

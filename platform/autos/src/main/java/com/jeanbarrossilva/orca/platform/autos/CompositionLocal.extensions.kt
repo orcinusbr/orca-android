@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.autos.autos
+package com.jeanbarrossilva.orca.platform.autos
 
 import androidx.compose.runtime.CompositionLocal
 

@@ -42,8 +42,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.platform.autos.autos.colors.asColor
-import com.jeanbarrossilva.orca.platform.autos.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview

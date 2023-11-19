@@ -29,9 +29,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.autos.R
-import com.jeanbarrossilva.orca.platform.autos.autos.borders.asBorderStroke
-import com.jeanbarrossilva.orca.platform.autos.autos.colors.asColor
-import com.jeanbarrossilva.orca.platform.autos.autos.forms.asShape
+import com.jeanbarrossilva.orca.platform.autos.borders.asBorderStroke
+import com.jeanbarrossilva.orca.platform.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.forms.asShape
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TextField as _TextField
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TextFieldDefaults as _TextFieldDefaults
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.error.ErrorDispatcher

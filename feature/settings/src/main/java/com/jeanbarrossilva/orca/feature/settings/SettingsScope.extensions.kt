@@ -3,7 +3,7 @@ package com.jeanbarrossilva.orca.feature.settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.ui.res.stringResource
-import com.jeanbarrossilva.orca.platform.autos.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.kit.action.setting.list.SettingsScope
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 

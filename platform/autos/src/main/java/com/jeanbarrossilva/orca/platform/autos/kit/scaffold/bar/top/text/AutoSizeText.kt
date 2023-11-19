@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
-import com.jeanbarrossilva.orca.platform.autos.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.size.AutoSizeRange
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.size.AutoSizer
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.size.rememberAutoSizeRange

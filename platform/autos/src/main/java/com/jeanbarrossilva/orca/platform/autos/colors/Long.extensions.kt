@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.autos.autos.colors
+package com.jeanbarrossilva.orca.platform.autos.colors
 
 import androidx.compose.ui.graphics.Color
 

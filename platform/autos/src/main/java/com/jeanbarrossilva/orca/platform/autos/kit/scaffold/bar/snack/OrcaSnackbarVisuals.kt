@@ -6,7 +6,7 @@ import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import com.jeanbarrossilva.orca.platform.autos.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 
 /**

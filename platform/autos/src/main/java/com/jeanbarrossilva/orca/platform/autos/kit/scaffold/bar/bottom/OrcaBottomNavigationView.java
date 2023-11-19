@@ -13,7 +13,7 @@ import com.jeanbarrossilva.orca.autos.borders.Border;
 import com.jeanbarrossilva.orca.autos.borders.Borders;
 import com.jeanbarrossilva.orca.autos.colors.Colors;
 import com.jeanbarrossilva.orca.platform.autos.R;
-import com.jeanbarrossilva.orca.platform.autos.autos.borders.BordersExtensions;
+import com.jeanbarrossilva.orca.platform.autos.borders.BordersExtensions;
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme;
 
 /** Orca-specific {@link BottomNavigationView}. */
