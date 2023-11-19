@@ -17,7 +17,7 @@ android {
 }
 
 dependencies {
-  androidTestImplementation(project(":platform:theme"))
+  androidTestImplementation(project(":platform:autos"))
   androidTestImplementation(libs.android.test.core)
   androidTestImplementation(libs.assertk)
 

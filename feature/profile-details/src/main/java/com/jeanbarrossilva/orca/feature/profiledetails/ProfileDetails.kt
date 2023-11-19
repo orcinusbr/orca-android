@@ -45,19 +45,19 @@ import com.jeanbarrossilva.orca.core.sample.instance.createSample
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.NavigationButton
 import com.jeanbarrossilva.orca.feature.profiledetails.ui.Header
-import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
-import com.jeanbarrossilva.orca.platform.theme.extensions.`if`
-import com.jeanbarrossilva.orca.platform.theme.kit.action.button.HoverableIconButton
-import com.jeanbarrossilva.orca.platform.theme.kit.menu.DropdownMenu
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBarDefaults as _TopAppBarDefaults
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
-import com.jeanbarrossilva.orca.platform.theme.reactivity.BottomAreaAvailabilityNestedScrollConnection
-import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
-import com.jeanbarrossilva.orca.platform.theme.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
+import com.jeanbarrossilva.orca.platform.autos.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.extensions.`if`
+import com.jeanbarrossilva.orca.platform.autos.kit.action.button.HoverableIconButton
+import com.jeanbarrossilva.orca.platform.autos.kit.menu.DropdownMenu
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults as _TopAppBarDefaults
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
+import com.jeanbarrossilva.orca.platform.autos.reactivity.BottomAreaAvailabilityNestedScrollConnection
+import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
+import com.jeanbarrossilva.orca.platform.autos.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Refresh
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
@@ -109,7 +109,7 @@ internal sealed class ProfileDetails : Serializable {
     @Composable
     override fun FloatingActionButton(navigator: ProfileDetailsBoundary, modifier: Modifier) {
       FloatingActionButton(onClick = {}) {
-        Icon(OrcaTheme.iconography.edit.filled.asImageVector, contentDescription = "Edit")
+        Icon(AutosTheme.iconography.edit.filled.asImageVector, contentDescription = "Edit")
       }
     }
 
@@ -179,7 +179,7 @@ internal sealed class ProfileDetails : Serializable {
           profile.avatarLoader,
           profile.name,
           profile.account,
-          profile.bio.toAnnotatedString(OrcaTheme.colors),
+          profile.bio.toAnnotatedString(AutosTheme.colors),
           profile.url
         )
       }
@@ -388,7 +388,7 @@ private fun ProfileDetails(
       Box {
         HoverableIconButton(onClick = { isTopBarDropdownExpanded = true }) {
           Icon(
-            OrcaTheme.iconography.expand.asImageVector,
+            AutosTheme.iconography.expand.asImageVector,
             contentDescription = stringResource(R.string.feature_profile_details_more)
           )
         }
@@ -402,7 +402,7 @@ private fun ProfileDetails(
             },
             leadingIcon = {
               Icon(
-                OrcaTheme.iconography.link.asImageVector,
+                AutosTheme.iconography.link.asImageVector,
                 contentDescription = stringResource(R.string.feature_profile_details_external_link)
               )
             }
@@ -416,7 +416,7 @@ private fun ProfileDetails(
             },
             leadingIcon = {
               Icon(
-                OrcaTheme.iconography.link.asImageVector,
+                AutosTheme.iconography.link.asImageVector,
                 contentDescription = stringResource(R.string.feature_profile_details_share)
               )
             }
@@ -430,7 +430,7 @@ private fun ProfileDetails(
             },
             leadingIcon = {
               Icon(
-                OrcaTheme.iconography.share.outlined.asImageVector,
+                AutosTheme.iconography.share.outlined.asImageVector,
                 contentDescription = stringResource(R.string.feature_profile_details_share)
               )
             }
@@ -516,7 +516,7 @@ private fun ProfileDetails(
 @Composable
 @MultiThemePreview
 private fun LoadingProfileDetailsPreview() {
-  OrcaTheme {
+  AutosTheme {
     ProfileDetails(
       BackwardsNavigationState.Unavailable,
       BottomAreaAvailabilityNestedScrollConnection.empty
@@ -527,13 +527,13 @@ private fun LoadingProfileDetailsPreview() {
 @Composable
 @MultiThemePreview
 private fun LoadedProfileDetailsWithoutTootsPreview() {
-  OrcaTheme { ProfileDetails(tootPreviewsLoadable = ListLoadable.Empty()) }
+  AutosTheme { ProfileDetails(tootPreviewsLoadable = ListLoadable.Empty()) }
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadedProfileDetailsWithTootsPreview() {
-  OrcaTheme {
+  AutosTheme {
     ProfileDetails(tootPreviewsLoadable = TootPreview.samples.toSerializableList().toListLoadable())
   }
 }
@@ -541,7 +541,7 @@ private fun LoadedProfileDetailsWithTootsPreview() {
 @Composable
 @MultiThemePreview
 private fun LoadedProfileDetailsWithExpandedTopBarDropdownMenuPreview() {
-  OrcaTheme {
+  AutosTheme {
     ProfileDetails(
       tootPreviewsLoadable = TootPreview.samples.toSerializableList().toListLoadable(),
       isTopBarDropdownMenuExpanded = true,

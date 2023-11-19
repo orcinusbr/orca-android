@@ -33,9 +33,9 @@ import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.loadable
 import com.jeanbarrossilva.loadable.placeholder.Placeholder
 import com.jeanbarrossilva.loadable.placeholder.PlaceholderDefaults
-import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.compose.Image as _Image
@@ -104,7 +104,7 @@ fun Image(
             Box(Modifier.clip(shape).background(PlaceholderDefaults.color).matchParentSize())
 
             Icon(
-              OrcaTheme.iconography.unavailable.filled.asImageVector,
+              AutosTheme.iconography.unavailable.filled.asImageVector,
               contentDescription = "Unavailable image",
               Modifier.height(maxHeight / 2).width(maxWidth / 2)
             )
@@ -119,7 +119,7 @@ fun Image(
 @Composable
 @MultiThemePreview
 private fun ImagePreview() {
-  OrcaTheme {
+  AutosTheme {
     _Image(
       rememberImageLoader(URL("https://images.unsplash.com/photo-1692890846581-da1a95435f34")),
       contentDescription = "Preview image",

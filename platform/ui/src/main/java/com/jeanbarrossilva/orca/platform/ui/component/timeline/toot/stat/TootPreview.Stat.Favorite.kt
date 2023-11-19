@@ -9,9 +9,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconInteractiveness
 import com.jeanbarrossilva.orca.platform.ui.component.stat.favorite.FavoriteStatIcon
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.SampleTootPreview
@@ -35,7 +35,7 @@ internal fun FavoriteStat(
   Stat(position, onClick, modifier.testTag(TOOT_PREVIEW_FAVORITE_STAT_TAG)) {
     val contentColor by
       animateColorAsState(
-        if (isActive) OrcaTheme.colors.activation.favorite.asColor else LocalContentColor.current,
+        if (isActive) AutosTheme.colors.activation.favorite.asColor else LocalContentColor.current,
         label = "ContentColor"
       )
 
@@ -52,7 +52,7 @@ internal fun FavoriteStat(
 @Composable
 @MultiThemePreview
 private fun InactiveFavoriteStatPreview() {
-  OrcaTheme {
+  AutosTheme {
     FavoriteStat(StatPosition.SUBSEQUENT, TootPreview.sample.copy(isFavorite = false), onClick = {})
   }
 }
@@ -60,7 +60,7 @@ private fun InactiveFavoriteStatPreview() {
 @Composable
 @MultiThemePreview
 private fun ActiveFavoriteStatPreview() {
-  OrcaTheme {
+  AutosTheme {
     FavoriteStat(StatPosition.SUBSEQUENT, TootPreview.sample.copy(isFavorite = true), onClick = {})
   }
 }

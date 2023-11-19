@@ -22,7 +22,7 @@ import com.jeanbarrossilva.orca.feature.search.SearchModule
 import com.jeanbarrossilva.orca.feature.settings.SettingsModule
 import com.jeanbarrossilva.orca.feature.settings.termmuting.TermMutingModule
 import com.jeanbarrossilva.orca.feature.tootdetails.TootDetailsModule
-import com.jeanbarrossilva.orca.platform.theme.reactivity.OnBottomAreaAvailabilityChangeListener
+import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
 import com.jeanbarrossilva.orca.std.injector.Injector
 import kotlinx.coroutines.launch

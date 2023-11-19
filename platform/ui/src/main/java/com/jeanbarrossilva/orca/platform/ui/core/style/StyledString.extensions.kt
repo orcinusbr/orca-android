@@ -6,7 +6,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import com.jeanbarrossilva.orca.autos.colors.Colors
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.core.style.spanned.toStyledString
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import com.jeanbarrossilva.orca.std.styledstring.style.Style
@@ -37,7 +37,7 @@ fun StyledString.Companion.fromHtml(html: String): StyledString {
 /** Converts this [StyledString] into an [AnnotatedString]. */
 @Composable
 fun StyledString.toAnnotatedString(): AnnotatedString {
-  return toAnnotatedString(OrcaTheme.colors)
+  return toAnnotatedString(AutosTheme.colors)
 }
 
 /**

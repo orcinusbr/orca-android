@@ -11,7 +11,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation_view" />
 
-    <com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.bottom.OrcaBottomNavigationView
+    <com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.bottom.OrcaBottomNavigationView
         android:id="@+id/bottom_navigation_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

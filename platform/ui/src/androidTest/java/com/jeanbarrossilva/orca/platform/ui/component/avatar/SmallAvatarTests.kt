@@ -5,7 +5,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import com.jeanbarrossilva.loadable.placeholder.test.assertIsLoading
 import com.jeanbarrossilva.loadable.placeholder.test.assertIsNotLoading
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.core.createSample
 import com.jeanbarrossilva.orca.std.imageloader.test.TestImageLoader
 import org.junit.Rule
@@ -16,20 +16,20 @@ internal class SmallAvatarTests {
 
   @Test
   fun isTaggedWhenEmpty() {
-    composeRule.setContent { OrcaTheme { SmallAvatar() } }
+    composeRule.setContent { AutosTheme { SmallAvatar() } }
     composeRule.onNodeWithTag(AVATAR_TAG).assertExists()
   }
 
   @Test
   fun isLoadingWhenEmpty() {
-    composeRule.setContent { OrcaTheme { SmallAvatar() } }
+    composeRule.setContent { AutosTheme { SmallAvatar() } }
     composeRule.onNodeWithTag(AVATAR_TAG).assertIsLoading()
   }
 
   @Test
   fun isTaggedWhenPopulated() {
     composeRule.setContent {
-      OrcaTheme { SmallAvatar(TestImageLoader, Profile.createSample().name) }
+      AutosTheme { SmallAvatar(TestImageLoader, Profile.createSample().name) }
     }
     composeRule.onNodeWithTag(AVATAR_TAG).assertExists()
   }
@@ -37,7 +37,7 @@ internal class SmallAvatarTests {
   @Test
   fun isLoadedWhenPopulated() {
     composeRule.setContent {
-      OrcaTheme { SmallAvatar(TestImageLoader, Profile.createSample().name) }
+      AutosTheme { SmallAvatar(TestImageLoader, Profile.createSample().name) }
     }
     composeRule.onNodeWithTag(AVATAR_TAG).assertIsNotLoading()
   }

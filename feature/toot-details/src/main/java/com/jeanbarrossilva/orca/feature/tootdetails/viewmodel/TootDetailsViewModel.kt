@@ -9,7 +9,7 @@ import com.jeanbarrossilva.loadable.list.flow.listLoadable
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.TootProvider
 import com.jeanbarrossilva.orca.feature.tootdetails.toTootDetailsFlow
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.toTootPreviewFlow
 import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
 import com.jeanbarrossilva.orca.platform.ui.core.context.share
@@ -36,7 +36,7 @@ private constructor(
   private val commentsIndexFlow = MutableStateFlow(0)
 
   private val colors
-    get() = OrcaTheme.getColors(context)
+    get() = AutosTheme.getColors(context)
 
   private val context
     get() = contextProvider.provide()

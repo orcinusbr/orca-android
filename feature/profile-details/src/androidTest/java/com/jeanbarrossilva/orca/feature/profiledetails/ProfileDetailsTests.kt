@@ -7,7 +7,7 @@ import androidx.compose.ui.test.performScrollToIndex
 import androidx.test.platform.app.InstrumentationRegistry
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.TIMELINE_TAG
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline
@@ -24,7 +24,7 @@ internal class ProfileDetailsTests {
     val screenHeightInPx =
       InstrumentationRegistry.getInstrumentation().context.resources.displayMetrics.heightPixels
     composeRule.setContent {
-      OrcaTheme {
+      AutosTheme {
         ProfileDetails(
           tootPreviewsLoadable =
             List(size = screenHeightInPx) { TootPreview.sample.copy(id = "${UUID.randomUUID()}") }

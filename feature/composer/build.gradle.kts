@@ -15,7 +15,7 @@ dependencies {
 
   implementation(project(":core"))
   implementation(project(":core:sample"))
-  implementation(project(":platform:theme"))
+  implementation(project(":platform:autos"))
   implementation(project(":platform:ui"))
   implementation(libs.android.compose.material.icons)
 

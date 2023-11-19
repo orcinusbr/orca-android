@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import com.jeanbarrossilva.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.reblog.Reblog
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -30,7 +30,7 @@ fun Toot.toTootPreviewFlow(colors: Colors): Flow<TootPreview> {
 /** Converts this [Toot] into a [SampleTootPreview]. */
 @Composable
 internal fun Toot.toTootPreview(): TootPreview {
-  return toTootPreview(OrcaTheme.colors)
+  return toTootPreview(AutosTheme.colors)
 }
 
 /**

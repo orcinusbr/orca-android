@@ -9,7 +9,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.TOOT_PREVIEW_FAVORITE_STAT_TAG
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.onTootPreviews
@@ -27,7 +27,7 @@ internal class FeedTests {
   fun runsCallbackWhenClickingTootFavoriteStat() {
     var hasCallbackBeenRun = false
     composeRule.setContent {
-      OrcaTheme {
+      AutosTheme {
         Feed(
           TootPreview.samples.toSerializableList().toListLoadable(),
           onFavorite = { hasCallbackBeenRun = true }

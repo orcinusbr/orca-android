@@ -17,7 +17,7 @@ import assertk.assertThat
 import assertk.assertions.containsExactly
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.performScrollToBottom
@@ -34,13 +34,13 @@ internal class TimelineTests {
 
   @Test
   fun showsEmptyMessageWhenListLoadableIsEmpty() {
-    composeRule.setContent { OrcaTheme { Timeline(ListLoadable.Empty()) } }
+    composeRule.setContent { AutosTheme { Timeline(ListLoadable.Empty()) } }
     composeRule.onNodeWithTag(EMPTY_TIMELINE_MESSAGE_TAG).assertIsDisplayed()
   }
 
   @Test
   fun showsDividerWhenHeaderIsNotAddedOnTootPreviewBeforeLastOne() {
-    composeRule.setContent { OrcaTheme { Timeline(TootPreview.samples.take(2)) } }
+    composeRule.setContent { AutosTheme { Timeline(TootPreview.samples.take(2)) } }
     composeRule
       .onNodeWithTag(TIMELINE_TAG)
       .onChildren()
@@ -52,7 +52,7 @@ internal class TimelineTests {
 
   @Test
   fun showsDividersWhenHeaderIsAddedOnTootPreviewBeforeLastOne() {
-    composeRule.setContent { OrcaTheme { Timeline(TootPreview.samples.take(2)) {} } }
+    composeRule.setContent { AutosTheme { Timeline(TootPreview.samples.take(2)) {} } }
     composeRule
       .onNodeWithTag(TIMELINE_TAG)
       .onChildren()[1]
@@ -63,7 +63,7 @@ internal class TimelineTests {
 
   @Test
   fun doesNotShowDividersOnLastTootPreview() {
-    composeRule.setContent { OrcaTheme { Timeline(TootPreview.samples.take(1)) } }
+    composeRule.setContent { AutosTheme { Timeline(TootPreview.samples.take(1)) } }
     composeRule
       .onTimeline()
       .onChildren()

@@ -9,8 +9,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
-import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconInteractiveness
 import com.jeanbarrossilva.orca.platform.ui.component.stat.reblog.ReblogStatIcon
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.Stat
@@ -43,7 +43,7 @@ internal fun ReblogStat(
 @Composable
 @MultiThemePreview
 private fun InactiveReblogStatPreview() {
-  OrcaTheme {
+  AutosTheme {
     ReblogStat(StatPosition.SUBSEQUENT, TootPreview.sample.copy(isReblogged = false), onClick = {})
   }
 }
@@ -51,7 +51,7 @@ private fun InactiveReblogStatPreview() {
 @Composable
 @MultiThemePreview
 private fun ActiveReblogStatPreview() {
-  OrcaTheme {
+  AutosTheme {
     ReblogStat(StatPosition.SUBSEQUENT, TootPreview.sample.copy(isReblogged = true), onClick = {})
   }
 }

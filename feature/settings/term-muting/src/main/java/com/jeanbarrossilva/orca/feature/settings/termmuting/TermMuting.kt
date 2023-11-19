@@ -25,17 +25,17 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.extensions.plus
-import com.jeanbarrossilva.orca.platform.theme.kit.action.button.PrimaryButton
-import com.jeanbarrossilva.orca.platform.theme.kit.input.text.TextField
-import com.jeanbarrossilva.orca.platform.theme.kit.input.text.error.containsErrorsAsState
-import com.jeanbarrossilva.orca.platform.theme.kit.input.text.error.rememberErrorDispatcher
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.button.ButtonBar
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBarDefaults
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBarWithBackNavigation
+import com.jeanbarrossilva.orca.platform.autos.extensions.plus
+import com.jeanbarrossilva.orca.platform.autos.kit.action.button.PrimaryButton
+import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TextField
+import com.jeanbarrossilva.orca.platform.autos.kit.input.text.error.containsErrorsAsState
+import com.jeanbarrossilva.orca.platform.autos.kit.input.text.error.rememberErrorDispatcher
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.button.ButtonBar
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBarWithBackNavigation
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 
 internal const val SETTINGS_TERM_MUTING_TEXT_FIELD_TAG = "settings-term-muting-text-field"
@@ -70,7 +70,7 @@ internal fun TermMuting(
   val context = LocalContext.current
   val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
   val lazyListState = rememberLazyListState()
-  val spacing = OrcaTheme.spacings.medium.dp
+  val spacing = AutosTheme.spacings.medium.dp
   val focusRequester = remember(::FocusRequester)
   val errorDispatcher = rememberErrorDispatcher {
     error(context, R.string.feature_settings_term_muting_empty_error, String::isBlank)
@@ -133,7 +133,7 @@ internal fun TermMuting(
       item {
         Text(
           stringResource(R.string.feature_settings_term_muting_explanation),
-          style = OrcaTheme.typography.bodySmall
+          style = AutosTheme.typography.bodySmall
         )
       }
     }
@@ -143,5 +143,5 @@ internal fun TermMuting(
 @Composable
 @MultiThemePreview
 private fun TermMutingPreview() {
-  OrcaTheme { TermMuting(term = "🐛", onTermChange = {}, onMute = {}, onPop = {}) }
+  AutosTheme { TermMuting(term = "🐛", onTermChange = {}, onMute = {}, onPop = {}) }
 }

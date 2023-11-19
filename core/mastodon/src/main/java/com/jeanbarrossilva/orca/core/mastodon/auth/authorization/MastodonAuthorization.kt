@@ -34,16 +34,16 @@ import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.selectable.list
 import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.selectable.list.selectFirst
 import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.viewmodel.MastodonAuthorizationViewModel
 import com.jeanbarrossilva.orca.core.sample.instance.domain.samples
-import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.extensions.plus
-import com.jeanbarrossilva.orca.platform.theme.kit.action.button.PrimaryButton
-import com.jeanbarrossilva.orca.platform.theme.kit.input.option.list.Options
-import com.jeanbarrossilva.orca.platform.theme.kit.input.text.TextField
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.button.ButtonBar
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.TopAppBar
-import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.top.text.AutoSizeText
+import com.jeanbarrossilva.orca.platform.autos.extensions.plus
+import com.jeanbarrossilva.orca.platform.autos.kit.action.button.PrimaryButton
+import com.jeanbarrossilva.orca.platform.autos.kit.input.option.list.Options
+import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TextField
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.button.ButtonBar
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 
 /**
  * Screen that presents username and instance fields for the user to fill in order for them to be
@@ -153,7 +153,7 @@ internal fun MastodonAuthorization(
   val isHeaderHidden by
     remember(lazyListState) { derivedStateOf { lazyListState.firstVisibleItemIndex > 0 } }
   val headerTitle = stringResource(R.string.core_http_authorization_account_origin)
-  val spacing = OrcaTheme.spacings.extraLarge.dp
+  val spacing = AutosTheme.spacings.extraLarge.dp
 
   Box(modifier) {
     Scaffold(
@@ -173,16 +173,20 @@ internal fun MastodonAuthorization(
       ) {
         item {
           Column(
-            verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.small.dp),
+            verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.small.dp),
             horizontalAlignment = Alignment.CenterHorizontally
           ) {
             Text(
               stringResource(R.string.core_http_authorization_welcome),
               textAlign = TextAlign.Center,
-              style = OrcaTheme.typography.headlineLarge
+              style = AutosTheme.typography.headlineLarge
             )
 
-            Text(headerTitle, textAlign = TextAlign.Center, style = OrcaTheme.typography.titleSmall)
+            Text(
+              headerTitle,
+              textAlign = TextAlign.Center,
+              style = AutosTheme.typography.titleSmall
+            )
           }
         }
 
@@ -210,14 +214,14 @@ internal fun MastodonAuthorization(
 @Composable
 @MultiThemePreview
 private fun LoadingMastodonAuthorizationPreview() {
-  OrcaTheme { MastodonAuthorization() }
+  AutosTheme { MastodonAuthorization() }
 }
 
 /** Preview of a loaded [MastodonAuthorization] screen. */
 @Composable
 @MultiThemePreview
 private fun LoadedMastodonAuthorizationPreview() {
-  OrcaTheme {
+  AutosTheme {
     MastodonAuthorization(
       searchQuery = "",
       onSearch = {},
