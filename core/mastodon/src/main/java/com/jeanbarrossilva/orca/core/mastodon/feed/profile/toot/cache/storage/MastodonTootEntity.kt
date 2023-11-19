@@ -15,7 +15,7 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.style.M
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonToot
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
-import com.jeanbarrossilva.orca.platform.autos.extensions.`if`
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.`if`
 import com.jeanbarrossilva.orca.platform.cache.Cache
 import com.jeanbarrossilva.orca.std.imageloader.Image
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader

@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.autos.extensions
+package com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top
 
 /**
  * Returns the result of the given [transform] if the [condition] is `true`; otherwise, returns the

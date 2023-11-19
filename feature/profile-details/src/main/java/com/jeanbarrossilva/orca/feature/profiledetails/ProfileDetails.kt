@@ -45,13 +45,13 @@ import com.jeanbarrossilva.orca.core.sample.instance.createSample
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.NavigationButton
 import com.jeanbarrossilva.orca.feature.profiledetails.ui.Header
-import com.jeanbarrossilva.orca.platform.autos.extensions.`if`
 import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.autos.kit.menu.DropdownMenu
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults as _TopAppBarDefaults
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.`if`
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.autos.reactivity.BottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
