@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.autos.extensions
+package com.jeanbarrossilva.orca.platform.autos.theme
 
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
