@@ -16,6 +16,8 @@ import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.core.mastodon.R
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
 
 /**
  * Visually notifies that authentication is running in the background.
@@ -24,13 +26,17 @@ import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
  */
 @Composable
 internal fun MastodonAuthentication(modifier: Modifier = Modifier) {
-  Surface(modifier, color = OrcaTheme.colors.background.container) {
+  Surface(modifier, color = OrcaTheme.colors.background.container.asColor) {
     Column(
       Modifier.fillMaxSize(),
-      Arrangement.spacedBy(OrcaTheme.spacings.medium, Alignment.CenterVertically),
+      Arrangement.spacedBy(OrcaTheme.spacings.medium.dp, Alignment.CenterVertically),
       Alignment.CenterHorizontally
     ) {
-      Icon(OrcaTheme.iconography.login, contentDescription = "Link", Modifier.size(64.dp))
+      Icon(
+        OrcaTheme.iconography.login.asImageVector,
+        contentDescription = "Link",
+        Modifier.size(64.dp)
+      )
 
       Text(
         stringResource(R.string.core_http_authentication_authenticating),

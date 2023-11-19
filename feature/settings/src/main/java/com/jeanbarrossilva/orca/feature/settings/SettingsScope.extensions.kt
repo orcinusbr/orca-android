@@ -4,6 +4,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.ui.res.stringResource
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.theme.kit.action.setting.list.SettingsScope
 
 /**
@@ -22,7 +23,7 @@ internal fun SettingsScope.muting(
   group(
     icon = {
       Icon(
-        OrcaTheme.iconography.mute.filled,
+        OrcaTheme.iconography.mute.filled.asImageVector,
         contentDescription = stringResource(R.string.feature_settings_muting)
       )
     },
@@ -33,7 +34,7 @@ internal fun SettingsScope.muting(
       label = { Text(stringResource(R.string.feature_settings_add)) },
       icon = {
         Icon(
-          OrcaTheme.iconography.add,
+          OrcaTheme.iconography.add.asImageVector,
           contentDescription = stringResource(R.string.feature_settings_add)
         )
       }
@@ -44,7 +45,7 @@ internal fun SettingsScope.muting(
           contentDescription = { stringResource(R.string.feature_settings_remove) },
           onClick = { onUnmute(it) }
         ) {
-          delete.filled
+          delete.filled.asImageVector
         }
       }
     }

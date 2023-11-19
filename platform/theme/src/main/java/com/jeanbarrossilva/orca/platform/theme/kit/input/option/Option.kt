@@ -28,9 +28,12 @@ import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
+import com.jeanbarrossilva.orca.autos.forms.Forms
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.configuration.Shapes
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.theme.autos.forms.asShape
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.theme.extensions.border
 import com.jeanbarrossilva.orca.platform.theme.kit.input.option.list.Options
 
@@ -51,15 +54,15 @@ internal object OptionDefaults {
 
   /** [CornerBasedShape] that clips an [Option] by default. */
   val shape
-    @Composable get() = getShape(OrcaTheme.shapes)
+    @Composable get() = getShape(OrcaTheme.forms)
 
   /**
    * Gets the [CornerBasedShape] that clips an [Option] by default.
    *
-   * @param shapes [Shapes] from which the [CornerBasedShape] will be obtained.
+   * @param forms [Forms] from which the [CornerBasedShape] will be obtained.
    */
-  fun getShape(shapes: Shapes): CornerBasedShape {
-    return shapes.medium
+  fun getShape(forms: Forms): CornerBasedShape {
+    return forms.medium.asShape
   }
 }
 
@@ -146,10 +149,10 @@ internal fun CoreOption(
   shape: Shape = OptionDefaults.shape,
   content: @Composable () -> Unit
 ) {
-  val spacing = OrcaTheme.spacings.large
-  val selectedContainerColor = OrcaTheme.colors.primary.container
+  val spacing = OrcaTheme.spacings.large.dp
+  val selectedContainerColor = OrcaTheme.colors.primary.container.asColor
   val containerColor =
-    if (isSelected) selectedContainerColor else OrcaTheme.colors.surface.container
+    if (isSelected) selectedContainerColor else OrcaTheme.colors.surface.container.asColor
   val contentColor = contentColorFor(containerColor)
 
   Row(
@@ -174,7 +177,7 @@ internal fun CoreOption(
       Box(Modifier.size(24.dp)) {
         if (isSelected) {
           Icon(
-            OrcaTheme.iconography.selected,
+            OrcaTheme.iconography.selected.asImageVector,
             contentDescription = "Selected",
             Modifier.testTag(OPTION_SELECTION_ICON_TAG)
           )

@@ -20,6 +20,8 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.borders.asBorderStroke
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.theme.kit.action.button.PrimaryButton
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.button.placement.Orientation
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.button.placement.height
@@ -74,17 +76,17 @@ private fun ButtonBar(
   content: @Composable () -> Unit
 ) {
   val density = LocalDensity.current
-  val border = OrcaTheme.borders.default
+  val border = OrcaTheme.borders.default.asBorderStroke
   val borderStrokeWidth by
     animateDpAsState(if (isHighlighted) border.width else (-1).dp, label = "BorderStrokeWidth")
-  val spacing = OrcaTheme.spacings.medium
+  val spacing = OrcaTheme.spacings.medium.dp
   val spacingInPx = remember(density, spacing) { with(density) { spacing.roundToPx() } }
   val containerColor by
     animateColorAsState(
       if (isHighlighted) {
-        OrcaTheme.colors.surface.container
+        OrcaTheme.colors.surface.container.asColor
       } else {
-        OrcaTheme.colors.background.container
+        OrcaTheme.colors.background.container.asColor
       },
       label = "ContainerColor"
     )

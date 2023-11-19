@@ -18,8 +18,12 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.theme.autos.forms.asShape
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
 
 /**
  * Visually highlights the [content] when it gets hovered; meant for indicating the non-obvious
@@ -53,9 +57,9 @@ private fun Hoverable(
   val density = LocalDensity.current
   val animationSpec = tween<Float>(durationMillis = 128)
   val alpha by animateFloatAsState(if (isHighlighted) 1f else 0f, animationSpec, label = "Alpha")
-  val containerColor = OrcaTheme.colors.placeholder
-  val shape = OrcaTheme.shapes.large
-  val spacing = OrcaTheme.spacings.small
+  val containerColor = OrcaTheme.colors.placeholder.asColor
+  val shape = OrcaTheme.forms.large.asShape
+  val spacing = OrcaTheme.spacings.small.dp
   val spacingInPx = remember(density, spacing) { with(density) { spacing.toPx() } }
   val scale by animateFloatAsState(if (isHighlighted) .95f else 1f, animationSpec, label = "Scale")
 
@@ -102,7 +106,7 @@ private fun HighlightedHoverablePreview() {
 private fun Hoverable(isHighlighted: Boolean, modifier: Modifier = Modifier) {
   Hoverable(isHighlighted, modifier) {
     IconButton(onClick = {}) {
-      Icon(OrcaTheme.iconography.home.outlined, contentDescription = "Home")
+      Icon(OrcaTheme.iconography.home.outlined.asImageVector, contentDescription = "Home")
     }
   }
 }

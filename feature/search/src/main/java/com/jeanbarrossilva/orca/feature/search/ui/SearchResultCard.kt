@@ -15,12 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
 import com.jeanbarrossilva.orca.core.sample.feed.profile.search.createSample
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.SmallAvatar
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
@@ -59,11 +61,11 @@ private fun SearchResultCard(
   onClick: () -> Unit,
   modifier: Modifier = Modifier
 ) {
-  val horizontalSpacing = OrcaTheme.spacings.large
+  val horizontalSpacing = OrcaTheme.spacings.large.dp
 
   Row(
     modifier
-      .padding(horizontalSpacing, vertical = OrcaTheme.spacings.medium)
+      .padding(horizontalSpacing, vertical = OrcaTheme.spacings.medium.dp)
       .clickable(onClick = onClick)
       .fillMaxWidth()
       .semantics { role = Role.Button },
@@ -72,7 +74,7 @@ private fun SearchResultCard(
   ) {
     avatar()
 
-    Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall)) {
+    Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall.dp)) {
       ProvideTextStyle(OrcaTheme.typography.bodyLarge, content = name)
       ProvideTextStyle(OrcaTheme.typography.bodyMedium, content = account)
     }
@@ -82,14 +84,16 @@ private fun SearchResultCard(
 @Composable
 @MultiThemePreview
 private fun LoadingSearchResultCardPreview() {
-  OrcaTheme { Surface(color = OrcaTheme.colors.background.container) { SearchResultCard() } }
+  OrcaTheme {
+    Surface(color = OrcaTheme.colors.background.container.asColor) { SearchResultCard() }
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadedSearchResultCardPreview() {
   OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container) {
+    Surface(color = OrcaTheme.colors.background.container.asColor) {
       SearchResultCard(
         ProfileSearchResult.createSample(ImageLoader.Provider.createSample()),
         onClick = {}

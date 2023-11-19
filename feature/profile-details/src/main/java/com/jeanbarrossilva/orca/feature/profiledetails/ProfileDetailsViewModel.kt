@@ -9,7 +9,7 @@ import com.jeanbarrossilva.loadable.list.flow.listLoadable
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.ProfileProvider
 import com.jeanbarrossilva.orca.core.feed.profile.toot.TootProvider
-import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
+import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.toTootPreviewFlow
 import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
@@ -43,13 +43,14 @@ private constructor(
   private val profileFlow = MutableSharedFlow<Profile>()
   private val tootsIndexFlow = MutableStateFlow(0)
 
+  private val colors
+    get() = OrcaTheme.getColors(context)
+
   private val context
     get() = contextProvider.provide()
 
   val detailsLoadableFlow =
-    profileFlow
-      .map { it.toProfileDetails(coroutineScope, Colors.getDefault(context)) }
-      .loadable(coroutineScope)
+    profileFlow.map { it.toProfileDetails(coroutineScope, colors) }.loadable(coroutineScope)
 
   @OptIn(ExperimentalCoroutinesApi::class)
   val tootPreviewsLoadableFlow =
@@ -91,9 +92,7 @@ private constructor(
   @OptIn(ExperimentalCoroutinesApi::class)
   private fun getTootPreviewsAt(index: Int): Flow<List<TootPreview>> {
     return profileFlow.filterNotNull().flatMapConcat { profile ->
-      profile.getToots(index).flatMapEach { toot ->
-        toot.toTootPreviewFlow(Colors.getDefault(context))
-      }
+      profile.getToots(index).flatMapEach { toot -> toot.toTootPreviewFlow(colors) }
     }
   }
 

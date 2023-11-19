@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconInteractiveness
 import com.jeanbarrossilva.orca.platform.ui.component.stat.favorite.FavoriteStatIcon
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.SampleTootPreview
@@ -34,7 +35,7 @@ internal fun FavoriteStat(
   Stat(position, onClick, modifier.testTag(TOOT_PREVIEW_FAVORITE_STAT_TAG)) {
     val contentColor by
       animateColorAsState(
-        if (isActive) OrcaTheme.colors.activation.favorite else LocalContentColor.current,
+        if (isActive) OrcaTheme.colors.activation.favorite.asColor else LocalContentColor.current,
         label = "ContentColor"
       )
 

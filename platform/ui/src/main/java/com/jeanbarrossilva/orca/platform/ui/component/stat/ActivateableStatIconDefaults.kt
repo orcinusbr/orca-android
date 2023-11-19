@@ -25,6 +25,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
 
 /** Tag for identifying an [ActivateableStatIconDefaults] for testing purposes. */
 const val ACTIVATEABLE_STAT_ICON_TAG = "activateable-stat-icon"
@@ -153,13 +155,13 @@ private fun ActiveActivateableStatIconPreview() {
 @Composable
 private fun ActivateableStatIcon(isActive: Boolean, modifier: Modifier = Modifier) {
   ActivateableStatIcon(
-    OrcaTheme.iconography.link,
+    OrcaTheme.iconography.link.asImageVector,
     contentDescription = "Disconnect",
     isActive,
     ActivateableStatIconInteractiveness.Still,
     ActivateableStatIconColors(
       inactiveColor = LocalContentColor.current,
-      activeColor = OrcaTheme.colors.link
+      activeColor = OrcaTheme.colors.link.asColor
     ),
     modifier
   )

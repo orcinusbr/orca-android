@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.plus
@@ -69,7 +70,7 @@ internal fun TermMuting(
   val context = LocalContext.current
   val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
   val lazyListState = rememberLazyListState()
-  val spacing = OrcaTheme.spacings.medium
+  val spacing = OrcaTheme.spacings.medium.dp
   val focusRequester = remember(::FocusRequester)
   val errorDispatcher = rememberErrorDispatcher {
     error(context, R.string.feature_settings_term_muting_empty_error, String::isBlank)

@@ -19,6 +19,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.forms.asShape
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.theme.autos.overlays.asPaddingValues
 import com.jeanbarrossilva.orca.platform.theme.extensions.plus
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold as _Scaffold
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.button.ButtonBar
@@ -59,7 +62,7 @@ fun Scaffold(
       SnackbarHost(snackbarPresenter.hostState) {
         Snackbar(
           it,
-          shape = OrcaTheme.shapes.medium,
+          shape = OrcaTheme.forms.medium.asShape,
           containerColor = it.orcaVisuals.containerColor,
           dismissActionContentColor = it.orcaVisuals.contentColor
         )
@@ -90,7 +93,7 @@ private fun ScaffoldPreview() {
       },
       floatingActionButton = {
         FloatingActionButton(onClick = {}) {
-          Icon(OrcaTheme.iconography.compose.filled, contentDescription = "Compose")
+          Icon(OrcaTheme.iconography.compose.filled.asImageVector, contentDescription = "Compose")
         }
       },
       snackbarPresenter = snackbarPresenter,
@@ -101,7 +104,7 @@ private fun ScaffoldPreview() {
         state = lazyListState,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = it + OrcaTheme.overlays.fab
+        contentPadding = it + OrcaTheme.overlays.fab.asPaddingValues
       ) {
         item { Text("Content", style = OrcaTheme.typography.bodyMedium) }
       }

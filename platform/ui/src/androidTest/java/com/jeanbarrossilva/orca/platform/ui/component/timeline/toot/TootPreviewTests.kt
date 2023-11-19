@@ -12,7 +12,6 @@ import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.toot.sample
 import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.test.onStatLabel
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.test.onTootPreviewBody
@@ -34,7 +33,7 @@ internal class TootPreviewTests {
   @get:Rule val composeRule = createComposeRule()
 
   private val sampleTootPreview
-    get() = TootPreview.getSample(context, Colors.getDefault(context))
+    get() = TootPreview.getSample(context, OrcaTheme.getColors(context))
 
   private val context
     get() = InstrumentationRegistry.getInstrumentation().context

@@ -3,7 +3,8 @@ package com.jeanbarrossilva.orca.platform.ui.core.style
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
+import com.jeanbarrossilva.orca.autos.colors.Colors
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
 import com.jeanbarrossilva.orca.std.styledstring.style.Style
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Bold
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Email
@@ -25,7 +26,7 @@ internal fun Style.toSpanStyle(colors: Colors): SpanStyle {
     is Email,
     is Hashtag,
     is Link,
-    is Mention -> SpanStyle(colors.link)
+    is Mention -> SpanStyle(colors.link.asColor)
     is Italic -> SpanStyle(fontStyle = FontStyle.Italic)
     else -> throw IllegalArgumentException("Cannot convert an unknown $this style.")
   }

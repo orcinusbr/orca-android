@@ -19,6 +19,8 @@ import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.orca.feature.feed.viewmodel.FeedViewModel
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.theme.autos.overlays.asPaddingValues
 import com.jeanbarrossilva.orca.platform.theme.extensions.plus
 import com.jeanbarrossilva.orca.platform.theme.kit.action.button.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.theme.kit.scaffold.Scaffold
@@ -118,7 +120,7 @@ private fun Feed(
         actions = {
           HoverableIconButton(onClick = onSearch) {
             Icon(
-              OrcaTheme.iconography.search,
+              OrcaTheme.iconography.search.asImageVector,
               contentDescription = stringResource(R.string.feature_feed_search)
             )
           }
@@ -133,7 +135,7 @@ private fun Feed(
           Modifier.testTag(FEED_FLOATING_ACTION_BUTTON_TAG)
         ) {
           Icon(
-            OrcaTheme.iconography.compose.filled,
+            OrcaTheme.iconography.compose.filled.asImageVector,
             contentDescription = stringResource(R.string.feature_feed_compose)
           )
         }
@@ -150,7 +152,7 @@ private fun Feed(
       onNext,
       Modifier.nestedScroll(bottomAreaAvailabilityNestedScrollConnection)
         .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-      contentPadding = it + OrcaTheme.overlays.fab,
+      contentPadding = it + OrcaTheme.overlays.fab.asPaddingValues,
       refresh =
         Refresh(isTimelineRefreshing, indicatorOffset = it.calculateTopPadding(), onTimelineRefresh)
     )

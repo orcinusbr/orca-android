@@ -35,6 +35,7 @@ import com.jeanbarrossilva.loadable.placeholder.Placeholder
 import com.jeanbarrossilva.loadable.placeholder.PlaceholderDefaults
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.compose.Image as _Image
@@ -103,7 +104,7 @@ fun Image(
             Box(Modifier.clip(shape).background(PlaceholderDefaults.color).matchParentSize())
 
             Icon(
-              OrcaTheme.iconography.unavailable.filled,
+              OrcaTheme.iconography.unavailable.filled.asImageVector,
               contentDescription = "Unavailable image",
               Modifier.height(maxHeight / 2).width(maxWidth / 2)
             )

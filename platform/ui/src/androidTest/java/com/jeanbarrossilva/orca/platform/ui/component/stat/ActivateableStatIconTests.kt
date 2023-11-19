@@ -4,6 +4,7 @@ import androidx.compose.ui.test.assertIsNotSelected
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performClick
+import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.test.onActivateableStatIcon
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -14,13 +15,13 @@ internal class ActivateableStatIconTests {
 
   @Test
   fun isUnselectedWhenInactive() {
-    composeRule.setContent { TestActivateableStatIcon(isActive = false) }
+    composeRule.setContent { OrcaTheme { TestActivateableStatIcon(isActive = false) } }
     composeRule.onActivateableStatIcon().assertIsNotSelected()
   }
 
   @Test
   fun isSelectedWhenActive() {
-    composeRule.setContent { TestActivateableStatIcon(isActive = true) }
+    composeRule.setContent { OrcaTheme { TestActivateableStatIcon(isActive = true) } }
     composeRule.onActivateableStatIcon().assertIsSelected()
   }
 
@@ -28,10 +29,12 @@ internal class ActivateableStatIconTests {
   fun receivesInteractionWhenInteractive() {
     var hasBeenInteractedWith = false
     composeRule.setContent {
-      TestActivateableStatIcon(
-        interactiveness =
-          ActivateableStatIconInteractiveness.Interactive { hasBeenInteractedWith = true }
-      )
+      OrcaTheme {
+        TestActivateableStatIcon(
+          interactiveness =
+            ActivateableStatIconInteractiveness.Interactive { hasBeenInteractedWith = true }
+        )
+      }
     }
     composeRule.onActivateableStatIcon().performClick()
     assertTrue(hasBeenInteractedWith)

@@ -9,6 +9,8 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIcon
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconColors
@@ -29,7 +31,7 @@ object FavoriteStatIconDefaults {
   @Composable
   fun colors(
     inactiveColor: Color = LocalContentColor.current,
-    activeColor: Color = OrcaTheme.colors.activation.favorite
+    activeColor: Color = OrcaTheme.colors.activation.favorite.asColor
   ): ActivateableStatIconColors {
     return ActivateableStatIconColors(inactiveColor, activeColor)
   }
@@ -53,9 +55,9 @@ fun FavoriteStatIcon(
 ) {
   ActivateableStatIcon(
     if (isActive) {
-      OrcaTheme.iconography.favorite.filled
+      OrcaTheme.iconography.favorite.filled.asImageVector
     } else {
-      OrcaTheme.iconography.favorite.outlined
+      OrcaTheme.iconography.favorite.outlined.asImageVector
     },
     contentDescription = stringResource(R.string.platform_ui_favorite_stat),
     isActive,
@@ -69,7 +71,7 @@ fun FavoriteStatIcon(
 @MultiThemePreview
 private fun InactiveFavoriteStatIconPreview() {
   OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container) {
+    Surface(color = OrcaTheme.colors.background.container.asColor) {
       FavoriteStatIcon(isActive = false, ActivateableStatIconInteractiveness.Still)
     }
   }
@@ -79,7 +81,7 @@ private fun InactiveFavoriteStatIconPreview() {
 @MultiThemePreview
 private fun ActiveFavoriteStatIconPreview() {
   OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container) {
+    Surface(color = OrcaTheme.colors.background.container.asColor) {
       FavoriteStatIcon(isActive = true, ActivateableStatIconInteractiveness.Still)
     }
   }

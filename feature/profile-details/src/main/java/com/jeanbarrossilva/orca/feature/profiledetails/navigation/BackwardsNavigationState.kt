@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState.Available
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState.Unavailable
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.theme.kit.action.button.HoverableIconButton
 import java.io.Serializable
 
@@ -29,7 +30,7 @@ sealed class BackwardsNavigationState : Serializable {
     @Composable
     override fun NavigationButton(modifier: Modifier) {
       HoverableIconButton(onClick = ::navigateBackwards) {
-        Icon(OrcaTheme.iconography.back, contentDescription = "Back")
+        Icon(OrcaTheme.iconography.back.asImageVector, contentDescription = "Back")
       }
     }
 

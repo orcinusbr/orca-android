@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.Popup
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
 
 /**
  * [Popup] menu that displays a variety of options through [DropdownMenuItem]s in its [content].
@@ -32,7 +33,7 @@ fun DropdownMenu(
   DropdownMenu(
     isExpanded,
     onDismissal,
-    modifier.background(OrcaTheme.colors.surface.container),
+    modifier.background(OrcaTheme.colors.surface.container.asColor),
     content = content
   )
 }

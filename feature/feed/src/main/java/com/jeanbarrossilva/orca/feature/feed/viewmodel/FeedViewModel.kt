@@ -9,7 +9,7 @@ import com.jeanbarrossilva.loadable.list.flow.listLoadable
 import com.jeanbarrossilva.orca.core.feed.FeedProvider
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
 import com.jeanbarrossilva.orca.core.feed.profile.toot.TootProvider
-import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
+import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.toTootPreviewFlow
 import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
@@ -32,7 +32,7 @@ internal class FeedViewModel(
   private val userID: String
 ) : ViewModel() {
   private val indexFlow = MutableStateFlow<Int?>(0)
-  private val colors by lazy { Colors.getDefault(context) }
+  private val colors by lazy { OrcaTheme.getColors(context) }
 
   private val context
     get() = contextProvider.provide()

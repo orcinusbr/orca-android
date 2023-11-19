@@ -3,14 +3,18 @@ package com.jeanbarrossilva.orca.platform.theme.kit.scaffold.bar.bottom;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.jeanbarrossilva.orca.autos.borders.Border;
+import com.jeanbarrossilva.orca.autos.borders.Borders;
+import com.jeanbarrossilva.orca.autos.colors.Colors;
+import com.jeanbarrossilva.orca.platform.theme.OrcaTheme;
 import com.jeanbarrossilva.orca.platform.theme.R;
-import com.jeanbarrossilva.orca.platform.theme.configuration.Borders;
-import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors;
+import com.jeanbarrossilva.orca.platform.theme.autos.borders.BordersExtensions;
 
 /** Orca-specific {@link BottomNavigationView}. */
 public final class OrcaBottomNavigationView extends BottomNavigationView {
@@ -28,19 +32,19 @@ public final class OrcaBottomNavigationView extends BottomNavigationView {
     this(context, attrs, 0);
   }
 
-  @SuppressWarnings("PrivateFieldAccess")
   public OrcaBottomNavigationView(
       @NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
     super(context, attrs, defStyleAttr);
-    Colors colors = Colors.getDefault(context);
-
-    // noinspection deprecation
-    int defaultMediumBorderColor = Borders.getDefaultMediumColorInArgb(colors);
-
-    int defaultMediumBorderWidth = Borders.DefaultWidth;
+    Colors colors = OrcaTheme.INSTANCE.getColors(context);
+    Border defaultBorder = Borders.Companion.getDefault(colors).getDefault();
+    int defaultMediumBorderColor =
+        defaultBorder.getColor() != null ? defaultBorder.getColor().intValue() : Color.TRANSPARENT;
+    int defaultMediumBorderWidth = (int) defaultBorder.getWidth();
     dividerPaint.setColor(defaultMediumBorderColor);
     dividerHeight =
-        Borders.areApplicable(context) ? Units.dp(context, defaultMediumBorderWidth) : 0;
+        BordersExtensions.areApplicable(Borders.Companion, context)
+            ? Units.dp(context, defaultMediumBorderWidth)
+            : 0;
     setBackgroundColor(getContext().getColor(R.color.surfaceContainer));
     stylizeItems();
   }

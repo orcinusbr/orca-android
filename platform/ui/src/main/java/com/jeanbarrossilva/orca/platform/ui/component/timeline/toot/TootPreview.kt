@@ -37,6 +37,7 @@ import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.test.Loading
+import com.jeanbarrossilva.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
 import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
@@ -45,7 +46,8 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.createSample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.createSamples
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.configuration.colors.Colors
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.theme.extensions.EmptyMutableInteractionSource
 import com.jeanbarrossilva.orca.platform.theme.extensions.IgnoringMutableInteractionSource
 import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
@@ -188,7 +190,7 @@ fun TootPreview(modifier: Modifier = Modifier) {
     content = {
       Column(
         bodyModifier.semantics { set(SemanticsProperties.Loading, true) },
-        Arrangement.spacedBy(OrcaTheme.spacings.extraSmall)
+        Arrangement.spacedBy(OrcaTheme.spacings.extraSmall.dp)
       ) {
         repeat(3) { LargeTextualPlaceholder() }
         MediumTextualPlaceholder()
@@ -236,11 +238,11 @@ fun TootPreview(
       preview.rebloggerName?.let {
         Row(
           Modifier.testTag(TOOT_PREVIEW_REBLOG_METADATA_TAG),
-          Arrangement.spacedBy(OrcaTheme.spacings.small),
+          Arrangement.spacedBy(OrcaTheme.spacings.small.dp),
           Alignment.CenterVertically
         ) {
           Icon(
-            OrcaTheme.iconography.reblog,
+            OrcaTheme.iconography.repost.asImageVector,
             contentDescription = stringResource(R.string.platform_ui_reblog_stat),
             Modifier.size(14.dp)
           )
@@ -250,7 +252,7 @@ fun TootPreview(
       }
     },
     content = {
-      Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.medium)) {
+      Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.medium.dp)) {
         Text(preview.text, bodyModifier)
 
         preview.highlight?.headline?.let { HeadlineCard(it, onHighlightClick) }
@@ -260,7 +262,7 @@ fun TootPreview(
       Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
         Stat(
           StatPosition.LEADING,
-          OrcaTheme.iconography.comment.outlined,
+          OrcaTheme.iconography.comment.outlined.asImageVector,
           contentDescription = stringResource(R.string.platform_ui_toot_preview_comments),
           onClick = {},
           Modifier.testTag(TOOT_PREVIEW_COMMENT_COUNT_STAT_TAG)
@@ -273,7 +275,7 @@ fun TootPreview(
 
         Stat(
           StatPosition.TRAILING,
-          OrcaTheme.iconography.share.outlined,
+          OrcaTheme.iconography.share.outlined.asImageVector,
           contentDescription = stringResource(R.string.platform_ui_toot_preview_share),
           onClick = onShare,
           Modifier.testTag(TOOT_PREVIEW_SHARE_ACTION_TAG)
@@ -339,7 +341,7 @@ private fun TootPreview(
       onClick?.let { IgnoringMutableInteractionSource(HoverInteraction::class) }
         ?: EmptyMutableInteractionSource()
     }
-  val spacing = OrcaTheme.spacings.medium
+  val spacing = OrcaTheme.spacings.medium.dp
   val metadataTextStyle = OrcaTheme.typography.bodySmall
 
   @OptIn(ExperimentalMaterial3Api::class)
@@ -355,7 +357,7 @@ private fun TootPreview(
         avatar()
 
         Column(verticalArrangement = Arrangement.spacedBy(spacing)) {
-          Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall)) {
+          Column(verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall.dp)) {
             ProvideTextStyle(OrcaTheme.typography.bodyLarge, name)
 
             CompositionLocalProvider(
@@ -378,7 +380,7 @@ private fun TootPreview(
 @Composable
 @MultiThemePreview
 private fun LoadingTootPreviewPreview() {
-  OrcaTheme { Surface(color = OrcaTheme.colors.background.container) { TootPreview() } }
+  OrcaTheme { Surface(color = OrcaTheme.colors.background.container.asColor) { TootPreview() } }
 }
 
 /** Preview of a loaded [SampleTootPreview] with disabled [Stat]s. */
@@ -386,7 +388,7 @@ private fun LoadingTootPreviewPreview() {
 @MultiThemePreview
 private fun LoadedTootPreviewWithDisabledStatsPreview() {
   OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container) {
+    Surface(color = OrcaTheme.colors.background.container.asColor) {
       SampleTootPreview(preview = TootPreview.sample.copy(isFavorite = false, isReblogged = false))
     }
   }
@@ -397,7 +399,7 @@ private fun LoadedTootPreviewWithDisabledStatsPreview() {
 @MultiThemePreview
 private fun LoadedTootPreviewWithEnabledStatsPreview() {
   OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container) {
+    Surface(color = OrcaTheme.colors.background.container.asColor) {
       SampleTootPreview(preview = TootPreview.sample.copy(isFavorite = true, isReblogged = true))
     }
   }

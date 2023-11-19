@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
-import com.jeanbarrossilva.orca.platform.theme.configuration.iconography.Iconography
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.theme.extensions.border
 import com.jeanbarrossilva.orca.platform.theme.extensions.bottom
 import com.jeanbarrossilva.orca.platform.theme.extensions.top
@@ -25,9 +25,9 @@ internal val settingsPreviewContent: SettingsScope.() -> Unit = {
     setting(
       onClick = {},
       label = { Text("Label #$it") },
-      icon = { Icon(OrcaTheme.iconography.link, contentDescription = "Setting") }
+      icon = { Icon(OrcaTheme.iconography.link.asImageVector, contentDescription = "Setting") }
     ) {
-      icon(contentDescription = { "Navigate" }, vector = Iconography::forward)
+      icon(contentDescription = { "Navigate" }, vector = { forward.asImageVector })
     }
   }
 }

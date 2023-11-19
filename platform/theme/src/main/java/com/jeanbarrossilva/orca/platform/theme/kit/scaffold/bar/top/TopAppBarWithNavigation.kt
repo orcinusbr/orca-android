@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.R
+import com.jeanbarrossilva.orca.platform.theme.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.theme.kit.action.button.HoverableIconButton
 
 /**
@@ -52,7 +53,7 @@ fun TopAppBarWithBackNavigation(
 fun BackAction(onClick: () -> Unit, modifier: Modifier = Modifier) {
   HoverableIconButton(onClick, modifier) {
     Icon(
-      OrcaTheme.iconography.back,
+      OrcaTheme.iconography.back.asImageVector,
       contentDescription =
         stringResource(R.string.platform_ui_top_app_bar_with_back_navigation_action)
     )

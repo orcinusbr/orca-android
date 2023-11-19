@@ -10,6 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
 import com.jeanbarrossilva.orca.platform.theme.extensions.plus
@@ -58,7 +59,7 @@ private fun Settings(
     LazyColumn(
       Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
       state = lazyListState,
-      contentPadding = it + PaddingValues(OrcaTheme.spacings.medium)
+      contentPadding = it + PaddingValues(OrcaTheme.spacings.medium.dp)
     ) {
       item {
         Section(stringResource(R.string.feature_settings_general)) {

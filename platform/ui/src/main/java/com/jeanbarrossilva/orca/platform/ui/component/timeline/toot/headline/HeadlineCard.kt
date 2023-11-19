@@ -19,10 +19,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Headline
 import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.highlight.createSample
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
+import com.jeanbarrossilva.orca.platform.theme.autos.forms.asShape
 import com.jeanbarrossilva.orca.platform.theme.extensions.border
 import com.jeanbarrossilva.orca.platform.theme.kit.action.Hoverable
 import com.jeanbarrossilva.orca.platform.ui.R
@@ -35,7 +38,7 @@ const val HEADLINE_CARD_TAG = "headline-card"
 
 @Composable
 fun HeadlineCard(headline: Headline, onClick: () -> Unit, modifier: Modifier = Modifier) {
-  val shape = OrcaTheme.shapes.large
+  val shape = OrcaTheme.forms.large.asShape
   val interactionSource = remember(::MutableInteractionSource)
 
   Hoverable(
@@ -43,7 +46,7 @@ fun HeadlineCard(headline: Headline, onClick: () -> Unit, modifier: Modifier = M
       .border(shape)
       .clip(shape)
       .clickable(interactionSource, LocalIndication.current, onClick = onClick)
-      .background(OrcaTheme.colors.surface.container)
+      .background(OrcaTheme.colors.surface.container.asColor)
       .testTag(HEADLINE_CARD_TAG)
   ) {
     Column {
@@ -58,8 +61,8 @@ fun HeadlineCard(headline: Headline, onClick: () -> Unit, modifier: Modifier = M
       }
 
       Column(
-        Modifier.padding(OrcaTheme.spacings.medium),
-        Arrangement.spacedBy(OrcaTheme.spacings.small)
+        Modifier.padding(OrcaTheme.spacings.medium.dp),
+        Arrangement.spacedBy(OrcaTheme.spacings.small.dp)
       ) {
         ProvideTextStyle(OrcaTheme.typography.bodyLarge) { Text(headline.title) }
 

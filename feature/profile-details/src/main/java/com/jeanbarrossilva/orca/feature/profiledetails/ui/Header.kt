@@ -12,11 +12,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetails
 import com.jeanbarrossilva.orca.platform.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.theme.OrcaTheme
+import com.jeanbarrossilva.orca.platform.theme.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.LargeAvatar
 
 @Composable
@@ -27,7 +29,7 @@ internal fun Header(modifier: Modifier = Modifier) {
     account = { LargeTextualPlaceholder() },
     bio = {
       Column(
-        verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall),
+        verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall.dp),
         horizontalAlignment = Alignment.CenterHorizontally
       ) {
         repeat(3) { LargeTextualPlaceholder() }
@@ -61,14 +63,14 @@ private fun Header(
   modifier: Modifier = Modifier
 ) {
   Column(
-    modifier.padding(OrcaTheme.spacings.extraLarge).fillMaxWidth(),
-    Arrangement.spacedBy(OrcaTheme.spacings.extraLarge),
+    modifier.padding(OrcaTheme.spacings.extraLarge.dp).fillMaxWidth(),
+    Arrangement.spacedBy(OrcaTheme.spacings.extraLarge.dp),
     Alignment.CenterHorizontally
   ) {
     avatar()
 
     Column(
-      verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall),
+      verticalArrangement = Arrangement.spacedBy(OrcaTheme.spacings.extraSmall.dp),
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
       ProvideTextStyle(OrcaTheme.typography.headlineLarge, name)
@@ -83,13 +85,13 @@ private fun Header(
 @Composable
 @MultiThemePreview
 private fun LoadingHeaderPreview() {
-  OrcaTheme { Surface(color = OrcaTheme.colors.background.container) { Header() } }
+  OrcaTheme { Surface(color = OrcaTheme.colors.background.container.asColor) { Header() } }
 }
 
 @Composable
 @MultiThemePreview
 private fun HeaderPreview() {
   OrcaTheme {
-    Surface(color = OrcaTheme.colors.background.container) { Header(ProfileDetails.sample) }
+    Surface(color = OrcaTheme.colors.background.container.asColor) { Header(ProfileDetails.sample) }
   }
 }
