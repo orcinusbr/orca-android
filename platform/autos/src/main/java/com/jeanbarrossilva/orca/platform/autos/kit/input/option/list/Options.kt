@@ -13,10 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.testTag
 import com.jeanbarrossilva.orca.platform.autos.extensions.border
-import com.jeanbarrossilva.orca.platform.autos.extensions.bottom
-import com.jeanbarrossilva.orca.platform.autos.extensions.top
+import com.jeanbarrossilva.orca.platform.autos.kit.bottom
 import com.jeanbarrossilva.orca.platform.autos.kit.input.option.Option
 import com.jeanbarrossilva.orca.platform.autos.kit.input.option.OptionDefaults
+import com.jeanbarrossilva.orca.platform.autos.kit.top
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 
