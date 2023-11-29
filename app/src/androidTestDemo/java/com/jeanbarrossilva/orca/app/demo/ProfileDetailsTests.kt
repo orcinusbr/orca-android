@@ -11,17 +11,17 @@ import androidx.test.espresso.intent.rule.IntentsRule
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.jeanbarrossilva.orca.app.R
 import com.jeanbarrossilva.orca.app.demo.test.browsesTo
-import com.jeanbarrossilva.orca.app.demo.test.performScrollToTootPreviewWithHeadlineCard
+import com.jeanbarrossilva.orca.app.demo.test.performScrollToPostPreviewWithHeadlineCard
 import com.jeanbarrossilva.orca.app.demo.test.performStartClick
 import com.jeanbarrossilva.orca.app.demo.test.respondWithOK
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.feed.profile.toot.content.highlight.Highlight
-import com.jeanbarrossilva.orca.core.sample.test.feed.profile.toot.content.highlight.sample
-import com.jeanbarrossilva.orca.core.sample.test.feed.profile.toot.samples
-import com.jeanbarrossilva.orca.feature.tootdetails.TootDetailsFragment
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
+import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Highlight
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.content.highlight.sample
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.samples
+import com.jeanbarrossilva.orca.feature.postdetails.PostDetailsFragment
 import com.jeanbarrossilva.orca.platform.ui.test.assertIsAtFragment
-import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.headline.onHeadlineCards
-import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.onTootPreviews
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.headline.onHeadlineCards
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.onPostPreviews
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.RuleChain
@@ -33,18 +33,18 @@ internal class ProfileDetailsTests {
   @get:Rule val ruleChain: RuleChain? = RuleChain.outerRule(intentsRule).around(composeRule)
 
   @Test
-  fun navigatesToTootHighlight() {
+  fun navigatesToPostHighlight() {
     val matcher = browsesTo("${Highlight.sample.url}")
     intending(matcher).respondWithOK()
-    composeRule.performScrollToTootPreviewWithHeadlineCard()
+    composeRule.performScrollToPostPreviewWithHeadlineCard()
     composeRule.onHeadlineCards().onFirst().performClick()
     intended(matcher)
   }
 
   @Test
-  fun navigatesToTootDetailsOnTootPreviewClick() {
+  fun navigatesToPostDetailsOnPostPreviewClick() {
     onView(withId(R.id.profile_details)).perform(click())
-    composeRule.onTootPreviews().onFirst().performStartClick()
-    assertIsAtFragment(composeRule.activity, TootDetailsFragment.getRoute(Toot.samples.first().id))
+    composeRule.onPostPreviews().onFirst().performStartClick()
+    assertIsAtFragment(composeRule.activity, PostDetailsFragment.getRoute(Post.samples.first().id))
   }
 }

@@ -8,10 +8,10 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.Mastodo
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.MastodonProfileEntityDao
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.style.MastodonStyleEntity
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.style.MastodonStyleEntityDao
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.cache.storage.MastodonPostEntity
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.cache.storage.MastodonPostEntityDao
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.storage.MastodonProfileSearchResultEntity
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.storage.MastodonProfileSearchResultEntityDao
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.MastodonTootEntity
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.MastodonTootEntityDao
 
 /** [RoomDatabase] in which core-Mastodon-related persistence operations will take place. */
 @Database(
@@ -20,7 +20,7 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.Ma
       MastodonStyleEntity::class,
       MastodonProfileEntity::class,
       MastodonProfileSearchResultEntity::class,
-      MastodonTootEntity::class
+      MastodonPostEntity::class
     ],
   version = 1
 )
@@ -37,8 +37,8 @@ internal abstract class MastodonDatabase : RoomDatabase() {
    */
   abstract val profileSearchResultEntityDao: MastodonProfileSearchResultEntityDao
 
-  /** DAO for operating on [Mastodon toot entities][MastodonTootEntity]. */
-  abstract val tootEntityDao: MastodonTootEntityDao
+  /** DAO for operating on [Mastodon post entities][MastodonPostEntity]. */
+  abstract val postEntityDao: MastodonPostEntityDao
 
   companion object {
     private lateinit var instance: MastodonDatabase

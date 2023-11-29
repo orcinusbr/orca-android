@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.orca.core.sample.image
 
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
+import com.jeanbarrossilva.orca.core.feed.profile.post.Author
 
 /** [SampleImageSource] of [Author]s' avatars. */
 sealed class AuthorImageSource : SampleImageSource() {

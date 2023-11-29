@@ -18,10 +18,10 @@ import assertk.assertions.containsExactly
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.performScrollToBottom
-import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.time.Time4JTestRule
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.time.Time4JTestRule
 import org.junit.Rule
 import org.junit.Test
 
@@ -39,8 +39,8 @@ internal class TimelineTests {
   }
 
   @Test
-  fun showsDividerWhenHeaderIsNotAddedOnTootPreviewBeforeLastOne() {
-    composeRule.setContent { AutosTheme { Timeline(TootPreview.samples.take(2)) } }
+  fun showsDividerWhenHeaderIsNotAddedOnPostPreviewBeforeLastOne() {
+    composeRule.setContent { AutosTheme { Timeline(PostPreview.samples.take(2)) } }
     composeRule
       .onNodeWithTag(TIMELINE_TAG)
       .onChildren()
@@ -51,8 +51,8 @@ internal class TimelineTests {
   }
 
   @Test
-  fun showsDividersWhenHeaderIsAddedOnTootPreviewBeforeLastOne() {
-    composeRule.setContent { AutosTheme { Timeline(TootPreview.samples.take(2)) {} } }
+  fun showsDividersWhenHeaderIsAddedOnPostPreviewBeforeLastOne() {
+    composeRule.setContent { AutosTheme { Timeline(PostPreview.samples.take(2)) {} } }
     composeRule
       .onNodeWithTag(TIMELINE_TAG)
       .onChildren()[1]
@@ -62,8 +62,8 @@ internal class TimelineTests {
   }
 
   @Test
-  fun doesNotShowDividersOnLastTootPreview() {
-    composeRule.setContent { AutosTheme { Timeline(TootPreview.samples.take(1)) } }
+  fun doesNotShowDividersOnLastPostPreview() {
+    composeRule.setContent { AutosTheme { Timeline(PostPreview.samples.take(1)) } }
     composeRule
       .onTimeline()
       .onChildren()

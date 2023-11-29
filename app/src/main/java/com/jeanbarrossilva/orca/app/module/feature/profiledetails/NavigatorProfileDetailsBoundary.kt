@@ -1,8 +1,8 @@
 package com.jeanbarrossilva.orca.app.module.feature.profiledetails
 
 import android.content.Context
+import com.jeanbarrossilva.orca.feature.postdetails.PostDetailsFragment
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetailsBoundary
-import com.jeanbarrossilva.orca.feature.tootdetails.TootDetailsFragment
 import com.jeanbarrossilva.orca.platform.ui.core.browseTo
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
 import java.net.URL
@@ -15,7 +15,7 @@ internal class NavigatorProfileDetailsBoundary(
     context.browseTo(url)
   }
 
-  override fun navigateToTootDetails(id: String) {
-    TootDetailsFragment.navigate(navigator, id)
+  override fun navigateToPostDetails(id: String) {
+    PostDetailsFragment.navigate(navigator, id)
   }
 }

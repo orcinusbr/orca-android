@@ -4,9 +4,9 @@ import android.content.Context
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.auth.actor.ActorProvider
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
+import com.jeanbarrossilva.orca.core.feed.profile.post.content.TermMuter
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.feed.profile.toot.content.TermMuter
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
 import com.jeanbarrossilva.orca.core.mastodon.MastodonDatabase
 import com.jeanbarrossilva.orca.core.mastodon.auth.authentication.MastodonAuthenticator
@@ -14,17 +14,17 @@ import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.MastodonAuthori
 import com.jeanbarrossilva.orca.core.mastodon.feed.MastodonFeedPaginator
 import com.jeanbarrossilva.orca.core.mastodon.feed.MastodonFeedProvider
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfile
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfileProvider
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfileTootPaginator
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.MastodonProfileFetcher
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.MastodonProfileStorage
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.MastodonPost
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.MastodonPostProvider
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.cache.MastodonPostFetcher
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.cache.storage.MastodonPostStorage
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.MastodonProfileSearcher
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.MastodonProfileSearchResultsFetcher
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.storage.MastodonProfileSearchResultsStorage
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonToot
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonTootProvider
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.MastodonTootFetcher
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.cache.storage.MastodonTootStorage
 import com.jeanbarrossilva.orca.platform.cache.Cache
 import com.jeanbarrossilva.orca.std.imageloader.Image
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
@@ -39,7 +39,7 @@ import java.net.URL
  * @param authorizer [MastodonAuthorizer] by which the user will be authorized.
  * @param actorProvider [ActorProvider] that will provide [Actor]s to the [authenticator], the
  *   [authenticationLock] and the [feedProvider].
- * @param termMuter [TermMuter] by which [Toot]s with muted terms will be filtered out.
+ * @param termMuter [TermMuter] by which [Post]s with muted terms will be filtered out.
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
  *   [Image]s will be loaded.
  */
@@ -56,31 +56,31 @@ class ContextualMastodonInstance(
   /** [MastodonDatabase] in which cached structures will be persisted. */
   private val database = MastodonDatabase.getInstance(context)
 
-  /** [MastodonTootFetcher] by which [Toot]s will be fetched from the API. */
-  private val tootFetcher = MastodonTootFetcher(imageLoaderProvider)
+  /** [MastodonPostFetcher] by which [Post]s will be fetched from the API. */
+  private val postFetcher = MastodonPostFetcher(imageLoaderProvider)
 
   /**
-   * [MastodonFeedPaginator] with which pagination through the feed's [Toot]s that have been fetched
+   * [MastodonFeedPaginator] with which pagination through the feed's [Post]s that have been fetched
    * from the API will be performed.
    */
-  private val feedTootPaginator = MastodonFeedPaginator(imageLoaderProvider)
+  private val feedPostPaginator = MastodonFeedPaginator(imageLoaderProvider)
 
   /**
-   * [MastodonProfileTootPaginator.Provider] that provides the [MastodonProfileTootPaginator] to be
+   * [MastodonProfilePostPaginator.Provider] that provides the [MastodonProfilePostPaginator] to be
    * used by [profileFetcher], [profileStorage] and [profileSearchResultsFetcher].
    */
-  private val profileTootPaginatorProvider =
-    MastodonProfileTootPaginator.Provider { MastodonProfileTootPaginator(imageLoaderProvider, it) }
+  private val profilePostPaginatorProvider =
+    MastodonProfilePostPaginator.Provider { MastodonProfilePostPaginator(imageLoaderProvider, it) }
 
   /** [MastodonProfileFetcher] by which [MastodonProfile]s will be fetched from the API. */
   private val profileFetcher =
-    MastodonProfileFetcher(imageLoaderProvider, profileTootPaginatorProvider)
+    MastodonProfileFetcher(imageLoaderProvider, profilePostPaginatorProvider)
 
   /** [MastodonProfileStorage] that will store fetched [MastodonProfile]s. */
   private val profileStorage =
     MastodonProfileStorage(
       imageLoaderProvider,
-      profileTootPaginatorProvider,
+      profilePostPaginatorProvider,
       database.profileEntityDao
     )
 
@@ -93,7 +93,7 @@ class ContextualMastodonInstance(
    * API.
    */
   private val profileSearchResultsFetcher =
-    MastodonProfileSearchResultsFetcher(imageLoaderProvider, profileTootPaginatorProvider)
+    MastodonProfileSearchResultsFetcher(imageLoaderProvider, profilePostPaginatorProvider)
 
   /** [MastodonProfileSearchResultsStorage] that will store fetched [ProfileSearchResult]s. */
   private val profileSearchResultsStorage =
@@ -108,20 +108,20 @@ class ContextualMastodonInstance(
       profileSearchResultsStorage
     )
 
-  /** [MastodonTootStorage] that will store fetched [MastodonToot]s. */
-  private val tootStorage =
-    MastodonTootStorage(
+  /** [MastodonPostStorage] that will store fetched [MastodonPost]s. */
+  private val postStorage =
+    MastodonPostStorage(
       profileCache,
-      database.tootEntityDao,
+      database.postEntityDao,
       database.styleEntityDao,
       imageLoaderProvider
     )
 
-  /** [Cache] that decides how to obtain [MastodonToot]s. */
-  private val tootCache = Cache.of(context, name = "toot-cache", tootFetcher, tootStorage)
+  /** [Cache] that decides how to obtain [MastodonPost]s. */
+  private val postCache = Cache.of(context, name = "post-cache", postFetcher, postStorage)
 
-  override val feedProvider = MastodonFeedProvider(actorProvider, termMuter, feedTootPaginator)
+  override val feedProvider = MastodonFeedProvider(actorProvider, termMuter, feedPostPaginator)
   override val profileProvider = MastodonProfileProvider(profileCache)
   override val profileSearcher = MastodonProfileSearcher(profileSearchResultsCache)
-  override val tootProvider = MastodonTootProvider(tootCache)
+  override val postProvider = MastodonPostProvider(postCache)
 }

@@ -61,9 +61,9 @@ import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Refresh
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.RelativeTimeProvider
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.rememberRelativeTimeProvider
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.time.RelativeTimeProvider
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.time.rememberRelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
@@ -172,8 +172,8 @@ internal sealed class ProfileDetails : Serializable {
       @Composable
       get() {
         val imageLoaderProvider = ImageLoader.Provider.createSample(LocalContext.current)
-        val tootProvider = Instance.createSample(imageLoaderProvider).tootProvider
-        val profile = Profile.createSample(tootProvider, imageLoaderProvider)
+        val postProvider = Instance.createSample(imageLoaderProvider).postProvider
+        val profile = Profile.createSample(postProvider, imageLoaderProvider)
         return Default(
           profile.id,
           profile.avatarLoader,
@@ -195,7 +195,7 @@ internal fun ProfileDetails(
   modifier: Modifier = Modifier
 ) {
   val detailsLoadable by viewModel.detailsLoadableFlow.collectAsState()
-  val tootsLoadable by viewModel.tootPreviewsLoadableFlow.collectAsState()
+  val postsLoadable by viewModel.postPreviewsLoadableFlow.collectAsState()
   var isTimelineRefreshing by remember { mutableStateOf(false) }
   val bottomAreaAvailabilityNestedScrollConnection =
     rememberBottomAreaAvailabilityNestedScrollConnection(onBottomAreaAvailabilityChangeListener)
@@ -203,16 +203,16 @@ internal fun ProfileDetails(
   ProfileDetails(
     navigator,
     detailsLoadable,
-    tootsLoadable,
+    postsLoadable,
     isTimelineRefreshing,
     onTimelineRefresh = {
       isTimelineRefreshing = true
       viewModel.requestRefresh { isTimelineRefreshing = false }
     },
     onFavorite = viewModel::favorite,
-    onReblog = viewModel::reblog,
-    navigator::navigateToTootDetails,
-    onNext = viewModel::loadTootsAt,
+    onRepost = viewModel::repost,
+    navigator::navigateToPostDetails,
+    onNext = viewModel::loadPostsAt,
     origin,
     navigator::navigateTo,
     onShare = viewModel::share,
@@ -223,7 +223,7 @@ internal fun ProfileDetails(
 
 @Composable
 internal fun ProfileDetails(
-  tootPreviewsLoadable: ListLoadable<TootPreview>,
+  postPreviewsLoadable: ListLoadable<PostPreview>,
   modifier: Modifier = Modifier,
   isTopBarDropdownMenuExpanded: Boolean = false,
   initialFirstVisibleTimelineItemIndex: Int = 0,
@@ -231,7 +231,7 @@ internal fun ProfileDetails(
 ) {
   ProfileDetails(
     Loadable.Loaded(ProfileDetails.sample),
-    tootPreviewsLoadable,
+    postPreviewsLoadable,
     isTimelineRefreshing = false,
     onTimelineRefresh = {},
     modifier,
@@ -244,7 +244,7 @@ internal fun ProfileDetails(
 @Composable
 internal fun ProfileDetails(
   detailsLoadable: Loadable<ProfileDetails>,
-  tootPreviewsLoadable: ListLoadable<TootPreview>,
+  postPreviewsLoadable: ListLoadable<PostPreview>,
   isTimelineRefreshing: Boolean,
   onTimelineRefresh: () -> Unit,
   modifier: Modifier = Modifier,
@@ -255,12 +255,12 @@ internal fun ProfileDetails(
   ProfileDetails(
     ProfileDetailsBoundary.empty,
     detailsLoadable,
-    tootPreviewsLoadable,
+    postPreviewsLoadable,
     isTimelineRefreshing,
     onTimelineRefresh,
     onFavorite = {},
-    onReblog = {},
-    onNavigationToTootDetails = {},
+    onRepost = {},
+    onNavigationToPostDetails = {},
     onNext = {},
     BackwardsNavigationState.Unavailable,
     onNavigateToWebpage = {},
@@ -277,12 +277,12 @@ internal fun ProfileDetails(
 private fun ProfileDetails(
   boundary: ProfileDetailsBoundary,
   detailsLoadable: Loadable<ProfileDetails>,
-  tootPreviewsLoadable: ListLoadable<TootPreview>,
+  postPreviewsLoadable: ListLoadable<PostPreview>,
   isTimelineRefreshing: Boolean,
   onTimelineRefresh: () -> Unit,
-  onFavorite: (tootID: String) -> Unit,
-  onReblog: (tootID: String) -> Unit,
-  onNavigationToTootDetails: (id: String) -> Unit,
+  onFavorite: (postID: String) -> Unit,
+  onRepost: (postID: String) -> Unit,
+  onNavigationToPostDetails: (id: String) -> Unit,
   onNext: (index: Int) -> Unit,
   origin: BackwardsNavigationState,
   onNavigateToWebpage: (URL) -> Unit,
@@ -300,13 +300,13 @@ private fun ProfileDetails(
       ProfileDetails(
         boundary,
         detailsLoadable.content,
-        tootPreviewsLoadable,
+        postPreviewsLoadable,
         isTimelineRefreshing,
         onTimelineRefresh,
         onHighlightClick = boundary::navigateTo,
         onFavorite,
-        onReblog,
-        onNavigationToTootDetails,
+        onRepost,
+        onNavigationToPostDetails,
         onNext,
         origin,
         onNavigateToWebpage,
@@ -358,13 +358,13 @@ private fun ProfileDetails(
 private fun ProfileDetails(
   boundary: ProfileDetailsBoundary,
   details: ProfileDetails,
-  tootsLoadable: ListLoadable<TootPreview>,
+  postsLoadable: ListLoadable<PostPreview>,
   isTimelineRefreshing: Boolean,
   onTimelineRefresh: () -> Unit,
   onHighlightClick: (URL) -> Unit,
-  onFavorite: (tootID: String) -> Unit,
-  onReblog: (tootID: String) -> Unit,
-  onNavigationToTootDetails: (id: String) -> Unit,
+  onFavorite: (postID: String) -> Unit,
+  onRepost: (postID: String) -> Unit,
+  onNavigationToPostDetails: (id: String) -> Unit,
   onNext: (index: Int) -> Unit,
   origin: BackwardsNavigationState,
   onNavigateToWebpage: (URL) -> Unit,
@@ -441,12 +441,12 @@ private fun ProfileDetails(
     timelineState,
     timeline = { shouldNestScrollToTopAppBar, padding ->
       Timeline(
-        tootsLoadable,
+        postsLoadable,
         onHighlightClick,
         onFavorite,
-        onReblog,
+        onRepost,
         onShare,
-        onClick = onNavigationToTootDetails,
+        onClick = onNavigationToPostDetails,
         onNext,
         Modifier.statusBarsPadding()
           .nestedScroll(bottomAreaAvailabilityNestedScrollConnection)
@@ -526,15 +526,15 @@ private fun LoadingProfileDetailsPreview() {
 
 @Composable
 @MultiThemePreview
-private fun LoadedProfileDetailsWithoutTootsPreview() {
-  AutosTheme { ProfileDetails(tootPreviewsLoadable = ListLoadable.Empty()) }
+private fun LoadedProfileDetailsWithoutPostsPreview() {
+  AutosTheme { ProfileDetails(postPreviewsLoadable = ListLoadable.Empty()) }
 }
 
 @Composable
 @MultiThemePreview
-private fun LoadedProfileDetailsWithTootsPreview() {
+private fun LoadedProfileDetailsWithPostsPreview() {
   AutosTheme {
-    ProfileDetails(tootPreviewsLoadable = TootPreview.samples.toSerializableList().toListLoadable())
+    ProfileDetails(postPreviewsLoadable = PostPreview.samples.toSerializableList().toListLoadable())
   }
 }
 
@@ -543,7 +543,7 @@ private fun LoadedProfileDetailsWithTootsPreview() {
 private fun LoadedProfileDetailsWithExpandedTopBarDropdownMenuPreview() {
   AutosTheme {
     ProfileDetails(
-      tootPreviewsLoadable = TootPreview.samples.toSerializableList().toListLoadable(),
+      postPreviewsLoadable = PostPreview.samples.toSerializableList().toListLoadable(),
       isTopBarDropdownMenuExpanded = true,
       initialFirstVisibleTimelineItemIndex = 1
     )

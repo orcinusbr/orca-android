@@ -6,10 +6,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfile
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfileTootPaginator
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.style.MastodonStyleEntity
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.type.editable.MastodonEditableProfile
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.type.followable.MastodonFollowableProfile
@@ -59,21 +59,21 @@ internal constructor(
    *   [Profile]'s avatar will be loaded from a [URL].
    * @param dao [MastodonProfileEntityDao] that will select the persisted
    *   [Mastodon style entities][MastodonStyleEntity].
-   * @param tootPaginatorProvider [MastodonProfileTootPaginator.Provider] by which a
-   *   [MastodonProfileTootPaginator] for paginating through the resulting [MastodonProfile]'s
-   *   [Toot]s will be provided.
+   * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
+   *   [MastodonProfilePostPaginator] for paginating through the resulting [MastodonProfile]'s
+   *   [Post]s will be provided.
    * @throws IllegalStateException If the [type] is unknown.
    */
   @Throws(IllegalStateException::class)
   internal suspend fun toProfile(
     avatarLoaderProvider: ImageLoader.Provider<URL>,
     dao: MastodonProfileEntityDao,
-    tootPaginatorProvider: MastodonProfileTootPaginator.Provider
+    postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): Profile {
     return when (type) {
-      EDITABLE_TYPE -> toMastodonEditableProfile(avatarLoaderProvider, dao, tootPaginatorProvider)
+      EDITABLE_TYPE -> toMastodonEditableProfile(avatarLoaderProvider, dao, postPaginatorProvider)
       FOLLOWABLE_TYPE ->
-        toMastodonFollowableProfile(avatarLoaderProvider, dao, tootPaginatorProvider)
+        toMastodonFollowableProfile(avatarLoaderProvider, dao, postPaginatorProvider)
       else -> throw IllegalStateException("Unknown profile entity type: $type.")
     }
   }
@@ -85,14 +85,14 @@ internal constructor(
    *   [MastodonEditableProfile]'s avatar will be loaded from a [URL].
    * @param dao [MastodonProfileEntityDao] that will select the persisted
    *   [Mastodon style entities][MastodonStyleEntity] applied to the [bio].
-   * @param tootPaginatorProvider [MastodonProfileTootPaginator.Provider] by which a
-   *   [MastodonProfileTootPaginator] for paginating through the resulting
-   *   [MastodonEditableProfile]'s [Toot]s will be provided.
+   * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
+   *   [MastodonProfilePostPaginator] for paginating through the resulting
+   *   [MastodonEditableProfile]'s [Post]s will be provided.
    */
   private suspend fun toMastodonEditableProfile(
     avatarLoaderProvider: ImageLoader.Provider<URL>,
     dao: MastodonProfileEntityDao,
-    tootPaginatorProvider: MastodonProfileTootPaginator.Provider
+    postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): MastodonEditableProfile {
     val account = Account.of(account)
     val avatarURL = URL(avatarURL)
@@ -100,7 +100,7 @@ internal constructor(
     val bio = getBioAsStyledString(dao)
     val url = URL(url)
     return MastodonEditableProfile(
-      tootPaginatorProvider,
+      postPaginatorProvider,
       id,
       account,
       avatarLoader,
@@ -119,14 +119,14 @@ internal constructor(
    *   [MastodonFollowableProfile]'s avatar will be loaded from a [URL].
    * @param dao [MastodonProfileEntityDao] that will select the persisted
    *   [Mastodon style entities][MastodonStyleEntity].
-   * @param tootPaginatorProvider [MastodonProfileTootPaginator.Provider] by which a
-   *   [MastodonProfileTootPaginator] for paginating through the resulting
-   *   [MastodonFollowableProfile]'s [Toot]s will be provided.
+   * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
+   *   [MastodonProfilePostPaginator] for paginating through the resulting
+   *   [MastodonFollowableProfile]'s [Post]s will be provided.
    */
   private suspend fun toMastodonFollowableProfile(
     avatarLoaderProvider: ImageLoader.Provider<URL>,
     dao: MastodonProfileEntityDao,
-    tootPaginatorProvider: MastodonProfileTootPaginator.Provider
+    postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): MastodonFollowableProfile<Follow> {
     val account = Account.of(account)
     val avatarURL = URL(avatarURL)
@@ -135,7 +135,7 @@ internal constructor(
     val follow = Follow.of(checkNotNull(follow))
     val url = URL(url)
     return MastodonFollowableProfile(
-      tootPaginatorProvider,
+      postPaginatorProvider,
       id,
       account,
       avatarLoader,

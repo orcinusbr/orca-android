@@ -1,9 +1,9 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfile
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfileTootPaginator
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
 import com.jeanbarrossilva.orca.platform.cache.Storage
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import java.net.URL
@@ -14,15 +14,15 @@ import kotlinx.coroutines.flow.first
  *
  * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
  *   [Profile]'s avatar will be loaded from a [URL].
- * @param tootPaginatorProvider [MastodonProfileTootPaginator.Provider] by which a
- *   [MastodonProfileTootPaginator] for paginating through a [MastodonProfile]'s [Toot]s will be
+ * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
+ *   [MastodonProfilePostPaginator] for paginating through a [MastodonProfile]'s [Post]s will be
  *   provided.
  * @param entityDao [MastodonProfileEntityDao] that will perform SQL transactions on
  *   [Mastodon profile entities][MastodonProfileEntity].
  */
 internal class MastodonProfileStorage(
   private val avatarLoaderProvider: ImageLoader.Provider<URL>,
-  private val tootPaginatorProvider: MastodonProfileTootPaginator.Provider,
+  private val postPaginatorProvider: MastodonProfilePostPaginator.Provider,
   private val entityDao: MastodonProfileEntityDao
 ) : Storage<Profile>() {
   override suspend fun onStore(key: String, value: Profile) {
@@ -38,7 +38,7 @@ internal class MastodonProfileStorage(
     return entityDao
       .selectByID(key)
       .first()
-      .toProfile(avatarLoaderProvider, entityDao, tootPaginatorProvider)
+      .toProfile(avatarLoaderProvider, entityDao, postPaginatorProvider)
   }
 
   override suspend fun onRemove(key: String) {

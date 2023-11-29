@@ -6,12 +6,12 @@ import org.junit.rules.ExternalResource
 
 /**
  * [ExternalResource] that resets the [Instance.Companion.sample]'s writers (such as
- * [SampleInstance.profileWriter] and [SampleInstance.tootWriter]) at the end of every test.
+ * [SampleInstance.profileWriter] and [SampleInstance.postWriter]) at the end of every test.
  */
 class SampleInstanceTestRule(private val instance: SampleInstance = Instance.sample) :
   ExternalResource() {
   override fun after() {
     Instance.sample.profileWriter.reset()
-    Instance.sample.tootWriter.reset()
+    Instance.sample.postWriter.reset()
   }
 }

@@ -4,8 +4,8 @@ import android.content.Context
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.auth.actor.ActorProvider
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.feed.profile.toot.content.TermMuter
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
+import com.jeanbarrossilva.orca.core.feed.profile.post.content.TermMuter
 import com.jeanbarrossilva.orca.core.instance.InstanceProvider
 import com.jeanbarrossilva.orca.core.instance.SomeInstance
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
@@ -26,7 +26,7 @@ import java.net.URL
  * @param actorProvider [ActorProvider] that provides the [Actor].
  * @param authenticationLock [AuthenticationLock] that will lock authentication-dependent
  *   functionality behind a "wall".
- * @param termMuter [TermMuter] by which [Toot]s with muted terms will be filtered out.
+ * @param termMuter [TermMuter] by which [Post]s with muted terms will be filtered out.
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
  *   [Image] will be loaded.
  */

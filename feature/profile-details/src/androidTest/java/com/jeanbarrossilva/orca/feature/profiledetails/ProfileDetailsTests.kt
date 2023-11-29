@@ -9,9 +9,9 @@ import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.TIMELINE_TAG
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline
-import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.time.TestRelativeTimeProvider
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.time.TestRelativeTimeProvider
 import java.util.UUID
 import org.junit.Rule
 import org.junit.Test
@@ -26,8 +26,8 @@ internal class ProfileDetailsTests {
     composeRule.setContent {
       AutosTheme {
         ProfileDetails(
-          tootPreviewsLoadable =
-            List(size = screenHeightInPx) { TootPreview.sample.copy(id = "${UUID.randomUUID()}") }
+          postPreviewsLoadable =
+            List(size = screenHeightInPx) { PostPreview.sample.copy(id = "${UUID.randomUUID()}") }
               .toSerializableList()
               .toListLoadable(),
           relativeTimeProvider = TestRelativeTimeProvider

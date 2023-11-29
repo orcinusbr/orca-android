@@ -9,7 +9,7 @@ import com.jeanbarrossilva.orca.std.injector.Injector
 internal class MainProfileDetailsModule(activity: OrcaActivity) :
   ProfileDetailsModule(
     { Injector.from<CoreModule>().instanceProvider().provide().profileProvider },
-    { Injector.from<CoreModule>().instanceProvider().provide().tootProvider },
+    { Injector.from<CoreModule>().instanceProvider().provide().postProvider },
     { NavigatorProfileDetailsBoundary(activity, activity.navigator) },
     onBottomAreaAvailabilityChangeListener = { activity }
   )

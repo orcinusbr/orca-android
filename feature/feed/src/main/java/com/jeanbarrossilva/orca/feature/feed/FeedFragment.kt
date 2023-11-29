@@ -18,7 +18,7 @@ class FeedFragment internal constructor() : ComposableFragment(), ContextProvide
       FeedViewModel.createFactory(
         contextProvider = this,
         module.feedProvider(),
-        module.tootProvider(),
+        module.postProvider(),
         userID
       )
     }

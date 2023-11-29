@@ -9,19 +9,19 @@ import androidx.lifecycle.lifecycleScope
 import com.jeanbarrossilva.orca.app.databinding.ActivityOrcaBinding
 import com.jeanbarrossilva.orca.app.module.core.MainMastodonCoreModule
 import com.jeanbarrossilva.orca.app.module.feature.feed.MainFeedModule
+import com.jeanbarrossilva.orca.app.module.feature.postdetails.MainPostDetailsModule
 import com.jeanbarrossilva.orca.app.module.feature.profiledetails.MainProfileDetailsModule
 import com.jeanbarrossilva.orca.app.module.feature.search.MainSearchModule
 import com.jeanbarrossilva.orca.app.module.feature.settings.MainSettingsModule
 import com.jeanbarrossilva.orca.app.module.feature.settings.termmuting.MainTermMutingModule
-import com.jeanbarrossilva.orca.app.module.feature.tootdetails.MainTootDetailsModule
 import com.jeanbarrossilva.orca.app.navigation.BottomNavigation
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.feature.feed.FeedModule
+import com.jeanbarrossilva.orca.feature.postdetails.PostDetailsModule
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetailsModule
 import com.jeanbarrossilva.orca.feature.search.SearchModule
 import com.jeanbarrossilva.orca.feature.settings.SettingsModule
 import com.jeanbarrossilva.orca.feature.settings.termmuting.TermMutingModule
-import com.jeanbarrossilva.orca.feature.tootdetails.TootDetailsModule
 import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
 import com.jeanbarrossilva.orca.std.injector.Injector
@@ -71,11 +71,11 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
       inject<Context> { this@OrcaActivity }
       register(coreModule)
       register<FeedModule>(MainFeedModule(this@OrcaActivity))
+      register<PostDetailsModule>(MainPostDetailsModule(this@OrcaActivity))
       register<ProfileDetailsModule>(MainProfileDetailsModule(this@OrcaActivity))
       register<SearchModule>(MainSearchModule(navigator))
       register<SettingsModule>(MainSettingsModule(navigator))
       register<TermMutingModule>(MainTermMutingModule(navigator))
-      register<TootDetailsModule>(MainTootDetailsModule(this@OrcaActivity))
     }
   }
 

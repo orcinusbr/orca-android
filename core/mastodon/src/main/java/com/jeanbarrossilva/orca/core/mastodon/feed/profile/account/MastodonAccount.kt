@@ -3,12 +3,12 @@ package com.jeanbarrossilva.orca.core.mastodon.feed.profile.account
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
+import com.jeanbarrossilva.orca.core.feed.profile.post.Author
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfile
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfileTootPaginator
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonToot
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.MastodonPost
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.type.editable.MastodonEditableProfile
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.type.followable.MastodonFollowableProfile
 import com.jeanbarrossilva.orca.core.mastodon.instance.SomeHttpInstance
@@ -70,18 +70,18 @@ internal data class MastodonAccount(
    *
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
    *   [Profile]'s avatar will be loaded from a [URL].
-   * @param tootPaginatorProvider [MastodonProfileTootPaginator.Provider] by which a
-   *   [MastodonProfileTootPaginator] for paginating through the resulting [MastodonProfile]'s
-   *   [MastodonToot]s will be provided.
+   * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
+   *   [MastodonProfilePostPaginator] for paginating through the resulting [MastodonProfile]'s
+   *   [MastodonPost]s will be provided.
    */
   suspend fun toProfile(
     avatarLoaderProvider: ImageLoader.Provider<URL>,
-    tootPaginatorProvider: MastodonProfileTootPaginator.Provider
+    postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): Profile {
     return if (isOwner()) {
-      toEditableProfile(avatarLoaderProvider, tootPaginatorProvider)
+      toEditableProfile(avatarLoaderProvider, postPaginatorProvider)
     } else {
-      toFollowableProfile(avatarLoaderProvider, tootPaginatorProvider)
+      toFollowableProfile(avatarLoaderProvider, postPaginatorProvider)
     }
   }
 
@@ -107,13 +107,13 @@ internal data class MastodonAccount(
    *
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
    *   [MastodonEditableProfile]'s avatar will be loaded from a [URL].
-   * @param tootPaginatorProvider [MastodonProfileTootPaginator.Provider] by which a
-   *   [MastodonProfileTootPaginator] for paginating through the resulting
-   *   [MastodonEditableProfile]'s [MastodonToot]s will be provided.
+   * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
+   *   [MastodonProfilePostPaginator] for paginating through the resulting
+   *   [MastodonEditableProfile]'s [MastodonPost]s will be provided.
    */
   private fun toEditableProfile(
     avatarLoaderProvider: ImageLoader.Provider<URL>,
-    tootPaginatorProvider: MastodonProfileTootPaginator.Provider
+    postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): MastodonEditableProfile {
     val account = toAccount()
     val avatarURL = URL(avatar)
@@ -121,7 +121,7 @@ internal data class MastodonAccount(
     val bio = StyledString.fromHtml(note)
     val url = URL(url)
     return MastodonEditableProfile(
-      tootPaginatorProvider,
+      postPaginatorProvider,
       id,
       account,
       avatarLoader,
@@ -138,13 +138,13 @@ internal data class MastodonAccount(
    *
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
    *   [MastodonFollowableProfile]'s avatar will be loaded from a [URL].
-   * @param tootPaginatorProvider [MastodonProfileTootPaginator.Provider] by which a
-   *   [MastodonProfileTootPaginator] for paginating through the resulting
-   *   [MastodonFollowableProfile]'s [MastodonToot]s will be provided.
+   * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
+   *   [MastodonProfilePostPaginator] for paginating through the resulting
+   *   [MastodonFollowableProfile]'s [MastodonPost]s will be provided.
    */
   private suspend fun toFollowableProfile(
     avatarLoaderProvider: ImageLoader.Provider<URL>,
-    tootPaginatorProvider: MastodonProfileTootPaginator.Provider
+    postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): MastodonFollowableProfile<Follow> {
     val account = toAccount()
     val avatarURL = URL(avatar)
@@ -159,7 +159,7 @@ internal data class MastodonAccount(
         .first()
         .toFollow(this)
     return MastodonFollowableProfile(
-      tootPaginatorProvider,
+      postPaginatorProvider,
       id,
       account,
       avatarLoader,

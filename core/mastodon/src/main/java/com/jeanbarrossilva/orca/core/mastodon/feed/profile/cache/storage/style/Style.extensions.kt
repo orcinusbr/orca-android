@@ -1,6 +1,6 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.style
 
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.std.styledstring.style.Style
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Bold
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Hashtag
@@ -29,9 +29,9 @@ internal val Style.name
 /**
  * Converts this [Style] into a [MastodonStyleEntity].
  *
- * @param tootID ID of the [Toot] to which this [Style] belongs.
+ * @param postID ID of the [Post] to which this [Style] belongs.
  */
-internal fun Style.toHttpStyleEntity(tootID: String): MastodonStyleEntity {
+internal fun Style.toHttpStyleEntity(postID: String): MastodonStyleEntity {
   val url = if (this is Mention) url.toString() else null
-  return MastodonStyleEntity(id = 0, tootID, name, indices.first, indices.last, url)
+  return MastodonStyleEntity(id = 0, postID, name, indices.first, indices.last, url)
 }

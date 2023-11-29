@@ -1,8 +1,8 @@
 package com.jeanbarrossilva.orca.core.sample.feed.profile.search
 
+import com.jeanbarrossilva.orca.core.feed.profile.post.Author
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.createSample
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 

@@ -1,11 +1,11 @@
 package com.jeanbarrossilva.orca.core.sample.feed.profile.type.editable
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.type.editable.EditableProfile
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileWriter
 import com.jeanbarrossilva.orca.core.sample.feed.profile.createSample
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.SampleTootProvider
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostProvider
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
 import com.jeanbarrossilva.orca.std.imageloader.Image
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
@@ -15,16 +15,16 @@ import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
  *
  * @param writer [SampleProfileWriter] used by the [EditableProfile]'s
  *   [editor][EditableProfile.editor] can make modifications.
- * @param tootProvider [SampleTootProvider] by which the [EditableProfile]'s [Toot]s will be loaded.
+ * @param postProvider [SamplePostProvider] by which the [EditableProfile]'s [Post]s will be loaded.
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
  *   [Image]s will be loaded from a [SampleImageSource].
  */
 fun EditableProfile.Companion.createSample(
   writer: SampleProfileWriter,
-  tootProvider: SampleTootProvider,
+  postProvider: SamplePostProvider,
   imageLoaderProvider: ImageLoader.Provider<SampleImageSource>
 ): EditableProfile {
-  val delegate = Profile.createSample(tootProvider, imageLoaderProvider)
+  val delegate = Profile.createSample(postProvider, imageLoaderProvider)
   return SampleEditableProfile(
     delegate.id,
     delegate.account,
@@ -34,7 +34,7 @@ fun EditableProfile.Companion.createSample(
     delegate.followerCount,
     delegate.followingCount,
     delegate.url,
-    tootProvider,
+    postProvider,
     writer
   )
 }

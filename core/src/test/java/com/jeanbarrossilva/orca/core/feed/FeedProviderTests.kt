@@ -1,9 +1,9 @@
 package com.jeanbarrossilva.orca.core.feed
 
 import app.cash.turbine.test
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.SampleTermMuter
-import com.jeanbarrossilva.orca.core.sample.test.feed.profile.toot.samples
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.SampleTermMuter
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.samples
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertFailsWith
@@ -20,7 +20,7 @@ internal class FeedProviderTests {
       object : FeedProvider() {
         override val termMuter = SampleTermMuter()
 
-        override suspend fun onProvide(userID: String, page: Int): Flow<List<Toot>> {
+        override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
           return emptyFlow()
         }
 
@@ -39,7 +39,7 @@ internal class FeedProviderTests {
       object : FeedProvider() {
         override val termMuter = SampleTermMuter()
 
-        override suspend fun onProvide(userID: String, page: Int): Flow<List<Toot>> {
+        override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
           return emptyFlow()
         }
 
@@ -58,26 +58,26 @@ internal class FeedProviderTests {
       object : FeedProvider() {
         override val termMuter = SampleTermMuter()
 
-        override suspend fun onProvide(userID: String, page: Int): Flow<List<Toot>> {
-          return flowOf(Toot.samples)
+        override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
+          return flowOf(Post.samples)
         }
 
         override suspend fun containsUser(userID: String): Boolean {
           return true
         }
       }
-    runTest { assertContentEquals(Toot.samples, provider.provide(userID = "🥸", page = 0).first()) }
+    runTest { assertContentEquals(Post.samples, provider.provide(userID = "🥸", page = 0).first()) }
   }
 
   @Test
-  fun `GIVEN some muted terms WHEN providing a feed THEN toots with these terms are filtered out`() {
+  fun `GIVEN some muted terms WHEN providing a feed THEN posts with these terms are filtered out`() {
     val termMuter = SampleTermMuter()
     val provider =
       object : FeedProvider() {
         override val termMuter = termMuter
 
-        override suspend fun onProvide(userID: String, page: Int): Flow<List<Toot>> {
-          return flowOf(Toot.samples.take(1))
+        override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
+          return flowOf(Post.samples.take(1))
         }
 
         override suspend fun containsUser(userID: String): Boolean {
@@ -85,7 +85,7 @@ internal class FeedProviderTests {
         }
       }
     runTest {
-      Toot.samples.first().content.text.split(' ').take(2).forEach { termMuter.mute(it) }
+      Post.samples.first().content.text.split(' ').take(2).forEach { termMuter.mute(it) }
       provider.provide(userID = "😶‍🌫️", page = 0).test {
         assertContentEquals(emptyList(), awaitItem())
         awaitComplete()

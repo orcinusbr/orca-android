@@ -8,7 +8,7 @@ internal class TestFeedBoundary : FeedBoundary {
 
   override fun navigateTo(url: URL) {}
 
-  override fun navigateToTootDetails(id: String) {}
+  override fun navigateToPostDetails(id: String) {}
 
   override fun navigateToComposer() {}
 }

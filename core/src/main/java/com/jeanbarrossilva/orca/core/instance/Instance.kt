@@ -5,9 +5,9 @@ import com.jeanbarrossilva.orca.core.auth.Authenticator
 import com.jeanbarrossilva.orca.core.feed.FeedProvider
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.ProfileProvider
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
+import com.jeanbarrossilva.orca.core.feed.profile.post.PostProvider
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearcher
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.feed.profile.toot.TootProvider
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
 
 /** An [Instance] with a generic [Authenticator]. */
@@ -31,7 +31,7 @@ abstract class Instance<T : Authenticator> {
    */
   abstract val authenticationLock: AuthenticationLock<T>
 
-  /** [Instance]-specific [FeedProvider] that provides the [Toot]s in the timeline. */
+  /** [Instance]-specific [FeedProvider] that provides the [Post]s in the timeline. */
   abstract val feedProvider: FeedProvider
 
   /** [Instance]-specific [ProfileProvider] for providing [Profile]s. */
@@ -40,8 +40,8 @@ abstract class Instance<T : Authenticator> {
   /** [Instance]-specific [ProfileSearcher] by which search for [Profile]s can be made. */
   abstract val profileSearcher: ProfileSearcher
 
-  /** [Instance]-specific [TootProvider] that provides [Toot]s. */
-  abstract val tootProvider: TootProvider
+  /** [Instance]-specific [PostProvider] that provides [Post]s. */
+  abstract val postProvider: PostProvider
 
   companion object
 }

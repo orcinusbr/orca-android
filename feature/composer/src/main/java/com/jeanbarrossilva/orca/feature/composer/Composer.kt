@@ -41,8 +41,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.createSample
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
 import com.jeanbarrossilva.orca.feature.composer.ui.Toolbar
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
@@ -231,7 +231,7 @@ private fun PopulatedWithoutToolbarComposerPreview() {
   AutosTheme {
     Composer(
       TextFieldValue(
-        Toot.createSample(ImageLoader.Provider.createSample()).content.text.toAnnotatedString()
+        Post.createSample(ImageLoader.Provider.createSample()).content.text.toAnnotatedString()
       ),
       isInitiallyFocused = false
     )
@@ -244,7 +244,7 @@ private fun PopulatedWithToolbarComposerPreview() {
   AutosTheme {
     Composer(
       TextFieldValue(
-        Toot.createSample(ImageLoader.Provider.createSample()).content.text.toAnnotatedString()
+        Post.createSample(ImageLoader.Provider.createSample()).content.text.toAnnotatedString()
       ),
       isInitiallyFocused = true
     )

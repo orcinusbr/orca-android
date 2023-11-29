@@ -5,7 +5,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.type.editable.EditableProfile
 import com.jeanbarrossilva.orca.core.feed.profile.type.editable.Editor
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfile
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileWriter
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.SampleTootProvider
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostProvider
 import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
@@ -25,7 +25,7 @@ internal data class SampleEditableProfile(
   override val followerCount: Int,
   override val followingCount: Int,
   override val url: URL,
-  override val tootProvider: SampleTootProvider,
+  override val postProvider: SamplePostProvider,
   private val writer: SampleProfileWriter
 ) : SampleProfile, EditableProfile() {
   override val editor: Editor by lazy { SampleEditor(writer, id) }
