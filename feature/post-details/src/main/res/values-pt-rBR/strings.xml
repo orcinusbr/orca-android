@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feature_post_details">Publicação</string>
+    <string name="feature_post_details_comments">Comentários</string>
+    <string name="feature_post_details_share">Compartilhar</string>
+</resources>

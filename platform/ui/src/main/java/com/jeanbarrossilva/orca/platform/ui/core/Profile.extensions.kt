@@ -12,6 +12,6 @@ import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 @Composable
 internal fun Profile.Companion.createSample(): Profile {
   val imageLoaderProvider = ImageLoader.Provider.createSample()
-  val tootProvider = Instance.createSample(imageLoaderProvider).tootProvider
-  return Profile.createSample(tootProvider, imageLoaderProvider)
+  val postProvider = Instance.createSample(imageLoaderProvider).postProvider
+  return Profile.createSample(postProvider, imageLoaderProvider)
 }

@@ -32,7 +32,7 @@ import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Refresh
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
 import java.net.URL
 
 const val FEED_FLOATING_ACTION_BUTTON_TAG = "feed-floating-action-button"
@@ -45,12 +45,12 @@ internal fun Feed(
   modifier: Modifier = Modifier
 ) {
   var isTimelineRefreshing by remember { mutableStateOf(false) }
-  val tootPreviewsLoadable by viewModel.tootPreviewsLoadableFlow.collectAsState()
+  val postPreviewsLoadable by viewModel.postPreviewsLoadableFlow.collectAsState()
   val bottomAreaAvailabilityNestedScrollConnection =
     rememberBottomAreaAvailabilityNestedScrollConnection(onBottomAreaAvailabilityChangeListener)
 
   Feed(
-    tootPreviewsLoadable,
+    postPreviewsLoadable,
     onSearch = boundary::navigateToSearch,
     isTimelineRefreshing,
     onTimelineRefresh = {
@@ -59,10 +59,10 @@ internal fun Feed(
     },
     onHighlightClick = boundary::navigateTo,
     onFavorite = viewModel::favorite,
-    onReblog = viewModel::reblog,
+    onRepost = viewModel::repost,
     onShare = viewModel::share,
-    onTootClick = boundary::navigateToTootDetails,
-    onNext = viewModel::loadTootsAt,
+    onPostClick = boundary::navigateToPostDetails,
+    onNext = viewModel::loadPostsAt,
     onComposition = boundary::navigateToComposer,
     bottomAreaAvailabilityNestedScrollConnection,
     modifier
@@ -71,20 +71,20 @@ internal fun Feed(
 
 @Composable
 internal fun Feed(
-  tootPreviewsLoadable: ListLoadable<TootPreview>,
+  postPreviewsLoadable: ListLoadable<PostPreview>,
   modifier: Modifier = Modifier,
-  onFavorite: (tootID: String) -> Unit = {}
+  onFavorite: (postID: String) -> Unit = {}
 ) {
   Feed(
-    tootPreviewsLoadable,
+    postPreviewsLoadable,
     onSearch = {},
     isTimelineRefreshing = false,
     onTimelineRefresh = {},
     onHighlightClick = {},
     onFavorite,
-    onReblog = {},
+    onRepost = {},
     onShare = {},
-    onTootClick = {},
+    onPostClick = {},
     onNext = {},
     onComposition = {},
     BottomAreaAvailabilityNestedScrollConnection.empty,
@@ -95,15 +95,15 @@ internal fun Feed(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun Feed(
-  tootPreviewsLoadable: ListLoadable<TootPreview>,
+  postPreviewsLoadable: ListLoadable<PostPreview>,
   onSearch: () -> Unit,
   isTimelineRefreshing: Boolean,
   onTimelineRefresh: () -> Unit,
   onHighlightClick: (URL) -> Unit,
-  onFavorite: (tootID: String) -> Unit,
-  onReblog: (tootID: String) -> Unit,
+  onFavorite: (postID: String) -> Unit,
+  onRepost: (postID: String) -> Unit,
   onShare: (URL) -> Unit,
-  onTootClick: (tootID: String) -> Unit,
+  onPostClick: (postID: String) -> Unit,
   onNext: (index: Int) -> Unit,
   onComposition: () -> Unit,
   bottomAreaAvailabilityNestedScrollConnection: BottomAreaAvailabilityNestedScrollConnection,
@@ -129,7 +129,7 @@ private fun Feed(
       )
     },
     floatingActionButton = {
-      if (tootPreviewsLoadable.isLoaded) {
+      if (postPreviewsLoadable.isLoaded) {
         FloatingActionButton(
           onClick = onComposition,
           Modifier.testTag(FEED_FLOATING_ACTION_BUTTON_TAG)
@@ -143,12 +143,12 @@ private fun Feed(
     }
   ) {
     Timeline(
-      tootPreviewsLoadable,
+      postPreviewsLoadable,
       onHighlightClick,
       onFavorite,
-      onReblog,
+      onRepost,
       onShare,
-      onTootClick,
+      onPostClick,
       onNext,
       Modifier.nestedScroll(bottomAreaAvailabilityNestedScrollConnection)
         .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
@@ -174,5 +174,5 @@ private fun EmptyFeedPreview() {
 @Composable
 @MultiThemePreview
 private fun PopulatedFeedPreview() {
-  AutosTheme { Feed(TootPreview.samples.toSerializableList().toListLoadable()) }
+  AutosTheme { Feed(PostPreview.samples.toSerializableList().toListLoadable()) }
 }

@@ -55,7 +55,7 @@ fun ReblogStatIcon(
 ) {
   ActivateableStatIcon(
     AutosTheme.iconography.repost.asImageVector,
-    contentDescription = stringResource(R.string.platform_ui_reblog_stat),
+    contentDescription = stringResource(R.string.platform_ui_repost_stat),
     isActive,
     interactiveness,
     colors,

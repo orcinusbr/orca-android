@@ -7,7 +7,7 @@ import com.jeanbarrossilva.orca.core.mastodon.auth.authentication.MastodonAuthen
 import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.MastodonAuthorizer
 import com.jeanbarrossilva.orca.core.mastodon.instance.MastodonInstanceProvider
 import com.jeanbarrossilva.orca.core.sharedpreferences.actor.SharedPreferencesActorProvider
-import com.jeanbarrossilva.orca.core.sharedpreferences.feed.profile.toot.content.SharedPreferencesTermMuter
+import com.jeanbarrossilva.orca.core.sharedpreferences.feed.profile.post.content.SharedPreferencesTermMuter
 import com.jeanbarrossilva.orca.std.imageloader.compose.CoilImageLoader
 import com.jeanbarrossilva.orca.std.injector.Injector
 

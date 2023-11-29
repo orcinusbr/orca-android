@@ -9,7 +9,7 @@ import com.jeanbarrossilva.orca.core.mastodon.client.test.instance.TestHttpInsta
 import com.jeanbarrossilva.orca.core.mastodon.client.test.instance.TestMastodonInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.content.SampleTermMuter
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.SampleTermMuter
 import com.jeanbarrossilva.orca.core.test.TestActorProvider
 import com.jeanbarrossilva.orca.core.test.TestAuthenticator
 import com.jeanbarrossilva.orca.core.test.TestAuthorizer

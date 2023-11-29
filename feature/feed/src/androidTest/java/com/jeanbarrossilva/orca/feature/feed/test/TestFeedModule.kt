@@ -8,7 +8,7 @@ import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabili
 internal object TestFeedModule :
   FeedModule(
     { Instance.sample.feedProvider },
-    { Instance.sample.tootProvider },
+    { Instance.sample.postProvider },
     { TestFeedBoundary() },
     { OnBottomAreaAvailabilityChangeListener.empty }
   )

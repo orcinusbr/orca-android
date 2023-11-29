@@ -7,11 +7,11 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jeanbarrossilva.loadable.list.flow.listLoadable
 import com.jeanbarrossilva.orca.core.feed.FeedProvider
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.feed.profile.toot.TootProvider
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
+import com.jeanbarrossilva.orca.core.feed.profile.post.PostProvider
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.toTootPreviewFlow
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.toPostPreviewFlow
 import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
 import com.jeanbarrossilva.orca.platform.ui.core.context.share
 import com.jeanbarrossilva.orca.platform.ui.core.flatMapEach
@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 internal class FeedViewModel(
   private val contextProvider: ContextProvider,
   private val feedProvider: FeedProvider,
-  private val tootProvider: TootProvider,
+  private val postProvider: PostProvider,
   private val userID: String
 ) : ViewModel() {
   private val indexFlow = MutableStateFlow<Int?>(0)
@@ -38,13 +38,13 @@ internal class FeedViewModel(
     get() = contextProvider.provide()
 
   @OptIn(ExperimentalCoroutinesApi::class)
-  val tootPreviewsLoadableFlow =
+  val postPreviewsLoadableFlow =
     indexFlow
       .filterNotNull()
       .flatMapLatest { feedProvider.provide(userID, it) }
-      .runningFold<_, List<Toot>?>(null) { accumulator, toots -> accumulator.orEmpty() + toots }
+      .runningFold<_, List<Post>?>(null) { accumulator, posts -> accumulator.orEmpty() + posts }
       .filterNotNull()
-      .flatMapEach(selector = TootPreview::id) { it.toTootPreviewFlow(colors) }
+      .flatMapEach(selector = PostPreview::id) { it.toPostPreviewFlow(colors) }
       .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
 
   fun requestRefresh(onRefresh: () -> Unit) {
@@ -52,24 +52,24 @@ internal class FeedViewModel(
     indexFlow.value = null
     indexFlow.value = index
     viewModelScope.launch {
-      tootPreviewsLoadableFlow.await()
+      postPreviewsLoadableFlow.await()
       onRefresh()
     }
   }
 
-  fun favorite(tootID: String) {
-    viewModelScope.launch { tootProvider.provide(tootID).first().favorite.toggle() }
+  fun favorite(postID: String) {
+    viewModelScope.launch { postProvider.provide(postID).first().favorite.toggle() }
   }
 
-  fun reblog(tootID: String) {
-    viewModelScope.launch { tootProvider.provide(tootID).first().reblog.toggle() }
+  fun repost(postID: String) {
+    viewModelScope.launch { postProvider.provide(postID).first().repost.toggle() }
   }
 
   fun share(url: URL) {
     context.share("$url")
   }
 
-  fun loadTootsAt(index: Int) {
+  fun loadPostsAt(index: Int) {
     indexFlow.value = index
   }
 
@@ -77,11 +77,11 @@ internal class FeedViewModel(
     fun createFactory(
       contextProvider: ContextProvider,
       feedProvider: FeedProvider,
-      tootProvider: TootProvider,
+      postProvider: PostProvider,
       userID: String
     ): ViewModelProvider.Factory {
       return viewModelFactory {
-        initializer { FeedViewModel(contextProvider, feedProvider, tootProvider, userID) }
+        initializer { FeedViewModel(contextProvider, feedProvider, postProvider, userID) }
       }
     }
   }

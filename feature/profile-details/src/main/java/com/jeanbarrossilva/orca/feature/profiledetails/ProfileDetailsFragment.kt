@@ -21,7 +21,7 @@ class ProfileDetailsFragment internal constructor() : ComposableFragment(), Cont
       ProfileDetailsViewModel.createFactory(
         contextProvider = this,
         module.profileProvider(),
-        module.tootProvider(),
+        module.postProvider(),
         id
       )
     }

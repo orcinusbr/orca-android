@@ -1,12 +1,12 @@
 package com.jeanbarrossilva.orca.core.sample.feed.profile.type.followable
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.FollowableProfile
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileWriter
 import com.jeanbarrossilva.orca.core.sample.feed.profile.createSample
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.SampleTootProvider
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostProvider
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
 import com.jeanbarrossilva.orca.std.imageloader.Image
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
@@ -16,7 +16,7 @@ import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
  *
  * @param writer [SampleProfileWriter] by which write operations to the [FollowableProfile] will be
  *   performed.
- * @param tootProvider [SampleTootProvider] by which the [FollowableProfile]'s [Toot]s will be
+ * @param postProvider [SamplePostProvider] by which the [FollowableProfile]'s [Post]s will be
  *   provided.
  * @param follow Current [Follow] status.
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
@@ -24,11 +24,11 @@ import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
  */
 fun <T : Follow> FollowableProfile.Companion.createSample(
   writer: SampleProfileWriter,
-  tootProvider: SampleTootProvider,
+  postProvider: SamplePostProvider,
   follow: T,
   imageLoaderProvider: ImageLoader.Provider<SampleImageSource>
 ): FollowableProfile<T> {
-  val delegate = Profile.createSample(tootProvider, imageLoaderProvider)
+  val delegate = Profile.createSample(postProvider, imageLoaderProvider)
   return SampleFollowableProfile(
     delegate.id,
     delegate.account,
@@ -40,6 +40,6 @@ fun <T : Follow> FollowableProfile.Companion.createSample(
     delegate.followingCount,
     delegate.url,
     writer,
-    tootProvider
+    postProvider
   )
 }

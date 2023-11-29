@@ -8,7 +8,7 @@ import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabili
 internal object TestProfileDetailsModule :
   ProfileDetailsModule(
     { Instance.sample.profileProvider },
-    { Instance.sample.tootProvider },
+    { Instance.sample.postProvider },
     { TestProfileDetailsBoundary() },
     { OnBottomAreaAvailabilityChangeListener.empty }
   )

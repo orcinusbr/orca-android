@@ -1,10 +1,10 @@
 package com.jeanbarrossilva.orca.core.sample.feed.profile
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.SampleTootProvider
-import com.jeanbarrossilva.orca.core.sample.feed.profile.toot.createSample
+import com.jeanbarrossilva.orca.core.feed.profile.post.Author
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostProvider
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
 import com.jeanbarrossilva.orca.std.imageloader.Image
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
@@ -13,12 +13,12 @@ import com.jeanbarrossilva.orca.std.styledstring.StyledString
 /**
  * Creates a sample [Profile].
  *
- * @param tootProvider [SampleTootProvider] by which the [Profile]'s [Toot]s will be provided.
+ * @param postProvider [SamplePostProvider] by which the [Profile]'s [Post]s will be provided.
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
  *   [Image]s will be loaded from a [SampleImageSource].
  */
 fun Profile.Companion.createSample(
-  tootProvider: SampleTootProvider,
+  postProvider: SamplePostProvider,
   imageLoaderProvider: ImageLoader.Provider<SampleImageSource>
 ): Profile {
   val author = Author.createSample(imageLoaderProvider)
@@ -35,6 +35,6 @@ fun Profile.Companion.createSample(
     override val followerCount = 1_024
     override val followingCount = 64
     override val url = author.profileURL
-    override val tootProvider = tootProvider
+    override val postProvider = postProvider
   }
 }

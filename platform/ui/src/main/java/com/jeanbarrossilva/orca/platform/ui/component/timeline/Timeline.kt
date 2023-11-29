@@ -41,22 +41,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.list.ListLoadable
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.R
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.RelativeTimeProvider
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.time.rememberRelativeTimeProvider
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.time.RelativeTimeProvider
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.time.rememberRelativeTimeProvider
 import java.net.URL
 
 /** Tag that identifies an [EmptyTimelineMessage] for testing purposes. */
 internal const val EMPTY_TIMELINE_MESSAGE_TAG = "empty-timeline-tag"
 
-/** Tag that identifies dividers between [TootPreview]s in a [Timeline] for testing purposes. */
+/** Tag that identifies dividers between [PostPreview]s in a [Timeline] for testing purposes. */
 internal const val TIMELINE_DIVIDER_TAG = "timeline-divider"
 
 /** Tag that identifies a [Timeline] for testing purposes. */
@@ -67,8 +67,8 @@ private enum class TimelineContentType {
   /** Content type for the header. */
   HEADER,
 
-  /** Content type for [TootPreview]s. */
-  TOOT_PREVIEW,
+  /** Content type for [PostPreview]s. */
+  POST_PREVIEW,
 
   /**
    * Content type for the [com.jeanbarrossilva.orca.platform.ui.component.timeline.RenderEffect].
@@ -77,33 +77,33 @@ private enum class TimelineContentType {
 }
 
 /**
- * Displays [TootPreview]s in a paginated way.
+ * Displays [PostPreview]s in a paginated way.
  *
- * @param tootPreviewsLoadable [ListLoadable] of [TootPreview]s to be lazily shown.
- * @param onHighlightClick Callback run whenever the [TootPreview]'s [TootPreview.highlight] is
+ * @param postPreviewsLoadable [ListLoadable] of [PostPreview]s to be lazily shown.
+ * @param onHighlightClick Callback run whenever the [PostPreview]'s [PostPreview.highlight] is
  *   clicked.
- * @param onFavorite Callback run whenever the [TootPreview] associated to the given ID requests the
- *   [Toot] to have its "favorited" state toggled.
- * @param onReblog Callback run whenever the [TootPreview] associated to the given ID requests the
- *   [Toot] to have its "reblogged" state toggled.
- * @param onShare Callback run whenever a [TootPreview] requests the [Toot]'s [URL] is requested to
+ * @param onFavorite Callback run whenever the [PostPreview] associated to the given ID requests the
+ *   [Post] to have its "favorited" state toggled.
+ * @param onRepost Callback run whenever the [PostPreview] associated to the given ID requests the
+ *   [Post] to have its "reblogged" state toggled.
+ * @param onShare Callback run whenever a [PostPreview] requests the [Post]'s [URL] is requested to
  *   be shared.
- * @param onClick Callback run whenever the [TootPreview] associated to the given ID is clicked.
+ * @param onClick Callback run whenever the [PostPreview] associated to the given ID is clicked.
  * @param onNext Callback run whenever the bottom is being reached.
  * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
  * @param state [LazyListState] through which scroll will be observed.
  * @param contentPadding [PaddingValues] to pad the content with.
  * @param refresh Configuration for the swipe-to-refresh behavior to be adopted.
  * @param relativeTimeProvider [RelativeTimeProvider] that provides the time that's passed since a
- *   [Toot] was published.
- * @param header [Composable] to be shown above the [TootPreview]s.
+ *   [Post] was published.
+ * @param header [Composable] to be shown above the [PostPreview]s.
  */
 @Composable
 fun Timeline(
-  tootPreviewsLoadable: ListLoadable<TootPreview>,
+  postPreviewsLoadable: ListLoadable<PostPreview>,
   onHighlightClick: (URL) -> Unit,
   onFavorite: (id: String) -> Unit,
-  onReblog: (id: String) -> Unit,
+  onRepost: (id: String) -> Unit,
   onShare: (URL) -> Unit,
   onClick: (id: String) -> Unit,
   onNext: (index: Int) -> Unit,
@@ -114,16 +114,16 @@ fun Timeline(
   relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider(),
   header: (@Composable () -> Unit)? = null
 ) {
-  when (tootPreviewsLoadable) {
+  when (postPreviewsLoadable) {
     is ListLoadable.Empty ->
       EmptyTimelineMessage(header?.let { { it() } }, contentPadding, modifier)
     is ListLoadable.Loading -> Timeline(modifier, contentPadding, header?.let { { it() } })
     is ListLoadable.Populated ->
       Timeline(
-        tootPreviewsLoadable.content,
+        postPreviewsLoadable.content,
         onHighlightClick,
         onFavorite,
-        onReblog,
+        onRepost,
         onShare,
         onClick,
         onNext,
@@ -139,9 +139,9 @@ fun Timeline(
 }
 
 /**
- * [LazyColumn] for displaying loading [TootPreview]s.
+ * [LazyColumn] for displaying loading [PostPreview]s.
  *
- * @param header [Composable] to be shown above the [TootPreview]s.
+ * @param header [Composable] to be shown above the [PostPreview]s.
  * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
  * @param contentPadding [PaddingValues] to pad the content with.
  */
@@ -152,38 +152,38 @@ fun Timeline(
   header: @Composable (LazyItemScope.() -> Unit)? = null
 ) {
   Timeline(onNext = {}, modifier, header, contentPadding = contentPadding) {
-    items(128) { TootPreview() }
+    items(128) { PostPreview() }
   }
 }
 
 /**
- * [LazyColumn] for displaying paged [TootPreview]s.
+ * [LazyColumn] for displaying paged [PostPreview]s.
  *
- * @param tootPreviews [TootPreview]s to be lazily shown.
- * @param onHighlightClick Callback run whenever the [TootPreview]'s [TootPreview.highlight] is
+ * @param postPreviews [PostPreview]s to be lazily shown.
+ * @param onHighlightClick Callback run whenever the [PostPreview]'s [PostPreview.highlight] is
  *   clicked.
- * @param onFavorite Callback run whenever the [TootPreview] associated to the given ID requests the
- *   [Toot] to have its "favorited" state toggled.
- * @param onReblog Callback run whenever the [TootPreview] associated to the given ID requests the
- *   [Toot] to have its "reblogged" state toggled.
- * @param onShare Callback run whenever a [TootPreview] requests the [Toot]'s [URL] is requested to
+ * @param onFavorite Callback run whenever the [PostPreview] associated to the given ID requests the
+ *   [Post] to have its "favorited" state toggled.
+ * @param onRepost Callback run whenever the [PostPreview] associated to the given ID requests the
+ *   [Post] to have its "reblogged" state toggled.
+ * @param onShare Callback run whenever a [PostPreview] requests the [Post]'s [URL] is requested to
  *   be shared.
- * @param onClick Callback run whenever the [TootPreview] associated to the given ID is clicked.
+ * @param onClick Callback run whenever the [PostPreview] associated to the given ID is clicked.
  * @param onNext Callback run whenever the bottom is being reached.
  * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
  * @param state [LazyListState] through which scroll will be observed.
  * @param contentPadding [PaddingValues] to pad the content with.
  * @param refresh Configuration for the swipe-to-refresh behavior to be adopted.
  * @param relativeTimeProvider [RelativeTimeProvider] that provides the time that's passed since a
- *   [Toot] was published.
- * @param header [Composable] to be shown above the [TootPreview]s.
+ *   [Post] was published.
+ * @param header [Composable] to be shown above the [PostPreview]s.
  */
 @Composable
 fun Timeline(
-  tootPreviews: List<TootPreview>,
+  postPreviews: List<PostPreview>,
   onHighlightClick: (URL) -> Unit,
   onFavorite: (id: String) -> Unit,
-  onReblog: (id: String) -> Unit,
+  onRepost: (id: String) -> Unit,
   onShare: (URL) -> Unit,
   onClick: (id: String) -> Unit,
   onNext: (index: Int) -> Unit,
@@ -194,24 +194,24 @@ fun Timeline(
   relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider(),
   header: (@Composable () -> Unit)? = null
 ) {
-  if (tootPreviews.isEmpty()) {
+  if (postPreviews.isEmpty()) {
     EmptyTimelineMessage(header?.let { { it() } }, contentPadding, modifier)
   } else {
     Timeline(onNext, modifier, header?.let { { it() } }, state, contentPadding, refresh) {
       itemsIndexed(
-        tootPreviews,
+        postPreviews,
         key = { _, preview -> preview.id },
-        contentType = { _, _ -> TimelineContentType.TOOT_PREVIEW }
+        contentType = { _, _ -> TimelineContentType.POST_PREVIEW }
       ) { index, preview ->
-        if (index == 0 && header != null || index != 0 && index != tootPreviews.lastIndex) {
+        if (index == 0 && header != null || index != 0 && index != postPreviews.lastIndex) {
           Divider(Modifier.testTag(TIMELINE_DIVIDER_TAG))
         }
 
-        TootPreview(
+        PostPreview(
           preview,
           onHighlightClick = { preview.highlight?.url?.run(onHighlightClick) },
           onFavorite = { onFavorite(preview.id) },
-          onReblog = { onReblog(preview.id) },
+          onRepost = { onRepost(preview.id) },
           onShare = { onShare(preview.url) },
           onClick = { onClick(preview.id) },
           relativeTimeProvider = relativeTimeProvider
@@ -290,23 +290,23 @@ fun Timeline(
 }
 
 /**
- * Displays [TootPreview]s in a paginated way.
+ * Displays [PostPreview]s in a paginated way.
  *
- * @param tootPreviewsLoadable [ListLoadable] of [TootPreview]s to be lazily shown.
+ * @param postPreviewsLoadable [ListLoadable] of [PostPreview]s to be lazily shown.
  * @param modifier [Modifier] to be applied to the underlying [Timeline].
- * @param header [Composable] to be shown above the [TootPreview]s.
+ * @param header [Composable] to be shown above the [PostPreview]s.
  */
 @Composable
 internal fun Timeline(
-  tootPreviewsLoadable: ListLoadable<TootPreview>,
+  postPreviewsLoadable: ListLoadable<PostPreview>,
   modifier: Modifier = Modifier,
   header: @Composable (() -> Unit)? = null
 ) {
   Timeline(
-    tootPreviewsLoadable,
+    postPreviewsLoadable,
     onHighlightClick = {},
     onFavorite = {},
-    onReblog = {},
+    onRepost = {},
     onShare = {},
     onClick = {},
     onNext = {},
@@ -316,26 +316,26 @@ internal fun Timeline(
 }
 
 /**
- * [Timeline] that's populated with sample [TootPreview]s.
+ * [Timeline] that's populated with sample [PostPreview]s.
  *
- * @param tootPreviews [TootPreview]s to be lazily shown.
+ * @param postPreviews [PostPreview]s to be lazily shown.
  * @param modifier [Modifier] to be applied to the underlying [Timeline].
  * @param onNext Callback run whenever the bottom is being reached.
- * @param header [Composable] to be shown above the [TootPreview]s.
- * @see TootPreview.samples
+ * @param header [Composable] to be shown above the [PostPreview]s.
+ * @see PostPreview.samples
  */
 @Composable
 internal fun Timeline(
-  tootPreviews: List<TootPreview>,
+  postPreviews: List<PostPreview>,
   modifier: Modifier = Modifier,
   onNext: (index: Int) -> Unit = {},
   header: @Composable() (() -> Unit)? = null
 ) {
   Timeline(
-    tootPreviews,
+    postPreviews,
     onHighlightClick = {},
     onFavorite = {},
-    onReblog = {},
+    onRepost = {},
     onShare = {},
     onClick = {},
     onNext,

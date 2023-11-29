@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.orca.core.feed.profile
 
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
@@ -37,7 +37,12 @@ interface Profile : Serializable {
    */
   val url: URL
 
-  suspend fun getToots(page: Int): Flow<List<Toot>>
+  /**
+   * Gets the [Post]s that have been published by the owner of this [Profile].
+   *
+   * @param page Page in which the [Post]s to be obtained are.
+   */
+  suspend fun getPosts(page: Int): Flow<List<Post>>
 
   companion object
 }

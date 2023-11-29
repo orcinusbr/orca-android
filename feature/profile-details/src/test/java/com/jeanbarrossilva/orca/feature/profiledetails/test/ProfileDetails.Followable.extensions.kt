@@ -23,7 +23,7 @@ internal fun ProfileDetails.Followable.Companion.createSample(
   val profile =
     FollowableProfile.createSample(
       Instance.sample.profileWriter,
-      Instance.sample.tootProvider,
+      Instance.sample.postProvider,
       Follow.Public.following(),
       TestSampleImageLoader.Provider
     )

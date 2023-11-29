@@ -10,10 +10,10 @@ import androidx.compose.ui.test.performScrollTo
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.TootPreview
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.TOOT_PREVIEW_FAVORITE_STAT_TAG
-import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.onTootPreviews
-import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.time.Time4JTestRule
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.stat.POST_PREVIEW_FAVORITE_STAT_TAG
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.onPostPreviews
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.time.Time4JTestRule
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -24,21 +24,21 @@ internal class FeedTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun runsCallbackWhenClickingTootFavoriteStat() {
+  fun runsCallbackWhenClickingPostFavoriteStat() {
     var hasCallbackBeenRun = false
     composeRule.setContent {
       AutosTheme {
         Feed(
-          TootPreview.samples.toSerializableList().toListLoadable(),
+          PostPreview.samples.toSerializableList().toListLoadable(),
           onFavorite = { hasCallbackBeenRun = true }
         )
       }
     }
     composeRule
-      .onTootPreviews()
+      .onPostPreviews()
       .onFirst()
       .onChildren()
-      .filterToOne(hasTestTag(TOOT_PREVIEW_FAVORITE_STAT_TAG))
+      .filterToOne(hasTestTag(POST_PREVIEW_FAVORITE_STAT_TAG))
       .performScrollTo()
       .performClick()
     assertTrue(hasCallbackBeenRun)

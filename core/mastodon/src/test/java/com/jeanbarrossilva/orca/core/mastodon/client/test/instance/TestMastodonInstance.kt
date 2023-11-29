@@ -48,6 +48,6 @@ internal class TestMastodonInstance(
   override val feedProvider = Instance.sample.feedProvider
   override val profileProvider = Instance.sample.profileProvider
   override val profileSearcher = Instance.sample.profileSearcher
-  override val tootProvider = Instance.sample.tootProvider
+  override val postProvider = Instance.sample.postProvider
   override val client = CoreHttpClient(clientEngineFactory, Logger.test)
 }

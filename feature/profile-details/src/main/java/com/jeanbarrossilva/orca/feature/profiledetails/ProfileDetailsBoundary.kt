@@ -5,14 +5,14 @@ import java.net.URL
 interface ProfileDetailsBoundary {
   fun navigateTo(url: URL)
 
-  fun navigateToTootDetails(id: String)
+  fun navigateToPostDetails(id: String)
 
   companion object {
     internal val empty =
       object : ProfileDetailsBoundary {
         override fun navigateTo(url: URL) {}
 
-        override fun navigateToTootDetails(id: String) {}
+        override fun navigateToPostDetails(id: String) {}
       }
   }
 }

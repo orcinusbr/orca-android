@@ -2,12 +2,12 @@ package com.jeanbarrossilva.orca.core.mastodon.feed.profile.type.followable
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.FollowableProfile
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndPost
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfile
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfileTootPaginator
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
 import com.jeanbarrossilva.orca.core.mastodon.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.injector.Injector
@@ -17,12 +17,12 @@ import java.net.URL
 /**
  * [MastodonProfile] that can be followed.
  *
- * @param tootPaginatorProvider [MastodonProfileTootPaginator.Provider] by which a
- *   [MastodonProfileTootPaginator] for paginating through the [MastodonProfile]'s [Toot]s will be
+ * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
+ *   [MastodonProfilePostPaginator] for paginating through the [MastodonProfile]'s [Post]s will be
  *   provided.
  */
 internal data class MastodonFollowableProfile<T : Follow>(
-  private val tootPaginatorProvider: MastodonProfileTootPaginator.Provider,
+  private val postPaginatorProvider: MastodonProfilePostPaginator.Provider,
   override val id: String,
   override val account: Account,
   override val avatarLoader: SomeImageLoader,
@@ -34,7 +34,7 @@ internal data class MastodonFollowableProfile<T : Follow>(
   override val url: URL
 ) :
   Profile by MastodonProfile(
-    tootPaginatorProvider,
+    postPaginatorProvider,
     id,
     account,
     avatarLoader,

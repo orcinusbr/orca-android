@@ -1,10 +1,10 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfile
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfileTootPaginator
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.account.MastodonAccount
 import com.jeanbarrossilva.orca.core.mastodon.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
@@ -20,19 +20,19 @@ import java.net.URL
  *
  * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
  *   [Profile]s' avatars will be loaded from a [URL].
- * @param tootPaginatorProvider [MastodonProfileTootPaginator.Provider] by which a
- *   [MastodonProfileTootPaginator] for paginating through a [MastodonProfile]'s [Toot]s will be
+ * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
+ *   [MastodonProfilePostPaginator] for paginating through a [MastodonProfile]'s [Post]s will be
  *   provided.
  */
 internal class MastodonProfileFetcher(
   private val avatarLoaderProvider: ImageLoader.Provider<URL>,
-  private val tootPaginatorProvider: MastodonProfileTootPaginator.Provider
+  private val postPaginatorProvider: MastodonProfilePostPaginator.Provider
 ) : Fetcher<Profile>() {
   override suspend fun onFetch(key: String): Profile {
     return (Injector.from<CoreModule>().instanceProvider().provide() as SomeHttpInstance)
       .client
       .authenticateAndGet("/api/v1/accounts/$key")
       .body<MastodonAccount>()
-      .toProfile(avatarLoaderProvider, tootPaginatorProvider)
+      .toProfile(avatarLoaderProvider, postPaginatorProvider)
   }
 }

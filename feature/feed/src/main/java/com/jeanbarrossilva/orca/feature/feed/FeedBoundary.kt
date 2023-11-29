@@ -7,7 +7,7 @@ interface FeedBoundary {
 
   fun navigateTo(url: URL)
 
-  fun navigateToTootDetails(id: String)
+  fun navigateToPostDetails(id: String)
 
   fun navigateToComposer()
 }

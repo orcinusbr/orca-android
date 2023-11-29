@@ -3,8 +3,8 @@ package com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.style
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.feed.profile.toot.content.Content
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
+import com.jeanbarrossilva.orca.core.feed.profile.post.content.Content
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import com.jeanbarrossilva.orca.std.styledstring.style.Style
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Bold
@@ -20,9 +20,9 @@ import java.net.URL
  * @param id Automatically generated unique identifier.
  * @param parentID ID of the parent that owns the [StyledString] to which the [Style] belongs.
  * @param name Name of the [Style].
- * @param startIndex Indicates the first index in the [Toot]'s [content][Toot.content]'s
+ * @param startIndex Indicates the first index in the [Post]'s [content][Post.content]'s
  *   [text][Content.text] to which the [Style] has been applied.
- * @param endIndex Final position in the [Toot]'s [content][Toot.content]'s [text][Content.text]
+ * @param endIndex Final position in the [Post]'s [content][Post.content]'s [text][Content.text]
  *   that has the [Style].
  * @param url URL [String] to which the styled portion leads if it happens to be a [Link] or `null`
  *   if it isn't.

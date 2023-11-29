@@ -1,14 +1,14 @@
 package com.jeanbarrossilva.orca.core.feed
 
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
-import com.jeanbarrossilva.orca.core.feed.profile.toot.content.TermMuter
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
+import com.jeanbarrossilva.orca.core.feed.profile.post.content.TermMuter
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Provides a user's feed (the [Toot]s shown to them based on who they follow) through [onProvide].
+ * Provides a user's feed (the [Post]s shown to them based on who they follow) through [onProvide].
  */
 abstract class FeedProvider {
-  /** [TermMuter] by which [Toot]s with muted terms will be filtered out. */
+  /** [TermMuter] by which [Post]s with muted terms will be filtered out. */
   protected abstract val termMuter: TermMuter
 
   /**
@@ -23,12 +23,12 @@ abstract class FeedProvider {
    * Provides the feed of the user identified as [userID].
    *
    * @param userID ID of the user whose feed will be provided.
-   * @param page Index of the [Toot]s that compose the feed.
+   * @param page Index of the [Post]s that compose the feed.
    * @throws NonexistentUserException If no user with such [userID] exists.
    * @throws IndexOutOfBoundsException If the page is invalid.
    * @see ensurePageValidity
    */
-  suspend fun provide(userID: String, page: Int): Flow<List<Toot>> {
+  suspend fun provide(userID: String, page: Int): Flow<List<Post>> {
     ensureContainsUser(userID)
     ensurePageValidity(page)
     return onProvide(userID, page).filterEach { !termMuter.isMuted(it.content) }
@@ -38,9 +38,9 @@ abstract class FeedProvider {
    * Provides the feed of the user identified as [userID].
    *
    * @param userID ID of the user whose feed will be provided.
-   * @param page Index of the [Toot]s that compose the feed.
+   * @param page Index of the [Post]s that compose the feed.
    */
-  protected abstract suspend fun onProvide(userID: String, page: Int): Flow<List<Toot>>
+  protected abstract suspend fun onProvide(userID: String, page: Int): Flow<List<Post>>
 
   /**
    * Whether a user identified as [userID] exists.

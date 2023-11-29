@@ -9,7 +9,7 @@ import com.jeanbarrossilva.orca.std.injector.Injector
 internal class MainFeedModule(activity: OrcaActivity) :
   FeedModule(
     { Injector.from<CoreModule>().instanceProvider().provide().feedProvider },
-    { Injector.from<CoreModule>().instanceProvider().provide().tootProvider },
+    { Injector.from<CoreModule>().instanceProvider().provide().postProvider },
     { NavigatorFeedBoundary(activity, activity.navigator) },
     onBottomAreaAvailabilityChangeListener = { activity }
   )

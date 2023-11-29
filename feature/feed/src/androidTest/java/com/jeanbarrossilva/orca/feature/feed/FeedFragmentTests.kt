@@ -13,21 +13,21 @@ import androidx.compose.ui.test.performScrollTo
 import androidx.test.core.app.launchActivity
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Toot
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.samples
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.sample
-import com.jeanbarrossilva.orca.core.sample.test.feed.profile.toot.samples
 import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
 import com.jeanbarrossilva.orca.core.sample.test.instance.sample
 import com.jeanbarrossilva.orca.feature.feed.test.FeedActivity
 import com.jeanbarrossilva.orca.feature.feed.test.TestFeedModule
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.toot.stat.TOOT_PREVIEW_FAVORITE_STAT_TAG
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.stat.POST_PREVIEW_FAVORITE_STAT_TAG
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.performScrollToBottom
-import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.isTootPreview
-import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.onTootPreviews
-import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.time.Time4JTestRule
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.isPostPreview
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.onPostPreviews
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.time.Time4JTestRule
 import com.jeanbarrossilva.orca.std.injector.test.InjectorTestRule
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -41,19 +41,19 @@ internal class FeedFragmentTests {
   @get:Rule val composeRule = createEmptyComposeRule()
 
   @Test
-  fun keepsPreviousTootsWhenLoadingNextOnes() {
+  fun keepsPreviousPostsWhenLoadingNextOnes() {
     launchActivity<FeedActivity>(FeedActivity.getIntent(Profile.sample.id)).use {
       composeRule
         .onTimeline()
         .performScrollToBottom()
         .onChildren()
-        .filter(isTootPreview())
-        .assertCountEquals(Toot.samples.size)
+        .filter(isPostPreview())
+        .assertCountEquals(Post.samples.size)
     }
   }
 
   @Test
-  fun favoritesToot() {
+  fun favoritesPost() {
     runTest {
       Instance.sample.feedProvider
         .provide(Actor.Authenticated.sample.id, page = 0)
@@ -64,10 +64,10 @@ internal class FeedFragmentTests {
     }
     launchActivity<FeedActivity>(FeedActivity.getIntent(Profile.sample.id)).use {
       composeRule
-        .onTootPreviews()
+        .onPostPreviews()
         .onFirst()
         .onChildren()
-        .filterToOne(hasTestTag(TOOT_PREVIEW_FAVORITE_STAT_TAG))
+        .filterToOne(hasTestTag(POST_PREVIEW_FAVORITE_STAT_TAG))
         .performScrollTo()
         .performClick()
         .assertIsSelected()

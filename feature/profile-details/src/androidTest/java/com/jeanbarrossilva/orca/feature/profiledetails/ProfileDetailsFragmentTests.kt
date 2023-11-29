@@ -14,7 +14,7 @@ import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavig
 import com.jeanbarrossilva.orca.feature.profiledetails.test.ProfileDetailsActivity
 import com.jeanbarrossilva.orca.feature.profiledetails.test.TestProfileDetailsModule
 import com.jeanbarrossilva.orca.feature.profiledetails.test.isFollowingType
-import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.toot.time.Time4JTestRule
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.time.Time4JTestRule
 import com.jeanbarrossilva.orca.std.injector.test.InjectorTestRule
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule

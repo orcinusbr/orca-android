@@ -24,7 +24,7 @@ internal suspend fun <T : Follow> assertTogglingEquals(after: T, before: T) {
   val profile =
     FollowableProfile.createSample(
       instance.profileWriter,
-      instance.tootProvider,
+      instance.postProvider,
       follow = before,
       instance.imageLoaderProvider
     )

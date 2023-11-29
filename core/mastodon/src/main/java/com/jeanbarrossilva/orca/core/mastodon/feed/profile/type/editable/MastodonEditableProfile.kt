@@ -4,8 +4,8 @@ import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.type.editable.EditableProfile
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfile
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfileTootPaginator
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.toot.MastodonToot
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.MastodonPost
 import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
@@ -13,12 +13,12 @@ import java.net.URL
 /**
  * [MastodonProfile] that can be edited.
  *
- * @param tootPaginatorProvider [MastodonProfileTootPaginator.Provider] by which a
- *   [MastodonProfileTootPaginator] for paginating through the [MastodonProfile]'s [MastodonToot]s
+ * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
+ *   [MastodonProfilePostPaginator] for paginating through the [MastodonProfile]'s [MastodonPost]s
  *   will be provided.
  */
 internal data class MastodonEditableProfile(
-  private val tootPaginatorProvider: MastodonProfileTootPaginator.Provider,
+  private val postPaginatorProvider: MastodonProfilePostPaginator.Provider,
   override val id: String,
   override val account: Account,
   override val avatarLoader: SomeImageLoader,
@@ -29,7 +29,7 @@ internal data class MastodonEditableProfile(
   override val url: URL
 ) :
   Profile by MastodonProfile(
-    tootPaginatorProvider,
+    postPaginatorProvider,
     id,
     account,
     avatarLoader,

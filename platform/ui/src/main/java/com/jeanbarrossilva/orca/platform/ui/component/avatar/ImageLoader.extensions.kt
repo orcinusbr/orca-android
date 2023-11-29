@@ -1,7 +1,7 @@
 package com.jeanbarrossilva.orca.platform.ui.component.avatar
 
 import androidx.compose.runtime.Composable
-import com.jeanbarrossilva.orca.core.feed.profile.toot.Author
+import com.jeanbarrossilva.orca.core.feed.profile.post.Author
 import com.jeanbarrossilva.orca.core.sample.image.AuthorImageSource
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
