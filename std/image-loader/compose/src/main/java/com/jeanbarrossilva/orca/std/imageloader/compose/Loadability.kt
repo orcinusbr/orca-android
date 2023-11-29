@@ -53,8 +53,7 @@ internal sealed class Loadability {
 
   /**
    * [Image] currently doesn't have the ability to be loaded because of the environment that it's
-   * in: either because it is supposed to be loaded asynchronously but is currently being previewed,
-   * or its size hasn't been properly specified.
+   * in: it is supposed to be asynchronous but is currently being previewed.
    */
   private class None(override val loader: SomeImageLoader, override val size: IntSize) :
     Loadability() {
