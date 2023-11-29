@@ -64,37 +64,37 @@ import java.io.Serializable
 import java.net.URL
 import java.time.ZonedDateTime
 
-/** Tag that identifies a [SampleTootPreview]'s name for testing purposes. */
+/** Tag that identifies a [TootPreview]'s name for testing purposes. */
 internal const val TOOT_PREVIEW_NAME_TAG = "toot-preview-name"
 
-/** Tag that identifies [SampleTootPreview]'s metadata for testing purposes. */
+/** Tag that identifies [TootPreview]'s metadata for testing purposes. */
 internal const val TOOT_PREVIEW_METADATA_TAG = "toot-preview-metadata"
 
-/** Tag that identifies a [SampleTootPreview]'s body for testing purposes. */
+/** Tag that identifies a [TootPreview]'s body for testing purposes. */
 internal const val TOOT_PREVIEW_BODY_TAG = "toot-preview-body"
 
-/** Tag that identifies a [SampleTootPreview]'s comment count stat for testing purposes. */
+/** Tag that identifies a [TootPreview]'s comment count stat for testing purposes. */
 internal const val TOOT_PREVIEW_COMMENT_COUNT_STAT_TAG = "toot-preview-comments-stat"
 
-/** Tag that identifies a [SampleTootPreview]'s reblog count stat for testing purposes. */
+/** Tag that identifies a [TootPreview]'s reblog count stat for testing purposes. */
 internal const val TOOT_PREVIEW_REBLOG_COUNT_STAT_TAG = "toot-preview-reblogs-stat"
 
-/** Tag that identifies a [SampleTootPreview]'s reblog metadata for testing purposes. */
+/** Tag that identifies a [TootPreview]'s reblog metadata for testing purposes. */
 internal const val TOOT_PREVIEW_REBLOG_METADATA_TAG = "toot-preview-reblog-metadata"
 
-/** Tag that identifies a [SampleTootPreview]'s share action for testing purposes. */
+/** Tag that identifies a [TootPreview]'s share action for testing purposes. */
 internal const val TOOT_PREVIEW_SHARE_ACTION_TAG = "toot-preview-share-action"
 
-/** Tag that identifies a [SampleTootPreview] for testing purposes. */
+/** Tag that identifies a [TootPreview] for testing purposes. */
 const val TOOT_PREVIEW_TAG = "toot-preview"
 
-/** [Modifier] to be applied to a [SampleTootPreview]'s name. */
+/** [Modifier] to be applied to a [TootPreview]'s name. */
 private val nameModifier = Modifier.testTag(TOOT_PREVIEW_NAME_TAG)
 
-/** [Modifier] to be applied to [SampleTootPreview]'s metadata. */
+/** [Modifier] to be applied to [TootPreview]'s metadata. */
 private val metadataModifier = Modifier.testTag(TOOT_PREVIEW_METADATA_TAG)
 
-/** [Modifier] to be applied to a [SampleTootPreview]'s body. */
+/** [Modifier] to be applied to a [TootPreview]'s body. */
 private val bodyModifier = Modifier.testTag(TOOT_PREVIEW_BODY_TAG)
 
 /**
@@ -153,17 +153,17 @@ data class TootPreview(
   }
 
   companion object {
-    /** [SampleTootPreview] sample. */
+    /** [TootPreview] sample. */
     val sample
       @Composable get() = getSample(LocalContext.current, AutosTheme.colors)
 
-    /** [SampleTootPreview] samples. */
+    /** [TootPreview] samples. */
     val samples
       @Composable
       get() = Toot.createSamples(ImageLoader.Provider.createSample()).map { it.toTootPreview() }
 
     /**
-     * Gets a sample [SampleTootPreview].
+     * Gets a sample [TootPreview].
      *
      * @param context [Context] through which a sample [ImageLoader.Provider] will be created.
      * @param colors [Colors] by which the resulting [TootPreview]'s [text][TootPreview.text] can be
@@ -204,7 +204,7 @@ fun TootPreview(modifier: Modifier = Modifier) {
 /**
  * Preview of a [Toot].
  *
- * @param preview [SampleTootPreview] that holds the overall data to be displayed.
+ * @param preview [TootPreview] that holds the overall data to be displayed.
  * @param onHighlightClick Callback run whenever the [HeadlineCard] (if displayed) is clicked.
  * @param onFavorite Callback run whenever the [Toot] is requested to be favorited.
  * @param onReblog Callback run whenever the [Toot] is requested to be reblogged.
@@ -253,7 +253,6 @@ fun TootPreview(
     content = {
       Column(verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.medium.dp)) {
         Text(preview.text, bodyModifier)
-
         preview.highlight?.headline?.let { HeadlineCard(it, onHighlightClick) }
       }
     },
@@ -375,14 +374,14 @@ private fun TootPreview(
   }
 }
 
-/** Preview of a loading [SampleTootPreview]. */
+/** Preview of a loading [TootPreview]. */
 @Composable
 @MultiThemePreview
 private fun LoadingTootPreviewPreview() {
   AutosTheme { Surface(color = AutosTheme.colors.background.container.asColor) { TootPreview() } }
 }
 
-/** Preview of a loaded [SampleTootPreview] with disabled [Stat]s. */
+/** Preview of a loaded [TootPreview] with disabled [Stat]s. */
 @Composable
 @MultiThemePreview
 private fun LoadedTootPreviewWithDisabledStatsPreview() {
@@ -393,7 +392,7 @@ private fun LoadedTootPreviewWithDisabledStatsPreview() {
   }
 }
 
-/** Preview of a loaded [SampleTootPreview] with enabled [Stat]s. */
+/** Preview of a loaded [TootPreview] with enabled [Stat]s. */
 @Composable
 @MultiThemePreview
 private fun LoadedTootPreviewWithEnabledStatsPreview() {

@@ -10,10 +10,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
 /**
- * Converts this [Toot] into a [Flow] of [SampleTootPreview].
+ * Converts this [Toot] into a [Flow] of [TootPreview].
  *
- * @param colors [Colors] by which the emitted [SampleTootPreview]s' [SampleTootPreview.text] can be
- *   colored.
+ * @param colors [Colors] by which the emitted [TootPreview]s' [TootPreview.text] can be colored.
  */
 fun Toot.toTootPreviewFlow(colors: Colors): Flow<TootPreview> {
   return combine(
@@ -27,17 +26,16 @@ fun Toot.toTootPreviewFlow(colors: Colors): Flow<TootPreview> {
   }
 }
 
-/** Converts this [Toot] into a [SampleTootPreview]. */
+/** Converts this [Toot] into a [TootPreview]. */
 @Composable
 internal fun Toot.toTootPreview(): TootPreview {
   return toTootPreview(AutosTheme.colors)
 }
 
 /**
- * Converts this [Toot] into a [SampleTootPreview].
+ * Converts this [Toot] into a [TootPreview].
  *
- * @param colors [Colors] by which the resulting [SampleTootPreview]'s [SampleTootPreview.text] can
- *   be colored.
+ * @param colors [Colors] by which the resulting [TootPreview]'s [TootPreview.text] can be colored.
  */
 internal fun Toot.toTootPreview(colors: Colors): TootPreview {
   return TootPreview(
