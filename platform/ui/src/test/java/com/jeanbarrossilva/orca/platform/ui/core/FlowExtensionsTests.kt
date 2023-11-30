@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.feature.feed.viewmodel
+package com.jeanbarrossilva.orca.platform.ui.core
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
