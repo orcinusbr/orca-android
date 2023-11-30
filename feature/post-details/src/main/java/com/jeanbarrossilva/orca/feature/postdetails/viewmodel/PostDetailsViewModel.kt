@@ -6,21 +6,20 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jeanbarrossilva.loadable.flow.loadable
 import com.jeanbarrossilva.loadable.list.flow.listLoadable
-import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.PostProvider
 import com.jeanbarrossilva.orca.feature.postdetails.toPostDetailsFlow
+import com.jeanbarrossilva.orca.feature.postdetails.viewmodel.notifier.notifierFlow
+import com.jeanbarrossilva.orca.feature.postdetails.viewmodel.notifier.notify
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.toPostPreviewFlow
+import com.jeanbarrossilva.orca.platform.ui.core.await
 import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
 import com.jeanbarrossilva.orca.platform.ui.core.context.share
 import com.jeanbarrossilva.orca.platform.ui.core.flatMapEach
 import java.net.URL
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
@@ -31,8 +30,11 @@ private constructor(
   private val postProvider: PostProvider,
   private val id: String
 ) : ViewModel() {
-  private val postFlow =
-    MutableSharedFlow<Post>().apply { viewModelScope.launch { emitAll(providePostFlow()) } }
+  private val notifierFlow = notifierFlow()
+
+  @OptIn(ExperimentalCoroutinesApi::class)
+  private val postFlow = notifierFlow.flatMapLatest { postProvider.provide(id) }
+
   private val commentsIndexFlow = MutableStateFlow(0)
 
   private val colors
@@ -53,8 +55,8 @@ private constructor(
 
   fun requestRefresh(onRefresh: () -> Unit) {
     viewModelScope.launch {
-      val post = providePostFlow().first()
-      postFlow.emit(post)
+      notifierFlow.notify()
+      postFlow.await()
       onRefresh()
     }
   }
@@ -73,10 +75,6 @@ private constructor(
 
   fun loadCommentsAt(index: Int) {
     commentsIndexFlow.value = index
-  }
-
-  private suspend fun providePostFlow(): Flow<Post> {
-    return postProvider.provide(id)
   }
 
   companion object {

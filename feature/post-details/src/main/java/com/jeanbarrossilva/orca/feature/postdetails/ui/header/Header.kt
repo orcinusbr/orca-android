@@ -23,9 +23,9 @@ import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
 import com.jeanbarrossilva.orca.feature.postdetails.PostDetails
+import com.jeanbarrossilva.orca.feature.postdetails.R
 import com.jeanbarrossilva.orca.feature.postdetails.ui.header.stat.FavoriteStat
 import com.jeanbarrossilva.orca.feature.postdetails.ui.header.stat.ReblogStat
-import com.jeanbarrossilva.orca.feature.profiledetails.R
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme

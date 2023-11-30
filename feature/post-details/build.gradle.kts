@@ -9,7 +9,7 @@ plugins {
 android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.get()
-  namespace = namespaceFor("feature.profiledetails")
+  namespace = namespaceFor("feature.postdetails")
 }
 
 dependencies {
@@ -23,4 +23,10 @@ dependencies {
   implementation(libs.android.lifecycle.viewmodel)
   implementation(libs.loadable.list)
   implementation(libs.loadable.placeholder)
+
+  testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.coroutines.test)
+  testImplementation(libs.kotlin.reflect)
+  testImplementation(libs.kotlin.test)
+  testImplementation(libs.turbine)
 }

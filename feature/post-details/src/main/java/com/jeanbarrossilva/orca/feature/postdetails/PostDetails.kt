@@ -22,7 +22,6 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
 import com.jeanbarrossilva.orca.feature.postdetails.ui.header.Header
 import com.jeanbarrossilva.orca.feature.postdetails.ui.header.formatted
 import com.jeanbarrossilva.orca.feature.postdetails.viewmodel.PostDetailsViewModel
-import com.jeanbarrossilva.orca.feature.profiledetails.R
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBarWithBackNavigation
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
