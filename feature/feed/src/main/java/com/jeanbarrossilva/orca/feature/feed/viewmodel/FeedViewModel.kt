@@ -19,9 +19,9 @@ import java.net.URL
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.runningFold
 import kotlinx.coroutines.launch
 
@@ -40,10 +40,8 @@ internal class FeedViewModel(
   @OptIn(ExperimentalCoroutinesApi::class)
   val postPreviewsLoadableFlow =
     indexFlow
-      .filterNotNull()
-      .flatMapLatest { feedProvider.provide(userID, it) }
-      .runningFold<_, List<Post>?>(null) { accumulator, posts -> accumulator.orEmpty() + posts }
-      .filterNotNull()
+      .flatMapLatest { it?.let { index -> feedProvider.provide(userID, index) } ?: flowOf(null) }
+      .runningFold(emptyList<Post>()) { accumulator, posts -> accumulator + posts.orEmpty() }
       .flatMapEach(selector = PostPreview::id) { it.toPostPreviewFlow(colors) }
       .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
 

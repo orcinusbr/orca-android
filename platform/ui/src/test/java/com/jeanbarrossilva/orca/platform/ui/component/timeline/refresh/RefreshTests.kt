@@ -1,4 +1,4 @@
-package com.jeanbarrossilva.orca.platform.ui.component.timeline
+package com.jeanbarrossilva.orca.platform.ui.component.timeline.refresh
 
 import androidx.compose.ui.unit.Dp
 import org.junit.Test

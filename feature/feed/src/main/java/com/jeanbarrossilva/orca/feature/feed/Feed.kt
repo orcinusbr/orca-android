@@ -30,9 +30,9 @@ import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabili
 import com.jeanbarrossilva.orca.platform.autos.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.Refresh
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.refresh.Refresh
 import java.net.URL
 
 const val FEED_FLOATING_ACTION_BUTTON_TAG = "feed-floating-action-button"

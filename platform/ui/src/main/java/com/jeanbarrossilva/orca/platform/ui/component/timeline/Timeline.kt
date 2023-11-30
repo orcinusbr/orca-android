@@ -38,6 +38,7 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.list.ListLoadable
@@ -51,6 +52,8 @@ import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.time.RelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.time.rememberRelativeTimeProvider
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.refresh.Refresh
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.refresh.isInProgress
 import java.net.URL
 
 /** Tag that identifies an [EmptyTimelineMessage] for testing purposes. */
@@ -58,6 +61,10 @@ internal const val EMPTY_TIMELINE_MESSAGE_TAG = "empty-timeline-tag"
 
 /** Tag that identifies dividers between [PostPreview]s in a [Timeline] for testing purposes. */
 internal const val TIMELINE_DIVIDER_TAG = "timeline-divider"
+
+/** Tag that identifies a [Timeline]'s refresh indicator for testing purposes. */
+@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP_PREFIX)
+const val TIMELINE_REFRESH_INDICATOR = "timeline-refresh-indicator"
 
 /** Tag that identifies a [Timeline] for testing purposes. */
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP_PREFIX) const val TIMELINE_TAG = "timeline"
@@ -284,7 +291,10 @@ fun Timeline(
     PullRefreshIndicator(
       refresh.isInProgress,
       pullRefreshState,
-      Modifier.offset(y = refresh.indicatorOffset).align(Alignment.TopCenter)
+      Modifier.offset(y = refresh.indicatorOffset)
+        .align(Alignment.TopCenter)
+        .testTag(TIMELINE_REFRESH_INDICATOR)
+        .semantics { isInProgress = refresh.isInProgress }
     )
   }
 }

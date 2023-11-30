@@ -19,9 +19,12 @@ import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.refresh.Refresh
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onRefreshIndicator
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.performScrollToBottom
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.time.Time4JTestRule
+import kotlin.time.Duration.Companion.days
 import org.junit.Rule
 import org.junit.Test
 
@@ -36,6 +39,13 @@ internal class TimelineTests {
   fun showsEmptyMessageWhenListLoadableIsEmpty() {
     composeRule.setContent { AutosTheme { Timeline(ListLoadable.Empty()) } }
     composeRule.onNodeWithTag(EMPTY_TIMELINE_MESSAGE_TAG).assertIsDisplayed()
+  }
+
+  @Test
+  fun showsRefreshIndicatorForeverWhenRefreshIsIndefinite() {
+    composeRule.setContent { Timeline(onNext = {}, refresh = Refresh.Indefinite) {} }
+    composeRule.mainClock.advanceTimeBy(256.days.inWholeMilliseconds)
+    composeRule.onRefreshIndicator().assertIsDisplayed()
   }
 
   @Test

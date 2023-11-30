@@ -1,9 +1,10 @@
-package com.jeanbarrossilva.orca.platform.ui.component.timeline
+package com.jeanbarrossilva.orca.platform.ui.component.timeline.refresh
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.isSpecified
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 
 /**
  * Swipe-to-refresh behavior configuration for a [Timeline].
@@ -34,5 +35,12 @@ data class Refresh(val isInProgress: Boolean, val indicatorOffset: Dp, val liste
   companion object {
     /** Never-active, no-op [Refresh]. */
     internal val Disabled = Refresh(isInProgress = false, indicatorOffset = 0.dp) {}
+
+    /**
+     * [Refresh] that remains active indefinitely.
+     *
+     * @see isInProgress
+     */
+    val Indefinite = Refresh(isInProgress = true, indicatorOffset = 0.dp) {}
   }
 }
