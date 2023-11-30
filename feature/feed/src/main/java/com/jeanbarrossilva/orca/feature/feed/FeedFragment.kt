@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
-import com.jeanbarrossilva.orca.feature.feed.viewmodel.FeedViewModel
 import com.jeanbarrossilva.orca.platform.ui.core.argument
 import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableFragment
 import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider

@@ -1,9 +1,12 @@
 package com.jeanbarrossilva.orca.app.demo
 
+import androidx.compose.ui.test.TouchInjectionScope
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeDown
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
@@ -15,7 +18,10 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Highlig
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.content.highlight.sample
 import com.jeanbarrossilva.orca.feature.composer.ComposerActivity
 import com.jeanbarrossilva.orca.feature.feed.FEED_FLOATING_ACTION_BUTTON_TAG
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onRefreshIndicator
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.headline.onHeadlineCards
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.refresh.assertIsNotInProgress
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.RuleChain
@@ -25,6 +31,12 @@ internal class FeedTests {
   private val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
 
   @get:Rule val ruleChain: RuleChain? = RuleChain.outerRule(intentsRule).around(composeRule)
+
+  @Test
+  fun refreshes() {
+    composeRule.onTimeline().performTouchInput(TouchInjectionScope::swipeDown)
+    composeRule.onRefreshIndicator().assertIsNotInProgress()
+  }
 
   @Test
   fun navigatesToPostHighlight() {

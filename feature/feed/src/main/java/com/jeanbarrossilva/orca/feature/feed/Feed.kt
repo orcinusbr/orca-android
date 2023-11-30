@@ -16,7 +16,6 @@ import androidx.compose.ui.res.stringResource
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
-import com.jeanbarrossilva.orca.feature.feed.viewmodel.FeedViewModel
 import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
@@ -30,9 +29,9 @@ import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabili
 import com.jeanbarrossilva.orca.platform.autos.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.Refresh
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.refresh.Refresh
 import java.net.URL
 
 const val FEED_FLOATING_ACTION_BUTTON_TAG = "feed-floating-action-button"

@@ -44,5 +44,6 @@ dependencies {
   implementation(libs.time4j)
 
   testImplementation(libs.assertk)
-  testImplementation(libs.junit)
+  testImplementation(libs.kotlin.coroutines.test)
+  testImplementation(libs.kotlin.test)
 }

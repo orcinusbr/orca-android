@@ -22,7 +22,6 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
 import com.jeanbarrossilva.orca.feature.postdetails.ui.header.Header
 import com.jeanbarrossilva.orca.feature.postdetails.ui.header.formatted
 import com.jeanbarrossilva.orca.feature.postdetails.viewmodel.PostDetailsViewModel
-import com.jeanbarrossilva.orca.feature.profiledetails.R
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBarWithBackNavigation
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
@@ -33,10 +32,10 @@ import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.Refresh
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.refresh.Refresh
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import java.io.Serializable
