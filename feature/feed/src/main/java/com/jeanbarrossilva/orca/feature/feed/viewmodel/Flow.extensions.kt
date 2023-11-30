@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.first
  */
 internal suspend fun <T> Flow<T>.await(): T {
   return if (this is StateFlow<T>) {
-    value.let { existing -> first { emitted -> emitted != existing } }
+    value.let { previous -> first { current -> current != previous } }
   } else {
     first()
   }
