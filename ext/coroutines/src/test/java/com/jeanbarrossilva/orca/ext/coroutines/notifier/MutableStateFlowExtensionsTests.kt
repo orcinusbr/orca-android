@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.postdetails.viewmodel.notifier
+package com.jeanbarrossilva.orca.ext.coroutines.notifier
 
 import app.cash.turbine.test
 import assertk.assertThat

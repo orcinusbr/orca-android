@@ -15,7 +15,7 @@
 
 @file:JvmName("MutableStateFlowExtensions")
 
-package com.jeanbarrossilva.orca.feature.postdetails.viewmodel.notifier
+package com.jeanbarrossilva.orca.ext.coroutines.notifier
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,13 +39,13 @@ import kotlinx.coroutines.flow.StateFlow
  * ```
  *
  * In this case, `countFlow` emits an incremented version of its current value at each notification
- * `notifierFlow` sends, and the result of its collection at the end is the printing of "0", "1",
- * "2" and "3".
+ * `notifierFlow` sends, and the result of its collection at the end is the sequential printing of
+ * "0", "1", "2" and "3".
  *
  * @see Notifier.next
  * @see Flow.collect
  */
-internal fun notifierFlow(): MutableStateFlow<Notifier> {
+fun notifierFlow(): MutableStateFlow<Notifier> {
   return MutableStateFlow(Notifier.initial)
 }
 
@@ -55,6 +55,6 @@ internal fun notifierFlow(): MutableStateFlow<Notifier> {
  *
  * @see notifierFlow
  */
-internal fun MutableStateFlow<Notifier>.notify() {
+fun MutableStateFlow<Notifier>.notify() {
   value = value.next()
 }

@@ -56,3 +56,5 @@ include(
   ":std:injector-test",
   ":std:styled-string"
 )
+
+include(":ext:coroutines")
