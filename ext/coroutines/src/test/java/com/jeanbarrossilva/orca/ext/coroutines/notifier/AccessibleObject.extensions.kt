@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.postdetails.viewmodel.notifier.test
+package com.jeanbarrossilva.orca.ext.coroutines.notifier
 
 import kotlin.reflect.KCallable
 import kotlin.reflect.jvm.isAccessible

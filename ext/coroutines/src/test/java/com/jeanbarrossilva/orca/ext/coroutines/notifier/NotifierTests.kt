@@ -13,20 +13,26 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.postdetails.viewmodel.notifier.test
+package com.jeanbarrossilva.orca.ext.coroutines.notifier
 
-import kotlin.reflect.KClass
-import kotlin.reflect.KFunction
+import assertk.assertThat
+import assertk.assertions.isNotEqualTo
+import assertk.assertions.isSameAs
+import kotlin.test.Test
 
-/**
- * Returns the [KFunction] whose parameters' [KClass]es match the given ones.
- *
- * @param T Value returned by each of the [KFunction]s.
- */
-internal operator fun <T> Collection<KFunction<T>>.get(
-  vararg parameterClasses: KClass<*>
-): KFunction<T> {
-  return first { function ->
-    function.parameters.map { parameter -> parameter.type.classifier } == parameterClasses.toList()
+internal class NotifierTests {
+  @Test(expected = IllegalArgumentException::class)
+  fun throwsWhenGettingSuccessorOfUnknownNotifier() {
+    Notifier::class.constructors[String::class].access { call("Notifier.unknown") }.next()
+  }
+
+  @Test
+  fun subsequentIsSuccessorOfInitial() {
+    assertThat(Notifier.initial.next()).isNotEqualTo(Notifier.initial)
+  }
+
+  @Test
+  fun initialIsSuccessorOfSubsequent() {
+    assertThat(Notifier.initial.next().next()).isSameAs(Notifier.initial)
   }
 }

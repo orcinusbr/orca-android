@@ -32,16 +32,11 @@ dependencies {
 
   implementation(project(":core"))
   implementation(project(":core:sample"))
+  implementation(project(":ext:coroutines"))
   implementation(project(":platform:autos"))
   implementation(project(":platform:ui"))
   implementation(project(":std:injector"))
   implementation(libs.android.lifecycle.viewmodel)
   implementation(libs.loadable.list)
   implementation(libs.loadable.placeholder)
-
-  testImplementation(libs.assertk)
-  testImplementation(libs.kotlin.coroutines.test)
-  testImplementation(libs.kotlin.reflect)
-  testImplementation(libs.kotlin.test)
-  testImplementation(libs.turbine)
 }
