@@ -20,7 +20,7 @@ internal class MutableStateFlowExtensionsTests {
       flow.test {
         awaitItem()
         flow.notify()
-        assertThat(awaitItem()).isSameAs(Notifier.subsequent())
+        assertThat(awaitItem()).isSameAs(Notifier.initial.next())
       }
     }
   }

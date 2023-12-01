@@ -11,9 +11,9 @@ import kotlinx.coroutines.flow.StateFlow
  * being collected by other [Flow]s, letting them know when it's time for them to emit new values.
  *
  * Notifications can be sent by it through [notify], which will simply emit a [Notifier] that's
- * different from the one that's currently being held. Because a [StateFlow] doesn't consecutively
- * emit values that are equal, there are two existing [Notifier] instances: [Notifier.initial] and
- * [Notifier.subsequent]. They're emitted interchangeably at each call to that method.
+ * different from the one currently being held. Because a [StateFlow] doesn't consecutively emit
+ * values that are equal, there are two existing [Notifier] instances: [Notifier.initial] and
+ * [Notifier.subsequent]; they're emitted interchangeably at each call to that method.
  *
  * Usage example:
  * ```kotlin
@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.StateFlow
  * `notifierFlow` sends, and the result of its collection at the end is the printing of "0", "1",
  * "2" and "3".
  *
+ * @see Notifier.next
  * @see Flow.collect
  */
 internal fun notifierFlow(): MutableStateFlow<Notifier> {
@@ -40,5 +41,5 @@ internal fun notifierFlow(): MutableStateFlow<Notifier> {
  * @see notifierFlow
  */
 internal fun MutableStateFlow<Notifier>.notify() {
-  value = Notifier.after(value)
+  value = value.next()
 }

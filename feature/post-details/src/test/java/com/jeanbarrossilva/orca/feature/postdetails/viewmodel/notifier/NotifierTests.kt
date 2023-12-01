@@ -1,6 +1,7 @@
 package com.jeanbarrossilva.orca.feature.postdetails.viewmodel.notifier
 
 import assertk.assertThat
+import assertk.assertions.isNotEqualTo
 import assertk.assertions.isSameAs
 import com.jeanbarrossilva.orca.feature.postdetails.viewmodel.notifier.test.access
 import com.jeanbarrossilva.orca.feature.postdetails.viewmodel.notifier.test.get
@@ -9,17 +10,16 @@ import kotlin.test.Test
 internal class NotifierTests {
   @Test(expected = IllegalArgumentException::class)
   fun throwsWhenGettingSuccessorOfUnknownNotifier() {
-    val unknown = Notifier::class.constructors[String::class].access { call("Notifier.unknown") }
-    Notifier.after(unknown)
+    Notifier::class.constructors[String::class].access { call("Notifier.unknown") }.next()
   }
 
   @Test
   fun subsequentIsSuccessorOfInitial() {
-    assertThat(Notifier.after(Notifier.initial)).isSameAs(Notifier.subsequent())
+    assertThat(Notifier.initial.next()).isNotEqualTo(Notifier.initial)
   }
 
   @Test
   fun initialIsSuccessorOfSubsequent() {
-    assertThat(Notifier.after(Notifier.subsequent())).isSameAs(Notifier.initial)
+    assertThat(Notifier.initial.next().next()).isSameAs(Notifier.initial)
   }
 }
