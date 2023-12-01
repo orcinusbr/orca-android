@@ -21,12 +21,14 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jeanbarrossilva.loadable.flow.loadable
 import com.jeanbarrossilva.loadable.list.flow.listLoadable
-import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.ProfileProvider
 import com.jeanbarrossilva.orca.core.feed.profile.post.PostProvider
+import com.jeanbarrossilva.orca.ext.coroutines.notifier.notifierFlow
+import com.jeanbarrossilva.orca.ext.coroutines.notifier.notify
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.toPostPreviewFlow
+import com.jeanbarrossilva.orca.platform.ui.core.await
 import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
 import com.jeanbarrossilva.orca.platform.ui.core.context.share
 import com.jeanbarrossilva.orca.platform.ui.core.flatMapEach
@@ -35,13 +37,12 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
@@ -55,7 +56,12 @@ private constructor(
   private val id: String
 ) : ViewModel() {
   private val coroutineScope = viewModelScope + coroutineDispatcher
-  private val profileFlow = MutableSharedFlow<Profile>()
+  private val profileNotifierFlow = notifierFlow()
+
+  @OptIn(ExperimentalCoroutinesApi::class)
+  private val profileFlow =
+    profileNotifierFlow.flatMapLatest { profileProvider.provide(id).filterNotNull() }
+
   private val postsIndexFlow = MutableStateFlow(0)
 
   private val colors
@@ -73,13 +79,10 @@ private constructor(
       .flatMapConcat(::getPostPreviewsAt)
       .listLoadable(coroutineScope, SharingStarted.WhileSubscribed())
 
-  init {
-    requestRefresh()
-  }
-
   fun requestRefresh(onRefresh: () -> Unit = {}) {
     viewModelScope.launch {
-      profileFlow.emitAll(provideProfileFlow())
+      profileNotifierFlow.notify()
+      profileFlow.await()
       onRefresh()
     }
   }
@@ -98,10 +101,6 @@ private constructor(
 
   fun loadPostsAt(index: Int) {
     postsIndexFlow.value = index
-  }
-
-  private suspend fun provideProfileFlow(): Flow<Profile> {
-    return profileProvider.provide(id).filterNotNull()
   }
 
   @OptIn(ExperimentalCoroutinesApi::class)
