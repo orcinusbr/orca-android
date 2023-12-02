@@ -20,6 +20,7 @@ import com.jeanbarrossilva.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.repost.Repost
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.toFigure
 import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -60,7 +61,7 @@ internal fun Post.toPostPreview(colors: Colors): PostPreview {
     author.account,
     if (this is Repost) reposter.name else null,
     content.text.toAnnotatedString(colors),
-    content.highlight,
+    content.highlight?.toFigure(),
     publicationDateTime,
     comment.count,
     favorite.isEnabled,

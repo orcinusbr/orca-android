@@ -56,7 +56,6 @@ import com.jeanbarrossilva.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.post.Author
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
-import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Highlight
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSamples
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
@@ -68,6 +67,7 @@ import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.SmallAvatar
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.Figure
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.headline.HeadlineCard
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.stat.FavoriteStat
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.stat.ReblogStat
@@ -121,7 +121,7 @@ private val bodyModifier = Modifier.testTag(POST_PREVIEW_BODY_TAG)
  * @param account [Account] of the author.
  * @param rebloggerName Name of the [Author] that reblogged the [Post].
  * @param text Content written by the author.
- * @param highlight [Highlight] from the [text].
+ * @param figure [Figure] that can be interacted with.
  * @param publicationDateTime Zoned moment in time in which it was published.
  * @param commentCount Amount of comments.
  * @param isFavorite Whether it's marked as favorite.
@@ -131,14 +131,15 @@ private val bodyModifier = Modifier.testTag(POST_PREVIEW_BODY_TAG)
  * @param url [URL] that leads to the [Post].
  */
 @Immutable
-data class PostPreview(
+data class PostPreview
+internal constructor(
   val id: String,
   val avatarLoader: SomeImageLoader,
   val name: String,
   private val account: Account,
   val rebloggerName: String?,
   val text: AnnotatedString,
-  val highlight: Highlight?,
+  val figure: Figure?,
   private val publicationDateTime: ZonedDateTime,
   private val commentCount: Int,
   val isFavorite: Boolean,
@@ -268,7 +269,7 @@ fun PostPreview(
     content = {
       Column(verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.medium.dp)) {
         Text(preview.text, bodyModifier)
-        preview.highlight?.headline?.let { HeadlineCard(it, onHighlightClick) }
+        preview.figure?.headline?.let { HeadlineCard(it, onHighlightClick) }
       }
     },
     stats = {

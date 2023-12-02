@@ -58,6 +58,7 @@ dependencies {
   implementation(libs.loadable.placeholder.test)
   implementation(libs.time4j)
 
+  testImplementation(project(":core:sample-test"))
   testImplementation(libs.assertk)
   testImplementation(libs.kotlin.coroutines.test)
   testImplementation(libs.kotlin.test)

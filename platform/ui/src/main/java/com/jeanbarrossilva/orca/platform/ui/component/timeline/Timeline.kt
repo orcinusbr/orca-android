@@ -102,7 +102,7 @@ private enum class TimelineContentType {
  * Displays [PostPreview]s in a paginated way.
  *
  * @param postPreviewsLoadable [ListLoadable] of [PostPreview]s to be lazily shown.
- * @param onHighlightClick Callback run whenever the [PostPreview]'s [PostPreview.highlight] is
+ * @param onHighlightClick Callback run whenever the [PostPreview]'s [PostPreview.figure] is
  *   clicked.
  * @param onFavorite Callback run whenever the [PostPreview] associated to the given ID requests the
  *   [Post] to have its "favorited" state toggled.
@@ -182,7 +182,7 @@ fun Timeline(
  * [LazyColumn] for displaying paged [PostPreview]s.
  *
  * @param postPreviews [PostPreview]s to be lazily shown.
- * @param onHighlightClick Callback run whenever the [PostPreview]'s [PostPreview.highlight] is
+ * @param onHighlightClick Callback run whenever the [PostPreview]'s [PostPreview.figure] is
  *   clicked.
  * @param onFavorite Callback run whenever the [PostPreview] associated to the given ID requests the
  *   [Post] to have its "favorited" state toggled.
@@ -231,7 +231,7 @@ fun Timeline(
 
         PostPreview(
           preview,
-          onHighlightClick = { preview.highlight?.url?.run(onHighlightClick) },
+          onHighlightClick = { preview.figure?.url?.run(onHighlightClick) },
           onFavorite = { onFavorite(preview.id) },
           onRepost = { onRepost(preview.id) },
           onShare = { onShare(preview.url) },
