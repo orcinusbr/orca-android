@@ -77,7 +77,7 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 android-activity = "1.7.2"
 android-compose = "1.5.3"
 android-fragment = "1.6.1"
-android-plugin = "8.1.4"
+android-plugin = "8.2.0"
 android-room = "2.5.2"
 android-sdk-min = "28"
 android-sdk-target = "34"
