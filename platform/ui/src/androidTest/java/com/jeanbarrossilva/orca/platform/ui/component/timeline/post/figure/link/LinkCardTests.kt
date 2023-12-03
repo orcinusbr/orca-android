@@ -13,24 +13,24 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.headline
+package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.link
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performClick
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
-import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.headline.onHeadlineCard
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.figure.link.onLinkCard
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 
-internal class HeadlineCardTests {
+internal class LinkCardTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
   fun runsCallbackWhenClicked() {
     var hasCallbackBeenRun = false
-    composeRule.setContent { AutosTheme { HeadlineCard(onClick = { hasCallbackBeenRun = true }) } }
-    composeRule.onHeadlineCard().performClick()
+    composeRule.setContent { AutosTheme { LinkCard(onClick = { hasCallbackBeenRun = true }) } }
+    composeRule.onLinkCard().performClick()
     assertTrue(hasCallbackBeenRun)
   }
 }

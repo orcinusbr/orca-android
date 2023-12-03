@@ -53,7 +53,8 @@ private constructor(
   private val profileProvider: ProfileProvider,
   private val postProvider: PostProvider,
   coroutineDispatcher: CoroutineDispatcher,
-  private val id: String
+  private val id: String,
+  private val onLinkClick: (URL) -> Unit
 ) : ViewModel() {
   private val coroutineScope = viewModelScope + coroutineDispatcher
   private val profileNotifierFlow = notifierFlow()
@@ -106,7 +107,7 @@ private constructor(
   @OptIn(ExperimentalCoroutinesApi::class)
   private fun getPostPreviewsAt(index: Int): Flow<List<PostPreview>> {
     return profileFlow.filterNotNull().flatMapConcat { profile ->
-      profile.getPosts(index).flatMapEach { post -> post.toPostPreviewFlow(colors) }
+      profile.getPosts(index).flatMapEach { post -> post.toPostPreviewFlow(colors, onLinkClick) }
     }
   }
 
@@ -115,7 +116,8 @@ private constructor(
       contextProvider: ContextProvider,
       profileProvider: ProfileProvider,
       postProvider: PostProvider,
-      id: String
+      id: String,
+      onLinkClick: (URL) -> Unit
     ): ViewModelProvider.Factory {
       return viewModelFactory {
         addInitializer(ProfileDetailsViewModel::class) {
@@ -124,7 +126,8 @@ private constructor(
             profileProvider,
             postProvider,
             Dispatchers.Main.immediate,
-            id
+            id,
+            onLinkClick
           )
         }
       }

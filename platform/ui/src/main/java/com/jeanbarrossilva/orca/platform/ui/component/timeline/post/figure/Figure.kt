@@ -15,14 +15,40 @@
 
 package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.ui.Modifier
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Headline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
-import java.net.URL
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.link.LinkCard
 
-/**
- * Interactive portion of a [PostPreview].
- *
- * @param headline [Headline] with the main information about the [url].
- * @param url [URL] that leads to the external site.
- */
-data class Figure internal constructor(val headline: Headline, val url: URL)
+/** Interactive portion of a [PostPreview]. */
+@Immutable
+sealed class Figure {
+  /**
+   * [Figure] that displays the data provided by the [headline].
+   *
+   * @param headline [Headline] with the main information about a mentioned link.
+   * @param onClick Lambda to be run whenever the [Content] gets clicked.
+   */
+  internal data class Link(private val headline: Headline, private val onClick: () -> Unit) :
+    Figure() {
+    @Composable
+    override fun Content(modifier: Modifier) {
+      LinkCard(headline, onClick, modifier)
+    }
+  }
+
+  /**
+   * UI content to displayed by this [Figure].
+   *
+   * @param modifier [Modifier] to be applied to the underlying [Composable].
+   */
+  @Composable internal abstract fun Content(modifier: Modifier)
+
+  /** UI content to displayed by this [Figure]. */
+  @Composable
+  internal fun Content() {
+    Content(Modifier)
+  }
+}

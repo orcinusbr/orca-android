@@ -17,7 +17,7 @@
 <resources>
     <string name="platform_ui_avatar">%s\'s avatar</string>
     <string name="platform_ui_favorite_stat">Favorite</string>
-    <string name="platform_ui_headline_card_cover">Cover of "%s"</string>
+    <string name="platform_ui_link_card_cover">Cover of "%s"</string>
     <string name="platform_ui_post_preview_comments">Comments</string>
     <string name="platform_ui_post_preview_reposted">Reposted by %s</string>
     <string name="platform_ui_post_preview_share">Share</string>

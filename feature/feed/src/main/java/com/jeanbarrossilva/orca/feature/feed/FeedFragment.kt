@@ -33,7 +33,8 @@ class FeedFragment internal constructor() : ComposableFragment(), ContextProvide
         contextProvider = this,
         module.feedProvider(),
         module.postProvider(),
-        userID
+        userID,
+        onLinkClick = module.boundary()::navigateTo
       )
     }
 

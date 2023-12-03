@@ -158,7 +158,6 @@ private fun Feed(
   ) {
     Timeline(
       postPreviewsLoadable,
-      onHighlightClick,
       onFavorite,
       onRepost,
       onShare,

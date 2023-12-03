@@ -17,7 +17,7 @@
 <resources>
     <string name="platform_ui_avatar">Foto de perfil de %s</string>
     <string name="platform_ui_favorite_stat">Curtir</string>
-    <string name="platform_ui_headline_card_cover">Capa de %s</string>
+    <string name="platform_ui_link_card_cover">Capa de %s</string>
     <string name="platform_ui_post_preview_comments">Comentários</string>
     <string name="platform_ui_post_preview_reposted">Repostado por %s</string>
     <string name="platform_ui_post_preview_share">Compartilhar</string>

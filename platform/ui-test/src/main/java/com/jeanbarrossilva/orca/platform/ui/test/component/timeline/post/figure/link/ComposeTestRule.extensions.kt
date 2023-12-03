@@ -13,22 +13,22 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.headline
+package com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.figure.link
 
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionCollection
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.headline.HEADLINE_CARD_TAG
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.headline.HeadlineCard
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.link.LINK_CARD_TAG
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.link.LinkCard
 
-/** [SemanticsNodeInteraction] of a [HeadlineCard]. */
-fun ComposeTestRule.onHeadlineCard(): SemanticsNodeInteraction {
-  return onNodeWithTag(HEADLINE_CARD_TAG)
+/** [SemanticsNodeInteraction] of a [LinkCard]. */
+fun ComposeTestRule.onLinkCard(): SemanticsNodeInteraction {
+  return onNodeWithTag(LINK_CARD_TAG)
 }
 
-/** [SemanticsNodeInteractionCollection] of [HeadlineCard]s. */
-fun ComposeTestRule.onHeadlineCards(): SemanticsNodeInteractionCollection {
-  return onAllNodesWithTag(HEADLINE_CARD_TAG)
+/** [SemanticsNodeInteractionCollection] of [LinkCard]s. */
+fun ComposeTestRule.onLinkCards(): SemanticsNodeInteractionCollection {
+  return onAllNodesWithTag(LINK_CARD_TAG)
 }

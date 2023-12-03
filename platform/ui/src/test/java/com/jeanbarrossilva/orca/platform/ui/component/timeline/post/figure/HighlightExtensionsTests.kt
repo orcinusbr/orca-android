@@ -26,10 +26,12 @@ import kotlin.test.Test
 
 internal class HighlightExtensionsTests {
   @Test
-  fun convertsIntoFigure() {
+  fun convertsIntoLink() {
     val coverLoader = TestSampleImageLoader.Provider.provide(CoverImageSource.Default)
     val headline = Headline("Title", "Subtitle", coverLoader)
     val url = URL("https://orca.jeanbarrossilva.com")
-    assertThat(Highlight(headline, url).toFigure()).isEqualTo(Figure(headline, url))
+    val onClick = {}
+    assertThat(Highlight(headline, url).toLink(onClick))
+      .isEqualTo(Figure.Link(headline, url, onClick))
   }
 }

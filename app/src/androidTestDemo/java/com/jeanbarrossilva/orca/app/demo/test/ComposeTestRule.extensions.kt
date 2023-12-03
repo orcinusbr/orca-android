@@ -27,14 +27,14 @@ import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
 import com.jeanbarrossilva.orca.core.sample.test.instance.sample
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.headline.HeadlineCard
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.link.LinkCard
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline
 import kotlin.properties.Delegates
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 
-/** Scrolls to the first [PostPreview] containing a [HeadlineCard]. */
-internal fun ComposeTestRule.performScrollToPostPreviewWithHeadlineCard() {
+/** Scrolls to the first [PostPreview] containing a [LinkCard]. */
+internal fun ComposeTestRule.performScrollToPostPreviewWithLinkCard() {
   var index by Delegates.notNull<Int>()
   runTest {
     index =

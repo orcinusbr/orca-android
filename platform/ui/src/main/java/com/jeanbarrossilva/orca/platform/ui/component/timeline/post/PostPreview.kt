@@ -68,7 +68,6 @@ import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.SmallAvatar
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.Figure
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.headline.HeadlineCard
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.stat.FavoriteStat
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.stat.ReblogStat
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.time.RelativeTimeProvider
@@ -176,7 +175,10 @@ internal constructor(
     /** [PostPreview] samples. */
     val samples
       @Composable
-      get() = Post.createSamples(ImageLoader.Provider.createSample()).map { it.toPostPreview() }
+      get() =
+        Post.createSamples(ImageLoader.Provider.createSample()).map {
+          it.toPostPreview(onLinkClick = {})
+        }
 
     /**
      * Gets a sample [PostPreview].
@@ -186,7 +188,8 @@ internal constructor(
      *   colored.
      */
     fun getSample(context: Context, colors: Colors): PostPreview {
-      return Post.createSample(ImageLoader.Provider.createSample(context)).toPostPreview(colors)
+      return Post.createSample(ImageLoader.Provider.createSample(context))
+        .toPostPreview(colors, onLinkClick = {})
     }
   }
 }
@@ -221,7 +224,6 @@ fun PostPreview(modifier: Modifier = Modifier) {
  * Preview of a [Post].
  *
  * @param preview [PostPreview] that holds the overall data to be displayed.
- * @param onHighlightClick Callback run whenever the [HeadlineCard] (if displayed) is clicked.
  * @param onFavorite Callback run whenever the [Post] is requested to be favorited.
  * @param onRepost Callback run whenever the [Post] is requested to be reblogged.
  * @param onShare Callback run whenever the [Post] is requested to be externally shared.
@@ -233,7 +235,6 @@ fun PostPreview(modifier: Modifier = Modifier) {
 @Composable
 fun PostPreview(
   preview: PostPreview,
-  onHighlightClick: () -> Unit,
   onFavorite: () -> Unit,
   onRepost: () -> Unit,
   onShare: () -> Unit,
@@ -269,7 +270,7 @@ fun PostPreview(
     content = {
       Column(verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.medium.dp)) {
         Text(preview.text, bodyModifier)
-        preview.figure?.headline?.let { HeadlineCard(it, onHighlightClick) }
+        preview.figure?.Content()
       }
     },
     stats = {
@@ -317,7 +318,6 @@ internal fun SamplePostPreview(
 ) {
   PostPreview(
     preview,
-    onHighlightClick = {},
     onFavorite = {},
     onRepost = {},
     onShare = {},

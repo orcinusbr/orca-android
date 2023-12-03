@@ -150,7 +150,6 @@ private fun PostDetails(
   ) {
     Timeline(
       commentsLoadable,
-      onHighlightClick,
       onFavorite,
       onRepost,
       onShare,

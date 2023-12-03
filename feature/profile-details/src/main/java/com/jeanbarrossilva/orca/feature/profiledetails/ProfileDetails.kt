@@ -457,7 +457,6 @@ private fun ProfileDetails(
     timeline = { shouldNestScrollToTopAppBar, padding ->
       Timeline(
         postsLoadable,
-        onHighlightClick,
         onFavorite,
         onRepost,
         onShare,

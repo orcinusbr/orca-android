@@ -46,7 +46,7 @@ import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.SmallAvatar
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.headline.HeadlineCard
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.link.LinkCard
 
 @Composable
 internal fun Header(modifier: Modifier = Modifier) {
@@ -83,7 +83,7 @@ internal fun Header(
       Column(verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.medium.dp)) {
         Text(details.text)
 
-        details.highlight?.headline?.let { HeadlineCard(it, onHighlightClick) }
+        details.highlight?.headline?.let { LinkCard(it, onHighlightClick) }
       }
     },
     metadata = { Text(details.formattedPublicationDateTime) },
