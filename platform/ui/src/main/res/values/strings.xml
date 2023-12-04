@@ -18,7 +18,7 @@
     <string name="platform_ui_avatar">%s\'s avatar</string>
     <string name="platform_ui_favorite_stat">Favorite</string>
     <string name="platform_ui_gallery_preview_thumbnail">
-        Attachment #%d of post authored by %s
+        Attachment #%1d of post authored by %2s
     </string>
     <string name="platform_ui_gallery_preview_thumbnail_over_count">%s+</string>
     <string name="platform_ui_link_card_cover">Cover of "%s"</string>
