@@ -59,7 +59,8 @@ internal fun Feed(
   modifier: Modifier = Modifier
 ) {
   var isTimelineRefreshing by remember { mutableStateOf(false) }
-  val postPreviewsLoadable by viewModel.postPreviewsLoadableFlow.collectAsState()
+  val postPreviewsLoadable by
+    viewModel.postPreviewsLoadableFlow.collectAsState(ListLoadable.Loading())
   val bottomAreaAvailabilityNestedScrollConnection =
     rememberBottomAreaAvailabilityNestedScrollConnection(onBottomAreaAvailabilityChangeListener)
 

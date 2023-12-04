@@ -27,7 +27,7 @@ import com.jeanbarrossilva.orca.std.imageloader.Image
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 
 /**
  * [FeedProvider] that provides a feed for a sample [Profile].
@@ -46,8 +46,8 @@ internal class SampleFeedProvider(
   private val postsFlow = postProvider.postsFlow.asStateFlow()
 
   override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
-    return postsFlow.map {
-      it.chunked(SampleProfile.POSTS_PER_PAGE).getOrElse(page) { emptyList() }
+    return postsFlow.mapNotNull { posts ->
+      posts.chunked(SampleProfile.POSTS_PER_PAGE).getOrElse(page) { posts.takeLast(1) }
     }
   }
 

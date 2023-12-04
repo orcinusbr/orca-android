@@ -20,10 +20,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.jeanbarrossilva.loadable.list.flow.listLoadable
+import com.jeanbarrossilva.loadable.list.toListLoadable
+import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.orca.core.feed.FeedProvider
-import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.PostProvider
+import com.jeanbarrossilva.orca.ext.coroutines.notifier.notifierFlow
+import com.jeanbarrossilva.orca.ext.coroutines.notifier.notify
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.toPostPreviewFlow
@@ -34,13 +36,10 @@ import com.jeanbarrossilva.orca.platform.ui.core.flatMapEach
 import java.net.URL
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.runningFold
+import kotlinx.coroutines.flow.flattenConcat
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 internal class FeedViewModel(
@@ -50,7 +49,8 @@ internal class FeedViewModel(
   private val userID: String,
   private val onLinkClick: (URL) -> Unit
 ) : ViewModel() {
-  private val indexFlow = MutableStateFlow<Int?>(0)
+  private val postPreviewsLoadableNotifierFlow = notifierFlow()
+  private val indexFlow = MutableStateFlow(0)
   private val colors by lazy { AutosTheme.getColors(context) }
 
   private val context
@@ -58,20 +58,14 @@ internal class FeedViewModel(
 
   @OptIn(ExperimentalCoroutinesApi::class)
   val postPreviewsLoadableFlow =
-    indexFlow
-      .flatMapLatest { it?.let { index -> feedProvider.provide(userID, index) } ?: flowOf(null) }
-      .runningFold<_, List<Post>?>(null) { accumulator, posts ->
-        posts?.let { accumulator.orEmpty() + it }
-      }
-      .filterNotNull()
-      .distinctUntilChanged()
+    postPreviewsLoadableNotifierFlow
+      .combine(indexFlow) { _, index -> feedProvider.provide(userID, index) }
+      .flattenConcat()
       .flatMapEach(selector = PostPreview::id) { it.toPostPreviewFlow(colors, onLinkClick) }
-      .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
+      .map { it.toSerializableList().toListLoadable() }
 
   fun requestRefresh(onRefresh: () -> Unit) {
-    val index = indexFlow.value
-    indexFlow.value = null
-    indexFlow.value = index
+    postPreviewsLoadableNotifierFlow.notify()
     viewModelScope.launch {
       postPreviewsLoadableFlow.await()
       onRefresh()

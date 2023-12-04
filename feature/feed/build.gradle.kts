@@ -38,6 +38,7 @@ dependencies {
 
   implementation(project(":core"))
   implementation(project(":core:sample"))
+  implementation(project(":ext:coroutines"))
   implementation(project(":platform:autos"))
   implementation(project(":platform:ui"))
   implementation(project(":std:injector"))
