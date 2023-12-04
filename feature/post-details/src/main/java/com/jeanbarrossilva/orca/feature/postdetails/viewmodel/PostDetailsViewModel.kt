@@ -61,7 +61,7 @@ private constructor(
 
   @OptIn(ExperimentalCoroutinesApi::class)
   val detailsLoadableFlow =
-    postFlow.flatMapLatest { it.toPostDetailsFlow(colors) }.loadable(viewModelScope)
+    postFlow.flatMapLatest { it.toPostDetailsFlow(colors, onLinkClick) }.loadable(viewModelScope)
 
   val commentsLoadableFlow =
     flatMapCombine(commentsIndexFlow, postFlow) { commentsIndex, post ->

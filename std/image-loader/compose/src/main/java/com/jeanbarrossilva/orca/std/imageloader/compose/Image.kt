@@ -35,6 +35,11 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.Loadable
@@ -69,7 +74,12 @@ fun Image(
   shape: Shape = RectangleShape,
   contentScale: ContentScale = ContentScale.Fit
 ) {
-  BoxWithConstraints(modifier) {
+  BoxWithConstraints(
+    modifier.semantics {
+      this.contentDescription = contentDescription
+      role = Role.Image
+    }
+  ) {
     val bitmapLoadable =
       Loadability.of(loader, IntSize(constraints.maxWidth, constraints.maxHeight))
         .get()
@@ -85,7 +95,7 @@ fun Image(
               Image(
                 it.content,
                 contentDescription,
-                Modifier.clip(shape).matchParentSize(),
+                Modifier.clip(shape).matchParentSize().clearAndSetSemantics {},
                 contentScale = contentScale
               )
             } else if (it is Loadable.Failed) {

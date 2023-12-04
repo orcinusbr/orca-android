@@ -68,7 +68,7 @@ internal fun Post.toPostPreview(colors: Colors, onLinkClick: (URL) -> Unit): Pos
     author.account,
     if (this is Repost) reposter.name else null,
     content.text.toAnnotatedString(colors),
-    content.highlight?.let { Figure.Link(it.headline) { onLinkClick(it.url) } },
+    Figure.of(content, onLinkClick),
     publicationDateTime,
     comment.count,
     favorite.isEnabled,

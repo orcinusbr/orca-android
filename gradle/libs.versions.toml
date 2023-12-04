@@ -12,6 +12,7 @@ android-compose-ui-test-junit = { group = "androidx.compose.ui", name = "ui-test
 android-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "android-compose" }
 android-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "android-compose" }
 android-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version = "2.1.4" }
+android-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version = "1.1.0-alpha13" }
 android-core = { group = "androidx.core", name = "core-ktx", version = "1.12.0" }
 android-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "android-fragment" }
 android-fragment-testing = { group = "androidx.fragment", name = "fragment-testing", version.ref = "android-fragment" }
@@ -55,6 +56,8 @@ slf4j = { group = "org.slf4j", name = "slf4j-api", version = "2.0.7" }
 spotless = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
 time4j = { group = "net.time4j", name = "time4j-android", version = "4.8-2021a" }
 turbine = { group = "app.cash.turbine", name = "turbine", version = "1.0.0" }
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-plugin" }
@@ -89,3 +92,5 @@ kotlin-symbolProcessor = "1.9.10-1.0.13"
 ktor = "2.3.2"
 loadable = "1.6.9"
 spotless = "6.22.0"
+androidx-test-ext-junit = "1.1.5"
+espresso-core = "3.5.1"

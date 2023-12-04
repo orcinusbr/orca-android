@@ -25,7 +25,6 @@ import com.jeanbarrossilva.orca.core.sample.instance.domain.sample
 import com.jeanbarrossilva.orca.std.imageloader.Image
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.buildStyledString
-import java.net.URL
 
 /**
  * Creates a sample [Content].
@@ -48,13 +47,7 @@ fun Content.Companion.createSample(
       +"\n".repeat(2)
       +highlight.url.toString()
     },
-    attachments =
-      listOf(
-        Attachment(
-          description = "Abstract art",
-          URL("https://images.unsplash.com/photo-1692890846581-da1a95435f34")
-        )
-      )
+    Attachment.samples
   ) {
     highlight.headline
   }

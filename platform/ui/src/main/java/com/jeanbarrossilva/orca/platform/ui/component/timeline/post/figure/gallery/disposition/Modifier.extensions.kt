@@ -13,16 +13,19 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.core.feed.profile.post.content
+package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition
 
-import java.net.URL
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.semantics
 
 /**
- * Media that has been attached to [Content].
+ * Tries to make the [Composable]'s size match the [aspectRatio].
  *
- * @param description Description of what's displayed.
- * @param url [URL] that leads to the media.
+ * @param aspectRatio Aspect ratio according to which the attempt to size the content will be
+ *   performed.
  */
-data class Attachment(val description: String?, val url: URL) {
-  companion object
+internal fun Modifier.aspectRatio(aspectRatio: Float): Modifier {
+  return aspectRatio(aspectRatio).semantics { this.aspectRatio = aspectRatio }
 }

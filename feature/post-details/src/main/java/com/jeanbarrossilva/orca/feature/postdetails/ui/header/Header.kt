@@ -46,7 +46,6 @@ import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.SmallAvatar
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.link.LinkCard
 
 @Composable
 internal fun Header(modifier: Modifier = Modifier) {
@@ -69,7 +68,6 @@ internal fun Header(modifier: Modifier = Modifier) {
 @Composable
 internal fun Header(
   details: PostDetails,
-  onHighlightClick: () -> Unit,
   onFavorite: () -> Unit,
   onRepost: () -> Unit,
   onShare: () -> Unit,
@@ -83,7 +81,7 @@ internal fun Header(
       Column(verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.medium.dp)) {
         Text(details.text)
 
-        details.highlight?.headline?.let { LinkCard(it, onHighlightClick) }
+        details.figure?.Content()
       }
     },
     metadata = { Text(details.formattedPublicationDateTime) },
@@ -170,13 +168,7 @@ private fun LoadingHeaderPreview() {
 private fun LoadedHeaderPreview() {
   AutosTheme {
     Surface(color = AutosTheme.colors.background.container.asColor) {
-      Header(
-        PostDetails.sample,
-        onHighlightClick = {},
-        onFavorite = {},
-        onRepost = {},
-        onShare = {}
-      )
+      Header(PostDetails.sample, onFavorite = {}, onRepost = {}, onShare = {})
     }
   }
 }

@@ -34,6 +34,7 @@ dependencies {
   androidTestImplementation(project(":std:image-loader-test"))
   androidTestImplementation(libs.android.compose.ui.test.junit)
   androidTestImplementation(libs.android.compose.ui.test.manifest)
+  androidTestImplementation(libs.android.constraintlayout.compose)
   androidTestImplementation(libs.android.test.core)
   androidTestImplementation(libs.android.test.runner)
   androidTestImplementation(libs.assertk)
