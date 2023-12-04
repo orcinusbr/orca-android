@@ -33,7 +33,8 @@ class PostDetailsFragment private constructor() : ComposableFragment() {
       PostDetailsViewModel.createFactory(
         contextProvider = ::requireContext,
         module.postProvider(),
-        id
+        id,
+        onLinkClick = module.boundary()::navigateTo
       )
     }
 

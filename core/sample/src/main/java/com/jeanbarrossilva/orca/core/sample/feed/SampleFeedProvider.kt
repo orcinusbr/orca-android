@@ -46,8 +46,8 @@ internal class SampleFeedProvider(
   private val postsFlow = postProvider.postsFlow.asStateFlow()
 
   override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
-    return postsFlow.map {
-      it.chunked(SampleProfile.POSTS_PER_PAGE).getOrElse(page) { emptyList() }
+    return postsFlow.map { posts ->
+      posts.chunked(SampleProfile.POSTS_PER_PAGE).getOrElse(page) { posts.takeLast(1) }
     }
   }
 

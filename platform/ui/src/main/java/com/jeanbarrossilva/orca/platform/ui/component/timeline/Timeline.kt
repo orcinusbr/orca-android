@@ -102,8 +102,6 @@ private enum class TimelineContentType {
  * Displays [PostPreview]s in a paginated way.
  *
  * @param postPreviewsLoadable [ListLoadable] of [PostPreview]s to be lazily shown.
- * @param onHighlightClick Callback run whenever the [PostPreview]'s [PostPreview.highlight] is
- *   clicked.
  * @param onFavorite Callback run whenever the [PostPreview] associated to the given ID requests the
  *   [Post] to have its "favorited" state toggled.
  * @param onRepost Callback run whenever the [PostPreview] associated to the given ID requests the
@@ -123,7 +121,6 @@ private enum class TimelineContentType {
 @Composable
 fun Timeline(
   postPreviewsLoadable: ListLoadable<PostPreview>,
-  onHighlightClick: (URL) -> Unit,
   onFavorite: (id: String) -> Unit,
   onRepost: (id: String) -> Unit,
   onShare: (URL) -> Unit,
@@ -134,7 +131,7 @@ fun Timeline(
   contentPadding: PaddingValues = PaddingValues(),
   refresh: Refresh = Refresh.Disabled,
   relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider(),
-  header: (@Composable () -> Unit)? = null
+  header: @Composable (() -> Unit)? = null
 ) {
   when (postPreviewsLoadable) {
     is ListLoadable.Empty ->
@@ -143,7 +140,6 @@ fun Timeline(
     is ListLoadable.Populated ->
       Timeline(
         postPreviewsLoadable.content,
-        onHighlightClick,
         onFavorite,
         onRepost,
         onShare,
@@ -182,8 +178,6 @@ fun Timeline(
  * [LazyColumn] for displaying paged [PostPreview]s.
  *
  * @param postPreviews [PostPreview]s to be lazily shown.
- * @param onHighlightClick Callback run whenever the [PostPreview]'s [PostPreview.highlight] is
- *   clicked.
  * @param onFavorite Callback run whenever the [PostPreview] associated to the given ID requests the
  *   [Post] to have its "favorited" state toggled.
  * @param onRepost Callback run whenever the [PostPreview] associated to the given ID requests the
@@ -203,7 +197,6 @@ fun Timeline(
 @Composable
 fun Timeline(
   postPreviews: List<PostPreview>,
-  onHighlightClick: (URL) -> Unit,
   onFavorite: (id: String) -> Unit,
   onRepost: (id: String) -> Unit,
   onShare: (URL) -> Unit,
@@ -214,7 +207,7 @@ fun Timeline(
   contentPadding: PaddingValues = PaddingValues(),
   refresh: Refresh = Refresh.Disabled,
   relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider(),
-  header: (@Composable () -> Unit)? = null
+  header: @Composable (() -> Unit)? = null
 ) {
   if (postPreviews.isEmpty()) {
     EmptyTimelineMessage(header?.let { { it() } }, contentPadding, modifier)
@@ -231,7 +224,6 @@ fun Timeline(
 
         PostPreview(
           preview,
-          onHighlightClick = { preview.highlight?.url?.run(onHighlightClick) },
           onFavorite = { onFavorite(preview.id) },
           onRepost = { onRepost(preview.id) },
           onShare = { onShare(preview.url) },
@@ -329,7 +321,6 @@ internal fun Timeline(
 ) {
   Timeline(
     postPreviewsLoadable,
-    onHighlightClick = {},
     onFavorite = {},
     onRepost = {},
     onShare = {},
@@ -354,11 +345,10 @@ internal fun Timeline(
   postPreviews: List<PostPreview>,
   modifier: Modifier = Modifier,
   onNext: (index: Int) -> Unit = {},
-  header: @Composable() (() -> Unit)? = null
+  header: @Composable (() -> Unit)? = null
 ) {
   Timeline(
     postPreviews,
-    onHighlightClick = {},
     onFavorite = {},
     onRepost = {},
     onShare = {},

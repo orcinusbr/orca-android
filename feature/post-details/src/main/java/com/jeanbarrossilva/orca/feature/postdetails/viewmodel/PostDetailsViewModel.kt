@@ -43,7 +43,8 @@ internal class PostDetailsViewModel
 private constructor(
   private val contextProvider: ContextProvider,
   private val postProvider: PostProvider,
-  private val id: String
+  private val id: String,
+  private val onLinkClick: (URL) -> Unit
 ) : ViewModel() {
   private val notifierFlow = notifierFlow()
 
@@ -60,11 +61,11 @@ private constructor(
 
   @OptIn(ExperimentalCoroutinesApi::class)
   val detailsLoadableFlow =
-    postFlow.flatMapLatest { it.toPostDetailsFlow(colors) }.loadable(viewModelScope)
+    postFlow.flatMapLatest { it.toPostDetailsFlow(colors, onLinkClick) }.loadable(viewModelScope)
 
   val commentsLoadableFlow =
     flatMapCombine(commentsIndexFlow, postFlow) { commentsIndex, post ->
-        post.comment.get(commentsIndex).flatMapEach { it.toPostPreviewFlow(colors) }
+        post.comment.get(commentsIndex).flatMapEach { it.toPostPreviewFlow(colors, onLinkClick) }
       }
       .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
 
@@ -96,11 +97,12 @@ private constructor(
     fun createFactory(
       contextProvider: ContextProvider,
       postProvider: PostProvider,
-      id: String
+      id: String,
+      onLinkClick: (URL) -> Unit
     ): ViewModelProvider.Factory {
       return viewModelFactory {
         addInitializer(PostDetailsViewModel::class) {
-          PostDetailsViewModel(contextProvider, postProvider, id)
+          PostDetailsViewModel(contextProvider, postProvider, id, onLinkClick)
         }
       }
     }

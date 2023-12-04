@@ -28,7 +28,7 @@ import java.net.URL
  * @param source Source from which the [Image] will be obtained.
  */
 @Composable
-internal fun rememberImageLoader(source: URL): SomeImageLoader {
+fun rememberImageLoader(source: URL): SomeImageLoader {
   val context = LocalContext.current
   return remember(context) { CoilImageLoader.Provider(context).provide(source) }
 }

@@ -59,7 +59,8 @@ internal fun Feed(
   modifier: Modifier = Modifier
 ) {
   var isTimelineRefreshing by remember { mutableStateOf(false) }
-  val postPreviewsLoadable by viewModel.postPreviewsLoadableFlow.collectAsState()
+  val postPreviewsLoadable by
+    viewModel.postPreviewsLoadableFlow.collectAsState(ListLoadable.Loading())
   val bottomAreaAvailabilityNestedScrollConnection =
     rememberBottomAreaAvailabilityNestedScrollConnection(onBottomAreaAvailabilityChangeListener)
 
@@ -71,7 +72,6 @@ internal fun Feed(
       isTimelineRefreshing = true
       viewModel.requestRefresh { isTimelineRefreshing = false }
     },
-    onHighlightClick = boundary::navigateTo,
     onFavorite = viewModel::favorite,
     onRepost = viewModel::repost,
     onShare = viewModel::share,
@@ -94,7 +94,6 @@ internal fun Feed(
     onSearch = {},
     isTimelineRefreshing = false,
     onTimelineRefresh = {},
-    onHighlightClick = {},
     onFavorite,
     onRepost = {},
     onShare = {},
@@ -113,7 +112,6 @@ private fun Feed(
   onSearch: () -> Unit,
   isTimelineRefreshing: Boolean,
   onTimelineRefresh: () -> Unit,
-  onHighlightClick: (URL) -> Unit,
   onFavorite: (postID: String) -> Unit,
   onRepost: (postID: String) -> Unit,
   onShare: (URL) -> Unit,
@@ -158,7 +156,6 @@ private fun Feed(
   ) {
     Timeline(
       postPreviewsLoadable,
-      onHighlightClick,
       onFavorite,
       onRepost,
       onShare,

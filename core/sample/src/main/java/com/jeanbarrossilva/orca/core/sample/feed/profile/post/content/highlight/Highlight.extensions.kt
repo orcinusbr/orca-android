@@ -30,5 +30,5 @@ import java.net.URL
 fun Highlight.Companion.createSample(
   coverLoaderProvider: ImageLoader.Provider<SampleImageSource>
 ): Highlight {
-  return Highlight(Headline.createSample(coverLoaderProvider), URL("https://mastodon.social"))
+  return Highlight(Headline.createSample(coverLoaderProvider), URL("https://pixelpals.app"))
 }

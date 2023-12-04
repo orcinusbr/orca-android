@@ -26,7 +26,7 @@ import androidx.test.espresso.intent.rule.IntentsRule
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.jeanbarrossilva.orca.app.R
 import com.jeanbarrossilva.orca.app.demo.test.browsesTo
-import com.jeanbarrossilva.orca.app.demo.test.performScrollToPostPreviewWithHeadlineCard
+import com.jeanbarrossilva.orca.app.demo.test.performScrollToPostPreviewWithLinkCard
 import com.jeanbarrossilva.orca.app.demo.test.performStartClick
 import com.jeanbarrossilva.orca.app.demo.test.respondWithOK
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
@@ -35,7 +35,7 @@ import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.content.highl
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.samples
 import com.jeanbarrossilva.orca.feature.postdetails.PostDetailsFragment
 import com.jeanbarrossilva.orca.platform.ui.test.assertIsAtFragment
-import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.headline.onHeadlineCards
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.figure.link.onLinkCards
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.onPostPreviews
 import org.junit.Rule
 import org.junit.Test
@@ -48,11 +48,11 @@ internal class ProfileDetailsTests {
   @get:Rule val ruleChain: RuleChain? = RuleChain.outerRule(intentsRule).around(composeRule)
 
   @Test
-  fun navigatesToPostHighlight() {
+  fun navigatesToPostLink() {
     val matcher = browsesTo("${Highlight.sample.url}")
     intending(matcher).respondWithOK()
-    composeRule.performScrollToPostPreviewWithHeadlineCard()
-    composeRule.onHeadlineCards().onFirst().performClick()
+    composeRule.performScrollToPostPreviewWithLinkCard()
+    composeRule.onLinkCards().onFirst().performClick()
     intended(matcher)
   }
 

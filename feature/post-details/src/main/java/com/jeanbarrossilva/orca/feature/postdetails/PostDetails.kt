@@ -32,7 +32,6 @@ import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
-import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Highlight
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
 import com.jeanbarrossilva.orca.feature.postdetails.ui.header.Header
 import com.jeanbarrossilva.orca.feature.postdetails.ui.header.formatted
@@ -49,6 +48,7 @@ import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.Figure
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.refresh.Refresh
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
@@ -64,7 +64,7 @@ internal data class PostDetails(
   val name: String,
   private val account: Account,
   val text: AnnotatedString,
-  val highlight: Highlight?,
+  val figure: Figure?,
   private val publicationDateTime: ZonedDateTime,
   private val commentCount: Int,
   val isFavorite: Boolean,
@@ -81,7 +81,8 @@ internal data class PostDetails(
 
   companion object {
     val sample
-      @Composable get() = Post.createSample(ImageLoader.Provider.createSample()).toPostDetails()
+      @Composable
+      get() = Post.createSample(ImageLoader.Provider.createSample()).toPostDetails(onLinkClick = {})
   }
 }
 
@@ -106,7 +107,6 @@ internal fun PostDetails(
       isTimelineRefreshing = true
       viewModel.requestRefresh { isTimelineRefreshing = false }
     },
-    onHighlightClick = boundary::navigateTo,
     onFavorite = viewModel::favorite,
     onRepost = viewModel::repost,
     onShare = viewModel::share,
@@ -125,7 +125,6 @@ private fun PostDetails(
   commentsLoadable: ListLoadable<PostPreview>,
   isTimelineRefreshing: Boolean,
   onTimelineRefresh: () -> Unit,
-  onHighlightClick: (URL) -> Unit,
   onFavorite: (postID: String) -> Unit,
   onRepost: (postID: String) -> Unit,
   onShare: (URL) -> Unit,
@@ -150,7 +149,6 @@ private fun PostDetails(
   ) {
     Timeline(
       commentsLoadable,
-      onHighlightClick,
       onFavorite,
       onRepost,
       onShare,
@@ -167,7 +165,6 @@ private fun PostDetails(
         is Loadable.Loaded ->
           Header(
             postLoadable.content,
-            onHighlightClick = { postLoadable.content.highlight?.url?.run(onHighlightClick) },
             onFavorite = { onFavorite(postLoadable.content.id) },
             onRepost = { onRepost(postLoadable.content.id) },
             onShare = { onShare(postLoadable.content.url) }
@@ -211,7 +208,6 @@ private fun PostDetails(
     commentsLoadable,
     isTimelineRefreshing = false,
     onTimelineRefresh = {},
-    onHighlightClick = {},
     onFavorite = {},
     onRepost = {},
     onShare = {},

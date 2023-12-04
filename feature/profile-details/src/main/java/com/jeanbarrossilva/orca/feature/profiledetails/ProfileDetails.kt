@@ -318,7 +318,6 @@ private fun ProfileDetails(
         postPreviewsLoadable,
         isTimelineRefreshing,
         onTimelineRefresh,
-        onHighlightClick = boundary::navigateTo,
         onFavorite,
         onRepost,
         onNavigationToPostDetails,
@@ -376,7 +375,6 @@ private fun ProfileDetails(
   postsLoadable: ListLoadable<PostPreview>,
   isTimelineRefreshing: Boolean,
   onTimelineRefresh: () -> Unit,
-  onHighlightClick: (URL) -> Unit,
   onFavorite: (postID: String) -> Unit,
   onRepost: (postID: String) -> Unit,
   onNavigationToPostDetails: (id: String) -> Unit,
@@ -457,7 +455,6 @@ private fun ProfileDetails(
     timeline = { shouldNestScrollToTopAppBar, padding ->
       Timeline(
         postsLoadable,
-        onHighlightClick,
         onFavorite,
         onRepost,
         onShare,

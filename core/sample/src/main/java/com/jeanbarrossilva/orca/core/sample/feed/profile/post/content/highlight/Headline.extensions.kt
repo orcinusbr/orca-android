@@ -30,8 +30,8 @@ fun Headline.Companion.createSample(
   coverLoaderProvider: ImageLoader.Provider<SampleImageSource>
 ): Headline {
   return Headline(
-    title = "Mastodon",
-    subtitle = "The original server operated by the Mastodon gGmbH non-profit.",
-    coverLoaderProvider.provide(CoverImageSource.Default)
+    title = "Pixel Pals Widget Pet Game",
+    subtitle = null,
+    coverLoader = coverLoaderProvider.provide(CoverImageSource.PixelPals)
   )
 }
