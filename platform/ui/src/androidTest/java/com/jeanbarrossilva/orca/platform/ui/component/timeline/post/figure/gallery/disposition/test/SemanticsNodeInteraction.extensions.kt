@@ -19,9 +19,9 @@ import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assert
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.Thumbnail
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.AspectRatio
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.test.isThumbnail
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.Thumbnail
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.test.isThumbnail
 
 /**
  * Asserts that the [Thumbnail]'s aspect ratio is equal to the given one.

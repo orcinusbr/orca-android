@@ -15,6 +15,7 @@
 
 package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition
 
+import androidx.annotation.IntRange
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.core.feed.profile.post.Author
@@ -36,8 +38,8 @@ import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.`if`
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.GalleryPreview
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.Thumbnail
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.ThumbnailDefaults
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.Thumbnail
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.ThumbnailDefaults
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
 
 /** Indicates how a [GalleryPreview]'s [Thumbnail]s should be laid out. */
@@ -62,16 +64,78 @@ internal sealed class Disposition {
    * @param attachments [Attachment]s for which [Thumbnail]s will be laid out.
    */
   data class Grid(val attachments: List<Attachment>) : Disposition() {
+    /**
+     * Provides a [Shape] for a non-leading [Thumbnail] that takes both the overall amount of
+     * visible [attachments] and the position of the [Thumbnail] into account.
+     *
+     * @see provide
+     */
+    enum class SubsequentShapeProvider {
+      /**
+       * Provides a [Shape] for a [Thumbnail] that is the second one, after the leading and before
+       * the trailing one.
+       */
+      SECOND_OF_THREE {
+        @Composable
+        override fun provide(): Shape {
+          return ThumbnailDefaults.shape.withoutTopStart.withoutBottomEnd.withoutBottomStart
+        }
+      },
+
+      /** Provides a [Shape] for a [Thumbnail] that is both the second and the trailing one. */
+      TRAILING_OF_TWO {
+        @Composable
+        override fun provide(): Shape {
+          return ThumbnailDefaults.shape.withoutTopStart.withoutBottomStart
+        }
+      },
+
+      /** Provides a [Shape] for a [Thumbnail] that is both the third and the trailing one. */
+      TRAILING_OF_THREE {
+        @Composable
+        override fun provide(): Shape {
+          return ThumbnailDefaults.shape.withoutTopStart.withoutTopEnd.withoutBottomStart
+        }
+      };
+
+      /** Provides the appropriate shape for a [Thumbnail]. */
+      @Composable abstract fun provide(): Shape
+
+      companion object {
+        /**
+         * Gets the appropriate [SubsequentShapeProvider] for both the [attachmentCount] and the
+         * [position].
+         *
+         * @param attachmentCount Amount of [Attachment]s for which [Thumbnail]s will be laid out.
+         * @param position Position of the [Thumbnail].
+         */
+        fun of(
+          @IntRange(from = 2) attachmentCount: Int,
+          @IntRange(from = 2, to = 3) position: Int
+        ): SubsequentShapeProvider {
+          require(attachmentCount >= 2) { "Amount of attachments should be >= 2." }
+          require(position in 2..3) { "Position should be either 2 or 3." }
+          val visibleAttachmentCount = minOf(3, attachmentCount)
+          return when {
+            position == 2 && visibleAttachmentCount == 2 -> TRAILING_OF_TWO
+            position == 2 && visibleAttachmentCount == 3 -> SECOND_OF_THREE
+            else -> TRAILING_OF_THREE
+          }
+        }
+      }
+    }
+
     @Composable
     override fun Content(modifier: Modifier, author: Author) {
-      val spacing = AutosTheme.spacings.small.dp
+      val spacing = AutosTheme.spacings.extraSmall.dp
 
       Row(modifier, Arrangement.spacedBy(spacing)) {
         Thumbnail(
           author,
           attachments.first(),
           position = 1,
-          Modifier.fillMaxWidth(.5f).aspectRatio(LEADING_HALF_WIDTH_RATIO)
+          Modifier.fillMaxWidth(.5f).aspectRatio(LEADING_HALF_WIDTH_RATIO),
+          ThumbnailDefaults.shape.withoutTopEnd.withoutBottomEnd
         )
 
         Column(verticalArrangement = Arrangement.spacedBy(spacing)) {
@@ -83,24 +147,26 @@ internal sealed class Disposition {
               (Modifier as Modifier)
                 .`if`(attachments.size > 2) { aspectRatio(TRAILING_APPROXIMATE_HALF_RATIO) }
                 .`if`(attachments.size == 2) { aspectRatio(TRAILING_APPROXIMATE_HALF_WIDTH_RATIO) }
-                .fillMaxWidth()
+                .fillMaxWidth(),
+              SubsequentShapeProvider.of(attachments.size, position = 2).provide()
             )
           }
 
           attachments.getOrNull(2)?.let {
+            val shape = SubsequentShapeProvider.of(attachments.size, position = 3).provide()
+
             Box(contentAlignment = Alignment.Center) {
               Thumbnail(
                 author,
                 it,
                 position = 3,
-                Modifier.fillMaxWidth().aspectRatio(TRAILING_APPROXIMATE_HALF_RATIO)
+                Modifier.fillMaxWidth().aspectRatio(TRAILING_APPROXIMATE_HALF_RATIO),
+                shape
               )
 
               if (attachments.size > 3) {
                 Box(
-                  Modifier.clip(ThumbnailDefaults.shape)
-                    .background(Color.Black.copy(alpha = .5f))
-                    .matchParentSize()
+                  Modifier.clip(shape).background(Color.Black.copy(alpha = .5f)).matchParentSize()
                 )
 
                 Text(
@@ -159,7 +225,7 @@ internal sealed class Disposition {
      * approximately half the width. This estimate is due to the spacing that a [Grid] has in
      * between its [Thumbnail]s.
      */
-    const val TRAILING_APPROXIMATE_HALF_WIDTH_RATIO = 8f / 9.4f
+    const val TRAILING_APPROXIMATE_HALF_WIDTH_RATIO = 8f / 9.2f
 
     /**
      * Gets the [Disposition] that's the most suitable for the [attachments].

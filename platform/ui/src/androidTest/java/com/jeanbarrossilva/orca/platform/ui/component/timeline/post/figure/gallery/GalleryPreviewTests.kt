@@ -30,7 +30,7 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.galle
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.test.assertAspectRatioEquals
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.test.assertDispositionIs
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.test.onGalleryPreview
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.test.onThumbnails
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.test.onThumbnails
 import org.junit.Rule
 import org.junit.Test
 

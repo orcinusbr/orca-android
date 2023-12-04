@@ -16,17 +16,10 @@
 package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.test
 
 import androidx.compose.ui.test.SemanticsNodeInteraction
-import androidx.compose.ui.test.SemanticsNodeInteractionCollection
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.GalleryPreview
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.Thumbnail
 
 /** [SemanticsNodeInteraction] of a [GalleryPreview]. */
 internal fun ComposeTestRule.onGalleryPreview(): SemanticsNodeInteraction {
   return onNode(isGalleryPreview())
-}
-
-/** [SemanticsNodeInteractionCollection] of [Thumbnail]s. */
-internal fun ComposeTestRule.onThumbnails(): SemanticsNodeInteractionCollection {
-  return onAllNodes(isThumbnail())
 }

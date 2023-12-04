@@ -13,14 +13,13 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery
+package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.Disposition
 import kotlin.test.Test
 
 internal class DispositionTests {

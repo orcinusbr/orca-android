@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery
+package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail
 
 import androidx.annotation.IntRange
 import androidx.compose.runtime.Composable
@@ -26,7 +26,6 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.Author
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
-import com.jeanbarrossilva.orca.platform.autos.border
 import com.jeanbarrossilva.orca.platform.autos.forms.asShape
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
@@ -53,20 +52,22 @@ internal object ThumbnailDefaults {
  * @param attachment [Attachment] whose content's preview will be loaded.
  * @param position 1-based index of the position within a [GalleryPreview].
  * @param modifier [Modifier] to be applied the underlying [Image].
+ * @param shape [Shape] by which it will be clipped.
  */
 @Composable
 internal fun Thumbnail(
   author: Author,
   attachment: Attachment,
   @IntRange(from = 1) position: Int,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
+  shape: Shape = ThumbnailDefaults.shape
 ) {
   Image(
     rememberImageLoader(attachment.url),
     contentDescription =
       stringResource(R.string.platform_ui_gallery_preview_thumbnail, position, author.name),
-    modifier.border(ThumbnailDefaults.shape).testTag(THUMBNAIL_TAG),
-    ThumbnailDefaults.shape,
+    modifier.testTag(THUMBNAIL_TAG),
+    shape,
     ContentScale.Crop
   )
 }

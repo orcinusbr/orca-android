@@ -18,7 +18,7 @@ package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gall
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.GalleryPreview
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.Thumbnail
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.Thumbnail
 
 /** [SemanticsPropertyKey] returned by [AspectRatio]. */
 private val aspectRatioSemanticsPropertyKey = SemanticsPropertyKey<Float>(name = "AspectRatio")

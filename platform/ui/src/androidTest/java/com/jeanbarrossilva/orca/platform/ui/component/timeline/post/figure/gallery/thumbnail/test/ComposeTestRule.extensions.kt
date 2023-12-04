@@ -13,14 +13,12 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.test
+package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.test
 
-import androidx.compose.ui.test.SemanticsMatcher
-import androidx.compose.ui.test.hasTestTag
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.GALLERY_PREVIEW_TAG
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.GalleryPreview
+import androidx.compose.ui.test.SemanticsNodeInteractionCollection
+import androidx.compose.ui.test.junit4.ComposeTestRule
 
-/** [SemanticsMatcher] that matches a [GalleryPreview]. */
-internal fun isGalleryPreview(): SemanticsMatcher {
-  return hasTestTag(GALLERY_PREVIEW_TAG)
+/** [SemanticsNodeInteractionCollection] of [Thumbnail]s. */
+internal fun ComposeTestRule.onThumbnails(): SemanticsNodeInteractionCollection {
+  return onAllNodes(isThumbnail())
 }

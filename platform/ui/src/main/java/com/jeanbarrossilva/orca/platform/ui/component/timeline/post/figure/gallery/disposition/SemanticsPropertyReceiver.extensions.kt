@@ -18,7 +18,7 @@ package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gall
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.GalleryPreview
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.Thumbnail
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.Thumbnail
 
 /** Aspect ratio of a [GalleryPreview]'s [Thumbnail]. */
 internal var SemanticsPropertyReceiver.aspectRatio by SemanticsProperties.AspectRatio
