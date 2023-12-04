@@ -20,6 +20,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onLast
 import androidx.test.platform.app.InstrumentationRegistry
+import com.jeanbarrossilva.orca.autos.forms.Forms
 import com.jeanbarrossilva.orca.core.feed.profile.post.Author
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
@@ -28,8 +29,15 @@ import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.Disposition
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.test.assertAspectRatioEquals
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.withoutBottomEnd
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.withoutBottomStart
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.withoutTopEnd
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.withoutTopStart
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.test.assertDispositionIs
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.test.onGalleryPreview
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.ThumbnailDefaults
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.test.assertIsClippedBy
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.test.onThumbnail
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.test.onThumbnails
 import org.junit.Rule
 import org.junit.Test
@@ -108,5 +116,64 @@ internal class GalleryPreviewTests {
     composeRule
       .onThumbnails()[1]
       .assertAspectRatioEquals(Disposition.TRAILING_APPROXIMATE_HALF_RATIO)
+  }
+
+  @Test
+  fun singleThumbnailIsClippedByDefaultShape() {
+    composeRule.setContent { AutosTheme { GalleryPreview(Attachment.samples.take(1)) } }
+    composeRule.onThumbnail().assertIsClippedBy(ThumbnailDefaults.getShape(Forms.default))
+  }
+
+  @Test
+  fun leadingThumbnailWithinGridOfTwoIsClippedByDefaultShapeWithZeroedTopEndAndBottomEndCorners() {
+    composeRule.setContent { AutosTheme { GalleryPreview(Attachment.samples.take(2)) } }
+    composeRule
+      .onThumbnails()
+      .onFirst()
+      .assertIsClippedBy(ThumbnailDefaults.getShape(Forms.default).withoutTopEnd.withoutBottomEnd)
+  }
+
+  @Test
+  fun leadingThumbnailWithinGridOfThreeIsClippedByDefaultShapeWithZeroedTopEndAndBottomEndCorners() {
+    composeRule.setContent { AutosTheme { GalleryPreview(Attachment.samples) } }
+    composeRule
+      .onThumbnails()
+      .onFirst()
+      .assertIsClippedBy(ThumbnailDefaults.getShape(Forms.default).withoutTopEnd.withoutBottomEnd)
+  }
+
+  @Test
+  fun secondThumbnailWithinGridOfThreeIsClippedByDefaultShapeWithZeroedTopStartAndBottomStartAndEndCorners() {
+    composeRule.setContent { AutosTheme { GalleryPreview(Attachment.samples) } }
+    composeRule
+      .onThumbnails()[1]
+      .assertIsClippedBy(
+        ThumbnailDefaults.getShape(Forms.default)
+          .withoutTopStart
+          .withoutBottomEnd
+          .withoutBottomStart
+      )
+  }
+
+  @Test
+  fun trailingThumbnailWithinGridOfTwoIsClippedByDefaultShapeWithZeroedBottomStartAndTopStartCorners() {
+    composeRule.setContent { AutosTheme { GalleryPreview(Attachment.samples.take(2)) } }
+    composeRule
+      .onThumbnails()
+      .onLast()
+      .assertIsClippedBy(
+        ThumbnailDefaults.getShape(Forms.default).withoutTopStart.withoutBottomStart
+      )
+  }
+
+  @Test
+  fun trailingThumbnailWithinGridOfThreeIsClippedByDefaultShapeWithZeroedTopStartAndEndAndBottomStartCorners() {
+    composeRule.setContent { AutosTheme { GalleryPreview(Attachment.samples) } }
+    composeRule
+      .onThumbnails()
+      .onLast()
+      .assertIsClippedBy(
+        ThumbnailDefaults.getShape(Forms.default).withoutTopStart.withoutTopEnd.withoutBottomStart
+      )
   }
 }

@@ -15,17 +15,21 @@
 
 package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.test
 
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
-import androidx.compose.ui.test.SemanticsNodeInteractionCollection
-import androidx.compose.ui.test.junit4.ComposeTestRule
+import androidx.compose.ui.test.assert
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.Shape
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.Thumbnail
 
-/** [SemanticsNodeInteraction] of a [Thumbnail]. */
-internal fun ComposeTestRule.onThumbnail(): SemanticsNodeInteraction {
-  return onNode(isThumbnail())
-}
-
-/** [SemanticsNodeInteractionCollection] of [Thumbnail]s. */
-internal fun ComposeTestRule.onThumbnails(): SemanticsNodeInteractionCollection {
-  return onAllNodes(isThumbnail())
+/**
+ * Asserts that the [Thumbnail] is clipped by the [shape].
+ *
+ * @param shape [Shape] by which the [Thumbnail] is expected to be clipped.
+ */
+internal fun SemanticsNodeInteraction.assertIsClippedBy(shape: Shape): SemanticsNodeInteraction {
+  assert(isThumbnail()) { "Can only assert the shape of a Thumbnail." }
+  val matcher = SemanticsMatcher("Shape = $shape") { it.config[SemanticsProperties.Shape] == shape }
+  return assert(matcher)
 }

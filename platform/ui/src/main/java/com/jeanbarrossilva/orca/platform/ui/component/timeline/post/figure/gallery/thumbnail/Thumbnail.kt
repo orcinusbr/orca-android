@@ -16,12 +16,15 @@
 package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail
 
 import androidx.annotation.IntRange
+import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import com.jeanbarrossilva.orca.autos.forms.Forms
 import com.jeanbarrossilva.orca.core.feed.profile.post.Author
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.sample
@@ -31,6 +34,7 @@ import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.GalleryPreview
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.compose.Image
 import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
@@ -40,9 +44,18 @@ internal const val THUMBNAIL_TAG = "thumbnail"
 
 /** Default values used by a [Thumbnail]. */
 internal object ThumbnailDefaults {
-  /** [Shape] by which a [Thumbnail] is clipped by default. */
+  /** [CornerBasedShape] by which a [Thumbnail] is clipped by default. */
   val shape
-    @Composable get() = AutosTheme.forms.large.asShape
+    @Composable get() = getShape(AutosTheme.forms)
+
+  /**
+   * Gets the [CornerBasedShape] by which a [Thumbnail] is clipped by default.
+   *
+   * @param forms [Forms] from which the [CornerBasedShape] will be obtained.
+   */
+  fun getShape(forms: Forms): CornerBasedShape {
+    return forms.large.asShape
+  }
 }
 
 /**
@@ -66,7 +79,7 @@ internal fun Thumbnail(
     rememberImageLoader(attachment.url),
     contentDescription =
       stringResource(R.string.platform_ui_gallery_preview_thumbnail, position, author.name),
-    modifier.testTag(THUMBNAIL_TAG),
+    modifier.testTag(THUMBNAIL_TAG).semantics { this.shape = shape },
     shape,
     ContentScale.Crop
   )
