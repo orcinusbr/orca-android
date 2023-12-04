@@ -26,11 +26,10 @@ internal val SampleImageSource.resourceID
   @DrawableRes
   get() =
     when (this) {
-      com.jeanbarrossilva.orca.core.sample.image.AuthorImageSource.Default ->
-        R.drawable.sample_avatar_default
-      com.jeanbarrossilva.orca.core.sample.image.AuthorImageSource.Rambo ->
-        R.drawable.sample_avatar_rambo
-      com.jeanbarrossilva.orca.core.sample.image.CoverImageSource.Default ->
-        R.drawable.sample_cover_default
+      AuthorImageSource.Default -> R.drawable.sample_avatar_default
+      AuthorImageSource.Christian -> R.drawable.sample_avatar_christian
+      AuthorImageSource.Rambo -> R.drawable.sample_avatar_rambo
+      CoverImageSource.Default -> R.drawable.sample_cover_default
+      CoverImageSource.PixelPals -> R.drawable.sample_cover_pixel_pals
       SampleImageSource.None -> -1
     }

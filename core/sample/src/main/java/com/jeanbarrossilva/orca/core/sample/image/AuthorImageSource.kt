@@ -21,5 +21,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.Author
 sealed class AuthorImageSource : SampleImageSource() {
   data object Default : AuthorImageSource()
 
+  data object Christian : AuthorImageSource()
+
   data object Rambo : AuthorImageSource()
 }

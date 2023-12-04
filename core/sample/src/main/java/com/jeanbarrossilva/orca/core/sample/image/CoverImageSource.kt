@@ -26,4 +26,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Highlig
 sealed class CoverImageSource : SampleImageSource() {
   /** [CoverImageSource] of the default sample [Post]. */
   data object Default : CoverImageSource()
+
+  /** [CoverImageSource] of a [Post] about Christian Selig's Pixel Pals app. */
+  data object PixelPals : CoverImageSource()
 }

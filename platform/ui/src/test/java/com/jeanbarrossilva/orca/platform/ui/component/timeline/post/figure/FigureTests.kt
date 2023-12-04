@@ -24,11 +24,10 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.content.Content
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Headline
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Highlight
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
-import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.createSample
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
 import com.jeanbarrossilva.orca.core.sample.instance.domain.sample
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.content.highlight.sample
-import com.jeanbarrossilva.orca.core.sample.test.image.TestSampleImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import com.jeanbarrossilva.orca.std.styledstring.buildStyledString
 import java.net.URL
@@ -37,7 +36,7 @@ import kotlin.test.Test
 internal class FigureTests {
   @Test
   fun createsGalleryFromContentWithHighlightAndAttachments() {
-    assertThat(Figure.of(Content.createSample(TestSampleImageLoader.Provider), onLinkClick = {}))
+    assertThat(Figure.of(Content.sample, onLinkClick = {}))
       .isEqualTo(Figure.Gallery(Attachment.samples))
   }
 

@@ -27,6 +27,9 @@ import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import java.net.URL
 import java.util.UUID
 
+/** ID of an [Author] created by [createChristianSample]. */
+private val christianSampleAuthorID = UUID.randomUUID().toString()
+
 /** ID of an [Author] created by [createRamboSample]. */
 private val ramboSampleAuthorID = UUID.randomUUID().toString()
 
@@ -49,12 +52,31 @@ fun Author.Companion.createSample(
 }
 
 /**
+ * Creates a sample author based on
+ * [@christianselig@mastodon.social](https://mastodon.social/@christianselig).
+ *
+ * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
+ *   [Author]'s avatar will be loaded from a [SampleImageSource].
+ */
+internal fun Author.Companion.createChristianSample(
+  avatarLoaderProvider: ImageLoader.Provider<SampleImageSource>
+): Author {
+  return Author(
+    christianSampleAuthorID,
+    avatarLoaderProvider.provide(AuthorImageSource.Christian),
+    name = "Christian Selig",
+    account = "christianselig" at "mastodon.social",
+    profileURL = URL("https://mastodon.social/@christianselig")
+  )
+}
+
+/**
  * Creates a sample author based on [@_inside@mastodon.social](https://mastodon.social/@_inside).
  *
  * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
  *   [Author]'s avatar will be loaded from a [SampleImageSource].
  */
-fun Author.Companion.createRamboSample(
+internal fun Author.Companion.createRamboSample(
   avatarLoaderProvider: ImageLoader.Provider<SampleImageSource>
 ): Author {
   return Author(
