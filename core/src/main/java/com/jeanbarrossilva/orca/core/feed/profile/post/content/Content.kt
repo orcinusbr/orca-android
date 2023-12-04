@@ -39,15 +39,18 @@ private constructor(
   val highlight: Highlight? = null
 ) {
   override fun equals(other: Any?): Boolean {
-    return other is Content && text == other.text && highlight == other.highlight
+    return other is Content &&
+      text == other.text &&
+      attachments == other.attachments &&
+      highlight == other.highlight
   }
 
   override fun hashCode(): Int {
-    return Objects.hash(text, highlight)
+    return Objects.hash(text, attachments, highlight)
   }
 
   override fun toString(): String {
-    return "Content(text=$text, highlight=$highlight)"
+    return "Content(text=$text, attachments=$attachments, highlight=$highlight)"
   }
 
   companion object {
