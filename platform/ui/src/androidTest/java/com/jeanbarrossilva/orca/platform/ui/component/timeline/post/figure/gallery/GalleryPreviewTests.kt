@@ -16,6 +16,7 @@
 package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery
 
 import androidx.compose.ui.test.assertContentDescriptionEquals
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onLast
@@ -29,6 +30,7 @@ import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.Disposition
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.test.assertAspectRatioEquals
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.test.onOverCount
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.withoutBottomEnd
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.withoutBottomStart
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.withoutTopEnd
@@ -39,6 +41,7 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.galle
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.test.assertIsClippedBy
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.test.onThumbnail
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.test.onThumbnails
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
 import org.junit.Rule
 import org.junit.Test
 
@@ -174,6 +177,20 @@ internal class GalleryPreviewTests {
       .onLast()
       .assertIsClippedBy(
         ThumbnailDefaults.getShape(Forms.default).withoutTopStart.withoutTopEnd.withoutBottomStart
+      )
+  }
+
+  @Test
+  fun gridOverCountDoesNotConsiderLastVisibleAttachment() {
+    val context = InstrumentationRegistry.getInstrumentation().context
+    composeRule.setContent { AutosTheme { GalleryPreview(Attachment.samples) } }
+    composeRule
+      .onOverCount()
+      .assertTextEquals(
+        context.getString(
+          R.string.platform_ui_gallery_preview_thumbnail_over_count,
+          (Attachment.samples.size - 2).formatted
+        )
       )
   }
 }

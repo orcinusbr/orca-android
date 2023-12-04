@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.core.feed.profile.post.Author
@@ -172,9 +173,10 @@ internal sealed class Disposition {
                 Text(
                   stringResource(
                     R.string.platform_ui_gallery_preview_thumbnail_over_count,
-                    (attachments.size - 3).formatted
+                    (attachments.size - 2).formatted
                   ),
-                  color = Color.White,
+                  Modifier.testTag(OVER_COUNT_TAG),
+                  Color.White,
                   style = AutosTheme.typography.titleLarge
                 )
               }
@@ -182,6 +184,11 @@ internal sealed class Disposition {
           }
         }
       }
+    }
+
+    companion object {
+      /** Tag that identifies a [Grid]'s [Content]'s [Thumbnail] over-count for testing purposes. */
+      const val OVER_COUNT_TAG = "gallery-grid-disposition-over-count"
     }
   }
 
