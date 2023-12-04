@@ -126,6 +126,10 @@ internal sealed class Disposition {
       }
     }
 
+    init {
+      require(attachments.size > 1) { "Grid should be given at least two attachments." }
+    }
+
     @Composable
     override fun Content(modifier: Modifier, author: Author) {
       val spacing = AutosTheme.spacings.extraSmall.dp
