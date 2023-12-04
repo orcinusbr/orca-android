@@ -143,16 +143,16 @@ internal sealed class Disposition {
     const val FULL_RATIO = 16f / 9f
 
     /**
-     * Aspect ratio of a [Thumbnail] that is approximately half of a [FULL_RATIO]. This estimate is
-     * due to the spacing that a [Grid] has in between its [Thumbnail]s.
-     */
-    const val TRAILING_APPROXIMATE_HALF_RATIO = 8f / 4.52f
-
-    /**
      * Aspect ratio of a leading [Thumbnail] that has the same height as a [FULL_RATIO], but half
      * the width.
      */
     const val LEADING_HALF_WIDTH_RATIO = 8f / 9f
+
+    /**
+     * Aspect ratio of a [Thumbnail] that is approximately half of a [FULL_RATIO]. This estimate is
+     * due to the spacing that a [Grid] has in between its [Thumbnail]s.
+     */
+    const val TRAILING_APPROXIMATE_HALF_RATIO = 8f / 4.52f
 
     /**
      * Aspect ratio of a trailing [Thumbnail] that has the same height as a [FULL_RATIO], but
