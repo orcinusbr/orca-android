@@ -21,6 +21,7 @@ import assertk.all
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
@@ -33,7 +34,7 @@ internal class LocalImageLoaderTests {
         override val source = R.drawable.ic_white
       }
     runTest {
-      assertThat(imageLoader.load(width = 1, height = 1)?.pixels.orEmpty()).all {
+      assertThat(imageLoader.load(ImageLoader.Size.explicit(1, 1))?.pixels.orEmpty()).all {
         hasSize(1)
         given { assertThat(it.single().x).isEqualTo(0) }
         given { assertThat(it.single().y).isEqualTo(0) }

@@ -53,7 +53,7 @@ fun SmallAvatar(imageLoader: SomeImageLoader, name: String, modifier: Modifier =
     imageLoader,
     contentDescriptionFor(name),
     modifier.requiredSize(smallSize).testTag(AVATAR_TAG),
-    smallShape
+    shape = smallShape
   )
 }
 
@@ -68,7 +68,7 @@ fun LargeAvatar(imageLoader: SomeImageLoader, name: String, modifier: Modifier =
     imageLoader,
     contentDescriptionFor(name),
     modifier.requiredSize(largeSize).testTag(AVATAR_TAG),
-    largeShape
+    shape = largeShape
   )
 }
 

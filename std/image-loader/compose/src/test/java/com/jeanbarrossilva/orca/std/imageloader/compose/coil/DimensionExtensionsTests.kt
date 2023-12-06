@@ -13,23 +13,22 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.std.imageloader.local
+package com.jeanbarrossilva.orca.std.imageloader.compose.coil
 
-import android.graphics.Bitmap
-import com.jeanbarrossilva.orca.std.imageloader.Image
-import com.jeanbarrossilva.orca.std.imageloader.buildImage
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import coil.size.Dimension
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import kotlin.test.Test
 
-/** Converts this [Bitmap] into an [Image]. */
-suspend fun Bitmap.toImage(): Image {
-  return buildImage(width, height) {
-    val nonHardwareBitmap =
-      if (config == Bitmap.Config.HARDWARE) {
-        copy(Bitmap.Config.ARGB_8888, false)
-      } else {
-        this@toImage
-      }
-    IntArray(size = width * height)
-      .also { nonHardwareBitmap.getPixels(it, 0, width, 0, 0, width, height) }
-      .forEach(::pixel)
+internal class DimensionExtensionsTests {
+  @Test
+  fun coilVersionOfAutomaticDimensionIsUndefined() {
+    assertThat(ImageLoader.Size.Dimension.Automatic.coil).isEqualTo(Dimension.Undefined)
+  }
+
+  @Test
+  fun coilVersionOfExplicitDimensionIsPixels() {
+    assertThat(ImageLoader.Size.Dimension.Explicit(2)).isEqualTo(Dimension.Pixels(2))
   }
 }

@@ -80,8 +80,8 @@ internal fun Thumbnail(
     contentDescription =
       stringResource(R.string.platform_ui_gallery_preview_thumbnail, position, author.name),
     modifier.testTag(THUMBNAIL_TAG).semantics { this.shape = shape },
-    shape,
-    ContentScale.Crop
+    shape = shape,
+    contentScale = ContentScale.Crop
   )
 }
 

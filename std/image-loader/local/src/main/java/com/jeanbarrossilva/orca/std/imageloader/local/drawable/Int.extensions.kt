@@ -13,28 +13,15 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-import com.jeanbarrossilva.orca.namespaceFor
+package com.jeanbarrossilva.orca.std.imageloader.local.drawable
 
-plugins {
-  alias(libs.plugins.android.library)
-  alias(libs.plugins.kotlin.android)
-}
-
-android {
-  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-  namespace = namespaceFor("std.imageloader.local")
-}
-
-dependencies {
-  androidTestImplementation(libs.android.test.core)
-  androidTestImplementation(libs.android.test.runner)
-  androidTestImplementation(libs.assertk)
-  androidTestImplementation(libs.kotlin.coroutines.test)
-
-  api(project(":std:image-loader"))
-
-  implementation(libs.android.core)
-
-  testImplementation(libs.assertk)
-  testImplementation(libs.kotlin.test)
+/**
+ * Scales this base [Int] (considered to be the adjacent one) based on the given [pb] and [ps].
+ *
+ * @param pb Base that's parallel to this one.
+ * @param ps Scaled [Int] that's parallel to the one to be returned.
+ * @return Scaled [Int] parallel to [ps].
+ */
+internal fun Int.scale(pb: Int, ps: Int): Int {
+  return (toDouble() * (ps.toDouble() / pb.toDouble())).toInt()
 }
