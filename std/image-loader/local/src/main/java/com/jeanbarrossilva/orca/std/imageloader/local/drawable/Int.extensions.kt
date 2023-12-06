@@ -18,7 +18,7 @@ package com.jeanbarrossilva.orca.std.imageloader.local.drawable
 /**
  * Scales this base [Int] (considered to be the adjacent one) based on the given [pb] and [ps].
  *
- * @param pb Base that's parallel to this one.
+ * @param pb Base [Int] that's parallel to this one.
  * @param ps Scaled [Int] that's parallel to the one to be returned.
  * @return Scaled [Int] parallel to [ps].
  */
