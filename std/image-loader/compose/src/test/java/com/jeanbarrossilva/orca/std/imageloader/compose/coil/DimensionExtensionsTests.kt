@@ -13,23 +13,22 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.std.imageloader.compose
+package com.jeanbarrossilva.orca.std.imageloader.compose.coil
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import coil.size.Dimension
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
-import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
-import com.jeanbarrossilva.orca.std.imageloader.compose.coil.CoilImageLoader
-import java.net.URL
+import kotlin.test.Test
 
-/**
- * Remembers an [ImageLoader].
- *
- * @param source Source from which the [Image] will be obtained.
- */
-@Composable
-fun rememberImageLoader(source: URL): SomeImageLoader {
-  val context = LocalContext.current
-  return remember(context) { CoilImageLoader.Provider(context).provide(source) }
+internal class DimensionExtensionsTests {
+  @Test
+  fun coilVersionOfAutomaticDimensionIsUndefined() {
+    assertThat(ImageLoader.Size.Dimension.Automatic.coil).isEqualTo(Dimension.Undefined)
+  }
+
+  @Test
+  fun coilVersionOfExplicitDimensionIsPixels() {
+    assertThat(ImageLoader.Size.Dimension.Explicit(2).coil).isEqualTo(Dimension.Pixels(2))
+  }
 }

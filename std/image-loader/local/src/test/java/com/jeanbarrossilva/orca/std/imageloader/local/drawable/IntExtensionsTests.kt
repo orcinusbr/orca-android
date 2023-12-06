@@ -13,28 +13,15 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-import com.jeanbarrossilva.orca.namespaceFor
+package com.jeanbarrossilva.orca.std.imageloader.local.drawable
 
-plugins {
-  alias(libs.plugins.android.library)
-  alias(libs.plugins.kotlin.android)
-}
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import kotlin.test.Test
 
-android {
-  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-  namespace = namespaceFor("std.imageloader.local")
-}
-
-dependencies {
-  androidTestImplementation(libs.android.test.core)
-  androidTestImplementation(libs.android.test.runner)
-  androidTestImplementation(libs.assertk)
-  androidTestImplementation(libs.kotlin.coroutines.test)
-
-  api(project(":std:image-loader"))
-
-  implementation(libs.android.core)
-
-  testImplementation(libs.assertk)
-  testImplementation(libs.kotlin.test)
+internal class IntExtensionsTests {
+  @Test
+  fun scales() {
+    assertThat(4.scale(pb = 16, ps = 8)).isEqualTo(2)
+  }
 }

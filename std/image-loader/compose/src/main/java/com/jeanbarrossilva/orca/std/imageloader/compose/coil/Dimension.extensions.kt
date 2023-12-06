@@ -13,23 +13,15 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.std.imageloader.local
+package com.jeanbarrossilva.orca.std.imageloader.compose.coil
 
-import android.graphics.Bitmap
-import com.jeanbarrossilva.orca.std.imageloader.Image
-import com.jeanbarrossilva.orca.std.imageloader.buildImage
+import coil.size.Dimension
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 
-/** Converts this [Bitmap] into an [Image]. */
-suspend fun Bitmap.toImage(): Image {
-  return buildImage(width, height) {
-    val nonHardwareBitmap =
-      if (config == Bitmap.Config.HARDWARE) {
-        copy(Bitmap.Config.ARGB_8888, false)
-      } else {
-        this@toImage
-      }
-    IntArray(size = width * height)
-      .also { nonHardwareBitmap.getPixels(it, 0, width, 0, 0, width, height) }
-      .forEach(::pixel)
-  }
-}
+/** Coil's [Dimension] version of this [ImageLoader.Size.Dimension]. */
+internal val ImageLoader.Size.Dimension.coil
+  get() =
+    when (this) {
+      is ImageLoader.Size.Dimension.Automatic -> Dimension.Undefined
+      is ImageLoader.Size.Dimension.Explicit -> Dimension.Pixels(value)
+    }

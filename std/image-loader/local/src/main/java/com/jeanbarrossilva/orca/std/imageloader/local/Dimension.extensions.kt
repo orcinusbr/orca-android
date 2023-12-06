@@ -13,23 +13,20 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.std.imageloader.compose
+package com.jeanbarrossilva.orca.std.imageloader.local
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
-import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
-import com.jeanbarrossilva.orca.std.imageloader.compose.coil.CoilImageLoader
-import java.net.URL
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 /**
- * Remembers an [ImageLoader].
+ * Returns whether this dimension is explicit.
  *
- * @param source Source from which the [Image] will be obtained.
+ * @see ImageLoader.Size.Dimension
+ * @see ImageLoader.Size.Dimension.Explicit
  */
-@Composable
-fun rememberImageLoader(source: URL): SomeImageLoader {
-  val context = LocalContext.current
-  return remember(context) { CoilImageLoader.Provider(context).provide(source) }
+@OptIn(ExperimentalContracts::class)
+internal fun ImageLoader.Size.Dimension.isExplicit(): Boolean {
+  contract { returns() implies (this@isExplicit is ImageLoader.Size.Dimension.Explicit) }
+  return this is ImageLoader.Size.Dimension.Explicit
 }

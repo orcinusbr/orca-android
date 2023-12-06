@@ -30,7 +30,7 @@ object TestImageLoader : ImageLoader<Unit> {
     }
   }
 
-  override suspend fun load(width: Int, height: Int): Image {
+  override suspend fun load(size: ImageLoader.Size): Image {
     return buildImage(width = 1, height = 1) { pixel(0) }
   }
 }

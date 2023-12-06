@@ -17,11 +17,10 @@ package com.jeanbarrossilva.orca.platform.ui.core.image
 
 import android.content.Context
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
 import com.jeanbarrossilva.orca.std.imageloader.Image
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
-import com.jeanbarrossilva.orca.std.imageloader.local.toImage
+import com.jeanbarrossilva.orca.std.imageloader.local.drawable.toImage
 
 internal class PlatformSampleImageLoader
 private constructor(private val context: Context, override val source: SampleImageSource) :
@@ -32,7 +31,7 @@ private constructor(private val context: Context, override val source: SampleIma
     }
   }
 
-  override suspend fun load(width: Int, height: Int): Image? {
-    return ContextCompat.getDrawable(context, source.resourceID)?.toBitmap(width, height)?.toImage()
+  override suspend fun load(size: ImageLoader.Size): Image? {
+    return ContextCompat.getDrawable(context, source.resourceID)?.toImage(size)
   }
 }

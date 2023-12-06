@@ -13,16 +13,15 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.std.imageloader.compose
+package com.jeanbarrossilva.orca.std.imageloader.compose.coil
 
 import android.content.Context
-import androidx.core.graphics.drawable.toBitmap
 import coil.imageLoader
 import coil.request.ImageRequest
 import com.jeanbarrossilva.orca.std.imageloader.AsyncImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.Image
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
-import com.jeanbarrossilva.orca.std.imageloader.local.toImage
+import com.jeanbarrossilva.orca.std.imageloader.local.drawable.toImage
 import java.net.URL
 
 /**
@@ -44,8 +43,8 @@ class CoilImageLoader private constructor(private val context: Context, override
     }
   }
 
-  override suspend fun load(width: Int, height: Int): Image? {
-    val request = ImageRequest.Builder(context).data("$source").size(width, height).build()
-    return context.imageLoader.execute(request).drawable?.toBitmap()?.toImage()
+  override suspend fun load(size: ImageLoader.Size): Image? {
+    val request = ImageRequest.Builder(context).data("$source").size(size.coil).build()
+    return context.imageLoader.execute(request).drawable?.toImage(size)
   }
 }

@@ -32,9 +32,19 @@ dependencies {
   api(project(":std:image-loader"))
   api(libs.android.compose.ui.tooling)
 
+  androidTestImplementation(project(":std:image-loader-test"))
+  androidTestImplementation(libs.android.compose.ui.test.junit)
+  androidTestImplementation(libs.android.compose.ui.test.manifest)
+  androidTestImplementation(libs.assertk)
+
+  implementation(project(":core:sample"))
   implementation(project(":platform:autos"))
   implementation(project(":std:image-loader:local"))
   implementation(libs.android.core)
   implementation(libs.coil)
   implementation(libs.loadable.placeholder)
+
+  testImplementation(project(":std:image-loader-test"))
+  testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.test)
 }

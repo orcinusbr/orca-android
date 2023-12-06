@@ -13,23 +13,11 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.std.imageloader.compose
+package com.jeanbarrossilva.orca.std.imageloader.compose.coil
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
+import coil.size.Size
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
-import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
-import com.jeanbarrossilva.orca.std.imageloader.compose.coil.CoilImageLoader
-import java.net.URL
 
-/**
- * Remembers an [ImageLoader].
- *
- * @param source Source from which the [Image] will be obtained.
- */
-@Composable
-fun rememberImageLoader(source: URL): SomeImageLoader {
-  val context = LocalContext.current
-  return remember(context) { CoilImageLoader.Provider(context).provide(source) }
-}
+/** Coil's [Size] version of this Size. */
+internal val ImageLoader.Size.coil
+  get() = Size(width.coil, height.coil)
