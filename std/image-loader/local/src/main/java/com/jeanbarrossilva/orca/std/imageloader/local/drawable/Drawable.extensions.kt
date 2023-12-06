@@ -28,11 +28,14 @@ import com.jeanbarrossilva.orca.std.imageloader.local.isExplicit
  *
  * @param size Size in which the [Image] will be sized, defaulting to this [Drawable]'s intrinsic
  *   dimensions if the [size]'s are automatic.
+ * @throws IllegalArgumentException If the both of the [size]'s dimensions are automatic (which
+ *   shouldn't be possible).
  * @see Drawable.getIntrinsicWidth
  * @see Drawable.getIntrinsicHeight
  * @see ImageLoader.Size.Dimension
  * @see ImageLoader.Size.Dimension.Automatic
  */
+@Throws(IllegalArgumentException::class)
 suspend fun Drawable.toImage(size: ImageLoader.Size): Image {
   val explicit = explicit(size)
   val width = explicit.first.value
@@ -53,13 +56,14 @@ suspend fun Drawable.toImage(size: ImageLoader.Size): Image {
  * value of the other one.
  *
  * @return [Pair] with both explicit dimensions.
- * @throws IllegalStateException If, for some unknown, evil, Machiavellian reason, both of the
+ * @throws IllegalArgumentException If, for some unknown, evil, Machiavellian reason, both of the
  *   [size]'s dimensions are automatic.
  * @see ImageLoader.Size.Dimension.Explicit
  * @see ImageLoader.Size.Dimension.Automatic
  * @see ImageLoader.Size.Dimension.Explicit.value
  * @see scale
  */
+@Throws(IllegalArgumentException::class)
 private fun Drawable.explicit(
   size: ImageLoader.Size
 ): Pair<ImageLoader.Size.Dimension.Explicit, ImageLoader.Size.Dimension.Explicit> {
