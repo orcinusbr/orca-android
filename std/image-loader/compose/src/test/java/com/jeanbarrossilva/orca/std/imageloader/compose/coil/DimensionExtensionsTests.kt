@@ -29,6 +29,6 @@ internal class DimensionExtensionsTests {
 
   @Test
   fun coilVersionOfExplicitDimensionIsPixels() {
-    assertThat(ImageLoader.Size.Dimension.Explicit(2)).isEqualTo(Dimension.Pixels(2))
+    assertThat(ImageLoader.Size.Dimension.Explicit(2).coil).isEqualTo(Dimension.Pixels(2))
   }
 }
