@@ -13,20 +13,16 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.std.imageloader.compose
+package com.jeanbarrossilva.orca.std.imageloader.compose.dimension
 
-import android.graphics.Bitmap
-import androidx.core.graphics.createBitmap
-import com.jeanbarrossilva.orca.std.imageloader.Image
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.withContext
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.DpSize
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 
-/** Converts this [Image] into a [Bitmap]. */
-internal suspend fun Image.toBitmap(): Bitmap {
-  return createBitmap(width, height).apply {
-    withContext(Dispatchers.IO) {
-      coroutineScope { pixels.forEach { setPixel(it.x, it.y, it.color) } }
-    }
-  }
+/** Converts this size into a [DpSize]. */
+context(Density)
+
+internal fun ImageLoader.Size.toDpSize(): DpSize {
+  val (widthInDp, heightInDp) = width.toDp() to height.toDp()
+  return DpSize(widthInDp, heightInDp)
 }

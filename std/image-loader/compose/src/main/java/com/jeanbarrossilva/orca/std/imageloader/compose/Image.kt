@@ -15,7 +15,6 @@
 
 package com.jeanbarrossilva.orca.std.imageloader.compose
 
-import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -24,10 +23,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,8 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -45,7 +40,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.Loadable
-import com.jeanbarrossilva.loadable.map
+import com.jeanbarrossilva.loadable.ifLoaded
 import com.jeanbarrossilva.loadable.placeholder.Placeholder
 import com.jeanbarrossilva.loadable.placeholder.PlaceholderDefaults
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
@@ -56,6 +51,7 @@ import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.compose.Image as _Image
+import com.jeanbarrossilva.orca.std.imageloader.compose.dimension.toDpSize
 import com.jeanbarrossilva.orca.std.imageloader.local.LocalImageLoader
 
 /**
@@ -69,7 +65,6 @@ import com.jeanbarrossilva.orca.std.imageloader.local.LocalImageLoader
  * @param sizing [Sizing] that defines how the underlying
  *   [Image][com.jeanbarrossilva.orca.std.imageloader.Image] will be sized.
  * @param shape [Shape] by which this [Image][_Image] will be clipped.
- * @param contentScale Defines how the image will be scaled within this [Composable]'s bounds.
  */
 @Composable
 fun Image(
@@ -77,8 +72,7 @@ fun Image(
   contentDescription: String,
   modifier: Modifier = Modifier,
   sizing: Sizing = Sizing.Constrained,
-  shape: Shape = RectangleShape,
-  contentScale: ContentScale = ContentScale.None
+  shape: Shape = RectangleShape
 ) {
   BoxWithConstraints(
     modifier.semantics {
@@ -86,22 +80,25 @@ fun Image(
       role = Role.Image
     }
   ) {
-    val size = remember(sizing, constraints) { sizing.size(constraints) }
-    val bitmapLoadable = Loadability.of(loader, size).get().map(Bitmap::asImageBitmap)
+    val density = LocalDensity.current
+    val size = remember(constraints) { sizing.size(constraints) }
+    val sizeAsDpSize = remember(density, size) { with(density) { size.toDpSize() } }
 
-    Placeholder(Modifier.matchParentSize(), isLoading = bitmapLoadable is Loadable.Loading, shape) {
-      CompositionLocalProvider(
-        LocalContentColor provides contentColorFor(PlaceholderDefaults.color)
-      ) {
-        bitmapLoadable.let {
-          if (it is Loadable.Loaded) {
-            Image(
-              it.content,
-              contentDescription,
-              Modifier.clip(shape).matchParentSize().clearAndSetSemantics {},
-              contentScale = contentScale
-            )
-          } else if (it is Loadable.Failed) {
+    Loadability.of(loader, size).get().also {
+      it.ifLoaded {
+        Image(
+          asImageBitmap(),
+          contentDescription,
+          Modifier.size(sizeAsDpSize).clip(shape).clearAndSetSemantics {},
+          contentScale = sizing.contentScale
+        )
+      }
+        ?: Placeholder(
+          Modifier.matchParentSize(),
+          isLoading = it is Loadable.Loading,
+          shape = shape
+        ) {
+          if (it is Loadable.Failed) {
             Box(Modifier.clip(shape).background(PlaceholderDefaults.color).matchParentSize())
 
             Icon(
@@ -113,7 +110,6 @@ fun Image(
             )
           }
         }
-      }
     }
   }
 }
@@ -131,21 +127,17 @@ fun Image(
 @Composable
 internal fun Image(
   modifier: Modifier = Modifier,
-  loader: SomeImageLoader =
-    object : LocalImageLoader() {
-      override val context = LocalContext.current
-      override val source = R.drawable.image
-    },
+  loader: SomeImageLoader = rememberImageLoader(R.drawable.image),
   sizing: Sizing = Sizing.Constrained,
 ) {
-  _Image(loader, contentDescription = "Preview image", modifier.size(512.dp), sizing)
+  _Image(loader, contentDescription = "Preview image", modifier, sizing)
 }
 
 /** Preview of an [Image] that has failed loading. */
 @Composable
 @MultiThemePreview
 private fun FailedImagePreview() {
-  AutosTheme { _Image(loader = rememberImageLoader(Attachment.sample.url)) }
+  AutosTheme { _Image(Modifier.size(512.dp), rememberImageLoader(Attachment.sample.url)) }
 }
 
 /**

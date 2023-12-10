@@ -27,7 +27,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -65,8 +64,7 @@ fun LinkCard(headline: Headline, onClick: () -> Unit, modifier: Modifier = Modif
         Image(
           it,
           contentDescription = stringResource(R.string.platform_ui_link_card_cover, headline.title),
-          Modifier.aspectRatio(16f / 9f).fillMaxWidth(),
-          contentScale = ContentScale.Crop
+          Modifier.aspectRatio(16f / 9f).fillMaxWidth()
         )
       }
 

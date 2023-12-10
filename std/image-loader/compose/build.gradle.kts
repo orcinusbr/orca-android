@@ -25,17 +25,13 @@ plugins {
 android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.get()
+  kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
   namespace = namespaceFor("std.imageloader.compose")
 }
 
 dependencies {
   api(project(":std:image-loader"))
   api(libs.android.compose.ui.tooling)
-
-  androidTestImplementation(project(":std:image-loader-test"))
-  androidTestImplementation(libs.android.compose.ui.test.junit)
-  androidTestImplementation(libs.android.compose.ui.test.manifest)
-  androidTestImplementation(libs.assertk)
 
   implementation(project(":core:sample"))
   implementation(project(":platform:autos"))

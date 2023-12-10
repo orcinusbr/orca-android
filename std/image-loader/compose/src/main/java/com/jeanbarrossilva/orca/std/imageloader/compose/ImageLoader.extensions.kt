@@ -15,18 +15,36 @@
 
 package com.jeanbarrossilva.orca.std.imageloader.compose
 
+import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.compose.coil.CoilImageLoader
+import com.jeanbarrossilva.orca.std.imageloader.local.LocalImageLoader
 import java.net.URL
 
 /**
  * Remembers an [ImageLoader].
  *
- * @param source Source from which the [Image] will be obtained.
+ * @param source Resource ID from which the [Image] will be obtained.
+ */
+@Composable
+fun rememberImageLoader(@DrawableRes source: Int): SomeImageLoader {
+  val context = LocalContext.current
+  return remember(context, source) {
+    object : LocalImageLoader() {
+      override val context = context
+      override val source = source
+    }
+  }
+}
+
+/**
+ * Remembers an [ImageLoader].
+ *
+ * @param source [URL] from which the [Image] will be obtained.
  */
 @Composable
 fun rememberImageLoader(source: URL): SomeImageLoader {

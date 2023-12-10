@@ -34,6 +34,7 @@ dependencies {
   api(project(":std:image-loader"))
 
   implementation(libs.android.core)
+  implementation(libs.kotlin.coroutines.core)
 
   testImplementation(libs.assertk)
   testImplementation(libs.kotlin.test)

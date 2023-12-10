@@ -20,7 +20,6 @@ import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
@@ -80,8 +79,7 @@ internal fun Thumbnail(
     contentDescription =
       stringResource(R.string.platform_ui_gallery_preview_thumbnail, position, author.name),
     modifier.testTag(THUMBNAIL_TAG).semantics { this.shape = shape },
-    shape = shape,
-    contentScale = ContentScale.Crop
+    shape = shape
   )
 }
 

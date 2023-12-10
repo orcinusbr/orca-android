@@ -29,6 +29,7 @@ import com.jeanbarrossilva.orca.std.imageloader.AsyncImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.Image
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
+import com.jeanbarrossilva.orca.std.imageloader.local.toBitmap
 import kotlinx.coroutines.runBlocking
 
 /** Indicates how an [Image] can be loaded through an [ImageLoader]. */
