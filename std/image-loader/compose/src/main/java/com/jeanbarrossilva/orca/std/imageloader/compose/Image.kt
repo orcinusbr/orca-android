@@ -31,7 +31,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -118,11 +117,7 @@ fun Image(
 @Composable
 internal fun Image(
   modifier: Modifier = Modifier,
-  loader: SomeImageLoader =
-    object : LocalImageLoader() {
-      override val context = LocalContext.current
-      override val source = R.drawable.image
-    },
+  loader: SomeImageLoader = rememberImageLoader(R.drawable.image),
   sizing: Sizing = Sizing.Constrained,
 ) {
   _Image(loader, contentDescription = "Preview image", modifier, sizing)
