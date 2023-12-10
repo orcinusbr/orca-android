@@ -13,31 +13,25 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.std.imageloader.compose.coil
+package com.jeanbarrossilva.orca.std.imageloader.compose.dimension
 
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import coil.size.Dimension
-import coil.size.Size
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import kotlin.test.Test
 
-internal class SizeExtensionsTests {
+internal class DimensionsExtensionsTests {
   @Test
-  fun getsCoilSizeWithAutomaticWidthAndHeightFromExplicitWidthAndHeight() {
-    assertThat(ImageLoader.Size.explicit(width = 2, height = 4).coil)
-      .isEqualTo(Size(width = 2, height = 4))
+  fun convertsAutomaticDimensionIntoUnspecifiedDP() {
+    assertThat(with(Density(1f)) { ImageLoader.Size.Dimension.Automatic.toDp() })
+      .isEqualTo(Dp.Unspecified)
   }
 
   @Test
-  fun getsCoilSizeWithPixelsWidthAndUndefinedHeightFromExplicitWidthAndAutomaticHeight() {
-    assertThat(ImageLoader.Size.width(2).coil)
-      .isEqualTo(Size(width = 2, height = Dimension.Undefined))
-  }
-
-  @Test
-  fun getsCoilSizeWithUndefinedWidthAndPixelsHeightFromAutomaticWidthAndExplicitHeight() {
-    assertThat(ImageLoader.Size.height(2).coil)
-      .isEqualTo(Size(width = Dimension.Undefined, height = Dimension.Pixels(2)))
+  fun convertsExplicitDimensionIntoSpecifiedDPs() {
+    assertThat(with(Density(1f)) { ImageLoader.Size.Dimension.Explicit(2).toDp() }).isEqualTo(2.dp)
   }
 }

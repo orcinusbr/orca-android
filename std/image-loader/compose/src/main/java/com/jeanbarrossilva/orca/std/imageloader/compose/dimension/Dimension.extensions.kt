@@ -13,6 +13,24 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.std.imageloader.compose
+package com.jeanbarrossilva.orca.std.imageloader.compose.dimension
 
-internal class ImageTests {}
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+
+/**
+ * Converts this dimension into [Dp]s.
+ *
+ * @see ImageLoader.Size.Dimension
+ * @see ImageLoader.Size.Dimension.Explicit.value
+ * @see ImageLoader.Size.Dimension.Explicit
+ */
+context(Density)
+
+internal fun ImageLoader.Size.Dimension.toDp(): Dp {
+  return when (this) {
+    is ImageLoader.Size.Dimension.Automatic -> Dp.Unspecified
+    is ImageLoader.Size.Dimension.Explicit -> value.toDp()
+  }
+}

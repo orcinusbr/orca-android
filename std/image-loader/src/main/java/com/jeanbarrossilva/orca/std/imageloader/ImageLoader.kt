@@ -51,9 +51,7 @@ interface ImageLoader<T : Any> {
    * @param width [Dimension] for how wide the [Image] is.
    * @param height [Dimension] for tall the [Image] is.
    */
-  class Size
-  @Throws(IllegalArgumentException::class)
-  private constructor(val width: Dimension, val height: Dimension) {
+  class Size(val width: Dimension, val height: Dimension) {
     /**
      * Denotes whether a dimension is explicitly specified or should be calculated automatically.
      *
@@ -73,12 +71,6 @@ interface ImageLoader<T : Any> {
        * @param value Value of this [Dimension] in pixels.
        */
       @JvmInline value class Explicit(val value: Int) : Dimension
-    }
-
-    init {
-      require(width is Dimension.Explicit || height is Dimension.Explicit) {
-        "Cannot size an image without at least one explicit dimension."
-      }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -102,6 +94,9 @@ interface ImageLoader<T : Any> {
     }
 
     companion object {
+      /** [Size] with both dimensions being automatic. */
+      val automatic = Size(width = Dimension.Automatic, height = Dimension.Automatic)
+
       /**
        * Creates a [Size] with both dimensions, [width] and [height], being explicit.
        *
@@ -122,7 +117,7 @@ interface ImageLoader<T : Any> {
        */
       fun width(width: Int): Size {
         val wd = Dimension.Explicit(width)
-        return Size(wd, Dimension.Automatic)
+        return Size(wd, height = Dimension.Automatic)
       }
 
       /**
@@ -132,7 +127,7 @@ interface ImageLoader<T : Any> {
        */
       fun height(height: Int): Size {
         val hd = Dimension.Explicit(height)
-        return Size(Dimension.Automatic, hd)
+        return Size(width = Dimension.Automatic, hd)
       }
     }
   }

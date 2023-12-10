@@ -15,63 +15,31 @@
 
 package com.jeanbarrossilva.orca.std.imageloader.local.drawable
 
-import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import androidx.core.graphics.drawable.toBitmap
 import com.jeanbarrossilva.orca.std.imageloader.Image
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.buildImage
-import com.jeanbarrossilva.orca.std.imageloader.local.isExplicit
 
 /**
  * Converts this [Drawable] into an [Image].
  *
- * @param size Size in which the [Image] will be sized, defaulting to this [Drawable]'s intrinsic
- *   dimensions if the [size]'s are automatic.
- * @throws IllegalArgumentException If the both of the [size]'s dimensions are automatic (which
- *   shouldn't be possible).
- * @see Drawable.getIntrinsicWidth
- * @see Drawable.getIntrinsicHeight
- * @see ImageLoader.Size.Dimension
- * @see ImageLoader.Size.Dimension.Automatic
+ * @param size Size according to which the [Image] will be sized.
  */
-@Throws(IllegalArgumentException::class)
 suspend fun Drawable.toImage(size: ImageLoader.Size): Image {
-  val explicit = explicit(size)
-  val width = explicit.first.value
-  val height = explicit.second.value
-  val bitmap =
-    toBitmap(width, height).let {
-      if (it.config == Bitmap.Config.HARDWARE) it.copy(Bitmap.Config.ARGB_8888, false) else it
-    }
-  return buildImage(width, height) {
-    IntArray(width * height)
-      .also { bitmap.getPixels(it, 0, width, 0, 0, width, height) }
-      .forEach(::pixel)
+  require(this is BitmapDrawable && bitmap != null) {
+    "A drawable needs to be a BitmapDrawable and have an actual bitmap for it to be converted " +
+      "into an image."
   }
-}
-
-/**
- * Explicits the dimension that's been defined to be calculated automatically by scaling it to the
- * value of the other one.
- *
- * @return [Pair] with both explicit dimensions.
- * @throws IllegalArgumentException If, for some unknown, evil, Machiavellian reason, both of the
- *   [size]'s dimensions are automatic.
- * @see ImageLoader.Size.Dimension.Explicit
- * @see ImageLoader.Size.Dimension.Automatic
- * @see ImageLoader.Size.Dimension.Explicit.value
- * @see scale
- */
-@Throws(IllegalArgumentException::class)
-private fun Drawable.explicit(
-  size: ImageLoader.Size
-): Pair<ImageLoader.Size.Dimension.Explicit, ImageLoader.Size.Dimension.Explicit> {
-  val (width, height) = size
-  val scale = { ab: Int, pb: Int, ps: Int -> ImageLoader.Size.Dimension.Explicit(ab.scale(pb, ps)) }
-  return when {
-    width.isExplicit() -> width to scale(intrinsicHeight, intrinsicWidth, width.value)
-    height.isExplicit() -> scale(intrinsicWidth, intrinsicHeight, height.value) to height
-    else -> throw IllegalArgumentException("Size shouldn't have both dimensions being automatic.")
+  val scaledWidth = size.width.value() ?: intrinsicWidth
+  val scaledHeight = size.height.value() ?: ((intrinsicHeight * scaledWidth) / intrinsicWidth)
+  val scaledBitmap = bitmap.withoutHardwareConfiguration().sample(scaledWidth, scaledHeight)
+  return with(scaledBitmap) {
+    buildImage(width, height) {
+      IntArray(size = width * height)
+        .also { getPixels(it, 0, width, 0, 0, width, height) }
+        .forEach(::pixel)
+        .also { scaledBitmap.recycle() }
+    }
   }
 }

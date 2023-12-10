@@ -25,6 +25,7 @@ plugins {
 android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.get()
+  kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
   namespace = namespaceFor("std.imageloader.compose")
 }
 

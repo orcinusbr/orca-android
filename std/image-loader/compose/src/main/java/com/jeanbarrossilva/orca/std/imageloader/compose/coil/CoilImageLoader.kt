@@ -44,7 +44,7 @@ class CoilImageLoader private constructor(private val context: Context, override
   }
 
   override suspend fun load(size: ImageLoader.Size): Image? {
-    val request = ImageRequest.Builder(context).data("$source").size(size.coil).build()
+    val request = ImageRequest.Builder(context).data("$source").build()
     return context.imageLoader.execute(request).drawable?.toImage(size)
   }
 }

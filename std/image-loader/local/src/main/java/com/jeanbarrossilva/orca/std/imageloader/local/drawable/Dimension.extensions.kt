@@ -15,13 +15,20 @@
 
 package com.jeanbarrossilva.orca.std.imageloader.local.drawable
 
-import assertk.assertThat
-import assertk.assertions.isEqualTo
-import kotlin.test.Test
+import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.imageloader.local.isExplicit
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
-internal class IntExtensionsTests {
-  @Test
-  fun scales() {
-    assertThat(4.scale(pb = 16, ps = 8)).isEqualTo(2)
-  }
+/**
+ * Returns this dimension's value if it is explicit; otherwise, `null`.
+ *
+ * @see ImageLoader.Size.Dimension
+ * @see ImageLoader.Size.Dimension.Explicit.value
+ * @see ImageLoader.Size.Dimension.Explicit
+ */
+@OptIn(ExperimentalContracts::class)
+internal fun ImageLoader.Size.Dimension.value(): Int? {
+  contract { returnsNotNull() implies (this@value is ImageLoader.Size.Dimension.Explicit) }
+  return if (isExplicit()) value else null
 }

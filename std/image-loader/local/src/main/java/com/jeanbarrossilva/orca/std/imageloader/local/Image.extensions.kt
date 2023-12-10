@@ -13,15 +13,20 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.std.imageloader.local.drawable
+package com.jeanbarrossilva.orca.std.imageloader.local
 
-/**
- * Scales this base [Int] (considered to be the adjacent one) based on the given [pb] and [ps].
- *
- * @param pb Base [Int] that's parallel to this one.
- * @param ps Scaled [Int] that's parallel to the one to be returned.
- * @return Scaled [Int] parallel to [ps].
- */
-internal fun Int.scale(pb: Int, ps: Int): Int {
-  return (toDouble() * (ps.toDouble() / pb.toDouble())).toInt()
+import android.graphics.Bitmap
+import androidx.core.graphics.createBitmap
+import com.jeanbarrossilva.orca.std.imageloader.Image
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
+
+/** Converts this [Image] into a [Bitmap]. */
+suspend fun Image.toBitmap(): Bitmap {
+  return createBitmap(width, height).apply {
+    withContext(Dispatchers.IO) {
+      coroutineScope { pixels.forEach { setPixel(it.x, it.y, it.color) } }
+    }
+  }
 }
