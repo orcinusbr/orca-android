@@ -28,7 +28,11 @@ import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 enum class Sizing {
   /** Sizes the [Image] based on the dimensions of the [Composable]. */
   Constrained {
-    override fun size(constraints: Constraints): ImageLoader.Size {
+    override fun canSizeBy(constraints: Constraints): Boolean {
+      return Widened.canSizeBy(constraints) && Elongated.canSizeBy(constraints)
+    }
+
+    override fun onSize(constraints: Constraints): ImageLoader.Size {
       return ImageLoader.Size.explicit(constraints.maxWidth, constraints.maxHeight)
     }
   },
@@ -38,7 +42,11 @@ enum class Sizing {
    * its height.
    */
   Widened {
-    override fun size(constraints: Constraints): ImageLoader.Size {
+    override fun canSizeBy(constraints: Constraints): Boolean {
+      return constraints.hasBoundedWidth
+    }
+
+    override fun onSize(constraints: Constraints): ImageLoader.Size {
       return ImageLoader.Size.width(constraints.maxWidth)
     }
   },
@@ -48,7 +56,11 @@ enum class Sizing {
    * its width.
    */
   Elongated {
-    override fun size(constraints: Constraints): ImageLoader.Size {
+    override fun canSizeBy(constraints: Constraints): Boolean {
+      return constraints.hasBoundedHeight
+    }
+
+    override fun onSize(constraints: Constraints): ImageLoader.Size {
       return ImageLoader.Size.height(constraints.maxHeight)
     }
   };
@@ -58,5 +70,21 @@ enum class Sizing {
    *
    * @param constraints [Constraints] to which the [Composable] is delimited.
    */
-  internal abstract fun size(constraints: Constraints): ImageLoader.Size
+  internal fun size(constraints: Constraints): ImageLoader.Size {
+    return if (canSizeBy(constraints)) onSize(constraints) else ImageLoader.Size.automatic
+  }
+
+  /**
+   * Returns whether the size can be determined by the given [constraints].
+   *
+   * @param constraints [Constraints] that might determine how the [Image] is sized.
+   */
+  internal abstract fun canSizeBy(constraints: Constraints): Boolean
+
+  /**
+   * Gets a size that matches the way this [Sizing] sizes an [Image].
+   *
+   * @param constraints [Constraints] to which the [Composable] is delimited.
+   */
+  protected abstract fun onSize(constraints: Constraints): ImageLoader.Size
 }
