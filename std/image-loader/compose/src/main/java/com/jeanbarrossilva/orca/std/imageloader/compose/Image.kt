@@ -32,6 +32,11 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.Loadable
@@ -69,7 +74,12 @@ fun Image(
   sizing: Sizing = Sizing.Constrained,
   shape: Shape = RectangleShape
 ) {
-  BoxWithConstraints(modifier) {
+  BoxWithConstraints(
+    modifier.semantics {
+      this.contentDescription = contentDescription
+      role = Role.Image
+    }
+  ) {
     val density = LocalDensity.current
     val size = remember(constraints) { sizing.size(constraints) }
     val sizeAsDpSize = remember(density, size) { with(density) { size.toDpSize() } }
@@ -79,7 +89,7 @@ fun Image(
         Image(
           asImageBitmap(),
           contentDescription,
-          Modifier.size(sizeAsDpSize).clip(shape),
+          Modifier.size(sizeAsDpSize).clip(shape).clearAndSetSemantics {},
           contentScale = sizing.contentScale
         )
       }
