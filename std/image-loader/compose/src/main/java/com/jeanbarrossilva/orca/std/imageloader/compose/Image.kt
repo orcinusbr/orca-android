@@ -31,8 +31,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.Loadable
@@ -47,6 +47,7 @@ import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.compose.Image as _Image
+import com.jeanbarrossilva.orca.std.imageloader.compose.dimension.toDpSize
 import com.jeanbarrossilva.orca.std.imageloader.local.LocalImageLoader
 
 /**
@@ -70,13 +71,17 @@ fun Image(
   shape: Shape = RectangleShape
 ) {
   BoxWithConstraints(modifier) {
-    Loadability.of(loader, remember(constraints) { sizing.size(constraints) }).get().also {
+    val density = LocalDensity.current
+    val size = remember(constraints) { sizing.size(constraints) }
+    val sizeAsDpSize = remember(density, size) { with(density) { size.toDpSize() } }
+
+    Loadability.of(loader, size).get().also {
       it.ifLoaded {
         Image(
           asImageBitmap(),
           contentDescription,
-          Modifier.clip(shape),
-          contentScale = ContentScale.None
+          Modifier.size(sizeAsDpSize).clip(shape),
+          contentScale = sizing.contentScale
         )
       }
         ?: Placeholder(

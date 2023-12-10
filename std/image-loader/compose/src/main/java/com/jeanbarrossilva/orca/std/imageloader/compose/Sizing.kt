@@ -16,6 +16,7 @@
 package com.jeanbarrossilva.orca.std.imageloader.compose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Constraints
 import com.jeanbarrossilva.orca.std.imageloader.Image
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
@@ -28,6 +29,8 @@ import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 enum class Sizing {
   /** Sizes the [Image] based on the dimensions of the [Composable]. */
   Constrained {
+    override val contentScale = ContentScale.Crop
+
     override fun canSizeBy(constraints: Constraints): Boolean {
       return Widened.canSizeBy(constraints) && Elongated.canSizeBy(constraints)
     }
@@ -42,6 +45,8 @@ enum class Sizing {
    * its height.
    */
   Widened {
+    override val contentScale = ContentScale.FillWidth
+
     override fun canSizeBy(constraints: Constraints): Boolean {
       return constraints.hasBoundedWidth
     }
@@ -56,6 +61,8 @@ enum class Sizing {
    * its width.
    */
   Elongated {
+    override val contentScale = ContentScale.FillHeight
+
     override fun canSizeBy(constraints: Constraints): Boolean {
       return constraints.hasBoundedHeight
     }
@@ -64,6 +71,9 @@ enum class Sizing {
       return ImageLoader.Size.height(constraints.maxHeight)
     }
   };
+
+  /** [ContentScale] that's associated to this [Sizing]. */
+  internal abstract val contentScale: ContentScale
 
   /**
    * Gets a size that matches the way this [Sizing] sizes an [Image].
