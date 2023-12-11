@@ -32,6 +32,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.forms.asShape
 import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold as _Scaffold
@@ -50,6 +52,7 @@ import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
  *
  * @param modifier [Modifier] to be applied to the underlying [Scaffold].
  * @param topAppBar [TopAppBar] to be placed at the top.
+ * @param containerColor [Color] of the container in which the [content] will be placed.
  * @param floatingActionButton [FloatingActionButton] to be placed at the bottom, above the
  *   [buttonBar] and below the [SnackbarHost], horizontally centered.
  * @param floatingActionButtonPosition [FabPosition] that determines where the
@@ -62,6 +65,7 @@ import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 fun Scaffold(
   modifier: Modifier = Modifier,
   topAppBar: @Composable () -> Unit = {},
+  containerColor: Color = AutosTheme.colors.background.container.asColor,
   floatingActionButton: @Composable () -> Unit = {},
   floatingActionButtonPosition: FabPosition = FabPosition.End,
   snackbarPresenter: SnackbarPresenter = rememberSnackbarPresenter(),
@@ -84,6 +88,7 @@ fun Scaffold(
     },
     floatingActionButton = floatingActionButton,
     floatingActionButtonPosition = floatingActionButtonPosition,
+    containerColor = containerColor,
     content = content
   )
 }
