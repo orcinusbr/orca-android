@@ -30,7 +30,7 @@ internal fun TouchInjectionScope.zoomIn() {
 }
 
 /**
- * Zooms from ≈ both the top left and the bottom right to the center.
+ * Zooms from both the top left and the bottom right to the center.
  *
  * @see TouchInjectionScope.topLeft
  * @see TouchInjectionScope.bottomRight
