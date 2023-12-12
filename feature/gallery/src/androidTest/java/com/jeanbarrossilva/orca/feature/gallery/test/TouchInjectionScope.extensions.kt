@@ -19,7 +19,7 @@ import androidx.compose.ui.test.TouchInjectionScope
 import androidx.compose.ui.test.pinch
 
 /**
- * Zooms from the center to ≈ both the top left and the bottom right.
+ * Zooms from the center to both the top left and the bottom right.
  *
  * @see TouchInjectionScope.center
  * @see TouchInjectionScope.topLeft
