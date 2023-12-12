@@ -21,7 +21,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
 import com.jeanbarrossilva.orca.feature.gallery.test.assertIsZoomedIn
 import com.jeanbarrossilva.orca.feature.gallery.test.assertIsZoomedOut
-import com.jeanbarrossilva.orca.feature.gallery.test.onCurrentPage
+import com.jeanbarrossilva.orca.feature.gallery.test.onPage
 import com.jeanbarrossilva.orca.feature.gallery.test.performScrollToPageAt
 import com.jeanbarrossilva.orca.feature.gallery.test.performZoomIn
 import com.jeanbarrossilva.orca.feature.gallery.test.performZoomOut
@@ -38,7 +38,7 @@ internal class GalleryTests {
       .apply { setContent { Gallery() } }
       .run {
         repeat(Attachment.samples.size.dec()) { index ->
-          onCurrentPage().`if`(index < Attachment.samples.lastIndex) {
+          onPage().`if`(index < Attachment.samples.lastIndex) {
             onParent().performScrollToPageAt(index)
           }
         }
@@ -51,12 +51,11 @@ internal class GalleryTests {
       .apply { setContent { Gallery() } }
       .run {
         repeat(Attachment.samples.size) { index ->
-          onCurrentPage()
-            .performZoomIn()
-            .assertIsZoomedIn()
-            .performZoomOut()
-            .assertIsZoomedOut()
-            .`if`(index < Attachment.samples.lastIndex) { onParent().performScrollToPageAt(index) }
+          onPage().performZoomIn().assertIsZoomedIn().performZoomOut().assertIsZoomedOut().`if`(
+            index < Attachment.samples.lastIndex
+          ) {
+            onParent().performScrollToPageAt(index)
+          }
         }
       }
   }

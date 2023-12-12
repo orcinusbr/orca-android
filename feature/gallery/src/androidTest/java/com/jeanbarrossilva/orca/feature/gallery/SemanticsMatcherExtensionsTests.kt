@@ -21,7 +21,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import com.jeanbarrossilva.orca.feature.gallery.test.isDisplayed
 import com.jeanbarrossilva.orca.feature.gallery.test.isPager
 import com.jeanbarrossilva.orca.feature.gallery.test.isZoomedIn
-import com.jeanbarrossilva.orca.feature.gallery.test.onCurrentPage
+import com.jeanbarrossilva.orca.feature.gallery.test.onPage
 import com.jeanbarrossilva.orca.feature.gallery.test.performZoomIn
 import org.junit.Rule
 import org.junit.Test
@@ -31,7 +31,7 @@ internal class SemanticsMatcherExtensionsTests {
 
   @Test
   fun matchesDisplayedNode() {
-    composeRule.apply { setContent { Gallery() } }.onCurrentPage().assert(isDisplayed())
+    composeRule.apply { setContent { Gallery() } }.onPage().assert(isDisplayed())
   }
 
   @Test
@@ -43,7 +43,7 @@ internal class SemanticsMatcherExtensionsTests {
   fun matchesZoomedInNode() {
     composeRule
       .apply { setContent { Gallery() } }
-      .onCurrentPage()
+      .onPage()
       .performZoomIn()
       .run { assert(isZoomedIn()) }
   }

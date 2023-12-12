@@ -28,7 +28,7 @@ import com.jeanbarrossilva.orca.feature.gallery.Gallery
  *
  * @see isPager
  */
-internal fun ComposeTestRule.onCurrentPage(): SemanticsNodeInteraction {
+internal fun ComposeTestRule.onPage(): SemanticsNodeInteraction {
   return onNode(isPager()).onChildren().filterToOne(isDisplayed()).also {
     waitUntil { it[isNotLoading()] }
   }

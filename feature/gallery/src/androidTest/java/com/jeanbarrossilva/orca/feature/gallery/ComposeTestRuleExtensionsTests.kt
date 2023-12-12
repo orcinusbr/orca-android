@@ -17,7 +17,7 @@ package com.jeanbarrossilva.orca.feature.gallery
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import com.jeanbarrossilva.orca.feature.gallery.test.onCurrentPage
+import com.jeanbarrossilva.orca.feature.gallery.test.onPage
 import org.junit.Rule
 import org.junit.Test
 
@@ -26,6 +26,6 @@ internal class ComposeTestRuleExtensionsTests {
 
   @Test
   fun findsCurrentPage() {
-    composeRule.apply { setContent { Gallery() } }.onCurrentPage().assertIsDisplayed()
+    composeRule.apply { setContent { Gallery() } }.onPage().assertIsDisplayed()
   }
 }

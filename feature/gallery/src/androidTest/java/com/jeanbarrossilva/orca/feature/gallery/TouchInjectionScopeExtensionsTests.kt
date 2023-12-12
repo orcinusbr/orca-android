@@ -20,7 +20,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performTouchInput
 import com.jeanbarrossilva.orca.feature.gallery.test.assertIsZoomedIn
 import com.jeanbarrossilva.orca.feature.gallery.test.assertIsZoomedOut
-import com.jeanbarrossilva.orca.feature.gallery.test.onCurrentPage
+import com.jeanbarrossilva.orca.feature.gallery.test.onPage
 import com.jeanbarrossilva.orca.feature.gallery.test.performZoomIn
 import com.jeanbarrossilva.orca.feature.gallery.test.zoomIn
 import com.jeanbarrossilva.orca.feature.gallery.test.zoomOut
@@ -34,7 +34,7 @@ internal class TouchInjectionScopeExtensionsTests {
   fun zoomsIn() {
     composeRule
       .apply { setContent { Gallery() } }
-      .onCurrentPage()
+      .onPage()
       .performTouchInput(TouchInjectionScope::zoomIn)
       .assertIsZoomedIn()
   }
@@ -43,7 +43,7 @@ internal class TouchInjectionScopeExtensionsTests {
   fun zoomsOut() {
     composeRule
       .apply { setContent { Gallery() } }
-      .onCurrentPage()
+      .onPage()
       .performZoomIn()
       .performTouchInput(TouchInjectionScope::zoomOut)
       .assertIsZoomedOut()
