@@ -20,9 +20,16 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Text
 import androidx.compose.ui.test.assertContentDescriptionEquals
+import androidx.compose.ui.test.hasTextExactly
+import androidx.compose.ui.test.isRoot
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.test.platform.app.InstrumentationRegistry
+import assertk.assertThat
+import assertk.assertions.isFalse
+import assertk.assertions.isTrue
+import com.jeanbarrossilva.orca.feature.gallery.test.get
 import com.jeanbarrossilva.orca.feature.gallery.test.onPage
 import com.jeanbarrossilva.orca.feature.gallery.test.onPager
 import com.jeanbarrossilva.orca.feature.gallery.test.performScrollToPageAt
@@ -32,6 +39,19 @@ import org.junit.Test
 
 internal class SemanticsNodeInteractionExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
+
+  @Test
+  fun getsWhetherMatcherMatchesNodeOfInteractionWhenItDoes() {
+    assertThat(composeRule.apply { setContent {} }.onRoot()[isRoot()]).isTrue()
+  }
+
+  @Test
+  fun getsWhetherMatcherMatchesNodeOfInteractionWhenItDoesNot() {
+    assertThat(
+        composeRule.apply { setContent { Text("🐋") } }.onNodeWithText("🐋")[hasTextExactly("🦈")]
+      )
+      .isFalse()
+  }
 
   @Test(expected = AssertionError::class)
   fun throwsWhenScrollingToPageOfNonGalleryPagerNode() {
