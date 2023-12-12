@@ -15,12 +15,22 @@
 
 package com.jeanbarrossilva.orca.feature.gallery
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.Text
+import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onRoot
+import androidx.test.platform.app.InstrumentationRegistry
 import com.jeanbarrossilva.orca.feature.gallery.test.assertIsZoomedIn
 import com.jeanbarrossilva.orca.feature.gallery.test.assertIsZoomedOut
 import com.jeanbarrossilva.orca.feature.gallery.test.onPage
+import com.jeanbarrossilva.orca.feature.gallery.test.onPager
+import com.jeanbarrossilva.orca.feature.gallery.test.performScrollToPageAt
 import com.jeanbarrossilva.orca.feature.gallery.test.performZoomIn
 import com.jeanbarrossilva.orca.feature.gallery.test.performZoomOut
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
 import org.junit.Rule
 import org.junit.Test
 
@@ -65,5 +75,31 @@ internal class SemanticsNodeInteractionExtensionsTests {
       .performZoomIn()
       .performZoomOut()
       .assertIsZoomedOut()
+  }
+
+  @Test(expected = AssertionError::class)
+  fun throwsWhenScrollingToPageOfNonGalleryPagerNode() {
+    composeRule
+      .apply {
+        setContent {
+          @OptIn(ExperimentalFoundationApi::class)
+          HorizontalPager(rememberPagerState { 2 }) { Text("$it") }
+        }
+      }
+      .run { onRoot().performScrollToPageAt(0) }
+  }
+
+  @Test
+  fun scrollsToPageOfGalleryPager() {
+    val context = InstrumentationRegistry.getInstrumentation().context
+    composeRule
+      .apply { setContent { Gallery() } }
+      .run {
+        onPager().performScrollToPageAt(0)
+        onPage()
+      }
+      .assertContentDescriptionEquals(
+        context.getString(R.string.feature_gallery_attachment, 2.formatted)
+      )
   }
 }

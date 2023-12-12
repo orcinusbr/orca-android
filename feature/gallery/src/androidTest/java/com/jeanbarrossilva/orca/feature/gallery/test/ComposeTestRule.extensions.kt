@@ -26,10 +26,17 @@ import com.jeanbarrossilva.orca.feature.gallery.Gallery
 /**
  * [SemanticsNodeInteraction] of a [Gallery]'s [HorizontalPager]'s current page.
  *
- * @see isPager
+ * @see onPager
  */
 internal fun ComposeTestRule.onPage(): SemanticsNodeInteraction {
-  return onNode(isPager()).onChildren().filterToOne(isDisplayed()).also {
-    waitUntil { it[isNotLoading()] }
-  }
+  return onPager().onChildren().filterToOne(isDisplayed()).also { waitUntil { it[isNotLoading()] } }
+}
+
+/**
+ * [SemanticsNodeInteraction] of a [Gallery]'s [HorizontalPager].
+ *
+ * @see isPager
+ */
+internal fun ComposeTestRule.onPager(): SemanticsNodeInteraction {
+  return onNode(isPager())
 }
