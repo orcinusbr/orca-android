@@ -20,12 +20,10 @@ import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
-import androidx.compose.ui.test.TouchInjectionScope
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.hasParent
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.performScrollToIndex
-import androidx.compose.ui.test.performTouchInput
 import com.jeanbarrossilva.orca.feature.gallery.Gallery
 
 /**
@@ -59,42 +57,4 @@ internal fun SemanticsNodeInteraction.performScrollToPageAt(index: Int): Semanti
     @OptIn(ExperimentalTestApi::class)
     waitUntilExactlyOneExists(hasParent(isPager()) and isDisplayed())
   }
-}
-
-/**
- * Asserts that the node has been zoomed into.
- *
- * @see isZoomedIn
- * @see TouchInjectionScope.zoomIn
- */
-internal fun SemanticsNodeInteraction.assertIsZoomedIn(): SemanticsNodeInteraction {
-  return assert(isZoomedIn())
-}
-
-/**
- * Asserts that the node has been zoomed out of.
- *
- * @see isZoomedIn
- * @see TouchInjectionScope.zoomOut
- */
-internal fun SemanticsNodeInteraction.assertIsZoomedOut(): SemanticsNodeInteraction {
-  return assert(isZoomedIn().not())
-}
-
-/**
- * Zooms into the [SemanticsNode].
- *
- * @see TouchInjectionScope.zoomIn
- */
-internal fun SemanticsNodeInteraction.performZoomIn(): SemanticsNodeInteraction {
-  return performTouchInput(TouchInjectionScope::zoomIn)
-}
-
-/**
- * Zooms out of the [SemanticsNode].
- *
- * @see TouchInjectionScope.zoomOut
- */
-internal fun SemanticsNodeInteraction.performZoomOut(): SemanticsNodeInteraction {
-  return performTouchInput(TouchInjectionScope::zoomOut)
 }

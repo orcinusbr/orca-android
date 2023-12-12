@@ -23,13 +23,9 @@ import androidx.compose.ui.platform.ViewRootForTest
 import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
-import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.isDisplayed
-import androidx.compose.ui.test.onParent
-import androidx.compose.ui.unit.Density
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.platform.app.InstrumentationRegistry
 import com.jeanbarrossilva.orca.feature.gallery.GALLERY_PAGER_TAG
 import com.jeanbarrossilva.orca.feature.gallery.Gallery
 
@@ -122,17 +118,4 @@ internal fun isDisplayed(): SemanticsMatcher {
 /** [SemanticsMatcher] that matches a [Gallery]'s [HorizontalPager]. */
 internal fun isPager(): SemanticsMatcher {
   return hasTestTag(GALLERY_PAGER_TAG)
-}
-
-/** [SemanticsMatcher] that matches a zoomed in [SemanticsNode]. */
-context(SemanticsNodeInteraction)
-
-internal fun isZoomedIn(): SemanticsMatcher {
-  return SemanticsMatcher("is zoomed in") {
-    val context = InstrumentationRegistry.getInstrumentation().context
-    val density = Density(context)
-    val bounds = with(density) { getUnclippedBoundsInRoot().toRect() }
-    val parentBounds = with(density) { onParent().getUnclippedBoundsInRoot().toRect() }
-    bounds.top < parentBounds.top && bounds.bottom < parentBounds.bottom
-  }
 }

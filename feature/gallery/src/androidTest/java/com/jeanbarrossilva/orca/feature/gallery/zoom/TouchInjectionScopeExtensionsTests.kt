@@ -13,17 +13,18 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.gallery
+package com.jeanbarrossilva.orca.feature.gallery.zoom
 
 import androidx.compose.ui.test.TouchInjectionScope
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performTouchInput
-import com.jeanbarrossilva.orca.feature.gallery.test.assertIsZoomedIn
-import com.jeanbarrossilva.orca.feature.gallery.test.assertIsZoomedOut
+import com.jeanbarrossilva.orca.feature.gallery.Gallery
 import com.jeanbarrossilva.orca.feature.gallery.test.onPage
-import com.jeanbarrossilva.orca.feature.gallery.test.performZoomIn
-import com.jeanbarrossilva.orca.feature.gallery.test.zoomIn
-import com.jeanbarrossilva.orca.feature.gallery.test.zoomOut
+import com.jeanbarrossilva.orca.feature.gallery.test.zoom.assertIsZoomedIn
+import com.jeanbarrossilva.orca.feature.gallery.test.zoom.assertIsZoomedOut
+import com.jeanbarrossilva.orca.feature.gallery.test.zoom.performZoomIn
+import com.jeanbarrossilva.orca.feature.gallery.test.zoom.zoomIn
+import com.jeanbarrossilva.orca.feature.gallery.test.zoom.zoomOut
 import org.junit.Rule
 import org.junit.Test
 

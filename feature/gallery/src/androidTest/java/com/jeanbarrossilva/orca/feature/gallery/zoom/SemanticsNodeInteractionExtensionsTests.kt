@@ -13,50 +13,58 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.gallery
+package com.jeanbarrossilva.orca.feature.gallery.zoom
 
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onParent
-import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
-import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
+import com.jeanbarrossilva.orca.feature.gallery.Gallery
 import com.jeanbarrossilva.orca.feature.gallery.test.onPage
-import com.jeanbarrossilva.orca.feature.gallery.test.performScrollToPageAt
 import com.jeanbarrossilva.orca.feature.gallery.test.zoom.assertIsZoomedIn
 import com.jeanbarrossilva.orca.feature.gallery.test.zoom.assertIsZoomedOut
 import com.jeanbarrossilva.orca.feature.gallery.test.zoom.performZoomIn
 import com.jeanbarrossilva.orca.feature.gallery.test.zoom.performZoomOut
-import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.`if`
 import org.junit.Rule
 import org.junit.Test
 
-internal class GalleryTests {
+internal class SemanticsNodeInteractionExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun swipesThroughEachAttachment() {
-    composeRule
-      .apply { setContent { Gallery() } }
-      .run {
-        repeat(Attachment.samples.size.dec()) { index ->
-          onPage().`if`(index < Attachment.samples.lastIndex) {
-            onParent().performScrollToPageAt(index)
-          }
-        }
-      }
+  fun performsZoomIn() {
+    composeRule.apply { setContent { Gallery() } }.onPage().performZoomIn().assertIsZoomedIn()
+  }
+
+  @Test(expected = AssertionError::class)
+  fun throwsWhenAssertingThatIsZoomedInWhenItIsNot() {
+    composeRule.apply { setContent { Gallery() } }.onPage().performZoomOut().assertIsZoomedIn()
   }
 
   @Test
-  fun zoomsIntoAndOutOfEachAttachment() {
+  fun assertsIsZoomedIn() {
+    composeRule.apply { setContent { Gallery() } }.onPage().performZoomIn().assertIsZoomedIn()
+  }
+
+  @Test
+  fun performsZoomOut() {
     composeRule
       .apply { setContent { Gallery() } }
-      .run {
-        repeat(Attachment.samples.size) { index ->
-          onPage().performZoomIn().assertIsZoomedIn().performZoomOut().assertIsZoomedOut().`if`(
-            index < Attachment.samples.lastIndex
-          ) {
-            onParent().performScrollToPageAt(index)
-          }
-        }
-      }
+      .onPage()
+      .performZoomIn()
+      .performZoomOut()
+      .assertIsZoomedOut()
+  }
+
+  @Test(expected = AssertionError::class)
+  fun throwsWhenAssertingThatIsZoomedOutWhenItIsNot() {
+    composeRule.apply { setContent { Gallery() } }.onPage().performZoomIn().assertIsZoomedOut()
+  }
+
+  @Test
+  fun assertsIsZoomedOut() {
+    composeRule
+      .apply { setContent { Gallery() } }
+      .onPage()
+      .performZoomIn()
+      .performZoomOut()
+      .assertIsZoomedOut()
   }
 }
