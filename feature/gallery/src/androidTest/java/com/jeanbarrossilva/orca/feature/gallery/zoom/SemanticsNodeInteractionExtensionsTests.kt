@@ -22,6 +22,7 @@ import com.jeanbarrossilva.orca.feature.gallery.test.zoom.assertIsZoomedIn
 import com.jeanbarrossilva.orca.feature.gallery.test.zoom.assertIsZoomedOut
 import com.jeanbarrossilva.orca.feature.gallery.test.zoom.performZoomIn
 import com.jeanbarrossilva.orca.feature.gallery.test.zoom.performZoomOut
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test
 
@@ -30,23 +31,35 @@ internal class SemanticsNodeInteractionExtensionsTests {
 
   @Test
   fun performsZoomIn() {
-    composeRule.apply { setContent { Gallery() } }.onPage().performZoomIn().assertIsZoomedIn()
+    composeRule
+      .apply { setContent { AutosTheme { Gallery() } } }
+      .onPage()
+      .performZoomIn()
+      .assertIsZoomedIn()
   }
 
   @Test(expected = AssertionError::class)
   fun throwsWhenAssertingThatIsZoomedInWhenItIsNot() {
-    composeRule.apply { setContent { Gallery() } }.onPage().performZoomOut().assertIsZoomedIn()
+    composeRule
+      .apply { setContent { AutosTheme { Gallery() } } }
+      .onPage()
+      .performZoomOut()
+      .assertIsZoomedIn()
   }
 
   @Test
   fun assertsIsZoomedIn() {
-    composeRule.apply { setContent { Gallery() } }.onPage().performZoomIn().assertIsZoomedIn()
+    composeRule
+      .apply { setContent { AutosTheme { Gallery() } } }
+      .onPage()
+      .performZoomIn()
+      .assertIsZoomedIn()
   }
 
   @Test
   fun performsZoomOut() {
     composeRule
-      .apply { setContent { Gallery() } }
+      .apply { setContent { AutosTheme { Gallery() } } }
       .onPage()
       .performZoomIn()
       .performZoomOut()
@@ -55,13 +68,17 @@ internal class SemanticsNodeInteractionExtensionsTests {
 
   @Test(expected = AssertionError::class)
   fun throwsWhenAssertingThatIsZoomedOutWhenItIsNot() {
-    composeRule.apply { setContent { Gallery() } }.onPage().performZoomIn().assertIsZoomedOut()
+    composeRule
+      .apply { setContent { AutosTheme { Gallery() } } }
+      .onPage()
+      .performZoomIn()
+      .assertIsZoomedOut()
   }
 
   @Test
   fun assertsIsZoomedOut() {
     composeRule
-      .apply { setContent { Gallery() } }
+      .apply { setContent { AutosTheme { Gallery() } } }
       .onPage()
       .performZoomIn()
       .performZoomOut()

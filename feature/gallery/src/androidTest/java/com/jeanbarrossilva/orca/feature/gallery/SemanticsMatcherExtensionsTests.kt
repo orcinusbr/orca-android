@@ -21,6 +21,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import com.jeanbarrossilva.orca.feature.gallery.test.isDisplayed
 import com.jeanbarrossilva.orca.feature.gallery.test.isPager
 import com.jeanbarrossilva.orca.feature.gallery.test.onPage
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test
 
@@ -29,11 +30,14 @@ internal class SemanticsMatcherExtensionsTests {
 
   @Test
   fun matchesDisplayedNode() {
-    composeRule.apply { setContent { Gallery() } }.onPage().assert(isDisplayed())
+    composeRule.apply { setContent { AutosTheme { Gallery() } } }.onPage().assert(isDisplayed())
   }
 
   @Test
   fun matchesPager() {
-    composeRule.apply { setContent { Gallery() } }.onNode(isPager()).assertIsDisplayed()
+    composeRule
+      .apply { setContent { AutosTheme { Gallery() } } }
+      .onNode(isPager())
+      .assertIsDisplayed()
   }
 }

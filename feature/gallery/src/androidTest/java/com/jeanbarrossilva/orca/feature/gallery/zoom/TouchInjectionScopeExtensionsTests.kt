@@ -25,6 +25,7 @@ import com.jeanbarrossilva.orca.feature.gallery.test.zoom.assertIsZoomedOut
 import com.jeanbarrossilva.orca.feature.gallery.test.zoom.performZoomIn
 import com.jeanbarrossilva.orca.feature.gallery.test.zoom.zoomIn
 import com.jeanbarrossilva.orca.feature.gallery.test.zoom.zoomOut
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test
 
@@ -34,7 +35,7 @@ internal class TouchInjectionScopeExtensionsTests {
   @Test
   fun zoomsIn() {
     composeRule
-      .apply { setContent { Gallery() } }
+      .apply { setContent { AutosTheme { Gallery() } } }
       .onPage()
       .performTouchInput(TouchInjectionScope::zoomIn)
       .assertIsZoomedIn()
@@ -43,7 +44,7 @@ internal class TouchInjectionScopeExtensionsTests {
   @Test
   fun zoomsOut() {
     composeRule
-      .apply { setContent { Gallery() } }
+      .apply { setContent { AutosTheme { Gallery() } } }
       .onPage()
       .performZoomIn()
       .performTouchInput(TouchInjectionScope::zoomOut)

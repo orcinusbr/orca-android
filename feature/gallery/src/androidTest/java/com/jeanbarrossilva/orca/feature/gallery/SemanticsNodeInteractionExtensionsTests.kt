@@ -33,6 +33,7 @@ import com.jeanbarrossilva.orca.feature.gallery.test.get
 import com.jeanbarrossilva.orca.feature.gallery.test.onPage
 import com.jeanbarrossilva.orca.feature.gallery.test.onPager
 import com.jeanbarrossilva.orca.feature.gallery.test.performScrollToPageAt
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
 import org.junit.Rule
 import org.junit.Test
@@ -69,7 +70,7 @@ internal class SemanticsNodeInteractionExtensionsTests {
   fun scrollsToPageOfGalleryPager() {
     val context = InstrumentationRegistry.getInstrumentation().context
     composeRule
-      .apply { setContent { Gallery() } }
+      .apply { setContent { AutosTheme { Gallery() } } }
       .run {
         onPager().performScrollToPageAt(0)
         onPage()

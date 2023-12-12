@@ -15,5 +15,6 @@
   -->
 
 <resources>
+    <string name="feature_gallery_close">Close</string>
     <string name="feature_gallery_attachment">Attachment #%s</string>
 </resources>

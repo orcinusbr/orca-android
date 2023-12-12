@@ -15,5 +15,6 @@
   -->
 
 <resources>
+    <string name="feature_gallery_close">Fechar</string>
     <string name="feature_gallery_attachment">Anexo nº %s</string>
 </resources>

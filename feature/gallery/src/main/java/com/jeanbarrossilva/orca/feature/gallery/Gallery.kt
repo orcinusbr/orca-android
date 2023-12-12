@@ -16,9 +16,13 @@
 package com.jeanbarrossilva.orca.feature.gallery
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -27,9 +31,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
-import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
+import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.std.imageloader.compose.Image
 import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
@@ -37,6 +43,7 @@ import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
 
+internal const val GALLERY_CLOSE_BUTTON = "gallery-close-button"
 internal const val GALLERY_PAGER_TAG = "gallery-pager-tag"
 
 @Composable
@@ -44,6 +51,7 @@ internal const val GALLERY_PAGER_TAG = "gallery-pager-tag"
 fun Gallery(
   primaryIndex: Int,
   secondary: List<Attachment>,
+  onClose: () -> Unit,
   modifier: Modifier = Modifier,
   primary: @Composable (Modifier, Sizing) -> Unit
 ) {
@@ -69,7 +77,7 @@ fun Gallery(
       }
     }
 
-  Scaffold(modifier, containerColor = Color.Black) {
+  Box(modifier.background(Color.Black)) {
     HorizontalPager(
       pagerState,
       Modifier.fillMaxHeight().testTag(GALLERY_PAGER_TAG),
@@ -78,12 +86,22 @@ fun Gallery(
     ) { page ->
       pages[page]()
     }
+
+    Box(Modifier.padding(AutosTheme.spacings.medium.dp)) {
+      HoverableIconButton(onClick = onClose, Modifier.testTag(GALLERY_CLOSE_BUTTON)) {
+        Icon(
+          AutosTheme.iconography.back.asImageVector,
+          contentDescription = stringResource(R.string.feature_gallery_close),
+          tint = Color.White
+        )
+      }
+    }
   }
 }
 
 @Composable
-internal fun Gallery(modifier: Modifier = Modifier) {
-  Gallery(primaryIndex = 0, Attachment.samples, modifier) { pageModifier, sizing ->
+internal fun Gallery(modifier: Modifier = Modifier, onClose: () -> Unit = {}) {
+  Gallery(primaryIndex = 0, Attachment.samples, onClose, modifier) { pageModifier, sizing ->
     Image(
       rememberImageLoader(com.jeanbarrossilva.orca.std.imageloader.compose.R.drawable.image),
       contentDescription = stringResource(R.string.feature_gallery_attachment, 1),

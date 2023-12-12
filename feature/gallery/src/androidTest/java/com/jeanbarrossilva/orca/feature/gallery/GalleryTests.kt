@@ -17,8 +17,12 @@ package com.jeanbarrossilva.orca.feature.gallery
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onParent
+import androidx.compose.ui.test.performClick
+import assertk.assertThat
+import assertk.assertions.isTrue
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
+import com.jeanbarrossilva.orca.feature.gallery.test.onCloseButton
 import com.jeanbarrossilva.orca.feature.gallery.test.onPage
 import com.jeanbarrossilva.orca.feature.gallery.test.performScrollToPageAt
 import com.jeanbarrossilva.orca.feature.gallery.test.zoom.assertIsZoomedIn
@@ -26,6 +30,7 @@ import com.jeanbarrossilva.orca.feature.gallery.test.zoom.assertIsZoomedOut
 import com.jeanbarrossilva.orca.feature.gallery.test.zoom.performZoomIn
 import com.jeanbarrossilva.orca.feature.gallery.test.zoom.performZoomOut
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.`if`
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test
 
@@ -33,9 +38,19 @@ internal class GalleryTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
+  fun closes() {
+    var isClosed = false
+    composeRule
+      .apply { setContent { AutosTheme { Gallery(onClose = { isClosed = true }) } } }
+      .onCloseButton()
+      .performClick()
+    assertThat(isClosed).isTrue()
+  }
+
+  @Test
   fun swipesThroughEachAttachment() {
     composeRule
-      .apply { setContent { Gallery() } }
+      .apply { setContent { AutosTheme { Gallery() } } }
       .run {
         repeat(Attachment.samples.size.dec()) { index ->
           onPage().`if`(index < Attachment.samples.lastIndex) {
@@ -48,7 +63,7 @@ internal class GalleryTests {
   @Test
   fun zoomsIntoAndOutOfEachAttachment() {
     composeRule
-      .apply { setContent { Gallery() } }
+      .apply { setContent { AutosTheme { Gallery() } } }
       .run {
         repeat(Attachment.samples.size) { index ->
           onPage().performZoomIn().assertIsZoomedIn().performZoomOut().assertIsZoomedOut().`if`(

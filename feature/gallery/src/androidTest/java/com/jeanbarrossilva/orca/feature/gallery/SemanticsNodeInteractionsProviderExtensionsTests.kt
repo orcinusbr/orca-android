@@ -17,7 +17,9 @@ package com.jeanbarrossilva.orca.feature.gallery
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import com.jeanbarrossilva.orca.feature.gallery.test.onCloseButton
 import com.jeanbarrossilva.orca.feature.gallery.test.onPager
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test
 
@@ -25,7 +27,15 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
+  fun findsCloseButton() {
+    composeRule
+      .apply { setContent { AutosTheme { Gallery() } } }
+      .onCloseButton()
+      .assertIsDisplayed()
+  }
+
+  @Test
   fun findsPager() {
-    composeRule.apply { setContent { Gallery() } }.onPager().assertIsDisplayed()
+    composeRule.apply { setContent { AutosTheme { Gallery() } } }.onPager().assertIsDisplayed()
   }
 }

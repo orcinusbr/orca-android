@@ -18,7 +18,15 @@ package com.jeanbarrossilva.orca.feature.gallery.test
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
+import androidx.compose.ui.test.onNodeWithTag
+import com.jeanbarrossilva.orca.feature.gallery.GALLERY_CLOSE_BUTTON
 import com.jeanbarrossilva.orca.feature.gallery.Gallery
+import com.jeanbarrossilva.orca.platform.autos.kit.action.button.icon.HoverableIconButton
+
+/** [SemanticsNodeInteraction] of a [Gallery]'s close [HoverableIconButton]. */
+internal fun SemanticsNodeInteractionsProvider.onCloseButton(): SemanticsNodeInteraction {
+  return onNodeWithTag(GALLERY_CLOSE_BUTTON)
+}
 
 /**
  * [SemanticsNodeInteraction] of a [Gallery]'s [HorizontalPager].
