@@ -17,15 +17,15 @@ package com.jeanbarrossilva.orca.feature.gallery
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import com.jeanbarrossilva.orca.feature.gallery.test.onPage
+import com.jeanbarrossilva.orca.feature.gallery.test.onPager
 import org.junit.Rule
 import org.junit.Test
 
-internal class ComposeTestRuleExtensionsTests {
+internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun findsCurrentPage() {
-    composeRule.apply { setContent { Gallery() } }.onPage().assertIsDisplayed()
+  fun findsPager() {
+    composeRule.apply { setContent { Gallery() } }.onPager().assertIsDisplayed()
   }
 }

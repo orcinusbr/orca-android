@@ -17,17 +17,14 @@ package com.jeanbarrossilva.orca.feature.gallery.test
 
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.ui.test.SemanticsNodeInteraction
-import androidx.compose.ui.test.filterToOne
-import androidx.compose.ui.test.junit4.ComposeTestRule
-import androidx.compose.ui.test.onChildren
-import com.jeanbarrossilva.loadable.placeholder.test.isNotLoading
+import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import com.jeanbarrossilva.orca.feature.gallery.Gallery
 
 /**
- * [SemanticsNodeInteraction] of a [Gallery]'s [HorizontalPager]'s current page.
+ * [SemanticsNodeInteraction] of a [Gallery]'s [HorizontalPager].
  *
- * @see onPager
+ * @see isPager
  */
-internal fun ComposeTestRule.onPage(): SemanticsNodeInteraction {
-  return onPager().onChildren().filterToOne(isDisplayed()).also { waitUntil { it[isNotLoading()] } }
+internal fun SemanticsNodeInteractionsProvider.onPager(): SemanticsNodeInteraction {
+  return onNode(isPager())
 }
