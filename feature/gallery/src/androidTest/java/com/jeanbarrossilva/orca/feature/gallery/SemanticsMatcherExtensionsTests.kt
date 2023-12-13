@@ -15,12 +15,15 @@
 
 package com.jeanbarrossilva.orca.feature.gallery
 
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.filterToOne
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onChildren
 import com.jeanbarrossilva.orca.feature.gallery.test.isDisplayed
+import com.jeanbarrossilva.orca.feature.gallery.test.isImage
 import com.jeanbarrossilva.orca.feature.gallery.test.isPage
 import com.jeanbarrossilva.orca.feature.gallery.test.isPager
 import com.jeanbarrossilva.orca.feature.gallery.test.onPage
@@ -35,6 +38,21 @@ internal class SemanticsMatcherExtensionsTests {
   @Test
   fun matchesDisplayedNode() {
     composeRule.apply { setContent { AutosTheme { Gallery() } } }.onPage().assert(isDisplayed())
+  }
+
+  @Test
+  fun matchesImage() {
+    composeRule
+      .apply {
+        setContent {
+          Image(
+            painterResource(com.jeanbarrossilva.orca.std.imageloader.compose.R.drawable.image),
+            contentDescription = "Image"
+          )
+        }
+      }
+      .onNode(isImage())
+      .assertIsDisplayed()
   }
 
   @Test

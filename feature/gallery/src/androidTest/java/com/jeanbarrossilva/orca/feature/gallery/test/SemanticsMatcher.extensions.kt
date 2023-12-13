@@ -20,7 +20,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.layout.LayoutInfo
 import androidx.compose.ui.platform.ViewRootForTest
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.SemanticsNode
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.hasParent
@@ -116,6 +119,17 @@ internal fun isDisplayed(): SemanticsMatcher {
   }
 }
 
+/**
+ * [SemanticsMatcher] that matches an image.
+ *
+ * @see Role.Image
+ */
+internal fun isImage(): SemanticsMatcher {
+  return SemanticsMatcher("is image") {
+    it.config.getOrNull(SemanticsProperties.Role) == Role.Image
+  }
+}
+
 /** [SemanticsMatcher] that matches a [Gallery]'s [HorizontalPager]. */
 internal fun isPager(): SemanticsMatcher {
   return hasTestTag(GALLERY_PAGER_TAG)
@@ -123,5 +137,5 @@ internal fun isPager(): SemanticsMatcher {
 
 /** [SemanticsMatcher] that matches a [Gallery]'s [HorizontalPager]'s current page. */
 internal fun isPage(): SemanticsMatcher {
-  return hasParent(isPager()) and isDisplayed()
+  return hasParent(isPager()) and isDisplayed() and isImage()
 }

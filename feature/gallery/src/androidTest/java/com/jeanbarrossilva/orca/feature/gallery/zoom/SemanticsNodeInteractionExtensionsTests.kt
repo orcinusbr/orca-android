@@ -43,6 +43,7 @@ internal class SemanticsNodeInteractionExtensionsTests {
     composeRule
       .apply { setContent { AutosTheme { Gallery() } } }
       .onPage()
+      .performZoomIn()
       .performZoomOut()
       .assertIsZoomedIn()
   }
