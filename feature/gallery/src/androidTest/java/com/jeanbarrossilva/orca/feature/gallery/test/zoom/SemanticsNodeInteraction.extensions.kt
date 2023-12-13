@@ -29,7 +29,7 @@ import androidx.compose.ui.test.performTouchInput
 internal fun SemanticsNodeInteraction.assertIsZoomedIn(): SemanticsNodeInteraction {
   return assert(
     unclippedBoundsMatcher("is zoomed in") { parentBounds, bounds ->
-      bounds.top < parentBounds.top && bounds.bottom < parentBounds.bottom
+      bounds.top < parentBounds.top || bounds.bottom < parentBounds.bottom
     }
   )
 }

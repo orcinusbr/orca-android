@@ -15,6 +15,7 @@
 
 package com.jeanbarrossilva.orca.feature.gallery.test
 
+import android.view.ViewConfiguration
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.filterToOne
@@ -29,5 +30,16 @@ import com.jeanbarrossilva.orca.feature.gallery.Gallery
  * @see onPager
  */
 internal fun ComposeTestRule.onPage(): SemanticsNodeInteraction {
-  return onPager().onChildren().filterToOne(isDisplayed()).also { waitUntil { it[isNotLoading()] } }
+  return onPager().onChildren().filterToOne(isPage()).also { waitUntil { it[isNotLoading()] } }
+}
+
+/**
+ * Waits until the double tap timeout duration (as it is defined by [ViewConfiguration]) has been
+ * elapsed.
+ *
+ * @see ViewConfiguration.getDoubleTapTimeout
+ */
+internal fun ComposeTestRule.waitForDoubleTapTimeout() {
+  val timeout = ViewConfiguration.getDoubleTapTimeout().toLong()
+  mainClock.advanceTimeBy(timeout)
 }

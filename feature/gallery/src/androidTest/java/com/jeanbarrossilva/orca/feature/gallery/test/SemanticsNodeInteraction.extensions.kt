@@ -21,7 +21,6 @@ import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assert
-import androidx.compose.ui.test.hasParent
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.performScrollToIndex
 import com.jeanbarrossilva.orca.feature.gallery.Gallery
@@ -54,7 +53,6 @@ internal fun SemanticsNodeInteraction.performScrollToPageAt(index: Int): Semanti
   assert(isPager()) { "Can only scroll to a page of a Gallery's HorizontalPager." }
   val position = index.inc()
   return performScrollToIndex(position).also {
-    @OptIn(ExperimentalTestApi::class)
-    waitUntilExactlyOneExists(hasParent(isPager()) and isDisplayed())
+    @OptIn(ExperimentalTestApi::class) waitUntilExactlyOneExists(isPage())
   }
 }

@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.component.stat.reblog
+package com.jeanbarrossilva.orca.platform.ui.component.stat.repost
 
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Surface
@@ -31,14 +31,15 @@ import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIcon
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconColors
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconDefaults
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconInteractiveness
+import com.jeanbarrossilva.orca.platform.ui.component.stat.Stat
 
-/** Tag that identifies a [ReblogStatIcon] for testing purposes. */
-const val REBLOG_STAT_ICON_TAG = "reblog-stat-icon"
+/** Tag that identifies a [RepostStatIcon] for testing purposes. */
+const val REPOST_STAT_ICON_TAG = "repost-stat-icon"
 
-/** Default values of a [ReblogStatIcon]. */
-object ReblogStatIconDefaults {
+/** Default values of a [RepostStatIcon]. */
+internal object RepostStatIconDefaults {
   /**
-   * [ActivateableStatIconColors] by which a [ReblogStatIcon] is colored by default.
+   * [ActivateableStatIconColors] by which a [RepostStatIcon] is colored by default.
    *
    * @param inactiveColor [Color] to color it with when it's inactive.
    * @param activeColor [Color] to color it with when it's active.
@@ -53,7 +54,7 @@ object ReblogStatIconDefaults {
 }
 
 /**
- * [ActivateableStatIconDefaults] that represents a "reblog" stat.
+ * [ActivateableStatIcon] that represents a repost [Stat].
  *
  * @param isActive Whether the state it represents is enabled.
  * @param interactiveness [ActivateableStatIconInteractiveness] that indicates whether this
@@ -62,11 +63,11 @@ object ReblogStatIconDefaults {
  * @param modifier [Modifier] to be applied to the underlying [ActivateableStatIconDefaults].
  */
 @Composable
-fun ReblogStatIcon(
+internal fun RepostStatIcon(
   isActive: Boolean,
   interactiveness: ActivateableStatIconInteractiveness,
   modifier: Modifier = Modifier,
-  colors: ActivateableStatIconColors = ReblogStatIconDefaults.colors()
+  colors: ActivateableStatIconColors = RepostStatIconDefaults.colors()
 ) {
   ActivateableStatIcon(
     AutosTheme.iconography.repost.asImageVector,
@@ -74,26 +75,26 @@ fun ReblogStatIcon(
     isActive,
     interactiveness,
     colors,
-    modifier.testTag(REBLOG_STAT_ICON_TAG)
+    modifier.testTag(REPOST_STAT_ICON_TAG)
   )
 }
 
 @Composable
 @MultiThemePreview
-private fun InactiveReblogStatIconPreview() {
+private fun InactiveRepostStatIconPreview() {
   AutosTheme {
     Surface(color = AutosTheme.colors.background.container.asColor) {
-      ReblogStatIcon(isActive = false, ActivateableStatIconInteractiveness.Still)
+      RepostStatIcon(isActive = false, ActivateableStatIconInteractiveness.Still)
     }
   }
 }
 
 @Composable
 @MultiThemePreview
-private fun ActiveReblogStatIconPreview() {
+private fun ActiveRepostStatIconPreview() {
   AutosTheme {
     Surface(color = AutosTheme.colors.background.container.asColor) {
-      ReblogStatIcon(isActive = true, ActivateableStatIconInteractiveness.Still)
+      RepostStatIcon(isActive = true, ActivateableStatIconInteractiveness.Still)
     }
   }
 }

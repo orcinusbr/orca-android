@@ -13,26 +13,26 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.stat
+package com.jeanbarrossilva.orca.platform.ui.component.stat.favorite
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconInteractiveness
-import com.jeanbarrossilva.orca.platform.ui.component.stat.favorite.FavoriteStatIcon
+import com.jeanbarrossilva.orca.platform.ui.component.stat.Stat
+import com.jeanbarrossilva.orca.platform.ui.component.stat.StatDefaults
+import com.jeanbarrossilva.orca.platform.ui.component.stat.StatPosition
+import com.jeanbarrossilva.orca.platform.ui.component.stat.StatsDetails
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.Stat
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.StatDefaults
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.StatPosition
 
 /** Tag that identifies a [PostPreview]'s favorite count stat for testing purposes. */
 const val POST_PREVIEW_FAVORITE_STAT_TAG = "post-preview-favorites-stat"
@@ -40,26 +40,28 @@ const val POST_PREVIEW_FAVORITE_STAT_TAG = "post-preview-favorites-stat"
 @Composable
 internal fun FavoriteStat(
   position: StatPosition,
-  preview: PostPreview,
+  details: StatsDetails,
   onClick: () -> Unit,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
+  inactiveContentColor: Color = StatDefaults.contentColor
 ) {
-  val isActive = remember(preview) { preview.isFavorite }
+  val isActive = remember(details, details::isFavorite)
 
   Stat(position, onClick, modifier.testTag(POST_PREVIEW_FAVORITE_STAT_TAG)) {
     val contentColor by
       animateColorAsState(
-        if (isActive) AutosTheme.colors.activation.favorite.asColor else LocalContentColor.current,
+        if (isActive) AutosTheme.colors.activation.favorite.asColor else inactiveContentColor,
         label = "ContentColor"
       )
 
     FavoriteStatIcon(
       isActive,
       ActivateableStatIconInteractiveness.Interactive { onClick() },
-      Modifier.size(StatDefaults.IconSize)
+      Modifier.size(StatDefaults.IconSize),
+      FavoriteStatIconDefaults.colors(inactiveContentColor)
     )
 
-    Text(preview.formattedFavoriteCount, color = contentColor)
+    Text(details.formattedFavoriteCount, color = contentColor)
   }
 }
 
@@ -67,7 +69,11 @@ internal fun FavoriteStat(
 @MultiThemePreview
 private fun InactiveFavoriteStatPreview() {
   AutosTheme {
-    FavoriteStat(StatPosition.SUBSEQUENT, PostPreview.sample.copy(isFavorite = false), onClick = {})
+    FavoriteStat(
+      StatPosition.SUBSEQUENT,
+      StatsDetails.sample.copy(isFavorite = false),
+      onClick = {}
+    )
   }
 }
 
@@ -75,6 +81,6 @@ private fun InactiveFavoriteStatPreview() {
 @MultiThemePreview
 private fun ActiveFavoriteStatPreview() {
   AutosTheme {
-    FavoriteStat(StatPosition.SUBSEQUENT, PostPreview.sample.copy(isFavorite = true), onClick = {})
+    FavoriteStat(StatPosition.SUBSEQUENT, StatsDetails.sample.copy(isFavorite = true), onClick = {})
   }
 }

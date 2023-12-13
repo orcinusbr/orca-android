@@ -46,6 +46,7 @@ import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
+import com.jeanbarrossilva.orca.platform.ui.component.stat.StatsDetails
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.Figure
@@ -66,18 +67,11 @@ internal data class PostDetails(
   val text: AnnotatedString,
   val figure: Figure?,
   private val publicationDateTime: ZonedDateTime,
-  private val commentCount: Int,
-  val isFavorite: Boolean,
-  private val favoriteCount: Int,
-  val isReblogged: Boolean,
-  private val reblogCount: Int,
+  val stats: StatsDetails,
   val url: URL
 ) : Serializable {
   val formattedPublicationDateTime = publicationDateTime.formatted
   val formattedUsername = AccountFormatter.username(account)
-  val formattedCommentCount = commentCount.formatted
-  val formattedFavoriteCount = favoriteCount.formatted
-  val formattedReblogCount = reblogCount.formatted
 
   companion object {
     val sample

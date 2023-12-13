@@ -15,8 +15,6 @@
 
 package com.jeanbarrossilva.orca.feature.postdetails.ui.header
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -24,28 +22,22 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
 import com.jeanbarrossilva.orca.feature.postdetails.PostDetails
-import com.jeanbarrossilva.orca.feature.postdetails.R
-import com.jeanbarrossilva.orca.feature.postdetails.ui.header.stat.FavoriteStat
-import com.jeanbarrossilva.orca.feature.postdetails.ui.header.stat.ReblogStat
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
-import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.SmallAvatar
+import com.jeanbarrossilva.orca.platform.ui.component.stat.Stats
 
 @Composable
 internal fun Header(modifier: Modifier = Modifier) {
@@ -87,32 +79,7 @@ internal fun Header(
     metadata = { Text(details.formattedPublicationDateTime) },
     stats = {
       Divider()
-
-      Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-        Stat {
-          Icon(
-            AutosTheme.iconography.comment.outlined.asImageVector,
-            contentDescription = stringResource(R.string.feature_post_details_comments)
-          )
-          Text(details.formattedCommentCount)
-        }
-
-        FavoriteStat(details, onClick = onFavorite)
-        ReblogStat(details, onClick = onRepost)
-
-        Stat {
-          Icon(
-            AutosTheme.iconography.share.outlined.asImageVector,
-            contentDescription = stringResource(R.string.feature_post_details_share),
-            Modifier.clickable(
-              remember(::MutableInteractionSource),
-              indication = null,
-              onClick = onShare
-            )
-          )
-        }
-      }
-
+      Stats(details.stats, onComment = {}, onFavorite, onRepost, onShare, Modifier.fillMaxWidth())
       Divider()
     },
     modifier

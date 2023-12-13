@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.ViewRootForTest
 import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.hasParent
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers
@@ -118,4 +119,9 @@ internal fun isDisplayed(): SemanticsMatcher {
 /** [SemanticsMatcher] that matches a [Gallery]'s [HorizontalPager]. */
 internal fun isPager(): SemanticsMatcher {
   return hasTestTag(GALLERY_PAGER_TAG)
+}
+
+/** [SemanticsMatcher] that matches a [Gallery]'s [HorizontalPager]'s current page. */
+internal fun isPage(): SemanticsMatcher {
+  return hasParent(isPager()) and isDisplayed()
 }

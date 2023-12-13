@@ -20,6 +20,7 @@ import com.jeanbarrossilva.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.repost.Repost
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.ui.component.stat.asStatsDetails
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.Figure
 import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
 import java.net.URL
@@ -70,11 +71,7 @@ internal fun Post.toPostPreview(colors: Colors, onLinkClick: (URL) -> Unit): Pos
     content.text.toAnnotatedString(colors),
     Figure.of(content, onLinkClick),
     publicationDateTime,
-    comment.count,
-    favorite.isEnabled,
-    favorite.count,
-    repost.isEnabled,
-    repost.count,
+    asStatsDetails(),
     url
   )
 }

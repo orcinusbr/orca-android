@@ -56,6 +56,7 @@ import com.jeanbarrossilva.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.post.Author
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
+import com.jeanbarrossilva.orca.core.feed.profile.post.stat.Stat
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSamples
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
@@ -67,9 +68,9 @@ import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.SmallAvatar
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
+import com.jeanbarrossilva.orca.platform.ui.component.stat.Stats
+import com.jeanbarrossilva.orca.platform.ui.component.stat.StatsDetails
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.Figure
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.stat.FavoriteStat
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.stat.ReblogStat
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.time.RelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.time.rememberRelativeTimeProvider
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
@@ -87,17 +88,8 @@ internal const val POST_PREVIEW_METADATA_TAG = "post-preview-metadata"
 /** Tag that identifies a [PostPreview]'s body for testing purposes. */
 internal const val POST_PREVIEW_BODY_TAG = "post-preview-body"
 
-/** Tag that identifies a [PostPreview]'s comment count stat for testing purposes. */
-internal const val POST_PREVIEW_COMMENT_COUNT_STAT_TAG = "post-preview-comments-stat"
-
-/** Tag that identifies a [PostPreview]'s reblog count stat for testing purposes. */
-internal const val POST_PREVIEW_REBLOG_COUNT_STAT_TAG = "post-preview-reblogs-stat"
-
 /** Tag that identifies a [PostPreview]'s reblog metadata for testing purposes. */
 internal const val POST_PREVIEW_REBLOG_METADATA_TAG = "post-preview-reblog-metadata"
-
-/** Tag that identifies a [PostPreview]'s share action for testing purposes. */
-internal const val POST_PREVIEW_SHARE_ACTION_TAG = "post-preview-share-action"
 
 /** Tag that identifies a [PostPreview] for testing purposes. */
 const val POST_PREVIEW_TAG = "post-preview"
@@ -122,11 +114,7 @@ private val bodyModifier = Modifier.testTag(POST_PREVIEW_BODY_TAG)
  * @param text Content written by the author.
  * @param figure [Figure] that can be interacted with.
  * @param publicationDateTime Zoned moment in time in which it was published.
- * @param commentCount Amount of comments.
- * @param isFavorite Whether it's marked as favorite.
- * @param favoriteCount Amount of times it's been marked as favorite.
- * @param isReblogged Whether it's reblogged.
- * @param reblogCount Amount of times it's been reblogged.
+ * @param stats [StatsDetails] of the [Post]'s [Stat]s.
  * @param url [URL] that leads to the [Post].
  */
 @Immutable
@@ -140,22 +128,9 @@ internal constructor(
   val text: AnnotatedString,
   val figure: Figure?,
   private val publicationDateTime: ZonedDateTime,
-  private val commentCount: Int,
-  val isFavorite: Boolean,
-  private val favoriteCount: Int,
-  val isReblogged: Boolean,
-  private val reblogCount: Int,
+  val stats: StatsDetails,
   internal val url: URL
 ) : Serializable {
-  /** Formatted, displayable version of [commentCount]. */
-  val formattedCommentCount = commentCount.formatted
-
-  /** Formatted, displayable version of [favoriteCount]. */
-  val formattedFavoriteCount = favoriteCount.formatted
-
-  /** Formatted, displayable version of [reblogCount]. */
-  val formattedReblogCount = reblogCount.formatted
-
   /**
    * Gets information about the author and how much time it's been since it was published.
    *
@@ -274,28 +249,7 @@ fun PostPreview(
       }
     },
     stats = {
-      Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-        Stat(
-          StatPosition.LEADING,
-          AutosTheme.iconography.comment.outlined.asImageVector,
-          contentDescription = stringResource(R.string.platform_ui_post_preview_comments),
-          onClick = {},
-          Modifier.testTag(POST_PREVIEW_COMMENT_COUNT_STAT_TAG)
-        ) {
-          Text(preview.formattedCommentCount)
-        }
-
-        FavoriteStat(StatPosition.SUBSEQUENT, preview, onClick = onFavorite)
-        ReblogStat(StatPosition.SUBSEQUENT, preview, onClick = onRepost)
-
-        Stat(
-          StatPosition.TRAILING,
-          AutosTheme.iconography.share.outlined.asImageVector,
-          contentDescription = stringResource(R.string.platform_ui_post_preview_share),
-          onClick = onShare,
-          Modifier.testTag(POST_PREVIEW_SHARE_ACTION_TAG)
-        )
-      }
+      Stats(preview.stats, onComment = {}, onFavorite, onRepost, onShare, Modifier.fillMaxWidth())
     },
     onClick,
     modifier
@@ -403,7 +357,12 @@ private fun LoadingPostPreviewPreview() {
 private fun LoadedPostPreviewWithDisabledStatsPreview() {
   AutosTheme {
     Surface(color = AutosTheme.colors.background.container.asColor) {
-      SamplePostPreview(preview = PostPreview.sample.copy(isFavorite = false, isReblogged = false))
+      SamplePostPreview(
+        preview =
+          PostPreview.sample.copy(
+            stats = StatsDetails.sample.copy(isFavorite = false, isReposted = false)
+          )
+      )
     }
   }
 }
@@ -414,7 +373,12 @@ private fun LoadedPostPreviewWithDisabledStatsPreview() {
 private fun LoadedPostPreviewWithEnabledStatsPreview() {
   AutosTheme {
     Surface(color = AutosTheme.colors.background.container.asColor) {
-      SamplePostPreview(preview = PostPreview.sample.copy(isFavorite = true, isReblogged = true))
+      SamplePostPreview(
+        preview =
+          PostPreview.sample.copy(
+            stats = StatsDetails.sample.copy(isFavorite = true, isReposted = true)
+          )
+      )
     }
   }
 }

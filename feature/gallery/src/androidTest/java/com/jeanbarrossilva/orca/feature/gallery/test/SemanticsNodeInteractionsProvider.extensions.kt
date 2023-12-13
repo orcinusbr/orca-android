@@ -19,13 +19,55 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.onNodeWithTag
-import com.jeanbarrossilva.orca.feature.gallery.GALLERY_CLOSE_BUTTON
+import com.jeanbarrossilva.orca.feature.gallery.Actions
+import com.jeanbarrossilva.orca.feature.gallery.GALLERY_ACTIONS_CLOSE_BUTTON_TAG
+import com.jeanbarrossilva.orca.feature.gallery.GALLERY_ACTIONS_OPTIONS_BUTTON_TAG
+import com.jeanbarrossilva.orca.feature.gallery.GALLERY_ACTIONS_OPTIONS_DOWNLOADS_ITEM_TAG
+import com.jeanbarrossilva.orca.feature.gallery.GALLERY_ACTIONS_OPTIONS_MENU_TAG
+import com.jeanbarrossilva.orca.feature.gallery.GALLERY_ACTIONS_TAG
 import com.jeanbarrossilva.orca.feature.gallery.Gallery
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 
-/** [SemanticsNodeInteraction] of a [Gallery]'s close [HoverableIconButton]. */
-internal fun SemanticsNodeInteractionsProvider.onCloseButton(): SemanticsNodeInteraction {
-  return onNodeWithTag(GALLERY_CLOSE_BUTTON)
+/** [SemanticsNodeInteraction] of a [Gallery]'s [Actions]. */
+internal fun SemanticsNodeInteractionsProvider.onActions(): SemanticsNodeInteraction {
+  return onNodeWithTag(GALLERY_ACTIONS_TAG)
+}
+
+/**
+ * [SemanticsNodeInteraction] of a [Gallery]'s [Actions]' close [HoverableIconButton].
+ *
+ * @see onActions
+ */
+internal fun SemanticsNodeInteractionsProvider.onCloseActionButton(): SemanticsNodeInteraction {
+  return onNodeWithTag(GALLERY_ACTIONS_CLOSE_BUTTON_TAG)
+}
+
+/**
+ * [SemanticsNodeInteraction] of a [Gallery]'s [Actions]' download option [DropdownMenuItem].
+ *
+ * @see onActions
+ * @see onOptionsButton
+ */
+internal fun SemanticsNodeInteractionsProvider.onDownloadItem(): SemanticsNodeInteraction {
+  return onNodeWithTag(GALLERY_ACTIONS_OPTIONS_DOWNLOADS_ITEM_TAG)
+}
+
+/**
+ * [SemanticsNodeInteraction] of a [Gallery]'s [Actions]' options [HoverableIconButton].
+ *
+ * @see onActions
+ */
+internal fun SemanticsNodeInteractionsProvider.onOptionsButton(): SemanticsNodeInteraction {
+  return onNodeWithTag(GALLERY_ACTIONS_OPTIONS_BUTTON_TAG)
+}
+
+/**
+ * [SemanticsNodeInteraction] of a [Gallery]'s [Actions]' options [DropdownMenu].
+ *
+ * @see onActions
+ */
+internal fun SemanticsNodeInteractionsProvider.onOptionsMenu(): SemanticsNodeInteraction {
+  return onNodeWithTag(GALLERY_ACTIONS_OPTIONS_MENU_TAG)
 }
 
 /**

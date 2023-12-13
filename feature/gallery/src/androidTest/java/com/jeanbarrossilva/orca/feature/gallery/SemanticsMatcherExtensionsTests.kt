@@ -17,10 +17,14 @@ package com.jeanbarrossilva.orca.feature.gallery
 
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.filterToOne
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onChildren
 import com.jeanbarrossilva.orca.feature.gallery.test.isDisplayed
+import com.jeanbarrossilva.orca.feature.gallery.test.isPage
 import com.jeanbarrossilva.orca.feature.gallery.test.isPager
 import com.jeanbarrossilva.orca.feature.gallery.test.onPage
+import com.jeanbarrossilva.orca.feature.gallery.test.onPager
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test
@@ -38,6 +42,16 @@ internal class SemanticsMatcherExtensionsTests {
     composeRule
       .apply { setContent { AutosTheme { Gallery() } } }
       .onNode(isPager())
+      .assertIsDisplayed()
+  }
+
+  @Test
+  fun matchesPage() {
+    composeRule
+      .apply { setContent { AutosTheme { Gallery() } } }
+      .onPager()
+      .onChildren()
+      .filterToOne(isPage())
       .assertIsDisplayed()
   }
 }

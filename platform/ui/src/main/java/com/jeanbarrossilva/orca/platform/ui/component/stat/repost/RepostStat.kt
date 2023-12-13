@@ -13,10 +13,10 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.stat
+package com.jeanbarrossilva.orca.platform.ui.component.stat.repost
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.material3.LocalContentColor
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,34 +24,43 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconInteractiveness
-import com.jeanbarrossilva.orca.platform.ui.component.stat.reblog.ReblogStatIcon
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.POST_PREVIEW_REBLOG_COUNT_STAT_TAG
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.Stat
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.StatPosition
+import com.jeanbarrossilva.orca.platform.ui.component.stat.Stat
+import com.jeanbarrossilva.orca.platform.ui.component.stat.StatDefaults
+import com.jeanbarrossilva.orca.platform.ui.component.stat.StatPosition
+import com.jeanbarrossilva.orca.platform.ui.component.stat.StatsDetails
+
+/** Tag that identifies a [RepostStat] for testing purposes. */
+const val REPOST_STAT_TAG = "repost-stat"
 
 @Composable
-internal fun ReblogStat(
+internal fun RepostStat(
   position: StatPosition,
-  preview: PostPreview,
+  details: StatsDetails,
   onClick: () -> Unit,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
+  inactiveContentColor: Color = StatDefaults.contentColor
 ) {
-  val isActive = remember(preview, preview::isReblogged)
+  val isActive = remember(details, details::isReposted)
 
-  Stat(position, onClick, modifier.testTag(POST_PREVIEW_REBLOG_COUNT_STAT_TAG)) {
+  Stat(position, onClick, modifier.testTag(REPOST_STAT_TAG)) {
     val contentColor by
       animateColorAsState(
-        if (isActive) Color(0xFF81C784) else LocalContentColor.current,
+        if (isActive) AutosTheme.colors.activation.reposted.asColor else inactiveContentColor,
         label = "ContentColor"
       )
 
-    ReblogStatIcon(isActive, ActivateableStatIconInteractiveness.Interactive { onClick() })
+    RepostStatIcon(
+      isActive,
+      ActivateableStatIconInteractiveness.Interactive { onClick() },
+      Modifier.size(StatDefaults.IconSize),
+      RepostStatIconDefaults.colors(inactiveColor = inactiveContentColor)
+    )
 
-    Text(preview.formattedReblogCount, color = contentColor)
+    Text(details.formattedReblogCount, color = contentColor)
   }
 }
 
@@ -59,7 +68,7 @@ internal fun ReblogStat(
 @MultiThemePreview
 private fun InactiveReblogStatPreview() {
   AutosTheme {
-    ReblogStat(StatPosition.SUBSEQUENT, PostPreview.sample.copy(isReblogged = false), onClick = {})
+    RepostStat(StatPosition.SUBSEQUENT, StatsDetails.sample.copy(isReposted = false), onClick = {})
   }
 }
 
@@ -67,6 +76,6 @@ private fun InactiveReblogStatPreview() {
 @MultiThemePreview
 private fun ActiveReblogStatPreview() {
   AutosTheme {
-    ReblogStat(StatPosition.SUBSEQUENT, PostPreview.sample.copy(isReblogged = true), onClick = {})
+    RepostStat(StatPosition.SUBSEQUENT, StatsDetails.sample.copy(isReposted = true), onClick = {})
   }
 }

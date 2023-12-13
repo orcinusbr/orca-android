@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.component.timeline.post
+package com.jeanbarrossilva.orca.platform.ui.component.stat
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
@@ -39,10 +40,12 @@ import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.kit.action.Hoverable
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconDefaults
 
 internal object StatDefaults {
   val IconSize = ActivateableStatIconDefaults.Size
+
+  val contentColor
+    @Composable get() = AutosTheme.colors.secondary.asColor
 }
 
 internal enum class StatPosition {
@@ -69,9 +72,10 @@ internal fun Stat(
   contentDescription: String,
   onClick: () -> Unit,
   modifier: Modifier = Modifier,
+  contentColor: Color = StatDefaults.contentColor,
   label: @Composable () -> Unit = {}
 ) {
-  Stat(position, onClick, modifier) {
+  Stat(position, onClick, modifier, contentColor) {
     Icon(vector, contentDescription, Modifier.size(StatDefaults.IconSize))
     label()
   }
@@ -82,10 +86,10 @@ internal fun Stat(
   position: StatPosition,
   onClick: () -> Unit,
   modifier: Modifier = Modifier,
+  contentColor: Color = StatDefaults.contentColor,
   content: @Composable RowScope.() -> Unit
 ) {
   val spacing = AutosTheme.spacings.small.dp
-  val contentColor = AutosTheme.colors.secondary.asColor
 
   Hoverable(modifier.padding(position.padding).clickable(role = Role.Button, onClick = onClick)) {
     Row(

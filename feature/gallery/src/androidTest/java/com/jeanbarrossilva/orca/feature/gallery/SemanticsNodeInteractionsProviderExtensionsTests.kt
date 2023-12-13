@@ -17,7 +17,12 @@ package com.jeanbarrossilva.orca.feature.gallery
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import com.jeanbarrossilva.orca.feature.gallery.test.onCloseButton
+import androidx.compose.ui.test.performClick
+import com.jeanbarrossilva.orca.feature.gallery.test.onActions
+import com.jeanbarrossilva.orca.feature.gallery.test.onCloseActionButton
+import com.jeanbarrossilva.orca.feature.gallery.test.onDownloadItem
+import com.jeanbarrossilva.orca.feature.gallery.test.onOptionsButton
+import com.jeanbarrossilva.orca.feature.gallery.test.onOptionsMenu
 import com.jeanbarrossilva.orca.feature.gallery.test.onPager
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
@@ -27,10 +32,40 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun findsCloseButton() {
+  fun findsActions() {
+    composeRule.apply { setContent { AutosTheme { Gallery() } } }.onActions().assertIsDisplayed()
+  }
+
+  @Test
+  fun findsCloseActionButton() {
+    composeRule
+      .apply { setContent { AutosTheme { Actions() } } }
+      .onCloseActionButton()
+      .assertIsDisplayed()
+  }
+
+  @Test
+  fun findsOptionsButton() {
+    composeRule
+      .apply { setContent { AutosTheme { Actions() } } }
+      .onOptionsButton()
+      .assertIsDisplayed()
+  }
+
+  @Test
+  fun findsOptionsMenu() {
     composeRule
       .apply { setContent { AutosTheme { Gallery() } } }
-      .onCloseButton()
+      .apply { onOptionsButton().performClick() }
+      .onOptionsMenu()
+      .assertIsDisplayed()
+  }
+
+  @Test
+  fun findsDownloadItem() {
+    composeRule
+      .apply { setContent { AutosTheme { Actions(areOptionsVisible = true) } } }
+      .onDownloadItem()
       .assertIsDisplayed()
   }
 

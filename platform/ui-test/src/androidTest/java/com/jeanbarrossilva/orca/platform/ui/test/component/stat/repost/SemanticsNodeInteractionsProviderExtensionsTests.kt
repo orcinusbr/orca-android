@@ -13,33 +13,20 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.gallery
+package com.jeanbarrossilva.orca.platform.ui.test.component.stat.repost
 
-import android.view.ViewConfiguration
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
-import assertk.assertThat
-import assertk.assertions.isGreaterThanOrEqualTo
-import com.jeanbarrossilva.orca.feature.gallery.test.onPage
-import com.jeanbarrossilva.orca.feature.gallery.test.waitForDoubleTapTimeout
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.ui.component.stat.Stats
 import org.junit.Rule
 import org.junit.Test
 
-internal class ComposeTestRuleExtensionsTests {
+internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun findsCurrentPage() {
-    composeRule.apply { setContent { AutosTheme { Gallery() } } }.onPage().assertIsDisplayed()
-  }
-
-  @Test
-  fun waitsForDoubleTapTimeout() {
-    assertThat(
-        composeRule.apply(ComposeContentTestRule::waitForDoubleTapTimeout).mainClock.currentTime
-      )
-      .isGreaterThanOrEqualTo(ViewConfiguration.getDoubleTapTimeout().toLong())
+  fun findsRepostStat() {
+    composeRule.apply { setContent { AutosTheme { Stats() } } }.onRepostStat().assertIsDisplayed()
   }
 }

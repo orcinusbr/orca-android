@@ -21,11 +21,13 @@ import androidx.compose.runtime.getValue
 import com.jeanbarrossilva.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.ui.component.stat.asStatsDetails
+import com.jeanbarrossilva.orca.platform.ui.component.stat.asStatsDetailsFlow
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.Figure
 import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
 import java.net.URL
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 
 /**
  * Converts this [Post] into a [Flow] of [PostDetails].
@@ -34,13 +36,7 @@ import kotlinx.coroutines.flow.combine
  * @param onLinkClick Lambda to be run whenever the [Figure.Link]'s content gets clicked.
  */
 internal fun Post.toPostDetailsFlow(colors: Colors, onLinkClick: (URL) -> Unit): Flow<PostDetails> {
-  return combine(
-    comment.countFlow,
-    favorite.isEnabledFlow,
-    favorite.countFlow,
-    repost.isEnabledFlow,
-    repost.countFlow
-  ) { commentCount, isFavorite, favoriteCount, isReblogged, reblogCount ->
+  return asStatsDetailsFlow().map {
     PostDetails(
       id,
       author.avatarLoader,
@@ -49,11 +45,7 @@ internal fun Post.toPostDetailsFlow(colors: Colors, onLinkClick: (URL) -> Unit):
       content.text.toAnnotatedString(colors),
       Figure.of(content, onLinkClick),
       publicationDateTime,
-      commentCount,
-      isFavorite,
-      favoriteCount,
-      isReblogged,
-      reblogCount,
+      it,
       url
     )
   }
@@ -66,11 +58,7 @@ internal fun Post.toPostDetailsFlow(colors: Colors, onLinkClick: (URL) -> Unit):
  */
 @Composable
 internal fun Post.toPostDetails(onLinkClick: (URL) -> Unit): PostDetails {
-  val commentCount by comment.countFlow.collectAsState()
-  val isFavorite by favorite.isEnabledFlow.collectAsState()
-  val favoriteCount by favorite.countFlow.collectAsState()
-  val isReblogged by repost.isEnabledFlow.collectAsState()
-  val reblogCount by repost.countFlow.collectAsState()
+  val stats by asStatsDetailsFlow().collectAsState(asStatsDetails())
   return PostDetails(
     id,
     author.avatarLoader,
@@ -79,11 +67,7 @@ internal fun Post.toPostDetails(onLinkClick: (URL) -> Unit): PostDetails {
     content.text.toAnnotatedString(AutosTheme.colors),
     Figure.of(content, onLinkClick),
     publicationDateTime,
-    commentCount,
-    isFavorite,
-    favoriteCount,
-    isReblogged,
-    reblogCount,
+    stats,
     url
   )
 }
