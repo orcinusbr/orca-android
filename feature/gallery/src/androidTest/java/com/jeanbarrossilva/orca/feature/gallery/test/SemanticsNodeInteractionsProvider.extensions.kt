@@ -16,6 +16,7 @@
 package com.jeanbarrossilva.orca.feature.gallery.test
 
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.onNodeWithTag
@@ -27,6 +28,7 @@ import com.jeanbarrossilva.orca.feature.gallery.GALLERY_ACTIONS_OPTIONS_MENU_TAG
 import com.jeanbarrossilva.orca.feature.gallery.GALLERY_ACTIONS_TAG
 import com.jeanbarrossilva.orca.feature.gallery.Gallery
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.icon.HoverableIconButton
+import com.jeanbarrossilva.orca.platform.autos.kit.menu.DropdownMenu
 
 /** [SemanticsNodeInteraction] of a [Gallery]'s [Actions]. */
 internal fun SemanticsNodeInteractionsProvider.onActions(): SemanticsNodeInteraction {
