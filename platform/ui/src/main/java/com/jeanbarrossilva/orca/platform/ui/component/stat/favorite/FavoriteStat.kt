@@ -32,10 +32,9 @@ import com.jeanbarrossilva.orca.platform.ui.component.stat.Stat
 import com.jeanbarrossilva.orca.platform.ui.component.stat.StatDefaults
 import com.jeanbarrossilva.orca.platform.ui.component.stat.StatPosition
 import com.jeanbarrossilva.orca.platform.ui.component.stat.StatsDetails
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
 
-/** Tag that identifies a [PostPreview]'s favorite count stat for testing purposes. */
-const val POST_PREVIEW_FAVORITE_STAT_TAG = "post-preview-favorites-stat"
+/** Tag that identifies a [FavoriteStat] for testing purposes. */
+const val FAVORITE_STAT_TAG = "favorites-stat"
 
 @Composable
 internal fun FavoriteStat(
@@ -47,7 +46,7 @@ internal fun FavoriteStat(
 ) {
   val isActive = remember(details, details::isFavorite)
 
-  Stat(position, onClick, modifier.testTag(POST_PREVIEW_FAVORITE_STAT_TAG)) {
+  Stat(position, onClick, modifier.testTag(FAVORITE_STAT_TAG)) {
     val contentColor by
       animateColorAsState(
         if (isActive) AutosTheme.colors.activation.favorite.asColor else inactiveContentColor,

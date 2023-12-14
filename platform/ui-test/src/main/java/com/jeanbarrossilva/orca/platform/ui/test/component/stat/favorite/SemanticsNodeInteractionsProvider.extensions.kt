@@ -19,9 +19,9 @@ import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithTag
 import com.jeanbarrossilva.orca.platform.ui.component.stat.Stats
-import com.jeanbarrossilva.orca.platform.ui.component.stat.favorite.POST_PREVIEW_FAVORITE_STAT_TAG
+import com.jeanbarrossilva.orca.platform.ui.component.stat.favorite.FAVORITE_STAT_TAG
 
 /** [SemanticsNodeInteraction] of [Stats]' favorite stat count. */
 fun ComposeTestRule.onFavoriteStat(): SemanticsNodeInteraction {
-  return onNodeWithTag(POST_PREVIEW_FAVORITE_STAT_TAG, useUnmergedTree = true)
+  return onNodeWithTag(FAVORITE_STAT_TAG, useUnmergedTree = true)
 }

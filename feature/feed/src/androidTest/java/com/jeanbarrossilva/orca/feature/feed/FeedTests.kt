@@ -25,7 +25,7 @@ import androidx.compose.ui.test.performScrollTo
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
-import com.jeanbarrossilva.orca.platform.ui.component.stat.favorite.POST_PREVIEW_FAVORITE_STAT_TAG
+import com.jeanbarrossilva.orca.platform.ui.component.stat.favorite.FAVORITE_STAT_TAG
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.onPostPreviews
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.time.Time4JTestRule
@@ -53,7 +53,7 @@ internal class FeedTests {
       .onPostPreviews()
       .onFirst()
       .onChildren()
-      .filterToOne(hasTestTag(POST_PREVIEW_FAVORITE_STAT_TAG))
+      .filterToOne(hasTestTag(FAVORITE_STAT_TAG))
       .performScrollTo()
       .performClick()
     assertTrue(hasCallbackBeenRun)
