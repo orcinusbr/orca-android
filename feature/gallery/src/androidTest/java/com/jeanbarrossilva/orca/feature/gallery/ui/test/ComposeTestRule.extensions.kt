@@ -17,13 +17,14 @@ package com.jeanbarrossilva.orca.feature.gallery.ui.test
 
 import android.view.ViewConfiguration
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.filterToOne
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onChildren
 import com.jeanbarrossilva.loadable.placeholder.test.isNotLoading
 import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
-import kotlin.time.Duration.Companion.seconds
+import com.jeanbarrossilva.orca.platform.ui.test.DefaultTimeout
 
 /**
  * [SemanticsNodeInteraction] of a [Gallery]'s [HorizontalPager]'s current page.
@@ -31,9 +32,12 @@ import kotlin.time.Duration.Companion.seconds
  * @see onPager
  */
 internal fun ComposeTestRule.onPage(): SemanticsNodeInteraction {
-  return onPager().onChildren().filterToOne(isPage()).also {
-    waitUntil(4.seconds.inWholeMilliseconds) { it[isNotLoading()] }
-  }
+  val nonLoadingPage = isPage() and isNotLoading()
+
+  @OptIn(ExperimentalTestApi::class)
+  waitUntilExactlyOneExists(nonLoadingPage, DefaultTimeout.inWholeMilliseconds)
+
+  return onPager().onChildren().filterToOne(nonLoadingPage)
 }
 
 /**
