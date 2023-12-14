@@ -25,8 +25,8 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.sample
-import com.jeanbarrossilva.orca.feature.gallery.Gallery
 import com.jeanbarrossilva.orca.feature.gallery.test.activity.GalleryActivity
+import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
 import com.jeanbarrossilva.orca.platform.ui.core.Intent
 import com.jeanbarrossilva.orca.std.imageloader.compose.Image

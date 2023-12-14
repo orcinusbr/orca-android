@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.gallery
+package com.jeanbarrossilva.orca.feature.gallery.ui
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.HorizontalPager
@@ -32,11 +32,12 @@ import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
-import com.jeanbarrossilva.orca.feature.gallery.test.get
-import com.jeanbarrossilva.orca.feature.gallery.test.onPage
-import com.jeanbarrossilva.orca.feature.gallery.test.onPager
-import com.jeanbarrossilva.orca.feature.gallery.test.performScrollToEachPage
-import com.jeanbarrossilva.orca.feature.gallery.test.performScrollToPageAt
+import com.jeanbarrossilva.orca.feature.gallery.R
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.get
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.onPage
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.onPager
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.performScrollToEachPage
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.performScrollToPageAt
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
 import org.junit.Rule

@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.gallery.test
+package com.jeanbarrossilva.orca.feature.gallery.ui.test
 
 import android.view.ViewConfiguration
 import androidx.compose.foundation.pager.HorizontalPager
@@ -22,7 +22,7 @@ import androidx.compose.ui.test.filterToOne
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onChildren
 import com.jeanbarrossilva.loadable.placeholder.test.isNotLoading
-import com.jeanbarrossilva.orca.feature.gallery.Gallery
+import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
 import kotlin.time.Duration.Companion.seconds
 
 /**

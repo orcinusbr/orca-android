@@ -13,17 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.gallery
+package com.jeanbarrossilva.orca.feature.gallery.ui
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performClick
-import com.jeanbarrossilva.orca.feature.gallery.test.onActions
-import com.jeanbarrossilva.orca.feature.gallery.test.onCloseActionButton
-import com.jeanbarrossilva.orca.feature.gallery.test.onDownloadItem
-import com.jeanbarrossilva.orca.feature.gallery.test.onOptionsButton
-import com.jeanbarrossilva.orca.feature.gallery.test.onOptionsMenu
-import com.jeanbarrossilva.orca.feature.gallery.test.onPager
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.onActions
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.onCloseActionButton
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.onDownloadItem
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.onOptionsButton
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.onOptionsMenu
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.onPager
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test

@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.gallery.test.zoom
+package com.jeanbarrossilva.orca.feature.gallery.ui.test.zoom
 
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.semantics.SemanticsNode

@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.gallery
+package com.jeanbarrossilva.orca.feature.gallery.ui
 
 import androidx.compose.ui.test.TouchInjectionScope
 import androidx.compose.ui.test.assertIsDisplayed
@@ -24,19 +24,19 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import assertk.assertThat
 import assertk.assertions.isTrue
-import com.jeanbarrossilva.orca.feature.gallery.test.onActions
-import com.jeanbarrossilva.orca.feature.gallery.test.onCloseActionButton
-import com.jeanbarrossilva.orca.feature.gallery.test.onDownloadItem
-import com.jeanbarrossilva.orca.feature.gallery.test.onOptionsButton
-import com.jeanbarrossilva.orca.feature.gallery.test.onOptionsMenu
-import com.jeanbarrossilva.orca.feature.gallery.test.onPage
-import com.jeanbarrossilva.orca.feature.gallery.test.onPager
-import com.jeanbarrossilva.orca.feature.gallery.test.performScrollToEachPage
-import com.jeanbarrossilva.orca.feature.gallery.test.waitForDoubleTapTimeout
-import com.jeanbarrossilva.orca.feature.gallery.test.zoom.assertIsZoomedIn
-import com.jeanbarrossilva.orca.feature.gallery.test.zoom.assertIsZoomedOut
-import com.jeanbarrossilva.orca.feature.gallery.test.zoom.performZoomIn
-import com.jeanbarrossilva.orca.feature.gallery.test.zoom.performZoomOut
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.onActions
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.onCloseActionButton
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.onDownloadItem
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.onOptionsButton
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.onOptionsMenu
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.onPage
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.onPager
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.performScrollToEachPage
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.waitForDoubleTapTimeout
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.zoom.assertIsZoomedIn
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.zoom.assertIsZoomedOut
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.zoom.performZoomIn
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.zoom.performZoomOut
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.test.component.stat.favorite.onFavoriteStat
 import com.jeanbarrossilva.orca.platform.ui.test.component.stat.onCommentStat

@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.gallery
+package com.jeanbarrossilva.orca.feature.gallery.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -41,9 +41,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
+import com.jeanbarrossilva.orca.feature.gallery.GalleryBoundary
+import com.jeanbarrossilva.orca.feature.gallery.GalleryViewModel
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.component.stat.StatsDetails
 import com.jeanbarrossilva.orca.std.imageloader.compose.Image
+import com.jeanbarrossilva.orca.std.imageloader.compose.R
 import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
 import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
 import kotlinx.coroutines.launch
@@ -102,8 +105,12 @@ internal fun Gallery(
     modifier
   ) { pageModifier, sizing ->
     Image(
-      rememberImageLoader(com.jeanbarrossilva.orca.std.imageloader.compose.R.drawable.image),
-      contentDescription = stringResource(R.string.feature_gallery_attachment, 1),
+      rememberImageLoader(R.drawable.image),
+      contentDescription =
+        stringResource(
+          com.jeanbarrossilva.orca.feature.gallery.R.string.feature_gallery_attachment,
+          1
+        ),
       pageModifier,
       sizing
     )
@@ -156,7 +163,11 @@ private fun Gallery(
           } else {
             Image(
               rememberImageLoader(secondary[index - if (index < primaryIndex) 0 else 1].url),
-              contentDescription = stringResource(R.string.feature_gallery_attachment, index.inc()),
+              contentDescription =
+                stringResource(
+                  com.jeanbarrossilva.orca.feature.gallery.R.string.feature_gallery_attachment,
+                  index.inc()
+                ),
               pageModifier,
               sizing
             )

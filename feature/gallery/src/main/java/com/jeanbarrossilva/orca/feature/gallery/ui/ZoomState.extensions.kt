@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.gallery
+package com.jeanbarrossilva.orca.feature.gallery.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State

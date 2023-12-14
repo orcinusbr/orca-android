@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.gallery.test
+package com.jeanbarrossilva.orca.feature.gallery.ui.test
 
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.ui.geometry.Offset
@@ -30,8 +30,8 @@ import androidx.compose.ui.test.hasParent
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers
-import com.jeanbarrossilva.orca.feature.gallery.GALLERY_PAGER_TAG
-import com.jeanbarrossilva.orca.feature.gallery.Gallery
+import com.jeanbarrossilva.orca.feature.gallery.ui.GALLERY_PAGER_TAG
+import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
 
 /**
  * [SemanticsMatcher] that matches a displayed [SemanticsNode].

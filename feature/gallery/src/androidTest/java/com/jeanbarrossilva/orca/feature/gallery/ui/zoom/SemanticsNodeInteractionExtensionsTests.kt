@@ -13,15 +13,15 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.gallery.zoom
+package com.jeanbarrossilva.orca.feature.gallery.ui.zoom
 
 import androidx.compose.ui.test.junit4.createComposeRule
-import com.jeanbarrossilva.orca.feature.gallery.Gallery
-import com.jeanbarrossilva.orca.feature.gallery.test.onPage
-import com.jeanbarrossilva.orca.feature.gallery.test.zoom.assertIsZoomedIn
-import com.jeanbarrossilva.orca.feature.gallery.test.zoom.assertIsZoomedOut
-import com.jeanbarrossilva.orca.feature.gallery.test.zoom.performZoomIn
-import com.jeanbarrossilva.orca.feature.gallery.test.zoom.performZoomOut
+import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.onPage
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.zoom.assertIsZoomedIn
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.zoom.assertIsZoomedOut
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.zoom.performZoomIn
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.zoom.performZoomOut
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test

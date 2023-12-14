@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.gallery
+package com.jeanbarrossilva.orca.feature.gallery.ui
 
 import android.view.ViewConfiguration
 import androidx.compose.ui.test.assertIsDisplayed
@@ -21,8 +21,8 @@ import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import assertk.assertThat
 import assertk.assertions.isGreaterThanOrEqualTo
-import com.jeanbarrossilva.orca.feature.gallery.test.onPage
-import com.jeanbarrossilva.orca.feature.gallery.test.waitForDoubleTapTimeout
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.onPage
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.waitForDoubleTapTimeout
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test

@@ -13,20 +13,20 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.gallery.test
+package com.jeanbarrossilva.orca.feature.gallery.ui.test
 
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.onNodeWithTag
-import com.jeanbarrossilva.orca.feature.gallery.Actions
-import com.jeanbarrossilva.orca.feature.gallery.GALLERY_ACTIONS_CLOSE_BUTTON_TAG
-import com.jeanbarrossilva.orca.feature.gallery.GALLERY_ACTIONS_OPTIONS_BUTTON_TAG
-import com.jeanbarrossilva.orca.feature.gallery.GALLERY_ACTIONS_OPTIONS_DOWNLOADS_ITEM_TAG
-import com.jeanbarrossilva.orca.feature.gallery.GALLERY_ACTIONS_OPTIONS_MENU_TAG
-import com.jeanbarrossilva.orca.feature.gallery.GALLERY_ACTIONS_TAG
-import com.jeanbarrossilva.orca.feature.gallery.Gallery
+import com.jeanbarrossilva.orca.feature.gallery.ui.Actions
+import com.jeanbarrossilva.orca.feature.gallery.ui.GALLERY_ACTIONS_CLOSE_BUTTON_TAG
+import com.jeanbarrossilva.orca.feature.gallery.ui.GALLERY_ACTIONS_OPTIONS_BUTTON_TAG
+import com.jeanbarrossilva.orca.feature.gallery.ui.GALLERY_ACTIONS_OPTIONS_DOWNLOADS_ITEM_TAG
+import com.jeanbarrossilva.orca.feature.gallery.ui.GALLERY_ACTIONS_OPTIONS_MENU_TAG
+import com.jeanbarrossilva.orca.feature.gallery.ui.GALLERY_ACTIONS_TAG
+import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.autos.kit.menu.DropdownMenu
 

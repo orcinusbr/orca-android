@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.gallery.test
+package com.jeanbarrossilva.orca.feature.gallery.ui.test
 
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.ui.semantics.SemanticsNode
@@ -23,7 +23,7 @@ import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.performScrollToIndex
-import com.jeanbarrossilva.orca.feature.gallery.Gallery
+import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
 
 /**
  * Returns whether the [matcher] matches the [SemanticsNode] fetched from this

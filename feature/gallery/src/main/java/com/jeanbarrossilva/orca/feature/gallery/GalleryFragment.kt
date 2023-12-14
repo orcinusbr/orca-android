@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
+import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
 import com.jeanbarrossilva.orca.platform.ui.core.application
 import com.jeanbarrossilva.orca.platform.ui.core.argument
 import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableFragment

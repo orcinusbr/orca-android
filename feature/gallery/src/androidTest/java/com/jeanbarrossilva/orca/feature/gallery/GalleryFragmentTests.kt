@@ -20,8 +20,8 @@ import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.jeanbarrossilva.orca.feature.gallery.test.activity.TestGalleryModule
 import com.jeanbarrossilva.orca.feature.gallery.test.launchGalleryActivity
-import com.jeanbarrossilva.orca.feature.gallery.test.onPager
-import com.jeanbarrossilva.orca.feature.gallery.test.performScrollToEachPage
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.onPager
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.performScrollToEachPage
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
 import com.jeanbarrossilva.orca.std.injector.module.binding.boundTo
 import com.jeanbarrossilva.orca.std.injector.test.InjectorTestRule

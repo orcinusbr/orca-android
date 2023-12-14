@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.gallery
+package com.jeanbarrossilva.orca.feature.gallery.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.ui.res.painterResource
@@ -22,12 +22,12 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.filterToOne
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onChildren
-import com.jeanbarrossilva.orca.feature.gallery.test.isDisplayed
-import com.jeanbarrossilva.orca.feature.gallery.test.isImage
-import com.jeanbarrossilva.orca.feature.gallery.test.isPage
-import com.jeanbarrossilva.orca.feature.gallery.test.isPager
-import com.jeanbarrossilva.orca.feature.gallery.test.onPage
-import com.jeanbarrossilva.orca.feature.gallery.test.onPager
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.isDisplayed
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.isImage
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.isPage
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.isPager
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.onPage
+import com.jeanbarrossilva.orca.feature.gallery.ui.test.onPager
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test
