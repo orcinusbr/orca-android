@@ -33,33 +33,37 @@ import com.jeanbarrossilva.orca.std.injector.Injector
 class GalleryFragment internal constructor() : ComposableFragment() {
   private val module by lazy { Injector.from<GalleryModule>() }
   private val postID by argument<String>(POST_ID_KEY)
-  private val primaryIndex by argument<Int>(PRIMARY_INDEX_KEY)
+  private val entrypointIndex by argument<Int>(ENTRYPOINT_INDEX_KEY)
   private val secondary by argument<List<Attachment>>(SECONDARY_KEY)
-  private var primary by mutableStateOf<(@Composable (Modifier, Sizing) -> Unit)?>(null)
+  private var entrypoint by mutableStateOf<(@Composable (Modifier, Sizing) -> Unit)?>(null)
   private val viewModel by
     viewModels<GalleryViewModel> {
       GalleryViewModel.createFactory(application, module.postProvider(), postID)
     }
 
-  internal constructor(postID: String, primaryIndex: Int, secondary: List<Attachment>) : this() {
+  internal constructor(postID: String, entrypointIndex: Int, secondary: List<Attachment>) : this() {
     arguments =
-      bundleOf(POST_ID_KEY to postID, PRIMARY_INDEX_KEY to primaryIndex, SECONDARY_KEY to secondary)
+      bundleOf(
+        POST_ID_KEY to postID,
+        ENTRYPOINT_INDEX_KEY to entrypointIndex,
+        SECONDARY_KEY to secondary
+      )
   }
 
   @Composable
   override fun Content() {
-    Gallery(viewModel, module.boundary(), primaryIndex, secondary) { modifier, sizing ->
-      primary?.invoke(modifier, sizing)
+    Gallery(viewModel, module.boundary(), entrypointIndex, secondary) { modifier, sizing ->
+      entrypoint?.invoke(modifier, sizing)
     }
   }
 
-  internal fun setPrimary(primary: @Composable (Modifier, Sizing) -> Unit) {
-    this.primary = primary
+  internal fun setEntrypoint(entrypoint: @Composable (Modifier, Sizing) -> Unit) {
+    this.entrypoint = entrypoint
   }
 
   companion object {
     internal const val POST_ID_KEY = "post"
-    internal const val PRIMARY_INDEX_KEY = "primary-index"
+    internal const val ENTRYPOINT_INDEX_KEY = "entrypoint-index"
     internal const val SECONDARY_KEY = "secondary"
   }
 }

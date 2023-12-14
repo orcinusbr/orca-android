@@ -36,23 +36,13 @@ import net.engawapg.lib.zoomable.toggleScale
 import net.engawapg.lib.zoomable.zoomable
 
 @Composable
-internal fun SamplePrimaryPage(sizing: Sizing, modifier: Modifier = Modifier) {
-  Image(
-    rememberImageLoader(com.jeanbarrossilva.orca.std.imageloader.compose.R.drawable.image),
-    contentDescription = stringResource(R.string.feature_gallery_attachment, 1),
-    modifier,
-    sizing
-  )
-}
-
-@Composable
 internal fun Page(
-  primaryIndex: Int,
+  entrypointIndex: Int,
   currentIndex: Int,
   secondary: List<Attachment>,
   onActionsVisibilityToggle: (areActionsVisible: Boolean) -> Unit,
   modifier: Modifier = Modifier,
-  primary: @Composable (Modifier, Sizing) -> Unit
+  entrypoint: @Composable (Modifier, Sizing) -> Unit
 ) {
   val coroutineScope = rememberCoroutineScope()
   val zoomState = rememberZoomState()
@@ -74,11 +64,13 @@ internal fun Page(
         }
       )
       .animateContentSize()
-  if (currentIndex == primaryIndex) {
-    primary(pageModifier, sizing)
+  if (currentIndex == entrypointIndex) {
+    entrypoint(pageModifier, sizing)
   } else {
     Image(
-      rememberImageLoader(secondary[currentIndex - if (currentIndex < primaryIndex) 0 else 1].url),
+      rememberImageLoader(
+        secondary[currentIndex - if (currentIndex < entrypointIndex) 0 else 1].url
+      ),
       contentDescription = stringResource(R.string.feature_gallery_attachment, currentIndex.inc()),
       pageModifier,
       sizing
@@ -87,16 +79,26 @@ internal fun Page(
 }
 
 @Composable
+internal fun SampleEntrypoint(sizing: Sizing, modifier: Modifier = Modifier) {
+  Image(
+    rememberImageLoader(com.jeanbarrossilva.orca.std.imageloader.compose.R.drawable.image),
+    contentDescription = stringResource(R.string.feature_gallery_attachment, 1),
+    modifier,
+    sizing
+  )
+}
+
+@Composable
 @Preview
 private fun PagePreview() {
   AutosTheme {
     Page(
-      primaryIndex = 0,
+      entrypointIndex = 0,
       currentIndex = 1,
       secondary = Attachment.samples,
       onActionsVisibilityToggle = {}
     ) { modifier, sizing ->
-      SamplePrimaryPage(sizing, modifier)
+      SampleEntrypoint(sizing, modifier)
     }
   }
 }

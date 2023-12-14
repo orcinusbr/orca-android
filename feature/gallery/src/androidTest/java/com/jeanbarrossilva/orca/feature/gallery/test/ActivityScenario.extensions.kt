@@ -38,15 +38,15 @@ import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
  * Launches a [GalleryActivity].
  *
  * @param postID ID of the [Post] to which the [Attachment]s belong.
- * @param primaryIndex Index of the primary page.
- * @param secondary [Attachment]s to be shown in the pages other than the [primary].
- * @param primary Primary page of the [Gallery].
+ * @param entrypointIndex Index at which the [entrypoint] is.
+ * @param secondary [Attachment]s to be shown in the pages other than the [entrypoint].
+ * @param entrypoint Entrypoint page of the [Gallery].
  */
 internal fun launchGalleryActivity(
   postID: String = Post.sample.id,
-  primaryIndex: Int = 0,
+  entrypointIndex: Int = 0,
   secondary: List<Attachment> = Attachment.samples,
-  primary: @Composable (Modifier, Sizing) -> Unit = { modifier, sizing ->
+  entrypoint: @Composable (Modifier, Sizing) -> Unit = { modifier, sizing ->
     Image(
       rememberImageLoader(R.drawable.image),
       contentDescription =
@@ -64,8 +64,8 @@ internal fun launchGalleryActivity(
     Intent<GalleryActivity>(
       context,
       GalleryActivity.POST_KEY to postID,
-      GalleryActivity.PRIMARY_INDEX_KEY to primaryIndex,
+      GalleryActivity.ENTRYPOINT_INDEX_KEY to entrypointIndex,
       GalleryActivity.SECONDARY_KEY to secondary
     )
-  return launchActivity<GalleryActivity>(intent).onActivity { it.setPrimary(primary) }
+  return launchActivity<GalleryActivity>(intent).onActivity { it.setEntrypoint(entrypoint) }
 }

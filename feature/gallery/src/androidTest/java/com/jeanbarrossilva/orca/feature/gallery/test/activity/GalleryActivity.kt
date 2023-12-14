@@ -30,7 +30,7 @@ internal class GalleryActivity : SingleFragmentActivity() {
     fragment<GalleryFragment>()
   }
 
-  fun setPrimary(primary: @Composable (Modifier, Sizing) -> Unit) {
+  fun setEntrypoint(entrypoint: @Composable (Modifier, Sizing) -> Unit) {
     supportFragmentManager.fragments
       .single()
       .let { it as NavHostFragment }
@@ -38,12 +38,12 @@ internal class GalleryActivity : SingleFragmentActivity() {
       .fragments
       .single()
       .let { it as GalleryFragment }
-      .setPrimary(primary)
+      .setEntrypoint(entrypoint)
   }
 
   companion object {
     const val POST_KEY = GalleryFragment.POST_ID_KEY
-    const val PRIMARY_INDEX_KEY = GalleryFragment.PRIMARY_INDEX_KEY
+    const val ENTRYPOINT_INDEX_KEY = GalleryFragment.ENTRYPOINT_INDEX_KEY
     const val SECONDARY_KEY = GalleryFragment.SECONDARY_KEY
   }
 }

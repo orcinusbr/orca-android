@@ -50,15 +50,15 @@ internal const val GALLERY_PAGER_TAG = "gallery-pager-tag"
 fun Gallery(
   viewModel: GalleryViewModel,
   boundary: GalleryBoundary,
-  primaryIndex: Int,
+  entrypointIndex: Int,
   secondary: List<Attachment>,
   modifier: Modifier = Modifier,
-  primary: @Composable (Modifier, Sizing) -> Unit
+  entrypoint: @Composable (Modifier, Sizing) -> Unit
 ) {
   val statsDetails by viewModel.statsDetailsFlow.collectAsState(StatsDetails.Empty)
 
   Gallery(
-    primaryIndex,
+    entrypointIndex,
     secondary,
     onDownload = viewModel::download,
     statsDetails,
@@ -68,7 +68,7 @@ fun Gallery(
     onShare = viewModel::share,
     onClose = boundary::pop,
     modifier,
-    primary
+    entrypoint
   )
 }
 
@@ -83,7 +83,7 @@ internal fun Gallery(
   onClose: () -> Unit = {}
 ) {
   Gallery(
-    primaryIndex = 0,
+    entrypointIndex = 0,
     Attachment.samples,
     onDownload,
     StatsDetails.sample,
@@ -94,14 +94,14 @@ internal fun Gallery(
     onClose,
     modifier
   ) { pageModifier, sizing ->
-    SamplePrimaryPage(sizing, pageModifier)
+    SampleEntrypoint(sizing, pageModifier)
   }
 }
 
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 private fun Gallery(
-  primaryIndex: Int,
+  entrypointIndex: Int,
   secondary: List<Attachment>,
   onDownload: () -> Unit,
   statsDetails: StatsDetails,
@@ -111,22 +111,22 @@ private fun Gallery(
   onShare: () -> Unit,
   onClose: () -> Unit,
   modifier: Modifier = Modifier,
-  primary: @Composable (Modifier, Sizing) -> Unit
+  entrypoint: @Composable (Modifier, Sizing) -> Unit
 ) {
   var areActionsVisible by rememberSaveable { mutableStateOf(true) }
   var areOptionsVisible by rememberSaveable(areActionsVisible) { mutableStateOf(false) }
   val pagerState = rememberPagerState(pageCount = secondary.size::inc)
   val sizing = remember { Sizing.Widened }
   val pages =
-    remember(primaryIndex, secondary, sizing) {
+    remember(entrypointIndex, secondary, sizing) {
       List<@Composable () -> Unit>(pagerState.pageCount) { index ->
         @Composable {
           Page(
-            primaryIndex,
+            entrypointIndex,
             index,
             secondary,
             onActionsVisibilityToggle = { areActionsVisible = it },
-            primary = primary
+            entrypoint = entrypoint
           )
         }
       }
