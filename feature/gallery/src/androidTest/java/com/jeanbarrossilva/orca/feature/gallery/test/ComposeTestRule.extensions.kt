@@ -23,6 +23,7 @@ import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onChildren
 import com.jeanbarrossilva.loadable.placeholder.test.isNotLoading
 import com.jeanbarrossilva.orca.feature.gallery.Gallery
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * [SemanticsNodeInteraction] of a [Gallery]'s [HorizontalPager]'s current page.
@@ -30,7 +31,9 @@ import com.jeanbarrossilva.orca.feature.gallery.Gallery
  * @see onPager
  */
 internal fun ComposeTestRule.onPage(): SemanticsNodeInteraction {
-  return onPager().onChildren().filterToOne(isPage()).also { waitUntil { it[isNotLoading()] } }
+  return onPager().onChildren().filterToOne(isPage()).also {
+    waitUntil(4.seconds.inWholeMilliseconds) { it[isNotLoading()] }
+  }
 }
 
 /**
