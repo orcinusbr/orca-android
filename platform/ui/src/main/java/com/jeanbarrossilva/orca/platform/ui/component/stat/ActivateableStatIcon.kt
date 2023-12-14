@@ -53,7 +53,7 @@ internal object ActivateableStatIconDefaults {
 }
 
 /** Determines whether a [ActivateableStatIconDefaults] is interactive. */
-sealed class ActivateableStatIconInteractiveness {
+internal sealed class ActivateableStatIconInteractiveness {
   /** Mode of non-interactivity. */
   object Still : ActivateableStatIconInteractiveness() {
     override fun onInteraction(isActive: Boolean) {}

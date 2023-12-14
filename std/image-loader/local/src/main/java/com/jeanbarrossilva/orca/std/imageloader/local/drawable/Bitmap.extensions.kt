@@ -32,7 +32,7 @@ import java.io.ByteArrayOutputStream
  * @see Bitmap.getPixels
  */
 internal fun Bitmap.sample(sampledWidth: Int, sampledHeight: Int): Bitmap {
-  return if (width != sampledWidth && height != sampledHeight) {
+  return if (width != sampledWidth || height != sampledHeight) {
     sampleDisregardingDimensionEquality(sampledWidth, sampledHeight)
   } else {
     this

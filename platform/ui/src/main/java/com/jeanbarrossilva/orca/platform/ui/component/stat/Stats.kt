@@ -1,0 +1,114 @@
+/*
+ * Copyright © 2023 Orca
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If
+ * not, see https://www.gnu.org/licenses.
+ */
+
+package com.jeanbarrossilva.orca.platform.ui.component.stat
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
+import com.jeanbarrossilva.orca.core.feed.profile.post.stat.Stat
+import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
+import com.jeanbarrossilva.orca.platform.ui.R
+import com.jeanbarrossilva.orca.platform.ui.component.stat.Stat as _Stat
+import com.jeanbarrossilva.orca.platform.ui.component.stat.favorite.FavoriteStat
+import com.jeanbarrossilva.orca.platform.ui.component.stat.repost.RepostStat
+
+/** Tag that identifies [Stats]' comment [Stat][_Stat] for testing purposes. */
+const val STATS_COMMENT_STAT_TAG = "stats-comment-stat"
+
+/** Tag that identifies [Stats]' share [Stat][_Stat] for testing purposes. */
+const val STATS_SHARE_STAT_TAG = "stats-share-stat"
+
+/**
+ * Actions for a [Post]'s [Stat]s.
+ *
+ * @param modifier [Modifier] to be applied to the underlying [Row].
+ */
+@Composable
+fun Stats(modifier: Modifier = Modifier) {
+  Stats(StatsDetails.sample, onComment = {}, onFavorite = {}, onRepost = {}, onShare = {}, modifier)
+}
+
+/**
+ * Actions for a [Post]'s [Stat]s.
+ *
+ * @param details [StatsDetails] of the [Post]'s [Stat]s.
+ * @param onFavorite Callback run whenever the [Post] is requested to be favorited.
+ * @param onRepost Callback run whenever the [Post] is requested to be reblogged.
+ * @param onShare Callback run whenever the [Post] is requested to be externally shared.
+ * @param modifier [Modifier] to be applied to the underlying [Row].
+ * @param contentColor [Color] by which each [Stat][_Stat]s' contents will be colored.
+ */
+@Composable
+fun Stats(
+  details: StatsDetails,
+  onComment: () -> Unit,
+  onFavorite: () -> Unit,
+  onRepost: () -> Unit,
+  onShare: () -> Unit,
+  modifier: Modifier = Modifier,
+  contentColor: Color = StatDefaults.contentColor
+) {
+  Row(modifier, Arrangement.SpaceBetween) {
+    _Stat(
+      StatPosition.LEADING,
+      AutosTheme.iconography.comment.outlined.asImageVector,
+      contentDescription = stringResource(R.string.platform_ui_post_preview_comments),
+      onClick = onComment,
+      Modifier.testTag(STATS_COMMENT_STAT_TAG),
+      contentColor
+    ) {
+      Text(details.formattedCommentCount)
+    }
+
+    FavoriteStat(
+      StatPosition.SUBSEQUENT,
+      details,
+      onClick = onFavorite,
+      inactiveContentColor = contentColor
+    )
+
+    RepostStat(
+      StatPosition.SUBSEQUENT,
+      details,
+      onClick = onRepost,
+      inactiveContentColor = contentColor
+    )
+
+    _Stat(
+      StatPosition.TRAILING,
+      AutosTheme.iconography.share.outlined.asImageVector,
+      contentDescription = stringResource(R.string.platform_ui_post_preview_share),
+      onClick = onShare,
+      Modifier.testTag(STATS_SHARE_STAT_TAG),
+      contentColor
+    )
+  }
+}
+
+/** Preview of [Stats]. */
+@Composable
+@MultiThemePreview
+private fun StatsPreview() {
+  AutosTheme { Stats() }
+}

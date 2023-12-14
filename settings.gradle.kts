@@ -32,9 +32,11 @@ include(
   ":core:shared-preferences",
   ":core-module",
   ":core-test",
+  ":ext:coroutines",
   ":ext:processing",
   ":feature:composer",
   ":feature:feed",
+  ":feature:gallery",
   ":feature:post-details",
   ":feature:profile-details",
   ":feature:search",
@@ -56,5 +58,3 @@ include(
   ":std:injector-test",
   ":std:styled-string"
 )
-
-include(":ext:coroutines")

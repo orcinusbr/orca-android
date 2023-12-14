@@ -29,14 +29,14 @@ import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.test.onPostPreviewBody
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.test.onPostPreviewCommentCountStat
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.test.onPostPreviewFavoriteCountStat
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.test.onPostPreviewMetadata
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.test.onPostPreviewName
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.test.onPostPreviewReblogCountStat
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.test.onPostPreviewReblogMetadata
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.test.onPostPreviewShareAction
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.test.onStatLabel
+import com.jeanbarrossilva.orca.platform.ui.test.component.stat.favorite.onFavoriteStat
+import com.jeanbarrossilva.orca.platform.ui.test.component.stat.onCommentStat
+import com.jeanbarrossilva.orca.platform.ui.test.component.stat.onShareStat
+import com.jeanbarrossilva.orca.platform.ui.test.component.stat.repost.onRepostStat
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.onPostPreview
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.time.TestRelativeTimeProvider
 import org.junit.Rule
@@ -143,7 +143,7 @@ internal class PostPreviewTests {
   @Test
   fun commentCountStatIsNonexistentWhenLoading() {
     composeRule.setContent { AutosTheme { PostPreview() } }
-    composeRule.onPostPreviewCommentCountStat().assertDoesNotExist()
+    composeRule.onCommentStat().assertDoesNotExist()
   }
 
   @Test
@@ -151,17 +151,17 @@ internal class PostPreviewTests {
     composeRule.setContent {
       AutosTheme { SamplePostPreview(relativeTimeProvider = TestRelativeTimeProvider) }
     }
-    composeRule.onPostPreviewCommentCountStat().assertIsDisplayed()
+    composeRule.onCommentStat().assertIsDisplayed()
     composeRule
-      .onPostPreviewCommentCountStat()
+      .onCommentStat()
       .onStatLabel()
-      .assertTextEquals(samplePostPreview.formattedCommentCount)
+      .assertTextEquals(samplePostPreview.stats.formattedCommentCount)
   }
 
   @Test
   fun favoriteCountStatIsNonexistentWhenLoading() {
     composeRule.setContent { AutosTheme { PostPreview() } }
-    composeRule.onPostPreviewFavoriteCountStat().assertDoesNotExist()
+    composeRule.onFavoriteStat().assertDoesNotExist()
   }
 
   @Test
@@ -169,17 +169,17 @@ internal class PostPreviewTests {
     composeRule.setContent {
       AutosTheme { SamplePostPreview(relativeTimeProvider = TestRelativeTimeProvider) }
     }
-    composeRule.onPostPreviewFavoriteCountStat().assertIsDisplayed()
+    composeRule.onFavoriteStat().assertIsDisplayed()
     composeRule
-      .onPostPreviewFavoriteCountStat()
+      .onFavoriteStat()
       .onStatLabel()
-      .assertTextEquals(samplePostPreview.formattedFavoriteCount)
+      .assertTextEquals(samplePostPreview.stats.formattedFavoriteCount)
   }
 
   @Test
   fun reblogCountStatIsNonexistentWhenLoading() {
     composeRule.setContent { AutosTheme { PostPreview() } }
-    composeRule.onPostPreviewReblogCountStat().assertDoesNotExist()
+    composeRule.onRepostStat().assertDoesNotExist()
   }
 
   @Test
@@ -187,17 +187,17 @@ internal class PostPreviewTests {
     composeRule.setContent {
       AutosTheme { SamplePostPreview(relativeTimeProvider = TestRelativeTimeProvider) }
     }
-    composeRule.onPostPreviewReblogCountStat().assertIsDisplayed()
+    composeRule.onRepostStat().assertIsDisplayed()
     composeRule
-      .onPostPreviewReblogCountStat()
+      .onRepostStat()
       .onStatLabel()
-      .assertTextEquals(samplePostPreview.formattedReblogCount)
+      .assertTextEquals(samplePostPreview.stats.formattedReblogCount)
   }
 
   @Test
   fun shareActionIsNonexistentWhenLoading() {
     composeRule.setContent { AutosTheme { PostPreview() } }
-    composeRule.onPostPreviewShareAction().assertDoesNotExist()
+    composeRule.onShareStat().assertDoesNotExist()
   }
 
   @Test
@@ -205,6 +205,6 @@ internal class PostPreviewTests {
     composeRule.setContent {
       AutosTheme { SamplePostPreview(relativeTimeProvider = TestRelativeTimeProvider) }
     }
-    composeRule.onPostPreviewShareAction().assertIsDisplayed()
+    composeRule.onShareStat().assertIsDisplayed()
   }
 }

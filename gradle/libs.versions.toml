@@ -23,10 +23,11 @@ android-plugin = { group = "com.android.tools.build", name = "gradle", version.r
 android-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "android-room" }
 android-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "android-room" }
 android-test-core = { group = "androidx.test", name = "core-ktx", version = "1.5.0" }
-android-test-espresso-intents = { group = "androidx.test.espresso", name = "espresso-intents", version = "3.5.1" }
+android-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "android-test-espresso" }
+android-test-espresso-intents = { group = "androidx.test.espresso", name = "espresso-intents", version.ref = "android-test-espresso" }
 android-test-runner = { group = "androidx.test", name = "runner", version = "1.5.0" }
 assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version = "0.27.0" }
-autos = { group = "com.jeanbarrossilva.orca.autos", name = "autos", version = "1.0.4" }
+autos = { group = "com.jeanbarrossilva.orca.autos", name = "autos", version = "1.0.5" }
 coil = { group = "io.coil-kt", name = "coil", version = "2.4.0" }
 junit = { group = "junit", name = "junit", version = "4.13.2" }
 jsoup = { group = "org.jsoup", name = "jsoup", version = "1.16.2" }
@@ -56,8 +57,7 @@ slf4j = { group = "org.slf4j", name = "slf4j-api", version = "2.0.7" }
 spotless = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
 time4j = { group = "net.time4j", name = "time4j-android", version = "4.8-2021a" }
 turbine = { group = "app.cash.turbine", name = "turbine", version = "1.0.0" }
-androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
+zoomable = { group = "net.engawapg.lib", name = "zoomable", version = "1.6.0-beta2" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-plugin" }
@@ -84,13 +84,11 @@ android-plugin = "8.2.0"
 android-room = "2.5.2"
 android-sdk-min = "28"
 android-sdk-target = "34"
+android-test-espresso = "3.5.0"
 java = "17"
-junit = "1.1.5"
 kotlin = "1.9.10"
 kotlin-coroutines = "1.7.2"
 kotlin-symbolProcessor = "1.9.10-1.0.13"
 ktor = "2.3.2"
 loadable = "1.6.9"
 spotless = "6.22.0"
-androidx-test-ext-junit = "1.1.5"
-espresso-core = "3.5.1"

@@ -15,6 +15,7 @@
 
 package com.jeanbarrossilva.orca.core.feed.profile.post.content
 
+import java.io.Serializable
 import java.net.URL
 
 /**
@@ -23,6 +24,6 @@ import java.net.URL
  * @param description Description of what's displayed.
  * @param url [URL] that leads to the media.
  */
-data class Attachment(val description: String?, val url: URL) {
+data class Attachment(val description: String?, val url: URL) : Serializable {
   companion object
 }

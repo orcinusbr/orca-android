@@ -31,12 +31,13 @@ import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIcon
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconColors
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconDefaults
 import com.jeanbarrossilva.orca.platform.ui.component.stat.ActivateableStatIconInteractiveness
+import com.jeanbarrossilva.orca.platform.ui.component.stat.Stat
 
 /** Tag that identifies a [FavoriteStatIcon] for testing purposes. */
 const val FAVORITE_STAT_ICON_TAG = "favorite-stat-icon"
 
 /** Default values of a [FavoriteStatIcon]. */
-object FavoriteStatIconDefaults {
+internal object FavoriteStatIconDefaults {
   /**
    * [ActivateableStatIconColors] by which a [FavoriteStatIcon] is colored by default.
    *
@@ -53,7 +54,7 @@ object FavoriteStatIconDefaults {
 }
 
 /**
- * [ActivateableStatIconDefaults] that represents a "favorite" stat.
+ * [ActivateableStatIcon] that represents a favorite [Stat].
  *
  * @param isActive Whether the state it represents is enabled.
  * @param interactiveness [ActivateableStatIconInteractiveness] that indicates whether this
@@ -62,7 +63,7 @@ object FavoriteStatIconDefaults {
  * @param modifier [Modifier] to be applied to the underlying [ActivateableStatIconDefaults].
  */
 @Composable
-fun FavoriteStatIcon(
+internal fun FavoriteStatIcon(
   isActive: Boolean,
   interactiveness: ActivateableStatIconInteractiveness,
   modifier: Modifier = Modifier,
