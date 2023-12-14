@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,8 +54,65 @@ import net.engawapg.lib.zoomable.zoomable
 internal const val GALLERY_PAGER_TAG = "gallery-pager-tag"
 
 @Composable
-@OptIn(ExperimentalFoundationApi::class)
 fun Gallery(
+  viewModel: GalleryViewModel,
+  boundary: GalleryBoundary,
+  primaryIndex: Int,
+  secondary: List<Attachment>,
+  modifier: Modifier = Modifier,
+  primary: @Composable (Modifier, Sizing) -> Unit
+) {
+  val statsDetails by viewModel.statsDetailsFlow.collectAsState(StatsDetails.Empty)
+
+  Gallery(
+    primaryIndex,
+    secondary,
+    onDownload = viewModel::download,
+    statsDetails,
+    onComment = { boundary.navigateToPostDetails(viewModel.postID) },
+    onFavorite = viewModel::toggleFavorite,
+    onRepost = viewModel::toggleRepost,
+    onShare = viewModel::share,
+    onClose = boundary::pop,
+    modifier,
+    primary
+  )
+}
+
+@Composable
+internal fun Gallery(
+  modifier: Modifier = Modifier,
+  onDownload: () -> Unit = {},
+  onComment: () -> Unit = {},
+  onFavorite: () -> Unit = {},
+  onRepost: () -> Unit = {},
+  onShare: () -> Unit = {},
+  onClose: () -> Unit = {}
+) {
+  Gallery(
+    primaryIndex = 0,
+    Attachment.samples,
+    onDownload,
+    StatsDetails.sample,
+    onComment,
+    onFavorite,
+    onRepost,
+    onShare,
+    onClose,
+    modifier
+  ) { pageModifier, sizing ->
+    Image(
+      rememberImageLoader(com.jeanbarrossilva.orca.std.imageloader.compose.R.drawable.image),
+      contentDescription = stringResource(R.string.feature_gallery_attachment, 1),
+      pageModifier,
+      sizing
+    )
+  }
+}
+
+@Composable
+@OptIn(ExperimentalFoundationApi::class)
+private fun Gallery(
   primaryIndex: Int,
   secondary: List<Attachment>,
   onDownload: () -> Unit,
@@ -130,37 +188,6 @@ fun Gallery(
         onClose
       )
     }
-  }
-}
-
-@Composable
-internal fun Gallery(
-  modifier: Modifier = Modifier,
-  onDownload: () -> Unit = {},
-  onComment: () -> Unit = {},
-  onFavorite: () -> Unit = {},
-  onRepost: () -> Unit = {},
-  onShare: () -> Unit = {},
-  onClose: () -> Unit = {}
-) {
-  Gallery(
-    primaryIndex = 0,
-    Attachment.samples,
-    onDownload,
-    StatsDetails.sample,
-    onComment,
-    onFavorite,
-    onRepost,
-    onShare,
-    onClose,
-    modifier
-  ) { pageModifier, sizing ->
-    Image(
-      rememberImageLoader(com.jeanbarrossilva.orca.std.imageloader.compose.R.drawable.image),
-      contentDescription = stringResource(R.string.feature_gallery_attachment, 1),
-      pageModifier,
-      sizing
-    )
   }
 }
 

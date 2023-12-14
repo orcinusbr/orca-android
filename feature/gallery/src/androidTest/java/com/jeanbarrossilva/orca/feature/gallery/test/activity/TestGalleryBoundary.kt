@@ -13,17 +13,12 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.core.feed.profile.post.content
+package com.jeanbarrossilva.orca.feature.gallery.test.activity
 
-import java.io.Serializable
-import java.net.URL
+import com.jeanbarrossilva.orca.feature.gallery.GalleryBoundary
 
-/**
- * Media that has been attached to [Content].
- *
- * @param description Description of what's displayed.
- * @param url [URL] that leads to the media.
- */
-data class Attachment(val description: String?, val url: URL) : Serializable {
-  companion object
+internal object TestGalleryBoundary : GalleryBoundary {
+  override fun navigateToPostDetails(id: String) {}
+
+  override fun pop() {}
 }

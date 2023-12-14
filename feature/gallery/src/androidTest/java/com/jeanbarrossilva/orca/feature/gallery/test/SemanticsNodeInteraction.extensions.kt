@@ -39,6 +39,36 @@ internal operator fun SemanticsNodeInteraction.get(matcher: SemanticsMatcher): B
 }
 
 /**
+ * Scrolls to each page of the [Gallery]'s [HorizontalPager] and runs the given [onSettling]
+ * callback on them.
+ *
+ * @param onSettling Action to be run on the first page and the subsequent ones when they are
+ *   scrolled to. Note that the [Int] it receives is the position of the page (which is index + 1)
+ *   rather than its index; the position of the first one is 1, second's is 2, third's is 3, and so
+ *   on.
+ * @throws AssertionError If this [SemanticsNodeInteraction]'s [SemanticsNode] isn't that of a
+ *   [Gallery]'s [HorizontalPager].
+ */
+context(ComposeTestRule)
+
+@Throws(AssertionError::class)
+internal fun SemanticsNodeInteraction.performScrollToEachPage(
+  onSettling: SemanticsNodeInteraction.(position: Int) -> Unit
+): SemanticsNodeInteraction {
+  var index = 0
+  while (true) {
+    onPage().onSettling(index.inc())
+    try {
+      performScrollToPageAt(index)
+      index++
+    } catch (_: IllegalArgumentException) {
+      break
+    }
+  }
+  return this
+}
+
+/**
  * Scrolls to the page of the [Gallery]'s [HorizontalPager] at the given [index].
  *
  * @param index Index of the page to scroll to. Note that the page's position, which is [index] + 1,

@@ -16,29 +16,27 @@
 package com.jeanbarrossilva.orca.feature.gallery
 
 import androidx.compose.ui.test.TouchInjectionScope
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.doubleClick
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onParent
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import assertk.assertThat
 import assertk.assertions.isTrue
-import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
-import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
 import com.jeanbarrossilva.orca.feature.gallery.test.onActions
 import com.jeanbarrossilva.orca.feature.gallery.test.onCloseActionButton
 import com.jeanbarrossilva.orca.feature.gallery.test.onDownloadItem
 import com.jeanbarrossilva.orca.feature.gallery.test.onOptionsButton
 import com.jeanbarrossilva.orca.feature.gallery.test.onOptionsMenu
 import com.jeanbarrossilva.orca.feature.gallery.test.onPage
-import com.jeanbarrossilva.orca.feature.gallery.test.performScrollToPageAt
+import com.jeanbarrossilva.orca.feature.gallery.test.onPager
+import com.jeanbarrossilva.orca.feature.gallery.test.performScrollToEachPage
 import com.jeanbarrossilva.orca.feature.gallery.test.waitForDoubleTapTimeout
 import com.jeanbarrossilva.orca.feature.gallery.test.zoom.assertIsZoomedIn
 import com.jeanbarrossilva.orca.feature.gallery.test.zoom.assertIsZoomedOut
 import com.jeanbarrossilva.orca.feature.gallery.test.zoom.performZoomIn
 import com.jeanbarrossilva.orca.feature.gallery.test.zoom.performZoomOut
-import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.`if`
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.test.component.stat.favorite.onFavoriteStat
 import com.jeanbarrossilva.orca.platform.ui.test.component.stat.onCommentStat
@@ -128,13 +126,7 @@ internal class GalleryTests {
   fun swipesThroughEachPage() {
     composeRule
       .apply { setContent { AutosTheme { Gallery() } } }
-      .run {
-        repeat(Attachment.samples.size.dec()) { index ->
-          onPage().`if`(index < Attachment.samples.lastIndex) {
-            onParent().performScrollToPageAt(index)
-          }
-        }
-      }
+      .run { onPager().performScrollToEachPage { assertIsDisplayed() } }
   }
 
   @Test
@@ -142,13 +134,11 @@ internal class GalleryTests {
     composeRule
       .apply { setContent { AutosTheme { Gallery() } } }
       .run {
-        repeat(Attachment.samples.size) { index ->
-          onPage()
-            .performTouchInput(TouchInjectionScope::doubleClick)
+        onPager().performScrollToEachPage {
+          performTouchInput(TouchInjectionScope::doubleClick)
             .assertIsZoomedIn()
             .performTouchInput(TouchInjectionScope::doubleClick)
             .assertIsZoomedOut()
-            .`if`(index < Attachment.samples.lastIndex) { onParent().performScrollToPageAt(index) }
         }
       }
   }
@@ -158,12 +148,8 @@ internal class GalleryTests {
     composeRule
       .apply { setContent { AutosTheme { Gallery() } } }
       .run {
-        repeat(Attachment.samples.size) { index ->
-          onPage().performZoomIn().assertIsZoomedIn().performZoomOut().assertIsZoomedOut().`if`(
-            index < Attachment.samples.lastIndex
-          ) {
-            onParent().performScrollToPageAt(index)
-          }
+        onPager().performScrollToEachPage {
+          performZoomIn().assertIsZoomedIn().performZoomOut().assertIsZoomedOut()
         }
       }
   }

@@ -15,6 +15,7 @@
 
 package com.jeanbarrossilva.orca.platform.ui.core
 
+import android.app.Activity
 import android.app.Application
 import androidx.fragment.app.Fragment
 
@@ -29,7 +30,8 @@ val Fragment.application
       ?: throw IllegalStateException("Fragment $this not attached to an Application.")
 
 /**
- * Gets the argument put with the given [key] lazily.
+ * Gets the argument put either into this [Fragment]'s arguments or its [Activity]'s [Intent]'s
+ * extras with the given [key] lazily.
  *
  * @param key Key to which the argument is associated.
  * @throws ClassCastException If the argument is present but isn't a [T].
@@ -37,6 +39,6 @@ val Fragment.application
 fun <T> Fragment.argument(key: String): Lazy<T> {
   return lazy {
     @Suppress("DEPRECATION", "UNCHECKED_CAST")
-    requireArguments().get(key) as T
+    arguments?.get(key) as? T ?: requireActivity().intent?.extras?.get(key) as T
   }
 }

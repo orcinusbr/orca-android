@@ -27,11 +27,15 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.test.platform.app.InstrumentationRegistry
 import assertk.assertThat
+import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
+import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
 import com.jeanbarrossilva.orca.feature.gallery.test.get
 import com.jeanbarrossilva.orca.feature.gallery.test.onPage
 import com.jeanbarrossilva.orca.feature.gallery.test.onPager
+import com.jeanbarrossilva.orca.feature.gallery.test.performScrollToEachPage
 import com.jeanbarrossilva.orca.feature.gallery.test.performScrollToPageAt
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
@@ -78,5 +82,22 @@ internal class SemanticsNodeInteractionExtensionsTests {
       .assertContentDescriptionEquals(
         context.getString(R.string.feature_gallery_attachment, 2.formatted)
       )
+  }
+
+  @Test
+  fun scrollsToEachPageOfGalleryPager() {
+    val context = InstrumentationRegistry.getInstrumentation().context
+    var positions = IntRange.EMPTY
+    composeRule
+      .apply { setContent { AutosTheme { Gallery() } } }
+      .run {
+        onPager().performScrollToEachPage {
+          positions = 1..it
+          assertContentDescriptionEquals(
+            context.getString(R.string.feature_gallery_attachment, it.formatted)
+          )
+        }
+      }
+    assertThat(positions).isEqualTo(1..Attachment.samples.size.inc())
   }
 }

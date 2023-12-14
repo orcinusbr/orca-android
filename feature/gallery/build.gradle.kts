@@ -16,6 +16,7 @@
 plugins {
   alias(libs.plugins.android.library)
   alias(libs.plugins.kotlin.android)
+  alias(libs.plugins.kotlin.symbolProcessor)
 }
 
 android {
@@ -26,12 +27,18 @@ android {
 }
 
 dependencies {
+  androidTestImplementation(project(":core:sample-test"))
   androidTestImplementation(project(":platform:ui-test"))
+  androidTestImplementation(project(":std:injector-test"))
   androidTestImplementation(libs.android.compose.ui.test.junit)
   androidTestImplementation(libs.android.compose.ui.test.manifest)
+  androidTestImplementation(libs.android.fragment.testing)
+  androidTestImplementation(libs.android.test.core)
   androidTestImplementation(libs.android.test.espresso.core)
   androidTestImplementation(libs.assertk)
   androidTestImplementation(libs.loadable.placeholder.test)
+
+  ksp(project(":std:injector-processor"))
 
   implementation(project(":core"))
   implementation(project(":core:sample"))

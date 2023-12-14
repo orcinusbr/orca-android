@@ -52,6 +52,16 @@ internal constructor(
   val formattedReblogCount = repostCount.formatted
 
   companion object {
+    /** [StatsDetails] with zeroed counts. */
+    val Empty =
+      StatsDetails(
+        commentCount = 0,
+        isFavorite = false,
+        favoriteCount = 0,
+        isReposted = false,
+        repostCount = 0
+      )
+
     /** Sample [StatsDetails]. */
     val sample
       @Composable get() = Post.createSample(ImageLoader.Provider.createSample()).asStatsDetails()
