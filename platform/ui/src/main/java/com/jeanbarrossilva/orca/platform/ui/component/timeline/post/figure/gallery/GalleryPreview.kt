@@ -21,50 +21,87 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import com.jeanbarrossilva.orca.core.feed.profile.post.Author
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
+import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.Disposition
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.disposition
-import com.jeanbarrossilva.orca.std.imageloader.Image
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.Thumbnail
 import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
-import com.jeanbarrossilva.orca.std.imageloader.compose.Image
-import java.net.URL
 
 /** Tag that identifies a [GalleryPreview] for testing purposes. */
 internal const val GALLERY_PREVIEW_TAG = "gallery-preview"
 
 /**
- * Grid in which thumbnails of the [attachments] are placed.
+ * Information to be previewed of a [Post]'s [Attachment]s.
  *
- * @param attachments [Attachment]s whose [Image]s will be loaded from their respective [URL].
- * @param modifier [Modifier] to be applied to the underlying [Box].
+ * @param postID ID of the [Post] to which the [attachments] belong.
+ * @param authorName Name of the [Author] by which the [Post] was published.
+ * @param attachments [Attachment]s to be previewed.
  */
-@Composable
-internal fun GalleryPreview(attachments: List<Attachment>, modifier: Modifier = Modifier) {
-  GalleryPreview(Author.createSample(ImageLoader.Provider.createSample()), attachments, modifier)
+data class GalleryPreview(
+  val postID: String,
+  val authorName: String,
+  val attachments: List<Attachment>
+) {
+  companion object {
+    /** Sample [GalleryPreview]. */
+    internal val sample
+      @Composable get() = getSample(ImageLoader.Provider.createSample())
+
+    /**
+     * Gets a sample [GalleryPreview].
+     *
+     * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
+     *   the [Thumbnail]s will be loaded.
+     */
+    internal fun getSample(
+      imageLoaderProvider: ImageLoader.Provider<SampleImageSource>
+    ): GalleryPreview {
+      return Post.createSample(imageLoaderProvider).asGalleryPreview()
+    }
+  }
 }
 
 /**
- * Grid in which thumbnails of the [attachments] are placed.
+ * Grid in which thumbnails of the [preview]'s [Attachment]s are placed.
  *
- * @param author [Author] by which the [attachments] have been added.
- * @param attachments [Attachment]s whose [Thumbnail]s will be loaded from their respective [URL].
+ * @param preview [GalleryPreview] with the information to be previewed.
  * @param modifier [Modifier] to be applied to the underlying [Box].
+ * @see GalleryPreview.attachments
  */
 @Composable
 internal fun GalleryPreview(
-  author: Author,
-  attachments: List<Attachment>,
+  modifier: Modifier = Modifier,
+  preview: GalleryPreview = GalleryPreview.sample
+) {
+  GalleryPreview(preview, Disposition.OnThumbnailClickListener.empty, modifier)
+}
+
+/**
+ * Grid in which thumbnails of the [preview]'s [Attachment]s are placed.
+ *
+ * @param preview [GalleryPreview] with the information to be previewed.
+ * @param onThumbnailClickListener [Disposition.OnThumbnailClickListener] that is notified of clicks
+ *   on [Thumbnail]s.
+ * @param modifier [Modifier] to be applied to the underlying [Box].
+ * @see GalleryPreview.attachments
+ */
+@Composable
+internal fun GalleryPreview(
+  preview: GalleryPreview,
+  onThumbnailClickListener: Disposition.OnThumbnailClickListener,
   modifier: Modifier = Modifier
 ) {
-  val disposition = Disposition.of(attachments)
+  val disposition = Disposition.of(preview, onThumbnailClickListener)
 
   Box(modifier.testTag(GALLERY_PREVIEW_TAG).semantics { this.disposition = disposition }) {
-    disposition.Content(author)
+    with(disposition) { Content(Modifier) }
   }
 }
 
@@ -72,26 +109,34 @@ internal fun GalleryPreview(
 @Composable
 @MultiThemePreview
 private fun SingleThumbnailGalleryPreviewPreview() {
-  AutosTheme { GalleryPreview(Attachment.samples.take(1)) }
+  AutosTheme {
+    GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples.take(1)))
+  }
 }
 
 /** Preview of a [GalleryPreview] with 2 [Thumbnail]s. */
 @Composable
 @MultiThemePreview
 private fun TwoThumbnailGalleryPreviewPreview() {
-  AutosTheme { GalleryPreview(Attachment.samples.take(2)) }
+  AutosTheme {
+    GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples.take(2)))
+  }
 }
 
 /** Preview of a [GalleryPreview] with 3 thumbnails. */
 @Composable
 @MultiThemePreview
 private fun ThreeThumbnailGalleryPreviewPreview() {
-  AutosTheme { GalleryPreview(Attachment.samples.take(3)) }
+  AutosTheme {
+    GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples.take(3)))
+  }
 }
 
 /** Preview of a [GalleryPreview] with 3+ [Thumbnail]s. */
 @Composable
 @MultiThemePreview
 private fun ThreePlusThumbnailGalleryPreviewPreview() {
-  AutosTheme { GalleryPreview(Attachment.samples) }
+  AutosTheme {
+    GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples))
+  }
 }

@@ -34,7 +34,10 @@ class FeedFragment internal constructor() : ComposableFragment(), ContextProvide
         module.feedProvider(),
         module.postProvider(),
         userID,
-        onLinkClick = module.boundary()::navigateTo
+        onLinkClick = module.boundary()::navigateTo,
+        onThumbnailClickListener = { postID, entrypointIndex, secondary, entrypoint ->
+          module.boundary().navigateToGallery(postID, entrypointIndex, secondary, entrypoint)
+        }
       )
     }
 

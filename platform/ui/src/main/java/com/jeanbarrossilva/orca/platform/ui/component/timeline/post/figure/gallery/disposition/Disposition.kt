@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,7 +34,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.jeanbarrossilva.orca.core.feed.profile.post.Author
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.`if`
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
@@ -42,32 +43,92 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.galle
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.Thumbnail
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.ThumbnailDefaults
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
+import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
 
 /** Indicates how a [GalleryPreview]'s [Thumbnail]s should be laid out. */
 @Immutable
-internal sealed class Disposition {
+sealed class Disposition {
+  /** [GalleryPreview] with the information to be previewed. */
+  internal abstract val preview: GalleryPreview
+
+  /** [OnThumbnailClickListener] that is notified of clicks on [Thumbnail]s. */
+  internal abstract val onThumbnailClickListener: OnThumbnailClickListener
+
+  /**
+   * Listener to be notified of clicks on a [Thumbnail].
+   *
+   * @see onThumbnailClickListener
+   */
+  fun interface OnThumbnailClickListener {
+    /**
+     * Operation to be performed whenever a [Thumbnail] is clicked.
+     *
+     * @param postID ID of the [Post] to which the [Thumbnail] belongs.
+     * @param entrypointIndex Index of the [entrypoint].
+     * @param secondary [Attachment]s that aren't the ones displayed by the primary [Thumbnail].
+     * @param entrypoint Copy of the [Thumbnail] that's been clicked on.
+     */
+    fun onThumbnailClickListener(
+      postID: String,
+      entrypointIndex: Int,
+      secondary: List<Attachment>,
+      entrypoint: @Composable (Modifier, Sizing) -> Unit
+    )
+
+    companion object {
+      /** No-op [OnThumbnailClickListener]. */
+      val empty = OnThumbnailClickListener { _, _, _, _ -> }
+    }
+  }
+
   /**
    * Indicates that a [GalleryPreview] has a single [Thumbnail].
    *
-   * @param attachment [Attachment] for which a [Thumbnail] will be laid out.
+   * @throws IllegalArgumentException If the [preview] contains more than one [Attachment].
+   * @see GalleryPreview.attachments
    */
-  data class Single(val attachment: Attachment) : Disposition() {
+  internal data class Single
+  @Throws(IllegalArgumentException::class)
+  constructor(
+    override val preview: GalleryPreview,
+    override val onThumbnailClickListener: OnThumbnailClickListener = OnThumbnailClickListener.empty
+  ) : Disposition() {
+    init {
+      require(preview.attachments.size == 1) { "Single disposition can only have one attachment." }
+    }
+
     @Composable
-    override fun Content(modifier: Modifier, author: Author) {
-      Thumbnail(author, attachment, position = 1, modifier.aspectRatio(FULL_RATIO).fillMaxWidth())
+    override fun Content(modifier: Modifier) {
+      val attachment = remember(preview, preview.attachments::single)
+
+      Thumbnail(
+        preview.authorName,
+        attachment,
+        position = 1,
+        onClick = {
+          onThumbnailClickListener.onThumbnailClickListener(
+            preview.postID,
+            entrypointIndex = 0,
+            listOf(attachment),
+            entrypoint = it
+          )
+        },
+        modifier.aspectRatio(FULL_RATIO).fillMaxWidth()
+      )
     }
   }
 
   /**
    * Indicates that a [GalleryPreview] has multiple [Thumbnail]s and that those should be laid out
    * as a grid.
-   *
-   * @param attachments [Attachment]s for which [Thumbnail]s will be laid out.
    */
-  data class Grid(val attachments: List<Attachment>) : Disposition() {
+  internal data class Grid(
+    override val preview: GalleryPreview,
+    override val onThumbnailClickListener: OnThumbnailClickListener = OnThumbnailClickListener.empty
+  ) : Disposition() {
     /**
      * Provides a [Shape] for a non-leading [Thumbnail] that takes both the overall amount of
-     * visible [attachments] and the position of the [Thumbnail] into account.
+     * visible [Attachment]s and the position of the [Thumbnail] into account.
      *
      * @see provide
      */
@@ -127,28 +188,47 @@ internal sealed class Disposition {
     }
 
     init {
-      require(attachments.size > 1) { "Grid should be given at least two attachments." }
+      require(preview.attachments.size > 1) { "Grid should be given at least two attachments." }
     }
 
     @Composable
-    override fun Content(modifier: Modifier, author: Author) {
+    override fun Content(modifier: Modifier) {
+      val postID = remember(preview, preview::postID)
+      val authorName = remember(preview, preview::authorName)
+      val attachments = remember(preview, preview::attachments)
       val spacing = AutosTheme.spacings.extraSmall.dp
 
       Row(modifier, Arrangement.spacedBy(spacing)) {
         Thumbnail(
-          author,
+          authorName,
           attachments.first(),
           position = 1,
+          onClick = {
+            onThumbnailClickListener.onThumbnailClickListener(
+              postID,
+              entrypointIndex = 1,
+              preview.attachments.minusAt(1),
+              entrypoint = it
+            )
+          },
           Modifier.fillMaxWidth(.5f).aspectRatio(LEADING_HALF_WIDTH_RATIO),
           ThumbnailDefaults.shape.withoutTopEnd.withoutBottomEnd
         )
 
         Column(verticalArrangement = Arrangement.spacedBy(spacing)) {
-          attachments.getOrNull(1)?.let {
+          attachments.getOrNull(1)?.let { attachment ->
             Thumbnail(
-              author,
-              it,
+              authorName,
+              attachment,
               position = 2,
+              onClick = { copy ->
+                onThumbnailClickListener.onThumbnailClickListener(
+                  postID,
+                  entrypointIndex = 2,
+                  preview.attachments.minusAt(2),
+                  entrypoint = copy
+                )
+              },
               (Modifier as Modifier)
                 .`if`(attachments.size > 2) { aspectRatio(TRAILING_APPROXIMATE_HALF_RATIO) }
                 .`if`(attachments.size == 2) { aspectRatio(TRAILING_APPROXIMATE_HALF_WIDTH_RATIO) }
@@ -157,14 +237,22 @@ internal sealed class Disposition {
             )
           }
 
-          attachments.getOrNull(2)?.let {
+          attachments.getOrNull(2)?.let { attachment ->
             val shape = SubsequentShapeProvider.of(attachments.size, position = 3).provide()
 
             Box(contentAlignment = Alignment.Center) {
               Thumbnail(
-                author,
-                it,
+                authorName,
+                attachment,
                 position = 3,
+                onClick = { copy ->
+                  onThumbnailClickListener.onThumbnailClickListener(
+                    postID,
+                    entrypointIndex = 3,
+                    attachments.minusAt(3),
+                    entrypoint = copy
+                  )
+                },
                 Modifier.fillMaxWidth().aspectRatio(TRAILING_APPROXIMATE_HALF_RATIO),
                 shape
               )
@@ -199,53 +287,48 @@ internal sealed class Disposition {
   /**
    * [Thumbnail]s laid out according to this [Disposition].
    *
-   * @param author [Author] by which the attachment(s) has/have been added.
    * @param modifier [Modifier] to be applied to the underlying [Composable].
    */
-  @Composable
-  fun Content(author: Author, modifier: Modifier = Modifier) {
-    Content(modifier, author)
-  }
-
-  /**
-   * [Thumbnail]s laid out according to this [Disposition].
-   *
-   * @param modifier [Modifier] to be applied to the underlying [Composable].
-   * @param author [Author] by which the attachment(s) has/have been added.
-   */
-  @Composable protected abstract fun Content(modifier: Modifier, author: Author)
+  @Composable abstract fun Content(modifier: Modifier)
 
   companion object {
     /** Aspect ratio of a [Thumbnail] that fills the [GalleryPreview]. */
-    const val FULL_RATIO = 16f / 9f
+    internal const val FULL_RATIO = 16f / 9f
 
     /**
      * Aspect ratio of a leading [Thumbnail] that has the same height as a [FULL_RATIO], but half
      * the width.
      */
-    const val LEADING_HALF_WIDTH_RATIO = 8f / 9f
+    internal const val LEADING_HALF_WIDTH_RATIO = 8f / 9f
 
     /**
      * Aspect ratio of a [Thumbnail] that is approximately half of a [FULL_RATIO]. This estimate is
      * due to the spacing that a [Grid] has in between its [Thumbnail]s.
      */
-    const val TRAILING_APPROXIMATE_HALF_RATIO = 8f / 4.52f
+    internal const val TRAILING_APPROXIMATE_HALF_RATIO = 8f / 4.52f
 
     /**
      * Aspect ratio of a trailing [Thumbnail] that has the same height as a [FULL_RATIO], but
      * approximately half the width. This estimate is due to the spacing that a [Grid] has in
      * between its [Thumbnail]s.
      */
-    const val TRAILING_APPROXIMATE_HALF_WIDTH_RATIO = 8f / 9.2f
+    internal const val TRAILING_APPROXIMATE_HALF_WIDTH_RATIO = 8f / 9.2f
 
     /**
-     * Gets the [Disposition] that's the most suitable for the [attachments].
+     * Gets the [Disposition] that's the most suitable for the [preview].
      *
-     * @param attachments [Attachment] for which [Thumbnail]s will be laid out.
+     * @param preview [GalleryPreview] with the information to be previewed.
+     * @param onThumbnailClickListener [OnThumbnailClickListener] that is notified of clicks on
+     *   [Thumbnail]s.
      */
-    fun of(attachments: List<Attachment>): Disposition {
+    internal fun of(
+      preview: GalleryPreview,
+      onThumbnailClickListener: OnThumbnailClickListener = OnThumbnailClickListener.empty
+    ): Disposition {
+      val attachments = preview.attachments
       require(attachments.isNotEmpty()) { "Cannot get disposition for an empty gallery." }
-      return if (attachments.size == 1) Single(attachments.single()) else Grid(attachments)
+      return if (attachments.size == 1) Single(preview, onThumbnailClickListener)
+      else Grid(preview, onThumbnailClickListener)
     }
   }
 }

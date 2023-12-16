@@ -13,25 +13,14 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.postdetails
+package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
-import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
-import java.net.URL
-
-interface PostDetailsBoundary {
-  fun navigateTo(url: URL)
-
-  fun navigateToGallery(
-    postID: String,
-    entrypointIndex: Int,
-    secondary: List<Attachment>,
-    entrypoint: @Composable (Modifier, Sizing) -> Unit
-  )
-
-  fun navigateToPostDetails(id: String)
-
-  fun pop()
+/**
+ * Returns a [List] without the element at the given [index].
+ *
+ * @param T Element of this [Iterable].
+ * @param index Index at which the element to be absent from the returned [List] is.
+ */
+internal fun <T> Iterable<T>.minusAt(index: Int): List<T> {
+  return toMutableList().apply { removeAt(index) }.toList()
 }

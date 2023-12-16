@@ -26,6 +26,7 @@ import com.jeanbarrossilva.orca.ext.coroutines.notifier.notifierFlow
 import com.jeanbarrossilva.orca.ext.coroutines.notifier.notify
 import com.jeanbarrossilva.orca.feature.postdetails.toPostDetailsFlow
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.Disposition
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.toPostPreviewFlow
 import com.jeanbarrossilva.orca.platform.ui.core.await
 import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
@@ -44,7 +45,8 @@ private constructor(
   private val contextProvider: ContextProvider,
   private val postProvider: PostProvider,
   private val id: String,
-  private val onLinkClick: (URL) -> Unit
+  private val onLinkClick: (URL) -> Unit,
+  private val onThumbnailClickListener: Disposition.OnThumbnailClickListener
 ) : ViewModel() {
   private val notifierFlow = notifierFlow()
 
@@ -61,11 +63,15 @@ private constructor(
 
   @OptIn(ExperimentalCoroutinesApi::class)
   val detailsLoadableFlow =
-    postFlow.flatMapLatest { it.toPostDetailsFlow(colors, onLinkClick) }.loadable(viewModelScope)
+    postFlow
+      .flatMapLatest { it.toPostDetailsFlow(colors, onLinkClick, onThumbnailClickListener) }
+      .loadable(viewModelScope)
 
   val commentsLoadableFlow =
     flatMapCombine(commentsIndexFlow, postFlow) { commentsIndex, post ->
-        post.comment.get(commentsIndex).flatMapEach { it.toPostPreviewFlow(colors, onLinkClick) }
+        post.comment.get(commentsIndex).flatMapEach {
+          it.toPostPreviewFlow(colors, onLinkClick, onThumbnailClickListener)
+        }
       }
       .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())
 
@@ -98,11 +104,18 @@ private constructor(
       contextProvider: ContextProvider,
       postProvider: PostProvider,
       id: String,
-      onLinkClick: (URL) -> Unit
+      onLinkClick: (URL) -> Unit,
+      onThumbnailClickListener: Disposition.OnThumbnailClickListener
     ): ViewModelProvider.Factory {
       return viewModelFactory {
         addInitializer(PostDetailsViewModel::class) {
-          PostDetailsViewModel(contextProvider, postProvider, id, onLinkClick)
+          PostDetailsViewModel(
+            contextProvider,
+            postProvider,
+            id,
+            onLinkClick,
+            onThumbnailClickListener
+          )
         }
       }
     }

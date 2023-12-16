@@ -13,25 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.postdetails
+package com.jeanbarrossilva.orca.platform.ui.core.activity
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
-import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
-import java.net.URL
+import android.os.Bundle
+import androidx.fragment.app.FragmentActivity
 
-interface PostDetailsBoundary {
-  fun navigateTo(url: URL)
-
-  fun navigateToGallery(
-    postID: String,
-    entrypointIndex: Int,
-    secondary: List<Attachment>,
-    entrypoint: @Composable (Modifier, Sizing) -> Unit
-  )
-
-  fun navigateToPostDetails(id: String)
-
-  fun pop()
+/**
+ * [FragmentActivity] that notifies its listeners from the [ActivityStarter] of its initialization.
+ */
+abstract class StartableActivity : FragmentActivity() {
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    ActivityStarter.notifyListenersOf(this)
+  }
 }

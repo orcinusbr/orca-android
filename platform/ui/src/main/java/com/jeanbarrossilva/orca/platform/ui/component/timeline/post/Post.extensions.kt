@@ -22,6 +22,8 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.repost.Repost
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.component.stat.asStatsDetails
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.Figure
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.Disposition
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.Thumbnail
 import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
 import java.net.URL
 import kotlinx.coroutines.flow.Flow
@@ -31,9 +33,15 @@ import kotlinx.coroutines.flow.combine
  * Converts this [Post] into a [Flow] of [PostPreview].
  *
  * @param colors [Colors] by which the emitted [PostPreview]s' [PostPreview.text] can be colored.
- * @param onLinkClick Lambda to be run whenever the [Figure.Link]'s content gets clicked.
+ * @param onLinkClick Lambda to be run whenever the [Figure.Link]'s content is clicked.
+ * @param onThumbnailClickListener [Disposition.OnThumbnailClickListener] that is notified of clicks
+ *   on [Thumbnail]s.
  */
-fun Post.toPostPreviewFlow(colors: Colors, onLinkClick: (URL) -> Unit): Flow<PostPreview> {
+fun Post.toPostPreviewFlow(
+  colors: Colors,
+  onLinkClick: (URL) -> Unit,
+  onThumbnailClickListener: Disposition.OnThumbnailClickListener
+): Flow<PostPreview> {
   return combine(
     comment.countFlow,
     favorite.isEnabledFlow,
@@ -41,27 +49,40 @@ fun Post.toPostPreviewFlow(colors: Colors, onLinkClick: (URL) -> Unit): Flow<Pos
     repost.isEnabledFlow,
     repost.countFlow
   ) { _, _, _, _, _ ->
-    toPostPreview(colors, onLinkClick)
+    toPostPreview(colors, onLinkClick, onThumbnailClickListener)
   }
 }
 
 /**
  * Converts this [Post] into a [PostPreview].
  *
- * @param onLinkClick Lambda to be run whenever the [Figure.Link]'s content gets clicked.
+ * @param onLinkClick Lambda to be run whenever the [Figure.Link]'s content is clicked.
+ * @param onThumbnailClickListener [Disposition.OnThumbnailClickListener] that is notified of clicks
+ *   on [Thumbnail]s.
  */
 @Composable
-internal fun Post.toPostPreview(onLinkClick: (URL) -> Unit): PostPreview {
-  return toPostPreview(AutosTheme.colors, onLinkClick)
+internal fun Post.toPostPreview(
+  onLinkClick: (URL) -> Unit = {},
+  onThumbnailClickListener: Disposition.OnThumbnailClickListener =
+    Disposition.OnThumbnailClickListener.empty
+): PostPreview {
+  return toPostPreview(AutosTheme.colors, onLinkClick, onThumbnailClickListener)
 }
 
 /**
  * Converts this [Post] into a [PostPreview].
  *
  * @param colors [Colors] by which the resulting [PostPreview]'s [PostPreview.text] can be colored.
- * @param onLinkClick Lambda to be run whenever the [Figure.Link]'s content gets clicked.
+ * @param onLinkClick Lambda to be run whenever the [Figure.Link]'s content is clicked.
+ * @param onThumbnailClickListener [Disposition.OnThumbnailClickListener] that is notified of clicks
+ *   on [Thumbnail]s.
  */
-internal fun Post.toPostPreview(colors: Colors, onLinkClick: (URL) -> Unit): PostPreview {
+internal fun Post.toPostPreview(
+  colors: Colors,
+  onLinkClick: (URL) -> Unit = {},
+  onThumbnailClickListener: Disposition.OnThumbnailClickListener =
+    Disposition.OnThumbnailClickListener.empty
+): PostPreview {
   return PostPreview(
     id,
     author.avatarLoader,
@@ -69,7 +90,7 @@ internal fun Post.toPostPreview(colors: Colors, onLinkClick: (URL) -> Unit): Pos
     author.account,
     if (this is Repost) reposter.name else null,
     content.text.toAnnotatedString(colors),
-    Figure.of(content, onLinkClick),
+    Figure.of(id, author.name, content, onLinkClick, onThumbnailClickListener),
     publicationDateTime,
     asStatsDetails(),
     url

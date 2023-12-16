@@ -16,20 +16,20 @@
 package com.jeanbarrossilva.orca.platform.ui.core.lifecycle
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.lifecycle.Lifecycle
+import com.jeanbarrossilva.orca.platform.ui.core.activity.StartableActivity
 import com.jeanbarrossilva.orca.platform.ui.core.lifecycle.state.CompleteLifecycleState
 import com.jeanbarrossilva.orca.platform.ui.core.lifecycle.state.compareTo
 import com.jeanbarrossilva.orca.platform.ui.core.lifecycle.state.next
 
 /**
- * [ComponentActivity] that provides a complete version of [Lifecycle.State], containing missing
+ * [StartableActivity] that provides a complete version of [Lifecycle.State], containing missing
  * states such as the [paused][CompleteLifecycleState.PAUSED] and
  * [stopped][CompleteLifecycleState.STOPPED] ones.
  *
  * @see CompleteLifecycleState
  */
-open class CompleteLifecycleActivity : ComponentActivity() {
+open class CompleteLifecycleActivity : StartableActivity() {
   /** [CompleteLifecycleState] in which this [CompleteLifecycleActivity] currently is. */
   var completeLifecycleState: CompleteLifecycleState? = null
     private set

@@ -34,7 +34,8 @@ class PostDetailsFragment private constructor() : ComposableFragment() {
         contextProvider = ::requireContext,
         module.postProvider(),
         id,
-        onLinkClick = module.boundary()::navigateTo
+        onLinkClick = module.boundary()::navigateTo,
+        onThumbnailClickListener = module.boundary()::navigateToGallery
       )
     }
 

@@ -80,6 +80,7 @@ dependencies {
   implementation(project(":core:shared-preferences"))
   implementation(project(":feature:composer"))
   implementation(project(":feature:feed"))
+  implementation(project(":feature:gallery"))
   implementation(project(":feature:post-details"))
   implementation(project(":feature:profile-details"))
   implementation(project(":feature:search"))

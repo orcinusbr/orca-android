@@ -24,6 +24,7 @@ import androidx.lifecycle.lifecycleScope
 import com.jeanbarrossilva.orca.app.databinding.ActivityOrcaBinding
 import com.jeanbarrossilva.orca.app.module.core.MainMastodonCoreModule
 import com.jeanbarrossilva.orca.app.module.feature.feed.MainFeedModule
+import com.jeanbarrossilva.orca.app.module.feature.gallery.MainGalleryModule
 import com.jeanbarrossilva.orca.app.module.feature.postdetails.MainPostDetailsModule
 import com.jeanbarrossilva.orca.app.module.feature.profiledetails.MainProfileDetailsModule
 import com.jeanbarrossilva.orca.app.module.feature.search.MainSearchModule
@@ -32,6 +33,7 @@ import com.jeanbarrossilva.orca.app.module.feature.settings.termmuting.MainTermM
 import com.jeanbarrossilva.orca.app.navigation.BottomNavigation
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.feature.feed.FeedModule
+import com.jeanbarrossilva.orca.feature.gallery.GalleryModule
 import com.jeanbarrossilva.orca.feature.postdetails.PostDetailsModule
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetailsModule
 import com.jeanbarrossilva.orca.feature.search.SearchModule
@@ -86,6 +88,7 @@ internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilit
       inject<Context> { this@OrcaActivity }
       register(coreModule)
       register<FeedModule>(MainFeedModule(this@OrcaActivity))
+      register<GalleryModule>(MainGalleryModule(navigator))
       register<PostDetailsModule>(MainPostDetailsModule(this@OrcaActivity))
       register<ProfileDetailsModule>(MainProfileDetailsModule(this@OrcaActivity))
       register<SearchModule>(MainSearchModule(navigator))

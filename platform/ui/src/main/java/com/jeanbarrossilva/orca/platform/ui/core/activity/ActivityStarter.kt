@@ -13,21 +13,24 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core
+package com.jeanbarrossilva.orca.platform.ui.core.activity
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import com.jeanbarrossilva.orca.platform.ui.core.bundleOf
+import com.jeanbarrossilva.orca.platform.ui.core.putExtras
 import kotlin.reflect.KClass
+import kotlin.reflect.full.isSuperclassOf
 
 /**
- * Starts an [Activity] with the configured settings.
+ * Starts an [StartableActivity] with the configured settings.
  *
- * @param T [Activity] to be started.
- * @param context [Context] from which the [Activity] will be started.
- * @param activityClass [KClass] of the [Activity].
+ * @param T [StartableActivity] to be started.
+ * @param context [Context] from which the [StartableActivity] will be started.
+ * @param activityClass [KClass] of the [StartableActivity].
  */
-class ActivityStarter<T : Activity>
+class ActivityStarter<T : StartableActivity>
 @PublishedApi
 internal constructor(private val context: Context, private val activityClass: KClass<T>) {
   /** Arguments to be passed to the [Intent]'s [extras][Intent.getExtras]. */
@@ -35,6 +38,16 @@ internal constructor(private val context: Context, private val activityClass: KC
 
   /** [Intent]'s [flags][Intent.getFlags]. */
   private var flags = 0
+
+  /**
+   * Listens to when an [StartableActivity] has been started.
+   *
+   * @param A [StartableActivity] that's been started.
+   * @see start
+   */
+  fun interface OnStartListener<A : StartableActivity> {
+    fun onStart(activity: A)
+  }
 
   /**
    * Defines the [Activity] as the first task of a new [Activity] group to be created. Useful for
@@ -56,14 +69,41 @@ internal constructor(private val context: Context, private val activityClass: KC
   }
 
   /**
-   * Starts the [Activity].
+   * Starts the [StartableActivity].
    *
+   * @param listener [OnStartListener] to be notified when the [StartableActivity] is started.
    * @see Context.startActivity
    */
-  fun start() {
+  fun start(listener: OnStartListener<T>? = null) {
     val argsAsArray = args.map { (key, value) -> key to value }.toTypedArray()
     val extras = bundleOf(*argsAsArray)
     val intent = Intent(context, activityClass.java).putExtras(extras).addFlags(flags)
+    listener?.let { listeners[activityClass] = it }
     context.startActivity(intent)
+  }
+
+  companion object {
+    /**
+     * [OnStartListener]s that have been registered associated to the [KClass] of the
+     * [StartableActivity] to whose starting they listen.
+     */
+    private val listeners =
+      mutableMapOf<KClass<out StartableActivity>, OnStartListener<out StartableActivity>>()
+
+    /**
+     * Notifies the [OnStartListener] that listens to the starting of the given [StartableActivity],
+     * removing it afterwards.
+     *
+     * @param activity [StartableActivity] whose start is listened to by the [OnStartListener] to be
+     *   notified.
+     */
+    internal fun notifyListenersOf(activity: StartableActivity) {
+      listeners
+        .filter { (activityClass, _) -> activityClass.isSuperclassOf(activity::class) }
+        .values
+        .filterIsInstance<OnStartListener<StartableActivity>>()
+        .forEach { it.onStart(activity) }
+        .also { listeners.remove(activity::class) }
+    }
   }
 }

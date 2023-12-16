@@ -19,12 +19,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
 import com.jeanbarrossilva.orca.core.feed.profile.post.Author
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Content
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Headline
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Highlight
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.GalleryPreview
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.Disposition
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.Thumbnail
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.link.LinkCard
 import java.net.URL
 
@@ -35,7 +38,7 @@ sealed class Figure {
    * [Figure] that displays the data provided by the [headline].
    *
    * @param headline [Headline] with the main information about a mentioned link.
-   * @param onClick Lambda to be run whenever the [Content] gets clicked.
+   * @param onClick Lambda to be run whenever the [LinkCard] is clicked.
    */
   internal data class Link(private val headline: Headline, private val onClick: () -> Unit) :
     Figure() {
@@ -46,20 +49,26 @@ sealed class Figure {
   }
 
   /**
-   * [Figure] that displays the thumbnails of the added [attachments].
+   * [Figure] that displays the [Thumbnail]s of the [preview].
    *
-   * @param attachments [Attachment]s that have been added by the [Author].
+   * @param preview [GalleryPreview] with the information to be previewed.
+   * @param onThumbnailClickListener [Disposition.OnThumbnailClickListener] that is notified of
+   *   clicks on [Thumbnail]s.
    */
   internal data class Gallery
   @Throws(IllegalArgumentException::class)
-  constructor(private val attachments: List<Attachment>) : Figure() {
+  constructor(
+    private val preview: GalleryPreview,
+    private val onThumbnailClickListener: Disposition.OnThumbnailClickListener =
+      Disposition.OnThumbnailClickListener.empty
+  ) : Figure() {
     init {
-      require(attachments.isNotEmpty()) { "Cannot create a gallery with empty attachments." }
+      require(preview.attachments.isNotEmpty()) { "Cannot create a gallery without attachments." }
     }
 
     @Composable
     override fun Content(modifier: Modifier) {
-      GalleryPreview(attachments)
+      GalleryPreview(preview, onThumbnailClickListener, modifier)
     }
   }
 
@@ -80,13 +89,26 @@ sealed class Figure {
     /**
      * Creates the appropriate [Figure] for the [content].
      *
+     * @param postID ID of the [Post] to which the [content] belongs.
+     * @param authorName Name of the [Author] by which the [Post] has been published.
      * @param content [Content] from which the [Figure] will be created.
+     * @param onLinkClick Lambda to be run whenever a [LinkCard] is clicked.
+     * @param onThumbnailClickListener [Disposition.OnThumbnailClickListener] that is notified of
+     *   clicks on [Thumbnail]s.
      * @return Either a [Gallery] if the [content] has [Attachment]s or a [Link] if it has a
      *   [Highlight].
      */
-    fun of(content: Content, onLinkClick: (URL) -> Unit): Figure? {
+    fun of(
+      postID: String,
+      authorName: String,
+      content: Content,
+      onLinkClick: (URL) -> Unit = {},
+      onThumbnailClickListener: Disposition.OnThumbnailClickListener =
+        Disposition.OnThumbnailClickListener.empty
+    ): Figure? {
       return when {
-        content.attachments.isNotEmpty() -> Gallery(content.attachments)
+        content.attachments.isNotEmpty() ->
+          Gallery(GalleryPreview(postID, authorName, content.attachments), onThumbnailClickListener)
         content.highlight != null ->
           with(content.highlight!!) { Link(headline) { onLinkClick(url) } }
         else -> null

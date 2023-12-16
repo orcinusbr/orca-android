@@ -39,9 +39,9 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.galle
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.test.onGalleryPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.ThumbnailDefaults
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.test.assertIsClippedBy
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.test.onThumbnail
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.test.onThumbnails
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.figure.gallery.thumbnail.onThumbnail
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.figure.gallery.thumbnail.onThumbnails
 import org.junit.Rule
 import org.junit.Test
 
@@ -50,20 +50,36 @@ internal class GalleryPreviewTests {
 
   @Test
   fun containsOneColumnWhenGivenSingleAttachment() {
-    composeRule.setContent { AutosTheme { GalleryPreview(Attachment.samples.take(1)) } }
+    composeRule.setContent {
+      AutosTheme {
+        GalleryPreview(
+          preview = GalleryPreview.sample.copy(attachments = Attachment.samples.take(1))
+        )
+      }
+    }
     composeRule.onGalleryPreview().assertDispositionIs<Disposition.Single>()
   }
 
   @Test
   fun containsTwoColumnsWhenGivenMultipleAttachments() {
-    composeRule.setContent { AutosTheme { GalleryPreview(Attachment.samples.take(2)) } }
+    composeRule.setContent {
+      AutosTheme {
+        GalleryPreview(
+          preview = GalleryPreview.sample.copy(attachments = Attachment.samples.take(2))
+        )
+      }
+    }
     composeRule.onGalleryPreview().assertDispositionIs<Disposition.Grid>()
   }
 
   @Test
   fun describesLeadingThumbnailContent() {
     val context = InstrumentationRegistry.getInstrumentation().context
-    composeRule.setContent { AutosTheme { GalleryPreview(Attachment.samples) } }
+    composeRule.setContent {
+      AutosTheme {
+        GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples))
+      }
+    }
     composeRule
       .onThumbnails()
       .onFirst()
@@ -75,7 +91,11 @@ internal class GalleryPreviewTests {
   @Test
   fun describesSecondThumbnailContent() {
     val context = InstrumentationRegistry.getInstrumentation().context
-    composeRule.setContent { AutosTheme { GalleryPreview(Attachment.samples) } }
+    composeRule.setContent {
+      AutosTheme {
+        GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples))
+      }
+    }
     composeRule
       .onThumbnails()[1]
       .assertContentDescriptionEquals(
@@ -86,7 +106,11 @@ internal class GalleryPreviewTests {
   @Test
   fun describesLastThumbnailContent() {
     val context = InstrumentationRegistry.getInstrumentation().context
-    composeRule.setContent { AutosTheme { GalleryPreview(Attachment.samples) } }
+    composeRule.setContent {
+      AutosTheme {
+        GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples))
+      }
+    }
     composeRule
       .onThumbnails()
       .onLast()
@@ -97,7 +121,13 @@ internal class GalleryPreviewTests {
 
   @Test
   fun leadingThumbnailHasHalfTheFullWidthWhenGivenTwoAttachments() {
-    composeRule.setContent { AutosTheme { GalleryPreview(Attachment.samples.take(2)) } }
+    composeRule.setContent {
+      AutosTheme {
+        GalleryPreview(
+          preview = GalleryPreview.sample.copy(attachments = Attachment.samples.take(2))
+        )
+      }
+    }
     composeRule
       .onThumbnails()
       .onFirst()
@@ -106,7 +136,13 @@ internal class GalleryPreviewTests {
 
   @Test
   fun trailingThumbnailHasHalfTheFullWidthWhenGivenTwoAttachments() {
-    composeRule.setContent { AutosTheme { GalleryPreview(Attachment.samples.take(2)) } }
+    composeRule.setContent {
+      AutosTheme {
+        GalleryPreview(
+          preview = GalleryPreview.sample.copy(attachments = Attachment.samples.take(2))
+        )
+      }
+    }
     composeRule
       .onThumbnails()
       .onLast()
@@ -115,7 +151,11 @@ internal class GalleryPreviewTests {
 
   @Test
   fun secondThumbnailHasHalfTheFullSizeWhenGivenMoreThanTwoAttachments() {
-    composeRule.setContent { AutosTheme { GalleryPreview(Attachment.samples) } }
+    composeRule.setContent {
+      AutosTheme {
+        GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples))
+      }
+    }
     composeRule
       .onThumbnails()[1]
       .assertAspectRatioEquals(Disposition.TRAILING_APPROXIMATE_HALF_RATIO)
@@ -123,13 +163,25 @@ internal class GalleryPreviewTests {
 
   @Test
   fun singleThumbnailIsClippedByDefaultShape() {
-    composeRule.setContent { AutosTheme { GalleryPreview(Attachment.samples.take(1)) } }
+    composeRule.setContent {
+      AutosTheme {
+        GalleryPreview(
+          preview = GalleryPreview.sample.copy(attachments = Attachment.samples.take(1))
+        )
+      }
+    }
     composeRule.onThumbnail().assertIsClippedBy(ThumbnailDefaults.getShape(Forms.default))
   }
 
   @Test
   fun leadingThumbnailWithinGridOfTwoIsClippedByDefaultShapeWithZeroedTopEndAndBottomEndCorners() {
-    composeRule.setContent { AutosTheme { GalleryPreview(Attachment.samples.take(2)) } }
+    composeRule.setContent {
+      AutosTheme {
+        GalleryPreview(
+          preview = GalleryPreview.sample.copy(attachments = Attachment.samples.take(2))
+        )
+      }
+    }
     composeRule
       .onThumbnails()
       .onFirst()
@@ -138,7 +190,11 @@ internal class GalleryPreviewTests {
 
   @Test
   fun leadingThumbnailWithinGridOfThreeIsClippedByDefaultShapeWithZeroedTopEndAndBottomEndCorners() {
-    composeRule.setContent { AutosTheme { GalleryPreview(Attachment.samples) } }
+    composeRule.setContent {
+      AutosTheme {
+        GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples))
+      }
+    }
     composeRule
       .onThumbnails()
       .onFirst()
@@ -147,7 +203,11 @@ internal class GalleryPreviewTests {
 
   @Test
   fun secondThumbnailWithinGridOfThreeIsClippedByDefaultShapeWithZeroedTopStartAndBottomStartAndEndCorners() {
-    composeRule.setContent { AutosTheme { GalleryPreview(Attachment.samples) } }
+    composeRule.setContent {
+      AutosTheme {
+        GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples))
+      }
+    }
     composeRule
       .onThumbnails()[1]
       .assertIsClippedBy(
@@ -160,7 +220,13 @@ internal class GalleryPreviewTests {
 
   @Test
   fun trailingThumbnailWithinGridOfTwoIsClippedByDefaultShapeWithZeroedBottomStartAndTopStartCorners() {
-    composeRule.setContent { AutosTheme { GalleryPreview(Attachment.samples.take(2)) } }
+    composeRule.setContent {
+      AutosTheme {
+        GalleryPreview(
+          preview = GalleryPreview.sample.copy(attachments = Attachment.samples.take(2))
+        )
+      }
+    }
     composeRule
       .onThumbnails()
       .onLast()
@@ -171,7 +237,11 @@ internal class GalleryPreviewTests {
 
   @Test
   fun trailingThumbnailWithinGridOfThreeIsClippedByDefaultShapeWithZeroedTopStartAndEndAndBottomStartCorners() {
-    composeRule.setContent { AutosTheme { GalleryPreview(Attachment.samples) } }
+    composeRule.setContent {
+      AutosTheme {
+        GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples))
+      }
+    }
     composeRule
       .onThumbnails()
       .onLast()
@@ -183,7 +253,11 @@ internal class GalleryPreviewTests {
   @Test
   fun gridOverCountDoesNotConsiderLastVisibleAttachment() {
     val context = InstrumentationRegistry.getInstrumentation().context
-    composeRule.setContent { AutosTheme { GalleryPreview(Attachment.samples) } }
+    composeRule.setContent {
+      AutosTheme {
+        GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples))
+      }
+    }
     composeRule
       .onOverCount()
       .assertTextEquals(

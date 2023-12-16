@@ -52,6 +52,7 @@ loadable-list = { group = "com.jeanbarrossilva.loadable", name = "loadable-list"
 loadable-placeholder = { group = "com.jeanbarrossilva.loadable", name = "loadable-placeholder", version.ref = "loadable" }
 loadable-placeholder-test = { group = "com.jeanbarrossilva.loadable", name = "loadable-placeholder-test", version.ref = "loadable" }
 mockk = { group = "io.mockk", name = "mockk-android", version = "1.13.7" }
+orbital = { group = "com.github.skydoves", name = "orbital", version = "0.3.3" }
 paginate = { group = "com.chrynan.paginate", name = "paginate-core", version = "0.3.0" }
 slf4j = { group = "org.slf4j", name = "slf4j-api", version = "2.0.7" }
 spotless = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }

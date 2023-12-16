@@ -24,6 +24,7 @@ import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.component.stat.asStatsDetails
 import com.jeanbarrossilva.orca.platform.ui.component.stat.asStatsDetailsFlow
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.Figure
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.Disposition
 import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
 import java.net.URL
 import kotlinx.coroutines.flow.Flow
@@ -33,9 +34,15 @@ import kotlinx.coroutines.flow.map
  * Converts this [Post] into a [Flow] of [PostDetails].
  *
  * @param colors [Colors] by which the emitted [PostDetails]' [PostDetails.text] can be colored.
- * @param onLinkClick Lambda to be run whenever the [Figure.Link]'s content gets clicked.
+ * @param onLinkClick Lambda to be run whenever the [Figure.Link]'s content is clicked.
+ * @param onThumbnailClickListener [Disposition.OnThumbnailClickListener] that is notified of clicks
+ *   on thumbnails.
  */
-internal fun Post.toPostDetailsFlow(colors: Colors, onLinkClick: (URL) -> Unit): Flow<PostDetails> {
+internal fun Post.toPostDetailsFlow(
+  colors: Colors,
+  onLinkClick: (URL) -> Unit,
+  onThumbnailClickListener: Disposition.OnThumbnailClickListener
+): Flow<PostDetails> {
   return asStatsDetailsFlow().map {
     PostDetails(
       id,
@@ -43,7 +50,7 @@ internal fun Post.toPostDetailsFlow(colors: Colors, onLinkClick: (URL) -> Unit):
       author.name,
       author.account,
       content.text.toAnnotatedString(colors),
-      Figure.of(content, onLinkClick),
+      Figure.of(id, author.name, content, onLinkClick, onThumbnailClickListener),
       publicationDateTime,
       it,
       url
@@ -54,10 +61,16 @@ internal fun Post.toPostDetailsFlow(colors: Colors, onLinkClick: (URL) -> Unit):
 /**
  * Converts this [Post] into [PostDetails].
  *
- * @param onLinkClick Lambda to be run whenever the [Figure.Link]'s content gets clicked.
+ * @param onLinkClick Lambda to be run whenever the [Figure.Link]'s content is clicked.
+ * @param onThumbnailClickListener [Disposition.OnThumbnailClickListener] that is notified of clicks
+ *   on thumbnails.
  */
 @Composable
-internal fun Post.toPostDetails(onLinkClick: (URL) -> Unit): PostDetails {
+internal fun Post.toPostDetails(
+  onLinkClick: (URL) -> Unit = {},
+  onThumbnailClickListener: Disposition.OnThumbnailClickListener =
+    Disposition.OnThumbnailClickListener.empty
+): PostDetails {
   val stats by asStatsDetailsFlow().collectAsState(asStatsDetails())
   return PostDetails(
     id,
@@ -65,7 +78,7 @@ internal fun Post.toPostDetails(onLinkClick: (URL) -> Unit): PostDetails {
     author.name,
     author.account,
     content.text.toAnnotatedString(AutosTheme.colors),
-    Figure.of(content, onLinkClick),
+    Figure.of(id, author.name, content, onLinkClick, onThumbnailClickListener),
     publicationDateTime,
     stats,
     url

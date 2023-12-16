@@ -16,10 +16,15 @@
 package com.jeanbarrossilva.orca.app.module.feature.postdetails
 
 import android.content.Context
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
+import com.jeanbarrossilva.orca.feature.gallery.GalleryActivity
 import com.jeanbarrossilva.orca.feature.postdetails.PostDetailsBoundary
 import com.jeanbarrossilva.orca.feature.postdetails.PostDetailsFragment
 import com.jeanbarrossilva.orca.platform.ui.core.browseTo
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
+import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
 import java.net.URL
 
 internal class NavigatorPostDetailsBoundary(
@@ -28,6 +33,15 @@ internal class NavigatorPostDetailsBoundary(
 ) : PostDetailsBoundary {
   override fun navigateTo(url: URL) {
     context.browseTo(url)
+  }
+
+  override fun navigateToGallery(
+    postID: String,
+    entrypointIndex: Int,
+    secondary: List<Attachment>,
+    entrypoint: @Composable (Modifier, Sizing) -> Unit
+  ) {
+    GalleryActivity.start(context, postID, entrypointIndex, secondary, entrypoint)
   }
 
   override fun navigateToPostDetails(id: String) {

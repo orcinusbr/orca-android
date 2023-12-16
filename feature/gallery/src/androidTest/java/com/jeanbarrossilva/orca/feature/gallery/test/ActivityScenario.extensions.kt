@@ -25,10 +25,9 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.sample
-import com.jeanbarrossilva.orca.feature.gallery.test.activity.GalleryActivity
+import com.jeanbarrossilva.orca.feature.gallery.GalleryActivity
 import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
-import com.jeanbarrossilva.orca.platform.ui.core.Intent
 import com.jeanbarrossilva.orca.std.imageloader.compose.Image
 import com.jeanbarrossilva.orca.std.imageloader.compose.R
 import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
@@ -60,12 +59,6 @@ internal fun launchGalleryActivity(
   }
 ): ActivityScenario<GalleryActivity> {
   val context = InstrumentationRegistry.getInstrumentation().context
-  val intent =
-    Intent<GalleryActivity>(
-      context,
-      GalleryActivity.POST_KEY to postID,
-      GalleryActivity.ENTRYPOINT_INDEX_KEY to entrypointIndex,
-      GalleryActivity.SECONDARY_KEY to secondary
-    )
+  val intent = GalleryActivity.getIntent(context, postID, entrypointIndex, secondary)
   return launchActivity<GalleryActivity>(intent).onActivity { it.setEntrypoint(entrypoint) }
 }

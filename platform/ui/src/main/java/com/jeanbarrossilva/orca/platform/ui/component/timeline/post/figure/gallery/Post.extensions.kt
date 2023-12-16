@@ -13,25 +13,11 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.postdetails
+package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
-import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
-import java.net.URL
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 
-interface PostDetailsBoundary {
-  fun navigateTo(url: URL)
-
-  fun navigateToGallery(
-    postID: String,
-    entrypointIndex: Int,
-    secondary: List<Attachment>,
-    entrypoint: @Composable (Modifier, Sizing) -> Unit
-  )
-
-  fun navigateToPostDetails(id: String)
-
-  fun pop()
+/** Creates a [GalleryPreview] from this [Post]. */
+internal fun Post.asGalleryPreview(): GalleryPreview {
+  return GalleryPreview(id, author.name, content.attachments)
 }

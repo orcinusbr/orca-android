@@ -47,7 +47,7 @@ import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
 internal const val GALLERY_PAGER_TAG = "gallery-pager-tag"
 
 @Composable
-fun Gallery(
+internal fun Gallery(
   viewModel: GalleryViewModel,
   boundary: GalleryBoundary,
   entrypointIndex: Int,
