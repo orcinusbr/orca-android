@@ -23,8 +23,8 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.createSample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostProvider
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.SampleTermMuter
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
-import com.jeanbarrossilva.orca.std.imageloader.Image
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.image.Image
+import com.jeanbarrossilva.orca.std.image.ImageLoader
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map

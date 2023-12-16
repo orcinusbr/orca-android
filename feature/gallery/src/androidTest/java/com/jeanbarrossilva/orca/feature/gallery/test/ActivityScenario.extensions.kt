@@ -28,10 +28,9 @@ import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.sample
 import com.jeanbarrossilva.orca.feature.gallery.GalleryActivity
 import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
-import com.jeanbarrossilva.orca.std.imageloader.compose.Image
-import com.jeanbarrossilva.orca.std.imageloader.compose.R
-import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
-import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
+import com.jeanbarrossilva.orca.std.image.compose.Image
+import com.jeanbarrossilva.orca.std.image.compose.Sizing
+import com.jeanbarrossilva.orca.std.image.compose.rememberImageLoader
 
 /**
  * Launches a [GalleryActivity].

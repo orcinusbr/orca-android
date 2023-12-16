@@ -21,7 +21,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.type.editable.Editor
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfile
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileWriter
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostProvider
-import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
 

@@ -21,8 +21,8 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.content.Content
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.stat.CommentStat
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.stat.FavoriteStat
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.stat.ReblogStat
-import com.jeanbarrossilva.orca.std.imageloader.Image
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.image.Image
+import com.jeanbarrossilva.orca.std.image.ImageLoader
 import java.net.URL
 import java.time.ZonedDateTime
 

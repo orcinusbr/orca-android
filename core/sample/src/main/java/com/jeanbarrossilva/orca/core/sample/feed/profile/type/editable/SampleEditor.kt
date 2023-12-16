@@ -18,7 +18,7 @@ package com.jeanbarrossilva.orca.core.sample.feed.profile.type.editable
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.type.editable.Editor
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileWriter
-import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 
 /**

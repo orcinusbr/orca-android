@@ -15,8 +15,8 @@
 
 package com.jeanbarrossilva.orca.core.sample.image
 
-import com.jeanbarrossilva.orca.std.imageloader.Image
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.image.Image
+import com.jeanbarrossilva.orca.std.image.ImageLoader
 
 /**
  * Source from which [Image]s will be loaded via an [ImageLoader] within the sample core variant.

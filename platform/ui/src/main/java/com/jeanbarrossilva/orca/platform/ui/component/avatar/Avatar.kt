@@ -28,9 +28,9 @@ import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.core.createSample
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
-import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
-import com.jeanbarrossilva.orca.std.imageloader.compose.Image
+import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoader
+import com.jeanbarrossilva.orca.std.image.compose.Image
 
 internal const val AVATAR_TAG = "avatar"
 

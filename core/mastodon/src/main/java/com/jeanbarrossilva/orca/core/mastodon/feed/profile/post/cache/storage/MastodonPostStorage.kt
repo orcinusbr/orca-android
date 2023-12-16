@@ -24,7 +24,7 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.style.M
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.style.toHttpStyleEntity
 import com.jeanbarrossilva.orca.platform.cache.Cache
 import com.jeanbarrossilva.orca.platform.cache.Storage
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.image.ImageLoader
 import java.net.URL
 
 /**

@@ -43,7 +43,7 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.galle
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.Thumbnail
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.ThumbnailDefaults
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
-import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
+import com.jeanbarrossilva.orca.std.image.compose.Sizing
 
 /** Indicates how a [GalleryPreview]'s [Thumbnail]s should be laid out. */
 @Immutable

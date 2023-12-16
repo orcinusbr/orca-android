@@ -21,7 +21,7 @@ import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.SampleTermMuter
 import com.jeanbarrossilva.orca.core.sample.instance.createSample
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.image.ImageLoader
 import com.jeanbarrossilva.orca.std.injector.Injector
 
 internal object DemoCoreModule :

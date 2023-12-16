@@ -31,7 +31,7 @@ import com.jeanbarrossilva.orca.platform.ui.core.Intent
 import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableActivity
 import com.jeanbarrossilva.orca.platform.ui.core.extra
 import com.jeanbarrossilva.orca.platform.ui.core.on
-import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
+import com.jeanbarrossilva.orca.std.image.compose.Sizing
 import com.jeanbarrossilva.orca.std.injector.Injector
 
 class GalleryActivity internal constructor() : ComposableActivity() {

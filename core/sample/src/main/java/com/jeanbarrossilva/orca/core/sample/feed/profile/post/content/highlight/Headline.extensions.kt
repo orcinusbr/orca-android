@@ -18,7 +18,7 @@ package com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.highlight
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Headline
 import com.jeanbarrossilva.orca.core.sample.image.CoverImageSource
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.image.ImageLoader
 
 /**
  * Creates a sample [Headline].

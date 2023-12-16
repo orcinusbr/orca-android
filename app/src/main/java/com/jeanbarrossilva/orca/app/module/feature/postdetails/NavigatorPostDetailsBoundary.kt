@@ -24,7 +24,7 @@ import com.jeanbarrossilva.orca.feature.postdetails.PostDetailsBoundary
 import com.jeanbarrossilva.orca.feature.postdetails.PostDetailsFragment
 import com.jeanbarrossilva.orca.platform.ui.core.browseTo
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
-import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
+import com.jeanbarrossilva.orca.std.image.compose.Sizing
 import java.net.URL
 
 internal class NavigatorPostDetailsBoundary(

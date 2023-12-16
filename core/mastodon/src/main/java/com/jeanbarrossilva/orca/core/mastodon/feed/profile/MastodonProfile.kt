@@ -18,7 +18,7 @@ package com.jeanbarrossilva.orca.core.mastodon.feed.profile
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
-import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoader
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
 import kotlinx.coroutines.flow.Flow

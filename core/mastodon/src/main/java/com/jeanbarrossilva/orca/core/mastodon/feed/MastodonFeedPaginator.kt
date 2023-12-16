@@ -17,7 +17,7 @@ package com.jeanbarrossilva.orca.core.mastodon.feed
 
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.MastodonPost
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination.MastodonPostPaginator
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.image.ImageLoader
 import java.net.URL
 
 /** [MastodonPostPaginator] that paginates through [MastodonPost]s of the feed. */

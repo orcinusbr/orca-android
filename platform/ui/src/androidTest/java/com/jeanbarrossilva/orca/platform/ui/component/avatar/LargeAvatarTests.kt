@@ -22,7 +22,7 @@ import com.jeanbarrossilva.loadable.placeholder.test.assertIsNotLoading
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.core.createSample
-import com.jeanbarrossilva.orca.std.imageloader.test.TestImageLoader
+import com.jeanbarrossilva.orca.std.image.test.TestImageLoader
 import org.junit.Rule
 import org.junit.Test
 

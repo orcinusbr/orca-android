@@ -21,7 +21,7 @@ plugins {
 }
 
 dependencies {
-  api(project(":std:image-loader"))
+  api(project(":std:image"))
   api(project(":std:styled-string"))
   api(libs.kotlin.coroutines.core)
 

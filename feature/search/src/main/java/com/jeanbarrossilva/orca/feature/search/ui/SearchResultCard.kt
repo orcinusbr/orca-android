@@ -40,7 +40,7 @@ import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.SmallAvatar
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.image.ImageLoader
 
 @Composable
 internal fun SearchResultCard(modifier: Modifier = Modifier) {

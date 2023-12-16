@@ -16,9 +16,9 @@
 package com.jeanbarrossilva.orca.core.sample.test.image
 
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
-import com.jeanbarrossilva.orca.std.imageloader.Image
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
-import com.jeanbarrossilva.orca.std.imageloader.buildImage
+import com.jeanbarrossilva.orca.std.image.Image
+import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.buildImage
 
 /** [ImageLoader] that loads an empty [Image] from a [SampleImageSource]. */
 class TestSampleImageLoader private constructor() : ImageLoader<SampleImageSource> {

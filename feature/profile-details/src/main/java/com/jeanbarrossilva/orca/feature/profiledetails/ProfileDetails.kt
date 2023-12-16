@@ -80,8 +80,8 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.time.Relativ
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.time.rememberRelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.refresh.Refresh
 import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
-import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
+import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoader
 import java.io.Serializable
 import java.net.URL
 

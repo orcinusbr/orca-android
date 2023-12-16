@@ -33,9 +33,9 @@ import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.GalleryPreview
-import com.jeanbarrossilva.orca.std.imageloader.compose.Image
-import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
-import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
+import com.jeanbarrossilva.orca.std.image.compose.Image
+import com.jeanbarrossilva.orca.std.image.compose.Sizing
+import com.jeanbarrossilva.orca.std.image.compose.rememberImageLoader
 
 /** Tag that identifies a [Thumbnail] for testing purposes. */
 const val THUMBNAIL_TAG = "thumbnail"

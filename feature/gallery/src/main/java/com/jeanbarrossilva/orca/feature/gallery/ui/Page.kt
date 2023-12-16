@@ -27,9 +27,9 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
 import com.jeanbarrossilva.orca.feature.gallery.R
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
-import com.jeanbarrossilva.orca.std.imageloader.compose.Image
-import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
-import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
+import com.jeanbarrossilva.orca.std.image.compose.Image
+import com.jeanbarrossilva.orca.std.image.compose.Sizing
+import com.jeanbarrossilva.orca.std.image.compose.rememberImageLoader
 import kotlinx.coroutines.launch
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.toggleScale
@@ -81,7 +81,7 @@ internal fun Page(
 @Composable
 internal fun SampleEntrypoint(sizing: Sizing, modifier: Modifier = Modifier) {
   Image(
-    rememberImageLoader(com.jeanbarrossilva.orca.std.imageloader.compose.R.drawable.image),
+    rememberImageLoader(com.jeanbarrossilva.orca.std.image.compose.R.drawable.image),
     contentDescription = stringResource(R.string.feature_gallery_attachment, 1),
     modifier,
     sizing

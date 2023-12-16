@@ -22,8 +22,8 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileWriter
 import com.jeanbarrossilva.orca.core.sample.feed.profile.createSample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostProvider
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
-import com.jeanbarrossilva.orca.std.imageloader.Image
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.image.Image
+import com.jeanbarrossilva.orca.std.image.ImageLoader
 
 /**
  * Creates a sample [EditableProfile].

@@ -41,8 +41,8 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.MastodonProfil
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.MastodonProfileSearchResultsFetcher
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.storage.MastodonProfileSearchResultsStorage
 import com.jeanbarrossilva.orca.platform.cache.Cache
-import com.jeanbarrossilva.orca.std.imageloader.Image
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.image.Image
+import com.jeanbarrossilva.orca.std.image.ImageLoader
 import java.net.URL
 
 /**

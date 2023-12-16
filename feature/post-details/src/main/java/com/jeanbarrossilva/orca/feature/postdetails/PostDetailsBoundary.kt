@@ -18,7 +18,7 @@ package com.jeanbarrossilva.orca.feature.postdetails
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
-import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
+import com.jeanbarrossilva.orca.std.image.compose.Sizing
 import java.net.URL
 
 interface PostDetailsBoundary {

@@ -18,9 +18,9 @@ package com.jeanbarrossilva.orca.platform.ui.core.image
 import android.content.Context
 import androidx.core.content.ContextCompat
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
-import com.jeanbarrossilva.orca.std.imageloader.Image
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
-import com.jeanbarrossilva.orca.std.imageloader.local.drawable.toImage
+import com.jeanbarrossilva.orca.std.image.Image
+import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.local.drawable.toImage
 
 internal class PlatformSampleImageLoader
 private constructor(private val context: Context, override val source: SampleImageSource) :

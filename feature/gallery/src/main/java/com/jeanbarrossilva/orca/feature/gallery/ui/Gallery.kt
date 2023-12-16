@@ -42,7 +42,7 @@ import com.jeanbarrossilva.orca.feature.gallery.GalleryBoundary
 import com.jeanbarrossilva.orca.feature.gallery.GalleryViewModel
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.component.stat.StatsDetails
-import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
+import com.jeanbarrossilva.orca.std.image.compose.Sizing
 
 internal const val GALLERY_PAGER_TAG = "gallery-pager-tag"
 

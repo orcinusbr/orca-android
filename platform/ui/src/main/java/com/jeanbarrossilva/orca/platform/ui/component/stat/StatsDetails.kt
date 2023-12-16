@@ -22,7 +22,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.stat.Stat
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.image.ImageLoader
 
 /**
  * Details of a [Post]'s [Stat]s.

@@ -19,7 +19,7 @@ import androidx.compose.runtime.Composable
 import com.jeanbarrossilva.orca.core.feed.profile.post.Author
 import com.jeanbarrossilva.orca.core.sample.image.AuthorImageSource
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.image.ImageLoader
 
 /** Creates an [ImageLoader] that loads the avatar of a default sample [Author]. */
 @Composable
