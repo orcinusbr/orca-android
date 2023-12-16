@@ -15,12 +15,23 @@
 
 package com.jeanbarrossilva.orca.feature.feed
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
+import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
 import java.net.URL
 
 interface FeedBoundary {
   fun navigateToSearch()
 
   fun navigateTo(url: URL)
+
+  fun navigateToGallery(
+    postID: String,
+    entrypointIndex: Int,
+    secondary: List<Attachment>,
+    entrypoint: @Composable (Modifier, Sizing) -> Unit
+  )
 
   fun navigateToPostDetails(id: String)
 

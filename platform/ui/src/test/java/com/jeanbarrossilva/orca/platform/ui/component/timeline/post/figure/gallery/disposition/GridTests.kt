@@ -17,21 +17,23 @@ package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gall
 
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.GalleryPreview
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.test.testSample
 import kotlin.test.Test
 
 internal class GridTests {
   @Test(expected = IllegalArgumentException::class)
   fun throwsWhenCreatingGridWithLessThanTwoAttachments() {
-    Disposition.Grid(Attachment.samples.take(1))
+    Disposition.Grid(GalleryPreview.testSample.copy(attachments = Attachment.samples.take(1)))
   }
 
   @Test
   fun createsGridWithTwoAttachments() {
-    Disposition.Grid(Attachment.samples.take(2))
+    Disposition.Grid(GalleryPreview.testSample.copy(attachments = Attachment.samples.take(2)))
   }
 
   @Test
   fun createsGridWithMoreThanTwoAttachments() {
-    Disposition.Grid(Attachment.samples)
+    Disposition.Grid(GalleryPreview.testSample.copy(attachments = Attachment.samples))
   }
 }

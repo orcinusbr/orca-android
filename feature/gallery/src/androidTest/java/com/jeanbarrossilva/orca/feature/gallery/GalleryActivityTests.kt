@@ -28,7 +28,7 @@ import com.jeanbarrossilva.orca.std.injector.test.InjectorTestRule
 import org.junit.Rule
 import org.junit.Test
 
-internal class GalleryFragmentTests {
+internal class GalleryActivityTests {
   @get:Rule
   val injectorRule = InjectorTestRule { register(TestGalleryModule.boundTo<GalleryModule, _>()) }
 

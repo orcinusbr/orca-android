@@ -38,7 +38,8 @@ class ProfileDetailsFragment internal constructor() : ComposableFragment(), Cont
         module.profileProvider(),
         module.postProvider(),
         id,
-        onLinkClick = module.boundary()::navigateTo
+        onLinkClick = module.boundary()::navigateTo,
+        onThumbnailClickListener = module.boundary()::navigateToGallery
       )
     }
 

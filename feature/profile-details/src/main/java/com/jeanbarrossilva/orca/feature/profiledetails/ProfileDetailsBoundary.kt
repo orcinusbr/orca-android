@@ -15,10 +15,21 @@
 
 package com.jeanbarrossilva.orca.feature.profiledetails
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
+import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
 import java.net.URL
 
 interface ProfileDetailsBoundary {
   fun navigateTo(url: URL)
+
+  fun navigateToGallery(
+    postID: String,
+    entrypointIndex: Int,
+    secondary: List<Attachment>,
+    entrypoint: @Composable (Modifier, Sizing) -> Unit
+  )
 
   fun navigateToPostDetails(id: String)
 
@@ -26,6 +37,13 @@ interface ProfileDetailsBoundary {
     internal val empty =
       object : ProfileDetailsBoundary {
         override fun navigateTo(url: URL) {}
+
+        override fun navigateToGallery(
+          postID: String,
+          entrypointIndex: Int,
+          secondary: List<Attachment>,
+          entrypoint: @Composable (Modifier, Sizing) -> Unit
+        ) {}
 
         override fun navigateToPostDetails(id: String) {}
       }

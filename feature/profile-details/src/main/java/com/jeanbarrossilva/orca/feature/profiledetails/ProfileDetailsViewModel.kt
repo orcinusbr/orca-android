@@ -27,6 +27,7 @@ import com.jeanbarrossilva.orca.ext.coroutines.notifier.notifierFlow
 import com.jeanbarrossilva.orca.ext.coroutines.notifier.notify
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.Disposition
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.toPostPreviewFlow
 import com.jeanbarrossilva.orca.platform.ui.core.await
 import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
@@ -54,7 +55,8 @@ private constructor(
   private val postProvider: PostProvider,
   coroutineDispatcher: CoroutineDispatcher,
   private val id: String,
-  private val onLinkClick: (URL) -> Unit
+  private val onLinkClick: (URL) -> Unit,
+  private val onThumbnailClickListener: Disposition.OnThumbnailClickListener
 ) : ViewModel() {
   private val coroutineScope = viewModelScope + coroutineDispatcher
   private val profileNotifierFlow = notifierFlow()
@@ -107,7 +109,9 @@ private constructor(
   @OptIn(ExperimentalCoroutinesApi::class)
   private fun getPostPreviewsAt(index: Int): Flow<List<PostPreview>> {
     return profileFlow.filterNotNull().flatMapConcat { profile ->
-      profile.getPosts(index).flatMapEach { post -> post.toPostPreviewFlow(colors, onLinkClick) }
+      profile.getPosts(index).flatMapEach { post ->
+        post.toPostPreviewFlow(colors, onLinkClick, onThumbnailClickListener)
+      }
     }
   }
 
@@ -117,7 +121,8 @@ private constructor(
       profileProvider: ProfileProvider,
       postProvider: PostProvider,
       id: String,
-      onLinkClick: (URL) -> Unit
+      onLinkClick: (URL) -> Unit,
+      onThumbnailClickListener: Disposition.OnThumbnailClickListener
     ): ViewModelProvider.Factory {
       return viewModelFactory {
         addInitializer(ProfileDetailsViewModel::class) {
@@ -127,7 +132,8 @@ private constructor(
             postProvider,
             Dispatchers.Main.immediate,
             id,
-            onLinkClick
+            onLinkClick,
+            onThumbnailClickListener
           )
         }
       }

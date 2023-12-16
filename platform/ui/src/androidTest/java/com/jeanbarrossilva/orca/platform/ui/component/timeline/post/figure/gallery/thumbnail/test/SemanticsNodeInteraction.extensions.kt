@@ -22,6 +22,7 @@ import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.assert
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.Shape
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.Thumbnail
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.figure.gallery.thumbnail.isThumbnail
 
 /**
  * Asserts that the [Thumbnail] is clipped by the [shape].

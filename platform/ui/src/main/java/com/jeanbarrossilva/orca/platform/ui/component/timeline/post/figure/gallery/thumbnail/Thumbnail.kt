@@ -16,9 +16,11 @@
 package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail
 
 import androidx.annotation.IntRange
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -26,20 +28,17 @@ import androidx.compose.ui.semantics.semantics
 import com.jeanbarrossilva.orca.autos.forms.Forms
 import com.jeanbarrossilva.orca.core.feed.profile.post.Author
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
-import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.sample
-import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
 import com.jeanbarrossilva.orca.platform.autos.forms.asShape
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.R
-import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.GalleryPreview
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
 import com.jeanbarrossilva.orca.std.imageloader.compose.Image
+import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
 import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
 
 /** Tag that identifies a [Thumbnail] for testing purposes. */
-internal const val THUMBNAIL_TAG = "thumbnail"
+const val THUMBNAIL_TAG = "thumbnail"
 
 /** Default values used by a [Thumbnail]. */
 internal object ThumbnailDefaults {
@@ -60,26 +59,40 @@ internal object ThumbnailDefaults {
 /**
  * [Image] that's a preview of the content of the [attachment].
  *
- * @param author [Author] by which the [attachment] has been added.
+ * @param authorName Name of the [Author] by which the [attachment] has been added.
  * @param attachment [Attachment] whose content's preview will be loaded.
  * @param position 1-based index of the position within a [GalleryPreview].
+ * @param onClick Callback run whenever this [Thumbnail] is clicked, to which an unclickable
+ *   identical one is given with the specified [Modifier] and [Sizing].
  * @param modifier [Modifier] to be applied the underlying [Image].
  * @param shape [Shape] by which it will be clipped.
  */
 @Composable
 internal fun Thumbnail(
-  author: Author,
+  authorName: String,
   attachment: Attachment,
   @IntRange(from = 1) position: Int,
+  onClick: (copy: @Composable (Modifier, Sizing) -> Unit) -> Unit,
   modifier: Modifier = Modifier,
   shape: Shape = ThumbnailDefaults.shape
 ) {
-  Image(
-    rememberImageLoader(attachment.url),
-    contentDescription =
-      stringResource(R.string.platform_ui_gallery_preview_thumbnail, position, author.name),
-    modifier.testTag(THUMBNAIL_TAG).semantics { this.shape = shape },
-    shape = shape
+  val thumbnail: @Composable (Modifier, Sizing) -> Unit = { thumbnailModifier, sizing ->
+    Image(
+      rememberImageLoader(attachment.url),
+      contentDescription =
+        stringResource(R.string.platform_ui_gallery_preview_thumbnail, position, authorName),
+      thumbnailModifier,
+      sizing,
+      shape
+    )
+  }
+  thumbnail(
+    modifier
+      .clip(shape)
+      .clickable { onClick(thumbnail) }
+      .testTag(THUMBNAIL_TAG)
+      .semantics { this.shape = shape },
+    Sizing.Constrained
   )
 }
 
@@ -89,9 +102,10 @@ internal fun Thumbnail(
 private fun ThumbnailPreview() {
   AutosTheme {
     Thumbnail(
-      Author.createSample(ImageLoader.Provider.createSample()),
-      Attachment.sample,
-      position = 1
+      GalleryPreview.sample.authorName,
+      GalleryPreview.sample.attachments.first(),
+      position = 1,
+      onClick = {}
     )
   }
 }

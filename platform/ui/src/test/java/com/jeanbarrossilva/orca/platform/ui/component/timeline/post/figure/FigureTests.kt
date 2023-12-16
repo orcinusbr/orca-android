@@ -19,6 +19,8 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
+import com.jeanbarrossilva.orca.core.feed.profile.post.Author
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Content
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Headline
@@ -28,6 +30,9 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
 import com.jeanbarrossilva.orca.core.sample.instance.domain.sample
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.content.highlight.sample
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.sample
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.GalleryPreview
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.test.testSample
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import com.jeanbarrossilva.orca.std.styledstring.buildStyledString
 import java.net.URL
@@ -36,19 +41,21 @@ import kotlin.test.Test
 internal class FigureTests {
   @Test
   fun createsGalleryFromContentWithHighlightAndAttachments() {
-    assertThat(Figure.of(Content.sample, onLinkClick = {}))
-      .isEqualTo(Figure.Gallery(Attachment.samples))
+    assertThat(Figure.of(Post.sample.id, Author.sample.name, Content.sample))
+      .isEqualTo(Figure.Gallery(GalleryPreview.testSample))
   }
 
   @Test
   fun createsGalleryFromContentWithAttachmentsAndWithoutHighlight() {
     assertThat(
         Figure.of(
+          Post.sample.id,
+          Author.sample.name,
           Content.from(Domain.sample, text = StyledString(""), Attachment.samples) { null },
           onLinkClick = {}
         )
       )
-      .isEqualTo(Figure.Gallery(Attachment.samples))
+      .isEqualTo(Figure.Gallery(GalleryPreview.testSample))
   }
 
   @Test
@@ -56,6 +63,8 @@ internal class FigureTests {
     val onLinkClick = { _: URL -> }
     assertThat(
         Figure.of(
+          Post.sample.id,
+          Author.sample.name,
           Content.from(
             Domain.sample,
             text = buildStyledString { +Highlight.sample.url.toString() }

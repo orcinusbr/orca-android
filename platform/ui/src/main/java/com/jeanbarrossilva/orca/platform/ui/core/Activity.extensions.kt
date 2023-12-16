@@ -22,3 +22,17 @@ import android.view.ViewGroup
 /** [ViewGroup] in which this [Activity]'s [View] is. */
 val Activity.content
   get() = requireViewById<ViewGroup>(android.R.id.content)
+
+/**
+ * Gets the extra put into this [Activity]'s [intent][Activity.getIntent] with the given [key]
+ * lazily.
+ *
+ * @param key Key to which the extra is associated.
+ * @throws ClassCastException If the extra is present but isn't a [T].
+ */
+fun <T> Activity.extra(key: String): Lazy<T> {
+  return lazy {
+    @Suppress("DEPRECATION", "UNCHECKED_CAST")
+    intent?.extras?.get(key) as T
+  }
+}

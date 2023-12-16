@@ -57,6 +57,7 @@ dependencies {
   implementation(libs.loadable.list)
   implementation(libs.loadable.placeholder)
   implementation(libs.loadable.placeholder.test)
+  implementation(libs.orbital)
   implementation(libs.time4j)
 
   testImplementation(project(":core:sample-test"))

@@ -150,10 +150,7 @@ internal constructor(
     /** [PostPreview] samples. */
     val samples
       @Composable
-      get() =
-        Post.createSamples(ImageLoader.Provider.createSample()).map {
-          it.toPostPreview(onLinkClick = {})
-        }
+      get() = Post.createSamples(ImageLoader.Provider.createSample()).map { it.toPostPreview() }
 
     /**
      * Gets a sample [PostPreview].
@@ -163,8 +160,7 @@ internal constructor(
      *   colored.
      */
     fun getSample(context: Context, colors: Colors): PostPreview {
-      return Post.createSample(ImageLoader.Provider.createSample(context))
-        .toPostPreview(colors, onLinkClick = {})
+      return Post.createSample(ImageLoader.Provider.createSample(context)).toPostPreview(colors)
     }
   }
 }

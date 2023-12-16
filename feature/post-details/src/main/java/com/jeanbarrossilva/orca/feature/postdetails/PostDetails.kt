@@ -75,8 +75,7 @@ internal data class PostDetails(
 
   companion object {
     val sample
-      @Composable
-      get() = Post.createSample(ImageLoader.Provider.createSample()).toPostDetails(onLinkClick = {})
+      @Composable get() = Post.createSample(ImageLoader.Provider.createSample()).toPostDetails()
   }
 }
 

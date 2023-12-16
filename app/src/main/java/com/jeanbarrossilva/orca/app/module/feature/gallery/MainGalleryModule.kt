@@ -13,25 +13,16 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.postdetails
+package com.jeanbarrossilva.orca.app.module.feature.gallery
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
-import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
-import java.net.URL
+import com.jeanbarrossilva.orca.core.module.CoreModule
+import com.jeanbarrossilva.orca.core.module.instanceProvider
+import com.jeanbarrossilva.orca.feature.gallery.GalleryModule
+import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
+import com.jeanbarrossilva.orca.std.injector.Injector
 
-interface PostDetailsBoundary {
-  fun navigateTo(url: URL)
-
-  fun navigateToGallery(
-    postID: String,
-    entrypointIndex: Int,
-    secondary: List<Attachment>,
-    entrypoint: @Composable (Modifier, Sizing) -> Unit
+internal class MainGalleryModule(navigator: Navigator) :
+  GalleryModule(
+    { Injector.from<CoreModule>().instanceProvider().provide().postProvider },
+    { NavigatorGalleryBoundary(navigator) }
   )
-
-  fun navigateToPostDetails(id: String)
-
-  fun pop()
-}

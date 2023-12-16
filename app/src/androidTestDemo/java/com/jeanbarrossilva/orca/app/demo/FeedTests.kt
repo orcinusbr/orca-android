@@ -27,14 +27,17 @@ import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.rule.IntentsRule
 import com.jeanbarrossilva.orca.app.demo.test.browsesTo
+import com.jeanbarrossilva.orca.app.demo.test.performScrollToPostPreviewWithGalleryPreview
 import com.jeanbarrossilva.orca.app.demo.test.performScrollToPostPreviewWithLinkCard
 import com.jeanbarrossilva.orca.app.demo.test.respondWithOK
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Highlight
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.content.highlight.sample
 import com.jeanbarrossilva.orca.feature.composer.ComposerActivity
 import com.jeanbarrossilva.orca.feature.feed.FEED_FLOATING_ACTION_BUTTON_TAG
+import com.jeanbarrossilva.orca.feature.gallery.GalleryActivity
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onRefreshIndicator
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline
+import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.figure.gallery.thumbnail.onThumbnails
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.figure.link.onLinkCards
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.refresh.assertIsNotInProgress
 import org.junit.Rule
@@ -59,6 +62,18 @@ internal class FeedTests {
     intending(matcher).respondWithOK()
     composeRule.performScrollToPostPreviewWithLinkCard()
     composeRule.onLinkCards().onFirst().performClick()
+    intended(matcher)
+  }
+
+  @Test
+  fun navigatesToGalleryOnThumbnailClick() {
+    val matcher = hasComponent(GalleryActivity::class.qualifiedName)
+    intending(matcher).respondWithOK()
+    with(composeRule) {
+      onTimeline().performScrollToPostPreviewWithGalleryPreview {
+        onThumbnails().onFirst().performClick()
+      }
+    }
     intended(matcher)
   }
 

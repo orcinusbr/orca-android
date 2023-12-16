@@ -28,6 +28,7 @@ import com.jeanbarrossilva.orca.ext.coroutines.notifier.notifierFlow
 import com.jeanbarrossilva.orca.ext.coroutines.notifier.notify
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.Disposition
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.toPostPreviewFlow
 import com.jeanbarrossilva.orca.platform.ui.core.await
 import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
@@ -47,7 +48,8 @@ internal class FeedViewModel(
   private val feedProvider: FeedProvider,
   private val postProvider: PostProvider,
   private val userID: String,
-  private val onLinkClick: (URL) -> Unit
+  private val onLinkClick: (URL) -> Unit,
+  private val onThumbnailClickListener: Disposition.OnThumbnailClickListener
 ) : ViewModel() {
   private val postPreviewsLoadableNotifierFlow = notifierFlow()
   private val indexFlow = MutableStateFlow(0)
@@ -61,7 +63,9 @@ internal class FeedViewModel(
     postPreviewsLoadableNotifierFlow
       .combine(indexFlow) { _, index -> feedProvider.provide(userID, index) }
       .flattenConcat()
-      .flatMapEach(selector = PostPreview::id) { it.toPostPreviewFlow(colors, onLinkClick) }
+      .flatMapEach(selector = PostPreview::id) {
+        it.toPostPreviewFlow(colors, onLinkClick, onThumbnailClickListener)
+      }
       .map { it.toSerializableList().toListLoadable() }
 
   fun requestRefresh(onRefresh: () -> Unit) {
@@ -94,11 +98,19 @@ internal class FeedViewModel(
       feedProvider: FeedProvider,
       postProvider: PostProvider,
       userID: String,
-      onLinkClick: (URL) -> Unit
+      onLinkClick: (URL) -> Unit,
+      onThumbnailClickListener: Disposition.OnThumbnailClickListener
     ): ViewModelProvider.Factory {
       return viewModelFactory {
         initializer {
-          FeedViewModel(contextProvider, feedProvider, postProvider, userID, onLinkClick)
+          FeedViewModel(
+            contextProvider,
+            feedProvider,
+            postProvider,
+            userID,
+            onLinkClick,
+            onThumbnailClickListener
+          )
         }
       }
     }

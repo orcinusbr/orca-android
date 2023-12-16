@@ -15,20 +15,38 @@
 
 package com.jeanbarrossilva.orca.platform.ui.core
 
-import android.app.Activity
 import androidx.test.platform.app.InstrumentationRegistry
+import com.jeanbarrossilva.orca.platform.ui.core.activity.StartableActivity
 import io.mockk.spyk
 import io.mockk.verify
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 internal class ActivityStarterTests {
-  class TestActivity : Activity()
+  private val context
+    get() = InstrumentationRegistry.getInstrumentation().context
+
+  class TestActivity : StartableActivity()
 
   @Test
   fun startsActivity() {
-    val context = InstrumentationRegistry.getInstrumentation().context
     val spiedContext = spyk(context)
-    spiedContext.on<TestActivity>().asNewTask().start()
+    spiedContext.on<TestActivity>().asNewTask().start(StartableActivity::finish)
     verify { spiedContext.startActivity(any()) }
+  }
+
+  @Test
+  fun notifiesListenerWhenActivityIsStarted() {
+    runTest {
+      @Suppress("RemoveExplicitTypeArguments")
+      suspendCoroutine<TestActivity> { continuation ->
+        context.on<TestActivity>().asNewTask().start { activity ->
+          activity.finish()
+          continuation.resume(activity)
+        }
+      }
+    }
   }
 }

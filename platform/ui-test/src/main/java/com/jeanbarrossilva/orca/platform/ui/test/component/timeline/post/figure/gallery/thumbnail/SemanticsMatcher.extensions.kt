@@ -13,25 +13,14 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.postdetails
+package com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.figure.gallery.thumbnail
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
-import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
-import java.net.URL
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.hasTestTag
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.GalleryPreview
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.THUMBNAIL_TAG
 
-interface PostDetailsBoundary {
-  fun navigateTo(url: URL)
-
-  fun navigateToGallery(
-    postID: String,
-    entrypointIndex: Int,
-    secondary: List<Attachment>,
-    entrypoint: @Composable (Modifier, Sizing) -> Unit
-  )
-
-  fun navigateToPostDetails(id: String)
-
-  fun pop()
+/** [SemanticsMatcher] that matches a [GalleryPreview]'s thumbnail. */
+fun isThumbnail(): SemanticsMatcher {
+  return hasTestTag(THUMBNAIL_TAG)
 }

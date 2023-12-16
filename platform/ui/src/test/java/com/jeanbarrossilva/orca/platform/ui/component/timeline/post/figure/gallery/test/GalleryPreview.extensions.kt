@@ -13,13 +13,14 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.test
+package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.test
 
-import androidx.compose.ui.test.SemanticsMatcher
-import androidx.compose.ui.test.hasTestTag
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.THUMBNAIL_TAG
+import com.jeanbarrossilva.orca.core.sample.test.image.TestSampleImageLoader
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.GalleryPreview
 
-/** [SemanticsMatcher] that matches a [Thumbnail]. */
-internal fun isThumbnail(): SemanticsMatcher {
-  return hasTestTag(THUMBNAIL_TAG)
-}
+/** [GalleryPreview] returned by [testSample]. */
+private val testSampleGalleryPreview = GalleryPreview.getSample(TestSampleImageLoader.Provider)
+
+/** Test sample [GalleryPreview]. */
+internal val GalleryPreview.Companion.testSample
+  get() = testSampleGalleryPreview

@@ -13,19 +13,19 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.test
+package com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.figure.gallery.thumbnail
 
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionCollection
-import androidx.compose.ui.test.junit4.ComposeTestRule
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.Thumbnail
+import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
+import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.GalleryPreview
 
-/** [SemanticsNodeInteraction] of a [Thumbnail]. */
-internal fun ComposeTestRule.onThumbnail(): SemanticsNodeInteraction {
+/** [SemanticsNodeInteraction] of a [GalleryPreview]' thumbnail. */
+fun SemanticsNodeInteractionsProvider.onThumbnail(): SemanticsNodeInteraction {
   return onNode(isThumbnail())
 }
 
-/** [SemanticsNodeInteractionCollection] of [Thumbnail]s. */
-internal fun ComposeTestRule.onThumbnails(): SemanticsNodeInteractionCollection {
+/** [SemanticsNodeInteractionCollection] of [GalleryPreview]s' thumbnails. */
+fun SemanticsNodeInteractionsProvider.onThumbnails(): SemanticsNodeInteractionCollection {
   return onAllNodes(isThumbnail())
 }
