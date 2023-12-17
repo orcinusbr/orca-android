@@ -1,0 +1,19 @@
+name: Publish documentation
+on:
+  push:
+    branches: [main]
+jobs:
+  publish:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: 17
+      - name: Generate
+        run: ./gradlew :dokkaHtmlMultiModule
+      - name: Publish
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: build/dokka/htmlMultiModule
