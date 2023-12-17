@@ -22,7 +22,5 @@ jobs:
       - name: Publish
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: main
-          commit-message: 'config: publish documentation'
+          branch: docs
           folder: build/dokka/htmlMultiModule
-          target-folder: docs
