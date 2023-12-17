@@ -24,3 +24,4 @@ jobs:
         with:
           branch: main
           folder: build/dokka/htmlMultiModule
+          target-folder: docs
