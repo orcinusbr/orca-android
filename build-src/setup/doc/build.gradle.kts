@@ -13,15 +13,15 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-include(
-  ":setup:android-library",
-  ":setup:doc",
-  ":setup:formatting",
-  ":setup:hooks",
-  ":setup:java",
-  ":setup:kotlin"
-)
+plugins {
+  alias(libs.plugins.kotlin.jvm)
 
-dependencyResolutionManagement.versionCatalogs {
-  register("libs") { from(files("../gradle/libs.versions.toml")) }
+  `java-gradle-plugin`
+}
+
+dependencies.implementation(libs.dokka)
+
+gradlePlugin.plugins.register("setup-doc") {
+  id = libs.plugins.orca.setup.doc.get().pluginId
+  implementationClass = "com.jeanbarrossilva.orca.setup.doc.DocSetupPlugin"
 }
