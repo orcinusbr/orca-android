@@ -24,6 +24,7 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.account.sample
 import com.jeanbarrossilva.orca.core.sample.image.AuthorImageSource
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
 import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import java.net.URL
 import java.util.UUID
 
@@ -40,7 +41,7 @@ private val ramboSampleAuthorID = UUID.randomUUID().toString()
  *   [Author]'s avatar will be loaded from a [SampleImageSource].
  */
 fun Author.Companion.createSample(
-  avatarLoaderProvider: ImageLoader.Provider<SampleImageSource>
+  avatarLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
 ): Author {
   return Author(
     Actor.Authenticated.sample.id,
@@ -59,7 +60,7 @@ fun Author.Companion.createSample(
  *   [Author]'s avatar will be loaded from a [SampleImageSource].
  */
 internal fun Author.Companion.createChristianSample(
-  avatarLoaderProvider: ImageLoader.Provider<SampleImageSource>
+  avatarLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
 ): Author {
   return Author(
     christianSampleAuthorID,
@@ -77,7 +78,7 @@ internal fun Author.Companion.createChristianSample(
  *   [Author]'s avatar will be loaded from a [SampleImageSource].
  */
 internal fun Author.Companion.createRamboSample(
-  avatarLoaderProvider: ImageLoader.Provider<SampleImageSource>
+  avatarLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
 ): Author {
   return Author(
     ramboSampleAuthorID,

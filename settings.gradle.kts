@@ -51,7 +51,6 @@ include(
   ":std:buildable-processor",
   ":std:image",
   ":std:image:compose",
-  ":std:image:local",
   ":std:image-test",
   ":std:injector",
   ":std:injector-processor",

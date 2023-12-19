@@ -22,15 +22,15 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.placeholder.Placeholder
-import com.jeanbarrossilva.orca.core.feed.profile.Profile
+import com.jeanbarrossilva.orca.core.feed.profile.post.Author
+import com.jeanbarrossilva.orca.core.sample.image.AuthorImageSource
 import com.jeanbarrossilva.orca.platform.autos.forms.asShape
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.R
-import com.jeanbarrossilva.orca.platform.ui.core.createSample
-import com.jeanbarrossilva.orca.std.image.ImageLoader
-import com.jeanbarrossilva.orca.std.image.SomeImageLoader
-import com.jeanbarrossilva.orca.std.image.compose.Image
+import com.jeanbarrossilva.orca.platform.ui.core.image.createSample
+import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
+import com.jeanbarrossilva.orca.std.image.compose.SomeComposableImageLoader
 
 internal const val AVATAR_TAG = "avatar"
 
@@ -48,12 +48,16 @@ fun SmallAvatar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun SmallAvatar(imageLoader: SomeImageLoader, name: String, modifier: Modifier = Modifier) {
-  Image(
-    imageLoader,
+fun SmallAvatar(
+  imageLoader: SomeComposableImageLoader,
+  name: String,
+  modifier: Modifier = Modifier
+) {
+  imageLoader.load()(
     contentDescriptionFor(name),
-    modifier.requiredSize(smallSize).testTag(AVATAR_TAG),
-    shape = smallShape
+    smallShape,
+    ComposableImageLoader.DefaultContentScale,
+    modifier.requiredSize(smallSize).testTag(AVATAR_TAG)
   )
 }
 
@@ -63,12 +67,34 @@ fun LargeAvatar(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun LargeAvatar(imageLoader: SomeImageLoader, name: String, modifier: Modifier = Modifier) {
-  Image(
-    imageLoader,
+fun LargeAvatar(
+  imageLoader: SomeComposableImageLoader,
+  name: String,
+  modifier: Modifier = Modifier
+) {
+  imageLoader.load()(
     contentDescriptionFor(name),
-    modifier.requiredSize(largeSize).testTag(AVATAR_TAG),
-    shape = largeShape
+    largeShape,
+    ComposableImageLoader.DefaultContentScale,
+    modifier.requiredSize(largeSize).testTag(AVATAR_TAG)
+  )
+}
+
+@Composable
+internal fun SampleSmallAvatar(modifier: Modifier = Modifier) {
+  SmallAvatar(
+    ComposableImageLoader.createSample(AuthorImageSource.Default),
+    Author.sample.name,
+    modifier
+  )
+}
+
+@Composable
+internal fun SampleLargeAvatar(modifier: Modifier = Modifier) {
+  LargeAvatar(
+    ComposableImageLoader.createSample(AuthorImageSource.Default),
+    Author.sample.name,
+    modifier
   )
 }
 
@@ -86,7 +112,7 @@ private fun LoadingLargeAvatarPreview() {
 @Composable
 @MultiThemePreview
 private fun LoadedLargeAvatarPreview() {
-  AutosTheme { LargeAvatar(ImageLoader.forDefaultSampleAuthor(), Profile.createSample().name) }
+  AutosTheme { SampleLargeAvatar() }
 }
 
 @Composable
@@ -98,5 +124,5 @@ private fun LoadingSmallAvatarPreview() {
 @Composable
 @MultiThemePreview
 private fun LoadedSmallAvatarPreview() {
-  AutosTheme { SmallAvatar(ImageLoader.forDefaultSampleAuthor(), Profile.createSample().name) }
+  AutosTheme { SampleSmallAvatar() }
 }

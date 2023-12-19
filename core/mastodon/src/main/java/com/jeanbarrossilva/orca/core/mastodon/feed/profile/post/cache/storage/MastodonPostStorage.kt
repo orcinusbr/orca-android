@@ -25,6 +25,7 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.style.t
 import com.jeanbarrossilva.orca.platform.cache.Cache
 import com.jeanbarrossilva.orca.platform.cache.Storage
 import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import java.net.URL
 
 /**
@@ -44,7 +45,7 @@ internal class MastodonPostStorage(
   private val profileCache: Cache<Profile>,
   private val postEntityDao: MastodonPostEntityDao,
   private val styleEntityDao: MastodonStyleEntityDao,
-  private val coverLoaderProvider: ImageLoader.Provider<URL>
+  private val coverLoaderProvider: SomeImageLoaderProvider<URL>
 ) : Storage<Post>() {
   override suspend fun onStore(key: String, value: Post) {
     val postEntity = MastodonPostEntity.from(value)

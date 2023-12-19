@@ -31,6 +31,7 @@ import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.platform.ui.core.style.fromHtml
 import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import io.ktor.client.call.body
@@ -72,7 +73,7 @@ internal data class MastodonAccount(
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
    *   [Author]'s avatar will be loaded from a [URL].
    */
-  fun toAuthor(avatarLoaderProvider: ImageLoader.Provider<URL>): Author {
+  fun toAuthor(avatarLoaderProvider: SomeImageLoaderProvider<URL>): Author {
     val avatarURL = URL(avatar)
     val avatarLoader = avatarLoaderProvider.provide(avatarURL)
     val account = toAccount()
@@ -90,7 +91,7 @@ internal data class MastodonAccount(
    *   [MastodonPost]s will be provided.
    */
   suspend fun toProfile(
-    avatarLoaderProvider: ImageLoader.Provider<URL>,
+    avatarLoaderProvider: SomeImageLoaderProvider<URL>,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): Profile {
     return if (isOwner()) {
@@ -127,7 +128,7 @@ internal data class MastodonAccount(
    *   [MastodonEditableProfile]'s [MastodonPost]s will be provided.
    */
   private fun toEditableProfile(
-    avatarLoaderProvider: ImageLoader.Provider<URL>,
+    avatarLoaderProvider: SomeImageLoaderProvider<URL>,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): MastodonEditableProfile {
     val account = toAccount()
@@ -158,7 +159,7 @@ internal data class MastodonAccount(
    *   [MastodonFollowableProfile]'s [MastodonPost]s will be provided.
    */
   private suspend fun toFollowableProfile(
-    avatarLoaderProvider: ImageLoader.Provider<URL>,
+    avatarLoaderProvider: SomeImageLoaderProvider<URL>,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): MastodonFollowableProfile<Follow> {
     val account = toAccount()

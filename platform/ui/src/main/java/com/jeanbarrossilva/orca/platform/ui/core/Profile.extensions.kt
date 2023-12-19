@@ -15,18 +15,17 @@
 
 package com.jeanbarrossilva.orca.platform.ui.core
 
-import androidx.compose.runtime.Composable
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.sample.feed.profile.createSample
 import com.jeanbarrossilva.orca.core.sample.instance.createSample
-import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
-import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.platform.ui.core.image.sample
+import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
 
-/** Creates a platform-specific sample [Profile]. */
-@Composable
-internal fun Profile.Companion.createSample(): Profile {
-  val imageLoaderProvider = ImageLoader.Provider.createSample()
-  val postProvider = Instance.createSample(imageLoaderProvider).postProvider
-  return Profile.createSample(postProvider, imageLoaderProvider)
-}
+/** [Profile] returned by [sample]. */
+private val sampleProfile =
+  Profile.createSample(Instance.sample.postProvider, ComposableImageLoader.Provider.sample)
+
+/** Sample [Profile] whose images are loaded by a sample [ComposableImageLoader]. */
+val Profile.Companion.sample
+  get() = sampleProfile

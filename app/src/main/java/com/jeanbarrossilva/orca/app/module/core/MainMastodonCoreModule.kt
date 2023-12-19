@@ -23,20 +23,20 @@ import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.MastodonAuthori
 import com.jeanbarrossilva.orca.core.mastodon.instance.MastodonInstanceProvider
 import com.jeanbarrossilva.orca.core.sharedpreferences.actor.SharedPreferencesActorProvider
 import com.jeanbarrossilva.orca.core.sharedpreferences.feed.profile.post.content.SharedPreferencesTermMuter
-import com.jeanbarrossilva.orca.std.image.compose.coil.CoilImageLoader
+import com.jeanbarrossilva.orca.std.image.compose.async.AsyncImageLoader
 import com.jeanbarrossilva.orca.std.injector.Injector
 
 internal object MainMastodonCoreModule :
   MastodonCoreModule(
     {
       MastodonInstanceProvider(
-        context = Injector.get(),
+        MainMastodonCoreModule.context,
         MainMastodonCoreModule.authorizer,
         MainMastodonCoreModule.authenticator,
         MainMastodonCoreModule.actorProvider,
         MainMastodonCoreModule.authenticationLock,
         MainMastodonCoreModule.termMuter,
-        CoilImageLoader.Provider(MainMastodonCoreModule.context)
+        AsyncImageLoader.Provider
       )
     },
     { MainMastodonCoreModule.authenticationLock },

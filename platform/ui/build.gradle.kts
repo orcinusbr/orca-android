@@ -48,7 +48,7 @@ dependencies {
   implementation(project(":core"))
   implementation(project(":core:sample"))
   implementation(project(":platform:autos"))
-  implementation(project(":std:image:local"))
+  implementation(project(":std:image:compose"))
   implementation(libs.android.activity.compose)
   implementation(libs.android.compose.material)
   implementation(libs.android.material)

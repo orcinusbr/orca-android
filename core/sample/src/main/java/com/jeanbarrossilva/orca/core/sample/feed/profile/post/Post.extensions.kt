@@ -27,8 +27,8 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.repost.createSample
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
 import com.jeanbarrossilva.orca.core.sample.instance.domain.sample
-import com.jeanbarrossilva.orca.std.image.Image
 import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import com.jeanbarrossilva.orca.std.styledstring.buildStyledString
 import java.net.URL
 import java.time.ZoneId
@@ -44,11 +44,11 @@ private val thirdPostID = UUID.randomUUID().toString()
 /**
  * Creates sample [Post]s.
  *
- * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
- *   [Image]s will be loaded from a [SampleImageSource].
+ * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
+ *   will be loaded from a [SampleImageSource].
  */
 fun Post.Companion.createSamples(
-  imageLoaderProvider: ImageLoader.Provider<SampleImageSource>
+  imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
 ): List<Post> {
   return listOf(
     Repost.createSample(imageLoaderProvider),
@@ -78,11 +78,11 @@ fun Post.Companion.createSamples(
 /**
  * Creates a sample [Post].
  *
- * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
- *   [Image]s will be loaded from a [SampleImageSource].
+ * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
+ *   will be loaded from a [SampleImageSource].
  */
 fun Post.Companion.createSample(
-  imageLoaderProvider: ImageLoader.Provider<SampleImageSource>
+  imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
 ): Post {
   return SamplePost(
     samplePostID,

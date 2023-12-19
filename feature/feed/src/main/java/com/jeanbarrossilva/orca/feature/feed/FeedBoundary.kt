@@ -18,7 +18,6 @@ package com.jeanbarrossilva.orca.feature.feed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
-import com.jeanbarrossilva.orca.std.image.compose.Sizing
 import java.net.URL
 
 interface FeedBoundary {
@@ -30,7 +29,7 @@ interface FeedBoundary {
     postID: String,
     entrypointIndex: Int,
     secondary: List<Attachment>,
-    entrypoint: @Composable (Modifier, Sizing) -> Unit
+    entrypoint: @Composable (Modifier) -> Unit
   )
 
   fun navigateToPostDetails(id: String)

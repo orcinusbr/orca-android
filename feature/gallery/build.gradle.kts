@@ -45,6 +45,5 @@ dependencies {
   implementation(project(":platform:autos"))
   implementation(project(":platform:ui"))
   implementation(project(":std:image:compose"))
-  implementation(project(":std:image:local"))
   implementation(libs.zoomable)
 }

@@ -15,129 +15,45 @@
 
 package com.jeanbarrossilva.orca.std.image
 
-import java.util.Objects
-
-/** [ImageLoader] with a generic source. */
-typealias SomeImageLoader = ImageLoader<*>
+/** [ImageLoader] with generic source and image. */
+typealias SomeImageLoader = ImageLoader<*, *>
 
 /**
- * Loads an [Image] through [load].
+ * [ImageLoader.Provider] with a generic image.
  *
- * @param T Source from which the [Image] will be obtained.
+ * @param T Source from which the image will be loaded.
  */
-interface ImageLoader<T : Any> {
-  /** Source from which the [Image] will be obtained. */
-  val source: T
+typealias SomeImageLoaderProvider<T> = ImageLoader.Provider<T, *>
+
+/**
+ * Loads an image through [load].
+ *
+ * @param I Source from which the image will be loaded.
+ * @param O Image to be loaded.
+ */
+interface ImageLoader<I : Any, O : Any> {
+  /** Source from which the image will be loaded. */
+  val source: I
 
   /**
    * Provides an [ImageLoader] through [provide].
    *
-   * @param T Source from which the [Image] will be obtained.
+   * @param PI Source from which the image will be loaded.
+   * @param PO Image to be loaded.
    */
-  fun interface Provider<T : Any> {
+  fun interface Provider<PI : Any, PO : Any> {
     /**
      * Provides an [ImageLoader].
      *
-     * @param source Source from which the [Image] will be obtained.
+     * @param source Source from which the image will be loaded.
      */
-    fun provide(source: T): ImageLoader<T>
+    fun provide(source: PI): ImageLoader<PI, PO>
 
     companion object
   }
 
-  /**
-   * Dimensions according to which an [Image] should be sized.
-   *
-   * @param width [Dimension] for how wide the [Image] is.
-   * @param height [Dimension] for tall the [Image] is.
-   */
-  class Size(val width: Dimension, val height: Dimension) {
-    /**
-     * Denotes whether a dimension is explicitly specified or should be calculated automatically.
-     *
-     * @see Automatic
-     * @see Explicit
-     */
-    sealed interface Dimension {
-      /**
-       * Denotes that the value should be calculated based either on an explicitly defined one or
-       * the constraints to which the [Image] to be sized is delimited.
-       */
-      data object Automatic : Dimension
-
-      /**
-       * Denotes that the value is the given one.
-       *
-       * @param value Value of this [Dimension] in pixels.
-       */
-      @JvmInline value class Explicit(val value: Int) : Dimension
-    }
-
-    override fun equals(other: Any?): Boolean {
-      return other is Size && width == other.width && height == other.height
-    }
-
-    override fun hashCode(): Int {
-      return Objects.hash(width, height)
-    }
-
-    override fun toString(): String {
-      return "Size(width=$width, height=$height)"
-    }
-
-    operator fun component1(): Dimension {
-      return width
-    }
-
-    operator fun component2(): Dimension {
-      return height
-    }
-
-    companion object {
-      /** [Size] with both dimensions being automatic. */
-      val automatic = Size(width = Dimension.Automatic, height = Dimension.Automatic)
-
-      /**
-       * Creates a [Size] with both dimensions, [width] and [height], being explicit.
-       *
-       * @param width How wide the [Image] is.
-       * @param height How tall the [Image] is.
-       * @see Dimension.Explicit
-       */
-      fun explicit(width: Int, height: Int): Size {
-        val wd = Dimension.Explicit(width)
-        val hd = Dimension.Explicit(height)
-        return Size(wd, hd)
-      }
-
-      /**
-       * Creates a [Size] with an explicit [width] and an automatic [height].
-       *
-       * @param width How wide the [Image] is.
-       */
-      fun width(width: Int): Size {
-        val wd = Dimension.Explicit(width)
-        return Size(wd, height = Dimension.Automatic)
-      }
-
-      /**
-       * Creates a [Size] with an explicit [height] and an automatic [height].
-       *
-       * @param height How tall the [Image] is.
-       */
-      fun height(height: Int): Size {
-        val hd = Dimension.Explicit(height)
-        return Size(width = Dimension.Automatic, hd)
-      }
-    }
-  }
-
-  /**
-   * Loads an [Image].
-   *
-   * @param size [Size] in which the [Image] will be loaded.
-   */
-  suspend fun load(size: Size): Image?
+  /** Loads the image. */
+  fun load(): O
 
   companion object
 }

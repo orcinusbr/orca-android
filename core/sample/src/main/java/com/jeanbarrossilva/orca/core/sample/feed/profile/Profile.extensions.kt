@@ -21,8 +21,8 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostProvider
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
-import com.jeanbarrossilva.orca.std.image.Image
 import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 
 /**
@@ -30,11 +30,11 @@ import com.jeanbarrossilva.orca.std.styledstring.StyledString
  *
  * @param postProvider [SamplePostProvider] by which the [Profile]'s [Post]s will be provided.
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
- *   [Image]s will be loaded from a [SampleImageSource].
+ *   images will be loaded from a [SampleImageSource].
  */
 fun Profile.Companion.createSample(
   postProvider: SamplePostProvider,
-  imageLoaderProvider: ImageLoader.Provider<SampleImageSource>
+  imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
 ): Profile {
   val author = Author.createSample(imageLoaderProvider)
   return object : SampleProfile {

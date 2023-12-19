@@ -20,8 +20,8 @@ import com.jeanbarrossilva.orca.core.feed.profile.ProfileProvider
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostProvider
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
-import com.jeanbarrossilva.orca.std.image.Image
 import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.mapNotNull
@@ -30,13 +30,13 @@ import kotlinx.coroutines.flow.mapNotNull
  * [ProfileProvider] that provides sample [Profile]s.
  *
  * @param postProvider [SamplePostProvider] by which [Profile]s' [Post]s will be provided.
- * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
- *   [Image]s can be loaded from a [SampleImageSource].
+ * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
+ *   can be loaded from a [SampleImageSource].
  */
 class SampleProfileProvider
 internal constructor(
   postProvider: SamplePostProvider,
-  imageLoaderProvider: ImageLoader.Provider<SampleImageSource>
+  imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
 ) : ProfileProvider() {
   /** [Profile]s that are present by default. */
   internal val defaultProfiles = listOf(Profile.createSample(postProvider, imageLoaderProvider))

@@ -21,6 +21,7 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfile
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
 import com.jeanbarrossilva.orca.platform.cache.Storage
 import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import java.net.URL
 import kotlinx.coroutines.flow.first
 
@@ -36,7 +37,7 @@ import kotlinx.coroutines.flow.first
  *   [Mastodon profile entities][MastodonProfileEntity].
  */
 internal class MastodonProfileStorage(
-  private val avatarLoaderProvider: ImageLoader.Provider<URL>,
+  private val avatarLoaderProvider: SomeImageLoaderProvider<URL>,
   private val postPaginatorProvider: MastodonProfilePostPaginator.Provider,
   private val entityDao: MastodonProfileEntityDao
 ) : Storage<Profile>() {

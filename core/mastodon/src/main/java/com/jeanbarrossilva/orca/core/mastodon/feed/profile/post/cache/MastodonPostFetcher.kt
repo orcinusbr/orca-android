@@ -22,8 +22,8 @@ import com.jeanbarrossilva.orca.core.mastodon.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.platform.cache.Fetcher
-import com.jeanbarrossilva.orca.std.image.Image
 import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.client.call.body
 import java.net.URL
@@ -31,10 +31,10 @@ import java.net.URL
 /**
  * [Fetcher] that requests [Post]s to the API.
  *
- * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
- *   [Image]s will be loaded from a [URL].
+ * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
+ *   will be loaded from a [URL].
  */
-internal class MastodonPostFetcher(private val imageLoaderProvider: ImageLoader.Provider<URL>) :
+internal class MastodonPostFetcher(private val imageLoaderProvider: SomeImageLoaderProvider<URL>) :
   Fetcher<Post>() {
   override suspend fun onFetch(key: String): Post {
     return (Injector.from<CoreModule>().instanceProvider().provide() as SomeHttpInstance)

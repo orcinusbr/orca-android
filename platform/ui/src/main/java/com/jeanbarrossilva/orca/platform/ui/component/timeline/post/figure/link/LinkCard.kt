@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -40,9 +41,9 @@ import com.jeanbarrossilva.orca.platform.autos.kit.action.Hoverable
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.R
-import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
-import com.jeanbarrossilva.orca.std.image.ImageLoader
-import com.jeanbarrossilva.orca.std.image.compose.Image
+import com.jeanbarrossilva.orca.platform.ui.core.image.sample
+import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
+import com.jeanbarrossilva.orca.std.image.compose.SomeComposableImageLoader
 
 /** Tag that identifies a [LinkCard] for testing purposes. */
 const val LINK_CARD_TAG = "link-card"
@@ -60,13 +61,14 @@ fun LinkCard(headline: Headline, onClick: () -> Unit, modifier: Modifier = Modif
       .testTag(LINK_CARD_TAG)
   ) {
     Column {
-      headline.coverLoader?.let {
-        Image(
-          it,
-          contentDescription = stringResource(R.string.platform_ui_link_card_cover, headline.title),
+      (headline.coverLoader as SomeComposableImageLoader?)
+        ?.load()
+        ?.invoke(
+          stringResource(R.string.platform_ui_link_card_cover, headline.title),
+          RectangleShape,
+          ComposableImageLoader.DefaultContentScale,
           Modifier.aspectRatio(16f / 9f).fillMaxWidth()
         )
-      }
 
       Column(
         Modifier.padding(AutosTheme.spacings.medium.dp),
@@ -86,7 +88,7 @@ fun LinkCard(headline: Headline, onClick: () -> Unit, modifier: Modifier = Modif
 
 @Composable
 internal fun LinkCard(modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
-  LinkCard(Headline.createSample(ImageLoader.Provider.createSample()), onClick, modifier)
+  LinkCard(Headline.createSample(ComposableImageLoader.Provider.sample), onClick, modifier)
 }
 
 @Composable

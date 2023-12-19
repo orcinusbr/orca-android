@@ -18,7 +18,6 @@ package com.jeanbarrossilva.orca.feature.profiledetails
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
-import com.jeanbarrossilva.orca.std.image.compose.Sizing
 import java.net.URL
 
 interface ProfileDetailsBoundary {
@@ -28,7 +27,7 @@ interface ProfileDetailsBoundary {
     postID: String,
     entrypointIndex: Int,
     secondary: List<Attachment>,
-    entrypoint: @Composable (Modifier, Sizing) -> Unit
+    entrypoint: @Composable (Modifier) -> Unit
   )
 
   fun navigateToPostDetails(id: String)
@@ -42,7 +41,7 @@ interface ProfileDetailsBoundary {
           postID: String,
           entrypointIndex: Int,
           secondary: List<Attachment>,
-          entrypoint: @Composable (Modifier, Sizing) -> Unit
+          entrypoint: @Composable (Modifier) -> Unit
         ) {}
 
         override fun navigateToPostDetails(id: String) {}

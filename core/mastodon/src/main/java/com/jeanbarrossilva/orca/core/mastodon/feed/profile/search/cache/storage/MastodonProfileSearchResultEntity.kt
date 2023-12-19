@@ -21,6 +21,7 @@ import androidx.room.PrimaryKey
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
 import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import java.net.URL
 
 /**
@@ -50,7 +51,7 @@ data class MastodonProfileSearchResultEntity(
    *   [ProfileSearchResult]'s avatar will be loaded from a [URL].
    */
   internal fun toProfileSearchResult(
-    avatarLoaderProvider: ImageLoader.Provider<URL>
+    avatarLoaderProvider: SomeImageLoaderProvider<URL>
   ): ProfileSearchResult {
     val account = Account.of(account, fallbackDomain = "mastodon.social")
     val avatarURL = URL(avatarURL)

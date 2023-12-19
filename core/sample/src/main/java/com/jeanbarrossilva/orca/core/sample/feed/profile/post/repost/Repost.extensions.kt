@@ -24,8 +24,8 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createRamboSample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
 import com.jeanbarrossilva.orca.core.sample.instance.domain.sample
-import com.jeanbarrossilva.orca.std.image.Image
 import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
 import java.time.ZoneId
@@ -38,11 +38,11 @@ private val sampleRepostID = UUID.randomUUID().toString()
 /**
  * Creates a sample [Repost].
  *
- * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
- *   [Image]s will be loaded from a [SampleImageSource].
+ * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
+ *   will be loaded from a [SampleImageSource].
  */
 fun Repost.Companion.createSample(
-  imageLoaderProvider: ImageLoader.Provider<SampleImageSource>
+  imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
 ): Repost {
   return Repost(
     SamplePost(

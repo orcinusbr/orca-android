@@ -43,7 +43,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -54,9 +53,6 @@ import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
-import com.jeanbarrossilva.orca.core.instance.Instance
-import com.jeanbarrossilva.orca.core.sample.feed.profile.createSample
-import com.jeanbarrossilva.orca.core.sample.instance.createSample
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.NavigationButton
 import com.jeanbarrossilva.orca.feature.profiledetails.ui.Header
@@ -73,14 +69,13 @@ import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabili
 import com.jeanbarrossilva.orca.platform.autos.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.time.RelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.time.rememberRelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.refresh.Refresh
+import com.jeanbarrossilva.orca.platform.ui.core.sample
 import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
-import com.jeanbarrossilva.orca.std.image.ImageLoader
 import com.jeanbarrossilva.orca.std.image.SomeImageLoader
 import java.io.Serializable
 import java.net.URL
@@ -186,16 +181,13 @@ internal sealed class ProfileDetails : Serializable {
     val sample: ProfileDetails
       @Composable
       get() {
-        val imageLoaderProvider = ImageLoader.Provider.createSample(LocalContext.current)
-        val postProvider = Instance.createSample(imageLoaderProvider).postProvider
-        val profile = Profile.createSample(postProvider, imageLoaderProvider)
         return Default(
-          profile.id,
-          profile.avatarLoader,
-          profile.name,
-          profile.account,
-          profile.bio.toAnnotatedString(AutosTheme.colors),
-          profile.url
+          Profile.sample.id,
+          Profile.sample.avatarLoader,
+          Profile.sample.name,
+          Profile.sample.account,
+          Profile.sample.bio.toAnnotatedString(AutosTheme.colors),
+          Profile.sample.url
         )
       }
   }

@@ -17,11 +17,12 @@ package com.jeanbarrossilva.orca.core.mastodon.feed
 
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.MastodonPost
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination.MastodonPostPaginator
-import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import java.net.URL
 
 /** [MastodonPostPaginator] that paginates through [MastodonPost]s of the feed. */
-internal class MastodonFeedPaginator(override val imageLoaderProvider: ImageLoader.Provider<URL>) :
-  MastodonPostPaginator() {
+internal class MastodonFeedPaginator(
+  override val imageLoaderProvider: SomeImageLoaderProvider<URL>
+) : MastodonPostPaginator() {
   override val route = "/api/v1/timelines/home"
 }

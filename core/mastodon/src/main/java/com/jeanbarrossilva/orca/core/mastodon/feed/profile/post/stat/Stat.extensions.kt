@@ -23,8 +23,8 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.MastodonPost
 import com.jeanbarrossilva.orca.core.mastodon.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
-import com.jeanbarrossilva.orca.std.image.Image
 import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.client.call.body
 import java.net.URL
@@ -35,14 +35,14 @@ import kotlinx.coroutines.flow.flow
  *
  * @param id ID of the [MastodonPost] for which the [Stat] is.
  * @param count Amount of comments that the [MastodonPost] has received.
- * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
- *   [Image]s will be loaded from a [URL].
+ * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
+ *   will be loaded from a [URL].
  */
 @Suppress("FunctionName")
 internal fun CommentStat(
   id: String,
   count: Int,
-  imageLoaderProvider: ImageLoader.Provider<URL>
+  imageLoaderProvider: SomeImageLoaderProvider<URL>
 ): Stat<Post> {
   return Stat(count) {
     get {

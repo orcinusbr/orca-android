@@ -23,31 +23,28 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.sample
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.GalleryPreview
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.test.testSample
 import kotlin.test.Test
 
 internal class DispositionTests {
   @Test(expected = IllegalArgumentException::class)
   fun throwsWhenGettingDispositionWithoutAttachments() {
     Disposition.of(
-      GalleryPreview.testSample.copy(Post.sample.id, Author.sample.name, attachments = emptyList()),
+      GalleryPreview.sample.copy(Post.sample.id, Author.sample.name, attachments = emptyList()),
       Disposition.OnThumbnailClickListener.empty
     )
   }
 
   @Test
   fun getsSingleDispositionForOneAttachment() {
-    assertThat(
-        Disposition.of(GalleryPreview.testSample.copy(attachments = Attachment.samples.take(1)))
-      )
+    assertThat(Disposition.of(GalleryPreview.sample.copy(attachments = Attachment.samples.take(1))))
       .isEqualTo(
-        Disposition.Single(GalleryPreview.testSample.copy(attachments = Attachment.samples.take(1)))
+        Disposition.Single(GalleryPreview.sample.copy(attachments = Attachment.samples.take(1)))
       )
   }
 
   @Test
   fun getsGridDispositionForMultipleThumbnails() {
-    assertThat(Disposition.of(GalleryPreview.testSample.copy(attachments = Attachment.samples)))
-      .isEqualTo(Disposition.Grid(GalleryPreview.testSample))
+    assertThat(Disposition.of(GalleryPreview.sample.copy(attachments = Attachment.samples)))
+      .isEqualTo(Disposition.Grid(GalleryPreview.sample))
   }
 }

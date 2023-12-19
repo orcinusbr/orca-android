@@ -18,17 +18,16 @@ package com.jeanbarrossilva.orca.feature.gallery.ui
 import androidx.compose.animation.animateContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
 import com.jeanbarrossilva.orca.feature.gallery.R
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
-import com.jeanbarrossilva.orca.std.image.compose.Image
-import com.jeanbarrossilva.orca.std.image.compose.Sizing
 import com.jeanbarrossilva.orca.std.image.compose.rememberImageLoader
 import kotlinx.coroutines.launch
 import net.engawapg.lib.zoomable.rememberZoomState
@@ -42,12 +41,11 @@ internal fun Page(
   secondary: List<Attachment>,
   onActionsVisibilityToggle: (areActionsVisible: Boolean) -> Unit,
   modifier: Modifier = Modifier,
-  entrypoint: @Composable (Modifier, Sizing) -> Unit
+  entrypoint: @Composable (Modifier) -> Unit
 ) {
   val coroutineScope = rememberCoroutineScope()
   val zoomState = rememberZoomState()
   val isZoomedIn by zoomState.isZoomedInAsState
-  val sizing = remember { Sizing.Widened }
   val pageModifier =
     modifier
       .zoomable(
@@ -65,26 +63,25 @@ internal fun Page(
       )
       .animateContentSize()
   if (currentIndex == entrypointIndex) {
-    entrypoint(pageModifier, sizing)
+    entrypoint(pageModifier)
   } else {
-    Image(
-      rememberImageLoader(
-        secondary[currentIndex - if (currentIndex < entrypointIndex) 0 else 1].url
-      ),
-      contentDescription = stringResource(R.string.feature_gallery_attachment, currentIndex.inc()),
-      pageModifier,
-      sizing
+    rememberImageLoader(secondary[currentIndex - if (currentIndex < entrypointIndex) 0 else 1].url)
+      .load()(
+      stringResource(R.string.feature_gallery_attachment, currentIndex.inc()),
+      RectangleShape,
+      ContentScale.FillWidth,
+      pageModifier
     )
   }
 }
 
 @Composable
-internal fun SampleEntrypoint(sizing: Sizing, modifier: Modifier = Modifier) {
-  Image(
-    rememberImageLoader(com.jeanbarrossilva.orca.std.image.compose.R.drawable.image),
-    contentDescription = stringResource(R.string.feature_gallery_attachment, 1),
-    modifier,
-    sizing
+internal fun SampleEntrypoint(modifier: Modifier = Modifier) {
+  rememberImageLoader(com.jeanbarrossilva.orca.platform.ui.R.drawable.sample_cover_default).load()(
+    stringResource(R.string.feature_gallery_attachment, 1),
+    RectangleShape,
+    ContentScale.FillWidth,
+    modifier
   )
 }
 
@@ -97,8 +94,8 @@ private fun PagePreview() {
       currentIndex = 1,
       secondary = Attachment.samples,
       onActionsVisibilityToggle = {}
-    ) { modifier, sizing ->
-      SampleEntrypoint(sizing, modifier)
+    ) {
+      SampleEntrypoint(it)
     }
   }
 }

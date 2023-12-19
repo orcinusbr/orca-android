@@ -25,14 +25,13 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
-import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.Disposition
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.disposition
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.Thumbnail
-import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.platform.ui.core.image.sample
+import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
 
 /** Tag that identifies a [GalleryPreview] for testing purposes. */
 internal const val GALLERY_PREVIEW_TAG = "gallery-preview"
@@ -51,20 +50,8 @@ data class GalleryPreview(
 ) {
   companion object {
     /** Sample [GalleryPreview]. */
-    internal val sample
-      @Composable get() = getSample(ImageLoader.Provider.createSample())
-
-    /**
-     * Gets a sample [GalleryPreview].
-     *
-     * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
-     *   the [Thumbnail]s will be loaded.
-     */
-    internal fun getSample(
-      imageLoaderProvider: ImageLoader.Provider<SampleImageSource>
-    ): GalleryPreview {
-      return Post.createSample(imageLoaderProvider).asGalleryPreview()
-    }
+    internal val sample =
+      Post.createSample(ComposableImageLoader.Provider.sample).asGalleryPreview()
   }
 }
 

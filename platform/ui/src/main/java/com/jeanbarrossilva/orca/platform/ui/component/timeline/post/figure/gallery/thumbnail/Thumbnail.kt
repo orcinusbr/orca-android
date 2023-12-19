@@ -21,7 +21,9 @@ import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
@@ -33,8 +35,6 @@ import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.GalleryPreview
-import com.jeanbarrossilva.orca.std.image.compose.Image
-import com.jeanbarrossilva.orca.std.image.compose.Sizing
 import com.jeanbarrossilva.orca.std.image.compose.rememberImageLoader
 
 /** Tag that identifies a [Thumbnail] for testing purposes. */
@@ -57,14 +57,14 @@ internal object ThumbnailDefaults {
 }
 
 /**
- * [Image] that's a preview of the content of the [attachment].
+ * Image that's a preview of the content of the [attachment].
  *
  * @param authorName Name of the [Author] by which the [attachment] has been added.
  * @param attachment [Attachment] whose content's preview will be loaded.
  * @param position 1-based index of the position within a [GalleryPreview].
  * @param onClick Callback run whenever this [Thumbnail] is clicked, to which an unclickable
- *   identical one is given with the specified [Modifier] and [Sizing].
- * @param modifier [Modifier] to be applied the underlying [Image].
+ *   identical one is given with the specified [Modifier].
+ * @param modifier [Modifier] to be applied the underlying image.
  * @param shape [Shape] by which it will be clipped.
  */
 @Composable
@@ -72,18 +72,16 @@ internal fun Thumbnail(
   authorName: String,
   attachment: Attachment,
   @IntRange(from = 1) position: Int,
-  onClick: (copy: @Composable (Modifier, Sizing) -> Unit) -> Unit,
+  onClick: (copy: @Composable (Modifier) -> Unit) -> Unit,
   modifier: Modifier = Modifier,
   shape: Shape = ThumbnailDefaults.shape
 ) {
-  val thumbnail: @Composable (Modifier, Sizing) -> Unit = { thumbnailModifier, sizing ->
-    Image(
-      rememberImageLoader(attachment.url),
-      contentDescription =
-        stringResource(R.string.platform_ui_gallery_preview_thumbnail, position, authorName),
-      thumbnailModifier,
-      sizing,
-      shape
+  val thumbnail: @Composable (Modifier) -> Unit = {
+    rememberImageLoader(attachment.url).load()(
+      stringResource(R.string.platform_ui_gallery_preview_thumbnail, position, authorName),
+      RectangleShape,
+      ContentScale.FillWidth,
+      it
     )
   }
   thumbnail(
@@ -91,8 +89,7 @@ internal fun Thumbnail(
       .clip(shape)
       .clickable { onClick(thumbnail) }
       .testTag(THUMBNAIL_TAG)
-      .semantics { this.shape = shape },
-    Sizing.Constrained
+      .semantics { this.shape = shape }
   )
 }
 

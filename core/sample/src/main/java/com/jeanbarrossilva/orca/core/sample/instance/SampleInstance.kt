@@ -34,20 +34,20 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostWriter
 import com.jeanbarrossilva.orca.core.sample.feed.profile.search.SampleProfileSearcher
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
 import com.jeanbarrossilva.orca.core.sample.instance.domain.sample
-import com.jeanbarrossilva.orca.std.image.Image
 import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 
 /**
  * [Instance] made out of sample underlying core structures.
  *
  * @param defaultPosts [Post]s that are provided by default by the [postProvider].
- * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
- *   [Image]s will be loaded from a [SampleImageSource].
+ * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
+ *   will be loaded from a [SampleImageSource].
  */
 class SampleInstance
 internal constructor(
   defaultPosts: List<Post>,
-  internal val imageLoaderProvider: ImageLoader.Provider<SampleImageSource>
+  internal val imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
 ) : Instance<Authenticator>() {
   override val domain = Domain.sample
   override val authenticator: Authenticator = SampleAuthenticator

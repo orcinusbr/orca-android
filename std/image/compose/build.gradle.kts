@@ -35,12 +35,7 @@ dependencies {
 
   implementation(project(":core:sample"))
   implementation(project(":platform:autos"))
-  implementation(project(":std:image:local"))
   implementation(libs.android.core)
-  implementation(libs.coil)
+  implementation(libs.coil.compose)
   implementation(libs.loadable.placeholder)
-
-  testImplementation(project(":std:image-test"))
-  testImplementation(libs.assertk)
-  testImplementation(libs.kotlin.test)
 }

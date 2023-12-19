@@ -32,7 +32,6 @@ import com.jeanbarrossilva.orca.core.sample.instance.domain.sample
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.content.highlight.sample
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.sample
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.GalleryPreview
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.test.testSample
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import com.jeanbarrossilva.orca.std.styledstring.buildStyledString
 import java.net.URL
@@ -42,7 +41,7 @@ internal class FigureTests {
   @Test
   fun createsGalleryFromContentWithHighlightAndAttachments() {
     assertThat(Figure.of(Post.sample.id, Author.sample.name, Content.sample))
-      .isEqualTo(Figure.Gallery(GalleryPreview.testSample))
+      .isEqualTo(Figure.Gallery(GalleryPreview.sample))
   }
 
   @Test
@@ -55,7 +54,7 @@ internal class FigureTests {
           onLinkClick = {}
         )
       )
-      .isEqualTo(Figure.Gallery(GalleryPreview.testSample))
+      .isEqualTo(Figure.Gallery(GalleryPreview.sample))
   }
 
   @Test

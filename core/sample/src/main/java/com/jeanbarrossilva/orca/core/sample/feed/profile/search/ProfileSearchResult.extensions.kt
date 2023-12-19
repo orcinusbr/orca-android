@@ -20,6 +20,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
 import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 
 /**
  * Creates a sample [ProfileSearchResult].
@@ -28,7 +29,7 @@ import com.jeanbarrossilva.orca.std.image.ImageLoader
  *   [ProfileSearchResult]'s avatar will be loaded.
  */
 fun ProfileSearchResult.Companion.createSample(
-  avatarImageLoader: ImageLoader.Provider<SampleImageSource>
+  avatarImageLoader: SomeImageLoaderProvider<SampleImageSource>
 ): ProfileSearchResult {
   val author = Author.createSample(avatarImageLoader)
   return ProfileSearchResult(

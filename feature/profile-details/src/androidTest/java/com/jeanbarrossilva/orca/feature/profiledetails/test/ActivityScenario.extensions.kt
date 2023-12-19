@@ -18,8 +18,8 @@ package com.jeanbarrossilva.orca.feature.profiledetails.test
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
-import com.jeanbarrossilva.orca.core.sample.test.feed.profile.sample
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState
+import com.jeanbarrossilva.orca.platform.ui.core.sample
 
 /**
  * Launches a [ProfileDetailsActivity].

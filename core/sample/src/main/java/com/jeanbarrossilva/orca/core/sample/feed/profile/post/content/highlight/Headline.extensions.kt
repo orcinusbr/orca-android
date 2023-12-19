@@ -19,6 +19,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Headlin
 import com.jeanbarrossilva.orca.core.sample.image.CoverImageSource
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
 import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 
 /**
  * Creates a sample [Headline].
@@ -27,7 +28,7 @@ import com.jeanbarrossilva.orca.std.image.ImageLoader
  *   [Headline]'s cover will be loaded.
  */
 fun Headline.Companion.createSample(
-  coverLoaderProvider: ImageLoader.Provider<SampleImageSource>
+  coverLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
 ): Headline {
   return Headline(
     title = "Pixel Pals Widget Pet Game",

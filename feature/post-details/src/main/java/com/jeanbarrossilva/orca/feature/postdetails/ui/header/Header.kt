@@ -38,6 +38,7 @@ import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.SmallAvatar
 import com.jeanbarrossilva.orca.platform.ui.component.stat.Stats
+import com.jeanbarrossilva.orca.std.image.compose.SomeComposableImageLoader
 
 @Composable
 internal fun Header(modifier: Modifier = Modifier) {
@@ -66,7 +67,7 @@ internal fun Header(
   modifier: Modifier = Modifier
 ) {
   Header(
-    avatar = { SmallAvatar(details.avatarLoader, details.name) },
+    avatar = { SmallAvatar(details.avatarLoader as SomeComposableImageLoader, details.name) },
     name = { Text(details.name) },
     username = { Text(details.formattedUsername) },
     content = {

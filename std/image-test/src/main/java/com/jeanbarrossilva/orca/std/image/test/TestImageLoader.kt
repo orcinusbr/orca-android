@@ -15,22 +15,18 @@
 
 package com.jeanbarrossilva.orca.std.image.test
 
-import com.jeanbarrossilva.orca.std.image.Image
 import com.jeanbarrossilva.orca.std.image.ImageLoader
-import com.jeanbarrossilva.orca.std.image.buildImage
 
-/** [ImageLoader] that loads an empty [Image]. */
-object TestImageLoader : ImageLoader<Unit> {
+/** [ImageLoader] that loads an empty image. */
+object TestImageLoader : ImageLoader<Unit, Unit> {
   override val source = Unit
 
   /** [ImageLoader.Provider] that provides the [TestImageLoader]. */
-  object Provider : ImageLoader.Provider<Unit> {
+  object Provider : ImageLoader.Provider<Unit, Unit> {
     override fun provide(source: Unit): TestImageLoader {
       return TestImageLoader
     }
   }
 
-  override suspend fun load(size: ImageLoader.Size): Image {
-    return buildImage(width = 1, height = 1) { pixel(0) }
-  }
+  override fun load() {}
 }

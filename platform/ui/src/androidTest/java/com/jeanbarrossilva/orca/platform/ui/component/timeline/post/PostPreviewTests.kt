@@ -24,6 +24,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.jeanbarrossilva.loadable.placeholder.test.assertIsLoading
 import com.jeanbarrossilva.loadable.placeholder.test.assertIsNotLoading
 import com.jeanbarrossilva.orca.core.feed.profile.post.Author
+import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.sample
 import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
@@ -33,6 +34,7 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.test.onPostP
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.test.onPostPreviewName
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.test.onPostPreviewReblogMetadata
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.test.onStatLabel
+import com.jeanbarrossilva.orca.platform.ui.core.sample
 import com.jeanbarrossilva.orca.platform.ui.test.component.stat.favorite.onFavoriteStat
 import com.jeanbarrossilva.orca.platform.ui.test.component.stat.onCommentStat
 import com.jeanbarrossilva.orca.platform.ui.test.component.stat.onShareStat
@@ -43,12 +45,12 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class PostPreviewTests {
-  @get:Rule val coreSampleRule = SampleInstanceTestRule()
+  @get:Rule val coreSampleRule = SampleInstanceTestRule(Instance.sample)
 
   @get:Rule val composeRule = createComposeRule()
 
   private val samplePostPreview
-    get() = PostPreview.getSample(context, AutosTheme.getColors(context))
+    get() = PostPreview.getSample(AutosTheme.getColors(context))
 
   private val context
     get() = InstrumentationRegistry.getInstrumentation().context

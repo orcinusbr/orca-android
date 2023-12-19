@@ -19,6 +19,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.MastodonProfileEntityDao
 import com.jeanbarrossilva.orca.platform.cache.Storage
 import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import java.net.URL
 import kotlinx.coroutines.flow.first
 
@@ -31,7 +32,7 @@ import kotlinx.coroutines.flow.first
  *   [Mastodon profile search result entities][MastodonProfileSearchResultEntity].
  */
 internal class MastodonProfileSearchResultsStorage(
-  private val avatarLoaderProvider: ImageLoader.Provider<URL>,
+  private val avatarLoaderProvider: SomeImageLoaderProvider<URL>,
   private val entityDao: MastodonProfileSearchResultEntityDao
 ) : Storage<List<ProfileSearchResult>>() {
   override suspend fun onStore(key: String, value: List<ProfileSearchResult>) {
