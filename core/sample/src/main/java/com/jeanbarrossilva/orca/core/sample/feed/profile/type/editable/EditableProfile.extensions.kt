@@ -22,8 +22,8 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileWriter
 import com.jeanbarrossilva.orca.core.sample.feed.profile.createSample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostProvider
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
-import com.jeanbarrossilva.orca.std.imageloader.Image
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 
 /**
  * Creates a sample [EditableProfile].
@@ -31,13 +31,13 @@ import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
  * @param writer [SampleProfileWriter] used by the [EditableProfile]'s
  *   [editor][EditableProfile.editor] can make modifications.
  * @param postProvider [SamplePostProvider] by which the [EditableProfile]'s [Post]s will be loaded.
- * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
- *   [Image]s will be loaded from a [SampleImageSource].
+ * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
+ *   will be loaded from a [SampleImageSource].
  */
 fun EditableProfile.Companion.createSample(
   writer: SampleProfileWriter,
   postProvider: SamplePostProvider,
-  imageLoaderProvider: ImageLoader.Provider<SampleImageSource>
+  imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
 ): EditableProfile {
   val delegate = Profile.createSample(postProvider, imageLoaderProvider)
   return SampleEditableProfile(

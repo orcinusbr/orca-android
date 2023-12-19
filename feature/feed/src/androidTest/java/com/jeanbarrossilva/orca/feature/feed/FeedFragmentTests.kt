@@ -31,13 +31,12 @@ import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
-import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.samples
-import com.jeanbarrossilva.orca.core.sample.test.feed.profile.sample
 import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
-import com.jeanbarrossilva.orca.core.sample.test.instance.sample
 import com.jeanbarrossilva.orca.feature.feed.test.FeedActivity
 import com.jeanbarrossilva.orca.feature.feed.test.TestFeedModule
+import com.jeanbarrossilva.orca.feature.feed.test.samples
 import com.jeanbarrossilva.orca.platform.ui.component.stat.favorite.FAVORITE_STAT_TAG
+import com.jeanbarrossilva.orca.platform.ui.core.sample
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.performScrollToBottom
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.isPostPreview
@@ -51,7 +50,7 @@ import org.junit.Test
 
 internal class FeedFragmentTests {
   @get:Rule val injectorRule = InjectorTestRule { register<FeedModule>(TestFeedModule) }
-  @get:Rule val sampleInstanceRule = SampleInstanceTestRule()
+  @get:Rule val sampleInstanceRule = SampleInstanceTestRule(Instance.sample)
   @get:Rule val time4JRule = Time4JTestRule()
   @get:Rule val composeRule = createEmptyComposeRule()
 

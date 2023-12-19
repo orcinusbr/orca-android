@@ -42,7 +42,6 @@ import com.jeanbarrossilva.orca.feature.gallery.GalleryBoundary
 import com.jeanbarrossilva.orca.feature.gallery.GalleryViewModel
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.component.stat.StatsDetails
-import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
 
 internal const val GALLERY_PAGER_TAG = "gallery-pager-tag"
 
@@ -53,7 +52,7 @@ internal fun Gallery(
   entrypointIndex: Int,
   secondary: List<Attachment>,
   modifier: Modifier = Modifier,
-  entrypoint: @Composable (Modifier, Sizing) -> Unit
+  entrypoint: @Composable (Modifier) -> Unit
 ) {
   val statsDetails by viewModel.statsDetailsFlow.collectAsState(StatsDetails.Empty)
 
@@ -93,8 +92,8 @@ internal fun Gallery(
     onShare,
     onClose,
     modifier
-  ) { pageModifier, sizing ->
-    SampleEntrypoint(sizing, pageModifier)
+  ) {
+    SampleEntrypoint(it)
   }
 }
 
@@ -111,14 +110,13 @@ private fun Gallery(
   onShare: () -> Unit,
   onClose: () -> Unit,
   modifier: Modifier = Modifier,
-  entrypoint: @Composable (Modifier, Sizing) -> Unit
+  entrypoint: @Composable (Modifier) -> Unit
 ) {
   var areActionsVisible by rememberSaveable { mutableStateOf(true) }
   var areOptionsVisible by rememberSaveable(areActionsVisible) { mutableStateOf(false) }
   val pagerState = rememberPagerState(pageCount = secondary.size::inc)
-  val sizing = remember { Sizing.Widened }
   val pages =
-    remember(entrypointIndex, secondary, sizing) {
+    remember(entrypointIndex, secondary) {
       List<@Composable () -> Unit>(pagerState.pageCount) { index ->
         @Composable {
           Page(

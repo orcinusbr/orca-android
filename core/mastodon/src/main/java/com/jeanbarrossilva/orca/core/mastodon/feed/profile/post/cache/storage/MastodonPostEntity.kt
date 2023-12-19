@@ -32,8 +32,8 @@ import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.`if`
 import com.jeanbarrossilva.orca.platform.cache.Cache
-import com.jeanbarrossilva.orca.std.imageloader.Image
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
@@ -83,13 +83,13 @@ internal data class MastodonPostEntity(
    * @param profileCache [Cache] from which the [Author]'s [Profile] will be retrieved.
    * @param dao [MastodonPostEntityDao] that will select the persisted
    *   [Mastodon style entities][MastodonStyleEntity].
-   * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by [Image]s
+   * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by images
    *   will be loaded from a [URL].
    */
   suspend fun toPost(
     profileCache: Cache<Profile>,
     dao: MastodonPostEntityDao,
-    imageLoaderProvider: ImageLoader.Provider<URL>
+    imageLoaderProvider: SomeImageLoaderProvider<URL>
   ): Post {
     val author = profileCache.get(authorID).toAuthor()
     val domain = Injector.from<CoreModule>().instanceProvider().provide().domain

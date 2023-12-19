@@ -27,8 +27,8 @@ import com.jeanbarrossilva.orca.core.instance.domain.Domain
 import com.jeanbarrossilva.orca.core.mastodon.auth.authentication.MastodonAuthenticator
 import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.MastodonAuthorizer
 import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.viewmodel.MastodonAuthorizationViewModel
-import com.jeanbarrossilva.orca.std.imageloader.Image
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import java.net.URL
 
 /**
@@ -42,8 +42,8 @@ import java.net.URL
  * @param authenticationLock [AuthenticationLock] that will lock authentication-dependent
  *   functionality behind a "wall".
  * @param termMuter [TermMuter] by which [Post]s with muted terms will be filtered out.
- * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
- *   [Image] will be loaded.
+ * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which image
+ *   will be loaded.
  */
 class MastodonInstanceProvider(
   private val context: Context,
@@ -52,7 +52,7 @@ class MastodonInstanceProvider(
   private val actorProvider: ActorProvider,
   private val authenticationLock: AuthenticationLock<MastodonAuthenticator>,
   private val termMuter: TermMuter,
-  private val imageLoaderProvider: ImageLoader.Provider<URL>
+  private val imageLoaderProvider: SomeImageLoaderProvider<URL>
 ) : InstanceProvider {
   override fun provide(): SomeInstance {
     return ContextualMastodonInstance(

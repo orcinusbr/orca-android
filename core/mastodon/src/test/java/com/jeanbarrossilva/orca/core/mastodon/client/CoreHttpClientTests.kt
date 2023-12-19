@@ -18,16 +18,18 @@ package com.jeanbarrossilva.orca.core.mastodon.client
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
+import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.mastodon.client.test.assertThatRequestAuthorizationHeaderOf
 import com.jeanbarrossilva.orca.core.mastodon.client.test.runAuthenticatedTest
 import com.jeanbarrossilva.orca.core.mastodon.client.test.runUnauthenticatedTest
 import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
+import com.jeanbarrossilva.orca.core.sample.test.instance.sample
 import io.ktor.http.parametersOf
 import kotlin.test.Test
 import org.junit.Rule
 
 internal class CoreHttpClientTests {
-  @get:Rule val sampleInstanceRule = SampleInstanceTestRule()
+  @get:Rule val sampleInstanceRule = SampleInstanceTestRule(Instance.sample)
 
   @Test
   fun requestsAuthenticationOnAuthenticateAndGetWithAnUnauthenticatedActor() {

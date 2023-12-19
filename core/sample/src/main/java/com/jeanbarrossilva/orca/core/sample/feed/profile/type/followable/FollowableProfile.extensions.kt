@@ -23,8 +23,8 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileWriter
 import com.jeanbarrossilva.orca.core.sample.feed.profile.createSample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostProvider
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
-import com.jeanbarrossilva.orca.std.imageloader.Image
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 
 /**
  * Creates a sample [FollowableProfile].
@@ -35,13 +35,13 @@ import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
  *   provided.
  * @param follow Current [Follow] status.
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
- *   [Image]s will be loaded from a [SampleImageSource].
+ *   images will be loaded from a [SampleImageSource].
  */
 fun <T : Follow> FollowableProfile.Companion.createSample(
   writer: SampleProfileWriter,
   postProvider: SamplePostProvider,
   follow: T,
-  imageLoaderProvider: ImageLoader.Provider<SampleImageSource>
+  imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
 ): FollowableProfile<T> {
   val delegate = Profile.createSample(postProvider, imageLoaderProvider)
   return SampleFollowableProfile(

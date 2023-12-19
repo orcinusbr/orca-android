@@ -46,7 +46,7 @@ internal class SemanticsMatcherExtensionsTests {
       .apply {
         setContent {
           Image(
-            painterResource(com.jeanbarrossilva.orca.std.imageloader.compose.R.drawable.image),
+            painterResource(com.jeanbarrossilva.orca.std.image.compose.R.drawable.image),
             contentDescription = "Image"
           )
         }

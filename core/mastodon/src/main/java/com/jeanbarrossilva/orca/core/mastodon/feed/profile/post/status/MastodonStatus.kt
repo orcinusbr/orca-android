@@ -25,8 +25,8 @@ import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.`if`
 import com.jeanbarrossilva.orca.platform.ui.core.style.fromHtml
-import com.jeanbarrossilva.orca.std.imageloader.Image
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import java.net.URL
@@ -74,9 +74,9 @@ internal constructor(
    * Converts this [MastodonStatus] into a [Post].
    *
    * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
-   *   [Image]s will be loaded from a [URL].
+   *   images will be loaded from a [URL].
    */
-  internal fun toPost(imageLoaderProvider: ImageLoader.Provider<URL>): Post {
+  internal fun toPost(imageLoaderProvider: SomeImageLoaderProvider<URL>): Post {
     val author =
       reblog?.account?.toAuthor(imageLoaderProvider) ?: account.toAuthor(imageLoaderProvider)
     val domain = Injector.from<CoreModule>().instanceProvider().provide().domain

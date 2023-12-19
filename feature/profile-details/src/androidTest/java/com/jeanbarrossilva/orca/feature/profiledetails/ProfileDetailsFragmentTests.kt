@@ -23,12 +23,12 @@ import androidx.compose.ui.test.performClick
 import com.jeanbarrossilva.loadable.placeholder.test.isLoading
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.FollowableProfile
 import com.jeanbarrossilva.orca.core.instance.Instance
-import com.jeanbarrossilva.orca.core.sample.test.feed.profile.type.sample
 import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
-import com.jeanbarrossilva.orca.core.sample.test.instance.sample
 import com.jeanbarrossilva.orca.feature.profiledetails.test.TestProfileDetailsModule
 import com.jeanbarrossilva.orca.feature.profiledetails.test.isFollowingType
 import com.jeanbarrossilva.orca.feature.profiledetails.test.launchProfileDetailsActivity
+import com.jeanbarrossilva.orca.feature.profiledetails.test.sample
+import com.jeanbarrossilva.orca.platform.ui.core.sample
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.time.Time4JTestRule
 import com.jeanbarrossilva.orca.std.injector.test.InjectorTestRule
 import kotlin.time.Duration.Companion.seconds
@@ -41,7 +41,7 @@ internal class ProfileDetailsFragmentTests {
   private val injectorRule = InjectorTestRule {
     register<ProfileDetailsModule>(TestProfileDetailsModule)
   }
-  private val sampleInstanceRule = SampleInstanceTestRule()
+  private val sampleInstanceRule = SampleInstanceTestRule(Instance.sample)
   private val time4JRule = Time4JTestRule()
   private val composeRule = createEmptyComposeRule()
 

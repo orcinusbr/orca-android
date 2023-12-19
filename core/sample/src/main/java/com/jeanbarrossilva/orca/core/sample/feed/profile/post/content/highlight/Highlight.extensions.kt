@@ -18,7 +18,8 @@ package com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.highlight
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Headline
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Highlight
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import java.net.URL
 
 /**
@@ -28,7 +29,7 @@ import java.net.URL
  *   [Highlight]'s [headline][Highlight.headline]'s cover will be loaded from [SampleImageSource].
  */
 fun Highlight.Companion.createSample(
-  coverLoaderProvider: ImageLoader.Provider<SampleImageSource>
+  coverLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
 ): Highlight {
   return Highlight(Headline.createSample(coverLoaderProvider), URL("https://pixelpals.app"))
 }

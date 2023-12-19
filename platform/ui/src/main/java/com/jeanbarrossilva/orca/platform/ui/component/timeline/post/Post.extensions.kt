@@ -25,6 +25,7 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.Figur
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.Disposition
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.Thumbnail
 import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
+import com.jeanbarrossilva.orca.std.image.compose.SomeComposableImageLoader
 import java.net.URL
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -85,7 +86,7 @@ internal fun Post.toPostPreview(
 ): PostPreview {
   return PostPreview(
     id,
-    author.avatarLoader,
+    author.avatarLoader as SomeComposableImageLoader,
     author.name,
     author.account,
     if (this is Repost) reposter.name else null,

@@ -35,6 +35,7 @@ import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.LargeAvatar
+import com.jeanbarrossilva.orca.std.image.compose.SomeComposableImageLoader
 
 @Composable
 internal fun Header(modifier: Modifier = Modifier) {
@@ -59,7 +60,7 @@ internal fun Header(modifier: Modifier = Modifier) {
 @Composable
 internal fun Header(details: ProfileDetails, modifier: Modifier = Modifier) {
   Header(
-    avatar = { LargeAvatar(details.avatarLoader, details.name) },
+    avatar = { LargeAvatar(details.avatarLoader as SomeComposableImageLoader, details.name) },
     name = { Text(details.name) },
     account = { Text(details.formattedAccount) },
     bio = { Text(details.bio) },

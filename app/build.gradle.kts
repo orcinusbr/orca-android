@@ -88,7 +88,6 @@ dependencies {
   implementation(project(":feature:settings:term-muting"))
   implementation(project(":platform:autos"))
   implementation(project(":platform:ui"))
-  implementation(project(":std:image-loader:local"))
   implementation(project(":std:injector"))
   implementation(libs.android.appcompat)
   implementation(libs.android.constraintlayout)

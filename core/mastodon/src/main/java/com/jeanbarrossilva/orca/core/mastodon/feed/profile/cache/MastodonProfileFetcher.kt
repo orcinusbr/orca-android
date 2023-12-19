@@ -25,7 +25,8 @@ import com.jeanbarrossilva.orca.core.mastodon.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.platform.cache.Fetcher
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.client.call.body
 import java.net.URL
@@ -40,7 +41,7 @@ import java.net.URL
  *   provided.
  */
 internal class MastodonProfileFetcher(
-  private val avatarLoaderProvider: ImageLoader.Provider<URL>,
+  private val avatarLoaderProvider: SomeImageLoaderProvider<URL>,
   private val postPaginatorProvider: MastodonProfilePostPaginator.Provider
 ) : Fetcher<Profile>() {
   override suspend fun onFetch(key: String): Profile {

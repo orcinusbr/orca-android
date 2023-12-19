@@ -23,8 +23,8 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.createSample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostProvider
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.SampleTermMuter
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
-import com.jeanbarrossilva.orca.std.imageloader.Image
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
@@ -33,11 +33,11 @@ import kotlinx.coroutines.flow.map
  * [FeedProvider] that provides a feed for a sample [Profile].
  *
  * @param profileAvatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by
- *   which [Image]s can be loaded from a [SampleImageSource].
+ *   which images can be loaded from a [SampleImageSource].
  * @param postProvider [SamplePostProvider] by which [Post]s will be provided.
  */
 internal class SampleFeedProvider(
-  private val profileAvatarLoaderProvider: ImageLoader.Provider<SampleImageSource>,
+  private val profileAvatarLoaderProvider: SomeImageLoaderProvider<SampleImageSource>,
   private val postProvider: SamplePostProvider
 ) : FeedProvider() {
   override val termMuter = SampleTermMuter()

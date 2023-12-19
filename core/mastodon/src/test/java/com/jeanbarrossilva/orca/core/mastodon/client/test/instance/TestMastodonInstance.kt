@@ -20,10 +20,10 @@ import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.mastodon.client.CoreHttpClient
 import com.jeanbarrossilva.orca.core.mastodon.client.Logger
 import com.jeanbarrossilva.orca.core.mastodon.instance.MastodonInstance
-import com.jeanbarrossilva.orca.core.sample.test.instance.sample
 import com.jeanbarrossilva.orca.core.test.TestAuthenticationLock
 import com.jeanbarrossilva.orca.core.test.TestAuthenticator
 import com.jeanbarrossilva.orca.core.test.TestAuthorizer
+import com.jeanbarrossilva.orca.platform.ui.core.sample
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.engine.mock.MockEngine

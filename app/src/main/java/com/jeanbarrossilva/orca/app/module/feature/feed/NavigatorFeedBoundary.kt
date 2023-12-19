@@ -26,7 +26,6 @@ import com.jeanbarrossilva.orca.feature.postdetails.PostDetailsFragment
 import com.jeanbarrossilva.orca.feature.search.SearchFragment
 import com.jeanbarrossilva.orca.platform.ui.core.browseTo
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
-import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
 import java.net.URL
 
 internal class NavigatorFeedBoundary(
@@ -45,7 +44,7 @@ internal class NavigatorFeedBoundary(
     postID: String,
     entrypointIndex: Int,
     secondary: List<Attachment>,
-    entrypoint: @Composable (Modifier, Sizing) -> Unit
+    entrypoint: @Composable (Modifier) -> Unit
   ) {
     GalleryActivity.start(context, postID, entrypointIndex, secondary, entrypoint)
   }

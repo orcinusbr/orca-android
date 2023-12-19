@@ -16,12 +16,11 @@
 package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure
 
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.GalleryPreview
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.test.testSample
 import kotlin.test.Test
 
 internal class GalleryTests {
   @Test(expected = IllegalArgumentException::class)
   fun throwsWhenNoAttachmentsAreProvided() {
-    Figure.Gallery(GalleryPreview.testSample.copy(attachments = emptyList()))
+    Figure.Gallery(GalleryPreview.sample.copy(attachments = emptyList()))
   }
 }

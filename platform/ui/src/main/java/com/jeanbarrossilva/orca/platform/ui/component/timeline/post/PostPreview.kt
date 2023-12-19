@@ -15,7 +15,6 @@
 
 package com.jeanbarrossilva.orca.platform.ui.component.timeline.post
 
-import android.content.Context
 import androidx.compose.foundation.interaction.HoverInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -41,7 +40,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsProperties
@@ -57,7 +55,6 @@ import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.post.Author
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.stat.Stat
-import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSamples
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
@@ -67,14 +64,16 @@ import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.SmallAvatar
-import com.jeanbarrossilva.orca.platform.ui.component.avatar.createSample
 import com.jeanbarrossilva.orca.platform.ui.component.stat.Stats
 import com.jeanbarrossilva.orca.platform.ui.component.stat.StatsDetails
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.Figure
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.time.RelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.time.rememberRelativeTimeProvider
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
-import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
+import com.jeanbarrossilva.orca.platform.ui.core.image.sample
+import com.jeanbarrossilva.orca.platform.ui.core.sample
+import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
+import com.jeanbarrossilva.orca.std.image.compose.SomeComposableImageLoader
 import java.io.Serializable
 import java.net.URL
 import java.time.ZonedDateTime
@@ -121,7 +120,7 @@ private val bodyModifier = Modifier.testTag(POST_PREVIEW_BODY_TAG)
 data class PostPreview
 internal constructor(
   val id: String,
-  val avatarLoader: SomeImageLoader,
+  val avatarLoader: SomeComposableImageLoader,
   val name: String,
   private val account: Account,
   val rebloggerName: String?,
@@ -145,22 +144,21 @@ internal constructor(
   companion object {
     /** [PostPreview] sample. */
     val sample
-      @Composable get() = getSample(LocalContext.current, AutosTheme.colors)
+      @Composable get() = getSample(AutosTheme.colors)
 
     /** [PostPreview] samples. */
     val samples
       @Composable
-      get() = Post.createSamples(ImageLoader.Provider.createSample()).map { it.toPostPreview() }
+      get() = Post.createSamples(ComposableImageLoader.Provider.sample).map { it.toPostPreview() }
 
     /**
      * Gets a sample [PostPreview].
      *
-     * @param context [Context] through which a sample [ImageLoader.Provider] will be created.
      * @param colors [Colors] by which the resulting [PostPreview]'s [text][PostPreview.text] can be
      *   colored.
      */
-    fun getSample(context: Context, colors: Colors): PostPreview {
-      return Post.createSample(ImageLoader.Provider.createSample(context)).toPostPreview(colors)
+    fun getSample(colors: Colors): PostPreview {
+      return Post.sample.toPostPreview(colors)
     }
   }
 }

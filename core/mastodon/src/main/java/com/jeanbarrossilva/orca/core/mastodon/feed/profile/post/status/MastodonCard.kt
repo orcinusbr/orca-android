@@ -16,7 +16,8 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.status
 
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Headline
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import java.net.URL
 import kotlinx.serialization.Serializable
 
@@ -40,9 +41,9 @@ internal data class MastodonCard(
    *
    * @param coverLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
    *   cover will be loaded from a [URL].
-   * @return Resulting [Headline] or `null` if the [image] is unavailable.
+   * @return Resulting [Headline] or `null` if the image is unavailable.
    */
-  fun toHeadline(coverLoaderProvider: ImageLoader.Provider<URL>): Headline? {
+  fun toHeadline(coverLoaderProvider: SomeImageLoaderProvider<URL>): Headline? {
     return image?.let {
       Headline(
         title,

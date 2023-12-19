@@ -31,10 +31,12 @@ import androidx.compose.ui.test.onSiblings
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import com.jeanbarrossilva.loadable.list.ListLoadable
+import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.refresh.Refresh
+import com.jeanbarrossilva.orca.platform.ui.core.sample
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onRefreshIndicator
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.performScrollToBottom
@@ -44,7 +46,7 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class TimelineTests {
-  @get:Rule val sampleInstanceRule = SampleInstanceTestRule()
+  @get:Rule val sampleInstanceRule = SampleInstanceTestRule(Instance.sample)
 
   @get:Rule val time4JRule = Time4JTestRule()
 

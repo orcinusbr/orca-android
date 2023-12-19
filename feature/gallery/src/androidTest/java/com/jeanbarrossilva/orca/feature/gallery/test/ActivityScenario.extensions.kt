@@ -17,6 +17,8 @@ package com.jeanbarrossilva.orca.feature.gallery.test
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
@@ -24,14 +26,13 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
+import com.jeanbarrossilva.orca.core.sample.image.CoverImageSource
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.sample
 import com.jeanbarrossilva.orca.feature.gallery.GalleryActivity
 import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
-import com.jeanbarrossilva.orca.std.imageloader.compose.Image
-import com.jeanbarrossilva.orca.std.imageloader.compose.R
-import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
-import com.jeanbarrossilva.orca.std.imageloader.compose.rememberImageLoader
+import com.jeanbarrossilva.orca.platform.ui.core.image.createSample
+import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
 
 /**
  * Launches a [GalleryActivity].
@@ -45,16 +46,15 @@ internal fun launchGalleryActivity(
   postID: String = Post.sample.id,
   entrypointIndex: Int = 0,
   secondary: List<Attachment> = Attachment.samples,
-  entrypoint: @Composable (Modifier, Sizing) -> Unit = { modifier, sizing ->
-    Image(
-      rememberImageLoader(R.drawable.image),
-      contentDescription =
-        stringResource(
-          com.jeanbarrossilva.orca.feature.gallery.R.string.feature_gallery_attachment,
-          1.formatted
-        ),
-      modifier,
-      sizing
+  entrypoint: @Composable (Modifier) -> Unit = {
+    ComposableImageLoader.createSample(CoverImageSource.Default).load()(
+      stringResource(
+        com.jeanbarrossilva.orca.feature.gallery.R.string.feature_gallery_attachment,
+        1.formatted
+      ),
+      RectangleShape,
+      ContentScale.FillWidth,
+      it
     )
   }
 ): ActivityScenario<GalleryActivity> {

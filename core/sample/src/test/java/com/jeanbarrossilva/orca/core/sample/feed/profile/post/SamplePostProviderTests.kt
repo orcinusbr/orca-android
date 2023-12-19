@@ -27,7 +27,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 
 internal class SamplePostProviderTests {
-  @get:Rule val instanceRule = SampleInstanceTestRule()
+  @get:Rule val instanceRule = SampleInstanceTestRule(Instance.sample)
 
   @Test
   fun `GIVEN all post samples WHEN getting them by their IDs THEN they're returned`() {

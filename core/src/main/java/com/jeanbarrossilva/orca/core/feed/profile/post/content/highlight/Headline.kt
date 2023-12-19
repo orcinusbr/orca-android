@@ -15,8 +15,8 @@
 
 package com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight
 
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
-import com.jeanbarrossilva.orca.std.imageloader.SomeImageLoader
+import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoader
 
 /**
  * Main information of a [Highlight].

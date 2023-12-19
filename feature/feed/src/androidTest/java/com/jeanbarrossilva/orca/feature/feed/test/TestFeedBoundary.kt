@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.feature.feed.FeedBoundary
-import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
 import java.net.URL
 
 internal class TestFeedBoundary : FeedBoundary {
@@ -31,7 +30,7 @@ internal class TestFeedBoundary : FeedBoundary {
     postID: String,
     entrypointIndex: Int,
     secondary: List<Attachment>,
-    entrypoint: @Composable (Modifier, Sizing) -> Unit
+    entrypoint: @Composable (Modifier) -> Unit
   ) {}
 
   override fun navigateToPostDetails(id: String) {}

@@ -31,7 +31,6 @@ import com.jeanbarrossilva.orca.platform.ui.core.Intent
 import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableActivity
 import com.jeanbarrossilva.orca.platform.ui.core.extra
 import com.jeanbarrossilva.orca.platform.ui.core.on
-import com.jeanbarrossilva.orca.std.imageloader.compose.Sizing
 import com.jeanbarrossilva.orca.std.injector.Injector
 
 class GalleryActivity internal constructor() : ComposableActivity() {
@@ -41,7 +40,7 @@ class GalleryActivity internal constructor() : ComposableActivity() {
   private val secondary by extra<List<Attachment>>(SECONDARY_KEY)
 
   @set:JvmName("_setEntrypoint")
-  private var entrypoint by mutableStateOf<(@Composable (Modifier, Sizing) -> Unit)?>(null)
+  private var entrypoint by mutableStateOf<(@Composable (Modifier) -> Unit)?>(null)
 
   private val viewModel by
     viewModels<GalleryViewModel> {
@@ -50,17 +49,17 @@ class GalleryActivity internal constructor() : ComposableActivity() {
 
   @Composable
   override fun Content() {
-    Gallery(viewModel, module.boundary(), entrypointIndex, secondary) { modifier, sizing ->
+    Gallery(viewModel, module.boundary(), entrypointIndex, secondary) {
       DisposableEffect(entrypoint) {
         Log.d("GalleryFragment", "entrypoint: $entrypoint")
         onDispose {}
       }
 
-      entrypoint?.invoke(modifier, sizing)
+      entrypoint?.invoke(it)
     }
   }
 
-  fun setEntrypoint(entrypoint: @Composable (Modifier, Sizing) -> Unit) {
+  fun setEntrypoint(entrypoint: @Composable (Modifier) -> Unit) {
     this.entrypoint = entrypoint
   }
 
@@ -88,7 +87,7 @@ class GalleryActivity internal constructor() : ComposableActivity() {
       postID: String,
       entrypointIndex: Int,
       secondary: List<Attachment>,
-      entrypoint: @Composable (Modifier, Sizing) -> Unit
+      entrypoint: @Composable (Modifier) -> Unit
     ) {
       context
         .on<GalleryActivity>()

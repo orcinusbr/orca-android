@@ -28,7 +28,8 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfilePostPa
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.style.MastodonStyleEntity
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.type.editable.MastodonEditableProfile
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.type.followable.MastodonFollowableProfile
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import com.jeanbarrossilva.orca.std.styledstring.style.Style
 import java.net.URL
@@ -81,7 +82,7 @@ internal constructor(
    */
   @Throws(IllegalStateException::class)
   internal suspend fun toProfile(
-    avatarLoaderProvider: ImageLoader.Provider<URL>,
+    avatarLoaderProvider: SomeImageLoaderProvider<URL>,
     dao: MastodonProfileEntityDao,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): Profile {
@@ -105,7 +106,7 @@ internal constructor(
    *   [MastodonEditableProfile]'s [Post]s will be provided.
    */
   private suspend fun toMastodonEditableProfile(
-    avatarLoaderProvider: ImageLoader.Provider<URL>,
+    avatarLoaderProvider: SomeImageLoaderProvider<URL>,
     dao: MastodonProfileEntityDao,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): MastodonEditableProfile {
@@ -139,7 +140,7 @@ internal constructor(
    *   [MastodonFollowableProfile]'s [Post]s will be provided.
    */
   private suspend fun toMastodonFollowableProfile(
-    avatarLoaderProvider: ImageLoader.Provider<URL>,
+    avatarLoaderProvider: SomeImageLoaderProvider<URL>,
     dao: MastodonProfileEntityDao,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): MastodonFollowableProfile<Follow> {

@@ -41,8 +41,8 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.MastodonProfil
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.MastodonProfileSearchResultsFetcher
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.storage.MastodonProfileSearchResultsStorage
 import com.jeanbarrossilva.orca.platform.cache.Cache
-import com.jeanbarrossilva.orca.std.imageloader.Image
-import com.jeanbarrossilva.orca.std.imageloader.ImageLoader
+import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import java.net.URL
 
 /**
@@ -55,8 +55,8 @@ import java.net.URL
  * @param actorProvider [ActorProvider] that will provide [Actor]s to the [authenticator], the
  *   [authenticationLock] and the [feedProvider].
  * @param termMuter [TermMuter] by which [Post]s with muted terms will be filtered out.
- * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
- *   [Image]s will be loaded.
+ * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
+ *   will be loaded.
  */
 class ContextualMastodonInstance(
   context: Context,
@@ -66,7 +66,7 @@ class ContextualMastodonInstance(
   actorProvider: ActorProvider,
   override val authenticationLock: AuthenticationLock<MastodonAuthenticator>,
   termMuter: TermMuter,
-  imageLoaderProvider: ImageLoader.Provider<URL>
+  imageLoaderProvider: SomeImageLoaderProvider<URL>
 ) : MastodonInstance<MastodonAuthorizer, MastodonAuthenticator>(domain, authorizer) {
   /** [MastodonDatabase] in which cached structures will be persisted. */
   private val database = MastodonDatabase.getInstance(context)
