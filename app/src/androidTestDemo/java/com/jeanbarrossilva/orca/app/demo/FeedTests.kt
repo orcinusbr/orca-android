@@ -22,16 +22,12 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.rule.IntentsRule
-import com.jeanbarrossilva.orca.app.demo.test.browsesTo
 import com.jeanbarrossilva.orca.app.demo.test.performScrollToPostPreviewWithGalleryPreview
 import com.jeanbarrossilva.orca.app.demo.test.performScrollToPostPreviewWithLinkCard
-import com.jeanbarrossilva.orca.app.demo.test.respondWithOK
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Highlight
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.content.highlight.sample
+import com.jeanbarrossilva.orca.ext.intents.intendBrowsingTo
+import com.jeanbarrossilva.orca.ext.intents.intendStartingOf
 import com.jeanbarrossilva.orca.feature.composer.ComposerActivity
 import com.jeanbarrossilva.orca.feature.feed.FEED_FLOATING_ACTION_BUTTON_TAG
 import com.jeanbarrossilva.orca.feature.gallery.GalleryActivity
@@ -42,13 +38,9 @@ import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.figure.
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.refresh.assertIsNotInProgress
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.RuleChain
 
 internal class FeedTests {
-  private val intentsRule = IntentsRule()
-  private val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
-
-  @get:Rule val ruleChain: RuleChain? = RuleChain.outerRule(intentsRule).around(composeRule)
+  @get:Rule val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
 
   @Test
   fun refreshes() {
@@ -58,28 +50,27 @@ internal class FeedTests {
 
   @Test
   fun navigatesToPostLink() {
-    val matcher = browsesTo("${Highlight.sample.url}")
-    intending(matcher).respondWithOK()
-    composeRule.performScrollToPostPreviewWithLinkCard()
-    composeRule.onLinkCards().onFirst().performClick()
-    intended(matcher)
+    intendBrowsingTo("${Highlight.sample.url}") {
+      composeRule.performScrollToPostPreviewWithLinkCard()
+      composeRule.onLinkCards().onFirst().performClick()
+    }
   }
 
   @Test
   fun navigatesToGalleryOnThumbnailClick() {
-    val matcher = hasComponent(GalleryActivity::class.qualifiedName)
-    intending(matcher).respondWithOK()
-    with(composeRule) {
-      onTimeline().performScrollToPostPreviewWithGalleryPreview {
-        onThumbnails().onFirst().performClick()
+    intendStartingOf<GalleryActivity> {
+      with(composeRule) {
+        onTimeline().performScrollToPostPreviewWithGalleryPreview {
+          onThumbnails().onFirst().performClick()
+        }
       }
     }
-    intended(matcher)
   }
 
   @Test
   fun navigatesToComposerOnFabClick() {
-    composeRule.onNodeWithTag(FEED_FLOATING_ACTION_BUTTON_TAG).performClick()
-    intended(hasComponent(ComposerActivity::class.qualifiedName))
+    intendStartingOf<ComposerActivity> {
+      composeRule.onNodeWithTag(FEED_FLOATING_ACTION_BUTTON_TAG).performClick()
+    }
   }
 }

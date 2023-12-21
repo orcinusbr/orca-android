@@ -16,20 +16,13 @@
 package com.jeanbarrossilva.orca.app
 
 import androidx.test.core.app.launchActivity
-import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
-import androidx.test.espresso.intent.rule.IntentsRule
 import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.MastodonAuthorizationActivity
-import org.junit.Rule
+import com.jeanbarrossilva.orca.ext.intents.intendStartingOf
 import org.junit.Test
 
 internal class OrcaActivityTests {
-  @get:Rule val intentsRule = IntentsRule()
-
   @Test
   fun navigatesToAuthorization() {
-    launchActivity<OrcaActivity>().use {
-      intended(hasComponent(MastodonAuthorizationActivity::class.qualifiedName))
-    }
+    intendStartingOf<MastodonAuthorizationActivity> { launchActivity<OrcaActivity>().close() }
   }
 }

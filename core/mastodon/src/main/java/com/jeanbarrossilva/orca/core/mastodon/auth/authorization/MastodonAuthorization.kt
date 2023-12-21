@@ -18,40 +18,45 @@ package com.jeanbarrossilva.orca.core.mastodon.auth.authorization
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
 import com.jeanbarrossilva.orca.core.mastodon.R
-import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.selectable.list.SelectableList
-import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.selectable.list.selectFirst
 import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.viewmodel.MastodonAuthorizationViewModel
-import com.jeanbarrossilva.orca.core.sample.instance.domain.samples
+import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.PrimaryButton
-import com.jeanbarrossilva.orca.platform.autos.kit.input.option.list.Options
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TextField
+import com.jeanbarrossilva.orca.platform.autos.kit.input.text.error.containsErrorsAsState
+import com.jeanbarrossilva.orca.platform.autos.kit.input.text.error.rememberErrorDispatcher
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.button.ButtonBar
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
@@ -59,154 +64,135 @@ import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.AutoSiz
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.plus
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
+import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 
 /**
- * Screen that presents username and instance fields for the user to fill in order for them to be
- * authenticated.
+ * Screen that asks for the [Domain] to which the user belongs.
  *
- * @param viewModel [MastodonAuthorizationViewModel] by which the [Domain]s will be loaded and to
- *   which updates to the search query and the selection will be sent.
+ * @param viewModel [MastodonAuthorizationViewModel] to which updates to the inserted [Domain] will
+ *   be sent.
+ * @param onHelp Action to be performed when the concept of an instance is requested to be
+ *   explained.
  * @param modifier [Modifier] to be applied to the underlying [Box].
  */
 @Composable
 internal fun MastodonAuthorization(
   viewModel: MastodonAuthorizationViewModel,
+  onHelp: () -> Unit,
   modifier: Modifier = Modifier
 ) {
-  val searchQuery by viewModel.searchQueryFlow.collectAsState()
-  val instanceDomainSelectablesLoadable by
-    viewModel.instanceDomainSelectablesLoadableFlow.collectAsState()
+  val domain by viewModel.domainFlow.collectAsState()
 
-  when (
-    @Suppress("NAME_SHADOWING")
-    val instanceDomainSelectablesLoadable = instanceDomainSelectablesLoadable
-  ) {
-    is Loadable.Loading -> MastodonAuthorization(modifier)
-    is Loadable.Loaded ->
-      MastodonAuthorization(
-        searchQuery,
-        onSearch = viewModel::search,
-        instanceDomainSelectablesLoadable.content,
-        onSelection = viewModel::select,
-        onSignIn = viewModel::authorize
-      )
-    is Loadable.Failed -> Unit
-  }
-}
-
-/**
- * Screen that presents loading [Domain]s.
- *
- * @param modifier [Modifier] to be applied to the underlying [Box].
- */
-@Composable
-internal fun MastodonAuthorization(modifier: Modifier = Modifier) {
   MastodonAuthorization(
-    searchField = {},
-    instanceDomains = { Options() },
-    onSignIn = {},
-    isSignInButtonEnabled = false,
+    domain,
+    onDomainChange = viewModel::setDomain,
+    onHelp,
+    onSignIn = viewModel::authorize,
     modifier
   )
 }
 
 /**
- * Screen that presents the [Domain]s that can be selected by the user for them to authenticate.
+ * Screen that asks for the [Domain] to which the user belongs.
  *
- * @param searchQuery Query with which the [Domain]s will be filtered.
- * @param onSearch Callback run whenever the user inputs to the search [TextField].
- * @param instanceDomains [Domain]s to be shown to the user.
- * @param onSelection Callback run whenever a [Domain] is selected.
+ * @param domain [String] version of the [Domain].
+ * @param onDomainChange Callback run whenever the user inputs to the domain [TextField].
  * @param onSignIn Callback run whenever the sign-in [PrimaryButton] is clicked.
+ * @param onHelp Action to be performed when the concept of an instance is requested to be
+ *   explained.
  * @param modifier [Modifier] to be applied to the underlying [Box].
  */
 @Composable
 internal fun MastodonAuthorization(
-  searchQuery: String,
-  onSearch: (query: String) -> Unit,
-  instanceDomains: SelectableList<Domain>,
-  onSelection: (Domain) -> Unit,
+  domain: String,
+  onDomainChange: (domain: String) -> Unit,
+  onHelp: () -> Unit,
   onSignIn: () -> Unit,
   modifier: Modifier = Modifier
 ) {
-  MastodonAuthorization(
-    searchField = {
-      TextField(
-        searchQuery,
-        onSearch,
-        Modifier.fillMaxWidth(),
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-        isSingleLined = true
-      ) {
-        Text(stringResource(R.string.core_http_authorization_search))
-      }
-    },
-    instanceDomains = {
-      Options(onSelection = { onSelection(instanceDomains[it].value) }) {
-        instanceDomains.forEach { option { Text("${it.value}") } }
-      }
-    },
-    onSignIn,
-    isSignInButtonEnabled = true,
-    modifier
-  )
-}
-
-@Composable
-internal fun MastodonAuthorization(
-  searchField: @Composable LazyItemScope.() -> Unit,
-  instanceDomains: @Composable LazyItemScope.() -> Unit,
-  onSignIn: () -> Unit,
-  isSignInButtonEnabled: Boolean,
-  modifier: Modifier = Modifier
-) {
-  val lazyListState = rememberLazyListState()
+  val context = LocalContext.current
+  val spacing = AutosTheme.spacings.extraLarge.dp
 
   @OptIn(ExperimentalMaterial3Api::class)
   val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
+  val lazyListState = rememberLazyListState()
   val isHeaderHidden by
     remember(lazyListState) { derivedStateOf { lazyListState.firstVisibleItemIndex > 0 } }
   val headerTitle = stringResource(R.string.core_http_authorization_account_origin)
-  val spacing = AutosTheme.spacings.extraLarge.dp
+  val focusRequester = remember(::FocusRequester)
+  val errorDispatcher = rememberErrorDispatcher {
+    error(context, R.string.core_http_authorization_empty_domain, String::isBlank)
+    error(context, R.string.core_http_authorization_invalid_domain) {
+      it.isNotBlank() && !Domain.isValid(it)
+    }
+  }
+  val containsErrors by errorDispatcher.containsErrorsAsState
+  val onDone by rememberUpdatedState {
+    errorDispatcher.dispatch()
+    if (!containsErrors) {
+      onSignIn()
+    }
+  }
+
+  LaunchedEffect(Unit) { focusRequester.requestFocusWithDelay() }
 
   Box(modifier) {
     Scaffold(
       buttonBar = {
-        ButtonBar(lazyListState) {
-          PrimaryButton(onClick = onSignIn, isEnabled = isSignInButtonEnabled) {
-            Text(stringResource(R.string.core_http_authorization_sign_in))
+        Column(verticalArrangement = Arrangement.spacedBy(spacing)) {
+          Column(
+            Modifier.padding(start = spacing, end = spacing),
+            Arrangement.spacedBy(AutosTheme.spacings.medium.dp)
+          ) {
+            TextField(
+              domain,
+              onDomainChange,
+              Modifier.focusRequester(focusRequester).fillMaxWidth(),
+              errorDispatcher,
+              KeyboardOptions(imeAction = ImeAction.Go),
+              KeyboardActions(onGo = { onDone() }),
+              isSingleLined = true
+            ) {
+              Text(stringResource(R.string.core_http_authorization_domain))
+            }
+
+            Text(
+              stringResource(R.string.core_http_authorization_help),
+              Modifier.clickable(
+                remember(::MutableInteractionSource),
+                indication = null,
+                onClick = onHelp
+              ),
+              color = AutosTheme.colors.link.asColor,
+              style = AutosTheme.typography.labelMedium
+            )
+          }
+
+          ButtonBar(lazyListState) {
+            PrimaryButton(onClick = onDone, isEnabled = !containsErrors) {
+              Text(stringResource(R.string.core_http_authorization_sign_in))
+            }
           }
         }
       }
     ) {
       LazyColumn(
         state = lazyListState,
-        verticalArrangement = Arrangement.spacedBy(spacing),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = it + PaddingValues(spacing)
+        contentPadding = it + PaddingValues(spacing),
+        verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.small.dp)
       ) {
         item {
-          Column(
-            verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.small.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-          ) {
-            Text(
-              stringResource(R.string.core_http_authorization_welcome),
-              textAlign = TextAlign.Center,
-              style = AutosTheme.typography.headlineLarge
-            )
-
-            Text(
-              headerTitle,
-              textAlign = TextAlign.Center,
-              style = AutosTheme.typography.titleSmall
-            )
-          }
+          Text(
+            stringResource(R.string.core_http_authorization_welcome),
+            textAlign = TextAlign.Center,
+            style = AutosTheme.typography.headlineLarge
+          )
         }
 
-        item(content = searchField)
-        item(content = instanceDomains)
+        item {
+          Text(headerTitle, textAlign = TextAlign.Center, style = AutosTheme.typography.titleSmall)
+        }
       }
     }
 
@@ -225,24 +211,9 @@ internal fun MastodonAuthorization(
   }
 }
 
-/** Preview of a loading [MastodonAuthorization] screen. */
+/** Preview of [MastodonAuthorization]. */
 @Composable
 @MultiThemePreview
-private fun LoadingMastodonAuthorizationPreview() {
-  AutosTheme { MastodonAuthorization() }
-}
-
-/** Preview of a loaded [MastodonAuthorization] screen. */
-@Composable
-@MultiThemePreview
-private fun LoadedMastodonAuthorizationPreview() {
-  AutosTheme {
-    MastodonAuthorization(
-      searchQuery = "",
-      onSearch = {},
-      instanceDomains = Domain.samples.selectFirst(),
-      onSelection = {},
-      onSignIn = {}
-    )
-  }
+private fun MastodonAuthorizationPreview() {
+  AutosTheme { MastodonAuthorization(domain = "", onDomainChange = {}, onHelp = {}, onSignIn = {}) }
 }

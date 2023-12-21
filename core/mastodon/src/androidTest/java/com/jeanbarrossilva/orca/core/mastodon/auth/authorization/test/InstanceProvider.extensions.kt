@@ -13,16 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.core.mastodon.auth.authorization.selectable
+package com.jeanbarrossilva.orca.core.mastodon.auth.authorization.test
 
-import androidx.annotation.Discouraged
+import com.jeanbarrossilva.orca.core.instance.InstanceProvider
+import com.jeanbarrossilva.orca.core.sample.instance.createSample
+import com.jeanbarrossilva.orca.platform.ui.core.image.sample
+import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
 
-/**
- * Holds a [value] that can be selected.
- *
- * @param value Value that's selected or unselected, according to [isSelected].
- * @param isSelected Whether [value] is considered to be selected.
- */
-internal data class Selectable<T>
-@Discouraged("Use the `select` or `unselect` extension functions instead.")
-constructor(val value: T, val isSelected: Boolean)
+/** [InstanceProvider] returned by [sample]. */
+private val sampleInstanceProvider =
+  InstanceProvider.createSample(ComposableImageLoader.Provider.sample)
+
+/** Sample [InstanceProvider] whose images are loaded by a [ComposableImageLoader]. */
+internal val InstanceProvider.Companion.sample
+  get() = sampleInstanceProvider

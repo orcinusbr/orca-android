@@ -13,22 +13,21 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.core.mastodon.auth.authorization.selectable.list
+package com.jeanbarrossilva.orca.ext.intents
 
-import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.selectable.Selectable
-
-/** Creates an empty [SelectableList]. */
-internal inline fun <reified T> emptySelectableList(): SelectableList<T> {
-  return selectableListOf()
-}
+import android.content.Intent
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
+import java.net.URI
+import org.hamcrest.CoreMatchers.both
+import org.hamcrest.Matcher
 
 /**
- * Creates a [SelectableList] with the given [elements].
+ * Creates a [Matcher] that matches an [Intent] that browses to the given [uri].
  *
- * @param elements [Selectable]s to be put in the [SelectableList].
+ * @param uri [String] form of the [URI] to which the [Intent] browses.
  */
-internal fun <T> selectableListOf(vararg elements: Selectable<T>): SelectableList<T> {
-  val list = listOf(*elements)
-
-  @Suppress("DiscouragedApi") return SelectableList(list)
+@PublishedApi
+internal fun browsesTo(uri: String): Matcher<Intent> {
+  return both(hasAction(Intent.ACTION_VIEW)).and(hasData(uri))
 }
