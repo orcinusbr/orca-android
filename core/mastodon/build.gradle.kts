@@ -33,7 +33,7 @@ android {
 
   secrets {
     defaultPropertiesFileName = "public.properties"
-    ignoreList += "^(?!(mastodon\\.clientSecret)|(instancesSocial\\.token)).*$"
+    ignoreList += "^(?!mastodon\\.clientSecret).*$"
   }
 
   packagingOptions.resources.excludes +=
