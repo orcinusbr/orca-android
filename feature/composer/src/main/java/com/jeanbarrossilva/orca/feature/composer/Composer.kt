@@ -181,7 +181,7 @@ private fun Composer(
                   style = style.copy(color = AutosTheme.colors.tertiary.asColor)
                 )
               },
-              colors = _TextFieldDefaults.colors(enabledContainerColor = Color.Transparent),
+              colors = _TextFieldDefaults.colors(containerColor = Color.Transparent),
               contentPadding = PaddingValues(0.dp)
             )
           }

@@ -17,12 +17,12 @@ package com.jeanbarrossilva.orca.platform.autos.kit.input.text
 
 import androidx.annotation.RestrictTo
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
@@ -33,13 +33,8 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
@@ -66,17 +61,15 @@ object TextFieldDefaults {
   /**
    * [TextFieldColors] by which a [TextField][_TextField] is colored by default.
    *
-   * @param enabledContainerColor [Color] to color the container with when the
-   *   [TextField][_TextField] is enabled.
+   * @param containerColor [Color] to color the container with.
    */
   @Composable
-  fun colors(
-    enabledContainerColor: Color = AutosTheme.colors.surface.container.asColor
-  ): TextFieldColors {
+  fun colors(containerColor: Color = AutosTheme.colors.surface.container.asColor): TextFieldColors {
     return TextFieldDefaults.colors(
-      focusedContainerColor = enabledContainerColor,
-      unfocusedContainerColor = enabledContainerColor,
-      cursorColor = contentColorFor(enabledContainerColor),
+      focusedContainerColor = containerColor,
+      unfocusedContainerColor = containerColor,
+      errorContainerColor = containerColor,
+      cursorColor = contentColorFor(containerColor),
       focusedIndicatorColor = Color.Transparent,
       unfocusedIndicatorColor = Color.Transparent,
       disabledIndicatorColor = Color.Transparent,
@@ -91,7 +84,7 @@ object TextFieldDefaults {
  * @param text Text to be shown.
  * @param onTextChange Callback called whenever the text changes.
  * @param modifier [Modifier] to be applied to the underlying [TextField].
- * @param errorDispatcher [ErrorDispatcher] to which invalid input state errors will be dispatched.
+ * @param errorDispatcher [ErrorDispatcher] by which invalid input state errors will be dispatched.
  * @param keyboardOptions Software-IME-specific options.
  * @param keyboardActions Software-IME-specific actions.
  * @param isSingleLined Whether there can be multiple lines.
@@ -107,71 +100,7 @@ fun TextField(
   isSingleLined: Boolean = false,
   label: @Composable () -> Unit
 ) {
-  var isFocused by remember { mutableStateOf(false) }
-
-  _TextField(
-    text,
-    onTextChange,
-    isFocused,
-    modifier.onFocusChanged { isFocused = it.isFocused },
-    errorDispatcher,
-    keyboardOptions,
-    keyboardActions,
-    isSingleLined,
-    label
-  )
-}
-
-/**
- * Orca-specific [TextField].
- *
- * @param modifier [Modifier] to be applied to the underlying [TextField].
- * @param text Text to be shown.
- * @param isFocused Whether it's focused.
- * @param errorDispatcher [ErrorDispatcher] to which invalid input state errors will be dispatched.
- */
-@Composable
-internal fun TextField(
-  modifier: Modifier = Modifier,
-  text: String = "Text",
-  isFocused: Boolean = false,
-  errorDispatcher: ErrorDispatcher = rememberErrorDispatcher()
-) {
-  _TextField(text, onTextChange = {}, isFocused, modifier, errorDispatcher) { Text("Label") }
-}
-
-/**
- * Orca-specific [TextField].
- *
- * @param text Text to be shown.
- * @param onTextChange Callback called whenever the text changes.
- * @param isFocused Whether it's focused.
- * @param modifier [Modifier] to be applied to the underlying [TextField].
- * @param errorDispatcher [ErrorDispatcher] by which invalid input state errors will be dispatched.
- * @param keyboardOptions Software-IME-specific options.
- * @param keyboardActions Software-IME-specific actions.
- * @param isSingleLined Whether there can be multiple lines.
- */
-@Composable
-private fun TextField(
-  text: String,
-  onTextChange: (text: String) -> Unit,
-  isFocused: Boolean,
-  modifier: Modifier = Modifier,
-  errorDispatcher: ErrorDispatcher = rememberErrorDispatcher(),
-  keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-  keyboardActions: KeyboardActions = KeyboardActions.Default,
-  isSingleLined: Boolean = false,
-  label: @Composable () -> Unit
-) {
   val context = LocalContext.current
-  val highlightColor = AutosTheme.colors.secondary.asColor
-  val borderColor by
-    animateColorAsState(
-      if (isFocused) highlightColor
-      else (AutosTheme.borders.default.asBorderStroke.brush as SolidColor).value,
-      label = "BorderColor"
-    )
   val shape = AutosTheme.forms.large.asShape
   val errorMessages =
     errorDispatcher.messages.joinToString("\n") {
@@ -188,15 +117,20 @@ private fun TextField(
     TextField(
       text,
       onTextChange,
-      modifier.border(AutosTheme.borders.default.asBorderStroke.width, borderColor, shape),
+      modifier.border(
+        AutosTheme.borders.default.asBorderStroke.width,
+        AutosTheme.borders.default.asBorderStroke.brush,
+        shape
+      ),
       label = {
-        val color by
-          animateColorAsState(
-            if (isFocused) highlightColor else LocalTextStyle.current.color,
-            label = "LabelColor"
-          )
-
-        ProvideTextStyle(LocalTextStyle.current.copy(color = color)) { label() }
+        val color =
+          if (containsErrors) {
+            AutosTheme.colors.error.container.asColor
+          } else {
+            LocalContentColor.current
+          }
+        val style = LocalTextStyle.current.copy(color = color)
+        ProvideTextStyle(style) { label() }
       },
       isError = containsErrors,
       keyboardOptions = keyboardOptions,
@@ -216,25 +150,27 @@ private fun TextField(
   }
 }
 
-/** Preview of an empty [TextField][_TextField]. */
+/**
+ * Orca-specific [TextField].
+ *
+ * @param modifier [Modifier] to be applied to the underlying [TextField].
+ * @param text Text to be shown.
+ * @param errorDispatcher [ErrorDispatcher] to which invalid input state errors will be dispatched.
+ */
 @Composable
-@MultiThemePreview
-private fun EmptyTextFieldPreview() {
-  AutosTheme { _TextField(text = "") }
-}
-
-/** Preview of an unfocused [TextField][_TextField]. */
-@Composable
-@MultiThemePreview
-private fun UnfocusedTextFieldPreview() {
-  AutosTheme { _TextField(isFocused = false) }
+internal fun TextField(
+  modifier: Modifier = Modifier,
+  text: String = "Text",
+  errorDispatcher: ErrorDispatcher = rememberErrorDispatcher()
+) {
+  _TextField(text, onTextChange = {}, modifier, errorDispatcher) { Text("Label") }
 }
 
 /** Preview of a focused [TextField][_TextField]. */
 @Composable
 @MultiThemePreview
-private fun FocusedTextFieldPreview() {
-  AutosTheme { _TextField(isFocused = true) }
+private fun ValidTextFieldPreview() {
+  AutosTheme { _TextField() }
 }
 
 /** Preview of a [TextField] with errors. */
