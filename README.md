@@ -50,11 +50,6 @@ github.token=your-token
 mastodon.clientSecret=your-token
 ```
 
-- [instances.social](https://instances.social/api/doc):
-```properties
-instancesSocial.token=your-token
-```
-
 ### Building
 
 [Clone the repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) to your machine, [open it in Android Studio](https://www.jetbrains.com/help/idea/import-project-or-module-wizard.html#open-project) and then [build it](https://www.jetbrains.com/help/idea/compiling-applications.html#compile_module). If the previous steps were followed, this process shouldn't throw any errors and the project should be built successfully.

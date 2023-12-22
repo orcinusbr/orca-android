@@ -43,6 +43,9 @@ class MastodonAuthorizationActivity internal constructor() :
       MastodonAuthorizationViewModel.createFactory(application, onAccessTokenRequestListener = this)
     }
 
+  /** [CustomTabsIntent] by which in-app browsing will be performed. */
+  private val customTabsIntent = CustomTabsIntent.Builder().build()
+
   /**
    * [IllegalStateException] thrown if the [MastodonAuthorizationActivity] has been started from a
    * deep link and an access token isn't provided.
@@ -57,12 +60,12 @@ class MastodonAuthorizationActivity internal constructor() :
 
   @Composable
   override fun Content() {
-    MastodonAuthorization(viewModel)
+    MastodonAuthorization(viewModel, onHelp = ::browseToHelpArticle)
   }
 
   override fun onAccessTokenRequest() {
     val uri = Uri.parse("${viewModel.url}")
-    CustomTabsIntent.Builder().build().launchUrl(this, uri)
+    customTabsIntent.launchUrl(this, uri)
   }
 
   /**
@@ -79,5 +82,23 @@ class MastodonAuthorizationActivity internal constructor() :
       .authorizer
       .receive(accessToken)
     finish()
+  }
+
+  /**
+   * Helps the user by browsing to Mastodon's blog article that explains how the platform works.
+   *
+   * @see helpUri
+   */
+  private fun browseToHelpArticle() {
+    customTabsIntent.launchUrl(this, helpUri)
+  }
+
+  companion object {
+    /** [Uri] that leads to a blog article that explains how Mastodon works. */
+    internal val helpUri: Uri =
+      Uri.Builder()
+        .scheme("https")
+        .path("blog.joinmastodon.org/2018/08/mastodon-quick-start-guide")
+        .build()
   }
 }

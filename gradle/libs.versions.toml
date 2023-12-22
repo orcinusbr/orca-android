@@ -60,6 +60,7 @@ spotless = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", v
 time4j = { group = "net.time4j", name = "time4j-android", version = "4.8-2021a" }
 turbine = { group = "app.cash.turbine", name = "turbine", version = "1.0.0" }
 zoomable = { group = "net.engawapg.lib", name = "zoomable", version = "1.6.0-beta2" }
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-plugin" }
@@ -97,3 +98,4 @@ kotlin-symbolProcessor = "1.9.10-1.0.13"
 ktor = "2.3.2"
 loadable = "1.6.9"
 spotless = "6.22.0"
+junit = "1.1.5"

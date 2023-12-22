@@ -13,18 +13,19 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.app.demo.test
+plugins {
+  alias(libs.plugins.android.library)
+  alias(libs.plugins.kotlin.android)
+}
 
-import android.app.Activity
-import android.app.Instrumentation
-import androidx.test.espresso.intent.OngoingStubbing
+android {
+  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  packagingOptions.resources.excludes +=
+    arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
+}
 
-/**
- * Responds with an OK [Instrumentation.ActivityResult].
- *
- * @see Activity.RESULT_OK
- */
-internal fun OngoingStubbing.respondWithOK() {
-  val activityResult = Instrumentation.ActivityResult(Activity.RESULT_OK, null)
-  respondWith(activityResult)
+dependencies {
+  androidTestImplementation(libs.mockk)
+
+  implementation(libs.android.test.espresso.intents)
 }

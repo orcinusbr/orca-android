@@ -21,39 +21,22 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.jeanbarrossilva.loadable.Loadable
-import com.jeanbarrossilva.loadable.flow.loadable
-import com.jeanbarrossilva.loadable.ifLoaded
 import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
 import com.jeanbarrossilva.orca.core.mastodon.R
 import com.jeanbarrossilva.orca.core.mastodon.auth.Mastodon
-import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.MastodonDomainsProvider
 import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.OnAccessTokenRequestListener
-import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.selectable.list.SelectableList
-import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.selectable.list.selectFirst
 import com.jeanbarrossilva.orca.core.mastodon.instance.MastodonInstance
-import com.jeanbarrossilva.orca.core.mastodon.instance.SomeHttpInstance
-import com.jeanbarrossilva.orca.core.module.CoreModule
-import com.jeanbarrossilva.orca.core.module.instanceProvider
-import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.http.URLBuilder
-import io.ktor.http.Url
 import io.ktor.http.appendPathSegments
 import io.ktor.http.takeFrom
-import kotlin.time.Duration.Companion.milliseconds
-import kotlinx.coroutines.FlowPreview
+import io.ktor.http.toURI
+import java.net.URL
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.filterNot
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 
 /**
  * [AndroidViewModel] that provides the [url] to be opened in the browser for authenticating the
@@ -68,90 +51,41 @@ private constructor(
   application: Application,
   private val onAccessTokenRequestListener: OnAccessTokenRequestListener
 ) : AndroidViewModel(application) {
-  /** [MutableStateFlow] to which the search query will be sent. */
-  @OptIn(FlowPreview::class)
-  private val searchQueryMutableFlow =
-    emptyFlow<String>().debounce(256.milliseconds).mutableStateIn(viewModelScope, initialValue = "")
-
-  /**
-   * [MutableStateFlow] to which the [SelectableList]s of [Domain]s of [Instance]s wrapped by a
-   * [Loadable] will be sent.
-   */
-  private val instanceDomainSelectablesLoadableMutableFlow =
-    searchQueryMutableFlow
-      .filterNot(String::isBlank)
-      .map { query ->
-        MastodonDomainsProvider.provide(query).sortedByDescending { domain ->
-          domain.toString().startsWith(query)
-        }
-      }
-      .onStart { emit(MastodonDomainsProvider.provide()) }
-      .map(List<Domain>::selectFirst)
-      .loadable(viewModelScope)
+  /** [MutableStateFlow] to which the [String] representation of the [Domain] will be sent. */
+  private val domainMutableFlow = MutableStateFlow("")
 
   /** [Application] with which this [MastodonAuthorizationViewModel] was created. */
   private val application
     @JvmName("_application") get() = getApplication<Application>()
 
-  /** [StateFlow] version of the [searchQueryMutableFlow]. */
-  val searchQueryFlow = searchQueryMutableFlow.asStateFlow()
+  /** [StateFlow] version of the [domainMutableFlow]. */
+  val domainFlow = domainMutableFlow.asStateFlow()
 
-  /** [StateFlow] version of [instanceDomainSelectablesLoadableMutableFlow]. */
-  val instanceDomainSelectablesLoadableFlow =
-    instanceDomainSelectablesLoadableMutableFlow.asStateFlow()
-
-  /** [Url] to be opened in order to authenticate. */
+  /** [URL] to be opened in order to authorize. */
   val url
-    get() =
-      URLBuilder()
-        .takeFrom(
-          (Injector.from<CoreModule>().instanceProvider().provide() as SomeHttpInstance).url
-        )
-        .appendPathSegments("oauth", "authorize")
-        .apply {
-          with(application.getString(R.string.scheme)) {
-            parameters["response_type"] = "code"
-            parameters["client_id"] = Mastodon.CLIENT_ID
-            parameters["redirect_uri"] = application.getString(R.string.redirect_uri, this)
-            parameters["scope"] = Mastodon.SCOPES
-          }
-        }
-        .build()
+    get() = createURL(application, Domain(domainFlow.value))
 
   /**
-   * Searches for [Domain]s matching the given [query].
+   * Emits [domain] to the [domainFlow].
    *
-   * @param query Query with which the [Domain]s will be filtered.
+   * @param domain [String] representation of the [Domain] to be emitted.
    */
-  fun search(query: String) {
-    searchQueryMutableFlow.value = query
+  fun setDomain(domain: String) {
+    domainMutableFlow.value = domain
   }
 
   /**
-   * Selects the [instanceDomain].
-   *
-   * @param instanceDomain [Domain] to be selected.
-   */
-  fun select(instanceDomain: Domain) {
-    with(instanceDomainSelectablesLoadableMutableFlow) {
-      value.ifLoaded { value = Loadable.Loaded(select(instanceDomain)) }
-    }
-  }
-
-  /**
-   * Persists the currently selected [Domain], injects the derived [MastodonInstance] and notifies
-   * the [onAccessTokenRequestListener].
+   * Persists the current [Domain], injects the derived [MastodonInstance] and notifies the
+   * [onAccessTokenRequestListener].
    */
   fun authorize() {
-    persistSelectedDomain()
+    persistDomain()
     onAccessTokenRequestListener.onAccessTokenRequest()
   }
 
-  /** Persists the [Domain] that's currently selected. */
-  private fun persistSelectedDomain() {
-    instanceDomainSelectablesLoadableFlow.value.ifLoaded {
-      getPreferences(application).edit { putString(INSTANCE_DOMAIN_PREFERENCE_KEY, "$selected") }
-    }
+  /** Persists the current value of the [domainFlow]. */
+  private fun persistDomain() {
+    getPreferences(application).edit { putString(INSTANCE_DOMAIN_PREFERENCE_KEY, domainFlow.value) }
   }
 
   companion object {
@@ -175,6 +109,30 @@ private constructor(
       return viewModelFactory {
         initializer { MastodonAuthorizationViewModel(application, onAccessTokenRequestListener) }
       }
+    }
+
+    /**
+     * Creates an authorization [URL] for the given [domain].
+     *
+     * @param context [Context] by which the redirect URI will be provided.
+     * @param domain [Domain] for which the [URL] will be created.
+     */
+    internal fun createURL(context: Context, domain: Domain): URL {
+      return URLBuilder()
+        .takeFrom(domain.url)
+        .appendPathSegments("oauth", "authorize")
+        .apply {
+          with(context) {
+            parameters["response_type"] = "code"
+            parameters["client_id"] = Mastodon.CLIENT_ID
+            parameters["redirect_uri"] =
+              getString(R.string.redirect_uri, getString(R.string.scheme))
+            parameters["scope"] = Mastodon.SCOPES
+          }
+        }
+        .build()
+        .toURI()
+        .toURL()
     }
 
     /**
