@@ -19,7 +19,7 @@
     <string name="core_http_authorization_account_origin">Where is your account from?</string>
     <string name="core_http_authorization_domain">Instance</string>
     <string name="core_http_authorization_empty_domain">Instance cannot be empty.</string>
-    <string name="core_http_authorization_help">What is an instance?</string>
+    <string name="core_http_authorization_help">I don\'t have an account</string>
     <string name="core_http_authorization_invalid_domain">
         Unfortunately, this isn\'t a valid instance.
     </string>

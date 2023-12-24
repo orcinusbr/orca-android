@@ -15,46 +15,46 @@
 
 package com.jeanbarrossilva.orca.platform.autos.kit.action.button
 
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
-import com.jeanbarrossilva.orca.platform.autos.kit.action.button.skeleton.Button
+import com.jeanbarrossilva.orca.platform.autos.kit.action.button.skeleton.Button as _Button
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.skeleton.ButtonDefaults as _ButtonDefaults
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.button.ButtonBar
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
+import kotlin.time.Duration.Companion.seconds
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 
 /**
- * [Button] that represents a primary action, performed or requested to be performed through
- * [onClick]; usually is placed on the bottom of the screen, filling its width.
+ * [Button][_Button] that executes a secondary action when clicked, and is usually preceded by a
+ * [PrimaryButton] within a [ButtonBar].
  *
  * @param onClick Callback called whenever it's clicked.
- * @param modifier [Modifier] to be applied to the underlying [ElevatedButton].
- * @param isEnabled Whether it can be interacted with.
+ * @param modifier [Modifier] to be applied to the underlying [_Button].
  * @param content Content to be placed inside of it; generally a [Text] that shortly explains the
  *   action performed by [onClick].
  */
 @Composable
-fun PrimaryButton(
+fun SecondaryButton(
   onClick: () -> Unit,
   modifier: Modifier = Modifier,
-  isEnabled: Boolean = true,
   content: @Composable () -> Unit
 ) {
-  Button {
-    ElevatedButton(
+  _Button {
+    Button(
       onClick = { load(onClick) },
       modifier,
-      isEnabled,
-      _ButtonDefaults.shape,
+      shape = _ButtonDefaults.shape,
       colors =
-        ButtonDefaults.elevatedButtonColors(
-          AutosTheme.colors.primary.container.asColor,
-          AutosTheme.colors.primary.content.asColor,
-          AutosTheme.colors.disabled.container.asColor,
-          AutosTheme.colors.disabled.content.asColor
+        ButtonDefaults.buttonColors(
+          containerColor = AutosTheme.colors.placeholder.asColor,
+          contentColor = AutosTheme.colors.background.content.asColor
         ),
       contentPadding = _ButtonDefaults.padding
     ) {
@@ -63,28 +63,12 @@ fun PrimaryButton(
   }
 }
 
-/** Preview of a disabled [PrimaryButton]. */
 @Composable
 @MultiThemePreview
-private fun DisabledPrimaryButtonPreview() {
-  AutosTheme { PrimaryButton(isEnabled = false) }
-}
-
-/** Preview of an enabled [PrimaryButton]. */
-@Composable
-@MultiThemePreview
-private fun EnabledPrimaryButtonPreview() {
-  AutosTheme { PrimaryButton(isEnabled = true) }
-}
-
-/**
- * [Button] that represents a primary action; usually is placed on the bottom of the screen, filling
- * its width.
- *
- * @param isEnabled Whether it can be interacted with.
- * @param modifier [Modifier] to be applied to the underlying [ElevatedButton].
- */
-@Composable
-private fun PrimaryButton(isEnabled: Boolean, modifier: Modifier = Modifier) {
-  PrimaryButton(onClick = {}, modifier, isEnabled) { Text("Label") }
+private fun SecondaryButtonPreview() {
+  AutosTheme {
+    SecondaryButton(onClick = { runBlocking { delay(5.seconds) } }, Modifier.fillMaxWidth()) {
+      Text("Label")
+    }
+  }
 }

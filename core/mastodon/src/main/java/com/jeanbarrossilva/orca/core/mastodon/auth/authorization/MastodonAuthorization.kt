@@ -18,8 +18,6 @@ package com.jeanbarrossilva.orca.core.mastodon.auth.authorization
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,13 +50,14 @@ import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
 import com.jeanbarrossilva.orca.core.mastodon.R
 import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.viewmodel.MastodonAuthorizationViewModel
-import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.PrimaryButton
+import com.jeanbarrossilva.orca.platform.autos.kit.action.button.SecondaryButton
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TextField
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.error.containsErrorsAsState
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.error.rememberErrorDispatcher
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.button.ButtonBar
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.button.ButtonBarDefaults
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.plus
@@ -71,8 +70,7 @@ import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
  *
  * @param viewModel [MastodonAuthorizationViewModel] to which updates to the inserted [Domain] will
  *   be sent.
- * @param onHelp Action to be performed when the concept of an instance is requested to be
- *   explained.
+ * @param onHelp Action to be performed when help is requested.
  * @param modifier [Modifier] to be applied to the underlying [Box].
  */
 @Composable
@@ -98,8 +96,7 @@ internal fun MastodonAuthorization(
  * @param domain [String] version of the [Domain].
  * @param onDomainChange Callback run whenever the user inputs to the domain [TextField].
  * @param onSignIn Callback run whenever the sign-in [PrimaryButton] is clicked.
- * @param onHelp Action to be performed when the concept of an instance is requested to be
- *   explained.
+ * @param onHelp Action to be performed when help is requested.
  * @param modifier [Modifier] to be applied to the underlying [Box].
  */
 @Composable
@@ -140,38 +137,28 @@ internal fun MastodonAuthorization(
   Box(modifier) {
     Scaffold(
       buttonBar = {
-        Column(verticalArrangement = Arrangement.spacedBy(spacing)) {
-          Column(
-            Modifier.padding(start = spacing, end = spacing),
-            Arrangement.spacedBy(AutosTheme.spacings.medium.dp)
+        Column(verticalArrangement = Arrangement.spacedBy(ButtonBarDefaults.spacing)) {
+          TextField(
+            domain,
+            onDomainChange,
+            Modifier.focusRequester(focusRequester)
+              .padding(start = ButtonBarDefaults.spacing, end = ButtonBarDefaults.spacing)
+              .fillMaxWidth(),
+            errorDispatcher,
+            KeyboardOptions(imeAction = ImeAction.Go),
+            KeyboardActions(onGo = { onDone() }),
+            isSingleLined = true
           ) {
-            TextField(
-              domain,
-              onDomainChange,
-              Modifier.focusRequester(focusRequester).fillMaxWidth(),
-              errorDispatcher,
-              KeyboardOptions(imeAction = ImeAction.Go),
-              KeyboardActions(onGo = { onDone() }),
-              isSingleLined = true
-            ) {
-              Text(stringResource(R.string.core_http_authorization_domain))
-            }
-
-            Text(
-              stringResource(R.string.core_http_authorization_help),
-              Modifier.clickable(
-                remember(::MutableInteractionSource),
-                indication = null,
-                onClick = onHelp
-              ),
-              color = AutosTheme.colors.link.asColor,
-              style = AutosTheme.typography.labelMedium
-            )
+            Text(stringResource(R.string.core_http_authorization_domain))
           }
 
           ButtonBar(lazyListState) {
             PrimaryButton(onClick = onDone, isEnabled = !containsErrors) {
               Text(stringResource(R.string.core_http_authorization_sign_in))
+            }
+
+            SecondaryButton(onClick = onHelp) {
+              Text(stringResource(R.string.core_http_authorization_help))
             }
           }
         }

@@ -32,10 +32,13 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.autos.borders.asBorderStroke
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.PrimaryButton
+import com.jeanbarrossilva.orca.platform.autos.kit.action.button.SecondaryButton
+import com.jeanbarrossilva.orca.platform.autos.kit.action.button.skeleton.Button
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.button.placement.Orientation
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.button.placement.height
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.button.placement.mapToPlacement
@@ -48,6 +51,13 @@ internal const val BUTTON_BAR_TAG = "button-bar"
 
 /** Tag that identifies a [ButtonBar]'s [Divider] for testing purposes. */
 internal const val BUTTON_BAR_DIVIDER_TAG = "button-bar-divider"
+
+/** Default values of a [ButtonBar]. */
+object ButtonBarDefaults {
+  /** Amount of [Dp]s by which a [ButtonBar]'s [Button]s are spaced. */
+  val spacing
+    @Composable get() = AutosTheme.spacings.small.dp
+}
 
 /**
  * Bar for housing a [PrimaryButton].
@@ -94,7 +104,7 @@ private fun ButtonBar(
   val border = AutosTheme.borders.default.asBorderStroke
   val borderStrokeWidth by
     animateDpAsState(if (isHighlighted) border.width else (-1).dp, label = "BorderStrokeWidth")
-  val spacing = AutosTheme.spacings.medium.dp
+  val spacing = ButtonBarDefaults.spacing
   val spacingInPx = remember(density, spacing) { with(density) { spacing.roundToPx() } }
   val containerColor by
     animateColorAsState(
@@ -119,7 +129,9 @@ private fun ButtonBar(
       val orientation = Orientation.VERTICAL
       val placements = measurables.mapToPlacement(constraints, orientation, spacingInPx)
 
-      layout(constraints.maxWidth, placements.height) { place(placements, orientation) }
+      layout(constraints.maxWidth, placements.height + spacingInPx) {
+        place(placements, orientation)
+      }
     }
   }
 }
@@ -132,7 +144,7 @@ private fun ButtonBar(
  */
 @Composable
 internal fun ButtonBar(lazyListState: LazyListState, modifier: Modifier = Modifier) {
-  ButtonBar(lazyListState, modifier) { PrimaryButton(onClick = {}) { Text("Label") } }
+  ButtonBar(lazyListState, modifier) { SampleContent() }
 }
 
 /** Preview of an idle [ButtonBar]. */
@@ -157,5 +169,12 @@ private fun HighlightedButtonBarPreview() {
  */
 @Composable
 private fun ButtonBar(isHighlighted: Boolean, modifier: Modifier = Modifier) {
-  ButtonBar(isHighlighted, modifier) { PrimaryButton(onClick = {}) { Text("Label") } }
+  ButtonBar(isHighlighted, modifier) { SampleContent() }
+}
+
+/** Sample [Button]s for a [ButtonBar]. */
+@Composable
+private fun SampleContent() {
+  PrimaryButton(onClick = {}) { Text("Primary") }
+  SecondaryButton(onClick = {}) { Text("Secondary") }
 }

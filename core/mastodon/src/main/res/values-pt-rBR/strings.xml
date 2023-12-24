@@ -19,7 +19,7 @@
     <string name="core_http_authorization_account_origin">De onde é a sua conta?</string>
     <string name="core_http_authorization_domain">Instância</string>
     <string name="core_http_authorization_empty_domain">A instância não pode estar vazia.</string>
-    <string name="core_http_authorization_help">O que é uma instância?</string>
+    <string name="core_http_authorization_help">Eu não tenho uma conta</string>
     <string name="core_http_authorization_invalid_domain">
         Infelizmente, essa não é uma instância válida.
     </string>
