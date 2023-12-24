@@ -17,10 +17,8 @@ package com.jeanbarrossilva.orca.feature.gallery
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -49,14 +47,7 @@ class GalleryActivity internal constructor() : ComposableActivity() {
 
   @Composable
   override fun Content() {
-    Gallery(viewModel, module.boundary(), entrypointIndex, secondary) {
-      DisposableEffect(entrypoint) {
-        Log.d("GalleryFragment", "entrypoint: $entrypoint")
-        onDispose {}
-      }
-
-      entrypoint?.invoke(it)
-    }
+    Gallery(viewModel, module.boundary(), entrypointIndex, secondary) { entrypoint?.invoke(it) }
   }
 
   fun setEntrypoint(entrypoint: @Composable (Modifier) -> Unit) {
