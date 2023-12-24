@@ -19,7 +19,10 @@ import androidx.annotation.RestrictTo
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.LocalContentColor
@@ -33,11 +36,13 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
+import com.jeanbarrossilva.orca.autos.forms.Form
 import com.jeanbarrossilva.orca.platform.autos.R
 import com.jeanbarrossilva.orca.platform.autos.borders.asBorderStroke
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
@@ -101,7 +106,8 @@ fun TextField(
   label: @Composable () -> Unit
 ) {
   val context = LocalContext.current
-  val shape = AutosTheme.forms.large.asShape
+  val form = AutosTheme.forms.large as Form.PerCorner
+  val shape = remember(form, form::asShape)
   val errorMessages =
     errorDispatcher.messages.joinToString("\n") {
       context.getString(R.string.platform_ui_text_field_consecutive_error_message, it)
@@ -113,37 +119,40 @@ fun TextField(
     onDispose {}
   }
 
-  Column(verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.medium.dp)) {
-    TextField(
-      text,
-      onTextChange,
-      modifier.border(
-        AutosTheme.borders.default.asBorderStroke.width,
-        AutosTheme.borders.default.asBorderStroke.brush,
-        shape
-      ),
-      label = {
-        val color =
-          if (containsErrors) {
-            AutosTheme.colors.error.container.asColor
-          } else {
-            LocalContentColor.current
-          }
-        val style = LocalTextStyle.current.copy(color = color)
-        ProvideTextStyle(style) { label() }
-      },
-      isError = containsErrors,
-      keyboardOptions = keyboardOptions,
-      keyboardActions = keyboardActions,
-      singleLine = isSingleLined,
-      shape = shape,
-      colors = _TextFieldDefaults.colors()
-    )
+  Column(modifier, Arrangement.spacedBy(AutosTheme.spacings.medium.dp)) {
+    BoxWithConstraints {
+      TextField(
+        text,
+        onTextChange,
+        Modifier.border(
+            AutosTheme.borders.default.asBorderStroke.width,
+            AutosTheme.borders.default.asBorderStroke.brush,
+            shape
+          )
+          .width(maxWidth),
+        label = {
+          val color =
+            if (containsErrors) {
+              AutosTheme.colors.error.container.asColor
+            } else {
+              LocalContentColor.current
+            }
+          val style = LocalTextStyle.current.copy(color = color)
+          ProvideTextStyle(style) { label() }
+        },
+        isError = containsErrors,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
+        singleLine = isSingleLined,
+        shape = shape,
+        colors = _TextFieldDefaults.colors()
+      )
+    }
 
     AnimatedVisibility(visible = containsErrors) {
       Text(
         errorMessages,
-        Modifier.testTag(TEXT_FIELD_ERRORS_TAG),
+        Modifier.padding(start = form.bottomStart.dp).testTag(TEXT_FIELD_ERRORS_TAG),
         AutosTheme.colors.error.container.asColor
       )
     }
