@@ -4,6 +4,8 @@
 .gradle/
 .idea/
 build/
+/app/default/release
 /captures
+/.signing
 *.iml
 local.properties
