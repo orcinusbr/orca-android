@@ -22,6 +22,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.mandatorySystemGesturesPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
@@ -130,7 +131,7 @@ private fun Gallery(
       }
     }
 
-  Box(modifier.background(Color.Black)) {
+  Box(modifier.background(Color.Black).mandatorySystemGesturesPadding().fillMaxHeight()) {
     HorizontalPager(
       pagerState,
       Modifier.fillMaxHeight().testTag(GALLERY_PAGER_TAG),
