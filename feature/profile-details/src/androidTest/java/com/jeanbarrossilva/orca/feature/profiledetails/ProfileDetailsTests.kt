@@ -19,10 +19,11 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performScrollToIndex
-import androidx.test.platform.app.InstrumentationRegistry
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.testing.context
+import com.jeanbarrossilva.orca.platform.testing.screen.Screen
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.TIMELINE_TAG
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline
@@ -36,13 +37,13 @@ internal class ProfileDetailsTests {
 
   @Test
   fun showsUsernameWhenScrollingPastHeader() {
-    val screenHeightInPx =
-      InstrumentationRegistry.getInstrumentation().context.resources.displayMetrics.heightPixels
     composeRule.setContent {
       AutosTheme {
         ProfileDetails(
           postPreviewsLoadable =
-            List(size = screenHeightInPx) { PostPreview.sample.copy(id = "${UUID.randomUUID()}") }
+            List(size = Screen.from(context).height.inPixels) {
+                PostPreview.sample.copy(id = "${UUID.randomUUID()}")
+              }
               .toSerializableList()
               .toListLoadable(),
           relativeTimeProvider = TestRelativeTimeProvider
