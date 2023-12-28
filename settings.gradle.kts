@@ -46,6 +46,7 @@ include(
   ":platform:cache",
   ":platform:autos-test",
   ":platform:intents",
+  ":platform:testing",
   ":platform:ui",
   ":platform:ui-test",
   ":std:buildable",
