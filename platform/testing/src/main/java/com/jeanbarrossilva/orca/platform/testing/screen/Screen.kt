@@ -84,7 +84,7 @@ class Screen private constructor(val width: Dimension, val height: Dimension) {
      *
      * @param context [Context] whose [Resources] will provide the dimensions.
      */
-    fun from(context: Context): Screen {
+    internal fun from(context: Context): Screen {
       return from(context.resources)
     }
 

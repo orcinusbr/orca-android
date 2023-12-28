@@ -37,6 +37,7 @@ dependencies {
 
   implementation(project(":core"))
   implementation(libs.android.core)
+  implementation(libs.android.lifecycle.runtime)
   implementation(libs.kotlin.coroutines.android)
   implementation(libs.kotlin.serialization.json)
 }

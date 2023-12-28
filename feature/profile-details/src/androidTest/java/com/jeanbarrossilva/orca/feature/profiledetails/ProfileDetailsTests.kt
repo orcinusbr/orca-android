@@ -22,8 +22,7 @@ import androidx.compose.ui.test.performScrollToIndex
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
-import com.jeanbarrossilva.orca.platform.testing.context
-import com.jeanbarrossilva.orca.platform.testing.screen.Screen
+import com.jeanbarrossilva.orca.platform.testing.screen.screen
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.TIMELINE_TAG
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline
@@ -41,7 +40,7 @@ internal class ProfileDetailsTests {
       AutosTheme {
         ProfileDetails(
           postPreviewsLoadable =
-            List(size = Screen.from(context).height.inPixels) {
+            List(size = screen.height.inPixels) {
                 PostPreview.sample.copy(id = "${UUID.randomUUID()}")
               }
               .toSerializableList()

@@ -30,7 +30,7 @@ import com.jeanbarrossilva.orca.feature.gallery.ui.test.onPager
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.performScrollToEachPage
 import com.jeanbarrossilva.orca.platform.testing.asString
 import com.jeanbarrossilva.orca.platform.testing.context
-import com.jeanbarrossilva.orca.platform.testing.screen.Screen
+import com.jeanbarrossilva.orca.platform.testing.screen.screen
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
 import com.jeanbarrossilva.orca.std.injector.module.binding.boundTo
 import com.jeanbarrossilva.orca.std.injector.test.InjectorTestRule
@@ -45,7 +45,6 @@ internal class GalleryActivityTests {
 
   @Test
   fun isEdgeToEdge() {
-    val screen = Screen.from(context)
     val density = Density(context)
     val resources = context.resources
     var systemBarsHeight = Dp.Unspecified
@@ -65,7 +64,7 @@ internal class GalleryActivityTests {
       composeRule
         .onRoot()
         .assertWidthIsEqualTo(screen.width.inDps)
-        .assertHeightIsEqualTo(screen.width.inDps + (systemBarsHeight - actionBarHeight))
+        .assertHeightIsEqualTo(screen.height.inDps + (systemBarsHeight - actionBarHeight))
     }
   }
 
