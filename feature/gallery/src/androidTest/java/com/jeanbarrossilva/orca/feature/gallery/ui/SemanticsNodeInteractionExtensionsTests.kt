@@ -25,7 +25,6 @@ import androidx.compose.ui.test.isRoot
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
-import androidx.test.platform.app.InstrumentationRegistry
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
@@ -39,6 +38,7 @@ import com.jeanbarrossilva.orca.feature.gallery.ui.test.onPager
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.performScrollToEachPage
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.performScrollToPageAt
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.testing.asString
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
 import org.junit.Rule
 import org.junit.Test
@@ -73,30 +73,24 @@ internal class SemanticsNodeInteractionExtensionsTests {
 
   @Test
   fun scrollsToPageOfGalleryPager() {
-    val context = InstrumentationRegistry.getInstrumentation().context
     composeRule
       .apply { setContent { AutosTheme { Gallery() } } }
       .run {
         onPager().performScrollToPageAt(0)
         onPage()
       }
-      .assertContentDescriptionEquals(
-        context.getString(R.string.feature_gallery_attachment, 2.formatted)
-      )
+      .assertContentDescriptionEquals(R.string.feature_gallery_attachment.asString(2.formatted))
   }
 
   @Test
   fun scrollsToEachPageOfGalleryPager() {
-    val context = InstrumentationRegistry.getInstrumentation().context
     var positions = IntRange.EMPTY
     composeRule
       .apply { setContent { AutosTheme { Gallery() } } }
       .run {
         onPager().performScrollToEachPage {
           positions = 1..it
-          assertContentDescriptionEquals(
-            context.getString(R.string.feature_gallery_attachment, it.formatted)
-          )
+          assertContentDescriptionEquals(R.string.feature_gallery_attachment.asString(it.formatted))
         }
       }
     assertThat(positions).isEqualTo(1..Attachment.samples.size.inc())

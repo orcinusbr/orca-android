@@ -21,7 +21,6 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performTextInput
-import androidx.test.platform.app.InstrumentationRegistry
 import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.instance.InstanceProvider
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
@@ -33,15 +32,14 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.SampleTerm
 import com.jeanbarrossilva.orca.core.sample.instance.domain.sample
 import com.jeanbarrossilva.orca.ext.intents.intendBrowsingTo
 import com.jeanbarrossilva.orca.platform.autos.test.kit.input.text.onTextFieldErrors
+import com.jeanbarrossilva.orca.platform.testing.asString
+import com.jeanbarrossilva.orca.platform.testing.context
 import com.jeanbarrossilva.orca.platform.ui.core.sample
 import com.jeanbarrossilva.orca.std.injector.test.InjectorTestRule
 import org.junit.Rule
 import org.junit.Test
 
 internal class MastodonAuthorizationActivityTests {
-  private val context
-    get() = InstrumentationRegistry.getInstrumentation().context
-
   @get:Rule
   val injectorRule = InjectorTestRule {
     register(
@@ -58,43 +56,37 @@ internal class MastodonAuthorizationActivityTests {
   @Test
   fun showsErrorWhenSigningInWithBlankDomain() {
     composeRule
-      .onNodeWithText(context.getString(R.string.core_http_authorization_domain))
+      .onNodeWithText(R.string.core_http_authorization_domain.asString())
       .apply { performTextInput(" ") }
       .performImeAction()
     composeRule
       .onTextFieldErrors()
       .assertTextEquals(
-        context.getString(
-          com.jeanbarrossilva.orca.platform.autos.R.string
-            .platform_ui_text_field_consecutive_error_message,
-          context.getString(R.string.core_http_authorization_empty_domain)
-        )
+        com.jeanbarrossilva.orca.platform.autos.R.string
+          .platform_ui_text_field_consecutive_error_message
+          .asString(R.string.core_http_authorization_empty_domain.asString())
       )
   }
 
   @Test
   fun showsErrorWhenSigningInWithInvalidDomain() {
     composeRule
-      .onNodeWithText(context.getString(R.string.core_http_authorization_domain))
+      .onNodeWithText(R.string.core_http_authorization_domain.asString())
       .apply { performTextInput("1️⃣🏛️🖼️") }
       .performImeAction()
     composeRule
       .onTextFieldErrors()
       .assertTextEquals(
-        context.getString(
-          com.jeanbarrossilva.orca.platform.autos.R.string
-            .platform_ui_text_field_consecutive_error_message,
-          context.getString(R.string.core_http_authorization_invalid_domain)
-        )
+        com.jeanbarrossilva.orca.platform.autos.R.string
+          .platform_ui_text_field_consecutive_error_message
+          .asString(R.string.core_http_authorization_invalid_domain.asString())
       )
   }
 
   @Test
   fun browsesToHelpArticle() {
     intendBrowsingTo("${MastodonAuthorizationActivity.helpUri}") {
-      composeRule
-        .onNodeWithText(context.getString(R.string.core_http_authorization_help))
-        .performClick()
+      composeRule.onNodeWithText(R.string.core_http_authorization_help.asString()).performClick()
     }
   }
 
@@ -102,7 +94,7 @@ internal class MastodonAuthorizationActivityTests {
   fun browsesToInstanceWhenSigningInWithValidDomain() {
     intendBrowsingTo("${MastodonAuthorizationViewModel.createURL(context, Domain.sample)}") {
       composeRule
-        .onNodeWithText(context.getString(R.string.core_http_authorization_domain))
+        .onNodeWithText(R.string.core_http_authorization_domain.asString())
         .apply { performTextInput("${Domain.sample}") }
         .performImeAction()
     }

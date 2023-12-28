@@ -15,16 +15,13 @@
 
 package com.jeanbarrossilva.orca.core.sharedpreferences.actor.test
 
-import androidx.test.platform.app.InstrumentationRegistry
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.TermMuter
 import com.jeanbarrossilva.orca.core.sharedpreferences.actor.SharedPreferencesActorProvider
 import com.jeanbarrossilva.orca.core.sharedpreferences.feed.profile.post.content.SharedPreferencesTermMuter
+import com.jeanbarrossilva.orca.platform.testing.context
 import org.junit.rules.ExternalResource
 
 internal class SharedPreferencesCoreTestRule : ExternalResource() {
-  private val context
-    get() = InstrumentationRegistry.getInstrumentation().context
-
   lateinit var actorProvider: SharedPreferencesActorProvider
     private set
 

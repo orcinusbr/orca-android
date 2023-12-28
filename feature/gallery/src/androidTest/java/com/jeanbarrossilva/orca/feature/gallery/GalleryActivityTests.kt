@@ -24,12 +24,13 @@ import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import androidx.test.platform.app.InstrumentationRegistry
 import com.jeanbarrossilva.orca.feature.gallery.test.activity.TestGalleryModule
 import com.jeanbarrossilva.orca.feature.gallery.test.launchGalleryActivity
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.onPager
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.performScrollToEachPage
+import com.jeanbarrossilva.orca.platform.testing.asString
+import com.jeanbarrossilva.orca.platform.testing.context
+import com.jeanbarrossilva.orca.platform.testing.screen.screen
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
 import com.jeanbarrossilva.orca.std.injector.module.binding.boundTo
 import com.jeanbarrossilva.orca.std.injector.test.InjectorTestRule
@@ -37,9 +38,6 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class GalleryActivityTests {
-  private val context
-    get() = InstrumentationRegistry.getInstrumentation().context
-
   @get:Rule
   val injectorRule = InjectorTestRule { register(TestGalleryModule.boundTo<GalleryModule, _>()) }
 
@@ -55,7 +53,6 @@ internal class GalleryActivityTests {
         .also { context.theme.resolveAttribute(android.R.attr.actionBarSize, it, true) }
         .let { resources.getDimensionPixelSize(it.resourceId) }
         .let { with(density) { it.toDp() } }
-    val configuration = resources.configuration
     launchGalleryActivity().use { scenario ->
       scenario.onActivity { activity ->
         activity.windowManager
@@ -66,10 +63,8 @@ internal class GalleryActivityTests {
       }
       composeRule
         .onRoot()
-        .assertWidthIsEqualTo(configuration.screenWidthDp.dp)
-        .assertHeightIsEqualTo(
-          configuration.screenHeightDp.dp + (systemBarsHeight - actionBarHeight)
-        )
+        .assertWidthIsEqualTo(screen.width.inDps)
+        .assertHeightIsEqualTo(screen.height.inDps + (systemBarsHeight - actionBarHeight))
     }
   }
 
@@ -78,9 +73,7 @@ internal class GalleryActivityTests {
     launchGalleryActivity().use {
       with(composeRule) {
         onPager().performScrollToEachPage {
-          assertContentDescriptionEquals(
-            context.getString(R.string.feature_gallery_attachment, it.formatted)
-          )
+          assertContentDescriptionEquals(R.string.feature_gallery_attachment.asString(it.formatted))
         }
       }
     }

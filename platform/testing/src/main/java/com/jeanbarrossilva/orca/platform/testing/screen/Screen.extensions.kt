@@ -13,25 +13,10 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.feed.test
+package com.jeanbarrossilva.orca.platform.testing.screen
 
-import android.content.Intent
-import androidx.navigation.NavGraphBuilder
-import com.jeanbarrossilva.orca.feature.feed.FeedFragment
 import com.jeanbarrossilva.orca.platform.testing.context
-import com.jeanbarrossilva.orca.platform.ui.core.Intent
-import com.jeanbarrossilva.orca.platform.ui.test.core.SingleFragmentActivity
 
-internal class FeedActivity : SingleFragmentActivity() {
-  override val route = "feed"
-
-  override fun NavGraphBuilder.add() {
-    fragment<FeedFragment>()
-  }
-
-  companion object {
-    fun getIntent(userID: String): Intent {
-      return Intent<FeedActivity>(context, FeedFragment.USER_ID_KEY to userID)
-    }
-  }
-}
+/** Test-tailored information about the display of the device. */
+val screen
+  get() = Screen.from(context)

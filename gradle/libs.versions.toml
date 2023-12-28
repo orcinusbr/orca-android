@@ -17,7 +17,8 @@ android-constraintlayout-compose = { group = "androidx.constraintlayout", name =
 android-core = { group = "androidx.core", name = "core-ktx", version = "1.12.0" }
 android-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "android-fragment" }
 android-fragment-testing = { group = "androidx.fragment", name = "fragment-testing", version.ref = "android-fragment" }
-android-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version = "2.6.2" }
+android-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "android-lifecycle" }
+android-lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "android-lifecycle" }
 android-material = { group = "com.google.android.material", name = "material", version = "1.9.0" }
 android-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version = "2.7.3" }
 android-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "android-plugin" }
@@ -85,6 +86,7 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 android-activity = "1.8.2"
 android-compose = "1.5.3"
 android-fragment = "1.6.1"
+android-lifecycle = "2.6.2"
 android-plugin = "8.2.0"
 android-room = "2.5.2"
 android-sdk-min = "28"
