@@ -22,7 +22,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
-import androidx.test.platform.app.InstrumentationRegistry
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
@@ -30,6 +29,7 @@ import com.jeanbarrossilva.orca.core.sample.image.CoverImageSource
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.sample
 import com.jeanbarrossilva.orca.feature.gallery.GalleryActivity
 import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
+import com.jeanbarrossilva.orca.platform.testing.context
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
 import com.jeanbarrossilva.orca.platform.ui.core.image.createSample
 import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
@@ -58,7 +58,6 @@ internal fun launchGalleryActivity(
     )
   }
 ): ActivityScenario<GalleryActivity> {
-  val context = InstrumentationRegistry.getInstrumentation().context
   val intent = GalleryActivity.getIntent(context, postID, entrypointIndex, secondary)
   return launchActivity<GalleryActivity>(intent).onActivity { it.setEntrypoint(entrypoint) }
 }
