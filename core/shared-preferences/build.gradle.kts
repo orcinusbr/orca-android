@@ -29,6 +29,7 @@ android {
 
 dependencies {
   androidTestImplementation(project(":core-test"))
+  androidTestImplementation(project(":platform:testing"))
   androidTestImplementation(libs.android.test.runner)
   androidTestImplementation(libs.junit)
   androidTestImplementation(libs.kotlin.coroutines.test)
