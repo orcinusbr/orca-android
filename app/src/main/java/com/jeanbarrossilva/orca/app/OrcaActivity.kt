@@ -44,7 +44,7 @@ import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
 import com.jeanbarrossilva.orca.std.injector.Injector
 import kotlinx.coroutines.launch
 
-internal open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilityChangeListener {
+open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilityChangeListener {
   private var binding: ActivityOrcaBinding? = null
   private var constraintSet: ConstraintSet? = null
 

@@ -15,19 +15,37 @@
 
 package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.time
 
+import android.content.Context
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.Locale
 import net.time4j.PrettyTime
+import net.time4j.android.ApplicationStarter
 import net.time4j.base.UnixTime
 
-/** [RelativeTimeProvider] that provides relative time with Time4J. */
-internal class Time4JRelativeTimeProvider : RelativeTimeProvider() {
+/**
+ * [RelativeTimeProvider] that provides relative time with Time4J.
+ *
+ * @param context [Context] through which Time4J will be started the first time a relative time is
+ *   requested to be provided.
+ */
+internal class Time4JRelativeTimeProvider(private val context: Context) : RelativeTimeProvider() {
+  /** Whether Time4J has been started. */
+  private var hasTime4JBeenStarted = false
+
   override fun onProvide(dateTime: ZonedDateTime): String {
+    startTime4JIfNotStarted()
     val locale = Locale.getDefault()
     val unixTime = dateTime.toUnixTime()
     val timeZoneID = ZoneId.systemDefault().id
     return PrettyTime.of(locale).printRelative(unixTime, timeZoneID)
+  }
+
+  /** Starts Time4J if it hasn't been started yet. */
+  private fun startTime4JIfNotStarted() {
+    if (!hasTime4JBeenStarted) {
+      ApplicationStarter.initialize(context, true)
+    }
   }
 
   /** Converts this [ZonedDateTime] into a [UnixTime]. */

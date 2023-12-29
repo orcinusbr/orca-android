@@ -17,9 +17,11 @@ package com.jeanbarrossilva.orca.platform.ui.component.timeline.post.time
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 
 /** [Remember][remember]s a [RelativeTimeProvider]. */
 @Composable
 fun rememberRelativeTimeProvider(): RelativeTimeProvider {
-  return remember(::Time4JRelativeTimeProvider)
+  val context = LocalContext.current
+  return remember { Time4JRelativeTimeProvider(context) }
 }

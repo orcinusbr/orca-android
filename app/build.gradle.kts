@@ -25,8 +25,9 @@ plugins {
 
 android {
   compileSdk = libs.versions.android.sdk.target.get().toInt()
-  composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.get()
+  composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
   flavorDimensions += Dimensions.VERSION
+  lintOptions.disable += "Instantiatable"
   namespace = namespaceFor("app")
 
   buildFeatures {
@@ -34,7 +35,14 @@ android {
     viewBinding = true
   }
 
-  buildTypes { release { isMinifyEnabled = true } }
+  buildTypes {
+    release {
+      isMinifyEnabled = true
+      isShrinkResources = true
+      proguardFile("proguard-rules.pro")
+      signingConfig = signingConfigs.getByName("debug")
+    }
+  }
 
   compileOptions {
     sourceCompatibility = JavaVersion.toVersion(libs.versions.java.get())
@@ -45,8 +53,8 @@ android {
     applicationId = project.namespace
     minSdk = libs.versions.android.sdk.min.get().toInt()
     targetSdk = libs.versions.android.sdk.target.get().toInt()
-    versionCode = 1
-    versionName = "0.1.0"
+    versionCode = 2
+    versionName = "0.1.1"
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 
@@ -66,18 +74,19 @@ dependencies {
   "androidTestDemoImplementation"(project(":platform:ui"))
   "androidTestDemoImplementation"(libs.android.activity.ktx)
   "androidTestDemoImplementation"(libs.android.compose.ui.test.junit)
-  androidTestImplementation(libs.android.test.espresso.core)
   "androidTestDemoImplementation"(libs.assertk)
 
   androidTestImplementation(project(":platform:intents"))
   androidTestImplementation(project(":platform:ui-test"))
   androidTestImplementation(libs.android.test.core)
+  androidTestImplementation(libs.android.test.espresso.core)
   androidTestImplementation(libs.android.test.runner)
+
+  "demoImplementation"(project(":core:sample"))
 
   ksp(project(":std:injector-processor"))
 
   implementation(project(":core:mastodon"))
-  implementation(project(":core:sample"))
   implementation(project(":core:shared-preferences"))
   implementation(project(":feature:composer"))
   implementation(project(":feature:feed"))
@@ -94,5 +103,6 @@ dependencies {
   implementation(libs.android.constraintlayout)
   implementation(libs.android.fragment.ktx)
   implementation(libs.android.material)
+  implementation(libs.kotlin.reflect)
   implementation(libs.time4j)
 }

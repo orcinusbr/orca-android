@@ -112,7 +112,6 @@ private fun Search(
   onBackwardsNavigation: () -> Unit,
   modifier: Modifier = Modifier
 ) {
-  @OptIn(ExperimentalComposeUiApi::class)
   val softwareKeyboardController = LocalSoftwareKeyboardController.current
 
   val areResultsEmpty = remember(query, results) { query.isNotBlank() && results.isEmpty() }

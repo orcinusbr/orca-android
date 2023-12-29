@@ -21,7 +21,7 @@ plugins {
 
 android {
   buildFeatures.compose = true
-  composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.get()
+  composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
   defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 }
 
