@@ -43,12 +43,13 @@ import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.component.stat.Stats
 import com.jeanbarrossilva.orca.platform.ui.component.stat.StatsDetails
 
-const val GALLERY_ACTIONS_CLOSE_BUTTON_TAG = "gallery-actions-close-button"
 internal const val GALLERY_ACTIONS_OPTIONS_BUTTON_TAG = "gallery-actions-options-button"
 internal const val GALLERY_ACTIONS_OPTIONS_DOWNLOADS_ITEM_TAG =
   "gallery-actions-options-download-action"
 internal const val GALLERY_ACTIONS_OPTIONS_MENU_TAG = "gallery-actions-options-menu"
 internal const val GALLERY_ACTIONS_TAG = "gallery-actions"
+
+const val GALLERY_ACTIONS_CLOSE_BUTTON_TAG = "gallery-actions-close-button"
 
 @Composable
 @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
