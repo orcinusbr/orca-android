@@ -17,7 +17,6 @@ package com.jeanbarrossilva.orca.core.sample.instance
 
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.Authenticator
-import com.jeanbarrossilva.orca.core.auth.actor.ActorProvider
 import com.jeanbarrossilva.orca.core.feed.FeedProvider
 import com.jeanbarrossilva.orca.core.feed.profile.ProfileProvider
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
@@ -26,6 +25,7 @@ import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
 import com.jeanbarrossilva.orca.core.sample.auth.SampleAuthenticator
 import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
+import com.jeanbarrossilva.orca.core.sample.auth.sample
 import com.jeanbarrossilva.orca.core.sample.feed.SampleFeedProvider
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileProvider
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileWriter
@@ -51,7 +51,7 @@ internal constructor(
 ) : Instance<Authenticator>() {
   override val domain = Domain.sample
   override val authenticator: Authenticator = SampleAuthenticator
-  override val authenticationLock = AuthenticationLock(authenticator, ActorProvider.sample)
+  override val authenticationLock = AuthenticationLock.sample
   override val postProvider = SamplePostProvider(defaultPosts)
   override val feedProvider: FeedProvider = SampleFeedProvider(imageLoaderProvider, postProvider)
   override val profileProvider: ProfileProvider =

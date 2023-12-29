@@ -13,25 +13,16 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.core.feed.profile.post
+package com.jeanbarrossilva.orca.core.sample.auth
 
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
-import com.jeanbarrossilva.orca.core.auth.SomeAuthenticationLock
-import kotlinx.coroutines.flow.Flow
+import com.jeanbarrossilva.orca.core.auth.Authenticator
+import com.jeanbarrossilva.orca.core.sample.auth.actor.SampleActorProvider
 
-/** Provides [Post]s. */
-abstract class PostProvider {
-  /**
-   * [AuthenticationLock] for distinguishing standard [Post]s from those that can be deleted when
-   * providing them.
-   */
-  protected abstract val authenticationLock: SomeAuthenticationLock
+/** [AuthenticationLock] returned by [sample]. */
+private val sampleAuthenticationLock: AuthenticationLock<Authenticator> =
+  AuthenticationLock(SampleAuthenticator, SampleActorProvider)
 
-  /**
-   * Provides the [Post] identified as [id].
-   *
-   * @param id ID of the [Post] to be provided.
-   * @see Post.id
-   */
-  abstract suspend fun provide(id: String): Flow<Post>
-}
+/** Sample [AuthenticationLock]. */
+internal val AuthenticationLock.Companion.sample
+  get() = sampleAuthenticationLock
