@@ -7,7 +7,8 @@ android-browser = { group = "androidx.browser", name = "browser", version = "1.6
 android-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "android-compose" }
 android-compose-material = { group = "androidx.compose.material", name = "material", version.ref = "android-compose" }
 android-compose-material-icons = { group = "androidx.compose.material", name = "material-icons-extended", version = "1.5.1" }
-android-compose-material3 = { group = "androidx.compose.material3", name = "material3", version = "1.1.2" }
+android-compose-material3 = { group = "androidx.compose.material3", name = "material3", version = "1.2.0-beta01" }
+android-compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "android-compose" }
 android-compose-ui-test-junit = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "android-compose" }
 android-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "android-compose" }
 android-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "android-compose" }
@@ -41,7 +42,7 @@ kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", vers
 kotlin-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.5.1" }
 kotlin-symbolProcessor = { group = "com.google.devtools.ksp", name = "symbol-processing-api", version.ref = "kotlin-symbolProcessor" }
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
-kctfork-ksp = { group = "dev.zacsweers.kctfork", name = "ksp", version = "0.3.2" }
+kctfork-ksp = { group = "dev.zacsweers.kctfork", name = "ksp", version = "0.4.0" }
 kotlinPoet-ksp = { group = "com.squareup", name = "kotlinpoet-ksp", version = "1.14.2" }
 ktor-client-contentNegotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-serialization-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
@@ -60,7 +61,6 @@ spotless = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", v
 time4j = { group = "net.time4j", name = "time4j-android", version = "4.8-2021a" }
 turbine = { group = "app.cash.turbine", name = "turbine", version = "1.0.0" }
 zoomable = { group = "net.engawapg.lib", name = "zoomable", version = "1.6.0-beta2" }
-androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-plugin" }
@@ -83,7 +83,8 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [versions]
 android-activity = "1.8.2"
-android-compose = "1.5.3"
+android-compose = "1.6.0-beta03"
+android-compose-compiler = "1.5.7"
 android-fragment = "1.6.1"
 android-plugin = "8.2.0"
 android-room = "2.5.2"
@@ -92,10 +93,9 @@ android-sdk-target = "34"
 android-test-espresso = "3.5.0"
 dokka = "1.9.10"
 java = "17"
-kotlin = "1.9.10"
+kotlin = "1.9.21"
 kotlin-coroutines = "1.7.2"
 kotlin-symbolProcessor = "1.9.10-1.0.13"
 ktor = "2.3.2"
 loadable = "1.6.9"
 spotless = "6.22.0"
-junit = "1.1.5"
