@@ -30,7 +30,10 @@ import com.jeanbarrossilva.orca.ext.intents.intendBrowsingTo
 import com.jeanbarrossilva.orca.ext.intents.intendStartingOf
 import com.jeanbarrossilva.orca.feature.composer.ComposerActivity
 import com.jeanbarrossilva.orca.feature.feed.FEED_FLOATING_ACTION_BUTTON_TAG
+import com.jeanbarrossilva.orca.feature.feed.FeedFragment
 import com.jeanbarrossilva.orca.feature.gallery.GalleryActivity
+import com.jeanbarrossilva.orca.feature.gallery.test.ui.onCloseActionButton
+import com.jeanbarrossilva.orca.platform.ui.test.assertIsAtFragment
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onRefreshIndicator
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.figure.gallery.thumbnail.onThumbnails
@@ -63,6 +66,17 @@ internal class FeedTests {
         onTimeline().performScrollToPostPreviewWithGalleryPreview {
           onThumbnails().onFirst().performClick()
         }
+      }
+    }
+  }
+
+  @Test
+  fun navigatesToGalleryAndGoesBackToFeedWhenClosingIt() {
+    with(composeRule) {
+      onTimeline().performScrollToPostPreviewWithGalleryPreview {
+        onThumbnails().onFirst().performClick()
+        onCloseActionButton().performClick()
+        assertIsAtFragment(composeRule.activity, FeedFragment.ROUTE)
       }
     }
   }

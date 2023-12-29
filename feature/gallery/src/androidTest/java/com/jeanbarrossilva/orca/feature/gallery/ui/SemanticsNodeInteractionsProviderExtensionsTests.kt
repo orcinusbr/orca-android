@@ -19,7 +19,6 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performClick
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.onActions
-import com.jeanbarrossilva.orca.feature.gallery.ui.test.onCloseActionButton
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.onDownloadItem
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.onOptionsButton
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.onOptionsMenu
@@ -34,14 +33,6 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @Test
   fun findsActions() {
     composeRule.apply { setContent { AutosTheme { Gallery() } } }.onActions().assertIsDisplayed()
-  }
-
-  @Test
-  fun findsCloseActionButton() {
-    composeRule
-      .apply { setContent { AutosTheme { Actions() } } }
-      .onCloseActionButton()
-      .assertIsDisplayed()
   }
 
   @Test

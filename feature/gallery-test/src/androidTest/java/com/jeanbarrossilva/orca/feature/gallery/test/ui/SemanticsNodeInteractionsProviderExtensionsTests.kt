@@ -13,14 +13,23 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.app.module.feature.gallery
+package com.jeanbarrossilva.orca.feature.gallery.test.ui
 
-import com.jeanbarrossilva.orca.feature.gallery.GalleryBoundary
-import com.jeanbarrossilva.orca.feature.postdetails.PostDetailsFragment
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createComposeRule
+import com.jeanbarrossilva.orca.feature.gallery.ui.Actions
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import org.junit.Rule
+import org.junit.Test
 
-internal class NavigatorGalleryBoundary(private val navigator: Navigator) : GalleryBoundary {
-  override fun navigateToPostDetails(id: String) {
-    PostDetailsFragment.navigate(navigator, id)
+internal class SemanticsNodeInteractionsProviderExtensionsTests {
+  @get:Rule val composeRule = createComposeRule()
+
+  @Test
+  fun findsCloseActionButton() {
+    composeRule
+      .apply { setContent { AutosTheme { Actions() } } }
+      .onCloseActionButton()
+      .assertIsDisplayed()
   }
 }

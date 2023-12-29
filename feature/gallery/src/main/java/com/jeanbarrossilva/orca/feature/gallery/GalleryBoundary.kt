@@ -17,6 +17,4 @@ package com.jeanbarrossilva.orca.feature.gallery
 
 interface GalleryBoundary {
   fun navigateToPostDetails(id: String)
-
-  fun pop()
 }

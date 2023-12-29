@@ -19,6 +19,4 @@ import com.jeanbarrossilva.orca.feature.gallery.GalleryBoundary
 
 internal object TestGalleryBoundary : GalleryBoundary {
   override fun navigateToPostDetails(id: String) {}
-
-  override fun pop() {}
 }

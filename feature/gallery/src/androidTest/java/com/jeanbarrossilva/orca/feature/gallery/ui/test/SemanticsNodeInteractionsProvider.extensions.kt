@@ -21,7 +21,6 @@ import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.onNodeWithTag
 import com.jeanbarrossilva.orca.feature.gallery.ui.Actions
-import com.jeanbarrossilva.orca.feature.gallery.ui.GALLERY_ACTIONS_CLOSE_BUTTON_TAG
 import com.jeanbarrossilva.orca.feature.gallery.ui.GALLERY_ACTIONS_OPTIONS_BUTTON_TAG
 import com.jeanbarrossilva.orca.feature.gallery.ui.GALLERY_ACTIONS_OPTIONS_DOWNLOADS_ITEM_TAG
 import com.jeanbarrossilva.orca.feature.gallery.ui.GALLERY_ACTIONS_OPTIONS_MENU_TAG
@@ -33,15 +32,6 @@ import com.jeanbarrossilva.orca.platform.autos.kit.menu.DropdownMenu
 /** [SemanticsNodeInteraction] of a [Gallery]'s [Actions]. */
 internal fun SemanticsNodeInteractionsProvider.onActions(): SemanticsNodeInteraction {
   return onNodeWithTag(GALLERY_ACTIONS_TAG)
-}
-
-/**
- * [SemanticsNodeInteraction] of a [Gallery]'s [Actions]' close [HoverableIconButton].
- *
- * @see onActions
- */
-internal fun SemanticsNodeInteractionsProvider.onCloseActionButton(): SemanticsNodeInteraction {
-  return onNodeWithTag(GALLERY_ACTIONS_CLOSE_BUTTON_TAG)
 }
 
 /**

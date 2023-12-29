@@ -37,6 +37,7 @@ include(
   ":feature:composer",
   ":feature:feed",
   ":feature:gallery",
+  ":feature:gallery-test",
   ":feature:post-details",
   ":feature:profile-details",
   ":feature:search",
