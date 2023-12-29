@@ -36,7 +36,7 @@ class SamplePostProvider internal constructor(internal val defaultPosts: List<Po
 
   override val authenticationLock = AuthenticationLock.sample
 
-  override suspend fun provide(id: String): Flow<Post> {
+  override suspend fun onProvide(id: String): Flow<Post> {
     return postsFlow.mapNotNull { posts -> posts.find { post -> post.id == id } }
   }
 

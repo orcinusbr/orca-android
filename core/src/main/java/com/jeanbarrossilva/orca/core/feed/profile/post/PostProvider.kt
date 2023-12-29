@@ -33,5 +33,15 @@ abstract class PostProvider {
    * @param id ID of the [Post] to be provided.
    * @see Post.id
    */
-  abstract suspend fun provide(id: String): Flow<Post>
+  suspend fun provide(id: String): Flow<Post> {
+    return onProvide(id)
+  }
+
+  /**
+   * Callback to be called when a [Post] identified as [id] is requested to be provided.
+   *
+   * @param id ID of the [Post] to be provided.
+   * @see Post.id
+   */
+  protected abstract suspend fun onProvide(id: String): Flow<Post>
 }

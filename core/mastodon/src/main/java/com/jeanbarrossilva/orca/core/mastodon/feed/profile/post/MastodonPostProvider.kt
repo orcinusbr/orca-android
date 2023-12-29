@@ -33,7 +33,7 @@ internal constructor(
   override val authenticationLock: SomeAuthenticationLock,
   private val cache: Cache<Post>
 ) : PostProvider() {
-  override suspend fun provide(id: String): Flow<Post> {
+  override suspend fun onProvide(id: String): Flow<Post> {
     val post = cache.get(id)
     return flowOf(post)
   }
