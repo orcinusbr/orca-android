@@ -14,18 +14,14 @@
   ~ not, see https://www.gnu.org/licenses.
   -->
 
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:name="com.jeanbarrossilva.orca.app.OrcaApplication"
         android:allowBackup="true"
         android:icon="@mipmap/icon_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/icon_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Autos"
-        tools:targetApi="31">
+        android:theme="@style/Theme.Autos">
         <activity
             android:name="com.jeanbarrossilva.orca.app.OrcaActivity"
             android:exported="true"
