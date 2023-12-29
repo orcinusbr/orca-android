@@ -56,5 +56,7 @@ class FeedFragment internal constructor() : ComposableFragment(), ContextProvide
 
   companion object {
     internal const val USER_ID_KEY = "user-id"
+
+    const val ROUTE = "feed"
   }
 }

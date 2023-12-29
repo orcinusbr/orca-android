@@ -1,3 +1,5 @@
+import com.jeanbarrossilva.orca.namespaceFor
+
 /*
  * Copyright © 2023 Orca
  *
@@ -13,14 +15,21 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.app.module.feature.gallery
+plugins {
+  alias(libs.plugins.android.library)
+  alias(libs.plugins.kotlin.android)
+}
 
-import com.jeanbarrossilva.orca.feature.gallery.GalleryBoundary
-import com.jeanbarrossilva.orca.feature.postdetails.PostDetailsFragment
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
+android {
+  buildFeatures.compose = true
+  composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
+  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  namespace = namespaceFor("feature.gallery.test")
+}
 
-internal class NavigatorGalleryBoundary(private val navigator: Navigator) : GalleryBoundary {
-  override fun navigateToPostDetails(id: String) {
-    PostDetailsFragment.navigate(navigator, id)
-  }
+dependencies {
+  implementation(project(":feature:gallery"))
+  implementation(project(":platform:autos"))
+  implementation(libs.android.compose.ui.test.junit)
+  implementation(libs.android.compose.ui.test.manifest)
 }

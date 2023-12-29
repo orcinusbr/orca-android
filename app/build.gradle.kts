@@ -71,6 +71,7 @@ android {
 
 dependencies {
   "androidTestDemoImplementation"(project(":core:sample-test"))
+  "androidTestDemoImplementation"(project(":feature:gallery-test"))
   "androidTestDemoImplementation"(project(":platform:ui"))
   "androidTestDemoImplementation"(libs.android.activity.ktx)
   "androidTestDemoImplementation"(libs.android.compose.ui.test.junit)

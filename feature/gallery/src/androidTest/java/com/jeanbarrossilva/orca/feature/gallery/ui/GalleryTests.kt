@@ -24,8 +24,8 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import assertk.assertThat
 import assertk.assertions.isTrue
+import com.jeanbarrossilva.orca.feature.gallery.test.ui.onCloseActionButton
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.onActions
-import com.jeanbarrossilva.orca.feature.gallery.ui.test.onCloseActionButton
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.onDownloadItem
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.onOptionsButton
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.onOptionsMenu

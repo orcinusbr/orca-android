@@ -15,6 +15,7 @@
 
 package com.jeanbarrossilva.orca.feature.gallery.ui
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,12 +43,29 @@ import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.component.stat.Stats
 import com.jeanbarrossilva.orca.platform.ui.component.stat.StatsDetails
 
-internal const val GALLERY_ACTIONS_CLOSE_BUTTON_TAG = "gallery-actions-close-button"
+const val GALLERY_ACTIONS_CLOSE_BUTTON_TAG = "gallery-actions-close-button"
 internal const val GALLERY_ACTIONS_OPTIONS_BUTTON_TAG = "gallery-actions-options-button"
 internal const val GALLERY_ACTIONS_OPTIONS_DOWNLOADS_ITEM_TAG =
   "gallery-actions-options-download-action"
 internal const val GALLERY_ACTIONS_OPTIONS_MENU_TAG = "gallery-actions-options-menu"
 internal const val GALLERY_ACTIONS_TAG = "gallery-actions"
+
+@Composable
+@VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+fun Actions(modifier: Modifier = Modifier, areOptionsVisible: Boolean = false) {
+  Actions(
+    areOptionsVisible,
+    onOptionsVisibilityToggle = {},
+    onDownload = {},
+    StatsDetails.sample,
+    onComment = {},
+    onFavorite = {},
+    onRepost = {},
+    onShare = {},
+    onClose = {},
+    modifier
+  )
+}
 
 @Composable
 internal fun Actions(
@@ -120,22 +138,6 @@ internal fun Actions(
       )
     }
   }
-}
-
-@Composable
-internal fun Actions(modifier: Modifier = Modifier, areOptionsVisible: Boolean = false) {
-  Actions(
-    areOptionsVisible,
-    onOptionsVisibilityToggle = {},
-    onDownload = {},
-    StatsDetails.sample,
-    onComment = {},
-    onFavorite = {},
-    onRepost = {},
-    onShare = {},
-    onClose = {},
-    modifier
-  )
 }
 
 @Composable

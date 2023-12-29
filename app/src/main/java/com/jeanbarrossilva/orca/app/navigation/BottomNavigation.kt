@@ -34,7 +34,7 @@ internal enum class BottomNavigation {
 
     override suspend fun getDestination(): Navigator.Navigation.Destination<*> {
       return authenticationLock.requestUnlock {
-        Navigator.Navigation.Destination("feed") { FeedFragment(it.id) }
+        Navigator.Navigation.Destination(FeedFragment.ROUTE) { FeedFragment(it.id) }
       }
     }
   },
