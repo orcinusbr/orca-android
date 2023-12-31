@@ -89,4 +89,6 @@ class AuthenticationLock<T : Authenticator>(
       throw FailedAuthenticationException()
     }
   }
+
+  companion object
 }

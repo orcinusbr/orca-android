@@ -15,6 +15,7 @@
 
 package com.jeanbarrossilva.orca.core.feed.profile.account.reblog
 
+import com.jeanbarrossilva.orca.core.feed.profile.post.DeletablePost
 import com.jeanbarrossilva.orca.core.feed.profile.post.repost.Repost
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.repost.sample
 import kotlin.test.Test
@@ -34,6 +35,14 @@ internal class RepostTests {
         override val favorite = Repost.sample.favorite
         override val repost = Repost.sample.repost
         override val url = Repost.sample.url
+
+        override fun asDeletable(): DeletablePost {
+          return let {
+            object : DeletablePost(it) {
+              override suspend fun delete() {}
+            }
+          }
+        }
       },
       Repost(
         Repost.sample.id,
@@ -45,7 +54,11 @@ internal class RepostTests {
         Repost.sample.favorite,
         Repost.sample.repost,
         Repost.sample.url
-      )
+      ) {
+        object : DeletablePost(it) {
+          override suspend fun delete() {}
+        }
+      }
     )
   }
 

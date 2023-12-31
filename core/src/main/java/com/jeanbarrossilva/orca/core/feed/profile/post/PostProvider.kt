@@ -15,15 +15,34 @@
 
 package com.jeanbarrossilva.orca.core.feed.profile.post
 
+import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
+import com.jeanbarrossilva.orca.core.auth.SomeAuthenticationLock
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 /** Provides [Post]s. */
-interface PostProvider {
+abstract class PostProvider {
+  /**
+   * [AuthenticationLock] for distinguishing standard [Post]s from those that can be deleted when
+   * providing them.
+   */
+  protected abstract val authenticationLock: SomeAuthenticationLock
+
   /**
    * Provides the [Post] identified as [id].
    *
    * @param id ID of the [Post] to be provided.
    * @see Post.id
    */
-  suspend fun provide(id: String): Flow<Post>
+  suspend fun provide(id: String): Flow<Post> {
+    return onProvide(id).map { it.asDeletableOrThis(authenticationLock) }
+  }
+
+  /**
+   * Callback to be called when a [Post] identified as [id] is requested to be provided.
+   *
+   * @param id ID of the [Post] to be provided.
+   * @see Post.id
+   */
+  protected abstract suspend fun onProvide(id: String): Flow<Post>
 }

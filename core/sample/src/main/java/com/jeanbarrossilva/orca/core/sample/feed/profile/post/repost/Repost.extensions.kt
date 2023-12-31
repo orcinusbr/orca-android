@@ -19,7 +19,9 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.Author
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Content
 import com.jeanbarrossilva.orca.core.feed.profile.post.repost.Repost
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SampleDeletablePost
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePost
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostWriter
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createRamboSample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
@@ -40,9 +42,12 @@ private val sampleRepostID = UUID.randomUUID().toString()
  *
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
  *   will be loaded from a [SampleImageSource].
+ * @param writerProvider [SamplePostWriter.Provider] by which a [SamplePostWriter] for creating a
+ *   [SampleDeletablePost] from the [Repost] can be provided.
  */
 fun Repost.Companion.createSample(
-  imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
+  imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>,
+  writerProvider: SamplePostWriter.Provider
 ): Repost {
   return Repost(
     SamplePost(
@@ -61,7 +66,8 @@ fun Repost.Companion.createSample(
         null
       },
       publicationDateTime = ZonedDateTime.of(2023, 8, 16, 16, 48, 43, 384, ZoneId.of("GMT-3")),
-      url = URL("https://mastodon.social/@_inside/110900315644335855")
+      url = URL("https://mastodon.social/@_inside/110900315644335855"),
+      writerProvider
     ),
     reblogger = Author.createSample(imageLoaderProvider)
   )

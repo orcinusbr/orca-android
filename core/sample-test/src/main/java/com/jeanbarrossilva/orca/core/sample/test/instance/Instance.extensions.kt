@@ -25,7 +25,7 @@ import com.jeanbarrossilva.orca.core.sample.test.image.TestSampleImageLoader
 
 /** [SampleInstance] returned by [sample]. */
 private val testSampleInstance =
-  Instance.createSample(TestSampleImageLoader.Provider, defaultPosts = Post.samples)
+  Instance.createSample(TestSampleImageLoader.Provider) { Post.samples }
 
 /** Test [SampleInstance]. */
 val Instance.Companion.sample

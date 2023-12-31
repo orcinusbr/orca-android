@@ -26,7 +26,7 @@ import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
 import com.jeanbarrossilva.orca.std.image.ImageLoader
 import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.map
 
 /**
@@ -42,8 +42,8 @@ internal class SampleFeedProvider(
 ) : FeedProvider() {
   override val termMuter = SampleTermMuter()
 
-  /** [Flow] with the posts to be provided in the feed. */
-  private val postsFlow = postProvider.postsFlow.asStateFlow()
+  /** [Flow] with the [Post]s to be provided in the feed. */
+  private val postsFlow = postProvider.postsFlow.asSharedFlow()
 
   override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
     return postsFlow.map { posts ->

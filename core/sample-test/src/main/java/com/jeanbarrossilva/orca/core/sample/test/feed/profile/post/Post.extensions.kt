@@ -16,15 +16,18 @@
 package com.jeanbarrossilva.orca.core.sample.test.feed.profile.post
 
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostWriter
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSamples
 import com.jeanbarrossilva.orca.core.sample.test.image.TestSampleImageLoader
 
 /** [Post] returned by [sample]. */
-private val testSamplePost = Post.createSample(TestSampleImageLoader.Provider)
+private val testSamplePost =
+  SamplePostWriter.provideAndGet { Post.createSample(TestSampleImageLoader.Provider, it) }
 
 /** [Post]s returned by [samples]. */
-private val testSamplePosts = Post.createSamples(TestSampleImageLoader.Provider)
+private val testSamplePosts =
+  SamplePostWriter.provideAndGetAll { Post.createSamples(TestSampleImageLoader.Provider, it) }
 
 /** Test sample [Post]. */
 val Post.Companion.sample

@@ -15,8 +15,10 @@
 
 package com.jeanbarrossilva.orca.core.sample.feed.profile.post
 
+import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.PostProvider
+import com.jeanbarrossilva.orca.core.sample.auth.sample
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -27,12 +29,14 @@ import kotlinx.coroutines.flow.mapNotNull
  *
  * @param defaultPosts [Post]s that are present by default.
  */
-class SamplePostProvider internal constructor(internal val defaultPosts: List<Post>) :
-  PostProvider {
+class SamplePostProvider internal constructor(internal val defaultPosts: List<Post> = emptyList()) :
+  PostProvider() {
   /** [MutableStateFlow] that provides the [Post]s. */
   internal val postsFlow = MutableStateFlow(defaultPosts)
 
-  override suspend fun provide(id: String): Flow<Post> {
+  override val authenticationLock = AuthenticationLock.sample
+
+  override suspend fun onProvide(id: String): Flow<Post> {
     return postsFlow.mapNotNull { posts -> posts.find { post -> post.id == id } }
   }
 
