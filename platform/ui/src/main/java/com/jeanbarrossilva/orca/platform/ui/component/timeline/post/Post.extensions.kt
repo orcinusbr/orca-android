@@ -19,16 +19,27 @@ import androidx.compose.runtime.Composable
 import com.jeanbarrossilva.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.repost.Repost
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostWriter
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSamples
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.component.stat.asStatsDetails
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.Figure
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.Disposition
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.Thumbnail
+import com.jeanbarrossilva.orca.platform.ui.core.image.sample
 import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
+import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
 import com.jeanbarrossilva.orca.std.image.compose.SomeComposableImageLoader
 import java.net.URL
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+
+/** Sample [Post]s whose images are loaded by a [ComposableImageLoader]. */
+internal val Post.Companion.samples
+  get() =
+    SamplePostWriter.provideAndGetAll {
+      Post.createSamples(ComposableImageLoader.Provider.sample, it)
+    }
 
 /**
  * Converts this [Post] into a [Flow] of [PostPreview].

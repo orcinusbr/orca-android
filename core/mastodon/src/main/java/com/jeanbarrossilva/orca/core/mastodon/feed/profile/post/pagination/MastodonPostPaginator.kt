@@ -22,7 +22,7 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.status.MastodonS
 import com.jeanbarrossilva.orca.core.mastodon.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
-import com.jeanbarrossilva.orca.platform.ui.core.mapEach
+import com.jeanbarrossilva.orca.ext.coroutines.mapEach
 import com.jeanbarrossilva.orca.std.image.ImageLoader
 import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import com.jeanbarrossilva.orca.std.injector.Injector

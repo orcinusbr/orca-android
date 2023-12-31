@@ -17,6 +17,7 @@ package com.jeanbarrossilva.orca.core.feed.profile.post.test
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.post.Author
+import com.jeanbarrossilva.orca.core.feed.profile.post.DeletablePost
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Content
 import com.jeanbarrossilva.orca.core.feed.profile.post.stat.Stat
@@ -35,4 +36,10 @@ internal class TestPost(
   override val favorite: ToggleableStat<Profile> = Post.sample.favorite,
   override val repost: ToggleableStat<Profile> = Post.sample.repost,
   override val url: URL = Post.sample.url
-) : Post()
+) : Post() {
+  override fun asDeletable(): DeletablePost {
+    return object : DeletablePost(this@TestPost) {
+      override suspend fun delete() {}
+    }
+  }
+}

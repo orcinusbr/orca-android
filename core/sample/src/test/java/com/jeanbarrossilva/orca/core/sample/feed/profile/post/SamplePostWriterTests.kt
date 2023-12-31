@@ -13,18 +13,27 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core
+package com.jeanbarrossilva.orca.core.sample.feed.profile.post
 
+import assertk.assertThat
+import assertk.assertions.isEmpty
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
-import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostWriter
-import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
-import com.jeanbarrossilva.orca.platform.ui.core.image.sample
-import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.sample
+import kotlin.test.Test
 
-/** [Post] returned by [sample]. */
-private val samplePost =
-  SamplePostWriter.provideAndGet { Post.createSample(ComposableImageLoader.Provider.sample, it) }
+internal class SamplePostWriterTests {
+  @Test
+  fun postProviderOfProvidedWriterHasReturnedPostsAsDefaultOnes() {
+    assertThat(SamplePostWriter.provideAll { emptyList() }.postProvider.defaultPosts).isEmpty()
+  }
 
-/** [Post] whose images are loaded by a sample [ComposableImageLoader]. */
-val Post.Companion.sample
-  get() = samplePost
+  @Test(expected = IllegalArgumentException::class)
+  fun throwsWhenAddingDuplicatePost() {
+    SamplePostWriter(SamplePostProvider(defaultPosts = listOf(Post.sample))).add(Post.sample)
+  }
+
+  @Test
+  fun addsUniquePost() {
+    SamplePostWriter().add(Post.sample)
+  }
+}

@@ -18,6 +18,7 @@ package com.jeanbarrossilva.orca.core.feed.profile.post
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.SomeAuthenticationLock
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 /** Provides [Post]s. */
 abstract class PostProvider {
@@ -34,7 +35,7 @@ abstract class PostProvider {
    * @see Post.id
    */
   suspend fun provide(id: String): Flow<Post> {
-    return onProvide(id)
+    return onProvide(id).map { it.asDeletableOrThis(authenticationLock) }
   }
 
   /**

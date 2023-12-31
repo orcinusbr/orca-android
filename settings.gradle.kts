@@ -34,6 +34,7 @@ include(
   ":core-test",
   ":ext:coroutines",
   ":ext:processing",
+  ":ext:testing",
   ":feature:composer",
   ":feature:feed",
   ":feature:gallery",

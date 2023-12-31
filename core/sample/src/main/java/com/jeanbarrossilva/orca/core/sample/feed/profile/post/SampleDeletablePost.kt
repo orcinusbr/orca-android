@@ -13,13 +13,19 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-plugins {
-  alias(libs.plugins.kotlin.jvm)
+package com.jeanbarrossilva.orca.core.sample.feed.profile.post
 
-  `java-library`
-}
+import com.jeanbarrossilva.orca.core.feed.profile.post.DeletablePost
 
-dependencies {
-  implementation(project(":core"))
-  implementation(project(":ext:testing"))
+/**
+ * [DeletablePost] whose deletion is performed by the [writer].
+ *
+ * @param delegate [SamplePost] to which this [SampleDeletablePost]'s functionality will be
+ *   delegated.
+ */
+internal data class SampleDeletablePost(private val delegate: SamplePost) :
+  DeletablePost(delegate) {
+  override suspend fun delete() {
+    delegate.writerProvider.provide().delete(id)
+  }
 }

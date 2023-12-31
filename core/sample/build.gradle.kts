@@ -23,9 +23,13 @@ plugins {
 dependencies {
   api(project(":core-module"))
 
+  implementation(project(":ext:coroutines"))
+
   ksp(project(":std:injector-processor"))
 
   testImplementation(project(":core:sample-test"))
+  testImplementation(project(":ext:testing"))
   testImplementation(libs.kotlin.coroutines.test)
   testImplementation(libs.kotlin.test)
+  testImplementation(libs.turbine)
 }

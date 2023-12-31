@@ -55,6 +55,7 @@ dependencies {
   ksp(project(":std:injector-processor"))
 
   implementation(project(":core:sample"))
+  implementation(project(":ext:coroutines"))
   implementation(project(":platform:autos"))
   implementation(project(":platform:cache"))
   implementation(project(":platform:ui"))

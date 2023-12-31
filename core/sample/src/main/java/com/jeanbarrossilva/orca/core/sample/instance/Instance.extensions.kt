@@ -17,6 +17,7 @@ package com.jeanbarrossilva.orca.core.sample.instance
 
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.instance.Instance
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostWriter
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSamples
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
 import com.jeanbarrossilva.orca.std.image.ImageLoader
@@ -27,11 +28,16 @@ import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
  *
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
  *   can be loaded from a [SampleImageSource].
- * @param defaultPosts [Post]s that are provided by default within the [SampleInstance].
+ * @param defaultPosts Returns the [Post]s that are provided by default within the [SampleInstance].
  */
 fun Instance.Companion.createSample(
   imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>,
-  defaultPosts: List<Post> = Post.createSamples(imageLoaderProvider)
+  defaultPosts: (SamplePostWriter.Provider) -> List<Post> = {
+    Post.createSamples(imageLoaderProvider, writerProvider = it)
+  }
 ): SampleInstance {
-  return SampleInstance(defaultPosts, imageLoaderProvider)
+  return SampleInstance(
+    imageLoaderProvider,
+    SamplePostWriter.provideAll(defaultPosts = defaultPosts)
+  )
 }

@@ -20,6 +20,10 @@ plugins {
 }
 
 dependencies {
-  implementation(project(":core"))
-  implementation(project(":ext:testing"))
+  api(libs.assertk)
+
+  implementation(libs.kotlin.reflect)
+  implementation(libs.openTest4J)
+
+  testImplementation(libs.kotlin.test)
 }
