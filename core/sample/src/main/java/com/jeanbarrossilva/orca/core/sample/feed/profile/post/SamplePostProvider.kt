@@ -25,11 +25,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 
 /**
- * [PostProvider] that provides sample [Post]s.
+ * [PostProvider] that provides sample [Posts].
  *
  * @param defaultPosts [Post]s that are present by default.
  */
-class SamplePostProvider internal constructor(internal val defaultPosts: List<Post> = emptyList()) :
+class SamplePostProvider internal constructor(internal val defaultPosts: Posts = Posts()) :
   PostProvider() {
   /** [MutableStateFlow] that provides the [Post]s. */
   internal val postsFlow = MutableStateFlow(defaultPosts)

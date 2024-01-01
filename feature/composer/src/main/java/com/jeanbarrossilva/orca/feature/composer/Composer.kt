@@ -56,7 +56,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.jeanbarrossilva.orca.core.feed.profile.post.Post
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
 import com.jeanbarrossilva.orca.feature.composer.ui.Toolbar
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
@@ -70,8 +70,8 @@ import com.jeanbarrossilva.orca.platform.autos.overlays.asPaddingValues
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
-import com.jeanbarrossilva.orca.platform.ui.core.sample
 import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
+import com.jeanbarrossilva.orca.platform.ui.core.withSample
 
 internal const val COMPOSER_FIELD = "composer-field"
 
@@ -243,7 +243,7 @@ private fun EmptyWithToolbarComposerPreview() {
 private fun PopulatedWithoutToolbarComposerPreview() {
   AutosTheme {
     Composer(
-      TextFieldValue(Post.sample.content.text.toAnnotatedString()),
+      TextFieldValue(Posts.withSample.single().content.text.toAnnotatedString()),
       isInitiallyFocused = false
     )
   }
@@ -254,7 +254,7 @@ private fun PopulatedWithoutToolbarComposerPreview() {
 private fun PopulatedWithToolbarComposerPreview() {
   AutosTheme {
     Composer(
-      TextFieldValue(Post.sample.content.text.toAnnotatedString()),
+      TextFieldValue(Posts.withSample.single().content.text.toAnnotatedString()),
       isInitiallyFocused = true
     )
   }

@@ -18,7 +18,8 @@ package com.jeanbarrossilva.orca.core.feed.profile.post
 import assertk.assertThat
 import assertk.assertions.isSameAs
 import assertk.assertions.isTrue
-import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.sample
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.withSample
 import com.jeanbarrossilva.orca.core.test.TestAuthenticationLock
 import com.jeanbarrossilva.testing.hasPropertiesEqualToThoseOf
 import kotlin.test.Test
@@ -28,18 +29,18 @@ internal class DeletablePostTests {
   @Test
   fun delegatesNonDeletionFunctionalityToDelegate() {
     assertThat(
-        object : DeletablePost(Post.sample) {
+        object : DeletablePost(Posts.withSample.single()) {
           override suspend fun delete() {}
         }
       )
-      .hasPropertiesEqualToThoseOf(Post.sample)
+      .hasPropertiesEqualToThoseOf(Posts.withSample)
   }
 
   @Test
   fun returnsItselfWhenConvertingItIntoDeletablePost() {
     val authenticationLock = TestAuthenticationLock()
     val post =
-      object : DeletablePost(Post.sample) {
+      object : DeletablePost(Posts.withSample.single()) {
         override suspend fun delete() {}
       }
     runTest { assertThat(post.asDeletableOrThis(authenticationLock)).isSameAs(post) }
@@ -49,7 +50,7 @@ internal class DeletablePostTests {
   fun isDeleted() {
     var hasBeenDeleted = false
     runTest {
-      object : DeletablePost(Post.sample) {
+      object : DeletablePost(Posts.withSample.single()) {
           override suspend fun delete() {
             hasBeenDeleted = true
           }

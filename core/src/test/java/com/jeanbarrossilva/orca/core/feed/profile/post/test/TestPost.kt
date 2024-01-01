@@ -22,24 +22,28 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Content
 import com.jeanbarrossilva.orca.core.feed.profile.post.stat.Stat
 import com.jeanbarrossilva.orca.core.feed.profile.post.stat.toggleable.ToggleableStat
-import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.sample
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.withSample
 import java.net.URL
 import java.time.ZonedDateTime
 
-/** Local [Post] that defaults its properties' values to [Post.Companion.sample]'s. */
+/** Local [Post] that defaults its properties' values to [Posts.Companion.withSample]'s sample. */
 internal class TestPost(
-  override val id: String = Post.sample.id,
-  override val author: Author = Post.sample.author,
-  override val content: Content = Post.sample.content,
-  override val publicationDateTime: ZonedDateTime = Post.sample.publicationDateTime,
-  override val comment: Stat<Post> = Post.sample.comment,
-  override val favorite: ToggleableStat<Profile> = Post.sample.favorite,
-  override val repost: ToggleableStat<Profile> = Post.sample.repost,
-  override val url: URL = Post.sample.url
+  override val id: String = delegate.id,
+  override val author: Author = delegate.author,
+  override val content: Content = delegate.content,
+  override val publicationDateTime: ZonedDateTime = delegate.publicationDateTime,
+  override val comment: Stat<Post> = delegate.comment,
+  override val favorite: ToggleableStat<Profile> = delegate.favorite,
+  override val repost: ToggleableStat<Profile> = delegate.repost,
+  override val url: URL = delegate.url
 ) : Post() {
   override fun asDeletable(): DeletablePost {
-    return object : DeletablePost(this@TestPost) {
-      override suspend fun delete() {}
-    }
+    return delegate.asDeletable()
+  }
+
+  companion object {
+    /** [Post] to which a [TestPost]'s functionality is delegated. */
+    private val delegate = Posts.withSample.single()
   }
 }

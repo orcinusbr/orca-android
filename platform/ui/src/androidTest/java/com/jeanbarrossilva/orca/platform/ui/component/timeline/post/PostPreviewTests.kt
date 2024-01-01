@@ -25,10 +25,10 @@ import com.jeanbarrossilva.loadable.placeholder.test.assertIsLoading
 import com.jeanbarrossilva.loadable.placeholder.test.assertIsNotLoading
 import com.jeanbarrossilva.orca.core.feed.profile.post.Author
 import com.jeanbarrossilva.orca.core.instance.Instance
-import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.sample
 import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.R
+import com.jeanbarrossilva.orca.platform.ui.component.avatar.sample
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.test.onPostPreviewBody
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.test.onPostPreviewMetadata
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.test.onPostPreviewName

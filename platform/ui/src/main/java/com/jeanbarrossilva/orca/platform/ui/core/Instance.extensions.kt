@@ -20,7 +20,7 @@ import com.jeanbarrossilva.orca.core.sample.instance.createSample
 import com.jeanbarrossilva.orca.platform.ui.core.image.sample
 import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
 
-/** [Instance] returned by [sample]. */
+/** [Instance] returned by [withSample]. */
 private val sampleInstance = Instance.createSample(ComposableImageLoader.Provider.sample)
 
 /** Sample [Instance] whose images are loaded by a sample [ComposableImageLoader]. */

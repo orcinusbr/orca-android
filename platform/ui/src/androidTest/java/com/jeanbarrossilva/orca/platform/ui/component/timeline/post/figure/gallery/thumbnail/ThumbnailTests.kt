@@ -22,8 +22,8 @@ import assertk.assertions.isTrue
 import com.jeanbarrossilva.orca.core.feed.profile.post.Author
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.sample
-import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.sample
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.ui.component.avatar.sample
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.figure.gallery.thumbnail.onThumbnail
 import org.junit.Rule
 import org.junit.Test

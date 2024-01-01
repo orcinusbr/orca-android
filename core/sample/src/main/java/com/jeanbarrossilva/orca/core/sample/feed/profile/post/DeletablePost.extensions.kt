@@ -37,12 +37,11 @@ internal val sampleDeletablePostID = UUID.randomUUID().toString()
  *
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
  *   will be loaded from a [SampleImageSource].
- * @param writerProvider [SamplePostWriter.Provider] by which a [SamplePostWriter] for creating
- *   [SampleDeletablePost]s from [SamplePost]s can be provided.
  */
+context(Posts.Builder.AdditionScope)
+
 fun DeletablePost.Companion.createSample(
-  imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>,
-  writerProvider: SamplePostWriter.Provider
+  imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
 ): DeletablePost {
   return SampleDeletablePost(
     SamplePost(

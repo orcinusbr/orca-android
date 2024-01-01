@@ -24,7 +24,6 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Highlig
 import com.jeanbarrossilva.orca.core.feed.profile.post.repost.Repost
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.highlight.createSample
-import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.repost.createSample
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
 import com.jeanbarrossilva.orca.core.sample.instance.domain.sample
@@ -44,16 +43,15 @@ private val thirdPostID = UUID.randomUUID().toString()
  *
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
  *   will be loaded from a [SampleImageSource].
- * @param writerProvider [SamplePostWriter.Provider] by which a [SamplePostWriter] for creating
- *   [SampleDeletablePost]s from the [Post]s can be provided.
  */
+context(Posts.Builder.AdditionScope)
+
 fun Post.Companion.createSamples(
-  imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>,
-  writerProvider: SamplePostWriter.Provider
+  imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
 ): List<Post> {
   return listOf(
-    Repost.createSample(imageLoaderProvider, writerProvider),
-    createSample(imageLoaderProvider, writerProvider),
+    Repost.createSample(imageLoaderProvider),
+    createSample(imageLoaderProvider),
     SamplePost(
       thirdPostID,
       Author.createChristianSample(imageLoaderProvider),
@@ -82,12 +80,11 @@ fun Post.Companion.createSamples(
  *
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
  *   will be loaded from a [SampleImageSource].
- * @param writerProvider [SamplePostWriter.Provider] by which a [SamplePostWriter] for creating a
- *   [SampleDeletablePost] from the [Post] can be provided.
  */
+context(Posts.Builder.AdditionScope)
+
 fun Post.Companion.createSample(
-  imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>,
-  writerProvider: SamplePostWriter.Provider
+  imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
 ): Post {
-  return DeletablePost.createSample(imageLoaderProvider, writerProvider)
+  return DeletablePost.createSample(imageLoaderProvider)
 }

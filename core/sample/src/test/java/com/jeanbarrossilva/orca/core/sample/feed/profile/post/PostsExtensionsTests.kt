@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,18 +13,15 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.repost
+package com.jeanbarrossilva.orca.core.sample.feed.profile.post
 
-import com.jeanbarrossilva.orca.core.feed.profile.post.repost.Repost
-import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostWriter
-import com.jeanbarrossilva.orca.core.sample.feed.profile.post.repost.createSample
-import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.content.highlight.sample
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.sample.test.image.TestSampleImageLoader
+import kotlin.test.Test
 
-/** [Repost] returned by [sample]. */
-private val testSampleRepost =
-  SamplePostWriter.provideAndGet { Repost.createSample(TestSampleImageLoader.Provider, it) }
-
-/** Test sample [Repost]. */
-val Repost.Companion.sample
-  get() = testSampleRepost
+internal class PostsExtensionsTests {
+  @Test
+  fun createsPosts() {
+    Posts { addAll { Post.createSamples(TestSampleImageLoader.Provider) } }
+  }
+}

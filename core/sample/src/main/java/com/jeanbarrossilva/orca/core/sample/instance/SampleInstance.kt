@@ -19,6 +19,7 @@ import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.Authenticator
 import com.jeanbarrossilva.orca.core.feed.FeedProvider
 import com.jeanbarrossilva.orca.core.feed.profile.ProfileProvider
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearcher
 import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
@@ -27,6 +28,7 @@ import com.jeanbarrossilva.orca.core.sample.auth.sample
 import com.jeanbarrossilva.orca.core.sample.feed.SampleFeedProvider
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileProvider
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileWriter
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostWriter
 import com.jeanbarrossilva.orca.core.sample.feed.profile.search.SampleProfileSearcher
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
@@ -39,12 +41,12 @@ import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
  *
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
  *   will be loaded from a [SampleImageSource].
- * @param postWriter [SamplePostWriter] for performing write operations on the [postProvider].
+ * @param posts [Post]s that are provided by default by the [postProvider].
  */
 class SampleInstance
 internal constructor(
   internal val imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>,
-  val postWriter: SamplePostWriter
+  private val defaultPosts: Posts
 ) : Instance<Authenticator>() {
   override val domain = Domain.sample
   override val authenticator: Authenticator = SampleAuthenticator
@@ -58,4 +60,8 @@ internal constructor(
 
   /** [SampleProfileWriter] for performing write operations on the [profileProvider]. */
   val profileWriter = SampleProfileWriter(profileProvider as SampleProfileProvider)
+
+  /** [SamplePostWriter] for performing write operations on the [postProvider]. */
+  val postWriter
+    get() = defaultPosts.additionScope.writerProvider.provide()
 }

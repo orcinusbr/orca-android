@@ -18,9 +18,8 @@ package com.jeanbarrossilva.orca.core.sample.feed.profile.post
 import assertk.assertThat
 import assertk.assertions.isEmpty
 import com.jeanbarrossilva.orca.core.feed.profile.post.DeletablePost
-import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.instance.Instance
-import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.samples
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.withSamples
 import com.jeanbarrossilva.orca.core.sample.test.image.TestSampleImageLoader
 import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
 import com.jeanbarrossilva.orca.core.sample.test.instance.sample
@@ -37,7 +36,7 @@ internal class SamplePostProviderTests {
   @Test
   fun getsPostsByTheirIDs() {
     runTest {
-      Post.samples.forEach {
+      Posts.withSamples.forEach {
         assertThat(Instance.sample.postProvider.provide(it.id).first())
           .hasPropertiesEqualToThoseOf(it)
       }
@@ -47,7 +46,10 @@ internal class SamplePostProviderTests {
   @Test
   fun doesNotProvidePostWhenItIsDeleted() {
     assertThat(
-        SamplePostWriter.provide { DeletablePost.createSample(TestSampleImageLoader.Provider, it) }
+        Posts { add { DeletablePost.createSample(TestSampleImageLoader.Provider) } }
+          .additionScope
+          .writerProvider
+          .provide()
           .postProvider
           .apply {
             runTest {

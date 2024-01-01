@@ -15,25 +15,18 @@
 
 package com.jeanbarrossilva.orca.core.sample.feed.profile.post
 
-import assertk.assertThat
-import assertk.assertions.isEmpty
-import com.jeanbarrossilva.orca.core.feed.profile.post.Post
-import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.sample
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.withSample
 import kotlin.test.Test
 
 internal class SamplePostWriterTests {
-  @Test
-  fun postProviderOfProvidedWriterHasReturnedPostsAsDefaultOnes() {
-    assertThat(SamplePostWriter.provideAll { emptyList() }.postProvider.defaultPosts).isEmpty()
-  }
-
   @Test(expected = IllegalArgumentException::class)
   fun throwsWhenAddingDuplicatePost() {
-    SamplePostWriter(SamplePostProvider(defaultPosts = listOf(Post.sample))).add(Post.sample)
+    SamplePostWriter(SamplePostProvider(defaultPosts = Posts.withSample))
+      .add(Posts.withSample.single())
   }
 
   @Test
   fun addsUniquePost() {
-    SamplePostWriter().add(Post.sample)
+    SamplePostWriter().add(Posts.withSample.single())
   }
 }

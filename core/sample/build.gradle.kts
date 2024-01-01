@@ -33,3 +33,5 @@ dependencies {
   testImplementation(libs.kotlin.test)
   testImplementation(libs.turbine)
 }
+
+kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")

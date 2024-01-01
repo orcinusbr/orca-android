@@ -66,3 +66,5 @@ dependencies {
   testImplementation(libs.kotlin.coroutines.test)
   testImplementation(libs.kotlin.test)
 }
+
+kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
