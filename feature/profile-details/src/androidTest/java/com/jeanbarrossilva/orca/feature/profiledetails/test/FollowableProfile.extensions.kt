@@ -21,9 +21,10 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.type.followable.createS
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.type.sample
 import com.jeanbarrossilva.orca.platform.ui.core.image.sample
 import com.jeanbarrossilva.orca.platform.ui.core.sample
+import com.jeanbarrossilva.orca.platform.ui.core.withSample
 import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
 
-/** [FollowableProfile] returned by [sample]. */
+/** [FollowableProfile] returned by [withSample]. */
 private val sampleFollowableProfile =
   FollowableProfile.createSample(
     Instance.sample.profileWriter,

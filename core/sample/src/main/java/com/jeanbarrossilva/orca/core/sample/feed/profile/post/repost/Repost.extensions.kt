@@ -19,9 +19,8 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.Author
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Content
 import com.jeanbarrossilva.orca.core.feed.profile.post.repost.Repost
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
-import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SampleDeletablePost
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePost
-import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostWriter
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createRamboSample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
@@ -42,12 +41,11 @@ private val sampleRepostID = UUID.randomUUID().toString()
  *
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
  *   will be loaded from a [SampleImageSource].
- * @param writerProvider [SamplePostWriter.Provider] by which a [SamplePostWriter] for creating a
- *   [SampleDeletablePost] from the [Repost] can be provided.
  */
+context(Posts.Builder.AdditionScope)
+
 fun Repost.Companion.createSample(
-  imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>,
-  writerProvider: SamplePostWriter.Provider
+  imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
 ): Repost {
   return Repost(
     SamplePost(

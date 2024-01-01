@@ -16,15 +16,16 @@
 package com.jeanbarrossilva.orca.platform.ui.core
 
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
-import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostWriter
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
 import com.jeanbarrossilva.orca.platform.ui.core.image.sample
 import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
 
-/** [Post] returned by [sample]. */
-private val samplePost =
-  SamplePostWriter.provideAndGet { Post.createSample(ComposableImageLoader.Provider.sample, it) }
+/** [Posts] returned by [withSample]. */
+private val postsWithSample = Posts {
+  add { Post.createSample(ComposableImageLoader.Provider.sample) }
+}
 
-/** [Post] whose images are loaded by a sample [ComposableImageLoader]. */
-val Post.Companion.sample
-  get() = samplePost
+/** [Posts] whose sample's images are loaded by a sample [ComposableImageLoader]. */
+val Posts.Companion.withSample
+  get() = postsWithSample

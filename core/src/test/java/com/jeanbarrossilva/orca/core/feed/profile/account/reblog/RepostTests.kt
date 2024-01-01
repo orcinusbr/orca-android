@@ -17,24 +17,28 @@ package com.jeanbarrossilva.orca.core.feed.profile.account.reblog
 
 import com.jeanbarrossilva.orca.core.feed.profile.post.DeletablePost
 import com.jeanbarrossilva.orca.core.feed.profile.post.repost.Repost
-import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.repost.sample
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.withSamples
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class RepostTests {
+  private val sampleRepost
+    get() = Posts.withSamples.filterIsInstance<Repost>().first()
+
   @Test
   fun createsRepost() {
     assertEquals(
       object : Repost() {
-        override val id = Repost.sample.id
-        override val author = Repost.sample.author
-        override val reposter = Repost.sample.reposter
-        override val content = Repost.sample.content
-        override val publicationDateTime = Repost.sample.publicationDateTime
-        override val comment = Repost.sample.comment
-        override val favorite = Repost.sample.favorite
-        override val repost = Repost.sample.repost
-        override val url = Repost.sample.url
+        override val id = sampleRepost.id
+        override val author = sampleRepost.author
+        override val reposter = sampleRepost.reposter
+        override val content = sampleRepost.content
+        override val publicationDateTime = sampleRepost.publicationDateTime
+        override val comment = sampleRepost.comment
+        override val favorite = sampleRepost.favorite
+        override val repost = sampleRepost.repost
+        override val url = sampleRepost.url
 
         override fun asDeletable(): DeletablePost {
           return let {
@@ -45,15 +49,15 @@ internal class RepostTests {
         }
       },
       Repost(
-        Repost.sample.id,
-        Repost.sample.author,
-        Repost.sample.reposter,
-        Repost.sample.content,
-        Repost.sample.publicationDateTime,
-        Repost.sample.comment,
-        Repost.sample.favorite,
-        Repost.sample.repost,
-        Repost.sample.url
+        sampleRepost.id,
+        sampleRepost.author,
+        sampleRepost.reposter,
+        sampleRepost.content,
+        sampleRepost.publicationDateTime,
+        sampleRepost.comment,
+        sampleRepost.favorite,
+        sampleRepost.repost,
+        sampleRepost.url
       ) {
         object : DeletablePost(it) {
           override suspend fun delete() {}
@@ -64,6 +68,6 @@ internal class RepostTests {
 
   @Test
   fun createsRepostFromOriginalPost() {
-    assertEquals(Repost.sample, Repost(Repost.sample, Repost.sample.reposter))
+    assertEquals(sampleRepost, Repost(sampleRepost, sampleRepost.reposter))
   }
 }

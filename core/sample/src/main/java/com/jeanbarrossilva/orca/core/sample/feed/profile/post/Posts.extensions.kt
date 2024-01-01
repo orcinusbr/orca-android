@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,15 +13,13 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-plugins {
-  alias(libs.plugins.kotlin.jvm)
+package com.jeanbarrossilva.orca.core.sample.feed.profile.post
 
-  `java-library`
+/**
+ * Creates [Posts].
+ *
+ * @param build Additional configuration to be performed.
+ */
+fun Posts(build: Posts.Builder.() -> Unit = {}): Posts {
+  return Posts.Builder().apply(build).build()
 }
-
-dependencies {
-  implementation(project(":core:sample"))
-  implementation(kotlin("test-junit"))
-}
-
-kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")

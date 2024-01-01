@@ -16,23 +16,25 @@
 package com.jeanbarrossilva.orca.core.sample.test.feed.profile.post
 
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
-import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostWriter
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSamples
 import com.jeanbarrossilva.orca.core.sample.test.image.TestSampleImageLoader
 
-/** [Post] returned by [sample]. */
-private val testSamplePost =
-  SamplePostWriter.provideAndGet { Post.createSample(TestSampleImageLoader.Provider, it) }
+/** [Posts] returned by [withSample]. */
+private val testPostsWithSample = Posts {
+  add { Post.createSample(TestSampleImageLoader.Provider) }
+}
 
-/** [Post]s returned by [samples]. */
-private val testSamplePosts =
-  SamplePostWriter.provideAndGetAll { Post.createSamples(TestSampleImageLoader.Provider, it) }
+/** [Posts] returned by [withSamples]. */
+private val testPostsWithSamples = Posts {
+  addAll { Post.createSamples(TestSampleImageLoader.Provider) }
+}
 
-/** Test sample [Post]. */
-val Post.Companion.sample
-  get() = testSamplePost
+/** Test [Posts] with a sample. */
+val Posts.Companion.withSample
+  get() = testPostsWithSample
 
-/** Test sample [Post]s. */
-val Post.Companion.samples
-  get() = testSamplePosts
+/** Test [Posts] with samples. */
+val Posts.Companion.withSamples
+  get() = testPostsWithSamples

@@ -17,8 +17,9 @@ package com.jeanbarrossilva.orca.core.feed
 
 import app.cash.turbine.test
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.SampleTermMuter
-import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.samples
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.withSamples
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertFailsWith
@@ -74,14 +75,16 @@ internal class FeedProviderTests {
         override val termMuter = SampleTermMuter()
 
         override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
-          return flowOf(Post.samples)
+          return flowOf(Posts.withSamples)
         }
 
         override suspend fun containsUser(userID: String): Boolean {
           return true
         }
       }
-    runTest { assertContentEquals(Post.samples, provider.provide(userID = "🥸", page = 0).first()) }
+    runTest {
+      assertContentEquals(Posts.withSamples, provider.provide(userID = "🥸", page = 0).first())
+    }
   }
 
   @Test
@@ -92,7 +95,7 @@ internal class FeedProviderTests {
         override val termMuter = termMuter
 
         override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
-          return flowOf(Post.samples.take(1))
+          return flowOf(Posts.withSamples.take(1))
         }
 
         override suspend fun containsUser(userID: String): Boolean {
@@ -100,7 +103,7 @@ internal class FeedProviderTests {
         }
       }
     runTest {
-      Post.samples.first().content.text.split(' ').take(2).forEach { termMuter.mute(it) }
+      Posts.withSamples.first().content.text.split(' ').take(2).forEach { termMuter.mute(it) }
       provider.provide(userID = "😶‍🌫️", page = 0).test {
         assertContentEquals(emptyList(), awaitItem())
         awaitComplete()

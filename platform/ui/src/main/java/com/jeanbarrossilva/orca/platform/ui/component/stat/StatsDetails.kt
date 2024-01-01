@@ -19,8 +19,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.stat.Stat
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
-import com.jeanbarrossilva.orca.platform.ui.core.sample
+import com.jeanbarrossilva.orca.platform.ui.core.withSample
 
 /**
  * Details of a [Post]'s [Stat]s.
@@ -62,6 +63,6 @@ internal constructor(
 
     /** Sample [StatsDetails]. */
     val sample
-      @Composable get() = Post.sample.asStatsDetails()
+      @Composable get() = Posts.withSample.single().asStatsDetails()
   }
 }

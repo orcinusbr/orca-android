@@ -28,13 +28,13 @@ import androidx.compose.ui.test.performScrollTo
 import androidx.test.core.app.launchActivity
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
-import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.withSamples
 import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
 import com.jeanbarrossilva.orca.feature.feed.test.FeedActivity
 import com.jeanbarrossilva.orca.feature.feed.test.TestFeedModule
-import com.jeanbarrossilva.orca.feature.feed.test.samples
 import com.jeanbarrossilva.orca.platform.ui.component.stat.favorite.FAVORITE_STAT_TAG
 import com.jeanbarrossilva.orca.platform.ui.core.sample
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline
@@ -62,7 +62,7 @@ internal class FeedFragmentTests {
         .performScrollToBottom()
         .onChildren()
         .filter(isPostPreview())
-        .assertCountEquals(Post.samples.size)
+        .assertCountEquals(Posts.withSamples.size)
     }
   }
 

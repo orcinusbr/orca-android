@@ -24,14 +24,15 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
 import com.jeanbarrossilva.orca.core.sample.image.CoverImageSource
-import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.sample
 import com.jeanbarrossilva.orca.feature.gallery.GalleryActivity
 import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
 import com.jeanbarrossilva.orca.platform.testing.context
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
 import com.jeanbarrossilva.orca.platform.ui.core.image.createSample
+import com.jeanbarrossilva.orca.platform.ui.core.withSample
 import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
 
 /**
@@ -43,7 +44,7 @@ import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
  * @param entrypoint Entrypoint page of the [Gallery].
  */
 internal fun launchGalleryActivity(
-  postID: String = Post.sample.id,
+  postID: String = Posts.withSample.single().id,
   entrypointIndex: Int = 0,
   secondary: List<Attachment> = Attachment.samples,
   entrypoint: @Composable (Modifier) -> Unit = {
