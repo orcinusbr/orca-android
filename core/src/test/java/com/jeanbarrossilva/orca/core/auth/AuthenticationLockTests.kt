@@ -37,7 +37,7 @@ internal class AuthenticationLockTests {
   }
 
   @Test
-  fun schedulesUnlocksForWhenOngoingOnes() {
+  fun schedulesUnlocksForWhenOngoingOnesAreFinished() {
     val lock = TestAuthenticationLock()
     runTest {
       lock.scheduleUnlock { delay(32.seconds) }
