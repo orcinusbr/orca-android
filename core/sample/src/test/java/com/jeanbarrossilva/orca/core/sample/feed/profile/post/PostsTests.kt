@@ -15,16 +15,20 @@
 
 package com.jeanbarrossilva.orca.core.sample.feed.profile.post
 
+import assertk.assertThat
+import assertk.assertions.containsSubList
+import assertk.assertions.isEmpty
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.withSample
 import kotlin.test.Test
 
-internal class AdditionScopeTests {
-  @Test(expected = SamplePostWriter.Provider.UnspecifiedWriterException::class)
-  fun doesNotProviderPostWriterWhenUnfinished() {
-    Posts.Builder.AdditionScope().writerProvider.provide()
+internal class PostsTests {
+  @Test
+  fun adds() {
+    assertThat(Posts() + Posts.withSample.single()).containsSubList(Posts.withSample)
   }
 
   @Test
-  fun providesPostWriterWhenFinished() {
-    Posts.Builder.AdditionScope().apply { finish(Posts()) }.writerProvider.provide()
+  fun subtracts() {
+    assertThat(Posts.withSample - Posts.withSample.single()).isEmpty()
   }
 }
