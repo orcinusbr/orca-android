@@ -33,7 +33,7 @@ internal enum class BottomNavigation {
     override val id = R.id.feed
 
     override suspend fun getDestination(): Navigator.Navigation.Destination<*> {
-      return authenticationLock.requestUnlock {
+      return authenticationLock.scheduleUnlock {
         Navigator.Navigation.Destination(FeedFragment.ROUTE) { FeedFragment(it.id) }
       }
     }
@@ -42,7 +42,7 @@ internal enum class BottomNavigation {
     override val id = R.id.profile_details
 
     override suspend fun getDestination(): Navigator.Navigation.Destination<*> {
-      return authenticationLock.requestUnlock {
+      return authenticationLock.scheduleUnlock {
         Navigator.Navigation.Destination(ProfileDetailsFragment.createRoute(it.id)) {
           ProfileDetailsFragment(BackwardsNavigationState.Unavailable, it.id)
         }

@@ -69,7 +69,7 @@ abstract class Post : Serializable {
      *   deletable one from it. May be troublesome when allowing unauthenticated ones to browse
      *   through the federated feed.
      */
-    return authenticationLock.requestUnlock { if (it.id == author.id) asDeletable() else this }
+    return authenticationLock.scheduleUnlock { if (it.id == author.id) asDeletable() else this }
   }
 
   companion object
