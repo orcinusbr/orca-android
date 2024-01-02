@@ -2,11 +2,11 @@ package com.jeanbarrossilva.orca.core.auth
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isTrue
 import com.jeanbarrossilva.orca.core.test.TestActorProvider
 import com.jeanbarrossilva.orca.core.test.TestAuthenticationLock
 import com.jeanbarrossilva.orca.core.test.TestAuthenticator
 import kotlin.test.Test
-import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,7 +19,7 @@ internal class AuthenticationLockTests {
     var hasBeenAuthenticated = false
     val authenticator = TestAuthenticator { hasBeenAuthenticated = true }
     runTest { TestAuthenticationLock(authenticator = authenticator).scheduleUnlock {} }
-    assertTrue(hasBeenAuthenticated)
+    assertThat(hasBeenAuthenticated).isTrue()
   }
 
   @Test
@@ -33,7 +33,7 @@ internal class AuthenticationLockTests {
         hasListenerBeenNotified = true
       }
     }
-    assertTrue(hasListenerBeenNotified)
+    assertThat(hasListenerBeenNotified).isTrue()
   }
 
   @Test
