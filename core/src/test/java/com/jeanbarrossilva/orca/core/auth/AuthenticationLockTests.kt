@@ -1,47 +1,52 @@
-/*
- * Copyright © 2023 Orca
- *
- * This program is free software: you can redistribute it and/or modify it under the terms of the
- * GNU General Public License as published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
- * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with this program. If
- * not, see https://www.gnu.org/licenses.
- */
-
 package com.jeanbarrossilva.orca.core.auth
 
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import com.jeanbarrossilva.orca.core.test.TestActorProvider
 import com.jeanbarrossilva.orca.core.test.TestAuthenticationLock
 import com.jeanbarrossilva.orca.core.test.TestAuthenticator
 import kotlin.test.Test
 import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 
 internal class AuthenticationLockTests {
   @Test
-  fun `GIVEN an unauthenticated actor WHEN unlocking THEN it's authenticated`() {
+  fun authenticatesWhenUnlockingWithUnauthenticatedActor() {
     var hasBeenAuthenticated = false
     val authenticator = TestAuthenticator { hasBeenAuthenticated = true }
-    runTest { TestAuthenticationLock(authenticator = authenticator).requestUnlock {} }
+    runTest { TestAuthenticationLock(authenticator = authenticator).scheduleUnlock {} }
     assertTrue(hasBeenAuthenticated)
   }
 
   @Test
-  fun `GIVEN an authenticated actor WHEN unlocking THEN the listener is notified`() {
+  fun unlocksWhenActorIsAuthenticated() {
     val actorProvider = TestActorProvider()
     val authenticator = TestAuthenticator(actorProvider = actorProvider)
     var hasListenerBeenNotified = false
     runTest {
       authenticator.authenticate()
-      TestAuthenticationLock(actorProvider, authenticator).requestUnlock {
+      TestAuthenticationLock(actorProvider, authenticator).scheduleUnlock {
         hasListenerBeenNotified = true
       }
     }
     assertTrue(hasListenerBeenNotified)
+  }
+
+  @Test
+  fun schedulesUnlocksForWhenOngoingOnes() {
+    val lock = TestAuthenticationLock()
+    runTest {
+      lock.scheduleUnlock { delay(32.seconds) }
+      repeat(1_024) { lock.scheduleUnlock { delay(8.seconds) } }
+      assertThat(
+          @OptIn(ExperimentalCoroutinesApi::class)
+          testScheduler.currentTime.milliseconds.inWholeSeconds
+        )
+        .isEqualTo(8_224)
+    }
   }
 }
