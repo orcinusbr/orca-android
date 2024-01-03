@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,8 +13,19 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.search
+package com.jeanbarrossilva.orca.app.demo
 
-interface SearchBoundary {
-  fun navigateToProfileDetails(id: String)
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import com.jeanbarrossilva.orca.app.demo.test.onSearchAction
+import org.junit.Rule
+import org.junit.Test
+
+internal class SemanticsNodeInteractionsProviderExtensionsTests {
+  @get:Rule val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
+
+  @Test
+  fun findsSearchAction() {
+    composeRule.onSearchAction().assertIsDisplayed()
+  }
 }

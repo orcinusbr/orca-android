@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,8 +13,14 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.search
+package com.jeanbarrossilva.orca.app.demo.test
 
-interface SearchBoundary {
-  fun navigateToProfileDetails(id: String)
+import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
+import androidx.compose.ui.test.onNodeWithTag
+import com.jeanbarrossilva.orca.feature.feed.FEED_SEARCH_ACTION_TAG
+
+/** [SemanticsNodeInteraction] of the feed's search action. */
+internal fun SemanticsNodeInteractionsProvider.onSearchAction(): SemanticsNodeInteraction {
+  return onNodeWithTag(FEED_SEARCH_ACTION_TAG)
 }

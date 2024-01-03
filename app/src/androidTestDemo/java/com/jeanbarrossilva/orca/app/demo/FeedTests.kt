@@ -22,6 +22,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
+import com.jeanbarrossilva.orca.app.demo.test.onSearchAction
 import com.jeanbarrossilva.orca.app.demo.test.performScrollToPostPreviewWithGalleryPreview
 import com.jeanbarrossilva.orca.app.demo.test.performScrollToPostPreviewWithLinkCard
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Highlight
@@ -33,6 +34,7 @@ import com.jeanbarrossilva.orca.feature.feed.FEED_FLOATING_ACTION_BUTTON_TAG
 import com.jeanbarrossilva.orca.feature.feed.FeedFragment
 import com.jeanbarrossilva.orca.feature.gallery.GalleryActivity
 import com.jeanbarrossilva.orca.feature.gallery.test.ui.onCloseActionButton
+import com.jeanbarrossilva.orca.feature.search.SearchActivity
 import com.jeanbarrossilva.orca.platform.ui.test.assertIsAtFragment
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onRefreshIndicator
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline
@@ -44,6 +46,11 @@ import org.junit.Test
 
 internal class FeedTests {
   @get:Rule val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
+
+  @Test
+  fun navigatesToSearch() {
+    intendStartingOf<SearchActivity> { composeRule.onSearchAction().performClick() }
+  }
 
   @Test
   fun refreshes() {

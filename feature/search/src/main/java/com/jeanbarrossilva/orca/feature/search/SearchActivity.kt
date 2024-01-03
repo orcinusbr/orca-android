@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,26 +15,26 @@
 
 package com.jeanbarrossilva.orca.feature.search
 
+import android.content.Context
+import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
-import androidx.fragment.app.viewModels
-import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableFragment
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.opening
+import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableActivity
+import com.jeanbarrossilva.orca.platform.ui.core.on
 import com.jeanbarrossilva.orca.std.injector.Injector
 
-class SearchFragment : ComposableFragment() {
+class SearchActivity internal constructor() : ComposableActivity() {
   private val module by lazy { Injector.from<SearchModule>() }
   private val viewModel by
     viewModels<SearchViewModel> { SearchViewModel.createFactory(module.searcher()) }
 
   @Composable
   override fun Content() {
-    Search(viewModel, module.boundary())
+    Search(viewModel, module.boundary(), onBackwardsNavigation = ::finish)
   }
 
   companion object {
-    fun navigate(navigator: Navigator) {
-      navigator.navigate(opening()) { to("search", ::SearchFragment) }
+    fun start(context: Context) {
+      context.on<SearchActivity>().start()
     }
   }
 }
