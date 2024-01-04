@@ -13,8 +13,14 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.settings.termmuting
+package com.jeanbarrossilva.orca.app.module.feature.settings
 
-interface TermMutingBoundary {
-  fun pop()
+import android.content.Context
+import com.jeanbarrossilva.orca.feature.settings.SettingsBoundary
+import com.jeanbarrossilva.orca.feature.settings.termmuting.TermMutingActivity
+
+internal class ContextualSettingsBoundary(private val context: Context) : SettingsBoundary {
+  override fun navigateToTermMuting() {
+    TermMutingActivity.start(context)
+  }
 }

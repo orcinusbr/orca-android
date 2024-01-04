@@ -59,7 +59,7 @@ internal const val SETTINGS_TERM_MUTING_MUTE_BUTTON = "settings-term-muting-mute
 @Composable
 internal fun TermMuting(
   viewModel: TermMutingViewModel,
-  boundary: TermMutingBoundary,
+  onBackwardsNavigation: () -> Unit,
   modifier: Modifier = Modifier
 ) {
   val term by viewModel.termFlow.collectAsState()
@@ -69,7 +69,7 @@ internal fun TermMuting(
     term,
     onTermChange = viewModel::setTerm,
     onMute = viewModel::mute,
-    onPop = boundary::pop
+    onBackwardsNavigation
   )
 }
 
@@ -80,7 +80,7 @@ internal fun TermMuting(
   term: String,
   onTermChange: (term: String) -> Unit,
   onMute: () -> Unit,
-  onPop: () -> Unit,
+  onBackwardsNavigation: () -> Unit,
 ) {
   val context = LocalContext.current
   val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
@@ -95,7 +95,7 @@ internal fun TermMuting(
     errorDispatcher.dispatch()
     if (!containsErrors) {
       onMute()
-      onPop()
+      onBackwardsNavigation()
     }
   }
 
@@ -110,7 +110,7 @@ internal fun TermMuting(
     modifier,
     topAppBar = {
       TopAppBarWithBackNavigation(
-        onNavigation = onPop,
+        onBackwardsNavigation,
         title = { Text(stringResource(R.string.feature_settings_term_muting)) },
         subtitle = { Text(stringResource(R.string.feature_settings_term_muting_settings)) },
         scrollBehavior = topAppBarScrollBehavior
@@ -158,5 +158,5 @@ internal fun TermMuting(
 @Composable
 @MultiThemePreview
 private fun TermMutingPreview() {
-  AutosTheme { TermMuting(term = "🐛", onTermChange = {}, onMute = {}, onPop = {}) }
+  AutosTheme { TermMuting(term = "🐛", onTermChange = {}, onMute = {}, onBackwardsNavigation = {}) }
 }

@@ -92,8 +92,8 @@ open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilityChangeLi
       register<PostDetailsModule>(MainPostDetailsModule(this@OrcaActivity))
       register<ProfileDetailsModule>(MainProfileDetailsModule(this@OrcaActivity))
       register<SearchModule>(MainSearchModule(navigator))
-      register<SettingsModule>(MainSettingsModule(navigator))
-      register<TermMutingModule>(MainTermMutingModule(navigator))
+      register<SettingsModule>(MainSettingsModule(this@OrcaActivity))
+      register<TermMutingModule>(MainTermMutingModule)
     }
   }
 
