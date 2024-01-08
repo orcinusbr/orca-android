@@ -27,7 +27,7 @@ android {
   compileSdk = libs.versions.android.sdk.target.get().toInt()
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
   flavorDimensions += Dimensions.VERSION
-  lintOptions.disable += "Instantiatable"
+  lint.disable += "Instantiatable"
   namespace = namespaceFor("app")
 
   buildFeatures {
