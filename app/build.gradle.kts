@@ -104,6 +104,6 @@ dependencies {
   implementation(libs.android.constraintlayout)
   implementation(libs.android.fragment.ktx)
   implementation(libs.android.material)
-  implementation(libs.kotlin.reflect)
-  implementation(libs.time4j)
+
+  releaseImplementation(libs.kotlin.reflect)
 }
