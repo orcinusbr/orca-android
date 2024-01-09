@@ -41,6 +41,6 @@ open class OrcaActivity :
     setContentView(binding?.root)
     inject(this, coreModule)
     navigateOnItemSelection(this)
-    navigateToDefaultDestination()
+    selectDefaultItem()
   }
 }

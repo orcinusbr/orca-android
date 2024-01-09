@@ -30,7 +30,7 @@ internal interface BottomNavigation : Binding {
     }
   }
 
-  fun navigateToDefaultDestination() {
+  fun selectDefaultItem() {
     binding?.bottomNavigationView?.selectedItemId = R.id.feed
   }
 
