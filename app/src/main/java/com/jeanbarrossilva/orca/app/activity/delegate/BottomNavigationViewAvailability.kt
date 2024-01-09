@@ -41,7 +41,7 @@ internal interface BottomNavigationViewAvailability :
     }
   }
 
-  fun updateBottomAreaAvailability(activity: ComponentActivity) {
+  fun offsetOnChange(activity: ComponentActivity) {
     constraintSet = ConstraintSet().apply { clone(binding?.root) }
     dereferenceConstraintSetOnDestroy(activity)
   }

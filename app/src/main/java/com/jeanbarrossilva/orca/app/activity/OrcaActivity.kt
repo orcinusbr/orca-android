@@ -37,7 +37,7 @@ open class OrcaActivity :
     super.onCreate(savedInstanceState)
     WindowCompat.setDecorFitsSystemWindows(window, false)
     bindView(this)
-    updateBottomAreaAvailability(this)
+    offsetOnChange(this)
     setContentView(binding?.root)
     inject(this, coreModule)
     navigateOnItemSelection(this)
