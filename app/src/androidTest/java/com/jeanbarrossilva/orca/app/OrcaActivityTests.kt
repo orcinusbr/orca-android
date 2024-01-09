@@ -16,6 +16,7 @@
 package com.jeanbarrossilva.orca.app
 
 import androidx.test.core.app.launchActivity
+import com.jeanbarrossilva.orca.app.activity.OrcaActivity
 import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.MastodonAuthorizationActivity
 import com.jeanbarrossilva.orca.ext.intents.intendStartingOf
 import org.junit.Test
