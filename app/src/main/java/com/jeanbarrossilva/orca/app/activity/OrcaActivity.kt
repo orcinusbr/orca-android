@@ -16,26 +16,23 @@
 package com.jeanbarrossilva.orca.app.activity
 
 import android.os.Bundle
-import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.lifecycleScope
-import com.jeanbarrossilva.orca.app.R
+import com.jeanbarrossilva.orca.app.activity.delegate.BottomNavigation
 import com.jeanbarrossilva.orca.app.activity.delegate.BottomNavigationViewAvailability
 import com.jeanbarrossilva.orca.app.activity.delegate.Injection
 import com.jeanbarrossilva.orca.app.databinding.ActivityOrcaBinding
 import com.jeanbarrossilva.orca.app.module.core.MainMastodonCoreModule
-import com.jeanbarrossilva.orca.app.navigation.BottomDestinationProvider
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
-import kotlinx.coroutines.launch
 
 open class OrcaActivity :
   NavigationActivity(),
   OnBottomAreaAvailabilityChangeListener,
   Injection,
-  BottomNavigationViewAvailability {
+  BottomNavigationViewAvailability,
+  BottomNavigation {
   protected open val coreModule: CoreModule = MainMastodonCoreModule
 
   override var binding: ActivityOrcaBinding? = null
@@ -48,22 +45,7 @@ open class OrcaActivity :
     updateBottomAreaAvailability(this)
     setContentView(binding?.root)
     inject(this, coreModule)
-    navigateOnBottomNavigationItemSelection()
+    navigateOnItemSelection(this)
     navigateToDefaultDestination()
-  }
-
-  private fun navigateOnBottomNavigationItemSelection() {
-    binding?.bottomNavigationView?.setOnItemSelectedListener {
-      navigateTo(it.itemId)
-      true
-    }
-  }
-
-  private fun navigateTo(@IdRes itemID: Int) {
-    lifecycleScope.launch { BottomDestinationProvider.provideAndNavigate(navigator, itemID) }
-  }
-
-  private fun navigateToDefaultDestination() {
-    binding?.bottomNavigationView?.selectedItemId = R.id.feed
   }
 }
