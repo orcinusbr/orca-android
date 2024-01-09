@@ -21,6 +21,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.jeanbarrossilva.orca.app.R
+import com.jeanbarrossilva.orca.app.activity.delegate.Binding
 import com.jeanbarrossilva.orca.app.activity.delegate.Injection
 import com.jeanbarrossilva.orca.app.databinding.ActivityOrcaBinding
 import com.jeanbarrossilva.orca.app.module.core.MainMastodonCoreModule
@@ -30,7 +31,8 @@ import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabili
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
 import kotlinx.coroutines.launch
 
-open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilityChangeListener, Injection {
+open class OrcaActivity :
+  NavigationActivity(), OnBottomAreaAvailabilityChangeListener, Injection, Binding {
   private var binding: ActivityOrcaBinding? = null
   private var constraintSet: ConstraintSet? = null
 
@@ -42,10 +44,10 @@ open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilityChangeLi
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     WindowCompat.setDecorFitsSystemWindows(window, false)
-    binding = ActivityOrcaBinding.inflate(layoutInflater)
     constraintSet = ConstraintSet().apply { clone(binding?.root) }
-    setContentView(binding?.root)
+    bindView(this)
     inject(this, coreModule)
+    setContentView(binding?.root)
     navigateOnBottomNavigationItemSelection()
     navigateToDefaultDestination()
   }
@@ -66,6 +68,10 @@ open class OrcaActivity : NavigationActivity(), OnBottomAreaAvailabilityChangeLi
       getConstraint(R.id.bottom_navigation_view).transform.translationY = offsetY
       applyTo(binding?.root)
     }
+  }
+
+  final override fun setBinding(binding: ActivityOrcaBinding?) {
+    this.binding = binding
   }
 
   private fun navigateOnBottomNavigationItemSelection() {
