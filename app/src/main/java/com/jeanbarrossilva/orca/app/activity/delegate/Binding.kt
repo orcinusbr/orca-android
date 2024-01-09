@@ -21,19 +21,18 @@ import androidx.lifecycle.LifecycleOwner
 import com.jeanbarrossilva.orca.app.databinding.ActivityOrcaBinding
 
 internal interface Binding {
+  var binding: ActivityOrcaBinding?
+
   fun bindView(activity: ComponentActivity) {
-    val binding = ActivityOrcaBinding.inflate(activity.layoutInflater)
-    setBinding(binding)
+    binding = ActivityOrcaBinding.inflate(activity.layoutInflater)
     unbindOnDestroy(activity)
   }
-
-  fun setBinding(binding: ActivityOrcaBinding?)
 
   private fun unbindOnDestroy(activity: ComponentActivity) {
     activity.lifecycle.addObserver(
       object : DefaultLifecycleObserver {
         override fun onDestroy(owner: LifecycleOwner) {
-          setBinding(null)
+          binding = null
         }
       }
     )

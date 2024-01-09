@@ -21,7 +21,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.jeanbarrossilva.orca.app.R
-import com.jeanbarrossilva.orca.app.activity.delegate.Binding
+import com.jeanbarrossilva.orca.app.activity.delegate.BottomNavigationViewAvailability
 import com.jeanbarrossilva.orca.app.activity.delegate.Injection
 import com.jeanbarrossilva.orca.app.databinding.ActivityOrcaBinding
 import com.jeanbarrossilva.orca.app.module.core.MainMastodonCoreModule
@@ -32,46 +32,24 @@ import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
 import kotlinx.coroutines.launch
 
 open class OrcaActivity :
-  NavigationActivity(), OnBottomAreaAvailabilityChangeListener, Injection, Binding {
-  private var binding: ActivityOrcaBinding? = null
-  private var constraintSet: ConstraintSet? = null
-
+  NavigationActivity(),
+  OnBottomAreaAvailabilityChangeListener,
+  Injection,
+  BottomNavigationViewAvailability {
   protected open val coreModule: CoreModule = MainMastodonCoreModule
 
-  final override val height: Int
-    get() = binding?.bottomNavigationView?.height ?: 0
+  override var binding: ActivityOrcaBinding? = null
+  override var constraintSet: ConstraintSet? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     WindowCompat.setDecorFitsSystemWindows(window, false)
-    constraintSet = ConstraintSet().apply { clone(binding?.root) }
     bindView(this)
-    inject(this, coreModule)
+    updateBottomAreaAvailability(this)
     setContentView(binding?.root)
+    inject(this, coreModule)
     navigateOnBottomNavigationItemSelection()
     navigateToDefaultDestination()
-  }
-
-  override fun onDestroy() {
-    super.onDestroy()
-    constraintSet = null
-    binding = null
-  }
-
-  final override fun getCurrentOffsetY(): Float {
-    return constraintSet?.getConstraint(R.id.bottom_navigation_view)?.transform?.translationY ?: 0f
-  }
-
-  final override fun onBottomAreaAvailabilityChange(offsetY: Float) {
-    constraintSet?.apply {
-      getConstraint(R.id.container).layout.bottomMargin = -offsetY.toInt()
-      getConstraint(R.id.bottom_navigation_view).transform.translationY = offsetY
-      applyTo(binding?.root)
-    }
-  }
-
-  final override fun setBinding(binding: ActivityOrcaBinding?) {
-    this.binding = binding
   }
 
   private fun navigateOnBottomNavigationItemSelection() {
