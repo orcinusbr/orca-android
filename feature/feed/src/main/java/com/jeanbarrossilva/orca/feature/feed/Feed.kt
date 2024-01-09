@@ -49,6 +49,7 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.refresh.Refresh
 import java.net.URL
 
+const val FEED_SEARCH_ACTION_TAG = "feed-search-action-tag"
 const val FEED_FLOATING_ACTION_BUTTON_TAG = "feed-floating-action-button"
 
 @Composable
@@ -130,7 +131,7 @@ private fun Feed(
       TopAppBar(
         title = { AutoSizeText(stringResource(R.string.feature_feed)) },
         actions = {
-          HoverableIconButton(onClick = onSearch) {
+          HoverableIconButton(onClick = onSearch, Modifier.testTag(FEED_SEARCH_ACTION_TAG)) {
             Icon(
               AutosTheme.iconography.search.asImageVector,
               contentDescription = stringResource(R.string.feature_feed_search)

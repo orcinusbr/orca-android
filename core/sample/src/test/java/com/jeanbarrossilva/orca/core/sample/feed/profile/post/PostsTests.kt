@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,14 +13,22 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.app.module.feature.settings
+package com.jeanbarrossilva.orca.core.sample.feed.profile.post
 
-import com.jeanbarrossilva.orca.feature.settings.SettingsBoundary
-import com.jeanbarrossilva.orca.feature.settings.termmuting.TermMutingFragment
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
+import assertk.assertThat
+import assertk.assertions.containsSubList
+import assertk.assertions.isEmpty
+import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.withSample
+import kotlin.test.Test
 
-internal class NavigatorSettingsBoundary(private val navigator: Navigator) : SettingsBoundary {
-  override fun navigateToTermMuting() {
-    TermMutingFragment.navigate(navigator)
+internal class PostsTests {
+  @Test
+  fun adds() {
+    assertThat(Posts() + Posts.withSample.single()).containsSubList(Posts.withSample)
+  }
+
+  @Test
+  fun subtracts() {
+    assertThat(Posts.withSample - Posts.withSample.single()).isEmpty()
   }
 }

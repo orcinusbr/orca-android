@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,16 +13,14 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.repost
+package com.jeanbarrossilva.orca.app.demo.test
 
-import com.jeanbarrossilva.orca.core.feed.profile.post.repost.Repost
-import com.jeanbarrossilva.orca.core.sample.feed.profile.post.repost.createSample
-import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.content.highlight.sample
-import com.jeanbarrossilva.orca.core.sample.test.image.TestSampleImageLoader
+import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
+import androidx.compose.ui.test.onNodeWithTag
+import com.jeanbarrossilva.orca.feature.feed.FEED_SEARCH_ACTION_TAG
 
-/** [Repost] returned by [sample]. */
-private val testSampleRepost = Repost.createSample(TestSampleImageLoader.Provider)
-
-/** Test sample [Repost]. */
-val Repost.Companion.sample
-  get() = testSampleRepost
+/** [SemanticsNodeInteraction] of the feed's search action. */
+internal fun SemanticsNodeInteractionsProvider.onSearchAction(): SemanticsNodeInteraction {
+  return onNodeWithTag(FEED_SEARCH_ACTION_TAG)
+}

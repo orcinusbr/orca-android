@@ -13,13 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.app.module.feature.settings.termmuting
+plugins {
+  alias(libs.plugins.kotlin.jvm)
 
-import com.jeanbarrossilva.orca.feature.settings.termmuting.TermMutingBoundary
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
+  `java-library`
+}
 
-internal class NavigatorTermMutingBoundary(private val navigator: Navigator) : TermMutingBoundary {
-  override fun pop() {
-    navigator.pop()
-  }
+dependencies {
+  api(libs.assertk)
+
+  implementation(libs.kotlin.reflect)
+  implementation(libs.openTest4J)
+
+  testImplementation(libs.kotlin.test)
 }

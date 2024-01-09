@@ -15,13 +15,13 @@
 
 package com.jeanbarrossilva.orca.platform.ui.core
 
+import com.jeanbarrossilva.orca.ext.coroutines.mapEach
 import com.jeanbarrossilva.orca.platform.ui.core.replacement.emptyReplacementList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.runningFold
 
@@ -68,13 +68,4 @@ fun <I, O, S> Flow<Collection<I>>.flatMapEach(
       accumulator
     }
   }
-}
-
-/**
- * Maps each element of the emitted [Collection]s to the result of [transform].
- *
- * @param transform Transformation to be made to the currently iterated element.
- */
-fun <I, O> Flow<Collection<I>>.mapEach(transform: suspend (I) -> O): Flow<List<O>> {
-  return map { elements -> elements.map { element -> transform(element) } }
 }

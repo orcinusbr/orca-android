@@ -13,16 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.feed.test
+package com.jeanbarrossilva.orca.platform.testing
 
-import com.jeanbarrossilva.orca.core.feed.profile.post.Post
-import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSamples
-import com.jeanbarrossilva.orca.platform.ui.core.image.sample
-import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
+import android.app.Instrumentation
+import android.content.Context
+import androidx.test.platform.app.InstrumentationRegistry
 
-/** [Post]s returned by [samples]. */
-private val samplePosts = Post.createSamples(ComposableImageLoader.Provider.sample)
-
-/** Sample [Post]s whose images are loaded by a [ComposableImageLoader]. */
-internal val Post.Companion.samples
-  get() = samplePosts
+/**
+ * [InstrumentationRegistry]'s [Instrumentation]'s [Context].
+ *
+ * @see InstrumentationRegistry.getInstrumentation
+ * @see Instrumentation.getContext
+ */
+val context: Context
+  get() = InstrumentationRegistry.getInstrumentation().context

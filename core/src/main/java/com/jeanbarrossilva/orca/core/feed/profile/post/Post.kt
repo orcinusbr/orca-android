@@ -15,6 +15,9 @@
 
 package com.jeanbarrossilva.orca.core.feed.profile.post
 
+import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
+import com.jeanbarrossilva.orca.core.auth.SomeAuthenticationLock
+import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Content
 import com.jeanbarrossilva.orca.core.feed.profile.post.stat.Stat
@@ -48,6 +51,26 @@ abstract class Post : Serializable {
 
   /** [URL] that leads to this [Post]. */
   abstract val url: URL
+
+  /** Creates a [DeletablePost] from this [Post]. */
+  abstract fun asDeletable(): DeletablePost
+
+  /**
+   * Creates a [DeletablePost] from this [Post] if its [author] is identified by the
+   * [authenticated][Actor.Authenticated] [Actor]'s ID; otherwise, returns this one.
+   *
+   * @param authenticationLock [AuthenticationLock] by which the ID of the [Actor] will be provided
+   *   and compared to the [author]'s.
+   * @see Actor.Authenticated.id
+   */
+  internal suspend fun asDeletableOrThis(authenticationLock: SomeAuthenticationLock): Post {
+    /**
+     * TODO: Not require the actor to be authenticated in order to return either this post or a
+     *   deletable one from it. May be troublesome when allowing unauthenticated ones to browse
+     *   through the federated feed.
+     */
+    return authenticationLock.scheduleUnlock { if (it.id == author.id) asDeletable() else this }
+  }
 
   companion object
 }

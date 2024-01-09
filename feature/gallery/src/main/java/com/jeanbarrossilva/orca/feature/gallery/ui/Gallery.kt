@@ -52,6 +52,7 @@ internal fun Gallery(
   boundary: GalleryBoundary,
   entrypointIndex: Int,
   secondary: List<Attachment>,
+  onClose: () -> Unit,
   modifier: Modifier = Modifier,
   entrypoint: @Composable (Modifier) -> Unit
 ) {
@@ -66,7 +67,7 @@ internal fun Gallery(
     onFavorite = viewModel::toggleFavorite,
     onRepost = viewModel::toggleRepost,
     onShare = viewModel::share,
-    onClose = boundary::pop,
+    onClose,
     modifier,
     entrypoint
   )

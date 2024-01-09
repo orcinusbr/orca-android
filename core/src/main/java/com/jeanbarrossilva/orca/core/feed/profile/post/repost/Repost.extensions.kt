@@ -17,6 +17,7 @@ package com.jeanbarrossilva.orca.core.feed.profile.post.repost
 
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.post.Author
+import com.jeanbarrossilva.orca.core.feed.profile.post.DeletablePost
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Content
 import com.jeanbarrossilva.orca.core.feed.profile.post.stat.Stat
@@ -41,7 +42,9 @@ fun Repost(original: Post, reblogger: Author): Repost {
     original.favorite,
     original.repost,
     original.url
-  )
+  ) {
+    original.asDeletable()
+  }
 }
 
 /**
@@ -56,6 +59,7 @@ fun Repost(original: Post, reblogger: Author): Repost {
  * @param favorite [Stat] for the [Post]'s favorites.
  * @param reblog [Stat] for the [Post]'s reblogs.
  * @param url [URL] that leads to the [Post].
+ * @param asDeletable Creates a [DeletablePost] from this [Repost].
  */
 fun Repost(
   id: String,
@@ -66,7 +70,8 @@ fun Repost(
   comment: Stat<Post>,
   favorite: ToggleableStat<Profile>,
   reblog: ToggleableStat<Profile>,
-  url: URL
+  url: URL,
+  asDeletable: (Repost) -> DeletablePost
 ): Repost {
   return object : Repost() {
     override val id = id
@@ -78,5 +83,9 @@ fun Repost(
     override val favorite = favorite
     override val repost = reblog
     override val url = url
+
+    override fun asDeletable(): DeletablePost {
+      return asDeletable(this)
+    }
   }
 }

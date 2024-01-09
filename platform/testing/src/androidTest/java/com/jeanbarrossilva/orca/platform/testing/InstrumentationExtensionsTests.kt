@@ -13,8 +13,16 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.settings.termmuting
+package com.jeanbarrossilva.orca.platform.testing
 
-interface TermMutingBoundary {
-  fun pop()
+import androidx.test.platform.app.InstrumentationRegistry
+import assertk.assertThat
+import assertk.assertions.isSameAs
+import org.junit.Test
+
+internal class InstrumentationExtensionsTests {
+  @Test
+  fun contextIsThatOfInstrumentationFromRegistry() {
+    assertThat(context).isSameAs(InstrumentationRegistry.getInstrumentation().context)
+  }
 }

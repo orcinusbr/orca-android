@@ -23,8 +23,4 @@ internal class NavigatorSearchBoundary(private val navigator: Navigator) : Searc
   override fun navigateToProfileDetails(id: String) {
     ProfileDetailsFragment.navigate(navigator, id)
   }
-
-  override fun pop() {
-    navigator.pop()
-  }
 }

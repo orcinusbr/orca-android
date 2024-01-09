@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,26 +15,26 @@
 
 package com.jeanbarrossilva.orca.feature.settings.termmuting
 
+import android.content.Context
+import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
-import androidx.fragment.app.viewModels
-import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableFragment
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.opening
+import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableActivity
+import com.jeanbarrossilva.orca.platform.ui.core.on
 import com.jeanbarrossilva.orca.std.injector.Injector
 
-class TermMutingFragment internal constructor() : ComposableFragment() {
+class TermMutingActivity internal constructor() : ComposableActivity() {
   private val module by lazy { Injector.from<TermMutingModule>() }
   private val viewModel by
     viewModels<TermMutingViewModel> { TermMutingViewModel.createFactory(module.termMuter()) }
 
   @Composable
   override fun Content() {
-    TermMuting(viewModel, module.boundary())
+    TermMuting(viewModel, onBackwardsNavigation = ::finish)
   }
 
   companion object {
-    fun navigate(navigator: Navigator) {
-      navigator.navigate(opening()) { to("settings/term-muting", ::TermMutingFragment) }
+    fun start(context: Context) {
+      context.on<TermMutingActivity>().start()
     }
   }
 }

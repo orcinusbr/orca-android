@@ -23,3 +23,5 @@ dependencies {
   implementation(project(":core:sample"))
   implementation(kotlin("test-junit"))
 }
+
+kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")

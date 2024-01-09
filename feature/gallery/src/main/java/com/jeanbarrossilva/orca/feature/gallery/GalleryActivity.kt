@@ -54,7 +54,9 @@ class GalleryActivity internal constructor() : ComposableActivity() {
 
   @Composable
   override fun Content() {
-    Gallery(viewModel, module.boundary(), entrypointIndex, secondary) { entrypoint?.invoke(it) }
+    Gallery(viewModel, module.boundary(), entrypointIndex, secondary, onClose = ::finish) {
+      entrypoint?.invoke(it)
+    }
   }
 
   fun setEntrypoint(entrypoint: @Composable (Modifier) -> Unit) {

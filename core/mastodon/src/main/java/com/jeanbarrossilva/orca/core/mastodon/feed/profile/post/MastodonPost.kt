@@ -16,6 +16,7 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.post
 
 import com.jeanbarrossilva.orca.core.feed.profile.post.Author
+import com.jeanbarrossilva.orca.core.feed.profile.post.DeletablePost
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Content
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.stat.CommentStat
@@ -50,4 +51,8 @@ internal constructor(
   override val comment = CommentStat(id, commentCount, imageLoaderProvider)
   override val favorite = FavoriteStat(id, favoriteCount)
   override val repost = ReblogStat(id, reblogCount)
+
+  override fun asDeletable(): DeletablePost {
+    return MastodonDeletablePost(this)
+  }
 }

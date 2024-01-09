@@ -27,7 +27,7 @@ android {
   compileSdk = libs.versions.android.sdk.target.get().toInt()
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
   flavorDimensions += Dimensions.VERSION
-  lintOptions.disable += "Instantiatable"
+  lint.disable += "Instantiatable"
   namespace = namespaceFor("app")
 
   buildFeatures {
@@ -71,6 +71,7 @@ android {
 
 dependencies {
   "androidTestDemoImplementation"(project(":core:sample-test"))
+  "androidTestDemoImplementation"(project(":feature:gallery-test"))
   "androidTestDemoImplementation"(project(":platform:ui"))
   "androidTestDemoImplementation"(libs.android.activity.ktx)
   "androidTestDemoImplementation"(libs.android.compose.ui.test.junit)
@@ -103,6 +104,6 @@ dependencies {
   implementation(libs.android.constraintlayout)
   implementation(libs.android.fragment.ktx)
   implementation(libs.android.material)
-  implementation(libs.kotlin.reflect)
-  implementation(libs.time4j)
+
+  releaseImplementation(libs.kotlin.reflect)
 }

@@ -23,8 +23,4 @@ internal class NavigatorGalleryBoundary(private val navigator: Navigator) : Gall
   override fun navigateToPostDetails(id: String) {
     PostDetailsFragment.navigate(navigator, id)
   }
-
-  override fun pop() {
-    navigator.pop()
-  }
 }

@@ -22,7 +22,7 @@ import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.onParent
 import androidx.compose.ui.unit.Density
-import androidx.test.platform.app.InstrumentationRegistry
+import com.jeanbarrossilva.orca.platform.testing.context
 
 /**
  * [SemanticsMatcher] that matches a [SemanticsNode] whose [predicate] is `true`.
@@ -38,7 +38,6 @@ internal fun unclippedBoundsMatcher(
   predicate: (parentBounds: Rect, bounds: Rect) -> Boolean
 ): SemanticsMatcher {
   return SemanticsMatcher(description) {
-    val context = InstrumentationRegistry.getInstrumentation().context
     val density = Density(context)
     val bounds = with(density) { getUnclippedBoundsInRoot().toRect() }
     val parentBounds = with(density) { onParent().getUnclippedBoundsInRoot().toRect() }

@@ -17,7 +17,6 @@ package com.jeanbarrossilva.orca.core.sample.instance
 
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.Authenticator
-import com.jeanbarrossilva.orca.core.auth.actor.ActorProvider
 import com.jeanbarrossilva.orca.core.feed.FeedProvider
 import com.jeanbarrossilva.orca.core.feed.profile.ProfileProvider
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
@@ -25,11 +24,11 @@ import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearcher
 import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
 import com.jeanbarrossilva.orca.core.sample.auth.SampleAuthenticator
-import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
+import com.jeanbarrossilva.orca.core.sample.auth.sample
 import com.jeanbarrossilva.orca.core.sample.feed.SampleFeedProvider
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileProvider
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfileWriter
-import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostProvider
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostWriter
 import com.jeanbarrossilva.orca.core.sample.feed.profile.search.SampleProfileSearcher
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
@@ -40,19 +39,19 @@ import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 /**
  * [Instance] made out of sample underlying core structures.
  *
- * @param defaultPosts [Post]s that are provided by default by the [postProvider].
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
  *   will be loaded from a [SampleImageSource].
+ * @param posts [Post]s that are provided by default by the [postProvider].
  */
 class SampleInstance
 internal constructor(
-  defaultPosts: List<Post>,
-  internal val imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
+  internal val imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>,
+  private val defaultPosts: Posts
 ) : Instance<Authenticator>() {
   override val domain = Domain.sample
   override val authenticator: Authenticator = SampleAuthenticator
-  override val authenticationLock = AuthenticationLock(authenticator, ActorProvider.sample)
-  override val postProvider = SamplePostProvider(defaultPosts)
+  override val authenticationLock = AuthenticationLock.sample
+  override val postProvider = postWriter.postProvider
   override val feedProvider: FeedProvider = SampleFeedProvider(imageLoaderProvider, postProvider)
   override val profileProvider: ProfileProvider =
     SampleProfileProvider(postProvider, imageLoaderProvider)
@@ -63,5 +62,6 @@ internal constructor(
   val profileWriter = SampleProfileWriter(profileProvider as SampleProfileProvider)
 
   /** [SamplePostWriter] for performing write operations on the [postProvider]. */
-  val postWriter = SamplePostWriter(postProvider)
+  val postWriter
+    get() = defaultPosts.additionScope.writerProvider.provide()
 }

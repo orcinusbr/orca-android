@@ -16,6 +16,7 @@
 package com.jeanbarrossilva.orca.core.sample.feed.profile.post
 
 import com.jeanbarrossilva.orca.core.feed.profile.post.Author
+import com.jeanbarrossilva.orca.core.feed.profile.post.DeletablePost
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Content
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Headline
@@ -23,7 +24,6 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Highlig
 import com.jeanbarrossilva.orca.core.feed.profile.post.repost.Repost
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.highlight.createSample
-import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.repost.createSample
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
 import com.jeanbarrossilva.orca.core.sample.instance.domain.sample
@@ -35,9 +35,6 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.UUID
 
-/** ID of a [Post] created by [createSample]. */
-private val samplePostID = UUID.randomUUID().toString()
-
 /** ID of the third [Post] in the [List] returned by [createSamples]. */
 private val thirdPostID = UUID.randomUUID().toString()
 
@@ -47,6 +44,8 @@ private val thirdPostID = UUID.randomUUID().toString()
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
  *   will be loaded from a [SampleImageSource].
  */
+context(Posts.Builder.AdditionScope)
+
 fun Post.Companion.createSamples(
   imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
 ): List<Post> {
@@ -70,7 +69,8 @@ fun Post.Companion.createSamples(
       },
       publicationDateTime =
         ZonedDateTime.of(2_023, 11, 27, 18, 26, 0, 0, ZoneId.of("America/Halifax")),
-      URL("https://mastodon.social/@christianselig/111484624066823391")
+      URL("https://mastodon.social/@christianselig/111484624066823391"),
+      writerProvider
     )
   )
 }
@@ -81,14 +81,10 @@ fun Post.Companion.createSamples(
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
  *   will be loaded from a [SampleImageSource].
  */
+context(Posts.Builder.AdditionScope)
+
 fun Post.Companion.createSample(
   imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
 ): Post {
-  return SamplePost(
-    samplePostID,
-    Author.createSample(imageLoaderProvider),
-    Content.sample,
-    publicationDateTime = ZonedDateTime.of(2_003, 10, 8, 8, 0, 0, 0, ZoneId.of("GMT-3")),
-    URL("https://mastodon.social/@christianselig/110492858891694580")
-  )
+  return DeletablePost.createSample(imageLoaderProvider)
 }

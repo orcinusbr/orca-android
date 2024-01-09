@@ -102,4 +102,21 @@ internal class CoreHttpClientTests {
         .isEqualTo("Bearer ${actor.accessToken}")
     }
   }
+
+  @Test
+  fun requestsAuthenticationOnAuthenticateAndDeleteWithAnUnauthenticatedActor() {
+    var isAuthenticated = false
+    runUnauthenticatedTest(onAuthentication = { isAuthenticated = true }) {
+      client.authenticateAndDelete(route = "")
+      assertThat(isAuthenticated).isTrue()
+    }
+  }
+
+  @Test
+  fun setsBearerAuthHeaderOnAuthenticateAndDeleteWithAnAuthenticatedActor() {
+    runAuthenticatedTest {
+      assertThatRequestAuthorizationHeaderOf(client.authenticateAndDelete(route = ""))
+        .isEqualTo("Bearer ${actor.accessToken}")
+    }
+  }
 }

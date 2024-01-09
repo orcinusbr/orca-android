@@ -15,9 +15,9 @@
 
 package com.jeanbarrossilva.orca.core.sharedpreferences.feed.profile.post.content
 
-import androidx.test.platform.app.InstrumentationRegistry
 import app.cash.turbine.test
 import com.jeanbarrossilva.orca.core.sharedpreferences.actor.test.SharedPreferencesCoreTestRule
+import com.jeanbarrossilva.orca.platform.testing.context
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -25,9 +25,6 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class SharedPreferencesTermMuterTests {
-  private val context
-    get() = InstrumentationRegistry.getInstrumentation().context
-
   @get:Rule val coreRule = SharedPreferencesCoreTestRule()
 
   @Test

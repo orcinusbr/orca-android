@@ -33,6 +33,7 @@ import io.ktor.client.plugins.observer.ResponseObserver
 import io.ktor.client.request.HttpRequest
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.bearerAuth
+import io.ktor.client.request.delete
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.forms.submitFormWithBinaryData
@@ -98,11 +99,28 @@ fun <EC : HttpClientEngineConfig, CC : HttpClientConfig<EC>> CoreHttpClient(
 }
 
 /**
+ * Performs a DELETE [HttpRequest] to the [route] that requires an
+ * [authenticated][Actor.Authenticated] [Actor].
+ *
+ * @param route URL [String] to which the [HttpRequest] will be sent
+ * @param build Additional configuration for the [HttpRequest] to be performed.
+ */
+suspend inline fun HttpClient.authenticateAndDelete(
+  route: String,
+  crossinline build: HttpRequestBuilder.() -> Unit = {}
+): HttpResponse {
+  return delete(route) {
+    authenticate()
+    build.invoke(this)
+  }
+}
+
+/**
  * Performs a GET [HttpRequest] to the [route] that requires an [authenticated][Actor.Authenticated]
  * [Actor].
  *
  * @param route URL [String] to which the [HttpRequest] will be sent.
- * @param build Additional configuration for the [HttpResponse] to be performed.
+ * @param build Additional configuration for the [HttpRequest] to be performed.
  */
 suspend inline fun HttpClient.authenticateAndGet(
   route: String,
@@ -119,7 +137,7 @@ suspend inline fun HttpClient.authenticateAndGet(
  * [authenticated][Actor.Authenticated] [Actor].
  *
  * @param route URL [String] to which the [HttpRequest] will be sent.
- * @param build Additional configuration for the [HttpResponse] to be performed.
+ * @param build Additional configuration for the [HttpRequest] to be performed.
  */
 suspend inline fun HttpClient.authenticateAndPost(
   route: String,
@@ -137,14 +155,14 @@ suspend inline fun HttpClient.authenticateAndPost(
  *
  * @param route URL [String] to which the [HttpRequest] will be sent.
  * @param parameters [Parameters] to be added to the form.
- * @param build Additional configuration for the [HttpResponse] to be performed.
+ * @param build Additional configuration for the [HttpRequest] to be performed.
  */
 suspend inline fun HttpClient.authenticateAndSubmitForm(
   route: String,
   parameters: Parameters,
   crossinline build: HttpRequestBuilder.() -> Unit = {}
 ): HttpResponse {
-  return authenticationLock.requestUnlock {
+  return authenticationLock.scheduleUnlock {
     submitForm(route, parameters) {
       bearerAuth(it.accessToken)
       build.invoke(this)
@@ -159,7 +177,7 @@ suspend inline fun HttpClient.authenticateAndSubmitForm(
  *
  * @param route URL [String] to which the [HttpRequest] will be sent.
  * @param formData [List] with [PartData] to be included in the form.
- * @param build Additional configuration for the [HttpResponse] to be performed.
+ * @param build Additional configuration for the [HttpRequest] to be performed.
  */
 suspend inline fun HttpClient.authenticateAndSubmitFormWithBinaryData(
   route: String,
@@ -178,7 +196,7 @@ suspend inline fun HttpClient.authenticateAndSubmitFormWithBinaryData(
  */
 @PublishedApi
 internal suspend fun HttpMessageBuilder.authenticate() {
-  authenticationLock.requestUnlock { bearerAuth(it.accessToken) }
+  authenticationLock.scheduleUnlock { bearerAuth(it.accessToken) }
 }
 
 /**

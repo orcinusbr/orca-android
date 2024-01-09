@@ -31,7 +31,7 @@ import androidx.compose.ui.text.AnnotatedString
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
-import com.jeanbarrossilva.orca.core.feed.profile.post.Post
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
 import com.jeanbarrossilva.orca.feature.postdetails.ui.header.Header
 import com.jeanbarrossilva.orca.feature.postdetails.ui.header.formatted
 import com.jeanbarrossilva.orca.feature.postdetails.viewmodel.PostDetailsViewModel
@@ -49,7 +49,7 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.Figure
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.refresh.Refresh
-import com.jeanbarrossilva.orca.platform.ui.core.sample
+import com.jeanbarrossilva.orca.platform.ui.core.withSample
 import com.jeanbarrossilva.orca.std.image.SomeImageLoader
 import java.io.Serializable
 import java.net.URL
@@ -72,7 +72,7 @@ internal data class PostDetails(
 
   companion object {
     val sample
-      @Composable get() = Post.sample.toPostDetails()
+      @Composable get() = Posts.withSample.single().toPostDetails()
   }
 }
 

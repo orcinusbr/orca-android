@@ -27,5 +27,5 @@ import com.jeanbarrossilva.orca.feature.settings.termmuting.TermMuting
 @Suppress("TestFunctionName")
 internal fun TestTermMuting(modifier: Modifier = Modifier) {
   var term by remember { mutableStateOf("") }
-  TermMuting(modifier, term, onTermChange = { term = it }, onMute = {}, onPop = {})
+  TermMuting(modifier, term, onTermChange = { term = it }, onMute = {}, onBackwardsNavigation = {})
 }

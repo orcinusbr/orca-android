@@ -55,7 +55,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.feed.profile.post.Author
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.stat.Stat
-import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSamples
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.icon.IgnoringMutableInteractionSource
@@ -69,10 +69,8 @@ import com.jeanbarrossilva.orca.platform.ui.component.stat.StatsDetails
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.Figure
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.time.RelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.time.rememberRelativeTimeProvider
-import com.jeanbarrossilva.orca.platform.ui.core.image.sample
-import com.jeanbarrossilva.orca.platform.ui.core.sample
+import com.jeanbarrossilva.orca.platform.ui.core.withSample
 import com.jeanbarrossilva.orca.std.image.ImageLoader
-import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
 import com.jeanbarrossilva.orca.std.image.compose.SomeComposableImageLoader
 import java.io.Serializable
 import java.net.URL
@@ -148,8 +146,7 @@ internal constructor(
 
     /** [PostPreview] samples. */
     val samples
-      @Composable
-      get() = Post.createSamples(ComposableImageLoader.Provider.sample).map { it.toPostPreview() }
+      @Composable get() = Posts.withSamples.map { it.toPostPreview() }
 
     /**
      * Gets a sample [PostPreview].
@@ -158,7 +155,7 @@ internal constructor(
      *   colored.
      */
     fun getSample(colors: Colors): PostPreview {
-      return Post.sample.toPostPreview(colors)
+      return Posts.withSample.single().toPostPreview(colors)
     }
   }
 }

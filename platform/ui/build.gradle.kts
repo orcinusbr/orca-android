@@ -47,6 +47,7 @@ dependencies {
 
   implementation(project(":core"))
   implementation(project(":core:sample"))
+  implementation(project(":ext:coroutines"))
   implementation(project(":platform:autos"))
   implementation(project(":std:image:compose"))
   implementation(libs.android.activity.compose)
@@ -65,3 +66,5 @@ dependencies {
   testImplementation(libs.kotlin.coroutines.test)
   testImplementation(libs.kotlin.test)
 }
+
+kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")

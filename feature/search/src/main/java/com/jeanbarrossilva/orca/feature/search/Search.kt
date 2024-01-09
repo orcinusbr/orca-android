@@ -70,21 +70,21 @@ internal object SearchDefaults {
 internal fun Search(
   viewModel: SearchViewModel,
   boundary: SearchBoundary,
+  onBackwardsNavigation: () -> Unit,
   modifier: Modifier = Modifier
 ) {
   val query by viewModel.queryFlow.collectAsState()
   val resultsLoadable by viewModel.resultsFlow.collectAsState()
 
   when (@Suppress("NAME_SHADOWING") val resultsLoadable = resultsLoadable) {
-    is Loadable.Loading ->
-      Search(query, onQueryChange = viewModel::setQuery, onBackwardsNavigation = boundary::pop)
+    is Loadable.Loading -> Search(query, onQueryChange = viewModel::setQuery, onBackwardsNavigation)
     is Loadable.Loaded ->
       Search(
         query,
         onQueryChange = viewModel::setQuery,
         resultsLoadable.content,
         onNavigateToProfileDetails = boundary::navigateToProfileDetails,
-        onBackwardsNavigation = boundary::pop,
+        onBackwardsNavigation,
         modifier
       )
     is Loadable.Failed -> Unit

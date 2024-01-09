@@ -18,11 +18,10 @@ package com.jeanbarrossilva.orca.platform.ui.core
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.sample.feed.profile.createSample
-import com.jeanbarrossilva.orca.core.sample.instance.createSample
 import com.jeanbarrossilva.orca.platform.ui.core.image.sample
 import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
 
-/** [Profile] returned by [sample]. */
+/** [Profile] returned by [withSample]. */
 private val sampleProfile =
   Profile.createSample(Instance.sample.postProvider, ComposableImageLoader.Provider.sample)
 
