@@ -23,7 +23,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Autos">
         <activity
-            android:name="com.jeanbarrossilva.orca.app.OrcaActivity"
+            android:name=".activity.OrcaActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
