@@ -25,7 +25,7 @@ import com.jeanbarrossilva.orca.app.activity.delegate.BottomNavigationViewAvaila
 import com.jeanbarrossilva.orca.app.activity.delegate.Injection
 import com.jeanbarrossilva.orca.app.databinding.ActivityOrcaBinding
 import com.jeanbarrossilva.orca.app.module.core.MainMastodonCoreModule
-import com.jeanbarrossilva.orca.app.navigation.BottomNavigation
+import com.jeanbarrossilva.orca.app.navigation.BottomDestinationProvider
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
@@ -60,7 +60,7 @@ open class OrcaActivity :
   }
 
   private fun navigateTo(@IdRes itemID: Int) {
-    lifecycleScope.launch { BottomNavigation.navigate(navigator, itemID) }
+    lifecycleScope.launch { BottomDestinationProvider.provideAndNavigate(navigator, itemID) }
   }
 
   private fun navigateToDefaultDestination() {
