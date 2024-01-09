@@ -17,9 +17,8 @@ package com.jeanbarrossilva.orca.app.activity.delegate
 
 import android.content.Context
 import androidx.activity.ComponentActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.jeanbarrossilva.orca.app.module.feature.feed.MainFeedModule
 import com.jeanbarrossilva.orca.app.module.feature.gallery.MainGalleryModule
 import com.jeanbarrossilva.orca.app.module.feature.postdetails.MainPostDetailsModule
@@ -38,7 +37,6 @@ import com.jeanbarrossilva.orca.feature.settings.termmuting.TermMutingModule
 import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
 import com.jeanbarrossilva.orca.std.injector.Injector
-import kotlinx.coroutines.launch
 
 internal interface Injection {
   fun <T> inject(activity: T, coreModule: CoreModule) where
@@ -57,8 +55,12 @@ internal interface Injection {
   }
 
   private fun clearDependenciesOnDestroy(activity: ComponentActivity) {
-    activity.lifecycleScope.launch {
-      activity.repeatOnLifecycle(Lifecycle.State.DESTROYED) { Injector.clear() }
-    }
+    activity.lifecycle.addObserver(
+      object : DefaultLifecycleObserver {
+        override fun onDestroy(owner: LifecycleOwner) {
+          Injector.clear()
+        }
+      }
+    )
   }
 }
