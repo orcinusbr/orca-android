@@ -24,15 +24,10 @@ import com.jeanbarrossilva.orca.app.activity.delegate.Injection
 import com.jeanbarrossilva.orca.app.databinding.ActivityOrcaBinding
 import com.jeanbarrossilva.orca.app.module.core.MainMastodonCoreModule
 import com.jeanbarrossilva.orca.core.module.CoreModule
-import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
 
 open class OrcaActivity :
-  NavigationActivity(),
-  OnBottomAreaAvailabilityChangeListener,
-  Injection,
-  BottomNavigationViewAvailability,
-  BottomNavigation {
+  NavigationActivity(), Injection, BottomNavigationViewAvailability, BottomNavigation {
   protected open val coreModule: CoreModule = MainMastodonCoreModule
 
   override var binding: ActivityOrcaBinding? = null
