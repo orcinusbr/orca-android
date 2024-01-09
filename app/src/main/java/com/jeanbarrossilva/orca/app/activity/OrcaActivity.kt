@@ -27,7 +27,7 @@ import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
 
 open class OrcaActivity :
-  NavigationActivity(), Injection, BottomNavigationViewAvailability, BottomNavigation {
+  NavigationActivity(), BottomNavigationViewAvailability, Injection, BottomNavigation {
   protected open val coreModule: CoreModule = MainMastodonCoreModule
 
   override var binding: ActivityOrcaBinding? = null
