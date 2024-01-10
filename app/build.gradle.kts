@@ -53,8 +53,8 @@ android {
     applicationId = project.namespace
     minSdk = libs.versions.android.sdk.min.get().toInt()
     targetSdk = libs.versions.android.sdk.target.get().toInt()
-    versionCode = 2
-    versionName = "0.1.1"
+    versionCode = 3
+    versionName = "v0.2"
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 
