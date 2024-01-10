@@ -20,6 +20,8 @@ import assertk.assertions.isEqualTo
 import com.jeanbarrossilva.orca.std.injector.module.Inject
 import com.jeanbarrossilva.orca.std.injector.module.Module
 import com.jeanbarrossilva.orca.std.injector.module.binding.boundTo
+import com.jeanbarrossilva.orca.std.injector.module.injection.Injection
+import com.jeanbarrossilva.orca.std.injector.module.injection.injectionOf
 import com.jeanbarrossilva.orca.std.injector.test.InjectorTestRule
 import kotlin.test.Test
 import org.junit.Rule
@@ -28,16 +30,18 @@ internal class InjectorTests {
   @get:Rule val injectorRule = InjectorTestRule()
 
   private abstract class SuperModuleWithNonAnnotatedDependency(
-    @Suppress("unused") private val dependency: Module.() -> Int
+    @Suppress("unused") private val dependency: Injection<Int>
   ) : Module()
 
-  private class SubModuleWithAnnotatedDependency : SuperModuleWithAnnotatedDependency({ 0 })
+  private class SubModuleWithAnnotatedDependency :
+    SuperModuleWithAnnotatedDependency(injectionOf { 0 })
 
   internal abstract class SuperModuleWithAnnotatedDependency(
-    @Suppress("unused") @Inject val dependency: Module.() -> Int
+    @Suppress("unused") @Inject val dependency: Injection<Int>
   ) : Module()
 
-  private class SubModuleWithNonAnnotatedDependency : SuperModuleWithNonAnnotatedDependency({ 0 })
+  private class SubModuleWithNonAnnotatedDependency :
+    SuperModuleWithNonAnnotatedDependency(injectionOf { 0 })
 
   @Test(expected = Injector.SelfRegistrationException::class)
   fun throwsWhenRegisteringItself() {

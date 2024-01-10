@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.ext.coroutines.notifier
+package com.jeanbarrossilva.orca.ext.reflection
 
 import kotlin.reflect.KCallable
 import kotlin.reflect.jvm.isAccessible
@@ -27,7 +27,7 @@ import kotlin.reflect.jvm.isAccessible
  * @param access Access to be performed while this [KCallable] is ensured to be accessible.
  * @see KCallable.isAccessible
  */
-internal fun <I : KCallable<*>, O> I.access(access: I.() -> O): O {
+fun <I : KCallable<*>, O> I.access(access: I.() -> O): O {
   val wasAccessible = isAccessible
   isAccessible = true
   return access().also { isAccessible = wasAccessible }

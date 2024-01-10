@@ -15,15 +15,17 @@
 
 package com.jeanbarrossilva.orca.app.module.feature.postdetails
 
-import com.jeanbarrossilva.orca.app.OrcaActivity
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.feature.postdetails.PostDetailsModule
+import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
+import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
 import com.jeanbarrossilva.orca.std.injector.Injector
+import com.jeanbarrossilva.orca.std.injector.module.injection.injectionOf
 
-internal class MainPostDetailsModule(activity: OrcaActivity) :
+internal class MainPostDetailsModule<T>(activity: T) :
   PostDetailsModule(
-    { Injector.from<CoreModule>().instanceProvider().provide().postProvider },
-    { NavigatorPostDetailsBoundary(activity, activity.navigator) },
-    onBottomAreaAvailabilityChangeListener = { activity }
-  )
+    injectionOf { Injector.from<CoreModule>().instanceProvider().provide().postProvider },
+    injectionOf { NavigatorPostDetailsBoundary(activity, activity.navigator) },
+    injectionOf { activity }
+  ) where T : NavigationActivity, T : OnBottomAreaAvailabilityChangeListener

@@ -15,12 +15,16 @@
 
 package com.jeanbarrossilva.orca.std.injector.module
 
+import com.jeanbarrossilva.orca.std.injector.module.injection.Injection
+import com.jeanbarrossilva.orca.std.injector.module.injection.contains
+import com.jeanbarrossilva.orca.std.injector.module.injection.get
+import com.jeanbarrossilva.orca.std.injector.module.injection.injectionOf
 import kotlin.reflect.KClass
 
 /** Container in which dependencies within a given context can be injected. */
 abstract class Module {
-  /** Dependencies that have been injected associated to their assigned types. */
-  @PublishedApi internal val injections = hashMapOf<KClass<*>, Lazy<Any>>()
+  /** [Injection]s that have been created. */
+  @PublishedApi internal val injections = mutableListOf<Injection<*>>()
 
   /**
    * [NoSuchElementException] thrown if a dependency that hasn't been injected is requested to be
@@ -37,13 +41,14 @@ abstract class Module {
     )
 
   /**
-   * Injects the dependency returned by the [injection].
+   * Injects the dependency returned by the [creation].
    *
    * @param T Dependency to be injected.
-   * @param injection Returns the dependency to be injected.
+   * @param creation Returns the dependency to be injected that can be lazily retrieved afterwards.
    */
-  inline fun <reified T : Any> inject(noinline injection: Module.() -> T) {
-    inject(T::class, injection)
+  inline fun <reified T : Any> inject(crossinline creation: Module.() -> T) {
+    val injection = injectionOf(creation)
+    inject(injection)
   }
 
   /**
@@ -63,10 +68,10 @@ abstract class Module {
    */
   @Throws(NoSuchElementException::class)
   inline fun <reified T : Any> get(): T {
-    return injections[T::class]?.value as T? ?: throw DependencyNotInjectedException(T::class)
+    return injections.get<T>()?.run { provide() } ?: throw DependencyNotInjectedException(T::class)
   }
 
-  /** Removes all injected dependencies. */
+  /** Removes all [Injection]s. */
   fun clear() {
     injections.clear()
     onClear()
@@ -80,9 +85,10 @@ abstract class Module {
    * @param injection Returns the dependency to be injected.
    */
   @PublishedApi
-  internal fun <T : Any> inject(dependencyClass: KClass<T>, injection: Module.() -> T) {
-    if (dependencyClass !in injections) {
-      injections[dependencyClass] = lazy { injection() }
+  internal inline fun <reified T : Any> inject(injection: Injection<T>) {
+    val hasNotBeenInjected = !injections.contains<T>()
+    if (hasNotBeenInjected) {
+      injections.add(injection)
     }
   }
 

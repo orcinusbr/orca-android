@@ -18,10 +18,11 @@ package com.jeanbarrossilva.orca.app.demo.module.core
 import com.jeanbarrossilva.orca.core.instance.InstanceProvider
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.SampleTermMuter
+import com.jeanbarrossilva.orca.std.injector.module.injection.injectionOf
 
 internal object DemoCoreModule :
   CoreModule(
-    { InstanceProvider.sample },
-    { InstanceProvider.sample.provide().authenticationLock },
-    { SampleTermMuter() }
+    injectionOf { InstanceProvider.sample },
+    injectionOf { InstanceProvider.sample.provide().authenticationLock },
+    injectionOf { SampleTermMuter() }
   )

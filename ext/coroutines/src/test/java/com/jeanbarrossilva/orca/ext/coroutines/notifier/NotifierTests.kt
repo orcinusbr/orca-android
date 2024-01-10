@@ -18,6 +18,7 @@ package com.jeanbarrossilva.orca.ext.coroutines.notifier
 import assertk.assertThat
 import assertk.assertions.isNotEqualTo
 import assertk.assertions.isSameAs
+import com.jeanbarrossilva.orca.ext.reflection.access
 import kotlin.test.Test
 
 internal class NotifierTests {

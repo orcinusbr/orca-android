@@ -23,6 +23,7 @@ import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.instance.InstanceProvider
 import com.jeanbarrossilva.orca.std.injector.module.Inject
 import com.jeanbarrossilva.orca.std.injector.module.Module
+import com.jeanbarrossilva.orca.std.injector.module.injection.Injection
 
 /**
  * [Module] into which core-level structures are injected.
@@ -34,7 +35,7 @@ import com.jeanbarrossilva.orca.std.injector.module.Module
  * @param termMuter [TermMuter] by which terms will be muted.
  */
 open class CoreModule(
-  @Inject internal val instanceProvider: Module.() -> InstanceProvider,
-  @Inject internal val authenticationLock: Module.() -> SomeAuthenticationLock,
-  @Inject internal val termMuter: Module.() -> TermMuter
+  @Inject internal val instanceProvider: Injection<InstanceProvider>,
+  @Inject internal val authenticationLock: Injection<SomeAuthenticationLock>,
+  @Inject internal val termMuter: Injection<TermMuter>
 ) : Module()

@@ -18,8 +18,9 @@ package com.jeanbarrossilva.orca.feature.settings
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.TermMuter
 import com.jeanbarrossilva.orca.std.injector.module.Inject
 import com.jeanbarrossilva.orca.std.injector.module.Module
+import com.jeanbarrossilva.orca.std.injector.module.injection.Injection
 
 abstract class SettingsModule(
-  @Inject internal val termMuter: Module.() -> TermMuter,
-  @Inject internal val boundary: Module.() -> SettingsBoundary
+  @Inject internal val termMuter: Injection<TermMuter>,
+  @Inject internal val boundary: Injection<SettingsBoundary>
 ) : Module()

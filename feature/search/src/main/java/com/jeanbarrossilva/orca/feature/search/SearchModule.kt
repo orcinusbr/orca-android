@@ -18,8 +18,9 @@ package com.jeanbarrossilva.orca.feature.search
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearcher
 import com.jeanbarrossilva.orca.std.injector.module.Inject
 import com.jeanbarrossilva.orca.std.injector.module.Module
+import com.jeanbarrossilva.orca.std.injector.module.injection.Injection
 
 abstract class SearchModule(
-  @Inject internal val searcher: Module.() -> ProfileSearcher,
-  @Inject internal val boundary: Module.() -> SearchBoundary
+  @Inject internal val searcher: Injection<ProfileSearcher>,
+  @Inject internal val boundary: Injection<SearchBoundary>
 ) : Module()

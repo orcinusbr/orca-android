@@ -25,10 +25,11 @@ import com.jeanbarrossilva.orca.core.sharedpreferences.actor.SharedPreferencesAc
 import com.jeanbarrossilva.orca.core.sharedpreferences.feed.profile.post.content.SharedPreferencesTermMuter
 import com.jeanbarrossilva.orca.std.image.compose.async.AsyncImageLoader
 import com.jeanbarrossilva.orca.std.injector.Injector
+import com.jeanbarrossilva.orca.std.injector.module.injection.injectionOf
 
 internal object MainMastodonCoreModule :
   MastodonCoreModule(
-    {
+    injectionOf {
       MastodonInstanceProvider(
         MainMastodonCoreModule.context,
         MainMastodonCoreModule.authorizer,
@@ -39,8 +40,8 @@ internal object MainMastodonCoreModule :
         AsyncImageLoader.Provider
       )
     },
-    { MainMastodonCoreModule.authenticationLock },
-    { MainMastodonCoreModule.termMuter }
+    injectionOf { MainMastodonCoreModule.authenticationLock },
+    injectionOf { MainMastodonCoreModule.termMuter }
   ) {
   private val actorProvider by lazy { SharedPreferencesActorProvider(context) }
   private val authorizer by lazy { MastodonAuthorizer(context) }

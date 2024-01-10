@@ -19,11 +19,12 @@ import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.feature.feed.FeedModule
 import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.ui.core.sample
+import com.jeanbarrossilva.orca.std.injector.module.injection.injectionOf
 
 internal object TestFeedModule :
   FeedModule(
-    { Instance.sample.feedProvider },
-    { Instance.sample.postProvider },
-    { TestFeedBoundary() },
-    { OnBottomAreaAvailabilityChangeListener.empty }
+    injectionOf { Instance.sample.feedProvider },
+    injectionOf { Instance.sample.postProvider },
+    injectionOf { TestFeedBoundary() },
+    injectionOf { OnBottomAreaAvailabilityChangeListener.empty }
   )

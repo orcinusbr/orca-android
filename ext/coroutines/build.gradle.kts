@@ -22,9 +22,9 @@ plugins {
 dependencies {
   api(libs.kotlin.coroutines.core)
 
+  testImplementation(project(":ext:reflection"))
   testImplementation(libs.assertk)
   testImplementation(libs.kotlin.coroutines.test)
-  testImplementation(libs.kotlin.reflect)
   testImplementation(libs.kotlin.test)
   testImplementation(libs.turbine)
 }

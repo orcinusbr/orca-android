@@ -18,8 +18,9 @@ package com.jeanbarrossilva.orca.feature.gallery
 import com.jeanbarrossilva.orca.core.feed.profile.post.PostProvider
 import com.jeanbarrossilva.orca.std.injector.module.Inject
 import com.jeanbarrossilva.orca.std.injector.module.Module
+import com.jeanbarrossilva.orca.std.injector.module.injection.Injection
 
 open class GalleryModule(
-  @Inject val postProvider: Module.() -> PostProvider,
-  @Inject val boundary: Module.() -> GalleryBoundary
+  @Inject val postProvider: Injection<PostProvider>,
+  @Inject val boundary: Injection<GalleryBoundary>
 ) : Module()

@@ -15,13 +15,13 @@
 
 package com.jeanbarrossilva.orca.std.injector
 
+import com.jeanbarrossilva.orca.ext.reflection.access
 import com.jeanbarrossilva.orca.std.injector.module.Module
 import com.jeanbarrossilva.orca.std.injector.module.binding.Binding
 import com.jeanbarrossilva.orca.std.injector.module.binding.SomeBinding
 import com.jeanbarrossilva.orca.std.injector.module.binding.boundTo
 import kotlin.reflect.KClass
 import kotlin.reflect.full.memberProperties
-import kotlin.reflect.jvm.isAccessible
 
 /** [Module] that enables global [Module] and dependency injection. */
 object Injector : Module() {
@@ -135,12 +135,7 @@ object Injector : Module() {
     T::class
       .memberProperties
       .filterIsInjection()
-      .associateBy { it.returnType.arguments.last().type?.classifier }
-      .mapKeys { (dependencyClassifier, _) -> dependencyClassifier as KClass<*> }
-      .onEach { (_, property) -> property.isAccessible = true }
-      .mapValues { (_, property) -> property.get(module) }
-      .forEach { (dependencyClass, injection) ->
-        module.inject(dependencyClass, injection.castTo())
-      }
+      .map { it.access { get(module) } }
+      .forEach(module::inject)
   }
 }
