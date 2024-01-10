@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,24 +13,33 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.std.injector.binding
+package com.jeanbarrossilva.orca.std.injector.module.injection
 
 import assertk.assertThat
-import assertk.assertions.isEqualTo
+import assertk.assertions.isSameAs
+import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.orca.std.injector.module.Module
-import com.jeanbarrossilva.orca.std.injector.module.binding.Binding
-import com.jeanbarrossilva.orca.std.injector.module.binding.boundTo
 import kotlin.test.Test
 
-internal class BindingExtensionsTests {
-  class SubModule : SuperModule()
-
-  abstract class SuperModule : Module()
-
+internal class InjectionExtensionsTests {
   @Test
-  fun binds() {
-    val module = SubModule()
-    assertThat(module.boundTo<SuperModule, SubModule>())
-      .isEqualTo(Binding(SuperModule::class, SubModule::class, module))
+  fun createsInjection() {
+    val dependency = Object()
+    with(Injector) {
+      assertThat(with(injectionOf { dependency }) { provide() })
+        .isSameAs(
+          with(
+            object : Injection<Any>() {
+              override val dependencyClass = Any::class
+
+              override fun Module.create(): Any {
+                return dependency
+              }
+            }
+          ) {
+            provide()
+          }
+        )
+    }
   }
 }

@@ -29,6 +29,7 @@ import com.jeanbarrossilva.orca.core.test.TestActorProvider
 import com.jeanbarrossilva.orca.core.test.TestAuthenticator
 import com.jeanbarrossilva.orca.core.test.TestAuthorizer
 import com.jeanbarrossilva.orca.std.injector.Injector
+import com.jeanbarrossilva.orca.std.injector.module.injection.injectionOf
 import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequest
 import io.ktor.http.HttpMethod
@@ -125,11 +126,10 @@ private fun <T : Actor> runCoreHttpClientTest(
   val instance = TestMastodonInstance(authorizer, authenticator, authenticationLock)
   val module =
     MastodonCoreModule(
-      { TestHttpInstanceProvider(authorizer, authenticator, authenticationLock) },
-      { authenticationLock }
-    ) {
-      SampleTermMuter()
-    }
+      injectionOf { TestHttpInstanceProvider(authorizer, authenticator, authenticationLock) },
+      injectionOf { authenticationLock },
+      injectionOf { SampleTermMuter() }
+    )
   Injector.register<CoreModule>(module)
   runTest { CoreHttpClientTestScope(delegate = this, instance.client, actor).body() }
   Injector.unregister<CoreModule>()

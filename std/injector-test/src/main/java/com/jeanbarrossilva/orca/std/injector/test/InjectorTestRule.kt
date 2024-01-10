@@ -19,13 +19,13 @@ import com.jeanbarrossilva.orca.std.injector.Injector
 import org.junit.rules.ExternalResource
 
 /**
- * Rule for running the [injection] before and clearing the [Injector] after the test is done.
+ * Rule for running the [action] before and clearing the [Injector] after the test is done.
  *
- * @param injection Operation to be performed on the [Injector].
+ * @param action Operation to be performed on the [Injector].
  */
-class InjectorTestRule(private val injection: Injector.() -> Unit = {}) : ExternalResource() {
+class InjectorTestRule(private val action: Injector.() -> Unit = {}) : ExternalResource() {
   override fun before() {
-    Injector.injection()
+    Injector.action()
   }
 
   override fun after() {

@@ -13,11 +13,22 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.settings.termmuting
+package com.jeanbarrossilva.orca.std.injector.module.binding
 
-import com.jeanbarrossilva.orca.core.feed.profile.post.content.TermMuter
-import com.jeanbarrossilva.orca.std.injector.module.Inject
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import com.jeanbarrossilva.orca.std.injector.module.Module
-import com.jeanbarrossilva.orca.std.injector.module.injection.Injection
+import kotlin.test.Test
 
-abstract class TermMutingModule(@Inject internal val termMuter: Injection<TermMuter>) : Module()
+internal class BindingExtensionsTests {
+  class SubModule : SuperModule()
+
+  abstract class SuperModule : Module()
+
+  @Test
+  fun binds() {
+    val module = SubModule()
+    assertThat(module.boundTo<SuperModule, SubModule>())
+      .isEqualTo(Binding(SuperModule::class, SubModule::class, module))
+  }
+}

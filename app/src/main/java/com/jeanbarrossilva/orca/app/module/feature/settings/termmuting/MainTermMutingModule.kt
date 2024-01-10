@@ -19,6 +19,7 @@ import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.termMuter
 import com.jeanbarrossilva.orca.feature.settings.termmuting.TermMutingModule
 import com.jeanbarrossilva.orca.std.injector.Injector
+import com.jeanbarrossilva.orca.std.injector.module.injection.injectionOf
 
 internal object MainTermMutingModule :
-  TermMutingModule({ Injector.from<CoreModule>().termMuter() })
+  TermMutingModule(injectionOf { Injector.from<CoreModule>().termMuter() })

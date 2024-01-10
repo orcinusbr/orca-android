@@ -31,6 +31,7 @@ import com.jeanbarrossilva.orca.ext.processing.addImports
 import com.jeanbarrossilva.orca.ext.processing.requireContainingFile
 import com.jeanbarrossilva.orca.std.injector.module.Inject
 import com.jeanbarrossilva.orca.std.injector.module.Module
+import com.jeanbarrossilva.orca.std.injector.module.injection.Injection
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
@@ -43,10 +44,10 @@ import com.squareup.kotlinpoet.ksp.writeTo
  * extension functions that retrieve the declared dependencies.
  *
  * Reports an error if...
- * - injections aren't part of a specific [Module];
- * - injections are private;
- * - injections have a return type different from `Module.() -> Any`; or
- * - a [Module] that declares injections is private.
+ * - [Injection]s aren't part of a specific [Module];
+ * - [Injection]s are private;
+ * - [Inject]-annotated properties don't return an [Injection]; or
+ * - a [Module] that declares [Injection]s is private.
  */
 class InjectProcessor private constructor(private val environment: SymbolProcessorEnvironment) :
   SymbolProcessor {
@@ -72,10 +73,10 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
    * Reports an error for each [KSPropertyDeclaration] within the [injectionDeclarations] that have
    * been created outside of a [Module]. For example:
    * ```
-   * class MyModule(@Inject private val correctlyDeclaredDependency: Module.() -> Int) : Module()
+   * class MyModule(@Inject private val correctlyDeclaredDependency: Injection<Int>) : Module()
    *
    * @Inject
-   * val incorrectlyDeclaredDependency: Module.() -> Int = { 0 }
+   * val incorrectlyDeclaredDependency = injectionOf { 0 }
    * ```
    *
    * In this case, the error would be reported on `incorrectlyDeclaredDependency`.
@@ -91,23 +92,23 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
   }
 
   /**
-   * Reports an error for each [KSPropertyDeclaration] within the [injectionDeclarations] that have
-   * a return type other than that of an injection, which is `Module.() -> Any`.
+   * Reports an error for each [KSPropertyDeclaration] within the [injectionDeclarations] that has a
+   * return type other than [Injection].
    *
    * @param injectionDeclarations Declared properties annotated with [Inject].
    */
   private fun reportErrorOnMismatchingType(injectionDeclarations: List<KSPropertyDeclaration>) {
     injectionDeclarations.filterNot(KSPropertyDeclaration::isInjection).forEach {
       environment.logger.error(
-        "An injection should return have a return type of `Module.() -> Any`.",
+        "An Inject-annotated property should return an Injection.",
         symbol = it
       )
     }
   }
 
   /**
-   * Reports an error for each private [Module] that contains injections. They should be visible to
-   * the extension properties that will be generated for their dependencies.
+   * Reports an error for each private [Module] that contains [Injection]s. They should be visible
+   * to the extension properties that will be generated for their dependencies.
    *
    * @param injectionDeclarations Declared properties annotated with [Inject].
    */
@@ -123,7 +124,7 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
   }
 
   /**
-   * Reports an error for each private injection. This is necessary for the workaround of
+   * Reports an error for each private [Injection]. This is necessary for the workaround of
    * suppressing their "unused" warning by referencing them when returning the dependency from their
    * respective extension property on the [Module] in which they've been declared.
    *
@@ -139,7 +140,8 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
    * Generates extension functions for each of the [injectionDeclarations] for them to be easily
    * obtained instead of relying on the [Module.get]'s runtime type check.
    *
-   * @param injectionDeclarations Injections for which the extension properties will be generated.
+   * @param injectionDeclarations [KSPropertyDeclaration]s of the [Injection]s for which the
+   *   extension properties will be generated.
    * @throws IllegalStateException If the [Module]s aren't part of a [KSFile] or the [KSType] of an
    *   injected dependency cannot be resolved.
    */
@@ -163,7 +165,8 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
    *
    * @param moduleDeclaration [KSClassDeclaration] of the [Module] for which the [FileSpec] will be
    *   created.
-   * @param injectionDeclarations [KSPropertyDeclaration]s of the [moduleDeclaration]'s injections.
+   * @param injectionDeclarations [KSPropertyDeclaration]s of the [moduleDeclaration]'s
+   *   [Injection]s.
    * @throws IllegalStateException If the [moduleDeclaration] isn't part of a [KSFile] or the
    *   [KSType] of an injected dependency cannot be resolved.
    */
@@ -189,7 +192,7 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
    *
    * @param moduleDeclaration [KSClassDeclaration] of the [Module] in which the
    *   [injectionDeclaration] is.
-   * @param injectionDeclaration [KSPropertyDeclaration] of the injection for which the [FunSpec]
+   * @param injectionDeclaration [KSPropertyDeclaration] of the [Injection] for which the [FunSpec]
    *   will be created.
    * @throws IllegalStateException If the [KSType] of the injected dependency cannot be resolved.
    */
@@ -229,11 +232,11 @@ class InjectProcessor private constructor(private val environment: SymbolProcess
       .receiver(moduleTypeName)
       .addStatement(
         """
-                    return run {
-                        $name
-                        get()
-                    }
-                """
+        return run {
+            $name
+            get()
+        }
+        """
           .trimIndent()
       )
       .returns(typeName)

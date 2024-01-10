@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,11 +13,22 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.settings.termmuting
+package com.jeanbarrossilva.orca.std.injector.module.injection
 
-import com.jeanbarrossilva.orca.core.feed.profile.post.content.TermMuter
-import com.jeanbarrossilva.orca.std.injector.module.Inject
 import com.jeanbarrossilva.orca.std.injector.module.Module
-import com.jeanbarrossilva.orca.std.injector.module.injection.Injection
 
-abstract class TermMutingModule(@Inject internal val termMuter: Injection<TermMuter>) : Module()
+/**
+ * Creates an [Injection].
+ *
+ * @param T Dependency to be injected.
+ * @param creation Returns the dependency to be injected that can be lazily retrieved afterwards.
+ */
+inline fun <reified T : Any> injectionOf(crossinline creation: Module.() -> T): Injection<T> {
+  return object : Injection<T>() {
+    override val dependencyClass = T::class
+
+    override fun Module.create(): T {
+      return creation()
+    }
+  }
+}

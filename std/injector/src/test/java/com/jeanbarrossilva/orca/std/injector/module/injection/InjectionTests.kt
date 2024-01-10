@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,11 +13,20 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.settings.termmuting
+package com.jeanbarrossilva.orca.std.injector.module.injection
 
-import com.jeanbarrossilva.orca.core.feed.profile.post.content.TermMuter
-import com.jeanbarrossilva.orca.std.injector.module.Inject
-import com.jeanbarrossilva.orca.std.injector.module.Module
-import com.jeanbarrossilva.orca.std.injector.module.injection.Injection
+import assertk.assertThat
+import assertk.assertions.isSameAs
+import com.jeanbarrossilva.orca.std.injector.Injector
+import kotlin.test.Test
 
-abstract class TermMutingModule(@Inject internal val termMuter: Injection<TermMuter>) : Module()
+internal class InjectionTests {
+  @Test
+  fun retrievesCreatedDependencyWhenProvidedSubsequently() {
+    val injection = injectionOf { Object() }
+    val provide = { with(Injector) { with(injection) { provide() } } }
+    val created = provide()
+    val retrieved = provide()
+    assertThat(retrieved).isSameAs(created)
+  }
+}

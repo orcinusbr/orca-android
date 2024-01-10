@@ -21,7 +21,9 @@ plugins {
 }
 
 dependencies {
-  implementation(libs.kotlin.reflect)
+  implementation(project(":ext:reflection"))
+
+  kspTest(project(":std:injector-processor"))
 
   testImplementation(project(":std:injector-test"))
   testImplementation(libs.assertk)
