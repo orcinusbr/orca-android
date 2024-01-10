@@ -28,11 +28,11 @@ import com.jeanbarrossilva.orca.platform.ui.core.navigation.duplication.disallow
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.suddenly
 import com.jeanbarrossilva.orca.std.injector.Injector
 
-internal enum class BottomNavigation {
+internal enum class BottomDestinationProvider {
   FEED {
     override val id = R.id.feed
 
-    override suspend fun getDestination(): Navigator.Navigation.Destination<*> {
+    override suspend fun provide(): Navigator.Navigation.Destination<*> {
       return authenticationLock.scheduleUnlock {
         Navigator.Navigation.Destination(FeedFragment.ROUTE) { FeedFragment(it.id) }
       }
@@ -41,7 +41,7 @@ internal enum class BottomNavigation {
   PROFILE_DETAILS {
     override val id = R.id.profile_details
 
-    override suspend fun getDestination(): Navigator.Navigation.Destination<*> {
+    override suspend fun provide(): Navigator.Navigation.Destination<*> {
       return authenticationLock.scheduleUnlock {
         Navigator.Navigation.Destination(ProfileDetailsFragment.createRoute(it.id)) {
           ProfileDetailsFragment(BackwardsNavigationState.Unavailable, it.id)
@@ -52,7 +52,7 @@ internal enum class BottomNavigation {
   SETTINGS {
     override val id = R.id.settings
 
-    override suspend fun getDestination(): Navigator.Navigation.Destination<*> {
+    override suspend fun provide(): Navigator.Navigation.Destination<*> {
       return Navigator.Navigation.Destination("settings", ::SettingsFragment)
     }
   };
@@ -62,12 +62,12 @@ internal enum class BottomNavigation {
   protected val authenticationLock
     get() = Injector.from<CoreModule>().authenticationLock()
 
-  protected abstract suspend fun getDestination(): Navigator.Navigation.Destination<*>
+  protected abstract suspend fun provide(): Navigator.Navigation.Destination<*>
 
   companion object {
-    suspend fun navigate(navigator: Navigator, @IdRes id: Int) {
-      val value = values().find { it.id == id } ?: throw NoSuchElementException("$id")
-      val destination = value.getDestination()
+    suspend fun provideAndNavigate(navigator: Navigator, @IdRes id: Int) {
+      val value = entries.find { it.id == id } ?: throw NoSuchElementException("$id")
+      val destination = value.provide()
       navigator.navigate(suddenly(), disallowingDuplication()) {
         to(destination.route, destination.target)
       }

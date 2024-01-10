@@ -15,16 +15,17 @@
 
 package com.jeanbarrossilva.orca.app.module.feature.feed
 
-import com.jeanbarrossilva.orca.app.OrcaActivity
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.feature.feed.FeedModule
+import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
+import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
 import com.jeanbarrossilva.orca.std.injector.Injector
 
-internal class MainFeedModule(activity: OrcaActivity) :
+internal class MainFeedModule<T>(activity: T) :
   FeedModule(
     { Injector.from<CoreModule>().instanceProvider().provide().feedProvider },
     { Injector.from<CoreModule>().instanceProvider().provide().postProvider },
     { NavigatorFeedBoundary(activity, activity.navigator) },
     onBottomAreaAvailabilityChangeListener = { activity }
-  )
+  ) where T : NavigationActivity, T : OnBottomAreaAvailabilityChangeListener
