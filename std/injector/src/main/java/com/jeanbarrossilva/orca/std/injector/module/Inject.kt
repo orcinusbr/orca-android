@@ -16,19 +16,23 @@
 package com.jeanbarrossilva.orca.std.injector.module
 
 import com.jeanbarrossilva.orca.std.injector.Injector
+import com.jeanbarrossilva.orca.std.injector.module.injection.Injection
+import com.jeanbarrossilva.orca.std.injector.module.injection.injectionOf
 
 /**
- * Denotes that the dependency returned by the value of the annotated property should be
+ * Denotes that the dependency provided by the value of the annotated property should be
  * automatically injected into the [Module] in which it was declared and that an extension function
  * for getting its result should be created for that same [Module].
  *
- * For example, declaring `class MyModule(@Inject val dependency: Module.() -> Int)` and registering
+ * For example, declaring `class MyModule(@Inject val dependency: Injection<Int>)` and registering
  * it in the [Injector] injects `dependency` into `MyModule` and makes its provided `Int` accessible
  * via a `MyModule.dependency()` extension function.
  *
- * Note that the annotated property should return a `Module.() -> Any`, which is how an injection is
- * recognized; otherwise, an error will be thrown at build time.
+ * Note that the annotated property should return an [Injection]; otherwise, an error will be thrown
+ * at build time.
  *
+ * @see Module.inject
  * @see Injector.register
+ * @see injectionOf
  */
 @Target(AnnotationTarget.PROPERTY) annotation class Inject

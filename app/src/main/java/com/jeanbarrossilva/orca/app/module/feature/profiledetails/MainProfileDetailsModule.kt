@@ -21,11 +21,12 @@ import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetailsModule
 import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
 import com.jeanbarrossilva.orca.std.injector.Injector
+import com.jeanbarrossilva.orca.std.injector.module.injection.injectionOf
 
 internal class MainProfileDetailsModule<T>(activity: T) :
   ProfileDetailsModule(
-    { Injector.from<CoreModule>().instanceProvider().provide().profileProvider },
-    { Injector.from<CoreModule>().instanceProvider().provide().postProvider },
-    { NavigatorProfileDetailsBoundary(activity, activity.navigator) },
-    onBottomAreaAvailabilityChangeListener = { activity }
+    injectionOf { Injector.from<CoreModule>().instanceProvider().provide().profileProvider },
+    injectionOf { Injector.from<CoreModule>().instanceProvider().provide().postProvider },
+    injectionOf { NavigatorProfileDetailsBoundary(activity, activity.navigator) },
+    injectionOf { activity }
   ) where T : NavigationActivity, T : OnBottomAreaAvailabilityChangeListener

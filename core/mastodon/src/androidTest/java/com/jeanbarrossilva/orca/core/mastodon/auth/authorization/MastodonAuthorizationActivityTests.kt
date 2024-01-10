@@ -35,6 +35,7 @@ import com.jeanbarrossilva.orca.platform.autos.test.kit.input.text.onTextFieldEr
 import com.jeanbarrossilva.orca.platform.testing.asString
 import com.jeanbarrossilva.orca.platform.testing.context
 import com.jeanbarrossilva.orca.platform.ui.core.sample
+import com.jeanbarrossilva.orca.std.injector.module.injection.injectionOf
 import com.jeanbarrossilva.orca.std.injector.test.InjectorTestRule
 import org.junit.Rule
 import org.junit.Test
@@ -44,9 +45,9 @@ internal class MastodonAuthorizationActivityTests {
   val injectorRule = InjectorTestRule {
     register(
       CoreModule(
-        { InstanceProvider.sample },
-        { Instance.sample.authenticationLock },
-        { SampleTermMuter() }
+        injectionOf { InstanceProvider.sample },
+        injectionOf { Instance.sample.authenticationLock },
+        injectionOf { SampleTermMuter() }
       )
     )
   }

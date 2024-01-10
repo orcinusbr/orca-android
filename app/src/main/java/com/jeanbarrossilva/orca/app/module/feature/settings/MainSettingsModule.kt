@@ -20,9 +20,10 @@ import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.termMuter
 import com.jeanbarrossilva.orca.feature.settings.SettingsModule
 import com.jeanbarrossilva.orca.std.injector.Injector
+import com.jeanbarrossilva.orca.std.injector.module.injection.injectionOf
 
 internal class MainSettingsModule(private val context: Context) :
   SettingsModule(
-    { Injector.from<CoreModule>().termMuter() },
-    { ContextualSettingsBoundary(context) }
+    injectionOf { Injector.from<CoreModule>().termMuter() },
+    injectionOf { ContextualSettingsBoundary(context) }
   )

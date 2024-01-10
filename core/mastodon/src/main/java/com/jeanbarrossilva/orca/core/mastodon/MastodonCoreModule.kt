@@ -23,7 +23,7 @@ import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.instance.InstanceProvider
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.std.injector.module.Inject
-import com.jeanbarrossilva.orca.std.injector.module.Module
+import com.jeanbarrossilva.orca.std.injector.module.injection.Injection
 
 /**
  * [CoreModule] into which Mastodon-specific core structures are injected.
@@ -35,7 +35,7 @@ import com.jeanbarrossilva.orca.std.injector.module.Module
  *   currently [authenticated][Actor.Authenticated] [Actor] is.
  */
 open class MastodonCoreModule(
-  @Inject internal val instanceProvider: Module.() -> InstanceProvider,
-  @Inject internal val authenticationLock: Module.() -> SomeAuthenticationLock,
-  @Inject internal val termMuter: Module.() -> TermMuter
+  @Inject internal val instanceProvider: Injection<InstanceProvider>,
+  @Inject internal val authenticationLock: Injection<SomeAuthenticationLock>,
+  @Inject internal val termMuter: Injection<TermMuter>
 ) : CoreModule(instanceProvider, authenticationLock, termMuter)

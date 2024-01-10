@@ -20,9 +20,10 @@ import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.feature.gallery.GalleryModule
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
 import com.jeanbarrossilva.orca.std.injector.Injector
+import com.jeanbarrossilva.orca.std.injector.module.injection.injectionOf
 
 internal class MainGalleryModule(navigator: Navigator) :
   GalleryModule(
-    { Injector.from<CoreModule>().instanceProvider().provide().postProvider },
-    { NavigatorGalleryBoundary(navigator) }
+    injectionOf { Injector.from<CoreModule>().instanceProvider().provide().postProvider },
+    injectionOf { NavigatorGalleryBoundary(navigator) }
   )

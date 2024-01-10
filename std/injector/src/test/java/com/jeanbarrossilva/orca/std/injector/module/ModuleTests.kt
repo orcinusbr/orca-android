@@ -13,11 +13,11 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.std.injector
+package com.jeanbarrossilva.orca.std.injector.module
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import com.jeanbarrossilva.orca.std.injector.module.Module
+import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.orca.std.injector.test.InjectorTestRule
 import kotlin.test.Test
 import org.junit.Rule

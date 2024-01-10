@@ -20,12 +20,13 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.PostProvider
 import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.std.injector.module.Inject
 import com.jeanbarrossilva.orca.std.injector.module.Module
+import com.jeanbarrossilva.orca.std.injector.module.injection.Injection
 
 abstract class ProfileDetailsModule(
-  @Inject internal val profileProvider: Module.() -> ProfileProvider,
-  @Inject internal val postProvider: Module.() -> PostProvider,
-  @Inject internal val boundary: Module.() -> ProfileDetailsBoundary,
+  @Inject internal val profileProvider: Injection<ProfileProvider>,
+  @Inject internal val postProvider: Injection<PostProvider>,
+  @Inject internal val boundary: Injection<ProfileDetailsBoundary>,
   @Inject
   internal val onBottomAreaAvailabilityChangeListener:
-    Module.() -> OnBottomAreaAvailabilityChangeListener
+    Injection<OnBottomAreaAvailabilityChangeListener>
 ) : Module()

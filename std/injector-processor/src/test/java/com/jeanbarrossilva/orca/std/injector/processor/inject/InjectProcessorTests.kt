@@ -33,11 +33,12 @@ internal class InjectProcessorTests {
         """
             import com.jeanbarrossilva.orca.std.injector.module.Inject
             import com.jeanbarrossilva.orca.std.injector.module.Module
+            import com.jeanbarrossilva.orca.std.injector.module.injection.Injection
 
-            class SubModule(@Inject override val dependency: Module.() -> Int = { 0 }) :
+            class SubModule(@Inject override val dependency: Injection<Int> = { 0 }) :
               SuperModule(dependency)
 
-            abstract class SuperModule(@Inject open val dependency: Module.() -> Int = { 0 }) :
+            abstract class SuperModule(@Inject open val dependency: Injection<Int> = { 0 }) :
               Module()
         """
           .trimIndent()

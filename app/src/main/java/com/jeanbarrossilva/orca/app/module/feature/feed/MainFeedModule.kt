@@ -21,11 +21,12 @@ import com.jeanbarrossilva.orca.feature.feed.FeedModule
 import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
 import com.jeanbarrossilva.orca.std.injector.Injector
+import com.jeanbarrossilva.orca.std.injector.module.injection.injectionOf
 
 internal class MainFeedModule<T>(activity: T) :
   FeedModule(
-    { Injector.from<CoreModule>().instanceProvider().provide().feedProvider },
-    { Injector.from<CoreModule>().instanceProvider().provide().postProvider },
-    { NavigatorFeedBoundary(activity, activity.navigator) },
-    onBottomAreaAvailabilityChangeListener = { activity }
+    injectionOf { Injector.from<CoreModule>().instanceProvider().provide().feedProvider },
+    injectionOf { Injector.from<CoreModule>().instanceProvider().provide().postProvider },
+    injectionOf { NavigatorFeedBoundary(activity, activity.navigator) },
+    injectionOf { activity }
   ) where T : NavigationActivity, T : OnBottomAreaAvailabilityChangeListener
