@@ -28,6 +28,8 @@ dependencies {
   androidTestImplementation(libs.android.compose.ui.test.junit)
   androidTestImplementation(libs.android.test.runner)
 
+  api(project(":composite:composable"))
+
   implementation(project(":core"))
   implementation(project(":core:sample"))
   implementation(project(":platform:autos"))

@@ -19,13 +19,13 @@ import android.content.Context
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
+import com.jeanbarrossilva.orca.composite.composable.ComposableActivity
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.mastodon.auth.authentication.MastodonAuthentication
 import com.jeanbarrossilva.orca.core.mastodon.auth.authentication.MastodonAuthenticationViewModel
 import com.jeanbarrossilva.orca.core.mastodon.instance.ContextualMastodonInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
-import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableActivity
 import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.platform.starter.on
 

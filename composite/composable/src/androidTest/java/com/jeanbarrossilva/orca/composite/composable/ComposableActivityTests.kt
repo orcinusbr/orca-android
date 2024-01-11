@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,25 +13,23 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.composer
+package com.jeanbarrossilva.orca.composite.composable
 
-import android.content.Context
-import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
-import com.jeanbarrossilva.orca.composite.composable.ComposableActivity
-import com.jeanbarrossilva.platform.starter.on
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onRoot
+import org.junit.Rule
+import org.junit.Test
 
-class ComposerActivity internal constructor() : ComposableActivity() {
-  private val viewModel by viewModels<ComposerViewModel>()
+internal class ComposableActivityTests {
+  @get:Rule val composeRule = createAndroidComposeRule<TestComposableActivity>()
 
-  @Composable
-  override fun Content() {
-    Composer(viewModel, onBackwardsNavigation = ::finish)
+  class TestComposableActivity : ComposableActivity() {
+    @Composable @Suppress("TestFunctionName") override fun Content() {}
   }
 
-  companion object {
-    fun start(context: Context) {
-      context.on<ComposerActivity>().asNewTask().start()
-    }
+  @Test
+  fun setsComposableContentView() {
+    composeRule.onRoot().assertExists()
   }
 }

@@ -25,6 +25,7 @@ includeBuild("build-src")
 
 include(
   ":app",
+  ":composite:composable",
   ":core",
   ":core:mastodon",
   ":core:sample",

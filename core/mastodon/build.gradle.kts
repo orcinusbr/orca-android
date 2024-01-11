@@ -51,6 +51,7 @@ dependencies {
   androidTestImplementation(libs.mockk)
 
   api(project(":core-module"))
+  api(project(":composite:composable"))
 
   ksp(project(":std:injector-processor"))
 

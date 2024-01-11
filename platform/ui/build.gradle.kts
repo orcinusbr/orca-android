@@ -48,7 +48,6 @@ dependencies {
   implementation(project(":ext:coroutines"))
   implementation(project(":platform:autos"))
   implementation(project(":std:image:compose"))
-  implementation(libs.android.activity.compose)
   implementation(libs.android.compose.material)
   implementation(libs.android.material)
   implementation(libs.jsoup)

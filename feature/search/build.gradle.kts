@@ -25,6 +25,8 @@ android {
 }
 
 dependencies {
+  api(project(":composite:composable"))
+
   ksp(project(":std:injector-processor"))
 
   implementation(project(":core"))
