@@ -17,6 +17,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
         <activity
-            android:name="com.jeanbarrossilva.platform.starter.ActivityStarterTests$TestStartableActivity" />
+            android:name="com.jeanbarrossilva.platform.starter.lifecycle.CompleteLifecycleActivity" />
+        <activity
+            android:name="com.jeanbarrossilva.platform.starter.test.TestStartableActivity" />
     </application>
 </manifest>

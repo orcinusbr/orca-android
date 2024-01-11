@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.lifecycle.test
+package com.jeanbarrossilva.platform.starter.lifecycle.test
 
 import android.app.Activity
 import android.app.Application

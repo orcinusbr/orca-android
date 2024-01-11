@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,14 +13,14 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.lifecycle
+package com.jeanbarrossilva.platform.starter.lifecycle
 
 import android.os.Bundle
 import androidx.lifecycle.Lifecycle
-import com.jeanbarrossilva.orca.platform.ui.core.lifecycle.state.CompleteLifecycleState
-import com.jeanbarrossilva.orca.platform.ui.core.lifecycle.state.compareTo
-import com.jeanbarrossilva.orca.platform.ui.core.lifecycle.state.next
 import com.jeanbarrossilva.platform.starter.StartableActivity
+import com.jeanbarrossilva.platform.starter.lifecycle.state.CompleteLifecycleState
+import com.jeanbarrossilva.platform.starter.lifecycle.state.compareTo
+import com.jeanbarrossilva.platform.starter.lifecycle.state.next
 
 /**
  * [StartableActivity] that provides a complete version of [Lifecycle.State], containing missing
@@ -88,10 +88,10 @@ open class CompleteLifecycleActivity : StartableActivity() {
   /**
    * Iteratively moves [completeLifecycleState] to the given [state].
    *
-   * **NOTE**: Currently only works if we're moving _toward_ the [state]; if [state] is a
+   * **NOTE**: Currently only works if we're moving _toward_ the [state]; if it is a
    * [CompleteLifecycleState] before [completeLifecycleState], nothing will be done.
    *
-   * @param state [CompleteLifecycleState] to which [completeLifecycleState] will be moved.
+   * @param state [CompleteLifecycleState] to which the [completeLifecycleState] will be moved.
    */
   private fun sideEffectlesslyMoveTo(
     @Suppress("SameParameterValue") state: CompleteLifecycleState

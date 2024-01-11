@@ -16,6 +16,7 @@
 package com.jeanbarrossilva.platform.starter
 
 import androidx.test.platform.app.InstrumentationRegistry
+import com.jeanbarrossilva.platform.starter.test.TestStartableActivity
 import io.mockk.spyk
 import io.mockk.verify
 import kotlin.coroutines.resume
@@ -26,8 +27,6 @@ import org.junit.Test
 internal class ActivityStarterTests {
   private val context
     get() = InstrumentationRegistry.getInstrumentation().context
-
-  class TestStartableActivity : StartableActivity()
 
   @Test
   fun startsActivity() {

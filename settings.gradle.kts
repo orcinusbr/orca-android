@@ -52,6 +52,7 @@ include(
   ":platform:navigation",
   ":platform:navigation-test",
   ":platform:starter",
+  ":platform:starter-test",
   ":platform:testing",
   ":platform:ui",
   ":platform:ui-test",

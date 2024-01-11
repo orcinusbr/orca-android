@@ -13,13 +13,14 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.lifecycle
+package com.jeanbarrossilva.platform.starter.lifecycle
 
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.launchActivity
-import com.jeanbarrossilva.orca.platform.ui.core.lifecycle.state.CompleteLifecycleState
-import com.jeanbarrossilva.orca.platform.ui.core.lifecycle.test.doOnDestroy
-import org.junit.Assert.assertEquals
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import com.jeanbarrossilva.platform.starter.lifecycle.state.CompleteLifecycleState
+import com.jeanbarrossilva.platform.starter.lifecycle.test.doOnDestroy
 import org.junit.Test
 
 internal class LifecycleActivityTests {
@@ -30,7 +31,7 @@ internal class LifecycleActivityTests {
         try {
           activity.onCreate(null, null)
         } catch (_: IllegalStateException) {}
-        assertEquals(CompleteLifecycleState.CREATED, activity.completeLifecycleState)
+        assertThat(activity.completeLifecycleState).isEqualTo(CompleteLifecycleState.CREATED)
       }
     }
   }
@@ -40,7 +41,7 @@ internal class LifecycleActivityTests {
     launchActivity<CompleteLifecycleActivity>().use { scenario ->
       scenario.onActivity { activity ->
         activity.callOnStart()
-        assertEquals(CompleteLifecycleState.STARTED, activity.completeLifecycleState)
+        assertThat(activity.completeLifecycleState).isEqualTo(CompleteLifecycleState.STARTED)
       }
     }
   }
@@ -50,7 +51,7 @@ internal class LifecycleActivityTests {
     launchActivity<CompleteLifecycleActivity>().use { scenario ->
       scenario.moveToState(Lifecycle.State.RESUMED)
       scenario.onActivity { activity ->
-        assertEquals(CompleteLifecycleState.RESUMED, activity.completeLifecycleState)
+        assertThat(activity.completeLifecycleState).isEqualTo(CompleteLifecycleState.RESUMED)
       }
     }
   }
@@ -60,7 +61,7 @@ internal class LifecycleActivityTests {
     launchActivity<CompleteLifecycleActivity>().use { scenario ->
       scenario.onActivity { activity ->
         activity.callOnPause()
-        assertEquals(CompleteLifecycleState.PAUSED, activity.completeLifecycleState)
+        assertThat(activity.completeLifecycleState).isEqualTo(CompleteLifecycleState.PAUSED)
       }
     }
   }
@@ -70,7 +71,7 @@ internal class LifecycleActivityTests {
     launchActivity<CompleteLifecycleActivity>().use { scenario ->
       scenario.onActivity { activity ->
         activity.callOnStop()
-        assertEquals(CompleteLifecycleState.STOPPED, activity.completeLifecycleState)
+        assertThat(activity.completeLifecycleState).isEqualTo(CompleteLifecycleState.STOPPED)
       }
     }
   }
@@ -82,7 +83,7 @@ internal class LifecycleActivityTests {
       scenario.onActivity { activity -> activity.doOnDestroy { state = completeLifecycleState } }
       scenario.moveToState(Lifecycle.State.DESTROYED)
     }
-    assertEquals(CompleteLifecycleState.DESTROYED, state)
+    assertThat(state).isEqualTo(CompleteLifecycleState.DESTROYED)
   }
 
   @Test
@@ -90,7 +91,7 @@ internal class LifecycleActivityTests {
     launchActivity<CompleteLifecycleActivity>().use { scenario ->
       scenario.onActivity { activity ->
         activity.finish()
-        assertEquals(CompleteLifecycleState.DESTROYED, activity.completeLifecycleState)
+        assertThat(activity.completeLifecycleState).isEqualTo(CompleteLifecycleState.DESTROYED)
       }
     }
   }

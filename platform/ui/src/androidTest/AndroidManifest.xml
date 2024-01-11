@@ -14,9 +14,4 @@
   ~ not, see https://www.gnu.org/licenses.
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <application>
-        <activity
-            android:name="com.jeanbarrossilva.orca.platform.ui.core.lifecycle.CompleteLifecycleActivity" />
-    </application>
-</manifest>
+<manifest />

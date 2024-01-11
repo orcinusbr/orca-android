@@ -21,7 +21,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
-import com.jeanbarrossilva.orca.platform.ui.core.lifecycle.CompleteLifecycleActivity
+import com.jeanbarrossilva.platform.starter.lifecycle.CompleteLifecycleActivity
 
 /**
  * [Activity] that shows [Composable] content.
