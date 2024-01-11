@@ -45,6 +45,7 @@ dependencies {
   implementation(project(":core"))
   implementation(project(":core:sample"))
   implementation(project(":platform:autos"))
+  implementation(project(":platform:starter"))
   implementation(project(":platform:ui"))
   implementation(project(":std:image:compose"))
   implementation(libs.zoomable)

@@ -30,8 +30,8 @@ import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
 import com.jeanbarrossilva.orca.platform.ui.core.Intent
 import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableActivity
 import com.jeanbarrossilva.orca.platform.ui.core.extra
-import com.jeanbarrossilva.orca.platform.ui.core.on
 import com.jeanbarrossilva.orca.std.injector.Injector
+import com.jeanbarrossilva.platform.starter.on
 
 class GalleryActivity internal constructor() : ComposableActivity() {
   private val module by lazy { Injector.from<GalleryModule>() }

@@ -19,7 +19,7 @@ import android.content.Context
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableActivity
-import com.jeanbarrossilva.orca.platform.ui.core.on
+import com.jeanbarrossilva.platform.starter.on
 
 class ComposerActivity internal constructor() : ComposableActivity() {
   private val viewModel by viewModels<ComposerViewModel>()
