@@ -25,9 +25,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.jeanbarrossilva.orca.composite.composable.ComposableActivity
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
-import com.jeanbarrossilva.orca.platform.starter.lifecycle.composable.ComposableActivity
 import com.jeanbarrossilva.orca.platform.ui.core.Intent
 import com.jeanbarrossilva.orca.platform.ui.core.extra
 import com.jeanbarrossilva.orca.std.injector.Injector

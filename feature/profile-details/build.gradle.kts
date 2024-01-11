@@ -38,6 +38,8 @@ dependencies {
   androidTestImplementation(libs.android.test.core)
   androidTestImplementation(libs.loadable.placeholder.test)
 
+  api(project(":composite:composable"))
+
   ksp(project(":std:injector-processor"))
 
   implementation(project(":core"))
@@ -45,7 +47,6 @@ dependencies {
   implementation(project(":ext:coroutines"))
   implementation(project(":platform:autos"))
   implementation(project(":platform:navigation"))
-  implementation(project(":platform:starter:lifecycle:composable"))
   implementation(project(":platform:ui"))
   implementation(project(":std:injector"))
   implementation(libs.android.lifecycle.viewmodel)

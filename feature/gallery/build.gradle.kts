@@ -40,13 +40,14 @@ dependencies {
   androidTestImplementation(libs.assertk)
   androidTestImplementation(libs.loadable.placeholder.test)
 
+  api(project(":composite:composable"))
+
   ksp(project(":std:injector-processor"))
 
   implementation(project(":core"))
   implementation(project(":core:sample"))
   implementation(project(":platform:autos"))
   implementation(project(":platform:starter"))
-  implementation(project(":platform:starter:lifecycle:composable"))
   implementation(project(":platform:ui"))
   implementation(project(":std:image:compose"))
   implementation(libs.zoomable)

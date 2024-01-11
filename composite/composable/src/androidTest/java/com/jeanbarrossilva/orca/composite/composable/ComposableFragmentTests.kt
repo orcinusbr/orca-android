@@ -13,23 +13,33 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.starter.lifecycle.composable
+package com.jeanbarrossilva.orca.composite.composable
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onRoot
+import androidx.navigation.NavGraphBuilder
+import com.jeanbarrossilva.orca.platform.ui.test.core.SingleFragmentActivity
 import org.junit.Rule
 import org.junit.Test
 
-internal class ComposableActivityTests {
-  @get:Rule val composeRule = createAndroidComposeRule<TestComposableActivity>()
+internal class ComposableFragmentTests {
+  @get:Rule val composeRule = createAndroidComposeRule<TestComposableFragmentActivity>()
 
-  class TestComposableActivity : ComposableActivity() {
+  class TestComposableFragmentActivity : SingleFragmentActivity() {
+    override val route = "composable"
+
+    override fun NavGraphBuilder.add() {
+      fragment<TestComposableFragment>()
+    }
+  }
+
+  class TestComposableFragment : ComposableFragment() {
     @Composable @Suppress("TestFunctionName") override fun Content() {}
   }
 
   @Test
-  fun setsComposableContentView() {
+  fun setsComposableView() {
     composeRule.onRoot().assertExists()
   }
 }

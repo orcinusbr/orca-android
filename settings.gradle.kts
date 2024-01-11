@@ -25,6 +25,7 @@ includeBuild("build-src")
 
 include(
   ":app",
+  ":composite:composable",
   ":core",
   ":core:mastodon",
   ":core:sample",
@@ -66,5 +67,3 @@ include(
   ":std:injector-test",
   ":std:styled-string"
 )
-
-include(":platform:starter:lifecycle:composable")

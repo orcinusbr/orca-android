@@ -20,11 +20,11 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.runtime.Composable
+import com.jeanbarrossilva.orca.composite.composable.ComposableActivity
 import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.viewmodel.MastodonAuthorizationViewModel
 import com.jeanbarrossilva.orca.core.mastodon.instance.ContextualMastodonInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
-import com.jeanbarrossilva.orca.platform.starter.lifecycle.composable.ComposableActivity
 import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.http.Url
 

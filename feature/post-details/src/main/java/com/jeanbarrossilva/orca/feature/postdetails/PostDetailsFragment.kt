@@ -18,10 +18,10 @@ package com.jeanbarrossilva.orca.feature.postdetails
 import androidx.compose.runtime.Composable
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import com.jeanbarrossilva.orca.composite.composable.ComposableFragment
 import com.jeanbarrossilva.orca.feature.postdetails.viewmodel.PostDetailsViewModel
 import com.jeanbarrossilva.orca.platform.navigation.Navigator
 import com.jeanbarrossilva.orca.platform.navigation.transition.opening
-import com.jeanbarrossilva.orca.platform.starter.lifecycle.composable.ComposableFragment
 import com.jeanbarrossilva.orca.platform.ui.core.argument
 import com.jeanbarrossilva.orca.std.injector.Injector
 

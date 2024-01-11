@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.starter.lifecycle.composable
+package com.jeanbarrossilva.orca.composite.composable
 
 import android.os.Bundle
 import android.view.LayoutInflater

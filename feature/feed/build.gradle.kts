@@ -35,13 +35,14 @@ dependencies {
   androidTestImplementation(libs.android.test.core)
   androidTestImplementation(libs.android.test.runner)
 
+  api(project(":composite:composable"))
+
   ksp(project(":std:injector-processor"))
 
   implementation(project(":core"))
   implementation(project(":core:sample"))
   implementation(project(":ext:coroutines"))
   implementation(project(":platform:autos"))
-  implementation(project(":platform:starter:lifecycle:composable"))
   implementation(project(":platform:ui"))
   implementation(project(":std:injector"))
   implementation(libs.loadable.list)

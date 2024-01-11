@@ -25,8 +25,8 @@ android {
 }
 
 dependencies {
+  androidTestImplementation(project(":platform:ui-test"))
   androidTestImplementation(libs.android.compose.ui.test.junit)
-  androidTestImplementation(libs.android.fragment.testing)
   androidTestImplementation(libs.android.test.core)
   androidTestImplementation(libs.assertk)
 

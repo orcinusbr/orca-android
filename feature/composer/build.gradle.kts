@@ -28,11 +28,12 @@ dependencies {
   androidTestImplementation(libs.android.compose.ui.test.junit)
   androidTestImplementation(libs.android.test.runner)
 
+  api(project(":composite:composable"))
+
   implementation(project(":core"))
   implementation(project(":core:sample"))
   implementation(project(":platform:autos"))
   implementation(project(":platform:starter"))
-  implementation(project(":platform:starter:lifecycle:composable"))
   implementation(project(":platform:ui"))
   implementation(libs.android.compose.material.icons)
 

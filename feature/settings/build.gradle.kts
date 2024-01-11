@@ -25,11 +25,12 @@ android {
 }
 
 dependencies {
+  api(project(":composite:composable"))
+
   ksp(project(":std:injector-processor"))
 
   implementation(project(":core"))
   implementation(project(":platform:autos"))
-  implementation(project(":platform:starter:lifecycle:composable"))
   implementation(project(":platform:ui"))
   implementation(project(":std:injector"))
 }

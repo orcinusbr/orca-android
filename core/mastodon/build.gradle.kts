@@ -51,6 +51,7 @@ dependencies {
   androidTestImplementation(libs.mockk)
 
   api(project(":core-module"))
+  api(project(":composite:composable"))
 
   ksp(project(":std:injector-processor"))
 
@@ -59,7 +60,6 @@ dependencies {
   implementation(project(":platform:autos"))
   implementation(project(":platform:cache"))
   implementation(project(":platform:starter"))
-  implementation(project(":platform:starter:lifecycle:composable"))
   implementation(project(":platform:ui"))
   implementation(libs.android.browser)
   implementation(libs.android.room.ktx)

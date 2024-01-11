@@ -17,6 +17,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
         <activity
-            android:name="com.jeanbarrossilva.orca.platform.starter.lifecycle.composable.ComposableActivityTests$TestComposableActivity" />
+            android:name="com.jeanbarrossilva.orca.composite.composable.ComposableActivityTests$TestComposableActivity" />
+        <activity
+            android:name="com.jeanbarrossilva.orca.composite.composable.ComposableFragmentTests$TestComposableFragmentActivity" />
     </application>
 </manifest>

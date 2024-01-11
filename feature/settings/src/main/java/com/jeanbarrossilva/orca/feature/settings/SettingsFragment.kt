@@ -17,7 +17,7 @@ package com.jeanbarrossilva.orca.feature.settings
 
 import androidx.compose.runtime.Composable
 import androidx.fragment.app.viewModels
-import com.jeanbarrossilva.orca.platform.starter.lifecycle.composable.ComposableFragment
+import com.jeanbarrossilva.orca.composite.composable.ComposableFragment
 import com.jeanbarrossilva.orca.std.injector.Injector
 
 class SettingsFragment : ComposableFragment() {
