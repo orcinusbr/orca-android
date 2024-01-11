@@ -27,7 +27,7 @@ internal class ActivityStarterTests {
   private val context
     get() = InstrumentationRegistry.getInstrumentation().context
 
-  class TestStartableActivity : StartableActivity()
+  internal class TestStartableActivity : StartableActivity()
 
   @Test
   fun startsActivity() {

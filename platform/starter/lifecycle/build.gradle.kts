@@ -18,22 +18,12 @@ plugins {
   alias(libs.plugins.kotlin.android)
 }
 
-android {
-  buildTypes.getByName("debug").proguardFile("proguard-rules.pro")
-  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-  packagingOptions.resources.excludes +=
-    arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
-}
+android.defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
 dependencies {
   androidTestImplementation(libs.android.test.core)
   androidTestImplementation(libs.android.test.runner)
-  androidTestImplementation(libs.kotlin.coroutines.test)
-  androidTestImplementation(libs.mockk)
+  androidTestImplementation(libs.assertk)
 
-  api(libs.android.fragment.ktx)
-
-  debugImplementation(libs.kotlin.coroutines.core)
-
-  implementation(libs.kotlin.reflect)
+  api(project(":platform:starter"))
 }

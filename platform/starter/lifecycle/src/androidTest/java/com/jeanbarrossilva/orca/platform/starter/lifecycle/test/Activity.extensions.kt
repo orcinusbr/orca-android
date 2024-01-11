@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.lifecycle.test
+package com.jeanbarrossilva.orca.platform.starter.lifecycle.test
 
 import android.app.Activity
 import android.app.Application
@@ -41,7 +41,6 @@ internal fun <T : Activity> T.doOnDestroy(action: T.() -> Unit) {
 
       override fun onActivityDestroyed(activity: Activity) {
         @Suppress("UNCHECKED_CAST") (activity as T).action()
-
         unregisterActivityLifecycleCallbacks(this)
       }
     }

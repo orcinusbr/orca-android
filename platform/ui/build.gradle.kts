@@ -37,7 +37,7 @@ dependencies {
   androidTestImplementation(libs.android.test.runner)
   androidTestImplementation(libs.assertk)
 
-  api(project(":platform:starter"))
+  api(project(":platform:starter:lifecycle"))
   api(project(":std:image:compose"))
   api(libs.android.compose.foundation)
   api(libs.android.fragment.ktx)

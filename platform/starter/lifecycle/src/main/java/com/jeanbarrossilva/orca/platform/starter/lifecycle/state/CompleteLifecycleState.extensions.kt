@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.lifecycle.state
+package com.jeanbarrossilva.orca.platform.starter.lifecycle.state
 
 /**
  * Compares this [CompleteLifecycleState] with the given [other]; if it is `null`, then it is
@@ -23,15 +23,6 @@ package com.jeanbarrossilva.orca.platform.ui.core.lifecycle.state
  */
 infix operator fun CompleteLifecycleState?.compareTo(other: CompleteLifecycleState): Int {
   return this?.compareTo(other) ?: -1
-}
-
-/**
- * Whether this [CompleteLifecycleState] equals to or is greater than the given [state].
- *
- * @param state [CompleteLifecycleState] to compare this one with.
- */
-fun CompleteLifecycleState?.isAtLeast(state: CompleteLifecycleState): Boolean {
-  return this != null && compareTo(state) >= 0
 }
 
 /**
