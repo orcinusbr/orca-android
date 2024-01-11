@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,20 +13,25 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.settings
+package com.jeanbarrossilva.orca.platform.starter.lifecycle.composable
 
 import androidx.compose.runtime.Composable
-import androidx.fragment.app.viewModels
-import com.jeanbarrossilva.orca.platform.starter.lifecycle.composable.ComposableFragment
-import com.jeanbarrossilva.orca.std.injector.Injector
+import androidx.compose.ui.test.junit4.createEmptyComposeRule
+import androidx.compose.ui.test.onRoot
+import androidx.fragment.app.testing.launchFragment
+import org.junit.Rule
+import org.junit.Test
 
-class SettingsFragment : ComposableFragment() {
-  private val module by lazy { Injector.from<SettingsModule>() }
-  private val viewModel by
-    viewModels<SettingsViewModel> { SettingsViewModel.createFactory(module.termMuter()) }
+internal class ComposableFragmentTests {
+  @get:Rule val composeRule = createEmptyComposeRule()
 
-  @Composable
-  override fun Content() {
-    Settings(viewModel, module.boundary())
+  @Test
+  fun setsComposableView() {
+    launchFragment {
+        object : ComposableFragment() {
+          @Composable @Suppress("TestFunctionName") override fun Content() {}
+        }
+      }
+      .use { composeRule.onRoot().assertExists() }
   }
 }

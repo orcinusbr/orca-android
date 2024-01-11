@@ -66,3 +66,5 @@ include(
   ":std:injector-test",
   ":std:styled-string"
 )
+
+include(":platform:starter:lifecycle:composable")

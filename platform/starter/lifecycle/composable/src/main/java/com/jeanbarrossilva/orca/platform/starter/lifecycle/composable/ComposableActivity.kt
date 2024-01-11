@@ -13,31 +13,25 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.composable
+package com.jeanbarrossilva.orca.platform.starter.lifecycle.composable
 
+import android.app.Activity
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ComposeView
-import androidx.fragment.app.Fragment
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.starter.lifecycle.CompleteLifecycleActivity
 
 /**
- * [Fragment] that shows [Composable][Composable] content.
+ * [Activity] that shows [Composable] content.
  *
  * @see Content
  */
-abstract class ComposableFragment : Fragment() {
-  override fun onCreateView(
-    inflater: LayoutInflater,
-    container: ViewGroup?,
-    savedInstanceState: Bundle?
-  ): View? {
-    return context?.let {
-      ComposeView(it).apply { setContent { AutosTheme { this@ComposableFragment.Content() } } }
-    }
+abstract class ComposableActivity : CompleteLifecycleActivity() {
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContent { AutosTheme { Content() } }
   }
 
   /** Content to be shown inside the [ComposeView]. */

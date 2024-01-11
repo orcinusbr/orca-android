@@ -19,8 +19,8 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import com.jeanbarrossilva.orca.platform.starter.lifecycle.composable.ComposableFragment
 import com.jeanbarrossilva.orca.platform.ui.core.argument
-import com.jeanbarrossilva.orca.platform.ui.core.composable.ComposableFragment
 import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
 

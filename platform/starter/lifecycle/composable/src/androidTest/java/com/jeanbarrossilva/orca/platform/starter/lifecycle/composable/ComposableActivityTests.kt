@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,23 +13,23 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-plugins {
-  alias(libs.plugins.android.library)
-  alias(libs.plugins.kotlin.android)
-  alias(libs.plugins.kotlin.symbolProcessor)
-}
+package com.jeanbarrossilva.orca.platform.starter.lifecycle.composable
 
-android {
-  buildFeatures.compose = true
-  composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
-}
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onRoot
+import org.junit.Rule
+import org.junit.Test
 
-dependencies {
-  ksp(project(":std:injector-processor"))
+internal class ComposableActivityTests {
+  @get:Rule val composeRule = createAndroidComposeRule<TestComposableActivity>()
 
-  implementation(project(":core"))
-  implementation(project(":platform:autos"))
-  implementation(project(":platform:starter:lifecycle:composable"))
-  implementation(project(":platform:ui"))
-  implementation(project(":std:injector"))
+  class TestComposableActivity : ComposableActivity() {
+    @Composable @Suppress("TestFunctionName") override fun Content() {}
+  }
+
+  @Test
+  fun setsComposableContentView() {
+    composeRule.onRoot().assertExists()
+  }
 }

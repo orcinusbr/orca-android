@@ -31,6 +31,7 @@ dependencies {
   implementation(project(":core:sample"))
   implementation(project(":platform:autos"))
   implementation(project(":platform:starter"))
+  implementation(project(":platform:starter:lifecycle:composable"))
   implementation(project(":platform:ui"))
   implementation(project(":std:injector"))
   implementation(libs.loadable.list)

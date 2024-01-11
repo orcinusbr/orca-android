@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -26,15 +26,12 @@ android {
 
 dependencies {
   androidTestImplementation(libs.android.compose.ui.test.junit)
-  androidTestImplementation(libs.android.test.runner)
+  androidTestImplementation(libs.android.fragment.testing)
+  androidTestImplementation(libs.android.test.core)
+  androidTestImplementation(libs.assertk)
 
-  implementation(project(":core"))
-  implementation(project(":core:sample"))
+  api(project(":platform:starter:lifecycle"))
+
   implementation(project(":platform:autos"))
-  implementation(project(":platform:starter"))
-  implementation(project(":platform:starter:lifecycle:composable"))
-  implementation(project(":platform:ui"))
-  implementation(libs.android.compose.material.icons)
-
-  testImplementation(libs.junit)
+  implementation(libs.android.activity.compose)
 }
