@@ -13,8 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.platform.starter.test
+plugins {
+  alias(libs.plugins.android.library)
+  alias(libs.plugins.kotlin.android)
+}
 
-import com.jeanbarrossilva.platform.starter.StartableActivity
+android.defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-internal class TestStartableActivity : StartableActivity()
+dependencies {
+  androidTestImplementation(libs.android.test.core)
+  androidTestImplementation(libs.android.test.runner)
+  androidTestImplementation(libs.assertk)
+
+  api(project(":platform:starter"))
+}

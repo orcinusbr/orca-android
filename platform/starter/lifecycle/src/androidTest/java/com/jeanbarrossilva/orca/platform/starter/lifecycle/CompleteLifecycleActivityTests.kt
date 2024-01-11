@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,17 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.platform.starter.lifecycle
+package com.jeanbarrossilva.orca.platform.starter.lifecycle
 
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.launchActivity
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import com.jeanbarrossilva.platform.starter.lifecycle.state.CompleteLifecycleState
-import com.jeanbarrossilva.platform.starter.lifecycle.test.doOnDestroy
+import com.jeanbarrossilva.orca.platform.starter.lifecycle.state.CompleteLifecycleState
+import com.jeanbarrossilva.orca.platform.starter.lifecycle.test.doOnDestroy
 import org.junit.Test
 
-internal class LifecycleActivityTests {
+internal class CompleteLifecycleActivityTests {
   @Test
   fun completeLifecycleStateIsCreatedWhenActivityIsCreated() {
     launchActivity<CompleteLifecycleActivity>().use { scenario ->

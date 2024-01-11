@@ -13,14 +13,14 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.platform.starter.lifecycle
+package com.jeanbarrossilva.orca.platform.starter.lifecycle
 
 import android.os.Bundle
 import androidx.lifecycle.Lifecycle
+import com.jeanbarrossilva.orca.platform.starter.lifecycle.state.CompleteLifecycleState
+import com.jeanbarrossilva.orca.platform.starter.lifecycle.state.compareTo
+import com.jeanbarrossilva.orca.platform.starter.lifecycle.state.next
 import com.jeanbarrossilva.platform.starter.StartableActivity
-import com.jeanbarrossilva.platform.starter.lifecycle.state.CompleteLifecycleState
-import com.jeanbarrossilva.platform.starter.lifecycle.state.compareTo
-import com.jeanbarrossilva.platform.starter.lifecycle.state.next
 
 /**
  * [StartableActivity] that provides a complete version of [Lifecycle.State], containing missing

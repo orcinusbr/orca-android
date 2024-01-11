@@ -13,20 +13,19 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.platform.starter.lifecycle
+package com.jeanbarrossilva.orca.platform.starter.lifecycle
 
 import androidx.test.core.app.launchActivity
 import assertk.assertThat
 import assertk.assertions.isTrue
-import com.jeanbarrossilva.platform.starter.lifecycle.test.doOnDestroy
-import com.jeanbarrossilva.platform.starter.test.TestStartableActivity
+import com.jeanbarrossilva.orca.platform.starter.lifecycle.test.doOnDestroy
 import org.junit.Test
 
 internal class ActivityExtensionsTests {
   @Test
   fun runsActionOnDestroy() {
     var hasActionBeenRun = false
-    launchActivity<TestStartableActivity>().use { scenario ->
+    launchActivity<CompleteLifecycleActivity>().use { scenario ->
       scenario.onActivity { activity ->
         activity.doOnDestroy { hasActionBeenRun = true }
         activity.finish()

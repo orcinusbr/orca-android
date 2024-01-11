@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.platform.starter.lifecycle.state
+package com.jeanbarrossilva.orca.platform.starter.lifecycle.state
 
 /**
  * Compares this [CompleteLifecycleState] with the given [other]; if it is `null`, then it is

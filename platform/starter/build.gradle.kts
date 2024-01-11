@@ -28,12 +28,12 @@ android {
 dependencies {
   androidTestImplementation(libs.android.test.core)
   androidTestImplementation(libs.android.test.runner)
-  androidTestImplementation(libs.assertk)
   androidTestImplementation(libs.kotlin.coroutines.test)
   androidTestImplementation(libs.mockk)
 
   api(libs.android.fragment.ktx)
 
-  implementation(libs.kotlin.coroutines.core)
+  debugImplementation(libs.kotlin.coroutines.core)
+
   implementation(libs.kotlin.reflect)
 }
