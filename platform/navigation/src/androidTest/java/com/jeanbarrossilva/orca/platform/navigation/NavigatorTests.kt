@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,18 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.navigation
+package com.jeanbarrossilva.orca.platform.navigation
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.test.core.app.launchActivity
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.duplication.disallowingDuplication
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.closing
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.opening
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.suddenly
-import com.jeanbarrossilva.orca.platform.ui.test.assertIsAtFragment
-import org.junit.Assert.assertEquals
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import com.jeanbarrossilva.orca.platform.navigation.test.isAt
+import com.jeanbarrossilva.orca.platform.navigation.transition.opening
+import com.jeanbarrossilva.orca.platform.navigation.transition.suddenly
 import org.junit.Test
 
 internal class NavigatorTests {
@@ -52,9 +51,9 @@ internal class NavigatorTests {
     launchActivity<TestNavigationActivity>().use { scenario ->
       scenario.onActivity { activity ->
         activity.navigator.navigate(suddenly()) {
-          to(FirstDestinationFragment.ROUTE, ::FirstDestinationFragment)
+          to(FirstDestinationFragment.ROUTE, NavigatorTests::FirstDestinationFragment)
         }
-        assertIsAtFragment(activity, FirstDestinationFragment.ROUTE)
+        assertThat(activity).isAt(FirstDestinationFragment.ROUTE)
       }
     }
   }
@@ -64,9 +63,9 @@ internal class NavigatorTests {
     launchActivity<TestNavigationActivity>().use { scenario ->
       scenario.onActivity { activity ->
         activity.navigator.navigate(opening()) {
-          to(FirstDestinationFragment.ROUTE, ::FirstDestinationFragment)
+          to(FirstDestinationFragment.ROUTE, NavigatorTests::FirstDestinationFragment)
         }
-        assertIsAtFragment(activity, FirstDestinationFragment.ROUTE)
+        assertThat(activity).isAt(FirstDestinationFragment.ROUTE)
       }
     }
   }
@@ -75,10 +74,12 @@ internal class NavigatorTests {
   fun navigatesWithClosingTransition() {
     launchActivity<TestNavigationActivity>().use { scenario ->
       scenario.onActivity { activity ->
-        activity.navigator.navigate(closing()) {
-          to(FirstDestinationFragment.ROUTE, ::FirstDestinationFragment)
+        activity.navigator.navigate(
+          com.jeanbarrossilva.orca.platform.navigation.transition.closing()
+        ) {
+          to(FirstDestinationFragment.ROUTE, NavigatorTests::FirstDestinationFragment)
         }
-        assertIsAtFragment(activity, FirstDestinationFragment.ROUTE)
+        assertThat(activity).isAt(FirstDestinationFragment.ROUTE)
       }
     }
   }
@@ -89,10 +90,10 @@ internal class NavigatorTests {
       scenario.onActivity { activity ->
         repeat(2) {
           activity.navigator.navigate(suddenly()) {
-            to(FirstDestinationFragment.ROUTE, ::FirstDestinationFragment)
+            to(FirstDestinationFragment.ROUTE, NavigatorTests::FirstDestinationFragment)
           }
         }
-        assertEquals(2, activity.supportFragmentManager.fragments.size)
+        assertThat(activity.supportFragmentManager.fragments.size).isEqualTo(2)
       }
     }
   }
@@ -102,11 +103,14 @@ internal class NavigatorTests {
     launchActivity<TestNavigationActivity>().use { scenario ->
       scenario.onActivity { activity ->
         repeat(2) {
-          activity.navigator.navigate(suddenly(), disallowingDuplication()) {
-            to(FirstDestinationFragment.ROUTE, ::FirstDestinationFragment)
+          activity.navigator.navigate(
+            suddenly(),
+            com.jeanbarrossilva.orca.platform.navigation.duplication.disallowingDuplication()
+          ) {
+            to(FirstDestinationFragment.ROUTE, NavigatorTests::FirstDestinationFragment)
           }
         }
-        assertEquals(1, activity.supportFragmentManager.fragments.size)
+        assertThat(activity.supportFragmentManager.fragments.size).isEqualTo(1)
       }
     }
   }
@@ -119,7 +123,7 @@ internal class NavigatorTests {
           navigate(suddenly()) { to(FirstDestinationFragment.ROUTE, ::FirstDestinationFragment) }
           navigate(suddenly()) { to(SecondDestinationFragment.ROUTE, ::SecondDestinationFragment) }
         }
-        assertIsAtFragment(activity, SecondDestinationFragment.ROUTE)
+        assertThat(activity).isAt(SecondDestinationFragment.ROUTE)
       }
     }
   }

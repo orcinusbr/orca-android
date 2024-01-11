@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.navigation
+package com.jeanbarrossilva.orca.platform.navigation
 
 import android.view.View
 import android.view.ViewGroup

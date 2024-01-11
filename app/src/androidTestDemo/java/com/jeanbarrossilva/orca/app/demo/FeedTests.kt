@@ -22,6 +22,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
+import assertk.assertThat
 import com.jeanbarrossilva.orca.app.demo.test.onSearchAction
 import com.jeanbarrossilva.orca.app.demo.test.performScrollToPostPreviewWithGalleryPreview
 import com.jeanbarrossilva.orca.app.demo.test.performScrollToPostPreviewWithLinkCard
@@ -35,7 +36,7 @@ import com.jeanbarrossilva.orca.feature.feed.FeedFragment
 import com.jeanbarrossilva.orca.feature.gallery.GalleryActivity
 import com.jeanbarrossilva.orca.feature.gallery.test.ui.onCloseActionButton
 import com.jeanbarrossilva.orca.feature.search.SearchActivity
-import com.jeanbarrossilva.orca.platform.ui.test.assertIsAtFragment
+import com.jeanbarrossilva.orca.platform.navigation.test.isAt
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onRefreshIndicator
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.figure.gallery.thumbnail.onThumbnails
@@ -83,7 +84,7 @@ internal class FeedTests {
       onTimeline().performScrollToPostPreviewWithGalleryPreview {
         onThumbnails().onFirst().performClick()
         onCloseActionButton().performClick()
-        assertIsAtFragment(composeRule.activity, FeedFragment.ROUTE)
+        assertThat(composeRule.activity).isAt(FeedFragment.ROUTE)
       }
     }
   }

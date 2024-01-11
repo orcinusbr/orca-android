@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.navigation.duplication
+package com.jeanbarrossilva.orca.platform.navigation.duplication
 
 /** Indicates that duplicate navigation is allowed. */
 fun allowingDuplication(): Duplication {

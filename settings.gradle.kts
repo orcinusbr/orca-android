@@ -49,6 +49,8 @@ include(
   ":platform:cache",
   ":platform:autos-test",
   ":platform:intents",
+  ":platform:navigation",
+  ":platform:navigation-test",
   ":platform:testing",
   ":platform:ui",
   ":platform:ui-test",

@@ -19,7 +19,7 @@ import androidx.annotation.IdRes
 import androidx.lifecycle.lifecycleScope
 import com.jeanbarrossilva.orca.app.R
 import com.jeanbarrossilva.orca.app.navigation.BottomDestinationProvider
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
+import com.jeanbarrossilva.orca.platform.navigation.NavigationActivity
 import kotlinx.coroutines.launch
 
 internal interface BottomNavigation : Binding {

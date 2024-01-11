@@ -1,5 +1,7 @@
+import com.jeanbarrossilva.orca.namespaceFor
+
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,21 +15,14 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.navigation.transition
-
-import androidx.fragment.app.FragmentTransaction
-
-/** Creates a close [Transition]. */
-fun closing(): Transition {
-  return Transition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+plugins {
+  alias(libs.plugins.android.library)
+  alias(libs.plugins.kotlin.android)
 }
 
-/** Creates an open [Transition]. */
-fun opening(): Transition {
-  return Transition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-}
+android.namespace = namespaceFor("platform.navigation.test")
 
-/** Creates a sudden [Transition]. */
-fun suddenly(): Transition {
-  return Transition(FragmentTransaction.TRANSIT_NONE)
+dependencies {
+  implementation(libs.android.fragment.ktx)
+  implementation(libs.assertk)
 }

@@ -19,7 +19,7 @@ import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetailsModule
 import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
+import com.jeanbarrossilva.orca.platform.navigation.NavigationActivity
 import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.orca.std.injector.module.injection.injectionOf
 
