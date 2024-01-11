@@ -51,6 +51,7 @@ include(
   ":platform:intents",
   ":platform:navigation",
   ":platform:navigation-test",
+  ":platform:starter",
   ":platform:testing",
   ":platform:ui",
   ":platform:ui-test",

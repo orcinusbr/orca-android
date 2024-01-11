@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,10 +13,9 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core
+package com.jeanbarrossilva.platform.starter
 
 import androidx.test.platform.app.InstrumentationRegistry
-import com.jeanbarrossilva.orca.platform.ui.core.activity.StartableActivity
 import io.mockk.spyk
 import io.mockk.verify
 import kotlin.coroutines.resume
@@ -28,12 +27,12 @@ internal class ActivityStarterTests {
   private val context
     get() = InstrumentationRegistry.getInstrumentation().context
 
-  class TestActivity : StartableActivity()
+  class TestStartableActivity : StartableActivity()
 
   @Test
   fun startsActivity() {
     val spiedContext = spyk(context)
-    spiedContext.on<TestActivity>().asNewTask().start(StartableActivity::finish)
+    spiedContext.on<TestStartableActivity>().asNewTask().start(StartableActivity::finish)
     verify { spiedContext.startActivity(any()) }
   }
 
@@ -41,8 +40,8 @@ internal class ActivityStarterTests {
   fun notifiesListenerWhenActivityIsStarted() {
     runTest {
       @Suppress("RemoveExplicitTypeArguments")
-      suspendCoroutine<TestActivity> { continuation ->
-        context.on<TestActivity>().asNewTask().start { activity ->
+      suspendCoroutine<TestStartableActivity> { continuation ->
+        context.on<TestStartableActivity>().asNewTask().start { activity ->
           activity.finish()
           continuation.resume(activity)
         }

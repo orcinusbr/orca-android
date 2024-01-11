@@ -38,6 +38,7 @@ dependencies {
 
   implementation(project(":core"))
   implementation(project(":platform:autos"))
+  implementation(project(":platform:starter"))
   implementation(project(":platform:ui"))
   implementation(project(":std:injector"))
 }

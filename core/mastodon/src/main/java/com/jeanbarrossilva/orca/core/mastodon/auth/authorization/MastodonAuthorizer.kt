@@ -17,7 +17,7 @@ package com.jeanbarrossilva.orca.core.mastodon.auth.authorization
 
 import android.content.Context
 import com.jeanbarrossilva.orca.core.auth.Authorizer
-import com.jeanbarrossilva.orca.platform.ui.core.on
+import com.jeanbarrossilva.platform.starter.on
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine

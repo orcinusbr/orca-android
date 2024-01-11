@@ -21,8 +21,6 @@ plugins {
 android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
-  packagingOptions.resources.excludes +=
-    arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
 
   defaultConfig { testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
 }
@@ -38,8 +36,8 @@ dependencies {
   androidTestImplementation(libs.android.test.core)
   androidTestImplementation(libs.android.test.runner)
   androidTestImplementation(libs.assertk)
-  androidTestImplementation(libs.mockk)
 
+  api(project(":platform:starter"))
   api(project(":std:image:compose"))
   api(libs.android.compose.foundation)
   api(libs.android.fragment.ktx)

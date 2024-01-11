@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,23 +16,23 @@
 plugins {
   alias(libs.plugins.android.library)
   alias(libs.plugins.kotlin.android)
-  alias(libs.plugins.kotlin.symbolProcessor)
 }
 
 android {
-  buildFeatures.compose = true
-  composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
+  buildTypes.getByName("debug").proguardFile("proguard-rules.pro")
+  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  packagingOptions.resources.excludes +=
+    arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
 }
 
 dependencies {
-  ksp(project(":std:injector-processor"))
+  androidTestImplementation(libs.android.test.core)
+  androidTestImplementation(libs.android.test.runner)
+  androidTestImplementation(libs.kotlin.coroutines.test)
+  androidTestImplementation(libs.mockk)
 
-  implementation(project(":core"))
-  implementation(project(":core:sample"))
-  implementation(project(":platform:autos"))
-  implementation(project(":platform:starter"))
-  implementation(project(":platform:ui"))
-  implementation(project(":std:injector"))
-  implementation(libs.loadable.list)
-  implementation(libs.loadable.placeholder)
+  api(libs.android.fragment.ktx)
+
+  implementation(libs.kotlin.coroutines.core)
+  implementation(libs.kotlin.reflect)
 }

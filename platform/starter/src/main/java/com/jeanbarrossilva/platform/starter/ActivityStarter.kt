@@ -13,18 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.activity
+package com.jeanbarrossilva.platform.starter
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import com.jeanbarrossilva.orca.platform.ui.core.bundleOf
-import com.jeanbarrossilva.orca.platform.ui.core.putExtras
+import androidx.core.os.bundleOf
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSuperclassOf
 
 /**
- * Starts an [StartableActivity] with the configured settings.
+ * Starts a [StartableActivity] with the configured settings.
  *
  * @param T [StartableActivity] to be started.
  * @param context [Context] from which the [StartableActivity] will be started.
@@ -40,7 +39,7 @@ internal constructor(private val context: Context, private val activityClass: KC
   private var flags = 0
 
   /**
-   * Listens to when an [StartableActivity] has been started.
+   * Listens to when a [StartableActivity] has been started.
    *
    * @param A [StartableActivity] that's been started.
    * @see start

@@ -17,6 +17,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
         <activity
-            android:name="com.jeanbarrossilva.orca.platform.ui.core.lifecycle.CompleteLifecycleActivity" />
+            android:name="com.jeanbarrossilva.platform.starter.ActivityStarterTests$TestStartableActivity" />
     </application>
 </manifest>

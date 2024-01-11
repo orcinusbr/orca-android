@@ -13,26 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-plugins {
-  alias(libs.plugins.android.library)
-  alias(libs.plugins.kotlin.android)
-  alias(libs.plugins.kotlin.symbolProcessor)
-}
+package com.jeanbarrossilva.platform.starter
 
-android {
-  buildFeatures.compose = true
-  composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
-}
+import android.os.Bundle
+import androidx.fragment.app.FragmentActivity
 
-dependencies {
-  ksp(project(":std:injector-processor"))
-
-  implementation(project(":core"))
-  implementation(project(":core:sample"))
-  implementation(project(":platform:autos"))
-  implementation(project(":platform:starter"))
-  implementation(project(":platform:ui"))
-  implementation(project(":std:injector"))
-  implementation(libs.loadable.list)
-  implementation(libs.loadable.placeholder)
+/**
+ * [FragmentActivity] that notifies its listeners from the [ActivityStarter] of its initialization.
+ */
+abstract class StartableActivity : FragmentActivity() {
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    ActivityStarter.notifyListenersOf(this)
+  }
 }
