@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.navigation.transition
+package com.jeanbarrossilva.orca.platform.navigation.transition
 
 import androidx.fragment.app.FragmentTransaction
 

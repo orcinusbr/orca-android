@@ -72,6 +72,7 @@ android {
 dependencies {
   "androidTestDemoImplementation"(project(":core:sample-test"))
   "androidTestDemoImplementation"(project(":feature:gallery-test"))
+  "androidTestDemoImplementation"(project(":platform:navigation-test"))
   "androidTestDemoImplementation"(project(":platform:ui"))
   "androidTestDemoImplementation"(libs.android.activity.ktx)
   "androidTestDemoImplementation"(libs.android.compose.ui.test.junit)
@@ -98,6 +99,7 @@ dependencies {
   implementation(project(":feature:settings"))
   implementation(project(":feature:settings:term-muting"))
   implementation(project(":platform:autos"))
+  implementation(project(":platform:navigation"))
   implementation(project(":platform:ui"))
   implementation(project(":std:injector"))
   implementation(libs.android.appcompat)

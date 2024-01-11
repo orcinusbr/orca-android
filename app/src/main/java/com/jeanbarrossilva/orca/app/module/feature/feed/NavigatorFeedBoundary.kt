@@ -24,8 +24,8 @@ import com.jeanbarrossilva.orca.feature.feed.FeedBoundary
 import com.jeanbarrossilva.orca.feature.gallery.GalleryActivity
 import com.jeanbarrossilva.orca.feature.postdetails.PostDetailsFragment
 import com.jeanbarrossilva.orca.feature.search.SearchActivity
+import com.jeanbarrossilva.orca.platform.navigation.Navigator
 import com.jeanbarrossilva.orca.platform.ui.core.browseTo
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
 import java.net.URL
 
 internal class NavigatorFeedBoundary(

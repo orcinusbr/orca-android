@@ -13,17 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.navigation
+package com.jeanbarrossilva.orca.platform.navigation
 
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.duplication.Duplication
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.duplication.allowingDuplication
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.duplication.disallowingDuplication
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.Transition
+import com.jeanbarrossilva.orca.platform.navigation.duplication.Duplication
+import com.jeanbarrossilva.orca.platform.navigation.duplication.allowingDuplication
+import com.jeanbarrossilva.orca.platform.navigation.duplication.disallowingDuplication
+import com.jeanbarrossilva.orca.platform.navigation.transition.Transition
 
 /**
  * Navigates to [Fragment]s through [navigate].

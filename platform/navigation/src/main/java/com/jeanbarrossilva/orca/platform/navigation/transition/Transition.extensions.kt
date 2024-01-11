@@ -13,14 +13,21 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.app.module.feature.search
+package com.jeanbarrossilva.orca.platform.navigation.transition
 
-import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetailsFragment
-import com.jeanbarrossilva.orca.feature.search.SearchBoundary
-import com.jeanbarrossilva.orca.platform.navigation.Navigator
+import androidx.fragment.app.FragmentTransaction
 
-internal class NavigatorSearchBoundary(private val navigator: Navigator) : SearchBoundary {
-  override fun navigateToProfileDetails(id: String) {
-    ProfileDetailsFragment.navigate(navigator, id)
-  }
+/** Creates a close [Transition]. */
+fun closing(): Transition {
+  return Transition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE)
+}
+
+/** Creates an open [Transition]. */
+fun opening(): Transition {
+  return Transition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+}
+
+/** Creates a sudden [Transition]. */
+fun suddenly(): Transition {
+  return Transition(FragmentTransaction.TRANSIT_NONE)
 }

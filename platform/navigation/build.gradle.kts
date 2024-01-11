@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,21 +13,19 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.test
+plugins {
+  alias(libs.plugins.android.library)
+  alias(libs.plugins.kotlin.android)
+}
 
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import org.junit.Assert.assertNotNull
+android.defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-/**
- * Asserts that a [Fragment] tagged as [tag] is the current one within the given [activity].
- *
- * @param activity [FragmentActivity] in which the [Fragment] is supposed to be.
- * @param tag Tag of the [Fragment] that's supposed to be the current one.
- */
-fun assertIsAtFragment(activity: FragmentActivity, tag: String) {
-  assertNotNull(
-    "Fragment tagged as \"$tag\" not found.",
-    activity.supportFragmentManager.findFragmentByTag(tag)
-  )
+dependencies {
+  androidTestImplementation(project(":platform:navigation-test"))
+  androidTestImplementation(libs.android.test.core)
+  androidTestImplementation(libs.android.test.runner)
+  androidTestImplementation(libs.android.test.core)
+  androidTestImplementation(libs.assertk)
+
+  implementation(libs.android.fragment.ktx)
 }

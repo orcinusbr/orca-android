@@ -24,7 +24,7 @@ import com.jeanbarrossilva.orca.app.activity.delegate.Injection
 import com.jeanbarrossilva.orca.app.databinding.ActivityOrcaBinding
 import com.jeanbarrossilva.orca.app.module.core.MainMastodonCoreModule
 import com.jeanbarrossilva.orca.core.module.CoreModule
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.NavigationActivity
+import com.jeanbarrossilva.orca.platform.navigation.NavigationActivity
 
 open class OrcaActivity :
   NavigationActivity(), BottomNavigationViewAvailability, Injection, BottomNavigation {

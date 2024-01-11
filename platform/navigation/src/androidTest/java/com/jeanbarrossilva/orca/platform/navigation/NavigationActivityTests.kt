@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,14 +13,15 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.navigation
+package com.jeanbarrossilva.orca.platform.navigation
 
 import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
 import androidx.fragment.app.FragmentContainerView
 import androidx.test.core.app.launchActivity
-import org.junit.Assert.assertNotEquals
+import assertk.assertThat
+import assertk.assertions.isNotEqualTo
 import org.junit.Test
 
 internal class NavigationActivityTests {
@@ -81,7 +82,7 @@ internal class NavigationActivityTests {
     launchActivity<UnidentifiedFragmentContainerViewActivity>().use { scenario ->
       scenario.onActivity { activity ->
         activity.navigator
-        assertNotEquals(View.NO_ID, activity.view?.id)
+        assertThat(activity.view?.id).isNotEqualTo(View.NO_ID)
       }
     }
   }

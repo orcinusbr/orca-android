@@ -23,9 +23,9 @@ import com.jeanbarrossilva.orca.feature.feed.FeedFragment
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetailsFragment
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.orca.feature.settings.SettingsFragment
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.duplication.disallowingDuplication
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.transition.suddenly
+import com.jeanbarrossilva.orca.platform.navigation.Navigator
+import com.jeanbarrossilva.orca.platform.navigation.duplication.disallowingDuplication
+import com.jeanbarrossilva.orca.platform.navigation.transition.suddenly
 import com.jeanbarrossilva.orca.std.injector.Injector
 
 internal enum class BottomDestinationProvider {

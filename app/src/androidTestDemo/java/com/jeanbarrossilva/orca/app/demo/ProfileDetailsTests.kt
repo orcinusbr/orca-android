@@ -21,6 +21,7 @@ import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import assertk.assertThat
 import com.jeanbarrossilva.orca.app.R
 import com.jeanbarrossilva.orca.app.demo.test.performScrollToPostPreviewWithLinkCard
 import com.jeanbarrossilva.orca.app.demo.test.performStartClick
@@ -30,7 +31,7 @@ import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.content.highl
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.withSamples
 import com.jeanbarrossilva.orca.ext.intents.intendBrowsingTo
 import com.jeanbarrossilva.orca.feature.postdetails.PostDetailsFragment
-import com.jeanbarrossilva.orca.platform.ui.test.assertIsAtFragment
+import com.jeanbarrossilva.orca.platform.navigation.test.isAt
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.figure.link.onLinkCards
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.onPostPreviews
 import org.junit.Rule
@@ -51,9 +52,7 @@ internal class ProfileDetailsTests {
   fun navigatesToPostDetailsOnPostPreviewClick() {
     onView(withId(R.id.profile_details)).perform(click())
     composeRule.onPostPreviews().onFirst().performStartClick()
-    assertIsAtFragment(
-      composeRule.activity,
-      PostDetailsFragment.getRoute(Posts.withSamples.first().id)
-    )
+    assertThat(composeRule.activity)
+      .isAt(PostDetailsFragment.getRoute(Posts.withSamples.first().id))
   }
 }

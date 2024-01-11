@@ -17,7 +17,7 @@ package com.jeanbarrossilva.orca.app.module.feature.gallery
 
 import com.jeanbarrossilva.orca.feature.gallery.GalleryBoundary
 import com.jeanbarrossilva.orca.feature.postdetails.PostDetailsFragment
-import com.jeanbarrossilva.orca.platform.ui.core.navigation.Navigator
+import com.jeanbarrossilva.orca.platform.navigation.Navigator
 
 internal class NavigatorGalleryBoundary(private val navigator: Navigator) : GalleryBoundary {
   override fun navigateToPostDetails(id: String) {
