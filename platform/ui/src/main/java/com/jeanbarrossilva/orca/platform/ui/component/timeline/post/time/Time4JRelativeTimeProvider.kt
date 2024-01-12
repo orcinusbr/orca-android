@@ -34,7 +34,7 @@ internal class Time4JRelativeTimeProvider(private val context: Context) : Relati
   private var hasTime4JBeenStarted = false
 
   override fun onProvide(dateTime: ZonedDateTime): String {
-    startTime4JIfNotStarted()
+    startTime4JIfUnstarted()
     val locale = Locale.getDefault()
     val unixTime = dateTime.toUnixTime()
     val timeZoneID = ZoneId.systemDefault().id
@@ -42,9 +42,10 @@ internal class Time4JRelativeTimeProvider(private val context: Context) : Relati
   }
 
   /** Starts Time4J if it hasn't been started yet. */
-  private fun startTime4JIfNotStarted() {
+  private fun startTime4JIfUnstarted() {
     if (!hasTime4JBeenStarted) {
       ApplicationStarter.initialize(context, true)
+      hasTime4JBeenStarted = true
     }
   }
 
