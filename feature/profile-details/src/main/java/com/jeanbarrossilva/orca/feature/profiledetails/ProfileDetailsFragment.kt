@@ -15,7 +15,6 @@
 
 package com.jeanbarrossilva.orca.feature.profiledetails
 
-import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.core.os.bundleOf
@@ -24,17 +23,17 @@ import com.jeanbarrossilva.orca.composite.composable.ComposableFragment
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.orca.platform.navigation.Navigator
 import com.jeanbarrossilva.orca.platform.navigation.transition.opening
+import com.jeanbarrossilva.orca.platform.ui.core.application
 import com.jeanbarrossilva.orca.platform.ui.core.argument
-import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
 
-class ProfileDetailsFragment internal constructor() : ComposableFragment(), ContextProvider {
+class ProfileDetailsFragment internal constructor() : ComposableFragment() {
   private val module by lazy { Injector.from<ProfileDetailsModule>() }
   private val id by argument<String>(ID_KEY)
   private val viewModel by
     viewModels<ProfileDetailsViewModel> {
       ProfileDetailsViewModel.createFactory(
-        contextProvider = this,
+        application,
         module.profileProvider(),
         module.postProvider(),
         id,
@@ -59,10 +58,6 @@ class ProfileDetailsFragment internal constructor() : ComposableFragment(), Cont
       backwardsNavigationState,
       onBottomAreaAvailabilityChangeListener = module.get()
     )
-  }
-
-  override fun provide(): Context {
-    return requireContext()
   }
 
   companion object {

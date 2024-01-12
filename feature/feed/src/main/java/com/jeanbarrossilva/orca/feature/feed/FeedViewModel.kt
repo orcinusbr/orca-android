@@ -15,7 +15,8 @@
 
 package com.jeanbarrossilva.orca.feature.feed
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
@@ -31,9 +32,8 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.Disposition
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.toPostPreviewFlow
 import com.jeanbarrossilva.orca.platform.ui.core.await
-import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
-import com.jeanbarrossilva.orca.platform.ui.core.context.share
 import com.jeanbarrossilva.orca.platform.ui.core.flatMapEach
+import com.jeanbarrossilva.orca.platform.ui.core.share
 import java.net.URL
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,19 +44,20 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 internal class FeedViewModel(
-  private val contextProvider: ContextProvider,
+  application: Application,
   private val feedProvider: FeedProvider,
   private val postProvider: PostProvider,
   private val userID: String,
   private val onLinkClick: (URL) -> Unit,
   private val onThumbnailClickListener: Disposition.OnThumbnailClickListener
-) : ViewModel() {
+) : AndroidViewModel(application) {
   private val postPreviewsLoadableNotifierFlow = notifierFlow()
   private val indexFlow = MutableStateFlow(0)
-  private val colors by lazy { AutosTheme.getColors(context) }
+  private val colors by lazy { AutosTheme.getColors(application) }
 
-  private val context
-    get() = contextProvider.provide()
+  @get:JvmName("_getApplication")
+  private val application
+    get() = getApplication<Application>()
 
   @OptIn(ExperimentalCoroutinesApi::class)
   val postPreviewsLoadableFlow =
@@ -85,7 +86,7 @@ internal class FeedViewModel(
   }
 
   fun share(url: URL) {
-    context.share("$url")
+    application.share("$url")
   }
 
   fun loadPostsAt(index: Int) {
@@ -94,7 +95,7 @@ internal class FeedViewModel(
 
   companion object {
     fun createFactory(
-      contextProvider: ContextProvider,
+      application: Application,
       feedProvider: FeedProvider,
       postProvider: PostProvider,
       userID: String,
@@ -104,7 +105,7 @@ internal class FeedViewModel(
       return viewModelFactory {
         initializer {
           FeedViewModel(
-            contextProvider,
+            application,
             feedProvider,
             postProvider,
             userID,

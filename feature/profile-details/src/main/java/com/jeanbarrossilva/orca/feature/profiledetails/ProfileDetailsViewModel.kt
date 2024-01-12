@@ -15,7 +15,8 @@
 
 package com.jeanbarrossilva.orca.feature.profiledetails
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -30,9 +31,8 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.Disposition
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.toPostPreviewFlow
 import com.jeanbarrossilva.orca.platform.ui.core.await
-import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
-import com.jeanbarrossilva.orca.platform.ui.core.context.share
 import com.jeanbarrossilva.orca.platform.ui.core.flatMapEach
+import com.jeanbarrossilva.orca.platform.ui.core.share
 import java.net.URL
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -50,14 +50,14 @@ import kotlinx.coroutines.plus
 
 internal class ProfileDetailsViewModel
 private constructor(
-  private val contextProvider: ContextProvider,
+  application: Application,
   private val profileProvider: ProfileProvider,
   private val postProvider: PostProvider,
   coroutineDispatcher: CoroutineDispatcher,
   private val id: String,
   private val onLinkClick: (URL) -> Unit,
   private val onThumbnailClickListener: Disposition.OnThumbnailClickListener
-) : ViewModel() {
+) : AndroidViewModel(application) {
   private val coroutineScope = viewModelScope + coroutineDispatcher
   private val profileNotifierFlow = notifierFlow()
 
@@ -68,10 +68,11 @@ private constructor(
   private val postsIndexFlow = MutableStateFlow(0)
 
   private val colors
-    get() = AutosTheme.getColors(context)
+    get() = AutosTheme.getColors(application)
 
-  private val context
-    get() = contextProvider.provide()
+  @get:JvmName("_getApplication")
+  private val application
+    get() = getApplication<Application>()
 
   val detailsLoadableFlow =
     profileFlow.map { it.toProfileDetails(coroutineScope, colors) }.loadable(coroutineScope)
@@ -91,7 +92,7 @@ private constructor(
   }
 
   fun share(url: URL) {
-    context.share("$url")
+    application.share("$url")
   }
 
   fun favorite(postID: String) {
@@ -117,7 +118,7 @@ private constructor(
 
   companion object {
     fun createFactory(
-      contextProvider: ContextProvider,
+      application: Application,
       profileProvider: ProfileProvider,
       postProvider: PostProvider,
       id: String,
@@ -127,7 +128,7 @@ private constructor(
       return viewModelFactory {
         addInitializer(ProfileDetailsViewModel::class) {
           ProfileDetailsViewModel(
-            contextProvider,
+            application,
             profileProvider,
             postProvider,
             Dispatchers.Main.immediate,
