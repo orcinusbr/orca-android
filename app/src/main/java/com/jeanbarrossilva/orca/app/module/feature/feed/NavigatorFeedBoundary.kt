@@ -19,13 +19,13 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
+import com.jeanbarrossilva.orca.ext.intents.browseTo
 import com.jeanbarrossilva.orca.feature.composer.ComposerActivity
 import com.jeanbarrossilva.orca.feature.feed.FeedBoundary
 import com.jeanbarrossilva.orca.feature.gallery.GalleryActivity
 import com.jeanbarrossilva.orca.feature.postdetails.PostDetailsFragment
 import com.jeanbarrossilva.orca.feature.search.SearchActivity
 import com.jeanbarrossilva.orca.platform.navigation.Navigator
-import com.jeanbarrossilva.orca.platform.ui.core.browseTo
 import java.net.URL
 
 internal class NavigatorFeedBoundary(

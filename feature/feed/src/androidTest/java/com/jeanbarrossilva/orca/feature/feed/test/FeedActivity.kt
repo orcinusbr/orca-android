@@ -17,9 +17,9 @@ package com.jeanbarrossilva.orca.feature.feed.test
 
 import android.content.Intent
 import androidx.navigation.NavGraphBuilder
+import com.jeanbarrossilva.orca.ext.intents.intentOf
 import com.jeanbarrossilva.orca.feature.feed.FeedFragment
 import com.jeanbarrossilva.orca.platform.testing.context
-import com.jeanbarrossilva.orca.platform.ui.core.Intent
 import com.jeanbarrossilva.orca.platform.ui.test.core.SingleFragmentActivity
 
 internal class FeedActivity : SingleFragmentActivity() {
@@ -31,7 +31,7 @@ internal class FeedActivity : SingleFragmentActivity() {
 
   companion object {
     fun getIntent(userID: String): Intent {
-      return Intent<FeedActivity>(context, FeedFragment.USER_ID_KEY to userID)
+      return intentOf<FeedActivity>(context, FeedFragment.USER_ID_KEY to userID)
     }
   }
 }

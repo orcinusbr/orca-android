@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core
+package com.jeanbarrossilva.orca.ext.intents
 
 import android.content.Context
 import android.content.Intent
@@ -37,6 +37,6 @@ fun Context.browseTo(url: URL) {
  * @param text Text to be shared.
  */
 fun Context.share(text: String) {
-  val intent = com.jeanbarrossilva.orca.platform.ui.core.Intent(text)
+  val intent = intentOf(text)
   startActivity(intent)
 }

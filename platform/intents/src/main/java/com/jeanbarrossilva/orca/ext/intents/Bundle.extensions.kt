@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core
+package com.jeanbarrossilva.orca.ext.intents
 
 import android.os.Bundle
 import androidx.core.os.bundleOf
@@ -25,7 +25,7 @@ import androidx.core.os.bundleOf
  * @return [Bundle], or `null` if [pairs] is empty.
  */
 @PublishedApi
-internal fun bundleOf(vararg pairs: Pair<String, Any?>): Bundle? {
+internal fun bundleOfOrNull(vararg pairs: Pair<String, Any?>): Bundle? {
   val hasArgs = pairs.isNotEmpty()
   return if (hasArgs) bundleOf(*pairs) else null
 }
