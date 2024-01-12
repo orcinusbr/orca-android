@@ -13,9 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.replacement
-
-import com.jeanbarrossilva.orca.core.sample.feed.profile.type.editable.replaceOnceBy
+package com.jeanbarrossilva.orca.ext.coroutines.replacement
 
 /**
  * [MutableList] that replaces a given element when its [selector] matches that of the other one
@@ -42,8 +40,8 @@ internal class ReplacementList<I, O>(
   }
 
   override fun add(element: I): Boolean {
-    val hasBeenReplaced = elements.replaceOnceBy({ element }) { selector(element) == selector(it) }
-    if (!hasBeenReplaced) {
+    val isNonexistent = !elements.replaceOnceBy({ element }) { selector(element) == selector(it) }
+    if (isNonexistent) {
       elements.add(element)
     }
     return true

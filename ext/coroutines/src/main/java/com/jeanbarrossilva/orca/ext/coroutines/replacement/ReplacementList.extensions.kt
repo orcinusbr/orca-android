@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.replacement
+package com.jeanbarrossilva.orca.ext.coroutines.replacement
 
 /** Creates an empty [ReplacementList]. */
 internal fun <T> emptyReplacementList(): ReplacementList<T, T> {
