@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.style.spanned
+package com.jeanbarrossilva.orca.composite.text.spanned
 
 import android.graphics.Typeface
 import android.text.style.StyleSpan

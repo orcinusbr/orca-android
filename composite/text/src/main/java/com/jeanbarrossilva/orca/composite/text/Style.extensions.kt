@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.style
+package com.jeanbarrossilva.orca.composite.text
 
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -26,7 +26,6 @@ import com.jeanbarrossilva.orca.std.styledstring.style.type.Email
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Hashtag
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Italic
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Link
-import com.jeanbarrossilva.orca.std.styledstring.style.type.Mention
 
 /**
  * Converts this [Style] into a [SpanStyle].
@@ -40,8 +39,7 @@ internal fun Style.toSpanStyle(colors: Colors): SpanStyle {
     is Bold -> SpanStyle(fontWeight = FontWeight.Bold)
     is Email,
     is Hashtag,
-    is Link,
-    is Mention -> SpanStyle(colors.link.asColor)
+    is Link, -> SpanStyle(colors.link.asColor)
     is Italic -> SpanStyle(fontStyle = FontStyle.Italic)
     else -> throw IllegalArgumentException("Cannot convert an unknown $this style.")
   }

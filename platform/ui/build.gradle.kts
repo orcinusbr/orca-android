@@ -45,6 +45,7 @@ dependencies {
   api(libs.android.fragment.ktx)
   api(libs.loadable)
 
+  implementation(project(":composite:text"))
   implementation(project(":core"))
   implementation(project(":core:sample"))
   implementation(project(":ext:coroutines"))

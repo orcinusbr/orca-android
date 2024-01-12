@@ -17,6 +17,7 @@ package com.jeanbarrossilva.orca.platform.ui.component.timeline.post
 
 import androidx.compose.runtime.Composable
 import com.jeanbarrossilva.orca.autos.colors.Colors
+import com.jeanbarrossilva.orca.composite.text.toAnnotatedString
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.repost.Repost
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
@@ -24,7 +25,6 @@ import com.jeanbarrossilva.orca.platform.ui.component.stat.asStatsDetails
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.Figure
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.Disposition
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.Thumbnail
-import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
 import com.jeanbarrossilva.orca.std.image.compose.SomeComposableImageLoader
 import java.net.URL
 import kotlinx.coroutines.flow.Flow

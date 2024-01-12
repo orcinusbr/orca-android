@@ -15,6 +15,7 @@
 
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.status
 
+import com.jeanbarrossilva.orca.composite.text.fromHtml
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Content
@@ -24,7 +25,6 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.MastodonPost
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.`if`
-import com.jeanbarrossilva.orca.platform.ui.core.style.fromHtml
 import com.jeanbarrossilva.orca.std.image.ImageLoader
 import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import com.jeanbarrossilva.orca.std.injector.Injector

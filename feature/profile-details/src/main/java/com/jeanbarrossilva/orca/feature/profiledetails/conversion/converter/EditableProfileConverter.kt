@@ -16,11 +16,11 @@
 package com.jeanbarrossilva.orca.feature.profiledetails.conversion.converter
 
 import com.jeanbarrossilva.orca.autos.colors.Colors
+import com.jeanbarrossilva.orca.composite.text.toAnnotatedString
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.type.editable.EditableProfile
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetails
 import com.jeanbarrossilva.orca.feature.profiledetails.conversion.ProfileConverter
-import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
 
 /** [ProfileConverter] that converts an [EditableProfile]. */
 internal class EditableProfileConverter(override val next: ProfileConverter?) : ProfileConverter() {

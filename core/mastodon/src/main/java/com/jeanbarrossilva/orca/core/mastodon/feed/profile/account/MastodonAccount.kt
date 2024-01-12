@@ -15,6 +15,7 @@
 
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.account
 
+import com.jeanbarrossilva.orca.composite.text.fromHtml
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
@@ -29,7 +30,6 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.type.followable.Masto
 import com.jeanbarrossilva.orca.core.mastodon.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
-import com.jeanbarrossilva.orca.platform.ui.core.style.fromHtml
 import com.jeanbarrossilva.orca.std.image.ImageLoader
 import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
