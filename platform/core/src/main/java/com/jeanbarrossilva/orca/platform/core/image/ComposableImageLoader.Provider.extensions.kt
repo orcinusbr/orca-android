@@ -13,17 +13,12 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.core.mastodon.auth.authorization.test
+package com.jeanbarrossilva.orca.platform.core.image
 
-import com.jeanbarrossilva.orca.core.instance.InstanceProvider
-import com.jeanbarrossilva.orca.core.sample.instance.createSample
-import com.jeanbarrossilva.orca.platform.ui.core.image.sample
+import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
 import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
 
-/** [InstanceProvider] returned by [sample]. */
-private val sampleInstanceProvider =
-  InstanceProvider.createSample(ComposableImageLoader.Provider.sample)
-
-/** Sample [InstanceProvider] whose images are loaded by a [ComposableImageLoader]. */
-internal val InstanceProvider.Companion.sample
-  get() = sampleInstanceProvider
+/** Sample [ComposableImageLoader.Provider]. */
+val ComposableImageLoader.Provider.Companion.sample:
+  ComposableImageLoader.Provider<SampleImageSource>
+  get() = SampleComposableImageLoader.Provider

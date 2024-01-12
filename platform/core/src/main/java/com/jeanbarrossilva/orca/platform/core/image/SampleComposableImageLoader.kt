@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.image
+package com.jeanbarrossilva.orca.platform.core.image
 
 import androidx.compose.foundation.Image
 import androidx.compose.ui.draw.clip
@@ -24,12 +24,13 @@ import com.jeanbarrossilva.orca.std.image.compose.ComposableImage
 import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
 
 /** [ComposableImageLoader] that loads images from a [SampleImageSource]. */
-internal class SampleImageLoader private constructor(override val source: SampleImageSource) :
+internal class SampleComposableImageLoader
+private constructor(override val source: SampleImageSource) :
   ComposableImageLoader<SampleImageSource>() {
-  /** [ImageLoader.Provider] that provides a [SampleImageLoader]. */
+  /** [ImageLoader.Provider] that provides a [SampleComposableImageLoader]. */
   object Provider : ComposableImageLoader.Provider<SampleImageSource> {
-    override fun provide(source: SampleImageSource): SampleImageLoader {
-      return SampleImageLoader(source)
+    override fun provide(source: SampleImageSource): SampleComposableImageLoader {
+      return SampleComposableImageLoader(source)
     }
   }
 

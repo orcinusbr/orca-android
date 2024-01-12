@@ -29,10 +29,10 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
 import com.jeanbarrossilva.orca.core.sample.image.CoverImageSource
 import com.jeanbarrossilva.orca.feature.gallery.GalleryActivity
 import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
+import com.jeanbarrossilva.orca.platform.core.image.createSample
+import com.jeanbarrossilva.orca.platform.core.withSample
 import com.jeanbarrossilva.orca.platform.testing.context
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
-import com.jeanbarrossilva.orca.platform.ui.core.image.createSample
-import com.jeanbarrossilva.orca.platform.ui.core.withSample
 import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
 
 /**

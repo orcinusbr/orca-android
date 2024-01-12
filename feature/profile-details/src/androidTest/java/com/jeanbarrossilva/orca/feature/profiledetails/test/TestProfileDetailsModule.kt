@@ -18,7 +18,7 @@ package com.jeanbarrossilva.orca.feature.profiledetails.test
 import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetailsModule
 import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
-import com.jeanbarrossilva.orca.platform.ui.core.sample
+import com.jeanbarrossilva.orca.platform.core.sample
 import com.jeanbarrossilva.orca.std.injector.module.injection.injectionOf
 
 internal object TestProfileDetailsModule :

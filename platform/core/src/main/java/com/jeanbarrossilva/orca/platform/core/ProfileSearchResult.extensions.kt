@@ -13,19 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core
+package com.jeanbarrossilva.orca.platform.core
 
-import com.jeanbarrossilva.orca.core.feed.profile.post.Post
-import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
-import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
-import com.jeanbarrossilva.orca.platform.ui.core.image.sample
+import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
+import com.jeanbarrossilva.orca.core.sample.feed.profile.search.createSample
+import com.jeanbarrossilva.orca.platform.core.image.sample
 import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
 
-/** [Posts] returned by [withSample]. */
-private val postsWithSample = Posts {
-  add { Post.createSample(ComposableImageLoader.Provider.sample) }
-}
+/** [ProfileSearchResult] returned by [sample]. */
+private val sampleProfileSearchResult =
+  ProfileSearchResult.createSample(ComposableImageLoader.Provider.sample)
 
-/** [Posts] whose sample's images are loaded by a sample [ComposableImageLoader]. */
-val Posts.Companion.withSample
-  get() = postsWithSample
+/** Sample [ProfileSearchResult] whose avatar is loaded by a sample [ComposableImageLoader]. */
+val ProfileSearchResult.Companion.sample
+  get() = sampleProfileSearchResult

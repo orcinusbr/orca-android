@@ -77,7 +77,8 @@ internal fun Page(
 
 @Composable
 internal fun SampleEntrypoint(modifier: Modifier = Modifier) {
-  rememberImageLoader(com.jeanbarrossilva.orca.platform.ui.R.drawable.sample_cover_default).load()(
+  rememberImageLoader(com.jeanbarrossilva.orca.platform.core.R.drawable.sample_cover_default)
+    .load()(
     stringResource(R.string.feature_gallery_attachment, 1),
     RectangleShape,
     ContentScale.FillWidth,

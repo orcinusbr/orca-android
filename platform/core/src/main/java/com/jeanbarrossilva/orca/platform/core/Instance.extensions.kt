@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,17 +13,16 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.search
+package com.jeanbarrossilva.orca.platform.core
 
-import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
-import com.jeanbarrossilva.orca.core.sample.feed.profile.search.createSample
-import com.jeanbarrossilva.orca.platform.ui.core.image.sample
+import com.jeanbarrossilva.orca.core.instance.Instance
+import com.jeanbarrossilva.orca.core.sample.instance.createSample
+import com.jeanbarrossilva.orca.platform.core.image.sample
 import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
 
-/** [ProfileSearchResult] returned by [sample]. */
-private val sampleProfileSearchResult =
-  ProfileSearchResult.createSample(ComposableImageLoader.Provider.sample)
+/** [Instance] returned by [sample]. */
+private val sampleInstance = Instance.createSample(ComposableImageLoader.Provider.sample)
 
-/** Sample [ProfileSearchResult] whose avatar is loaded by a sample [ComposableImageLoader]. */
-internal val ProfileSearchResult.Companion.sample
-  get() = sampleProfileSearchResult
+/** Sample [Instance] whose images are loaded by a sample [ComposableImageLoader]. */
+val Instance.Companion.sample
+  get() = sampleInstance

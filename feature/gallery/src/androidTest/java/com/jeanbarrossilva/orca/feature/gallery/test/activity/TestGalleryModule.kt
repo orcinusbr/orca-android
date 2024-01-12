@@ -17,7 +17,7 @@ package com.jeanbarrossilva.orca.feature.gallery.test.activity
 
 import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.feature.gallery.GalleryModule
-import com.jeanbarrossilva.orca.platform.ui.core.sample
+import com.jeanbarrossilva.orca.platform.core.sample
 import com.jeanbarrossilva.orca.std.injector.module.injection.injectionOf
 
 internal object TestGalleryModule :

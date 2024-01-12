@@ -27,6 +27,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.Author
 import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.platform.core.sample
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.sample
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.test.onPostPreviewBody
@@ -34,7 +35,6 @@ import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.test.onPostP
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.test.onPostPreviewName
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.test.onPostPreviewReblogMetadata
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.test.onStatLabel
-import com.jeanbarrossilva.orca.platform.ui.core.sample
 import com.jeanbarrossilva.orca.platform.ui.test.component.stat.favorite.onFavoriteStat
 import com.jeanbarrossilva.orca.platform.ui.test.component.stat.onCommentStat
 import com.jeanbarrossilva.orca.platform.ui.test.component.stat.onShareStat

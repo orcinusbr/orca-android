@@ -27,10 +27,10 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
+import com.jeanbarrossilva.orca.platform.core.withSample
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.Disposition
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.disposition
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.thumbnail.Thumbnail
-import com.jeanbarrossilva.orca.platform.ui.core.withSample
 
 /** Tag that identifies a [GalleryPreview] for testing purposes. */
 internal const val GALLERY_PREVIEW_TAG = "gallery-preview"

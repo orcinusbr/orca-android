@@ -19,9 +19,9 @@ import com.jeanbarrossilva.orca.core.feed.profile.type.followable.FollowableProf
 import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.sample.feed.profile.type.followable.createSample
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.type.sample
-import com.jeanbarrossilva.orca.platform.ui.core.image.sample
-import com.jeanbarrossilva.orca.platform.ui.core.sample
-import com.jeanbarrossilva.orca.platform.ui.core.withSample
+import com.jeanbarrossilva.orca.platform.core.image.sample
+import com.jeanbarrossilva.orca.platform.core.sample
+import com.jeanbarrossilva.orca.platform.core.withSample
 import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
 
 /** [FollowableProfile] returned by [withSample]. */

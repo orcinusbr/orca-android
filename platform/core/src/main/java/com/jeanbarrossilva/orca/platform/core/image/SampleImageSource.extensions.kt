@@ -13,13 +13,13 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.image
+package com.jeanbarrossilva.orca.platform.core.image
 
 import androidx.annotation.DrawableRes
 import com.jeanbarrossilva.orca.core.sample.image.AuthorImageSource
 import com.jeanbarrossilva.orca.core.sample.image.CoverImageSource
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
-import com.jeanbarrossilva.orca.platform.ui.R
+import com.jeanbarrossilva.orca.platform.core.R
 
 /** Resource ID for this respective [SampleImageSource]. */
 internal val SampleImageSource.resourceID

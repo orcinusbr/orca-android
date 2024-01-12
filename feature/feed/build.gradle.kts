@@ -27,6 +27,7 @@ android {
 
 dependencies {
   androidTestImplementation(project(":core:sample-test"))
+  androidTestImplementation(project(":platform:core"))
   androidTestImplementation(project(":platform:testing"))
   androidTestImplementation(project(":platform:ui-test"))
   androidTestImplementation(project(":std:injector-test"))

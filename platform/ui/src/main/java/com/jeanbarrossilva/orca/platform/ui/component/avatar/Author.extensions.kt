@@ -17,7 +17,7 @@ package com.jeanbarrossilva.orca.platform.ui.component.avatar
 
 import com.jeanbarrossilva.orca.core.feed.profile.post.Author
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
-import com.jeanbarrossilva.orca.platform.ui.core.image.sample
+import com.jeanbarrossilva.orca.platform.core.image.sample
 import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
 
 /** Sample [Author] whose avatar is loaded by a sample [ComposableImageLoader]. */

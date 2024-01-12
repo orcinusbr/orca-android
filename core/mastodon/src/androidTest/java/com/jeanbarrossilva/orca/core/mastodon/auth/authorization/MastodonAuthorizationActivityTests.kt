@@ -25,16 +25,15 @@ import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.instance.InstanceProvider
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
 import com.jeanbarrossilva.orca.core.mastodon.R
-import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.test.sample
 import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.viewmodel.MastodonAuthorizationViewModel
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.SampleTermMuter
 import com.jeanbarrossilva.orca.core.sample.instance.domain.sample
 import com.jeanbarrossilva.orca.ext.intents.intendBrowsingTo
 import com.jeanbarrossilva.orca.platform.autos.test.kit.input.text.onTextFieldErrors
+import com.jeanbarrossilva.orca.platform.core.sample
 import com.jeanbarrossilva.orca.platform.testing.asString
 import com.jeanbarrossilva.orca.platform.testing.context
-import com.jeanbarrossilva.orca.platform.ui.core.sample
 import com.jeanbarrossilva.orca.std.injector.module.injection.injectionOf
 import com.jeanbarrossilva.orca.std.injector.test.InjectorTestRule
 import org.junit.Rule

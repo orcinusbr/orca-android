@@ -18,7 +18,7 @@ package com.jeanbarrossilva.orca.feature.feed.test
 import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.feature.feed.FeedModule
 import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
-import com.jeanbarrossilva.orca.platform.ui.core.sample
+import com.jeanbarrossilva.orca.platform.core.sample
 import com.jeanbarrossilva.orca.std.injector.module.injection.injectionOf
 
 internal object TestFeedModule :

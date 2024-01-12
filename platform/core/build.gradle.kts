@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,13 +13,21 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.image
+plugins {
+  alias(libs.plugins.android.library)
+  alias(libs.plugins.kotlin.android)
+}
 
-import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
-import com.jeanbarrossilva.orca.std.image.ImageLoader
-import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
+android {
+  buildFeatures.compose = true
+  composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
+}
 
-/** Sample [ImageLoader.Provider]. */
-val ComposableImageLoader.Provider.Companion.sample:
-  ComposableImageLoader.Provider<SampleImageSource>
-  get() = SampleImageLoader.Provider
+dependencies {
+  api(project(":core:sample"))
+
+  implementation(project(":std:image:compose"))
+  implementation(libs.android.compose.foundation)
+}
+
+kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")

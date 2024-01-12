@@ -69,12 +69,12 @@ import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabili
 import com.jeanbarrossilva.orca.platform.autos.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
+import com.jeanbarrossilva.orca.platform.core.sample
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.time.RelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.time.rememberRelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.refresh.Refresh
-import com.jeanbarrossilva.orca.platform.ui.core.sample
 import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
 import com.jeanbarrossilva.orca.std.image.SomeImageLoader
 import java.io.Serializable

@@ -43,13 +43,13 @@ import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabili
 import com.jeanbarrossilva.orca.platform.autos.reactivity.rememberBottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
+import com.jeanbarrossilva.orca.platform.core.withSample
 import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
 import com.jeanbarrossilva.orca.platform.ui.component.stat.StatsDetails
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.Figure
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.refresh.Refresh
-import com.jeanbarrossilva.orca.platform.ui.core.withSample
 import com.jeanbarrossilva.orca.std.image.SomeImageLoader
 import java.io.Serializable
 import java.net.URL

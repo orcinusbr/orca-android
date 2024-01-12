@@ -69,9 +69,9 @@ import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.plus
 import com.jeanbarrossilva.orca.platform.autos.overlays.asPaddingValues
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
+import com.jeanbarrossilva.orca.platform.core.withSample
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 import com.jeanbarrossilva.orca.platform.ui.core.style.toAnnotatedString
-import com.jeanbarrossilva.orca.platform.ui.core.withSample
 
 internal const val COMPOSER_FIELD = "composer-field"
 

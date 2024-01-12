@@ -13,16 +13,18 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core
+package com.jeanbarrossilva.orca.platform.core.image
 
-import com.jeanbarrossilva.orca.core.instance.Instance
-import com.jeanbarrossilva.orca.core.sample.instance.createSample
-import com.jeanbarrossilva.orca.platform.ui.core.image.sample
+import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
 import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
 
-/** [Instance] returned by [withSample]. */
-private val sampleInstance = Instance.createSample(ComposableImageLoader.Provider.sample)
-
-/** Sample [Instance] whose images are loaded by a sample [ComposableImageLoader]. */
-val Instance.Companion.sample
-  get() = sampleInstance
+/**
+ * Creates a sample [ComposableImageLoader].
+ *
+ * @param source [SampleImageSource] from which the image will be loaded.
+ */
+fun ComposableImageLoader.Companion.createSample(
+  source: SampleImageSource
+): ComposableImageLoader<SampleImageSource> {
+  return SampleComposableImageLoader.Provider.provide(source)
+}
