@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.style.spanned;
+package com.jeanbarrossilva.orca.composite.text.spanned;
 
 import androidx.annotation.NonNull;
 import com.jeanbarrossilva.orca.std.styledstring.style.Style;

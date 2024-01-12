@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,21 +13,25 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.style
+plugins {
+  alias(libs.plugins.android.library)
+  alias(libs.plugins.kotlin.android)
+}
 
-import org.jsoup.nodes.Element
-import org.jsoup.nodes.Node
+android.defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-/**
- * Removes this [Element] and appends the child [Node]s that existed prior to its removal to its
- * parent.
- *
- * @see Element.childNodes
- * @see Element.parent
- */
-internal fun Element.pop() {
-  val parent = parent() ?: return
-  val childNodes = childNodes()
-  remove()
-  parent.appendChildren(childNodes)
+dependencies {
+  androidTestImplementation(libs.android.test.core)
+  androidTestImplementation(libs.android.test.runner)
+  androidTestImplementation(libs.assertk)
+
+  api(project(":platform:autos"))
+  api(project(":std:styled-string"))
+  api(libs.android.compose.foundation)
+
+  implementation(libs.android.core)
+  implementation(libs.jsoup)
+
+  testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.test)
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,21 +13,21 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.style.spanned
+package com.jeanbarrossilva.orca.composite.text
 
-import assertk.assertThat
-import assertk.assertions.isEqualTo
-import assertk.assertions.isNotEqualTo
-import org.junit.Test
+import org.jsoup.nodes.Element
+import org.jsoup.nodes.Node
 
-internal class PartTests {
-  @Test
-  fun comparesEqualParts() {
-    assertThat(Part(0..8)).isEqualTo(Part(0..8))
-  }
-
-  @Test
-  fun comparesDifferentParts() {
-    assertThat(Part(0..8)).isNotEqualTo(Part(1..9))
-  }
+/**
+ * Removes this [Element] and appends the child [Node]s that existed prior to its removal to its
+ * parent.
+ *
+ * @see Element.childNodes
+ * @see Element.parent
+ */
+internal fun Element.pop() {
+  val parent = parent() ?: return
+  val childNodes = childNodes()
+  remove()
+  parent.appendChildren(childNodes)
 }

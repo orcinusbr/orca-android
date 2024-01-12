@@ -26,6 +26,7 @@ includeBuild("build-src")
 include(
   ":app",
   ":composite:composable",
+  ":composite:text",
   ":core",
   ":core:mastodon",
   ":core:sample",
@@ -49,6 +50,7 @@ include(
   ":platform:autos",
   ":platform:cache",
   ":platform:autos-test",
+  ":platform:core",
   ":platform:intents",
   ":platform:navigation",
   ":platform:navigation-test",
@@ -67,5 +69,3 @@ include(
   ":std:injector-test",
   ":std:styled-string"
 )
-
-include(":platform:core")

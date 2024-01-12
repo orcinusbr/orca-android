@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,16 +13,21 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core.style
+package com.jeanbarrossilva.orca.composite.text.spanned
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import com.jeanbarrossilva.orca.std.styledstring.StyledString
-import org.junit.Test
+import assertk.assertions.isNotEqualTo
+import kotlin.test.Test
 
-internal class StyledStringExtensionsTests {
+internal class PartTests {
   @Test
-  fun breaksLineTwiceBetweenParagraphsWhenConvertingHtmlToStyledString() {
-    assertThat(StyledString.fromHtml("<p>👔</p><p>🥾</p>")).isEqualTo(StyledString("👔\n\n🥾"))
+  fun comparesEqualParts() {
+    assertThat(Part(0..8)).isEqualTo(Part(0..8))
+  }
+
+  @Test
+  fun comparesDifferentParts() {
+    assertThat(Part(0..8)).isNotEqualTo(Part(1..9))
   }
 }

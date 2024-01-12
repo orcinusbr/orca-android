@@ -32,6 +32,7 @@ dependencies {
 
   ksp(project(":std:injector-processor"))
 
+  implementation(project(":composite:text"))
   implementation(project(":core"))
   implementation(project(":core:sample"))
   implementation(project(":ext:coroutines"))
