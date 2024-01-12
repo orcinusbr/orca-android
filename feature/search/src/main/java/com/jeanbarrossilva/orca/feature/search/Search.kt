@@ -59,6 +59,7 @@ import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.BackAction
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
+import com.jeanbarrossilva.orca.platform.core.sample
 import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
 
 internal object SearchDefaults {

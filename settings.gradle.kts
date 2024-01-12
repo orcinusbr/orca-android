@@ -67,3 +67,5 @@ include(
   ":std:injector-test",
   ":std:styled-string"
 )
+
+include(":platform:core")

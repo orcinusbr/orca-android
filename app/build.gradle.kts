@@ -85,6 +85,7 @@ dependencies {
   androidTestImplementation(libs.android.test.runner)
 
   "demoImplementation"(project(":core:sample"))
+  "demoImplementation"(project(":platform:core"))
 
   ksp(project(":std:injector-processor"))
 

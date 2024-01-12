@@ -61,6 +61,8 @@ import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.icon.IgnoringMutableInteractionSource
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
+import com.jeanbarrossilva.orca.platform.core.withSample
+import com.jeanbarrossilva.orca.platform.core.withSamples
 import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
 import com.jeanbarrossilva.orca.platform.ui.R
 import com.jeanbarrossilva.orca.platform.ui.component.avatar.SmallAvatar
@@ -69,7 +71,6 @@ import com.jeanbarrossilva.orca.platform.ui.component.stat.StatsDetails
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.Figure
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.time.RelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.time.rememberRelativeTimeProvider
-import com.jeanbarrossilva.orca.platform.ui.core.withSample
 import com.jeanbarrossilva.orca.std.image.ImageLoader
 import com.jeanbarrossilva.orca.std.image.compose.SomeComposableImageLoader
 import java.io.Serializable

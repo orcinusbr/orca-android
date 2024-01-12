@@ -35,8 +35,8 @@ import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.withSamples
 import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
 import com.jeanbarrossilva.orca.feature.feed.test.FeedActivity
 import com.jeanbarrossilva.orca.feature.feed.test.TestFeedModule
+import com.jeanbarrossilva.orca.platform.core.sample
 import com.jeanbarrossilva.orca.platform.ui.component.stat.favorite.FAVORITE_STAT_TAG
-import com.jeanbarrossilva.orca.platform.ui.core.sample
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.performScrollToBottom
 import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.isPostPreview

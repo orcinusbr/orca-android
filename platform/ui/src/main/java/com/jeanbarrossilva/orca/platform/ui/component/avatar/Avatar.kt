@@ -27,8 +27,8 @@ import com.jeanbarrossilva.orca.core.sample.image.AuthorImageSource
 import com.jeanbarrossilva.orca.platform.autos.forms.asShape
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
+import com.jeanbarrossilva.orca.platform.core.image.createSample
 import com.jeanbarrossilva.orca.platform.ui.R
-import com.jeanbarrossilva.orca.platform.ui.core.image.createSample
 import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
 import com.jeanbarrossilva.orca.std.image.compose.SomeComposableImageLoader
 

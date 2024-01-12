@@ -18,6 +18,7 @@ package com.jeanbarrossilva.orca.app.demo.module.core
 import com.jeanbarrossilva.orca.core.instance.InstanceProvider
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.SampleTermMuter
+import com.jeanbarrossilva.orca.platform.core.sample
 import com.jeanbarrossilva.orca.std.injector.module.injection.injectionOf
 
 internal object DemoCoreModule :
