@@ -15,7 +15,8 @@
 
 package com.jeanbarrossilva.orca.feature.postdetails.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.viewModelFactory
@@ -29,9 +30,8 @@ import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.Disposition
 import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.toPostPreviewFlow
 import com.jeanbarrossilva.orca.platform.ui.core.await
-import com.jeanbarrossilva.orca.platform.ui.core.context.ContextProvider
-import com.jeanbarrossilva.orca.platform.ui.core.context.share
 import com.jeanbarrossilva.orca.platform.ui.core.flatMapEach
+import com.jeanbarrossilva.orca.platform.ui.core.share
 import java.net.URL
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,12 +42,12 @@ import kotlinx.coroutines.launch
 
 internal class PostDetailsViewModel
 private constructor(
-  private val contextProvider: ContextProvider,
+  application: Application,
   private val postProvider: PostProvider,
   private val id: String,
   private val onLinkClick: (URL) -> Unit,
   private val onThumbnailClickListener: Disposition.OnThumbnailClickListener
-) : ViewModel() {
+) : AndroidViewModel(application) {
   private val notifierFlow = notifierFlow()
 
   @OptIn(ExperimentalCoroutinesApi::class)
@@ -56,10 +56,11 @@ private constructor(
   private val commentsIndexFlow = MutableStateFlow(0)
 
   private val colors
-    get() = AutosTheme.getColors(context)
+    get() = AutosTheme.getColors(application)
 
-  private val context
-    get() = contextProvider.provide()
+  @get:JvmName("_getApplication")
+  private val application
+    get() = getApplication<Application>()
 
   @OptIn(ExperimentalCoroutinesApi::class)
   val detailsLoadableFlow =
@@ -92,7 +93,7 @@ private constructor(
   }
 
   fun share(url: URL) {
-    context.share("$url")
+    application.share("$url")
   }
 
   fun loadCommentsAt(index: Int) {
@@ -101,7 +102,7 @@ private constructor(
 
   companion object {
     fun createFactory(
-      contextProvider: ContextProvider,
+      application: Application,
       postProvider: PostProvider,
       id: String,
       onLinkClick: (URL) -> Unit,
@@ -109,13 +110,7 @@ private constructor(
     ): ViewModelProvider.Factory {
       return viewModelFactory {
         addInitializer(PostDetailsViewModel::class) {
-          PostDetailsViewModel(
-            contextProvider,
-            postProvider,
-            id,
-            onLinkClick,
-            onThumbnailClickListener
-          )
+          PostDetailsViewModel(application, postProvider, id, onLinkClick, onThumbnailClickListener)
         }
       }
     }

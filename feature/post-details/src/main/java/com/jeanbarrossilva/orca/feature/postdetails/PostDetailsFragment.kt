@@ -22,6 +22,7 @@ import com.jeanbarrossilva.orca.composite.composable.ComposableFragment
 import com.jeanbarrossilva.orca.feature.postdetails.viewmodel.PostDetailsViewModel
 import com.jeanbarrossilva.orca.platform.navigation.Navigator
 import com.jeanbarrossilva.orca.platform.navigation.transition.opening
+import com.jeanbarrossilva.orca.platform.ui.core.application
 import com.jeanbarrossilva.orca.platform.ui.core.argument
 import com.jeanbarrossilva.orca.std.injector.Injector
 
@@ -31,7 +32,7 @@ class PostDetailsFragment private constructor() : ComposableFragment() {
   private val viewModel by
     viewModels<PostDetailsViewModel> {
       PostDetailsViewModel.createFactory(
-        contextProvider = ::requireContext,
+        application,
         module.postProvider(),
         id,
         onLinkClick = module.boundary()::navigateTo,

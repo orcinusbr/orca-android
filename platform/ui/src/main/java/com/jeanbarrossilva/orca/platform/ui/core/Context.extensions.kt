@@ -30,3 +30,13 @@ fun Context.browseTo(url: URL) {
   val intent = Intent(Intent.ACTION_VIEW, uri).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK }
   startActivity(intent)
 }
+
+/**
+ * Opens the share sheet so that the [text] can be shared.
+ *
+ * @param text Text to be shared.
+ */
+fun Context.share(text: String) {
+  val intent = com.jeanbarrossilva.orca.platform.ui.core.Intent(text)
+  startActivity(intent)
+}
