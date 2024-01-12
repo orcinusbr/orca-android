@@ -37,6 +37,7 @@ dependencies {
   implementation(project(":ext:coroutines"))
   implementation(project(":platform:autos"))
   implementation(project(":platform:core"))
+  implementation(project(":platform:intents"))
   implementation(project(":platform:navigation"))
   implementation(project(":platform:ui"))
   implementation(project(":std:injector"))

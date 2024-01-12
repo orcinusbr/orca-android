@@ -17,10 +17,10 @@ package com.jeanbarrossilva.orca.feature.profiledetails.test
 
 import android.content.Intent
 import androidx.navigation.NavGraphBuilder
+import com.jeanbarrossilva.orca.ext.intents.intentOf
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetailsFragment
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState
 import com.jeanbarrossilva.orca.platform.testing.context
-import com.jeanbarrossilva.orca.platform.ui.core.Intent
 import com.jeanbarrossilva.orca.platform.ui.test.core.SingleFragmentActivity
 
 internal class ProfileDetailsActivity : SingleFragmentActivity() {
@@ -32,7 +32,7 @@ internal class ProfileDetailsActivity : SingleFragmentActivity() {
 
   companion object {
     fun getIntent(backwardsNavigationState: BackwardsNavigationState, id: String): Intent {
-      return Intent<ProfileDetailsActivity>(
+      return intentOf<ProfileDetailsActivity>(
         context,
         ProfileDetailsFragment.BACKWARDS_NAVIGATION_STATE_KEY to backwardsNavigationState,
         ProfileDetailsFragment.ID_KEY to id

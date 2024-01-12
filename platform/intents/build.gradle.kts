@@ -27,5 +27,6 @@ android {
 dependencies {
   androidTestImplementation(libs.mockk)
 
+  implementation(libs.android.core)
   implementation(libs.android.test.espresso.intents)
 }

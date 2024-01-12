@@ -23,8 +23,8 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.PostProvider
+import com.jeanbarrossilva.orca.ext.intents.share
 import com.jeanbarrossilva.orca.platform.ui.component.stat.asStatsDetailsFlow
-import com.jeanbarrossilva.orca.platform.ui.core.share
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first

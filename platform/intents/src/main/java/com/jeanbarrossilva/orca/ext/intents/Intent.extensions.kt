@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core
+package com.jeanbarrossilva.orca.ext.intents
 
 import android.app.Activity
 import android.content.Context
@@ -31,26 +31,26 @@ internal fun Intent.putExtras(extras: Bundle?): Intent {
 }
 
 /**
- * [Intent] through which the [Activity] can be started.
+ * Creates an [Intent] through which the [Activity] can be started.
  *
  * @param context [Context] to create the [Intent] with.
  * @param args Arguments to be passed to the [Intent]'s [extras][Intent.getExtras].
  * @see Context.startActivity
  */
-inline fun <reified T : Activity> Intent(
+inline fun <reified T : Activity> intentOf(
   context: Context,
   vararg args: Pair<String, Any?>
 ): Intent {
-  val extras = bundleOf(*args)
+  val extras = bundleOfOrNull(*args)
   return Intent(context, T::class.java).apply { putExtras(extras) }
 }
 
 /**
- * [Intent] that allows the user to share the [text] externally.
+ * Creates an [Intent] that allows the user to share the [text] externally.
  *
  * @param text Content to be shared.
  */
-fun Intent(text: String): Intent {
+fun intentOf(text: String): Intent {
   return Intent(Intent.ACTION_SEND).apply {
     flags = Intent.FLAG_ACTIVITY_NEW_TASK
     type = "text/plain"

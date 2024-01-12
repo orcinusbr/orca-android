@@ -100,6 +100,7 @@ dependencies {
   implementation(project(":feature:settings"))
   implementation(project(":feature:settings:term-muting"))
   implementation(project(":platform:autos"))
+  implementation(project(":platform:intents"))
   implementation(project(":platform:navigation"))
   implementation(project(":platform:ui"))
   implementation(project(":std:injector"))
