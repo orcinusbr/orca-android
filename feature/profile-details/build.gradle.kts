@@ -43,12 +43,8 @@ dependencies {
 
   ksp(project(":std:injector-processor"))
 
-  implementation(project(":composite:text"))
   implementation(project(":composite:timeline"))
-  implementation(project(":core:sample"))
   implementation(project(":ext:coroutines"))
-  implementation(project(":platform:autos"))
-  implementation(project(":platform:core"))
   implementation(project(":platform:intents"))
   implementation(project(":platform:navigation"))
   implementation(project(":platform:ui"))

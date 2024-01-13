@@ -19,11 +19,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.jeanbarrossilva.orca.autos.colors.Colors
-import com.jeanbarrossilva.orca.composite.text.toAnnotatedString
 import com.jeanbarrossilva.orca.composite.timeline.post.figure.Figure
 import com.jeanbarrossilva.orca.composite.timeline.post.figure.gallery.disposition.Disposition
 import com.jeanbarrossilva.orca.composite.timeline.stat.details.asStatsDetails
 import com.jeanbarrossilva.orca.composite.timeline.stat.details.asStatsDetailsFlow
+import com.jeanbarrossilva.orca.composite.timeline.text.toAnnotatedString
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import java.net.URL

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -51,12 +51,12 @@ import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
-import com.jeanbarrossilva.orca.composite.text.toAnnotatedString
 import com.jeanbarrossilva.orca.composite.timeline.Timeline
 import com.jeanbarrossilva.orca.composite.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.composite.timeline.post.time.RelativeTimeProvider
 import com.jeanbarrossilva.orca.composite.timeline.post.time.rememberRelativeTimeProvider
 import com.jeanbarrossilva.orca.composite.timeline.refresh.Refresh
+import com.jeanbarrossilva.orca.composite.timeline.text.toAnnotatedString
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState

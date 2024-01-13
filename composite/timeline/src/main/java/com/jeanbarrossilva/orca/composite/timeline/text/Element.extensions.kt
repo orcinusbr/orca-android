@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.composite.text
+package com.jeanbarrossilva.orca.composite.timeline.text
 
 import org.jsoup.nodes.Element
 import org.jsoup.nodes.Node

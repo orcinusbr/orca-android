@@ -47,7 +47,6 @@ dependencies {
 
   implementation(project(":composite:timeline"))
   implementation(project(":core:sample"))
-  implementation(project(":platform:autos"))
   implementation(project(":platform:core"))
   implementation(project(":platform:intents"))
   implementation(project(":platform:starter"))

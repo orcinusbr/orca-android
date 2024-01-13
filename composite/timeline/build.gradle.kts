@@ -36,11 +36,13 @@ dependencies {
   androidTestImplementation(libs.assertk)
   androidTestImplementation(libs.mockk)
 
+  api(project(":platform:autos"))
   api(project(":platform:core"))
+  api(project(":std:styled-string"))
 
-  implementation(project(":composite:text"))
-  implementation(project(":platform:autos"))
   implementation(libs.android.compose.material)
+  implementation(libs.android.core)
+  implementation(libs.jsoup)
   implementation(libs.loadable.list)
   implementation(libs.loadable.placeholder)
   implementation(libs.loadable.placeholder.test)
