@@ -20,20 +20,4 @@ plugins {
   alias(libs.plugins.kotlin.android)
 }
 
-android {
-  buildFeatures.viewBinding = true
-  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-  namespace = namespaceFor("platform.ui.test")
-}
-
-dependencies {
-  androidTestImplementation(libs.android.test.core)
-  androidTestImplementation(libs.android.test.runner)
-  androidTestImplementation(libs.assertk)
-  androidTestImplementation(libs.junit)
-  androidTestImplementation(libs.kotlin.coroutines.test)
-
-  api(libs.android.navigation.fragment)
-
-  debugImplementation(libs.kotlin.coroutines.core)
-}
+android.namespace = namespaceFor("platform.ui.test")

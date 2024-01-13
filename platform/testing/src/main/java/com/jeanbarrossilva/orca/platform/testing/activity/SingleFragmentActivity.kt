@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.test.core
+package com.jeanbarrossilva.orca.platform.testing.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -32,15 +32,13 @@ import androidx.navigation.fragment.FragmentNavigator
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.fragment
 import androidx.navigation.get
-import com.jeanbarrossilva.orca.platform.ui.test.R
-import com.jeanbarrossilva.orca.platform.ui.test.databinding.ActivitySingleDestinationBinding
+import com.jeanbarrossilva.orca.platform.testing.R
+import com.jeanbarrossilva.orca.platform.testing.databinding.ActivitySingleDestinationBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 
 /** [FragmentActivity] that hosts a single [Fragment]. */
 abstract class SingleFragmentActivity : FragmentActivity() {
@@ -149,10 +147,10 @@ abstract class SingleFragmentActivity : FragmentActivity() {
   class InequivalentDestinationRouteException internal constructor(route: String) :
     IllegalStateException("Destination route doesn't match SingleFragmentActivity's ($route).")
 
-  /** [IllegalStateException] thrown if the added [NavDestination] doesn't point to a [Fragment]. */
+  /** [IllegalStateException] thrown if the added [NavDestination] doesn't lead to a [Fragment]. */
   class NonFragmentDestinationException internal constructor() :
     IllegalStateException(
-      "SingleFragmentActivity should have a destination that points to a Fragment."
+      "SingleFragmentActivity should have a destination that leads to a Fragment."
     )
 
   /**
@@ -203,6 +201,7 @@ abstract class SingleFragmentActivity : FragmentActivity() {
    * Note that its [route][NavDestination.route] has to be the same as this
    * [SingleFragmentActivity]'s.
    *
+   * @see NavGraphBuilder.fragment
    * @see SingleFragmentActivity.route
    */
   protected abstract fun NavGraphBuilder.add()
@@ -234,7 +233,7 @@ abstract class SingleFragmentActivity : FragmentActivity() {
   }
 
   /**
-   * Callback that's called if the current [NavDestination] doesn't point to a [Fragment].
+   * Callback that's called if the current [NavDestination] doesn't lead to a [Fragment].
    *
    * Throws a [NoDestinationException] by default.
    */
@@ -248,7 +247,7 @@ abstract class SingleFragmentActivity : FragmentActivity() {
    * @param listener [OnNavGraphChangeListener] to be notified.
    */
   internal fun doOnNavGraphChange(listener: OnNavGraphChangeListener) {
-    if (navController.hasNavGraph) {
+    if (navController.containsNavGraph) {
       listener.onNavGraphChange()
     } else {
       onNavGraphChangeListeners.add(listener)
@@ -264,17 +263,15 @@ abstract class SingleFragmentActivity : FragmentActivity() {
    * @throws NoDestinationException If no [NavDestination] has been added through [add].
    * @throws MultipleDestinationsException If multiple [NavDestination]s have been added through
    *   [add].
-   * @throws NonFragmentDestinationException If the [NavDestination] doesn't point to a [Fragment].
+   * @throws NonFragmentDestinationException If the [NavDestination] doesn't lead to a [Fragment].
    */
   private fun ensureIntegrity(navGraph: NavGraph) {
     navGraphIntegrityInsuranceJob =
       navGraphIntegrityInsuranceScope
         .launch {
-          Mutex().withLock(owner = navGraph) {
-            ensureHasSingleDestination(navGraph)
-            ensureDestinationRouteIsEquivalent(navGraph)
-            ensureDestinationPointsToFragment(navGraph)
-          }
+          ensureHasSingleDestination(navGraph)
+          ensureDestinationRouteIsEquivalent(navGraph)
+          ensureDestinationLeadsToFragment(navGraph)
         }
         .also { it.invokeOnCompletion { navGraphIntegrityInsuranceJob = null } }
   }
@@ -313,15 +310,15 @@ abstract class SingleFragmentActivity : FragmentActivity() {
   }
 
   /**
-   * Ensures that [navGraph]'s [NavDestination] points to a [Fragment].
+   * Ensures that [navGraph]'s [NavDestination] leads to a [Fragment].
    *
    * @param navGraph [NavGraph] to perform the insurance on.
-   * @throws NonFragmentDestinationException If the [NavDestination] doesn't point to a [Fragment].
+   * @throws NonFragmentDestinationException If the [NavDestination] doesn't lead to a [Fragment].
    */
-  private fun ensureDestinationPointsToFragment(navGraph: NavGraph) {
+  private fun ensureDestinationLeadsToFragment(navGraph: NavGraph) {
     val destination = navGraph[navGraph.startDestinationId]
-    val isNotPointingToFragment = destination.navigatorName != "fragment"
-    if (isNotPointingToFragment) {
+    val isNonFragmentDestination = destination.navigatorName != "fragment"
+    if (isNonFragmentDestination) {
       onNonFragmentDestination()
     }
   }

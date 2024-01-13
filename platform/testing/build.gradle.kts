@@ -22,15 +22,18 @@ android {
   defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   packagingOptions.resources.excludes +=
     arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
+  buildFeatures.viewBinding = true
 }
 
 dependencies {
   androidTestImplementation(libs.android.test.runner)
   androidTestImplementation(libs.assertk)
   androidTestImplementation(libs.junit)
+  androidTestImplementation(libs.kotlin.coroutines.test)
   androidTestImplementation(libs.kotlin.reflect)
   androidTestImplementation(libs.mockk)
 
-  implementation(libs.android.compose.ui)
-  implementation(libs.android.test.core)
+  api(libs.android.compose.ui)
+  api(libs.android.navigation.fragment)
+  api(libs.android.test.core)
 }
