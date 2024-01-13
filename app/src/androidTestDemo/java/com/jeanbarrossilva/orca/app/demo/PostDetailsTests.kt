@@ -19,10 +19,10 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.performClick
 import com.jeanbarrossilva.orca.app.demo.test.performScrollToPostPreviewWithLinkCard
+import com.jeanbarrossilva.orca.composite.timeline.test.post.figure.link.onLinkCards
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Highlight
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.content.highlight.sample
 import com.jeanbarrossilva.orca.ext.intents.intendBrowsingTo
-import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.figure.link.onLinkCards
 import org.junit.Rule
 import org.junit.Test
 

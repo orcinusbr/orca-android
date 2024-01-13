@@ -25,6 +25,8 @@ import assertk.assertThat
 import com.jeanbarrossilva.orca.app.R
 import com.jeanbarrossilva.orca.app.demo.test.performScrollToPostPreviewWithLinkCard
 import com.jeanbarrossilva.orca.app.demo.test.performStartClick
+import com.jeanbarrossilva.orca.composite.timeline.test.post.figure.link.onLinkCards
+import com.jeanbarrossilva.orca.composite.timeline.test.post.onPostPreviews
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Highlight
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.content.highlight.sample
@@ -32,8 +34,6 @@ import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.withSamples
 import com.jeanbarrossilva.orca.ext.intents.intendBrowsingTo
 import com.jeanbarrossilva.orca.feature.postdetails.PostDetailsFragment
 import com.jeanbarrossilva.orca.platform.navigation.test.isAt
-import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.figure.link.onLinkCards
-import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.onPostPreviews
 import org.junit.Rule
 import org.junit.Test
 

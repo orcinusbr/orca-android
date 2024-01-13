@@ -69,6 +69,7 @@ dependencies {
   implementation(libs.ktor.client.core)
   implementation(libs.ktor.client.contentNegotiation)
   implementation(libs.ktor.serialization.json)
+  implementation(libs.loadable)
   implementation(libs.paginate)
 
   ksp(libs.android.room.compiler)

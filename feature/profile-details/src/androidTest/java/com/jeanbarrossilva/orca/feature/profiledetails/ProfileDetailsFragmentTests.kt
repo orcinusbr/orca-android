@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -29,7 +29,6 @@ import com.jeanbarrossilva.orca.feature.profiledetails.test.isFollowingType
 import com.jeanbarrossilva.orca.feature.profiledetails.test.launchProfileDetailsActivity
 import com.jeanbarrossilva.orca.feature.profiledetails.test.sample
 import com.jeanbarrossilva.orca.platform.core.sample
-import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.time.Time4JTestRule
 import com.jeanbarrossilva.orca.std.injector.test.InjectorTestRule
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.test.runTest
@@ -42,15 +41,11 @@ internal class ProfileDetailsFragmentTests {
     register<ProfileDetailsModule>(TestProfileDetailsModule)
   }
   private val sampleInstanceRule = SampleInstanceTestRule(Instance.sample)
-  private val time4JRule = Time4JTestRule()
   private val composeRule = createEmptyComposeRule()
 
   @get:Rule
   val ruleChain: RuleChain =
-    RuleChain.outerRule(injectorRule)
-      .around(sampleInstanceRule)
-      .around(time4JRule)
-      .around(composeRule)
+    RuleChain.outerRule(injectorRule).around(sampleInstanceRule).around(composeRule)
 
   @Test
   fun unfollowsFollowedProfileWhenClickingActionButton() {

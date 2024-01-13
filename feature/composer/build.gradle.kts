@@ -31,7 +31,6 @@ dependencies {
   api(project(":composite:composable"))
 
   implementation(project(":composite:text"))
-  implementation(project(":core"))
   implementation(project(":core:sample"))
   implementation(project(":platform:autos"))
   implementation(project(":platform:core"))

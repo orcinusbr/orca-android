@@ -32,12 +32,12 @@ import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
+import com.jeanbarrossilva.orca.composite.timeline.avatar.SmallAvatar
+import com.jeanbarrossilva.orca.composite.timeline.stat.Stats
 import com.jeanbarrossilva.orca.feature.postdetails.PostDetails
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.ui.component.avatar.SmallAvatar
-import com.jeanbarrossilva.orca.platform.ui.component.stat.Stats
 import com.jeanbarrossilva.orca.std.image.compose.SomeComposableImageLoader
 
 @Composable

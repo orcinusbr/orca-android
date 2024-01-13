@@ -24,6 +24,9 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import assertk.assertThat
 import assertk.assertions.isTrue
+import com.jeanbarrossilva.orca.composite.timeline.test.stat.activateable.favorite.onFavoriteStat
+import com.jeanbarrossilva.orca.composite.timeline.test.stat.activateable.repost.onRepostStat
+import com.jeanbarrossilva.orca.composite.timeline.test.stat.onCommentStat
 import com.jeanbarrossilva.orca.feature.gallery.test.ui.onCloseActionButton
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.onActions
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.onDownloadItem
@@ -38,9 +41,6 @@ import com.jeanbarrossilva.orca.feature.gallery.ui.test.zoom.assertIsZoomedOut
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.zoom.performZoomIn
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.zoom.performZoomOut
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
-import com.jeanbarrossilva.orca.platform.ui.test.component.stat.favorite.onFavoriteStat
-import com.jeanbarrossilva.orca.platform.ui.test.component.stat.onCommentStat
-import com.jeanbarrossilva.orca.platform.ui.test.component.stat.repost.onRepostStat
 import org.junit.Rule
 import org.junit.Test
 

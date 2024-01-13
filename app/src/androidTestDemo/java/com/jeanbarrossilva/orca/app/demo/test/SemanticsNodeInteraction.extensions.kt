@@ -22,15 +22,15 @@ import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.click
 import androidx.compose.ui.test.performScrollToIndex
 import androidx.compose.ui.test.performTouchInput
+import com.jeanbarrossilva.orca.composite.timeline.Timeline
+import com.jeanbarrossilva.orca.composite.timeline.post.PostPreview
+import com.jeanbarrossilva.orca.composite.timeline.post.figure.gallery.GalleryPreview
+import com.jeanbarrossilva.orca.composite.timeline.test.isTimeline
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
 import com.jeanbarrossilva.orca.core.sample.test.instance.sample
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.GalleryPreview
-import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.isTimeline
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 

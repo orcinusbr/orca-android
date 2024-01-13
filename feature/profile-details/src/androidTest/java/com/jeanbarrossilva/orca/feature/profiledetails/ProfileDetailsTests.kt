@@ -21,12 +21,12 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performScrollToIndex
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
+import com.jeanbarrossilva.orca.composite.timeline.TIMELINE_TAG
+import com.jeanbarrossilva.orca.composite.timeline.post.PostPreview
+import com.jeanbarrossilva.orca.composite.timeline.test.onTimeline
+import com.jeanbarrossilva.orca.composite.timeline.test.post.time.StringRelativeTimeProvider
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.testing.screen.screen
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.TIMELINE_TAG
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
-import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline
-import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.post.time.TestRelativeTimeProvider
 import java.util.UUID
 import org.junit.Rule
 import org.junit.Test
@@ -45,7 +45,7 @@ internal class ProfileDetailsTests {
               }
               .toSerializableList()
               .toListLoadable(),
-          relativeTimeProvider = TestRelativeTimeProvider
+          relativeTimeProvider = StringRelativeTimeProvider
         )
       }
     }

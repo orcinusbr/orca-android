@@ -29,6 +29,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
+import com.jeanbarrossilva.orca.composite.timeline.stat.details.formatted
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
 import com.jeanbarrossilva.orca.feature.gallery.R
@@ -39,7 +40,6 @@ import com.jeanbarrossilva.orca.feature.gallery.ui.test.performScrollToEachPage
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.performScrollToPageAt
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.testing.asString
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
 import org.junit.Rule
 import org.junit.Test
 

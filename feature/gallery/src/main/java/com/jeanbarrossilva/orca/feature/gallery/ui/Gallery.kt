@@ -37,12 +37,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
+import com.jeanbarrossilva.orca.composite.timeline.stat.details.StatsDetails
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
 import com.jeanbarrossilva.orca.feature.gallery.GalleryBoundary
 import com.jeanbarrossilva.orca.feature.gallery.GalleryViewModel
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
-import com.jeanbarrossilva.orca.platform.ui.component.stat.StatsDetails
 
 internal const val GALLERY_PAGER_TAG = "gallery-pager-tag"
 

@@ -30,6 +30,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
+import com.jeanbarrossilva.orca.composite.timeline.Timeline
+import com.jeanbarrossilva.orca.composite.timeline.post.PostPreview
+import com.jeanbarrossilva.orca.composite.timeline.post.figure.Figure
+import com.jeanbarrossilva.orca.composite.timeline.refresh.Refresh
+import com.jeanbarrossilva.orca.composite.timeline.stat.details.StatsDetails
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
 import com.jeanbarrossilva.orca.feature.postdetails.ui.header.Header
@@ -45,11 +50,6 @@ import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.core.withSample
 import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
-import com.jeanbarrossilva.orca.platform.ui.component.stat.StatsDetails
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.Timeline
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.Figure
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.refresh.Refresh
 import com.jeanbarrossilva.orca.std.image.SomeImageLoader
 import java.io.Serializable
 import java.net.URL

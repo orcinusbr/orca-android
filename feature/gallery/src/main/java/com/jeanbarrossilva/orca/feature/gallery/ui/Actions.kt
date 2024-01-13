@@ -35,13 +35,12 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jeanbarrossilva.orca.composite.timeline.stat.details.StatsDetails
 import com.jeanbarrossilva.orca.feature.gallery.R
 import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.autos.kit.menu.DropdownMenu
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
-import com.jeanbarrossilva.orca.platform.ui.component.stat.Stats
-import com.jeanbarrossilva.orca.platform.ui.component.stat.StatsDetails
 
 internal const val GALLERY_ACTIONS_OPTIONS_BUTTON_TAG = "gallery-actions-options-button"
 internal const val GALLERY_ACTIONS_OPTIONS_DOWNLOADS_ITEM_TAG =
@@ -128,7 +127,7 @@ internal fun Actions(
         }
       }
 
-      Stats(
+      com.jeanbarrossilva.orca.composite.timeline.stat.Stats(
         details,
         onComment,
         onFavorite,
