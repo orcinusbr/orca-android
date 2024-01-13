@@ -15,7 +15,7 @@
 
 @file:JvmName("AnyExtensions")
 
-package com.jeanbarrossilva.orca.composite.text.spanned
+package com.jeanbarrossilva.orca.composite.timeline.text.spanned
 
 import android.text.ParcelableSpan
 import android.text.Spanned

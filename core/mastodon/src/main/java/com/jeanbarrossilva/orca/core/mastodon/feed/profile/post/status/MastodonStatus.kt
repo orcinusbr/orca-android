@@ -15,7 +15,7 @@
 
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.status
 
-import com.jeanbarrossilva.orca.composite.text.fromHtml
+import com.jeanbarrossilva.orca.composite.timeline.text.fromHtml
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Content

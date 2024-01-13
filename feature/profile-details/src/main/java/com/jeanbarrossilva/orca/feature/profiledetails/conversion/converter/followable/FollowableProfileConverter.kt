@@ -16,7 +16,7 @@
 package com.jeanbarrossilva.orca.feature.profiledetails.conversion.converter.followable
 
 import com.jeanbarrossilva.orca.autos.colors.Colors
-import com.jeanbarrossilva.orca.composite.text.toAnnotatedString
+import com.jeanbarrossilva.orca.composite.timeline.text.toAnnotatedString
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.Follow
 import com.jeanbarrossilva.orca.core.feed.profile.type.followable.FollowableProfile

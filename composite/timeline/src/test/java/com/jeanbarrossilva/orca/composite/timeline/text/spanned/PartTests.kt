@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.composite.text.spanned
+package com.jeanbarrossilva.orca.composite.timeline.text.spanned
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo

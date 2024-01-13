@@ -26,7 +26,6 @@ includeBuild("build-src")
 include(
   ":app",
   ":composite:composable",
-  ":composite:text",
   ":composite:timeline",
   ":composite:timeline-test",
   ":core",

@@ -30,10 +30,7 @@ dependencies {
 
   api(project(":composite:composable"))
 
-  implementation(project(":composite:text"))
-  implementation(project(":core:sample"))
-  implementation(project(":platform:autos"))
-  implementation(project(":platform:core"))
+  implementation(project(":composite:timeline"))
   implementation(project(":platform:starter"))
   implementation(project(":platform:ui"))
   implementation(libs.android.compose.material.icons)

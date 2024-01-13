@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.composite.text
+package com.jeanbarrossilva.orca.composite.timeline.text
 
 import android.text.Html
 import androidx.compose.runtime.Composable
@@ -21,7 +21,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import com.jeanbarrossilva.orca.autos.colors.Colors
-import com.jeanbarrossilva.orca.composite.text.spanned.toStyledString
+import com.jeanbarrossilva.orca.composite.timeline.text.spanned.toStyledString
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import com.jeanbarrossilva.orca.std.styledstring.style.Style
