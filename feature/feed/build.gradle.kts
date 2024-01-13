@@ -26,6 +26,7 @@ android {
 }
 
 dependencies {
+  androidTestImplementation(project(":composite:timeline-test"))
   androidTestImplementation(project(":core:sample-test"))
   androidTestImplementation(project(":platform:core"))
   androidTestImplementation(project(":platform:testing"))
@@ -40,7 +41,7 @@ dependencies {
 
   ksp(project(":std:injector-processor"))
 
-  implementation(project(":core"))
+  implementation(project(":composite:timeline"))
   implementation(project(":core:sample"))
   implementation(project(":ext:coroutines"))
   implementation(project(":platform:autos"))

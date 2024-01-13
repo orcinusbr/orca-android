@@ -25,8 +25,8 @@ android {
 
 dependencies {
   api(project(":core:sample"))
+  api(project(":std:image:compose"))
 
-  implementation(project(":std:image:compose"))
   implementation(libs.android.compose.foundation)
 }
 

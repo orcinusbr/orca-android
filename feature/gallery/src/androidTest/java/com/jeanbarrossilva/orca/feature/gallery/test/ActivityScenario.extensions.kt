@@ -22,6 +22,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
+import com.jeanbarrossilva.orca.composite.timeline.stat.details.formatted
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
@@ -32,7 +33,6 @@ import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
 import com.jeanbarrossilva.orca.platform.core.image.createSample
 import com.jeanbarrossilva.orca.platform.core.withSample
 import com.jeanbarrossilva.orca.platform.testing.context
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
 import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
 
 /**

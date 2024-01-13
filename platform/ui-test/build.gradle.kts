@@ -21,27 +21,19 @@ plugins {
 }
 
 android {
-  namespace = namespaceFor("platform.ui.test")
-  composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
+  buildFeatures.viewBinding = true
   defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-  buildFeatures {
-    compose = true
-    viewBinding = true
-  }
+  namespace = namespaceFor("platform.ui.test")
 }
 
 dependencies {
-  androidTestImplementation(project(":platform:autos"))
   androidTestImplementation(libs.android.test.core)
+  androidTestImplementation(libs.android.test.runner)
   androidTestImplementation(libs.assertk)
+  androidTestImplementation(libs.junit)
+  androidTestImplementation(libs.kotlin.coroutines.test)
 
   api(libs.android.navigation.fragment)
 
-  implementation(project(":platform:ui"))
-  implementation(libs.android.compose.ui.test.junit)
-  implementation(libs.time4j)
-
-  testImplementation(libs.assertk)
-  testImplementation(libs.kotlin.test)
+  debugImplementation(libs.kotlin.coroutines.core)
 }

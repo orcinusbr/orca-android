@@ -24,6 +24,7 @@ import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
+import com.jeanbarrossilva.orca.composite.timeline.stat.details.formatted
 import com.jeanbarrossilva.orca.feature.gallery.test.activity.TestGalleryModule
 import com.jeanbarrossilva.orca.feature.gallery.test.launchGalleryActivity
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.onPager
@@ -31,7 +32,6 @@ import com.jeanbarrossilva.orca.feature.gallery.ui.test.performScrollToEachPage
 import com.jeanbarrossilva.orca.platform.testing.asString
 import com.jeanbarrossilva.orca.platform.testing.context
 import com.jeanbarrossilva.orca.platform.testing.screen.screen
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.formatted
 import com.jeanbarrossilva.orca.std.injector.module.binding.boundTo
 import com.jeanbarrossilva.orca.std.injector.test.InjectorTestRule
 import org.junit.Rule

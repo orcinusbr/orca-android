@@ -70,21 +70,20 @@ android {
 }
 
 dependencies {
+  "androidTestDemoImplementation"(project(":composite:timeline"))
+  "androidTestDemoImplementation"(project(":composite:timeline-test"))
   "androidTestDemoImplementation"(project(":core:sample-test"))
   "androidTestDemoImplementation"(project(":feature:gallery-test"))
   "androidTestDemoImplementation"(project(":platform:navigation-test"))
-  "androidTestDemoImplementation"(project(":platform:ui"))
   "androidTestDemoImplementation"(libs.android.activity.ktx)
   "androidTestDemoImplementation"(libs.android.compose.ui.test.junit)
   "androidTestDemoImplementation"(libs.assertk)
 
   androidTestImplementation(project(":platform:intents"))
-  androidTestImplementation(project(":platform:ui-test"))
   androidTestImplementation(libs.android.test.core)
   androidTestImplementation(libs.android.test.espresso.core)
   androidTestImplementation(libs.android.test.runner)
 
-  "demoImplementation"(project(":core:sample"))
   "demoImplementation"(project(":platform:core"))
 
   ksp(project(":std:injector-processor"))
@@ -102,7 +101,7 @@ dependencies {
   implementation(project(":platform:autos"))
   implementation(project(":platform:intents"))
   implementation(project(":platform:navigation"))
-  implementation(project(":platform:ui"))
+  implementation(project(":std:image:compose"))
   implementation(project(":std:injector"))
   implementation(libs.android.appcompat)
   implementation(libs.android.constraintlayout)

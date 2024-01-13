@@ -27,6 +27,8 @@ include(
   ":app",
   ":composite:composable",
   ":composite:text",
+  ":composite:timeline",
+  ":composite:timeline-test",
   ":core",
   ":core:mastodon",
   ":core:sample",

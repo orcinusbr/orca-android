@@ -21,49 +21,10 @@ plugins {
 android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
-  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-  packagingOptions.resources.excludes +=
-    arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
 }
 
 dependencies {
-  androidTestImplementation(kotlin("reflect"))
-  androidTestImplementation(project(":core:sample-test"))
-  androidTestImplementation(project(":platform:ui-test"))
-  androidTestImplementation(project(":std:image-test"))
-  androidTestImplementation(libs.android.compose.ui.test.junit)
-  androidTestImplementation(libs.android.compose.ui.test.manifest)
-  androidTestImplementation(libs.android.constraintlayout.compose)
-  androidTestImplementation(libs.android.test.core)
-  androidTestImplementation(libs.android.test.runner)
-  androidTestImplementation(libs.assertk)
-  androidTestImplementation(libs.mockk)
-
-  api(project(":platform:starter:lifecycle"))
-  api(project(":std:image:compose"))
-  api(libs.android.compose.foundation)
+  api(project(":core"))
+  api(libs.android.compose.ui)
   api(libs.android.fragment.ktx)
-  api(libs.loadable)
-
-  implementation(project(":composite:text"))
-  implementation(project(":core"))
-  implementation(project(":core:sample"))
-  implementation(project(":ext:coroutines"))
-  implementation(project(":platform:autos"))
-  implementation(project(":platform:core"))
-  implementation(project(":std:image:compose"))
-  implementation(libs.android.compose.material)
-  implementation(libs.android.material)
-  implementation(libs.jsoup)
-  implementation(libs.kotlin.reflect)
-  implementation(libs.loadable.list)
-  implementation(libs.loadable.placeholder)
-  implementation(libs.loadable.placeholder.test)
-  implementation(libs.orbital)
-  implementation(libs.time4j)
-
-  testImplementation(project(":core:sample-test"))
-  testImplementation(libs.assertk)
-  testImplementation(libs.kotlin.coroutines.test)
-  testImplementation(libs.kotlin.test)
 }

@@ -16,9 +16,9 @@
 package com.jeanbarrossilva.orca.app.demo.test
 
 import androidx.compose.ui.test.junit4.ComposeTestRule
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.PostPreview
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.link.LinkCard
-import com.jeanbarrossilva.orca.platform.ui.test.component.timeline.onTimeline
+import com.jeanbarrossilva.orca.composite.timeline.post.PostPreview
+import com.jeanbarrossilva.orca.composite.timeline.post.figure.link.LinkCard
+import com.jeanbarrossilva.orca.composite.timeline.test.onTimeline
 
 /** Scrolls to the first [PostPreview] containing a [LinkCard]. */
 internal fun ComposeTestRule.performScrollToPostPreviewWithLinkCard() {

@@ -29,7 +29,7 @@ dependencies {
 
   ksp(project(":std:injector-processor"))
 
-  implementation(project(":core"))
+  implementation(project(":composite:timeline"))
   implementation(project(":core:sample"))
   implementation(project(":platform:autos"))
   implementation(project(":platform:core"))

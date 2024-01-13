@@ -27,6 +27,7 @@ android {
 }
 
 dependencies {
+  androidTestImplementation(project(":composite:timeline-test"))
   androidTestImplementation(project(":core:sample-test"))
   androidTestImplementation(project(":feature:gallery-test"))
   androidTestImplementation(project(":platform:testing"))
@@ -44,13 +45,12 @@ dependencies {
 
   ksp(project(":std:injector-processor"))
 
-  implementation(project(":core"))
+  implementation(project(":composite:timeline"))
   implementation(project(":core:sample"))
   implementation(project(":platform:autos"))
   implementation(project(":platform:core"))
   implementation(project(":platform:intents"))
   implementation(project(":platform:starter"))
   implementation(project(":platform:ui"))
-  implementation(project(":std:image:compose"))
   implementation(libs.zoomable)
 }

@@ -22,6 +22,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jeanbarrossilva.loadable.flow.loadable
 import com.jeanbarrossilva.loadable.list.flow.listLoadable
+import com.jeanbarrossilva.orca.composite.timeline.post.figure.gallery.disposition.Disposition
+import com.jeanbarrossilva.orca.composite.timeline.post.toPostPreviewFlow
 import com.jeanbarrossilva.orca.core.feed.profile.post.PostProvider
 import com.jeanbarrossilva.orca.ext.coroutines.await
 import com.jeanbarrossilva.orca.ext.coroutines.flatMapEach
@@ -30,8 +32,6 @@ import com.jeanbarrossilva.orca.ext.coroutines.notifier.notify
 import com.jeanbarrossilva.orca.ext.intents.share
 import com.jeanbarrossilva.orca.feature.postdetails.toPostDetailsFlow
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.figure.gallery.disposition.Disposition
-import com.jeanbarrossilva.orca.platform.ui.component.timeline.post.toPostPreviewFlow
 import java.net.URL
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
