@@ -20,8 +20,8 @@ import androidx.navigation.NavGraphBuilder
 import com.jeanbarrossilva.orca.ext.intents.intentOf
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetailsFragment
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState
+import com.jeanbarrossilva.orca.platform.testing.activity.SingleFragmentActivity
 import com.jeanbarrossilva.orca.platform.testing.context
-import com.jeanbarrossilva.orca.platform.ui.test.core.SingleFragmentActivity
 
 internal class ProfileDetailsActivity : SingleFragmentActivity() {
   override val route = "profile-details"

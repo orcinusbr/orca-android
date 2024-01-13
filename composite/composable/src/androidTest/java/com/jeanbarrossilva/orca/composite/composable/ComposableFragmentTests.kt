@@ -19,7 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.navigation.NavGraphBuilder
-import com.jeanbarrossilva.orca.platform.ui.test.core.SingleFragmentActivity
+import com.jeanbarrossilva.orca.platform.testing.activity.SingleFragmentActivity
 import org.junit.Rule
 import org.junit.Test
 

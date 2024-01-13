@@ -19,8 +19,8 @@ import android.content.Intent
 import androidx.navigation.NavGraphBuilder
 import com.jeanbarrossilva.orca.ext.intents.intentOf
 import com.jeanbarrossilva.orca.feature.feed.FeedFragment
+import com.jeanbarrossilva.orca.platform.testing.activity.SingleFragmentActivity
 import com.jeanbarrossilva.orca.platform.testing.context
-import com.jeanbarrossilva.orca.platform.ui.test.core.SingleFragmentActivity
 
 internal class FeedActivity : SingleFragmentActivity() {
   override val route = "feed"

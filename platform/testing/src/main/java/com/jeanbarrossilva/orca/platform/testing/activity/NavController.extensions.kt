@@ -13,12 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.test.core
+package com.jeanbarrossilva.orca.platform.testing.activity
 
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph
 
-/** Whether this [NavController] has a [graph][NavController.graph]. */
-internal val NavController.hasNavGraph
+/**
+ * Whether this [NavController] contains a [NavGraph].
+ *
+ * @see NavController.graph
+ */
+internal val NavController.containsNavGraph
   get() =
     try {
       graph
