@@ -27,8 +27,8 @@ import androidx.compose.ui.unit.Dp
 import com.jeanbarrossilva.orca.composite.timeline.stat.details.formatted
 import com.jeanbarrossilva.orca.feature.gallery.test.activity.TestGalleryModule
 import com.jeanbarrossilva.orca.feature.gallery.test.launchGalleryActivity
-import com.jeanbarrossilva.orca.feature.gallery.ui.test.onPager
-import com.jeanbarrossilva.orca.feature.gallery.ui.test.performScrollToEachPage
+import com.jeanbarrossilva.orca.feature.gallery.test.ui.onPager
+import com.jeanbarrossilva.orca.feature.gallery.test.ui.performScrollToEachPage
 import com.jeanbarrossilva.orca.platform.testing.asString
 import com.jeanbarrossilva.orca.platform.testing.context
 import com.jeanbarrossilva.orca.platform.testing.screen.screen

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -18,7 +18,7 @@ package com.jeanbarrossilva.orca.core.sample.feed
 import com.jeanbarrossilva.orca.core.feed.FeedProvider
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
-import com.jeanbarrossilva.orca.core.sample.feed.profile.SampleProfile
+import com.jeanbarrossilva.orca.core.sample.feed.profile.SAMPLE_POSTS_PER_PAGE
 import com.jeanbarrossilva.orca.core.sample.feed.profile.createSample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePostProvider
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.SampleTermMuter
@@ -47,7 +47,7 @@ internal class SampleFeedProvider(
 
   override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
     return postsFlow.map { posts ->
-      posts.chunked(SampleProfile.POSTS_PER_PAGE).getOrElse(page) { posts.takeLast(1) }
+      posts.chunked(SAMPLE_POSTS_PER_PAGE).getOrElse(page) { posts.takeLast(1) }
     }
   }
 

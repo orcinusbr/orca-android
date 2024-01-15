@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,21 +13,14 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.testing
+package com.jeanbarrossilva.orca.composite.timeline.post
 
-import android.content.res.Resources
-import androidx.annotation.StringRes
-import androidx.test.platform.app.InstrumentationRegistry
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.SemanticsPropertyKey
 
-/**
- * Gets the [String] from this resource ID.
- *
- * @param format [String] by which arguments in the [String] will be replaced.
- */
-fun @receiver:StringRes Int.asString(vararg format: String): String {
-  return try {
-    context.getString(this, *format)
-  } catch (_: Resources.NotFoundException) {
-    InstrumentationRegistry.getInstrumentation().targetContext.getString(this, *format)
-  }
-}
+/** [SemanticsPropertyKey] returned by [PostPreview]. */
+private val postPreviewSemanticsPropertyKey = SemanticsPropertyKey<PostPreview>("PostPreview")
+
+/** [SemanticsPropertyKey] of a [PostPreview]. */
+val @receiver:Suppress("UnusedReceiverParameter") SemanticsProperties.PostPreview
+  get() = postPreviewSemanticsPropertyKey

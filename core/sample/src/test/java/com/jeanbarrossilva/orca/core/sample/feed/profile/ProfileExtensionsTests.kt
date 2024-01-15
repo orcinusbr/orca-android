@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -31,7 +31,7 @@ internal class ProfileExtensionsTests {
   fun `GIVEN a sample profile WHEN getting its posts THEN they are the sample ones`() {
     runTest {
       assertContentEquals(
-        Posts.withSamples.filter { it.author == Author.sample }.take(SampleProfile.POSTS_PER_PAGE),
+        Posts.withSamples.filter { it.author == Author.sample }.take(SAMPLE_POSTS_PER_PAGE),
         Profile.sample.getPosts(0).first()
       )
     }

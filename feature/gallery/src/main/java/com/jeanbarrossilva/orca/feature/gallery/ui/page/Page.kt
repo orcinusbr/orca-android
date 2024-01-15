@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,8 +13,9 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.gallery.ui
+package com.jeanbarrossilva.orca.feature.gallery.ui.page
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.animateContentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,16 +24,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
 import com.jeanbarrossilva.orca.feature.gallery.R
+import com.jeanbarrossilva.orca.feature.gallery.ui.isZoomedInAsState
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.std.image.compose.rememberImageLoader
 import kotlinx.coroutines.launch
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.toggleScale
 import net.engawapg.lib.zoomable.zoomable
+
+@Composable
+@VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+fun Page(modifier: Modifier = Modifier) {
+  Page(
+    entrypointIndex = 0,
+    currentIndex = 1,
+    secondary = Attachment.samples,
+    onActionsVisibilityToggle = {},
+    modifier
+  ) {
+    SampleEntrypoint(it)
+  }
+}
 
 @Composable
 internal fun Page(
@@ -62,6 +79,7 @@ internal fun Page(
         }
       )
       .animateContentSize()
+      .semantics { index = currentIndex }
   if (currentIndex == entrypointIndex) {
     entrypoint(pageModifier)
   } else {
@@ -89,14 +107,5 @@ internal fun SampleEntrypoint(modifier: Modifier = Modifier) {
 @Composable
 @Preview
 private fun PagePreview() {
-  AutosTheme {
-    Page(
-      entrypointIndex = 0,
-      currentIndex = 1,
-      secondary = Attachment.samples,
-      onActionsVisibilityToggle = {}
-    ) {
-      SampleEntrypoint(it)
-    }
-  }
+  AutosTheme { Page() }
 }

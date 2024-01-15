@@ -205,8 +205,8 @@ sealed class Disposition {
           onClick = {
             onThumbnailClickListener.onThumbnailClickListener(
               postID,
-              entrypointIndex = 1,
-              preview.attachments.minusAt(1),
+              entrypointIndex = 0,
+              preview.attachments.minusAt(0),
               entrypoint = it
             )
           },
@@ -223,8 +223,8 @@ sealed class Disposition {
               onClick = { copy ->
                 onThumbnailClickListener.onThumbnailClickListener(
                   postID,
-                  entrypointIndex = 2,
-                  preview.attachments.minusAt(2),
+                  entrypointIndex = 1,
+                  preview.attachments.minusAt(1),
                   entrypoint = copy
                 )
               },
@@ -247,8 +247,8 @@ sealed class Disposition {
                 onClick = { copy ->
                   onThumbnailClickListener.onThumbnailClickListener(
                     postID,
-                    entrypointIndex = 3,
-                    attachments.minusAt(3),
+                    entrypointIndex = 2,
+                    attachments.minusAt(2),
                     entrypoint = copy
                   )
                 },

@@ -18,8 +18,8 @@ package com.jeanbarrossilva.orca.feature.gallery.ui.zoom
 import androidx.compose.ui.test.TouchInjectionScope
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performTouchInput
+import com.jeanbarrossilva.orca.feature.gallery.test.ui.page.onPage
 import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
-import com.jeanbarrossilva.orca.feature.gallery.ui.test.onPage
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.zoom.assertIsZoomedIn
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.zoom.assertIsZoomedOut
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.zoom.performZoomIn

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,21 +13,20 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.testing
+package com.jeanbarrossilva.orca.app.demo.test
 
-import android.content.res.Resources
-import androidx.annotation.StringRes
-import androidx.test.platform.app.InstrumentationRegistry
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.test.SemanticsMatcher
+import com.jeanbarrossilva.orca.composite.timeline.post.PostPreview
 
 /**
- * Gets the [String] from this resource ID.
+ * [SemanticsMatcher] that matches a [Composable] that's linked to the given [postPreview].
  *
- * @param format [String] by which arguments in the [String] will be replaced.
+ * @param postPreview [PostPreview] that's expected to be linked.
  */
-fun @receiver:StringRes Int.asString(vararg format: String): String {
-  return try {
-    context.getString(this, *format)
-  } catch (_: Resources.NotFoundException) {
-    InstrumentationRegistry.getInstrumentation().targetContext.getString(this, *format)
+internal fun isPostPreview(postPreview: PostPreview): SemanticsMatcher {
+  return SemanticsMatcher("PostPreview.id = ${postPreview.id}") {
+    it.config[SemanticsProperties.PostPreview].id == postPreview.id
   }
 }

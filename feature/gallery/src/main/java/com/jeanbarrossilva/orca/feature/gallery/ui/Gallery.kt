@@ -15,6 +15,7 @@
 
 package com.jeanbarrossilva.orca.feature.gallery.ui
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -42,9 +43,17 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
 import com.jeanbarrossilva.orca.feature.gallery.GalleryBoundary
 import com.jeanbarrossilva.orca.feature.gallery.GalleryViewModel
+import com.jeanbarrossilva.orca.feature.gallery.ui.page.Page
+import com.jeanbarrossilva.orca.feature.gallery.ui.page.SampleEntrypoint
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 
-internal const val GALLERY_PAGER_TAG = "gallery-pager-tag"
+const val GALLERY_PAGER_TAG = "gallery-pager-tag"
+
+@Composable
+@VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+fun Gallery(modifier: Modifier = Modifier) {
+  SampleGallery(modifier)
+}
 
 @Composable
 internal fun Gallery(
@@ -74,7 +83,7 @@ internal fun Gallery(
 }
 
 @Composable
-internal fun Gallery(
+internal fun SampleGallery(
   modifier: Modifier = Modifier,
   onDownload: () -> Unit = {},
   onComment: () -> Unit = {},
@@ -116,7 +125,8 @@ private fun Gallery(
 ) {
   var areActionsVisible by rememberSaveable { mutableStateOf(true) }
   var areOptionsVisible by rememberSaveable(areActionsVisible) { mutableStateOf(false) }
-  val pagerState = rememberPagerState(pageCount = secondary.size::inc)
+  val pagerState =
+    rememberPagerState(initialPage = entrypointIndex, pageCount = secondary.size::inc)
   val pages =
     remember(entrypointIndex, secondary) {
       List<@Composable () -> Unit>(pagerState.pageCount) { index ->

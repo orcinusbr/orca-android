@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -23,7 +23,9 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
 import assertk.assertThat
+import com.jeanbarrossilva.orca.app.demo.test.assertContentDescriptionIsCohesiveToPagePosition
 import com.jeanbarrossilva.orca.app.demo.test.onSearchAction
+import com.jeanbarrossilva.orca.app.demo.test.perform
 import com.jeanbarrossilva.orca.app.demo.test.performScrollToPostPreviewWithGalleryPreview
 import com.jeanbarrossilva.orca.app.demo.test.performScrollToPostPreviewWithLinkCard
 import com.jeanbarrossilva.orca.composite.timeline.test.onRefreshIndicator
@@ -40,6 +42,8 @@ import com.jeanbarrossilva.orca.feature.feed.FEED_FLOATING_ACTION_BUTTON_TAG
 import com.jeanbarrossilva.orca.feature.feed.FeedFragment
 import com.jeanbarrossilva.orca.feature.gallery.GalleryActivity
 import com.jeanbarrossilva.orca.feature.gallery.test.ui.onCloseActionButton
+import com.jeanbarrossilva.orca.feature.gallery.test.ui.onPager
+import com.jeanbarrossilva.orca.feature.gallery.test.ui.performScrollToEachPage
 import com.jeanbarrossilva.orca.feature.search.SearchActivity
 import com.jeanbarrossilva.orca.platform.navigation.test.isAt
 import org.junit.Rule
@@ -73,6 +77,21 @@ internal class FeedTests {
       with(composeRule) {
         onTimeline().performScrollToPostPreviewWithGalleryPreview {
           onThumbnails().onFirst().performClick()
+        }
+      }
+    }
+  }
+
+  @Test
+  fun showsImageWhoseThumbnailWasClickedWhenNavigatingToGallery() {
+    with(composeRule) {
+      onTimeline().performScrollToPostPreviewWithGalleryPreview { post ->
+        perform({ onThumbnails() }) { index ->
+          performClick()
+          onPager().performScrollToEachPage {
+            assertContentDescriptionIsCohesiveToPagePosition(post, entrypointIndex = index)
+          }
+          onCloseActionButton().performClick()
         }
       }
     }

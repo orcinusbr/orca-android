@@ -18,6 +18,7 @@ package com.jeanbarrossilva.orca.feature.gallery.test.ui
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import com.jeanbarrossilva.orca.feature.gallery.ui.Actions
+import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test
@@ -31,5 +32,10 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
       .apply { setContent { AutosTheme { Actions() } } }
       .onCloseActionButton()
       .assertIsDisplayed()
+  }
+
+  @Test
+  fun findsPager() {
+    composeRule.apply { setContent { AutosTheme { Gallery() } } }.onPager().assertIsDisplayed()
   }
 }

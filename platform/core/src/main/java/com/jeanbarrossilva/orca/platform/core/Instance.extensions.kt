@@ -16,12 +16,14 @@
 package com.jeanbarrossilva.orca.platform.core
 
 import com.jeanbarrossilva.orca.core.instance.Instance
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
 import com.jeanbarrossilva.orca.core.sample.instance.createSample
 import com.jeanbarrossilva.orca.platform.core.image.sample
 import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
 
 /** [Instance] returned by [sample]. */
-private val sampleInstance = Instance.createSample(ComposableImageLoader.Provider.sample)
+private val sampleInstance =
+  Instance.createSample(ComposableImageLoader.Provider.sample, Posts.withSamples)
 
 /** Sample [Instance] whose images are loaded by a sample [ComposableImageLoader]. */
 val Instance.Companion.sample

@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.gallery.ui.test
+package com.jeanbarrossilva.orca.feature.gallery.test.ui
 
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.ui.geometry.Offset
@@ -26,7 +26,6 @@ import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
-import androidx.compose.ui.test.hasParent
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers
@@ -38,11 +37,12 @@ import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
  *
  * **NOTE**: Most of the implementation is as [SemanticsNodeInteraction.isDisplayed]'s is, since no
  * version of it has been made publicly available specifically for strictly-assertion-driven
- * scenarios (such an `isDisplayed()` [SemanticsMatcher] like this one) as of version 1.5.3 of
+ * scenarios (such as an `isDisplayed()` [SemanticsMatcher] like this one) as of version 1.5.3 of
  * Jetpack Compose. If it is to be officially provided in an adopted future version, it is highly
  * recommended to migrate to it instead of relying on this one.
  */
-internal fun isDisplayed(): SemanticsMatcher {
+@Suppress("VisibleForTests")
+fun isDisplayed(): SemanticsMatcher {
   return SemanticsMatcher("is displayed") { node ->
     fun isNotPlaced(layoutInfo: LayoutInfo): Boolean {
       return !layoutInfo.isPlaced
@@ -119,6 +119,11 @@ internal fun isDisplayed(): SemanticsMatcher {
   }
 }
 
+/** [SemanticsMatcher] that matches a [Gallery]'s [HorizontalPager]. */
+fun isPager(): SemanticsMatcher {
+  return hasTestTag(GALLERY_PAGER_TAG)
+}
+
 /**
  * [SemanticsMatcher] that matches an image.
  *
@@ -128,14 +133,4 @@ internal fun isImage(): SemanticsMatcher {
   return SemanticsMatcher("is image") {
     it.config.getOrNull(SemanticsProperties.Role) == Role.Image
   }
-}
-
-/** [SemanticsMatcher] that matches a [Gallery]'s [HorizontalPager]. */
-internal fun isPager(): SemanticsMatcher {
-  return hasTestTag(GALLERY_PAGER_TAG)
-}
-
-/** [SemanticsMatcher] that matches a [Gallery]'s [HorizontalPager]'s current page. */
-internal fun isPage(): SemanticsMatcher {
-  return hasParent(isPager()) and isDisplayed() and isImage()
 }

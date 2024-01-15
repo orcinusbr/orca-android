@@ -15,12 +15,66 @@
 
 package com.jeanbarrossilva.orca.app.demo.test
 
+import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.SemanticsNodeInteractionCollection
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.onNodeWithTag
 import com.jeanbarrossilva.orca.feature.feed.FEED_SEARCH_ACTION_TAG
 
-/** [SemanticsNodeInteraction] of the feed's search action. */
+/**
+ * Whether this [AssertionError] is the result of asserting the existence of a given
+ * [SemanticsNode], which denotes that there isn't one at the index at which it was tried to be
+ * accessed.
+ *
+ * Since there is no public API in Jetpack Compose (as per 1.6.0-rc01) for retrieving all of the
+ * [SemanticsNodeInteraction]s within a [SemanticsNodeInteractionCollection], it can be used to
+ * indicate that its end has been reached.
+ *
+ * @see END
+ */
+private val AssertionError.isBecauseIndexIsOutOfBounds
+  get() = message?.startsWith("Failed: assertExists.\nCan't retrieve node at index '") ?: false
+
+/**
+ * Indicates that the end of a [SemanticsNodeInteractionCollection] has been reached due to the
+ * absence of a [SemanticsNodeInteraction] at a given index.
+ *
+ * @see java.lang.AssertionError.isBecauseIndexIsOutOfBounds
+ */
+private object END
+
+/** [SemanticsNodeInteraction] of a feed's search action. */
 internal fun SemanticsNodeInteractionsProvider.onSearchAction(): SemanticsNodeInteraction {
   return onNodeWithTag(FEED_SEARCH_ACTION_TAG)
+}
+
+/**
+ * Performs the given [action] on each of the provided [SemanticsNodeInteraction]s.
+ *
+ * @param interactions Returns the [SemanticsNodeInteractionCollection] with the
+ *   [SemanticsNodeInteraction]s on which the [action] will be performed.
+ * @param action Operation to be run on each [SemanticsNode]'s [SemanticsNodeInteraction].
+ */
+internal fun SemanticsNodeInteractionsProvider.perform(
+  interactions: SemanticsNodeInteractionsProvider.() -> SemanticsNodeInteractionCollection,
+  action: SemanticsNodeInteraction.(index: Int) -> Unit
+): SemanticsNodeInteractionCollection {
+  @Suppress("LocalVariableName") val _interactions = interactions()
+  var index = 0
+  var current: Any? = null
+  while (current !== END) {
+    current =
+      try {
+        _interactions[index].also(SemanticsNodeInteraction::assertExists)
+      } catch (error: AssertionError) {
+        if (error.isBecauseIndexIsOutOfBounds) {
+          END
+        } else {
+          throw error
+        }
+      }
+    (current as? SemanticsNodeInteraction)?.action(index++)
+  }
+  return _interactions
 }
