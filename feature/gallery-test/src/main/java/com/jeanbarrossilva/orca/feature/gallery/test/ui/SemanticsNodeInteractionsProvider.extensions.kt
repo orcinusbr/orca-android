@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,14 +15,25 @@
 
 package com.jeanbarrossilva.orca.feature.gallery.test.ui
 
+import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.onNodeWithTag
 import com.jeanbarrossilva.orca.feature.gallery.ui.Actions
 import com.jeanbarrossilva.orca.feature.gallery.ui.GALLERY_ACTIONS_CLOSE_BUTTON_TAG
+import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 
-/** [SemanticsNodeInteraction] of a gallery's [Actions]' close [HoverableIconButton]. */
+/** [SemanticsNodeInteraction] of a [Gallery]'s [Actions]' close [HoverableIconButton]. */
 fun SemanticsNodeInteractionsProvider.onCloseActionButton(): SemanticsNodeInteraction {
   return onNodeWithTag(GALLERY_ACTIONS_CLOSE_BUTTON_TAG)
+}
+
+/**
+ * [SemanticsNodeInteraction] of a [Gallery]'s [HorizontalPager].
+ *
+ * @see isPager
+ */
+fun SemanticsNodeInteractionsProvider.onPager(): SemanticsNodeInteraction {
+  return onNode(isPager())
 }

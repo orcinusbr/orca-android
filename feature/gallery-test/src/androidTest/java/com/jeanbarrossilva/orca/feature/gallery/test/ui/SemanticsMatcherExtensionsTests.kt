@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.gallery.ui
+package com.jeanbarrossilva.orca.feature.gallery.test.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.ui.res.painterResource
@@ -22,12 +22,9 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.filterToOne
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onChildren
-import com.jeanbarrossilva.orca.feature.gallery.ui.test.isDisplayed
-import com.jeanbarrossilva.orca.feature.gallery.ui.test.isImage
-import com.jeanbarrossilva.orca.feature.gallery.ui.test.isPage
-import com.jeanbarrossilva.orca.feature.gallery.ui.test.isPager
-import com.jeanbarrossilva.orca.feature.gallery.ui.test.onPage
-import com.jeanbarrossilva.orca.feature.gallery.ui.test.onPager
+import com.jeanbarrossilva.orca.feature.gallery.test.ui.page.isPage
+import com.jeanbarrossilva.orca.feature.gallery.test.ui.page.onPage
+import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test

@@ -23,7 +23,6 @@ android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
   defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-  kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
 }
 
 dependencies {
@@ -37,9 +36,7 @@ dependencies {
   androidTestImplementation(libs.android.compose.ui.test.manifest)
   androidTestImplementation(libs.android.fragment.testing)
   androidTestImplementation(libs.android.test.core)
-  androidTestImplementation(libs.android.test.espresso.core)
   androidTestImplementation(libs.assertk)
-  androidTestImplementation(libs.loadable.placeholder.test)
 
   api(project(":composite:composable"))
 
@@ -53,3 +50,5 @@ dependencies {
   implementation(project(":platform:ui"))
   implementation(libs.zoomable)
 }
+
+kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")

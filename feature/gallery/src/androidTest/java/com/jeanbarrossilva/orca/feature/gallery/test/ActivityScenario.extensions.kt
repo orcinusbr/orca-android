@@ -29,7 +29,7 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.samples
 import com.jeanbarrossilva.orca.core.sample.image.CoverImageSource
 import com.jeanbarrossilva.orca.feature.gallery.GalleryActivity
-import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
+import com.jeanbarrossilva.orca.feature.gallery.ui.SampleGallery
 import com.jeanbarrossilva.orca.platform.core.image.createSample
 import com.jeanbarrossilva.orca.platform.core.withSample
 import com.jeanbarrossilva.orca.platform.testing.context
@@ -41,7 +41,7 @@ import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
  * @param postID ID of the [Post] to which the [Attachment]s belong.
  * @param entrypointIndex Index at which the [entrypoint] is.
  * @param secondary [Attachment]s to be shown in the pages other than the [entrypoint].
- * @param entrypoint Entrypoint page of the [Gallery].
+ * @param entrypoint Entrypoint page of the [SampleGallery].
  */
 internal fun launchGalleryActivity(
   postID: String = Posts.withSample.single().id,

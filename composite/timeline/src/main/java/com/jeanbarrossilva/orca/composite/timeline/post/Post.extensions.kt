@@ -15,7 +15,6 @@
 
 package com.jeanbarrossilva.orca.composite.timeline.post
 
-import androidx.compose.runtime.Composable
 import com.jeanbarrossilva.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.composite.timeline.post.figure.Figure
 import com.jeanbarrossilva.orca.composite.timeline.post.figure.gallery.disposition.Disposition
@@ -24,7 +23,6 @@ import com.jeanbarrossilva.orca.composite.timeline.stat.details.asStatsDetails
 import com.jeanbarrossilva.orca.composite.timeline.text.toAnnotatedString
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.repost.Repost
-import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.std.image.compose.SomeComposableImageLoader
 import java.net.URL
 import kotlinx.coroutines.flow.Flow
@@ -57,28 +55,12 @@ fun Post.toPostPreviewFlow(
 /**
  * Converts this [Post] into a [PostPreview].
  *
- * @param onLinkClick Lambda to be run whenever the [Figure.Link]'s content is clicked.
- * @param onThumbnailClickListener [Disposition.OnThumbnailClickListener] that is notified of clicks
- *   on [Thumbnail]s.
- */
-@Composable
-internal fun Post.toPostPreview(
-  onLinkClick: (URL) -> Unit = {},
-  onThumbnailClickListener: Disposition.OnThumbnailClickListener =
-    Disposition.OnThumbnailClickListener.empty
-): PostPreview {
-  return toPostPreview(AutosTheme.colors, onLinkClick, onThumbnailClickListener)
-}
-
-/**
- * Converts this [Post] into a [PostPreview].
- *
  * @param colors [Colors] by which the resulting [PostPreview]'s [PostPreview.text] can be colored.
  * @param onLinkClick Lambda to be run whenever the [Figure.Link]'s content is clicked.
  * @param onThumbnailClickListener [Disposition.OnThumbnailClickListener] that is notified of clicks
  *   on [Thumbnail]s.
  */
-internal fun Post.toPostPreview(
+fun Post.toPostPreview(
   colors: Colors,
   onLinkClick: (URL) -> Unit = {},
   onThumbnailClickListener: Disposition.OnThumbnailClickListener =

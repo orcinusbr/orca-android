@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -22,6 +22,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 
+/** Maximum amount of [Post]s emitted by [SampleProfile.getPosts]. */
+const val SAMPLE_POSTS_PER_PAGE = 50
+
 /** [Profile] whose operations are performed in memory and serves as a sample. */
 internal interface SampleProfile : Profile {
   /** [SamplePostProvider] by which this [SampleProfile]'s [Post]s will be provided. */
@@ -29,12 +32,7 @@ internal interface SampleProfile : Profile {
 
   override suspend fun getPosts(page: Int): Flow<List<Post>> {
     return postProvider.provideBy(id).filterNotNull().map {
-      it.windowed(POSTS_PER_PAGE, partialWindows = true).getOrElse(page) { emptyList() }
+      it.windowed(SAMPLE_POSTS_PER_PAGE, partialWindows = true).getOrElse(page) { emptyList() }
     }
-  }
-
-  companion object {
-    /** Maximum amount of [Post]s emitted to [getPosts]. */
-    const val POSTS_PER_PAGE = 50
   }
 }

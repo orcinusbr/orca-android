@@ -22,7 +22,6 @@ import com.jeanbarrossilva.orca.feature.gallery.ui.test.onActions
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.onDownloadItem
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.onOptionsButton
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.onOptionsMenu
-import com.jeanbarrossilva.orca.feature.gallery.ui.test.onPager
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test
@@ -58,10 +57,5 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
       .apply { setContent { AutosTheme { Actions(areOptionsVisible = true) } } }
       .onDownloadItem()
       .assertIsDisplayed()
-  }
-
-  @Test
-  fun findsPager() {
-    composeRule.apply { setContent { AutosTheme { Gallery() } } }.onPager().assertIsDisplayed()
   }
 }

@@ -28,13 +28,13 @@ import com.jeanbarrossilva.orca.composite.timeline.test.stat.activateable.favori
 import com.jeanbarrossilva.orca.composite.timeline.test.stat.activateable.repost.onRepostStat
 import com.jeanbarrossilva.orca.composite.timeline.test.stat.onCommentStat
 import com.jeanbarrossilva.orca.feature.gallery.test.ui.onCloseActionButton
+import com.jeanbarrossilva.orca.feature.gallery.test.ui.onPager
+import com.jeanbarrossilva.orca.feature.gallery.test.ui.page.onPage
+import com.jeanbarrossilva.orca.feature.gallery.test.ui.performScrollToEachPage
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.onActions
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.onDownloadItem
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.onOptionsButton
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.onOptionsMenu
-import com.jeanbarrossilva.orca.feature.gallery.ui.test.onPage
-import com.jeanbarrossilva.orca.feature.gallery.ui.test.onPager
-import com.jeanbarrossilva.orca.feature.gallery.ui.test.performScrollToEachPage
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.waitForDoubleTapTimeout
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.zoom.assertIsZoomedIn
 import com.jeanbarrossilva.orca.feature.gallery.ui.test.zoom.assertIsZoomedOut
@@ -51,7 +51,7 @@ internal class GalleryTests {
   fun closes() {
     var isClosed = false
     composeRule
-      .apply { setContent { AutosTheme { Gallery(onClose = { isClosed = true }) } } }
+      .apply { setContent { AutosTheme { SampleGallery(onClose = { isClosed = true }) } } }
       .onCloseActionButton()
       .performClick()
     assertThat(isClosed).isTrue()
@@ -61,7 +61,7 @@ internal class GalleryTests {
   fun downloads() {
     var isDownloaded = false
     composeRule
-      .apply { setContent { AutosTheme { Gallery(onDownload = { isDownloaded = true }) } } }
+      .apply { setContent { AutosTheme { SampleGallery(onDownload = { isDownloaded = true }) } } }
       .run {
         onOptionsButton().performClick()
         onDownloadItem().performClick()
@@ -85,7 +85,7 @@ internal class GalleryTests {
   fun comments() {
     var hasCommented = false
     composeRule
-      .apply { setContent { AutosTheme { Gallery(onComment = { hasCommented = true }) } } }
+      .apply { setContent { AutosTheme { SampleGallery(onComment = { hasCommented = true }) } } }
       .onCommentStat()
       .performClick()
     assertThat(hasCommented).isTrue()
@@ -95,7 +95,7 @@ internal class GalleryTests {
   fun favorites() {
     var isFavorited = false
     composeRule
-      .apply { setContent { AutosTheme { Gallery(onFavorite = { isFavorited = true }) } } }
+      .apply { setContent { AutosTheme { SampleGallery(onFavorite = { isFavorited = true }) } } }
       .onFavoriteStat()
       .performClick()
     assertThat(isFavorited).isTrue()
@@ -105,7 +105,7 @@ internal class GalleryTests {
   fun reposts() {
     var isReposted = false
     composeRule
-      .apply { setContent { AutosTheme { Gallery(onRepost = { isReposted = true }) } } }
+      .apply { setContent { AutosTheme { SampleGallery(onRepost = { isReposted = true }) } } }
       .onRepostStat()
       .performClick()
     assertThat(isReposted).isTrue()

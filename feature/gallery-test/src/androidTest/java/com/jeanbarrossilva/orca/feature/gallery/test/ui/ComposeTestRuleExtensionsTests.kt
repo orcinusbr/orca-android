@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,14 +13,13 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.gallery.ui
+package com.jeanbarrossilva.orca.feature.gallery.test.ui
 
-import android.view.ViewConfiguration
-import androidx.compose.ui.test.junit4.ComposeContentTestRule
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import assertk.assertThat
-import assertk.assertions.isGreaterThanOrEqualTo
-import com.jeanbarrossilva.orca.feature.gallery.ui.test.waitForDoubleTapTimeout
+import com.jeanbarrossilva.orca.feature.gallery.test.ui.page.onPage
+import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test
 
@@ -28,10 +27,7 @@ internal class ComposeTestRuleExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun waitsForDoubleTapTimeout() {
-    assertThat(
-        composeRule.apply(ComposeContentTestRule::waitForDoubleTapTimeout).mainClock.currentTime
-      )
-      .isGreaterThanOrEqualTo(ViewConfiguration.getDoubleTapTimeout().toLong())
+  fun findsCurrentPage() {
+    composeRule.apply { setContent { AutosTheme { Gallery() } } }.onPage().assertIsDisplayed()
   }
 }

@@ -16,29 +16,7 @@
 package com.jeanbarrossilva.orca.feature.gallery.ui.test
 
 import android.view.ViewConfiguration
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.SemanticsNodeInteraction
-import androidx.compose.ui.test.filterToOne
 import androidx.compose.ui.test.junit4.ComposeTestRule
-import androidx.compose.ui.test.onChildren
-import com.jeanbarrossilva.loadable.placeholder.test.isNotLoading
-import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
-import com.jeanbarrossilva.orca.platform.ui.test.DefaultTimeout
-
-/**
- * [SemanticsNodeInteraction] of a [Gallery]'s [HorizontalPager]'s current page.
- *
- * @see onPager
- */
-internal fun ComposeTestRule.onPage(): SemanticsNodeInteraction {
-  val nonLoadingPage = isPage() and isNotLoading()
-
-  @OptIn(ExperimentalTestApi::class)
-  waitUntilExactlyOneExists(nonLoadingPage, DefaultTimeout.inWholeMilliseconds)
-
-  return onPager().onChildren().filterToOne(nonLoadingPage)
-}
 
 /**
  * Waits until the double tap timeout duration (as it is defined by [ViewConfiguration]) has been

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,21 +13,21 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.gallery.ui.test
+package com.jeanbarrossilva.orca.feature.gallery.test.ui.page
 
-import androidx.compose.ui.semantics.SemanticsNode
+import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.ui.test.SemanticsMatcher
-import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.hasParent
+import com.jeanbarrossilva.orca.feature.gallery.test.ui.isDisplayed
+import com.jeanbarrossilva.orca.feature.gallery.test.ui.isImage
+import com.jeanbarrossilva.orca.feature.gallery.test.ui.isPager
+import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
 
 /**
- * Returns whether the [matcher] matches the [SemanticsNode] fetched from this
- * [SemanticsNodeInteraction].
+ * [SemanticsMatcher] that matches a [Gallery]'s [HorizontalPager]'s current page.
  *
- * @param matcher [SemanticsMatcher] to match the [SemanticsNode] against.
- * @see SemanticsMatcher.matches
- * @see SemanticsNodeInteraction.fetchSemanticsNode
+ * @see isPager
  */
-internal operator fun SemanticsNodeInteraction.get(matcher: SemanticsMatcher): Boolean {
-  val node = fetchSemanticsNode()
-  return matcher.matches(node)
+fun isPage(): SemanticsMatcher {
+  return hasParent(isPager()) and isDisplayed() and isImage()
 }

@@ -15,6 +15,7 @@
 
 package com.jeanbarrossilva.orca.composite.timeline.post
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.interaction.HoverInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -144,7 +145,7 @@ internal constructor(
 
     /** [PostPreview] samples. */
     val samples
-      @Composable get() = Posts.withSamples.map { it.toPostPreview() }
+      @Composable get() = getSamples(AutosTheme.colors)
 
     /**
      * Gets a sample [PostPreview].
@@ -154,6 +155,16 @@ internal constructor(
      */
     fun getSample(colors: Colors): PostPreview {
       return Posts.withSample.single().toPostPreview(colors)
+    }
+
+    /**
+     * Gets sample [PostPreview]s.
+     *
+     * @param colors [Colors] by which the resulting [PostPreview]s' [text][PostPreview.text]s can
+     *   be colored.
+     */
+    fun getSamples(colors: Colors): List<PostPreview> {
+      return Posts.withSamples.map { it.toPostPreview(colors) }
     }
   }
 }
@@ -181,6 +192,32 @@ fun PostPreview(modifier: Modifier = Modifier) {
     stats = {},
     onClick = null,
     modifier
+  )
+}
+
+/**
+ * Preview of a [Post].
+ *
+ * @param modifier [Modifier] to be applied to the underlying [Card].
+ * @param preview [PostPreview] that holds the overall data to be displayed.
+ * @param relativeTimeProvider [RelativeTimeProvider] that provides the time that's passed since the
+ *   [Post] was published.
+ */
+@Composable
+@VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+fun LoadedPostPreview(
+  modifier: Modifier = Modifier,
+  preview: PostPreview = PostPreview.sample,
+  relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider()
+) {
+  PostPreview(
+    preview,
+    onFavorite = {},
+    onRepost = {},
+    onShare = {},
+    onClick = {},
+    modifier,
+    relativeTimeProvider
   )
 }
 
@@ -241,32 +278,7 @@ fun PostPreview(
       Stats(preview.stats, onComment = {}, onFavorite, onRepost, onShare, Modifier.fillMaxWidth())
     },
     onClick,
-    modifier
-  )
-}
-
-/**
- * Preview of a [Post].
- *
- * @param modifier [Modifier] to be applied to the underlying [Card].
- * @param preview [PostPreview] that holds the overall data to be displayed.
- * @param relativeTimeProvider [RelativeTimeProvider] that provides the time that's passed since the
- *   [Post] was published.
- */
-@Composable
-internal fun LoadedPostPreview(
-  modifier: Modifier = Modifier,
-  preview: PostPreview = PostPreview.sample,
-  relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider()
-) {
-  PostPreview(
-    preview,
-    onFavorite = {},
-    onRepost = {},
-    onShare = {},
-    onClick = {},
-    modifier,
-    relativeTimeProvider
+    modifier.semantics { postPreview = preview }
   )
 }
 

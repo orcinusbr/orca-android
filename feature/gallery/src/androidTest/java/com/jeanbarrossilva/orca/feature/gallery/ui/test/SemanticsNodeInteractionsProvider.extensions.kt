@@ -15,7 +15,6 @@
 
 package com.jeanbarrossilva.orca.feature.gallery.ui.test
 
-import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
@@ -25,17 +24,17 @@ import com.jeanbarrossilva.orca.feature.gallery.ui.GALLERY_ACTIONS_OPTIONS_BUTTO
 import com.jeanbarrossilva.orca.feature.gallery.ui.GALLERY_ACTIONS_OPTIONS_DOWNLOADS_ITEM_TAG
 import com.jeanbarrossilva.orca.feature.gallery.ui.GALLERY_ACTIONS_OPTIONS_MENU_TAG
 import com.jeanbarrossilva.orca.feature.gallery.ui.GALLERY_ACTIONS_TAG
-import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
+import com.jeanbarrossilva.orca.feature.gallery.ui.SampleGallery
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.autos.kit.menu.DropdownMenu
 
-/** [SemanticsNodeInteraction] of a [Gallery]'s [Actions]. */
+/** [SemanticsNodeInteraction] of a [SampleGallery]'s [Actions]. */
 internal fun SemanticsNodeInteractionsProvider.onActions(): SemanticsNodeInteraction {
   return onNodeWithTag(GALLERY_ACTIONS_TAG)
 }
 
 /**
- * [SemanticsNodeInteraction] of a [Gallery]'s [Actions]' download option [DropdownMenuItem].
+ * [SemanticsNodeInteraction] of a [SampleGallery]'s [Actions]' download option [DropdownMenuItem].
  *
  * @see onActions
  * @see onOptionsButton
@@ -45,7 +44,7 @@ internal fun SemanticsNodeInteractionsProvider.onDownloadItem(): SemanticsNodeIn
 }
 
 /**
- * [SemanticsNodeInteraction] of a [Gallery]'s [Actions]' options [HoverableIconButton].
+ * [SemanticsNodeInteraction] of a [SampleGallery]'s [Actions]' options [HoverableIconButton].
  *
  * @see onActions
  */
@@ -54,19 +53,10 @@ internal fun SemanticsNodeInteractionsProvider.onOptionsButton(): SemanticsNodeI
 }
 
 /**
- * [SemanticsNodeInteraction] of a [Gallery]'s [Actions]' options [DropdownMenu].
+ * [SemanticsNodeInteraction] of a [SampleGallery]'s [Actions]' options [DropdownMenu].
  *
  * @see onActions
  */
 internal fun SemanticsNodeInteractionsProvider.onOptionsMenu(): SemanticsNodeInteraction {
   return onNodeWithTag(GALLERY_ACTIONS_OPTIONS_MENU_TAG)
-}
-
-/**
- * [SemanticsNodeInteraction] of a [Gallery]'s [HorizontalPager].
- *
- * @see isPager
- */
-internal fun SemanticsNodeInteractionsProvider.onPager(): SemanticsNodeInteraction {
-  return onNode(isPager())
 }
