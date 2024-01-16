@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,13 +13,23 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-plugins {
-  alias(libs.plugins.android.library)
-  alias(libs.plugins.kotlin.android)
-}
+package com.jeanbarrossilva.orca.platform.navigation
 
-dependencies {
-  api(project(":core"))
-  api(libs.android.compose.ui)
-  api(libs.android.fragment.ktx)
+import android.app.Activity
+import androidx.test.core.app.launchActivity
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import com.jeanbarrossilva.orca.ext.intents.intentOf
+import com.jeanbarrossilva.orca.platform.testing.context
+import org.junit.Test
+
+internal class ActivityExtensionsTests {
+  @Test
+  fun getsIntentExtra() {
+    launchActivity<Activity>(intentOf<Activity>(context, "extra" to 0)).use { scenario ->
+      scenario.onActivity { activity ->
+        assertThat(activity.extra<Int>("extra").value).isEqualTo(0)
+      }
+    }
+  }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -19,8 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import com.jeanbarrossilva.orca.composite.composable.ComposableFragment
-import com.jeanbarrossilva.orca.platform.ui.core.application
-import com.jeanbarrossilva.orca.platform.ui.core.argument
+import com.jeanbarrossilva.orca.platform.navigation.application
+import com.jeanbarrossilva.orca.platform.navigation.argument
 import com.jeanbarrossilva.orca.std.injector.Injector
 
 class FeedFragment internal constructor() : ComposableFragment() {

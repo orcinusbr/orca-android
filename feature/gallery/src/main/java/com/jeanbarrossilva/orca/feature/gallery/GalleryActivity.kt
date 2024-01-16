@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -29,7 +29,7 @@ import com.jeanbarrossilva.orca.composite.composable.ComposableActivity
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.ext.intents.intentOf
 import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
-import com.jeanbarrossilva.orca.platform.ui.core.extra
+import com.jeanbarrossilva.orca.platform.navigation.extra
 import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.platform.starter.on
 
