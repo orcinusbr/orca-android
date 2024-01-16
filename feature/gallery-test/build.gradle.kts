@@ -34,7 +34,6 @@ dependencies {
   implementation(project(":feature:gallery"))
   implementation(project(":platform:autos"))
   implementation(project(":platform:testing"))
-  implementation(project(":platform:ui-test"))
   implementation(libs.android.compose.ui.test.junit)
   implementation(libs.android.compose.ui.test.manifest)
   implementation(libs.android.test.espresso.core)

@@ -59,7 +59,6 @@ include(
   ":platform:starter:lifecycle",
   ":platform:testing",
   ":platform:ui",
-  ":platform:ui-test",
   ":std:buildable",
   ":std:buildable-processor",
   ":std:image",

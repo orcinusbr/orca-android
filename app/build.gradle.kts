@@ -76,7 +76,6 @@ dependencies {
   "androidTestDemoImplementation"(project(":feature:gallery-test"))
   "androidTestDemoImplementation"(project(":platform:navigation-test"))
   "androidTestDemoImplementation"(project(":platform:testing"))
-  "androidTestDemoImplementation"(project(":platform:ui-test"))
   "androidTestDemoImplementation"(libs.android.activity.ktx)
   "androidTestDemoImplementation"(libs.android.compose.ui.test.junit)
   "androidTestDemoImplementation"(libs.assertk)

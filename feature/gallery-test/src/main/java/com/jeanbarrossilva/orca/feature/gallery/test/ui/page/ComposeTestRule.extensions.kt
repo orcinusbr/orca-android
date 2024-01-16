@@ -24,7 +24,7 @@ import androidx.compose.ui.test.onChildren
 import com.jeanbarrossilva.loadable.placeholder.test.isNotLoading
 import com.jeanbarrossilva.orca.feature.gallery.test.ui.onPager
 import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
-import com.jeanbarrossilva.orca.platform.ui.test.DefaultTimeout
+import com.jeanbarrossilva.orca.platform.testing.DefaultTimeout
 
 /**
  * [SemanticsNodeInteraction] of a [Gallery]'s [HorizontalPager]'s current page.

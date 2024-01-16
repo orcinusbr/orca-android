@@ -13,11 +13,12 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-import com.jeanbarrossilva.orca.namespaceFor
+package com.jeanbarrossilva.orca.platform.testing
 
-plugins {
-  alias(libs.plugins.android.library)
-  alias(libs.plugins.kotlin.android)
-}
+import kotlin.time.Duration.Companion.seconds
 
-android.namespace = namespaceFor("platform.ui.test")
+/**
+ * Default duration of the timeout for awaiting actions that may take longer than expected by the UI
+ * framework.
+ */
+val DefaultTimeout = 4.seconds
