@@ -15,7 +15,7 @@
 
 package com.jeanbarrossilva.orca.platform.autos.kit.input.text
 
-import androidx.annotation.RestrictTo
+import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -57,8 +57,10 @@ import com.jeanbarrossilva.orca.platform.autos.kit.input.text.error.rememberErro
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 
+/** Tag that identifies a [TextField] for testing purposes. */
+const val TEXT_FIELD_TAG = "text-field"
+
 /** Tag that identifies a [TextField]'s errors' [Text] for testing purposes. */
-@RestrictTo(RestrictTo.Scope.LIBRARY_GROUP_PREFIX)
 const val TEXT_FIELD_ERRORS_TAG = "text-field-errors"
 
 /** Default values used by a [TextField][_TextField]. */
@@ -86,9 +88,24 @@ object TextFieldDefaults {
 /**
  * Orca-specific [TextField].
  *
+ * @param modifier [Modifier] to be applied to the underlying [Column].
+ * @param errorDispatcher [ErrorDispatcher] to which invalid input state errors will be dispatched.
+ */
+@Composable
+@VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+fun TextField(
+  modifier: Modifier = Modifier,
+  errorDispatcher: ErrorDispatcher = rememberErrorDispatcher()
+) {
+  _TextField(modifier, text = "", errorDispatcher)
+}
+
+/**
+ * Orca-specific [TextField].
+ *
  * @param text Text to be shown.
  * @param onTextChange Callback called whenever the text changes.
- * @param modifier [Modifier] to be applied to the underlying [TextField].
+ * @param modifier [Modifier] to be applied to the underlying [Column].
  * @param errorDispatcher [ErrorDispatcher] by which invalid input state errors will be dispatched.
  * @param keyboardOptions Software-IME-specific options.
  * @param keyboardActions Software-IME-specific actions.
@@ -129,7 +146,8 @@ fun TextField(
             AutosTheme.borders.default.asBorderStroke.brush,
             shape
           )
-          .width(maxWidth),
+          .width(maxWidth)
+          .testTag(TEXT_FIELD_TAG),
         label = {
           val color =
             if (containsErrors) {
@@ -162,7 +180,7 @@ fun TextField(
 /**
  * Orca-specific [TextField].
  *
- * @param modifier [Modifier] to be applied to the underlying [TextField].
+ * @param modifier [Modifier] to be applied to the underlying [Column].
  * @param text Text to be shown.
  * @param errorDispatcher [ErrorDispatcher] to which invalid input state errors will be dispatched.
  */

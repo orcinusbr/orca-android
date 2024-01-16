@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -31,8 +31,8 @@ dependencies {
   api(project(":composite:composable"))
 
   implementation(project(":composite:timeline"))
+  implementation(project(":platform:focus"))
   implementation(project(":platform:starter"))
-  implementation(project(":platform:ui"))
   implementation(libs.android.compose.material.icons)
 
   testImplementation(libs.junit)

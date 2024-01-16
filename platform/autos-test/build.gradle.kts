@@ -20,9 +20,17 @@ plugins {
   alias(libs.plugins.kotlin.android)
 }
 
-android.namespace = namespaceFor("platform.theme.test")
+android {
+  buildFeatures.compose = true
+  composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
+  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  namespace = namespaceFor("platform.autos.test")
+}
 
 dependencies {
+  androidTestImplementation(libs.android.compose.ui.test.manifest)
+  androidTestImplementation(libs.android.test.runner)
+
   implementation(project(":platform:autos"))
   implementation(libs.android.compose.ui.test.junit)
 }

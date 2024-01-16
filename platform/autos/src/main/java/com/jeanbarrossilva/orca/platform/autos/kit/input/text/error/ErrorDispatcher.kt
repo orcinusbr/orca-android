@@ -95,7 +95,7 @@ class ErrorDispatcher private constructor(private val errors: List<Error>) {
      *
      * @param message [String] that describes the error.
      */
-    internal fun errorAlways(message: String) {
+    fun errorAlways(message: String) {
       error(message) { true }
     }
 

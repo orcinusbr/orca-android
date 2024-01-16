@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -28,19 +28,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -63,7 +61,7 @@ import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.AutoSiz
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.plus
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
+import com.jeanbarrossilva.orca.platform.focus.rememberImmediateFocusRequester
 
 /**
  * Screen that asks for the [Domain] to which the user belongs.
@@ -117,7 +115,7 @@ internal fun MastodonAuthorization(
   val isHeaderHidden by
     remember(lazyListState) { derivedStateOf { lazyListState.firstVisibleItemIndex > 0 } }
   val headerTitle = stringResource(R.string.core_http_authorization_account_origin)
-  val focusRequester = remember(::FocusRequester)
+  val focusRequester = rememberImmediateFocusRequester()
   val errorDispatcher = rememberErrorDispatcher {
     error(context, R.string.core_http_authorization_empty_domain, String::isBlank)
     error(context, R.string.core_http_authorization_invalid_domain) {
@@ -131,8 +129,6 @@ internal fun MastodonAuthorization(
       onSignIn()
     }
   }
-
-  LaunchedEffect(Unit) { focusRequester.requestFocusWithDelay() }
 
   Box(modifier) {
     Scaffold(
@@ -192,7 +188,7 @@ internal fun MastodonAuthorization(
         @OptIn(ExperimentalMaterial3Api::class)
         TopAppBar(title = { AutoSizeText(headerTitle) }, scrollBehavior = topAppBarScrollBehavior)
 
-        Divider()
+        HorizontalDivider()
       }
     }
   }

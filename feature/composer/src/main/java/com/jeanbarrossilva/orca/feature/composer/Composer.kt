@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -33,7 +33,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,7 +40,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
@@ -71,7 +69,7 @@ import com.jeanbarrossilva.orca.platform.autos.overlays.asPaddingValues
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.core.withSample
-import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
+import com.jeanbarrossilva.orca.platform.focus.rememberImmediateFocusRequester
 
 internal const val COMPOSER_FIELD = "composer-field"
 
@@ -102,7 +100,7 @@ private fun Composer(
   isToolbarInitiallyVisible: Boolean = false
 ) {
   val density = LocalDensity.current
-  val focusRequester = remember(::FocusRequester)
+  val focusRequester = rememberImmediateFocusRequester()
   val style = AutosTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Normal)
   val interactionSource = remember(::MutableInteractionSource)
   val brushColor = AutosTheme.colors.primary.container.asColor
@@ -112,8 +110,6 @@ private fun Composer(
   var toolbarSafeAreaPadding by remember { mutableStateOf(PaddingValues(end = 56.dp + 16.dp)) }
   val floatingActionButtonPosition =
     remember(isToolbarVisible) { if (isToolbarVisible) FabPosition.End else FabPosition.Center }
-
-  LaunchedEffect(Unit) { focusRequester.requestFocusWithDelay() }
 
   Scaffold(
     modifier,
