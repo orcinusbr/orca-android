@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="https://github.com/jeanbarrossilva/Orca/assets/38408390/6854428c-62dc-419a-add0-2f2ef6d7622c" />
+    <img src="https://github.com/the-orca-app/android/assets/38408390/adfd2748-5ca3-482a-9a65-650cdea4f8bb" />
 </div>
 
 ## About
