@@ -1,36 +1,67 @@
-<!--
-  ~ Copyright © 2023 Orca
-  ~
-  ~ This program is free software: you can redistribute it and/or modify it under the terms of the
-  ~ GNU General Public License as published by the Free Software Foundation, either version 3 of the
-  ~ License, or (at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
-  ~ even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-  ~ General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License along with this program. If
-  ~ not, see https://www.gnu.org/licenses.
-  -->
-
 <vector
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:width="108dp"
+    xmlns:aapt="http://schemas.android.com/aapt"
     android:height="108dp"
-    android:viewportWidth="718"
-    android:viewportHeight="419">
+    android:viewportHeight="512"
+    android:viewportWidth="512"
+    android:width="108dp">
   <group
-      android:scaleX="0.5"
-      android:scaleY="0.29178274"
-      android:translateX="179.5"
-      android:translateY="148.37152">
+      android:scaleX="0.65"
+      android:scaleY="0.65"
+      android:translateX="89.6"
+      android:translateY="89.6">
     <path
-        android:pathData="M110.65,23.46C166.67,-5.49 232.73,-7.76 290.61,17.28L296.4,19.78C341.85,39.44 379.04,74.31 401.58,118.4C406.7,128.4 411.01,138.79 414.49,149.47L421.72,171.67L430.02,207.35L455.75,313.27C458.29,323.74 466.37,331.97 476.79,334.72C491.05,338.48 505.88,331.07 511.45,317.41L538.04,252.13L508.34,240.28C482.27,229.88 466.64,204.48 467.44,177.96C467.66,170.57 469.15,163.09 472.05,155.82L481.21,132.85L524.4,150.07C524.56,150.14 524.71,150.2 524.87,150.26C554.63,162.33 574.43,188.58 579.58,218.09C580.04,220.71 580.38,223.36 580.6,226.03C582.66,224.18 584.79,222.44 587,220.8C611.05,202.93 643.48,197.51 673.38,209.24C673.53,209.31 673.69,209.37 673.85,209.43L717.03,226.66L707.87,249.63C704.97,256.89 700.91,263.35 695.98,268.86C678.3,288.65 649.49,296.32 623.41,285.92L598.51,275.99L571.64,341.94C553.75,385.85 506.06,409.66 460.21,397.57C426.72,388.74 400.76,362.27 392.58,328.61L366.78,222.38L359.04,189.13L352.68,169.59C350.27,162.17 347.27,154.95 343.71,147.99C328.04,117.35 302.19,93.11 270.59,79.44L264.8,76.93C224.82,59.64 179.19,61.21 140.5,81.21L137.86,82.57C115.75,93.99 97.23,111.33 84.37,132.64C55.41,180.64 59.2,241.56 93.9,285.6L98.45,291.38C113.51,310.49 133.12,325.52 155.49,335.08L163.87,338.66C191.31,350.39 221.23,355.15 250.95,352.53L306.56,347.62C324.44,346.05 340.21,359.26 341.79,377.14C343.37,395.02 330.15,410.8 312.27,412.37L256.66,417.28C216.27,420.84 175.62,414.37 138.33,398.43L129.95,394.85C97.57,381.01 69.19,359.27 47.39,331.61L42.84,325.83C-8.6,260.54 -14.22,170.22 28.72,99.06C47.79,67.46 75.24,41.76 108.02,24.82L110.65,23.46Z"
-        android:fillColor="@color/icon_launcher_foreground"
-        tools:ignore="VectorPath" />
+        android:pathData="M122.5,120.3C122.5,105.95 133.27,93.89 147.53,92.28L248.49,80.86C254.89,80.13 260.5,85.14 260.5,91.59C260.5,123.02 235.02,148.5 203.59,148.5H150.7C135.13,148.5 122.5,135.88 122.5,120.3Z">
+      <aapt:attr name="android:fillColor">
+        <gradient
+            android:endX="260.5"
+            android:endY="148.5"
+            android:startX="122.5"
+            android:startY="79.5"
+            android:type="linear">
+          <item
+              android:color="#FFFFFFFF"
+              android:offset="0" />
+          <item
+              android:color="#FFBABABA"
+              android:offset="1" />
+        </gradient>
+      </aapt:attr>
+    </path>
     <path
-        android:pathData="M254.45,209.45C254.45,231.54 236.54,249.45 214.45,249.45C192.36,249.45 174.45,231.54 174.45,209.45C174.45,187.36 192.36,169.45 214.45,169.45C236.54,169.45 254.45,187.36 254.45,209.45Z"
-        android:fillColor="@color/icon_launcher_foreground" />
+        android:pathData="M150.25,120.25m-28.25,0a28.25,28.25 0,1 1,56.5 0a28.25,28.25 0,1 1,-56.5 0">
+      <aapt:attr name="android:fillColor">
+        <gradient
+            android:endX="178.5"
+            android:endY="148.5"
+            android:startX="122"
+            android:startY="92"
+            android:type="linear">
+          <item
+              android:color="#FF1A1A1A"
+              android:offset="0" />
+          <item
+              android:color="#FF000000"
+              android:offset="1" />
+        </gradient>
+      </aapt:attr>
+    </path>
+    <path android:pathData="M158,110.5m-10,0a10,10 0,1 1,20 0a10,10 0,1 1,-20 0">
+      <aapt:attr name="android:fillColor">
+        <gradient
+            android:endX="168"
+            android:endY="120.5"
+            android:startX="148"
+            android:startY="100.5"
+            android:type="linear">
+          <item
+              android:color="#FFFCFCFC"
+              android:offset="0" />
+          <item
+              android:color="#FFBABABA"
+              android:offset="1" />
+        </gradient>
+      </aapt:attr>
+    </path>
   </group>
 </vector>
