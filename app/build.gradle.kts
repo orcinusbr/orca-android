@@ -73,6 +73,7 @@ dependencies {
   "androidTestDemoImplementation"(project(":composite:timeline"))
   "androidTestDemoImplementation"(project(":composite:timeline-test"))
   "androidTestDemoImplementation"(project(":core:sample-test"))
+  "androidTestDemoImplementation"(project(":feature:feed-test"))
   "androidTestDemoImplementation"(project(":feature:gallery-test"))
   "androidTestDemoImplementation"(project(":platform:navigation-test"))
   "androidTestDemoImplementation"(project(":platform:testing"))

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,6 +15,7 @@
 
 package com.jeanbarrossilva.orca.feature.feed
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -51,6 +52,12 @@ import java.net.URL
 
 const val FEED_SEARCH_ACTION_TAG = "feed-search-action-tag"
 const val FEED_FLOATING_ACTION_BUTTON_TAG = "feed-floating-action-button"
+
+@Composable
+@VisibleForTesting
+fun Feed(modifier: Modifier = Modifier) {
+  Feed(PostPreview.samples.toSerializableList().toListLoadable(), modifier)
+}
 
 @Composable
 internal fun Feed(
