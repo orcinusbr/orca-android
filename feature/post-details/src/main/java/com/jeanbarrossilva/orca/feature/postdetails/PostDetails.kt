@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -49,7 +49,6 @@ import com.jeanbarrossilva.orca.platform.autos.reactivity.rememberBottomAreaAvai
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.core.withSample
-import com.jeanbarrossilva.orca.platform.ui.AccountFormatter
 import com.jeanbarrossilva.orca.std.image.SomeImageLoader
 import java.io.Serializable
 import java.net.URL
@@ -68,7 +67,7 @@ internal data class PostDetails(
   val url: URL
 ) : Serializable {
   val formattedPublicationDateTime = publicationDateTime.formatted
-  val formattedUsername = AccountFormatter.username(account)
+  val formattedUsername = account.username.toString()
 
   companion object {
     val sample
