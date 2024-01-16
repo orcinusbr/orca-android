@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -22,12 +22,12 @@ import kotlin.test.assertFailsWith
 internal class StringExtensionsTests {
   @Test
   fun `GIVEN a blank username WHEN creating an account with it THEN it throws`() {
-    assertFailsWith<Account.BlankUsernameException> { " " at "appleseed.com" }
+    assertFailsWith<Username.BlankValueException> { " " at "appleseed.com" }
   }
 
   @Test
   fun `GIVEN a username with an illegal character WHEN creating an account with it THEN it throws`() {
-    assertFailsWith<Account.IllegalUsernameException> { "john@" at "appleseed.com" }
+    assertFailsWith<Username.IllegalValueException> { "john@" at "appleseed.com" }
   }
 
   @Test
