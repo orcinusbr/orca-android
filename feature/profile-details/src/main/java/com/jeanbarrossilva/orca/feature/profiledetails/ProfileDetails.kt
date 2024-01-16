@@ -92,10 +92,10 @@ internal sealed class ProfileDetails : Serializable {
   abstract val url: URL
 
   val formattedAccount
-    get() = "${account.username}@${account.domain}"
+    get() = account.toString()
 
   val username
-    get() = "@${account.username}"
+    get() = account.username.toString()
 
   data class Default(
     override val id: String,

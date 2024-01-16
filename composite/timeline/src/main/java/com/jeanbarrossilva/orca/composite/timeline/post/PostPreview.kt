@@ -135,7 +135,7 @@ internal constructor(
    */
   fun getMetadata(relativeTimeProvider: RelativeTimeProvider): String {
     val timeSincePublication = relativeTimeProvider.provide(publicationDateTime)
-    return "@${account.username} • $timeSincePublication"
+    return "${account.username} • $timeSincePublication"
   }
 
   companion object {
