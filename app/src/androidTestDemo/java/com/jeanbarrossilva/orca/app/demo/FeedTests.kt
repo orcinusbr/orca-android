@@ -24,7 +24,6 @@ import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
 import assertk.assertThat
 import com.jeanbarrossilva.orca.app.demo.test.assertContentDescriptionIsCohesiveToPagePosition
-import com.jeanbarrossilva.orca.app.demo.test.onSearchAction
 import com.jeanbarrossilva.orca.app.demo.test.perform
 import com.jeanbarrossilva.orca.app.demo.test.performScrollToPostPreviewWithGalleryPreview
 import com.jeanbarrossilva.orca.app.demo.test.performScrollToPostPreviewWithLinkCard
@@ -40,6 +39,7 @@ import com.jeanbarrossilva.orca.ext.intents.intendStartingOf
 import com.jeanbarrossilva.orca.feature.composer.ComposerActivity
 import com.jeanbarrossilva.orca.feature.feed.FEED_FLOATING_ACTION_BUTTON_TAG
 import com.jeanbarrossilva.orca.feature.feed.FeedFragment
+import com.jeanbarrossilva.orca.feature.feed.test.onSearchAction
 import com.jeanbarrossilva.orca.feature.gallery.GalleryActivity
 import com.jeanbarrossilva.orca.feature.gallery.test.ui.onCloseActionButton
 import com.jeanbarrossilva.orca.feature.gallery.test.ui.onPager

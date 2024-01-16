@@ -41,6 +41,7 @@ include(
   ":ext:testing",
   ":feature:composer",
   ":feature:feed",
+  ":feature:feed-test",
   ":feature:gallery",
   ":feature:gallery-test",
   ":feature:post-details",

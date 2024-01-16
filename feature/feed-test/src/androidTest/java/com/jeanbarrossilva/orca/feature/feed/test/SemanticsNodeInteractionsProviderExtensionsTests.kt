@@ -13,19 +13,20 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.app.demo
+package com.jeanbarrossilva.orca.feature.feed.test
 
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import com.jeanbarrossilva.orca.app.demo.test.onSearchAction
+import androidx.compose.ui.test.junit4.createComposeRule
+import com.jeanbarrossilva.orca.feature.feed.Feed
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test
 
 internal class SemanticsNodeInteractionsProviderExtensionsTests {
-  @get:Rule val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
+  @get:Rule val composeRule = createComposeRule()
 
   @Test
   fun findsSearchAction() {
-    composeRule.onSearchAction().assertIsDisplayed()
+    composeRule.apply { setContent { AutosTheme { Feed() } } }.onSearchAction().assertIsDisplayed()
   }
 }

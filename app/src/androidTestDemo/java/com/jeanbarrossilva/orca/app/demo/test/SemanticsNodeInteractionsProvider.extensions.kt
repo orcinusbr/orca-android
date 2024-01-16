@@ -19,8 +19,6 @@ import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionCollection
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
-import androidx.compose.ui.test.onNodeWithTag
-import com.jeanbarrossilva.orca.feature.feed.FEED_SEARCH_ACTION_TAG
 
 /**
  * Whether this [AssertionError] is the result of asserting the existence of a given
@@ -43,11 +41,6 @@ private val AssertionError.isBecauseIndexIsOutOfBounds
  * @see java.lang.AssertionError.isBecauseIndexIsOutOfBounds
  */
 private object END
-
-/** [SemanticsNodeInteraction] of a feed's search action. */
-internal fun SemanticsNodeInteractionsProvider.onSearchAction(): SemanticsNodeInteraction {
-  return onNodeWithTag(FEED_SEARCH_ACTION_TAG)
-}
 
 /**
  * Performs the given [action] on each of the provided [SemanticsNodeInteraction]s.
