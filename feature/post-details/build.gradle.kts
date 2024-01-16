@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -33,10 +33,10 @@ dependencies {
   ksp(project(":std:injector-processor"))
 
   implementation(project(":composite:timeline"))
+  implementation(project(":core"))
   implementation(project(":ext:coroutines"))
   implementation(project(":platform:intents"))
   implementation(project(":platform:navigation"))
-  implementation(project(":platform:ui"))
   implementation(project(":std:injector"))
   implementation(libs.android.lifecycle.viewmodel)
   implementation(libs.loadable.list)
