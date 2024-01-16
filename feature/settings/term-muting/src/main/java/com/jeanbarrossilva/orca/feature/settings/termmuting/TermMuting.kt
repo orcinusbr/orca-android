@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -26,13 +26,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -51,7 +48,7 @@ import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBarWit
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.plus
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
+import com.jeanbarrossilva.orca.platform.focus.rememberImmediateFocusRequester
 
 internal const val SETTINGS_TERM_MUTING_TEXT_FIELD_TAG = "settings-term-muting-text-field"
 internal const val SETTINGS_TERM_MUTING_MUTE_BUTTON = "settings-term-muting-mute-button"
@@ -86,7 +83,7 @@ internal fun TermMuting(
   val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
   val lazyListState = rememberLazyListState()
   val spacing = AutosTheme.spacings.medium.dp
-  val focusRequester = remember(::FocusRequester)
+  val focusRequester = rememberImmediateFocusRequester()
   val errorDispatcher = rememberErrorDispatcher {
     error(context, R.string.feature_settings_term_muting_empty_error, String::isBlank)
   }
@@ -98,8 +95,6 @@ internal fun TermMuting(
       onBackwardsNavigation()
     }
   }
-
-  LaunchedEffect(Unit) { focusRequester.requestFocusWithDelay() }
 
   DisposableEffect(term) {
     errorDispatcher.register(term)

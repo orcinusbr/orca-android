@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -52,6 +52,7 @@ include(
   ":platform:cache",
   ":platform:autos-test",
   ":platform:core",
+  ":platform:focus",
   ":platform:intents",
   ":platform:navigation",
   ":platform:navigation-test",

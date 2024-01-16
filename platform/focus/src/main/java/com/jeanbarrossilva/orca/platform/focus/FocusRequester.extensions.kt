@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,14 +13,30 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.ui.core
+package com.jeanbarrossilva.orca.platform.focus
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.focus.FocusRequester
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 
-/** Requests focus with an initial delay. */
-suspend fun FocusRequester.requestFocusWithDelay() {
-  delay(256.milliseconds)
-  requestFocus()
+/**
+ * [Duration] of the delay of an immediate [FocusRequester]'s initial focus.
+ *
+ * @see rememberImmediateFocusRequester
+ */
+internal val ImmediateFocusRequesterInitialDelay = 256.milliseconds
+
+/** Remembers a [FocusRequester] that automatically requests initial focus. */
+@Composable
+fun rememberImmediateFocusRequester(): FocusRequester {
+  return remember(::FocusRequester).also {
+    LaunchedEffect(it) {
+      delay(ImmediateFocusRequesterInitialDelay)
+      it.requestFocus()
+    }
+  }
 }

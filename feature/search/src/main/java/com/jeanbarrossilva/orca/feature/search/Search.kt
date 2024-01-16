@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -37,14 +37,11 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -60,7 +57,7 @@ import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.BackAction
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.core.sample
-import com.jeanbarrossilva.orca.platform.ui.core.requestFocusWithDelay
+import com.jeanbarrossilva.orca.platform.focus.rememberImmediateFocusRequester
 
 internal object SearchDefaults {
   val VerticalArrangement = Arrangement.Top
@@ -143,8 +140,7 @@ private fun Search(
           it,
           onClick = {
             onNavigateToProfileDetails(it.id)
-
-            @OptIn(ExperimentalComposeUiApi::class) softwareKeyboardController?.hide()
+            softwareKeyboardController?.hide()
           }
         )
       }
@@ -162,10 +158,8 @@ private fun Search(
   horizontalAlignment: Alignment.Horizontal = SearchDefaults.HorizontalAlignment,
   content: LazyListScope.() -> Unit
 ) {
-  val focusRequester = remember(::FocusRequester)
+  val focusRequester = rememberImmediateFocusRequester()
   val spacing = AutosTheme.spacings.medium.dp
-
-  LaunchedEffect(Unit) { focusRequester.requestFocusWithDelay() }
 
   Scaffold(
     modifier,

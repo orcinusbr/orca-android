@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,15 +13,22 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.autos.test.kit.input.text
+plugins {
+  alias(libs.plugins.android.library)
+  alias(libs.plugins.kotlin.android)
+}
 
-import androidx.compose.ui.test.SemanticsNodeInteraction
-import androidx.compose.ui.test.junit4.ComposeTestRule
-import androidx.compose.ui.test.onNodeWithTag
-import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TEXT_FIELD_ERRORS_TAG
-import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TextField
+android {
+  buildFeatures.compose = true
+  composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
+  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+}
 
-/** [SemanticsNodeInteraction] of a [TextField]'s errors. */
-fun ComposeTestRule.onTextFieldErrors(): SemanticsNodeInteraction {
-  return onNodeWithTag(TEXT_FIELD_ERRORS_TAG)
+dependencies {
+  androidTestImplementation(project(":platform:autos"))
+  androidTestImplementation(project(":platform:autos-test"))
+  androidTestImplementation(libs.android.compose.ui.test.junit)
+  androidTestImplementation(libs.android.compose.ui.test.manifest)
+
+  api(libs.android.compose.ui)
 }
