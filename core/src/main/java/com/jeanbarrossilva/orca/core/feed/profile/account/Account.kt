@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,11 +15,8 @@
 
 package com.jeanbarrossilva.orca.core.feed.profile.account
 
-import com.jeanbarrossilva.orca.core.feed.profile.account.Account.BlankUsernameException
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account.Companion.of
-import com.jeanbarrossilva.orca.core.feed.profile.account.Account.IllegalUsernameException
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
-import com.jeanbarrossilva.orca.core.instance.domain.isLegal
 import java.io.Serializable
 
 /**
@@ -30,49 +27,10 @@ import java.io.Serializable
  *
  * @param username Unique name that can be modified.
  * @param domain [Domain] of the server in which this [Account] is.
- * @throws BlankUsernameException If the [username] is blank.
- * @throws IllegalUsernameException If the [username] contains any illegal characters.
  */
-data class Account internal constructor(val username: String, val domain: Domain) : Serializable {
-  /** [IllegalArgumentException] thrown if the [username] is blank. */
-  class BlankUsernameException internal constructor() :
-    IllegalArgumentException("An account cannot have a blank username.")
-
-  /**
-   * [IllegalArgumentException] thrown if the [username] contains any illegal characters.
-   *
-   * @param illegalCharacters [Char]s that make the [username] illegal.
-   */
-  class IllegalUsernameException internal constructor(illegalCharacters: List<Char>) :
-    IllegalArgumentException("Username cannot contain: $illegalCharacters")
-
-  init {
-    ensureUsernameNonBlankness()
-    ensureUsernameLegality()
-  }
-
+data class Account internal constructor(val username: Username, val domain: Domain) : Serializable {
   override fun toString(): String {
-    return username + SEPARATOR + domain
-  }
-
-  /**
-   * Ensures that the [username] is not blank.
-   *
-   * @throws BlankUsernameException If the [username] is blank.
-   */
-  private fun ensureUsernameNonBlankness() {
-    if (username.isBlank()) {
-      throw BlankUsernameException()
-    }
-  }
-
-  /**
-   * Ensures that the [username] is legal.
-   *
-   * @throws IllegalUsernameException If the [username] is illegal.
-   */
-  private fun ensureUsernameLegality() {
-    Domain.doOnIllegality(username) { throw IllegalUsernameException(it) }
+    return username.value + SEPARATOR + domain
   }
 
   companion object {
@@ -101,8 +59,8 @@ data class Account internal constructor(val username: String, val domain: Domain
      * @param string [String] to be parsed.
      * @param fallbackDomain [Domain] to fallback to if the [string] only has a username.
      * @throws BlankStringException If the [string] is blank.
-     * @throws BlankUsernameException If the username is blank.
-     * @throws IllegalUsernameException If the username contains any illegal characters.
+     * @throws Username.BlankValueException If the username is blank.
+     * @throws Username.IllegalValueException If the username contains any illegal characters.
      * @throws Domain.BlankValueException If the domain is not specified in the [string] and the
      *   [fallbackDomain] is `null`.
      * @throws Domain.IllegalValueException If the domain contains any of the
@@ -110,23 +68,21 @@ data class Account internal constructor(val username: String, val domain: Domain
      * @throws Domain.ValueWithoutTopLevelDomainException If the domain doesn't have a top-level
      *   domain.
      */
+    @Throws(
+      BlankStringException::class,
+      Username.BlankValueException::class,
+      Username.IllegalValueException::class,
+      Domain.BlankValueException::class,
+      Domain.BlankValueException::class
+    )
     fun of(string: String, fallbackDomain: String? = null): Account {
       val formattedString = string.trim().ifEmpty { throw BlankStringException() }
       val parts = formattedString.split(SEPARATOR)
-      val username = parts.first()
+      val username = Username(parts[0])
       val containsDomain = parts.size > 1
       val domainValue = if (containsDomain) parts[1].trim() else fallbackDomain?.trim().orEmpty()
       val domain = Domain(domainValue)
       return Account(username, domain)
-    }
-
-    /**
-     * Verifies whether the username is valid.
-     *
-     * @param username Username whose validity will be verified.
-     */
-    fun isUsernameValid(username: String): Boolean {
-      return username.isNotBlank() && username.isLegal
     }
   }
 }
