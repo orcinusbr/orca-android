@@ -26,7 +26,7 @@ import com.jeanbarrossilva.orca.app.module.core.MainMastodonCoreModule
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.platform.navigation.NavigationActivity
 
-open class OrcaActivity :
+internal open class OrcaActivity :
   NavigationActivity(), BottomNavigationViewAvailability, Injection, BottomNavigation {
   protected open val coreModule: CoreModule = MainMastodonCoreModule
 

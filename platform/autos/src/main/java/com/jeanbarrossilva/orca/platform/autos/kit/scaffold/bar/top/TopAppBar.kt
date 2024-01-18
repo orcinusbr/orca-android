@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -42,16 +42,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.autos.borders.Borders
 import com.jeanbarrossilva.orca.platform.autos.borders.areApplicable
 import com.jeanbarrossilva.orca.platform.autos.borders.asBorderStroke
+import com.jeanbarrossilva.orca.platform.autos.colors.LocalContainerColor
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBar as _TopAppBar
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults as _TopAppBarDefaults
+import com.jeanbarrossilva.orca.platform.autos.kit.sheet.LocalWindowInsets
+import com.jeanbarrossilva.orca.platform.autos.kit.sheet.takeOrElse
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 
@@ -91,9 +95,10 @@ fun TopAppBar(
   val heightOffset by
     remember(scrollBehavior) { derivedStateOf { scrollBehavior.state.heightOffset } }
   val isOverlapping = remember(overlap) { overlap > 0f }
-  val idleContainerColor = AutosTheme.colors.background.container.asColor
   val scrolledContainerColor = AutosTheme.colors.surface.container.asColor
-  val containerColorTransitionFraction = remember(overlap) { if (overlap > 0.01f) 1f else 0f }
+  val containerColorTransitionFraction = remember(isOverlapping) { if (isOverlapping) 1f else 0f }
+  val idleContainerColor =
+    LocalContainerColor.current.takeOrElse { AutosTheme.colors.background.container.asColor }
   val containerColor by
     animateColorAsState(
       lerp(
@@ -145,12 +150,12 @@ fun TopAppBar(
         Spacer(Modifier.width(spacing))
       }
     },
-    colors =
-      TopAppBarDefaults.topAppBarColors(
-        containerColor = idleContainerColor,
-        scrolledContainerColor,
-        actionIconContentColor = AutosTheme.colors.secondary.asColor
-      ),
+    LocalWindowInsets.current.takeOrElse { TopAppBarDefaults.windowInsets },
+    TopAppBarDefaults.topAppBarColors(
+      idleContainerColor,
+      scrolledContainerColor = containerColor,
+      actionIconContentColor = AutosTheme.colors.secondary.asColor
+    ),
     scrollBehavior = scrollBehavior
   )
 }

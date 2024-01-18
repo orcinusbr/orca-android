@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -25,6 +25,7 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
@@ -32,6 +33,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.takeOrElse
+import com.jeanbarrossilva.orca.platform.autos.colors.LocalContainerColor
+import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.forms.asShape
 import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold as _Scaffold
@@ -41,6 +45,8 @@ import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.snack.presenter.
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.snack.presenter.rememberSnackbarPresenter
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
+import com.jeanbarrossilva.orca.platform.autos.kit.sheet.LocalWindowInsets
+import com.jeanbarrossilva.orca.platform.autos.kit.sheet.takeOrElse
 import com.jeanbarrossilva.orca.platform.autos.overlays.asPaddingValues
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
@@ -82,8 +88,11 @@ fun Scaffold(
         )
       }
     },
-    floatingActionButton = floatingActionButton,
-    floatingActionButtonPosition = floatingActionButtonPosition,
+    floatingActionButton,
+    floatingActionButtonPosition,
+    LocalContainerColor.current.takeOrElse { AutosTheme.colors.background.container.asColor },
+    contentWindowInsets =
+      LocalWindowInsets.current.takeOrElse { ScaffoldDefaults.contentWindowInsets },
     content = content
   )
 }
