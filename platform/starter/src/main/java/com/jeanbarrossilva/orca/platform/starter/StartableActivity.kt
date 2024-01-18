@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.platform.orca.starter
+package com.jeanbarrossilva.orca.platform.starter
 
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity

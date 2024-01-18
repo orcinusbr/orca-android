@@ -26,8 +26,8 @@ import com.jeanbarrossilva.orca.core.mastodon.auth.authentication.MastodonAuthen
 import com.jeanbarrossilva.orca.core.mastodon.instance.ContextualMastodonInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
+import com.jeanbarrossilva.orca.platform.starter.on
 import com.jeanbarrossilva.orca.std.injector.Injector
-import com.jeanbarrossilva.platform.orca.starter.on
 
 /**
  * [ComposableActivity] that visually notifies the user of the background authentication process

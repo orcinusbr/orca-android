@@ -16,8 +16,6 @@
 package com.jeanbarrossilva.orca.platform.starter
 
 import androidx.test.platform.app.InstrumentationRegistry
-import com.jeanbarrossilva.platform.orca.starter.StartableActivity
-import com.jeanbarrossilva.platform.orca.starter.on
 import io.mockk.spyk
 import io.mockk.verify
 import kotlin.coroutines.resume
