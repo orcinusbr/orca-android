@@ -67,7 +67,7 @@ class SheetScope internal constructor() {
         TopAppBar(
           title,
           defaultContainerColor = SheetDefaults.containerColor,
-          windowInsets = WindowInsets(left = 0.dp, top = 0.dp, right = 0.dp, bottom = 0.dp),
+          windowInsets = WindowInsets.Zero,
           scrollBehavior = null
         )
       },

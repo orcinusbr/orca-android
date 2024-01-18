@@ -92,7 +92,7 @@ internal fun Sheet(
     state,
     containerColor = SheetDefaults.containerColor,
     tonalElevation = 0.dp,
-    windowInsets = WindowInsets(left = 0.dp, top = 0.dp, right = 0.dp, bottom = 0.dp)
+    windowInsets = WindowInsets.Zero
   ) {
     remember(::SheetScope).apply(content).Content()
   }
