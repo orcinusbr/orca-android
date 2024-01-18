@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orca
+ * Copyright © 2023 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,9 +16,18 @@
 package com.jeanbarrossilva.orca.platform.autos.kit.scaffold
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.runtime.Composable
-import com.jeanbarrossilva.orca.platform.autos.kit.end
-import com.jeanbarrossilva.orca.platform.autos.kit.start
+import androidx.compose.ui.platform.LocalLayoutDirection
+
+/** End padding calculated through the [LocalLayoutDirection]. */
+private val PaddingValues.end
+  @Composable get() = calculateEndPadding(LocalLayoutDirection.current)
+
+/** Start padding calculated through the [LocalLayoutDirection]. */
+private val PaddingValues.start
+  @Composable get() = calculateStartPadding(LocalLayoutDirection.current)
 
 /**
  * Adds the [PaddingValues].
