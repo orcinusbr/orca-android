@@ -54,7 +54,7 @@ fun TopAppBarWithBackNavigation(
     navigationIcon = { BackAction(onClick = onNavigation) },
     subtitle,
     actions,
-    scrollBehavior = scrollBehavior
+    scrollBehavior
   )
 }
 

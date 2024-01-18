@@ -88,13 +88,13 @@ fun TopAppBar(
   navigationIcon: @Composable () -> Unit = {},
   subtitle: @Composable () -> Unit = {},
   actions: @Composable RowScope.() -> Unit = {},
-  scrollBehavior: TopAppBarScrollBehavior? = _TopAppBarDefaults.scrollBehavior
+  scrollBehavior: TopAppBarScrollBehavior = _TopAppBarDefaults.scrollBehavior
 ) {
   val overlap by
-    remember(scrollBehavior) { derivedStateOf { scrollBehavior?.state?.overlappedFraction } }
+    remember(scrollBehavior) { derivedStateOf { scrollBehavior.state.overlappedFraction } }
   val heightOffset by
-    remember(scrollBehavior) { derivedStateOf { scrollBehavior?.state?.heightOffset } }
-  val isOverlapping = remember(overlap) { overlap?.let { it > 0f } ?: false }
+    remember(scrollBehavior) { derivedStateOf { scrollBehavior.state.heightOffset } }
+  val isOverlapping = remember(overlap) { overlap > 0f }
   val scrolledContainerColor = AutosTheme.colors.surface.container.asColor
   val containerColorTransitionFraction = remember(isOverlapping) { if (isOverlapping) 1f else 0f }
   val idleContainerColor =
@@ -112,7 +112,7 @@ fun TopAppBar(
   val spacing = AutosTheme.spacings.medium.dp
   val verticalSpacing by
     animateDpAsState(
-      with(LocalDensity.current) { maxOf(0.dp, spacing + (heightOffset?.toDp() ?: 0.dp)) },
+      with(LocalDensity.current) { maxOf(0.dp, spacing + heightOffset.toDp()) },
       label = "VerticalSpacing"
     )
   val borderStrokeWidth by
