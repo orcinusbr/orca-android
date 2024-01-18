@@ -20,7 +20,7 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import com.jeanbarrossilva.orca.composite.composable.ComposableActivity
 import com.jeanbarrossilva.orca.std.injector.Injector
-import com.jeanbarrossilva.platform.starter.on
+import com.jeanbarrossilva.platform.orca.starter.on
 
 class TermMutingActivity internal constructor() : ComposableActivity() {
   private val module by lazy { Injector.from<TermMutingModule>() }

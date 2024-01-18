@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -27,7 +27,7 @@ import com.jeanbarrossilva.orca.core.mastodon.instance.ContextualMastodonInstanc
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
-import com.jeanbarrossilva.platform.starter.on
+import com.jeanbarrossilva.platform.orca.starter.on
 
 /**
  * [ComposableActivity] that visually notifies the user of the background authentication process

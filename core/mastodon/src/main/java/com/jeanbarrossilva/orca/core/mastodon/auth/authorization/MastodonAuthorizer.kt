@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -17,7 +17,7 @@ package com.jeanbarrossilva.orca.core.mastodon.auth.authorization
 
 import android.content.Context
 import com.jeanbarrossilva.orca.core.auth.Authorizer
-import com.jeanbarrossilva.platform.starter.on
+import com.jeanbarrossilva.platform.orca.starter.on
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
