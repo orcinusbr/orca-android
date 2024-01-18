@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,17 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.platform.starter
+package com.jeanbarrossilva.orca.platform.starter
 
-import android.content.Context
+import android.os.Bundle
+import androidx.fragment.app.FragmentActivity
 
 /**
- * Creates an [ActivityStarter] for the [StartableActivity], from which it can be set up and
- * started.
- *
- * @param T [StartableActivity] whose start-up may be configured.
- * @see ActivityStarter.start
+ * [FragmentActivity] that notifies its listeners from the [ActivityStarter] of its initialization.
  */
-inline fun <reified T : StartableActivity> Context.on(): ActivityStarter<T> {
-  return ActivityStarter(this, T::class)
+abstract class StartableActivity : FragmentActivity() {
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    ActivityStarter.notifyListenersOf(this)
+  }
 }

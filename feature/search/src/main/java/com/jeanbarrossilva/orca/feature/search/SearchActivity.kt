@@ -19,8 +19,8 @@ import android.content.Context
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import com.jeanbarrossilva.orca.composite.composable.ComposableActivity
+import com.jeanbarrossilva.orca.platform.starter.on
 import com.jeanbarrossilva.orca.std.injector.Injector
-import com.jeanbarrossilva.platform.starter.on
 
 class SearchActivity internal constructor() : ComposableActivity() {
   private val module by lazy { Injector.from<SearchModule>() }

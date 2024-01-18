@@ -17,10 +17,10 @@ package com.jeanbarrossilva.orca.platform.starter.lifecycle
 
 import android.os.Bundle
 import androidx.lifecycle.Lifecycle
+import com.jeanbarrossilva.orca.platform.starter.StartableActivity
 import com.jeanbarrossilva.orca.platform.starter.lifecycle.state.CompleteLifecycleState
 import com.jeanbarrossilva.orca.platform.starter.lifecycle.state.compareTo
 import com.jeanbarrossilva.orca.platform.starter.lifecycle.state.next
-import com.jeanbarrossilva.platform.starter.StartableActivity
 
 /**
  * [StartableActivity] that provides a complete version of [Lifecycle.State], containing missing

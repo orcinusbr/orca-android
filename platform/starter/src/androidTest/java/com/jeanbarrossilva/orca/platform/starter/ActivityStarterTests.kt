@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.platform.starter
+package com.jeanbarrossilva.orca.platform.starter
 
 import androidx.test.platform.app.InstrumentationRegistry
 import io.mockk.spyk
