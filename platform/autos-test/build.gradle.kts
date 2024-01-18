@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orca
+ * Copyright © 2023 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -32,6 +32,5 @@ dependencies {
   androidTestImplementation(libs.android.test.runner)
 
   implementation(project(":platform:autos"))
-  implementation(project(":platform:testing"))
   implementation(libs.android.compose.ui.test.junit)
 }
