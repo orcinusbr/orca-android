@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,6 +42,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
@@ -74,6 +76,8 @@ object TopAppBarDefaults {
  *   for popping the back stack.
  * @param subtitle Contextualizes the [title].
  * @param actions [IconButton]s with actions to be performed in this context.
+ * @param defaultContainerColor [Color] by which the container is colored by default.
+ * @param windowInsets [WindowInsets] within which the content will be shown.
  * @param scrollBehavior Defines how this [TopAppBar][_TopAppBar] behaves on scroll.
  */
 @Composable
@@ -84,20 +88,21 @@ fun TopAppBar(
   navigationIcon: @Composable () -> Unit = {},
   subtitle: @Composable () -> Unit = {},
   actions: @Composable RowScope.() -> Unit = {},
-  scrollBehavior: TopAppBarScrollBehavior = _TopAppBarDefaults.scrollBehavior
+  defaultContainerColor: Color = AutosTheme.colors.background.container.asColor,
+  windowInsets: WindowInsets = TopAppBarDefaults.windowInsets,
+  scrollBehavior: TopAppBarScrollBehavior? = _TopAppBarDefaults.scrollBehavior
 ) {
   val overlap by
-    remember(scrollBehavior) { derivedStateOf { scrollBehavior.state.overlappedFraction } }
+    remember(scrollBehavior) { derivedStateOf { scrollBehavior?.state?.overlappedFraction } }
   val heightOffset by
-    remember(scrollBehavior) { derivedStateOf { scrollBehavior.state.heightOffset } }
-  val isOverlapping = remember(overlap) { overlap > 0f }
-  val idleContainerColor = AutosTheme.colors.background.container.asColor
+    remember(scrollBehavior) { derivedStateOf { scrollBehavior?.state?.heightOffset } }
+  val isOverlapping = remember(overlap) { overlap?.let { it > 0f } ?: false }
   val scrolledContainerColor = AutosTheme.colors.surface.container.asColor
-  val containerColorTransitionFraction = remember(overlap) { if (overlap > 0.01f) 1f else 0f }
+  val containerColorTransitionFraction = remember(isOverlapping) { if (isOverlapping) 1f else 0f }
   val containerColor by
     animateColorAsState(
       lerp(
-        idleContainerColor,
+        defaultContainerColor,
         scrolledContainerColor,
         FastOutLinearInEasing.transform(containerColorTransitionFraction)
       ),
@@ -107,7 +112,7 @@ fun TopAppBar(
   val spacing = AutosTheme.spacings.medium.dp
   val verticalSpacing by
     animateDpAsState(
-      with(LocalDensity.current) { maxOf(0.dp, spacing + heightOffset.toDp()) },
+      with(LocalDensity.current) { maxOf(0.dp, spacing + (heightOffset?.toDp() ?: 0.dp)) },
       label = "VerticalSpacing"
     )
   val borderStrokeWidth by
@@ -145,12 +150,12 @@ fun TopAppBar(
         Spacer(Modifier.width(spacing))
       }
     },
-    colors =
-      TopAppBarDefaults.topAppBarColors(
-        containerColor = idleContainerColor,
-        scrolledContainerColor,
-        actionIconContentColor = AutosTheme.colors.secondary.asColor
-      ),
+    windowInsets,
+    TopAppBarDefaults.topAppBarColors(
+      defaultContainerColor,
+      scrolledContainerColor = containerColor,
+      actionIconContentColor = AutosTheme.colors.secondary.asColor
+    ),
     scrollBehavior = scrollBehavior
   )
 }

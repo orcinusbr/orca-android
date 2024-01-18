@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -32,6 +32,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.forms.asShape
 import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold as _Scaffold
@@ -56,6 +58,7 @@ import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
  *   [floatingActionButton] will be placed.
  * @param snackbarPresenter [SnackbarPresenter] through which [Snackbar]s can be presented.
  * @param buttonBar [ButtonBar] to be placed at the utmost bottom.
+ * @param containerColor [Color] by which the container will be colored.
  * @param content Main content of the current context.
  */
 @Composable
@@ -66,6 +69,7 @@ fun Scaffold(
   floatingActionButtonPosition: FabPosition = FabPosition.End,
   snackbarPresenter: SnackbarPresenter = rememberSnackbarPresenter(),
   buttonBar: @Composable () -> Unit = {},
+  containerColor: Color = AutosTheme.colors.background.container.asColor,
   content: @Composable (padding: PaddingValues) -> Unit
 ) {
   Scaffold(
@@ -82,8 +86,9 @@ fun Scaffold(
         )
       }
     },
-    floatingActionButton = floatingActionButton,
-    floatingActionButtonPosition = floatingActionButtonPosition,
+    floatingActionButton,
+    floatingActionButtonPosition,
+    containerColor,
     content = content
   )
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,24 +13,25 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.autos.kit.scaffold
+package com.jeanbarrossilva.orca.platform.autos.kit.sheet
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.Dp
 import com.jeanbarrossilva.orca.platform.autos.kit.end
 import com.jeanbarrossilva.orca.platform.autos.kit.start
 
 /**
- * Adds the [PaddingValues].
+ * Creates [PaddingValues] with whose bounds the given amount of [Dp]s is summed.
  *
- * @param other [PaddingValues] to add to the receiver one.
+ * @param other Amount of [Dp]s to sum with this [PaddingValues]' bounds.
  */
 @Composable
-operator fun PaddingValues.plus(other: PaddingValues): PaddingValues {
+internal operator fun PaddingValues.plus(other: Dp): PaddingValues {
   return PaddingValues(
-    start + other.start,
-    calculateTopPadding() + other.calculateTopPadding(),
-    end + other.end,
-    calculateBottomPadding() + other.calculateBottomPadding()
+    start + other,
+    calculateTopPadding() + other,
+    end + other,
+    calculateBottomPadding() + other
   )
 }
