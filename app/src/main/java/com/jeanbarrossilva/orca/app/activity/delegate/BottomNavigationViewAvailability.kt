@@ -37,12 +37,12 @@ internal interface BottomNavigationViewAvailability :
     constraintSet?.apply {
       getConstraint(R.id.container).layout.bottomMargin = -offsetY.toInt()
       getConstraint(R.id.bottom_navigation_view).transform.translationY = offsetY
-      applyTo(binding?.mainView)
+      applyTo(binding?.root)
     }
   }
 
   fun offsetOnChange(activity: ComponentActivity) {
-    constraintSet = ConstraintSet().apply { clone(binding?.mainView) }
+    constraintSet = ConstraintSet().apply { clone(binding?.root) }
     dereferenceConstraintSetOnDestroy(activity)
   }
 

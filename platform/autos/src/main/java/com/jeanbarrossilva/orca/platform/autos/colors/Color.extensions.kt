@@ -13,14 +13,11 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.autos.kit.sheet.controller.test
+package com.jeanbarrossilva.orca.platform.autos.colors
 
-import com.jeanbarrossilva.orca.platform.autos.kit.sheet.controller.SheetController
-import org.junit.rules.ExternalResource
+import androidx.compose.runtime.ProvidableCompositionLocal
+import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.ui.graphics.Color
 
-/** Rule that unsets the current [SheetController] at the end of each test case. */
-internal class SheetControllerTestRule : ExternalResource() {
-  override fun after() {
-    SheetController.unsetCurrent()
-  }
-}
+/** [ProvidableCompositionLocal] that provides a [Color] for a container. */
+internal val LocalContainerColor = compositionLocalOf(defaultFactory = Color::Unspecified)

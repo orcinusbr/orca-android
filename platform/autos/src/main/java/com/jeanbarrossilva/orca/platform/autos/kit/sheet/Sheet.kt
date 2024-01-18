@@ -15,86 +15,55 @@
 
 package com.jeanbarrossilva.orca.platform.autos.kit.sheet
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import com.jeanbarrossilva.orca.platform.autos.border
+import com.jeanbarrossilva.orca.platform.autos.colors.LocalContainerColor
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.forms.asShape
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
-import com.jeanbarrossilva.orca.platform.autos.kit.sheet.controller.SheetController
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 
 /** Tag that identifies a [Sheet] for testing purposes. */
 const val SHEET_TAG = "sheet"
 
-/** Default values used by a [Sheet]. */
-internal object SheetDefaults {
-  /** [Color] by which the container of a [Sheet] is colored by default. */
-  val containerColor
-    @Composable get() = AutosTheme.colors.background.container.asColor
-}
-
 /**
  * Component that overlays the entire UI, intended to display important, relevant information.
  *
- * Can be controlled through the current [SheetController], that should be first set in order for it
- * to be usable.
- *
- * @param modifier [Modifier] to be applied to the underlying [Box].
- * @see SheetController.current
- * @see SheetController.setCurrent
- */
-@Composable
-fun Sheet(modifier: Modifier = Modifier) {
-  SheetController.current?.content?.let {
-    @OptIn(ExperimentalMaterial3Api::class)
-    Sheet(modifier, SheetController.rememberCurrentOrHiddenState()) { it(this) }
-  }
-}
-
-/**
- * Component that overlays the entire UI, intended to display important, relevant information.
- *
- * Can be controlled through the current [SheetController], that should be first set in order for it
- * to be usable.
- *
- * @param modifier [Modifier] to be applied to the underlying [Box].
- * @param state [SheetState] by which changes on visibility will be performed.
+ * @param modifier [Modifier] to be applied to the underlying [ModalBottomSheet].
  * @param content Content to be shown in this [Sheet].
- * @see SheetController.current
- * @see SheetController.setCurrent
  */
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-internal fun Sheet(
-  modifier: Modifier = Modifier,
-  state: SheetState = rememberModalBottomSheetState(),
-  content: SheetScope.() -> Unit
-) {
-  ModalBottomSheet(
-    onDismissRequest = {},
-    modifier.testTag(SHEET_TAG),
-    state,
-    containerColor = SheetDefaults.containerColor,
-    tonalElevation = 0.dp,
-    windowInsets = WindowInsets.Zero
+fun Sheet(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+  CompositionLocalProvider(
+    LocalContainerColor provides AutosTheme.colors.background.container.asColor,
+    LocalWindowInsets provides WindowInsets.Zero
   ) {
-    remember(::SheetScope).apply(content).Content()
+    ModalBottomSheet(
+      onDismissRequest = {},
+      modifier.statusBarsPadding().testTag(SHEET_TAG),
+      containerColor = LocalContainerColor.current,
+      tonalElevation = 0.dp,
+      windowInsets = LocalWindowInsets.current
+    ) {
+      content()
+    }
   }
 }
 
@@ -105,12 +74,10 @@ private fun SheetPreview() {
   AutosTheme {
     @OptIn(ExperimentalMaterial3Api::class)
     Sheet {
-      title { AutoSizeText("Title") }
-
-      content {
+      Scaffold(topAppBar = { TopAppBar(title = { AutoSizeText("Title") }) }) {
         Box(
-          Modifier.border(AutosTheme.forms.large.asShape)
-            .clip(AutosTheme.forms.large.asShape)
+          Modifier.clip(AutosTheme.forms.large.asShape)
+            .background(AutosTheme.colors.surface.container.asColor)
             .fillMaxSize(),
           Alignment.Center
         ) {

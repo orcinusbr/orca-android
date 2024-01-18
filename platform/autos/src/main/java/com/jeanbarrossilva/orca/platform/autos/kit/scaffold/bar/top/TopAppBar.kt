@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,18 +41,21 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.autos.borders.Borders
 import com.jeanbarrossilva.orca.platform.autos.borders.areApplicable
 import com.jeanbarrossilva.orca.platform.autos.borders.asBorderStroke
+import com.jeanbarrossilva.orca.platform.autos.colors.LocalContainerColor
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBar as _TopAppBar
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults as _TopAppBarDefaults
+import com.jeanbarrossilva.orca.platform.autos.kit.sheet.LocalWindowInsets
+import com.jeanbarrossilva.orca.platform.autos.kit.sheet.takeOrElse
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 
@@ -76,8 +78,6 @@ object TopAppBarDefaults {
  *   for popping the back stack.
  * @param subtitle Contextualizes the [title].
  * @param actions [IconButton]s with actions to be performed in this context.
- * @param defaultContainerColor [Color] by which the container is colored by default.
- * @param windowInsets [WindowInsets] within which the content will be shown.
  * @param scrollBehavior Defines how this [TopAppBar][_TopAppBar] behaves on scroll.
  */
 @Composable
@@ -88,8 +88,6 @@ fun TopAppBar(
   navigationIcon: @Composable () -> Unit = {},
   subtitle: @Composable () -> Unit = {},
   actions: @Composable RowScope.() -> Unit = {},
-  defaultContainerColor: Color = AutosTheme.colors.background.container.asColor,
-  windowInsets: WindowInsets = TopAppBarDefaults.windowInsets,
   scrollBehavior: TopAppBarScrollBehavior? = _TopAppBarDefaults.scrollBehavior
 ) {
   val overlap by
@@ -99,10 +97,12 @@ fun TopAppBar(
   val isOverlapping = remember(overlap) { overlap?.let { it > 0f } ?: false }
   val scrolledContainerColor = AutosTheme.colors.surface.container.asColor
   val containerColorTransitionFraction = remember(isOverlapping) { if (isOverlapping) 1f else 0f }
+  val idleContainerColor =
+    LocalContainerColor.current.takeOrElse { AutosTheme.colors.background.container.asColor }
   val containerColor by
     animateColorAsState(
       lerp(
-        defaultContainerColor,
+        idleContainerColor,
         scrolledContainerColor,
         FastOutLinearInEasing.transform(containerColorTransitionFraction)
       ),
@@ -150,9 +150,9 @@ fun TopAppBar(
         Spacer(Modifier.width(spacing))
       }
     },
-    windowInsets,
+    LocalWindowInsets.current.takeOrElse { TopAppBarDefaults.windowInsets },
     TopAppBarDefaults.topAppBarColors(
-      defaultContainerColor,
+      idleContainerColor,
       scrolledContainerColor = containerColor,
       actionIconContentColor = AutosTheme.colors.secondary.asColor
     ),

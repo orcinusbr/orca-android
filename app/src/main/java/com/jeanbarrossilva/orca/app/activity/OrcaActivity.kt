@@ -21,18 +21,13 @@ import androidx.core.view.WindowCompat
 import com.jeanbarrossilva.orca.app.activity.delegate.BottomNavigation
 import com.jeanbarrossilva.orca.app.activity.delegate.BottomNavigationViewAvailability
 import com.jeanbarrossilva.orca.app.activity.delegate.Injection
-import com.jeanbarrossilva.orca.app.activity.delegate.SheetControl
 import com.jeanbarrossilva.orca.app.databinding.ActivityOrcaBinding
 import com.jeanbarrossilva.orca.app.module.core.MainMastodonCoreModule
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.platform.navigation.NavigationActivity
 
 internal open class OrcaActivity :
-  NavigationActivity(),
-  BottomNavigationViewAvailability,
-  Injection,
-  BottomNavigation,
-  SheetControl {
+  NavigationActivity(), BottomNavigationViewAvailability, Injection, BottomNavigation {
   protected open val coreModule: CoreModule = MainMastodonCoreModule
 
   override var binding: ActivityOrcaBinding? = null
@@ -43,7 +38,6 @@ internal open class OrcaActivity :
     WindowCompat.setDecorFitsSystemWindows(window, false)
     bindView(this)
     offsetOnChange(this)
-    control()
     setContentView(binding?.root)
     inject(this, coreModule)
     navigateOnItemSelection(this)

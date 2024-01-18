@@ -15,10 +15,9 @@
 
 package com.jeanbarrossilva.orca.platform.autos.test.kit.sheet
 
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.test.junit4.createComposeRule
 import com.jeanbarrossilva.orca.platform.autos.kit.sheet.Sheet
-import com.jeanbarrossilva.orca.platform.autos.kit.sheet.controller.SheetController
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test
@@ -28,16 +27,8 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
 
   @Test
   fun findsSheet() {
-    SheetController.setCurrentForTest()
     composeRule
-      .apply {
-        setContent {
-          AutosTheme {
-            Sheet()
-            LaunchedEffect(Unit) { SheetController.current?.show {} }
-          }
-        }
-      }
+      .apply { setContent { AutosTheme { @OptIn(ExperimentalMaterial3Api::class) Sheet {} } } }
       .onSheet()
       .assertExists()
   }

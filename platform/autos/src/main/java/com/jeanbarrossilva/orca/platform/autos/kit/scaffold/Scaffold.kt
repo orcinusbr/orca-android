@@ -25,6 +25,7 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
@@ -32,7 +33,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.takeOrElse
+import com.jeanbarrossilva.orca.platform.autos.colors.LocalContainerColor
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.forms.asShape
 import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
@@ -43,6 +45,8 @@ import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.snack.presenter.
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.snack.presenter.rememberSnackbarPresenter
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
+import com.jeanbarrossilva.orca.platform.autos.kit.sheet.LocalWindowInsets
+import com.jeanbarrossilva.orca.platform.autos.kit.sheet.takeOrElse
 import com.jeanbarrossilva.orca.platform.autos.overlays.asPaddingValues
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
@@ -58,7 +62,6 @@ import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
  *   [floatingActionButton] will be placed.
  * @param snackbarPresenter [SnackbarPresenter] through which [Snackbar]s can be presented.
  * @param buttonBar [ButtonBar] to be placed at the utmost bottom.
- * @param containerColor [Color] by which the container will be colored.
  * @param content Main content of the current context.
  */
 @Composable
@@ -69,7 +72,6 @@ fun Scaffold(
   floatingActionButtonPosition: FabPosition = FabPosition.End,
   snackbarPresenter: SnackbarPresenter = rememberSnackbarPresenter(),
   buttonBar: @Composable () -> Unit = {},
-  containerColor: Color = AutosTheme.colors.background.container.asColor,
   content: @Composable (padding: PaddingValues) -> Unit
 ) {
   Scaffold(
@@ -88,7 +90,9 @@ fun Scaffold(
     },
     floatingActionButton,
     floatingActionButtonPosition,
-    containerColor,
+    LocalContainerColor.current.takeOrElse { AutosTheme.colors.background.container.asColor },
+    contentWindowInsets =
+      LocalWindowInsets.current.takeOrElse { ScaffoldDefaults.contentWindowInsets },
     content = content
   )
 }
