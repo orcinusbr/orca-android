@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright © 2023 Orca
+  ~ Copyright © 2024 Orca
   ~
   ~ This program is free software: you can redistribute it and/or modify it under the terms of the
   ~ GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,5 +15,12 @@
   -->
 
 <resources>
-    <string name="app_name">Orca</string>
+    <string
+        name="feature_onboarding_app_name"
+        translatable="false">
+        Orca
+    </string>
+    <string name="feature_onboarding_next">Next</string>
+    <string name="feature_onboarding_skip">Skip</string>
+    <string name="feature_onboarding_slogan">Experience Mastodon at its fullest.</string>
 </resources>

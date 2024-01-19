@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright © 2023 Orca
+  ~ Copyright © 2024 Orca
   ~
   ~ This program is free software: you can redistribute it and/or modify it under the terms of the
   ~ GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,21 +15,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <application
-        android:allowBackup="true"
-        android:icon="@mipmap/icon_launcher"
-        android:label="@string/feature_onboarding_app_name"
-        android:roundIcon="@mipmap/icon_launcher_round"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.Autos">
-        <activity
-            android:name=".activity.OrcaActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustResize">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+    <application>
+        <activity android:name=".OnboardingActivity" />
     </application>
 </manifest>

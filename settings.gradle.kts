@@ -44,6 +44,7 @@ include(
   ":feature:feed-test",
   ":feature:gallery",
   ":feature:gallery-test",
+  ":feature:onboarding",
   ":feature:post-details",
   ":feature:profile-details",
   ":feature:search",

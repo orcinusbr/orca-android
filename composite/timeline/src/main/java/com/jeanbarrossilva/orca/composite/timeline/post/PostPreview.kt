@@ -15,7 +15,6 @@
 
 package com.jeanbarrossilva.orca.composite.timeline.post
 
-import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.interaction.HoverInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,9 +25,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.LocalTonalElevationEnabled
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -38,13 +39,14 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
@@ -169,13 +171,37 @@ internal constructor(
   }
 }
 
+/** Default values used by a [PostPreview]. */
+object PostPreviewDefaults {
+  /** [Shape] by which a [PostPreview] is clipped by default. */
+  internal val shape
+    @Composable get() = RectangleShape
+
+  /**
+   * [CardElevation] by which the size of the shadow underneath a [PostPreview] is defined by
+   * default.
+   *
+   * @param default Size of the shadow when the [PostPreview] is idle.
+   */
+  @Composable
+  fun elevation(default: Dp = 0.dp): CardElevation {
+    return CardDefaults.cardElevation(default)
+  }
+}
+
 /**
  * Loading preview of a [Post].
  *
  * @param modifier [Modifier] to be applied to the underlying [Card].
+ * @param shape [Shape] by which it will be clipped.
+ * @param elevation Size of the underneath shadow across different states.
  */
 @Composable
-fun PostPreview(modifier: Modifier = Modifier) {
+fun PostPreview(
+  modifier: Modifier = Modifier,
+  shape: Shape = PostPreviewDefaults.shape,
+  elevation: CardElevation = PostPreviewDefaults.elevation(),
+) {
   PostPreview(
     avatar = { SmallAvatar() },
     name = { SmallTextualPlaceholder(nameModifier) },
@@ -191,6 +217,8 @@ fun PostPreview(modifier: Modifier = Modifier) {
     },
     stats = {},
     onClick = null,
+    shape,
+    elevation,
     modifier
   )
 }
@@ -204,7 +232,6 @@ fun PostPreview(modifier: Modifier = Modifier) {
  *   [Post] was published.
  */
 @Composable
-@VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
 fun LoadedPostPreview(
   modifier: Modifier = Modifier,
   preview: PostPreview = PostPreview.sample,
@@ -217,6 +244,8 @@ fun LoadedPostPreview(
     onShare = {},
     onClick = {},
     modifier,
+    PostPreviewDefaults.shape,
+    PostPreviewDefaults.elevation(),
     relativeTimeProvider
   )
 }
@@ -230,6 +259,8 @@ fun LoadedPostPreview(
  * @param onShare Callback run whenever the [Post] is requested to be externally shared.
  * @param onClick Callback run whenever it's clicked.
  * @param modifier [Modifier] to be applied to the underlying [Card].
+ * @param shape [Shape] by which it will be clipped.
+ * @param elevation Size of the underneath shadow across different states.
  * @param relativeTimeProvider [RelativeTimeProvider] that provides the time that's passed since the
  *   [Post] was published.
  */
@@ -241,6 +272,8 @@ fun PostPreview(
   onShare: () -> Unit,
   onClick: () -> Unit,
   modifier: Modifier = Modifier,
+  shape: Shape = PostPreviewDefaults.shape,
+  elevation: CardElevation = PostPreviewDefaults.elevation(),
   relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider()
 ) {
   val metadata =
@@ -278,6 +311,8 @@ fun PostPreview(
       Stats(preview.stats, onComment = {}, onFavorite, onRepost, onShare, Modifier.fillMaxWidth())
     },
     onClick,
+    shape,
+    elevation,
     modifier.semantics { postPreview = preview }
   )
 }
@@ -293,6 +328,8 @@ fun PostPreview(
  * @param stats [Stat]s for data and actions such as comments, favorites, reblogs and external
  *   sharing.
  * @param onClick Callback run whenever it's clicked.
+ * @param shape [Shape] by which it will be clipped.
+ * @param elevation Size of the underneath shadow across different states.
  * @param modifier [Modifier] to be applied to the underlying [Card].
  */
 @Composable
@@ -303,6 +340,8 @@ private fun PostPreview(
   content: @Composable () -> Unit,
   stats: @Composable () -> Unit,
   onClick: (() -> Unit)?,
+  shape: Shape,
+  elevation: CardElevation,
   modifier: Modifier = Modifier
 ) {
   val interactionSource =
@@ -313,31 +352,35 @@ private fun PostPreview(
   val spacing = AutosTheme.spacings.medium.dp
   val metadataTextStyle = AutosTheme.typography.bodySmall
 
-  Card(
-    onClick ?: {},
-    modifier.testTag(POST_PREVIEW_TAG),
-    shape = RectangleShape,
-    colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-    interactionSource = interactionSource
-  ) {
-    Column(Modifier.padding(spacing), Arrangement.spacedBy(spacing)) {
-      Row(horizontalArrangement = Arrangement.spacedBy(spacing)) {
-        avatar()
+  CompositionLocalProvider(LocalTonalElevationEnabled provides false) {
+    Card(
+      onClick ?: {},
+      modifier.testTag(POST_PREVIEW_TAG),
+      shape = shape,
+      colors =
+        CardDefaults.cardColors(containerColor = AutosTheme.colors.background.container.asColor),
+      elevation = elevation,
+      interactionSource = interactionSource
+    ) {
+      Column(Modifier.padding(spacing), Arrangement.spacedBy(spacing)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(spacing)) {
+          avatar()
 
-        Column(verticalArrangement = Arrangement.spacedBy(spacing)) {
-          Column(verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.extraSmall.dp)) {
-            ProvideTextStyle(AutosTheme.typography.bodyLarge, name)
+          Column(verticalArrangement = Arrangement.spacedBy(spacing)) {
+            Column(verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.extraSmall.dp)) {
+              ProvideTextStyle(AutosTheme.typography.bodyLarge, name)
 
-            CompositionLocalProvider(
-              LocalContentColor provides metadataTextStyle.color,
-              LocalTextStyle provides metadataTextStyle
-            ) {
-              metadata()
+              CompositionLocalProvider(
+                LocalContentColor provides metadataTextStyle.color,
+                LocalTextStyle provides metadataTextStyle
+              ) {
+                metadata()
+              }
             }
-          }
 
-          content()
-          stats()
+            content()
+            stats()
+          }
         }
       }
     }

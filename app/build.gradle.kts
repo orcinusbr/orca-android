@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -95,6 +95,7 @@ dependencies {
   implementation(project(":feature:composer"))
   implementation(project(":feature:feed"))
   implementation(project(":feature:gallery"))
+  implementation(project(":feature:onboarding"))
   implementation(project(":feature:post-details"))
   implementation(project(":feature:profile-details"))
   implementation(project(":feature:search"))
@@ -106,7 +107,7 @@ dependencies {
   implementation(project(":std:image:compose"))
   implementation(project(":std:injector"))
   implementation(libs.android.appcompat)
-  implementation(libs.android.constraintlayout)
+  implementation(libs.android.constraintLayout)
   implementation(libs.android.fragment.ktx)
   implementation(libs.android.material)
 
