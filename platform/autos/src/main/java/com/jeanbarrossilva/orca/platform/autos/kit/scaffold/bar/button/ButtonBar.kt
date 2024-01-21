@@ -15,13 +15,13 @@
 
 package com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.button
 
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
@@ -57,67 +58,84 @@ object ButtonBarDefaults {
   /** Amount of [Dp]s by which a [ButtonBar]'s [Button]s are spaced. */
   val spacing
     @Composable get() = AutosTheme.spacings.small.dp
+
+  /**
+   * Creates [ButtonBarColors] by which a [ButtonBar] is colored by default.
+   *
+   * @param idleContainerColor [Color] by which the container should be colored when idle.
+   * @param scrolledContainerColor [Color] by which the container should be colored when scrolled.
+   */
+  @Composable
+  fun colors(
+    idleContainerColor: Color = ButtonBarColors.defaultIdleContainer,
+    scrolledContainerColor: Color = AutosTheme.colors.surface.container.asColor
+  ): ButtonBarColors {
+    return ButtonBarColors(idleContainerColor, scrolledContainerColor)
+  }
 }
 
 /**
  * Bar for housing a [PrimaryButton].
  *
- * @param lazyListState [LazyListState] that will determine whether it gets highlighted.
+ * @param lazyListState [LazyListState] that determines whether it is idle.
  * @param modifier [Modifier] to be applied to the underlying [Layout].
+ * @param colors [ButtonBarColors] by which it will be colored.
  * @param content [PrimaryButton] to be shown.
  */
 @Composable
 fun ButtonBar(
   lazyListState: LazyListState,
   modifier: Modifier = Modifier,
+  colors: ButtonBarColors = ButtonBarDefaults.colors(),
   content: @Composable () -> Unit
 ) {
-  val isHighlighted by remember(lazyListState) { derivedStateOf(lazyListState::canScrollForward) }
-  ButtonBar(isHighlighted, modifier, content)
+  val isIdle by remember(lazyListState) { derivedStateOf { lazyListState.canScrollBackward } }
+  ButtonBar(isIdle, modifier, colors, content)
 }
 
 /**
  * Bar for housing a [PrimaryButton] in an idle state.
  *
  * @param modifier [Modifier] to be applied to the underlying [Layout].
+ * @param containerColor [Color] by which the container is colored.
  * @param content [PrimaryButton] to be shown.
  */
 @Composable
-fun ButtonBar(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
-  ButtonBar(isHighlighted = false, modifier, content)
+fun ButtonBar(
+  modifier: Modifier = Modifier,
+  containerColor: Color = ButtonBarColors.defaultIdleContainer,
+  content: @Composable () -> Unit
+) {
+  ButtonBar(isIdle = true, modifier, ButtonBarDefaults.colors(containerColor), content)
 }
 
 /**
  * Bar for housing a [PrimaryButton].
  *
- * @param isHighlighted Whether it should visually stand out.
+ * @param isIdle Whether an associated lazy list is scrolled.
  * @param modifier [Modifier] to be applied to the underlying [Layout].
+ * @param colors [ButtonBarColors] by which it will be colored.
  * @param content [PrimaryButton] to be shown.
  */
 @Composable
 private fun ButtonBar(
-  isHighlighted: Boolean,
+  isIdle: Boolean,
   modifier: Modifier = Modifier,
+  colors: ButtonBarColors = ButtonBarDefaults.colors(),
   content: @Composable () -> Unit
 ) {
   val density = LocalDensity.current
-  val border = AutosTheme.borders.default.asBorderStroke
   val borderStrokeWidth by
-    animateDpAsState(if (isHighlighted) border.width else (-1).dp, label = "BorderStrokeWidth")
+    animateDpAsState(
+      if (isIdle) ((-1).dp) else AutosTheme.borders.default.asBorderStroke.width,
+      label = "BorderStrokeWidth"
+    )
   val spacing = ButtonBarDefaults.spacing
   val spacingInPx = remember(density, spacing) { with(density) { spacing.roundToPx() } }
-  val containerColor by
-    animateColorAsState(
-      if (isHighlighted) {
-        AutosTheme.colors.surface.container.asColor
-      } else {
-        AutosTheme.colors.background.container.asColor
-      },
-      label = "ContainerColor"
-    )
+  val containerColor = colors.container(isIdle)
 
   Column(modifier) {
-    Divider(Modifier.testTag(BUTTON_BAR_DIVIDER_TAG), thickness = borderStrokeWidth)
+    HorizontalDivider(Modifier.testTag(BUTTON_BAR_DIVIDER_TAG), thickness = borderStrokeWidth)
 
     Layout(
       content,
@@ -151,25 +169,25 @@ internal fun ButtonBar(lazyListState: LazyListState, modifier: Modifier = Modifi
 @Composable
 @MultiThemePreview
 private fun IdleButtonBarPreview() {
-  AutosTheme { ButtonBar(isHighlighted = false) }
+  AutosTheme { ButtonBar(isIdle = true) }
 }
 
 /** Preview of a highlighted [ButtonBar]. */
 @Composable
 @MultiThemePreview
 private fun HighlightedButtonBarPreview() {
-  AutosTheme { ButtonBar(isHighlighted = true) }
+  AutosTheme { ButtonBar(isIdle = false) }
 }
 
 /**
  * Bar for housing a [PrimaryButton].
  *
- * @param isHighlighted Whether it should visually stand out.
+ * @param isIdle Whether an associated lazy list is scrolled.
  * @param modifier [Modifier] to be applied to the underlying [Layout].
  */
 @Composable
-private fun ButtonBar(isHighlighted: Boolean, modifier: Modifier = Modifier) {
-  ButtonBar(isHighlighted, modifier) { SampleContent() }
+private fun ButtonBar(isIdle: Boolean, modifier: Modifier = Modifier) {
+  ButtonBar(isIdle, modifier) { SampleContent() }
 }
 
 /** Sample [Button]s for a [ButtonBar]. */

@@ -39,6 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jeanbarrossilva.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.platform.animator.Animator
 import com.jeanbarrossilva.orca.platform.animator.animation.timing.after
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
@@ -68,7 +69,7 @@ internal fun Onboarding(onNext: () -> Unit, onSkip: () -> Unit, modifier: Modifi
       modifier,
       buttonBar = {
         buttonBar.Animate(slideInVertically { it }, after(slogan) + 2.seconds) {
-          ButtonBar {
+          ButtonBar(containerColor = Colors.DARK.background.container.asColor) {
             PrimaryButton(onClick = onNext, Modifier.testTag(NEXT_BUTTON_TAG)) {
               Text(stringResource(R.string.feature_onboarding_next))
             }
