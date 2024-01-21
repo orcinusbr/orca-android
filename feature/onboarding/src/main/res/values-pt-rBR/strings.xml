@@ -14,6 +14,10 @@
   -->
 
 <resources>
+    <string name="feature_onboarding_hero">
+        Imagem de início em preto e branco de uma orca no oceano, apenas com sua aleta dorsal
+        visível
+    </string>
     <string name="feature_onboarding_next">Próximo</string>
     <string name="feature_onboarding_skip">Pular</string>
     <string name="feature_onboarding_slogan">Experience o Mastodon ao máximo.</string>

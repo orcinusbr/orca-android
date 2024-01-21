@@ -92,7 +92,7 @@ internal fun Onboarding(onNext: () -> Unit, onSkip: () -> Unit, modifier: Modifi
     ) {
       Image(
         painterResource(R.drawable.hero),
-        contentDescription = "",
+        contentDescription = stringResource(R.string.feature_onboarding_hero),
         Modifier.haze(buttonBarHazeState, buttonBarContainerColor).fillMaxSize(),
         contentScale = ContentScale.Crop
       )
