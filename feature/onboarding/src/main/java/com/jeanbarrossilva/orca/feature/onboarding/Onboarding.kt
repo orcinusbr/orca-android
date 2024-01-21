@@ -15,21 +15,17 @@
 
 package com.jeanbarrossilva.orca.feature.onboarding
 
+import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -43,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import com.jeanbarrossilva.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.platform.animator.Animator
 import com.jeanbarrossilva.orca.platform.animator.animation.timing.after
+import com.jeanbarrossilva.orca.platform.animator.animation.timing.immediately
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.PrimaryButton
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.SecondaryButton
@@ -58,6 +55,14 @@ import kotlin.time.Duration.Companion.seconds
 internal const val NEXT_BUTTON_TAG = "next-button"
 internal const val SKIP_BUTTON_TAG = "skip-button"
 
+private object OnboardingDefaults {
+  private const val AnimationDurationInMilliseconds = 1_500
+
+  fun <T> animationSpec(): FiniteAnimationSpec<T> {
+    return tween(AnimationDurationInMilliseconds)
+  }
+}
+
 @Composable
 internal fun Onboarding(modifier: Modifier = Modifier) {
   Onboarding(onNext = {}, onSkip = {}, modifier)
@@ -67,14 +72,14 @@ internal fun Onboarding(modifier: Modifier = Modifier) {
 internal fun Onboarding(onNext: () -> Unit, onSkip: () -> Unit, modifier: Modifier = Modifier) {
   val buttonBarHazeState = remember(::HazeState)
   val buttonBarContainerColor = remember { Colors.DARK.background.container.asColor }
-  val fadeInSpec = tween<Float>(durationMillis = 1_000)
-  val fadeIn = fadeIn(fadeInSpec)
+  val slideInVertically = slideInVertically(OnboardingDefaults.animationSpec()) { it }
+  val fadeIn = fadeIn(OnboardingDefaults.animationSpec())
 
-  Animator { (appName, slogan, buttonBar) ->
+  Animator { (appName, buttonBar) ->
     Scaffold(
       modifier,
       buttonBar = {
-        buttonBar.Animate(slideInVertically { it }, after(slogan) + 2.seconds) {
+        buttonBar.Animate(slideInVertically, after(appName) + 2.seconds) {
           ButtonBar(
             material = ButtonBarMaterial.Vibrant(buttonBarHazeState),
             containerColor = buttonBarContainerColor
@@ -97,30 +102,15 @@ internal fun Onboarding(onNext: () -> Unit, onSkip: () -> Unit, modifier: Modifi
         contentScale = ContentScale.Crop
       )
 
-      Column(
-        Modifier.padding(top = 64.dp).fillMaxWidth(),
-        Arrangement.spacedBy(AutosTheme.spacings.small.dp),
-        Alignment.CenterHorizontally
-      ) {
-        ProvideTextStyle(LocalTextStyle.current.copy(color = Color.Black)) {
-          appName.Animate(fadeIn + slideInVertically { -it }) {
-            Text(
-              stringResource(R.string.feature_onboarding_app_name).uppercase(),
-              fontSize = 68.sp,
-              fontWeight = FontWeight.Light,
-              textAlign = TextAlign.Center
-            )
-          }
-
-          slogan.Animate(fadeIn + slideInVertically { -it }, after(appName) + 1.seconds) {
-            Text(
-              stringResource(R.string.feature_onboarding_slogan),
-              color = AutosTheme.colors.secondary.asColor,
-              fontSize = 20.sp,
-              fontWeight = FontWeight.Light
-            )
-          }
-        }
+      appName.Animate(fadeIn + slideInVertically, immediately() + 1.seconds) {
+        Text(
+          stringResource(R.string.feature_onboarding_app_name).uppercase(),
+          Modifier.padding(top = 175.dp).fillMaxWidth(),
+          Color.Black,
+          80.sp,
+          fontWeight = FontWeight.Light,
+          textAlign = TextAlign.Center
+        )
       }
     }
   }

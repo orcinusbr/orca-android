@@ -21,9 +21,8 @@
         Orca
     </string>
     <string name="feature_onboarding_hero">
-        Black and white hero image of an Orca in the ocean, only with its dorsal fin visible
+        Black and white hero image of an orca in the ocean, only with its dorsal fin visible
     </string>
     <string name="feature_onboarding_next">Next</string>
     <string name="feature_onboarding_skip">Skip</string>
-    <string name="feature_onboarding_slogan">Experience Mastodon at its fullest.</string>
 </resources>
