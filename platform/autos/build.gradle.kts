@@ -35,6 +35,7 @@ dependencies {
   api(libs.android.compose.material3)
   api(libs.android.compose.ui.tooling)
   api(libs.autos)
+  api(libs.haze)
 
   implementation(kotlin("stdlib"))
   implementation(libs.accompanist.adapter)

@@ -28,7 +28,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
@@ -55,6 +54,9 @@ internal const val BUTTON_BAR_DIVIDER_TAG = "button-bar-divider"
 
 /** Default values of a [ButtonBar]. */
 object ButtonBarDefaults {
+  /** [ButtonBarMaterial] by which a [ButtonBar] is made out of by default. */
+  internal val Material = ButtonBarMaterial.Opaque
+
   /** Amount of [Dp]s by which a [ButtonBar]'s [Button]s are spaced. */
   val spacing
     @Composable get() = AutosTheme.spacings.small.dp
@@ -79,6 +81,7 @@ object ButtonBarDefaults {
  *
  * @param lazyListState [LazyListState] that determines whether it is idle.
  * @param modifier [Modifier] to be applied to the underlying [Layout].
+ * @param material [ButtonBarMaterial] that defines how the container will be colored.
  * @param colors [ButtonBarColors] by which it will be colored.
  * @param content [PrimaryButton] to be shown.
  */
@@ -86,27 +89,30 @@ object ButtonBarDefaults {
 fun ButtonBar(
   lazyListState: LazyListState,
   modifier: Modifier = Modifier,
+  material: ButtonBarMaterial = ButtonBarDefaults.Material,
   colors: ButtonBarColors = ButtonBarDefaults.colors(),
   content: @Composable () -> Unit
 ) {
   val isIdle by remember(lazyListState) { derivedStateOf { lazyListState.canScrollBackward } }
-  ButtonBar(isIdle, modifier, colors, content)
+  ButtonBar(isIdle, modifier, material, colors, content)
 }
 
 /**
  * Bar for housing a [PrimaryButton] in an idle state.
  *
  * @param modifier [Modifier] to be applied to the underlying [Layout].
+ * @param material [ButtonBarMaterial] that defines how the container will be colored.
  * @param containerColor [Color] by which the container is colored.
  * @param content [PrimaryButton] to be shown.
  */
 @Composable
 fun ButtonBar(
   modifier: Modifier = Modifier,
+  material: ButtonBarMaterial = ButtonBarDefaults.Material,
   containerColor: Color = ButtonBarColors.defaultIdleContainer,
   content: @Composable () -> Unit
 ) {
-  ButtonBar(isIdle = true, modifier, ButtonBarDefaults.colors(containerColor), content)
+  ButtonBar(isIdle = true, modifier, material, ButtonBarDefaults.colors(containerColor), content)
 }
 
 /**
@@ -114,6 +120,7 @@ fun ButtonBar(
  *
  * @param isIdle Whether an associated lazy list is scrolled.
  * @param modifier [Modifier] to be applied to the underlying [Layout].
+ * @param material [ButtonBarMaterial] that defines how the container will be colored.
  * @param colors [ButtonBarColors] by which it will be colored.
  * @param content [PrimaryButton] to be shown.
  */
@@ -121,6 +128,7 @@ fun ButtonBar(
 private fun ButtonBar(
   isIdle: Boolean,
   modifier: Modifier = Modifier,
+  material: ButtonBarMaterial = ButtonBarDefaults.Material,
   colors: ButtonBarColors = ButtonBarDefaults.colors(),
   content: @Composable () -> Unit
 ) {
@@ -132,17 +140,14 @@ private fun ButtonBar(
     )
   val spacing = ButtonBarDefaults.spacing
   val spacingInPx = remember(density, spacing) { with(density) { spacing.roundToPx() } }
-  val containerColor = colors.container(isIdle)
 
   Column(modifier) {
     HorizontalDivider(Modifier.testTag(BUTTON_BAR_DIVIDER_TAG), thickness = borderStrokeWidth)
 
-    Layout(
-      content,
-      Modifier.drawBehind { drawRect(containerColor) }
-        .padding(spacing)
-        .fillMaxWidth()
-        .testTag(BUTTON_BAR_TAG)
+    material.Container(
+      Modifier.padding(spacing).fillMaxWidth().testTag(BUTTON_BAR_TAG),
+      colors.container(isIdle),
+      content
     ) { measurables, constraints ->
       val orientation = Orientation.VERTICAL
       val placements = measurables.mapToPlacement(constraints, orientation, spacingInPx)

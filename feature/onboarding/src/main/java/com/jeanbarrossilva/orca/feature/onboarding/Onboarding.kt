@@ -28,6 +28,7 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,8 +48,11 @@ import com.jeanbarrossilva.orca.platform.autos.kit.action.button.PrimaryButton
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.SecondaryButton
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.button.ButtonBar
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.button.ButtonBarMaterial
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.haze
 import kotlin.time.Duration.Companion.seconds
 
 internal const val NEXT_BUTTON_TAG = "next-button"
@@ -61,6 +65,8 @@ internal fun Onboarding(modifier: Modifier = Modifier) {
 
 @Composable
 internal fun Onboarding(onNext: () -> Unit, onSkip: () -> Unit, modifier: Modifier = Modifier) {
+  val buttonBarHazeState = remember(::HazeState)
+  val buttonBarContainerColor = remember { Colors.DARK.background.container.asColor }
   val fadeInSpec = tween<Float>(durationMillis = 1_000)
   val fadeIn = fadeIn(fadeInSpec)
 
@@ -69,7 +75,10 @@ internal fun Onboarding(onNext: () -> Unit, onSkip: () -> Unit, modifier: Modifi
       modifier,
       buttonBar = {
         buttonBar.Animate(slideInVertically { it }, after(slogan) + 2.seconds) {
-          ButtonBar(containerColor = Colors.DARK.background.container.asColor) {
+          ButtonBar(
+            material = ButtonBarMaterial.Vibrant(buttonBarHazeState),
+            containerColor = buttonBarContainerColor
+          ) {
             PrimaryButton(onClick = onNext, Modifier.testTag(NEXT_BUTTON_TAG)) {
               Text(stringResource(R.string.feature_onboarding_next))
             }
@@ -84,7 +93,7 @@ internal fun Onboarding(onNext: () -> Unit, onSkip: () -> Unit, modifier: Modifi
       Image(
         painterResource(R.drawable.hero),
         contentDescription = "",
-        Modifier.fillMaxSize(),
+        Modifier.haze(buttonBarHazeState, buttonBarContainerColor).fillMaxSize(),
         contentScale = ContentScale.Crop
       )
 
@@ -97,7 +106,7 @@ internal fun Onboarding(onNext: () -> Unit, onSkip: () -> Unit, modifier: Modifi
           appName.Animate(fadeIn + slideInVertically { -it }) {
             Text(
               stringResource(R.string.feature_onboarding_app_name).uppercase(),
-              fontSize = 64.sp,
+              fontSize = 68.sp,
               fontWeight = FontWeight.Light,
               textAlign = TextAlign.Center
             )
@@ -107,7 +116,7 @@ internal fun Onboarding(onNext: () -> Unit, onSkip: () -> Unit, modifier: Modifi
             Text(
               stringResource(R.string.feature_onboarding_slogan),
               color = AutosTheme.colors.secondary.asColor,
-              fontSize = 18.sp,
+              fontSize = 20.sp,
               fontWeight = FontWeight.Light
             )
           }
