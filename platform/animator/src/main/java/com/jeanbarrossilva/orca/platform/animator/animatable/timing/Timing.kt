@@ -15,16 +15,24 @@
 
 package com.jeanbarrossilva.orca.platform.animator.animatable.timing
 
+import androidx.annotation.CallSuper
 import com.jeanbarrossilva.orca.ext.coroutines.await
 import com.jeanbarrossilva.orca.platform.animator.animatable.Animatable
 import com.jeanbarrossilva.orca.platform.animator.animatable.Animation
+import kotlin.time.Duration
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 
 /** Indicates when an animation should be run. */
 sealed class Timing {
+  /** [Duration] to be waited for before the animation runs. */
+  internal abstract val delay: Duration
+
   /** Indicates that an animation should be run immediately. */
-  internal data object Immediate : Timing() {
-    override suspend fun time() {}
+  internal data class Immediate(override val delay: Duration = Duration.ZERO) : Timing() {
+    override fun plus(delay: Duration): Timing {
+      return Immediate(delay)
+    }
   }
 
   /**
@@ -33,15 +41,29 @@ sealed class Timing {
    * @param animatable [Animatable] whose animation has to finish for the one's to which this
    *   [Timing] refers to to start.
    */
-  internal data class Sequential(private val animatable: Animatable) : Timing() {
+  internal data class Sequential(
+    private val animatable: Animatable,
+    override val delay: Duration = Duration.ZERO
+  ) : Timing() {
+    override fun plus(delay: Duration): Timing {
+      return Sequential(animatable, delay)
+    }
+
     override suspend fun time() {
       animatable.animationFlow.filter { it == Animation.Finished }.await()
+      super.time()
     }
   }
+
+  /** Indicates that the animation should only be run after the given amount of time. */
+  abstract operator fun plus(delay: Duration): Timing
 
   /**
    * Suspends until the condition specified by this [Timing] for the animation to be run is
    * satisfied.
    */
-  internal abstract suspend fun time()
+  @CallSuper
+  internal open suspend fun time() {
+    delay(delay)
+  }
 }

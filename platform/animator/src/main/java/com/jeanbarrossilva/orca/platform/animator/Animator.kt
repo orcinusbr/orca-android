@@ -43,15 +43,15 @@ import com.jeanbarrossilva.orca.platform.animator.animatable.timing.immediately
  *
  * In this case, the greeting would fade in [immediately], since it doesn't depend on other
  * animations and no posterior delay has been specified. Similarly, the following is how it would be
- * done if the greeting was to be displayed only [after] another [Composable]'s animation has
- * finished running:
+ * done if the greeting was to be displayed only 2 seconds [after] another [Composable]'s animation
+ * has finished running:
  * ```kotlin
  * Animator { (emoji, greeting) ->
  *   emoji.Animate(fadeIn()) {
  *     Text("🌎")
  *   }
  *
- *   greeting.Animate(fadeIn(), after(emoji)) {
+ *   greeting.Animate(fadeIn(), after(emoji) + 2.seconds) {
  *     Text("Hello, world!")
  *   }
  * }

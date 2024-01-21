@@ -23,8 +23,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import com.jeanbarrossilva.orca.platform.animator.animatable.timing.Timing
 import com.jeanbarrossilva.orca.platform.animator.animatable.timing.immediately
-import kotlin.time.Duration
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -45,22 +43,19 @@ class Animatable internal constructor() {
    *
    * @param transition [EnterTransition] to animate the [content]'s visibility change.
    * @param timing [Timing] that dictates when the animation will start running.
-   * @param delay Amount of time to be waited for until the [content] is made visible.
    * @param content [Composable] to be displayed.
    */
   @Composable
   fun Animate(
     transition: EnterTransition = EnterTransition.None,
     timing: Timing = immediately(),
-    delay: Duration = Duration.ZERO,
     content: @Composable () -> Unit
   ) {
     val isVisible = animationMutableFlow.collectAsState().value >= Animation.Ignited
 
-    LaunchedEffect(transition, timing, delay, content) {
+    LaunchedEffect(transition, timing, content) {
       animation = Animation.Idle
       timing.time()
-      delay(delay)
       animation = Animation.Finished
     }
 

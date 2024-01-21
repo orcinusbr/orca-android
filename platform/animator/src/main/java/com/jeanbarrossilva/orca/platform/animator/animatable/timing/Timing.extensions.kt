@@ -19,7 +19,7 @@ import com.jeanbarrossilva.orca.platform.animator.animatable.Animatable
 
 /** [Timing] that indicates that an animation should be run immediately. */
 fun immediately(): Timing {
-  return Timing.Immediate
+  return Timing.Immediate()
 }
 
 /**
