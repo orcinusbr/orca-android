@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.animator.animatable
+package com.jeanbarrossilva.orca.platform.animator.animation.animatable
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
@@ -21,8 +21,9 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import com.jeanbarrossilva.orca.platform.animator.animatable.timing.Timing
-import com.jeanbarrossilva.orca.platform.animator.animatable.timing.immediately
+import com.jeanbarrossilva.orca.platform.animator.animation.Animation
+import com.jeanbarrossilva.orca.platform.animator.animation.timing.Timing
+import com.jeanbarrossilva.orca.platform.animator.animation.timing.immediately
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

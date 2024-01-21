@@ -13,22 +13,16 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.animator.animatable.timing
+package com.jeanbarrossilva.orca.platform.animator.animation.animatable
 
-import com.jeanbarrossilva.orca.platform.animator.animatable.Animatable
-
-/** [Timing] that indicates that an animation should be run immediately. */
-fun immediately(): Timing {
-  return Timing.Immediate()
-}
+import kotlin.reflect.KProperty
+import kotlinx.coroutines.flow.StateFlow
 
 /**
- * [Timing] that indicates that an animation should be run after the given [animatable] has finished
- * animating.
+ * Obtains the value of this [StateFlow].
  *
- * @param animatable [Animatable] whose animation has to finish for the one to which this [Timing]
- *   refers to to start.
+ * @param T Object to be returned, held by this [StateFlow].
  */
-fun after(animatable: Animatable): Timing {
-  return Timing.Sequential(animatable)
+internal operator fun <T> StateFlow<T>.getValue(thisRef: Any, property: KProperty<*>): T {
+  return value
 }

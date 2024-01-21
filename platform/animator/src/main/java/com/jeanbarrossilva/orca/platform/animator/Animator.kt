@@ -17,10 +17,10 @@ package com.jeanbarrossilva.orca.platform.animator
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.runtime.Composable
-import com.jeanbarrossilva.orca.platform.animator.animatable.Animatable
-import com.jeanbarrossilva.orca.platform.animator.animatable.Animatables
-import com.jeanbarrossilva.orca.platform.animator.animatable.timing.after
-import com.jeanbarrossilva.orca.platform.animator.animatable.timing.immediately
+import com.jeanbarrossilva.orca.platform.animator.animation.animatable.Animatable
+import com.jeanbarrossilva.orca.platform.animator.animation.animatable.Animatables
+import com.jeanbarrossilva.orca.platform.animator.animation.timing.after
+import com.jeanbarrossilva.orca.platform.animator.animation.timing.immediately
 
 /**
  * Animator is an Orca-specific animation API built on top of Jetpack Compose's that facilitates the

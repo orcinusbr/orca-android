@@ -13,22 +13,22 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.animator.animatable
+package com.jeanbarrossilva.orca.platform.animator.animation.timing
 
-import androidx.compose.runtime.Immutable
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import com.jeanbarrossilva.orca.platform.animator.animation.animatable.Animatable
+import kotlin.test.Test
 
-/** Stage in which an animation can be. */
-@Immutable
-internal enum class Animation {
-  /** States that an animation hasn't started running. */
-  Idle,
+internal class AnimatableScopeExtensionsTests {
+  @Test
+  fun createsImmediateTiming() {
+    assertThat(immediately()).isEqualTo(Timing.Immediate())
+  }
 
-  /** Denotes that an animation has been requested to be run but hasn't started yet. */
-  Ignited,
-
-  /** Indicates that an animation either is in progress or has finished. */
-  Running,
-
-  /** Represents that an animation has finished running. */
-  Finished
+  @Test
+  fun createsSequentialTiming() {
+    val animatable = Animatable()
+    assertThat(after(animatable)).isEqualTo(Timing.Sequential(animatable))
+  }
 }

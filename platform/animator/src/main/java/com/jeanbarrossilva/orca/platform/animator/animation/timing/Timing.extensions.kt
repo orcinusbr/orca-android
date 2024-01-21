@@ -13,22 +13,22 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.animator.animatable.timing
+package com.jeanbarrossilva.orca.platform.animator.animation.timing
 
-import assertk.assertThat
-import assertk.assertions.isEqualTo
-import com.jeanbarrossilva.orca.platform.animator.animatable.Animatable
-import kotlin.test.Test
+import com.jeanbarrossilva.orca.platform.animator.animation.animatable.Animatable
 
-internal class AnimatableScopeExtensionsTests {
-  @Test
-  fun createsImmediateTiming() {
-    assertThat(immediately()).isEqualTo(Timing.Immediate)
-  }
+/** [Timing] that indicates that an animation should be run immediately. */
+fun immediately(): Timing {
+  return Timing.Immediate()
+}
 
-  @Test
-  fun createsSequentialTiming() {
-    val animatable = Animatable()
-    assertThat(after(animatable)).isEqualTo(Timing.Sequential(animatable))
-  }
+/**
+ * [Timing] that indicates that an animation should be run after the given [animatable] has finished
+ * animating.
+ *
+ * @param animatable [Animatable] whose animation has to finish for the one to which this [Timing]
+ *   refers to to start.
+ */
+fun after(animatable: Animatable): Timing {
+  return Timing.Sequential(animatable)
 }

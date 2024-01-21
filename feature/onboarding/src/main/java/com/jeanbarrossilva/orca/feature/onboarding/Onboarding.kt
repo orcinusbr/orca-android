@@ -40,7 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jeanbarrossilva.orca.platform.animator.Animator
-import com.jeanbarrossilva.orca.platform.animator.animatable.timing.after
+import com.jeanbarrossilva.orca.platform.animator.animation.timing.after
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.PrimaryButton
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.SecondaryButton

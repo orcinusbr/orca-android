@@ -13,16 +13,22 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.animator.animatable
+package com.jeanbarrossilva.orca.platform.animator.animation
 
-import kotlin.reflect.KProperty
-import kotlinx.coroutines.flow.StateFlow
+import androidx.compose.runtime.Immutable
 
-/**
- * Obtains the value of this [StateFlow].
- *
- * @param T Object to be returned, held by this [StateFlow].
- */
-internal operator fun <T> StateFlow<T>.getValue(thisRef: Any, property: KProperty<*>): T {
-  return value
+/** Stage in which an animation can be. */
+@Immutable
+internal enum class Animation {
+  /** States that an animation hasn't started running. */
+  Idle,
+
+  /** Denotes that an animation has been requested to be run but hasn't started yet. */
+  Ignited,
+
+  /** Indicates that an animation either is in progress or has finished. */
+  Running,
+
+  /** Represents that an animation has finished running. */
+  Finished
 }

@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.animator.animatable
+package com.jeanbarrossilva.orca.platform.animator.animation.animatable
 
 import kotlin.reflect.KProperty
 import kotlinx.coroutines.flow.MutableStateFlow

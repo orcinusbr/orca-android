@@ -13,12 +13,12 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.animator.animatable.timing
+package com.jeanbarrossilva.orca.platform.animator.animation.timing
 
 import androidx.annotation.CallSuper
 import com.jeanbarrossilva.orca.ext.coroutines.await
-import com.jeanbarrossilva.orca.platform.animator.animatable.Animatable
-import com.jeanbarrossilva.orca.platform.animator.animatable.Animation
+import com.jeanbarrossilva.orca.platform.animator.animation.Animation
+import com.jeanbarrossilva.orca.platform.animator.animation.animatable.Animatable
 import kotlin.time.Duration
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
