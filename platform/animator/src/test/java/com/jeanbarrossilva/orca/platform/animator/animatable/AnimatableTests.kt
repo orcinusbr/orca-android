@@ -13,21 +13,15 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.onboarding
+package com.jeanbarrossilva.orca.platform.animator.animatable
 
-import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.Composable
-import com.jeanbarrossilva.orca.composite.composable.ComposableActivity
+import assertk.assertThat
+import assertk.assertions.isFalse
+import kotlin.test.Test
 
-internal class OnboardingActivity : ComposableActivity() {
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    enableEdgeToEdge()
-  }
-
-  @Composable
-  override fun Content() {
-    Onboarding(onNext = ::finish, onSkip = ::finish)
+internal class AnimatableTests {
+  @Test
+  fun isInitiallyInvisible() {
+    assertThat(Animatable().isVisible).isFalse()
   }
 }

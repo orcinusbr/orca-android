@@ -18,9 +18,9 @@ package com.jeanbarrossilva.orca.feature.onboarding.ui.test
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.onNodeWithTag
-import com.jeanbarrossilva.orca.feature.onboarding.ui.NEXT_BUTTON_TAG
-import com.jeanbarrossilva.orca.feature.onboarding.ui.Onboarding
-import com.jeanbarrossilva.orca.feature.onboarding.ui.SKIP_BUTTON_TAG
+import com.jeanbarrossilva.orca.feature.onboarding.NEXT_BUTTON_TAG
+import com.jeanbarrossilva.orca.feature.onboarding.Onboarding
+import com.jeanbarrossilva.orca.feature.onboarding.SKIP_BUTTON_TAG
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.PrimaryButton
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.SecondaryButton
 

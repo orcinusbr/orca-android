@@ -13,25 +13,24 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.onboarding.ui
+package com.jeanbarrossilva.orca.platform.animator.animatable
 
 import androidx.compose.material3.Text
+import androidx.compose.runtime.remember
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import org.junit.Rule
 import org.junit.Test
 
-internal class StateExtensionsTests {
+internal class AnimatableTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun animatesStringAsState() {
-    composeRule.setContent { Text(animateStringAsState("Hello, world!").value) }
-    composeRule.mainClock.advanceTimeBy(
-      milliseconds =
-        (0..12).sumOf { calculateNextCharDelayInMillisecondsForAnimatedAsStateString(it, 12) }
-    )
-    composeRule.onNodeWithText("Hello, world!").assertIsDisplayed()
+  fun showsContentImmediately() {
+    composeRule
+      .apply { setContent { remember(::Animatable).Animate { Text("1️⃣0️⃣") } } }
+      .onNodeWithText("1️⃣0️⃣")
+      .assertIsDisplayed()
   }
 }

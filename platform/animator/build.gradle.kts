@@ -25,15 +25,16 @@ android {
 }
 
 dependencies {
+  androidTestImplementation(libs.android.compose.material3)
   androidTestImplementation(libs.android.compose.ui.test.junit)
   androidTestImplementation(libs.android.compose.ui.test.manifest)
   androidTestImplementation(libs.assertk)
 
-  api(project(":composite:composable"))
-
-  implementation(project(":composite:timeline"))
+  implementation(libs.android.compose.animation)
   implementation(project(":ext:coroutines"))
-  implementation(project(":platform:animator"))
-  implementation(libs.android.constraintLayout.compose)
-  implementation(libs.android.core)
+
+  testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.coroutines.test)
+  testImplementation(libs.kotlin.test)
+  testImplementation(libs.turbine)
 }

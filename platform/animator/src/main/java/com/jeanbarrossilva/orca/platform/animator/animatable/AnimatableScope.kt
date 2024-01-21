@@ -13,21 +13,15 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.onboarding
+package com.jeanbarrossilva.orca.platform.animator.animatable
 
-import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.Composable
-import com.jeanbarrossilva.orca.composite.composable.ComposableActivity
+import kotlinx.coroutines.flow.Flow
 
-internal class OnboardingActivity : ComposableActivity() {
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    enableEdgeToEdge()
-  }
-
-  @Composable
-  override fun Content() {
-    Onboarding(onNext = ::finish, onSkip = ::finish)
-  }
-}
+/**
+ * Scope within which content can be animated.
+ *
+ * @param animationActivenessFlow [Flow] to which [Boolean]s that indicate whether an animation is
+ *   currently being run are emitted.
+ */
+@AnimatableDsl
+class AnimatableScope internal constructor(internal val animationActivenessFlow: Flow<Boolean>)

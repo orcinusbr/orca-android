@@ -20,18 +20,15 @@ import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import assertk.assertThat
 import assertk.assertions.isTrue
-import com.jeanbarrossilva.orca.feature.onboarding.ui.Movement
 import com.jeanbarrossilva.orca.feature.onboarding.ui.test.onNextButton
 import com.jeanbarrossilva.orca.feature.onboarding.ui.test.onSkipButton
-import com.jeanbarrossilva.orca.platform.testing.context
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.RuleChain
 
 internal class OnboardingActivityTests {
   private val composeRule = createEmptyComposeRule()
-  private val intent = OnboardingActivity.getIntent(context, Movement.Still)
-  private val activityScenarioRule = ActivityScenarioRule<OnboardingActivity>(intent)
+  private val activityScenarioRule = ActivityScenarioRule(OnboardingActivity::class.java)
 
   @get:Rule
   val ruleChain: RuleChain? = RuleChain.outerRule(composeRule).around(activityScenarioRule)

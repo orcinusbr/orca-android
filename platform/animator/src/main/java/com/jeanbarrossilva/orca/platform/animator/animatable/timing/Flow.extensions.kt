@@ -13,21 +13,29 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.onboarding
+package com.jeanbarrossilva.orca.platform.animator.animatable.timing
 
-import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.Composable
-import com.jeanbarrossilva.orca.composite.composable.ComposableActivity
+import com.jeanbarrossilva.orca.ext.coroutines.await
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNot
 
-internal class OnboardingActivity : ComposableActivity() {
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    enableEdgeToEdge()
-  }
+/**
+ * Awaits the next `false` [Boolean] to be emitted and returns it.
+ *
+ * @see Flow.await
+ * @see Flow.awaitTrue
+ */
+internal suspend fun Flow<Boolean>.awaitFalse(): Boolean {
+  return filterNot { it }.await()
+}
 
-  @Composable
-  override fun Content() {
-    Onboarding(onNext = ::finish, onSkip = ::finish)
-  }
+/**
+ * Awaits the next `true` [Boolean] to be emitted and returns it.
+ *
+ * @see Flow.await
+ * @see Flow.awaitFalse
+ */
+internal suspend fun Flow<Boolean>.awaitTrue(): Boolean {
+  return filter { it }.await()
 }

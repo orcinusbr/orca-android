@@ -17,6 +17,7 @@ package com.jeanbarrossilva.orca.feature.onboarding.ui
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import com.jeanbarrossilva.orca.feature.onboarding.Onboarding
 import com.jeanbarrossilva.orca.feature.onboarding.ui.test.onNextButton
 import com.jeanbarrossilva.orca.feature.onboarding.ui.test.onSkipButton
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
