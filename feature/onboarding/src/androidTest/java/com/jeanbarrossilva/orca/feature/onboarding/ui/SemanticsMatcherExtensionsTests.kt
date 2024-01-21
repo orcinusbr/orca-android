@@ -16,20 +16,17 @@
 package com.jeanbarrossilva.orca.feature.onboarding.ui
 
 import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import com.jeanbarrossilva.orca.feature.onboarding.Onboarding
 import com.jeanbarrossilva.orca.feature.onboarding.ui.test.isNextButton
 import com.jeanbarrossilva.orca.feature.onboarding.ui.test.isSkipButton
-import com.jeanbarrossilva.orca.feature.onboarding.ui.test.onNextButton
-import com.jeanbarrossilva.orca.feature.onboarding.ui.test.onSkipButton
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.testing.DefaultTimeout
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-internal class SemanticsNodeInteractionsProviderExtensionsTests {
+internal class SemanticsMatcherExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Before
@@ -38,18 +35,14 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
   }
 
   @Test
-  fun findsNextButton() {
+  fun matchesNextButton() {
     @OptIn(ExperimentalTestApi::class)
     composeRule.waitUntilExactlyOneExists(isNextButton(), DefaultTimeout.inWholeMilliseconds)
-
-    composeRule.onNextButton().assertIsDisplayed()
   }
 
   @Test
-  fun findsSkipButton() {
+  fun matchesSkipButton() {
     @OptIn(ExperimentalTestApi::class)
     composeRule.waitUntilExactlyOneExists(isSkipButton(), DefaultTimeout.inWholeMilliseconds)
-
-    composeRule.onSkipButton().assertIsDisplayed()
   }
 }
