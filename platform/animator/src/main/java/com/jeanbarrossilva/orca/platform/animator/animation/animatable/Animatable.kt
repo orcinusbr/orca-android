@@ -21,23 +21,20 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import com.jeanbarrossilva.orca.ext.coroutines.await
 import com.jeanbarrossilva.orca.platform.animator.animation.Animation
 import com.jeanbarrossilva.orca.platform.animator.animation.timing.Timing
 import com.jeanbarrossilva.orca.platform.animator.animation.timing.immediately
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filter
 
 /** Schedules the execution of the animation of a [Composable]. */
 class Animatable internal constructor() {
   /** [MutableStateFlow] to which the current stage of the animation is emitted. */
-  private val animationMutableFlow = MutableStateFlow(Animation.Idle)
+  private val animationFlow = MutableStateFlow(Animation.Idle)
 
   /** Stage in which the animation currently is. */
-  private var animation by animationMutableFlow
-
-  /** [StateFlow] to which the current stage of the animation is emitted. */
-  internal val animationFlow = animationMutableFlow.asStateFlow()
+  private var animation by animationFlow
 
   /**
    * Shows the [content] while animating it with the given [transition].
@@ -52,7 +49,7 @@ class Animatable internal constructor() {
     timing: Timing = immediately(),
     content: @Composable () -> Unit
   ) {
-    val isVisible = animationMutableFlow.collectAsState().value >= Animation.Ignited
+    val isVisible = animationFlow.collectAsState().value >= Animation.Ignited
 
     LaunchedEffect(transition, timing, content) {
       animation = Animation.Idle
@@ -70,5 +67,10 @@ class Animatable internal constructor() {
 
       content()
     }
+  }
+
+  /** Suspends until the animation finishes running. */
+  internal suspend fun waitForAnimation() {
+    animationFlow.filter { it == Animation.Finished }.await()
   }
 }

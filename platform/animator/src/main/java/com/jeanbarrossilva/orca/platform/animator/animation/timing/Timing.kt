@@ -16,12 +16,9 @@
 package com.jeanbarrossilva.orca.platform.animator.animation.timing
 
 import androidx.annotation.CallSuper
-import com.jeanbarrossilva.orca.ext.coroutines.await
-import com.jeanbarrossilva.orca.platform.animator.animation.Animation
 import com.jeanbarrossilva.orca.platform.animator.animation.animatable.Animatable
 import kotlin.time.Duration
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.filter
 
 /** Indicates when an animation should be run. */
 sealed class Timing {
@@ -50,7 +47,7 @@ sealed class Timing {
     }
 
     override suspend fun time() {
-      animatable.animationFlow.filter { it == Animation.Finished }.await()
+      animatable.waitForAnimation()
       super.time()
     }
   }
