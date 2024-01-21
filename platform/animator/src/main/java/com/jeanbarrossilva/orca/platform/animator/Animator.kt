@@ -25,12 +25,13 @@ import com.jeanbarrossilva.orca.platform.animator.animatable.timing.immediately
 /**
  * Animator is an Orca-specific animation API built on top of Jetpack Compose's that facilitates the
  * orchestration of sequential [EnterTransition]s that depend on others for them to start running.
+ *
  * It works by providing [Animatable]s (not to be confused with
  * [androidx.compose.animation.Animatable]) to the given [content], each intended to arbitrarily
  * refer to a [Composable] that will have its visibility toggled on alongside the execution of an
  * [EnterTransition].
  *
- * [Composable]s can have their entrance animated by being provided to the content of their assigned
+ * [Composable]s can have their entrance animated by being provided as the content of their assigned
  * [Animatable]'s [Animatable.Animate]. For example:
  * ```kotlin
  * Animator { (greeting) ->
@@ -50,13 +51,13 @@ import com.jeanbarrossilva.orca.platform.animator.animatable.timing.immediately
  *     Text("🌎")
  *   }
  *
- *   greeting.Animate(fadeIn(), { after(emoji) }) {
+ *   greeting.Animate(fadeIn(), after(emoji)) {
  *     Text("Hello, world!")
  *   }
  * }
  * ```
  *
- * Note that this [Composable], [Animator], serves only as an entrypoint to the overall API and
+ * Note that this [Composable], [Animator], serves merely as an entrypoint to the overall API and
  * doesn't have any intrinsic behavior other than just showing the [content] and providing an
  * instance of [Animatables] to it.
  *

@@ -21,7 +21,6 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
 import com.jeanbarrossilva.orca.platform.animator.animatable.timing.Timing
 import com.jeanbarrossilva.orca.platform.animator.animatable.timing.immediately
 import kotlin.time.Duration
@@ -32,24 +31,14 @@ import kotlinx.coroutines.flow.asStateFlow
 
 /** Schedules the execution of the animation of a [Composable]. */
 class Animatable internal constructor() {
-  /**
-   * [MutableStateFlow] to which [Boolean]s that indicate whether the content has been made visible
-   * are emitted.
-   */
-  private val visibilityMutableFlow = MutableStateFlow(false)
+  /** [MutableStateFlow] to which the current stage of the animation is emitted. */
+  private val animationMutableFlow = MutableStateFlow(Animation.Idle)
 
-  /**
-   * [StateFlow] to which [Boolean]s that indicate whether the content has been made visible are
-   * emitted.
-   */
-  internal val visibilityFlow = visibilityMutableFlow.asStateFlow()
+  /** Stage in which the animation currently is. */
+  private var animation by animationMutableFlow
 
-  /** Whether the content is currently visible. */
-  internal var isVisible
-    get() = visibilityFlow.value
-    private set(isVisible) {
-      visibilityMutableFlow.value = isVisible
-    }
+  /** [StateFlow] to which the current stage of the animation is emitted. */
+  internal val animationFlow = animationMutableFlow.asStateFlow()
 
   /**
    * Shows the [content] while animating it with the given [transition].
@@ -62,27 +51,28 @@ class Animatable internal constructor() {
   @Composable
   fun Animate(
     transition: EnterTransition = EnterTransition.None,
-    timing: AnimatableScope.() -> Timing = AnimatableScope::immediately,
+    timing: Timing = immediately(),
     delay: Duration = Duration.ZERO,
-    content: @Composable AnimatableScope.() -> Unit
+    content: @Composable () -> Unit
   ) {
-    val animationActivenessFlow = remember { MutableStateFlow(false) }
-    val scope = remember(animationActivenessFlow) { AnimatableScope(animationActivenessFlow) }
+    val isVisible = animationMutableFlow.collectAsState().value >= Animation.Ignited
 
-    LaunchedEffect(scope) {
-      isVisible = false
-      scope.timing().time()
+    LaunchedEffect(transition, timing, delay, content) {
+      animation = Animation.Idle
+      timing.time()
       delay(delay)
-      isVisible = true
+      animation = Animation.Finished
     }
 
-    AnimatedVisibility(visibilityFlow.collectAsState().value, enter = transition) {
+    AnimatedVisibility(isVisible, enter = transition) {
       @OptIn(ExperimentalAnimationApi::class)
       LaunchedEffect(this.transition.isRunning) {
-        animationActivenessFlow.value = this@AnimatedVisibility.transition.isRunning
+        if (this@AnimatedVisibility.transition.isRunning) {
+          animation = Animation.Running
+        }
       }
 
-      scope.content()
+      content()
     }
   }
 }

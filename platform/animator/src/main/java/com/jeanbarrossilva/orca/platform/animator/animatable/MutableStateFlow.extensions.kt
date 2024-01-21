@@ -15,13 +15,18 @@
 
 package com.jeanbarrossilva.orca.platform.animator.animatable
 
-import kotlinx.coroutines.flow.Flow
+import kotlin.reflect.KProperty
+import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
- * Scope within which content can be animated.
+ * Changes the current value of this [MutableStateFlow].
  *
- * @param animationActivenessFlow [Flow] to which [Boolean]s that indicate whether an animation is
- *   currently being run are emitted.
+ * @param T Object to change this [MutableStateFlow]'s current one to.
  */
-@AnimatableDsl
-class AnimatableScope internal constructor(internal val animationActivenessFlow: Flow<Boolean>)
+internal operator fun <T> MutableStateFlow<T>.setValue(
+  thisRef: Any,
+  property: KProperty<*>,
+  value: T
+) {
+  this.value = value
+}

@@ -15,5 +15,20 @@
 
 package com.jeanbarrossilva.orca.platform.animator.animatable
 
-/** Indicates that the annotated class is part of the DSL of an [Animatable]. */
-@DslMarker @Target(AnnotationTarget.CLASS) internal annotation class AnimatableDsl
+import androidx.compose.runtime.Immutable
+
+/** Stage in which an animation can be. */
+@Immutable
+internal enum class Animation {
+  /** States that an animation hasn't started running. */
+  Idle,
+
+  /** Denotes that an animation has been requested to be run but hasn't started yet. */
+  Ignited,
+
+  /** Indicates that an animation either is in progress or has finished. */
+  Running,
+
+  /** Represents that an animation has finished running. */
+  Finished
+}

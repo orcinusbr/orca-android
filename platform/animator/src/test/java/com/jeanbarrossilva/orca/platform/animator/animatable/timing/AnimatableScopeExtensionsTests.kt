@@ -18,23 +18,17 @@ package com.jeanbarrossilva.orca.platform.animator.animatable.timing
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.jeanbarrossilva.orca.platform.animator.animatable.Animatable
-import com.jeanbarrossilva.orca.platform.animator.animatable.AnimatableScope
 import kotlin.test.Test
-import kotlinx.coroutines.flow.flowOf
 
 internal class AnimatableScopeExtensionsTests {
   @Test
   fun createsImmediateTiming() {
-    val animationActivenessFlow = flowOf(false)
-    assertThat(AnimatableScope(animationActivenessFlow).immediately())
-      .isEqualTo(Timing.Immediate(animationActivenessFlow))
+    assertThat(immediately()).isEqualTo(Timing.Immediate)
   }
 
   @Test
   fun createsSequentialTiming() {
-    val animationActivenessFlow = flowOf(false)
     val animatable = Animatable()
-    assertThat(AnimatableScope(animationActivenessFlow).after(animatable))
-      .isEqualTo(Timing.Sequential(animatable, animationActivenessFlow))
+    assertThat(after(animatable)).isEqualTo(Timing.Sequential(animatable))
   }
 }

@@ -15,13 +15,14 @@
 
 package com.jeanbarrossilva.orca.platform.animator.animatable
 
-import assertk.assertThat
-import assertk.assertions.isFalse
-import kotlin.test.Test
+import kotlin.reflect.KProperty
+import kotlinx.coroutines.flow.StateFlow
 
-internal class AnimatableTests {
-  @Test
-  fun isInitiallyInvisible() {
-    assertThat(Animatable().isVisible).isFalse()
-  }
+/**
+ * Obtains the value of this [StateFlow].
+ *
+ * @param T Object to be returned, held by this [StateFlow].
+ */
+internal operator fun <T> StateFlow<T>.getValue(thisRef: Any, property: KProperty<*>): T {
+  return value
 }

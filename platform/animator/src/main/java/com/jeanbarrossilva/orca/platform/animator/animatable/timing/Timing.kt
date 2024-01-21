@@ -15,35 +15,27 @@
 
 package com.jeanbarrossilva.orca.platform.animator.animatable.timing
 
+import com.jeanbarrossilva.orca.ext.coroutines.await
 import com.jeanbarrossilva.orca.platform.animator.animatable.Animatable
-import kotlinx.coroutines.flow.Flow
+import com.jeanbarrossilva.orca.platform.animator.animatable.Animation
+import kotlinx.coroutines.flow.filter
 
 /** Indicates when an animation should be run. */
 sealed class Timing {
-  /**
-   * [Flow] to which [Boolean]s that indicate whether an animation is currently being run are
-   * emitted.
-   */
-  internal abstract val animationActivenessFlow: Flow<Boolean>
-
   /** Indicates that an animation should be run immediately. */
-  internal data class Immediate(override val animationActivenessFlow: Flow<Boolean>) : Timing() {
+  internal data object Immediate : Timing() {
     override suspend fun time() {}
   }
 
   /**
    * Indicates that an animation should be run after the given [animatable] has finished animating.
    *
-   * @param animatable [Animatable] whose animation has to finish for the one to which this [Timing]
-   *   refers to to start.
+   * @param animatable [Animatable] whose animation has to finish for the one's to which this
+   *   [Timing] refers to to start.
    */
-  internal data class Sequential(
-    private val animatable: Animatable,
-    override val animationActivenessFlow: Flow<Boolean>
-  ) : Timing() {
+  internal data class Sequential(private val animatable: Animatable) : Timing() {
     override suspend fun time() {
-      animatable.visibilityFlow.awaitTrue()
-      animationActivenessFlow.awaitFalse()
+      animatable.animationFlow.filter { it == Animation.Finished }.await()
     }
   }
 

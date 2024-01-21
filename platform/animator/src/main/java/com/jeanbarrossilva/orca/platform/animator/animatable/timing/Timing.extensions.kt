@@ -16,11 +16,10 @@
 package com.jeanbarrossilva.orca.platform.animator.animatable.timing
 
 import com.jeanbarrossilva.orca.platform.animator.animatable.Animatable
-import com.jeanbarrossilva.orca.platform.animator.animatable.AnimatableScope
 
 /** [Timing] that indicates that an animation should be run immediately. */
-fun AnimatableScope.immediately(): Timing {
-  return Timing.Immediate(animationActivenessFlow)
+fun immediately(): Timing {
+  return Timing.Immediate
 }
 
 /**
@@ -30,6 +29,6 @@ fun AnimatableScope.immediately(): Timing {
  * @param animatable [Animatable] whose animation has to finish for the one to which this [Timing]
  *   refers to to start.
  */
-fun AnimatableScope.after(animatable: Animatable): Timing {
-  return Timing.Sequential(animatable, animationActivenessFlow)
+fun after(animatable: Animatable): Timing {
+  return Timing.Sequential(animatable)
 }

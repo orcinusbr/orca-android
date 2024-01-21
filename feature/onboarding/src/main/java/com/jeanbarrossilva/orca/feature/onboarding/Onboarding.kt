@@ -67,7 +67,7 @@ internal fun Onboarding(onNext: () -> Unit, onSkip: () -> Unit, modifier: Modifi
     Scaffold(
       modifier,
       buttonBar = {
-        buttonBar.Animate(slideInVertically { it }, { after(slogan) }, delay = 1.seconds) {
+        buttonBar.Animate(slideInVertically { it }, after(slogan), delay = 1.seconds) {
           ButtonBar {
             PrimaryButton(onClick = onNext, Modifier.testTag(NEXT_BUTTON_TAG)) {
               Text(stringResource(R.string.feature_onboarding_next))
@@ -102,7 +102,7 @@ internal fun Onboarding(onNext: () -> Unit, onSkip: () -> Unit, modifier: Modifi
             )
           }
 
-          slogan.Animate(fadeIn + slideInVertically { -it }, { after(appName) }) {
+          slogan.Animate(fadeIn + slideInVertically { -it }, after(appName)) {
             Text(
               stringResource(R.string.feature_onboarding_slogan),
               color = AutosTheme.colors.secondary.asColor,
