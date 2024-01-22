@@ -93,7 +93,7 @@ fun ButtonBar(
   colors: ButtonBarColors = ButtonBarDefaults.colors(),
   content: @Composable () -> Unit
 ) {
-  val isIdle by remember(lazyListState) { derivedStateOf { lazyListState.canScrollBackward } }
+  val isIdle by remember(lazyListState) { derivedStateOf { !lazyListState.canScrollForward } }
   ButtonBar(isIdle, modifier, material, colors, content)
 }
 
