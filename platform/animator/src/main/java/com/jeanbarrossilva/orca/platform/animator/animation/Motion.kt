@@ -15,23 +15,27 @@
 
 package com.jeanbarrossilva.orca.platform.animator.animation
 
-import androidx.compose.material3.Text
-import androidx.compose.runtime.remember
-import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithText
 import com.jeanbarrossilva.orca.platform.animator.animation.animatable.Animatable
-import org.junit.Rule
-import org.junit.Test
 
-internal class AnimatableTests {
-  @get:Rule val composeRule = createComposeRule()
+/** Indicates whether animations should be run or not. */
+enum class Motion {
+  /** Denotes that animations should be enabled and run as expected. */
+  Moving {
+    override fun createAnimatable(): Animatable {
+      return Animatable.Moving()
+    }
+  },
 
-  @Test
-  fun showsContentImmediately() {
-    composeRule
-      .apply { setContent { remember(::Animatable).Animate { Text("1️⃣0️⃣") } } }
-      .onNodeWithText("1️⃣0️⃣")
-      .assertIsDisplayed()
-  }
+  /**
+   * Denotes that all animations should be disabled and that the content should be displayed
+   * instantly.
+   */
+  Still {
+    override fun createAnimatable(): Animatable {
+      return Animatable.Still()
+    }
+  };
+
+  /** Creates an [Animatable]. */
+  internal abstract fun createAnimatable(): Animatable
 }

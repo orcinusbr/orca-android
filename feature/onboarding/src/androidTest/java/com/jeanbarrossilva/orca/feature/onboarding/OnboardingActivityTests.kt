@@ -22,13 +22,16 @@ import assertk.assertThat
 import assertk.assertions.isTrue
 import com.jeanbarrossilva.orca.feature.onboarding.ui.test.onNextButton
 import com.jeanbarrossilva.orca.feature.onboarding.ui.test.onSkipButton
+import com.jeanbarrossilva.orca.platform.animator.animation.Motion
+import com.jeanbarrossilva.orca.platform.testing.context
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.RuleChain
 
 internal class OnboardingActivityTests {
   private val composeRule = createEmptyComposeRule()
-  private val activityScenarioRule = ActivityScenarioRule(OnboardingActivity::class.java)
+  private val intent = OnboardingActivity.getIntent(context, Motion.Still)
+  private val activityScenarioRule = ActivityScenarioRule<OnboardingActivity>(intent)
 
   @get:Rule
   val ruleChain: RuleChain? = RuleChain.outerRule(composeRule).around(activityScenarioRule)

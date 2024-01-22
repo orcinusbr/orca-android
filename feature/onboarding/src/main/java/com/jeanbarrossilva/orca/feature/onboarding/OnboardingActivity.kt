@@ -15,12 +15,19 @@
 
 package com.jeanbarrossilva.orca.feature.onboarding
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import com.jeanbarrossilva.orca.composite.composable.ComposableActivity
+import com.jeanbarrossilva.orca.ext.intents.intentOf
+import com.jeanbarrossilva.orca.platform.animator.animation.Motion
+import com.jeanbarrossilva.orca.platform.navigation.extra
 
 internal class OnboardingActivity : ComposableActivity() {
+  private val motion by extra<Motion>(MOTION_KEY)
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
@@ -28,6 +35,14 @@ internal class OnboardingActivity : ComposableActivity() {
 
   @Composable
   override fun Content() {
-    Onboarding(onNext = ::finish, onSkip = ::finish)
+    Onboarding(motion, onNext = ::finish, onSkip = ::finish)
+  }
+
+  companion object {
+    private const val MOTION_KEY = "motion"
+
+    fun getIntent(context: Context, motion: Motion): Intent {
+      return intentOf<OnboardingActivity>(context, MOTION_KEY to motion)
+    }
   }
 }

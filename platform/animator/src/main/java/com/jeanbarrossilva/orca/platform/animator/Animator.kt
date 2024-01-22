@@ -17,6 +17,8 @@ package com.jeanbarrossilva.orca.platform.animator
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import com.jeanbarrossilva.orca.platform.animator.animation.Motion
 import com.jeanbarrossilva.orca.platform.animator.animation.animatable.Animatable
 import com.jeanbarrossilva.orca.platform.animator.animation.animatable.Animatables
 import com.jeanbarrossilva.orca.platform.animator.animation.timing.after
@@ -58,12 +60,19 @@ import com.jeanbarrossilva.orca.platform.animator.animation.timing.immediately
  * ```
  *
  * Note that this [Composable], [Animator], serves merely as an entrypoint to the overall API and
- * doesn't have any intrinsic behavior other than just showing the [content] and providing an
- * instance of [Animatables] to it.
+ * doesn't have any intrinsic behavior other than just showing the [content] and providing a
+ * remembered instance of [Animatables] to it.
+ *
+ * @param motion Indicates whether the specified animations should be run or if the [Composable]s
+ *   should be shown instantly; defaults to [Motion.Moving], which, as expected from an animation
+ *   API, turns them on and plays the [EnterTransition]s as they were declared to be performed.
+ *
+ *   Setting it to [Motion.Still] for disabling them might be useful for testing.
  *
  * @param content Content to be shown in which [Animatable]-based animations can be run.
  */
 @Composable
-fun Animator(content: @Composable (Animatables) -> Unit) {
-  content(Animatables.instance)
+fun Animator(motion: Motion = Motion.Moving, content: @Composable (Animatables) -> Unit) {
+  val animatables = remember(motion) { Animatables(motion) }
+  content(animatables)
 }

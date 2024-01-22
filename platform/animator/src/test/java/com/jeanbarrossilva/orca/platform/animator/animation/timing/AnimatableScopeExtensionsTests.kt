@@ -28,7 +28,7 @@ internal class AnimatableScopeExtensionsTests {
 
   @Test
   fun createsSequentialTiming() {
-    val animatable = Animatable()
+    val animatable = Animatable.Still()
     assertThat(after(animatable)).isEqualTo(Timing.Sequential(animatable))
   }
 }

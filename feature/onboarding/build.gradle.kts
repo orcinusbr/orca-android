@@ -35,6 +35,8 @@ dependencies {
   implementation(project(":composite:timeline"))
   implementation(project(":ext:coroutines"))
   implementation(project(":platform:animator"))
+  implementation(project(":platform:intents"))
+  implementation(project(":platform:navigation"))
   implementation(libs.android.constraintLayout.compose)
   implementation(libs.android.core)
 }

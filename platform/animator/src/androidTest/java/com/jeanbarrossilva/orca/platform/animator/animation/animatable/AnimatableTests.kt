@@ -18,7 +18,11 @@ package com.jeanbarrossilva.orca.platform.animator.animation.animatable
 import androidx.compose.animation.core.AnimationConstants.DefaultDurationMillis
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
+import androidx.compose.material3.Text
+import androidx.compose.runtime.remember
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithText
 import assertk.assertThat
 import assertk.assertions.isTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -32,8 +36,16 @@ internal class AnimatableTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
+  fun showsContentImmediately() {
+    composeRule
+      .apply { setContent { remember(Animatable::Moving).Animate { Text("1️⃣0️⃣") } } }
+      .onNodeWithText("1️⃣0️⃣")
+      .assertIsDisplayed()
+  }
+
+  @Test
   fun waitsForAnimation() {
-    val animatable = Animatable()
+    val animatable = Animatable.Moving()
     var hasAnimationFinished = false
     runTest(@OptIn(ExperimentalCoroutinesApi::class) UnconfinedTestDispatcher()) {
       launch {

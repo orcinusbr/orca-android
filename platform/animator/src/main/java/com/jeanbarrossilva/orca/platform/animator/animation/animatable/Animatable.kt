@@ -28,13 +28,58 @@ import com.jeanbarrossilva.orca.platform.animator.animation.timing.immediately
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filter
 
-/** Schedules the execution of the animation of a [Composable]. */
-class Animatable internal constructor() {
+/**
+ * Schedules the execution of the animation of a [Composable].
+ *
+ * @param initialAnimation Stage that is considered to be the starting one of an animation.
+ */
+sealed class Animatable(private val initialAnimation: Animation) {
   /** [MutableStateFlow] to which the current stage of the animation is emitted. */
-  private val animationFlow = MutableStateFlow(Animation.Idle)
+  internal val animationFlow = MutableStateFlow(initialAnimation)
 
-  /** Stage in which the animation currently is. */
-  private var animation by animationFlow
+  /** [Animatable] that animates the entrance of its content. */
+  internal class Moving : Animatable(initialAnimation = Animation.Idle) {
+    /** Stage in which the animation currently is. */
+    private var animation by animationFlow
+
+    @Composable
+    override fun Animate(
+      transition: EnterTransition,
+      timing: Timing,
+      content: @Composable () -> Unit
+    ) {
+      val isVisible = animationFlow.collectAsState().value >= Animation.Ignited
+
+      LaunchedEffect(transition, timing, content) {
+        animation = Animation.Idle
+        timing.time()
+        animation = Animation.Finished
+      }
+
+      AnimatedVisibility(isVisible, enter = transition) {
+        @OptIn(ExperimentalAnimationApi::class)
+        LaunchedEffect(this.transition.isRunning) {
+          if (this@AnimatedVisibility.transition.isRunning) {
+            animation = Animation.Running
+          }
+        }
+
+        content()
+      }
+    }
+  }
+
+  /** [Animatable] that displays its content instantly, ignoring any specified animation. */
+  internal class Still : Animatable(initialAnimation = Animation.Finished) {
+    @Composable
+    override fun Animate(
+      transition: EnterTransition,
+      timing: Timing,
+      content: @Composable () -> Unit
+    ) {
+      content()
+    }
+  }
 
   /**
    * Shows the [content] while animating it with the given [transition].
@@ -44,29 +89,27 @@ class Animatable internal constructor() {
    * @param content [Composable] to be displayed.
    */
   @Composable
-  fun Animate(
-    transition: EnterTransition = EnterTransition.None,
-    timing: Timing = immediately(),
-    content: @Composable () -> Unit
-  ) {
-    val isVisible = animationFlow.collectAsState().value >= Animation.Ignited
+  abstract fun Animate(transition: EnterTransition, timing: Timing, content: @Composable () -> Unit)
 
-    LaunchedEffect(transition, timing, content) {
-      animation = Animation.Idle
-      timing.time()
-      animation = Animation.Finished
-    }
+  /**
+   * Shows the [content] immediately without an [EnterTransition].
+   *
+   * @param content [Composable] to be displayed.
+   */
+  @Composable
+  fun Animate(content: @Composable () -> Unit) {
+    Animate(EnterTransition.None, content)
+  }
 
-    AnimatedVisibility(isVisible, enter = transition) {
-      @OptIn(ExperimentalAnimationApi::class)
-      LaunchedEffect(this.transition.isRunning) {
-        if (this@AnimatedVisibility.transition.isRunning) {
-          animation = Animation.Running
-        }
-      }
-
-      content()
-    }
+  /**
+   * Shows the [content] immediately while animating it with the given [transition].
+   *
+   * @param transition [EnterTransition] to animate the [content]'s visibility change.
+   * @param content [Composable] to be displayed.
+   */
+  @Composable
+  fun Animate(transition: EnterTransition, content: @Composable () -> Unit) {
+    Animate(transition, immediately(), content)
   }
 
   /** Suspends until the animation finishes running. */
