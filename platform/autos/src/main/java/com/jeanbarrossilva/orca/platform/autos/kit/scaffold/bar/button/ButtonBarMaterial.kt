@@ -27,7 +27,7 @@ import dev.chrisbanes.haze.hazeChild
 
 /** Dictates the way a [ButtonBar]'s container might be colored. */
 sealed class ButtonBarMaterial {
-  /** Indicates that the [Color] should be rendered as is. */
+  /** Indicates that the [Color] should be rendered as-is. */
   data object Opaque : ButtonBarMaterial() {
     @Composable
     override fun Container(
