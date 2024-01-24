@@ -18,16 +18,16 @@ package com.jeanbarrossilva.orca.platform.autos.test.kit.input.text
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.onNodeWithTag
+import com.jeanbarrossilva.orca.platform.autos.kit.input.text.FormTextField
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TEXT_FIELD_ERRORS_TAG
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TEXT_FIELD_TAG
-import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TextField
 
-/** [SemanticsNodeInteraction] of a [TextField]. */
+/** [SemanticsNodeInteraction] of a [FormTextField]. */
 fun SemanticsNodeInteractionsProvider.onTextField(): SemanticsNodeInteraction {
   return onNodeWithTag(TEXT_FIELD_TAG)
 }
 
-/** [SemanticsNodeInteraction] of a [TextField]'s errors. */
+/** [SemanticsNodeInteraction] of a [FormTextField]'s errors. */
 fun SemanticsNodeInteractionsProvider.onTextFieldErrors(): SemanticsNodeInteraction {
   return onNodeWithTag(TEXT_FIELD_ERRORS_TAG)
 }

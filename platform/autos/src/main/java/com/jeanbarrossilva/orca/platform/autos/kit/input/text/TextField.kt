@@ -47,26 +47,28 @@ import com.jeanbarrossilva.orca.platform.autos.R
 import com.jeanbarrossilva.orca.platform.autos.borders.asBorderStroke
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.forms.asShape
-import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TextField as _TextField
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TextFieldDefaults as _TextFieldDefaults
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.error.ErrorDispatcher
-import com.jeanbarrossilva.orca.platform.autos.kit.input.text.error.buildErrorDispatcher
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.error.containsErrorsAsState
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.error.messages
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.error.rememberErrorDispatcher
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 
-/** Tag that identifies a [TextField] for testing purposes. */
+/**
+ * Tag that identifies a text field for testing purposes.
+ *
+ * @see FormTextField
+ */
 const val TEXT_FIELD_TAG = "text-field"
 
-/** Tag that identifies a [TextField]'s errors' [Text] for testing purposes. */
+/** Tag that identifies a text field's errors' [Text] for testing purposes. */
 const val TEXT_FIELD_ERRORS_TAG = "text-field-errors"
 
-/** Default values used by a [TextField][_TextField]. */
+/** Default values used by Orca's text fields. */
 object TextFieldDefaults {
   /**
-   * [TextFieldColors] by which a [TextField][_TextField] is colored by default.
+   * [TextFieldColors] by which a [TextField][FormTextField] is colored by default.
    *
    * @param containerColor [Color] to color the container with.
    */
@@ -93,15 +95,15 @@ object TextFieldDefaults {
  */
 @Composable
 @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-fun TextField(
+fun FormTextField(
   modifier: Modifier = Modifier,
   errorDispatcher: ErrorDispatcher = rememberErrorDispatcher()
 ) {
-  _TextField(modifier, text = "", errorDispatcher)
+  FormTextField(modifier, text = "", errorDispatcher)
 }
 
 /**
- * Orca-specific [TextField].
+ * Orca-specific text field for forms.
  *
  * @param text Text to be shown.
  * @param onTextChange Callback called whenever the text changes.
@@ -112,7 +114,7 @@ fun TextField(
  * @param isSingleLined Whether there can be multiple lines.
  */
 @Composable
-fun TextField(
+fun FormTextField(
   text: String,
   onTextChange: (text: String) -> Unit,
   modifier: Modifier = Modifier,
@@ -178,36 +180,36 @@ fun TextField(
 }
 
 /**
- * Orca-specific [TextField].
+ * Orca-specific text field for forms.
  *
  * @param modifier [Modifier] to be applied to the underlying [Column].
  * @param text Text to be shown.
  * @param errorDispatcher [ErrorDispatcher] to which invalid input state errors will be dispatched.
  */
 @Composable
-internal fun TextField(
+internal fun FormTextField(
   modifier: Modifier = Modifier,
   text: String = "Text",
   errorDispatcher: ErrorDispatcher = rememberErrorDispatcher()
 ) {
-  _TextField(text, onTextChange = {}, modifier, errorDispatcher) { Text("Label") }
+  FormTextField(text, onTextChange = {}, modifier, errorDispatcher) { Text("Label") }
 }
 
-/** Preview of a focused [TextField][_TextField]. */
+/** Preview of a focused [FormTextField]. */
 @Composable
 @MultiThemePreview
-private fun ValidTextFieldPreview() {
-  AutosTheme { _TextField() }
+private fun ValidFormTextFieldPreview() {
+  AutosTheme { FormTextField() }
 }
 
-/** Preview of a [TextField] with errors. */
+/** Preview of a [FormTextField] with errors. */
 @Composable
 @MultiThemePreview
-private fun InvalidTextFieldPreview() {
+private fun InvalidFormTextFieldPreview() {
   AutosTheme {
-    _TextField(
+    FormTextField(
       errorDispatcher =
-        buildErrorDispatcher {
+        rememberErrorDispatcher {
             errorAlways("This is an error.")
             errorAlways("This is another error. 😛")
           }

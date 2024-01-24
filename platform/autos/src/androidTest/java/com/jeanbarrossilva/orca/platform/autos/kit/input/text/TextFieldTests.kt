@@ -31,7 +31,7 @@ internal class TextFieldTests {
   fun showsErrorsWhenTextIsInvalid() {
     val errorDispatcher =
       buildErrorDispatcher { errorAlways("🫵🏽") }.apply(ErrorDispatcher::dispatch)
-    composeRule.setContent { AutosTheme { TextField(errorDispatcher = errorDispatcher) } }
+    composeRule.setContent { AutosTheme { FormTextField(errorDispatcher = errorDispatcher) } }
     composeRule.onTextFieldErrors().assertIsDisplayed()
   }
 }

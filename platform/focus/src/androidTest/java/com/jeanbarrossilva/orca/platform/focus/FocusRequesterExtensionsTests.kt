@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.test.assertIsFocused
 import androidx.compose.ui.test.junit4.createComposeRule
-import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TextField
+import com.jeanbarrossilva.orca.platform.autos.kit.input.text.FormTextField
 import com.jeanbarrossilva.orca.platform.autos.test.kit.input.text.onTextField
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
@@ -33,7 +33,7 @@ internal class FocusRequesterExtensionsTests {
     composeRule
       .apply {
         setContent {
-          AutosTheme { TextField(Modifier.focusRequester(rememberImmediateFocusRequester())) }
+          AutosTheme { FormTextField(Modifier.focusRequester(rememberImmediateFocusRequester())) }
         }
       }
       .run {

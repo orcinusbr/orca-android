@@ -18,7 +18,7 @@ package com.jeanbarrossilva.orca.platform.autos.test.kit.input.text
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TextField
+import com.jeanbarrossilva.orca.platform.autos.kit.input.text.FormTextField
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.error.rememberErrorDispatcher
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
@@ -28,15 +28,15 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun findsTextField() {
+  fun findsFormTextField() {
     composeRule
-      .apply { setContent { AutosTheme { TextField() } } }
+      .apply { setContent { AutosTheme { FormTextField() } } }
       .onTextField()
       .assertIsDisplayed()
   }
 
   @Test
-  fun findsTextFieldErrors() {
+  fun findsFormTextFieldErrors() {
     composeRule
       .apply {
         setContent {
@@ -48,7 +48,7 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
               onDispose {}
             }
 
-            TextField(errorDispatcher = errorDispatcher)
+            FormTextField(errorDispatcher = errorDispatcher)
           }
         }
       }

@@ -50,7 +50,7 @@ import com.jeanbarrossilva.orca.core.mastodon.R
 import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.viewmodel.MastodonAuthorizationViewModel
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.PrimaryButton
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.SecondaryButton
-import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TextField
+import com.jeanbarrossilva.orca.platform.autos.kit.input.text.FormTextField
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.error.containsErrorsAsState
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.error.rememberErrorDispatcher
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
@@ -92,7 +92,7 @@ internal fun MastodonAuthorization(
  * Screen that asks for the [Domain] to which the user belongs.
  *
  * @param domain [String] version of the [Domain].
- * @param onDomainChange Callback run whenever the user inputs to the domain [TextField].
+ * @param onDomainChange Callback run whenever the user inputs to the domain [FormTextField].
  * @param onSignIn Callback run whenever the sign-in [PrimaryButton] is clicked.
  * @param onHelp Action to be performed when help is requested.
  * @param modifier [Modifier] to be applied to the underlying [Box].
@@ -134,7 +134,7 @@ internal fun MastodonAuthorization(
     Scaffold(
       buttonBar = {
         Column(verticalArrangement = Arrangement.spacedBy(ButtonBarDefaults.spacing)) {
-          TextField(
+          FormTextField(
             domain,
             onDomainChange,
             Modifier.focusRequester(focusRequester)
