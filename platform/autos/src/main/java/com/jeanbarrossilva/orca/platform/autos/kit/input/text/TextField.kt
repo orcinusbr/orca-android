@@ -230,7 +230,7 @@ fun CompositionTextField(
  * @param errorDispatcher [ErrorDispatcher] by which invalid input state errors will be dispatched.
  * @param keyboardOptions Software-IME-specific options.
  * @param keyboardActions Software-IME-specific actions.
- * @param isSingleLined Whether there can be multiple lines.
+ * @param isSinglyLined Whether there can be only one line.
  */
 @Composable
 fun FormTextField(
@@ -240,7 +240,7 @@ fun FormTextField(
   errorDispatcher: ErrorDispatcher = rememberErrorDispatcher(),
   keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
   keyboardActions: KeyboardActions = KeyboardActions.Default,
-  isSingleLined: Boolean = false,
+  isSinglyLined: Boolean = false,
   label: @Composable () -> Unit
 ) {
   val form = AutosTheme.forms.large as Form.PerCorner
@@ -266,7 +266,7 @@ fun FormTextField(
       isError = containsErrors,
       keyboardOptions = keyboardOptions,
       keyboardActions = keyboardActions,
-      singleLine = isSingleLined,
+      singleLine = isSinglyLined,
       shape = shape,
       colors = _TextFieldDefaults.colors()
     )

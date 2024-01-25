@@ -143,7 +143,7 @@ internal fun MastodonAuthorization(
             errorDispatcher,
             KeyboardOptions(imeAction = ImeAction.Go),
             KeyboardActions(onGo = { onDone() }),
-            isSingleLined = true
+            isSinglyLined = true
           ) {
             Text(stringResource(R.string.core_http_authorization_domain))
           }
