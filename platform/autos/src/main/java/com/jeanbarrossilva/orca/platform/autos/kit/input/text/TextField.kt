@@ -17,6 +17,7 @@ package com.jeanbarrossilva.orca.platform.autos.kit.input.text
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -43,7 +44,9 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -155,6 +158,7 @@ fun FormTextField(
  * @param onSend Action performed when the [value] is requested to be sent.
  * @param modifier [Modifier] to be applied to the underlying [ContentWithErrors].
  * @param errorDispatcher [ErrorDispatcher] by which invalid input state errors will be dispatched.
+ * @param colors [TextFieldColors] by which it its colored.
  * @param placeholder [Text] to be shown when the [CompositionTextField] is focused and the [value]
  *   is empty.
  */
@@ -166,6 +170,7 @@ fun CompositionTextField(
   onSend: () -> Unit,
   modifier: Modifier = Modifier,
   errorDispatcher: ErrorDispatcher = rememberErrorDispatcher(),
+  colors: TextFieldColors = _TextFieldDefaults.colors(),
   placeholder: @Composable () -> Unit = {}
 ) {
   val interactionSource = remember(::MutableInteractionSource)
@@ -177,6 +182,7 @@ fun CompositionTextField(
   }
 
   val style = LocalTextStyle.current
+  var containerColor by remember(colors) { mutableStateOf(Color.Unspecified) }
   val cursorBrushColor = AutosTheme.colors.primary.container.asColor
   val cursorBrush = remember(cursorBrushColor) { SolidColor(cursorBrushColor) }
   val spacing = _TextFieldDefaults.compositionSpacing
@@ -185,8 +191,11 @@ fun CompositionTextField(
     value.text,
     errorDispatcher,
     errorMessagesStartSpacing = spacing,
-    modifier.padding(bottom = spacing)
-  ) { _, secondaryTextStyle ->
+    modifier.background(containerColor).padding(bottom = spacing)
+  ) { containsErrors, secondaryTextStyle ->
+    containerColor =
+      colors.containerColor(isEnabled = true, containsErrors, interactionSource).value
+
     BasicTextField(
       value,
       onValueChange,
@@ -207,7 +216,7 @@ fun CompositionTextField(
         interactionSource,
         placeholder = { ProvideTextStyle(secondaryTextStyle) { placeholder() } },
         leadingIcon = leadingIcon,
-        colors = _TextFieldDefaults.colors(containerColor = Color.Transparent),
+        colors = colors,
         contentPadding = PaddingValues(start = spacing * 2)
       )
     }
