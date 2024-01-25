@@ -38,7 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.PrimaryButton
-import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TextField
+import com.jeanbarrossilva.orca.platform.autos.kit.input.text.FormTextField
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.error.containsErrorsAsState
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.error.rememberErrorDispatcher
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
@@ -126,7 +126,7 @@ internal fun TermMuting(
       contentPadding = it + PaddingValues(spacing)
     ) {
       item {
-        TextField(
+        FormTextField(
           term,
           onTermChange,
           Modifier.focusRequester(focusRequester)

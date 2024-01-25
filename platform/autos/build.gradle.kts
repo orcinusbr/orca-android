@@ -36,7 +36,7 @@ dependencies {
   api(libs.android.compose.ui.tooling)
   api(libs.autos)
 
-  implementation(kotlin("stdlib"))
+  implementation(project(":ext:reflection"))
   implementation(libs.accompanist.adapter)
   implementation(libs.android.material)
   implementation(libs.kotlin.reflect)

@@ -51,7 +51,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearchResult
 import com.jeanbarrossilva.orca.feature.search.ui.SearchResultCard
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
-import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TextField
+import com.jeanbarrossilva.orca.platform.autos.kit.input.text.FormTextField
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.BackAction
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
@@ -174,7 +174,11 @@ private fun Search(
           BackAction(onClick = onBackwardsNavigation)
         }
 
-        TextField(query, onQueryChange, Modifier.focusRequester(focusRequester).fillMaxWidth()) {
+        FormTextField(
+          query,
+          onQueryChange,
+          Modifier.focusRequester(focusRequester).fillMaxWidth()
+        ) {
           Text(stringResource(R.string.feature_search_placeholder))
         }
       }

@@ -31,8 +31,8 @@ import androidx.compose.ui.text.withStyle
 import com.jeanbarrossilva.orca.feature.composer.test.assertTextEquals
 import com.jeanbarrossilva.orca.feature.composer.test.isBoldFormat
 import com.jeanbarrossilva.orca.feature.composer.test.isItalicFormat
-import com.jeanbarrossilva.orca.feature.composer.test.onField
 import com.jeanbarrossilva.orca.feature.composer.test.onToolbar
+import com.jeanbarrossilva.orca.platform.autos.test.kit.input.text.onTextField
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
@@ -43,11 +43,11 @@ internal class ComposerActivityTests {
 
   @Test
   fun stylesSelectedComposition() {
-    composeRule.onField().performTextInput("Hello, world!")
-    composeRule.onField().performTextInputSelection(TextRange(0, 5))
+    composeRule.onTextField().performTextInput("Hello, world!")
+    composeRule.onTextField().performTextInputSelection(TextRange(0, 5))
     composeRule.onToolbar().onChildren().filterToOne(isBoldFormat()).performClick()
     composeRule
-      .onField()
+      .onTextField()
       .assertTextEquals(
         buildAnnotatedString {
           withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append("Hello") }
@@ -62,12 +62,12 @@ internal class ComposerActivityTests {
   )
   @Test
   fun keepsStylizationWhenUnselectingStylizedComposition() {
-    composeRule.onField().performTextInput("Hello, world!")
-    composeRule.onField().performTextInputSelection(TextRange(7, 12))
+    composeRule.onTextField().performTextInput("Hello, world!")
+    composeRule.onTextField().performTextInputSelection(TextRange(7, 12))
     composeRule.onToolbar().onChildren().filterToOne(isItalicFormat()).performClick()
-    repeat(64) { composeRule.onField().performTextInputSelection(TextRange((0..12).random())) }
+    repeat(64) { composeRule.onTextField().performTextInputSelection(TextRange((0..12).random())) }
     composeRule
-      .onField()
+      .onTextField()
       .assertTextEquals(
         buildAnnotatedString {
           append("Hello, ")
