@@ -20,6 +20,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -36,9 +37,9 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
@@ -124,58 +125,36 @@ fun FormTextField(
   isSingleLined: Boolean = false,
   label: @Composable () -> Unit
 ) {
-  val context = LocalContext.current
-  val form = AutosTheme.forms.large as Form.PerCorner
-  val shape = remember(form, form::asShape)
-  val errorMessages =
-    errorDispatcher.messages.joinToString("\n") {
-      context.getString(R.string.platform_ui_text_field_consecutive_error_message, it)
-    }
-  val containsErrors by errorDispatcher.containsErrorsAsState
-
-  DisposableEffect(text) {
-    errorDispatcher.register(text)
-    onDispose {}
-  }
-
-  Column(modifier, Arrangement.spacedBy(AutosTheme.spacings.medium.dp)) {
-    BoxWithConstraints {
-      TextField(
-        text,
-        onTextChange,
-        Modifier.border(
-            AutosTheme.borders.default.asBorderStroke.width,
-            AutosTheme.borders.default.asBorderStroke.brush,
-            shape
-          )
-          .width(maxWidth)
-          .testTag(TEXT_FIELD_TAG),
-        label = {
-          val color =
-            if (containsErrors) {
-              AutosTheme.colors.error.container.asColor
-            } else {
-              LocalContentColor.current
-            }
-          val style = LocalTextStyle.current.copy(color = color)
-          ProvideTextStyle(style) { label() }
-        },
-        isError = containsErrors,
-        keyboardOptions = keyboardOptions,
-        keyboardActions = keyboardActions,
-        singleLine = isSingleLined,
-        shape = shape,
-        colors = _TextFieldDefaults.colors()
-      )
-    }
-
-    AnimatedVisibility(visible = containsErrors) {
-      Text(
-        errorMessages,
-        Modifier.padding(start = form.bottomStart.dp).testTag(TEXT_FIELD_ERRORS_TAG),
-        AutosTheme.colors.error.container.asColor
-      )
-    }
+  ContentWithErrors(text, errorDispatcher, AutosTheme.forms.large as Form.PerCorner, modifier) {
+    shape,
+    containsErrors ->
+    TextField(
+      text,
+      onTextChange,
+      Modifier.border(
+          AutosTheme.borders.default.asBorderStroke.width,
+          AutosTheme.borders.default.asBorderStroke.brush,
+          shape
+        )
+        .width(maxWidth)
+        .testTag(TEXT_FIELD_TAG),
+      label = {
+        val color =
+          if (containsErrors) {
+            AutosTheme.colors.error.container.asColor
+          } else {
+            LocalContentColor.current
+          }
+        val style = LocalTextStyle.current.copy(color = color)
+        ProvideTextStyle(style) { label() }
+      },
+      isError = containsErrors,
+      keyboardOptions = keyboardOptions,
+      keyboardActions = keyboardActions,
+      singleLine = isSingleLined,
+      shape = shape,
+      colors = _TextFieldDefaults.colors()
+    )
   }
 }
 
@@ -193,6 +172,47 @@ internal fun FormTextField(
   errorDispatcher: ErrorDispatcher = rememberErrorDispatcher()
 ) {
   FormTextField(text, onTextChange = {}, modifier, errorDispatcher) { Text("Label") }
+}
+
+/**
+ * Shows the [content] of a text field with the errors dispatched by the [errorDispatcher].
+ *
+ * @param text Text to be shown.
+ * @param errorDispatcher [ErrorDispatcher] by which invalid input state errors will be dispatched.
+ * @param modifier [Modifier] to be applied to the underlying [Column].
+ * @param content Text field to which the errors to be eventually shown are associated.
+ */
+@Composable
+private fun ContentWithErrors(
+  text: String,
+  errorDispatcher: ErrorDispatcher,
+  form: Form.PerCorner,
+  modifier: Modifier = Modifier,
+  content: @Composable BoxWithConstraintsScope.(Shape, containsErrors: Boolean) -> Unit
+) {
+  val context = LocalContext.current
+  val errorMessages =
+    errorDispatcher.messages.joinToString("\n") {
+      context.getString(R.string.platform_ui_text_field_consecutive_error_message, it)
+    }
+  val containsErrors by errorDispatcher.containsErrorsAsState
+
+  DisposableEffect(text) {
+    errorDispatcher.register(text)
+    onDispose {}
+  }
+
+  Column(modifier, Arrangement.spacedBy(AutosTheme.spacings.medium.dp)) {
+    BoxWithConstraints { content(form.asShape, containsErrors) }
+
+    AnimatedVisibility(visible = containsErrors) {
+      Text(
+        errorMessages,
+        Modifier.padding(start = form.bottomStart.dp).testTag(TEXT_FIELD_ERRORS_TAG),
+        AutosTheme.colors.error.container.asColor
+      )
+    }
+  }
 }
 
 /** Preview of a focused [FormTextField]. */
