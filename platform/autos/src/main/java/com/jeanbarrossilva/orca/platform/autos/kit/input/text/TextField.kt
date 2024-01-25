@@ -24,8 +24,6 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -207,15 +205,10 @@ fun CompositionTextField(
         singleLine = false,
         VisualTransformation.None,
         interactionSource,
-        placeholder = {
-          Row {
-            Spacer(Modifier.width(spacing))
-            ProvideTextStyle(secondaryTextStyle) { placeholder() }
-          }
-        },
+        placeholder = { ProvideTextStyle(secondaryTextStyle) { placeholder() } },
         leadingIcon = leadingIcon,
         colors = _TextFieldDefaults.colors(containerColor = Color.Transparent),
-        contentPadding = PaddingValues(0.dp)
+        contentPadding = PaddingValues(start = spacing * 2)
       )
     }
   }
