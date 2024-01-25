@@ -21,6 +21,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.DeletablePost
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Content
 import com.jeanbarrossilva.orca.core.feed.profile.post.stat.Stat
+import com.jeanbarrossilva.orca.core.feed.profile.post.stat.addable.AddableStat
 import com.jeanbarrossilva.orca.core.feed.profile.post.stat.toggleable.ToggleableStat
 import java.net.URL
 import java.time.ZonedDateTime
@@ -67,7 +68,7 @@ fun Repost(
   reblogger: Author,
   content: Content,
   publicationDateTime: ZonedDateTime,
-  comment: Stat<Post>,
+  comment: AddableStat<Post>,
   favorite: ToggleableStat<Profile>,
   reblog: ToggleableStat<Profile>,
   url: URL,

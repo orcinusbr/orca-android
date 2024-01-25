@@ -20,7 +20,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.Author
 import com.jeanbarrossilva.orca.core.feed.profile.post.DeletablePost
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Content
-import com.jeanbarrossilva.orca.core.feed.profile.post.stat.Stat
+import com.jeanbarrossilva.orca.core.feed.profile.post.stat.addable.AddableStat
 import com.jeanbarrossilva.orca.core.feed.profile.post.stat.toggleable.ToggleableStat
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.withSample
@@ -33,7 +33,7 @@ internal class TestPost(
   override val author: Author = delegate.author,
   override val content: Content = delegate.content,
   override val publicationDateTime: ZonedDateTime = delegate.publicationDateTime,
-  override val comment: Stat<Post> = delegate.comment,
+  override val comment: AddableStat<Post> = delegate.comment,
   override val favorite: ToggleableStat<Profile> = delegate.favorite,
   override val repost: ToggleableStat<Profile> = delegate.repost,
   override val url: URL = delegate.url

@@ -20,7 +20,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.Author
 import com.jeanbarrossilva.orca.core.feed.profile.post.DeletablePost
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Content
-import com.jeanbarrossilva.orca.core.feed.profile.post.stat.Stat
+import com.jeanbarrossilva.orca.core.feed.profile.post.stat.addable.AddableStat
 import com.jeanbarrossilva.orca.core.feed.profile.post.stat.toggleable.ToggleableStat
 import java.net.URL
 import java.time.ZonedDateTime
@@ -39,7 +39,7 @@ internal data class SamplePost(
   override val url: URL,
   val writerProvider: SamplePostWriter.Provider
 ) : Post() {
-  override val comment = Stat<Post>()
+  override val comment = AddableStat<Post>()
   override val favorite = ToggleableStat<Profile>()
   override val repost = ToggleableStat<Profile>()
 

@@ -302,7 +302,9 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
         ?: throw IllegalArgumentException("A return type hasn't been specified.")
     val typeResolver = buildableClassDeclaration.typeParameters.toTypeParameterResolver()
     val parameterSpecs =
-      functionDeclaration.parameters.map(::createBuilderCallbackPropertyParameterSpec)
+      functionDeclaration.parameters.map {
+        createBuilderCallbackPropertyParameterSpec(buildableClassDeclaration, it)
+      }
     val returnTypeName = returnType.toTypeName(typeResolver)
     val typeName =
       LambdaTypeName.get(parameters = parameterSpecs, returnType = returnTypeName)
@@ -336,13 +338,17 @@ class BuildableProcessor private constructor(private val environment: SymbolProc
   /**
    * Creates a [ParameterSpec] for the [valueParameter] of a callback property.
    *
+   * @param buildableClassDeclaration [KSClassDeclaration] of the [Buildable]-annotated class for
+   *   which the builder is.
    * @param valueParameter [KSValueParameter] for which the [ParameterSpec] is.
    */
   private fun createBuilderCallbackPropertyParameterSpec(
+    buildableClassDeclaration: KSClassDeclaration,
     valueParameter: KSValueParameter
   ): ParameterSpec {
     val name = valueParameter.requireName().asString()
-    val typeName = valueParameter.type.toTypeName()
+    val typeParamResolver = buildableClassDeclaration.typeParameters.toTypeParameterResolver()
+    val typeName = valueParameter.type.toTypeName(typeParamResolver)
     return ParameterSpec.builder(name, typeName).build()
   }
 
