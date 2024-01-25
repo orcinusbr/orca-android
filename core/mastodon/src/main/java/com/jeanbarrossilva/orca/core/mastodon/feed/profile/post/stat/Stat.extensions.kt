@@ -17,7 +17,10 @@ package com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.stat
 
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.stat.Stat
+import com.jeanbarrossilva.orca.core.feed.profile.post.stat.addable.AddableStat
+import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndDelete
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndGet
+import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndSubmitForm
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.MastodonContext
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.MastodonPost
 import com.jeanbarrossilva.orca.core.mastodon.instance.SomeHttpInstance
@@ -27,6 +30,7 @@ import com.jeanbarrossilva.orca.std.image.ImageLoader
 import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.client.call.body
+import io.ktor.http.Parameters
 import java.net.URL
 import kotlinx.coroutines.flow.flow
 
@@ -43,8 +47,8 @@ internal fun CommentStat(
   id: String,
   count: Int,
   imageLoaderProvider: SomeImageLoaderProvider<URL>
-): Stat<Post> {
-  return Stat(count) {
+): AddableStat<Post> {
+  return AddableStat(count) {
     get {
       flow {
         (Injector.from<CoreModule>().instanceProvider().provide() as SomeHttpInstance)
@@ -55,6 +59,22 @@ internal fun CommentStat(
           .map { it.toPost(imageLoaderProvider) }
           .also { emit(it) }
       }
+    }
+    add {
+      (Injector.from<CoreModule>().instanceProvider().provide() as SomeHttpInstance)
+        .client
+        .authenticateAndSubmitForm(
+          "/api/v1/statuses",
+          Parameters.build {
+            append("in_reply_to_id", id)
+            append("status", "${it.content.text}")
+          }
+        )
+    }
+    remove {
+      (Injector.from<CoreModule>().instanceProvider().provide() as SomeHttpInstance)
+        .client
+        .authenticateAndDelete("/api/v1/statuses/${it.id}")
     }
   }
 }

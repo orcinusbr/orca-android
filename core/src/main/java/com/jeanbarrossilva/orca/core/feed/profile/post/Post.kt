@@ -21,6 +21,7 @@ import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Content
 import com.jeanbarrossilva.orca.core.feed.profile.post.stat.Stat
+import com.jeanbarrossilva.orca.core.feed.profile.post.stat.addable.AddableStat
 import com.jeanbarrossilva.orca.core.feed.profile.post.stat.toggleable.ToggleableStat
 import java.io.Serializable
 import java.net.URL
@@ -41,7 +42,7 @@ abstract class Post : Serializable {
   abstract val publicationDateTime: ZonedDateTime
 
   /** [Stat] for comments. */
-  abstract val comment: Stat<Post>
+  abstract val comment: AddableStat<Post>
 
   /** [Stat] for favorites. */
   abstract val favorite: ToggleableStat<Profile>
