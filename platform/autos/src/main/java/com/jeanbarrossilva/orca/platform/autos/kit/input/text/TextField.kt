@@ -315,13 +315,12 @@ private fun ContentWithErrors(
       context.getString(R.string.platform_ui_text_field_consecutive_error_message, it)
     }
   val containsErrors by errorDispatcher.containsErrorsAsState
-  val secondaryTextColor =
+  val errorMessagesColor =
     if (containsErrors) {
       AutosTheme.colors.error.container.asColor
     } else {
       LocalContentColor.current
     }
-  val secondaryTextStyle = LocalTextStyle.current.copy(color = secondaryTextColor)
 
   DisposableEffect(text) {
     errorDispatcher.register(text)
@@ -329,13 +328,18 @@ private fun ContentWithErrors(
   }
 
   Column(modifier, Arrangement.spacedBy(AutosTheme.spacings.medium.dp)) {
-    BoxWithConstraints { content(containsErrors, secondaryTextStyle) }
+    BoxWithConstraints {
+      content(
+        containsErrors,
+        LocalTextStyle.current.copy(color = AutosTheme.colors.tertiary.asColor)
+      )
+    }
 
     AnimatedVisibility(visible = containsErrors) {
       Text(
         errorMessages,
         Modifier.padding(start = errorMessagesStartSpacing).testTag(TEXT_FIELD_ERRORS_TAG),
-        secondaryTextColor
+        errorMessagesColor
       )
     }
   }
