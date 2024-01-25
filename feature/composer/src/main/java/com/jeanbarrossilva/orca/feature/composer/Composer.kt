@@ -19,19 +19,16 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -42,25 +39,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.jeanbarrossilva.orca.composite.timeline.avatar.SmallAvatar
 import com.jeanbarrossilva.orca.composite.timeline.text.toAnnotatedString
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
 import com.jeanbarrossilva.orca.feature.composer.ui.Toolbar
-import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.icon.HoverableIconButton
-import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TextFieldDefaults as _TextFieldDefaults
+import com.jeanbarrossilva.orca.platform.autos.kit.input.text.CompositionTextField
+import com.jeanbarrossilva.orca.platform.autos.kit.input.text.TextFieldDefaults
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
@@ -70,8 +63,6 @@ import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.core.withSample
 import com.jeanbarrossilva.orca.platform.focus.rememberImmediateFocusRequester
-
-internal const val COMPOSER_FIELD = "composer-field"
 
 @Composable
 internal fun Composer(
@@ -101,10 +92,6 @@ private fun Composer(
 ) {
   val density = LocalDensity.current
   val focusRequester = rememberImmediateFocusRequester()
-  val style = AutosTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Normal)
-  val interactionSource = remember(::MutableInteractionSource)
-  val brushColor = AutosTheme.colors.primary.container.asColor
-  val cursorBrush = remember(brushColor) { SolidColor(brushColor) }
   var isToolbarVisible by remember { mutableStateOf(isToolbarInitiallyVisible) }
   val toolbarSpacing = AutosTheme.spacings.medium.dp
   var toolbarSafeAreaPadding by remember { mutableStateOf(PaddingValues(end = 56.dp + 16.dp)) }
@@ -150,36 +137,19 @@ private fun Composer(
     Box(Modifier.padding(padding).fillMaxSize()) {
       LazyColumn(
         contentPadding =
-          PaddingValues(AutosTheme.spacings.large.dp) + AutosTheme.overlays.fab.asPaddingValues
+          PaddingValues(bottom = TextFieldDefaults.compositionSpacing) +
+            AutosTheme.overlays.fab.asPaddingValues
       ) {
         item {
-          BasicTextField(
+          CompositionTextField(
             value,
             onValueChange,
+            leadingIcon = { SmallAvatar() },
+            onSend = onCompose,
             Modifier.onFocusChanged { isToolbarVisible = it.isFocused }
               .focusRequester(focusRequester)
-              .testTag(COMPOSER_FIELD),
-            textStyle = style,
-            interactionSource = interactionSource,
-            cursorBrush = cursorBrush
-          ) { innerTextField ->
-            @OptIn(ExperimentalMaterial3Api::class)
-            TextFieldDefaults.DecorationBox(
-              value.text,
-              innerTextField,
-              enabled = true,
-              singleLine = false,
-              VisualTransformation.None,
-              interactionSource,
-              placeholder = {
-                Text(
-                  stringResource(R.string.feature_composer_placeholder),
-                  style = style.copy(color = AutosTheme.colors.tertiary.asColor)
-                )
-              },
-              colors = _TextFieldDefaults.colors(containerColor = Color.Transparent),
-              contentPadding = PaddingValues(0.dp)
-            )
+          ) {
+            Text(stringResource(R.string.feature_composer_placeholder))
           }
         }
       }

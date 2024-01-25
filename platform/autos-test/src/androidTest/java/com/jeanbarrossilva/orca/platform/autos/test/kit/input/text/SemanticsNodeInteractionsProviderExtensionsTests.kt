@@ -18,6 +18,7 @@ package com.jeanbarrossilva.orca.platform.autos.test.kit.input.text
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import com.jeanbarrossilva.orca.platform.autos.kit.input.text.CompositionTextField
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.FormTextField
 import com.jeanbarrossilva.orca.platform.autos.kit.input.text.error.rememberErrorDispatcher
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
@@ -28,10 +29,39 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
+  fun findsCompositionTextField() {
+    composeRule
+      .apply { setContent { AutosTheme { CompositionTextField() } } }
+      .onTextField()
+      .assertIsDisplayed()
+  }
+
+  @Test
   fun findsFormTextField() {
     composeRule
       .apply { setContent { AutosTheme { FormTextField() } } }
       .onTextField()
+      .assertIsDisplayed()
+  }
+
+  @Test
+  fun findsCompositionTextFieldErrors() {
+    composeRule
+      .apply {
+        setContent {
+          AutosTheme {
+            val errorDispatcher = rememberErrorDispatcher { errorAlways("☠️") }
+
+            DisposableEffect(errorDispatcher) {
+              errorDispatcher.dispatch()
+              onDispose {}
+            }
+
+            CompositionTextField(errorDispatcher = errorDispatcher)
+          }
+        }
+      }
+      .onTextFieldErrors()
       .assertIsDisplayed()
   }
 

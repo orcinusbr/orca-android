@@ -18,14 +18,22 @@ package com.jeanbarrossilva.orca.platform.autos.kit.input.text
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.border
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.ProvideTextStyle
@@ -37,12 +45,20 @@ import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.jeanbarrossilva.loadable.placeholder.Placeholder
 import com.jeanbarrossilva.orca.autos.forms.Form
 import com.jeanbarrossilva.orca.platform.autos.R
 import com.jeanbarrossilva.orca.platform.autos.borders.asBorderStroke
@@ -59,6 +75,7 @@ import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 /**
  * Tag that identifies a text field for testing purposes.
  *
+ * @see CompositionTextField
  * @see FormTextField
  */
 const val TEXT_FIELD_TAG = "text-field"
@@ -68,8 +85,12 @@ const val TEXT_FIELD_ERRORS_TAG = "text-field-errors"
 
 /** Default values used by Orca's text fields. */
 object TextFieldDefaults {
+  /** Amount of [Dp]s by which a [CompositionTextField] is spaced by default. */
+  val compositionSpacing
+    @Composable get() = AutosTheme.spacings.medium.dp
+
   /**
-   * [TextFieldColors] by which a [TextField][FormTextField] is colored by default.
+   * [TextFieldColors] by which a text field is colored by default.
    *
    * @param containerColor [Color] to color the container with.
    */
@@ -89,13 +110,37 @@ object TextFieldDefaults {
 }
 
 /**
- * Orca-specific [TextField].
+ * Orca-specific text field for composition.
+ *
+ * @param modifier [Modifier] to be applied to the underlying [ContentWithErrors].
+ * @param errorDispatcher [ErrorDispatcher] by which invalid input state errors will be dispatched.
+ */
+@Composable
+@VisibleForTesting
+fun CompositionTextField(
+  modifier: Modifier = Modifier,
+  errorDispatcher: ErrorDispatcher = rememberErrorDispatcher()
+) {
+  CompositionTextField(
+    remember { TextFieldValue("") },
+    onValueChange = {},
+    leadingIcon = { Placeholder(Modifier.size(42.dp), shape = AutosTheme.forms.small.asShape) },
+    onSend = {},
+    modifier,
+    errorDispatcher
+  ) {
+    Text("Placeholder")
+  }
+}
+
+/**
+ * Orca-specific [TextField] for forms.
  *
  * @param modifier [Modifier] to be applied to the underlying [Column].
  * @param errorDispatcher [ErrorDispatcher] to which invalid input state errors will be dispatched.
  */
 @Composable
-@VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+@VisibleForTesting
 fun FormTextField(
   modifier: Modifier = Modifier,
   errorDispatcher: ErrorDispatcher = rememberErrorDispatcher()
@@ -104,11 +149,84 @@ fun FormTextField(
 }
 
 /**
+ * Orca-specific text field for composition.
+ *
+ * @param value [TextFieldValue] with the text to be shown.
+ * @param onValueChange Callback called whenever the [TextFieldValue] changes.
+ * @param leadingIcon Icon displayed before the [value].
+ * @param onSend Action performed when the [value] is requested to be sent.
+ * @param modifier [Modifier] to be applied to the underlying [ContentWithErrors].
+ * @param errorDispatcher [ErrorDispatcher] by which invalid input state errors will be dispatched.
+ * @param placeholder [Text] to be shown when the [CompositionTextField] is focused and the [value]
+ *   is empty.
+ */
+@Composable
+fun CompositionTextField(
+  value: TextFieldValue,
+  onValueChange: (value: TextFieldValue) -> Unit,
+  leadingIcon: @Composable () -> Unit,
+  onSend: () -> Unit,
+  modifier: Modifier = Modifier,
+  errorDispatcher: ErrorDispatcher = rememberErrorDispatcher(),
+  placeholder: @Composable () -> Unit = {}
+) {
+  val interactionSource = remember(::MutableInteractionSource)
+
+  // TODO: Internalize Form subclasses' constructors in αὐτός.
+  // TODO: Add Form.Companion.Rectangular to αὐτός.
+  val shape = remember {
+    Form.PerCorner(topStart = 0f, topEnd = 0f, bottomStart = 0f, bottomEnd = 0f).asShape
+  }
+
+  val style = LocalTextStyle.current
+  val cursorBrushColor = AutosTheme.colors.primary.container.asColor
+  val cursorBrush = remember(cursorBrushColor) { SolidColor(cursorBrushColor) }
+  val spacing = _TextFieldDefaults.compositionSpacing
+
+  ContentWithErrors(
+    value.text,
+    errorDispatcher,
+    errorMessagesStartSpacing = spacing,
+    modifier.padding(bottom = spacing)
+  ) { _, secondaryTextStyle ->
+    BasicTextField(
+      value,
+      onValueChange,
+      Modifier.clip(shape).padding(spacing).fillMaxWidth().testTag(TEXT_FIELD_TAG),
+      textStyle = style,
+      keyboardActions = KeyboardActions(onSend = { onSend() }),
+      keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
+      interactionSource = interactionSource,
+      cursorBrush = cursorBrush
+    ) { innerTextField ->
+      @OptIn(ExperimentalMaterial3Api::class)
+      TextFieldDefaults.DecorationBox(
+        value.text,
+        innerTextField,
+        enabled = true,
+        singleLine = false,
+        VisualTransformation.None,
+        interactionSource,
+        placeholder = {
+          Row {
+            Spacer(Modifier.width(spacing))
+            ProvideTextStyle(secondaryTextStyle) { placeholder() }
+          }
+        },
+        leadingIcon = leadingIcon,
+        colors = _TextFieldDefaults.colors(containerColor = Color.Transparent),
+        contentPadding = PaddingValues(0.dp)
+      )
+    }
+  }
+}
+
+/**
  * Orca-specific text field for forms.
  *
  * @param text Text to be shown.
  * @param onTextChange Callback called whenever the text changes.
- * @param modifier [Modifier] to be applied to the underlying [Column].
+ * @param modifier [Modifier] to be applied to the underlying [ContentWithErrors].
  * @param errorDispatcher [ErrorDispatcher] by which invalid input state errors will be dispatched.
  * @param keyboardOptions Software-IME-specific options.
  * @param keyboardActions Software-IME-specific actions.
@@ -125,9 +243,15 @@ fun FormTextField(
   isSingleLined: Boolean = false,
   label: @Composable () -> Unit
 ) {
-  ContentWithErrors(text, errorDispatcher, AutosTheme.forms.large as Form.PerCorner, modifier) {
-    shape,
-    containsErrors ->
+  val form = AutosTheme.forms.large as Form.PerCorner
+  val shape = remember(form, form::asShape)
+
+  ContentWithErrors(
+    text,
+    errorDispatcher,
+    errorMessagesStartSpacing = form.bottomStart.dp,
+    modifier
+  ) { containsErrors, secondaryTextStyle ->
     TextField(
       text,
       onTextChange,
@@ -138,16 +262,7 @@ fun FormTextField(
         )
         .width(maxWidth)
         .testTag(TEXT_FIELD_TAG),
-      label = {
-        val color =
-          if (containsErrors) {
-            AutosTheme.colors.error.container.asColor
-          } else {
-            LocalContentColor.current
-          }
-        val style = LocalTextStyle.current.copy(color = color)
-        ProvideTextStyle(style) { label() }
-      },
+      label = { ProvideTextStyle(secondaryTextStyle) { label() } },
       isError = containsErrors,
       keyboardOptions = keyboardOptions,
       keyboardActions = keyboardActions,
@@ -179,6 +294,8 @@ internal fun FormTextField(
  *
  * @param text Text to be shown.
  * @param errorDispatcher [ErrorDispatcher] by which invalid input state errors will be dispatched.
+ * @param errorMessagesStartSpacing Leading spacing between the error messages and the start of the
+ *   [Composable].
  * @param modifier [Modifier] to be applied to the underlying [Column].
  * @param content Text field to which the errors to be eventually shown are associated.
  */
@@ -186,9 +303,11 @@ internal fun FormTextField(
 private fun ContentWithErrors(
   text: String,
   errorDispatcher: ErrorDispatcher,
-  form: Form.PerCorner,
+  errorMessagesStartSpacing: Dp,
   modifier: Modifier = Modifier,
-  content: @Composable BoxWithConstraintsScope.(Shape, containsErrors: Boolean) -> Unit
+  content:
+    @Composable
+    BoxWithConstraintsScope.(containsErrors: Boolean, secondaryTextStyle: TextStyle) -> Unit
 ) {
   val context = LocalContext.current
   val errorMessages =
@@ -196,6 +315,13 @@ private fun ContentWithErrors(
       context.getString(R.string.platform_ui_text_field_consecutive_error_message, it)
     }
   val containsErrors by errorDispatcher.containsErrorsAsState
+  val secondaryTextColor =
+    if (containsErrors) {
+      AutosTheme.colors.error.container.asColor
+    } else {
+      LocalContentColor.current
+    }
+  val secondaryTextStyle = LocalTextStyle.current.copy(color = secondaryTextColor)
 
   DisposableEffect(text) {
     errorDispatcher.register(text)
@@ -203,19 +329,42 @@ private fun ContentWithErrors(
   }
 
   Column(modifier, Arrangement.spacedBy(AutosTheme.spacings.medium.dp)) {
-    BoxWithConstraints { content(form.asShape, containsErrors) }
+    BoxWithConstraints { content(containsErrors, secondaryTextStyle) }
 
     AnimatedVisibility(visible = containsErrors) {
       Text(
         errorMessages,
-        Modifier.padding(start = form.bottomStart.dp).testTag(TEXT_FIELD_ERRORS_TAG),
-        AutosTheme.colors.error.container.asColor
+        Modifier.padding(start = errorMessagesStartSpacing).testTag(TEXT_FIELD_ERRORS_TAG),
+        secondaryTextColor
       )
     }
   }
 }
 
-/** Preview of a focused [FormTextField]. */
+/** Preview of a valid [CompositionTextField]. */
+@Composable
+@MultiThemePreview
+private fun ValidCompositionTextFieldPreview() {
+  AutosTheme { CompositionTextField() }
+}
+
+/** Preview of a [CompositionTextField] with errors. */
+@Composable
+@MultiThemePreview
+private fun InvalidCompositionTextFieldPreview() {
+  AutosTheme {
+    CompositionTextField(
+      errorDispatcher =
+        rememberErrorDispatcher {
+            errorAlways("This is an error.")
+            errorAlways("This is another error. 😛")
+          }
+          .apply(ErrorDispatcher::dispatch)
+    )
+  }
+}
+
+/** Preview of a valid [FormTextField]. */
 @Composable
 @MultiThemePreview
 private fun ValidFormTextFieldPreview() {
