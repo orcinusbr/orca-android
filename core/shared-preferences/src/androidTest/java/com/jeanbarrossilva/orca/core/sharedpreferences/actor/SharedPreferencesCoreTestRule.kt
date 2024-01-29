@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,10 +13,10 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.core.sharedpreferences.actor.test
+package com.jeanbarrossilva.orca.core.sharedpreferences.actor
 
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.TermMuter
-import com.jeanbarrossilva.orca.core.sharedpreferences.actor.SharedPreferencesActorProvider
+import com.jeanbarrossilva.orca.core.sharedpreferences.actor.mirror.image.NoOpImageLoaderProviderFactory
 import com.jeanbarrossilva.orca.core.sharedpreferences.feed.profile.post.content.SharedPreferencesTermMuter
 import com.jeanbarrossilva.orca.platform.testing.context
 import org.junit.rules.ExternalResource
@@ -29,7 +29,7 @@ internal class SharedPreferencesCoreTestRule : ExternalResource() {
     private set
 
   override fun before() {
-    actorProvider = SharedPreferencesActorProvider(context)
+    actorProvider = SharedPreferencesActorProvider(context, NoOpImageLoaderProviderFactory)
     termMuter = SharedPreferencesTermMuter(context)
   }
 

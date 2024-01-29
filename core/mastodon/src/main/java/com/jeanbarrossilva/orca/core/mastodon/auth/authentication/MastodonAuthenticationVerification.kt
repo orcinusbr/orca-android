@@ -15,11 +15,34 @@
 
 package com.jeanbarrossilva.orca.core.mastodon.auth.authentication
 
+import com.jeanbarrossilva.orca.core.auth.actor.Actor
+import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
+import java.net.URL
 import kotlinx.serialization.Serializable
 
 /**
  * Structure returned by the API when the user's credentials are verified.
  *
  * @param id Unique identifier of the user.
+ * @param avatar URL [String] that leads to the avatar image.
  */
-@Serializable internal data class MastodonAuthenticationVerification(val id: String)
+@Serializable
+internal data class MastodonAuthenticationVerification(val id: String, val avatar: String) {
+  /**
+   * Converts this [MastodonAuthenticationVerification] into an [authenticated][Actor.Authenticated]
+   * [Actor].
+   *
+   * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
+   *   avatar will be loaded from a [URL].
+   * @param accessToken Token that gives Orca user-level access to the API resources.
+   */
+  fun toActor(
+    avatarLoaderProvider: SomeImageLoaderProvider<URL>,
+    accessToken: String
+  ): Actor.Authenticated {
+    val avatarURL = URL(avatar)
+    val avatarLoader = avatarLoaderProvider.provide(avatarURL)
+    return Actor.Authenticated(id, accessToken, avatarLoader)
+  }
+}

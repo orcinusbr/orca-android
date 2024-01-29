@@ -24,6 +24,7 @@ dependencies {
   api(project(":core-module"))
 
   implementation(project(":ext:coroutines"))
+  implementation(project(":std:image-test"))
 
   ksp(project(":std:injector-processor"))
 

@@ -21,6 +21,7 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import com.jeanbarrossilva.orca.composite.composable.ComposableActivity
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
+import com.jeanbarrossilva.orca.core.instance.InstanceProvider
 import com.jeanbarrossilva.orca.core.mastodon.auth.authentication.MastodonAuthentication
 import com.jeanbarrossilva.orca.core.mastodon.auth.authentication.MastodonAuthenticationViewModel
 import com.jeanbarrossilva.orca.core.mastodon.instance.ContextualMastodonInstance
@@ -46,8 +47,20 @@ class MastodonAuthenticationActivity : ComposableActivity() {
    */
   private val viewModel by
     viewModels<MastodonAuthenticationViewModel> {
-      MastodonAuthenticationViewModel.createFactory(application, authorizationCode)
+      MastodonAuthenticationViewModel.createFactory(
+        application,
+        instance.imageLoaderProvider,
+        authorizationCode
+      )
     }
+
+  /**
+   * [ContextualMastodonInstance] provided by the [module]'s [InstanceProvider].
+   *
+   * @see CoreModule.instanceProvider
+   */
+  private val instance
+    get() = module.instanceProvider().provide() as ContextualMastodonInstance
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -65,7 +78,7 @@ class MastodonAuthenticationActivity : ComposableActivity() {
    */
   private fun authenticate() {
     viewModel.request {
-      (module.instanceProvider().provide() as ContextualMastodonInstance).authenticator.receive(it)
+      instance.authenticator.receive(it)
       finish()
     }
   }

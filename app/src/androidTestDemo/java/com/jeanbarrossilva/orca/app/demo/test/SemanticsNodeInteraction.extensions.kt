@@ -32,7 +32,6 @@ import com.jeanbarrossilva.orca.composite.timeline.test.isTimeline
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.instance.Instance
-import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.SAMPLE_POSTS_PER_PAGE
 import com.jeanbarrossilva.orca.feature.gallery.test.ui.page.isPage
 import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery

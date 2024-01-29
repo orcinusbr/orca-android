@@ -15,6 +15,9 @@
 
 package com.jeanbarrossilva.orca.core.auth.actor
 
+import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoader
+
 /** Agent that can perform operations throughout the application. */
 sealed interface Actor {
   /** Unknown [Actor] that has restricted access. */
@@ -25,8 +28,13 @@ sealed interface Actor {
    *
    * @param id Unique identifier within Mastodon.
    * @param accessToken Access token resulted from the authentication.
+   * @param avatarLoader [ImageLoader] by which the avatar will be loaded.
    */
-  data class Authenticated(val id: String, val accessToken: String) : Actor {
+  data class Authenticated(
+    val id: String,
+    val accessToken: String,
+    val avatarLoader: SomeImageLoader
+  ) : Actor {
     companion object
   }
 }

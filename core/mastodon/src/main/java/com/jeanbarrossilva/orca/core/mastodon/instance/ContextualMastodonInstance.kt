@@ -66,7 +66,7 @@ class ContextualMastodonInstance(
   actorProvider: ActorProvider,
   override val authenticationLock: AuthenticationLock<MastodonAuthenticator>,
   termMuter: TermMuter,
-  imageLoaderProvider: SomeImageLoaderProvider<URL>
+  internal val imageLoaderProvider: SomeImageLoaderProvider<URL>
 ) : MastodonInstance<MastodonAuthorizer, MastodonAuthenticator>(domain, authorizer) {
   /** [MastodonDatabase] in which cached structures will be persisted. */
   private val database = MastodonDatabase.getInstance(context)
