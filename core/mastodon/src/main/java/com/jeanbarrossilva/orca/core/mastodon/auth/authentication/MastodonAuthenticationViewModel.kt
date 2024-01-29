@@ -28,21 +28,29 @@ import com.jeanbarrossilva.orca.core.mastodon.auth.Mastodon
 import com.jeanbarrossilva.orca.core.mastodon.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
+import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.submitForm
 import io.ktor.http.Parameters
+import java.net.URL
 import kotlinx.coroutines.launch
 
 /**
  * [AndroidViewModel] that requests an [Actor] through [request].
  *
  * @param application [Application] that allows [Context]-specific behavior.
+ * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
+ *   avatar will be loaded from a [URL].
  * @param authorizationCode Code provided by the API when authorization was granted to the user.
  */
 internal class MastodonAuthenticationViewModel
-private constructor(application: Application, private val authorizationCode: String) :
-  AndroidViewModel(application) {
+private constructor(
+  application: Application,
+  private val avatarLoaderProvider: SomeImageLoaderProvider<URL>,
+  private val authorizationCode: String
+) : AndroidViewModel(application) {
   /**
    * Requests the API to authenticate the user and runs [onAuthentication] with the resulting
    * [Actor].
@@ -68,7 +76,7 @@ private constructor(application: Application, private val authorizationCode: Str
           }
         )
         .body<MastodonAuthenticationToken>()
-        .toActor()
+        .toActor(avatarLoaderProvider)
         .run(onAuthentication)
     }
   }
@@ -78,14 +86,19 @@ private constructor(application: Application, private val authorizationCode: Str
      * Creates a [ViewModelProvider.Factory] that provides a [MastodonAuthenticationViewModel].
      *
      * @param application [Application] that allows [Context]-specific behavior.
+     * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
+     *   the avatar will be loaded from a [URL].
      * @param authorizationCode Code provided by the API when authorization was granted to the user.
      */
     fun createFactory(
       application: Application,
+      avatarLoaderProvider: SomeImageLoaderProvider<URL>,
       authorizationCode: String
     ): ViewModelProvider.Factory {
       return viewModelFactory {
-        initializer { MastodonAuthenticationViewModel(application, authorizationCode) }
+        initializer {
+          MastodonAuthenticationViewModel(application, avatarLoaderProvider, authorizationCode)
+        }
       }
     }
   }

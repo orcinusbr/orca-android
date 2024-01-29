@@ -28,9 +28,13 @@ android {
 }
 
 dependencies {
+  androidTestImplementation(project(":core:sample"))
+  androidTestImplementation(project(":core:sample-test"))
   androidTestImplementation(project(":core-test"))
+  androidTestImplementation(project(":ext:reflection"))
   androidTestImplementation(project(":platform:testing"))
   androidTestImplementation(libs.android.test.runner)
+  androidTestImplementation(libs.assertk)
   androidTestImplementation(libs.junit)
   androidTestImplementation(libs.kotlin.coroutines.test)
   androidTestImplementation(libs.turbine)
@@ -39,5 +43,6 @@ dependencies {
   implementation(libs.android.core)
   implementation(libs.android.lifecycle.runtime)
   implementation(libs.kotlin.coroutines.android)
+  implementation(libs.kotlin.reflect)
   implementation(libs.kotlin.serialization.json)
 }

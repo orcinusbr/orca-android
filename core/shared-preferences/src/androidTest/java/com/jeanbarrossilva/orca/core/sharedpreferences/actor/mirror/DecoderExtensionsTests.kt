@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,12 +15,12 @@
 
 package com.jeanbarrossilva.orca.core.sharedpreferences.actor.mirror
 
-import com.jeanbarrossilva.orca.core.auth.actor.Actor
+import kotlinx.serialization.json.JsonObject
+import org.junit.Test
 
-/** Converts this [Actor] into a [MirroredActor]. */
-internal fun Actor.toMirroredActor(): MirroredActor {
-  return when (this) {
-    is Actor.Unauthenticated -> MirroredActor.unauthenticated()
-    is Actor.Authenticated -> MirroredActor.authenticated(id, accessToken, this.avatarLoader.source)
+internal class DecoderExtensionsTests {
+  @Test
+  fun createsJsonTreeDecoder() {
+    createJsonTreeDecoder(JsonObject(emptyMap()))
   }
 }

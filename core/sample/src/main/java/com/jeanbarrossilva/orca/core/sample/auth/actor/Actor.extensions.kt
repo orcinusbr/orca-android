@@ -16,10 +16,24 @@
 package com.jeanbarrossilva.orca.core.sample.auth.actor
 
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
+import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoader
+import com.jeanbarrossilva.orca.std.image.test.TestImageLoader
 
-/** [Actor.Authenticated] returned by [sample]. */
-private val authenticatedActorSample = Actor.Authenticated("sample-id", "sample-access-token")
+/**
+ * [Authenticated][Actor.Authenticated] [Actor] returned by [Actor.Authenticated.Companion.sample].
+ */
+private val testSampleAuthenticatedActor = Actor.Authenticated.createSample(TestImageLoader)
 
-/** Sample [authenticated][Actor.Authenticated] [Actor]. */
+/** [Authenticated][Actor.Authenticated] [Actor] whose avatar is loaded by a [TestImageLoader]. */
 val Actor.Authenticated.Companion.sample
-  get() = authenticatedActorSample
+  get() = testSampleAuthenticatedActor
+
+/**
+ * Creates a sample [authenticated][Actor.Authenticated] [Actor].
+ *
+ * @param avatarLoader [ImageLoader] by which the avatar will be loaded.
+ */
+fun Actor.Authenticated.Companion.createSample(avatarLoader: SomeImageLoader): Actor.Authenticated {
+  return Actor.Authenticated("sample-id", "sample-access-token", avatarLoader)
+}

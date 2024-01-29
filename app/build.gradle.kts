@@ -101,6 +101,7 @@ dependencies {
   implementation(project(":feature:settings"))
   implementation(project(":feature:settings:term-muting"))
   implementation(project(":platform:autos"))
+  implementation(project(":platform:core"))
   implementation(project(":platform:intents"))
   implementation(project(":platform:navigation"))
   implementation(project(":std:image:compose"))

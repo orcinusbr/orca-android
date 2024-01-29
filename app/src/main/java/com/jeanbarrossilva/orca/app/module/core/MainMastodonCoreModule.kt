@@ -43,7 +43,9 @@ internal object MainMastodonCoreModule :
     injectionOf { MainMastodonCoreModule.authenticationLock },
     injectionOf { MainMastodonCoreModule.termMuter }
   ) {
-  private val actorProvider by lazy { SharedPreferencesActorProvider(context) }
+  private val actorProvider by lazy {
+    SharedPreferencesActorProvider(context, MainImageLoaderProviderFactory)
+  }
   private val authorizer by lazy { MastodonAuthorizer(context) }
   private val authenticator by lazy { MastodonAuthenticator(context, authorizer, actorProvider) }
   private val authenticationLock by lazy { AuthenticationLock(authenticator, actorProvider) }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -17,6 +17,7 @@ package com.jeanbarrossilva.orca.core.test
 
 import com.jeanbarrossilva.orca.core.auth.Authenticator
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
+import com.jeanbarrossilva.orca.std.image.test.TestImageLoader
 
 /**
  * [Authenticator] that switches the [Actor] locally on authentication.
@@ -44,7 +45,8 @@ class TestAuthenticator(
    * [Authenticated][Actor.Authenticated] [Actor] to switch to when the [currentActor] is
    * [unauthenticated][Actor.Unauthenticated].
    */
-  private val authenticatedActor = Actor.Authenticated("test-id", "test-access-token")
+  private val authenticatedActor =
+    Actor.Authenticated("test-id", "test-access-token", TestImageLoader)
 
   override suspend fun onAuthenticate(authorizationCode: String): Actor {
     onOnAuthenticate(authorizationCode)

@@ -16,7 +16,7 @@
 package com.jeanbarrossilva.orca.core.sharedpreferences.feed.profile.post.content
 
 import app.cash.turbine.test
-import com.jeanbarrossilva.orca.core.sharedpreferences.actor.test.SharedPreferencesCoreTestRule
+import com.jeanbarrossilva.orca.core.sharedpreferences.actor.SharedPreferencesCoreTestRule
 import com.jeanbarrossilva.orca.platform.testing.context
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,14 +13,19 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.core.sharedpreferences.actor.mirror
+package com.jeanbarrossilva.orca.core.sample.test.auth.actor
 
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
+import com.jeanbarrossilva.orca.core.sample.auth.actor.createSample
+import com.jeanbarrossilva.orca.core.sample.image.AuthorImageSource
+import com.jeanbarrossilva.orca.core.sample.test.image.TestSampleImageLoader
 
-/** Converts this [Actor] into a [MirroredActor]. */
-internal fun Actor.toMirroredActor(): MirroredActor {
-  return when (this) {
-    is Actor.Unauthenticated -> MirroredActor.unauthenticated()
-    is Actor.Authenticated -> MirroredActor.authenticated(id, accessToken, this.avatarLoader.source)
-  }
-}
+/** [Actor.Authenticated] returned by [Actor.Authenticated.Companion.sample]. */
+internal val testAuthenticatedActorSample =
+  Actor.Authenticated.createSample(
+    TestSampleImageLoader.Provider.provide(AuthorImageSource.Default)
+  )
+
+/** Test sample [authenticated][Actor.Authenticated] [Actor]. */
+val Actor.Authenticated.Companion.sample
+  get() = testAuthenticatedActorSample

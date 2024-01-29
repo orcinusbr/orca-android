@@ -19,10 +19,13 @@ import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.mastodon.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
+import com.jeanbarrossilva.orca.std.image.ImageLoader
+import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.client.call.body
 import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.get
+import java.net.URL
 import kotlinx.serialization.Serializable
 
 /**
@@ -36,14 +39,32 @@ internal data class MastodonAuthenticationToken(val accessToken: String) {
   /**
    * Converts this [MastodonAuthenticationToken] into an [authenticated][Actor.Authenticated]
    * [Actor].
+   *
+   * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
+   *   avatar will be loaded from a [URL].
    */
-  suspend fun toActor(): Actor.Authenticated {
-    val id =
+  suspend fun toActor(avatarLoaderProvider: SomeImageLoaderProvider<URL>): Actor.Authenticated {
+    return toActor(
+      avatarLoaderProvider,
       (Injector.from<CoreModule>().instanceProvider().provide() as SomeHttpInstance)
         .client
         .get("/api/v1/accounts/verify_credentials") { bearerAuth(accessToken) }
         .body<MastodonAuthenticationVerification>()
-        .id
-    return Actor.Authenticated(id, accessToken)
+    )
+  }
+
+  /**
+   * Converts this [MastodonAuthenticationToken] into an [authenticated][Actor.Authenticated]
+   * [Actor].
+   *
+   * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
+   *   avatar will be loaded from a [URL].
+   * @param verification Result of verifying the user's credentials.
+   */
+  fun toActor(
+    avatarLoaderProvider: SomeImageLoaderProvider<URL>,
+    verification: MastodonAuthenticationVerification
+  ): Actor.Authenticated {
+    return verification.toActor(avatarLoaderProvider, accessToken)
   }
 }

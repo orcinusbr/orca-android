@@ -21,11 +21,15 @@ import androidx.core.content.edit
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.auth.actor.ActorProvider
 import com.jeanbarrossilva.orca.core.sharedpreferences.actor.mirror.MirroredActor
+import com.jeanbarrossilva.orca.core.sharedpreferences.actor.mirror.image.ImageLoaderProviderFactory
 import com.jeanbarrossilva.orca.core.sharedpreferences.actor.mirror.toMirroredActor
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-class SharedPreferencesActorProvider(context: Context) : ActorProvider() {
+class SharedPreferencesActorProvider(
+  context: Context,
+  private val avatarLoaderProviderFactory: ImageLoaderProviderFactory
+) : ActorProvider() {
   private val preferences: SharedPreferences =
     context.getSharedPreferences("shared-preferences-actor-provider", Context.MODE_PRIVATE)
 
@@ -39,7 +43,7 @@ class SharedPreferencesActorProvider(context: Context) : ActorProvider() {
     return preferences
       .getString(MIRRORED_ACTOR_KEY, null)
       ?.let { Json.decodeFromString<MirroredActor>(it) }
-      ?.toActor()
+      ?.toActor(avatarLoaderProviderFactory)
       ?: Actor.Unauthenticated
   }
 

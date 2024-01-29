@@ -16,19 +16,45 @@
 package com.jeanbarrossilva.orca.core.sharedpreferences.actor.mirror
 
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
+import com.jeanbarrossilva.orca.core.sharedpreferences.actor.mirror.image.ImageLoaderProviderFactory
+import com.jeanbarrossilva.orca.core.sharedpreferences.actor.mirror.image.ImageLoaderSourceSerializer
+import java.util.Objects
 import kotlinx.serialization.Serializable
 
 @Serializable
 internal class MirroredActor
-private constructor(private val type: String, val id: String?, val accessToken: String?) {
+private constructor(
+  private val type: String,
+  val id: String?,
+  val accessToken: String?,
+  private val avatarSource: @Serializable(with = ImageLoaderSourceSerializer::class) Any?
+) {
   init {
     ensureIntegrity()
   }
 
-  fun toActor(): Actor {
+  override fun equals(other: Any?): Boolean {
+    return other is MirroredActor &&
+      type == other.type &&
+      id == other.id &&
+      accessToken == other.accessToken &&
+      avatarSource == other.avatarSource
+  }
+
+  override fun hashCode(): Int {
+    return Objects.hash(type, id, accessToken, avatarSource)
+  }
+
+  fun toActor(avatarProviderFactory: ImageLoaderProviderFactory): Actor {
     return fold(
       onUnauthenticated = { Actor.Unauthenticated },
-      onAuthenticated = { Actor.Authenticated(id!!, accessToken!!) }
+      onAuthenticated = {
+        Actor.Authenticated(
+          id!!,
+          accessToken!!,
+          avatarProviderFactory.createFor(avatarSource!!::class).provide(avatarSource)
+        )
+      }
     )
   }
 
@@ -66,11 +92,11 @@ private constructor(private val type: String, val id: String?, val accessToken: 
       "Authenticated mirrored actor should have"
 
     fun unauthenticated(): MirroredActor {
-      return MirroredActor(UNAUTHENTICATED_TYPE, id = null, accessToken = null)
+      return MirroredActor(UNAUTHENTICATED_TYPE, id = null, accessToken = null, avatarSource = null)
     }
 
-    fun authenticated(id: String, accessToken: String): MirroredActor {
-      return MirroredActor(AUTHENTICATED_TYPE, id, accessToken)
+    fun authenticated(id: String, accessToken: String, avatarSource: Any): MirroredActor {
+      return MirroredActor(AUTHENTICATED_TYPE, id, accessToken, avatarSource)
     }
   }
 }

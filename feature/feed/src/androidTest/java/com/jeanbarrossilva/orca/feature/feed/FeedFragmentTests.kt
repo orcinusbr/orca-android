@@ -34,7 +34,6 @@ import com.jeanbarrossilva.orca.composite.timeline.test.post.onPostPreviews
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.instance.Instance
-import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.withSamples
 import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
