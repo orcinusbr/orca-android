@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,11 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.autos.reactivity
+package com.jeanbarrossilva.orca.platform.autos.reactivity.scroll
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.FloatState
+import androidx.compose.runtime.asFloatState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
+import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
  * [NestedScrollConnection] that notifies the [listener] of scroll changes.
@@ -27,11 +33,22 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 class BottomAreaAvailabilityNestedScrollConnection
 internal constructor(private val listener: OnBottomAreaAvailabilityChangeListener) :
   NestedScrollConnection {
+  /** [MutableStateFlow] to which the current Y offset of the bottom area is emitted. */
+  private var yOffsetFlow = MutableStateFlow(0f)
+
+  /** Current Y offset of the bottom area. */
+  private var yOffset by yOffsetFlow
+
+  /** Gets the current Y offset of the bottom area as a [FloatState]. */
+  @Composable
+  fun getYOffsetAsState(): FloatState {
+    return yOffsetFlow.collectAsState().asFloatState()
+  }
+
   override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-    val currentOffsetY = listener.yOffsetFlow.value
     val heightAsFloat = listener.height.toFloat()
-    val changedOffsetY = (currentOffsetY - available.y).coerceIn(0f, heightAsFloat)
-    listener.onBottomAreaAvailabilityChange(changedOffsetY)
+    yOffset = (yOffset - available.y).coerceIn(0f, heightAsFloat)
+    listener.onBottomAreaAvailabilityChange(yOffset)
     return Offset.Zero
   }
 

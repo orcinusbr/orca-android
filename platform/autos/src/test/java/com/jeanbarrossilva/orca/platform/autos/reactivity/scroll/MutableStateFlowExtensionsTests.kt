@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,19 +13,18 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.autos.reactivity
+package com.jeanbarrossilva.orca.platform.autos.reactivity.scroll
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import kotlin.test.Test
+import kotlinx.coroutines.flow.MutableStateFlow
 
-/**
- * Remembers a [BottomAreaAvailabilityNestedScrollConnection].
- *
- * @param listener [OnBottomAreaAvailabilityChangeListener] to be notified.
- */
-@Composable
-fun rememberBottomAreaAvailabilityNestedScrollConnection(
-  listener: OnBottomAreaAvailabilityChangeListener
-): BottomAreaAvailabilityNestedScrollConnection {
-  return remember(listener) { BottomAreaAvailabilityNestedScrollConnection(listener) }
+internal class MutableStateFlowExtensionsTests {
+  @Test
+  fun setsValue() {
+    var value by MutableStateFlow(0)
+    value = 1
+    assertThat(value).isEqualTo(1)
+  }
 }

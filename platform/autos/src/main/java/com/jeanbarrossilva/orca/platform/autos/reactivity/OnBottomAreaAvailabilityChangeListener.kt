@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orca
+ * Copyright © 2023 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,19 +15,13 @@
 
 package com.jeanbarrossilva.orca.platform.autos.reactivity
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-
 /** Listens to changes on the availability of the utmost bottom portion of the displayed content. */
 interface OnBottomAreaAvailabilityChangeListener {
   /** Provides the height of the UI component in the bottom area. */
   val height: Int
 
-  /**
-   * [StateFlow] to which the current offset in the Y-axis of the UI component in the bottom area is
-   * emitted.
-   */
-  val yOffsetFlow: StateFlow<Float>
+  /** Provides the current offset in the Y-axis of the UI component in the bottom area. */
+  fun getCurrentYOffset(): Float
 
   /**
    * Callback run whenever the availability of the bottom area is changed.
@@ -42,7 +36,10 @@ interface OnBottomAreaAvailabilityChangeListener {
     val empty =
       object : OnBottomAreaAvailabilityChangeListener {
         override val height = 0
-        override val yOffsetFlow = MutableStateFlow(0f)
+
+        override fun getCurrentYOffset(): Float {
+          return 0f
+        }
 
         override fun onBottomAreaAvailabilityChange(yOffset: Float) {}
       }
