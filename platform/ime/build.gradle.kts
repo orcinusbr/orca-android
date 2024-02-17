@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -19,22 +19,24 @@ plugins {
 }
 
 android {
+  buildFeatures.compose = true
+  composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
   defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-  packagingOptions.resources.excludes +=
-    arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
-  buildFeatures.viewBinding = true
 }
 
 dependencies {
-  androidTestImplementation(libs.android.test.junit)
+  androidTestImplementation(project(":ext:coroutines"))
+  androidTestImplementation(project(":platform:testing"))
+  androidTestImplementation(libs.android.test.core)
   androidTestImplementation(libs.android.test.runner)
   androidTestImplementation(libs.assertk)
-  androidTestImplementation(libs.junit)
   androidTestImplementation(libs.kotlin.coroutines.test)
-  androidTestImplementation(libs.kotlin.reflect)
-  androidTestImplementation(libs.mockk)
+  androidTestImplementation(libs.kotlin.test)
+  androidTestImplementation(libs.openTest4J)
 
-  api(libs.android.compose.ui)
-  api(libs.android.navigation.fragment)
-  api(libs.android.test.core)
+  implementation(libs.android.compose.ui)
+  implementation(libs.android.core)
+
+  testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.test)
 }
