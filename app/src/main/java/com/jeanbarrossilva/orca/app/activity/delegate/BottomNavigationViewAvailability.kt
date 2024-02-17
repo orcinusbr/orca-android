@@ -21,23 +21,23 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.jeanbarrossilva.orca.app.R
 import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
-import kotlinx.coroutines.flow.MutableStateFlow
 
 internal interface BottomNavigationViewAvailability :
   OnBottomAreaAvailabilityChangeListener, Binding {
-  override val yOffsetFlow: MutableStateFlow<Float>
-
   var constraintSet: ConstraintSet?
 
   override val height
     get() = binding?.bottomNavigationView?.height ?: 0
+
+  override fun getCurrentYOffset(): Float {
+    return binding?.bottomNavigationView?.translationY ?: 0f
+  }
 
   override fun onBottomAreaAvailabilityChange(yOffset: Float) {
     constraintSet?.apply {
       getConstraint(R.id.container).layout.bottomMargin = -yOffset.toInt()
       getConstraint(R.id.bottom_navigation_view).transform.translationY = yOffset
       applyTo(binding?.root)
-      yOffsetFlow.value = yOffset
     }
   }
 

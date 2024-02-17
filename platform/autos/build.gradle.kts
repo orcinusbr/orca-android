@@ -31,6 +31,7 @@ dependencies {
   androidTestImplementation(libs.android.test.core)
   androidTestImplementation(libs.android.test.runner)
   androidTestImplementation(libs.assertk)
+  androidTestImplementation(libs.kotlin.test)
 
   api(libs.android.compose.material3)
   api(libs.android.compose.ui.tooling)
@@ -43,5 +44,6 @@ dependencies {
   implementation(libs.loadable.placeholder)
 
   testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.coroutines.test)
   testImplementation(libs.kotlin.test)
 }

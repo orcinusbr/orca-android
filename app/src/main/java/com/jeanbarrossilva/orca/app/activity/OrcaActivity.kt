@@ -25,13 +25,11 @@ import com.jeanbarrossilva.orca.app.databinding.ActivityOrcaBinding
 import com.jeanbarrossilva.orca.app.module.core.MainMastodonCoreModule
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.platform.navigation.NavigationActivity
-import kotlinx.coroutines.flow.MutableStateFlow
 
 internal open class OrcaActivity :
   NavigationActivity(), BottomNavigationViewAvailability, Injection, BottomNavigation {
   protected open val coreModule: CoreModule = MainMastodonCoreModule
 
-  override val yOffsetFlow = MutableStateFlow(0f)
   override var binding: ActivityOrcaBinding? = null
   override var constraintSet: ConstraintSet? = null
 
