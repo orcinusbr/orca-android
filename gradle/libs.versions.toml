@@ -31,7 +31,6 @@ android-test-runner = { group = "androidx.test", name = "runner", version = "1.5
 assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version = "0.27.0" }
 autos = { group = "com.jeanbarrossilva.orca.autos", name = "autos", version = "1.0.5" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version = "2.4.0" }
-dokka = { group = "org.jetbrains.dokka", name = "dokka-gradle-plugin", version.ref = "dokka" }
 junit = { group = "junit", name = "junit", version = "4.13.2" }
 jsoup = { group = "org.jsoup", name = "jsoup", version = "1.16.2" }
 kotlin-compiler-embeddable = { group = "org.jetbrains.kotlin", name = "kotlin-compiler-embeddable", version.ref = "kotlin" }
@@ -68,7 +67,6 @@ android-application = { id = "com.android.application", version.ref = "android-p
 android-library = { id = "com.android.library", version.ref = "android-plugin" }
 android-maps-secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version = "2.0.1" }
 buildconfig = { id = "com.github.gmazzo.buildconfig", version = "3.1.0" }
-dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
@@ -93,7 +91,6 @@ android-room = "2.6.1"
 android-sdk-min = "28"
 android-sdk-target = "34"
 android-test-espresso = "3.5.1"
-dokka = "1.9.10"
 java = "17"
 kotlin = "1.9.21"
 kotlin-coroutines = "1.7.2"

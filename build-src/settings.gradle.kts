@@ -15,13 +15,12 @@
 
 include(
   ":setup:android-library",
-  ":setup:doc",
   ":setup:formatting",
   ":setup:hooks",
   ":setup:java",
   ":setup:kotlin"
 )
 
-dependencyResolutionManagement.versionCatalogs {
-  register("libs") { from(files("../gradle/libs.versions.toml")) }
+dependencyResolutionManagement.versionCatalogs.register("libs") {
+  from(files("../gradle/libs.versions.toml"))
 }
