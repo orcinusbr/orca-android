@@ -17,7 +17,9 @@
 
 package com.jeanbarrossilva.orca.platform.ime.scope
 
+import android.view.WindowInsets
 import android.view.WindowInsetsAnimation
+import android.view.WindowInsetsController
 import androidx.activity.ComponentActivity
 import androidx.test.core.app.launchActivity
 import com.jeanbarrossilva.orca.platform.ime.Ime
@@ -66,7 +68,41 @@ internal suspend fun ImeScope.close() {
 /**
  * Creates an environment for [Ime]-specific tests.
  *
+ * Ultimately, facilitates the process of controlling the visibility of the IME and, most
+ * importantly, suspends the execution flow while doing so (that is, until the animation ends). This
+ * specific behavior prevents the outdated state in which the IME previously *was* to be obtained as
+ * being the current one, which is what would most likely occur if, for example, the following case
+ * was to be tested:
+ * ```kotlin
+ * @Test
+ * fun opensIme(windowInsets: WindowInsets, windowInsetsController: WindowInsetsController) {
+ *   windowInsetsController.show(Ime.type)
+ *   assertThat(windowInsets.isVisible(Ime.type)).isTrue()
+ * }
+ * ```
+ *
+ * With the [ImeScope] that is provided to the [body] of this method, calls to both [ImeScope.open]
+ * and [ImeScope.close] gracefully wait for the animations to end and provide the most up-to-date
+ * visibility when it is later retrieved. What was done in the previous example could successfully
+ * be achieved as:
+ * ```kotlin
+ * @Test
+ * fun opensIme() {
+ *   runImeTest {
+ *     open()
+ *     assertThat(ime.isOpen).isTrue()
+ *   }
+ * }
+ * ```
+ *
  * @param body Testing to be performed.
+ * @see WindowInsets
+ * @see WindowInsetsController
+ * @see Ime.type
+ * @see WindowInsetsController.show
+ * @see WindowInsets.isVisible
+ * @see ImeScope.ime
+ * @see Ime.isOpen
  */
 @OptIn(ExperimentalContracts::class)
 @Suppress("NOTHING_TO_INLINE")

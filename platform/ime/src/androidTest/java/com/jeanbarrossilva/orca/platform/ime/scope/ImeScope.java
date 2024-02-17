@@ -60,7 +60,7 @@ public class ImeScope implements CoroutineScope {
   @NonNull private final CoroutineScope delegate;
 
   /**
-   * Scope in which tests for an {@link ImeAnimationCallback} can be run.
+   * Scope in which {@link Ime} tests can be run.
    *
    * @param activity {@link Activity} from which the IME will be toggled.
    * @param view {@link View} to which the {@link ImeAnimationCallback} will be added.
