@@ -28,7 +28,7 @@ class BottomAreaAvailabilityNestedScrollConnection
 internal constructor(private val listener: OnBottomAreaAvailabilityChangeListener) :
   NestedScrollConnection {
   override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-    val currentOffsetY = listener.getCurrentOffsetY()
+    val currentOffsetY = listener.yOffsetFlow.value
     val heightAsFloat = listener.height.toFloat()
     val changedOffsetY = (currentOffsetY - available.y).coerceIn(0f, heightAsFloat)
     listener.onBottomAreaAvailabilityChange(changedOffsetY)
