@@ -54,6 +54,7 @@ include(
   ":platform:autos-test",
   ":platform:core",
   ":platform:focus",
+  ":platform:ime",
   ":platform:intents",
   ":platform:navigation",
   ":platform:navigation-test",
