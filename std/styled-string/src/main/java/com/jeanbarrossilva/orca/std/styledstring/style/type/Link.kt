@@ -47,6 +47,7 @@ interface Link : Style {
      * @param indices Indices at which both the style symbols and the target are in the whole
      *   [String].
      */
+    @JvmStatic
     fun to(url: URL, indices: IntRange): Link {
       return object : Link {
         override val indices = indices

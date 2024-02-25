@@ -56,7 +56,7 @@ import com.jeanbarrossilva.orca.composite.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.composite.timeline.post.time.RelativeTimeProvider
 import com.jeanbarrossilva.orca.composite.timeline.post.time.rememberRelativeTimeProvider
 import com.jeanbarrossilva.orca.composite.timeline.refresh.Refresh
-import com.jeanbarrossilva.orca.composite.timeline.text.toAnnotatedString
+import com.jeanbarrossilva.orca.composite.timeline.text.annotated.toAnnotatedString
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.account.Account
 import com.jeanbarrossilva.orca.feature.profiledetails.navigation.BackwardsNavigationState
