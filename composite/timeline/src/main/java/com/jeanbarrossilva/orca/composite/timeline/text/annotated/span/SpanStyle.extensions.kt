@@ -25,60 +25,12 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.isUnspecified
 import com.jeanbarrossilva.orca.autos.colors.Colors
-import com.jeanbarrossilva.orca.core.feed.profile.Profile
-import com.jeanbarrossilva.orca.core.feed.profile.account.Account
+import com.jeanbarrossilva.orca.composite.timeline.text.annotated.span.category.Categorizer
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.std.styledstring.StyledString
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Bold
-import com.jeanbarrossilva.orca.std.styledstring.style.type.Email
-import com.jeanbarrossilva.orca.std.styledstring.style.type.Hashtag
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Italic
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Link
-import com.jeanbarrossilva.orca.std.styledstring.style.type.Mention
-import java.net.MalformedURLException
-import java.net.URL
-
-/**
- * Font feature setting that specifies the category of a [SpanStyle] that has been created for a
- * [Link].
- *
- * @see createLinkSpanStyle
- */
-private const val SPAN_STYLE_LINK_CATEGORY_SETTING = "category: "
-
-/**
- * Specification of [SPAN_STYLE_LINK_CATEGORY_SETTING] for denoting that the [SpanStyle] has been
- * created for an [Email].
- */
-private const val SPAN_STYLE_LINK_CATEGORY_SETTING_EMAIL_SPEC = "email"
-
-/**
- * Specification of [SPAN_STYLE_LINK_CATEGORY_SETTING] for denoting that the [SpanStyle] has been
- * created for a [Hashtag].
- */
-private const val SPAN_STYLE_LINK_CATEGORY_SETTING_HASHTAG_SPEC = "hashtag"
-
-/**
- * Specification of [SPAN_STYLE_LINK_CATEGORY_SETTING] for denoting that the [SpanStyle] has been
- * created for a [Mention].
- */
-private const val SPAN_STYLE_LINK_CATEGORY_SETTING_MENTION_SPEC = "mention"
-
-/**
- * Description of the text (mentioned [Account], [URL], ...) that is styled by this [SpanStyle].
- *
- * @throws IllegalStateException If no category is attached.
- * @see createLinkSpanStyle
- */
-private val SpanStyle.category
-  @Throws(IllegalStateException::class)
-  get() =
-    fontFeatureSettings
-      ?.substringAfter(SPAN_STYLE_LINK_CATEGORY_SETTING, missingDelimiterValue = "")
-      ?.substringBefore(" ")
-      ?.ifEmpty { null }
-      ?.trim()
-      ?: error("No category has been attached to $fontFeatureSettings.")
 
 /**
  * [SpanStyle] into which an emboldened portion within a [StyledString] will be turned when
@@ -98,120 +50,17 @@ private val SpanStyle.category
  */
 @JvmField internal val ItalicSpanStyle = SpanStyle(fontStyle = FontStyle.Italic)
 
-/** Whether this [SpanStyle] has been created for an [Email]. */
-internal val SpanStyle.isForEmail
-  get() =
-    fontFeatureSettings?.let {
-      SPAN_STYLE_LINK_CATEGORY_SETTING + SPAN_STYLE_LINK_CATEGORY_SETTING_EMAIL_SPEC in it
-    }
-      ?: false
-
-/** Whether this [SpanStyle] has been created for a [Hashtag]. */
-internal val SpanStyle.isForHashtag
-  get() =
-    fontFeatureSettings?.let {
-      SPAN_STYLE_LINK_CATEGORY_SETTING + SPAN_STYLE_LINK_CATEGORY_SETTING_HASHTAG_SPEC in it
-    }
-      ?: false
-
-/** Whether this [SpanStyle] has been created for a [Link]. */
-internal val SpanStyle.isForLink
-  get() = fontFeatureSettings?.let { SPAN_STYLE_LINK_CATEGORY_SETTING in it } ?: false
-
-/** Whether this [SpanStyle] has been created for a [Mention]. */
-internal val SpanStyle.isForMention
-  get() =
-    fontFeatureSettings?.let {
-      SPAN_STYLE_LINK_CATEGORY_SETTING + SPAN_STYLE_LINK_CATEGORY_SETTING_MENTION_SPEC in it
-    }
-      ?: false
-
-/**
- * [URL] of the [Profile] that has been attached as the "mention" [category] of this [SpanStyle].
- *
- * @throws IllegalStateException If no [category] is attached.
- * @throws MalformedURLException If the [URL] or the call to "url" is either malformed or missing.
- * @see Profile.url
- */
-internal val SpanStyle.mention
-  @Throws(IllegalStateException::class, MalformedURLException::class)
-  get() =
-    category
-      .substringAfter("$SPAN_STYLE_LINK_CATEGORY_SETTING_MENTION_SPEC ", missingDelimiterValue = "")
-      .substringBefore(" ", missingDelimiterValue = "")
-      .let(::URL)
-
-/**
- * [URL] that has been attached as the [category] of this [SpanStyle].
- *
- * @throws IllegalStateException If no [category] is attached.
- * @throws MalformedURLException If the [URL] or the call to "url" is either malformed or missing.
- */
-internal val SpanStyle.url
-  @Throws(IllegalStateException::class, MalformedURLException::class)
-  get() =
-    category
-      .substringAfter("url(", missingDelimiterValue = "")
-      .substringBeforeLast(")", missingDelimiterValue = "")
-      .ifEmpty {
-        throw MalformedURLException("Metadata with missing or malformed call to \"url\".")
-      }
-      .let(::URL)
-
-/**
- * Creates a [SpanStyle] into which an [Email] within a [StyledString] will be turned when
- * converting it into an [AnnotatedString].
- *
- * @param colors [Colors] by which the [SpanStyle] can be colored.
- * @see StyledString.toAnnotatedString
- * @see SpanStyle.category
- */
-internal fun createEmailSpanStyle(colors: Colors): SpanStyle {
-  return createLinkSpanStyle(colors, category = SPAN_STYLE_LINK_CATEGORY_SETTING_EMAIL_SPEC)
-}
-
-/**
- * Creates a [SpanStyle] into which a [Hashtag] within a [StyledString] will be turned when
- * converting it into an [AnnotatedString].
- *
- * @param colors [Colors] by which the [SpanStyle] can be colored.
- * @see StyledString.toAnnotatedString
- * @see SpanStyle.category
- */
-internal fun createHashtagSpanStyle(colors: Colors): SpanStyle {
-  return createLinkSpanStyle(colors, SPAN_STYLE_LINK_CATEGORY_SETTING_HASHTAG_SPEC)
-}
-
-/**
- * Creates a [SpanStyle] into which a [Mention] within a [StyledString] will be turned when
- * converting it into an [AnnotatedString].
- *
- * @param colors [Colors] by which the [SpanStyle] can be colored.
- * @param url [URL] that leads to the [Profile] that has been mentioned.
- * @see StyledString.toAnnotatedString
- * @see SpanStyle.category
- */
-internal fun createMentionSpanStyle(colors: Colors, url: URL): SpanStyle {
-  return createLinkSpanStyle(
-    colors,
-    category = "$SPAN_STYLE_LINK_CATEGORY_SETTING_MENTION_SPEC $url"
-  )
-}
-
 /**
  * Creates a [SpanStyle] into which a [Link] within a [StyledString] will be turned when converting
  * it into an [AnnotatedString].
  *
  * @param colors [Colors] by which the [SpanStyle] can be colored.
- * @param category Describes the text being styled.
+ * @param category Describes the text being styled; should be created by the [Categorizer].
  * @see StyledString.toAnnotatedString
  * @see SpanStyle.category
  */
-internal fun createLinkSpanStyle(colors: Colors, category: String? = null): SpanStyle {
-  return SpanStyle(
-    colors.link.asColor,
-    fontFeatureSettings = category?.let { SPAN_STYLE_LINK_CATEGORY_SETTING + category }
-  )
+internal fun createLinkSpanStyle(colors: Colors, category: String): SpanStyle {
+  return SpanStyle(colors.link.asColor, fontFeatureSettings = category)
 }
 
 /**

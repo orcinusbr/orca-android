@@ -17,6 +17,7 @@ package com.jeanbarrossilva.orca.composite.timeline.text.annotated.span
 
 import androidx.compose.ui.text.SpanStyle
 import com.jeanbarrossilva.orca.autos.colors.Colors
+import com.jeanbarrossilva.orca.composite.timeline.text.annotated.span.category.Categorizer
 import com.jeanbarrossilva.orca.std.styledstring.style.Style
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Bold
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Email
@@ -35,11 +36,11 @@ import com.jeanbarrossilva.orca.std.styledstring.style.type.Mention
 internal fun Style.toSpanStyle(colors: Colors): SpanStyle {
   return when (this) {
     is Bold -> BoldSpanStyle
-    is Email -> createEmailSpanStyle(colors)
-    is Hashtag -> createHashtagSpanStyle(colors)
+    is Email -> createLinkSpanStyle(colors, Categorizer.categorizeAsEmail())
+    is Hashtag -> createLinkSpanStyle(colors, Categorizer.categorizeAsHashtag())
     is Italic -> ItalicSpanStyle
-    is Mention -> createMentionSpanStyle(colors, url)
-    is Link -> createLinkSpanStyle(colors, category = "url($url)")
+    is Mention -> createLinkSpanStyle(colors, Categorizer.categorizeAsMention(url))
+    is Link -> createLinkSpanStyle(colors, Categorizer.categorizeAsLink(url))
     else -> throw IllegalArgumentException("Cannot convert an unknown $this style.")
   }
 }

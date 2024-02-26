@@ -15,6 +15,15 @@
 
 package com.jeanbarrossilva.orca.composite.timeline.text.annotated.span;
 
+import static com.jeanbarrossilva.orca.composite.timeline.text.annotated.span.SpanStyles.ItalicSpanStyle;
+import static com.jeanbarrossilva.orca.composite.timeline.text.annotated.span.SpanStyles.contains;
+import static com.jeanbarrossilva.orca.composite.timeline.text.annotated.span.category.SpanStyles.getMention;
+import static com.jeanbarrossilva.orca.composite.timeline.text.annotated.span.category.SpanStyles.getUrl;
+import static com.jeanbarrossilva.orca.composite.timeline.text.annotated.span.category.SpanStyles.isForEmail;
+import static com.jeanbarrossilva.orca.composite.timeline.text.annotated.span.category.SpanStyles.isForHashtag;
+import static com.jeanbarrossilva.orca.composite.timeline.text.annotated.span.category.SpanStyles.isForLink;
+import static com.jeanbarrossilva.orca.composite.timeline.text.annotated.span.category.SpanStyles.isForMention;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.compose.ui.text.AnnotatedString;
@@ -46,7 +55,7 @@ public enum StyleExtractor {
   BOLD {
     @Override
     boolean isExtractable(@NonNull SpanStyle spanStyle) {
-      return SpanStyles.contains(spanStyle, SpanStyles.BoldSpanStyle);
+      return contains(spanStyle, SpanStyles.BoldSpanStyle);
     }
 
     @NonNull
@@ -60,7 +69,7 @@ public enum StyleExtractor {
   EMAIL {
     @Override
     boolean isExtractable(@NonNull SpanStyle spanStyle) {
-      return SpanStyles.isForEmail(spanStyle);
+      return isForEmail(spanStyle);
     }
 
     @NonNull
@@ -74,7 +83,7 @@ public enum StyleExtractor {
   HASHTAG {
     @Override
     boolean isExtractable(@NonNull SpanStyle spanStyle) {
-      return SpanStyles.isForHashtag(spanStyle);
+      return isForHashtag(spanStyle);
     }
 
     @NonNull
@@ -88,7 +97,7 @@ public enum StyleExtractor {
   ITALIC {
     @Override
     boolean isExtractable(@NonNull SpanStyle spanStyle) {
-      return SpanStyles.contains(spanStyle, SpanStyles.ItalicSpanStyle);
+      return contains(spanStyle, ItalicSpanStyle);
     }
 
     @NonNull
@@ -102,14 +111,14 @@ public enum StyleExtractor {
   LINK {
     @Override
     boolean isExtractable(@NonNull SpanStyle spanStyle) {
-      return SpanStyles.isForLink(spanStyle);
+      return isForLink(spanStyle);
     }
 
     @NonNull
     @Override
     protected Style onExtract(@NonNull SpanStyle spanStyle, @NonNull IntRange indices)
         throws MalformedURLException {
-      @NonNull URL url = SpanStyles.getUrl(spanStyle);
+      @NonNull URL url = getUrl(spanStyle);
       return Link.to(url, indices);
     }
   },
@@ -118,14 +127,14 @@ public enum StyleExtractor {
   MENTION {
     @Override
     boolean isExtractable(@NonNull SpanStyle spanStyle) {
-      return SpanStyles.isForMention(spanStyle);
+      return isForMention(spanStyle);
     }
 
     @NonNull
     @Override
     protected Style onExtract(@NonNull SpanStyle spanStyle, @NonNull IntRange indices)
         throws MalformedURLException {
-      return new Mention(indices, SpanStyles.getMention(spanStyle));
+      return new Mention(indices, getMention(spanStyle));
     }
   };
 

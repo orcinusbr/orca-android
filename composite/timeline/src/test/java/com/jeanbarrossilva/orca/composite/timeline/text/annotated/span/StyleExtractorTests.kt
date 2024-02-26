@@ -21,6 +21,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import com.jeanbarrossilva.orca.autos.colors.Colors
+import com.jeanbarrossilva.orca.composite.timeline.text.annotated.span.category.Categorizer
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Bold
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Italic
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Link
@@ -46,7 +47,12 @@ internal class StyleExtractorTests {
 
   @Test
   fun emailExtractorExtractsFromSpanStyle() {
-    assertThat(StyleExtractor.EMAIL.isExtractable(createEmailSpanStyle(Colors.LIGHT))).isTrue()
+    assertThat(
+        StyleExtractor.EMAIL.isExtractable(
+          createLinkSpanStyle(Colors.LIGHT, Categorizer.categorizeAsEmail())
+        )
+      )
+      .isTrue()
   }
 
   @Test
@@ -56,7 +62,12 @@ internal class StyleExtractorTests {
 
   @Test
   fun hashtagExtractorExtractsFromSpanStyle() {
-    assertThat(StyleExtractor.HASHTAG.isExtractable(createHashtagSpanStyle(Colors.LIGHT))).isTrue()
+    assertThat(
+        StyleExtractor.HASHTAG.isExtractable(
+          createLinkSpanStyle(Colors.LIGHT, Categorizer.categorizeAsHashtag())
+        )
+      )
+      .isTrue()
   }
 
   @Test
@@ -76,19 +87,22 @@ internal class StyleExtractorTests {
 
   @Test(expected = MalformedURLException::class)
   fun linkExtractorThrowsWhenExtractingFromSpanStyleWithMalformedCallToUrl() {
-    StyleExtractor.LINK.extract(createLinkSpanStyle(Colors.LIGHT, category = "url("), 0..1)
+    StyleExtractor.LINK.extract(createLinkSpanStyle(Colors.LIGHT, "category: url("), 0..1)
   }
 
   @Test(expected = MalformedURLException::class)
   fun linkExtractorThrowsWhenExtractingFromSpanStyleWithMalformedURL() {
-    StyleExtractor.LINK.extract(createLinkSpanStyle(Colors.LIGHT, category = "url()"), 0..1)
+    StyleExtractor.LINK.extract(createLinkSpanStyle(Colors.LIGHT, "category: url()"), 0..1)
   }
 
   @Test
   fun linkExtractorExtractsFromSpanStyle() {
     assertThat(
         StyleExtractor.LINK.extract(
-          createLinkSpanStyle(Colors.LIGHT, category = "url(https://orca.jeanbarrossilva.com)"),
+          createLinkSpanStyle(
+            Colors.LIGHT,
+            Categorizer.categorizeAsLink(URL("https://orca.jeanbarrossilva.com"))
+          ),
           0..1
         )
       )
@@ -104,7 +118,10 @@ internal class StyleExtractorTests {
   fun mentionExtractorExtractsFromSpanStyle() {
     assertThat(
         StyleExtractor.MENTION.isExtractable(
-          createMentionSpanStyle(Colors.LIGHT, URL("https://orca.jeanbarrossilva.com"))
+          createLinkSpanStyle(
+            Colors.LIGHT,
+            Categorizer.categorizeAsMention(URL("https://orca.jeanbarrossilva.com"))
+          )
         )
       )
       .isTrue()
