@@ -13,19 +13,18 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.composite.timeline.text
+package com.jeanbarrossilva.orca.composite.timeline.text.annotated.span
 
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import com.jeanbarrossilva.orca.autos.colors.Colors
-import com.jeanbarrossilva.orca.platform.autos.colors.asColor
+import com.jeanbarrossilva.orca.composite.timeline.text.annotated.span.category.Categorizer
 import com.jeanbarrossilva.orca.std.styledstring.style.Style
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Bold
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Email
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Hashtag
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Italic
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Link
+import com.jeanbarrossilva.orca.std.styledstring.style.type.Mention
 
 /**
  * Converts this [Style] into a [SpanStyle].
@@ -36,11 +35,12 @@ import com.jeanbarrossilva.orca.std.styledstring.style.type.Link
 @Throws(IllegalArgumentException::class)
 internal fun Style.toSpanStyle(colors: Colors): SpanStyle {
   return when (this) {
-    is Bold -> SpanStyle(fontWeight = FontWeight.Bold)
-    is Email,
-    is Hashtag,
-    is Link, -> SpanStyle(colors.link.asColor)
-    is Italic -> SpanStyle(fontStyle = FontStyle.Italic)
+    is Bold -> BoldSpanStyle
+    is Email -> createLinkSpanStyle(colors, Categorizer.categorizeAsEmail())
+    is Hashtag -> createLinkSpanStyle(colors, Categorizer.categorizeAsHashtag())
+    is Italic -> ItalicSpanStyle
+    is Mention -> createLinkSpanStyle(colors, Categorizer.categorizeAsMention(url))
+    is Link -> createLinkSpanStyle(colors, Categorizer.categorizeAsLink(url))
     else -> throw IllegalArgumentException("Cannot convert an unknown $this style.")
   }
 }

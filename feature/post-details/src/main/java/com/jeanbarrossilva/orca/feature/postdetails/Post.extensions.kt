@@ -23,7 +23,7 @@ import com.jeanbarrossilva.orca.composite.timeline.post.figure.Figure
 import com.jeanbarrossilva.orca.composite.timeline.post.figure.gallery.disposition.Disposition
 import com.jeanbarrossilva.orca.composite.timeline.stat.details.asStatsDetails
 import com.jeanbarrossilva.orca.composite.timeline.stat.details.asStatsDetailsFlow
-import com.jeanbarrossilva.orca.composite.timeline.text.toAnnotatedString
+import com.jeanbarrossilva.orca.composite.timeline.text.annotated.toAnnotatedString
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import java.net.URL

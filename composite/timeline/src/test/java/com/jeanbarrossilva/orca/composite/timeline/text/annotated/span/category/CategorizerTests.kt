@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,17 +13,25 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.composite.timeline.text
+package com.jeanbarrossilva.orca.composite.timeline.text.annotated.span.category
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import com.jeanbarrossilva.orca.composite.timeline.text.annotated.fromHtml
-import com.jeanbarrossilva.orca.std.styledstring.StyledString
-import org.junit.Test
+import java.net.URL
+import kotlin.test.Test
 
-internal class StyledStringExtensionsTests {
+internal class CategorizerTests {
+  private val url = URL("https://orca.jeanbarrossilva.com")
+
   @Test
-  fun breaksLineTwiceBetweenParagraphsWhenConvertingHtmlToStyledString() {
-    assertThat(StyledString.fromHtml("<p>👔</p><p>🥾</p>")).isEqualTo(StyledString("👔\n\n🥾"))
+  fun createsURLSpec() {
+    assertThat(Categorizer.createSpec(url))
+      .isEqualTo(Categorizer.LINK_SPEC_START + url + Categorizer.LINK_SPEC_END)
+  }
+
+  @Test
+  fun categorizesAsUntaggedLink() {
+    assertThat(Categorizer.categorizeAsLink(url))
+      .isEqualTo(Categorizer.PREFIX + Categorizer.createSpec(url))
   }
 }
