@@ -22,6 +22,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import com.jeanbarrossilva.orca.ext.coroutines.getValue
+import com.jeanbarrossilva.orca.ext.coroutines.setValue
 import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
 import kotlinx.coroutines.flow.MutableStateFlow
 

@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.autos.reactivity.scroll
+package com.jeanbarrossilva.orca.ext.coroutines
 
 import kotlin.reflect.KProperty
 import kotlinx.coroutines.flow.StateFlow
@@ -27,6 +27,6 @@ import kotlinx.coroutines.flow.StateFlow
  *   this method.
  * @see StateFlow.value
  */
-internal operator fun <T> StateFlow<T>.getValue(thisRef: Any?, property: KProperty<*>): T {
+operator fun <T> StateFlow<T>.getValue(thisRef: Any?, property: KProperty<*>): T {
   return value
 }

@@ -22,7 +22,9 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.status.MastodonS
 import com.jeanbarrossilva.orca.core.mastodon.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
+import com.jeanbarrossilva.orca.ext.coroutines.getValue
 import com.jeanbarrossilva.orca.ext.coroutines.mapEach
+import com.jeanbarrossilva.orca.ext.coroutines.setValue
 import com.jeanbarrossilva.orca.std.image.ImageLoader
 import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
@@ -70,11 +72,7 @@ internal abstract class MastodonPostPaginator {
    *
    * @see pageFlow
    */
-  private var page
-    get() = pageFlow.value
-    private set(page) {
-      pageFlow.value = page
-    }
+  private var page by pageFlow
 
   /**
    * [ImageLoader.Provider] that provides the [ImageLoader] by which images will be loaded from a
