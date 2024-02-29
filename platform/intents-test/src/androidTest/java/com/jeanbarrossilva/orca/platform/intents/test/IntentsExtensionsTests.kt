@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,13 +13,11 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.ext.intents
+package com.jeanbarrossilva.orca.platform.intents.test
 
-import android.app.Activity
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
-import com.jeanbarrossilva.orca.ext.intents.test.browseTo
-import com.jeanbarrossilva.orca.ext.intents.test.startActivity
+import com.jeanbarrossilva.orca.platform.starter.StartableActivity
 import io.mockk.mockkStatic
 import io.mockk.verify
 import junit.framework.AssertionFailedError
@@ -30,7 +28,7 @@ internal class IntentsExtensionsTests {
   fun initializesEspressoIntentsBeforeIntending() {
     mockkStatic(Intents::class) {
       intend(anyIntent()) {
-        startActivity<Activity>()
+        startActivity()
         verify { Intents.init() }
       }
     }
@@ -39,7 +37,7 @@ internal class IntentsExtensionsTests {
   @Test
   fun releasesEspressoIntentsAfterIntending() {
     mockkStatic(Intents::class) {
-      intend(anyIntent()) { startActivity<Activity>() }
+      intend(anyIntent()) { startActivity() }
       verify { Intents.release() }
     }
   }
@@ -69,11 +67,11 @@ internal class IntentsExtensionsTests {
 
   @Test(expected = AssertionFailedError::class)
   fun throwsWhenActivityIsIntendedToBeStartedButIsNot() {
-    intendStartingOf<Activity> {}
+    intendStartingOf<StartableActivity> {}
   }
 
   @Test
   fun intendsStartingOfActivity() {
-    intendStartingOf<Activity> { startActivity<Activity>() }
+    intendStartingOf<StartableActivity> { startActivity() }
   }
 }

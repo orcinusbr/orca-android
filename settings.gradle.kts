@@ -56,6 +56,7 @@ include(
   ":platform:focus",
   ":platform:ime",
   ":platform:intents",
+  ":platform:intents-test",
   ":platform:navigation",
   ":platform:navigation-test",
   ":platform:starter",

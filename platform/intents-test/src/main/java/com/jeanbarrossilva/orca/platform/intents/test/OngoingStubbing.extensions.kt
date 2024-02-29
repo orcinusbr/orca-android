@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,21 +13,19 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.ext.intents
+package com.jeanbarrossilva.orca.platform.intents.test
 
-import android.content.Intent
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
-import java.net.URI
-import org.hamcrest.CoreMatchers.both
-import org.hamcrest.Matcher
+import android.app.Activity
+import android.app.Instrumentation
+import androidx.test.espresso.intent.OngoingStubbing
 
 /**
- * Creates a [Matcher] that matches an [Intent] that browses to the given [uri].
+ * Responds with an OK [Instrumentation.ActivityResult].
  *
- * @param uri [String] form of the [URI] to which the [Intent] browses.
+ * @see Activity.RESULT_OK
  */
 @PublishedApi
-internal fun browsesTo(uri: String): Matcher<Intent> {
-  return both(hasAction(Intent.ACTION_VIEW)).and(hasData(uri))
+internal fun OngoingStubbing.respondWithOK() {
+  val activityResult = Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+  respondWith(activityResult)
 }

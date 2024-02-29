@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -18,7 +18,7 @@ package com.jeanbarrossilva.orca.app
 import androidx.test.core.app.launchActivity
 import com.jeanbarrossilva.orca.app.activity.OrcaActivity
 import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.MastodonAuthorizationActivity
-import com.jeanbarrossilva.orca.ext.intents.intendStartingOf
+import com.jeanbarrossilva.orca.platform.intents.test.intendStartingOf
 import org.junit.Test
 
 internal class OrcaActivityTests {

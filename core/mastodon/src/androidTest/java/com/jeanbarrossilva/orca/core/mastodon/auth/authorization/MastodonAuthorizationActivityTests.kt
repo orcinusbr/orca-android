@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -29,9 +29,9 @@ import com.jeanbarrossilva.orca.core.mastodon.auth.authorization.viewmodel.Masto
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.SampleTermMuter
 import com.jeanbarrossilva.orca.core.sample.instance.domain.sample
-import com.jeanbarrossilva.orca.ext.intents.intendBrowsingTo
 import com.jeanbarrossilva.orca.platform.autos.test.kit.input.text.onTextFieldErrors
 import com.jeanbarrossilva.orca.platform.core.sample
+import com.jeanbarrossilva.orca.platform.intents.test.intendBrowsingTo
 import com.jeanbarrossilva.orca.platform.testing.asString
 import com.jeanbarrossilva.orca.platform.testing.context
 import com.jeanbarrossilva.orca.std.injector.module.injection.injectionOf

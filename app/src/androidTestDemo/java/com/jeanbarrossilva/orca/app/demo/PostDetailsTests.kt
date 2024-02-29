@@ -22,7 +22,7 @@ import com.jeanbarrossilva.orca.app.demo.test.performScrollToPostPreviewWithLink
 import com.jeanbarrossilva.orca.composite.timeline.test.post.figure.link.onLinkCards
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Highlight
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.content.highlight.sample
-import com.jeanbarrossilva.orca.ext.intents.intendBrowsingTo
+import com.jeanbarrossilva.orca.platform.intents.test.intendBrowsingTo
 import org.junit.Rule
 import org.junit.Test
 

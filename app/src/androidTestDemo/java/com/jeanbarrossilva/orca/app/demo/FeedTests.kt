@@ -34,8 +34,6 @@ import com.jeanbarrossilva.orca.composite.timeline.test.post.figure.link.onLinkC
 import com.jeanbarrossilva.orca.composite.timeline.test.refresh.assertIsNotInProgress
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Highlight
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.content.highlight.sample
-import com.jeanbarrossilva.orca.ext.intents.intendBrowsingTo
-import com.jeanbarrossilva.orca.ext.intents.intendStartingOf
 import com.jeanbarrossilva.orca.feature.composer.ComposerActivity
 import com.jeanbarrossilva.orca.feature.feed.FEED_FLOATING_ACTION_BUTTON_TAG
 import com.jeanbarrossilva.orca.feature.feed.FeedFragment
@@ -45,6 +43,8 @@ import com.jeanbarrossilva.orca.feature.gallery.test.ui.onCloseActionButton
 import com.jeanbarrossilva.orca.feature.gallery.test.ui.onPager
 import com.jeanbarrossilva.orca.feature.gallery.test.ui.performScrollToEachPage
 import com.jeanbarrossilva.orca.feature.search.SearchActivity
+import com.jeanbarrossilva.orca.platform.intents.test.intendBrowsingTo
+import com.jeanbarrossilva.orca.platform.intents.test.intendStartingOf
 import com.jeanbarrossilva.orca.platform.navigation.test.isAt
 import org.junit.Rule
 import org.junit.Test
