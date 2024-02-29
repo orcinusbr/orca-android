@@ -13,25 +13,18 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.autos.reactivity.scroll
+package com.jeanbarrossilva.orca.ext.coroutines
 
-import kotlin.reflect.KProperty
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import kotlin.test.Test
 import kotlinx.coroutines.flow.MutableStateFlow
 
-/**
- * Changes the value of this [MutableStateFlow] to the given one.
- *
- * @param T Value being held.
- * @param thisRef Object in which access to the value is being performed.
- * @param property [KProperty] within the [thisRef] by which setting the value is being delegated to
- *   this method.
- * @param value Value to which this [MutableStateFlow]'s will be changed.
- * @see MutableStateFlow.value
- */
-internal operator fun <T> MutableStateFlow<T>.setValue(
-  thisRef: Any?,
-  property: KProperty<*>,
-  value: T
-) {
-  this.value = value
+internal class MutableStateFlowExtensionsTests {
+  @Test
+  fun setsValue() {
+    var value by MutableStateFlow(0)
+    value = 1
+    assertThat(value).isEqualTo(1)
+  }
 }

@@ -13,18 +13,21 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.autos.reactivity.scroll
+package com.jeanbarrossilva.orca.ext.coroutines
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import kotlin.test.Test
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.test.runTest
 
-internal class MutableStateFlowExtensionsTests {
+internal class StateFlowExtensionsTests {
   @Test
-  fun setsValue() {
-    var value by MutableStateFlow(0)
-    value = 1
-    assertThat(value).isEqualTo(1)
+  fun getsValue() {
+    runTest {
+      val value by flowOf(0).stateIn(this)
+      assertThat(value).isEqualTo(0)
+    }
   }
 }

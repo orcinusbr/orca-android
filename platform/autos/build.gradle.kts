@@ -37,6 +37,7 @@ dependencies {
   api(libs.android.compose.ui.tooling)
   api(libs.autos)
 
+  implementation(project(":ext:coroutines"))
   implementation(project(":ext:reflection"))
   implementation(libs.accompanist.adapter)
   implementation(libs.android.material)

@@ -19,6 +19,8 @@ import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsAnimation
 import com.jeanbarrossilva.orca.ext.coroutines.await
+import com.jeanbarrossilva.orca.ext.coroutines.getValue
+import com.jeanbarrossilva.orca.ext.coroutines.setValue
 import com.jeanbarrossilva.orca.platform.ime.scope.animation.stage.Stage
 import java.time.Duration
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,12 +45,12 @@ internal class ImeAnimationCallback(private val view: View) :
   private val WindowInsetsAnimation.isOfIme
     get() = typeMask and type == type
 
-  /** Current [Stage] of the ongoing [WindowInsetsAnimation]. */
-  var stage
-    get() = stageFlow.value
-    private set(stage) {
-      stageFlow.value = stage
-    }
+  /**
+   * Current [Stage] of the ongoing [WindowInsetsAnimation].
+   *
+   * @see stageFlow
+   */
+  var stage by stageFlow
 
   init {
     stage = Stage.idle()
