@@ -42,7 +42,7 @@ android {
 
 dependencies {
   androidTestImplementation(project(":platform:autos-test"))
-  androidTestImplementation(project(":platform:intents"))
+  androidTestImplementation(project(":platform:intents-test"))
   androidTestImplementation(project(":platform:testing"))
   androidTestImplementation(project(":std:injector-test"))
   androidTestImplementation(libs.android.compose.ui.test.junit)

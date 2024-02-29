@@ -1,5 +1,7 @@
+import com.jeanbarrossilva.orca.namespaceFor
+
 /*
- * Copyright © 2023-2024 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -18,4 +20,19 @@ plugins {
   alias(libs.plugins.kotlin.android)
 }
 
-dependencies.implementation(libs.android.core)
+android {
+  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  namespace = namespaceFor("platform.intents.test")
+  packagingOptions.resources.excludes +=
+    arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
+}
+
+dependencies {
+  androidTestImplementation(project(":platform:starter"))
+  androidTestImplementation(project(":platform:testing"))
+  androidTestImplementation(libs.mockk)
+
+  debugImplementation(libs.android.lifecycle.runtime)
+
+  implementation(libs.android.test.espresso.intents)
+}

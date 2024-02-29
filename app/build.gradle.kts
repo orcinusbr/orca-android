@@ -81,7 +81,7 @@ dependencies {
   "androidTestDemoImplementation"(libs.android.compose.ui.test.junit)
   "androidTestDemoImplementation"(libs.assertk)
 
-  androidTestImplementation(project(":platform:intents"))
+  androidTestImplementation(project(":platform:intents-test"))
   androidTestImplementation(libs.android.test.core)
   androidTestImplementation(libs.android.test.espresso.core)
   androidTestImplementation(libs.android.test.runner)

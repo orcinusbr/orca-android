@@ -31,8 +31,8 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Highlig
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.content.highlight.sample
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.withSamples
-import com.jeanbarrossilva.orca.ext.intents.intendBrowsingTo
 import com.jeanbarrossilva.orca.feature.postdetails.PostDetailsFragment
+import com.jeanbarrossilva.orca.platform.intents.test.intendBrowsingTo
 import com.jeanbarrossilva.orca.platform.navigation.test.isAt
 import org.junit.Rule
 import org.junit.Test
