@@ -2,7 +2,8 @@
 .DS_Store
 .externalNativeBuild
 .gradle/
-.idea/
+.idea/*
+!.idea/icon.svg
 build/
 /app/default/release
 /captures
