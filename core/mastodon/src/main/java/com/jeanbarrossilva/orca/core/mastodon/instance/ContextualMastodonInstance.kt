@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -40,6 +40,7 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.cache.storage.Ma
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.MastodonProfileSearcher
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.MastodonProfileSearchResultsFetcher
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.storage.MastodonProfileSearchResultsStorage
+import com.jeanbarrossilva.orca.core.mastodon.notification.NotificationWorker
 import com.jeanbarrossilva.orca.platform.cache.Cache
 import com.jeanbarrossilva.orca.std.image.ImageLoader
 import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
@@ -49,7 +50,8 @@ import java.net.URL
  * [MastodonInstance] that authorizes the user and caches all fetched structures through the given
  * [Context].
  *
- * @param context [Context] with which the [authenticator] will be created.
+ * @param context [Context] with which the [authenticator] will be created and through which a
+ *   [NotificationWorker] will be enqueued.
  * @param domain Unique identifier of the server.
  * @param authorizer [MastodonAuthorizer] by which the user will be authorized.
  * @param actorProvider [ActorProvider] that will provide [Actor]s to the [authenticator], the
@@ -57,6 +59,7 @@ import java.net.URL
  * @param termMuter [TermMuter] by which [Post]s with muted terms will be filtered out.
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
  *   will be loaded.
+ * @see NotificationWorker.enqueue
  */
 class ContextualMastodonInstance(
   context: Context,
@@ -139,4 +142,8 @@ class ContextualMastodonInstance(
   override val profileProvider = MastodonProfileProvider(profileCache)
   override val profileSearcher = MastodonProfileSearcher(profileSearchResultsCache)
   override val postProvider = MastodonPostProvider(authenticationLock, postCache)
+
+  init {
+    NotificationWorker.enqueue(context)
+  }
 }

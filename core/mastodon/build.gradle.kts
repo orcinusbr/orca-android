@@ -52,6 +52,7 @@ dependencies {
 
   api(project(":core-module"))
   api(project(":composite:composable"))
+  api(libs.android.work)
 
   ksp(project(":std:injector-processor"))
 
@@ -70,6 +71,7 @@ dependencies {
   implementation(libs.ktor.client.contentNegotiation)
   implementation(libs.ktor.serialization.json)
   implementation(libs.loadable)
+  implementation(libs.nanohttpd.websocket)
   implementation(libs.paginate)
 
   ksp(libs.android.room.compiler)
