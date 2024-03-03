@@ -68,8 +68,7 @@ import kotlinx.coroutines.launch
  * @see stop
  * @see NanoWSD.WebSocket.close
  */
-class NotificationServer
-internal constructor(
+internal class NotificationServer(
   private val authenticationLock: SomeAuthenticationLock,
   private val httpClient: HttpClient
 ) : NanoWSD(defaultOrAvailablePort) {
@@ -140,7 +139,7 @@ internal constructor(
   }
 
   /** Suspends until this [NotificationServer] is stopped. */
-  internal suspend fun await() {
+  suspend fun await() {
     coroutineScope.coroutineContext[Job]?.join()
   }
 
