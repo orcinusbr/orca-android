@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -18,6 +18,7 @@ package com.jeanbarrossilva.orca.std.image.compose.async
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
@@ -74,7 +75,7 @@ class AsyncImageLoader private constructor(override val source: URL) :
           AsyncImage(
             "$source",
             contentDescription,
-            Modifier.clip(shape).clearAndSetSemantics {},
+            Modifier.clip(shape).fillMaxSize().clearAndSetSemantics {},
             onState = { state = it },
             contentScale = contentScale
           )

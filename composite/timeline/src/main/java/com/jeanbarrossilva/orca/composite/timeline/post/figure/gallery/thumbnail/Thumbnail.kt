@@ -35,6 +35,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.platform.autos.forms.asShape
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
+import com.jeanbarrossilva.orca.std.image.compose.ComposableImageLoader
 import com.jeanbarrossilva.orca.std.image.compose.rememberImageLoader
 
 /** Tag that identifies a [Thumbnail] for testing purposes. */
@@ -72,23 +73,25 @@ internal fun Thumbnail(
   authorName: String,
   attachment: Attachment,
   @IntRange(from = 1) position: Int,
-  onClick: (copy: @Composable (Modifier) -> Unit) -> Unit,
+  onClick: (copy: @Composable (ContentScale, Modifier) -> Unit) -> Unit,
   modifier: Modifier = Modifier,
   shape: Shape = ThumbnailDefaults.shape
 ) {
-  val thumbnail: @Composable (Modifier) -> Unit = {
-    rememberImageLoader(attachment.url).load()(
-      stringResource(
-        R.string.composite_timeline_post_preview_gallery_thumbnail,
-        position,
-        authorName
-      ),
-      RectangleShape,
-      ContentScale.FillWidth,
-      it
-    )
-  }
+  val thumbnail =
+    @Composable { contentScale: ContentScale, thumbnailModifier: Modifier ->
+      rememberImageLoader(attachment.url).load()(
+        stringResource(
+          R.string.composite_timeline_post_preview_gallery_thumbnail,
+          position,
+          authorName
+        ),
+        RectangleShape,
+        contentScale,
+        thumbnailModifier
+      )
+    }
   thumbnail(
+    ComposableImageLoader.DefaultContentScale,
     modifier
       .clip(shape)
       .clickable { onClick(thumbnail) }

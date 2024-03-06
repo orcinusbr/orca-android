@@ -47,15 +47,15 @@ internal fun launchGalleryActivity(
   postID: String = Posts.withSample.single().id,
   entrypointIndex: Int = 0,
   secondary: List<Attachment> = Attachment.samples,
-  entrypoint: @Composable (Modifier) -> Unit = {
+  entrypoint: @Composable (ContentScale, Modifier) -> Unit = { contentScale, modifier ->
     ComposableImageLoader.createSample(CoverImageSource.Default).load()(
       stringResource(
         com.jeanbarrossilva.orca.feature.gallery.R.string.feature_gallery_attachment,
         1.formatted
       ),
       RectangleShape,
-      ContentScale.FillWidth,
-      it
+      contentScale,
+      modifier
     )
   }
 ): ActivityScenario<GalleryActivity> {
