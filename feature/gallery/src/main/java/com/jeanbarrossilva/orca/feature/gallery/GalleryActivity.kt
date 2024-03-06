@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import com.jeanbarrossilva.orca.composite.composable.ComposableActivity
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.ext.intents.intentOf
@@ -40,7 +41,7 @@ class GalleryActivity internal constructor() : ComposableActivity() {
   private val secondary by extra<List<Attachment>>(SECONDARY_KEY)
 
   @set:JvmName("_setEntrypoint")
-  private var entrypoint by mutableStateOf<(@Composable (Modifier) -> Unit)?>(null)
+  private var entrypoint by mutableStateOf<(@Composable (ContentScale, Modifier) -> Unit)?>(null)
 
   private val viewModel by
     viewModels<GalleryViewModel> {
@@ -55,11 +56,11 @@ class GalleryActivity internal constructor() : ComposableActivity() {
   @Composable
   override fun Content() {
     Gallery(viewModel, module.boundary(), entrypointIndex, secondary, onClose = ::finish) {
-      entrypoint?.invoke(it)
+      entrypoint?.invoke(ContentScale.FillWidth, it)
     }
   }
 
-  fun setEntrypoint(entrypoint: @Composable (Modifier) -> Unit) {
+  fun setEntrypoint(entrypoint: @Composable (ContentScale, Modifier) -> Unit) {
     this.entrypoint = entrypoint
   }
 
@@ -87,7 +88,7 @@ class GalleryActivity internal constructor() : ComposableActivity() {
       postID: String,
       entrypointIndex: Int,
       secondary: List<Attachment>,
-      entrypoint: @Composable (Modifier) -> Unit
+      entrypoint: @Composable (ContentScale, Modifier) -> Unit
     ) {
       context
         .on<GalleryActivity>()

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -17,6 +17,7 @@ package com.jeanbarrossilva.orca.feature.profiledetails
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import java.net.URL
 
@@ -27,7 +28,7 @@ interface ProfileDetailsBoundary {
     postID: String,
     entrypointIndex: Int,
     secondary: List<Attachment>,
-    entrypoint: @Composable (Modifier) -> Unit
+    entrypoint: @Composable (ContentScale, Modifier) -> Unit
   )
 
   fun navigateToPostDetails(id: String)
@@ -41,7 +42,7 @@ interface ProfileDetailsBoundary {
           postID: String,
           entrypointIndex: Int,
           secondary: List<Attachment>,
-          entrypoint: @Composable (Modifier) -> Unit
+          entrypoint: @Composable (ContentScale, Modifier) -> Unit
         ) {}
 
         override fun navigateToPostDetails(id: String) {}

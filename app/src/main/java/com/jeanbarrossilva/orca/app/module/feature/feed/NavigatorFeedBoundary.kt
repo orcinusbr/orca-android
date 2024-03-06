@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -18,6 +18,7 @@ package com.jeanbarrossilva.orca.app.module.feature.feed
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Attachment
 import com.jeanbarrossilva.orca.ext.intents.browseTo
 import com.jeanbarrossilva.orca.feature.composer.ComposerActivity
@@ -44,7 +45,7 @@ internal class NavigatorFeedBoundary(
     postID: String,
     entrypointIndex: Int,
     secondary: List<Attachment>,
-    entrypoint: @Composable (Modifier) -> Unit
+    entrypoint: @Composable (ContentScale, Modifier) -> Unit
   ) {
     GalleryActivity.start(context, postID, entrypointIndex, secondary, entrypoint)
   }
