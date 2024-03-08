@@ -19,53 +19,66 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.platform.testTag
+import java.io.Serializable
 
 /** Tag that identifies a [RenderEffect] for testing purposes. */
 const val RENDER_EFFECT_TAG = "render-effect"
 
 /**
- * Adds a [RenderEffect] to this [LazyListScope].
+ * Key to which a [RenderEffect] is associated when it is added to a lazy list.
  *
- * @param key Value to which a change indicates whether the effect should be reset and its next
- *   rendering should be taken into account. Note that this isn't an identifier for the
- *   [RenderEffect] item to be added.
+ * @see LazyListScope.renderEffect
+ */
+@Immutable
+private object RenderEffectKey : Serializable {
+  /**
+   * Allows the class to replace/resolve the [RenderEffectKey] read from the stream before it is
+   * returned to the caller and directly control the types and instances of its own instances being
+   * deserialized.
+   *
+   * Refer to the
+   * [Java Object Serialization Specification](https://docs.oracle.com/en/java/javase/11/docs/specs/serialization/input.html#the-readresolve-method).
+   */
+  private fun readResolve(): Any {
+    return RenderEffectKey
+  }
+}
+
+/**
+ * Adds a [RenderEffect] to the lazy list.
+ *
+ * Note that an [IllegalArgumentException] will be thrown if this is done on the same lazy list
+ * multiple times, due to the fact that the [RenderEffect] item has a unique key that would get
+ * reused if it got added more than once.
+ *
  * @param contentType Content type to be associated to the [RenderEffect] for Compose to be able to
  *   reuse it.
- * @param onPlacement Lambda invoked when the [RenderEffect] is laid out.
- * @param onEffect Callback run when the [RenderEffect] is rendered.
+ * @param keys Values to which changes indicates whether the effect should be reset and its next
+ *   rendering should be taken into account. Note that these aren't identifiers for the
+ *   [RenderEffect] item to be added.
+ * @param effect Callback run when the [RenderEffect] is rendered.
  */
-internal fun LazyListScope.renderEffect(
-  key: Any,
-  contentType: Any,
-  onPlacement: () -> Unit,
-  onEffect: () -> Unit
-) {
-  item(key = "render-effect", contentType) { RenderEffect(key, onPlacement) { onEffect() } }
+internal fun LazyListScope.renderEffect(contentType: Any, vararg keys: Any?, effect: () -> Unit) {
+  item(RenderEffectKey, contentType) { RenderEffect(*keys, effect = effect) }
 }
 
 /**
  * [Composable] that acts both as a marker and a trigger for the bottom of a [Timeline], running the
  * given [effect] for notifying when it's been reached.
  *
- * @param key Value to which a change indicates that the [effect] should be run.
- * @param onPlacement Lambda invoked when it's laid out.
+ * @param keys Values to which changes indicate that the [effect] should be run.
  * @param effect Operation to be performed once this [Composable] is rendered for the first time and
- *   when the [key] changes.
+ *   when the [keys] changes.
  */
 @Composable
-private fun RenderEffect(key: Any, onPlacement: () -> Unit, effect: () -> Unit) {
-  DisposableEffect(Unit) {
+private fun RenderEffect(vararg keys: Any?, effect: () -> Unit) {
+  DisposableEffect(*keys) {
     effect()
     onDispose {}
   }
 
-  DisposableEffect(key) {
-    effect()
-    onDispose {}
-  }
-
-  Spacer(Modifier.onPlaced { onPlacement() }.testTag(RENDER_EFFECT_TAG))
+  Spacer(Modifier.testTag(RENDER_EFFECT_TAG))
 }

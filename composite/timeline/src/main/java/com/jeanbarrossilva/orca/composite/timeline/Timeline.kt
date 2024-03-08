@@ -39,13 +39,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -253,14 +254,19 @@ fun Timeline(
   content: LazyListScope.() -> Unit
 ) {
   val pullRefreshState = rememberPullRefreshState(refresh.isInProgress, refresh.listener::onRefresh)
-  var index by rememberSaveable { mutableIntStateOf(0) }
-  var hasReachedRenderEffect by remember { mutableStateOf(false) }
-
-  DisposableEffect(Unit) {
-    if (!hasReachedRenderEffect) {
-      onNext(index++)
+  val itemCount by remember {
+    derivedStateOf(structuralEqualityPolicy()) { state.layoutInfo.totalItemsCount }
+  }
+  var itemCountPriorToLastPagination by remember { mutableStateOf<Int?>(null) }
+  var index by remember { mutableIntStateOf(0) }
+  val paginate by rememberUpdatedState {
+    itemCountPriorToLastPagination = itemCount
+    onNext(index++)
+  }
+  val paginateOnChangedItemCount by rememberUpdatedState {
+    if (itemCount != itemCountPriorToLastPagination) {
+      paginate()
     }
-    onDispose {}
   }
 
   Box(Modifier.pullRefresh(pullRefreshState)) {
@@ -268,26 +274,11 @@ fun Timeline(
       header?.let { item(contentType = TimelineContentType.HEADER, content = it) }
       content()
       renderEffect(
-        key = content,
         TimelineContentType.RENDER_EFFECT,
-        onPlacement = { hasReachedRenderEffect = true }
-      ) {
-        /*
-         * If the content has filled the entirety of the height of the screen when the timeline was
-         * first composed, then the index has already been incremented by the disposable effect
-         * above; thus, invoking `onNext` with `++index` in the first branch prevents the same index
-         * from being provided twice to the callback.
-         *
-         * As for the contrary case in the "else" branch, if the content was short enough for the
-         * render effect to be visible, then the index hasn't been preemptively incremented, meaning
-         * that its current value should be the one to be provided.
-         */
-        if (hasReachedRenderEffect) {
-          onNext(++index)
-        } else {
-          onNext(index++)
-        }
-      }
+        content,
+        itemCount,
+        effect = paginateOnChangedItemCount
+      )
     }
 
     PullRefreshIndicator(

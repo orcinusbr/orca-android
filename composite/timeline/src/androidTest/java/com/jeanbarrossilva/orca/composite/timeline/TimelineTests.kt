@@ -16,9 +16,11 @@
 package com.jeanbarrossilva.orca.composite.timeline
 
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.test.TouchInjectionScope
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.filter
@@ -28,8 +30,11 @@ import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onSiblings
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeDown
 import assertk.assertThat
 import assertk.assertions.containsExactly
+import assertk.assertions.isEqualTo
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.orca.composite.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.composite.timeline.refresh.Refresh
@@ -40,6 +45,7 @@ import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.core.sample
+import com.jeanbarrossilva.orca.platform.testing.screen.screen
 import kotlin.time.Duration.Companion.days
 import org.junit.Rule
 import org.junit.Test
@@ -98,11 +104,37 @@ internal class TimelineTests {
   fun providesNextIndexWhenReachingBottom() {
     val indices = mutableStateListOf<Int>()
     composeRule.setContent {
-      Timeline(onNext = { indices += it }) {
+      Timeline(
+        onNext = {
+          if (indices.size < 2) {
+            indices += indices.lastOrNull()?.inc() ?: 0
+          }
+        }
+      ) {
         items(indices) { Spacer(Modifier.fillParentMaxSize()) }
       }
     }
-    composeRule.onTimeline().performScrollToBottom().performScrollToBottom()
-    assertThat(indices).containsExactly(0, 1, 2)
+    composeRule.onTimeline().performScrollToBottom()
+    composeRule.waitUntil { indices.size == 2 }
+    composeRule.onTimeline().performScrollToBottom()
+    assertThat(indices).containsExactly(0, 1)
+  }
+
+  @Test
+  fun doesNotProvideNextIndexWhenReachingBottomMultipleTimesAndNoItemsHaveBeenAdded() {
+    val indices = hashSetOf<Int>()
+    composeRule
+      .apply {
+        setContent {
+          Timeline(onNext = { indices += it }) {
+            item { Spacer(Modifier.height(screen.height.inDps).fillParentMaxWidth()) }
+          }
+        }
+      }
+      .onTimeline()
+      .performScrollToBottom()
+      .performTouchInput(TouchInjectionScope::swipeDown)
+      .performScrollToBottom()
+    assertThat(indices).isEqualTo(hashSetOf(0))
   }
 }
