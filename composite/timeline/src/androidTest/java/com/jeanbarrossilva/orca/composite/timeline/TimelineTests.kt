@@ -107,7 +107,7 @@ internal class TimelineTests {
       Timeline(
         onNext = {
           if (indices.size < 2) {
-            indices += indices.lastOrNull()?.inc() ?: 0
+            indices += it
           }
         }
       ) {
@@ -117,7 +117,7 @@ internal class TimelineTests {
     composeRule.onTimeline().performScrollToBottom()
     composeRule.waitUntil { indices.size == 2 }
     composeRule.onTimeline().performScrollToBottom()
-    assertThat(indices).containsExactly(0, 1)
+    assertThat(indices).containsExactly(1, 2)
   }
 
   @Test
@@ -135,6 +135,6 @@ internal class TimelineTests {
       .performScrollToBottom()
       .performTouchInput(TouchInjectionScope::swipeDown)
       .performScrollToBottom()
-    assertThat(indices).isEqualTo(hashSetOf(0))
+    assertThat(indices).isEqualTo(hashSetOf(1))
   }
 }

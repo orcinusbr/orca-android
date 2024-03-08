@@ -105,7 +105,9 @@ private enum class TimelineContentType {
  * @param onShare Callback run whenever a [PostPreview] requests the [Post]'s [URL] is requested to
  *   be shared.
  * @param onClick Callback run whenever the [PostPreview] associated to the given ID is clicked.
- * @param onNext Callback run whenever the bottom is being reached.
+ * @param onNext Operation to be performed whenever pagination is requested. Provided index starts
+ *   at one, mainly because it is implied that the current page is 0 if the content has already been
+ *   loaded.
  * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
  * @param state [LazyListState] through which scroll will be observed.
  * @param contentPadding [PaddingValues] to pad the content with.
@@ -181,7 +183,9 @@ fun Timeline(
  * @param onShare Callback run whenever a [PostPreview] requests the [Post]'s [URL] is requested to
  *   be shared.
  * @param onClick Callback run whenever the [PostPreview] associated to the given ID is clicked.
- * @param onNext Callback run whenever the bottom is being reached.
+ * @param onNext Operation to be performed whenever pagination is requested. Provided index starts
+ *   at one, mainly because it is implied that the current page is 0 if the content has already been
+ *   loaded.
  * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
  * @param state [LazyListState] through which scroll will be observed.
  * @param contentPadding [PaddingValues] to pad the content with.
@@ -234,7 +238,9 @@ fun Timeline(
 /**
  * [LazyColumn] for displaying paged content.
  *
- * @param onNext Callback run whenever the bottom is being reached.
+ * @param onNext Operation to be performed whenever pagination is requested. Provided index starts
+ *   at one, mainly because it is implied that the current page is 0 if the content has already been
+ *   loaded.
  * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
  * @param header [Composable] to be shown above the [content].
  * @param state [LazyListState] through which scroll will be observed.
@@ -258,7 +264,7 @@ fun Timeline(
     derivedStateOf(structuralEqualityPolicy()) { state.layoutInfo.totalItemsCount }
   }
   var itemCountPriorToLastPagination by remember { mutableStateOf<Int?>(null) }
-  var index by remember { mutableIntStateOf(0) }
+  var index by remember { mutableIntStateOf(1) }
   val paginate by rememberUpdatedState {
     itemCountPriorToLastPagination = itemCount
     onNext(index++)
