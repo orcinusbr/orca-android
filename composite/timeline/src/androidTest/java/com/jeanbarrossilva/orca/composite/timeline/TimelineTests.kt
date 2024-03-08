@@ -16,7 +16,6 @@
 package com.jeanbarrossilva.orca.composite.timeline
 
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Modifier
@@ -45,7 +44,6 @@ import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.sample.test.instance.SampleInstanceTestRule
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.core.sample
-import com.jeanbarrossilva.orca.platform.testing.screen.screen
 import kotlin.time.Duration.Companion.days
 import org.junit.Rule
 import org.junit.Test
@@ -126,9 +124,7 @@ internal class TimelineTests {
     composeRule
       .apply {
         setContent {
-          Timeline(onNext = { indices += it }) {
-            item { Spacer(Modifier.height(screen.height.inDps).fillParentMaxWidth()) }
-          }
+          Timeline(onNext = { indices += it }) { item { Spacer(Modifier.fillParentMaxSize()) } }
         }
       }
       .onTimeline()
