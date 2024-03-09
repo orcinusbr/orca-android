@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -29,7 +29,7 @@ import io.ktor.http.set
 import io.ktor.http.takeFrom
 
 /** An [MastodonInstance] with a generic [Authorizer] and an [Authenticator]. */
-internal typealias SomeHttpInstance = MastodonInstance<*, *>
+internal typealias SomeMastodonInstance = MastodonInstance<*, *>
 
 /**
  * [Instance] that performs all of its underlying operations by sending [HttpRequest]s to the API.
