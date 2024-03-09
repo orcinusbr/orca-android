@@ -28,7 +28,7 @@ import io.ktor.http.parametersOf
 import kotlin.test.Test
 import org.junit.Rule
 
-internal class CoreHttpClientTests {
+internal class MastodonClientTests {
   @get:Rule val sampleInstanceRule = SampleInstanceTestRule(Instance.sample)
 
   @Test
