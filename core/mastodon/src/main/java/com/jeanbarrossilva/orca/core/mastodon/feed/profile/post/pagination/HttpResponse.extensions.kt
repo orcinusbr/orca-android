@@ -15,6 +15,7 @@
 
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination
 
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination.type.KTypeCreator
 import io.ktor.client.call.DoubleReceiveException
 import io.ktor.client.call.NoTransformationFoundException
 import io.ktor.client.call.body

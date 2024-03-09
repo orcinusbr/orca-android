@@ -18,6 +18,7 @@ package com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.mastodon.client.MastodonClient
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndGet
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination.type.KTypeCreator
 import com.jeanbarrossilva.orca.core.mastodon.instance.SomeMastodonInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
