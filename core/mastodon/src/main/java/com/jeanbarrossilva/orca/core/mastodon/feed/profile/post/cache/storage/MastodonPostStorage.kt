@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -22,6 +22,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Highlig
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.style.MastodonStyleEntity
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.style.MastodonStyleEntityDao
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.style.toHttpStyleEntity
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentPaginator
 import com.jeanbarrossilva.orca.platform.cache.Cache
 import com.jeanbarrossilva.orca.platform.cache.Storage
 import com.jeanbarrossilva.orca.std.image.ImageLoader
@@ -40,12 +41,17 @@ import java.net.URL
  * @param coverLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which a
  *   [Post]'s [content][Post.content]'s [highlight][Content.highlight]'s
  *   [headline][Highlight.headline] cover will be loaded from a [URL].
+ * @param commentPaginatorProvider [MastodonCommentPaginator.Provider] by which a
+ *   [MastodonCommentPaginator] for paginating through the stored [Post]s' comments will be
+ *   provided.
+ * @see Post.comment
  */
 internal class MastodonPostStorage(
   private val profileCache: Cache<Profile>,
   private val postEntityDao: MastodonPostEntityDao,
   private val styleEntityDao: MastodonStyleEntityDao,
-  private val coverLoaderProvider: SomeImageLoaderProvider<URL>
+  private val coverLoaderProvider: SomeImageLoaderProvider<URL>,
+  private val commentPaginatorProvider: MastodonCommentPaginator.Provider
 ) : Storage<Post>() {
   override suspend fun onStore(key: String, value: Post) {
     val postEntity = MastodonPostEntity.from(value)
@@ -59,7 +65,9 @@ internal class MastodonPostStorage(
   }
 
   override suspend fun onGet(key: String): Post {
-    return postEntityDao.selectByID(key).toPost(profileCache, postEntityDao, coverLoaderProvider)
+    return postEntityDao
+      .selectByID(key)
+      .toPost(profileCache, postEntityDao, coverLoaderProvider, commentPaginatorProvider)
   }
 
   override suspend fun onRemove(key: String) {

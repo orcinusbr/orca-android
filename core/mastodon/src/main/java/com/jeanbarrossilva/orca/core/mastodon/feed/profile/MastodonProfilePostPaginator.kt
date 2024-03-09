@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,29 +15,35 @@
 
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile
 
-import com.jeanbarrossilva.orca.core.feed.profile.post.Post
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.account.MastodonAccount
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination.MastodonPostPaginator
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination.MastodonStatusesPaginator
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentPaginator
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.status.MastodonStatus
 import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import java.net.URL
 
 /**
- * [MastodonPostPaginator] that paginates through a [MastodonProfile]'s [Post]s.
+ * [MastodonPostPaginator] that paginates through a [MastodonAccount]'s [MastodonStatus]es.
  *
- * @param id ID of the [MastodonProfile].
+ * @param id ID of the [MastodonAccount].
+ * @see MastodonAccount.id
  */
 internal class MastodonProfilePostPaginator(
   override val imageLoaderProvider: SomeImageLoaderProvider<URL>,
+  override val commentPaginatorProvider: MastodonCommentPaginator.Provider,
   id: String
-) : MastodonPostPaginator() {
+) : MastodonStatusesPaginator() {
   override val route = "/api/v1/accounts/$id/statuses"
 
   /** Provides a [MastodonProfilePostPaginator] through [provide]. */
   fun interface Provider {
     /**
-     * Provides a [MastodonProfilePostPaginator] that paginates through the [Post]s of a
-     * [MastodonProfile] identified as [id].
+     * Provides a [MastodonProfilePostPaginator] that paginates through the [MastodonStatus]es of a
+     * [MastodonAccount] identified as [id].
      *
-     * @param id ID of the [MastodonProfile].
+     * @param id ID of the [MastodonAccount].
+     * @see MastodonAccount.id
      */
     fun provide(id: String): MastodonProfilePostPaginator
   }

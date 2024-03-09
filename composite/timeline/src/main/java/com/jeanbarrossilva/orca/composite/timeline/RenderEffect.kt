@@ -56,7 +56,7 @@ private object RenderEffectKey : Serializable {
  *
  * @param contentType Content type to be associated to the [RenderEffect] for Compose to be able to
  *   reuse it.
- * @param keys Values to which changes indicates whether the effect should be reset and its next
+ * @param keys Values to which changes indicate whether the effect should be reset and its next
  *   rendering should be taken into account. Note that these aren't identifiers for the
  *   [RenderEffect] item to be added.
  * @param effect Callback run when the [RenderEffect] is rendered.
@@ -71,7 +71,7 @@ internal fun LazyListScope.renderEffect(contentType: Any, vararg keys: Any?, eff
  *
  * @param keys Values to which changes indicate that the [effect] should be run.
  * @param effect Operation to be performed once this [Composable] is rendered for the first time and
- *   when the [keys] changes.
+ *   when the [keys] change.
  */
 @Composable
 private fun RenderEffect(vararg keys: Any?, effect: () -> Unit) {

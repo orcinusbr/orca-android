@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -18,29 +18,28 @@ package com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.mastodon.client.CoreHttpClient
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndGet
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.status.MastodonStatus
 import com.jeanbarrossilva.orca.core.mastodon.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.ext.coroutines.getValue
-import com.jeanbarrossilva.orca.ext.coroutines.mapEach
 import com.jeanbarrossilva.orca.ext.coroutines.setValue
-import com.jeanbarrossilva.orca.std.image.ImageLoader
-import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
-import io.ktor.client.call.body
 import io.ktor.client.request.HttpRequest
 import io.ktor.client.statement.HttpResponse
-import java.net.URL
 import kotlin.jvm.optionals.getOrNull
+import kotlin.reflect.KClass
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 
-/** Requests and paginates through [Post]s. */
-internal abstract class MastodonPostPaginator {
+/**
+ * Requests and paginates through [Post]s.
+ *
+ * @param T DTO that is returned by the API.
+ */
+internal abstract class MastodonPostPaginator<T : Any> : KTypeCreator {
   /** Last [HttpResponse] that's been received. */
   private var lastResponse: HttpResponse? = null
 
@@ -52,7 +51,7 @@ internal abstract class MastodonPostPaginator {
    *
    * @see page
    */
-  private val postFlow =
+  private val postsFlow =
     pageFlow
       .compareNotNull { previous, current -> previous.getOrNull()?.compareTo(current) ?: 0 }
       .map { it == 0 }
@@ -60,8 +59,7 @@ internal abstract class MastodonPostPaginator {
       .map({ (url, isRefreshing) -> isRefreshing || url == null }) { route to it.second }
       .mapNotNull { (url, _) -> url?.let { client.authenticateAndGet(it) } }
       .onEach { lastResponse = it }
-      .map { it.body<List<MastodonStatus>>() }
-      .mapEach { it.toPost(imageLoaderProvider) }
+      .map { it.body(this, dtoClass).toMastodonPosts() }
 
   /** [CoreHttpClient] through which the [HttpRequest]s will be performed. */
   private val client
@@ -74,14 +72,11 @@ internal abstract class MastodonPostPaginator {
    */
   private var page by pageFlow
 
-  /**
-   * [ImageLoader.Provider] that provides the [ImageLoader] by which images will be loaded from a
-   * [URL].
-   */
-  protected abstract val imageLoaderProvider: SomeImageLoaderProvider<URL>
-
   /** URL [String] to which the initial [HttpRequest] should be sent. */
   protected abstract val route: String
+
+  /** [KClass] of the DTO that is returned by the API. */
+  protected abstract val dtoClass: KClass<T>
 
   /**
    * Iterates from the current page to the given one.
@@ -94,8 +89,11 @@ internal abstract class MastodonPostPaginator {
   @Throws(IllegalArgumentException::class)
   fun paginateTo(page: Int): Flow<List<Post>> {
     iterate(page)
-    return postFlow
+    return postsFlow
   }
+
+  /** Converts the DTO returned by the API into [Post]s. */
+  protected abstract fun T.toMastodonPosts(): List<Post>
 
   /**
    * Goes through each page between the current and the given one.

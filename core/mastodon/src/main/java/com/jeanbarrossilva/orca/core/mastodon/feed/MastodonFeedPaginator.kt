@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -17,12 +17,15 @@ package com.jeanbarrossilva.orca.core.mastodon.feed
 
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.MastodonPost
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination.MastodonPostPaginator
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination.MastodonStatusesPaginator
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentPaginator
 import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import java.net.URL
 
 /** [MastodonPostPaginator] that paginates through [MastodonPost]s of the feed. */
 internal class MastodonFeedPaginator(
-  override val imageLoaderProvider: SomeImageLoaderProvider<URL>
-) : MastodonPostPaginator() {
+  override val imageLoaderProvider: SomeImageLoaderProvider<URL>,
+  override val commentPaginatorProvider: MastodonCommentPaginator.Provider
+) : MastodonStatusesPaginator() {
   override val route = "/api/v1/timelines/home"
 }

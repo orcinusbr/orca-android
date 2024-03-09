@@ -112,9 +112,7 @@ internal class TimelineTests {
         items(indices) { Spacer(Modifier.fillParentMaxSize()) }
       }
     }
-    composeRule.onTimeline().performScrollToBottom()
-    composeRule.waitUntil { indices.size == 2 }
-    composeRule.onTimeline().performScrollToBottom()
+    composeRule.onTimeline().performScrollToBottom().performScrollToBottom()
     assertThat(indices).containsExactly(1, 2)
   }
 

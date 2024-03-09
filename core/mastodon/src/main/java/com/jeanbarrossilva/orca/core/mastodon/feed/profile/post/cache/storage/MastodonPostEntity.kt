@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -28,6 +28,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.content.highlight.Highlig
 import com.jeanbarrossilva.orca.core.feed.profile.post.repost.Repost
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.style.MastodonStyleEntity
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.MastodonPost
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentPaginator
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.`if`
@@ -85,11 +86,15 @@ internal data class MastodonPostEntity(
    *   [Mastodon style entities][MastodonStyleEntity].
    * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by images
    *   will be loaded from a [URL].
+   * @param commentPaginatorProvider [MastodonCommentPaginator.Provider] by which a
+   *   [MastodonCommentPaginator] for paginating through the [Post]'s comments will be provided.
+   * @see Post.comment
    */
   suspend fun toPost(
     profileCache: Cache<Profile>,
     dao: MastodonPostEntityDao,
-    imageLoaderProvider: SomeImageLoaderProvider<URL>
+    imageLoaderProvider: SomeImageLoaderProvider<URL>,
+    commentPaginatorProvider: MastodonCommentPaginator.Provider
   ): Post {
     val author = profileCache.get(authorID).toAuthor()
     val domain = Injector.from<CoreModule>().instanceProvider().provide().domain
@@ -108,10 +113,11 @@ internal data class MastodonPostEntity(
     val url = URL(url)
     return MastodonPost(
         id,
+        imageLoaderProvider,
         author,
         content,
-        imageLoaderProvider,
         publicationDateTime,
+        commentPaginatorProvider,
         commentCount,
         favoriteCount,
         repostCount,

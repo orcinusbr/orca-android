@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,52 +13,38 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.stat
+package com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.stat.comment
 
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.stat.Stat
 import com.jeanbarrossilva.orca.core.feed.profile.post.stat.addable.AddableStat
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndDelete
-import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndSubmitForm
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.MastodonContext
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.MastodonPost
 import com.jeanbarrossilva.orca.core.mastodon.instance.SomeHttpInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
-import com.jeanbarrossilva.orca.std.image.ImageLoader
-import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
-import io.ktor.client.call.body
 import io.ktor.http.Parameters
-import java.net.URL
-import kotlinx.coroutines.flow.flow
 
 /**
  * Builds a [Stat] for an [MastodonPost]'s comments that obtains them from the API.
  *
  * @param id ID of the [MastodonPost] for which the [Stat] is.
  * @param count Amount of comments that the [MastodonPost] has received.
- * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
- *   will be loaded from a [URL].
+ * @param contextPaginatorProvider [MastodonCommentPaginator.Provider] by which a
+ *   [MastodonCommentPaginator] for paginating through the comments will be provided.
+ * @see Post.comment
  */
 @Suppress("FunctionName")
 internal fun CommentStat(
   id: String,
   count: Int,
-  imageLoaderProvider: SomeImageLoaderProvider<URL>
+  contextPaginatorProvider: MastodonCommentPaginator.Provider
 ): AddableStat<Post> {
   return AddableStat(count) {
-    get {
-      flow {
-        (Injector.from<CoreModule>().instanceProvider().provide() as SomeHttpInstance)
-          .client
-          .authenticateAndGet("/api/v1/statuses/$id/context")
-          .body<MastodonContext>()
-          .descendants
-          .map { it.toPost(imageLoaderProvider) }
-          .also { emit(it) }
-      }
+    contextPaginatorProvider.provide(id).let { contextPaginator ->
+      get { index -> contextPaginator.paginateTo(index) }
     }
     add {
       (Injector.from<CoreModule>().instanceProvider().provide() as SomeHttpInstance)

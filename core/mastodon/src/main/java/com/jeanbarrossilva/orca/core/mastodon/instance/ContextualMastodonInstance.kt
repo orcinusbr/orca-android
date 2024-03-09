@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -37,6 +37,7 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.MastodonPost
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.MastodonPostProvider
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.cache.MastodonPostFetcher
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.cache.storage.MastodonPostStorage
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentPaginator
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.MastodonProfileSearcher
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.MastodonProfileSearchResultsFetcher
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.storage.MastodonProfileSearchResultsStorage
@@ -71,21 +72,31 @@ class ContextualMastodonInstance(
   /** [MastodonDatabase] in which cached structures will be persisted. */
   private val database = MastodonDatabase.getInstance(context)
 
+  /**
+   * [MastodonCommentPaginator.Provider] that provides the [MastodonProfilePostPaginator] to be used
+   * by [postFetcher], [feedPostPaginator], [profilePostPaginatorProvider] and [postStorage].
+   */
+  private val commentPaginatorProvider =
+    MastodonCommentPaginator.Provider { MastodonCommentPaginator(imageLoaderProvider, it) }
+
   /** [MastodonPostFetcher] by which [Post]s will be fetched from the API. */
-  private val postFetcher = MastodonPostFetcher(imageLoaderProvider)
+  private val postFetcher = MastodonPostFetcher(imageLoaderProvider, commentPaginatorProvider)
 
   /**
    * [MastodonFeedPaginator] with which pagination through the feed's [Post]s that have been fetched
    * from the API will be performed.
    */
-  private val feedPostPaginator = MastodonFeedPaginator(imageLoaderProvider)
+  private val feedPostPaginator =
+    MastodonFeedPaginator(imageLoaderProvider, commentPaginatorProvider)
 
   /**
    * [MastodonProfilePostPaginator.Provider] that provides the [MastodonProfilePostPaginator] to be
    * used by [profileFetcher], [profileStorage] and [profileSearchResultsFetcher].
    */
   private val profilePostPaginatorProvider =
-    MastodonProfilePostPaginator.Provider { MastodonProfilePostPaginator(imageLoaderProvider, it) }
+    MastodonProfilePostPaginator.Provider {
+      MastodonProfilePostPaginator(imageLoaderProvider, commentPaginatorProvider, it)
+    }
 
   /** [MastodonProfileFetcher] by which [MastodonProfile]s will be fetched from the API. */
   private val profileFetcher =
@@ -129,7 +140,8 @@ class ContextualMastodonInstance(
       profileCache,
       database.postEntityDao,
       database.styleEntityDao,
-      imageLoaderProvider
+      imageLoaderProvider,
+      commentPaginatorProvider
     )
 
   /** [Cache] that decides how to obtain [MastodonPost]s. */

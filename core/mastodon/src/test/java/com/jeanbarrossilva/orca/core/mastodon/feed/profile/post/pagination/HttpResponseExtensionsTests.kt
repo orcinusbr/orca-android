@@ -1,0 +1,50 @@
+/*
+ * Copyright © 2024 Orca
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the
+ * GNU General Public License as published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If
+ * not, see https://www.gnu.org/licenses.
+ */
+
+package com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination
+
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import com.jeanbarrossilva.orca.core.mastodon.client.CoreHttpClient
+import com.jeanbarrossilva.orca.core.mastodon.client.Logger
+import com.jeanbarrossilva.orca.core.mastodon.client.test.instance.test
+import io.ktor.client.engine.HttpClientEngineFactory
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.MockEngineConfig
+import io.ktor.client.engine.mock.respondOk
+import io.ktor.client.request.get
+import kotlin.test.Test
+import kotlinx.coroutines.test.runTest
+
+internal class HttpResponseExtensionsTests {
+  @Test
+  fun getsBody() {
+    runTest {
+      assertThat(
+          CoreHttpClient(
+              object : HttpClientEngineFactory<MockEngineConfig> {
+                override fun create(block: MockEngineConfig.() -> Unit): MockEngine {
+                  return MockEngine { respondOk("Hello, world!") }.apply { block(config) }
+                }
+              },
+              Logger.test
+            )
+            .get("/")
+            .body(KTypeCreator.defaultFor<String>(), String::class)
+        )
+        .isEqualTo("Hello, world!")
+    }
+  }
+}
