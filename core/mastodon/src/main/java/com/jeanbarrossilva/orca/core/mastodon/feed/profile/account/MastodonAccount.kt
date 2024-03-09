@@ -119,7 +119,7 @@ internal data class MastodonAccount(
   }
 
   /**
-   * Converts this [MastodonAccount] into an [MastodonEditableProfile].
+   * Converts this [MastodonAccount] into A [MastodonEditableProfile].
    *
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
    *   [MastodonEditableProfile]'s avatar will be loaded from a [URL].
@@ -150,7 +150,7 @@ internal data class MastodonAccount(
   }
 
   /**
-   * Converts this [MastodonAccount] into an [MastodonFollowableProfile].
+   * Converts this [MastodonAccount] into A [MastodonFollowableProfile].
    *
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
    *   [MastodonFollowableProfile]'s avatar will be loaded from a [URL].

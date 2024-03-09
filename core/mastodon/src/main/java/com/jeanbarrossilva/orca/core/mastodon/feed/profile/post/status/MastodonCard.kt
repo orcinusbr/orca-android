@@ -22,7 +22,7 @@ import java.net.URL
 import kotlinx.serialization.Serializable
 
 /**
- * Structure returned by the API that represents the most prominent content of an [MastodonStatus].
+ * Structure returned by the API that represents the most prominent content of A [MastodonStatus].
  *
  * @param url URL [String] that leads to the webpage to which this [MastodonCard] refers.
  * @param title Title of the webpage.

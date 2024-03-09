@@ -42,7 +42,7 @@ import java.net.URL
  * @param avatarURL URL [String] that leads to the avatar image.
  * @param bio Describes who the owner is and/or provides information regarding the
  *   [MastodonProfile].
- * @param type Determines whether the [MastodonProfile] is an [MastodonEditableProfile] or an
+ * @param type Determines whether the [MastodonProfile] is A [MastodonEditableProfile] or an
  *   [MastodonFollowableProfile].
  * @param follow [String] version of the [MastodonFollowableProfile]'s
  *   [follow][MastodonFollowableProfile.follow] or `null` if the [MastodonProfile] is of a different
@@ -95,7 +95,7 @@ internal constructor(
   }
 
   /**
-   * Converts this [MastodonProfileEntity] into an [MastodonEditableProfile].
+   * Converts this [MastodonProfileEntity] into A [MastodonEditableProfile].
    *
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
    *   [MastodonEditableProfile]'s avatar will be loaded from a [URL].
@@ -129,7 +129,7 @@ internal constructor(
   }
 
   /**
-   * Converts this [MastodonProfileEntity] into an [MastodonFollowableProfile].
+   * Converts this [MastodonProfileEntity] into A [MastodonFollowableProfile].
    *
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
    *   [MastodonFollowableProfile]'s avatar will be loaded from a [URL].
@@ -176,10 +176,10 @@ internal constructor(
   }
 
   companion object {
-    /** [Int] that represents an [MastodonEditableProfile]. */
+    /** [Int] that represents A [MastodonEditableProfile]. */
     internal const val EDITABLE_TYPE = 0
 
-    /** [Int] that represents an [MastodonFollowableProfile]. */
+    /** [Int] that represents A [MastodonFollowableProfile]. */
     internal const val FOLLOWABLE_TYPE = 1
   }
 }

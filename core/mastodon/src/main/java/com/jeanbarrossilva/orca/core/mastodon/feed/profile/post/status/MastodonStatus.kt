@@ -35,7 +35,7 @@ import java.time.ZonedDateTime
 import kotlinx.serialization.Serializable
 
 /**
- * Structure returned by the API that is the DTO version of either an [MastodonPost] or a [Repost];
+ * Structure returned by the API that is the DTO version of either A [MastodonPost] or a [Repost];
  * which one it represents is determined by [reblog]'s nullability.
  *
  * @param id Unique identifier.
