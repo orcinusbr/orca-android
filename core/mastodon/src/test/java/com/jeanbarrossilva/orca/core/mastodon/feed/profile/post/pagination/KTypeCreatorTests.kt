@@ -17,19 +17,17 @@ package com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import kotlin.reflect.KClass
 import kotlin.reflect.typeOf
 import kotlin.test.Test
 
 internal class KTypeCreatorTests {
   @Test(KTypeCreator.Companion.ComplexTypeException::class)
   fun throwsWhenCreatingComplexTypeWithDefaultCreator() {
-    @Suppress("UNCHECKED_CAST")
-    KTypeCreator.defaultFor<List<Any>>().create(List::class as KClass<List<Any>>)
+    KTypeCreator.defaultFor<List<Any>>().create()
   }
 
   @Test
   fun defaultCreatorCreatesSimpleType() {
-    assertThat(KTypeCreator.defaultFor<String>().create(String::class)).isEqualTo(typeOf<String>())
+    assertThat(KTypeCreator.defaultFor<String>().create()).isEqualTo(typeOf<String>())
   }
 }

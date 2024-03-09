@@ -21,7 +21,7 @@ import kotlin.reflect.KType
 import kotlin.reflect.full.createType
 
 /**
- * Creates a [KType] from a [KClass] of [T].
+ * Creates a [KType] for [T].
  *
  * Such behavior is necessary because of the generic nature of a [MastodonPostPaginator]: since its
  * type parameter (which is the DTO to be received from the API when pagination takes place) cannot
@@ -31,18 +31,22 @@ import kotlin.reflect.full.createType
  * can automatically do the work all by itself.
  *
  * It is primarily taken advantage of by Orca's own implementation of [HttpResponse.body], which
- * takes a [KClass] in instead of a reified type parameter (as does [io.ktor.client.call.body]).
+ * takes a [KTypeCreator] in instead of a reified type parameter (as does
+ * [io.ktor.client.call.body]).
  *
- * @param T Type whose [KClass] will be used to create a [KType].
+ * @param T Object for which the [KType] to be created is.
  * @see defaultFor
  */
 internal interface KTypeCreator<T : Any> {
   /**
-   * Creates a [KType] from the [kClass].
+   * [KClass] from which the [KType] can be created.
    *
-   * @param kClass [KClass] for which the [KType] to be created is.
+   * @see create
    */
-  fun create(kClass: KClass<T>): KType
+  val kClass: KClass<T>
+
+  /** Creates a [KType] for [T]. */
+  fun create(): KType
 
   companion object {
     /**
@@ -56,19 +60,21 @@ internal interface KTypeCreator<T : Any> {
       IllegalArgumentException("Cannot create a type from a $kClass with a default creator.")
 
     /**
-     * [KTypeCreator] that creates a [KType] from a [KClass] through [createType], without
-     * specifying any type parameters or annotations. Useful for simpler types that do not require
-     * these details to be set.
+     * [KTypeCreator] that creates a [KType] for [T] through [KClass.createType], without specifying
+     * any type arguments or [Annotation]s. Useful for simpler types that do not require these
+     * details to be set.
      *
      * **NOTE**: A [ComplexTypeException] will be thrown if [T] is a complex type and a [KType] for
-     * a [KClass] of it is requested to be created, denoting that it should be done so manually
-     * instead of delegating the creation to a default [KTypeCreator].
+     * it is requested to be created, denoting that it should be done so manually instead of
+     * delegating the creation to a default [KTypeCreator].
      *
-     * @param T Type whose [KClass] will be used to create a [KType].
+     * @param T Object for which the [KType] to be created is.
      */
-    fun <T : Any> defaultFor(): KTypeCreator<T> {
+    inline fun <reified T : Any> defaultFor(): KTypeCreator<T> {
       return object : KTypeCreator<T> {
-        override fun create(kClass: KClass<T>): KType {
+        override val kClass = T::class
+
+        override fun create(): KType {
           return try {
             kClass.createType()
           } catch (_: IllegalArgumentException) {
