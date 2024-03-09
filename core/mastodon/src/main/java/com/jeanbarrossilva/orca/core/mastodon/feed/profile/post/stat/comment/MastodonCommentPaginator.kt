@@ -38,7 +38,6 @@ internal class MastodonCommentPaginator(
   private val imageLoaderProvider: SomeImageLoaderProvider<URL>,
   id: String
 ) : MastodonPostPaginator<MastodonContext>(), KTypeCreator<MastodonContext> by kTypeCreatorOf() {
-  override val kClass = MastodonContext::class
   override val route = "/api/v1/statuses/$id/context"
 
   /** Provides a [MastodonProfilePostPaginator] through [provide]. */
