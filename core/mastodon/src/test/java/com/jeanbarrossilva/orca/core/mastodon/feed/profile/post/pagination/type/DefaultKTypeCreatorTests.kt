@@ -13,12 +13,10 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination
+package com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination.type
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination.type.ComplexTypeException
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination.type.kTypeCreatorOf
 import io.mockk.mockkStatic
 import io.mockk.verify
 import kotlin.reflect.full.createType
