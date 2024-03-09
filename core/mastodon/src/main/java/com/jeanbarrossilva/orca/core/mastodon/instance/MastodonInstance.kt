@@ -29,7 +29,7 @@ import io.ktor.http.set
 import io.ktor.http.takeFrom
 
 /** A [MastodonInstance] with a generic [Authorizer] and an [Authenticator]. */
-internal typealias SomeMastodonInstance = MastodonInstance<*, *>
+typealias SomeMastodonInstance = MastodonInstance<*, *>
 
 /**
  * [Instance] that performs all of its underlying operations by sending [HttpRequest]s to the API.
@@ -38,10 +38,9 @@ internal typealias SomeMastodonInstance = MastodonInstance<*, *>
  * @param S [Authenticator] to authenticate the user with.
  * @param authorizer [Authorizer] by which the user will be authorized.
  */
-internal abstract class MastodonInstance<F : Authorizer, S : Authenticator>(
-  final override val domain: Domain,
-  internal val authorizer: F
-) : Instance<S>() {
+abstract class MastodonInstance<F : Authorizer, S : Authenticator>
+internal constructor(final override val domain: Domain, internal val authorizer: F) :
+  Instance<S>() {
   /** [Url] to which routes will be appended when [HttpRequest]s are sent. */
   internal val url = URLBuilder().apply { set(scheme = "https", host = "$domain") }.build()
 
