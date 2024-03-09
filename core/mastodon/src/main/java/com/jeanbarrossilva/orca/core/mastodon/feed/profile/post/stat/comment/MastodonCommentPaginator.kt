@@ -18,12 +18,12 @@ package com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.stat.comment
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.MastodonContext
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination.KTypeCreator
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination.MastodonPostPaginator
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination.type.KTypeCreator
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination.type.kTypeCreatorOf
 import com.jeanbarrossilva.orca.std.image.ImageLoader
 import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import java.net.URL
-import kotlin.reflect.KType
 
 /**
  * [MastodonPostPaginator] for paginating through the comments of a [Post].
@@ -37,7 +37,7 @@ import kotlin.reflect.KType
 internal class MastodonCommentPaginator(
   private val imageLoaderProvider: SomeImageLoaderProvider<URL>,
   id: String
-) : MastodonPostPaginator<MastodonContext>() {
+) : MastodonPostPaginator<MastodonContext>(), KTypeCreator<MastodonContext> by kTypeCreatorOf() {
   override val kClass = MastodonContext::class
   override val route = "/api/v1/statuses/$id/context"
 
@@ -52,10 +52,6 @@ internal class MastodonCommentPaginator(
      * @see Post.id
      */
     fun provide(id: String): MastodonCommentPaginator
-  }
-
-  override fun create(): KType {
-    return KTypeCreator.defaultFor<MastodonContext>().create()
   }
 
   override fun MastodonContext.toMastodonPosts(): List<Post> {

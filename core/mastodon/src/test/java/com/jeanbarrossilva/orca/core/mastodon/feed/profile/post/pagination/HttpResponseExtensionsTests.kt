@@ -20,6 +20,7 @@ import assertk.assertions.isEqualTo
 import com.jeanbarrossilva.orca.core.mastodon.client.Logger
 import com.jeanbarrossilva.orca.core.mastodon.client.MastodonClient
 import com.jeanbarrossilva.orca.core.mastodon.client.test.instance.test
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination.type.kTypeCreatorOf
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.MockEngineConfig
@@ -42,7 +43,7 @@ internal class HttpResponseExtensionsTests {
               Logger.test
             )
             .get("/")
-            .body(KTypeCreator.defaultFor<String>())
+            .body(kTypeCreatorOf<String>())
         )
         .isEqualTo("Hello, world!")
     }

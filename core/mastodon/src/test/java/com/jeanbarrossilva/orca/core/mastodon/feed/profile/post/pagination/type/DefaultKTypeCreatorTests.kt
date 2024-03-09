@@ -13,21 +13,37 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination
+package com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination.type
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import io.mockk.mockkStatic
+import io.mockk.verify
+import kotlin.reflect.full.createType
 import kotlin.reflect.typeOf
 import kotlin.test.Test
 
-internal class KTypeCreatorTests {
-  @Test(KTypeCreator.Companion.ComplexTypeException::class)
-  fun throwsWhenCreatingComplexTypeWithDefaultCreator() {
-    KTypeCreator.defaultFor<List<Any>>().create()
+internal class DefaultKTypeCreatorTests {
+  @Test
+  fun createsDefaultCreatorWithClassOfReifiedType() {
+    assertThat(kTypeCreatorOf<Any>().kClass).isEqualTo(Any::class)
   }
 
   @Test
-  fun defaultCreatorCreatesSimpleType() {
-    assertThat(KTypeCreator.defaultFor<String>().create()).isEqualTo(typeOf<String>())
+  fun delegatesCreationToCreateTypeExtensionMethodOnKClass() {
+    mockkStatic("kotlin.reflect.full.KClassifiers") {
+      kTypeCreatorOf<Any>().create()
+      verify { Any::class.createType() }
+    }
+  }
+
+  @Test(ComplexTypeException::class)
+  fun throwsWhenCreatingComplexType() {
+    kTypeCreatorOf<List<Any>>().create()
+  }
+
+  @Test
+  fun createsSimpleType() {
+    assertThat(kTypeCreatorOf<Any>().create()).isEqualTo(typeOf<Any>())
   }
 }
