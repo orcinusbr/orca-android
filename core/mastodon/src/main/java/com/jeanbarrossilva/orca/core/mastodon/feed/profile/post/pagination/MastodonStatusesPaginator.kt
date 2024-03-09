@@ -47,7 +47,7 @@ internal abstract class MastodonStatusesPaginator : MastodonPostPaginator<List<M
   @Suppress("UNCHECKED_CAST")
   final override val dtoClass = List::class as KClass<List<MastodonStatus>>
 
-  final override fun create(kClass: KClass<*>): KType {
+  final override fun create(kClass: KClass<List<MastodonStatus>>): KType {
     val statusType = typeOf<MastodonStatus>()
     val statusProjection = KTypeProjection(KVariance.OUT, statusType)
     val arguments = listOf(statusProjection)

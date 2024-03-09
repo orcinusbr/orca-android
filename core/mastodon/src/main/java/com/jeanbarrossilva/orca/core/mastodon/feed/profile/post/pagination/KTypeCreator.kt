@@ -21,7 +21,7 @@ import kotlin.reflect.KType
 import kotlin.reflect.full.createType
 
 /**
- * Creates a [KType] from a [KClass].
+ * Creates a [KType] from a [KClass] of [T].
  *
  * Such behavior is necessary because of the generic nature of a [MastodonPostPaginator]: since its
  * type parameter (which is the DTO to be received from the API when pagination takes place) cannot
@@ -33,15 +33,16 @@ import kotlin.reflect.full.createType
  * It is primarily taken advantage of by Orca's own implementation of [HttpResponse.body], which
  * takes a [KClass] in instead of a reified type parameter (as does [io.ktor.client.call.body]).
  *
+ * @param T Type whose [KClass] will be used to create a [KType].
  * @see defaultFor
  */
-internal interface KTypeCreator {
+internal interface KTypeCreator<T : Any> {
   /**
    * Creates a [KType] from the [kClass].
    *
    * @param kClass [KClass] for which the [KType] to be created is.
    */
-  fun create(kClass: KClass<*>): KType
+  fun create(kClass: KClass<T>): KType
 
   companion object {
     /**
@@ -62,10 +63,12 @@ internal interface KTypeCreator {
      * **NOTE**: A [ComplexTypeException] will be thrown if [T] is a complex type and a [KType] for
      * a [KClass] of it is requested to be created, denoting that it should be done so manually
      * instead of delegating the creation to a default [KTypeCreator].
+     *
+     * @param T Type whose [KClass] will be used to create a [KType].
      */
-    fun <T : Any> defaultFor(): KTypeCreator {
-      return object : KTypeCreator {
-        override fun create(kClass: KClass<*>): KType {
+    fun <T : Any> defaultFor(): KTypeCreator<T> {
+      return object : KTypeCreator<T> {
+        override fun create(kClass: KClass<T>): KType {
           return try {
             kClass.createType()
           } catch (_: IllegalArgumentException) {

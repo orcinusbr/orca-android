@@ -35,7 +35,7 @@ import kotlin.reflect.javaType
  */
 @Throws(DoubleReceiveException::class, NoTransformationFoundException::class)
 internal suspend fun <T : Any> HttpResponse.body(
-  typeCreator: KTypeCreator,
+  typeCreator: KTypeCreator<T>,
   bodyClass: KClass<T>
 ): T {
   val type = typeCreator.create(bodyClass)

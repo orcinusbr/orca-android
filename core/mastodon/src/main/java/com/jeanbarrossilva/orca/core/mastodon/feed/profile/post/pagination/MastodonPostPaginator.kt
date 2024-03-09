@@ -39,7 +39,7 @@ import kotlinx.coroutines.flow.onEach
  *
  * @param T DTO that is returned by the API.
  */
-internal abstract class MastodonPostPaginator<T : Any> : KTypeCreator {
+internal abstract class MastodonPostPaginator<T : Any> : KTypeCreator<T> {
   /** Last [HttpResponse] that's been received. */
   private var lastResponse: HttpResponse? = null
 

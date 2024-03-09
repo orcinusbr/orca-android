@@ -55,7 +55,7 @@ internal class MastodonCommentPaginator(
     fun provide(id: String): MastodonCommentPaginator
   }
 
-  override fun create(kClass: KClass<*>): KType {
+  override fun create(kClass: KClass<MastodonContext>): KType {
     return KTypeCreator.defaultFor<MastodonContext>().create(kClass)
   }
 
