@@ -21,7 +21,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.stat.addable.AddableStat
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndDelete
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndSubmitForm
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.MastodonPost
-import com.jeanbarrossilva.orca.core.mastodon.instance.SomeHttpInstance
+import com.jeanbarrossilva.orca.core.mastodon.instance.SomeMastodonInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
@@ -47,7 +47,7 @@ internal fun CommentStat(
       get { index -> contextPaginator.paginateTo(index) }
     }
     add {
-      (Injector.from<CoreModule>().instanceProvider().provide() as SomeHttpInstance)
+      (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
         .client
         .authenticateAndSubmitForm(
           "/api/v1/statuses",
@@ -58,7 +58,7 @@ internal fun CommentStat(
         )
     }
     remove {
-      (Injector.from<CoreModule>().instanceProvider().provide() as SomeHttpInstance)
+      (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
         .client
         .authenticateAndDelete("/api/v1/statuses/${it.id}")
     }

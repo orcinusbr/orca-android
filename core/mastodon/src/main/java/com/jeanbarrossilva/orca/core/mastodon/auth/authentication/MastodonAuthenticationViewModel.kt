@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -25,7 +25,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.mastodon.R
 import com.jeanbarrossilva.orca.core.mastodon.auth.Mastodon
-import com.jeanbarrossilva.orca.core.mastodon.instance.SomeHttpInstance
+import com.jeanbarrossilva.orca.core.mastodon.instance.SomeMastodonInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.std.image.ImageLoader
@@ -62,7 +62,7 @@ private constructor(
     val scheme = application.getString(R.string.scheme)
     val redirectUri = application.getString(R.string.redirect_uri, scheme)
     viewModelScope.launch {
-      (Injector.from<CoreModule>().instanceProvider().provide() as SomeHttpInstance)
+      (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
         .client
         .submitForm(
           "/oauth/token",

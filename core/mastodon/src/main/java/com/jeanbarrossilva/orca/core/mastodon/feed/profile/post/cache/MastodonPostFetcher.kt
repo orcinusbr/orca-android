@@ -19,7 +19,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentPaginator
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.status.MastodonStatus
-import com.jeanbarrossilva.orca.core.mastodon.instance.SomeHttpInstance
+import com.jeanbarrossilva.orca.core.mastodon.instance.SomeMastodonInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.platform.cache.Fetcher
@@ -43,7 +43,7 @@ internal class MastodonPostFetcher(
   private val commentPaginatorProvider: MastodonCommentPaginator.Provider
 ) : Fetcher<Post>() {
   override suspend fun onFetch(key: String): Post {
-    return (Injector.from<CoreModule>().instanceProvider().provide() as SomeHttpInstance)
+    return (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
       .client
       .authenticateAndGet("/api/v1/statuses/$key")
       .body<MastodonStatus>()

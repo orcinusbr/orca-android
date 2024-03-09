@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -19,7 +19,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.post.stat.toggleable.ToggleableStat
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndPost
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.MastodonPost
-import com.jeanbarrossilva.orca.core.mastodon.instance.SomeHttpInstance
+import com.jeanbarrossilva.orca.core.mastodon.instance.SomeMastodonInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
@@ -40,7 +40,7 @@ internal fun FavoriteStat(id: String, count: Int): ToggleableStat<Profile> {
         } else {
           @Suppress("SpellCheckingInspection") "/api/v1/statuses/$id/unfavourite"
         }
-      (Injector.from<CoreModule>().instanceProvider().provide() as SomeHttpInstance)
+      (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
         .client
         .authenticateAndPost(route)
     }
@@ -58,7 +58,7 @@ internal fun ReblogStat(id: String, count: Int): ToggleableStat<Profile> {
   return ToggleableStat(count) {
     setEnabled { isEnabled ->
       val route = if (isEnabled) "/api/v1/statuses/$id/reblog" else "/api/v1/statuses/$id/unreblog"
-      (Injector.from<CoreModule>().instanceProvider().provide() as SomeHttpInstance)
+      (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
         .client
         .authenticateAndPost(route)
     }

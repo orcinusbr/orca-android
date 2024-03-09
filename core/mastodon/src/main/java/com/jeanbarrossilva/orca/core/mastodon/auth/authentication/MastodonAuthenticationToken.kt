@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,7 +16,7 @@
 package com.jeanbarrossilva.orca.core.mastodon.auth.authentication
 
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
-import com.jeanbarrossilva.orca.core.mastodon.instance.SomeHttpInstance
+import com.jeanbarrossilva.orca.core.mastodon.instance.SomeMastodonInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.std.image.ImageLoader
@@ -46,7 +46,7 @@ internal data class MastodonAuthenticationToken(val accessToken: String) {
   suspend fun toActor(avatarLoaderProvider: SomeImageLoaderProvider<URL>): Actor.Authenticated {
     return toActor(
       avatarLoaderProvider,
-      (Injector.from<CoreModule>().instanceProvider().provide() as SomeHttpInstance)
+      (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
         .client
         .get("/api/v1/accounts/verify_credentials") { bearerAuth(accessToken) }
         .body<MastodonAuthenticationVerification>()

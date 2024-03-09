@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -18,7 +18,7 @@ package com.jeanbarrossilva.orca.core.mastodon.feed.profile.type.editable
 import com.jeanbarrossilva.orca.core.feed.profile.type.editable.Editor
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndSubmitForm
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndSubmitFormWithBinaryData
-import com.jeanbarrossilva.orca.core.mastodon.instance.SomeHttpInstance
+import com.jeanbarrossilva.orca.core.mastodon.instance.SomeMastodonInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.std.image.SomeImageLoader
@@ -45,19 +45,19 @@ internal class MastodonEditor : Editor {
     val contentDisposition = "form-data; name=\"avatar\" filename=\"${file.name}\""
     val headers = Headers.build { append(HttpHeaders.ContentDisposition, contentDisposition) }
     val formData = formData { append("avatar", inputProvider, headers) }
-    (Injector.from<CoreModule>().instanceProvider().provide() as SomeHttpInstance)
+    (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
       .client
       .authenticateAndSubmitFormWithBinaryData(ROUTE, formData)
   }
 
   override suspend fun setName(name: String) {
-    (Injector.from<CoreModule>().instanceProvider().provide() as SomeHttpInstance)
+    (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
       .client
       .authenticateAndSubmitForm(ROUTE, parametersOf("display_name", name))
   }
 
   override suspend fun setBio(bio: StyledString) {
-    (Injector.from<CoreModule>().instanceProvider().provide() as SomeHttpInstance)
+    (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
       .client
       .authenticateAndSubmitForm(ROUTE, parametersOf("note", "$bio"))
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -18,7 +18,7 @@ package com.jeanbarrossilva.orca.core.mastodon.feed.profile.post
 import com.jeanbarrossilva.orca.core.feed.profile.post.DeletablePost
 import com.jeanbarrossilva.orca.core.mastodon.MastodonCoreModule
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndDelete
-import com.jeanbarrossilva.orca.core.mastodon.instance.SomeHttpInstance
+import com.jeanbarrossilva.orca.core.mastodon.instance.SomeMastodonInstance
 import com.jeanbarrossilva.orca.core.mastodon.instanceProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
 
@@ -30,7 +30,7 @@ import com.jeanbarrossilva.orca.std.injector.Injector
 internal data class MastodonDeletablePost(private val delegate: MastodonPost) :
   DeletablePost(delegate) {
   override suspend fun delete() {
-    (Injector.from<MastodonCoreModule>().instanceProvider().provide() as SomeHttpInstance)
+    (Injector.from<MastodonCoreModule>().instanceProvider().provide() as SomeMastodonInstance)
       .client
       .authenticateAndDelete("api/v1/statuses/$id")
   }
