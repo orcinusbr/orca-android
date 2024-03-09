@@ -25,7 +25,7 @@ import kotlin.reflect.KType
  * Creates a [KType] for [T].
  *
  * Such behavior is necessary because of the generic nature of a [MastodonPostPaginator]: since its
- * type parameter (which is the DTO to be received from the API when pagination takes place) cannot
+ * type argument (which is the DTO to be received from the API when pagination takes place) cannot
  * be reified (at least not as of Kotlin 1.9.21), the [HttpResponse] needs to know how to actually
  * convert the payload into the specified object. Tends to result in a somewhat manual process if
  * there are, for example, type arguments that need to be given; otherwise, a default [KTypeCreator]
