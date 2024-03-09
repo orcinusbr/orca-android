@@ -67,7 +67,7 @@ internal abstract class MastodonPostPaginator<T : Any> : KTypeCreator<T> {
       .map({ (url, isRefreshing) -> isRefreshing || url == null }) { route to it.second }
       .mapNotNull { (url, _) -> url?.let { client.authenticateAndGet(it) } }
       .onEach { lastResponse = it }
-      .map { it.body(this).toMastodonPosts() }
+      .map { it.body(this).toPosts() }
 
   /** [MastodonClient] through which the [HttpRequest]s will be performed. */
   private val client
@@ -99,7 +99,7 @@ internal abstract class MastodonPostPaginator<T : Any> : KTypeCreator<T> {
   }
 
   /** Converts the DTO returned by the API into [Post]s. */
-  protected abstract fun T.toMastodonPosts(): List<Post>
+  protected abstract fun T.toPosts(): List<Post>
 
   /**
    * Goes through each page between the current and the given one.

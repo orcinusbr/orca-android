@@ -53,7 +53,7 @@ internal class MastodonCommentPaginator(
     fun provide(id: String): MastodonCommentPaginator
   }
 
-  override fun MastodonContext.toMastodonPosts(): List<Post> {
+  override fun MastodonContext.toPosts(): List<Post> {
     return descendants.map { it.toPost(imageLoaderProvider) { this@MastodonCommentPaginator } }
   }
 }
