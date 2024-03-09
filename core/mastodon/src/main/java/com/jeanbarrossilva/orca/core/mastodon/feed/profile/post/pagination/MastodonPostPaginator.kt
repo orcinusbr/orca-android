@@ -19,6 +19,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.mastodon.client.MastodonClient
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination.type.KTypeCreator
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination.type.kTypeCreatorOf
 import com.jeanbarrossilva.orca.core.mastodon.instance.SomeMastodonInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
@@ -36,6 +37,13 @@ import kotlinx.coroutines.flow.onEach
 
 /**
  * Requests and paginates through [Post]s.
+ *
+ * One noticeable fact is that a [MastodonPostPaginator] is also a [KTypeCreator]. Such inheritance
+ * is necessary because of its generic nature: since its type argument cannot be reified (at least
+ * not as of Kotlin 1.9.21), the [HttpResponse] needs to know how to actually convert the received
+ * payload into a [T]. Tends to result in a somewhat manual process if there are, for example, type
+ * arguments that need to be passed in; otherwise, this behavior can simply be delegated to a
+ * default [KTypeCreator], obtainable through the [kTypeCreatorOf] creator method.
  *
  * @param T DTO that is returned by the API.
  */
