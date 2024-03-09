@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -28,7 +28,7 @@ import com.jeanbarrossilva.orca.core.test.TestAuthorizer
  * @param authenticationLock [AuthenticationLock] by which features can be locked or unlocked by an
  *   authentication "wall".
  */
-internal class TestHttpInstanceProvider(
+internal class TestMastodonInstanceProvider(
   private val authorizer: TestAuthorizer,
   private val authenticator: TestAuthenticator,
   private val authenticationLock: AuthenticationLock<TestAuthenticator>

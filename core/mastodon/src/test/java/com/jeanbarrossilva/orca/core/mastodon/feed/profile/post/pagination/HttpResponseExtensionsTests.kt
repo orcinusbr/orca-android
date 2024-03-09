@@ -17,8 +17,8 @@ package com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import com.jeanbarrossilva.orca.core.mastodon.client.CoreHttpClient
 import com.jeanbarrossilva.orca.core.mastodon.client.Logger
+import com.jeanbarrossilva.orca.core.mastodon.client.MastodonClient
 import com.jeanbarrossilva.orca.core.mastodon.client.test.instance.test
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.engine.mock.MockEngine
@@ -33,7 +33,7 @@ internal class HttpResponseExtensionsTests {
   fun getsBody() {
     runTest {
       assertThat(
-          CoreHttpClient(
+          MastodonClient(
               object : HttpClientEngineFactory<MockEngineConfig> {
                 override fun create(block: MockEngineConfig.() -> Unit): MockEngine {
                   return MockEngine { respondOk("Hello, world!") }.apply { block(config) }

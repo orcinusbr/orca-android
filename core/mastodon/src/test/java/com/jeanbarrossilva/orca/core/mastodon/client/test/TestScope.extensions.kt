@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -19,9 +19,9 @@ import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.auth.actor.ActorProvider
 import com.jeanbarrossilva.orca.core.mastodon.MastodonCoreModule
-import com.jeanbarrossilva.orca.core.mastodon.client.CoreHttpClient
-import com.jeanbarrossilva.orca.core.mastodon.client.test.instance.TestHttpInstanceProvider
+import com.jeanbarrossilva.orca.core.mastodon.client.MastodonClient
 import com.jeanbarrossilva.orca.core.mastodon.client.test.instance.TestMastodonInstance
+import com.jeanbarrossilva.orca.core.mastodon.client.test.instance.TestMastodonInstanceProvider
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.sample.auth.actor.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.SampleTermMuter
@@ -39,15 +39,15 @@ import kotlinx.coroutines.test.runTest
 
 /**
  * [CoroutineScope] created from the [TestScope] in which the test in running, that houses
- * [CoreHttpClient]-test-related structures.
+ * [MastodonClient]-test-related structures.
  *
  * @param T Specified [Actor] for performing the testing.
  * @param delegate [TestScope] that's been launched and will provide [CoroutineScope]-like
- *   functionality to this [CoreHttpClientTestScope].
- * @param client [CoreHttpClient] for executing the intended [HttpRequest]s.
+ *   functionality to this [MastodonClientTestScope].
+ * @param client [MastodonClient] for executing the intended [HttpRequest]s.
  * @param actor [Actor] used when running the test.
  */
-internal class CoreHttpClientTestScope<T : Actor>(
+internal class MastodonClientTestScope<T : Actor>(
   delegate: TestScope,
   val client: HttpClient,
   val actor: T
@@ -67,21 +67,21 @@ internal class FixedActorProvider(private val actor: Actor) : TestActorProvider(
 }
 
 /**
- * Configures an environment for a [CoreHttpClient] test with an
- * [authenticated][Actor.Authenticated] [Actor], providing the proper [CoreHttpClientTestScope].
+ * Configures an environment for a [MastodonClient] test with an
+ * [authenticated][Actor.Authenticated] [Actor], providing the proper [MastodonClientTestScope].
  *
  * @param body Callback run when the environment has been set up and is, therefore, ready to be
  *   used.
  */
 internal fun runAuthenticatedTest(
-  body: suspend CoreHttpClientTestScope<Actor.Authenticated>.() -> Unit
+  body: suspend MastodonClientTestScope<Actor.Authenticated>.() -> Unit
 ) {
   runCoreHttpClientTest(Actor.Authenticated.sample, onAuthentication = {}, body)
 }
 
 /**
- * Configures an environment for a [CoreHttpClient] test with an
- * [unauthenticated][Actor.Unauthenticated] [Actor], providing the proper [CoreHttpClientTestScope].
+ * Configures an environment for a [MastodonClient] test with an
+ * [unauthenticated][Actor.Unauthenticated] [Actor], providing the proper [MastodonClientTestScope].
  *
  * @param onAuthentication Action run whenever the [Actor] is authenticated.
  * @param body Callback run when the environment has been set up and is, therefore, ready to be
@@ -89,24 +89,24 @@ internal fun runAuthenticatedTest(
  */
 internal fun runUnauthenticatedTest(
   onAuthentication: () -> Unit,
-  body: suspend CoreHttpClientTestScope<Actor.Unauthenticated>.() -> Unit
+  body: suspend MastodonClientTestScope<Actor.Unauthenticated>.() -> Unit
 ) {
   runCoreHttpClientTest(Actor.Unauthenticated, onAuthentication, body)
 }
 
 /**
- * Configures an environment for a [CoreHttpClient] test, providing the proper
- * [CoreHttpClientTestScope].
+ * Configures an environment for a [MastodonClient] test, providing the proper
+ * [MastodonClientTestScope].
  *
  * @param T [Actor] to run the test with.
  * @param actor [Actor] to be fixedly provided by the underlying [ActorProvider]. Determines the
- *   behavior of `authenticateAnd*` calls done on the [CoreHttpClient] within the [body], given that
+ *   behavior of `authenticateAnd*` calls done on the [MastodonClient] within the [body], given that
  *   an [unauthenticated][Actor.Unauthenticated] [Actor] will be requested to be authenticated when
  *   such invocations take place, while having an [authenticated][Actor.Authenticated] [Actor] would
  *   simply mean that the operation derived from the [HttpMethod] will be performed.
  * @param onAuthentication Action run whenever the [Actor] is authenticated. At this point, the most
  *   up-to-date [Actor] is probably different from the one with which the test has been configured
- *   and that is in the [CoreHttpClientTestScope] given to the [body].
+ *   and that is in the [MastodonClientTestScope] given to the [body].
  * @param body Callback run when the environment has been set up and is, therefore, ready to be
  *   used.
  * @see HttpClient.authenticateAndGet
@@ -117,7 +117,7 @@ internal fun runUnauthenticatedTest(
 private fun <T : Actor> runCoreHttpClientTest(
   actor: T,
   onAuthentication: () -> Unit,
-  body: suspend CoreHttpClientTestScope<T>.() -> Unit
+  body: suspend MastodonClientTestScope<T>.() -> Unit
 ) {
   val authorizer = TestAuthorizer()
   val actorProvider = FixedActorProvider(actor)
@@ -126,11 +126,11 @@ private fun <T : Actor> runCoreHttpClientTest(
   val instance = TestMastodonInstance(authorizer, authenticator, authenticationLock)
   val module =
     MastodonCoreModule(
-      injectionOf { TestHttpInstanceProvider(authorizer, authenticator, authenticationLock) },
+      injectionOf { TestMastodonInstanceProvider(authorizer, authenticator, authenticationLock) },
       injectionOf { authenticationLock },
       injectionOf { SampleTermMuter() }
     )
   Injector.register<CoreModule>(module)
-  runTest { CoreHttpClientTestScope(delegate = this, instance.client, actor).body() }
+  runTest { MastodonClientTestScope(delegate = this, instance.client, actor).body() }
   Injector.unregister<CoreModule>()
 }

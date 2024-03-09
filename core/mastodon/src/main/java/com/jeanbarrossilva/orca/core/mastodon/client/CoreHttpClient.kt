@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -65,17 +65,17 @@ internal val authenticationLock
   get() = Injector.from<CoreModule>().instanceProvider().provide().authenticationLock
 
 /**
- * [HttpClient] through which [HttpRequest]s can be performed.
+ * [HttpClient] through which [HttpRequest]s can be sent to the Mastodon API.
  *
  * @param config Additional configuration to be done on the [HttpClient].
  */
 @Suppress("FunctionName")
-fun CoreHttpClient(config: HttpClientConfig<CIOEngineConfig>.() -> Unit): HttpClient {
-  return CoreHttpClient(CIO, Logger.android, config)
+fun MastodonClient(config: HttpClientConfig<CIOEngineConfig>.() -> Unit): HttpClient {
+  return MastodonClient(CIO, Logger.android, config)
 }
 
 /**
- * [HttpClient] through which [HttpRequest]s can be performed.
+ * [HttpClient] through which [HttpRequest]s can be sent to the Mastodon API.
  *
  * @param EC [HttpClientEngineConfig] through which the [HttpClientConfig] will be configured.
  * @param CC [HttpClientConfig] that will configure the [HttpClient].
@@ -85,7 +85,7 @@ fun CoreHttpClient(config: HttpClientConfig<CIOEngineConfig>.() -> Unit): HttpCl
  * @param config Additional configuration to be done on the [HttpClient].
  */
 @Suppress("FunctionName")
-fun <EC : HttpClientEngineConfig, CC : HttpClientConfig<EC>> CoreHttpClient(
+fun <EC : HttpClientEngineConfig, CC : HttpClientConfig<EC>> MastodonClient(
   engineFactory: HttpClientEngineFactory<EC>,
   logger: Logger,
   config: CC.() -> Unit = {}
@@ -93,7 +93,6 @@ fun <EC : HttpClientEngineConfig, CC : HttpClientConfig<EC>> CoreHttpClient(
   return HttpClient(engineFactory) {
     setUpResponseLogging(logger)
     setUpContentNegotiation()
-
     @Suppress("UNCHECKED_CAST") (this as CC).config()
   }
 }
@@ -200,7 +199,7 @@ internal suspend fun HttpMessageBuilder.authenticate() {
 }
 
 /**
- * Observes [HttpResponse]s sent to the [CoreHttpClient] to be built and logs them.
+ * Observes [HttpResponse]s sent to the [MastodonClient] to be built and logs them.
  *
  * @param logger [Logger] by which received [HttpResponse]s will be logged.
  */

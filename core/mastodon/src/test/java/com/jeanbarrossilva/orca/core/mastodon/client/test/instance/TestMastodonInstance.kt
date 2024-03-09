@@ -17,8 +17,8 @@ package com.jeanbarrossilva.orca.core.mastodon.client.test.instance
 
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.instance.Instance
-import com.jeanbarrossilva.orca.core.mastodon.client.CoreHttpClient
 import com.jeanbarrossilva.orca.core.mastodon.client.Logger
+import com.jeanbarrossilva.orca.core.mastodon.client.MastodonClient
 import com.jeanbarrossilva.orca.core.mastodon.instance.MastodonInstance
 import com.jeanbarrossilva.orca.core.sample.test.instance.sample
 import com.jeanbarrossilva.orca.core.test.TestAuthenticationLock
@@ -64,5 +64,5 @@ internal class TestMastodonInstance(
   override val profileProvider = Instance.sample.profileProvider
   override val profileSearcher = Instance.sample.profileSearcher
   override val postProvider = Instance.sample.postProvider
-  override val client = CoreHttpClient(clientEngineFactory, Logger.test)
+  override val client = MastodonClient(clientEngineFactory, Logger.test)
 }
