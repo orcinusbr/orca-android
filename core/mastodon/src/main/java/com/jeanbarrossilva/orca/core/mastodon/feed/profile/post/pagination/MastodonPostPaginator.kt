@@ -16,7 +16,7 @@
 package com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination
 
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
-import com.jeanbarrossilva.orca.core.mastodon.client.CoreHttpClient
+import com.jeanbarrossilva.orca.core.mastodon.client.MastodonClient
 import com.jeanbarrossilva.orca.core.mastodon.client.authenticateAndGet
 import com.jeanbarrossilva.orca.core.mastodon.instance.SomeMastodonInstance
 import com.jeanbarrossilva.orca.core.module.CoreModule
@@ -61,7 +61,7 @@ internal abstract class MastodonPostPaginator<T : Any> : KTypeCreator {
       .onEach { lastResponse = it }
       .map { it.body(this, dtoClass).toMastodonPosts() }
 
-  /** [CoreHttpClient] through which the [HttpRequest]s will be performed. */
+  /** [MastodonClient] through which the [HttpRequest]s will be performed. */
   private val client
     get() =
       (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance).client
