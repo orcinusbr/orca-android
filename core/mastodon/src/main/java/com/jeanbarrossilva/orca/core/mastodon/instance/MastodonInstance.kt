@@ -28,7 +28,7 @@ import io.ktor.http.Url
 import io.ktor.http.set
 import io.ktor.http.takeFrom
 
-/** An [MastodonInstance] with a generic [Authorizer] and an [Authenticator]. */
+/** A [MastodonInstance] with a generic [Authorizer] and an [Authenticator]. */
 internal typealias SomeMastodonInstance = MastodonInstance<*, *>
 
 /**

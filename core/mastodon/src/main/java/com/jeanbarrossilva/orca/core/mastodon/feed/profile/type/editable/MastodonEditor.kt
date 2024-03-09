@@ -63,7 +63,7 @@ internal class MastodonEditor : Editor {
   }
 
   companion object {
-    /** Route to which the [HttpRequest]s will be sent for editing an [MastodonEditableProfile]. */
+    /** Route to which the [HttpRequest]s will be sent for editing A [MastodonEditableProfile]. */
     private const val ROUTE = "api/v1/accounts/update_credentials"
   }
 }

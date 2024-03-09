@@ -25,7 +25,7 @@ import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.std.injector.Injector
 
 /**
- * Builds a [ToggleableStat] for an [MastodonPost]'s favorites that obtains them from the API.
+ * Builds a [ToggleableStat] for A [MastodonPost]'s favorites that obtains them from the API.
  *
  * @param id ID of the [MastodonPost] for which the [ToggleableStat] is.
  * @param count Amount of times that the [MastodonPost] has been marked as favorite.
@@ -48,7 +48,7 @@ internal fun FavoriteStat(id: String, count: Int): ToggleableStat<Profile> {
 }
 
 /**
- * Builds a [ToggleableStat] for an [MastodonPost]'s reblogs that obtains them from the API.
+ * Builds a [ToggleableStat] for A [MastodonPost]'s reblogs that obtains them from the API.
  *
  * @param id ID of the [MastodonPost] for which the [ToggleableStat] is.
  * @param count Amount of times that the [MastodonPost] has been reblogged.

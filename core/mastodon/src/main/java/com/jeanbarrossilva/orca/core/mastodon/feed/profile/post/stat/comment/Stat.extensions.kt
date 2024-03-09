@@ -28,7 +28,7 @@ import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.http.Parameters
 
 /**
- * Builds a [Stat] for an [MastodonPost]'s comments that obtains them from the API.
+ * Builds a [Stat] for A [MastodonPost]'s comments that obtains them from the API.
  *
  * @param id ID of the [MastodonPost] for which the [Stat] is.
  * @param count Amount of comments that the [MastodonPost] has received.
