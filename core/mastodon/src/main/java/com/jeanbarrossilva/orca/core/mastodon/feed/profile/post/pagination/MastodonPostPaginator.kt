@@ -27,7 +27,6 @@ import com.jeanbarrossilva.orca.std.injector.Injector
 import io.ktor.client.request.HttpRequest
 import io.ktor.client.statement.HttpResponse
 import kotlin.jvm.optionals.getOrNull
-import kotlin.reflect.KClass
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -39,7 +38,7 @@ import kotlinx.coroutines.flow.onEach
  *
  * @param T DTO that is returned by the API.
  */
-internal abstract class MastodonPostPaginator<T : Any> : KTypeCreator {
+internal abstract class MastodonPostPaginator<T : Any> : KTypeCreator<T> {
   /** Last [HttpResponse] that's been received. */
   private var lastResponse: HttpResponse? = null
 
@@ -59,7 +58,7 @@ internal abstract class MastodonPostPaginator<T : Any> : KTypeCreator {
       .map({ (url, isRefreshing) -> isRefreshing || url == null }) { route to it.second }
       .mapNotNull { (url, _) -> url?.let { client.authenticateAndGet(it) } }
       .onEach { lastResponse = it }
-      .map { it.body(this, dtoClass).toMastodonPosts() }
+      .map { it.body(this).toMastodonPosts() }
 
   /** [MastodonClient] through which the [HttpRequest]s will be performed. */
   private val client
@@ -75,9 +74,6 @@ internal abstract class MastodonPostPaginator<T : Any> : KTypeCreator {
 
   /** URL [String] to which the initial [HttpRequest] should be sent. */
   protected abstract val route: String
-
-  /** [KClass] of the DTO that is returned by the API. */
-  protected abstract val dtoClass: KClass<T>
 
   /**
    * Iterates from the current page to the given one.

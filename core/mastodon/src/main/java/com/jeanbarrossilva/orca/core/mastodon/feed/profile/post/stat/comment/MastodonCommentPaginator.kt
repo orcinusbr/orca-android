@@ -23,7 +23,6 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.pagination.Masto
 import com.jeanbarrossilva.orca.std.image.ImageLoader
 import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
 import java.net.URL
-import kotlin.reflect.KClass
 import kotlin.reflect.KType
 
 /**
@@ -39,8 +38,8 @@ internal class MastodonCommentPaginator(
   private val imageLoaderProvider: SomeImageLoaderProvider<URL>,
   id: String
 ) : MastodonPostPaginator<MastodonContext>() {
+  override val kClass = MastodonContext::class
   override val route = "/api/v1/statuses/$id/context"
-  override val dtoClass = MastodonContext::class
 
   /** Provides a [MastodonProfilePostPaginator] through [provide]. */
   fun interface Provider {
@@ -55,8 +54,8 @@ internal class MastodonCommentPaginator(
     fun provide(id: String): MastodonCommentPaginator
   }
 
-  override fun create(kClass: KClass<*>): KType {
-    return KTypeCreator.defaultFor<MastodonContext>().create(kClass)
+  override fun create(): KType {
+    return KTypeCreator.defaultFor<MastodonContext>().create()
   }
 
   override fun MastodonContext.toMastodonPosts(): List<Post> {

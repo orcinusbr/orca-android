@@ -42,7 +42,7 @@ internal class HttpResponseExtensionsTests {
               Logger.test
             )
             .get("/")
-            .body(KTypeCreator.defaultFor<String>(), String::class)
+            .body(KTypeCreator.defaultFor<String>())
         )
         .isEqualTo("Hello, world!")
     }

@@ -23,11 +23,11 @@ import kotlin.test.Test
 internal class KTypeCreatorTests {
   @Test(KTypeCreator.Companion.ComplexTypeException::class)
   fun throwsWhenCreatingComplexTypeWithDefaultCreator() {
-    KTypeCreator.defaultFor<List<Any>>().create(List::class)
+    KTypeCreator.defaultFor<List<Any>>().create()
   }
 
   @Test
   fun defaultCreatorCreatesSimpleType() {
-    assertThat(KTypeCreator.defaultFor<String>().create(String::class)).isEqualTo(typeOf<String>())
+    assertThat(KTypeCreator.defaultFor<String>().create()).isEqualTo(typeOf<String>())
   }
 }

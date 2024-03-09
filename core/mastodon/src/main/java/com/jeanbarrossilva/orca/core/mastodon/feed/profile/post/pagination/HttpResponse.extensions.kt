@@ -20,7 +20,6 @@ import io.ktor.client.call.NoTransformationFoundException
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import io.ktor.util.reflect.TypeInfo
-import kotlin.reflect.KClass
 import kotlin.reflect.KType
 import kotlin.reflect.javaType
 
@@ -28,17 +27,17 @@ import kotlin.reflect.javaType
  * Receives the payload as being a [T].
  *
  * @param T Body to be obtained.
- * @param typeCreator [KTypeCreator] by which a [KType] for the [bodyClass] will be created.
- * @param bodyClass [KClass] of the body to be returned.
+ * @param typeCreator [KTypeCreator] by which a [KType] for the payload to be returned will be
+ *   created.
  * @throws DoubleReceiveException If the payload has already been received.
  * @throws NoTransformationFoundException If no transformation for [T] is found.
  */
 @Throws(DoubleReceiveException::class, NoTransformationFoundException::class)
-internal suspend fun <T : Any> HttpResponse.body(
-  typeCreator: KTypeCreator,
-  bodyClass: KClass<T>
-): T {
-  val type = typeCreator.create(bodyClass)
-  @OptIn(ExperimentalStdlibApi::class) val typeInfo = TypeInfo(bodyClass, type.javaType, type)
+internal suspend fun <T : Any> HttpResponse.body(typeCreator: KTypeCreator<T>): T {
+  val type = typeCreator.create()
+
+  @OptIn(ExperimentalStdlibApi::class)
+  val typeInfo = TypeInfo(typeCreator.kClass, type.javaType, type)
+
   return body(typeInfo)
 }
