@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -23,12 +23,13 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jeanbarrossilva.loadable.flow.loadable
 import com.jeanbarrossilva.loadable.list.flow.listLoadable
 import com.jeanbarrossilva.orca.composite.timeline.post.figure.gallery.disposition.Disposition
-import com.jeanbarrossilva.orca.composite.timeline.post.toPostPreviewFlow
+import com.jeanbarrossilva.orca.composite.timeline.post.toPostPreview
 import com.jeanbarrossilva.orca.core.feed.profile.post.PostProvider
 import com.jeanbarrossilva.orca.ext.coroutines.await
-import com.jeanbarrossilva.orca.ext.coroutines.flatMapEach
+import com.jeanbarrossilva.orca.ext.coroutines.mapEach
 import com.jeanbarrossilva.orca.ext.coroutines.notifier.notifierFlow
 import com.jeanbarrossilva.orca.ext.coroutines.notifier.notify
+import com.jeanbarrossilva.orca.ext.coroutines.pagination.paginate
 import com.jeanbarrossilva.orca.ext.intents.share
 import com.jeanbarrossilva.orca.feature.postdetails.toPostDetailsFlow
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
@@ -68,10 +69,12 @@ private constructor(
       .flatMapLatest { it.toPostDetailsFlow(colors, onLinkClick, onThumbnailClickListener) }
       .loadable(viewModelScope)
 
+  @OptIn(ExperimentalCoroutinesApi::class)
   val commentsLoadableFlow =
-    flatMapCombine(commentsIndexFlow, postFlow) { commentsIndex, post ->
-        post.comment.get(commentsIndex).flatMapEach {
-          it.toPostPreviewFlow(colors, onLinkClick, onThumbnailClickListener)
+    postFlow
+      .flatMapLatest { post ->
+        commentsIndexFlow.paginate(post.comment::get).mapEach { comment ->
+          comment.toPostPreview(colors, onLinkClick, onThumbnailClickListener)
         }
       }
       .listLoadable(viewModelScope, SharingStarted.WhileSubscribed())

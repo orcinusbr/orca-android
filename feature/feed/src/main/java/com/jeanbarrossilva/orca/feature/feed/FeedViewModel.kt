@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -32,14 +32,13 @@ import com.jeanbarrossilva.orca.ext.coroutines.await
 import com.jeanbarrossilva.orca.ext.coroutines.flatMapEach
 import com.jeanbarrossilva.orca.ext.coroutines.notifier.notifierFlow
 import com.jeanbarrossilva.orca.ext.coroutines.notifier.notify
+import com.jeanbarrossilva.orca.ext.coroutines.pagination.paginate
 import com.jeanbarrossilva.orca.ext.intents.share
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import java.net.URL
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flattenConcat
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -51,19 +50,18 @@ internal class FeedViewModel(
   private val onLinkClick: (URL) -> Unit,
   private val onThumbnailClickListener: Disposition.OnThumbnailClickListener
 ) : AndroidViewModel(application) {
-  private val postPreviewsLoadableNotifierFlow = notifierFlow()
   private val indexFlow = MutableStateFlow(0)
+  private val postPreviewsLoadableNotifierFlow = notifierFlow()
   private val colors by lazy { AutosTheme.getColors(application) }
 
   @get:JvmName("_getApplication")
   private val application
     get() = getApplication<Application>()
 
-  @OptIn(ExperimentalCoroutinesApi::class)
   val postPreviewsLoadableFlow =
-    postPreviewsLoadableNotifierFlow
-      .combine(indexFlow) { _, index -> feedProvider.provide(userID, index) }
-      .flattenConcat()
+    indexFlow
+      .combine(postPreviewsLoadableNotifierFlow) { index, _ -> index }
+      .paginate { feedProvider.provide(userID, page = it) }
       .flatMapEach(selector = PostPreview::id) {
         it.toPostPreviewFlow(colors, onLinkClick, onThumbnailClickListener)
       }

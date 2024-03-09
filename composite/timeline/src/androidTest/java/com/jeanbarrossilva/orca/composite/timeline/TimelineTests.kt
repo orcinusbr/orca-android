@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.test.TouchInjectionScope
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.filter
@@ -28,8 +29,11 @@ import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onSiblings
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeDown
 import assertk.assertThat
 import assertk.assertions.containsExactly
+import assertk.assertions.isEqualTo
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.orca.composite.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.composite.timeline.refresh.Refresh
@@ -98,11 +102,33 @@ internal class TimelineTests {
   fun providesNextIndexWhenReachingBottom() {
     val indices = mutableStateListOf<Int>()
     composeRule.setContent {
-      Timeline(onNext = { indices += it }) {
+      Timeline(
+        onNext = {
+          if (indices.size < 2) {
+            indices += it
+          }
+        }
+      ) {
         items(indices) { Spacer(Modifier.fillParentMaxSize()) }
       }
     }
     composeRule.onTimeline().performScrollToBottom().performScrollToBottom()
-    assertThat(indices).containsExactly(0, 1, 2)
+    assertThat(indices).containsExactly(1, 2)
+  }
+
+  @Test
+  fun doesNotProvideNextIndexWhenReachingBottomMultipleTimesAndNoItemsHaveBeenAdded() {
+    val indices = hashSetOf<Int>()
+    composeRule
+      .apply {
+        setContent {
+          Timeline(onNext = { indices += it }) { item { Spacer(Modifier.fillParentMaxSize()) } }
+        }
+      }
+      .onTimeline()
+      .performScrollToBottom()
+      .performTouchInput(TouchInjectionScope::swipeDown)
+      .performScrollToBottom()
+    assertThat(indices).isEqualTo(hashSetOf(1))
   }
 }
