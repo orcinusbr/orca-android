@@ -70,30 +70,31 @@ internal val authenticationLock
  * @param config Additional configuration to be done on the [HttpClient].
  */
 @Suppress("FunctionName")
-fun MastodonClient(config: HttpClientConfig<CIOEngineConfig>.() -> Unit): HttpClient {
+internal inline fun MastodonClient(
+  crossinline config: HttpClientConfig<CIOEngineConfig>.() -> Unit
+): HttpClient {
   return MastodonClient(CIO, Logger.android, config)
 }
 
 /**
  * [HttpClient] through which [HttpRequest]s can be sent to the Mastodon API.
  *
- * @param EC [HttpClientEngineConfig] through which the [HttpClientConfig] will be configured.
- * @param CC [HttpClientConfig] that will configure the [HttpClient].
+ * @param T [HttpClientEngineConfig] through which the [HttpClientConfig] will be configured.
  * @param engineFactory [HttpClientEngineFactory] for creating the [HttpClientEngine] that powers
  *   the resulting [HttpClient].
  * @param logger [Logger] by which received [HttpResponse]s will be logged.
  * @param config Additional configuration to be done on the [HttpClient].
  */
 @Suppress("FunctionName")
-fun <EC : HttpClientEngineConfig, CC : HttpClientConfig<EC>> MastodonClient(
-  engineFactory: HttpClientEngineFactory<EC>,
+internal inline fun <T : HttpClientEngineConfig> MastodonClient(
+  engineFactory: HttpClientEngineFactory<T>,
   logger: Logger,
-  config: CC.() -> Unit = {}
+  crossinline config: HttpClientConfig<T>.() -> Unit = {}
 ): HttpClient {
   return HttpClient(engineFactory) {
     setUpResponseLogging(logger)
     setUpContentNegotiation()
-    @Suppress("UNCHECKED_CAST") (this as CC).config()
+    config()
   }
 }
 
@@ -104,7 +105,7 @@ fun <EC : HttpClientEngineConfig, CC : HttpClientConfig<EC>> MastodonClient(
  * @param route URL [String] to which the [HttpRequest] will be sent
  * @param build Additional configuration for the [HttpRequest] to be performed.
  */
-suspend inline fun HttpClient.authenticateAndDelete(
+internal suspend inline fun HttpClient.authenticateAndDelete(
   route: String,
   crossinline build: HttpRequestBuilder.() -> Unit = {}
 ): HttpResponse {
@@ -121,7 +122,7 @@ suspend inline fun HttpClient.authenticateAndDelete(
  * @param route URL [String] to which the [HttpRequest] will be sent.
  * @param build Additional configuration for the [HttpRequest] to be performed.
  */
-suspend inline fun HttpClient.authenticateAndGet(
+internal suspend inline fun HttpClient.authenticateAndGet(
   route: String,
   crossinline build: HttpRequestBuilder.() -> Unit = {}
 ): HttpResponse {
@@ -138,7 +139,7 @@ suspend inline fun HttpClient.authenticateAndGet(
  * @param route URL [String] to which the [HttpRequest] will be sent.
  * @param build Additional configuration for the [HttpRequest] to be performed.
  */
-suspend inline fun HttpClient.authenticateAndPost(
+internal suspend inline fun HttpClient.authenticateAndPost(
   route: String,
   crossinline build: HttpRequestBuilder.() -> Unit = {}
 ): HttpResponse {
@@ -156,7 +157,7 @@ suspend inline fun HttpClient.authenticateAndPost(
  * @param parameters [Parameters] to be added to the form.
  * @param build Additional configuration for the [HttpRequest] to be performed.
  */
-suspend inline fun HttpClient.authenticateAndSubmitForm(
+internal suspend inline fun HttpClient.authenticateAndSubmitForm(
   route: String,
   parameters: Parameters,
   crossinline build: HttpRequestBuilder.() -> Unit = {}
@@ -178,7 +179,7 @@ suspend inline fun HttpClient.authenticateAndSubmitForm(
  * @param formData [List] with [PartData] to be included in the form.
  * @param build Additional configuration for the [HttpRequest] to be performed.
  */
-suspend inline fun HttpClient.authenticateAndSubmitFormWithBinaryData(
+internal suspend inline fun HttpClient.authenticateAndSubmitFormWithBinaryData(
   route: String,
   formData: List<PartData>,
   crossinline build: HttpRequestBuilder.() -> Unit = {}
