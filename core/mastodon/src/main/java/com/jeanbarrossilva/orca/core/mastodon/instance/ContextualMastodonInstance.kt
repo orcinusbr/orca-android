@@ -59,7 +59,8 @@ import java.net.URL
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
  *   will be loaded.
  */
-class ContextualMastodonInstance(
+class ContextualMastodonInstance
+internal constructor(
   context: Context,
   domain: Domain,
   authorizer: MastodonAuthorizer,
