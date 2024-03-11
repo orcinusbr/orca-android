@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,21 +15,45 @@
 
 package com.jeanbarrossilva.orca.core.feed.profile.post.stat.toggleable
 
+import app.cash.turbine.test
+import assertk.assertThat
+import assertk.assertions.isFalse
+import assertk.assertions.isTrue
 import kotlin.test.Test
-import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
 
-internal class ToggleableStatExtensionsTests {
+internal class ToggleableStatTests {
   @Test
-  fun buildsToggleableStatWithConfiguredSetEnabled() {
-    var isEnabled = false
-    runTest {
-      ToggleableStat<Int>(count = 1) { onSetEnabled { isEnabled = it } }
-        .apply {
-          disable()
-          enable()
+  fun isInitiallyDisabled() {
+    runTest { ToggleableStat<Any> {}.isEnabledFlow.test { assertThat(awaitItem()).isFalse() } }
+  }
+
+  @Test
+  fun enables() {
+    ToggleableStat<Any> {}
+      .apply {
+        runTest {
+          isEnabledFlow.test {
+            awaitItem()
+            enable()
+            assertThat(awaitItem()).isTrue()
+          }
         }
-    }
-    assertTrue(isEnabled)
+      }
+  }
+
+  @Test
+  fun disables() {
+    ToggleableStat<Any> {}
+      .apply {
+        runTest {
+          enable()
+          isEnabledFlow.test {
+            awaitItem()
+            disable()
+            assertThat(awaitItem()).isFalse()
+          }
+        }
+      }
   }
 }

@@ -46,7 +46,7 @@ internal fun CommentStat(
     contextPaginatorProvider.provide(id).let { contextPaginator ->
       get { index -> contextPaginator.paginateTo(index) }
     }
-    add {
+    onAdd {
       (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
         .client
         .authenticateAndSubmitForm(
@@ -57,7 +57,7 @@ internal fun CommentStat(
           }
         )
     }
-    remove {
+    onRemove {
       (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
         .client
         .authenticateAndDelete("/api/v1/statuses/${it.id}")

@@ -34,7 +34,9 @@ dependencies {
   androidTestImplementation(libs.android.test.core)
   androidTestImplementation(libs.android.test.runner)
   androidTestImplementation(libs.assertk)
+  androidTestImplementation(libs.kotlin.coroutines.test)
   androidTestImplementation(libs.mockk)
+  androidTestImplementation(libs.turbine)
 
   api(project(":platform:autos"))
   api(project(":platform:core"))

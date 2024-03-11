@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -23,6 +23,7 @@ import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.SamplePost
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createRamboSample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.createSample
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.stat.createSampleToggleableStat
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
 import com.jeanbarrossilva.orca.core.sample.instance.domain.sample
 import com.jeanbarrossilva.orca.std.image.ImageLoader
@@ -64,6 +65,8 @@ fun Repost.Companion.createSample(
         null
       },
       publicationDateTime = ZonedDateTime.of(2023, 8, 16, 16, 48, 43, 384, ZoneId.of("GMT-3")),
+      favorite = createSampleToggleableStat(imageLoaderProvider),
+      repost = createSampleToggleableStat(imageLoaderProvider),
       url = URL("https://mastodon.social/@_inside/110900315644335855"),
       writerProvider
     ),

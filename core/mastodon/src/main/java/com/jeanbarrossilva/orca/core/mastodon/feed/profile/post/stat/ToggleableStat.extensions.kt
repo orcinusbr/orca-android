@@ -33,7 +33,7 @@ import com.jeanbarrossilva.orca.std.injector.Injector
 @Suppress("FunctionName")
 internal fun FavoriteStat(id: String, count: Int): ToggleableStat<Profile> {
   return ToggleableStat(count) {
-    setEnabled { isEnabled ->
+    onSetEnabled { isEnabled ->
       val route =
         if (isEnabled) {
           "/api/v1/statuses/$id/favourite"
@@ -56,7 +56,7 @@ internal fun FavoriteStat(id: String, count: Int): ToggleableStat<Profile> {
 @Suppress("FunctionName")
 internal fun ReblogStat(id: String, count: Int): ToggleableStat<Profile> {
   return ToggleableStat(count) {
-    setEnabled { isEnabled ->
+    onSetEnabled { isEnabled ->
       val route = if (isEnabled) "/api/v1/statuses/$id/reblog" else "/api/v1/statuses/$id/unreblog"
       (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
         .client

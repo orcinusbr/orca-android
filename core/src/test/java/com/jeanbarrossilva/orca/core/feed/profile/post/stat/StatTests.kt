@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,23 +13,34 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.core.feed.profile.post.stat.toggleable
+package com.jeanbarrossilva.orca.core.feed.profile.post.stat
 
+import app.cash.turbine.test
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import assertk.assertions.isZero
 import kotlin.test.Test
-import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
 
-internal class ToggleableStatExtensionsTests {
+internal class StatTests {
   @Test
-  fun buildsToggleableStatWithConfiguredSetEnabled() {
-    var isEnabled = false
-    runTest {
-      ToggleableStat<Int>(count = 1) { onSetEnabled { isEnabled = it } }
-        .apply {
-          disable()
-          enable()
+  fun hasZeroElementsInitially() {
+    Stat<Any> {}.apply { runTest { countFlow.test { assertThat(awaitItem()).isZero() } } }
+  }
+
+  @Test
+  fun emitsChangedCount() {
+    Stat<Any> {}
+      .apply {
+        runTest {
+          countFlow.test {
+            awaitItem()
+            count++
+            assertThat(awaitItem()).isEqualTo(1)
+            count--
+            assertThat(awaitItem()).isZero()
+          }
         }
-    }
-    assertTrue(isEnabled)
+      }
   }
 }

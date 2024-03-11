@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,6 +15,8 @@
 
 package com.jeanbarrossilva.orca.core.feed.profile.post.stat
 
+import com.jeanbarrossilva.orca.ext.coroutines.getValue
+import com.jeanbarrossilva.orca.ext.coroutines.setValue
 import com.jeanbarrossilva.orca.std.buildable.Buildable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,14 +42,14 @@ abstract class Stat<T> internal constructor(count: Int = 0) {
    * [MutableStateFlow] that keeps track of the total amount of elements comprehended by this
    * [Stat].
    */
-  internal val countMutableFlow = MutableStateFlow(count)
+  private val countMutableFlow = MutableStateFlow(count)
 
   /** [StateFlow] to which the amount of elements will be emitted. */
   val countFlow = countMutableFlow.asStateFlow()
 
   /** Current amount of elements. */
-  val count
-    get() = countFlow.value
+  var count by countMutableFlow
+    internal set
 
   /**
    * Gets the [Flow] to which the elements related to this [Stat] will be emitted.
