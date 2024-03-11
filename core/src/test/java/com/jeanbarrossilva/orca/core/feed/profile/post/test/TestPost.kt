@@ -37,7 +37,7 @@ internal class TestPost(
   override val favorite: ToggleableStat<Profile> = delegate.favorite,
   override val repost: ToggleableStat<Profile> = delegate.repost,
   override val url: URL = delegate.url
-) : Post() {
+) : Post {
   override fun asDeletable(): DeletablePost {
     return delegate.asDeletable()
   }

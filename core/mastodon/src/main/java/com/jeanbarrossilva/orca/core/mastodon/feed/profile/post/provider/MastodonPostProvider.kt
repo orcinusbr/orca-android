@@ -13,11 +13,11 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.core.mastodon.feed.profile.post
+package com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.provider
 
 import com.jeanbarrossilva.orca.core.auth.SomeAuthenticationLock
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
-import com.jeanbarrossilva.orca.core.feed.profile.post.PostProvider
+import com.jeanbarrossilva.orca.core.feed.profile.post.provider.PostProvider
 import com.jeanbarrossilva.orca.platform.cache.Cache
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,11 +16,9 @@
 package com.jeanbarrossilva.orca.core.feed.profile.post
 
 import assertk.assertThat
-import assertk.assertions.isSameAs
 import assertk.assertions.isTrue
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.post.withSample
-import com.jeanbarrossilva.orca.core.test.TestAuthenticationLock
 import com.jeanbarrossilva.testing.hasPropertiesEqualToThoseOf
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
@@ -34,16 +32,6 @@ internal class DeletablePostTests {
         }
       )
       .hasPropertiesEqualToThoseOf(Posts.withSample)
-  }
-
-  @Test
-  fun returnsItselfWhenConvertingItIntoDeletablePost() {
-    val authenticationLock = TestAuthenticationLock()
-    val post =
-      object : DeletablePost(Posts.withSample.single()) {
-        override suspend fun delete() {}
-      }
-    runTest { assertThat(post.asDeletableOrThis(authenticationLock)).isSameAs(post) }
   }
 
   @Test

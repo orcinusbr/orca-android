@@ -24,7 +24,7 @@ import com.jeanbarrossilva.loadable.flow.loadable
 import com.jeanbarrossilva.loadable.list.flow.listLoadable
 import com.jeanbarrossilva.orca.composite.timeline.post.figure.gallery.disposition.Disposition
 import com.jeanbarrossilva.orca.composite.timeline.post.toPostPreview
-import com.jeanbarrossilva.orca.core.feed.profile.post.PostProvider
+import com.jeanbarrossilva.orca.core.feed.profile.post.provider.PostProvider
 import com.jeanbarrossilva.orca.ext.coroutines.await
 import com.jeanbarrossilva.orca.ext.coroutines.mapEach
 import com.jeanbarrossilva.orca.ext.coroutines.notifier.notifierFlow

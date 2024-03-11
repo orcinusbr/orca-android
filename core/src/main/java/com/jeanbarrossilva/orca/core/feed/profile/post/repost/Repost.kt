@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -20,7 +20,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import java.util.Objects
 
 /** [Post] that has been reposted by someone else. */
-abstract class Repost internal constructor() : Post() {
+abstract class Repost internal constructor() : Post {
   /** [Author] by which this [Repost] has been created. */
   abstract val reposter: Author
 
