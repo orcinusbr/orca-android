@@ -15,7 +15,7 @@
 
 package com.jeanbarrossilva.orca.feature.gallery
 
-import com.jeanbarrossilva.orca.core.feed.profile.post.PostProvider
+import com.jeanbarrossilva.orca.core.feed.profile.post.provider.PostProvider
 import com.jeanbarrossilva.orca.std.injector.module.Inject
 import com.jeanbarrossilva.orca.std.injector.module.Module
 import com.jeanbarrossilva.orca.std.injector.module.injection.Injection

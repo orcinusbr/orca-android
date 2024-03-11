@@ -40,7 +40,7 @@ internal data class SamplePost(
   override val repost: ToggleableStat<Profile>,
   override val url: URL,
   val writerProvider: SamplePostWriter.Provider
-) : Post() {
+) : Post {
   override val comment = createSampleAddableStat<Post>()
 
   override fun asDeletable(): DeletablePost {

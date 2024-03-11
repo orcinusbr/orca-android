@@ -17,7 +17,7 @@ package com.jeanbarrossilva.orca.core.sample.feed.profile.post
 
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
-import com.jeanbarrossilva.orca.core.feed.profile.post.PostProvider
+import com.jeanbarrossilva.orca.core.feed.profile.post.provider.PostProvider
 import com.jeanbarrossilva.orca.core.sample.auth.sample
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

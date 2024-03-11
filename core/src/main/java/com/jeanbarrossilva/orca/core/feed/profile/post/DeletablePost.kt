@@ -22,7 +22,7 @@ package com.jeanbarrossilva.orca.core.feed.profile.post
  *   will be delegated.
  * @see delete
  */
-abstract class DeletablePost(private val delegate: Post) : Post() {
+abstract class DeletablePost(private val delegate: Post) : Post {
   override val id = delegate.id
   override val author = delegate.author
   override val content = delegate.content

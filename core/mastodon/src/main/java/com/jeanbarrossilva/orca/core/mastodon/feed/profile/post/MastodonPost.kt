@@ -52,7 +52,7 @@ internal constructor(
   private val favoriteCount: Int,
   private val reblogCount: Int,
   override val url: URL
-) : Post() {
+) : Post {
   override val comment = CommentStat(id, commentCount, commentPaginatorProvider)
   override val favorite = FavoriteStat(id, favoriteCount)
   override val repost = ReblogStat(id, reblogCount)

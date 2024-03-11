@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,10 +13,11 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.core.feed.profile.post
+package com.jeanbarrossilva.orca.core.feed.profile.post.provider
 
 import com.jeanbarrossilva.orca.core.auth.AuthenticationLock
 import com.jeanbarrossilva.orca.core.auth.SomeAuthenticationLock
+import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -35,7 +36,7 @@ abstract class PostProvider {
    * @see Post.id
    */
   suspend fun provide(id: String): Flow<Post> {
-    return onProvide(id).map { it.asDeletableOrThis(authenticationLock) }
+    return onProvide(id).map { it.asDeletable(authenticationLock) }
   }
 
   /**

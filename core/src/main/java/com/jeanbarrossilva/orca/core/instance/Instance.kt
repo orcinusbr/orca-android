@@ -21,7 +21,7 @@ import com.jeanbarrossilva.orca.core.feed.FeedProvider
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.feed.profile.ProfileProvider
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
-import com.jeanbarrossilva.orca.core.feed.profile.post.PostProvider
+import com.jeanbarrossilva.orca.core.feed.profile.post.provider.PostProvider
 import com.jeanbarrossilva.orca.core.feed.profile.search.ProfileSearcher
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
 

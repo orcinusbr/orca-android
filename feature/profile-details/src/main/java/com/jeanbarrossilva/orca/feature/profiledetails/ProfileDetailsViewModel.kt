@@ -26,7 +26,7 @@ import com.jeanbarrossilva.orca.composite.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.composite.timeline.post.figure.gallery.disposition.Disposition
 import com.jeanbarrossilva.orca.composite.timeline.post.toPostPreviewFlow
 import com.jeanbarrossilva.orca.core.feed.profile.ProfileProvider
-import com.jeanbarrossilva.orca.core.feed.profile.post.PostProvider
+import com.jeanbarrossilva.orca.core.feed.profile.post.provider.PostProvider
 import com.jeanbarrossilva.orca.ext.coroutines.await
 import com.jeanbarrossilva.orca.ext.coroutines.flatMapEach
 import com.jeanbarrossilva.orca.ext.coroutines.notifier.notifierFlow

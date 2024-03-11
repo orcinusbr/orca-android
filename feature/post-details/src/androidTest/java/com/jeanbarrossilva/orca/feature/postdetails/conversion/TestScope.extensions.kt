@@ -22,7 +22,7 @@ import com.jeanbarrossilva.orca.composite.timeline.post.figure.link.LinkCard
 import com.jeanbarrossilva.orca.composite.timeline.stat.details.StatsDetails
 import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
-import com.jeanbarrossilva.orca.core.feed.profile.post.PostProvider
+import com.jeanbarrossilva.orca.core.feed.profile.post.provider.PostProvider
 import com.jeanbarrossilva.orca.core.feed.profile.post.stat.Stat
 import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts

@@ -34,9 +34,9 @@ import com.jeanbarrossilva.orca.core.mastodon.feed.profile.MastodonProfileProvid
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.MastodonProfileFetcher
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.cache.storage.MastodonProfileStorage
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.MastodonPost
-import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.MastodonPostProvider
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.cache.MastodonPostFetcher
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.cache.storage.MastodonPostStorage
+import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.provider.MastodonPostProvider
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentPaginator
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.MastodonProfileSearcher
 import com.jeanbarrossilva.orca.core.mastodon.feed.profile.search.cache.MastodonProfileSearchResultsFetcher
