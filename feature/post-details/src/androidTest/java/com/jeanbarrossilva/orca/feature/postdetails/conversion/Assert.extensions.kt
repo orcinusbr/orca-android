@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,23 +13,18 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.core.feed.profile.post.stat.toggleable
+package com.jeanbarrossilva.orca.feature.postdetails.conversion
 
-import kotlin.test.Test
-import kotlin.test.assertTrue
-import kotlinx.coroutines.test.runTest
+import assertk.Assert
+import assertk.assertThat
+import com.jeanbarrossilva.orca.core.feed.profile.Profile
 
-internal class ToggleableStatExtensionsTests {
-  @Test
-  fun buildsToggleableStatWithConfiguredSetEnabled() {
-    var isEnabled = false
-    runTest {
-      ToggleableStat<Int>(count = 1) { onSetEnabled { isEnabled = it } }
-        .apply {
-          disable()
-          enable()
-        }
-    }
-    assertTrue(isEnabled)
-  }
+/**
+ * Creates an assertion for the [profiles]' IDs.
+ *
+ * @param profiles [Profile]s for whose IDs the assertion is.
+ * @see Profile.id
+ */
+internal fun assertThatIDsOf(profiles: Iterable<Profile>): Assert<List<String>> {
+  return assertThat(profiles).transform("List<Profile>.map(Profile::id)") { it.map(Profile::id) }
 }

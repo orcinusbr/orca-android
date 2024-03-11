@@ -15,10 +15,8 @@
 
 package com.jeanbarrossilva.orca.composite.timeline.stat.details
 
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
-import com.jeanbarrossilva.orca.core.feed.profile.post.stat.Stat
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.Posts
 import com.jeanbarrossilva.orca.platform.core.withSample
 
@@ -61,7 +59,6 @@ internal constructor(
       )
 
     /** Sample [StatsDetails]. */
-    val sample
-      @Composable get() = Posts.withSample.single().asStatsDetails()
+    val sample = Posts.withSample.single().asStatsDetails()
   }
 }

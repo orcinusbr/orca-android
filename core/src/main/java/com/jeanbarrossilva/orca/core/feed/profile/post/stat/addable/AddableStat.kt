@@ -21,6 +21,7 @@ import com.jeanbarrossilva.orca.std.buildable.Buildable
 /**
  * [Stat] to and from which elements can be added and removed.
  *
+ * @param T Element to be either added or removed.
  * @param count Initial amount of elements.
  */
 @Buildable
@@ -30,12 +31,32 @@ abstract class AddableStat<T> internal constructor(count: Int = 0) : Stat<T>(cou
    *
    * @param element Element to be added.
    */
-  open suspend fun add(element: T) {}
+  suspend fun add(element: T) {
+    count++
+    onAdd(element)
+  }
 
   /**
    * Removes the given [element].
    *
    * @param element Element to be removed.
    */
-  open suspend fun remove(element: T) {}
+  suspend fun remove(element: T) {
+    count--
+    onRemove(element)
+  }
+
+  /**
+   * Callback called when the given [element] is requested to be added.
+   *
+   * @param element Element to be added.
+   */
+  protected open suspend fun onAdd(element: T) {}
+
+  /**
+   * Callback called when the given [element] is requested to be removed.
+   *
+   * @param element Element to be removed.
+   */
+  protected open suspend fun onRemove(element: T) {}
 }

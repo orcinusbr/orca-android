@@ -44,10 +44,9 @@ fun Post.asStatsDetails(): StatsDetails {
 fun Post.asStatsDetailsFlow(): Flow<StatsDetails> {
   return combine(
     comment.countFlow,
-    favorite.isEnabledFlow,
-    favorite.countFlow,
-    repost.isEnabledFlow,
-    repost.countFlow,
-    ::StatsDetails
-  )
+    favorite.countFlow.dependOn(favorite.isEnabledFlow),
+    repost.countFlow.dependOn(repost.isEnabledFlow)
+  ) { _, _, _ ->
+    asStatsDetails()
+  }
 }

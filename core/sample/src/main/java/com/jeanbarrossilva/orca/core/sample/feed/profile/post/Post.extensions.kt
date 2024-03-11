@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -25,6 +25,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.repost.Repost
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.highlight.createSample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.repost.createSample
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.stat.createSampleToggleableStat
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
 import com.jeanbarrossilva.orca.core.sample.instance.domain.sample
 import com.jeanbarrossilva.orca.std.image.ImageLoader
@@ -69,6 +70,8 @@ fun Post.Companion.createSamples(
       },
       publicationDateTime =
         ZonedDateTime.of(2_023, 11, 27, 18, 26, 0, 0, ZoneId.of("America/Halifax")),
+      favorite = createSampleToggleableStat(imageLoaderProvider),
+      repost = createSampleToggleableStat(imageLoaderProvider),
       URL("https://mastodon.social/@christianselig/111484624066823391"),
       writerProvider
     )

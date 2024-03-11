@@ -24,10 +24,18 @@ plugins {
 android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
+  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   namespace = namespaceFor("feature.postdetails")
 }
 
 dependencies {
+  androidTestImplementation(project(":core:sample-test"))
+  androidTestImplementation(libs.android.test.runner)
+  androidTestImplementation(libs.assertk)
+  androidTestImplementation(libs.kotlin.coroutines.test)
+  androidTestImplementation(libs.kotlin.test)
+  androidTestImplementation(libs.turbine)
+
   api(project(":composite:composable"))
 
   ksp(project(":std:injector-processor"))

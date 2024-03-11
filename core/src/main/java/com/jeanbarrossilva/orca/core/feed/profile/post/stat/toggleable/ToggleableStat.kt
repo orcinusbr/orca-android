@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,6 +16,8 @@
 package com.jeanbarrossilva.orca.core.feed.profile.post.stat.toggleable
 
 import com.jeanbarrossilva.orca.core.feed.profile.post.stat.Stat
+import com.jeanbarrossilva.orca.ext.coroutines.getValue
+import com.jeanbarrossilva.orca.ext.coroutines.setValue
 import com.jeanbarrossilva.orca.std.buildable.Buildable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -35,22 +37,18 @@ abstract class ToggleableStat<T> internal constructor(count: Int = 0) : Stat<T>(
   val isEnabledFlow = isEnabledMutableFlow.asStateFlow()
 
   /** Whether this [ToggleableStat] is currently enabled. */
-  val isEnabled
-    get() = isEnabledFlow.value
+  var isEnabled by isEnabledMutableFlow
+    private set
 
   /** Toggles whether this [ToggleableStat] is enabled. */
   suspend fun toggle() {
     setEnabled(!isEnabled)
-    isEnabledMutableFlow.value = !isEnabled
-    countMutableFlow.value = if (isEnabled) countFlow.value.inc() else countFlow.value.dec()
   }
 
   /** Enables this [ToggleableStat]. */
   suspend fun enable() {
     if (!isEnabled) {
       setEnabled(true)
-      isEnabledMutableFlow.value = true
-      countMutableFlow.value++
     }
   }
 
@@ -58,15 +56,24 @@ abstract class ToggleableStat<T> internal constructor(count: Int = 0) : Stat<T>(
   suspend fun disable() {
     if (isEnabled) {
       setEnabled(false)
-      isEnabledMutableFlow.value = false
-      countMutableFlow.value--
     }
   }
 
   /**
+   * Callback run whenever the enableability of this [ToggleableStat] is toggled.
+   *
+   * @param isEnabled Whether it's being enabled.
+   */
+  protected open suspend fun onSetEnabled(isEnabled: Boolean) {}
+
+  /**
    * Defines whether this [ToggleableStat] is enabled.
    *
-   * @param isEnabled Whether it's being enabled or disabled.
+   * @param isEnabled Whether it should be enabled.
    */
-  protected open suspend fun setEnabled(isEnabled: Boolean) {}
+  private suspend fun setEnabled(isEnabled: Boolean) {
+    this.isEnabled = isEnabled
+    count += if (isEnabled) 1 else -1
+    onSetEnabled(isEnabled)
+  }
 }

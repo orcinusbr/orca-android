@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -21,6 +21,7 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.content.Content
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.highlight.createSample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.content.sample
 import com.jeanbarrossilva.orca.core.sample.feed.profile.post.repost.createSample
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.stat.createSampleToggleableStat
 import com.jeanbarrossilva.orca.core.sample.image.SampleImageSource
 import com.jeanbarrossilva.orca.std.image.ImageLoader
 import com.jeanbarrossilva.orca.std.image.SomeImageLoaderProvider
@@ -49,6 +50,8 @@ fun DeletablePost.Companion.createSample(
       Author.createSample(imageLoaderProvider),
       Content.sample,
       publicationDateTime = ZonedDateTime.of(2_003, 10, 8, 8, 0, 0, 0, ZoneId.of("GMT-3")),
+      favorite = createSampleToggleableStat(imageLoaderProvider),
+      repost = createSampleToggleableStat(imageLoaderProvider),
       URL("https://mastodon.social/@christianselig/110492858891694580"),
       writerProvider
     )

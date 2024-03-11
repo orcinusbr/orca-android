@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,19 +16,66 @@
 package com.jeanbarrossilva.orca.feature.postdetails
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import com.jeanbarrossilva.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.composite.timeline.post.figure.Figure
 import com.jeanbarrossilva.orca.composite.timeline.post.figure.gallery.disposition.Disposition
 import com.jeanbarrossilva.orca.composite.timeline.stat.details.asStatsDetails
 import com.jeanbarrossilva.orca.composite.timeline.stat.details.asStatsDetailsFlow
 import com.jeanbarrossilva.orca.composite.timeline.text.annotated.toAnnotatedString
+import com.jeanbarrossilva.orca.core.auth.actor.Actor
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.orca.std.image.compose.SomeComposableImageLoader
 import java.net.URL
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+
+/**
+ * Converts this [Post] into [PostDetails].
+ *
+ * @param onLinkClick Lambda to be run whenever the [Figure.Link]'s content is clicked.
+ * @param onThumbnailClickListener [Disposition.OnThumbnailClickListener] that is notified of clicks
+ *   on thumbnails.
+ * @see Actor.Authenticated
+ * @see Actor.Authenticated.avatarLoader
+ */
+@Composable
+internal fun Post.toPostDetails(
+  onLinkClick: (URL) -> Unit = {},
+  onThumbnailClickListener: Disposition.OnThumbnailClickListener =
+    Disposition.OnThumbnailClickListener.empty
+): PostDetails {
+  return toPostDetails(AutosTheme.colors, onLinkClick, onThumbnailClickListener)
+}
+
+/**
+ * Converts this [Post] into [PostDetails].
+ *
+ * @param colors [Colors] by which the emitted [PostDetails]' [PostDetails.text] can be colored.
+ * @param onLinkClick Lambda to be run whenever the [Figure.Link]'s content is clicked.
+ * @param onThumbnailClickListener [Disposition.OnThumbnailClickListener] that is notified of clicks
+ *   on thumbnails.
+ * @see Actor.Authenticated
+ * @see Actor.Authenticated.avatarLoader
+ */
+internal fun Post.toPostDetails(
+  colors: Colors,
+  onLinkClick: (URL) -> Unit = {},
+  onThumbnailClickListener: Disposition.OnThumbnailClickListener =
+    Disposition.OnThumbnailClickListener.empty
+): PostDetails {
+  return PostDetails(
+    id,
+    author.avatarLoader as SomeComposableImageLoader,
+    author.name,
+    author.account,
+    content.text.toAnnotatedString(colors),
+    Figure.of(id, author.name, content, onLinkClick, onThumbnailClickListener),
+    publicationDateTime,
+    asStatsDetails(),
+    url
+  )
+}
 
 /**
  * Converts this [Post] into a [Flow] of [PostDetails].
@@ -56,31 +103,4 @@ internal fun Post.toPostDetailsFlow(
       url
     )
   }
-}
-
-/**
- * Converts this [Post] into [PostDetails].
- *
- * @param onLinkClick Lambda to be run whenever the [Figure.Link]'s content is clicked.
- * @param onThumbnailClickListener [Disposition.OnThumbnailClickListener] that is notified of clicks
- *   on thumbnails.
- */
-@Composable
-internal fun Post.toPostDetails(
-  onLinkClick: (URL) -> Unit = {},
-  onThumbnailClickListener: Disposition.OnThumbnailClickListener =
-    Disposition.OnThumbnailClickListener.empty
-): PostDetails {
-  val stats by asStatsDetailsFlow().collectAsState(asStatsDetails())
-  return PostDetails(
-    id,
-    author.avatarLoader,
-    author.name,
-    author.account,
-    content.text.toAnnotatedString(AutosTheme.colors),
-    Figure.of(id, author.name, content, onLinkClick, onThumbnailClickListener),
-    publicationDateTime,
-    stats,
-    url
-  )
 }

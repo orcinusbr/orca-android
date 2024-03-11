@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,23 +13,16 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.core.feed.profile.post.stat.toggleable
+package com.jeanbarrossilva.orca.feature.postdetails.conversion
 
+import assertk.assertions.containsExactly
+import com.jeanbarrossilva.orca.core.feed.profile.Profile
+import com.jeanbarrossilva.orca.platform.core.sample
 import kotlin.test.Test
-import kotlin.test.assertTrue
-import kotlinx.coroutines.test.runTest
 
-internal class ToggleableStatExtensionsTests {
+internal class AssertExtensionsTests {
   @Test
-  fun buildsToggleableStatWithConfiguredSetEnabled() {
-    var isEnabled = false
-    runTest {
-      ToggleableStat<Int>(count = 1) { onSetEnabled { isEnabled = it } }
-        .apply {
-          disable()
-          enable()
-        }
-    }
-    assertTrue(isEnabled)
+  fun assertsOnProfileIDs() {
+    assertThatIDsOf(listOf(Profile.sample)).containsExactly(Profile.sample.id)
   }
 }

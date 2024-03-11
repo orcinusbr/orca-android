@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -20,8 +20,8 @@ import com.jeanbarrossilva.orca.core.feed.profile.post.Author
 import com.jeanbarrossilva.orca.core.feed.profile.post.DeletablePost
 import com.jeanbarrossilva.orca.core.feed.profile.post.Post
 import com.jeanbarrossilva.orca.core.feed.profile.post.content.Content
-import com.jeanbarrossilva.orca.core.feed.profile.post.stat.addable.AddableStat
 import com.jeanbarrossilva.orca.core.feed.profile.post.stat.toggleable.ToggleableStat
+import com.jeanbarrossilva.orca.core.sample.feed.profile.post.stat.createSampleAddableStat
 import java.net.URL
 import java.time.ZonedDateTime
 
@@ -36,12 +36,12 @@ internal data class SamplePost(
   override val author: Author,
   override val content: Content,
   override val publicationDateTime: ZonedDateTime,
+  override val favorite: ToggleableStat<Profile>,
+  override val repost: ToggleableStat<Profile>,
   override val url: URL,
   val writerProvider: SamplePostWriter.Provider
 ) : Post() {
-  override val comment = AddableStat<Post>()
-  override val favorite = ToggleableStat<Profile>()
-  override val repost = ToggleableStat<Profile>()
+  override val comment = createSampleAddableStat<Post>()
 
   override fun asDeletable(): DeletablePost {
     return SampleDeletablePost(this)
