@@ -16,7 +16,6 @@
 package com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.navigation
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -55,6 +54,7 @@ object NavigationBarDefaults {
  * @param title [AutoSizeText] that describes the current context.
  * @param action Main navigation action.
  * @param modifier [Modifier] to be applied to the underlying [Surface].
+ * @param subtitle [AutoSizeText] for more details on the current context.
  * @param content Tabs that are shown, configured through the provided [NavigationBarScope].
  * @see NavigationBarScope.tab
  */
@@ -63,6 +63,7 @@ fun NavigationBar(
   title: @Composable () -> Unit,
   action: @Composable () -> Unit,
   modifier: Modifier = Modifier,
+  subtitle: @Composable () -> Unit = {},
   content: NavigationBarScope.() -> Unit
 ) {
   val scope = remember(content) { NavigationBarScope().apply(content) }
@@ -70,15 +71,22 @@ fun NavigationBar(
 
   Surface(modifier, color = NavigationBarDefaults.ContainerColor, contentColor = Color.White) {
     Column(Modifier.padding(spacing).testTag(NAVIGATION_BAR_TAG), Arrangement.spacedBy(spacing)) {
-      Box(Modifier.fillMaxWidth(), Alignment.Center) {
+      Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         ProvideTextStyle(
           AutosTheme.typography.headlineLarge.copy(
             color = LocalContentColor.current,
             textAlign = TextAlign.Center
-          )
-        ) {
-          title()
-        }
+          ),
+          title
+        )
+
+        ProvideTextStyle(
+          AutosTheme.typography.titleSmall.copy(
+            color = LocalContentColor.current,
+            textAlign = TextAlign.Center
+          ),
+          subtitle
+        )
       }
 
       Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
