@@ -38,8 +38,8 @@ internal class ButtonBarTests {
     val lazyListState = LazyListState()
     composeRule.setContent {
       AutosTheme {
-        Scaffold(buttonBar = { ButtonBar(lazyListState) }) {
-          LazyColumn(state = lazyListState) { item { Spacer(Modifier) } }
+        Scaffold(bottom = { ButtonBar(lazyListState) }) {
+          expanded { LazyColumn(state = lazyListState) { item { Spacer(Modifier) } } }
         }
       }
     }
@@ -51,9 +51,11 @@ internal class ButtonBarTests {
     val lazyListState = LazyListState()
     composeRule.setContent {
       AutosTheme {
-        Scaffold(buttonBar = { ButtonBar(lazyListState) }) {
-          LazyColumn(state = lazyListState) {
-            item { Spacer(Modifier.padding(it).fillScreenSize()) }
+        Scaffold(bottom = { ButtonBar(lazyListState) }) {
+          expanded {
+            LazyColumn(state = lazyListState) {
+              item { Spacer(Modifier.padding(it).fillScreenSize()) }
+            }
           }
         }
       }

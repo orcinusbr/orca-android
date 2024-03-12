@@ -71,14 +71,16 @@ private fun Settings(
       )
     }
   ) {
-    LazyColumn(
-      Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-      state = lazyListState,
-      contentPadding = it + PaddingValues(AutosTheme.spacings.medium.dp)
-    ) {
-      item {
-        Section(stringResource(R.string.feature_settings_general)) {
-          muting(mutedTerms, onNavigationToTermMuting, onTermUnmute)
+    navigable {
+      LazyColumn(
+        Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+        state = lazyListState,
+        contentPadding = it + PaddingValues(AutosTheme.spacings.medium.dp)
+      ) {
+        item {
+          Section(stringResource(R.string.feature_settings_general)) {
+            muting(mutedTerms, onNavigationToTermMuting, onTermUnmute)
+          }
         }
       }
     }

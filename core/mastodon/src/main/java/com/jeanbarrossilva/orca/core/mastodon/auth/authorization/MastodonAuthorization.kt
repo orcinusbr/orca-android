@@ -132,7 +132,7 @@ internal fun MastodonAuthorization(
 
   Box(modifier) {
     Scaffold(
-      buttonBar = {
+      bottom = {
         Column(verticalArrangement = Arrangement.spacedBy(ButtonBarDefaults.spacing)) {
           FormTextField(
             domain,
@@ -160,21 +160,27 @@ internal fun MastodonAuthorization(
         }
       }
     ) {
-      LazyColumn(
-        state = lazyListState,
-        contentPadding = it + PaddingValues(spacing),
-        verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.small.dp)
-      ) {
-        item {
-          Text(
-            stringResource(R.string.core_http_authorization_welcome),
-            textAlign = TextAlign.Center,
-            style = AutosTheme.typography.headlineLarge
-          )
-        }
+      expanded {
+        LazyColumn(
+          state = lazyListState,
+          contentPadding = it + PaddingValues(spacing),
+          verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.small.dp)
+        ) {
+          item {
+            Text(
+              stringResource(R.string.core_http_authorization_welcome),
+              textAlign = TextAlign.Center,
+              style = AutosTheme.typography.headlineLarge
+            )
+          }
 
-        item {
-          Text(headerTitle, textAlign = TextAlign.Center, style = AutosTheme.typography.titleSmall)
+          item {
+            Text(
+              headerTitle,
+              textAlign = TextAlign.Center,
+              style = AutosTheme.typography.titleSmall
+            )
+          }
         }
       }
     }

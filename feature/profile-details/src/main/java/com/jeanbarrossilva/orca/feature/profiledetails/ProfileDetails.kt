@@ -498,7 +498,9 @@ private fun ProfileDetails(
   }
 
   Box(modifier) {
-    Scaffold(floatingActionButton = floatingActionButton) { timeline(isHeaderHidden, it) }
+    Scaffold(floatingActionButton = floatingActionButton) {
+      navigable { timeline(isHeaderHidden, it) }
+    }
 
     AnimatedVisibility(
       visible = isHeaderHidden,

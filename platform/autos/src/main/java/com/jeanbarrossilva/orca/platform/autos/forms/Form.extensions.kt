@@ -13,6 +13,8 @@
  * not, see https://www.gnu.org/licenses.
  */
 
+@file:JvmName("Forms")
+
 package com.jeanbarrossilva.orca.platform.autos.forms
 
 import androidx.compose.foundation.shape.CornerBasedShape

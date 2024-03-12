@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,18 +13,20 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-@file:JvmName("CornerBasedShapes")
+package com.jeanbarrossilva.orca.platform.autos.test
 
-package com.jeanbarrossilva.orca.platform.autos.kit
+import androidx.compose.material3.Text
+import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onRoot
+import org.junit.Rule
+import org.junit.Test
 
-import androidx.compose.foundation.shape.CornerBasedShape
-import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.ZeroCornerSize
+internal class SemanticsMatcherExtensionsTests {
+  @get:Rule val composeRule = createComposeRule()
 
-/** Version of this [CornerBasedShape] with zeroed top [CornerSize]s. */
-internal val CornerBasedShape.bottom
-  get() = copy(topStart = ZeroCornerSize, topEnd = ZeroCornerSize)
-
-/** Version of this [CornerBasedShape] with zeroed bottom [CornerSize]s. */
-internal val CornerBasedShape.top
-  get() = copy(bottomEnd = ZeroCornerSize, bottomStart = ZeroCornerSize)
+  @Test
+  fun matchesDisplayedNode() {
+    composeRule.apply { setContent { Text("Hello, world!") } }.onRoot().assert(isDisplayed())
+  }
+}

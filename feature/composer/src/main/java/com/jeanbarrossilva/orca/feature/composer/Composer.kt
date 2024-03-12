@@ -133,60 +133,62 @@ private fun Composer(
       }
     },
     floatingActionButtonPosition = floatingActionButtonPosition
-  ) { padding ->
-    Box(Modifier.padding(padding).fillMaxSize()) {
-      LazyColumn(
-        contentPadding =
-          PaddingValues(bottom = TextFieldDefaults.compositionSpacing) +
-            AutosTheme.overlays.fab.asPaddingValues
-      ) {
-        item {
-          CompositionTextField(
-            value,
-            onValueChange,
-            leadingIcon = { SmallAvatar() },
-            onSend = onCompose,
-            Modifier.onFocusChanged { isToolbarVisible = it.isFocused }
-              .focusRequester(focusRequester)
-          ) {
-            Text(stringResource(R.string.feature_composer_placeholder))
+  ) {
+    navigable { padding ->
+      Box(Modifier.padding(padding).fillMaxSize()) {
+        LazyColumn(
+          contentPadding =
+            PaddingValues(bottom = TextFieldDefaults.compositionSpacing) +
+              AutosTheme.overlays.fab.asPaddingValues
+        ) {
+          item {
+            CompositionTextField(
+              value,
+              onValueChange,
+              leadingIcon = { SmallAvatar() },
+              onSend = onCompose,
+              Modifier.onFocusChanged { isToolbarVisible = it.isFocused }
+                .focusRequester(focusRequester)
+            ) {
+              Text(stringResource(R.string.feature_composer_placeholder))
+            }
           }
         }
-      }
 
-      AnimatedVisibility(
-        isToolbarVisible,
-        Modifier.padding(start = toolbarSpacing, end = toolbarSpacing, bottom = toolbarSpacing)
-          .align(Alignment.BottomStart),
-        enter = slideInVertically { height -> height },
-        exit = fadeOut() + slideOutVertically { height -> height }
-      ) {
-        /*
-         * There is a bug where the EditProcessor used by CoreTextField's state under the
-         * hood creates a new instance of the AnnotatedString held by the TextFieldValue
-         * (whenever selection changes) only with its text property set, ignoring any span
-         * or paragraph styles given in the previous recomposition.
-         *
-         * This is an issue known since 2019, so I don't know how likely it is that the
-         * Compose team is going to fix it any time soon. Multi-style text editing has been
-         * on the roadmap since October 2022.
-         *
-         * https://issuetracker.google.com/issues/199754661
-         * https://developer.android.com/jetpack/androidx/compose-roadmap
-         */
-        Toolbar(
-          value.isSelectionBold,
-          onBoldToggle = { isBold -> onValueChange(value.withBoldSelection(isBold)) },
-          value.isSelectionItalicized,
-          onItalicToggle = { isItalicized ->
-            onValueChange(value.withItalicizedSelection(isItalicized))
-          },
-          value.isSelectionUnderlined,
-          onUnderlineToggle = { isUnderlined ->
-            onValueChange(value.withUnderlinedSelection(isUnderlined))
-          },
-          Modifier.padding(toolbarSafeAreaPadding)
-        )
+        AnimatedVisibility(
+          isToolbarVisible,
+          Modifier.padding(start = toolbarSpacing, end = toolbarSpacing, bottom = toolbarSpacing)
+            .align(Alignment.BottomStart),
+          enter = slideInVertically { height -> height },
+          exit = fadeOut() + slideOutVertically { height -> height }
+        ) {
+          /*
+           * There is a bug where the EditProcessor used by CoreTextField's state under the
+           * hood creates a new instance of the AnnotatedString held by the TextFieldValue
+           * (whenever selection changes) only with its text property set, ignoring any span
+           * or paragraph styles given in the previous recomposition.
+           *
+           * This is an issue known since 2019, so I don't know how likely it is that the
+           * Compose team is going to fix it any time soon. Multi-style text editing has been
+           * on the roadmap since October 2022.
+           *
+           * https://issuetracker.google.com/issues/199754661
+           * https://developer.android.com/jetpack/androidx/compose-roadmap
+           */
+          Toolbar(
+            value.isSelectionBold,
+            onBoldToggle = { isBold -> onValueChange(value.withBoldSelection(isBold)) },
+            value.isSelectionItalicized,
+            onItalicToggle = { isItalicized ->
+              onValueChange(value.withItalicizedSelection(isItalicized))
+            },
+            value.isSelectionUnderlined,
+            onUnderlineToggle = { isUnderlined ->
+              onValueChange(value.withUnderlinedSelection(isUnderlined))
+            },
+            Modifier.padding(toolbarSafeAreaPadding)
+          )
+        }
       }
     }
   }

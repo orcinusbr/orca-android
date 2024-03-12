@@ -33,10 +33,10 @@ dependencies {
   implementation(project(":composite:timeline"))
   implementation(project(":feature:gallery"))
   implementation(project(":platform:autos"))
+  implementation(project(":platform:autos-test"))
   implementation(project(":platform:testing"))
   implementation(libs.android.compose.ui.test.junit)
   implementation(libs.android.compose.ui.test.manifest)
-  implementation(libs.android.test.espresso.core)
   implementation(libs.loadable.placeholder.test)
 }
 

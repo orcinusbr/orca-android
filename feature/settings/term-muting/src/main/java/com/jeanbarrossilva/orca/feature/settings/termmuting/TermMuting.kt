@@ -111,7 +111,7 @@ internal fun TermMuting(
         scrollBehavior = topAppBarScrollBehavior
       )
     },
-    buttonBar = {
+    bottom = {
       ButtonBar(lazyListState) {
         PrimaryButton(onClick = onDone, Modifier.testTag(SETTINGS_TERM_MUTING_MUTE_BUTTON)) {
           Text(stringResource(R.string.feature_settings_term_muting_mute))
@@ -119,32 +119,34 @@ internal fun TermMuting(
       }
     }
   ) {
-    LazyColumn(
-      Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-      lazyListState,
-      verticalArrangement = Arrangement.spacedBy(spacing),
-      contentPadding = it + PaddingValues(spacing)
-    ) {
-      item {
-        FormTextField(
-          term,
-          onTermChange,
-          Modifier.focusRequester(focusRequester)
-            .fillMaxWidth()
-            .testTag(SETTINGS_TERM_MUTING_TEXT_FIELD_TAG),
-          errorDispatcher,
-          KeyboardOptions(imeAction = ImeAction.Done),
-          KeyboardActions(onDone = { onDone() })
-        ) {
-          Text(stringResource(R.string.feature_settings_term_muting_term))
+    navigable {
+      LazyColumn(
+        Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+        lazyListState,
+        verticalArrangement = Arrangement.spacedBy(spacing),
+        contentPadding = it + PaddingValues(spacing)
+      ) {
+        item {
+          FormTextField(
+            term,
+            onTermChange,
+            Modifier.focusRequester(focusRequester)
+              .fillMaxWidth()
+              .testTag(SETTINGS_TERM_MUTING_TEXT_FIELD_TAG),
+            errorDispatcher,
+            KeyboardOptions(imeAction = ImeAction.Done),
+            KeyboardActions(onDone = { onDone() })
+          ) {
+            Text(stringResource(R.string.feature_settings_term_muting_term))
+          }
         }
-      }
 
-      item {
-        Text(
-          stringResource(R.string.feature_settings_term_muting_explanation),
-          style = AutosTheme.typography.bodySmall
-        )
+        item {
+          Text(
+            stringResource(R.string.feature_settings_term_muting_explanation),
+            style = AutosTheme.typography.bodySmall
+          )
+        }
       }
     }
   }
