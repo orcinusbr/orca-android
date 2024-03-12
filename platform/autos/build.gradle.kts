@@ -40,7 +40,6 @@ dependencies {
   implementation(project(":ext:coroutines"))
   implementation(project(":ext:reflection"))
   implementation(libs.accompanist.adapter)
-  implementation(libs.android.constraintlayout.compose)
   implementation(libs.android.material)
   implementation(libs.kotlin.reflect)
   implementation(libs.loadable.placeholder)
