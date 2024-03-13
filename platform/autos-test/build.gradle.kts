@@ -33,4 +33,5 @@ dependencies {
 
   implementation(project(":platform:autos"))
   implementation(libs.android.compose.ui.test.junit)
+  implementation(libs.android.test.espresso.core)
 }

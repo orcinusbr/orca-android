@@ -162,19 +162,25 @@ private fun Feed(
       }
     }
   ) {
-    Timeline(
-      postPreviewsLoadable,
-      onFavorite,
-      onRepost,
-      onShare,
-      onPostClick,
-      onNext,
-      Modifier.nestedScroll(bottomAreaAvailabilityNestedScrollConnection)
-        .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-      contentPadding = it + AutosTheme.overlays.fab.asPaddingValues,
-      refresh =
-        Refresh(isTimelineRefreshing, indicatorOffset = it.calculateTopPadding(), onTimelineRefresh)
-    )
+    navigable {
+      Timeline(
+        postPreviewsLoadable,
+        onFavorite,
+        onRepost,
+        onShare,
+        onPostClick,
+        onNext,
+        Modifier.nestedScroll(bottomAreaAvailabilityNestedScrollConnection)
+          .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+        contentPadding = it + AutosTheme.overlays.fab.asPaddingValues,
+        refresh =
+          Refresh(
+            isTimelineRefreshing,
+            indicatorOffset = it.calculateTopPadding(),
+            onTimelineRefresh
+          )
+      )
+    }
   }
 }
 

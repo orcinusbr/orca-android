@@ -19,7 +19,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -184,18 +183,19 @@ private fun Search(
       }
     }
   ) {
-    LazyColumn(
-      @OptIn(ExperimentalLayoutApi::class)
-      Modifier
-        // TODO: Add bottom bar overlay to Overlays.
-        .consumeWindowInsets(PaddingValues(104.dp))
-        .imePadding()
-        .fillMaxSize(),
-      verticalArrangement = verticalArrangement,
-      horizontalAlignment = horizontalAlignment,
-      contentPadding = it,
-      content = content
-    )
+    expanded {
+      LazyColumn(
+        Modifier
+          // TODO: Add bottom bar overlay to Overlays.
+          .consumeWindowInsets(PaddingValues(104.dp))
+          .imePadding()
+          .fillMaxSize(),
+        verticalArrangement = verticalArrangement,
+        horizontalAlignment = horizontalAlignment,
+        contentPadding = it,
+        content = content
+      )
+    }
   }
 }
 

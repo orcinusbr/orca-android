@@ -75,13 +75,15 @@ private fun SheetPreview() {
     @OptIn(ExperimentalMaterial3Api::class)
     Sheet {
       Scaffold(topAppBar = { TopAppBar(title = { AutoSizeText("Title") }) }) {
-        Box(
-          Modifier.clip(AutosTheme.forms.large.asShape)
-            .background(AutosTheme.colors.surface.container.asColor)
-            .fillMaxSize(),
-          Alignment.Center
-        ) {
-          Text("Content", style = AutosTheme.typography.titleMedium)
+        expanded {
+          Box(
+            Modifier.clip(AutosTheme.forms.large.asShape)
+              .background(AutosTheme.colors.surface.container.asColor)
+              .fillMaxSize(),
+            Alignment.Center
+          ) {
+            Text("Content", style = AutosTheme.typography.titleMedium)
+          }
         }
       }
     }

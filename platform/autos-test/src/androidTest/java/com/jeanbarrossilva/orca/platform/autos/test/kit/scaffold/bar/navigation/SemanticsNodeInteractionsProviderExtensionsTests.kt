@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,53 +13,49 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.gallery.test.ui
+package com.jeanbarrossilva.orca.platform.autos.test.kit.scaffold.bar.navigation
 
-import androidx.compose.foundation.Image
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.test.assertAll
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.filterToOne
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onChildren
-import com.jeanbarrossilva.orca.feature.gallery.test.ui.page.isPage
-import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.navigation.NavigationBar
+import com.jeanbarrossilva.orca.platform.autos.test.isDisplayed
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test
 
-internal class SemanticsMatcherExtensionsTests {
+internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun matchesImage() {
+  fun findsNavigationBar() {
+    composeRule
+      .apply { setContent { AutosTheme { NavigationBar(title = {}, action = {}) {} } } }
+      .onNavigationBar()
+      .assertIsDisplayed()
+  }
+
+  @Test
+  fun findsTab() {
     composeRule
       .apply {
         setContent {
-          Image(
-            painterResource(com.jeanbarrossilva.orca.std.image.compose.R.drawable.image),
-            contentDescription = "Image"
-          )
+          AutosTheme { NavigationBar(title = {}, action = {}) { tab(onClick = {}) {} } }
         }
       }
-      .onNode(isImage())
+      .onTab()
       .assertIsDisplayed()
   }
 
   @Test
-  fun matchesPager() {
+  fun findsTabs() {
     composeRule
-      .apply { setContent { AutosTheme { Gallery() } } }
-      .onNode(isPager())
-      .assertIsDisplayed()
-  }
-
-  @Test
-  fun matchesPage() {
-    composeRule
-      .apply { setContent { AutosTheme { Gallery() } } }
-      .onPager()
-      .onChildren()
-      .filterToOne(isPage())
-      .assertIsDisplayed()
+      .apply {
+        setContent {
+          AutosTheme { NavigationBar(title = {}, action = {}) { tab(onClick = {}) {} } }
+        }
+      }
+      .onTabs()
+      .assertAll(isDisplayed())
   }
 }

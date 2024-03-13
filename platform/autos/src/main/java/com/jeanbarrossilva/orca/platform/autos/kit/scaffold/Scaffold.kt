@@ -16,7 +16,6 @@
 package com.jeanbarrossilva.orca.platform.autos.kit.scaffold
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -31,6 +30,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.takeOrElse
@@ -40,11 +40,14 @@ import com.jeanbarrossilva.orca.platform.autos.forms.asShape
 import com.jeanbarrossilva.orca.platform.autos.iconography.asImageVector
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold as _Scaffold
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.button.ButtonBar
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.navigation.NavigationBar
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.snack.orcaVisuals
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.snack.presenter.SnackbarPresenter
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.snack.presenter.rememberSnackbarPresenter
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.scope.Content
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.scope.ScaffoldScope
 import com.jeanbarrossilva.orca.platform.autos.kit.sheet.LocalWindowInsets
 import com.jeanbarrossilva.orca.platform.autos.kit.sheet.takeOrElse
 import com.jeanbarrossilva.orca.platform.autos.overlays.asPaddingValues
@@ -56,13 +59,16 @@ import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
  *
  * @param modifier [Modifier] to be applied to the underlying [Scaffold].
  * @param topAppBar [TopAppBar] to be placed at the top.
- * @param floatingActionButton [FloatingActionButton] to be placed at the bottom, above the
- *   [buttonBar] and below the [SnackbarHost], horizontally centered.
+ * @param floatingActionButton [FloatingActionButton] to be placed at the bottom, above the [bottom]
+ *   and below the [SnackbarHost], horizontally centered.
  * @param floatingActionButtonPosition [FabPosition] that determines where the
  *   [floatingActionButton] will be placed.
  * @param snackbarPresenter [SnackbarPresenter] through which [Snackbar]s can be presented.
- * @param buttonBar [ButtonBar] to be placed at the utmost bottom.
+ * @param bottom [Composable] to be placed at the utmost bottom, such as a [NavigationBar] and/or a
+ *   [ButtonBar].
  * @param content Main content of the current context.
+ * @see ScaffoldScope.expanded
+ * @see ScaffoldScope.navigable
  */
 @Composable
 fun Scaffold(
@@ -71,13 +77,13 @@ fun Scaffold(
   floatingActionButton: @Composable () -> Unit = {},
   floatingActionButtonPosition: FabPosition = FabPosition.End,
   snackbarPresenter: SnackbarPresenter = rememberSnackbarPresenter(),
-  buttonBar: @Composable () -> Unit = {},
-  content: @Composable (padding: PaddingValues) -> Unit
+  bottom: @Composable () -> Unit = {},
+  content: ScaffoldScope.() -> Content
 ) {
   Scaffold(
     modifier,
     topAppBar,
-    bottomBar = buttonBar,
+    bottomBar = bottom,
     snackbarHost = {
       SnackbarHost(snackbarPresenter.hostState) {
         Snackbar(
@@ -92,9 +98,10 @@ fun Scaffold(
     floatingActionButtonPosition,
     LocalContainerColor.current.takeOrElse { AutosTheme.colors.background.container.asColor },
     contentWindowInsets =
-      LocalWindowInsets.current.takeOrElse { ScaffoldDefaults.contentWindowInsets },
-    content = content
-  )
+      LocalWindowInsets.current.takeOrElse { ScaffoldDefaults.contentWindowInsets }
+  ) {
+    remember(::ScaffoldScope).content().ClippedValue(it)
+  }
 }
 
 /** Preview of a [Scaffold][_Scaffold]. */
@@ -120,16 +127,18 @@ private fun ScaffoldPreview() {
         }
       },
       snackbarPresenter = snackbarPresenter,
-      buttonBar = { ButtonBar(lazyListState) }
+      bottom = { ButtonBar(lazyListState) }
     ) {
-      LazyColumn(
-        Modifier.fillMaxSize(),
-        state = lazyListState,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = it + AutosTheme.overlays.fab.asPaddingValues
-      ) {
-        item { Text("Content", style = AutosTheme.typography.bodyMedium) }
+      expanded {
+        LazyColumn(
+          Modifier.fillMaxSize(),
+          state = lazyListState,
+          verticalArrangement = Arrangement.Center,
+          horizontalAlignment = Alignment.CenterHorizontally,
+          contentPadding = it + AutosTheme.overlays.fab.asPaddingValues
+        ) {
+          item { Text("Content", style = AutosTheme.typography.bodyMedium) }
+        }
       }
     }
   }

@@ -13,21 +13,24 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.gallery.test.ui.page
+package com.jeanbarrossilva.orca.platform.autos.test.kit.scaffold.bar.navigation
 
-import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.ui.test.SemanticsMatcher
-import androidx.compose.ui.test.hasParent
-import com.jeanbarrossilva.orca.feature.gallery.test.ui.isImage
-import com.jeanbarrossilva.orca.feature.gallery.test.ui.isPager
-import com.jeanbarrossilva.orca.feature.gallery.ui.Gallery
-import com.jeanbarrossilva.orca.platform.autos.test.isDisplayed
+import androidx.compose.ui.test.hasTestTag
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.navigation.NAVIGATION_BAR_TAG
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.navigation.NavigationBar
+import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.navigation.NavigationBarScope
+
+/** [SemanticsMatcher] that matches a [NavigationBar]. */
+fun isNavigationBar(): SemanticsMatcher {
+  return hasTestTag(NAVIGATION_BAR_TAG)
+}
 
 /**
- * [SemanticsMatcher] that matches a [Gallery]'s [HorizontalPager]'s current page.
+ * [SemanticsMatcher] that matches a tab of a [NavigationBar].
  *
- * @see isPager
+ * @see isNavigationBar
  */
-fun isPage(): SemanticsMatcher {
-  return hasParent(isPager()) and isDisplayed() and isImage()
+fun isTab(): SemanticsMatcher {
+  return hasTestTag(NavigationBarScope.TAB_TAG)
 }
