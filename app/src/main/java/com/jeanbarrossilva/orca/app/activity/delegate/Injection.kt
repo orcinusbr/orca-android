@@ -34,14 +34,11 @@ import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetailsModule
 import com.jeanbarrossilva.orca.feature.search.SearchModule
 import com.jeanbarrossilva.orca.feature.settings.SettingsModule
 import com.jeanbarrossilva.orca.feature.settings.termmuting.TermMutingModule
-import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
 import com.jeanbarrossilva.orca.platform.navigation.NavigationActivity
 import com.jeanbarrossilva.orca.std.injector.Injector
 
 internal interface Injection {
-  fun <T> inject(activity: T, coreModule: CoreModule) where
-  T : NavigationActivity,
-  T : OnBottomAreaAvailabilityChangeListener {
+  fun inject(activity: NavigationActivity, coreModule: CoreModule) {
     Injector.inject<Context> { activity }
     Injector.register(coreModule)
     Injector.register<FeedModule>(MainFeedModule(activity))

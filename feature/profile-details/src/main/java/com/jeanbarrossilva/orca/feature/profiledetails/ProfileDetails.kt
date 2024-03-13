@@ -70,9 +70,6 @@ import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults as _TopAppBarDefaults
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.`if`
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
-import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
-import com.jeanbarrossilva.orca.platform.autos.reactivity.scroll.BottomAreaAvailabilityNestedScrollConnection
-import com.jeanbarrossilva.orca.platform.autos.reactivity.scroll.rememberBottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.core.sample
@@ -196,19 +193,16 @@ internal sealed class ProfileDetails : Serializable {
 @Composable
 internal fun ProfileDetails(
   viewModel: ProfileDetailsViewModel,
-  navigator: ProfileDetailsBoundary,
+  boundary: ProfileDetailsBoundary,
   origin: BackwardsNavigationState,
-  onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
   modifier: Modifier = Modifier
 ) {
   val detailsLoadable by viewModel.detailsLoadableFlow.collectAsState()
   val postsLoadable by viewModel.postPreviewsLoadableFlow.collectAsState()
   var isTimelineRefreshing by remember { mutableStateOf(false) }
-  val bottomAreaAvailabilityNestedScrollConnection =
-    rememberBottomAreaAvailabilityNestedScrollConnection(onBottomAreaAvailabilityChangeListener)
 
   ProfileDetails(
-    navigator,
+    boundary,
     detailsLoadable,
     postsLoadable,
     isTimelineRefreshing,
@@ -218,12 +212,11 @@ internal fun ProfileDetails(
     },
     onFavorite = viewModel::favorite,
     onRepost = viewModel::repost,
-    navigator::navigateToPostDetails,
+    boundary::navigateToPostDetails,
     onNext = viewModel::loadPostsAt,
     origin,
-    navigator::navigateTo,
+    boundary::navigateTo,
     onShare = viewModel::share,
-    bottomAreaAvailabilityNestedScrollConnection,
     modifier
   )
 }
@@ -272,7 +265,6 @@ internal fun ProfileDetails(
     BackwardsNavigationState.Unavailable,
     onNavigateToWebpage = {},
     onShare = {},
-    BottomAreaAvailabilityNestedScrollConnection.empty,
     modifier,
     isTopBarDropdownMenuExpanded,
     initialFirstVisibleTimelineItemIndex,
@@ -294,15 +286,13 @@ private fun ProfileDetails(
   origin: BackwardsNavigationState,
   onNavigateToWebpage: (URL) -> Unit,
   onShare: (URL) -> Unit,
-  bottomAreaAvailabilityNestedScrollConnection: BottomAreaAvailabilityNestedScrollConnection,
   modifier: Modifier = Modifier,
   isTopBarDropdownMenuExpanded: Boolean = false,
   initialFirstVisibleTimelineItemIndex: Int = 0,
   relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider()
 ) {
   when (detailsLoadable) {
-    is Loadable.Loading ->
-      ProfileDetails(origin, bottomAreaAvailabilityNestedScrollConnection, modifier)
+    is Loadable.Loading -> ProfileDetails(origin, modifier)
     is Loadable.Loaded ->
       ProfileDetails(
         boundary,
@@ -317,7 +307,6 @@ private fun ProfileDetails(
         origin,
         onNavigateToWebpage,
         onShare,
-        bottomAreaAvailabilityNestedScrollConnection,
         modifier,
         isTopBarDropdownMenuExpanded,
         initialFirstVisibleTimelineItemIndex,
@@ -328,11 +317,7 @@ private fun ProfileDetails(
 }
 
 @Composable
-private fun ProfileDetails(
-  origin: BackwardsNavigationState,
-  bottomAreaAvailabilityNestedScrollConnection: BottomAreaAvailabilityNestedScrollConnection,
-  modifier: Modifier = Modifier
-) {
+private fun ProfileDetails(origin: BackwardsNavigationState, modifier: Modifier = Modifier) {
   @OptIn(ExperimentalMaterial3Api::class)
   val topAppBarScrollBehavior = _TopAppBarDefaults.scrollBehavior
 
@@ -344,9 +329,7 @@ private fun ProfileDetails(
     timelineState = rememberLazyListState(),
     timeline = { shouldNestScrollToTopAppBar, _ ->
       Timeline(
-        Modifier.nestedScroll(bottomAreaAvailabilityNestedScrollConnection).`if`(
-          shouldNestScrollToTopAppBar
-        ) {
+        (Modifier as Modifier).`if`(shouldNestScrollToTopAppBar) {
           nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
         }
       ) {
@@ -374,7 +357,6 @@ private fun ProfileDetails(
   origin: BackwardsNavigationState,
   onNavigateToWebpage: (URL) -> Unit,
   onShare: (URL) -> Unit,
-  bottomAreaAvailabilityNestedScrollConnection: BottomAreaAvailabilityNestedScrollConnection,
   modifier: Modifier = Modifier,
   isTopBarDropdownMenuExpanded: Boolean = false,
   initialFirstVisibleTimelineItemIndex: Int = 0,
@@ -452,11 +434,9 @@ private fun ProfileDetails(
         onShare,
         onClick = onNavigationToPostDetails,
         onNext,
-        Modifier.statusBarsPadding()
-          .nestedScroll(bottomAreaAvailabilityNestedScrollConnection)
-          .`if`(shouldNestScrollToTopAppBar) {
-            nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
-          },
+        Modifier.statusBarsPadding().`if`(shouldNestScrollToTopAppBar) {
+          nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
+        },
         timelineState,
         contentPadding = padding,
         refresh =
@@ -522,12 +502,7 @@ private fun ProfileDetails(
 @Composable
 @MultiThemePreview
 private fun LoadingProfileDetailsPreview() {
-  AutosTheme {
-    ProfileDetails(
-      BackwardsNavigationState.Unavailable,
-      BottomAreaAvailabilityNestedScrollConnection.empty
-    )
-  }
+  AutosTheme { ProfileDetails(BackwardsNavigationState.Unavailable) }
 }
 
 @Composable

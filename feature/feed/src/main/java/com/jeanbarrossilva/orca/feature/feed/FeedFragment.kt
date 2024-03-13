@@ -46,7 +46,7 @@ class FeedFragment internal constructor() : ComposableFragment() {
 
   @Composable
   override fun Content() {
-    Feed(viewModel, boundary = module.get(), onBottomAreaAvailabilityChangeListener = module.get())
+    Feed(viewModel, module.boundary())
   }
 
   companion object {

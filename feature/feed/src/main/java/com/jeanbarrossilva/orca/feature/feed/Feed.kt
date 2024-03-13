@@ -43,9 +43,6 @@ import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDef
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.plus
 import com.jeanbarrossilva.orca.platform.autos.overlays.asPaddingValues
-import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
-import com.jeanbarrossilva.orca.platform.autos.reactivity.scroll.BottomAreaAvailabilityNestedScrollConnection
-import com.jeanbarrossilva.orca.platform.autos.reactivity.scroll.rememberBottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import java.net.URL
@@ -60,17 +57,10 @@ fun Feed(modifier: Modifier = Modifier) {
 }
 
 @Composable
-internal fun Feed(
-  viewModel: FeedViewModel,
-  boundary: FeedBoundary,
-  onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
-  modifier: Modifier = Modifier
-) {
+internal fun Feed(viewModel: FeedViewModel, boundary: FeedBoundary, modifier: Modifier = Modifier) {
   var isTimelineRefreshing by remember { mutableStateOf(false) }
   val postPreviewsLoadable by
     viewModel.postPreviewsLoadableFlow.collectAsState(ListLoadable.Loading())
-  val bottomAreaAvailabilityNestedScrollConnection =
-    rememberBottomAreaAvailabilityNestedScrollConnection(onBottomAreaAvailabilityChangeListener)
 
   Feed(
     postPreviewsLoadable,
@@ -86,7 +76,6 @@ internal fun Feed(
     onPostClick = boundary::navigateToPostDetails,
     onNext = viewModel::loadPostsAt,
     onComposition = boundary::navigateToComposer,
-    bottomAreaAvailabilityNestedScrollConnection,
     modifier
   )
 }
@@ -108,7 +97,6 @@ internal fun Feed(
     onPostClick = {},
     onNext = {},
     onComposition = {},
-    BottomAreaAvailabilityNestedScrollConnection.empty,
     modifier
   )
 }
@@ -126,7 +114,6 @@ private fun Feed(
   onPostClick: (postID: String) -> Unit,
   onNext: (index: Int) -> Unit,
   onComposition: () -> Unit,
-  bottomAreaAvailabilityNestedScrollConnection: BottomAreaAvailabilityNestedScrollConnection,
   modifier: Modifier = Modifier
 ) {
   val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
@@ -170,8 +157,7 @@ private fun Feed(
         onShare,
         onPostClick,
         onNext,
-        Modifier.nestedScroll(bottomAreaAvailabilityNestedScrollConnection)
-          .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+        Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
         contentPadding = it + AutosTheme.overlays.fab.asPaddingValues,
         refresh =
           Refresh(

@@ -43,9 +43,6 @@ import com.jeanbarrossilva.orca.feature.postdetails.viewmodel.PostDetailsViewMod
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.TopAppBarWithBackNavigation
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
-import com.jeanbarrossilva.orca.platform.autos.reactivity.OnBottomAreaAvailabilityChangeListener
-import com.jeanbarrossilva.orca.platform.autos.reactivity.scroll.BottomAreaAvailabilityNestedScrollConnection
-import com.jeanbarrossilva.orca.platform.autos.reactivity.scroll.rememberBottomAreaAvailabilityNestedScrollConnection
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.orca.platform.core.withSample
@@ -79,14 +76,11 @@ internal data class PostDetails(
 internal fun PostDetails(
   viewModel: PostDetailsViewModel,
   boundary: PostDetailsBoundary,
-  onBottomAreaAvailabilityChangeListener: OnBottomAreaAvailabilityChangeListener,
   modifier: Modifier = Modifier
 ) {
   val postLoadable by viewModel.detailsLoadableFlow.collectAsState()
   val commentsLoadable by viewModel.commentsLoadableFlow.collectAsState()
   var isTimelineRefreshing by remember { mutableStateOf(false) }
-  val bottomAreaAvailabilityNestedScrollConnection =
-    rememberBottomAreaAvailabilityNestedScrollConnection(onBottomAreaAvailabilityChangeListener)
 
   PostDetails(
     postLoadable,
@@ -102,7 +96,6 @@ internal fun PostDetails(
     onNavigateToDetails = boundary::navigateToPostDetails,
     onNext = viewModel::loadCommentsAt,
     onBackwardsNavigation = boundary::pop,
-    bottomAreaAvailabilityNestedScrollConnection,
     modifier
   )
 }
@@ -120,7 +113,6 @@ private fun PostDetails(
   onNavigateToDetails: (postID: String) -> Unit,
   onNext: (index: Int) -> Unit,
   onBackwardsNavigation: () -> Unit,
-  bottomAreaAvailabilityNestedScrollConnection: BottomAreaAvailabilityNestedScrollConnection,
   modifier: Modifier = Modifier
 ) {
   val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
@@ -143,8 +135,7 @@ private fun PostDetails(
       onShare,
       onClick = onNavigateToDetails,
       onNext,
-      Modifier.nestedScroll(bottomAreaAvailabilityNestedScrollConnection)
-        .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+      Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
       contentPadding = it,
       refresh =
         Refresh(isTimelineRefreshing, indicatorOffset = it.calculateTopPadding(), onTimelineRefresh)
@@ -203,7 +194,6 @@ private fun PostDetails(
     onNavigateToDetails = {},
     onNext = {},
     onBackwardsNavigation = {},
-    BottomAreaAvailabilityNestedScrollConnection.empty,
     modifier
   )
 }

@@ -52,12 +52,7 @@ class ProfileDetailsFragment internal constructor() : ComposableFragment() {
       argument<BackwardsNavigationState>(BACKWARDS_NAVIGATION_STATE_KEY)
     }
 
-    ProfileDetails(
-      viewModel,
-      navigator = module.get(),
-      backwardsNavigationState,
-      onBottomAreaAvailabilityChangeListener = module.get()
-    )
+    ProfileDetails(viewModel, module.boundary(), backwardsNavigationState)
   }
 
   companion object {
