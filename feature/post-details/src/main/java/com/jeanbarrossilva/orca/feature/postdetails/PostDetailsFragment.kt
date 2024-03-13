@@ -46,7 +46,7 @@ class PostDetailsFragment private constructor() : ComposableFragment() {
 
   @Composable
   override fun Content() {
-    PostDetails(viewModel, module.boundary(), module.onBottomAreaAvailabilityChangeListener())
+    PostDetails(viewModel, module.boundary())
   }
 
   companion object {
