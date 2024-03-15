@@ -22,13 +22,9 @@ android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
   defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-  packagingOptions.resources.excludes +=
-    arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
 }
 
 dependencies {
-  androidTestImplementation(project(":composite:composable"))
-  androidTestImplementation(project(":ext:reflection"))
   androidTestImplementation(project(":platform:autos-test"))
   androidTestImplementation(project(":platform:testing"))
   androidTestImplementation(libs.android.compose.ui.test.junit)
@@ -38,7 +34,6 @@ dependencies {
   androidTestImplementation(libs.android.test.runner)
   androidTestImplementation(libs.assertk)
   androidTestImplementation(libs.kotlin.test)
-  androidTestImplementation(libs.mockk)
 
   api(libs.android.compose.material3)
   api(libs.android.compose.ui.tooling)
