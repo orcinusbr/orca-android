@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,22 +13,23 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.testing
+package com.jeanbarrossilva.orca.platform.autos.test.theme
 
-import assertk.assertThat
-import assertk.assertions.isEmpty
-import assertk.assertions.isEqualTo
-import com.jeanbarrossilva.orca.platform.testing.test.R
+import androidx.compose.ui.test.junit4.createComposeRule
+import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
+import org.junit.Rule
 import org.junit.Test
 
-internal class IntExtensionsTests {
-  @Test
-  fun stringFromEmptyStringResourceIDIsEmpty() {
-    assertThat(emptyStringResourceID.asString()).isEmpty()
+internal class AutosThemeExtensionsTests {
+  @get:Rule val composeRule = createComposeRule()
+
+  @Test(expected = MissingThemingException::class)
+  fun throwsWhenContentIsRequiredToBeThemedButIsNot() {
+    composeRule.setContent { AutosTheme.require() }
   }
 
   @Test
-  fun getsStringFromResourceID() {
-    assertThat(R.string.string.asString()).isEqualTo("5️⃣👍🏽🏞️👩🏻‍💻⏩🎇")
+  fun doesNotThrowWhenContentIsRequiredToBeThemedAndIs() {
+    composeRule.setContent { AutosTheme { AutosTheme.require() } }
   }
 }

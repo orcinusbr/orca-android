@@ -15,6 +15,7 @@
 
 package com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.navigation
 
+import androidx.appcompat.view.menu.MenuItemImpl
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,7 +23,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.testTag
+import androidx.core.graphics.drawable.toBitmap
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 
 /**
@@ -46,6 +49,20 @@ class NavigationBarScope internal constructor() {
    */
   fun tab(onClick: () -> Unit, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     tabs.add { HoverableIconButton(onClick, modifier.testTag(TAB_TAG), content) }
+  }
+
+  /**
+   * Adds a selectable navigation tab from a [MenuItemImpl].
+   *
+   * @param menuItem [MenuItemImpl] based on which the tab will be added.
+   */
+  @Suppress("RestrictedApi")
+  internal fun tab(menuItem: MenuItemImpl) {
+    tab(onClick = { menuItem.invoke() }) {
+      menuItem.icon?.toBitmap()?.asImageBitmap()?.let {
+        Icon(it, menuItem.contentDescription?.toString() ?: "")
+      }
+    }
   }
 
   companion object {

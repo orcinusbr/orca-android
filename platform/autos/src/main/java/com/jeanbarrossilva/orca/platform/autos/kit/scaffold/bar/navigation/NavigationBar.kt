@@ -45,6 +45,9 @@ const val NAVIGATION_BAR_TAG = "navigation-bar"
 object NavigationBarDefaults {
   /** [Color] by which the container of a [NavigationBar] is colored. */
   val ContainerColor = Color.Black
+
+  /** [Color] by which the content on the container is colored. */
+  val ContentColor = Color.White
 }
 
 /**
@@ -66,10 +69,41 @@ fun NavigationBar(
   subtitle: @Composable () -> Unit = {},
   content: NavigationBarScope.() -> Unit
 ) {
-  val scope = remember(content) { NavigationBarScope().apply(content) }
+  NavigationBar(
+    remember(content) { NavigationBarScope().apply(content) },
+    title,
+    action,
+    modifier,
+    subtitle
+  )
+}
+
+/**
+ * Bar to which tabs for accessing different contexts within Orca can be added and/or a prominent
+ * navigation action (such as going back to a previous context) may be performed.
+ *
+ * @param scope [NavigationBarScope] to which tabs are added.
+ * @param title [AutoSizeText] that describes the current context.
+ * @param action Main navigation action.
+ * @param modifier [Modifier] to be applied to the underlying [Surface].
+ * @param subtitle [AutoSizeText] for more details on the current context.
+ * @see NavigationBarScope.tab
+ */
+@Composable
+internal fun NavigationBar(
+  scope: NavigationBarScope,
+  title: @Composable () -> Unit,
+  action: @Composable () -> Unit,
+  modifier: Modifier = Modifier,
+  subtitle: @Composable () -> Unit = {}
+) {
   val spacing = AutosTheme.spacings.medium.dp
 
-  Surface(modifier, color = NavigationBarDefaults.ContainerColor, contentColor = Color.White) {
+  Surface(
+    modifier,
+    color = NavigationBarDefaults.ContainerColor,
+    contentColor = NavigationBarDefaults.ContentColor
+  ) {
     Column(Modifier.padding(spacing).testTag(NAVIGATION_BAR_TAG), Arrangement.spacedBy(spacing)) {
       Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         ProvideTextStyle(
