@@ -184,26 +184,26 @@ constructor(
   /**
    * Adds a tab.
    *
-   * @param id ID resource by which the tab will be identified.
-   * @param iconResourceID Resource of the icon of the tab to be added.
-   * @param contentDescriptionResourceID Resource of the description for the tab.
+   * @param idResource ID resource by which the tab will be identified.
+   * @param iconResource Resource of the icon of the tab to be added.
+   * @param contentDescriptionResource Resource of the description for the tab.
    * @param onClickListener [MenuItem.OnMenuItemClickListener] to be notified when the tab is
    *   clicked.
    * @see NavigationBarScope.tab
    */
   fun addTab(
-    @IdRes id: Int,
-    @DrawableRes iconResourceID: Int,
-    @StringRes contentDescriptionResourceID: Int,
+    @IdRes idResource: Int,
+    @DrawableRes iconResource: Int,
+    @StringRes contentDescriptionResource: Int,
     onClickListener: MenuItem.OnMenuItemClickListener
   ) {
     @Suppress("RestrictedApi")
     menuBuilder
-      .add(0, id, 0, null)
+      .add(0, idResource, 0, null)
       ?.apply {
-        contentDescription = context.getString(contentDescriptionResourceID)
+        contentDescription = context.getString(contentDescriptionResource)
         setOnMenuItemClickListener(onClickListener)
-        setIcon(iconResourceID)
+        setIcon(iconResource)
       }
       ?.run { scope.tab(this as MenuItemImpl) }
   }
@@ -211,28 +211,28 @@ constructor(
   /**
    * Changes the tab that is currently selected.
    *
-   * @param currentTabResourceID ID resource of the tab to be set as the current one.
+   * @param currentTabIDResource ID resource of the tab to be set as the current one.
    */
-  fun setCurrentTab(@IdRes currentTabResourceID: Int) {
-    this.currentTabIDResource = currentTabResourceID
+  fun setCurrentTab(@IdRes currentTabIDResource: Int) {
+    this.currentTabIDResource = currentTabIDResource
 
     @Suppress("RestrictedApi")
-    menu.findItem(currentTabResourceID).let { it as MenuItemImpl }.invoke()
+    menu.findItem(currentTabIDResource).let { it as MenuItemImpl }.invoke()
   }
 
   /**
    * Updates the action [ImageButton].
    *
-   * @param iconResourceID ID resource of the [Drawable] of the icon to be set.
+   * @param iconResource Resource of the [Drawable] of the icon to be set.
    * @param contentDescriptionResource Resource of the description to be set.
    * @param onClickListener [View.OnClickListener] to be notified when the [ImageButton] is clicked.
    */
   fun setAction(
-    @DrawableRes iconResourceID: Int,
+    @DrawableRes iconResource: Int,
     @StringRes contentDescriptionResource: Int,
     onClickListener: OnClickListener
   ) {
-    actionIcon = ContextCompat.getDrawable(context, iconResourceID)
+    actionIcon = ContextCompat.getDrawable(context, iconResource)
     actionContentDescription = context.getString(contentDescriptionResource)
     onActionClickListener = onClickListener
   }
