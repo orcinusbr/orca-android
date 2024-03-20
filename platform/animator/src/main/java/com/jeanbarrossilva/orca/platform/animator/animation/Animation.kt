@@ -30,5 +30,5 @@ internal enum class Animation {
   Ongoing,
 
   /** Represents that an animation has finished running. */
-  Finished
+  Ended
 }

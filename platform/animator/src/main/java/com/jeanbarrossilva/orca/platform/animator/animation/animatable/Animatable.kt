@@ -51,7 +51,7 @@ sealed class Animatable(private val initialAnimation: Animation) {
       LaunchedEffect(transition, timing, content) {
         animation = Animation.Idle
         timing.time()
-        animation = Animation.Finished
+        animation = Animation.Ended
       }
 
       AnimatedVisibility(
@@ -71,7 +71,7 @@ sealed class Animatable(private val initialAnimation: Animation) {
   }
 
   /** [Animatable] that displays its content instantly, ignoring any specified animation. */
-  internal class Still : Animatable(initialAnimation = Animation.Finished) {
+  internal class Still : Animatable(initialAnimation = Animation.Ended) {
     @Composable
     override fun Animate(
       transition: EnterTransition,
@@ -115,6 +115,6 @@ sealed class Animatable(private val initialAnimation: Animation) {
 
   /** Suspends until the animation finishes running. */
   internal suspend fun waitForAnimation() {
-    animationFlow.filter { it == Animation.Finished }.await()
+    animationFlow.filter { it == Animation.Ended }.await()
   }
 }
