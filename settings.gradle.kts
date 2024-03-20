@@ -49,6 +49,7 @@ include(
   ":feature:search",
   ":feature:settings",
   ":feature:settings:term-muting",
+  ":platform:animator",
   ":platform:autos",
   ":platform:cache",
   ":platform:autos-test",
