@@ -24,7 +24,7 @@ internal enum class Animation {
   Idle,
 
   /** Denotes that an animation has been requested to be run but hasn't started yet. */
-  Ignited,
+  Prepared,
 
   /** Indicates that an animation either is in progress or has finished. */
   Running,

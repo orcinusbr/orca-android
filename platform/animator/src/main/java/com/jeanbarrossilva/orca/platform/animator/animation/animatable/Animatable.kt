@@ -55,7 +55,7 @@ sealed class Animatable(private val initialAnimation: Animation) {
       }
 
       AnimatedVisibility(
-        visible = animationFlow.collectAsState().value >= Animation.Ignited,
+        visible = animationFlow.collectAsState().value >= Animation.Prepared,
         enter = transition
       ) {
         @OptIn(ExperimentalAnimationApi::class)
