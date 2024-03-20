@@ -61,7 +61,7 @@ sealed class Animatable(private val initialAnimation: Animation) {
         @OptIn(ExperimentalAnimationApi::class)
         LaunchedEffect(this.transition.isRunning) {
           if (this@AnimatedVisibility.transition.isRunning) {
-            animation = Animation.Running
+            animation = Animation.Ongoing
           }
         }
 
