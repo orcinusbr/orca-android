@@ -35,7 +35,7 @@ import kotlinx.coroutines.flow.filter
  *
  * @param initialAnimation Stage that is considered to be the starting one of an animation.
  */
-sealed class Animatable(private val initialAnimation: Animation) {
+sealed class Animatable(initialAnimation: Animation) {
   /** [MutableStateFlow] to which the current stage of the animation is emitted. */
   internal val animationFlow = MutableStateFlow(initialAnimation)
 
