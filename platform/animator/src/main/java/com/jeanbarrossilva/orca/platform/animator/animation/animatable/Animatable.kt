@@ -22,6 +22,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import com.jeanbarrossilva.orca.ext.coroutines.await
+import com.jeanbarrossilva.orca.ext.coroutines.getValue
+import com.jeanbarrossilva.orca.ext.coroutines.setValue
 import com.jeanbarrossilva.orca.platform.animator.animation.Animation
 import com.jeanbarrossilva.orca.platform.animator.animation.timing.Timing
 import com.jeanbarrossilva.orca.platform.animator.animation.timing.immediately
