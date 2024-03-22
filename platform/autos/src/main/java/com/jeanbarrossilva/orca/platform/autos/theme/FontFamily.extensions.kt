@@ -22,7 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import com.jeanbarrossilva.orca.platform.autos.R
 
 /** [FontFamily] of the Rubik typeface. */
-internal val FontFamily.Companion.Rubik
+val FontFamily.Companion.Rubik
   get() =
     FontFamily(
       Font(R.font.rubik_light, FontWeight.Light),

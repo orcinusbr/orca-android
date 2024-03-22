@@ -46,6 +46,7 @@ include(
   ":feature:gallery-test",
   ":feature:post-details",
   ":feature:profile-details",
+  ":feature:registration",
   ":feature:search",
   ":feature:settings",
   ":feature:settings:term-muting",

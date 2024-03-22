@@ -81,6 +81,7 @@
     <style
         name="Theme.Orca.Typography.LabelMedium"
         parent="TextAppearance.Material3.LabelMedium">
+        <item name="android:lineHeight">4sp</item>
         <item name="android:textSize">14sp</item>
     </style>
 </resources>
