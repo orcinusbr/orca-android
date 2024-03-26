@@ -20,8 +20,13 @@ import androidx.compose.runtime.mutableStateListOf
 
 /** Scope from which items can be added onto a [Stack]. */
 internal class StackScope {
-  /** Contents that have been added to the [Stack]. */
-  val contents = mutableStateListOf<@Composable () -> Unit>()
+  /** Contents that have been added onto the [Stack]. */
+  private val contents = mutableStateListOf<@Composable () -> Unit>()
+
+  /** Gets an immutable [List] containing the contents that have been added onto the [Stack]. */
+  fun contents(): List<@Composable () -> Unit> {
+    return contents.toList()
+  }
 
   /**
    * Adds an item onto the [Stack].

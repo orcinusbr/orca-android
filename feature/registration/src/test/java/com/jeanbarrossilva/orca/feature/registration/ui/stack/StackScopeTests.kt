@@ -24,12 +24,12 @@ import kotlin.test.Test
 internal class StackScopeTests {
   @Test
   fun isCreatedWithNoItems() {
-    assertThat(StackScope().contents).isEmpty()
+    assertThat(StackScope().contents()).isEmpty()
   }
 
   @Test
   fun addsItem() {
     val content = @Composable {}
-    assertThat(StackScope().apply { item(content) }.contents).containsExactly(content)
+    assertThat(StackScope().apply { item(content) }.contents()).containsExactly(content)
   }
 }

@@ -107,7 +107,7 @@ internal fun Stack(modifier: Modifier = Modifier, content: StackScope.() -> Unit
     onDispose {}
   }
 
-  Layout({ scope.contents.forEach { it() } }, modifier) { measurables, constraints ->
+  Layout({ scope.contents().forEach { it() } }, modifier) { measurables, constraints ->
     val items = measurables.takeLast(MaxVisibleItemCount).map { it.measure(constraints) }
     val foreground = items.lastOrNull() ?: return@Layout layout(0, 0) {}
     val foregroundIndex = items.lastIndex
