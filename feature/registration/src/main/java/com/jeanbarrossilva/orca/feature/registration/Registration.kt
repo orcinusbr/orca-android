@@ -32,8 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.jeanbarrossilva.orca.core.instance.domain.Domain
-import com.jeanbarrossilva.orca.core.sample.instance.domain.samples
 import com.jeanbarrossilva.orca.feature.registration.ui.stack.Stack
 import com.jeanbarrossilva.orca.feature.registration.ui.status.Status
 import com.jeanbarrossilva.orca.feature.registration.ui.status.StatusCard
@@ -73,7 +71,7 @@ private fun Registration(modifier: Modifier = Modifier, motion: Motion = Motion.
                 item {
                   failedStatusCard.Animate(statusCardEnterTransition) {
                     StatusCard(rememberStatusCardState(statusCardDelay, Status.Failed)) {
-                      Text("${Domain.samples[1]}")
+                      Text("Instance 1")
                     }
                   }
                 }
@@ -84,7 +82,7 @@ private fun Registration(modifier: Modifier = Modifier, motion: Motion = Motion.
                     after(failedStatusCard) + statusCardDelay
                   ) {
                     StatusCard(rememberStatusCardState(statusCardDelay, Status.Succeeded)) {
-                      Text("${Domain.samples[2]}")
+                      Text("Instance 2")
                     }
                   }
                 }
@@ -115,6 +113,12 @@ private fun Registration(modifier: Modifier = Modifier, motion: Motion = Motion.
 
 @Composable
 @MultiThemePreview
-private fun RegistrationPreview() {
-  AutosTheme { Registration(motion = Motion.Moving) }
+private fun StillRegistrationPreview() {
+  AutosTheme { Registration(motion = Motion.Still) }
+}
+
+@Composable
+@MultiThemePreview
+private fun MovingRegistrationPreview() {
+  AutosTheme { Registration() }
 }
