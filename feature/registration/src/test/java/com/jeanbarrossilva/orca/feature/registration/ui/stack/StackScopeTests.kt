@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.registration.ui.stack.state
+package com.jeanbarrossilva.orca.feature.registration.ui.stack
 
 import androidx.compose.runtime.Composable
 import assertk.assertThat
@@ -21,15 +21,15 @@ import assertk.assertions.containsExactly
 import assertk.assertions.isEmpty
 import kotlin.test.Test
 
-internal class StackStateTests {
+internal class StackScopeTests {
   @Test
   fun isCreatedWithNoItems() {
-    assertThat(StackState().contents).isEmpty()
+    assertThat(StackScope().contents).isEmpty()
   }
 
   @Test
   fun addsItem() {
     val content = @Composable {}
-    assertThat(StackState().apply { item(content) }.contents).containsExactly(content)
+    assertThat(StackScope().apply { item(content) }.contents).containsExactly(content)
   }
 }

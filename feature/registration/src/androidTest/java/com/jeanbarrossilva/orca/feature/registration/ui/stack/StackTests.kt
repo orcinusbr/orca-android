@@ -19,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
-import com.jeanbarrossilva.orca.feature.registration.ui.stack.state.StackState
 import kotlin.test.Test
 import org.junit.Rule
 
@@ -28,9 +27,7 @@ internal class StackTests {
 
   @Test
   fun addsItem() {
-    val state = StackState()
-    composeRule.setContent { Stack(state = state) {} }
-    state.item { Text("❤️") }
+    composeRule.setContent { Stack { item { Text("❤️") } } }
     composeRule.onNodeWithText("❤️").assertIsDisplayed()
   }
 }

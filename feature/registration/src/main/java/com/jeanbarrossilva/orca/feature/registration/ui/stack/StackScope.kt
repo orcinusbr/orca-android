@@ -13,14 +13,13 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.registration.ui.stack.state
+package com.jeanbarrossilva.orca.feature.registration.ui.stack
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
-import com.jeanbarrossilva.orca.feature.registration.ui.stack.Stack
 
-/** Allows for items to be added onto a [Stack]. */
-internal class StackState {
+/** Scope from which items can be added onto a [Stack]. */
+internal class StackScope {
   /** Contents that have been added to the [Stack]. */
   val contents = mutableStateListOf<@Composable () -> Unit>()
 

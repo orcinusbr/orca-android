@@ -20,11 +20,10 @@ import androidx.annotation.IntRange
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.util.fastForEachIndexed
-import com.jeanbarrossilva.orca.feature.registration.ui.stack.state.StackState
-import com.jeanbarrossilva.orca.feature.registration.ui.stack.state.rememberStackState
 import com.jeanbarrossilva.orca.feature.registration.ui.status.Status
 import com.jeanbarrossilva.orca.feature.registration.ui.status.StatusCard
 import com.jeanbarrossilva.orca.feature.registration.ui.status.rememberStatusCardState
@@ -92,23 +91,23 @@ private annotation class BackgroundItemIndex
  * as the "foreground" one) and some of those previous to it (the "background" ones). The exact
  * quantity is determined by [MaxVisibleItemCount].
  *
+ * For a more detailed explanation on the distinction between foreground and background items and
+ * the reasoning behind how they're indexed, refer to [requireBackgroundItemIndex]'s documentation.
+ *
  * @param modifier [Modifier] that is applied to the underlying [Layout].
- * @param state [StackState] to which items can be added. Also the one provided to the [content].
  * @param content Configures the items to be shown and that can be added through the receiver
- *   [StackState].
+ *   [StackScope].
  */
 @Composable
-internal fun Stack(
-  modifier: Modifier = Modifier,
-  state: StackState = rememberStackState(),
-  content: StackState.() -> Unit
-) {
-  DisposableEffect(state, content) {
-    state.content()
+internal fun Stack(modifier: Modifier = Modifier, content: StackScope.() -> Unit) {
+  val scope = remember(::StackScope)
+
+  DisposableEffect(scope, content) {
+    scope.content()
     onDispose {}
   }
 
-  Layout({ state.contents.forEach { it() } }, modifier) { measurables, constraints ->
+  Layout({ scope.contents.forEach { it() } }, modifier) { measurables, constraints ->
     val items = measurables.takeLast(MaxVisibleItemCount).map { it.measure(constraints) }
     val foreground = items.lastOrNull() ?: return@Layout layout(0, 0) {}
     val foregroundIndex = items.lastIndex

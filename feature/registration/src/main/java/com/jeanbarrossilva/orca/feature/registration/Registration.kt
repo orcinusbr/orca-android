@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.sp
 import com.jeanbarrossilva.orca.core.instance.domain.Domain
 import com.jeanbarrossilva.orca.core.sample.instance.domain.samples
 import com.jeanbarrossilva.orca.feature.registration.ui.stack.Stack
-import com.jeanbarrossilva.orca.feature.registration.ui.stack.state.rememberStackState
 import com.jeanbarrossilva.orca.feature.registration.ui.status.Status
 import com.jeanbarrossilva.orca.feature.registration.ui.status.StatusCard
 import com.jeanbarrossilva.orca.feature.registration.ui.status.rememberStatusCardState
@@ -54,7 +53,6 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 private fun Registration(modifier: Modifier = Modifier, motion: Motion = Motion.Moving) {
   val verticalSpacing = AutosTheme.spacings.extraLarge.dp
-  val statusCardStackState = rememberStackState()
   val statusCardEnterTransition = fadeIn() + scaleIn(initialScale = .5f)
   val statusCardDelay = remember { 2.seconds }
 
@@ -71,7 +69,7 @@ private fun Registration(modifier: Modifier = Modifier, motion: Motion = Motion.
         item {
           Box(Modifier.padding(vertical = verticalSpacing).fillMaxHeight(), Alignment.Center) {
             Animator(motion) { (failedStatusCard, succeededStatusCard) ->
-              Stack(state = statusCardStackState) {
+              Stack {
                 item {
                   failedStatusCard.Animate(statusCardEnterTransition) {
                     StatusCard(rememberStatusCardState(statusCardDelay, Status.Failed)) {
