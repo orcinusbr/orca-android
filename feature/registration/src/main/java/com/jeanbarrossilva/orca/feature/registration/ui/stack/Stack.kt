@@ -129,9 +129,9 @@ internal fun Stack(modifier: Modifier = Modifier, content: StackScope.() -> Unit
       }
     val backgroundHeight = backgroundScaledYOffsets.sum()
     layout(foregroundWidth, backgroundHeight + foregroundHeight + foregroundYOffset) {
-      background.fastForEachIndexed { index, backgroundItem ->
-        backgroundItem.placeWithLayer(
-          x = calculateCenteringXForBackgroundItem(foregroundWidth, backgroundItem.width),
+      background.fastForEachIndexed { index, item ->
+        item.placeWithLayer(
+          x = calculateCenteringXForBackgroundItem(foregroundWidth, item.width),
           y = backgroundScaledYOffsets[index] - foregroundYOffset
         ) {
           scaleX = backgroundScales[index]
