@@ -120,12 +120,7 @@ internal fun Stack(modifier: Modifier = Modifier, content: StackScope.() -> Unit
       List(backgroundCount) { calculateScaleForBackgroundItem(backgroundCount, index = it) }
     val backgroundYOffsets =
       background.mapIndexed { index, item ->
-        calculateScaledYOffsetForBackgroundItem(
-          backgroundCount,
-          index,
-          item.height,
-          backgroundScales[index]
-        )
+        calculateScaledYOffsetForBackgroundItem(index, item.height, backgroundScales[index])
       }
     val backgroundHeight = backgroundYOffsets.sum()
     layout(foregroundWidth, backgroundHeight + foregroundHeight + foregroundYOffset) {
@@ -146,7 +141,6 @@ internal fun Stack(modifier: Modifier = Modifier, content: StackScope.() -> Unit
 /**
  * Calculates the scaled Y offset of a background item according to the index at which it is.
  *
- * @param count Amount of background items being shown.
  * @param index Index at which the background item whose unscaled Y offset will be scaled is.
  * @param height Height of the background item, as seen by the parent layout.
  * @param scale Amount by which the unscaled Y offset will be scaled.
@@ -156,10 +150,9 @@ internal fun Stack(modifier: Modifier = Modifier, content: StackScope.() -> Unit
  */
 @Throws(IllegalArgumentException::class)
 private fun calculateScaledYOffsetForBackgroundItem(
-  count: Int,
   @BackgroundItemIndex index: Int,
   height: Int,
-  @UnitFraction scale: Float = calculateScaleForBackgroundItem(count, index)
+  @UnitFraction scale: Float
 ): Int {
   requireBackgroundItemIndex(index)
   val unscaledYOffset = calculateUnscaledYOffsetForItem(index, height)
