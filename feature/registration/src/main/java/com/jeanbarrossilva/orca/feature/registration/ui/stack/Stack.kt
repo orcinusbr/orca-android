@@ -53,7 +53,7 @@ private const val FurthermostVisibleBackgroundItemIndexSubtrahend =
  * Fraction by which the first background item is scaled, based on which following ones will also be
  * scaled.
  */
-@FloatRange(from = 0.0, to = 1.0) private const val InitialBackgroundItemScale = .95f
+@UnitFraction private const val InitialBackgroundItemScale = .95f
 
 /**
  * Fraction in the Y axis by which the furthermost background item is offset. Also used as a basis
@@ -62,7 +62,16 @@ private const val FurthermostVisibleBackgroundItemIndexSubtrahend =
  * @see calculateUnscaledYOffsetForItem
  * @see calculateScaledYOffsetForBackgroundItem
  */
-@FloatRange(from = 0.0, to = 1.0) private const val InitialBackgroundItemYOffsetFraction = .1f
+@UnitFraction private const val InitialBackgroundItemYOffsetFraction = .1f
+
+/**
+ * Denotes that a [Float] represents a fraction whose numerator is always 1 and whose denominator is
+ * positive, consequently with a value that is within the `0f..1f` range.
+ */
+@FloatRange(from = 0.0, to = 1.0)
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY, AnnotationTarget.VALUE_PARAMETER)
+private annotation class UnitFraction
 
 /**
  * Denotes that an [Int] is the index of a background item.
@@ -151,7 +160,7 @@ private fun calculateScaledYOffsetForBackgroundItem(
   count: Int,
   @BackgroundItemIndex index: Int,
   height: Int,
-  @FloatRange(from = 0.0, to = 1.0) scale: Float = calculateScaleForBackgroundItem(count, index)
+  @UnitFraction scale: Float = calculateScaleForBackgroundItem(count, index)
 ): Int {
   requireBackgroundItemIndex(index)
   val unscaledYOffset = calculateUnscaledYOffsetForItem(index, height)
@@ -179,7 +188,7 @@ private fun calculateUnscaledYOffsetForItem(index: Int, height: Int): Int {
  *   [requireBackgroundItemIndex]'s documentation.
  */
 @Throws(IllegalArgumentException::class)
-@FloatRange(from = 0.0, to = 1.0)
+@UnitFraction
 private fun calculateScaleForBackgroundItem(count: Int, @BackgroundItemIndex index: Int): Float {
   val reversedIndex = calculateReversedIndexForBackgroundItem(count, index)
   return InitialBackgroundItemScale.pow(reversedIndex)
