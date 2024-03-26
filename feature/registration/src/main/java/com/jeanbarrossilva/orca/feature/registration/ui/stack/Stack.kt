@@ -225,12 +225,11 @@ private fun calculateReversedIndexForBackgroundItem(
  * The furthermost background item, located at index `n -
  * `[FurthermostVisibleBackgroundItemIndexSubtrahend] within the entire item [List] (`n` being the
  * total amount of both foreground and background items), has an index of 0 among the items that are
- * actually visible (which does not always encompass every added one).
+ * actually visible (which don't always encompass every added one).
  *
  * @param index Index at which the background item is.
  * @throws IllegalArgumentException If the index isn't that of a background item (that is, isn't
  *   within the `0..<`[MaxVisibleBackgroundItemCount]` range).
- * @see Int.inc
  */
 @Throws(IllegalArgumentException::class)
 internal fun requireBackgroundItemIndex(@BackgroundItemIndex index: Int) {
