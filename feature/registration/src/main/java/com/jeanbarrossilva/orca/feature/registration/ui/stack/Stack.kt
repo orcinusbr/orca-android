@@ -118,7 +118,7 @@ internal fun Stack(modifier: Modifier = Modifier, content: StackScope.() -> Unit
     val background = items.take(backgroundCount)
     val backgroundScales =
       List(backgroundCount) { calculateScaleForBackgroundItem(backgroundCount, index = it) }
-    val backgroundScaledYOffsets =
+    val backgroundYOffsets =
       background.mapIndexed { index, item ->
         calculateScaledYOffsetForBackgroundItem(
           backgroundCount,
@@ -127,12 +127,12 @@ internal fun Stack(modifier: Modifier = Modifier, content: StackScope.() -> Unit
           backgroundScales[index]
         )
       }
-    val backgroundHeight = backgroundScaledYOffsets.sum()
+    val backgroundHeight = backgroundYOffsets.sum()
     layout(foregroundWidth, backgroundHeight + foregroundHeight + foregroundYOffset) {
       background.fastForEachIndexed { index, item ->
         item.placeWithLayer(
           x = calculateCenteringXForBackgroundItem(foregroundWidth, item.width),
-          y = backgroundScaledYOffsets[index] - foregroundYOffset
+          y = backgroundYOffsets[index] - foregroundYOffset
         ) {
           scaleX = backgroundScales[index]
           scaleY = scaleX
