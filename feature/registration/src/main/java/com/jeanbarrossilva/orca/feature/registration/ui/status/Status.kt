@@ -23,7 +23,9 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.jeanbarrossilva.orca.feature.registration.R
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 
@@ -41,7 +43,7 @@ internal enum class Status {
 
     @Composable
     override fun Description(modifier: Modifier) {
-      Text("Attempting to register account...")
+      Text(stringResource(R.string.feature_registration_status_loading))
     }
   },
   Succeeded {
@@ -56,7 +58,7 @@ internal enum class Status {
 
     @Composable
     override fun Description(modifier: Modifier) {
-      Text("Account registered successfully.")
+      Text(stringResource(R.string.feature_registration_status_succeeded))
     }
   },
   Failed {
@@ -71,7 +73,7 @@ internal enum class Status {
 
     @Composable
     override fun Description(modifier: Modifier) {
-      Text("Couldn't register account.")
+      Text(stringResource(R.string.feature_registration_status_failed))
     }
   };
 

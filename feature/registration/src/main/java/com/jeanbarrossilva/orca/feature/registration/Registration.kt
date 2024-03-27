@@ -35,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.jeanbarrossilva.orca.feature.registration.ui.stack.Stack
 import com.jeanbarrossilva.orca.feature.registration.ui.status.Status
@@ -111,12 +112,13 @@ private fun Registration(modifier: Modifier = Modifier, motion: Motion = Motion.
 
         item {
           Column(verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.large.dp)) {
-            Text("Create an account", style = AutosTheme.typography.headlineLarge)
+            Text(
+              stringResource(R.string.feature_registration),
+              style = AutosTheme.typography.headlineLarge
+            )
 
             Text(
-              "Orca will try to find an instance that is available and create an account for you " +
-                "with the credentials you pass in. All of it in a completely secure way, not " +
-                "storing any of the given private information (such as your desired password).",
+              stringResource(R.string.feature_registration_explanation),
               style = AutosTheme.typography.headlineSmall
             )
           }
