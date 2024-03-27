@@ -183,7 +183,7 @@ internal object StackMeasurePolicy : MeasurePolicy {
    * Calculates the reversed index of a background item, as if the stacking order was the inverse of
    * what it is.
    *
-   * In a [Stack] with 3 items, for example, one background item and two background ones, the item
+   * In a [Stack] with 3 items, for example, one foreground item and two background ones, the item
    * that was added first (which would visually be the furthermost item) would normally be indexed
    * as 0; this method, on the other hand, returns 2 for it.
    *
