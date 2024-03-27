@@ -18,12 +18,17 @@ package com.jeanbarrossilva.orca.feature.registration
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,6 +43,7 @@ import com.jeanbarrossilva.orca.feature.registration.ui.status.rememberStatusCar
 import com.jeanbarrossilva.orca.platform.animator.Animator
 import com.jeanbarrossilva.orca.platform.animator.animation.Motion
 import com.jeanbarrossilva.orca.platform.animator.animation.timing.after
+import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.PrimaryButton
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.button.ButtonBar
@@ -47,7 +53,14 @@ import kotlin.time.Duration.Companion.seconds
 
 @Composable
 private fun Registration(modifier: Modifier = Modifier, motion: Motion = Motion.Moving) {
-  val verticalSpacing = AutosTheme.spacings.extraLarge.dp
+  val spacing = AutosTheme.spacings.large.dp
+  val spacerModifier = remember(spacing) { Modifier.height(spacing) }
+  val backdropColor =
+    if (isSystemInDarkTheme()) {
+      AutosTheme.colors.surface.container.asColor
+    } else {
+      AutosTheme.colors.placeholder.asColor
+    }
   val statusCardAnimationSpec = remember { tween<Float>() }
   val statusCardEnterTransition =
     remember(statusCardAnimationSpec) {
@@ -59,18 +72,20 @@ private fun Registration(modifier: Modifier = Modifier, motion: Motion = Motion.
     expanded {
       LazyColumn(
         Modifier.padding(it).fillMaxHeight(),
-        contentPadding = PaddingValues(horizontal = AutosTheme.spacings.large.dp, verticalSpacing),
         verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        contentPadding = PaddingValues(spacing)
       ) {
-        item {}
+        item { Spacer(spacerModifier) }
 
         item {
-          Box(Modifier.padding(vertical = verticalSpacing).fillMaxHeight(), Alignment.Center) {
+          Box(contentAlignment = Alignment.Center) {
+            Canvas(Modifier.size(256.dp)) { drawCircle(backdropColor) }
+
             Animator(motion) { (failedStatusCard, succeededStatusCard) ->
               Stack {
                 item {
-                  failedStatusCard.Animate(statusCardEnterTransition) {
+                  failedStatusCard.Animate {
                     StatusCard(rememberStatusCardState(statusCardDelay, Status.Failed)) {
                       Text("Instance 1")
                     }
@@ -92,8 +107,10 @@ private fun Registration(modifier: Modifier = Modifier, motion: Motion = Motion.
           }
         }
 
+        item { Spacer(spacerModifier) }
+
         item {
-          Column(verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.extraLarge.dp)) {
+          Column(verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.large.dp)) {
             Text("Create an account", style = AutosTheme.typography.headlineLarge)
 
             Text(
@@ -104,6 +121,8 @@ private fun Registration(modifier: Modifier = Modifier, motion: Motion = Motion.
             )
           }
         }
+
+        item { Spacer(spacerModifier) }
       }
     }
   }

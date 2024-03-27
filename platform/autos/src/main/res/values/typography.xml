@@ -43,6 +43,7 @@
         parent="TextAppearance.Material3.HeadlineSmall">
         <item name="android:textColor">@color/secondary</item>
         <item name="android:textSize">18sp</item>
+        <item name="lineHeight">26sp</item>
     </style>
 
     <style
