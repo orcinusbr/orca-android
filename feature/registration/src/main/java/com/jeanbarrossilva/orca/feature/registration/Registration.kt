@@ -30,9 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.jeanbarrossilva.orca.feature.registration.ui.stack.Stack
 import com.jeanbarrossilva.orca.feature.registration.ui.status.Status
 import com.jeanbarrossilva.orca.feature.registration.ui.status.StatusCard
@@ -40,13 +38,11 @@ import com.jeanbarrossilva.orca.feature.registration.ui.status.rememberStatusCar
 import com.jeanbarrossilva.orca.platform.animator.Animator
 import com.jeanbarrossilva.orca.platform.animator.animation.Motion
 import com.jeanbarrossilva.orca.platform.animator.animation.timing.after
-import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.PrimaryButton
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.button.ButtonBar
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
-import com.jeanbarrossilva.orca.platform.autos.theme.Rubik
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
@@ -104,10 +100,7 @@ private fun Registration(modifier: Modifier = Modifier, motion: Motion = Motion.
               "Orca will try to find an instance that is available and create an account for you " +
                 "with the credentials you pass in. All of it in a completely secure way, not " +
                 "storing any of the given private information (such as your desired password).",
-              color = AutosTheme.colors.secondary.asColor,
-              fontFamily = FontFamily.Rubik,
-              fontSize = 18.sp,
-              lineHeight = 24.sp
+              style = AutosTheme.typography.headlineSmall
             )
           }
         }
