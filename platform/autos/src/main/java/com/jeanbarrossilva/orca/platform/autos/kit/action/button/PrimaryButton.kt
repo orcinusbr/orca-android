@@ -20,11 +20,15 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.skeleton.Button
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.skeleton.ButtonDefaults as _ButtonDefaults
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
+
+/** Tag that identifies a [PrimaryButton] for testing purposes. */
+const val PRIMARY_BUTTON_TAG = "primary-button"
 
 /**
  * [Button] that represents a primary action, performed or requested to be performed through
@@ -46,7 +50,7 @@ fun PrimaryButton(
   Button {
     ElevatedButton(
       onClick = { load(onClick) },
-      modifier,
+      modifier.testTag(PRIMARY_BUTTON_TAG),
       isEnabled,
       _ButtonDefaults.shape,
       colors =
