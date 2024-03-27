@@ -117,7 +117,7 @@ internal object StackMeasurePolicy : MeasurePolicy {
       backgroundItems.fastForEachIndexed { index, backgroundItem ->
         backgroundItem.placeWithLayer(
           x =
-            calculateBackgroundItemCenteringX(
+            calculateCenteringXForBackgroundItem(
               parentWidth = foregroundItemWidth,
               backgroundItem.width
             ),
@@ -229,7 +229,10 @@ internal object StackMeasurePolicy : MeasurePolicy {
    * @param parentWidth Width of the parent layout in which the background item will be placed.
    * @param backgroundItemWidth Width of the background item to be placed.
    */
-  private fun calculateBackgroundItemCenteringX(parentWidth: Int, backgroundItemWidth: Int): Int {
+  private fun calculateCenteringXForBackgroundItem(
+    parentWidth: Int,
+    backgroundItemWidth: Int
+  ): Int {
     return (parentWidth - backgroundItemWidth) / 2
   }
 }
