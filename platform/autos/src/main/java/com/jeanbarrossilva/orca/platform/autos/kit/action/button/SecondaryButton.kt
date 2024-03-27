@@ -21,6 +21,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.skeleton.Button as _Button
 import com.jeanbarrossilva.orca.platform.autos.kit.action.button.skeleton.ButtonDefaults as _ButtonDefaults
@@ -30,6 +31,9 @@ import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+
+/** Tag that identifies the [SecondaryButton] for testing purposes. */
+const val SECONDARY_BUTTON_TAG = "secondary-button"
 
 /**
  * [Button][_Button] that executes a secondary action when clicked, and is usually preceded by a
@@ -49,7 +53,7 @@ fun SecondaryButton(
   _Button {
     Button(
       onClick = { load(onClick) },
-      modifier,
+      modifier.testTag(SECONDARY_BUTTON_TAG),
       shape = _ButtonDefaults.shape,
       colors =
         ButtonDefaults.buttonColors(
