@@ -29,7 +29,7 @@ import kotlin.math.pow
 import kotlin.math.roundToInt
 
 /**
- * [MeasurePolicy] by which the [Placeable]s of a [Stack] a placed, stacked on top of each other
+ * [MeasurePolicy] by which the [Placeable]s of a [Stack] are placed, stacked on top of each other
  * Y-offset and scaled according to their index in order to create a "stack" or "pile"-like visual
  * representation of the items that have been added onto it.
  */
