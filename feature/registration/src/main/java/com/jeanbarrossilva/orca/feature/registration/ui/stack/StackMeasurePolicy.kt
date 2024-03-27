@@ -52,8 +52,8 @@ internal object StackMeasurePolicy : MeasurePolicy {
    * Fraction in the Y axis by which the furthermost background item is offset. Also used as a basis
    * for calculating the Y offset of all subsequent background items.
    *
-   * @see calculateUnscaledYOffsetForItem
-   * @see calculateScaledYOffsetForBackgroundItem
+   * @see calculateUnscaledYOffset
+   * @see scaleBackgroundItemYOffset
    */
   @UnitFraction private const val InitialBackgroundItemYOffsetFraction = .1f
 
@@ -92,34 +92,38 @@ internal object StackMeasurePolicy : MeasurePolicy {
     constraints: Constraints
   ): MeasureResult {
     val items = measurables.takeLast(MaxVisibleItemCount).map { it.measure(constraints) }
-    val foreground = items.lastOrNull() ?: return layout(0, 0) {}
-    val foregroundIndex = items.lastIndex
-    val foregroundWidth = foreground.width
-    val foregroundHeight = foreground.height
-    val foregroundYOffset = calculateUnscaledYOffsetForItem(foregroundIndex, foregroundHeight)
-    val backgroundCount = items.size - FurthermostVisibleBackgroundItemIndexSubtrahend
-    val background = items.take(backgroundCount)
+    val foregroundItem = items.lastOrNull() ?: return layout(0, 0) {}
+    val foregroundItemIndex = items.lastIndex
+    val foregroundItemWidth = foregroundItem.width
+    val foregroundItemHeight = foregroundItem.height
+    val foregroundItemYOffset = calculateUnscaledYOffset(foregroundItemIndex, foregroundItemHeight)
+    val backgroundItemCount = items.size - FurthermostVisibleBackgroundItemIndexSubtrahend
+    val backgroundItems = items.take(backgroundItemCount)
     val backgroundScales =
-      List(backgroundCount) { calculateScaleForBackgroundItem(backgroundCount, index = it) }
+      List(backgroundItemCount) { scaleBackgroundItem(backgroundItemCount, index = it) }
     val backgroundYOffsets =
-      background.mapIndexed { index, item ->
-        calculateScaledYOffsetForBackgroundItem(index, item.height, backgroundScales[index])
+      backgroundItems.mapIndexed { index, backgroundItem ->
+        scaleBackgroundItemYOffset(index, backgroundItem.height, backgroundScales[index])
       }
     val backgroundHeight = backgroundYOffsets.sum()
     return layout(
-      width = foregroundWidth,
-      height = backgroundHeight + foregroundHeight + foregroundYOffset
+      width = foregroundItemWidth,
+      height = backgroundHeight + foregroundItemHeight + foregroundItemYOffset
     ) {
-      background.fastForEachIndexed { index, item ->
-        item.placeWithLayer(
-          x = calculateCenteringXForBackgroundItem(foregroundWidth, item.width),
-          y = backgroundYOffsets[index] - foregroundYOffset
+      backgroundItems.fastForEachIndexed { index, backgroundItem ->
+        backgroundItem.placeWithLayer(
+          x =
+            calculateBackgroundItemCenteringX(
+              parentWidth = foregroundItemWidth,
+              backgroundItem.width
+            ),
+          y = backgroundYOffsets[index] - foregroundItemYOffset
         ) {
           scaleX = backgroundScales[index]
           scaleY = scaleX
         }
       }
-      foreground.place(x = 0, y = backgroundHeight + foregroundYOffset)
+      foregroundItem.place(x = 0, y = backgroundHeight + foregroundItemYOffset)
     }
   }
 
@@ -131,16 +135,16 @@ internal object StackMeasurePolicy : MeasurePolicy {
    * @param scale Amount by which the unscaled Y offset will be scaled.
    * @throws IllegalArgumentException If the [index] isn't that of a background item, as per
    *   [requireBackgroundItemIndex]'s documentation.
-   * @see calculateUnscaledYOffsetForItem
+   * @see calculateUnscaledYOffset
    */
   @Throws(IllegalArgumentException::class)
-  private fun calculateScaledYOffsetForBackgroundItem(
+  private fun scaleBackgroundItemYOffset(
     @BackgroundItemIndex index: Int,
     height: Int,
     @UnitFraction scale: Float
   ): Int {
     requireBackgroundItemIndex(index)
-    val unscaledYOffset = calculateUnscaledYOffsetForItem(index, height)
+    val unscaledYOffset = calculateUnscaledYOffset(index, height)
     return (unscaledYOffset * scale).roundToInt()
   }
 
@@ -152,7 +156,7 @@ internal object StackMeasurePolicy : MeasurePolicy {
    * @param height Height of the item, as seen by the parent layout.
    * @see InitialBackgroundItemYOffsetFraction
    */
-  private fun calculateUnscaledYOffsetForItem(index: Int, height: Int): Int {
+  private fun calculateUnscaledYOffset(index: Int, height: Int): Int {
     return if (index == 0) 0
     else (InitialBackgroundItemYOffsetFraction / index * height).roundToInt()
   }
@@ -167,8 +171,8 @@ internal object StackMeasurePolicy : MeasurePolicy {
    */
   @Throws(IllegalArgumentException::class)
   @UnitFraction
-  private fun calculateScaleForBackgroundItem(count: Int, @BackgroundItemIndex index: Int): Float {
-    val reversedIndex = calculateReversedIndexForBackgroundItem(count, index)
+  private fun scaleBackgroundItem(count: Int, @BackgroundItemIndex index: Int): Float {
+    val reversedIndex = reverseBackgroundItemIndex(count, index)
     return InitialBackgroundItemScale.pow(reversedIndex)
   }
 
@@ -186,10 +190,7 @@ internal object StackMeasurePolicy : MeasurePolicy {
    *   [requireBackgroundItemIndex]'s documentation.
    */
   @Throws(IllegalArgumentException::class)
-  private fun calculateReversedIndexForBackgroundItem(
-    count: Int,
-    @BackgroundItemIndex index: Int
-  ): Int {
+  private fun reverseBackgroundItemIndex(count: Int, @BackgroundItemIndex index: Int): Int {
     requireBackgroundItemIndex(index)
     return count - index
   }
@@ -211,7 +212,7 @@ internal object StackMeasurePolicy : MeasurePolicy {
    *   within the `0..<`[MaxVisibleBackgroundItemCount]` range).
    */
   @Throws(IllegalArgumentException::class)
-  internal fun requireBackgroundItemIndex(@BackgroundItemIndex index: Int) {
+  private fun requireBackgroundItemIndex(@BackgroundItemIndex index: Int) {
     require(index >= 0) { "Index of a background item should be >= 0." }
     require(index < MaxVisibleBackgroundItemCount) {
       "Index of a background item cannot be greater than $MaxVisibleBackgroundItemCount."
@@ -225,10 +226,7 @@ internal object StackMeasurePolicy : MeasurePolicy {
    * @param parentWidth Width of the parent layout in which the background item will be placed.
    * @param backgroundItemWidth Width of the background item to be placed.
    */
-  private fun calculateCenteringXForBackgroundItem(
-    parentWidth: Int,
-    backgroundItemWidth: Int
-  ): Int {
+  private fun calculateBackgroundItemCenteringX(parentWidth: Int, backgroundItemWidth: Int): Int {
     return (parentWidth - backgroundItemWidth) / 2
   }
 }
