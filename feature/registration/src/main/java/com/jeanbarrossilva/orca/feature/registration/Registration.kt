@@ -15,6 +15,7 @@
 
 package com.jeanbarrossilva.orca.feature.registration
 
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.layout.Arrangement
@@ -51,7 +52,11 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 private fun Registration(modifier: Modifier = Modifier, motion: Motion = Motion.Moving) {
   val verticalSpacing = AutosTheme.spacings.extraLarge.dp
-  val statusCardEnterTransition = fadeIn() + scaleIn(initialScale = .5f)
+  val statusCardAnimationSpec = remember { tween<Float>() }
+  val statusCardEnterTransition =
+    remember(statusCardAnimationSpec) {
+      fadeIn(statusCardAnimationSpec) + scaleIn(statusCardAnimationSpec, initialScale = .8f)
+    }
   val statusCardDelay = remember { 2.seconds }
 
   Scaffold(modifier, bottom = { ButtonBar { PrimaryButton(onClick = {}) { Text("Continue") } } }) {
@@ -79,7 +84,7 @@ private fun Registration(modifier: Modifier = Modifier, motion: Motion = Motion.
                 item {
                   succeededStatusCard.Animate(
                     statusCardEnterTransition,
-                    after(failedStatusCard) + statusCardDelay
+                    after(failedStatusCard) + statusCardDelay * 1.5
                   ) {
                     StatusCard(rememberStatusCardState(statusCardDelay, Status.Succeeded)) {
                       Text("Instance 2")
