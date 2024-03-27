@@ -63,7 +63,7 @@ internal object StackMeasurePolicy : MeasurePolicy {
    * for calculating the Y offset of all subsequent background items.
    *
    * @see calculateUnscaledYOffset
-   * @see scaleBackgroundItemYOffset
+   * @see calculateScaledYOffsetForBackgroundItem
    */
   @UnitFraction private const val InitialBackgroundItemYOffsetFraction = .1f
 
@@ -100,10 +100,14 @@ internal object StackMeasurePolicy : MeasurePolicy {
     val backgroundItemCount = items.size - FurthermostVisibleBackgroundItemIndexSubtrahend
     val backgroundItems = items.take(backgroundItemCount)
     val backgroundScales =
-      List(backgroundItemCount) { scaleBackgroundItem(backgroundItemCount, index = it) }
+      List(backgroundItemCount) { calculateScaleForBackgroundItem(backgroundItemCount, index = it) }
     val backgroundYOffsets =
       backgroundItems.mapIndexed { index, backgroundItem ->
-        scaleBackgroundItemYOffset(index, backgroundItem.height, backgroundScales[index])
+        calculateScaledYOffsetForBackgroundItem(
+          index,
+          backgroundItem.height,
+          backgroundScales[index]
+        )
       }
     val backgroundHeight = backgroundYOffsets.sum()
     return layout(
@@ -138,7 +142,7 @@ internal object StackMeasurePolicy : MeasurePolicy {
    * @see calculateUnscaledYOffset
    */
   @Throws(IllegalArgumentException::class)
-  private fun scaleBackgroundItemYOffset(
+  private fun calculateScaledYOffsetForBackgroundItem(
     @BackgroundItemIndex index: Int,
     height: Int,
     @UnitFraction scale: Float
@@ -171,7 +175,7 @@ internal object StackMeasurePolicy : MeasurePolicy {
    */
   @Throws(IllegalArgumentException::class)
   @UnitFraction
-  private fun scaleBackgroundItem(count: Int, @BackgroundItemIndex index: Int): Float {
+  private fun calculateScaleForBackgroundItem(count: Int, @BackgroundItemIndex index: Int): Float {
     val reversedIndex = reverseBackgroundItemIndex(count, index)
     return InitialBackgroundItemScale.pow(reversedIndex)
   }
