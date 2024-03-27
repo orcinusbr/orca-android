@@ -62,7 +62,7 @@ internal object StackMeasurePolicy : MeasurePolicy {
    * Fraction in the Y axis by which the furthermost background item is offset. Also used as a basis
    * for calculating the Y offset of all subsequent background items.
    *
-   * @see calculateUnscaledYOffset
+   * @see calculateUnscaledYOffsetForItem
    * @see calculateScaledYOffsetForBackgroundItem
    */
   @UnitFraction private const val InitialBackgroundItemYOffsetFraction = .1f
@@ -96,7 +96,8 @@ internal object StackMeasurePolicy : MeasurePolicy {
     val foregroundItemIndex = items.lastIndex
     val foregroundItemWidth = foregroundItem.width
     val foregroundItemHeight = foregroundItem.height
-    val foregroundItemYOffset = calculateUnscaledYOffset(foregroundItemIndex, foregroundItemHeight)
+    val foregroundItemYOffset =
+      calculateUnscaledYOffsetForItem(foregroundItemIndex, foregroundItemHeight)
     val backgroundItemCount = items.size - FurthermostVisibleBackgroundItemIndexSubtrahend
     val backgroundItems = items.take(backgroundItemCount)
     val backgroundScales =
@@ -139,7 +140,7 @@ internal object StackMeasurePolicy : MeasurePolicy {
    * @param scale Amount by which the unscaled Y offset will be scaled.
    * @throws IllegalArgumentException If the [index] isn't that of a background item, as per
    *   [requireBackgroundItemIndex]'s documentation.
-   * @see calculateUnscaledYOffset
+   * @see calculateUnscaledYOffsetForItem
    */
   @Throws(IllegalArgumentException::class)
   private fun calculateScaledYOffsetForBackgroundItem(
@@ -148,7 +149,7 @@ internal object StackMeasurePolicy : MeasurePolicy {
     @UnitFraction scale: Float
   ): Int {
     requireBackgroundItemIndex(index)
-    val unscaledYOffset = calculateUnscaledYOffset(index, height)
+    val unscaledYOffset = calculateUnscaledYOffsetForItem(index, height)
     return (unscaledYOffset * scale).roundToInt()
   }
 
@@ -160,7 +161,7 @@ internal object StackMeasurePolicy : MeasurePolicy {
    * @param height Height of the item, as seen by the parent layout.
    * @see InitialBackgroundItemYOffsetFraction
    */
-  private fun calculateUnscaledYOffset(index: Int, height: Int): Int {
+  private fun calculateUnscaledYOffsetForItem(index: Int, height: Int): Int {
     return if (index == 0) 0
     else (InitialBackgroundItemYOffsetFraction / index * height).roundToInt()
   }
