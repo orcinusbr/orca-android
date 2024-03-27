@@ -42,6 +42,16 @@ internal object StackMeasurePolicy : MeasurePolicy {
    */
   private const val MaxVisibleItemCount = 3
 
+  /** Maximum amount of background items that are visible. */
+  private const val MaxVisibleBackgroundItemCount = MaxVisibleItemCount - 1
+
+  /**
+   * Amount to be subtracted from the quantity of total items that have been added onto a [Stack]
+   * for the index of the first visible background one to be determined.
+   */
+  private const val FurthermostVisibleBackgroundItemIndexSubtrahend =
+    MaxVisibleItemCount - MaxVisibleBackgroundItemCount
+
   /**
    * Fraction by which the first background item is scaled, based on which following ones will also
    * be scaled.
@@ -56,16 +66,6 @@ internal object StackMeasurePolicy : MeasurePolicy {
    * @see scaleBackgroundItemYOffset
    */
   @UnitFraction private const val InitialBackgroundItemYOffsetFraction = .1f
-
-  /** Maximum amount of background items that are visible. */
-  const val MaxVisibleBackgroundItemCount = MaxVisibleItemCount - 1
-
-  /**
-   * Amount to be subtracted from the quantity of total items that have been added onto a [Stack]
-   * for the index of the first visible background one to be determined.
-   */
-  private const val FurthermostVisibleBackgroundItemIndexSubtrahend =
-    MaxVisibleItemCount - MaxVisibleBackgroundItemCount
 
   /**
    * Denotes that a [Float] represents a fraction whose numerator is always 1 and whose denominator
