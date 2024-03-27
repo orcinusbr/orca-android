@@ -59,13 +59,13 @@ internal object StackMeasurePolicy : MeasurePolicy {
   @UnitFraction private const val InitialBackgroundItemScale = .95f
 
   /**
-   * Fraction in the Y axis by which the furthermost background item is offset. Also used as a basis
-   * for calculating the Y offset of all subsequent background items.
+   * Fraction in the Y axis by which the background item after the furthermost one is offset. Also
+   * used as a basis for calculating the Y offset of all others subsequent to it.
    *
    * @see calculateUnscaledYOffsetForItem
    * @see calculateScaledYOffsetForBackgroundItem
    */
-  @UnitFraction private const val InitialBackgroundItemYOffsetFraction = .1f
+  @UnitFraction private const val InitialItemYOffsetFraction = .1f
 
   /**
    * Denotes that a [Float] represents a fraction whose numerator is always 1 and whose denominator
@@ -159,11 +159,10 @@ internal object StackMeasurePolicy : MeasurePolicy {
    *
    * @param index Index at which the item to be placed is.
    * @param height Height of the item, as seen by the parent layout.
-   * @see InitialBackgroundItemYOffsetFraction
+   * @see InitialItemYOffsetFraction
    */
   private fun calculateUnscaledYOffsetForItem(index: Int, height: Int): Int {
-    return if (index == 0) 0
-    else (InitialBackgroundItemYOffsetFraction / index * height).roundToInt()
+    return if (index == 0) 0 else (InitialItemYOffsetFraction / index * height).roundToInt()
   }
 
   /**
