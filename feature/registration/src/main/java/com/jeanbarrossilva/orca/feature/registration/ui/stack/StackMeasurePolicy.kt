@@ -60,12 +60,12 @@ internal object StackMeasurePolicy : MeasurePolicy {
 
   /**
    * Fraction in the Y axis by which the background item after the furthermost one is offset. Also
-   * used as a basis for calculating the Y offset of all others subsequent to it.
+   * used as a basis for calculating the Y coordinate of all others subsequent to it.
    *
-   * @see calculateUnscaledYOffsetForItem
-   * @see calculateScaledYOffsetForBackgroundItem
+   * @see calculateUnscaledYForItem
+   * @see calculateScaledYForBackgroundItem
    */
-  @UnitFraction private const val InitialItemYOffsetFraction = .1f
+  @UnitFraction private const val InitialItemYFraction = .1f
 
   /**
    * Denotes that a [Float] represents a fraction whose numerator is always 1 and whose denominator
@@ -91,30 +91,29 @@ internal object StackMeasurePolicy : MeasurePolicy {
     measurables: List<Measurable>,
     constraints: Constraints
   ): MeasureResult {
-    val items = measurables.takeLast(MaxVisibleItemCount).map { it.measure(constraints) }
-    val foregroundItem = items.lastOrNull() ?: return layout(0, 0) {}
-    val foregroundItemIndex = items.lastIndex
-    val foregroundItemWidth = foregroundItem.width
-    val foregroundItemHeight = foregroundItem.height
-    val foregroundItemYOffset =
-      calculateUnscaledYOffsetForItem(foregroundItemIndex, foregroundItemHeight)
+    val items =
+      measurables
+        .takeLast(MaxVisibleItemCount)
+        .ifEmpty {
+          return layout(0, 0) {}
+        }
+        .map { it.measure(constraints) }
     val backgroundItemCount = items.size - FurthermostVisibleBackgroundItemIndexSubtrahend
     val backgroundItems = items.take(backgroundItemCount)
     val backgroundScales =
       List(backgroundItemCount) { calculateScaleForBackgroundItem(backgroundItemCount, index = it) }
-    val backgroundYOffsets =
+    val backgroundYs =
       backgroundItems.mapIndexed { index, backgroundItem ->
-        calculateScaledYOffsetForBackgroundItem(
-          index,
-          backgroundItem.height,
-          backgroundScales[index]
-        )
+        calculateScaledYForBackgroundItem(index, backgroundItem.height, backgroundScales[index])
       }
-    val backgroundHeight = backgroundYOffsets.sum()
-    return layout(
-      width = foregroundItemWidth,
-      height = backgroundHeight + foregroundItemHeight + foregroundItemYOffset
-    ) {
+    val backgroundHeight = backgroundYs.sum()
+    val foregroundItem = items.last()
+    val foregroundItemIndex = items.lastIndex
+    val foregroundItemWidth = foregroundItem.width
+    val foregroundItemHeight = foregroundItem.height
+    val foregroundItemYOffset = calculateUnscaledYForItem(foregroundItemIndex, foregroundItemHeight)
+    val foregroundItemY = backgroundHeight + foregroundItemYOffset
+    return layout(width = foregroundItemWidth, height = foregroundItemHeight + foregroundItemY) {
       backgroundItems.fastForEachIndexed { index, backgroundItem ->
         backgroundItem.placeWithLayer(
           x =
@@ -122,47 +121,47 @@ internal object StackMeasurePolicy : MeasurePolicy {
               parentWidth = foregroundItemWidth,
               backgroundItem.width
             ),
-          y = backgroundYOffsets[index] - foregroundItemYOffset
+          y = backgroundYs[index] - foregroundItemYOffset
         ) {
           scaleX = backgroundScales[index]
           scaleY = scaleX
         }
       }
-      foregroundItem.place(x = 0, y = backgroundHeight + foregroundItemYOffset)
+      foregroundItem.place(x = 0, foregroundItemY)
     }
   }
 
   /**
-   * Calculates the scaled Y offset of a background item according to the index at which it is.
+   * Calculates the scaled Y coordinate of a background item according to the index at which it is.
    *
-   * @param index Index at which the background item whose unscaled Y offset will be scaled is.
+   * @param index Index at which the background item whose unscaled Y coordinate will be scaled is.
    * @param height Height of the background item, as seen by the parent layout.
-   * @param scale Amount by which the unscaled Y offset will be scaled.
+   * @param scale Amount by which the unscaled Y coordinate will be scaled.
    * @throws IllegalArgumentException If the [index] isn't that of a background item, as per
    *   [requireBackgroundItemIndex]'s documentation.
-   * @see calculateUnscaledYOffsetForItem
+   * @see calculateUnscaledYForItem
    */
   @Throws(IllegalArgumentException::class)
-  private fun calculateScaledYOffsetForBackgroundItem(
+  private fun calculateScaledYForBackgroundItem(
     @BackgroundItemIndex index: Int,
     height: Int,
     @UnitFraction scale: Float
   ): Int {
     requireBackgroundItemIndex(index)
-    val unscaledYOffset = calculateUnscaledYOffsetForItem(index, height)
-    return (unscaledYOffset * scale).roundToInt()
+    val unscaledY = calculateUnscaledYForItem(index, height)
+    return (unscaledY * scale).roundToInt()
   }
 
   /**
-   * Calculates the unscaled offset in the Y axis of an item (either a foreground or a background
-   * one).
+   * Calculates the unscaled coordinate in the Y axis of an item (either a foreground or a
+   * background one).
    *
    * @param index Index at which the item to be placed is.
    * @param height Height of the item, as seen by the parent layout.
-   * @see InitialItemYOffsetFraction
+   * @see InitialItemYFraction
    */
-  private fun calculateUnscaledYOffsetForItem(index: Int, height: Int): Int {
-    return if (index == 0) 0 else (InitialItemYOffsetFraction / index * height).roundToInt()
+  private fun calculateUnscaledYForItem(index: Int, height: Int): Int {
+    return if (index == 0) 0 else (InitialItemYFraction / index * height).roundToInt()
   }
 
   /**
