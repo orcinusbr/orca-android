@@ -53,7 +53,16 @@ import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
-private fun Registration(modifier: Modifier = Modifier, motion: Motion = Motion.Moving) {
+internal fun Registration(boundary: RegistrationBoundary, modifier: Modifier = Modifier) {
+  Registration(boundary, Motion.Moving, modifier)
+}
+
+@Composable
+private fun Registration(
+  boundary: RegistrationBoundary,
+  motion: Motion,
+  modifier: Modifier = Modifier
+) {
   val spacing = AutosTheme.spacings.large.dp
   val spacerModifier = remember(spacing) { Modifier.height(spacing) }
   val backdropColor =
@@ -69,7 +78,12 @@ private fun Registration(modifier: Modifier = Modifier, motion: Motion = Motion.
     }
   val statusCardDelay = remember { 2.seconds }
 
-  Scaffold(modifier, bottom = { ButtonBar { PrimaryButton(onClick = {}) { Text("Continue") } } }) {
+  Scaffold(
+    modifier,
+    bottom = {
+      ButtonBar { PrimaryButton(onClick = boundary::navigateToCredentials) { Text("Continue") } }
+    }
+  ) {
     expanded {
       LazyColumn(
         Modifier.padding(it).fillMaxHeight(),
@@ -133,11 +147,11 @@ private fun Registration(modifier: Modifier = Modifier, motion: Motion = Motion.
 @Composable
 @MultiThemePreview
 private fun StillRegistrationPreview() {
-  AutosTheme { Registration(motion = Motion.Still) }
+  AutosTheme { Registration(NoOpRegistrationBoundary, Motion.Still) }
 }
 
 @Composable
 @MultiThemePreview
 private fun MovingRegistrationPreview() {
-  AutosTheme { Registration() }
+  AutosTheme { Registration(NoOpRegistrationBoundary) }
 }
