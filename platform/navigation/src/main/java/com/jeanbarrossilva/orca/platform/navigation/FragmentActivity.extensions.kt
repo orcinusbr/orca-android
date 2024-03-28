@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -17,24 +17,22 @@ package com.jeanbarrossilva.orca.platform.navigation
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentContainerView
 
-/** [FragmentActivity] through which [Navigator]-based navigation can be performed. */
-open class NavigationActivity : FragmentActivity() {
-  /**
-   * [Navigator] through which navigation can be performed.
-   *
-   * **NOTE**: Because the [FragmentContainerView] that this [NavigationActivity] holds needs to
-   * have an ID for the [Navigator] to work properly, one is automatically generated and assigned to
-   * it if it doesn't already have one.
-   *
-   * @throws IllegalStateException If a [FragmentContainerView] is not found within the [View] tree.
-   */
-  val navigator
-    get() =
-      requireViewById<ViewGroup>(android.R.id.content)
-        .get<FragmentContainerView>(isInclusive = false)
-        .also(View::identify)
-        .let { Navigator(supportFragmentManager, it.id) }
-}
+/**
+ * [Navigator] through which [Fragment] navigation can be performed.
+ *
+ * **NOTE**: Because the [FragmentContainerView] that this [FragmentActivity] holds needs to have an
+ * ID for the [Navigator] to work properly, one is automatically generated and assigned to it if it
+ * doesn't already have one.
+ *
+ * @throws IllegalStateException If a [FragmentContainerView] is not found within the [View] tree.
+ */
+val FragmentActivity.navigator
+  get() =
+    requireViewById<ViewGroup>(android.R.id.content)
+      .get<FragmentContainerView>(isInclusive = false)
+      .also(View::identify)
+      .let { Navigator.Pool.get(supportFragmentManager, it.id) }

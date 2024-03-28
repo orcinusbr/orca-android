@@ -17,14 +17,14 @@ package com.jeanbarrossilva.orca.app.activity
 
 import android.os.Bundle
 import androidx.core.view.WindowCompat
+import androidx.fragment.app.FragmentActivity
 import com.jeanbarrossilva.orca.app.activity.delegate.BottomNavigation
 import com.jeanbarrossilva.orca.app.activity.delegate.Injection
 import com.jeanbarrossilva.orca.app.databinding.ActivityOrcaBinding
 import com.jeanbarrossilva.orca.app.module.core.MainMastodonCoreModule
 import com.jeanbarrossilva.orca.core.module.CoreModule
-import com.jeanbarrossilva.orca.platform.navigation.NavigationActivity
 
-internal open class OrcaActivity : NavigationActivity(), Injection, BottomNavigation {
+internal open class OrcaActivity : FragmentActivity(), Injection, BottomNavigation {
   protected open val coreModule: CoreModule = MainMastodonCoreModule
 
   override var binding: ActivityOrcaBinding? = null

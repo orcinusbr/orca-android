@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -32,7 +32,7 @@ import com.jeanbarrossilva.orca.platform.navigation.transition.Transition
  * @param containerID ID of the [FragmentContainerView] to which [Fragment]s will be added.
  */
 class Navigator
-internal constructor(
+private constructor(
   private val fragmentManager: FragmentManager,
   @IdRes private val containerID: Int
 ) {
@@ -71,6 +71,37 @@ internal constructor(
           return Destination(route, target)
         }
       }
+    }
+  }
+
+  /**
+   * Stores, in memory, [Navigator]s that have been created, allowing for them to be retrieved.
+   * Ultimately, prevents re-instantiation of [Navigator]s.
+   */
+  internal object Pool {
+    /**
+     * [Navigator]s that have been created, associated to their respective [FragmentContainerView]
+     * ID, to be later retrieved.
+     *
+     * @see get
+     */
+    private val pooled = hashMapOf<Int, Navigator>()
+
+    /**
+     * Creates a [Navigator] if none has yet been instantiated with the specified [containerID] or
+     * retrieves the previously stored one.
+     *
+     * @param fragmentManager [FragmentManager] that adds [Fragment]s to the
+     *   [FragmentContainerView].
+     * @param containerID ID of the [FragmentContainerView] to which [Fragment]s will be added.
+     */
+    fun get(fragmentManager: FragmentManager, @IdRes containerID: Int): Navigator {
+      return pooled.getOrPut(containerID) { Navigator(fragmentManager, containerID) }
+    }
+
+    /** Removes all previously created and stored [Navigator]s. */
+    fun clear() {
+      pooled.clear()
     }
   }
 

@@ -16,14 +16,15 @@
 package com.jeanbarrossilva.orca.app.activity.delegate
 
 import androidx.annotation.IdRes
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import com.jeanbarrossilva.orca.app.R
 import com.jeanbarrossilva.orca.app.navigation.BottomDestinationProvider
-import com.jeanbarrossilva.orca.platform.navigation.NavigationActivity
+import com.jeanbarrossilva.orca.platform.navigation.navigator
 import kotlinx.coroutines.launch
 
 internal interface BottomNavigation : Binding {
-  fun navigateOnItemSelection(activity: NavigationActivity) {
+  fun navigateOnItemSelection(activity: FragmentActivity) {
     binding?.bottomNavigationView?.setOnItemSelectedListener {
       navigate(activity, it.itemId)
       true
@@ -34,7 +35,7 @@ internal interface BottomNavigation : Binding {
     binding?.bottomNavigationView?.selectedItemId = R.id.feed
   }
 
-  private fun navigate(activity: NavigationActivity, @IdRes itemID: Int) {
+  private fun navigate(activity: FragmentActivity, @IdRes itemID: Int) {
     activity.lifecycleScope.launch {
       BottomDestinationProvider.provideAndNavigate(activity.navigator, itemID)
     }

@@ -27,7 +27,6 @@ import androidx.fragment.app.testing.FragmentFactoryHolderViewModel
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.launchActivity
-import com.jeanbarrossilva.orca.platform.navigation.NavigationActivity
 import kotlin.reflect.full.primaryConstructor
 
 /**
