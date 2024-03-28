@@ -15,19 +15,13 @@
 
 package com.jeanbarrossilva.orca.platform.navigation
 
-import android.view.View
-import androidx.fragment.app.Fragment
+import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentContainerView
 
-/**
- * [Navigator] through which [Fragment] navigation can be performed.
- *
- * **NOTE**: Because the [FragmentContainerView] that this [FragmentActivity] holds needs to have an
- * ID for the [Navigator] to work properly, one is automatically generated and assigned to it if it
- * doesn't already have one.
- *
- * @throws IllegalStateException If a [FragmentContainerView] is not found within the [View] tree.
- */
-val FragmentActivity.navigator
-  get() = Navigator.Pool.get(this)
+internal class FragmentContainerViewActivity : FragmentActivity() {
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(FragmentContainerView(this))
+  }
+}

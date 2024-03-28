@@ -15,10 +15,7 @@
 
 package com.jeanbarrossilva.orca.platform.navigation
 
-import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentContainerView
 import androidx.test.core.app.launchActivity
 import assertk.assertThat
 import assertk.assertions.isEqualTo
@@ -28,13 +25,6 @@ import com.jeanbarrossilva.orca.platform.navigation.transition.suddenly
 import org.junit.Test
 
 internal class NavigatorTests {
-  class FragmentContainerViewActivity : FragmentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-      super.onCreate(savedInstanceState)
-      setContentView(FragmentContainerView(this))
-    }
-  }
-
   class FirstDestinationFragment : Fragment() {
     companion object {
       const val ROUTE = "first-destination"

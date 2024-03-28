@@ -16,14 +16,13 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
-        <activity android:name="android.app.Activity" />
         <activity
-            android:name="com.jeanbarrossilva.orca.platform.navigation.NavigationActivityTests$EphemeralFragmentContainerViewActivity" />
+            android:name="com.jeanbarrossilva.orca.platform.navigation.FragmentActivityExtensionsTests$EphemeralFragmentContainerViewActivity" />
         <activity
-            android:name="com.jeanbarrossilva.orca.platform.navigation.NavigationActivityTests$NoFragmentContainerViewActivity" />
+            android:name="com.jeanbarrossilva.orca.platform.navigation.FragmentActivityExtensionsTests$NoFragmentContainerViewActivity" />
         <activity
-            android:name="com.jeanbarrossilva.orca.platform.navigation.NavigationActivityTests$UnidentifiedFragmentContainerViewActivity" />
+            android:name="com.jeanbarrossilva.orca.platform.navigation.FragmentActivityExtensionsTests$UnidentifiedFragmentContainerViewActivity" />
         <activity
-            android:name="com.jeanbarrossilva.orca.platform.navigation.NavigatorTests$TestNavigationActivity" />
+            android:name="com.jeanbarrossilva.orca.platform.navigation.FragmentContainerViewActivity" />
     </application>
 </manifest>

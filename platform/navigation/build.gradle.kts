@@ -34,8 +34,4 @@ dependencies {
   androidTestImplementation(libs.assertk)
 
   implementation(libs.android.fragment.ktx)
-
-  testImplementation(libs.assertk)
-  testImplementation(libs.kotlin.test)
-  testImplementation(libs.mockk)
 }

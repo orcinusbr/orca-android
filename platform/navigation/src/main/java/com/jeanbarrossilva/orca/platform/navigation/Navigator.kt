@@ -15,11 +15,17 @@
 
 package com.jeanbarrossilva.orca.platform.navigation
 
+import android.view.View
+import android.widget.FrameLayout
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.jeanbarrossilva.orca.platform.navigation.duplication.Duplication
 import com.jeanbarrossilva.orca.platform.navigation.duplication.allowingDuplication
 import com.jeanbarrossilva.orca.platform.navigation.duplication.disallowingDuplication
@@ -88,20 +94,85 @@ private constructor(
     private val pooled = hashMapOf<Int, Navigator>()
 
     /**
-     * Creates a [Navigator] if none has yet been instantiated with the specified [containerID] or
-     * retrieves the previously stored one.
+     * [LifecycleObserver] that removes the [Navigator] associated to the [containerID] after the
+     * [FragmentActivity] is destroyed.
      *
-     * @param fragmentManager [FragmentManager] that adds [Fragment]s to the
-     *   [FragmentContainerView].
-     * @param containerID ID of the [FragmentContainerView] to which [Fragment]s will be added.
+     * @param containerID ID of the [FragmentContainerView] to which the [Navigator] to be removed
+     *   has been associated when pooled.
      */
-    fun get(fragmentManager: FragmentManager, @IdRes containerID: Int): Navigator {
-      return pooled.getOrPut(containerID) { Navigator(fragmentManager, containerID) }
+    private class RemovalLifecycleObserver(@IdRes private val containerID: Int) :
+      DefaultLifecycleObserver {
+      override fun onDestroy(owner: LifecycleOwner) {
+        super.onDestroy(owner)
+        (owner as FragmentActivity).lifecycle.removeObserver(this)
+        pooled.remove(containerID)
+      }
     }
 
-    /** Removes all previously created and stored [Navigator]s. */
-    fun clear() {
-      pooled.clear()
+    /**
+     * Creates a [Navigator] if no equivalent one for the [activity] has yet been instantiated,
+     * storing it for later use, or retrieves the previously stored one.
+     *
+     * @param activity [FragmentActivity] through which the [Navigator] will be obtained.
+     * @throws IllegalStateException If no [FragmentContainerView] is found in the [activity].
+     */
+    @Throws(IllegalStateException::class)
+    fun get(activity: FragmentActivity): Navigator {
+      val containerID = getContainerIDOrThrow(activity)
+      if (containerID !in this) {
+        pool(activity, containerID)
+      }
+      return pooled.getValue(containerID)
+    }
+
+    /**
+     * Pools a [Navigator] for the given [activity].
+     *
+     * @param activity [FragmentActivity] based on which the [Navigator] will be pooled (created and
+     *   stored).
+     */
+    internal fun pool(activity: FragmentActivity) {
+      val containerID = getContainerIDOrThrow(activity)
+      pool(activity, containerID)
+    }
+
+    /**
+     * Obtains the ID of the [FragmentContainerView] contained by the [FragmentActivity].
+     *
+     * @param activity [FragmentActivity] in which the [FragmentContainerView] is.
+     * @throws IllegalStateException If no [FragmentContainerView] is found.
+     */
+    @Throws(IllegalStateException::class)
+    internal fun getContainerIDOrThrow(activity: FragmentActivity): Int {
+      return activity
+        .requireViewById<FrameLayout>(android.R.id.content)
+        .get<FragmentContainerView>(isInclusive = false)
+        .also(View::identify)
+        .id
+    }
+
+    /**
+     * Whether a [Navigator] that is attached to the [containerID] is pooled.
+     *
+     * @param containerID ID of the [FragmentContainerView] to which the [Navigator] whose presence
+     *   will be verified is attached.
+     */
+    internal operator fun contains(@IdRes containerID: Int): Boolean {
+      return containerID in pooled
+    }
+
+    /**
+     * Pools a [Navigator] for the given [activity].
+     *
+     * @param activity [FragmentActivity] based on which the [Navigator] will be pooled (created and
+     *   stored).
+     * @param containerID ID of the [FragmentContainerView] to which [Fragment]s will be added.
+     */
+    private fun pool(activity: FragmentActivity, @IdRes containerID: Int) {
+      val navigator = Navigator(activity.supportFragmentManager, containerID)
+      val lifecycleObserver = RemovalLifecycleObserver(containerID)
+      activity.runOnUiThread { activity.lifecycle.addObserver(lifecycleObserver) }
+      pooled[containerID] = navigator
     }
   }
 
