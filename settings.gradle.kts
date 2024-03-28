@@ -47,6 +47,7 @@ include(
   ":feature:post-details",
   ":feature:profile-details",
   ":feature:registration",
+  ":feature:registration:credentials",
   ":feature:search",
   ":feature:settings",
   ":feature:settings:term-muting",
