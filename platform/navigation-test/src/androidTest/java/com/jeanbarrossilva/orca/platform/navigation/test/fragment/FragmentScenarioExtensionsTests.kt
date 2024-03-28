@@ -13,21 +13,14 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-plugins {
-  alias(libs.plugins.android.library)
-  alias(libs.plugins.kotlin.android)
-}
+package com.jeanbarrossilva.orca.platform.navigation.test.fragment
 
-android.defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+import androidx.fragment.app.Fragment
+import kotlin.test.Test
 
-dependencies {
-  androidTestImplementation(project(":platform:intents"))
-  androidTestImplementation(project(":platform:navigation-test"))
-  androidTestImplementation(project(":platform:testing"))
-  androidTestImplementation(libs.android.test.core)
-  androidTestImplementation(libs.android.test.runner)
-  androidTestImplementation(libs.android.test.core)
-  androidTestImplementation(libs.assertk)
-
-  implementation(libs.android.fragment.ktx)
+internal class FragmentScenarioExtensionsTests {
+  @Test
+  fun launchesFragmentInNavigationContainer() {
+    launchFragmentInNavigationContainer(::Fragment).close()
+  }
 }
