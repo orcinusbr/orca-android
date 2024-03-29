@@ -18,11 +18,7 @@ plugins {
   alias(libs.plugins.kotlin.android)
 }
 
-android {
-  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-  packagingOptions.resources.excludes +=
-    arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
-}
+android.defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
 dependencies {
   androidTestImplementation(project(":platform:intents"))
