@@ -20,6 +20,7 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.commitNow
 import androidx.fragment.app.testing.EmptyFragmentActivity
@@ -27,13 +28,17 @@ import androidx.fragment.app.testing.FragmentFactoryHolderViewModel
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.launchActivity
+import com.jeanbarrossilva.orca.platform.navigation.Navigator
+import com.jeanbarrossilva.orca.platform.navigation.navigator
 import kotlin.reflect.full.primaryConstructor
 
 /**
- * Launches the specified [Fragment] in a [NavigationActivity].
+ * Launches the specified [Fragment] in a [FragmentActivity] whose content is a
+ * [FragmentContainerView], which, in turn, allows for its [Navigator] to be obtained.
  *
  * @param T [Fragment] to be launched.
  * @param instantiation Provides an instance of the [Fragment] to be launched.
+ * @see navigator
  */
 inline fun <reified T : Fragment> launchFragmentInNavigationContainer(
   crossinline instantiation: () -> T
