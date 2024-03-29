@@ -17,7 +17,6 @@ package com.jeanbarrossilva.orca.platform.navigation.test.activity
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.jeanbarrossilva.orca.platform.navigation.navigator
-import com.jeanbarrossilva.orca.platform.testing.activity.scenario.activity
 import kotlin.test.Test
 import org.junit.Rule
 
@@ -26,8 +25,9 @@ internal class FragmentActivityExtensionsTests {
 
   @Test
   fun getsNavigatorWhenMadeNavigable() {
-    checkNotNull(activityScenarioRule.scenario.activity)
-      .apply(NavigationActivity::makeNavigable)
-      .navigator
+    activityScenarioRule.scenario.onActivity {
+      it.makeNavigable()
+      it.navigator
+    }
   }
 }
