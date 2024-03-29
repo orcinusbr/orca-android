@@ -25,6 +25,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,6 +40,20 @@ import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.button.ButtonBar
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.plus
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
+
+@Composable
+internal fun Credentials(viewModel: CredentialsViewModel, modifier: Modifier = Modifier) {
+  val email by viewModel.emailFlow.collectAsState()
+  val password by viewModel.passwordFlow.collectAsState()
+
+  Credentials(
+    email,
+    onEmailChange = viewModel::setEmail,
+    password,
+    onPasswordChange = viewModel::setPassword,
+    modifier
+  )
+}
 
 @Composable
 private fun Credentials(
