@@ -86,8 +86,8 @@ private constructor(
    */
   internal object Pool {
     /**
-     * [Navigator]s that have been created, associated to their respective [FragmentContainerView]
-     * ID, to be later retrieved.
+     * [Navigator]s that have been created, associated to their respective [FragmentContainerView]s'
+     * IDs, to be later retrieved.
      *
      * @see get
      */
