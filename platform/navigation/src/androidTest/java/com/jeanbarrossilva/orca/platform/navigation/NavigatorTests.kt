@@ -39,7 +39,7 @@ internal class NavigatorTests {
 
   @Test
   fun navigatesSuddenly() {
-    launchActivity<FragmentContainerViewActivity>().use { scenario ->
+    launchActivity<NavigationActivity>().use { scenario ->
       scenario.onActivity { activity ->
         activity.navigator.navigate(suddenly()) {
           to(FirstDestinationFragment.ROUTE, NavigatorTests::FirstDestinationFragment)
@@ -51,7 +51,7 @@ internal class NavigatorTests {
 
   @Test
   fun navigatesWithOpeningTransition() {
-    launchActivity<FragmentContainerViewActivity>().use { scenario ->
+    launchActivity<NavigationActivity>().use { scenario ->
       scenario.onActivity { activity ->
         activity.navigator.navigate(opening()) {
           to(FirstDestinationFragment.ROUTE, NavigatorTests::FirstDestinationFragment)
@@ -63,7 +63,7 @@ internal class NavigatorTests {
 
   @Test
   fun navigatesWithClosingTransition() {
-    launchActivity<FragmentContainerViewActivity>().use { scenario ->
+    launchActivity<NavigationActivity>().use { scenario ->
       scenario.onActivity { activity ->
         activity.navigator.navigate(
           com.jeanbarrossilva.orca.platform.navigation.transition.closing()
@@ -77,7 +77,7 @@ internal class NavigatorTests {
 
   @Test
   fun navigatesTwiceWhenDuplicationIsAllowed() {
-    launchActivity<FragmentContainerViewActivity>().use { scenario ->
+    launchActivity<NavigationActivity>().use { scenario ->
       scenario.onActivity { activity ->
         repeat(2) {
           activity.navigator.navigate(suddenly()) {
@@ -91,7 +91,7 @@ internal class NavigatorTests {
 
   @Test
   fun navigatesOnceWhenDuplicationIsDisallowed() {
-    launchActivity<FragmentContainerViewActivity>().use { scenario ->
+    launchActivity<NavigationActivity>().use { scenario ->
       scenario.onActivity { activity ->
         repeat(2) {
           activity.navigator.navigate(
@@ -108,7 +108,7 @@ internal class NavigatorTests {
 
   @Test
   fun navigatesSequentially() {
-    launchActivity<FragmentContainerViewActivity>().use { scenario ->
+    launchActivity<NavigationActivity>().use { scenario ->
       scenario.onActivity { activity ->
         with(activity.navigator) {
           navigate(suddenly()) { to(FirstDestinationFragment.ROUTE, ::FirstDestinationFragment) }

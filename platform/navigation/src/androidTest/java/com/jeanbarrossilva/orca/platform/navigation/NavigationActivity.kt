@@ -19,7 +19,7 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentContainerView
 
-internal class FragmentContainerViewActivity : FragmentActivity() {
+internal class NavigationActivity : FragmentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(FragmentContainerView(this))

@@ -26,7 +26,7 @@ import org.junit.Test
 internal class NavigatorPoolTests {
   @Test
   fun remembers() {
-    launchActivity<FragmentContainerViewActivity>().use {
+    launchActivity<NavigationActivity>().use {
       val activity = checkNotNull(it.activity)
       val containerID = Navigator.Pool.getContainerIDOrThrow(activity)
       Navigator.Pool.remember(activity)
@@ -36,7 +36,7 @@ internal class NavigatorPoolTests {
 
   @Test
   fun removesNavigatorAfterActivityIsDestroyed() {
-    launchActivity<FragmentContainerViewActivity>().use {
+    launchActivity<NavigationActivity>().use {
       val activity = checkNotNull(it.activity)
       val containerID = Navigator.Pool.getContainerIDOrThrow(activity)
       Navigator.Pool.remember(activity)

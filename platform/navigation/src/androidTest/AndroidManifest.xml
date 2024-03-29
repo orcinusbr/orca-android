@@ -23,6 +23,6 @@
         <activity
             android:name="com.jeanbarrossilva.orca.platform.navigation.FragmentActivityExtensionsTests$UnidentifiedFragmentContainerViewActivity" />
         <activity
-            android:name="com.jeanbarrossilva.orca.platform.navigation.FragmentContainerViewActivity" />
+            android:name="com.jeanbarrossilva.orca.platform.navigation.NavigationActivity" />
     </application>
 </manifest>
