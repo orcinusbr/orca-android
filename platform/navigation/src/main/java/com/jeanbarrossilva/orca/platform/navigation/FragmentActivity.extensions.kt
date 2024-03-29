@@ -30,4 +30,4 @@ import androidx.fragment.app.FragmentContainerView
  * @throws IllegalStateException If a [FragmentContainerView] is not found within the [View] tree.
  */
 val FragmentActivity.navigator
-  get() = Navigator.Pool.get(this)
+  @Throws(IllegalStateException::class) get() = Navigator.Pool.get(this)
