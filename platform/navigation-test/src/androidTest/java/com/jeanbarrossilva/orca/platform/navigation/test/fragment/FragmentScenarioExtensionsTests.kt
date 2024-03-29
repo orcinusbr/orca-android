@@ -16,11 +16,14 @@
 package com.jeanbarrossilva.orca.platform.navigation.test.fragment
 
 import androidx.fragment.app.Fragment
+import com.jeanbarrossilva.orca.platform.navigation.navigator
 import kotlin.test.Test
 
 internal class FragmentScenarioExtensionsTests {
   @Test
-  fun launchesFragmentInNavigationContainer() {
-    launchFragmentInNavigationContainer(::Fragment).close()
+  fun getsNavigatorFromContainerActivity() {
+    launchFragmentInNavigationContainer(::Fragment).use { scenario ->
+      scenario.onFragment { fragment -> fragment.requireActivity().navigator }
+    }
   }
 }

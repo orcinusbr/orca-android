@@ -15,57 +15,30 @@
 
 package com.jeanbarrossilva.orca.platform.navigation.test.fragment
 
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentContainerView
-import androidx.fragment.app.commitNow
-import androidx.fragment.app.testing.EmptyFragmentActivity
-import androidx.fragment.app.testing.FragmentFactoryHolderViewModel
 import androidx.fragment.app.testing.FragmentScenario
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.core.app.launchActivity
+import androidx.fragment.app.testing.launchFragmentInContainer
 import com.jeanbarrossilva.orca.platform.navigation.Navigator
 import com.jeanbarrossilva.orca.platform.navigation.navigator
-import kotlin.reflect.full.primaryConstructor
 
 /**
  * Launches the specified [Fragment] in a [FragmentActivity] whose content is a
  * [FragmentContainerView], which, in turn, allows for its [Navigator] to be obtained.
  *
  * @param T [Fragment] to be launched.
- * @param instantiation Provides an instance of the [Fragment] to be launched.
+ * @param instantiate Creates an instance of the [Fragment] to be launched.
  * @see navigator
  */
 inline fun <reified T : Fragment> launchFragmentInNavigationContainer(
-  crossinline instantiation: () -> T
+  crossinline instantiate: () -> T
 ): FragmentScenario<T> {
-  val context = ApplicationProvider.getApplicationContext<Context>()
-  val activityName = ComponentName(context, EmptyFragmentActivity::class.java)
-  val activityThemeKey = EmptyFragmentActivity.THEME_EXTRAS_BUNDLE_KEY
-  val activityIntent = Intent.makeMainActivity(activityName).putExtra(activityThemeKey, 0)
-  val activityScenario = launchActivity<EmptyFragmentActivity>(activityIntent)
-  val fragmentFactory = fragmentFactoryOf(instantiation)
-  val fragmentJavaClass = T::class.java
-  val fragmentScenarioConstructor = checkNotNull(FragmentScenario::class.primaryConstructor)
-  val fragmentScenario = fragmentScenarioConstructor.call(fragmentJavaClass, activityScenario)
-  activityScenario.onActivity { activity ->
-    val fragment = instantiation()
-    val fragmentContainerViewID = View.generateViewId()
-    val fragmentContainerView =
-      FragmentContainerView(activity).apply { id = fragmentContainerViewID }
-    activity.setContentView(fragmentContainerView)
-
-    @Suppress("RestrictedApi")
-    FragmentFactoryHolderViewModel.getInstance(activity).fragmentFactory = fragmentFactory
-
-    activity.supportFragmentManager.fragmentFactory = fragmentFactory
-    activity.supportFragmentManager.commitNow {
-      add(fragmentContainerViewID, fragment, "FragmentInNavigationContainer")
-    }
+  return launchFragmentInContainer(instantiate = instantiate).onFragment {
+    val activity = it.requireActivity()
+    val containerID = View.generateViewId()
+    val container = FragmentContainerView(activity).apply { id = containerID }
+    activity.setContentView(container)
   }
-  @Suppress("UNCHECKED_CAST") return fragmentScenario as FragmentScenario<T>
 }
