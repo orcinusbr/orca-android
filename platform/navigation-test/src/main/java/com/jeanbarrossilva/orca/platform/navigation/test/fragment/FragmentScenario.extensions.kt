@@ -48,7 +48,7 @@ inline fun <reified T : Fragment> launchFragmentInNavigationContainer(
   val activityThemeKey = EmptyFragmentActivity.THEME_EXTRAS_BUNDLE_KEY
   val activityIntent = Intent.makeMainActivity(activityName).putExtra(activityThemeKey, 0)
   val activityScenario = launchActivity<EmptyFragmentActivity>(activityIntent)
-  val fragmentFactory = FragmentFactory(instantiation)
+  val fragmentFactory = fragmentFactoryOf(instantiation)
   val fragmentJavaClass = T::class.java
   val fragmentScenarioConstructor = checkNotNull(FragmentScenario::class.primaryConstructor)
   val fragmentScenario = fragmentScenarioConstructor.call(fragmentJavaClass, activityScenario)

@@ -19,14 +19,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 
 /**
- * [FragmentFactory] that automatically checks whether the name of the class of which an instance
- * has been requested to be created coincides with that of the specified [Fragment].
+ * Creates a [FragmentFactory] that automatically checks whether the name of the class of which an
+ * instance has been requested to be created coincides with that of the specified [Fragment].
  *
  * @param T [Fragment] to be instantiated.
  * @param instantiation Provides an instance of the [Fragment].
  */
 @PublishedApi
-internal inline fun <reified T : Fragment> FragmentFactory(
+internal inline fun <reified T : Fragment> fragmentFactoryOf(
   crossinline instantiation: () -> T
 ): FragmentFactory {
   return object : FragmentFactory() {

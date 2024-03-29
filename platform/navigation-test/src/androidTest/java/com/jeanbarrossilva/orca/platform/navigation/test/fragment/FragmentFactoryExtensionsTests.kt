@@ -26,7 +26,7 @@ internal class FragmentFactoryExtensionsTests {
   @Test
   fun fragmentFactoryCreatesSpecifiedFragment() {
     var hasBeenCreated = false
-    FragmentFactory {
+    fragmentFactoryOf {
         hasBeenCreated = true
         DialogFragment()
       }
@@ -36,7 +36,7 @@ internal class FragmentFactoryExtensionsTests {
 
   @Test(expected = Fragment.InstantiationException::class)
   fun throwsWhenCreatingUnspecifiedFragment() {
-    FragmentFactory(::DialogFragment)
+    fragmentFactoryOf(::DialogFragment)
       .instantiate(ClassLoader.getSystemClassLoader(), ListFragment::class.java.name)
   }
 }
