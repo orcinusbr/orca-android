@@ -137,7 +137,8 @@ private constructor(
     }
 
     /**
-     * Obtains the ID of the [FragmentContainerView] contained by the [FragmentActivity].
+     * Obtains the ID of the [FragmentContainerView] (generating one for it if it hasn't already
+     * been identified) contained by the [FragmentActivity].
      *
      * @param activity [FragmentActivity] in which the [FragmentContainerView] is.
      * @throws IllegalStateException If no [FragmentContainerView] is found.
