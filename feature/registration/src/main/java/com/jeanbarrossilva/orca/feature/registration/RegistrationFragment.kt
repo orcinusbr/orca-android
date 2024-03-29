@@ -21,7 +21,7 @@ import com.jeanbarrossilva.orca.platform.navigation.Navigator
 import com.jeanbarrossilva.orca.platform.navigation.transition.opening
 import com.jeanbarrossilva.orca.std.injector.Injector
 
-class RegistrationFragment : ComposableFragment() {
+class RegistrationFragment internal constructor() : ComposableFragment() {
   private val module by lazy { Injector.from<RegistrationModule>() }
 
   @Composable
@@ -30,8 +30,10 @@ class RegistrationFragment : ComposableFragment() {
   }
 
   companion object {
+    internal const val ROUTE = "registration"
+
     fun navigate(navigator: Navigator) {
-      navigator.navigate(opening()) { to("registration", ::RegistrationFragment) }
+      navigator.navigate(opening()) { to(ROUTE, ::RegistrationFragment) }
     }
   }
 }

@@ -15,10 +15,15 @@
 
 package com.jeanbarrossilva.orca.feature.registration
 
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.runComposeUiTest
 import androidx.fragment.app.testing.launchFragmentInContainer
+import assertk.assertThat
 import com.jeanbarrossilva.orca.platform.autos.test.kit.action.button.onPrimaryButton
+import com.jeanbarrossilva.orca.platform.navigation.navigator
+import com.jeanbarrossilva.orca.platform.navigation.test.activity.launchNavigationActivity
+import com.jeanbarrossilva.orca.platform.navigation.test.isAt
 import com.jeanbarrossilva.orca.std.injector.module.injection.injectionOf
 import com.jeanbarrossilva.orca.std.injector.test.InjectorTestRule
 import io.mockk.mockkObject
@@ -32,14 +37,25 @@ internal class RegistrationFragmentTests {
     register(RegistrationModule(injectionOf { NoOpRegistrationBoundary }))
   }
 
-  @get:Rule val composeRule = createComposeRule()
+  @Test
+  fun navigates() {
+    launchNavigationActivity().use { scenario ->
+      scenario.onActivity { activity ->
+        RegistrationFragment.navigate(activity.navigator)
+        assertThat(activity).isAt(RegistrationFragment.ROUTE)
+      }
+    }
+  }
 
   @Test
   fun navigatesToCredentialsWhenContinuing() {
-    mockkObject(NoOpRegistrationBoundary) {
-      launchFragmentInContainer(instantiate = ::RegistrationFragment).use {
-        composeRule.onPrimaryButton().performClick()
-        verify { NoOpRegistrationBoundary.navigateToCredentials() }
+    @OptIn(ExperimentalTestApi::class)
+    runComposeUiTest {
+      mockkObject(NoOpRegistrationBoundary) {
+        launchFragmentInContainer(instantiate = ::RegistrationFragment).use {
+          onPrimaryButton().performClick()
+          verify { NoOpRegistrationBoundary.navigateToCredentials() }
+        }
       }
     }
   }

@@ -14,9 +14,12 @@ android {
 
 dependencies {
   androidTestImplementation(project(":platform:autos-test"))
+  androidTestImplementation(project(":platform:navigation"))
+  androidTestImplementation(project(":platform:navigation-test"))
   androidTestImplementation(project(":std:injector-test"))
   androidTestImplementation(libs.android.compose.ui.test.junit)
   androidTestImplementation(libs.android.fragment.testing)
+  androidTestImplementation(libs.assertk)
   androidTestImplementation(libs.kotlin.test)
   androidTestImplementation(libs.mockk)
 
