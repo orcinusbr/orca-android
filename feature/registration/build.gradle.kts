@@ -45,10 +45,7 @@ dependencies {
   implementation(project(":core:sample"))
   implementation(project(":platform:animator"))
   implementation(project(":platform:autos"))
-  implementation(libs.android.core)
+  implementation(project(":platform:stack"))
 
   ksp(project(":std:injector-processor"))
-
-  testImplementation(libs.assertk)
-  testImplementation(libs.kotlin.test)
 }

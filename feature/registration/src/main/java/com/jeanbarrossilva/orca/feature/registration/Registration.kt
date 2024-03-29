@@ -37,7 +37,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.jeanbarrossilva.orca.feature.registration.ui.stack.Stack
 import com.jeanbarrossilva.orca.feature.registration.ui.status.Status
 import com.jeanbarrossilva.orca.feature.registration.ui.status.StatusCard
 import com.jeanbarrossilva.orca.feature.registration.ui.status.rememberStatusCardState
@@ -50,6 +49,7 @@ import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.Scaffold
 import com.jeanbarrossilva.orca.platform.autos.kit.scaffold.bar.button.ButtonBar
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.orca.platform.autos.theme.MultiThemePreview
+import com.jeanbarrossilva.orca.platform.stack.Stack
 import kotlin.time.Duration.Companion.seconds
 
 @Composable
