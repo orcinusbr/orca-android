@@ -15,7 +15,6 @@
 
 package com.jeanbarrossilva.orca.platform.navigation
 
-import android.app.Activity
 import androidx.test.core.app.launchActivity
 import assertk.assertThat
 import assertk.assertions.isEqualTo
@@ -26,7 +25,8 @@ import org.junit.Test
 internal class ActivityExtensionsTests {
   @Test
   fun getsIntentExtra() {
-    launchActivity<Activity>(intentOf<Activity>(context, "extra" to 0)).use { scenario ->
+    launchActivity<NavigationActivity>(intentOf<NavigationActivity>(context, "extra" to 0)).use {
+      scenario ->
       scenario.onActivity { activity ->
         assertThat(activity.extra<Int>("extra").value).isEqualTo(0)
       }
