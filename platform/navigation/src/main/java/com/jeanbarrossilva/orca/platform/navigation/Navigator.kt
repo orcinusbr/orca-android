@@ -157,10 +157,10 @@ private constructor(
     }
 
     /**
-     * Whether a [Navigator] that is attached to the [containerID] is pooled.
+     * Whether a [Navigator] that is attached to the [containerID] is currently remembered.
      *
      * @param containerID ID of the [FragmentContainerView] to which the [Navigator] whose presence
-     *   will be verified is attached.
+     *   in the [Pool] will be verified is attached.
      */
     internal operator fun contains(@IdRes containerID: Int): Boolean {
       return containerID in remembrances
