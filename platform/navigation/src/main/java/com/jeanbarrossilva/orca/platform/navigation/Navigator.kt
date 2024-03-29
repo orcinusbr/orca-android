@@ -91,7 +91,7 @@ private constructor(
      *
      * @see get
      */
-    private val pooled = hashMapOf<Int, Navigator>()
+    private val remembrances = hashMapOf<Int, Navigator>()
 
     /**
      * [LifecycleObserver] that removes the [Navigator] associated to the [containerID] after the
@@ -105,13 +105,13 @@ private constructor(
       override fun onDestroy(owner: LifecycleOwner) {
         super.onDestroy(owner)
         (owner as FragmentActivity).lifecycle.removeObserver(this)
-        pooled.remove(containerID)
+        remembrances.remove(containerID)
       }
     }
 
     /**
      * Creates a [Navigator] if no equivalent one for the [activity] has yet been instantiated,
-     * storing it for later use, or retrieves the previously stored one.
+     * storing it for later use, or retrieves the previously remembered one.
      *
      * @param activity [FragmentActivity] through which the [Navigator] will be obtained.
      * @throws IllegalStateException If no [FragmentContainerView] is found in the [activity].
@@ -120,20 +120,19 @@ private constructor(
     fun get(activity: FragmentActivity): Navigator {
       val containerID = getContainerIDOrThrow(activity)
       if (containerID !in this) {
-        pool(activity, containerID)
+        remember(activity, containerID)
       }
-      return pooled.getValue(containerID)
+      return remembrances.getValue(containerID)
     }
 
     /**
-     * Pools a [Navigator] for the given [activity].
+     * Creates and stores a [Navigator] for the given [activity].
      *
-     * @param activity [FragmentActivity] based on which the [Navigator] will be pooled (created and
-     *   stored).
+     * @param activity [FragmentActivity] based on which the [Navigator] will be remembered.
      */
-    internal fun pool(activity: FragmentActivity) {
+    internal fun remember(activity: FragmentActivity) {
       val containerID = getContainerIDOrThrow(activity)
-      pool(activity, containerID)
+      remember(activity, containerID)
     }
 
     /**
@@ -159,21 +158,20 @@ private constructor(
      *   will be verified is attached.
      */
     internal operator fun contains(@IdRes containerID: Int): Boolean {
-      return containerID in pooled
+      return containerID in remembrances
     }
 
     /**
-     * Pools a [Navigator] for the given [activity].
+     * Creates and stores a [Navigator] for the given [activity].
      *
-     * @param activity [FragmentActivity] based on which the [Navigator] will be pooled (created and
-     *   stored).
+     * @param activity [FragmentActivity] based on which the [Navigator] will be remembered.
      * @param containerID ID of the [FragmentContainerView] to which [Fragment]s will be added.
      */
-    private fun pool(activity: FragmentActivity, @IdRes containerID: Int) {
+    private fun remember(activity: FragmentActivity, @IdRes containerID: Int) {
       val navigator = Navigator(activity.supportFragmentManager, containerID)
       val lifecycleObserver = RemovalLifecycleObserver(containerID)
       activity.runOnUiThread { activity.lifecycle.addObserver(lifecycleObserver) }
-      pooled[containerID] = navigator
+      remembrances[containerID] = navigator
     }
   }
 

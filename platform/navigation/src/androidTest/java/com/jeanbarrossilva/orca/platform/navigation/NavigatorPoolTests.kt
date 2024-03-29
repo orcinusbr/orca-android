@@ -25,11 +25,11 @@ import org.junit.Test
 
 internal class NavigatorPoolTests {
   @Test
-  fun pools() {
+  fun remembers() {
     launchActivity<FragmentContainerViewActivity>().use {
       val activity = checkNotNull(it.activity)
       val containerID = Navigator.Pool.getContainerIDOrThrow(activity)
-      Navigator.Pool.pool(activity)
+      Navigator.Pool.remember(activity)
       assertThat(containerID in Navigator.Pool).isTrue()
     }
   }
@@ -39,7 +39,7 @@ internal class NavigatorPoolTests {
     launchActivity<FragmentContainerViewActivity>().use {
       val activity = checkNotNull(it.activity)
       val containerID = Navigator.Pool.getContainerIDOrThrow(activity)
-      Navigator.Pool.pool(activity)
+      Navigator.Pool.remember(activity)
       it.moveToState(Lifecycle.State.DESTROYED)
       assertThat(containerID in Navigator.Pool).isFalse()
     }
