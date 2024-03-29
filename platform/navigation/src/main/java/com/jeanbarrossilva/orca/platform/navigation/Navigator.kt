@@ -126,9 +126,11 @@ private constructor(
     }
 
     /**
-     * Creates and stores a [Navigator] for the given [activity].
+     * Creates and stores a [Navigator], associating it to the given [containerID] and automatically
+     * removing it from the [Pool] after the [activity] is destroyed.
      *
-     * @param activity [FragmentActivity] based on which the [Navigator] will be remembered.
+     * @param activity [FragmentActivity] after whose destruction the remembered [Navigator] will be
+     *   removed.
      * @param containerID ID of the [FragmentContainerView] to which [Fragment]s will be added.
      */
     internal fun remember(activity: FragmentActivity, @IdRes containerID: Int) {
