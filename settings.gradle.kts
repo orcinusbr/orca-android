@@ -60,6 +60,7 @@ include(
   ":platform:intents-test",
   ":platform:navigation",
   ":platform:navigation-test",
+  ":platform:stack",
   ":platform:starter",
   ":platform:starter:lifecycle",
   ":platform:testing",
