@@ -15,16 +15,17 @@
 
 package com.jeanbarrossilva.orca.app.module.feature.profiledetails
 
+import android.content.Context
 import com.jeanbarrossilva.orca.core.module.CoreModule
 import com.jeanbarrossilva.orca.core.module.instanceProvider
 import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetailsModule
-import com.jeanbarrossilva.orca.platform.navigation.NavigationActivity
+import com.jeanbarrossilva.orca.platform.navigation.Navigator
 import com.jeanbarrossilva.orca.std.injector.Injector
 import com.jeanbarrossilva.orca.std.injector.module.injection.injectionOf
 
-internal class MainProfileDetailsModule(activity: NavigationActivity) :
+internal class MainProfileDetailsModule(context: Context, navigator: Navigator) :
   ProfileDetailsModule(
     injectionOf { Injector.from<CoreModule>().instanceProvider().provide().profileProvider },
     injectionOf { Injector.from<CoreModule>().instanceProvider().provide().postProvider },
-    injectionOf { NavigatorProfileDetailsBoundary(activity, activity.navigator) }
+    injectionOf { NavigatorProfileDetailsBoundary(context, navigator) }
   )

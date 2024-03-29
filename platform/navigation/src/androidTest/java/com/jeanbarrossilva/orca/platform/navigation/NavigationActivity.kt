@@ -15,21 +15,13 @@
 
 package com.jeanbarrossilva.orca.platform.navigation
 
-import androidx.test.core.app.launchActivity
-import assertk.assertThat
-import assertk.assertions.isEqualTo
-import com.jeanbarrossilva.orca.ext.intents.intentOf
-import com.jeanbarrossilva.orca.platform.testing.context
-import org.junit.Test
+import android.os.Bundle
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentContainerView
 
-internal class ActivityExtensionsTests {
-  @Test
-  fun getsIntentExtra() {
-    launchActivity<NavigationActivity>(intentOf<NavigationActivity>(context, "extra" to 0)).use {
-      scenario ->
-      scenario.onActivity { activity ->
-        assertThat(activity.extra<Int>("extra").value).isEqualTo(0)
-      }
-    }
+internal class NavigationActivity : FragmentActivity() {
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(FragmentContainerView(this))
   }
 }

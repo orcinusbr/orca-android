@@ -13,23 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.navigation
+package com.jeanbarrossilva.orca.platform.navigation.test.fragment
 
-import androidx.test.core.app.launchActivity
-import assertk.assertThat
-import assertk.assertions.isEqualTo
-import com.jeanbarrossilva.orca.ext.intents.intentOf
-import com.jeanbarrossilva.orca.platform.testing.context
-import org.junit.Test
+import androidx.fragment.app.Fragment
+import com.jeanbarrossilva.orca.platform.navigation.navigator
+import kotlin.test.Test
 
-internal class ActivityExtensionsTests {
+internal class FragmentScenarioExtensionsTests {
   @Test
-  fun getsIntentExtra() {
-    launchActivity<NavigationActivity>(intentOf<NavigationActivity>(context, "extra" to 0)).use {
-      scenario ->
-      scenario.onActivity { activity ->
-        assertThat(activity.extra<Int>("extra").value).isEqualTo(0)
-      }
+  fun getsNavigatorFromContainerActivity() {
+    launchFragmentInNavigationContainer(::Fragment).use { scenario ->
+      scenario.onFragment { fragment -> fragment.requireActivity().navigator }
     }
   }
 }

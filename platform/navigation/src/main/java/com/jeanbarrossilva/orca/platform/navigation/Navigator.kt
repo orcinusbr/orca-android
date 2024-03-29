@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Orca
+ * Copyright © 2023-2024 Orca
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,11 +15,17 @@
 
 package com.jeanbarrossilva.orca.platform.navigation
 
+import android.view.View
+import android.widget.FrameLayout
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.jeanbarrossilva.orca.platform.navigation.duplication.Duplication
 import com.jeanbarrossilva.orca.platform.navigation.duplication.allowingDuplication
 import com.jeanbarrossilva.orca.platform.navigation.duplication.disallowingDuplication
@@ -32,7 +38,7 @@ import com.jeanbarrossilva.orca.platform.navigation.transition.Transition
  * @param containerID ID of the [FragmentContainerView] to which [Fragment]s will be added.
  */
 class Navigator
-internal constructor(
+private constructor(
   private val fragmentManager: FragmentManager,
   @IdRes private val containerID: Int
 ) {
@@ -71,6 +77,93 @@ internal constructor(
           return Destination(route, target)
         }
       }
+    }
+  }
+
+  /**
+   * Stores, in memory, [Navigator]s that have been created, allowing for them to be retrieved.
+   * Ultimately, prevents re-instantiation of [Navigator]s.
+   */
+  internal object Pool {
+    /**
+     * [Navigator]s that have been created, associated to their respective [FragmentContainerView]s'
+     * IDs, to be later retrieved.
+     *
+     * @see get
+     */
+    private val remembrances = hashMapOf<Int, Navigator>()
+
+    /**
+     * [LifecycleObserver] that removes the [Navigator] associated to the [containerID] after the
+     * [FragmentActivity] is destroyed.
+     *
+     * @param containerID ID of the [FragmentContainerView] to which the [Navigator] to be removed
+     *   has been associated when pooled.
+     */
+    private class RemovalLifecycleObserver(@IdRes private val containerID: Int) :
+      DefaultLifecycleObserver {
+      override fun onDestroy(owner: LifecycleOwner) {
+        super.onDestroy(owner)
+        (owner as FragmentActivity).lifecycle.removeObserver(this)
+        remembrances.remove(containerID)
+      }
+    }
+
+    /**
+     * Creates a [Navigator] if no equivalent one for the [activity] has yet been instantiated,
+     * storing it for later use, or retrieves the previously remembered one.
+     *
+     * @param activity [FragmentActivity] through which the [Navigator] will be obtained.
+     * @throws IllegalStateException If no [FragmentContainerView] is found in the [activity].
+     */
+    @Throws(IllegalStateException::class)
+    fun get(activity: FragmentActivity): Navigator {
+      val containerID = getContainerIDOrThrow(activity)
+      if (containerID !in this) {
+        remember(activity, containerID)
+      }
+      return remembrances.getValue(containerID)
+    }
+
+    /**
+     * Creates and stores a [Navigator], associating it to the given [containerID] and automatically
+     * removing it from the [Pool] after the [activity] is destroyed.
+     *
+     * @param activity [FragmentActivity] after whose destruction the remembered [Navigator] will be
+     *   removed.
+     * @param containerID ID of the [FragmentContainerView] to which [Fragment]s will be added.
+     */
+    internal fun remember(activity: FragmentActivity, @IdRes containerID: Int) {
+      val navigator = Navigator(activity.supportFragmentManager, containerID)
+      val lifecycleObserver = RemovalLifecycleObserver(containerID)
+      activity.runOnUiThread { activity.lifecycle.addObserver(lifecycleObserver) }
+      remembrances[containerID] = navigator
+    }
+
+    /**
+     * Obtains the ID of the [FragmentContainerView] (generating one for it if it hasn't already
+     * been identified) contained by the [FragmentActivity].
+     *
+     * @param activity [FragmentActivity] in which the [FragmentContainerView] is.
+     * @throws IllegalStateException If no [FragmentContainerView] is found.
+     */
+    @Throws(IllegalStateException::class)
+    internal fun getContainerIDOrThrow(activity: FragmentActivity): Int {
+      return activity
+        .requireViewById<FrameLayout>(android.R.id.content)
+        .get<FragmentContainerView>(isInclusive = false)
+        .also(View::identify)
+        .id
+    }
+
+    /**
+     * Whether a [Navigator] that is attached to the [containerID] is currently remembered.
+     *
+     * @param containerID ID of the [FragmentContainerView] to which the [Navigator] whose presence
+     *   in the [Pool] will be verified is attached.
+     */
+    internal operator fun contains(@IdRes containerID: Int): Boolean {
+      return containerID in remembrances
     }
   }
 

@@ -17,6 +17,7 @@ package com.jeanbarrossilva.orca.app.activity.delegate
 
 import android.content.Context
 import androidx.activity.ComponentActivity
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.jeanbarrossilva.orca.app.module.feature.feed.MainFeedModule
@@ -34,18 +35,19 @@ import com.jeanbarrossilva.orca.feature.profiledetails.ProfileDetailsModule
 import com.jeanbarrossilva.orca.feature.search.SearchModule
 import com.jeanbarrossilva.orca.feature.settings.SettingsModule
 import com.jeanbarrossilva.orca.feature.settings.termmuting.TermMutingModule
-import com.jeanbarrossilva.orca.platform.navigation.NavigationActivity
+import com.jeanbarrossilva.orca.platform.navigation.navigator
 import com.jeanbarrossilva.orca.std.injector.Injector
 
 internal interface Injection {
-  fun inject(activity: NavigationActivity, coreModule: CoreModule) {
+  fun inject(activity: FragmentActivity, coreModule: CoreModule) {
+    val navigator = activity.navigator
     Injector.inject<Context> { activity }
     Injector.register(coreModule)
-    Injector.register<FeedModule>(MainFeedModule(activity))
-    Injector.register<GalleryModule>(MainGalleryModule(activity.navigator))
-    Injector.register<PostDetailsModule>(MainPostDetailsModule(activity))
-    Injector.register<ProfileDetailsModule>(MainProfileDetailsModule(activity))
-    Injector.register<SearchModule>(MainSearchModule(activity.navigator))
+    Injector.register<FeedModule>(MainFeedModule(activity, navigator))
+    Injector.register<GalleryModule>(MainGalleryModule(navigator))
+    Injector.register<PostDetailsModule>(MainPostDetailsModule(activity, navigator))
+    Injector.register<ProfileDetailsModule>(MainProfileDetailsModule(activity, navigator))
+    Injector.register<SearchModule>(MainSearchModule(navigator))
     Injector.register<SettingsModule>(MainSettingsModule(activity))
     Injector.register<TermMutingModule>(MainTermMutingModule)
     clearDependenciesOnDestroy(activity)

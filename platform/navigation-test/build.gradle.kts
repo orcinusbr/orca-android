@@ -20,9 +20,21 @@ plugins {
   alias(libs.plugins.kotlin.android)
 }
 
-android.namespace = namespaceFor("platform.navigation.test")
+android {
+  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  namespace = namespaceFor("platform.navigation.test")
+}
 
 dependencies {
+  androidTestImplementation(libs.android.fragment.testing)
+  androidTestImplementation(libs.android.test.runner)
+  androidTestImplementation(libs.kotlin.test)
+
+  api(libs.android.fragment.testing)
+
+  implementation(project(":platform:navigation"))
   implementation(libs.android.fragment.ktx)
+  implementation(libs.android.test.core)
   implementation(libs.assertk)
+  implementation(libs.kotlin.reflect)
 }

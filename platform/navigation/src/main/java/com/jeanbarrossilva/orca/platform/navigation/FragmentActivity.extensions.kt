@@ -15,21 +15,19 @@
 
 package com.jeanbarrossilva.orca.platform.navigation
 
-import androidx.test.core.app.launchActivity
-import assertk.assertThat
-import assertk.assertions.isEqualTo
-import com.jeanbarrossilva.orca.ext.intents.intentOf
-import com.jeanbarrossilva.orca.platform.testing.context
-import org.junit.Test
+import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentContainerView
 
-internal class ActivityExtensionsTests {
-  @Test
-  fun getsIntentExtra() {
-    launchActivity<NavigationActivity>(intentOf<NavigationActivity>(context, "extra" to 0)).use {
-      scenario ->
-      scenario.onActivity { activity ->
-        assertThat(activity.extra<Int>("extra").value).isEqualTo(0)
-      }
-    }
-  }
-}
+/**
+ * [Navigator] through which [Fragment] navigation can be performed.
+ *
+ * **NOTE**: Because the [FragmentContainerView] that this [FragmentActivity] holds needs to have an
+ * ID for the [Navigator] to work properly, one is automatically generated and assigned to it if it
+ * doesn't already have one.
+ *
+ * @throws IllegalStateException If a [FragmentContainerView] is not found within the [View] tree.
+ */
+val FragmentActivity.navigator
+  @Throws(IllegalStateException::class) get() = Navigator.Pool.get(this)
