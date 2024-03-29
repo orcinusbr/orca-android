@@ -13,29 +13,21 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.platform.navigation.test.fragment
+package com.jeanbarrossilva.orca.platform.navigation.test.activity
 
-import androidx.fragment.app.Fragment
+import android.view.View
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentContainerView
-import androidx.fragment.app.testing.FragmentScenario
-import androidx.fragment.app.testing.launchFragmentInContainer
 import com.jeanbarrossilva.orca.platform.navigation.Navigator
 import com.jeanbarrossilva.orca.platform.navigation.navigator
-import com.jeanbarrossilva.orca.platform.navigation.test.activity.makeNavigable
 
 /**
- * Launches the specified [Fragment] in a [FragmentActivity] whose content is a
- * [FragmentContainerView], which, in turn, allows for its [Navigator] to be obtained.
+ * Allows for this [FragmentActivity]'s [Navigator] to be obtained by overriding its content and
+ * setting it as a [FragmentContainerView].
  *
- * @param T [Fragment] to be launched.
- * @param instantiate Creates an instance of the [Fragment] to be launched.
  * @see navigator
  */
-inline fun <reified T : Fragment> launchFragmentInNavigationContainer(
-  crossinline instantiate: () -> T
-): FragmentScenario<T> {
-  return launchFragmentInContainer(instantiate = instantiate).onFragment {
-    it.activity?.makeNavigable()
-  }
+@PublishedApi
+internal fun FragmentActivity.makeNavigable() {
+  FragmentContainerView(this).apply { id = View.generateViewId() }.run(::setContentView)
 }

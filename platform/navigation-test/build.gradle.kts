@@ -26,7 +26,9 @@ android {
 }
 
 dependencies {
+  androidTestImplementation(project(":platform:testing"))
   androidTestImplementation(libs.android.fragment.testing)
+  androidTestImplementation(libs.android.test.junit)
   androidTestImplementation(libs.android.test.runner)
   androidTestImplementation(libs.kotlin.test)
 
