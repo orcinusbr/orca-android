@@ -29,7 +29,7 @@ internal class NavigatorPoolTests {
     launchActivity<NavigationActivity>().use {
       val activity = checkNotNull(it.activity)
       val containerID = Navigator.Pool.getContainerIDOrThrow(activity)
-      Navigator.Pool.remember(activity)
+      Navigator.Pool.remember(activity, containerID)
       assertThat(containerID in Navigator.Pool).isTrue()
     }
   }
@@ -39,7 +39,7 @@ internal class NavigatorPoolTests {
     launchActivity<NavigationActivity>().use {
       val activity = checkNotNull(it.activity)
       val containerID = Navigator.Pool.getContainerIDOrThrow(activity)
-      Navigator.Pool.remember(activity)
+      Navigator.Pool.remember(activity, containerID)
       it.moveToState(Lifecycle.State.DESTROYED)
       assertThat(containerID in Navigator.Pool).isFalse()
     }

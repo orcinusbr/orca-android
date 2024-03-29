@@ -129,10 +129,13 @@ private constructor(
      * Creates and stores a [Navigator] for the given [activity].
      *
      * @param activity [FragmentActivity] based on which the [Navigator] will be remembered.
+     * @param containerID ID of the [FragmentContainerView] to which [Fragment]s will be added.
      */
-    internal fun remember(activity: FragmentActivity) {
-      val containerID = getContainerIDOrThrow(activity)
-      remember(activity, containerID)
+    internal fun remember(activity: FragmentActivity, @IdRes containerID: Int) {
+      val navigator = Navigator(activity.supportFragmentManager, containerID)
+      val lifecycleObserver = RemovalLifecycleObserver(containerID)
+      activity.runOnUiThread { activity.lifecycle.addObserver(lifecycleObserver) }
+      remembrances[containerID] = navigator
     }
 
     /**
@@ -159,19 +162,6 @@ private constructor(
      */
     internal operator fun contains(@IdRes containerID: Int): Boolean {
       return containerID in remembrances
-    }
-
-    /**
-     * Creates and stores a [Navigator] for the given [activity].
-     *
-     * @param activity [FragmentActivity] based on which the [Navigator] will be remembered.
-     * @param containerID ID of the [FragmentContainerView] to which [Fragment]s will be added.
-     */
-    private fun remember(activity: FragmentActivity, @IdRes containerID: Int) {
-      val navigator = Navigator(activity.supportFragmentManager, containerID)
-      val lifecycleObserver = RemovalLifecycleObserver(containerID)
-      activity.runOnUiThread { activity.lifecycle.addObserver(lifecycleObserver) }
-      remembrances[containerID] = navigator
     }
   }
 
