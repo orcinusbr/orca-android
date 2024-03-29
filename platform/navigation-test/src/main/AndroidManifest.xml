@@ -14,4 +14,8 @@
   ~ not, see https://www.gnu.org/licenses.
   -->
 
-<manifest />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <activity android:name=".activity.NavigationActivity" />
+    </application>
+</manifest>
