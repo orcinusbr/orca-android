@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright © 2023 Orca
+  ~ Copyright © 2023-2024 Orca
   ~
   ~ This program is free software: you can redistribute it and/or modify it under the terms of the
   ~ GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -68,6 +68,7 @@
         <item name="textAppearanceBodySmall">@style/Theme.Orca.Typography.BodySmall</item>
         <item name="textAppearanceHeadlineLarge">@style/Theme.Orca.Typography.HeadlineLarge</item>
         <item name="textAppearanceHeadlineMedium">@style/Theme.Orca.Typography.HeadlineMedium</item>
+        <item name="textAppearanceHeadlineSmall">@style/Theme.Orca.Typography.HeadlineSmall</item>
         <item name="textAppearanceLabelLarge">@style/Theme.Orca.Typography.LabelLarge</item>
         <item name="textAppearanceLabelMedium">@style/Theme.Orca.Typography.LabelMedium</item>
         <item name="textAppearanceTitleLarge">@style/Theme.Orca.Typography.TitleLarge</item>

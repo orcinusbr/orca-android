@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright © 2023 Orca
+  ~ Copyright © 2023-2024 Orca
   ~
   ~ This program is free software: you can redistribute it and/or modify it under the terms of the
   ~ GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -36,6 +36,14 @@
         <item name="android:textColor">@color/secondary</item>
         <item name="android:textFontWeight">@integer/font_weight_medium</item>
         <item name="android:textSize">20sp</item>
+    </style>
+
+    <style
+        name="Theme.Orca.Typography.HeadlineSmall"
+        parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:textColor">@color/secondary</item>
+        <item name="android:textSize">18sp</item>
+        <item name="lineHeight">26sp</item>
     </style>
 
     <style
