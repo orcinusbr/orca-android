@@ -24,7 +24,6 @@ dependencies {
   androidTestImplementation(project(":platform:intents"))
   androidTestImplementation(project(":platform:navigation-test"))
   androidTestImplementation(project(":platform:testing"))
-  androidTestImplementation(libs.android.fragment.testing)
   androidTestImplementation(libs.android.test.core)
   androidTestImplementation(libs.android.test.runner)
   androidTestImplementation(libs.android.test.core)

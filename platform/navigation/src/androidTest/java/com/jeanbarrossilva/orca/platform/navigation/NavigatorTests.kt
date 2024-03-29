@@ -15,9 +15,7 @@
 
 package com.jeanbarrossilva.orca.platform.navigation
 
-import android.os.Bundle
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentContainerView
 import androidx.test.core.app.launchActivity
 import assertk.assertThat
 import assertk.assertions.isEqualTo
@@ -27,13 +25,6 @@ import com.jeanbarrossilva.orca.platform.navigation.transition.suddenly
 import org.junit.Test
 
 internal class NavigatorTests {
-  class TestNavigationActivity : NavigationActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-      super.onCreate(savedInstanceState)
-      setContentView(FragmentContainerView(this))
-    }
-  }
-
   class FirstDestinationFragment : Fragment() {
     companion object {
       const val ROUTE = "first-destination"
@@ -48,7 +39,7 @@ internal class NavigatorTests {
 
   @Test
   fun navigatesSuddenly() {
-    launchActivity<TestNavigationActivity>().use { scenario ->
+    launchActivity<NavigationActivity>().use { scenario ->
       scenario.onActivity { activity ->
         activity.navigator.navigate(suddenly()) {
           to(FirstDestinationFragment.ROUTE, NavigatorTests::FirstDestinationFragment)
@@ -60,7 +51,7 @@ internal class NavigatorTests {
 
   @Test
   fun navigatesWithOpeningTransition() {
-    launchActivity<TestNavigationActivity>().use { scenario ->
+    launchActivity<NavigationActivity>().use { scenario ->
       scenario.onActivity { activity ->
         activity.navigator.navigate(opening()) {
           to(FirstDestinationFragment.ROUTE, NavigatorTests::FirstDestinationFragment)
@@ -72,7 +63,7 @@ internal class NavigatorTests {
 
   @Test
   fun navigatesWithClosingTransition() {
-    launchActivity<TestNavigationActivity>().use { scenario ->
+    launchActivity<NavigationActivity>().use { scenario ->
       scenario.onActivity { activity ->
         activity.navigator.navigate(
           com.jeanbarrossilva.orca.platform.navigation.transition.closing()
@@ -86,7 +77,7 @@ internal class NavigatorTests {
 
   @Test
   fun navigatesTwiceWhenDuplicationIsAllowed() {
-    launchActivity<TestNavigationActivity>().use { scenario ->
+    launchActivity<NavigationActivity>().use { scenario ->
       scenario.onActivity { activity ->
         repeat(2) {
           activity.navigator.navigate(suddenly()) {
@@ -100,7 +91,7 @@ internal class NavigatorTests {
 
   @Test
   fun navigatesOnceWhenDuplicationIsDisallowed() {
-    launchActivity<TestNavigationActivity>().use { scenario ->
+    launchActivity<NavigationActivity>().use { scenario ->
       scenario.onActivity { activity ->
         repeat(2) {
           activity.navigator.navigate(
@@ -117,7 +108,7 @@ internal class NavigatorTests {
 
   @Test
   fun navigatesSequentially() {
-    launchActivity<TestNavigationActivity>().use { scenario ->
+    launchActivity<NavigationActivity>().use { scenario ->
       scenario.onActivity { activity ->
         with(activity.navigator) {
           navigate(suddenly()) { to(FirstDestinationFragment.ROUTE, ::FirstDestinationFragment) }

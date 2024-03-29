@@ -18,16 +18,17 @@ package com.jeanbarrossilva.orca.platform.navigation
 import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentContainerView
 import androidx.test.core.app.launchActivity
 import assertk.assertThat
 import assertk.assertions.isNotEqualTo
 import org.junit.Test
 
-internal class NavigationActivityTests {
-  class NoFragmentContainerViewActivity : NavigationActivity()
+internal class FragmentActivityExtensionsTests {
+  class NoFragmentContainerViewActivity : FragmentActivity()
 
-  class UnidentifiedFragmentContainerViewActivity : NavigationActivity() {
+  class UnidentifiedFragmentContainerViewActivity : FragmentActivity() {
     var view: FragmentContainerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +43,7 @@ internal class NavigationActivityTests {
     }
   }
 
-  class EphemeralFragmentContainerViewActivity : NavigationActivity() {
+  class EphemeralFragmentContainerViewActivity : FragmentActivity() {
     private var view: FrameLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
