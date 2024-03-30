@@ -41,7 +41,7 @@ fun rememberStatusCardState(
    */
   val isEverLoading = remember(targetStatus) { targetStatus == Status.Loading }
 
-  return remember(isEverLoading, targetStatus) {
+  return remember(isEverLoading) {
       if (isEverLoading) {
         StatusCardState.EverLoading
       } else {

@@ -49,6 +49,7 @@ include(
   ":feature:profile-details",
   ":feature:registration",
   ":feature:registration:credentials",
+  ":feature:registration:ongoing",
   ":feature:search",
   ":feature:settings",
   ":feature:settings:term-muting",
