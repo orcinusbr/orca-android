@@ -14,10 +14,7 @@
   -->
 
 <resources>
-    <string name="feature_registration">Create an account</string>
-    <string name="feature_registration_explanation">
-        Orca will try to find an instance that is available and create an account for you with the
-        credentials you pass in. All of it in a completely secure way, not storing any of the given
-        private information (such as your desired password).
-    </string>
+    <string name="composite_status_loading">Attempting to create account…</string>
+    <string name="composite_status_succeeded">Account created successfully.</string>
+    <string name="composite_status_failed">Couldn\'t create account.</string>
 </resources>

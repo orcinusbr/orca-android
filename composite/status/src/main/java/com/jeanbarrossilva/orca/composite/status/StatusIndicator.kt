@@ -13,8 +13,9 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.registration.ui.status
+package com.jeanbarrossilva.orca.composite.status
 
+import android.graphics.drawable.Drawable
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.size
@@ -30,9 +31,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import com.jeanbarrossilva.orca.platform.autos.R
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 
+/**
+ * Contained icon for facilitating the understanding of what a given [Status] means.
+ *
+ * @param iconResource [Drawable] resource of the icon.
+ * @param containerColor [Color] by which the container with the icon will be colored.
+ * @param contentColor [Color] of the icon itself.
+ * @param modifier [Modifier] that is applied to the [Canvas].
+ */
 @Composable
 internal fun StatusIndicator(
   @DrawableRes iconResource: Int,
@@ -57,12 +67,13 @@ internal fun StatusIndicator(
   }
 }
 
+/** Preview of a [StatusIndicator]. */
 @Composable
 @Preview
 private fun StatusIndicatorPreview() {
   AutosTheme {
     StatusIndicator(
-      com.jeanbarrossilva.orca.platform.autos.R.drawable.icon_profile_filled,
+      R.drawable.icon_profile_filled,
       containerColor = AutosTheme.colors.activation.favorite.asColor,
       contentColor = Color.White
     )

@@ -20,7 +20,4 @@
         com as credenciais que inserir. Tudo isso de uma forma completamente segura, sem armazenar
         nenhuma das informações privadas fornecidas (como a sua senha desejada).
     </string>
-    <string name="feature_registration_status_loading">Tentando criar conta…</string>
-    <string name="feature_registration_status_succeeded">Conta criada com sucesso.</string>
-    <string name="feature_registration_status_failed">Não foi possível criar uma conta.</string>
 </resources>

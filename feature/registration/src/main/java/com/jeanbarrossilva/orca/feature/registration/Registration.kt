@@ -37,9 +37,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.jeanbarrossilva.orca.feature.registration.ui.status.Status
-import com.jeanbarrossilva.orca.feature.registration.ui.status.StatusCard
-import com.jeanbarrossilva.orca.feature.registration.ui.status.rememberStatusCardState
+import com.jeanbarrossilva.orca.composite.status.Status
+import com.jeanbarrossilva.orca.composite.status.StatusCard
+import com.jeanbarrossilva.orca.composite.status.state.rememberStatusCardState
 import com.jeanbarrossilva.orca.platform.animator.Animator
 import com.jeanbarrossilva.orca.platform.animator.animation.Motion
 import com.jeanbarrossilva.orca.platform.animator.animation.timing.after
@@ -101,7 +101,7 @@ private fun Registration(
               Stack {
                 item {
                   failedStatusCard.Animate {
-                    StatusCard(rememberStatusCardState(statusCardDelay, Status.Failed)) {
+                    StatusCard(rememberStatusCardState(Status.Failed, statusCardDelay)) {
                       Text("Instance 1")
                     }
                   }
@@ -112,7 +112,7 @@ private fun Registration(
                     statusCardEnterTransition,
                     after(failedStatusCard) + statusCardDelay * 1.5
                   ) {
-                    StatusCard(rememberStatusCardState(statusCardDelay, Status.Succeeded)) {
+                    StatusCard(rememberStatusCardState(Status.Succeeded, statusCardDelay)) {
                       Text("Instance 2")
                     }
                   }

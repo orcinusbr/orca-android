@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.feature.registration.ui.status
+package com.jeanbarrossilva.orca.composite.status
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
@@ -25,12 +25,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.jeanbarrossilva.orca.feature.registration.R
+import com.jeanbarrossilva.orca.core.instance.Instance
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 
+/** Account registration stage that a [StatusCard] can represent. */
 @Immutable
-internal enum class Status {
+enum class Status {
+  /** Denotes that an [Instance] at which an account can be registered is being searched for. */
   Loading {
     @Composable
     override fun Indicator(modifier: Modifier) {
@@ -43,9 +45,14 @@ internal enum class Status {
 
     @Composable
     override fun Description(modifier: Modifier) {
-      Text(stringResource(R.string.feature_registration_status_loading))
+      Text(stringResource(R.string.composite_status_loading))
     }
   },
+
+  /**
+   * Denotes that an available [Instance] has been found and an account been registered
+   * successfully.
+   */
   Succeeded {
     @Composable
     override fun Indicator(modifier: Modifier) {
@@ -58,9 +65,11 @@ internal enum class Status {
 
     @Composable
     override fun Description(modifier: Modifier) {
-      Text(stringResource(R.string.feature_registration_status_succeeded))
+      Text(stringResource(R.string.composite_status_succeeded))
     }
   },
+
+  /** Denotes that an account couldn't be registered at a given [Instance]. */
   Failed {
     @Composable
     override fun Indicator(modifier: Modifier) {
@@ -73,21 +82,41 @@ internal enum class Status {
 
     @Composable
     override fun Description(modifier: Modifier) {
-      Text(stringResource(R.string.feature_registration_status_failed))
+      Text(stringResource(R.string.composite_status_failed))
     }
   };
 
+  /**
+   * [StatusIndicator] that matches the [Description] and helps to easily identify whether an
+   * account could be registered or if the process itself hasn't yet completed.
+   */
   @Composable
   fun Indicator() {
     Indicator(Modifier)
   }
 
+  /**
+   * [Text] that clearly describes whether an account has been registered, hasn't or the process is
+   * still ongoing.
+   */
   @Composable
   fun Description() {
     Description(Modifier)
   }
 
+  /**
+   * [StatusIndicator] that matches the [Description] and helps to easily identify whether an
+   * account could be registered or if the process itself hasn't yet completed.
+   *
+   * @param modifier [Modifier] that is applied to the [StatusIndicator].
+   */
   @Composable abstract fun Indicator(modifier: Modifier)
 
+  /**
+   * [Text] that clearly describes whether an account has been registered, hasn't or the process is
+   * still ongoing.
+   *
+   * @param modifier [Modifier] that is applied to the [Text].
+   */
   @Composable abstract fun Description(modifier: Modifier)
 }
