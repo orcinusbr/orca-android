@@ -26,6 +26,7 @@ import kotlinx.coroutines.delay
  * Remembers a [StatusCardState].
  *
  * @param targetStatus [Status] to which the current one will be changed when it loads.
+ * @param delay [Duration] to wait for before loading the [Status].
  * @see StatusCardState.status
  * @see StatusCardState.loadStatus
  */
