@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orca
+ * Copyright © 2023-2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.feature.feed
 
+import android.os.Bundle
 import androidx.compose.runtime.Composable
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
@@ -41,7 +42,7 @@ class FeedFragment internal constructor() : ComposableFragment() {
     }
 
   constructor(userID: String) : this() {
-    arguments = bundleOf(USER_ID_KEY to userID)
+    arguments = createArguments(userID)
   }
 
   @Composable
@@ -53,5 +54,9 @@ class FeedFragment internal constructor() : ComposableFragment() {
     internal const val USER_ID_KEY = "user-id"
 
     const val ROUTE = "feed"
+
+    internal fun createArguments(userID: String): Bundle {
+      return bundleOf(USER_ID_KEY to userID)
+    }
   }
 }

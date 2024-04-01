@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orca
+ * Copyright © 2023-2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -25,7 +25,6 @@ import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
-import androidx.test.core.app.launchActivity
 import br.com.orcinus.orca.composite.timeline.stat.activateable.favorite.FAVORITE_STAT_TAG
 import br.com.orcinus.orca.composite.timeline.test.onTimeline
 import br.com.orcinus.orca.composite.timeline.test.performScrollToBottom
@@ -37,9 +36,9 @@ import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
 import br.com.orcinus.orca.core.sample.test.feed.profile.post.withSamples
 import br.com.orcinus.orca.core.sample.test.instance.SampleInstanceTestRule
-import br.com.orcinus.orca.feature.feed.test.FeedActivity
 import br.com.orcinus.orca.feature.feed.test.TestFeedModule
 import br.com.orcinus.orca.platform.core.sample
+import br.com.orcinus.orca.platform.navigation.test.fragment.launchFragmentInNavigationContainer
 import br.com.orcinus.orca.std.injector.test.InjectorTestRule
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -53,14 +52,15 @@ internal class FeedFragmentTests {
 
   @Test
   fun keepsPreviousPostsWhenLoadingNextOnes() {
-    launchActivity<FeedActivity>(FeedActivity.getIntent(Profile.sample.id)).use {
-      composeRule
-        .onTimeline()
-        .performScrollToBottom()
-        .onChildren()
-        .filter(isPostPreview())
-        .assertCountEquals(Posts.withSamples.size)
-    }
+    launchFragmentInNavigationContainer { FeedFragment(Profile.sample.id) }
+      .use {
+        composeRule
+          .onTimeline()
+          .performScrollToBottom()
+          .onChildren()
+          .filter(isPostPreview())
+          .assertCountEquals(Posts.withSamples.size)
+      }
   }
 
   @Test
@@ -73,15 +73,16 @@ internal class FeedFragmentTests {
         .favorite
         .disable()
     }
-    launchActivity<FeedActivity>(FeedActivity.getIntent(Profile.sample.id)).use {
-      composeRule
-        .onPostPreviews()
-        .onFirst()
-        .onChildren()
-        .filterToOne(hasTestTag(FAVORITE_STAT_TAG))
-        .performScrollTo()
-        .performClick()
-        .assertIsSelected()
-    }
+    launchFragmentInNavigationContainer { FeedFragment(Profile.sample.id) }
+      .use {
+        composeRule
+          .onPostPreviews()
+          .onFirst()
+          .onChildren()
+          .filterToOne(hasTestTag(FAVORITE_STAT_TAG))
+          .performScrollTo()
+          .performClick()
+          .assertIsSelected()
+      }
   }
 }
