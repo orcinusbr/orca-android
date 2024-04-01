@@ -14,5 +14,10 @@
   -->
 
 <resources>
+    <string name="feature_registration_ongoing">Criando uma conta para você…</string>
+    <string name="feature_registration_ongoing_description">
+        O Orca está acessando cada uma das instâncias conhecidas e criará sua conta em uma que
+        estiver disponível.
+    </string>
     <string name="feature_registration_ongoing_done">Concluir</string>
 </resources>
