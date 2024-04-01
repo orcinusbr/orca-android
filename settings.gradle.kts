@@ -26,6 +26,7 @@ includeBuild("build-src")
 include(
   ":app",
   ":composite:composable",
+  ":composite:status",
   ":composite:timeline",
   ":composite:timeline-test",
   ":core",
@@ -46,6 +47,9 @@ include(
   ":feature:gallery-test",
   ":feature:post-details",
   ":feature:profile-details",
+  ":feature:registration",
+  ":feature:registration:credentials",
+  ":feature:registration:ongoing",
   ":feature:search",
   ":feature:settings",
   ":feature:settings:term-muting",
