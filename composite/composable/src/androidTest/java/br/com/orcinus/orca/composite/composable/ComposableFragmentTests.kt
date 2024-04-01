@@ -16,30 +16,22 @@
 package br.com.orcinus.orca.composite.composable
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.onRoot
-import androidx.navigation.NavGraphBuilder
-import br.com.orcinus.orca.platform.testing.activity.SingleFragmentActivity
-import org.junit.Rule
+import androidx.compose.ui.test.runEmptyComposeUiTest
+import br.com.orcinus.orca.platform.navigation.test.fragment.launchFragmentInNavigationContainer
 import org.junit.Test
 
 internal class ComposableFragmentTests {
-  @get:Rule val composeRule = createAndroidComposeRule<TestComposableFragmentActivity>()
-
-  class TestComposableFragmentActivity : SingleFragmentActivity() {
-    override val route = "composable"
-
-    override fun NavGraphBuilder.add() {
-      fragment<TestComposableFragment>()
-    }
-  }
-
   class TestComposableFragment : ComposableFragment() {
     @Composable @Suppress("TestFunctionName") override fun Content() {}
   }
 
   @Test
   fun setsComposableView() {
-    composeRule.onRoot().assertExists()
+    @OptIn(ExperimentalTestApi::class)
+    runEmptyComposeUiTest {
+      launchFragmentInNavigationContainer(::TestComposableFragment).use { onRoot().assertExists() }
+    }
   }
 }

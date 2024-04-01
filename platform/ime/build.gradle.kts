@@ -27,6 +27,7 @@ android {
 dependencies {
   androidTestImplementation(project(":ext:coroutines"))
   androidTestImplementation(project(":platform:testing"))
+  androidTestImplementation(libs.android.activity.ktx)
   androidTestImplementation(libs.android.test.core)
   androidTestImplementation(libs.android.test.runner)
   androidTestImplementation(libs.assertk)

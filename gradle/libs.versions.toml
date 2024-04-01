@@ -82,7 +82,7 @@ orca-setup-kotlin = { id = "br.com.orcinus.orca.setup.kotlin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [versions]
-android-activity = "1.8.2"
+android-activity = "1.7.0"
 android-compose = "1.6.0-rc01"
 android-compose-compiler = "1.5.7"
 android-fragment = "1.6.2"

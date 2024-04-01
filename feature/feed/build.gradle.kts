@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orca
+ * Copyright © 2023-2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -29,7 +29,7 @@ dependencies {
   androidTestImplementation(project(":composite:timeline-test"))
   androidTestImplementation(project(":core:sample-test"))
   androidTestImplementation(project(":platform:core"))
-  androidTestImplementation(project(":platform:testing"))
+  androidTestImplementation(project(":platform:navigation-test"))
   androidTestImplementation(project(":std:injector-test"))
   androidTestImplementation(libs.android.compose.ui.test.junit)
   androidTestImplementation(libs.android.compose.ui.test.manifest)

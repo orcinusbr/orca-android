@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright © 2023-2024 Orca
+  ~ Copyright © 2023–2024 Orcinus
   ~
   ~ This program is free software: you can redistribute it and/or modify it under the terms of the
   ~ GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,18 +16,7 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
-        <activity android:name="android.app.Activity" />
         <activity
-            android:name="br.com.orcinus.orca.platform.testing.activity.SingleFragmentActivityTests$InequivalentlyRoutedDestinationActivity" />
-        <activity
-            android:name="br.com.orcinus.orca.platform.testing.activity.SingleFragmentActivityTests$MultipleDestinationsActivity" />
-        <activity
-            android:name="br.com.orcinus.orca.platform.testing.activity.SingleFragmentActivityTests$NoDestinationActivity" />
-        <activity
-            android:name="br.com.orcinus.orca.platform.testing.activity.SingleFragmentActivityTests$NonFragmentDestinationActivity" />
-        <activity
-            android:name="br.com.orcinus.orca.platform.testing.activity.SingleFragmentActivityTests$NonFragmentDestinationActivity$DestinationActivity" />
-        <activity
-            android:name="br.com.orcinus.orca.platform.testing.activity.SingleFragmentActivityTests$PosteriorlyAddedDestinationActivity" />
+            android:name="br.com.orcinus.orca.platform.testing.activity.scenario.ActivityScenarioExtensionsTests$TestActivity" />
     </application>
 </manifest>

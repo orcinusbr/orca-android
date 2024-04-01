@@ -25,10 +25,8 @@ android {
 }
 
 dependencies {
-  androidTestImplementation(project(":platform:testing"))
+  androidTestImplementation(project(":platform:navigation-test"))
   androidTestImplementation(libs.android.compose.ui.test.junit)
-  androidTestImplementation(libs.android.test.core)
-  androidTestImplementation(libs.assertk)
 
   api(project(":platform:starter:lifecycle"))
 

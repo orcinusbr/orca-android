@@ -15,25 +15,14 @@
 
 package br.com.orcinus.orca.platform.navigation.test.fragment
 
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import assertk.assertThat
-import assertk.assertions.isSameAs
 import br.com.orcinus.orca.platform.navigation.navigator
 import kotlin.test.Test
 
 internal class FragmentScenarioExtensionsTests {
   @Test
-  fun launchesFragmentInNavigationContainerWithArguments() {
-    val args = bundleOf("id" to 0)
-    launchFragmentInNavigationContainer(args, ::Fragment).use { scenario ->
-      scenario.onFragment { fragment -> assertThat(fragment.arguments).isSameAs(args) }
-    }
-  }
-
-  @Test
   fun getsNavigatorFromContainerActivity() {
-    launchFragmentInNavigationContainer(instantiate = ::Fragment).use { scenario ->
+    launchFragmentInNavigationContainer(instantiation = ::Fragment).use { scenario ->
       scenario.onFragment { fragment -> fragment.requireActivity().navigator }
     }
   }

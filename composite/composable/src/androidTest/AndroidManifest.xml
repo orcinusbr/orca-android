@@ -18,7 +18,5 @@
     <application>
         <activity
             android:name="br.com.orcinus.orca.composite.composable.ComposableActivityTests$TestComposableActivity" />
-        <activity
-            android:name="br.com.orcinus.orca.composite.composable.ComposableFragmentTests$TestComposableFragmentActivity" />
     </application>
 </manifest>

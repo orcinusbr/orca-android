@@ -23,7 +23,9 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class ActivityScenarioExtensionsTests {
-  @get:Rule val activityScenarioRule = ActivityScenarioRule(Activity::class.java)
+  @get:Rule val activityScenarioRule = ActivityScenarioRule(TestActivity::class.java)
+
+  class TestActivity : Activity()
 
   @Test
   fun getsActivity() {
