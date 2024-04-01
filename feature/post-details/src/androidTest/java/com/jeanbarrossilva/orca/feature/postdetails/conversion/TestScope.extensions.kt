@@ -15,7 +15,7 @@
 
 package com.jeanbarrossilva.orca.feature.postdetails.conversion
 
-import com.jeanbarrossilva.orca.autos.colors.Colors
+import br.com.orcinus.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.composite.timeline.post.figure.gallery.GalleryPreview
 import com.jeanbarrossilva.orca.composite.timeline.post.figure.gallery.disposition.Disposition
 import com.jeanbarrossilva.orca.composite.timeline.post.figure.link.LinkCard

@@ -15,7 +15,7 @@
 
 package com.jeanbarrossilva.orca.feature.profiledetails.test
 
-import com.jeanbarrossilva.orca.autos.colors.Colors
+import br.com.orcinus.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.composite.timeline.text.annotated.toAnnotatedString
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.core.sample.test.feed.profile.sample

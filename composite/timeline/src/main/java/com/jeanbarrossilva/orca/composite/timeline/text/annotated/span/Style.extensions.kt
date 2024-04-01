@@ -16,7 +16,7 @@
 package com.jeanbarrossilva.orca.composite.timeline.text.annotated.span
 
 import androidx.compose.ui.text.SpanStyle
-import com.jeanbarrossilva.orca.autos.colors.Colors
+import br.com.orcinus.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.composite.timeline.text.annotated.span.category.Categorizer
 import com.jeanbarrossilva.orca.std.styledstring.style.Style
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Bold

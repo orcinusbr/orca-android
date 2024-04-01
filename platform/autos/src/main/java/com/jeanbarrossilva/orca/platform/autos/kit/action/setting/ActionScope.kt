@@ -25,7 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import com.jeanbarrossilva.orca.autos.iconography.Iconography
+import br.com.orcinus.orca.autos.iconography.Iconography
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme
 
 /** Scope through which either an [icon] or a [button] action can be added. */

@@ -45,7 +45,7 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import com.jeanbarrossilva.orca.autos.borders.Borders
+import br.com.orcinus.orca.autos.borders.Borders
 import com.jeanbarrossilva.orca.platform.autos.borders.areApplicable
 import com.jeanbarrossilva.orca.platform.autos.borders.asBorderStroke
 import com.jeanbarrossilva.orca.platform.autos.colors.LocalContainerColor

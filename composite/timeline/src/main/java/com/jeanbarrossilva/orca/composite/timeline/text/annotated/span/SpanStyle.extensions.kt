@@ -24,7 +24,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.isUnspecified
-import com.jeanbarrossilva.orca.autos.colors.Colors
+import br.com.orcinus.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.composite.timeline.text.annotated.span.category.Categorizer
 import com.jeanbarrossilva.orca.platform.autos.colors.asColor
 import com.jeanbarrossilva.orca.std.styledstring.StyledString

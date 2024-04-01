@@ -18,9 +18,9 @@ package com.jeanbarrossilva.orca.app.demo
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.test.assertAny
 import androidx.compose.ui.test.junit4.createComposeRule
+import br.com.orcinus.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.app.demo.test.isPostPreview
 import com.jeanbarrossilva.orca.app.demo.test.performScrollToPostIndex
-import com.jeanbarrossilva.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.composite.timeline.Timeline
 import com.jeanbarrossilva.orca.composite.timeline.post.PostPreview
 import com.jeanbarrossilva.orca.composite.timeline.test.onTimeline

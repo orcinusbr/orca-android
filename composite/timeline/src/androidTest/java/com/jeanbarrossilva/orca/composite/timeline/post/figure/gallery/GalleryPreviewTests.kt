@@ -21,7 +21,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onLast
 import androidx.test.platform.app.InstrumentationRegistry
-import com.jeanbarrossilva.orca.autos.forms.Forms
+import br.com.orcinus.orca.autos.forms.Forms
 import com.jeanbarrossilva.orca.composite.timeline.R
 import com.jeanbarrossilva.orca.composite.timeline.avatar.sample
 import com.jeanbarrossilva.orca.composite.timeline.post.figure.gallery.disposition.Disposition

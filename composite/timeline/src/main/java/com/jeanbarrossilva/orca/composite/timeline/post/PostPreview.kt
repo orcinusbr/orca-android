@@ -46,11 +46,11 @@ import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
+import br.com.orcinus.orca.autos.colors.Colors
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.test.Loading
-import com.jeanbarrossilva.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.composite.timeline.R
 import com.jeanbarrossilva.orca.composite.timeline.avatar.SmallAvatar
 import com.jeanbarrossilva.orca.composite.timeline.post.figure.Figure

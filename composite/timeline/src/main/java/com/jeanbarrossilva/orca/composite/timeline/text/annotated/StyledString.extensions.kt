@@ -20,7 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import com.jeanbarrossilva.orca.autos.colors.Colors
+import br.com.orcinus.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.composite.timeline.text.annotated.span.toSpanStyle
 import com.jeanbarrossilva.orca.composite.timeline.text.pop
 import com.jeanbarrossilva.orca.composite.timeline.text.spanned.toStyledString

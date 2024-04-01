@@ -16,7 +16,7 @@
 package com.jeanbarrossilva.orca.feature.postdetails
 
 import androidx.compose.runtime.Composable
-import com.jeanbarrossilva.orca.autos.colors.Colors
+import br.com.orcinus.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.composite.timeline.post.figure.Figure
 import com.jeanbarrossilva.orca.composite.timeline.post.figure.gallery.disposition.Disposition
 import com.jeanbarrossilva.orca.composite.timeline.stat.details.asStatsDetails

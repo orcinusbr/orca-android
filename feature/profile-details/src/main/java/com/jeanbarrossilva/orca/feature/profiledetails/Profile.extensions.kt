@@ -15,7 +15,7 @@
 
 package com.jeanbarrossilva.orca.feature.profiledetails
 
-import com.jeanbarrossilva.orca.autos.colors.Colors
+import br.com.orcinus.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.core.feed.profile.Profile
 import com.jeanbarrossilva.orca.feature.profiledetails.conversion.ProfileConverterFactory
 import kotlinx.coroutines.CoroutineScope

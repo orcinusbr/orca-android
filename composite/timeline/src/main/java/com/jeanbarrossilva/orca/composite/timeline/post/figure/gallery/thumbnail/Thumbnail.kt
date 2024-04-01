@@ -27,7 +27,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
-import com.jeanbarrossilva.orca.autos.forms.Forms
+import br.com.orcinus.orca.autos.forms.Forms
 import com.jeanbarrossilva.orca.composite.timeline.R
 import com.jeanbarrossilva.orca.composite.timeline.post.figure.gallery.GalleryPreview
 import com.jeanbarrossilva.orca.core.feed.profile.post.Author

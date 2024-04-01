@@ -20,7 +20,7 @@ import androidx.compose.foundation.shape.ZeroCornerSize
 import androidx.compose.ui.unit.dp
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import com.jeanbarrossilva.orca.autos.Spacings
+import br.com.orcinus.orca.autos.Spacings
 import com.jeanbarrossilva.orca.composite.timeline.post.figure.gallery.disposition.withoutBottomEnd
 import com.jeanbarrossilva.orca.composite.timeline.post.figure.gallery.disposition.withoutBottomStart
 import com.jeanbarrossilva.orca.composite.timeline.post.figure.gallery.disposition.withoutTopEnd

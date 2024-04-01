@@ -19,7 +19,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -65,12 +64,7 @@ private fun Registration(
 ) {
   val spacing = AutosTheme.spacings.large.dp
   val spacerModifier = remember(spacing) { Modifier.height(spacing) }
-  val backdropColor =
-    if (isSystemInDarkTheme()) {
-      AutosTheme.colors.surface.container.asColor
-    } else {
-      AutosTheme.colors.placeholder.asColor
-    }
+  val backdropColor = AutosTheme.colors.backdrop.asColor
   val statusCardAnimationSpec = remember { tween<Float>() }
   val statusCardEnterTransition =
     remember(statusCardAnimationSpec) {

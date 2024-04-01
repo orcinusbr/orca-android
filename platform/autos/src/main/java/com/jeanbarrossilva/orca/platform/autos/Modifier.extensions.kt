@@ -20,7 +20,7 @@ import androidx.compose.foundation.border
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Shape
-import com.jeanbarrossilva.orca.autos.borders.Borders
+import br.com.orcinus.orca.autos.borders.Borders
 import com.jeanbarrossilva.orca.platform.autos.borders.areApplicable
 import com.jeanbarrossilva.orca.platform.autos.borders.asBorderStroke
 import com.jeanbarrossilva.orca.platform.autos.theme.AutosTheme

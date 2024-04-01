@@ -18,7 +18,7 @@ package com.jeanbarrossilva.orca.composite.timeline.text.annotated.span
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
-import com.jeanbarrossilva.orca.autos.colors.Colors
+import br.com.orcinus.orca.autos.colors.Colors
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Bold
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Email
 import com.jeanbarrossilva.orca.std.styledstring.style.type.Italic

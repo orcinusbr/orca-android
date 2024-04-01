@@ -21,12 +21,12 @@ import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 
 /**
- * Adds the repository in which [αὐτός](https://github.com/orcaformastodon/autos) is located.
+ * Adds the repository in which [αὐτός](https://github.com/orcinusbr/autos) is located.
  *
  * @param project [Project] to which the repository is being added.
  */
 fun RepositoryHandler.autos(project: Project): MavenArtifactRepository {
-  return gitHubPackages(project, route = "orcaformastodon/autos")
+  return gitHubPackages(project, route = "orcinusbr/autos")
 }
 
 /** Adds [chRyNaN](https://github.com/chRyNaN)'s repository. * */

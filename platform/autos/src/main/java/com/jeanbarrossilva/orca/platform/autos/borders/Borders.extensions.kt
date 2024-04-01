@@ -24,7 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocal
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.platform.LocalContext
-import com.jeanbarrossilva.orca.autos.borders.Borders
+import br.com.orcinus.orca.autos.borders.Borders
 import com.jeanbarrossilva.orca.platform.autos.noLocalProvidedFor
 
 /** [CompositionLocal] that provides [Borders]. */
