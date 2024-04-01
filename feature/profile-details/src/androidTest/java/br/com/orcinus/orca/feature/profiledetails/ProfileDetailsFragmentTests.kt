@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orca
+ * Copyright © 2023-2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -20,14 +20,16 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
 import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.sample.test.instance.SampleInstanceTestRule
+import br.com.orcinus.orca.feature.profiledetails.navigation.BackwardsNavigationState
 import br.com.orcinus.orca.feature.profiledetails.test.TestProfileDetailsModule
 import br.com.orcinus.orca.feature.profiledetails.test.isFollowingType
-import br.com.orcinus.orca.feature.profiledetails.test.launchProfileDetailsActivity
 import br.com.orcinus.orca.feature.profiledetails.test.sample
 import br.com.orcinus.orca.platform.core.sample
+import br.com.orcinus.orca.platform.navigation.test.fragment.launchFragmentInNavigationContainer
 import br.com.orcinus.orca.std.injector.test.InjectorTestRule
 import com.jeanbarrossilva.loadable.placeholder.test.isLoading
 import kotlin.time.Duration.Companion.seconds
@@ -54,19 +56,28 @@ internal class ProfileDetailsFragmentTests {
     if (!profile.follow.isFollowingType) {
       runTest { profile.toggleFollow() }
     }
-    launchProfileDetailsActivity(profile.id).use {
-      composeRule
-        .onNodeWithTag(ProfileDetails.Followable.MAIN_ACTION_BUTTON_TAG)
-        .performClick()
-        .assertTextEquals(ProfileDetails.Followable.Status.UNFOLLOWED.label)
-    }
+    launchFragmentInNavigationContainer {
+        ProfileDetailsFragment(BackwardsNavigationState.Unavailable, profile.id)
+      }
+      .use {
+        composeRule
+          .onNodeWithTag(ProfileDetails.Followable.MAIN_ACTION_BUTTON_TAG)
+          .performClick()
+          .assertTextEquals(ProfileDetails.Followable.Status.UNFOLLOWED.label)
+      }
   }
 
   @Test
   fun loadsPosts() {
-    launchProfileDetailsActivity().use {
-      @OptIn(ExperimentalTestApi::class)
-      composeRule.waitUntilDoesNotExist(isLoading(), timeoutMillis = 4.seconds.inWholeMilliseconds)
-    }
+    launchFragmentInNavigationContainer {
+        ProfileDetailsFragment(BackwardsNavigationState.Unavailable, Profile.sample.id)
+      }
+      .use {
+        @OptIn(ExperimentalTestApi::class)
+        composeRule.waitUntilDoesNotExist(
+          isLoading(),
+          timeoutMillis = 4.seconds.inWholeMilliseconds
+        )
+      }
   }
 }
