@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.platform.navigation.test.fragment
 
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentContainerView
@@ -29,13 +30,15 @@ import br.com.orcinus.orca.platform.navigation.test.activity.makeNavigable
  * [FragmentContainerView], which, in turn, allows for its [Navigator] to be obtained.
  *
  * @param T [Fragment] to be launched.
+ * @param args [Bundle] containing the arguments for the [Fragment].
  * @param instantiate Creates an instance of the [Fragment] to be launched.
  * @see navigator
  */
 inline fun <reified T : Fragment> launchFragmentInNavigationContainer(
+  args: Bundle? = null,
   crossinline instantiate: () -> T
 ): FragmentScenario<T> {
-  return launchFragmentInContainer(instantiate = instantiate).onFragment {
+  return launchFragmentInContainer(args, instantiate = instantiate).onFragment {
     it.activity?.makeNavigable()
   }
 }
