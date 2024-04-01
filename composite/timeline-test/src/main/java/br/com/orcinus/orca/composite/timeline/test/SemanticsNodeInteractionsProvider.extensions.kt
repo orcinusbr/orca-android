@@ -16,17 +16,17 @@
 package br.com.orcinus.orca.composite.timeline.test
 
 import androidx.compose.ui.test.SemanticsNodeInteraction
-import androidx.compose.ui.test.junit4.ComposeTestRule
+import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.onNodeWithTag
 import br.com.orcinus.orca.composite.timeline.TIMELINE_REFRESH_INDICATOR
 import br.com.orcinus.orca.composite.timeline.Timeline
 
 /** [SemanticsNodeInteraction] of a [Timeline]'s refresh indicator. */
-fun ComposeTestRule.onRefreshIndicator(): SemanticsNodeInteraction {
+fun SemanticsNodeInteractionsProvider.onRefreshIndicator(): SemanticsNodeInteraction {
   return onNodeWithTag(TIMELINE_REFRESH_INDICATOR)
 }
 
 /** [SemanticsNodeInteraction] of a [Timeline]. */
-fun ComposeTestRule.onTimeline(): SemanticsNodeInteraction {
+fun SemanticsNodeInteractionsProvider.onTimeline(): SemanticsNodeInteraction {
   return onNode(isTimeline())
 }

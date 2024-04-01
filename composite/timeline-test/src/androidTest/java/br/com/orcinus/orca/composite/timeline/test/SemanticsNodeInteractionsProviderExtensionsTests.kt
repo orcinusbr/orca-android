@@ -22,7 +22,7 @@ import br.com.orcinus.orca.composite.timeline.refresh.Refresh
 import org.junit.Rule
 import org.junit.Test
 
-internal class ComposeTestRuleExtensionsTests {
+internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
