@@ -16,6 +16,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
         <activity
-            android:name="com.jeanbarrossilva.orca.feature.profiledetails.test.ProfileDetailsActivity" />
+            android:name="br.com.orcinus.orca.feature.profiledetails.test.ProfileDetailsActivity" />
     </application>
 </manifest>

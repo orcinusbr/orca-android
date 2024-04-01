@@ -49,7 +49,7 @@ allprojects {
 gradlePlugin {
   plugins.register(name) {
     id = name
-    implementationClass = "com.jeanbarrossilva.orca.plugin.BuildSrcPlugin"
+    implementationClass = "br.com.orcinus.orca.plugin.BuildSrcPlugin"
   }
 }
 

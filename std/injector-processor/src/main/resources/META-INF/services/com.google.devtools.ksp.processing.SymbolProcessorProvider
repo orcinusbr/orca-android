@@ -13,4 +13,4 @@
 # not, see https://www.gnu.org/licenses.
 #
 
-com.jeanbarrossilva.orca.std.injector.processor.inject.InjectProcessor$Provider
+br.com.orcinus.orca.std.injector.processor.inject.InjectProcessor$Provider

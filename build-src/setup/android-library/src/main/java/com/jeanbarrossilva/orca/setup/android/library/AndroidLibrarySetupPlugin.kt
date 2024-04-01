@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.setup.android.library
+package br.com.orcinus.orca.setup.android.library
 
 import com.android.build.gradle.LibraryExtension
 import org.gradle.api.JavaVersion

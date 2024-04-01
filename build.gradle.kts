@@ -13,9 +13,9 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-import com.jeanbarrossilva.orca.autos
-import com.jeanbarrossilva.orca.chrynan
-import com.jeanbarrossilva.orca.loadable
+import br.com.orcinus.orca.autos
+import br.com.orcinus.orca.chrynan
+import br.com.orcinus.orca.loadable
 
 plugins {
   alias(libs.plugins.android.application) apply false

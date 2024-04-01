@@ -21,11 +21,11 @@ plugins {
 }
 
 buildConfig {
-  packageName("com.jeanbarrossilva.orca.setup.java")
+  packageName("br.com.orcinus.orca.setup.java")
   buildConfigField("String", "JAVA_VERSION", "\"${libs.versions.java.get()}\"")
 }
 
 gradlePlugin.plugins.register("setup-java") {
   id = libs.plugins.orca.setup.java.get().pluginId
-  implementationClass = "com.jeanbarrossilva.orca.setup.java.JavaSetupPlugin"
+  implementationClass = "br.com.orcinus.orca.setup.java.JavaSetupPlugin"
 }

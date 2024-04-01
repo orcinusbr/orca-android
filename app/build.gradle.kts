@@ -13,9 +13,8 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-import com.jeanbarrossilva.orca.Dimensions
-import com.jeanbarrossilva.orca.namespace
-import com.jeanbarrossilva.orca.namespaceFor
+import br.com.orcinus.orca.Dimensions
+import br.com.orcinus.orca.namespaceFor
 
 plugins {
   alias(libs.plugins.android.application)
@@ -50,7 +49,7 @@ android {
   }
 
   defaultConfig {
-    applicationId = project.namespace
+    applicationId = "com.jeanbarrossilva.orca"
     minSdk = libs.versions.android.sdk.min.get().toInt()
     targetSdk = libs.versions.android.sdk.target.get().toInt()
     versionCode = 4

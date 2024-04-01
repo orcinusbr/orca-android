@@ -18,16 +18,16 @@
     <application>
         <activity android:name="android.app.Activity" />
         <activity
-            android:name="com.jeanbarrossilva.orca.platform.testing.activity.SingleFragmentActivityTests$InequivalentlyRoutedDestinationActivity" />
+            android:name="br.com.orcinus.orca.platform.testing.activity.SingleFragmentActivityTests$InequivalentlyRoutedDestinationActivity" />
         <activity
-            android:name="com.jeanbarrossilva.orca.platform.testing.activity.SingleFragmentActivityTests$MultipleDestinationsActivity" />
+            android:name="br.com.orcinus.orca.platform.testing.activity.SingleFragmentActivityTests$MultipleDestinationsActivity" />
         <activity
-            android:name="com.jeanbarrossilva.orca.platform.testing.activity.SingleFragmentActivityTests$NoDestinationActivity" />
+            android:name="br.com.orcinus.orca.platform.testing.activity.SingleFragmentActivityTests$NoDestinationActivity" />
         <activity
-            android:name="com.jeanbarrossilva.orca.platform.testing.activity.SingleFragmentActivityTests$NonFragmentDestinationActivity" />
+            android:name="br.com.orcinus.orca.platform.testing.activity.SingleFragmentActivityTests$NonFragmentDestinationActivity" />
         <activity
-            android:name="com.jeanbarrossilva.orca.platform.testing.activity.SingleFragmentActivityTests$NonFragmentDestinationActivity$DestinationActivity" />
+            android:name="br.com.orcinus.orca.platform.testing.activity.SingleFragmentActivityTests$NonFragmentDestinationActivity$DestinationActivity" />
         <activity
-            android:name="com.jeanbarrossilva.orca.platform.testing.activity.SingleFragmentActivityTests$PosteriorlyAddedDestinationActivity" />
+            android:name="br.com.orcinus.orca.platform.testing.activity.SingleFragmentActivityTests$PosteriorlyAddedDestinationActivity" />
     </application>
 </manifest>

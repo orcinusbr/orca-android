@@ -21,7 +21,7 @@ plugins {
 }
 
 buildConfig {
-  packageName("com.jeanbarrossilva.orca.setup.android.library")
+  packageName("br.com.orcinus.orca.setup.android.library")
   buildConfigField("String", "JAVA_VERSION", "\"${libs.versions.java.get()}\"")
   buildConfigField("String", "MIN_SDK_VERSION", "\"${libs.versions.android.sdk.min.get()}\"")
   buildConfigField("String", "TARGET_SDK_VERSION", "\"${libs.versions.android.sdk.target.get()}\"")
@@ -31,7 +31,7 @@ dependencies { implementation(libs.android.plugin) }
 
 gradlePlugin.plugins.register("setup-android-library") {
   id = libs.plugins.orca.setup.android.library.get().pluginId
-  implementationClass = "com.jeanbarrossilva.orca.setup.android.library.AndroidLibrarySetupPlugin"
+  implementationClass = "br.com.orcinus.orca.setup.android.library.AndroidLibrarySetupPlugin"
 }
 
 repositories.google()

@@ -1,4 +1,4 @@
-import com.jeanbarrossilva.orca.namespaceFor
+import br.com.orcinus.orca.namespaceFor
 
 /*
  * Copyright © 2024 Orcinus

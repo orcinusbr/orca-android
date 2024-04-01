@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-import com.jeanbarrossilva.orca.namespaceFor
+import br.com.orcinus.orca.namespaceFor
 
 plugins {
   alias(libs.plugins.android.library)

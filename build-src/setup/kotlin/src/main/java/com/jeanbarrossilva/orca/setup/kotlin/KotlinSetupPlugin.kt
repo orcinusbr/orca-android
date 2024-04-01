@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package com.jeanbarrossilva.orca.setup.kotlin
+package br.com.orcinus.orca.setup.kotlin
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project

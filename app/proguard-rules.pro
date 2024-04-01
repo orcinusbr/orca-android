@@ -13,7 +13,7 @@
 # not, see https://www.gnu.org/licenses.
 #
 
--keep class com.jeanbarrossilva.orca.** { *; }
+-keep class br.com.orcinus.orca.** { *; }
 -keepclassmembers class ** implements android.os.Parcelable {
     public static final android.os.Parcelable$Creator CREATOR;
 }
