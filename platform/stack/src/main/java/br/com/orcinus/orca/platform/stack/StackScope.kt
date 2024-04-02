@@ -23,11 +23,6 @@ class StackScope internal constructor() {
   /** Contents that have been added onto the [Stack]. */
   private val contents = mutableStateListOf<@Composable () -> Unit>()
 
-  /** Gets an immutable [List] containing the contents that have been added onto the [Stack]. */
-  fun contents(): List<@Composable () -> Unit> {
-    return contents.toList()
-  }
-
   /**
    * Adds an item onto the [Stack].
    *
@@ -35,5 +30,10 @@ class StackScope internal constructor() {
    */
   fun item(content: @Composable () -> Unit) {
     contents.add(content)
+  }
+
+  /** Gets an immutable [List] containing the contents that have been added onto the [Stack]. */
+  internal fun contents(): List<@Composable () -> Unit> {
+    return contents.toList()
   }
 }
