@@ -22,7 +22,10 @@ import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import br.com.orcinus.orca.ext.reflection.access
 import br.com.orcinus.orca.platform.testing.context
+import kotlin.reflect.KProperty1
+import kotlin.reflect.full.declaredMemberProperties
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -59,6 +62,11 @@ private class WithDrawableMatcher(
   override fun matches(item: Any?): Boolean {
     return item is ImageView &&
       (((resource == Resources.ID_NULL && item.drawable == null) ||
+        ImageView::class
+          .declaredMemberProperties
+          .filterIsInstance<KProperty1<ImageView, Int>>()
+          .single { it.name == "mResource" }
+          .access { get(item) } == resource ||
         drawable?.constantState == item.drawable?.constantState ||
         drawable?.toBitmap()?.sameAs(item.drawable?.toBitmap()) ?: false))
   }
