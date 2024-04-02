@@ -17,10 +17,22 @@ jobs:
           cache: 'gradle'
           java-version: '17'
           distribution: 'corretto'
-      - name: Test with Gradle
+      - name: Run unit tests
         env:
           GITHUB_USERNAME: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: gradle/actions/setup-gradle@v3
         with:
           arguments: test
+      - name: Run instrumented tests
+        env:
+          GITHUB_USERNAME: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: reactivecircus/android-emulator-runner@v2.30.1
+        with:
+          api-level: 29
+          arch: x86_64
+          disable-animations: true
+          disk-size: 2048M
+          heap-size: 512M
+          script: ./gradlew connectedCheck
