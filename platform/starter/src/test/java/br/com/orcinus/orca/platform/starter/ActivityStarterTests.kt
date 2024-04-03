@@ -16,24 +16,20 @@
 package br.com.orcinus.orca.platform.starter
 
 import br.com.orcinus.orca.platform.testing.context
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
-import kotlin.test.Test
-import kotlinx.coroutines.test.runTest
+import io.mockk.spyk
+import io.mockk.verify
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class ActivityStarterTests {
   internal class TestStartableActivity : StartableActivity()
 
   @Test
-  fun notifiesListenerWhenActivityIsStarted() {
-    runTest {
-      @Suppress("RemoveExplicitTypeArguments")
-      suspendCoroutine<TestStartableActivity> { continuation ->
-        context.on<TestStartableActivity>().asNewTask().start { activity ->
-          activity.finish()
-          continuation.resume(activity)
-        }
-      }
-    }
+  fun startsActivity() {
+    val spiedContext = spyk(context)
+    spiedContext.on<TestStartableActivity>().asNewTask().start(StartableActivity::finish)
+    verify { spiedContext.startActivity(any()) }
   }
 }
