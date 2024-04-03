@@ -21,16 +21,17 @@ plugins {
 android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
-  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
-  androidTestImplementation(project(":platform:navigation-test"))
-  androidTestImplementation(libs.assertk)
-  androidTestImplementation(libs.kotlin.test)
-
   api(project(":composite:composable"))
   api(project(":platform:navigation"))
 
   implementation(project(":platform:autos"))
+
+  testImplementation(project(":platform:navigation-test"))
+  testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.test)
+  testImplementation(libs.robolectric)
 }
