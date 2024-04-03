@@ -13,12 +13,21 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.feature.gallery.test.activity
+package br.com.orcinus.orca.feature.gallery.test
 
+import br.com.orcinus.orca.core.feed.profile.post.provider.PostProvider
 import br.com.orcinus.orca.core.instance.Instance
+import br.com.orcinus.orca.feature.gallery.GalleryBoundary
 import br.com.orcinus.orca.feature.gallery.GalleryModule
 import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.std.injector.module.injection.injectionOf
 
-internal object TestGalleryModule :
-  GalleryModule(injectionOf { Instance.sample.postProvider }, injectionOf { TestGalleryBoundary })
+/**
+ * [GalleryModule] to which a sample [PostProvider] and a no-op [GalleryBoundary] are injected.
+ *
+ * @see Instance.Companion.sample
+ * @see Instance.postProvider
+ * @see NoOpGalleryBoundary
+ */
+object TestGalleryModule :
+  GalleryModule(injectionOf { Instance.sample.postProvider }, injectionOf { NoOpGalleryBoundary })

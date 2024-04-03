@@ -31,19 +31,17 @@ import br.com.orcinus.orca.feature.gallery.test.ui.onCloseActionButton
 import br.com.orcinus.orca.feature.gallery.test.ui.onPager
 import br.com.orcinus.orca.feature.gallery.test.ui.page.onPage
 import br.com.orcinus.orca.feature.gallery.test.ui.performScrollToEachPage
-import br.com.orcinus.orca.feature.gallery.ui.test.onActions
-import br.com.orcinus.orca.feature.gallery.ui.test.onDownloadItem
-import br.com.orcinus.orca.feature.gallery.ui.test.onOptionsButton
-import br.com.orcinus.orca.feature.gallery.ui.test.onOptionsMenu
-import br.com.orcinus.orca.feature.gallery.ui.test.waitForDoubleTapTimeout
-import br.com.orcinus.orca.feature.gallery.ui.test.zoom.assertIsZoomedIn
-import br.com.orcinus.orca.feature.gallery.ui.test.zoom.assertIsZoomedOut
-import br.com.orcinus.orca.feature.gallery.ui.test.zoom.performZoomIn
-import br.com.orcinus.orca.feature.gallery.ui.test.zoom.performZoomOut
+import br.com.orcinus.orca.feature.gallery.ui.zoom.assertIsZoomedIn
+import br.com.orcinus.orca.feature.gallery.ui.zoom.assertIsZoomedOut
+import br.com.orcinus.orca.feature.gallery.ui.zoom.performZoomIn
+import br.com.orcinus.orca.feature.gallery.ui.zoom.performZoomOut
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import kotlin.test.Test
 import org.junit.Rule
-import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class GalleryTests {
   @get:Rule val composeRule = createComposeRule()
 

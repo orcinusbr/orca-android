@@ -29,7 +29,7 @@ import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.samples
 import br.com.orcinus.orca.core.sample.image.CoverImageSource
 import br.com.orcinus.orca.feature.gallery.GalleryActivity
-import br.com.orcinus.orca.feature.gallery.ui.SampleGallery
+import br.com.orcinus.orca.feature.gallery.R
 import br.com.orcinus.orca.platform.core.image.createSample
 import br.com.orcinus.orca.platform.core.withSample
 import br.com.orcinus.orca.platform.testing.context
@@ -43,16 +43,13 @@ import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
  * @param secondary [Attachment]s to be shown in the pages other than the [entrypoint].
  * @param entrypoint Entrypoint page of the [SampleGallery].
  */
-internal fun launchGalleryActivity(
+fun launchGalleryActivity(
   postID: String = Posts.withSample.single().id,
   entrypointIndex: Int = 0,
   secondary: List<Attachment> = Attachment.samples,
   entrypoint: @Composable (ContentScale, Modifier) -> Unit = { contentScale, modifier ->
     ComposableImageLoader.createSample(CoverImageSource.Default).load()(
-      stringResource(
-        br.com.orcinus.orca.feature.gallery.R.string.feature_gallery_attachment,
-        1.formatted
-      ),
+      stringResource(R.string.feature_gallery_attachment, 1.formatted),
       RectangleShape,
       contentScale,
       modifier

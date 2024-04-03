@@ -15,39 +15,73 @@
 
 package br.com.orcinus.orca.feature.gallery.ui.zoom
 
-import androidx.compose.ui.test.TouchInjectionScope
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.performTouchInput
 import br.com.orcinus.orca.feature.gallery.test.ui.page.onPage
 import br.com.orcinus.orca.feature.gallery.ui.Gallery
-import br.com.orcinus.orca.feature.gallery.ui.test.zoom.assertIsZoomedIn
-import br.com.orcinus.orca.feature.gallery.ui.test.zoom.assertIsZoomedOut
-import br.com.orcinus.orca.feature.gallery.ui.test.zoom.performZoomIn
-import br.com.orcinus.orca.feature.gallery.ui.test.zoom.zoomIn
-import br.com.orcinus.orca.feature.gallery.ui.test.zoom.zoomOut
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import kotlin.test.Test
 import org.junit.Rule
-import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-internal class TouchInjectionScopeExtensionsTests {
+@RunWith(RobolectricTestRunner::class)
+internal class SemanticsNodeInteractionExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun zoomsIn() {
-    composeRule
-      .apply { setContent { AutosTheme { Gallery() } } }
-      .onPage()
-      .performTouchInput(TouchInjectionScope::zoomIn)
-      .assertIsZoomedIn()
-  }
-
-  @Test
-  fun zoomsOut() {
+  fun performsZoomIn() {
     composeRule
       .apply { setContent { AutosTheme { Gallery() } } }
       .onPage()
       .performZoomIn()
-      .performTouchInput(TouchInjectionScope::zoomOut)
+      .assertIsZoomedIn()
+  }
+
+  @Test(expected = AssertionError::class)
+  fun throwsWhenAssertingThatIsZoomedInWhenItIsNot() {
+    composeRule
+      .apply { setContent { AutosTheme { Gallery() } } }
+      .onPage()
+      .performZoomIn()
+      .performZoomOut()
+      .assertIsZoomedIn()
+  }
+
+  @Test
+  fun assertsIsZoomedIn() {
+    composeRule
+      .apply { setContent { AutosTheme { Gallery() } } }
+      .onPage()
+      .performZoomIn()
+      .assertIsZoomedIn()
+  }
+
+  @Test
+  fun performsZoomOut() {
+    composeRule
+      .apply { setContent { AutosTheme { Gallery() } } }
+      .onPage()
+      .performZoomIn()
+      .performZoomOut()
+      .assertIsZoomedOut()
+  }
+
+  @Test(expected = AssertionError::class)
+  fun throwsWhenAssertingThatIsZoomedOutWhenItIsNot() {
+    composeRule
+      .apply { setContent { AutosTheme { Gallery() } } }
+      .onPage()
+      .performZoomIn()
+      .assertIsZoomedOut()
+  }
+
+  @Test
+  fun assertsIsZoomedOut() {
+    composeRule
+      .apply { setContent { AutosTheme { Gallery() } } }
+      .onPage()
+      .performZoomIn()
+      .performZoomOut()
       .assertIsZoomedOut()
   }
 }

@@ -24,10 +24,12 @@ import androidx.compose.ui.test.onRoot
 import assertk.assertThat
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
-import br.com.orcinus.orca.feature.gallery.ui.test.get
+import kotlin.test.Test
 import org.junit.Rule
-import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class SemanticsNodeInteractionExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 

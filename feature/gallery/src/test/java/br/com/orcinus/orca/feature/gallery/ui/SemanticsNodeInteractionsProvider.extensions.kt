@@ -13,18 +13,12 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.feature.gallery.ui.test
+package br.com.orcinus.orca.feature.gallery.ui
 
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.onNodeWithTag
-import br.com.orcinus.orca.feature.gallery.ui.Actions
-import br.com.orcinus.orca.feature.gallery.ui.GALLERY_ACTIONS_OPTIONS_BUTTON_TAG
-import br.com.orcinus.orca.feature.gallery.ui.GALLERY_ACTIONS_OPTIONS_DOWNLOADS_ITEM_TAG
-import br.com.orcinus.orca.feature.gallery.ui.GALLERY_ACTIONS_OPTIONS_MENU_TAG
-import br.com.orcinus.orca.feature.gallery.ui.GALLERY_ACTIONS_TAG
-import br.com.orcinus.orca.feature.gallery.ui.SampleGallery
 import br.com.orcinus.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 import br.com.orcinus.orca.platform.autos.kit.menu.DropdownMenu
 

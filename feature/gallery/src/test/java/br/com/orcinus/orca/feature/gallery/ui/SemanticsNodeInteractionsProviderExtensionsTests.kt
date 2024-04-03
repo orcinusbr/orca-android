@@ -18,14 +18,13 @@ package br.com.orcinus.orca.feature.gallery.ui
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performClick
-import br.com.orcinus.orca.feature.gallery.ui.test.onActions
-import br.com.orcinus.orca.feature.gallery.ui.test.onDownloadItem
-import br.com.orcinus.orca.feature.gallery.ui.test.onOptionsButton
-import br.com.orcinus.orca.feature.gallery.ui.test.onOptionsMenu
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import kotlin.test.Test
 import org.junit.Rule
-import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 

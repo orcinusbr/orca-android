@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.feature.gallery.ui.test.zoom
+package br.com.orcinus.orca.feature.gallery.ui.zoom
 
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.semantics.SemanticsNode

@@ -13,18 +13,11 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.feature.gallery.ui.test
+package br.com.orcinus.orca.feature.gallery.test
 
-import android.view.ViewConfiguration
-import androidx.compose.ui.test.junit4.ComposeTestRule
+import br.com.orcinus.orca.feature.gallery.GalleryBoundary
 
-/**
- * Waits until the double tap timeout duration (as it is defined by [ViewConfiguration]) has been
- * elapsed.
- *
- * @see ViewConfiguration.getDoubleTapTimeout
- */
-internal fun ComposeTestRule.waitForDoubleTapTimeout() {
-  val timeout = ViewConfiguration.getDoubleTapTimeout().toLong()
-  mainClock.advanceTimeBy(timeout)
+/** [GalleryBoundary] that doesn't navigate anywhere. */
+object NoOpGalleryBoundary : GalleryBoundary {
+  override fun navigateToPostDetails(id: String) {}
 }

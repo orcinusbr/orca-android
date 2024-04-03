@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -19,24 +19,24 @@ plugins {
   alias(libs.plugins.kotlin.symbolProcessor)
 }
 
+kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
+
 android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
   defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
-  androidTestImplementation(project(":composite:timeline-test"))
-  androidTestImplementation(project(":core:sample-test"))
   androidTestImplementation(project(":feature:gallery-test"))
   androidTestImplementation(project(":platform:testing"))
   androidTestImplementation(project(":std:injector-test"))
-  androidTestImplementation(libs.android.compose.ui.test.manifest)
-  androidTestImplementation(libs.android.fragment.testing)
-  androidTestImplementation(libs.android.test.core)
-  androidTestImplementation(libs.assertk)
+  androidTestImplementation(libs.android.compose.ui.test.junit)
+  androidTestImplementation(libs.kotlin.test)
 
   api(project(":composite:composable"))
+  api(project(":core"))
 
   ksp(project(":std:injector-processor"))
 
@@ -47,6 +47,16 @@ dependencies {
   implementation(project(":platform:navigation"))
   implementation(project(":platform:starter"))
   implementation(libs.zoomable)
-}
 
-kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
+  testImplementation(project(":composite:timeline-test"))
+  testImplementation(project(":core:sample-test"))
+  testImplementation(project(":feature:gallery-test"))
+  testImplementation(project(":platform:testing"))
+  testImplementation(project(":std:injector-test"))
+  testImplementation(libs.android.compose.ui.test.manifest)
+  testImplementation(libs.android.fragment.testing)
+  testImplementation(libs.android.test.core)
+  testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.test)
+  testImplementation(libs.robolectric)
+}

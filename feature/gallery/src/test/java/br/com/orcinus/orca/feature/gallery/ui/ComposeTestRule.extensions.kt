@@ -16,22 +16,15 @@
 package br.com.orcinus.orca.feature.gallery.ui
 
 import android.view.ViewConfiguration
-import androidx.compose.ui.test.junit4.ComposeContentTestRule
-import androidx.compose.ui.test.junit4.createComposeRule
-import assertk.assertThat
-import assertk.assertions.isGreaterThanOrEqualTo
-import br.com.orcinus.orca.feature.gallery.ui.test.waitForDoubleTapTimeout
-import org.junit.Rule
-import org.junit.Test
+import androidx.compose.ui.test.junit4.ComposeTestRule
 
-internal class ComposeTestRuleExtensionsTests {
-  @get:Rule val composeRule = createComposeRule()
-
-  @Test
-  fun waitsForDoubleTapTimeout() {
-    assertThat(
-        composeRule.apply(ComposeContentTestRule::waitForDoubleTapTimeout).mainClock.currentTime
-      )
-      .isGreaterThanOrEqualTo(ViewConfiguration.getDoubleTapTimeout().toLong())
-  }
+/**
+ * Waits until the double tap timeout duration (as it is defined by [ViewConfiguration]) has been
+ * elapsed.
+ *
+ * @see ViewConfiguration.getDoubleTapTimeout
+ */
+internal fun ComposeTestRule.waitForDoubleTapTimeout() {
+  val timeout = ViewConfiguration.getDoubleTapTimeout().toLong()
+  mainClock.advanceTimeBy(timeout)
 }

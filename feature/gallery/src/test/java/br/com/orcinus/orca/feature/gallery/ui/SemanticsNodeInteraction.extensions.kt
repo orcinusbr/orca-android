@@ -13,10 +13,21 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.feature.gallery.test.activity
+package br.com.orcinus.orca.feature.gallery.ui
 
-import br.com.orcinus.orca.feature.gallery.GalleryBoundary
+import androidx.compose.ui.semantics.SemanticsNode
+import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.SemanticsNodeInteraction
 
-internal object TestGalleryBoundary : GalleryBoundary {
-  override fun navigateToPostDetails(id: String) {}
+/**
+ * Returns whether the [matcher] matches the [SemanticsNode] fetched from this
+ * [SemanticsNodeInteraction].
+ *
+ * @param matcher [SemanticsMatcher] to match the [SemanticsNode] against.
+ * @see SemanticsMatcher.matches
+ * @see SemanticsNodeInteraction.fetchSemanticsNode
+ */
+internal operator fun SemanticsNodeInteraction.get(matcher: SemanticsMatcher): Boolean {
+  val node = fetchSemanticsNode()
+  return matcher.matches(node)
 }
