@@ -23,15 +23,16 @@ plugins {
 android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
-  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   namespace = namespaceFor("feature.feed.test")
+  testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
-  androidTestImplementation(libs.android.compose.ui.test.manifest)
-  androidTestImplementation(libs.android.test.runner)
+  api(libs.android.compose.ui.test.junit)
 
   implementation(project(":feature:feed"))
   implementation(project(":platform:autos"))
-  implementation(libs.android.compose.ui.test.junit)
+
+  testImplementation(libs.android.compose.ui.test.manifest)
+  testImplementation(libs.robolectric)
 }
