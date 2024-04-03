@@ -20,7 +20,10 @@ import br.com.orcinus.orca.platform.navigation.navigator
 import br.com.orcinus.orca.platform.navigation.test.activity.launchNavigationActivity
 import br.com.orcinus.orca.platform.navigation.test.isAt
 import kotlin.test.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class OngoingFragmentTests {
   @Test
   fun navigates() {
