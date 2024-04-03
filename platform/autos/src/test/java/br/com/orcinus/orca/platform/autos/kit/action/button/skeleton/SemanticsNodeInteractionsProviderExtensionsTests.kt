@@ -15,53 +15,30 @@
 
 package br.com.orcinus.orca.platform.autos.kit.action.button.skeleton
 
-import androidx.compose.material3.Text
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithText
-import assertk.assertThat
-import assertk.assertions.isTrue
-import kotlin.test.Test
 import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class ButtonScopeTests {
-  private val scope = ButtonScope()
-
+internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun runsCallbackWhenLoading() {
-    var hasOnClickBeenRun = false
-    scope.load { hasOnClickBeenRun = true }
-    assertThat(hasOnClickBeenRun).isTrue()
-  }
+  fun findsLoadingIndicator() {
+    composeRule.setContent {
+      Button {
+        DisposableEffect(Unit) {
+          load()
+          onDispose {}
+        }
 
-  @Test
-  fun showsIndicatorWhenContentIsLoading() {
-    with(composeRule) {
-      setContent { scope.Loadable {} }
-      scope.load { onLoadingIndicator().assertIsDisplayed() }
+        Loadable {}
+      }
     }
-  }
-
-  @Test
-  fun showsContentBeforeLoading() {
-    with(composeRule) {
-      setContent { scope.Loadable { Text("☀️") } }
-      onNodeWithText("☀️").assertIsDisplayed()
-      scope.load {}
-    }
-  }
-
-  @Test
-  fun showsContentAfterLoading() {
-    with(composeRule) {
-      setContent { scope.Loadable { Text("☀️") } }
-      scope.load {}
-      onNodeWithText("☀️").assertIsDisplayed()
-    }
+    composeRule.onLoadingIndicator().assertIsDisplayed()
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,44 +13,39 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.autos.kit.sheet
+package br.com.orcinus.orca.platform.autos.kit.input.text.error
 
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.unit.Dp
 import assertk.assertThat
-import assertk.assertions.each
-import assertk.assertions.isEqualTo
+import assertk.assertions.containsExactly
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class WindowInsetsExtensionsTests {
+internal class ErrorDispatcherExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun zeroedWindowInsetsHasZeroedBounds() {
-    assertThat(WindowInsets.Zero).isEqualTo(WindowInsets(left = 0, top = 0, right = 0, bottom = 0))
-  }
-
-  @Test
-  fun takesFallbackWhenInsetsOneBoundIsUnspecified() {
-    lateinit var insets: List<WindowInsets>
+  fun addsMessagesOnErrorAnnouncements() {
+    var messages = emptyList<String>()
     composeRule.setContent {
-      insets =
-        remember {
-            arrayOf(
-              WindowInsets(left = Dp.Unspecified),
-              WindowInsets(top = Dp.Unspecified),
-              WindowInsets(right = Dp.Unspecified),
-              WindowInsets(bottom = Dp.Unspecified)
-            )
-          }
-          .map { it.takeOrElse { WindowInsets.Zero } }
+      val dispatcher = rememberErrorDispatcher { errorAlways("🦭") }
+
+      with(dispatcher.messages) messages@{
+        DisposableEffect(this) {
+          messages = this@messages
+          onDispose {}
+        }
+      }
+
+      DisposableEffect(Unit) {
+        dispatcher.dispatch()
+        onDispose {}
+      }
     }
-    assertThat(insets).each { it.isEqualTo(WindowInsets.Zero) }
+    assertThat(messages).containsExactly("🦭")
   }
 }
