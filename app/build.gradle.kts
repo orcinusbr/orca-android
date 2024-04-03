@@ -80,6 +80,7 @@ dependencies {
   "androidTestDemoImplementation"(libs.android.compose.ui.test.manifest)
 
   androidTestImplementation(project(":composite:timeline-test"))
+  androidTestImplementation(project(":platform:intents-test"))
   androidTestImplementation(libs.android.test.core)
   androidTestImplementation(libs.android.test.runner)
 
