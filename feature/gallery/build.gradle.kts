@@ -31,7 +31,6 @@ dependencies {
   androidTestImplementation(project(":feature:gallery-test"))
   androidTestImplementation(project(":platform:testing"))
   androidTestImplementation(project(":std:injector-test"))
-  androidTestImplementation(libs.android.compose.ui.test.junit)
   androidTestImplementation(libs.android.compose.ui.test.manifest)
   androidTestImplementation(libs.android.fragment.testing)
   androidTestImplementation(libs.android.test.core)

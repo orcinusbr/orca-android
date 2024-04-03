@@ -118,7 +118,6 @@ dependencies {
   "testDemoImplementation"(project(":platform:intents-test"))
   "testDemoImplementation"(project(":platform:navigation-test"))
   "testDemoImplementation"(project(":platform:testing"))
-  "testDemoImplementation"(libs.android.compose.ui.test.junit)
   "testDemoImplementation"(libs.android.test.espresso.core)
   "testDemoImplementation"(libs.assertk)
   "testDemoImplementation"(libs.kotlin.test)

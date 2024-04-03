@@ -13,27 +13,24 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.test.refresh
+package br.com.orcinus.orca.composite.timeline.test.stat.favorite
 
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import br.com.orcinus.orca.composite.timeline.Timeline
-import br.com.orcinus.orca.composite.timeline.refresh.Refresh
-import br.com.orcinus.orca.composite.timeline.test.onRefreshIndicator
+import br.com.orcinus.orca.composite.timeline.stat.Stats
+import br.com.orcinus.orca.composite.timeline.test.stat.activateable.favorite.onFavoriteStat
+import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-internal class SemanticsNodeInteractionExtensionsTests {
+@RunWith(RobolectricTestRunner::class)
+internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
-  @Test(expected = AssertionError::class)
-  fun throwsWhenAssertingThatNodeIsNotInProgressWhenItIs() {
-    composeRule.setContent { Timeline(onNext = {}, refresh = Refresh.Indefinite) {} }
-    composeRule.onRefreshIndicator().assertIsNotInProgress()
-  }
-
   @Test
-  fun doesNotThrowWhenAssertingThatNodeIsNotInProgressWhenItIsNot() {
-    composeRule.setContent { Timeline(onNext = {}) {} }
-    composeRule.onRefreshIndicator().assertIsNotInProgress()
+  fun findsFavoriteStat() {
+    composeRule.apply { setContent { AutosTheme { Stats() } } }.onFavoriteStat().assertIsDisplayed()
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,25 +13,24 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.test
+package br.com.orcinus.orca.composite.timeline.test.stat.repost
 
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import br.com.orcinus.orca.composite.timeline.Timeline
+import br.com.orcinus.orca.composite.timeline.stat.Stats
+import br.com.orcinus.orca.composite.timeline.test.stat.activateable.repost.onRepostStat
+import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-internal class SemanticsMatcherExtensionsTests {
+@RunWith(RobolectricTestRunner::class)
+internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun findsRenderEffect() {
-    composeRule.setContent { Timeline(onNext = {}) {} }
-    composeRule.onNode(isRenderEffect()).assertExists()
-  }
-
-  @Test
-  fun findsTimeline() {
-    composeRule.setContent { Timeline(onNext = {}) {} }
-    composeRule.onNode(isTimeline()).assertExists()
+  fun findsRepostStat() {
+    composeRule.apply { setContent { AutosTheme { Stats() } } }.onRepostStat().assertIsDisplayed()
   }
 }

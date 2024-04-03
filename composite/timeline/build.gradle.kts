@@ -29,7 +29,6 @@ android {
 dependencies {
   testImplementation(project(":composite:timeline-test"))
   testImplementation(project(":core:sample-test"))
-  testImplementation(libs.android.compose.ui.test.junit)
   testImplementation(libs.android.compose.ui.test.manifest)
   testImplementation(libs.android.test.core)
   testImplementation(libs.assertk)

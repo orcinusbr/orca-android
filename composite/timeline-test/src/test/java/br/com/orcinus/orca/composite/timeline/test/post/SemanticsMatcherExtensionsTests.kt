@@ -26,7 +26,10 @@ import br.com.orcinus.orca.composite.timeline.test.post.time.StringRelativeTimeP
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class SemanticsMatcherExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 

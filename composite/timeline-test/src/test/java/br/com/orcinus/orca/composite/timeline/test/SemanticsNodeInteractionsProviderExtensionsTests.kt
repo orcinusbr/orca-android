@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,25 +13,24 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.test.stat
+package br.com.orcinus.orca.composite.timeline.test
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import br.com.orcinus.orca.composite.timeline.stat.Stats
-import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import br.com.orcinus.orca.composite.timeline.Timeline
+import br.com.orcinus.orca.composite.timeline.refresh.Refresh
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun findsCommentStat() {
-    composeRule.apply { setContent { AutosTheme { Stats() } } }.onCommentStat().assertIsDisplayed()
-  }
-
-  @Test
-  fun findsShareStat() {
-    composeRule.apply { setContent { AutosTheme { Stats() } } }.onShareStat().assertIsDisplayed()
+  fun findsTimelineRefreshIndicator() {
+    composeRule.setContent { Timeline(onNext = {}, refresh = Refresh.Indefinite) {} }
+    composeRule.onRefreshIndicator().assertIsDisplayed()
   }
 }

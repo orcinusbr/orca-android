@@ -34,7 +34,6 @@ dependencies {
   androidTestImplementation(project(":platform:navigation-test"))
   androidTestImplementation(project(":platform:testing"))
   androidTestImplementation(project(":std:injector-test"))
-  androidTestImplementation(libs.android.compose.ui.test.junit)
   androidTestImplementation(libs.android.test.core)
   androidTestImplementation(libs.loadable.placeholder.test)
 

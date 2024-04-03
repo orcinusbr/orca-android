@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,19 +15,26 @@
 
 package br.com.orcinus.orca.composite.timeline.test
 
-import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import br.com.orcinus.orca.composite.timeline.Timeline
-import br.com.orcinus.orca.composite.timeline.refresh.Refresh
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-internal class SemanticsNodeInteractionsProviderExtensionsTests {
+@RunWith(RobolectricTestRunner::class)
+internal class SemanticsMatcherExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun findsTimelineRefreshIndicator() {
-    composeRule.setContent { Timeline(onNext = {}, refresh = Refresh.Indefinite) {} }
-    composeRule.onRefreshIndicator().assertIsDisplayed()
+  fun matchesRenderEffect() {
+    composeRule.setContent { Timeline(onNext = {}) {} }
+    composeRule.onNode(isRenderEffect()).assertExists()
+  }
+
+  @Test
+  fun matchesTimeline() {
+    composeRule.setContent { Timeline(onNext = {}) {} }
+    composeRule.onNode(isTimeline()).assertExists()
   }
 }

@@ -15,19 +15,28 @@
 
 package br.com.orcinus.orca.composite.timeline.test.refresh
 
-import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import br.com.orcinus.orca.composite.timeline.Timeline
 import br.com.orcinus.orca.composite.timeline.refresh.Refresh
+import br.com.orcinus.orca.composite.timeline.test.onRefreshIndicator
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-internal class SemanticsMatcherExtensionsTests {
+@RunWith(RobolectricTestRunner::class)
+internal class SemanticsNodeInteractionExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
-  @Test
-  fun findsNodeThatIsInProgress() {
+  @Test(expected = AssertionError::class)
+  fun throwsWhenAssertingThatNodeIsNotInProgressWhenItIs() {
     composeRule.setContent { Timeline(onNext = {}, refresh = Refresh.Indefinite) {} }
-    composeRule.onNode(isInProgress()).assertIsDisplayed()
+    composeRule.onRefreshIndicator().assertIsNotInProgress()
+  }
+
+  @Test
+  fun doesNotThrowWhenAssertingThatNodeIsNotInProgressWhenItIsNot() {
+    composeRule.setContent { Timeline(onNext = {}) {} }
+    composeRule.onRefreshIndicator().assertIsNotInProgress()
   }
 }
