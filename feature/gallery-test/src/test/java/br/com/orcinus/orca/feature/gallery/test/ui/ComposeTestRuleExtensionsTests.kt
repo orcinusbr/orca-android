@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -17,25 +17,20 @@ package br.com.orcinus.orca.feature.gallery.test.ui
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import br.com.orcinus.orca.feature.gallery.ui.Actions
+import br.com.orcinus.orca.feature.gallery.test.ui.page.onPage
 import br.com.orcinus.orca.feature.gallery.ui.Gallery
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-internal class SemanticsNodeInteractionsProviderExtensionsTests {
+@RunWith(RobolectricTestRunner::class)
+internal class ComposeTestRuleExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun findsCloseActionButton() {
-    composeRule
-      .apply { setContent { AutosTheme { Actions() } } }
-      .onCloseActionButton()
-      .assertIsDisplayed()
-  }
-
-  @Test
-  fun findsPager() {
-    composeRule.apply { setContent { AutosTheme { Gallery() } } }.onPager().assertIsDisplayed()
+  fun findsCurrentPage() {
+    composeRule.apply { setContent { AutosTheme { Gallery() } } }.onPage().assertIsDisplayed()
   }
 }

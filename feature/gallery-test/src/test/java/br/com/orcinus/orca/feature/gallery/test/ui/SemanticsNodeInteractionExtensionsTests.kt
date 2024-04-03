@@ -34,7 +34,10 @@ import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.testing.asString
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class SemanticsNodeInteractionExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
