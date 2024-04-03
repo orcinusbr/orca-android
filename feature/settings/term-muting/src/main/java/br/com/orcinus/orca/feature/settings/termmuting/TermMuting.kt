@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -71,8 +71,13 @@ internal fun TermMuting(
 }
 
 @Composable
+internal fun TermMuting(modifier: Modifier = Modifier) {
+  TermMuting(modifier, term = "", onTermChange = {}, onMute = {}, onBackwardsNavigation = {})
+}
+
+@Composable
 @OptIn(ExperimentalMaterial3Api::class)
-internal fun TermMuting(
+private fun TermMuting(
   modifier: Modifier = Modifier,
   term: String,
   onTermChange: (term: String) -> Unit,
@@ -155,5 +160,5 @@ internal fun TermMuting(
 @Composable
 @MultiThemePreview
 private fun TermMutingPreview() {
-  AutosTheme { TermMuting(term = "🐛", onTermChange = {}, onMute = {}, onBackwardsNavigation = {}) }
+  AutosTheme { TermMuting() }
 }
