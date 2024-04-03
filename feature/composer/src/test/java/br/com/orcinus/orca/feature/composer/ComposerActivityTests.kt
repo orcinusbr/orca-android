@@ -28,19 +28,18 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import br.com.orcinus.orca.feature.composer.test.assertTextEquals
-import br.com.orcinus.orca.feature.composer.test.isBoldFormat
-import br.com.orcinus.orca.feature.composer.test.isItalicFormat
-import br.com.orcinus.orca.feature.composer.test.onToolbar
 import br.com.orcinus.orca.platform.autos.test.kit.input.text.onTextField
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-@OptIn(ExperimentalTestApi::class)
+@RunWith(RobolectricTestRunner::class)
 internal class ComposerActivityTests {
   @get:Rule val composeRule = createAndroidComposeRule<ComposerActivity>()
 
+  @OptIn(ExperimentalTestApi::class)
   @Test
   fun stylesSelectedComposition() {
     composeRule.onTextField().performTextInput("Hello, world!")
@@ -60,6 +59,7 @@ internal class ComposerActivityTests {
     "androidx.compose.ui:ui-text:1.5.0 has a bug that prevents stylization from being kept " +
       "across selection changes."
   )
+  @OptIn(ExperimentalTestApi::class)
   @Test
   fun keepsStylizationWhenUnselectingStylizedComposition() {
     composeRule.onTextField().performTextInput("Hello, world!")
