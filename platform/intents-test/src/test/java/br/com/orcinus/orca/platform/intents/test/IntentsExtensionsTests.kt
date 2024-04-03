@@ -22,7 +22,10 @@ import io.mockk.mockkStatic
 import io.mockk.verify
 import junit.framework.AssertionFailedError
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class IntentsExtensionsTests {
   @Test
   fun initializesEspressoIntentsBeforeIntending() {
