@@ -38,10 +38,8 @@ dependencies {
 
   testImplementation(project(":platform:autos-test"))
   testImplementation(project(":platform:testing"))
-  testImplementation(libs.android.compose.ui.test.junit)
   testImplementation(libs.android.compose.ui.test.manifest)
   testImplementation(libs.android.test.core)
-  testImplementation(libs.android.test.espresso.core)
   testImplementation(libs.assertk)
   testImplementation(libs.kotlin.coroutines.test)
   testImplementation(libs.kotlin.test)

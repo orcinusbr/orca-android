@@ -40,7 +40,6 @@ dependencies {
   implementation(project(":platform:starter"))
 
   testImplementation(project(":platform:autos-test"))
-  testImplementation(libs.android.compose.ui.test.junit)
   testImplementation(libs.android.compose.ui.test.manifest)
   testImplementation(libs.robolectric)
 }

@@ -13,49 +13,35 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.autos.test.kit.scaffold.bar.navigation
+package br.com.orcinus.orca.platform.autos.test.kit.action.button
 
-import androidx.compose.ui.test.assertAll
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.navigation.NavigationBar
-import br.com.orcinus.orca.platform.autos.test.isDisplayed
+import br.com.orcinus.orca.platform.autos.kit.action.button.PrimaryButton
+import br.com.orcinus.orca.platform.autos.kit.action.button.SecondaryButton
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-internal class SemanticsNodeInteractionsProviderExtensionsTests {
+@RunWith(RobolectricTestRunner::class)
+internal class SemanticsMatcherExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun findsNavigationBar() {
+  fun matchesPrimaryButton() {
     composeRule
-      .apply { setContent { AutosTheme { NavigationBar(title = {}, action = {}) {} } } }
-      .onNavigationBar()
+      .apply { setContent { AutosTheme { PrimaryButton(onClick = {}) {} } } }
+      .onNode(isPrimaryButton())
       .assertIsDisplayed()
   }
 
   @Test
-  fun findsTab() {
+  fun matchesSecondaryButton() {
     composeRule
-      .apply {
-        setContent {
-          AutosTheme { NavigationBar(title = {}, action = {}) { tab(onClick = {}) {} } }
-        }
-      }
-      .onTab()
+      .apply { setContent { AutosTheme { SecondaryButton(onClick = {}) {} } } }
+      .onNode(isSecondaryButton())
       .assertIsDisplayed()
-  }
-
-  @Test
-  fun findsTabs() {
-    composeRule
-      .apply {
-        setContent {
-          AutosTheme { NavigationBar(title = {}, action = {}) { tab(onClick = {}) {} } }
-        }
-      }
-      .onTabs()
-      .assertAll(isDisplayed())
   }
 }

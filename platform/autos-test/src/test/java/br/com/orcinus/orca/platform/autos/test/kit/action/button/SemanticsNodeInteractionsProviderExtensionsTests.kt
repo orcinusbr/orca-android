@@ -13,23 +13,35 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.autos.test.kit.sheet
+package br.com.orcinus.orca.platform.autos.test.kit.action.button
 
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import br.com.orcinus.orca.platform.autos.kit.sheet.Sheet
+import br.com.orcinus.orca.platform.autos.kit.action.button.PrimaryButton
+import br.com.orcinus.orca.platform.autos.kit.action.button.SecondaryButton
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun findsSheet() {
+  fun findsPrimaryButton() {
     composeRule
-      .apply { setContent { AutosTheme { @OptIn(ExperimentalMaterial3Api::class) Sheet {} } } }
-      .onSheet()
-      .assertExists()
+      .apply { setContent { AutosTheme { PrimaryButton(onClick = {}) {} } } }
+      .onPrimaryButton()
+      .assertIsDisplayed()
+  }
+
+  @Test
+  fun findsSecondaryButton() {
+    composeRule
+      .apply { setContent { AutosTheme { SecondaryButton(onClick = {}) {} } } }
+      .onSecondaryButton()
+      .assertIsDisplayed()
   }
 }

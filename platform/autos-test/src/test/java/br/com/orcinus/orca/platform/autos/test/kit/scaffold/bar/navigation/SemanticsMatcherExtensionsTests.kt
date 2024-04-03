@@ -13,20 +13,38 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.autos.test
+package br.com.orcinus.orca.platform.autos.test.kit.scaffold.bar.navigation
 
-import androidx.compose.material3.Text
-import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onRoot
+import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.navigation.NavigationBar
+import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class SemanticsMatcherExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun matchesDisplayedNode() {
-    composeRule.apply { setContent { Text("Hello, world!") } }.onRoot().assert(isDisplayed())
+  fun matchesNavigationBar() {
+    composeRule
+      .apply { setContent { AutosTheme { NavigationBar(title = {}, action = {}) {} } } }
+      .onNode(isNavigationBar())
+      .assertIsDisplayed()
+  }
+
+  @Test
+  fun matchesTab() {
+    composeRule
+      .apply {
+        setContent {
+          AutosTheme { NavigationBar(title = {}, action = {}) { tab(onClick = {}) {} } }
+        }
+      }
+      .onNode(isTab())
+      .assertIsDisplayed()
   }
 }

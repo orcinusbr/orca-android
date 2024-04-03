@@ -13,35 +13,26 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.autos.test.kit.scaffold.bar.navigation
+package br.com.orcinus.orca.platform.autos.test.theme
 
-import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.navigation.NavigationBar
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-internal class SemanticsMatcherExtensionsTests {
+@RunWith(RobolectricTestRunner::class)
+internal class AutosThemeExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
-  @Test
-  fun matchesNavigationBar() {
-    composeRule
-      .apply { setContent { AutosTheme { NavigationBar(title = {}, action = {}) {} } } }
-      .onNode(isNavigationBar())
-      .assertIsDisplayed()
+  @Test(expected = MissingThemingException::class)
+  fun throwsWhenContentIsRequiredToBeThemedButIsNot() {
+    composeRule.setContent { AutosTheme.require() }
   }
 
   @Test
-  fun matchesTab() {
-    composeRule
-      .apply {
-        setContent {
-          AutosTheme { NavigationBar(title = {}, action = {}) { tab(onClick = {}) {} } }
-        }
-      }
-      .onNode(isTab())
-      .assertIsDisplayed()
+  fun doesNotThrowWhenContentIsRequiredToBeThemedAndIs() {
+    composeRule.setContent { AutosTheme { AutosTheme.require() } }
   }
 }

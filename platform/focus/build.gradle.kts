@@ -27,7 +27,6 @@ android {
 dependencies {
   androidTestImplementation(project(":platform:autos"))
   androidTestImplementation(project(":platform:autos-test"))
-  androidTestImplementation(libs.android.compose.ui.test.junit)
   androidTestImplementation(libs.android.compose.ui.test.manifest)
 
   api(libs.android.compose.ui)

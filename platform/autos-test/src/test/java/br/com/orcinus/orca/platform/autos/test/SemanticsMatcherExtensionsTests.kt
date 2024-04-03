@@ -13,23 +13,23 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.autos.test.theme
+package br.com.orcinus.orca.platform.autos.test
 
+import androidx.compose.material3.Text
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.junit4.createComposeRule
-import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import androidx.compose.ui.test.onRoot
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-internal class AutosThemeExtensionsTests {
+@RunWith(RobolectricTestRunner::class)
+internal class SemanticsMatcherExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
-  @Test(expected = MissingThemingException::class)
-  fun throwsWhenContentIsRequiredToBeThemedButIsNot() {
-    composeRule.setContent { AutosTheme.require() }
-  }
-
   @Test
-  fun doesNotThrowWhenContentIsRequiredToBeThemedAndIs() {
-    composeRule.setContent { AutosTheme { AutosTheme.require() } }
+  fun matchesDisplayedNode() {
+    composeRule.apply { setContent { Text("Hello, world!") } }.onRoot().assert(isDisplayed())
   }
 }

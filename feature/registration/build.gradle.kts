@@ -42,7 +42,6 @@ dependencies {
   testImplementation(project(":platform:navigation"))
   testImplementation(project(":platform:navigation-test"))
   testImplementation(project(":std:injector-test"))
-  testImplementation(libs.android.compose.ui.test.junit)
   testImplementation(libs.android.fragment.testing)
   testImplementation(libs.assertk)
   testImplementation(libs.kotlin.test)
