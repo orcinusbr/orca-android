@@ -23,7 +23,10 @@ import assertk.assertions.isTrue
 import br.com.orcinus.orca.composite.timeline.stat.details.StatsDetails
 import br.com.orcinus.orca.feature.postdetails.toPostDetails
 import kotlin.test.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class DetailingTests {
   @Test
   fun createsDetailsWithSpecifiedCommentCount() {

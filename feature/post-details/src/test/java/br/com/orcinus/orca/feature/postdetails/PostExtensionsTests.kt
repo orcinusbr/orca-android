@@ -28,7 +28,10 @@ import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.std.image.compose.SomeComposableImageLoader
 import kotlin.test.Test
 import org.junit.Rule
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class PostExtensionsTests {
   @get:Rule val sampleInstanceRule = SampleInstanceTestRule(Instance.sample)
 

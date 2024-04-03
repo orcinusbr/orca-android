@@ -54,6 +54,13 @@ internal class PostDetailsConversionScope(delegate: TestScope, private val postI
   private val detailing by lazy(::Detailing)
 
   /**
+   * [Post] to be added as a comment.
+   *
+   * @see comment
+   */
+  private val comment = Posts.withSamples.last()
+
+  /**
    * Authenticated [Actor] whose avatar [ImageLoader] will be used to load the image.
    *
    * @see Actor.Authenticated
@@ -79,13 +86,6 @@ internal class PostDetailsConversionScope(delegate: TestScope, private val postI
    * [GalleryPreview]'s thumbnails.
    */
   val onThumbnailClickListener = Disposition.OnThumbnailClickListener.empty
-
-  /**
-   * [Post] to be added as a comment.
-   *
-   * @see comment
-   */
-  val comment = Posts.withSamples.last()
 
   /**
    * Offers multiple ways to obtain [PostDetails] from the given [post].
