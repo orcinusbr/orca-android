@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -38,7 +38,10 @@ import br.com.orcinus.orca.std.injector.module.injection.injectionOf
 import br.com.orcinus.orca.std.injector.test.InjectorTestRule
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class MastodonAuthorizationActivityTests {
   @get:Rule
   val injectorRule = InjectorTestRule {
