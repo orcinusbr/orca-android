@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.cache.test
+package br.com.orcinus.orca.platform.cache.memory
 
 import androidx.test.platform.app.InstrumentationRegistry
 import br.com.orcinus.orca.platform.cache.Cache
@@ -25,14 +25,14 @@ import kotlin.time.Duration.Companion.minutes
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineScheduler
 
-internal class TestCache(
+internal class InMemoryCache(
   private val coroutineScheduler: TestCoroutineScheduler,
   override val databaseProvider: CacheDatabase.Provider
 ) : Cache<Char>(InstrumentationRegistry.getInstrumentation().context, NAME) {
-  override var fetcher = TestFetcher()
+  override var fetcher = InMemoryFetcher()
     private set
 
-  override var storage = TestStorage()
+  override var storage = InMemoryStorage()
     private set
 
   override var timeToIdle = 1.days
@@ -45,19 +45,19 @@ internal class TestCache(
     @OptIn(ExperimentalCoroutinesApi::class) coroutineScheduler.currentTime.milliseconds
   }
 
-  fun fetchingWith(fetcher: TestFetcher): TestCache {
+  fun fetchingWith(fetcher: InMemoryFetcher): InMemoryCache {
     return apply { this.fetcher = fetcher }
   }
 
-  fun storingTo(storage: TestStorage): TestCache {
+  fun storingTo(storage: InMemoryStorage): InMemoryCache {
     return apply { this.storage = storage }
   }
 
-  fun idlingFor(timeToIdle: Duration): TestCache {
+  fun idlingFor(timeToIdle: Duration): InMemoryCache {
     return apply { this.timeToIdle = timeToIdle }
   }
 
-  fun livingFor(timeToLive: Duration): TestCache {
+  fun livingFor(timeToLive: Duration): InMemoryCache {
     return apply { this.timeToLive = timeToLive }
   }
 

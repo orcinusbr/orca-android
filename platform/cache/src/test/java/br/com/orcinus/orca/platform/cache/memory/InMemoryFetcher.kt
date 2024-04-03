@@ -13,11 +13,11 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.cache.test
+package br.com.orcinus.orca.platform.cache.memory
 
 import br.com.orcinus.orca.platform.cache.Fetcher
 
-internal class TestFetcher : Fetcher<Char>() {
+internal class InMemoryFetcher : Fetcher<Char>() {
   override suspend fun onFetch(key: String): Char {
     return FETCHED[key.toInt()]
   }

@@ -13,11 +13,12 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.cache.test
+package br.com.orcinus.orca.platform.cache
 
 import androidx.room.Room
 import androidx.test.platform.app.InstrumentationRegistry
 import br.com.orcinus.orca.platform.cache.database.CacheDatabase
+import br.com.orcinus.orca.platform.cache.memory.InMemoryCache
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import org.junit.rules.ExternalResource
@@ -25,11 +26,11 @@ import org.junit.rules.ExternalResource
 internal class CacheTestRule(private val coroutineScope: TestScope) : ExternalResource() {
   private lateinit var database: CacheDatabase
 
-  val cache = TestCache(coroutineScope.testScheduler, ::database)
+  val cache = InMemoryCache(coroutineScope.testScheduler, ::database)
 
   override fun before() {
     val context = InstrumentationRegistry.getInstrumentation().context
-    database = Room.databaseBuilder(context, CacheDatabase::class.java, TestCache.NAME).build()
+    database = Room.databaseBuilder(context, CacheDatabase::class.java, InMemoryCache.NAME).build()
   }
 
   override fun after() {

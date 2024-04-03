@@ -15,9 +15,8 @@
 
 package br.com.orcinus.orca.platform.cache
 
-import br.com.orcinus.orca.platform.cache.test.CacheTestRule
-import br.com.orcinus.orca.platform.cache.test.TestFetcher
-import br.com.orcinus.orca.platform.cache.test.TestStorage
+import br.com.orcinus.orca.platform.cache.memory.InMemoryFetcher
+import br.com.orcinus.orca.platform.cache.memory.InMemoryStorage
 import io.mockk.coVerify
 import io.mockk.spyk
 import kotlin.test.Test
@@ -30,7 +29,10 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class CacheTests {
   @OptIn(ExperimentalCoroutinesApi::class)
   private val coroutineScope = TestScope(UnconfinedTestDispatcher())
@@ -39,7 +41,7 @@ internal class CacheTests {
 
   @Test
   fun fetchesWhenValueIsObtainedForTheFirstTime() {
-    val fetcher = spyk(TestFetcher())
+    val fetcher = spyk(InMemoryFetcher())
     coroutineScope.runTest {
       cacheRule.cache.fetchingWith(fetcher).get("0")
       coVerify { fetcher.fetch("0") }
@@ -48,7 +50,7 @@ internal class CacheTests {
 
   @Test
   fun remembersValueWhenItIsObtainedForTheFirstTime() {
-    val storage = TestStorage()
+    val storage = InMemoryStorage()
     coroutineScope.runTest {
       val value = cacheRule.cache.storingTo(storage).get("0")
       assertEquals(value, storage.get("0"))
@@ -57,8 +59,8 @@ internal class CacheTests {
 
   @Test
   fun obtainsRememberedValueWhenItIsReadBeforeTimeToIdle() {
-    val fetcher = spyk(TestFetcher())
-    val storage = spyk(TestStorage())
+    val fetcher = spyk(InMemoryFetcher())
+    val storage = spyk(InMemoryStorage())
     val cache =
       cacheRule.cache.storingTo(storage).fetchingWith(fetcher).idlingFor(1.days).livingFor(1.days)
     coroutineScope.runTest {
@@ -74,8 +76,8 @@ internal class CacheTests {
 
   @Test
   fun remembersValueAgainWhenItIsObtainedAfterTimeToIdle() {
-    val fetcher = spyk(TestFetcher())
-    val storage = spyk(TestStorage())
+    val fetcher = spyk(InMemoryFetcher())
+    val storage = spyk(InMemoryStorage())
     val cache = cacheRule.cache.storingTo(storage).fetchingWith(fetcher).idlingFor(1.days)
     coroutineScope.runTest {
       cache.get("0")
@@ -84,14 +86,14 @@ internal class CacheTests {
 
       cache.get("0")
       coVerify(exactly = 2) { fetcher.fetch("0") }
-      coVerify(exactly = 2) { storage.store("0", TestFetcher.FETCHED.first()) }
+      coVerify(exactly = 2) { storage.store("0", InMemoryFetcher.FETCHED.first()) }
     }
   }
 
   @Test
   fun obtainsRememberedValueWhenItIsReadBeforeTimeToLive() {
-    val fetcher = spyk(TestFetcher())
-    val storage = spyk(TestStorage())
+    val fetcher = spyk(InMemoryFetcher())
+    val storage = spyk(InMemoryStorage())
     val cache = cacheRule.cache.storingTo(storage).fetchingWith(fetcher).livingFor(1.days)
     coroutineScope.runTest {
       cache.get("0")
@@ -106,8 +108,8 @@ internal class CacheTests {
 
   @Test
   fun remembersValueAgainWhenItIsObtainedAfterTimeToLive() {
-    val fetcher = spyk(TestFetcher())
-    val storage = spyk(TestStorage())
+    val fetcher = spyk(InMemoryFetcher())
+    val storage = spyk(InMemoryStorage())
     val cache = cacheRule.cache.storingTo(storage).fetchingWith(fetcher).livingFor(1.days)
     coroutineScope.runTest {
       cache.get("0")
@@ -116,7 +118,7 @@ internal class CacheTests {
 
       cache.get("0")
       coVerify(exactly = 2) { fetcher.fetch("0") }
-      coVerify(exactly = 2) { storage.store("0", TestFetcher.FETCHED.first()) }
+      coVerify(exactly = 2) { storage.store("0", InMemoryFetcher.FETCHED.first()) }
     }
   }
 }

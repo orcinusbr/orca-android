@@ -13,11 +13,11 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.cache.test
+package br.com.orcinus.orca.platform.cache.memory
 
 import br.com.orcinus.orca.platform.cache.Storage
 
-internal class TestStorage : Storage<Char>() {
+internal class InMemoryStorage : Storage<Char>() {
   private var stored = ""
 
   override suspend fun onStore(key: String, value: Char) {
