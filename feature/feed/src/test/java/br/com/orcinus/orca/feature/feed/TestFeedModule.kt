@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,10 +13,9 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.feature.feed.test
+package br.com.orcinus.orca.feature.feed
 
 import br.com.orcinus.orca.core.instance.Instance
-import br.com.orcinus.orca.feature.feed.FeedModule
 import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.std.injector.module.injection.injectionOf
 
@@ -24,5 +23,5 @@ internal object TestFeedModule :
   FeedModule(
     injectionOf { Instance.sample.feedProvider },
     injectionOf { Instance.sample.postProvider },
-    injectionOf { TestFeedBoundary() }
+    injectionOf { NoOpFeedBoundary() }
   )

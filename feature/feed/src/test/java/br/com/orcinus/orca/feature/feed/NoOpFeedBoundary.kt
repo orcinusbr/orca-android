@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,16 +13,15 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.feature.feed.test
+package br.com.orcinus.orca.feature.feed
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
-import br.com.orcinus.orca.feature.feed.FeedBoundary
 import java.net.URL
 
-internal class TestFeedBoundary : FeedBoundary {
+internal class NoOpFeedBoundary : FeedBoundary {
   override fun navigateToSearch() {}
 
   override fun navigateTo(url: URL) {}

@@ -31,7 +31,10 @@ import com.jeanbarrossilva.loadable.list.toSerializableList
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class FeedTests {
   @get:Rule val composeRule = createComposeRule()
 

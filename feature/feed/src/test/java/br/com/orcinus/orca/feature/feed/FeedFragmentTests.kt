@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -36,7 +36,6 @@ import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
 import br.com.orcinus.orca.core.sample.test.feed.profile.post.withSamples
 import br.com.orcinus.orca.core.sample.test.instance.SampleInstanceTestRule
-import br.com.orcinus.orca.feature.feed.test.TestFeedModule
 import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.platform.navigation.test.fragment.launchFragmentInNavigationContainer
 import br.com.orcinus.orca.std.injector.test.InjectorTestRule
@@ -44,7 +43,10 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class FeedFragmentTests {
   @get:Rule val injectorRule = InjectorTestRule { register<FeedModule>(TestFeedModule) }
   @get:Rule val sampleInstanceRule = SampleInstanceTestRule(Instance.sample)
