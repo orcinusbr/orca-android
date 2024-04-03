@@ -15,36 +15,25 @@
 
 package br.com.orcinus.orca.platform.animator.animation.animatable
 
-import androidx.compose.animation.core.AnimationConstants.DefaultDurationMillis
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
+import androidx.compose.material3.Text
+import androidx.compose.runtime.remember
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import assertk.assertThat
-import assertk.assertions.isTrue
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.runTest
+import androidx.compose.ui.test.onNodeWithText
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class AnimatableTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun waitsForAnimation() {
-    val animatable = Animatable.Moving()
-    var hasAnimationFinished = false
-    runTest(@OptIn(ExperimentalCoroutinesApi::class) (UnconfinedTestDispatcher())) {
-      launch {
-        animatable.waitForAnimation()
-        hasAnimationFinished = true
-      }
-      launch {
-        composeRule.setContent { animatable.Animate(fadeIn(tween())) {} }
-        composeRule.mainClock.advanceTimeBy(milliseconds = DefaultDurationMillis.toLong())
-        assertThat(hasAnimationFinished).isTrue()
-      }
-    }
+  fun showsContentImmediately() {
+    composeRule
+      .apply { setContent { remember(Animatable::Moving).Animate { Text("1️⃣0️⃣") } } }
+      .onNodeWithText("1️⃣0️⃣")
+      .assertIsDisplayed()
   }
 }

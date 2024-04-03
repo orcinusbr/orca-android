@@ -22,20 +22,25 @@ android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
   defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
-  androidTestImplementation(libs.android.compose.material3)
   androidTestImplementation(libs.android.compose.ui.test.junit)
   androidTestImplementation(libs.android.compose.ui.test.manifest)
   androidTestImplementation(libs.assertk)
   androidTestImplementation(libs.kotlin.test)
 
-  implementation(libs.android.compose.animation)
+  api(libs.android.compose.animation)
+
   implementation(project(":ext:coroutines"))
 
+  testImplementation(libs.android.compose.material3)
+  testImplementation(libs.android.compose.ui.test.junit)
+  testImplementation(libs.android.compose.ui.test.manifest)
   testImplementation(libs.assertk)
   testImplementation(libs.kotlin.coroutines.test)
   testImplementation(libs.kotlin.test)
   testImplementation(libs.turbine)
+  testImplementation(libs.robolectric)
 }

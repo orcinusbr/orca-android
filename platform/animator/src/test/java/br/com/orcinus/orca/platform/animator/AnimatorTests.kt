@@ -23,7 +23,10 @@ import br.com.orcinus.orca.platform.animator.animation.Motion
 import br.com.orcinus.orca.platform.animator.animation.animatable.Animatables
 import kotlin.test.Test
 import org.junit.Rule
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class AnimatorTests {
   @get:Rule val composeRule = createComposeRule()
 
