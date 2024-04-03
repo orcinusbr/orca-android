@@ -24,25 +24,26 @@ plugins {
 
 android {
   namespace = namespaceFor("core.sharedpreferences")
-  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
-  androidTestImplementation(project(":core:sample"))
-  androidTestImplementation(project(":core:sample-test"))
-  androidTestImplementation(project(":core-test"))
-  androidTestImplementation(project(":ext:reflection"))
-  androidTestImplementation(project(":platform:testing"))
-  androidTestImplementation(libs.android.test.runner)
-  androidTestImplementation(libs.assertk)
-  androidTestImplementation(libs.junit)
-  androidTestImplementation(libs.kotlin.coroutines.test)
-  androidTestImplementation(libs.turbine)
+  api(project(":core"))
 
-  implementation(project(":core"))
   implementation(libs.android.core)
   implementation(libs.android.lifecycle.runtime)
   implementation(libs.kotlin.coroutines.android)
   implementation(libs.kotlin.reflect)
   implementation(libs.kotlin.serialization.json)
+
+  testImplementation(project(":core:sample"))
+  testImplementation(project(":core:sample-test"))
+  testImplementation(project(":core-test"))
+  testImplementation(project(":ext:reflection"))
+  testImplementation(project(":platform:testing"))
+  testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.coroutines.test)
+  testImplementation(libs.kotlin.test)
+  testImplementation(libs.robolectric)
+  testImplementation(libs.turbine)
 }
