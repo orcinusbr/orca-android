@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.starter.lifecycle.test
+package br.com.orcinus.orca.platform.starter.lifecycle
 
 import android.app.Activity
 import android.app.Application

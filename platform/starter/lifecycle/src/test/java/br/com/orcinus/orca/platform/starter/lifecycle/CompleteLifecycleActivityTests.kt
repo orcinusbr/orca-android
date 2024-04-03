@@ -15,14 +15,18 @@
 
 package br.com.orcinus.orca.platform.starter.lifecycle
 
+import android.os.Build
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.launchActivity
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.platform.starter.lifecycle.state.CompleteLifecycleState
-import br.com.orcinus.orca.platform.starter.lifecycle.test.doOnDestroy
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
+@RunWith(RobolectricTestRunner::class)
 internal class CompleteLifecycleActivityTests {
   @Test
   fun completeLifecycleStateIsCreatedWhenActivityIsCreated() {
@@ -76,6 +80,7 @@ internal class CompleteLifecycleActivityTests {
     }
   }
 
+  @Config(sdk = [Build.VERSION_CODES.Q])
   @Test
   fun completeLifecycleStateIsDestroyedWhenActivityIsDestroyed() {
     var state: CompleteLifecycleState? = null

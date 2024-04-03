@@ -15,13 +15,18 @@
 
 package br.com.orcinus.orca.platform.starter.lifecycle
 
+import android.os.Build
 import androidx.test.core.app.launchActivity
 import assertk.assertThat
 import assertk.assertions.isTrue
-import br.com.orcinus.orca.platform.starter.lifecycle.test.doOnDestroy
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
+@RunWith(RobolectricTestRunner::class)
 internal class ActivityExtensionsTests {
+  @Config(sdk = [Build.VERSION_CODES.Q])
   @Test
   fun runsActionOnDestroy() {
     var hasActionBeenRun = false
