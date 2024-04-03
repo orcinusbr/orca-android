@@ -30,7 +30,10 @@ import io.mockk.mockkObject
 import io.mockk.verify
 import kotlin.test.Test
 import org.junit.Rule
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class RegistrationFragmentTests {
   @get:Rule
   val injectorRule = InjectorTestRule {
