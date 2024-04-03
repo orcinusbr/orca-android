@@ -106,7 +106,6 @@ dependencies {
   implementation(project(":std:injector"))
   implementation(libs.android.appcompat)
   implementation(libs.android.constraintlayout)
-  implementation(libs.android.fragment.ktx)
   implementation(libs.android.material)
 
   releaseImplementation(libs.kotlin.reflect)

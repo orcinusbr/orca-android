@@ -21,8 +21,11 @@ import assertk.assertThat
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import br.com.orcinus.orca.platform.testing.activity.scenario.activity
-import org.junit.Test
+import kotlin.test.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class NavigatorPoolTests {
   @Test
   fun remembers() {

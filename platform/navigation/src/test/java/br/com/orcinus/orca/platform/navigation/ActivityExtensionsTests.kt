@@ -20,8 +20,11 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.ext.intents.intentOf
 import br.com.orcinus.orca.platform.testing.context
-import org.junit.Test
+import kotlin.test.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class ActivityExtensionsTests {
   @Test
   fun getsIntentExtra() {

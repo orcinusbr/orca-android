@@ -21,8 +21,11 @@ import androidx.fragment.app.testing.launchFragment
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isSameAs
-import org.junit.Test
+import kotlin.test.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class FragmentExtensionsTests {
   @Test(expected = IllegalStateException::class)
   fun throwsWhenGettingApplicationWhileDetached() {

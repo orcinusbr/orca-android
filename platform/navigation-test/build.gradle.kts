@@ -36,7 +36,6 @@ dependencies {
 
   implementation(project(":ext:reflection"))
   implementation(project(":platform:navigation"))
-  implementation(libs.android.fragment.ktx)
   implementation(libs.android.test.core)
   implementation(libs.assertk)
   implementation(libs.kotlin.reflect)

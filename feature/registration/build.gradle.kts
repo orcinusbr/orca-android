@@ -39,7 +39,6 @@ dependencies {
   ksp(project(":std:injector-processor"))
 
   testImplementation(project(":platform:autos-test"))
-  testImplementation(project(":platform:navigation"))
   testImplementation(project(":platform:navigation-test"))
   testImplementation(project(":std:injector-test"))
   testImplementation(libs.android.fragment.testing)

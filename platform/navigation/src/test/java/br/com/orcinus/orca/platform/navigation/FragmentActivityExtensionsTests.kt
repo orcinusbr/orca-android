@@ -23,8 +23,11 @@ import androidx.fragment.app.FragmentContainerView
 import androidx.test.core.app.launchActivity
 import assertk.assertThat
 import assertk.assertions.isNotEqualTo
-import org.junit.Test
+import kotlin.test.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class FragmentActivityExtensionsTests {
   class NoFragmentContainerViewActivity : FragmentActivity()
 

@@ -22,8 +22,11 @@ import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.platform.navigation.test.isAt
 import br.com.orcinus.orca.platform.navigation.transition.opening
 import br.com.orcinus.orca.platform.navigation.transition.suddenly
-import org.junit.Test
+import kotlin.test.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class NavigatorTests {
   class FirstDestinationFragment : Fragment() {
     companion object {
