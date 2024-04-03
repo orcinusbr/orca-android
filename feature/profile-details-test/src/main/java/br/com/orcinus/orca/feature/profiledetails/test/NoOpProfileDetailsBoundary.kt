@@ -15,20 +15,23 @@
 
 package br.com.orcinus.orca.feature.profiledetails.test
 
-import br.com.orcinus.orca.autos.colors.Colors
-import br.com.orcinus.orca.composite.timeline.text.annotated.toAnnotatedString
-import br.com.orcinus.orca.core.feed.profile.Profile
-import br.com.orcinus.orca.core.sample.test.feed.profile.sample
-import br.com.orcinus.orca.feature.profiledetails.ProfileDetails
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
+import br.com.orcinus.orca.feature.profiledetails.ProfileDetailsBoundary
+import java.net.URL
 
-/** Sample [ProfileDetails.Default]. */
-internal val ProfileDetails.Default.Companion.sample
-  get() =
-    ProfileDetails.Default(
-      Profile.sample.id,
-      Profile.sample.avatarLoader,
-      Profile.sample.name,
-      Profile.sample.account,
-      Profile.sample.bio.toAnnotatedString(Colors.LIGHT),
-      Profile.sample.url
-    )
+/** [ProfileDetailsBoundary] that doesn't navigate anywhere. */
+internal object NoOpProfileDetailsBoundary : ProfileDetailsBoundary {
+  override fun navigateTo(url: URL) {}
+
+  override fun navigateToGallery(
+    postID: String,
+    entrypointIndex: Int,
+    secondary: List<Attachment>,
+    entrypoint: @Composable (ContentScale, Modifier) -> Unit
+  ) {}
+
+  override fun navigateToPostDetails(id: String) {}
+}

@@ -22,11 +22,11 @@ import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
 import br.com.orcinus.orca.core.sample.test.feed.profile.sample
 import br.com.orcinus.orca.core.sample.test.feed.profile.type.sample
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetails
-import br.com.orcinus.orca.feature.profiledetails.test.createSample
-import br.com.orcinus.orca.feature.profiledetails.test.sample
+import br.com.orcinus.orca.feature.profiledetails.createSample
+import br.com.orcinus.orca.feature.profiledetails.sample
+import kotlin.test.Test
 import kotlinx.coroutines.test.TestScope
 import org.junit.Assert.assertEquals
-import org.junit.Test
 
 internal class ProfileConverterFactoryTests {
   private val coroutineScope = TestScope()

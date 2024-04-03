@@ -15,22 +15,30 @@
 
 package br.com.orcinus.orca.feature.profiledetails
 
-import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
-import br.com.orcinus.orca.core.feed.profile.Profile
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performClick
+import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
 import br.com.orcinus.orca.core.instance.Instance
+import br.com.orcinus.orca.core.sample.feed.profile.type.followable.createSample
+import br.com.orcinus.orca.core.sample.test.feed.profile.type.sample
 import br.com.orcinus.orca.core.sample.test.instance.SampleInstanceTestRule
 import br.com.orcinus.orca.feature.profiledetails.navigation.BackwardsNavigationState
 import br.com.orcinus.orca.feature.profiledetails.test.TestProfileDetailsModule
+import br.com.orcinus.orca.platform.core.image.sample
 import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.platform.navigation.test.fragment.launchFragmentInNavigationContainer
-import br.com.orcinus.orca.platform.testing.DefaultTimeout
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import br.com.orcinus.orca.std.injector.test.InjectorTestRule
-import com.jeanbarrossilva.loadable.placeholder.test.isLoading
 import kotlin.test.Test
+import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.rules.RuleChain
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class ProfileDetailsFragmentTests {
   private val injectorRule = InjectorTestRule {
     register<ProfileDetailsModule>(TestProfileDetailsModule)
@@ -43,16 +51,26 @@ internal class ProfileDetailsFragmentTests {
     RuleChain.outerRule(injectorRule).around(sampleInstanceRule).around(composeRule)
 
   @Test
-  fun loadsPosts() {
+  fun unfollowsFollowedProfileWhenClickingActionButton() {
+    val profile =
+      FollowableProfile.createSample(
+        Instance.sample.profileWriter,
+        Instance.sample.postProvider,
+        FollowableProfile.sample.follow,
+        ComposableImageLoader.Provider.sample
+      )
+    Instance.sample.profileWriter.insert(profile)
+    if (!profile.follow.isFollowingType) {
+      runTest { profile.toggleFollow() }
+    }
     launchFragmentInNavigationContainer {
-        ProfileDetailsFragment(BackwardsNavigationState.Unavailable, Profile.sample.id)
+        ProfileDetailsFragment(BackwardsNavigationState.Unavailable, profile.id)
       }
       .use {
-        @OptIn(ExperimentalTestApi::class)
-        composeRule.waitUntilDoesNotExist(
-          isLoading(),
-          timeoutMillis = DefaultTimeout.inWholeMilliseconds
-        )
+        composeRule
+          .onNodeWithTag(ProfileDetails.Followable.MAIN_ACTION_BUTTON_TAG)
+          .performClick()
+          .assertTextEquals(ProfileDetails.Followable.Status.UNFOLLOWED.label)
       }
   }
 }

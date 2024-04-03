@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.feature.profiledetails.test
+package br.com.orcinus.orca.feature.profiledetails
 
 import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.composite.timeline.text.annotated.toAnnotatedString
@@ -23,7 +23,6 @@ import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.sample.feed.profile.type.followable.createSample
 import br.com.orcinus.orca.core.sample.test.image.TestSampleImageLoader
 import br.com.orcinus.orca.core.sample.test.instance.sample
-import br.com.orcinus.orca.feature.profiledetails.ProfileDetails
 import br.com.orcinus.orca.feature.profiledetails.conversion.converter.followable.toStatus
 
 /**

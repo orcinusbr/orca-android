@@ -28,9 +28,12 @@ import br.com.orcinus.orca.platform.testing.screen.screen
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import java.util.UUID
+import kotlin.test.Test
 import org.junit.Rule
-import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class ProfileDetailsTests {
   @get:Rule val composeRule = createComposeRule()
 

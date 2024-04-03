@@ -13,13 +13,12 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.feature.profiledetails.test
+package br.com.orcinus.orca.feature.profiledetails
 
 import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.composite.timeline.text.annotated.toAnnotatedString
 import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
 import br.com.orcinus.orca.core.sample.test.feed.profile.type.sample
-import br.com.orcinus.orca.feature.profiledetails.ProfileDetails
 
 /** Sample [ProfileDetails.Editable]. */
 internal val ProfileDetails.Editable.Companion.sample

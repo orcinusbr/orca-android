@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.feature.profiledetails.test
+package br.com.orcinus.orca.feature.profiledetails
 
 import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
 

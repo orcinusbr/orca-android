@@ -47,6 +47,7 @@ include(
   ":feature:gallery-test",
   ":feature:post-details",
   ":feature:profile-details",
+  ":feature:profile-details-test",
   ":feature:registration",
   ":feature:registration:credentials",
   ":feature:registration:ongoing",
@@ -68,6 +69,7 @@ include(
   ":platform:starter",
   ":platform:starter:lifecycle",
   ":platform:testing",
+  ":platform:testing:compose",
   ":std:buildable",
   ":std:buildable-processor",
   ":std:image",
@@ -78,5 +80,3 @@ include(
   ":std:injector-test",
   ":std:styled-string"
 )
-
-include(":platform:testing:compose")

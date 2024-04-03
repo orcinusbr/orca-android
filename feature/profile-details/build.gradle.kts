@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -26,18 +26,22 @@ android {
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
   defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   namespace = namespaceFor("feature.profiledetails")
+  testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
-  androidTestImplementation(project(":composite:timeline-test"))
   androidTestImplementation(project(":core:sample-test"))
+  androidTestImplementation(project(":feature:profile-details-test"))
   androidTestImplementation(project(":platform:navigation-test"))
   androidTestImplementation(project(":platform:testing"))
   androidTestImplementation(project(":std:injector-test"))
-  androidTestImplementation(libs.android.test.core)
+  androidTestImplementation(libs.android.compose.ui.test.junit)
+  androidTestImplementation(libs.android.compose.ui.test.manifest)
   androidTestImplementation(libs.loadable.placeholder.test)
 
+  api(project(":core"))
   api(project(":composite:composable"))
+  api(libs.android.compose.ui)
 
   ksp(project(":std:injector-processor"))
 
@@ -51,7 +55,13 @@ dependencies {
   implementation(libs.loadable.list)
   implementation(libs.loadable.placeholder)
 
+  testImplementation(project(":composite:timeline-test"))
   testImplementation(project(":core:sample-test"))
+  testImplementation(project(":feature:profile-details-test"))
+  testImplementation(project(":platform:navigation-test"))
+  testImplementation(project(":platform:testing"))
+  testImplementation(project(":std:injector-test"))
   testImplementation(libs.kotlin.coroutines.test)
-  testImplementation(libs.junit)
+  testImplementation(libs.kotlin.test)
+  testImplementation(libs.robolectric)
 }
