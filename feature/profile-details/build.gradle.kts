@@ -37,6 +37,7 @@ dependencies {
   androidTestImplementation(project(":std:injector-test"))
   androidTestImplementation(libs.android.compose.ui.test.junit)
   androidTestImplementation(libs.android.compose.ui.test.manifest)
+  androidTestImplementation(libs.kotlin.test)
   androidTestImplementation(libs.loadable.placeholder.test)
 
   api(project(":core"))
