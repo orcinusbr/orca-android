@@ -24,7 +24,10 @@ import br.com.orcinus.orca.platform.autos.test.kit.input.text.onTextField
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class FocusRequesterExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
