@@ -78,3 +78,5 @@ include(
   ":std:injector-test",
   ":std:styled-string"
 )
+
+include(":platform:testing:compose")

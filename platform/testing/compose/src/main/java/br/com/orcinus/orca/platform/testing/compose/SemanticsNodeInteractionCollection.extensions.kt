@@ -13,12 +13,11 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.app.demo.test
+package br.com.orcinus.orca.platform.testing.compose
 
 import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionCollection
-import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 
 /**
  * Whether this [AssertionError] is the result of asserting the existence of a given
@@ -43,23 +42,19 @@ private val AssertionError.isBecauseIndexIsOutOfBounds
 private object END
 
 /**
- * Performs the given [action] on each of the provided [SemanticsNodeInteraction]s.
+ * Performs the given [action] on each of the [SemanticsNodeInteraction]s.
  *
- * @param interactions Returns the [SemanticsNodeInteractionCollection] with the
- *   [SemanticsNodeInteraction]s on which the [action] will be performed.
  * @param action Operation to be run on each [SemanticsNode]'s [SemanticsNodeInteraction].
  */
-internal fun SemanticsNodeInteractionsProvider.perform(
-  interactions: SemanticsNodeInteractionsProvider.() -> SemanticsNodeInteractionCollection,
+fun SemanticsNodeInteractionCollection.onEach(
   action: SemanticsNodeInteraction.(index: Int) -> Unit
 ): SemanticsNodeInteractionCollection {
-  @Suppress("LocalVariableName") val _interactions = interactions()
   var index = 0
   var current: Any? = null
   while (current !== END) {
     current =
       try {
-        _interactions[index].also(SemanticsNodeInteraction::assertExists)
+        get(index).also(SemanticsNodeInteraction::assertExists)
       } catch (error: AssertionError) {
         if (error.isBecauseIndexIsOutOfBounds) {
           END
@@ -69,5 +64,5 @@ internal fun SemanticsNodeInteractionsProvider.perform(
       }
     (current as? SemanticsNodeInteraction)?.action(index++)
   }
-  return _interactions
+  return this
 }

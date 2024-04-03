@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.app
+package br.com.orcinus.orca.app.demo
 
 import androidx.compose.ui.test.TouchInjectionScope
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -22,34 +22,28 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
-import assertk.assertThat
-import br.com.orcinus.orca.app.demo.DemoOrcaActivity
-import br.com.orcinus.orca.app.demo.test.assertContentDescriptionIsCohesiveToPagePosition
-import br.com.orcinus.orca.app.demo.test.perform
-import br.com.orcinus.orca.app.demo.test.performScrollToPostPreviewWithGalleryPreview
-import br.com.orcinus.orca.app.demo.test.performScrollToPostPreviewWithLinkCard
 import br.com.orcinus.orca.composite.timeline.test.onRefreshIndicator
 import br.com.orcinus.orca.composite.timeline.test.onTimeline
 import br.com.orcinus.orca.composite.timeline.test.post.figure.gallery.thumbnail.onThumbnails
 import br.com.orcinus.orca.composite.timeline.test.post.figure.link.onLinkCards
+import br.com.orcinus.orca.composite.timeline.test.post.performScrollToPostPreviewWithGalleryPreview
+import br.com.orcinus.orca.composite.timeline.test.post.performScrollToPostPreviewWithLinkCard
 import br.com.orcinus.orca.composite.timeline.test.refresh.assertIsNotInProgress
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Highlight
 import br.com.orcinus.orca.core.sample.test.feed.profile.post.content.highlight.sample
 import br.com.orcinus.orca.feature.composer.ComposerActivity
 import br.com.orcinus.orca.feature.feed.FEED_FLOATING_ACTION_BUTTON_TAG
-import br.com.orcinus.orca.feature.feed.FeedFragment
 import br.com.orcinus.orca.feature.feed.test.onSearchAction
 import br.com.orcinus.orca.feature.gallery.GalleryActivity
-import br.com.orcinus.orca.feature.gallery.test.ui.onCloseActionButton
-import br.com.orcinus.orca.feature.gallery.test.ui.onPager
-import br.com.orcinus.orca.feature.gallery.test.ui.performScrollToEachPage
 import br.com.orcinus.orca.feature.search.SearchActivity
 import br.com.orcinus.orca.platform.intents.test.intendBrowsingTo
 import br.com.orcinus.orca.platform.intents.test.intendStartingOf
-import br.com.orcinus.orca.platform.navigation.test.isAt
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class FeedTests {
   @get:Rule val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
 
@@ -67,7 +61,7 @@ internal class FeedTests {
   @Test
   fun navigatesToPostLink() {
     intendBrowsingTo("${Highlight.sample.url}") {
-      composeRule.performScrollToPostPreviewWithLinkCard()
+      composeRule.onTimeline().performScrollToPostPreviewWithLinkCard()
       composeRule.onLinkCards().onFirst().performClick()
     }
   }
@@ -79,32 +73,6 @@ internal class FeedTests {
         onTimeline().performScrollToPostPreviewWithGalleryPreview {
           onThumbnails().onFirst().performClick()
         }
-      }
-    }
-  }
-
-  @Test
-  fun showsImageWhoseThumbnailWasClickedWhenNavigatingToGallery() {
-    with(composeRule) {
-      onTimeline().performScrollToPostPreviewWithGalleryPreview { post ->
-        perform({ onThumbnails() }) { index ->
-          performClick()
-          onPager().performScrollToEachPage {
-            assertContentDescriptionIsCohesiveToPagePosition(post, entrypointIndex = index)
-          }
-          onCloseActionButton().performClick()
-        }
-      }
-    }
-  }
-
-  @Test
-  fun navigatesToGalleryAndGoesBackToFeedWhenClosingIt() {
-    with(composeRule) {
-      onTimeline().performScrollToPostPreviewWithGalleryPreview {
-        onThumbnails().onFirst().performClick()
-        onCloseActionButton().performClick()
-        assertThat(composeRule.activity).isAt(FeedFragment.ROUTE)
       }
     }
   }

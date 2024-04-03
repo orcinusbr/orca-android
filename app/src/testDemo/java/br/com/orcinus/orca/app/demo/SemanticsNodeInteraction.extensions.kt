@@ -13,14 +13,15 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.app.demo.test
+package br.com.orcinus.orca.app.demo
 
-import androidx.compose.ui.test.junit4.ComposeTestRule
-import br.com.orcinus.orca.composite.timeline.post.PostPreview
-import br.com.orcinus.orca.composite.timeline.post.figure.link.LinkCard
-import br.com.orcinus.orca.composite.timeline.test.onTimeline
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.semantics.SemanticsNode
+import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.click
+import androidx.compose.ui.test.performTouchInput
 
-/** Scrolls to the first [PostPreview] containing a [LinkCard]. */
-internal fun ComposeTestRule.performScrollToPostPreviewWithLinkCard() {
-  onTimeline().performScrollToPostIndex({ it.content.highlight != null })
+/** Performs a click on the portion located at [Offset.Zero] of this [SemanticsNode]. */
+internal fun SemanticsNodeInteraction.performStartClick() {
+  performTouchInput { click(Offset.Zero) }
 }

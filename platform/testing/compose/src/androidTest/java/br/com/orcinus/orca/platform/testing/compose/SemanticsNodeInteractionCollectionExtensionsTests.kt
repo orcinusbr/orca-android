@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.app
+package br.com.orcinus.orca.platform.testing.compose
 
 import androidx.compose.material3.Text
 import androidx.compose.ui.semantics.SemanticsProperties
@@ -22,9 +22,8 @@ import androidx.compose.ui.test.hasTextExactly
 import androidx.compose.ui.test.junit4.createComposeRule
 import assertk.assertThat
 import assertk.assertions.containsExactly
-import br.com.orcinus.orca.app.demo.test.perform
+import kotlin.test.Test
 import org.junit.Rule
-import org.junit.Test
 
 internal class SemanticsNodeInteractionCollectionExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
@@ -39,7 +38,8 @@ internal class SemanticsNodeInteractionCollectionExtensionsTests {
           Text("1")
         }
       }
-      .perform({ onAllNodes(hasTextExactly("0") or hasTextExactly("1")) }) {
+      .onAllNodes(hasTextExactly("0") or hasTextExactly("1"))
+      .onEach {
         texts[it] = fetchSemanticsNode().config[SemanticsProperties.Text].single().toString()
       }
     assertThat(texts).containsExactly("0", "1")
@@ -54,8 +54,7 @@ internal class SemanticsNodeInteractionCollectionExtensionsTests {
           Text("3")
         }
       }
-      .perform({ onAllNodes(hasTextExactly("2") or hasTextExactly("3")) }) {
-        assertIsNotDisplayed()
-      }
+      .onAllNodes(hasTextExactly("2") or hasTextExactly("3"))
+      .onEach { assertIsNotDisplayed() }
   }
 }

@@ -13,39 +13,52 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.app
+package br.com.orcinus.orca.composite.timeline.test.post
 
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.assertAny
 import androidx.compose.ui.test.junit4.createComposeRule
-import br.com.orcinus.orca.app.demo.test.isPostPreview
 import br.com.orcinus.orca.autos.colors.Colors
-import br.com.orcinus.orca.composite.timeline.post.LoadedPostPreview
+import br.com.orcinus.orca.composite.timeline.Timeline
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
-import br.com.orcinus.orca.composite.timeline.test.post.onPostPreview
-import br.com.orcinus.orca.composite.timeline.test.post.time.StringRelativeTimeProvider
+import br.com.orcinus.orca.composite.timeline.test.onTimeline
+import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import br.com.orcinus.orca.platform.core.withSamples
 import org.junit.Rule
 import org.junit.Test
 
-internal class SemanticsMatcherExtensionsTests {
+internal class SemanticsNodeInteractionExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun linksPostPreview() {
+  fun performsScrollToPostIndex() {
     lateinit var colors: Colors
-    composeRule.setContent {
-      AutosTheme {
-        AutosTheme.colors.let {
-          DisposableEffect(Unit) {
-            colors = it
-            onDispose {}
+    composeRule
+      .apply {
+        setContent {
+          AutosTheme {
+            AutosTheme.colors.let {
+              DisposableEffect(Unit) {
+                colors = it
+                onDispose {}
+              }
+            }
+
+            Timeline(
+              PostPreview.samples,
+              onFavorite = {},
+              onRepost = {},
+              onShare = {},
+              onClick = {},
+              onNext = {}
+            )
           }
         }
-
-        LoadedPostPreview(relativeTimeProvider = StringRelativeTimeProvider)
       }
-    }
-    composeRule.onPostPreview().assert(isPostPreview(PostPreview.getSample(colors)))
+      .run {
+        onTimeline().performScrollToPostIndex({ it == Posts.withSamples.last() })
+        onPostPreviews().assertAny(isPostPreview(PostPreview.getSamples(colors).last()))
+      }
   }
 }

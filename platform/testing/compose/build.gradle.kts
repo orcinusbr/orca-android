@@ -13,20 +13,20 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.app.demo.test
+plugins {
+  alias(libs.plugins.android.library)
+  alias(libs.plugins.kotlin.android)
+}
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.semantics.SemanticsProperties
-import androidx.compose.ui.test.SemanticsMatcher
-import br.com.orcinus.orca.composite.timeline.post.PostPreview
+android {
+  composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
+}
 
-/**
- * [SemanticsMatcher] that matches a [Composable] that's linked to the given [postPreview].
- *
- * @param postPreview [PostPreview] that's expected to be linked.
- */
-internal fun isPostPreview(postPreview: PostPreview): SemanticsMatcher {
-  return SemanticsMatcher("PostPreview.id = ${postPreview.id}") {
-    it.config[SemanticsProperties.PostPreview].id == postPreview.id
-  }
+dependencies {
+  androidTestImplementation(libs.android.compose.material3)
+  androidTestImplementation(libs.android.compose.ui.test.manifest)
+  androidTestImplementation(libs.assertk)
+  androidTestImplementation(libs.kotlin.test)
+
+  api(libs.android.compose.ui.test.junit)
 }

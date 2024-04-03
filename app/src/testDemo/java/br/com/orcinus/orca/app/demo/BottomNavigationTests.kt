@@ -13,35 +13,36 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.app
+package br.com.orcinus.orca.app.demo
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import br.com.orcinus.orca.app.demo.DemoOrcaActivity
-import org.junit.Assert.assertEquals
+import assertk.assertThat
+import br.com.orcinus.orca.app.R
+import br.com.orcinus.orca.feature.feed.FeedFragment
+import br.com.orcinus.orca.feature.profiledetails.ProfileDetailsFragment
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class BottomNavigationTests {
   @get:Rule val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
 
   @Test
   fun navigatesOnceWhenClickingFeedItemMultipleTimes() {
     repeat(2) { onView(withId(R.id.feed)).perform(click()) }
-    assertEquals(1, composeRule.activity.supportFragmentManager.fragments.size)
+    assertThat(composeRule.activity.supportFragmentManager.fragments)
+      .containsExactlyInstancesOf(FeedFragment::class)
   }
 
   @Test
   fun navigatesOnceWhenClickingProfileDetailsItemMultipleTimes() {
     repeat(2) { onView(withId(R.id.profile_details)).perform(click()) }
-
-    /*
-     * We expect it to have two Fragment instances because we start with a FeedFragment,
-     * and then comes the single ProfileDetailsFragment one after the navigation is
-     * performed once.
-     */
-    assertEquals(2, composeRule.activity.supportFragmentManager.fragments.size)
+    assertThat(composeRule.activity.supportFragmentManager.fragments)
+      .containsExactlyInstancesOf(FeedFragment::class, ProfileDetailsFragment::class)
   }
 }

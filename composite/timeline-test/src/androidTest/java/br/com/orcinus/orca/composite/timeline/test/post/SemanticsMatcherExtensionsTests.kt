@@ -15,9 +15,14 @@
 
 package br.com.orcinus.orca.composite.timeline.test.post
 
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import br.com.orcinus.orca.autos.colors.Colors
+import br.com.orcinus.orca.composite.timeline.post.LoadedPostPreview
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
+import br.com.orcinus.orca.composite.timeline.test.post.time.StringRelativeTimeProvider
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test
@@ -26,8 +31,26 @@ internal class SemanticsMatcherExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun findsPostPreviewNode() {
+  fun matchesPostPreviewNode() {
     composeRule.setContent { AutosTheme { PostPreview() } }
     composeRule.onNode(isPostPreview()).assertIsDisplayed()
+  }
+
+  @Test
+  fun matchesLinkedPostPreviewNode() {
+    lateinit var colors: Colors
+    composeRule.setContent {
+      AutosTheme {
+        AutosTheme.colors.let {
+          DisposableEffect(Unit) {
+            colors = it
+            onDispose {}
+          }
+        }
+
+        LoadedPostPreview(relativeTimeProvider = StringRelativeTimeProvider)
+      }
+    }
+    composeRule.onPostPreview().assert(isPostPreview(PostPreview.getSample(colors)))
   }
 }
