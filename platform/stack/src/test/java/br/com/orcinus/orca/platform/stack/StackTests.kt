@@ -21,7 +21,10 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import kotlin.test.Test
 import org.junit.Rule
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class StackTests {
   @get:Rule val composeRule = createComposeRule()
 
