@@ -21,6 +21,7 @@ import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.testing.EmptyFragmentActivity
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.test.core.app.launchActivity
+import br.com.orcinus.orca.ext.reflection.access
 import br.com.orcinus.orca.platform.navigation.Navigator
 import br.com.orcinus.orca.platform.navigation.navigator
 import br.com.orcinus.orca.platform.navigation.test.activity.makeNavigable
@@ -49,8 +50,9 @@ inline fun <reified T : Fragment> launchFragmentInNavigationContainer(
     }
 
   @Suppress("UNCHECKED_CAST")
-  return FragmentScenario::class.primaryConstructor?.call(T::class.java, activityScenario)
-    as FragmentScenario<T>?
+  return FragmentScenario::class.primaryConstructor?.access {
+    call(T::class.java, activityScenario)
+  } as FragmentScenario<T>?
     ?: throw NoSuchMethodException(
       "FragmentScenario.<init>(Class<out Fragment>, ActivityScenario<EmptyFragmentActivity>)"
     )

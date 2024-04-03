@@ -34,6 +34,7 @@ dependencies {
 
   api(libs.android.fragment.testing)
 
+  implementation(project(":ext:reflection"))
   implementation(project(":platform:navigation"))
   implementation(libs.android.fragment.ktx)
   implementation(libs.android.test.core)

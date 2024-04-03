@@ -21,7 +21,10 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.runEmptyComposeUiTest
 import br.com.orcinus.orca.platform.navigation.test.fragment.launchFragmentInNavigationContainer
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class ComposableFragmentTests {
   class TestComposableFragment : ComposableFragment() {
     @Composable @Suppress("TestFunctionName") override fun Content() {}
