@@ -13,20 +13,9 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.ime.scope.animation
+package br.com.orcinus.orca.platform.ime.test.scope
 
-import assertk.assertThat
-import br.com.orcinus.orca.platform.ime.scope.animation.stage.isEnded
-import br.com.orcinus.orca.platform.ime.scope.open
-import br.com.orcinus.orca.platform.ime.scope.runImeTest
-import kotlin.test.Test
+import androidx.activity.ComponentActivity
 
-internal class ImeAnimationCallbackScopeExtensionsTests {
-  @Test
-  fun setsViewCallbackBeforeTesting() {
-    runImeTest {
-      open()
-      assertThat(animationCallback.stage).isEnded()
-    }
-  }
-}
+/** [ComponentActivity] that is launched by [runImeTest]. */
+internal class ImeScopeActivity : ComponentActivity()

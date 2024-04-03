@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.ime.scope.animation.stage;
+package br.com.orcinus.orca.platform.ime.test.scope.animation.stage;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

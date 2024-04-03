@@ -61,6 +61,7 @@ include(
   ":platform:core",
   ":platform:focus",
   ":platform:ime",
+  ":platform:ime-test",
   ":platform:intents",
   ":platform:intents-test",
   ":platform:navigation",

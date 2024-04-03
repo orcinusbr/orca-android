@@ -13,15 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.ime.scope.animation
+package br.com.orcinus.orca.platform.ime.test.scope.animation
 
 import android.view.View
-import android.view.WindowInsets
 import android.view.WindowInsetsAnimation
+import androidx.core.view.WindowInsetsAnimationCompat
+import androidx.core.view.WindowInsetsCompat
 import br.com.orcinus.orca.ext.coroutines.await
 import br.com.orcinus.orca.ext.coroutines.getValue
 import br.com.orcinus.orca.ext.coroutines.setValue
-import br.com.orcinus.orca.platform.ime.scope.animation.stage.Stage
+import br.com.orcinus.orca.platform.ime.Ime
+import br.com.orcinus.orca.platform.ime.test.scope.animation.stage.Stage
 import java.time.Duration
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -31,8 +33,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
  * @param view [View] to which this [ImeAnimationCallback] will be set.
  * @see View.setWindowInsetsAnimationCallback
  */
+@PublishedApi
 internal class ImeAnimationCallback(private val view: View) :
-  WindowInsetsAnimation.Callback(DISPATCH_MODE_CONTINUE_ON_SUBTREE) {
+  WindowInsetsAnimationCompat.Callback(DISPATCH_MODE_CONTINUE_ON_SUBTREE) {
   /**
    * [MutableStateFlow] to which the current [Stage] of the ongoing [WindowInsetsAnimation] is
    * emitted.
@@ -42,8 +45,8 @@ internal class ImeAnimationCallback(private val view: View) :
   private val stageFlow = MutableStateFlow(Stage.idle())
 
   /** Whether this [WindowInsetsAnimation] is the IME's. */
-  private val WindowInsetsAnimation.isOfIme
-    get() = typeMask and type == type
+  private val WindowInsetsAnimationCompat.isOfIme
+    get() = typeMask and Ime.type == Ime.type
 
   /**
    * Current [Stage] of the ongoing [WindowInsetsAnimation].
@@ -52,11 +55,7 @@ internal class ImeAnimationCallback(private val view: View) :
    */
   var stage by stageFlow
 
-  init {
-    stage = Stage.idle()
-  }
-
-  override fun onPrepare(animation: WindowInsetsAnimation) {
+  override fun onPrepare(animation: WindowInsetsAnimationCompat) {
     if (animation.isOfIme) {
       val duration = Duration.ofMillis(animation.durationMillis)
       stage += Stage.prepared(duration)
@@ -64,9 +63,9 @@ internal class ImeAnimationCallback(private val view: View) :
   }
 
   override fun onStart(
-    animation: WindowInsetsAnimation,
-    bounds: WindowInsetsAnimation.Bounds
-  ): WindowInsetsAnimation.Bounds {
+    animation: WindowInsetsAnimationCompat,
+    bounds: WindowInsetsAnimationCompat.BoundsCompat
+  ): WindowInsetsAnimationCompat.BoundsCompat {
     if (animation.isOfIme) {
       val duration = Duration.ofMillis(animation.durationMillis)
       stage += Stage.started(duration)
@@ -75,20 +74,20 @@ internal class ImeAnimationCallback(private val view: View) :
   }
 
   override fun onProgress(
-    insets: WindowInsets,
-    runningAnimations: MutableList<WindowInsetsAnimation>
-  ): WindowInsets {
+    insets: WindowInsetsCompat,
+    runningAnimations: MutableList<WindowInsetsAnimationCompat>
+  ): WindowInsetsCompat {
     val ongoing = runningAnimations.filter { it.isOfIme }
     val hasOngoing = ongoing.isNotEmpty()
     if (hasOngoing) {
-      val durationInMilliseconds = ongoing.sumOf(WindowInsetsAnimation::getDurationMillis)
+      val durationInMilliseconds = ongoing.sumOf(WindowInsetsAnimationCompat::getDurationMillis)
       val duration = Duration.ofMillis(durationInMilliseconds)
       stage += Stage.ongoing(duration)
     }
     return insets
   }
 
-  override fun onEnd(animation: WindowInsetsAnimation) {
+  override fun onEnd(animation: WindowInsetsAnimationCompat) {
     if (animation.isOfIme) {
       stage += Stage.ended()
     }
@@ -100,17 +99,8 @@ internal class ImeAnimationCallback(private val view: View) :
    * @see Stage.ended
    */
   suspend fun awaitAnimation() {
-    stageFlow.await()
     while (!stage.isEnded) {
-      awaitAnimation()
+      stageFlow.await()
     }
-  }
-
-  companion object {
-    /**
-     * Constant from [WindowInsets.Type] that is used for determining whether a
-     * [WindowInsetsAnimation] belongs to the IME.
-     */
-    @JvmField val type = WindowInsets.Type.ime()
   }
 }

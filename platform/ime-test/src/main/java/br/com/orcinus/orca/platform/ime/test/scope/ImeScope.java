@@ -13,19 +13,21 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.ime.scope;
+package br.com.orcinus.orca.platform.ime.test.scope;
 
-import android.app.Activity;
+import android.os.Build;
 import android.view.View;
 import android.view.WindowInsetsAnimation;
 import android.view.WindowInsetsController;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import br.com.orcinus.orca.platform.ime.Ime;
-import br.com.orcinus.orca.platform.ime.scope.animation.ImeAnimationCallback;
-import br.com.orcinus.orca.platform.ime.scope.animation.stage.Stage;
+import br.com.orcinus.orca.platform.ime.test.scope.animation.ImeAnimationCallback;
+import br.com.orcinus.orca.platform.ime.test.scope.animation.stage.Stage;
 import java.time.Duration;
 import java.util.function.Consumer;
+import kotlin.PublishedApi;
 import kotlin.Unit;
 import kotlin.coroutines.Continuation;
 import kotlin.coroutines.CoroutineContext;
@@ -33,8 +35,8 @@ import kotlinx.coroutines.CoroutineScope;
 
 /** Scope in which {@link Ime} tests can be run. */
 public class ImeScope implements CoroutineScope {
-  /** {@link Activity} from which the IME will be toggled. */
-  @NonNull private final Activity activity;
+  /** {@link ImeScopeActivity} from which the IME will be toggled. */
+  @NonNull private final ImeScopeActivity activity;
 
   /** {@link View} to which the {@link ImeAnimationCallback} will be added. */
   @NonNull private final View view;
@@ -62,7 +64,7 @@ public class ImeScope implements CoroutineScope {
   /**
    * Scope in which {@link Ime} tests can be run.
    *
-   * @param activity {@link Activity} from which the IME will be toggled.
+   * @param activity {@link ImeScopeActivity} from which the IME will be toggled.
    * @param view {@link View} to which the {@link ImeAnimationCallback} will be added.
    * @param onVisibilityChangeListener {@link CapturingOnImeVisibilityChangeListener} by which the
    *     current visibility of the IME is captured and provided.
@@ -73,8 +75,9 @@ public class ImeScope implements CoroutineScope {
    * @see ImeScope#getVisibility()
    * @see Stage#ongoing(Duration)
    */
-  ImeScope(
-      @NonNull Activity activity,
+  @PublishedApi
+  public ImeScope(
+      @NonNull ImeScopeActivity activity,
       @NonNull View view,
       @NonNull CapturingOnImeVisibilityChangeListener onVisibilityChangeListener,
       @NonNull ImeAnimationCallback animationCallback,
@@ -93,10 +96,10 @@ public class ImeScope implements CoroutineScope {
    * @param continuation {@link Continuation} to resume from after the IME {@link
    *     WindowInsetsAnimation} has ended.
    */
+  @RequiresApi(Build.VERSION_CODES.R)
   void open(Continuation<? super Unit> continuation) {
     runAndAwaitAnimation(
-        continuation,
-        (windowInsetsController) -> windowInsetsController.show(ImeAnimationCallback.type));
+        continuation, (windowInsetsController) -> windowInsetsController.show(Ime.type));
   }
 
   /**
@@ -105,10 +108,10 @@ public class ImeScope implements CoroutineScope {
    * @param continuation {@link Continuation} to resume from after the IME {@link
    *     WindowInsetsAnimation} has ended.
    */
+  @RequiresApi(Build.VERSION_CODES.R)
   void close(Continuation<? super Unit> continuation) {
     runAndAwaitAnimation(
-        continuation,
-        (windowInsetsController) -> windowInsetsController.hide(ImeAnimationCallback.type));
+        continuation, (windowInsetsController) -> windowInsetsController.hide(Ime.type));
   }
 
   /**
@@ -153,6 +156,7 @@ public class ImeScope implements CoroutineScope {
    * @see ImeScope#getView()
    * @see View#getWindowInsetsController()
    */
+  @RequiresApi(Build.VERSION_CODES.R)
   private void runAndAwaitAnimation(
       @NonNull Continuation<? super Unit> continuation,
       @NonNull Consumer<WindowInsetsController> action) {

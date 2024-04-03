@@ -13,17 +13,12 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.ime.scope;
+package br.com.orcinus.orca.platform.ime.test.scope;
 
-import android.app.Activity;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowInsetsController;
 import androidx.annotation.NonNull;
-import androidx.core.graphics.Insets;
-import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.core.view.WindowInsetsControllerCompat;
 import br.com.orcinus.orca.platform.ime.Ime;
 import br.com.orcinus.orca.platform.ime.state.OnImeVisibilityChangeListener;
 
@@ -31,29 +26,13 @@ import br.com.orcinus.orca.platform.ime.state.OnImeVisibilityChangeListener;
  * {@link OnImeVisibilityChangeListener} that captures the last visibility to which the IME has been
  * set.
  *
- * <p>Since it acts both as a {@link WindowInsetsController.OnControllableInsetsChangedListener} and
- * a {@link WindowInsetsControllerCompat.OnControllableInsetsChangedListener} (the latter being
- * because {@link OnImeVisibilityChangeListener} implements it), the {@link WindowInsetsController}
- * by which controllable {@link Insets} are changed will be converted into its compatibility
- * version.
- *
  * @see Ime.Visibility
  * @see CapturingOnImeVisibilityChangeListener#getVisibility()
  * @see
  *     WindowInsetsController.OnControllableInsetsChangedListener#onControllableInsetsChanged(WindowInsetsController,
  *     int)
  */
-public class CapturingOnImeVisibilityChangeListener extends OnImeVisibilityChangeListener
-    implements WindowInsetsController.OnControllableInsetsChangedListener {
-  /**
-   * {@link Activity} whose {@link Window} will be used to convert a {@link WindowInsetsController}
-   * into a {@link WindowInsetsControllerCompat}.
-   *
-   * @see Activity#getWindow()
-   * @see WindowCompat#getInsetsController(Window, View)
-   */
-  @NonNull private final Activity activity;
-
+public class CapturingOnImeVisibilityChangeListener extends OnImeVisibilityChangeListener {
   /**
    * Latest visibility to which the IME has changed.
    *
@@ -65,14 +44,6 @@ public class CapturingOnImeVisibilityChangeListener extends OnImeVisibilityChang
    * {@link OnImeVisibilityChangeListener} that captures the last visibility to which the IME has
    * been set.
    *
-   * <p>Since it acts both as a {@link WindowInsetsController.OnControllableInsetsChangedListener}
-   * and a {@link WindowInsetsControllerCompat.OnControllableInsetsChangedListener} (the latter
-   * being because {@link OnImeVisibilityChangeListener} implements it), the {@link
-   * WindowInsetsController} by which controllable {@link Insets} are changed will be converted into
-   * its compatibility version.
-   *
-   * @param activity {@link Activity} whose {@link Window} will be used to convert a {@link
-   *     WindowInsetsController} into a {@link WindowInsetsControllerCompat}.
    * @param view {@link View} whose {@link WindowInsetsCompat} will provide the visibility.
    * @see Ime.Visibility
    * @see CapturingOnImeVisibilityChangeListener#getVisibility()
@@ -80,23 +51,13 @@ public class CapturingOnImeVisibilityChangeListener extends OnImeVisibilityChang
    *     WindowInsetsController.OnControllableInsetsChangedListener#onControllableInsetsChanged(WindowInsetsController,
    *     int)
    */
-  public CapturingOnImeVisibilityChangeListener(@NonNull Activity activity, @NonNull View view) {
+  public CapturingOnImeVisibilityChangeListener(@NonNull View view) {
     super(view);
-    this.activity = activity;
   }
 
   @Override
   public void onImeVisibilityChange(int ime) {
     visibility = ime;
-  }
-
-  @Override
-  public void onControllableInsetsChanged(
-      @NonNull WindowInsetsController controller, int typeMask) {
-    Window window = activity.getWindow();
-    View view = getView();
-    WindowInsetsControllerCompat controllerCompat = WindowCompat.getInsetsController(window, view);
-    onControllableInsetsChanged(controllerCompat, typeMask);
   }
 
   /**

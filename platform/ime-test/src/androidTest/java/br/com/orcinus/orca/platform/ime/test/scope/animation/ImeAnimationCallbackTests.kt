@@ -13,11 +13,12 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.ime.scope.animation
+package br.com.orcinus.orca.platform.ime.test.scope.animation
 
 import assertk.assertThat
-import br.com.orcinus.orca.platform.ime.scope.animation.stage.isEnded
-import br.com.orcinus.orca.platform.ime.scope.runImeTest
+import br.com.orcinus.orca.platform.ime.Ime
+import br.com.orcinus.orca.platform.ime.test.scope.animation.stage.isEnded
+import br.com.orcinus.orca.platform.ime.test.scope.runImeTest
 import kotlin.test.Test
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -26,7 +27,7 @@ internal class ImeAnimationCallbackTests {
   @Test
   fun awaitsOpeningAnimation() {
     runImeTest {
-      withContext(Dispatchers.Main) { view.windowInsetsController?.show(ImeAnimationCallback.type) }
+      withContext(Dispatchers.Main) { view.windowInsetsController?.show(Ime.type) }
       animationCallback.awaitAnimation()
       assertThat(animationCallback.stage).isEnded()
     }
@@ -35,9 +36,9 @@ internal class ImeAnimationCallbackTests {
   @Test
   fun awaitsClosingAnimation() {
     runImeTest {
-      withContext(Dispatchers.Main) { view.windowInsetsController?.show(ImeAnimationCallback.type) }
+      withContext(Dispatchers.Main) { view.windowInsetsController?.show(Ime.type) }
       animationCallback.awaitAnimation()
-      withContext(Dispatchers.Main) { view.windowInsetsController?.hide(ImeAnimationCallback.type) }
+      withContext(Dispatchers.Main) { view.windowInsetsController?.hide(Ime.type) }
       animationCallback.awaitAnimation()
       assertThat(animationCallback.stage).isEnded()
     }

@@ -13,17 +13,18 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-@file:JvmName("ImeScopeExtensions")
+package br.com.orcinus.orca.platform.ime.test.scope
 
-package br.com.orcinus.orca.platform.ime.scope
-
+import android.os.Build
 import android.view.WindowInsets
 import android.view.WindowInsetsAnimation
 import android.view.WindowInsetsController
-import androidx.activity.ComponentActivity
+import androidx.annotation.RequiresApi
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.test.core.app.launchActivity
 import br.com.orcinus.orca.platform.ime.Ime
-import br.com.orcinus.orca.platform.ime.scope.animation.ImeAnimationCallback
+import br.com.orcinus.orca.platform.ime.test.scope.animation.ImeAnimationCallback
 import br.com.orcinus.orca.platform.testing.activity.scenario.activity
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
@@ -37,7 +38,7 @@ import kotlinx.coroutines.test.runTest
  * @throws IllegalStateException If this [ImeScope]'s current IME visibility is invalid.
  * @see Ime
  */
-internal inline val ImeScope.ime
+inline val ImeScope.ime
   @Throws(IllegalStateException::class)
   get() =
     when (visibility) {
@@ -52,7 +53,8 @@ internal inline val ImeScope.ime
  *
  * @see ImeScope.open
  */
-internal suspend fun ImeScope.open() {
+@RequiresApi(Build.VERSION_CODES.R)
+suspend fun ImeScope.open() {
   suspendCoroutine(::open)
 }
 
@@ -61,7 +63,8 @@ internal suspend fun ImeScope.open() {
  *
  * @see ImeScope.close
  */
-internal suspend fun ImeScope.close() {
+@RequiresApi(Build.VERSION_CODES.R)
+suspend fun ImeScope.close() {
   suspendCoroutine(::close)
 }
 
@@ -106,23 +109,24 @@ internal suspend fun ImeScope.close() {
  */
 @OptIn(ExperimentalContracts::class)
 @Suppress("NOTHING_TO_INLINE")
-internal inline fun runImeTest(noinline body: suspend ImeScope.() -> Unit) {
+inline fun runImeTest(noinline body: suspend ImeScope.() -> Unit) {
   contract { callsInPlace(body, InvocationKind.EXACTLY_ONCE) }
-  val scenario = launchActivity<ComponentActivity>()
+  val scenario = launchActivity<ImeScopeActivity>()
   val activity = checkNotNull(scenario.activity)
   val view = checkNotNull(activity.window?.decorView)
-  val onVisibilityChangeListener = CapturingOnImeVisibilityChangeListener(activity, view)
+  val windowInsetsControllerCompat = WindowCompat.getInsetsController(activity.window, view)
+  val onVisibilityChangeListener = CapturingOnImeVisibilityChangeListener(view)
   val animationCallback = ImeAnimationCallback(view)
-  val windowInsetsController = checkNotNull(activity.window?.insetsController)
   runTest {
-    val scope = ImeScope(activity, view, onVisibilityChangeListener, animationCallback, this)
-    windowInsetsController.addOnControllableInsetsChangedListener(onVisibilityChangeListener)
-    view.setWindowInsetsAnimationCallback(animationCallback)
+    windowInsetsControllerCompat.addOnControllableInsetsChangedListener(onVisibilityChangeListener)
+    ViewCompat.setWindowInsetsAnimationCallback(view, animationCallback)
     try {
-      scope.body()
+      ImeScope(activity, view, onVisibilityChangeListener, animationCallback, this).body()
     } finally {
-      view.setWindowInsetsAnimationCallback(null)
-      windowInsetsController.removeOnControllableInsetsChangedListener(onVisibilityChangeListener)
+      ViewCompat.setWindowInsetsAnimationCallback(view, null)
+      windowInsetsControllerCompat.removeOnControllableInsetsChangedListener(
+        onVisibilityChangeListener
+      )
       scenario.close()
     }
   }
