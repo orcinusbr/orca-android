@@ -19,7 +19,10 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import br.com.orcinus.orca.platform.navigation.navigator
 import kotlin.test.Test
 import org.junit.Rule
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class FragmentActivityExtensionsTests {
   @get:Rule val activityScenarioRule = ActivityScenarioRule(NavigationActivity::class.java)
 

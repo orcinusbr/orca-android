@@ -13,17 +13,18 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.navigation.test.fragment
+package br.com.orcinus.orca.platform.navigation.test.activity
 
-import androidx.fragment.app.Fragment
 import br.com.orcinus.orca.platform.navigation.navigator
+import br.com.orcinus.orca.platform.testing.activity.scenario.activity
 import kotlin.test.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-internal class FragmentScenarioExtensionsTests {
+@RunWith(RobolectricTestRunner::class)
+internal class ActivityScenarioExtensionsTests {
   @Test
-  fun getsNavigatorFromContainerActivity() {
-    launchFragmentInNavigationContainer(instantiation = ::Fragment).use { scenario ->
-      scenario.onFragment { fragment -> fragment.requireActivity().navigator }
-    }
+  fun getsNavigatorFromNavigationActivity() {
+    launchNavigationActivity().use { it.activity?.navigator }
   }
 }

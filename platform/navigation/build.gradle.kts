@@ -31,7 +31,6 @@ dependencies {
   testImplementation(project(":platform:intents"))
   testImplementation(project(":platform:navigation-test"))
   testImplementation(project(":platform:testing"))
-  testImplementation(libs.android.test.core)
   testImplementation(libs.assertk)
   testImplementation(libs.kotlin.test)
   testImplementation(libs.robolectric)

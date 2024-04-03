@@ -41,7 +41,6 @@ dependencies {
   testImplementation(project(":platform:autos-test"))
   testImplementation(project(":platform:navigation-test"))
   testImplementation(project(":std:injector-test"))
-  testImplementation(libs.android.fragment.testing)
   testImplementation(libs.assertk)
   testImplementation(libs.kotlin.test)
   testImplementation(libs.mockk)

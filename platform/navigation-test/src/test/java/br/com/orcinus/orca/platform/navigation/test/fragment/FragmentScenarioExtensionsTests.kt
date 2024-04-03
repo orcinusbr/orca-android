@@ -16,26 +16,17 @@
 package br.com.orcinus.orca.platform.navigation.test.fragment
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentFactory
+import br.com.orcinus.orca.platform.navigation.navigator
+import kotlin.test.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-/**
- * Creates a [FragmentFactory] that automatically checks whether the name of the class of which an
- * instance has been requested to be created coincides with that of the specified [Fragment].
- *
- * @param T [Fragment] to be instantiated.
- * @param instantiation Provides an instance of the [Fragment].
- */
-@PublishedApi
-internal inline fun <reified T : Fragment> fragmentFactoryOf(
-  crossinline instantiation: () -> T
-): FragmentFactory {
-  return object : FragmentFactory() {
-    override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
-      return if (className == T::class.qualifiedName) {
-        instantiation()
-      } else {
-        super.instantiate(classLoader, className)
-      }
+@RunWith(RobolectricTestRunner::class)
+internal class FragmentScenarioExtensionsTests {
+  @Test
+  fun getsNavigatorFromContainerActivity() {
+    launchFragmentInNavigationContainer(instantiation = ::Fragment).use { scenario ->
+      scenario.onFragment { fragment -> fragment.requireActivity().navigator }
     }
   }
 }
