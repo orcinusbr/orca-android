@@ -13,24 +13,20 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.feature.gallery.test.ui
+package br.com.orcinus.orca.feature.gallery.test.ui.page
 
-import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.createComposeRule
-import br.com.orcinus.orca.feature.gallery.test.ui.page.onPage
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
+import br.com.orcinus.orca.feature.gallery.test.ui.onPager
 import br.com.orcinus.orca.feature.gallery.ui.Gallery
-import br.com.orcinus.orca.platform.autos.theme.AutosTheme
-import org.junit.Rule
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 
-@RunWith(RobolectricTestRunner::class)
-internal class ComposeTestRuleExtensionsTests {
-  @get:Rule val composeRule = createComposeRule()
-
-  @Test
-  fun findsCurrentPage() {
-    composeRule.apply { setContent { AutosTheme { Gallery() } } }.onPage().assertIsDisplayed()
-  }
+/**
+ * [SemanticsNodeInteraction] of a [Gallery]'s [HorizontalPager]'s current page.
+ *
+ * @see onPager
+ * @see isPage
+ */
+fun SemanticsNodeInteractionsProvider.onPage(): SemanticsNodeInteraction {
+  return onNode(isPage())
 }

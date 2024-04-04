@@ -17,6 +17,7 @@ package br.com.orcinus.orca.feature.gallery.test.ui
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import br.com.orcinus.orca.feature.gallery.test.ui.page.onPage
 import br.com.orcinus.orca.feature.gallery.ui.Actions
 import br.com.orcinus.orca.feature.gallery.ui.Gallery
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
@@ -40,5 +41,10 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @Test
   fun findsPager() {
     composeRule.apply { setContent { AutosTheme { Gallery() } } }.onPager().assertIsDisplayed()
+  }
+
+  @Test
+  fun findsPage() {
+    composeRule.apply { setContent { AutosTheme { Gallery() } } }.onPage().assertIsDisplayed()
   }
 }
