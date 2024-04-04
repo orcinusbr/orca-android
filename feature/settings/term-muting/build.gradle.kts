@@ -38,6 +38,7 @@ dependencies {
   implementation(project(":platform:autos"))
   implementation(project(":platform:focus"))
   implementation(project(":platform:starter"))
+  implementation(libs.android.activity.ktx)
 
   testImplementation(project(":platform:autos-test"))
   testImplementation(libs.android.compose.ui.test.manifest)
