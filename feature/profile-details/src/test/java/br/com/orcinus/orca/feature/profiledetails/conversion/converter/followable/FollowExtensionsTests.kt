@@ -17,8 +17,8 @@ package br.com.orcinus.orca.feature.profiledetails.conversion.converter.followab
 
 import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetails
+import kotlin.test.Test
 import org.junit.Assert.assertEquals
-import org.junit.Test
 
 internal class FollowExtensionsTests {
   @Test

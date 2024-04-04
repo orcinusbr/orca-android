@@ -22,34 +22,31 @@ plugins {
 android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
-  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
-  androidTestImplementation(project(":composite:timeline-test"))
-  androidTestImplementation(project(":core:sample-test"))
-  androidTestImplementation(project(":platform:core"))
-  androidTestImplementation(project(":platform:navigation-test"))
-  androidTestImplementation(project(":std:injector-test"))
-  androidTestImplementation(libs.android.compose.ui.test.junit)
-  androidTestImplementation(libs.android.compose.ui.test.manifest)
-  androidTestImplementation(libs.android.test.core)
-  androidTestImplementation(libs.android.test.runner)
-
   api(project(":composite:composable"))
+  api(project(":core"))
 
   ksp(project(":std:injector-processor"))
 
   implementation(project(":composite:timeline"))
-  implementation(project(":core:sample"))
   implementation(project(":ext:coroutines"))
   implementation(project(":platform:autos"))
   implementation(project(":platform:intents"))
   implementation(project(":platform:navigation"))
   implementation(project(":std:injector"))
+  implementation(libs.android.fragment.ktx)
   implementation(libs.loadable.list)
 
-  testImplementation(libs.assertk)
+  testImplementation(project(":composite:timeline-test"))
+  testImplementation(project(":core:sample-test"))
+  testImplementation(project(":platform:core"))
+  testImplementation(project(":platform:navigation-test"))
+  testImplementation(project(":std:injector-test"))
+  testImplementation(libs.android.compose.ui.test.manifest)
   testImplementation(libs.kotlin.coroutines.test)
   testImplementation(libs.kotlin.test)
+  testImplementation(libs.robolectric)
 }

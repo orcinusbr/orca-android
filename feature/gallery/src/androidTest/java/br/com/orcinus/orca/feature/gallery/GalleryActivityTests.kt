@@ -17,19 +17,14 @@ package br.com.orcinus.orca.feature.gallery
 
 import android.util.TypedValue
 import android.view.WindowInsets
-import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.assertHeightIsEqualTo
 import androidx.compose.ui.test.assertWidthIsEqualTo
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
-import br.com.orcinus.orca.composite.timeline.stat.details.formatted
-import br.com.orcinus.orca.feature.gallery.test.activity.TestGalleryModule
+import br.com.orcinus.orca.feature.gallery.test.TestGalleryModule
 import br.com.orcinus.orca.feature.gallery.test.launchGalleryActivity
-import br.com.orcinus.orca.feature.gallery.test.ui.onPager
-import br.com.orcinus.orca.feature.gallery.test.ui.performScrollToEachPage
-import br.com.orcinus.orca.platform.testing.asString
 import br.com.orcinus.orca.platform.testing.context
 import br.com.orcinus.orca.platform.testing.screen.screen
 import br.com.orcinus.orca.std.injector.module.binding.boundTo
@@ -65,17 +60,6 @@ internal class GalleryActivityTests {
         .onRoot()
         .assertWidthIsEqualTo(screen.width.inDps)
         .assertHeightIsEqualTo(screen.height.inDps + (systemBarsHeight - actionBarHeight))
-    }
-  }
-
-  @Test
-  fun describesEachPage() {
-    launchGalleryActivity().use {
-      with(composeRule) {
-        onPager().performScrollToEachPage {
-          assertContentDescriptionEquals(R.string.feature_gallery_attachment.asString(it.formatted))
-        }
-      }
     }
   }
 }

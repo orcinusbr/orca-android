@@ -25,15 +25,9 @@ android {
 }
 
 dependencies {
-  androidTestImplementation(project(":ext:coroutines"))
-  androidTestImplementation(project(":platform:testing"))
-  androidTestImplementation(libs.android.activity.ktx)
-  androidTestImplementation(libs.android.test.core)
+  androidTestImplementation(project(":platform:ime-test"))
   androidTestImplementation(libs.android.test.runner)
-  androidTestImplementation(libs.assertk)
-  androidTestImplementation(libs.kotlin.coroutines.test)
   androidTestImplementation(libs.kotlin.test)
-  androidTestImplementation(libs.openTest4J)
 
   implementation(libs.android.compose.ui)
   implementation(libs.android.core)

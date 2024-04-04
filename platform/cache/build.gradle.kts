@@ -21,19 +21,17 @@ plugins {
 
 android {
   defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-  packagingOptions.resources.excludes +=
-    arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
+  testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
-  androidTestImplementation(libs.android.test.core)
-  androidTestImplementation(libs.android.test.runner)
-  androidTestImplementation(libs.kotlin.coroutines.test)
-  androidTestImplementation(libs.kotlin.test)
-  androidTestImplementation(libs.mockk)
-
   ksp(libs.android.room.compiler)
 
-  implementation(libs.kotlin.coroutines.core)
   implementation(libs.android.room.ktx)
+
+  testImplementation(libs.android.test.core)
+  testImplementation(libs.kotlin.coroutines.test)
+  testImplementation(libs.kotlin.test)
+  testImplementation(libs.mockk)
+  testImplementation(libs.robolectric)
 }

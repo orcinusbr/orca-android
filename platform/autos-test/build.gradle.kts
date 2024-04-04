@@ -25,13 +25,22 @@ android {
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
   defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   namespace = namespaceFor("platform.autos.test")
+  testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
+  androidTestImplementation(project(":platform:testing"))
   androidTestImplementation(libs.android.compose.ui.test.manifest)
-  androidTestImplementation(libs.android.test.runner)
+  androidTestImplementation(libs.kotlin.test)
 
+  api(libs.android.compose.ui.test.junit)
+  api(libs.android.test.espresso.core)
+
+  implementation(project(":ext:reflection"))
   implementation(project(":platform:autos"))
-  implementation(libs.android.compose.ui.test.junit)
-  implementation(libs.android.test.espresso.core)
+
+  testImplementation(project(":platform:testing"))
+  testImplementation(libs.android.compose.ui.test.manifest)
+  testImplementation(libs.kotlin.test)
+  testImplementation(libs.robolectric)
 }

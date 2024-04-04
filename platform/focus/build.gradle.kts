@@ -21,14 +21,14 @@ plugins {
 android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
-  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
-  androidTestImplementation(project(":platform:autos"))
-  androidTestImplementation(project(":platform:autos-test"))
-  androidTestImplementation(libs.android.compose.ui.test.junit)
-  androidTestImplementation(libs.android.compose.ui.test.manifest)
-
   api(libs.android.compose.ui)
+
+  testImplementation(project(":platform:autos"))
+  testImplementation(project(":platform:autos-test"))
+  testImplementation(libs.android.compose.ui.test.manifest)
+  testImplementation(libs.robolectric)
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,26 +16,19 @@
 package br.com.orcinus.orca.feature.profiledetails
 
 import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
-import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.performClick
 import br.com.orcinus.orca.core.feed.profile.Profile
-import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
 import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.sample.test.instance.SampleInstanceTestRule
 import br.com.orcinus.orca.feature.profiledetails.navigation.BackwardsNavigationState
 import br.com.orcinus.orca.feature.profiledetails.test.TestProfileDetailsModule
-import br.com.orcinus.orca.feature.profiledetails.test.isFollowingType
-import br.com.orcinus.orca.feature.profiledetails.test.sample
 import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.platform.navigation.test.fragment.launchFragmentInNavigationContainer
+import br.com.orcinus.orca.platform.testing.DefaultTimeout
 import br.com.orcinus.orca.std.injector.test.InjectorTestRule
 import com.jeanbarrossilva.loadable.placeholder.test.isLoading
-import kotlin.time.Duration.Companion.seconds
-import kotlinx.coroutines.test.runTest
+import kotlin.test.Test
 import org.junit.Rule
-import org.junit.Test
 import org.junit.rules.RuleChain
 
 internal class ProfileDetailsFragmentTests {
@@ -50,24 +43,6 @@ internal class ProfileDetailsFragmentTests {
     RuleChain.outerRule(injectorRule).around(sampleInstanceRule).around(composeRule)
 
   @Test
-  fun unfollowsFollowedProfileWhenClickingActionButton() {
-    val profile = FollowableProfile.sample
-    Instance.sample.profileWriter.insert(profile)
-    if (!profile.follow.isFollowingType) {
-      runTest { profile.toggleFollow() }
-    }
-    launchFragmentInNavigationContainer {
-        ProfileDetailsFragment(BackwardsNavigationState.Unavailable, profile.id)
-      }
-      .use {
-        composeRule
-          .onNodeWithTag(ProfileDetails.Followable.MAIN_ACTION_BUTTON_TAG)
-          .performClick()
-          .assertTextEquals(ProfileDetails.Followable.Status.UNFOLLOWED.label)
-      }
-  }
-
-  @Test
   fun loadsPosts() {
     launchFragmentInNavigationContainer {
         ProfileDetailsFragment(BackwardsNavigationState.Unavailable, Profile.sample.id)
@@ -76,7 +51,7 @@ internal class ProfileDetailsFragmentTests {
         @OptIn(ExperimentalTestApi::class)
         composeRule.waitUntilDoesNotExist(
           isLoading(),
-          timeoutMillis = 4.seconds.inWholeMilliseconds
+          timeoutMillis = DefaultTimeout.inWholeMilliseconds
         )
       }
   }

@@ -18,19 +18,16 @@ plugins {
   alias(libs.plugins.kotlin.android)
 }
 
-android {
-  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-  packagingOptions.resources.excludes +=
-    arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
-}
+android.testOptions.unitTests.isIncludeAndroidResources = true
 
 dependencies {
-  androidTestImplementation(libs.android.test.junit)
-  androidTestImplementation(libs.android.test.runner)
-  androidTestImplementation(libs.assertk)
-  androidTestImplementation(libs.kotlin.reflect)
-  androidTestImplementation(libs.mockk)
-
   api(libs.android.compose.ui)
   api(libs.android.test.core)
+
+  testImplementation(libs.android.test.junit)
+  testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.reflect)
+  testImplementation(libs.kotlin.test)
+  testImplementation(libs.mockk)
+  testImplementation(libs.robolectric)
 }

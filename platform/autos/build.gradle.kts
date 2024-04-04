@@ -21,20 +21,10 @@ plugins {
 android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
-  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
-  androidTestImplementation(project(":platform:autos-test"))
-  androidTestImplementation(project(":platform:testing"))
-  androidTestImplementation(libs.android.compose.ui.test.junit)
-  androidTestImplementation(libs.android.compose.ui.test.manifest)
-  androidTestImplementation(libs.android.test.core)
-  androidTestImplementation(libs.android.test.espresso.core)
-  androidTestImplementation(libs.android.test.runner)
-  androidTestImplementation(libs.assertk)
-  androidTestImplementation(libs.kotlin.test)
-
   api(libs.android.compose.material3)
   api(libs.android.compose.ui.tooling)
   api(libs.autos)
@@ -46,7 +36,11 @@ dependencies {
   implementation(libs.kotlin.reflect)
   implementation(libs.loadable.placeholder)
 
+  testImplementation(project(":platform:autos-test"))
+  testImplementation(project(":platform:testing"))
+  testImplementation(libs.android.compose.ui.test.manifest)
   testImplementation(libs.assertk)
   testImplementation(libs.kotlin.coroutines.test)
   testImplementation(libs.kotlin.test)
+  testImplementation(libs.robolectric)
 }

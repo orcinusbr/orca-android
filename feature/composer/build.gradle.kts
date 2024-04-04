@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -21,20 +21,18 @@ plugins {
 android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
-  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
-  androidTestImplementation(project(":platform:autos-test"))
-  androidTestImplementation(libs.android.compose.ui.test.junit)
-  androidTestImplementation(libs.android.test.runner)
-
   api(project(":composite:composable"))
 
   implementation(project(":composite:timeline"))
   implementation(project(":platform:focus"))
   implementation(project(":platform:starter"))
   implementation(libs.android.compose.material.icons)
+  implementation(libs.android.activity.ktx)
 
-  testImplementation(libs.junit)
+  testImplementation(project(":platform:autos-test"))
+  testImplementation(libs.robolectric)
 }

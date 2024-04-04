@@ -18,16 +18,20 @@ plugins {
   alias(libs.plugins.kotlin.android)
 }
 
-android.defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+android {
+  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  testOptions.unitTests.isIncludeAndroidResources = true
+}
 
 dependencies {
-  androidTestImplementation(project(":platform:intents"))
-  androidTestImplementation(project(":platform:navigation-test"))
-  androidTestImplementation(project(":platform:testing"))
-  androidTestImplementation(libs.android.test.core)
-  androidTestImplementation(libs.android.test.runner)
-  androidTestImplementation(libs.android.test.core)
-  androidTestImplementation(libs.assertk)
+  api(libs.android.fragment)
 
   implementation(libs.android.fragment.ktx)
+
+  testImplementation(project(":platform:intents"))
+  testImplementation(project(":platform:navigation-test"))
+  testImplementation(project(":platform:testing"))
+  testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.test)
+  testImplementation(libs.robolectric)
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -24,7 +24,7 @@ plugins {
 android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
-  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  testOptions.unitTests.isIncludeAndroidResources = true
 
   buildFeatures {
     buildConfig = true
@@ -35,21 +35,9 @@ android {
     defaultPropertiesFileName = "public.properties"
     ignoreList += "^(?!mastodon\\.clientSecret).*$"
   }
-
-  packagingOptions.resources.excludes +=
-    arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
 }
 
 dependencies {
-  androidTestImplementation(project(":platform:autos-test"))
-  androidTestImplementation(project(":platform:intents-test"))
-  androidTestImplementation(project(":platform:testing"))
-  androidTestImplementation(project(":std:injector-test"))
-  androidTestImplementation(libs.android.compose.ui.test.junit)
-  androidTestImplementation(libs.android.test.core)
-  androidTestImplementation(libs.android.test.runner)
-  androidTestImplementation(libs.mockk)
-
   api(project(":core-module"))
   api(project(":composite:composable"))
 
@@ -64,6 +52,7 @@ dependencies {
   implementation(project(":platform:navigation"))
   implementation(project(":platform:starter"))
   implementation(libs.android.browser)
+  implementation(libs.android.fragment.ktx)
   implementation(libs.android.room.ktx)
   implementation(libs.kotlin.reflect)
   implementation(libs.ktor.client.cio)
@@ -82,11 +71,15 @@ dependencies {
   testImplementation(project(":core:sample"))
   testImplementation(project(":core:sample-test"))
   testImplementation(project(":core-test"))
+  testImplementation(project(":platform:autos-test"))
+  testImplementation(project(":platform:intents-test"))
+  testImplementation(project(":platform:testing"))
+  testImplementation(project(":std:injector-test"))
   testImplementation(libs.assertk)
-  testImplementation(libs.junit)
   testImplementation(libs.kotlin.coroutines.test)
   testImplementation(libs.kotlin.test)
   testImplementation(libs.ktor.client.mock)
   testImplementation(libs.mockk)
+  testImplementation(libs.robolectric)
   testImplementation(libs.turbine)
 }

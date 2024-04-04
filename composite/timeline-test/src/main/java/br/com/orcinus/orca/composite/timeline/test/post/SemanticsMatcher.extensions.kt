@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.composite.timeline.test.post
 
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsMatcher
@@ -25,5 +26,16 @@ import br.com.orcinus.orca.composite.timeline.post.PostPreview
 fun isPostPreview(): SemanticsMatcher {
   return SemanticsMatcher("is PostPreview") {
     it.config.getOrNull(SemanticsProperties.TestTag) == POST_PREVIEW_TAG
+  }
+}
+
+/**
+ * [SemanticsMatcher] that matches a [Composable] that's linked to the given [postPreview].
+ *
+ * @param postPreview [PostPreview] that's expected to be linked.
+ */
+internal fun isPostPreview(postPreview: PostPreview): SemanticsMatcher {
+  return SemanticsMatcher("PostPreview.id = ${postPreview.id}") {
+    it.config[SemanticsProperties.PostPreview].id == postPreview.id
   }
 }

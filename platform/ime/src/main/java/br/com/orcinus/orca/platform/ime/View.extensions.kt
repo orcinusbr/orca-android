@@ -36,5 +36,5 @@ internal val View.rootWindowInsetsCompat
  *
  * @see View.getWindowInsetsController
  */
-internal val View.windowInsetsControllerCompat
+val View.windowInsetsControllerCompat
   get() = context?.findActivity()?.window?.let { WindowCompat.getInsetsController(it, this) }

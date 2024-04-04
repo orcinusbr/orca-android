@@ -16,13 +16,41 @@
 package br.com.orcinus.orca.platform.autos.kit.sheet
 
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.runtime.remember
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.unit.Dp
 import assertk.assertThat
+import assertk.assertions.each
 import assertk.assertions.isEqualTo
+import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class WindowInsetsExtensionsTests {
+  @get:Rule val composeRule = createComposeRule()
+
   @Test
   fun zeroedWindowInsetsHasZeroedBounds() {
     assertThat(WindowInsets.Zero).isEqualTo(WindowInsets(left = 0, top = 0, right = 0, bottom = 0))
+  }
+
+  @Test
+  fun takesFallbackWhenInsetsOneBoundIsUnspecified() {
+    lateinit var insets: List<WindowInsets>
+    composeRule.setContent {
+      insets =
+        remember {
+            arrayOf(
+              WindowInsets(left = Dp.Unspecified),
+              WindowInsets(top = Dp.Unspecified),
+              WindowInsets(right = Dp.Unspecified),
+              WindowInsets(bottom = Dp.Unspecified)
+            )
+          }
+          .map { it.takeOrElse { WindowInsets.Zero } }
+    }
+    assertThat(insets).each { it.isEqualTo(WindowInsets.Zero) }
   }
 }

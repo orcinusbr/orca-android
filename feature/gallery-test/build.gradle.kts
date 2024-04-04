@@ -20,24 +20,28 @@ plugins {
   alias(libs.plugins.kotlin.android)
 }
 
+kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
+
 android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
   defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   namespace = namespaceFor("feature.gallery.test")
+  testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
-  androidTestImplementation(libs.assertk)
+  api(project(":core"))
+  api(libs.android.compose.ui.test.junit)
 
   implementation(project(":composite:timeline"))
   implementation(project(":feature:gallery"))
   implementation(project(":platform:autos"))
   implementation(project(":platform:autos-test"))
   implementation(project(":platform:testing"))
-  implementation(libs.android.compose.ui.test.junit)
   implementation(libs.android.compose.ui.test.manifest)
   implementation(libs.loadable.placeholder.test)
-}
 
-kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
+  testImplementation(libs.assertk)
+  testImplementation(libs.robolectric)
+}

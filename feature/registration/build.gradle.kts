@@ -22,22 +22,10 @@ plugins {
 android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
-  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-  packagingOptions.resources.excludes +=
-    arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
+  testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
-  androidTestImplementation(project(":platform:autos-test"))
-  androidTestImplementation(project(":platform:navigation"))
-  androidTestImplementation(project(":platform:navigation-test"))
-  androidTestImplementation(project(":std:injector-test"))
-  androidTestImplementation(libs.android.compose.ui.test.junit)
-  androidTestImplementation(libs.android.fragment.testing)
-  androidTestImplementation(libs.assertk)
-  androidTestImplementation(libs.kotlin.test)
-  androidTestImplementation(libs.mockk)
-
   api(project(":platform:navigation"))
   api(project(":std:injector"))
 
@@ -49,4 +37,12 @@ dependencies {
   implementation(project(":platform:stack"))
 
   ksp(project(":std:injector-processor"))
+
+  testImplementation(project(":platform:autos-test"))
+  testImplementation(project(":platform:navigation-test"))
+  testImplementation(project(":std:injector-test"))
+  testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.test)
+  testImplementation(libs.mockk)
+  testImplementation(libs.robolectric)
 }

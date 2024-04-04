@@ -23,16 +23,16 @@ plugins {
 android {
   defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   namespace = namespaceFor("platform.intents.test")
-  packagingOptions.resources.excludes +=
-    arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
+  testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
-  androidTestImplementation(project(":platform:starter"))
-  androidTestImplementation(project(":platform:testing"))
-  androidTestImplementation(libs.mockk)
-
   debugImplementation(libs.android.lifecycle.runtime)
 
   implementation(libs.android.test.espresso.intents)
+
+  testImplementation(project(":platform:starter"))
+  testImplementation(project(":platform:testing"))
+  testImplementation(libs.mockk)
+  testImplementation(libs.robolectric)
 }

@@ -21,22 +21,21 @@ plugins {
 android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
-  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   packagingOptions.resources.excludes +=
     arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
+  testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
-  androidTestImplementation(project(":composite:timeline-test"))
-  androidTestImplementation(project(":core:sample-test"))
-  androidTestImplementation(libs.android.compose.ui.test.junit)
-  androidTestImplementation(libs.android.compose.ui.test.manifest)
-  androidTestImplementation(libs.android.test.core)
-  androidTestImplementation(libs.android.test.runner)
-  androidTestImplementation(libs.assertk)
-  androidTestImplementation(libs.kotlin.coroutines.test)
-  androidTestImplementation(libs.mockk)
-  androidTestImplementation(libs.turbine)
+  testImplementation(project(":composite:timeline-test"))
+  testImplementation(project(":core:sample-test"))
+  testImplementation(libs.android.compose.ui.test.manifest)
+  testImplementation(libs.android.test.core)
+  testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.coroutines.test)
+  testImplementation(libs.mockk)
+  testImplementation(libs.robolectric)
+  testImplementation(libs.turbine)
 
   api(project(":platform:autos"))
   api(project(":platform:core"))

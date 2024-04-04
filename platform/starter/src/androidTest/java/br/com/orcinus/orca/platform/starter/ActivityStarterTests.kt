@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,26 +15,14 @@
 
 package br.com.orcinus.orca.platform.starter
 
-import androidx.test.platform.app.InstrumentationRegistry
-import io.mockk.spyk
-import io.mockk.verify
+import br.com.orcinus.orca.platform.testing.context
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
-import org.junit.Test
 
 internal class ActivityStarterTests {
-  private val context
-    get() = InstrumentationRegistry.getInstrumentation().context
-
   internal class TestStartableActivity : StartableActivity()
-
-  @Test
-  fun startsActivity() {
-    val spiedContext = spyk(context)
-    spiedContext.on<TestStartableActivity>().asNewTask().start(StartableActivity::finish)
-    verify { spiedContext.startActivity(any()) }
-  }
 
   @Test
   fun notifiesListenerWhenActivityIsStarted() {

@@ -28,6 +28,7 @@ android {
   flavorDimensions += Dimensions.VERSION
   lint.disable += "Instantiatable"
   namespace = namespaceFor("app")
+  testOptions.unitTests.isIncludeAndroidResources = true
 
   buildFeatures {
     compose = true
@@ -71,19 +72,13 @@ android {
 dependencies {
   "androidTestDemoImplementation"(project(":composite:timeline"))
   "androidTestDemoImplementation"(project(":composite:timeline-test"))
-  "androidTestDemoImplementation"(project(":core:sample-test"))
-  "androidTestDemoImplementation"(project(":feature:feed-test"))
   "androidTestDemoImplementation"(project(":feature:gallery-test"))
+  "androidTestDemoImplementation"(project(":platform:intents-test"))
   "androidTestDemoImplementation"(project(":platform:navigation-test"))
   "androidTestDemoImplementation"(project(":platform:testing"))
-  "androidTestDemoImplementation"(libs.android.activity.ktx)
-  "androidTestDemoImplementation"(libs.android.compose.ui.test.junit)
+  "androidTestDemoImplementation"(project(":platform:testing:compose"))
   "androidTestDemoImplementation"(libs.assertk)
-
-  androidTestImplementation(project(":platform:intents-test"))
-  androidTestImplementation(libs.android.test.core)
-  androidTestImplementation(libs.android.test.espresso.core)
-  androidTestImplementation(libs.android.test.runner)
+  "androidTestDemoImplementation"(libs.android.compose.ui.test.manifest)
 
   "demoImplementation"(project(":platform:core"))
 
@@ -107,10 +102,28 @@ dependencies {
   implementation(project(":std:injector"))
   implementation(libs.android.appcompat)
   implementation(libs.android.constraintlayout)
-  implementation(libs.android.fragment.ktx)
   implementation(libs.android.material)
 
   releaseImplementation(libs.kotlin.reflect)
+
+  "testDemoImplementation"(project(":composite:timeline"))
+  "testDemoImplementation"(project(":composite:timeline-test"))
+  "testDemoImplementation"(project(":core:sample-test"))
+  "testDemoImplementation"(project(":feature:feed-test"))
+  "testDemoImplementation"(project(":feature:gallery-test"))
+  "testDemoImplementation"(project(":platform:intents-test"))
+  "testDemoImplementation"(project(":platform:navigation-test"))
+  "testDemoImplementation"(project(":platform:testing"))
+  "testDemoImplementation"(libs.android.test.espresso.core)
+  "testDemoImplementation"(libs.assertk)
+  "testDemoImplementation"(libs.kotlin.test)
+  "testDemoImplementation"(libs.openTest4J)
+  "testDemoImplementation"(libs.robolectric)
+
+  testImplementation(project(":composite:timeline-test"))
+  testImplementation(project(":platform:intents-test"))
+  testImplementation(libs.android.test.core)
+  testImplementation(libs.robolectric)
 }
 
 kotlin.compilerOptions.freeCompilerArgs.addAll("-Xcontext-receivers")

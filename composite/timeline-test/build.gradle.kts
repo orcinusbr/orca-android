@@ -25,15 +25,17 @@ android {
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
   defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   namespace = namespaceFor("composite.timeline.test")
+  testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
-  androidTestImplementation(libs.android.compose.ui.test.junit)
   androidTestImplementation(libs.android.compose.ui.test.manifest)
-  androidTestImplementation(libs.android.test.core)
-  androidTestImplementation(libs.android.test.runner)
-  androidTestImplementation(libs.assertk)
+
+  api(libs.android.compose.ui.test.junit)
+
+  testImplementation(libs.android.compose.ui.test.manifest)
+  testImplementation(libs.assertk)
+  testImplementation(libs.robolectric)
 
   implementation(project(":composite:timeline"))
-  implementation(libs.android.compose.ui.test.junit)
 }

@@ -18,12 +18,13 @@ plugins {
   alias(libs.plugins.kotlin.android)
 }
 
-android.defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+android.testOptions.unitTests.isIncludeAndroidResources = true
 
 dependencies {
-  androidTestImplementation(libs.android.test.core)
-  androidTestImplementation(libs.android.test.runner)
-  androidTestImplementation(libs.assertk)
-
   api(project(":platform:starter"))
+
+  testImplementation(libs.android.test.core)
+  testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.test)
+  testImplementation(libs.robolectric)
 }
