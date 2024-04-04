@@ -13,14 +13,16 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-include(
-  ":setup:android-library",
-  ":setup:formatting",
-  ":setup:hooks",
-  ":setup:java",
-  ":setup:kotlin"
-)
+plugins {
+  alias(libs.plugins.buildconfig)
+  alias(libs.plugins.kotlin.jvm)
 
-dependencyResolutionManagement.versionCatalogs.register("libs") {
-  from(files("../gradle/libs.versions.toml"))
+  `java-gradle-plugin`
+}
+
+dependencies { implementation(libs.kotlin.gradlePlugin) }
+
+gradlePlugin.plugins.register("setup-hooks") {
+  id = libs.plugins.orca.setup.hooks.get().pluginId
+  implementationClass = "br.com.orcinus.orca.setup.hooks.HooksSetupPlugin"
 }
