@@ -32,4 +32,5 @@ dependencies {
   implementation(project(":core"))
   implementation(project(":platform:autos"))
   implementation(project(":std:injector"))
+  implementation(libs.android.lifecycle.viewmodel)
 }
