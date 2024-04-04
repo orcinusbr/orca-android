@@ -20,7 +20,10 @@ import br.com.orcinus.orca.app.activity.OrcaActivity
 import br.com.orcinus.orca.core.mastodon.auth.authorization.MastodonAuthorizationActivity
 import br.com.orcinus.orca.platform.intents.test.intendStartingOf
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class OrcaActivityTests {
   @Test
   fun navigatesToAuthorization() {

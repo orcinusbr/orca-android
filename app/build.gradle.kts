@@ -79,11 +79,6 @@ dependencies {
   "androidTestDemoImplementation"(libs.assertk)
   "androidTestDemoImplementation"(libs.android.compose.ui.test.manifest)
 
-  androidTestImplementation(project(":composite:timeline-test"))
-  androidTestImplementation(project(":platform:intents-test"))
-  androidTestImplementation(libs.android.test.core)
-  androidTestImplementation(libs.android.test.runner)
-
   "demoImplementation"(project(":platform:core"))
 
   ksp(project(":std:injector-processor"))
@@ -123,6 +118,11 @@ dependencies {
   "testDemoImplementation"(libs.kotlin.test)
   "testDemoImplementation"(libs.openTest4J)
   "testDemoImplementation"(libs.robolectric)
+
+  testImplementation(project(":composite:timeline-test"))
+  testImplementation(project(":platform:intents-test"))
+  testImplementation(libs.android.test.core)
+  testImplementation(libs.robolectric)
 }
 
 kotlin.compilerOptions.freeCompilerArgs.addAll("-Xcontext-receivers")
