@@ -32,6 +32,7 @@ dependencies {
   implementation(project(":core:sample"))
   implementation(project(":platform:autos"))
   implementation(project(":platform:stack"))
+  implementation(libs.android.fragment.ktx)
 
   testImplementation(project(":platform:navigation-test"))
   testImplementation(libs.assertk)
