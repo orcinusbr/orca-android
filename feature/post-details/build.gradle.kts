@@ -39,6 +39,7 @@ dependencies {
   implementation(project(":ext:coroutines"))
   implementation(project(":platform:intents"))
   implementation(project(":std:injector"))
+  implementation(libs.android.fragment.ktx)
   implementation(libs.android.lifecycle.viewmodel)
   implementation(libs.loadable.list)
   implementation(libs.loadable.placeholder)
