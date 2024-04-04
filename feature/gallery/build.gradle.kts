@@ -45,6 +45,7 @@ dependencies {
   implementation(project(":platform:intents"))
   implementation(project(":platform:navigation"))
   implementation(project(":platform:starter"))
+  implementation(libs.android.activity.ktx)
   implementation(libs.zoomable)
 
   testImplementation(project(":composite:timeline-test"))
