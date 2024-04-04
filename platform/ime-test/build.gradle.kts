@@ -22,7 +22,6 @@ dependencies {
   implementation(project(":platform:ime"))
   implementation(project(":platform:testing"))
   implementation(libs.android.activity.ktx)
-  implementation(libs.android.test.core)
 
   testImplementation(libs.kotlin.test)
   testImplementation(libs.openTest4J)

@@ -30,7 +30,10 @@ import io.mockk.verify
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.staticFunctions
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class ScreenTests {
   @Test
   fun createsScreenFromResources() {

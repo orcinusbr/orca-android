@@ -19,7 +19,10 @@ import br.com.orcinus.orca.platform.testing.context
 import io.mockk.mockkObject
 import io.mockk.verify
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class ScreenExtensionsTests {
   @Test
   fun getsScreenFromContext() {

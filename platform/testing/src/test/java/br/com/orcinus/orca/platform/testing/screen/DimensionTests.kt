@@ -20,7 +20,10 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.platform.testing.context
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class DimensionTests {
   @Test
   fun createsWidthFromResources() {

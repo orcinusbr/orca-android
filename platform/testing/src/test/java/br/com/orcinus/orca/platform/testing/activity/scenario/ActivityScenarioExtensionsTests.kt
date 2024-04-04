@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,16 +13,25 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.testing
+package br.com.orcinus.orca.platform.testing.activity.scenario
 
-import androidx.test.platform.app.InstrumentationRegistry
+import android.app.Activity
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import assertk.assertThat
 import assertk.assertions.isSameAs
+import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-internal class InstrumentationExtensionsTests {
+@RunWith(RobolectricTestRunner::class)
+internal class ActivityScenarioExtensionsTests {
+  @get:Rule val activityScenarioRule = ActivityScenarioRule(TestActivity::class.java)
+
+  class TestActivity : Activity()
+
   @Test
-  fun contextIsThatOfInstrumentationFromRegistry() {
-    assertThat(context).isSameAs(InstrumentationRegistry.getInstrumentation().context)
+  fun getsActivity() {
+    activityScenarioRule.scenario?.run { onActivity { assertThat(activity).isSameAs(it) } }
   }
 }

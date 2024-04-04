@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -20,7 +20,10 @@ import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.platform.testing.test.R
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class IntExtensionsTests {
   @Test
   fun stringFromEmptyStringResourceIDIsEmpty() {
