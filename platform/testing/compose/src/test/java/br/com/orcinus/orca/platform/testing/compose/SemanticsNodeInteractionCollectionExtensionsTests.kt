@@ -24,7 +24,10 @@ import assertk.assertThat
 import assertk.assertions.containsExactly
 import kotlin.test.Test
 import org.junit.Rule
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class SemanticsNodeInteractionCollectionExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
