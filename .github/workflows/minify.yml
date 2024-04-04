@@ -1,4 +1,4 @@
-name: Build
+name: Minify
 on:
   push:
     branches: [ "main" ]
@@ -17,10 +17,10 @@ jobs:
           cache: 'gradle'
           java-version: '17'
           distribution: 'corretto'
-      - name: Build with Gradle
+      - name: Minify
         env:
           GITHUB_USERNAME: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: gradle/actions/setup-gradle@v3
         with:
-          arguments: build
+          arguments: minifyReleaseWithR8
