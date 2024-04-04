@@ -52,6 +52,7 @@ dependencies {
   implementation(project(":platform:navigation"))
   implementation(project(":platform:starter"))
   implementation(libs.android.browser)
+  implementation(libs.android.fragment.ktx)
   implementation(libs.android.room.ktx)
   implementation(libs.kotlin.reflect)
   implementation(libs.ktor.client.cio)
