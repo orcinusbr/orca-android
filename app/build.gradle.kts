@@ -71,6 +71,7 @@ android {
 
 dependencies {
   "androidTestDemoImplementation"(project(":composite:timeline"))
+  "androidTestDemoImplementation"(project(":composite:timeline-test"))
   "androidTestDemoImplementation"(project(":feature:gallery-test"))
   "androidTestDemoImplementation"(project(":platform:intents-test"))
   "androidTestDemoImplementation"(project(":platform:navigation-test"))
