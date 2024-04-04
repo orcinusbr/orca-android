@@ -15,13 +15,12 @@
 
 package br.com.orcinus.orca.platform.ime.test.scope;
 
-import android.os.Build;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowInsetsAnimation;
-import android.view.WindowInsetsController;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import br.com.orcinus.orca.platform.ime.Ime;
 import br.com.orcinus.orca.platform.ime.test.scope.animation.ImeAnimationCallback;
 import br.com.orcinus.orca.platform.ime.test.scope.animation.stage.Stage;
@@ -69,7 +68,7 @@ public class ImeScope implements CoroutineScope {
    * @param onVisibilityChangeListener {@link CapturingOnImeVisibilityChangeListener} by which the
    *     current visibility of the IME is captured and provided.
    * @param animationCallback {@link ImeAnimationCallback} that suspends this {@link ImeScope} while
-   *     {@link WindowInsetsAnimation}s are ongoing.
+   *     animations are ongoing.
    * @param delegate {@link CoroutineScope} to which {@link CoroutineScope}-like behavior is
    *     delegated.
    * @see ImeScope#getVisibility()
@@ -96,10 +95,10 @@ public class ImeScope implements CoroutineScope {
    * @param continuation {@link Continuation} to resume from after the IME {@link
    *     WindowInsetsAnimation} has ended.
    */
-  @RequiresApi(Build.VERSION_CODES.R)
   void open(Continuation<? super Unit> continuation) {
     runAndAwaitAnimation(
-        continuation, (windowInsetsController) -> windowInsetsController.show(Ime.type));
+        continuation,
+        (windowInsetsControllerCompat) -> windowInsetsControllerCompat.show(Ime.type));
   }
 
   /**
@@ -108,10 +107,10 @@ public class ImeScope implements CoroutineScope {
    * @param continuation {@link Continuation} to resume from after the IME {@link
    *     WindowInsetsAnimation} has ended.
    */
-  @RequiresApi(Build.VERSION_CODES.R)
   void close(Continuation<? super Unit> continuation) {
     runAndAwaitAnimation(
-        continuation, (windowInsetsController) -> windowInsetsController.hide(Ime.type));
+        continuation,
+        (windowInsetsControllerCompat) -> windowInsetsControllerCompat.hide(Ime.type));
   }
 
   /**
@@ -147,22 +146,23 @@ public class ImeScope implements CoroutineScope {
   }
 
   /**
-   * Performs the given action on the {@link View}'s {@link WindowInsetsController} and awaits the
-   * end of the IME {@link WindowInsetsAnimation}.
+   * Performs the given action on the {@link View}'s {@link WindowInsetsControllerCompat} and awaits
+   * the end of the IME animation.
    *
-   * @param action {@link Consumer} that accepts the {@link WindowInsetsController}.
+   * @param action {@link Consumer} that accepts the {@link WindowInsetsControllerCompat}.
    * @param continuation {@link Continuation} to resume from after the IME {@link
    *     WindowInsetsAnimation} has ended.
    * @see ImeScope#getView()
-   * @see View#getWindowInsetsController()
+   * @see WindowCompat#getInsetsController(Window, View)
    */
-  @RequiresApi(Build.VERSION_CODES.R)
   private void runAndAwaitAnimation(
       @NonNull Continuation<? super Unit> continuation,
-      @NonNull Consumer<WindowInsetsController> action) {
-    @Nullable WindowInsetsController windowInsetsController = getView().getWindowInsetsController();
-    assert windowInsetsController != null;
-    activity.runOnUiThread(() -> action.accept(windowInsetsController));
+      @NonNull Consumer<WindowInsetsControllerCompat> action) {
+    Window window = activity.getWindow();
+    View view = getView();
+    WindowInsetsControllerCompat windowInsetsControllerCompat =
+        WindowCompat.getInsetsController(window, view);
+    activity.runOnUiThread(() -> action.accept(windowInsetsControllerCompat));
     animationCallback.awaitAnimation(continuation);
   }
 }
