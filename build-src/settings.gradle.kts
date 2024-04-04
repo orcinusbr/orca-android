@@ -13,13 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-include(
-  ":setup:android-library",
-  ":setup:formatting",
-  ":setup:hooks",
-  ":setup:java",
-  ":setup:kotlin"
-)
+include(":setup:android-library", ":setup:formatting", ":setup:java", ":setup:kotlin")
 
 dependencyResolutionManagement.versionCatalogs.register("libs") {
   from(files("../gradle/libs.versions.toml"))

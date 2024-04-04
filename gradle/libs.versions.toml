@@ -78,7 +78,6 @@ moduleDependencyGraph = { id = "com.savvasdalkitsis.module-dependency-graph", ve
 orca-setup-android-library = { id = "br.com.orcinus.orca.setup.android.library" }
 orca-setup-doc = { id = "br.com.orcinus.orca.setup.doc" }
 orca-setup-formatting = { id = "br.com.orcinus.orca.setup.formatting" }
-orca-setup-hooks = { id = "br.com.orcinus.orca.setup.hooks" }
 orca-setup-java = { id = "br.com.orcinus.orca.setup.java" }
 orca-setup-kotlin = { id = "br.com.orcinus.orca.setup.kotlin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
