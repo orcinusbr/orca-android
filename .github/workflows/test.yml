@@ -23,7 +23,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         uses: gradle/actions/setup-gradle@v3
         with:
-          arguments: test
+          arguments: check
       - name: Run instrumented tests
         env:
           GITHUB_USERNAME: ${{ github.actor }}
