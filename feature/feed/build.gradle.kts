@@ -37,6 +37,7 @@ dependencies {
   implementation(project(":platform:intents"))
   implementation(project(":platform:navigation"))
   implementation(project(":std:injector"))
+  implementation(libs.android.fragment.ktx)
   implementation(libs.loadable.list)
 
   testImplementation(project(":composite:timeline-test"))
