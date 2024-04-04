@@ -29,6 +29,7 @@ dependencies {
   api(project(":platform:navigation"))
 
   implementation(project(":platform:autos"))
+  implementation(libs.android.fragment.ktx)
 
   testImplementation(project(":platform:navigation-test"))
   testImplementation(libs.assertk)
