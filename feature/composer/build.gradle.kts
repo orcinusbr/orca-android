@@ -31,6 +31,7 @@ dependencies {
   implementation(project(":platform:focus"))
   implementation(project(":platform:starter"))
   implementation(libs.android.compose.material.icons)
+  implementation(libs.android.activity.ktx)
 
   testImplementation(project(":platform:autos-test"))
   testImplementation(libs.robolectric)
