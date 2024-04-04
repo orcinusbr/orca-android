@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.platform.ime.test.scope;
 
+import android.annotation.SuppressLint;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowInsetsAnimation;
@@ -95,6 +96,7 @@ public class ImeScope implements CoroutineScope {
    * @param continuation {@link Continuation} to resume from after the IME {@link
    *     WindowInsetsAnimation} has ended.
    */
+  @SuppressLint("WrongConstant")
   void open(Continuation<? super Unit> continuation) {
     runAndAwaitAnimation(
         continuation,
@@ -107,6 +109,7 @@ public class ImeScope implements CoroutineScope {
    * @param continuation {@link Continuation} to resume from after the IME {@link
    *     WindowInsetsAnimation} has ended.
    */
+  @SuppressLint("WrongConstant")
   void close(Continuation<? super Unit> continuation) {
     runAndAwaitAnimation(
         continuation,

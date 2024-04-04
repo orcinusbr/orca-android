@@ -20,6 +20,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsCompat.Type.InsetsType
 import br.com.orcinus.orca.platform.ime.state.rememberImeAsState
 
 /**
@@ -113,7 +114,7 @@ value class Ime private constructor(@Visibility private val visibility: Int) {
      * Constant from [WindowInsetsCompat.Type] that is used for determining whether the IME is
      * visible.
      */
-    @JvmField val type = WindowInsetsCompat.Type.ime()
+    @InsetsType @JvmField val type = WindowInsetsCompat.Type.ime()
 
     /**
      * Obtains the visibility of the IME through the [windowInsets].
