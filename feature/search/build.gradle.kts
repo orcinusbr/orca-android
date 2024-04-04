@@ -35,6 +35,7 @@ dependencies {
   implementation(project(":platform:focus"))
   implementation(project(":platform:starter"))
   implementation(project(":std:injector"))
+  implementation(libs.android.lifecycle.viewmodel)
   implementation(libs.loadable.list)
   implementation(libs.loadable.placeholder)
 }
