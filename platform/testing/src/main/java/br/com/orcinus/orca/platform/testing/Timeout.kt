@@ -21,4 +21,4 @@ import kotlin.time.Duration.Companion.seconds
  * Default duration of the timeout for awaiting actions that may take longer than expected by the UI
  * framework.
  */
-val DefaultTimeout = 24.seconds
+val DefaultTimeout = 4.seconds
