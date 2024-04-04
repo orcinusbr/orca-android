@@ -99,8 +99,9 @@ internal class ImeAnimationCallback(private val view: View) :
    * @see Stage.ended
    */
   suspend fun awaitAnimation() {
+    stageFlow.await()
     while (!stage.isEnded) {
-      stageFlow.await()
+      awaitAnimation()
     }
   }
 }
