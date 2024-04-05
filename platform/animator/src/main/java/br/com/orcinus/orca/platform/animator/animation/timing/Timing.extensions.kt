@@ -26,7 +26,7 @@ fun immediately(): Timing {
 /**
  * [Timing] that indicates that an animation should be run after the given amount of time.
  *
- * @param delay [Duration] to wait for before animating.
+ * @param delay [Duration] to wait for before the animation runs.
  */
 fun after(delay: Duration): Timing {
   return Timing.Immediate(delay)
