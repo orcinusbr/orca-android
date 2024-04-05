@@ -59,6 +59,17 @@ import br.com.orcinus.orca.platform.animator.animation.timing.immediately
  * }
  * ```
  *
+ * There might also be cases in which [Composable]s should simply be shown [after] a certain amount
+ * of time on their own, unbound from any other animations. Such behavior could be achieved with the
+ * following:
+ * ```kotlin
+ * Animator { (greeting) ->
+ *   emoji.Animate(fadeIn(), after(2.seconds)) {
+ *     Text("Hello, world!")
+ *   }
+ * }
+ * ```
+ *
  * Note that this [Composable], [Animator], serves merely as an entrypoint to the overall API and
  * doesn't have any intrinsic behavior other than just showing the [content] and providing a
  * remembered instance of [Animatables] to it.

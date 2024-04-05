@@ -52,7 +52,11 @@ sealed class Timing {
     }
   }
 
-  /** Indicates that the animation should only be run after the given amount of time. */
+  /**
+   * Indicates that the animation should only be run after the given amount of time.
+   *
+   * @param delay [Duration] to wait for before the animation runs.
+   */
   abstract operator fun plus(delay: Duration): Timing
 
   /**
