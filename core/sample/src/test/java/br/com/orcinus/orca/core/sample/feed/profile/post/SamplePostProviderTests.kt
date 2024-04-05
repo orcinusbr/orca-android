@@ -17,6 +17,7 @@ package br.com.orcinus.orca.core.sample.feed.profile.post
 
 import assertk.assertThat
 import assertk.assertions.isEmpty
+import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.core.feed.profile.post.DeletablePost
 import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.sample.test.feed.profile.post.withSamples
@@ -34,7 +35,15 @@ internal class SamplePostProviderTests {
   @get:Rule val instanceRule = SampleInstanceTestRule(Instance.sample)
 
   @Test
-  fun getsPostsByTheirIDs() {
+  fun providesAllPosts() {
+    runTest {
+      assertThat(Instance.sample.postProvider.provideAll().first())
+        .isEqualTo(Instance.sample.postProvider.defaultPosts)
+    }
+  }
+
+  @Test
+  fun providesPostsByTheirIDs() {
     runTest {
       Posts.withSamples.forEach {
         assertThat(Instance.sample.postProvider.provide(it.id).first())

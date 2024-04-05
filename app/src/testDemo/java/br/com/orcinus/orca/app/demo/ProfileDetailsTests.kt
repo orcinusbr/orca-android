@@ -17,23 +17,28 @@ package br.com.orcinus.orca.app.demo
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.onLast
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import assertk.assertThat
 import br.com.orcinus.orca.app.R
-import br.com.orcinus.orca.composite.timeline.test.onTimeline
+import br.com.orcinus.orca.composite.timeline.test.isTimeline
 import br.com.orcinus.orca.composite.timeline.test.post.figure.link.onLinkCards
 import br.com.orcinus.orca.composite.timeline.test.post.onPostPreviews
 import br.com.orcinus.orca.composite.timeline.test.post.performScrollToPostPreviewWithLinkCard
-import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Highlight
+import br.com.orcinus.orca.core.feed.profile.Profile
+import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
-import br.com.orcinus.orca.core.sample.test.feed.profile.post.content.highlight.sample
-import br.com.orcinus.orca.core.sample.test.feed.profile.post.withSamples
 import br.com.orcinus.orca.feature.postdetails.PostDetailsFragment
+import br.com.orcinus.orca.platform.core.sample
+import br.com.orcinus.orca.platform.core.withSamples
 import br.com.orcinus.orca.platform.intents.test.intendBrowsingTo
 import br.com.orcinus.orca.platform.navigation.test.isAt
+import kotlin.test.BeforeTest
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -43,11 +48,25 @@ import org.robolectric.RobolectricTestRunner
 internal class ProfileDetailsTests {
   @get:Rule val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
 
+  @BeforeTest
+  fun setUp() {
+    onView(withId(R.id.profile_details)).perform(click())
+  }
+
   @Test
   fun navigatesToPostLink() {
-    intendBrowsingTo("${Highlight.sample.url}") {
-      composeRule.onTimeline().performScrollToPostPreviewWithLinkCard()
-      composeRule.onLinkCards().onFirst().performClick()
+    runTest {
+      intendBrowsingTo(
+        Instance.sample.postProvider
+          .provideBy(Profile.sample.id)
+          .first()
+          .firstNotNullOf { it.content.highlight }
+          .url
+          .toString()
+      ) {
+        composeRule.onAllNodes(isTimeline()).onLast().performScrollToPostPreviewWithLinkCard()
+        composeRule.onLinkCards().onFirst().performClick()
+      }
     }
   }
 

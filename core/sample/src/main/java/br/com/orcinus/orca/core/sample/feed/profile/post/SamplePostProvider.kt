@@ -21,6 +21,7 @@ import br.com.orcinus.orca.core.feed.profile.post.provider.PostProvider
 import br.com.orcinus.orca.core.sample.auth.sample
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 
@@ -37,7 +38,12 @@ class SamplePostProvider internal constructor(internal val defaultPosts: Posts =
   override val authenticationLock = AuthenticationLock.sample
 
   override suspend fun onProvide(id: String): Flow<Post> {
-    return postsFlow.mapNotNull { posts -> posts.find { post -> post.id == id } }
+    return provideAll().mapNotNull { posts -> posts.find { post -> post.id == id } }
+  }
+
+  /** Provides all published [Post]s. */
+  fun provideAll(): Flow<List<Post>> {
+    return postsFlow.asStateFlow()
   }
 
   /**
@@ -45,7 +51,7 @@ class SamplePostProvider internal constructor(internal val defaultPosts: Posts =
    *
    * @param authorID ID of the author whose [Post]s will be provided.
    */
-  internal fun provideBy(authorID: String): Flow<List<Post>> {
-    return postsFlow.map { posts -> posts.filter { post -> post.author.id == authorID } }
+  fun provideBy(authorID: String): Flow<List<Post>> {
+    return provideAll().map { posts -> posts.filter { post -> post.author.id == authorID } }
   }
 }

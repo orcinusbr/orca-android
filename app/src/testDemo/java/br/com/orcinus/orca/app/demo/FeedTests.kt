@@ -29,15 +29,18 @@ import br.com.orcinus.orca.composite.timeline.test.post.figure.link.onLinkCards
 import br.com.orcinus.orca.composite.timeline.test.post.performScrollToPostPreviewWithGalleryPreview
 import br.com.orcinus.orca.composite.timeline.test.post.performScrollToPostPreviewWithLinkCard
 import br.com.orcinus.orca.composite.timeline.test.refresh.assertIsNotInProgress
-import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Highlight
+import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.sample.test.feed.profile.post.content.highlight.sample
 import br.com.orcinus.orca.feature.composer.ComposerActivity
 import br.com.orcinus.orca.feature.feed.FEED_FLOATING_ACTION_BUTTON_TAG
 import br.com.orcinus.orca.feature.feed.test.onSearchAction
 import br.com.orcinus.orca.feature.gallery.GalleryActivity
 import br.com.orcinus.orca.feature.search.SearchActivity
+import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.platform.intents.test.intendBrowsingTo
 import br.com.orcinus.orca.platform.intents.test.intendStartingOf
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -60,9 +63,18 @@ internal class FeedTests {
 
   @Test
   fun navigatesToPostLink() {
-    intendBrowsingTo("${Highlight.sample.url}") {
-      composeRule.onTimeline().performScrollToPostPreviewWithLinkCard()
-      composeRule.onLinkCards().onFirst().performClick()
+    runTest {
+      intendBrowsingTo(
+        Instance.sample.postProvider
+          .provideAll()
+          .first()
+          .firstNotNullOf { it.content.highlight }
+          .url
+          .toString()
+      ) {
+        composeRule.onTimeline().performScrollToPostPreviewWithLinkCard()
+        composeRule.onLinkCards().onFirst().performClick()
+      }
     }
   }
 
