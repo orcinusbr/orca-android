@@ -16,7 +16,6 @@
 package br.com.orcinus.orca.core.sample.feed.profile
 
 import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
-import br.com.orcinus.orca.core.sample.test.assertTogglingEquals
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
