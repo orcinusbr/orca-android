@@ -19,11 +19,17 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.platform.animator.animation.animatable.Animatable
 import kotlin.test.Test
+import kotlin.time.Duration.Companion.seconds
 
-internal class AnimatableScopeExtensionsTests {
+internal class TimingExtensionsTests {
   @Test
   fun createsImmediateTiming() {
     assertThat(immediately()).isEqualTo(Timing.Immediate())
+  }
+
+  @Test
+  fun createsDelayedTiming() {
+    assertThat(after(2.seconds)).isEqualTo(Timing.Immediate(delay = 2.seconds))
   }
 
   @Test

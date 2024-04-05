@@ -16,10 +16,20 @@
 package br.com.orcinus.orca.platform.animator.animation.timing
 
 import br.com.orcinus.orca.platform.animator.animation.animatable.Animatable
+import kotlin.time.Duration
 
 /** [Timing] that indicates that an animation should be run immediately. */
 fun immediately(): Timing {
   return Timing.Immediate()
+}
+
+/**
+ * [Timing] that indicates that an animation should be run after the given amount of time.
+ *
+ * @param delay [Duration] to wait for before animating.
+ */
+fun after(delay: Duration): Timing {
+  return Timing.Immediate(delay)
 }
 
 /**
