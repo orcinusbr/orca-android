@@ -26,6 +26,7 @@ import br.com.orcinus.orca.core.instance.domain.Domain
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.highlight.createSample
 import br.com.orcinus.orca.core.sample.feed.profile.post.repost.createSample
 import br.com.orcinus.orca.core.sample.feed.profile.post.stat.createSampleToggleableStat
+import br.com.orcinus.orca.core.sample.image.CoverImageSource
 import br.com.orcinus.orca.core.sample.image.SampleImageSource
 import br.com.orcinus.orca.core.sample.instance.domain.sample
 import br.com.orcinus.orca.std.image.ImageLoader
@@ -38,6 +39,9 @@ import java.util.UUID
 
 /** ID of the third [Post] in the [List] returned by [createSamples]. */
 private val thirdPostID = UUID.randomUUID().toString()
+
+/** ID of the fourth [Post] in the [List] returned by [createSamples]. */
+private val fourthPostID = UUID.randomUUID().toString()
 
 /**
  * Creates sample [Post]s.
@@ -53,8 +57,38 @@ fun Post.Companion.createSamples(
   return listOf(
     Repost.createSample(imageLoaderProvider),
     createSample(imageLoaderProvider),
+    SampleDeletablePost(
+      SamplePost(
+        thirdPostID,
+        Author.createSample(imageLoaderProvider),
+        Content.from(
+          Domain.sample,
+          text =
+            buildStyledString {
+              +"Great talk about the importance of introverts in an extroversion-seeking world."
+              +"\n".repeat(2)
+              +"https://www.ted.com/talks/susan_cain_the_power_of_introverts"
+            }
+        ) {
+          Headline(
+            title = "The power of introverts",
+            subtitle =
+              "In a culture where being social and outgoing are prized above all else, " +
+                "it can be difficult, even shameful, to be an introvert. But, as Susan Cain " +
+                "argues in this passionate talk, introverts bring extraordinary talents and " +
+                "abilities to the world, and should be encouraged and celebrated.",
+            imageLoaderProvider.provide(CoverImageSource.ThePowerOfIntroverts)
+          )
+        },
+        publicationDateTime = ZonedDateTime.of(2_024, 4, 5, 9, 32, 0, 0, ZoneId.of("GMT-3")),
+        favorite = createSampleToggleableStat(imageLoaderProvider),
+        repost = createSampleToggleableStat(imageLoaderProvider),
+        URL("https://mastodon.social/@jeanbarrossilva/111665399868682952"),
+        writerProvider
+      )
+    ),
     SamplePost(
-      thirdPostID,
+      fourthPostID,
       Author.createChristianSample(imageLoaderProvider),
       Content.from(
         Domain.sample,

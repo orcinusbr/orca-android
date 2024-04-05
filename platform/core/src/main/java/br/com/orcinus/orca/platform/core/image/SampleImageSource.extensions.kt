@@ -31,5 +31,6 @@ internal val SampleImageSource.resourceID
       AuthorImageSource.Rambo -> R.drawable.sample_avatar_rambo
       CoverImageSource.Default -> R.drawable.sample_cover_default
       CoverImageSource.PixelPals -> R.drawable.sample_cover_pixel_pals
+      CoverImageSource.ThePowerOfIntroverts -> R.drawable.sample_cover_the_power_of_introverts
       SampleImageSource.None -> -1
     }

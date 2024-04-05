@@ -29,4 +29,7 @@ sealed class CoverImageSource : SampleImageSource() {
 
   /** [CoverImageSource] of a [Post] about Christian Selig's Pixel Pals app. */
   data object PixelPals : CoverImageSource()
+
+  /** [CoverImageSource] of a [Post] about Susan Cain's TED talk on the power of introverts. */
+  data object ThePowerOfIntroverts : CoverImageSource()
 }

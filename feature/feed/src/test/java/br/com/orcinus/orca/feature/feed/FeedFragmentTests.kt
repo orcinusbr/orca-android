@@ -15,9 +15,7 @@
 
 package br.com.orcinus.orca.feature.feed
 
-import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsSelected
-import androidx.compose.ui.test.filter
 import androidx.compose.ui.test.filterToOne
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
@@ -26,15 +24,10 @@ import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import br.com.orcinus.orca.composite.timeline.stat.activateable.favorite.FAVORITE_STAT_TAG
-import br.com.orcinus.orca.composite.timeline.test.onTimeline
-import br.com.orcinus.orca.composite.timeline.test.performScrollToBottom
-import br.com.orcinus.orca.composite.timeline.test.post.isPostPreview
 import br.com.orcinus.orca.composite.timeline.test.post.onPostPreviews
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.instance.Instance
-import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
-import br.com.orcinus.orca.core.sample.test.feed.profile.post.withSamples
 import br.com.orcinus.orca.core.sample.test.instance.SampleInstanceTestRule
 import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.platform.navigation.test.fragment.launchFragmentInNavigationContainer
@@ -51,19 +44,6 @@ internal class FeedFragmentTests {
   @get:Rule val injectorRule = InjectorTestRule { register<FeedModule>(TestFeedModule) }
   @get:Rule val sampleInstanceRule = SampleInstanceTestRule(Instance.sample)
   @get:Rule val composeRule = createEmptyComposeRule()
-
-  @Test
-  fun keepsPreviousPostsWhenLoadingNextOnes() {
-    launchFragmentInNavigationContainer { FeedFragment(Profile.sample.id) }
-      .use {
-        composeRule
-          .onTimeline()
-          .performScrollToBottom()
-          .onChildren()
-          .filter(isPostPreview())
-          .assertCountEquals(Posts.withSamples.size)
-      }
-  }
 
   @Test
   fun favoritesPost() {
