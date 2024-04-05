@@ -26,11 +26,7 @@ sealed class Timing {
   internal abstract val delay: Duration
 
   /** Indicates that an animation should be run immediately. */
-  internal data class Immediate(override val delay: Duration = Duration.ZERO) : Timing() {
-    override fun plus(delay: Duration): Timing {
-      return Immediate(delay)
-    }
-  }
+  internal data class Immediate(override val delay: Duration = Duration.ZERO) : Timing()
 
   /**
    * Indicates that an animation should be run after the given [animatable] has finished animating.
@@ -42,7 +38,12 @@ sealed class Timing {
     private val animatable: Animatable,
     override val delay: Duration = Duration.ZERO
   ) : Timing() {
-    override fun plus(delay: Duration): Timing {
+    /**
+     * Indicates that the animation should only be run after the given amount of time.
+     *
+     * @param delay [Duration] to be waited for before the animation runs.
+     */
+    operator fun plus(delay: Duration): Timing {
       return Sequential(animatable, delay)
     }
 
@@ -51,9 +52,6 @@ sealed class Timing {
       super.time()
     }
   }
-
-  /** Indicates that the animation should only be run after the given amount of time. */
-  abstract operator fun plus(delay: Duration): Timing
 
   /**
    * Suspends until the condition specified by this [Timing] for the animation to be run is
