@@ -47,7 +47,7 @@ abstract class Registrar {
    * @see FlowCollector.emit
    */
   @Throws(Credentials.BlankPasswordException::class, Credentials.InvalidEmailException::class)
-  suspend fun register(email: String, password: String): Flow<Registration> {
+  fun register(email: String, password: String): Flow<Registration> {
     return flow {
       val domainIterator = domains.iterator()
       val credentials = Credentials(email, password)
