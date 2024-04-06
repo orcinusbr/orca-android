@@ -29,7 +29,7 @@ internal class CredentialsTests {
   }
 
   @Test
-  fun doesNotThrowsWhenEmailIsValidAndPasswordIsNotBlank() {
+  fun doesNotThrowWhenEmailIsValidAndPasswordIsNotBlank() {
     Credentials("jean@orcinus.com.br", "password123")
   }
 }
