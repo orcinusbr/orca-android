@@ -36,17 +36,19 @@ abstract class Registrar {
    * Iterates through each of the [Instance]s' [Domain]s that are known by this [Registrar] and
    * tries to register an [Account] in one that is available.
    *
+   * **NOTE**: Collecting the resulting [Flow] with an invalid [email] will cause a
+   * [Credentials.InvalidEmailException] to be thrown. Conversely, if the [password] is blank, a
+   * [Credentials.BlankPasswordException] will be thrown.
+   *
    * @param email E-mail address. Ideally would be one that hasn't yet been used by anyone else in
    *   the [Instance].
    * @param password Private key that provides access to the [Account] alongside the [email].
    * @return [Flow] to which the results of registration attempts are emitted. By design, if any of
    *   them is successful, no subsequent [Registration]s are emitted to the returned [Flow].
-   * @throws Credentials.BlankPasswordException If the [password] is blank.
-   * @throws Credentials.InvalidEmailException If the [email] is invalid.
    * @see Instance.domain
    * @see FlowCollector.emit
+   * @see Flow.collect
    */
-  @Throws(Credentials.BlankPasswordException::class, Credentials.InvalidEmailException::class)
   fun register(email: String, password: String): Flow<Registration> {
     return flow {
       val domainIterator = domains.iterator()
