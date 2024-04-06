@@ -41,7 +41,7 @@ import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
  *
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
  *   will be loaded from a [SampleImageSource].
- * @param posts [Post]s that are provided by default by the [postProvider].
+ * @param defaultPosts [Post]s that are provided by default by the [postProvider].
  */
 class SampleInstance
 internal constructor(
