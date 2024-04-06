@@ -33,8 +33,12 @@ import br.com.orcinus.orca.std.styledstring.style.type.Email
 data class Credentials
 @Throws(BlankPasswordException::class, InvalidEmailException::class)
 constructor(val email: String, val password: String) {
-  /** [IllegalArgumentException] thrown if the [email] is not a valid one. */
-  inner class InvalidEmailException internal constructor() :
+  /**
+   * [IllegalArgumentException] thrown if the [email] is not a valid one.
+   *
+   * @param email E-mail that is invalid.
+   */
+  class InvalidEmailException internal constructor(email: String) :
     IllegalArgumentException("\"$email\" isn't a valid e-mail.")
 
   /** [IllegalArgumentException] thrown if the [password] is blank. */
@@ -55,7 +59,7 @@ constructor(val email: String, val password: String) {
   private fun ensureEmailValidity() {
     val isEmailInvalid = !Email.regex.matches(email)
     if (isEmailInvalid) {
-      throw InvalidEmailException()
+      throw InvalidEmailException(email)
     }
   }
 

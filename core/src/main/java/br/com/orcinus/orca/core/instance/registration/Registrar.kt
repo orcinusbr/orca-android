@@ -41,13 +41,16 @@ abstract class Registrar {
    * @param password Private key that provides access to the [Account] alongside the [email].
    * @return [Flow] to which the results of registration attempts are emitted. By design, if any of
    *   them is successful, no subsequent [Registration]s are emitted to the returned [Flow].
+   * @throws Credentials.BlankPasswordException If the [password] is blank.
+   * @throws Credentials.InvalidEmailException If the [email] is invalid.
    * @see Instance.domain
    * @see FlowCollector.emit
    */
+  @Throws(Credentials.BlankPasswordException::class, Credentials.InvalidEmailException::class)
   suspend fun register(email: String, password: String): Flow<Registration> {
     return flow {
-      val credentials = Credentials(email, password)
       val domainIterator = domains.iterator()
+      val credentials = Credentials(email, password)
       var hasSucceeded = false
       while (!hasSucceeded && domainIterator.hasNext()) {
         val domain = domainIterator.next()
