@@ -42,7 +42,7 @@ constructor(val email: String, val password: String) {
     IllegalArgumentException("\"$email\" isn't a valid e-mail.")
 
   /** [IllegalArgumentException] thrown if the [password] is blank. */
-  inner class BlankPasswordException internal constructor() :
+  class BlankPasswordException internal constructor() :
     IllegalArgumentException("Password cannot be blank.")
 
   init {
