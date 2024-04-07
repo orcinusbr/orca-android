@@ -55,4 +55,10 @@ internal class DomTests {
     assertThat(buildDom { document.getElementsByClassName("Airplane pt.2") })
       .isEqualTo("document.getElementsByClassName(\"Airplane pt.2\")")
   }
+
+  @Test
+  fun getsElementsByTagName() {
+    assertThat(buildDom { document.getElementsByTagName("input") })
+      .isEqualTo("document.getElementsByTagName(\"input\")")
+  }
 }
