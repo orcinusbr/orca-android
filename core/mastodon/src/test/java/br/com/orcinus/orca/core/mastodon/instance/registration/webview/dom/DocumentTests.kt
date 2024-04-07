@@ -19,7 +19,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import kotlin.test.Test
 
-internal class DomTests {
+internal class DocumentTests {
   @Test
   fun callToDocumentGetterReferencesDocument() {
     assertThat(buildDom { document }).isEqualTo("document")
