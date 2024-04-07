@@ -94,7 +94,7 @@ public class DomInteractor {
      * @param other {@link String} to which this {@link JavaScriptString} is being compared.
      */
     @NonNull
-    JavaScriptBoolean isStrictlyEqual(@NonNull String other) {
+    public JavaScriptBoolean isStrictlyEqual(@NonNull String other) {
       script += " === \"" + other + '"';
       return JavaScriptBoolean.instance;
     }
@@ -108,7 +108,7 @@ public class DomInteractor {
      * documentation at Mozilla Developer Network </a>.
      */
     @NonNull
-    JavaScriptString toLowerCase() {
+    public JavaScriptString toLowerCase() {
       script += ".toLowerCase()";
       return this;
     }
@@ -131,7 +131,7 @@ public class DomInteractor {
    * href="https://developer.mozilla.org/en-US/docs/Web/API/Document">documentation at Mozilla
    * Developer Network </a>.
    */
-  class Document {
+  public class Document {
     /**
      * {@link HTMLCollection} that is always returned by {@link
      * Document#getElementsByClassName(String)}.
@@ -152,7 +152,7 @@ public class DomInteractor {
      * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement">documentation at
      * Mozilla Developer Network </a>.
      */
-    class HTMLInputElement {
+    public class HTMLInputElement {
       /**
        * The {@code HTMLInputElement} interface provides special properties and methods for
        * manipulating the options, layout, and presentation of {@code <input>} elements.
@@ -171,7 +171,7 @@ public class DomInteractor {
        * <p>It reflects the {@code type} attribute of the {@code <input>} element.
        */
       @NonNull
-      JavaScriptString getType() {
+      public JavaScriptString getType() {
         script += ".type";
         return javaScriptString;
       }
@@ -186,7 +186,7 @@ public class DomInteractor {
        *
        * @param value Value to which this {@link HTMLInputElement}'s should be changed.
        */
-      void setValue(@NonNull String value) {
+      public void setValue(@NonNull String value) {
         state(() -> ".value = \"" + value + '"');
       }
 
@@ -198,7 +198,7 @@ public class DomInteractor {
        * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/click">documentation at
        * Mozilla Developer Network </a>.
        */
-      void click() {
+      public void click() {
         state(() -> ".click()");
       }
     }
@@ -212,7 +212,7 @@ public class DomInteractor {
      * href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLCollection">documentation at
      * Mozilla Developer Network </a>.
      */
-    class HTMLCollection {
+    public class HTMLCollection {
       /**
        * The {@link HTMLCollection} interface represents a generic collection (array-like object
        * similar to arguments) of elements (in document order) and offers methods and properties for
@@ -230,7 +230,7 @@ public class DomInteractor {
        *
        * @param block Action to be run on each {@link HTMLInputElement}.
        */
-      void forEach(@NonNull Consumer<Supplier<HTMLInputElement>> block) {
+      public void forEach(@NonNull Consumer<Supplier<HTMLInputElement>> block) {
         String[] line = script.split("\n");
         String referenceName = line[line.length - 1];
         script = StringsKt.replaceAfterLast(script, '\n', "", "");
@@ -249,7 +249,7 @@ public class DomInteractor {
        * @param index Index at which the {@link HTMLInputElement} to be obtained is.
        */
       @NonNull
-      HTMLInputElement get(int index) {
+      public HTMLInputElement get(int index) {
         script += '[' + String.valueOf(index) + ']';
         return htmlInputElement;
       }
@@ -289,7 +289,7 @@ public class DomInteractor {
      *     within the document; only one element should have any given ID.
      */
     @NonNull
-    HTMLInputElement getElementById(@NonNull String id) {
+    public HTMLInputElement getElementById(@NonNull String id) {
       script += ".getElementById(\"" + id + "\")";
       return htmlInputElement;
     }
@@ -310,7 +310,7 @@ public class DomInteractor {
      *     separated by whitespace.
      */
     @NonNull
-    HTMLCollection getElementsByClassName(@NonNull String names) {
+    public HTMLCollection getElementsByClassName(@NonNull String names) {
       script += ".getElementsByClassName(\"" + names + "\")";
       return htmlCollection;
     }
@@ -331,10 +331,24 @@ public class DomInteractor {
      *     all elements.
      */
     @NonNull
-    HTMLCollection getElementsByTagName(@NonNull String name) {
+    public HTMLCollection getElementsByTagName(@NonNull String name) {
       script += ".getElementsByTagName(\"" + name + "\")";
       return htmlCollection;
     }
+  }
+
+  /**
+   * Direct translation of accessing {@link Document} in JavaScript. Its side effect is that, as
+   * well as any call to the {@link Document} API, it appends the equivalent expression or statement
+   * to the {@link String} to be later returned by {@link DomInteractor#script()}.
+   */
+  @NonNull
+  public Document getDocument() {
+    script += "document";
+    if (document == null) {
+      document = new Document();
+    }
+    return document;
   }
 
   /**
@@ -349,20 +363,6 @@ public class DomInteractor {
     state(() -> ") {");
     statement.run();
     state(() -> "}");
-  }
-
-  /**
-   * Direct translation of accessing {@link Document} in JavaScript. Its side effect is that, as
-   * well as any call to the {@link Document} API, it appends the equivalent expression or statement
-   * to the {@link String} to be later returned by {@link DomInteractor#script()}.
-   */
-  @NonNull
-  Document getDocument() {
-    script += "document";
-    if (document == null) {
-      document = new Document();
-    }
-    return document;
   }
 
   /**
