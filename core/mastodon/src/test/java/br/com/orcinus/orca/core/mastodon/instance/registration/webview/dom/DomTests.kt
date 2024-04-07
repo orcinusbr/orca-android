@@ -19,27 +19,23 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import kotlin.test.Test
 
-internal class DocumentTests {
+internal class DomTests {
   @Test
-  fun callToDocumentGetterReferencesDocument() {
-    assertThat(buildDom { document }).isEqualTo("document")
-  }
-
-  @Test
-  fun getsElementByID() {
-    assertThat(buildDom { document.getElementById("id") })
-      .isEqualTo("document.getElementById(\"id\")")
-  }
-
-  @Test
-  fun getsElementsByClassName() {
-    assertThat(buildDom { document.getElementsByClassName("Airplane pt.2") })
-      .isEqualTo("document.getElementsByClassName(\"Airplane pt.2\")")
-  }
-
-  @Test
-  fun getsElementsByTagName() {
-    assertThat(buildDom { document.getElementsByTagName("input") })
-      .isEqualTo("document.getElementsByTagName(\"input\")")
+  fun insertsIfStatement() {
+    assertThat(
+        buildDom {
+          `if`({ document.getElementById("element0").type.isStrictlyEqual("button") }) {
+            document.getElementById("element1").click()
+          }
+        }
+      )
+      .isEqualTo(
+        """
+          if (document.getElementById("element0").type === "button") {
+          document.getElementById("element1").click()
+          }
+        """
+          .trimIndent()
+      )
   }
 }
