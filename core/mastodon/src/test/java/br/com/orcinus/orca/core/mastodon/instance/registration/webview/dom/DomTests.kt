@@ -49,4 +49,10 @@ internal class DomTests {
     assertThat(buildDom { document.getElementById("id") })
       .isEqualTo("document.getElementById(\"id\")")
   }
+
+  @Test
+  fun getsElementsByClassName() {
+    assertThat(buildDom { document.getElementsByClassName("Airplane pt.2") })
+      .isEqualTo("document.getElementsByClassName(\"Airplane pt.2\")")
+  }
 }

@@ -218,7 +218,7 @@ internal class Dom {
      *   separated by whitespace.
      */
     fun getElementsByClassName(names: String): HTMLCollection {
-      script += ".getElementsByClassName($names)"
+      script += ".getElementsByClassName(\"$names\")"
       return htmlCollection
     }
 
