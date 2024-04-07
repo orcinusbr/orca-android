@@ -138,7 +138,7 @@ internal class Dom {
        * @param value Value to which this [HTMLInputElement]'s should be changed.
        */
       fun setValue(value: String) {
-        state { ".value = $value" }
+        state { ".value = \"$value\"" }
       }
 
       /**
