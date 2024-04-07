@@ -72,7 +72,7 @@ public class DomInteractor {
    * href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">
    * documentation at Mozilla Developer Network </a>.
    */
-  class JavaScriptString {
+  public class JavaScriptString {
     /**
      * The {@code String} object is used to represent and manipulate a sequence of characters.
      *
