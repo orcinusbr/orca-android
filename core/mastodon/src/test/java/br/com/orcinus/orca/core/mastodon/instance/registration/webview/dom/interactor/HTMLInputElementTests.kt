@@ -13,28 +13,28 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom
+package br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom.interactor
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import kotlin.test.Test
 
-internal class DocumentTests {
+internal class HTMLInputElementTests {
   @Test
-  fun getsElementByID() {
-    assertThat(interactWithDom { document.getElementById("id") })
-      .isEqualTo("document.getElementById(\"id\")")
+  fun getsType() {
+    assertThat(interactWithDom { document.getElementById("element").type })
+      .isEqualTo("document.getElementById(\"element\").type")
   }
 
   @Test
-  fun getsElementsByClassName() {
-    assertThat(interactWithDom { document.getElementsByClassName("Airplane pt.2") })
-      .isEqualTo("document.getElementsByClassName(\"Airplane pt.2\")")
+  fun setsValue() {
+    assertThat(interactWithDom { document.getElementById("element").setValue("value") })
+      .isEqualTo("document.getElementById(\"element\").value = \"value\"")
   }
 
   @Test
-  fun getsElementsByTagName() {
-    assertThat(interactWithDom { document.getElementsByTagName("input") })
-      .isEqualTo("document.getElementsByTagName(\"input\")")
+  fun clicks() {
+    assertThat(interactWithDom { document.getElementById("element").click() })
+      .isEqualTo("document.getElementById(\"element\").click()")
   }
 }

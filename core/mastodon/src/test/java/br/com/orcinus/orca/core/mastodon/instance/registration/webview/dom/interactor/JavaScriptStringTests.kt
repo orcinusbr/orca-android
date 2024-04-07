@@ -13,37 +13,22 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom
+package br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom.interactor
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import kotlin.test.Test
 
-internal class HTMLCollectionTests {
+internal class JavaScriptStringTests {
   @Test
-  fun iteratesThroughEachElement() {
-    assertThat(
-        interactWithDom {
-          document.getElementsByClassName("element").forEach {
-            it().setValue("value")
-            it().click()
-          }
-        }
-      )
-      .isEqualTo(
-        """
-          for (let element of document.getElementsByClassName("element")) {
-          element.value = "value"
-          element.click()
-          }
-        """
-          .trimIndent()
-      )
+  fun comparesStrictlyToAnotherString() {
+    assertThat(interactWithDom { document.getElementById("element").type.isStrictlyEqual("input") })
+      .isEqualTo("document.getElementById(\"element\").type === \"input\"")
   }
 
   @Test
-  fun getsElementByIndex() {
-    assertThat(interactWithDom { document.getElementsByClassName("element")[0] })
-      .isEqualTo("document.getElementsByClassName(\"element\")[0]")
+  fun lowersCase() {
+    assertThat(interactWithDom { document.getElementById("element").type.toLowerCase() })
+      .isEqualTo("document.getElementById(\"element\").type.toLowerCase()")
   }
 }

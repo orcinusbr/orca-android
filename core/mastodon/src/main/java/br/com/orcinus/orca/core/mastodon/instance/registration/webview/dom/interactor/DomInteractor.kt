@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom
+package br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom.interactor
 
 /**
  * Exposes the JavaScript Document Object Model (DOM) as a Kotlin API and allows for it to be

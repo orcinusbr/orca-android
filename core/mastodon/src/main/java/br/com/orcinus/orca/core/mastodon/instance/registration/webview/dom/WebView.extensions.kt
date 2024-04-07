@@ -16,6 +16,8 @@
 package br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom
 
 import android.webkit.WebView
+import br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom.interactor.DomInteractor
+import br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom.interactor.interactWithDom
 
 /**
  * Interacts with the Document Object Model (DOM) via an object provided to the [interaction], from

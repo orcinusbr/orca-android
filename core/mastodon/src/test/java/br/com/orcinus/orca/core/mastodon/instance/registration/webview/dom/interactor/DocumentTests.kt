@@ -13,34 +13,28 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom
+package br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom.interactor
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import kotlin.test.Test
 
-internal class DomInteractorTests {
+internal class DocumentTests {
   @Test
-  fun callToDocumentGetterReferencesDocument() {
-    assertThat(interactWithDom { document }).isEqualTo("document")
+  fun getsElementByID() {
+    assertThat(interactWithDom { document.getElementById("id") })
+      .isEqualTo("document.getElementById(\"id\")")
   }
 
   @Test
-  fun insertsIfStatement() {
-    assertThat(
-        interactWithDom {
-          `if`({ document.getElementById("element0").type.isStrictlyEqual("button") }) {
-            document.getElementById("element1").click()
-          }
-        }
-      )
-      .isEqualTo(
-        """
-          if (document.getElementById("element0").type === "button") {
-          document.getElementById("element1").click()
-          }
-        """
-          .trimIndent()
-      )
+  fun getsElementsByClassName() {
+    assertThat(interactWithDom { document.getElementsByClassName("Airplane pt.2") })
+      .isEqualTo("document.getElementsByClassName(\"Airplane pt.2\")")
+  }
+
+  @Test
+  fun getsElementsByTagName() {
+    assertThat(interactWithDom { document.getElementsByTagName("input") })
+      .isEqualTo("document.getElementsByTagName(\"input\")")
   }
 }
