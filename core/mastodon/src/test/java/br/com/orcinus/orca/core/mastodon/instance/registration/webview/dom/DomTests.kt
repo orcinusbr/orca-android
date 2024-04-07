@@ -43,4 +43,10 @@ internal class DomTests {
           .trimIndent()
       )
   }
+
+  @Test
+  fun getsElementByID() {
+    assertThat(buildDom { document.getElementById("id") })
+      .isEqualTo("document.getElementById(\"id\")")
+  }
 }
