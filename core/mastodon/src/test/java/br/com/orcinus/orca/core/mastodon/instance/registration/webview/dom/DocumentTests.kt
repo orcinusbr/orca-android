@@ -21,11 +21,6 @@ import kotlin.test.Test
 
 internal class DocumentTests {
   @Test
-  fun callToDocumentGetterReferencesDocument() {
-    assertThat(buildDom { document }).isEqualTo("document")
-  }
-
-  @Test
   fun getsElementByID() {
     assertThat(buildDom { document.getElementById("id") })
       .isEqualTo("document.getElementById(\"id\")")

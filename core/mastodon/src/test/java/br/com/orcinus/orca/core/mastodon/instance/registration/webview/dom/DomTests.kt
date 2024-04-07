@@ -21,6 +21,11 @@ import kotlin.test.Test
 
 internal class DomTests {
   @Test
+  fun callToDocumentGetterReferencesDocument() {
+    assertThat(buildDom { document }).isEqualTo("document")
+  }
+
+  @Test
   fun insertsIfStatement() {
     assertThat(
         buildDom {
