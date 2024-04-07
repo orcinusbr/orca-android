@@ -22,19 +22,19 @@ import kotlin.test.Test
 internal class HTMLInputElementTests {
   @Test
   fun getsType() {
-    assertThat(buildDom { document.getElementById("element").type })
+    assertThat(interactWithDom { document.getElementById("element").type })
       .isEqualTo("document.getElementById(\"element\").type")
   }
 
   @Test
   fun setsValue() {
-    assertThat(buildDom { document.getElementById("element").setValue("value") })
+    assertThat(interactWithDom { document.getElementById("element").setValue("value") })
       .isEqualTo("document.getElementById(\"element\").value = \"value\"")
   }
 
   @Test
   fun clicks() {
-    assertThat(buildDom { document.getElementById("element").click() })
+    assertThat(interactWithDom { document.getElementById("element").click() })
       .isEqualTo("document.getElementById(\"element\").click()")
   }
 }

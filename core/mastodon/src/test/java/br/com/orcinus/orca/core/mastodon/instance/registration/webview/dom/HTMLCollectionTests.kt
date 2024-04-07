@@ -23,7 +23,7 @@ internal class HTMLCollectionTests {
   @Test
   fun iteratesThroughEachElement() {
     assertThat(
-        buildDom {
+        interactWithDom {
           document.getElementsByClassName("element").forEach {
             it().setValue("value")
             it().click()
@@ -43,7 +43,7 @@ internal class HTMLCollectionTests {
 
   @Test
   fun getsElementByIndex() {
-    assertThat(buildDom { document.getElementsByClassName("element")[0] })
+    assertThat(interactWithDom { document.getElementsByClassName("element")[0] })
       .isEqualTo("document.getElementsByClassName(\"element\")[0]")
   }
 }

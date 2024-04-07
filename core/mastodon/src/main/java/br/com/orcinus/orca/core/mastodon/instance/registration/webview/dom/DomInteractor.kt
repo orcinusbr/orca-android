@@ -16,11 +16,12 @@
 package br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom
 
 /**
- * Exposes the JavaScript Document Object Model (DOM) as a Kotlin API.
+ * Exposes the JavaScript Document Object Model (DOM) as a Kotlin API and allows for it to be
+ * interacted with.
  *
- * @see build
+ * @see script
  */
-internal class Dom {
+internal class DomInteractor {
   /**
    * [Document] to which an access is a mere read operation on the field's value instead of a call
    * to a getter, meaning that doing so doesn't actually change the [script].
@@ -38,7 +39,7 @@ internal class Dom {
   /**
    * Direct translation of accessing [Document] in JavaScript. Its side effect is that, as well as
    * any call to the [Document] API, it appends the equivalent expression or statement to the
-   * [String] to be later returned by [build].
+   * [String] to be later returned by [script].
    */
   val document
     get() = unevaluatedDocument.also { script += "document" }
@@ -261,9 +262,10 @@ internal class Dom {
   }
 
   /**
-   * Provides a [String] in which all calls to the [Dom] API are represented as JavaScript source.
+   * Provides a [String] in which all calls to the [DomInteractor] API are represented as JavaScript
+   * source.
    */
-  fun build(): String {
+  fun script(): String {
     return script.trimEnd()
   }
 

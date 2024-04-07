@@ -22,19 +22,19 @@ import kotlin.test.Test
 internal class DocumentTests {
   @Test
   fun getsElementByID() {
-    assertThat(buildDom { document.getElementById("id") })
+    assertThat(interactWithDom { document.getElementById("id") })
       .isEqualTo("document.getElementById(\"id\")")
   }
 
   @Test
   fun getsElementsByClassName() {
-    assertThat(buildDom { document.getElementsByClassName("Airplane pt.2") })
+    assertThat(interactWithDom { document.getElementsByClassName("Airplane pt.2") })
       .isEqualTo("document.getElementsByClassName(\"Airplane pt.2\")")
   }
 
   @Test
   fun getsElementsByTagName() {
-    assertThat(buildDom { document.getElementsByTagName("input") })
+    assertThat(interactWithDom { document.getElementsByTagName("input") })
       .isEqualTo("document.getElementsByTagName(\"input\")")
   }
 }

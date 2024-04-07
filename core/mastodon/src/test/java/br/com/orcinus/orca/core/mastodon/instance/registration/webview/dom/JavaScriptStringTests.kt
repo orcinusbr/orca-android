@@ -22,13 +22,13 @@ import kotlin.test.Test
 internal class JavaScriptStringTests {
   @Test
   fun comparesStrictlyToAnotherString() {
-    assertThat(buildDom { document.getElementById("element").type.isStrictlyEqual("input") })
+    assertThat(interactWithDom { document.getElementById("element").type.isStrictlyEqual("input") })
       .isEqualTo("document.getElementById(\"element\").type === \"input\"")
   }
 
   @Test
   fun lowersCase() {
-    assertThat(buildDom { document.getElementById("element").type.toLowerCase() })
+    assertThat(interactWithDom { document.getElementById("element").type.toLowerCase() })
       .isEqualTo("document.getElementById(\"element\").type.toLowerCase()")
   }
 }

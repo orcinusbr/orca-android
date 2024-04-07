@@ -19,16 +19,16 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import kotlin.test.Test
 
-internal class DomTests {
+internal class DomInteractorTests {
   @Test
   fun callToDocumentGetterReferencesDocument() {
-    assertThat(buildDom { document }).isEqualTo("document")
+    assertThat(interactWithDom { document }).isEqualTo("document")
   }
 
   @Test
   fun insertsIfStatement() {
     assertThat(
-        buildDom {
+        interactWithDom {
           `if`({ document.getElementById("element0").type.isStrictlyEqual("button") }) {
             document.getElementById("element1").click()
           }

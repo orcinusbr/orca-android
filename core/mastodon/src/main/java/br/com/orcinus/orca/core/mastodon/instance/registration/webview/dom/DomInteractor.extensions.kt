@@ -16,11 +16,11 @@
 package br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom
 
 /**
- * Evaluates the JavaScript script to be translated that resulted from the given [evaluation], that
- * is provided with a [Dom] from which a Kotlin API that mimics the DOM's can be used.
+ * Creates a script from an interaction with a Document Object Model (DOM), made possible by the
+ * [DomInteractor] provided to the lambda.
  *
- * @param evaluation Modifies the JavaScript script to be evaluated.
+ * @param interaction Interacts with a DOM.
  */
-internal fun buildDom(evaluation: Dom.() -> Unit): String {
-  return Dom().apply(evaluation).build()
+internal fun interactWithDom(interaction: DomInteractor.() -> Unit): String {
+  return DomInteractor().apply(interaction).script()
 }

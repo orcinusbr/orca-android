@@ -18,12 +18,13 @@ package br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom
 import android.webkit.WebView
 
 /**
- * Interacts with the Document Object Model (DOM) via an object provided to the [evaluation], from
- * which JavaScript expressions and statements can be translated from calls to the [Dom] Kotlin API.
+ * Interacts with the Document Object Model (DOM) via an object provided to the [interaction], from
+ * which JavaScript expressions and statements can be translated from calls to the [DomInteractor]
+ * Kotlin API.
  *
- * @param evaluation Modifications to be made on this [WebView]'s DOM.
+ * @param interaction Interaction to be performed on this [WebView]'s DOM.
  */
-internal fun WebView.onDom(evaluation: Dom.() -> Unit) {
-  val script = buildDom(evaluation)
+internal fun WebView.onDom(interaction: DomInteractor.() -> Unit) {
+  val script = interactWithDom(interaction)
   evaluateJavascript(script, null)
 }
