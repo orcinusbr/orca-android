@@ -29,7 +29,7 @@ internal class DomInteractorTests {
   fun insertsIfStatement() {
     assertThat(
         interactWithDom {
-          `if`({ document.getElementById("element0").type.isStrictlyEqual("button") }) {
+          doIf({ document.getElementById("element0").type.isStrictlyEqual("button") }) {
             document.getElementById("element1").click()
           }
         }

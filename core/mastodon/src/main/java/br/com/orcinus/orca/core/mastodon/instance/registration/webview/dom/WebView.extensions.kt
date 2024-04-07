@@ -22,7 +22,7 @@ import br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom.inter
 /**
  * Interacts with the Document Object Model (DOM) via an object provided to the [interaction], from
  * which JavaScript expressions and statements can be translated from calls to the [DomInteractor]
- * Kotlin API.
+ * Java API.
  *
  * @param interaction Interaction to be performed on this [WebView]'s DOM.
  */

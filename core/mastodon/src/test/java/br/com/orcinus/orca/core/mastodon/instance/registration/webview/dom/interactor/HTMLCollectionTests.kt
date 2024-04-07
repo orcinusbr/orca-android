@@ -25,8 +25,8 @@ internal class HTMLCollectionTests {
     assertThat(
         interactWithDom {
           document.getElementsByClassName("element").forEach {
-            it().setValue("value")
-            it().click()
+            it.get().setValue("value")
+            it.get().click()
           }
         }
       )
