@@ -168,10 +168,14 @@ internal class Dom {
        *
        * @param block Action to be run on each [HTMLInputElement].
        */
-      fun forEach(block: (HTMLInputElement) -> Unit) {
+      fun forEach(block: (element: () -> HTMLInputElement) -> Unit) {
         val referenceName = script.split('\n').last()
+        script = script.replaceAfterLast('\n', "", missingDelimiterValue = "")
         state { "for (let element of $referenceName) {" }
-        block(htmlInputElement)
+        block {
+          script += "element"
+          htmlInputElement
+        }
         state { "}" }
       }
 
