@@ -253,14 +253,14 @@ internal class Dom {
     condition()
     state { ") {" }
     statement()
-    script += '}'
+    state { "}" }
   }
 
   /**
    * Provides a [String] in which all calls to the [Dom] API are represented as JavaScript source.
    */
   fun build(): String {
-    return script
+    return script.trimEnd()
   }
 
   /**
