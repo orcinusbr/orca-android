@@ -16,7 +16,6 @@
 package br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom
 
 import android.webkit.WebView
-import br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom.buildDom as _evaluateJavaScript
 
 /**
  * Interacts with the Document Object Model (DOM) via an object provided to the [evaluation], from
@@ -25,6 +24,6 @@ import br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom.build
  * @param evaluation Modifications to be made on this [WebView]'s DOM.
  */
 internal fun WebView.onDom(evaluation: Dom.() -> Unit) {
-  val script = _evaluateJavaScript(evaluation)
+  val script = buildDom(evaluation)
   evaluateJavascript(script, null)
 }
