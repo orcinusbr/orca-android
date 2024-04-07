@@ -26,7 +26,7 @@ internal class DomInteractorTests {
   }
 
   @Test
-  fun insertsIfStatement() {
+  fun appendsConditional() {
     assertThat(
         interactWithDom {
           doIf({ document.getElementById("element0").type.isStrictlyEqual("button") }) {

@@ -24,3 +24,13 @@ package br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom.inte
 internal fun interactWithDom(interaction: DomInteractor.() -> Unit): String {
   return DomInteractor().apply(interaction).script()
 }
+
+/**
+ * Appends a JavaScript conditional.
+ *
+ * @param condition Provides the condition to be satisfied in order for the statement to be run.
+ * @param statement Action performed when the condition is `true`.
+ */
+fun DomInteractor.`if`(condition: () -> DomInteractor.JavaScriptBoolean, statement: () -> Unit) {
+  doIf(condition, statement)
+}
