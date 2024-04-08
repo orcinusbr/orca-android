@@ -17,7 +17,7 @@ package br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom
 
 import android.webkit.WebView
 import br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom.interactor.DomInteractor
-import br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom.interactor.interactWithDom
+import br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom.interactor.interactWithDom as _interactWithDom
 
 /**
  * Interacts with the Document Object Model (DOM) via an object provided to the [interaction], from
@@ -26,7 +26,7 @@ import br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom.inter
  *
  * @param interaction Interaction to be performed on this [WebView]'s DOM.
  */
-internal inline fun WebView.onDom(interaction: DomInteractor.() -> Unit) {
-  val script = interactWithDom(interaction)
+internal inline fun WebView.interactWithDom(interaction: DomInteractor.() -> Unit) {
+  val script = _interactWithDom(interaction)
   evaluateJavascript(script, null)
 }

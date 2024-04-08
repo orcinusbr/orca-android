@@ -22,8 +22,8 @@ import br.com.orcinus.orca.core.instance.domain.Domain
 import br.com.orcinus.orca.core.instance.registration.Credentials
 import br.com.orcinus.orca.core.mastodon.instance.registration.MastodonRegistrationActivity
 import br.com.orcinus.orca.core.mastodon.instance.registration.MastodonRegistrationWebpageInteractor
+import br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom.interactWithDom
 import br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom.interactor.`if`
-import br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom.onDom
 
 /**
  * [MastodonRegistrationWebpageInteractor] that registers an [Account] at
@@ -38,7 +38,7 @@ internal class MastodonSocialRegistrationWebpageInteractor :
     webView: WebView,
     credentials: Credentials
   ): Boolean {
-    webView.onDom {
+    webView.interactWithDom {
       document.getElementsByClassName("button")[0].click()
       document.getElementById("user_email").setValue(credentials.email)
       document.getElementById("user_password").setValue(credentials.password)
