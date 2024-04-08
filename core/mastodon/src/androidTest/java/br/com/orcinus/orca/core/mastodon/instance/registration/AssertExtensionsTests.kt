@@ -15,21 +15,24 @@
 
 package br.com.orcinus.orca.core.mastodon.instance.registration
 
-import assertk.Assert
-import assertk.assertions.support.expected
-import assertk.assertions.support.show
+import assertk.assertThat
+import kotlin.math.PI
+import kotlin.test.Test
+import org.opentest4j.AssertionFailedError
 
-/**
- * Asserts that the [Iterable] contains at least one of the specified [elements].
- *
- * @param E Element in the [Iterable].
- * @param I [Iterable] by which any of the [elements] are expected to be contained.
- */
-internal fun <E, I : Iterable<E>> Assert<I>.containsAny(vararg elements: E): Assert<I> {
-  given {
-    if (elements.none(it::contains)) {
-      expected("to contain any of:${show(elements)} but was:${show(it)}")
-    }
+internal class AssertExtensionsTests {
+  @Test
+  fun passesWhenAssertingThatIterableContainsAnyOfTheSpecifiedElementsAndItHasSomeOfThem() {
+    assertThat(listOf(0, ":P")).containsAny(":P", PI)
   }
-  return this
+
+  @Test
+  fun passesWhenAssertingThatIterableContainsAnyOfTheSpecifiedElementsAndItHasAllOfThem() {
+    assertThat(listOf(2, ":)")).containsAny(2, ":)")
+  }
+
+  @Test(expected = AssertionFailedError::class)
+  fun failsWhenAssertingThatIterableContainsAnyOfTheSpecifiedElementsAndItDoesNot() {
+    assertThat(listOf(0, 2)).containsAny(4, 16)
+  }
 }

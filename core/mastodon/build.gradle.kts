@@ -44,6 +44,7 @@ dependencies {
   androidTestImplementation(libs.assertk)
   androidTestImplementation(libs.kotlin.coroutines.test)
   androidTestImplementation(libs.kotlin.test)
+  androidTestImplementation(libs.openTest4J)
 
   api(project(":core-module"))
   api(project(":composite:composable"))
