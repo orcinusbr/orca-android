@@ -18,11 +18,13 @@ package br.com.orcinus.orca.platform.autos.kit.action.button.icon
 import androidx.compose.foundation.interaction.HoverInteraction
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.kit.action.Hoverable
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
@@ -45,7 +47,7 @@ fun HoverableIconButton(
     IgnoringMutableInteractionSource(PressInteraction.Press::class, HoverInteraction::class)
   }
 
-  Hoverable(modifier) {
+  Hoverable(modifier.size(48.dp)) {
     IconButton(onClick, Modifier.matchParentSize(), interactionSource = interactionSource) {
       content()
     }
