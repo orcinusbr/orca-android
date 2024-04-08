@@ -31,6 +31,7 @@ import br.com.orcinus.orca.core.instance.registration.Registrar
 internal class MastodonRegistrar(private val context: Context) : Registrar() {
   override val domains = MastodonRegistrationWebpageInteractorProvider.domains
 
+  @Throws(MastodonRegistrationWebpageInteractorProvider.Companion.UnknownDomainException::class)
   override suspend fun register(credentials: Credentials, domain: Domain): Boolean {
     return MastodonRegistrationWebpageInteractorProvider.at(domain)
       .provide()
