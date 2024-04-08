@@ -35,12 +35,8 @@ internal class DomInteractorTests {
         }
       )
       .isEqualTo(
-        """
-          if (document.getElementById("element0").type === "button") {
-          document.getElementById("element1").click()
-          }
-        """
-          .trimIndent()
+        "if (document.getElementById(\"element0\").type === \"button\") {" +
+          "document.getElementById(\"element1\").click();}"
       )
   }
 }

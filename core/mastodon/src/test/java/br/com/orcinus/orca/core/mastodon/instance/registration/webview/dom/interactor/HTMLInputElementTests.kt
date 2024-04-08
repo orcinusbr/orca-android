@@ -29,12 +29,12 @@ internal class HTMLInputElementTests {
   @Test
   fun setsValue() {
     assertThat(interactWithDom { document.getElementById("element").setValue("value") })
-      .isEqualTo("document.getElementById(\"element\").value = \"value\"")
+      .isEqualTo("document.getElementById(\"element\").value = \"value\";")
   }
 
   @Test
   fun clicks() {
     assertThat(interactWithDom { document.getElementById("element").click() })
-      .isEqualTo("document.getElementById(\"element\").click()")
+      .isEqualTo("document.getElementById(\"element\").click();")
   }
 }

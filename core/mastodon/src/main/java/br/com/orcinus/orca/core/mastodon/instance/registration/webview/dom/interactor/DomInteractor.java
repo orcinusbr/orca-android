@@ -29,6 +29,9 @@ import kotlin.text.StringsKt;
  * @see DomInteractor#script
  */
 public class DomInteractor {
+  /** {@link Character} that denotes the end of a statement in the {@link DomInteractor#script}. */
+  private static final Character STATEMENT_END_DELIMITER = ';';
+
   /** {@link Document} that is always returned by {@link DomInteractor#getDocument()}. */
   @Nullable private Document document;
 
@@ -188,7 +191,7 @@ public class DomInteractor {
        * @param value Value to which this {@link HTMLInputElement}'s should be changed.
        */
       public void setValue(@NonNull String value) {
-        state(() -> ".value = \"" + value + '"');
+        state(".value = \"" + value + '"');
       }
 
       /**
@@ -200,7 +203,7 @@ public class DomInteractor {
        * Mozilla Developer Network </a>.
        */
       public void click() {
-        state(() -> ".click()");
+        state(".click()");
       }
     }
 
@@ -232,16 +235,20 @@ public class DomInteractor {
        * @param block Action to be run on each {@link HTMLInputElement}.
        */
       public void forEach(@NonNull Consumer<Supplier<HTMLInputElement>> block) {
-        String[] line = script.split("\n");
-        String referenceName = line[line.length - 1];
-        script = StringsKt.replaceAfterLast(script, '\n', "", "");
-        state(() -> "for (let element of " + referenceName + ") {");
+        String statementDelimiterEndAsString = STATEMENT_END_DELIMITER.toString();
+        String[] statements = script.split(statementDelimiterEndAsString);
+        String referenceName = statements[statements.length - 1];
+        script =
+            StringsKt.replaceAfterLast(script, STATEMENT_END_DELIMITER, "", "")
+                + "for (let element of "
+                + referenceName
+                + ") {";
         block.accept(
             () -> {
               script += "element";
               return htmlInputElement;
             });
-        state(() -> "}");
+        script += '}';
       }
 
       /**
@@ -380,18 +387,17 @@ public class DomInteractor {
   void doIf(@NonNull Supplier<JavaScriptBoolean> condition, @NonNull Runnable statement) {
     script += "if (";
     condition.get();
-    state(() -> ") {");
+    script += ") {";
     statement.run();
-    state(() -> "}");
+    script += '}';
   }
 
   /**
-   * Appends the finished statement produced by the statement lambda to the {@link
-   * DomInteractor#script}.
+   * Appends the statement as finished to the {@link DomInteractor#script}.
    *
-   * @param statement Creates a statement.
+   * @param statement Statement to be finished and appended.
    */
-  private void state(@NonNull Supplier<String> statement) {
-    script += statement.get() + '\n';
+  private void state(String statement) {
+    script += statement + STATEMENT_END_DELIMITER;
   }
 }

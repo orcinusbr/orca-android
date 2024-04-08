@@ -31,13 +31,8 @@ internal class HTMLCollectionTests {
         }
       )
       .isEqualTo(
-        """
-          for (let element of document.getElementsByClassName("element")) {
-          element.value = "value"
-          element.click()
-          }
-        """
-          .trimIndent()
+        "for (let element of document.getElementsByClassName(\"element\")) {" +
+          "element.value = \"value\";element.click();}"
       )
   }
 
