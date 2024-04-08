@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.platform.autos.kit.scaffold.bar.navigation
 
 import androidx.appcompat.view.menu.MenuItemImpl
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -47,7 +48,11 @@ class NavigationBarScope internal constructor() {
    * @param modifier [Modifier] to be applied to the underlying [HoverableIconButton].
    * @param content [Icon] to be shown.
    */
-  fun tab(onClick: () -> Unit, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+  fun tab(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    content: @Composable BoxScope.() -> Unit
+  ) {
     tabs.add { HoverableIconButton(onClick, modifier.testTag(TAB_TAG), content) }
   }
 

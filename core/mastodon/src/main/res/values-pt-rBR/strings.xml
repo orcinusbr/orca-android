@@ -25,4 +25,6 @@
     </string>
     <string name="core_http_authorization_sign_in">Entrar</string>
     <string name="core_http_authorization_welcome">Bem-vindo!</string>
+    <string name="core_mastodon_close_tab">Fechar aba</string>
+    <string name="core_mastodon_share">Compartilhar</string>
 </resources>

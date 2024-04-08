@@ -26,7 +26,7 @@ import br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom.inter
  *
  * @param interaction Interaction to be performed on this [WebView]'s DOM.
  */
-internal fun WebView.onDom(interaction: DomInteractor.() -> Unit) {
+internal inline fun WebView.onDom(interaction: DomInteractor.() -> Unit) {
   val script = interactWithDom(interaction)
   evaluateJavascript(script, null)
 }

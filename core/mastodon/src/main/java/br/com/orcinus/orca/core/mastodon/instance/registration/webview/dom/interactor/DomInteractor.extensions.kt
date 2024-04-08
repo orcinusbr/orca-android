@@ -21,7 +21,7 @@ package br.com.orcinus.orca.core.mastodon.instance.registration.webview.dom.inte
  *
  * @param interaction Interacts with a DOM.
  */
-internal fun interactWithDom(interaction: DomInteractor.() -> Unit): String {
+internal inline fun interactWithDom(interaction: DomInteractor.() -> Unit): String {
   return DomInteractor().apply(interaction).script()
 }
 

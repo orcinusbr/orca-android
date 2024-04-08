@@ -22,6 +22,8 @@ plugins {
   alias(libs.plugins.kotlin.symbolProcessor)
 }
 
+kotlin.compilerOptions.freeCompilerArgs.addAll("-Xcontext-receivers")
+
 android {
   compileSdk = libs.versions.android.sdk.target.get().toInt()
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
@@ -101,7 +103,7 @@ dependencies {
   implementation(project(":std:image:compose"))
   implementation(project(":std:injector"))
   implementation(libs.android.appcompat)
-  implementation(libs.android.constraintlayout)
+  implementation(libs.android.constraintLayout)
   implementation(libs.android.material)
 
   releaseImplementation(libs.kotlin.reflect)
@@ -125,5 +127,3 @@ dependencies {
   testImplementation(libs.android.test.core)
   testImplementation(libs.robolectric)
 }
-
-kotlin.compilerOptions.freeCompilerArgs.addAll("-Xcontext-receivers")

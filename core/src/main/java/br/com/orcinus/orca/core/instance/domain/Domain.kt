@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.instance.domain
 
+import java.io.Serializable
 import java.net.URL
 
 /**
@@ -23,7 +24,7 @@ import java.net.URL
  * @param value [String] that represents this [Domain].
  */
 @JvmInline
-value class Domain(private val value: String) {
+value class Domain(private val value: String) : Serializable {
   /** [URL] that leads to this [Domain]. */
   val url
     get() = URL("https", value, "")

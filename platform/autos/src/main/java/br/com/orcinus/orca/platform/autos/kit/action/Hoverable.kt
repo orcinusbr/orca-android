@@ -21,6 +21,7 @@ import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -48,7 +49,7 @@ import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
  * @param content Content to be highlighted when hovered.
  */
 @Composable
-fun Hoverable(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+fun Hoverable(modifier: Modifier = Modifier, content: @Composable BoxScope.() -> Unit) {
   val interactionSource = remember(::MutableInteractionSource)
   val isHovered by interactionSource.collectIsHoveredAsState()
 
@@ -67,7 +68,7 @@ fun Hoverable(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
 private fun Hoverable(
   isHighlighted: Boolean,
   modifier: Modifier = Modifier,
-  content: @Composable () -> Unit
+  content: @Composable BoxScope.() -> Unit
 ) {
   val density = LocalDensity.current
   val animationSpec = tween<Float>(durationMillis = 128)

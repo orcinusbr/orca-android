@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import kotlin.PublishedApi;
 import kotlin.text.StringsKt;
 
 /**
@@ -338,6 +339,15 @@ public class DomInteractor {
   }
 
   /**
+   * Exposes the JavaScript Document Object Model (DOM) as a Java API and allows for it to be
+   * interacted with.
+   *
+   * @see DomInteractor#script
+   */
+  @PublishedApi
+  public DomInteractor() {}
+
+  /**
    * Direct translation of accessing {@link Document} in JavaScript. Its side effect is that, as
    * well as any call to the {@link Document} API, it appends the equivalent expression or statement
    * to the {@link String} to be later returned by {@link DomInteractor#script()}.
@@ -352,6 +362,16 @@ public class DomInteractor {
   }
 
   /**
+   * Provides a {@link String} in which all calls to the {@link DomInteractor} API are represented
+   * as JavaScript source.
+   */
+  @NonNull
+  @PublishedApi
+  public String script() {
+    return StringsKt.trimEnd(script).toString();
+  }
+
+  /**
    * Appends a JavaScript conditional.
    *
    * @param condition Provides the condition to be satisfied in order for the statement to be run.
@@ -363,15 +383,6 @@ public class DomInteractor {
     state(() -> ") {");
     statement.run();
     state(() -> "}");
-  }
-
-  /**
-   * Provides a {@link String} in which all calls to the {@link DomInteractor} API are represented
-   * as JavaScript source.
-   */
-  @NonNull
-  String script() {
-    return StringsKt.trimEnd(script).toString();
   }
 
   /**

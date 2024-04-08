@@ -17,6 +17,7 @@ package br.com.orcinus.orca.platform.autos.kit.action.button.icon
 
 import androidx.compose.foundation.interaction.HoverInteraction
 import androidx.compose.foundation.interaction.PressInteraction
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -38,14 +39,16 @@ import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 fun HoverableIconButton(
   onClick: () -> Unit,
   modifier: Modifier = Modifier,
-  content: @Composable () -> Unit
+  content: @Composable BoxScope.() -> Unit
 ) {
   val interactionSource = remember {
     IgnoringMutableInteractionSource(PressInteraction.Press::class, HoverInteraction::class)
   }
 
   Hoverable(modifier) {
-    IconButton(onClick, interactionSource = interactionSource, content = content)
+    IconButton(onClick, Modifier.matchParentSize(), interactionSource = interactionSource) {
+      content()
+    }
   }
 }
 
