@@ -23,8 +23,7 @@ import br.com.orcinus.orca.std.styledstring.style.type.Email
  * Information with which an [Account] can be registered or logged into.
  *
  * @param email E-mail address. When registering an [Account], ideally would be one that hasn't yet
- *   been used by anyone else in the [Instance] when registering, and an existing one when logging
- *   in.
+ *   been used by anyone else in the [Instance], and an existing one when logging in.
  * @param password Private key that provides access to the [Account] alongside the [email].
  * @throws BlankPasswordException If the [password] is blank.
  * @throws InvalidEmailException If the [email] is invalid.
