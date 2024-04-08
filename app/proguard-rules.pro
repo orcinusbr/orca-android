@@ -13,12 +13,4 @@
 # not, see https://www.gnu.org/licenses.
 #
 
--keep class br.com.orcinus.orca.** { *; }
--keepclassmembers class ** implements android.os.Parcelable {
-    public static final android.os.Parcelable$Creator CREATOR;
-}
--keepclassmembers enum kotlin.reflect.jvm.internal.impl.builtins.PrimitiveType {
-    #noinspection ShrinkerUnresolvedReference
-    public static kotlin.reflect.jvm.internal.impl.builtins.PrimitiveType[] values();
-}
--keepclassmembers enum net.time4j.** { public static **[] values(); }
+-dontobfuscate

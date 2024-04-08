@@ -19,7 +19,6 @@ plugins {
 }
 
 android {
-  buildTypes.getByName("debug").proguardFile("proguard-rules.pro")
   defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   packagingOptions.resources.excludes +=
     arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
