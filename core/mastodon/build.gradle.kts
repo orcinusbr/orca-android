@@ -62,7 +62,6 @@ dependencies {
   implementation(libs.android.constraintLayout.compose)
   implementation(libs.android.fragment.ktx)
   implementation(libs.android.room.ktx)
-  implementation(libs.jsoup)
   implementation(libs.kotlin.reflect)
   implementation(libs.ktor.client.cio)
   implementation(libs.ktor.client.core)
