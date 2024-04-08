@@ -32,9 +32,8 @@ internal class MastodonRegistrar(private val context: Context) : Registrar() {
   override val domains = MastodonRegistrationWebpageInteractorProvider.domains
 
   override suspend fun register(credentials: Credentials, domain: Domain): Boolean {
-    MastodonRegistrationWebpageInteractorProvider.at(domain)
+    return MastodonRegistrationWebpageInteractorProvider.at(domain)
       .provide()
       .interact(context, credentials)
-    return true
   }
 }
