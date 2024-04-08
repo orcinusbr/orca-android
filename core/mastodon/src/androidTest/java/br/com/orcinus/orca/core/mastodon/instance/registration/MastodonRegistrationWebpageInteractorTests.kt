@@ -37,8 +37,9 @@ internal class MastodonRegistrationWebpageInteractorTests {
             webView: WebView,
             hasLoadedSuccessfully: Boolean,
             credentials: Credentials
-          ) {
+          ): Boolean {
             assertThat(listOf(webView.progress, hasLoadedSuccessfully)).containsAny(100, false)
+            return false
           }
         }
         .interact(context, Credentials.sample)
