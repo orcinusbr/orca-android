@@ -24,6 +24,7 @@ plugins {
 android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
+  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   testOptions.unitTests.isIncludeAndroidResources = true
 
   buildFeatures {
@@ -38,6 +39,13 @@ android {
 }
 
 dependencies {
+  androidTestImplementation(project(":platform:testing"))
+  androidTestImplementation(libs.android.test.runner)
+  androidTestImplementation(libs.assertk)
+  androidTestImplementation(libs.kotlin.coroutines.test)
+  androidTestImplementation(libs.kotlin.test)
+  androidTestImplementation(libs.openTest4J)
+
   api(project(":core-module"))
   api(project(":composite:composable"))
 
@@ -52,6 +60,7 @@ dependencies {
   implementation(project(":platform:navigation"))
   implementation(project(":platform:starter"))
   implementation(libs.android.browser)
+  implementation(libs.android.constraintLayout.compose)
   implementation(libs.android.fragment.ktx)
   implementation(libs.android.room.ktx)
   implementation(libs.kotlin.reflect)

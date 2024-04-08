@@ -25,6 +25,8 @@
     </string>
     <string name="core_http_authorization_sign_in">Sign in</string>
     <string name="core_http_authorization_welcome">Welcome!</string>
+    <string name="core_mastodon_close_tab">Close tab</string>
+    <string name="core_mastodon_share">Share</string>
     <string
         name="redirect_uri"
         translatable="false">
