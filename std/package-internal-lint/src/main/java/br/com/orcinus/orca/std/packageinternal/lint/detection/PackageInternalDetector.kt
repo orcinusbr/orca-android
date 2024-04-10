@@ -43,10 +43,6 @@ internal class PackageInternalDetector : Detector(), SourceCodeScanner {
     return listOf(UCallExpression::class.java)
   }
 
-  override fun inheritAnnotation(annotation: String): Boolean {
-    return false
-  }
-
   override fun createUastHandler(context: JavaContext): UElementHandler {
     return object : UElementHandler() {
       override fun visitCallExpression(node: UCallExpression) {
