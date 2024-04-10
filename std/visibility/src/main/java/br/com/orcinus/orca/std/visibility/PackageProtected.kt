@@ -18,6 +18,10 @@ package br.com.orcinus.orca.std.visibility
 /**
  * Denotes that a structure should only be accessed from a package equal to that in which it was
  * declared or its derivatives (the child ones, those within it).
+ *
+ * For example, a class marked as package-protected declared at `br.com.orcinus.orca.core` can be
+ * accessed from `br.com.orcinus.orca.core` and `br.com.orcinus.orca.core.sample`, but shouldn't be
+ * accessed from `br.com.orcinus.orca.app`.
  */
 @Retention(AnnotationRetention.BINARY)
 @Target(
