@@ -79,7 +79,7 @@ include(
   ":std:injector",
   ":std:injector-processor",
   ":std:injector-test",
-  ":std:package-protected",
-  ":std:package-protected-lint",
-  ":std:styled-string"
+  ":std:styled-string",
+  ":std:visibility",
+  ":std:visibility-lint"
 )
