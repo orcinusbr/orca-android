@@ -19,7 +19,7 @@ import br.com.orcinus.orca.std.visibility.PackageProtected
 import com.android.tools.lint.checks.infrastructure.TestFile
 import com.android.tools.lint.checks.infrastructure.TestFiles
 
-/** [TestFile] in which a [PackageProtected]-like [Annotation] in declared. */
+/** [TestFile] in which a [PackageProtected]-like [Annotation] is declared. */
 internal val TestFiles.packageProtectedAnnotation
   get() =
     kotlin(
