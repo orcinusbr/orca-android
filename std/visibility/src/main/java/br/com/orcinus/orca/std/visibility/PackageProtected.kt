@@ -17,7 +17,7 @@ package br.com.orcinus.orca.std.visibility
 
 /**
  * Denotes that a structure should only be referenced from a package equal to that in which it was
- * declared or its derivatives (the child ones, those within it).
+ * declared or its children.
  *
  * For example, a class marked as package-protected declared at `br.com.orcinus.orca.core` can be
  * referenced from `br.com.orcinus.orca.core` and `br.com.orcinus.orca.core.sample`, but shouldn't

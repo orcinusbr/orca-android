@@ -53,7 +53,7 @@ internal fun List<UExpression>
 
 /**
  * Returns whether this [UExpression] has been created in a package that isn't that in which the
- * [declaration] is or one of its derivatives.
+ * [declaration] is or one of its children.
  *
  * @param declaration [UDeclaration] that is marked as package-protected and whose package will be
  *   compared to that in which this [UExpression] is.

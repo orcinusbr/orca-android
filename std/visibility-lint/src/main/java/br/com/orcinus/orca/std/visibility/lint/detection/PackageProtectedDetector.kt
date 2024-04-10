@@ -33,10 +33,10 @@ import org.jetbrains.uast.getQualifiedChain
 
 /**
  * [Detector] that reports accesses to structures marked as package-protected that have been made
- * from a package that is neither the one in which they have been declared nor one of its
- * derivatives (i. e., a class marked as package-protected declared at `br.com.orcinus.orca.core`
- * can be accessed from `br.com.orcinus.orca.core` and `br.com.orcinus.orca.core.sample`, but
- * shouldn't be accessed from `br.com.orcinus.orca.app`).
+ * from a package that is neither the one in which they have been declared nor one of its children
+ * (i. e., a class marked as package-protected declared at `br.com.orcinus.orca.core` can be
+ * accessed from `br.com.orcinus.orca.core` and `br.com.orcinus.orca.core.sample`, but shouldn't be
+ * accessed from `br.com.orcinus.orca.app`).
  *
  * A structure is considered to have package-protected visibility if it's annotated with
  * [PackageProtected].
@@ -59,8 +59,7 @@ internal class PackageProtectedDetector : Detector(), SourceCodeScanner {
 
   /**
    * Reports references to package-protected structures from outside the package in which they have
-   * been declared or its derivatives in each of the qualified [UExpression]s within the
-   * [expression].
+   * been declared or its children in each of the qualified [UExpression]s within the [expression].
    *
    * @param context [JavaContext] with which [UExpression] that refer to package-private structures
    *   from an outside package will be obtained from the [expression].
@@ -82,7 +81,7 @@ internal class PackageProtectedDetector : Detector(), SourceCodeScanner {
   companion object {
     /**
      * Message that is shown when structures with package-protected visibility are referenced from
-     * an outside or non-derivative package.
+     * an outside or non-child package.
      */
     const val MESSAGE = "This structure is package-protected."
 
@@ -93,8 +92,7 @@ internal class PackageProtectedDetector : Detector(), SourceCodeScanner {
         briefDescription = "Access to package-protected structure",
         explanation =
           "Structures marked as package-protected should only be accessed from the package in " +
-            "which they have been declared or one of its derivatives (the child ones, those " +
-            "within it).",
+            "which they have been declared or one of its children.",
         Category.CORRECTNESS,
         priority = 5,
         Severity.ERROR,

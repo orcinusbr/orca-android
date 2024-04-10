@@ -143,7 +143,7 @@ internal class PackageProtectedDetectorTests {
   }
 
   @Test
-  fun doesNotReportOnReferenceFromDerivativePackageToClassMarkedAsPackageProtectedFromCustomAnnotation() {
+  fun doesNotReportOnReferenceFromChildPackageToClassMarkedAsPackageProtectedFromCustomAnnotation() {
     lintTask
       .files(
         TestFiles.packageProtectedAnnotation,
@@ -213,7 +213,7 @@ internal class PackageProtectedDetectorTests {
   }
 
   @Test
-  fun doesNotReportOnReferenceFromDerivativePackageToPackageProtectedClass() {
+  fun doesNotReportOnReferenceFromChildPackageToPackageProtectedClass() {
     lintTask
       .files(
         TestFiles.packageProtectedAnnotation,
@@ -363,7 +363,7 @@ internal class PackageProtectedDetectorTests {
   }
 
   @Test
-  fun doesNotReportOnReferenceFromDerivativePackageToPackageProtectedClassConstructor() {
+  fun doesNotReportOnReferenceFromChildPackageToPackageProtectedClassConstructor() {
     lintTask
       .files(
         TestFiles.packageProtectedAnnotation,
@@ -523,7 +523,7 @@ internal class PackageProtectedDetectorTests {
   }
 
   @Test
-  fun doesNotReportOnReferenceFromDerivativePackageToPackageProtectedMethod() {
+  fun doesNotReportOnReferenceFromChildPackageToPackageProtectedMethod() {
     lintTask
       .files(
         TestFiles.packageProtectedAnnotation,

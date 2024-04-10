@@ -22,7 +22,7 @@ import com.android.tools.lint.client.api.Vendor
 /**
  * [IssueRegistry] containing the [PackageProtectedDetector.issue], which characterizes problems of
  * accesses to structures that have been marked as package-protected from outside of the module in
- * which they have been declared or any of its derivatives.
+ * which they have been declared or any of its children.
  */
 internal class PackageProtectedIssueRegistry : IssueRegistry() {
   override val vendor = Vendor(vendorName = "Orcinus", contact = "jean@orcinus.com.br")
