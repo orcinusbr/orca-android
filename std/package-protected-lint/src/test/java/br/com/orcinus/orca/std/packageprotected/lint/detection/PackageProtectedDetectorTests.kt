@@ -188,4 +188,93 @@ internal class PackageProtectedDetectorTests {
         """
       )
   }
+
+  @Test
+  fun reportsOnReferenceFromOutsidePackageToMethodMarkedAsPackageProtectedFromCustomAnnotation() {
+    lintTask
+      .files(
+        TestFiles.packageProtectedAnnotation,
+        TestFiles.packageProtectedAnnotatedAnnotation,
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.std.packageprotected.lint.detection.test
+
+              class Api {
+                @PackageProtectedApi
+                fun call() {
+                }
+              }
+            """
+          )
+          .indented(),
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.app
+
+              import br.com.orcinus.orca.std.packageprotected.lint.detection.test.Api
+
+              private object Consumer {
+                init {
+                  Api().call()
+                }
+              }
+            """
+          )
+          .indented()
+      )
+      .run()
+      .expect(
+        """
+          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: ${PackageProtectedDetector.MESSAGE} [${PackageProtectedDetector.issue.id}]
+              Api().call()
+              ~~~~~~~~~~~~
+          1 errors, 0 warnings
+        """
+      )
+  }
+
+  @Test
+  fun reportsOnReferenceFromOutsidePackageToPackageProtectedMethod() {
+    lintTask
+      .files(
+        TestFiles.packageProtectedAnnotation,
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.std.packageprotected.lint.detection.test
+
+              import br.com.orcinus.orca.std.packageprotected.PackageProtected
+
+              class Api {
+                @PackageProtected
+                fun call() {
+                }
+              }
+            """
+          )
+          .indented(),
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.app
+
+              import br.com.orcinus.orca.std.packageprotected.lint.detection.test.Api
+
+              private object Consumer {
+                init {
+                  Api().call()
+                }
+              }
+            """
+          )
+          .indented()
+      )
+      .run()
+      .expect(
+        """
+          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: ${PackageProtectedDetector.MESSAGE} [${PackageProtectedDetector.issue.id}]
+              Api().call()
+              ~~~~~~~~~~~~
+          1 errors, 0 warnings
+        """
+      )
+  }
 }
