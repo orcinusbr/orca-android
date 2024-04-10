@@ -39,8 +39,8 @@ import org.jetbrains.uast.getQualifiedChain
 internal fun UExpression.filterIsResolvedToDeclarationMarkedAsPackageProtected(
   context: JavaContext
 ): List<UExpression> {
-  return getQualifiedChain().filter { expression ->
-    expression.tryResolveUDeclaration()?.run {
+  return getQualifiedChain().filter {
+    it.tryResolveUDeclaration()?.run {
       isPackageProtected(context) || getContainingDeclaration()?.isPackageProtected(context) == true
     }
       ?: false
