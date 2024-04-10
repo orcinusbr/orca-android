@@ -22,6 +22,7 @@ import com.intellij.psi.PsiClass
 import org.jetbrains.uast.UAnnotation
 import org.jetbrains.uast.UDeclaration
 import org.jetbrains.uast.UExpression
+import org.jetbrains.uast.getContainingDeclaration
 import org.jetbrains.uast.getQualifiedChain
 
 /**
@@ -38,7 +39,10 @@ import org.jetbrains.uast.getQualifiedChain
 internal fun UExpression.filterIsResolvedToDeclarationMarkedAsPackageProtected(
   context: JavaContext
 ): List<UExpression> {
-  return getQualifiedChain().filter {
-    it.tryResolveUDeclaration()?.isPackageProtected(context) ?: false
+  return getQualifiedChain().filter { expression ->
+    expression.tryResolveUDeclaration()?.run {
+      isPackageProtected(context) || getContainingDeclaration()?.isPackageProtected(context) == true
+    }
+      ?: false
   }
 }

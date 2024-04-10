@@ -21,7 +21,6 @@ import com.intellij.psi.PsiAnnotation
 import com.intellij.psi.PsiClass
 import org.jetbrains.uast.UAnnotation
 import org.jetbrains.uast.UDeclaration
-import org.jetbrains.uast.getContainingDeclaration
 
 /**
  * Whether this [UDeclaration] is of a structure that has been annotated with [PackageProtected] or
@@ -33,12 +32,11 @@ import org.jetbrains.uast.getContainingDeclaration
  *   [UAnnotation]s other than [PackageProtected] itself.
  */
 internal fun UDeclaration.isPackageProtected(context: JavaContext): Boolean {
-  return hasAnnotation(PackageProtected::class.java.name) ||
-    getContainingDeclaration()?.hasAnnotation(PackageProtected::class.java.name) ?: false ||
-    getContainingDeclaration()
-      ?.annotations
-      .orEmpty()
-      .mapNotNull(PsiAnnotation::getQualifiedName)
-      .mapNotNull(context.evaluator::findClass)
-      .any { it.hasAnnotation(PackageProtected::class.java.name) }
+  return with(PackageProtected::class.java.name) {
+    hasAnnotation(this) ||
+      annotations
+        .mapNotNull(PsiAnnotation::getQualifiedName)
+        .mapNotNull(context.evaluator::findClass)
+        .any { it.hasAnnotation(this) }
+  }
 }
