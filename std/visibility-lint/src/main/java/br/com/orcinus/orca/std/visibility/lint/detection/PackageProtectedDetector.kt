@@ -54,6 +54,15 @@ internal class PackageProtectedDetector : Detector(), SourceCodeScanner {
     }
   }
 
+  /**
+   * Reports accesses to package-protected structures from outside the package in which they have
+   * been declared or its derivatives in each of the qualified [UExpression]s within the
+   * [expression].
+   *
+   * @param context [JavaContext] with which [UExpression] that refer to package-private structures
+   *   from an outside package will be obtained from the [expression].
+   * @param expression [UExpression] to be checked.
+   */
   private fun reportExpressionsResolvedToDeclarationsMarkedAsPackageProtected(
     context: JavaContext,
     expression: UExpression
