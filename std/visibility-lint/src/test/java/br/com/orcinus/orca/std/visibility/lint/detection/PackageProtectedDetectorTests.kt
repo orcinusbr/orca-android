@@ -109,6 +109,146 @@ internal class PackageProtectedDetectorTests {
   }
 
   @Test
+  fun doesNotReportOnReferenceFromSamePackageToClassMarkedAsPackageProtectedFromCustomAnnotation() {
+    lintTask
+      .files(
+        TestFiles.packageProtectedAnnotation,
+        TestFiles.packageProtectedAnnotatedAnnotation,
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.std.visibility.lint.detection.test
+
+              @PackageProtectedApi
+              class Api
+            """
+          )
+          .indented(),
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.std.visibility.lint.detection.test
+
+              import br.com.orcinus.orca.std.visibility.lint.detection.test.Api
+
+              private object Consumer {
+                init {
+                  Api()
+                }
+              }
+            """
+          )
+          .indented()
+      )
+      .run()
+      .expect("No warnings.")
+  }
+
+  @Test
+  fun doesNotReportOnReferenceFromDerivativePackageToClassMarkedAsPackageProtectedFromCustomAnnotation() {
+    lintTask
+      .files(
+        TestFiles.packageProtectedAnnotation,
+        TestFiles.packageProtectedAnnotatedAnnotation,
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.std.visibility.lint.detection.test
+
+              @PackageProtectedApi
+              class Api
+            """
+          )
+          .indented(),
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.std.visibility.lint.detection.test.consumer
+
+              import br.com.orcinus.orca.std.visibility.lint.detection.test.Api
+
+              private object Consumer {
+                init {
+                  Api()
+                }
+              }
+            """
+          )
+          .indented()
+      )
+      .run()
+      .expect("No warnings.")
+  }
+
+  @Test
+  fun doesNotReportOnReferenceFromSamePackageToPackageProtectedClass() {
+    lintTask
+      .files(
+        TestFiles.packageProtectedAnnotation,
+        TestFiles.packageProtectedAnnotatedAnnotation,
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.std.visibility.lint.detection.test
+
+              import br.com.orcinus.orca.std.visibility.PackageProtected
+
+              @PackageProtected
+              class Api
+            """
+          )
+          .indented(),
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.std.visibility.lint.detection.test
+
+              import br.com.orcinus.orca.std.visibility.lint.detection.test.Api
+
+              private object Consumer {
+                init {
+                  Api()
+                }
+              }
+            """
+          )
+          .indented()
+      )
+      .run()
+      .expect("No warnings.")
+  }
+
+  @Test
+  fun doesNotReportOnReferenceFromDerivativePackageToPackageProtectedClass() {
+    lintTask
+      .files(
+        TestFiles.packageProtectedAnnotation,
+        TestFiles.packageProtectedAnnotatedAnnotation,
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.std.visibility.lint.detection.test
+
+              import br.com.orcinus.orca.std.visibility.PackageProtected
+
+              @PackageProtected
+              class Api
+            """
+          )
+          .indented(),
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.std.visibility.lint.detection.test.consumer
+
+              import br.com.orcinus.orca.std.visibility.lint.detection.test.Api
+
+              private object Consumer {
+                init {
+                  Api()
+                }
+              }
+            """
+          )
+          .indented()
+      )
+      .run()
+      .expect("No warnings.")
+  }
+
+  @Test
   fun reportsOnReferenceFromOutsidePackageToClassConstructorMarkedAsPackageProtectedFromCustomAnnotation() {
     lintTask
       .files(
@@ -187,6 +327,73 @@ internal class PackageProtectedDetectorTests {
           1 errors, 0 warnings
         """
       )
+  }
+
+  @Test
+  fun doesNotReportOnReferenceFromSamePackageToClassConstructorMarkedAsPackageProtectedFromCustomAnnotation() {
+    lintTask
+      .files(
+        TestFiles.packageProtectedAnnotation,
+        TestFiles.packageProtectedAnnotatedAnnotation,
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.std.visibility.lint.detection.test
+
+              class Api @PackageProtectedApi constructor()
+            """
+          )
+          .indented(),
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.std.visibility.lint.detection.test
+
+              import br.com.orcinus.orca.std.visibility.lint.detection.test.Api
+
+              private object Consumer {
+                init {
+                  Api()
+                }
+              }
+            """
+          )
+          .indented()
+      )
+      .run()
+      .expect("No warnings.")
+  }
+
+  @Test
+  fun doesNotReportOnReferenceFromDerivativePackageToPackageProtectedClassConstructor() {
+    lintTask
+      .files(
+        TestFiles.packageProtectedAnnotation,
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.std.visibility.lint.detection.test
+
+              import br.com.orcinus.orca.std.visibility.PackageProtected
+
+              class Api @PackageProtected constructor()
+            """
+          )
+          .indented(),
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.std.visibility.lint.detection.test.consumer
+
+              import br.com.orcinus.orca.std.visibility.lint.detection.test.Api
+
+              private object Consumer {
+                init {
+                  Api()
+                }
+              }
+            """
+          )
+          .indented()
+      )
+      .run()
+      .expect("No warnings.")
   }
 
   @Test
@@ -276,5 +483,80 @@ internal class PackageProtectedDetectorTests {
           1 errors, 0 warnings
         """
       )
+  }
+
+  @Test
+  fun doesNotReportOnReferenceFromSamePackageToMethodMarkedAsPackageProtectedFromCustomAnnotation() {
+    lintTask
+      .files(
+        TestFiles.packageProtectedAnnotation,
+        TestFiles.packageProtectedAnnotatedAnnotation,
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.std.visibility.lint.detection.test
+
+              class Api {
+                @PackageProtectedApi
+                fun call() {
+                }
+              }
+            """
+          )
+          .indented(),
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.std.visibility.lint.detection.test
+
+              import br.com.orcinus.orca.std.visibility.lint.detection.test.Api
+
+              private object Consumer {
+                init {
+                  Api().call()
+                }
+              }
+            """
+          )
+          .indented()
+      )
+      .run()
+      .expect("No warnings.")
+  }
+
+  @Test
+  fun doesNotReportOnReferenceFromDerivativePackageToPackageProtectedMethod() {
+    lintTask
+      .files(
+        TestFiles.packageProtectedAnnotation,
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.std.visibility.lint.detection.test
+
+              import br.com.orcinus.orca.std.visibility.PackageProtected
+
+              class Api {
+                @PackageProtected
+                fun call() {
+                }
+              }
+            """
+          )
+          .indented(),
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.std.visibility.lint.detection.test.consumer
+
+              import br.com.orcinus.orca.std.visibility.lint.detection.test.Api
+
+              private object Consumer {
+                init {
+                  Api().call()
+                }
+              }
+            """
+          )
+          .indented()
+      )
+      .run()
+      .expect("No warnings.")
   }
 }

@@ -49,13 +49,16 @@ internal class PackageProtectedDetector : Detector(), SourceCodeScanner {
   override fun createUastHandler(context: JavaContext): UElementHandler {
     return object : UElementHandler() {
       override fun visitCallExpression(node: UCallExpression) {
-        reportExpressionsResolvedToDeclarationsMarkedAsPackageProtected(context, node)
+        reportExpressionsResolvedToDeclarationsMarkedAsPackageProtectedReferencedFromOutsidePackage(
+          context,
+          node
+        )
       }
     }
   }
 
   /**
-   * Reports accesses to package-protected structures from outside the package in which they have
+   * Reports references to package-protected structures from outside the package in which they have
    * been declared or its derivatives in each of the qualified [UExpression]s within the
    * [expression].
    *
@@ -63,14 +66,14 @@ internal class PackageProtectedDetector : Detector(), SourceCodeScanner {
    *   from an outside package will be obtained from the [expression].
    * @param expression [UExpression] to be checked.
    */
-  private fun reportExpressionsResolvedToDeclarationsMarkedAsPackageProtected(
+  private fun reportExpressionsResolvedToDeclarationsMarkedAsPackageProtectedReferencedFromOutsidePackage(
     context: JavaContext,
     expression: UExpression
   ) {
     Incident(context, issue).message(MESSAGE).let {
       expression
         .getQualifiedChain()
-        .filterIsResolvedToDeclarationMarkedAsPackageProtected(context)
+        .filterIsResolvedToDeclarationMarkedAsPackageProtectedReferencedFromOutsidePackage(context)
         .map(it::at)
         .forEach(context::report)
     }

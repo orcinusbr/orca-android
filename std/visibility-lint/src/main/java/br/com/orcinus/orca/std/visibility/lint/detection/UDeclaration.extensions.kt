@@ -24,11 +24,11 @@ import org.jetbrains.uast.UDeclaration
 
 /**
  * Whether this [UDeclaration] is of a structure that has been annotated with [PackageProtected] or
- * with an [Annotation] that extends [PackageProtected], denoting that accesses from a package that
- * isn't the one in which this [UDeclaration] is should be reported.
+ * with an [Annotation] that extends [PackageProtected], denoting that references from a package
+ * that isn't the one in which this [UDeclaration] is should be reported.
  *
  * @param context [JavaContext] for finding the [PsiClass]es of [UAnnotation]s with which ones that
- *   might be [PackageProtected]-annotated, allowing for improper accesses to be propagated with
+ *   might be [PackageProtected]-annotated, allowing for improper references to be propagated with
  *   [UAnnotation]s other than [PackageProtected] itself.
  */
 internal fun UDeclaration.isPackageProtected(context: JavaContext): Boolean {
