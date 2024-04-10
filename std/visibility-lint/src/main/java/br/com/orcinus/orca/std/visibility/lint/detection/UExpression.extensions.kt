@@ -23,7 +23,6 @@ import org.jetbrains.uast.UAnnotation
 import org.jetbrains.uast.UDeclaration
 import org.jetbrains.uast.UExpression
 import org.jetbrains.uast.getContainingDeclaration
-import org.jetbrains.uast.getQualifiedChain
 
 /**
  * Returns only the [UExpression]s whose resolved [UDeclaration]s have been marked as
@@ -36,10 +35,10 @@ import org.jetbrains.uast.getQualifiedChain
  * @see tryResolveUDeclaration
  * @see UDeclaration.isPackageProtected
  */
-internal fun UExpression.filterIsResolvedToDeclarationMarkedAsPackageProtected(
+internal fun List<UExpression>.filterIsResolvedToDeclarationMarkedAsPackageProtected(
   context: JavaContext
 ): List<UExpression> {
-  return getQualifiedChain().filter {
+  return filter {
     it.tryResolveUDeclaration()?.run {
       isPackageProtected(context) || getContainingDeclaration()?.isPackageProtected(context) == true
     }

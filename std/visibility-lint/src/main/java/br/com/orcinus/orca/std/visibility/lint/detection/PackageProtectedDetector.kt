@@ -29,6 +29,7 @@ import com.android.tools.lint.detector.api.SourceCodeScanner
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UExpression
+import org.jetbrains.uast.getQualifiedChain
 
 /**
  * [Detector] that reports accesses to structures marked as package-protected that have been made
@@ -57,21 +58,13 @@ internal class PackageProtectedDetector : Detector(), SourceCodeScanner {
     context: JavaContext,
     expression: UExpression
   ) {
-    expression.filterIsResolvedToDeclarationMarkedAsPackageProtected(context).forEach {
-      report(context, it)
+    Incident(context, issue).message(MESSAGE).let {
+      expression
+        .getQualifiedChain()
+        .filterIsResolvedToDeclarationMarkedAsPackageProtected(context)
+        .map(it::at)
+        .forEach(context::report)
     }
-  }
-
-  /**
-   * Reports an improper access to the [element] that's been annotated with [PackageProtected].
-   *
-   * @param context [JavaContext] with which an [Incident] will be created and used to perform the
-   *   reporting.
-   * @param element Package-protected element that has been referenced from an outside package.
-   */
-  private fun report(context: JavaContext, element: UElement) {
-    val incident = Incident(context, issue).at(element).message(MESSAGE)
-    context.report(incident)
   }
 
   companion object {
