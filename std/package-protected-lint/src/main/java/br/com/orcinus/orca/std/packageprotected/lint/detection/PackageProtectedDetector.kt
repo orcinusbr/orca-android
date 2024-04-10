@@ -62,6 +62,13 @@ internal class PackageProtectedDetector : Detector(), SourceCodeScanner {
     }
   }
 
+  /**
+   * Reports an improper access to the [element] that's been annotated with [PackageProtected].
+   *
+   * @param context [JavaContext] with which an [Incident] will be created and used to perform the
+   *   reporting.
+   * @param element Package-protected element that has been referenced from an outside package.
+   */
   private fun report(context: JavaContext, element: UElement) {
     val incident = Incident(context, issue).at(element).message(MESSAGE)
     context.report(incident)
