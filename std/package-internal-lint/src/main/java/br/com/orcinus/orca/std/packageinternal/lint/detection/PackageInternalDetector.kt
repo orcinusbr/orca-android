@@ -29,7 +29,6 @@ import com.android.tools.lint.detector.api.SourceCodeScanner
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UExpression
-import org.jetbrains.uast.asRecursiveLogString
 
 /**
  * [Detector] that reports accesses to structures marked as package-internal that have been made
@@ -49,7 +48,6 @@ internal class PackageInternalDetector : Detector(), SourceCodeScanner {
   }
 
   override fun createUastHandler(context: JavaContext): UElementHandler {
-    context.uastFile?.asRecursiveLogString()?.run(::println)
     return object : UElementHandler() {
       override fun visitCallExpression(node: UCallExpression) {
         reportExpressionsResolvedToDeclarationsMarkedAsPackageInternal(context, node)
