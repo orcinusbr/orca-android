@@ -51,6 +51,8 @@ ktor-serialization-json = { group = "io.ktor", name = "ktor-serialization-kotlin
 ktor-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 ktor-client-mock = { group = "io.ktor", name = "ktor-client-mock", version.ref = "ktor" }
+lint-api = { group = "com.android.tools.lint", name = "lint-api", version.ref = "lint" }
+lint-tests = { group = "com.android.tools.lint", name = "lint-tests", version.ref = "lint" }
 loadable = { group = "com.jeanbarrossilva.loadable", name = "loadable", version.ref = "loadable" }
 loadable-list = { group = "com.jeanbarrossilva.loadable", name = "loadable-list", version.ref = "loadable" }
 loadable-placeholder = { group = "com.jeanbarrossilva.loadable", name = "loadable-placeholder", version.ref = "loadable" }
@@ -64,7 +66,6 @@ spotless = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", v
 time4j = { group = "net.time4j", name = "time4j-android", version = "4.8-2021a" }
 turbine = { group = "app.cash.turbine", name = "turbine", version = "1.0.0" }
 zoomable = { group = "net.engawapg.lib", name = "zoomable", version = "1.6.0-beta2" }
-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-plugin" }
@@ -75,6 +76,7 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-symbolProcessor = { id = "com.google.devtools.ksp", version.ref = "kotlin-symbolProcessor" }
+lint = { id = "com.android.lint", version.ref = "android-plugin" }
 moduleDependencyGraph = { id = "com.savvasdalkitsis.module-dependency-graph", version = "0.10" }
 orca-setup-android-library = { id = "br.com.orcinus.orca.setup.android.library" }
 orca-setup-doc = { id = "br.com.orcinus.orca.setup.doc" }
@@ -100,6 +102,6 @@ kotlin = "1.9.23"
 kotlin-coroutines = "1.8.0"
 kotlin-symbolProcessor = "1.9.23-1.0.19"
 ktor = "2.3.2"
+lint = "31.3.1"
 loadable = "1.6.9"
 spotless = "6.22.0"
-junit = "1.1.5"

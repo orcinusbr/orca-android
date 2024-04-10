@@ -79,5 +79,7 @@ include(
   ":std:injector",
   ":std:injector-processor",
   ":std:injector-test",
+  ":std:package-internal",
+  ":std:package-internal-lint",
   ":std:styled-string"
 )
