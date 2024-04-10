@@ -33,7 +33,9 @@ import org.jetbrains.uast.UExpression
 /**
  * [Detector] that reports accesses to structures marked as package-internal that have been made
  * from a package that is neither the one in which they have been declared nor one of its
- * derivatives.
+ * derivatives (i. e., a class marked as package-internal declared at `br.com.orcinus.orca.core` can
+ * be accessed from `br.com.orcinus.orca.core.sample`, but shouldn't be accessed from
+ * `br.com.orcinus.orca.app`).
  *
  * A structure is considered to have package-internal visibility if it's annotated with
  * [PackageInternal].
