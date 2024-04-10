@@ -15,6 +15,4 @@ package br.com.orcinus.orca.std.visibility
   AnnotationTarget.PROPERTY_SETTER,
   AnnotationTarget.TYPEALIAS
 )
-annotation class PackageProtected {
-  companion object
-}
+annotation class PackageProtected
