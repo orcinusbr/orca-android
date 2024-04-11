@@ -70,15 +70,13 @@ internal class PackageProtectedDetector : Detector(), SourceCodeScanner {
     context: JavaContext,
     expression: UExpression
   ) {
-    Incident(context, issue).let { incident ->
-      expression
-        .getQualifiedChain()
-        .withResolvedToDeclarationMarkedAsPackageProtectedReferencedFromOutsidePackage(context) {
-          qualifiedExpression,
-          message ->
-          context.report(incident.at(qualifiedExpression).message(message))
-        }
-    }
+    expression
+      .getQualifiedChain()
+      .withResolvedToDeclarationMarkedAsPackageProtectedReferencedFromOutsidePackage(context) {
+        qualifiedExpression,
+        message ->
+        context.report(Incident(context, issue).at(qualifiedExpression).message(message))
+      }
   }
 
   companion object {
