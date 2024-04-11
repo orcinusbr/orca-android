@@ -81,5 +81,5 @@ include(
   ":std:injector-test",
   ":std:styled-string",
   ":std:visibility",
-  ":std:visibility-lint"
+  ":std:visibility-check"
 )
