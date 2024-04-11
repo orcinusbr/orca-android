@@ -48,7 +48,7 @@ internal fun Iterable<UExpression>
   associateWithNotNull { it.tryResolveUDeclaration() }
     .mapValuesNotNull { (expression, resolvedDeclaration) ->
       with({ declaration: UDeclaration ->
-        if (expression.isFromPackageThatNeitherEqualsToNorIsChildOfThatOf(declaration)) {
+        if (expression.isFromPackageOutsideOfThatOf(declaration)) {
           declaration
             .findPackageProtectedAnnotation(context)
             ?.findAttributeValue(PackageProtected::message.name)

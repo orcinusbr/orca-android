@@ -26,10 +26,8 @@ import org.jetbrains.uast.getContainingUFile
  * @param declaration [UDeclaration] that is marked as package-protected and whose package will be
  *   compared to that in which this [UExpression] is.
  */
-internal fun UExpression.isFromPackageThatNeitherEqualsToNorIsChildOfThatOf(
-  declaration: UDeclaration
-): Boolean {
-  val file = getContainingUFile() ?: return false
+internal fun UExpression.isFromPackageOutsideOfThatOf(declaration: UDeclaration): Boolean {
+  val expressionFile = getContainingUFile() ?: return false
   val declarationFile = declaration.getContainingUFile() ?: return false
-  return !file.packageName.startsWith(declarationFile.packageName)
+  return !expressionFile.packageName.startsWith(declarationFile.packageName)
 }
