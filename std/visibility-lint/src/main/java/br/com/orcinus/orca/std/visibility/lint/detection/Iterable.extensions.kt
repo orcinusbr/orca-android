@@ -33,6 +33,10 @@ import org.jetbrains.uast.getContainingDeclaration
  * @param context [JavaContext] for finding [UAnnotation]s that might be
  *   [PackageProtected]-annotated, allowing for improper references to be propagated with
  *   [UAnnotation]s other than [PackageProtected] itself.
+ * @param action Operation to be run on the [UExpression]s that both contain references to
+ *   package-protected structures and are from packages that are unrelated to those of the
+ *   structures, alongside the custom message that has been specified by the [PackageProtected]
+ *   annotation with which these structures' [UDeclaration]s have been annotated.
  * @see tryResolveUDeclaration
  * @see UDeclaration.findPackageProtectedAnnotation
  */
