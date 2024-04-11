@@ -22,6 +22,9 @@ package br.com.orcinus.orca.std.visibility
  * For example, a class marked as package-protected declared at `br.com.orcinus.orca.core` can be
  * referenced from `br.com.orcinus.orca.core` and `br.com.orcinus.orca.core.sample`, but shouldn't
  * be referenced from `br.com.orcinus.orca.app`.
+ *
+ * @param message Message with which the error will be reported on references from an outside
+ *   package.
  */
 @Retention(AnnotationRetention.BINARY)
 @Target(
@@ -34,4 +37,11 @@ package br.com.orcinus.orca.std.visibility
   AnnotationTarget.PROPERTY_SETTER,
   AnnotationTarget.TYPEALIAS
 )
-annotation class PackageProtected
+annotation class PackageProtected(val message: String = DEFAULT_MESSAGE) {
+  companion object {
+    /** [message] that is the default one of [PackageProtected]. */
+    const val DEFAULT_MESSAGE =
+      "This structure is package-protected and is not intended to be referenced by outside " +
+        "packages."
+  }
+}

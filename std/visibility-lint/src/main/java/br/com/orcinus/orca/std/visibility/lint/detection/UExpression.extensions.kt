@@ -15,41 +15,9 @@
 
 package br.com.orcinus.orca.std.visibility.lint.detection
 
-import br.com.orcinus.orca.std.visibility.PackageProtected
-import com.android.tools.lint.detector.api.JavaContext
-import com.android.tools.lint.detector.api.UastLintUtils.Companion.tryResolveUDeclaration
-import com.intellij.psi.PsiClass
-import org.jetbrains.uast.UAnnotation
 import org.jetbrains.uast.UDeclaration
 import org.jetbrains.uast.UExpression
-import org.jetbrains.uast.getContainingDeclaration
 import org.jetbrains.uast.getContainingUFile
-
-/**
- * Returns only the [UExpression]s whose resolved [UDeclaration]s have been marked as
- * package-protected, denoting that references from packages that aren't the ones in which the
- * [UDeclaration]s are should be reported.
- *
- * @param context [JavaContext] for finding the [PsiClass]es of [UAnnotation]s with which ones that
- *   might be [PackageProtected]-annotated, allowing for improper references to be propagated with
- *   [UAnnotation]s other than [PackageProtected] itself.
- * @see tryResolveUDeclaration
- * @see UDeclaration.isPackageProtected
- */
-internal fun List<UExpression>
-  .filterIsResolvedToDeclarationMarkedAsPackageProtectedReferencedFromOutsidePackage(
-  context: JavaContext
-): List<UExpression> {
-  return filter { expression ->
-    val resolvedDeclaration = expression.tryResolveUDeclaration() ?: return@filter false
-    val isReferencedFromOutsidePackage = { declaration: UDeclaration ->
-      declaration.isPackageProtected(context) &&
-        expression.isFromPackageThatNeitherIsNorDerivesFromThatOf(declaration)
-    }
-    isReferencedFromOutsidePackage(resolvedDeclaration) ||
-      resolvedDeclaration.getContainingDeclaration()?.let(isReferencedFromOutsidePackage) ?: false
-  }
-}
 
 /**
  * Returns whether this [UExpression] has been created in a package that isn't that in which the
@@ -58,7 +26,7 @@ internal fun List<UExpression>
  * @param declaration [UDeclaration] that is marked as package-protected and whose package will be
  *   compared to that in which this [UExpression] is.
  */
-private fun UExpression.isFromPackageThatNeitherIsNorDerivesFromThatOf(
+internal fun UExpression.isFromPackageThatNeitherEqualsToNorIsChildOfThatOf(
   declaration: UDeclaration
 ): Boolean {
   val file = getContainingUFile() ?: return false

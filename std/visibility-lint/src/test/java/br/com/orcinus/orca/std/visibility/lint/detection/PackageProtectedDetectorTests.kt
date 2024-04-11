@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.std.visibility.lint.detection
 
+import br.com.orcinus.orca.std.visibility.PackageProtected
 import com.android.tools.lint.checks.infrastructure.TestFiles
 import com.android.tools.lint.checks.infrastructure.TestLintTask
 import kotlin.test.Test
@@ -32,8 +33,6 @@ internal class PackageProtectedDetectorTests {
         TestFiles.kotlin(
             """
               package br.com.orcinus.orca.std.visibility.lint.detection.test
-
-              import br.com.orcinus.orca.std.visibility.PackageProtected
 
               @PackageProtectedApi
               class Api
@@ -58,7 +57,48 @@ internal class PackageProtectedDetectorTests {
       .run()
       .expect(
         """
-          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: ${PackageProtectedDetector.MESSAGE} [${PackageProtectedDetector.issue.id}]
+          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: ${PackageProtected.DEFAULT_MESSAGE} [${PackageProtectedDetector.issue.id}]
+              Api()
+              ~~~~~
+          1 errors, 0 warnings
+        """
+      )
+  }
+
+  @Test
+  fun reportsOnReferenceFromOutsidePackageToClassMarkedAsPackageProtectedFromCustomAnnotationWithAlternateMessage() {
+    lintTask
+      .files(
+        TestFiles.packageProtectedAnnotation,
+        TestFiles.packageProtectedAnnotatedAnnotationWithAlternateMessage,
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.std.visibility.lint.detection.test
+
+              @PackageProtectedApi
+              class Api
+            """
+          )
+          .indented(),
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.app
+
+              import br.com.orcinus.orca.std.visibility.lint.detection.test.Api
+
+              private object Consumer {
+                init {
+                  Api()
+                }
+              }
+            """
+          )
+          .indented()
+      )
+      .run()
+      .expect(
+        """
+          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: :P [${PackageProtectedDetector.issue.id}]
               Api()
               ~~~~~
           1 errors, 0 warnings
@@ -100,7 +140,49 @@ internal class PackageProtectedDetectorTests {
       .run()
       .expect(
         """
-          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: ${PackageProtectedDetector.MESSAGE} [${PackageProtectedDetector.issue.id}]
+          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: ${PackageProtected.DEFAULT_MESSAGE} [${PackageProtectedDetector.issue.id}]
+              Api()
+              ~~~~~
+          1 errors, 0 warnings
+        """
+      )
+  }
+
+  @Test
+  fun reportsOnReferenceFromOutsidePackageToPackageProtectedClassWithAlternateMessage() {
+    lintTask
+      .files(
+        TestFiles.packageProtectedAnnotation,
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.std.visibility.lint.detection.test
+
+              import br.com.orcinus.orca.std.visibility.PackageProtected
+
+              @PackageProtected(message = ":P")
+              class Api
+            """
+          )
+          .indented(),
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.app
+
+              import br.com.orcinus.orca.std.visibility.lint.detection.test.Api
+
+              private object Consumer {
+                init {
+                  Api()
+                }
+              }
+            """
+          )
+          .indented()
+      )
+      .run()
+      .expect(
+        """
+          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: :P [${PackageProtectedDetector.issue.id}]
               Api()
               ~~~~~
           1 errors, 0 warnings
@@ -280,7 +362,47 @@ internal class PackageProtectedDetectorTests {
       .run()
       .expect(
         """
-          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: ${PackageProtectedDetector.MESSAGE} [${PackageProtectedDetector.issue.id}]
+          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: ${PackageProtected.DEFAULT_MESSAGE} [${PackageProtectedDetector.issue.id}]
+              Api()
+              ~~~~~
+          1 errors, 0 warnings
+        """
+      )
+  }
+
+  @Test
+  fun reportsOnReferenceFromOutsidePackageToClassConstructorMarkedAsPackageProtectedFromCustomAnnotationWithAlternateMessage() {
+    lintTask
+      .files(
+        TestFiles.packageProtectedAnnotation,
+        TestFiles.packageProtectedAnnotatedAnnotationWithAlternateMessage,
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.std.visibility.lint.detection.test
+
+              class Api @PackageProtectedApi constructor()
+            """
+          )
+          .indented(),
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.app
+
+              import br.com.orcinus.orca.std.visibility.lint.detection.test.Api
+
+              private object Consumer {
+                init {
+                  Api()
+                }
+              }
+            """
+          )
+          .indented()
+      )
+      .run()
+      .expect(
+        """
+          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: :P [${PackageProtectedDetector.issue.id}]
               Api()
               ~~~~~
           1 errors, 0 warnings
@@ -321,7 +443,48 @@ internal class PackageProtectedDetectorTests {
       .run()
       .expect(
         """
-          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: ${PackageProtectedDetector.MESSAGE} [${PackageProtectedDetector.issue.id}]
+          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: ${PackageProtected.DEFAULT_MESSAGE} [${PackageProtectedDetector.issue.id}]
+              Api()
+              ~~~~~
+          1 errors, 0 warnings
+        """
+      )
+  }
+
+  @Test
+  fun reportsOnReferenceFromOutsidePackageToPackageProtectedClassConstructorWithAlternateMessage() {
+    lintTask
+      .files(
+        TestFiles.packageProtectedAnnotation,
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.std.visibility.lint.detection.test
+
+              import br.com.orcinus.orca.std.visibility.PackageProtected
+
+              class Api @PackageProtected(message = ":P") constructor()
+            """
+          )
+          .indented(),
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.app
+
+              import br.com.orcinus.orca.std.visibility.lint.detection.test.Api
+
+              private object Consumer {
+                init {
+                  Api()
+                }
+              }
+            """
+          )
+          .indented()
+      )
+      .run()
+      .expect(
+        """
+          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: :P [${PackageProtectedDetector.issue.id}]
               Api()
               ~~~~~
           1 errors, 0 warnings
@@ -432,7 +595,51 @@ internal class PackageProtectedDetectorTests {
       .run()
       .expect(
         """
-          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: ${PackageProtectedDetector.MESSAGE} [${PackageProtectedDetector.issue.id}]
+          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: ${PackageProtected.DEFAULT_MESSAGE} [${PackageProtectedDetector.issue.id}]
+              Api().call()
+              ~~~~~~~~~~~~
+          1 errors, 0 warnings
+        """
+      )
+  }
+
+  @Test
+  fun reportsOnReferenceFromOutsidePackageToMethodMarkedAsPackageProtectedFromCustomAnnotationWithAlternateMessage() {
+    lintTask
+      .files(
+        TestFiles.packageProtectedAnnotation,
+        TestFiles.packageProtectedAnnotatedAnnotationWithAlternateMessage,
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.std.visibility.lint.detection.test
+
+              class Api {
+                @PackageProtectedApi
+                fun call() {
+                }
+              }
+            """
+          )
+          .indented(),
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.app
+
+              import br.com.orcinus.orca.std.visibility.lint.detection.test.Api
+
+              private object Consumer {
+                init {
+                  Api().call()
+                }
+              }
+            """
+          )
+          .indented()
+      )
+      .run()
+      .expect(
+        """
+          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: :P [${PackageProtectedDetector.issue.id}]
               Api().call()
               ~~~~~~~~~~~~
           1 errors, 0 warnings
@@ -477,7 +684,52 @@ internal class PackageProtectedDetectorTests {
       .run()
       .expect(
         """
-          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: ${PackageProtectedDetector.MESSAGE} [${PackageProtectedDetector.issue.id}]
+          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: ${PackageProtected.DEFAULT_MESSAGE} [${PackageProtectedDetector.issue.id}]
+              Api().call()
+              ~~~~~~~~~~~~
+          1 errors, 0 warnings
+        """
+      )
+  }
+
+  @Test
+  fun reportsOnReferenceFromOutsidePackageToPackageProtectedMethodWithAlternateMessage() {
+    lintTask
+      .files(
+        TestFiles.packageProtectedAnnotation,
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.std.visibility.lint.detection.test
+
+              import br.com.orcinus.orca.std.visibility.PackageProtected
+
+              class Api {
+                @PackageProtected(message = ":P")
+                fun call() {
+                }
+              }
+            """
+          )
+          .indented(),
+        TestFiles.kotlin(
+            """
+              package br.com.orcinus.orca.app
+
+              import br.com.orcinus.orca.std.visibility.lint.detection.test.Api
+
+              private object Consumer {
+                init {
+                  Api().call()
+                }
+              }
+            """
+          )
+          .indented()
+      )
+      .run()
+      .expect(
+        """
+          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: :P [${PackageProtectedDetector.issue.id}]
               Api().call()
               ~~~~~~~~~~~~
           1 errors, 0 warnings

@@ -69,22 +69,18 @@ internal class PackageProtectedDetector : Detector(), SourceCodeScanner {
     context: JavaContext,
     expression: UExpression
   ) {
-    Incident(context, issue).message(MESSAGE).let {
+    Incident(context, issue).let { incident ->
       expression
         .getQualifiedChain()
-        .filterIsResolvedToDeclarationMarkedAsPackageProtectedReferencedFromOutsidePackage(context)
-        .map(it::at)
-        .forEach(context::report)
+        .withResolvedToDeclarationMarkedAsPackageProtectedReferencedFromOutsidePackage(context) {
+          qualifiedExpression,
+          message ->
+          context.report(incident.at(qualifiedExpression).message(message))
+        }
     }
   }
 
   companion object {
-    /**
-     * Message that is shown when structures with package-protected visibility are referenced from
-     * an outside or non-child package.
-     */
-    const val MESSAGE = "This structure is package-protected."
-
     /** [Issue] that informs of improper accesses to package-protected structures. */
     val issue =
       Issue.create(

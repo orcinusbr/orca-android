@@ -26,7 +26,7 @@ internal val TestFiles.packageProtectedAnnotation
         """
           package br.com.orcinus.orca.std.visibility
 
-          annotation class PackageProtected
+          annotation class PackageProtected(val message: String = "${PackageProtected.DEFAULT_MESSAGE}")
         """
       )
       .indented()
@@ -44,6 +44,25 @@ internal val TestFiles.packageProtectedAnnotatedAnnotation
           import br.com.orcinus.orca.std.visibility.PackageProtected
 
           @PackageProtected
+          internal annotation class PackageProtectedApi
+        """
+      )
+      .indented()
+
+/**
+ * Essentially the same [TestFile] as [TestFiles.packageProtectedAnnotatedAnnotation], but with the
+ * declared [Annotation] having an alternate message for when references from outside packages are
+ * found.
+ */
+internal val TestFiles.packageProtectedAnnotatedAnnotationWithAlternateMessage
+  get() =
+    kotlin(
+        """
+          package br.com.orcinus.orca.std.visibility.lint.detection.test
+
+          import br.com.orcinus.orca.std.visibility.PackageProtected
+
+          @PackageProtected(message = ":P")
           internal annotation class PackageProtectedApi
         """
       )
