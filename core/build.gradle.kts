@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -27,6 +27,7 @@ dependencies {
 
   implementation(project(":ext:coroutines"))
   implementation(project(":std:buildable"))
+  implementation(project(":std:visibility"))
 
   ksp(project(":std:buildable-processor"))
 

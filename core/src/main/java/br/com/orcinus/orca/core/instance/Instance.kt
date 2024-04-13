@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.instance
 
+import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.Authenticator
 import br.com.orcinus.orca.core.feed.FeedProvider
@@ -33,7 +34,7 @@ typealias SomeInstance = Instance<*>
  *
  * @param T [Authenticator] to authenticate the user with.
  */
-abstract class Instance<T : Authenticator> {
+abstract class Instance<T : Authenticator> @InternalCoreApi constructor() {
   /** Unique identifier of the server. */
   abstract val domain: Domain
 

@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.module
 
+import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.Actor
@@ -34,7 +35,9 @@ import br.com.orcinus.orca.std.injector.module.injection.Injection
  *   functionality behind a "wall".
  * @param termMuter [TermMuter] by which terms will be muted.
  */
-open class CoreModule(
+open class CoreModule
+@InternalCoreApi
+constructor(
   @Inject internal val instanceProvider: Injection<InstanceProvider>,
   @Inject internal val authenticationLock: Injection<SomeAuthenticationLock>,
   @Inject internal val termMuter: Injection<TermMuter>

@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.auth
 
+import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import kotlin.coroutines.Continuation
@@ -39,10 +40,9 @@ typealias SomeAuthenticationLock = AuthenticationLock<*>
  * @see scheduleUnlock
  * @see scheduleUnlock
  */
-class AuthenticationLock<A : Authenticator>(
-  private val authenticator: A,
-  private val actorProvider: ActorProvider
-) {
+class AuthenticationLock<A : Authenticator>
+@InternalCoreApi
+constructor(private val authenticator: A, private val actorProvider: ActorProvider) {
   /**
    * [MutableStateFlow] to which [Boolean]s that indicate whether this [AuthenticationLock] has
    * ongoing unlocks are emitted.

@@ -15,8 +15,10 @@
 
 package br.com.orcinus.orca.core.auth.actor
 
+import br.com.orcinus.orca.core.InternalCoreApi
+
 /** Provides an [Actor] through [provide]. */
-abstract class ActorProvider {
+abstract class ActorProvider @InternalCoreApi constructor() {
   /** Provides an [Actor]. */
   suspend fun provide(): Actor {
     return retrieve()

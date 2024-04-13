@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.auth.actor
 
+import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoader
 
@@ -30,11 +31,9 @@ sealed interface Actor {
    * @param accessToken Access token resulted from the authentication.
    * @param avatarLoader [ImageLoader] by which the avatar will be loaded.
    */
-  data class Authenticated(
-    val id: String,
-    val accessToken: String,
-    val avatarLoader: SomeImageLoader
-  ) : Actor {
+  data class Authenticated
+  @InternalCoreApi
+  constructor(val id: String, val accessToken: String, val avatarLoader: SomeImageLoader) : Actor {
     companion object
   }
 }

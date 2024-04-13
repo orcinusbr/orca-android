@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.instance.registration
 
+import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.instance.domain.Domain
@@ -28,7 +29,7 @@ import kotlinx.coroutines.flow.flow
  *
  * @see register
  */
-abstract class Registrar {
+abstract class Registrar @InternalCoreApi constructor() {
   /** [Domain]s of the [Instance]s in which registration can be attempted to be performed. */
   protected abstract val domains: List<Domain>
 

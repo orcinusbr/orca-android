@@ -15,6 +15,8 @@
 
 package br.com.orcinus.orca.core.feed.profile.post
 
+import br.com.orcinus.orca.core.InternalCoreApi
+
 /**
  * [Post] that can be deleted.
  *
@@ -22,7 +24,7 @@ package br.com.orcinus.orca.core.feed.profile.post
  *   will be delegated.
  * @see delete
  */
-abstract class DeletablePost(private val delegate: Post) : Post {
+abstract class DeletablePost @InternalCoreApi constructor(private val delegate: Post) : Post {
   override val id = delegate.id
   override val author = delegate.author
   override val content = delegate.content

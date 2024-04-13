@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.instance.registration
 
+import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.std.styledstring.style.type.Email
@@ -30,6 +31,7 @@ import br.com.orcinus.orca.std.styledstring.style.type.Email
  * @see Registrar.register
  */
 data class Credentials
+@InternalCoreApi
 @Throws(BlankPasswordException::class, InvalidEmailException::class)
 constructor(val email: String, val password: String) {
   /**

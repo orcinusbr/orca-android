@@ -15,17 +15,18 @@
 
 package br.com.orcinus.orca.core.feed.profile
 
+import br.com.orcinus.orca.core.InternalCoreApi
 import kotlinx.coroutines.flow.Flow
 
 /** Provides a [Profile] through [onProvide]. */
-abstract class ProfileProvider {
+abstract class ProfileProvider @InternalCoreApi constructor() {
   /**
    * [IllegalArgumentException] thrown when a [Profile] that doesn't exist is requested to be
    * provided.
    *
    * @param id ID of the [Profile] requested to be provided.
    */
-  class NonexistentProfileException(id: String) :
+  class NonexistentProfileException @InternalCoreApi constructor(id: String) :
     IllegalArgumentException("Profile identified as \"$id\" doesn't exist.")
 
   /**
