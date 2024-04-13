@@ -13,26 +13,24 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-plugins {
-  alias(libs.plugins.kotlin.jvm)
-  alias(libs.plugins.lint)
+package br.com.orcinus.orca.setup.lint
 
-  `java-library`
-}
+import com.android.build.api.dsl.CommonExtension
+import org.gradle.api.Plugin
+import org.gradle.api.Project
 
-dependencies {
-  compileOnly(project(":std:visibility"))
-  compileOnly(libs.lint.api)
-
-  testImplementation(project(":std:visibility"))
-  testImplementation(libs.assertk)
-  testImplementation(libs.kotlin.test)
-  testImplementation(libs.lint.api)
-  testImplementation(libs.lint.tests)
-}
-
-tasks.jar {
-  manifest.attributes(
-    "Lint-Registry-v2" to "br.com.orcinus.orca.std.visibility.check.PackageProtectedIssueRegistry"
-  )
+class LintSetupPlugin : Plugin<Project> {
+  override fun apply(target: Project) {
+    target.subprojects { subProject ->
+      subProject.afterEvaluate { evaluatedSubproject ->
+        with(evaluatedSubproject) {
+          extensions.findByType(CommonExtension::class.java)?.let { _ ->
+            arrayOf(":std:visibility-check").forEach { modulePath ->
+              with(dependencies) { add("lintChecks", project(mapOf("path" to modulePath))) }
+            }
+          }
+        }
+      }
+    }
+  }
 }

@@ -18,13 +18,16 @@ package br.com.orcinus.orca.std.visibility.check
 import br.com.orcinus.orca.std.visibility.check.detection.PackageProtectedDetector
 import com.android.tools.lint.client.api.IssueRegistry
 import com.android.tools.lint.client.api.Vendor
+import com.android.tools.lint.detector.api.CURRENT_API
 
 /**
  * [IssueRegistry] containing the [PackageProtectedDetector.issue], which characterizes problems of
  * accesses to structures that have been marked as package-protected from outside of the module in
  * which they have been declared or any of its children.
  */
+@Suppress("unused")
 internal class PackageProtectedIssueRegistry : IssueRegistry() {
   override val vendor = Vendor(vendorName = "Orcinus", contact = "jean@orcinus.com.br")
+  override val api = CURRENT_API
   override val issues = listOf(PackageProtectedDetector.issue)
 }

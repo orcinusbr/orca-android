@@ -84,6 +84,7 @@ orca-setup-formatting = { id = "br.com.orcinus.orca.setup.formatting" }
 orca-setup-hooks = { id = "br.com.orcinus.orca.setup.hooks" }
 orca-setup-java = { id = "br.com.orcinus.orca.setup.java" }
 orca-setup-kotlin = { id = "br.com.orcinus.orca.setup.kotlin" }
+orca-setup-lint = { id = "br.com.orcinus.orca.setup.lint" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [versions]
@@ -92,7 +93,7 @@ android-compose = "1.6.0-rc01"
 android-compose-compiler = "1.5.11"
 android-fragment = "1.6.2"
 android-lifecycle = "2.7.0"
-android-plugin = "8.3.1"
+android-plugin = "8.3.2"
 android-room = "2.6.1"
 android-sdk-min = "28"
 android-sdk-target = "34"
@@ -102,6 +103,6 @@ kotlin = "1.9.23"
 kotlin-coroutines = "1.8.0"
 kotlin-symbolProcessor = "1.9.23-1.0.19"
 ktor = "2.3.2"
-lint = "31.3.1"
+lint = "31.3.2"
 loadable = "1.6.9"
 spotless = "6.22.0"
