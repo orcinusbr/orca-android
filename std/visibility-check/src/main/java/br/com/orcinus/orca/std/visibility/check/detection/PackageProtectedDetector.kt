@@ -77,7 +77,7 @@ internal class PackageProtectedDetector : Detector(), SourceCodeScanner {
   ) {
     expression
       .getQualifiedChain()
-      .withResolvedToDeclarationMarkedAsPackageProtectedReferencedFromOutsidePackage(context) {
+      .withResolvedToDeclarationMarkedAsPackageProtectedReferencedFromOutsidePackage {
         qualifiedExpression,
         message ->
         context.report(Incident(context, issue).at(qualifiedExpression).message(message))

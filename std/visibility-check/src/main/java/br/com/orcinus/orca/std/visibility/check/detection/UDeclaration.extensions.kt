@@ -16,28 +16,19 @@
 package br.com.orcinus.orca.std.visibility.check.detection
 
 import br.com.orcinus.orca.std.visibility.PackageProtected
-import com.android.tools.lint.detector.api.JavaContext
-import com.intellij.psi.PsiAnnotation
+import com.android.tools.lint.detector.api.UastLintUtils.Companion.tryResolveUDeclaration
 import org.jetbrains.uast.UAnnotation
 import org.jetbrains.uast.UDeclaration
-import org.jetbrains.uast.toUElementOfType
 
 /**
  * Obtains the [UAnnotation] of [PackageProtected] if this [UDeclaration] is of a structure that has
  * been annotated with it or with a [UAnnotation] that extends [PackageProtected], denoting that
  * references from a package that isn't the one in which this [UDeclaration] is should be reported.
- *
- * @param context [JavaContext] for finding [UAnnotation]s that might be
- *   [PackageProtected]-annotated, allowing for improper references to be propagated with
- *   [UAnnotation]s other than [PackageProtected] itself.
  */
-internal fun UDeclaration.findPackageProtectedAnnotation(context: JavaContext): UAnnotation? {
-  return with(PackageProtected::class.java.name) {
-      getAnnotation(this)
-        ?: annotations
-          .mapNotNull(PsiAnnotation::getQualifiedName)
-          .mapNotNull(context.evaluator::findClass)
-          .firstNotNullOfOrNull { it.getAnnotation(this) }
-    }
-    ?.toUElementOfType()
+internal fun UDeclaration.findPackageProtectedAnnotation(): UAnnotation? {
+  val annotationName = PackageProtected::class.qualifiedName ?: return null
+  return findAnnotation(annotationName)
+    ?: uAnnotations
+      .mapNotNull { it.tryResolveUDeclaration() }
+      .firstNotNullOfOrNull { it.findAnnotation(annotationName) }
 }

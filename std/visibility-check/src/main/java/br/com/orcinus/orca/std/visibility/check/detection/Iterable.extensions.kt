@@ -16,11 +16,9 @@
 package br.com.orcinus.orca.std.visibility.check.detection
 
 import br.com.orcinus.orca.std.visibility.PackageProtected
-import com.android.tools.lint.detector.api.JavaContext
 import com.android.tools.lint.detector.api.UastLintUtils.Companion.tryResolveUDeclaration
 import com.android.utils.associateWithNotNull
 import com.android.utils.mapValuesNotNull
-import org.jetbrains.uast.UAnnotation
 import org.jetbrains.uast.UDeclaration
 import org.jetbrains.uast.UExpression
 import org.jetbrains.uast.getContainingDeclaration
@@ -30,9 +28,6 @@ import org.jetbrains.uast.getContainingDeclaration
  * marked as package-protected, denoting that references from packages that aren't the ones in which
  * the [UDeclaration]s are should be reported.
  *
- * @param context [JavaContext] for finding [UAnnotation]s that might be
- *   [PackageProtected]-annotated, allowing for improper references to be propagated with
- *   [UAnnotation]s other than [PackageProtected] itself.
  * @param action Operation to be run on the [UExpression]s that both contain references to
  *   package-protected structures and are from packages that are unrelated to those of the
  *   structures, alongside the custom message that has been specified by the [PackageProtected]
@@ -42,15 +37,14 @@ import org.jetbrains.uast.getContainingDeclaration
  */
 internal fun Iterable<UExpression>
   .withResolvedToDeclarationMarkedAsPackageProtectedReferencedFromOutsidePackage(
-  context: JavaContext,
-  action: (UExpression, message: String) -> Unit
+  action: (expression: UExpression, message: String) -> Unit
 ) {
   associateWithNotNull { it.tryResolveUDeclaration() }
     .mapValuesNotNull { (expression, resolvedDeclaration) ->
       with({ declaration: UDeclaration ->
         if (expression.isFromPackageOutsideOfThatOf(declaration)) {
           declaration
-            .findPackageProtectedAnnotation(context)
+            .findPackageProtectedAnnotation()
             ?.findAttributeValue(PackageProtected::message.name)
             ?.evaluate()
             ?.toString()
