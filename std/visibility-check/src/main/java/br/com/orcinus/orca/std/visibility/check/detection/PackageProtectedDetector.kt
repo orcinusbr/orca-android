@@ -16,7 +16,8 @@
 package br.com.orcinus.orca.std.visibility.check.detection
 
 import br.com.orcinus.orca.std.visibility.PackageProtected
-import com.android.tools.lint.client.api.UElementHandler
+import com.android.tools.lint.detector.api.AnnotationInfo
+import com.android.tools.lint.detector.api.AnnotationUsageInfo
 import com.android.tools.lint.detector.api.Category
 import com.android.tools.lint.detector.api.Detector
 import com.android.tools.lint.detector.api.Implementation
@@ -26,7 +27,6 @@ import com.android.tools.lint.detector.api.JavaContext
 import com.android.tools.lint.detector.api.Scope
 import com.android.tools.lint.detector.api.Severity
 import com.android.tools.lint.detector.api.SourceCodeScanner
-import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UExpression
 import org.jetbrains.uast.getQualifiedChain
@@ -42,19 +42,24 @@ import org.jetbrains.uast.getQualifiedChain
  * [PackageProtected].
  */
 internal class PackageProtectedDetector : Detector(), SourceCodeScanner {
-  override fun getApplicableUastTypes(): List<Class<out UElement>> {
-    return listOf(UCallExpression::class.java)
+  override fun visitAnnotationUsage(
+    context: JavaContext,
+    element: UElement,
+    annotationInfo: AnnotationInfo,
+    usageInfo: AnnotationUsageInfo
+  ) {
+    reportExpressionsResolvedToDeclarationsMarkedAsPackageProtectedReferencedFromOutsidePackage(
+      context,
+      element as UExpression
+    )
   }
 
-  override fun createUastHandler(context: JavaContext): UElementHandler {
-    return object : UElementHandler() {
-      override fun visitCallExpression(node: UCallExpression) {
-        reportExpressionsResolvedToDeclarationsMarkedAsPackageProtectedReferencedFromOutsidePackage(
-          context,
-          node
-        )
-      }
-    }
+  override fun applicableAnnotations(): List<String> {
+    return listOfNotNull(PackageProtected::class.qualifiedName)
+  }
+
+  override fun getApplicableUastTypes(): List<Class<UExpression>> {
+    return listOf(UExpression::class.java)
   }
 
   /**
