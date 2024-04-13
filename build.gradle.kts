@@ -25,6 +25,7 @@ plugins {
   alias(libs.plugins.kotlin.jvm) apply false
   alias(libs.plugins.kotlin.serialization) apply false
   alias(libs.plugins.kotlin.symbolProcessor) apply false
+  alias(libs.plugins.lint) apply false
   alias(libs.plugins.moduleDependencyGraph)
   alias(libs.plugins.spotless)
 
@@ -33,6 +34,7 @@ plugins {
   id(libs.plugins.orca.setup.hooks.get().pluginId)
   id(libs.plugins.orca.setup.java.get().pluginId)
   id(libs.plugins.orca.setup.kotlin.get().pluginId)
+  id(libs.plugins.orca.setup.lint.get().pluginId)
   id("build-src")
 }
 
@@ -48,4 +50,4 @@ subprojects {
   }
 }
 
-tasks.named("clean") { delete(rootProject.buildDir) }
+tasks.named("clean") { delete(rootProject.layout.buildDirectory) }

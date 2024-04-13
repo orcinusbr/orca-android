@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,15 +13,26 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-include(
-  ":setup:android-library",
-  ":setup:formatting",
-  ":setup:hooks",
-  ":setup:java",
-  ":setup:kotlin",
-  ":setup:lint"
-)
+plugins {
+  alias(libs.plugins.kotlin.jvm)
+  alias(libs.plugins.lint)
 
-dependencyResolutionManagement.versionCatalogs.register("libs") {
-  from(files("../gradle/libs.versions.toml"))
+  `java-library`
+}
+
+dependencies {
+  compileOnly(project(":std:visibility"))
+  compileOnly(libs.lint.api)
+
+  testImplementation(project(":std:visibility"))
+  testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.test)
+  testImplementation(libs.lint.api)
+  testImplementation(libs.lint.tests)
+}
+
+tasks.jar {
+  manifest.attributes(
+    "Lint-Registry-v2" to "br.com.orcinus.orca.std.visibility.check.PackageProtectedIssueRegistry"
+  )
 }

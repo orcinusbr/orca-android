@@ -79,5 +79,7 @@ include(
   ":std:injector",
   ":std:injector-processor",
   ":std:injector-test",
-  ":std:styled-string"
+  ":std:styled-string",
+  ":std:visibility",
+  ":std:visibility-check"
 )

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,15 +13,21 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-include(
-  ":setup:android-library",
-  ":setup:formatting",
-  ":setup:hooks",
-  ":setup:java",
-  ":setup:kotlin",
-  ":setup:lint"
-)
+plugins {
+  alias(libs.plugins.buildconfig)
+  alias(libs.plugins.kotlin.jvm)
 
-dependencyResolutionManagement.versionCatalogs.register("libs") {
-  from(files("../gradle/libs.versions.toml"))
+  `java-gradle-plugin`
 }
+
+dependencies {
+  implementation(libs.android.plugin)
+  implementation(libs.kotlin.gradlePlugin)
+}
+
+gradlePlugin.plugins.register("setup-lint") {
+  id = libs.plugins.orca.setup.lint.get().pluginId
+  implementationClass = "br.com.orcinus.orca.setup.lint.LintSetupPlugin"
+}
+
+repositories.google()
