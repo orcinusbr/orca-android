@@ -31,11 +31,7 @@ package br.com.orcinus.orca.std.visibility
   AnnotationTarget.ANNOTATION_CLASS,
   AnnotationTarget.CLASS,
   AnnotationTarget.CONSTRUCTOR,
-  AnnotationTarget.FUNCTION,
-  AnnotationTarget.PROPERTY,
-  AnnotationTarget.PROPERTY_GETTER,
-  AnnotationTarget.PROPERTY_SETTER,
-  AnnotationTarget.TYPEALIAS
+  AnnotationTarget.FUNCTION
 )
 annotation class PackageProtected(val message: String = DEFAULT_MESSAGE) {
   companion object {
