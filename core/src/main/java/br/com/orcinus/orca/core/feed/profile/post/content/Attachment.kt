@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.feed.profile.post.content
 
+import br.com.orcinus.orca.core.InternalCoreApi
 import java.io.Serializable
 import java.net.URL
 
@@ -24,6 +25,7 @@ import java.net.URL
  * @param description Description of what's displayed.
  * @param url [URL] that leads to the media.
  */
-data class Attachment(val description: String?, val url: URL) : Serializable {
+data class Attachment @InternalCoreApi constructor(val description: String?, val url: URL) :
+  Serializable {
   companion object
 }

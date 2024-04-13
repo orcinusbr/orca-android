@@ -15,11 +15,12 @@
 
 package br.com.orcinus.orca.core.auth
 
+import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 
 /** Authenticates a user through [authenticate]. */
-abstract class Authenticator {
+abstract class Authenticator @InternalCoreApi constructor() {
   /** [Authorizer] with which the user will be authorized. */
   protected abstract val authorizer: Authorizer
 

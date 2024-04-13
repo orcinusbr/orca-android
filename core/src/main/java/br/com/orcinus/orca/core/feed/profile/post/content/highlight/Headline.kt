@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.feed.profile.post.content.highlight
 
+import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoader
 
@@ -25,6 +26,8 @@ import br.com.orcinus.orca.std.image.SomeImageLoader
  * @param subtitle Brief description of the content in the external site.
  * @param coverLoader [ImageLoader] that loads the image that represents the content.
  */
-data class Headline(val title: String, val subtitle: String?, val coverLoader: SomeImageLoader?) {
+data class Headline
+@InternalCoreApi
+constructor(val title: String, val subtitle: String?, val coverLoader: SomeImageLoader?) {
   companion object
 }

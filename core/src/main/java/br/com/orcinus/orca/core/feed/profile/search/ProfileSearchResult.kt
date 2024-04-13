@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.feed.profile.search
 
+import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.std.image.SomeImageLoader
 import java.io.Serializable
@@ -29,7 +30,9 @@ import java.net.URL
  * @param name Name to be displayed.
  * @param url [URL] that leads to the profile.
  */
-data class ProfileSearchResult(
+data class ProfileSearchResult
+@InternalCoreApi
+constructor(
   val id: String,
   val account: Account,
   val avatarLoader: SomeImageLoader,

@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.feed.profile.post.content
 
+import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Headline
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.HeadlineProvider
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Highlight
@@ -62,6 +63,7 @@ private constructor(
      * @param attachments [Attachment]s containing the attached media.
      * @param headlineProvider [HeadlineProvider] that provides the [Headline].
      */
+    @InternalCoreApi
     fun from(
       domain: Domain,
       text: StyledString,

@@ -15,10 +15,11 @@
 
 package br.com.orcinus.orca.core.feed.profile.type.followable
 
+import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.feed.profile.Profile
 
 /** [Profile] whose [follow] status can be toggled. */
-abstract class FollowableProfile<T : Follow> : Profile {
+abstract class FollowableProfile<T : Follow> @InternalCoreApi constructor() : Profile {
   /** Current [Follow] status. */
   abstract val follow: T
 

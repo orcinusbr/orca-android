@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.feed.profile.type.followable
 
+import br.com.orcinus.orca.core.InternalCoreApi
 import java.io.Serializable
 
 /** Status that indicates in which "following" state a user is related to another. */
@@ -31,6 +32,7 @@ abstract class Follow private constructor() : Serializable {
        * [Follow] status in which a user doesn't receive any updates related to the other's
        * activity.
        */
+      @InternalCoreApi
       fun unfollowed(): Public {
         return object : Public() {
           override fun toString(): String {
@@ -48,6 +50,7 @@ abstract class Follow private constructor() : Serializable {
       }
 
       /** [Follow] status in which a user has subscribed to receive updates from another. */
+      @InternalCoreApi
       fun following(): Public {
         return object : Public() {
           override fun toString(): String {
@@ -75,6 +78,7 @@ abstract class Follow private constructor() : Serializable {
        * [Follow] status in which a user doesn't receive any updates related to the other's
        * activity.
        */
+      @InternalCoreApi
       fun unfollowed(): Private {
         return object : Private() {
           override fun toString(): String {
@@ -95,6 +99,7 @@ abstract class Follow private constructor() : Serializable {
        * [Follow] status in which a user has requested to follow another and is waiting for it to be
        * accepted or denied.
        */
+      @InternalCoreApi
       fun requested(): Private {
         return object : Private() {
           override fun toString(): String {
@@ -112,6 +117,7 @@ abstract class Follow private constructor() : Serializable {
       }
 
       /** [Follow] status in which a user has subscribed to receive updates from another. */
+      @InternalCoreApi
       fun following(): Private {
         return object : Private() {
           override fun toString(): String {
@@ -178,6 +184,7 @@ abstract class Follow private constructor() : Serializable {
      * @throws BlankStringException If the [string] is blank.
      * @throws InvalidFollowString If the [string] is not a valid [Follow] representation.
      */
+    @InternalCoreApi
     fun of(string: String): Follow {
       val formattedString = string.trim()
       formattedString.ifBlank { throw BlankStringException() }
@@ -201,6 +208,7 @@ abstract class Follow private constructor() : Serializable {
      * @throws IllegalArgumentException If [expected] and [actual] have different visibilities.
      * @see visibilityName
      */
+    @InternalCoreApi
     fun <T : Follow> requireVisibilityMatch(expected: T, actual: Follow): T {
       val isCohesive = actual.visibilityName == expected.visibilityName
       return if (isCohesive) {

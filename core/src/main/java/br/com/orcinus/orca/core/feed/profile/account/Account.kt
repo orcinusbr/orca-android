@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.feed.profile.account
 
+import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.feed.profile.account.Account.Companion.of
 import br.com.orcinus.orca.core.instance.domain.Domain
 import java.io.Serializable
@@ -68,6 +69,7 @@ data class Account internal constructor(val username: Username, val domain: Doma
      * @throws Domain.ValueWithoutTopLevelDomainException If the domain doesn't have a top-level
      *   domain.
      */
+    @InternalCoreApi
     @Throws(
       BlankStringException::class,
       Username.BlankValueException::class,

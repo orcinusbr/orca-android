@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,13 +13,13 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.feed.profile.search
+package br.com.orcinus.orca.core
 
-import br.com.orcinus.orca.core.InternalCoreApi
-import br.com.orcinus.orca.core.feed.profile.Profile
+import br.com.orcinus.orca.std.visibility.PackageProtected
 
-/** Converts this [Profile] into a [ProfileSearchResult]. */
-@InternalCoreApi
-fun Profile.toProfileSearchResult(): ProfileSearchResult {
-  return ProfileSearchResult(id, account, avatarLoader, name, url)
-}
+/**
+ * Denotes that an API is a part of the internal structure of the main functionality of Orca and
+ * should only be referenced from one of the core variants.
+ */
+@PackageProtected(message = "This API should only be referenced from a core variant.")
+annotation class InternalCoreApi

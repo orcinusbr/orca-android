@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.feed.profile.account
 
+import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.instance.domain.Domain
 
 /**
@@ -23,6 +24,7 @@ import br.com.orcinus.orca.core.instance.domain.Domain
  *
  * @param domain Mastodon instance from which the user is.
  */
+@InternalCoreApi
 infix fun String.at(domain: String): Account {
   return Account(Username(this), Domain(domain))
 }

@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.feed.profile.post
 
+import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoader
@@ -30,7 +31,9 @@ import java.net.URL
  * @param account Unique identifier within an instance.
  * @param profileURL [URL] that leads to this [Author]'s profile.
  */
-data class Author(
+data class Author
+@InternalCoreApi
+constructor(
   val id: String,
   val avatarLoader: SomeImageLoader,
   val name: String,

@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.feed
 
+import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.TermMuter
 import kotlinx.coroutines.flow.Flow
@@ -22,7 +23,7 @@ import kotlinx.coroutines.flow.Flow
 /**
  * Provides a user's feed (the [Post]s shown to them based on who they follow) through [onProvide].
  */
-abstract class FeedProvider {
+abstract class FeedProvider @InternalCoreApi constructor() {
   /** [TermMuter] by which [Post]s with muted terms will be filtered out. */
   protected abstract val termMuter: TermMuter
 

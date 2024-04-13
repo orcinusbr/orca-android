@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.feed.profile.search
 
+import br.com.orcinus.orca.core.InternalCoreApi
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -25,7 +26,7 @@ import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flowOf
 
 /** Searches for profiles through [search]. */
-abstract class ProfileSearcher {
+abstract class ProfileSearcher @InternalCoreApi constructor() {
   /** [MutableStateFlow] to which the query is emitted. */
   private val queryFlow = MutableStateFlow("")
 

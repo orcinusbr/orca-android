@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.feed.profile.type.editable
 
+import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoader
 import br.com.orcinus.orca.std.styledstring.StyledString
@@ -44,6 +45,7 @@ interface Editor {
 
   companion object {
     /** No-op, empty [Editor]. */
+    @InternalCoreApi
     val empty =
       object : Editor {
         override suspend fun setAvatarLoader(avatarLoader: SomeImageLoader) {}
