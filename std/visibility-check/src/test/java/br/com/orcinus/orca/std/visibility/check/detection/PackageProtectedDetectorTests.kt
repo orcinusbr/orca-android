@@ -221,7 +221,7 @@ internal class PackageProtectedDetectorTests {
           .indented()
       )
       .run()
-      .expect("No warnings.")
+      .expectClean()
   }
 
   @Test
@@ -255,7 +255,7 @@ internal class PackageProtectedDetectorTests {
           .indented()
       )
       .run()
-      .expect("No warnings.")
+      .expectClean()
   }
 
   @Test
@@ -291,7 +291,7 @@ internal class PackageProtectedDetectorTests {
           .indented()
       )
       .run()
-      .expect("No warnings.")
+      .expectClean()
   }
 
   @Test
@@ -327,7 +327,7 @@ internal class PackageProtectedDetectorTests {
           .indented()
       )
       .run()
-      .expect("No warnings.")
+      .expectClean()
   }
 
   @Test
@@ -522,7 +522,7 @@ internal class PackageProtectedDetectorTests {
           .indented()
       )
       .run()
-      .expect("No warnings.")
+      .expectClean()
   }
 
   @Test
@@ -556,7 +556,7 @@ internal class PackageProtectedDetectorTests {
           .indented()
       )
       .run()
-      .expect("No warnings.")
+      .expectClean()
   }
 
   @Test
@@ -771,7 +771,7 @@ internal class PackageProtectedDetectorTests {
           .indented()
       )
       .run()
-      .expect("No warnings.")
+      .expectClean()
   }
 
   @Test
@@ -809,6 +809,6 @@ internal class PackageProtectedDetectorTests {
           .indented()
       )
       .run()
-      .expect("No warnings.")
+      .expectClean()
   }
 }
