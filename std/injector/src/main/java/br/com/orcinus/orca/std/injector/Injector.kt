@@ -121,7 +121,7 @@ object Injector : Module() {
     binding: Binding<B, A>
   ) {
     bindings.add(binding)
-    injectDeclaredDependenciesOf(binding.target)
+    injectDependenciesOf(binding.target)
   }
 
   /**
@@ -131,7 +131,7 @@ object Injector : Module() {
    * @param module [Module] whose dependencies will be injected into it.
    */
   @PublishedApi
-  internal inline fun <reified T : Module> injectDeclaredDependenciesOf(module: T) {
+  internal inline fun <reified T : Module> injectDependenciesOf(module: T) {
     T::class
       .memberProperties
       .filterIsInjection()
