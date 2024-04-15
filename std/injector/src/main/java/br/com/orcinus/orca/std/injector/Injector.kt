@@ -21,6 +21,7 @@ import br.com.orcinus.orca.std.injector.module.binding.Binding
 import br.com.orcinus.orca.std.injector.module.binding.SomeBinding
 import br.com.orcinus.orca.std.injector.module.binding.boundTo
 import kotlin.reflect.KClass
+import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
 
 /** [Module] that enables global [Module] and dependency injection. */
@@ -54,8 +55,10 @@ object Injector : Module() {
    * @param module [Module] to be registered.
    * @throws SelfRegistrationException If the [module] is this [Injector].
    */
+  @Throws(SelfRegistrationException::class)
   inline fun <reified T : Module> register(module: T) {
-    register(module.boundTo())
+    val binding = module.boundTo()
+    register(binding)
   }
 
   /**
@@ -67,7 +70,8 @@ object Injector : Module() {
    * @param binding [Binding] that associates the [Module] to its [A] and [B] types.
    * @throws SelfRegistrationException If the [Module] is this [Injector].
    */
-  inline fun <reified B : Module, reified A : B> register(binding: Binding<B, A>) {
+  @Throws(SelfRegistrationException::class)
+  fun <B : Module, A : B> register(binding: Binding<B, A>) {
     if (binding.target != this) {
       registerWithoutSelfRegistrationInsurance(binding)
     } else {
@@ -117,7 +121,7 @@ object Injector : Module() {
    * @param binding [Binding] that associates the [Module] to its [A] and [B] types.
    */
   @PublishedApi
-  internal inline fun <reified B : Module, reified A : B> registerWithoutSelfRegistrationInsurance(
+  internal fun <B : Module, A : B> registerWithoutSelfRegistrationInsurance(
     binding: Binding<B, A>
   ) {
     bindings.add(binding)
@@ -131,9 +135,10 @@ object Injector : Module() {
    * @param module [Module] whose dependencies will be injected into it.
    */
   @PublishedApi
-  internal inline fun <reified T : Module> injectDependenciesOf(module: T) {
-    T::class
+  internal fun <T : Module> injectDependenciesOf(module: T) {
+    module::class
       .memberProperties
+      .filterIsInstance<KProperty1<T, *>>()
       .filterIsInjection()
       .map { it.access { get(module) } }
       .forEach(module::inject)

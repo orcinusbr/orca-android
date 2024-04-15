@@ -21,14 +21,21 @@ import br.com.orcinus.orca.std.injector.module.Module
 import kotlin.test.Test
 
 internal class BindingExtensionsTests {
-  class SubModule : SuperModule()
+  class AliasModule : BaseModule()
 
-  abstract class SuperModule : Module()
+  abstract class BaseModule : Module()
 
   @Test
   fun binds() {
-    val module = SubModule()
-    assertThat(module.boundTo<SuperModule, SubModule>())
-      .isEqualTo(Binding(SuperModule::class, SubModule::class, module))
+    val module = AliasModule()
+    assertThat(module.bound)
+      .isEqualTo(Binding(base = AliasModule::class, alias = AliasModule::class, module))
+  }
+
+  @Test
+  fun bindsToDistinctBaseAndAlias() {
+    val module = AliasModule()
+    assertThat(module.boundTo<BaseModule, AliasModule>())
+      .isEqualTo(Binding(base = BaseModule::class, alias = AliasModule::class, module))
   }
 }
