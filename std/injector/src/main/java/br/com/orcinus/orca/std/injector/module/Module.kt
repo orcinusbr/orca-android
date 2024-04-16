@@ -20,6 +20,9 @@ import br.com.orcinus.orca.std.injector.module.injection.SomeInjection
 import br.com.orcinus.orca.std.injector.module.injection.immediateInjectionOf
 import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 import br.com.orcinus.orca.std.injector.module.replacement.replacementListOf
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 import kotlin.reflect.KClass
 
 /** Container in which dependencies within a given context can be injected. */
@@ -52,7 +55,9 @@ abstract class Module {
     message = "Prefer `injectLazily` to better distinguish between immediate and lazy injections.",
     ReplaceWith("injectLazily(creation)")
   )
+  @OptIn(ExperimentalContracts::class)
   inline fun <reified T : Any> inject(crossinline creation: Module.() -> T) {
+    contract { callsInPlace(creation, InvocationKind.AT_MOST_ONCE) }
     injectLazily(creation)
   }
 
@@ -65,7 +70,9 @@ abstract class Module {
    * @see get
    * @see injectImmediately
    */
+  @OptIn(ExperimentalContracts::class)
   inline fun <reified T : Any> injectLazily(crossinline creation: Module.() -> T) {
+    contract { callsInPlace(creation, InvocationKind.AT_MOST_ONCE) }
     val injection = lazyInjectionOf(creation)
     inject(injection)
   }
@@ -77,7 +84,9 @@ abstract class Module {
    * @param creation Returns the dependency to be injected that can be retrieved afterwards.
    * @see injectLazily
    */
+  @OptIn(ExperimentalContracts::class)
   inline fun <reified T : Any> injectImmediately(crossinline creation: Module.() -> T) {
+    contract { callsInPlace(creation, InvocationKind.EXACTLY_ONCE) }
     val dependency = creation()
     val injection = immediateInjectionOf(dependency)
     inject(injection)
