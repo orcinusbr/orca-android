@@ -16,11 +16,27 @@
 package br.com.orcinus.orca.std.injector.module.injection
 
 import assertk.assertThat
+import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
 import assertk.assertions.isSameAs
 import br.com.orcinus.orca.std.injector.Injector
 import kotlin.test.Test
 
-internal class InjectionTests {
+internal class LazyInjectionTests {
+  @Test
+  fun createsDependencyLazily() {
+    var hasDependencyBeenCreated = false
+    lazyInjectionOf { hasDependencyBeenCreated = true }
+    assertThat(hasDependencyBeenCreated).isFalse()
+  }
+
+  @Test
+  fun createsDependencyOnce() {
+    var creationCount = 0
+    with(Injector) { with(lazyInjectionOf { creationCount++ }) { repeat(2) { provide() } } }
+    assertThat(creationCount).isEqualTo(1)
+  }
+
   @Test
   fun retrievesCreatedDependencyWhenProvidedSubsequently() {
     val injection = lazyInjectionOf { Object() }
