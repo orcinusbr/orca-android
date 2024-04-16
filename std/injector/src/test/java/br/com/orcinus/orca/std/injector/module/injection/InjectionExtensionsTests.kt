@@ -16,30 +16,34 @@
 package br.com.orcinus.orca.std.injector.module.injection
 
 import assertk.assertThat
-import assertk.assertions.isSameAs
+import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
+import assertk.assertions.isInstanceOf
 import br.com.orcinus.orca.std.injector.Injector
-import br.com.orcinus.orca.std.injector.module.Module
 import kotlin.test.Test
 
 internal class InjectionExtensionsTests {
   @Test
-  fun createsLazyInjection() {
-    val dependency = Object()
-    with(Injector) {
-      assertThat(with(lazyInjectionOf { dependency }) { provide() })
-        .isSameAs(
-          with(
-            object : Injection.Lazy<Any>() {
-              override val dependencyClass = Any::class
+  fun createsImmediateInjection() {
+    assertThat(immediateInjectionOf(0)).isInstanceOf<Injection.Immediate<Int>>()
+  }
 
-              override fun Module.create(): Any {
-                return dependency
-              }
-            }
-          ) {
-            provide()
-          }
-        )
-    }
+  @Test
+  fun createsLazyInjection() {
+    assertThat(lazyInjectionOf { 0 }).isInstanceOf<Injection.Lazy<Int>>()
+  }
+
+  @Test
+  fun lazyInjectionCreatesDependencyLazily() {
+    var hasDependencyBeenCreated = false
+    lazyInjectionOf { hasDependencyBeenCreated = true }
+    assertThat(hasDependencyBeenCreated).isFalse()
+  }
+
+  @Test
+  fun lazyInjectionCreatesDependencyOnce() {
+    var creationCount = 0
+    with(Injector) { with(lazyInjectionOf { creationCount++ }) { repeat(2) { provide() } } }
+    assertThat(creationCount).isEqualTo(1)
   }
 }
