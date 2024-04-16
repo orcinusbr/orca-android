@@ -89,7 +89,7 @@ internal class InjectorTests {
   @Test
   fun getsDependencyFromModuleInjectedAfterItWasRegistered() {
     Injector.register<Module>(object : Module() {})
-    Injector.from<Module>().inject { 0 }
+    Injector.from<Module>().injectLazily { 0 }
     assertThat(Injector.from<Module>().get<Int>()).isEqualTo(0)
   }
 

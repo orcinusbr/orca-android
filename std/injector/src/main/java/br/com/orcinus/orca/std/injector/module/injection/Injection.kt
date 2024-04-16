@@ -18,29 +18,63 @@ package br.com.orcinus.orca.std.injector.module.injection
 import br.com.orcinus.orca.std.injector.module.Module
 import kotlin.reflect.KClass
 
+/** [Injection] with a generic dependency. */
+internal typealias SomeInjection = Injection<*>
+
 /**
- * Lazily provides the dependency to be injected into a given [Module].
+ * Provides the dependency to be injected into a given [Module].
  *
- * @param T Dependency to be injected.
+ * @param T Dependency to be created and provided.
  * @see injectionOf
  * @see provide
  */
-abstract class Injection<T : Any> @PublishedApi internal constructor() {
-  /** Dependency to be injected. */
-  private var dependency: T? = null
-
-  /** [KClass] of the [dependency]. */
+sealed class Injection<T : Any> {
+  /** [KClass] of the dependency. */
   @PublishedApi internal abstract val dependencyClass: KClass<T>
 
   /**
-   * Retrieves the dependency to be injected or creates it if it's the first time that it's being
-   * requested to be provided.
+   * [Injection] that provides the already evaluated [dependency] each time it is requested to be
+   * either created or retrieved.
+   *
+   * @param T Dependency to be provided.
+   * @param dependency Pre-instantiated dependency to be provided and injected.
+   */
+  internal class Immediate<T : Any>(private val dependency: T) : Injection<T>() {
+    @Suppress("UNCHECKED_CAST") override val dependencyClass = dependency::class as KClass<T>
+
+    override fun Module.provide(): T {
+      return create()
+    }
+
+    override fun Module.create(): T {
+      return dependency
+    }
+  }
+
+  /**
+   * [Injection] that creates the dependency once and only when it is requested to be provided.
+   *
+   * @param T Dependency to be created and provided.
+   * @see create
+   * @see provide
+   */
+  @PublishedApi
+  internal abstract class Lazy<T : Any> : Injection<T>() {
+    /** Dependency to be later retrieved. */
+    private var dependency: T? = null
+
+    override fun Module.provide(): T {
+      return dependency ?: create().also { dependency = it }
+    }
+  }
+
+  /**
+   * Creates the dependency to be injected or retrieves if this is a lazy [Injection] it is the
+   * first time that it's being requested to be provided.
    *
    * @see create
    */
-  fun Module.provide(): T {
-    return dependency ?: create().also { dependency = it }
-  }
+  @PublishedApi internal abstract fun Module.provide(): T
 
   /** Creates the dependency to be injected. */
   protected abstract fun Module.create(): T

@@ -27,9 +27,18 @@ internal class InjectionExtensionsTests {
     val dependency = Object()
     with(Injector) {
       assertThat(with(injectionOf { dependency }) { provide() })
+        .isSameAs(with(lazyInjectionOf { dependency }) { provide() })
+    }
+  }
+
+  @Test
+  fun createsLazyInjection() {
+    val dependency = Object()
+    with(Injector) {
+      assertThat(with(lazyInjectionOf { dependency }) { provide() })
         .isSameAs(
           with(
-            object : Injection<Any>() {
+            object : Injection.Lazy<Any>() {
               override val dependencyClass = Any::class
 
               override fun Module.create(): Any {

@@ -17,6 +17,7 @@ package br.com.orcinus.orca.std.injector.module
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isTrue
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.injector.test.InjectorTestRule
 import kotlin.test.Test
@@ -26,8 +27,28 @@ internal class ModuleTests {
   @get:Rule val injectorRule = InjectorTestRule()
 
   @Test
-  fun injectsDependency() {
-    Injector.inject { 0 }
+  fun injectsLazily() {
+    var hasBeenInjectedLazily = true
+    Injector.injectLazily { hasBeenInjectedLazily = false }
+    assertThat(hasBeenInjectedLazily).isTrue()
+  }
+
+  @Test
+  fun injectsImmediately() {
+    var hasBeenInjectedImmediately = false
+    Injector.injectImmediately { hasBeenInjectedImmediately = true }
+    assertThat(hasBeenInjectedImmediately).isTrue()
+  }
+
+  @Test
+  fun getsDependencyInjectedLazily() {
+    Injector.injectLazily { 0 }
+    assertThat(Injector.get<Int>()).isEqualTo(0)
+  }
+
+  @Test
+  fun getsDependencyInjectedImmediately() {
+    Injector.injectImmediately { 0 }
     assertThat(Injector.get<Int>()).isEqualTo(0)
   }
 
@@ -37,15 +58,36 @@ internal class ModuleTests {
   }
 
   @Test
-  fun getsDependencyThatGetsPreviouslyInjectedOne() {
-    Injector.inject { 0 }
-    Injector.inject { get<Int>() }
+  fun immediatelyGetsDependencyThatGetsPreviouslyImmediatelyInjectedOne() {
+    Injector.injectImmediately { 0 }
+    Injector.injectImmediately<Int> { get() }
     assertThat(Injector.get<Int>()).isEqualTo(0)
+  }
+
+  @Test(expected = StackOverflowError::class)
+  fun throwsWhenImmediatelyGettingDependencyThatGetsPreviouslyLazilyInjectedOne() {
+    Injector.injectImmediately { 0 }
+    Injector.injectLazily { get() }
+    Injector.get<Int>()
+  }
+
+  @Test
+  fun replacesDependencyInjectedLazily() {
+    Injector.injectLazily { 0 }
+    Injector.injectLazily { 1 }
+    assertThat(Injector.get<Int>()).isEqualTo(1)
+  }
+
+  @Test
+  fun replacesDependencyInjectedImmediately() {
+    Injector.injectImmediately { 0 }
+    Injector.injectImmediately { 1 }
+    assertThat(Injector.get<Int>()).isEqualTo(1)
   }
 
   @Test(Module.DependencyNotInjectedException::class)
   fun clears() {
-    Injector.inject { 0 }
+    Injector.injectLazily { 0 }
     Injector.clear()
     Injector.get<Int>()
   }

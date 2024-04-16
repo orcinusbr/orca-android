@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,22 +13,23 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.ext.coroutines.replacement
+package br.com.orcinus.orca.std.injector.module.replacement
 
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import assertk.assertThat
+import assertk.assertions.containsExactly
+import kotlin.test.Test
 
 internal class ReplacementListTests {
   @Test
   fun adds() {
-    assertEquals(replacementListOf(0), emptyReplacementList<Int>().apply { add(0) })
+    assertThat(replacementListOf<Int>().apply { add(0) }).containsExactly(0)
   }
 
   @Test
   fun replaces() {
-    assertEquals(
-      replacementListOf("Hello,", "world!", selector = String::first),
-      replacementListOf("Hey,", "world!", selector = String::first).apply { add("Hello,") }
-    )
+    assertThat(
+        replacementListOf("Hey,", "world!", selector = String::first).apply { add("Hello,") }
+      )
+      .containsExactly("Hello,", "world!")
   }
 }
