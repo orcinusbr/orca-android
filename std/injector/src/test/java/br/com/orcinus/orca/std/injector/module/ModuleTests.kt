@@ -34,13 +34,6 @@ internal class ModuleTests {
   }
 
   @Test
-  fun injectsImmediately() {
-    var hasBeenInjectedImmediately = false
-    Injector.injectImmediately { hasBeenInjectedImmediately = true }
-    assertThat(hasBeenInjectedImmediately).isTrue()
-  }
-
-  @Test
   fun getsDependencyInjectedLazily() {
     Injector.injectLazily { 0 }
     assertThat(Injector.get<Int>()).isEqualTo(0)
@@ -48,7 +41,7 @@ internal class ModuleTests {
 
   @Test
   fun getsDependencyInjectedImmediately() {
-    Injector.injectImmediately { 0 }
+    Injector.injectImmediately(0)
     assertThat(Injector.get<Int>()).isEqualTo(0)
   }
 
@@ -59,15 +52,15 @@ internal class ModuleTests {
 
   @Test
   fun immediatelyGetsDependencyThatGetsPreviouslyImmediatelyInjectedOne() {
-    Injector.injectImmediately { 0 }
-    Injector.injectImmediately<Int> { get() }
+    Injector.injectImmediately(0)
+    Injector.injectImmediately(Injector.get<Int>())
     assertThat(Injector.get<Int>()).isEqualTo(0)
   }
 
   @Test(expected = StackOverflowError::class)
   fun throwsWhenImmediatelyGettingDependencyThatGetsPreviouslyLazilyInjectedOne() {
-    Injector.injectImmediately { 0 }
-    Injector.injectLazily { get() }
+    Injector.injectImmediately(0)
+    Injector.injectLazily { get<Int>() }
     Injector.get<Int>()
   }
 
@@ -80,8 +73,8 @@ internal class ModuleTests {
 
   @Test
   fun replacesDependencyInjectedImmediately() {
-    Injector.injectImmediately { 0 }
-    Injector.injectImmediately { 1 }
+    Injector.injectImmediately(0)
+    Injector.injectImmediately(1)
     assertThat(Injector.get<Int>()).isEqualTo(1)
   }
 

@@ -78,16 +78,13 @@ abstract class Module {
   }
 
   /**
-   * Injects the dependency returned by the [creation] immediately.
+   * Injects the [dependency] immediately.
    *
    * @param T Dependency to be injected.
-   * @param creation Returns the dependency to be injected that can be retrieved afterwards.
+   * @param dependency Dependency to be immediately injected.
    * @see injectLazily
    */
-  @OptIn(ExperimentalContracts::class)
-  inline fun <reified T : Any> injectImmediately(crossinline creation: Module.() -> T) {
-    contract { callsInPlace(creation, InvocationKind.EXACTLY_ONCE) }
-    val dependency = creation()
+  inline fun <reified T : Any> injectImmediately(dependency: T) {
     val injection = immediateInjectionOf(dependency)
     inject(injection)
   }
