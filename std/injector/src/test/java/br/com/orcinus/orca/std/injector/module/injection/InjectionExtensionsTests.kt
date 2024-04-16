@@ -23,15 +23,6 @@ import kotlin.test.Test
 
 internal class InjectionExtensionsTests {
   @Test
-  fun createsInjection() {
-    val dependency = Object()
-    with(Injector) {
-      assertThat(with(injectionOf { dependency }) { provide() })
-        .isSameAs(with(lazyInjectionOf { dependency }) { provide() })
-    }
-  }
-
-  @Test
   fun createsLazyInjection() {
     val dependency = Object()
     with(Injector) {

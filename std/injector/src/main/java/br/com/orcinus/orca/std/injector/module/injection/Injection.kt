@@ -25,8 +25,9 @@ internal typealias SomeInjection = Injection<*>
  * Provides the dependency to be injected into a given [Module].
  *
  * @param T Dependency to be created and provided.
- * @see injectionOf
  * @see provide
+ * @see immediateInjectionOf
+ * @see lazyInjectionOf
  */
 sealed class Injection<T : Any> {
   /** [KClass] of the dependency. */

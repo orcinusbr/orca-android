@@ -23,7 +23,7 @@ import kotlin.test.Test
 internal class InjectionTests {
   @Test
   fun retrievesCreatedDependencyWhenProvidedSubsequently() {
-    val injection = injectionOf { Object() }
+    val injection = lazyInjectionOf { Object() }
     val provide = { with(Injector) { with(injection) { provide() } } }
     val created = provide()
     val retrieved = provide()

@@ -21,7 +21,7 @@ import br.com.orcinus.orca.std.injector.module.Inject
 import br.com.orcinus.orca.std.injector.module.Module
 import br.com.orcinus.orca.std.injector.module.binding.boundTo
 import br.com.orcinus.orca.std.injector.module.injection.Injection
-import br.com.orcinus.orca.std.injector.module.injection.injectionOf
+import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 import br.com.orcinus.orca.std.injector.test.InjectorTestRule
 import kotlin.test.Test
 import org.junit.Rule
@@ -30,14 +30,14 @@ internal class InjectorTests {
   @get:Rule val injectorRule = InjectorTestRule()
 
   private class SubModuleWithNonAnnotatedInjection :
-    SuperModuleWithNonAnnotatedInjection(injectionOf { 0 })
+    SuperModuleWithNonAnnotatedInjection(lazyInjectionOf { 0 })
 
   private abstract class SuperModuleWithNonAnnotatedInjection(
     @Suppress("unused") private val injection: Injection<Int>
   ) : Module()
 
   private class SubModuleWithAnnotatedInjection :
-    SuperModuleWithAnnotatedInjection(injectionOf { 0 })
+    SuperModuleWithAnnotatedInjection(lazyInjectionOf { 0 })
 
   internal abstract class SuperModuleWithAnnotatedInjection(@Inject val injection: Injection<Int>) :
     Module()
