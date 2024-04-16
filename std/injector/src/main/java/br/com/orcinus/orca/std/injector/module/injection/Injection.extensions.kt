@@ -16,6 +16,9 @@
 package br.com.orcinus.orca.std.injector.module.injection
 
 import br.com.orcinus.orca.std.injector.module.Module
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 /**
  * Creates an immediate [Injection], which receives a pre-instantiated dependency to be later
@@ -43,7 +46,9 @@ fun <T : Any> immediateInjectionOf(dependency: T): Injection<T> {
     "br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf"
   )
 )
+@OptIn(ExperimentalContracts::class)
 inline fun <reified T : Any> injectionOf(crossinline creation: Module.() -> T): Injection<T> {
+  contract { callsInPlace(creation, InvocationKind.AT_MOST_ONCE) }
   return lazyInjectionOf(creation)
 }
 
@@ -56,7 +61,9 @@ inline fun <reified T : Any> injectionOf(crossinline creation: Module.() -> T): 
  * @see Injection.Lazy
  * @see immediateInjectionOf
  */
+@OptIn(ExperimentalContracts::class)
 inline fun <reified T : Any> lazyInjectionOf(crossinline creation: Module.() -> T): Injection<T> {
+  contract { callsInPlace(creation, InvocationKind.AT_MOST_ONCE) }
   return object : Injection.Lazy<T>() {
     override val dependencyClass = T::class
 
