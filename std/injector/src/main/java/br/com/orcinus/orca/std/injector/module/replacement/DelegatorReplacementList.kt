@@ -49,8 +49,16 @@ private class DelegatorReplacementList<E, S>(
     return super.add(element)
   }
 
+  override fun addAll(elements: Collection<E>): Boolean {
+    return super.addAll(elements)
+  }
+
   override fun add(index: Int, element: E) {
     super.add(index, element)
+  }
+
+  override fun addAll(index: Int, elements: Collection<E>): Boolean {
+    return super.addAll(index, elements)
   }
 
   override fun replace(index: Int, replacement: E, selection: S) {
