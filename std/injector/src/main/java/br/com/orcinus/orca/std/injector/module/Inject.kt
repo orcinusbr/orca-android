@@ -31,7 +31,8 @@ import br.com.orcinus.orca.std.injector.module.injection.injectionOf
  * Note that the annotated property should return an [Injection]; otherwise, an error will be thrown
  * at build time.
  *
- * @see Module.inject
+ * @see Module.injectImmediately
+ * @see Module.injectLazily
  * @see Injector.register
  * @see injectionOf
  */

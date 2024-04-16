@@ -37,7 +37,7 @@ fun <T : Any> immediateInjectionOf(dependency: T): Injection<T> {
  * @param creation Returns the dependency to be injected that can be lazily retrieved afterwards.
  */
 @Deprecated(
-  message = "Use `lazyInjectionOf` to better distinguish between lazy and immediate injections.",
+  message = "Prefer `lazyInjectionOf` to better distinguish between lazy and immediate injections.",
   ReplaceWith(
     "lazyInjectionOf(creation)",
     "br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf"

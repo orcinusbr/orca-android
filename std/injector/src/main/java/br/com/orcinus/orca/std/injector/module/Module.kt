@@ -43,6 +43,20 @@ abstract class Module {
     )
 
   /**
+   * Injects the dependency returned by the [creation].
+   *
+   * @param T Dependency to be injected.
+   * @param creation Returns the dependency to be injected that can be lazily retrieved afterwards.
+   */
+  @Deprecated(
+    message = "Prefer `injectLazily` to better distinguish between immediate and lazy injections.",
+    ReplaceWith("injectLazily(creation)")
+  )
+  inline fun <reified T : Any> inject(crossinline creation: Module.() -> T) {
+    injectLazily(creation)
+  }
+
+  /**
    * Injects the dependency returned by the [creation] lazily, creating it only when it is requested
    * to be obtained.
    *
