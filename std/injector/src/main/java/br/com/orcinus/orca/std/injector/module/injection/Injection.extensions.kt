@@ -48,7 +48,7 @@ inline fun <reified T : Any> injectionOf(crossinline creation: Module.() -> T): 
 }
 
 /**
- * Creates a lazy [Injection], which only creates the dependency when it is requested to be
+ * Creates a lazy [Injection], which creates the dependency once and only when it is requested to be
  * provided.
  *
  * @param T Dependency to be injected.
