@@ -28,4 +28,5 @@ dependencies {
   testImplementation(project(":std:injector-test"))
   testImplementation(libs.assertk)
   testImplementation(libs.kotlin.test)
+  testImplementation(libs.openTest4J)
 }

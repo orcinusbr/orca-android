@@ -32,6 +32,14 @@ abstract class ReplacementList<E, S> internal constructor() : MutableList<E> {
   /** Denotes that an instance of an object is yet to be obtained. */
   internal object None
 
+  override fun contains(element: E): Boolean {
+    return any { selector(element) == selector(it) }
+  }
+
+  override fun containsAll(elements: Collection<E>): Boolean {
+    return elements.all(::contains)
+  }
+
   override fun add(element: E): Boolean {
     add(lastIndex, element)
     return true

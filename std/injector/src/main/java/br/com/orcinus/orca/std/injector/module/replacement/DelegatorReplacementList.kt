@@ -45,6 +45,14 @@ private class DelegatorReplacementList<E, S>(
     return delegate.toString()
   }
 
+  override fun contains(element: E): Boolean {
+    return super.contains(element)
+  }
+
+  override fun containsAll(elements: Collection<E>): Boolean {
+    return super.containsAll(elements)
+  }
+
   override fun add(element: E): Boolean {
     return super.add(element)
   }

@@ -16,10 +16,34 @@
 package br.com.orcinus.orca.std.injector.module.replacement
 
 import assertk.assertThat
+import assertk.assertions.contains
+import assertk.assertions.containsAll
 import assertk.assertions.containsExactly
+import assertk.assertions.doesNotContain
 import kotlin.test.Test
+import org.opentest4j.AssertionFailedError
 
 internal class ReplacementListTests {
+  @Test
+  fun contains() {
+    assertThat(replacementListOf(":P", ";P", selector = String::first)).contains(":)")
+  }
+
+  @Test
+  fun doesNotContain() {
+    assertThat(replacementListOf(":P", ":)", selector = String::first)).doesNotContain(";P")
+  }
+
+  @Test
+  fun containsAll() {
+    assertThat(replacementListOf(":P", ":)", selector = String::first)).containsAll(":T", ":3")
+  }
+
+  @Test(expected = AssertionFailedError::class)
+  fun doesNotContainAll() {
+    assertThat(replacementListOf(":P", ":)", selector = String::first)).containsAll(":P", ";(")
+  }
+
   @Test
   fun adds() {
     assertThat(replacementListOf<Int>().apply { add(0) }).containsExactly(0)
