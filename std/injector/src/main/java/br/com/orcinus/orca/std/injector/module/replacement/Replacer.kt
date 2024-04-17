@@ -26,14 +26,82 @@ package br.com.orcinus.orca.std.injector.module.replacement
  * @see place
  */
 abstract class Replacer<E, S, P> : Collection<E> {
-  /**
-   * Selections (meaning the result of invoking the [selector] on an element) that have already been
-   * performed.
-   */
-  private val selections = hashMapOf<E, S>()
+  /** Defines the caching behavior for invocations of the [selector] on same elements. */
+  internal abstract val caching: Caching<E, S>
 
   /** Provides the value by which each element should be compared when replaced. */
   internal abstract val selector: (E) -> S
+
+  /**
+   * Strategy for dealing with selections of same elements.
+   *
+   * @param E Element whose selection will be performed.
+   * @param S Result of selecting an element.
+   */
+  sealed class Caching<E, S> {
+    /**
+     * Denotes that selections shouldn't be cached.
+     *
+     * @param E Element whose selection will be performed.
+     * @param S Result of selecting an element.
+     * @param selector Selects an element.
+     */
+    class Disabled<E, S> internal constructor(private val selector: (E) -> S) : Caching<E, S>() {
+      override fun on(element: E): S {
+        return selector(element)
+      }
+
+      override fun remove(element: E) {}
+
+      override fun clear() {}
+    }
+
+    /**
+     * Denotes that selections should be cached, preventing recalculations for elements that are
+     * equal.
+     *
+     * @param E Element whose selection will be performed.
+     * @param S Result of selecting an element.
+     * @param selector Selects an element.
+     */
+    class Enabled<E, S> internal constructor(private val selector: (E) -> S) : Caching<E, S>() {
+      /**
+       * Selections (meaning the result of invoking the [selector] on an element) that have already
+       * been performed.
+       */
+      private val selections = hashMapOf<E, S>()
+
+      override fun on(element: E): S {
+        return selections.getOrPut(element) { selector(element) }
+      }
+
+      override fun remove(element: E) {
+        selections.remove(element)
+      }
+
+      override fun clear() {
+        selections.clear()
+      }
+    }
+
+    /**
+     * Applies this strategy to the given [element].
+     *
+     * @param element Element whose selection may or may not be cached.
+     */
+    abstract fun on(element: E): S
+
+    /**
+     * Removes the selection that has been performed on the [element].
+     *
+     * @param element Element on which the [selector] may have been invoked and whose selection will
+     *   be removed.
+     */
+    abstract fun remove(element: E)
+
+    /** Clears any selection that has been cached. */
+    abstract fun clear()
+  }
 
   /** Denotes that an instance of an object hasn't yet been obtained. */
   object None
@@ -50,7 +118,7 @@ abstract class Replacer<E, S, P> : Collection<E> {
       if (selection === None) {
         selection = selector(element)
       }
-      selection == select(it)
+      selection == caching.on(it)
     }
   }
 
@@ -72,8 +140,8 @@ abstract class Replacer<E, S, P> : Collection<E> {
    */
   protected fun place(elements: Collection<E>): Any? {
     val firstElement = elements.firstOrNull() ?: return None
-    val firstElementSelection = select(firstElement)
-    var outerIndex = size.inc() - indexOfFirst { firstElementSelection != select(it) }
+    val firstElementSelection = caching.on(firstElement)
+    var outerIndex = size.inc() - indexOfFirst { firstElementSelection != caching.on(it) }
     var lastPlacement: Any? = None
     for (innerIndex in elements.indices) {
       val element = if (innerIndex == 0) firstElement else elements.elementAt(innerIndex)
@@ -96,7 +164,7 @@ abstract class Replacer<E, S, P> : Collection<E> {
       if (selection === None) {
         selection = selector(element)
       }
-      selection == select(it)
+      selection == caching.on(it)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -136,17 +204,7 @@ abstract class Replacer<E, S, P> : Collection<E> {
    * performed on the elements themselves.
    */
   protected fun unselect() {
-    selections.clear()
-  }
-
-  /**
-   * Obtains the result of invoking the [selector] on the [element], either by directly doing so or
-   * retrieving the previously computed value.
-   *
-   * @param element Element to be selected.
-   */
-  private fun select(element: E): S {
-    return selections.getOrPut(element) { selector(element) }
+    caching.clear()
   }
 
   /**
@@ -178,7 +236,7 @@ abstract class Replacer<E, S, P> : Collection<E> {
    *   where it currently is.
    */
   private fun prepareForReplacement(index: Int, element: E): Any? {
-    selections.remove(element)
+    caching.remove(element)
     return onPreparationForReplacement(index)
   }
 }

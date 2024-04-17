@@ -29,16 +29,18 @@ import java.util.Objects
  */
 private class DelegatorMutableReplacementList<E, S>(
   private val delegate: MutableList<E>,
+  override val caching: Caching<E, S>,
   override val selector: (E) -> S
 ) : MutableReplacementList<E, S>(), MutableList<E> by delegate {
   override fun equals(other: Any?): Boolean {
     return other is DelegatorMutableReplacementList<*, *> &&
       delegate == other.delegate &&
+      caching == other.caching &&
       selector == other.selector
   }
 
   override fun hashCode(): Int {
-    return Objects.hash(delegate, selector)
+    return Objects.hash(delegate, caching, selector)
   }
 
   override fun toString(): String {
@@ -98,7 +100,10 @@ private class DelegatorMutableReplacementList<E, S>(
  * @param elements Elements to be added to the [MutableReplacementList].
  */
 fun <E> mutableReplacementListOf(vararg elements: E): MutableReplacementList<E, E> {
-  return mutableReplacementListOf(*elements) { it }
+  val delegate = mutableListOf(*elements)
+  val selector = { element: E -> element }
+  val caching = Replacer.Caching.Disabled(selector)
+  return DelegatorMutableReplacementList(delegate, caching, selector)
 }
 
 /**
@@ -115,5 +120,6 @@ fun <E, S> mutableReplacementListOf(
   selector: (E) -> S
 ): MutableReplacementList<E, S> {
   val delegate = mutableListOf(*elements)
-  return DelegatorMutableReplacementList(delegate, selector)
+  val caching = Replacer.Caching.Enabled(selector)
+  return DelegatorMutableReplacementList(delegate, caching, selector)
 }
