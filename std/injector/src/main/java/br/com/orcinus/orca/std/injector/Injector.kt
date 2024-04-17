@@ -22,7 +22,6 @@ import br.com.orcinus.orca.std.injector.module.binding.SomeBinding
 import br.com.orcinus.orca.std.injector.module.binding.boundTo
 import br.com.orcinus.orca.std.injector.module.replacement.replacementListOf
 import kotlin.reflect.KClass
-import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
 
 /** [Module] that enables global [Module] and dependency injection. */
@@ -72,7 +71,7 @@ object Injector : Module() {
    * @throws SelfRegistrationException If the [Module] is this [Injector].
    */
   @Throws(SelfRegistrationException::class)
-  fun <B : Module, A : B> register(binding: Binding<B, A>) {
+  inline fun <B : Module, reified A : B> register(binding: Binding<B, A>) {
     if (binding.target != this) {
       registerWithoutSelfRegistrationInsurance(binding)
     } else {
@@ -122,7 +121,7 @@ object Injector : Module() {
    * @param binding [Binding] that associates the [Module] to its [A] and [B] types.
    */
   @PublishedApi
-  internal fun <B : Module, A : B> registerWithoutSelfRegistrationInsurance(
+  internal inline fun <B : Module, reified A : B> registerWithoutSelfRegistrationInsurance(
     binding: Binding<B, A>
   ) {
     bindings.add(binding)
@@ -136,10 +135,9 @@ object Injector : Module() {
    * @param module [Module] whose dependencies will be injected into it.
    */
   @PublishedApi
-  internal fun <T : Module> injectDependenciesOf(module: T) {
-    module::class
+  internal inline fun <reified T : Module> injectDependenciesOf(module: T) {
+    T::class
       .memberProperties
-      .filterIsInstance<KProperty1<T, *>>()
       .filterIsInjection()
       .map { it.access { get(module) } }
       .forEach(module::inject)
