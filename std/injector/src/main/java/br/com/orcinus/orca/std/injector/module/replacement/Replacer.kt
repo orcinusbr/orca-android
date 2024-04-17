@@ -73,7 +73,7 @@ abstract class Replacer<E, S, P> : Collection<E> {
   protected fun place(elements: Collection<E>): Any? {
     val firstElement = elements.firstOrNull() ?: return None
     val firstElementSelection = select(firstElement)
-    var outerIndex = size - indexOfFirst { firstElementSelection != selector(it) }
+    var outerIndex = size.inc() - indexOfFirst { firstElementSelection != select(it) }
     var lastPlacement: Any? = None
     for (innerIndex in elements.indices) {
       val element = if (innerIndex == 0) firstElement else elements.elementAt(innerIndex)
