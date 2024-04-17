@@ -50,17 +50,14 @@ abstract class ReplacementList<E, S> internal constructor() : MutableList<E> {
   }
 
   override fun addAll(index: Int, elements: Collection<E>): Boolean {
-    val hasElementsToBeAdded = elements.isNotEmpty()
-    if (hasElementsToBeAdded) {
-      val firstElement = elements.first()
-      val firstElementSelection = selector(firstElement)
-      var outerIndex = size - indexOfFirst { firstElementSelection != selector(it) }
-      for (innerIndex in elements.indices) {
-        val element = if (innerIndex == 0) firstElement else elements.elementAt(innerIndex)
-        add(outerIndex++, element)
-      }
+    val firstElement = elements.firstOrNull() ?: return false
+    val firstElementSelection = selector(firstElement)
+    var outerIndex = size - indexOfFirst { firstElementSelection != selector(it) }
+    for (innerIndex in elements.indices) {
+      val element = if (innerIndex == 0) firstElement else elements.elementAt(innerIndex)
+      add(outerIndex++, element)
     }
-    return hasElementsToBeAdded
+    return true
   }
 
   /**
