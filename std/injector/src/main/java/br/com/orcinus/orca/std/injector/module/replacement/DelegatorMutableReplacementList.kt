@@ -18,21 +18,21 @@ package br.com.orcinus.orca.std.injector.module.replacement
 import java.util.Objects
 
 /**
- * Implementation of [ReplacementList] that delegates [MutableList]-like functionality to the
- * [delegate] and is returned by [replacementListOf].
+ * Implementation of [MutableReplacementList] that delegates [MutableList]-like functionality to the
+ * [delegate] and is returned by [mutableReplacementListOf].
  *
  * @param E Element to be contained.
  * @param S Object with which comparison for determining whether an element gets either added or
  *   replaced is performed.
- * @param delegate [MutableList] to which this [DelegatorReplacementList]'s functionality will be
- *   delegated, except for that of [append].
+ * @param delegate [MutableList] to which this [DelegatorMutableReplacementList]'s functionality
+ *   will be delegated, except for that of [append].
  */
-private class DelegatorReplacementList<E, S>(
+private class DelegatorMutableReplacementList<E, S>(
   private val delegate: MutableList<E>,
   override val selector: (E) -> S
-) : ReplacementList<E, S>(), MutableList<E> by delegate {
+) : MutableReplacementList<E, S>(), MutableList<E> by delegate {
   override fun equals(other: Any?): Boolean {
-    return other is DelegatorReplacementList<*, *> &&
+    return other is DelegatorMutableReplacementList<*, *> &&
       delegate == other.delegate &&
       selector == other.selector
   }
@@ -87,7 +87,7 @@ private class DelegatorReplacementList<E, S>(
 }
 
 /**
- * Creates a [ReplacementList] with the given [elements].
+ * Creates a [MutableReplacementList] with the given [elements].
  *
  * When denoting whether one of the elements should be replaced when a new one is being added, the
  * replacement and the current candidate over which iteration is taking place will be compared
@@ -95,22 +95,25 @@ private class DelegatorReplacementList<E, S>(
  * [Any.equals] method and it returns `true`.
  *
  * @param E Element to be contained.
- * @param elements Elements to be added to the [ReplacementList].
+ * @param elements Elements to be added to the [MutableReplacementList].
  */
-fun <E> replacementListOf(vararg elements: E): ReplacementList<E, E> {
-  return replacementListOf(*elements) { it }
+fun <E> mutableReplacementListOf(vararg elements: E): MutableReplacementList<E, E> {
+  return mutableReplacementListOf(*elements) { it }
 }
 
 /**
- * Creates a [ReplacementList] with the given [elements].
+ * Creates a [MutableReplacementList] with the given [elements].
  *
  * @param E Element to be contained.
  * @param S Object with which comparison for determining whether an element gets either added or
  *   replaced is performed.
- * @param elements Elements to be added to the [ReplacementList].
+ * @param elements Elements to be added to the [MutableReplacementList].
  * @param selector Provides the value by which each element should be compared when replaced.
  */
-fun <E, S> replacementListOf(vararg elements: E, selector: (E) -> S): ReplacementList<E, S> {
+fun <E, S> mutableReplacementListOf(
+  vararg elements: E,
+  selector: (E) -> S
+): MutableReplacementList<E, S> {
   val delegate = mutableListOf(*elements)
-  return DelegatorReplacementList(delegate, selector)
+  return DelegatorMutableReplacementList(delegate, selector)
 }

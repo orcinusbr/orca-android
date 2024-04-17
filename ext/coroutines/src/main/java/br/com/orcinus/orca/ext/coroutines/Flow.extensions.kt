@@ -15,8 +15,8 @@
 
 package br.com.orcinus.orca.ext.coroutines
 
-import br.com.orcinus.orca.std.injector.module.replacement.ReplacementList
-import br.com.orcinus.orca.std.injector.module.replacement.replacementListOf
+import br.com.orcinus.orca.std.injector.module.replacement.MutableReplacementList
+import br.com.orcinus.orca.std.injector.module.replacement.mutableReplacementListOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -47,7 +47,7 @@ suspend fun <T> Flow<T>.await(): T {
  * @param transform Transformation to be made to the currently iterated element.
  */
 fun <I, O> Flow<Collection<I>>.flatMapEach(transform: suspend (I) -> Flow<O>): Flow<List<O>> {
-  return flatMapEach(accumulator = replacementListOf(), transform)
+  return flatMapEach(accumulator = mutableReplacementListOf(), transform)
 }
 
 /**
@@ -62,7 +62,7 @@ fun <I, O, S> Flow<Collection<I>>.flatMapEach(
   selector: (O) -> S,
   transform: suspend (I) -> Flow<O>
 ): Flow<List<O>> {
-  return flatMapEach(accumulator = replacementListOf(selector = selector), transform)
+  return flatMapEach(accumulator = mutableReplacementListOf(selector = selector), transform)
 }
 
 /**
@@ -70,13 +70,13 @@ fun <I, O, S> Flow<Collection<I>>.flatMapEach(
  * and folding them into an up-to-date [List] that gets emitted each time any of these [Flow]s
  * receive an emission.
  *
- * @param accumulator [ReplacementList] to which the elements in [Collection]s emitted to this
- *   [Flow] will be added.
+ * @param accumulator [MutableReplacementList] to which the elements in [Collection]s emitted to
+ *   this [Flow] will be added.
  * @param transform Transformation to be made to the currently iterated element.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 private fun <I, O, S> Flow<Collection<I>>.flatMapEach(
-  accumulator: ReplacementList<O, S>,
+  accumulator: MutableReplacementList<O, S>,
   transform: suspend (I) -> Flow<O>
 ): Flow<List<O>> {
   return mapEach(transform).flatMapLatest { flows ->

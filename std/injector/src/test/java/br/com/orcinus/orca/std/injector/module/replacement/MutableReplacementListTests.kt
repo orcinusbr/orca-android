@@ -23,36 +23,38 @@ import assertk.assertions.doesNotContain
 import kotlin.test.Test
 import org.opentest4j.AssertionFailedError
 
-internal class ReplacementListTests {
+internal class MutableReplacementListTests {
   @Test
   fun contains() {
-    assertThat(replacementListOf(":P", ";P", selector = String::first)).contains(":)")
+    assertThat(mutableReplacementListOf(":P", ";P", selector = String::first)).contains(":)")
   }
 
   @Test
   fun doesNotContain() {
-    assertThat(replacementListOf(":P", ":)", selector = String::first)).doesNotContain(";P")
+    assertThat(mutableReplacementListOf(":P", ":)", selector = String::first)).doesNotContain(";P")
   }
 
   @Test
   fun containsAll() {
-    assertThat(replacementListOf(":P", ":)", selector = String::first)).containsAll(":T", ":3")
+    assertThat(mutableReplacementListOf(":P", ":)", selector = String::first))
+      .containsAll(":T", ":3")
   }
 
   @Test(expected = AssertionFailedError::class)
   fun doesNotContainAll() {
-    assertThat(replacementListOf(":P", ":)", selector = String::first)).containsAll(":P", ";(")
+    assertThat(mutableReplacementListOf(":P", ":)", selector = String::first))
+      .containsAll(":P", ";(")
   }
 
   @Test
   fun adds() {
-    assertThat(replacementListOf<Int>().apply { add(0) }).containsExactly(0)
+    assertThat(mutableReplacementListOf<Int>().apply { add(0) }).containsExactly(0)
   }
 
   @Test
   fun replaces() {
     assertThat(
-        replacementListOf("Hey,", "world!", selector = String::first).apply { add("Hello,") }
+        mutableReplacementListOf("Hey,", "world!", selector = String::first).apply { add("Hello,") }
       )
       .containsExactly("Hello,", "world!")
   }

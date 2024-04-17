@@ -19,16 +19,17 @@ import assertk.assertThat
 import assertk.assertions.containsExactly
 import kotlin.test.Test
 
-internal class DelegatorReplacementListTests {
+internal class DelegatorMutableReplacementListTests {
   @Test
   fun createsReplacementListWithDefaultSelector() {
-    assertThat(replacementListOf(0, 1).apply { add(0) }).containsExactly(0, 1)
+    assertThat(mutableReplacementListOf(0, 1).apply { add(0) }).containsExactly(0, 1)
   }
 
   @Test
   fun createsReplacementListWithCustomSelector() {
     assertThat(
-        replacementListOf(0, 1, 2) { if (it == 0) Object() else it }.apply { addAll(arrayOf(0, 1)) }
+        mutableReplacementListOf(0, 1, 2) { if (it == 0) Object() else it }
+          .apply { addAll(arrayOf(0, 1)) }
       )
       .containsExactly(0, 1, 2, 0)
   }

@@ -39,7 +39,7 @@ abstract class Replacer<E, S, P> : Collection<E> {
   object None
 
   /**
-   * Returns whether the [element] is present in this [ReplacementList], comparing it to the
+   * Returns whether the [element] is present in this [MutableReplacementList], comparing it to the
    * currently existing ones by their [selector]s.
    *
    * @param element Element whose presence will be checked.
@@ -55,8 +55,8 @@ abstract class Replacer<E, S, P> : Collection<E> {
   }
 
   /**
-   * Returns whether all the [elements] are present in this [ReplacementList], comparing them to the
-   * currently existing ones by their [selector]s.
+   * Returns whether all the [elements] are present in this [MutableReplacementList], comparing them
+   * to the currently existing ones by their [selector]s.
    *
    * @param elements Elements whose presence will be checked.
    */

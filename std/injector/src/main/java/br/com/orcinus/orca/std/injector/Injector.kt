@@ -20,14 +20,14 @@ import br.com.orcinus.orca.std.injector.module.Module
 import br.com.orcinus.orca.std.injector.module.binding.Binding
 import br.com.orcinus.orca.std.injector.module.binding.SomeBinding
 import br.com.orcinus.orca.std.injector.module.binding.boundTo
-import br.com.orcinus.orca.std.injector.module.replacement.replacementListOf
+import br.com.orcinus.orca.std.injector.module.replacement.mutableReplacementListOf
 import kotlin.reflect.KClass
 import kotlin.reflect.full.memberProperties
 
 /** [Module] that enables global [Module] and dependency injection. */
 object Injector : Module() {
   /** [Binding]s that have been registered. */
-  @PublishedApi internal val bindings = replacementListOf(selector = SomeBinding::base)
+  @PublishedApi internal val bindings = mutableReplacementListOf(selector = SomeBinding::base)
 
   /** [IllegalArgumentException] thrown if the [Injector] registers itself. */
   class SelfRegistrationException @PublishedApi internal constructor() :

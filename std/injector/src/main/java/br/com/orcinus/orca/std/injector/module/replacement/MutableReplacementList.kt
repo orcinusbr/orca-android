@@ -25,12 +25,12 @@ package br.com.orcinus.orca.std.injector.module.replacement
  * @see append
  * @see replace
  */
-abstract class ReplacementList<E, S> internal constructor() :
+abstract class MutableReplacementList<E, S> internal constructor() :
   Replacer<E, S, Unit>(), MutableList<E> {
   /**
-   * Either adds the given [element] to the end of this [ReplacementList] or replaces the existing
-   * one that matches it based on its [selector], placing it at the same index at which the previous
-   * one was.
+   * Either adds the given [element] to the end of this [MutableReplacementList] or replaces the
+   * existing one that matches it based on its [selector], placing it at the same index at which the
+   * previous one was.
    *
    * @param element Element to be added or by which the existing one that matches it will be
    *   replaced.
@@ -41,9 +41,9 @@ abstract class ReplacementList<E, S> internal constructor() :
   }
 
   /**
-   * Either adds all the given [elements] to the end of this [ReplacementList] or replaces the
-   * existing ones that matches them based on their [selector]s, placing them at the same index at
-   * which the previous one was.
+   * Either adds all the given [elements] to the end of this [MutableReplacementList] or replaces
+   * the existing ones that matches them based on their [selector]s, placing them at the same index
+   * at which the previous one was.
    *
    * @param elements Elements to be added or by which the existing ones that match them will be
    *   replaced.
@@ -85,8 +85,8 @@ abstract class ReplacementList<E, S> internal constructor() :
   }
 
   /**
-   * Callback that gets called when this [ReplacementList] is requested to be cleared, after it has
-   * been properly unselected.
+   * Callback that gets called when this [MutableReplacementList] is requested to be cleared, after
+   * it has been properly unselected.
    *
    * @see unselect
    */
