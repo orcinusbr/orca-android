@@ -17,6 +17,7 @@ package br.com.orcinus.orca.std.injector
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isSameAs
 import br.com.orcinus.orca.std.injector.module.Inject
 import br.com.orcinus.orca.std.injector.module.Module
 import br.com.orcinus.orca.std.injector.module.binding.boundTo
@@ -52,6 +53,16 @@ internal class InjectorTests {
     val module = object : Module() {}
     Injector.register<Module>(module)
     assertThat(Injector.from<Module>()).isEqualTo(module)
+  }
+
+  @Test
+  fun replacesWhenRegisteringModuleBoundToSameBaseAsPreviouslyRegisteredOne() {
+    val replacement = SubModuleWithAnnotatedInjection()
+    Injector.register(
+      SubModuleWithAnnotatedInjection().boundTo<SuperModuleWithAnnotatedInjection, _>()
+    )
+    Injector.register(replacement.boundTo<SuperModuleWithAnnotatedInjection, _>())
+    assertThat(Injector.from<SuperModuleWithAnnotatedInjection>()).isSameAs(replacement)
   }
 
   @Test(expected = Injector.SelfRetrievalException::class)
