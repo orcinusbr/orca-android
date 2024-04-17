@@ -89,7 +89,7 @@ abstract class Replacer<E, S, P> : Collection<E> {
      *
      * @param element Element whose selection may or may not be cached.
      */
-    abstract fun on(element: E): S
+    internal abstract fun on(element: E): S
 
     /**
      * Removes the selection that has been performed on the [element].
@@ -97,10 +97,10 @@ abstract class Replacer<E, S, P> : Collection<E> {
      * @param element Element on which the [selector] may have been invoked and whose selection will
      *   be removed.
      */
-    abstract fun remove(element: E)
+    internal abstract fun remove(element: E)
 
     /** Clears any selection that has been cached. */
-    abstract fun clear()
+    internal abstract fun clear()
   }
 
   /** Denotes that an instance of an object hasn't yet been obtained. */
