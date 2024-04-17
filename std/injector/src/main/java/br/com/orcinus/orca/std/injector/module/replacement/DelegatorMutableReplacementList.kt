@@ -100,10 +100,10 @@ private class DelegatorMutableReplacementList<E, S>(
  * @param elements Elements to be added to the [MutableReplacementList].
  */
 fun <E> mutableReplacementListOf(vararg elements: E): MutableReplacementList<E, E> {
-  val delegate = mutableListOf(*elements)
-  val selector = { element: E -> element }
-  val caching = Replacer.Caching.Disabled(selector)
-  return DelegatorMutableReplacementList(delegate, caching, selector)
+  return Replacer.withStructuralEqualityBasedSelector { caching, selector ->
+    val delegate = mutableListOf(*elements)
+    DelegatorMutableReplacementList(delegate, caching, selector)
+  }
 }
 
 /**
@@ -119,7 +119,8 @@ fun <E, S> mutableReplacementListOf(
   vararg elements: E,
   selector: (E) -> S
 ): MutableReplacementList<E, S> {
-  val delegate = mutableListOf(*elements)
-  val caching = Replacer.Caching.Enabled(selector)
-  return DelegatorMutableReplacementList(delegate, caching, selector)
+  return Replacer.withCustomSelector(selector) {
+    val delegate = mutableListOf(*elements)
+    DelegatorMutableReplacementList(delegate, it, selector)
+  }
 }

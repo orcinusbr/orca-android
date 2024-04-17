@@ -239,4 +239,61 @@ abstract class Replacer<E, S, P> : Collection<E> {
     caching.remove(element)
     return onPreparationForReplacement(index)
   }
+
+  companion object {
+    /**
+     * Selector that returns the element that has been provided to it, denoting that comparisons in
+     * a [Replacer] should be performed by comparing its structure to another one's (behaving just
+     * like [Any.equals]).
+     *
+     * @see selector
+     */
+    private val structuralEqualityBasedSelector = { element: Any? -> element }
+
+    /**
+     * Provides the appropriate caching strategy for creating a [Replacer] whose selector is a
+     * custom one.
+     *
+     * For this kind of [Replacer], selection caching is enabled, meaning that each selector
+     * invocation result is associated to the element on which it was performed, allowing for it to
+     * be later retrieved when, for example, comparing an element in the [Replacer] to another one
+     * that may or may not be in it via [contains].
+     *
+     * In case the specified [selector] merely returns the element over which iteration takes place
+     * itself, [withStructuralEqualityBasedSelector] should be used to create the [Replacer]
+     * instead, given that it disables caching that would otherwise be unnecessary and inefficient
+     * and already provides such selector.
+     *
+     * @param selector Provides the value by which each element should be compared when replaced.
+     * @param creation Creates the [Replacer] with the given [Caching].
+     * @see Replacer.selector
+     */
+    fun <E, S, R : Replacer<E, S, *>> withCustomSelector(
+      selector: (E) -> S,
+      creation: (Caching<E, S>) -> R
+    ): R {
+      val caching = Caching.Enabled(selector)
+      return creation(caching)
+    }
+
+    /**
+     * Provides a selector for comparing the elements' by their own structure, alongside the
+     * appropriate caching strategy for creating a [Replacer].
+     *
+     * For a [Replacer] of such a kind, caching selections would be unnecessary and rather
+     * inefficient because these are just the elements on which the selector was invoked themselves;
+     * that means that they'd be stored not only once, but twice.
+     *
+     * @param creation Creates the [Replacer] with the given [Caching] and structural-equality-based
+     *   selector.
+     * @see Replacer.selector
+     */
+    fun <E, R : Replacer<E, E, *>> withStructuralEqualityBasedSelector(
+      creation: (Caching<E, E>, selector: (E) -> E) -> R
+    ): R {
+      @Suppress("UNCHECKED_CAST") val selector = structuralEqualityBasedSelector as (E) -> E
+      val caching = Caching.Disabled(selector)
+      return creation(caching, selector)
+    }
+  }
 }
