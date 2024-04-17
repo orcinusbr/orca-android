@@ -133,7 +133,10 @@ abstract class Module {
    */
   @PublishedApi
   internal inline fun <reified T : Any> getOrNull(): T? {
-    return injections.filterIsInstance<Injection<T>>().firstOrNull()?.run { provide() }
+    return injections
+      .filterIsInstance<Injection<T>>()
+      .singleOrNull { it.dependencyClass == T::class }
+      ?.run { provide() }
   }
 
   /** Callback run whenever this [Module] is cleared. */

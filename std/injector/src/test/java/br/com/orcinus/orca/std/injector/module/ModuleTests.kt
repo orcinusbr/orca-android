@@ -78,6 +78,22 @@ internal class ModuleTests {
     assertThat(Injector.get<Int>()).isEqualTo(1)
   }
 
+  @Test
+  fun getsDependenciesInjectedImmediately() {
+    Injector.injectImmediately(0)
+    Injector.injectImmediately(":P")
+    assertThat(Injector.get<Int>()).isEqualTo(0)
+    assertThat(Injector.get<String>()).isEqualTo(":P")
+  }
+
+  @Test
+  fun getsDependenciesInjectedLazily() {
+    Injector.injectLazily { 0 }
+    Injector.injectLazily { ":P" }
+    assertThat(Injector.get<Int>()).isEqualTo(0)
+    assertThat(Injector.get<String>()).isEqualTo(":P")
+  }
+
   @Test(Module.DependencyNotInjectedException::class)
   fun clears() {
     Injector.injectLazily { 0 }
