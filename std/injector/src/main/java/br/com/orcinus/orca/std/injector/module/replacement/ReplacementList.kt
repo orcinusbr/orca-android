@@ -32,23 +32,60 @@ abstract class ReplacementList<E, S> internal constructor() : MutableList<E> {
   /** Denotes that an instance of an object is yet to be obtained. */
   internal object None
 
+  /**
+   * Returns whether the [element] is present in this [ReplacementList], comparing it to the
+   * currently existing ones by their [selector]s.
+   *
+   * @param element Element whose presence will be checked.
+   */
   override fun contains(element: E): Boolean {
     return any { selector(element) == selector(it) }
   }
 
+  /**
+   * Returns whether all the [elements] are present in this [ReplacementList], comparing them to the
+   * currently existing ones by their [selector]s.
+   *
+   * @param elements Elements whose presence will be checked.
+   */
   override fun containsAll(elements: Collection<E>): Boolean {
     return elements.all(::contains)
   }
 
+  /**
+   * Either adds the given [element] to the end of this [ReplacementList] or replaces the existing
+   * one that matches it based on its [selector], placing it at the same index at which the previous
+   * one was.
+   *
+   * @param element Element to be added or by which the existing one that matches it will be
+   *   replaced.
+   */
   override fun add(element: E): Boolean {
     add(lastIndex, element)
     return true
   }
 
+  /**
+   * Either adds all the given [elements] to the end of this [ReplacementList] or replaces the
+   * existing ones that matches them based on their [selector]s, placing them at the same index at
+   * which the previous one was.
+   *
+   * @param elements Elements to be added or by which the existing ones that match them will be
+   *   replaced.
+   */
   override fun addAll(elements: Collection<E>): Boolean {
     return addAll(lastIndex, elements)
   }
 
+  /**
+   * Either adds all the given [elements] or replaces the existing ones that matches them based on
+   * their [selector]s, placing them at the same index at which the previous one was.
+   *
+   * @param index Index at which the [elements] should be added when no other ones that match them
+   *   are found.
+   * @param elements Elements to be added or by which the existing ones that match them will be
+   *   replaced.
+   */
   override fun addAll(index: Int, elements: Collection<E>): Boolean {
     val firstElement = elements.firstOrNull() ?: return false
     val firstElementSelection = selector(firstElement)
@@ -61,11 +98,11 @@ abstract class ReplacementList<E, S> internal constructor() : MutableList<E> {
   }
 
   /**
-   * Either adds the given [element] to the end of this [ReplacementList] or replaces the existing
-   * one that matches it based on its [selector], placing it at the same index at which the previous
-   * one was.
+   * Either adds the given [element] or replaces the existing one that matches it based on its
+   * [selector], placing it at the same index at which the previous one was.
    *
-   * @param index Index at which the [element] should be added.
+   * @param index Index at which the [element] should be added when no other one that matches it is
+   *   found.
    * @param element Element to be added or by which the existing one that matches it will be
    *   replaced.
    */
