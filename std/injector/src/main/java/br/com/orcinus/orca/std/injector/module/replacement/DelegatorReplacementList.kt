@@ -25,7 +25,7 @@ import java.util.Objects
  * @param S Object with which comparison for determining whether an element gets either added or
  *   replaced is performed.
  * @param delegate [MutableList] to which this [DelegatorReplacementList]'s functionality will be
- *   delegated, except for that of [add].
+ *   delegated, except for that of [append].
  */
 private class DelegatorReplacementList<E, S>(
   private val delegate: MutableList<E>,
@@ -69,8 +69,20 @@ private class DelegatorReplacementList<E, S>(
     return super.addAll(index, elements)
   }
 
-  override fun onAdd(index: Int, element: E) {
+  override fun clear() {
+    super.clear()
+  }
+
+  override fun append(placement: Any?, index: Int, element: E) {
     delegate.add(index, element)
+  }
+
+  override fun onPreparationForReplacement(index: Int) {
+    removeAt(index)
+  }
+
+  override fun onClearance() {
+    delegate.clear()
   }
 }
 
