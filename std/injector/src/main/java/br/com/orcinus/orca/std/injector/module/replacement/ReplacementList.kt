@@ -123,15 +123,6 @@ abstract class ReplacementList<E, S> internal constructor() : MutableList<E> {
   }
 
   /**
-   * Replaces the element whose [selector] equals that of the [replacement].
-   *
-   * @param index Index at which the element to be replaced is.
-   * @param replacement Element by which the matching one will be replaced.
-   * @param selection Result of invoking the [selector] on the [replacement].
-   */
-  protected abstract fun replace(index: Int, replacement: E, selection: S)
-
-  /**
    * Callback that gets called when an element that was not previously in this [ReplacementList] is
    * requested to be added to it.
    *
@@ -140,4 +131,23 @@ abstract class ReplacementList<E, S> internal constructor() : MutableList<E> {
    * @return Whether the [element] has been successfully added.
    */
   protected abstract fun onAdd(index: Int, element: E)
+
+  /**
+   * Replaces the element whose [selector] equals that of the [replacement].
+   *
+   * @param index Index at which the element to be replaced is.
+   * @param replacement Element by which the matching one will be replaced.
+   * @param selection Result of invoking the [selector] on the [replacement].
+   */
+  private fun replace(index: Int, replacement: E, selection: S) {
+    for (candidateIndex in indices) {
+      val candidate = get(candidateIndex)
+      val isReplaceable = selector(candidate) == selection
+      if (isReplaceable) {
+        removeAt(index)
+        onAdd(index, replacement)
+        break
+      }
+    }
+  }
 }

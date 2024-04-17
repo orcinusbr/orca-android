@@ -69,18 +69,6 @@ private class DelegatorReplacementList<E, S>(
     return super.addAll(index, elements)
   }
 
-  override fun replace(index: Int, replacement: E, selection: S) {
-    for (candidateIndex in indices) {
-      val candidate = get(candidateIndex)
-      val isReplaceable = selector(candidate) == selection
-      if (isReplaceable) {
-        removeAt(index)
-        onAdd(index, replacement)
-        break
-      }
-    }
-  }
-
   override fun onAdd(index: Int, element: E) {
     delegate.add(index, element)
   }
