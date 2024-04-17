@@ -18,6 +18,7 @@ package br.com.orcinus.orca.std.injector
 import br.com.orcinus.orca.std.injector.module.Inject
 import br.com.orcinus.orca.std.injector.module.Module
 import br.com.orcinus.orca.std.injector.module.injection.Injection
+import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.jvm.jvmErasure
@@ -28,10 +29,11 @@ import kotlin.reflect.jvm.jvmErasure
  * - are annotated with [Inject], denoting that the dependencies provided by their values should be
  *   automatically injected into the [Module] in which they were declared; and
  * - have a return type of [Injection], which allows for operations to be performed within the
- *   [Module] and provides a dependency lazily.
+ *   [Module] (when it is a lazy one) and provides a dependency.
  *
  * @param T [Module] into which the resulting dependencies of the [KProperty1]s' values will be
  *   injected.
+ * @see lazyInjectionOf
  */
 @PublishedApi
 internal fun <T : Module> Iterable<KProperty1<T, *>>.filterIsInjection():
