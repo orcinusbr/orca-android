@@ -218,9 +218,10 @@ abstract class Replacer<E, S, P> : Collection<E> {
   private fun replace(index: Int, element: E, selection: S): Any? {
     for (candidateIndex in indices) {
       val candidate = elementAt(candidateIndex)
-      val isReplaceable = selector(candidate) == selection
+      val isReplaceable = caching.on(candidate) == selection
       if (isReplaceable) {
-        return append(prepareForReplacement(index, candidate), index, element)
+        val preparedForReplacement = prepareForReplacement(index, candidate)
+        return append(preparedForReplacement, index, element)
       }
     }
     return None
