@@ -13,24 +13,31 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.std.injector.module.injection
+package br.com.orcinus.orca.std.injector.module.replacement
 
-/**
- * Whether this [Iterable] contains an [Injection] whose dependency's type is [T].
- *
- * @param T Dependency to look for.
- */
-@PublishedApi
-internal inline fun <reified T : Any> Iterable<Injection<*>>.contains(): Boolean {
-  return any { it.dependencyClass == T::class }
-}
+internal class EmptyReplacer<E, S>(
+  override val caching: Caching<E, S>,
+  override val selector: (E) -> S
+) : Replacer<E, S, Unit>() {
+  override val size = 0
 
-/**
- * Obtains the [Injection] whose dependency's type is [T].
- *
- * @param T Dependency of the [Injection] to be obtained.
- */
-@PublishedApi
-internal inline fun <reified T : Any> Iterable<Injection<*>>.get(): Injection<T>? {
-  @Suppress("UNCHECKED_CAST") return find { it.dependencyClass == T::class } as Injection<T>?
+  override fun iterator(): Iterator<E> {
+    return object : Iterator<E> {
+      override fun hasNext(): Boolean {
+        return false
+      }
+
+      override fun next(): E {
+        throw NoSuchElementException("Empty replacer has no elements!")
+      }
+    }
+  }
+
+  override fun isEmpty(): Boolean {
+    return true
+  }
+
+  override fun append(placement: Any?, index: Int, element: E) {}
+
+  override fun onPreparationForReplacement(index: Int) {}
 }

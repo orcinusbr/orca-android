@@ -13,20 +13,24 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.std.injector.module.injection
+package br.com.orcinus.orca.std.injector.module.replacement
 
 import assertk.assertThat
-import assertk.assertions.isSameAs
-import br.com.orcinus.orca.std.injector.Injector
+import assertk.assertions.containsExactly
 import kotlin.test.Test
 
-internal class InjectionTests {
+internal class DelegatorMutableReplacementListTests {
   @Test
-  fun retrievesCreatedDependencyWhenProvidedSubsequently() {
-    val injection = injectionOf { Object() }
-    val provide = { with(Injector) { with(injection) { provide() } } }
-    val created = provide()
-    val retrieved = provide()
-    assertThat(retrieved).isSameAs(created)
+  fun createsReplacementListWithDefaultSelector() {
+    assertThat(mutableReplacementListOf(0, 1).apply { add(0) }).containsExactly(0, 1)
+  }
+
+  @Test
+  fun createsReplacementListWithCustomSelector() {
+    assertThat(
+        mutableReplacementListOf(0, 1, 2) { if (it == 0) Object() else it }
+          .apply { addAll(arrayOf(0, 1)) }
+      )
+      .containsExactly(0, 1, 2, 0)
   }
 }

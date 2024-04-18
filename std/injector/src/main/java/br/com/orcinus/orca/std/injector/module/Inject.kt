@@ -17,7 +17,8 @@ package br.com.orcinus.orca.std.injector.module
 
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.injector.module.injection.Injection
-import br.com.orcinus.orca.std.injector.module.injection.injectionOf
+import br.com.orcinus.orca.std.injector.module.injection.immediateInjectionOf
+import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 
 /**
  * Denotes that the dependency provided by the value of the annotated property should be
@@ -31,8 +32,10 @@ import br.com.orcinus.orca.std.injector.module.injection.injectionOf
  * Note that the annotated property should return an [Injection]; otherwise, an error will be thrown
  * at build time.
  *
- * @see Module.inject
+ * @see Module.injectImmediately
+ * @see Module.injectLazily
  * @see Injector.register
- * @see injectionOf
+ * @see immediateInjectionOf
+ * @see lazyInjectionOf
  */
 @Target(AnnotationTarget.PROPERTY) annotation class Inject

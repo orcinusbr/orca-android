@@ -16,30 +16,17 @@
 package br.com.orcinus.orca.std.injector.module.injection
 
 import assertk.assertThat
-import assertk.assertions.isSameAs
-import br.com.orcinus.orca.std.injector.Injector
-import br.com.orcinus.orca.std.injector.module.Module
+import assertk.assertions.isInstanceOf
 import kotlin.test.Test
 
 internal class InjectionExtensionsTests {
   @Test
-  fun createsInjection() {
-    val dependency = Object()
-    with(Injector) {
-      assertThat(with(injectionOf { dependency }) { provide() })
-        .isSameAs(
-          with(
-            object : Injection<Any>() {
-              override val dependencyClass = Any::class
+  fun createsImmediateInjection() {
+    assertThat(immediateInjectionOf(0)).isInstanceOf<Injection.Immediate<Int>>()
+  }
 
-              override fun Module.create(): Any {
-                return dependency
-              }
-            }
-          ) {
-            provide()
-          }
-        )
-    }
+  @Test
+  fun createsLazyInjection() {
+    assertThat(lazyInjectionOf { 0 }).isInstanceOf<Injection.Lazy<Int>>()
   }
 }

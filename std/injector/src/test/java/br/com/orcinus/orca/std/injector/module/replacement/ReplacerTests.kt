@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,29 +13,27 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.std.injector.module.binding
+package br.com.orcinus.orca.std.injector.module.replacement
 
 import assertk.assertThat
-import assertk.assertions.isEqualTo
-import br.com.orcinus.orca.std.injector.module.Module
+import assertk.assertions.isInstanceOf
 import kotlin.test.Test
 
-internal class BindingExtensionsTests {
-  class AliasModule : BaseModule()
-
-  abstract class BaseModule : Module()
-
+internal class ReplacerTests {
   @Test
-  fun binds() {
-    val module = AliasModule()
-    assertThat(module.bound)
-      .isEqualTo(Binding(base = AliasModule::class, alias = AliasModule::class, module))
+  fun enablesCachingWhenCreatingReplacerWithCustomSelector() {
+    val selector = Any::hashCode
+    Replacer.withCustomSelector(selector) {
+      assertThat(it).isInstanceOf<Replacer.Caching.Enabled<Any, Int>>()
+      mutableReplacementListOf(selector = selector)
+    }
   }
 
   @Test
-  fun bindsToDistinctBaseAndAlias() {
-    val module = AliasModule()
-    assertThat(module.boundTo<BaseModule, AliasModule>())
-      .isEqualTo(Binding(base = BaseModule::class, alias = AliasModule::class, module))
+  fun disablesCachingWhenCreatingReplacerWithStructuralEqualityBasedSelector() {
+    Replacer.withStructuralEqualityBasedSelector { caching, selector ->
+      assertThat(caching).isInstanceOf<Replacer.Caching.Disabled<Any, Any>>()
+      EmptyReplacer<Any, Any>(caching, selector)
+    }
   }
 }

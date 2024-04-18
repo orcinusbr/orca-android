@@ -17,11 +17,12 @@ package br.com.orcinus.orca.std.injector
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isSameAs
 import br.com.orcinus.orca.std.injector.module.Inject
 import br.com.orcinus.orca.std.injector.module.Module
 import br.com.orcinus.orca.std.injector.module.binding.boundTo
 import br.com.orcinus.orca.std.injector.module.injection.Injection
-import br.com.orcinus.orca.std.injector.module.injection.injectionOf
+import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 import br.com.orcinus.orca.std.injector.test.InjectorTestRule
 import kotlin.test.Test
 import org.junit.Rule
@@ -29,19 +30,18 @@ import org.junit.Rule
 internal class InjectorTests {
   @get:Rule val injectorRule = InjectorTestRule()
 
-  private abstract class SuperModuleWithNonAnnotatedDependency(
-    @Suppress("unused") private val dependency: Injection<Int>
+  private class SubModuleWithNonAnnotatedInjection :
+    SuperModuleWithNonAnnotatedInjection(lazyInjectionOf { 0 })
+
+  private abstract class SuperModuleWithNonAnnotatedInjection(
+    @Suppress("unused") private val injection: Injection<Int>
   ) : Module()
 
-  private class SubModuleWithAnnotatedDependency :
-    SuperModuleWithAnnotatedDependency(injectionOf { 0 })
+  private class SubModuleWithAnnotatedInjection :
+    SuperModuleWithAnnotatedInjection(lazyInjectionOf { 0 })
 
-  internal abstract class SuperModuleWithAnnotatedDependency(
-    @Suppress("unused") @Inject val dependency: Injection<Int>
-  ) : Module()
-
-  private class SubModuleWithNonAnnotatedDependency :
-    SuperModuleWithNonAnnotatedDependency(injectionOf { 0 })
+  internal abstract class SuperModuleWithAnnotatedInjection(@Inject val injection: Injection<Int>) :
+    Module()
 
   @Test(expected = Injector.SelfRegistrationException::class)
   fun throwsWhenRegisteringItself() {
@@ -53,6 +53,16 @@ internal class InjectorTests {
     val module = object : Module() {}
     Injector.register<Module>(module)
     assertThat(Injector.from<Module>()).isEqualTo(module)
+  }
+
+  @Test
+  fun replacesWhenRegisteringModuleBoundToSameBaseAsPreviouslyRegisteredOne() {
+    val replacement = SubModuleWithAnnotatedInjection()
+    Injector.register(
+      SubModuleWithAnnotatedInjection().boundTo<SuperModuleWithAnnotatedInjection, _>()
+    )
+    Injector.register(replacement.boundTo<SuperModuleWithAnnotatedInjection, _>())
+    assertThat(Injector.from<SuperModuleWithAnnotatedInjection>()).isSameAs(replacement)
   }
 
   @Test(expected = Injector.SelfRetrievalException::class)
@@ -67,30 +77,30 @@ internal class InjectorTests {
 
   @Test(expected = Module.DependencyNotInjectedException::class)
   fun doesNotInjectNonAnnotatedModuleDependenciesWhenRegisteringIt() {
-    Injector.register<SuperModuleWithNonAnnotatedDependency>(SubModuleWithNonAnnotatedDependency())
-    Injector.from<SuperModuleWithNonAnnotatedDependency>().get<Int>()
+    Injector.register<SuperModuleWithNonAnnotatedInjection>(SubModuleWithNonAnnotatedInjection())
+    Injector.from<SuperModuleWithNonAnnotatedInjection>().get<Int>()
   }
 
   @Test
   fun registersAnnotatedModuleDependenciesWhenRegisteringIt() {
-    Injector.register<SuperModuleWithAnnotatedDependency>(SubModuleWithAnnotatedDependency())
-    assertThat(Injector.from<SuperModuleWithAnnotatedDependency>().get<Int>()).isEqualTo(0)
+    Injector.register<SuperModuleWithAnnotatedInjection>(SubModuleWithAnnotatedInjection())
+    assertThat(Injector.from<SuperModuleWithAnnotatedInjection>().injection()).isEqualTo(0)
   }
 
   @Test
   fun registersModuleBoundToBothItsActualAndBaseTypes() {
-    val module = SubModuleWithAnnotatedDependency()
+    val module = SubModuleWithAnnotatedInjection()
     Injector.register(
-      module.boundTo<SuperModuleWithAnnotatedDependency, SubModuleWithAnnotatedDependency>()
+      module.boundTo<SuperModuleWithAnnotatedInjection, SubModuleWithAnnotatedInjection>()
     )
-    assertThat(Injector.from<SuperModuleWithAnnotatedDependency>()).isEqualTo(module)
-    assertThat(Injector.from<SubModuleWithAnnotatedDependency>()).isEqualTo(module)
+    assertThat(Injector.from<SuperModuleWithAnnotatedInjection>()).isEqualTo(module)
+    assertThat(Injector.from<SubModuleWithAnnotatedInjection>()).isEqualTo(module)
   }
 
   @Test
   fun getsDependencyFromModuleInjectedAfterItWasRegistered() {
     Injector.register<Module>(object : Module() {})
-    Injector.from<Module>().inject { 0 }
+    Injector.from<Module>().injectLazily { 0 }
     assertThat(Injector.from<Module>().get<Int>()).isEqualTo(0)
   }
 

@@ -16,15 +16,20 @@
 package br.com.orcinus.orca.std.injector.module
 
 import br.com.orcinus.orca.std.injector.module.injection.Injection
-import br.com.orcinus.orca.std.injector.module.injection.contains
-import br.com.orcinus.orca.std.injector.module.injection.get
-import br.com.orcinus.orca.std.injector.module.injection.injectionOf
+import br.com.orcinus.orca.std.injector.module.injection.SomeInjection
+import br.com.orcinus.orca.std.injector.module.injection.immediateInjectionOf
+import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
+import br.com.orcinus.orca.std.injector.module.replacement.mutableReplacementListOf
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 import kotlin.reflect.KClass
 
 /** Container in which dependencies within a given context can be injected. */
 abstract class Module {
   /** [Injection]s that have been created. */
-  @PublishedApi internal val injections = mutableListOf<Injection<*>>()
+  @PublishedApi
+  internal val injections = mutableReplacementListOf(selector = SomeInjection::dependencyClass)
 
   /**
    * [NoSuchElementException] thrown if a dependency that hasn't been injected is requested to be
@@ -46,8 +51,41 @@ abstract class Module {
    * @param T Dependency to be injected.
    * @param creation Returns the dependency to be injected that can be lazily retrieved afterwards.
    */
+  @Deprecated(
+    message = "Prefer `injectLazily` to better distinguish between immediate and lazy injections.",
+    ReplaceWith("injectLazily(creation)")
+  )
+  @OptIn(ExperimentalContracts::class)
   inline fun <reified T : Any> inject(crossinline creation: Module.() -> T) {
-    val injection = injectionOf(creation)
+    contract { callsInPlace(creation, InvocationKind.AT_MOST_ONCE) }
+    injectLazily(creation)
+  }
+
+  /**
+   * Injects the dependency returned by the [creation] lazily, creating it only when it is requested
+   * to be obtained.
+   *
+   * @param T Dependency to be injected.
+   * @param creation Returns the dependency to be injected that can be lazily retrieved afterwards.
+   * @see get
+   * @see injectImmediately
+   */
+  @OptIn(ExperimentalContracts::class)
+  inline fun <reified T : Any> injectLazily(crossinline creation: Module.() -> T) {
+    contract { callsInPlace(creation, InvocationKind.AT_MOST_ONCE) }
+    val injection = lazyInjectionOf(creation)
+    inject(injection)
+  }
+
+  /**
+   * Injects the [dependency] immediately.
+   *
+   * @param T Dependency to be injected.
+   * @param dependency Dependency to be immediately injected.
+   * @see injectLazily
+   */
+  inline fun <reified T : Any> injectImmediately(dependency: T) {
+    val injection = immediateInjectionOf(dependency)
     inject(injection)
   }
 
@@ -66,9 +104,9 @@ abstract class Module {
    * @param T Dependency to be obtained.
    * @throws DependencyNotInjectedException If no dependency of type [T] has been injected.
    */
-  @Throws(NoSuchElementException::class)
+  @Throws(DependencyNotInjectedException::class)
   inline fun <reified T : Any> get(): T {
-    return injections.get<T>()?.run { provide() } ?: throw DependencyNotInjectedException(T::class)
+    return getOrNull() ?: throw DependencyNotInjectedException(T::class)
   }
 
   /** Removes all [Injection]s. */
@@ -80,16 +118,25 @@ abstract class Module {
   /**
    * Injects the dependency returned by the [injection].
    *
-   * @param T Dependency to be injected.
-   * @param dependencyClass [KClass] to which the dependency will be associated.
-   * @param injection Returns the dependency to be injected.
+   * @param injection Provides the dependency to be injected.
    */
   @PublishedApi
-  internal inline fun <reified T : Any> inject(injection: Injection<T>) {
-    val hasNotBeenInjected = !injections.contains<T>()
-    if (hasNotBeenInjected) {
-      injections.add(injection)
-    }
+  internal fun inject(injection: SomeInjection) {
+    injections.add(injection)
+  }
+
+  /**
+   * Obtains a dependency of type [T] that has been previously injected into this [Module] or `null`
+   * if none has been.
+   *
+   * @param T Dependency to be obtained.
+   */
+  @PublishedApi
+  internal inline fun <reified T : Any> getOrNull(): T? {
+    return injections
+      .filterIsInstance<Injection<T>>()
+      .singleOrNull { it.dependencyClass == T::class }
+      ?.run { provide() }
   }
 
   /** Callback run whenever this [Module] is cleared. */
