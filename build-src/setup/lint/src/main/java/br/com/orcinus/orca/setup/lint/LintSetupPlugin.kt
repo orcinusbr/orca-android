@@ -25,8 +25,11 @@ class LintSetupPlugin : Plugin<Project> {
       subProject.afterEvaluate { evaluatedSubproject ->
         with(evaluatedSubproject) {
           extensions.findByType(CommonExtension::class.java)?.let { _ ->
-            arrayOf(":std:visibility-check").forEach { modulePath ->
-              with(dependencies) { add("lintChecks", project(mapOf("path" to modulePath))) }
+            arrayOf(":std:visibility").forEach { modulePath ->
+              with(dependencies) {
+                add("compileOnly", project(mapOf("path" to modulePath)))
+                add("lintChecks", project(mapOf("path" to "$modulePath-check")))
+              }
             }
           }
         }
