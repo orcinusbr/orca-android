@@ -167,12 +167,11 @@ abstract class Replacer<E, S, P> : Collection<E> {
       selection == caching.on(it)
     }
 
-    @Suppress("UNCHECKED_CAST")
     return if (replacementIndex == -1) {
       val additionIndex = maxOf(0, index)
       append(None, additionIndex, element)
     } else {
-      replace(replacementIndex, element, selection as S)
+      @Suppress("UNCHECKED_CAST") replace(replacementIndex, element, selection as S)
     }
   }
 
