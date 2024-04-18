@@ -277,7 +277,7 @@ abstract class Replacer<E, S, P> : Collection<E> {
     }
 
     /**
-     * Provides a selector for comparing the elements' by their own structure, alongside the
+     * Provides a selector for comparing the elements by their own structure, alongside the
      * appropriate caching strategy for creating a [Replacer].
      *
      * For a [Replacer] of such a kind, caching selections would be unnecessary and rather
