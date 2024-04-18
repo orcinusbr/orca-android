@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023-2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,18 +13,22 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-plugins {
-  alias(libs.plugins.kotlin.jvm)
+package br.com.orcinus.orca.ext.coroutines.replacement
 
-  `java-library`
-}
+import org.junit.Assert.assertEquals
+import org.junit.Test
 
-dependencies {
-  api(libs.kotlin.coroutines.core)
+internal class ReplacementListTests {
+  @Test
+  fun adds() {
+    assertEquals(replacementListOf(0), emptyReplacementList<Int>().apply { add(0) })
+  }
 
-  testImplementation(project(":ext:reflection"))
-  testImplementation(libs.assertk)
-  testImplementation(libs.kotlin.coroutines.test)
-  testImplementation(libs.kotlin.test)
-  testImplementation(libs.turbine)
+  @Test
+  fun replaces() {
+    assertEquals(
+      replacementListOf("Hello,", "world!", selector = String::first),
+      replacementListOf("Hey,", "world!", selector = String::first).apply { add("Hello,") }
+    )
+  }
 }

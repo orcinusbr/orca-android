@@ -15,8 +15,7 @@
 
 package br.com.orcinus.orca.ext.coroutines
 
-import br.com.orcinus.orca.std.injector.module.replacement.MutableReplacementList
-import br.com.orcinus.orca.std.injector.module.replacement.mutableReplacementListOf
+import br.com.orcinus.orca.ext.coroutines.replacement.emptyReplacementList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -47,7 +46,7 @@ suspend fun <T> Flow<T>.await(): T {
  * @param transform Transformation to be made to the currently iterated element.
  */
 fun <I, O> Flow<Collection<I>>.flatMapEach(transform: suspend (I) -> Flow<O>): Flow<List<O>> {
-  return flatMapEach(accumulator = mutableReplacementListOf(), transform)
+  return flatMapEach(selector = { it }, transform)
 }
 
 /**
@@ -55,32 +54,16 @@ fun <I, O> Flow<Collection<I>>.flatMapEach(transform: suspend (I) -> Flow<O>): F
  * and folding them into an up-to-date [List] that gets emitted each time any of these [Flow]s
  * receive an emission.
  *
- * @param selector Provides the value by which each element should be compared when replaced.
+ * @param selector Returns the value by which elements should be compared when replacing them.
  * @param transform Transformation to be made to the currently iterated element.
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 fun <I, O, S> Flow<Collection<I>>.flatMapEach(
   selector: (O) -> S,
   transform: suspend (I) -> Flow<O>
 ): Flow<List<O>> {
-  return flatMapEach(accumulator = mutableReplacementListOf(selector = selector), transform)
-}
-
-/**
- * Maps each element of the emitted [Collection]s to the resulting [Flow] of [transform], merging
- * and folding them into an up-to-date [List] that gets emitted each time any of these [Flow]s
- * receive an emission.
- *
- * @param accumulator [MutableReplacementList] to which the elements in [Collection]s emitted to
- *   this [Flow] will be added.
- * @param transform Transformation to be made to the currently iterated element.
- */
-@OptIn(ExperimentalCoroutinesApi::class)
-private fun <I, O, S> Flow<Collection<I>>.flatMapEach(
-  accumulator: MutableReplacementList<O, S>,
-  transform: suspend (I) -> Flow<O>
-): Flow<List<O>> {
   return mapEach(transform).flatMapLatest { flows ->
-    flows.merge().runningFold(accumulator) { accumulator, element ->
+    flows.merge().runningFold(emptyReplacementList(selector)) { accumulator, element ->
       accumulator.add(element)
       accumulator
     }
