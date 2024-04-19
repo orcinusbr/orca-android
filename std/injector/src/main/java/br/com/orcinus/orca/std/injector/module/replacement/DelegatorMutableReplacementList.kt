@@ -33,7 +33,7 @@ private val structuralEqualityBasedSelector = { element: Any? -> element }
  * @param S Object with which comparison for determining whether an element gets either added or
  *   replaced is performed.
  * @param delegate [MutableList] to which this [DelegatorMutableReplacementList]'s functionality
- *   will be delegated, except for that of [onAddition].
+ *   will be delegated.
  */
 private class DelegatorMutableReplacementList<E, S>(
   private val delegate: MutableList<E>,
