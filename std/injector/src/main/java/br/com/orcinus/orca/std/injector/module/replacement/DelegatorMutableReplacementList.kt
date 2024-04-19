@@ -18,6 +18,14 @@ package br.com.orcinus.orca.std.injector.module.replacement
 import java.util.Objects
 
 /**
+ * Selector that returns the element that has been provided to it, denoting that comparisons in a
+ * [MutableReplacementList] should be performed by comparing its structure to another one's.
+ *
+ * @see MutableReplacementList.selector
+ */
+private val structuralEqualityBasedSelector = { element: Any? -> element }
+
+/**
  * Implementation of [MutableReplacementList] that delegates [MutableList]-like functionality to the
  * [delegate] and is returned by [mutableReplacementListOf].
  *
@@ -25,7 +33,7 @@ import java.util.Objects
  * @param S Object with which comparison for determining whether an element gets either added or
  *   replaced is performed.
  * @param delegate [MutableList] to which this [DelegatorMutableReplacementList]'s functionality
- *   will be delegated, except for that of [append].
+ *   will be delegated, except for that of [onAddition].
  */
 private class DelegatorMutableReplacementList<E, S>(
   private val delegate: MutableList<E>,
@@ -75,12 +83,8 @@ private class DelegatorMutableReplacementList<E, S>(
     super.clear()
   }
 
-  override fun append(placement: Any?, index: Int, element: E) {
+  override fun onAddition(index: Int, element: E) {
     delegate.add(index, element)
-  }
-
-  override fun onPreparationForReplacement(index: Int) {
-    removeAt(index)
   }
 
   override fun onClearance() {
@@ -91,6 +95,10 @@ private class DelegatorMutableReplacementList<E, S>(
 /**
  * Creates a [MutableReplacementList] with the given [elements].
  *
+ * Selection caching is disabled, given that it would be unnecessary and rather inefficient because
+ * these are just the elements on which the selector was invoked themselves; that means that they'd
+ * be stored not only once, but twice.
+ *
  * When denoting whether one of the elements should be replaced when a new one is being added, the
  * replacement and the current candidate over which iteration is taking place will be compared
  * structurally, meaning that it will be replaced when the replacement is passed into its
@@ -100,14 +108,24 @@ private class DelegatorMutableReplacementList<E, S>(
  * @param elements Elements to be added to the [MutableReplacementList].
  */
 fun <E> mutableReplacementListOf(vararg elements: E): MutableReplacementList<E, E> {
-  return Replacer.withStructuralEqualityBasedSelector { caching, selector ->
-    val delegate = mutableListOf(*elements)
-    DelegatorMutableReplacementList(delegate, caching, selector)
-  }
+  val delegate = mutableListOf(*elements)
+  @Suppress("UNCHECKED_CAST") val selector = structuralEqualityBasedSelector as (E) -> E
+  val caching = MutableReplacementList.Caching.Disabled(selector)
+  return DelegatorMutableReplacementList(delegate, caching, selector)
 }
 
 /**
  * Creates a [MutableReplacementList] with the given [elements].
+ *
+ * Selection caching is enabled, meaning that each selector invocation result is associated to the
+ * element on which it was performed, allowing for it to be later retrieved when, for example,
+ * comparing an element in the [MutableReplacementList] to another one that may or may not be in it
+ * via [contains].
+ *
+ * In case the specified [selector] merely returns the element over which iteration takes place
+ * itself, the [mutableReplacementListOf] creator method *without* a selector parameter should be
+ * called to create the [MutableReplacementList] instead, given that it disables caching that would
+ * otherwise be unnecessary and inefficient and already overrides such selector.
  *
  * @param E Element to be contained.
  * @param S Object with which comparison for determining whether an element gets either added or
@@ -119,8 +137,7 @@ fun <E, S> mutableReplacementListOf(
   vararg elements: E,
   selector: (E) -> S
 ): MutableReplacementList<E, S> {
-  return Replacer.withCustomSelector(selector) {
-    val delegate = mutableListOf(*elements)
-    DelegatorMutableReplacementList(delegate, it, selector)
-  }
+  val delegate = mutableListOf(*elements)
+  val caching = MutableReplacementList.Caching.Enabled(selector)
+  return DelegatorMutableReplacementList(delegate, caching, selector)
 }
