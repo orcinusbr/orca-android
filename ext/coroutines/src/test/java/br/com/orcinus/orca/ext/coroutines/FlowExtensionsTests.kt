@@ -52,6 +52,18 @@ internal class FlowExtensionsTests {
   }
 
   @Test
+  fun flatMapsEach() {
+    runTest {
+      flowOf(listOf(2, 4), listOf(16, 256))
+        .flatMapEach { flowOf(it * it) }
+        .test {
+          assertThat(awaitItem()).containsExactly(4, 16, 256, 65_536)
+          awaitComplete()
+        }
+    }
+  }
+
+  @Test
   fun mapsEach() {
     runTest {
       flowOf(listOf(2, 4))

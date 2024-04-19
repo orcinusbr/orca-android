@@ -36,7 +36,8 @@ abstract class MutableReplacementList<E, S> internal constructor() :
    *   replaced.
    */
   override fun add(element: E): Boolean {
-    add(lastIndex, element)
+    val index = lastIndex.inc()
+    add(index, element)
     return true
   }
 

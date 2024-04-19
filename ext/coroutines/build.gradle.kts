@@ -22,6 +22,8 @@ plugins {
 dependencies {
   api(libs.kotlin.coroutines.core)
 
+  implementation(project(":std:injector"))
+
   testImplementation(project(":ext:reflection"))
   testImplementation(libs.assertk)
   testImplementation(libs.kotlin.coroutines.test)
