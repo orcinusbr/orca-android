@@ -26,11 +26,11 @@ package br.com.orcinus.orca.std.injector.module.replacement
  * @see place
  */
 abstract class Replacer<E, S, P> : Collection<E> {
-  /** Defines the caching behavior for invocations of the [selector] on same elements. */
-  internal abstract val caching: Caching<E, S>
-
   /** Provides the value by which each element should be compared when replaced. */
   internal abstract val selector: (E) -> S
+
+  /** Defines the caching behavior for invocations of the [selector] on same elements. */
+  abstract val caching: Caching<E, S>
 
   /**
    * Strategy for dealing with selections of same elements.
@@ -89,7 +89,7 @@ abstract class Replacer<E, S, P> : Collection<E> {
      *
      * @param element Element whose selection may or may not be cached.
      */
-    internal abstract fun on(element: E): S
+    abstract fun on(element: E): S
 
     /**
      * Removes the selection that has been performed on the [element].
