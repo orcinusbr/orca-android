@@ -26,7 +26,7 @@ package br.com.orcinus.orca.std.injector.module.replacement
  * @see replace
  */
 abstract class MutableReplacementList<E, S> internal constructor() :
-  Replacer<E, S, Unit>(), MutableList<E> {
+  Replacer<E, S>(), MutableList<E> {
   /**
    * Either adds the given [element] to the end of this [MutableReplacementList] or replaces the
    * existing one that matches it based on its [selector], placing it at the same index at which the

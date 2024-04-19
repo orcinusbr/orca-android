@@ -18,7 +18,7 @@ package br.com.orcinus.orca.std.injector.module.replacement
 internal class EmptyReplacer<E, S>(
   override val caching: Caching<E, S>,
   override val selector: (E) -> S
-) : Replacer<E, S, Unit>() {
+) : Replacer<E, S>() {
   override val size = 0
 
   override fun iterator(): Iterator<E> {

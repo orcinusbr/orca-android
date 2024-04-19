@@ -22,10 +22,9 @@ package br.com.orcinus.orca.std.injector.module.replacement
  * @param E Element to be contained.
  * @param S Object with which comparison for determining whether an element gets either added or
  *   replaced is performed.
- * @param P Result of either appending or removing an element.
  * @see place
  */
-abstract class Replacer<E, S, P> : Collection<E> {
+abstract class Replacer<E, S> : Collection<E> {
   /** Defines the caching behavior for invocations of the [selector] on same elements. */
   internal abstract val caching: Caching<E, S>
 
@@ -155,10 +154,8 @@ abstract class Replacer<E, S, P> : Collection<E> {
    *
    * @param index Index at which the element may be added.
    * @param element Element to be place.
-   * @return Result of having placed the [element] at the [index] or [None] when it hasn't been
-   *   placed at all.
    */
-  protected fun place(index: Int, element: E): Any? {
+  protected fun place(index: Int, element: E) {
     var selection: Any? = None
     val replacementIndex = indexOfFirst {
       if (selection === None) {
@@ -166,8 +163,8 @@ abstract class Replacer<E, S, P> : Collection<E> {
       }
       selection == caching.on(it)
     }
-
-    return if (replacementIndex == -1) {
+    val isNonexistent = replacementIndex == -1
+    if (isNonexistent) {
       val additionIndex = maxOf(0, index)
       append(None, additionIndex, element)
     } else {
@@ -178,24 +175,18 @@ abstract class Replacer<E, S, P> : Collection<E> {
   /**
    * Appends the [element].
    *
-   * @param placement Result of the previous element that has been either appended or prepared for
-   *   replacement. Can be either [P] (in the previously described scenario) or [None] when there
-   *   hasn't been a placement prior to this one.
    * @param index Index at which the element *should* be added.
    * @param element Element to be appended.
-   * @return Result of having appended the [element] at the [index].
    */
-  protected abstract fun append(placement: Any?, index: Int, element: E): P
+  protected abstract fun append(placement: Any?, index: Int, element: E)
 
   /**
    * Callback that gets called when the element at the [index] is requested to be prepared for an
    * upcoming replacement.
    *
    * @param index Index at which the element to be replaced is.
-   * @return Result of having prepared the element at the [index] to have another one being added to
-   *   where it currently is.
    */
-  protected abstract fun onPreparationForReplacement(index: Int): P
+  protected abstract fun onPreparationForReplacement(index: Int)
 
   /**
    * Removes the results of [selector] invocations on elements that have been iterated through,
@@ -212,10 +203,8 @@ abstract class Replacer<E, S, P> : Collection<E> {
    * @param index Index at which the element to be replaced is.
    * @param element Element by which the matching one will be replaced.
    * @param selection Result of invoking the [selector] on the [element].
-   * @return Result of having replaced the element at the [index] by the given one or [None] when no
-   *   matching one is found.
    */
-  private fun replace(index: Int, element: E, selection: S): Any? {
+  private fun replace(index: Int, element: E, selection: S) {
     for (candidateIndex in indices) {
       val candidate = elementAt(candidateIndex)
       val isReplaceable = caching.on(candidate) == selection
@@ -224,7 +213,6 @@ abstract class Replacer<E, S, P> : Collection<E> {
         return append(preparedForReplacement, index, element)
       }
     }
-    return None
   }
 
   /**
@@ -232,10 +220,8 @@ abstract class Replacer<E, S, P> : Collection<E> {
    *
    * @param index Index at which the [element] is.
    * @param element Element to soon be replaced.
-   * @return Result of having prepared the element at the [index] to have another one being added to
-   *   where it currently is.
    */
-  private fun prepareForReplacement(index: Int, element: E): Any? {
+  private fun prepareForReplacement(index: Int, element: E) {
     caching.remove(element)
     return onPreparationForReplacement(index)
   }
@@ -264,11 +250,15 @@ abstract class Replacer<E, S, P> : Collection<E> {
      * instead, given that it disables caching that would otherwise be unnecessary and inefficient
      * and already provides such selector.
      *
+     * @param E Element to be contained.
+     * @param S Object with which comparison for determining whether an element gets either added or
+     *   replaced is performed.
+     * @param R [Replacer] to be created.
      * @param selector Provides the value by which each element should be compared when replaced.
      * @param creation Creates the [Replacer] with the given [Caching].
      * @see Replacer.selector
      */
-    fun <E, S, R : Replacer<E, S, *>> withCustomSelector(
+    fun <E, S, R : Replacer<E, S>> withCustomSelector(
       selector: (E) -> S,
       creation: (Caching<E, S>) -> R
     ): R {
@@ -284,11 +274,13 @@ abstract class Replacer<E, S, P> : Collection<E> {
      * inefficient because these are just the elements on which the selector was invoked themselves;
      * that means that they'd be stored not only once, but twice.
      *
+     * @param E Element to be contained.
+     * @param R [Replacer] to be created.
      * @param creation Creates the [Replacer] with the given [Caching] and structural-equality-based
      *   selector.
      * @see Replacer.selector
      */
-    fun <E, R : Replacer<E, E, *>> withStructuralEqualityBasedSelector(
+    fun <E, R : Replacer<E, E>> withStructuralEqualityBasedSelector(
       creation: (Caching<E, E>, selector: (E) -> E) -> R
     ): R {
       @Suppress("UNCHECKED_CAST") val selector = structuralEqualityBasedSelector as (E) -> E
