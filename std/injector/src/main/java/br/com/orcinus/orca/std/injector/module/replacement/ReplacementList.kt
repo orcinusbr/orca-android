@@ -28,27 +28,9 @@ import java.util.Objects
 private val structuralEqualityBasedSelector = { element: Any? -> element }
 
 /**
- * [MutableList] that replaces a given element when its selector matches that of the other one being
- * added, maintaining its index.
- *
- * @param E Element to be contained.
- * @param S Object with which comparison for determining whether an element gets either added or
- *   replaced is performed.
- * @see ReplacementList.selector
- */
-@Deprecated(
-  message = "`MutableReplacementList` has been renamed to \"ReplacementList\".",
-  ReplaceWith(
-    "ReplacementList<E, S>",
-    "br.com.orcinus.orca.std.injector.module.replacement.ReplacementList"
-  )
-)
-typealias MutableReplacementList<E, S> = ReplacementList<E, S>
-
-/**
  * Implementation of [ReplacementList] that delegates [MutableList]-like functionality to the
- * [delegate] and is returned by [replacementListOf]. Conflicting overrides should all fall back to
- * [ReplacementList]'s behavior.
+ * pre-populated [delegate] and is returned by [replacementListOf]. Conflicting overrides should all
+ * fall back to [ReplacementList]'s behavior.
  *
  * @param E Element to be contained.
  * @param S Object with which comparison for determining whether an element gets either added or
@@ -117,10 +99,10 @@ private class DelegatorReplacementList<E, S>(
  * being added, maintaining its index.
  *
  * @param E Element to be contained.
- * @param S Object with which comparison for determining whether an element gets either added or
+ * @param S Object with which comparison for determining whether an element gets either appended or
  *   replaced is performed.
  */
-abstract class ReplacementList<E, S> internal constructor() : MutableList<E> {
+private abstract class ReplacementList<E, S> : MutableList<E> {
   /** Defines the caching behavior for invocations of the [selector] on same elements. */
   protected abstract val caching: Caching<E, S>
 
@@ -144,7 +126,7 @@ abstract class ReplacementList<E, S> internal constructor() : MutableList<E> {
      * @param S Result of selecting an element.
      * @param selector Selects an element.
      */
-    class Disabled<E, S> internal constructor(private val selector: (E) -> S) : Caching<E, S>() {
+    class Disabled<E, S>(private val selector: (E) -> S) : Caching<E, S>() {
       override fun on(element: E): S {
         return selector(element)
       }
@@ -162,7 +144,7 @@ abstract class ReplacementList<E, S> internal constructor() : MutableList<E> {
      * @param S Result of selecting an element.
      * @param selector Selects an element.
      */
-    class Enabled<E, S> internal constructor(private val selector: (E) -> S) : Caching<E, S>() {
+    class Enabled<E, S>(private val selector: (E) -> S) : Caching<E, S>() {
       /**
        * Selections (meaning the result of invoking the [selector] on an element) that have already
        * been performed.
@@ -369,79 +351,21 @@ abstract class ReplacementList<E, S> internal constructor() : MutableList<E> {
 }
 
 /**
- * Creates a [ReplacementList] with the given [elements].
+ * Creates a replacement [MutableList].
  *
- * Selection caching is disabled, given that it would be unnecessary and rather inefficient because
- * selecting the elements would just return the elements on which the selector was invoked
- * themselves; that means that they'd be stored not only once, but twice.
+ * Posteriorly adding elements to it can produce one of two possible outcomes: either the element
+ * will replace a previously existing one when they're structurally equal, being put at the same
+ * index at which the matching one was, or it will get appended.
  *
- * When denoting whether one of the elements should be replaced when a new one is being added, the
- * replacement and the current candidate over which iteration is taking place will be compared
- * structurally, meaning that it will be replaced when the replacement is passed into its
- * [Any.equals] method and it returns `true`.
- *
- * @param E Element to be contained.
- * @param elements Elements to be added to the [ReplacementList].
- * @see ReplacementList.selector
- */
-@Deprecated(
-  message = "`MutableReplacementList` has been renamed to \"ReplacementList\".",
-  ReplaceWith(
-    "replacementListOf(*elements)",
-    "br.com.orcinus.orca.std.injector.module.replacement.replacementListOf"
-  )
-)
-fun <E> mutableReplacementListOf(vararg elements: E): ReplacementList<E, E> {
-  return replacementListOf(*elements)
-}
-
-/**
- * Creates a [ReplacementList] with the given [elements].
- *
- * Selection caching is enabled, meaning that each [selector] invocation result is associated to the
- * element on which it was performed, allowing for it to be later retrieved when, for example,
- * comparing an element to another one that may or may not be in the [ReplacementList] via
- * [contains].
- *
- * In case the specified [selector] merely returns the element on which iteration takes place
- * itself, the [mutableReplacementListOf] creator method *without* a selector parameter should be
- * called instead, given that it disables caching that would otherwise be unnecessary and
- * inefficient and already overrides such selector.
+ * In case the elements need to be compared by anything other than their own structures, the
+ * [replacementListOf] creator method that requires a selector to be passed in should be called
+ * instead, as it provides this lambda that allows for returning the value based on which
+ * element-to-element comparison should be performed.
  *
  * @param E Element to be contained.
- * @param S Object with which comparison for determining whether an element gets either added or
- *   replaced is performed.
- * @param elements Elements to be added to the [ReplacementList].
- * @param selector Provides the value by which each element should be compared when replaced.
+ * @param elements Elements to be added to the replacement [MutableList].
  */
-@Deprecated(
-  message = "`MutableReplacementList` has been renamed to \"ReplacementList\".",
-  ReplaceWith(
-    "replacementListOf(*elements, selector = selector)",
-    "br.com.orcinus.orca.std.injector.module.replacement.replacementListOf"
-  )
-)
-fun <E, S> mutableReplacementListOf(vararg elements: E, selector: (E) -> S): ReplacementList<E, S> {
-  return replacementListOf(*elements, selector = selector)
-}
-
-/**
- * Creates a [ReplacementList] with the given [elements].
- *
- * Selection caching is disabled, given that it would be unnecessary and rather inefficient because
- * selecting the elements would just return the elements on which the selector was invoked
- * themselves; that means that they'd be stored not only once, but twice.
- *
- * When denoting whether one of the elements should be replaced when a new one is being added, the
- * replacement and the current candidate over which iteration is taking place will be compared
- * structurally, meaning that it will be replaced when the replacement is passed into its
- * [Any.equals] method and it returns `true`.
- *
- * @param E Element to be contained.
- * @param elements Elements to be added to the [ReplacementList].
- * @see ReplacementList.selector
- */
-fun <E> replacementListOf(vararg elements: E): ReplacementList<E, E> {
+fun <E> replacementListOf(vararg elements: E): MutableList<E> {
   val delegate = mutableListOf(*elements)
   @Suppress("UNCHECKED_CAST") val selector = structuralEqualityBasedSelector as (E) -> E
   val caching = ReplacementList.Caching.Disabled(selector)
@@ -449,12 +373,12 @@ fun <E> replacementListOf(vararg elements: E): ReplacementList<E, E> {
 }
 
 /**
- * Creates a [ReplacementList] with the given [elements].
+ * Creates a replacement [MutableList].
  *
- * Selection caching is enabled, meaning that each [selector] invocation result is associated to the
- * element on which it was performed, allowing for it to be later retrieved when, for example,
- * comparing an element to another one that may or may not be in the [ReplacementList] via
- * [contains].
+ * Posteriorly adding elements to it can produce one of two possible outcomes: either the element
+ * will replace a previously existing one when their selections (which is the result of invoking the
+ * [selector] on them) are equal, being put at the same index at which the matching one was, or it
+ * will get appended.
  *
  * In case the specified [selector] merely returns the element on which iteration takes place
  * itself, the [replacementListOf] creator method *without* a selector parameter should be called
@@ -462,12 +386,12 @@ fun <E> replacementListOf(vararg elements: E): ReplacementList<E, E> {
  * already overrides such selector.
  *
  * @param E Element to be contained.
- * @param S Object with which comparison for determining whether an element gets either added or
+ * @param S Object with which comparison for determining whether an element gets either appended or
  *   replaced is performed.
  * @param elements Elements to be added to the [ReplacementList].
  * @param selector Provides the value by which each element should be compared when replaced.
  */
-fun <E, S> replacementListOf(vararg elements: E, selector: (E) -> S): ReplacementList<E, S> {
+fun <E, S> replacementListOf(vararg elements: E, selector: (E) -> S): MutableList<E> {
   val delegate = mutableListOf(*elements)
   val caching = ReplacementList.Caching.Enabled(selector)
   return DelegatorReplacementList(delegate, caching, selector)

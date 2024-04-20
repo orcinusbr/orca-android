@@ -15,12 +15,11 @@
 
 package br.com.orcinus.orca.ext.coroutines
 
-import br.com.orcinus.orca.std.injector.module.replacement.MutableReplacementList
-import br.com.orcinus.orca.std.injector.module.replacement.mutableReplacementListOf
+import br.com.orcinus.orca.std.injector.module.replacement.replacementListOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.map
@@ -48,7 +47,7 @@ suspend fun <T> Flow<T>.await(): T {
  * @param transform Transformation to be made to the currently iterated element.
  */
 fun <I, O> Flow<Collection<I>>.flatMapEach(transform: suspend (I) -> Flow<O>): Flow<List<O>> {
-  return flatMapEach(accumulator = mutableReplacementListOf(), transform)
+  return flatMapEach(accumulator = replacementListOf(), transform)
 }
 
 /**
@@ -63,7 +62,7 @@ fun <I, O, S> Flow<Collection<I>>.flatMapEach(
   selector: (O) -> S,
   transform: suspend (I) -> Flow<O>
 ): Flow<List<O>> {
-  return flatMapEach(accumulator = mutableReplacementListOf(selector = selector), transform)
+  return flatMapEach(accumulator = replacementListOf(selector = selector), transform)
 }
 
 /**
@@ -71,19 +70,20 @@ fun <I, O, S> Flow<Collection<I>>.flatMapEach(
  * and folding them into an up-to-date [List] that gets emitted each time any of these [Flow]s
  * receive an emission.
  *
- * @param accumulator [MutableReplacementList] to which the elements in [Collection]s emitted to
- *   this [Flow] will be added.
+ * @param accumulator [MutableList] to which the elements in [Collection]s emitted to this [Flow]
+ *   will be added.
  * @param transform Transformation to be made to the currently iterated element.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-private fun <I, O, S> Flow<Collection<I>>.flatMapEach(
-  accumulator: MutableReplacementList<O, S>,
+private fun <I, O> Flow<Collection<I>>.flatMapEach(
+  accumulator: MutableList<O>,
   transform: suspend (I) -> Flow<O>
 ): Flow<List<O>> {
   return mapEach { transform(it).onEach(accumulator::add).map { accumulator } }
-    .map(List<Flow<MutableReplacementList<O, S>>>::merge)
+    .map(List<Flow<MutableList<O>>>::merge)
     .flattenMerge()
-    .distinctUntilChangedBy(MutableReplacementList<O, S>::toList)
+    .map(MutableList<O>::toList)
+    .distinctUntilChanged()
 }
 
 /**
