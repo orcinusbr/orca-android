@@ -19,7 +19,7 @@ import br.com.orcinus.orca.std.injector.module.injection.Injection
 import br.com.orcinus.orca.std.injector.module.injection.SomeInjection
 import br.com.orcinus.orca.std.injector.module.injection.immediateInjectionOf
 import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
-import br.com.orcinus.orca.std.injector.module.replacement.mutableReplacementListOf
+import br.com.orcinus.orca.std.injector.module.replacement.replacementListOf
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -29,7 +29,7 @@ import kotlin.reflect.KClass
 abstract class Module {
   /** [Injection]s that have been created. */
   @PublishedApi
-  internal val injections = mutableReplacementListOf(selector = SomeInjection::dependencyClass)
+  internal val injections = replacementListOf(selector = SomeInjection::dependencyClass)
 
   /**
    * [NoSuchElementException] thrown if a dependency that hasn't been injected is requested to be
