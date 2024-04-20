@@ -15,10 +15,10 @@
 
 package br.com.orcinus.orca.std.visibility.check.detection
 
-import br.com.orcinus.orca.std.visibility.PackageProtected
 import com.android.tools.lint.detector.api.UastLintUtils.Companion.tryResolveUDeclaration
 import com.android.utils.associateWithNotNull
 import com.android.utils.mapValuesNotNull
+import org.jetbrains.uast.UAnnotation
 import org.jetbrains.uast.UDeclaration
 import org.jetbrains.uast.UExpression
 import org.jetbrains.uast.getContainingDeclaration
@@ -30,8 +30,9 @@ import org.jetbrains.uast.getContainingDeclaration
  *
  * @param action Operation to be run on the [UExpression]s that both contain references to
  *   package-protected structures and are from packages that are unrelated to those of the
- *   structures, alongside the custom message that has been specified by the [PackageProtected]
- *   annotation with which these structures' [UDeclaration]s have been annotated.
+ *   structures, alongside the custom message that has been specified by the [UAnnotation] that
+ *   changes the visibility to package-protected with which these structures' [UDeclaration]s have
+ *   been annotated.
  * @see tryResolveUDeclaration
  * @see UDeclaration.findPackageProtectedAnnotation
  */
@@ -45,7 +46,7 @@ internal fun Iterable<UExpression>
         if (expression.isFromPackageOutsideOfThatOf(declaration)) {
           declaration
             .findPackageProtectedAnnotation()
-            ?.findAttributeValue(PackageProtected::message.name)
+            ?.findAttributeValue("message")
             ?.evaluate()
             ?.toString()
         } else {

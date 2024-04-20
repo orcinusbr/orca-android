@@ -22,7 +22,7 @@ import com.android.tools.lint.detector.api.CURRENT_API
 
 /**
  * [IssueRegistry] containing the [PackageProtectedDetector.issue], which characterizes problems of
- * accesses to structures that have been marked as package-protected from outside of the module in
+ * references to structures that have been marked as package-protected from outside of the module in
  * which they have been declared or any of its children.
  */
 @Suppress("unused")

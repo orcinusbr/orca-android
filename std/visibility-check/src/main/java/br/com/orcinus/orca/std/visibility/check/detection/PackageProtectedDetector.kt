@@ -15,7 +15,6 @@
 
 package br.com.orcinus.orca.std.visibility.check.detection
 
-import br.com.orcinus.orca.std.visibility.PackageProtected
 import com.android.tools.lint.detector.api.AnnotationInfo
 import com.android.tools.lint.detector.api.AnnotationUsageInfo
 import com.android.tools.lint.detector.api.Category
@@ -37,9 +36,6 @@ import org.jetbrains.uast.getQualifiedChain
  * (i. e., a class marked as package-protected declared at `br.com.orcinus.orca.core` can be
  * accessed from `br.com.orcinus.orca.core` and `br.com.orcinus.orca.core.sample`, but shouldn't be
  * accessed from `br.com.orcinus.orca.app`).
- *
- * A structure is considered to have package-protected visibility if it's annotated with
- * [PackageProtected].
  */
 internal class PackageProtectedDetector : Detector(), SourceCodeScanner {
   override fun visitAnnotationUsage(
@@ -55,7 +51,7 @@ internal class PackageProtectedDetector : Detector(), SourceCodeScanner {
   }
 
   override fun applicableAnnotations(): List<String> {
-    return listOfNotNull(PackageProtected::class.qualifiedName)
+    return listOfNotNull(PACKAGE_PROTECTED_ANNOTATION_NAME)
   }
 
   override fun getApplicableUastTypes(): List<Class<UExpression>> {
@@ -67,7 +63,7 @@ internal class PackageProtectedDetector : Detector(), SourceCodeScanner {
    * been declared or its children in each of the qualified [UExpression]s within the [expression].
    *
    * @param context [JavaContext] through which qualified [UExpression]s that refer to
-   *   package-private structures from outside packages will be obtained from the [expression].
+   *   package-protected structures from outside packages will be obtained from the [expression].
    * @param expression [UExpression] to be checked.
    * @see Iterable.withResolvedToDeclarationMarkedAsPackageProtectedReferencedFromOutsidePackage
    */

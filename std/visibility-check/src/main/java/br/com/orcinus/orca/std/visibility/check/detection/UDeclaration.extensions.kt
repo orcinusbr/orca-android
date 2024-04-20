@@ -15,20 +15,25 @@
 
 package br.com.orcinus.orca.std.visibility.check.detection
 
-import br.com.orcinus.orca.std.visibility.PackageProtected
 import com.android.tools.lint.detector.api.UastLintUtils.Companion.tryResolveUDeclaration
 import org.jetbrains.uast.UAnnotation
 import org.jetbrains.uast.UDeclaration
 
 /**
- * Obtains the [UAnnotation] of [PackageProtected] if this [UDeclaration] is of a structure that has
- * been annotated with it or with a [UAnnotation] that extends [PackageProtected], denoting that
- * references from a package that isn't the one in which this [UDeclaration] is should be reported.
+ * Qualified name of the annotation for changing the visibility of a structure to package-protected.
+ */
+internal const val PACKAGE_PROTECTED_ANNOTATION_NAME =
+  "br.com.orcinus.orca.std.visibility.PackageProtected"
+
+/**
+ * Obtains the [UAnnotation] that makes a structure be package-protected if this [UDeclaration] is
+ * of a structure that has been annotated with it or with another [UAnnotation] that extends that
+ * one, denoting that references from a package that isn't the one in which this [UDeclaration] is
+ * should be reported.
  */
 internal fun UDeclaration.findPackageProtectedAnnotation(): UAnnotation? {
-  val annotationName = PackageProtected::class.qualifiedName ?: return null
-  return findAnnotation(annotationName)
+  return findAnnotation(PACKAGE_PROTECTED_ANNOTATION_NAME)
     ?: uAnnotations
       .mapNotNull { it.tryResolveUDeclaration() }
-      .firstNotNullOfOrNull { it.findAnnotation(annotationName) }
+      .firstNotNullOfOrNull { it.findAnnotation(PACKAGE_PROTECTED_ANNOTATION_NAME) }
 }
