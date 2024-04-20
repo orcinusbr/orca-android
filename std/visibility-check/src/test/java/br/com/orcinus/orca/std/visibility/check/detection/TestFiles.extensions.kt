@@ -15,25 +15,28 @@
 
 package br.com.orcinus.orca.std.visibility.check.detection
 
-import br.com.orcinus.orca.std.visibility.PackageProtected
 import com.android.tools.lint.checks.infrastructure.TestFile
 import com.android.tools.lint.checks.infrastructure.TestFiles
 
-/** [TestFile] in which a [PackageProtected]-like [Annotation] is declared. */
+internal const val DEFAULT_MESSAGE =
+  "This structure is package-protected and is not intended to be referenced by outside " +
+    "packages."
+
+/** [TestFile] in which an [Annotation] for marking a structure as package-protected is declared. */
 internal val TestFiles.packageProtectedAnnotation
   get() =
     kotlin(
         """
           package br.com.orcinus.orca.std.visibility
 
-          annotation class PackageProtected(val message: String = "${PackageProtected.DEFAULT_MESSAGE}")
+          annotation class PackageProtected(val message: String = "$DEFAULT_MESSAGE")
         """
       )
       .indented()
 
 /**
- * [TestFile] in which an [Annotation] that is annotated with the [PackageProtected]-like one from
- * [TestFiles.packageProtectedAnnotation] is declared.
+ * [TestFile] in which an [Annotation] that is annotated with the [Annotation] for marking a
+ * structure as package-protected from [TestFiles.packageProtectedAnnotation] is declared.
  */
 internal val TestFiles.packageProtectedAnnotatedAnnotation
   get() =

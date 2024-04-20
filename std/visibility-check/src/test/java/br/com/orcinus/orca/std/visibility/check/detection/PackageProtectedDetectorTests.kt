@@ -15,7 +15,6 @@
 
 package br.com.orcinus.orca.std.visibility.check.detection
 
-import br.com.orcinus.orca.std.visibility.PackageProtected
 import com.android.tools.lint.checks.infrastructure.TestFiles
 import com.android.tools.lint.checks.infrastructure.TestLintTask
 import kotlin.test.Test
@@ -57,7 +56,7 @@ internal class PackageProtectedDetectorTests {
       .run()
       .expect(
         """
-          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: ${PackageProtected.DEFAULT_MESSAGE} [${PackageProtectedDetector.issue.id}]
+          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: $DEFAULT_MESSAGE [${PackageProtectedDetector.issue.id}]
               Api()
               ~~~~~
           1 errors, 0 warnings
@@ -140,7 +139,7 @@ internal class PackageProtectedDetectorTests {
       .run()
       .expect(
         """
-          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: ${PackageProtected.DEFAULT_MESSAGE} [${PackageProtectedDetector.issue.id}]
+          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: $DEFAULT_MESSAGE [${PackageProtectedDetector.issue.id}]
               Api()
               ~~~~~
           1 errors, 0 warnings
@@ -362,7 +361,7 @@ internal class PackageProtectedDetectorTests {
       .run()
       .expect(
         """
-          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: ${PackageProtected.DEFAULT_MESSAGE} [${PackageProtectedDetector.issue.id}]
+          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: $DEFAULT_MESSAGE [${PackageProtectedDetector.issue.id}]
               Api()
               ~~~~~
           1 errors, 0 warnings
@@ -443,7 +442,7 @@ internal class PackageProtectedDetectorTests {
       .run()
       .expect(
         """
-          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: ${PackageProtected.DEFAULT_MESSAGE} [${PackageProtectedDetector.issue.id}]
+          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: $DEFAULT_MESSAGE [${PackageProtectedDetector.issue.id}]
               Api()
               ~~~~~
           1 errors, 0 warnings
@@ -595,7 +594,7 @@ internal class PackageProtectedDetectorTests {
       .run()
       .expect(
         """
-          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: ${PackageProtected.DEFAULT_MESSAGE} [${PackageProtectedDetector.issue.id}]
+          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: $DEFAULT_MESSAGE [${PackageProtectedDetector.issue.id}]
               Api().call()
               ~~~~~~~~~~~~
           1 errors, 0 warnings
@@ -684,7 +683,7 @@ internal class PackageProtectedDetectorTests {
       .run()
       .expect(
         """
-          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: ${PackageProtected.DEFAULT_MESSAGE} [${PackageProtectedDetector.issue.id}]
+          src/br/com/orcinus/orca/app/Consumer.kt:7: Error: $DEFAULT_MESSAGE [${PackageProtectedDetector.issue.id}]
               Api().call()
               ~~~~~~~~~~~~
           1 errors, 0 warnings
