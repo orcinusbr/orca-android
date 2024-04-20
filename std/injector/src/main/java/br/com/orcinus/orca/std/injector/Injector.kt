@@ -18,16 +18,18 @@ package br.com.orcinus.orca.std.injector
 import br.com.orcinus.orca.ext.reflection.access
 import br.com.orcinus.orca.std.injector.module.Module
 import br.com.orcinus.orca.std.injector.module.binding.Binding
-import br.com.orcinus.orca.std.injector.module.binding.SomeBinding
 import br.com.orcinus.orca.std.injector.module.binding.boundTo
-import br.com.orcinus.orca.std.injector.module.replacement.replacementListOf
 import kotlin.reflect.KClass
 import kotlin.reflect.full.memberProperties
 
 /** [Module] that enables global [Module] and dependency injection. */
 object Injector : Module() {
-  /** [Binding]s that have been registered. */
-  @PublishedApi internal val bindings = replacementListOf(selector = SomeBinding::base)
+  /**
+   * [Binding]s that have been registered, associated to their base [KClass].
+   *
+   * @see Binding.base
+   */
+  @PublishedApi internal val bindings = hashMapOf<KClass<out Module>, Module>()
 
   /** [IllegalArgumentException] thrown if the [Injector] registers itself. */
   class SelfRegistrationException @PublishedApi internal constructor() :
@@ -88,8 +90,8 @@ object Injector : Module() {
    */
   @Throws(ModuleNotRegisteredException::class)
   inline fun <reified T : Module> from(): T {
-    return if (T::class != Injector::class) {
-      bindings.find { T::class in it }?.target as T? ?: throw ModuleNotRegisteredException(T::class)
+    return if (T::class != this::class) {
+      bindings[T::class] as T? ?: throw ModuleNotRegisteredException(T::class)
     } else {
       throw SelfRetrievalException()
     }
@@ -103,12 +105,11 @@ object Injector : Module() {
    */
   @Throws(ModuleNotRegisteredException::class)
   inline fun <reified T : Module> unregister() {
-    bindings.find { T::class in it }?.let(bindings::remove)
-      ?: throw ModuleNotRegisteredException(T::class)
+    bindings.remove(T::class) ?: throw ModuleNotRegisteredException(T::class)
   }
 
   override fun onClear() {
-    bindings.map(SomeBinding::target).forEach(Module::clear)
+    bindings.values.forEach(Module::clear)
     bindings.clear()
   }
 
@@ -124,8 +125,10 @@ object Injector : Module() {
   internal inline fun <B : Module, reified A : B> registerWithoutSelfRegistrationInsurance(
     binding: Binding<B, A>
   ) {
-    bindings.add(binding)
-    injectDependenciesOf(binding.target)
+    val target = binding.target
+    bindings[binding.base] = target
+    bindings[binding.alias] = target
+    injectDependenciesOf(target)
   }
 
   /**
