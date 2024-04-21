@@ -15,7 +15,7 @@
 
 package br.com.orcinus.orca.ext.coroutines
 
-import br.com.orcinus.orca.std.injector.module.replacement.replacementListOf
+import br.com.orcinus.orca.ext.coroutines.replacement.replacementListOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
