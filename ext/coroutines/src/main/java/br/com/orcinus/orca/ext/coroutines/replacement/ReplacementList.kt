@@ -73,24 +73,29 @@ private class DelegatorReplacementList<E, S>(
     return super.addAll(elements)
   }
 
-  override fun add(index: Int, element: E) {
-    super.add(index, element)
-  }
-
   override fun addAll(index: Int, elements: Collection<E>): Boolean {
     return super.addAll(index, elements)
   }
 
+  override fun add(index: Int, element: E) {
+    super.add(index, element)
+  }
+
+  override fun removeAll(elements: Collection<E>): Boolean {
+    return super.removeAll(elements)
+  }
+
+  override fun remove(element: E): Boolean {
+    return super.remove(element)
+  }
+
   override fun clear() {
     super.clear()
-  }
-
-  override fun onAddition(index: Int, element: E) {
-    delegate.add(index, element)
-  }
-
-  override fun onClearance() {
     delegate.clear()
+  }
+
+  override fun append(index: Int, element: E) {
+    delegate.add(index, element)
   }
 }
 
@@ -263,31 +268,69 @@ private abstract class ReplacementList<E, S> : MutableList<E> {
   }
 
   /**
-   * Removes both all of the elements in this [ReplacementList] and the results of [selector]
-   * invocations on elements that have been iterated through, denoting that these selections should
-   * be computed again the next time a comparison operation is performed on the elements themselves.
+   * Removes all of the [elements] by comparing the result of having invoked the [selector] on them
+   * to those of the existing ones in this [ReplacementList].
+   *
+   * @param elements Elements to be removed.
+   * @return Whether all of the [elements] have been removed.
    */
-  override fun clear() {
-    caching.clear()
-    onClearance()
+  override fun removeAll(elements: Collection<E>): Boolean {
+    var haveBeenRemoved = elements.isNotEmpty()
+    for (innerIndex in elements.indices) {
+      val element = elements.elementAt(innerIndex)
+      val hasNotBeenRemoved = !remove(element)
+      if (hasNotBeenRemoved) {
+        haveBeenRemoved = false
+      }
+    }
+    return haveBeenRemoved
   }
 
   /**
-   * Callback that gets called when the [element] is requested to be added.
+   * Removes the [element] by comparing the result of having invoked the [selector] on it to those
+   * of the existing ones in this [ReplacementList].
    *
-   * @param index Index at which the element *should* be added.
-   * @param element Element to be appended.
+   * @param element Element to be removed.
+   * @return Whether the [element] has been removed.
    */
-  protected abstract fun onAddition(index: Int, element: E)
+  override fun remove(element: E): Boolean {
+    var elementSelection: Any? = None
+    var hasBeenRemoved = false
+    for (index in indices) {
+      val candidate =
+        getOrElse(index) {
+          return hasBeenRemoved
+        }
+      val selection = caching.on(candidate)
+      if (elementSelection === None) {
+        elementSelection = selector(element)
+      }
+      if (elementSelection == selection) {
+        caching.remove(element)
+        removeAt(index)
+        hasBeenRemoved = true
+      }
+    }
+    return hasBeenRemoved
+  }
 
   /**
-   * Callback that gets called when this [ReplacementList] is requested to be cleared, after all of
-   * the selections have been cleared in case they've been previously cached (the latter depending
-   * on the defined caching strategy).
-   *
-   * @see caching
+   * Removes both all of the elements in this [ReplacementList] and, depending on whether caching is
+   * enabled, the results of [selector] invocations on elements on which iteration has been
+   * performed, denoting that these selections should be computed again the next time the elements
+   * are requested to be compared.
    */
-  protected abstract fun onClearance()
+  override fun clear() {
+    caching.clear()
+  }
+
+  /**
+   * Callback that gets called when the [element] is requested to be appended.
+   *
+   * @param index Index at which the element *should* be appended.
+   * @param element Element to be appended.
+   */
+  protected abstract fun append(index: Int, element: E)
 
   /**
    * Places all of the [elements].
@@ -295,16 +338,14 @@ private abstract class ReplacementList<E, S> : MutableList<E> {
    * @param elements Elements to be placed.
    * @return Result of having placed the [elements] or [None] when they haven't been placed at all.
    */
-  private fun place(elements: Collection<E>): Any? {
-    val firstElement = elements.firstOrNull() ?: return None
+  private fun place(elements: Collection<E>) {
+    val firstElement = elements.firstOrNull() ?: return
     val firstElementSelection = caching.on(firstElement)
     var outerIndex = size.inc() - indexOfFirst { firstElementSelection != caching.on(it) }
-    var lastPlacement: Any? = None
     for (innerIndex in elements.indices) {
       val element = if (innerIndex == 0) firstElement else elements.elementAt(innerIndex)
-      lastPlacement = place(outerIndex++, element)
+      place(outerIndex++, element)
     }
-    return lastPlacement
   }
 
   /**
@@ -324,7 +365,7 @@ private abstract class ReplacementList<E, S> : MutableList<E> {
     val isNonexistent = replacementIndex == -1
     if (isNonexistent) {
       val additionIndex = maxOf(0, index)
-      onAddition(additionIndex, element)
+      append(additionIndex, element)
     } else {
       @Suppress("UNCHECKED_CAST") replace(replacementIndex, element, selection as S)
     }
@@ -339,12 +380,12 @@ private abstract class ReplacementList<E, S> : MutableList<E> {
    */
   private fun replace(index: Int, element: E, selection: S) {
     for (candidateIndex in indices) {
-      val candidate = elementAt(candidateIndex)
+      val candidate = get(candidateIndex)
       val isReplaceable = caching.on(candidate) == selection
       if (isReplaceable) {
         caching.remove(candidate)
         removeAt(index)
-        onAddition(index, element)
+        append(index, element)
       }
     }
   }
@@ -364,6 +405,7 @@ private abstract class ReplacementList<E, S> : MutableList<E> {
  *
  * @param E Element to be contained.
  * @param elements Elements to be added to the replacement [MutableList].
+ * @see MutableList.add
  */
 fun <E> replacementListOf(vararg elements: E): MutableList<E> {
   val delegate = mutableListOf(*elements)
@@ -380,6 +422,12 @@ fun <E> replacementListOf(vararg elements: E): MutableList<E> {
  * [selector] on them) are equal, being put at the same index at which the matching one was, or it
  * will get appended.
  *
+ * When removing an element, what determines whether it matches an already-present one isn't its
+ * structure, but its selection compared to those of pre-contained ones. For example: given a
+ * `replacementListOf(0, 1, 2) { it % 2 == 0 }` (whose selector defines the identity of an element
+ * as being its divisibility by 2, allowing only for a single even and a single odd [Int] to be
+ * contained), `remove(4)` would remove both `0` and `2`.
+ *
  * In case the specified [selector] merely returns the element on which iteration takes place
  * itself, the [replacementListOf] creator method *without* a selector parameter should be called
  * instead, given that it disables caching that would otherwise be unnecessary and inefficient and
@@ -390,6 +438,8 @@ fun <E> replacementListOf(vararg elements: E): MutableList<E> {
  *   replaced is performed.
  * @param elements Elements to be added to the [ReplacementList].
  * @param selector Provides the value by which each element should be compared when replaced.
+ * @see MutableList.add
+ * @see MutableList.remove
  */
 fun <E, S> replacementListOf(vararg elements: E, selector: (E) -> S): MutableList<E> {
   val delegate = mutableListOf(*elements)
