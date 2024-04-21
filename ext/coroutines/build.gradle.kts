@@ -28,5 +28,6 @@ dependencies {
   testImplementation(libs.assertk)
   testImplementation(libs.kotlin.coroutines.test)
   testImplementation(libs.kotlin.test)
+  testImplementation(libs.openTest4J)
   testImplementation(libs.turbine)
 }

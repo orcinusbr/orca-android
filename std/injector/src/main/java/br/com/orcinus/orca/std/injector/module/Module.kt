@@ -19,7 +19,6 @@ import br.com.orcinus.orca.std.injector.module.injection.Injection
 import br.com.orcinus.orca.std.injector.module.injection.SomeInjection
 import br.com.orcinus.orca.std.injector.module.injection.immediateInjectionOf
 import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
-import br.com.orcinus.orca.std.injector.module.replacement.replacementListOf
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -27,9 +26,8 @@ import kotlin.reflect.KClass
 
 /** Container in which dependencies within a given context can be injected. */
 abstract class Module {
-  /** [Injection]s that have been created. */
-  @PublishedApi
-  internal val injections = replacementListOf(selector = SomeInjection::dependencyClass)
+  /** [Injection]s that have been created, associated to their dependencies' [KClass]es. */
+  @PublishedApi internal val injections = hashMapOf<KClass<*>, Injection<*>>()
 
   /**
    * [NoSuchElementException] thrown if a dependency that hasn't been injected is requested to be
@@ -106,7 +104,8 @@ abstract class Module {
    */
   @Throws(DependencyNotInjectedException::class)
   inline fun <reified T : Any> get(): T {
-    return getOrNull() ?: throw DependencyNotInjectedException(T::class)
+    return injections[T::class]?.run { provide() } as T?
+      ?: throw DependencyNotInjectedException(T::class)
   }
 
   /** Removes all [Injection]s. */
@@ -122,21 +121,7 @@ abstract class Module {
    */
   @PublishedApi
   internal fun inject(injection: SomeInjection) {
-    injections.add(injection)
-  }
-
-  /**
-   * Obtains a dependency of type [T] that has been previously injected into this [Module] or `null`
-   * if none has been.
-   *
-   * @param T Dependency to be obtained.
-   */
-  @PublishedApi
-  internal inline fun <reified T : Any> getOrNull(): T? {
-    return injections
-      .filterIsInstance<Injection<T>>()
-      .singleOrNull { it.dependencyClass == T::class }
-      ?.run { provide() }
+    injections[injection.dependencyClass] = injection
   }
 
   /** Callback run whenever this [Module] is cleared. */

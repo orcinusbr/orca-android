@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.std.injector.module.replacement
+package br.com.orcinus.orca.ext.coroutines.replacement
 
 import java.util.Objects
 
