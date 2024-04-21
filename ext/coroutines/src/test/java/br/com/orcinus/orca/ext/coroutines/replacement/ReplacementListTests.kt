@@ -45,7 +45,7 @@ internal class ReplacementListTests {
   }
 
   @Test
-  fun adds() {
+  fun appends() {
     assertThat(replacementListOf<Int>().apply { add(0) }).containsExactly(0)
   }
 
@@ -55,5 +55,10 @@ internal class ReplacementListTests {
         replacementListOf("Hey,", "world!", selector = String::first).apply { add("Hello,") }
       )
       .containsExactly("Hello,", "world!")
+  }
+
+  @Test
+  fun removes() {
+    assertThat(replacementListOf(0, 1) { it % 2 == 0 }.apply { remove(2) }).containsExactly(1)
   }
 }
