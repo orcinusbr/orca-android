@@ -83,14 +83,11 @@ private class DelegatorReplacementList<E, S>(
 
   override fun clear() {
     super.clear()
-  }
-
-  override fun onAddition(index: Int, element: E) {
-    delegate.add(index, element)
-  }
-
-  override fun onClearance() {
     delegate.clear()
+  }
+
+  override fun append(index: Int, element: E) {
+    delegate.add(index, element)
   }
 }
 
@@ -263,31 +260,22 @@ private abstract class ReplacementList<E, S> : MutableList<E> {
   }
 
   /**
-   * Removes both all of the elements in this [ReplacementList] and the results of [selector]
-   * invocations on elements that have been iterated through, denoting that these selections should
-   * be computed again the next time a comparison operation is performed on the elements themselves.
+   * Removes both all of the elements in this [ReplacementList] and, depending on whether caching is
+   * enabled, the results of [selector] invocations on elements on which iteration has been
+   * performed, denoting that these selections should be computed again the next time the elements
+   * are requested to be compared.
    */
   override fun clear() {
     caching.clear()
-    onClearance()
   }
 
   /**
-   * Callback that gets called when the [element] is requested to be added.
+   * Callback that gets called when the [element] is requested to be appended.
    *
-   * @param index Index at which the element *should* be added.
+   * @param index Index at which the element *should* be appended.
    * @param element Element to be appended.
    */
-  protected abstract fun onAddition(index: Int, element: E)
-
-  /**
-   * Callback that gets called when this [ReplacementList] is requested to be cleared, after all of
-   * the selections have been cleared in case they've been previously cached (the latter depending
-   * on the defined caching strategy).
-   *
-   * @see caching
-   */
-  protected abstract fun onClearance()
+  protected abstract fun append(index: Int, element: E)
 
   /**
    * Places all of the [elements].
@@ -324,7 +312,7 @@ private abstract class ReplacementList<E, S> : MutableList<E> {
     val isNonexistent = replacementIndex == -1
     if (isNonexistent) {
       val additionIndex = maxOf(0, index)
-      onAddition(additionIndex, element)
+      append(additionIndex, element)
     } else {
       @Suppress("UNCHECKED_CAST") replace(replacementIndex, element, selection as S)
     }
@@ -344,7 +332,7 @@ private abstract class ReplacementList<E, S> : MutableList<E> {
       if (isReplaceable) {
         caching.remove(candidate)
         removeAt(index)
-        onAddition(index, element)
+        append(index, element)
       }
     }
   }
