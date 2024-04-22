@@ -94,6 +94,14 @@ private class DelegatorReplacementList<E, S>(
     delegate.clear()
   }
 
+  override fun plus(element: E): ReplacementList<E, S> {
+    return DelegatorReplacementList(delegate, caching, selector).apply { add(element) }
+  }
+
+  override fun minus(element: E): ReplacementList<E, S> {
+    return DelegatorReplacementList(delegate, caching, selector).apply { remove(element) }
+  }
+
   override fun append(index: Int, element: E) {
     delegate.add(index, element)
   }
@@ -335,6 +343,22 @@ abstract class ReplacementList<E, S> internal constructor() : MutableList<E> {
   operator fun contains(selection: S): Boolean {
     return any { caching.on(it) == selection }
   }
+
+  /**
+   * Creates a [ReplacementList] to which the [element] is added, either by replacing an existing
+   * one depending on the equality of their selections or appending it.
+   *
+   * @param element Element to be added.
+   */
+  abstract operator fun plus(element: E): ReplacementList<E, S>
+
+  /**
+   * Creates a [ReplacementList] from which the [element] whose selector matches that of an existing
+   * one is removed.
+   *
+   * @param element Element to be removed.
+   */
+  abstract operator fun minus(element: E): ReplacementList<E, S>
 
   /**
    * Callback that gets called when the [element] is requested to be appended.
