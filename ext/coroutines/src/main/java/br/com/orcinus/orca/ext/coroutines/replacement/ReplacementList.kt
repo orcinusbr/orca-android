@@ -102,6 +102,25 @@ private class DelegatorReplacementList<E, S>(
     return DelegatorReplacementList(delegate, caching, selector).apply { remove(element) }
   }
 
+  /**
+   * Creates a [ReplacementList] from which the element whose selection equals to the given one is
+   * removed.
+   *
+   * @param selection Result of invoking the [selector] on the element to be removed.
+   */
+  @JvmName("minusSelection")
+  fun minus(selection: S): ReplacementList<E, S> {
+    return DelegatorReplacementList(delegate, caching, selector).apply {
+      for (index in indices) {
+        val candidate = getOrNull(index) ?: return this
+        val candidateSelection = caching.on(candidate)
+        if (candidateSelection == selection) {
+          removeAt(index)
+        }
+      }
+    }
+  }
+
   override fun append(index: Int, element: E) {
     delegate.add(index, element)
   }
@@ -481,4 +500,18 @@ fun <E, S> replacementListOf(vararg elements: E, selector: (E) -> S): Replacemen
   val delegate = mutableListOf(*elements)
   val caching = ReplacementList.Caching.Enabled(selector)
   return DelegatorReplacementList(delegate, caching, selector)
+}
+
+/**
+ * Creates a [ReplacementList] from which the element whose selection equals to the given one is
+ * removed.
+ *
+ * @param E Element to be contained.
+ * @param S Object with which comparison for determining whether an element gets either appended or
+ *   replaced is performed.
+ * @param selection Result of invoking the selector on the element to be removed.
+ * @see ReplacementList.selector
+ */
+operator fun <E, S> ReplacementList<E, S>.minus(selection: S): ReplacementList<E, S> {
+  return (this as DelegatorReplacementList<E, S>).minus(selection)
 }
