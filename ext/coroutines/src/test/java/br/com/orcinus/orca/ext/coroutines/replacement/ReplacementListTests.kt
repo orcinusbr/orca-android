@@ -20,7 +20,9 @@ import assertk.assertions.contains
 import assertk.assertions.containsAll
 import assertk.assertions.containsExactly
 import assertk.assertions.doesNotContain
+import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
+import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import kotlin.test.Test
 import org.opentest4j.AssertionFailedError
@@ -78,6 +80,16 @@ internal class ReplacementListTests {
         replacementListOf("Hey,", "world!", selector = String::first).apply { add("Hello,") }
       )
       .containsExactly("Hello,", "world!")
+  }
+
+  @Test
+  fun getsBySelection() {
+    assertThat(replacementListOf(0, 1) { it % 2 == 0 }.getOrNull(true)).isEqualTo(0)
+  }
+
+  @Test
+  fun returnsNullWhenGettingBySelectionAndNoneIsFound() {
+    assertThat(replacementListOf(0, 2) { it % 2 == 0 }.getOrNull(false)).isNull()
   }
 
   @Test

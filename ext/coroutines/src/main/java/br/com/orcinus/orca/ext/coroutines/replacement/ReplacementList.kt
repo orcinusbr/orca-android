@@ -364,6 +364,16 @@ abstract class ReplacementList<E, S> internal constructor() : MutableList<E> {
   }
 
   /**
+   * Obtains the element whose selection equals to the given one or `null` when no element's equals
+   * to it.
+   *
+   * @param selection Result of invoking the [selector] on the element to be obtained.
+   */
+  fun getOrNull(selection: S): E? {
+    return find { caching.on(it) == selection }
+  }
+
+  /**
    * Creates a [ReplacementList] to which the [element] is added, either by replacing an existing
    * one depending on the equality of their selections or appending it.
    *
