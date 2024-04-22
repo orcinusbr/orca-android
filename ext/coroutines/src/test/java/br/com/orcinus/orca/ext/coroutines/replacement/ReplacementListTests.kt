@@ -20,6 +20,8 @@ import assertk.assertions.contains
 import assertk.assertions.containsAll
 import assertk.assertions.containsExactly
 import assertk.assertions.doesNotContain
+import assertk.assertions.isFalse
+import assertk.assertions.isTrue
 import kotlin.test.Test
 import org.opentest4j.AssertionFailedError
 
@@ -32,6 +34,16 @@ internal class ReplacementListTests {
   @Test
   fun doesNotContain() {
     assertThat(replacementListOf(":P", ":)", selector = String::first)).doesNotContain(";P")
+  }
+
+  @Test
+  fun containsSelection() {
+    assertThat(':' in replacementListOf(":P", ":)", selector = String::first)).isTrue()
+  }
+
+  @Test
+  fun doesNotContainSelection() {
+    assertThat(';' in replacementListOf(":P", ":)", selector = String::first)).isFalse()
   }
 
   @Test
