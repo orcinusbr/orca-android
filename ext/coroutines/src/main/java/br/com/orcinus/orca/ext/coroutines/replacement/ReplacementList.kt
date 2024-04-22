@@ -101,13 +101,14 @@ private class DelegatorReplacementList<E, S>(
 
 /**
  * [MutableList] that replaces a given element when its [selector] matches that of the other one
- * being added, maintaining its index.
+ * being added, maintaining its index. Can be instantiated by calling one of the [replacementListOf]
+ * creator methods.
  *
  * @param E Element to be contained.
  * @param S Object with which comparison for determining whether an element gets either appended or
  *   replaced is performed.
  */
-private abstract class ReplacementList<E, S> : MutableList<E> {
+abstract class ReplacementList<E, S> internal constructor() : MutableList<E> {
   /** Defines the caching behavior for invocations of the [selector] on same elements. */
   protected abstract val caching: Caching<E, S>
 
@@ -131,7 +132,7 @@ private abstract class ReplacementList<E, S> : MutableList<E> {
      * @param S Result of selecting an element.
      * @param selector Selects an element.
      */
-    class Disabled<E, S>(private val selector: (E) -> S) : Caching<E, S>() {
+    internal class Disabled<E, S>(private val selector: (E) -> S) : Caching<E, S>() {
       override fun on(element: E): S {
         return selector(element)
       }
@@ -149,7 +150,7 @@ private abstract class ReplacementList<E, S> : MutableList<E> {
      * @param S Result of selecting an element.
      * @param selector Selects an element.
      */
-    class Enabled<E, S>(private val selector: (E) -> S) : Caching<E, S>() {
+    internal class Enabled<E, S>(private val selector: (E) -> S) : Caching<E, S>() {
       /**
        * Selections (meaning the result of invoking the [selector] on an element) that have already
        * been performed.
@@ -325,6 +326,17 @@ private abstract class ReplacementList<E, S> : MutableList<E> {
   }
 
   /**
+   * Returns whether one of the elements provide the given [selection] when the [selector] is
+   * invoked on them.
+   *
+   * @param selection Result of selecting an element whose presence will be checked.
+   */
+  @JvmName("containsSelection")
+  operator fun contains(selection: S): Boolean {
+    return any { caching.on(it) == selection }
+  }
+
+  /**
    * Callback that gets called when the [element] is requested to be appended.
    *
    * @param index Index at which the element *should* be appended.
@@ -392,7 +404,7 @@ private abstract class ReplacementList<E, S> : MutableList<E> {
 }
 
 /**
- * Creates a replacement [MutableList].
+ * Creates a [ReplacementList].
  *
  * Posteriorly adding elements to it can produce one of two possible outcomes: either the element
  * will replace a previously existing one when they're structurally equal, being put at the same
@@ -404,10 +416,10 @@ private abstract class ReplacementList<E, S> : MutableList<E> {
  * element-to-element comparison should be performed.
  *
  * @param E Element to be contained.
- * @param elements Elements to be added to the replacement [MutableList].
- * @see MutableList.add
+ * @param elements Elements to be added to the [ReplacementList].
+ * @see ReplacementList.add
  */
-fun <E> replacementListOf(vararg elements: E): MutableList<E> {
+fun <E> replacementListOf(vararg elements: E): ReplacementList<E, E> {
   val delegate = mutableListOf(*elements)
   @Suppress("UNCHECKED_CAST") val selector = structuralEqualityBasedSelector as (E) -> E
   val caching = ReplacementList.Caching.Disabled(selector)
@@ -415,7 +427,7 @@ fun <E> replacementListOf(vararg elements: E): MutableList<E> {
 }
 
 /**
- * Creates a replacement [MutableList].
+ * Creates a [ReplacementList].
  *
  * Posteriorly adding elements to it can produce one of two possible outcomes: either the element
  * will replace a previously existing one when their selections (which is the result of invoking the
@@ -438,10 +450,10 @@ fun <E> replacementListOf(vararg elements: E): MutableList<E> {
  *   replaced is performed.
  * @param elements Elements to be added to the [ReplacementList].
  * @param selector Provides the value by which each element should be compared when replaced.
- * @see MutableList.add
- * @see MutableList.remove
+ * @see ReplacementList.add
+ * @see ReplacementList.remove
  */
-fun <E, S> replacementListOf(vararg elements: E, selector: (E) -> S): MutableList<E> {
+fun <E, S> replacementListOf(vararg elements: E, selector: (E) -> S): ReplacementList<E, S> {
   val delegate = mutableListOf(*elements)
   val caching = ReplacementList.Caching.Enabled(selector)
   return DelegatorReplacementList(delegate, caching, selector)

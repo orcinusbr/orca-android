@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.ext.coroutines
 
+import br.com.orcinus.orca.ext.coroutines.replacement.ReplacementList
 import br.com.orcinus.orca.ext.coroutines.replacement.replacementListOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -70,13 +71,13 @@ fun <I, O, S> Flow<Collection<I>>.flatMapEach(
  * and folding them into an up-to-date [List] that gets emitted each time any of these [Flow]s
  * receive an emission.
  *
- * @param accumulator [MutableList] to which the elements in [Collection]s emitted to this [Flow]
- *   will be added.
+ * @param accumulator [ReplacementList] to which the elements in [Collection]s emitted to this
+ *   [Flow] will be added.
  * @param transform Transformation to be made to the currently iterated element.
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 private fun <I, O> Flow<Collection<I>>.flatMapEach(
-  accumulator: MutableList<O>,
+  accumulator: ReplacementList<O, *>,
   transform: suspend (I) -> Flow<O>
 ): Flow<List<O>> {
   return mapEach { transform(it).onEach(accumulator::add).map { accumulator } }
