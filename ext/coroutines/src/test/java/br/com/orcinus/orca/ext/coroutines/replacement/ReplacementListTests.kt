@@ -62,7 +62,7 @@ internal class ReplacementListTests {
   }
 
   @Test
-  fun appendsByMutation() {
+  fun appendsByMutating() {
     assertThat(replacementListOf<Int>().apply { add(0) }).containsExactly(0)
   }
 
@@ -73,7 +73,7 @@ internal class ReplacementListTests {
   }
 
   @Test
-  fun replacesByMutation() {
+  fun replacesByMutating() {
     assertThat(
         replacementListOf("Hey,", "world!", selector = String::first).apply { add("Hello,") }
       )
@@ -81,7 +81,12 @@ internal class ReplacementListTests {
   }
 
   @Test
-  fun removes() {
+  fun removesBySelection() {
+    assertThat(replacementListOf(0, 1) { it % 2 == 0 } - true).containsExactly(1)
+  }
+
+  @Test
+  fun removesByMutating() {
     assertThat(replacementListOf(0, 1) { it % 2 == 0 }.apply { remove(2) }).containsExactly(1)
   }
 }
