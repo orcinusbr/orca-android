@@ -23,7 +23,7 @@ import br.com.orcinus.orca.core.sample.feed.profile.post.createSample
 import br.com.orcinus.orca.core.sample.image.SampleImageSource
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import br.com.orcinus.orca.std.styledstring.StyledString
+import br.com.orcinus.orca.std.markdown.Markdown
 
 /**
  * Creates a sample [Profile].
@@ -43,7 +43,7 @@ fun Profile.Companion.createSample(
     override val avatarLoader = author.avatarLoader
     override val name = author.name
     override val bio =
-      StyledString(
+      Markdown(
         "Co-founder @ Grupo Estoa, software engineer, author, writer and content creator; " +
           "neuroscience, quantum physics and philosophy enthusiast."
       )

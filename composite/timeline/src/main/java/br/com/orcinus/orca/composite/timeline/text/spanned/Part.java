@@ -16,7 +16,7 @@
 package br.com.orcinus.orca.composite.timeline.text.spanned;
 
 import androidx.annotation.NonNull;
-import br.com.orcinus.orca.std.styledstring.style.Style;
+import br.com.orcinus.orca.std.markdown.style.Style;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

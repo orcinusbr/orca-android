@@ -33,8 +33,8 @@ import br.com.orcinus.orca.core.sample.feed.profile.post.content.samples
 import br.com.orcinus.orca.core.sample.instance.domain.sample
 import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.platform.core.withSample
-import br.com.orcinus.orca.std.styledstring.StyledString
-import br.com.orcinus.orca.std.styledstring.buildStyledString
+import br.com.orcinus.orca.std.markdown.Markdown
+import br.com.orcinus.orca.std.markdown.buildMarkdown
 import java.net.URL
 import kotlin.test.Test
 
@@ -51,7 +51,7 @@ internal class FigureTests {
         Figure.of(
           Posts.withSample.single().id,
           Author.sample.name,
-          Content.from(Domain.sample, text = StyledString(""), Attachment.samples) { null },
+          Content.from(Domain.sample, text = Markdown(""), Attachment.samples) { null },
           onLinkClick = {}
         )
       )
@@ -65,10 +65,7 @@ internal class FigureTests {
         Figure.of(
           Posts.withSample.single().id,
           Author.sample.name,
-          Content.from(
-            Domain.sample,
-            text = buildStyledString { +Highlight.sample.url.toString() }
-          ) {
+          Content.from(Domain.sample, text = buildMarkdown { +Highlight.sample.url.toString() }) {
             Headline.sample
           },
           onLinkClick

@@ -19,13 +19,13 @@ import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.instance.domain.Domain
 import br.com.orcinus.orca.core.sample.instance.domain.sample
-import br.com.orcinus.orca.std.styledstring.buildStyledString
+import br.com.orcinus.orca.std.markdown.buildMarkdown
 
 /** [Content] returned by [sample]. */
 private val sampleContent =
   Content.from(
     Domain.sample,
-    buildStyledString {
+    buildMarkdown {
       +"This is a "
       bold { +"sample" }
       +" "

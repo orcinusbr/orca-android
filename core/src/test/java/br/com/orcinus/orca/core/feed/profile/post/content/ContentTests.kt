@@ -20,8 +20,8 @@ import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Highlight
 import br.com.orcinus.orca.core.instance.domain.Domain
 import br.com.orcinus.orca.core.sample.instance.domain.sample
 import br.com.orcinus.orca.core.sample.test.feed.profile.post.content.highlight.sample
-import br.com.orcinus.orca.std.styledstring.StyledString
-import br.com.orcinus.orca.std.styledstring.buildStyledString
+import br.com.orcinus.orca.std.markdown.Markdown
+import br.com.orcinus.orca.std.markdown.buildMarkdown
 import java.net.URL
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -30,10 +30,10 @@ internal class ContentTests {
   @Test
   fun `GIVEN a text with a trailing link and a headline WHEN creating content from them THEN the link is removed`() {
     assertEquals(
-      StyledString("😗"),
+      Markdown("😗"),
       Content.from(
           Domain.sample,
-          buildStyledString {
+          buildMarkdown {
             +"😗 "
             link(Highlight.sample.url) { +"🔗" }
           }
@@ -47,13 +47,13 @@ internal class ContentTests {
   @Test
   fun `GIVEN a text with a trailing link and no headline WHEN creating content from them THEN the link is kept`() {
     assertEquals(
-      buildStyledString {
+      buildMarkdown {
         link(Highlight.sample.url) { +"Link" }
         +'!'
       },
       Content.from(
           Domain.sample,
-          buildStyledString {
+          buildMarkdown {
             link(Highlight.sample.url) { +"Link" }
             +'!'
           }
@@ -67,10 +67,10 @@ internal class ContentTests {
   @Test
   fun `GIVEN a text with two trailing URLs WHEN creating content from it THEN they're kept`() {
     assertEquals(
-      buildStyledString { +"🫨 ${Highlight.sample.url} ${Highlight.sample.url}" },
+      buildMarkdown { +"🫨 ${Highlight.sample.url} ${Highlight.sample.url}" },
       Content.from(
           Domain.sample,
-          buildStyledString { +"🫨 ${Highlight.sample.url} ${Highlight.sample.url}" }
+          buildMarkdown { +"🫨 ${Highlight.sample.url} ${Highlight.sample.url}" }
         ) {
           Headline.sample
         }
@@ -82,7 +82,7 @@ internal class ContentTests {
   fun `GIVEN a text with a link to an internal resource and no headline WHEN creating content from them THEN it doesn't throw`() {
     Content.from(
       Domain.sample,
-      buildStyledString {
+      buildMarkdown {
         link(URL(Domain.sample.url, "resource")) { +"Here" }
         +'!'
       }

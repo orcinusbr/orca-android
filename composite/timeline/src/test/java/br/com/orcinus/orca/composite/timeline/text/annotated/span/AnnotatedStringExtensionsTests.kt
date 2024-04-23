@@ -20,29 +20,28 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import br.com.orcinus.orca.composite.timeline.text.annotated.toStyledString
-import br.com.orcinus.orca.std.styledstring.StyledString
-import br.com.orcinus.orca.std.styledstring.buildStyledString
+import br.com.orcinus.orca.composite.timeline.text.annotated.toMarkdown
+import br.com.orcinus.orca.std.markdown.Markdown
+import br.com.orcinus.orca.std.markdown.buildMarkdown
 import kotlin.test.Test
 
 internal class AnnotatedStringExtensionsTests {
   @Test
-  fun convertsAnnotatedStringWithoutAnnotationsIntoStyledString() {
-    assertThat(AnnotatedString("Hello, world!").toStyledString())
-      .isEqualTo(StyledString("Hello, world!"))
+  fun convertsAnnotatedStringWithoutAnnotationsIntoMarkdown() {
+    assertThat(AnnotatedString("Hello, world!").toMarkdown()).isEqualTo(Markdown("Hello, world!"))
   }
 
   @Test
-  fun convertsEmboldenedAnnotatedStringIntoStyledString() {
+  fun convertsEmboldenedAnnotatedStringIntoMarkdown() {
     assertThat(
         buildAnnotatedString {
             withStyle(BoldSpanStyle) { append("Hello") }
             append(", world!")
           }
-          .toStyledString()
+          .toMarkdown()
       )
       .isEqualTo(
-        buildStyledString {
+        buildMarkdown {
           bold { +"Hello" }
           +", world!"
         }
@@ -50,16 +49,16 @@ internal class AnnotatedStringExtensionsTests {
   }
 
   @Test
-  fun convertsItalicizedAnnotatedStringIntoStyledString() {
+  fun convertsItalicizedAnnotatedStringIntoMarkdown() {
     assertThat(
         buildAnnotatedString {
             withStyle(ItalicSpanStyle) { append("Hello") }
             append(", world!")
           }
-          .toStyledString()
+          .toMarkdown()
       )
       .isEqualTo(
-        buildStyledString {
+        buildMarkdown {
           italic { +"Hello" }
           +", world!"
         }

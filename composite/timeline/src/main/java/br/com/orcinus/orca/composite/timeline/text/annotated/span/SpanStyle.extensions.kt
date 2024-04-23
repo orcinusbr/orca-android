@@ -27,36 +27,36 @@ import androidx.compose.ui.unit.isUnspecified
 import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.composite.timeline.text.annotated.span.category.Categorizer
 import br.com.orcinus.orca.platform.autos.colors.asColor
-import br.com.orcinus.orca.std.styledstring.StyledString
-import br.com.orcinus.orca.std.styledstring.style.type.Bold
-import br.com.orcinus.orca.std.styledstring.style.type.Italic
-import br.com.orcinus.orca.std.styledstring.style.type.Link
+import br.com.orcinus.orca.std.markdown.Markdown
+import br.com.orcinus.orca.std.markdown.style.type.Bold
+import br.com.orcinus.orca.std.markdown.style.type.Italic
+import br.com.orcinus.orca.std.markdown.style.type.Link
 
 /**
- * [SpanStyle] into which an emboldened portion within a [StyledString] will be turned when
- * converting it into an [AnnotatedString].
+ * [SpanStyle] into which an emboldened portion within [Markdown] will be turned when converting it
+ * into an [AnnotatedString].
  *
  * @see Bold
- * @see StyledString.toAnnotatedString
+ * @see Markdown.toAnnotatedString
  */
 @JvmField internal val BoldSpanStyle = SpanStyle(fontWeight = FontWeight.Bold)
 
 /**
- * [SpanStyle] into which an italicized portion within a [StyledString] will be turned when
- * converting it into an [AnnotatedString].
+ * [SpanStyle] into which an italicized portion within [Markdown] will be turned when converting it
+ * into an [AnnotatedString].
  *
  * @see Italic
- * @see StyledString.toAnnotatedString
+ * @see Markdown.toAnnotatedString
  */
 @JvmField internal val ItalicSpanStyle = SpanStyle(fontStyle = FontStyle.Italic)
 
 /**
- * Creates a [SpanStyle] into which a [Link] within a [StyledString] will be turned when converting
- * it into an [AnnotatedString].
+ * Creates a [SpanStyle] into which a [Link] within [Markdown] will be turned when converting it
+ * into an [AnnotatedString].
  *
  * @param colors [Colors] by which the [SpanStyle] can be colored.
  * @param category Describes the text being styled; should be created by the [Categorizer].
- * @see StyledString.toAnnotatedString
+ * @see Markdown.toAnnotatedString
  * @see SpanStyle.category
  */
 internal fun createLinkSpanStyle(colors: Colors, category: String): SpanStyle {

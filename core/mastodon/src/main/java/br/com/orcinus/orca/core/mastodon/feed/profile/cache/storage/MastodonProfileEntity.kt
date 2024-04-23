@@ -30,8 +30,8 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.type.editable.MastodonEdit
 import br.com.orcinus.orca.core.mastodon.feed.profile.type.followable.MastodonFollowableProfile
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import br.com.orcinus.orca.std.styledstring.StyledString
-import br.com.orcinus.orca.std.styledstring.style.Style
+import br.com.orcinus.orca.std.markdown.Markdown
+import br.com.orcinus.orca.std.markdown.style.Style
 import java.net.URL
 
 /**
@@ -113,7 +113,7 @@ internal constructor(
     val account = Account.of(account)
     val avatarURL = URL(avatarURL)
     val avatarLoader = avatarLoaderProvider.provide(avatarURL)
-    val bio = getBioAsStyledString(dao)
+    val bio = getBioAsMarkdown(dao)
     val url = URL(url)
     return MastodonEditableProfile(
       postPaginatorProvider,
@@ -147,7 +147,7 @@ internal constructor(
     val account = Account.of(account)
     val avatarURL = URL(avatarURL)
     val avatarLoader = avatarLoaderProvider.provide(avatarURL)
-    val bio = getBioAsStyledString(dao)
+    val bio = getBioAsMarkdown(dao)
     val follow = Follow.of(checkNotNull(follow))
     val url = URL(url)
     return MastodonFollowableProfile(
@@ -165,14 +165,14 @@ internal constructor(
   }
 
   /**
-   * Gets the [bio] as a [StyledString], with its [Style]s applied to it.
+   * Gets the [bio] as [Markdown], with its [Style]s applied to it.
    *
    * @param dao [MastodonProfileEntityDao] that will select the persisted
    *   [Mastodon style entities][MastodonStyleEntity].
    */
-  private suspend fun getBioAsStyledString(dao: MastodonProfileEntityDao): StyledString {
+  private suspend fun getBioAsMarkdown(dao: MastodonProfileEntityDao): Markdown {
     val styles = dao.selectWithBioStylesByID(id).styles.map(MastodonStyleEntity::toStyle)
-    return StyledString(bio, styles)
+    return Markdown(bio, styles)
   }
 
   companion object {

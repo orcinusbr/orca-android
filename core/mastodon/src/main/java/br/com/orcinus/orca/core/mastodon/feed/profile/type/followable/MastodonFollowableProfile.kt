@@ -26,7 +26,7 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfilePostPaginat
 import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
 import br.com.orcinus.orca.std.image.SomeImageLoader
 import br.com.orcinus.orca.std.injector.Injector
-import br.com.orcinus.orca.std.styledstring.StyledString
+import br.com.orcinus.orca.std.markdown.Markdown
 import java.net.URL
 
 /**
@@ -42,7 +42,7 @@ internal data class MastodonFollowableProfile<T : Follow>(
   override val account: Account,
   override val avatarLoader: SomeImageLoader,
   override val name: String,
-  override val bio: StyledString,
+  override val bio: Markdown,
   override val follow: T,
   override val followerCount: Int,
   override val followingCount: Int,

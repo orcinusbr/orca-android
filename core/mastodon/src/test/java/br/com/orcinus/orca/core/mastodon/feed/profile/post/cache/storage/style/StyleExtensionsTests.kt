@@ -16,7 +16,7 @@
 package br.com.orcinus.orca.core.mastodon.feed.profile.post.cache.storage.style
 
 import br.com.orcinus.orca.core.mastodon.feed.profile.cache.storage.style.name
-import br.com.orcinus.orca.std.styledstring.style.Style
+import br.com.orcinus.orca.std.markdown.style.Style
 import kotlin.test.Test
 
 internal class StyleExtensionsTests {

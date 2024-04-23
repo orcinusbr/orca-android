@@ -16,12 +16,12 @@
 package br.com.orcinus.orca.core.mastodon.feed.profile.cache.storage.style
 
 import br.com.orcinus.orca.core.feed.profile.post.Post
-import br.com.orcinus.orca.std.styledstring.style.Style
-import br.com.orcinus.orca.std.styledstring.style.type.Bold
-import br.com.orcinus.orca.std.styledstring.style.type.Hashtag
-import br.com.orcinus.orca.std.styledstring.style.type.Italic
-import br.com.orcinus.orca.std.styledstring.style.type.Link
-import br.com.orcinus.orca.std.styledstring.style.type.Mention
+import br.com.orcinus.orca.std.markdown.style.Style
+import br.com.orcinus.orca.std.markdown.style.type.Bold
+import br.com.orcinus.orca.std.markdown.style.type.Hashtag
+import br.com.orcinus.orca.std.markdown.style.type.Italic
+import br.com.orcinus.orca.std.markdown.style.type.Link
+import br.com.orcinus.orca.std.markdown.style.type.Mention
 
 /**
  * Name of this [Style].

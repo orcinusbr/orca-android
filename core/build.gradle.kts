@@ -22,7 +22,7 @@ plugins {
 
 dependencies {
   api(project(":std:image"))
-  api(project(":std:styled-string"))
+  api(project(":std:markdown"))
   api(libs.kotlin.coroutines.core)
 
   implementation(project(":ext:coroutines"))

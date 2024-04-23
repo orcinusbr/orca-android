@@ -19,9 +19,9 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
 import br.com.orcinus.orca.autos.colors.Colors
-import br.com.orcinus.orca.std.styledstring.style.type.Bold
-import br.com.orcinus.orca.std.styledstring.style.type.Email
-import br.com.orcinus.orca.std.styledstring.style.type.Italic
+import br.com.orcinus.orca.std.markdown.style.type.Bold
+import br.com.orcinus.orca.std.markdown.style.type.Email
+import br.com.orcinus.orca.std.markdown.style.type.Italic
 import kotlin.test.Test
 
 internal class StyleExtensionsTests {

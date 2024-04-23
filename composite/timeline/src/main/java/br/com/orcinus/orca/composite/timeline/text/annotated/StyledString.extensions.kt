@@ -23,19 +23,19 @@ import androidx.compose.ui.text.buildAnnotatedString
 import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.composite.timeline.text.annotated.span.toSpanStyle
 import br.com.orcinus.orca.composite.timeline.text.pop
-import br.com.orcinus.orca.composite.timeline.text.spanned.toStyledString
+import br.com.orcinus.orca.composite.timeline.text.spanned.toMarkdown
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
-import br.com.orcinus.orca.std.styledstring.StyledString
-import br.com.orcinus.orca.std.styledstring.style.Style
+import br.com.orcinus.orca.std.markdown.Markdown
+import br.com.orcinus.orca.std.markdown.style.Style
 import org.jsoup.Jsoup
 import org.jsoup.parser.Parser
 
 /**
- * Creates a [StyledString] from the [html].
+ * Creates [Markdown] from the [html].
  *
- * @param html HTML-formatted [String] from which a [StyledString] will be created.
+ * @param html HTML-formatted [String] from which [Markdown] will be created.
  */
-fun StyledString.Companion.fromHtml(html: String): StyledString {
+fun Markdown.Companion.fromHtml(html: String): Markdown {
   return Html.fromHtml(
       Jsoup.parse(html, Parser.xmlParser())
         .apply {
@@ -48,21 +48,21 @@ fun StyledString.Companion.fromHtml(html: String): StyledString {
         .html(),
       Html.FROM_HTML_MODE_LEGACY
     )
-    .toStyledString()
+    .toMarkdown()
 }
 
-/** Converts this [StyledString] into an [AnnotatedString]. */
+/** Converts this [Markdown] into an [AnnotatedString]. */
 @Composable
-fun StyledString.toAnnotatedString(): AnnotatedString {
+fun Markdown.toAnnotatedString(): AnnotatedString {
   return toAnnotatedString(AutosTheme.colors)
 }
 
 /**
- * Converts this [StyledString] into an [AnnotatedString].
+ * Converts this [Markdown] into an [AnnotatedString].
  *
  * @param colors [Colors] by which the [AnnotatedString] can be colored.
  */
-fun StyledString.toAnnotatedString(colors: Colors): AnnotatedString {
+fun Markdown.toAnnotatedString(colors: Colors): AnnotatedString {
   val conversions = HashMap<Style, SpanStyle>()
   return buildAnnotatedString {
     append(this@toAnnotatedString)

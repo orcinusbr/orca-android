@@ -20,20 +20,20 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
-import br.com.orcinus.orca.std.styledstring.StyledString
-import br.com.orcinus.orca.std.styledstring.style.Style
-import br.com.orcinus.orca.std.styledstring.style.type.Bold
-import br.com.orcinus.orca.std.styledstring.style.type.Hashtag
-import br.com.orcinus.orca.std.styledstring.style.type.Italic
-import br.com.orcinus.orca.std.styledstring.style.type.Link
-import br.com.orcinus.orca.std.styledstring.style.type.Mention
+import br.com.orcinus.orca.std.markdown.Markdown
+import br.com.orcinus.orca.std.markdown.style.Style
+import br.com.orcinus.orca.std.markdown.style.type.Bold
+import br.com.orcinus.orca.std.markdown.style.type.Hashtag
+import br.com.orcinus.orca.std.markdown.style.type.Italic
+import br.com.orcinus.orca.std.markdown.style.type.Link
+import br.com.orcinus.orca.std.markdown.style.type.Mention
 import java.net.URL
 
 /**
  * Primitive information to be stored about a [Style].
  *
  * @param id Automatically generated unique identifier.
- * @param parentID ID of the parent that owns the [StyledString] to which the [Style] belongs.
+ * @param parentID ID of the parent that owns the [Markdown] to which the [Style] belongs.
  * @param name Name of the [Style].
  * @param startIndex Indicates the first index in the [Post]'s [content][Post.content]'s
  *   [text][Content.text] to which the [Style] has been applied.

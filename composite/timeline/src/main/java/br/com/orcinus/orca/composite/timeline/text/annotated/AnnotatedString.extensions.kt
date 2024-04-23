@@ -17,10 +17,10 @@ package br.com.orcinus.orca.composite.timeline.text.annotated
 
 import androidx.compose.ui.text.AnnotatedString
 import br.com.orcinus.orca.composite.timeline.text.annotated.span.StyleExtractor
-import br.com.orcinus.orca.std.styledstring.StyledString
+import br.com.orcinus.orca.std.markdown.Markdown
 
-/** Converts this [AnnotatedString] into a [StyledString]. */
-fun AnnotatedString.toStyledString(): StyledString {
+/** Converts this [AnnotatedString] into [Markdown]. */
+fun AnnotatedString.toMarkdown(): Markdown {
   val styles = spanStyles.flatMap { StyleExtractor.extractAll(it.item, it.start..it.end.dec()) }
-  return StyledString(text, styles)
+  return Markdown(text, styles)
 }

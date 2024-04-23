@@ -19,9 +19,9 @@ import android.graphics.Typeface
 import android.os.Build
 import android.text.Spanned
 import android.text.style.StyleSpan
-import br.com.orcinus.orca.std.styledstring.style.Style
-import br.com.orcinus.orca.std.styledstring.style.type.Bold
-import br.com.orcinus.orca.std.styledstring.style.type.Italic
+import br.com.orcinus.orca.std.markdown.style.Style
+import br.com.orcinus.orca.std.markdown.style.type.Bold
+import br.com.orcinus.orca.std.markdown.style.type.Italic
 
 /**
  * Creates a [StyleSpan], defining its font weight adjustment if the version of Android currently

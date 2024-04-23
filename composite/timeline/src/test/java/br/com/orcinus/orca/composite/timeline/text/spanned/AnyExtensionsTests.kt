@@ -22,9 +22,9 @@ import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
-import br.com.orcinus.orca.std.styledstring.style.type.Bold
-import br.com.orcinus.orca.std.styledstring.style.type.Italic
-import br.com.orcinus.orca.std.styledstring.style.type.Link
+import br.com.orcinus.orca.std.markdown.style.type.Bold
+import br.com.orcinus.orca.std.markdown.style.type.Italic
+import br.com.orcinus.orca.std.markdown.style.type.Link
 import java.net.URL
 import org.junit.Test
 import org.junit.runner.RunWith

@@ -22,8 +22,8 @@ import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Highlight
 import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.instance.domain.Domain
 import br.com.orcinus.orca.core.instance.domain.isOfResourceFrom
-import br.com.orcinus.orca.std.styledstring.StyledString
-import br.com.orcinus.orca.std.styledstring.style.type.Link
+import br.com.orcinus.orca.std.markdown.Markdown
+import br.com.orcinus.orca.std.markdown.style.type.Link
 import java.util.Objects
 
 /**
@@ -35,7 +35,7 @@ import java.util.Objects
  */
 class Content
 private constructor(
-  val text: StyledString,
+  val text: Markdown,
   val attachments: List<Attachment>,
   val highlight: Highlight? = null
 ) {
@@ -66,7 +66,7 @@ private constructor(
     @InternalCoreApi
     fun from(
       domain: Domain,
-      text: StyledString,
+      text: Markdown,
       attachments: List<Attachment> = emptyList(),
       headlineProvider: HeadlineProvider
     ): Content {

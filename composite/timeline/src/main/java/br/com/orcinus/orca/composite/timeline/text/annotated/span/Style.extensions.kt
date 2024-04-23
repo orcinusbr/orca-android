@@ -18,13 +18,13 @@ package br.com.orcinus.orca.composite.timeline.text.annotated.span
 import androidx.compose.ui.text.SpanStyle
 import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.composite.timeline.text.annotated.span.category.Categorizer
-import br.com.orcinus.orca.std.styledstring.style.Style
-import br.com.orcinus.orca.std.styledstring.style.type.Bold
-import br.com.orcinus.orca.std.styledstring.style.type.Email
-import br.com.orcinus.orca.std.styledstring.style.type.Hashtag
-import br.com.orcinus.orca.std.styledstring.style.type.Italic
-import br.com.orcinus.orca.std.styledstring.style.type.Link
-import br.com.orcinus.orca.std.styledstring.style.type.Mention
+import br.com.orcinus.orca.std.markdown.style.Style
+import br.com.orcinus.orca.std.markdown.style.type.Bold
+import br.com.orcinus.orca.std.markdown.style.type.Email
+import br.com.orcinus.orca.std.markdown.style.type.Hashtag
+import br.com.orcinus.orca.std.markdown.style.type.Italic
+import br.com.orcinus.orca.std.markdown.style.type.Link
+import br.com.orcinus.orca.std.markdown.style.type.Mention
 
 /**
  * Converts this [Style] into a [SpanStyle].

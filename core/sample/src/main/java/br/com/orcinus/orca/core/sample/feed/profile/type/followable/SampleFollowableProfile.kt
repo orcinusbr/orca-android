@@ -22,7 +22,7 @@ import br.com.orcinus.orca.core.sample.feed.profile.SampleProfile
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileWriter
 import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
 import br.com.orcinus.orca.std.image.SomeImageLoader
-import br.com.orcinus.orca.std.styledstring.StyledString
+import br.com.orcinus.orca.std.markdown.Markdown
 import java.net.URL
 
 /**
@@ -36,7 +36,7 @@ internal data class SampleFollowableProfile<T : Follow>(
   override val account: Account,
   override val avatarLoader: SomeImageLoader,
   override val name: String,
-  override val bio: StyledString,
+  override val bio: Markdown,
   override val follow: T,
   override val followerCount: Int,
   override val followingCount: Int,

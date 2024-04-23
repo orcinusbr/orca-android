@@ -21,8 +21,8 @@ import android.text.ParcelableSpan
 import android.text.Spanned
 import android.text.style.StyleSpan
 import android.text.style.URLSpan
-import br.com.orcinus.orca.std.styledstring.style.Style
-import br.com.orcinus.orca.std.styledstring.style.type.Link
+import br.com.orcinus.orca.std.markdown.style.Style
+import br.com.orcinus.orca.std.markdown.style.type.Link
 import java.net.URL
 
 /**
