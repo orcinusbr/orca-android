@@ -21,10 +21,10 @@ import androidx.compose.ui.text.SpanStyle
 import br.com.orcinus.orca.composite.timeline.text.annotated.span.createLinkSpanStyle
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.account.Account
-import br.com.orcinus.orca.std.styledstring.style.type.Email
-import br.com.orcinus.orca.std.styledstring.style.type.Hashtag
-import br.com.orcinus.orca.std.styledstring.style.type.Link
-import br.com.orcinus.orca.std.styledstring.style.type.Mention
+import br.com.orcinus.orca.std.markdown.style.type.Email
+import br.com.orcinus.orca.std.markdown.style.type.Hashtag
+import br.com.orcinus.orca.std.markdown.style.type.Link
+import br.com.orcinus.orca.std.markdown.style.type.Mention
 import java.net.MalformedURLException
 import java.net.URL
 

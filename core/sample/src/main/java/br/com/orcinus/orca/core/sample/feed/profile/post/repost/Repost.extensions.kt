@@ -28,7 +28,7 @@ import br.com.orcinus.orca.core.sample.image.SampleImageSource
 import br.com.orcinus.orca.core.sample.instance.domain.sample
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import br.com.orcinus.orca.std.styledstring.StyledString
+import br.com.orcinus.orca.std.markdown.Markdown
 import java.net.URL
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -54,7 +54,7 @@ fun Repost.Companion.createSample(
       Author.createRamboSample(imageLoaderProvider),
       Content.from(
         Domain.sample,
-        StyledString(
+        Markdown(
           "Programming life hack. Looking for real-world examples of how an API is used? Search " +
             "for code on GitHub like so: “APINameHere path:*.extension”. Practical example for a " +
             "MusicKit API in Swift: “MusicCatalogResourceRequest extension:*.swift”. I can " +

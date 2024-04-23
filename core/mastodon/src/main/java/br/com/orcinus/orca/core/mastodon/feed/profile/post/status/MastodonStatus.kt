@@ -29,7 +29,7 @@ import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.`if`
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import br.com.orcinus.orca.std.injector.Injector
-import br.com.orcinus.orca.std.styledstring.StyledString
+import br.com.orcinus.orca.std.markdown.Markdown
 import java.net.URL
 import java.time.ZonedDateTime
 import kotlinx.serialization.Serializable
@@ -87,7 +87,7 @@ internal constructor(
     val author =
       reblog?.account?.toAuthor(imageLoaderProvider) ?: account.toAuthor(imageLoaderProvider)
     val domain = Injector.from<CoreModule>().instanceProvider().provide().domain
-    val text = StyledString.fromHtml(reblog?.content ?: content)
+    val text = Markdown.fromHtml(reblog?.content ?: content)
     val attachments =
       (reblog?.mediaAttachments ?: mediaAttachments).map(MastodonAttachment::toAttachment)
     val content = Content.from(domain, text, attachments) { card?.toHeadline(imageLoaderProvider) }

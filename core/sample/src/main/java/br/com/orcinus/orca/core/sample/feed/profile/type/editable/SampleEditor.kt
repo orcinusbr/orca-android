@@ -19,7 +19,7 @@ import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.type.editable.Editor
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileWriter
 import br.com.orcinus.orca.std.image.SomeImageLoader
-import br.com.orcinus.orca.std.styledstring.StyledString
+import br.com.orcinus.orca.std.markdown.Markdown
 
 /**
  * [Editor] that edits [SampleEditableProfile]s.
@@ -39,7 +39,7 @@ internal class SampleEditor(
     edit { this.name = name }
   }
 
-  override suspend fun setBio(bio: StyledString) {
+  override suspend fun setBio(bio: Markdown) {
     edit { this.bio = bio }
   }
 

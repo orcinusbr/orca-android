@@ -18,7 +18,7 @@ package br.com.orcinus.orca.core.feed.profile.type.editable
 import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoader
-import br.com.orcinus.orca.std.styledstring.StyledString
+import br.com.orcinus.orca.std.markdown.Markdown
 
 /** Edits an [EditableProfile]. */
 interface Editor {
@@ -41,7 +41,7 @@ interface Editor {
    *
    * @param bio Bio to be set to the [EditableProfile].
    */
-  suspend fun setBio(bio: StyledString)
+  suspend fun setBio(bio: Markdown)
 
   companion object {
     /** No-op, empty [Editor]. */
@@ -52,7 +52,7 @@ interface Editor {
 
         override suspend fun setName(name: String) {}
 
-        override suspend fun setBio(bio: StyledString) {}
+        override suspend fun setBio(bio: Markdown) {}
       }
   }
 }

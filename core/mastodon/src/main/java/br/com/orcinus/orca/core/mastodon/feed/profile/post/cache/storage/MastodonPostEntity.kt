@@ -36,7 +36,7 @@ import br.com.orcinus.orca.platform.cache.Cache
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import br.com.orcinus.orca.std.injector.Injector
-import br.com.orcinus.orca.std.styledstring.StyledString
+import br.com.orcinus.orca.std.markdown.Markdown
 import java.net.URL
 import java.time.ZonedDateTime
 
@@ -99,7 +99,7 @@ internal data class MastodonPostEntity(
     val author = profileCache.get(authorID).toAuthor()
     val domain = Injector.from<CoreModule>().instanceProvider().provide().domain
     val styles = dao.selectWithStylesByID(id).styles.map(MastodonStyleEntity::toStyle)
-    val text = StyledString(text, styles)
+    val text = Markdown(text, styles)
     val coverLoader = headlineCoverURL?.let { imageLoaderProvider.provide(URL(it)) }
     val content =
       Content.from(domain, text) {

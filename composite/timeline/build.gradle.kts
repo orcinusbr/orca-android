@@ -39,7 +39,7 @@ dependencies {
 
   api(project(":platform:autos"))
   api(project(":platform:core"))
-  api(project(":std:styled-string"))
+  api(project(":std:markdown"))
 
   implementation(libs.android.compose.material)
   implementation(libs.android.core)

@@ -17,19 +17,19 @@ package br.com.orcinus.orca.core.feed.profile.post.content
 
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Highlight
 import br.com.orcinus.orca.core.instance.domain.Domain
-import br.com.orcinus.orca.std.styledstring.StyledString
-import br.com.orcinus.orca.std.styledstring.style.type.Link
+import br.com.orcinus.orca.std.markdown.Markdown
+import br.com.orcinus.orca.std.markdown.style.type.Link
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
 /**
- * Returns whether the [Highlight] link can be removed from this [StyledString].
+ * Returns whether the [Highlight] link can be removed from this [Markdown].
  *
  * @param externalLinks [Link]s that link to resources outside of a given [Domain].
  * @param highlightLink [Link] considered to be the highlight from the external ones.
  */
 @OptIn(ExperimentalContracts::class)
-internal fun StyledString.isHighlightLinkRemovable(
+internal fun Markdown.isHighlightLinkRemovable(
   externalLinks: List<Link>,
   highlightLink: Link?
 ): Boolean {
@@ -40,10 +40,10 @@ internal fun StyledString.isHighlightLinkRemovable(
 }
 
 /**
- * Returns this [StyledString] minus the [Highlight] link.
+ * Returns this [Markdown] minus the [Highlight] link.
  *
  * @param highlightLink [Link] considered to be the highlight from the external ones.
  */
-internal fun StyledString.withoutHighlightLink(highlightLink: Link): StyledString {
+internal fun Markdown.withoutHighlightLink(highlightLink: Link): Markdown {
   return copy { removeRange(highlightLink.indices).trim() }
 }

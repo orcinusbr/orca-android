@@ -31,7 +31,7 @@ import br.com.orcinus.orca.core.sample.image.SampleImageSource
 import br.com.orcinus.orca.core.sample.instance.domain.sample
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import br.com.orcinus.orca.std.styledstring.buildStyledString
+import br.com.orcinus.orca.std.markdown.buildMarkdown
 import java.net.URL
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -64,7 +64,7 @@ fun Post.Companion.createSamples(
         Content.from(
           Domain.sample,
           text =
-            buildStyledString {
+            buildMarkdown {
               +"Great talk about the importance of introverts in an extroversion-seeking world."
               +"\n".repeat(2)
               +"https://www.ted.com/talks/susan_cain_the_power_of_introverts"
@@ -93,7 +93,7 @@ fun Post.Companion.createSamples(
       Content.from(
         Domain.sample,
         text =
-          buildStyledString {
+          buildMarkdown {
             +("Also, last day to get Pixel Pals premium at a discount and last day for the " +
               "lifetime unlock to be available!")
             +"\n".repeat(2)

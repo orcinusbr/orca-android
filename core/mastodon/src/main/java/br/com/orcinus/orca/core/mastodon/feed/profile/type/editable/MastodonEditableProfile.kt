@@ -22,7 +22,7 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfile
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.MastodonPost
 import br.com.orcinus.orca.std.image.SomeImageLoader
-import br.com.orcinus.orca.std.styledstring.StyledString
+import br.com.orcinus.orca.std.markdown.Markdown
 import java.net.URL
 
 /**
@@ -38,7 +38,7 @@ internal data class MastodonEditableProfile(
   override val account: Account,
   override val avatarLoader: SomeImageLoader,
   override val name: String,
-  override val bio: StyledString,
+  override val bio: Markdown,
   override val followerCount: Int,
   override val followingCount: Int,
   override val url: URL

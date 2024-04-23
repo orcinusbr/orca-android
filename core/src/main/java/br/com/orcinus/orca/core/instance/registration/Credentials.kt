@@ -18,7 +18,7 @@ package br.com.orcinus.orca.core.instance.registration
 import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.core.instance.Instance
-import br.com.orcinus.orca.std.styledstring.style.type.Email
+import br.com.orcinus.orca.std.markdown.style.type.Email
 
 /**
  * Information with which an [Account] can be registered or logged into.

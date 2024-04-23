@@ -17,7 +17,7 @@ package br.com.orcinus.orca.composite.timeline.text.spanned
 
 import android.text.Spanned
 import androidx.core.text.getSpans
-import br.com.orcinus.orca.std.styledstring.StyledString
+import br.com.orcinus.orca.std.markdown.Markdown
 
 /** [Part]s by which this [Spanned] is composed. */
 internal val Spanned.parts
@@ -30,11 +30,11 @@ internal val Spanned.parts
       }
     }
 
-/** Converts this [Spanned] into a [StyledString]. */
-fun Spanned.toStyledString(): StyledString {
+/** Converts this [Spanned] into [Markdown]. */
+fun Spanned.toMarkdown(): Markdown {
   val text = toString()
   val styles = parts.filterIsInstance<Part.Spanned>().flatMap(Part.Spanned::toStyles)
-  return StyledString(text, styles)
+  return Markdown(text, styles)
 }
 
 /**

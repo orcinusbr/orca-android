@@ -23,7 +23,7 @@ import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.std.image.SomeImageLoader
 import br.com.orcinus.orca.std.injector.Injector
-import br.com.orcinus.orca.std.styledstring.StyledString
+import br.com.orcinus.orca.std.markdown.Markdown
 import io.ktor.client.request.HttpRequest
 import io.ktor.client.request.forms.InputProvider
 import io.ktor.client.request.forms.formData
@@ -56,7 +56,7 @@ internal class MastodonEditor : Editor {
       .authenticateAndSubmitForm(ROUTE, parametersOf("display_name", name))
   }
 
-  override suspend fun setBio(bio: StyledString) {
+  override suspend fun setBio(bio: Markdown) {
     (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
       .client
       .authenticateAndSubmitForm(ROUTE, parametersOf("note", "$bio"))

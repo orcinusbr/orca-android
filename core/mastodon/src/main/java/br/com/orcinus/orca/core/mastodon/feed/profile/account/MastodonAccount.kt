@@ -33,7 +33,7 @@ import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import br.com.orcinus.orca.std.injector.Injector
-import br.com.orcinus.orca.std.styledstring.StyledString
+import br.com.orcinus.orca.std.markdown.Markdown
 import io.ktor.client.call.body
 import io.ktor.client.request.parameter
 import java.net.URL
@@ -134,7 +134,7 @@ internal data class MastodonAccount(
     val account = toAccount()
     val avatarURL = URL(avatar)
     val avatarLoader = avatarLoaderProvider.provide(avatarURL)
-    val bio = StyledString.fromHtml(note)
+    val bio = Markdown.fromHtml(note)
     val url = URL(url)
     return MastodonEditableProfile(
       postPaginatorProvider,
@@ -165,7 +165,7 @@ internal data class MastodonAccount(
     val account = toAccount()
     val avatarURL = URL(avatar)
     val avatarLoader = avatarLoaderProvider.provide(avatarURL)
-    val bio = StyledString.fromHtml(note)
+    val bio = Markdown.fromHtml(note)
     val url = URL(url)
     val follow =
       (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
