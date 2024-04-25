@@ -18,16 +18,16 @@ package br.com.orcinus.orca.ext.intents
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import java.net.URL
+import java.net.URI
 
 /**
- * Browses to the [url].
+ * Browses to the [uri].
  *
- * @param url [URL] to browse to.
+ * @param uri [URI] to browse to.
  */
-fun Context.browseTo(url: URL) {
-  val uri = Uri.parse("$url")
-  val intent = Intent(Intent.ACTION_VIEW, uri).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK }
+fun Context.browseTo(uri: URI) {
+  @Suppress("LocalVariableName") val _uri = Uri.parse("$uri")
+  val intent = Intent(Intent.ACTION_VIEW, _uri).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK }
   startActivity(intent)
 }
 

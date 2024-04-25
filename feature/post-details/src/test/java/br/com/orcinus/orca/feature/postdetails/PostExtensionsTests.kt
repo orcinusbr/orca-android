@@ -55,7 +55,7 @@ internal class PostExtensionsTests {
             ),
             post().publicationDateTime,
             post().asStatsDetails(),
-            post().url
+            post().uri
           )
         )
     }

@@ -80,6 +80,7 @@ include(
   ":std:injector-processor",
   ":std:injector-test",
   ":std:markdown",
+  ":std:uri",
   ":std:visibility",
   ":std:visibility-check"
 )

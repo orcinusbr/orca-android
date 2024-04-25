@@ -20,7 +20,7 @@ import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoader
 import java.io.Serializable
-import java.net.URL
+import java.net.URI
 
 /**
  * User that's authored a [Post].
@@ -29,7 +29,7 @@ import java.net.URL
  * @param avatarLoader [ImageLoader] that loads the avatar.
  * @param name Name to be displayed.
  * @param account Unique identifier within an instance.
- * @param profileURL [URL] that leads to this [Author]'s profile.
+ * @param profileURI [URI] that leads to this [Author]'s profile.
  */
 data class Author
 @InternalCoreApi
@@ -38,7 +38,7 @@ constructor(
   val avatarLoader: SomeImageLoader,
   val name: String,
   val account: Account,
-  val profileURL: URL
+  val profileURI: URI
 ) : Serializable {
   companion object
 }

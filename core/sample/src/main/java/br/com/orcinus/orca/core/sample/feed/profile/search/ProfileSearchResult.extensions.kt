@@ -37,6 +37,6 @@ fun ProfileSearchResult.Companion.createSample(
     author.account,
     author.avatarLoader,
     author.name,
-    author.profileURL
+    author.profileURI
   )
 }

@@ -61,8 +61,7 @@ internal class ProfileDetailsTests {
           .provideBy(Profile.sample.id)
           .first()
           .firstNotNullOf { it.content.highlight }
-          .url
-          .toString()
+          .uri
       ) {
         composeRule.onAllNodes(isTimeline()).onLast().performScrollToPostPreviewWithLinkCard()
         composeRule.onLinkCards().onFirst().performClick()

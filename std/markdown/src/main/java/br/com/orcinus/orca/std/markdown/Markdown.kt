@@ -19,12 +19,12 @@ import br.com.orcinus.orca.std.markdown.style.Style
 import br.com.orcinus.orca.std.markdown.style.isChoppedBy
 import br.com.orcinus.orca.std.markdown.style.isWithin
 import java.io.Serializable
-import java.net.URL
+import java.net.URI
 import java.util.Objects
 
 /**
  * [CharSequence] that supports stylization such as emboldening, italicizing and linking (through
- * plain [URL]s, e-mails, mentions and even simple text).
+ * plain [URI]s, e-mails, mentions and even simple text).
  *
  * [Markdown] can be created either through its constructors, or through [buildMarkdown].
  *
@@ -128,13 +128,13 @@ class Markdown(private val text: String, val styles: List<Style>) :
     }
 
     /**
-     * Links the text to be appended to the [url].
+     * Links the text to be appended to the [uri].
      *
      * @param appendix Additionally stylizes the link to be appended or solely appends it.
      * @see Style.Link
      */
-    fun link(url: URL, appendix: Appender.() -> Unit) {
-      append(appendix) { Style.Link.to(url, it) }
+    fun link(uri: URI, appendix: Appender.() -> Unit) {
+      append(appendix) { Style.Link.to(uri, it) }
     }
 
     /**
@@ -143,8 +143,8 @@ class Markdown(private val text: String, val styles: List<Style>) :
      * @param appendix Additionally stylizes the mention to be appended or solely appends it.
      * @see Style.Mention
      */
-    fun mention(url: URL, appendix: Appender.() -> Unit) {
-      append(appendix) { Style.Mention(it, url) }
+    fun mention(uri: URI, appendix: Appender.() -> Unit) {
+      append(appendix) { Style.Mention(it, uri) }
     }
 
     /**
@@ -159,7 +159,7 @@ class Markdown(private val text: String, val styles: List<Style>) :
       ensureStyleConstraints()
       val emails = text.map(Style.Email.regex) { indices, _ -> Style.Email(indices) }
       val plainLinks =
-        text.map(Style.Link.urlRegex) { indices, match -> Style.Link.to(URL(match), indices) }
+        text.map(Style.Link.uriRegex) { indices, match -> Style.Link.to(URI(match), indices) }
       val stylesAsList = styles.apply { addAll(emails + plainLinks) }.toList()
       return Markdown(text, stylesAsList)
     }

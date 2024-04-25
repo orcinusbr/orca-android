@@ -20,11 +20,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetailsBoundary
-import java.net.URL
+import java.net.URI
 
 /** [ProfileDetailsBoundary] that doesn't navigate anywhere. */
 internal object NoOpProfileDetailsBoundary : ProfileDetailsBoundary {
-  override fun navigateTo(url: URL) {}
+  override fun navigateTo(uri: URI) {}
 
   override fun navigateToGallery(
     postID: String,

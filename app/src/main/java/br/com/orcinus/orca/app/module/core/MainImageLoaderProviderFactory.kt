@@ -20,7 +20,7 @@ import br.com.orcinus.orca.platform.core.image.sample
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import br.com.orcinus.orca.std.image.compose.async.AsyncImageLoader
-import java.net.URL
+import java.net.URI
 
 internal object MainImageLoaderProviderFactory : ImageLoaderProviderFactory() {
   override fun createForSampleImageSource(): SomeImageLoaderProvider<Any> {
@@ -28,7 +28,7 @@ internal object MainImageLoaderProviderFactory : ImageLoaderProviderFactory() {
     return ComposableImageLoader.Provider.sample as SomeImageLoaderProvider<Any>
   }
 
-  override fun createForURL(): SomeImageLoaderProvider<URL> {
+  override fun createForURI(): SomeImageLoaderProvider<URI> {
     return AsyncImageLoader.Provider
   }
 }

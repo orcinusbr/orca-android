@@ -20,6 +20,7 @@ plugins {
 }
 
 dependencies {
+  testImplementation(project(":std:uri"))
   testImplementation(libs.assertk)
   testImplementation(libs.kotlin.test)
 }

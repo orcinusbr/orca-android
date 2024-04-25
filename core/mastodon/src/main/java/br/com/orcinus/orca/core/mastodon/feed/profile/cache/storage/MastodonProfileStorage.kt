@@ -22,14 +22,14 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfilePostPaginat
 import br.com.orcinus.orca.platform.cache.Storage
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import java.net.URL
+import java.net.URI
 import kotlinx.coroutines.flow.first
 
 /**
  * [Storage] for [Profile]s.
  *
  * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
- *   [Profile]'s avatar will be loaded from a [URL].
+ *   [Profile]'s avatar will be loaded from a [URI].
  * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
  *   [MastodonProfilePostPaginator] for paginating through a [MastodonProfile]'s [Post]s will be
  *   provided.
@@ -37,7 +37,7 @@ import kotlinx.coroutines.flow.first
  *   [Mastodon profile entities][MastodonProfileEntity].
  */
 internal class MastodonProfileStorage(
-  private val avatarLoaderProvider: SomeImageLoaderProvider<URL>,
+  private val avatarLoaderProvider: SomeImageLoaderProvider<URI>,
   private val postPaginatorProvider: MastodonProfilePostPaginator.Provider,
   private val entityDao: MastodonProfileEntityDao
 ) : Storage<Profile>() {

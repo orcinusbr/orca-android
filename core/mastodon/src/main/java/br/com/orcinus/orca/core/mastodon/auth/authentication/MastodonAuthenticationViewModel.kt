@@ -34,7 +34,7 @@ import br.com.orcinus.orca.std.injector.Injector
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.submitForm
 import io.ktor.http.Parameters
-import java.net.URL
+import java.net.URI
 import kotlinx.coroutines.launch
 
 /**
@@ -42,13 +42,13 @@ import kotlinx.coroutines.launch
  *
  * @param application [Application] that allows [Context]-specific behavior.
  * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
- *   avatar will be loaded from a [URL].
+ *   avatar will be loaded from a [URI].
  * @param authorizationCode Code provided by the API when authorization was granted to the user.
  */
 internal class MastodonAuthenticationViewModel
 private constructor(
   application: Application,
-  private val avatarLoaderProvider: SomeImageLoaderProvider<URL>,
+  private val avatarLoaderProvider: SomeImageLoaderProvider<URI>,
   private val authorizationCode: String
 ) : AndroidViewModel(application) {
   /**
@@ -87,12 +87,12 @@ private constructor(
      *
      * @param application [Application] that allows [Context]-specific behavior.
      * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
-     *   the avatar will be loaded from a [URL].
+     *   the avatar will be loaded from a [URI].
      * @param authorizationCode Code provided by the API when authorization was granted to the user.
      */
     fun createFactory(
       application: Application,
-      avatarLoaderProvider: SomeImageLoaderProvider<URL>,
+      avatarLoaderProvider: SomeImageLoaderProvider<URI>,
       authorizationCode: String
     ): ViewModelProvider.Factory {
       return viewModelFactory {

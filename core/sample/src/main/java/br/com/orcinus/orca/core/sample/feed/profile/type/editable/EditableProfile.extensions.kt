@@ -48,7 +48,7 @@ fun EditableProfile.Companion.createSample(
     delegate.bio,
     delegate.followerCount,
     delegate.followingCount,
-    delegate.url,
+    delegate.uri,
     postProvider,
     writer
   )

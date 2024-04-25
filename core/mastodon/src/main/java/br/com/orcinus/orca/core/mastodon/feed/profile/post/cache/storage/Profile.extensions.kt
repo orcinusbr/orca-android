@@ -20,5 +20,5 @@ import br.com.orcinus.orca.core.feed.profile.post.Author
 
 /** Converts this [Profile] into an [Author]. */
 internal fun Profile.toAuthor(): Author {
-  return Author(id, avatarLoader, name, account, profileURL = url)
+  return Author(id, avatarLoader, name, account, profileURI = uri)
 }

@@ -17,9 +17,10 @@ package br.com.orcinus.orca.core.feed.profile.search
 
 import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.feed.profile.account.Account
+import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoader
 import java.io.Serializable
-import java.net.URL
+import java.net.URI
 
 /**
  * Result of a profile search.
@@ -28,7 +29,7 @@ import java.net.URL
  * @param account Unique identifier within an instance.
  * @param avatarLoader [ImageLoader] that loads the avatar.
  * @param name Name to be displayed.
- * @param url [URL] that leads to the profile.
+ * @param uri [URI] that leads to the profile.
  */
 data class ProfileSearchResult
 @InternalCoreApi
@@ -37,7 +38,7 @@ constructor(
   val account: Account,
   val avatarLoader: SomeImageLoader,
   val name: String,
-  val url: URL
+  val uri: URI
 ) : Serializable {
   companion object
 }

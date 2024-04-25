@@ -18,6 +18,7 @@ package br.com.orcinus.orca.platform.intents.test
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import br.com.orcinus.orca.platform.starter.StartableActivity
+import br.com.orcinus.orca.std.uri.URIBuilder
 import io.mockk.mockkStatic
 import io.mockk.verify
 import junit.framework.AssertionFailedError
@@ -58,14 +59,13 @@ internal class IntentsExtensionsTests {
 
   @Test(expected = AssertionFailedError::class)
   fun throwsWhenBrowsingIsIntendedButNotRequested() {
-    intendBrowsingTo("https://orca.jeanbarrossilva.com") {}
+    intendBrowsingTo(URIBuilder.scheme("https").host("orca.jeanbarrossilva.com").build()) {}
   }
 
   @Test
   fun intendsBrowsing() {
-    intendBrowsingTo("https://orca.jeanbarrossilva.com") {
-      browseTo("https://orca.jeanbarrossilva.com")
-    }
+    val uri = URIBuilder.scheme("https").host("orca.jeanbarrossilva.com").build()
+    intendBrowsingTo(uri) { browseTo(uri) }
   }
 
   @Test(expected = AssertionFailedError::class)

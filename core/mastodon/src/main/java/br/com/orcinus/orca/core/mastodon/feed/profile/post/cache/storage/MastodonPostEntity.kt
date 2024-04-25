@@ -37,7 +37,7 @@ import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.markdown.Markdown
-import java.net.URL
+import java.net.URI
 import java.time.ZonedDateTime
 
 /**
@@ -50,7 +50,7 @@ import java.time.ZonedDateTime
  *   [highlight][Content.highlight] [headline][Highlight.headline].
  * @param headlineSubtitle Subtitle of the [Post]'s [content][Post.content]'s
  *   [highlight][Content.highlight] [headline][Highlight.headline].
- * @param headlineCoverURL URL [String] that leads to the cover image of the [Post]'s
+ * @param headlineCoverURI URI [String] that leads to the cover image of the [Post]'s
  *   [content][Post.content]'s [highlight][Content.highlight] [headline][Highlight.headline].
  * @param publicationDateTime [String] representation of the moment in which the [Post] was
  *   published.
@@ -59,7 +59,7 @@ import java.time.ZonedDateTime
  *   [authenticated][Actor.Authenticated] [Actor].
  * @param isReposted Whether the [Post] is reblogged.
  * @param repostCount Amount of times the [Post] has been reblogged.
- * @param url URL [String] that leads to the [Post].
+ * @param uri URI [String] that leads to the [Post].
  */
 @Entity(tableName = "posts")
 internal data class MastodonPostEntity(
@@ -69,14 +69,14 @@ internal data class MastodonPostEntity(
   val text: String,
   @ColumnInfo(name = "headline_title") val headlineTitle: String?,
   @ColumnInfo(name = "headline_subtitle") val headlineSubtitle: String?,
-  @ColumnInfo(name = "headline_cover_url") val headlineCoverURL: String?,
+  @ColumnInfo(name = "headline_cover_uri") val headlineCoverURI: String?,
   @ColumnInfo(name = "publication_date_time") val publicationDateTime: String,
   @ColumnInfo(name = "comment_count") val commentCount: Int,
   @ColumnInfo(name = "is_favorite") val isFavorite: Boolean,
   @ColumnInfo(name = "favorite_count") val favoriteCount: Int,
   @ColumnInfo(name = "is_reposted") val isReposted: Boolean,
   @ColumnInfo(name = "repost_count") val repostCount: Int,
-  @ColumnInfo(name = "url") val url: String
+  @ColumnInfo(name = "uri") val uri: String
 ) {
   /**
    * Converts this [MastodonPostEntity] into a [Post].
@@ -85,7 +85,7 @@ internal data class MastodonPostEntity(
    * @param dao [MastodonPostEntityDao] that will select the persisted
    *   [Mastodon style entities][MastodonStyleEntity].
    * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by images
-   *   will be loaded from a [URL].
+   *   will be loaded from a [URI].
    * @param commentPaginatorProvider [MastodonCommentPaginator.Provider] by which a
    *   [MastodonCommentPaginator] for paginating through the [Post]'s comments will be provided.
    * @see Post.comment
@@ -93,14 +93,14 @@ internal data class MastodonPostEntity(
   suspend fun toPost(
     profileCache: Cache<Profile>,
     dao: MastodonPostEntityDao,
-    imageLoaderProvider: SomeImageLoaderProvider<URL>,
+    imageLoaderProvider: SomeImageLoaderProvider<URI>,
     commentPaginatorProvider: MastodonCommentPaginator.Provider
   ): Post {
     val author = profileCache.get(authorID).toAuthor()
     val domain = Injector.from<CoreModule>().instanceProvider().provide().domain
     val styles = dao.selectWithStylesByID(id).styles.map(MastodonStyleEntity::toStyle)
     val text = Markdown(text, styles)
-    val coverLoader = headlineCoverURL?.let { imageLoaderProvider.provide(URL(it)) }
+    val coverLoader = headlineCoverURI?.let { imageLoaderProvider.provide(URI(it)) }
     val content =
       Content.from(domain, text) {
         if (headlineTitle != null) {
@@ -110,7 +110,7 @@ internal data class MastodonPostEntity(
         }
       }
     val publicationDateTime = ZonedDateTime.parse(publicationDateTime)
-    val url = URL(url)
+    val uri = URI(uri)
     return MastodonPost(
         id,
         imageLoaderProvider,
@@ -121,7 +121,7 @@ internal data class MastodonPostEntity(
         commentCount,
         favoriteCount,
         repostCount,
-        url
+        uri
       )
       .`if`<Post>(reposterID != null) {
         val reposter = profileCache.get(reposterID!!).toAuthor()
@@ -143,15 +143,15 @@ internal data class MastodonPostEntity(
         "${post.content.text}",
         post.content.highlight?.headline?.title,
         post.content.highlight?.headline?.subtitle,
-        headlineCoverURL =
-          post.content.highlight?.headline?.coverLoader?.source?.let { it as? URL }?.toString(),
+        headlineCoverURI =
+          post.content.highlight?.headline?.coverLoader?.source?.let { it as? URI }?.toString(),
         "${post.publicationDateTime}",
         post.comment.count,
         post.favorite.isEnabled,
         post.favorite.count,
         post.repost.isEnabled,
         post.repost.count,
-        "${post.url}"
+        "${post.uri}"
       )
     }
   }

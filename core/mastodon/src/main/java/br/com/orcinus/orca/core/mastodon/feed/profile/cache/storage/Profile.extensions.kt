@@ -30,7 +30,7 @@ internal fun Profile.toMastodonProfileEntity(): MastodonProfileEntity {
   return MastodonProfileEntity(
     id,
     "$account",
-    avatarURL = "${avatarLoader.source}",
+    avatarURI = "${avatarLoader.source}",
     name,
     "$bio",
     type =
@@ -42,6 +42,6 @@ internal fun Profile.toMastodonProfileEntity(): MastodonProfileEntity {
     follow = if (this is FollowableProfile<*>) "$follow" else null,
     followerCount,
     followingCount,
-    "$url"
+    "$uri"
   )
 }

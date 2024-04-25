@@ -29,7 +29,7 @@ import br.com.orcinus.orca.core.sample.instance.domain.sample
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import br.com.orcinus.orca.std.markdown.Markdown
-import java.net.URL
+import br.com.orcinus.orca.std.uri.URIBuilder
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.UUID
@@ -67,7 +67,11 @@ fun Repost.Companion.createSample(
       publicationDateTime = ZonedDateTime.of(2023, 8, 16, 16, 48, 43, 384, ZoneId.of("GMT-3")),
       favorite = createSampleToggleableStat(imageLoaderProvider),
       repost = createSampleToggleableStat(imageLoaderProvider),
-      url = URL("https://mastodon.social/@_inside/110900315644335855"),
+      URIBuilder.scheme("https")
+        .host("mastodon.social")
+        .path("@_inside")
+        .path("110900315644335855")
+        .build(),
       writerProvider
     ),
     reblogger = Author.createSample(imageLoaderProvider)

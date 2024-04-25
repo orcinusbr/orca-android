@@ -33,7 +33,7 @@ internal class DefaultProfileConverter(override val next: ProfileConverter?) : P
       profile.name,
       profile.account,
       profile.bio.toAnnotatedString(colors),
-      profile.url
+      profile.uri
     )
   }
 }

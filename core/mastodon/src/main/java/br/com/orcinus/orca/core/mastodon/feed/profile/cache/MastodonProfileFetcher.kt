@@ -29,19 +29,19 @@ import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import br.com.orcinus.orca.std.injector.Injector
 import io.ktor.client.call.body
-import java.net.URL
+import java.net.URI
 
 /**
  * [Fetcher] for [MastodonProfile]s.
  *
  * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
- *   [Profile]s' avatars will be loaded from a [URL].
+ *   [Profile]s' avatars will be loaded from a [URI].
  * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
  *   [MastodonProfilePostPaginator] for paginating through a [MastodonProfile]'s [Post]s will be
  *   provided.
  */
 internal class MastodonProfileFetcher(
-  private val avatarLoaderProvider: SomeImageLoaderProvider<URL>,
+  private val avatarLoaderProvider: SomeImageLoaderProvider<URI>,
   private val postPaginatorProvider: MastodonProfilePostPaginator.Provider
 ) : Fetcher<Profile>() {
   override suspend fun onFetch(key: String): Profile {

@@ -44,7 +44,7 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.search.cache.storage.Masto
 import br.com.orcinus.orca.platform.cache.Cache
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import java.net.URL
+import java.net.URI
 
 /**
  * [MastodonInstance] that authorizes the user and caches all fetched structures through the given
@@ -67,7 +67,7 @@ internal class ContextualMastodonInstance(
   actorProvider: ActorProvider,
   override val authenticationLock: AuthenticationLock<MastodonAuthenticator>,
   termMuter: TermMuter,
-  internal val imageLoaderProvider: SomeImageLoaderProvider<URL>
+  internal val imageLoaderProvider: SomeImageLoaderProvider<URI>
 ) : MastodonInstance<MastodonAuthorizer, MastodonAuthenticator>(domain, authorizer) {
   /** [MastodonDatabase] in which cached structures will be persisted. */
   private val database = MastodonDatabase.getInstance(context)

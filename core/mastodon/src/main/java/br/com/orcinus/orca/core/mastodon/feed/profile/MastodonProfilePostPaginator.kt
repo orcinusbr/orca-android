@@ -21,7 +21,7 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.MastodonSt
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentPaginator
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import java.net.URL
+import java.net.URI
 
 /**
  * [MastodonPostPaginator] that paginates through a [MastodonAccount]'s [MastodonStatus]es.
@@ -30,7 +30,7 @@ import java.net.URL
  * @see MastodonAccount.id
  */
 internal class MastodonProfilePostPaginator(
-  override val imageLoaderProvider: SomeImageLoaderProvider<URL>,
+  override val imageLoaderProvider: SomeImageLoaderProvider<URI>,
   override val commentPaginatorProvider: MastodonCommentPaginator.Provider,
   id: String
 ) : MastodonStatusesPaginator() {

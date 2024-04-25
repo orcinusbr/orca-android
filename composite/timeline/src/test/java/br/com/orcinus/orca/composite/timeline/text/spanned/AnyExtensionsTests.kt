@@ -23,13 +23,15 @@ import assertk.assertions.containsExactly
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import br.com.orcinus.orca.std.markdown.style.Style
-import java.net.URL
+import br.com.orcinus.orca.std.uri.URIBuilder
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class AnyExtensionsTests {
+  private val uri = URIBuilder.scheme("https").host("orca.jeanbarrossilva.com").build()
+
   @Test
   fun structurallyComparesEqualStyleSpans() {
     assertThat(
@@ -46,18 +48,16 @@ internal class AnyExtensionsTests {
 
   @Test
   fun structurallyComparesEqualURLSpans() {
-    assertThat(
-        URLSpan("https://orca.jeanbarrossilva.com")
-          .isStructurallyEqualTo(URLSpan("https://orca.jeanbarrossilva.com"))
-      )
-      .isTrue()
+    assertThat(URLSpan("$uri").isStructurallyEqualTo(URLSpan("$uri"))).isTrue()
   }
 
   @Test
   fun structurallyComparesDifferentURLSpans() {
     assertThat(
-        URLSpan("https://orca.jeanbarrossilva.com")
-          .isStructurallyEqualTo(URLSpan("https://beluga.jeanbarrossilva.com"))
+        URLSpan("$uri")
+          .isStructurallyEqualTo(
+            URLSpan("${URIBuilder.scheme("https").host("beluga.jeanbarrossilva.com").build()}")
+          )
       )
       .isFalse()
   }
@@ -81,7 +81,6 @@ internal class AnyExtensionsTests {
 
   @Test
   fun convertsURLSpanIntoStyle() {
-    assertThat(URLSpan("https://orca.jeanbarrossilva.com").toStyles(0..31))
-      .containsExactly(Style.Link.to(URL("https://orca.jeanbarrossilva.com"), 0..31))
+    assertThat(URLSpan("$uri").toStyles(0..31)).containsExactly(Style.Link.to(uri, 0..31))
   }
 }

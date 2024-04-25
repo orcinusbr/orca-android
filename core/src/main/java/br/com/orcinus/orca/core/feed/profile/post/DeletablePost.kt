@@ -32,7 +32,7 @@ abstract class DeletablePost @InternalCoreApi constructor(private val delegate: 
   override val comment = delegate.comment
   override val favorite = delegate.favorite
   override val repost = delegate.repost
-  override val url = delegate.url
+  override val uri = delegate.uri
 
   final override fun asDeletable(): DeletablePost {
     return this

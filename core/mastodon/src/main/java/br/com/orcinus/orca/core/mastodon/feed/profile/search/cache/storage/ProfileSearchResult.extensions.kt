@@ -25,5 +25,5 @@ import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 internal fun ProfileSearchResult.toMastodonProfileSearchResultEntity(
   query: String
 ): MastodonProfileSearchResultEntity {
-  return MastodonProfileSearchResultEntity(query, id, "$account", "$avatarLoader", name, "$url")
+  return MastodonProfileSearchResultEntity(query, id, "$account", "$avatarLoader", name, "$uri")
 }

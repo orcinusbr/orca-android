@@ -19,10 +19,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
-import java.net.URL
+import java.net.URI
 
 interface ProfileDetailsBoundary {
-  fun navigateTo(url: URL)
+  fun navigateTo(uri: URI)
 
   fun navigateToGallery(
     postID: String,
@@ -36,7 +36,7 @@ interface ProfileDetailsBoundary {
   companion object {
     internal val empty =
       object : ProfileDetailsBoundary {
-        override fun navigateTo(url: URL) {}
+        override fun navigateTo(uri: URI) {}
 
         override fun navigateToGallery(
           postID: String,

@@ -30,7 +30,6 @@ import br.com.orcinus.orca.composite.timeline.test.post.performScrollToPostPrevi
 import br.com.orcinus.orca.composite.timeline.test.post.performScrollToPostPreviewWithLinkCard
 import br.com.orcinus.orca.composite.timeline.test.refresh.assertIsNotInProgress
 import br.com.orcinus.orca.core.instance.Instance
-import br.com.orcinus.orca.core.sample.test.feed.profile.post.content.highlight.sample
 import br.com.orcinus.orca.feature.composer.ComposerActivity
 import br.com.orcinus.orca.feature.feed.FEED_FLOATING_ACTION_BUTTON_TAG
 import br.com.orcinus.orca.feature.feed.test.onSearchAction
@@ -69,8 +68,7 @@ internal class FeedTests {
           .provideAll()
           .first()
           .firstNotNullOf { it.content.highlight }
-          .url
-          .toString()
+          .uri
       ) {
         composeRule.onTimeline().performScrollToPostPreviewWithLinkCard()
         composeRule.onLinkCards().onFirst().performClick()

@@ -23,11 +23,13 @@ import assertk.assertions.isTrue
 import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.composite.timeline.text.annotated.span.category.Categorizer
 import br.com.orcinus.orca.std.markdown.style.Style
-import java.net.MalformedURLException
-import java.net.URL
+import br.com.orcinus.orca.std.uri.URIBuilder
+import java.net.URISyntaxException
 import kotlin.test.Test
 
 internal class StyleExtractorTests {
+  private val uri = URIBuilder.scheme("https").host("orca.jeanbarrossilva.com").build()
+
   @Test
   fun boldExtractorDoesNotExtractFromNonBoldSpanStyle() {
     assertThat(StyleExtractor.BOLD.extract(SpanStyle(), 0..1)).isNull()
@@ -79,17 +81,17 @@ internal class StyleExtractorTests {
   }
 
   @Test
-  fun linkExtractorDoesNotExtractFromNonURLSpanStyle() {
+  fun linkExtractorDoesNotExtractFromNonURISpanStyle() {
     assertThat(StyleExtractor.LINK.extract(SpanStyle(), 0..1))
   }
 
-  @Test(expected = MalformedURLException::class)
+  @Test(expected = URISyntaxException::class)
   fun linkExtractorThrowsWhenExtractingFromSpanStyleWithMalformedCallToUrl() {
     StyleExtractor.LINK.extract(createLinkSpanStyle(Colors.LIGHT, "category: url("), 0..1)
   }
 
-  @Test(expected = MalformedURLException::class)
-  fun linkExtractorThrowsWhenExtractingFromSpanStyleWithMalformedURL() {
+  @Test(expected = URISyntaxException::class)
+  fun linkExtractorThrowsWhenExtractingFromSpanStyleWithMalformedURI() {
     StyleExtractor.LINK.extract(createLinkSpanStyle(Colors.LIGHT, "category: url()"), 0..1)
   }
 
@@ -97,14 +99,11 @@ internal class StyleExtractorTests {
   fun linkExtractorExtractsFromSpanStyle() {
     assertThat(
         StyleExtractor.LINK.extract(
-          createLinkSpanStyle(
-            Colors.LIGHT,
-            Categorizer.categorizeAsLink(URL("https://orca.jeanbarrossilva.com"))
-          ),
+          createLinkSpanStyle(Colors.LIGHT, Categorizer.categorizeAsLink(uri)),
           0..1
         )
       )
-      .isEqualTo(Style.Link.to(URL("https://orca.jeanbarrossilva.com"), 0..1))
+      .isEqualTo(Style.Link.to(uri, 0..1))
   }
 
   @Test
@@ -116,10 +115,7 @@ internal class StyleExtractorTests {
   fun mentionExtractorExtractsFromSpanStyle() {
     assertThat(
         StyleExtractor.MENTION.isExtractable(
-          createLinkSpanStyle(
-            Colors.LIGHT,
-            Categorizer.categorizeAsMention(URL("https://orca.jeanbarrossilva.com"))
-          )
+          createLinkSpanStyle(Colors.LIGHT, Categorizer.categorizeAsMention(uri))
         )
       )
       .isTrue()

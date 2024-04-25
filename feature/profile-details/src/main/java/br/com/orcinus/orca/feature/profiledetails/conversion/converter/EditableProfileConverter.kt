@@ -32,7 +32,7 @@ internal class EditableProfileConverter(override val next: ProfileConverter?) : 
         profile.name,
         profile.account,
         profile.bio.toAnnotatedString(colors),
-        profile.url
+        profile.uri
       )
     } else {
       null

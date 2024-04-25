@@ -25,14 +25,14 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.comment.CommentS
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentPaginator
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import java.net.URL
+import java.net.URI
 import java.time.ZonedDateTime
 
 /**
  * [Post] whose actions communicate with the Mastodon API.
  *
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
- *   will be loaded from a [URL].
+ *   will be loaded from a [URI].
  * @param commentPaginatorProvider [MastodonCommentPaginator.Provider] by which a
  *   [MastodonCommentPaginator] for paginating through the comments will be provided.
  * @param commentCount Amount of comments that this [MastodonPost] has received.
@@ -43,7 +43,7 @@ import java.time.ZonedDateTime
 data class MastodonPost
 internal constructor(
   override val id: String,
-  private val imageLoaderProvider: SomeImageLoaderProvider<URL>,
+  private val imageLoaderProvider: SomeImageLoaderProvider<URI>,
   override val author: Author,
   override val content: Content,
   override val publicationDateTime: ZonedDateTime,
@@ -51,7 +51,7 @@ internal constructor(
   private val commentCount: Int,
   private val favoriteCount: Int,
   private val reblogCount: Int,
-  override val url: URL
+  override val uri: URI
 ) : Post {
   override val comment = CommentStat(id, commentCount, commentPaginatorProvider)
   override val favorite = FavoriteStat(id, favoriteCount)

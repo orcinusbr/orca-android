@@ -36,7 +36,7 @@ import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.markdown.Markdown
 import io.ktor.client.call.body
 import io.ktor.client.request.parameter
-import java.net.URL
+import java.net.URI
 import kotlinx.serialization.Serializable
 
 /**
@@ -45,12 +45,12 @@ import kotlinx.serialization.Serializable
  * @param id Unique global identifier.
  * @param username Unique identifier within the instance from which this [Account] is.
  * @param acct Relative identifier based on the instance of this [Account].
- * @param url URL [String] that leads to this [Account] within its instance.
+ * @param uri URI [String] that leads to this [Account] within its instance.
  * @param displayName Name that's publicly displayed.
  * @param locked Whether its contents are private, meaning that they can only be seen by accepted
  *   followers.
  * @param note Description provided by the owner.
- * @param avatar URL [String] that leads to the avatar image.
+ * @param avatar URI [String] that leads to the avatar image.
  * @param followersCount Amount of followers that this [Account] has.
  * @param followingCount Amount of other [Account]s that this one is following.
  */
@@ -59,7 +59,7 @@ internal data class MastodonAccount(
   val id: String,
   val username: String,
   val acct: String,
-  val url: String,
+  val uri: String,
   val displayName: String,
   val locked: Boolean,
   val note: String,
@@ -71,27 +71,27 @@ internal data class MastodonAccount(
    * Converts this [MastodonAccount] into an [Author].
    *
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
-   *   [Author]'s avatar will be loaded from a [URL].
+   *   [Author]'s avatar will be loaded from a [URI].
    */
-  fun toAuthor(avatarLoaderProvider: SomeImageLoaderProvider<URL>): Author {
-    val avatarURL = URL(avatar)
-    val avatarLoader = avatarLoaderProvider.provide(avatarURL)
+  fun toAuthor(avatarLoaderProvider: SomeImageLoaderProvider<URI>): Author {
+    val avatarURI = URI(avatar)
+    val avatarLoader = avatarLoaderProvider.provide(avatarURI)
     val account = toAccount()
-    val profileURL = URL(url)
-    return Author(id, avatarLoader, displayName, account, profileURL)
+    val profileURI = URI(uri)
+    return Author(id, avatarLoader, displayName, account, profileURI)
   }
 
   /**
    * Converts this [MastodonAccount] into a [Profile].
    *
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
-   *   [Profile]'s avatar will be loaded from a [URL].
+   *   [Profile]'s avatar will be loaded from a [URI].
    * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
    *   [MastodonProfilePostPaginator] for paginating through the resulting [MastodonProfile]'s
    *   [MastodonPost]s will be provided.
    */
   suspend fun toProfile(
-    avatarLoaderProvider: SomeImageLoaderProvider<URL>,
+    avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): Profile {
     return if (isOwner()) {
@@ -122,20 +122,20 @@ internal data class MastodonAccount(
    * Converts this [MastodonAccount] into A [MastodonEditableProfile].
    *
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
-   *   [MastodonEditableProfile]'s avatar will be loaded from a [URL].
+   *   [MastodonEditableProfile]'s avatar will be loaded from a [URI].
    * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
    *   [MastodonProfilePostPaginator] for paginating through the resulting
    *   [MastodonEditableProfile]'s [MastodonPost]s will be provided.
    */
   private fun toEditableProfile(
-    avatarLoaderProvider: SomeImageLoaderProvider<URL>,
+    avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): MastodonEditableProfile {
     val account = toAccount()
-    val avatarURL = URL(avatar)
-    val avatarLoader = avatarLoaderProvider.provide(avatarURL)
+    val avatarURI = URI(avatar)
+    val avatarLoader = avatarLoaderProvider.provide(avatarURI)
     val bio = Markdown.fromHtml(note)
-    val url = URL(url)
+    val uri = URI(uri)
     return MastodonEditableProfile(
       postPaginatorProvider,
       id,
@@ -145,7 +145,7 @@ internal data class MastodonAccount(
       bio,
       followersCount,
       followingCount,
-      url
+      uri
     )
   }
 
@@ -153,20 +153,20 @@ internal data class MastodonAccount(
    * Converts this [MastodonAccount] into A [MastodonFollowableProfile].
    *
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
-   *   [MastodonFollowableProfile]'s avatar will be loaded from a [URL].
+   *   [MastodonFollowableProfile]'s avatar will be loaded from a [URI].
    * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
    *   [MastodonProfilePostPaginator] for paginating through the resulting
    *   [MastodonFollowableProfile]'s [MastodonPost]s will be provided.
    */
   private suspend fun toFollowableProfile(
-    avatarLoaderProvider: SomeImageLoaderProvider<URL>,
+    avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): MastodonFollowableProfile<Follow> {
     val account = toAccount()
-    val avatarURL = URL(avatar)
-    val avatarLoader = avatarLoaderProvider.provide(avatarURL)
+    val avatarURI = URI(avatar)
+    val avatarLoader = avatarLoaderProvider.provide(avatarURI)
     val bio = Markdown.fromHtml(note)
-    val url = URL(url)
+    val uri = URI(uri)
     val follow =
       (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
         .client
@@ -184,7 +184,7 @@ internal data class MastodonAccount(
       follow,
       followersCount,
       followingCount,
-      url
+      uri
     )
   }
 }

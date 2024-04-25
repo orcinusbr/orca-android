@@ -17,14 +17,14 @@ package br.com.orcinus.orca.core.feed.profile.post.content.highlight
 
 import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
-import java.net.URL
+import java.net.URI
 
 /**
  * Main portion of a [Content] that redirects the user to another site.
  *
  * @param headline [Headline] with the main information.
- * @param url [URL] that leads to the external site.
+ * @param uri [URI] that leads to the external site.
  */
-data class Highlight @InternalCoreApi constructor(val headline: Headline, val url: URL) {
+data class Highlight @InternalCoreApi constructor(val headline: Headline, val uri: URI) {
   companion object
 }

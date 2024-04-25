@@ -26,7 +26,7 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.std.image.compose.SomeComposableImageLoader
-import java.net.URL
+import java.net.URI
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -41,7 +41,7 @@ import kotlinx.coroutines.flow.map
  */
 @Composable
 internal fun Post.toPostDetails(
-  onLinkClick: (URL) -> Unit = {},
+  onLinkClick: (URI) -> Unit = {},
   onThumbnailClickListener: Disposition.OnThumbnailClickListener =
     Disposition.OnThumbnailClickListener.empty
 ): PostDetails {
@@ -60,7 +60,7 @@ internal fun Post.toPostDetails(
  */
 internal fun Post.toPostDetails(
   colors: Colors,
-  onLinkClick: (URL) -> Unit = {},
+  onLinkClick: (URI) -> Unit = {},
   onThumbnailClickListener: Disposition.OnThumbnailClickListener =
     Disposition.OnThumbnailClickListener.empty
 ): PostDetails {
@@ -73,7 +73,7 @@ internal fun Post.toPostDetails(
     Figure.of(id, author.name, content, onLinkClick, onThumbnailClickListener),
     publicationDateTime,
     asStatsDetails(),
-    url
+    uri
   )
 }
 
@@ -87,7 +87,7 @@ internal fun Post.toPostDetails(
  */
 internal fun Post.toPostDetailsFlow(
   colors: Colors,
-  onLinkClick: (URL) -> Unit,
+  onLinkClick: (URI) -> Unit,
   onThumbnailClickListener: Disposition.OnThumbnailClickListener
 ): Flow<PostDetails> {
   return asStatsDetailsFlow().map {
@@ -100,7 +100,7 @@ internal fun Post.toPostDetailsFlow(
       Figure.of(id, author.name, content, onLinkClick, onThumbnailClickListener),
       publicationDateTime,
       it,
-      url
+      uri
     )
   }
 }

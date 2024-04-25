@@ -38,7 +38,7 @@ internal class RepostTests {
         override val comment = sampleRepost.comment
         override val favorite = sampleRepost.favorite
         override val repost = sampleRepost.repost
-        override val url = sampleRepost.url
+        override val uri = sampleRepost.uri
 
         override fun asDeletable(): DeletablePost {
           return let {
@@ -57,7 +57,7 @@ internal class RepostTests {
         sampleRepost.comment,
         sampleRepost.favorite,
         sampleRepost.repost,
-        sampleRepost.url
+        sampleRepost.uri
       ) {
         object : DeletablePost(it) {
           override suspend fun delete() {}

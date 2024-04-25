@@ -20,7 +20,7 @@ import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Highlight
 import br.com.orcinus.orca.core.sample.image.SampleImageSource
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import java.net.URL
+import br.com.orcinus.orca.std.uri.URIBuilder
 
 /**
  * Creates a sample [Highlight].
@@ -31,5 +31,8 @@ import java.net.URL
 fun Highlight.Companion.createSample(
   coverLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
 ): Highlight {
-  return Highlight(Headline.createSample(coverLoaderProvider), URL("https://pixelpals.app"))
+  return Highlight(
+    Headline.createSample(coverLoaderProvider),
+    URIBuilder.scheme("https").host("pixelpals.app").build()
+  )
 }

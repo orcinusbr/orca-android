@@ -29,17 +29,14 @@ import br.com.orcinus.orca.core.mastodon.R
 import br.com.orcinus.orca.core.mastodon.auth.Mastodon
 import br.com.orcinus.orca.core.mastodon.auth.authorization.OnAccessTokenRequestListener
 import br.com.orcinus.orca.core.mastodon.instance.MastodonInstance
-import io.ktor.http.URLBuilder
-import io.ktor.http.appendPathSegments
-import io.ktor.http.takeFrom
-import io.ktor.http.toURI
-import java.net.URL
+import br.com.orcinus.orca.std.uri.HostedURIBuilder
+import java.net.URI
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 /**
- * [AndroidViewModel] that provides the [url] to be opened in the browser for authenticating the
+ * [AndroidViewModel] that provides the [uri] to be opened in the browser for authenticating the
  * user.
  *
  * @param application [Application] that allows [Context]-specific behavior.
@@ -61,9 +58,9 @@ private constructor(
   /** [StateFlow] version of the [domainMutableFlow]. */
   val domainFlow = domainMutableFlow.asStateFlow()
 
-  /** [URL] to be opened in order to authorize. */
-  val url
-    get() = createURL(application, Domain(domainFlow.value))
+  /** [URI] to be opened in order to authorize. */
+  val uri
+    get() = createURI(application, Domain(domainFlow.value))
 
   /**
    * Emits [domain] to the [domainFlow].
@@ -112,27 +109,23 @@ private constructor(
     }
 
     /**
-     * Creates an authorization [URL] for the given [domain].
+     * Creates an authorization [URI] for the given [domain].
      *
      * @param context [Context] by which the redirect URI will be provided.
-     * @param domain [Domain] for which the [URL] will be created.
+     * @param domain [Domain] for which the [URI] will be created.
      */
-    internal fun createURL(context: Context, domain: Domain): URL {
-      return URLBuilder()
-        .takeFrom(domain.url)
-        .appendPathSegments("oauth", "authorize")
-        .apply {
-          with(context) {
-            parameters["response_type"] = "code"
-            parameters["client_id"] = Mastodon.CLIENT_ID
-            parameters["redirect_uri"] =
-              getString(R.string.redirect_uri, getString(R.string.scheme))
-            parameters["scope"] = Mastodon.SCOPES
-          }
-        }
-        .build()
-        .toURI()
-        .toURL()
+    internal fun createURI(context: Context, domain: Domain): URI {
+      return with(context) {
+        HostedURIBuilder.from(domain.uri)
+          .path("oauth")
+          .path("authorize")
+          .query()
+          .parameter("response_type", "code")
+          .parameter("client_id", Mastodon.CLIENT_ID)
+          .parameter("redirect_uri", getString(R.string.redirect_uri, getString(R.string.scheme)))
+          .parameter("scope", Mastodon.SCOPES)
+          .build()
+      }
     }
 
     /**

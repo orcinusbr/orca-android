@@ -53,7 +53,7 @@ fun <T : Follow> FollowableProfile.Companion.createSample(
     follow,
     delegate.followerCount,
     delegate.followingCount,
-    delegate.url,
+    delegate.uri,
     writer,
     postProvider
   )

@@ -20,7 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import br.com.orcinus.orca.std.image.compose.async.AsyncImageLoader
 import br.com.orcinus.orca.std.image.compose.local.LocalImageLoader
-import java.net.URL
+import java.net.URI
 
 /**
  * Remembers a [ComposableImageLoader].
@@ -35,9 +35,9 @@ fun rememberImageLoader(@DrawableRes source: Int): SomeComposableImageLoader {
 /**
  * Remembers a [ComposableImageLoader].
  *
- * @param source [URL] from which the image will be obtained.
+ * @param source [URI] from which the image will be obtained.
  */
 @Composable
-fun rememberImageLoader(source: URL): SomeComposableImageLoader {
+fun rememberImageLoader(source: URI): SomeComposableImageLoader {
   return remember(source) { AsyncImageLoader.Provider.provide(source) }
 }

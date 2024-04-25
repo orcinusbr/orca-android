@@ -23,7 +23,7 @@ import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.feed.profile.post.stat.Stat
 import br.com.orcinus.orca.core.feed.profile.post.stat.addable.AddableStat
 import br.com.orcinus.orca.core.feed.profile.post.stat.toggleable.ToggleableStat
-import java.net.URL
+import java.net.URI
 import java.time.ZonedDateTime
 
 /**
@@ -42,7 +42,7 @@ fun Repost(original: Post, reblogger: Author): Repost {
     original.comment,
     original.favorite,
     original.repost,
-    original.url
+    original.uri
   ) {
     original.asDeletable()
   }
@@ -59,7 +59,7 @@ fun Repost(original: Post, reblogger: Author): Repost {
  * @param comment [Stat] for the [Post]'s comments.
  * @param favorite [Stat] for the [Post]'s favorites.
  * @param reblog [Stat] for the [Post]'s reblogs.
- * @param url [URL] that leads to the [Post].
+ * @param uri [URI] that leads to the [Post].
  * @param asDeletable Creates a [DeletablePost] from this [Repost].
  */
 fun Repost(
@@ -71,7 +71,7 @@ fun Repost(
   comment: AddableStat<Post>,
   favorite: ToggleableStat<Profile>,
   reblog: ToggleableStat<Profile>,
-  url: URL,
+  uri: URI,
   asDeletable: (Repost) -> DeletablePost
 ): Repost {
   return object : Repost() {
@@ -83,7 +83,7 @@ fun Repost(
     override val comment = comment
     override val favorite = favorite
     override val repost = reblog
-    override val url = url
+    override val uri = uri
 
     override fun asDeletable(): DeletablePost {
       return asDeletable(this)

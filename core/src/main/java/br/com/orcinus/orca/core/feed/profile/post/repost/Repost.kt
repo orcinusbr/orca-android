@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -34,7 +34,7 @@ abstract class Repost internal constructor() : Post {
       comment == other.comment &&
       favorite == other.favorite &&
       repost == other.repost &&
-      url == other.url
+      uri == other.uri
   }
 
   override fun hashCode(): Int {
@@ -46,14 +46,14 @@ abstract class Repost internal constructor() : Post {
       comment,
       favorite,
       repost,
-      url
+      uri
     )
   }
 
   override fun toString(): String {
     return "Repost(id=$id, author=$author, reposter=$reposter, content=$content, " +
       "publicationDateTime=$publicationDateTime, comment=$comment, favorite=$favorite," +
-      "repost=$repost, url=$url)"
+      "repost=$repost, uri=$uri)"
   }
 
   companion object

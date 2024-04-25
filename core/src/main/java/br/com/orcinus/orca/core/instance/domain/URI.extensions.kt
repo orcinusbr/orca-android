@@ -15,9 +15,9 @@
 
 package br.com.orcinus.orca.core.instance.domain
 
-import java.net.URL
+import java.net.URI
 
-/** Returns whether this [URL] is of a resource that belongs to the [domain]. */
-internal fun URL.isOfResourceFrom(domain: Domain): Boolean {
+/** Returns whether this [URI] is of a resource that belongs to the [domain]. */
+internal fun URI.isOfResourceFrom(domain: Domain): Boolean {
   return host == domain.toString() && path.isNotEmpty()
 }

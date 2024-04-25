@@ -22,7 +22,7 @@ import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.style.Style
-import java.net.URL
+import java.net.URI
 
 /**
  * Primitive information to be stored about a [Style].
@@ -34,7 +34,7 @@ import java.net.URL
  *   [text][Content.text] to which the [Style] has been applied.
  * @param endIndex Final position in the [Post]'s [content][Post.content]'s [text][Content.text]
  *   that has the [Style].
- * @param url URL [String] to which the styled portion leads if it happens to be a [Link] or `null`
+ * @param uri URI [String] to which the styled portion leads if it happens to be a [Link] or `null`
  *   if it isn't.
  * @see Style.name
  * @see Style.indices
@@ -46,7 +46,7 @@ internal data class MastodonStyleEntity(
   @ColumnInfo(name = "name") val name: String,
   @ColumnInfo(name = "start_index") val startIndex: Int,
   @ColumnInfo(name = "end_index") val endIndex: Int,
-  @ColumnInfo(name = "url") val url: String?
+  @ColumnInfo(name = "uri") val uri: String?
 ) {
   /**
    * Converts this [MastodonStyleEntity] into a [Style].
@@ -60,8 +60,8 @@ internal data class MastodonStyleEntity(
       "bold" -> Style.Bold(indices)
       "hashtag" -> Style.Hashtag(indices)
       "italic" -> Style.Italic(indices)
-      "link" -> Style.Link.to(URL(url), indices)
-      "mention" -> Style.Mention(indices, URL(url))
+      "link" -> Style.Link.to(URI(uri), indices)
+      "mention" -> Style.Mention(indices, URI(uri))
       else -> throw IllegalStateException("Unknown style name: \"$name\".")
     }
   }

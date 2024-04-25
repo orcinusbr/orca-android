@@ -27,7 +27,7 @@ import br.com.orcinus.orca.platform.cache.Cache
 import br.com.orcinus.orca.platform.cache.Storage
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import java.net.URL
+import java.net.URI
 
 /**
  * [Storage] for [Post]s.
@@ -40,7 +40,7 @@ import java.net.URL
  *   [Mastodon style entities][MastodonStyleEntity].
  * @param coverLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which a
  *   [Post]'s [content][Post.content]'s [highlight][Content.highlight]'s
- *   [headline][Highlight.headline] cover will be loaded from a [URL].
+ *   [headline][Highlight.headline] cover will be loaded from a [URI].
  * @param commentPaginatorProvider [MastodonCommentPaginator.Provider] by which a
  *   [MastodonCommentPaginator] for paginating through the stored [Post]s' comments will be
  *   provided.
@@ -50,7 +50,7 @@ internal class MastodonPostStorage(
   private val profileCache: Cache<Profile>,
   private val postEntityDao: MastodonPostEntityDao,
   private val styleEntityDao: MastodonStyleEntityDao,
-  private val coverLoaderProvider: SomeImageLoaderProvider<URL>,
+  private val coverLoaderProvider: SomeImageLoaderProvider<URI>,
   private val commentPaginatorProvider: MastodonCommentPaginator.Provider
 ) : Storage<Post>() {
   override suspend fun onStore(key: String, value: Post) {

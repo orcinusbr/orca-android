@@ -21,7 +21,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.compose.ui.text.SpanStyle;
 import br.com.orcinus.orca.core.feed.profile.Profile;
 import br.com.orcinus.orca.std.markdown.style.Style;
-import java.net.URL;
+import java.net.URI;
 
 /**
  * Creates categories for {@link Style.Link}-based {@link SpanStyle}s' font feature settings.
@@ -29,8 +29,8 @@ import java.net.URL;
  * @see SpanStyle#getFontFeatureSettings()
  * @see Categorizer#categorizeAsHashtag()
  * @see Categorizer#categorizeAsEmail()
- * @see Categorizer#categorizeAsLink(String, URL)
- * @see Categorizer#categorizeAsMention(URL)
+ * @see Categorizer#categorizeAsLink(String, URI)
+ * @see Categorizer#categorizeAsMention(URI)
  */
 public class Categorizer {
   /**
@@ -77,7 +77,7 @@ public class Categorizer {
   /**
    * {@link String} by which a {@link Style.Mention} spec is tagged.
    *
-   * @see Categorizer#categorizeAsMention(URL)
+   * @see Categorizer#categorizeAsMention(URI)
    */
   @NonNull static final String MENTION_TAG = "mention";
 
@@ -93,8 +93,8 @@ public class Categorizer {
    * @see SpanStyle#getFontFeatureSettings()
    * @see Categorizer#categorizeAsHashtag()
    * @see Categorizer#categorizeAsEmail()
-   * @see Categorizer#categorizeAsLink(String, URL)
-   * @see Categorizer#categorizeAsMention(URL)
+   * @see Categorizer#categorizeAsLink(String, URI)
+   * @see Categorizer#categorizeAsMention(URI)
    */
   private Categorizer() {}
 
@@ -113,33 +113,33 @@ public class Categorizer {
   /**
    * Creates a category for a {@link Style.Mention}-based {@link SpanStyle}.
    *
-   * @param url {@link URL} that leads to the {@link Profile} that has been mentioned.
+   * @param uri {@link URI} that leads to the {@link Profile} that has been mentioned.
    */
   @NonNull
-  public static String categorizeAsMention(URL url) {
-    return categorizeAsLink(MENTION_TAG, url);
+  public static String categorizeAsMention(URI uri) {
+    return categorizeAsLink(MENTION_TAG, uri);
   }
 
   /**
    * Creates a default category (that is, one for a {@link SpanStyle} that has been created directly
    * from a {@link Style.Link} instead of its subclasses, such as {@link Style.Mention}).
    *
-   * @param url {@link URL} to which the {@link Style.Link} leads.
+   * @param uri {@link URI} to which the {@link Style.Link} leads.
    */
   @NonNull
-  public static String categorizeAsLink(URL url) {
-    return categorizeAsLink(null, url);
+  public static String categorizeAsLink(URI uri) {
+    return categorizeAsLink(null, uri);
   }
 
   /**
-   * Creates a spec for the {@link URL}.
+   * Creates a spec for the {@link URI}.
    *
-   * @param url {@link URL} for which the spec is.
+   * @param uri {@link URI} for which the spec is.
    */
   @NonNull
   @VisibleForTesting
-  static String createSpec(URL url) {
-    return LINK_SPEC_START + url + LINK_SPEC_END;
+  static String createSpec(URI uri) {
+    return LINK_SPEC_START + uri + LINK_SPEC_END;
   }
 
   /**
@@ -147,11 +147,11 @@ public class Categorizer {
    * from a {@link Style.Link} instead of its subclasses, such as {@link Style.Mention}).
    *
    * @param tag {@link String} that precedes the spec.
-   * @param url {@link URL} to which the {@link Style.Link} leads.
+   * @param uri {@link URI} to which the {@link Style.Link} leads.
    */
   @NonNull
-  private static String categorizeAsLink(@Nullable String tag, URL url) {
-    @NonNull String spec = createSpec(url);
+  private static String categorizeAsLink(@Nullable String tag, URI uri) {
+    @NonNull String spec = createSpec(uri);
     if (tag != null) {
       spec = String.format("%s %s", tag, spec);
     }

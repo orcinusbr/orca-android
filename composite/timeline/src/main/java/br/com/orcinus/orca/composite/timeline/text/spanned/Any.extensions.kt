@@ -22,7 +22,7 @@ import android.text.Spanned
 import android.text.style.StyleSpan
 import android.text.style.URLSpan
 import br.com.orcinus.orca.std.markdown.style.Style
-import java.net.URL
+import java.net.URI
 
 /**
  * Compares both spans structurally.
@@ -49,7 +49,7 @@ internal fun Any.isStructurallyEqualTo(other: Any): Boolean {
 internal fun Any.toStyles(indices: IntRange): List<Style> {
   return when (this) {
     is StyleSpan -> toStyles(indices)
-    is URLSpan -> listOf(Style.Link.to(URL(url), indices))
+    is URLSpan -> listOf(Style.Link.to(URI(url), indices))
     else -> emptyList()
   }
 }

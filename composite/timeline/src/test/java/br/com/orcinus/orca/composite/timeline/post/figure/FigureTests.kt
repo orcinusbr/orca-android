@@ -35,7 +35,7 @@ import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.platform.core.withSample
 import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.buildMarkdown
-import java.net.URL
+import java.net.URI
 import kotlin.test.Test
 
 internal class FigureTests {
@@ -60,12 +60,12 @@ internal class FigureTests {
 
   @Test
   fun createsLinkFromContentWithHighlightAndWithoutAttachments() {
-    val onLinkClick = { _: URL -> }
+    val onLinkClick = { _: URI -> }
     assertThat(
         Figure.of(
           Posts.withSample.single().id,
           Author.sample.name,
-          Content.from(Domain.sample, text = buildMarkdown { +Highlight.sample.url.toString() }) {
+          Content.from(Domain.sample, text = buildMarkdown { +Highlight.sample.uri.toString() }) {
             Headline.sample
           },
           onLinkClick

@@ -21,16 +21,17 @@ import android.net.Uri
 import br.com.orcinus.orca.platform.starter.StartableActivity
 import br.com.orcinus.orca.platform.starter.on
 import br.com.orcinus.orca.platform.testing.context
+import java.net.URI
 
 /**
  * Browses to the URI from the test's [Context].
  *
- * @param uriAsString [String] representation of the [Uri] to which the browsing will be performed.
+ * @param uri [URI] to which the browsing will be performed.
  * @see context
  */
-internal fun browseTo(uriAsString: String) {
-  val uri = Uri.parse(uriAsString)
-  val intent = Intent(Intent.ACTION_VIEW).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK).setData(uri)
+internal fun browseTo(uri: URI) {
+  @Suppress("LocalVariableName") val _uri = Uri.parse("$uri")
+  val intent = Intent(Intent.ACTION_VIEW).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK).setData(_uri)
   context.startActivity(intent)
 }
 

@@ -27,6 +27,7 @@ dependencies {
 
   implementation(project(":ext:coroutines"))
   implementation(project(":std:buildable"))
+  implementation(project(":std:uri"))
   implementation(project(":std:visibility"))
 
   ksp(project(":std:buildable-processor"))

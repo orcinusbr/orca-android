@@ -21,7 +21,7 @@ import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoader
 import br.com.orcinus.orca.std.markdown.Markdown
 import java.io.Serializable
-import java.net.URL
+import java.net.URI
 import kotlinx.coroutines.flow.Flow
 
 /** A user's profile. */
@@ -48,9 +48,9 @@ interface Profile : Serializable {
   val followingCount: Int
 
   /**
-   * [URL] that leads to the webpage of the instance through which this [Profile] can be accessed.
+   * [URI] that leads to the webpage of the instance through which this [Profile] can be accessed.
    */
-  val url: URL
+  val uri: URI
 
   /**
    * Gets the [Post]s that have been published by the owner of this [Profile].

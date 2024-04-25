@@ -27,19 +27,19 @@ import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import br.com.orcinus.orca.std.injector.Injector
 import io.ktor.client.call.body
-import java.net.URL
+import java.net.URI
 
 /**
  * [Fetcher] that requests [Post]s to the API.
  *
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
- *   will be loaded from a [URL].
+ *   will be loaded from a [URI].
  * @param commentPaginatorProvider [MastodonCommentPaginator] by which a [MastodonCommentPaginator]
  *   for paginating through the fetched [Post]s will be provided.
  * @see Post.comment
  */
 internal class MastodonPostFetcher(
-  private val imageLoaderProvider: SomeImageLoaderProvider<URL>,
+  private val imageLoaderProvider: SomeImageLoaderProvider<URI>,
   private val commentPaginatorProvider: MastodonCommentPaginator.Provider
 ) : Fetcher<Post>() {
   override suspend fun onFetch(key: String): Post {

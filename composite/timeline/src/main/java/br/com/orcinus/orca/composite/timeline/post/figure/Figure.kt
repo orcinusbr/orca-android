@@ -29,7 +29,7 @@ import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Headline
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Highlight
-import java.net.URL
+import java.net.URI
 
 /** Interactive portion of a [PostPreview]. */
 @Immutable
@@ -102,7 +102,7 @@ sealed class Figure {
       postID: String,
       authorName: String,
       content: Content,
-      onLinkClick: (URL) -> Unit = {},
+      onLinkClick: (URI) -> Unit = {},
       onThumbnailClickListener: Disposition.OnThumbnailClickListener =
         Disposition.OnThumbnailClickListener.empty
     ): Figure? {
@@ -110,7 +110,7 @@ sealed class Figure {
         content.attachments.isNotEmpty() ->
           Gallery(GalleryPreview(postID, authorName, content.attachments), onThumbnailClickListener)
         content.highlight != null ->
-          with(content.highlight!!) { Link(headline) { onLinkClick(url) } }
+          with(content.highlight!!) { Link(headline) { onLinkClick(uri) } }
         else -> null
       }
     }

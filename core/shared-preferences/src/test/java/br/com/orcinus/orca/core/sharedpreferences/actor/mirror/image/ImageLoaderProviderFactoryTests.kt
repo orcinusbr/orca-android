@@ -21,26 +21,33 @@ import assertk.assertions.isInstanceOf
 import br.com.orcinus.orca.core.sample.image.AuthorImageSource
 import br.com.orcinus.orca.core.sample.image.SampleImageSource
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import java.net.URL
+import br.com.orcinus.orca.std.uri.URIBuilder
+import java.net.URI
 import org.junit.Test
 
 internal class ImageLoaderProviderFactoryTests {
   @Test(expected = ImageLoaderProviderFactory.UnknownSourceTypeException::class)
   fun throwsWhenFoldingUnknownSource() {
-    ImageLoaderProviderFactory.fold<SampleImageSource, _>("", onURL = {}, onSampleImageSource = {})
+    ImageLoaderProviderFactory.fold<SampleImageSource, _>("", onURI = {}, onSampleImageSource = {})
   }
 
   @Test(expected = ImageLoaderProviderFactory.UnknownSourceTypeException::class)
   fun throwsWhenFoldingUnknownSourceClass() {
-    ImageLoaderProviderFactory.fold(Nothing::class, onURL = {}, onSampleImageSource = {})
+    ImageLoaderProviderFactory.fold(Nothing::class, onURI = {}, onSampleImageSource = {})
   }
 
   @Test
-  fun runsURLCallbackWhenSourceIsURL() {
+  fun runsURICallbackWhenSourceIsURI() {
     assertThat(
         ImageLoaderProviderFactory.fold<SampleImageSource, _>(
-          "https://app.orca.jeanbarrossilva.com/profile/@jeanbarrossilva/avatar.jpg",
-          onURL = { 0 },
+          URIBuilder.scheme("https")
+            .host("app.orca.jeanbarrossilva.com")
+            .path("profile")
+            .path("@jeanbarrossilva")
+            .path("avatar.jpg")
+            .build()
+            .toString(),
+          onURI = { 0 },
           onSampleImageSource = { 1 }
         )
       )
@@ -48,9 +55,9 @@ internal class ImageLoaderProviderFactoryTests {
   }
 
   @Test
-  fun runsURLCallbackWhenSourceClassIsURL() {
+  fun runsURICallbackWhenSourceClassIsURI() {
     assertThat(
-        ImageLoaderProviderFactory.fold(URL::class, onURL = { 0 }, onSampleImageSource = { 1 })
+        ImageLoaderProviderFactory.fold(URI::class, onURI = { 0 }, onSampleImageSource = { 1 })
       )
       .isEqualTo(0)
   }
@@ -60,7 +67,7 @@ internal class ImageLoaderProviderFactoryTests {
     ImageLoaderProviderFactory.fold<SampleImageSource, _>(
       SampleImageSource::class.java.name,
       onSampleImageSource = {},
-      onURL = {}
+      onURI = {}
     )
   }
 
@@ -69,7 +76,7 @@ internal class ImageLoaderProviderFactoryTests {
     ImageLoaderProviderFactory.fold<SampleImageSource.None, _>(
       AuthorImageSource.Default::class.java.name,
       onSampleImageSource = {},
-      onURL = {}
+      onURI = {}
     )
   }
 
@@ -78,7 +85,7 @@ internal class ImageLoaderProviderFactoryTests {
     assertThat(
         ImageLoaderProviderFactory.fold<SampleImageSource.None, _>(
           SampleImageSource.None::class.java.name,
-          onURL = { 0 },
+          onURI = { 0 },
           onSampleImageSource = { 1 }
         )
       )
@@ -90,7 +97,7 @@ internal class ImageLoaderProviderFactoryTests {
     assertThat(
         ImageLoaderProviderFactory.fold(
           SampleImageSource::class,
-          onURL = { 0 },
+          onURI = { 0 },
           onSampleImageSource = { 1 }
         )
       )
@@ -102,7 +109,7 @@ internal class ImageLoaderProviderFactoryTests {
     assertThat(
         ImageLoaderProviderFactory.fold<AuthorImageSource.Default, _>(
           AuthorImageSource.Default::class.java.name,
-          onURL = { 0 },
+          onURI = { 0 },
           onSampleImageSource = { 1 }
         )
       )
@@ -114,7 +121,7 @@ internal class ImageLoaderProviderFactoryTests {
     assertThat(
         ImageLoaderProviderFactory.fold(
           AuthorImageSource.Default::class,
-          onURL = { 0 },
+          onURI = { 0 },
           onSampleImageSource = { 1 }
         )
       )
@@ -127,9 +134,9 @@ internal class ImageLoaderProviderFactoryTests {
   }
 
   @Test
-  fun createsProviderForURL() {
-    assertThat(NoOpImageLoaderProviderFactory.createFor(URL::class))
-      .isInstanceOf<SomeImageLoaderProvider<URL>>()
+  fun createsProviderForURI() {
+    assertThat(NoOpImageLoaderProviderFactory.createFor(URI::class))
+      .isInstanceOf<SomeImageLoaderProvider<URI>>()
   }
 
   @Test

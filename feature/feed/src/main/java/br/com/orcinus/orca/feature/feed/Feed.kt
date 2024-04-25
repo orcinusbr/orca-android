@@ -45,7 +45,7 @@ import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
-import java.net.URL
+import java.net.URI
 
 const val FEED_SEARCH_ACTION_TAG = "feed-search-action-tag"
 const val FEED_FLOATING_ACTION_BUTTON_TAG = "feed-floating-action-button"
@@ -110,7 +110,7 @@ private fun Feed(
   onTimelineRefresh: () -> Unit,
   onFavorite: (postID: String) -> Unit,
   onRepost: (postID: String) -> Unit,
-  onShare: (URL) -> Unit,
+  onShare: (URI) -> Unit,
   onPostClick: (postID: String) -> Unit,
   onNext: (index: Int) -> Unit,
   onComposition: () -> Unit,

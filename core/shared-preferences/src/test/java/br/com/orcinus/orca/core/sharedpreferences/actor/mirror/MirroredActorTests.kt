@@ -19,7 +19,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.sample.test.auth.actor.sample
-import java.net.URL
+import br.com.orcinus.orca.std.uri.URIBuilder
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.jsonObject
@@ -41,11 +41,17 @@ internal class MirroredActorTests {
   }
 
   @Test
-  fun isSerializableWhenAuthenticatedWithAvatarURLSource() {
+  fun isSerializableWhenAuthenticatedWithAvatarURISource() {
     val encoder = createJsonTreeEncoder()
     val delegate = Actor.Authenticated.sample
-    val avatarURL = URL("https://app.orca.jeanbarrossilva.com/profile/@jeanbarrossilva/avatar.jpg")
-    val actor = MirroredActor.authenticated(delegate.id, delegate.accessToken, avatarURL)
+    val avatarURI =
+      URIBuilder.scheme("https")
+        .host("app.orca.jeanbarrossilva.com")
+        .path("profile")
+        .path("@jeanbarrossilva")
+        .path("avatar.jpg")
+        .build()
+    val actor = MirroredActor.authenticated(delegate.id, delegate.accessToken, avatarURI)
     MirroredActor.serializer().serialize(encoder, actor)
   }
 
@@ -66,10 +72,16 @@ internal class MirroredActorTests {
   }
 
   @Test
-  fun isDeserializableWhenAuthenticatedWithAvatarURL() {
+  fun isDeserializableWhenAuthenticatedWithAvatarURI() {
     val delegate = Actor.Authenticated.sample
-    val avatarURL = URL("https://app.orca.jeanbarrossilva.com/profile/@jeanbarrossilva/avatar.jpg")
-    val actor = MirroredActor.authenticated(delegate.id, delegate.accessToken, avatarURL)
+    val avatarURI =
+      URIBuilder.scheme("https")
+        .host("app.orca.jeanbarrossilva.com")
+        .path("profile")
+        .path("@jeanbarrossilva")
+        .path("avatar.jpg")
+        .build()
+    val actor = MirroredActor.authenticated(delegate.id, delegate.accessToken, avatarURI)
     val jsonObject = Json.encodeToJsonElement(actor).jsonObject
     val decoder = createJsonTreeDecoder(jsonObject)
     assertThat(MirroredActor.serializer().deserialize(decoder)).isEqualTo(actor)

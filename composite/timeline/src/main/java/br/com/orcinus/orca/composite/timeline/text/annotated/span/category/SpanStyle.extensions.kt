@@ -22,11 +22,11 @@ import br.com.orcinus.orca.composite.timeline.text.annotated.span.createLinkSpan
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.std.markdown.style.Style
-import java.net.MalformedURLException
-import java.net.URL
+import java.net.URI
+import java.net.URISyntaxException
 
 /**
- * Description of the text (mentioned [Account], [URL], ...) that is styled by this [SpanStyle].
+ * Description of the text (mentioned [Account], [URI], ...) that is styled by this [SpanStyle].
  *
  * @throws IllegalStateException If no category is attached.
  * @see createLinkSpanStyle
@@ -58,33 +58,34 @@ internal val SpanStyle.isForMention
   get() = fontFeatureSettings?.let { Categorizer.MENTION_SPEC_PREFIX in it } ?: false
 
 /**
- * [URL] of the [Profile] that has been attached as the "mention" [category] of this [SpanStyle].
+ * [URI] of the [Profile] that has been attached as the "mention" [category] of this [SpanStyle].
  *
  * @throws IllegalStateException If no [category] is attached.
- * @throws MalformedURLException If the [URL] or the call to "url" is either malformed or missing.
- * @see Profile.url
+ * @throws URISyntaxException If the [URI] or the call to "url" is either malformed or missing.
+ * @see Profile.uri
  */
 internal val SpanStyle.mention
-  @Throws(IllegalStateException::class, MalformedURLException::class)
+  @Throws(IllegalStateException::class, URISyntaxException::class)
   get() =
     category
       .substringAfter("${Categorizer.MENTION_TAG} ", missingDelimiterValue = "")
       .substringBefore(" ", missingDelimiterValue = "")
-      .let(::URL)
+      .let(::URI)
 
 /**
- * [URL] that has been attached as the [category] of this [SpanStyle].
+ * [URI] that has been attached as the [category] of this [SpanStyle].
  *
  * @throws IllegalStateException If no [category] is attached.
- * @throws MalformedURLException If the [URL] or the call to "url" is either malformed or missing.
+ * @throws URISyntaxException If the [URI] or the call to "url" is either malformed or missing.
  */
-internal val SpanStyle.url
-  @Throws(IllegalStateException::class, MalformedURLException::class)
+internal val SpanStyle.uri
+  @JvmName("getURI")
+  @Throws(IllegalStateException::class, URISyntaxException::class)
   get() =
     category
       .substringAfter(Categorizer.LINK_SPEC_START, missingDelimiterValue = "")
       .substringBeforeLast(Categorizer.LINK_SPEC_END, missingDelimiterValue = "")
       .ifEmpty {
-        throw MalformedURLException("Metadata with missing or malformed call to \"url\".")
+        throw URISyntaxException("", "Metadata with missing or malformed call to \"url\".")
       }
-      .let(::URL)
+      .let(::URI)

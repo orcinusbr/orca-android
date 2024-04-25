@@ -20,7 +20,7 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.comment.Mastodon
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import java.net.URL
+import java.net.URI
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 import kotlin.reflect.KTypeProjection
@@ -32,9 +32,9 @@ import kotlin.reflect.typeOf
 internal abstract class MastodonStatusesPaginator : MastodonPostPaginator<List<MastodonStatus>>() {
   /**
    * [ImageLoader.Provider] that provides the [ImageLoader] by which images will be loaded from a
-   * [URL].
+   * [URI].
    */
-  protected abstract val imageLoaderProvider: SomeImageLoaderProvider<URL>
+  protected abstract val imageLoaderProvider: SomeImageLoaderProvider<URI>
 
   /**
    * [MastodonCommentPaginator.Provider] through which a [MastodonCommentPaginator] for paginating

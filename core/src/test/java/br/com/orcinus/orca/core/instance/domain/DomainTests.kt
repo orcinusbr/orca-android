@@ -16,24 +16,23 @@
 package br.com.orcinus.orca.core.instance.domain
 
 import assertk.assertThat
-import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.core.sample.instance.domain.sample
 import kotlin.test.Test
 
 internal class DomainTests {
   @Test
-  fun urlProtocolIsHttps() {
-    assertThat(Domain.sample.url.protocol).isEqualTo("https")
+  fun uriSchemeIsHttps() {
+    assertThat(Domain.sample.uri.scheme).isEqualTo("https")
   }
 
   @Test
-  fun urlHostIsDomain() {
-    assertThat(Domain.sample.url.host).isEqualTo("${Domain.sample}")
+  fun uriHostIsDomain() {
+    assertThat(Domain.sample.uri.host).isEqualTo("${Domain.sample}")
   }
 
   @Test
-  fun urlDoesNotHavePath() {
-    assertThat(Domain.sample.url.path).isEmpty()
+  fun uriPathIsEmpty() {
+    assertThat(Domain.sample.uri.path).isEqualTo("/")
   }
 }

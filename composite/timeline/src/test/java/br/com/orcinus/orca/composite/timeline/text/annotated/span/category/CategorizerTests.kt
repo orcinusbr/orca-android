@@ -17,21 +17,21 @@ package br.com.orcinus.orca.composite.timeline.text.annotated.span.category
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import java.net.URL
+import br.com.orcinus.orca.std.uri.URIBuilder
 import kotlin.test.Test
 
 internal class CategorizerTests {
-  private val url = URL("https://orca.jeanbarrossilva.com")
+  private val uri = URIBuilder.scheme("https").host("orca.jeanbarrossilva.com").build()
 
   @Test
-  fun createsURLSpec() {
-    assertThat(Categorizer.createSpec(url))
-      .isEqualTo(Categorizer.LINK_SPEC_START + url + Categorizer.LINK_SPEC_END)
+  fun createsURISpec() {
+    assertThat(Categorizer.createSpec(uri))
+      .isEqualTo(Categorizer.LINK_SPEC_START + uri + Categorizer.LINK_SPEC_END)
   }
 
   @Test
   fun categorizesAsUntaggedLink() {
-    assertThat(Categorizer.categorizeAsLink(url))
-      .isEqualTo(Categorizer.PREFIX + Categorizer.createSpec(url))
+    assertThat(Categorizer.categorizeAsLink(uri))
+      .isEqualTo(Categorizer.PREFIX + Categorizer.createSpec(uri))
   }
 }

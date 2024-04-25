@@ -18,6 +18,7 @@ package br.com.orcinus.orca.core.sharedpreferences.actor.mirror.image
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import java.net.MalformedURLException
+import java.net.URI
 import java.net.URL
 import kotlin.reflect.KClass
 import kotlin.reflect.full.allSuperclasses
@@ -26,7 +27,7 @@ import kotlin.reflect.full.allSuperclasses
  * Factory that creates [ImageLoader.Provider]s for various types of source.
  *
  * @see createForSampleImageSource
- * @see createForURL
+ * @see createForURI
  */
 abstract class ImageLoaderProviderFactory {
   /**
@@ -45,9 +46,9 @@ abstract class ImageLoaderProviderFactory {
 
   /**
    * Creates an [ImageLoader.Provider] that provides an [ImageLoader] by which an image is loaded
-   * through a [URL].
+   * through a [URI].
    */
-  abstract fun createForURL(): SomeImageLoaderProvider<URL>
+  abstract fun createForURI(): SomeImageLoaderProvider<URI>
 
   /**
    * Creates an [ImageLoader.Provider] for the [sourceClass].
@@ -57,12 +58,12 @@ abstract class ImageLoaderProviderFactory {
    *   have a declared [ImageLoader.Provider] creator method for it within this
    *   [ImageLoaderProviderFactory].
    * @see createForSampleImageSource
-   * @see createForURL
+   * @see createForURI
    */
   @Throws(UnknownSourceTypeException::class)
   internal fun createFor(sourceClass: KClass<*>): SomeImageLoaderProvider<Any> {
     @Suppress("UNCHECKED_CAST")
-    return fold(sourceClass, ::createForURL, ::createForSampleImageSource)
+    return fold(sourceClass, ::createForURI, ::createForSampleImageSource)
       as SomeImageLoaderProvider<Any>
   }
 
@@ -79,8 +80,8 @@ abstract class ImageLoaderProviderFactory {
     private val String.isSampleImageSourceClassName
       get() = startsWith("br.com.orcinus.orca.core.sample.image.")
 
-    /** Whether this [String] is the representation of an [URL]. */
-    private val String.isOfURL
+    /** Whether this [String] is the representation of an [URI]. */
+    private val String.isOfURI
       get() =
         try {
           URL(this)
@@ -90,33 +91,33 @@ abstract class ImageLoaderProviderFactory {
         }
 
     /**
-     * Performs one of the given actions ([onURL] or [onSampleImageSource]) if the type of source is
+     * Performs one of the given actions ([onURI] or [onSampleImageSource]) if the type of source is
      * equivalent to that to which these lambdas refer to.
      *
      * @param T Value returned by the lambdas.
      * @param sourceClass [KClass] of the source from which an image can be loaded.
-     * @param onURL Operation to be run if the source is a [URL].
+     * @param onURI Operation to be run if the source is a [URI].
      * @param onSampleImageSource Callback executed if the source is that of a sample image.
      * @throws UnknownSourceTypeException If the source type is unknown.
      * @see KClass.isOfSampleImageSource
      */
     @Throws(UnknownSourceTypeException::class)
-    internal fun <T> fold(sourceClass: KClass<*>, onURL: () -> T, onSampleImageSource: () -> T): T {
+    internal fun <T> fold(sourceClass: KClass<*>, onURI: () -> T, onSampleImageSource: () -> T): T {
       return when {
-        sourceClass == URL::class -> onURL()
+        sourceClass == URI::class -> onURI()
         sourceClass.isOfSampleImageSource -> onSampleImageSource()
         else -> throw UnknownSourceTypeException(sourceClass.java.simpleName)
       }
     }
 
     /**
-     * Performs one of the given actions ([onURL] or [onSampleImageSource]) if the given [String]
+     * Performs one of the given actions ([onURI] or [onSampleImageSource]) if the given [String]
      * representation of the source is equivalent to that to which these lambdas refer to.
      *
      * @param I Sample image source.
      * @param O Value returned by the lambdas.
      * @param source Source from which an image can be loaded, represented as a [String].
-     * @param onURL Operation to be run if the source is a [URL].
+     * @param onURI Operation to be run if the source is a [URI].
      * @param onSampleImageSource Callback executed if the source is that of a sample image.
      * @throws ClassCastException If the source is that of a sample image and has a type other than
      *   [I].
@@ -129,9 +130,9 @@ abstract class ImageLoaderProviderFactory {
       NoSuchFieldException::class,
       UnknownSourceTypeException::class
     )
-    internal fun <I, O> fold(source: String, onURL: (URL) -> O, onSampleImageSource: (I) -> O): O {
+    internal fun <I, O> fold(source: String, onURI: (URI) -> O, onSampleImageSource: (I) -> O): O {
       return when {
-        source.isOfURL -> onURL(URL(source))
+        source.isOfURI -> onURI(URI(source))
         source.isSampleImageSourceClassName ->
           @Suppress("UNCHECKED_CAST") onSampleImageSource(getObjectInstanceOrThrow(source) as I)
         else -> throw UnknownSourceTypeException(source)

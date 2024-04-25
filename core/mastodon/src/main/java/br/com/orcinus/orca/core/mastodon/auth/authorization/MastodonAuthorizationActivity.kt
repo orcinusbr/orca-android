@@ -26,7 +26,9 @@ import br.com.orcinus.orca.core.mastodon.instance.ContextualMastodonInstance
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.std.injector.Injector
+import br.com.orcinus.orca.std.uri.URIBuilder
 import io.ktor.http.Url
+import java.net.URI
 
 /**
  * [ComposableActivity] that visually notifies the user of the background authorization process that
@@ -64,14 +66,14 @@ class MastodonAuthorizationActivity internal constructor() :
   }
 
   override fun onAccessTokenRequest() {
-    val uri = Uri.parse("${viewModel.url}")
+    val uri = Uri.parse("${viewModel.uri}")
     customTabsIntent.launchUrl(this, uri)
   }
 
   /**
    * Sends the access token that might be in the [deepLink] to the [MastodonAuthorizer].
    *
-   * @param deepLink [Uri] from which this [MastodonAuthorizationActivity] was started after
+   * @param deepLink [URI] from which this [MastodonAuthorizationActivity] was started after
    *   requesting for the user to be authorized.
    * @throws UnprovidedAccessTokenException If an access token hasn't been provided.
    */
@@ -87,18 +89,21 @@ class MastodonAuthorizationActivity internal constructor() :
   /**
    * Helps the user by browsing to Mastodon's blog article that explains how the platform works.
    *
-   * @see helpUri
+   * @see helpURI
    */
   private fun browseToHelpArticle() {
-    customTabsIntent.launchUrl(this, helpUri)
+    val uri = Uri.parse("$helpURI")
+    customTabsIntent.launchUrl(this, uri)
   }
 
   companion object {
-    /** [Uri] that leads to a blog article that explains how Mastodon works. */
-    internal val helpUri: Uri =
-      Uri.Builder()
-        .scheme("https")
-        .path("blog.joinmastodon.org/2018/08/mastodon-quick-start-guide")
+    /** [URI] that leads to a blog article that explains how Mastodon works. */
+    internal val helpURI: URI =
+      URIBuilder.scheme("https")
+        .host("blog.joinmastodon.org")
+        .path("2018")
+        .path("08")
+        .path("mastodon-quick-start-guide")
         .build()
   }
 }

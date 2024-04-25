@@ -33,7 +33,7 @@ import br.com.orcinus.orca.ext.intents.share
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.loadable.flow.loadable
 import com.jeanbarrossilva.loadable.list.flow.listLoadable
-import java.net.URL
+import java.net.URI
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -55,7 +55,7 @@ private constructor(
   private val postProvider: PostProvider,
   coroutineDispatcher: CoroutineDispatcher,
   private val id: String,
-  private val onLinkClick: (URL) -> Unit,
+  private val onLinkClick: (URI) -> Unit,
   private val onThumbnailClickListener: Disposition.OnThumbnailClickListener
 ) : AndroidViewModel(application) {
   private val coroutineScope = viewModelScope + coroutineDispatcher
@@ -91,8 +91,8 @@ private constructor(
     }
   }
 
-  fun share(url: URL) {
-    application.share("$url")
+  fun share(uri: URI) {
+    application.share("$uri")
   }
 
   fun favorite(postID: String) {
@@ -122,7 +122,7 @@ private constructor(
       profileProvider: ProfileProvider,
       postProvider: PostProvider,
       id: String,
-      onLinkClick: (URL) -> Unit,
+      onLinkClick: (URI) -> Unit,
       onThumbnailClickListener: Disposition.OnThumbnailClickListener
     ): ViewModelProvider.Factory {
       return viewModelFactory {

@@ -22,7 +22,7 @@ import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import java.net.URL
+import java.net.URI
 
 /**
  * Primitive information to be persisted about a [ProfileSearchResult].
@@ -31,32 +31,32 @@ import java.net.URL
  * @param id Unique identifier.
  * @param account [String] representation of the [MastodonProfileSearchResultEntity]'s
  *   [account][MastodonProfileSearchResultEntity.account].
- * @param avatarURL URL [String] that leads to the avatar image.
+ * @param avatarURI URI [String] that leads to the avatar image.
  * @param name Name to be displayed.
- * @param url URL [String] that leads to the owner.
+ * @param uri URI [String] that leads to the owner.
  */
 @Entity(tableName = "profile_search_results")
 data class MastodonProfileSearchResultEntity(
   @PrimaryKey internal val query: String,
   internal val id: String,
   internal val account: String,
-  @ColumnInfo(name = "avatar_url") internal val avatarURL: String,
+  @ColumnInfo(name = "avatar_uri") internal val avatarURI: String,
   internal val name: String,
-  internal val url: String
+  internal val uri: String
 ) {
   /**
    * Converts this [MastodonProfileSearchResultEntity] into a [ProfileSearchResult].
    *
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
-   *   [ProfileSearchResult]'s avatar will be loaded from a [URL].
+   *   [ProfileSearchResult]'s avatar will be loaded from a [URI].
    */
   internal fun toProfileSearchResult(
-    avatarLoaderProvider: SomeImageLoaderProvider<URL>
+    avatarLoaderProvider: SomeImageLoaderProvider<URI>
   ): ProfileSearchResult {
     val account = Account.of(account, fallbackDomain = "mastodon.social")
-    val avatarURL = URL(avatarURL)
-    val avatarLoader = avatarLoaderProvider.provide(avatarURL)
-    val url = URL(url)
-    return ProfileSearchResult(id, account, avatarLoader, name, url)
+    val avatarURI = URI(avatarURI)
+    val avatarLoader = avatarLoaderProvider.provide(avatarURI)
+    val uri = URI(uri)
+    return ProfileSearchResult(id, account, avatarLoader, name, uri)
   }
 }

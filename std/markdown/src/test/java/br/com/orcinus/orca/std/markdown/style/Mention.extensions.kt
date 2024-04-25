@@ -16,22 +16,23 @@
 package br.com.orcinus.orca.std.markdown.style
 
 import br.com.orcinus.orca.std.markdown.Markdown
-import java.net.URL
+import br.com.orcinus.orca.std.uri.URIBuilder
+import java.net.URI
 
 /**
- * Sample [URL] to create mentions with.
+ * Sample [URI] to create mentions with.
  *
  * @see Markdown.Builder.mention
- * @see Mention
+ * @see Style.Mention
  */
-internal val Style.Mention.Companion.url
-  get() = URL("https://mastodon.social/@jeanbarrossilva")
+internal val Style.Mention.Companion.uri
+  get() = URIBuilder.scheme("https").host("mastodon.social").path("@jeanbarrossilva").build()
 
 /**
  * Sample username to mention.
  *
  * @see Markdown.Builder.mention
- * @see Mention
+ * @see Style.Mention
  */
 internal val Style.Mention.Companion.username
   get() = "jeanbarrossilva"

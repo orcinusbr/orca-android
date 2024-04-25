@@ -24,7 +24,7 @@ import br.com.orcinus.orca.composite.timeline.text.annotated.toAnnotatedString
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.repost.Repost
 import br.com.orcinus.orca.std.image.compose.SomeComposableImageLoader
-import java.net.URL
+import java.net.URI
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
@@ -38,7 +38,7 @@ import kotlinx.coroutines.flow.combine
  */
 fun Post.toPostPreviewFlow(
   colors: Colors,
-  onLinkClick: (URL) -> Unit,
+  onLinkClick: (URI) -> Unit,
   onThumbnailClickListener: Disposition.OnThumbnailClickListener
 ): Flow<PostPreview> {
   return combine(
@@ -62,7 +62,7 @@ fun Post.toPostPreviewFlow(
  */
 fun Post.toPostPreview(
   colors: Colors,
-  onLinkClick: (URL) -> Unit = {},
+  onLinkClick: (URI) -> Unit = {},
   onThumbnailClickListener: Disposition.OnThumbnailClickListener =
     Disposition.OnThumbnailClickListener.empty
 ): PostPreview {
@@ -76,6 +76,6 @@ fun Post.toPostPreview(
     Figure.of(id, author.name, content, onLinkClick, onThumbnailClickListener),
     publicationDateTime,
     asStatsDetails(),
-    url
+    uri
   )
 }

@@ -18,7 +18,7 @@ package br.com.orcinus.orca.composite.timeline.text.annotated.span;
 import static br.com.orcinus.orca.composite.timeline.text.annotated.span.SpanStyles.ItalicSpanStyle;
 import static br.com.orcinus.orca.composite.timeline.text.annotated.span.SpanStyles.contains;
 import static br.com.orcinus.orca.composite.timeline.text.annotated.span.category.SpanStyles.getMention;
-import static br.com.orcinus.orca.composite.timeline.text.annotated.span.category.SpanStyles.getUrl;
+import static br.com.orcinus.orca.composite.timeline.text.annotated.span.category.SpanStyles.getURI;
 import static br.com.orcinus.orca.composite.timeline.text.annotated.span.category.SpanStyles.isForEmail;
 import static br.com.orcinus.orca.composite.timeline.text.annotated.span.category.SpanStyles.isForHashtag;
 import static br.com.orcinus.orca.composite.timeline.text.annotated.span.category.SpanStyles.isForLink;
@@ -30,8 +30,8 @@ import androidx.compose.ui.text.AnnotatedString;
 import androidx.compose.ui.text.SpanStyle;
 import br.com.orcinus.orca.std.markdown.Markdown;
 import br.com.orcinus.orca.std.markdown.style.Style;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -111,9 +111,9 @@ public enum StyleExtractor {
     @NonNull
     @Override
     protected Style onExtract(@NonNull SpanStyle spanStyle, @NonNull IntRange indices)
-        throws MalformedURLException {
-      @NonNull URL url = getUrl(spanStyle);
-      return Style.Link.to(url, indices);
+        throws URISyntaxException {
+      @NonNull URI uri = getURI(spanStyle);
+      return Style.Link.to(uri, indices);
     }
   },
 
@@ -127,7 +127,7 @@ public enum StyleExtractor {
     @NonNull
     @Override
     protected Style onExtract(@NonNull SpanStyle spanStyle, @NonNull IntRange indices)
-        throws MalformedURLException {
+        throws URISyntaxException {
       return new Style.Mention(indices, getMention(spanStyle));
     }
   };
@@ -146,7 +146,7 @@ public enum StyleExtractor {
             styleExtractor -> {
               try {
                 return styleExtractor.extract(spanStyle, indices);
-              } catch (MalformedURLException exception) {
+              } catch (URISyntaxException exception) {
                 throw new RuntimeException(exception);
               }
             })
@@ -169,7 +169,7 @@ public enum StyleExtractor {
    * @param indices Indices at which the {@link SpanStyle} is applied.
    */
   @Nullable
-  final Style extract(SpanStyle spanStyle, IntRange indices) throws MalformedURLException {
+  final Style extract(SpanStyle spanStyle, IntRange indices) throws URISyntaxException {
     if (isExtractable(spanStyle)) {
       return onExtract(spanStyle, indices);
     } else {
@@ -186,5 +186,5 @@ public enum StyleExtractor {
    */
   @NonNull
   protected abstract Style onExtract(@NonNull SpanStyle spanStyle, @NonNull IntRange indices)
-      throws MalformedURLException;
+      throws URISyntaxException;
 }

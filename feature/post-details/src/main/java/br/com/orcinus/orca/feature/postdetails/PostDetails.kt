@@ -48,7 +48,7 @@ import br.com.orcinus.orca.std.image.SomeImageLoader
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import java.io.Serializable
-import java.net.URL
+import java.net.URI
 import java.time.ZonedDateTime
 
 @Immutable
@@ -61,7 +61,7 @@ internal data class PostDetails(
   val figure: Figure?,
   private val publicationDateTime: ZonedDateTime,
   val stats: StatsDetails,
-  val url: URL
+  val uri: URI
 ) : Serializable {
   val formattedPublicationDateTime = publicationDateTime.formatted
   val formattedUsername = account.username.toString()
@@ -109,7 +109,7 @@ private fun PostDetails(
   onTimelineRefresh: () -> Unit,
   onFavorite: (postID: String) -> Unit,
   onRepost: (postID: String) -> Unit,
-  onShare: (URL) -> Unit,
+  onShare: (URI) -> Unit,
   onNavigateToDetails: (postID: String) -> Unit,
   onNext: (index: Int) -> Unit,
   onBackwardsNavigation: () -> Unit,
@@ -147,7 +147,7 @@ private fun PostDetails(
             postLoadable.content,
             onFavorite = { onFavorite(postLoadable.content.id) },
             onRepost = { onRepost(postLoadable.content.id) },
-            onShare = { onShare(postLoadable.content.url) }
+            onShare = { onShare(postLoadable.content.uri) }
           )
         is Loadable.Failed -> Unit
       }

@@ -16,7 +16,7 @@
 package br.com.orcinus.orca.core.sharedpreferences.actor.mirror.image
 
 import br.com.orcinus.orca.std.image.ImageLoader
-import java.net.URL
+import java.net.URI
 import kotlin.reflect.KClass
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -37,7 +37,7 @@ internal class ImageLoaderSourceSerializer : KSerializer<Any> {
     return encoder.encodeString(
       ImageLoaderProviderFactory.fold(
         value::class.also { sourceClass = it },
-        onURL = value::toString,
+        onURI = value::toString,
         onSampleImageSource = { value::class.java.name }
       )
     )
@@ -47,7 +47,7 @@ internal class ImageLoaderSourceSerializer : KSerializer<Any> {
     return decoder.decodeString().let { decoded ->
       ImageLoaderProviderFactory.fold<Any, _>(
         decoded,
-        onURL = { URL(decoded) },
+        onURI = { URI(decoded) },
         onSampleImageSource = { sampleImageSource -> sampleImageSource }
       )
     }

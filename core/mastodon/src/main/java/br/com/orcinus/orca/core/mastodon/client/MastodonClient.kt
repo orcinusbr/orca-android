@@ -102,7 +102,7 @@ internal inline fun <T : HttpClientEngineConfig> MastodonClient(
  * Performs a DELETE [HttpRequest] to the [route] that requires an
  * [authenticated][Actor.Authenticated] [Actor].
  *
- * @param route URL [String] to which the [HttpRequest] will be sent
+ * @param route URI [String] to which the [HttpRequest] will be sent
  * @param build Additional configuration for the [HttpRequest] to be performed.
  */
 internal suspend inline fun HttpClient.authenticateAndDelete(
@@ -119,7 +119,7 @@ internal suspend inline fun HttpClient.authenticateAndDelete(
  * Performs a GET [HttpRequest] to the [route] that requires an [authenticated][Actor.Authenticated]
  * [Actor].
  *
- * @param route URL [String] to which the [HttpRequest] will be sent.
+ * @param route URI [String] to which the [HttpRequest] will be sent.
  * @param build Additional configuration for the [HttpRequest] to be performed.
  */
 internal suspend inline fun HttpClient.authenticateAndGet(
@@ -136,7 +136,7 @@ internal suspend inline fun HttpClient.authenticateAndGet(
  * Performs a POST [HttpRequest] to the [route] that requires an
  * [authenticated][Actor.Authenticated] [Actor].
  *
- * @param route URL [String] to which the [HttpRequest] will be sent.
+ * @param route URI [String] to which the [HttpRequest] will be sent.
  * @param build Additional configuration for the [HttpRequest] to be performed.
  */
 internal suspend inline fun HttpClient.authenticateAndPost(
@@ -153,7 +153,7 @@ internal suspend inline fun HttpClient.authenticateAndPost(
  * Performs a POST [HttpRequest] with the [parameters] included in the form to the [route] that
  * requires an [authenticated][Actor.Authenticated] [Actor].
  *
- * @param route URL [String] to which the [HttpRequest] will be sent.
+ * @param route URI [String] to which the [HttpRequest] will be sent.
  * @param parameters [Parameters] to be added to the form.
  * @param build Additional configuration for the [HttpRequest] to be performed.
  */
@@ -175,7 +175,7 @@ internal suspend inline fun HttpClient.authenticateAndSubmitForm(
  * [authenticated][Actor.Authenticated] [Actor], encoding the provided [formData] with the
  * `multipart/form-data` format.
  *
- * @param route URL [String] to which the [HttpRequest] will be sent.
+ * @param route URI [String] to which the [HttpRequest] will be sent.
  * @param formData [List] with [PartData] to be included in the form.
  * @param build Additional configuration for the [HttpRequest] to be performed.
  */

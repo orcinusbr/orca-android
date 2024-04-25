@@ -17,26 +17,26 @@ package br.com.orcinus.orca.platform.intents.test
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.OngoingStubbing
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import java.net.URI
 import junit.framework.AssertionFailedError
 import org.hamcrest.Matcher
 
 /**
- * Asserts that an [Intent] for browsing to the given [String] representation of an [Uri] is started
- * after the [action] lambda is run. The [Intent] responds with an "OK".
+ * Asserts that an [Intent] for browsing to the given [URI] is started after the [action] lambda is
+ * run. The [Intent] responds with an "OK".
  *
- * @param uri [String] version of the [Uri] to which browsing should be requested.
+ * @param uri [URI] to which browsing should be requested.
  * @param action Callback that requests the browsing.
  * @throws AssertionFailedError If browsing to the [uri] is not requested or it is done so multiple
  *   times.
  */
 @Throws(AssertionFailedError::class)
-inline fun intendBrowsingTo(uri: String, action: () -> Unit) {
+inline fun intendBrowsingTo(uri: URI, action: () -> Unit) {
   intend(browsesTo(uri), action)
 }
 

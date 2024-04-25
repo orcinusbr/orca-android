@@ -68,7 +68,7 @@ import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.loadable.list.ListLoadable
-import java.net.URL
+import java.net.URI
 
 /** Tag that identifies an [EmptyTimelineMessage] for testing purposes. */
 internal const val EMPTY_TIMELINE_MESSAGE_TAG = "empty-timeline-tag"
@@ -102,7 +102,7 @@ private enum class TimelineContentType {
  *   [Post] to have its "favorited" state toggled.
  * @param onRepost Callback run whenever the [PostPreview] associated to the given ID requests the
  *   [Post] to have its "reblogged" state toggled.
- * @param onShare Callback run whenever a [PostPreview] requests the [Post]'s [URL] is requested to
+ * @param onShare Callback run whenever a [PostPreview] requests the [Post]'s [URI] is requested to
  *   be shared.
  * @param onClick Callback run whenever the [PostPreview] associated to the given ID is clicked.
  * @param onNext Operation to be performed whenever pagination is requested. Provided index starts
@@ -121,7 +121,7 @@ fun Timeline(
   postPreviewsLoadable: ListLoadable<PostPreview>,
   onFavorite: (id: String) -> Unit,
   onRepost: (id: String) -> Unit,
-  onShare: (URL) -> Unit,
+  onShare: (URI) -> Unit,
   onClick: (id: String) -> Unit,
   onNext: (index: Int) -> Unit,
   modifier: Modifier = Modifier,
@@ -180,7 +180,7 @@ fun Timeline(
  *   [Post] to have its "favorited" state toggled.
  * @param onRepost Callback run whenever the [PostPreview] associated to the given ID requests the
  *   [Post] to have its "reblogged" state toggled.
- * @param onShare Callback run whenever a [PostPreview] requests the [Post]'s [URL] is requested to
+ * @param onShare Callback run whenever a [PostPreview] requests the [Post]'s [URI] is requested to
  *   be shared.
  * @param onClick Callback run whenever the [PostPreview] associated to the given ID is clicked.
  * @param onNext Operation to be performed whenever pagination is requested. Provided index starts
@@ -199,7 +199,7 @@ fun Timeline(
   postPreviews: List<PostPreview>,
   onFavorite: (id: String) -> Unit,
   onRepost: (id: String) -> Unit,
-  onShare: (URL) -> Unit,
+  onShare: (URI) -> Unit,
   onClick: (id: String) -> Unit,
   onNext: (index: Int) -> Unit,
   modifier: Modifier = Modifier,
@@ -226,7 +226,7 @@ fun Timeline(
           preview,
           onFavorite = { onFavorite(preview.id) },
           onRepost = { onRepost(preview.id) },
-          onShare = { onShare(preview.url) },
+          onShare = { onShare(preview.uri) },
           onClick = { onClick(preview.id) },
           relativeTimeProvider = relativeTimeProvider
         )

@@ -27,7 +27,7 @@ import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
 import br.com.orcinus.orca.std.image.SomeImageLoader
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.markdown.Markdown
-import java.net.URL
+import java.net.URI
 
 /**
  * [MastodonProfile] that can be followed.
@@ -46,7 +46,7 @@ internal data class MastodonFollowableProfile<T : Follow>(
   override val follow: T,
   override val followerCount: Int,
   override val followingCount: Int,
-  override val url: URL
+  override val uri: URI
 ) :
   Profile by MastodonProfile(
     postPaginatorProvider,
@@ -57,7 +57,7 @@ internal data class MastodonFollowableProfile<T : Follow>(
     bio,
     followerCount,
     followingCount,
-    url
+    uri
   ),
   FollowableProfile<T>() {
   override suspend fun onChangeFollowTo(follow: T) {

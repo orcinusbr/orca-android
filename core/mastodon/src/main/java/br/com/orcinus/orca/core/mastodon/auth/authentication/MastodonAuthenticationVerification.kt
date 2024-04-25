@@ -18,14 +18,14 @@ package br.com.orcinus.orca.core.mastodon.auth.authentication
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import java.net.URL
+import java.net.URI
 import kotlinx.serialization.Serializable
 
 /**
  * Structure returned by the API when the user's credentials are verified.
  *
  * @param id Unique identifier of the user.
- * @param avatar URL [String] that leads to the avatar image.
+ * @param avatar URI [String] that leads to the avatar image.
  */
 @Serializable
 internal data class MastodonAuthenticationVerification(val id: String, val avatar: String) {
@@ -34,15 +34,15 @@ internal data class MastodonAuthenticationVerification(val id: String, val avata
    * [Actor].
    *
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
-   *   avatar will be loaded from a [URL].
+   *   avatar will be loaded from a [URI].
    * @param accessToken Token that gives Orca user-level access to the API resources.
    */
   fun toActor(
-    avatarLoaderProvider: SomeImageLoaderProvider<URL>,
+    avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     accessToken: String
   ): Actor.Authenticated {
-    val avatarURL = URL(avatar)
-    val avatarLoader = avatarLoaderProvider.provide(avatarURL)
+    val avatarURI = URI(avatar)
+    val avatarLoader = avatarLoaderProvider.provide(avatarURI)
     return Actor.Authenticated(id, accessToken, avatarLoader)
   }
 }
