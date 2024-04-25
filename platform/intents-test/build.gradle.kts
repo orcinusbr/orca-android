@@ -29,6 +29,7 @@ android {
 dependencies {
   debugImplementation(libs.android.lifecycle.runtime)
 
+  implementation(project(":std:uri"))
   implementation(libs.android.test.espresso.intents)
 
   testImplementation(project(":platform:starter"))

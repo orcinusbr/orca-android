@@ -41,8 +41,8 @@ internal class LoadingFinishingListenerWebViewClient(
     fun onLoadFinishing(hasLoadedSuccessfully: Boolean)
   }
 
-  override fun onPageFinished(view: WebView?, url: String?) {
-    super.onPageFinished(view, url)
+  override fun onPageFinished(view: WebView?, uri: String?) {
+    super.onPageFinished(view, uri)
     listener.onLoadFinishing(hasLoadedSuccessfully = true)
   }
 

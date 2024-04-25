@@ -19,10 +19,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
-import java.net.URL
+import java.net.URI
 
 interface PostDetailsBoundary {
-  fun navigateTo(url: URL)
+  fun navigateTo(uri: URI)
 
   fun navigateToGallery(
     postID: String,

@@ -25,7 +25,7 @@ import br.com.orcinus.orca.core.sample.image.AuthorImageSource
 import br.com.orcinus.orca.core.sample.image.SampleImageSource
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import java.net.URL
+import br.com.orcinus.orca.std.uri.URIBuilder
 import java.util.UUID
 
 /** ID of an [Author] created by [createChristianSample]. */
@@ -48,7 +48,7 @@ fun Author.Companion.createSample(
     avatarLoaderProvider.provide(AuthorImageSource.Default),
     name = "Jean Silva",
     Account.sample,
-    profileURL = URL("https://mastodon.social/@jeanbarrossilva")
+    profileURI = URIBuilder.scheme("https").host("mastodon.social").path("@jeanbarrossilva").build()
   )
 }
 
@@ -67,7 +67,7 @@ internal fun Author.Companion.createChristianSample(
     avatarLoaderProvider.provide(AuthorImageSource.Christian),
     name = "Christian Selig",
     account = "christianselig" at "mastodon.social",
-    profileURL = URL("https://mastodon.social/@christianselig")
+    profileURI = URIBuilder.scheme("https").host("mastodon.social").path("@christianselig").build()
   )
 }
 
@@ -85,6 +85,6 @@ internal fun Author.Companion.createRamboSample(
     avatarLoaderProvider.provide(AuthorImageSource.Rambo),
     name = "Guilherme Rambo",
     account = "_inside" at "mastodon.social",
-    profileURL = URL("https://mastodon.social/@_inside")
+    profileURI = URIBuilder.scheme("https").host("mastodon.social").path("@_inside").build()
   )
 }

@@ -33,8 +33,8 @@ internal fun Style.toSpanStyle(colors: Colors): SpanStyle {
     is Style.Email -> createLinkSpanStyle(colors, Categorizer.categorizeAsEmail())
     is Style.Hashtag -> createLinkSpanStyle(colors, Categorizer.categorizeAsHashtag())
     is Style.Italic -> ItalicSpanStyle
-    is Style.Mention -> createLinkSpanStyle(colors, Categorizer.categorizeAsMention(url))
-    is Style.Link -> createLinkSpanStyle(colors, Categorizer.categorizeAsLink(url))
+    is Style.Mention -> createLinkSpanStyle(colors, Categorizer.categorizeAsMention(uri))
+    is Style.Link -> createLinkSpanStyle(colors, Categorizer.categorizeAsLink(uri))
     else -> throw IllegalArgumentException("Cannot convert an unknown $this style.")
   }
 }

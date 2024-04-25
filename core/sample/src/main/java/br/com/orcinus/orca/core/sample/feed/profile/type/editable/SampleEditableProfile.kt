@@ -23,7 +23,7 @@ import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileWriter
 import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
 import br.com.orcinus.orca.std.image.SomeImageLoader
 import br.com.orcinus.orca.std.markdown.Markdown
-import java.net.URL
+import java.net.URI
 
 /**
  * [SampleProfile] that's also editable.
@@ -39,7 +39,7 @@ internal data class SampleEditableProfile(
   override var bio: Markdown,
   override val followerCount: Int,
   override val followingCount: Int,
-  override val url: URL,
+  override val uri: URI,
   override val postProvider: SamplePostProvider,
   private val writer: SampleProfileWriter
 ) : SampleProfile, EditableProfile() {

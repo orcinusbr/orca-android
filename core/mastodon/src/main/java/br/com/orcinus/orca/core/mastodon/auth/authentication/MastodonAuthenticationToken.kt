@@ -25,7 +25,7 @@ import br.com.orcinus.orca.std.injector.Injector
 import io.ktor.client.call.body
 import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.get
-import java.net.URL
+import java.net.URI
 import kotlinx.serialization.Serializable
 
 /**
@@ -41,9 +41,9 @@ internal data class MastodonAuthenticationToken(val accessToken: String) {
    * [Actor].
    *
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
-   *   avatar will be loaded from a [URL].
+   *   avatar will be loaded from a [URI].
    */
-  suspend fun toActor(avatarLoaderProvider: SomeImageLoaderProvider<URL>): Actor.Authenticated {
+  suspend fun toActor(avatarLoaderProvider: SomeImageLoaderProvider<URI>): Actor.Authenticated {
     return toActor(
       avatarLoaderProvider,
       (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
@@ -58,11 +58,11 @@ internal data class MastodonAuthenticationToken(val accessToken: String) {
    * [Actor].
    *
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
-   *   avatar will be loaded from a [URL].
+   *   avatar will be loaded from a [URI].
    * @param verification Result of verifying the user's credentials.
    */
   fun toActor(
-    avatarLoaderProvider: SomeImageLoaderProvider<URL>,
+    avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     verification: MastodonAuthenticationVerification
   ): Actor.Authenticated {
     return verification.toActor(avatarLoaderProvider, accessToken)

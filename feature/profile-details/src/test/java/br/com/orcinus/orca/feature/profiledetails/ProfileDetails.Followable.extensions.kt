@@ -47,7 +47,7 @@ internal fun ProfileDetails.Followable.Companion.createSample(
     profile.name,
     profile.account,
     profile.bio.toAnnotatedString(Colors.LIGHT),
-    profile.url,
+    profile.uri,
     profile.follow.toStatus(),
     onStatusToggle
   )

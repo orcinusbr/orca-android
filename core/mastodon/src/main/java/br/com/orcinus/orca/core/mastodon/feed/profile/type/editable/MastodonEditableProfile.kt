@@ -23,7 +23,7 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfilePostPaginat
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.MastodonPost
 import br.com.orcinus.orca.std.image.SomeImageLoader
 import br.com.orcinus.orca.std.markdown.Markdown
-import java.net.URL
+import java.net.URI
 
 /**
  * [MastodonProfile] that can be edited.
@@ -41,7 +41,7 @@ internal data class MastodonEditableProfile(
   override val bio: Markdown,
   override val followerCount: Int,
   override val followingCount: Int,
-  override val url: URL
+  override val uri: URI
 ) :
   Profile by MastodonProfile(
     postPaginatorProvider,
@@ -52,7 +52,7 @@ internal data class MastodonEditableProfile(
     bio,
     followerCount,
     followingCount,
-    url
+    uri
   ),
   EditableProfile() {
   override val editor = MastodonEditor()

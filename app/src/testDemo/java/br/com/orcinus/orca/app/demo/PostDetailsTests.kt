@@ -22,7 +22,6 @@ import br.com.orcinus.orca.composite.timeline.test.onTimeline
 import br.com.orcinus.orca.composite.timeline.test.post.figure.link.onLinkCards
 import br.com.orcinus.orca.composite.timeline.test.post.performScrollToPostPreviewWithLinkCard
 import br.com.orcinus.orca.core.instance.Instance
-import br.com.orcinus.orca.core.sample.test.feed.profile.post.content.highlight.sample
 import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.platform.intents.test.intendBrowsingTo
 import kotlinx.coroutines.flow.first
@@ -44,8 +43,7 @@ internal class PostDetailsTests {
           .provideAll()
           .first()
           .firstNotNullOf { it.content.highlight }
-          .url
-          .toString()
+          .uri
       ) {
         composeRule.onTimeline().performScrollToPostPreviewWithLinkCard()
         composeRule.onLinkCards().onFirst().performClick()

@@ -22,7 +22,7 @@ import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.feed.profile.post.stat.toggleable.ToggleableStat
 import br.com.orcinus.orca.core.sample.feed.profile.post.stat.createSampleAddableStat
-import java.net.URL
+import java.net.URI
 import java.time.ZonedDateTime
 
 /**
@@ -38,7 +38,7 @@ internal data class SamplePost(
   override val publicationDateTime: ZonedDateTime,
   override val favorite: ToggleableStat<Profile>,
   override val repost: ToggleableStat<Profile>,
-  override val url: URL,
+  override val uri: URI,
   val writerProvider: SamplePostWriter.Provider
 ) : Post {
   override val comment = createSampleAddableStat<Post>()

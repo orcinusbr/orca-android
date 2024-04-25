@@ -24,7 +24,7 @@ import br.com.orcinus.orca.core.feed.profile.post.stat.addable.AddableStat
 import br.com.orcinus.orca.core.feed.profile.post.stat.toggleable.ToggleableStat
 import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
 import br.com.orcinus.orca.core.sample.test.feed.profile.post.withSample
-import java.net.URL
+import java.net.URI
 import java.time.ZonedDateTime
 
 /** Local [Post] that defaults its properties' values to [Posts.Companion.withSample]'s sample. */
@@ -36,7 +36,7 @@ internal class TestPost(
   override val comment: AddableStat<Post> = delegate.comment,
   override val favorite: ToggleableStat<Profile> = delegate.favorite,
   override val repost: ToggleableStat<Profile> = delegate.repost,
-  override val url: URL = delegate.url
+  override val uri: URI = delegate.uri
 ) : Post {
   override fun asDeletable(): DeletablePost {
     return delegate.asDeletable()

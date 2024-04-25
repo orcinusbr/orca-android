@@ -26,7 +26,7 @@ import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.instance.domain.Domain
 import br.com.orcinus.orca.platform.navigation.extra
 import br.com.orcinus.orca.platform.starter.on
-import java.net.URL
+import java.net.URI
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -43,8 +43,8 @@ internal class MastodonRegistrationActivity : ComposableActivity() {
    */
   private val domain by extra<Domain>(DOMAIN_KEY)
 
-  /** [URL] to be loaded by the shown [WebView]. */
-  private val url by extra<URL>(URL_KEY)
+  /** [URI] to be loaded by the shown [WebView]. */
+  private val uri by extra<URI>(URI_KEY)
 
   /**
    * [MutableSharedFlow] to which the callback for when the webpage has finished loading is emitted.
@@ -56,7 +56,7 @@ internal class MastodonRegistrationActivity : ComposableActivity() {
   override fun Content() {
     MastodonRegistration(
       domain,
-      url,
+      uri,
       onWebpageLoad = { webView, hasLoadedSuccessfully ->
         lifecycleScope.launch { onWebpageLoadFlow.first()(webView, hasLoadedSuccessfully) }
       },
@@ -69,8 +69,8 @@ internal class MastodonRegistrationActivity : ComposableActivity() {
     /** Key of the [Domain] extra. */
     private const val DOMAIN_KEY = "domain"
 
-    /** Key of the [URL] extra. */
-    private const val URL_KEY = "url"
+    /** Key of the [URI] extra. */
+    private const val URI_KEY = "uri"
 
     /**
      * Starts a [MastodonRegistrationActivity].
@@ -81,7 +81,7 @@ internal class MastodonRegistrationActivity : ComposableActivity() {
     fun start(
       context: Context,
       domain: Domain,
-      url: URL,
+      uri: URI,
       onWebpageLoad:
         suspend (
           activity: MastodonRegistrationActivity, WebView, hasLoadedSuccessfully: Boolean
@@ -90,7 +90,7 @@ internal class MastodonRegistrationActivity : ComposableActivity() {
       context
         .on<MastodonRegistrationActivity>()
         .asNewTask()
-        .with(DOMAIN_KEY to domain, URL_KEY to url)
+        .with(DOMAIN_KEY to domain, URI_KEY to uri)
         .start { activity ->
           activity.lifecycleScope.launch {
             activity.onWebpageLoadFlow.emit { webView, hasLoadedSuccessfully ->

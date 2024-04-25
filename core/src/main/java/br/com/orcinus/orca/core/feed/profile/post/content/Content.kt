@@ -71,9 +71,9 @@ private constructor(
       headlineProvider: HeadlineProvider
     ): Content {
       val links = text.styles.filterIsInstance<Style.Link>()
-      val externalLinks = links.filterNot { it.url.isOfResourceFrom(domain) }
+      val externalLinks = links.filterNot { it.uri.isOfResourceFrom(domain) }
       val highlightLink = externalLinks.firstOrNull()
-      val highlightUrl = highlightLink?.url
+      val highlightUrl = highlightLink?.uri
       val headline = highlightUrl?.let { headlineProvider.provide(it) }
       val highlight = headline?.let { Highlight(it, highlightUrl) }
       val isHighlightLinkRemovable = text.isHighlightLinkRemovable(externalLinks, highlightLink)

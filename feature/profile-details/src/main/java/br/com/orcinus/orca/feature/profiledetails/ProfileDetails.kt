@@ -75,7 +75,7 @@ import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import java.io.Serializable
-import java.net.URL
+import java.net.URI
 
 internal const val PROFILE_DETAILS_TOP_BAR_TAG = "profile-details-top-bar"
 
@@ -86,7 +86,7 @@ internal sealed class ProfileDetails : Serializable {
   abstract val avatarLoader: SomeImageLoader
   abstract val name: String
   abstract val bio: AnnotatedString
-  abstract val url: URL
+  abstract val uri: URI
 
   val formattedAccount
     get() = account.toString()
@@ -100,7 +100,7 @@ internal sealed class ProfileDetails : Serializable {
     override val name: String,
     override val account: Account,
     override val bio: AnnotatedString,
-    override val url: URL
+    override val uri: URI
   ) : ProfileDetails() {
     companion object
   }
@@ -111,7 +111,7 @@ internal sealed class ProfileDetails : Serializable {
     override val name: String,
     override val account: Account,
     override val bio: AnnotatedString,
-    override val url: URL
+    override val uri: URI
   ) : ProfileDetails() {
     @Composable
     override fun FloatingActionButton(navigator: ProfileDetailsBoundary, modifier: Modifier) {
@@ -129,7 +129,7 @@ internal sealed class ProfileDetails : Serializable {
     override val name: String,
     override val account: Account,
     override val bio: AnnotatedString,
-    override val url: URL,
+    override val uri: URI,
     val status: Status,
     private val onStatusToggle: () -> Unit
   ) : ProfileDetails() {
@@ -184,7 +184,7 @@ internal sealed class ProfileDetails : Serializable {
           Profile.sample.name,
           Profile.sample.account,
           Profile.sample.bio.toAnnotatedString(AutosTheme.colors),
-          Profile.sample.url
+          Profile.sample.uri
         )
       }
   }
@@ -284,8 +284,8 @@ private fun ProfileDetails(
   onNavigationToPostDetails: (id: String) -> Unit,
   onNext: (index: Int) -> Unit,
   origin: BackwardsNavigationState,
-  onNavigateToWebpage: (URL) -> Unit,
-  onShare: (URL) -> Unit,
+  onNavigateToWebpage: (URI) -> Unit,
+  onShare: (URI) -> Unit,
   modifier: Modifier = Modifier,
   isTopBarDropdownMenuExpanded: Boolean = false,
   initialFirstVisibleTimelineItemIndex: Int = 0,
@@ -355,8 +355,8 @@ private fun ProfileDetails(
   onNavigationToPostDetails: (id: String) -> Unit,
   onNext: (index: Int) -> Unit,
   origin: BackwardsNavigationState,
-  onNavigateToWebpage: (URL) -> Unit,
-  onShare: (URL) -> Unit,
+  onNavigateToWebpage: (URI) -> Unit,
+  onShare: (URI) -> Unit,
   modifier: Modifier = Modifier,
   isTopBarDropdownMenuExpanded: Boolean = false,
   initialFirstVisibleTimelineItemIndex: Int = 0,
@@ -384,7 +384,7 @@ private fun ProfileDetails(
           DropdownMenuItem(
             text = { Text(stringResource(R.string.feature_profile_details_open_in_browser)) },
             onClick = {
-              onNavigateToWebpage(details.url)
+              onNavigateToWebpage(details.uri)
               isTopBarDropdownExpanded = false
             },
             leadingIcon = {
@@ -398,7 +398,7 @@ private fun ProfileDetails(
           DropdownMenuItem(
             text = { Text(stringResource(R.string.feature_profile_details_copy_url)) },
             onClick = {
-              clipboardManager.setText(AnnotatedString("${details.url}"))
+              clipboardManager.setText(AnnotatedString("${details.uri}"))
               isTopBarDropdownExpanded = false
             },
             leadingIcon = {
@@ -412,7 +412,7 @@ private fun ProfileDetails(
           DropdownMenuItem(
             text = { Text(stringResource(R.string.feature_profile_details_share)) },
             onClick = {
-              onShare(details.url)
+              onShare(details.uri)
               isTopBarDropdownExpanded = false
             },
             leadingIcon = {

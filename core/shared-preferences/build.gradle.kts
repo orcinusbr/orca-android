@@ -41,6 +41,7 @@ dependencies {
   testImplementation(project(":core-test"))
   testImplementation(project(":ext:reflection"))
   testImplementation(project(":platform:testing"))
+  testImplementation(project(":std:uri"))
   testImplementation(libs.assertk)
   testImplementation(libs.kotlin.coroutines.test)
   testImplementation(libs.kotlin.test)

@@ -20,7 +20,7 @@ import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.std.image.SomeImageLoader
 import br.com.orcinus.orca.std.markdown.Markdown
-import java.net.URL
+import java.net.URI
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -38,7 +38,7 @@ internal data class MastodonProfile(
   override val bio: Markdown,
   override val followerCount: Int,
   override val followingCount: Int,
-  override val url: URL
+  override val uri: URI
 ) : Profile {
   private lateinit var postPaginator: MastodonProfilePostPaginator
 

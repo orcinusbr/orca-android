@@ -23,19 +23,19 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.type.KType
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.type.kTypeCreatorOf
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import java.net.URL
+import java.net.URI
 
 /**
  * [MastodonPostPaginator] for paginating through the comments of a [Post].
  *
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
- *   will be loaded from a [URL].
+ *   will be loaded from a [URI].
  * @param id ID of the original [Post].
  * @see Post.comment
  * @see Post.id
  */
 internal class MastodonCommentPaginator(
-  private val imageLoaderProvider: SomeImageLoaderProvider<URL>,
+  private val imageLoaderProvider: SomeImageLoaderProvider<URI>,
   id: String
 ) : MastodonPostPaginator<MastodonContext>(), KTypeCreator<MastodonContext> by kTypeCreatorOf() {
   override val route = "/api/v1/statuses/$id/context"

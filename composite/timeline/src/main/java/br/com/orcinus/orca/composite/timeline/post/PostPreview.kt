@@ -73,7 +73,7 @@ import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.test.Loading
 import java.io.Serializable
-import java.net.URL
+import java.net.URI
 import java.time.ZonedDateTime
 
 /** Tag that identifies a [PostPreview]'s name for testing purposes. */
@@ -112,7 +112,7 @@ private val bodyModifier = Modifier.testTag(POST_PREVIEW_BODY_TAG)
  * @param figure [Figure] that can be interacted with.
  * @param publicationDateTime Zoned moment in time in which it was published.
  * @param stats [StatsDetails] of the [Post]'s [Stat]s.
- * @param url [URL] that leads to the [Post].
+ * @param uri [URI] that leads to the [Post].
  */
 @Immutable
 data class PostPreview
@@ -126,7 +126,7 @@ internal constructor(
   val figure: Figure?,
   private val publicationDateTime: ZonedDateTime,
   val stats: StatsDetails,
-  internal val url: URL
+  internal val uri: URI
 ) : Serializable {
   /**
    * Gets information about the author and how much time it's been since it was published.

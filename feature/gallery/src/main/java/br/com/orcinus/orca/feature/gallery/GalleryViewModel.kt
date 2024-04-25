@@ -54,7 +54,7 @@ private constructor(
   }
 
   internal fun share() {
-    viewModelScope.launch { getApplication<Application>().share("${getPost().url}") }
+    viewModelScope.launch { getApplication<Application>().share("${getPost().uri}") }
   }
 
   private suspend fun getPost(): Post {

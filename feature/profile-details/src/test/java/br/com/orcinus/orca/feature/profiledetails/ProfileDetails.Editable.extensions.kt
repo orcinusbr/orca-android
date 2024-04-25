@@ -29,5 +29,5 @@ internal val ProfileDetails.Editable.Companion.sample
       EditableProfile.sample.name,
       EditableProfile.sample.account,
       EditableProfile.sample.bio.toAnnotatedString(Colors.LIGHT),
-      EditableProfile.sample.url
+      EditableProfile.sample.uri
     )

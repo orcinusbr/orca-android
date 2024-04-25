@@ -24,7 +24,7 @@ import br.com.orcinus.orca.core.instance.domain.Domain
 import br.com.orcinus.orca.core.sample.instance.domain.sample
 import br.com.orcinus.orca.core.sample.test.auth.actor.sample
 import br.com.orcinus.orca.std.image.compose.async.AsyncImageLoader
-import java.net.URL
+import java.net.URI
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
@@ -33,14 +33,14 @@ internal class MastodonAuthenticationTokenTests {
   fun convertsIntoActor() {
     val id = Actor.Authenticated.sample.id
     val accessToken = Actor.Authenticated.sample.accessToken
-    val avatarURLAsString = "${Domain.sample.url}/accounts/$id/avatar.png"
-    val verification = MastodonAuthenticationVerification(id, avatarURLAsString)
+    val avatarURIAsString = "${Domain.sample.uri}/accounts/$id/avatar.png"
+    val verification = MastodonAuthenticationVerification(id, avatarURIAsString)
     val authToken = MastodonAuthenticationToken(accessToken)
     runTest {
       assertThat(authToken.toActor(AsyncImageLoader.Provider, verification)).all {
         prop(Actor.Authenticated::id).isEqualTo(id)
         prop(Actor.Authenticated::accessToken).isEqualTo(accessToken)
-        transform { it.avatarLoader.source }.isEqualTo(URL(avatarURLAsString))
+        transform { it.avatarLoader.source }.isEqualTo(URI(avatarURIAsString))
       }
     }
   }

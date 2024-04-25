@@ -27,7 +27,7 @@ internal class LoadingFinishingListenerWebViewClientTests {
   fun notifiesListenerWhenLoadingFinishes() {
     var hasListenerBeenNotified = false
     LoadingFinishingListenerWebViewClient { hasListenerBeenNotified = true }
-      .onPageFinished(view = null, url = null)
+      .onPageFinished(view = null, uri = null)
     assertThat(hasListenerBeenNotified).isTrue()
   }
 }

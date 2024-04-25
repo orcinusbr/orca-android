@@ -42,6 +42,6 @@ internal val Style.name
  * @param postID ID of the [Post] to which this [Style] belongs.
  */
 internal fun Style.toHttpStyleEntity(postID: String): MastodonStyleEntity {
-  val url = if (this is Style.Mention) url.toString() else null
-  return MastodonStyleEntity(id = 0, postID, name, indices.first, indices.last, url)
+  val uri = if (this is Style.Mention) uri.toString() else null
+  return MastodonStyleEntity(id = 0, postID, name, indices.first, indices.last, uri)
 }

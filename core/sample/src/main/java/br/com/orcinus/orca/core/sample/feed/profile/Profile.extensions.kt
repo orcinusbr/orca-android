@@ -49,7 +49,7 @@ fun Profile.Companion.createSample(
       )
     override val followerCount = 1_024
     override val followingCount = 64
-    override val url = author.profileURL
+    override val uri = author.profileURI
     override val postProvider = postProvider
   }
 }

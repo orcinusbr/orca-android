@@ -43,7 +43,7 @@ internal class FollowableProfileConverter(
         profile.name,
         profile.account,
         profile.bio.toAnnotatedString(colors),
-        profile.url,
+        profile.uri,
         profile.follow.toStatus()
       ) {
         coroutineScope.launch { profile.toggleFollow() }

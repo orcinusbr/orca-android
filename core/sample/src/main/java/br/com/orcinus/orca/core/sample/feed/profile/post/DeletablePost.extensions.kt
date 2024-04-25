@@ -25,7 +25,7 @@ import br.com.orcinus.orca.core.sample.feed.profile.post.stat.createSampleToggle
 import br.com.orcinus.orca.core.sample.image.SampleImageSource
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import java.net.URL
+import br.com.orcinus.orca.std.uri.URIBuilder
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.UUID
@@ -52,7 +52,11 @@ fun DeletablePost.Companion.createSample(
       publicationDateTime = ZonedDateTime.of(2_003, 10, 8, 8, 0, 0, 0, ZoneId.of("GMT-3")),
       favorite = createSampleToggleableStat(imageLoaderProvider),
       repost = createSampleToggleableStat(imageLoaderProvider),
-      URL("https://mastodon.social/@christianselig/110492858891694580"),
+      URIBuilder.scheme("https")
+        .host("mastodon.social")
+        .path("@christianselig")
+        .path("110492858891694580")
+        .build(),
       writerProvider
     )
   )

@@ -28,7 +28,7 @@ import br.com.orcinus.orca.core.mastodon.auth.authorization.MastodonAuthorizer
 import br.com.orcinus.orca.core.mastodon.auth.authorization.viewmodel.MastodonAuthorizationViewModel
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import java.net.URL
+import java.net.URI
 
 /**
  * [InstanceProvider] that provides a [ContextualMastodonInstance].
@@ -51,7 +51,7 @@ class MastodonInstanceProvider(
   private val actorProvider: ActorProvider,
   private val authenticationLock: AuthenticationLock<MastodonAuthenticator>,
   private val termMuter: TermMuter,
-  private val imageLoaderProvider: SomeImageLoaderProvider<URL>
+  private val imageLoaderProvider: SomeImageLoaderProvider<URI>
 ) : InstanceProvider {
   override fun provide(): SomeMastodonInstance {
     return ContextualMastodonInstance(

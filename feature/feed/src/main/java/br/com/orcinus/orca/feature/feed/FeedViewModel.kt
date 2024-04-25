@@ -35,7 +35,7 @@ import br.com.orcinus.orca.ext.intents.share
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
-import java.net.URL
+import java.net.URI
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
@@ -47,7 +47,7 @@ internal class FeedViewModel(
   private val feedProvider: FeedProvider,
   private val postProvider: PostProvider,
   private val userID: String,
-  private val onLinkClick: (URL) -> Unit,
+  private val onLinkClick: (URI) -> Unit,
   private val onThumbnailClickListener: Disposition.OnThumbnailClickListener
 ) : AndroidViewModel(application) {
   private val indexFlow = MutableStateFlow(0)
@@ -83,8 +83,8 @@ internal class FeedViewModel(
     viewModelScope.launch { postProvider.provide(postID).first().repost.toggle() }
   }
 
-  fun share(url: URL) {
-    application.share("$url")
+  fun share(uri: URI) {
+    application.share("$uri")
   }
 
   fun loadPostsAt(index: Int) {
@@ -97,7 +97,7 @@ internal class FeedViewModel(
       feedProvider: FeedProvider,
       postProvider: PostProvider,
       userID: String,
-      onLinkClick: (URL) -> Unit,
+      onLinkClick: (URI) -> Unit,
       onThumbnailClickListener: Disposition.OnThumbnailClickListener
     ): ViewModelProvider.Factory {
       return viewModelFactory {

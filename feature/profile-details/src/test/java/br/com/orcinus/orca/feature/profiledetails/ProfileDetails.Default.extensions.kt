@@ -29,5 +29,5 @@ internal val ProfileDetails.Default.Companion.sample
       Profile.sample.name,
       Profile.sample.account,
       Profile.sample.bio.toAnnotatedString(Colors.LIGHT),
-      Profile.sample.url
+      Profile.sample.uri
     )

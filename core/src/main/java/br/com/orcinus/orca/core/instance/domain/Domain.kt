@@ -15,8 +15,9 @@
 
 package br.com.orcinus.orca.core.instance.domain
 
+import br.com.orcinus.orca.std.uri.URIBuilder
 import java.io.Serializable
-import java.net.URL
+import java.net.URI
 
 /**
  * An instance's unique identifier.
@@ -25,9 +26,9 @@ import java.net.URL
  */
 @JvmInline
 value class Domain(private val value: String) : Serializable {
-  /** [URL] that leads to this [Domain]. */
-  val url
-    get() = URL("https", value, "")
+  /** [URI] that leads to this [Domain]. */
+  val uri
+    get() = URIBuilder.scheme("https").host(value).build()
 
   /** [IllegalArgumentException] thrown if the [value] is blank. */
   class BlankValueException internal constructor() :

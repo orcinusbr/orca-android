@@ -20,11 +20,11 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.MastodonPo
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.MastodonStatusesPaginator
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentPaginator
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import java.net.URL
+import java.net.URI
 
 /** [MastodonPostPaginator] that paginates through [MastodonPost]s of the feed. */
 internal class MastodonFeedPaginator(
-  override val imageLoaderProvider: SomeImageLoaderProvider<URL>,
+  override val imageLoaderProvider: SomeImageLoaderProvider<URI>,
   override val commentPaginatorProvider: MastodonCommentPaginator.Provider
 ) : MastodonStatusesPaginator() {
   override val route = "/api/v1/timelines/home"

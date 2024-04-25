@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,23 +13,16 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.instance.domain
+package br.com.orcinus.orca.std.uri
 
 import assertk.assertThat
-import assertk.assertions.isFalse
-import assertk.assertions.isTrue
-import br.com.orcinus.orca.core.sample.instance.domain.sample
-import java.net.URL
+import assertk.assertions.isEqualTo
 import kotlin.test.Test
 
-internal class URLExtensionsTests {
+internal class SchemedURIBuilderTests {
   @Test
-  fun isInternalResourceURL() {
-    assertThat(URL(Domain.sample.url, "path").isOfResourceFrom(Domain.sample)).isTrue()
-  }
-
-  @Test
-  fun isExternalResourceURL() {
-    assertThat(URL("https", "google.com", " ").isOfResourceFrom(Domain.sample)).isFalse()
+  fun createsHostedURIBuilder() {
+    assertThat(URIBuilder.scheme("https").host("mastodon.social"))
+      .isEqualTo(HostedURIBuilder("https", "mastodon.social"))
   }
 }

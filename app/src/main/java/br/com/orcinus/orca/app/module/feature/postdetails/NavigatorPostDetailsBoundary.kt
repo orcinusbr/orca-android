@@ -25,14 +25,14 @@ import br.com.orcinus.orca.feature.gallery.GalleryActivity
 import br.com.orcinus.orca.feature.postdetails.PostDetailsBoundary
 import br.com.orcinus.orca.feature.postdetails.PostDetailsFragment
 import br.com.orcinus.orca.platform.navigation.Navigator
-import java.net.URL
+import java.net.URI
 
 internal class NavigatorPostDetailsBoundary(
   private val context: Context,
   private val navigator: Navigator
 ) : PostDetailsBoundary {
-  override fun navigateTo(url: URL) {
-    context.browseTo(url)
+  override fun navigateTo(uri: URI) {
+    context.browseTo(uri)
   }
 
   override fun navigateToGallery(

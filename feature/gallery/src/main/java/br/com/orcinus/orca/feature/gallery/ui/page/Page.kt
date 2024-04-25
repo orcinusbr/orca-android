@@ -83,7 +83,7 @@ internal fun Page(
   if (currentIndex == entrypointIndex) {
     entrypoint(pageModifier)
   } else {
-    rememberImageLoader(secondary[currentIndex - if (currentIndex < entrypointIndex) 0 else 1].url)
+    rememberImageLoader(secondary[currentIndex - if (currentIndex < entrypointIndex) 0 else 1].uri)
       .load()(
       stringResource(R.string.feature_gallery_attachment, currentIndex.inc()),
       RectangleShape,

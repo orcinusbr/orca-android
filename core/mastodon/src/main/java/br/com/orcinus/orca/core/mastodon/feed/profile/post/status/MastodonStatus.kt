@@ -30,7 +30,7 @@ import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.markdown.Markdown
-import java.net.URL
+import java.net.URI
 import java.time.ZonedDateTime
 import kotlinx.serialization.Serializable
 
@@ -44,9 +44,9 @@ import kotlinx.serialization.Serializable
  * @param reblogsCount Amount of times it's been reblogged.
  * @param favouritesCount Amount of times it's been favorited.
  * @param repliesCount Amount of replies that's been received.
- * @param url String [URL] that leads to this [MastodonStatus].
+ * @param uri String [URI] that leads to this [MastodonStatus].
  * @param reblog [MastodonStatus] that's being reblogged in this one.
- * @param card [MastodonCard] for the highlighted [URL] that's in the [content].
+ * @param card [MastodonCard] for the highlighted [URI] that's in the [content].
  * @param content Text that's been written.
  * @param mediaAttachments [MastodonAttachment]s of attached media.
  * @param favourited Whether it's been favorited by the currently
@@ -63,7 +63,7 @@ internal constructor(
   internal val reblogsCount: Int,
   internal val favouritesCount: Int,
   internal val repliesCount: Int,
-  internal val url: String,
+  internal val uri: String,
   internal val reblog: MastodonStatus?,
   internal val card: MastodonCard?,
   internal val content: String,
@@ -75,13 +75,13 @@ internal constructor(
    * Converts this [MastodonStatus] into a [Post].
    *
    * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
-   *   images will be loaded from a [URL].
+   *   images will be loaded from a [URI].
    * @param commentPaginatorProvider [MastodonCommentPaginator.Provider] by which a
    *   [MastodonCommentPaginator] for paginating through the comments will be provided.
    * @see Post.comment
    */
   internal fun toPost(
-    imageLoaderProvider: SomeImageLoaderProvider<URL>,
+    imageLoaderProvider: SomeImageLoaderProvider<URI>,
     commentPaginatorProvider: MastodonCommentPaginator.Provider
   ): Post {
     val author =
@@ -92,7 +92,7 @@ internal constructor(
       (reblog?.mediaAttachments ?: mediaAttachments).map(MastodonAttachment::toAttachment)
     val content = Content.from(domain, text, attachments) { card?.toHeadline(imageLoaderProvider) }
     val publicationDateTime = ZonedDateTime.parse(reblog?.createdAt ?: createdAt)
-    val url = URL(reblog?.url ?: url)
+    val uri = URI(reblog?.uri ?: uri)
     return MastodonPost(
         id,
         imageLoaderProvider,
@@ -103,7 +103,7 @@ internal constructor(
         commentCount = reblog?.repliesCount ?: repliesCount,
         favouritesCount,
         reblogsCount,
-        url
+        uri
       )
       .`if`<Post>(reblog != null) {
         val reposter = this@MastodonStatus.account.toAuthor(imageLoaderProvider)

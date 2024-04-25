@@ -19,12 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
-import java.net.URL
+import java.net.URI
 
 internal class NoOpFeedBoundary : FeedBoundary {
   override fun navigateToSearch() {}
 
-  override fun navigateTo(url: URL) {}
+  override fun navigateTo(uri: URI) {}
 
   override fun navigateToGallery(
     postID: String,

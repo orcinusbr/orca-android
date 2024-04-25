@@ -32,14 +32,14 @@ import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.style.Style
-import java.net.URL
+import java.net.URI
 
 /**
  * Primitive information to be persisted about a [MastodonProfile].
  *
  * @param id Unique identifier.
  * @param account [String] representation of the [MastodonProfile]'s [account][Profile.account].
- * @param avatarURL URL [String] that leads to the avatar image.
+ * @param avatarURI URI [String] that leads to the avatar image.
  * @param bio Describes who the owner is and/or provides information regarding the
  *   [MastodonProfile].
  * @param type Determines whether the [MastodonProfile] is A [MastodonEditableProfile] or an
@@ -56,14 +56,14 @@ data class MastodonProfileEntity
 internal constructor(
   @PrimaryKey internal val id: String,
   internal val account: String,
-  @ColumnInfo(name = "avatar_url") internal val avatarURL: String,
+  @ColumnInfo(name = "avatar_uri") internal val avatarURI: String,
   internal val name: String,
   internal val bio: String,
   @Type internal val type: Int,
   internal val follow: String?,
   @ColumnInfo(name = "follower_count") internal val followerCount: Int,
   @ColumnInfo(name = "following_count") internal val followingCount: Int,
-  internal val url: String
+  internal val uri: String
 ) {
   /** Constrains the [type] to the known ones. */
   @IntDef(EDITABLE_TYPE, FOLLOWABLE_TYPE) internal annotation class Type
@@ -72,7 +72,7 @@ internal constructor(
    * Converts this [MastodonProfileEntity] into a [Profile].
    *
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
-   *   [Profile]'s avatar will be loaded from a [URL].
+   *   [Profile]'s avatar will be loaded from a [URI].
    * @param dao [MastodonProfileEntityDao] that will select the persisted
    *   [Mastodon style entities][MastodonStyleEntity].
    * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
@@ -82,7 +82,7 @@ internal constructor(
    */
   @Throws(IllegalStateException::class)
   internal suspend fun toProfile(
-    avatarLoaderProvider: SomeImageLoaderProvider<URL>,
+    avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     dao: MastodonProfileEntityDao,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): Profile {
@@ -98,7 +98,7 @@ internal constructor(
    * Converts this [MastodonProfileEntity] into A [MastodonEditableProfile].
    *
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
-   *   [MastodonEditableProfile]'s avatar will be loaded from a [URL].
+   *   [MastodonEditableProfile]'s avatar will be loaded from a [URI].
    * @param dao [MastodonProfileEntityDao] that will select the persisted
    *   [Mastodon style entities][MastodonStyleEntity] applied to the [bio].
    * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
@@ -106,15 +106,15 @@ internal constructor(
    *   [MastodonEditableProfile]'s [Post]s will be provided.
    */
   private suspend fun toMastodonEditableProfile(
-    avatarLoaderProvider: SomeImageLoaderProvider<URL>,
+    avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     dao: MastodonProfileEntityDao,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): MastodonEditableProfile {
     val account = Account.of(account)
-    val avatarURL = URL(avatarURL)
-    val avatarLoader = avatarLoaderProvider.provide(avatarURL)
+    val avatarURI = URI(avatarURI)
+    val avatarLoader = avatarLoaderProvider.provide(avatarURI)
     val bio = getBioAsMarkdown(dao)
-    val url = URL(url)
+    val uri = URI(uri)
     return MastodonEditableProfile(
       postPaginatorProvider,
       id,
@@ -124,7 +124,7 @@ internal constructor(
       bio,
       followerCount,
       followingCount,
-      url
+      uri
     )
   }
 
@@ -132,7 +132,7 @@ internal constructor(
    * Converts this [MastodonProfileEntity] into A [MastodonFollowableProfile].
    *
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
-   *   [MastodonFollowableProfile]'s avatar will be loaded from a [URL].
+   *   [MastodonFollowableProfile]'s avatar will be loaded from a [URI].
    * @param dao [MastodonProfileEntityDao] that will select the persisted
    *   [Mastodon style entities][MastodonStyleEntity].
    * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
@@ -140,16 +140,16 @@ internal constructor(
    *   [MastodonFollowableProfile]'s [Post]s will be provided.
    */
   private suspend fun toMastodonFollowableProfile(
-    avatarLoaderProvider: SomeImageLoaderProvider<URL>,
+    avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     dao: MastodonProfileEntityDao,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): MastodonFollowableProfile<Follow> {
     val account = Account.of(account)
-    val avatarURL = URL(avatarURL)
-    val avatarLoader = avatarLoaderProvider.provide(avatarURL)
+    val avatarURI = URI(avatarURI)
+    val avatarLoader = avatarLoaderProvider.provide(avatarURI)
     val bio = getBioAsMarkdown(dao)
     val follow = Follow.of(checkNotNull(follow))
-    val url = URL(url)
+    val uri = URI(uri)
     return MastodonFollowableProfile(
       postPaginatorProvider,
       id,
@@ -160,7 +160,7 @@ internal constructor(
       follow,
       followerCount,
       followingCount,
-      url
+      uri
     )
   }
 

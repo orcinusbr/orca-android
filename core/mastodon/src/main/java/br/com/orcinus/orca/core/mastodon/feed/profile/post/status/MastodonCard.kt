@@ -18,20 +18,20 @@ package br.com.orcinus.orca.core.mastodon.feed.profile.post.status
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Headline
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import java.net.URL
+import java.net.URI
 import kotlinx.serialization.Serializable
 
 /**
  * Structure returned by the API that represents the most prominent content of A [MastodonStatus].
  *
- * @param url URL [String] that leads to the webpage to which this [MastodonCard] refers.
+ * @param uri URI [String] that leads to the webpage to which this [MastodonCard] refers.
  * @param title Title of the webpage.
  * @param description Description of the webpage.
- * @param image URL [String] that leads to the cover image.
+ * @param image URI [String] that leads to the cover image.
  */
 @Serializable
 internal data class MastodonCard(
-  val url: String,
+  val uri: String,
   val title: String,
   val description: String,
   val image: String?
@@ -40,15 +40,15 @@ internal data class MastodonCard(
    * Converts this [MastodonCard] into a [Headline].
    *
    * @param coverLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
-   *   cover will be loaded from a [URL].
+   *   cover will be loaded from a [URI].
    * @return Resulting [Headline] or `null` if the image is unavailable.
    */
-  fun toHeadline(coverLoaderProvider: SomeImageLoaderProvider<URL>): Headline? {
+  fun toHeadline(coverLoaderProvider: SomeImageLoaderProvider<URI>): Headline? {
     return image?.let {
       Headline(
         title,
         subtitle = description.ifEmpty { null },
-        coverLoader = coverLoaderProvider.provide(URL(image))
+        coverLoader = coverLoaderProvider.provide(URI(image))
       )
     }
   }

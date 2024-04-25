@@ -22,7 +22,7 @@ import br.com.orcinus.orca.core.sample.instance.domain.sample
 import br.com.orcinus.orca.core.sample.test.feed.profile.post.content.highlight.sample
 import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.buildMarkdown
-import java.net.URL
+import br.com.orcinus.orca.std.uri.HostedURIBuilder
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -35,7 +35,7 @@ internal class ContentTests {
           Domain.sample,
           buildMarkdown {
             +"😗 "
-            link(Highlight.sample.url) { +"🔗" }
+            link(Highlight.sample.uri) { +"🔗" }
           }
         ) {
           Headline.sample
@@ -48,13 +48,13 @@ internal class ContentTests {
   fun `GIVEN a text with a trailing link and no headline WHEN creating content from them THEN the link is kept`() {
     assertEquals(
       buildMarkdown {
-        link(Highlight.sample.url) { +"Link" }
+        link(Highlight.sample.uri) { +"Link" }
         +'!'
       },
       Content.from(
           Domain.sample,
           buildMarkdown {
-            link(Highlight.sample.url) { +"Link" }
+            link(Highlight.sample.uri) { +"Link" }
             +'!'
           }
         ) {
@@ -65,12 +65,12 @@ internal class ContentTests {
   }
 
   @Test
-  fun `GIVEN a text with two trailing URLs WHEN creating content from it THEN they're kept`() {
+  fun `GIVEN a text with two trailing URIs WHEN creating content from it THEN they're kept`() {
     assertEquals(
-      buildMarkdown { +"🫨 ${Highlight.sample.url} ${Highlight.sample.url}" },
+      buildMarkdown { +"🫨 ${Highlight.sample.uri} ${Highlight.sample.uri}" },
       Content.from(
           Domain.sample,
-          buildMarkdown { +"🫨 ${Highlight.sample.url} ${Highlight.sample.url}" }
+          buildMarkdown { +"🫨 ${Highlight.sample.uri} ${Highlight.sample.uri}" }
         ) {
           Headline.sample
         }
@@ -83,7 +83,7 @@ internal class ContentTests {
     Content.from(
       Domain.sample,
       buildMarkdown {
-        link(URL(Domain.sample.url, "resource")) { +"Here" }
+        link(HostedURIBuilder.from(Domain.sample.uri).path("resource").build()) { +"Here" }
         +'!'
       }
     ) {

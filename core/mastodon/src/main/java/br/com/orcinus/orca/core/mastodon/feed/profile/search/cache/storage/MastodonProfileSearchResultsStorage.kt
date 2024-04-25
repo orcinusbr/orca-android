@@ -20,19 +20,19 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.cache.storage.MastodonProf
 import br.com.orcinus.orca.platform.cache.Storage
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import java.net.URL
+import java.net.URI
 import kotlinx.coroutines.flow.first
 
 /**
  * [Storage] for [ProfileSearchResult]s.
  *
  * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
- *   [ProfileSearchResult]'s avatar will be loaded from a [URL].
+ *   [ProfileSearchResult]'s avatar will be loaded from a [URI].
  * @param entityDao [MastodonProfileEntityDao] that will perform SQL transactions on
  *   [Mastodon profile search result entities][MastodonProfileSearchResultEntity].
  */
 internal class MastodonProfileSearchResultsStorage(
-  private val avatarLoaderProvider: SomeImageLoaderProvider<URL>,
+  private val avatarLoaderProvider: SomeImageLoaderProvider<URI>,
   private val entityDao: MastodonProfileSearchResultEntityDao
 ) : Storage<List<ProfileSearchResult>>() {
   override suspend fun onStore(key: String, value: List<ProfileSearchResult>) {

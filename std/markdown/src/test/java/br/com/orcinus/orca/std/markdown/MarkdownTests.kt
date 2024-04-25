@@ -18,7 +18,7 @@ package br.com.orcinus.orca.std.markdown
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import br.com.orcinus.orca.std.markdown.style.Style
-import br.com.orcinus.orca.std.markdown.style.url
+import br.com.orcinus.orca.std.markdown.style.uri
 import br.com.orcinus.orca.std.markdown.style.username
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
@@ -42,13 +42,13 @@ internal class MarkdownTests {
     assertThat(
         buildMarkdown {
             +"Hello, "
-            mention(Style.Mention.url) { +Style.Mention.username }
+            mention(Style.Mention.uri) { +Style.Mention.username }
             +"!"
           }
           .styles
       )
       .containsExactly(
-        Style.Mention(indices = 7..(7 + Style.Mention.username.lastIndex), Style.Mention.url)
+        Style.Mention(indices = 7..(7 + Style.Mention.username.lastIndex), Style.Mention.uri)
       )
   }
 

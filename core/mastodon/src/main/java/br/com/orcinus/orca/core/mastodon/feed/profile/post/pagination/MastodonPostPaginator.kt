@@ -64,8 +64,8 @@ internal abstract class MastodonPostPaginator<T : Any> : KTypeCreator<T> {
       .compareNotNull { previous, current -> previous.getOrNull()?.compareTo(current) ?: 0 }
       .map { it == 0 }
       .associateWith { lastResponse?.headers?.links?.firstOrNull()?.uri }
-      .map({ (url, isRefreshing) -> isRefreshing || url == null }) { route to it.second }
-      .mapNotNull { (url, _) -> url?.let { client.authenticateAndGet(it) } }
+      .map({ (uri, isRefreshing) -> isRefreshing || uri == null }) { route to it.second }
+      .mapNotNull { (uri, _) -> uri?.let { client.authenticateAndGet(it) } }
       .onEach { lastResponse = it }
       .map { it.body(this).toPosts() }
 
@@ -81,7 +81,7 @@ internal abstract class MastodonPostPaginator<T : Any> : KTypeCreator<T> {
    */
   private var page by pageFlow
 
-  /** URL [String] to which the initial [HttpRequest] should be sent. */
+  /** URI [String] to which the initial [HttpRequest] should be sent. */
   protected abstract val route: String
 
   /**

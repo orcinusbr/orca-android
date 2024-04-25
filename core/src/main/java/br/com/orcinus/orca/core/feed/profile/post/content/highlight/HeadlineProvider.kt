@@ -16,15 +16,15 @@
 package br.com.orcinus.orca.core.feed.profile.post.content.highlight
 
 import br.com.orcinus.orca.core.InternalCoreApi
-import java.net.URL
+import java.net.URI
 
 /** Provides a [Headline] through [provide]. */
 @InternalCoreApi
 fun interface HeadlineProvider {
   /**
-   * Provides a [Headline] based on the [url].
+   * Provides a [Headline] based on the [uri].
    *
-   * @param url [URL] for which the [Headline] will be provided.
+   * @param uri [URI] for which the [Headline] will be provided.
    */
-  fun provide(url: URL): Headline?
+  fun provide(uri: URI): Headline?
 }

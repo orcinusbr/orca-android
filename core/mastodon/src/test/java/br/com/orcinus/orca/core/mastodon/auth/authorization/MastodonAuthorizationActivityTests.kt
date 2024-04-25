@@ -86,14 +86,14 @@ internal class MastodonAuthorizationActivityTests {
 
   @Test
   fun browsesToHelpArticle() {
-    intendBrowsingTo("${MastodonAuthorizationActivity.helpUri}") {
+    intendBrowsingTo(MastodonAuthorizationActivity.helpURI) {
       composeRule.onNodeWithText(R.string.core_http_authorization_help.asString()).performClick()
     }
   }
 
   @Test
   fun browsesToInstanceWhenSigningInWithValidDomain() {
-    intendBrowsingTo("${MastodonAuthorizationViewModel.createURL(context, Domain.sample)}") {
+    intendBrowsingTo(MastodonAuthorizationViewModel.createURI(context, Domain.sample)) {
       composeRule
         .onNodeWithText(R.string.core_http_authorization_domain.asString())
         .apply { performTextInput("${Domain.sample}") }

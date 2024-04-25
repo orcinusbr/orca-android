@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -20,7 +20,7 @@ import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.feed.profile.post.stat.Stat
 import br.com.orcinus.orca.core.feed.profile.post.stat.addable.AddableStat
 import br.com.orcinus.orca.core.feed.profile.post.stat.toggleable.ToggleableStat
-import java.net.URL
+import java.net.URI
 import java.time.ZonedDateTime
 
 /** Content that's been posted by a user, the [author]. */
@@ -46,8 +46,8 @@ interface Post {
   /** [Stat] for reposts. */
   val repost: ToggleableStat<Profile>
 
-  /** [URL] that leads to this [Post]. */
-  val url: URL
+  /** [URI] that leads to this [Post]. */
+  val uri: URI
 
   /** Creates a [DeletablePost] from this [Post]. */
   fun asDeletable(): DeletablePost

@@ -33,7 +33,7 @@ import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.platform.core.withSample
 import br.com.orcinus.orca.platform.core.withSamples
 import br.com.orcinus.orca.std.image.ImageLoader
-import java.net.URL
+import java.net.URI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -79,7 +79,7 @@ internal class PostDetailsConversionScope(delegate: TestScope, private val postI
    * Callback for when the [LinkCard] of [PostDetails] is clicked that's used in the conversion
    * process of the [post].
    */
-  val onLinkClick = { _: URL -> }
+  val onLinkClick = { _: URI -> }
 
   /**
    * [Disposition.OnThumbnailClickListener] that listens to clicks on [PostDetails]'

@@ -59,6 +59,7 @@ dependencies {
   implementation(project(":platform:focus"))
   implementation(project(":platform:navigation"))
   implementation(project(":platform:starter"))
+  implementation(project(":std:uri"))
   implementation(libs.android.browser)
   implementation(libs.android.constraintLayout.compose)
   implementation(libs.android.fragment.ktx)

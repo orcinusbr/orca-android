@@ -61,7 +61,7 @@ import br.com.orcinus.orca.platform.autos.kit.action.button.icon.HoverableIconBu
 import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
-import java.net.URL
+import java.net.URI
 
 /** Default values used by a [MastodonRegistration]. */
 private object MastodonRegistrationDefaults {
@@ -70,14 +70,14 @@ private object MastodonRegistrationDefaults {
 }
 
 /**
- * [CustomTabsIntent]-like UI with a toolbar from which the [url] can be requested to be shared and
+ * [CustomTabsIntent]-like UI with a toolbar from which the [uri] can be requested to be shared and
  * that indicates the loading progress of the [WebView] in which registration is attempted to be
  * performed.
  *
  * @param domain [Domain] of the [Instance] in which registration is being tried.
- * @param url [URL] to be loaded by the [WebView].
+ * @param uri [URI] to be loaded by the [WebView].
  * @param onWebpageLoad Callback for when the [WebView] finishes loading the webpage.
- * @param onSharing Callback for when the [url] is requested to be shared.
+ * @param onSharing Callback for when the [uri] is requested to be shared.
  * @param onPop Callback for when the stack is requested to be popped.
  * @param modifier [Modifier] that is applied to the [Scaffold].
  * @see Instance.domain
@@ -85,7 +85,7 @@ private object MastodonRegistrationDefaults {
 @Composable
 internal fun MastodonRegistration(
   domain: Domain,
-  url: URL,
+  uri: URI,
   onWebpageLoad: (WebView, hasLoadedSuccessfully: Boolean) -> Unit,
   onSharing: () -> Unit,
   onPop: () -> Unit,
@@ -101,7 +101,7 @@ internal fun MastodonRegistration(
         ConstraintLayout(
           Modifier.background(AutosTheme.colors.surface.container.asColor).fillMaxWidth()
         ) {
-          val (closeActionButton, instanceUrlText, shareActionButton) = createRefs()
+          val (closeActionButton, domainText, shareActionButton) = createRefs()
 
           HoverableIconButton(
             onClick = onPop,
@@ -120,7 +120,7 @@ internal fun MastodonRegistration(
 
           Text(
             "$domain",
-            Modifier.constrainAs(instanceUrlText) {
+            Modifier.constrainAs(domainText) {
               start.linkTo(closeActionButton.end)
               centerVerticallyTo(parent)
             },
@@ -173,7 +173,7 @@ internal fun MastodonRegistration(
         webView.webChromeClient = LoadingProgressChangeListenerWebChromeClient {
           webpageLoadingProgress = it
         }
-        webView.loadUrl("$url")
+        webView.loadUrl("$uri")
       }
     }
   }
@@ -186,7 +186,7 @@ private fun MastodonRegistrationPreview() {
   AutosTheme {
     MastodonRegistration(
       Domain.sample,
-      Domain.sample.url,
+      Domain.sample.uri,
       onWebpageLoad = { _, _ -> },
       onSharing = {},
       onPop = {}

@@ -79,7 +79,7 @@ internal fun Thumbnail(
 ) {
   val thumbnail =
     @Composable { contentScale: ContentScale, thumbnailModifier: Modifier ->
-      rememberImageLoader(attachment.url).load()(
+      rememberImageLoader(attachment.uri).load()(
         stringResource(
           R.string.composite_timeline_post_preview_gallery_thumbnail,
           position,

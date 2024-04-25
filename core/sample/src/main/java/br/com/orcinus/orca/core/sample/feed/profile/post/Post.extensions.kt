@@ -32,7 +32,7 @@ import br.com.orcinus.orca.core.sample.instance.domain.sample
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import br.com.orcinus.orca.std.markdown.buildMarkdown
-import java.net.URL
+import br.com.orcinus.orca.std.uri.URIBuilder
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.UUID
@@ -83,7 +83,11 @@ fun Post.Companion.createSamples(
         publicationDateTime = ZonedDateTime.of(2_024, 4, 5, 9, 32, 0, 0, ZoneId.of("GMT-3")),
         favorite = createSampleToggleableStat(imageLoaderProvider),
         repost = createSampleToggleableStat(imageLoaderProvider),
-        URL("https://mastodon.social/@jeanbarrossilva/111665399868682952"),
+        URIBuilder.scheme("https")
+          .host("mastodon.social")
+          .path("@jeanbarrossilva")
+          .path("111665399868682952")
+          .build(),
         writerProvider
       )
     ),
@@ -97,7 +101,7 @@ fun Post.Companion.createSamples(
             +("Also, last day to get Pixel Pals premium at a discount and last day for the " +
               "lifetime unlock to be available!")
             +"\n".repeat(2)
-            +Highlight.createSample(imageLoaderProvider).url.toString()
+            +Highlight.createSample(imageLoaderProvider).uri.toString()
           }
       ) {
         Headline.createSample(imageLoaderProvider)
@@ -106,7 +110,11 @@ fun Post.Companion.createSamples(
         ZonedDateTime.of(2_023, 11, 27, 18, 26, 0, 0, ZoneId.of("America/Halifax")),
       favorite = createSampleToggleableStat(imageLoaderProvider),
       repost = createSampleToggleableStat(imageLoaderProvider),
-      URL("https://mastodon.social/@christianselig/111484624066823391"),
+      URIBuilder.scheme("https")
+        .host("mastodon.social")
+        .path("@christianselig")
+        .path("111484624066823391")
+        .build(),
       writerProvider
     )
   )

@@ -16,7 +16,7 @@
 package br.com.orcinus.orca.std.markdown.style
 
 import java.io.Serializable
-import java.net.URL
+import java.net.URI
 import java.util.Objects
 
 /** Indicates where and how a target has been stylized. */
@@ -82,21 +82,21 @@ interface Style : Serializable {
   }
 
   /**
-   * [Style] that attaches a [URL] to a text.
+   * [Style] that attaches a [URI] to a text.
    *
-   * @see url
+   * @see uri
    */
   interface Link : Style {
-    /** [URL] to which this [Link] links. */
-    val url: URL
+    /** [URI] to which this [Link] links. */
+    val uri: URI
 
     override fun at(indices: IntRange): Style {
-      return to(url, indices)
+      return to(uri, indices)
     }
 
     companion object {
-      /** [Regex] that matches a [URL]. */
-      internal val urlRegex =
+      /** [Regex] that matches a [URI]. */
+      internal val uriRegex =
         Regex(
           "https?://(www\\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}[-a-zA-Z0-9()@:%_+." +
             "~#?&/=]+"
@@ -105,26 +105,26 @@ interface Style : Serializable {
       /**
        * Creates a [Link].
        *
-       * @param url [URL] to which the [Link] links.
+       * @param uri [URI] to which the [Link] links.
        * @param indices Indices at which both the style symbols and the target are in the whole
        *   [String].
        */
       @JvmStatic
-      fun to(url: URL, indices: IntRange): Link {
+      fun to(uri: URI, indices: IntRange): Link {
         return object : Link {
           override val indices = indices
-          override val url = url
+          override val uri = uri
 
           override fun equals(other: Any?): Boolean {
-            return other is Link && url == other.url && indices == other.indices
+            return other is Link && uri == other.uri && indices == other.indices
           }
 
           override fun hashCode(): Int {
-            return Objects.hash(url, indices)
+            return Objects.hash(uri, indices)
           }
 
           override fun toString(): String {
-            return "Link(url=$url, indices=$indices)"
+            return "Link(uri=$uri, indices=$indices)"
           }
         }
       }
@@ -132,7 +132,7 @@ interface Style : Serializable {
   }
 
   /** [Style] for referencing a username. */
-  data class Mention(override val indices: IntRange, override val url: URL) : Constrained(), Link {
+  data class Mention(override val indices: IntRange, override val uri: URI) : Constrained(), Link {
     override val regex = Regex("[a-zA-Z0-9._%+-]+")
 
     companion object

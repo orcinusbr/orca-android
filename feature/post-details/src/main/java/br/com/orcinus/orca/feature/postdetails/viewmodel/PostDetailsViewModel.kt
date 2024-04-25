@@ -33,7 +33,7 @@ import br.com.orcinus.orca.feature.postdetails.toPostDetailsFlow
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.loadable.flow.loadable
 import com.jeanbarrossilva.loadable.list.flow.listLoadable
-import java.net.URL
+import java.net.URI
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -46,7 +46,7 @@ private constructor(
   application: Application,
   private val postProvider: PostProvider,
   private val id: String,
-  private val onLinkClick: (URL) -> Unit,
+  private val onLinkClick: (URI) -> Unit,
   private val onThumbnailClickListener: Disposition.OnThumbnailClickListener
 ) : AndroidViewModel(application) {
   private val notifierFlow = notifierFlow()
@@ -95,8 +95,8 @@ private constructor(
     viewModelScope.launch { postProvider.provide(id).first().repost.toggle() }
   }
 
-  fun share(url: URL) {
-    application.share("$url")
+  fun share(uri: URI) {
+    application.share("$uri")
   }
 
   fun loadCommentsAt(index: Int) {
@@ -108,7 +108,7 @@ private constructor(
       application: Application,
       postProvider: PostProvider,
       id: String,
-      onLinkClick: (URL) -> Unit,
+      onLinkClick: (URI) -> Unit,
       onThumbnailClickListener: Disposition.OnThumbnailClickListener
     ): ViewModelProvider.Factory {
       return viewModelFactory {
