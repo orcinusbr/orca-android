@@ -18,20 +18,20 @@ package br.com.orcinus.orca.core.feed.profile.post.content
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Highlight
 import br.com.orcinus.orca.core.instance.domain.Domain
 import br.com.orcinus.orca.std.markdown.Markdown
-import br.com.orcinus.orca.std.markdown.style.type.Link
+import br.com.orcinus.orca.std.markdown.style.Style
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
 /**
  * Returns whether the [Highlight] link can be removed from this [Markdown].
  *
- * @param externalLinks [Link]s that link to resources outside of a given [Domain].
- * @param highlightLink [Link] considered to be the highlight from the external ones.
+ * @param externalLinks [Style.Link]s that link to resources outside of a given [Domain].
+ * @param highlightLink [Style.Link] considered to be the highlight from the external ones.
  */
 @OptIn(ExperimentalContracts::class)
 internal fun Markdown.isHighlightLinkRemovable(
-  externalLinks: List<Link>,
-  highlightLink: Link?
+  externalLinks: List<Style.Link>,
+  highlightLink: Style.Link?
 ): Boolean {
   contract { returns() implies (highlightLink != null) }
   return externalLinks.size == 1 &&
@@ -42,8 +42,8 @@ internal fun Markdown.isHighlightLinkRemovable(
 /**
  * Returns this [Markdown] minus the [Highlight] link.
  *
- * @param highlightLink [Link] considered to be the highlight from the external ones.
+ * @param highlightLink [Style.Link] considered to be the highlight from the external ones.
  */
-internal fun Markdown.withoutHighlightLink(highlightLink: Link): Markdown {
+internal fun Markdown.withoutHighlightLink(highlightLink: Style.Link): Markdown {
   return copy { removeRange(highlightLink.indices).trim() }
 }

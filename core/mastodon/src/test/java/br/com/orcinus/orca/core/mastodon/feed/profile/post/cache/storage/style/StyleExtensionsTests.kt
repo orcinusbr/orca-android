@@ -22,13 +22,6 @@ import kotlin.test.Test
 internal class StyleExtensionsTests {
   @Test(expected = IllegalArgumentException::class)
   fun throwsWhenGettingNameOfNonexistentStyle() {
-    object : Style {
-        override val indices = IntRange.EMPTY
-
-        override fun at(indices: IntRange): Style {
-          throw UnsupportedOperationException()
-        }
-      }
-      .name
+    Style.empty.name
   }
 }

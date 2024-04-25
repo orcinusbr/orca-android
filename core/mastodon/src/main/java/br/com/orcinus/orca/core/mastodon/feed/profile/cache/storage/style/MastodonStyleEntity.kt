@@ -22,11 +22,6 @@ import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.style.Style
-import br.com.orcinus.orca.std.markdown.style.type.Bold
-import br.com.orcinus.orca.std.markdown.style.type.Hashtag
-import br.com.orcinus.orca.std.markdown.style.type.Italic
-import br.com.orcinus.orca.std.markdown.style.type.Link
-import br.com.orcinus.orca.std.markdown.style.type.Mention
 import java.net.URL
 
 /**
@@ -62,11 +57,11 @@ internal data class MastodonStyleEntity(
   fun toStyle(): Style {
     val indices = startIndex..endIndex
     return when (name) {
-      "bold" -> Bold(indices)
-      "hashtag" -> Hashtag(indices)
-      "italic" -> Italic(indices)
-      "link" -> Link.to(URL(url), indices)
-      "mention" -> Mention(indices, URL(url))
+      "bold" -> Style.Bold(indices)
+      "hashtag" -> Style.Hashtag(indices)
+      "italic" -> Style.Italic(indices)
+      "link" -> Style.Link.to(URL(url), indices)
+      "mention" -> Style.Mention(indices, URL(url))
       else -> throw IllegalStateException("Unknown style name: \"$name\".")
     }
   }

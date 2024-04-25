@@ -21,10 +21,7 @@ import androidx.compose.ui.text.SpanStyle
 import br.com.orcinus.orca.composite.timeline.text.annotated.span.createLinkSpanStyle
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.account.Account
-import br.com.orcinus.orca.std.markdown.style.type.Email
-import br.com.orcinus.orca.std.markdown.style.type.Hashtag
-import br.com.orcinus.orca.std.markdown.style.type.Link
-import br.com.orcinus.orca.std.markdown.style.type.Mention
+import br.com.orcinus.orca.std.markdown.style.Style
 import java.net.MalformedURLException
 import java.net.URL
 
@@ -44,19 +41,19 @@ private val SpanStyle.category
       ?.trim()
       ?: error("No category has been attached to $fontFeatureSettings.")
 
-/** Whether this [SpanStyle] has been created for an [Email]. */
+/** Whether this [SpanStyle] has been created for a [Style.Email]. */
 internal val SpanStyle.isForEmail
   get() = fontFeatureSettings?.let { Categorizer.categorizeAsEmail() in it } ?: false
 
-/** Whether this [SpanStyle] has been created for a [Hashtag]. */
+/** Whether this [SpanStyle] has been created for a [Style.Hashtag]. */
 internal val SpanStyle.isForHashtag
   get() = fontFeatureSettings?.let { Categorizer.HASHTAG_SPEC_PREFIX in it } ?: false
 
-/** Whether this [SpanStyle] has been created for a [Link]. */
+/** Whether this [SpanStyle] has been created for a [Style.Link]. */
 internal val SpanStyle.isForLink
   get() = fontFeatureSettings?.let { Categorizer.LINK_SPEC_START in it } ?: false
 
-/** Whether this [SpanStyle] has been created for a [Mention]. */
+/** Whether this [SpanStyle] has been created for a [Style.Mention]. */
 internal val SpanStyle.isForMention
   get() = fontFeatureSettings?.let { Categorizer.MENTION_SPEC_PREFIX in it } ?: false
 

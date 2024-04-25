@@ -19,12 +19,6 @@ import androidx.compose.ui.text.SpanStyle
 import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.composite.timeline.text.annotated.span.category.Categorizer
 import br.com.orcinus.orca.std.markdown.style.Style
-import br.com.orcinus.orca.std.markdown.style.type.Bold
-import br.com.orcinus.orca.std.markdown.style.type.Email
-import br.com.orcinus.orca.std.markdown.style.type.Hashtag
-import br.com.orcinus.orca.std.markdown.style.type.Italic
-import br.com.orcinus.orca.std.markdown.style.type.Link
-import br.com.orcinus.orca.std.markdown.style.type.Mention
 
 /**
  * Converts this [Style] into a [SpanStyle].
@@ -35,12 +29,12 @@ import br.com.orcinus.orca.std.markdown.style.type.Mention
 @Throws(IllegalArgumentException::class)
 internal fun Style.toSpanStyle(colors: Colors): SpanStyle {
   return when (this) {
-    is Bold -> BoldSpanStyle
-    is Email -> createLinkSpanStyle(colors, Categorizer.categorizeAsEmail())
-    is Hashtag -> createLinkSpanStyle(colors, Categorizer.categorizeAsHashtag())
-    is Italic -> ItalicSpanStyle
-    is Mention -> createLinkSpanStyle(colors, Categorizer.categorizeAsMention(url))
-    is Link -> createLinkSpanStyle(colors, Categorizer.categorizeAsLink(url))
+    is Style.Bold -> BoldSpanStyle
+    is Style.Email -> createLinkSpanStyle(colors, Categorizer.categorizeAsEmail())
+    is Style.Hashtag -> createLinkSpanStyle(colors, Categorizer.categorizeAsHashtag())
+    is Style.Italic -> ItalicSpanStyle
+    is Style.Mention -> createLinkSpanStyle(colors, Categorizer.categorizeAsMention(url))
+    is Style.Link -> createLinkSpanStyle(colors, Categorizer.categorizeAsLink(url))
     else -> throw IllegalArgumentException("Cannot convert an unknown $this style.")
   }
 }

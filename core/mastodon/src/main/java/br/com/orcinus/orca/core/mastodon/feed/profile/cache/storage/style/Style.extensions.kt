@@ -17,11 +17,6 @@ package br.com.orcinus.orca.core.mastodon.feed.profile.cache.storage.style
 
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.std.markdown.style.Style
-import br.com.orcinus.orca.std.markdown.style.type.Bold
-import br.com.orcinus.orca.std.markdown.style.type.Hashtag
-import br.com.orcinus.orca.std.markdown.style.type.Italic
-import br.com.orcinus.orca.std.markdown.style.type.Link
-import br.com.orcinus.orca.std.markdown.style.type.Mention
 
 /**
  * Name of this [Style].
@@ -32,11 +27,11 @@ internal val Style.name
   @Throws(IllegalArgumentException::class)
   get() =
     when (this) {
-      is Bold -> "bold"
-      is Hashtag -> "hashtag"
-      is Italic -> "italic"
-      is Mention -> "mention"
-      is Link -> "link"
+      is Style.Bold -> "bold"
+      is Style.Hashtag -> "hashtag"
+      is Style.Italic -> "italic"
+      is Style.Mention -> "mention"
+      is Style.Link -> "link"
       else ->
         throw IllegalArgumentException("No name specified for a ${this::class.simpleName} style.")
     }
@@ -47,6 +42,6 @@ internal val Style.name
  * @param postID ID of the [Post] to which this [Style] belongs.
  */
 internal fun Style.toHttpStyleEntity(postID: String): MastodonStyleEntity {
-  val url = if (this is Mention) url.toString() else null
+  val url = if (this is Style.Mention) url.toString() else null
   return MastodonStyleEntity(id = 0, postID, name, indices.first, indices.last, url)
 }
