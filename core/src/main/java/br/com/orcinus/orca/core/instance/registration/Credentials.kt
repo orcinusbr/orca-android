@@ -18,7 +18,7 @@ package br.com.orcinus.orca.core.instance.registration
 import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.core.instance.Instance
-import br.com.orcinus.orca.std.markdown.style.type.Email
+import br.com.orcinus.orca.std.markdown.style.Style
 
 /**
  * Information with which an [Account] can be registered or logged into.
@@ -52,13 +52,13 @@ constructor(val email: String, val password: String) {
   }
 
   /**
-   * Ensures that the [email] is a valid one, matching it against the [Email.regex].
+   * Ensures that the [email] is a valid one, matching it against the [Style.Email.regex].
    *
    * @throws InvalidEmailException If the [email] is invalid.
    */
   @Throws(InvalidEmailException::class)
   private fun ensureEmailValidity() {
-    val isEmailInvalid = !Email.regex.matches(email)
+    val isEmailInvalid = !Style.Email.regex.matches(email)
     if (isEmailInvalid) {
       throw InvalidEmailException(email)
     }

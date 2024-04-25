@@ -20,8 +20,6 @@ import android.os.Build
 import android.text.Spanned
 import android.text.style.StyleSpan
 import br.com.orcinus.orca.std.markdown.style.Style
-import br.com.orcinus.orca.std.markdown.style.type.Bold
-import br.com.orcinus.orca.std.markdown.style.type.Italic
 
 /**
  * Creates a [StyleSpan], defining its font weight adjustment if the version of Android currently
@@ -60,9 +58,9 @@ internal fun StyleSpan.isStructurallyEqualTo(other: StyleSpan): Boolean {
  */
 internal fun StyleSpan.toStyles(indices: IntRange): List<Style> {
   return when (style) {
-    Typeface.BOLD -> listOf(Bold(indices))
-    Typeface.BOLD_ITALIC -> listOf(Bold(indices), Italic(indices))
-    Typeface.ITALIC -> listOf(Italic(indices))
+    Typeface.BOLD -> listOf(Style.Bold(indices))
+    Typeface.BOLD_ITALIC -> listOf(Style.Bold(indices), Style.Italic(indices))
+    Typeface.ITALIC -> listOf(Style.Italic(indices))
     else -> emptyList()
   }
 }

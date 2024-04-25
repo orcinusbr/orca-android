@@ -19,24 +19,23 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
 import br.com.orcinus.orca.autos.colors.Colors
-import br.com.orcinus.orca.std.markdown.style.type.Bold
-import br.com.orcinus.orca.std.markdown.style.type.Email
-import br.com.orcinus.orca.std.markdown.style.type.Italic
+import br.com.orcinus.orca.std.markdown.style.Style
 import kotlin.test.Test
 
 internal class StyleExtensionsTests {
   @Test
   fun convertsBoldIntoSpanStyle() {
-    assertThat(Bold(0..1).toSpanStyle(Colors.LIGHT)).isEqualTo(BoldSpanStyle)
+    assertThat(Style.Bold(0..1).toSpanStyle(Colors.LIGHT)).isEqualTo(BoldSpanStyle)
   }
 
   @Test
   fun convertsItalicIntoSpanStyle() {
-    assertThat(Italic(0..1).toSpanStyle(Colors.LIGHT)).isEqualTo(ItalicSpanStyle)
+    assertThat(Style.Italic(0..1).toSpanStyle(Colors.LIGHT)).isEqualTo(ItalicSpanStyle)
   }
 
   @Test
   fun convertsEmailIntoSpanStyle() {
-    assertThat(StyleExtractor.EMAIL.isExtractable(Email(0..1).toSpanStyle(Colors.LIGHT))).isTrue()
+    assertThat(StyleExtractor.EMAIL.isExtractable(Style.Email(0..1).toSpanStyle(Colors.LIGHT)))
+      .isTrue()
   }
 }

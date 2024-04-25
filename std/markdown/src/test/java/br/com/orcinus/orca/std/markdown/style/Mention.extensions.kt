@@ -13,15 +13,25 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.std.markdown.style.type
+package br.com.orcinus.orca.std.markdown.style
 
-import br.com.orcinus.orca.std.markdown.style.Style
+import br.com.orcinus.orca.std.markdown.Markdown
+import java.net.URL
 
-/** [Style] for a specific subject. */
-data class Hashtag(override val indices: IntRange) : Style.Constrained() {
-  override val regex = Regex("\\w+")
+/**
+ * Sample [URL] to create mentions with.
+ *
+ * @see Markdown.Builder.mention
+ * @see Mention
+ */
+internal val Style.Mention.Companion.url
+  get() = URL("https://mastodon.social/@jeanbarrossilva")
 
-  override fun at(indices: IntRange): Hashtag {
-    return copy(indices = indices)
-  }
-}
+/**
+ * Sample username to mention.
+ *
+ * @see Markdown.Builder.mention
+ * @see Mention
+ */
+internal val Style.Mention.Companion.username
+  get() = "jeanbarrossilva"

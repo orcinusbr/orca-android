@@ -30,12 +30,6 @@ import androidx.compose.ui.text.AnnotatedString;
 import androidx.compose.ui.text.SpanStyle;
 import br.com.orcinus.orca.std.markdown.Markdown;
 import br.com.orcinus.orca.std.markdown.style.Style;
-import br.com.orcinus.orca.std.markdown.style.type.Bold;
-import br.com.orcinus.orca.std.markdown.style.type.Email;
-import br.com.orcinus.orca.std.markdown.style.type.Hashtag;
-import br.com.orcinus.orca.std.markdown.style.type.Italic;
-import br.com.orcinus.orca.std.markdown.style.type.Link;
-import br.com.orcinus.orca.std.markdown.style.type.Mention;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -51,7 +45,7 @@ import kotlin.ranges.IntRange;
  * @see StyleExtractor#extract(SpanStyle, IntRange)
  */
 public enum StyleExtractor {
-  /** Extracts a {@link Bold} {@link Style} from a {@link SpanStyle}. */
+  /** Extracts a {@link Style.Bold} {@link Style} from a {@link SpanStyle}. */
   BOLD {
     @Override
     boolean isExtractable(@NonNull SpanStyle spanStyle) {
@@ -61,11 +55,11 @@ public enum StyleExtractor {
     @NonNull
     @Override
     protected Style onExtract(@NonNull SpanStyle spanStyle, @NonNull IntRange indices) {
-      return new Bold(indices);
+      return new Style.Bold(indices);
     }
   },
 
-  /** Extracts an {@link Email} {@link Style} from a {@link SpanStyle}. */
+  /** Extracts an {@link Style.Email} {@link Style} from a {@link SpanStyle}. */
   EMAIL {
     @Override
     boolean isExtractable(@NonNull SpanStyle spanStyle) {
@@ -75,11 +69,11 @@ public enum StyleExtractor {
     @NonNull
     @Override
     protected Style onExtract(@NonNull SpanStyle spanStyle, @NonNull IntRange indices) {
-      return new Email(indices);
+      return new Style.Email(indices);
     }
   },
 
-  /** Extracts a {@link Hashtag} from a {@link SpanStyle}. */
+  /** Extracts a {@link Style.Hashtag} from a {@link SpanStyle}. */
   HASHTAG {
     @Override
     boolean isExtractable(@NonNull SpanStyle spanStyle) {
@@ -89,11 +83,11 @@ public enum StyleExtractor {
     @NonNull
     @Override
     protected Style onExtract(@NonNull SpanStyle spanStyle, @NonNull IntRange indices) {
-      return new Hashtag(indices);
+      return new Style.Hashtag(indices);
     }
   },
 
-  /** Extracts an {@link Italic} {@link Style} from a {@link SpanStyle}. */
+  /** Extracts an {@link Style.Italic} {@link Style} from a {@link SpanStyle}. */
   ITALIC {
     @Override
     boolean isExtractable(@NonNull SpanStyle spanStyle) {
@@ -103,11 +97,11 @@ public enum StyleExtractor {
     @NonNull
     @Override
     protected Style onExtract(@NonNull SpanStyle spanStyle, @NonNull IntRange indices) {
-      return new Italic(indices);
+      return new Style.Italic(indices);
     }
   },
 
-  /** Extracts a {@link Link} from a {@link SpanStyle}. */
+  /** Extracts a {@link Style.Link} from a {@link SpanStyle}. */
   LINK {
     @Override
     boolean isExtractable(@NonNull SpanStyle spanStyle) {
@@ -119,11 +113,11 @@ public enum StyleExtractor {
     protected Style onExtract(@NonNull SpanStyle spanStyle, @NonNull IntRange indices)
         throws MalformedURLException {
       @NonNull URL url = getUrl(spanStyle);
-      return Link.to(url, indices);
+      return Style.Link.to(url, indices);
     }
   },
 
-  /** Extracts a {@link Mention} from a {@link SpanStyle}. */
+  /** Extracts a {@link Style.Mention} from a {@link SpanStyle}. */
   MENTION {
     @Override
     boolean isExtractable(@NonNull SpanStyle spanStyle) {
@@ -134,7 +128,7 @@ public enum StyleExtractor {
     @Override
     protected Style onExtract(@NonNull SpanStyle spanStyle, @NonNull IntRange indices)
         throws MalformedURLException {
-      return new Mention(indices, getMention(spanStyle));
+      return new Style.Mention(indices, getMention(spanStyle));
     }
   };
 

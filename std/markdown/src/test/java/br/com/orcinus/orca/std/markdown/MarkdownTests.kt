@@ -15,15 +15,13 @@
 
 package br.com.orcinus.orca.std.markdown
 
+import assertk.assertThat
+import assertk.assertions.containsExactly
 import br.com.orcinus.orca.std.markdown.style.Style
-import br.com.orcinus.orca.std.markdown.style.type.Bold
-import br.com.orcinus.orca.std.markdown.style.type.Italic
-import br.com.orcinus.orca.std.markdown.style.type.Mention
-import br.com.orcinus.orca.std.markdown.style.type.test.url
-import br.com.orcinus.orca.std.markdown.style.type.test.username
+import br.com.orcinus.orca.std.markdown.style.url
+import br.com.orcinus.orca.std.markdown.style.username
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
-import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 internal class MarkdownTests {
@@ -41,48 +39,49 @@ internal class MarkdownTests {
 
   @Test
   fun placesAppendedMentionCorrectly() {
-    assertEquals(
-      Mention(indices = 7..(7 + Mention.username.lastIndex), Mention.url),
-      buildMarkdown {
-          +"Hello, "
-          mention(Mention.url) { +Mention.username }
-          +"!"
-        }
-        .styles
-        .single()
-    )
+    assertThat(
+        buildMarkdown {
+            +"Hello, "
+            mention(Style.Mention.url) { +Style.Mention.username }
+            +"!"
+          }
+          .styles
+      )
+      .containsExactly(
+        Style.Mention(indices = 7..(7 + Style.Mention.username.lastIndex), Style.Mention.url)
+      )
   }
 
   @Test
   fun nestsStyles() {
-    assertContentEquals(
-      listOf(Bold(0..4), Italic(0..4)),
-      buildMarkdown {
-          bold { italic { +"Hello" } }
-          +'!'
-        }
-        .styles
-    )
+    assertThat(
+        buildMarkdown {
+            bold { italic { +"Hello" } }
+            +'!'
+          }
+          .styles
+      )
+      .containsExactly(Style.Bold(0..4), Style.Italic(0..4))
   }
 
   @Test
   fun chopsStylesWhenCopying() {
-    assertContentEquals(
-      listOf(Bold(0..4), Italic(6..7)),
-      buildMarkdown {
-          bold { +"Lorem" }
-          +" "
-          italic { +"ipsum" }
-        }
-        .copy { take(8) }
-        .styles
-    )
+    assertThat(
+        buildMarkdown {
+            bold { +"Lorem" }
+            +" "
+            italic { +"ipsum" }
+          }
+          .copy { take(8) }
+          .styles
+      )
+      .containsExactly(Style.Bold(0..4), Style.Italic(6..7))
   }
 
   @Test
   fun dropsStylesWhenCopying() {
     assertContentEquals(
-      listOf(Bold(0..4)),
+      listOf(Style.Bold(0..4)),
       buildMarkdown {
           bold { +"Lorem" }
           +" "

@@ -22,9 +22,7 @@ import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.composite.timeline.text.annotated.span.category.Categorizer
-import br.com.orcinus.orca.std.markdown.style.type.Bold
-import br.com.orcinus.orca.std.markdown.style.type.Italic
-import br.com.orcinus.orca.std.markdown.style.type.Link
+import br.com.orcinus.orca.std.markdown.style.Style
 import java.net.MalformedURLException
 import java.net.URL
 import kotlin.test.Test
@@ -37,7 +35,7 @@ internal class StyleExtractorTests {
 
   @Test
   fun boldExtractorExtractsFromSpanStyle() {
-    assertThat(StyleExtractor.BOLD.extract(BoldSpanStyle, 0..1)).isEqualTo(Bold(0..1))
+    assertThat(StyleExtractor.BOLD.extract(BoldSpanStyle, 0..1)).isEqualTo(Style.Bold(0..1))
   }
 
   @Test
@@ -77,7 +75,7 @@ internal class StyleExtractorTests {
 
   @Test
   fun italicExtractorExtractsFromSpanStyle() {
-    assertThat(StyleExtractor.ITALIC.extract(ItalicSpanStyle, 0..1)).isEqualTo(Italic(0..1))
+    assertThat(StyleExtractor.ITALIC.extract(ItalicSpanStyle, 0..1)).isEqualTo(Style.Italic(0..1))
   }
 
   @Test
@@ -106,7 +104,7 @@ internal class StyleExtractorTests {
           0..1
         )
       )
-      .isEqualTo(Link.to(URL("https://orca.jeanbarrossilva.com"), 0..1))
+      .isEqualTo(Style.Link.to(URL("https://orca.jeanbarrossilva.com"), 0..1))
   }
 
   @Test

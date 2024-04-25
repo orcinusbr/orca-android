@@ -22,9 +22,7 @@ import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
-import br.com.orcinus.orca.std.markdown.style.type.Bold
-import br.com.orcinus.orca.std.markdown.style.type.Italic
-import br.com.orcinus.orca.std.markdown.style.type.Link
+import br.com.orcinus.orca.std.markdown.style.Style
 import java.net.URL
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -66,23 +64,24 @@ internal class AnyExtensionsTests {
 
   @Test
   fun convertsBoldStyleSpanIntoStyle() {
-    assertThat((StyleSpan(Typeface.BOLD) as Any).toStyles(0..8)).containsExactly(Bold(0..8))
+    assertThat((StyleSpan(Typeface.BOLD) as Any).toStyles(0..8)).containsExactly(Style.Bold(0..8))
   }
 
   @Test
   fun convertsBoldItalicStyleSpanIntoStyles() {
     assertThat((StyleSpan(Typeface.BOLD_ITALIC) as Any).toStyles(0..8))
-      .containsExactly(Bold(0..8), Italic(0..8))
+      .containsExactly(Style.Bold(0..8), Style.Italic(0..8))
   }
 
   @Test
   fun convertsItalicStyleSpanIntoStyle() {
-    assertThat((StyleSpan(Typeface.ITALIC) as Any).toStyles(0..8)).containsExactly(Italic(0..8))
+    assertThat((StyleSpan(Typeface.ITALIC) as Any).toStyles(0..8))
+      .containsExactly(Style.Italic(0..8))
   }
 
   @Test
   fun convertsURLSpanIntoStyle() {
     assertThat(URLSpan("https://orca.jeanbarrossilva.com").toStyles(0..31))
-      .containsExactly(Link.to(URL("https://orca.jeanbarrossilva.com"), 0..31))
+      .containsExactly(Style.Link.to(URL("https://orca.jeanbarrossilva.com"), 0..31))
   }
 }

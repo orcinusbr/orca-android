@@ -18,27 +18,26 @@ package br.com.orcinus.orca.std.markdown.style
 import assertk.assertThat
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
-import br.com.orcinus.orca.std.markdown.style.type.Bold
 import kotlin.test.Test
 
 internal class StyleExtensionsTests {
   @Test
   fun isWithin() {
-    assertThat(Bold(0..4).isWithin("Hello!"))
+    assertThat(Style.Bold(0..4).isWithin("Hello!")).isTrue()
   }
 
   @Test
   fun isNotWithin() {
-    assertThat(Bold(0..6).isWithin("Hello."))
+    assertThat(Style.Bold(0..6).isWithin("Hello.")).isFalse()
   }
 
   @Test
   fun isChopped() {
-    assertThat(Bold(0..Int.MAX_VALUE).isChoppedBy("🦩")).isTrue()
+    assertThat(Style.Bold(0..Int.MAX_VALUE).isChoppedBy("🦩")).isTrue()
   }
 
   @Test
   fun isNotChopped() {
-    assertThat(Bold(0..4).isChoppedBy("Hello, world!")).isFalse()
+    assertThat(Style.Bold(0..4).isChoppedBy("Hello, world!")).isFalse()
   }
 }

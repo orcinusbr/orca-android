@@ -18,12 +18,6 @@ package br.com.orcinus.orca.std.markdown
 import br.com.orcinus.orca.std.markdown.style.Style
 import br.com.orcinus.orca.std.markdown.style.isChoppedBy
 import br.com.orcinus.orca.std.markdown.style.isWithin
-import br.com.orcinus.orca.std.markdown.style.type.Bold
-import br.com.orcinus.orca.std.markdown.style.type.Email
-import br.com.orcinus.orca.std.markdown.style.type.Hashtag
-import br.com.orcinus.orca.std.markdown.style.type.Italic
-import br.com.orcinus.orca.std.markdown.style.type.Link
-import br.com.orcinus.orca.std.markdown.style.type.Mention
 import java.io.Serializable
 import java.net.URL
 import java.util.Objects
@@ -107,50 +101,50 @@ class Markdown(private val text: String, val styles: List<Style>) :
      * Emboldens the text to be appended.
      *
      * @param appendix Additionally stylizes the bold text to be appended or solely appends it.
-     * @see Bold
+     * @see Style.Bold
      */
     fun bold(appendix: Appender.() -> Unit) {
-      append(appendix, ::Bold)
+      append(appendix, Style::Bold)
     }
 
     /**
      * Turns the text to be appended into a hashtag.
      *
      * @param appendix Additionally stylizes the hashtag to be appended or solely appends it.
-     * @see Hashtag
+     * @see Style.Hashtag
      */
     fun hashtag(appendix: Appender.() -> Unit) {
-      append(appendix, ::Hashtag)
+      append(appendix, Style::Hashtag)
     }
 
     /**
      * Italicizes the text to be appended.
      *
      * @param appendix Additionally stylizes the italic text to be appended or solely appends it.
-     * @see Italic
+     * @see Style.Italic
      */
     fun italic(appendix: Appender.() -> Unit) {
-      append(appendix, ::Italic)
+      append(appendix, Style::Italic)
     }
 
     /**
      * Links the text to be appended to the [url].
      *
      * @param appendix Additionally stylizes the link to be appended or solely appends it.
-     * @see Link
+     * @see Style.Link
      */
     fun link(url: URL, appendix: Appender.() -> Unit) {
-      append(appendix) { Link.to(url, it) }
+      append(appendix) { Style.Link.to(url, it) }
     }
 
     /**
      * Turns the text to be appended into a mention.
      *
      * @param appendix Additionally stylizes the mention to be appended or solely appends it.
-     * @see Mention
+     * @see Style.Mention
      */
     fun mention(url: URL, appendix: Appender.() -> Unit) {
-      append(appendix) { Mention(it, url) }
+      append(appendix) { Style.Mention(it, url) }
     }
 
     /**
@@ -163,8 +157,9 @@ class Markdown(private val text: String, val styles: List<Style>) :
     @Throws(Style.Constrained.InvalidTargetException::class)
     internal fun build(): Markdown {
       ensureStyleConstraints()
-      val emails = text.map(Email.regex) { indices, _ -> Email(indices) }
-      val plainLinks = text.map(Link.urlRegex) { indices, match -> Link.to(URL(match), indices) }
+      val emails = text.map(Style.Email.regex) { indices, _ -> Style.Email(indices) }
+      val plainLinks =
+        text.map(Style.Link.urlRegex) { indices, match -> Style.Link.to(URL(match), indices) }
       val stylesAsList = styles.apply { addAll(emails + plainLinks) }.toList()
       return Markdown(text, stylesAsList)
     }

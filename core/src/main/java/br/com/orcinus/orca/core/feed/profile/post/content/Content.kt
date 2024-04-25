@@ -23,7 +23,7 @@ import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.instance.domain.Domain
 import br.com.orcinus.orca.core.instance.domain.isOfResourceFrom
 import br.com.orcinus.orca.std.markdown.Markdown
-import br.com.orcinus.orca.std.markdown.style.type.Link
+import br.com.orcinus.orca.std.markdown.style.Style
 import java.util.Objects
 
 /**
@@ -70,7 +70,7 @@ private constructor(
       attachments: List<Attachment> = emptyList(),
       headlineProvider: HeadlineProvider
     ): Content {
-      val links = text.styles.filterIsInstance<Link>()
+      val links = text.styles.filterIsInstance<Style.Link>()
       val externalLinks = links.filterNot { it.url.isOfResourceFrom(domain) }
       val highlightLink = externalLinks.firstOrNull()
       val highlightUrl = highlightLink?.url
