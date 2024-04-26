@@ -67,7 +67,8 @@ fun Repost.Companion.createSample(
       publicationDateTime = ZonedDateTime.of(2023, 8, 16, 16, 48, 43, 384, ZoneId.of("GMT-3")),
       favorite = createSampleToggleableStat(imageLoaderProvider),
       repost = createSampleToggleableStat(imageLoaderProvider),
-      URIBuilder.scheme("https")
+      URIBuilder.url()
+        .scheme("https")
         .host("mastodon.social")
         .path("@_inside")
         .path("110900315644335855")

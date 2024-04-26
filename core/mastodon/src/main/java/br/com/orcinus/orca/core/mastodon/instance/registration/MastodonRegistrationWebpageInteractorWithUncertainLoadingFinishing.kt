@@ -22,7 +22,7 @@ import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.instance.domain.Domain
 import br.com.orcinus.orca.core.instance.registration.Credentials
-import br.com.orcinus.orca.std.uri.HostedURIBuilder
+import br.com.orcinus.orca.std.uri.url.HostedURLBuilder
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -54,7 +54,7 @@ internal abstract class MastodonRegistrationWebpageInteractorWithUncertainLoadin
       MastodonRegistrationActivity.start(
         context,
         domain,
-        HostedURIBuilder.from(domain.uri).path("auth").path("sign_up").build()
+        HostedURLBuilder.from(domain.uri).path("auth").path("sign_up").build()
       ) { activity, webView, hasLoadedSuccessfully ->
         onInteraction(activity, webView, hasLoadedSuccessfully, credentials).also {
           runCatching { continuation.resume(it) }

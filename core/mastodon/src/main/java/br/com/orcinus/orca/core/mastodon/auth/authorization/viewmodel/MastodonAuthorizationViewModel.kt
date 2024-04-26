@@ -29,7 +29,7 @@ import br.com.orcinus.orca.core.mastodon.R
 import br.com.orcinus.orca.core.mastodon.auth.Mastodon
 import br.com.orcinus.orca.core.mastodon.auth.authorization.OnAccessTokenRequestListener
 import br.com.orcinus.orca.core.mastodon.instance.MastodonInstance
-import br.com.orcinus.orca.std.uri.HostedURIBuilder
+import br.com.orcinus.orca.std.uri.url.HostedURLBuilder
 import java.net.URI
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -116,7 +116,7 @@ private constructor(
      */
     internal fun createURI(context: Context, domain: Domain): URI {
       return with(context) {
-        HostedURIBuilder.from(domain.uri)
+        HostedURLBuilder.from(domain.uri)
           .path("oauth")
           .path("authorize")
           .query()

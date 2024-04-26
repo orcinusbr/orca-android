@@ -28,7 +28,7 @@ import java.net.URISyntaxException
 import kotlin.test.Test
 
 internal class StyleExtractorTests {
-  private val uri = URIBuilder.scheme("https").host("orca.jeanbarrossilva.com").build()
+  private val uri = URIBuilder.url().scheme("https").host("orca.jeanbarrossilva.com").build()
 
   @Test
   fun boldExtractorDoesNotExtractFromNonBoldSpanStyle() {

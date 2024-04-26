@@ -21,7 +21,7 @@ import br.com.orcinus.orca.std.uri.URIBuilder
 import kotlin.test.Test
 
 internal class CategorizerTests {
-  private val uri = URIBuilder.scheme("https").host("orca.jeanbarrossilva.com").build()
+  private val uri = URIBuilder.url().scheme("https").host("orca.jeanbarrossilva.com").build()
 
   @Test
   fun createsURISpec() {

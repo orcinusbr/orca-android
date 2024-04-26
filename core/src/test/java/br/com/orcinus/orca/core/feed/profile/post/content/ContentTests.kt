@@ -22,7 +22,7 @@ import br.com.orcinus.orca.core.sample.instance.domain.sample
 import br.com.orcinus.orca.core.sample.test.feed.profile.post.content.highlight.sample
 import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.buildMarkdown
-import br.com.orcinus.orca.std.uri.HostedURIBuilder
+import br.com.orcinus.orca.std.uri.url.HostedURLBuilder
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -83,7 +83,7 @@ internal class ContentTests {
     Content.from(
       Domain.sample,
       buildMarkdown {
-        link(HostedURIBuilder.from(Domain.sample.uri).path("resource").build()) { +"Here" }
+        link(HostedURLBuilder.from(Domain.sample.uri).path("resource").build()) { +"Here" }
         +'!'
       }
     ) {

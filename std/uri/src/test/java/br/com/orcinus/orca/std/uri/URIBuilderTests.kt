@@ -17,11 +17,19 @@ package br.com.orcinus.orca.std.uri
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import br.com.orcinus.orca.std.uri.url.SchemedURLBuilder
+import java.net.URI
 import kotlin.test.Test
 
 class URIBuilderTests {
   @Test
   fun createsSchemedURIBuilder() {
-    assertThat(URIBuilder.scheme("https")).isEqualTo(SchemedURIBuilder("https"))
+    assertThat(URIBuilder.url().scheme("https")).isEqualTo(SchemedURLBuilder("https"))
+  }
+
+  @Test
+  fun buildsMailtoURI() {
+    assertThat(URIBuilder.mailto("jean@orcinus.com.br"))
+      .isEqualTo(URI("${URIBuilder.MAILTO}:jean@orcinus.com.br"))
   }
 }

@@ -45,7 +45,8 @@ internal class MirroredActorTests {
     val encoder = createJsonTreeEncoder()
     val delegate = Actor.Authenticated.sample
     val avatarURI =
-      URIBuilder.scheme("https")
+      URIBuilder.url()
+        .scheme("https")
         .host("app.orca.jeanbarrossilva.com")
         .path("profile")
         .path("@jeanbarrossilva")
@@ -75,7 +76,8 @@ internal class MirroredActorTests {
   fun isDeserializableWhenAuthenticatedWithAvatarURI() {
     val delegate = Actor.Authenticated.sample
     val avatarURI =
-      URIBuilder.scheme("https")
+      URIBuilder.url()
+        .scheme("https")
         .host("app.orca.jeanbarrossilva.com")
         .path("profile")
         .path("@jeanbarrossilva")

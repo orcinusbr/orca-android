@@ -33,6 +33,6 @@ fun Highlight.Companion.createSample(
 ): Highlight {
   return Highlight(
     Headline.createSample(coverLoaderProvider),
-    URIBuilder.scheme("https").host("pixelpals.app").build()
+    URIBuilder.url().scheme("https").host("pixelpals.app").build()
   )
 }

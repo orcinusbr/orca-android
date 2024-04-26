@@ -13,13 +13,13 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.std.uri
+package br.com.orcinus.orca.std.uri.url
 
 import java.net.URI
 import java.util.Objects
 
 /**
- * [URI] builder to which a scheme, a host and a path have been provided, from which query
+ * URL [URI] builder to which a scheme, a host and a path have been provided, from which query
  * parameters can be appended and a [URI] can be finally built.
  *
  * @param scheme Specification about the type of application addressed by the [URI].
@@ -30,21 +30,21 @@ import java.util.Objects
  * @see parameter
  * @see build
  */
-class SegmentedURIBuilder
+class SegmentedURLBuilder
 internal constructor(
   private val scheme: String,
   private val host: String,
   private val path: String
 ) {
   /**
-   * Parameters that have been appended to the query of the [URI] to be built.
+   * Parameters that have been appended to the query of the URL [URI] to be built.
    *
    * @see parameter
    */
   private val query = hashMapOf<String, String>()
 
   override fun equals(other: Any?): Boolean {
-    return other is SegmentedURIBuilder &&
+    return other is SegmentedURLBuilder &&
       scheme == other.scheme &&
       host == other.host &&
       path == other.path
@@ -55,17 +55,17 @@ internal constructor(
   }
 
   /**
-   * Appends a query parameter to the [URI] to be built.
+   * Appends a query parameter to the URL [URI] to be built.
    *
    * @param key Identifier of the [value].
    * @param value Information to be associated to the [key] in the query.
    */
-  fun parameter(key: String, value: String): SegmentedURIBuilder {
+  fun parameter(key: String, value: String): SegmentedURLBuilder {
     query[key] = value
     return this
   }
 
-  /** Builds a [URI] with the specified components. */
+  /** Builds a URL [URI] with the specified components. */
   fun build(): URI {
     val query = query.map { (key, value) -> "$key=$value" }.joinToString(separator = "&")
     val fragment = null

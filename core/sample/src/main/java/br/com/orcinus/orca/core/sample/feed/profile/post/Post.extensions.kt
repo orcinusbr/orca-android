@@ -83,7 +83,8 @@ fun Post.Companion.createSamples(
         publicationDateTime = ZonedDateTime.of(2_024, 4, 5, 9, 32, 0, 0, ZoneId.of("GMT-3")),
         favorite = createSampleToggleableStat(imageLoaderProvider),
         repost = createSampleToggleableStat(imageLoaderProvider),
-        URIBuilder.scheme("https")
+        URIBuilder.url()
+          .scheme("https")
           .host("mastodon.social")
           .path("@jeanbarrossilva")
           .path("111665399868682952")
@@ -110,7 +111,8 @@ fun Post.Companion.createSamples(
         ZonedDateTime.of(2_023, 11, 27, 18, 26, 0, 0, ZoneId.of("America/Halifax")),
       favorite = createSampleToggleableStat(imageLoaderProvider),
       repost = createSampleToggleableStat(imageLoaderProvider),
-      URIBuilder.scheme("https")
+      URIBuilder.url()
+        .scheme("https")
         .host("mastodon.social")
         .path("@christianselig")
         .path("111484624066823391")

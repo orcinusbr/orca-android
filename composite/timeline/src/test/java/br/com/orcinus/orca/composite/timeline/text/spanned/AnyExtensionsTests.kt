@@ -30,7 +30,7 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class AnyExtensionsTests {
-  private val uri = URIBuilder.scheme("https").host("orca.jeanbarrossilva.com").build()
+  private val uri = URIBuilder.url().scheme("https").host("orca.jeanbarrossilva.com").build()
 
   @Test
   fun structurallyComparesEqualStyleSpans() {
@@ -56,7 +56,9 @@ internal class AnyExtensionsTests {
     assertThat(
         URLSpan("$uri")
           .isStructurallyEqualTo(
-            URLSpan("${URIBuilder.scheme("https").host("beluga.jeanbarrossilva.com").build()}")
+            URLSpan(
+              "${URIBuilder.url().scheme("https").host("beluga.jeanbarrossilva.com").build()}"
+            )
           )
       )
       .isFalse()

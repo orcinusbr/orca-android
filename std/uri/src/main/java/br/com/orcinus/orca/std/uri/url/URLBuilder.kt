@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,26 +13,22 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.std.markdown.style
+package br.com.orcinus.orca.std.uri.url
 
-import br.com.orcinus.orca.std.markdown.Markdown
-import br.com.orcinus.orca.std.uri.URIBuilder
 import java.net.URI
 
 /**
- * Sample [URI] to create mentions with.
+ * Builder from which a [SchemedURLBuilder] can be obtained.
  *
- * @see Markdown.Builder.mention
- * @see Style.Mention
+ * @see scheme
  */
-internal val Style.Mention.Companion.uri
-  get() = URIBuilder.url().scheme("https").host("mastodon.social").path("@jeanbarrossilva").build()
-
-/**
- * Sample username to mention.
- *
- * @see Markdown.Builder.mention
- * @see Style.Mention
- */
-internal val Style.Mention.Companion.username
-  get() = "jeanbarrossilva"
+class URLBuilder internal constructor() {
+  /**
+   * Defines the scheme of the URL [URI] to be built.
+   *
+   * @param scheme Specification about the type of application addressed by the [URI].
+   */
+  fun scheme(scheme: String): SchemedURLBuilder {
+    return SchemedURLBuilder(scheme)
+  }
+}

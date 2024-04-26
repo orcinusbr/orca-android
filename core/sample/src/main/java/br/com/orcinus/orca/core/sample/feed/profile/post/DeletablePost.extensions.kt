@@ -52,7 +52,8 @@ fun DeletablePost.Companion.createSample(
       publicationDateTime = ZonedDateTime.of(2_003, 10, 8, 8, 0, 0, 0, ZoneId.of("GMT-3")),
       favorite = createSampleToggleableStat(imageLoaderProvider),
       repost = createSampleToggleableStat(imageLoaderProvider),
-      URIBuilder.scheme("https")
+      URIBuilder.url()
+        .scheme("https")
         .host("mastodon.social")
         .path("@christianselig")
         .path("110492858891694580")
