@@ -13,13 +13,13 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.std.uri
+package br.com.orcinus.orca.std.uri.url
 
 import java.net.URI
 import java.util.Objects
 
 /**
- * [URI] builder to which both a scheme and a host have been provided, from which paths can be
+ * URL [URI] builder to which both a scheme and a host have been provided, from which paths can be
  * appended, a query can be constructed and a [URI] can be finally built.
  *
  * @param scheme Specification about the type of application addressed by the [URI].
@@ -29,7 +29,7 @@ import java.util.Objects
  * @see query
  * @see build
  */
-class HostedURIBuilder internal constructor(private val scheme: String, private val host: String) {
+class HostedURLBuilder internal constructor(private val scheme: String, private val host: String) {
   /**
    * Segments that have been appended to the [URI] to be built.
    *
@@ -45,7 +45,7 @@ class HostedURIBuilder internal constructor(private val scheme: String, private 
     get() = '/' + segments.joinToString(separator = "/")
 
   override fun equals(other: Any?): Boolean {
-    return other is HostedURIBuilder &&
+    return other is HostedURLBuilder &&
       scheme == other.scheme &&
       host == other.host &&
       segments == other.segments
@@ -56,22 +56,22 @@ class HostedURIBuilder internal constructor(private val scheme: String, private 
   }
 
   /**
-   * Appends a segment to the path of the [URI] to be built.
+   * Appends a segment to the path of the URL [URI] to be built.
    *
    * @param path Segment that may resemble or map exactly to a file system path but does not always
    *   imply a relation to one.
    */
-  fun path(path: String): HostedURIBuilder {
+  fun path(path: String): HostedURLBuilder {
     segments += path
     return this
   }
 
-  /** Allows for query parameters to be appended from a [SegmentedURIBuilder]. */
-  fun query(): SegmentedURIBuilder {
-    return SegmentedURIBuilder(scheme, host, path)
+  /** Allows for query parameters to be appended from a [SegmentedURLBuilder]. */
+  fun query(): SegmentedURLBuilder {
+    return SegmentedURLBuilder(scheme, host, path)
   }
 
-  /** Builds a [URI] with the specified components. */
+  /** Builds a URL [URI] with the specified components. */
   fun build(): URI {
     val fragment = null
     return URI(scheme, host, path, fragment)
@@ -79,13 +79,13 @@ class HostedURIBuilder internal constructor(private val scheme: String, private 
 
   companion object {
     /**
-     * Creates a [HostedURIBuilder] from which path segments can be appended to the given existing
-     * [URI], allowing for a new one with the specified modifications to be built.
+     * Creates a [HostedURLBuilder] from which path segments can be appended to the given existing
+     * URL [URI], allowing for a new one with the specified modifications to be built.
      *
      * @param uri [URI] based on which another one can be built.
      */
-    fun from(uri: URI): HostedURIBuilder {
-      return HostedURIBuilder(uri.scheme, uri.host)
+    fun from(uri: URI): HostedURLBuilder {
+      return HostedURLBuilder(uri.scheme, uri.host)
     }
   }
 }

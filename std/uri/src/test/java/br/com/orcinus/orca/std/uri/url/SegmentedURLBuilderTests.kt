@@ -13,16 +13,36 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.std.uri
+package br.com.orcinus.orca.std.uri.url
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import br.com.orcinus.orca.std.uri.URIBuilder
+import java.net.URI
 import kotlin.test.Test
 
-internal class SchemedURIBuilderTests {
+internal class SegmentedURLBuilderTests {
   @Test
-  fun createsHostedURIBuilder() {
-    assertThat(URIBuilder.scheme("https").host("mastodon.social"))
-      .isEqualTo(HostedURIBuilder("https", "mastodon.social"))
+  fun appendsParameters() {
+    assertThat(
+        URIBuilder.url()
+          .scheme("https")
+          .host("mastodon.social")
+          .path("api")
+          .path("v1")
+          .path("statuses")
+          .path("112276588128366269")
+          .path("reblogged_by")
+          .query()
+          .parameter("limit", "2")
+          .parameter("since_id", "112276666465473478")
+          .build()
+      )
+      .isEqualTo(
+        URI(
+          "https://mastodon.social/api/v1/statuses/112276588128366269/reblogged_by?limit=2&since_" +
+            "id=112276666465473478"
+        )
+      )
   }
 }

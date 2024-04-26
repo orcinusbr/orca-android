@@ -28,7 +28,7 @@ import java.net.URI
 value class Domain(private val value: String) : Serializable {
   /** [URI] that leads to this [Domain]. */
   val uri
-    get() = URIBuilder.scheme("https").host(value).build()
+    get() = URIBuilder.url().scheme("https").host(value).build()
 
   /** [IllegalArgumentException] thrown if the [value] is blank. */
   class BlankValueException internal constructor() :

@@ -59,12 +59,12 @@ internal class IntentsExtensionsTests {
 
   @Test(expected = AssertionFailedError::class)
   fun throwsWhenBrowsingIsIntendedButNotRequested() {
-    intendBrowsingTo(URIBuilder.scheme("https").host("orca.jeanbarrossilva.com").build()) {}
+    intendBrowsingTo(URIBuilder.url().scheme("https").host("orca.jeanbarrossilva.com").build()) {}
   }
 
   @Test
   fun intendsBrowsing() {
-    val uri = URIBuilder.scheme("https").host("orca.jeanbarrossilva.com").build()
+    val uri = URIBuilder.url().scheme("https").host("orca.jeanbarrossilva.com").build()
     intendBrowsingTo(uri) { browseTo(uri) }
   }
 

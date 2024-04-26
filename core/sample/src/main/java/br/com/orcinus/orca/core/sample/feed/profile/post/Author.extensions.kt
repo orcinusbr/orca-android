@@ -48,7 +48,8 @@ fun Author.Companion.createSample(
     avatarLoaderProvider.provide(AuthorImageSource.Default),
     name = "Jean Silva",
     Account.sample,
-    profileURI = URIBuilder.scheme("https").host("mastodon.social").path("@jeanbarrossilva").build()
+    profileURI =
+      URIBuilder.url().scheme("https").host("mastodon.social").path("@jeanbarrossilva").build()
   )
 }
 
@@ -67,7 +68,8 @@ internal fun Author.Companion.createChristianSample(
     avatarLoaderProvider.provide(AuthorImageSource.Christian),
     name = "Christian Selig",
     account = "christianselig" at "mastodon.social",
-    profileURI = URIBuilder.scheme("https").host("mastodon.social").path("@christianselig").build()
+    profileURI =
+      URIBuilder.url().scheme("https").host("mastodon.social").path("@christianselig").build()
   )
 }
 
@@ -85,6 +87,6 @@ internal fun Author.Companion.createRamboSample(
     avatarLoaderProvider.provide(AuthorImageSource.Rambo),
     name = "Guilherme Rambo",
     account = "_inside" at "mastodon.social",
-    profileURI = URIBuilder.scheme("https").host("mastodon.social").path("@_inside").build()
+    profileURI = URIBuilder.url().scheme("https").host("mastodon.social").path("@_inside").build()
   )
 }

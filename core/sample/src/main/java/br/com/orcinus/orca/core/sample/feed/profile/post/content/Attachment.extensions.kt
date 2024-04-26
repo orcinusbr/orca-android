@@ -23,21 +23,24 @@ private val sampleAttachments =
   listOf(
     Attachment(
       description = "A very tall window with lots of windows.",
-      URIBuilder.scheme("https")
+      URIBuilder.url()
+        .scheme("https")
         .host("images.unsplash.com")
         .path("photo-1701432925081-9ccb2455c44c")
         .build()
     ),
     Attachment(
       description = "Brown wooden framed yellow padded chair.",
-      URIBuilder.scheme("https")
+      URIBuilder.url()
+        .scheme("https")
         .host("images.unsplash.com")
         .path("photo-1586023492125-27b2c045efd7")
         .build()
     ),
     Attachment(
       description = "Brown wooden seat beside white wooden table.",
-      URIBuilder.scheme("https")
+      URIBuilder.url()
+        .scheme("https")
         .host("images.unsplash.com")
         .path("photo-1600585152220-90363fe7e115")
         .build()
@@ -45,7 +48,8 @@ private val sampleAttachments =
     Attachment(
       description =
         "Black flat widescreen computer monitor with Apple Magic Keyboard and Mouse on desk.",
-      URIBuilder.scheme("https")
+      URIBuilder.url()
+        .scheme("https")
         .host("images.unsplash.com")
         .path("photo-1548611716-3000815a5803")
         .build()

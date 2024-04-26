@@ -15,21 +15,36 @@
 
 package br.com.orcinus.orca.std.uri
 
+import br.com.orcinus.orca.std.uri.url.URLBuilder
 import java.net.URI
 
 /**
  * Entrypoint that introduces an API for building [URI]s without having to rely on the unnamed and
  * error-prone parameters that the Java class' constructor requires.
  *
- * @see scheme
+ * @see url
+ * @see mailto
  */
 object URIBuilder {
   /**
-   * Defines the scheme of the [URI] to be built.
+   * Scheme of a `mailto` [URI].
    *
-   * @param scheme Specification about the type of application addressed by the [URI].
+   * @see mailto
    */
-  fun scheme(scheme: String): SchemedURIBuilder {
-    return SchemedURIBuilder(scheme)
+  internal const val MAILTO = "mailto"
+
+  /** Indicates that the [URI] to be built is a Universal Resource Locator (URL). */
+  fun url(): URLBuilder {
+    return URLBuilder()
+  }
+
+  /**
+   * Builds a `mailto` [URI].
+   *
+   * @param email E-mail box address for which the [URI] is.
+   */
+  fun mailto(email: String): URI {
+    val fragment = null
+    return URI(MAILTO, email, fragment)
   }
 }

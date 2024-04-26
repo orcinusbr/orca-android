@@ -13,24 +13,28 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.std.uri
+package br.com.orcinus.orca.std.uri.url
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import br.com.orcinus.orca.std.uri.URIBuilder
 import java.net.URI
 import kotlin.test.Test
 
-internal class HostedURIBuilderTests {
+internal class HostedURLBuilderTests {
   @Test
-  fun createsHostedURIBuilder() {
-    assertThat(HostedURIBuilder.from(URIBuilder.scheme("https").host("mastodon.social").build()))
-      .isEqualTo(HostedURIBuilder("https", "mastodon.social"))
+  fun createsHostedURLBuilder() {
+    assertThat(
+        HostedURLBuilder.from(URIBuilder.url().scheme("https").host("mastodon.social").build())
+      )
+      .isEqualTo(HostedURLBuilder("https", "mastodon.social"))
   }
 
   @Test
   fun appendsPaths() {
     assertThat(
-        URIBuilder.scheme("https")
+        URIBuilder.url()
+          .scheme("https")
           .host("mastodon.social")
           .path("@jeanbarrossilva")
           .path("following")
@@ -40,14 +44,15 @@ internal class HostedURIBuilderTests {
   }
 
   @Test
-  fun createsSegmentedURIBuilder() {
+  fun createsSegmentedURLBuilder() {
     assertThat(
-        URIBuilder.scheme("https")
+        URIBuilder.url()
+          .scheme("https")
           .host("mastodon.social")
           .path("@jeanbarrossilva")
           .path("followers")
           .query()
       )
-      .isEqualTo(SegmentedURIBuilder("https", "mastodon.social", "/@jeanbarrossilva/followers"))
+      .isEqualTo(SegmentedURLBuilder("https", "mastodon.social", "/@jeanbarrossilva/followers"))
   }
 }

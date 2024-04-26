@@ -99,7 +99,8 @@ class MastodonAuthorizationActivity internal constructor() :
   companion object {
     /** [URI] that leads to a blog article that explains how Mastodon works. */
     internal val helpURI: URI =
-      URIBuilder.scheme("https")
+      URIBuilder.url()
+        .scheme("https")
         .host("blog.joinmastodon.org")
         .path("2018")
         .path("08")

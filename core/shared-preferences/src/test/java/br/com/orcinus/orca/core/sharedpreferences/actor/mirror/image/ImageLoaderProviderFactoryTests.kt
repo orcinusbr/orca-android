@@ -40,7 +40,8 @@ internal class ImageLoaderProviderFactoryTests {
   fun runsURICallbackWhenSourceIsURI() {
     assertThat(
         ImageLoaderProviderFactory.fold<SampleImageSource, _>(
-          URIBuilder.scheme("https")
+          URIBuilder.url()
+            .scheme("https")
             .host("app.orca.jeanbarrossilva.com")
             .path("profile")
             .path("@jeanbarrossilva")

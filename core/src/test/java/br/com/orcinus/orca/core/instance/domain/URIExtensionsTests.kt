@@ -19,15 +19,15 @@ import assertk.assertThat
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import br.com.orcinus.orca.core.sample.instance.domain.sample
-import br.com.orcinus.orca.std.uri.HostedURIBuilder
 import br.com.orcinus.orca.std.uri.URIBuilder
+import br.com.orcinus.orca.std.uri.url.HostedURLBuilder
 import kotlin.test.Test
 
 internal class URIExtensionsTests {
   @Test
   fun isInternalResourceURI() {
     assertThat(
-        HostedURIBuilder.from(Domain.sample.uri)
+        HostedURLBuilder.from(Domain.sample.uri)
           .path("path")
           .build()
           .isOfResourceFrom(Domain.sample)
@@ -38,7 +38,7 @@ internal class URIExtensionsTests {
   @Test
   fun isExternalResourceURI() {
     assertThat(
-        URIBuilder.scheme("https").host("google.com").build().isOfResourceFrom(Domain.sample)
+        URIBuilder.url().scheme("https").host("google.com").build().isOfResourceFrom(Domain.sample)
       )
       .isFalse()
   }
