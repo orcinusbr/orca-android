@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -17,7 +17,6 @@ package br.com.orcinus.orca.composite.timeline.text.annotated.span
 
 import androidx.compose.ui.text.SpanStyle
 import br.com.orcinus.orca.autos.colors.Colors
-import br.com.orcinus.orca.composite.timeline.text.annotated.span.category.Categorizer
 import br.com.orcinus.orca.std.markdown.style.Style
 
 /**
@@ -30,11 +29,7 @@ import br.com.orcinus.orca.std.markdown.style.Style
 internal fun Style.toSpanStyle(colors: Colors): SpanStyle {
   return when (this) {
     is Style.Bold -> BoldSpanStyle
-    is Style.Email -> createLinkSpanStyle(colors, Categorizer.categorizeAsEmail())
-    is Style.Hashtag -> createLinkSpanStyle(colors, Categorizer.categorizeAsHashtag())
     is Style.Italic -> ItalicSpanStyle
-    is Style.Mention -> createLinkSpanStyle(colors, Categorizer.categorizeAsMention(uri))
-    is Style.Link -> createLinkSpanStyle(colors, Categorizer.categorizeAsLink(uri))
-    else -> throw IllegalArgumentException("Cannot convert an unknown $this style.")
+    is Style.Link -> createLinkSpanStyle(colors, uri)
   }
 }

@@ -17,39 +17,22 @@ package br.com.orcinus.orca.std.markdown
 
 import assertk.assertThat
 import assertk.assertions.containsExactly
+import assertk.assertions.isEmpty
 import br.com.orcinus.orca.std.markdown.style.Style
-import br.com.orcinus.orca.std.markdown.style.uri
-import br.com.orcinus.orca.std.markdown.style.username
+import java.net.URI
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
-import kotlin.test.assertFailsWith
 
 internal class MarkdownTests {
   @Test
   fun doesNotStylizeMalformattedEmailWhenItIsAppended() {
-    assertContentEquals(buildMarkdown { +"john@@appleseed.com" }.styles, emptyList())
+    assertThat(buildMarkdown { +"john@@appleseed.com" }.styles).isEmpty()
   }
 
   @Test
-  fun throwsWhenHashtagWithMalformattedSubjectIsAppended() {
-    assertFailsWith<Style.Constrained.InvalidTargetException> {
-      buildMarkdown { hashtag { +"subjects - cannot - have - whitespaces" } }
-    }
-  }
-
-  @Test
-  fun placesAppendedMentionCorrectly() {
-    assertThat(
-        buildMarkdown {
-            +"Hello, "
-            mention(Style.Mention.uri) { +Style.Mention.username }
-            +"!"
-          }
-          .styles
-      )
-      .containsExactly(
-        Style.Mention(indices = 7..(7 + Style.Mention.username.lastIndex), Style.Mention.uri)
-      )
+  fun stylizesAppendedEmail() {
+    assertThat(buildMarkdown { +"jean@orcinus.com.br" }.styles)
+      .containsExactly(Style.Link(URI("mailto", "jean@orcinus.com.br", null), indices = 0..18))
   }
 
   @Test

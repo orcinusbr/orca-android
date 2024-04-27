@@ -31,9 +31,8 @@ import java.util.Objects
  * @param text Underlying [String] that's been built.
  * @param styles [Style]s applied to the [text].
  * @see Builder.bold
- * @see Builder.hashtag
  * @see Builder.italic
- * @see Builder.mention
+ * @see Builder.link
  * @see Builder.build
  */
 class Markdown(private val text: String, val styles: List<Style>) :
@@ -108,16 +107,6 @@ class Markdown(private val text: String, val styles: List<Style>) :
     }
 
     /**
-     * Turns the text to be appended into a hashtag.
-     *
-     * @param appendix Additionally stylizes the hashtag to be appended or solely appends it.
-     * @see Style.Hashtag
-     */
-    fun hashtag(appendix: Appender.() -> Unit) {
-      append(appendix, Style::Hashtag)
-    }
-
-    /**
      * Italicizes the text to be appended.
      *
      * @param appendix Additionally stylizes the italic text to be appended or solely appends it.
@@ -134,34 +123,16 @@ class Markdown(private val text: String, val styles: List<Style>) :
      * @see Style.Link
      */
     fun link(uri: URI, appendix: Appender.() -> Unit) {
-      append(appendix) { Style.Link.to(uri, it) }
+      append(appendix) { Style.Link(uri, it) }
     }
 
-    /**
-     * Turns the text to be appended into a mention.
-     *
-     * @param appendix Additionally stylizes the mention to be appended or solely appends it.
-     * @see Style.Mention
-     */
-    fun mention(uri: URI, appendix: Appender.() -> Unit) {
-      append(appendix) { Style.Mention(it, uri) }
-    }
-
-    /**
-     * Builds [Markdown] with the provided [Style]s.
-     *
-     * @throws Style.Constrained.InvalidTargetException If a constrained [Style] is applied to an
-     *   invalid target.
-     */
+    /** Builds [Markdown] with the provided [Style]s. */
     @PublishedApi
-    @Throws(Style.Constrained.InvalidTargetException::class)
     internal fun build(): Markdown {
-      ensureStyleConstraints()
-      val emails = text.map(Style.Email.regex) { indices, _ -> Style.Email(indices) }
-      val plainLinks =
-        text.map(Style.Link.uriRegex) { indices, match -> Style.Link.to(URI(match), indices) }
-      val stylesAsList = styles.apply { addAll(emails + plainLinks) }.toList()
-      return Markdown(text, stylesAsList)
+      val mailto = { email: String -> URI("mailto", email, null) }
+      val emails = text.map(Regex.email) { indices, email -> Style.Link(mailto(email), indices) }
+      val urls = text.map(Regex.url) { indices, url -> Style.Link(URI(url), indices) }
+      return Markdown(text, styles + emails + urls)
     }
 
     /**
@@ -176,27 +147,6 @@ class Markdown(private val text: String, val styles: List<Style>) :
       activeAppenders.add(appender)
       appender.appendix()
       activeAppenders.remove(appender)
-    }
-
-    /**
-     * Ensures that the applied constrained [Style]s' targets match their required format.
-     *
-     * @throws Style.Constrained.InvalidTargetException If a constrained [Style] is applied to an
-     *   invalid target.
-     * @see Style.Constrained
-     */
-    @Throws(Style.Constrained.InvalidTargetException::class)
-    private fun ensureStyleConstraints() {
-      styles
-        .filterIsInstance<Style.Constrained>()
-        .associateWith { text.substring(it.indices) }
-        .entries
-        .firstOrNull()
-        ?.let { (style, target) ->
-          if (!target.matches(style.regex)) {
-            throw style.InvalidTargetException(target)
-          }
-        }
     }
   }
 

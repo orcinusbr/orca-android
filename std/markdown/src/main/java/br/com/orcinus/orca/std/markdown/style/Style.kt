@@ -17,59 +17,15 @@ package br.com.orcinus.orca.std.markdown.style
 
 import java.io.Serializable
 import java.net.URI
-import java.util.Objects
 
 /** Indicates where and how a target has been stylized. */
-interface Style : Serializable {
+sealed interface Style : Serializable {
   /** Indices at which both the style symbols and the target are in the whole [String]. */
   val indices: IntRange
-
-  /** [Style] that requires its targets to match the [regex]. */
-  abstract class Constrained protected constructor() : Style {
-    /** [Regex] that targets to which this [Style] is applied should match. */
-    internal abstract val regex: Regex
-
-    /**
-     * [IllegalArgumentException] thrown if the target is an invalid one for this [Style].
-     *
-     * @param target Target that's invalid.
-     */
-    inner class InvalidTargetException internal constructor(target: String) :
-      IllegalArgumentException("Target doesn't match regex ($regex): \"$target\".")
-  }
 
   /** [Style] that applies a heavier weight to the target's font. */
   data class Bold(override val indices: IntRange) : Style {
     override fun at(indices: IntRange): Bold {
-      return copy(indices = indices)
-    }
-  }
-
-  /** [Style] for referencing an e-mail, such as "john@appleseed.com". */
-  data class Email(override val indices: IntRange) : Style {
-    override fun at(indices: IntRange): Email {
-      return copy(indices = indices)
-    }
-
-    companion object {
-      /** [Regex] that matches an [Email]. */
-      val regex =
-        Regex(
-          "(?:[a-z0-9!#\$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#\$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x0" +
-            "8\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-" +
-            "\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])" +
-            "?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[" +
-            "0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-" +
-            "\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)])"
-        )
-    }
-  }
-
-  /** [Style] for a specific subject. */
-  data class Hashtag(override val indices: IntRange) : Constrained() {
-    override val regex = Regex("\\w+")
-
-    override fun at(indices: IntRange): Hashtag {
       return copy(indices = indices)
     }
   }
@@ -84,58 +40,12 @@ interface Style : Serializable {
   /**
    * [Style] that attaches a [URI] to a text.
    *
-   * @see uri
+   * @param uri [URI] to which this [Link] links.
    */
-  interface Link : Style {
-    /** [URI] to which this [Link] links. */
-    val uri: URI
-
+  data class Link(val uri: URI, override val indices: IntRange) : Style {
     override fun at(indices: IntRange): Style {
-      return to(uri, indices)
+      return Link(uri, indices)
     }
-
-    companion object {
-      /** [Regex] that matches a [URI]. */
-      internal val uriRegex =
-        Regex(
-          "https?://(www\\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}[-a-zA-Z0-9()@:%_+." +
-            "~#?&/=]+"
-        )
-
-      /**
-       * Creates a [Link].
-       *
-       * @param uri [URI] to which the [Link] links.
-       * @param indices Indices at which both the style symbols and the target are in the whole
-       *   [String].
-       */
-      @JvmStatic
-      fun to(uri: URI, indices: IntRange): Link {
-        return object : Link {
-          override val indices = indices
-          override val uri = uri
-
-          override fun equals(other: Any?): Boolean {
-            return other is Link && uri == other.uri && indices == other.indices
-          }
-
-          override fun hashCode(): Int {
-            return Objects.hash(uri, indices)
-          }
-
-          override fun toString(): String {
-            return "Link(uri=$uri, indices=$indices)"
-          }
-        }
-      }
-    }
-  }
-
-  /** [Style] for referencing a username. */
-  data class Mention(override val indices: IntRange, override val uri: URI) : Constrained(), Link {
-    override val regex = Regex("[a-zA-Z0-9._%+-]+")
-
-    companion object
   }
 
   /**
@@ -145,16 +55,4 @@ interface Style : Serializable {
    *   [String].
    */
   fun at(indices: IntRange): Style
-
-  companion object {
-    /** [Style] whose [indices] are empty. */
-    val empty =
-      object : Style {
-        override val indices = IntRange.EMPTY
-
-        override fun at(indices: IntRange): Style {
-          return this
-        }
-      }
-  }
 }
