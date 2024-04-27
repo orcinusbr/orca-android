@@ -13,25 +13,29 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.text.annotated.span.category
+package br.com.orcinus.orca.composite.timeline.text.annotated.span
 
+import androidx.compose.ui.text.SpanStyle
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.std.uri.URIBuilder
 import kotlin.test.Test
 
-internal class CategorizerTests {
-  private val uri = URIBuilder.url().scheme("https").host("orca.jeanbarrossilva.com").build()
+internal class SpanStyleExtensionsTests {
+  @Test(expected = IllegalStateException::class)
+  fun throwsWhenGettingURIFromSpanStyleWithoutFontFeatureSettings() {
+    SpanStyle().uri
+  }
 
-  @Test
-  fun createsURISpec() {
-    assertThat(Categorizer.createSpec(uri))
-      .isEqualTo(Categorizer.LINK_SPEC_START + uri + Categorizer.LINK_SPEC_END)
+  @Test(expected = IllegalStateException::class)
+  fun throwsWhenGettingURIFromSpanStyleWithFontFeatureSettingsWithoutCategory() {
+    SpanStyle(fontFeatureSettings = "").uri
   }
 
   @Test
-  fun categorizesAsUntaggedLink() {
-    assertThat(Categorizer.categorizeAsLink(uri))
-      .isEqualTo(Categorizer.PREFIX + Categorizer.createSpec(uri))
+  fun getsURIFromSpanStyle() {
+    val uri = URIBuilder.url().scheme("https").host("orca.orcinus.com.br").build()
+    assertThat(createLinkSpanStyle(Colors.LIGHT, uri).uri).isEqualTo(uri)
   }
 }

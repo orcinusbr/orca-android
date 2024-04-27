@@ -25,11 +25,26 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.isUnspecified
 import br.com.orcinus.orca.autos.colors.Colors
-import br.com.orcinus.orca.composite.timeline.text.annotated.span.category.Categorizer
 import br.com.orcinus.orca.composite.timeline.text.annotated.toAnnotatedString
 import br.com.orcinus.orca.platform.autos.colors.asColor
 import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.style.Style
+import java.net.URI
+import java.net.URISyntaxException
+
+/**
+ * Denotes the start of a [SpanStyle]'s font feature setting category created from a [Style.Link].
+ *
+ * @see CATEGORY_SUFFIX
+ */
+private const val CATEGORY_PREFIX = "category: url("
+
+/**
+ * Denotes the end of a [SpanStyle]'s font feature setting category created from a [Style.Link].
+ *
+ * @see CATEGORY_PREFIX
+ */
+private const val CATEGORY_SUFFIX = ")"
 
 /**
  * [SpanStyle] into which an emboldened portion within [Markdown] will be turned when converting it
@@ -49,17 +64,44 @@ import br.com.orcinus.orca.std.markdown.style.Style
  */
 @JvmField internal val ItalicSpanStyle = SpanStyle(fontStyle = FontStyle.Italic)
 
+/** Whether this [SpanStyle] has been created for a [Style.Link]. */
+internal val SpanStyle.isForLink
+  get() = fontFeatureSettings?.let { CATEGORY_PREFIX in it } ?: false
+
+/**
+ * [URI] that has been attached as the category of this [SpanStyle].
+ *
+ * @throws IllegalStateException If the font feature settings haven't been defined, no [category] is
+ *   specified or a call within it to `url` containing the [URI] is missing.
+ * @see SpanStyle.fontFeatureSettings
+ */
+internal val SpanStyle.uri
+  @JvmName("getURI")
+  @Throws(IllegalStateException::class, URISyntaxException::class)
+  get() =
+    fontFeatureSettings
+      ?.substringAfter(CATEGORY_PREFIX, missingDelimiterValue = "")
+      ?.substringBefore(CATEGORY_SUFFIX)
+      ?.ifEmpty { throw IllegalStateException("No category has been specified.") }
+      ?.trim()
+      ?.ifEmpty { throw IllegalStateException("Category with missing call to \"url\".") }
+      ?.let(::URI)
+      ?: throw IllegalStateException("Font feature settings haven't been defined.")
+
 /**
  * Creates a [SpanStyle] into which a [Style.Link] within [Markdown] will be turned when converting
  * it into an [AnnotatedString].
  *
  * @param colors [Colors] by which the [SpanStyle] can be colored.
- * @param category Describes the text being styled; should be created by the [Categorizer].
+ * @param uri [URI] to which the [Style.Link] links.
  * @see toAnnotatedString
  * @see category
  */
-internal fun createLinkSpanStyle(colors: Colors, category: String): SpanStyle {
-  return SpanStyle(colors.link.asColor, fontFeatureSettings = category)
+internal fun createLinkSpanStyle(colors: Colors, uri: URI): SpanStyle {
+  return SpanStyle(
+    colors.link.asColor,
+    fontFeatureSettings = CATEGORY_PREFIX + uri + CATEGORY_SUFFIX
+  )
 }
 
 /**

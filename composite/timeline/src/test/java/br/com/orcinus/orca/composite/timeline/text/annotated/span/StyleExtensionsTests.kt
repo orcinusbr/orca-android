@@ -17,7 +17,6 @@ package br.com.orcinus.orca.composite.timeline.text.annotated.span
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import assertk.assertions.isTrue
 import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.std.markdown.style.Style
 import kotlin.test.Test
@@ -31,11 +30,5 @@ internal class StyleExtensionsTests {
   @Test
   fun convertsItalicIntoSpanStyle() {
     assertThat(Style.Italic(0..1).toSpanStyle(Colors.LIGHT)).isEqualTo(ItalicSpanStyle)
-  }
-
-  @Test
-  fun convertsEmailIntoSpanStyle() {
-    assertThat(StyleExtractor.EMAIL.isExtractable(Style.Email(0..1).toSpanStyle(Colors.LIGHT)))
-      .isTrue()
   }
 }

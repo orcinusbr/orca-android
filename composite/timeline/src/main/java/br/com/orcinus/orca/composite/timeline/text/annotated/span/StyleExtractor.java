@@ -15,15 +15,6 @@
 
 package br.com.orcinus.orca.composite.timeline.text.annotated.span;
 
-import static br.com.orcinus.orca.composite.timeline.text.annotated.span.SpanStyles.ItalicSpanStyle;
-import static br.com.orcinus.orca.composite.timeline.text.annotated.span.SpanStyles.contains;
-import static br.com.orcinus.orca.composite.timeline.text.annotated.span.category.SpanStyles.getMention;
-import static br.com.orcinus.orca.composite.timeline.text.annotated.span.category.SpanStyles.getURI;
-import static br.com.orcinus.orca.composite.timeline.text.annotated.span.category.SpanStyles.isForEmail;
-import static br.com.orcinus.orca.composite.timeline.text.annotated.span.category.SpanStyles.isForHashtag;
-import static br.com.orcinus.orca.composite.timeline.text.annotated.span.category.SpanStyles.isForLink;
-import static br.com.orcinus.orca.composite.timeline.text.annotated.span.category.SpanStyles.isForMention;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.compose.ui.text.AnnotatedString;
@@ -49,41 +40,13 @@ public enum StyleExtractor {
   BOLD {
     @Override
     boolean isExtractable(@NonNull SpanStyle spanStyle) {
-      return contains(spanStyle, SpanStyles.BoldSpanStyle);
+      return SpanStyles.contains(spanStyle, SpanStyles.BoldSpanStyle);
     }
 
     @NonNull
     @Override
-    protected Style onExtract(@NonNull SpanStyle spanStyle, @NonNull IntRange indices) {
+    protected Style.Bold onExtract(@NonNull SpanStyle spanStyle, @NonNull IntRange indices) {
       return new Style.Bold(indices);
-    }
-  },
-
-  /** Extracts an {@link Style.Email} {@link Style} from a {@link SpanStyle}. */
-  EMAIL {
-    @Override
-    boolean isExtractable(@NonNull SpanStyle spanStyle) {
-      return isForEmail(spanStyle);
-    }
-
-    @NonNull
-    @Override
-    protected Style onExtract(@NonNull SpanStyle spanStyle, @NonNull IntRange indices) {
-      return new Style.Email(indices);
-    }
-  },
-
-  /** Extracts a {@link Style.Hashtag} from a {@link SpanStyle}. */
-  HASHTAG {
-    @Override
-    boolean isExtractable(@NonNull SpanStyle spanStyle) {
-      return isForHashtag(spanStyle);
-    }
-
-    @NonNull
-    @Override
-    protected Style onExtract(@NonNull SpanStyle spanStyle, @NonNull IntRange indices) {
-      return new Style.Hashtag(indices);
     }
   },
 
@@ -91,12 +54,12 @@ public enum StyleExtractor {
   ITALIC {
     @Override
     boolean isExtractable(@NonNull SpanStyle spanStyle) {
-      return contains(spanStyle, ItalicSpanStyle);
+      return SpanStyles.contains(spanStyle, SpanStyles.ItalicSpanStyle);
     }
 
     @NonNull
     @Override
-    protected Style onExtract(@NonNull SpanStyle spanStyle, @NonNull IntRange indices) {
+    protected Style.Italic onExtract(@NonNull SpanStyle spanStyle, @NonNull IntRange indices) {
       return new Style.Italic(indices);
     }
   },
@@ -105,30 +68,15 @@ public enum StyleExtractor {
   LINK {
     @Override
     boolean isExtractable(@NonNull SpanStyle spanStyle) {
-      return isForLink(spanStyle);
+      return SpanStyles.isForLink(spanStyle);
     }
 
     @NonNull
     @Override
-    protected Style onExtract(@NonNull SpanStyle spanStyle, @NonNull IntRange indices)
+    protected Style.Link onExtract(@NonNull SpanStyle spanStyle, @NonNull IntRange indices)
         throws URISyntaxException {
-      @NonNull URI uri = getURI(spanStyle);
-      return Style.Link.to(uri, indices);
-    }
-  },
-
-  /** Extracts a {@link Style.Mention} from a {@link SpanStyle}. */
-  MENTION {
-    @Override
-    boolean isExtractable(@NonNull SpanStyle spanStyle) {
-      return isForMention(spanStyle);
-    }
-
-    @NonNull
-    @Override
-    protected Style onExtract(@NonNull SpanStyle spanStyle, @NonNull IntRange indices)
-        throws URISyntaxException {
-      return new Style.Mention(indices, getMention(spanStyle));
+      @NonNull URI uri = SpanStyles.getURI(spanStyle);
+      return new Style.Link(uri, indices);
     }
   };
 

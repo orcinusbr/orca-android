@@ -49,7 +49,7 @@ internal fun Any.isStructurallyEqualTo(other: Any): Boolean {
 internal fun Any.toStyles(indices: IntRange): List<Style> {
   return when (this) {
     is StyleSpan -> toStyles(indices)
-    is URLSpan -> listOf(Style.Link.to(URI(url), indices))
+    is URLSpan -> listOf(Style.Link(URI(url), indices))
     else -> emptyList()
   }
 }

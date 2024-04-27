@@ -34,8 +34,8 @@ import java.net.URI
  *   [text][Content.text] to which the [Style] has been applied.
  * @param endIndex Final position in the [Post]'s [content][Post.content]'s [text][Content.text]
  *   that has the [Style].
- * @param uri URI [String] to which the styled portion leads if it happens to be a [Link] or `null`
- *   if it isn't.
+ * @param uri URI [String] to which the styled portion leads if it happens to be a [Style.Link] or
+ *   `null` if it isn't.
  * @see Style.name
  * @see Style.indices
  */
@@ -58,10 +58,8 @@ internal data class MastodonStyleEntity(
     val indices = startIndex..endIndex
     return when (name) {
       "bold" -> Style.Bold(indices)
-      "hashtag" -> Style.Hashtag(indices)
       "italic" -> Style.Italic(indices)
-      "link" -> Style.Link.to(URI(uri), indices)
-      "mention" -> Style.Mention(indices, URI(uri))
+      "link" -> Style.Link(URI(uri), indices)
       else -> throw IllegalStateException("Unknown style name: \"$name\".")
     }
   }

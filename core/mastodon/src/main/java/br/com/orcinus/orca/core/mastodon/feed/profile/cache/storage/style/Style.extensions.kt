@@ -28,12 +28,8 @@ internal val Style.name
   get() =
     when (this) {
       is Style.Bold -> "bold"
-      is Style.Hashtag -> "hashtag"
       is Style.Italic -> "italic"
-      is Style.Mention -> "mention"
       is Style.Link -> "link"
-      else ->
-        throw IllegalArgumentException("No name specified for a ${this::class.simpleName} style.")
     }
 
 /**
@@ -42,6 +38,6 @@ internal val Style.name
  * @param postID ID of the [Post] to which this [Style] belongs.
  */
 internal fun Style.toHttpStyleEntity(postID: String): MastodonStyleEntity {
-  val uri = if (this is Style.Mention) uri.toString() else null
+  val uri = if (this is Style.Link) uri.toString() else null
   return MastodonStyleEntity(id = 0, postID, name, indices.first, indices.last, uri)
 }

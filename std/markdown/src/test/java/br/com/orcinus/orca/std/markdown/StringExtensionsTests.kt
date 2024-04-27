@@ -17,15 +17,13 @@ package br.com.orcinus.orca.std.markdown
 
 import assertk.assertThat
 import assertk.assertions.containsExactly
-import br.com.orcinus.orca.std.markdown.style.Style
 import kotlin.test.Test
 
 internal class StringExtensionsTests {
   @Test
   fun transformsEachRegexMatchingPortion() {
     assertThat(
-        "me@jeanbarrossilva.com, john@appleseed.com"
-          .map(Style.Email.regex) { indices, _ -> indices }
+        "me@jeanbarrossilva.com, john@appleseed.com".map(Regex.email) { indices, _ -> indices }
       )
       .containsExactly(0..21, 24..41)
   }

@@ -83,6 +83,6 @@ internal class AnyExtensionsTests {
 
   @Test
   fun convertsURLSpanIntoStyle() {
-    assertThat(URLSpan("$uri").toStyles(0..31)).containsExactly(Style.Link.to(uri, 0..31))
+    assertThat(URLSpan("$uri").toStyles(0..31)).containsExactly(Style.Link(uri, 0..31))
   }
 }
