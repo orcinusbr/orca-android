@@ -17,11 +17,12 @@ package br.com.orcinus.orca.platform.markdown
 
 import android.widget.EditText
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -81,14 +82,16 @@ fun MarkdownTextField(
 ) {
   val context = LocalContext.current
   val editText = remember(context) { EditText(context) }
-  val styles = remember(state) { state.styles }
+  var styles by remember(state) { mutableStateOf(emptyList<Style>()) }
   val markDown: (String) -> Markdown by rememberUpdatedState { Markdown(it, styles) }
+  val onStylizationListener =
+    remember(state) {
+      MarkdownTextFieldState.OnStylizationListener {
+        styles = it
+        onTextChange(markDown("$text"))
+      }
+    }
   val onTextChangeListener = remember { OnTextChangeListener { onTextChange(markDown(it)) } }
-
-  DisposableEffect(styles) {
-    onTextChange(markDown("$text"))
-    onDispose {}
-  }
 
   AndroidView(
     { editText },
@@ -112,6 +115,7 @@ fun MarkdownTextField(
     it.background = null
     it.addTextChangedListener(onTextChangeListener)
     it.setText(text)
+    state.setOnStylizationListener(onStylizationListener)
     state.setInitialStyles(text.styles)
     state.span(it)
   }

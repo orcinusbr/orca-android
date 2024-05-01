@@ -18,12 +18,22 @@ package br.com.orcinus.orca.platform.markdown.state
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEmpty
+import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.std.markdown.style.Style
 import kotlin.test.Test
 import org.junit.Rule
 
 internal class MarkdownTextFieldStateTests {
   @get:Rule val stateRule = MarkdownTextFieldStateTestRule()
+
+  @Test
+  fun notifiesOnStylizationListener() {
+    var styles = emptyList<Style>()
+    stateRule.state.setOnStylizationListener { styles = it }
+    stateRule.state.toggle(Style.Bold(indices = 0..1))
+    stateRule.state.toggle(Style.Italic(indices = 0..1))
+    assertThat(styles).containsExactly(Style.Bold(indices = 0..1), Style.Italic(indices = 0..1))
+  }
 
   @Test
   fun setsInitialStyles() {
@@ -51,7 +61,16 @@ internal class MarkdownTextFieldStateTests {
   }
 
   @Test
-  fun resets() {
+  fun removesOnStylizationListenerWhenResetting() {
+    var listenerNotificationCount = 0
+    stateRule.state.setOnStylizationListener { listenerNotificationCount++ }
+    stateRule.state.reset()
+    stateRule.state.toggle(Style.Bold(indices = 0..1))
+    assertThat(listenerNotificationCount).isEqualTo(1)
+  }
+
+  @Test
+  fun removesStylesWhenResetting() {
     stateRule.state.toggle(Style.Bold(indices = 0..1))
     stateRule.state.reset()
     assertThat(stateRule.state.styles).isEmpty()

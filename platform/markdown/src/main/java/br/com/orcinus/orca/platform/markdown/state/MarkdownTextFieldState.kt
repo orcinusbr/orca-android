@@ -17,9 +17,6 @@ package br.com.orcinus.orca.platform.markdown.state
 
 import android.text.ParcelableSpan
 import android.widget.EditText
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import br.com.orcinus.orca.platform.markdown.MarkdownTextField
 import br.com.orcinus.orca.platform.markdown.span.toParcelableSpan
 import br.com.orcinus.orca.std.markdown.style.Style
@@ -39,13 +36,30 @@ class MarkdownTextFieldState internal constructor() {
    */
   private var isInInitialState = true
 
+  /** [OnStylizationListener] that will be notified of [Style] changes. */
+  private var onStylizationListener: OnStylizationListener? = null
+
   /**
-   * [Style]s that have been pushed.
+   * [Style]s that have been applied.
    *
    * @see toggle
    */
-  internal var styles by mutableStateOf(emptyList<Style>())
+  var styles = emptyList<Style>()
     private set
+
+  /**
+   * Listener to be notified of changes in the [Style]s that have been applied.
+   *
+   * @see onStylization
+   */
+  fun interface OnStylizationListener {
+    /**
+     * Callback that gets called whenever stylization is performed.
+     *
+     * @param styles Currently applied [Style]s after the change.
+     */
+    fun onStylization(styles: List<Style>)
+  }
 
   /**
    * Applies the [style] to or removes it from the text.
@@ -58,7 +72,17 @@ class MarkdownTextFieldState internal constructor() {
     } else {
       styles += style
     }
+    onStylizationListener?.onStylization(styles)
     isInInitialState = false
+  }
+
+  /**
+   * Defines the [OnStylizationListener] that will be notified of [Style] changes.
+   *
+   * @param onStylizationListener [OnStylizationListener] to be defined.
+   */
+  internal fun setOnStylizationListener(onStylizationListener: OnStylizationListener) {
+    this.onStylizationListener = onStylizationListener
   }
 
   /**
@@ -69,6 +93,7 @@ class MarkdownTextFieldState internal constructor() {
   internal fun setInitialStyles(initialStyles: List<Style>) {
     if (isInInitialState) {
       styles = initialStyles
+      onStylizationListener?.onStylization(styles)
       isInInitialState = false
     }
   }
@@ -93,6 +118,8 @@ class MarkdownTextFieldState internal constructor() {
    */
   internal fun reset() {
     styles = emptyList()
+    onStylizationListener?.onStylization(styles)
+    onStylizationListener = null
     isInInitialState = true
   }
 }

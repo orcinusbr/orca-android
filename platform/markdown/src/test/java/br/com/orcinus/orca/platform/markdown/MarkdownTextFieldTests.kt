@@ -27,7 +27,6 @@ import br.com.orcinus.orca.platform.markdown.test.onMarkdownTextField
 import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.buildMarkdown
 import br.com.orcinus.orca.std.markdown.style.Style
-import kotlin.test.Ignore
 import kotlin.test.Test
 import org.junit.Rule
 import org.junit.runner.RunWith
@@ -50,7 +49,6 @@ internal class MarkdownTextFieldTests {
     assertThat(text).isEqualTo(":o")
   }
 
-  @Ignore
   @Test
   fun notifiesChangeToTextWhenStyleIsApplied() {
     var text by mutableStateOf(Markdown("君の名は。"))
