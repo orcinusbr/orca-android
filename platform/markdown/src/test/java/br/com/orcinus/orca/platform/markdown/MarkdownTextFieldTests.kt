@@ -17,7 +17,9 @@ package br.com.orcinus.orca.platform.markdown
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performTextInput
 import assertk.assertThat
@@ -36,6 +38,19 @@ import org.robolectric.RobolectricTestRunner
 internal class MarkdownTextFieldTests {
   @get:Rule val stateRule = MarkdownTextFieldStateTestRule()
   @get:Rule val composeRule = createComposeRule()
+
+  @Test
+  fun doesNotChangeText() {
+    composeRule
+      .apply {
+        setContent {
+          MarkdownTextField(stateRule.state, remember { Markdown("") }, onTextChange = {})
+        }
+      }
+      .onMarkdownTextField()
+      .apply { performTextInput(":c") }
+      .assertTextEquals("")
+  }
 
   @Test
   fun notifiesChangesToText() {

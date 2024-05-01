@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,19 +13,21 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.markdown.span
+package br.com.orcinus.orca.platform.markdown.spanned
 
-import android.graphics.Typeface
-import android.text.ParcelableSpan
-import android.text.style.StyleSpan
-import android.text.style.URLSpan
-import br.com.orcinus.orca.std.markdown.style.Style
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import assertk.assertions.isNotEqualTo
+import kotlin.test.Test
 
-/** Converts this [Style] into a [ParcelableSpan]. */
-internal fun Style.toParcelableSpan(): ParcelableSpan {
-  return when (this) {
-    is Style.Bold -> StyleSpan(Typeface.BOLD)
-    is Style.Italic -> StyleSpan(Typeface.ITALIC)
-    is Style.Link -> URLSpan("$uri")
+internal class PartTests {
+  @Test
+  fun comparesEqualParts() {
+    assertThat(Part(0..8)).isEqualTo(Part(0..8))
+  }
+
+  @Test
+  fun comparesDifferentParts() {
+    assertThat(Part(0..8)).isNotEqualTo(Part(1..9))
   }
 }

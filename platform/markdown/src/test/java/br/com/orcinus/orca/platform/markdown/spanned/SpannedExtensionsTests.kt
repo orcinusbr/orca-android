@@ -13,13 +13,14 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.text.spanned
+package br.com.orcinus.orca.platform.markdown.spanned
 
 import android.graphics.Typeface
 import android.text.Html
 import android.text.style.StyleSpan
 import assertk.assertThat
 import assertk.assertions.containsExactly
+import br.com.orcinus.orca.platform.markdown.spanned.span.createStyleSpan
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -34,7 +35,7 @@ internal class SpannedExtensionsTests {
       )
       .containsExactly(
         Part(0..4).span(StyleSpan(Typeface.ITALIC)),
-        Part(0..4).span(StyleSpan(Typeface.BOLD, fontWeightAdjustment = 0)),
+        Part(0..4).span(createStyleSpan(Typeface.BOLD, fontWeightAdjustment = 0)),
         Part(5..6),
         Part(7..11).span(StyleSpan(Typeface.ITALIC))
       )

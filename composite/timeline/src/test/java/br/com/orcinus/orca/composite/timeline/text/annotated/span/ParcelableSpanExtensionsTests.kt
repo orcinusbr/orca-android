@@ -13,49 +13,41 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.markdown.span
+package br.com.orcinus.orca.composite.timeline.text.annotated.span
 
 import android.graphics.Typeface
 import android.text.style.StyleSpan
 import android.text.style.URLSpan
 import assertk.assertThat
-import assertk.assertions.isFalse
-import assertk.assertions.isTrue
+import assertk.assertions.containsExactly
+import br.com.orcinus.orca.std.markdown.style.Style
 import br.com.orcinus.orca.std.uri.URIBuilder
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class ParcelableSpanExtensionsTests {
+class ParcelableSpanExtensionsTests {
   private val uri = URIBuilder.url().scheme("https").host("orca.orcinus.com.br").build()
 
   @Test
-  fun structurallyComparesEqualStyleSpans() {
-    assertThat(StyleSpan(Typeface.NORMAL).isStructurallyEqualTo(StyleSpan(Typeface.NORMAL)))
-      .isTrue()
+  fun convertsBoldStyleSpanIntoStyle() {
+    assertThat(StyleSpan(Typeface.BOLD).toStyles(0..8)).containsExactly(Style.Bold(0..8))
   }
 
   @Test
-  fun structurallyComparesDifferentStyleSpans() {
-    assertThat(StyleSpan(Typeface.NORMAL).isStructurallyEqualTo(StyleSpan(Typeface.BOLD))).isFalse()
+  fun convertsBoldItalicStyleSpanIntoStyles() {
+    assertThat(StyleSpan(Typeface.BOLD_ITALIC).toStyles(0..8))
+      .containsExactly(Style.Bold(0..8), Style.Italic(0..8))
   }
 
   @Test
-  fun structurallyComparesEqualURLSpans() {
-    assertThat(URLSpan("$uri").isStructurallyEqualTo(URLSpan("$uri"))).isTrue()
+  fun convertsItalicStyleSpanIntoStyle() {
+    assertThat(StyleSpan(Typeface.ITALIC).toStyles(0..8)).containsExactly(Style.Italic(0..8))
   }
 
   @Test
-  fun structurallyComparesDifferentURLSpans() {
-    assertThat(
-        URLSpan("$uri")
-          .isStructurallyEqualTo(
-            URLSpan(
-              "${URIBuilder.url().scheme("https").host("beluga.jeanbarrossilva.com").build()}"
-            )
-          )
-      )
-      .isFalse()
+  fun convertsURLSpanIntoStyle() {
+    assertThat(URLSpan("$uri").toStyles(0..31)).containsExactly(Style.Link(uri, 0..31))
   }
 }

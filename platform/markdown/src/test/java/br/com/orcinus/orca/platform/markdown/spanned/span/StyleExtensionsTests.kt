@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,21 +13,26 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.text.spanned
+package br.com.orcinus.orca.platform.markdown.spanned.span
 
+import android.graphics.Typeface
+import android.text.style.StyleSpan
 import assertk.assertThat
-import assertk.assertions.isEqualTo
-import assertk.assertions.isNotEqualTo
+import assertk.assertions.isTrue
+import br.com.orcinus.orca.std.markdown.style.Style
 import kotlin.test.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-internal class PartTests {
+@RunWith(RobolectricTestRunner::class)
+internal class StyleExtensionsTests {
   @Test
-  fun comparesEqualParts() {
-    assertThat(Part(0..8)).isEqualTo(Part(0..8))
-  }
-
-  @Test
-  fun comparesDifferentParts() {
-    assertThat(Part(0..8)).isNotEqualTo(Part(1..9))
+  fun convertsBoldStyleIntoStyleSpanWithBoldTypeface() {
+    assertThat(
+        Style.Bold(indices = 0..1)
+          .toParcelableSpan()
+          .isStructurallyEqualTo(StyleSpan(Typeface.BOLD))
+      )
+      .isTrue()
   }
 }

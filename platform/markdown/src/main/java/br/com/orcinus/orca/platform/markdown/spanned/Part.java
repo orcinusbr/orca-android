@@ -13,13 +13,11 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.text.spanned;
+package br.com.orcinus.orca.platform.markdown.spanned;
 
 import android.text.ParcelableSpan;
 import androidx.annotation.NonNull;
-import br.com.orcinus.orca.platform.markdown.span.ParcelableSpanExtensions;
-import br.com.orcinus.orca.std.markdown.style.Style;
-import java.util.ArrayList;
+import br.com.orcinus.orca.platform.markdown.spanned.span.ParcelableSpanExtensions;
 import java.util.List;
 import java.util.Objects;
 import kotlin.ranges.IntRange;
@@ -28,7 +26,7 @@ import kotlin.ranges.IntRange;
  * Portion of a {@link android.text.Spanned} that either has or doesn't have a {@link
  * ParcelableSpan} applied to it.
  */
-class Part {
+public class Part {
   /** Indices to which this {@link Part} refers. */
   @NonNull private final IntRange indices;
 
@@ -37,10 +35,15 @@ class Part {
    *
    * @see Spanned#getSpans()
    */
-  static class Spanned extends Part {
+  public static class Spanned extends Part {
     /** {@link ParcelableSpan}s that have been applied to the specified {@link Part#indices}. */
     @NonNull private final List<ParcelableSpan> spans;
 
+    /**
+     * {@link Part} to which {@link ParcelableSpan}s have been applied.
+     *
+     * @see Spanned#getSpans()
+     */
     private Spanned(@NonNull IntRange indices, @NonNull List<ParcelableSpan> spans) {
       super(indices);
       this.spans = spans;
@@ -69,17 +72,8 @@ class Part {
      * Spanned#indices}.
      */
     @NonNull
-    List<ParcelableSpan> getSpans() {
+    public List<ParcelableSpan> getSpans() {
       return spans;
-    }
-
-    /** Converts this {@link Part} into a {@link Style}. */
-    List<Style> toStyles() {
-      ArrayList<Style> styles = new ArrayList<>();
-      for (ParcelableSpan span : spans) {
-        styles.addAll(AnyExtensions.toStyles(span, getIndices()));
-      }
-      return styles;
     }
 
     /**
@@ -102,6 +96,10 @@ class Part {
     }
   }
 
+  /**
+   * Portion of a {@link android.text.Spanned} that either has or doesn't have a {@link
+   * ParcelableSpan} applied to it.
+   */
   Part(@NonNull IntRange indices) {
     this.indices = indices;
   }
@@ -124,7 +122,7 @@ class Part {
 
   /** Gets the indices to which this {@link Part} refers. */
   @NonNull
-  IntRange getIndices() {
+  public IntRange getIndices() {
     return indices;
   }
 

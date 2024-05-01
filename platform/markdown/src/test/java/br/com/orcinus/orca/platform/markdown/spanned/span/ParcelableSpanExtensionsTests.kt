@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,14 +13,14 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.text.spanned
+package br.com.orcinus.orca.platform.markdown.spanned.span
 
 import android.graphics.Typeface
 import android.text.style.StyleSpan
 import android.text.style.URLSpan
 import assertk.assertThat
-import assertk.assertions.containsExactly
-import br.com.orcinus.orca.std.markdown.style.Style
+import assertk.assertions.isFalse
+import assertk.assertions.isTrue
 import br.com.orcinus.orca.std.uri.URIBuilder
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -28,26 +28,32 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class ParcelableSpanExtensionsTests {
-  private val uri = URIBuilder.url().scheme("https").host("orca.jeanbarrossilva.com").build()
+  private val uri = URIBuilder.url().scheme("https").host("orca.orcinus.com.br").build()
 
   @Test
-  fun convertsBoldStyleSpanIntoStyle() {
-    assertThat(StyleSpan(Typeface.BOLD).toStyles(0..8)).containsExactly(Style.Bold(0..8))
+  fun structurallyComparesEqualStyleSpans() {
+    assertThat(StyleSpan(Typeface.NORMAL).isStructurallyEqualTo(StyleSpan(Typeface.NORMAL)))
+      .isTrue()
   }
 
   @Test
-  fun convertsBoldItalicStyleSpanIntoStyles() {
-    assertThat(StyleSpan(Typeface.BOLD_ITALIC).toStyles(0..8))
-      .containsExactly(Style.Bold(0..8), Style.Italic(0..8))
+  fun structurallyComparesDifferentStyleSpans() {
+    assertThat(StyleSpan(Typeface.NORMAL).isStructurallyEqualTo(StyleSpan(Typeface.BOLD))).isFalse()
   }
 
   @Test
-  fun convertsItalicStyleSpanIntoStyle() {
-    assertThat(StyleSpan(Typeface.ITALIC).toStyles(0..8)).containsExactly(Style.Italic(0..8))
+  fun structurallyComparesEqualURLSpans() {
+    assertThat(URLSpan("$uri").isStructurallyEqualTo(URLSpan("$uri"))).isTrue()
   }
 
   @Test
-  fun convertsURLSpanIntoStyle() {
-    assertThat(URLSpan("$uri").toStyles(0..31)).containsExactly(Style.Link(uri, 0..31))
+  fun structurallyComparesDifferentURLSpans() {
+    assertThat(
+        URLSpan("$uri")
+          .isStructurallyEqualTo(
+            URLSpan("${URIBuilder.url().scheme("https").host("beluga.orcinus.com.br").build()}")
+          )
+      )
+      .isFalse()
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,17 +13,19 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.text.spanned
+package br.com.orcinus.orca.platform.markdown.spanned.span
 
-import android.text.Spanned
-import br.com.orcinus.orca.composite.timeline.text.annotated.span.toStyles
-import br.com.orcinus.orca.platform.markdown.spanned.Part
-import br.com.orcinus.orca.platform.markdown.spanned.parts
-import br.com.orcinus.orca.std.markdown.Markdown
+import android.graphics.Typeface
+import android.text.ParcelableSpan
+import android.text.style.StyleSpan
+import android.text.style.URLSpan
+import br.com.orcinus.orca.std.markdown.style.Style
 
-/** Converts this [Spanned] into [Markdown]. */
-fun Spanned.toMarkdown(): Markdown {
-  val text = toString()
-  val styles = parts.filterIsInstance<Part.Spanned>().flatMap(Part.Spanned::toStyles)
-  return Markdown(text, styles)
+/** Converts this [Style] into a [ParcelableSpan]. */
+internal fun Style.toParcelableSpan(): ParcelableSpan {
+  return when (this) {
+    is Style.Bold -> StyleSpan(Typeface.BOLD)
+    is Style.Italic -> StyleSpan(Typeface.ITALIC)
+    is Style.Link -> URLSpan("$uri")
+  }
 }

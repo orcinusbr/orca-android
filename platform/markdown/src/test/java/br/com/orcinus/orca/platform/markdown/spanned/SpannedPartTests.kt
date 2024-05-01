@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.text.spanned
+package br.com.orcinus.orca.platform.markdown.spanned
 
 import android.graphics.Typeface
 import android.text.style.StyleSpan

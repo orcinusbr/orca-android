@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.SpanStyle
 import assertk.assertThat
 import assertk.assertions.isTrue
-import br.com.orcinus.orca.platform.markdown.span.isStructurallyEqualTo
+import br.com.orcinus.orca.platform.markdown.spanned.span.isStructurallyEqualTo
 import kotlin.test.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner

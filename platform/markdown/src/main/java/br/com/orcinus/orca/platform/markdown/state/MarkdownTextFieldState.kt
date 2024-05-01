@@ -18,7 +18,7 @@ package br.com.orcinus.orca.platform.markdown.state
 import android.text.ParcelableSpan
 import android.widget.EditText
 import br.com.orcinus.orca.platform.markdown.MarkdownTextField
-import br.com.orcinus.orca.platform.markdown.span.toParcelableSpan
+import br.com.orcinus.orca.platform.markdown.spanned.span.toParcelableSpan
 import br.com.orcinus.orca.std.markdown.style.Style
 
 /**

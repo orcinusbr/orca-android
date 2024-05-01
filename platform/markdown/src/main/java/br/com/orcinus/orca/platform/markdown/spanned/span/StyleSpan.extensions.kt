@@ -13,26 +13,25 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.markdown.span
+package br.com.orcinus.orca.platform.markdown.spanned.span
 
 import android.graphics.Typeface
+import android.os.Build
 import android.text.style.StyleSpan
-import assertk.assertThat
-import assertk.assertions.isTrue
-import br.com.orcinus.orca.std.markdown.style.Style
-import kotlin.test.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 
-@RunWith(RobolectricTestRunner::class)
-internal class StyleExtensionsTests {
-  @Test
-  fun convertsBoldStyleIntoStyleSpanWithBoldTypeface() {
-    assertThat(
-        Style.Bold(indices = 0..1)
-          .toParcelableSpan()
-          .isStructurallyEqualTo(StyleSpan(Typeface.BOLD))
-      )
-      .isTrue()
+/**
+ * Creates a [StyleSpan], defining its font weight adjustment if the version of Android currently
+ * being used supports it.
+ *
+ * @param style One of the constants defined by [Typeface] that determines the style of the
+ *   [StyleSpan].
+ * @param fontWeightAdjustment Adjustment to be made to the supplied font weight.
+ * @see StyleSpan.getFontWeightAdjustment
+ */
+internal fun createStyleSpan(style: Int, fontWeightAdjustment: Int): StyleSpan {
+  return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    StyleSpan(style, fontWeightAdjustment)
+  } else {
+    StyleSpan(style)
   }
 }

@@ -31,7 +31,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.style.BaselineShift
 import br.com.orcinus.orca.ext.reflection.access
-import br.com.orcinus.orca.platform.markdown.span.DRAW_STYLE_SPAN_NAME
+import br.com.orcinus.orca.platform.markdown.spanned.span.DRAW_STYLE_SPAN_NAME
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 

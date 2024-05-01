@@ -26,7 +26,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
-import br.com.orcinus.orca.platform.markdown.span.toSpanStyle
+import br.com.orcinus.orca.platform.markdown.spanned.span.toSpanStyle
 import kotlin.reflect.full.primaryConstructor
 
 /**

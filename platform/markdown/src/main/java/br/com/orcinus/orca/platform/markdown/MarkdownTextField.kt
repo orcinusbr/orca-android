@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.platform.markdown
 
+import android.text.InputFilter
 import android.widget.EditText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
@@ -30,9 +31,11 @@ import androidx.compose.ui.semantics.insertTextAtCursor
 import androidx.compose.ui.semantics.requestFocus
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.setText
+import androidx.compose.ui.semantics.text
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import br.com.orcinus.orca.platform.markdown.annotated.toEditableAsState
+import br.com.orcinus.orca.platform.markdown.spanned.toAnnotatedString
 import br.com.orcinus.orca.platform.markdown.state.MarkdownTextFieldState
 import br.com.orcinus.orca.platform.markdown.state.rememberMarkdownTextFieldState
 import br.com.orcinus.orca.std.markdown.Markdown
@@ -96,6 +99,7 @@ fun MarkdownTextField(
   AndroidView(
     { editText },
     modifier.testTag(MarkdownTextFieldTag).semantics {
+      editText.text?.toAnnotatedString(context)?.run { this@semantics.text = this }
       insertTextAtCursor {
         editText.text != editText.text?.append(it.toEditableAsState(context).value)
       }
@@ -108,12 +112,20 @@ fun MarkdownTextField(
       }
     },
     onRelease = {
+      it.text?.clear()
       it.removeTextChangedListener(onTextChangeListener)
       state.reset()
     }
   ) {
     it.background = null
     it.addTextChangedListener(onTextChangeListener)
+    it.text?.filters =
+      arrayOf(
+        InputFilter { source, _, _, _, _, _ ->
+          onTextChange(text)
+          if (source != "$text") text else null
+        }
+      )
     it.setText(text)
     state.setOnStylizationListener(onStylizationListener)
     state.setInitialStyles(text.styles)

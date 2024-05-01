@@ -15,7 +15,7 @@
 
 @file:JvmName("ParcelableSpanExtensions")
 
-package br.com.orcinus.orca.platform.markdown.span
+package br.com.orcinus.orca.platform.markdown.spanned.span
 
 import android.content.Context
 import android.os.Build
@@ -194,9 +194,9 @@ internal fun ParcelableSpan.toSpanStyle(context: Context): SpanStyle {
 }
 
 /**
- * Compares both [StyleSpan]s structurally.
+ * Compares both [createStyleSpan]s structurally.
  *
- * @param other [StyleSpan] to which the receiver one will be compared.
+ * @param other [createStyleSpan] to which the receiver one will be compared.
  */
 private fun StyleSpan.isStructurallyEqualTo(other: StyleSpan): Boolean {
   return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
