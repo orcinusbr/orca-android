@@ -7,8 +7,8 @@ android-browser = { group = "androidx.browser", name = "browser", version = "1.7
 android-compose-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "android-compose" }
 android-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "android-compose" }
 android-compose-material = { group = "androidx.compose.material", name = "material", version.ref = "android-compose" }
-android-compose-material-icons = { group = "androidx.compose.material", name = "material-icons-extended", version = "1.5.4" }
-android-compose-material3 = { group = "androidx.compose.material3", name = "material3", version = "1.2.0-beta02" }
+android-compose-material-icons = { group = "androidx.compose.material", name = "material-icons-extended", version = "1.6.6" }
+android-compose-material3 = { group = "androidx.compose.material3", name = "material3", version = "1.2.1" }
 android-compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "android-compose" }
 android-compose-ui-test-junit = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "android-compose" }
 android-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "android-compose" }
@@ -89,7 +89,7 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [versions]
 android-activity = "1.7.0"
-android-compose = "1.6.0-rc01"
+android-compose = "1.6.6"
 android-compose-compiler = "1.5.11"
 android-fragment = "1.6.2"
 android-lifecycle = "2.7.0"

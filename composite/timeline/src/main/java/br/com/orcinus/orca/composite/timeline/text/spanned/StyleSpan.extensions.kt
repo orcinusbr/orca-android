@@ -39,19 +39,6 @@ internal fun StyleSpan(style: Int, fontWeightAdjustment: Int): StyleSpan {
 }
 
 /**
- * Whether this [StyleSpan] is structurally equal to the [other].
- *
- * @param other [StyleSpan] to which this one will be structurally compared.
- */
-internal fun StyleSpan.isStructurallyEqualTo(other: StyleSpan): Boolean {
-  return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-    style == other.style && fontWeightAdjustment == other.fontWeightAdjustment
-  } else {
-    style == other.style
-  }
-}
-
-/**
  * Converts this [StyleSpan] into [Style]s.
  *
  * @param indices Indices of a [Spanned] to which this [StyleSpan] has been applied.

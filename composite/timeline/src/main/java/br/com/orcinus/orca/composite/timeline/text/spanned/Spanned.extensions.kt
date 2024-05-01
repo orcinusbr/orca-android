@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.composite.timeline.text.spanned
 
+import android.text.ParcelableSpan
 import android.text.Spanned
 import androidx.core.text.getSpans
 import br.com.orcinus.orca.std.markdown.Markdown
@@ -38,12 +39,12 @@ fun Spanned.toMarkdown(): Markdown {
 }
 
 /**
- * Merges all spans that have been applied to this [Spanned] into ordered spanned [Part]s, from
- * which the spans and also their respective indices can be obtained.
+ * Merges all [ParcelableSpan]s that have been applied to this [Spanned] into ordered spanned
+ * [Part]s, from which the indices at which they are can be obtained.
  *
  * @see Part.Spanned
  * @see Part.Spanned.getIndices
  */
 private fun Spanned.mergeSpansIntoParts(): List<Part.Spanned> {
-  return getSpans<Any>().map { Part(getSpanStart(it)..getSpanEnd(it).dec()).span(it) }
+  return getSpans<ParcelableSpan>().map { Part(getSpanStart(it)..getSpanEnd(it).dec()).span(it) }
 }

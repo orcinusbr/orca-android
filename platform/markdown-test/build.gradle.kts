@@ -13,44 +13,30 @@
  * not, see https://www.gnu.org/licenses.
  */
 
+import br.com.orcinus.orca.namespaceFor
+
 plugins {
   alias(libs.plugins.android.library)
   alias(libs.plugins.kotlin.android)
 }
 
+kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
+
 android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
-  packagingOptions.resources.excludes +=
-    arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
+  namespace = namespaceFor("platform.markdown.test")
   testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
-  testImplementation(project(":composite:timeline-test"))
-  testImplementation(project(":core:sample-test"))
-  testImplementation(libs.android.compose.ui.test.manifest)
-  testImplementation(libs.android.test.core)
-  testImplementation(libs.assertk)
-  testImplementation(libs.kotlin.coroutines.test)
-  testImplementation(libs.mockk)
-  testImplementation(libs.robolectric)
-  testImplementation(libs.turbine)
-
-  api(project(":platform:autos"))
-  api(project(":platform:core"))
-  api(project(":std:markdown"))
+  api(libs.android.compose.ui.test.junit)
 
   implementation(project(":platform:markdown"))
-  implementation(libs.android.compose.material)
-  implementation(libs.android.core)
-  implementation(libs.jsoup)
-  implementation(libs.loadable.list)
-  implementation(libs.loadable.placeholder)
+  implementation(libs.android.compose.ui.test.manifest)
   implementation(libs.loadable.placeholder.test)
-  implementation(libs.time4j)
 
-  testImplementation(project(":std:uri"))
   testImplementation(libs.assertk)
   testImplementation(libs.kotlin.test)
+  testImplementation(libs.robolectric)
 }

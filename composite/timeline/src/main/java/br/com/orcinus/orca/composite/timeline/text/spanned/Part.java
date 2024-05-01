@@ -15,7 +15,9 @@
 
 package br.com.orcinus.orca.composite.timeline.text.spanned;
 
+import android.text.ParcelableSpan;
 import androidx.annotation.NonNull;
+import br.com.orcinus.orca.platform.markdown.span.ParcelableSpanExtensions;
 import br.com.orcinus.orca.std.markdown.style.Style;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,22 +25,23 @@ import java.util.Objects;
 import kotlin.ranges.IntRange;
 
 /**
- * Portion of a {@link android.text.Spanned} that either has or doesn't have a span applied to it.
+ * Portion of a {@link android.text.Spanned} that either has or doesn't have a {@link
+ * ParcelableSpan} applied to it.
  */
 class Part {
   /** Indices to which this {@link Part} refers. */
   @NonNull private final IntRange indices;
 
   /**
-   * {@link Part} to which spans have been applied.
+   * {@link Part} to which {@link ParcelableSpan}s have been applied.
    *
    * @see Spanned#getSpans()
    */
   static class Spanned extends Part {
-    /** Spans that have been applied to the specified {@link Part#indices}. */
-    @NonNull private final List<Object> spans;
+    /** {@link ParcelableSpan}s that have been applied to the specified {@link Part#indices}. */
+    @NonNull private final List<ParcelableSpan> spans;
 
-    private Spanned(@NonNull IntRange indices, @NonNull List<Object> spans) {
+    private Spanned(@NonNull IntRange indices, @NonNull List<ParcelableSpan> spans) {
       super(indices);
       this.spans = spans;
     }
@@ -61,33 +64,37 @@ class Part {
       return "Part.Spanned(indices=" + getIndices() + ", spans=" + spans + ')';
     }
 
-    /** Gets the spans that have been applied to the specified {@link Spanned#indices}. */
+    /**
+     * Gets the {@link ParcelableSpan}s that have been applied to the specified {@link
+     * Spanned#indices}.
+     */
     @NonNull
-    List<Object> getSpans() {
+    List<ParcelableSpan> getSpans() {
       return spans;
     }
 
     /** Converts this {@link Part} into a {@link Style}. */
     List<Style> toStyles() {
       ArrayList<Style> styles = new ArrayList<>();
-      for (Object span : spans) {
+      for (ParcelableSpan span : spans) {
         styles.addAll(AnyExtensions.toStyles(span, getIndices()));
       }
       return styles;
     }
 
     /**
-     * Returns whether the given spans are structurally equal to the ones that belong to this {@link
-     * Spanned}.
+     * Returns whether the given {@link ParcelableSpan}s are structurally equal to the ones that
+     * belong to this {@link Spanned}.
      *
-     * @param others Spans to which those of this {@link Spanned} will be structurally compared.
+     * @param others {@link ParcelableSpan}s to which those of this {@link Spanned} will be
+     *     structurally compared.
      */
-    private boolean areSpansStructurallyEqual(List<Object> others) {
+    private boolean areSpansStructurallyEqual(List<ParcelableSpan> others) {
       if (spans.size() != others.size()) {
         return false;
       }
       for (int index = 0; index < spans.size(); index++) {
-        if (!AnyExtensions.isStructurallyEqualTo(spans.get(index), others.get(index))) {
+        if (!ParcelableSpanExtensions.isStructurallyEqualTo(spans.get(index), others.get(index))) {
           return false;
         }
       }
@@ -122,12 +129,12 @@ class Part {
   }
 
   /**
-   * Creates a {@link Part.Spanned} with the given spans.
+   * Creates a {@link Part.Spanned} with the given {@link ParcelableSpan}s.
    *
-   * @param spans Spans that have been applied.
+   * @param spans {@link ParcelableSpan}s that have been applied.
    */
-  Spanned span(Object... spans) {
-    List<Object> spansAsList = List.of(spans);
+  Spanned span(ParcelableSpan... spans) {
+    List<ParcelableSpan> spansAsList = List.of(spans);
     return new Spanned(indices, spansAsList);
   }
 }
