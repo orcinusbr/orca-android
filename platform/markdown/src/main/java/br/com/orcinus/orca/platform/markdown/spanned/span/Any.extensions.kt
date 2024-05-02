@@ -13,11 +13,14 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-@file:JvmName("ParcelableSpanExtensions")
+@file:JvmName("AnyExtensions")
 
 package br.com.orcinus.orca.platform.markdown.spanned.span
 
 import android.content.Context
+import android.graphics.Typeface.ITALIC
+import android.graphics.fonts.FontStyle.FONT_WEIGHT_MAX
+import android.graphics.fonts.FontStyle.FONT_WEIGHT_MIN
 import android.os.Build
 import android.text.ParcelableSpan
 import android.text.style.AbsoluteSizeSpan
@@ -33,6 +36,7 @@ import android.text.style.TextAppearanceSpan
 import android.text.style.TypefaceSpan
 import android.text.style.URLSpan
 import android.text.style.UnderlineSpan
+import android.util.TypedValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
@@ -50,29 +54,32 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import kotlin.math.roundToInt
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 
-/**
- * Qualified name of `androidx.compose.ui:ui-text`'s `DrawStyleSpan` [ParcelableSpan] as of 1.6.6.
- */
+/** Qualified name of `androidx.compose.ui:ui-text`'s `DrawStyleSpan` as of 1.6.6. */
 internal const val DRAW_STYLE_SPAN_NAME = "androidx.compose.ui.text.platform.style.DrawStyleSpan"
 
 /**
- * Compares both [ParcelableSpan]s structurally.
+ * Compares both spans structurally.
  *
- * @param other [ParcelableSpan] to which the receiver one will be compared.
+ * @param context [Context] with which both font sizes will be converted to the same unit when both
+ *   the receiver and [other] are [AbsoluteSizeSpan]s.
+ * @param other Span to which the receiver one will be compared.
  */
-fun ParcelableSpan.isStructurallyEqualTo(other: ParcelableSpan): Boolean {
+fun Any.areStructurallyEqual(context: Context, other: Any): Boolean {
   return when {
-    this is StyleSpan && other is StyleSpan -> isStructurallyEqualTo(other)
+    this is AbsoluteSizeSpan && other is AbsoluteSizeSpan -> areStructurallyEqual(context, other)
+    this is StyleSpan && other is StyleSpan -> areStructurallyEqual(other)
     this is URLSpan && other is URLSpan -> url == other.url
-    else -> spanTypeId == other.spanTypeId
+    this is ParcelableSpan && other is ParcelableSpan -> spanTypeId == other.spanTypeId
+    else -> this == other
   }
 }
 
 /**
- * Converts this [ParcelableSpan] into a [SpanStyle].
+ * Converts this span into a [SpanStyle].
  *
  * @param context [Context] with which conversion from either density-dependent or -independent
  *   pixels into scalable ones is performed when the receiver is an [AbsoluteSizeSpan].
@@ -80,7 +87,25 @@ fun ParcelableSpan.isStructurallyEqualTo(other: ParcelableSpan): Boolean {
  *   but doesn't have a declared member property to which a [DrawStyle] is assigned.
  */
 @Throws(NoSuchFieldException::class)
-internal fun ParcelableSpan.toSpanStyle(context: Context): SpanStyle {
+internal fun Any.toSpanStyle(context: Context): SpanStyle {
+  val typeface =
+    when {
+      this is TextAppearanceSpan && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q -> typeface
+      this is TypefaceSpan -> typeface
+      else -> null
+    }
+  val fontWeight =
+    if (this is TextAppearanceSpan && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      textFontWeight
+    } else {
+      typeface?.weight
+    }
+  val style =
+    if (this is StyleSpan) {
+      style
+    } else {
+      typeface?.style
+    }
   return SpanStyle(
     color =
       if (this is ForegroundColorSpan) {
@@ -101,43 +126,29 @@ internal fun ParcelableSpan.toSpanStyle(context: Context): SpanStyle {
         TextUnit.Unspecified
       },
     fontWeight =
-      if (this is TypefaceSpan) {
-        typeface?.weight?.let {
-          when {
-            it <= 0 -> null
-            it <= 100 -> FontWeight.Thin
-            it <= 200 -> FontWeight.ExtraLight
-            it <= 300 -> FontWeight.Light
-            it <= 400 -> FontWeight.Normal
-            it <= 500 -> FontWeight.Medium
-            it <= 600 -> FontWeight.SemiBold
-            it <= 700 -> FontWeight.Bold
-            else -> FontWeight.Black
-          }
-        }
-      } else {
-        null
-      },
+      fontWeight
+        ?.coerceIn(
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) FONT_WEIGHT_MIN else 1,
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) FONT_WEIGHT_MAX else 1_000
+        )
+        ?.let(::FontWeight),
     fontStyle =
-      if (this is StyleSpan && style and android.graphics.Typeface.ITALIC != 0) {
+      if (style != null && style and ITALIC != 0) {
         FontStyle.Italic
       } else {
         null
       },
-    fontFamily =
-      if (this is TypefaceSpan) {
-        typeface?.let(::Typeface)?.fontFamily
-      } else {
-        null
-      },
+    fontFamily = typeface?.let(::Typeface)?.fontFamily,
     fontFeatureSettings =
-      if (this is TextAppearanceSpan) {
+      if (this is TextAppearanceSpan && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
         fontFeatureSettings
       } else {
         null
       },
     letterSpacing =
-      if (this is TextAppearanceSpan) {
+      if (
+        this is TextAppearanceSpan && Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
+      ) {
         letterSpacing.em
       } else {
         TextUnit.Unspecified
@@ -173,7 +184,7 @@ internal fun ParcelableSpan.toSpanStyle(context: Context): SpanStyle {
         else -> null
       },
     shadow =
-      if (this is TextAppearanceSpan) {
+      if (this is TextAppearanceSpan && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
         Shadow(Color(shadowColor), Offset(shadowDx, shadowDy), shadowRadius)
       } else {
         null
@@ -182,7 +193,7 @@ internal fun ParcelableSpan.toSpanStyle(context: Context): SpanStyle {
       with(this::class) {
         if (qualifiedName == DRAW_STYLE_SPAN_NAME) {
           declaredMemberProperties
-            .filterIsInstance<KProperty1<ParcelableSpan, DrawStyle>>()
+            .filterIsInstance<KProperty1<Any, DrawStyle>>()
             .singleOrNull()
             ?.get(this@toSpanStyle)
             ?: throw NoSuchFieldException("DrawStyleSpan.drawStyle")
@@ -194,11 +205,37 @@ internal fun ParcelableSpan.toSpanStyle(context: Context): SpanStyle {
 }
 
 /**
- * Compares both [createStyleSpan]s structurally.
+ * Compares both [AbsoluteSizeSpan]s structurally.
  *
- * @param other [createStyleSpan] to which the receiver one will be compared.
+ * @param context [Context] with which both font sizes will be converted to the same unit.
+ * @param other [AbsoluteSizeSpan] to which the receiver one will be compared.
+ * @see AbsoluteSizeSpan.getSize
  */
-private fun StyleSpan.isStructurallyEqualTo(other: StyleSpan): Boolean {
+private fun AbsoluteSizeSpan.areStructurallyEqual(
+  context: Context,
+  other: AbsoluteSizeSpan
+): Boolean {
+  val px: (Int) -> Int = {
+    TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        it.toFloat(),
+        context.resources?.displayMetrics
+      )
+      .roundToInt()
+  }
+  return when {
+    dip == other.dip -> size == size
+    dip && !other.dip -> px(size) == other.size
+    else -> size == px(other.size)
+  }
+}
+
+/**
+ * Compares both [StyleSpan]s structurally.
+ *
+ * @param other [StyleSpan] to which the receiver one will be compared.
+ */
+private fun StyleSpan.areStructurallyEqual(other: StyleSpan): Boolean {
   return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
     style == other.style && fontWeightAdjustment == other.fontWeightAdjustment
   } else {

@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.mastodon.feed.profile.cache
 
+import android.content.Context
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.mastodon.client.authenticateAndGet
@@ -34,13 +35,17 @@ import java.net.URI
 /**
  * [Fetcher] for [MastodonProfile]s.
  *
+ * @param context [Context] with which a fetched [MastodonAccount] will be converted into a
+ *   [Profile].
  * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
  *   [Profile]s' avatars will be loaded from a [URI].
  * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
  *   [MastodonProfilePostPaginator] for paginating through a [MastodonProfile]'s [Post]s will be
  *   provided.
+ * @see MastodonAccount.toProfile
  */
 internal class MastodonProfileFetcher(
+  private val context: Context,
   private val avatarLoaderProvider: SomeImageLoaderProvider<URI>,
   private val postPaginatorProvider: MastodonProfilePostPaginator.Provider
 ) : Fetcher<Profile>() {
@@ -49,6 +54,6 @@ internal class MastodonProfileFetcher(
       .client
       .authenticateAndGet("/api/v1/accounts/$key")
       .body<MastodonAccount>()
-      .toProfile(avatarLoaderProvider, postPaginatorProvider)
+      .toProfile(context, avatarLoaderProvider, postPaginatorProvider)
   }
 }

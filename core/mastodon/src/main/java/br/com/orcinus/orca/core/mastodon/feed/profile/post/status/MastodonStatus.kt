@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.mastodon.feed.profile.post.status
 
+import android.content.Context
 import br.com.orcinus.orca.composite.timeline.text.annotated.fromHtml
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.post.Post
@@ -74,20 +75,23 @@ internal constructor(
   /**
    * Converts this [MastodonStatus] into a [Post].
    *
+   * @param context [Context] with which the [content] will be converted into [Markdown].
    * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
    *   images will be loaded from a [URI].
    * @param commentPaginatorProvider [MastodonCommentPaginator.Provider] by which a
    *   [MastodonCommentPaginator] for paginating through the comments will be provided.
+   * @see Markdown.Companion.fromHtml
    * @see Post.comment
    */
   internal fun toPost(
+    context: Context,
     imageLoaderProvider: SomeImageLoaderProvider<URI>,
     commentPaginatorProvider: MastodonCommentPaginator.Provider
   ): Post {
     val author =
       reblog?.account?.toAuthor(imageLoaderProvider) ?: account.toAuthor(imageLoaderProvider)
     val domain = Injector.from<CoreModule>().instanceProvider().provide().domain
-    val text = Markdown.fromHtml(reblog?.content ?: content)
+    val text = Markdown.fromHtml(context, reblog?.content ?: content)
     val attachments =
       (reblog?.mediaAttachments ?: mediaAttachments).map(MastodonAttachment::toAttachment)
     val content = Content.from(domain, text, attachments) { card?.toHeadline(imageLoaderProvider) }

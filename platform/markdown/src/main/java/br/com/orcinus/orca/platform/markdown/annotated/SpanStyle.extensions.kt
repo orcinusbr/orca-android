@@ -15,11 +15,14 @@
 
 package br.com.orcinus.orca.platform.markdown.annotated
 
-import android.text.ParcelableSpan
+import android.content.Context
+import android.graphics.Typeface
+import android.text.style.AbsoluteSizeSpan
 import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.SubscriptSpan
 import android.text.style.SuperscriptSpan
+import android.text.style.TypefaceSpan
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ShaderBrush
@@ -29,28 +32,41 @@ import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontSynthesis
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.createFontFamilyResolver
+import androidx.compose.ui.text.font.resolveAsTypeface
 import androidx.compose.ui.text.style.BaselineShift
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.isSpecified
 import br.com.orcinus.orca.ext.reflection.access
 import br.com.orcinus.orca.platform.markdown.spanned.span.DRAW_STYLE_SPAN_NAME
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
 /**
- * Converts this [SpanStyle] into [ParcelableSpan]s.
+ * Converts this [SpanStyle] into spans.
  *
+ * @param context [Context] with which conversion from a font size into density-dependent pixels is
+ *   performed when the [TextUnit] is specified.
  * @throws IllegalArgumentException If the specified [Brush] isn't a [SolidColor] nor a
- *   [ShaderBrush], since there aren't equivalent [ParcelableSpan]s for [Brush]es other than those
- *   of such types.
+ *   [ShaderBrush], since there aren't equivalent spans for [Brush]es other than those of such
+ *   types.
  * @throws NoSuchMethodException If the specified [Brush] is a [ShaderBrush] or a [DrawStyle] has
  *   been defined and the primary constructor of `androidx.compose.ui:ui-text`'s `DrawStyleSpan` or
  *   `ShaderBrushSpan` isn't found, given that they're referenced and called through reflection
  *   because both are APIs are internal to the module in which they've been declared as of 1.6.6.
  * @see SpanStyle.brush
+ * @see SpanStyle.fontStyle
+ * @see Typeface.NORMAL
+ * @see Typeface.ITALIC
  * @see SpanStyle.drawStyle
  * @see KClass.primaryConstructor
  */
 @Throws(IllegalArgumentException::class, NoSuchMethodException::class)
-internal fun SpanStyle.toParcelableSpans(): List<ParcelableSpan> {
+internal fun SpanStyle.toSpans(context: Context): List<Any> {
   return buildList {
     val foregroundColor = color.takeOrElse { (brush as? SolidColor)?.value ?: Color.Unspecified }
     if (foregroundColor.isSpecified) {
@@ -59,11 +75,28 @@ internal fun SpanStyle.toParcelableSpans(): List<ParcelableSpan> {
       Class.forName("androidx.compose.ui.text.platform.style.ShaderBrushSpan")
         .kotlin
         .primaryConstructor
-        ?.access { call(brush) as ParcelableSpan }
+        ?.access { call(brush) }
         ?.run(::add)
         ?: throw NoSuchMethodException("ShaderBrushSpan.<init>(ShaderBrush)")
     } else if (brush != null) {
       throw IllegalArgumentException("No equivalent spans for non-solid-color and -shader brushes.")
+    }
+    if (fontSize.isSpecified) {
+      add(with(Density(context)) { AbsoluteSizeSpan(fontSize.roundToPx()) })
+    }
+    if (fontFamily != null || fontWeight != null || fontStyle != null || fontSynthesis != null) {
+      add(
+        TypefaceSpan(
+          createFontFamilyResolver(context)
+            .resolveAsTypeface(
+              fontFamily,
+              fontWeight ?: FontWeight.Normal,
+              fontStyle ?: FontStyle.Normal,
+              fontSynthesis ?: FontSynthesis.None
+            )
+            .value
+        )
+      )
     }
     if (background.isSpecified) {
       add(BackgroundColorSpan(background.toArgb()))
@@ -73,11 +106,7 @@ internal fun SpanStyle.toParcelableSpans(): List<ParcelableSpan> {
       BaselineShift.Subscript -> add(SubscriptSpan())
     }
     drawStyle?.let {
-      Class.forName(DRAW_STYLE_SPAN_NAME)
-        .kotlin
-        .primaryConstructor
-        ?.access { call(it) as ParcelableSpan }
-        ?.run(::add)
+      Class.forName(DRAW_STYLE_SPAN_NAME).kotlin.primaryConstructor?.access { call(it) }?.run(::add)
         ?: throw NoSuchMethodException("DrawStyleSpan.<init>(DrawStyle)")
     }
   }

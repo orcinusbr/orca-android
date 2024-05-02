@@ -15,15 +15,26 @@
 
 package br.com.orcinus.orca.composite.timeline.text.spanned
 
+import android.content.Context
 import android.text.Spanned
 import br.com.orcinus.orca.composite.timeline.text.annotated.span.toStyles
 import br.com.orcinus.orca.platform.markdown.spanned.Part
-import br.com.orcinus.orca.platform.markdown.spanned.parts
+import br.com.orcinus.orca.platform.markdown.spanned.getParts
+import br.com.orcinus.orca.platform.markdown.spanned.span.areStructurallyEqual
 import br.com.orcinus.orca.std.markdown.Markdown
+import br.com.orcinus.orca.std.markdown.style.Style
 
-/** Converts this [Spanned] into [Markdown]. */
-fun Spanned.toMarkdown(): Markdown {
+/**
+ * Converts this [Spanned] into [Markdown].
+ *
+ * @param context [Context] with which each of this [Spanned]'s [Part]s can compare its spans and
+ *   their conversions into [Style]s will be performed.
+ * @see Spanned.getParts
+ * @see areStructurallyEqual
+ * @see Part.Spanned.toStyles
+ */
+fun Spanned.toMarkdown(context: Context): Markdown {
   val text = toString()
-  val styles = parts.filterIsInstance<Part.Spanned>().flatMap(Part.Spanned::toStyles)
+  val styles = getParts(context).filterIsInstance<Part.Spanned>().flatMap(Part.Spanned::toStyles)
   return Markdown(text, styles)
 }

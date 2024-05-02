@@ -19,6 +19,7 @@ import android.graphics.Typeface
 import android.text.style.StyleSpan
 import assertk.assertThat
 import assertk.assertions.isTrue
+import br.com.orcinus.orca.platform.testing.context
 import br.com.orcinus.orca.std.markdown.style.Style
 import kotlin.test.Test
 import org.junit.runner.RunWith
@@ -29,9 +30,7 @@ internal class StyleExtensionsTests {
   @Test
   fun convertsBoldStyleIntoStyleSpanWithBoldTypeface() {
     assertThat(
-        Style.Bold(indices = 0..1)
-          .toParcelableSpan()
-          .isStructurallyEqualTo(StyleSpan(Typeface.BOLD))
+        Style.Bold(indices = 0..1).toSpan().areStructurallyEqual(context, StyleSpan(Typeface.BOLD))
       )
       .isTrue()
   }

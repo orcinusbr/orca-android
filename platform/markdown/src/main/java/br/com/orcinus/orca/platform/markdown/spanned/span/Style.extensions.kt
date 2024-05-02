@@ -16,13 +16,12 @@
 package br.com.orcinus.orca.platform.markdown.spanned.span
 
 import android.graphics.Typeface
-import android.text.ParcelableSpan
 import android.text.style.StyleSpan
 import android.text.style.URLSpan
 import br.com.orcinus.orca.std.markdown.style.Style
 
-/** Converts this [Style] into a [ParcelableSpan]. */
-internal fun Style.toParcelableSpan(): ParcelableSpan {
+/** Converts this [Style] into a span. */
+internal fun Style.toSpan(): Any {
   return when (this) {
     is Style.Bold -> StyleSpan(Typeface.BOLD)
     is Style.Italic -> StyleSpan(Typeface.ITALIC)

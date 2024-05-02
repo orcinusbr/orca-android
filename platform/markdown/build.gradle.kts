@@ -26,6 +26,11 @@ android {
 }
 
 dependencies {
+  androidTestImplementation(project(":platform:testing"))
+  androidTestImplementation(libs.android.test.runner)
+  androidTestImplementation(libs.assertk)
+  androidTestImplementation(libs.kotlin.test)
+
   api(project(":std:markdown"))
 
   implementation(project(":ext:coroutines"))
@@ -35,6 +40,7 @@ dependencies {
   implementation(libs.android.core)
 
   testImplementation(project(":platform:markdown-test"))
+  testImplementation(project(":platform:testing"))
   testImplementation(project(":std:uri"))
   testImplementation(libs.android.compose.ui.test.junit)
   testImplementation(libs.android.compose.ui.test.manifest)

@@ -27,7 +27,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class ParcelableSpanExtensionsTests {
+class AnyextensionsKtTests {
   private val uri = URIBuilder.url().scheme("https").host("orca.orcinus.com.br").build()
 
   @Test

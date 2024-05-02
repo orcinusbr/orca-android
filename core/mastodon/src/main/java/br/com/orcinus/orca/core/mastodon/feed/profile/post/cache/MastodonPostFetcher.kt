@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.mastodon.feed.profile.post.cache
 
+import android.content.Context
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.mastodon.client.authenticateAndGet
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentPaginator
@@ -32,13 +33,16 @@ import java.net.URI
 /**
  * [Fetcher] that requests [Post]s to the API.
  *
+ * @param context [Context] with which a fetched [MastodonStatus] will be converted into a [Post].
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
  *   will be loaded from a [URI].
  * @param commentPaginatorProvider [MastodonCommentPaginator] by which a [MastodonCommentPaginator]
  *   for paginating through the fetched [Post]s will be provided.
+ * @see MastodonStatus.toPost
  * @see Post.comment
  */
 internal class MastodonPostFetcher(
+  private val context: Context,
   private val imageLoaderProvider: SomeImageLoaderProvider<URI>,
   private val commentPaginatorProvider: MastodonCommentPaginator.Provider
 ) : Fetcher<Post>() {
@@ -47,6 +51,6 @@ internal class MastodonPostFetcher(
       .client
       .authenticateAndGet("/api/v1/statuses/$key")
       .body<MastodonStatus>()
-      .toPost(imageLoaderProvider, commentPaginatorProvider)
+      .toPost(context, imageLoaderProvider, commentPaginatorProvider)
   }
 }

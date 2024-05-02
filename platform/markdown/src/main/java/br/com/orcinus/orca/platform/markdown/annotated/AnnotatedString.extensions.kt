@@ -18,7 +18,6 @@ package br.com.orcinus.orca.platform.markdown.annotated
 import android.content.Context
 import android.text.Editable
 import android.text.InputFilter
-import android.text.ParcelableSpan
 import androidx.compose.runtime.State
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.ShaderBrush
@@ -32,17 +31,18 @@ import kotlin.reflect.full.primaryConstructor
 /**
  * Converts this [AnnotatedString] into a [State] that holds an [Editable].
  *
- * @param context [Context] with which conversions from [ParcelableSpan]s into [SpanStyle]s are
- *   performed.
+ * @param context [Context] with which conversions from [SpanStyle]s into spans are performed and
+ *   vice-versa.
  * @throws IllegalArgumentException If any of the [SpanStyle]s specifies a [Brush] isn't a
- *   [SolidColor] nor a [ShaderBrush], since there aren't equivalent [ParcelableSpan]s for [Brush]es
- *   other than those of such types.
+ *   [SolidColor] nor a [ShaderBrush], since there aren't equivalent spans for [Brush]es other than
+ *   those of such types.
  * @throws NoSuchMethodException If the specified [Brush] is a [ShaderBrush] or a [DrawStyle] has
  *   been defined and the primary constructor of `androidx.compose.ui:ui-text`'s `DrawStyleSpan` or
- *   `ShaderBrushSpan` isn't found when converting [SpanStyle]s into [ParcelableSpan]s, given that
- *   they're referenced and called through reflection because both are APIs are internal to the
- *   module in which they've been declared as of 1.6.6.
- * @see ParcelableSpan.toSpanStyle
+ *   `ShaderBrushSpan` isn't found when converting [SpanStyle]s into spans, given that they're
+ *   referenced and called through reflection because both are APIs are internal to the module in
+ *   which they've been declared as of 1.6.6.
+ * @see SpanStyle.toSpans
+ * @see Any.toSpanStyle
  * @see AnnotatedString.spanStyles
  * @see SpanStyle.brush
  * @see SpanStyle.drawStyle
@@ -61,14 +61,13 @@ internal fun AnnotatedString.toEditableAsState(context: Context): State<Editable
       private var filters = emptyArray<InputFilter>()
 
       /**
-       * Alias for `getSpans(0, length(), ParcelableSpan.class)`, which obtains all of the
-       * [ParcelableSpan]s that have been set to this [Editable] (which is the only type of span
-       * that it can contain).
+       * Alias for `getSpans(0, length(), Object.class)`, which obtains all of the spans that have
+       * been set to this [Editable].
        *
        * @see getSpans
        */
       private val spans
-        get() = getSpans(start = 0, end = length, ParcelableSpan::class.java)
+        get() = getSpans(start = 0, end = length, Object::class.java)
 
       override fun getChars(start: Int, end: Int, dest: CharArray?, destoff: Int) {
         dest?.let {
@@ -86,13 +85,13 @@ internal fun AnnotatedString.toEditableAsState(context: Context): State<Editable
 
         @Suppress("UNCHECKED_CAST")
         return if (coercedStart == 0 && coercedEnd == 0) {
-          emptyArray<ParcelableSpan>()
+          emptyArray<Any>()
         } else {
           spanStyles
             .subList(coercedStart, coercedEnd)
-            .flatMap { it.item.toParcelableSpans() }
+            .flatMap { it.item.toSpans(context) }
             .run { type?.let { _ -> filter { it::class.java == type } } ?: this }
-            .toTypedArray<ParcelableSpan>()
+            .toTypedArray<Any>()
         }
           as Array<T>
       }
@@ -123,12 +122,12 @@ internal fun AnnotatedString.toEditableAsState(context: Context): State<Editable
       }
 
       override fun setSpan(what: Any?, start: Int, end: Int, flags: Int) {
-        if (what is ParcelableSpan) {
+        what?.let {
           value =
             AnnotatedString.Builder()
               .apply {
                 append(text)
-                addStyle(what.toSpanStyle(context), start, end)
+                addStyle(it.toSpanStyle(context), start, end)
                 spanStyles.forEach { addStyle(it.item, it.start, it.end) }
                 paragraphStyles.forEach { addStyle(it.item, it.start, it.end) }
               }
@@ -139,13 +138,13 @@ internal fun AnnotatedString.toEditableAsState(context: Context): State<Editable
       }
 
       override fun removeSpan(what: Any?) {
-        if (what is ParcelableSpan) {
+        what?.let { span ->
           value =
             AnnotatedString.Builder()
               .apply {
                 append(text)
                 spanStyles
-                  .filterNot { what in it.item.toParcelableSpans() }
+                  .filterNot { span in it.item.toSpans(context) }
                   .forEach { addStyle(it.item, it.start, it.end) }
                 paragraphStyles.forEach { addStyle(it.item, it.start, it.end) }
               }

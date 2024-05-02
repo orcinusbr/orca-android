@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.mastodon.feed
 
+import android.content.Context
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.MastodonPost
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.MastodonPostPaginator
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.MastodonStatusesPaginator
@@ -24,6 +25,7 @@ import java.net.URI
 
 /** [MastodonPostPaginator] that paginates through [MastodonPost]s of the feed. */
 internal class MastodonFeedPaginator(
+  override val context: Context,
   override val imageLoaderProvider: SomeImageLoaderProvider<URI>,
   override val commentPaginatorProvider: MastodonCommentPaginator.Provider
 ) : MastodonStatusesPaginator() {

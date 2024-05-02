@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.comment
 
+import android.content.Context
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.MastodonContext
@@ -28,13 +29,16 @@ import java.net.URI
 /**
  * [MastodonPostPaginator] for paginating through the comments of a [Post].
  *
+ * @param context [Context] with which [MastodonContext]s will be converted into [Post]s.
  * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
  *   will be loaded from a [URI].
  * @param id ID of the original [Post].
  * @see Post.comment
+ * @see toPosts
  * @see Post.id
  */
 internal class MastodonCommentPaginator(
+  private val context: Context,
   private val imageLoaderProvider: SomeImageLoaderProvider<URI>,
   id: String
 ) : MastodonPostPaginator<MastodonContext>(), KTypeCreator<MastodonContext> by kTypeCreatorOf() {
@@ -54,6 +58,8 @@ internal class MastodonCommentPaginator(
   }
 
   override fun MastodonContext.toPosts(): List<Post> {
-    return descendants.map { it.toPost(imageLoaderProvider) { this@MastodonCommentPaginator } }
+    return descendants.map {
+      it.toPost(context, imageLoaderProvider) { this@MastodonCommentPaginator }
+    }
   }
 }

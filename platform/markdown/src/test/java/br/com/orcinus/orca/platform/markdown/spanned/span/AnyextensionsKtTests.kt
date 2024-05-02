@@ -21,36 +21,39 @@ import android.text.style.URLSpan
 import assertk.assertThat
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
+import br.com.orcinus.orca.platform.testing.context
 import br.com.orcinus.orca.std.uri.URIBuilder
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class ParcelableSpanExtensionsTests {
+internal class AnyextensionsKtTests {
   private val uri = URIBuilder.url().scheme("https").host("orca.orcinus.com.br").build()
 
   @Test
   fun structurallyComparesEqualStyleSpans() {
-    assertThat(StyleSpan(Typeface.NORMAL).isStructurallyEqualTo(StyleSpan(Typeface.NORMAL)))
+    assertThat(StyleSpan(Typeface.NORMAL).areStructurallyEqual(context, StyleSpan(Typeface.NORMAL)))
       .isTrue()
   }
 
   @Test
   fun structurallyComparesDifferentStyleSpans() {
-    assertThat(StyleSpan(Typeface.NORMAL).isStructurallyEqualTo(StyleSpan(Typeface.BOLD))).isFalse()
+    assertThat(StyleSpan(Typeface.NORMAL).areStructurallyEqual(context, StyleSpan(Typeface.BOLD)))
+      .isFalse()
   }
 
   @Test
   fun structurallyComparesEqualURLSpans() {
-    assertThat(URLSpan("$uri").isStructurallyEqualTo(URLSpan("$uri"))).isTrue()
+    assertThat(URLSpan("$uri").areStructurallyEqual(context, URLSpan("$uri"))).isTrue()
   }
 
   @Test
   fun structurallyComparesDifferentURLSpans() {
     assertThat(
         URLSpan("$uri")
-          .isStructurallyEqualTo(
+          .areStructurallyEqual(
+            context,
             URLSpan("${URIBuilder.url().scheme("https").host("beluga.orcinus.com.br").build()}")
           )
       )

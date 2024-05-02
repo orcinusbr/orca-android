@@ -21,7 +21,8 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.SpanStyle
 import assertk.assertThat
 import assertk.assertions.isTrue
-import br.com.orcinus.orca.platform.markdown.spanned.span.isStructurallyEqualTo
+import br.com.orcinus.orca.platform.markdown.spanned.span.areStructurallyEqual
+import br.com.orcinus.orca.platform.testing.context
 import kotlin.test.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -32,9 +33,12 @@ internal class SpanStyleExtensionsTests {
   fun convertsSpanStyleWithSolidColorBrushIntoForegroundColorSpan() {
     assertThat(
         SpanStyle(SolidColor(Color.Black), alpha = .8f)
-          .toParcelableSpans()
+          .toSpans(context)
           .single()
-          .isStructurallyEqualTo(ForegroundColorSpan(android.graphics.Color.argb(.8f, 0f, 0f, 0f)))
+          .areStructurallyEqual(
+            context,
+            ForegroundColorSpan(android.graphics.Color.argb(.8f, 0f, 0f, 0f))
+          )
       )
       .isTrue()
   }
@@ -42,10 +46,10 @@ internal class SpanStyleExtensionsTests {
   @Test
   fun convertsSpanStyleWithColorIntoForegroundColorSpan() {
     assertThat(
-        SpanStyle(color = Color.Black)
-          .toParcelableSpans()
+        SpanStyle(Color.Black)
+          .toSpans(context)
           .single()
-          .isStructurallyEqualTo(ForegroundColorSpan(android.graphics.Color.BLACK))
+          .areStructurallyEqual(context, ForegroundColorSpan(android.graphics.Color.BLACK))
       )
       .isTrue()
   }

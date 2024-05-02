@@ -15,9 +15,10 @@
 
 package br.com.orcinus.orca.platform.markdown.spanned;
 
+import android.content.Context;
 import android.text.ParcelableSpan;
 import androidx.annotation.NonNull;
-import br.com.orcinus.orca.platform.markdown.spanned.span.ParcelableSpanExtensions;
+import br.com.orcinus.orca.platform.markdown.spanned.span.AnyExtensions;
 import java.util.List;
 import java.util.Objects;
 import kotlin.ranges.IntRange;
@@ -31,21 +32,34 @@ public class Part {
   @NonNull private final IntRange indices;
 
   /**
-   * {@link Part} to which {@link ParcelableSpan}s have been applied.
+   * {@link Part} to which spans have been applied.
    *
    * @see Spanned#getSpans()
    */
   public static class Spanned extends Part {
-    /** {@link ParcelableSpan}s that have been applied to the specified {@link Part#indices}. */
-    @NonNull private final List<ParcelableSpan> spans;
+    /**
+     * {@link Context} with which two spans can be compared structurally.
+     *
+     * @see AnyExtensions#areStructurallyEqual(Object, Context, Object)
+     */
+    @NonNull private final Context context;
+
+    /** Spans that have been applied to the specified {@link Part#indices}. */
+    @NonNull private final List<Object> spans;
 
     /**
-     * {@link Part} to which {@link ParcelableSpan}s have been applied.
+     * {@link Part} to which spans have been applied.
      *
+     * @param context {@link Context} with which two spans can be compared structurally.
+     * @param indices Indices to which this {@link Part} refers.
+     * @param spans Spans that have been applied to the specified {@link Part#indices}.
+     * @see AnyExtensions#areStructurallyEqual(Object, Context, Object)
      * @see Spanned#getSpans()
      */
-    private Spanned(@NonNull IntRange indices, @NonNull List<ParcelableSpan> spans) {
+    private Spanned(
+        @NonNull Context context, @NonNull IntRange indices, @NonNull List<Object> spans) {
       super(indices);
+      this.context = context;
       this.spans = spans;
     }
 
@@ -67,28 +81,24 @@ public class Part {
       return "Part.Spanned(indices=" + getIndices() + ", spans=" + spans + ')';
     }
 
-    /**
-     * Gets the {@link ParcelableSpan}s that have been applied to the specified {@link
-     * Spanned#indices}.
-     */
+    /** Gets the spans that have been applied to the specified {@link Spanned#indices}. */
     @NonNull
-    public List<ParcelableSpan> getSpans() {
+    public List<Object> getSpans() {
       return spans;
     }
 
     /**
-     * Returns whether the given {@link ParcelableSpan}s are structurally equal to the ones that
-     * belong to this {@link Spanned}.
+     * Returns whether the given spans are structurally equal to the ones that belong to this {@link
+     * Spanned}.
      *
-     * @param others {@link ParcelableSpan}s to which those of this {@link Spanned} will be
-     *     structurally compared.
+     * @param others Spans to which those of this {@link Spanned} will be structurally compared.
      */
-    private boolean areSpansStructurallyEqual(List<ParcelableSpan> others) {
+    private boolean areSpansStructurallyEqual(List<Object> others) {
       if (spans.size() != others.size()) {
         return false;
       }
       for (int index = 0; index < spans.size(); index++) {
-        if (!ParcelableSpanExtensions.isStructurallyEqualTo(spans.get(index), others.get(index))) {
+        if (!AnyExtensions.areStructurallyEqual(spans.get(index), context, others.get(index))) {
           return false;
         }
       }
@@ -99,6 +109,8 @@ public class Part {
   /**
    * Portion of a {@link android.text.Spanned} that either has or doesn't have a {@link
    * ParcelableSpan} applied to it.
+   *
+   * @param indices Indices to which this {@link Part} refers.
    */
   Part(@NonNull IntRange indices) {
     this.indices = indices;
@@ -127,12 +139,13 @@ public class Part {
   }
 
   /**
-   * Creates a {@link Part.Spanned} with the given {@link ParcelableSpan}s.
+   * Creates a {@link Part.Spanned} with the given spans.
    *
-   * @param spans {@link ParcelableSpan}s that have been applied.
+   * @param context {@link Context} with which two spans can be compared structurally.
+   * @param spans Spans that have been applied.
    */
-  Spanned span(ParcelableSpan... spans) {
-    List<ParcelableSpan> spansAsList = List.of(spans);
-    return new Spanned(indices, spansAsList);
+  Spanned span(Context context, Object... spans) {
+    List<Object> spansAsList = List.of(spans);
+    return new Spanned(context, indices, spansAsList);
   }
 }

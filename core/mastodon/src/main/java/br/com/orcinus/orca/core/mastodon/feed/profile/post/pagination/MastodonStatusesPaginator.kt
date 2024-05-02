@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination
 
+import android.content.Context
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentPaginator
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus
@@ -30,6 +31,13 @@ import kotlin.reflect.typeOf
 
 /** [MastodonPostPaginator] that receives a [List] of [MastodonStatus]es from the API. */
 internal abstract class MastodonStatusesPaginator : MastodonPostPaginator<List<MastodonStatus>>() {
+  /**
+   * [Context] with which [MastodonStatus]es will be converted into [Post]s.
+   *
+   * @see toPosts
+   */
+  protected abstract val context: Context
+
   /**
    * [ImageLoader.Provider] that provides the [ImageLoader] by which images will be loaded from a
    * [URI].
@@ -55,6 +63,6 @@ internal abstract class MastodonStatusesPaginator : MastodonPostPaginator<List<M
   }
 
   final override fun List<MastodonStatus>.toPosts(): List<Post> {
-    return map { it.toPost(imageLoaderProvider, commentPaginatorProvider) }
+    return map { it.toPost(context, imageLoaderProvider, commentPaginatorProvider) }
   }
 }

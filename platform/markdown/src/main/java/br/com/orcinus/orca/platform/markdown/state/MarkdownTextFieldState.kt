@@ -15,10 +15,9 @@
 
 package br.com.orcinus.orca.platform.markdown.state
 
-import android.text.ParcelableSpan
 import android.widget.EditText
 import br.com.orcinus.orca.platform.markdown.MarkdownTextField
-import br.com.orcinus.orca.platform.markdown.spanned.span.toParcelableSpan
+import br.com.orcinus.orca.platform.markdown.spanned.span.toSpan
 import br.com.orcinus.orca.std.markdown.style.Style
 
 /**
@@ -99,14 +98,14 @@ class MarkdownTextFieldState internal constructor() {
   }
 
   /**
-   * Sets the [ParcelableSpan]s into which applied [Style]s will be converted in the [editText].
+   * Sets the spans into which applied [Style]s will be converted in the [editText].
    *
-   * @param editText [EditText] in which the [ParcelableSpan]s will be set.
+   * @param editText [EditText] in which the spans will be set.
    * @see styles
    */
   internal fun span(editText: EditText) {
     styles
-      .associate { it.indices to it.toParcelableSpan() }
+      .associate { it.indices to it.toSpan() }
       .forEach { (indices, span) ->
         editText.text.setSpan(span, indices.first, indices.last.inc(), 0)
       }
