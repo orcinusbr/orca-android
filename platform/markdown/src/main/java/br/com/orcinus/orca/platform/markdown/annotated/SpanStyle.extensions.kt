@@ -20,7 +20,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color.TRANSPARENT
 import android.graphics.Typeface
 import android.os.Build
-import android.os.LocaleList
+import android.os.LocaleList.forLanguageTags
 import android.text.style.AbsoluteSizeSpan
 import android.text.style.BackgroundColorSpan
 import android.text.style.ForegroundColorSpan
@@ -43,6 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.createFontFamilyResolver
 import androidx.compose.ui.text.font.resolveAsTypeface
 import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.intl.LocaleList
 import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.TextUnit
@@ -62,8 +63,8 @@ import kotlin.reflect.full.primaryConstructor
  *   performed when the [TextUnit] is specified.
  * @throws IllegalArgumentException If the specified [Brush] isn't a [SolidColor] nor a
  *   [ShaderBrush], since there aren't equivalent spans for [Brush]es other than those of such
- *   types; font feature settings or letter spacing has been defined but a font size hasn't; or the
- *   given [FontStyle] is neither normal nor italic.
+ *   types; font feature settings, letter spacing, a [LocaleList] or a [Shadow] has been defined but
+ *   a font size hasn't; or the given [FontStyle] is neither normal nor italic.
  * @throws NoSuchFieldException If system version is at least Upside-Down Cake (API level 34), a
  *   font-specific value ([SpanStyle.fontWeight], [SpanStyle.fontStyle], [SpanStyle.fontSynthesis],
  *   [SpanStyle.fontFamily]) is non-`null` and the property to which the specified font feature
@@ -72,12 +73,13 @@ import kotlin.reflect.full.primaryConstructor
  *   been defined and the primary constructor of `androidx.compose.ui:ui-text`'s `DrawStyleSpan` or
  *   `ShaderBrushSpan` isn't found.
  * @see SpanStyle.brush
+ * @see SpanStyle.fontFeatureSettings
+ * @see SpanStyle.letterSpacing
+ * @see SpanStyle.localeList
+ * @see SpanStyle.shadow
  * @see SpanStyle.fontStyle
  * @see FontStyle.Companion.Normal
  * @see FontStyle.Companion.Italic
- * @see SpanStyle.fontFeatureSettings
- * @see Typeface.NORMAL
- * @see Typeface.ITALIC
  * @see SpanStyle.drawStyle
  * @see KClass.primaryConstructor
  */
@@ -171,7 +173,7 @@ internal fun SpanStyle.toSpans(context: Context): List<Any> {
               fontWeight?.weight ?: typeface.weight,
               localeList
                 ?.joinToString(separator = ",", transform = Locale::toLanguageTag)
-                ?.let(LocaleList::forLanguageTags),
+                ?.let(::forLanguageTags),
               typeface,
               shadow?.blurRadius ?: Float.NaN,
               shadow?.offset?.x ?: Float.NaN,
