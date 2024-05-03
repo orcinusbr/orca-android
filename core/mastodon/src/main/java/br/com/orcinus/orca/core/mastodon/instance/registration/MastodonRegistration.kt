@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -165,8 +164,8 @@ internal fun MastodonRegistration(
       }
     }
   ) {
-    expanded { padding ->
-      AndroidView(::WebView, Modifier.padding(padding).fillMaxSize()) { webView ->
+    expanded {
+      AndroidView(::WebView, Modifier.fillMaxSize()) { webView ->
         webView.webViewClient = LoadingFinishingListenerWebViewClient { hasLoadedSuccessfully ->
           onWebpageLoad(webView, hasLoadedSuccessfully && webpageLoadingProgress == 1f)
         }

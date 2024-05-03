@@ -17,14 +17,17 @@ package br.com.orcinus.orca.platform.autos.kit.scaffold.scope
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
+import br.com.orcinus.orca.platform.autos.colors.asColor
 import br.com.orcinus.orca.platform.autos.forms.asShape
 import br.com.orcinus.orca.platform.autos.kit.bottom
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.navigation.NavigationBar
+import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.navigation.NavigationBarDefaults
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.navigation.NavigationBarScope
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 
@@ -34,11 +37,10 @@ abstract class Content internal constructor() {
   @get:Composable protected abstract val shape: Shape
 
   /** [Composable] to be shown. */
-  internal abstract val value: @Composable (padding: PaddingValues) -> Unit
+  internal abstract val value: @Composable () -> Unit
 
   /** [Content] that is displayed all by itself. */
-  internal class Expanded(override val value: @Composable (padding: PaddingValues) -> Unit) :
-    Content() {
+  internal class Expanded(override val value: @Composable () -> Unit) : Content() {
     override val shape
       @Composable get() = RectangleShape
   }
@@ -48,8 +50,7 @@ abstract class Content internal constructor() {
    *
    * @see NavigationBarScope.tab
    */
-  internal class Navigable(override val value: @Composable (padding: PaddingValues) -> Unit) :
-    Content() {
+  internal class Navigable(override val value: @Composable () -> Unit) : Content() {
     override val shape
       @Composable get() = AutosTheme.forms.medium.asShape.bottom
   }
@@ -61,6 +62,9 @@ abstract class Content internal constructor() {
    */
   @Composable
   internal fun ClippedValue(padding: PaddingValues) {
-    Box(Modifier.clip(shape)) { value(padding) }
+    Box(Modifier.padding(padding)) {
+      Surface(Modifier.matchParentSize(), color = NavigationBarDefaults.ContainerColor) {}
+      Surface(shape = shape, color = AutosTheme.colors.background.container.asColor) { value() }
+    }
   }
 }

@@ -37,7 +37,6 @@ import br.com.orcinus.orca.platform.autos.kit.action.button.PrimaryButton
 import br.com.orcinus.orca.platform.autos.kit.action.button.SecondaryButton
 import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.button.ButtonBar
-import br.com.orcinus.orca.platform.autos.kit.scaffold.plus
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 
@@ -69,16 +68,14 @@ private enum class OnboardingContentType {
  *   of using it for the user.
  * @param description Provides more details on the subject being presented, expanding on what the
  *   [title] says.
- * @param modifier [Modifier] for the underlying [LazyColumn].
- * @param contentPadding Padding to be applied to the shown content.
+ * @param modifier [Modifier] for the underlying [LazyColumn]
  */
 @Composable
 fun Onboarding(
   illustration: @Composable () -> Unit,
   title: @Composable () -> Unit,
   description: @Composable () -> Unit,
-  modifier: Modifier = Modifier,
-  contentPadding: PaddingValues = PaddingValues(0.dp)
+  modifier: Modifier = Modifier
 ) {
   val spacing = AutosTheme.spacings.large.dp
 
@@ -86,7 +83,7 @@ fun Onboarding(
     modifier.fillMaxHeight(),
     verticalArrangement = Arrangement.SpaceBetween,
     horizontalAlignment = Alignment.CenterHorizontally,
-    contentPadding = contentPadding + PaddingValues(spacing)
+    contentPadding = PaddingValues(spacing)
   ) {
     item(contentType = OnboardingContentType.Spacer) {}
     item(contentType = OnboardingContentType.Illustration) { illustration() }
@@ -139,8 +136,7 @@ private fun OnboardingPreview() {
               "And then here goes a very detailed description of it: what it is, what and who it " +
                 "is for, what it does..."
             )
-          },
-          contentPadding = it
+          }
         )
       }
     }

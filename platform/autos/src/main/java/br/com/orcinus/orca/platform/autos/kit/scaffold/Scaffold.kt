@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.platform.autos.kit.scaffold
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -44,6 +45,7 @@ import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.navigation.Navigation
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.orcaVisuals
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.SnackbarPresenter
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.rememberSnackbarPresenter
+import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.BackAction
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
 import br.com.orcinus.orca.platform.autos.kit.scaffold.scope.Content
@@ -64,7 +66,7 @@ import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
  * @param floatingActionButtonPosition [FabPosition] that determines where the
  *   [floatingActionButton] will be placed.
  * @param snackbarPresenter [SnackbarPresenter] through which [Snackbar]s can be presented.
- * @param bottom [Composable] to be placed at the utmost bottom, such as a [NavigationBar] and/or a
+ * @param bottom [Composable] to be placed at the utmost bottom, such as a [NavigationBar] or a
  *   [ButtonBar].
  * @param content Main content of the current context.
  * @see ScaffoldScope.expanded
@@ -127,15 +129,26 @@ private fun ScaffoldPreview() {
         }
       },
       snackbarPresenter = snackbarPresenter,
-      bottom = { ButtonBar(lazyListState) }
+      bottom = {
+        Column {
+          NavigationBar(
+            title = { AutoSizeText("Scaffold") },
+            action = { BackAction(onClick = {}) }
+          ) {
+            tab(onClick = {}) {
+              Icon(AutosTheme.iconography.home.filled.asImageVector, contentDescription = "Home")
+            }
+          }
+        }
+      }
     ) {
-      expanded {
+      navigable {
         LazyColumn(
           Modifier.fillMaxSize(),
           state = lazyListState,
           verticalArrangement = Arrangement.Center,
           horizontalAlignment = Alignment.CenterHorizontally,
-          contentPadding = it + AutosTheme.overlays.fab.asPaddingValues
+          contentPadding = AutosTheme.overlays.fab.asPaddingValues
         ) {
           item { Text("Content", style = AutosTheme.typography.bodyMedium) }
         }

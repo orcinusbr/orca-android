@@ -134,8 +134,8 @@ private fun Composer(
     },
     floatingActionButtonPosition = floatingActionButtonPosition
   ) {
-    navigable { padding ->
-      Box(Modifier.padding(padding).fillMaxSize()) {
+    navigable {
+      Box(Modifier.fillMaxSize()) {
         LazyColumn(
           contentPadding =
             PaddingValues(bottom = TextFieldDefaults.compositionSpacing) +
