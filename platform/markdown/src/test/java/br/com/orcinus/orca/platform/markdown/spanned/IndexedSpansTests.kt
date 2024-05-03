@@ -15,6 +15,8 @@
 
 package br.com.orcinus.orca.platform.markdown.spanned
 
+import android.graphics.Typeface
+import android.text.style.StyleSpan
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEqualTo
@@ -26,12 +28,30 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 internal class IndexedSpansTests {
   @Test
-  fun comparesEqualParts() {
+  fun comparesEqualEmptyIndexedSpans() {
     assertThat(IndexedSpans(context, 0..8, emptyList())).isEqualTo(IndexedSpans(context, 0..8))
   }
 
   @Test
-  fun comparesDifferentParts() {
+  fun comparesDifferentIndexedSpans() {
     assertThat(IndexedSpans(context, 0..8)).isNotEqualTo(IndexedSpans(context, 1..9))
+  }
+
+  @Test
+  fun comparesEqualPopulatedIndexedSpans() {
+    assertThat(IndexedSpans(context, 0..8, StyleSpan(Typeface.NORMAL)))
+      .isEqualTo(IndexedSpans(context, 0..8, StyleSpan(Typeface.NORMAL)))
+  }
+
+  @Test
+  fun comparesPopulatedIndexedSpansDifferingInIndices() {
+    assertThat(IndexedSpans(context, 0..8, StyleSpan(Typeface.NORMAL)))
+      .isNotEqualTo(IndexedSpans(context, 1..9, StyleSpan(Typeface.NORMAL)))
+  }
+
+  @Test
+  fun comparesPopulatedIndexedSpansDifferingInSpans() {
+    assertThat(IndexedSpans(context, 0..8, StyleSpan(Typeface.NORMAL)))
+      .isNotEqualTo(IndexedSpans(context, 0..8, StyleSpan(Typeface.BOLD)))
   }
 }
