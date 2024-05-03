@@ -18,8 +18,10 @@ package br.com.orcinus.orca.platform.autos.kit.scaffold.bar.navigation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.ProvideTextStyle
@@ -29,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -125,16 +128,53 @@ internal fun NavigationBar(
 
       Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
         action()
-        scope.tabs.forEach { it() }
+
+        scope.tabs
+          .onEach { it() }
+          .also {
+            if (it.size == 1) {
+              Spacer(Modifier.size(LocalViewConfiguration.current.minimumTouchTargetSize))
+            }
+          }
       }
     }
   }
 }
 
-/** Preview of a [NavigationBar]. */
+/** Preview of a [NavigationBar] with one tab. */
 @Composable
 @MultiThemePreview
-private fun NavigationBarPreview() {
+private fun OneTabNavigationBarPreview() {
+  AutosTheme {
+    NavigationBar(title = { AutoSizeText("Home") }, action = { BackAction(onClick = {}) }) {
+      tab(onClick = {}) {
+        Icon(AutosTheme.iconography.home.filled.asImageVector, contentDescription = "Home")
+      }
+    }
+  }
+}
+
+/** Preview of a [NavigationBar] with two tabs. */
+@Composable
+@MultiThemePreview
+private fun TwoTabNavigationBarPreview() {
+  AutosTheme {
+    NavigationBar(title = { AutoSizeText("Home") }, action = { BackAction(onClick = {}) }) {
+      tab(onClick = {}) {
+        Icon(AutosTheme.iconography.home.filled.asImageVector, contentDescription = "Home")
+      }
+
+      tab(onClick = {}) {
+        Icon(AutosTheme.iconography.profile.outlined.asImageVector, contentDescription = "Profile")
+      }
+    }
+  }
+}
+
+/** Preview of a [NavigationBar] with three tabs. */
+@Composable
+@MultiThemePreview
+private fun ThreeTabNavigationBarPreview() {
   AutosTheme {
     NavigationBar(title = { AutoSizeText("Home") }, action = { BackAction(onClick = {}) }) {
       tab(onClick = {}) {
