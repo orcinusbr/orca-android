@@ -18,8 +18,8 @@ package br.com.orcinus.orca.composite.timeline.text.spanned
 import android.content.Context
 import android.text.Spanned
 import br.com.orcinus.orca.composite.timeline.text.annotated.span.toStyles
-import br.com.orcinus.orca.platform.markdown.spanned.Part
-import br.com.orcinus.orca.platform.markdown.spanned.getParts
+import br.com.orcinus.orca.platform.markdown.spanned.IndexedSpans
+import br.com.orcinus.orca.platform.markdown.spanned.getIndexedSpans
 import br.com.orcinus.orca.platform.markdown.spanned.span.isStructurallyEqual
 import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.style.Style
@@ -27,14 +27,14 @@ import br.com.orcinus.orca.std.markdown.style.Style
 /**
  * Converts this [Spanned] into [Markdown].
  *
- * @param context [Context] with which each of this [Spanned]'s [Part]s can compare its spans and
- *   their conversions into [Style]s will be performed.
- * @see Spanned.getParts
+ * @param context [Context] with which each of this [Spanned]'s [IndexedSpans] can compare its spans
+ *   and their conversions into [Style]s will be performed.
+ * @see Spanned.getIndexedSpans
  * @see isStructurallyEqual
- * @see Part.Spanned.toStyles
+ * @see IndexedSpans.toStyles
  */
 fun Spanned.toMarkdown(context: Context): Markdown {
   val text = toString()
-  val styles = getParts(context).filterIsInstance<Part.Spanned>().flatMap(Part.Spanned::toStyles)
+  val styles = getIndexedSpans(context).flatMap(IndexedSpans::toStyles)
   return Markdown(text, styles)
 }

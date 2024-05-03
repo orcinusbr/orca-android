@@ -26,29 +26,27 @@ import br.com.orcinus.orca.platform.markdown.spanned.span.isStructurallyEqual
 import br.com.orcinus.orca.platform.markdown.spanned.span.toSpanStyle
 
 /**
- * Obtains all of the [Part]s by which this [Spanned] is composed.
+ * Obtains all of the spans by which this [Spanned] is composed, alongside the indices that they are
+ * in.
  *
- * @param context [Context] with which each spanned [Part] can compare its spans structurally.
+ * **NOTE**: Even though [IndexedSpans] themselves can contain no spans at all, portions to which
+ * none have been applied are omitted.
+ *
+ * @param context [Context] with which [IndexedSpans] can compare its spans structurally.
  * @see isStructurallyEqual
  */
-fun Spanned.getParts(context: Context): List<Part> {
-  return mergeSpansIntoParts(context).fold(emptyList()) { accumulator, part ->
-    if (accumulator.isNotEmpty() && part.indices.first > accumulator.last().indices.last.inc()) {
-      accumulator + Part(accumulator.last().indices.last.inc()..part.indices.first.dec()) + part
-    } else {
-      accumulator + part
-    }
-  }
+fun Spanned.getIndexedSpans(context: Context): List<IndexedSpans> {
+  return getSpans<Any>().map { IndexedSpans(context, getSpanStart(it)..getSpanEnd(it).dec(), it) }
 }
 
 /**
  * Converts this [Spanned] into an [AnnotatedString].
  *
- * @param context [Context] with which each of this [Spanned]'s [Part]s can compare its spans
+ * @param context [Context] with which each of this [Spanned]'s [IndexedSpans] can compare its spans
  *   structurally and conversions from spans into [SpanStyle]s will be performed.
  * @throws NoSuchFieldException If the one of the spans is an `androidx.compose.ui:ui-text`
  *   `DrawStyleSpan` but doesn't have a declared member property to which a [DrawStyle] is assigned.
- * @see Spanned.getParts
+ * @see Spanned.getIndexedSpans
  * @see Spanned.getSpans
  * @see isStructurallyEqual
  */
@@ -56,23 +54,12 @@ fun Spanned.getParts(context: Context): List<Part> {
 internal fun Spanned.toAnnotatedString(context: Context): AnnotatedString {
   return buildAnnotatedString {
     append("${this@toAnnotatedString}")
-    getParts(context).filterIsInstance<Part.Spanned>().forEach { part ->
-      part.spans
+    getIndexedSpans(context).forEach { indexedSpans ->
+      indexedSpans.spans
         .map { span -> span.toSpanStyle(context) }
-        .forEach { spanStyle -> addStyle(spanStyle, part.indices.first, part.indices.last.inc()) }
+        .forEach { spanStyle ->
+          addStyle(spanStyle, indexedSpans.indices.first, indexedSpans.indices.last.inc())
+        }
     }
   }
-}
-
-/**
- * Merges all spans that have been applied to this [Spanned] into ordered spanned [Part]s, from
- * which the indices at which they are can be obtained.
- *
- * @param context [Context] with which each spanned [Part] can compare its spans structurally.
- * @see Part.Spanned
- * @see Part.Spanned.getIndices
- * @see isStructurallyEqual
- */
-private fun Spanned.mergeSpansIntoParts(context: Context): List<Part.Spanned> {
-  return getSpans<Any>().map { Part(getSpanStart(it)..getSpanEnd(it).dec()).span(context, it) }
 }

@@ -15,10 +15,10 @@
 
 package br.com.orcinus.orca.composite.timeline.text.annotated.span
 
-import br.com.orcinus.orca.platform.markdown.spanned.Part
+import br.com.orcinus.orca.platform.markdown.spanned.IndexedSpans
 import br.com.orcinus.orca.std.markdown.style.Style
 
-/** Converts this spanned [Part] into [Style]s. */
-internal fun Part.Spanned.toStyles(): List<Style> {
+/** Converts these [IndexedSpans] into [Style]s. */
+internal fun IndexedSpans.toStyles(): List<Style> {
   return spans.flatMap { it.toStyles(indices) }
 }

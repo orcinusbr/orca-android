@@ -18,16 +18,20 @@ package br.com.orcinus.orca.platform.markdown.spanned
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEqualTo
+import br.com.orcinus.orca.platform.testing.context
 import kotlin.test.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-internal class PartTests {
+@RunWith(RobolectricTestRunner::class)
+internal class IndexedSpansTests {
   @Test
   fun comparesEqualParts() {
-    assertThat(Part(0..8)).isEqualTo(Part(0..8))
+    assertThat(IndexedSpans(context, 0..8, emptyList())).isEqualTo(IndexedSpans(context, 0..8))
   }
 
   @Test
   fun comparesDifferentParts() {
-    assertThat(Part(0..8)).isNotEqualTo(Part(1..9))
+    assertThat(IndexedSpans(context, 0..8)).isNotEqualTo(IndexedSpans(context, 1..9))
   }
 }

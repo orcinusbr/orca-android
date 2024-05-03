@@ -32,13 +32,12 @@ internal class SpannedExtensionsTests {
   fun partitions() {
     assertThat(
         Html.fromHtml("<p><b><i>Hello</i></b>, <i>world</i>!</p>", Html.FROM_HTML_MODE_COMPACT)
-          .getParts(context)
+          .getIndexedSpans(context)
       )
       .containsExactly(
-        Part(0..4).span(context, StyleSpan(Typeface.ITALIC)),
-        Part(0..4).span(context, createStyleSpan(Typeface.BOLD, fontWeightAdjustment = 0)),
-        Part(5..6),
-        Part(7..11).span(context, StyleSpan(Typeface.ITALIC))
+        IndexedSpans(context, 0..4, StyleSpan(Typeface.ITALIC)),
+        IndexedSpans(context, 0..4, createStyleSpan(Typeface.BOLD, fontWeightAdjustment = 0)),
+        IndexedSpans(context, 7..11, StyleSpan(Typeface.ITALIC))
       )
   }
 }

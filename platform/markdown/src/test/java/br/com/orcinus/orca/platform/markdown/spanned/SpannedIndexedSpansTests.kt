@@ -28,31 +28,31 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class SpannedPartTests {
+internal class SpannedIndexedSpansTests {
   @Test
   fun comparesEqualSpannedParts() {
-    assertThat(Part(0..8).span(context, StyleSpan(Typeface.NORMAL)))
-      .isEqualTo(Part(0..8).span(context, StyleSpan(Typeface.NORMAL)))
+    assertThat(IndexedSpans(context, 0..8, StyleSpan(Typeface.NORMAL)))
+      .isEqualTo(IndexedSpans(context, 0..8, StyleSpan(Typeface.NORMAL)))
   }
 
   @Test
   fun comparesSpannedPartsDifferingInIndices() {
-    assertThat(Part(0..8).span(context, StyleSpan(Typeface.NORMAL)))
-      .isNotEqualTo(Part(1..9).span(context, StyleSpan(Typeface.NORMAL)))
+    assertThat(IndexedSpans(context, 0..8, StyleSpan(Typeface.NORMAL)))
+      .isNotEqualTo(IndexedSpans(context, 1..9, StyleSpan(Typeface.NORMAL)))
   }
 
   @Test
   fun comparesSpannedPartsDifferingInSpans() {
-    assertThat(Part(0..8).span(context, StyleSpan(Typeface.NORMAL)))
-      .isNotEqualTo(Part(0..8).span(context, StyleSpan(Typeface.BOLD)))
+    assertThat(IndexedSpans(context, 0..8, StyleSpan(Typeface.NORMAL)))
+      .isNotEqualTo(IndexedSpans(context, 0..8, StyleSpan(Typeface.BOLD)))
   }
 
   @Test
   fun spans() {
     val span = StyleSpan(Typeface.NORMAL)
-    assertThat(Part(0..8).span(context, span)).all {
-      prop(Part.Spanned::getIndices).isEqualTo(0..8)
-      prop(Part.Spanned::getSpans).isEqualTo(listOf(span))
+    assertThat(IndexedSpans(context, 0..8, span)).all {
+      prop(IndexedSpans::getIndices).isEqualTo(0..8)
+      prop(IndexedSpans::getSpans).isEqualTo(listOf(span))
     }
   }
 }
