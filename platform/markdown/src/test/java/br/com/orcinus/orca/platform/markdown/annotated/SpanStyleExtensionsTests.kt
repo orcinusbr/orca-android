@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.SpanStyle
 import assertk.assertThat
 import assertk.assertions.isTrue
-import br.com.orcinus.orca.platform.markdown.spanned.span.areStructurallyEqual
+import br.com.orcinus.orca.platform.markdown.spanned.span.isStructurallyEqual
 import br.com.orcinus.orca.platform.testing.context
 import kotlin.test.Test
 import org.junit.runner.RunWith
@@ -35,7 +35,7 @@ internal class SpanStyleExtensionsTests {
         SpanStyle(SolidColor(Color.Black), alpha = .8f)
           .toSpans(context)
           .single()
-          .areStructurallyEqual(
+          .isStructurallyEqual(
             context,
             ForegroundColorSpan(android.graphics.Color.argb(.8f, 0f, 0f, 0f))
           )
@@ -49,7 +49,7 @@ internal class SpanStyleExtensionsTests {
         SpanStyle(Color.Black)
           .toSpans(context)
           .single()
-          .areStructurallyEqual(context, ForegroundColorSpan(android.graphics.Color.BLACK))
+          .isStructurallyEqual(context, ForegroundColorSpan(android.graphics.Color.BLACK))
       )
       .isTrue()
   }

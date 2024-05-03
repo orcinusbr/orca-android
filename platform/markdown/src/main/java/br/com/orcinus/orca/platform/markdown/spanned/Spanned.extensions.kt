@@ -22,14 +22,14 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.core.text.getSpans
-import br.com.orcinus.orca.platform.markdown.spanned.span.areStructurallyEqual
+import br.com.orcinus.orca.platform.markdown.spanned.span.isStructurallyEqual
 import br.com.orcinus.orca.platform.markdown.spanned.span.toSpanStyle
 
 /**
  * Obtains all of the [Part]s by which this [Spanned] is composed.
  *
  * @param context [Context] with which each spanned [Part] can compare its spans structurally.
- * @see areStructurallyEqual
+ * @see isStructurallyEqual
  */
 fun Spanned.getParts(context: Context): List<Part> {
   return mergeSpansIntoParts(context).fold(emptyList()) { accumulator, part ->
@@ -50,7 +50,7 @@ fun Spanned.getParts(context: Context): List<Part> {
  *   `DrawStyleSpan` but doesn't have a declared member property to which a [DrawStyle] is assigned.
  * @see Spanned.getParts
  * @see Spanned.getSpans
- * @see areStructurallyEqual
+ * @see isStructurallyEqual
  */
 @Throws(NoSuchFieldException::class)
 internal fun Spanned.toAnnotatedString(context: Context): AnnotatedString {
@@ -71,7 +71,7 @@ internal fun Spanned.toAnnotatedString(context: Context): AnnotatedString {
  * @param context [Context] with which each spanned [Part] can compare its spans structurally.
  * @see Part.Spanned
  * @see Part.Spanned.getIndices
- * @see areStructurallyEqual
+ * @see isStructurallyEqual
  */
 private fun Spanned.mergeSpansIntoParts(context: Context): List<Part.Spanned> {
   return getSpans<Any>().map { Part(getSpanStart(it)..getSpanEnd(it).dec()).span(context, it) }

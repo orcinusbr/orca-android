@@ -40,7 +40,7 @@ public class Part {
     /**
      * {@link Context} with which two spans can be compared structurally.
      *
-     * @see AnyExtensions#areStructurallyEqual(Object, Context, Object)
+     * @see AnyExtensions#isStructurallyEqual(Object, Context, Object)
      */
     @NonNull private final Context context;
 
@@ -53,7 +53,7 @@ public class Part {
      * @param context {@link Context} with which two spans can be compared structurally.
      * @param indices Indices to which this {@link Part} refers.
      * @param spans Spans that have been applied to the specified {@link Part#indices}.
-     * @see AnyExtensions#areStructurallyEqual(Object, Context, Object)
+     * @see AnyExtensions#isStructurallyEqual(Object, Context, Object)
      * @see Spanned#getSpans()
      */
     private Spanned(
@@ -98,7 +98,7 @@ public class Part {
         return false;
       }
       for (int index = 0; index < spans.size(); index++) {
-        if (!AnyExtensions.areStructurallyEqual(spans.get(index), context, others.get(index))) {
+        if (!AnyExtensions.isStructurallyEqual(spans.get(index), context, others.get(index))) {
           return false;
         }
       }

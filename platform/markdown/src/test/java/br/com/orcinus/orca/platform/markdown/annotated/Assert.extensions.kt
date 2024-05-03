@@ -19,13 +19,13 @@ import assertk.Assert
 import assertk.assertions.support.expected
 import assertk.assertions.support.expectedListDiff
 import assertk.assertions.support.show
-import br.com.orcinus.orca.platform.markdown.spanned.span.areStructurallyEqual
+import br.com.orcinus.orca.platform.markdown.spanned.span.isStructurallyEqual
 import br.com.orcinus.orca.platform.testing.context
 
 /**
- * Asserts that each of the spans on which assertion is taking place are structurally equal to the
+ * Asserts that each of the spans on which assertion is taking place is structurally equal to the
  * ones that have been specified (in the order in which they were given, and according to
- * [Any.areStructurallyEqual]).
+ * [Any.isStructurallyEqual]).
  *
  * @param expected Spans to be structurally compared to the ones being asserted against.
  */
@@ -37,7 +37,7 @@ internal fun <T : Any> Assert<Array<out T>>.areStructurallyEqual(
       expectedListDiff(expected.toList(), actual.toList())
     } else {
       actual.forEachIndexed { index, span ->
-        if (!span.areStructurallyEqual(context, expected[index])) {
+        if (!span.isStructurallyEqual(context, expected[index])) {
           expected(
             "${show(span)} to be structurally equal to ${show(expected[index])} but it is not."
           )

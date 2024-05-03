@@ -33,26 +33,26 @@ internal class AnyextensionsKtTests {
 
   @Test
   fun structurallyComparesEqualStyleSpans() {
-    assertThat(StyleSpan(Typeface.NORMAL).areStructurallyEqual(context, StyleSpan(Typeface.NORMAL)))
+    assertThat(StyleSpan(Typeface.NORMAL).isStructurallyEqual(context, StyleSpan(Typeface.NORMAL)))
       .isTrue()
   }
 
   @Test
   fun structurallyComparesDifferentStyleSpans() {
-    assertThat(StyleSpan(Typeface.NORMAL).areStructurallyEqual(context, StyleSpan(Typeface.BOLD)))
+    assertThat(StyleSpan(Typeface.NORMAL).isStructurallyEqual(context, StyleSpan(Typeface.BOLD)))
       .isFalse()
   }
 
   @Test
   fun structurallyComparesEqualURLSpans() {
-    assertThat(URLSpan("$uri").areStructurallyEqual(context, URLSpan("$uri"))).isTrue()
+    assertThat(URLSpan("$uri").isStructurallyEqual(context, URLSpan("$uri"))).isTrue()
   }
 
   @Test
   fun structurallyComparesDifferentURLSpans() {
     assertThat(
         URLSpan("$uri")
-          .areStructurallyEqual(
+          .isStructurallyEqual(
             context,
             URLSpan("${URIBuilder.url().scheme("https").host("beluga.orcinus.com.br").build()}")
           )

@@ -30,7 +30,7 @@ internal class StyleExtensionsTests {
   @Test
   fun convertsBoldStyleIntoStyleSpanWithBoldTypeface() {
     assertThat(
-        Style.Bold(indices = 0..1).toSpan().areStructurallyEqual(context, StyleSpan(Typeface.BOLD))
+        Style.Bold(indices = 0..1).toSpan().isStructurallyEqual(context, StyleSpan(Typeface.BOLD))
       )
       .isTrue()
   }

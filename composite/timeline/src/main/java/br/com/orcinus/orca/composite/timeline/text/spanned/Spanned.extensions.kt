@@ -20,7 +20,7 @@ import android.text.Spanned
 import br.com.orcinus.orca.composite.timeline.text.annotated.span.toStyles
 import br.com.orcinus.orca.platform.markdown.spanned.Part
 import br.com.orcinus.orca.platform.markdown.spanned.getParts
-import br.com.orcinus.orca.platform.markdown.spanned.span.areStructurallyEqual
+import br.com.orcinus.orca.platform.markdown.spanned.span.isStructurallyEqual
 import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.style.Style
 
@@ -30,7 +30,7 @@ import br.com.orcinus.orca.std.markdown.style.Style
  * @param context [Context] with which each of this [Spanned]'s [Part]s can compare its spans and
  *   their conversions into [Style]s will be performed.
  * @see Spanned.getParts
- * @see areStructurallyEqual
+ * @see isStructurallyEqual
  * @see Part.Spanned.toStyles
  */
 fun Spanned.toMarkdown(context: Context): Markdown {

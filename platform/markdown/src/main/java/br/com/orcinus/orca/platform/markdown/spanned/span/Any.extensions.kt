@@ -91,11 +91,11 @@ internal const val DRAW_STYLE_SPAN_NAME = "androidx.compose.ui.text.platform.sty
  *   the receiver and [other] are [AbsoluteSizeSpan]s.
  * @param other Span to which the receiver one will be compared.
  */
-fun Any.areStructurallyEqual(context: Context, other: Any): Boolean {
+fun Any.isStructurallyEqual(context: Context, other: Any): Boolean {
   return when {
-    this is AbsoluteSizeSpan && other is AbsoluteSizeSpan -> areStructurallyEqual(context, other)
-    this is StyleSpan && other is StyleSpan -> areStructurallyEqual(other)
-    this is TextAppearanceSpan && other is TextAppearanceSpan -> areStructurallyEqual(other)
+    this is AbsoluteSizeSpan && other is AbsoluteSizeSpan -> isStructurallyEqual(context, other)
+    this is StyleSpan && other is StyleSpan -> isStructurallyEqual(other)
+    this is TextAppearanceSpan && other is TextAppearanceSpan -> isStructurallyEqual(other)
     this is URLSpan && other is URLSpan -> url == other.url
     this is ParcelableSpan && other is ParcelableSpan -> spanTypeId == other.spanTypeId
     else -> this == other
@@ -235,7 +235,7 @@ internal fun Any.toSpanStyle(context: Context): SpanStyle {
  * @param other [AbsoluteSizeSpan] to which the receiver one will be compared.
  * @see AbsoluteSizeSpan.getSize
  */
-private fun AbsoluteSizeSpan.areStructurallyEqual(
+private fun AbsoluteSizeSpan.isStructurallyEqual(
   context: Context,
   other: AbsoluteSizeSpan
 ): Boolean {
@@ -259,7 +259,7 @@ private fun AbsoluteSizeSpan.areStructurallyEqual(
  *
  * @param other [StyleSpan] to which the receiver one will be compared.
  */
-private fun StyleSpan.areStructurallyEqual(other: StyleSpan): Boolean {
+private fun StyleSpan.isStructurallyEqual(other: StyleSpan): Boolean {
   return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
     style == other.style && fontWeightAdjustment == other.fontWeightAdjustment
   } else {
@@ -272,10 +272,10 @@ private fun StyleSpan.areStructurallyEqual(other: StyleSpan): Boolean {
  *
  * @param other [TextAppearanceSpan] to which the receiver one will be compared.
  */
-private fun TextAppearanceSpan.areStructurallyEqual(other: TextAppearanceSpan): Boolean {
+private fun TextAppearanceSpan.isStructurallyEqual(other: TextAppearanceSpan): Boolean {
   return family == other.family &&
-    textColor.areStructurallyEqual(other.textColor) &&
-    linkTextColor.areStructurallyEqual(other.linkTextColor) &&
+    textColor.isStructurallyEqual(other.textColor) &&
+    linkTextColor.isStructurallyEqual(other.linkTextColor) &&
     textSize == other.textSize &&
     textStyle == other.textStyle &&
     (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q ||
@@ -299,7 +299,7 @@ private fun TextAppearanceSpan.areStructurallyEqual(other: TextAppearanceSpan): 
  *
  * @param other [ColorStateList] to which the receiver one will be compared.
  */
-private fun ColorStateList.areStructurallyEqual(other: ColorStateList): Boolean {
+private fun ColorStateList.isStructurallyEqual(other: ColorStateList): Boolean {
   return if (isStateful) {
     for (state in colorStateListStates) {
       if (
