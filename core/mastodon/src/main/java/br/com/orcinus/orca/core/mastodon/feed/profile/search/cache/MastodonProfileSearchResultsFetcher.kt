@@ -15,6 +15,8 @@
 
 package br.com.orcinus.orca.core.mastodon.feed.profile.search.cache
 
+import android.content.Context
+import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.core.feed.profile.search.toProfileSearchResult
@@ -36,13 +38,16 @@ import java.net.URI
 /**
  * [Fetcher] that requests [ProfileSearchResult]s to the API.
  *
+ * @param context [Context] with which fetched [MastodonAccount]s will be converted into [Profile]s.
  * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
  *   [ProfileSearchResult]s' avatars will be loaded from a [URI].
  * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
  *   [MastodonProfilePostPaginator] for paginating through a [MastodonProfile]'s [Post]s will be
  *   provided.
+ * @see MastodonAccount.toProfile
  */
 internal class MastodonProfileSearchResultsFetcher(
+  private val context: Context,
   private val avatarLoaderProvider: SomeImageLoaderProvider<URI>,
   private val postPaginatorProvider: MastodonProfilePostPaginator.Provider
 ) : Fetcher<List<ProfileSearchResult>>() {
@@ -51,6 +56,8 @@ internal class MastodonProfileSearchResultsFetcher(
       .client
       .authenticateAndGet("/api/v1/accounts/search") { parameter("q", key) }
       .body<List<MastodonAccount>>()
-      .map { it.toProfile(avatarLoaderProvider, postPaginatorProvider).toProfileSearchResult() }
+      .map {
+        it.toProfile(context, avatarLoaderProvider, postPaginatorProvider).toProfileSearchResult()
+      }
   }
 }

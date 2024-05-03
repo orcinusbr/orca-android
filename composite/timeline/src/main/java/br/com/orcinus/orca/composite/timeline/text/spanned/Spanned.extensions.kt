@@ -15,35 +15,26 @@
 
 package br.com.orcinus.orca.composite.timeline.text.spanned
 
+import android.content.Context
 import android.text.Spanned
-import androidx.core.text.getSpans
+import br.com.orcinus.orca.composite.timeline.text.annotated.span.toStyles
+import br.com.orcinus.orca.platform.markdown.spanned.IndexedSpans
+import br.com.orcinus.orca.platform.markdown.spanned.getIndexedSpans
+import br.com.orcinus.orca.platform.markdown.spanned.span.isStructurallyEqual
 import br.com.orcinus.orca.std.markdown.Markdown
-
-/** [Part]s by which this [Spanned] is composed. */
-internal val Spanned.parts
-  get() =
-    mergeSpansIntoParts().fold(emptyList<Part>()) { accumulator, part ->
-      if (accumulator.isNotEmpty() && part.indices.first > accumulator.last().indices.last.inc()) {
-        accumulator + Part(accumulator.last().indices.last.inc()..part.indices.first.dec()) + part
-      } else {
-        accumulator + part
-      }
-    }
-
-/** Converts this [Spanned] into [Markdown]. */
-fun Spanned.toMarkdown(): Markdown {
-  val text = toString()
-  val styles = parts.filterIsInstance<Part.Spanned>().flatMap(Part.Spanned::toStyles)
-  return Markdown(text, styles)
-}
+import br.com.orcinus.orca.std.markdown.style.Style
 
 /**
- * Merges all spans that have been applied to this [Spanned] into ordered spanned [Part]s, from
- * which the spans and also their respective indices can be obtained.
+ * Converts this [Spanned] into [Markdown].
  *
- * @see Part.Spanned
- * @see Part.Spanned.getIndices
+ * @param context [Context] with which each of this [Spanned]'s [IndexedSpans] can compare its spans
+ *   and their conversions into [Style]s will be performed.
+ * @see Spanned.getIndexedSpans
+ * @see isStructurallyEqual
+ * @see IndexedSpans.toStyles
  */
-private fun Spanned.mergeSpansIntoParts(): List<Part.Spanned> {
-  return getSpans<Any>().map { Part(getSpanStart(it)..getSpanEnd(it).dec()).span(it) }
+fun Spanned.toMarkdown(context: Context): Markdown {
+  val text = toString()
+  val styles = getIndexedSpans(context).flatMap(IndexedSpans::toStyles)
+  return Markdown(text, styles)
 }

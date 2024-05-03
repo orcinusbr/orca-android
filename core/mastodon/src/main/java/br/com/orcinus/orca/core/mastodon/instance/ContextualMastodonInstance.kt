@@ -42,6 +42,7 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.search.MastodonProfileSear
 import br.com.orcinus.orca.core.mastodon.feed.profile.search.cache.MastodonProfileSearchResultsFetcher
 import br.com.orcinus.orca.core.mastodon.feed.profile.search.cache.storage.MastodonProfileSearchResultsStorage
 import br.com.orcinus.orca.platform.cache.Cache
+import br.com.orcinus.orca.platform.cache.Fetcher
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import java.net.URI
@@ -50,7 +51,7 @@ import java.net.URI
  * [MastodonInstance] that authorizes the user and caches all fetched structures through the given
  * [Context].
  *
- * @param context [Context] with which the [authenticator] will be created.
+ * @param context [Context] with which the [database], [Cache]s and [Fetcher]s will be created.
  * @param domain Unique identifier of the server.
  * @param authorizer [MastodonAuthorizer] by which the user will be authorized.
  * @param actorProvider [ActorProvider] that will provide [Actor]s to the [authenticator], the
@@ -77,17 +78,18 @@ internal class ContextualMastodonInstance(
    * by [postFetcher], [feedPostPaginator], [profilePostPaginatorProvider] and [postStorage].
    */
   private val commentPaginatorProvider =
-    MastodonCommentPaginator.Provider { MastodonCommentPaginator(imageLoaderProvider, it) }
+    MastodonCommentPaginator.Provider { MastodonCommentPaginator(context, imageLoaderProvider, it) }
 
   /** [MastodonPostFetcher] by which [Post]s will be fetched from the API. */
-  private val postFetcher = MastodonPostFetcher(imageLoaderProvider, commentPaginatorProvider)
+  private val postFetcher =
+    MastodonPostFetcher(context, imageLoaderProvider, commentPaginatorProvider)
 
   /**
    * [MastodonFeedPaginator] with which pagination through the feed's [Post]s that have been fetched
    * from the API will be performed.
    */
   private val feedPostPaginator =
-    MastodonFeedPaginator(imageLoaderProvider, commentPaginatorProvider)
+    MastodonFeedPaginator(context, imageLoaderProvider, commentPaginatorProvider)
 
   /**
    * [MastodonProfilePostPaginator.Provider] that provides the [MastodonProfilePostPaginator] to be
@@ -95,12 +97,12 @@ internal class ContextualMastodonInstance(
    */
   private val profilePostPaginatorProvider =
     MastodonProfilePostPaginator.Provider {
-      MastodonProfilePostPaginator(imageLoaderProvider, commentPaginatorProvider, it)
+      MastodonProfilePostPaginator(context, imageLoaderProvider, commentPaginatorProvider, it)
     }
 
   /** [MastodonProfileFetcher] by which [MastodonProfile]s will be fetched from the API. */
   private val profileFetcher =
-    MastodonProfileFetcher(imageLoaderProvider, profilePostPaginatorProvider)
+    MastodonProfileFetcher(context, imageLoaderProvider, profilePostPaginatorProvider)
 
   /** [MastodonProfileStorage] that will store fetched [MastodonProfile]s. */
   private val profileStorage =
@@ -119,7 +121,7 @@ internal class ContextualMastodonInstance(
    * API.
    */
   private val profileSearchResultsFetcher =
-    MastodonProfileSearchResultsFetcher(imageLoaderProvider, profilePostPaginatorProvider)
+    MastodonProfileSearchResultsFetcher(context, imageLoaderProvider, profilePostPaginatorProvider)
 
   /** [MastodonProfileSearchResultsStorage] that will store fetched [ProfileSearchResult]s. */
   private val profileSearchResultsStorage =

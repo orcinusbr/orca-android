@@ -15,7 +15,9 @@
 
 package br.com.orcinus.orca.composite.timeline.text.annotated
 
+import android.content.Context
 import android.text.Html
+import android.text.Spanned
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -33,9 +35,11 @@ import org.jsoup.parser.Parser
 /**
  * Creates [Markdown] from the [html].
  *
+ * @param context [Context] with which the underlying [Spanned] will be converted into [Markdown].
  * @param html HTML-formatted [String] from which [Markdown] will be created.
+ * @see Spanned.toMarkdown
  */
-fun Markdown.Companion.fromHtml(html: String): Markdown {
+fun Markdown.Companion.fromHtml(context: Context, html: String): Markdown {
   return Html.fromHtml(
       Jsoup.parse(html, Parser.xmlParser())
         .apply {
@@ -48,7 +52,7 @@ fun Markdown.Companion.fromHtml(html: String): Markdown {
         .html(),
       Html.FROM_HTML_MODE_LEGACY
     )
-    .toMarkdown()
+    .toMarkdown(context)
 }
 
 /** Converts this [Markdown] into an [AnnotatedString]. */

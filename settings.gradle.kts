@@ -64,6 +64,8 @@ include(
   ":platform:ime-test",
   ":platform:intents",
   ":platform:intents-test",
+  ":platform:markdown",
+  ":platform:markdown-test",
   ":platform:navigation",
   ":platform:navigation-test",
   ":platform:stack",

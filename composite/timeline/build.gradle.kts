@@ -29,6 +29,7 @@ android {
 dependencies {
   testImplementation(project(":composite:timeline-test"))
   testImplementation(project(":core:sample-test"))
+  testImplementation(project(":platform:testing"))
   testImplementation(libs.android.compose.ui.test.manifest)
   testImplementation(libs.android.test.core)
   testImplementation(libs.assertk)
@@ -41,6 +42,7 @@ dependencies {
   api(project(":platform:core"))
   api(project(":std:markdown"))
 
+  implementation(project(":platform:markdown"))
   implementation(libs.android.compose.material)
   implementation(libs.android.core)
   implementation(libs.jsoup)

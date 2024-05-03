@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,21 +13,13 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.text.spanned
+package br.com.orcinus.orca.platform.markdown.state
 
-import assertk.assertThat
-import assertk.assertions.isEqualTo
-import assertk.assertions.isNotEqualTo
-import kotlin.test.Test
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 
-internal class PartTests {
-  @Test
-  fun comparesEqualParts() {
-    assertThat(Part(0..8)).isEqualTo(Part(0..8))
-  }
-
-  @Test
-  fun comparesDifferentParts() {
-    assertThat(Part(0..8)).isNotEqualTo(Part(1..9))
-  }
+/** Remembers a [MarkdownTextFieldState]. */
+@Composable
+fun rememberMarkdownTextFieldState(): MarkdownTextFieldState {
+  return remember(::MarkdownTextFieldState)
 }

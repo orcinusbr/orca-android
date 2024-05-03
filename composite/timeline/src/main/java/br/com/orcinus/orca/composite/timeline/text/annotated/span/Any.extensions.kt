@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,30 +13,14 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-@file:JvmName("AnyExtensions")
+package br.com.orcinus.orca.composite.timeline.text.annotated.span
 
-package br.com.orcinus.orca.composite.timeline.text.spanned
-
-import android.text.ParcelableSpan
+import android.graphics.Typeface
 import android.text.Spanned
 import android.text.style.StyleSpan
 import android.text.style.URLSpan
 import br.com.orcinus.orca.std.markdown.style.Style
 import java.net.URI
-
-/**
- * Compares both spans structurally.
- *
- * @param other Span to be compared to this one.
- */
-internal fun Any.isStructurallyEqualTo(other: Any): Boolean {
-  return when {
-    this is StyleSpan && other is StyleSpan -> isStructurallyEqualTo(other)
-    this is URLSpan && other is URLSpan -> url == other.url
-    this is ParcelableSpan && other is ParcelableSpan -> spanTypeId == other.spanTypeId
-    else -> equals(other)
-  }
-}
 
 /**
  * Converts this span into [Style]s.
@@ -50,6 +34,20 @@ internal fun Any.toStyles(indices: IntRange): List<Style> {
   return when (this) {
     is StyleSpan -> toStyles(indices)
     is URLSpan -> listOf(Style.Link(URI(url), indices))
+    else -> emptyList()
+  }
+}
+
+/**
+ * Converts this [StyleSpan] into [Style]s.
+ *
+ * @param indices Indices of a [Spanned] to which this [StyleSpan] has been applied.
+ */
+private fun StyleSpan.toStyles(indices: IntRange): List<Style> {
+  return when (style) {
+    Typeface.BOLD -> listOf(Style.Bold(indices))
+    Typeface.BOLD_ITALIC -> listOf(Style.Bold(indices), Style.Italic(indices))
+    Typeface.ITALIC -> listOf(Style.Italic(indices))
     else -> emptyList()
   }
 }

@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.mastodon.feed.profile.account
 
+import android.content.Context
 import br.com.orcinus.orca.composite.timeline.text.annotated.fromHtml
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.Profile
@@ -84,20 +85,23 @@ internal data class MastodonAccount(
   /**
    * Converts this [MastodonAccount] into a [Profile].
    *
+   * @param context [Context] with which the [note] will be converted into [Markdown].
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
    *   [Profile]'s avatar will be loaded from a [URI].
    * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
    *   [MastodonProfilePostPaginator] for paginating through the resulting [MastodonProfile]'s
    *   [MastodonPost]s will be provided.
+   * @see Markdown.Companion.fromHtml
    */
   suspend fun toProfile(
+    context: Context,
     avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): Profile {
     return if (isOwner()) {
-      toEditableProfile(avatarLoaderProvider, postPaginatorProvider)
+      toEditableProfile(context, avatarLoaderProvider, postPaginatorProvider)
     } else {
-      toFollowableProfile(avatarLoaderProvider, postPaginatorProvider)
+      toFollowableProfile(context, avatarLoaderProvider, postPaginatorProvider)
     }
   }
 
@@ -121,20 +125,23 @@ internal data class MastodonAccount(
   /**
    * Converts this [MastodonAccount] into A [MastodonEditableProfile].
    *
+   * @param context [Context] with which the [note] will be converted into [Markdown].
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
    *   [MastodonEditableProfile]'s avatar will be loaded from a [URI].
    * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
    *   [MastodonProfilePostPaginator] for paginating through the resulting
    *   [MastodonEditableProfile]'s [MastodonPost]s will be provided.
+   * @see Markdown.Companion.fromHtml
    */
   private fun toEditableProfile(
+    context: Context,
     avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): MastodonEditableProfile {
     val account = toAccount()
     val avatarURI = URI(avatar)
     val avatarLoader = avatarLoaderProvider.provide(avatarURI)
-    val bio = Markdown.fromHtml(note)
+    val bio = Markdown.fromHtml(context, note)
     val uri = URI(uri)
     return MastodonEditableProfile(
       postPaginatorProvider,
@@ -152,20 +159,23 @@ internal data class MastodonAccount(
   /**
    * Converts this [MastodonAccount] into A [MastodonFollowableProfile].
    *
+   * @param context [Context] with which the [note] will be converted into [Markdown].
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
    *   [MastodonFollowableProfile]'s avatar will be loaded from a [URI].
    * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
    *   [MastodonProfilePostPaginator] for paginating through the resulting
    *   [MastodonFollowableProfile]'s [MastodonPost]s will be provided.
+   * @see Markdown.Companion.fromHtml
    */
   private suspend fun toFollowableProfile(
+    context: Context,
     avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): MastodonFollowableProfile<Follow> {
     val account = toAccount()
     val avatarURI = URI(avatar)
     val avatarLoader = avatarLoaderProvider.provide(avatarURI)
-    val bio = Markdown.fromHtml(note)
+    val bio = Markdown.fromHtml(context, note)
     val uri = URI(uri)
     val follow =
       (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)

@@ -18,6 +18,7 @@ package br.com.orcinus.orca.composite.timeline.text
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.composite.timeline.text.annotated.fromHtml
+import br.com.orcinus.orca.platform.testing.context
 import br.com.orcinus.orca.std.markdown.Markdown
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,6 +28,6 @@ import org.robolectric.RobolectricTestRunner
 internal class MarkdownExtensionsTests {
   @Test
   fun breaksLineTwiceBetweenParagraphsWhenConvertingHtmlToMarkdown() {
-    assertThat(Markdown.fromHtml("<p>👔</p><p>🥾</p>")).isEqualTo(Markdown("👔\n\n🥾"))
+    assertThat(Markdown.fromHtml(context, "<p>👔</p><p>🥾</p>")).isEqualTo(Markdown("👔\n\n🥾"))
   }
 }

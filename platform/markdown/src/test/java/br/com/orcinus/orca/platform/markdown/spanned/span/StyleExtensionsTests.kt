@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,30 +13,25 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.text.spanned
+package br.com.orcinus.orca.platform.markdown.spanned.span
 
 import android.graphics.Typeface
-import android.text.Html
 import android.text.style.StyleSpan
 import assertk.assertThat
-import assertk.assertions.containsExactly
-import org.junit.Test
+import assertk.assertions.isTrue
+import br.com.orcinus.orca.platform.testing.context
+import br.com.orcinus.orca.std.markdown.style.Style
+import kotlin.test.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class SpannedExtensionsTests {
+internal class StyleExtensionsTests {
   @Test
-  fun partitions() {
+  fun convertsBoldStyleIntoStyleSpanWithBoldTypeface() {
     assertThat(
-        Html.fromHtml("<p><b><i>Hello</i></b>, <i>world</i>!</p>", Html.FROM_HTML_MODE_COMPACT)
-          .parts
+        Style.Bold(indices = 0..1).toSpan().isStructurallyEqual(context, StyleSpan(Typeface.BOLD))
       )
-      .containsExactly(
-        Part(0..4).span(StyleSpan(Typeface.ITALIC)),
-        Part(0..4).span(StyleSpan(Typeface.BOLD, fontWeightAdjustment = 0)),
-        Part(5..6),
-        Part(7..11).span(StyleSpan(Typeface.ITALIC))
-      )
+      .isTrue()
   }
 }
