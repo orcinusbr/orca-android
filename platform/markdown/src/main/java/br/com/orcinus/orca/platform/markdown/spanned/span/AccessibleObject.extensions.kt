@@ -26,7 +26,7 @@ import java.lang.reflect.AccessibleObject
  * @param access Access to be performed while this [AccessibleObject] is ensured to be accessible.
  * @see AccessibleObject.isAccessible
  */
-fun <I : AccessibleObject, O> I.access(access: I.() -> O): O {
+internal fun <I : AccessibleObject, O> I.access(access: I.() -> O): O {
   val wasAccessible = isAccessible
   isAccessible = true
   return access().also { isAccessible = wasAccessible }
