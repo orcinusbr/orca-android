@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.BackAction
@@ -156,7 +157,7 @@ private fun OneTabNavigationBarPreview() {
 
 /** Preview of a [NavigationBar] with two tabs. */
 @Composable
-@MultiThemePreview
+@Preview
 private fun TwoTabNavigationBarPreview() {
   AutosTheme {
     NavigationBar(title = { AutoSizeText("Home") }, action = { BackAction(onClick = {}) }) {
@@ -173,7 +174,7 @@ private fun TwoTabNavigationBarPreview() {
 
 /** Preview of a [NavigationBar] with three tabs. */
 @Composable
-@MultiThemePreview
+@Preview
 private fun ThreeTabNavigationBarPreview() {
   AutosTheme {
     NavigationBar(title = { AutoSizeText("Home") }, action = { BackAction(onClick = {}) }) {
