@@ -44,7 +44,7 @@ internal fun createTextAppearanceSpan(
   val hasElegantTextHeightAsInt = if (hasElegantTextHeight) 1 else 0
   val hasLetterSpacing = !letterSpacing.isNaN()
   val hasLetterSpacingAsInt = if (hasLetterSpacing) 1 else 0
-  return TextAppearanceSpan(
+  val parcel =
     Parcel.obtain().apply parcel@{
       writeString(family)
       writeInt(style)
@@ -72,5 +72,5 @@ internal fun createTextAppearanceSpan(
       writeString(fontVariationSettings)
       setDataPosition(0)
     }
-  )
+  return TextAppearanceSpan(parcel).also { parcel.recycle() }
 }
