@@ -35,24 +35,26 @@ import kotlin.reflect.full.primaryConstructor
 /**
  * Converts this [AnnotatedString] into a [State] that holds an [Editable].
  *
- * @param context [Context] with which conversions from [SpanStyle]s into spans are performed and
- *   vice-versa.
- * @throws IllegalArgumentException If any of the [SpanStyle]s specifies a [Brush] isn't a
- *   [SolidColor] nor a [ShaderBrush], since there aren't equivalent spans for [Brush]es other than
- *   those of such types; font feature settings, letter spacing, a [LocaleList] or a [Shadow] has
- *   been defined but font size hasn't; or its [FontStyle] is neither normal nor italic.
- * @throws NoSuchFieldException If system version is at least Upside-Down Cake (API level 34), one
- *   of the [SpanStyle]s' font-specific values ([SpanStyle.fontWeight], [SpanStyle.fontStyle],
+ * **NOTE**: Obtaining spans may result in some [Exception]s getting thrown depending on how the
+ * [SpanStyle]s of the receiver were constructed:
+ * - [IllegalArgumentException]: when a [SpanStyle] specifies a [Brush] that isn't a [SolidColor]
+ *   nor a [ShaderBrush], since there aren't equivalent spans for [Brush]es other than those of such
+ *   types; font feature settings, letter spacing, a [LocaleList] or a [Shadow] has been defined but
+ *   font size hasn't; or its [FontStyle] is neither normal nor italic.
+ * - [NoSuchFieldException]: when system version is at least Upside-Down Cake (API level 34), one of
+ *   the [SpanStyle]s' font-specific values ([SpanStyle.fontWeight], [SpanStyle.fontStyle],
  *   [SpanStyle.fontSynthesis], [SpanStyle.fontFamily]) is non-`null` and the property to which the
  *   specified font feature settings would be assigned of the resulting [TextAppearanceSpan] that it
  *   was converted into isn't found.
- * @throws NoSuchMethodException If the specified [Brush] is a [ShaderBrush] or a [DrawStyle] has
- *   been defined and the primary constructor of `androidx.compose.ui:ui-text`'s `DrawStyleSpan` or
- *   `ShaderBrushSpan` isn't found when converting [SpanStyle]s into spans, given that they're
- *   referenced and called through reflection because both are APIs are internal to the module in
- *   which they've been declared as of 1.6.6.
- * @see SpanStyle.toSpans
- * @see Any.toSpanStyle
+ * - [NoSuchMethodException]: when a [SpanStyle]'s specified [Brush] is a [ShaderBrush] or a
+ *   [DrawStyle] has been defined and the primary constructor of `androidx.compose.ui:ui-text`'s
+ *   `ShaderBrushSpan` or `DrawStyleSpan` isn't found when converting [SpanStyle]s into spans, given
+ *   that they're referenced and called through reflection because both are APIs are internal to the
+ *   module in which they've been declared as of 1.6.6.
+ *
+ * @param context [Context] with which conversions from [SpanStyle]s into spans are performed and
+ *   vice-versa.
+ * @see Editable.getSpans
  * @see AnnotatedString.spanStyles
  * @see SpanStyle.brush
  * @see SpanStyle.fontFeatureSettings
@@ -64,8 +66,9 @@ import kotlin.reflect.full.primaryConstructor
  * @see FontStyle.Companion.Italic
  * @see SpanStyle.drawStyle
  * @see primaryConstructor
+ * @see SpanStyle.toSpans
+ * @see Any.toSpanStyle
  */
-@Throws(IllegalArgumentException::class, NoSuchMethodException::class)
 internal fun AnnotatedString.toEditableAsState(context: Context): State<Editable> {
   return buildState {
     object : Editable, CharSequence by text {

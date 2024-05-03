@@ -70,8 +70,8 @@ import kotlin.reflect.full.primaryConstructor
  *   [SpanStyle.fontFamily]) is non-`null` and the property to which the specified font feature
  *   settings would be assigned of the resulting [TextAppearanceSpan] isn't found.
  * @throws NoSuchMethodException If the specified [Brush] is a [ShaderBrush] or a [DrawStyle] has
- *   been defined and the primary constructor of `androidx.compose.ui:ui-text`'s `DrawStyleSpan` or
- *   `ShaderBrushSpan` isn't found.
+ *   been defined and the primary constructor of `androidx.compose.ui:ui-text`'s `ShaderBrushSpan`
+ *   or `DrawStyleSpan` isn't found.
  * @see SpanStyle.brush
  * @see SpanStyle.fontFeatureSettings
  * @see SpanStyle.letterSpacing
@@ -83,7 +83,7 @@ import kotlin.reflect.full.primaryConstructor
  * @see SpanStyle.drawStyle
  * @see KClass.primaryConstructor
  */
-@Throws(IllegalArgumentException::class, NoSuchMethodException::class)
+@Throws(IllegalArgumentException::class, NoSuchFieldException::class, NoSuchMethodException::class)
 internal fun SpanStyle.toSpans(context: Context): List<Any> {
   return buildList {
     val brush = brush
@@ -163,8 +163,8 @@ internal fun SpanStyle.toSpans(context: Context): List<Any> {
                 FontStyle.Italic -> Typeface.ITALIC
                 else ->
                   throw IllegalArgumentException(
-                    "Font style must be either ${FontStyle.Normal} or ${FontStyle.Italic}, but was " +
-                      "$fontStyle instead."
+                    "Font style must be either ${FontStyle.Normal} or ${FontStyle.Italic}, but " +
+                      "was $fontStyle instead."
                   )
               },
               fontSizeInPixels,
