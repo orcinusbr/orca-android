@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontStyle
 import br.com.orcinus.orca.platform.markdown.spanned.span.toSpanStyle
 import kotlin.reflect.full.primaryConstructor
 
@@ -36,7 +37,8 @@ import kotlin.reflect.full.primaryConstructor
  *   vice-versa.
  * @throws IllegalArgumentException If any of the [SpanStyle]s specifies a [Brush] isn't a
  *   [SolidColor] nor a [ShaderBrush], since there aren't equivalent spans for [Brush]es other than
- *   those of such types.
+ *   those of such types; font feature settings or letter spacing has been defined but font size
+ *   hasn't; its [FontStyle] is neither normal nor italic.
  * @throws NoSuchFieldException If system version is at least Upside-Down Cake (API level 34), one
  *   of the [SpanStyle]s' font-specific values ([SpanStyle.fontWeight], [SpanStyle.fontStyle],
  *   [SpanStyle.fontSynthesis], [SpanStyle.fontFamily]) is non-`null` and the property to which the
@@ -51,6 +53,9 @@ import kotlin.reflect.full.primaryConstructor
  * @see Any.toSpanStyle
  * @see AnnotatedString.spanStyles
  * @see SpanStyle.brush
+ * @see SpanStyle.fontStyle
+ * @see FontStyle.Companion.Normal
+ * @see FontStyle.Companion.Italic
  * @see SpanStyle.drawStyle
  * @see primaryConstructor
  */

@@ -31,6 +31,7 @@ import android.text.style.TypefaceSpan
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.isSpecified
@@ -61,7 +62,8 @@ import kotlin.reflect.full.primaryConstructor
  *   performed when the [TextUnit] is specified.
  * @throws IllegalArgumentException If the specified [Brush] isn't a [SolidColor] nor a
  *   [ShaderBrush], since there aren't equivalent spans for [Brush]es other than those of such
- *   types.
+ *   types; font feature settings or letter spacing has been defined but a font size hasn't; or the
+ *   given [FontStyle] is neither normal nor italic.
  * @throws NoSuchFieldException If system version is at least Upside-Down Cake (API level 34), a
  *   font-specific value ([SpanStyle.fontWeight], [SpanStyle.fontStyle], [SpanStyle.fontSynthesis],
  *   [SpanStyle.fontFamily]) is non-`null` and the property to which the specified font feature
@@ -70,6 +72,9 @@ import kotlin.reflect.full.primaryConstructor
  *   been defined and the primary constructor of `androidx.compose.ui:ui-text`'s `DrawStyleSpan` or
  *   `ShaderBrushSpan` isn't found.
  * @see SpanStyle.brush
+ * @see SpanStyle.fontStyle
+ * @see FontStyle.Companion.Normal
+ * @see FontStyle.Companion.Italic
  * @see SpanStyle.fontFeatureSettings
  * @see Typeface.NORMAL
  * @see Typeface.ITALIC
@@ -133,44 +138,60 @@ internal fun SpanStyle.toSpans(context: Context): List<Any> {
     } else if (brush != null) {
       throw IllegalArgumentException("No equivalent spans for non-solid-color and -shader brushes.")
     }
-    if (fontSize.isSpecified) {
-      add(with(density) { AbsoluteSizeSpan(fontSize.roundToPx()) })
-    }
+    fontSizeInPixels?.let { add(AbsoluteSizeSpan(it)) }
     typeface?.let {
-      if (
-        fontSizeInPixels != null && (foregroundColorInArgb != null || fontFeatureSettings != null)
-      ) {
-        add(
-          createTextAppearanceSpan(
-            family =
-              if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                typeface.systemFontFamilyName
-              } else {
-                null
-              },
-            when (fontStyle) {
-              FontStyle.Normal -> Typeface.NORMAL
-              FontStyle.Italic -> Typeface.ITALIC
-              else -> -1
-            },
-            fontSizeInPixels,
-            ColorStateList.valueOf(foregroundColorInArgb ?: TRANSPARENT),
-            textColorLink = ColorStateList.valueOf(TRANSPARENT),
-            fontWeight?.weight ?: typeface.weight,
-            localeList
-              ?.joinToString(separator = ",", transform = Locale::toLanguageTag)
-              ?.let(LocaleList::forLanguageTags),
-            typeface,
-            shadow?.blurRadius ?: Float.NaN,
-            shadow?.offset?.x ?: Float.NaN,
-            shadow?.offset?.y ?: Float.NaN,
-            shadow?.color?.toArgb() ?: TRANSPARENT,
-            hasElegantTextHeight = false,
-            if (letterSpacing.isSpecified) with(density) { letterSpacing.toPx() } else Float.NaN,
-            fontFeatureSettings,
-            fontVariationSettings = null
+      if (fontSizeInPixels != null) {
+        if (foregroundColorInArgb == null) {
+          throw IllegalArgumentException(
+            "A color must be specified in order for a span containing the font size to be created."
           )
-        )
+        } else {
+          val foregroundColorStateList = ColorStateList.valueOf(foregroundColorInArgb)
+          add(
+            createTextAppearanceSpan(
+              family =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                  typeface.systemFontFamilyName
+                } else {
+                  null
+                },
+              when (fontStyle) {
+                FontStyle.Normal,
+                null -> Typeface.NORMAL
+                FontStyle.Italic -> Typeface.ITALIC
+                else ->
+                  throw IllegalArgumentException(
+                    "Font style must be either ${FontStyle.Normal} or ${FontStyle.Italic}, but was " +
+                      "$fontStyle instead."
+                  )
+              },
+              fontSizeInPixels,
+              foregroundColorStateList,
+              textColorLink = foregroundColorStateList,
+              fontWeight?.weight ?: typeface.weight,
+              localeList
+                ?.joinToString(separator = ",", transform = Locale::toLanguageTag)
+                ?.let(LocaleList::forLanguageTags),
+              typeface,
+              shadow?.blurRadius ?: Float.NaN,
+              shadow?.offset?.x ?: Float.NaN,
+              shadow?.offset?.y ?: Float.NaN,
+              shadow?.color?.toArgb() ?: TRANSPARENT,
+              hasElegantTextHeight = false,
+              if (letterSpacing.isSpecified) with(density) { letterSpacing.toPx() } else Float.NaN,
+              fontFeatureSettings,
+              fontVariationSettings = null
+            )
+          )
+        }
+      } else if (fontFeatureSettings != null) {
+        missingFontSizeFor("font feature settings")
+      } else if (letterSpacing.isSpecified) {
+        missingFontSizeFor("letter spacing")
+      } else if (localeList != null) {
+        missingFontSizeFor("locale list")
+      } else if (shadow != null && shadow != Shadow.None) {
+        missingFontSizeFor("shadow")
       } else {
         add(TypefaceSpan(typeface))
       }
@@ -187,4 +208,19 @@ internal fun SpanStyle.toSpans(context: Context): List<Any> {
         ?: throw NoSuchMethodException("DrawStyleSpan.<init>(DrawStyle)")
     }
   }
+}
+
+/**
+ * Throws an [IllegalArgumentException] stating that a given [SpanStyle] property can only have a
+ * span created for it when a font size has been specified.
+ *
+ * @param propertyDescription Short description of the property that requires the font size.
+ * @see SpanStyle.fontSize
+ * @see TextUnit.isSpecified
+ */
+private fun missingFontSizeFor(propertyDescription: String): Nothing {
+  throw IllegalArgumentException(
+    "A font size must be specified in order for a span containing a $propertyDescription to be " +
+      "created."
+  )
 }
