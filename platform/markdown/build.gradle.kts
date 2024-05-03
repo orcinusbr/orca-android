@@ -46,5 +46,6 @@ dependencies {
   testImplementation(libs.android.compose.ui.test.manifest)
   testImplementation(libs.assertk)
   testImplementation(libs.kotlin.test)
+  testImplementation(libs.openTest4J)
   testImplementation(libs.robolectric)
 }

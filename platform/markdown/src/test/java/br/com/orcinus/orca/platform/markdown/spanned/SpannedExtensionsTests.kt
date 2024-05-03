@@ -21,6 +21,7 @@ import android.text.style.StyleSpan
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import br.com.orcinus.orca.platform.markdown.spanned.span.createStyleSpan
+import br.com.orcinus.orca.platform.testing.context
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -31,13 +32,13 @@ internal class SpannedExtensionsTests {
   fun partitions() {
     assertThat(
         Html.fromHtml("<p><b><i>Hello</i></b>, <i>world</i>!</p>", Html.FROM_HTML_MODE_COMPACT)
-          .parts
+          .getParts(context)
       )
       .containsExactly(
-        Part(0..4).span(StyleSpan(Typeface.ITALIC)),
-        Part(0..4).span(createStyleSpan(Typeface.BOLD, fontWeightAdjustment = 0)),
+        Part(0..4).span(context, StyleSpan(Typeface.ITALIC)),
+        Part(0..4).span(context, createStyleSpan(Typeface.BOLD, fontWeightAdjustment = 0)),
         Part(5..6),
-        Part(7..11).span(StyleSpan(Typeface.ITALIC))
+        Part(7..11).span(context, StyleSpan(Typeface.ITALIC))
       )
   }
 }

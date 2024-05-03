@@ -18,6 +18,7 @@
 package br.com.orcinus.orca.platform.markdown.spanned.span
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Typeface.ITALIC
 import android.graphics.fonts.FontStyle.FONT_WEIGHT_MAX
 import android.graphics.fonts.FontStyle.FONT_WEIGHT_MIN
@@ -58,6 +59,28 @@ import kotlin.math.roundToInt
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 
+/**
+ * Possible states for which a [ColorStateList] can provide a color (according to the
+ * [documentation](https://developer.android.com/guide/topics/resources/color-list-resource)).
+ *
+ * @see ColorStateList.getColorForState
+ */
+private val colorStateListStates =
+  intArrayOf(
+    android.R.attr.state_checkable,
+    -android.R.attr.state_checkable,
+    android.R.attr.state_checked,
+    -android.R.attr.state_checked,
+    android.R.attr.state_enabled,
+    -android.R.attr.state_enabled,
+    android.R.attr.state_pressed,
+    -android.R.attr.state_pressed,
+    android.R.attr.state_selected,
+    -android.R.attr.state_selected,
+    android.R.attr.state_window_focused,
+    -android.R.attr.state_window_focused,
+  )
+
 /** Qualified name of `androidx.compose.ui:ui-text`'s `DrawStyleSpan` as of 1.6.6. */
 internal const val DRAW_STYLE_SPAN_NAME = "androidx.compose.ui.text.platform.style.DrawStyleSpan"
 
@@ -72,6 +95,7 @@ fun Any.areStructurallyEqual(context: Context, other: Any): Boolean {
   return when {
     this is AbsoluteSizeSpan && other is AbsoluteSizeSpan -> areStructurallyEqual(context, other)
     this is StyleSpan && other is StyleSpan -> areStructurallyEqual(other)
+    this is TextAppearanceSpan && other is TextAppearanceSpan -> areStructurallyEqual(other)
     this is URLSpan && other is URLSpan -> url == other.url
     this is ParcelableSpan && other is ParcelableSpan -> spanTypeId == other.spanTypeId
     else -> this == other
@@ -240,5 +264,53 @@ private fun StyleSpan.areStructurallyEqual(other: StyleSpan): Boolean {
     style == other.style && fontWeightAdjustment == other.fontWeightAdjustment
   } else {
     style == other.style
+  }
+}
+
+/**
+ * Compares both [TextAppearanceSpan]s structurally.
+ *
+ * @param other [TextAppearanceSpan] to which the receiver one will be compared.
+ */
+private fun TextAppearanceSpan.areStructurallyEqual(other: TextAppearanceSpan): Boolean {
+  return family == other.family &&
+    textColor.areStructurallyEqual(other.textColor) &&
+    linkTextColor.areStructurallyEqual(other.linkTextColor) &&
+    textSize == other.textSize &&
+    textStyle == other.textStyle &&
+    (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q ||
+      textFontWeight == other.textFontWeight &&
+        textLocales == other.textLocales &&
+        shadowColor == other.shadowColor &&
+        (shadowDx.isNaN() && shadowDy.isNaN() || shadowDx == other.shadowDx) &&
+        (shadowDy.isNaN() && shadowDy.isNaN() || shadowDy == other.shadowDy) &&
+        (shadowRadius.isNaN() && other.shadowRadius.isNaN() ||
+          shadowRadius == other.shadowRadius) &&
+        fontFeatureSettings == other.fontFeatureSettings &&
+        fontVariationSettings == other.fontVariationSettings &&
+        isElegantTextHeight == other.isElegantTextHeight) &&
+    (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE ||
+      typeface?.systemFontFamilyName == other.typeface?.systemFontFamilyName &&
+        letterSpacing == other.letterSpacing)
+}
+
+/**
+ * Compares both [ColorStateList]s structurally.
+ *
+ * @param other [ColorStateList] to which the receiver one will be compared.
+ */
+private fun ColorStateList.areStructurallyEqual(other: ColorStateList): Boolean {
+  return if (isStateful) {
+    for (state in colorStateListStates) {
+      if (
+        getColorForState(intArrayOf(state), defaultColor) !=
+          other.getColorForState(intArrayOf(state), other.defaultColor)
+      ) {
+        return false
+      }
+    }
+    true
+  } else {
+    defaultColor == other.defaultColor
   }
 }

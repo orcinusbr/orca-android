@@ -59,7 +59,7 @@ internal fun Spanned.toAnnotatedString(context: Context): AnnotatedString {
     getParts(context).filterIsInstance<Part.Spanned>().forEach { part ->
       part.spans
         .map { span -> span.toSpanStyle(context) }
-        .forEach { spanStyle -> addStyle(spanStyle, part.indices.first, part.indices.last) }
+        .forEach { spanStyle -> addStyle(spanStyle, part.indices.first, part.indices.last.inc()) }
     }
   }
 }

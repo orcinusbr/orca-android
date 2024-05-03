@@ -18,6 +18,7 @@ package br.com.orcinus.orca.platform.markdown.annotated
 import android.content.Context
 import android.text.Editable
 import android.text.InputFilter
+import android.text.style.TextAppearanceSpan
 import androidx.compose.runtime.State
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.ShaderBrush
@@ -36,6 +37,11 @@ import kotlin.reflect.full.primaryConstructor
  * @throws IllegalArgumentException If any of the [SpanStyle]s specifies a [Brush] isn't a
  *   [SolidColor] nor a [ShaderBrush], since there aren't equivalent spans for [Brush]es other than
  *   those of such types.
+ * @throws NoSuchFieldException If system version is at least Upside-Down Cake (API level 34), one
+ *   of the [SpanStyle]s' font-specific values ([SpanStyle.fontWeight], [SpanStyle.fontStyle],
+ *   [SpanStyle.fontSynthesis], [SpanStyle.fontFamily]) is non-`null` and the property to which the
+ *   specified font feature settings would be assigned of the resulting [TextAppearanceSpan] that it
+ *   was converted into isn't found.
  * @throws NoSuchMethodException If the specified [Brush] is a [ShaderBrush] or a [DrawStyle] has
  *   been defined and the primary constructor of `androidx.compose.ui:ui-text`'s `DrawStyleSpan` or
  *   `ShaderBrushSpan` isn't found when converting [SpanStyle]s into spans, given that they're
@@ -79,18 +85,19 @@ internal fun AnnotatedString.toEditableAsState(context: Context): State<Editable
       }
 
       override fun <T : Any?> getSpans(start: Int, end: Int, type: Class<T>?): Array<T> {
-        val spanCount = spanStyles.size
-        val coercedStart = start.coerceIn(0, spanCount)
-        val coercedEnd = end.coerceIn(0, spanCount)
-
         @Suppress("UNCHECKED_CAST")
-        return if (coercedStart == 0 && coercedEnd == 0) {
+        return if (start == end) {
           emptyArray<Any>()
         } else {
           spanStyles
-            .subList(coercedStart, coercedEnd)
+            .filter { start >= it.start && end <= it.end }
             .flatMap { it.item.toSpans(context) }
-            .run { type?.let { _ -> filter { it::class.java == type } } ?: this }
+            .run {
+              type
+                ?.takeUnless { it == Object::class.java }
+                ?.let { _ -> filter { it::class.java == type } }
+                ?: this
+            }
             .toTypedArray<Any>()
         }
           as Array<T>
