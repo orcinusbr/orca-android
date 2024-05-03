@@ -15,13 +15,13 @@
 
 package br.com.orcinus.orca.platform.markdown.annotated
 
+import android.graphics.Color.BLACK
+import android.graphics.Color.argb
 import android.text.style.ForegroundColorSpan
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.SpanStyle
 import assertk.assertThat
-import assertk.assertions.isTrue
-import br.com.orcinus.orca.platform.markdown.spanned.span.isStructurallyEqual
 import br.com.orcinus.orca.platform.testing.context
 import kotlin.test.Test
 import org.junit.runner.RunWith
@@ -31,26 +31,13 @@ import org.robolectric.RobolectricTestRunner
 internal class SpanStyleExtensionsTests {
   @Test
   fun convertsSpanStyleWithSolidColorBrushIntoForegroundColorSpan() {
-    assertThat(
-        SpanStyle(SolidColor(Color.Black), alpha = .8f)
-          .toSpans(context)
-          .single()
-          .isStructurallyEqual(
-            context,
-            ForegroundColorSpan(android.graphics.Color.argb(.8f, 0f, 0f, 0f))
-          )
-      )
-      .isTrue()
+    assertThat(SpanStyle(SolidColor(Color.Black), alpha = .8f).toSpans(context).toTypedArray())
+      .areStructurallyEqual(ForegroundColorSpan(argb(.8f, 0f, 0f, 0f)))
   }
 
   @Test
   fun convertsSpanStyleWithColorIntoForegroundColorSpan() {
-    assertThat(
-        SpanStyle(Color.Black)
-          .toSpans(context)
-          .single()
-          .isStructurallyEqual(context, ForegroundColorSpan(android.graphics.Color.BLACK))
-      )
-      .isTrue()
+    assertThat(SpanStyle(Color.Black).toSpans(context).toTypedArray())
+      .areStructurallyEqual(ForegroundColorSpan(BLACK))
   }
 }
