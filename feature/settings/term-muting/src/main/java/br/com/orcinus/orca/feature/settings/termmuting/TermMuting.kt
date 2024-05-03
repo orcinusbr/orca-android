@@ -107,7 +107,7 @@ private fun TermMuting(
 
   Scaffold(
     modifier,
-    topAppBar = {
+    top = {
       TopAppBarWithBackNavigation(
         onBackwardsNavigation,
         title = { Text(stringResource(R.string.feature_settings_term_muting)) },

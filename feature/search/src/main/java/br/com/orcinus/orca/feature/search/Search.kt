@@ -162,7 +162,7 @@ private fun Search(
 
   Scaffold(
     modifier,
-    topAppBar = {
+    top = {
       Row(
         Modifier.background(AutosTheme.colors.background.container.asColor)
           .padding(top = spacing, end = spacing, bottom = spacing)

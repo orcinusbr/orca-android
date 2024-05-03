@@ -31,7 +31,6 @@ import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
-import br.com.orcinus.orca.platform.autos.kit.scaffold.plus
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 
@@ -64,7 +63,7 @@ private fun Settings(
 
   Scaffold(
     modifier,
-    topAppBar = {
+    top = {
       TopAppBar(
         title = { AutoSizeText(stringResource(R.string.feature_settings)) },
         scrollBehavior = topAppBarScrollBehavior

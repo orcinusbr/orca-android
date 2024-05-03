@@ -95,7 +95,7 @@ internal fun MastodonRegistration(
 
   Scaffold(
     modifier,
-    topAppBar = {
+    top = {
       Column {
         ConstraintLayout(
           Modifier.background(AutosTheme.colors.surface.container.asColor).fillMaxWidth()

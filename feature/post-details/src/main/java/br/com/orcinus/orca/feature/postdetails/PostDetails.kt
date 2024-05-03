@@ -119,7 +119,7 @@ private fun PostDetails(
 
   Scaffold(
     modifier,
-    topAppBar = {
+    top = {
       @OptIn(ExperimentalMaterial3Api::class)
       TopAppBarWithBackNavigation(
         onNavigation = onBackwardsNavigation,

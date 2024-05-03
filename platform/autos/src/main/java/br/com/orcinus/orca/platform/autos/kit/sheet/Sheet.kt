@@ -74,7 +74,7 @@ private fun SheetPreview() {
   AutosTheme {
     @OptIn(ExperimentalMaterial3Api::class)
     Sheet {
-      Scaffold(topAppBar = { TopAppBar(title = { AutoSizeText("Title") }) }) {
+      Scaffold(top = { TopAppBar(title = { AutoSizeText("Title") }) }) {
         expanded {
           Box(
             Modifier.clip(AutosTheme.forms.large.asShape)

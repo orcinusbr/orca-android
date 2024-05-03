@@ -100,7 +100,7 @@ private fun Composer(
 
   Scaffold(
     modifier,
-    topAppBar = {
+    top = {
       @OptIn(ExperimentalMaterial3Api::class)
       TopAppBar(
         title = { AutoSizeText(stringResource(R.string.feature_composer)) },

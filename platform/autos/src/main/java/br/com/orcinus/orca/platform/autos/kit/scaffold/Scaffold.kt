@@ -18,9 +18,9 @@ package br.com.orcinus.orca.platform.autos.kit.scaffold
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -35,10 +35,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.takeOrElse
+import androidx.compose.ui.unit.dp
 import br.com.orcinus.orca.platform.autos.colors.LocalContainerColor
 import br.com.orcinus.orca.platform.autos.colors.asColor
 import br.com.orcinus.orca.platform.autos.forms.asShape
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
+import br.com.orcinus.orca.platform.autos.kit.input.text.FormTextField
 import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold as _Scaffold
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.button.ButtonBar
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.navigation.NavigationBar
@@ -46,7 +48,6 @@ import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.orcaVisuals
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.SnackbarPresenter
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.rememberSnackbarPresenter
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.BackAction
-import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
 import br.com.orcinus.orca.platform.autos.kit.scaffold.scope.Content
 import br.com.orcinus.orca.platform.autos.kit.scaffold.scope.ScaffoldScope
@@ -60,7 +61,7 @@ import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
  * Orca-specific [Scaffold].
  *
  * @param modifier [Modifier] to be applied to the underlying [Scaffold].
- * @param topAppBar [TopAppBar] to be placed at the top.
+ * @param top [Composable] to be placed at the very top.
  * @param floatingActionButton [FloatingActionButton] to be placed at the bottom, above the [bottom]
  *   and below the [SnackbarHost], horizontally centered.
  * @param floatingActionButtonPosition [FabPosition] that determines where the
@@ -75,7 +76,7 @@ import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 @Composable
 fun Scaffold(
   modifier: Modifier = Modifier,
-  topAppBar: @Composable () -> Unit = {},
+  top: @Composable () -> Unit = {},
   floatingActionButton: @Composable () -> Unit = {},
   floatingActionButtonPosition: FabPosition = FabPosition.End,
   snackbarPresenter: SnackbarPresenter = rememberSnackbarPresenter(),
@@ -84,8 +85,8 @@ fun Scaffold(
 ) {
   Scaffold(
     modifier,
-    topAppBar,
-    bottomBar = bottom,
+    top,
+    bottom,
     snackbarHost = {
       SnackbarHost(snackbarPresenter.hostState) {
         Snackbar(
@@ -120,8 +121,14 @@ private fun ScaffoldPreview() {
 
   AutosTheme {
     _Scaffold(
-      topAppBar = {
-        @OptIn(ExperimentalMaterial3Api::class) TopAppBar(title = { AutoSizeText("Scaffold") })
+      top = {
+        FormTextField(
+          text = "",
+          onTextChange = {},
+          Modifier.padding(AutosTheme.spacings.medium.dp)
+        ) {
+          Text("Search…")
+        }
       },
       floatingActionButton = {
         FloatingActionButton(onClick = {}) {

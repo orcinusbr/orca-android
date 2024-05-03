@@ -119,7 +119,7 @@ private fun Feed(
 
   Scaffold(
     modifier,
-    topAppBar = {
+    top = {
       @OptIn(ExperimentalMaterial3Api::class)
       TopAppBar(
         title = { AutoSizeText(stringResource(R.string.feature_feed)) },
