@@ -132,8 +132,8 @@ internal fun AnnotatedString.toEditableAsState(context: Context): State<Editable
       override fun nextSpanTransition(start: Int, limit: Int, type: Class<*>?): Int {
         return if (start <= spans.lastIndex) {
           spans
+            .drop(start)
             .withIndex()
-            .drop(start.inc())
             .find { it.index < spans.lastIndex && spans[it.index.inc()]::class != it.value::class }
             ?.index
             ?: limit
