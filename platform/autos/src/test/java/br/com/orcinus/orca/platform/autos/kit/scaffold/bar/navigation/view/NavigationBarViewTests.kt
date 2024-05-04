@@ -107,56 +107,6 @@ internal class NavigationBarViewTests {
   }
 
   @Test
-  fun addsTab() {
-    composeRule
-      .apply {
-        setContent {
-          AndroidView(::NavigationBarView) {
-            it.addTab(android.R.id.tabs, R.drawable.icon_home_outlined, emptyStringResourceID) {
-              false
-            }
-          }
-        }
-      }
-      .onTab()
-      .assertIsDisplayed()
-  }
-
-  @Test
-  fun selectsTab() {
-    var hasBeenSelected = false
-    composeRule
-      .apply {
-        setContent {
-          AndroidView(::NavigationBarView) {
-            it.addTab(android.R.id.tabs, R.drawable.icon_home_outlined, emptyStringResourceID) {
-              hasBeenSelected = true
-              true
-            }
-          }
-        }
-      }
-      .onTab()
-      .performClick()
-    assertThat(hasBeenSelected).isTrue()
-  }
-
-  @Test
-  fun setsCurrentTab() {
-    var hasBeenSet = false
-    composeRule.setContent {
-      AndroidView(::NavigationBarView) {
-        it.addTab(android.R.id.tabs, R.drawable.icon_home_outlined, emptyStringResourceID) {
-          hasBeenSet = true
-          true
-        }
-        it.setCurrentTab(android.R.id.tabs)
-      }
-    }
-    assertThat(hasBeenSet).isTrue()
-  }
-
-  @Test
   fun identifiesActionButton() {
     val view = NavigationBarView(context)
     composeRule.setContent { AndroidView({ view }) }
@@ -202,15 +152,103 @@ internal class NavigationBarViewTests {
   }
 
   @Test
-  fun clicksAction() {
+  fun clicksActionButton() {
     val view = NavigationBarView(context)
-    var hasBeenClicked = false
+    var hasActionButtonBeenClicked = false
     composeRule.setContent {
       AndroidView({ view }) {
-        it.setAction(R.drawable.icon_back, emptyStringResourceID) { hasBeenClicked = true }
+        it.setAction(R.drawable.icon_back, emptyStringResourceID) {
+          hasActionButtonBeenClicked = true
+        }
       }
     }
     onView(withId(view.actionButtonID)).perform(click())
-    assertThat(hasBeenClicked).isTrue()
+    assertThat(hasActionButtonBeenClicked).isTrue()
+  }
+
+  @Test
+  fun setsOnActionButtonClickListener() {
+    val view = NavigationBarView(context)
+    var hasActionButtonBeenClicked = false
+    composeRule.setContent {
+      AndroidView({ view }) {
+        it.setAction(R.drawable.icon_back, emptyStringResourceID) {}
+        it.setOnActionButtonClickListener { hasActionButtonBeenClicked = true }
+      }
+    }
+    onView(withId(view.actionButtonID)).perform(click())
+    assertThat(hasActionButtonBeenClicked).isTrue()
+  }
+
+  @Test
+  fun addsTab() {
+    composeRule
+      .apply {
+        setContent {
+          AndroidView(::NavigationBarView) {
+            it.addTab(android.R.id.tabs, R.drawable.icon_home_outlined, emptyStringResourceID) {
+              false
+            }
+          }
+        }
+      }
+      .onTab()
+      .assertIsDisplayed()
+  }
+
+  @Test
+  fun setsOnTabClickListener() {
+    var hasTabBeenClicked = false
+    composeRule
+      .apply {
+        setContent {
+          AndroidView(::NavigationBarView) {
+            it.addTab(android.R.id.tabs, R.drawable.icon_home_outlined, emptyStringResourceID) {
+              false
+            }
+            it.setOnTabClickListener(android.R.id.tabs) {
+              hasTabBeenClicked = true
+              true
+            }
+          }
+        }
+      }
+      .onTab()
+      .performClick()
+    assertThat(hasTabBeenClicked).isTrue()
+  }
+
+  @Test
+  fun selectsTab() {
+    var hasBeenSelected = false
+    composeRule
+      .apply {
+        setContent {
+          AndroidView(::NavigationBarView) {
+            it.addTab(android.R.id.tabs, R.drawable.icon_home_outlined, emptyStringResourceID) {
+              hasBeenSelected = true
+              true
+            }
+          }
+        }
+      }
+      .onTab()
+      .performClick()
+    assertThat(hasBeenSelected).isTrue()
+  }
+
+  @Test
+  fun setsCurrentTab() {
+    var hasBeenSet = false
+    composeRule.setContent {
+      AndroidView(::NavigationBarView) {
+        it.addTab(android.R.id.tabs, R.drawable.icon_home_outlined, emptyStringResourceID) {
+          hasBeenSet = true
+          true
+        }
+        it.setCurrentTab(android.R.id.tabs)
+      }
+    }
+    assertThat(hasBeenSet).isTrue()
   }
 }

@@ -16,7 +16,6 @@
 package br.com.orcinus.orca.platform.autos.kit.scaffold.bar.button
 
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.ui.Modifier
@@ -54,9 +53,7 @@ internal class ButtonBarTests {
       AutosTheme {
         Scaffold(bottom = { ButtonBar(lazyListState) }) {
           expanded {
-            LazyColumn(state = lazyListState) {
-              item { Spacer(Modifier.padding(it).fillScreenSize()) }
-            }
+            LazyColumn(state = lazyListState) { item { Spacer(Modifier.fillScreenSize()) } }
           }
         }
       }

@@ -22,6 +22,7 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.Menu
 import android.view.MenuItem
+import android.view.MenuItem.OnMenuItemClickListener
 import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
@@ -41,7 +42,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.AbstractComposeView
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.getStringOrThrow
 import androidx.core.content.withStyledAttributes
 import androidx.core.view.forEach
 import br.com.orcinus.orca.platform.autos.R
@@ -90,7 +90,7 @@ constructor(
   private var actionIcon by mutableStateOf<Drawable?>(null)
 
   /** Description of what the action does. */
-  private var actionContentDescription by mutableStateOf<String?>(null)
+  private var actionDescription by mutableStateOf<String?>(null)
 
   /** [View.OnClickListener] to be notified of clicks on the action [ImageButton]. */
   private var onActionClickListener by mutableStateOf<OnClickListener?>(null)
@@ -106,7 +106,11 @@ constructor(
    */
   @VisibleForTesting internal val actionButtonID = View.generateViewId()
 
-  /** ID of the title [TextView]. */
+  /**
+   * ID of the title [TextView].
+   *
+   * @see TextView.getId
+   */
   @VisibleForTesting internal val titleViewID = View.generateViewId()
 
   /**
@@ -141,6 +145,7 @@ constructor(
   }
 
   @Composable
+  @Throws(IllegalStateException::class)
   override fun Content() {
     AutosTheme {
       onThemedCompositionListener?.onThemedComposition()
@@ -156,18 +161,19 @@ constructor(
             }
           }
         },
-        action = {
-          LocalContentColor.current.toArgb().let { contentColorInArgb ->
-            AndroidView(::ImageButton) { view ->
-              view.id = actionButtonID
-              view.background = null
-              view.contentDescription = actionContentDescription
-              view.imageTintList = ColorStateList.valueOf(contentColorInArgb)
-              view.setOnClickListener(onActionClickListener)
-              view.setImageDrawable(actionIcon)
+        action = action@{
+            val actionIcon = actionIcon ?: return@action
+            val contentColorInArgb = LocalContentColor.current.toArgb()
+
+            AndroidView(::ImageButton) {
+              it.id = actionButtonID
+              it.background = null
+              it.contentDescription = requireActionDescription()
+              it.imageTintList = ColorStateList.valueOf(contentColorInArgb)
+              it.setOnClickListener(onActionClickListener)
+              it.setImageDrawable(actionIcon)
             }
           }
-        }
       )
     }
   }
@@ -182,30 +188,23 @@ constructor(
   }
 
   /**
-   * Adds a tab.
+   * Changes the action to be performed when the action [ImageButton] gets clicked.
    *
-   * @param idResource ID resource by which the tab will be identified.
-   * @param iconResource Resource of the icon of the tab to be added.
-   * @param contentDescriptionResource Resource of the description for the tab.
-   * @param onClickListener [MenuItem.OnMenuItemClickListener] to be notified when the tab is
-   *   clicked.
-   * @see NavigationBarScope.tab
+   * @param onActionClickListener [View.OnClickListener] to be notified.
    */
-  fun addTab(
-    @IdRes idResource: Int,
-    @DrawableRes iconResource: Int,
-    @StringRes contentDescriptionResource: Int,
-    onClickListener: MenuItem.OnMenuItemClickListener
-  ) {
-    @Suppress("RestrictedApi")
-    menuBuilder
-      .add(0, idResource, 0, null)
-      ?.apply {
-        contentDescription = context.getString(contentDescriptionResource)
-        setOnMenuItemClickListener(onClickListener)
-        setIcon(iconResource)
-      }
-      ?.run { scope.tab(this as MenuItemImpl) }
+  fun setOnActionButtonClickListener(onActionClickListener: OnClickListener) {
+    this.onActionClickListener = onActionClickListener
+  }
+
+  /**
+   * Changes the action to be performed when the tab whose ID resource equals to the given one gets
+   * clicked.
+   *
+   * @param idResource ID resource of the tab whose [OnMenuItemClickListener] will be changed.
+   * @param onTabClickListener [OnMenuItemClickListener] to change the matching tab's to.
+   */
+  fun setOnTabClickListener(@IdRes idResource: Int, onTabClickListener: OnMenuItemClickListener) {
+    menu.findItem(idResource)?.setOnMenuItemClickListener(onTabClickListener)
   }
 
   /**
@@ -221,23 +220,6 @@ constructor(
   }
 
   /**
-   * Updates the action [ImageButton].
-   *
-   * @param iconResource Resource of the [Drawable] of the icon to be set.
-   * @param contentDescriptionResource Resource of the description to be set.
-   * @param onClickListener [View.OnClickListener] to be notified when the [ImageButton] is clicked.
-   */
-  fun setAction(
-    @DrawableRes iconResource: Int,
-    @StringRes contentDescriptionResource: Int,
-    onClickListener: OnClickListener
-  ) {
-    actionIcon = ContextCompat.getDrawable(context, iconResource)
-    actionContentDescription = context.getString(contentDescriptionResource)
-    onActionClickListener = onClickListener
-  }
-
-  /**
    * Changes the [OnThemedCompositionListener] to be notified when the [Content] is composed and
    * themed.
    *
@@ -246,6 +228,50 @@ constructor(
   @VisibleForTesting
   internal fun setOnCompositionListener(onThemedCompositionListener: OnThemedCompositionListener?) {
     this.onThemedCompositionListener = onThemedCompositionListener
+  }
+
+  /**
+   * Updates the action [ImageButton].
+   *
+   * @param iconResource Resource of the [Drawable] of the icon to be set.
+   * @param contentDescriptionResource Resource of the description to be set.
+   * @param onClickListener [View.OnClickListener] to be notified when the [ImageButton] is clicked.
+   */
+  internal fun setAction(
+    @DrawableRes iconResource: Int,
+    @StringRes contentDescriptionResource: Int,
+    onClickListener: OnClickListener
+  ) {
+    actionIcon = ContextCompat.getDrawable(context, iconResource)
+    actionDescription = context.getString(contentDescriptionResource)
+    onActionClickListener = onClickListener
+  }
+
+  /**
+   * Adds a tab.
+   *
+   * @param idResource ID resource by which the tab will be identified.
+   * @param iconResource Resource of the icon of the tab to be added.
+   * @param contentDescriptionResource Resource of the description for the tab.
+   * @param onClickListener [MenuItem.OnMenuItemClickListener] to be notified when the tab is
+   *   clicked.
+   * @see NavigationBarScope.tab
+   */
+  internal fun addTab(
+    @IdRes idResource: Int,
+    @DrawableRes iconResource: Int,
+    @StringRes contentDescriptionResource: Int,
+    onClickListener: OnMenuItemClickListener
+  ) {
+    @Suppress("RestrictedApi")
+    menuBuilder
+      .add(0, idResource, 0, null)
+      ?.apply {
+        contentDescription = context.getString(contentDescriptionResource)
+        setOnMenuItemClickListener(onClickListener)
+        setIcon(iconResource)
+      }
+      ?.run { scope.tab(this as MenuItemImpl) }
   }
 
   /**
@@ -281,8 +307,17 @@ constructor(
   private fun TypedArray.setActionFromAttributes() {
     getDrawable(R.styleable.NavigationBarView_actionIcon)?.let {
       actionIcon = it
-      actionContentDescription =
-        getStringOrThrow(R.styleable.NavigationBarView_actionContentDescription)
+      actionDescription = getString(R.styleable.NavigationBarView_actionContentDescription)
     }
+  }
+
+  /**
+   * Requires the description that has been specified for the action.
+   *
+   * @throws IllegalStateException If the action has not been described.
+   */
+  @Throws(IllegalStateException::class)
+  private fun requireActionDescription(): String {
+    return checkNotNull(actionDescription) { "Action is required to be described." }
   }
 }
