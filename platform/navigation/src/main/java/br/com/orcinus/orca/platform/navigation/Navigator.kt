@@ -43,6 +43,13 @@ private constructor(
   @IdRes private val containerID: Int
 ) {
   /**
+   * [Navigation.Destination.OnChangeListener]s that are currently listening to
+   * [Navigation.Destination] changes.
+   */
+  private val onDestinationChangeListeners =
+    mutableListOf<Navigation.Destination.OnChangeListener>()
+
+  /**
    * Defines the [Destination.Provider] that will provide the [Fragment] destination through [to].
    */
   class Navigation<T : Fragment> internal constructor() {
@@ -62,6 +69,21 @@ private constructor(
       abstract class Provider<T : Fragment> internal constructor() {
         /** Provides the [Destination] to navigate to. */
         internal abstract fun provide(): Destination<T>
+      }
+
+      /**
+       * Listener to be notified whenever the [Destination] changes.
+       *
+       * @see onChange
+       */
+      fun interface OnChangeListener {
+        /**
+         * Callback that gets called when the [Destination] is defined as currently being the given
+         * one.
+         *
+         * @param destination [Destination] that has been changed to.
+         */
+        fun onChange(destination: Destination<*>)
       }
     }
 
@@ -168,6 +190,32 @@ private constructor(
   }
 
   /**
+   * Adds a [Navigation.Destination.OnChangeListener] that will be notified whenever the current
+   * [Navigation.Destination] changes.
+   *
+   * @param onDestinationChangeListener [Navigation.Destination.OnChangeListener] to be added.
+   * @see removeOnDestinationChangeListener
+   */
+  fun addOnDestinationChangeListener(
+    onDestinationChangeListener: Navigation.Destination.OnChangeListener
+  ) {
+    onDestinationChangeListeners.add(onDestinationChangeListener)
+  }
+
+  /**
+   * Removes a previously added [Navigation.Destination.OnChangeListener], which results in it not
+   * being notified of future changes.
+   *
+   * @param onDestinationChangeListener [Navigation.Destination.OnChangeListener] to be removed.
+   * @see addOnDestinationChangeListener
+   */
+  fun removeOnDestinationChangeListener(
+    onDestinationChangeListener: Navigation.Destination.OnChangeListener
+  ) {
+    onDestinationChangeListeners.remove(onDestinationChangeListener)
+  }
+
+  /**
    * Navigates to the [Fragment] destination provided by the result of [navigation].
    *
    * @param T [Fragment] to navigate to.
@@ -214,5 +262,6 @@ private constructor(
       add(containerID, destination.target(), destination.route)
     }
     fragmentManager.executePendingTransactions()
+    onDestinationChangeListeners.forEach { it.onChange(destination) }
   }
 }
