@@ -301,8 +301,8 @@ private constructor(
       setTransition(transition.value)
       add(containerID, fragment, fragment.tag)
       (fragment as? DestinationFragment)?.setId(id)
+      onNavigationListeners.forEach { it.onNavigation(fragment) }
     }
     fragmentManager.executePendingTransactions()
-    onNavigationListeners.forEach { it.onNavigation(fragment) }
   }
 }
