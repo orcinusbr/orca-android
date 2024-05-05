@@ -17,6 +17,7 @@ package br.com.orcinus.orca.platform.navigation
 
 import android.view.View
 import android.widget.FrameLayout
+import androidx.annotation.Discouraged
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -46,6 +47,23 @@ private constructor(
 ) {
   /** [OnNavigationListener]s that are currently listening to navigations. */
   internal val onNavigationListeners = mutableListOf<OnNavigationListener>()
+
+  /** Defines the [Destination] that will provide the [Fragment] which is the destination. */
+  @Discouraged(
+    "Providing a non-`DestinationFragment` is highly discouraged, since it is a requirement of " +
+      "`View`-`Navigator` integration APIs for it to be uniquely identified. When navigating, " +
+      "prefer calling `Navigator.navigateToDestinationFragment` instead."
+  )
+  class Navigation private constructor() {
+    /**
+     * Target navigation site.
+     *
+     * @param T [Fragment] to be navigated to.
+     * @param route Path by which the [fragment] can be retrieved.
+     * @param fragment Returns the [Fragment] of this [Destination].
+     */
+    data class Destination<T : Fragment>(val route: String, val fragment: () -> T)
+  }
 
   /**
    * Listener to be notified when a [Fragment] gets navigated to.
