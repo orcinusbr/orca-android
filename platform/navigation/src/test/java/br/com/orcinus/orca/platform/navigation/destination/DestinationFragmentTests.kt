@@ -23,7 +23,9 @@ internal class DestinationFragmentTests {
   @Test
   fun identifies() {
     assertThat(
-        object : DestinationFragment({ android.R.id.empty }) {}.apply(DestinationFragment::setId).id
+        object : DestinationFragment({ android.R.id.empty }) {}
+          .apply(DestinationFragment::setId)
+          .getId()
       )
       .isEqualTo(android.R.id.empty)
   }

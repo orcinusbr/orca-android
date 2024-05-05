@@ -45,7 +45,7 @@ private constructor(
   @IdRes private val containerID: Int
 ) {
   /** [OnNavigationListener]s that are currently listening to navigations. */
-  private val onNavigationListeners = mutableListOf<OnNavigationListener>()
+  internal val onNavigationListeners = mutableListOf<OnNavigationListener>()
 
   /**
    * Listener to be notified when a [Fragment] gets navigated to.
@@ -86,6 +86,7 @@ private constructor(
       override fun onDestroy(owner: LifecycleOwner) {
         super.onDestroy(owner)
         (owner as FragmentActivity).lifecycle.removeObserver(this)
+        remembrances.getValue(containerID).onNavigationListeners.clear()
         remembrances.remove(containerID)
       }
     }
@@ -114,11 +115,12 @@ private constructor(
      *   removed.
      * @param containerID ID of the [FragmentContainerView] to which [Fragment]s will be added.
      */
-    internal fun remember(activity: FragmentActivity, @IdRes containerID: Int) {
+    internal fun remember(activity: FragmentActivity, @IdRes containerID: Int): Navigator {
       val navigator = Navigator(activity.supportFragmentManager, containerID)
       val lifecycleObserver = RemovalLifecycleObserver(containerID)
       activity.runOnUiThread { activity.lifecycle.addObserver(lifecycleObserver) }
       remembrances[containerID] = navigator
+      return navigator
     }
 
     /**
@@ -246,6 +248,7 @@ private constructor(
       "br.com.orcinus.orca.platform.navigation.Navigator"
     )
   )
+  @JvmName("navigateToFragmentOfType")
   fun <T : Fragment> navigate(
     transition: Transition,
     duplication: Duplication = allowingDuplication(),
