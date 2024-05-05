@@ -22,11 +22,29 @@ import assertk.assertions.support.expected
 import assertk.assertions.support.show
 
 /**
+ * Asserts that the ID of the current [Fragment] within the [FragmentActivity] matches the given
+ * one.
+ *
+ * @param A [FragmentActivity] in which the [Fragment] is.
+ * @param F [Fragment] that it is expected to be at.
+ * @param id ID of the [Fragment] that's expected to be the current one.
+ * @see Fragment.getId
+ */
+inline fun <A : FragmentActivity, reified F : Fragment> Assert<A>.isAt(id: Int): Assert<A> {
+  given {
+    it.supportFragmentManager.findFragmentById(id)
+      ?: expected("to be at:${show(F::class.simpleName)}")
+  }
+  return this
+}
+
+/**
  * Asserts that the tag of the current [Fragment] within the [FragmentActivity] matches the given
  * one.
  *
  * @param T [FragmentActivity] in which the [Fragment] is.
  * @param tag Tag of the [Fragment] that's expected to be the current one.
+ * @see Fragment.getTag
  */
 fun <T : FragmentActivity> Assert<T>.isAt(tag: String): Assert<T> {
   given { it.supportFragmentManager.findFragmentByTag(tag) ?: expected("to be at:${show(tag)}") }
