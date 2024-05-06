@@ -39,7 +39,7 @@ internal class NavigatorTests {
     }
   }
 
-  class SecondDestinationFragment : DestinationFragment(::generateID) {
+  class SecondDestinationFragment : DestinationFragment({ id }) {
     companion object {
       val id = generateID()
     }
