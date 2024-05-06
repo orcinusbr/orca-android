@@ -33,7 +33,7 @@ import kotlin.reflect.full.declaredMemberProperties
  */
 abstract class DestinationFragment
 @Throws(NoSuchFieldException::class)
-constructor(internal val id: () -> Int) : Fragment() {
+constructor(private val id: () -> Int) : Fragment() {
   @CallSuper
   override fun onAttach(context: Context) {
     super.onAttach(context)
