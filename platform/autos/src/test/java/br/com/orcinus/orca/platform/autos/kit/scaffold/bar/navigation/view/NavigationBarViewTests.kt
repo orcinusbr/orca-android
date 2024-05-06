@@ -24,6 +24,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
@@ -106,9 +107,17 @@ internal class NavigationBarViewTests {
     onView(withId(view.titleViewID)).check(matches(isDisplayed()))
   }
 
-  @Test
-  fun identifiesActionButton() {
+  @Test(expected = NoMatchingViewException::class)
+  fun doesNotIdentifyActionButtonWhenItHasNotBeenSet() {
     val view = NavigationBarView(context)
+    composeRule.setContent { AndroidView({ view }) }
+    onView(withId(view.actionButtonID)).check(matches(isCompletelyDisplayed()))
+  }
+
+  @Test
+  fun identifiesActionButtonWhenItHasBeenSet() {
+    val view =
+      NavigationBarView(context).apply { setAction(R.drawable.icon_back, emptyStringResourceID) {} }
     composeRule.setContent { AndroidView({ view }) }
     onView(withId(view.actionButtonID)).check(matches(isCompletelyDisplayed()))
   }
