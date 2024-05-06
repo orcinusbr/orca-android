@@ -69,7 +69,7 @@ internal enum class BottomDestinationProvider {
       val value = entries.find { it.id == id } ?: throw NoSuchElementException("$id")
       val destination = value.provide()
       navigator.navigate(suddenly(), disallowingDuplication()) {
-        to(destination.route, destination.fragment)
+        to(destination.route, destination.target)
       }
     }
   }

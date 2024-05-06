@@ -59,10 +59,10 @@ private constructor(
      * Target navigation site.
      *
      * @param T [Fragment] to be navigated to.
-     * @param route Path by which the [fragment] can be retrieved.
-     * @param fragment Returns the [Fragment] of this [Destination].
+     * @param route Path by which the [target] can be retrieved.
+     * @param target Returns the [Fragment] of this [Destination].
      */
-    data class Destination<T : Fragment>(val route: String, val fragment: () -> T)
+    data class Destination<T : Fragment>(val route: String, val target: () -> T)
   }
 
   /**
