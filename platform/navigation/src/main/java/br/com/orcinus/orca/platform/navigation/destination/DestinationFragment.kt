@@ -37,30 +37,22 @@ constructor(internal val id: () -> Int) : Fragment() {
   @CallSuper
   override fun onAttach(context: Context) {
     super.onAttach(context)
-    setId()
-  }
-
-  /** Identifies this [DestinationFragment] with the result of the predefined [id]. */
-  @Throws(NoSuchFieldException::class)
-  private fun setId() {
-    val id = id()
-    setId(id)
+    identify()
   }
 
   /**
-   * Identifies this [DestinationFragment] with the given [id].
+   * Identifies this [DestinationFragment] with the ID provided by [id].
    *
-   * @param id Identifier to be defined as this [DestinationFragment]'s.
    * @throws NoSuchFieldException If the property responsible for holding the ID isn't found (since
    *   it's private API as of `androidx.fragment` 1.7.0.
    */
   @Throws(NoSuchFieldException::class)
-  internal fun setId(id: Int) {
+  private fun identify() {
     Fragment::class
       .declaredMemberProperties
       .filterIsInstance<KMutableProperty1<Fragment, Int>>()
       .singleOrNull { it.name == "mFragmentId" }
-      ?.access { set(this@DestinationFragment, id) }
+      ?.access { set(this@DestinationFragment, id()) }
       ?: throw NoSuchFieldException("Fragment.mFragmentId")
   }
 
