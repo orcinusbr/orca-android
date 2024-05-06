@@ -52,7 +52,7 @@ internal class NavigatorTests {
     launchActivity<NavigationActivity>().use { scenario ->
       scenario.onActivity { activity: NavigationActivity ->
         activity.navigator.navigateToDestinationFragment(suddenly(), FirstDestinationFragment())
-        assertThat(activity).isAt<_, FirstDestinationFragment>(FirstDestinationFragment.id)
+        assertThat(activity).isAt<_, FirstDestinationFragment>()
       }
     }
   }
@@ -62,7 +62,7 @@ internal class NavigatorTests {
     launchActivity<NavigationActivity>().use { scenario ->
       scenario.onActivity { activity: NavigationActivity ->
         activity.navigator.navigateToDestinationFragment(opening(), FirstDestinationFragment())
-        assertThat(activity).isAt<_, FirstDestinationFragment>(FirstDestinationFragment.id)
+        assertThat(activity).isAt<_, FirstDestinationFragment>()
       }
     }
   }
@@ -72,7 +72,7 @@ internal class NavigatorTests {
     launchActivity<NavigationActivity>().use { scenario ->
       scenario.onActivity { activity: NavigationActivity ->
         activity.navigator.navigateToDestinationFragment(closing(), FirstDestinationFragment())
-        assertThat(activity).isAt<_, FirstDestinationFragment>(FirstDestinationFragment.id)
+        assertThat(activity).isAt<_, FirstDestinationFragment>()
       }
     }
   }
@@ -113,7 +113,7 @@ internal class NavigatorTests {
           navigateToDestinationFragment(suddenly(), FirstDestinationFragment())
           navigateToDestinationFragment(suddenly(), SecondDestinationFragment())
         }
-        assertThat(activity).isAt<_, SecondDestinationFragment>(SecondDestinationFragment.id)
+        assertThat(activity).isAt<_, SecondDestinationFragment>()
       }
     }
   }
