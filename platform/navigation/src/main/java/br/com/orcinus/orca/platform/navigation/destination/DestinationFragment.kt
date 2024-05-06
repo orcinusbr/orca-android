@@ -22,9 +22,9 @@ import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.full.declaredMemberProperties
 
 /**
- * [Fragment] for which a route is specified and whose ID has been assigned lazily, after it has
- * been hosted by a container. Essentially means that it wasn't "inherited" from such and didn't
- * originate from an `android:id` XML attribute.
+ * [Fragment] whose ID has been assigned lazily, after it has been hosted by a container.
+ * Essentially means that it wasn't "inherited" from such and didn't originate from an `android:id`
+ * XML attribute.
  *
  * @param id Provides the identifier to be defined as this [DestinationFragment]'s.
  * @see getId
