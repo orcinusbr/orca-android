@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -17,6 +17,7 @@ package br.com.orcinus.orca.platform.navigation
 
 import android.view.View
 import android.widget.FrameLayout
+import androidx.annotation.Discouraged
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -26,6 +27,8 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import br.com.orcinus.orca.platform.navigation.destination.DestinationFragment
+import br.com.orcinus.orca.platform.navigation.destination.FragmentProvisioningScope
 import br.com.orcinus.orca.platform.navigation.duplication.Duplication
 import br.com.orcinus.orca.platform.navigation.duplication.allowingDuplication
 import br.com.orcinus.orca.platform.navigation.duplication.disallowingDuplication
@@ -42,10 +45,16 @@ private constructor(
   private val fragmentManager: FragmentManager,
   @IdRes private val containerID: Int
 ) {
-  /**
-   * Defines the [Destination.Provider] that will provide the [Fragment] destination through [to].
-   */
-  class Navigation<T : Fragment> internal constructor() {
+  /** [OnNavigationListener]s that are currently listening to navigations. */
+  internal val onNavigationListeners = mutableListOf<OnNavigationListener>()
+
+  /** Defines the [Destination] that will provide the [Fragment] which is the destination. */
+  @Discouraged(
+    "Providing a non-`DestinationFragment` is highly discouraged, since it is a requirement of " +
+      "`View`-`Navigator` integration APIs for it to be uniquely identified. When navigating, " +
+      "prefer calling `Navigator.navigate(Transition, Duplication, DestinationFragment)` instead."
+  )
+  class Navigation private constructor() {
     /**
      * Target navigation site.
      *
@@ -53,31 +62,21 @@ private constructor(
      * @param route Path by which the [target] can be retrieved.
      * @param target Returns the [Fragment] of this [Destination].
      */
-    data class Destination<T : Fragment>(val route: String, val target: () -> T) {
-      /**
-       * Provides the [Destination] to navigate to through [provide]. Can be instantiated via [to].
-       *
-       * @param T [Fragment] to navigate to.
-       */
-      abstract class Provider<T : Fragment> internal constructor() {
-        /** Provides the [Destination] to navigate to. */
-        internal abstract fun provide(): Destination<T>
-      }
-    }
+    data class Destination<T : Fragment>(val route: String, val target: () -> T)
+  }
 
+  /**
+   * Listener to be notified when a [Fragment] gets navigated to.
+   *
+   * @see onNavigation
+   */
+  fun interface OnNavigationListener {
     /**
-     * Creates a [Destination.Provider].
+     * Callback that gets called when navigation to a [Fragment] is performed.
      *
-     * @param route Path by which the result of [target] can be retrieved.
-     * @param target Returns the [Fragment] to navigate to.
+     * @param fragment [Fragment] that is the destination.
      */
-    fun to(route: String, target: () -> T): Destination.Provider<T> {
-      return object : Destination.Provider<T>() {
-        override fun provide(): Destination<T> {
-          return Destination(route, target)
-        }
-      }
-    }
+    fun onNavigation(fragment: Fragment)
   }
 
   /**
@@ -105,6 +104,7 @@ private constructor(
       override fun onDestroy(owner: LifecycleOwner) {
         super.onDestroy(owner)
         (owner as FragmentActivity).lifecycle.removeObserver(this)
+        remembrances.getValue(containerID).onNavigationListeners.clear()
         remembrances.remove(containerID)
       }
     }
@@ -133,11 +133,12 @@ private constructor(
      *   removed.
      * @param containerID ID of the [FragmentContainerView] to which [Fragment]s will be added.
      */
-    internal fun remember(activity: FragmentActivity, @IdRes containerID: Int) {
+    internal fun remember(activity: FragmentActivity, @IdRes containerID: Int): Navigator {
       val navigator = Navigator(activity.supportFragmentManager, containerID)
       val lifecycleObserver = RemovalLifecycleObserver(containerID)
       activity.runOnUiThread { activity.lifecycle.addObserver(lifecycleObserver) }
       remembrances[containerID] = navigator
+      return navigator
     }
 
     /**
@@ -168,28 +169,127 @@ private constructor(
   }
 
   /**
-   * Navigates to the [Fragment] destination provided by the result of [navigation].
+   * Adds an [OnNavigationListener] that will be notified whenever navigation to a [Fragment] is
+   * performed.
+   *
+   * @param onNavigationListener [OnNavigationListener] to be added.
+   * @see removeOnNavigationListener
+   */
+  fun addOnNavigationListener(onNavigationListener: OnNavigationListener) {
+    onNavigationListeners.add(onNavigationListener)
+  }
+
+  /**
+   * Removes a previously added [OnNavigationListener], which results in it not being notified of
+   * future navigations.
+   *
+   * @param onNavigationListener [OnNavigationListener] to be removed.
+   * @see addOnNavigationListener
+   */
+  fun removeOnNavigationListener(onNavigationListener: OnNavigationListener) {
+    onNavigationListeners.remove(onNavigationListener)
+  }
+
+  /**
+   * Navigates to the [fragment].
+   *
+   * @param T [DestinationFragment] to navigate to.
+   * @param transition [Transition] with which the navigation will be animated.
+   * @param duplication Indicates whether the navigation should be performed even if the current
+   *   [DestinationFragment]'s ID and that of the given one are the same.
+   * @param fragment [DestinationFragment] to which navigation will be performed.
+   * @see allowingDuplication
+   * @see disallowingDuplication
+   */
+  fun <T : DestinationFragment> navigate(
+    transition: Transition,
+    duplication: Duplication = allowingDuplication(),
+    fragment: T
+  ) {
+    _navigate(transition, duplication, fragment)
+  }
+
+  /**
+   * Navigates to the [fragment] while allowing duplication.
+   *
+   * @param T [DestinationFragment] to navigate to.
+   * @param transition [Transition] with which the navigation will be animated.
+   * @param fragment [DestinationFragment] to which navigation will be performed.
+   * @see allowingDuplication
+   */
+  fun <T : DestinationFragment> navigate(transition: Transition, fragment: T) {
+    _navigate(transition, allowingDuplication(), fragment)
+  }
+
+  /**
+   * Navigates to the provided [Fragment].
+   *
+   * @param transition [Transition] with which the navigation will be animated.
+   * @param duplication Indicates whether the navigation should be performed even if the current
+   *   [Fragment]'s ID and that of the given one are the same.
+   * @param fragmentProvisioning Provides the [Fragment] to which navigation will be performed.
+   * @see allowingDuplication
+   * @see disallowingDuplication
+   */
+  @Discouraged(
+    "Navigating to a non-`DestinationFragment` is highly discouraged, since it is a requirement " +
+      "of `View`-`Navigator` integration APIs for it to be uniquely identified."
+  )
+  fun navigate(
+    transition: Transition,
+    duplication: Duplication = allowingDuplication(),
+    fragmentProvisioning: FragmentProvisioningScope<Fragment>.() -> Fragment
+  ) {
+    @Suppress("DiscouragedApi") navigate<Fragment>(transition, duplication, fragmentProvisioning)
+  }
+
+  /**
+   * Navigates to the provided [Fragment].
    *
    * @param T [Fragment] to navigate to.
    * @param transition [Transition] with which the navigation will be animated.
    * @param duplication Indicates whether the navigation should be performed even if the current
-   *   [Navigation.Destination]'s and that of the provided by the result of [navigation] are the
-   *   same.
-   * @param navigation Defines where to navigate to.
+   *   [Fragment]'s ID and that of the given one are the same.
+   * @param fragmentProvisioning Provides the [Fragment] to which navigation will be performed.
    * @see allowingDuplication
    * @see disallowingDuplication
-   * @see Navigation.to
    */
+  @Discouraged(
+    "Navigating to a non-`DestinationFragment` is highly discouraged, since it is a requirement " +
+      "of `View`-`Navigator` integration APIs for it to be uniquely identified."
+  )
+  @JvmName("navigateToFragmentOfType")
   fun <T : Fragment> navigate(
     transition: Transition,
     duplication: Duplication = allowingDuplication(),
-    navigation: Navigation<T>.() -> Navigation.Destination.Provider<T>
+    fragmentProvisioning: FragmentProvisioningScope<T>.() -> T
   ) {
-    val previousRoute = fragmentManager.fragments.lastOrNull()?.tag
-    val destination = Navigation<T>().navigation().provide()
-    val canNavigate = duplication.canNavigate(previousRoute, currentRoute = destination.route)
+    val fragment = FragmentProvisioningScope<T>().fragmentProvisioning()
+    _navigate(transition, duplication, fragment)
+  }
+
+  /**
+   * Navigates to the [fragment].
+   *
+   * @param T [Fragment] to navigate to.
+   * @param transition [Transition] with which the navigation will be animated.
+   * @param duplication Indicates whether the navigation should be performed even if the current
+   *   [Fragment]'s ID and that of the given one are the same.
+   * @param fragment [DestinationFragment] to which navigation will be performed.
+   * @see allowingDuplication
+   * @see disallowingDuplication
+   */
+  @Suppress("FunctionName")
+  private fun <T : Fragment> _navigate(
+    transition: Transition,
+    duplication: Duplication,
+    fragment: T
+  ) {
+    val currentFragmentClass = fragmentManager.fragments.lastOrNull()?.let { it::class }
+    val canNavigate =
+      duplication.canNavigate(currentFragmentClass, nextFragmentClass = fragment::class)
     if (canNavigate) {
-      unconditionallyNavigate(transition, destination)
+      navigateToUnidentifiedFragment(transition, fragment)
     }
   }
 
@@ -199,19 +299,18 @@ private constructor(
   }
 
   /**
-   * Navigates to the [destination] without checking if we're allowed to do so.
+   * Navigates to the unidentified [fragment].
    *
    * @param transition [Transition] with which the navigation will be animated.
-   * @param destination [Navigation.Destination] to navigate to.
+   * @param fragment [Fragment] to navigate to.
+   * @see Fragment.getId
    */
-  private fun unconditionallyNavigate(
-    transition: Transition,
-    destination: Navigation.Destination<*>
-  ) {
+  private fun navigateToUnidentifiedFragment(transition: Transition, fragment: Fragment) {
     fragmentManager.commit(allowStateLoss = true) {
       addToBackStack(null)
       setTransition(transition.value)
-      add(containerID, destination.target(), destination.route)
+      add(containerID, fragment, fragment.tag)
+      onNavigationListeners.forEach { it.onNavigation(fragment) }
     }
     fragmentManager.executePendingTransactions()
   }

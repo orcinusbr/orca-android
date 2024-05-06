@@ -18,6 +18,7 @@ package br.com.orcinus.orca.platform.navigation
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.launchActivity
 import assertk.assertThat
+import assertk.assertions.isEmpty
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import br.com.orcinus.orca.platform.testing.activity.scenario.activity
@@ -45,6 +46,17 @@ internal class NavigatorPoolTests {
       Navigator.Pool.remember(activity, containerID)
       it.moveToState(Lifecycle.State.DESTROYED)
       assertThat(containerID in Navigator.Pool).isFalse()
+    }
+  }
+
+  @Test
+  fun removesOnNavigationListenersFromNavigatorAfterActivityIsDestroyed() {
+    launchActivity<NavigationActivity>().use {
+      val activity = checkNotNull(it.activity)
+      val containerID = Navigator.Pool.getContainerIDOrThrow(activity)
+      val navigator = Navigator.Pool.remember(activity, containerID)
+      it.moveToState(Lifecycle.State.DESTROYED)
+      assertThat(navigator.onNavigationListeners).isEmpty()
     }
   }
 }

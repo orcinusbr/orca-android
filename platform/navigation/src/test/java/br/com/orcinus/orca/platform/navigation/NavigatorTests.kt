@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,11 +15,16 @@
 
 package br.com.orcinus.orca.platform.navigation
 
-import androidx.fragment.app.Fragment
 import androidx.test.core.app.launchActivity
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
+import assertk.assertions.isInstanceOf
+import assertk.assertions.isSameAs
+import br.com.orcinus.orca.platform.navigation.destination.DestinationFragment
+import br.com.orcinus.orca.platform.navigation.duplication.disallowingDuplication
 import br.com.orcinus.orca.platform.navigation.test.isAt
+import br.com.orcinus.orca.platform.navigation.transition.closing
 import br.com.orcinus.orca.platform.navigation.transition.opening
 import br.com.orcinus.orca.platform.navigation.transition.suddenly
 import kotlin.test.Test
@@ -28,26 +33,26 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class NavigatorTests {
-  class FirstDestinationFragment : Fragment() {
+  class UnidentifiedDestinationFragment : DestinationFragment(::NO_ID)
+
+  class FirstDestinationFragment : DestinationFragment(::id) {
     companion object {
-      const val ROUTE = "first-destination"
+      val id = generateID()
     }
   }
 
-  class SecondDestinationFragment : Fragment() {
+  class SecondDestinationFragment : DestinationFragment(::id) {
     companion object {
-      const val ROUTE = "second-destination"
+      val id = generateID()
     }
   }
 
   @Test
   fun navigatesSuddenly() {
     launchActivity<NavigationActivity>().use { scenario ->
-      scenario.onActivity { activity ->
-        activity.navigator.navigate(suddenly()) {
-          to(FirstDestinationFragment.ROUTE, NavigatorTests::FirstDestinationFragment)
-        }
-        assertThat(activity).isAt(FirstDestinationFragment.ROUTE)
+      scenario.onActivity { activity: NavigationActivity ->
+        activity.navigator.navigate(suddenly(), FirstDestinationFragment())
+        assertThat(activity).isAt<_, FirstDestinationFragment>()
       }
     }
   }
@@ -55,11 +60,9 @@ internal class NavigatorTests {
   @Test
   fun navigatesWithOpeningTransition() {
     launchActivity<NavigationActivity>().use { scenario ->
-      scenario.onActivity { activity ->
-        activity.navigator.navigate(opening()) {
-          to(FirstDestinationFragment.ROUTE, NavigatorTests::FirstDestinationFragment)
-        }
-        assertThat(activity).isAt(FirstDestinationFragment.ROUTE)
+      scenario.onActivity { activity: NavigationActivity ->
+        activity.navigator.navigate(opening(), FirstDestinationFragment())
+        assertThat(activity).isAt<_, FirstDestinationFragment>()
       }
     }
   }
@@ -67,11 +70,9 @@ internal class NavigatorTests {
   @Test
   fun navigatesWithClosingTransition() {
     launchActivity<NavigationActivity>().use { scenario ->
-      scenario.onActivity { activity ->
-        activity.navigator.navigate(br.com.orcinus.orca.platform.navigation.transition.closing()) {
-          to(FirstDestinationFragment.ROUTE, NavigatorTests::FirstDestinationFragment)
-        }
-        assertThat(activity).isAt(FirstDestinationFragment.ROUTE)
+      scenario.onActivity { activity: NavigationActivity ->
+        activity.navigator.navigate(closing(), FirstDestinationFragment())
+        assertThat(activity).isAt<_, FirstDestinationFragment>()
       }
     }
   }
@@ -79,12 +80,8 @@ internal class NavigatorTests {
   @Test
   fun navigatesTwiceWhenDuplicationIsAllowed() {
     launchActivity<NavigationActivity>().use { scenario ->
-      scenario.onActivity { activity ->
-        repeat(2) {
-          activity.navigator.navigate(suddenly()) {
-            to(FirstDestinationFragment.ROUTE, NavigatorTests::FirstDestinationFragment)
-          }
-        }
+      scenario.onActivity { activity: NavigationActivity ->
+        repeat(2) { activity.navigator.navigate(suddenly(), FirstDestinationFragment()) }
         assertThat(activity.supportFragmentManager.fragments.size).isEqualTo(2)
       }
     }
@@ -93,14 +90,13 @@ internal class NavigatorTests {
   @Test
   fun navigatesOnceWhenDuplicationIsDisallowed() {
     launchActivity<NavigationActivity>().use { scenario ->
-      scenario.onActivity { activity ->
+      scenario.onActivity { activity: NavigationActivity ->
         repeat(2) {
           activity.navigator.navigate(
             suddenly(),
-            br.com.orcinus.orca.platform.navigation.duplication.disallowingDuplication()
-          ) {
-            to(FirstDestinationFragment.ROUTE, NavigatorTests::FirstDestinationFragment)
-          }
+            disallowingDuplication(),
+            FirstDestinationFragment()
+          )
         }
         assertThat(activity.supportFragmentManager.fragments.size).isEqualTo(1)
       }
@@ -110,12 +106,49 @@ internal class NavigatorTests {
   @Test
   fun navigatesSequentially() {
     launchActivity<NavigationActivity>().use { scenario ->
-      scenario.onActivity { activity ->
+      scenario.onActivity { activity: NavigationActivity ->
         with(activity.navigator) {
-          navigate(suddenly()) { to(FirstDestinationFragment.ROUTE, ::FirstDestinationFragment) }
-          navigate(suddenly()) { to(SecondDestinationFragment.ROUTE, ::SecondDestinationFragment) }
+          navigate(suddenly(), FirstDestinationFragment())
+          navigate(suddenly(), SecondDestinationFragment())
         }
-        assertThat(activity).isAt(SecondDestinationFragment.ROUTE)
+        assertThat(activity).isAt<_, SecondDestinationFragment>()
+      }
+    }
+  }
+
+  @Test
+  fun fragmentIdentifierRemainsBeingTheLazilySpecifiedOneAfterItIsHostedByAContainer() {
+    launchActivity<NavigationActivity>().use { scenario ->
+      scenario.onActivity { activity: NavigationActivity ->
+        val fragment = FirstDestinationFragment()
+        activity.navigator.navigate(suddenly(), fragment)
+        assertThat(fragment.getId()).isSameAs(FirstDestinationFragment.id)
+      }
+    }
+  }
+
+  @Test
+  fun addsOnNavigationListener() {
+    launchActivity<NavigationActivity>().use { scenario ->
+      scenario.onActivity { activity: NavigationActivity ->
+        lateinit var fragment: DestinationFragment
+        activity.navigator.addOnNavigationListener { fragment = it as DestinationFragment }
+        activity.navigator.navigate(suddenly(), FirstDestinationFragment())
+        assertThat(fragment).isInstanceOf<FirstDestinationFragment>()
+      }
+    }
+  }
+
+  @Test
+  fun removesOnNavigationListener() {
+    launchActivity<NavigationActivity>().use { scenario ->
+      scenario.onActivity { activity: NavigationActivity ->
+        var hasListenerBeenNotified = false
+        val listener = Navigator.OnNavigationListener { hasListenerBeenNotified = true }
+        activity.navigator.addOnNavigationListener(listener)
+        activity.navigator.removeOnNavigationListener(listener)
+        activity.navigator.navigate(suddenly(), FirstDestinationFragment())
+        assertThat(hasListenerBeenNotified).isFalse()
       }
     }
   }

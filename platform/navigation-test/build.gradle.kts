@@ -32,6 +32,7 @@ dependencies {
 
   implementation(project(":ext:reflection"))
   implementation(project(":platform:navigation"))
+  implementation(libs.android.annotation)
   implementation(libs.assertk)
   implementation(libs.kotlin.reflect)
 
@@ -39,5 +40,6 @@ dependencies {
   testImplementation(libs.android.fragment.testing)
   testImplementation(libs.android.test.junit)
   testImplementation(libs.kotlin.test)
+  testImplementation(libs.openTest4J)
   testImplementation(libs.robolectric)
 }

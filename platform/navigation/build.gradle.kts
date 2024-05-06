@@ -26,6 +26,8 @@ android {
 dependencies {
   api(libs.android.fragment)
 
+  implementation(project(":ext:reflection"))
+  implementation(libs.android.annotation)
   implementation(libs.android.fragment.ktx)
 
   testImplementation(project(":platform:intents"))
