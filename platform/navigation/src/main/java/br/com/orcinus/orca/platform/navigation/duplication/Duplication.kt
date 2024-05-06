@@ -16,19 +16,26 @@
 package br.com.orcinus.orca.platform.navigation.duplication
 
 import androidx.fragment.app.Fragment
+import kotlin.reflect.KClass
 
 /** Indicates the approval or lack thereof of duplicate navigation. */
 sealed class Duplication {
   /** Indicates that duplicate navigation is disallowed. */
   internal data object Disallowed : Duplication() {
-    override fun canNavigate(currentID: Int?, nextID: Int): Boolean {
-      return currentID == null || nextID != currentID
+    override fun canNavigate(
+      currentFragmentClass: KClass<out Fragment>?,
+      nextFragmentClass: KClass<out Fragment>
+    ): Boolean {
+      return currentFragmentClass == null || nextFragmentClass != currentFragmentClass
     }
   }
 
   /** Indicates that duplicate navigation is allowed. */
   internal data object Allowed : Duplication() {
-    override fun canNavigate(currentID: Int?, nextID: Int): Boolean {
+    override fun canNavigate(
+      currentFragmentClass: KClass<out Fragment>?,
+      nextFragmentClass: KClass<out Fragment>
+    ): Boolean {
       return true
     }
   }
@@ -36,8 +43,11 @@ sealed class Duplication {
   /**
    * Determines whether navigation can be performed.
    *
-   * @param currentID ID of the current [Fragment].
-   * @param nextID ID of the [Fragment] to which navigation has been requested.
+   * @param currentFragmentClass [KClass] of the current [Fragment].
+   * @param nextFragmentClass [KClass] of the [Fragment] to which navigation has been requested.
    */
-  internal abstract fun canNavigate(currentID: Int?, nextID: Int): Boolean
+  internal abstract fun canNavigate(
+    currentFragmentClass: KClass<out Fragment>?,
+    nextFragmentClass: KClass<out Fragment>
+  ): Boolean
 }

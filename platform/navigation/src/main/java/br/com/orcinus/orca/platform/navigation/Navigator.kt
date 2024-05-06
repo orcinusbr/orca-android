@@ -293,11 +293,11 @@ private constructor(
     duplication: Duplication,
     fragment: T
   ) {
-    val currentID = fragmentManager.fragments.lastOrNull()?.id
-    val nextID = if (fragment is DestinationFragment) fragment.id() else fragment.id
-    val canNavigate = duplication.canNavigate(currentID, nextID)
+    val currentFragmentClass = fragmentManager.fragments.lastOrNull()?.let { it::class }
+    val canNavigate =
+      duplication.canNavigate(currentFragmentClass, nextFragmentClass = fragment::class)
     if (canNavigate) {
-      navigateToUnidentifiedFragment(transition, fragment, nextID)
+      navigateToUnidentifiedFragment(transition, fragment)
     }
   }
 
@@ -307,21 +307,17 @@ private constructor(
   }
 
   /**
-   * Navigates to the unidentified [fragment], whose ID will be the given one after it's been added
-   * to the container.
+   * Navigates to the unidentified [fragment].
    *
    * @param transition [Transition] with which the navigation will be animated.
    * @param fragment [Fragment] to navigate to.
-   * @param id ID that has been computed when the [fragment] is a [DestinationFragment] or the
-   *   [Fragment]'s own immutable one.
    * @see Fragment.getId
    */
-  private fun navigateToUnidentifiedFragment(transition: Transition, fragment: Fragment, id: Int) {
+  private fun navigateToUnidentifiedFragment(transition: Transition, fragment: Fragment) {
     fragmentManager.commit(allowStateLoss = true) {
       addToBackStack(null)
       setTransition(transition.value)
       add(containerID, fragment, fragment.tag)
-      (fragment as? DestinationFragment)?.takeUnless { id == DestinationFragment.NO_ID }?.setId(id)
       onNavigationListeners.forEach { it.onNavigation(fragment) }
     }
     fragmentManager.executePendingTransactions()

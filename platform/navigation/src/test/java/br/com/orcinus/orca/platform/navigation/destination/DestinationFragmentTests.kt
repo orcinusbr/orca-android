@@ -15,18 +15,43 @@
 
 package br.com.orcinus.orca.platform.navigation.destination
 
+import androidx.fragment.app.testing.launchFragment
+import androidx.lifecycle.Lifecycle
 import assertk.assertThat
-import assertk.assertions.isEqualTo
+import assertk.assertions.isSameAs
 import kotlin.test.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class DestinationFragmentTests {
+  class ToAttachDestinationFragment : DestinationFragment(::id) {
+    companion object {
+      val id = generateID()
+    }
+  }
+
   @Test
-  fun identifies() {
-    assertThat(
-        object : DestinationFragment({ android.R.id.empty }) {}
-          .apply(DestinationFragment::setId)
-          .getId()
-      )
-      .isEqualTo(android.R.id.empty)
+  fun isNotIdentifiedWhenUnattached() {
+    assertThat(ToAttachDestinationFragment().getId()).isSameAs(DestinationFragment.NO_ID)
+  }
+
+  @Test
+  fun isIdentifiedWhenAttached() {
+    launchFragment(instantiate = ::ToAttachDestinationFragment).use { scenario ->
+      scenario.onFragment { fragment ->
+        assertThat(fragment.getId()).isSameAs(ToAttachDestinationFragment.id)
+      }
+    }
+  }
+
+  @Test
+  fun isNotIdentifiedWhenDetached() {
+    val fragment = ToAttachDestinationFragment()
+    launchFragment { fragment }
+      .use {
+        it.moveToState(Lifecycle.State.DESTROYED)
+        assertThat(fragment.getId()).isSameAs(DestinationFragment.NO_ID)
+      }
   }
 }

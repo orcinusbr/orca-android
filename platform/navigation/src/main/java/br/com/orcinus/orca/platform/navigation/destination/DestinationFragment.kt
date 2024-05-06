@@ -15,7 +15,9 @@
 
 package br.com.orcinus.orca.platform.navigation.destination
 
+import android.content.Context
 import android.view.View
+import androidx.annotation.CallSuper
 import androidx.fragment.app.Fragment
 import br.com.orcinus.orca.ext.reflection.access
 import kotlin.reflect.KMutableProperty1
@@ -32,9 +34,15 @@ import kotlin.reflect.full.declaredMemberProperties
 abstract class DestinationFragment
 @Throws(NoSuchFieldException::class)
 constructor(internal val id: () -> Int) : Fragment() {
+  @CallSuper
+  override fun onAttach(context: Context) {
+    super.onAttach(context)
+    setId()
+  }
+
   /** Identifies this [DestinationFragment] with the result of the predefined [id]. */
   @Throws(NoSuchFieldException::class)
-  internal fun setId() {
+  private fun setId() {
     val id = id()
     setId(id)
   }

@@ -119,17 +119,6 @@ internal class NavigatorTests {
   }
 
   @Test
-  fun fragmentIdentifierIsThatOfTheContainerByWhichItIsHostedWhenItWasUnidentified() {
-    launchActivity<NavigationActivity>().use { scenario ->
-      scenario.onActivity { activity: NavigationActivity ->
-        val fragment = UnidentifiedDestinationFragment()
-        activity.navigator.navigateToDestinationFragment(suddenly(), fragment)
-        assertThat(fragment.getId()).isEqualTo(Navigator.Pool.getContainerIDOrThrow(activity))
-      }
-    }
-  }
-
-  @Test
   fun fragmentIdentifierRemainsBeingTheLazilySpecifiedOneAfterItIsHostedByAContainer() {
     launchActivity<NavigationActivity>().use { scenario ->
       scenario.onActivity { activity: NavigationActivity ->
