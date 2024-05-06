@@ -321,7 +321,7 @@ private constructor(
       addToBackStack(null)
       setTransition(transition.value)
       add(containerID, fragment, fragment.tag)
-      (fragment as? DestinationFragment)?.setId(id)
+      (fragment as? DestinationFragment)?.takeUnless { id == DestinationFragment.NO_ID }?.setId(id)
       onNavigationListeners.forEach { it.onNavigation(fragment) }
     }
     fragmentManager.executePendingTransactions()

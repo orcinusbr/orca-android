@@ -33,13 +33,15 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class NavigatorTests {
-  class FirstDestinationFragment : DestinationFragment({ id }) {
+  class UnidentifiedDestinationFragment : DestinationFragment(::NO_ID)
+
+  class FirstDestinationFragment : DestinationFragment(::id) {
     companion object {
       val id = generateID()
     }
   }
 
-  class SecondDestinationFragment : DestinationFragment({ id }) {
+  class SecondDestinationFragment : DestinationFragment(::id) {
     companion object {
       val id = generateID()
     }
@@ -112,6 +114,17 @@ internal class NavigatorTests {
           navigateToDestinationFragment(suddenly(), SecondDestinationFragment())
         }
         assertThat(activity).isAt<_, SecondDestinationFragment>(SecondDestinationFragment.id)
+      }
+    }
+  }
+
+  @Test
+  fun fragmentIdentifierIsThatOfTheContainerByWhichItIsHostedWhenItWasUnidentified() {
+    launchActivity<NavigationActivity>().use { scenario ->
+      scenario.onActivity { activity: NavigationActivity ->
+        val fragment = UnidentifiedDestinationFragment()
+        activity.navigator.navigateToDestinationFragment(suddenly(), fragment)
+        assertThat(fragment.getId()).isEqualTo(Navigator.Pool.getContainerIDOrThrow(activity))
       }
     }
   }
