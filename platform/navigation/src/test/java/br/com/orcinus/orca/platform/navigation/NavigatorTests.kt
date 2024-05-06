@@ -51,7 +51,7 @@ internal class NavigatorTests {
   fun navigatesSuddenly() {
     launchActivity<NavigationActivity>().use { scenario ->
       scenario.onActivity { activity: NavigationActivity ->
-        activity.navigator.navigateToDestinationFragment(suddenly(), FirstDestinationFragment())
+        activity.navigator.navigate(suddenly(), FirstDestinationFragment())
         assertThat(activity).isAt<_, FirstDestinationFragment>()
       }
     }
@@ -61,7 +61,7 @@ internal class NavigatorTests {
   fun navigatesWithOpeningTransition() {
     launchActivity<NavigationActivity>().use { scenario ->
       scenario.onActivity { activity: NavigationActivity ->
-        activity.navigator.navigateToDestinationFragment(opening(), FirstDestinationFragment())
+        activity.navigator.navigate(opening(), FirstDestinationFragment())
         assertThat(activity).isAt<_, FirstDestinationFragment>()
       }
     }
@@ -71,7 +71,7 @@ internal class NavigatorTests {
   fun navigatesWithClosingTransition() {
     launchActivity<NavigationActivity>().use { scenario ->
       scenario.onActivity { activity: NavigationActivity ->
-        activity.navigator.navigateToDestinationFragment(closing(), FirstDestinationFragment())
+        activity.navigator.navigate(closing(), FirstDestinationFragment())
         assertThat(activity).isAt<_, FirstDestinationFragment>()
       }
     }
@@ -81,9 +81,7 @@ internal class NavigatorTests {
   fun navigatesTwiceWhenDuplicationIsAllowed() {
     launchActivity<NavigationActivity>().use { scenario ->
       scenario.onActivity { activity: NavigationActivity ->
-        repeat(2) {
-          activity.navigator.navigateToDestinationFragment(suddenly(), FirstDestinationFragment())
-        }
+        repeat(2) { activity.navigator.navigate(suddenly(), FirstDestinationFragment()) }
         assertThat(activity.supportFragmentManager.fragments.size).isEqualTo(2)
       }
     }
@@ -94,7 +92,7 @@ internal class NavigatorTests {
     launchActivity<NavigationActivity>().use { scenario ->
       scenario.onActivity { activity: NavigationActivity ->
         repeat(2) {
-          activity.navigator.navigateToDestinationFragment(
+          activity.navigator.navigate(
             suddenly(),
             disallowingDuplication(),
             FirstDestinationFragment()
@@ -110,8 +108,8 @@ internal class NavigatorTests {
     launchActivity<NavigationActivity>().use { scenario ->
       scenario.onActivity { activity: NavigationActivity ->
         with(activity.navigator) {
-          navigateToDestinationFragment(suddenly(), FirstDestinationFragment())
-          navigateToDestinationFragment(suddenly(), SecondDestinationFragment())
+          navigate(suddenly(), FirstDestinationFragment())
+          navigate(suddenly(), SecondDestinationFragment())
         }
         assertThat(activity).isAt<_, SecondDestinationFragment>()
       }
@@ -123,7 +121,7 @@ internal class NavigatorTests {
     launchActivity<NavigationActivity>().use { scenario ->
       scenario.onActivity { activity: NavigationActivity ->
         val fragment = FirstDestinationFragment()
-        activity.navigator.navigateToDestinationFragment(suddenly(), fragment)
+        activity.navigator.navigate(suddenly(), fragment)
         assertThat(fragment.getId()).isSameAs(FirstDestinationFragment.id)
       }
     }
@@ -135,7 +133,7 @@ internal class NavigatorTests {
       scenario.onActivity { activity: NavigationActivity ->
         lateinit var fragment: DestinationFragment
         activity.navigator.addOnNavigationListener { fragment = it as DestinationFragment }
-        activity.navigator.navigateToDestinationFragment(suddenly(), FirstDestinationFragment())
+        activity.navigator.navigate(suddenly(), FirstDestinationFragment())
         assertThat(fragment).isInstanceOf<FirstDestinationFragment>()
       }
     }
@@ -149,7 +147,7 @@ internal class NavigatorTests {
         val listener = Navigator.OnNavigationListener { hasListenerBeenNotified = true }
         activity.navigator.addOnNavigationListener(listener)
         activity.navigator.removeOnNavigationListener(listener)
-        activity.navigator.navigateToDestinationFragment(suddenly(), FirstDestinationFragment())
+        activity.navigator.navigate(suddenly(), FirstDestinationFragment())
         assertThat(hasListenerBeenNotified).isFalse()
       }
     }

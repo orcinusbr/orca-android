@@ -32,7 +32,7 @@ import kotlin.reflect.full.declaredMemberProperties
  * @param T [Fragment] to navigate to.
  * @see to
  * @see Navigator.navigate
- * @see Navigator.navigateToDestinationFragment
+ * @see Navigator.navigate
  */
 class FragmentProvisioningScope<T : Fragment> internal constructor() {
   /**
@@ -49,7 +49,7 @@ class FragmentProvisioningScope<T : Fragment> internal constructor() {
   @Discouraged(
     "Providing a non-`DestinationFragment` is highly discouraged, since it is a requirement of " +
       "`View`-`Navigator` integration APIs for it to be uniquely identified. When navigating, " +
-      "prefer calling `Navigator.navigateToDestinationFragment` instead."
+      "prefer calling `Navigator.navigate` instead."
   )
   @Throws(NoSuchFieldException::class)
   fun to(tag: String, fragment: () -> T): T {

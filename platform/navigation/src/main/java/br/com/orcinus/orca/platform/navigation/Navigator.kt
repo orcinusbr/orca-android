@@ -52,7 +52,7 @@ private constructor(
   @Discouraged(
     "Providing a non-`DestinationFragment` is highly discouraged, since it is a requirement of " +
       "`View`-`Navigator` integration APIs for it to be uniquely identified. When navigating, " +
-      "prefer calling `Navigator.navigateToDestinationFragment` instead."
+      "prefer calling `Navigator.navigate(Transition, Duplication, DestinationFragment)` instead."
   )
   class Navigation private constructor() {
     /**
@@ -201,7 +201,7 @@ private constructor(
    * @see allowingDuplication
    * @see disallowingDuplication
    */
-  fun <T : DestinationFragment> navigateToDestinationFragment(
+  fun <T : DestinationFragment> navigate(
     transition: Transition,
     duplication: Duplication = allowingDuplication(),
     fragment: T
@@ -217,7 +217,7 @@ private constructor(
    * @param fragment [DestinationFragment] to which navigation will be performed.
    * @see allowingDuplication
    */
-  fun <T : DestinationFragment> navigateToDestinationFragment(transition: Transition, fragment: T) {
+  fun <T : DestinationFragment> navigate(transition: Transition, fragment: T) {
     _navigate(transition, allowingDuplication(), fragment)
   }
 
@@ -231,20 +231,16 @@ private constructor(
    * @see allowingDuplication
    * @see disallowingDuplication
    */
-  @Deprecated(
+  @Discouraged(
     "Navigating to a non-`DestinationFragment` is highly discouraged, since it is a requirement " +
-      "of `View`-`Navigator` integration APIs for it to be uniquely identified.",
-    ReplaceWith(
-      "navigateToDestinationFragment(transition, duplication, fragmentProvisioning)",
-      "br.com.orcinus.orca.platform.navigation.Navigator"
-    )
+      "of `View`-`Navigator` integration APIs for it to be uniquely identified."
   )
   fun navigate(
     transition: Transition,
     duplication: Duplication = allowingDuplication(),
     fragmentProvisioning: FragmentProvisioningScope<Fragment>.() -> Fragment
   ) {
-    @Suppress("DEPRECATION") navigate<Fragment>(transition, duplication, fragmentProvisioning)
+    @Suppress("DiscouragedApi") navigate<Fragment>(transition, duplication, fragmentProvisioning)
   }
 
   /**
@@ -258,13 +254,9 @@ private constructor(
    * @see allowingDuplication
    * @see disallowingDuplication
    */
-  @Deprecated(
+  @Discouraged(
     "Navigating to a non-`DestinationFragment` is highly discouraged, since it is a requirement " +
-      "of `View`-`Navigator` integration APIs for it to be uniquely identified.",
-    ReplaceWith(
-      "navigateToDestinationFragment<T>(transition, duplication, fragmentProvisioning)",
-      "br.com.orcinus.orca.platform.navigation.Navigator"
-    )
+      "of `View`-`Navigator` integration APIs for it to be uniquely identified."
   )
   @JvmName("navigateToFragmentOfType")
   fun <T : Fragment> navigate(
