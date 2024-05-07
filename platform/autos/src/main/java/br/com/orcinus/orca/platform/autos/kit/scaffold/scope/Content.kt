@@ -17,6 +17,7 @@ package br.com.orcinus.orca.platform.autos.kit.scaffold.scope
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -59,12 +60,16 @@ abstract class Content internal constructor() {
    * [value] clipped by the specified [shape].
    *
    * @param padding [PaddingValues] to be passed into the [value].
+   * @param modifier [Modifier] that is applied to the underlying [Box].
    */
   @Composable
-  internal fun ClippedValue(padding: PaddingValues) {
-    Box(Modifier.padding(padding)) {
+  internal fun ClippedValue(padding: PaddingValues, modifier: Modifier = Modifier) {
+    Box(modifier.padding(padding)) {
       Surface(Modifier.matchParentSize(), color = NavigationBarDefaults.ContainerColor) {}
-      Surface(shape = shape, color = AutosTheme.colors.background.container.asColor) { value() }
+
+      Surface(Modifier.fillMaxSize(), shape, AutosTheme.colors.background.container.asColor) {
+        value()
+      }
     }
   }
 }
