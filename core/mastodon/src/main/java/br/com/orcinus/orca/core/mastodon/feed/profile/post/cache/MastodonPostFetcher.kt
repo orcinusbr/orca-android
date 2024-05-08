@@ -17,10 +17,10 @@ package br.com.orcinus.orca.core.mastodon.feed.profile.post.cache
 
 import android.content.Context
 import br.com.orcinus.orca.core.feed.profile.post.Post
-import br.com.orcinus.orca.core.mastodon.client.authenticateAndGet
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentPaginator
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus
 import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
+import br.com.orcinus.orca.core.mastodon.network.client.authenticateAndGet
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.platform.cache.Fetcher

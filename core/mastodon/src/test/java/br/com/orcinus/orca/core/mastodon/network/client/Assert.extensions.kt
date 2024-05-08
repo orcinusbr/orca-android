@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.client.test
+package br.com.orcinus.orca.core.mastodon.network.client
 
 import assertk.Assert
 import assertk.assertThat

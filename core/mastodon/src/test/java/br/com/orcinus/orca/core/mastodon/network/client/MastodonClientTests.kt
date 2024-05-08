@@ -13,15 +13,12 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.client
+package br.com.orcinus.orca.core.mastodon.network.client
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
 import br.com.orcinus.orca.core.instance.Instance
-import br.com.orcinus.orca.core.mastodon.client.test.assertThatRequestAuthorizationHeaderOf
-import br.com.orcinus.orca.core.mastodon.client.test.runAuthenticatedTest
-import br.com.orcinus.orca.core.mastodon.client.test.runUnauthenticatedTest
 import br.com.orcinus.orca.core.sample.test.instance.SampleInstanceTestRule
 import br.com.orcinus.orca.core.sample.test.instance.sample
 import io.ktor.http.parametersOf

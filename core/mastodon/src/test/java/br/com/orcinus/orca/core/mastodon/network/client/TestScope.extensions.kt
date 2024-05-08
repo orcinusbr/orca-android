@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,15 +13,14 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.client.test
+package br.com.orcinus.orca.core.mastodon.network.client
 
 import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.mastodon.MastodonCoreModule
-import br.com.orcinus.orca.core.mastodon.client.MastodonClient
-import br.com.orcinus.orca.core.mastodon.client.test.instance.TestMastodonInstance
-import br.com.orcinus.orca.core.mastodon.client.test.instance.TestMastodonInstanceProvider
+import br.com.orcinus.orca.core.mastodon.instance.TestMastodonInstance
+import br.com.orcinus.orca.core.mastodon.instance.TestMastodonInstanceProvider
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.sample.auth.actor.sample
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.SampleTermMuter

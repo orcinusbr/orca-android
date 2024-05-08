@@ -19,7 +19,7 @@ import br.com.orcinus.orca.core.auth.Authenticator
 import br.com.orcinus.orca.core.auth.Authorizer
 import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.instance.domain.Domain
-import br.com.orcinus.orca.core.mastodon.client.MastodonClient
+import br.com.orcinus.orca.core.mastodon.network.client.MastodonClient
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.HttpRequest

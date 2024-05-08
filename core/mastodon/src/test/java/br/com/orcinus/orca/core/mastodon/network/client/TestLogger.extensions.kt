@@ -13,30 +13,16 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.client
+package br.com.orcinus.orca.core.mastodon.network.client
 
-import android.util.Log
-import io.mockk.mockkStatic
-import io.mockk.verify
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
+/** [Logger] returned by [test]. */
+private val testLogger =
+  object : Logger() {
+    override fun onInfo(info: String) {}
 
-@RunWith(RobolectricTestRunner::class)
-internal class AndroidLoggerTests {
-  @Test
-  fun infoCallsAndroidLogI() {
-    mockkStatic(Log::class) {
-      Logger.android.info("😮")
-      verify { Log.i(Logger.ANDROID_LOGGER_TAG, "😮") }
-    }
+    override fun onError(error: String) {}
   }
 
-  @Test
-  fun errorCallsAndroidLogE() {
-    mockkStatic(Log::class) {
-      Logger.android.error("😵")
-      verify { Log.e(Logger.ANDROID_LOGGER_TAG, "😵") }
-    }
-  }
-}
+/** A no-op [Logger]. */
+internal val Logger.Companion.test
+  get() = testLogger

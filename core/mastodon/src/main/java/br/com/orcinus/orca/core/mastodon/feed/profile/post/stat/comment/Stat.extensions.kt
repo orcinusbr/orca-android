@@ -18,10 +18,10 @@ package br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.comment
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.stat.Stat
 import br.com.orcinus.orca.core.feed.profile.post.stat.addable.AddableStat
-import br.com.orcinus.orca.core.mastodon.client.authenticateAndDelete
-import br.com.orcinus.orca.core.mastodon.client.authenticateAndSubmitForm
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.MastodonPost
 import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
+import br.com.orcinus.orca.core.mastodon.network.client.authenticateAndDelete
+import br.com.orcinus.orca.core.mastodon.network.client.authenticateAndSubmitForm
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.std.injector.Injector

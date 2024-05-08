@@ -20,10 +20,10 @@ import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
 import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
-import br.com.orcinus.orca.core.mastodon.client.authenticateAndPost
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfile
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
 import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
+import br.com.orcinus.orca.core.mastodon.network.client.authenticateAndPost
 import br.com.orcinus.orca.std.image.SomeImageLoader
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.markdown.Markdown
