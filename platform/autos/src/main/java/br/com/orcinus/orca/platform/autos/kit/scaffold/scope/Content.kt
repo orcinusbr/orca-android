@@ -29,8 +29,6 @@ import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.platform.autos.colors.asColor
 import br.com.orcinus.orca.platform.autos.forms.asShape
 import br.com.orcinus.orca.platform.autos.kit.bottom
-import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.navigation.NavigationBar
-import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.navigation.NavigationBarScope
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 
 /** Defines how a [Composable] containing a specific context should be laid out. */

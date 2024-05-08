@@ -40,7 +40,6 @@ import br.com.orcinus.orca.platform.autos.forms.asShape
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold as _Scaffold
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.button.ButtonBar
-import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.navigation.NavigationBar
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.orcaVisuals
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.SnackbarPresenter
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.rememberSnackbarPresenter
@@ -65,8 +64,7 @@ import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
  * @param floatingActionButtonPosition [FabPosition] that determines where the
  *   [floatingActionButton] will be placed.
  * @param snackbarPresenter [SnackbarPresenter] through which [Snackbar]s can be presented.
- * @param bottom [Composable] to be placed at the utmost bottom, such as a [NavigationBar] and/or a
- *   [ButtonBar].
+ * @param bottom [Composable] to be placed at the utmost bottom, such as a [ButtonBar].
  * @param content Main content of the current context.
  * @see ScaffoldScope.expanded
  * @see ScaffoldScope.navigable

@@ -17,8 +17,6 @@ package br.com.orcinus.orca.platform.autos.kit.scaffold.scope
 
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.navigation.NavigationBar
-import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.navigation.NavigationBarScope
 
 /** Scope from which the [Content] of a [Scaffold] can be defined. */
 class ScaffoldScope internal constructor() {
