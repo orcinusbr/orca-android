@@ -39,10 +39,12 @@ import kotlin.contracts.contract
 import kotlin.reflect.KClass
 
 /**
- * Navigates to [Fragment]s through [navigateOrThrow].
+ * Navigates to [Fragment]s.
  *
  * @param fragmentManager [FragmentManager] that adds [Fragment]s to the [FragmentContainerView].
  * @param containerID ID of the [FragmentContainerView] to which [Fragment]s will be added.
+ * @see navigate
+ * @see navigateOrThrow
  */
 class Navigator
 private constructor(
