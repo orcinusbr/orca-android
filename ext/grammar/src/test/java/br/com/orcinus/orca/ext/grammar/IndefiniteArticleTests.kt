@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.std.buildable.processor.grammar
+package br.com.orcinus.orca.ext.grammar
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo

@@ -31,10 +31,8 @@ class CredentialsFragment internal constructor() : ComposableFragment() {
   }
 
   companion object {
-    internal const val ROUTE = "credentials"
-
     fun navigate(navigator: Navigator) {
-      navigator.navigate(opening()) { to(ROUTE, ::CredentialsFragment) }
+      navigator.navigate(opening(), ::CredentialsFragment)
     }
   }
 }

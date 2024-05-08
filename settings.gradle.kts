@@ -37,6 +37,7 @@ include(
   ":core-module",
   ":core-test",
   ":ext:coroutines",
+  ":ext:grammar",
   ":ext:processing",
   ":ext:reflection",
   ":ext:testing",

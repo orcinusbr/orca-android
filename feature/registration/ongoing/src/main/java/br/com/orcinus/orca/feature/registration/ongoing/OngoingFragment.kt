@@ -31,10 +31,8 @@ internal class OngoingFragment : ComposableFragment() {
   }
 
   companion object {
-    const val ROUTE = "ONGOING"
-
     fun navigate(navigator: Navigator) {
-      navigator.navigate(opening()) { to(ROUTE, ::OngoingFragment) }
+      navigator.navigate(opening(), ::OngoingFragment)
     }
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -59,18 +59,12 @@ class ProfileDetailsFragment internal constructor() : ComposableFragment() {
     internal const val ID_KEY = "id"
     internal const val BACKWARDS_NAVIGATION_STATE_KEY = "backwards-navigation-state"
 
-    fun createRoute(id: String): String {
-      return "profile/$id"
-    }
-
     fun navigate(navigator: Navigator, id: String) {
       navigator.navigate(opening()) {
-        to(createRoute(id)) {
-          ProfileDetailsFragment(
-            BackwardsNavigationState.Available.createInstance(navigator::pop),
-            id
-          )
-        }
+        ProfileDetailsFragment(
+          BackwardsNavigationState.Available.createInstance(navigator::pop),
+          id
+        )
       }
     }
   }

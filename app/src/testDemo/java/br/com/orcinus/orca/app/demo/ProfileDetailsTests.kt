@@ -30,10 +30,8 @@ import br.com.orcinus.orca.composite.timeline.test.post.onPostPreviews
 import br.com.orcinus.orca.composite.timeline.test.post.performScrollToPostPreviewWithLinkCard
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.instance.Instance
-import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
 import br.com.orcinus.orca.feature.postdetails.PostDetailsFragment
 import br.com.orcinus.orca.platform.core.sample
-import br.com.orcinus.orca.platform.core.withSamples
 import br.com.orcinus.orca.platform.intents.test.intendBrowsingTo
 import br.com.orcinus.orca.platform.navigation.test.isAt
 import kotlin.test.BeforeTest
@@ -73,7 +71,6 @@ internal class ProfileDetailsTests {
   fun navigatesToPostDetailsOnPostPreviewClick() {
     onView(withId(R.id.profile_details)).perform(click())
     composeRule.onPostPreviews().onFirst().performStartClick()
-    assertThat(composeRule.activity)
-      .isAt(PostDetailsFragment.getRoute(Posts.withSamples.first().id))
+    assertThat(composeRule.activity).isAt<_, PostDetailsFragment>()
   }
 }

@@ -45,7 +45,9 @@ inline fun <reified T : Fragment> launchFragmentInNavigationContainer(
     launchActivity<EmptyFragmentActivity>().apply {
       onActivity {
         it?.makeNavigable()
-        it?.navigator?.navigate(suddenly()) { to("FragmentScenario_Fragment_Tag", instantiation) }
+        it?.navigator?.navigate(suddenly()) {
+          instantiation().apply { setTag("FragmentScenario_Fragment_Tag") }
+        }
       }
     }
 

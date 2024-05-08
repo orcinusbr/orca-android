@@ -45,7 +45,7 @@ internal class RegistrationFragmentTests {
     launchNavigationActivity().use { scenario ->
       scenario.onActivity { activity ->
         RegistrationFragment.navigate(activity.navigator)
-        assertThat(activity).isAt(RegistrationFragment.ROUTE)
+        assertThat(activity).isAt<_, RegistrationFragment>()
       }
     }
   }

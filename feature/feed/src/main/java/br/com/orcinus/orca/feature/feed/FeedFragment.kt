@@ -53,8 +53,6 @@ class FeedFragment internal constructor() : ComposableFragment() {
   companion object {
     internal const val USER_ID_KEY = "user-id"
 
-    const val ROUTE = "feed"
-
     internal fun createArguments(userID: String): Bundle {
       return bundleOf(USER_ID_KEY to userID)
     }

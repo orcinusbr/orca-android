@@ -34,7 +34,6 @@ dependencies {
   implementation(project(":platform:navigation"))
   implementation(libs.android.annotation)
   implementation(libs.assertk)
-  implementation(libs.kotlin.reflect)
 
   testImplementation(project(":platform:testing"))
   testImplementation(libs.android.fragment.testing)

@@ -21,6 +21,7 @@ plugins {
 }
 
 dependencies {
+  implementation(project(":ext:grammar"))
   implementation(project(":ext:processing"))
   implementation(project(":std:buildable"))
   implementation(libs.kotlin.symbolProcessor)

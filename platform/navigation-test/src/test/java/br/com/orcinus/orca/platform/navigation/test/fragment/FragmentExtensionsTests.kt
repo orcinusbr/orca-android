@@ -13,25 +13,16 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.feature.registration.ongoing
+package br.com.orcinus.orca.platform.navigation.test.fragment
 
+import androidx.fragment.app.Fragment
 import assertk.assertThat
-import br.com.orcinus.orca.platform.navigation.navigator
-import br.com.orcinus.orca.platform.navigation.test.activity.launchNavigationActivity
-import br.com.orcinus.orca.platform.navigation.test.isAt
+import assertk.assertions.isEqualTo
 import kotlin.test.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 
-@RunWith(RobolectricTestRunner::class)
-internal class OngoingFragmentTests {
+internal class FragmentExtensionsTests {
   @Test
-  fun navigates() {
-    launchNavigationActivity().use { scenario ->
-      scenario.onActivity { activity ->
-        OngoingFragment.navigate(activity.navigator)
-        assertThat(activity).isAt<_, OngoingFragment>()
-      }
-    }
+  fun tags() {
+    assertThat(object : Fragment() {}.apply { setTag("🎁📕🧶💌") }.tag).isEqualTo("🎁📕🧶💌")
   }
 }

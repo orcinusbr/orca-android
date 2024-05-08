@@ -23,19 +23,23 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import br.com.orcinus.orca.platform.navigation.destination.DestinationFragment
-import br.com.orcinus.orca.platform.navigation.destination.FragmentProvisioningScope
+import br.com.orcinus.orca.ext.grammar.IndefiniteArticle
 import br.com.orcinus.orca.platform.navigation.duplication.Duplication
 import br.com.orcinus.orca.platform.navigation.duplication.allowingDuplication
 import br.com.orcinus.orca.platform.navigation.duplication.disallowingDuplication
 import br.com.orcinus.orca.platform.navigation.transition.Transition
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
+import kotlin.reflect.KClass
 
 /**
- * Navigates to [Fragment]s through [navigate].
+ * Navigates to [Fragment]s through [navigateOrThrow].
  *
  * @param fragmentManager [FragmentManager] that adds [Fragment]s to the [FragmentContainerView].
  * @param containerID ID of the [FragmentContainerView] to which [Fragment]s will be added.
@@ -47,23 +51,6 @@ private constructor(
 ) {
   /** [OnNavigationListener]s that are currently listening to navigations. */
   internal val onNavigationListeners = mutableListOf<OnNavigationListener>()
-
-  /** Defines the [Destination] that will provide the [Fragment] which is the destination. */
-  @Discouraged(
-    "Providing a non-`DestinationFragment` is highly discouraged, since it is a requirement of " +
-      "`View`-`Navigator` integration APIs for it to be uniquely identified. When navigating, " +
-      "prefer calling `Navigator.navigate(Transition, Duplication, DestinationFragment)` instead."
-  )
-  class Navigation private constructor() {
-    /**
-     * Target navigation site.
-     *
-     * @param T [Fragment] to be navigated to.
-     * @param route Path by which the [target] can be retrieved.
-     * @param target Returns the [Fragment] of this [Destination].
-     */
-    data class Destination<T : Fragment>(val route: String, val target: () -> T)
-  }
 
   /**
    * Listener to be notified when a [Fragment] gets navigated to.
@@ -191,105 +178,132 @@ private constructor(
   }
 
   /**
-   * Navigates to the [fragment].
+   * Navigates to the provided [Fragment], allowing for duplication.
    *
-   * @param T [DestinationFragment] to navigate to.
+   * @param T [Fragment] to navigate to.
    * @param transition [Transition] with which the navigation will be animated.
-   * @param duplication Indicates whether the navigation should be performed even if the current
-   *   [DestinationFragment]'s ID and that of the given one are the same.
-   * @param fragment [DestinationFragment] to which navigation will be performed.
+   * @param provisioning Provides the [Fragment] to which navigation will be performed.
    * @see allowingDuplication
-   * @see disallowingDuplication
    */
-  fun <T : DestinationFragment> navigate(
+  @OptIn(ExperimentalContracts::class)
+  inline fun <reified T : Fragment> navigate(
     transition: Transition,
-    duplication: Duplication = allowingDuplication(),
-    fragment: T
+    noinline provisioning: () -> T
   ) {
-    _navigate(transition, duplication, fragment)
+    contract { callsInPlace(provisioning, InvocationKind.EXACTLY_ONCE) }
+    navigate(transition, T::class, provisioning)
   }
 
   /**
-   * Navigates to the [fragment] while allowing duplication.
-   *
-   * @param T [DestinationFragment] to navigate to.
-   * @param transition [Transition] with which the navigation will be animated.
-   * @param fragment [DestinationFragment] to which navigation will be performed.
-   * @see allowingDuplication
-   */
-  fun <T : DestinationFragment> navigate(transition: Transition, fragment: T) {
-    _navigate(transition, allowingDuplication(), fragment)
-  }
-
-  /**
-   * Navigates to the provided [Fragment].
-   *
-   * @param transition [Transition] with which the navigation will be animated.
-   * @param duplication Indicates whether the navigation should be performed even if the current
-   *   [Fragment]'s ID and that of the given one are the same.
-   * @param fragmentProvisioning Provides the [Fragment] to which navigation will be performed.
-   * @see allowingDuplication
-   * @see disallowingDuplication
-   */
-  @Discouraged(
-    "Navigating to a non-`DestinationFragment` is highly discouraged, since it is a requirement " +
-      "of `View`-`Navigator` integration APIs for it to be uniquely identified."
-  )
-  fun navigate(
-    transition: Transition,
-    duplication: Duplication = allowingDuplication(),
-    fragmentProvisioning: FragmentProvisioningScope<Fragment>.() -> Fragment
-  ) {
-    @Suppress("DiscouragedApi") navigate<Fragment>(transition, duplication, fragmentProvisioning)
-  }
-
-  /**
-   * Navigates to the provided [Fragment].
+   * Navigates to the provided [Fragment], taking into consideration whether duplication is allowed
+   * and ignoring this request when it isn't and the current [Fragment] at which the
+   * [fragmentManager] is a [T] (the same type of the one that has been provided).
    *
    * @param T [Fragment] to navigate to.
    * @param transition [Transition] with which the navigation will be animated.
    * @param duplication Indicates whether the navigation should be performed even if the current
-   *   [Fragment]'s ID and that of the given one are the same.
-   * @param fragmentProvisioning Provides the [Fragment] to which navigation will be performed.
+   *   [Fragment] and the given one have the same type.
+   * @param provisioning Provides the [Fragment] to which navigation will be performed.
    * @see allowingDuplication
    * @see disallowingDuplication
    */
-  @Discouraged(
-    "Navigating to a non-`DestinationFragment` is highly discouraged, since it is a requirement " +
-      "of `View`-`Navigator` integration APIs for it to be uniquely identified."
-  )
-  @JvmName("navigateToFragmentOfType")
-  fun <T : Fragment> navigate(
-    transition: Transition,
-    duplication: Duplication = allowingDuplication(),
-    fragmentProvisioning: FragmentProvisioningScope<T>.() -> T
-  ) {
-    val fragment = FragmentProvisioningScope<T>().fragmentProvisioning()
-    _navigate(transition, duplication, fragment)
-  }
-
-  /**
-   * Navigates to the [fragment].
-   *
-   * @param T [Fragment] to navigate to.
-   * @param transition [Transition] with which the navigation will be animated.
-   * @param duplication Indicates whether the navigation should be performed even if the current
-   *   [Fragment]'s ID and that of the given one are the same.
-   * @param fragment [DestinationFragment] to which navigation will be performed.
-   * @see allowingDuplication
-   * @see disallowingDuplication
-   */
-  @Suppress("FunctionName")
-  private fun <T : Fragment> _navigate(
+  @OptIn(ExperimentalContracts::class)
+  inline fun <reified T : Fragment> navigate(
     transition: Transition,
     duplication: Duplication,
-    fragment: T
+    noinline provisioning: () -> T
   ) {
-    val currentFragmentClass = fragmentManager.fragments.lastOrNull()?.let { it::class }
-    val canNavigate =
-      duplication.canNavigate(currentFragmentClass, nextFragmentClass = fragment::class)
-    if (canNavigate) {
-      navigateToUnidentifiedFragment(transition, fragment)
+    contract { callsInPlace(provisioning, InvocationKind.EXACTLY_ONCE) }
+    navigate(transition, duplication, T::class, provisioning)
+  }
+
+  /**
+   * Navigates to the provided [Fragment], allowing for duplication.
+   *
+   * @param T [Fragment] to navigate to.
+   * @param transition [Transition] with which the navigation will be animated.
+   * @param fragmentClass [KClass] of the [Fragment] being specified, to which that of the current
+   *   one will be compared.
+   * @param provisioning Provides the [Fragment] to which navigation will be performed.
+   * @see allowingDuplication
+   */
+  @OptIn(ExperimentalContracts::class)
+  fun <T : Fragment> navigate(
+    transition: Transition,
+    fragmentClass: KClass<T>,
+    provisioning: () -> T
+  ) {
+    contract { callsInPlace(provisioning, InvocationKind.EXACTLY_ONCE) }
+    navigateDependingOnDuplication(transition, allowingDuplication(), fragmentClass, provisioning)
+  }
+
+  /**
+   * Navigates to the provided [Fragment], taking into consideration whether duplication is allowed
+   * and ignoring this request when it isn't and the [fragmentClass] equals to that of the current
+   * one.
+   *
+   * @param T [Fragment] to navigate to.
+   * @param transition [Transition] with which the navigation will be animated.
+   * @param duplication Indicates whether the navigation should be performed even if the current
+   *   [Fragment] and the given one have the same type.
+   * @param fragmentClass [KClass] of the [Fragment] being specified, to which that of the current
+   *   one will be compared.
+   * @param provisioning Provides the [Fragment] to which navigation will be performed.
+   * @see allowingDuplication
+   * @see disallowingDuplication
+   */
+  @OptIn(ExperimentalContracts::class)
+  fun <T : Fragment> navigate(
+    transition: Transition,
+    duplication: Duplication,
+    fragmentClass: KClass<T>,
+    provisioning: () -> T
+  ) {
+    contract { callsInPlace(provisioning, InvocationKind.EXACTLY_ONCE) }
+
+    @Suppress("DiscouragedApi")
+    navigateOrThrow(transition, duplication, fragmentClass, provisioning as () -> Fragment)
+  }
+
+  /**
+   * Unsafely navigates to the provided [Fragment], taking into consideration whether duplication is
+   * allowed and ignoring this request when it isn't and the [fragmentClass] equals to that of the
+   * current one.
+   *
+   * @param transition [Transition] with which the navigation will be animated.
+   * @param duplication Indicates whether the navigation should be performed even if the current
+   *   [Fragment] and the given one have the same type.
+   * @param fragmentClass [KClass] of the [Fragment] being specified, to which that of the current
+   *   one will be compared.
+   * @param provisioning Provides the [Fragment] to which navigation will be performed.
+   * @throws IllegalArgumentException If [provisioning] returns a [Fragment] whose [KClass] doesn't
+   *   match the given [fragmentClass].
+   * @see allowingDuplication
+   * @see disallowingDuplication
+   */
+  @Discouraged(
+    "It is safer to navigate by calling the type-parametrized version of this method, since an " +
+      "`IllegalArgumentException` will be thrown if the specified `fragmentClass` differs from " +
+      "that of the `Fragment` returned by `provisioning` for maintenance of consistency. For a " +
+      "more detailed explanation, refer to the documentation."
+  )
+  @OptIn(ExperimentalContracts::class)
+  @Throws(IllegalArgumentException::class)
+  fun navigateOrThrow(
+    transition: Transition,
+    duplication: Duplication,
+    fragmentClass: KClass<out Fragment>,
+    provisioning: () -> Fragment
+  ) {
+    contract { callsInPlace(provisioning, InvocationKind.EXACTLY_ONCE) }
+    navigateDependingOnDuplication(transition, duplication, fragmentClass) {
+      provisioning().also {
+        require(it::class == fragmentClass) {
+          "Navigation to ${it::class.simpleName} was requested but expected " +
+            "${IndefiniteArticle.of(fragmentClass.simpleName ?: return@also)} " +
+            "${fragmentClass.simpleName}."
+        }
+      }
     }
   }
 
@@ -299,14 +313,42 @@ private constructor(
   }
 
   /**
-   * Navigates to the unidentified [fragment].
+   * Navigates to the provided [Fragment], taking into consideration whether duplication is allowed
+   * and ignoring this request when the [KClass] of the current [Fragment] equals to that of the
+   * given one.
    *
    * @param transition [Transition] with which the navigation will be animated.
-   * @param fragment [Fragment] to navigate to.
-   * @see Fragment.getId
+   * @param duplication Indicates whether the navigation should be performed even if the current
+   *   [Fragment] and the given one have the same type.
+   * @param fragmentClass [KClass] of the [Fragment] being specified, to which that of the current
+   *   one will be compared.
+   * @param provisioning Provides the [Fragment] to which navigation will be performed.
+   * @see allowingDuplication
+   * @see disallowingDuplication
    */
-  private fun navigateToUnidentifiedFragment(transition: Transition, fragment: Fragment) {
-    fragmentManager.commit(allowStateLoss = true) {
+  private fun navigateDependingOnDuplication(
+    transition: Transition,
+    duplication: Duplication,
+    fragmentClass: KClass<out Fragment>,
+    provisioning: () -> Fragment
+  ) {
+    val currentFragmentClass = fragmentManager.fragments.lastOrNull()?.let { it::class }
+    val canNavigate = duplication.canNavigate(currentFragmentClass, fragmentClass)
+    if (canNavigate) {
+      navigateSynchronously(transition, provisioning)
+    }
+  }
+
+  /**
+   * Requests navigation to the specified [Fragment] and waits for the underlying
+   * [FragmentTransaction] to be executed.
+   *
+   * @param transition [Transition] with which the navigation will be animated.
+   * @param provisioning Provides the [Fragment] to which navigation will be performed.
+   */
+  private fun navigateSynchronously(transition: Transition, provisioning: () -> Fragment) {
+    fragmentManager.commit {
+      val fragment = provisioning()
       addToBackStack(null)
       setTransition(transition.value)
       add(containerID, fragment, fragment.tag)

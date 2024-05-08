@@ -15,10 +15,10 @@
 
 package br.com.orcinus.orca.std.buildable.processor
 
+import br.com.orcinus.orca.ext.grammar.IndefiniteArticle
 import br.com.orcinus.orca.ext.processing.addImports
 import br.com.orcinus.orca.ext.processing.requireContainingFile
 import br.com.orcinus.orca.std.buildable.Buildable
-import br.com.orcinus.orca.std.buildable.processor.grammar.IndefiniteArticle
 import br.com.orcinus.orca.std.buildable.processor.grammar.PossessiveApostrophe
 import com.google.devtools.ksp.getAllSuperTypes
 import com.google.devtools.ksp.getVisibility

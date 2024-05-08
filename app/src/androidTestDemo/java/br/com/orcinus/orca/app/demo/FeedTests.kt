@@ -40,7 +40,7 @@ internal class FeedTests {
       onTimeline().performScrollToPostPreviewWithGalleryPreview {
         onThumbnails().onFirst().performClick()
         onCloseActionButton().performClick()
-        assertThat(composeRule.activity).isAt(FeedFragment.ROUTE)
+        assertThat(composeRule.activity).isAt<_, FeedFragment>()
       }
     }
   }
