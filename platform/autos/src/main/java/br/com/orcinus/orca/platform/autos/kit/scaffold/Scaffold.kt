@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.platform.autos.kit.scaffold
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -24,7 +25,6 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
@@ -49,6 +49,7 @@ import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
 import br.com.orcinus.orca.platform.autos.kit.scaffold.scope.Content
 import br.com.orcinus.orca.platform.autos.kit.scaffold.scope.ScaffoldScope
 import br.com.orcinus.orca.platform.autos.kit.sheet.LocalWindowInsets
+import br.com.orcinus.orca.platform.autos.kit.sheet.Zero
 import br.com.orcinus.orca.platform.autos.kit.sheet.takeOrElse
 import br.com.orcinus.orca.platform.autos.overlays.asPaddingValues
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
@@ -97,8 +98,7 @@ fun Scaffold(
     floatingActionButton,
     floatingActionButtonPosition,
     LocalContainerColor.current.takeOrElse { AutosTheme.colors.background.container.asColor },
-    contentWindowInsets =
-      LocalWindowInsets.current.takeOrElse { ScaffoldDefaults.contentWindowInsets }
+    contentWindowInsets = LocalWindowInsets.current.takeOrElse(WindowInsets::Zero)
   ) {
     remember(::ScaffoldScope).content().ClippedValue(it)
   }
@@ -135,7 +135,7 @@ private fun ScaffoldPreview() {
           state = lazyListState,
           verticalArrangement = Arrangement.Center,
           horizontalAlignment = Alignment.CenterHorizontally,
-          contentPadding = it + AutosTheme.overlays.fab.asPaddingValues
+          contentPadding = AutosTheme.overlays.fab.asPaddingValues
         ) {
           item { Text("Content", style = AutosTheme.typography.bodyMedium) }
         }

@@ -19,7 +19,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,7 +36,6 @@ import br.com.orcinus.orca.platform.autos.kit.action.button.PrimaryButton
 import br.com.orcinus.orca.platform.autos.kit.action.button.SecondaryButton
 import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.button.ButtonBar
-import br.com.orcinus.orca.platform.autos.kit.scaffold.plus
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 
@@ -70,23 +68,20 @@ private enum class OnboardingContentType {
  * @param description Provides more details on the subject being presented, expanding on what the
  *   [title] says.
  * @param modifier [Modifier] for the underlying [LazyColumn].
- * @param contentPadding Padding to be applied to the shown content.
  */
 @Composable
 fun Onboarding(
   illustration: @Composable () -> Unit,
   title: @Composable () -> Unit,
   description: @Composable () -> Unit,
-  modifier: Modifier = Modifier,
-  contentPadding: PaddingValues = PaddingValues(0.dp)
+  modifier: Modifier = Modifier
 ) {
   val spacing = AutosTheme.spacings.large.dp
 
   LazyColumn(
     modifier.fillMaxHeight(),
     verticalArrangement = Arrangement.SpaceBetween,
-    horizontalAlignment = Alignment.CenterHorizontally,
-    contentPadding = contentPadding + PaddingValues(spacing)
+    horizontalAlignment = Alignment.CenterHorizontally
   ) {
     item(contentType = OnboardingContentType.Spacer) {}
     item(contentType = OnboardingContentType.Illustration) { illustration() }
@@ -139,8 +134,7 @@ private fun OnboardingPreview() {
               "And then here goes a very detailed description of it: what it is, what and who it " +
                 "is for, what it does..."
             )
-          },
-          contentPadding = it
+          }
         )
       }
     }

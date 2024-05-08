@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -134,8 +134,8 @@ private fun Composer(
     },
     floatingActionButtonPosition = floatingActionButtonPosition
   ) {
-    navigable { padding ->
-      Box(Modifier.padding(padding).fillMaxSize()) {
+    navigable {
+      Box(Modifier.fillMaxSize()) {
         LazyColumn(
           contentPadding =
             PaddingValues(bottom = TextFieldDefaults.compositionSpacing) +

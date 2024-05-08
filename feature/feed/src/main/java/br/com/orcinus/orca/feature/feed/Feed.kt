@@ -158,13 +158,8 @@ private fun Feed(
         onPostClick,
         onNext,
         Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-        contentPadding = it + AutosTheme.overlays.fab.asPaddingValues,
-        refresh =
-          Refresh(
-            isTimelineRefreshing,
-            indicatorOffset = it.calculateTopPadding(),
-            onTimelineRefresh
-          )
+        contentPadding = AutosTheme.overlays.fab.asPaddingValues,
+        refresh = Refresh(isTimelineRefreshing, onTimelineRefresh)
       )
     }
   }

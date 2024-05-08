@@ -37,7 +37,6 @@ import br.com.orcinus.orca.platform.autos.kit.action.button.PrimaryButton
 import br.com.orcinus.orca.platform.autos.kit.input.text.FormTextField
 import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.button.ButtonBar
-import br.com.orcinus.orca.platform.autos.kit.scaffold.plus
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 
@@ -79,7 +78,7 @@ private fun Credentials(
     expanded {
       LazyColumn(
         Modifier.fillMaxSize(),
-        contentPadding = it + PaddingValues(spacing),
+        contentPadding = PaddingValues(spacing),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
       ) {
