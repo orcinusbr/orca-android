@@ -30,10 +30,8 @@ class RegistrationFragment internal constructor() : ComposableFragment() {
   }
 
   companion object {
-    internal const val ROUTE = "registration"
-
     fun navigate(navigator: Navigator) {
-      navigator.navigate(opening()) { to(ROUTE, ::RegistrationFragment) }
+      navigator.navigate(opening(), ::RegistrationFragment)
     }
   }
 }

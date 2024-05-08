@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -52,12 +52,8 @@ class PostDetailsFragment private constructor() : ComposableFragment() {
   companion object {
     private const val ID_KEY = "id"
 
-    fun getRoute(id: String): String {
-      return "post/$id"
-    }
-
     fun navigate(navigator: Navigator, id: String) {
-      navigator.navigate(opening()) { to(getRoute(id)) { PostDetailsFragment(id) } }
+      navigator.navigate(opening()) { PostDetailsFragment(id) }
     }
   }
 }

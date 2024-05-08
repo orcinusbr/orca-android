@@ -13,9 +13,10 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.app.navigation
+package br.com.orcinus.orca.app.activity.delegate.navigation
 
 import androidx.annotation.IdRes
+import androidx.fragment.app.Fragment
 import br.com.orcinus.orca.app.R
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.authenticationLock
@@ -28,32 +29,28 @@ import br.com.orcinus.orca.platform.navigation.duplication.disallowingDuplicatio
 import br.com.orcinus.orca.platform.navigation.transition.suddenly
 import br.com.orcinus.orca.std.injector.Injector
 
-internal enum class BottomDestinationProvider {
+internal enum class BottomNavigationFragmentProvider {
   FEED {
     override val id = R.id.feed
 
-    override suspend fun provide(): Navigator.Navigation.Destination<*> {
-      return authenticationLock.scheduleUnlock {
-        Navigator.Navigation.Destination(FeedFragment.ROUTE) { FeedFragment(it.id) }
-      }
+    override suspend fun provide(): FeedFragment {
+      return authenticationLock.scheduleUnlock { FeedFragment(it.id) }
     }
   },
   PROFILE_DETAILS {
     override val id = R.id.profile_details
 
-    override suspend fun provide(): Navigator.Navigation.Destination<*> {
+    override suspend fun provide(): ProfileDetailsFragment {
       return authenticationLock.scheduleUnlock {
-        Navigator.Navigation.Destination(ProfileDetailsFragment.createRoute(it.id)) {
-          ProfileDetailsFragment(BackwardsNavigationState.Unavailable, it.id)
-        }
+        ProfileDetailsFragment(BackwardsNavigationState.Unavailable, it.id)
       }
     }
   },
   SETTINGS {
     override val id = R.id.settings
 
-    override suspend fun provide(): Navigator.Navigation.Destination<*> {
-      return Navigator.Navigation.Destination("settings", ::SettingsFragment)
+    override suspend fun provide(): SettingsFragment {
+      return SettingsFragment()
     }
   };
 
@@ -62,15 +59,15 @@ internal enum class BottomDestinationProvider {
   protected val authenticationLock
     get() = Injector.from<CoreModule>().authenticationLock()
 
-  protected abstract suspend fun provide(): Navigator.Navigation.Destination<*>
+  protected abstract suspend fun provide(): Fragment
 
   companion object {
-    suspend fun provideAndNavigate(navigator: Navigator, @IdRes id: Int) {
-      val value = entries.find { it.id == id } ?: throw NoSuchElementException("$id")
-      val destination = value.provide()
-      navigator.navigate(suddenly(), disallowingDuplication()) {
-        to(destination.route, destination.target)
-      }
+    suspend fun navigate(navigator: Navigator, @IdRes id: Int) {
+      val provider = entries.find { it.id == id } ?: throw NoSuchElementException("$id")
+      val fragment = provider.provide()
+
+      @Suppress("DiscouragedApi")
+      navigator.navigateOrThrow(suddenly(), disallowingDuplication(), fragment::class) { fragment }
     }
   }
 }

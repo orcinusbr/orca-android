@@ -26,7 +26,7 @@ android {
 dependencies {
   api(libs.android.fragment)
 
-  implementation(project(":ext:reflection"))
+  implementation(project(":ext:grammar"))
   implementation(libs.android.annotation)
   implementation(libs.android.fragment.ktx)
 

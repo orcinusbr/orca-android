@@ -13,13 +13,13 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.app.activity.delegate
+package br.com.orcinus.orca.app.activity.delegate.navigation
 
 import androidx.annotation.IdRes
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import br.com.orcinus.orca.app.R
-import br.com.orcinus.orca.app.navigation.BottomDestinationProvider
+import br.com.orcinus.orca.app.activity.delegate.Binding
 import br.com.orcinus.orca.platform.navigation.navigator
 import kotlinx.coroutines.launch
 
@@ -37,7 +37,7 @@ internal interface BottomNavigation : Binding {
 
   private fun navigate(activity: FragmentActivity, @IdRes itemID: Int) {
     activity.lifecycleScope.launch {
-      BottomDestinationProvider.provideAndNavigate(activity.navigator, itemID)
+      BottomNavigationFragmentProvider.navigate(activity.navigator, itemID)
     }
   }
 }

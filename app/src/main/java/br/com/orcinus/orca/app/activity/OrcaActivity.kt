@@ -18,8 +18,8 @@ package br.com.orcinus.orca.app.activity
 import android.os.Bundle
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentActivity
-import br.com.orcinus.orca.app.activity.delegate.BottomNavigation
 import br.com.orcinus.orca.app.activity.delegate.Injection
+import br.com.orcinus.orca.app.activity.delegate.navigation.BottomNavigation
 import br.com.orcinus.orca.app.databinding.ActivityOrcaBinding
 import br.com.orcinus.orca.app.module.core.MainMastodonCoreModule
 import br.com.orcinus.orca.core.module.CoreModule

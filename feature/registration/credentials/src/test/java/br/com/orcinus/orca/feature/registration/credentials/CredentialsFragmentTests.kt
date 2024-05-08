@@ -30,7 +30,7 @@ internal class CredentialsFragmentTests {
     launchNavigationActivity().use { scenario ->
       scenario.onActivity { activity ->
         CredentialsFragment.navigate(activity.navigator)
-        assertThat(activity).isAt(CredentialsFragment.ROUTE)
+        assertThat(activity).isAt<_, CredentialsFragment>()
       }
     }
   }
