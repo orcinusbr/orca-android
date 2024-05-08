@@ -33,7 +33,6 @@ dependencies {
   implementation(project(":ext:reflection"))
   implementation(libs.accompanist.adapter)
   implementation(libs.android.material)
-  implementation(libs.kotlin.reflect)
   implementation(libs.loadable.placeholder)
 
   testImplementation(project(":platform:autos-test"))

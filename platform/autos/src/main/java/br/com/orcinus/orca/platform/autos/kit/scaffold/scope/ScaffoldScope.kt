@@ -15,11 +15,8 @@
 
 package br.com.orcinus.orca.platform.autos.kit.scaffold.scope
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.navigation.NavigationBar
-import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.navigation.NavigationBarScope
 
 /** Scope from which the [Content] of a [Scaffold] can be defined. */
 class ScaffoldScope internal constructor() {
@@ -28,7 +25,7 @@ class ScaffoldScope internal constructor() {
    *
    * @param value [Composable] to be shown.
    */
-  fun expanded(value: @Composable (padding: PaddingValues) -> Unit): Content {
+  fun expanded(value: @Composable () -> Unit): Content {
     return Content.Expanded(value)
   }
 
@@ -38,7 +35,7 @@ class ScaffoldScope internal constructor() {
    * @param value [Composable] to be shown.
    * @see NavigationBarScope.tab
    */
-  fun navigable(value: @Composable (padding: PaddingValues) -> Unit): Content {
+  fun navigable(value: @Composable () -> Unit): Content {
     return Content.Navigable(value)
   }
 }

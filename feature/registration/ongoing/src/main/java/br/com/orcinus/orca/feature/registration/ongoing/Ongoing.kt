@@ -94,8 +94,7 @@ private fun Ongoing(
       Onboarding(
         illustration = { Stack { statusCardStackScope = this } },
         title = { Text(stringResource(R.string.feature_registration_ongoing)) },
-        description = { Text(stringResource(R.string.feature_registration_ongoing_description)) },
-        contentPadding = it
+        description = { Text(stringResource(R.string.feature_registration_ongoing_description)) }
       )
     }
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -19,7 +19,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyListState
@@ -327,7 +326,7 @@ private fun ProfileDetails(origin: BackwardsNavigationState, modifier: Modifier 
     title = { MediumTextualPlaceholder() },
     actions = {},
     timelineState = rememberLazyListState(),
-    timeline = { shouldNestScrollToTopAppBar, _ ->
+    timeline = { shouldNestScrollToTopAppBar ->
       Timeline(
         (Modifier as Modifier).`if`(shouldNestScrollToTopAppBar) {
           nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
@@ -426,7 +425,7 @@ private fun ProfileDetails(
       }
     },
     timelineState,
-    timeline = { shouldNestScrollToTopAppBar, padding ->
+    timeline = { shouldNestScrollToTopAppBar ->
       Timeline(
         postsLoadable,
         onFavorite,
@@ -438,13 +437,7 @@ private fun ProfileDetails(
           nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
         },
         timelineState,
-        contentPadding = padding,
-        refresh =
-          Refresh(
-            isTimelineRefreshing,
-            indicatorOffset = padding.calculateTopPadding(),
-            onTimelineRefresh
-          ),
+        refresh = Refresh(isTimelineRefreshing, onTimelineRefresh),
         relativeTimeProvider = relativeTimeProvider
       ) {
         Header(details)
@@ -463,7 +456,7 @@ private fun ProfileDetails(
   title: @Composable () -> Unit,
   actions: @Composable RowScope.() -> Unit,
   timelineState: LazyListState,
-  timeline: @Composable (shouldNestScrollToTopAppBar: Boolean, padding: PaddingValues) -> Unit,
+  timeline: @Composable (shouldNestScrollToTopAppBar: Boolean) -> Unit,
   floatingActionButton: @Composable () -> Unit,
   origin: BackwardsNavigationState,
   modifier: Modifier = Modifier
@@ -478,9 +471,7 @@ private fun ProfileDetails(
   }
 
   Box(modifier) {
-    Scaffold(floatingActionButton = floatingActionButton) {
-      navigable { timeline(isHeaderHidden, it) }
-    }
+    Scaffold(floatingActionButton = floatingActionButton) { navigable { timeline(isHeaderHidden) } }
 
     AnimatedVisibility(
       visible = isHeaderHidden,

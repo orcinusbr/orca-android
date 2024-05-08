@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -290,10 +289,9 @@ fun Timeline(
     PullRefreshIndicator(
       refresh.isInProgress,
       pullRefreshState,
-      Modifier.offset(y = refresh.indicatorOffset)
-        .align(Alignment.TopCenter)
-        .testTag(TIMELINE_REFRESH_INDICATOR)
-        .semantics { isInProgress = refresh.isInProgress }
+      Modifier.align(Alignment.TopCenter).testTag(TIMELINE_REFRESH_INDICATOR).semantics {
+        isInProgress = refresh.isInProgress
+      }
     )
   }
 }

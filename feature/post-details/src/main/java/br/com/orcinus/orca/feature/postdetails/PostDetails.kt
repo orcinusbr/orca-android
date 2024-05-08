@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,7 +16,6 @@
 package br.com.orcinus.orca.feature.postdetails
 
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.collectAsState
@@ -38,6 +37,7 @@ import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
 import br.com.orcinus.orca.feature.postdetails.ui.header.Header
 import br.com.orcinus.orca.feature.postdetails.ui.header.formatted
 import br.com.orcinus.orca.feature.postdetails.viewmodel.PostDetailsViewModel
+import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBarWithBackNavigation
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
@@ -119,7 +119,7 @@ private fun PostDetails(
 
   Scaffold(
     modifier,
-    topBar = {
+    topAppBar = {
       @OptIn(ExperimentalMaterial3Api::class)
       TopAppBarWithBackNavigation(
         onNavigation = onBackwardsNavigation,
@@ -128,28 +128,28 @@ private fun PostDetails(
       )
     }
   ) {
-    Timeline(
-      commentsLoadable,
-      onFavorite,
-      onRepost,
-      onShare,
-      onClick = onNavigateToDetails,
-      onNext,
-      Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-      contentPadding = it,
-      refresh =
-        Refresh(isTimelineRefreshing, indicatorOffset = it.calculateTopPadding(), onTimelineRefresh)
-    ) {
-      when (postLoadable) {
-        is Loadable.Loading -> Header()
-        is Loadable.Loaded ->
-          Header(
-            postLoadable.content,
-            onFavorite = { onFavorite(postLoadable.content.id) },
-            onRepost = { onRepost(postLoadable.content.id) },
-            onShare = { onShare(postLoadable.content.uri) }
-          )
-        is Loadable.Failed -> Unit
+    navigable {
+      Timeline(
+        commentsLoadable,
+        onFavorite,
+        onRepost,
+        onShare,
+        onClick = onNavigateToDetails,
+        onNext,
+        Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+        refresh = Refresh(isTimelineRefreshing, onTimelineRefresh)
+      ) {
+        when (postLoadable) {
+          is Loadable.Loading -> Header()
+          is Loadable.Loaded ->
+            Header(
+              postLoadable.content,
+              onFavorite = { onFavorite(postLoadable.content.id) },
+              onRepost = { onRepost(postLoadable.content.id) },
+              onShare = { onShare(postLoadable.content.uri) }
+            )
+          is Loadable.Failed -> Unit
+        }
       }
     }
   }
