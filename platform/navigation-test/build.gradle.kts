@@ -1,5 +1,3 @@
-import br.com.orcinus.orca.namespaceFor
-
 /*
  * Copyright © 2024 Orcinus
  *
@@ -14,6 +12,8 @@ import br.com.orcinus.orca.namespaceFor
  * You should have received a copy of the GNU General Public License along with this program. If
  * not, see https://www.gnu.org/licenses.
  */
+
+import br.com.orcinus.orca.namespaceFor
 
 plugins {
   alias(libs.plugins.android.library)
@@ -32,7 +32,6 @@ dependencies {
 
   implementation(project(":ext:reflection"))
   implementation(project(":platform:navigation"))
-  implementation(libs.android.annotation)
   implementation(libs.assertk)
 
   testImplementation(project(":platform:testing"))
