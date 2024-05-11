@@ -32,6 +32,9 @@ import br.com.orcinus.orca.std.injector.module.injection.injectionOf
 import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequest
 import io.ktor.http.HttpMethod
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
@@ -43,12 +46,14 @@ import kotlinx.coroutines.test.runTest
  * @param T Specified [Actor] for performing the testing.
  * @param delegate [TestScope] that's been launched and will provide [CoroutineScope]-like
  *   functionality to this [MastodonClientTestScope].
+ * @param authenticationLock [AuthenticationLock] by which authentication might have been required.
  * @param client [MastodonClient] for executing the intended [HttpRequest]s.
  * @param actor [Actor] used when running the test.
  */
 internal class MastodonClientTestScope<T : Actor>(
   delegate: TestScope,
   val client: HttpClient,
+  val authenticationLock: AuthenticationLock<TestAuthenticator>,
   val actor: T
 ) : CoroutineScope by delegate
 
@@ -72,10 +77,12 @@ internal class FixedActorProvider(private val actor: Actor) : TestActorProvider(
  * @param body Callback run when the environment has been set up and is, therefore, ready to be
  *   used.
  */
+@OptIn(ExperimentalContracts::class)
 internal fun runAuthenticatedTest(
   body: suspend MastodonClientTestScope<Actor.Authenticated>.() -> Unit
 ) {
-  runCoreHttpClientTest(Actor.Authenticated.sample, onAuthentication = {}, body)
+  contract { callsInPlace(body, InvocationKind.EXACTLY_ONCE) }
+  runCoreHttpClientTest(Actor.Authenticated.sample, onAuthentication = {}, body = body)
 }
 
 /**
@@ -83,14 +90,21 @@ internal fun runAuthenticatedTest(
  * [unauthenticated][Actor.Unauthenticated] [Actor], providing the proper [MastodonClientTestScope].
  *
  * @param onAuthentication Action run whenever the [Actor] is authenticated.
+ * @param clientResponseProvider Defines how the [HttpClient] will respond to requests.
  * @param body Callback run when the environment has been set up and is, therefore, ready to be
  *   used.
  */
+@OptIn(ExperimentalContracts::class)
 internal fun runUnauthenticatedTest(
   onAuthentication: () -> Unit,
+  clientResponseProvider: ClientResponseProvider = ClientResponseProvider.ok,
   body: suspend MastodonClientTestScope<Actor.Unauthenticated>.() -> Unit
 ) {
-  runCoreHttpClientTest(Actor.Unauthenticated, onAuthentication, body)
+  contract {
+    callsInPlace(onAuthentication, InvocationKind.AT_MOST_ONCE)
+    callsInPlace(body, InvocationKind.EXACTLY_ONCE)
+  }
+  runCoreHttpClientTest(Actor.Unauthenticated, onAuthentication, clientResponseProvider, body)
 }
 
 /**
@@ -106,23 +120,34 @@ internal fun runUnauthenticatedTest(
  * @param onAuthentication Action run whenever the [Actor] is authenticated. At this point, the most
  *   up-to-date [Actor] is probably different from the one with which the test has been configured
  *   and that is in the [MastodonClientTestScope] given to the [body].
+ * @param clientResponseProvider Defines how the [HttpClient] will respond to requests.
  * @param body Callback run when the environment has been set up and is, therefore, ready to be
  *   used.
  * @see HttpClient.authenticateAndGet
  * @see HttpClient.authenticateAndPost
  * @see HttpClient.authenticateAndSubmitForm
  * @see HttpClient.authenticateAndSubmitFormWithBinaryData
+ * @see MastodonClientTestScope.client
  */
+@OptIn(ExperimentalContracts::class)
 private fun <T : Actor> runCoreHttpClientTest(
   actor: T,
   onAuthentication: () -> Unit,
+  clientResponseProvider: ClientResponseProvider = ClientResponseProvider.ok,
   body: suspend MastodonClientTestScope<T>.() -> Unit
 ) {
+  contract {
+    callsInPlace(onAuthentication, InvocationKind.AT_MOST_ONCE)
+    callsInPlace(body, InvocationKind.EXACTLY_ONCE)
+  }
   val authorizer = TestAuthorizer()
   val actorProvider = FixedActorProvider(actor)
   val authenticator = TestAuthenticator(authorizer, actorProvider) { onAuthentication() }
   val authenticationLock = AuthenticationLock(authenticator, actorProvider)
-  val instance = TestMastodonInstance(authorizer, authenticator, authenticationLock)
+  val instance =
+    TestMastodonInstance(authorizer, authenticator, authenticationLock) {
+      with(clientResponseProvider) { provide(it) }
+    }
   val module =
     MastodonCoreModule(
       injectionOf { TestMastodonInstanceProvider(authorizer, authenticator, authenticationLock) },
@@ -130,6 +155,11 @@ private fun <T : Actor> runCoreHttpClientTest(
       injectionOf { SampleTermMuter() }
     )
   Injector.register<CoreModule>(module)
-  runTest { MastodonClientTestScope(delegate = this, instance.client, actor).body() }
-  Injector.unregister<CoreModule>()
+  runTest {
+    try {
+      MastodonClientTestScope(delegate = this, instance.client, authenticationLock, actor).body()
+    } finally {
+      Injector.unregister<CoreModule>()
+    }
+  }
 }

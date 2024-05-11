@@ -38,16 +38,18 @@ import io.ktor.client.request.HttpResponseData
  * [MastodonInstance] whose [client] responds OK to each sent [HttpRequest].
  *
  * @param authorizer [TestAuthorizer] with which the user will be authorized.
- * @param respond Responds to an [HttpRequest].
+ * @param clientEngineConfiguration Defines how the [client] to an [HttpRequest].
  */
 internal class TestMastodonInstance(
   authorizer: TestAuthorizer = TestAuthorizer(),
   override val authenticator: TestAuthenticator = TestAuthenticator(authorizer),
   override val authenticationLock: AuthenticationLock<TestAuthenticator> =
     TestAuthenticationLock(authenticator = authenticator),
-  private val respond: MockRequestHandleScope.(HttpRequestData) -> HttpResponseData = {
-    respondOk()
-  }
+  private val clientEngineConfiguration:
+    suspend MockRequestHandleScope.(HttpRequestData) -> HttpResponseData =
+    {
+      respondOk()
+    }
 ) : MastodonInstance<TestAuthorizer, TestAuthenticator>(Instance.sample.domain, authorizer) {
   /**
    * [HttpClientEngineFactory] that creates a [MockEngine] that sends an OK response to each
@@ -56,7 +58,7 @@ internal class TestMastodonInstance(
   private val clientEngineFactory =
     object : HttpClientEngineFactory<MockEngineConfig> {
       override fun create(block: MockEngineConfig.() -> Unit): HttpClientEngine {
-        return MockEngine(respond).apply { block(config) }
+        return MockEngine(clientEngineConfiguration).apply { block(config) }
       }
     }
 
