@@ -20,8 +20,6 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
 import br.com.orcinus.orca.core.mastodon.network.requester.request.Authentication
 import br.com.orcinus.orca.core.mastodon.network.requester.request.Resumption
-import br.com.orcinus.orca.core.mastodon.network.requester.request.runRequesterResumptionTest
-import br.com.orcinus.orca.core.mastodon.network.requester.request.runUnauthenticatedRequesterTest
 import io.ktor.client.call.body
 import io.ktor.http.Parameters
 import io.mockk.coVerify

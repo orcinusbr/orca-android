@@ -17,9 +17,9 @@ package br.com.orcinus.orca.core.mastodon.instance
 
 import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.instance.Instance
-import br.com.orcinus.orca.core.mastodon.network.client.Logger
-import br.com.orcinus.orca.core.mastodon.network.client.MastodonClient
-import br.com.orcinus.orca.core.mastodon.network.client.test
+import br.com.orcinus.orca.core.mastodon.network.requester.client.Logger
+import br.com.orcinus.orca.core.mastodon.network.requester.client.MastodonClient
+import br.com.orcinus.orca.core.mastodon.network.requester.client.test
 import br.com.orcinus.orca.core.sample.test.instance.sample
 import br.com.orcinus.orca.core.test.TestAuthenticationLock
 import br.com.orcinus.orca.core.test.TestAuthenticator

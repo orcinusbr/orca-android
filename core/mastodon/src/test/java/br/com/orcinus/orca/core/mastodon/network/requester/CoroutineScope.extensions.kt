@@ -13,12 +13,11 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.network.requester.request
+package br.com.orcinus.orca.core.mastodon.network.requester
 
 import br.com.orcinus.orca.core.auth.actor.Actor
-import br.com.orcinus.orca.core.mastodon.network.client.ClientResponseProvider
-import br.com.orcinus.orca.core.mastodon.network.client.runUnauthenticatedTest
-import br.com.orcinus.orca.core.mastodon.network.requester.Requester
+import br.com.orcinus.orca.core.mastodon.network.requester.client.ClientResponseProvider
+import br.com.orcinus.orca.core.mastodon.network.requester.client.runUnauthenticatedTest
 import br.com.orcinus.orca.core.mastodon.network.requester.request.memory.InMemoryRequestDao
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.respondOk

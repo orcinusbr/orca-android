@@ -19,7 +19,7 @@ import br.com.orcinus.orca.core.feed.profile.post.DeletablePost
 import br.com.orcinus.orca.core.mastodon.MastodonCoreModule
 import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
 import br.com.orcinus.orca.core.mastodon.instanceProvider
-import br.com.orcinus.orca.core.mastodon.network.client.authenticateAndDelete
+import br.com.orcinus.orca.core.mastodon.network.requester.client.authenticateAndDelete
 import br.com.orcinus.orca.std.injector.Injector
 
 /**

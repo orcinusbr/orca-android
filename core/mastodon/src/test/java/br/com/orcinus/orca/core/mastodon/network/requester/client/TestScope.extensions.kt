@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.network.client
+package br.com.orcinus.orca.core.mastodon.network.requester.client
 
 import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.Actor
@@ -28,7 +28,7 @@ import br.com.orcinus.orca.core.test.TestActorProvider
 import br.com.orcinus.orca.core.test.TestAuthenticator
 import br.com.orcinus.orca.core.test.TestAuthorizer
 import br.com.orcinus.orca.std.injector.Injector
-import br.com.orcinus.orca.std.injector.module.injection.injectionOf
+import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequest
 import io.ktor.http.HttpMethod
@@ -150,9 +150,11 @@ private fun <T : Actor> runCoreHttpClientTest(
     }
   val module =
     MastodonCoreModule(
-      injectionOf { TestMastodonInstanceProvider(authorizer, authenticator, authenticationLock) },
-      injectionOf { authenticationLock },
-      injectionOf { SampleTermMuter() }
+      lazyInjectionOf {
+        TestMastodonInstanceProvider(authorizer, authenticator, authenticationLock)
+      },
+      lazyInjectionOf { authenticationLock },
+      lazyInjectionOf { SampleTermMuter() }
     )
   Injector.register<CoreModule>(module)
   runTest {

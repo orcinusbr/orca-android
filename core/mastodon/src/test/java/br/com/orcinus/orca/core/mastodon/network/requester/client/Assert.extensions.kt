@@ -13,16 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.network.client
+package br.com.orcinus.orca.core.mastodon.network.requester.client
 
 import assertk.Assert
 import assertk.assertThat
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.request
+import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 
 /**
- * Creates an [Assert] on the [response]'s authorization [HttpHeader].
+ * Creates an [Assert] on the [response]'s authorization [Headers].
  *
  * @param response [HttpResponse] whose header will be the basis of the [Assert].
  */

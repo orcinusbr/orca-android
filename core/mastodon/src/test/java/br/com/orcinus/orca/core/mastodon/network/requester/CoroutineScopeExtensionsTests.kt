@@ -13,10 +13,11 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.network.requester.request
+package br.com.orcinus.orca.core.mastodon.network.requester
 
 import assertk.assertThat
 import assertk.assertions.isTrue
+import br.com.orcinus.orca.core.mastodon.network.requester.request.Authentication
 import kotlin.test.Test
 
 internal class CoroutineScopeExtensionsTests {

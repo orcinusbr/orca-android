@@ -28,7 +28,7 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.post.MastodonPost
 import br.com.orcinus.orca.core.mastodon.feed.profile.type.editable.MastodonEditableProfile
 import br.com.orcinus.orca.core.mastodon.feed.profile.type.followable.MastodonFollowableProfile
 import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
-import br.com.orcinus.orca.core.mastodon.network.client.authenticateAndGet
+import br.com.orcinus.orca.core.mastodon.network.requester.client.authenticateAndGet
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.std.image.ImageLoader

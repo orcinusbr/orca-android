@@ -17,8 +17,8 @@ package br.com.orcinus.orca.core.mastodon.feed.profile.type.editable
 
 import br.com.orcinus.orca.core.feed.profile.type.editable.Editor
 import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
-import br.com.orcinus.orca.core.mastodon.network.client.authenticateAndSubmitForm
-import br.com.orcinus.orca.core.mastodon.network.client.authenticateAndSubmitFormWithBinaryData
+import br.com.orcinus.orca.core.mastodon.network.requester.client.authenticateAndSubmitForm
+import br.com.orcinus.orca.core.mastodon.network.requester.client.authenticateAndSubmitFormWithBinaryData
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.std.image.SomeImageLoader
