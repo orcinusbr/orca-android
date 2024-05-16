@@ -50,13 +50,13 @@ private object ParametersKSerializer : KSerializer<Parameters> {
       mapSerialDescriptor(
         keyDescriptor =
           PrimitiveSerialDescriptor(
-            serialName = "${this::class.qualifiedName}.descriptor\$key",
+            serialName = "${this::class.qualifiedName}.descriptor*key",
             PrimitiveKind.STRING
           ),
         valueDescriptor =
           listSerialDescriptor(
             PrimitiveSerialDescriptor(
-              "${this::class.qualifiedName}.descriptor\$value\$element",
+              "${this::class.qualifiedName}.descriptor*value*element",
               PrimitiveKind.STRING
             )
           )
