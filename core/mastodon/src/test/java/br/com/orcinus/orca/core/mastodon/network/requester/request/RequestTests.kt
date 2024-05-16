@@ -19,10 +19,19 @@ import assertk.assertThat
 import assertk.assertions.isTrue
 import io.ktor.http.Parameters
 import kotlin.test.Test
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 internal class RequestTests {
+  @Test(expected = IllegalStateException::class)
+  fun throwsWhenCreatingRequestWithUnknownMethodName() {
+    Request(
+      Authentication.None,
+      methodName = "🇮🇹",
+      "/api/v1/resource",
+      Json.encodeToString(Parameters.serializer(), Parameters.Empty)
+    )
+  }
+
   @Test
   fun invokesGetLambdaWhenFoldingGetRequest() {
     var hasGetLambdaBeenInvoked = false
@@ -30,7 +39,7 @@ internal class RequestTests {
         Authentication.None,
         Request.MethodName.GET,
         "/api/v1/resource",
-        Json.encodeToString(Parameters.Empty.entries())
+        Json.encodeToString(Parameters.serializer(), Parameters.Empty)
       )
       .fold(onGet = { hasGetLambdaBeenInvoked = true }, onPost = {})
     assertThat(hasGetLambdaBeenInvoked).isTrue()
@@ -43,7 +52,7 @@ internal class RequestTests {
         Authentication.None,
         Request.MethodName.POST,
         "/api/v1/resource",
-        Json.encodeToString(Parameters.Empty.entries())
+        Json.encodeToString(Parameters.serializer(), Parameters.Empty)
       )
       .fold(onGet = {}, onPost = { hasPostLambdaBeenInvoked = true })
     assertThat(hasPostLambdaBeenInvoked).isTrue()
