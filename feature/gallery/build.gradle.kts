@@ -24,16 +24,10 @@ kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
 android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
-  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
-  androidTestImplementation(project(":feature:gallery-test"))
-  androidTestImplementation(project(":platform:testing"))
-  androidTestImplementation(project(":std:injector-test"))
-  androidTestImplementation(libs.kotlin.test)
-
   api(project(":composite:composable"))
   api(project(":core"))
 

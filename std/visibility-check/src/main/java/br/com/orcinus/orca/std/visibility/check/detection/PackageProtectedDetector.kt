@@ -44,10 +44,12 @@ internal class PackageProtectedDetector : Detector(), SourceCodeScanner {
     annotationInfo: AnnotationInfo,
     usageInfo: AnnotationUsageInfo
   ) {
-    reportExpressionsResolvedToDeclarationsMarkedAsPackageProtectedReferencedFromOutsidePackage(
-      context,
-      element as UExpression
-    )
+    if (element is UExpression) {
+      reportExpressionsResolvedToDeclarationsMarkedAsPackageProtectedReferencedFromOutsidePackage(
+        context,
+        element
+      )
+    }
   }
 
   override fun applicableAnnotations(): List<String> {

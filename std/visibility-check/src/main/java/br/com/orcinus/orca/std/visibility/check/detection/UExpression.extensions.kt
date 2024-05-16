@@ -15,19 +15,38 @@
 
 package br.com.orcinus.orca.std.visibility.check.detection
 
+import org.jetbrains.uast.UAnnotation
 import org.jetbrains.uast.UDeclaration
 import org.jetbrains.uast.UExpression
 import org.jetbrains.uast.getContainingUFile
 
 /**
- * Returns whether this [UExpression] has been created in a package that isn't that in which the
- * [declaration] is or one of its children.
+ * Returns whether this [UExpression] is in a package from which the contained structure shouldn't
+ * be referenced.
  *
- * @param declaration [UDeclaration] that is marked as package-protected and whose package will be
- *   compared to that in which this [UExpression] is.
+ * @param referenceDeclaration [UDeclaration] of the structure referenced by the receiver
+ *   [UExpression].
+ * @param annotationDeclaration [UDeclaration] of the [UAnnotation].
+ * @param isAnnotationInherited Whether the [referenceDeclaration] is annotated by a [UAnnotation]
+ *   that "inherits" the behavior of the one by which package-protected visibility is defined
+ *   instead of being annotated with the latter directly.
  */
-internal fun UExpression.isFromPackageOutsideOfThatOf(declaration: UDeclaration): Boolean {
-  val expressionFile = getContainingUFile() ?: return false
-  val declarationFile = declaration.getContainingUFile() ?: return false
-  return !expressionFile.packageName.startsWith(declarationFile.packageName)
+internal fun UExpression.isFromOutsidePackage(
+  referenceDeclaration: UDeclaration,
+  annotationDeclaration: UDeclaration,
+  isAnnotationInherited: Boolean
+): Boolean {
+  return !isAnnotationInherited && isFromPackageOutsideOfThatOf(referenceDeclaration) ||
+    isFromPackageOutsideOfThatOf(annotationDeclaration)
+}
+
+/**
+ * Returns whether this [UExpression] is in a package that isn't that of the [declaration].
+ *
+ * @param declaration [UDeclaration] whose package will be compared to this [UExpression]'s.
+ */
+private fun UExpression.isFromPackageOutsideOfThatOf(declaration: UDeclaration): Boolean {
+  val expressionPackageName = getContainingUFile()?.packageName ?: return false
+  val declarationPackageName = declaration.getContainingUFile()?.packageName ?: return false
+  return !expressionPackageName.startsWith(declarationPackageName)
 }

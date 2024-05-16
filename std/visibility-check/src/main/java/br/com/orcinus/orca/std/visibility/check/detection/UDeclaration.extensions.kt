@@ -27,13 +27,13 @@ internal const val PACKAGE_PROTECTED_ANNOTATION_NAME =
 
 /**
  * Obtains the [UAnnotation] that makes a structure be package-protected if this [UDeclaration] is
- * of a structure that has been annotated with it or with another [UAnnotation] that extends that
- * one, denoting that references from a package that isn't the one in which this [UDeclaration] is
- * should be reported.
+ * of one that has been annotated with it or with another [UAnnotation] that "inherits" that one's
+ * behavior, denoting that references from a package that isn't the one in which either it or this
+ * [UDeclaration] is should be reported.
  */
 internal fun UDeclaration.findPackageProtectedAnnotation(): UAnnotation? {
   return findAnnotation(PACKAGE_PROTECTED_ANNOTATION_NAME)
-    ?: uAnnotations
-      .mapNotNull { it.tryResolveUDeclaration() }
-      .firstNotNullOfOrNull { it.findAnnotation(PACKAGE_PROTECTED_ANNOTATION_NAME) }
+    ?: uAnnotations.find {
+      it.tryResolveUDeclaration()?.hasAnnotation(PACKAGE_PROTECTED_ANNOTATION_NAME) ?: false
+    }
 }
