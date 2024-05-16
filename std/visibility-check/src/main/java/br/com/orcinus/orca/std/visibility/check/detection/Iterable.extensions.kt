@@ -21,6 +21,7 @@ import com.android.utils.mapValuesNotNull
 import org.jetbrains.uast.UAnnotation
 import org.jetbrains.uast.UDeclaration
 import org.jetbrains.uast.UExpression
+import org.jetbrains.uast.evaluateString
 import org.jetbrains.uast.getContainingDeclaration
 
 /**
@@ -41,19 +42,27 @@ internal fun Iterable<UExpression>
   action: (expression: UExpression, message: String) -> Unit
 ) {
   associateWithNotNull { it.tryResolveUDeclaration() }
-    .mapValuesNotNull { (expression, resolvedDeclaration) ->
-      with({ declaration: UDeclaration ->
-        if (expression.isFromPackageOutsideOfThatOf(declaration)) {
-          declaration
-            .findPackageProtectedAnnotation()
+    .mapValuesNotNull { (expression, referenceDeclaration) ->
+      with<(UDeclaration) -> String?, _>({
+        val annotation = it.findPackageProtectedAnnotation() ?: return@with null
+        val annotationDeclaration = annotation.tryResolveUDeclaration() ?: return@with null
+        val isAnnotationInherited = annotation.qualifiedName != PACKAGE_PROTECTED_ANNOTATION_NAME
+        val isExpressionFromOutsidePackage =
+          expression.isFromOutsidePackage(it, annotationDeclaration, isAnnotationInherited)
+        if (isExpressionFromOutsidePackage) {
+          if (isAnnotationInherited) {
+              annotationDeclaration.findAnnotation(PACKAGE_PROTECTED_ANNOTATION_NAME)
+            } else {
+              annotation
+            }
             ?.findAttributeValue("message")
-            ?.evaluate()
-            ?.toString()
+            ?.evaluateString()
         } else {
           null
         }
       }) {
-        invoke(resolvedDeclaration) ?: resolvedDeclaration.getContainingDeclaration()?.let(::invoke)
+        invoke(referenceDeclaration)
+          ?: referenceDeclaration.getContainingDeclaration()?.let(::invoke)
       }
     }
     .forEach(action)
