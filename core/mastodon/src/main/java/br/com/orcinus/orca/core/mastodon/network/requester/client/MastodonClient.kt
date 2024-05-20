@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.mastodon.network.requester.client
 
+import androidx.annotation.Discouraged
 import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.module.CoreModule
@@ -105,6 +106,7 @@ internal inline fun <T : HttpClientEngineConfig> MastodonClient(
  * @param route URI [String] to which the [HttpRequest] will be sent
  * @param build Additional configuration for the [HttpRequest] to be performed.
  */
+@Discouraged("Prefer performing an authenticated `DELETE` HTTP request through a `Requester`.")
 internal suspend inline fun HttpClient.authenticateAndDelete(
   route: String,
   crossinline build: HttpRequestBuilder.() -> Unit = {}
@@ -122,6 +124,7 @@ internal suspend inline fun HttpClient.authenticateAndDelete(
  * @param route URI [String] to which the [HttpRequest] will be sent.
  * @param build Additional configuration for the [HttpRequest] to be performed.
  */
+@Discouraged("Prefer performing an authenticated `GET` HTTP request through a `Requester`.")
 internal suspend inline fun HttpClient.authenticateAndGet(
   route: String,
   crossinline build: HttpRequestBuilder.() -> Unit = {}
@@ -139,6 +142,7 @@ internal suspend inline fun HttpClient.authenticateAndGet(
  * @param route URI [String] to which the [HttpRequest] will be sent.
  * @param build Additional configuration for the [HttpRequest] to be performed.
  */
+@Discouraged("Prefer performing an authenticated `POST` HTTP request through a `Requester`.")
 internal suspend inline fun HttpClient.authenticateAndPost(
   route: String,
   crossinline build: HttpRequestBuilder.() -> Unit = {}
@@ -157,6 +161,9 @@ internal suspend inline fun HttpClient.authenticateAndPost(
  * @param parameters [Parameters] to be added to the form.
  * @param build Additional configuration for the [HttpRequest] to be performed.
  */
+@Discouraged(
+  "Prefer performing an authenticated, parameterized `POST` HTTP request through a `Requester`."
+)
 internal suspend inline fun HttpClient.authenticateAndSubmitForm(
   route: String,
   parameters: Parameters,
@@ -179,6 +186,10 @@ internal suspend inline fun HttpClient.authenticateAndSubmitForm(
  * @param formData [List] with [PartData] to be included in the form.
  * @param build Additional configuration for the [HttpRequest] to be performed.
  */
+@Discouraged(
+  "Prefer performing an authenticated, `multipart/form-data` `POST` HTTP request through a " +
+    "`Requester`."
+)
 internal suspend inline fun HttpClient.authenticateAndSubmitFormWithBinaryData(
   route: String,
   formData: List<PartData>,
