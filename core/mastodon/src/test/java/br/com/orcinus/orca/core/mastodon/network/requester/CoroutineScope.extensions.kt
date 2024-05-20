@@ -20,45 +20,11 @@ import br.com.orcinus.orca.core.mastodon.network.requester.client.ClientResponse
 import br.com.orcinus.orca.core.mastodon.network.requester.client.runUnauthenticatedTest
 import br.com.orcinus.orca.core.mastodon.network.requester.request.memory.InMemoryRequestDao
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.mock.respondOk
 import io.mockk.spyk
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
-import kotlin.time.Duration.Companion.minutes
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-
-/**
- * Runs a [Requester]-focused test targeting request resumption behavior.
- *
- * @param request Performs the request to be performed, interrupted and then resumed.
- * @param onResumption Callback called after the [request] has been resumed.
- */
-@OptIn(ExperimentalContracts::class)
-internal fun runRequesterResumptionTest(
-  request: suspend Requester.() -> Unit,
-  onResumption: suspend Requester.() -> Unit
-) {
-  contract {
-    callsInPlace(request, InvocationKind.AT_LEAST_ONCE)
-    callsInPlace(onResumption, InvocationKind.EXACTLY_ONCE)
-  }
-  runUnauthenticatedRequesterTest(
-    onAuthentication = {},
-    clientResponseProvider = {
-      delay(2.minutes)
-      respondOk()
-    }
-  ) {
-    launch(Dispatchers.Unconfined) { it.request() }.cancel()
-    it.interrupt()
-    launch(Dispatchers.Unconfined) { it.resume() }.cancel()
-    it.onResumption()
-  }
-}
 
 /**
  * Runs a [Requester]-focused test.

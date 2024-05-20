@@ -20,9 +20,9 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
 import br.com.orcinus.orca.core.mastodon.network.requester.request.Authentication
 import br.com.orcinus.orca.core.mastodon.network.requester.request.Resumption
+import br.com.orcinus.orca.core.mastodon.network.requester.request.resumptionOf
 import io.ktor.client.call.body
 import io.ktor.http.Parameters
-import io.mockk.coVerify
 import kotlin.test.Test
 
 internal class RequesterTests {
@@ -60,35 +60,29 @@ internal class RequesterTests {
 
   @Test
   fun doesNotResumeUnresumableGetRequestWhenItIsInterrupted() {
-    runRequesterResumptionTest({ get(Authentication.None, "api/v1/resource") }) {
-      coVerify(exactly = 1) { get(Authentication.None, "api/v1/resource") }
-    }
+    assertThat(resumptionOf { get(Authentication.None, "api/v1/resource") })
+      .isEqualTo(Resumption.None)
   }
 
   @Test
   fun resumesResumableGetRequestWhenItIsInterrupted() {
-    runRequesterResumptionTest({
-      get(Authentication.None, "api/v1/resource", Resumption.Resumable)
-    }) {
-      coVerify(exactly = 2) { get(Authentication.None, "api/v1/resource", Resumption.Resumable) }
-    }
+    assertThat(resumptionOf { get(Authentication.None, "api/v1/resource", Resumption.Resumable) })
+      .isEqualTo(Resumption.Resumable)
   }
 
   @Test
   fun doesNotResumeUnresumablePostRequestWhenItIsInterrupted() {
-    runRequesterResumptionTest({ post(Authentication.None, "api/v1/resource") }) {
-      coVerify(exactly = 1) { post(Authentication.None, "api/v1/resource", Parameters.Empty) }
-    }
+    assertThat(resumptionOf { post(Authentication.None, "api/v1/resource") })
+      .isEqualTo(Resumption.None)
   }
 
   @Test
   fun resumesResumablePostRequestWhenItIsInterrupted() {
-    runRequesterResumptionTest({
-      post(Authentication.None, "api/v1/resource", Resumption.Resumable)
-    }) {
-      coVerify(exactly = 2) {
-        post(Authentication.None, "api/v1/resource", Parameters.Empty, Resumption.Resumable)
-      }
-    }
+    assertThat(
+        resumptionOf {
+          post(Authentication.None, "api/v1/resource", Parameters.Empty, Resumption.Resumable)
+        }
+      )
+      .isEqualTo(Resumption.Resumable)
   }
 }

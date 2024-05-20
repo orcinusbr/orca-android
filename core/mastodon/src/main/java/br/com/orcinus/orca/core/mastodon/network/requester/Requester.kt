@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.mastodon.network.requester
 
+import androidx.annotation.VisibleForTesting
 import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.Actor
@@ -24,6 +25,7 @@ import br.com.orcinus.orca.core.mastodon.network.requester.request.RequestDao
 import br.com.orcinus.orca.core.mastodon.network.requester.request.Resumption
 import br.com.orcinus.orca.core.mastodon.network.requester.request.serializer
 import io.ktor.client.HttpClient
+import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.client.request.post
@@ -83,7 +85,7 @@ internal class Requester(
     resumption: Resumption = Resumption.None
   ): HttpResponse {
     return request(authentication, Request.MethodName.GET, route, resumption, Parameters.Empty) {
-      client.get(route) { authentication.lock(authenticationLock, this) }
+      client.get(route) { it() }
     }
   }
 
@@ -100,7 +102,7 @@ internal class Requester(
     route: String,
     resumption: Resumption = Resumption.None
   ): HttpResponse {
-    return post(authentication, route, Parameters.Empty, resumption)
+    return post(authentication, route, Parameters.Empty, resumption) { client.post(route) { it() } }
   }
 
   /**
@@ -118,15 +120,11 @@ internal class Requester(
     parameters: Parameters,
     resumption: Resumption = Resumption.None
   ): HttpResponse {
-    return request(authentication, Request.MethodName.POST, route, resumption, parameters) {
+    return post(authentication, route, parameters, resumption) {
       if (parameters.isEmpty()) {
-        client.post(route) { authentication.lock(authenticationLock, this) }
+        client.post(route) { it() }
       } else {
-        coroutineScope {
-          client.submitForm(route, parameters) requestBuilder@{
-            launch { authentication.lock(authenticationLock, this@requestBuilder) }
-          }
-        }
+        coroutineScope { client.submitForm(route, parameters) { launch { it() } } }
       }
     }
   }
@@ -160,6 +158,28 @@ internal class Requester(
   }
 
   /**
+   * Prepares an HTTP `POST` request to be sent.
+   *
+   * @param authentication Authentication requirement that is appropriate for this specific request.
+   * @param route Route from the base [URL] to which the request will be sent.
+   * @param parameters [Parameters] to be added to the form.
+   * @param resumption Policy for defining whether the request should be resumed in case it is
+   *   interrupted.
+   * @param request Actual performance of the `POST` request.
+   */
+  @InternalRequesterApi
+  @VisibleForTesting
+  internal suspend fun post(
+    authentication: Authentication,
+    route: String,
+    parameters: Parameters,
+    resumption: Resumption,
+    request: suspend (config: suspend HttpRequestBuilder.() -> Unit) -> HttpResponse
+  ): HttpResponse {
+    return request(authentication, Request.MethodName.POST, route, resumption, parameters, request)
+  }
+
+  /**
    * Persists the request intended to be performed in the lambda whose return is awaited in another
    * [CoroutineScope] within this [Requester]; then, removes the persisted information afterwards
    * when it responds.
@@ -183,14 +203,17 @@ internal class Requester(
     route: String,
     resumption: Resumption,
     parameters: Parameters,
-    request: suspend () -> HttpResponse
+    request: suspend (config: suspend HttpRequestBuilder.() -> Unit) -> HttpResponse
   ): HttpResponse {
     contract { callsInPlace(request, InvocationKind.EXACTLY_ONCE) }
     return coroutineScope {
       val parametersInJson = Json.encodeToString(Parameters.serializer(), parameters)
       val requestEntity = Request(authentication, methodName, route, parametersInJson)
       resumption.prepare(requestDao, requestEntity)
-      val responseDeferred = async(start = CoroutineStart.LAZY) { request() }
+      val responseDeferred =
+        async(start = CoroutineStart.LAZY) {
+          request { authentication.lock(authenticationLock, this) }
+        }
       ongoing[requestEntity] = responseDeferred
       val response = responseDeferred.await()
       ongoing -= requestEntity
