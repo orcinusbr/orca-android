@@ -26,21 +26,24 @@ import kotlinx.serialization.KSerializer
 
 /** DAO by which [Request]-related read and write operations are performed. */
 @Dao
-@InternalRequesterApi
 internal abstract class RequestDao {
   /**
    * Selects all of the [Request]s that have been previously inserted.
    *
    * @see insert
    */
-  @Query("SELECT * FROM requests") abstract suspend fun selectAll(): List<Request>
+  @InternalRequesterApi
+  @Query("SELECT * FROM requests")
+  abstract suspend fun selectAll(): List<Request>
 
   /**
    * Inserts the [request].
    *
    * @param request [Request] to be inserted.
    */
-  @Insert(onConflict = OnConflictStrategy.REPLACE) abstract suspend fun insert(request: Request)
+  @Insert(onConflict = OnConflictStrategy.REPLACE)
+  @InternalRequesterApi
+  abstract suspend fun insert(request: Request)
 
   /**
    * Deletes the inserted [Request].
@@ -48,34 +51,12 @@ internal abstract class RequestDao {
    * @param request [Request] to be deleted.
    * @see insert
    */
-  @Delete abstract suspend fun delete(request: Request)
+  @Delete @InternalRequesterApi abstract suspend fun delete(request: Request)
 
   /**
    * Deletes all of the [Request]s that have been inserted.
    *
    * @see insert
    */
-  @Query("DELETE FROM requests") abstract suspend fun clear()
-
-  /**
-   * Inserts a [Request].
-   *
-   * @param authentication Authentication requirement that's been deemed appropriate.
-   * @param methodName Name of the HTTP method that's been called on the [route].
-   * @param route Specific resource to which access was performed of the [Request] to be inserted.
-   * @param parameters [Parameters] represented as a JSON object converted by a [KSerializer] into a
-   *   [String].
-   * @return The [Request] that's been inserted.
-   * @see Parameters.Companion.serializer
-   */
-  suspend fun insert(
-    authentication: Authentication,
-    @Request.MethodName methodName: String,
-    route: String,
-    parameters: String
-  ): Request {
-    val request = Request(authentication, methodName, route, parameters)
-    insert(request)
-    return request
-  }
+  @Query("DELETE FROM requests") @InternalRequesterApi abstract suspend fun clear()
 }
