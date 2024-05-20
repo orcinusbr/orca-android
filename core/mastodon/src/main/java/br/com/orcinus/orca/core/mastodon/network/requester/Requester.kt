@@ -26,6 +26,7 @@ import br.com.orcinus.orca.core.mastodon.network.requester.request.Resumption
 import br.com.orcinus.orca.core.mastodon.network.requester.request.serializer
 import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.delete
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.client.request.post
@@ -70,6 +71,24 @@ internal class Requester(
    */
   class InterruptionException @InternalRequesterApi internal constructor(request: Request) :
     CancellationException("$request has been interrupted by its requester.")
+
+  /**
+   * Sends an HTTP `DELETE` request.
+   *
+   * @param authentication Authentication requirement that is appropriate for this specific request.
+   * @param route Route from the base [URL] to which the request will be sent.
+   * @param resumption Policy for defining whether the request should be resumed in case it is
+   *   interrupted.
+   */
+  suspend fun delete(
+    authentication: Authentication,
+    route: String,
+    resumption: Resumption = Resumption.None
+  ): HttpResponse {
+    return request(authentication, Request.MethodName.DELETE, route, resumption, Parameters.Empty) {
+      client.delete(route) { it() }
+    }
+  }
 
   /**
    * Sends an HTTP `GET` request.
@@ -137,6 +156,7 @@ internal class Requester(
   suspend fun resume() {
     requestDao.selectAll().forEach { request ->
       request.fold(
+        onDelete = { delete(request.authentication, request.route, Resumption.Resumable) },
         onGet = { get(request.authentication, request.route, Resumption.Resumable) },
         onPost = {
           post(

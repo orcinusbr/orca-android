@@ -19,6 +19,7 @@ import assertk.assertThat
 import assertk.assertions.isTrue
 import io.ktor.http.Parameters
 import kotlin.test.Test
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 internal class RequestTests {
@@ -33,6 +34,19 @@ internal class RequestTests {
   }
 
   @Test
+  fun invokesDeleteLambdaWhenFoldingDeleteRequest() {
+    var hasDeleteLambdaBeenInvoked = false
+    Request(
+        Authentication.None,
+        Request.MethodName.DELETE,
+        "/api/v1/resource",
+        Json.encodeToString(Parameters.serializer(), Parameters.Empty)
+      )
+      .fold(onDelete = { hasDeleteLambdaBeenInvoked = true }, onGet = {}, onPost = {})
+    assertThat(hasDeleteLambdaBeenInvoked).isTrue()
+  }
+
+  @Test
   fun invokesGetLambdaWhenFoldingGetRequest() {
     var hasGetLambdaBeenInvoked = false
     Request(
@@ -41,7 +55,7 @@ internal class RequestTests {
         "/api/v1/resource",
         Json.encodeToString(Parameters.serializer(), Parameters.Empty)
       )
-      .fold(onGet = { hasGetLambdaBeenInvoked = true }, onPost = {})
+      .fold(onDelete = {}, onGet = { hasGetLambdaBeenInvoked = true }, onPost = {})
     assertThat(hasGetLambdaBeenInvoked).isTrue()
   }
 
@@ -54,7 +68,7 @@ internal class RequestTests {
         "/api/v1/resource",
         Json.encodeToString(Parameters.serializer(), Parameters.Empty)
       )
-      .fold(onGet = {}, onPost = { hasPostLambdaBeenInvoked = true })
+      .fold(onDelete = {}, onGet = {}, onPost = { hasPostLambdaBeenInvoked = true })
     assertThat(hasPostLambdaBeenInvoked).isTrue()
   }
 }

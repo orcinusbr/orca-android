@@ -52,13 +52,16 @@ constructor(
   val parameters: String
 ) {
   /** Constrains an HTTP method name to the ones that are currently supported. */
-  @StringDef(MethodName.GET, MethodName.POST)
+  @StringDef(MethodName.DELETE, MethodName.GET, MethodName.POST)
   annotation class MethodName {
     companion object {
-      /** Name of a `GET` HTTP method. */
+      /** Name of the `DELETE` HTTP method. */
+      const val DELETE = "DELETE"
+
+      /** Name of the `GET` HTTP method. */
       const val GET = "GET"
 
-      /** Name of a `POST` HTTP method. */
+      /** Name of the `POST` HTTP method. */
       const val POST = "POST"
     }
   }
@@ -85,21 +88,23 @@ constructor(
   ) : this(id = 0, authentication, methodName, route, parameters)
 
   init {
-    fold(onGet = {}, onPost = {})
+    fold(onDelete = {}, onGet = {}, onPost = {})
   }
 
   /**
    * Invokes one of the specified lambdas depending on whose HTTP method the [methodName] is.
    *
    * @param T Result of executing one of the functions.
+   * @param onDelete Callback called if this structure is of a `DELETE` request.
    * @param onGet Operation to be performed in case this is the structure of a `GET` request.
    * @param onPost Action to run when this is a `POST` request's structure.
    * @throws IllegalStateException If the [methodName] isn't that of a supported method (that is,
    *   isn't one of the constants defined by [MethodName]).
    */
   @Throws(IllegalStateException::class)
-  inline fun <T> fold(onGet: () -> T, onPost: () -> T): T {
+  inline fun <T> fold(onDelete: () -> T, onGet: () -> T, onPost: () -> T): T {
     return when (methodName) {
+      MethodName.DELETE -> onDelete()
       MethodName.GET -> onGet()
       MethodName.POST -> onPost()
       else -> throw IllegalStateException("No known method named \"$methodName\".")

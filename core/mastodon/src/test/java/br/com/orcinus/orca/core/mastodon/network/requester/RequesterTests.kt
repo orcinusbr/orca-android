@@ -27,9 +27,25 @@ import kotlin.test.Test
 
 internal class RequesterTests {
   @Test
+  fun deletes() {
+    runUnauthenticatedRequesterTest(onAuthentication = {}) {
+      assertThat(it.delete(Authentication.None, "/api/v1/resource").body<String>()).isEqualTo("")
+    }
+  }
+
+  @Test
+  fun deletesSchedulingAuthentication() {
+    var hasAuthenticated = false
+    runUnauthenticatedRequesterTest(onAuthentication = { hasAuthenticated = true }) {
+      it.delete(Authentication.Scheduled, "/api/v1/resource")
+    }
+    assertThat(hasAuthenticated).isTrue()
+  }
+
+  @Test
   fun gets() {
     runUnauthenticatedRequesterTest(onAuthentication = {}) {
-      assertThat(it.get(Authentication.None, "api/v1/resource").body<String>()).isEqualTo("")
+      assertThat(it.get(Authentication.None, "/api/v1/resource").body<String>()).isEqualTo("")
     }
   }
 
@@ -37,7 +53,7 @@ internal class RequesterTests {
   fun getsSchedulingAuthentication() {
     var hasAuthenticated = false
     runUnauthenticatedRequesterTest(onAuthentication = { hasAuthenticated = true }) {
-      it.get(Authentication.Scheduled, "api/v1/resource")
+      it.get(Authentication.Scheduled, "/api/v1/resource")
     }
     assertThat(hasAuthenticated).isTrue()
   }
@@ -45,7 +61,7 @@ internal class RequesterTests {
   @Test
   fun posts() {
     runUnauthenticatedRequesterTest(onAuthentication = {}) {
-      assertThat(it.post(Authentication.None, "api/v1/resource").body<String>()).isEqualTo("")
+      assertThat(it.post(Authentication.None, "/api/v1/resource").body<String>()).isEqualTo("")
     }
   }
 
@@ -53,26 +69,40 @@ internal class RequesterTests {
   fun postsSchedulingAuthentication() {
     var hasAuthenticated = false
     runUnauthenticatedRequesterTest(onAuthentication = { hasAuthenticated = true }) {
-      it.get(Authentication.Scheduled, "api/v1/resource")
+      it.get(Authentication.Scheduled, "/api/v1/resource")
     }
     assertThat(hasAuthenticated).isTrue()
   }
 
   @Test
+  fun doesNotResumeUnresumableDeleteRequestWhenItIsInterrupted() {
+    assertThat(resumptionOf { delete(Authentication.None, "/api/v1/resource") })
+      .isEqualTo(Resumption.None)
+  }
+
+  @Test
+  fun resumesResumableDeleteRequestWhenItIsInterrupted() {
+    assertThat(
+        resumptionOf { delete(Authentication.None, "/api/v1/resource", Resumption.Resumable) }
+      )
+      .isEqualTo(Resumption.Resumable)
+  }
+
+  @Test
   fun doesNotResumeUnresumableGetRequestWhenItIsInterrupted() {
-    assertThat(resumptionOf { get(Authentication.None, "api/v1/resource") })
+    assertThat(resumptionOf { get(Authentication.None, "/api/v1/resource") })
       .isEqualTo(Resumption.None)
   }
 
   @Test
   fun resumesResumableGetRequestWhenItIsInterrupted() {
-    assertThat(resumptionOf { get(Authentication.None, "api/v1/resource", Resumption.Resumable) })
+    assertThat(resumptionOf { get(Authentication.None, "/api/v1/resource", Resumption.Resumable) })
       .isEqualTo(Resumption.Resumable)
   }
 
   @Test
   fun doesNotResumeUnresumablePostRequestWhenItIsInterrupted() {
-    assertThat(resumptionOf { post(Authentication.None, "api/v1/resource") })
+    assertThat(resumptionOf { post(Authentication.None, "/api/v1/resource") })
       .isEqualTo(Resumption.None)
   }
 
@@ -80,7 +110,7 @@ internal class RequesterTests {
   fun resumesResumablePostRequestWhenItIsInterrupted() {
     assertThat(
         resumptionOf {
-          post(Authentication.None, "api/v1/resource", Parameters.Empty, Resumption.Resumable)
+          post(Authentication.None, "/api/v1/resource", Parameters.Empty, Resumption.Resumable)
         }
       )
       .isEqualTo(Resumption.Resumable)
