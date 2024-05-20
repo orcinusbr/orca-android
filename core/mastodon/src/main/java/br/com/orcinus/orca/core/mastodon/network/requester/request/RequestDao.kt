@@ -21,8 +21,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import br.com.orcinus.orca.core.mastodon.network.requester.InternalRequesterApi
-import io.ktor.http.Parameters
-import kotlinx.serialization.KSerializer
 
 /** DAO by which [Request]-related read and write operations are performed. */
 @Dao
