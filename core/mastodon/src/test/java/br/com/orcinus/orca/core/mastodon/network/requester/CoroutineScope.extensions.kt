@@ -35,7 +35,7 @@ import kotlin.contracts.contract
 import kotlinx.coroutines.CoroutineScope
 
 /**
- * Obtains the amount of time the [request] is retried.
+ * Obtains the amount of times the [request] is retried.
  *
  * @param request Performs the request to be retried.
  */
