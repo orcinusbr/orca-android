@@ -19,12 +19,16 @@ import androidx.annotation.VisibleForTesting
 import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.mastodon.network.requester.client.Logger
+import br.com.orcinus.orca.core.mastodon.network.requester.client.normalizeJsonKeys
 import br.com.orcinus.orca.core.mastodon.network.requester.request.Authentication
 import br.com.orcinus.orca.core.mastodon.network.requester.request.Request
 import br.com.orcinus.orca.core.mastodon.network.requester.request.RequestDao
 import br.com.orcinus.orca.core.mastodon.network.requester.request.Resumption
 import br.com.orcinus.orca.core.mastodon.network.requester.request.serializer
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.delete
 import io.ktor.client.request.forms.submitForm
@@ -50,16 +54,28 @@ import kotlinx.serialization.json.Json
  * be performed, caching their results for resource saving and effortless retrieval when an internet
  * connection isn't available.
  *
- * @param client [HttpClient] that will be responsible for sending HTTP requests.
  * @param authenticationLock [AuthenticationLock] for unlocking operations made by an
  *   unauthenticated [Actor].
+ * @param clientEngineFactory [HttpClientEngineFactory] that creates the [HttpClientEngine] powering
+ *   the underlying [client].
+ * @param logger [Logger] by which received [HttpResponse]s will be logged.
  * @param requestDao [RequestDao] for performing read and write operations on [Request]s.
  */
-internal class Requester(
-  private val client: HttpClient,
+internal class Requester
+@InternalRequesterApi
+constructor(
   private val authenticationLock: SomeAuthenticationLock,
+  private val clientEngineFactory: HttpClientEngineFactory<*>,
+  private val logger: Logger,
   private val requestDao: RequestDao
 ) {
+  /** [HttpClient] that will be responsible for sending HTTP requests. */
+  private val client =
+    HttpClient(clientEngineFactory) {
+      logger.start(this)
+      normalizeJsonKeys()
+    }
+
   /** Responses that are currently being obtained. */
   private val ongoing = hashMapOf<Request, Deferred<HttpResponse>>()
 

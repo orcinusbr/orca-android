@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,14 +15,9 @@
 
 package br.com.orcinus.orca.core.mastodon.network.requester.client
 
-/** [Logger] returned by [test]. */
-private val testLogger =
-  object : Logger() {
-    override fun onInfo(info: String) {}
+/** [Logger] that (ironically) doesn't log anything. */
+internal object NoOpLogger : Logger() {
+  override fun info(info: String) {}
 
-    override fun onError(error: String) {}
-  }
-
-/** A no-op [Logger]. */
-internal val Logger.Companion.test
-  get() = testLogger
+  override fun error(error: String) {}
+}

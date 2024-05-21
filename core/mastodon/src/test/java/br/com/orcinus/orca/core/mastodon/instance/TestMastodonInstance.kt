@@ -17,54 +17,40 @@ package br.com.orcinus.orca.core.mastodon.instance
 
 import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.instance.Instance
-import br.com.orcinus.orca.core.mastodon.network.requester.client.Logger
+import br.com.orcinus.orca.core.mastodon.network.requester.client.ClientResponseProvider
 import br.com.orcinus.orca.core.mastodon.network.requester.client.MastodonClient
-import br.com.orcinus.orca.core.mastodon.network.requester.client.test
+import br.com.orcinus.orca.core.mastodon.network.requester.client.NoOpLogger
+import br.com.orcinus.orca.core.mastodon.network.requester.client.createHttpClientEngineFactory
 import br.com.orcinus.orca.core.sample.test.instance.sample
 import br.com.orcinus.orca.core.test.TestAuthenticationLock
 import br.com.orcinus.orca.core.test.TestAuthenticator
 import br.com.orcinus.orca.core.test.TestAuthorizer
-import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.engine.mock.MockEngine
-import io.ktor.client.engine.mock.MockEngineConfig
-import io.ktor.client.engine.mock.MockRequestHandleScope
-import io.ktor.client.engine.mock.respondOk
 import io.ktor.client.request.HttpRequest
-import io.ktor.client.request.HttpRequestData
-import io.ktor.client.request.HttpResponseData
 
 /**
  * [MastodonInstance] whose [client] responds OK to each sent [HttpRequest].
  *
  * @param authorizer [TestAuthorizer] with which the user will be authorized.
- * @param clientEngineConfiguration Defines how the [client] to an [HttpRequest].
+ * @param clientResponseProvider Defines how the [client] to an [HttpRequest].
  */
 internal class TestMastodonInstance(
   authorizer: TestAuthorizer = TestAuthorizer(),
   override val authenticator: TestAuthenticator = TestAuthenticator(authorizer),
   override val authenticationLock: AuthenticationLock<TestAuthenticator> =
     TestAuthenticationLock(authenticator = authenticator),
-  private val clientEngineConfiguration:
-    suspend MockRequestHandleScope.(HttpRequestData) -> HttpResponseData =
-    {
-      respondOk()
-    }
+  private val clientResponseProvider: ClientResponseProvider
 ) : MastodonInstance<TestAuthorizer, TestAuthenticator>(Instance.sample.domain, authorizer) {
   /**
    * [HttpClientEngineFactory] that creates a [MockEngine] that sends an OK response to each
    * [HttpRequest].
    */
-  private val clientEngineFactory =
-    object : HttpClientEngineFactory<MockEngineConfig> {
-      override fun create(block: MockEngineConfig.() -> Unit): HttpClientEngine {
-        return MockEngine(clientEngineConfiguration).apply { block(config) }
-      }
-    }
+  private val clientEngineFactory = createHttpClientEngineFactory(clientResponseProvider)
 
   override val feedProvider = Instance.sample.feedProvider
   override val profileProvider = Instance.sample.profileProvider
   override val profileSearcher = Instance.sample.profileSearcher
   override val postProvider = Instance.sample.postProvider
-  override val client = MastodonClient(clientEngineFactory, Logger.test)
+  override val client = MastodonClient(clientEngineFactory, NoOpLogger)
 }

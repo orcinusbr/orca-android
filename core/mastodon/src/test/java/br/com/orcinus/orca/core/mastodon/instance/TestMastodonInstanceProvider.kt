@@ -17,8 +17,11 @@ package br.com.orcinus.orca.core.mastodon.instance
 
 import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.instance.InstanceProvider
+import br.com.orcinus.orca.core.mastodon.network.requester.client.ClientResponseProvider
 import br.com.orcinus.orca.core.test.TestAuthenticator
 import br.com.orcinus.orca.core.test.TestAuthorizer
+import io.ktor.client.HttpClient
+import io.ktor.client.request.HttpRequest
 
 /**
  * [InstanceProvider] that provides a [TestMastodonInstance].
@@ -27,13 +30,24 @@ import br.com.orcinus.orca.core.test.TestAuthorizer
  * @param authenticator [TestAuthenticator] through which authentication can be done.
  * @param authenticationLock [AuthenticationLock] by which features can be locked or unlocked by an
  *   authentication "wall".
+ * @param clientResponseProvider Defines how the [HttpClient] to an [HttpRequest].
  */
 internal class TestMastodonInstanceProvider(
   private val authorizer: TestAuthorizer,
   private val authenticator: TestAuthenticator,
-  private val authenticationLock: AuthenticationLock<TestAuthenticator>
+  private val authenticationLock: AuthenticationLock<TestAuthenticator>,
+  private val clientResponseProvider: ClientResponseProvider
 ) : InstanceProvider {
+  /**
+   * [TestMastodonInstance] to be provided.
+   *
+   * @see provide
+   */
+  private val instance by lazy {
+    TestMastodonInstance(authorizer, authenticator, authenticationLock, clientResponseProvider)
+  }
+
   override fun provide(): TestMastodonInstance {
-    return TestMastodonInstance(authorizer, authenticator, authenticationLock)
+    return instance
   }
 }

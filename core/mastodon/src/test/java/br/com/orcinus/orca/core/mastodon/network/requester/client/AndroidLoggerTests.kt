@@ -16,8 +16,16 @@
 package br.com.orcinus.orca.core.mastodon.network.requester.client
 
 import android.util.Log
+import br.com.orcinus.orca.core.mastodon.network.requester.client.NoOpLogger.format
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.mock.respondError
+import io.ktor.client.engine.mock.respondOk
+import io.ktor.client.request.get
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpStatusCode
+import io.mockk.coVerify
 import io.mockk.mockkStatic
-import io.mockk.verify
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -26,17 +34,33 @@ import org.robolectric.RobolectricTestRunner
 internal class AndroidLoggerTests {
   @Test
   fun infoCallsAndroidLogI() {
+    lateinit var response: HttpResponse
     mockkStatic(Log::class) {
-      Logger.android.info("😮")
-      verify { Log.i(Logger.ANDROID_LOGGER_TAG, "😮") }
+      runTest {
+        response =
+          HttpClient(createHttpClientEngineFactory { respondOk("😮") }) {
+              Logger.Android.start(this)
+            }
+            .get("/api/v1/resource")
+      }
+      coVerify { Log.i(Logger.Android.TAG, response.format()) }
     }
   }
 
   @Test
   fun errorCallsAndroidLogE() {
+    lateinit var response: HttpResponse
     mockkStatic(Log::class) {
-      Logger.android.error("😵")
-      verify { Log.e(Logger.ANDROID_LOGGER_TAG, "😵") }
+      runTest {
+        response =
+          HttpClient(
+              createHttpClientEngineFactory { respondError(HttpStatusCode.NotImplemented, "😵") }
+            ) {
+              Logger.Android.start(this)
+            }
+            .get("/api/v1/resource")
+      }
+      coVerify { Log.e(Logger.Android.TAG, response.format()) }
     }
   }
 }

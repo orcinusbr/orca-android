@@ -19,7 +19,6 @@ import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.mastodon.MastodonCoreModule
-import br.com.orcinus.orca.core.mastodon.instance.TestMastodonInstance
 import br.com.orcinus.orca.core.mastodon.instance.TestMastodonInstanceProvider
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.sample.auth.actor.sample
@@ -144,18 +143,20 @@ private fun <T : Actor> runCoreHttpClientTest(
   val actorProvider = FixedActorProvider(actor)
   val authenticator = TestAuthenticator(authorizer, actorProvider) { onAuthentication() }
   val authenticationLock = AuthenticationLock(authenticator, actorProvider)
-  val instance =
-    TestMastodonInstance(authorizer, authenticator, authenticationLock) {
-      with(clientResponseProvider) { provide(it) }
-    }
+  val instanceProvider =
+    TestMastodonInstanceProvider(
+      authorizer,
+      authenticator,
+      authenticationLock,
+      clientResponseProvider
+    )
   val module =
     MastodonCoreModule(
-      lazyInjectionOf {
-        TestMastodonInstanceProvider(authorizer, authenticator, authenticationLock)
-      },
+      lazyInjectionOf { instanceProvider },
       lazyInjectionOf { authenticationLock },
       lazyInjectionOf { SampleTermMuter() }
     )
+  val instance = instanceProvider.provide()
   Injector.register<CoreModule>(module)
   runTest {
     try {

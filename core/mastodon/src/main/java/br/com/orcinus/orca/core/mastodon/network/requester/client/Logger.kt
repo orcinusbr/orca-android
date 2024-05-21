@@ -16,55 +16,79 @@
 package br.com.orcinus.orca.core.mastodon.network.requester.client
 
 import android.util.Log
+import br.com.orcinus.orca.core.mastodon.network.requester.InternalRequesterApi
+import io.ktor.client.HttpClient
+import io.ktor.client.HttpClientConfig
+import io.ktor.client.plugins.HttpResponseValidator
+import io.ktor.client.plugins.observer.ResponseObserver
+import io.ktor.client.request.HttpRequest
+import io.ktor.client.request.forms.FormDataContent
+import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsText
+import io.ktor.client.statement.request
+import io.ktor.http.isSuccess
 
 /** Logs messages with different severity levels. */
-abstract class Logger {
+@InternalRequesterApi
+internal abstract class Logger {
+  /** [Logger] that forwards logs to the Android [Log]. */
+  object Android : Logger() {
+    /** Tag by which sent logs will be tagged. */
+    const val TAG = "Requester"
+
+    override fun info(info: String) {
+      Log.i(TAG, info)
+    }
+
+    override fun error(error: String) {
+      Log.e(TAG, error)
+    }
+  }
+
+  /**
+   * Observes and logs each [HttpResponse] sent to the [HttpClient].
+   *
+   * @param clientConfig [HttpClientConfig] whose [HttpResponse]s will be logged.
+   */
+  fun start(clientConfig: HttpClientConfig<*>) {
+    clientConfig.ResponseObserver {
+      val message = it.format()
+      val logging = if (it.status.isSuccess()) ::info else ::error
+      logging(message)
+    }
+    clientConfig.HttpResponseValidator {
+      handleResponseExceptionWithRequest { cause, _ -> cause.message?.let(::error) }
+    }
+  }
+
   /**
    * Logs additional information.
    *
    * @param info [String] with the information to be logged.
    */
-  internal fun info(info: String) {
-    onInfo(info)
-  }
+  protected abstract fun info(info: String)
 
   /**
    * Logs the occurrence of an error.
    *
    * @param error [String] describing the error to be logged.
    */
-  internal fun error(error: String) {
-    onError(error)
-  }
+  protected abstract fun error(error: String)
 
   /**
-   * Logs additional information.
-   *
-   * @param info [String] with the information to be logged.
+   * Converts this [HttpResponse] into a formatted [String] which contains relevant information
+   * regarding both the [HttpRequest] that originated this [HttpResponse] and this [HttpResponse]
+   * itself.
    */
-  protected abstract fun onInfo(info: String)
-
-  /**
-   * Logs the occurrence of an error.
-   *
-   * @param error [String] describing the error to be logged.
-   */
-  protected abstract fun onError(error: String)
-
-  companion object {
-    /** Tag to which logs sent by [android] will be attached. */
-    const val ANDROID_LOGGER_TAG = "CoreHttpClient"
-
-    /** [Logger] that uses the Android [Log]. */
-    val android =
-      object : Logger() {
-        override fun onInfo(info: String) {
-          Log.i(ANDROID_LOGGER_TAG, info)
-        }
-
-        override fun onError(error: String) {
-          Log.e(ANDROID_LOGGER_TAG, error)
-        }
-      }
+  suspend fun HttpResponse.format(): String {
+    val requestContent = request.content
+    val requestFormDataParamsAsString =
+      if (requestContent is FormDataContent) " (${requestContent.formData})" else ""
+    return """
+      ${status.value} on ${request.method.value} ${request.url} $requestFormDataParamsAsString
+      $headers
+      ${bodyAsText()}
+    """
+      .trimIndent()
   }
 }
