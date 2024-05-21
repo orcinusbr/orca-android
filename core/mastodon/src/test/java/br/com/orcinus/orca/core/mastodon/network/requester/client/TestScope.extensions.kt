@@ -77,8 +77,8 @@ internal class FixedActorProvider(private val actor: Actor) : TestActorProvider(
  *   used.
  */
 @OptIn(ExperimentalContracts::class)
-internal fun runAuthenticatedTest(
-  body: suspend MastodonClientTestScope<Actor.Authenticated>.() -> Unit
+internal inline fun runAuthenticatedTest(
+  crossinline body: suspend MastodonClientTestScope<Actor.Authenticated>.() -> Unit
 ) {
   contract { callsInPlace(body, InvocationKind.EXACTLY_ONCE) }
   runCoreHttpClientTest(Actor.Authenticated.sample, onAuthentication = {}, body = body)
@@ -94,10 +94,10 @@ internal fun runAuthenticatedTest(
  *   used.
  */
 @OptIn(ExperimentalContracts::class)
-internal fun runUnauthenticatedTest(
-  onAuthentication: () -> Unit,
+internal inline fun runUnauthenticatedTest(
+  crossinline onAuthentication: () -> Unit,
   clientResponseProvider: ClientResponseProvider = ClientResponseProvider.ok,
-  body: suspend MastodonClientTestScope<Actor.Unauthenticated>.() -> Unit
+  crossinline body: suspend MastodonClientTestScope<Actor.Unauthenticated>.() -> Unit
 ) {
   contract {
     callsInPlace(onAuthentication, InvocationKind.AT_MOST_ONCE)
@@ -129,11 +129,11 @@ internal fun runUnauthenticatedTest(
  * @see MastodonClientTestScope.client
  */
 @OptIn(ExperimentalContracts::class)
-private fun <T : Actor> runCoreHttpClientTest(
+private inline fun <T : Actor> runCoreHttpClientTest(
   actor: T,
-  onAuthentication: () -> Unit,
+  crossinline onAuthentication: () -> Unit,
   clientResponseProvider: ClientResponseProvider = ClientResponseProvider.ok,
-  body: suspend MastodonClientTestScope<T>.() -> Unit
+  crossinline body: suspend MastodonClientTestScope<T>.() -> Unit
 ) {
   contract {
     callsInPlace(onAuthentication, InvocationKind.AT_MOST_ONCE)

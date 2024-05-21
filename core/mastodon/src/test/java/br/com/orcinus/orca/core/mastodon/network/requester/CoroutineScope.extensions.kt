@@ -63,10 +63,10 @@ internal inline fun retryCountOf(crossinline request: suspend Requester.() -> Ht
  * @param body Operation to be performed with the [Requester].
  */
 @OptIn(ExperimentalContracts::class)
-internal fun runUnauthenticatedRequesterTest(
-  onAuthentication: () -> Unit,
+internal inline fun runUnauthenticatedRequesterTest(
+  crossinline onAuthentication: () -> Unit,
   clientResponseProvider: ClientResponseProvider = ClientResponseProvider.ok,
-  body: suspend CoroutineScope.(Requester) -> Unit
+  crossinline body: suspend CoroutineScope.(Requester) -> Unit
 ) {
   contract {
     callsInPlace(onAuthentication)
