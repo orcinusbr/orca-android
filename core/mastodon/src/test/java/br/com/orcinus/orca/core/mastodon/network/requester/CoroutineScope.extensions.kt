@@ -25,11 +25,35 @@ import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.MockEngineConfig
+import io.ktor.client.engine.mock.respondError
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpStatusCode
 import io.mockk.spyk
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlinx.coroutines.CoroutineScope
+
+/**
+ * Obtains the amount of time the [request] is retried.
+ *
+ * @param request Performs the request to be retried.
+ */
+@OptIn(ExperimentalContracts::class)
+internal inline fun retryCountOf(crossinline request: suspend Requester.() -> HttpResponse): Int {
+  contract { callsInPlace(request, InvocationKind.EXACTLY_ONCE) }
+  var requestCount = 0
+  runUnauthenticatedRequesterTest(
+    onAuthentication = {},
+    clientResponseProvider = {
+      requestCount++
+      respondError(HttpStatusCode.NotImplemented)
+    }
+  ) {
+    it.request()
+  }
+  return requestCount.dec()
+}
 
 /**
  * Runs a [Requester]-focused test.

@@ -43,6 +43,11 @@ internal class RequesterTests {
   }
 
   @Test
+  fun retriesDeleteTwiceAfterFailure() {
+    assertThat(retryCountOf { delete(Authentication.None, "/api/v1/resource") }).isEqualTo(2)
+  }
+
+  @Test
   fun gets() {
     runUnauthenticatedRequesterTest(onAuthentication = {}) {
       assertThat(it.get(Authentication.None, "/api/v1/resource").body<String>()).isEqualTo("")
@@ -59,6 +64,11 @@ internal class RequesterTests {
   }
 
   @Test
+  fun retriesGetTwiceAfterFailure() {
+    assertThat(retryCountOf { get(Authentication.None, "/api/v1/resource") }).isEqualTo(2)
+  }
+
+  @Test
   fun posts() {
     runUnauthenticatedRequesterTest(onAuthentication = {}) {
       assertThat(it.post(Authentication.None, "/api/v1/resource").body<String>()).isEqualTo("")
@@ -72,6 +82,11 @@ internal class RequesterTests {
       it.get(Authentication.Scheduled, "/api/v1/resource")
     }
     assertThat(hasAuthenticated).isTrue()
+  }
+
+  @Test
+  fun retriesPostTwiceAfterFailure() {
+    assertThat(retryCountOf { post(Authentication.None, "/api/v1/resource") }).isEqualTo(2)
   }
 
   @Test

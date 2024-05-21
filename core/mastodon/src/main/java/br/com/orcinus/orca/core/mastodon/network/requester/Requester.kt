@@ -27,8 +27,11 @@ import br.com.orcinus.orca.core.mastodon.network.requester.request.RequestDao
 import br.com.orcinus.orca.core.mastodon.network.requester.request.Resumption
 import br.com.orcinus.orca.core.mastodon.network.requester.request.serializer
 import io.ktor.client.HttpClient
+import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.HttpClientEngineFactory
+import io.ktor.client.plugins.HttpRequestRetry
+import io.ktor.client.request.HttpRequest
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.delete
 import io.ktor.client.request.forms.submitForm
@@ -74,6 +77,7 @@ constructor(
     HttpClient(clientEngineFactory) {
       logger.start(this)
       normalizeJsonKeys()
+      retryAfterFailures()
     }
 
   /** Responses that are currently being obtained. */
@@ -255,6 +259,14 @@ constructor(
       ongoing -= requestEntity
       requestDao.delete(requestEntity)
       response
+    }
+  }
+
+  /** Configures retrying behavior on [HttpRequest]s that fail due to server errors. */
+  private fun HttpClientConfig<*>.retryAfterFailures() {
+    install(HttpRequestRetry) {
+      retryOnServerErrors(2)
+      exponentialDelay()
     }
   }
 }
