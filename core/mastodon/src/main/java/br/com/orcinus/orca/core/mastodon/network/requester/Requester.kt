@@ -25,7 +25,7 @@ import br.com.orcinus.orca.core.mastodon.network.requester.request.Authenticatio
 import br.com.orcinus.orca.core.mastodon.network.requester.request.Request
 import br.com.orcinus.orca.core.mastodon.network.requester.request.RequestDao
 import br.com.orcinus.orca.core.mastodon.network.requester.request.Resumption
-import br.com.orcinus.orca.core.mastodon.network.requester.request.serializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.serializer
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngine

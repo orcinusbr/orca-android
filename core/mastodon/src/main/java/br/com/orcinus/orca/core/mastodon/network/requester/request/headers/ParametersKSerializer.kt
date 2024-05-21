@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.network.requester.request
+package br.com.orcinus.orca.core.mastodon.network.requester.request.headers
 
 import io.ktor.http.Parameters
 import kotlinx.serialization.ExperimentalSerializationApi

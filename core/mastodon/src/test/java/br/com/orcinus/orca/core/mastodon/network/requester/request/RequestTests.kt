@@ -17,9 +17,9 @@ package br.com.orcinus.orca.core.mastodon.network.requester.request
 
 import assertk.assertThat
 import assertk.assertions.isTrue
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.serializer
 import io.ktor.http.Parameters
 import kotlin.test.Test
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 internal class RequestTests {
