@@ -13,33 +13,31 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.network.requester.request.headers
+package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.bytes
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.ktor.util.toByteArray
-import io.ktor.utils.io.ByteReadChannel
+import java.nio.ByteBuffer
 import kotlin.test.Test
-import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.add
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.putJsonArray
 
-internal class ByteReadChannelKSerializerTests {
+internal class ByteBufferKSerializerTests {
   @Test
   fun serializes() {
     assertThat(
         Json.encodeToString(
-          ByteReadChannel.serializer(),
-          ByteReadChannel(byteArrayOf(0b000001, 0b00000010))
+          ByteBufferKSerializer,
+          ByteBuffer.wrap(byteArrayOf(0b000001, 0b00000010))
         )
       )
       .isEqualTo(
         buildJsonObject {
             @OptIn(ExperimentalSerializationApi::class)
-            putJsonArray(ByteReadChannel.Companion.serializer().descriptor.getElementName(0)) {
+            putJsonArray(ByteBufferKSerializer.descriptor.getElementName(0)) {
               add(0b00000001)
               add(0b00000010)
             }
@@ -50,24 +48,19 @@ internal class ByteReadChannelKSerializerTests {
 
   @Test
   fun deserializes() {
-    runTest {
-      assertThat(
-          Json.decodeFromString(
-              ByteReadChannel.serializer(),
-              buildJsonObject {
-                  @OptIn(ExperimentalSerializationApi::class)
-                  putJsonArray(
-                    ByteReadChannel.Companion.serializer().descriptor.getElementName(0)
-                  ) {
-                    add(0b00000001)
-                    add(0b00000010)
-                  }
-                }
-                .toString()
-            )
-            .toByteArray()
+    assertThat(
+        Json.decodeFromString(
+          ByteBufferKSerializer,
+          buildJsonObject {
+              @OptIn(ExperimentalSerializationApi::class)
+              putJsonArray(ByteBufferKSerializer.descriptor.getElementName(0)) {
+                add(0b00000001)
+                add(0b00000010)
+              }
+            }
+            .toString()
         )
-        .isEqualTo(byteArrayOf(0b000001, 0b00000010))
-    }
+      )
+      .isEqualTo(ByteBuffer.wrap(byteArrayOf(0b000001, 0b00000010)))
   }
 }
