@@ -17,11 +17,24 @@ package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.stri
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import io.ktor.http.headersOf
 import io.ktor.http.parametersOf
 import io.ktor.util.StringValues
 import kotlin.test.Test
 
 internal class StringValuesExtensionsTests {
+  @Test
+  fun convertsIntoHeaders() {
+    assertThat(
+        StringValues.build {
+            appendAll("k0", listOf("v0", "v1"))
+            append("k1", "v2")
+          }
+          .toHeaders()
+      )
+      .isEqualTo(headersOf("k0" to listOf("v0", "v1"), "k1" to listOf("v2")))
+  }
+
   @Test
   fun convertsIntoParameters() {
     assertThat(
