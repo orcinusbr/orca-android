@@ -13,32 +13,31 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.network.requester.request.headers
+package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.strings
 
-import io.ktor.http.Parameters
+import io.ktor.util.StringValues
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapEntrySerializer
 import kotlinx.serialization.builtins.SetSerializer
 import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.listSerialDescriptor
 import kotlinx.serialization.descriptors.mapSerialDescriptor
+import kotlinx.serialization.descriptors.serialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
 /**
- * [KSerializer] for serializing and deserializing [Parameters], returned by
- * [Parameters.Companion.serializer].
+ * [KSerializer] for serializing and deserializing [StringValues], returned by
+ * [StringValues.Companion.serializer].
  */
-private object ParametersKSerializer : KSerializer<Parameters> {
+private object StringValuesKSerializer : KSerializer<StringValues> {
   /**
-   * [KSerializer] by which the [Set] containing [Parameters]' entries will be serialized.
+   * [KSerializer] by which the [Set] containing [StringValues]' entries will be serialized.
    *
-   * @see Parameters.entries
+   * @see StringValues.entries
    */
   private val setSerializer =
     SetSerializer(MapEntrySerializer(String.serializer(), ListSerializer(String.serializer())))
@@ -46,34 +45,24 @@ private object ParametersKSerializer : KSerializer<Parameters> {
   @OptIn(ExperimentalSerializationApi::class)
   override val descriptor =
     SerialDescriptor(
-      this::class.java.name,
+      StringValuesKSerializer::class.java.name,
       mapSerialDescriptor(
-        keyDescriptor =
-          PrimitiveSerialDescriptor(
-            serialName = "${this::class.qualifiedName}.descriptor*key",
-            PrimitiveKind.STRING
-          ),
-        valueDescriptor =
-          listSerialDescriptor(
-            PrimitiveSerialDescriptor(
-              "${this::class.qualifiedName}.descriptor*value*element",
-              PrimitiveKind.STRING
-            )
-          )
+        keyDescriptor = serialDescriptor<String>(),
+        valueDescriptor = listSerialDescriptor(serialDescriptor<String>())
       )
     )
 
-  override fun serialize(encoder: Encoder, value: Parameters) {
+  override fun serialize(encoder: Encoder, value: StringValues) {
     encoder.encodeSerializableValue(setSerializer, value.entries())
   }
 
-  override fun deserialize(decoder: Decoder): Parameters {
+  override fun deserialize(decoder: Decoder): StringValues {
     val entries = decoder.decodeSerializableValue(setSerializer)
-    return Parameters.build { entries.forEach { appendAll(it.key, it.value) } }
+    return StringValues.build { entries.forEach { appendAll(it.key, it.value) } }
   }
 }
 
-/** [KSerializer] for serializing and deserializing [Parameters]. */
-internal fun Parameters.Companion.serializer(): KSerializer<Parameters> {
-  return ParametersKSerializer
+/** [KSerializer] for serializing and deserializing [StringValues]. */
+internal fun StringValues.Companion.serializer(): KSerializer<StringValues> {
+  return StringValuesKSerializer
 }

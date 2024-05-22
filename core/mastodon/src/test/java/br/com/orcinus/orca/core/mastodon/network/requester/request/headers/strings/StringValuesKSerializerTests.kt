@@ -13,22 +13,22 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.network.requester.request.headers
+package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.strings
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.ktor.http.Parameters
 import io.ktor.http.parametersOf
+import io.ktor.util.StringValues
 import kotlin.test.Test
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-internal class ParametersKSerializerTests {
+internal class StringValuesKSerializerTests {
   @Test
   fun serializes() {
     assertThat(
         Json.encodeToString(
-          Parameters.serializer(),
+          StringValues.serializer(),
           parametersOf("key0" to listOf("value0", "value1"), "key1" to listOf("value2"))
         )
       )
@@ -52,13 +52,18 @@ internal class ParametersKSerializerTests {
   fun deserializes() {
     assertThat(
         Json.decodeFromString(
-          Parameters.serializer(),
+          StringValues.serializer(),
           Json.encodeToString(
-            Parameters.serializer(),
+            StringValues.serializer(),
             parametersOf("key0" to listOf("value0", "value1"), "key1" to listOf("value2"))
           )
         )
       )
-      .isEqualTo(parametersOf("key0" to listOf("value0", "value1"), "key1" to listOf("value2")))
+      .isEqualTo(
+        StringValues.build {
+          appendAll("key0", listOf("value0", "value1"))
+          append("key1", "value2")
+        }
+      )
   }
 }

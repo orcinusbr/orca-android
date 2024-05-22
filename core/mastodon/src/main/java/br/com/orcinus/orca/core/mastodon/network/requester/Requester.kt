@@ -25,7 +25,8 @@ import br.com.orcinus.orca.core.mastodon.network.requester.request.Authenticatio
 import br.com.orcinus.orca.core.mastodon.network.requester.request.Request
 import br.com.orcinus.orca.core.mastodon.network.requester.request.RequestDao
 import br.com.orcinus.orca.core.mastodon.network.requester.request.Resumption
-import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.serializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.strings.serializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.strings.toParameters
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngine
@@ -39,6 +40,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.Parameters
+import io.ktor.util.StringValues
 import java.net.URL
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
@@ -182,7 +184,7 @@ constructor(
           post(
             request.authentication,
             request.route,
-            Json.decodeFromString(Parameters.serializer(), request.parameters),
+            Json.decodeFromString(StringValues.serializer(), request.parameters).toParameters(),
             Resumption.Resumable
           )
         }
@@ -247,7 +249,7 @@ constructor(
   ): HttpResponse {
     contract { callsInPlace(request, InvocationKind.EXACTLY_ONCE) }
     return coroutineScope {
-      val parametersInJson = Json.encodeToString(Parameters.serializer(), parameters)
+      val parametersInJson = Json.encodeToString(StringValues.serializer(), parameters)
       val requestEntity = Request(authentication, methodName, route, parametersInJson)
       resumption.prepare(requestDao, requestEntity)
       val responseDeferred =

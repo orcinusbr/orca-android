@@ -20,7 +20,9 @@ import androidx.annotation.StringDef
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import br.com.orcinus.orca.core.mastodon.network.requester.InternalRequesterApi
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.strings.serializer
 import io.ktor.http.Parameters
+import io.ktor.util.StringValues
 import kotlinx.serialization.KSerializer
 
 /**
@@ -30,11 +32,11 @@ import kotlinx.serialization.KSerializer
  * @param authentication Authentication requirement that's been deemed appropriate.
  * @param methodName Name of the HTTP method called on the [route].
  * @param route Specific resource on which the HTTP method is being called.
- * @param parameters [Parameters] represented as a JSON object converted by a [KSerializer] into a
- *   [String].
+ * @param parameters [StringValues] containing the parameters represented as a JSON object converted
+ *   by a [KSerializer] into a [String].
  * @throws IllegalStateException If the [methodName] isn't that of a supported method (that is,
  *   isn't one of the constants defined by [MethodName]).
- * @see Parameters.Companion.serializer
+ * @see serializer
  */
 @Entity(tableName = "requests")
 internal data class Request
@@ -70,8 +72,8 @@ constructor(
    * @param authentication Authentication requirement that's been deemed appropriate.
    * @param methodName Name of the HTTP method called on the [route].
    * @param route Specific resource on which the HTTP method is being called.
-   * @param parameters [Parameters] represented as a JSON object converted by a [KSerializer] into a
-   *   [String].
+   * @param parameters [StringValues] containing the parameters represented as a JSON object
+   *   converted by a [KSerializer] into a [String].
    * @throws IllegalStateException If the [methodName] isn't that of a supported method (that is,
    *   isn't one of the constants defined by [MethodName]).
    * @see Parameters.Companion.serializer

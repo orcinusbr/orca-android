@@ -17,8 +17,9 @@ package br.com.orcinus.orca.core.mastodon.network.requester.request
 
 import assertk.assertThat
 import assertk.assertions.isTrue
-import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.serializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.strings.serializer
 import io.ktor.http.Parameters
+import io.ktor.util.StringValues
 import kotlin.test.Test
 import kotlinx.serialization.json.Json
 
@@ -29,7 +30,7 @@ internal class RequestTests {
       Authentication.None,
       methodName = "🇮🇹",
       "/api/v1/resource",
-      Json.encodeToString(Parameters.serializer(), Parameters.Empty)
+      Json.encodeToString(StringValues.serializer(), StringValues.Empty)
     )
   }
 
@@ -40,7 +41,7 @@ internal class RequestTests {
         Authentication.None,
         Request.MethodName.DELETE,
         "/api/v1/resource",
-        Json.encodeToString(Parameters.serializer(), Parameters.Empty)
+        Json.encodeToString(StringValues.serializer(), Parameters.Empty)
       )
       .fold(onDelete = { hasDeleteLambdaBeenInvoked = true }, onGet = {}, onPost = {})
     assertThat(hasDeleteLambdaBeenInvoked).isTrue()
@@ -53,7 +54,7 @@ internal class RequestTests {
         Authentication.None,
         Request.MethodName.GET,
         "/api/v1/resource",
-        Json.encodeToString(Parameters.serializer(), Parameters.Empty)
+        Json.encodeToString(StringValues.serializer(), Parameters.Empty)
       )
       .fold(onDelete = {}, onGet = { hasGetLambdaBeenInvoked = true }, onPost = {})
     assertThat(hasGetLambdaBeenInvoked).isTrue()
@@ -66,7 +67,7 @@ internal class RequestTests {
         Authentication.None,
         Request.MethodName.POST,
         "/api/v1/resource",
-        Json.encodeToString(Parameters.serializer(), Parameters.Empty)
+        Json.encodeToString(StringValues.serializer(), Parameters.Empty)
       )
       .fold(onDelete = {}, onGet = {}, onPost = { hasPostLambdaBeenInvoked = true })
     assertThat(hasPostLambdaBeenInvoked).isTrue()
