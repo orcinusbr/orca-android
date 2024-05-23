@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.strings
 
+import br.com.orcinus.orca.core.mastodon.network.requester.InternalRequesterApi
 import io.ktor.util.StringValues
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -63,6 +64,7 @@ private object StringValuesKSerializer : KSerializer<StringValues> {
 }
 
 /** [KSerializer] for serializing and deserializing [StringValues]. */
+@InternalRequesterApi
 internal fun StringValues.Companion.serializer(): KSerializer<StringValues> {
   return StringValuesKSerializer
 }

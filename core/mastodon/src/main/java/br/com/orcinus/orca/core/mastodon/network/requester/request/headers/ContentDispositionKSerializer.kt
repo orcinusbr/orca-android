@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.mastodon.network.requester.request.headers
 
+import br.com.orcinus.orca.core.mastodon.network.requester.InternalRequesterApi
 import io.ktor.http.ContentDisposition
 import io.ktor.http.HeaderValueParam
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -79,6 +80,7 @@ private object ContentDispositionKSerializer : KSerializer<ContentDisposition> {
 }
 
 /** [KSerializer] for serializing and deserializing a [ContentDisposition]. */
+@InternalRequesterApi
 internal fun ContentDisposition.Companion.serializer(): KSerializer<ContentDisposition> {
   return ContentDispositionKSerializer
 }

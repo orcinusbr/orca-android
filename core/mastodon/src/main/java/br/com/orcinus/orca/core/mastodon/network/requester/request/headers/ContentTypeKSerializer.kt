@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.mastodon.network.requester.request.headers
 
+import br.com.orcinus.orca.core.mastodon.network.requester.InternalRequesterApi
 import io.ktor.http.ContentType
 import io.ktor.http.HeaderValueParam
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -82,6 +83,7 @@ private object ContentTypeKSerializer : KSerializer<ContentType> {
 }
 
 /** [KSerializer] for serializing and deserializing a [ContentType]. */
+@InternalRequesterApi
 internal fun ContentType.Companion.serializer(): KSerializer<ContentType> {
   return ContentTypeKSerializer
 }

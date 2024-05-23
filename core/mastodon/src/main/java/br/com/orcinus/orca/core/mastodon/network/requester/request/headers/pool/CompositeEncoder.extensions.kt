@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.pool
 
+import br.com.orcinus.orca.core.mastodon.network.requester.InternalRequesterApi
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.HeaderValueParamKSerializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.ByteBufferKSerializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.serializer
@@ -52,6 +53,7 @@ import kotlinx.serialization.encoding.CompositeEncoder
  *     - [Short]; or
  *     - [StringValues].
  */
+@InternalRequesterApi
 @Throws(IllegalArgumentException::class)
 internal fun CompositeEncoder.encodeElement(descriptor: SerialDescriptor, index: Int, value: Any) {
   when (value) {

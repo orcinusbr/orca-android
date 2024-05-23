@@ -15,16 +15,19 @@
 
 package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.strings
 
+import br.com.orcinus.orca.core.mastodon.network.requester.InternalRequesterApi
 import io.ktor.http.Headers
 import io.ktor.http.Parameters
 import io.ktor.util.StringValues
 
 /** Converts these [StringValues] into [Headers]. */
+@InternalRequesterApi
 internal fun StringValues.toHeaders(): Headers {
   return Headers.build { appendAll(this@toHeaders) }
 }
 
 /** Converts these [StringValues] into [Parameters]. */
+@InternalRequesterApi
 internal fun StringValues.toParameters(): Parameters {
   return Parameters.build { appendAll(this@toParameters) }
 }

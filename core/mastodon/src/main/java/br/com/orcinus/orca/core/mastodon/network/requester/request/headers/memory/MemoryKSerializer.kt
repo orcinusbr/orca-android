@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory
 
+import br.com.orcinus.orca.core.mastodon.network.requester.InternalRequesterApi
 import io.ktor.utils.io.bits.Memory
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
@@ -53,6 +54,7 @@ private object MemoryKSerializer : KSerializer<Memory> {
 }
 
 /** [KSerializer] for serializing and deserializing a [Memory]. */
+@InternalRequesterApi
 internal fun Memory.Companion.serializer(): KSerializer<Memory> {
   return MemoryKSerializer
 }
