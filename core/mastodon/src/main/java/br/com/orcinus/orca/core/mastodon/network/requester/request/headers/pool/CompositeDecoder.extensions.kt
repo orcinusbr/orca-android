@@ -17,8 +17,8 @@ package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.pool
 
 import br.com.orcinus.orca.core.mastodon.network.requester.InternalRequesterApi
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.HeaderValueParamKSerializer
-import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.bytes.ByteBufferKSerializer
-import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.bytes.serializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.ByteBufferKSerializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.serializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.serializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.strings.serializer
 import io.ktor.http.ContentDisposition

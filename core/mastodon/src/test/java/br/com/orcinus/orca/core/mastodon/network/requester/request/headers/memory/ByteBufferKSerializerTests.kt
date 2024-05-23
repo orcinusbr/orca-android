@@ -13,36 +13,34 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.bytes
+package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.ktor.utils.io.bits.Memory
 import java.nio.ByteBuffer
 import kotlin.test.Test
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.add
 import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.putJsonArray
 
-internal class MemoryKSerializerTests {
+internal class ByteBufferKSerializerTests {
   @Test
   fun serializes() {
     assertThat(
         Json.encodeToString(
-          Memory.serializer(),
-          Memory(ByteBuffer.wrap(byteArrayOf(0b000001, 0b00000010)))
+          ByteBufferKSerializer,
+          ByteBuffer.wrap(byteArrayOf(0b000001, 0b00000010))
         )
       )
       .isEqualTo(
         buildJsonObject {
-            put(
-              @OptIn(ExperimentalSerializationApi::class)
-              Memory.serializer().descriptor.getElementName(0),
-              Json.encodeToJsonElement(
-                ByteBufferKSerializer,
-                ByteBuffer.wrap(byteArrayOf(0b000001, 0b00000010))
-              )
-            )
+            @OptIn(ExperimentalSerializationApi::class)
+            putJsonArray(ByteBufferKSerializer.descriptor.getElementName(0)) {
+              add(0b00000001)
+              add(0b00000010)
+            }
           }
           .toString()
       )
@@ -52,20 +50,17 @@ internal class MemoryKSerializerTests {
   fun deserializes() {
     assertThat(
         Json.decodeFromString(
-          Memory.serializer(),
+          ByteBufferKSerializer,
           buildJsonObject {
-              put(
-                @OptIn(ExperimentalSerializationApi::class)
-                Memory.serializer().descriptor.getElementName(0),
-                Json.encodeToJsonElement(
-                  ByteBufferKSerializer,
-                  ByteBuffer.wrap(byteArrayOf(0b000001, 0b00000010))
-                )
-              )
+              @OptIn(ExperimentalSerializationApi::class)
+              putJsonArray(ByteBufferKSerializer.descriptor.getElementName(0)) {
+                add(0b00000001)
+                add(0b00000010)
+              }
             }
             .toString()
         )
       )
-      .isEqualTo(Memory(ByteBuffer.wrap(byteArrayOf(0b000001, 0b00000010))))
+      .isEqualTo(ByteBuffer.wrap(byteArrayOf(0b000001, 0b00000010)))
   }
 }

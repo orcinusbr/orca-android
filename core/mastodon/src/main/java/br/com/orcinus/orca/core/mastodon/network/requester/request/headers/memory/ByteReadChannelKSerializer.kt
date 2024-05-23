@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.bytes
+package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory
 
 import br.com.orcinus.orca.core.mastodon.network.requester.InternalRequesterApi
 import io.ktor.util.toByteArray

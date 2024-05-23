@@ -13,38 +13,46 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.bytes
+package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory
 
-import br.com.orcinus.orca.core.mastodon.network.requester.InternalRequesterApi
-import java.nio.ByteBuffer
+import io.ktor.utils.io.bits.Memory
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.builtins.ByteArraySerializer
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
-import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.decodeStructure
 import kotlinx.serialization.encoding.encodeStructure
 
-/** [KSerializer] for serializing and deserializing a [ByteBuffer]. */
-@InternalRequesterApi
-internal object ByteBufferKSerializer : KSerializer<ByteBuffer> {
+/**
+ * [KSerializer] for serializing and deserializing and [Memory], returned by
+ * [Memory.Companion.serializer].
+ */
+private object MemoryKSerializer : KSerializer<Memory> {
   override val descriptor =
-    buildClassSerialDescriptor(ByteBufferKSerializer::class.java.name) {
-      element<ByteArray>("array")
+    buildClassSerialDescriptor(MemoryKSerializer::class.java.name) {
+      element("buffer", ByteBufferKSerializer.descriptor)
     }
 
-  override fun serialize(encoder: Encoder, value: ByteBuffer) {
+  override fun serialize(encoder: Encoder, value: Memory) {
     encoder.encodeStructure(descriptor) {
-      encodeSerializableElement(descriptor, index = 0, ByteArraySerializer(), value.array())
+      encodeSerializableElement(descriptor, index = 0, ByteBufferKSerializer, value.buffer)
     }
   }
 
-  override fun deserialize(decoder: Decoder): ByteBuffer {
+  override fun deserialize(decoder: Decoder): Memory {
     return decoder.decodeStructure(descriptor) {
-      ByteBuffer.wrap(
-        decodeSerializableElement(descriptor, decodeElementIndex(descriptor), ByteArraySerializer())
+      Memory(
+        decodeSerializableElement(
+          descriptor,
+          index = decodeElementIndex(descriptor),
+          ByteBufferKSerializer
+        )
       )
     }
   }
+}
+
+/** [KSerializer] for serializing and deserializing a [Memory]. */
+internal fun Memory.Companion.serializer(): KSerializer<Memory> {
+  return MemoryKSerializer
 }
