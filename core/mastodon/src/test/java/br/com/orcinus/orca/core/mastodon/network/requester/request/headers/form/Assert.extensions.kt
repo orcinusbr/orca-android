@@ -19,32 +19,42 @@ import assertk.Assert
 import assertk.assertions.isEqualTo
 import assertk.assertions.support.expected
 import assertk.assertions.support.show
-import io.ktor.http.Headers
-import io.ktor.http.content.PartData
+import io.ktor.utils.io.ByteReadChannel
+import io.ktor.utils.io.core.Input
 import io.ktor.utils.io.core.readBytes
 import kotlinx.coroutines.test.runTest
 
 /**
- * Asserts that the binary channel item is equivalent to the given one.
+ * Asserts that the bytes remaining to be read from the actual [ByteReadChannel] are equal to those
+ * of the given one.
  *
- * @param expected [PartData.BinaryChannelItem] to be compared to the actual one.
+ * @param T [ByteReadChannel] on which the assertion is being performed.
+ * @param expected [ByteReadChannel] whose remaining bytes will be compared to the actual one.
  */
-internal fun Assert<PartData.BinaryChannelItem>.isEquivalentTo(
-  expected: PartData.BinaryChannelItem
-): Assert<PartData.BinaryChannelItem> {
-  transform("provider") { it.provider() }
-    .given {
-      runTest {
-        val actualRemainingBytes = it.readRemaining().readBytes()
-        val expectedRemainingBytes = expected.provider().readRemaining().readBytes()
-        if (!actualRemainingBytes.contentEquals(expectedRemainingBytes)) {
-          expected(
-            "provided, read bytes to be:${show(expectedRemainingBytes)} but was:" +
-              show(actualRemainingBytes)
-          )
-        }
+internal fun <T : ByteReadChannel> Assert<T>.isEquivalentTo(expected: ByteReadChannel): Assert<T> {
+  given {
+    runTest {
+      val actualRemainingBytes = it.readRemaining().readBytes()
+      val expectedRemainingBytes = expected.readRemaining().readBytes()
+      val areNotEquivalent = !actualRemainingBytes.contentEquals(expectedRemainingBytes)
+      if (areNotEquivalent) {
+        expected(
+          "read bytes to be:${show(expectedRemainingBytes)} but was:${show(actualRemainingBytes)}"
+        )
       }
     }
-  transform("headers", PartData.BinaryChannelItem::headers).isEqualTo(Headers.Empty)
+  }
+  return this
+}
+
+/**
+ * Asserts that the bytes remaining to be read from the actual [Input] are equal to those of the
+ * given one.
+ *
+ * @param T [Input] on which the assertion is being performed.
+ * @param expected [Input] to be compared to the actual one.
+ */
+internal fun <T : Input> Assert<T>.isEquivalentTo(expected: T): Assert<T> {
+  transform { it.pool.borrow().readBytes() }.isEqualTo(expected.pool.borrow().readBytes())
   return this
 }

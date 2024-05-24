@@ -16,8 +16,6 @@
 package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.form
 
 import assertk.assertThat
-import io.ktor.http.Headers
-import io.ktor.http.content.PartData
 import io.ktor.utils.io.ByteReadChannel
 import kotlin.test.Test
 import org.opentest4j.AssertionFailedError
@@ -25,15 +23,11 @@ import org.opentest4j.AssertionFailedError
 internal class AssertExtensionsTests {
   @Test
   fun passesWhenBinaryChannelItemsAreEquivalent() {
-    assertThat(PartData.BinaryChannelItem({ ByteReadChannel.Empty }, Headers.Empty))
-      .isEquivalentTo(PartData.BinaryChannelItem({ ByteReadChannel.Empty }, Headers.Empty))
+    assertThat(ByteReadChannel.Empty).isEquivalentTo(ByteReadChannel.Empty)
   }
 
   @Test(expected = AssertionFailedError::class)
   fun failsWhenBinaryChannelItemsAreInequivalent() {
-    assertThat(
-        PartData.BinaryChannelItem({ ByteReadChannel(byteArrayOf(0b00000001)) }, Headers.Empty)
-      )
-      .isEquivalentTo(PartData.BinaryChannelItem({ ByteReadChannel.Empty }, Headers.Empty))
+    assertThat(ByteReadChannel(byteArrayOf(0b00000001))).isEquivalentTo(ByteReadChannel.Empty)
   }
 }

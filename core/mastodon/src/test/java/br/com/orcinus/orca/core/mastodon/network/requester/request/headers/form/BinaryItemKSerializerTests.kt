@@ -18,35 +18,39 @@ package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.form
 import assertk.all
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.serializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.input.DefaultInputTestRule
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.input.serializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.strings.serializer
 import io.ktor.http.Headers
 import io.ktor.http.content.PartData
 import io.ktor.util.StringValues
-import io.ktor.utils.io.ByteReadChannel
+import io.ktor.utils.io.core.Input
 import kotlin.test.Test
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
+import org.junit.Rule
 
-internal class BinaryChannelItemKSerializerTests {
+internal class BinaryItemKSerializerTests {
+  @get:Rule val defaultInputRule = DefaultInputTestRule()
+
   @Test
   fun serializes() {
     assertThat(
         Json.encodeToString(
-          BinaryChannelItemKSerializer,
-          PartData.BinaryChannelItem({ ByteReadChannel.Empty }, Headers.Empty)
+          BinaryItemKSerializer,
+          PartData.BinaryItem({ defaultInputRule.defaultInput }, dispose = {}, Headers.Empty)
         )
       )
       .isEqualTo(
         @OptIn(ExperimentalSerializationApi::class)
         buildJsonObject {
             put(
-              BinaryChannelItemKSerializer.descriptor.getElementName(0),
-              Json.encodeToJsonElement(ByteReadChannel.serializer(), ByteReadChannel.Empty)
+              BinaryItemKSerializer.descriptor.getElementName(0),
+              Json.encodeToJsonElement(Input.serializer(), defaultInputRule.defaultInput)
             )
             put(
-              BinaryChannelItemKSerializer.descriptor.getElementName(1),
+              BinaryItemKSerializer.descriptor.getElementName(1),
               Json.encodeToJsonElement(StringValues.serializer(), Headers.Empty)
             )
           }
@@ -58,15 +62,15 @@ internal class BinaryChannelItemKSerializerTests {
   fun deserializes() {
     assertThat(
         Json.decodeFromString(
-          BinaryChannelItemKSerializer,
+          BinaryItemKSerializer,
           @OptIn(ExperimentalSerializationApi::class)
           buildJsonObject {
               put(
-                BinaryChannelItemKSerializer.descriptor.getElementName(0),
-                Json.encodeToJsonElement(ByteReadChannel.serializer(), ByteReadChannel.Empty)
+                BinaryItemKSerializer.descriptor.getElementName(0),
+                Json.encodeToJsonElement(Input.serializer(), defaultInputRule.defaultInput)
               )
               put(
-                BinaryChannelItemKSerializer.descriptor.getElementName(1),
+                BinaryItemKSerializer.descriptor.getElementName(1),
                 Json.encodeToJsonElement(StringValues.serializer(), Headers.Empty)
               )
             }
@@ -74,8 +78,8 @@ internal class BinaryChannelItemKSerializerTests {
         )
       )
       .all {
-        transform("binaryChannel") { it.provider() }.isEquivalentTo(ByteReadChannel.Empty)
-        transform("headers", PartData.BinaryChannelItem::headers).isEqualTo(Headers.Empty)
+        transform("binary") { it.provider() }.isEquivalentTo(defaultInputRule.defaultInput)
+        transform("headers", PartData.BinaryItem::headers).isEqualTo(Headers.Empty)
       }
   }
 }

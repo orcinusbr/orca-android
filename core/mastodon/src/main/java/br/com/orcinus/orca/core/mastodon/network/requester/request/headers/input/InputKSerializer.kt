@@ -80,7 +80,7 @@ private object InputKSerializer : KSerializer<Input> {
   }
 }
 
-/** [KSerializer] for serializing and deserializing an [Input] */
+/** [KSerializer] for serializing and deserializing an [Input]. */
 @InternalRequesterApi
 internal fun Input.Companion.serializer(): KSerializer<Input> {
   return InputKSerializer
