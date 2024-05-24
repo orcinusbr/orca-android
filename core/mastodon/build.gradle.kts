@@ -90,6 +90,7 @@ dependencies {
   testImplementation(libs.kotlin.coroutines.test)
   testImplementation(libs.kotlin.test)
   testImplementation(libs.ktor.client.mock)
+  testImplementation(libs.mockito)
   testImplementation(libs.mockk)
   testImplementation(libs.robolectric)
   testImplementation(libs.turbine)

@@ -26,6 +26,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HeaderValueParam
 import io.ktor.util.StringValues
 import io.ktor.utils.io.ByteReadChannel
+import io.ktor.utils.io.bits.Memory
 import java.nio.ByteBuffer
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -50,6 +51,7 @@ import kotlinx.serialization.encoding.CompositeEncoder
  *     - [HeaderValueParam];
  *     - [Int];
  *     - [Long];
+ *     - [Memory];
  *     - [Short]; or
  *     - [StringValues].
  */
@@ -71,6 +73,7 @@ internal fun CompositeEncoder.encodeElement(descriptor: SerialDescriptor, index:
       encodeSerializableElement(descriptor, index, HeaderValueParamKSerializer, value)
     is Int -> encodeIntElement(descriptor, index, value)
     is Long -> encodeLongElement(descriptor, index, value)
+    is Memory -> encodeSerializableElement(descriptor, index, Memory.serializer(), value)
     is Short -> encodeShortElement(descriptor, index, value)
     is StringValues ->
       encodeSerializableElement(descriptor, index, StringValues.serializer(), value)

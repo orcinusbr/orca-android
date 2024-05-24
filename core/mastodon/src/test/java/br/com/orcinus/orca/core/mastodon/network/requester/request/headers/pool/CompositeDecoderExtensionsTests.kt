@@ -25,6 +25,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HeaderValueParam
 import io.ktor.util.StringValues
 import io.ktor.utils.io.ByteReadChannel
+import io.ktor.utils.io.bits.Memory
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -33,6 +34,9 @@ import kotlin.test.Test
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.serialDescriptor
 import kotlinx.serialization.encoding.CompositeDecoder
+import org.mockito.BDDMockito.then
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
 
 internal class CompositeDecoderExtensionsTests {
   private object Unknown
@@ -201,6 +205,17 @@ internal class CompositeDecoderExtensionsTests {
       decodeElement<Long>(serialDescriptor<Long>(), index = 0)
       verify(exactly = 1) { decodeLongElement(serialDescriptor<Long>(), index = 0) }
     }
+  }
+
+  @Test
+  fun decodesMemoryElement() {
+    val decoder = mock(CompositeDecoder::class.java)
+    val serializer = Memory.serializer()
+    val descriptor = serializer.descriptor
+    `when`(decoder.decodeSerializableElement(descriptor, index = 0, serializer))
+      .thenReturn(Memory.Empty)
+    decoder.decodeElement<Memory>(descriptor, index = 0)
+    then(decoder).should().decodeSerializableElement(descriptor, index = 0, serializer)
   }
 
   @Test

@@ -26,6 +26,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HeaderValueParam
 import io.ktor.util.StringValues
 import io.ktor.utils.io.ByteReadChannel
+import io.ktor.utils.io.bits.Memory
 import java.nio.ByteBuffer
 import kotlin.reflect.KClass
 import kotlinx.serialization.KSerializer
@@ -84,6 +85,7 @@ internal inline fun <reified T : Any> CompositeDecoder.decodeElement(
  *     - [HeaderValueParam];
  *     - [Int];
  *     - [Long];
+ *     - [Memory];
  *     - [Short]; or
  *     - [StringValues].
  */
@@ -110,6 +112,7 @@ internal fun <T : Any> CompositeDecoder.decodeElement(
       decodeSerializableElement(descriptor, index, HeaderValueParamKSerializer)
     Int::class -> decodeIntElement(descriptor, index)
     Long::class -> decodeLongElement(descriptor, index)
+    Memory::class -> decodeSerializableElement(descriptor, index, Memory.serializer())
     Short::class -> decodeShortElement(descriptor, index)
     StringValues::class -> decodeSerializableElement(descriptor, index, StringValues.serializer())
     else -> throw IllegalArgumentException("Cannot decode a ${valueClass.simpleName}.")

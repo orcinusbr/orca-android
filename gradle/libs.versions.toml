@@ -58,7 +58,8 @@ loadable = { group = "com.jeanbarrossilva.loadable", name = "loadable", version.
 loadable-list = { group = "com.jeanbarrossilva.loadable", name = "loadable-list", version.ref = "loadable" }
 loadable-placeholder = { group = "com.jeanbarrossilva.loadable", name = "loadable-placeholder", version.ref = "loadable" }
 loadable-placeholder-test = { group = "com.jeanbarrossilva.loadable", name = "loadable-placeholder-test", version.ref = "loadable" }
-mockk = { group = "io.mockk", name = "mockk-android", version = "1.13.7" }
+mockito = { group = "org.mockito", name = "mockito-core", version = "5.12.0" }
+mockk = { group = "io.mockk", name = "mockk-android", version = "1.13.10" }
 openTest4J = { group = "org.opentest4j", name = "opentest4j", version = "1.3.0" }
 paginate = { group = "com.chrynan.paginate", name = "paginate-core", version = "0.3.0" }
 robolectric = { group = "org.robolectric", name = "robolectric", version = "4.12" }

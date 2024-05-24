@@ -25,6 +25,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HeaderValueParam
 import io.ktor.util.StringValues
 import io.ktor.utils.io.ByteReadChannel
+import io.ktor.utils.io.bits.Memory
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -211,6 +212,29 @@ internal class CompositeEncoderExtensionsTests {
       every { encodeIntElement(serialDescriptor<Int>(), index = 0, 0) } returns Unit
       encodeElement(serialDescriptor<Int>(), index = 0, 0)
       verify(exactly = 1) { encodeIntElement(serialDescriptor<Int>(), index = 0, 0) }
+    }
+  }
+
+  @Test
+  fun encodesMemoryElement() {
+    mockk<CompositeEncoder> {
+      every {
+        encodeSerializableElement(
+          Memory.serializer().descriptor,
+          index = 0,
+          Memory.serializer(),
+          Memory.Empty
+        )
+      } returns Unit
+      encodeElement(Memory.serializer().descriptor, index = 0, Memory.Empty)
+      verify(exactly = 1) {
+        encodeSerializableElement(
+          Memory.serializer().descriptor,
+          index = 0,
+          Memory.serializer(),
+          Memory.Empty
+        )
+      }
     }
   }
 
