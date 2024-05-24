@@ -92,6 +92,7 @@ dependencies {
   testImplementation(libs.ktor.client.mock)
   testImplementation(libs.mockito)
   testImplementation(libs.mockk)
+  testImplementation(libs.openTest4J)
   testImplementation(libs.robolectric)
   testImplementation(libs.turbine)
 }
