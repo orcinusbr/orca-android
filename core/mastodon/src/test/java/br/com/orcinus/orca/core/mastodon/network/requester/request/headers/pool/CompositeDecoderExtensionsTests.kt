@@ -16,6 +16,8 @@
 package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.pool
 
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.HeaderValueParamKSerializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.input.DefaultInput
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.input.serializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.ByteBufferKSerializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.serializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.serializer
@@ -26,6 +28,8 @@ import io.ktor.http.HeaderValueParam
 import io.ktor.util.StringValues
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.bits.Memory
+import io.ktor.utils.io.core.Input
+import io.ktor.utils.io.core.internal.ChunkBuffer
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -118,6 +122,27 @@ internal class CompositeDecoderExtensionsTests {
   }
 
   @Test
+  fun decodesChunkBufferElement() {
+    mockk<CompositeDecoder> {
+      every {
+        decodeSerializableElement(
+          ChunkBuffer.serializer().descriptor,
+          index = 0,
+          ChunkBuffer.serializer()
+        )
+      } returns ChunkBuffer.Empty
+      decodeElement<ChunkBuffer>(ChunkBuffer.serializer().descriptor, index = 0)
+      verify(exactly = 1) {
+        decodeSerializableElement(
+          ChunkBuffer.serializer().descriptor,
+          index = 0,
+          ChunkBuffer.serializer()
+        )
+      }
+    }
+  }
+
+  @Test
   fun decodesContentDispositionElement() {
     mockk<CompositeDecoder> {
       every {
@@ -185,6 +210,19 @@ internal class CompositeDecoderExtensionsTests {
           index = 0,
           HeaderValueParamKSerializer
         )
+      }
+    }
+  }
+
+  @Test
+  fun decodesInputElement() {
+    mockk<CompositeDecoder> {
+      every {
+        decodeSerializableElement(Input.serializer().descriptor, index = 0, Input.serializer())
+      } returns DefaultInput()
+      decodeElement<Input>(Input.serializer().descriptor, index = 0)
+      verify(exactly = 1) {
+        decodeSerializableElement(Input.serializer().descriptor, index = 0, Input.serializer())
       }
     }
   }

@@ -17,6 +17,9 @@ package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.pool
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.serializer
+import io.ktor.utils.io.core.internal.ChunkBuffer
+import io.ktor.utils.io.core.readBytes
 import io.ktor.utils.io.pool.DefaultPool
 import io.ktor.utils.io.pool.useInstance
 import kotlin.test.AfterTest
@@ -27,11 +30,12 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
 internal class ObjectPoolKSerializerTests {
-  private val serializer = ObjectPoolKSerializer(Int::class)
+  private val serializer =
+    ObjectPoolKSerializer(ChunkBuffer::class, ChunkBuffer.serializer().descriptor)
   private val objectPool =
-    object : DefaultPool<Int>(capacity = 1) {
-      override fun produceInstance(): Int {
-        return 0
+    object : DefaultPool<ChunkBuffer>(capacity = 1) {
+      override fun produceInstance(): ChunkBuffer {
+        return ChunkBuffer.Empty
       }
     }
 
@@ -47,7 +51,10 @@ internal class ObjectPoolKSerializerTests {
         @OptIn(ExperimentalSerializationApi::class)
         buildJsonObject {
             put(serializer.descriptor.getElementName(0), 1)
-            put(serializer.descriptor.getElementName(1), 0)
+            put(
+              serializer.descriptor.getElementName(1),
+              Json.encodeToJsonElement(ChunkBuffer.serializer(), ChunkBuffer.Empty)
+            )
           }
           .toString()
       )
@@ -61,12 +68,16 @@ internal class ObjectPoolKSerializerTests {
             @OptIn(ExperimentalSerializationApi::class)
             buildJsonObject {
                 put(serializer.descriptor.getElementName(0), 1)
-                put(serializer.descriptor.getElementName(1), 0)
+                put(
+                  serializer.descriptor.getElementName(1),
+                  Json.encodeToJsonElement(ChunkBuffer.serializer(), ChunkBuffer.Empty)
+                )
               }
               .toString()
           )
           .useInstance { it }
+          .readBytes()
       )
-      .isEqualTo(objectPool.borrow())
+      .isEqualTo(objectPool.borrow().readBytes())
   }
 }

@@ -16,6 +16,8 @@
 package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.pool
 
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.HeaderValueParamKSerializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.input.DefaultInputTestRule
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.input.serializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.ByteBufferKSerializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.serializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.serializer
@@ -26,6 +28,8 @@ import io.ktor.http.HeaderValueParam
 import io.ktor.util.StringValues
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.bits.Memory
+import io.ktor.utils.io.core.Input
+import io.ktor.utils.io.core.internal.ChunkBuffer
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -34,8 +38,11 @@ import kotlin.test.Test
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.serialDescriptor
 import kotlinx.serialization.encoding.CompositeEncoder
+import org.junit.Rule
 
 internal class CompositeEncoderExtensionsTests {
+  @get:Rule val defaultInputRule = DefaultInputTestRule()
+
   private object Unknown
 
   @Test(expected = IllegalArgumentException::class)
@@ -125,6 +132,29 @@ internal class CompositeEncoderExtensionsTests {
   }
 
   @Test
+  fun encodesChunkBufferElement() {
+    mockk<CompositeEncoder> {
+      every {
+        encodeSerializableElement(
+          ChunkBuffer.serializer().descriptor,
+          index = 0,
+          ChunkBuffer.serializer(),
+          ChunkBuffer.Empty
+        )
+      } returns Unit
+      encodeElement(ChunkBuffer.serializer().descriptor, index = 0, ChunkBuffer.Empty)
+      verify(exactly = 1) {
+        encodeSerializableElement(
+          ChunkBuffer.serializer().descriptor,
+          index = 0,
+          ChunkBuffer.serializer(),
+          ChunkBuffer.Empty
+        )
+      }
+    }
+  }
+
+  @Test
   fun encodesContentDispositionElement() {
     mockk<CompositeEncoder> {
       every {
@@ -201,6 +231,29 @@ internal class CompositeEncoderExtensionsTests {
           index = 0,
           HeaderValueParamKSerializer,
           HeaderValueParam("charset", "utf-8")
+        )
+      }
+    }
+  }
+
+  @Test
+  fun encodesInputElement() {
+    mockk<CompositeEncoder> {
+      every {
+        encodeSerializableElement(
+          Input.serializer().descriptor,
+          index = 0,
+          Input.serializer(),
+          defaultInputRule.defaultInput
+        )
+      } returns Unit
+      encodeElement(Input.serializer().descriptor, index = 0, defaultInputRule.defaultInput)
+      verify(exactly = 1) {
+        encodeSerializableElement(
+          Input.serializer().descriptor,
+          index = 0,
+          Input.serializer(),
+          defaultInputRule.defaultInput
         )
       }
     }

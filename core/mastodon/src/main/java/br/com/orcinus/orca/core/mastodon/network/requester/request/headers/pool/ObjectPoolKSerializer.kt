@@ -21,6 +21,7 @@ import io.ktor.utils.io.pool.ObjectPool
 import kotlin.reflect.KClass
 import kotlin.reflect.full.starProjectedType
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.descriptors.serialDescriptor
@@ -41,14 +42,18 @@ import kotlinx.serialization.encoding.encodeStructure
  *
  * @param T Object contained by the [ObjectPool].
  * @param instanceClass [KClass] of the pooled instance.
+ * @param instanceDescriptor [SerialDescriptor] of the object instance.
  */
 @InternalRequesterApi
-internal class ObjectPoolKSerializer<T : Any>(private val instanceClass: KClass<T>) :
-  KSerializer<ObjectPool<T>> {
+internal class ObjectPoolKSerializer<T : Any>(
+  private val instanceClass: KClass<T>,
+  private val instanceDescriptor: SerialDescriptor =
+    serialDescriptor(instanceClass.starProjectedType)
+) : KSerializer<ObjectPool<T>> {
   override val descriptor =
     buildClassSerialDescriptor(ObjectPoolKSerializer::class.java.name) {
       element<Int>("capacity")
-      element("instance", serialDescriptor(instanceClass.starProjectedType))
+      element("instance", instanceDescriptor)
     }
 
   override fun serialize(encoder: Encoder, value: ObjectPool<T>) {

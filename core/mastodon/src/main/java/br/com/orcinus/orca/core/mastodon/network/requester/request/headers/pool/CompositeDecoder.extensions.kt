@@ -17,6 +17,7 @@ package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.pool
 
 import br.com.orcinus.orca.core.mastodon.network.requester.InternalRequesterApi
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.HeaderValueParamKSerializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.input.serializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.ByteBufferKSerializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.serializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.serializer
@@ -27,6 +28,8 @@ import io.ktor.http.HeaderValueParam
 import io.ktor.util.StringValues
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.bits.Memory
+import io.ktor.utils.io.core.Input
+import io.ktor.utils.io.core.internal.ChunkBuffer
 import java.nio.ByteBuffer
 import kotlin.reflect.KClass
 import kotlinx.serialization.KSerializer
@@ -46,10 +49,12 @@ import kotlinx.serialization.encoding.CompositeDecoder
  *     - [ByteBuffer];
  *     - [ByteReadChannel];
  *     - [Char];
+ *     - [ChunkBuffer];
  *     - [ContentDisposition];
  *     - [ContentType];
  *     - [Float];
  *     - [HeaderValueParam];
+ *     - [Input];
  *     - [Int];
  *     - [Long];
  *     - [Memory];
@@ -79,10 +84,12 @@ internal inline fun <reified T : Any> CompositeDecoder.decodeElement(
  *     - [ByteBuffer];
  *     - [ByteReadChannel];
  *     - [Char];
+ *     - [ChunkBuffer];
  *     - [ContentDisposition];
  *     - [ContentType];
  *     - [Float];
  *     - [HeaderValueParam];
+ *     - [Input];
  *     - [Int];
  *     - [Long];
  *     - [Memory];
@@ -104,12 +111,14 @@ internal fun <T : Any> CompositeDecoder.decodeElement(
     ByteReadChannel::class ->
       decodeSerializableElement(descriptor, index, ByteReadChannel.serializer())
     Char::class -> decodeCharElement(descriptor, index)
+    ChunkBuffer::class -> decodeSerializableElement(descriptor, index, ChunkBuffer.serializer())
     ContentDisposition::class ->
       decodeSerializableElement(descriptor, index, ContentDisposition.serializer())
     ContentType::class -> decodeSerializableElement(descriptor, index, ContentType.serializer())
     Float::class -> decodeFloatElement(descriptor, index)
     HeaderValueParam::class ->
       decodeSerializableElement(descriptor, index, HeaderValueParamKSerializer)
+    Input::class -> decodeSerializableElement(descriptor, index, Input.serializer())
     Int::class -> decodeIntElement(descriptor, index)
     Long::class -> decodeLongElement(descriptor, index)
     Memory::class -> decodeSerializableElement(descriptor, index, Memory.serializer())

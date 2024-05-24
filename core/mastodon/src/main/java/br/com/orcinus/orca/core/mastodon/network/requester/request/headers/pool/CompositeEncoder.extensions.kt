@@ -17,6 +17,7 @@ package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.pool
 
 import br.com.orcinus.orca.core.mastodon.network.requester.InternalRequesterApi
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.HeaderValueParamKSerializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.input.serializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.ByteBufferKSerializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.serializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.serializer
@@ -27,6 +28,8 @@ import io.ktor.http.HeaderValueParam
 import io.ktor.util.StringValues
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.bits.Memory
+import io.ktor.utils.io.core.Input
+import io.ktor.utils.io.core.internal.ChunkBuffer
 import java.nio.ByteBuffer
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -45,10 +48,12 @@ import kotlinx.serialization.encoding.CompositeEncoder
  *     - [ByteBuffer];
  *     - [ByteReadChannel];
  *     - [Char];
+ *     - [ChunkBuffer];
  *     - [ContentDisposition];
  *     - [ContentType];
  *     - [Float];
  *     - [HeaderValueParam];
+ *     - [Input];
  *     - [Int];
  *     - [Long];
  *     - [Memory];
@@ -65,12 +70,14 @@ internal fun CompositeEncoder.encodeElement(descriptor: SerialDescriptor, index:
     is ByteReadChannel ->
       encodeSerializableElement(descriptor, index, ByteReadChannel.serializer(), value)
     is Char -> encodeCharElement(descriptor, index, value)
+    is ChunkBuffer -> encodeSerializableElement(descriptor, index, ChunkBuffer.serializer(), value)
     is ContentDisposition ->
       encodeSerializableElement(descriptor, index, ContentDisposition.serializer(), value)
     is ContentType -> encodeSerializableElement(descriptor, index, ContentType.serializer(), value)
     is Float -> encodeFloatElement(descriptor, index, value)
     is HeaderValueParam ->
       encodeSerializableElement(descriptor, index, HeaderValueParamKSerializer, value)
+    is Input -> encodeSerializableElement(descriptor, index, Input.serializer(), value)
     is Int -> encodeIntElement(descriptor, index, value)
     is Long -> encodeLongElement(descriptor, index, value)
     is Memory -> encodeSerializableElement(descriptor, index, Memory.serializer(), value)
