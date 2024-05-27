@@ -16,45 +16,39 @@
 package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.form
 
 import assertk.Assert
-import assertk.assertions.isEqualTo
-import assertk.assertions.support.expected
-import assertk.assertions.support.show
+import assertk.assertions.hasSameContentAs
+import io.ktor.util.asStream
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.core.Input
-import io.ktor.utils.io.core.readBytes
-import kotlinx.coroutines.test.runTest
+import io.ktor.utils.io.jvm.javaio.toInputStream
 
 /**
  * Asserts that the bytes remaining to be read from the actual [ByteReadChannel] are equal to those
  * of the given one.
  *
+ * Both actual and expected [ByteReadChannel]s are canceled after the assertion.
+ *
  * @param T [ByteReadChannel] on which the assertion is being performed.
  * @param expected [ByteReadChannel] whose remaining bytes will be compared to the actual one.
+ * @see ByteReadChannel.cancel
  */
-internal fun <T : ByteReadChannel> Assert<T>.isEquivalentTo(expected: ByteReadChannel): Assert<T> {
-  given {
-    runTest {
-      val actualRemainingBytes = it.readRemaining().readBytes()
-      val expectedRemainingBytes = expected.readRemaining().readBytes()
-      val areNotEquivalent = !actualRemainingBytes.contentEquals(expectedRemainingBytes)
-      if (areNotEquivalent) {
-        expected(
-          "read bytes to be:${show(expectedRemainingBytes)} but was:${show(actualRemainingBytes)}"
-        )
-      }
-    }
-  }
+internal fun <T : ByteReadChannel> Assert<T>.hasSameContentAs(
+  expected: ByteReadChannel
+): Assert<T> {
+  transform(transform = ByteReadChannel::toInputStream).hasSameContentAs(expected.toInputStream())
   return this
 }
 
 /**
- * Asserts that the bytes remaining to be read from the actual [Input] are equal to those of the
- * given one.
+ * Asserts that the bytes to be read from the actual [Input] are equal to those of the given one.
+ *
+ * Both actual and expected [Input]s are closed after the assertion.
  *
  * @param T [Input] on which the assertion is being performed.
  * @param expected [Input] to be compared to the actual one.
+ * @see Input.close
  */
-internal fun <T : Input> Assert<T>.isEquivalentTo(expected: T): Assert<T> {
-  transform { it.pool.borrow().readBytes() }.isEqualTo(expected.pool.borrow().readBytes())
+internal fun <T : Input> Assert<T>.hasSameContentAs(expected: T): Assert<T> {
+  transform(transform = Input::asStream).hasSameContentAs(expected.asStream())
   return this
 }

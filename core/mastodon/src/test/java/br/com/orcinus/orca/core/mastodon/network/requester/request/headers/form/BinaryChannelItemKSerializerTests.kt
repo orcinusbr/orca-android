@@ -74,7 +74,7 @@ internal class BinaryChannelItemKSerializerTests {
         )
       )
       .all {
-        transform("binaryChannel") { it.provider() }.isEquivalentTo(ByteReadChannel.Empty)
+        transform("binaryChannel") { it.provider() }.hasSameContentAs(ByteReadChannel.Empty)
         transform("headers", PartData.BinaryChannelItem::headers).isEqualTo(Headers.Empty)
       }
   }

@@ -16,15 +16,14 @@
 package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.pool
 
 import br.com.orcinus.orca.core.mastodon.network.requester.InternalRequesterApi
-import io.ktor.utils.io.pool.DefaultPool
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.serializer
+import io.ktor.utils.io.core.internal.ChunkBuffer
 import io.ktor.utils.io.pool.ObjectPool
 import kotlin.reflect.KClass
-import kotlin.reflect.full.starProjectedType
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
-import kotlinx.serialization.descriptors.serialDescriptor
 import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.encoding.CompositeEncoder
 import kotlinx.serialization.encoding.Decoder
@@ -43,12 +42,13 @@ import kotlinx.serialization.encoding.encodeStructure
  * @param T Object contained by the [ObjectPool].
  * @param instanceClass [KClass] of the pooled instance.
  * @param instanceDescriptor [SerialDescriptor] of the object instance.
+ * @see forChunkBuffer
  */
 @InternalRequesterApi
-internal class ObjectPoolKSerializer<T : Any>(
+internal class ObjectPoolKSerializer<T : Any>
+private constructor(
   private val instanceClass: KClass<T>,
-  private val instanceDescriptor: SerialDescriptor =
-    serialDescriptor(instanceClass.starProjectedType)
+  private val instanceDescriptor: SerialDescriptor
 ) : KSerializer<ObjectPool<T>> {
   override val descriptor =
     buildClassSerialDescriptor(ObjectPoolKSerializer::class.java.name) {
@@ -75,11 +75,19 @@ internal class ObjectPoolKSerializer<T : Any>(
           else -> break
         }
       }
-      object : DefaultPool<T>(capacity) {
-        override fun produceInstance(): T {
-          return instance
-        }
-      }
+      objectPoolOf(capacity) { instance }
     }
+  }
+
+  companion object {
+    /**
+     * [ObjectPoolKSerializer] for an [ObjectPool] through which a [ChunkBuffer] can be both
+     * borrowed and recycled.
+     *
+     * @see ObjectPool.borrow
+     * @see ObjectPool.recycle
+     */
+    val forChunkBuffer =
+      ObjectPoolKSerializer(ChunkBuffer::class, ChunkBuffer.serializer().descriptor)
   }
 }

@@ -17,17 +17,32 @@ package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.form
 
 import assertk.assertThat
 import io.ktor.utils.io.ByteReadChannel
+import io.ktor.utils.io.streams.asInput
+import java.io.ByteArrayInputStream
 import kotlin.test.Test
 import org.opentest4j.AssertionFailedError
 
 internal class AssertExtensionsTests {
   @Test
-  fun passesWhenBinaryChannelItemsAreEquivalent() {
-    assertThat(ByteReadChannel.Empty).isEquivalentTo(ByteReadChannel.Empty)
+  fun passesWhenBinaryChannelItemsHaveTheSameContent() {
+    assertThat(ByteReadChannel.Empty).hasSameContentAs(ByteReadChannel.Empty)
   }
 
   @Test(expected = AssertionFailedError::class)
-  fun failsWhenBinaryChannelItemsAreInequivalent() {
-    assertThat(ByteReadChannel(byteArrayOf(0b00000001))).isEquivalentTo(ByteReadChannel.Empty)
+  fun failsWhenBinaryChannelItemsHaveDifferentContents() {
+    assertThat(ByteReadChannel(byteArrayOf(0))).hasSameContentAs(ByteReadChannel.Empty)
+  }
+
+  @Test
+  fun passesWhenInputsHaveTheSameContent() {
+    val buffer = byteArrayOf(0)
+    assertThat(ByteArrayInputStream(buffer).asInput())
+      .hasSameContentAs(ByteArrayInputStream(buffer).asInput())
+  }
+
+  @Test(expected = AssertionFailedError::class)
+  fun failsWhenInputsHaveDifferentContents() {
+    assertThat(byteArrayOf(1).inputStream().asInput())
+      .hasSameContentAs(byteArrayOf(0).inputStream().asInput())
   }
 }

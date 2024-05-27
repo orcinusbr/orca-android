@@ -20,7 +20,6 @@ import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.serializer
 import io.ktor.utils.io.core.internal.ChunkBuffer
 import io.ktor.utils.io.core.readBytes
-import io.ktor.utils.io.pool.DefaultPool
 import io.ktor.utils.io.pool.useInstance
 import kotlin.test.AfterTest
 import kotlin.test.Test
@@ -30,14 +29,7 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
 internal class ObjectPoolKSerializerTests {
-  private val serializer =
-    ObjectPoolKSerializer(ChunkBuffer::class, ChunkBuffer.serializer().descriptor)
-  private val objectPool =
-    object : DefaultPool<ChunkBuffer>(capacity = 1) {
-      override fun produceInstance(): ChunkBuffer {
-        return ChunkBuffer.Empty
-      }
-    }
+  private val objectPool = objectPoolOf(production = ChunkBuffer::Empty)
 
   @AfterTest
   fun tearDown() {
@@ -46,13 +38,13 @@ internal class ObjectPoolKSerializerTests {
 
   @Test
   fun serializes() {
-    assertThat(Json.encodeToString(serializer, objectPool))
+    assertThat(Json.encodeToString(ObjectPoolKSerializer.forChunkBuffer, objectPool))
       .isEqualTo(
         @OptIn(ExperimentalSerializationApi::class)
         buildJsonObject {
-            put(serializer.descriptor.getElementName(0), 1)
+            put(ObjectPoolKSerializer.forChunkBuffer.descriptor.getElementName(0), 1)
             put(
-              serializer.descriptor.getElementName(1),
+              ObjectPoolKSerializer.forChunkBuffer.descriptor.getElementName(1),
               Json.encodeToJsonElement(ChunkBuffer.serializer(), ChunkBuffer.Empty)
             )
           }
@@ -64,12 +56,12 @@ internal class ObjectPoolKSerializerTests {
   fun deserializes() {
     assertThat(
         Json.decodeFromString(
-            serializer,
+            ObjectPoolKSerializer.forChunkBuffer,
             @OptIn(ExperimentalSerializationApi::class)
             buildJsonObject {
-                put(serializer.descriptor.getElementName(0), 1)
+                put(ObjectPoolKSerializer.forChunkBuffer.descriptor.getElementName(0), 1)
                 put(
-                  serializer.descriptor.getElementName(1),
+                  ObjectPoolKSerializer.forChunkBuffer.descriptor.getElementName(1),
                   Json.encodeToJsonElement(ChunkBuffer.serializer(), ChunkBuffer.Empty)
                 )
               }

@@ -17,43 +17,64 @@ package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.inpu
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.form.hasSameContentAs
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.serializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.pool.ObjectPoolKSerializer
 import io.ktor.utils.io.core.Input
 import io.ktor.utils.io.core.internal.ChunkBuffer
+import io.ktor.utils.io.streams.asInput
+import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
-import org.junit.Rule
 
 internal class InputKSerializerTests {
-  @get:Rule val inputRule = DefaultInputTestRule()
+  private val input = byteArrayOf(0).inputStream().asInput()
+
+  @AfterTest
+  fun tearDown() {
+    input.close()
+  }
 
   @Test
   fun serializes() {
-    assertThat(Json.encodeToString(Input.serializer(), inputRule.defaultInput))
+    assertThat(Json.encodeToString(Input.serializer(), input))
       .isEqualTo(
         @OptIn(ExperimentalSerializationApi::class)
         buildJsonObject {
             put(
               Input.serializer().descriptor.getElementName(0),
-              Json.encodeToJsonElement(
-                ChunkBuffer.serializer(),
-                inputRule.defaultInput.pool.borrow()
-              )
+              Json.encodeToJsonElement(ChunkBuffer.serializer(), input.pool.borrow())
             )
-            put(Input.serializer().descriptor.getElementName(1), inputRule.defaultInput.remaining)
             put(
-              Input.serializer().descriptor.getElementName(2),
-              Json.encodeToJsonElement(
-                ObjectPoolKSerializer(ChunkBuffer::class, ChunkBuffer.serializer().descriptor),
-                inputRule.defaultInput.pool
-              )
+              Input.serializer().descriptor.getElementName(1),
+              Json.encodeToJsonElement(ObjectPoolKSerializer.forChunkBuffer, ChunkBuffer.Pool)
             )
           }
           .toString()
       )
+  }
+
+  @Test
+  fun deserializes() {
+    assertThat(
+        Json.decodeFromString(
+          Input.serializer(),
+          @OptIn(ExperimentalSerializationApi::class)
+          buildJsonObject {
+              put(
+                Input.serializer().descriptor.getElementName(0),
+                Json.encodeToJsonElement(ChunkBuffer.serializer(), input.pool.borrow())
+              )
+              put(
+                Input.serializer().descriptor.getElementName(1),
+                Json.encodeToJsonElement(ObjectPoolKSerializer.forChunkBuffer, ChunkBuffer.Pool)
+              )
+            }
+            .toString()
+        )
+      )
+      .hasSameContentAs(input)
   }
 }

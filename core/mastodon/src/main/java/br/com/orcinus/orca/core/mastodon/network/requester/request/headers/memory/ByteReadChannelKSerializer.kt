@@ -40,9 +40,13 @@ private object ByteReadChannelKSerializer : KSerializer<ByteReadChannel> {
     }
 
   override fun serialize(encoder: Encoder, value: ByteReadChannel) {
-    val destination = runBlocking { value.toByteArray() }
     encoder.encodeStructure(descriptor) {
-      encodeSerializableElement(descriptor, index = 0, ByteArraySerializer(), destination)
+      encodeSerializableElement(
+        descriptor,
+        index = 0,
+        ByteArraySerializer(),
+        runBlocking { value.toByteArray() }
+      )
     }
   }
 

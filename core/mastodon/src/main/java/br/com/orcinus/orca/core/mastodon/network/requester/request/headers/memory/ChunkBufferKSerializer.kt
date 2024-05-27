@@ -34,7 +34,7 @@ import kotlinx.serialization.encoding.encodeStructure
 private object ChunkBufferKSerializer : KSerializer<ChunkBuffer> {
   override val descriptor: SerialDescriptor =
     buildClassSerialDescriptor(ChunkBufferKSerializer::class.java.name) {
-      element("memory", ByteBufferKSerializer.descriptor)
+      element("memory", Memory.serializer().descriptor)
     }
 
   override fun serialize(encoder: Encoder, value: ChunkBuffer) {

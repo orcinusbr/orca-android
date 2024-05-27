@@ -18,7 +18,9 @@ package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memo
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.ktor.utils.io.bits.Memory
+import io.ktor.utils.io.core.ChunkBuffer
 import io.ktor.utils.io.core.internal.ChunkBuffer
+import java.nio.ByteBuffer
 import kotlin.test.Test
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -27,13 +29,15 @@ import kotlinx.serialization.json.buildJsonObject
 internal class ChunkBufferKSerializerTests {
   @Test
   fun serializes() {
-    assertThat(Json.encodeToString(ChunkBuffer.serializer(), ChunkBuffer.Empty))
+    assertThat(
+        Json.encodeToString(ChunkBuffer.serializer(), ChunkBuffer(ByteBuffer.wrap(byteArrayOf(0))))
+      )
       .isEqualTo(
         buildJsonObject {
             put(
               @OptIn(ExperimentalSerializationApi::class)
               ChunkBuffer.serializer().descriptor.getElementName(0),
-              Json.encodeToJsonElement(Memory.serializer(), ChunkBuffer.Empty.memory)
+              Json.encodeToJsonElement(Memory.serializer(), Memory(ByteBuffer.wrap(byteArrayOf(0))))
             )
           }
           .toString()
@@ -49,13 +53,16 @@ internal class ChunkBufferKSerializerTests {
                 put(
                   @OptIn(ExperimentalSerializationApi::class)
                   ChunkBuffer.serializer().descriptor.getElementName(0),
-                  Json.encodeToJsonElement(Memory.serializer(), ChunkBuffer.Empty.memory)
+                  Json.encodeToJsonElement(
+                    Memory.serializer(),
+                    Memory(ByteBuffer.wrap(byteArrayOf(0)))
+                  )
                 )
               }
               .toString()
           )
           .memory
       )
-      .isEqualTo(Memory.Empty)
+      .isEqualTo(Memory(ByteBuffer.wrap(byteArrayOf(0))))
   }
 }

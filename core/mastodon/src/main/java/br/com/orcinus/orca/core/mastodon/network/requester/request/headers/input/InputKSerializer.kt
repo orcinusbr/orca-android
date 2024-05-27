@@ -18,12 +18,15 @@ package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.inpu
 import br.com.orcinus.orca.core.mastodon.network.requester.InternalRequesterApi
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.serializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.pool.ObjectPoolKSerializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.pool.map
+import io.ktor.util.copy
 import io.ktor.utils.io.core.Input
+import io.ktor.utils.io.core.buildPacket
 import io.ktor.utils.io.core.internal.ChunkBuffer
+import io.ktor.utils.io.core.writeFully
 import io.ktor.utils.io.pool.ObjectPool
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
-import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.decodeStructure
@@ -34,19 +37,10 @@ import kotlinx.serialization.encoding.encodeStructure
  * [Input.Companion.serializer].
  */
 private object InputKSerializer : KSerializer<Input> {
-  /**
-   * [ObjectPoolKSerializer] by which an [Input]'s [ObjectPool] can be serialized and deserialized.
-   *
-   * @see Input.pool
-   */
-  private val poolKSerializer =
-    ObjectPoolKSerializer(ChunkBuffer::class, ChunkBuffer.serializer().descriptor)
-
   override val descriptor =
     buildClassSerialDescriptor(InputKSerializer::class.java.name) {
       element("head", ChunkBuffer.serializer().descriptor)
-      element<Long>("remaining")
-      element("pool", poolKSerializer.descriptor)
+      element("pool", ObjectPoolKSerializer.forChunkBuffer.descriptor)
     }
 
   override fun serialize(encoder: Encoder, value: Input) {
@@ -57,25 +51,31 @@ private object InputKSerializer : KSerializer<Input> {
         ChunkBuffer.serializer(),
         value.pool.borrow()
       )
-      encodeLongElement(descriptor, index = 1, value.remaining)
-      encodeSerializableElement(descriptor, index = 2, poolKSerializer, value.pool)
+      encodeSerializableElement(
+        descriptor,
+        index = 1,
+        ObjectPoolKSerializer.forChunkBuffer,
+        value.pool
+      )
     }
   }
 
   override fun deserialize(decoder: Decoder): Input {
     return decoder.decodeStructure(descriptor) {
       lateinit var head: ChunkBuffer
-      var remaining = 0L
       lateinit var pool: ObjectPool<ChunkBuffer>
       while (true) {
         when (val index = decodeElementIndex(descriptor)) {
           0 -> head = decodeSerializableElement(descriptor, index, ChunkBuffer.serializer())
-          1 -> remaining = decodeLongElement(descriptor, index)
-          2 -> pool = decodeSerializableElement(descriptor, index, poolKSerializer)
+          1 ->
+            pool =
+              decodeSerializableElement(descriptor, index, ObjectPoolKSerializer.forChunkBuffer)
           else -> break
         }
       }
-      DefaultInput(head, remaining, pool)
+      buildPacket {
+        writeFully(head.memory.buffer.copy(pool.map { it.memory.buffer }, head.referenceCount))
+      }
     }
   }
 }

@@ -58,7 +58,7 @@ internal object BinaryItemKSerializer : KSerializer<PartData.BinaryItem> {
           else -> break
         }
       }
-      PartData.BinaryItem({ binary }, dispose = {}, headers)
+      PartData.BinaryItem({ binary }, dispose = binary::close, headers)
     }
   }
 }
