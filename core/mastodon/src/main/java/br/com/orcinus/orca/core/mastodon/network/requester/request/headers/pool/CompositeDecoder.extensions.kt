@@ -17,6 +17,10 @@ package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.pool
 
 import br.com.orcinus.orca.core.mastodon.network.requester.InternalRequesterApi
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.HeaderValueParamKSerializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.form.BinaryChannelItemKSerializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.form.BinaryItemKSerializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.form.FileItemKSerializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.form.FormItemKSerializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.ByteBufferKSerializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.serializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.serializer
@@ -24,6 +28,7 @@ import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.strin
 import io.ktor.http.ContentDisposition
 import io.ktor.http.ContentType
 import io.ktor.http.HeaderValueParam
+import io.ktor.http.content.PartData
 import io.ktor.util.StringValues
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.bits.Memory
@@ -57,6 +62,10 @@ import kotlinx.serialization.encoding.CompositeDecoder
  *     - [Int];
  *     - [Long];
  *     - [Memory];
+ *     - [PartData.BinaryChannelItem];
+ *     - [PartData.BinaryItem];
+ *     - [PartData.FileItem];
+ *     - [PartData.FormItem];
  *     - [Short]; or
  *     - [StringValues].
  */
@@ -92,6 +101,10 @@ internal inline fun <reified T : Any> CompositeDecoder.decodeElement(
  *     - [Int];
  *     - [Long];
  *     - [Memory];
+ *     - [PartData.BinaryChannelItem];
+ *     - [PartData.BinaryItem];
+ *     - [PartData.FileItem];
+ *     - [PartData.FormItem];
  *     - [Short]; or
  *     - [StringValues].
  */
@@ -121,6 +134,12 @@ internal fun <T : Any> CompositeDecoder.decodeElement(
     Int::class -> decodeIntElement(descriptor, index)
     Long::class -> decodeLongElement(descriptor, index)
     Memory::class -> decodeSerializableElement(descriptor, index, Memory.serializer())
+    PartData.BinaryChannelItem::class ->
+      decodeSerializableElement(descriptor, index, BinaryChannelItemKSerializer)
+    PartData.BinaryItem::class ->
+      decodeSerializableElement(descriptor, index, BinaryItemKSerializer)
+    PartData.FileItem::class -> decodeSerializableElement(descriptor, index, FileItemKSerializer)
+    PartData.FormItem::class -> decodeSerializableElement(descriptor, index, FormItemKSerializer)
     Short::class -> decodeShortElement(descriptor, index)
     StringValues::class -> decodeSerializableElement(descriptor, index, StringValues.serializer())
     else -> throw IllegalArgumentException("Cannot decode a ${valueClass.simpleName}.")

@@ -16,6 +16,10 @@
 package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.pool
 
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.HeaderValueParamKSerializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.form.BinaryChannelItemKSerializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.form.BinaryItemKSerializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.form.FileItemKSerializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.form.FormItemKSerializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.ByteBufferKSerializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.serializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.serializer
@@ -23,11 +27,14 @@ import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.strin
 import io.ktor.http.ContentDisposition
 import io.ktor.http.ContentType
 import io.ktor.http.HeaderValueParam
+import io.ktor.http.Headers
+import io.ktor.http.content.PartData
 import io.ktor.util.StringValues
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.bits.Memory
 import io.ktor.utils.io.core.Input
 import io.ktor.utils.io.core.internal.ChunkBuffer
+import io.ktor.utils.io.jvm.javaio.toByteReadChannel
 import io.ktor.utils.io.streams.asInput
 import io.mockk.every
 import io.mockk.mockk
@@ -253,6 +260,89 @@ internal class CompositeDecoderExtensionsTests {
       .thenReturn(Memory.Empty)
     decoder.decodeElement<Memory>(descriptor, index = 0)
     then(decoder).should().decodeSerializableElement(descriptor, index = 0, serializer)
+  }
+
+  @Test
+  fun encodesBinaryChannelItemElement() {
+    mockk<CompositeDecoder> {
+      every {
+        decodeSerializableElement(
+          BinaryChannelItemKSerializer.descriptor,
+          index = 0,
+          BinaryChannelItemKSerializer
+        )
+      } returns
+        PartData.BinaryChannelItem(
+          { byteArrayOf(0).inputStream().toByteReadChannel() },
+          Headers.Empty
+        )
+      decodeElement<PartData.BinaryChannelItem>(BinaryChannelItemKSerializer.descriptor, index = 0)
+      verify(exactly = 1) {
+        decodeSerializableElement(
+          BinaryChannelItemKSerializer.descriptor,
+          index = 0,
+          BinaryChannelItemKSerializer
+        )
+      }
+    }
+  }
+
+  @Test
+  fun encodesBinaryItemElement() {
+    mockk<CompositeDecoder> {
+      every {
+        decodeSerializableElement(
+          BinaryItemKSerializer.descriptor,
+          index = 0,
+          BinaryItemKSerializer
+        )
+      } returns
+        byteArrayOf(0).inputStream().asInput().use {
+          PartData.BinaryItem({ it }, dispose = it::close, Headers.Empty)
+        }
+      decodeElement<PartData.BinaryItem>(BinaryItemKSerializer.descriptor, index = 0)
+      verify(exactly = 1) {
+        decodeSerializableElement(
+          BinaryItemKSerializer.descriptor,
+          index = 0,
+          BinaryItemKSerializer
+        )
+      }
+    }
+  }
+
+  @Test
+  fun encodesFileItemElement() {
+    mockk<CompositeDecoder> {
+      every {
+        decodeSerializableElement(FileItemKSerializer.descriptor, index = 0, FileItemKSerializer)
+      } returns
+        byteArrayOf(0).inputStream().asInput().use {
+          PartData.FileItem({ it }, dispose = it::close, Headers.Empty)
+        }
+      decodeElement<PartData.FileItem>(FileItemKSerializer.descriptor, index = 0)
+      verify(exactly = 1) {
+        decodeSerializableElement(FileItemKSerializer.descriptor, index = 0, FileItemKSerializer)
+      }
+    }
+  }
+
+  @Test
+  fun encodesFormItemElement() {
+    mockk<CompositeDecoder> {
+      every {
+        decodeSerializableElement(FormItemKSerializer.descriptor, index = 0, FormItemKSerializer)
+      } returns
+        PartData.FormItem(
+          "${HeaderValueParam("filename", "file.png")}",
+          dispose = {},
+          Headers.Empty
+        )
+      decodeElement<PartData.FormItem>(FormItemKSerializer.descriptor, index = 0)
+      verify(exactly = 1) {
+        decodeSerializableElement(FormItemKSerializer.descriptor, index = 0, FormItemKSerializer)
+      }
+    }
   }
 
   @Test

@@ -16,6 +16,10 @@
 package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.pool
 
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.HeaderValueParamKSerializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.form.BinaryChannelItemKSerializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.form.BinaryItemKSerializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.form.FileItemKSerializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.form.FormItemKSerializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.ByteBufferKSerializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.serializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.serializer
@@ -23,11 +27,14 @@ import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.strin
 import io.ktor.http.ContentDisposition
 import io.ktor.http.ContentType
 import io.ktor.http.HeaderValueParam
+import io.ktor.http.Headers
+import io.ktor.http.content.PartData
 import io.ktor.util.StringValues
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.bits.Memory
 import io.ktor.utils.io.core.Input
 import io.ktor.utils.io.core.internal.ChunkBuffer
+import io.ktor.utils.io.jvm.javaio.toByteReadChannel
 import io.ktor.utils.io.streams.asInput
 import io.mockk.every
 import io.mockk.mockk
@@ -287,6 +294,109 @@ internal class CompositeEncoderExtensionsTests {
         )
       }
     }
+  }
+
+  @Test
+  fun encodesBinaryChannelItemElement() {
+    val binaryChannel = byteArrayOf(0).inputStream().toByteReadChannel()
+    val binaryChannelItem = PartData.BinaryChannelItem({ binaryChannel }, Headers.Empty)
+    mockk<CompositeEncoder> {
+      every {
+        encodeSerializableElement(
+          BinaryChannelItemKSerializer.descriptor,
+          index = 0,
+          BinaryChannelItemKSerializer,
+          binaryChannelItem
+        )
+      } returns Unit
+      encodeElement(BinaryChannelItemKSerializer.descriptor, index = 0, binaryChannelItem)
+      verify(exactly = 1) {
+        encodeSerializableElement(
+          BinaryChannelItemKSerializer.descriptor,
+          index = 0,
+          BinaryChannelItemKSerializer,
+          binaryChannelItem
+        )
+      }
+    }
+  }
+
+  @Test
+  fun encodesBinaryItemElement() {
+    val binary = byteArrayOf(0).inputStream().asInput()
+    val binaryItem = PartData.BinaryItem({ binary }, dispose = binary::close, Headers.Empty)
+    mockk<CompositeEncoder> {
+      every {
+        encodeSerializableElement(
+          BinaryItemKSerializer.descriptor,
+          index = 0,
+          BinaryItemKSerializer,
+          binaryItem
+        )
+      } returns Unit
+      encodeElement(BinaryItemKSerializer.descriptor, index = 0, binaryItem)
+      verify(exactly = 1) {
+        encodeSerializableElement(
+          BinaryItemKSerializer.descriptor,
+          index = 0,
+          BinaryItemKSerializer,
+          binaryItem
+        )
+      }
+    }
+    binaryItem.dispose()
+  }
+
+  @Test
+  fun encodesFileItemElement() {
+    val file = byteArrayOf(0).inputStream().asInput()
+    val fileItem = PartData.FileItem({ file }, dispose = file::close, Headers.Empty)
+    mockk<CompositeEncoder> {
+      every {
+        encodeSerializableElement(
+          FileItemKSerializer.descriptor,
+          index = 0,
+          FileItemKSerializer,
+          fileItem
+        )
+      } returns Unit
+      encodeElement(FileItemKSerializer.descriptor, index = 0, fileItem)
+      verify(exactly = 1) {
+        encodeSerializableElement(
+          FileItemKSerializer.descriptor,
+          index = 0,
+          FileItemKSerializer,
+          fileItem
+        )
+      }
+    }
+    fileItem.dispose()
+  }
+
+  @Test
+  fun encodesFormItemElement() {
+    val formItem =
+      PartData.FormItem("${HeaderValueParam("filename", "file.png")}", dispose = {}, Headers.Empty)
+    mockk<CompositeEncoder> {
+      every {
+        encodeSerializableElement(
+          FormItemKSerializer.descriptor,
+          index = 0,
+          FormItemKSerializer,
+          formItem
+        )
+      } returns Unit
+      encodeElement(FormItemKSerializer.descriptor, index = 0, formItem)
+      verify(exactly = 1) {
+        encodeSerializableElement(
+          FormItemKSerializer.descriptor,
+          index = 0,
+          FormItemKSerializer,
+          formItem
+        )
+      }
+    }
+    formItem.dispose()
   }
 
   @Test

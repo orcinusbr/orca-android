@@ -17,6 +17,10 @@ package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.pool
 
 import br.com.orcinus.orca.core.mastodon.network.requester.InternalRequesterApi
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.HeaderValueParamKSerializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.form.BinaryChannelItemKSerializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.form.BinaryItemKSerializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.form.FileItemKSerializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.form.FormItemKSerializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.ByteBufferKSerializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.serializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.serializer
@@ -24,6 +28,7 @@ import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.strin
 import io.ktor.http.ContentDisposition
 import io.ktor.http.ContentType
 import io.ktor.http.HeaderValueParam
+import io.ktor.http.content.PartData
 import io.ktor.util.StringValues
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.bits.Memory
@@ -56,6 +61,10 @@ import kotlinx.serialization.encoding.CompositeEncoder
  *     - [Int];
  *     - [Long];
  *     - [Memory];
+ *     - [PartData.BinaryChannelItem];
+ *     - [PartData.BinaryItem];
+ *     - [PartData.FileItem];
+ *     - [PartData.FormItem];
  *     - [Short]; or
  *     - [StringValues].
  */
@@ -80,6 +89,12 @@ internal fun CompositeEncoder.encodeElement(descriptor: SerialDescriptor, index:
     is Int -> encodeIntElement(descriptor, index, value)
     is Long -> encodeLongElement(descriptor, index, value)
     is Memory -> encodeSerializableElement(descriptor, index, Memory.serializer(), value)
+    is PartData.BinaryChannelItem ->
+      encodeSerializableElement(descriptor, index, BinaryChannelItemKSerializer, value)
+    is PartData.BinaryItem ->
+      encodeSerializableElement(descriptor, index, BinaryItemKSerializer, value)
+    is PartData.FileItem -> encodeSerializableElement(descriptor, index, FileItemKSerializer, value)
+    is PartData.FormItem -> encodeSerializableElement(descriptor, index, FormItemKSerializer, value)
     is Short -> encodeShortElement(descriptor, index, value)
     is StringValues ->
       encodeSerializableElement(descriptor, index, StringValues.serializer(), value)
