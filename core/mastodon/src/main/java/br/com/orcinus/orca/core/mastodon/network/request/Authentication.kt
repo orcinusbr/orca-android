@@ -18,6 +18,7 @@ package br.com.orcinus.orca.core.mastodon.network.request
 import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.mastodon.network.InternalNetworkApi
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.bearerAuth
 
@@ -47,6 +48,7 @@ enum class Authentication {
    * @param lock [AuthenticationLock] by which authentication may be requested to be performed.
    * @param requestBuilder [HttpRequestBuilder] responsible for building the HTTP request.
    */
+  @InternalNetworkApi
   internal abstract suspend fun lock(
     lock: SomeAuthenticationLock,
     requestBuilder: HttpRequestBuilder
