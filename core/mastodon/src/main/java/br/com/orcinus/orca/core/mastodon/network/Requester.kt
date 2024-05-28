@@ -22,6 +22,7 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.network.client.Logger
 import br.com.orcinus.orca.core.mastodon.network.client.normalizeJsonKeys
 import br.com.orcinus.orca.core.mastodon.network.request.Authentication
+import br.com.orcinus.orca.core.mastodon.network.request.Parameterization
 import br.com.orcinus.orca.core.mastodon.network.request.Request
 import br.com.orcinus.orca.core.mastodon.network.request.RequestDao
 import br.com.orcinus.orca.core.mastodon.network.request.Resumption
@@ -143,7 +144,13 @@ constructor(
     route: String,
     resumption: Resumption = Resumption.None
   ): HttpResponse {
-    return request(authentication, Request.MethodName.DELETE, route, resumption, Parameters.Empty) {
+    return request(
+      authentication,
+      Request.MethodName.DELETE,
+      route,
+      resumption,
+      Parameterization.empty
+    ) {
       client.delete(route) { it() }
     }
   }
@@ -161,7 +168,13 @@ constructor(
     route: String,
     resumption: Resumption = Resumption.None
   ): HttpResponse {
-    return request(authentication, Request.MethodName.GET, route, resumption, Parameters.Empty) {
+    return request(
+      authentication,
+      Request.MethodName.GET,
+      route,
+      resumption,
+      Parameterization.empty
+    ) {
       client.get(route) { it() }
     }
   }
@@ -179,7 +192,9 @@ constructor(
     route: String,
     resumption: Resumption = Resumption.None
   ): HttpResponse {
-    return post(authentication, route, Parameters.Empty, resumption) { client.post(route) { it() } }
+    return post(authentication, route, Parameterization.empty, resumption) {
+      client.post(route) { it() }
+    }
   }
 
   /**
@@ -197,7 +212,7 @@ constructor(
     parameters: Parameters,
     resumption: Resumption = Resumption.None
   ): HttpResponse {
-    return post(authentication, route, parameters, resumption) {
+    return post(authentication, route, Parameterization.Body(parameters), resumption) {
       if (parameters.isEmpty()) {
         client.post(route) { it() }
       } else {
@@ -216,23 +231,32 @@ constructor(
   /**
    * Prepares an HTTP `POST` request to be sent.
    *
+   * @param T Parameters held by [parameterization].
    * @param authentication Authentication requirement that is appropriate for this specific request.
    * @param route Route from the base [URL] to which the request will be sent.
-   * @param parameters [Parameters] to be added to the form.
+   * @param parameterization Content of the parameters which vary in type depending on where they
+   *   are inserted in the request.
    * @param resumption Policy for defining whether the request should be resumed in case it is
    *   interrupted.
    * @param request Actual performance of the `POST` request.
    */
   @InternalNetworkApi
   @VisibleForTesting
-  internal suspend fun post(
+  internal suspend inline fun <reified T : Any> post(
     authentication: Authentication,
     route: String,
-    parameters: Parameters,
+    parameterization: Parameterization<T>,
     resumption: Resumption,
-    request: suspend (config: suspend HttpRequestBuilder.() -> Unit) -> HttpResponse
+    crossinline request: suspend (config: suspend HttpRequestBuilder.() -> Unit) -> HttpResponse
   ): HttpResponse {
-    return request(authentication, Request.MethodName.POST, route, resumption, parameters, request)
+    return request(
+      authentication,
+      Request.MethodName.POST,
+      route,
+      resumption,
+      parameterization,
+      request
+    )
   }
 
   /**
@@ -243,27 +267,31 @@ constructor(
    * In case cancellation occurs while there were ongoing requests, those that have been marked as
    * resumable will be executed again when [resume] is called.
    *
+   * @param T Parameters held by [parameterization].
    * @param authentication Authentication requirement that is appropriate for this specific request.
    * @param methodName Name of the HTTP method that's equivalent to that of the request to be
    *   performed.
    * @param route Specific resource on which the HTTP method is being called.
    * @param resumption Policy for defining whether the request should be resumed in case it is
    *   interrupted.
+   * @param parameterization Content of the parameters which vary in type depending on where they
+   *   are inserted in the request.
    * @param request Actual performance of the request to which the HTTP method refers.
    * @see Resumption.Resumable
    */
   @OptIn(ExperimentalContracts::class)
-  private suspend fun request(
+  private suspend inline fun <reified T : Any> request(
     authentication: Authentication,
     @Request.MethodName methodName: String,
     route: String,
     resumption: Resumption,
-    parameters: Parameters,
-    request: suspend (config: suspend HttpRequestBuilder.() -> Unit) -> HttpResponse
+    parameterization: Parameterization<T>,
+    crossinline request: suspend (config: suspend HttpRequestBuilder.() -> Unit) -> HttpResponse
   ): HttpResponse {
     contract { callsInPlace(request, InvocationKind.EXACTLY_ONCE) }
     return coroutineScope {
-      val parametersInJson = Json.encodeToString(StringValues.serializer(), parameters)
+      val parametersInJson =
+        Json.encodeToString(parameterization.serializer, parameterization.content)
       val requestEntity = Request(authentication, methodName, route, parametersInJson)
       resumption.prepare(requestDao, requestEntity)
       val responseDeferred =

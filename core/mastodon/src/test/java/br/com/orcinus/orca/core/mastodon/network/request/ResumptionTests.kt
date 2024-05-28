@@ -18,9 +18,13 @@ package br.com.orcinus.orca.core.mastodon.network.request
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEmpty
+import br.com.orcinus.orca.core.mastodon.network.request.headers.strings.serializer
 import br.com.orcinus.orca.core.mastodon.network.request.memory.InMemoryRequestDaoTestRule
+import io.ktor.http.Parameters
+import io.ktor.util.StringValues
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
+import kotlinx.serialization.json.Json
 import org.junit.Rule
 
 internal class ResumptionTests {
@@ -31,7 +35,12 @@ internal class ResumptionTests {
     runTest {
       Resumption.None.prepare(
         inMemoryRequestDaoRule.dao,
-        Request(Authentication.None, Request.MethodName.GET, "/api/v1/resource", parameters = "[]")
+        Request(
+          Authentication.None,
+          Request.MethodName.GET,
+          "/api/v1/resource",
+          Json.encodeToString(StringValues.serializer(), Parameters.Empty)
+        )
       )
       assertThat(inMemoryRequestDaoRule.dao.selectAll()).isEmpty()
     }
@@ -40,7 +49,12 @@ internal class ResumptionTests {
   @Test
   fun persistsRequestWhenResumableResumptionPrepares() {
     val request =
-      Request(Authentication.None, Request.MethodName.GET, "/api/v1/resource", parameters = "[]")
+      Request(
+        Authentication.None,
+        Request.MethodName.GET,
+        "/api/v1/resource",
+        Json.encodeToString(StringValues.serializer(), Parameters.Empty)
+      )
     runTest {
       Resumption.Resumable.prepare(inMemoryRequestDaoRule.dao, request)
       assertThat(inMemoryRequestDaoRule.dao.selectAll()).containsExactly(request)
