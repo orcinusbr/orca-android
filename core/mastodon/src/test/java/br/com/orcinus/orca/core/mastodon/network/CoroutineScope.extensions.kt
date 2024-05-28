@@ -90,6 +90,7 @@ internal inline fun runUnauthenticatedRequesterTest(
       body(spiedRequester)
     } finally {
       requestDao.clear()
+      requester.interrupt()
     }
   }
 }
