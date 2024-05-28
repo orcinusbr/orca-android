@@ -107,6 +107,30 @@ constructor(
     CancellationException("$request has been interrupted by its requester.")
 
   /**
+   * Restarts requests that have been attempted to be performed previously and were cancelled when
+   * this [Requester] was last interrupted, whose information were persisted by the HTTP-analogous
+   * method when it called [request].
+   *
+   * @see interrupt
+   */
+  suspend fun resume() {
+    requestDao.selectAll().forEach {
+      it.fold(
+        onDelete = { delete(it.authentication, it.route, Resumption.Resumable) },
+        onGet = { get(it.authentication, it.route, Resumption.Resumable) },
+        onPost = {
+          post(
+            it.authentication,
+            it.route,
+            Json.decodeFromString(StringValues.serializer(), it.parameters).toParameters(),
+            Resumption.Resumable
+          )
+        }
+      )
+    }
+  }
+
+  /**
    * Sends an HTTP `DELETE` request.
    *
    * @param authentication Authentication requirement that is appropriate for this specific request.
@@ -179,28 +203,6 @@ constructor(
       } else {
         coroutineScope { client.submitForm(route, parameters) { launch { it() } } }
       }
-    }
-  }
-
-  /**
-   * Restarts requests that have been attempted to be performed previously and were interrupted when
-   * this [Requester] was last cancelled, whose information were persisted by the HTTP-analogous
-   * method when it called [request].
-   */
-  suspend fun resume() {
-    requestDao.selectAll().forEach { request ->
-      request.fold(
-        onDelete = { delete(request.authentication, request.route, Resumption.Resumable) },
-        onGet = { get(request.authentication, request.route, Resumption.Resumable) },
-        onPost = {
-          post(
-            request.authentication,
-            request.route,
-            Json.decodeFromString(StringValues.serializer(), request.parameters).toParameters(),
-            Resumption.Resumable
-          )
-        }
-      )
     }
   }
 
