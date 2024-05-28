@@ -15,6 +15,8 @@
 
 package br.com.orcinus.orca.core.mastodon.network.request
 
+import br.com.orcinus.orca.core.mastodon.network.InternalNetworkApi
+
 /** Indicates whether a given request should be resumed whenever it is abruptly interrupted. */
 enum class Resumption {
   /**
@@ -41,5 +43,5 @@ enum class Resumption {
    * @param dao [RequestDao] by which information about the request can be persisted.
    * @param request Data regarding the request to be resumed.
    */
-  internal abstract suspend fun prepare(dao: RequestDao, request: Request)
+  @InternalNetworkApi internal abstract suspend fun prepare(dao: RequestDao, request: Request)
 }
