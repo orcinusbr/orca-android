@@ -44,7 +44,6 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.Parameters
 import io.ktor.util.StringValues
 import java.net.URI
-import java.net.URL
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -135,7 +134,7 @@ constructor(
    * Sends an HTTP `DELETE` request.
    *
    * @param authentication Authentication requirement that is appropriate for this specific request.
-   * @param route Route from the base [URL] to which the request will be sent.
+   * @param route Route from the [base] to which the request will be sent.
    * @param resumption Policy for defining whether the request should be resumed in case it is
    *   interrupted.
    */
@@ -159,7 +158,7 @@ constructor(
    * Sends an HTTP `GET` request.
    *
    * @param authentication Authentication requirement that is appropriate for this specific request.
-   * @param route Route from the base [URL] to which the request will be sent.
+   * @param route Route from the [base] to which the request will be sent.
    * @param resumption Policy for defining whether the request should be resumed in case it is
    *   interrupted.
    */
@@ -183,7 +182,7 @@ constructor(
    * Sends an unparameterized HTTP `POST` request.
    *
    * @param authentication Authentication requirement that is appropriate for this specific request.
-   * @param route Route from the base [URL] to which the request will be sent.
+   * @param route Route from the [base] to which the request will be sent.
    * @param resumption Policy for defining whether the request should be resumed in case it is
    *   interrupted.
    */
@@ -201,7 +200,7 @@ constructor(
    * Sends an HTTP `POST` request.
    *
    * @param authentication Authentication requirement that is appropriate for this specific request.
-   * @param route Route from the base [URL] to which the request will be sent.
+   * @param route Route from the [base] to which the request will be sent.
    * @param parameters [Parameters] to be added to the form.
    * @param resumption Policy for defining whether the request should be resumed in case it is
    *   interrupted.
@@ -233,7 +232,7 @@ constructor(
    *
    * @param T Parameters held by [parameterization].
    * @param authentication Authentication requirement that is appropriate for this specific request.
-   * @param route Route from the base [URL] to which the request will be sent.
+   * @param route Route from the [base] to which the request will be sent.
    * @param parameterization Content of the parameters which vary in type depending on where they
    *   are inserted in the request.
    * @param resumption Policy for defining whether the request should be resumed in case it is
