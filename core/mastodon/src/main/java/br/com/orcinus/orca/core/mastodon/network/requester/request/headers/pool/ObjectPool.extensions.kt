@@ -43,9 +43,9 @@ private class TransformerObjectPool<I : Any, O : Any>(
 
   override fun borrow(): O {
     val originalInstance = originalPool.borrow()
-    val transformed = transform(originalInstance)
-    history[transformed] = originalInstance
-    return transformed
+    val transformedInstance = transform(originalInstance)
+    history[transformedInstance] = originalInstance
+    return transformedInstance
   }
 
   override fun dispose() {
