@@ -18,6 +18,7 @@ package br.com.orcinus.orca.core.mastodon.network.client
 import androidx.annotation.Discouraged
 import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.mastodon.network.InternalNetworkApi
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.std.injector.Injector
@@ -196,6 +197,7 @@ internal suspend inline fun HttpClient.authenticateAndSubmitFormWithBinaryData(
  * Provides the [authenticated][Actor.Authenticated] [Actor]'s access token to the
  * [Authorization][HttpHeaders.Authorization] header through the [authenticationLock].
  */
+@InternalNetworkApi
 @PublishedApi
 internal suspend fun HttpMessageBuilder.authenticate() {
   authenticationLock.scheduleUnlock { bearerAuth(it.accessToken) }
