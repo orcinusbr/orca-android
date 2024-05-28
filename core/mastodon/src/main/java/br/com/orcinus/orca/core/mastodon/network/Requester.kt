@@ -59,6 +59,10 @@ import kotlinx.serialization.json.Json
  * be performed, caching their results for resource saving and effortless retrieval when an internet
  * connection isn't available.
  *
+ * Requests can also be made resumable, which means that they will be automatically retried in case
+ * this [Requester] is interrupted and gets resumed posteriorly. For more information, refer to the
+ * documentation of [Resumption] and its policies'.
+ *
  * @param authenticationLock [AuthenticationLock] for unlocking operations made by an
  *   unauthenticated [Actor].
  * @param clientEngineFactory [HttpClientEngineFactory] that creates the [HttpClientEngine] powering
