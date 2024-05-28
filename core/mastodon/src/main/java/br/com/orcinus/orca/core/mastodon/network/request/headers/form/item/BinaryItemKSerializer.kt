@@ -13,16 +13,16 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.network.request.headers.form
+package br.com.orcinus.orca.core.mastodon.network.request.headers.form.item
 
 import br.com.orcinus.orca.core.mastodon.network.InternalNetworkApi
-import br.com.orcinus.orca.core.mastodon.network.request.headers.memory.serializer
+import br.com.orcinus.orca.core.mastodon.network.request.headers.serializer
 import br.com.orcinus.orca.core.mastodon.network.request.headers.strings.serializer
 import br.com.orcinus.orca.core.mastodon.network.request.headers.strings.toHeaders
 import io.ktor.http.Headers
 import io.ktor.http.content.PartData
 import io.ktor.util.StringValues
-import io.ktor.utils.io.ByteReadChannel
+import io.ktor.utils.io.core.Input
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
@@ -30,47 +30,35 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.decodeStructure
 import kotlinx.serialization.encoding.encodeStructure
 
-/**
- * [KSerializer] for serializing and deserializing a binary channel item.
- *
- * @see PartData.BinaryChannelItem
- */
 @InternalNetworkApi
-internal object BinaryChannelItemKSerializer : KSerializer<PartData.BinaryChannelItem> {
+internal object BinaryItemKSerializer : KSerializer<PartData.BinaryItem> {
   override val descriptor =
-    buildClassSerialDescriptor(BinaryChannelItemKSerializer::class.java.name) {
-      element("binaryChannel", ByteReadChannel.serializer().descriptor)
+    buildClassSerialDescriptor(BinaryItemKSerializer::class.java.name) {
+      element("binary", Input.serializer().descriptor)
       element("headers", StringValues.serializer().descriptor)
     }
 
-  override fun serialize(encoder: Encoder, value: PartData.BinaryChannelItem) {
+  override fun serialize(encoder: Encoder, value: PartData.BinaryItem) {
     encoder.encodeStructure(descriptor) {
-      encodeSerializableElement(
-        descriptor,
-        index = 0,
-        ByteReadChannel.serializer(),
-        value.provider()
-      )
+      encodeSerializableElement(descriptor, index = 0, Input.serializer(), value.provider())
       encodeSerializableElement(descriptor, index = 1, StringValues.serializer(), value.headers)
     }
   }
 
-  override fun deserialize(decoder: Decoder): PartData.BinaryChannelItem {
+  override fun deserialize(decoder: Decoder): PartData.BinaryItem {
     return decoder.decodeStructure(descriptor) {
-      lateinit var binaryChannel: ByteReadChannel
+      lateinit var binary: Input
       lateinit var headers: Headers
       while (true) {
         when (val index = decodeElementIndex(descriptor)) {
-          0 ->
-            binaryChannel =
-              decodeSerializableElement(descriptor, index, ByteReadChannel.serializer())
+          0 -> binary = decodeSerializableElement(descriptor, index, Input.serializer())
           1 ->
             headers =
               decodeSerializableElement(descriptor, index, StringValues.serializer()).toHeaders()
           else -> break
         }
       }
-      PartData.BinaryChannelItem({ binaryChannel }, headers)
+      PartData.BinaryItem({ binary }, dispose = binary::close, headers)
     }
   }
 }

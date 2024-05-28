@@ -16,10 +16,10 @@
 package br.com.orcinus.orca.core.mastodon.network.request.headers.pool
 
 import br.com.orcinus.orca.core.mastodon.network.request.headers.HeaderValueParamKSerializer
-import br.com.orcinus.orca.core.mastodon.network.request.headers.form.BinaryChannelItemKSerializer
-import br.com.orcinus.orca.core.mastodon.network.request.headers.form.BinaryItemKSerializer
-import br.com.orcinus.orca.core.mastodon.network.request.headers.form.FileItemKSerializer
-import br.com.orcinus.orca.core.mastodon.network.request.headers.form.FormItemKSerializer
+import br.com.orcinus.orca.core.mastodon.network.request.headers.form.item.BinaryChannelItemKSerializer
+import br.com.orcinus.orca.core.mastodon.network.request.headers.form.item.BinaryItemKSerializer
+import br.com.orcinus.orca.core.mastodon.network.request.headers.form.item.FileItemKSerializer
+import br.com.orcinus.orca.core.mastodon.network.request.headers.form.item.FormItemKSerializer
 import br.com.orcinus.orca.core.mastodon.network.request.headers.memory.ByteBufferKSerializer
 import br.com.orcinus.orca.core.mastodon.network.request.headers.memory.serializer
 import br.com.orcinus.orca.core.mastodon.network.request.headers.serializer

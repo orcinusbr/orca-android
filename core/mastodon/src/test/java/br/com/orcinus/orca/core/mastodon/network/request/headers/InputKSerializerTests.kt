@@ -17,7 +17,7 @@ package br.com.orcinus.orca.core.mastodon.network.request.headers
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import br.com.orcinus.orca.core.mastodon.network.request.headers.form.hasSameContentAs
+import br.com.orcinus.orca.core.mastodon.network.request.headers.form.item.hasSameContentAs
 import br.com.orcinus.orca.core.mastodon.network.request.headers.memory.serializer
 import br.com.orcinus.orca.core.mastodon.network.request.headers.pool.ObjectPoolKSerializer
 import io.ktor.utils.io.core.Input

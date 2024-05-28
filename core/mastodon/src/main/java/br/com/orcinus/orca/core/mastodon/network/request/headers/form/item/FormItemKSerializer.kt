@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.network.request.headers.form
+package br.com.orcinus.orca.core.mastodon.network.request.headers.form.item
 
 import br.com.orcinus.orca.core.mastodon.network.InternalNetworkApi
 import br.com.orcinus.orca.core.mastodon.network.request.headers.strings.serializer

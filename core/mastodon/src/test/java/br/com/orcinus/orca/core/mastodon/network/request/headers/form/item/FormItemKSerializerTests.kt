@@ -13,49 +13,44 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.network.request.headers.form
+package br.com.orcinus.orca.core.mastodon.network.request.headers.form.item
 
 import assertk.all
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import br.com.orcinus.orca.core.mastodon.network.request.headers.serializer
 import br.com.orcinus.orca.core.mastodon.network.request.headers.strings.serializer
+import io.ktor.http.HeaderValueParam
 import io.ktor.http.Headers
 import io.ktor.http.content.PartData
 import io.ktor.util.StringValues
-import io.ktor.utils.io.core.Input
-import io.ktor.utils.io.streams.asInput
-import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 
-internal class FileItemKSerializerTests {
-  private val file = byteArrayOf(0).inputStream().asInput()
-
-  @AfterTest
-  fun tearDown() {
-    file.close()
-  }
-
+internal class FormItemKSerializerTests {
   @Test
   fun serializes() {
     assertThat(
         Json.encodeToString(
-          FileItemKSerializer,
-          PartData.FileItem({ file }, dispose = file::close, Headers.Empty)
+          FormItemKSerializer,
+          PartData.FormItem(
+            "${HeaderValueParam("filename", "file.png")}",
+            dispose = {},
+            Headers.Empty
+          )
         )
       )
       .isEqualTo(
         @OptIn(ExperimentalSerializationApi::class)
         buildJsonObject {
             put(
-              FileItemKSerializer.descriptor.getElementName(0),
-              Json.encodeToJsonElement(Input.serializer(), file)
+              FormItemKSerializer.descriptor.getElementName(0),
+              "${HeaderValueParam("filename", "file.png")}"
             )
             put(
-              FileItemKSerializer.descriptor.getElementName(1),
+              FormItemKSerializer.descriptor.getElementName(1),
               Json.encodeToJsonElement(StringValues.serializer(), Headers.Empty)
             )
           }
@@ -67,15 +62,15 @@ internal class FileItemKSerializerTests {
   fun deserializes() {
     assertThat(
         Json.decodeFromString(
-          FileItemKSerializer,
+          FormItemKSerializer,
           @OptIn(ExperimentalSerializationApi::class)
           buildJsonObject {
               put(
-                FileItemKSerializer.descriptor.getElementName(0),
-                Json.encodeToJsonElement(Input.serializer(), file)
+                FormItemKSerializer.descriptor.getElementName(0),
+                "${HeaderValueParam("filename", "file.png")}"
               )
               put(
-                FileItemKSerializer.descriptor.getElementName(1),
+                FormItemKSerializer.descriptor.getElementName(1),
                 Json.encodeToJsonElement(StringValues.serializer(), Headers.Empty)
               )
             }
@@ -83,8 +78,9 @@ internal class FileItemKSerializerTests {
         )
       )
       .all {
-        transform("file") { it.provider() }.hasSameContentAs(file)
-        transform("headers", PartData.FileItem::headers).isEqualTo(Headers.Empty)
+        transform("value", PartData.FormItem::value)
+          .isEqualTo("${HeaderValueParam("filename", "file.png")}")
+        transform("headers", PartData.FormItem::headers).isEqualTo(Headers.Empty)
       }
   }
 }

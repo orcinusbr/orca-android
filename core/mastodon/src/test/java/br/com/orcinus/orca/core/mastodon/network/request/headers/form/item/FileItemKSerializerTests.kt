@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.network.request.headers.form
+package br.com.orcinus.orca.core.mastodon.network.request.headers.form.item
 
 import assertk.all
 import assertk.assertThat
@@ -25,35 +25,37 @@ import io.ktor.http.content.PartData
 import io.ktor.util.StringValues
 import io.ktor.utils.io.core.Input
 import io.ktor.utils.io.streams.asInput
+import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
 
-internal class BinaryItemKSerializerTests {
+internal class FileItemKSerializerTests {
+  private val file = byteArrayOf(0).inputStream().asInput()
+
+  @AfterTest
+  fun tearDown() {
+    file.close()
+  }
+
   @Test
   fun serializes() {
     assertThat(
         Json.encodeToString(
-          BinaryItemKSerializer,
-          PartData.BinaryItem(
-            byteArrayOf(0).inputStream().asInput().use { { it } },
-            dispose = {},
-            Headers.Empty
-          )
+          FileItemKSerializer,
+          PartData.FileItem({ file }, dispose = file::close, Headers.Empty)
         )
       )
       .isEqualTo(
         @OptIn(ExperimentalSerializationApi::class)
         buildJsonObject {
             put(
-              BinaryItemKSerializer.descriptor.getElementName(0),
-              byteArrayOf(0).inputStream().asInput().use {
-                Json.encodeToJsonElement(Input.serializer(), it)
-              }
+              FileItemKSerializer.descriptor.getElementName(0),
+              Json.encodeToJsonElement(Input.serializer(), file)
             )
             put(
-              BinaryItemKSerializer.descriptor.getElementName(1),
+              FileItemKSerializer.descriptor.getElementName(1),
               Json.encodeToJsonElement(StringValues.serializer(), Headers.Empty)
             )
           }
@@ -65,17 +67,15 @@ internal class BinaryItemKSerializerTests {
   fun deserializes() {
     assertThat(
         Json.decodeFromString(
-          BinaryItemKSerializer,
+          FileItemKSerializer,
           @OptIn(ExperimentalSerializationApi::class)
           buildJsonObject {
               put(
-                BinaryItemKSerializer.descriptor.getElementName(0),
-                byteArrayOf(0).inputStream().asInput().use {
-                  Json.encodeToJsonElement(Input.serializer(), it)
-                }
+                FileItemKSerializer.descriptor.getElementName(0),
+                Json.encodeToJsonElement(Input.serializer(), file)
               )
               put(
-                BinaryItemKSerializer.descriptor.getElementName(1),
+                FileItemKSerializer.descriptor.getElementName(1),
                 Json.encodeToJsonElement(StringValues.serializer(), Headers.Empty)
               )
             }
@@ -83,9 +83,8 @@ internal class BinaryItemKSerializerTests {
         )
       )
       .all {
-        transform("binary") { it.provider() }
-          .hasSameContentAs(byteArrayOf(0).inputStream().asInput())
-        transform("headers", PartData.BinaryItem::headers).isEqualTo(Headers.Empty)
+        transform("file") { it.provider() }.hasSameContentAs(file)
+        transform("headers", PartData.FileItem::headers).isEqualTo(Headers.Empty)
       }
   }
 }
