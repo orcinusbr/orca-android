@@ -32,6 +32,7 @@ import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.plugins.HttpRequestRetry
+import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.HttpRequest
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.delete
@@ -41,6 +42,7 @@ import io.ktor.client.request.post
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.Parameters
 import io.ktor.util.StringValues
+import java.net.URI
 import java.net.URL
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
@@ -69,6 +71,10 @@ import kotlinx.serialization.json.Json
  *   the underlying [client].
  * @param logger [Logger] by which received [HttpResponse]s will be logged.
  * @param requestDao [RequestDao] for performing read and write operations on [Request]s.
+ * @param base [URI] from which routes are constructed.
+ * @see Resumption.Resumable
+ * @see interrupt
+ * @see resume
  */
 internal class Requester
 @InternalNetworkApi
@@ -76,11 +82,13 @@ constructor(
   private val authenticationLock: SomeAuthenticationLock,
   private val clientEngineFactory: HttpClientEngineFactory<*>,
   private val logger: Logger,
-  private val requestDao: RequestDao
+  private val requestDao: RequestDao,
+  private val base: URI
 ) {
   /** [HttpClient] that will be responsible for sending HTTP requests. */
   private val client =
     HttpClient(clientEngineFactory) {
+      defaultRequest { url(base.scheme, base.host, base.port.takeIf { it >= 0 }, base.path) }
       logger.start(this)
       normalizeJsonKeys()
       retryAfterFailures()

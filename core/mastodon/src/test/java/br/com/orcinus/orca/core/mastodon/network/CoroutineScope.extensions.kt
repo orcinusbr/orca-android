@@ -20,6 +20,7 @@ import br.com.orcinus.orca.core.mastodon.network.client.ClientResponseProvider
 import br.com.orcinus.orca.core.mastodon.network.client.NoOpLogger
 import br.com.orcinus.orca.core.mastodon.network.client.runUnauthenticatedTest
 import br.com.orcinus.orca.core.mastodon.network.request.memory.InMemoryRequestDao
+import br.com.orcinus.orca.std.uri.URIBuilder
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.HttpClientEngineFactory
@@ -73,18 +74,15 @@ internal inline fun runUnauthenticatedRequesterTest(
     callsInPlace(body, InvocationKind.EXACTLY_ONCE)
   }
   runUnauthenticatedTest(onAuthentication, clientResponseProvider) {
+    val clientEngineFactory =
+      object : HttpClientEngineFactory<MockEngineConfig> {
+        override fun create(block: MockEngineConfig.() -> Unit): HttpClientEngine {
+          return (client.engine as MockEngine).apply { config.block() }
+        }
+      }
     val requestDao = InMemoryRequestDao()
-    val requester =
-      Requester(
-        authenticationLock,
-        object : HttpClientEngineFactory<MockEngineConfig> {
-          override fun create(block: MockEngineConfig.() -> Unit): HttpClientEngine {
-            return (client.engine as MockEngine).apply { config.block() }
-          }
-        },
-        NoOpLogger,
-        requestDao
-      )
+    val base = URIBuilder.url().scheme("https").host("orca.orcinus.com.br").path("app").build()
+    val requester = Requester(authenticationLock, clientEngineFactory, NoOpLogger, requestDao, base)
     val spiedRequester = spyk(requester)
     try {
       body(spiedRequester)
