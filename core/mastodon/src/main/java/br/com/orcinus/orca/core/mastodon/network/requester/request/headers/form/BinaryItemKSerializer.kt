@@ -16,7 +16,7 @@
 package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.form
 
 import br.com.orcinus.orca.core.mastodon.network.requester.InternalRequesterApi
-import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.input.serializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.serializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.strings.serializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.strings.toHeaders
 import io.ktor.http.Headers

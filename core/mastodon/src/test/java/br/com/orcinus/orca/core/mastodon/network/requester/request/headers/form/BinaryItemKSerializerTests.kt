@@ -18,7 +18,7 @@ package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.form
 import assertk.all
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.input.serializer
+import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.serializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.strings.serializer
 import io.ktor.http.Headers
 import io.ktor.http.content.PartData
