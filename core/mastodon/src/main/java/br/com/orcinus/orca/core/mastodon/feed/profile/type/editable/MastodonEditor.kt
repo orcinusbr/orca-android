@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -17,8 +17,8 @@ package br.com.orcinus.orca.core.mastodon.feed.profile.type.editable
 
 import br.com.orcinus.orca.core.feed.profile.type.editable.Editor
 import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
-import br.com.orcinus.orca.core.mastodon.network.requester.client.authenticateAndSubmitForm
-import br.com.orcinus.orca.core.mastodon.network.requester.client.authenticateAndSubmitFormWithBinaryData
+import br.com.orcinus.orca.core.mastodon.network.client.authenticateAndSubmitForm
+import br.com.orcinus.orca.core.mastodon.network.client.authenticateAndSubmitFormWithBinaryData
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.std.image.SomeImageLoader

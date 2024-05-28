@@ -17,7 +17,7 @@ package br.com.orcinus.orca.core.mastodon.instance
 
 import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.instance.InstanceProvider
-import br.com.orcinus.orca.core.mastodon.network.requester.client.ClientResponseProvider
+import br.com.orcinus.orca.core.mastodon.network.client.ClientResponseProvider
 import br.com.orcinus.orca.core.test.TestAuthenticator
 import br.com.orcinus.orca.core.test.TestAuthorizer
 import io.ktor.client.HttpClient
