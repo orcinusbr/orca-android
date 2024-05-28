@@ -16,7 +16,6 @@
 package br.com.orcinus.orca.core.mastodon.network.requester.request.headers.pool
 
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.HeaderValueParamKSerializer
-import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.input.DefaultInputTestRule
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.input.serializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.ByteBufferKSerializer
 import br.com.orcinus.orca.core.mastodon.network.requester.request.headers.memory.serializer
@@ -30,6 +29,7 @@ import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.bits.Memory
 import io.ktor.utils.io.core.Input
 import io.ktor.utils.io.core.internal.ChunkBuffer
+import io.ktor.utils.io.streams.asInput
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -38,11 +38,8 @@ import kotlin.test.Test
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.serialDescriptor
 import kotlinx.serialization.encoding.CompositeEncoder
-import org.junit.Rule
 
 internal class CompositeEncoderExtensionsTests {
-  @get:Rule val defaultInputRule = DefaultInputTestRule()
-
   private object Unknown
 
   @Test(expected = IllegalArgumentException::class)
@@ -239,22 +236,24 @@ internal class CompositeEncoderExtensionsTests {
   @Test
   fun encodesInputElement() {
     mockk<CompositeEncoder> {
-      every {
-        encodeSerializableElement(
-          Input.serializer().descriptor,
-          index = 0,
-          Input.serializer(),
-          defaultInputRule.defaultInput
-        )
-      } returns Unit
-      encodeElement(Input.serializer().descriptor, index = 0, defaultInputRule.defaultInput)
-      verify(exactly = 1) {
-        encodeSerializableElement(
-          Input.serializer().descriptor,
-          index = 0,
-          Input.serializer(),
-          defaultInputRule.defaultInput
-        )
+      byteArrayOf(0).inputStream().asInput().use {
+        every {
+          encodeSerializableElement(
+            Input.serializer().descriptor,
+            index = 0,
+            Input.serializer(),
+            it
+          )
+        } returns Unit
+        encodeElement(Input.serializer().descriptor, index = 0, it)
+        verify(exactly = 1) {
+          encodeSerializableElement(
+            Input.serializer().descriptor,
+            index = 0,
+            Input.serializer(),
+            it
+          )
+        }
       }
     }
   }
