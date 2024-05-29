@@ -15,7 +15,6 @@
 
 package br.com.orcinus.orca.core.mastodon.network
 
-import androidx.annotation.VisibleForTesting
 import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.Actor
@@ -239,9 +238,7 @@ constructor(
    *   interrupted.
    * @param request Actual performance of the `POST` request.
    */
-  @InternalNetworkApi
-  @VisibleForTesting
-  internal suspend inline fun <reified T : Any> post(
+  private suspend inline fun <reified T : Any> post(
     authentication: Authentication,
     route: String,
     parameterization: Parameterization<T>,
