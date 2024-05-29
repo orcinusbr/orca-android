@@ -27,6 +27,8 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.post.cache.storage.Mastodo
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.cache.storage.MastodonPostEntityDao
 import br.com.orcinus.orca.core.mastodon.feed.profile.search.cache.storage.MastodonProfileSearchResultEntity
 import br.com.orcinus.orca.core.mastodon.feed.profile.search.cache.storage.MastodonProfileSearchResultEntityDao
+import br.com.orcinus.orca.core.mastodon.network.request.Request
+import br.com.orcinus.orca.core.mastodon.network.request.RequestDao
 
 /** [RoomDatabase] in which core-Mastodon-related persistence operations will take place. */
 @Database(
@@ -35,7 +37,8 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.search.cache.storage.Masto
       MastodonStyleEntity::class,
       MastodonProfileEntity::class,
       MastodonProfileSearchResultEntity::class,
-      MastodonPostEntity::class
+      MastodonPostEntity::class,
+      Request::class
     ],
   version = 1
 )
@@ -54,6 +57,9 @@ internal abstract class MastodonDatabase : RoomDatabase() {
 
   /** DAO for operating on [Mastodon post entities][MastodonPostEntity]. */
   abstract val postEntityDao: MastodonPostEntityDao
+
+  /** DAO for operating on [Request]s. */
+  abstract val requestDao: RequestDao
 
   companion object {
     private lateinit var instance: MastodonDatabase

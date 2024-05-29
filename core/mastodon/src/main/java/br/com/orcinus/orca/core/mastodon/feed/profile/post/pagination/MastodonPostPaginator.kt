@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,11 +16,10 @@
 package br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination
 
 import br.com.orcinus.orca.core.feed.profile.post.Post
-import br.com.orcinus.orca.core.mastodon.client.MastodonClient
-import br.com.orcinus.orca.core.mastodon.client.authenticateAndGet
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.type.KTypeCreator
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.type.kTypeCreatorOf
 import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
+import br.com.orcinus.orca.core.mastodon.network.client.authenticateAndGet
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.ext.coroutines.getValue

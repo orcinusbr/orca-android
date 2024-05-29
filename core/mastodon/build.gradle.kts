@@ -59,6 +59,7 @@ dependencies {
   implementation(project(":platform:focus"))
   implementation(project(":platform:navigation"))
   implementation(project(":platform:starter"))
+  implementation(project(":std:visibility"))
   implementation(project(":std:uri"))
   implementation(libs.android.browser)
   implementation(libs.android.constraintLayout.compose)
@@ -89,7 +90,9 @@ dependencies {
   testImplementation(libs.kotlin.coroutines.test)
   testImplementation(libs.kotlin.test)
   testImplementation(libs.ktor.client.mock)
+  testImplementation(libs.mockito)
   testImplementation(libs.mockk)
+  testImplementation(libs.openTest4J)
   testImplementation(libs.robolectric)
   testImplementation(libs.turbine)
 }
