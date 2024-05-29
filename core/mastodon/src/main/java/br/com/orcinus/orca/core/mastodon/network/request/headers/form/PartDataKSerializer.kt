@@ -28,7 +28,7 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.decodeStructure
 import kotlinx.serialization.encoding.encodeStructure
 
-/** [KSerializer] for serializing and deserializing a [PartData]. */
+/** [KSerializer] for serializing and deserializing [PartData]. */
 internal object PartDataKSerializer : KSerializer<PartData> {
   override val descriptor =
     buildClassSerialDescriptor(PartDataKSerializer::class.java.name) {
