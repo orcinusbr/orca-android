@@ -39,6 +39,7 @@ internal class ResumptionTests {
           Authentication.None,
           Request.MethodName.GET,
           "/api/v1/resource",
+          Parameterization.Body.name,
           Json.encodeToString(StringValues.serializer(), Parameters.Empty)
         )
       )
@@ -53,6 +54,7 @@ internal class ResumptionTests {
         Authentication.None,
         Request.MethodName.GET,
         "/api/v1/resource",
+        Parameterization.Body.name,
         Json.encodeToString(StringValues.serializer(), Parameters.Empty)
       )
     runTest {

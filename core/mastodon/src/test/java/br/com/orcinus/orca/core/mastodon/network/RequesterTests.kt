@@ -22,6 +22,7 @@ import br.com.orcinus.orca.core.mastodon.network.request.Authentication
 import br.com.orcinus.orca.core.mastodon.network.request.Resumption
 import br.com.orcinus.orca.core.mastodon.network.request.resumptionOf
 import io.ktor.client.call.body
+import io.ktor.client.request.forms.formData
 import io.ktor.http.Parameters
 import kotlin.test.Test
 
@@ -122,10 +123,20 @@ internal class RequesterTests {
   }
 
   @Test
-  fun resumesResumablePostRequestWhenItIsInterrupted() {
+  fun resumesResumablePostRequestWithBodyParametersWhenItIsInterrupted() {
     assertThat(
         resumptionOf {
           post(Authentication.None, "/api/v1/resource", Parameters.Empty, Resumption.Resumable)
+        }
+      )
+      .isEqualTo(Resumption.Resumable)
+  }
+
+  @Test
+  fun resumesResumablePostRequestWithHeaderParametersWhenItIsInterrupted() {
+    assertThat(
+        resumptionOf {
+          post(Authentication.None, "/api/v1/resource", formData(), Resumption.Resumable)
         }
       )
       .isEqualTo(Resumption.Resumable)

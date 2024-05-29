@@ -25,8 +25,6 @@ import br.com.orcinus.orca.core.mastodon.network.request.Parameterization
 import br.com.orcinus.orca.core.mastodon.network.request.Request
 import br.com.orcinus.orca.core.mastodon.network.request.RequestDao
 import br.com.orcinus.orca.core.mastodon.network.request.Resumption
-import br.com.orcinus.orca.core.mastodon.network.request.headers.strings.serializer
-import br.com.orcinus.orca.core.mastodon.network.request.headers.strings.toParameters
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngine
@@ -37,11 +35,12 @@ import io.ktor.client.request.HttpRequest
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.delete
 import io.ktor.client.request.forms.submitForm
+import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.Parameters
-import io.ktor.util.StringValues
+import io.ktor.http.content.PartData
 import java.net.URI
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
@@ -53,7 +52,6 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
 
 /**
  * Manages and automatically retries in case of failures HTTP requests that have been requested to
@@ -118,12 +116,14 @@ constructor(
         onDelete = { delete(it.authentication, it.route, Resumption.Resumable) },
         onGet = { get(it.authentication, it.route, Resumption.Resumable) },
         onPost = {
-          post(
-            it.authentication,
-            it.route,
-            Json.decodeFromString(StringValues.serializer(), it.parameters).toParameters(),
-            Resumption.Resumable
-          )
+          when (
+            val parameterization = Parameterization.deserialize(it.parameterization, it.parameters)
+          ) {
+            is Parameterization.Body ->
+              post(it.authentication, it.route, parameterization.content, Resumption.Resumable)
+            is Parameterization.Headers ->
+              post(it.authentication, it.route, parameterization.content, Resumption.Resumable)
+          }
         }
       )
     }
@@ -219,6 +219,26 @@ constructor(
     }
   }
 
+  /**
+   * Sends an HTTP `POST` request.
+   *
+   * @param authentication Authentication requirement that is appropriate for this specific request.
+   * @param route Route from the [base] to which the request will be sent.
+   * @param form `multipart/form-data`-encoded parts to be added as headers.
+   * @param resumption Policy for defining whether the request should be resumed in case it is
+   *   interrupted.
+   */
+  suspend fun post(
+    authentication: Authentication,
+    route: String,
+    form: List<PartData>,
+    resumption: Resumption = Resumption.None
+  ): HttpResponse {
+    return post(authentication, route, Parameterization.Headers(form), resumption) {
+      client.submitFormWithBinaryData(route, form) { it() }
+    }
+  }
+
   /** Interrupts all of the ongoing requests. */
   fun interrupt() {
     ongoing
@@ -286,9 +306,9 @@ constructor(
   ): HttpResponse {
     contract { callsInPlace(request, InvocationKind.EXACTLY_ONCE) }
     return coroutineScope {
-      val parametersInJson =
-        Json.encodeToString(parameterization.serializer, parameterization.content)
-      val requestEntity = Request(authentication, methodName, route, parametersInJson)
+      val serializedParameters = parameterization.serializedContent
+      val requestEntity =
+        Request(authentication, methodName, route, parameterization.name, serializedParameters)
       resumption.prepare(requestDao, requestEntity)
       val responseDeferred =
         async(start = CoroutineStart.LAZY) {

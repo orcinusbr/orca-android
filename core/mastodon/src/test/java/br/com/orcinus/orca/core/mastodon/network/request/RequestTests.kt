@@ -30,6 +30,7 @@ internal class RequestTests {
       Authentication.None,
       methodName = "🇮🇹",
       "/api/v1/resource",
+      Parameterization.Body.name,
       Json.encodeToString(StringValues.serializer(), StringValues.Empty)
     )
   }
@@ -41,6 +42,7 @@ internal class RequestTests {
         Authentication.None,
         Request.MethodName.DELETE,
         "/api/v1/resource",
+        Parameterization.Body.name,
         Json.encodeToString(StringValues.serializer(), Parameters.Empty)
       )
       .fold(onDelete = { hasDeleteLambdaBeenInvoked = true }, onGet = {}, onPost = {})
@@ -54,6 +56,7 @@ internal class RequestTests {
         Authentication.None,
         Request.MethodName.GET,
         "/api/v1/resource",
+        Parameterization.Body.name,
         Json.encodeToString(StringValues.serializer(), Parameters.Empty)
       )
       .fold(onDelete = {}, onGet = { hasGetLambdaBeenInvoked = true }, onPost = {})
@@ -67,6 +70,7 @@ internal class RequestTests {
         Authentication.None,
         Request.MethodName.POST,
         "/api/v1/resource",
+        Parameterization.Body.name,
         Json.encodeToString(StringValues.serializer(), Parameters.Empty)
       )
       .fold(onDelete = {}, onGet = {}, onPost = { hasPostLambdaBeenInvoked = true })

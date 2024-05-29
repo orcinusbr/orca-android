@@ -20,9 +20,8 @@ import androidx.annotation.StringDef
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import br.com.orcinus.orca.core.mastodon.network.InternalNetworkApi
-import br.com.orcinus.orca.core.mastodon.network.request.headers.strings.serializer
+import io.ktor.http.content.PartData
 import io.ktor.util.StringValues
-import kotlinx.serialization.KSerializer
 
 /**
  * Persistable entity of an HTTP request.
@@ -31,11 +30,12 @@ import kotlinx.serialization.KSerializer
  * @param authentication Authentication requirement that's been deemed appropriate.
  * @param methodName Name of the HTTP method called on the [route].
  * @param route Specific resource on which the HTTP method is being called.
- * @param parameters [StringValues] containing the parameters represented as a JSON object converted
- *   by a [KSerializer] into a [String].
+ * @param parameterization Name of the strategy for parameterizing the request.
+ * @param parameters Serialized version of [StringValues] or multiple [PartData].
  * @throws IllegalStateException If the [methodName] isn't that of a supported method (that is,
  *   isn't one of the constants defined by [MethodName]).
- * @see serializer
+ * @see Parameterization.name
+ * @see Parameterization.serializedContent
  */
 @Entity(tableName = "requests")
 internal data class Request
@@ -47,6 +47,7 @@ constructor(
   val authentication: Authentication,
   @MethodName val methodName: String,
   val route: String,
+  val parameterization: String,
   val parameters: String
 ) {
   /** Constrains an HTTP method name to the ones that are currently supported. */
@@ -71,11 +72,12 @@ constructor(
    * @param authentication Authentication requirement that's been deemed appropriate.
    * @param methodName Name of the HTTP method called on the [route].
    * @param route Specific resource on which the HTTP method is being called.
-   * @param parameters [StringValues] containing the parameters represented as a JSON object
-   *   converted by a [KSerializer] into a [String].
+   * @param parameterization Name of the strategy for parameterizing the request.
+   * @param parameters Serialized version of [StringValues] or multiple [PartData].
    * @throws IllegalStateException If the [methodName] isn't that of a supported method (that is,
    *   isn't one of the constants defined by [MethodName]).
-   * @see serializer
+   * @see Parameterization.Body.Companion.name
+   * @see Parameterization.Headers.Companion.name
    */
   @InternalNetworkApi
   @Suppress("DiscouragedApi")
@@ -84,8 +86,9 @@ constructor(
     authentication: Authentication,
     @MethodName methodName: String,
     route: String,
+    parameterization: String,
     parameters: String
-  ) : this(id = 0, authentication, methodName, route, parameters)
+  ) : this(id = 0, authentication, methodName, route, parameterization, parameters)
 
   init {
     fold(onDelete = {}, onGet = {}, onPost = {})
