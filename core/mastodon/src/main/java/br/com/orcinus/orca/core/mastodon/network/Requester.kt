@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.mastodon.network
 
+import androidx.annotation.VisibleForTesting
 import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.Actor
@@ -45,18 +46,21 @@ import java.net.URI
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
  * Manages and automatically retries in case of failures HTTP requests that have been requested to
- * be performed, caching their results for resource saving and effortless retrieval when an internet
- * connection isn't available.
+ * be performed, caching their results for saving of resources and effortless retrievals when an
+ * internet connection isn't available.
  *
  * Requests can also be made resumable, which means that they will be automatically retried in case
  * this [Requester] is interrupted and gets resumed posteriorly. For more information, refer to the
@@ -69,6 +73,8 @@ import kotlinx.coroutines.launch
  * @param logger [Logger] by which received [HttpResponse]s will be logged.
  * @param requestDao [RequestDao] for performing read and write operations on [Request]s.
  * @param base [URI] from which routes are constructed.
+ * @param scope Creates a new [CoroutineScope] in which the time to live of a performed request will
+ *   be awaited.
  * @see Resumption.Resumable
  * @see interrupt
  * @see resume
@@ -80,7 +86,8 @@ constructor(
   private val clientEngineFactory: HttpClientEngineFactory<*>,
   private val logger: Logger,
   private val requestDao: RequestDao,
-  private val base: URI
+  private val base: URI,
+  private val scope: () -> CoroutineScope
 ) {
   /** [HttpClient] that will be responsible for sending HTTP requests. */
   private val client =
@@ -93,6 +100,12 @@ constructor(
 
   /** Responses that are currently being obtained. */
   private val ongoing = hashMapOf<Request, Deferred<HttpResponse>>()
+
+  /**
+   * Responses to previously performed requests that haven't yet become stale (that is, are alive)
+   * and are eligible for reuse.
+   */
+  private val cache = hashMapOf<Request, HttpResponse>()
 
   /**
    * [CancellationException] that is the cause of when a request is interrupted.
@@ -246,10 +259,17 @@ constructor(
       .clear()
   }
 
+  /** Configures retrying behavior on [HttpRequest]s that fail due to server errors. */
+  private fun HttpClientConfig<*>.retryAfterFailures() {
+    install(HttpRequestRetry) {
+      retryOnServerErrors(2)
+      exponentialDelay()
+    }
+  }
+
   /**
    * Prepares an HTTP `POST` request to be sent.
    *
-   * @param T Parameters held by [parameterization].
    * @param authentication Authentication requirement that is appropriate for this specific request.
    * @param route Route from the [base] to which the request will be sent.
    * @param parameterization Content of the parameters which vary in type depending on where they
@@ -258,10 +278,10 @@ constructor(
    *   interrupted.
    * @param request Actual performance of the `POST` request.
    */
-  private suspend inline fun <reified T : Any> post(
+  private suspend inline fun post(
     authentication: Authentication,
     route: String,
-    parameterization: Parameterization<T>,
+    parameterization: Parameterization<*>,
     resumption: Resumption,
     crossinline request: suspend (config: suspend HttpRequestBuilder.() -> Unit) -> HttpResponse
   ): HttpResponse {
@@ -278,12 +298,13 @@ constructor(
   /**
    * Persists the request intended to be performed in the lambda whose return is awaited in another
    * [CoroutineScope] within this [Requester]; then, removes the persisted information afterwards
-   * when it responds.
+   * when it responds. The produced response gets cached and maintained alive for a given amount of
+   * time (specified by [timeToLive]), allowing for repeated calls to this method within that period
+   * to reuse and return the cached response instead of actually executing the [request] again.
    *
-   * In case cancellation occurs while there were ongoing requests, those that have been marked as
-   * resumable will be executed again when [resume] is called.
+   * In case this particular request was made resumable and it is interrupted, it will then be
+   * executed again when [resume] is called.
    *
-   * @param T Parameters held by [parameterization].
    * @param authentication Authentication requirement that is appropriate for this specific request.
    * @param methodName Name of the HTTP method that's equivalent to that of the request to be
    *   performed.
@@ -296,24 +317,22 @@ constructor(
    * @see Resumption.Resumable
    */
   @OptIn(ExperimentalContracts::class)
-  private suspend inline fun <reified T : Any> request(
+  private suspend inline fun request(
     authentication: Authentication,
     @Request.MethodName methodName: String,
     route: String,
     resumption: Resumption,
-    parameterization: Parameterization<T>,
+    parameterization: Parameterization<*>,
     crossinline request: suspend (config: suspend HttpRequestBuilder.() -> Unit) -> HttpResponse
   ): HttpResponse {
-    contract { callsInPlace(request, InvocationKind.EXACTLY_ONCE) }
+    contract { callsInPlace(request, InvocationKind.AT_MOST_ONCE) }
     return coroutineScope {
       val serializedParameters = parameterization.serializedContent
       val requestEntity =
         Request(authentication, methodName, route, parameterization.name, serializedParameters)
       resumption.prepare(requestDao, requestEntity)
       val responseDeferred =
-        async(start = CoroutineStart.LAZY) {
-          request { authentication.lock(authenticationLock, this) }
-        }
+        async(start = CoroutineStart.LAZY) { retrieveOrRememberResponse(requestEntity, request) }
       ongoing[requestEntity] = responseDeferred
       val response = responseDeferred.await()
       ongoing -= requestEntity
@@ -322,11 +341,42 @@ constructor(
     }
   }
 
-  /** Configures retrying behavior on [HttpRequest]s that fail due to server errors. */
-  private fun HttpClientConfig<*>.retryAfterFailures() {
-    install(HttpRequestRetry) {
-      retryOnServerErrors(2)
-      exponentialDelay()
+  /**
+   * Obtains the [HttpResponse] that's been cached and previously associated to the given
+   * [requestEntity] if it hasn't yet become stale or performs the [request] in case it has. When
+   * the [request] lambda is invoked, its resulting [HttpResponse] is cached afterwards.
+   *
+   * @param requestEntity Request metadata based on which a cached [HttpResponse] may be retrieved.
+   * @param request Actual performance of the request to be executed when an alive [HttpResponse]
+   *   isn't available.
+   */
+  @OptIn(ExperimentalContracts::class)
+  private suspend inline fun retrieveOrRememberResponse(
+    requestEntity: Request,
+    crossinline request: suspend (config: suspend HttpRequestBuilder.() -> Unit) -> HttpResponse
+  ): HttpResponse {
+    contract { callsInPlace(request, InvocationKind.AT_MOST_ONCE) }
+    return cache[requestEntity]
+      ?: request { requestEntity.authentication.lock(authenticationLock, this) }
+        .also { cache(requestEntity, it) }
+  }
+
+  /**
+   * Caches the [response] for a specific amount of time, defined by [timeToLive].
+   *
+   * @param requestEntity Metadata to which the [response] will be associated.
+   * @param response [HttpResponse] to be cached.
+   */
+  private suspend fun cache(requestEntity: Request, response: HttpResponse) {
+    scope().launch {
+      cache[requestEntity] = response
+      delay(timeToLive)
+      cache.remove(requestEntity)
     }
+  }
+
+  companion object {
+    /** [Duration] for which a request is considered to be alive and its response can be reused. */
+    @InternalNetworkApi @VisibleForTesting val timeToLive = 5.seconds
   }
 }

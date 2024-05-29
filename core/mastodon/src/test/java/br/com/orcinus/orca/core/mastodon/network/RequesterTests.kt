@@ -23,8 +23,10 @@ import br.com.orcinus.orca.core.mastodon.network.request.Resumption
 import br.com.orcinus.orca.core.mastodon.network.request.resumptionOf
 import io.ktor.client.call.body
 import io.ktor.client.request.forms.formData
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.Parameters
 import kotlin.test.Test
+import kotlinx.coroutines.delay
 
 internal class RequesterTests {
   @Test
@@ -49,6 +51,35 @@ internal class RequesterTests {
   }
 
   @Test
+  fun cachesDeleteRequest() {
+    val delete: suspend Requester.() -> HttpResponse = {
+      delete(Authentication.None, "/api/v1/resource")
+    }
+    assertThat(
+        responseCountOf {
+          delete()
+          delete()
+        }
+      )
+      .isEqualTo(1)
+  }
+
+  @Test
+  fun stalesDeleteRequestAfterItsTimeToLiveHasPassed() {
+    val delete: suspend Requester.() -> HttpResponse = {
+      delete(Authentication.None, "/api/v1/resource")
+    }
+    assertThat(
+        responseCountOf {
+          delete()
+          delay(Requester.timeToLive)
+          delete()
+        }
+      )
+      .isEqualTo(2)
+  }
+
+  @Test
   fun gets() {
     runUnauthenticatedRequesterTest(onAuthentication = {}) {
       assertThat(it.get(Authentication.None, "/api/v1/resource").body<String>()).isEqualTo("")
@@ -70,6 +101,31 @@ internal class RequesterTests {
   }
 
   @Test
+  fun cachesGetRequest() {
+    val get: suspend Requester.() -> HttpResponse = { get(Authentication.None, "/api/v1/resource") }
+    assertThat(
+        responseCountOf {
+          get()
+          get()
+        }
+      )
+      .isEqualTo(1)
+  }
+
+  @Test
+  fun stalesGetRequestAfterItsTimeToLiveHasPassed() {
+    val get: suspend Requester.() -> HttpResponse = { get(Authentication.None, "/api/v1/resource") }
+    assertThat(
+        responseCountOf {
+          get()
+          delay(Requester.timeToLive)
+          get()
+        }
+      )
+      .isEqualTo(2)
+  }
+
+  @Test
   fun posts() {
     runUnauthenticatedRequesterTest(onAuthentication = {}) {
       assertThat(it.post(Authentication.None, "/api/v1/resource").body<String>()).isEqualTo("")
@@ -88,6 +144,35 @@ internal class RequesterTests {
   @Test
   fun retriesPostTwiceAfterFailure() {
     assertThat(retryCountOf { post(Authentication.None, "/api/v1/resource") }).isEqualTo(2)
+  }
+
+  @Test
+  fun cachesPostRequest() {
+    val post: suspend Requester.() -> HttpResponse = {
+      post(Authentication.None, "/api/v1/resource")
+    }
+    assertThat(
+        responseCountOf {
+          post()
+          post()
+        }
+      )
+      .isEqualTo(1)
+  }
+
+  @Test
+  fun stalesPostRequestAfterItsTimeToLiveHasPassed() {
+    val post: suspend Requester.() -> HttpResponse = {
+      post(Authentication.None, "/api/v1/resource")
+    }
+    assertThat(
+        responseCountOf {
+          post()
+          delay(Requester.timeToLive)
+          post()
+        }
+      )
+      .isEqualTo(2)
   }
 
   @Test

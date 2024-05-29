@@ -43,17 +43,20 @@ import kotlinx.coroutines.CoroutineScope
 @OptIn(ExperimentalContracts::class)
 internal inline fun retryCountOf(crossinline request: suspend Requester.() -> HttpResponse): Int {
   contract { callsInPlace(request, InvocationKind.EXACTLY_ONCE) }
-  var requestCount = 0
-  runUnauthenticatedRequesterTest(
-    onAuthentication = {},
-    clientResponseProvider = {
-      requestCount++
-      respondError(HttpStatusCode.NotImplemented)
-    }
-  ) {
-    it.request()
-  }
-  return requestCount.dec()
+  return responseCountOf({ respondError(HttpStatusCode.NotImplemented) }, request).dec()
+}
+
+/**
+ * Obtains the amount of times an [HttpResponse] is provided for the [request].
+ *
+ * @param request Performs the request to be retried.
+ */
+@OptIn(ExperimentalContracts::class)
+internal inline fun responseCountOf(
+  crossinline request: suspend Requester.() -> HttpResponse
+): Int {
+  contract { callsInPlace(request, InvocationKind.EXACTLY_ONCE) }
+  return responseCountOf(ClientResponseProvider.ok, request)
 }
 
 /**
@@ -82,7 +85,10 @@ internal inline fun runUnauthenticatedRequesterTest(
       }
     val requestDao = InMemoryRequestDao()
     val base = URIBuilder.url().scheme("https").host("orca.orcinus.com.br").path("app").build()
-    val requester = Requester(authenticationLock, clientEngineFactory, NoOpLogger, requestDao, base)
+    val requester =
+      Requester(authenticationLock, clientEngineFactory, NoOpLogger, requestDao, base) {
+        CoroutineScope(coroutineContext)
+      }
     val spiedRequester = spyk(requester)
     try {
       body(spiedRequester)
@@ -91,4 +97,29 @@ internal inline fun runUnauthenticatedRequesterTest(
       requester.interrupt()
     }
   }
+}
+
+/**
+ * Obtains the amount of times an [HttpResponse] is provided for the [request].
+ *
+ * @param clientResponseProvider Defines how the HttpClient will respond to requests.
+ * @param request Performs the request to be retried.
+ */
+@OptIn(ExperimentalContracts::class)
+private inline fun responseCountOf(
+  clientResponseProvider: ClientResponseProvider,
+  crossinline request: suspend Requester.() -> HttpResponse
+): Int {
+  contract { callsInPlace(request, InvocationKind.EXACTLY_ONCE) }
+  var responseCount = 0
+  runUnauthenticatedRequesterTest(
+    onAuthentication = {},
+    clientResponseProvider = {
+      responseCount++
+      with(clientResponseProvider) { provide(it) }
+    }
+  ) {
+    it.request()
+  }
+  return responseCount
 }
