@@ -26,6 +26,7 @@ import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.authenticationLock
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.injector.module.Module
+import br.com.orcinus.orca.std.uri.url.HostedURLBuilder
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.request.HttpRequestBuilder
@@ -53,7 +54,7 @@ constructor(
   @get:InternalNetworkApi @get:VisibleForTesting internal val lock: SomeAuthenticationLock
 ) : Requester(logger, baseURI, clientEngineFactory) {
   override suspend fun delete(
-    route: URI.() -> URI,
+    route: HostedURLBuilder.() -> HostedURLBuilder,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return lock.scheduleUnlock {
@@ -66,7 +67,7 @@ constructor(
 
   override suspend fun get(
     parameters: Parameters,
-    route: URI.() -> URI,
+    route: HostedURLBuilder.() -> HostedURLBuilder,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return lock.scheduleUnlock {
@@ -79,7 +80,7 @@ constructor(
 
   override suspend fun post(
     parameters: Parameters,
-    route: URI.() -> URI,
+    route: HostedURLBuilder.() -> HostedURLBuilder,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return lock.scheduleUnlock {
@@ -92,7 +93,7 @@ constructor(
 
   override suspend fun post(
     form: List<PartData>,
-    route: URI.() -> URI,
+    route: HostedURLBuilder.() -> HostedURLBuilder,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return lock.scheduleUnlock {
