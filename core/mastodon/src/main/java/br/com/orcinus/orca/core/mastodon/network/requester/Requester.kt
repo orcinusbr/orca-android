@@ -22,12 +22,12 @@ import br.com.orcinus.orca.core.mastodon.network.requester.authentication.Authen
 import br.com.orcinus.orca.core.mastodon.network.requester.authentication.authenticated
 import br.com.orcinus.orca.core.mastodon.network.requester.resumption.ResumableRequester
 import br.com.orcinus.orca.core.mastodon.network.requester.resumption.resumable
+import br.com.orcinus.orca.std.uri.url.HostedURLBuilder
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.plugins.HttpRequestRetry
-import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.delete
 import io.ktor.client.request.forms.submitForm
@@ -68,7 +68,6 @@ constructor(
   /** [HttpClient] that will be responsible for sending HTTP requests. */
   private val client =
     HttpClient(clientEngineFactory) {
-      defaultRequest { url("$baseURI") }
       logger.start(this)
       normalizeJsonKeys()
       retryAfterFailures()
@@ -77,9 +76,9 @@ constructor(
   /**
    * Sends an HTTP `DELETE` request.
    *
-   * @param route Produces an [URI] from the [baseURI] to which the request will be sent.
+   * @param route Builds the route from the [baseURI] to which the request will be sent.
    */
-  suspend fun delete(route: URI.() -> URI): HttpResponse {
+  suspend fun delete(route: HostedURLBuilder.() -> HostedURLBuilder): HttpResponse {
     return delete(route, noOpRequestBuild)
   }
 
@@ -87,9 +86,12 @@ constructor(
    * Sends an HTTP `GET` request.
    *
    * @param parameters [Parameters] to be added to the body of the request.
-   * @param route Produces an [URI] from the [baseURI] to which the request will be sent.
+   * @param route Builds the route from the [baseURI] to which the request will be sent.
    */
-  suspend fun get(parameters: Parameters = Parameters.Empty, route: URI.() -> URI): HttpResponse {
+  suspend fun get(
+    parameters: Parameters = Parameters.Empty,
+    route: HostedURLBuilder.() -> HostedURLBuilder
+  ): HttpResponse {
     return get(parameters, route, noOpRequestBuild)
   }
 
@@ -97,9 +99,12 @@ constructor(
    * Sends an HTTP `POST` request.
    *
    * @param parameters [Parameters] to be added to the form.
-   * @param route Produces an [URI] from the [baseURI] to which the request will be sent.
+   * @param route Builds the route from the [baseURI] to which the request will be sent.
    */
-  suspend fun post(parameters: Parameters = Parameters.Empty, route: URI.() -> URI): HttpResponse {
+  suspend fun post(
+    parameters: Parameters = Parameters.Empty,
+    route: HostedURLBuilder.() -> HostedURLBuilder
+  ): HttpResponse {
     return post(parameters, route, noOpRequestBuild)
   }
 
@@ -107,21 +112,24 @@ constructor(
    * Sends an HTTP `POST` request.
    *
    * @param form `multipart/form-data`-encoded parts to be added as headers.
-   * @param route Produces an [URI] from the [baseURI] to which the request will be sent.
+   * @param route Builds the route from the [baseURI] to which the request will be sent.
    */
-  suspend fun post(form: List<PartData>, route: URI.() -> URI): HttpResponse {
+  suspend fun post(
+    form: List<PartData>,
+    route: HostedURLBuilder.() -> HostedURLBuilder
+  ): HttpResponse {
     return post(form, route, noOpRequestBuild)
   }
 
   /**
    * Sends an HTTP `DELETE` request.
    *
-   * @param route Produces an [URI] from the [baseURI] to which the request will be sent.
+   * @param route Builds the route from the [baseURI] to which the request will be sent.
    * @param build Additional configuration for the request being built.
    */
   @InternalNetworkApi
   internal open suspend fun delete(
-    route: URI.() -> URI,
+    route: HostedURLBuilder.() -> HostedURLBuilder,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return client.delete(absolute(route), build)
@@ -130,14 +138,14 @@ constructor(
   /**
    * Sends an HTTP `GET` request.
    *
-   * @param route Produces an [URI] from the [baseURI] to which the request will be sent.
+   * @param route Builds the route from the [baseURI] to which the request will be sent.
    * @param parameters [Parameters] to be added to the body of the request.
    * @param build Additional configuration for the request being built.
    */
   @InternalNetworkApi
   internal open suspend fun get(
     parameters: Parameters = Parameters.Empty,
-    route: URI.() -> URI,
+    route: HostedURLBuilder.() -> HostedURLBuilder,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return client.get(absolute(route)) {
@@ -150,13 +158,13 @@ constructor(
    * Sends an HTTP `POST` request.
    *
    * @param parameters [Parameters] to be added to the form.
-   * @param route Produces an [URI] from the [baseURI] to which the request will be sent.
+   * @param route Builds the route from the [baseURI] to which the request will be sent.
    * @param build Additional configuration for the request being built.
    */
   @InternalNetworkApi
   internal open suspend fun post(
     parameters: Parameters = Parameters.Empty,
-    route: URI.() -> URI,
+    route: HostedURLBuilder.() -> HostedURLBuilder,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return if (parameters.isEmpty()) {
@@ -170,13 +178,13 @@ constructor(
    * Sends an HTTP `POST` request.
    *
    * @param form `multipart/form-data`-encoded parts to be added as headers.
-   * @param route Produces an [URI] from the [baseURI] to which the request will be sent.
+   * @param route Builds the route from the [baseURI] to which the request will be sent.
    * @param build Additional configuration for the request being built.
    */
   @InternalNetworkApi
   internal open suspend fun post(
     form: List<PartData>,
-    route: URI.() -> URI,
+    route: HostedURLBuilder.() -> HostedURLBuilder,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return if (form.isEmpty()) {
@@ -187,14 +195,14 @@ constructor(
   }
 
   /**
-   * Converts the [URI] returned by [route] into the [String] version of the absolute [URI].
+   * Builds a [URI] based on the given routing and converts it into its absolute [String].
    *
-   * @param route Produces an [URI] from the [baseURI].
+   * @param route Builds the route from the [baseURI] to which the request will be sent.
    */
   @InternalNetworkApi
   @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
-  internal fun absolute(route: URI.() -> URI): String {
-    return baseURI.route().toString()
+  internal fun absolute(route: HostedURLBuilder.() -> HostedURLBuilder): String {
+    return HostedURLBuilder.from(baseURI).route().build().toString()
   }
 
   /** Configures retrying behavior on requests that fail due to server errors. */

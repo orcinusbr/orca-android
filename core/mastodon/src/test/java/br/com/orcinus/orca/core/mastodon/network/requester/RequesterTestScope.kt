@@ -48,7 +48,7 @@ import kotlinx.coroutines.CoroutineScope
 internal class RequesterTestScope<T : Requester>(
   val delegate: MastodonClientTestScope<*>,
   val requester: T,
-  val route: URI.() -> URI
+  val route: HostedURLBuilder.() -> HostedURLBuilder
 ) : CoroutineScope by delegate
 
 /**
@@ -88,9 +88,6 @@ internal inline fun runRequesterTest(
     val baseURI = URIBuilder.url().scheme("https").host("orca.orcinus.com.br").path("app").build()
     val clientEngineFactory = createHttpClientEngineFactory<MockEngineConfig>(client::engine)
     val requester = Requester(NoOpLogger, baseURI, clientEngineFactory)
-    RequesterTestScope(this, requester) {
-        HostedURLBuilder.from(this).path("api").path("v1").path("resource").build()
-      }
-      .body()
+    RequesterTestScope(this, requester) { path("api").path("v1").path("resource") }.body()
   }
 }

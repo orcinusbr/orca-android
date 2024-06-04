@@ -17,6 +17,7 @@ package br.com.orcinus.orca.core.mastodon.network.requester
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import br.com.orcinus.orca.std.uri.url.HostedURLBuilder
 import io.ktor.client.call.body
 import kotlin.test.Test
 
@@ -24,7 +25,8 @@ internal class RequesterTests {
   @Test
   fun makesRouteAbsolute() {
     runRequesterTest {
-      assertThat(requester.absolute(route)).isEqualTo("${requester.baseURI.route()}")
+      assertThat(requester.absolute(route))
+        .isEqualTo("${HostedURLBuilder.from(requester.baseURI).route().build()}")
     }
   }
 

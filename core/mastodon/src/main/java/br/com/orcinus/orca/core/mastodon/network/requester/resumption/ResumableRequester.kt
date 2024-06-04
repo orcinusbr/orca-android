@@ -27,6 +27,7 @@ import br.com.orcinus.orca.core.mastodon.network.requester.resumption.request.Re
 import br.com.orcinus.orca.core.mastodon.network.requester.resumption.request.Resumption
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.injector.module.Module
+import br.com.orcinus.orca.std.uri.url.HostedURLBuilder
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.request.HttpRequestBuilder
@@ -103,7 +104,7 @@ constructor(
     CancellationException("$request has been interrupted by its requester.")
 
   override suspend fun delete(
-    route: URI.() -> URI,
+    route: HostedURLBuilder.() -> HostedURLBuilder,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return prepareForResumption(Request.MethodName.DELETE, Parameterization.empty, route) {
@@ -113,7 +114,7 @@ constructor(
 
   override suspend fun get(
     parameters: Parameters,
-    route: URI.() -> URI,
+    route: HostedURLBuilder.() -> HostedURLBuilder,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return prepareForResumption(Request.MethodName.GET, Parameterization.Body(parameters), route) {
@@ -123,7 +124,7 @@ constructor(
 
   override suspend fun post(
     parameters: Parameters,
-    route: URI.() -> URI,
+    route: HostedURLBuilder.() -> HostedURLBuilder,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return prepareForResumption(Request.MethodName.POST, Parameterization.Body(parameters), route) {
@@ -133,7 +134,7 @@ constructor(
 
   override suspend fun post(
     form: List<PartData>,
-    route: URI.() -> URI,
+    route: HostedURLBuilder.() -> HostedURLBuilder,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return prepareForResumption(Request.MethodName.POST, Parameterization.Headers(form), route) {
@@ -150,23 +151,23 @@ constructor(
    */
   suspend fun resume() {
     requestDao.selectAll().forEach {
+      val route = { _: HostedURLBuilder -> HostedURLBuilder.from(URI(it.route)) }
       it.fold(
-        onDelete = { delete { URI(it.route) } },
+        onDelete = { delete(route) },
         onGet = {
           get(
             (Parameterization.deserialize(Parameterization.Body.name, it.parameters)
                 as Parameterization.Body)
-              .content
-          ) {
-            URI(it.route)
-          }
+              .content,
+            route
+          )
         },
         onPost = {
           when (
             val parameterization = Parameterization.deserialize(it.parameterization, it.parameters)
           ) {
-            is Parameterization.Body -> post(parameterization.content) { URI(it.route) }
-            is Parameterization.Headers -> post(parameterization.content) { URI(it.route) }
+            is Parameterization.Body -> post(parameterization.content, route)
+            is Parameterization.Headers -> post(parameterization.content, route)
           }
         }
       )
@@ -193,7 +194,7 @@ constructor(
    *   performed.
    * @param parameterization Content of the parameters which vary in type depending on where they
    *   are inserted in the request.
-   * @param route Produces an [URI] from the [baseURI] to which the request will be sent.
+   * @param route Builds the route from the [baseURI] to which the request will be sent.
    * @param request Actual performance of the request to which the HTTP method refers.
    * @see Resumption.Resumable
    */
@@ -201,7 +202,7 @@ constructor(
   private suspend inline fun prepareForResumption(
     @Request.MethodName methodName: String,
     parameterization: Parameterization<*>,
-    noinline route: URI.() -> URI,
+    noinline route: HostedURLBuilder.() -> HostedURLBuilder,
     crossinline request: suspend () -> HttpResponse
   ): HttpResponse {
     contract { callsInPlace(request, InvocationKind.AT_MOST_ONCE) }
