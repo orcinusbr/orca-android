@@ -15,7 +15,9 @@
 
 package br.com.orcinus.orca.core.mastodon.network.client
 
+import br.com.orcinus.orca.core.mastodon.network.InternalNetworkApi
 import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.HttpClientEngineConfig
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.MockEngineConfig
@@ -25,15 +27,35 @@ import io.ktor.client.statement.HttpResponse
 /**
  * Creates an [HttpClientEngineFactory] that produces a [MockEngine].
  *
- * @param clientResponseProvider [ClientResponseProvider] that defines the [HttpResponse] to be
- *   provided to an [HttpRequest].
+ * @param responseProvider [ClientResponseProvider] that defines the [HttpResponse] to be provided
+ *   to an [HttpRequest].
+ * @see HttpClientEngineFactory.create
  */
+@InternalNetworkApi
 internal fun createHttpClientEngineFactory(
-  clientResponseProvider: ClientResponseProvider
+  responseProvider: ClientResponseProvider
 ): HttpClientEngineFactory<MockEngineConfig> {
-  return object : HttpClientEngineFactory<MockEngineConfig> {
-    override fun create(block: MockEngineConfig.() -> Unit): HttpClientEngine {
-      return MockEngine { with(clientResponseProvider) { provide(it) } }.apply { config.block() }
+  return createHttpClientEngineFactory { MockEngine { with(responseProvider) { provide(it) } } }
+}
+
+/**
+ * Creates an [HttpClientEngineFactory] that produces the [engine].
+ *
+ * @param T [HttpClientEngineConfig] with which the [engine] is configured.
+ * @param engine Returns [HttpClientEngine] to be created by the [HttpClientEngineFactory] when it's
+ *   requested to produce a new one.
+ * @throws ClassCastException If the [engine]'s configuration isn't of type [T].
+ * @see HttpClientEngine.config
+ * @see HttpClientEngineFactory.create
+ */
+@InternalNetworkApi
+@Throws(ClassCastException::class)
+internal fun <T : HttpClientEngineConfig> createHttpClientEngineFactory(
+  engine: () -> HttpClientEngine
+): HttpClientEngineFactory<T> {
+  return object : HttpClientEngineFactory<T> {
+    override fun create(block: T.() -> Unit): HttpClientEngine {
+      return engine().apply { @Suppress("UNCHECKED_CAST") (config as T).block() }
     }
   }
 }

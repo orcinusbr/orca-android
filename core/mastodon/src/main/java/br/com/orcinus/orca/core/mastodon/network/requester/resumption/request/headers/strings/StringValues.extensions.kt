@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,22 +13,21 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.network.client
+package br.com.orcinus.orca.core.mastodon.network.requester.resumption.request.headers.strings
 
-import assertk.Assert
-import assertk.assertThat
 import br.com.orcinus.orca.core.mastodon.network.InternalNetworkApi
-import io.ktor.client.statement.HttpResponse
-import io.ktor.client.statement.request
 import io.ktor.http.Headers
-import io.ktor.http.HttpHeaders
+import io.ktor.http.Parameters
+import io.ktor.util.StringValues
 
-/**
- * Creates an [Assert] on the [response]'s authorization [Headers].
- *
- * @param response [HttpResponse] whose header will be the basis of the [Assert].
- */
+/** Converts these [StringValues] into [Headers]. */
 @InternalNetworkApi
-internal fun assertThatRequestAuthorizationHeaderOf(response: HttpResponse): Assert<String?> {
-  return assertThat(response.request.headers[HttpHeaders.Authorization])
+internal fun StringValues.toHeaders(): Headers {
+  return Headers.build { appendAll(this@toHeaders) }
+}
+
+/** Converts these [StringValues] into [Parameters]. */
+@InternalNetworkApi
+internal fun StringValues.toParameters(): Parameters {
+  return Parameters.build { appendAll(this@toParameters) }
 }
