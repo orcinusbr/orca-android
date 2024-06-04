@@ -19,6 +19,8 @@ import androidx.annotation.Discouraged
 import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.network.InternalNetworkApi
+import br.com.orcinus.orca.core.mastodon.network.requester.Logger
+import br.com.orcinus.orca.core.mastodon.network.requester.normalizeJsonKeys
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.std.injector.Injector

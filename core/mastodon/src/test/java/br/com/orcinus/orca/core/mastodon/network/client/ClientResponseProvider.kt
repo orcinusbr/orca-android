@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.mastodon.network.client
 
+import br.com.orcinus.orca.core.mastodon.network.InternalNetworkApi
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockRequestHandleScope
 import io.ktor.client.engine.mock.respondOk
@@ -26,6 +27,7 @@ import io.ktor.client.request.HttpResponseData
  *
  * @see provide
  */
+@InternalNetworkApi
 internal fun interface ClientResponseProvider {
   /**
    * Provides [HttpResponseData] related to a response that's been given to a request.

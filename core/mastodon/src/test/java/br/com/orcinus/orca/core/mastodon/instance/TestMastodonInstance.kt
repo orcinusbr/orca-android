@@ -19,8 +19,8 @@ import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.mastodon.network.client.ClientResponseProvider
 import br.com.orcinus.orca.core.mastodon.network.client.MastodonClient
-import br.com.orcinus.orca.core.mastodon.network.client.NoOpLogger
 import br.com.orcinus.orca.core.mastodon.network.client.createHttpClientEngineFactory
+import br.com.orcinus.orca.core.mastodon.network.requester.NoOpLogger
 import br.com.orcinus.orca.core.sample.test.instance.sample
 import br.com.orcinus.orca.core.test.TestAuthenticationLock
 import br.com.orcinus.orca.core.test.TestAuthenticator
