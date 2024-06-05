@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.mastodon.network.requester
 
+import androidx.annotation.CallSuper
 import androidx.annotation.VisibleForTesting
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.network.InternalNetworkApi
@@ -124,6 +125,7 @@ constructor(
    * @param route Builds the route from the [baseURI] to which the request will be sent.
    * @param build Additional configuration for the request being built.
    */
+  @CallSuper
   @InternalNetworkApi
   internal open suspend fun delete(
     route: HostedURLBuilder.() -> URI,
@@ -139,6 +141,7 @@ constructor(
    * @param parameters [Parameters] to be added to the body of the request.
    * @param build Additional configuration for the request being built.
    */
+  @CallSuper
   @InternalNetworkApi
   internal open suspend fun get(
     parameters: Parameters = Parameters.Empty,
@@ -158,6 +161,7 @@ constructor(
    * @param route Builds the route from the [baseURI] to which the request will be sent.
    * @param build Additional configuration for the request being built.
    */
+  @CallSuper
   @InternalNetworkApi
   internal open suspend fun post(
     parameters: Parameters = Parameters.Empty,
@@ -178,6 +182,7 @@ constructor(
    * @param route Builds the route from the [baseURI] to which the request will be sent.
    * @param build Additional configuration for the request being built.
    */
+  @CallSuper
   @InternalNetworkApi
   internal open suspend fun post(
     form: List<PartData>,
