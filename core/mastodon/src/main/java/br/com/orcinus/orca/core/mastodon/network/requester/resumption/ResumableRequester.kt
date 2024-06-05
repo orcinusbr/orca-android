@@ -104,7 +104,7 @@ constructor(
     CancellationException("$request has been interrupted by its requester.")
 
   override suspend fun delete(
-    route: HostedURLBuilder.() -> HostedURLBuilder,
+    route: HostedURLBuilder.() -> URI,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return prepareForResumption(Request.MethodName.DELETE, Parameterization.empty, route) {
@@ -114,7 +114,7 @@ constructor(
 
   override suspend fun get(
     parameters: Parameters,
-    route: HostedURLBuilder.() -> HostedURLBuilder,
+    route: HostedURLBuilder.() -> URI,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return prepareForResumption(Request.MethodName.GET, Parameterization.Body(parameters), route) {
@@ -124,7 +124,7 @@ constructor(
 
   override suspend fun post(
     parameters: Parameters,
-    route: HostedURLBuilder.() -> HostedURLBuilder,
+    route: HostedURLBuilder.() -> URI,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return prepareForResumption(Request.MethodName.POST, Parameterization.Body(parameters), route) {
@@ -134,7 +134,7 @@ constructor(
 
   override suspend fun post(
     form: List<PartData>,
-    route: HostedURLBuilder.() -> HostedURLBuilder,
+    route: HostedURLBuilder.() -> URI,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return prepareForResumption(Request.MethodName.POST, Parameterization.Headers(form), route) {
@@ -151,7 +151,7 @@ constructor(
    */
   suspend fun resume() {
     requestDao.selectAll().forEach {
-      val route = { _: HostedURLBuilder -> HostedURLBuilder.from(URI(it.route)) }
+      val route = { _: HostedURLBuilder -> URI(it.route) }
       it.fold(
         onDelete = { delete(route) },
         onGet = {
@@ -202,7 +202,7 @@ constructor(
   private suspend inline fun prepareForResumption(
     @Request.MethodName methodName: String,
     parameterization: Parameterization<*>,
-    noinline route: HostedURLBuilder.() -> HostedURLBuilder,
+    noinline route: HostedURLBuilder.() -> URI,
     crossinline request: suspend () -> HttpResponse
   ): HttpResponse {
     contract { callsInPlace(request, InvocationKind.AT_MOST_ONCE) }

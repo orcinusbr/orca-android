@@ -26,7 +26,7 @@ internal class RequesterTests {
   fun makesRouteAbsolute() {
     runRequesterTest {
       assertThat(requester.absolute(route))
-        .isEqualTo("${HostedURLBuilder.from(requester.baseURI).route().build()}")
+        .isEqualTo("${HostedURLBuilder.from(requester.baseURI).route()}")
     }
   }
 

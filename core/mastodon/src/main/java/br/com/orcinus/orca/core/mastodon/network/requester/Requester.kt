@@ -78,7 +78,7 @@ constructor(
    *
    * @param route Builds the route from the [baseURI] to which the request will be sent.
    */
-  suspend fun delete(route: HostedURLBuilder.() -> HostedURLBuilder): HttpResponse {
+  suspend fun delete(route: HostedURLBuilder.() -> URI): HttpResponse {
     return delete(route, noOpRequestBuild)
   }
 
@@ -90,7 +90,7 @@ constructor(
    */
   suspend fun get(
     parameters: Parameters = Parameters.Empty,
-    route: HostedURLBuilder.() -> HostedURLBuilder
+    route: HostedURLBuilder.() -> URI
   ): HttpResponse {
     return get(parameters, route, noOpRequestBuild)
   }
@@ -103,7 +103,7 @@ constructor(
    */
   suspend fun post(
     parameters: Parameters = Parameters.Empty,
-    route: HostedURLBuilder.() -> HostedURLBuilder
+    route: HostedURLBuilder.() -> URI
   ): HttpResponse {
     return post(parameters, route, noOpRequestBuild)
   }
@@ -114,10 +114,7 @@ constructor(
    * @param form `multipart/form-data`-encoded parts to be added as headers.
    * @param route Builds the route from the [baseURI] to which the request will be sent.
    */
-  suspend fun post(
-    form: List<PartData>,
-    route: HostedURLBuilder.() -> HostedURLBuilder
-  ): HttpResponse {
+  suspend fun post(form: List<PartData>, route: HostedURLBuilder.() -> URI): HttpResponse {
     return post(form, route, noOpRequestBuild)
   }
 
@@ -129,7 +126,7 @@ constructor(
    */
   @InternalNetworkApi
   internal open suspend fun delete(
-    route: HostedURLBuilder.() -> HostedURLBuilder,
+    route: HostedURLBuilder.() -> URI,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return client.delete(absolute(route), build)
@@ -145,7 +142,7 @@ constructor(
   @InternalNetworkApi
   internal open suspend fun get(
     parameters: Parameters = Parameters.Empty,
-    route: HostedURLBuilder.() -> HostedURLBuilder,
+    route: HostedURLBuilder.() -> URI,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return client.get(absolute(route)) {
@@ -164,7 +161,7 @@ constructor(
   @InternalNetworkApi
   internal open suspend fun post(
     parameters: Parameters = Parameters.Empty,
-    route: HostedURLBuilder.() -> HostedURLBuilder,
+    route: HostedURLBuilder.() -> URI,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return if (parameters.isEmpty()) {
@@ -184,7 +181,7 @@ constructor(
   @InternalNetworkApi
   internal open suspend fun post(
     form: List<PartData>,
-    route: HostedURLBuilder.() -> HostedURLBuilder,
+    route: HostedURLBuilder.() -> URI,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return if (form.isEmpty()) {
@@ -201,8 +198,8 @@ constructor(
    */
   @InternalNetworkApi
   @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
-  internal fun absolute(route: HostedURLBuilder.() -> HostedURLBuilder): String {
-    return HostedURLBuilder.from(baseURI).route().build().toString()
+  internal fun absolute(route: HostedURLBuilder.() -> URI): String {
+    return HostedURLBuilder.from(baseURI).route().toString()
   }
 
   /** Configures retrying behavior on requests that fail due to server errors. */

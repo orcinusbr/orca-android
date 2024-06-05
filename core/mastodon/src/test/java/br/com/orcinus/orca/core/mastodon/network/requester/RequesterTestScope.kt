@@ -41,14 +41,14 @@ import kotlinx.coroutines.CoroutineScope
  * @property delegate [MastodonClientTestScope] to which [CoroutineScope]-like functionality will be
  *   delegated.
  * @property requester [Requester] that's been created.
- * @property route Produces a default route from the [requester]'s base [URI] to which the
- *   [requester]'s requests can be sent.
+ * @property route Produces a default route from the [requester]'s base [URI] to which the requests
+ *   can be sent.
  */
 @InternalNetworkApi
 internal class RequesterTestScope<T : Requester>(
   val delegate: MastodonClientTestScope<*>,
   val requester: T,
-  val route: HostedURLBuilder.() -> HostedURLBuilder
+  val route: HostedURLBuilder.() -> URI
 ) : CoroutineScope by delegate
 
 /**
@@ -88,6 +88,6 @@ internal inline fun runRequesterTest(
     val baseURI = URIBuilder.url().scheme("https").host("orca.orcinus.com.br").path("app").build()
     val clientEngineFactory = createHttpClientEngineFactory<MockEngineConfig>(client::engine)
     val requester = Requester(NoOpLogger, baseURI, clientEngineFactory)
-    RequesterTestScope(this, requester) { path("api").path("v1").path("resource") }.body()
+    RequesterTestScope(this, requester) { path("api").path("v1").path("resource").build() }.body()
   }
 }
