@@ -54,7 +54,7 @@ constructor(
   @get:InternalNetworkApi @get:VisibleForTesting internal val lock: SomeAuthenticationLock
 ) : Requester(logger, baseURI, clientEngineFactory) {
   override suspend fun delete(
-    route: HostedURLBuilder.() -> HostedURLBuilder,
+    route: HostedURLBuilder.() -> URI,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return lock.scheduleUnlock {
@@ -67,7 +67,7 @@ constructor(
 
   override suspend fun get(
     parameters: Parameters,
-    route: HostedURLBuilder.() -> HostedURLBuilder,
+    route: HostedURLBuilder.() -> URI,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return lock.scheduleUnlock {
@@ -80,7 +80,7 @@ constructor(
 
   override suspend fun post(
     parameters: Parameters,
-    route: HostedURLBuilder.() -> HostedURLBuilder,
+    route: HostedURLBuilder.() -> URI,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return lock.scheduleUnlock {
@@ -93,7 +93,7 @@ constructor(
 
   override suspend fun post(
     form: List<PartData>,
-    route: HostedURLBuilder.() -> HostedURLBuilder,
+    route: HostedURLBuilder.() -> URI,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return lock.scheduleUnlock {
