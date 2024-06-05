@@ -37,7 +37,7 @@ import io.ktor.http.content.PartData
 import java.net.URI
 
 /**
- * Requester whose requests require authentication in order to be performed.
+ * [Requester] whose requests require authentication in order to be performed.
  *
  * @property logger [Logger] by which received [HttpResponse]s will be logged.
  * @property clientEngineFactory [HttpClientEngineFactory] that creates the [HttpClientEngine]

@@ -49,8 +49,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 
 /**
- * Requester whose requests are resumable: whenever they're abruptly interrupted, they're
- * automatically retried after a call to [resume].
+ * [Requester] whose requests are resumable: whenever they're abruptly interrupted, they're
+ * automatically retried after a call to [resume]. They're also made reusable, which means that
+ * novel requests won't be performed in case the same operation is requested to be executed
+ * repeatedly (within the period whose duration is defined by [timeToLive]).
  *
  * @property elapsedTimeProvider [ResumableRequester.ElapsedTimeProvider] with which each request
  *   will be timestamped.

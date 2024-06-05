@@ -44,8 +44,7 @@ import java.net.URI
  * Performs various kinds of HTTP requests.
  *
  * Requests can also be made resumable through [resumable], which produces a [ResumableRequester]
- * through which they will be automatically retried in case they're interrupted and get resumed
- * posteriorly.
+ * which automatically retries in case they're abruptly interrupted and get resumed posteriorly.
  *
  * As for those that require an authenticated [Actor], [authenticated] can be called in order to
  * create an [AuthenticatedRequester] by which authentication will be required when performing any
