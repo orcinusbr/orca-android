@@ -26,18 +26,16 @@ import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.authenticationLock
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.injector.module.Module
-import br.com.orcinus.orca.std.uri.url.HostedURLBuilder
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.bearerAuth
 import io.ktor.client.statement.HttpResponse
-import io.ktor.http.Parameters
 import io.ktor.http.content.PartData
 import java.net.URI
 
 /**
- * Requester whose requests require authentication in order to be performed.
+ * [Requester] whose requests require authentication in order to be performed.
  *
  * @property logger [Logger] by which received [HttpResponse]s will be logged.
  * @property clientEngineFactory [HttpClientEngineFactory] that creates the [HttpClientEngine]
@@ -54,53 +52,72 @@ constructor(
   @get:InternalNetworkApi @get:VisibleForTesting internal val lock: SomeAuthenticationLock
 ) : Requester(logger, baseURI, clientEngineFactory) {
   override suspend fun delete(
-    route: HostedURLBuilder.() -> URI,
+    config: Configuration,
+    route: URI,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return lock.scheduleUnlock {
-      super.delete(route) {
-        bearerAuth(it.accessToken)
-        build()
-      }
+      super.delete(
+        config,
+        route,
+        build = {
+          bearerAuth(it.accessToken)
+          build()
+        }
+      )
     }
   }
 
   override suspend fun get(
-    parameters: Parameters,
-    route: HostedURLBuilder.() -> URI,
+    config: Configuration,
+    route: URI,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return lock.scheduleUnlock {
-      super.get(parameters, route) {
-        bearerAuth(it.accessToken)
-        build()
-      }
+      super.get(
+        config,
+        route,
+        build = {
+          bearerAuth(it.accessToken)
+          build()
+        }
+      )
     }
   }
 
   override suspend fun post(
-    parameters: Parameters,
-    route: HostedURLBuilder.() -> URI,
+    config: Configuration,
+    route: URI,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return lock.scheduleUnlock {
-      super.post(parameters, route) {
-        bearerAuth(it.accessToken)
-        build()
-      }
+      super.post(
+        config,
+        route,
+        build = {
+          bearerAuth(it.accessToken)
+          build()
+        }
+      )
     }
   }
 
   override suspend fun post(
+    config: Configuration,
+    route: URI,
     form: List<PartData>,
-    route: HostedURLBuilder.() -> URI,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
     return lock.scheduleUnlock {
-      super.post(form, route) {
-        bearerAuth(it.accessToken)
-        build()
-      }
+      super.post(
+        config,
+        route,
+        form,
+        build = {
+          bearerAuth(it.accessToken)
+          build()
+        }
+      )
     }
   }
 }

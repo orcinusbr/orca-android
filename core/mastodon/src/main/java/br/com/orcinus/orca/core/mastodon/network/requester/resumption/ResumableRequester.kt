@@ -21,18 +21,20 @@ import br.com.orcinus.orca.core.mastodon.MastodonDatabase
 import br.com.orcinus.orca.core.mastodon.network.InternalNetworkApi
 import br.com.orcinus.orca.core.mastodon.network.requester.Logger
 import br.com.orcinus.orca.core.mastodon.network.requester.Requester
-import br.com.orcinus.orca.core.mastodon.network.requester.resumption.request.Parameterization
 import br.com.orcinus.orca.core.mastodon.network.requester.resumption.request.Request
 import br.com.orcinus.orca.core.mastodon.network.requester.resumption.request.RequestDao
 import br.com.orcinus.orca.core.mastodon.network.requester.resumption.request.Resumption
+import br.com.orcinus.orca.core.mastodon.network.requester.resumption.request.headers.form.PartDataKSerializer
+import br.com.orcinus.orca.core.mastodon.network.requester.resumption.request.headers.strings.serializer
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.injector.module.Module
 import br.com.orcinus.orca.std.uri.url.HostedURLBuilder
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.forms.formData
 import io.ktor.client.statement.HttpResponse
-import io.ktor.http.Parameters
+import io.ktor.http.Headers
 import io.ktor.http.content.PartData
 import io.ktor.util.StringValues
 import java.net.URI
@@ -47,10 +49,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.json.Json
 
 /**
- * Requester whose requests are resumable: whenever they're abruptly interrupted, they're
- * automatically retried after a call to [resume].
+ * [Requester] whose requests are resumable: whenever they're abruptly interrupted, they're
+ * automatically retried after a call to [resume]. They're also made reusable, which means that
+ * novel requests won't be performed in case the same operation is requested to be executed
+ * repeatedly (within the period whose duration is defined by [timeToLive]).
  *
  * @property elapsedTimeProvider [ResumableRequester.ElapsedTimeProvider] with which each request
  *   will be timestamped.
@@ -104,41 +110,43 @@ constructor(
     CancellationException("$request has been interrupted by its requester.")
 
   override suspend fun delete(
-    route: HostedURLBuilder.() -> URI,
+    config: Configuration,
+    route: URI,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
-    return prepareForResumption(Request.MethodName.DELETE, Parameterization.empty, route) {
-      super.delete(route, build)
+    return prepareForResumption(Request.MethodName.DELETE, config.headers, formData(), route) {
+      super.delete(config, route, build)
     }
   }
 
   override suspend fun get(
-    parameters: Parameters,
-    route: HostedURLBuilder.() -> URI,
+    config: Configuration,
+    route: URI,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
-    return prepareForResumption(Request.MethodName.GET, Parameterization.Body(parameters), route) {
-      super.get(parameters, route, build)
+    return prepareForResumption(Request.MethodName.GET, config.headers, formData(), route) {
+      super.get(config, route, build)
     }
   }
 
   override suspend fun post(
-    parameters: Parameters,
-    route: HostedURLBuilder.() -> URI,
+    config: Configuration,
+    route: URI,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
-    return prepareForResumption(Request.MethodName.POST, Parameterization.Body(parameters), route) {
-      super.post(parameters, route, build)
+    return prepareForResumption(Request.MethodName.POST, config.headers, formData(), route) {
+      super.post(config, route, build)
     }
   }
 
   override suspend fun post(
+    config: Configuration,
+    route: URI,
     form: List<PartData>,
-    route: HostedURLBuilder.() -> URI,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
-    return prepareForResumption(Request.MethodName.POST, Parameterization.Headers(form), route) {
-      super.post(form, route, build)
+    return prepareForResumption(Request.MethodName.POST, config.headers, formData(), route) {
+      super.post(config, route, form, build)
     }
   }
 
@@ -150,24 +158,24 @@ constructor(
    * @see interrupt
    */
   suspend fun resume() {
-    requestDao.selectAll().forEach {
-      val route = { _: HostedURLBuilder -> URI(it.route) }
-      it.fold(
-        onDelete = { delete(route) },
-        onGet = {
-          get(
-            (Parameterization.deserialize(Parameterization.Body.name, it.parameters)
-                as Parameterization.Body)
-              .content,
-            route
-          )
-        },
+    requestDao.selectAll().forEach { request ->
+      val route = { _: HostedURLBuilder -> URI(request.route) }
+      val config: Configuration.Builder.() -> Unit = {
+        headers {
+          val headers = Json.decodeFromString(StringValues.serializer(), request.headers)
+          appendAll(headers)
+        }
+      }
+      request.fold(
+        onDelete = { delete(route, config) },
+        onGet = { get(route, config) },
         onPost = {
-          when (
-            val parameterization = Parameterization.deserialize(it.parameterization, it.parameters)
-          ) {
-            is Parameterization.Body -> post(parameterization.content, route)
-            is Parameterization.Headers -> post(parameterization.content, route)
+          val form = Json.decodeFromString(ListSerializer(PartDataKSerializer), request.form)
+          val isFormEmpty = form.isEmpty()
+          if (isFormEmpty) {
+            post(route, config)
+          } else {
+            post(route, form, config)
           }
         }
       )
@@ -192,8 +200,8 @@ constructor(
    *
    * @param methodName Name of the HTTP method that's equivalent to that of the request to be
    *   performed.
-   * @param parameterization Content of the parameters which vary in type depending on where they
-   *   are inserted in the request.
+   * @param headers [Headers] to be added to the request.
+   * @param form [PartData] to be included as headers.
    * @param route Builds the route from the [baseURI] to which the request will be sent.
    * @param request Actual performance of the request to which the HTTP method refers.
    * @see Resumption.Resumable
@@ -201,8 +209,9 @@ constructor(
   @OptIn(ExperimentalContracts::class)
   private suspend inline fun prepareForResumption(
     @Request.MethodName methodName: String,
-    parameterization: Parameterization<*>,
-    noinline route: HostedURLBuilder.() -> URI,
+    headers: Headers,
+    form: List<PartData>,
+    route: URI,
     crossinline request: suspend () -> HttpResponse
   ): HttpResponse {
     contract { callsInPlace(request, InvocationKind.AT_MOST_ONCE) }
@@ -210,9 +219,9 @@ constructor(
       val entity =
         retrieveOrCreateRequest(
           methodName,
-          absolute(route),
-          parameterization.name,
-          parameterization.serializedContent
+          "$route",
+          Json.encodeToString(StringValues.serializer(), headers),
+          Json.encodeToString(ListSerializer(PartDataKSerializer), form)
         )
       requestDao.insert(entity)
       val response = progress.computeIfAbsent(entity) { async { respond(entity, request) } }.await()
@@ -228,22 +237,22 @@ constructor(
    *
    * @param methodName Name of the HTTP method called on the [route].
    * @param route Specific, absolute resource on which the HTTP method is being called.
-   * @param parameterizationName Name of the strategy for parameterizing the request.
-   * @param serializedParameters Serialized version of [StringValues] or multiple [PartData].
+   * @param serializedHeaders [String]-serialized form of the [Headers].
+   * @param serializedForm Serialized version of multiple [PartData].
    */
   private suspend fun retrieveOrCreateRequest(
     @Request.MethodName methodName: String,
     route: String,
-    parameterizationName: String,
-    serializedParameters: String
+    serializedHeaders: String,
+    serializedForm: String
   ): Request {
-    val id = Request.generateID(methodName, route, parameterizationName, serializedParameters)
+    val id = Request.generateID(methodName, route, serializedHeaders, serializedForm)
     return requestDao.selectByID(id)
       ?: Request(
         methodName,
         route,
-        parameterizationName,
-        serializedParameters,
+        serializedHeaders,
+        serializedForm,
         timestamp = elapsedTimeProvider.provide().inWholeMilliseconds
       )
   }
