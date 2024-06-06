@@ -45,7 +45,7 @@ internal class AuthenticatedRequesterTests {
   fun schedulesAuthenticationOnGetRequest() {
     var hasAuthenticationBeenScheduled = false
     runAuthenticatedRequesterTest(onAuthentication = { hasAuthenticationBeenScheduled = true }) {
-      requester.get(route = route)
+      requester.get(route)
     }
     assertThat(hasAuthenticationBeenScheduled).isTrue()
   }
@@ -54,7 +54,7 @@ internal class AuthenticatedRequesterTests {
   fun schedulesAuthenticationOnPostRequest() {
     var hasAuthenticationBeenScheduled = false
     runAuthenticatedRequesterTest(onAuthentication = { hasAuthenticationBeenScheduled = true }) {
-      requester.post(route = route)
+      requester.post(route)
     }
     assertThat(hasAuthenticationBeenScheduled).isTrue()
   }
@@ -70,7 +70,7 @@ internal class AuthenticatedRequesterTests {
   @Test
   fun addsAuthorizationHeaderToGetRequest() {
     runAuthenticatedRequesterTest {
-      assertThatRequestAuthorizationHeaderOf(requester.get(route = route))
+      assertThatRequestAuthorizationHeaderOf(requester.get(route))
         .isEqualTo("Bearer test-access-token")
     }
   }
@@ -78,7 +78,7 @@ internal class AuthenticatedRequesterTests {
   @Test
   fun addsAuthorizationHeaderToPostRequest() {
     runAuthenticatedRequesterTest {
-      assertThatRequestAuthorizationHeaderOf(requester.post(route = route))
+      assertThatRequestAuthorizationHeaderOf(requester.post(route))
         .isEqualTo("Bearer test-access-token")
     }
   }

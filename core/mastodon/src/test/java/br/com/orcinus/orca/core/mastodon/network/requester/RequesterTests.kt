@@ -26,7 +26,7 @@ internal class RequesterTests {
   fun makesRouteAbsolute() {
     runRequesterTest {
       assertThat(requester.absolute(route))
-        .isEqualTo("${HostedURLBuilder.from(requester.baseURI).route()}")
+        .isEqualTo(HostedURLBuilder.from(requester.baseURI).route())
     }
   }
 
@@ -42,16 +42,16 @@ internal class RequesterTests {
 
   @Test
   fun gets() {
-    runRequesterTest { assertThat(requester.get(route = route).body<String>()).isEqualTo("") }
+    runRequesterTest { assertThat(requester.get(route).body<String>()).isEqualTo("") }
   }
 
   @Test
   fun retriesGetTwiceAfterFailure() {
-    assertThat(retryCountOf { requester.get(route = route) }).isEqualTo(2)
+    assertThat(retryCountOf { requester.get(route) }).isEqualTo(2)
   }
 
   @Test
   fun retriesPostTwiceAfterFailure() {
-    assertThat(retryCountOf { requester.post(route = route) }).isEqualTo(2)
+    assertThat(retryCountOf { requester.post(route) }).isEqualTo(2)
   }
 }

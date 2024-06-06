@@ -18,8 +18,12 @@ package br.com.orcinus.orca.core.mastodon.network.requester.resumption.request
 import assertk.assertThat
 import assertk.assertions.isNotEqualTo
 import assertk.assertions.isTrue
+import br.com.orcinus.orca.core.mastodon.network.requester.resumption.request.headers.strings.serializer
+import io.ktor.http.Headers
 import io.ktor.http.Parameters
+import io.ktor.util.StringValues
 import kotlin.test.Test
+import kotlinx.serialization.json.Json
 
 internal class RequestTests {
   @Test
@@ -29,8 +33,8 @@ internal class RequestTests {
           Request.generateID(
             Request.MethodName.GET,
             "/api/v1/resource",
-            Parameterization.Body.name,
-            Parameterization.Body(Parameters.Empty).serializedContent
+            Json.encodeToString(StringValues.serializer(), Headers.Empty),
+            Json.encodeToString(StringValues.serializer(), Parameters.Empty)
           )
         }
       )
@@ -43,16 +47,16 @@ internal class RequestTests {
         Request.generateID(
           Request.MethodName.GET,
           "/api/v1/resource",
-          Parameterization.Body.name,
-          Parameterization.Body(Parameters.Empty).serializedContent
+          Json.encodeToString(StringValues.serializer(), Headers.Empty),
+          Json.encodeToString(StringValues.serializer(), Parameters.Empty)
         )
       )
       .isNotEqualTo(
         Request.generateID(
           Request.MethodName.GET,
           "/api/v2/resource",
-          Parameterization.Body.name,
-          Parameterization.Body(Parameters.Empty).serializedContent
+          Json.encodeToString(StringValues.serializer(), Headers.Empty),
+          Json.encodeToString(StringValues.serializer(), Parameters.Empty)
         )
       )
   }
@@ -62,8 +66,8 @@ internal class RequestTests {
     Request(
       methodName = "🇮🇹",
       "/api/v1/resource",
-      Parameterization.Body.name,
-      Parameterization.Body(Parameters.Empty).serializedContent,
+      Json.encodeToString(StringValues.serializer(), Headers.Empty),
+      Json.encodeToString(StringValues.serializer(), Parameters.Empty),
       timestamp = 0
     )
   }
@@ -74,8 +78,8 @@ internal class RequestTests {
     Request(
         Request.MethodName.DELETE,
         "/api/v1/resource",
-        Parameterization.Body.name,
-        Parameterization.Body(Parameters.Empty).serializedContent,
+        Json.encodeToString(StringValues.serializer(), Headers.Empty),
+        Json.encodeToString(StringValues.serializer(), Parameters.Empty),
         timestamp = 0
       )
       .fold(onDelete = { hasDeleteLambdaBeenInvoked = true }, onGet = {}, onPost = {})
@@ -88,8 +92,8 @@ internal class RequestTests {
     Request(
         Request.MethodName.GET,
         "/api/v1/resource",
-        Parameterization.Body.name,
-        Parameterization.Body(Parameters.Empty).serializedContent,
+        Json.encodeToString(StringValues.serializer(), Headers.Empty),
+        Json.encodeToString(StringValues.serializer(), Parameters.Empty),
         timestamp = 0
       )
       .fold(onDelete = {}, onGet = { hasGetLambdaBeenInvoked = true }, onPost = {})
@@ -102,8 +106,8 @@ internal class RequestTests {
     Request(
         Request.MethodName.POST,
         "/api/v1/resource",
-        Parameterization.Body.name,
-        Parameterization.Body(Parameters.Empty).serializedContent,
+        Json.encodeToString(StringValues.serializer(), Headers.Empty),
+        Json.encodeToString(StringValues.serializer(), Parameters.Empty),
         timestamp = 0
       )
       .fold(onDelete = {}, onGet = {}, onPost = { hasPostLambdaBeenInvoked = true })

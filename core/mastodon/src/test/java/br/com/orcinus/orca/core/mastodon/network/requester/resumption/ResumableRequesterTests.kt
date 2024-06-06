@@ -21,7 +21,6 @@ import br.com.orcinus.orca.core.mastodon.network.requester.Requester
 import br.com.orcinus.orca.core.mastodon.network.requester.runRequesterTest
 import br.com.orcinus.orca.std.injector.module.Module
 import io.ktor.client.request.forms.formData
-import io.ktor.http.Parameters
 import kotlin.test.Test
 import kotlin.time.Duration.Companion.nanoseconds
 import kotlinx.coroutines.delay
@@ -41,17 +40,17 @@ internal class ResumableRequesterTests {
 
   @Test
   fun resumesResumableGetRequestWhenItIsInterrupted() {
-    assertThat(resumptionCountOf { requester.get(route = route) }).isEqualTo(1)
+    assertThat(resumptionCountOf { requester.get(route) }).isEqualTo(1)
   }
 
   @Test
   fun resumesResumablePostRequestWithBodyParametersWhenItIsInterrupted() {
-    assertThat(resumptionCountOf { requester.post(Parameters.Empty, route) }).isEqualTo(1)
+    assertThat(resumptionCountOf { requester.post(route) }).isEqualTo(1)
   }
 
   @Test
   fun resumesResumablePostRequestWithHeaderParametersWhenItIsInterrupted() {
-    assertThat(resumptionCountOf { requester.post(formData(), route) }).isEqualTo(1)
+    assertThat(resumptionCountOf { requester.post(route, formData()) }).isEqualTo(1)
   }
 
   @Test
@@ -69,8 +68,8 @@ internal class ResumableRequesterTests {
   fun reusesGetRequest() {
     assertThat(
         responseCountOf {
-          requester.get(route = route)
-          requester.get(route = route)
+          requester.get(route)
+          requester.get(route)
         }
       )
       .isEqualTo(1)
@@ -80,8 +79,8 @@ internal class ResumableRequesterTests {
   fun reusesPostRequest() {
     assertThat(
         responseCountOf {
-          requester.post(route = route)
-          requester.post(route = route)
+          requester.post(route)
+          requester.post(route)
         }
       )
       .isEqualTo(1)
@@ -91,9 +90,9 @@ internal class ResumableRequesterTests {
   fun stalesGetRequestAfterItsTimeToLiveHasPassed() {
     assertThat(
         responseCountOf {
-          requester.get(route = route)
+          requester.get(route)
           delay(ResumableRequester.timeToLive + 1.nanoseconds)
-          requester.get(route = route)
+          requester.get(route)
         }
       )
       .isEqualTo(2)
@@ -115,9 +114,9 @@ internal class ResumableRequesterTests {
   fun stalesPostRequestAfterItsTimeToLiveHasPassed() {
     assertThat(
         responseCountOf {
-          requester.post(route = route)
+          requester.post(route)
           delay(ResumableRequester.timeToLive + 1.nanoseconds)
-          requester.post(route = route)
+          requester.post(route)
         }
       )
       .isEqualTo(2)
