@@ -23,7 +23,7 @@ import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfile
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
 import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
-import br.com.orcinus.orca.core.mastodon.network.client.authenticateAndPost
+import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 import br.com.orcinus.orca.std.image.SomeImageLoader
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.markdown.Markdown
@@ -61,7 +61,23 @@ internal data class MastodonFollowableProfile<T : Follow>(
   ),
   FollowableProfile<T>() {
   override suspend fun onChangeFollowTo(follow: T) {
-    val toggledRoute = follow.getToggledRoute(this)
-    Injector.get<SomeMastodonInstance>().client.authenticateAndPost(toggledRoute)
+    Injector.get<SomeMastodonInstance>()
+      .requester
+      .authenticated()
+      .post({
+        path("api")
+          .path("v1")
+          .path("accounts")
+          .path(id)
+          .run {
+            when (follow) {
+              Follow.Public.following(),
+              Follow.Private.requested(),
+              Follow.Private.following() -> path("unfollow")
+              else -> path("follow")
+            }
+          }
+          .build()
+      })
   }
 }

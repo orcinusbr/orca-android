@@ -19,7 +19,8 @@ import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.type.KTypeCreator
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.type.kTypeCreatorOf
 import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
-import br.com.orcinus.orca.core.mastodon.network.client.authenticateAndGet
+import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
+import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.ext.coroutines.getValue
@@ -64,14 +65,16 @@ internal abstract class MastodonPostPaginator<T : Any> : KTypeCreator<T> {
       .map { it == 0 }
       .associateWith { lastResponse?.headers?.links?.firstOrNull()?.uri }
       .map({ (uri, isRefreshing) -> isRefreshing || uri == null }) { route to it.second }
-      .mapNotNull { (uri, _) -> uri?.let { client.authenticateAndGet(it) } }
+      .mapNotNull { (uri, _) ->
+        uri?.let { requester.authenticated().get({ build().resolve(uri) }) }
+      }
       .onEach { lastResponse = it }
       .map { it.body(this).toPosts() }
 
-  /** [MastodonClient] through which the [HttpRequest]s will be performed. */
-  private val client
+  /** [Requester] through which the [HttpRequest]s will be performed. */
+  private val requester
     get() =
-      (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance).client
+      (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance).requester
 
   /**
    * Index of the page that's the current one.

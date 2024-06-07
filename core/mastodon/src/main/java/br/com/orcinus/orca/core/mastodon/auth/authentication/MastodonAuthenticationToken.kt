@@ -23,8 +23,8 @@ import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import br.com.orcinus.orca.std.injector.Injector
 import io.ktor.client.call.body
-import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.get
+import io.ktor.http.HttpHeaders
 import java.net.URI
 import kotlinx.serialization.Serializable
 
@@ -47,8 +47,10 @@ internal data class MastodonAuthenticationToken(val accessToken: String) {
     return toActor(
       avatarLoaderProvider,
       (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
-        .client
-        .get("/api/v1/accounts/verify_credentials") { bearerAuth(accessToken) }
+        .requester
+        .get({ path("api").path("v1").path("accounts").path("verify_credentials").build() }) {
+          headers { append(HttpHeaders.Authorization, "Bearer $accessToken") }
+        }
         .body<MastodonAuthenticationVerification>()
     )
   }

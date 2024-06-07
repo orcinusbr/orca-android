@@ -32,8 +32,6 @@ import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import br.com.orcinus.orca.std.injector.Injector
 import io.ktor.client.call.body
-import io.ktor.client.request.forms.submitForm
-import io.ktor.http.Parameters
 import java.net.URI
 import kotlinx.coroutines.launch
 
@@ -63,18 +61,19 @@ private constructor(
     val redirectUri = application.getString(R.string.redirect_uri, scheme)
     viewModelScope.launch {
       (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
-        .client
-        .submitForm(
-          "/oauth/token",
-          Parameters.build {
-            set("grant_type", "authorization_code")
-            set("code", authorizationCode)
-            set("client_id", Mastodon.CLIENT_ID)
-            set("client_secret", Mastodon.CLIENT_SECRET)
-            set("redirect_uri", redirectUri)
-            set("scope", Mastodon.SCOPES)
-          }
-        )
+        .requester
+        .post({
+          path("oauth")
+            .path("token")
+            .query()
+            .parameter("grant_type", "authorization_code")
+            .parameter("code", authorizationCode)
+            .parameter("client_id", Mastodon.CLIENT_ID)
+            .parameter("client_secret", Mastodon.CLIENT_SECRET)
+            .parameter("redirect_uri", redirectUri)
+            .parameter("scope", Mastodon.SCOPES)
+            .build()
+        })
         .body<MastodonAuthenticationToken>()
         .toActor(avatarLoaderProvider)
         .run(onAuthentication)

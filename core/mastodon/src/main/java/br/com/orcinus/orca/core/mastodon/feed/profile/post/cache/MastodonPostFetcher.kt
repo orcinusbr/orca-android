@@ -20,7 +20,7 @@ import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentPaginator
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus
 import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
-import br.com.orcinus.orca.core.mastodon.network.client.authenticateAndGet
+import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.platform.cache.Fetcher
@@ -48,8 +48,9 @@ internal class MastodonPostFetcher(
 ) : Fetcher<Post>() {
   override suspend fun onFetch(key: String): Post {
     return (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
-      .client
-      .authenticateAndGet("/api/v1/statuses/$key")
+      .requester
+      .authenticated()
+      .get({ path("api").path("v1").path("statuses").path(key).build() })
       .body<MastodonStatus>()
       .toPost(context, imageLoaderProvider, commentPaginatorProvider)
   }
