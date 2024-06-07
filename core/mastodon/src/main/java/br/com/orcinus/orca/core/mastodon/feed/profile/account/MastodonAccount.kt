@@ -28,7 +28,7 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.post.MastodonPost
 import br.com.orcinus.orca.core.mastodon.feed.profile.type.editable.MastodonEditableProfile
 import br.com.orcinus.orca.core.mastodon.feed.profile.type.followable.MastodonFollowableProfile
 import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
-import br.com.orcinus.orca.core.mastodon.network.client.authenticateAndGet
+import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.std.image.ImageLoader
@@ -36,7 +36,6 @@ import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.markdown.Markdown
 import io.ktor.client.call.body
-import io.ktor.client.request.parameter
 import java.net.URI
 import kotlinx.serialization.Serializable
 
@@ -179,8 +178,17 @@ internal data class MastodonAccount(
     val uri = URI(uri)
     val follow =
       (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
-        .client
-        .authenticateAndGet("/api/v1/accounts/relationships") { parameter("id", id) }
+        .requester
+        .authenticated()
+        .get({
+          path("api")
+            .path("v1")
+            .path("accounts")
+            .path("relationships")
+            .query()
+            .parameter("id", id)
+            .build()
+        })
         .body<List<MastodonRelationship>>()
         .first()
         .toFollow(this)

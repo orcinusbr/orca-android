@@ -17,19 +17,17 @@ package br.com.orcinus.orca.core.mastodon.feed.profile.type.editable
 
 import br.com.orcinus.orca.core.feed.profile.type.editable.Editor
 import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
-import br.com.orcinus.orca.core.mastodon.network.client.authenticateAndSubmitForm
-import br.com.orcinus.orca.core.mastodon.network.client.authenticateAndSubmitFormWithBinaryData
+import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.std.image.SomeImageLoader
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.markdown.Markdown
-import io.ktor.client.request.HttpRequest
+import br.com.orcinus.orca.std.uri.url.HostedURLBuilder
 import io.ktor.client.request.forms.InputProvider
 import io.ktor.client.request.forms.formData
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
-import io.ktor.http.parametersOf
 import io.ktor.utils.io.streams.asInput
 import java.nio.file.Path
 import kotlin.io.path.name
@@ -44,26 +42,34 @@ internal class MastodonEditor : Editor {
     val inputProvider = InputProvider(fileLength) { fileAsFile.inputStream().asInput() }
     val contentDisposition = "form-data; name=\"avatar\" filename=\"${file.name}\""
     val headers = Headers.build { append(HttpHeaders.ContentDisposition, contentDisposition) }
-    val formData = formData { append("avatar", inputProvider, headers) }
+    val form = formData { append("avatar", inputProvider, headers) }
     (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
-      .client
-      .authenticateAndSubmitFormWithBinaryData(ROUTE, formData)
+      .requester
+      .authenticated()
+      .post({ edit().build() }, form)
   }
 
   override suspend fun setName(name: String) {
     (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
-      .client
-      .authenticateAndSubmitForm(ROUTE, parametersOf("display_name", name))
+      .requester
+      .authenticated()
+      .post({ edit().query().parameter("display_name", name).build() })
   }
 
   override suspend fun setBio(bio: Markdown) {
     (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
-      .client
-      .authenticateAndSubmitForm(ROUTE, parametersOf("note", "$bio"))
+      .requester
+      .authenticated()
+      .post({ edit().query().parameter("note", "$bio").build() })
   }
 
   companion object {
-    /** Route to which the [HttpRequest]s will be sent for editing A [MastodonEditableProfile]. */
-    private const val ROUTE = "api/v1/accounts/update_credentials"
+    /**
+     * Appends segments that compose the route for editing a [MastodonEditableProfile] to which
+     * requests are to be sent.
+     */
+    private fun HostedURLBuilder.edit(): HostedURLBuilder {
+      return path("api").path("v1").path("accounts").path("update_credentials")
+    }
   }
 }

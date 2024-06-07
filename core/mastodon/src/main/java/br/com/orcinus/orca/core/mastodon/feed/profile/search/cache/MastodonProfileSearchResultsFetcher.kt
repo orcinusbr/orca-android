@@ -24,7 +24,7 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfile
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
 import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
-import br.com.orcinus.orca.core.mastodon.network.client.authenticateAndGet
+import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.platform.cache.Fetcher
@@ -32,7 +32,6 @@ import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import br.com.orcinus.orca.std.injector.Injector
 import io.ktor.client.call.body
-import io.ktor.client.request.parameter
 import java.net.URI
 
 /**
@@ -53,8 +52,11 @@ internal class MastodonProfileSearchResultsFetcher(
 ) : Fetcher<List<ProfileSearchResult>>() {
   override suspend fun onFetch(key: String): List<ProfileSearchResult> {
     return (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
-      .client
-      .authenticateAndGet("/api/v1/accounts/search") { parameter("q", key) }
+      .requester
+      .authenticated()
+      .get({
+        path("api").path("v1").path("accounts").path("search").query().parameter("q", key).build()
+      })
       .body<List<MastodonAccount>>()
       .map {
         it.toProfile(context, avatarLoaderProvider, postPaginatorProvider).toProfileSearchResult()

@@ -18,8 +18,8 @@ package br.com.orcinus.orca.core.mastodon.feed.profile.post
 import br.com.orcinus.orca.core.feed.profile.post.DeletablePost
 import br.com.orcinus.orca.core.mastodon.MastodonCoreModule
 import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
+import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 import br.com.orcinus.orca.core.mastodon.instanceProvider
-import br.com.orcinus.orca.core.mastodon.network.client.authenticateAndDelete
 import br.com.orcinus.orca.std.injector.Injector
 
 /**
@@ -31,7 +31,8 @@ internal data class MastodonDeletablePost(private val delegate: MastodonPost) :
   DeletablePost(delegate) {
   override suspend fun delete() {
     (Injector.from<MastodonCoreModule>().instanceProvider().provide() as SomeMastodonInstance)
-      .client
-      .authenticateAndDelete("api/v1/statuses/$id")
+      .requester
+      .authenticated()
+      .delete({ path("api").path("v1").path("statuses").path(id).build() })
   }
 }

@@ -22,7 +22,7 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfile
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
 import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
-import br.com.orcinus.orca.core.mastodon.network.client.authenticateAndGet
+import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.platform.cache.Fetcher
@@ -51,8 +51,9 @@ internal class MastodonProfileFetcher(
 ) : Fetcher<Profile>() {
   override suspend fun onFetch(key: String): Profile {
     return (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
-      .client
-      .authenticateAndGet("/api/v1/accounts/$key")
+      .requester
+      .authenticated()
+      .get({ path("api").path("v1").path("accounts").path(key).build() })
       .body<MastodonAccount>()
       .toProfile(context, avatarLoaderProvider, postPaginatorProvider)
   }

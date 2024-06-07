@@ -19,14 +19,14 @@ import br.com.orcinus.orca.core.auth.Authenticator
 import br.com.orcinus.orca.core.auth.Authorizer
 import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.instance.domain.Domain
-import br.com.orcinus.orca.core.mastodon.network.client.MastodonClient
+import br.com.orcinus.orca.core.mastodon.instance.requester.Logger
+import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import io.ktor.client.HttpClient
-import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.HttpRequest
 import io.ktor.http.URLBuilder
 import io.ktor.http.Url
 import io.ktor.http.set
-import io.ktor.http.takeFrom
 
 /** A [MastodonInstance] with a generic [Authorizer] and an [Authenticator]. */
 typealias SomeMastodonInstance = MastodonInstance<*, *>
@@ -45,5 +45,6 @@ internal constructor(final override val domain: Domain, internal val authorizer:
   internal val url = URLBuilder().apply { set(scheme = "https", host = "$domain") }.build()
 
   /** [HttpClient] by which [HttpRequest]s will be sent. */
-  open val client = MastodonClient { defaultRequest { url.takeFrom(this@MastodonInstance.url) } }
+  internal open val requester =
+    Requester(Logger.Android, baseURI = domain.uri, clientEngineFactory = CIO)
 }

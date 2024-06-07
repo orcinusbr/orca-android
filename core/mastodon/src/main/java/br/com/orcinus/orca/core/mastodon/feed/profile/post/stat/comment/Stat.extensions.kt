@@ -20,12 +20,10 @@ import br.com.orcinus.orca.core.feed.profile.post.stat.Stat
 import br.com.orcinus.orca.core.feed.profile.post.stat.addable.AddableStat
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.MastodonPost
 import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
-import br.com.orcinus.orca.core.mastodon.network.client.authenticateAndDelete
-import br.com.orcinus.orca.core.mastodon.network.client.authenticateAndSubmitForm
+import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.std.injector.Injector
-import io.ktor.http.Parameters
 
 /**
  * Builds a [Stat] for A [MastodonPost]'s comments that obtains them from the API.
@@ -48,19 +46,23 @@ internal fun CommentStat(
     }
     onAdd {
       (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
-        .client
-        .authenticateAndSubmitForm(
-          "/api/v1/statuses",
-          Parameters.build {
-            append("in_reply_to_id", id)
-            append("status", "${it.content.text}")
-          }
-        )
+        .requester
+        .authenticated()
+        .post({
+          path("api")
+            .path("v1")
+            .path("statuses")
+            .query()
+            .parameter("in_reply_to_id", id)
+            .parameter("status", "${it.content.text}")
+            .build()
+        })
     }
     onRemove {
       (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
-        .client
-        .authenticateAndDelete("/api/v1/statuses/${it.id}")
+        .requester
+        .authenticated()
+        .delete({ path("api").path("v1").path("statuses").path(it.id).build() })
     }
   }
 }

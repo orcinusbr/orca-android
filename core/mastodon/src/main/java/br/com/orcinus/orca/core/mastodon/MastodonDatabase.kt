@@ -27,8 +27,8 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.post.cache.storage.Mastodo
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.cache.storage.MastodonPostEntityDao
 import br.com.orcinus.orca.core.mastodon.feed.profile.search.cache.storage.MastodonProfileSearchResultEntity
 import br.com.orcinus.orca.core.mastodon.feed.profile.search.cache.storage.MastodonProfileSearchResultEntityDao
-import br.com.orcinus.orca.core.mastodon.network.requester.resumption.request.Request
-import br.com.orcinus.orca.core.mastodon.network.requester.resumption.request.RequestDao
+import br.com.orcinus.orca.core.mastodon.instance.requester.resumption.request.Request
+import br.com.orcinus.orca.core.mastodon.instance.requester.resumption.request.RequestDao
 
 /** [RoomDatabase] in which core-Mastodon-related persistence operations will take place. */
 @Database(
