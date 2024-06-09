@@ -20,8 +20,8 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
 import br.com.orcinus.orca.autos.colors.Colors
+import br.com.orcinus.orca.ext.uri.URIBuilder
 import br.com.orcinus.orca.std.markdown.style.Style
-import br.com.orcinus.orca.std.uri.URIBuilder
 import kotlin.test.Test
 
 internal class StyleExtractorTests {

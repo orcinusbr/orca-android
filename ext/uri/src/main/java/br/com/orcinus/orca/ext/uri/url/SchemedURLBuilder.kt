@@ -13,22 +13,25 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.std.uri.url
+package br.com.orcinus.orca.ext.uri.url
 
 import java.net.URI
 
 /**
- * Builder from which a [SchemedURLBuilder] can be obtained.
+ * URL [URI] builder to which a scheme has been provided, from which the host can be defined.
  *
- * @see scheme
+ * @param scheme Specification about the type of application addressed by the [URI].
+ * @see host
  */
-class URLBuilder internal constructor() {
+@JvmInline
+value class SchemedURLBuilder internal constructor(private val scheme: String) {
   /**
-   * Defines the scheme of the URL [URI] to be built.
+   * Defines the host of the URL [URI] to be built.
    *
-   * @param scheme Specification about the type of application addressed by the [URI].
+   * @param host Subcomponent consisting of either a registered name (including but not limited to a
+   *   hostname) or an IP address.
    */
-  fun scheme(scheme: String): SchemedURLBuilder {
-    return SchemedURLBuilder(scheme)
+  fun host(host: String): HostedURLBuilder {
+    return HostedURLBuilder(scheme, host)
   }
 }

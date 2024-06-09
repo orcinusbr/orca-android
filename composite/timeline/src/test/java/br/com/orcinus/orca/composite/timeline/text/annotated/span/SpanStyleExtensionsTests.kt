@@ -19,7 +19,7 @@ import androidx.compose.ui.text.SpanStyle
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.autos.colors.Colors
-import br.com.orcinus.orca.std.uri.URIBuilder
+import br.com.orcinus.orca.ext.uri.URIBuilder
 import kotlin.test.Test
 
 internal class SpanStyleExtensionsTests {

@@ -18,9 +18,9 @@ package br.com.orcinus.orca.core.sample.feed.profile.post.content.highlight
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Headline
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Highlight
 import br.com.orcinus.orca.core.sample.image.SampleImageSource
+import br.com.orcinus.orca.ext.uri.URIBuilder
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import br.com.orcinus.orca.std.uri.URIBuilder
 
 /**
  * Creates a sample [Highlight].

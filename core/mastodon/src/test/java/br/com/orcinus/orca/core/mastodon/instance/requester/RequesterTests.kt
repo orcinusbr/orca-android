@@ -17,7 +17,7 @@ package br.com.orcinus.orca.core.mastodon.instance.requester
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import br.com.orcinus.orca.std.uri.url.HostedURLBuilder
+import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import io.ktor.client.call.body
 import kotlin.test.Test
 

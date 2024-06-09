@@ -13,23 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.std.uri
+package br.com.orcinus.orca.ext.uri.url
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import br.com.orcinus.orca.std.uri.url.SchemedURLBuilder
-import java.net.URI
+import br.com.orcinus.orca.ext.uri.URIBuilder
 import kotlin.test.Test
 
-class URIBuilderTests {
+internal class SchemedURLBuilderTests {
   @Test
-  fun createsSchemedURIBuilder() {
-    assertThat(URIBuilder.url().scheme("https")).isEqualTo(SchemedURLBuilder("https"))
-  }
-
-  @Test
-  fun buildsMailtoURI() {
-    assertThat(URIBuilder.mailto("jean@orcinus.com.br"))
-      .isEqualTo(URI("${URIBuilder.MAILTO}:jean@orcinus.com.br"))
+  fun createsHostedURLBuilder() {
+    assertThat(URIBuilder.url().scheme("https").host("mastodon.social"))
+      .isEqualTo(HostedURLBuilder("https", "mastodon.social"))
   }
 }

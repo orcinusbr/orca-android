@@ -19,7 +19,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.sample.test.auth.actor.sample
-import br.com.orcinus.orca.std.uri.URIBuilder
+import br.com.orcinus.orca.ext.uri.URIBuilder
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.jsonObject

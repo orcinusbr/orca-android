@@ -13,46 +13,36 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.std.uri.url
+package br.com.orcinus.orca.ext.uri.url
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import br.com.orcinus.orca.std.uri.URIBuilder
+import br.com.orcinus.orca.ext.uri.URIBuilder
 import java.net.URI
 import kotlin.test.Test
 
-internal class HostedURLBuilderTests {
+internal class SegmentedURLBuilderTests {
   @Test
-  fun createsHostedURLBuilder() {
-    assertThat(
-        HostedURLBuilder.from(URIBuilder.url().scheme("https").host("mastodon.social").build())
-      )
-      .isEqualTo(HostedURLBuilder("https", "mastodon.social"))
-  }
-
-  @Test
-  fun appendsPaths() {
+  fun appendsParameters() {
     assertThat(
         URIBuilder.url()
           .scheme("https")
           .host("mastodon.social")
-          .path("@jeanbarrossilva")
-          .path("following")
+          .path("api")
+          .path("v1")
+          .path("statuses")
+          .path("112276588128366269")
+          .path("reblogged_by")
+          .query()
+          .parameter("limit", "2")
+          .parameter("since_id", "112276666465473478")
           .build()
       )
-      .isEqualTo(URI.create("https://mastodon.social/@jeanbarrossilva/following"))
-  }
-
-  @Test
-  fun createsSegmentedURLBuilder() {
-    assertThat(
-        URIBuilder.url()
-          .scheme("https")
-          .host("mastodon.social")
-          .path("@jeanbarrossilva")
-          .path("followers")
-          .query()
+      .isEqualTo(
+        URI(
+          "https://mastodon.social/api/v1/statuses/112276588128366269/reblogged_by?limit=2&since_" +
+            "id=112276666465473478"
+        )
       )
-      .isEqualTo(SegmentedURLBuilder("https", "mastodon.social", "/@jeanbarrossilva/followers"))
   }
 }

@@ -22,7 +22,7 @@ import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.Authe
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 import br.com.orcinus.orca.core.mastodon.instance.requester.resumption.ResumableRequester
 import br.com.orcinus.orca.core.mastodon.instance.requester.resumption.resumable
-import br.com.orcinus.orca.std.uri.url.HostedURLBuilder
+import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngine

@@ -51,7 +51,7 @@ dependencies {
   implementation(libs.loadable.placeholder.test)
   implementation(libs.time4j)
 
-  testImplementation(project(":std:uri"))
+  testImplementation(project(":ext:uri"))
   testImplementation(libs.assertk)
   testImplementation(libs.kotlin.test)
 }

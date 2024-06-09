@@ -19,8 +19,8 @@ import assertk.assertThat
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import br.com.orcinus.orca.core.sample.instance.domain.sample
-import br.com.orcinus.orca.std.uri.URIBuilder
-import br.com.orcinus.orca.std.uri.url.HostedURLBuilder
+import br.com.orcinus.orca.ext.uri.URIBuilder
+import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import kotlin.test.Test
 
 internal class URIExtensionsTests {

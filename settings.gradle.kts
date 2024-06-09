@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -41,6 +41,7 @@ include(
   ":ext:processing",
   ":ext:reflection",
   ":ext:testing",
+  ":ext:uri",
   ":feature:composer",
   ":feature:feed",
   ":feature:feed-test",
@@ -83,7 +84,6 @@ include(
   ":std:injector-processor",
   ":std:injector-test",
   ":std:markdown",
-  ":std:uri",
   ":std:visibility",
   ":std:visibility-check"
 )

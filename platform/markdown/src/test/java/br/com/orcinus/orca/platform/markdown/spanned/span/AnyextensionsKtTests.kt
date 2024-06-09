@@ -21,8 +21,8 @@ import android.text.style.URLSpan
 import assertk.assertThat
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
+import br.com.orcinus.orca.ext.uri.URIBuilder
 import br.com.orcinus.orca.platform.testing.context
-import br.com.orcinus.orca.std.uri.URIBuilder
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner

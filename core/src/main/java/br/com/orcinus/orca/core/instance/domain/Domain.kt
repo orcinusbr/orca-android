@@ -15,7 +15,7 @@
 
 package br.com.orcinus.orca.core.instance.domain
 
-import br.com.orcinus.orca.std.uri.URIBuilder
+import br.com.orcinus.orca.ext.uri.URIBuilder
 import java.io.Serializable
 import java.net.URI
 

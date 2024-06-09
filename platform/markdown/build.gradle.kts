@@ -39,9 +39,9 @@ dependencies {
   implementation(libs.android.compose.ui.tooling)
   implementation(libs.android.core)
 
+  testImplementation(project(":ext:uri"))
   testImplementation(project(":platform:markdown-test"))
   testImplementation(project(":platform:testing"))
-  testImplementation(project(":std:uri"))
   testImplementation(libs.android.compose.ui.test.junit)
   testImplementation(libs.android.compose.ui.test.manifest)
   testImplementation(libs.assertk)
