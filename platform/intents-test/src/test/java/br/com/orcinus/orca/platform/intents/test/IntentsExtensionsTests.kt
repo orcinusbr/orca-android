@@ -17,8 +17,8 @@ package br.com.orcinus.orca.platform.intents.test
 
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
+import br.com.orcinus.orca.ext.uri.URIBuilder
 import br.com.orcinus.orca.platform.starter.StartableActivity
-import br.com.orcinus.orca.std.uri.URIBuilder
 import io.mockk.mockkStatic
 import io.mockk.verify
 import junit.framework.AssertionFailedError

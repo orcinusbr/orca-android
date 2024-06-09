@@ -29,7 +29,7 @@ import br.com.orcinus.orca.core.mastodon.R
 import br.com.orcinus.orca.core.mastodon.auth.Mastodon
 import br.com.orcinus.orca.core.mastodon.auth.authorization.OnAccessTokenRequestListener
 import br.com.orcinus.orca.core.mastodon.instance.MastodonInstance
-import br.com.orcinus.orca.std.uri.url.HostedURLBuilder
+import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import java.net.URI
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

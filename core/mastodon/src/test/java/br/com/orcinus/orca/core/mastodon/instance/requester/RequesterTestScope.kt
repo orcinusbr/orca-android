@@ -24,10 +24,10 @@ import br.com.orcinus.orca.core.sample.feed.profile.post.content.SampleTermMuter
 import br.com.orcinus.orca.core.test.TestActorProvider
 import br.com.orcinus.orca.core.test.TestAuthenticator
 import br.com.orcinus.orca.core.test.TestAuthorizer
+import br.com.orcinus.orca.ext.uri.URIBuilder
+import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
-import br.com.orcinus.orca.std.uri.URIBuilder
-import br.com.orcinus.orca.std.uri.url.HostedURLBuilder
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngineConfig
 import io.ktor.client.engine.mock.respondError

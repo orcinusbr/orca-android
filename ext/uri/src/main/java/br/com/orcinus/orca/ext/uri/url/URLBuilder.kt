@@ -13,17 +13,22 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.std.uri.url
+package br.com.orcinus.orca.ext.uri.url
 
-import assertk.assertThat
-import assertk.assertions.isEqualTo
-import br.com.orcinus.orca.std.uri.URIBuilder
-import kotlin.test.Test
+import java.net.URI
 
-internal class SchemedURLBuilderTests {
-  @Test
-  fun createsHostedURLBuilder() {
-    assertThat(URIBuilder.url().scheme("https").host("mastodon.social"))
-      .isEqualTo(HostedURLBuilder("https", "mastodon.social"))
+/**
+ * Builder from which a [SchemedURLBuilder] can be obtained.
+ *
+ * @see scheme
+ */
+class URLBuilder internal constructor() {
+  /**
+   * Defines the scheme of the URL [URI] to be built.
+   *
+   * @param scheme Specification about the type of application addressed by the [URI].
+   */
+  fun scheme(scheme: String): SchemedURLBuilder {
+    return SchemedURLBuilder(scheme)
   }
 }

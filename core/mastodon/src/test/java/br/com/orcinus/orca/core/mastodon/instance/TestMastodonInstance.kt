@@ -24,7 +24,7 @@ import br.com.orcinus.orca.core.sample.test.instance.sample
 import br.com.orcinus.orca.core.test.TestAuthenticationLock
 import br.com.orcinus.orca.core.test.TestAuthenticator
 import br.com.orcinus.orca.core.test.TestAuthorizer
-import br.com.orcinus.orca.std.uri.URIBuilder
+import br.com.orcinus.orca.ext.uri.URIBuilder
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.request.HttpRequest

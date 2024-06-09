@@ -23,9 +23,9 @@ import br.com.orcinus.orca.core.sample.auth.actor.sample
 import br.com.orcinus.orca.core.sample.feed.profile.account.sample
 import br.com.orcinus.orca.core.sample.image.AuthorImageSource
 import br.com.orcinus.orca.core.sample.image.SampleImageSource
+import br.com.orcinus.orca.ext.uri.URIBuilder
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import br.com.orcinus.orca.std.uri.URIBuilder
 import java.util.UUID
 
 /** ID of an [Author] created by [createChristianSample]. */

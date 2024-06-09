@@ -25,9 +25,9 @@ import br.com.orcinus.orca.core.mastodon.instance.requester.resumption.request.R
 import br.com.orcinus.orca.core.mastodon.instance.requester.resumption.request.RequestDao
 import br.com.orcinus.orca.core.mastodon.instance.requester.resumption.request.headers.form.PartDataKSerializer
 import br.com.orcinus.orca.core.mastodon.instance.requester.resumption.request.headers.strings.serializer
+import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.injector.module.Module
-import br.com.orcinus.orca.std.uri.url.HostedURLBuilder
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.request.HttpRequestBuilder

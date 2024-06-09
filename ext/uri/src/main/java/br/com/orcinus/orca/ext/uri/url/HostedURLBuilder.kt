@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.std.uri.url
+package br.com.orcinus.orca.ext.uri.url
 
 import java.net.URI
 import java.util.Objects

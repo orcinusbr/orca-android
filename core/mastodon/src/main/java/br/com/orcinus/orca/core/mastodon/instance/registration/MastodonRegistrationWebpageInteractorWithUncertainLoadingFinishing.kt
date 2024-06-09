@@ -22,7 +22,7 @@ import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.instance.domain.Domain
 import br.com.orcinus.orca.core.instance.registration.Credentials
-import br.com.orcinus.orca.std.uri.url.HostedURLBuilder
+import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 

@@ -16,7 +16,7 @@
 package br.com.orcinus.orca.core.sample.feed.profile.post.content
 
 import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
-import br.com.orcinus.orca.std.uri.URIBuilder
+import br.com.orcinus.orca.ext.uri.URIBuilder
 
 /** [Attachment]s returned by [samples]. */
 private val sampleAttachments =

@@ -25,8 +25,8 @@ import br.com.orcinus.orca.core.mastodon.auth.authorization.viewmodel.MastodonAu
 import br.com.orcinus.orca.core.mastodon.instance.ContextualMastodonInstance
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
+import br.com.orcinus.orca.ext.uri.URIBuilder
 import br.com.orcinus.orca.std.injector.Injector
-import br.com.orcinus.orca.std.uri.URIBuilder
 import io.ktor.http.Url
 import java.net.URI
 

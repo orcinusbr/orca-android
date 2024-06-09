@@ -26,8 +26,8 @@ dependencies {
   api(libs.kotlin.coroutines.core)
 
   implementation(project(":ext:coroutines"))
+  implementation(project(":ext:uri"))
   implementation(project(":std:buildable"))
-  implementation(project(":std:uri"))
   implementation(project(":std:visibility"))
 
   ksp(project(":std:buildable-processor"))

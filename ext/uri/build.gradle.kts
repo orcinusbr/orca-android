@@ -13,25 +13,13 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.std.uri.url
+plugins {
+  alias(libs.plugins.kotlin.jvm)
 
-import java.net.URI
+  `java-library`
+}
 
-/**
- * URL [URI] builder to which a scheme has been provided, from which the host can be defined.
- *
- * @param scheme Specification about the type of application addressed by the [URI].
- * @see host
- */
-@JvmInline
-value class SchemedURLBuilder internal constructor(private val scheme: String) {
-  /**
-   * Defines the host of the URL [URI] to be built.
-   *
-   * @param host Subcomponent consisting of either a registered name (including but not limited to a
-   *   hostname) or an IP address.
-   */
-  fun host(host: String): HostedURLBuilder {
-    return HostedURLBuilder(scheme, host)
-  }
+dependencies {
+  testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.test)
 }

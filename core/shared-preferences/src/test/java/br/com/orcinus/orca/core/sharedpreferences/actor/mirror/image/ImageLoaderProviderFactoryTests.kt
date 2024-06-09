@@ -20,8 +20,8 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import br.com.orcinus.orca.core.sample.image.AuthorImageSource
 import br.com.orcinus.orca.core.sample.image.SampleImageSource
+import br.com.orcinus.orca.ext.uri.URIBuilder
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import br.com.orcinus.orca.std.uri.URIBuilder
 import java.net.URI
 import org.junit.Test
 

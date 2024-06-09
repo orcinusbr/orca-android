@@ -20,8 +20,8 @@ import android.text.style.StyleSpan
 import android.text.style.URLSpan
 import assertk.assertThat
 import assertk.assertions.containsExactly
+import br.com.orcinus.orca.ext.uri.URIBuilder
 import br.com.orcinus.orca.std.markdown.style.Style
-import br.com.orcinus.orca.std.uri.URIBuilder
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner

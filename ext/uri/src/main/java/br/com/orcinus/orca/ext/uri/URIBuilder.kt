@@ -13,9 +13,9 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.std.uri
+package br.com.orcinus.orca.ext.uri
 
-import br.com.orcinus.orca.std.uri.url.URLBuilder
+import br.com.orcinus.orca.ext.uri.url.URLBuilder
 import java.net.URI
 
 /**

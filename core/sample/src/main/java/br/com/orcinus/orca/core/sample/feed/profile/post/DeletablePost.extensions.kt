@@ -23,9 +23,9 @@ import br.com.orcinus.orca.core.sample.feed.profile.post.content.sample
 import br.com.orcinus.orca.core.sample.feed.profile.post.repost.createSample
 import br.com.orcinus.orca.core.sample.feed.profile.post.stat.createSampleToggleableStat
 import br.com.orcinus.orca.core.sample.image.SampleImageSource
+import br.com.orcinus.orca.ext.uri.URIBuilder
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import br.com.orcinus.orca.std.uri.URIBuilder
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.UUID
