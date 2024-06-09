@@ -29,11 +29,17 @@ import io.ktor.client.request.forms.formData
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.utils.io.streams.asInput
+import java.net.URI
 import java.nio.file.Path
 import kotlin.io.path.name
 
 /** [Editor] whose actions communicate with the Mastodon API. */
 internal class MastodonEditor : Editor {
+  /** [URI] to which requests for editing a [MastodonEditableProfile] are to be sent. */
+  private val editRoute: HostedURLBuilder.() -> URI = {
+    path("api").path("v1").path("accounts").path("update_credentials").build()
+  }
+
   @Suppress("UNREACHABLE_CODE", "UNUSED_VARIABLE")
   override suspend fun setAvatarLoader(avatarLoader: SomeImageLoader) {
     val file: Path = TODO()
@@ -46,30 +52,20 @@ internal class MastodonEditor : Editor {
     (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
       .requester
       .authenticated()
-      .post({ edit().build() }, form)
+      .post(editRoute, form)
   }
 
   override suspend fun setName(name: String) {
     (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
       .requester
       .authenticated()
-      .post({ edit().query().parameter("display_name", name).build() })
+      .post(editRoute) { parameters { append("display_name", name) } }
   }
 
   override suspend fun setBio(bio: Markdown) {
     (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
       .requester
       .authenticated()
-      .post({ edit().query().parameter("note", "$bio").build() })
-  }
-
-  companion object {
-    /**
-     * Appends segments that compose the route for editing a [MastodonEditableProfile] to which
-     * requests are to be sent.
-     */
-    private fun HostedURLBuilder.edit(): HostedURLBuilder {
-      return path("api").path("v1").path("accounts").path("update_credentials")
-    }
+      .post(editRoute) { parameters { append("note", "$bio") } }
   }
 }

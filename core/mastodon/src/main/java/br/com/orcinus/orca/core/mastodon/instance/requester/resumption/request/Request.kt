@@ -23,6 +23,7 @@ import androidx.room.PrimaryKey
 import br.com.orcinus.orca.core.mastodon.instance.requester.InternalRequesterApi
 import io.ktor.http.Headers
 import io.ktor.http.content.PartData
+import io.ktor.util.StringValues
 
 /**
  * Persistable entity of an HTTP request.
@@ -31,6 +32,7 @@ import io.ktor.http.content.PartData
  * @property methodName Name of the HTTP method called on the [route].
  * @property route Specific resource on which the HTTP method is being called.
  * @property headers [String]-serialized form of the added [Headers].
+ * @property parameters Serialized version of [StringValues] that have been added as parameters.
  * @property form Serialized version of multiple [PartData].
  * @property timestamp Unix time in which the request was performed.
  * @throws IllegalStateException If the [methodName] isn't that of a supported method (that is,
@@ -46,6 +48,7 @@ constructor(
   @ColumnInfo(name = "method_name") @MethodName val methodName: String,
   val route: String,
   val headers: String,
+  val parameters: String,
   val form: String,
   val timestamp: Long
 ) {
@@ -71,6 +74,7 @@ constructor(
    * @param methodName Name of the HTTP method called on the [route].
    * @param route Specific resource on which the HTTP method is being called.
    * @param headers [String]-serialized form of the added [Headers].
+   * @param parameters Serialized version of [StringValues] that have been added as parameters.
    * @param form Serialized version of multiple [PartData].
    * @param timestamp Unix time in which the request was performed.
    * @throws IllegalStateException If the [methodName] isn't that of a supported method (that is,
@@ -83,13 +87,15 @@ constructor(
     @MethodName methodName: String,
     route: String,
     headers: String,
+    parameters: String,
     form: String,
     timestamp: Long
   ) : this(
-    generateID(methodName, route, headers, form),
+    generateID(methodName, route, headers, parameters, form),
     methodName,
     route,
     headers,
+    parameters,
     form,
     timestamp
   )
@@ -126,6 +132,7 @@ constructor(
      * @param methodName Name of the HTTP method called on the [route].
      * @param route Specific resource on which the HTTP method is being called.
      * @param headers [String]-serialized form of the [Headers] to be added.
+     * @param parameters Serialized version of [StringValues] that have been added as parameters.
      * @param form Serialized version of multiple [PartData].
      */
     @InternalRequesterApi
@@ -133,9 +140,10 @@ constructor(
       @MethodName methodName: String,
       route: String,
       headers: String,
+      parameters: String,
       form: String
     ): Int {
-      return methodName.plus(route).plus(headers).plus(form).hashCode()
+      return methodName.plus(route).plus(headers).plus(parameters).plus(form).hashCode()
     }
   }
 }

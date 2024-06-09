@@ -48,15 +48,12 @@ internal fun CommentStat(
       (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
         .requester
         .authenticated()
-        .post({
-          path("api")
-            .path("v1")
-            .path("statuses")
-            .query()
-            .parameter("in_reply_to_id", id)
-            .parameter("status", "${it.content.text}")
-            .build()
-        })
+        .post({ path("api").path("v1").path("statuses").build() }) {
+          parameters {
+            append("in_reply_to_id", id)
+            append("status", "${it.content.text}")
+          }
+        }
     }
     onRemove {
       (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)

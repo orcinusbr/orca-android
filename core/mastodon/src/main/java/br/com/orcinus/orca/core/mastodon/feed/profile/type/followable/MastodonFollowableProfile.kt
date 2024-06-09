@@ -73,8 +73,8 @@ internal data class MastodonFollowableProfile<T : Follow>(
             when (follow) {
               Follow.Public.following(),
               Follow.Private.requested(),
-              Follow.Private.following() -> path("unfollow")
-              else -> path("follow")
+              Follow.Private.following() -> path("follow")
+              else -> path("unfollow")
             }
           }
           .build()
