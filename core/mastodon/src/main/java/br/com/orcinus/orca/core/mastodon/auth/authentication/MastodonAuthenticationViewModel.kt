@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -62,18 +62,16 @@ private constructor(
     viewModelScope.launch {
       (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
         .requester
-        .post({
-          path("oauth")
-            .path("token")
-            .query()
-            .parameter("grant_type", "authorization_code")
-            .parameter("code", authorizationCode)
-            .parameter("client_id", Mastodon.CLIENT_ID)
-            .parameter("client_secret", Mastodon.CLIENT_SECRET)
-            .parameter("redirect_uri", redirectUri)
-            .parameter("scope", Mastodon.SCOPES)
-            .build()
-        })
+        .post({ path("oauth").path("token").build() }) {
+          parameters {
+            append("grant_type", "authorization_code")
+            append("code", authorizationCode)
+            append("client_id", Mastodon.CLIENT_ID)
+            append("client_secret", Mastodon.CLIENT_SECRET)
+            append("redirect_uri", redirectUri)
+            append("scope", Mastodon.SCOPES)
+          }
+        }
         .body<MastodonAuthenticationToken>()
         .toActor(avatarLoaderProvider)
         .run(onAuthentication)

@@ -31,11 +31,14 @@ import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.delete
+import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.get
 import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.Headers
+import io.ktor.http.Parameters
 import io.ktor.http.content.PartData
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.util.StringValuesBuilder
@@ -79,10 +82,9 @@ internal open class Requester(
   /**
    * Modifications that have been applied to a request to be performed.
    *
-   * @property headers [Headers] that have been added.
+   * @property headers [Headers] that have been appended.
    */
-  @JvmInline
-  value class Configuration
+  open class Configuration
   @InternalRequesterApi
   constructor(@get:InternalRequesterApi val headers: Headers) {
     /**
@@ -90,12 +92,13 @@ internal open class Requester(
      *
      * @see build
      */
-    class Builder @InternalRequesterApi constructor() {
-      /** [Headers] to be added. */
-      private var headers = Headers.Empty
+    open class Builder @InternalRequesterApi constructor() {
+      /** [Headers] to be appended. */
+      protected var headers = Headers.Empty
+        private set
 
       /**
-       * Adds headers to the request.
+       * Appends headers to the request.
        *
        * @param build Builds the headers to be added.
        */
@@ -109,8 +112,73 @@ internal open class Requester(
 
       /** Builds a [Configuration] with the applied modifications. */
       @InternalRequesterApi
-      fun build(): Configuration {
+      open fun build(): Configuration {
         return Configuration(headers)
+      }
+    }
+
+    /**
+     * [Configuration] specific to an `application/x-www-form-urlencoded`-MIME-typed request.
+     *
+     * @property headers [Headers] that have been appended.
+     * @property parameters [Parameters] that have been appended to the body.
+     */
+    class UrlEncoded
+    @InternalRequesterApi
+    constructor(headers: Headers, @get:InternalRequesterApi val parameters: Parameters) :
+      Configuration(headers) {
+      /**
+       * [Configuration.Builder] that builds a [Configuration] for an
+       * `application/x-www-form-urlencoded`-MIME-typed request.
+       */
+      class Builder : Configuration.Builder() {
+        /** [Parameters] to be appended to the body. */
+        private var parameters = Parameters.Empty
+
+        /**
+         * Appends parameters to the body of the request.
+         *
+         * @param build Builds the parameters to be added.
+         */
+        fun parameters(build: StringValuesBuilder.() -> Unit) {
+          parameters =
+            Parameters.build {
+              appendAll(parameters)
+              build(this)
+            }
+        }
+
+        override fun build(): UrlEncoded {
+          return UrlEncoded(headers, parameters)
+        }
+      }
+
+      override fun applyTo(requestBuilder: HttpRequestBuilder) {
+        super.applyTo(requestBuilder)
+        requestBuilder.setBody(FormDataContent(parameters))
+      }
+
+      companion object {
+        /**
+         * [Configuration] for an `application/x-www-form-urlencoded`-MIME-typed request on which
+         * modifications aren't performed.
+         */
+        private val empty = UrlEncoded(Headers.Empty, Parameters.Empty)
+
+        /**
+         * Instantiates a [Builder] for building the returned
+         * `application/x-www-form-urlencoded`-specific [Configuration].
+         *
+         * @param build Modifies the [Configuration] to be built.
+         */
+        @InternalRequesterApi
+        fun build(build: Builder.() -> Unit): UrlEncoded {
+          return if (build === noOpBuild) {
+            empty
+          } else {
+            Builder().apply(build).build()
+          }
+        }
       }
     }
 
@@ -120,8 +188,9 @@ internal open class Requester(
      * @param requestBuilder [HttpRequestBuilder] to which the modifications encompassed by this
      *   [Configuration] will be applied.
      */
+    @CallSuper
     @InternalRequesterApi
-    fun applyTo(requestBuilder: HttpRequestBuilder) {
+    open fun applyTo(requestBuilder: HttpRequestBuilder) {
       requestBuilder.headers.appendAll(headers)
     }
 
@@ -182,9 +251,9 @@ internal open class Requester(
    */
   suspend fun post(
     route: HostedURLBuilder.() -> URI,
-    config: Configuration.Builder.() -> Unit = Configuration.noOpBuild
+    config: Configuration.UrlEncoded.Builder.() -> Unit = Configuration.noOpBuild
   ): HttpResponse {
-    return post(Configuration.build(config), absolute(route), noOpRequestBuild)
+    return post(Configuration.UrlEncoded.build(config), absolute(route), noOpRequestBuild)
   }
 
   /**

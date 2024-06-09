@@ -33,7 +33,7 @@ import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.forms.formData
 import io.ktor.client.statement.HttpResponse
-import io.ktor.http.Headers
+import io.ktor.http.Parameters
 import io.ktor.http.content.PartData
 import io.ktor.util.StringValues
 import java.net.URI
@@ -114,7 +114,7 @@ constructor(
     route: URI,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
-    return prepareForResumption(Request.MethodName.DELETE, config.headers, formData(), route) {
+    return prepareForResumption(Request.MethodName.DELETE, config, formData(), route) {
       super.delete(config, route, build)
     }
   }
@@ -124,7 +124,7 @@ constructor(
     route: URI,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
-    return prepareForResumption(Request.MethodName.GET, config.headers, formData(), route) {
+    return prepareForResumption(Request.MethodName.GET, config, formData(), route) {
       super.get(config, route, build)
     }
   }
@@ -134,7 +134,7 @@ constructor(
     route: URI,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
-    return prepareForResumption(Request.MethodName.POST, config.headers, formData(), route) {
+    return prepareForResumption(Request.MethodName.POST, config, formData(), route) {
       super.post(config, route, build)
     }
   }
@@ -145,7 +145,7 @@ constructor(
     form: List<PartData>,
     build: HttpRequestBuilder.() -> Unit
   ): HttpResponse {
-    return prepareForResumption(Request.MethodName.POST, config.headers, formData(), route) {
+    return prepareForResumption(Request.MethodName.POST, config, formData(), route) {
       super.post(config, route, form, build)
     }
   }
@@ -173,7 +173,14 @@ constructor(
           val form = Json.decodeFromString(ListSerializer(PartDataKSerializer), request.form)
           val isFormEmpty = form.isEmpty()
           if (isFormEmpty) {
-            post(route, config)
+            post(route) {
+              config()
+              parameters {
+                val parameters =
+                  Json.decodeFromString(StringValues.serializer(), request.parameters)
+                appendAll(parameters)
+              }
+            }
           } else {
             post(route, form, config)
           }
@@ -200,7 +207,7 @@ constructor(
    *
    * @param methodName Name of the HTTP method that's equivalent to that of the request to be
    *   performed.
-   * @param headers [Headers] to be added to the request.
+   * @param config [Requester.Configuration] with which the request will be configured.
    * @param form [PartData] to be included as headers.
    * @param route Builds the route from the [baseURI] to which the request will be sent.
    * @param request Actual performance of the request to which the HTTP method refers.
@@ -208,7 +215,7 @@ constructor(
   @OptIn(ExperimentalContracts::class)
   private suspend inline fun prepareForResumption(
     @Request.MethodName methodName: String,
-    headers: Headers,
+    config: Configuration,
     form: List<PartData>,
     route: URI,
     crossinline request: suspend () -> HttpResponse
@@ -219,7 +226,7 @@ constructor(
         retrieveOrCreateRequest(
           methodName,
           "$route",
-          Json.encodeToString(StringValues.serializer(), headers),
+          config,
           Json.encodeToString(ListSerializer(PartDataKSerializer), form)
         )
       requestDao.insert(entity)
@@ -236,21 +243,29 @@ constructor(
    *
    * @param methodName Name of the HTTP method called on the [route].
    * @param route Specific, absolute resource on which the HTTP method is being called.
-   * @param serializedHeaders [String]-serialized form of the [Headers].
+   * @param config [Requester.Configuration] with which the request will be configured.
    * @param serializedForm Serialized version of multiple [PartData].
    */
   private suspend fun retrieveOrCreateRequest(
     @Request.MethodName methodName: String,
     route: String,
-    serializedHeaders: String,
+    config: Configuration,
     serializedForm: String
   ): Request {
-    val id = Request.generateID(methodName, route, serializedHeaders, serializedForm)
+    val serializedHeaders = Json.encodeToString(StringValues.serializer(), config.headers)
+    val serializedParameters =
+      Json.encodeToString(
+        StringValues.serializer(),
+        if (config is Configuration.UrlEncoded) config.parameters else Parameters.Empty
+      )
+    val id =
+      Request.generateID(methodName, route, serializedHeaders, serializedParameters, serializedForm)
     return requestDao.selectByID(id)
       ?: Request(
         methodName,
         route,
         serializedHeaders,
+        serializedParameters,
         serializedForm,
         timestamp = elapsedTimeProvider.provide().inWholeMilliseconds
       )

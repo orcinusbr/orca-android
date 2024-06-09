@@ -55,7 +55,7 @@ internal class MastodonProfileSearchResultsFetcher(
       .requester
       .authenticated()
       .get({
-        path("api").path("v1").path("accounts").path("search").query().parameter("q", key).build()
+        path("api").path("v2").path("accounts").path("search").query().parameter("q", key).build()
       })
       .body<List<MastodonAccount>>()
       .map {
