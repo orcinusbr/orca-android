@@ -24,26 +24,20 @@ import java.util.Objects
 
 /**
  * [CharSequence] that supports stylization such as emboldening, italicizing and linking (through
- * plain [URI]s, e-mails, mentions and even simple text).
+ * plain [URI]s, e-mails and even simple text).
  *
- * [Markdown] can be created either through its constructors, or through [buildMarkdown].
+ * [Markdown] can be created either through its factory methods ([Companion.unstyled] and
+ * [Companion.styled]), or through [buildMarkdown].
  *
- * @param text Underlying [String] that's been built.
- * @param styles [Style]s applied to the [text].
+ * @property text Underlying [String] that's been built.
+ * @property styles [Style]s applied to the [text].
  * @see Builder.bold
  * @see Builder.italic
  * @see Builder.link
  * @see Builder.build
  */
-class Markdown(private val text: String, val styles: List<Style>) :
+class Markdown private constructor(private val text: String, val styles: List<Style>) :
   CharSequence by text, Serializable {
-  /**
-   * [Markdown] without [Style]s.
-   *
-   * @param text [String] without any [Style]s attached to it.
-   */
-  constructor(text: String) : this(text, styles = emptyList())
-
   /** Allows text and [Style]s to be appended and for [Markdown] to be built. */
   class Builder @PublishedApi internal constructor() {
     /** [String] to be the [text][Markdown.text] of the [Markdown] being built. */
@@ -132,7 +126,7 @@ class Markdown(private val text: String, val styles: List<Style>) :
       val mailto = { email: String -> URI("mailto", email, null) }
       val emails = text.map(Regex.email) { indices, email -> Style.Link(mailto(email), indices) }
       val urls = text.map(Regex.url) { indices, url -> Style.Link(URI(url), indices) }
-      return Markdown(text, styles + emails + urls)
+      return styled(text, styles + emails + urls)
     }
 
     /**
@@ -180,5 +174,32 @@ class Markdown(private val text: String, val styles: List<Style>) :
     )
   }
 
-  companion object
+  companion object {
+    /**
+     * [Markdown] with an empty, unstyled [text].
+     *
+     * @see styles
+     */
+    val empty = Markdown("", styles = emptyList())
+
+    /**
+     * Creates [Markdown] without [Style]s.
+     *
+     * @param text Unstyled underlying [String].
+     */
+    fun unstyled(text: String): Markdown {
+      return styled(text, styles = emptyList())
+    }
+
+    /**
+     * Creates [Markdown] with [Style]s.
+     *
+     * @param text Styled underlying [String].
+     * @param styles [Style]s to be applied to the [text].
+     */
+    fun styled(text: String, styles: List<Style>): Markdown {
+      val isEmpty = text.isEmpty() && styles.isEmpty()
+      return if (isEmpty) empty else Markdown(text, styles)
+    }
+  }
 }

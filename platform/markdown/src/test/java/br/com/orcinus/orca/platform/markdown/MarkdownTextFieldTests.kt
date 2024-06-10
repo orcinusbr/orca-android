@@ -17,7 +17,6 @@ package br.com.orcinus.orca.platform.markdown
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -43,9 +42,7 @@ internal class MarkdownTextFieldTests {
   fun doesNotChangeText() {
     composeRule
       .apply {
-        setContent {
-          MarkdownTextField(stateRule.state, remember { Markdown("") }, onTextChange = {})
-        }
+        setContent { MarkdownTextField(stateRule.state, Markdown.empty, onTextChange = {}) }
       }
       .onMarkdownTextField()
       .apply { performTextInput(":c") }
@@ -54,7 +51,7 @@ internal class MarkdownTextFieldTests {
 
   @Test
   fun notifiesChangesToText() {
-    var text by mutableStateOf(Markdown(""))
+    var text by mutableStateOf(Markdown.empty)
     composeRule
       .apply {
         setContent { MarkdownTextField(stateRule.state, text, onTextChange = { text = it }) }
@@ -66,7 +63,7 @@ internal class MarkdownTextFieldTests {
 
   @Test
   fun notifiesChangeToTextWhenStyleIsApplied() {
-    var text by mutableStateOf(Markdown("君の名は。"))
+    var text by mutableStateOf(Markdown.unstyled("君の名は。"))
     composeRule.setContent {
       MarkdownTextField(stateRule.state, text, onTextChange = { text = it })
     }

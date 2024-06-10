@@ -51,7 +51,7 @@ internal class FigureTests {
         Figure.of(
           Posts.withSample.single().id,
           Author.sample.name,
-          Content.from(Domain.sample, text = Markdown(""), Attachment.samples) { null },
+          Content.from(Domain.sample, text = Markdown.empty, Attachment.samples) { null },
           onLinkClick = {}
         )
       )

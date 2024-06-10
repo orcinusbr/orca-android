@@ -22,5 +22,5 @@ import br.com.orcinus.orca.std.markdown.Markdown
 /** Converts this [AnnotatedString] into [Markdown]. */
 fun AnnotatedString.toMarkdown(): Markdown {
   val styles = spanStyles.flatMap { StyleExtractor.extractAll(it.item, it.start..it.end.dec()) }
-  return Markdown(text, styles)
+  return Markdown.styled(text, styles)
 }

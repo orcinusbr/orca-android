@@ -18,12 +18,35 @@ package br.com.orcinus.orca.std.markdown
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEmpty
+import assertk.assertions.isEqualTo
+import assertk.assertions.isSameAs
 import br.com.orcinus.orca.std.markdown.style.Style
 import java.net.URI
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 
 internal class MarkdownTests {
+  @Test
+  fun createsUnstyledMarkdown() {
+    assertThat(Markdown.unstyled("💍").styles).isEmpty()
+  }
+
+  @Test
+  fun returnsEmptyMarkdownWhenCreatingStyledOneWithBothTextAndStylesBeingEmpty() {
+    assertThat(Markdown.styled("", styles = emptyList())).isSameAs(Markdown.empty)
+  }
+
+  @Test
+  fun createsMarkdownWithSpecifiedTextWhenTextIsNotEmptyAndIsUnstyled() {
+    assertThat("${Markdown.styled("☕️", styles = emptyList())}").isEqualTo("☕️")
+  }
+
+  @Test
+  fun createsMarkdownWithSpecifiedStylesWhenTextIsEmptyAndUnstyled() {
+    assertThat(Markdown.styled("", styles = listOf(Style.Bold(0..0))).styles)
+      .containsExactly(Style.Bold(0..0))
+  }
+
   @Test
   fun doesNotStylizeMalformattedEmailWhenItIsAppended() {
     assertThat(buildMarkdown { +"john@@appleseed.com" }.styles).isEmpty()
