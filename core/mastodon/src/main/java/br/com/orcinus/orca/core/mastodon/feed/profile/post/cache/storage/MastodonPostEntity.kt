@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -99,7 +99,7 @@ internal data class MastodonPostEntity(
     val author = profileCache.get(authorID).toAuthor()
     val domain = Injector.from<CoreModule>().instanceProvider().provide().domain
     val styles = dao.selectWithStylesByID(id).styles.map(MastodonStyleEntity::toStyle)
-    val text = Markdown(text, styles)
+    val text = Markdown.styled(text, styles)
     val coverLoader = headlineCoverURI?.let { imageLoaderProvider.provide(URI(it)) }
     val content =
       Content.from(domain, text) {

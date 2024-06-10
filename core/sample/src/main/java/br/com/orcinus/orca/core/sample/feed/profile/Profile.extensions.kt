@@ -43,7 +43,7 @@ fun Profile.Companion.createSample(
     override val avatarLoader = author.avatarLoader
     override val name = author.name
     override val bio =
-      Markdown(
+      Markdown.unstyled(
         "Co-founder @ Grupo Estoa, software engineer, author, writer and content creator; " +
           "neuroscience, quantum physics and philosophy enthusiast."
       )

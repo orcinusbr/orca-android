@@ -28,7 +28,8 @@ import kotlin.test.Test
 internal class AnnotatedStringExtensionsTests {
   @Test
   fun convertsAnnotatedStringWithoutAnnotationsIntoMarkdown() {
-    assertThat(AnnotatedString("Hello, world!").toMarkdown()).isEqualTo(Markdown("Hello, world!"))
+    assertThat(AnnotatedString("Hello, world!").toMarkdown())
+      .isEqualTo(Markdown.unstyled("Hello, world!"))
   }
 
   @Test

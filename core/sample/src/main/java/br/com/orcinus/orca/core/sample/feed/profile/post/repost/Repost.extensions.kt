@@ -54,7 +54,7 @@ fun Repost.Companion.createSample(
       Author.createRamboSample(imageLoaderProvider),
       Content.from(
         Domain.sample,
-        Markdown(
+        Markdown.unstyled(
           "Programming life hack. Looking for real-world examples of how an API is used? Search " +
             "for code on GitHub like so: “APINameHere path:*.extension”. Practical example for a " +
             "MusicKit API in Swift: “MusicCatalogResourceRequest extension:*.swift”. I can " +

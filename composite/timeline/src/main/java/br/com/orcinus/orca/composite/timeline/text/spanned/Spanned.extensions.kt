@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -36,5 +36,5 @@ import br.com.orcinus.orca.std.markdown.style.Style
 fun Spanned.toMarkdown(context: Context): Markdown {
   val text = toString()
   val styles = getIndexedSpans(context).flatMap(IndexedSpans::toStyles)
-  return Markdown(text, styles)
+  return Markdown.styled(text, styles)
 }

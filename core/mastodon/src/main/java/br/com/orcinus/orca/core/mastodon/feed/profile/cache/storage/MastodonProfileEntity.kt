@@ -172,7 +172,7 @@ internal constructor(
    */
   private suspend fun getBioAsMarkdown(dao: MastodonProfileEntityDao): Markdown {
     val styles = dao.selectWithBioStylesByID(id).styles.map(MastodonStyleEntity::toStyle)
-    return Markdown(bio, styles)
+    return Markdown.styled(bio, styles)
   }
 
   companion object {

@@ -86,7 +86,7 @@ fun MarkdownTextField(
   val context = LocalContext.current
   val editText = remember(context) { EditText(context) }
   var styles by remember(state) { mutableStateOf(emptyList<Style>()) }
-  val markDown: (String) -> Markdown by rememberUpdatedState { Markdown(it, styles) }
+  val markDown: (String) -> Markdown by rememberUpdatedState { Markdown.styled(it, styles) }
   val onStylizationListener =
     remember(state) {
       MarkdownTextFieldState.OnStylizationListener {

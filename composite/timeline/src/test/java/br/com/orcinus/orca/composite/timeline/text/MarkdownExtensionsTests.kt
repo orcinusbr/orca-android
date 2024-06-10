@@ -28,6 +28,7 @@ import org.robolectric.RobolectricTestRunner
 internal class MarkdownExtensionsTests {
   @Test
   fun breaksLineTwiceBetweenParagraphsWhenConvertingHtmlToMarkdown() {
-    assertThat(Markdown.fromHtml(context, "<p>👔</p><p>🥾</p>")).isEqualTo(Markdown("👔\n\n🥾"))
+    assertThat(Markdown.fromHtml(context, "<p>👔</p><p>🥾</p>"))
+      .isEqualTo(Markdown.unstyled("👔\n\n🥾"))
   }
 }

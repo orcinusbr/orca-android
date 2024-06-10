@@ -30,7 +30,7 @@ internal class ContentTests {
   @Test
   fun `GIVEN a text with a trailing link and a headline WHEN creating content from them THEN the link is removed`() {
     assertEquals(
-      Markdown("😗"),
+      Markdown.unstyled("😗"),
       Content.from(
           Domain.sample,
           buildMarkdown {
