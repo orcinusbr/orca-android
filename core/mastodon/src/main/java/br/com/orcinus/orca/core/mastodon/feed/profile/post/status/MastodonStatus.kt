@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -32,6 +32,7 @@ import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.markdown.Markdown
 import java.net.URI
+import java.net.URL
 import java.time.ZonedDateTime
 import kotlinx.serialization.Serializable
 
@@ -45,7 +46,7 @@ import kotlinx.serialization.Serializable
  * @param reblogsCount Amount of times it's been reblogged.
  * @param favouritesCount Amount of times it's been favorited.
  * @param repliesCount Amount of replies that's been received.
- * @param uri String [URI] that leads to this [MastodonStatus].
+ * @param url String [URL] that leads to this [MastodonStatus].
  * @param reblog [MastodonStatus] that's being reblogged in this one.
  * @param card [MastodonCard] for the highlighted [URI] that's in the [content].
  * @param content Text that's been written.
@@ -64,7 +65,7 @@ internal constructor(
   internal val reblogsCount: Int,
   internal val favouritesCount: Int,
   internal val repliesCount: Int,
-  internal val uri: String,
+  internal val url: String,
   internal val reblog: MastodonStatus?,
   internal val card: MastodonCard?,
   internal val content: String,
@@ -96,7 +97,7 @@ internal constructor(
       (reblog?.mediaAttachments ?: mediaAttachments).map(MastodonAttachment::toAttachment)
     val content = Content.from(domain, text, attachments) { card?.toHeadline(imageLoaderProvider) }
     val publicationDateTime = ZonedDateTime.parse(reblog?.createdAt ?: createdAt)
-    val uri = URI(reblog?.uri ?: uri)
+    val uri = URI(reblog?.url ?: url)
     return MastodonPost(
         id,
         imageLoaderProvider,
