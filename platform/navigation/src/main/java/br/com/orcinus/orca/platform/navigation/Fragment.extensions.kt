@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -19,6 +19,8 @@ import android.app.Activity
 import android.app.Application
 import android.content.Intent
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentContainerView
 
 /**
  * [Application] to which this [Fragment] is attached.
@@ -29,6 +31,24 @@ val Fragment.application
   get() =
     activity?.application
       ?: throw IllegalStateException("Fragment $this not attached to an Application.")
+
+/**
+ * [Navigator] through which navigation can be performed.
+ *
+ * **NOTE**: Because the [FragmentContainerView] that this [Fragment]'s [FragmentActivity] holds
+ * needs to have an ID for the [Navigator] to work properly, one is automatically generated and
+ * assigned to it if it doesn't already have one.
+ *
+ * @throws IllegalStateException If a [FragmentContainerView] isn't found.
+ */
+val Fragment.navigator
+  get() = Navigator.Pool.get(this)
+
+/** [Navigator] by which navigation to this [Fragment] has potentially been performed. */
+val Fragment.parentNavigator
+  get() =
+    with(parentFragmentManager) { fragments[fragments.lastIndex - backStackEntryCount.dec()] }
+      .navigator
 
 /**
  * Gets the argument put either into this [Fragment]'s arguments or its [Activity]'s [Intent]'s

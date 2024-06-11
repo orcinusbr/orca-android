@@ -28,6 +28,7 @@ android {
 dependencies {
   api(project(":composite:composable"))
   api(project(":core"))
+  api(project(":platform:navigation"))
 
   ksp(project(":std:injector-processor"))
 
@@ -35,7 +36,6 @@ dependencies {
   implementation(project(":ext:coroutines"))
   implementation(project(":platform:autos"))
   implementation(project(":platform:intents"))
-  implementation(project(":platform:navigation"))
   implementation(project(":std:injector"))
   implementation(libs.android.fragment.ktx)
   implementation(libs.loadable.list)

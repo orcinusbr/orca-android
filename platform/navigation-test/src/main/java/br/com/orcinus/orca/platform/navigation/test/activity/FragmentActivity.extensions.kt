@@ -22,12 +22,12 @@ import br.com.orcinus.orca.platform.navigation.Navigator
 import br.com.orcinus.orca.platform.navigation.navigator
 
 /**
- * Allows for this [FragmentActivity]'s [Navigator] to be obtained by overriding its content and
+ * Allows this [FragmentActivity] to have a [Navigator] created for it by overriding its content and
  * setting it as a [FragmentContainerView].
  *
+ * @see Navigator.withoutBackStack
  * @see navigator
  */
-@PublishedApi
-internal fun FragmentActivity.makeNavigable() {
+fun FragmentActivity.makeNavigable() {
   FragmentContainerView(this).apply { id = View.generateViewId() }.run(::setContentView)
 }

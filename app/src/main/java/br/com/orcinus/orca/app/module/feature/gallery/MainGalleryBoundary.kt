@@ -13,14 +13,14 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.app.module.feature.search
+package br.com.orcinus.orca.app.module.feature.gallery
 
-import br.com.orcinus.orca.feature.profiledetails.ProfileDetailsFragment
-import br.com.orcinus.orca.feature.search.SearchBoundary
+import br.com.orcinus.orca.feature.gallery.GalleryBoundary
+import br.com.orcinus.orca.feature.postdetails.PostDetailsFragment
 import br.com.orcinus.orca.platform.navigation.Navigator
 
-internal class NavigatorSearchBoundary(private val navigator: Navigator) : SearchBoundary {
-  override fun navigateToProfileDetails(id: String) {
-    ProfileDetailsFragment.navigate(navigator, id)
+internal object MainGalleryBoundary : GalleryBoundary {
+  override fun navigateToPostDetails(navigator: Navigator, id: String) {
+    PostDetailsFragment.navigate(navigator, id)
   }
 }

@@ -44,8 +44,9 @@ inline fun <reified T : Fragment> launchFragmentInNavigationContainer(
   val activityScenario =
     launchActivity<EmptyFragmentActivity>().apply {
       onActivity {
-        it?.makeNavigable()
-        it?.navigator?.navigate(suddenly()) {
+        it ?: return@onActivity
+        it.makeNavigable()
+        Navigator.withoutBackStack(it).navigate(suddenly()) {
           instantiation().apply { setTag("FragmentScenario_Fragment_Tag") }
         }
       }

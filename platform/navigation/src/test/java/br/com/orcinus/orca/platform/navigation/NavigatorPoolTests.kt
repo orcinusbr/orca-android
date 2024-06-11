@@ -15,13 +15,12 @@
 
 package br.com.orcinus.orca.platform.navigation
 
-import androidx.lifecycle.Lifecycle
-import androidx.test.core.app.launchActivity
+import androidx.fragment.app.Fragment
 import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isFalse
-import assertk.assertions.isTrue
-import br.com.orcinus.orca.platform.testing.activity.scenario.activity
+import assertk.assertions.isSameAs
+import br.com.orcinus.orca.platform.navigation.test.fragment.launchFragmentInNavigationContainer
 import kotlin.test.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -30,33 +29,33 @@ import org.robolectric.RobolectricTestRunner
 internal class NavigatorPoolTests {
   @Test
   fun remembers() {
-    launchActivity<NavigationActivity>().use {
-      val activity = checkNotNull(it.activity)
-      val containerID = Navigator.Pool.getContainerIDOrThrow(activity)
-      Navigator.Pool.remember(activity, containerID)
-      assertThat(containerID in Navigator.Pool).isTrue()
+    launchFragmentInNavigationContainer(::Fragment).use { scenario ->
+      scenario.onFragment { fragment ->
+        val navigator = Navigator.Pool.get(fragment)
+        assertThat(Navigator.Pool.get(fragment)).isSameAs(navigator)
+      }
     }
   }
 
   @Test
-  fun removesNavigatorAfterActivityIsDestroyed() {
-    launchActivity<NavigationActivity>().use {
-      val activity = checkNotNull(it.activity)
-      val containerID = Navigator.Pool.getContainerIDOrThrow(activity)
-      Navigator.Pool.remember(activity, containerID)
-      it.moveToState(Lifecycle.State.DESTROYED)
-      assertThat(containerID in Navigator.Pool).isFalse()
+  fun removesNavigatorAfterActivityToWhichTheFragmentIsAttachedIsDestroyed() {
+    launchFragmentInNavigationContainer(::Fragment).use { scenario ->
+      scenario.onFragment { fragment ->
+        Navigator.Pool.get(fragment)
+        scenario.recreate()
+        assertThat(fragment in Navigator.Pool).isFalse()
+      }
     }
   }
 
   @Test
-  fun removesOnNavigationListenersFromNavigatorAfterActivityIsDestroyed() {
-    launchActivity<NavigationActivity>().use {
-      val activity = checkNotNull(it.activity)
-      val containerID = Navigator.Pool.getContainerIDOrThrow(activity)
-      val navigator = Navigator.Pool.remember(activity, containerID)
-      it.moveToState(Lifecycle.State.DESTROYED)
-      assertThat(navigator.onNavigationListeners).isEmpty()
+  fun removesOnNavigationListenersFromNavigatorAfterTheActivityToWhichTheFragmentIsAttachedIsDestroyed() {
+    launchFragmentInNavigationContainer(::Fragment).use { scenario ->
+      scenario.onFragment { fragment ->
+        val navigator = Navigator.Pool.get(fragment)
+        fragment.requireActivity().finish()
+        assertThat(navigator.onNavigationListeners).isEmpty()
+      }
     }
   }
 }

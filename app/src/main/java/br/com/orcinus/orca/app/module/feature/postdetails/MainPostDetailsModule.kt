@@ -19,12 +19,11 @@ import android.content.Context
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.feature.postdetails.PostDetailsModule
-import br.com.orcinus.orca.platform.navigation.Navigator
 import br.com.orcinus.orca.std.injector.Injector
-import br.com.orcinus.orca.std.injector.module.injection.injectionOf
+import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 
-internal class MainPostDetailsModule(context: Context, navigator: Navigator) :
+internal class MainPostDetailsModule(context: Context) :
   PostDetailsModule(
-    injectionOf { Injector.from<CoreModule>().instanceProvider().provide().postProvider },
-    injectionOf { NavigatorPostDetailsBoundary(context, navigator) }
+    lazyInjectionOf { Injector.from<CoreModule>().instanceProvider().provide().postProvider },
+    lazyInjectionOf { MainPostDetailsBoundary(context) }
   )

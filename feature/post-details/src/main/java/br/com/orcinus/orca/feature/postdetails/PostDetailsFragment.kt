@@ -23,6 +23,7 @@ import br.com.orcinus.orca.feature.postdetails.viewmodel.PostDetailsViewModel
 import br.com.orcinus.orca.platform.navigation.Navigator
 import br.com.orcinus.orca.platform.navigation.application
 import br.com.orcinus.orca.platform.navigation.argument
+import br.com.orcinus.orca.platform.navigation.parentNavigator
 import br.com.orcinus.orca.platform.navigation.transition.opening
 import br.com.orcinus.orca.std.injector.Injector
 
@@ -35,10 +36,13 @@ class PostDetailsFragment private constructor() : ComposableFragment() {
         application,
         module.postProvider(),
         id,
-        onLinkClick = module.boundary()::navigateTo,
-        onThumbnailClickListener = module.boundary()::navigateToGallery
+        onLinkClick = boundary::navigateTo,
+        onThumbnailClickListener = boundary::navigateToGallery
       )
     }
+
+  private val boundary
+    get() = module.boundary()
 
   private constructor(id: String) : this() {
     arguments = bundleOf(ID_KEY to id)
@@ -46,7 +50,11 @@ class PostDetailsFragment private constructor() : ComposableFragment() {
 
   @Composable
   override fun Content() {
-    PostDetails(viewModel, module.boundary())
+    PostDetails(
+      viewModel,
+      onNavigateToDetails = { boundary.navigateToPostDetails(parentNavigator, it) },
+      onBackwardsNavigation = { boundary.pop(parentNavigator) }
+    )
   }
 
   companion object {

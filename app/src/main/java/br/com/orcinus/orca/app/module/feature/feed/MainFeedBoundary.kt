@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.app.module.feature.profiledetails
+package br.com.orcinus.orca.app.module.feature.feed
 
 import android.content.Context
 import androidx.compose.runtime.Composable
@@ -21,16 +21,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
 import br.com.orcinus.orca.ext.intents.browseTo
+import br.com.orcinus.orca.feature.composer.ComposerActivity
+import br.com.orcinus.orca.feature.feed.FeedBoundary
 import br.com.orcinus.orca.feature.gallery.GalleryActivity
 import br.com.orcinus.orca.feature.postdetails.PostDetailsFragment
-import br.com.orcinus.orca.feature.profiledetails.ProfileDetailsBoundary
+import br.com.orcinus.orca.feature.search.SearchActivity
 import br.com.orcinus.orca.platform.navigation.Navigator
 import java.net.URI
 
-internal class NavigatorProfileDetailsBoundary(
-  private val context: Context,
-  private val navigator: Navigator
-) : ProfileDetailsBoundary {
+internal class MainFeedBoundary(private val context: Context) : FeedBoundary {
+  override fun navigateToSearch(navigator: Navigator) {
+    SearchActivity.start(context)
+  }
+
   override fun navigateTo(uri: URI) {
     context.browseTo(uri)
   }
@@ -44,7 +47,11 @@ internal class NavigatorProfileDetailsBoundary(
     GalleryActivity.start(context, postID, entrypointIndex, secondary, entrypoint)
   }
 
-  override fun navigateToPostDetails(id: String) {
+  override fun navigateToPostDetails(navigator: Navigator, id: String) {
     PostDetailsFragment.navigate(navigator, id)
+  }
+
+  override fun navigateToComposer() {
+    ComposerActivity.start(context)
   }
 }

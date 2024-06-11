@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.app.module.feature.postdetails
+package br.com.orcinus.orca.app.module.feature.profiledetails
 
 import android.content.Context
 import androidx.compose.runtime.Composable
@@ -22,15 +22,12 @@ import androidx.compose.ui.layout.ContentScale
 import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
 import br.com.orcinus.orca.ext.intents.browseTo
 import br.com.orcinus.orca.feature.gallery.GalleryActivity
-import br.com.orcinus.orca.feature.postdetails.PostDetailsBoundary
 import br.com.orcinus.orca.feature.postdetails.PostDetailsFragment
+import br.com.orcinus.orca.feature.profiledetails.ProfileDetailsBoundary
 import br.com.orcinus.orca.platform.navigation.Navigator
 import java.net.URI
 
-internal class NavigatorPostDetailsBoundary(
-  private val context: Context,
-  private val navigator: Navigator
-) : PostDetailsBoundary {
+internal class MainProfileDetailsBoundary(private val context: Context) : ProfileDetailsBoundary {
   override fun navigateTo(uri: URI) {
     context.browseTo(uri)
   }
@@ -44,11 +41,7 @@ internal class NavigatorPostDetailsBoundary(
     GalleryActivity.start(context, postID, entrypointIndex, secondary, entrypoint)
   }
 
-  override fun navigateToPostDetails(id: String) {
+  override fun navigateToPostDetails(navigator: Navigator, id: String) {
     PostDetailsFragment.navigate(navigator, id)
-  }
-
-  override fun pop() {
-    navigator.pop()
   }
 }

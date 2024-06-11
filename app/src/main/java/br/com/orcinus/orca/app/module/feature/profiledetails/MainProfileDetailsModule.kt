@@ -19,13 +19,12 @@ import android.content.Context
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetailsModule
-import br.com.orcinus.orca.platform.navigation.Navigator
 import br.com.orcinus.orca.std.injector.Injector
-import br.com.orcinus.orca.std.injector.module.injection.injectionOf
+import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 
-internal class MainProfileDetailsModule(context: Context, navigator: Navigator) :
+internal class MainProfileDetailsModule(context: Context) :
   ProfileDetailsModule(
-    injectionOf { Injector.from<CoreModule>().instanceProvider().provide().profileProvider },
-    injectionOf { Injector.from<CoreModule>().instanceProvider().provide().postProvider },
-    injectionOf { NavigatorProfileDetailsBoundary(context, navigator) }
+    lazyInjectionOf { Injector.from<CoreModule>().instanceProvider().provide().profileProvider },
+    lazyInjectionOf { Injector.from<CoreModule>().instanceProvider().provide().postProvider },
+    lazyInjectionOf { MainProfileDetailsBoundary(context) }
   )

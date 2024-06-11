@@ -35,19 +35,17 @@ import br.com.orcinus.orca.feature.profiledetails.ProfileDetailsModule
 import br.com.orcinus.orca.feature.search.SearchModule
 import br.com.orcinus.orca.feature.settings.SettingsModule
 import br.com.orcinus.orca.feature.settings.termmuting.TermMutingModule
-import br.com.orcinus.orca.platform.navigation.navigator
 import br.com.orcinus.orca.std.injector.Injector
 
 internal interface Injection {
   fun inject(activity: FragmentActivity, coreModule: CoreModule) {
-    val navigator = activity.navigator
-    Injector.inject<Context> { activity }
+    Injector.injectLazily<Context> { activity }
     Injector.register(coreModule)
-    Injector.register<FeedModule>(MainFeedModule(activity, navigator))
-    Injector.register<GalleryModule>(MainGalleryModule(navigator))
-    Injector.register<PostDetailsModule>(MainPostDetailsModule(activity, navigator))
-    Injector.register<ProfileDetailsModule>(MainProfileDetailsModule(activity, navigator))
-    Injector.register<SearchModule>(MainSearchModule(navigator))
+    Injector.register<FeedModule>(MainFeedModule(activity))
+    Injector.register<GalleryModule>(MainGalleryModule)
+    Injector.register<PostDetailsModule>(MainPostDetailsModule(activity))
+    Injector.register<ProfileDetailsModule>(MainProfileDetailsModule(activity))
+    Injector.register<SearchModule>(MainSearchModule)
     Injector.register<SettingsModule>(MainSettingsModule(activity))
     Injector.register<TermMutingModule>(MainTermMutingModule)
     clearDependenciesOnDestroy(activity)

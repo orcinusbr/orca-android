@@ -16,7 +16,6 @@
 package br.com.orcinus.orca.platform.navigation
 
 import android.view.View
-import android.widget.FrameLayout
 import androidx.annotation.Discouraged
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
@@ -41,14 +40,16 @@ import kotlin.reflect.KClass
 /**
  * Navigates to [Fragment]s.
  *
- * @param fragmentManager [FragmentManager] that adds [Fragment]s to the [FragmentContainerView].
- * @param containerID ID of the [FragmentContainerView] to which [Fragment]s will be added.
+ * @property fragmentManager [FragmentManager] that adds [Fragment]s to the [FragmentContainerView].
+ * @property backStack [BackStack] to which [Fragment]s are added.
+ * @property containerID ID of the [FragmentContainerView] to which [Fragment]s will be added.
  * @see navigate
  * @see navigateOrThrow
  */
 class Navigator
 private constructor(
   private val fragmentManager: FragmentManager,
+  private val backStack: BackStack,
   @IdRes private val containerID: Int
 ) {
   /** [OnNavigationListener]s that are currently listening to navigations. */
@@ -74,60 +75,42 @@ private constructor(
    */
   internal object Pool {
     /**
-     * [Navigator]s that have been created, associated to their respective [FragmentContainerView]s'
-     * IDs, to be later retrieved.
+     * [Navigator]s that have been created, associated to their respective [Fragment]s, to be later
+     * retrieved.
      *
      * @see get
      */
-    private val remembrances = hashMapOf<Int, Navigator>()
+    private val remembrances = hashMapOf<Fragment, Navigator>()
 
     /**
-     * [LifecycleObserver] that removes the [Navigator] associated to the [containerID] after the
+     * [LifecycleObserver] that removes the [Navigator] associated to the [fragment] after the
      * [FragmentActivity] is destroyed.
      *
-     * @param containerID ID of the [FragmentContainerView] to which the [Navigator] to be removed
-     *   has been associated when pooled.
+     * @property fragment [Fragment] to which the [Navigator] to be removed has been associated when
+     *   pooled.
      */
-    private class RemovalLifecycleObserver(@IdRes private val containerID: Int) :
+    private class RemovalLifecycleObserver(private val fragment: Fragment) :
       DefaultLifecycleObserver {
       override fun onDestroy(owner: LifecycleOwner) {
         super.onDestroy(owner)
-        (owner as FragmentActivity).lifecycle.removeObserver(this)
-        remembrances.getValue(containerID).onNavigationListeners.clear()
-        remembrances.remove(containerID)
+        owner.lifecycle.removeObserver(this)
+        remembrances.getValue(fragment).onNavigationListeners.clear()
+        remembrances.remove(fragment)
       }
     }
 
     /**
-     * Creates a [Navigator] if no equivalent one for the [activity] has yet been instantiated,
+     * Creates a [Navigator] if no equivalent one for the [fragment] has yet been instantiated,
      * storing it for later use, or retrieves the previously remembered one.
      *
-     * @param activity [FragmentActivity] through which the [Navigator] will be obtained.
-     * @throws IllegalStateException If no [FragmentContainerView] is found in the [activity].
+     * @param fragment [Fragment] through which the [Navigator] will be obtained.
+     * @throws IllegalStateException If the [fragment] isn't attached to a [FragmentActivity] or no
+     *   [FragmentContainerView] is found.
      */
     @Throws(IllegalStateException::class)
-    fun get(activity: FragmentActivity): Navigator {
-      val containerID = getContainerIDOrThrow(activity)
-      if (containerID !in this) {
-        remember(activity, containerID)
-      }
-      return remembrances.getValue(containerID)
-    }
-
-    /**
-     * Creates and stores a [Navigator], associating it to the given [containerID] and automatically
-     * removing it from the [Pool] after the [activity] is destroyed.
-     *
-     * @param activity [FragmentActivity] after whose destruction the remembered [Navigator] will be
-     *   removed.
-     * @param containerID ID of the [FragmentContainerView] to which [Fragment]s will be added.
-     */
-    internal fun remember(activity: FragmentActivity, @IdRes containerID: Int): Navigator {
-      val navigator = Navigator(activity.supportFragmentManager, containerID)
-      val lifecycleObserver = RemovalLifecycleObserver(containerID)
-      activity.runOnUiThread { activity.lifecycle.addObserver(lifecycleObserver) }
-      remembrances[containerID] = navigator
-      return navigator
+    fun get(fragment: Fragment): Navigator {
+      val containerID = getContainerID(fragment)
+      return remembrances[fragment] ?: remember(fragment, containerID)
     }
 
     /**
@@ -138,22 +121,54 @@ private constructor(
      * @throws IllegalStateException If no [FragmentContainerView] is found.
      */
     @Throws(IllegalStateException::class)
-    internal fun getContainerIDOrThrow(activity: FragmentActivity): Int {
-      return activity
-        .requireViewById<FrameLayout>(android.R.id.content)
+    internal fun getContainerID(activity: FragmentActivity): Int {
+      return activity.content
         .get<FragmentContainerView>(isInclusive = false)
         .also(View::identify)
         .id
     }
 
     /**
-     * Whether a [Navigator] that is attached to the [containerID] is currently remembered.
+     * Whether a [Navigator] that is attached to the [fragment] is currently remembered.
      *
-     * @param containerID ID of the [FragmentContainerView] to which the [Navigator] whose presence
-     *   in the [Pool] will be verified is attached.
+     * @param fragment [Fragment] to which the [Navigator] whose presence in the [Pool] will be
+     *   verified is attached.
      */
-    internal operator fun contains(@IdRes containerID: Int): Boolean {
-      return containerID in remembrances
+    internal operator fun contains(fragment: Fragment): Boolean {
+      return fragment in remembrances
+    }
+
+    /**
+     * Creates and stores a [Navigator], associating it to the given [containerID] and automatically
+     * removing it from the [Pool] after the [fragment] is destroyed.
+     *
+     * @param fragment [Fragment] after whose destruction the remembered [Navigator] will be
+     *   removed.
+     * @param containerID ID of the [FragmentContainerView] to which [Fragment]s will be added.
+     * @throws IllegalStateException If the [fragment] isn't attached to a [FragmentActivity].
+     */
+    @Throws(IllegalStateException::class)
+    private fun remember(fragment: Fragment, @IdRes containerID: Int): Navigator {
+      val backStack = BackStack.Contextual(fragment)
+      val navigator = Navigator(fragment.parentFragmentManager, backStack, containerID)
+      val lifecycleObserver = RemovalLifecycleObserver(fragment)
+      fragment.requireActivity().runOnUiThread { fragment.lifecycle.addObserver(lifecycleObserver) }
+      remembrances[fragment] = navigator
+      return navigator
+    }
+
+    /**
+     * Obtains the ID of the [FragmentContainerView] (generating one for it if it hasn't already
+     * been identified) contained by the [fragment]'s [FragmentActivity].
+     *
+     * @param fragment [Fragment] from which the [FragmentContainerView] will be obtained.
+     * @throws IllegalStateException If the [fragment] isn't attached to a [FragmentActivity] or no
+     *   [FragmentContainerView] is found.
+     */
+    @Throws(IllegalStateException::class)
+    private fun getContainerID(fragment: Fragment): Int {
+      val activity = fragment.requireActivity()
+      return getContainerID(activity)
     }
   }
 
@@ -351,11 +366,27 @@ private constructor(
   private fun navigateSynchronously(transition: Transition, provisioning: () -> Fragment) {
     fragmentManager.commit {
       val fragment = provisioning()
-      addToBackStack(null)
+      backStack.add(this)
       setTransition(transition.value)
       add(containerID, fragment, fragment.tag)
       onNavigationListeners.forEach { it.onNavigation(fragment) }
     }
     fragmentManager.executePendingTransactions()
+  }
+
+  companion object {
+    /**
+     * Creates a [Navigator] without a back stack.
+     *
+     * @param activity [FragmentActivity] from which both the [FragmentManager] and the ID of the
+     *   [FragmentContainerView] are obtained.
+     */
+    fun withoutBackStack(activity: FragmentActivity): Navigator {
+      return Navigator(
+        activity.supportFragmentManager,
+        BackStack.None,
+        Pool.getContainerID(activity)
+      )
+    }
   }
 }

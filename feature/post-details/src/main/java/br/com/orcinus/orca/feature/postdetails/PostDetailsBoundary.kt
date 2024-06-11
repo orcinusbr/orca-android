@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
+import br.com.orcinus.orca.platform.navigation.Navigator
 import java.net.URI
 
 interface PostDetailsBoundary {
@@ -31,7 +32,7 @@ interface PostDetailsBoundary {
     entrypoint: @Composable (ContentScale, Modifier) -> Unit
   )
 
-  fun navigateToPostDetails(id: String)
+  fun navigateToPostDetails(navigator: Navigator, id: String)
 
-  fun pop()
+  fun pop(navigator: Navigator)
 }

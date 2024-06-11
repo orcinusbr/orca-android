@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -22,6 +22,7 @@ import androidx.fragment.app.viewModels
 import br.com.orcinus.orca.composite.composable.ComposableFragment
 import br.com.orcinus.orca.platform.navigation.application
 import br.com.orcinus.orca.platform.navigation.argument
+import br.com.orcinus.orca.platform.navigation.navigator
 import br.com.orcinus.orca.std.injector.Injector
 
 class FeedFragment internal constructor() : ComposableFragment() {
@@ -34,12 +35,15 @@ class FeedFragment internal constructor() : ComposableFragment() {
         module.feedProvider(),
         module.postProvider(),
         userID,
-        onLinkClick = module.boundary()::navigateTo,
+        onLinkClick = boundary::navigateTo,
         onThumbnailClickListener = { postID, entrypointIndex, secondary, entrypoint ->
           module.boundary().navigateToGallery(postID, entrypointIndex, secondary, entrypoint)
         }
       )
     }
+
+  private val boundary
+    get() = module.boundary()
 
   constructor(userID: String) : this() {
     arguments = createArguments(userID)
@@ -47,7 +51,12 @@ class FeedFragment internal constructor() : ComposableFragment() {
 
   @Composable
   override fun Content() {
-    Feed(viewModel, module.boundary())
+    Feed(
+      viewModel,
+      onSearch = { boundary.navigateToSearch(navigator) },
+      onPostClick = { boundary.navigateToPostDetails(navigator, it) },
+      onComposition = { boundary.navigateToComposer() }
+    )
   }
 
   companion object {

@@ -16,8 +16,9 @@
 package br.com.orcinus.orca.feature.gallery.test
 
 import br.com.orcinus.orca.feature.gallery.GalleryBoundary
+import br.com.orcinus.orca.platform.navigation.Navigator
 
 /** [GalleryBoundary] that doesn't navigate anywhere. */
 object NoOpGalleryBoundary : GalleryBoundary {
-  override fun navigateToPostDetails(id: String) {}
+  override fun navigateToPostDetails(navigator: Navigator, id: String) {}
 }

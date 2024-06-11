@@ -18,12 +18,11 @@ package br.com.orcinus.orca.app.module.feature.search
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.feature.search.SearchModule
-import br.com.orcinus.orca.platform.navigation.Navigator
 import br.com.orcinus.orca.std.injector.Injector
-import br.com.orcinus.orca.std.injector.module.injection.injectionOf
+import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 
-internal class MainSearchModule(navigator: Navigator) :
+internal object MainSearchModule :
   SearchModule(
-    injectionOf { Injector.from<CoreModule>().instanceProvider().provide().profileSearcher },
-    injectionOf { NavigatorSearchBoundary(navigator) }
+    lazyInjectionOf { Injector.from<CoreModule>().instanceProvider().provide().profileSearcher },
+    lazyInjectionOf { MainSearchBoundary }
   )
