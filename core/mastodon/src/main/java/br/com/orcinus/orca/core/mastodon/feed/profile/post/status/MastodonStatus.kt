@@ -48,7 +48,7 @@ import kotlinx.serialization.Serializable
  * @property reblogsCount Amount of times it's been reblogged.
  * @property favouritesCount Amount of times it's been favorited.
  * @property repliesCount Amount of replies that's been received.
- * @property url String [URL] that leads to this [MastodonStatus].
+ * @property uri String [URL] that leads to this [MastodonStatus].
  * @property reblog [MastodonStatus] that's being reblogged in this one.
  * @property card [MastodonCard] for the highlighted [URI] that's in the [content].
  * @property content Text that's been written.
@@ -67,7 +67,7 @@ internal constructor(
   internal val reblogsCount: Int,
   internal val favouritesCount: Int,
   internal val repliesCount: Int,
-  internal val url: String,
+  internal val uri: String,
   internal val reblog: MastodonStatus?,
   internal val card: MastodonCard?,
   internal val content: String,
@@ -101,7 +101,7 @@ internal constructor(
       (reblog?.mediaAttachments ?: mediaAttachments).map(MastodonAttachment::toAttachment)
     val content = Content.from(domain, text, attachments) { card?.toHeadline(imageLoaderProvider) }
     val publicationDateTime = ZonedDateTime.parse(reblog?.createdAt ?: createdAt)
-    val uri = URI(reblog?.url ?: url)
+    val uri = URI(reblog?.uri ?: uri)
     return MastodonPost(
         requester,
         id,
