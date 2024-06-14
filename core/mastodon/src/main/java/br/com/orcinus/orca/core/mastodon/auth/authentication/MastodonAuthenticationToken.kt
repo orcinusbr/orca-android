@@ -28,10 +28,10 @@ import kotlinx.serialization.Serializable
  * Structure returned by the Mastodon API that holds the access token that's been given when
  * authorization was successfully granted to the user.
  *
- * @param accessToken Token that gives Orca user-level access to the API resources.
+ * @property accessToken Token that gives Orca user-level access to the API resources.
  */
 @Serializable
-internal data class MastodonAuthenticationToken(val accessToken: String) {
+internal data class MastodonAuthenticationToken(private val accessToken: String) {
   /**
    * Converts this [MastodonAuthenticationToken] into an [authenticated][Actor.Authenticated]
    * [Actor].
