@@ -55,3 +55,5 @@ dependencies {
   testImplementation(libs.assertk)
   testImplementation(libs.kotlin.test)
 }
+
+kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")

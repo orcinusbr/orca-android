@@ -17,11 +17,6 @@ package br.com.orcinus.orca.composite.timeline.post
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import br.com.orcinus.orca.autos.colors.Colors
-import br.com.orcinus.orca.composite.timeline.post.figure.Figure
-import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
-import br.com.orcinus.orca.platform.core.withSample
-import java.net.URI
 import kotlin.test.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -30,12 +25,9 @@ import org.robolectric.RobolectricTestRunner
 internal class PostExtensionsTests {
   @Test
   fun convertsIntoPostPreview() {
-    val post = Posts.withSample.single()
-    val onLinkClick = { _: URI -> }
-    assertThat(post.toPostPreview(Colors.LIGHT, onLinkClick))
-      .isEqualTo(
-        PostPreview.getSample(Colors.LIGHT)
-          .copy(figure = Figure.of(post.id, post.author.name, post.content, onLinkClick))
-      )
+    runPostConversionTest {
+      assertThat(post.toPostPreview(colors, onLinkClick))
+        .isEqualTo(PostPreview.getSample(colors).copy(figure = figure))
+    }
   }
 }

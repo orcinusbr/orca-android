@@ -22,6 +22,7 @@ import br.com.orcinus.orca.core.sample.image.SampleImageSource
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.compose.ComposableImage
 import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
+import java.util.Objects
 
 /** [ComposableImageLoader] that loads images from a [SampleImageSource]. */
 internal class SampleComposableImageLoader
@@ -32,6 +33,14 @@ private constructor(override val source: SampleImageSource) :
     override fun provide(source: SampleImageSource): SampleComposableImageLoader {
       return SampleComposableImageLoader(source)
     }
+  }
+
+  override fun equals(other: Any?): Boolean {
+    return other is SampleComposableImageLoader && source == other.source
+  }
+
+  override fun hashCode(): Int {
+    return Objects.hash(source)
   }
 
   override fun load(): ComposableImage {
