@@ -19,6 +19,9 @@ import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfile
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
+import br.com.orcinus.orca.core.mastodon.feed.profile.type.editable.MastodonEditableProfile
+import br.com.orcinus.orca.core.mastodon.feed.profile.type.followable.MastodonFollowableProfile
+import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.platform.cache.Storage
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
@@ -28,15 +31,18 @@ import kotlinx.coroutines.flow.first
 /**
  * [Storage] for [Profile]s.
  *
- * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
- *   [Profile]'s avatar will be loaded from a [URI].
- * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
+ * @property requester [Requester] by which a [MastodonEditableProfile]'s editing requests are
+ *   performed and a [MastodonFollowableProfile]'s follow status is obtained.
+ * @property avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
+ *   the [Profile]'s avatar will be loaded from a [URI].
+ * @property postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
  *   [MastodonProfilePostPaginator] for paginating through a [MastodonProfile]'s [Post]s will be
  *   provided.
- * @param entityDao [MastodonProfileEntityDao] that will perform SQL transactions on
+ * @property entityDao [MastodonProfileEntityDao] that will perform SQL transactions on
  *   [Mastodon profile entities][MastodonProfileEntity].
  */
 internal class MastodonProfileStorage(
+  private val requester: Requester,
   private val avatarLoaderProvider: SomeImageLoaderProvider<URI>,
   private val postPaginatorProvider: MastodonProfilePostPaginator.Provider,
   private val entityDao: MastodonProfileEntityDao
@@ -54,7 +60,7 @@ internal class MastodonProfileStorage(
     return entityDao
       .selectByID(key)
       .first()
-      .toProfile(avatarLoaderProvider, entityDao, postPaginatorProvider)
+      .toProfile(requester, avatarLoaderProvider, entityDao, postPaginatorProvider)
   }
 
   override suspend fun onRemove(key: String) {

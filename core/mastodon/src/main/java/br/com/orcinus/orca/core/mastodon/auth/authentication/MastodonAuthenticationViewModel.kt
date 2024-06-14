@@ -25,12 +25,9 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.R
 import br.com.orcinus.orca.core.mastodon.auth.Mastodon
-import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
-import br.com.orcinus.orca.core.module.CoreModule
-import br.com.orcinus.orca.core.module.instanceProvider
+import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import br.com.orcinus.orca.std.injector.Injector
 import io.ktor.client.call.body
 import java.net.URI
 import kotlinx.coroutines.launch
@@ -38,14 +35,17 @@ import kotlinx.coroutines.launch
 /**
  * [AndroidViewModel] that requests an [Actor] through [request].
  *
- * @param application [Application] that allows [Context]-specific behavior.
- * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
- *   avatar will be loaded from a [URI].
- * @param authorizationCode Code provided by the API when authorization was granted to the user.
+ * @property application [Application] that allows [Context]-specific behavior.
+ * @property requester [Requester] with which a [MastodonAuthenticationToken] is converted into an
+ *   [Actor].
+ * @property avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
+ *   the avatar will be loaded from a [URI].
+ * @property authorizationCode Code provided by the API when authorization was granted to the user.
  */
 internal class MastodonAuthenticationViewModel
 private constructor(
   application: Application,
+  private val requester: Requester,
   private val avatarLoaderProvider: SomeImageLoaderProvider<URI>,
   private val authorizationCode: String
 ) : AndroidViewModel(application) {
@@ -60,8 +60,7 @@ private constructor(
     val scheme = application.getString(R.string.scheme)
     val redirectUri = application.getString(R.string.redirect_uri, scheme)
     viewModelScope.launch {
-      (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
-        .requester
+      requester
         .post({ path("oauth").path("token").build() }) {
           parameters {
             append("grant_type", "authorization_code")
@@ -73,7 +72,7 @@ private constructor(
           }
         }
         .body<MastodonAuthenticationToken>()
-        .toActor(avatarLoaderProvider)
+        .toActor(requester, avatarLoaderProvider)
         .run(onAuthentication)
     }
   }
@@ -83,18 +82,26 @@ private constructor(
      * Creates a [ViewModelProvider.Factory] that provides a [MastodonAuthenticationViewModel].
      *
      * @param application [Application] that allows [Context]-specific behavior.
+     * @param requester [Requester] with which a [MastodonAuthenticationToken] is converted into an
+     *   [Actor].
      * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
      *   the avatar will be loaded from a [URI].
      * @param authorizationCode Code provided by the API when authorization was granted to the user.
      */
     fun createFactory(
       application: Application,
+      requester: Requester,
       avatarLoaderProvider: SomeImageLoaderProvider<URI>,
       authorizationCode: String
     ): ViewModelProvider.Factory {
       return viewModelFactory {
         initializer {
-          MastodonAuthenticationViewModel(application, avatarLoaderProvider, authorizationCode)
+          MastodonAuthenticationViewModel(
+            application,
+            requester,
+            avatarLoaderProvider,
+            authorizationCode
+          )
         }
       }
     }

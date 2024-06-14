@@ -27,7 +27,7 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfilePostPaginat
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.MastodonPost
 import br.com.orcinus.orca.core.mastodon.feed.profile.type.editable.MastodonEditableProfile
 import br.com.orcinus.orca.core.mastodon.feed.profile.type.followable.MastodonFollowableProfile
-import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
+import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
@@ -42,17 +42,17 @@ import kotlinx.serialization.Serializable
 /**
  * Structure returned by the API when requesting a user's account.
  *
- * @param id Unique global identifier.
- * @param username Unique identifier within the instance from which this [Account] is.
- * @param acct Relative identifier based on the instance of this [Account].
- * @param uri URI [String] that leads to this [Account] within its instance.
- * @param displayName Name that's publicly displayed.
- * @param locked Whether its contents are private, meaning that they can only be seen by accepted
+ * @property id Unique global identifier.
+ * @property username Unique identifier within the instance from which this [Account] is.
+ * @property acct Relative identifier based on the instance of this [Account].
+ * @property uri URI [String] that leads to this [Account] within its instance.
+ * @property displayName Name that's publicly displayed.
+ * @property locked Whether its contents are private, meaning that they can only be seen by accepted
  *   followers.
- * @param note Description provided by the owner.
- * @param avatar URI [String] that leads to the avatar image.
- * @param followersCount Amount of followers that this [Account] has.
- * @param followingCount Amount of other [Account]s that this one is following.
+ * @property note Description provided by the owner.
+ * @property avatar URI [String] that leads to the avatar image.
+ * @property followersCount Amount of followers that this [Account] has.
+ * @property followingCount Amount of other [Account]s that this one is following.
  */
 @Serializable
 internal data class MastodonAccount(
@@ -85,6 +85,8 @@ internal data class MastodonAccount(
    * Converts this [MastodonAccount] into a [Profile].
    *
    * @param context [Context] with which the [note] will be converted into [Markdown].
+   * @param requester [Requester] by which a request to obtain the follow status for a
+   *   [MastodonFollowableProfile] is performed.
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
    *   [Profile]'s avatar will be loaded from a [URI].
    * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
@@ -94,13 +96,14 @@ internal data class MastodonAccount(
    */
   suspend fun toProfile(
     context: Context,
+    requester: Requester,
     avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): Profile {
     return if (isOwner()) {
-      toEditableProfile(context, avatarLoaderProvider, postPaginatorProvider)
+      toEditableProfile(context, requester, avatarLoaderProvider, postPaginatorProvider)
     } else {
-      toFollowableProfile(context, avatarLoaderProvider, postPaginatorProvider)
+      toFollowableProfile(context, requester, avatarLoaderProvider, postPaginatorProvider)
     }
   }
 
@@ -122,9 +125,10 @@ internal data class MastodonAccount(
   }
 
   /**
-   * Converts this [MastodonAccount] into A [MastodonEditableProfile].
+   * Converts this [MastodonAccount] into a [MastodonEditableProfile].
    *
    * @param context [Context] with which the [note] will be converted into [Markdown].
+   * @param requester [Requester] by which editing requests are performed.
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
    *   [MastodonEditableProfile]'s avatar will be loaded from a [URI].
    * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
@@ -134,6 +138,7 @@ internal data class MastodonAccount(
    */
   private fun toEditableProfile(
     context: Context,
+    requester: Requester,
     avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): MastodonEditableProfile {
@@ -143,6 +148,7 @@ internal data class MastodonAccount(
     val bio = Markdown.fromHtml(context, note)
     val uri = URI(uri)
     return MastodonEditableProfile(
+      requester,
       postPaginatorProvider,
       id,
       account,
@@ -156,9 +162,10 @@ internal data class MastodonAccount(
   }
 
   /**
-   * Converts this [MastodonAccount] into A [MastodonFollowableProfile].
+   * Converts this [MastodonAccount] into a [MastodonFollowableProfile].
    *
    * @param context [Context] with which the [note] will be converted into [Markdown].
+   * @param requester [Requester] by which a request to obtain the follow status will be performed.
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
    *   [MastodonFollowableProfile]'s avatar will be loaded from a [URI].
    * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
@@ -168,6 +175,7 @@ internal data class MastodonAccount(
    */
   private suspend fun toFollowableProfile(
     context: Context,
+    requester: Requester,
     avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): MastodonFollowableProfile<Follow> {
@@ -177,8 +185,7 @@ internal data class MastodonAccount(
     val bio = Markdown.fromHtml(context, note)
     val uri = URI(uri)
     val follow =
-      (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
-        .requester
+      requester
         .authenticated()
         .get({
           path("api")
@@ -193,6 +200,7 @@ internal data class MastodonAccount(
         .first()
         .toFollow(this)
     return MastodonFollowableProfile(
+      requester,
       postPaginatorProvider,
       id,
       account,

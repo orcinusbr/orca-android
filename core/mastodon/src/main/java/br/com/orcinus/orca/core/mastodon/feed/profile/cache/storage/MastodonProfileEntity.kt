@@ -28,6 +28,7 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfilePostPaginat
 import br.com.orcinus.orca.core.mastodon.feed.profile.cache.storage.style.MastodonStyleEntity
 import br.com.orcinus.orca.core.mastodon.feed.profile.type.editable.MastodonEditableProfile
 import br.com.orcinus.orca.core.mastodon.feed.profile.type.followable.MastodonFollowableProfile
+import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import br.com.orcinus.orca.std.markdown.Markdown
@@ -37,18 +38,18 @@ import java.net.URI
 /**
  * Primitive information to be persisted about a [MastodonProfile].
  *
- * @param id Unique identifier.
- * @param account [String] representation of the [MastodonProfile]'s [account][Profile.account].
- * @param avatarURI URI [String] that leads to the avatar image.
- * @param bio Describes who the owner is and/or provides information regarding the
+ * @property id Unique identifier.
+ * @property account [String] representation of the [MastodonProfile]'s [account][Profile.account].
+ * @property avatarURI URI [String] that leads to the avatar image.
+ * @property bio Describes who the owner is and/or provides information regarding the
  *   [MastodonProfile].
- * @param type Determines whether the [MastodonProfile] is A [MastodonEditableProfile] or an
+ * @property type Determines whether the [MastodonProfile] is a [MastodonEditableProfile] or an
  *   [MastodonFollowableProfile].
- * @param follow [String] version of the [MastodonFollowableProfile]'s
+ * @property follow [String] version of the [MastodonFollowableProfile]'s
  *   [follow][MastodonFollowableProfile.follow] or `null` if the [MastodonProfile] is of a different
  *   type.
- * @param followerCount Amount of followers the [MastodonProfile] has.
- * @param followingCount Amount of other [MastodonProfile]s the one this [MastodonProfileEntity]
+ * @property followerCount Amount of followers the [MastodonProfile] has.
+ * @property followingCount Amount of other [MastodonProfile]s the one this [MastodonProfileEntity]
  *   refers to follows.
  */
 @Entity(tableName = "profiles")
@@ -71,6 +72,8 @@ internal constructor(
   /**
    * Converts this [MastodonProfileEntity] into a [Profile].
    *
+   * @param requester [Requester] by which a [MastodonEditableProfile]'s editing requests are
+   *   performed and a [MastodonFollowableProfile]'s follow status is obtained.
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
    *   [Profile]'s avatar will be loaded from a [URI].
    * @param dao [MastodonProfileEntityDao] that will select the persisted
@@ -82,21 +85,24 @@ internal constructor(
    */
   @Throws(IllegalStateException::class)
   internal suspend fun toProfile(
+    requester: Requester,
     avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     dao: MastodonProfileEntityDao,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): Profile {
     return when (type) {
-      EDITABLE_TYPE -> toMastodonEditableProfile(avatarLoaderProvider, dao, postPaginatorProvider)
+      EDITABLE_TYPE ->
+        toMastodonEditableProfile(requester, avatarLoaderProvider, dao, postPaginatorProvider)
       FOLLOWABLE_TYPE ->
-        toMastodonFollowableProfile(avatarLoaderProvider, dao, postPaginatorProvider)
+        toMastodonFollowableProfile(requester, avatarLoaderProvider, dao, postPaginatorProvider)
       else -> throw IllegalStateException("Unknown profile entity type: $type.")
     }
   }
 
   /**
-   * Converts this [MastodonProfileEntity] into A [MastodonEditableProfile].
+   * Converts this [MastodonProfileEntity] into a [MastodonEditableProfile].
    *
+   * @param requester [Requester] by which editing requests are performed.
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
    *   [MastodonEditableProfile]'s avatar will be loaded from a [URI].
    * @param dao [MastodonProfileEntityDao] that will select the persisted
@@ -106,6 +112,7 @@ internal constructor(
    *   [MastodonEditableProfile]'s [Post]s will be provided.
    */
   private suspend fun toMastodonEditableProfile(
+    requester: Requester,
     avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     dao: MastodonProfileEntityDao,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
@@ -116,6 +123,7 @@ internal constructor(
     val bio = getBioAsMarkdown(dao)
     val uri = URI(uri)
     return MastodonEditableProfile(
+      requester,
       postPaginatorProvider,
       id,
       account,
@@ -129,8 +137,9 @@ internal constructor(
   }
 
   /**
-   * Converts this [MastodonProfileEntity] into A [MastodonFollowableProfile].
+   * Converts this [MastodonProfileEntity] into a [MastodonFollowableProfile].
    *
+   * @param requester [Requester] by which a request to change the follow status is performed.
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
    *   [MastodonFollowableProfile]'s avatar will be loaded from a [URI].
    * @param dao [MastodonProfileEntityDao] that will select the persisted
@@ -140,6 +149,7 @@ internal constructor(
    *   [MastodonFollowableProfile]'s [Post]s will be provided.
    */
   private suspend fun toMastodonFollowableProfile(
+    requester: Requester,
     avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     dao: MastodonProfileEntityDao,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
@@ -151,6 +161,7 @@ internal constructor(
     val follow = Follow.of(checkNotNull(follow))
     val uri = URI(uri)
     return MastodonFollowableProfile(
+      requester,
       postPaginatorProvider,
       id,
       account,
@@ -176,10 +187,10 @@ internal constructor(
   }
 
   companion object {
-    /** [Int] that represents A [MastodonEditableProfile]. */
+    /** [Int] that represents a [MastodonEditableProfile]. */
     internal const val EDITABLE_TYPE = 0
 
-    /** [Int] that represents A [MastodonFollowableProfile]. */
+    /** [Int] that represents a [MastodonFollowableProfile]. */
     internal const val FOLLOWABLE_TYPE = 1
   }
 }

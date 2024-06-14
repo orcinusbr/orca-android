@@ -19,23 +19,22 @@ import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.stat.Stat
 import br.com.orcinus.orca.core.feed.profile.post.stat.addable.AddableStat
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.MastodonPost
-import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
+import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
-import br.com.orcinus.orca.core.module.CoreModule
-import br.com.orcinus.orca.core.module.instanceProvider
-import br.com.orcinus.orca.std.injector.Injector
 
 /**
- * Builds a [Stat] for A [MastodonPost]'s comments that obtains them from the API.
+ * Builds a [Stat] for a [MastodonPost]'s comments that obtains them from the API.
  *
- * @param id ID of the [MastodonPost] for which the [Stat] is.
- * @param count Amount of comments that the [MastodonPost] has received.
- * @param contextPaginatorProvider [MastodonCommentPaginator.Provider] by which a
+ * @property requester [Requester] by which requests to add or remove comments are performed.
+ * @property id ID of the [MastodonPost] for which the [Stat] is.
+ * @property count Amount of comments that the [MastodonPost] has received.
+ * @property contextPaginatorProvider [MastodonCommentPaginator.Provider] by which a
  *   [MastodonCommentPaginator] for paginating through the comments will be provided.
  * @see Post.comment
  */
 @Suppress("FunctionName")
 internal fun CommentStat(
+  requester: Requester,
   id: String,
   count: Int,
   contextPaginatorProvider: MastodonCommentPaginator.Provider
@@ -45,19 +44,15 @@ internal fun CommentStat(
       get { index -> contextPaginator.paginateTo(index) }
     }
     onAdd {
-      (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
-        .requester
-        .authenticated()
-        .post({ path("api").path("v1").path("statuses").build() }) {
-          parameters {
-            append("in_reply_to_id", id)
-            append("status", "${it.content.text}")
-          }
+      requester.authenticated().post({ path("api").path("v1").path("statuses").build() }) {
+        parameters {
+          append("in_reply_to_id", id)
+          append("status", "${it.content.text}")
         }
+      }
     }
     onRemove {
-      (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
-        .requester
+      requester
         .authenticated()
         .delete({ path("api").path("v1").path("statuses").path(it.id).build() })
     }

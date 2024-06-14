@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -20,12 +20,14 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.post.MastodonPost
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.MastodonPostPaginator
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.MastodonStatusesPaginator
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentPaginator
+import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import java.net.URI
 
 /** [MastodonPostPaginator] that paginates through [MastodonPost]s of the feed. */
 internal class MastodonFeedPaginator(
   override val context: Context,
+  override val requester: Requester,
   override val imageLoaderProvider: SomeImageLoaderProvider<URI>,
   override val commentPaginatorProvider: MastodonCommentPaginator.Provider
 ) : MastodonStatusesPaginator() {

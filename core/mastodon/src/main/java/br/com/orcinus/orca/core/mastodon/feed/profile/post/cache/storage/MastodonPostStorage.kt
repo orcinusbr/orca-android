@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -19,10 +19,12 @@ import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Highlight
+import br.com.orcinus.orca.core.feed.profile.post.stat.Stat
 import br.com.orcinus.orca.core.mastodon.feed.profile.cache.storage.style.MastodonStyleEntity
 import br.com.orcinus.orca.core.mastodon.feed.profile.cache.storage.style.MastodonStyleEntityDao
 import br.com.orcinus.orca.core.mastodon.feed.profile.cache.storage.style.toHttpStyleEntity
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentPaginator
+import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.platform.cache.Cache
 import br.com.orcinus.orca.platform.cache.Storage
 import br.com.orcinus.orca.std.image.ImageLoader
@@ -32,21 +34,23 @@ import java.net.URI
 /**
  * [Storage] for [Post]s.
  *
- * @param profileCache [Cache] of [Profile]s with which [Mastodon post entities][MastodonPostEntity]
- *   will be converted to [Post]s.
- * @param postEntityDao [MastodonStyleEntityDao] that will perform SQL transactions on
+ * @property requester [Requester] by which [Stat]-related requests are performed.
+ * @property profileCache [Cache] of [Profile]s with which
+ *   [Mastodon post entities][MastodonPostEntity] will be converted to [Post]s.
+ * @property postEntityDao [MastodonStyleEntityDao] that will perform SQL transactions on
  *   [Mastodon post entities][MastodonPostEntity].
- * @param styleEntityDao [MastodonStyleEntityDao] for inserting and deleting
+ * @property styleEntityDao [MastodonStyleEntityDao] for inserting and deleting
  *   [Mastodon style entities][MastodonStyleEntity].
- * @param coverLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which a
+ * @property coverLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which a
  *   [Post]'s [content][Post.content]'s [highlight][Content.highlight]'s
  *   [headline][Highlight.headline] cover will be loaded from a [URI].
- * @param commentPaginatorProvider [MastodonCommentPaginator.Provider] by which a
+ * @property commentPaginatorProvider [MastodonCommentPaginator.Provider] by which a
  *   [MastodonCommentPaginator] for paginating through the stored [Post]s' comments will be
  *   provided.
  * @see Post.comment
  */
 internal class MastodonPostStorage(
+  private val requester: Requester,
   private val profileCache: Cache<Profile>,
   private val postEntityDao: MastodonPostEntityDao,
   private val styleEntityDao: MastodonStyleEntityDao,
@@ -67,7 +71,7 @@ internal class MastodonPostStorage(
   override suspend fun onGet(key: String): Post {
     return postEntityDao
       .selectByID(key)
-      .toPost(profileCache, postEntityDao, coverLoaderProvider, commentPaginatorProvider)
+      .toPost(requester, profileCache, postEntityDao, coverLoaderProvider, commentPaginatorProvider)
   }
 
   override suspend fun onRemove(key: String) {
