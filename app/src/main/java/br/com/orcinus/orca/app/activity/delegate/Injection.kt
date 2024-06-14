@@ -15,7 +15,6 @@
 
 package br.com.orcinus.orca.app.activity.delegate
 
-import android.content.Context
 import androidx.activity.ComponentActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -39,7 +38,6 @@ import br.com.orcinus.orca.std.injector.Injector
 
 internal interface Injection {
   fun inject(activity: FragmentActivity, coreModule: CoreModule) {
-    Injector.injectLazily<Context> { activity }
     Injector.register(coreModule)
     Injector.register<FeedModule>(MainFeedModule(activity))
     Injector.register<GalleryModule>(MainGalleryModule)
