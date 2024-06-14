@@ -16,6 +16,12 @@
 package br.com.orcinus.orca.platform.navigation
 
 import android.app.Activity
+import android.view.View
+import android.widget.FrameLayout
+
+/** [FrameLayout] containing the [View] set as this [Activity]'s content. */
+val Activity.content
+  get() = requireViewById<FrameLayout>(android.R.id.content)
 
 /**
  * Gets the extra put into this [Activity]'s [intent][Activity.getIntent] with the given [key]

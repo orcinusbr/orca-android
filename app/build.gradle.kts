@@ -99,7 +99,6 @@ dependencies {
   implementation(project(":platform:autos"))
   implementation(project(":platform:core"))
   implementation(project(":platform:intents"))
-  implementation(project(":platform:navigation"))
   implementation(project(":std:image:compose"))
   implementation(project(":std:injector"))
   implementation(libs.android.appcompat)

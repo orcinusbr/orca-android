@@ -30,6 +30,7 @@ android {
 dependencies {
   api(project(":composite:composable"))
   api(project(":core"))
+  api(project(":platform:navigation"))
 
   ksp(project(":std:injector-processor"))
 
@@ -37,7 +38,6 @@ dependencies {
   implementation(project(":core:sample"))
   implementation(project(":platform:core"))
   implementation(project(":platform:intents"))
-  implementation(project(":platform:navigation"))
   implementation(project(":platform:starter"))
   implementation(libs.android.activity.ktx)
   implementation(libs.zoomable)

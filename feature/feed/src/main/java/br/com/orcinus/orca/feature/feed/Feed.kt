@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -38,7 +38,6 @@ import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
-import br.com.orcinus.orca.platform.autos.kit.scaffold.plus
 import br.com.orcinus.orca.platform.autos.overlays.asPaddingValues
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
@@ -57,14 +56,20 @@ fun Feed(modifier: Modifier = Modifier) {
 }
 
 @Composable
-internal fun Feed(viewModel: FeedViewModel, boundary: FeedBoundary, modifier: Modifier = Modifier) {
+internal fun Feed(
+  viewModel: FeedViewModel,
+  onSearch: () -> Unit,
+  onPostClick: (postID: String) -> Unit,
+  onComposition: () -> Unit,
+  modifier: Modifier = Modifier
+) {
   var isTimelineRefreshing by remember { mutableStateOf(false) }
   val postPreviewsLoadable by
     viewModel.postPreviewsLoadableFlow.collectAsState(ListLoadable.Loading())
 
   Feed(
     postPreviewsLoadable,
-    onSearch = boundary::navigateToSearch,
+    onSearch,
     isTimelineRefreshing,
     onTimelineRefresh = {
       isTimelineRefreshing = true
@@ -73,9 +78,9 @@ internal fun Feed(viewModel: FeedViewModel, boundary: FeedBoundary, modifier: Mo
     onFavorite = viewModel::favorite,
     onRepost = viewModel::repost,
     onShare = viewModel::share,
-    onPostClick = boundary::navigateToPostDetails,
+    onPostClick,
     onNext = viewModel::loadPostsAt,
-    onComposition = boundary::navigateToComposer,
+    onComposition,
     modifier
   )
 }

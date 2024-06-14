@@ -16,12 +16,10 @@
 package br.com.orcinus.orca.platform.navigation
 
 import androidx.fragment.app.Fragment
-import androidx.test.core.app.launchActivity
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import assertk.assertions.isFalse
-import assertk.assertions.isInstanceOf
 import br.com.orcinus.orca.platform.navigation.duplication.disallowingDuplication
+import br.com.orcinus.orca.platform.navigation.test.fragment.launchFragmentInNavigationContainer
 import br.com.orcinus.orca.platform.navigation.test.isAt
 import br.com.orcinus.orca.platform.navigation.transition.closing
 import br.com.orcinus.orca.platform.navigation.transition.opening
@@ -38,105 +36,80 @@ internal class NavigatorTests {
 
   @Test(expected = IllegalArgumentException::class)
   fun throwsWhenNavigatingUnsafelyToAFragmentDistinctFromSpecifiedOne() {
-    launchActivity<NavigationActivity>().use { scenario ->
-      scenario.onActivity { activity: NavigationActivity ->
-        activity.navigator.navigateOrThrow(
-          suddenly(),
-          disallowingDuplication(),
-          FirstFragment::class,
-          ::SecondFragment
-        )
+    launchFragmentInNavigationContainer(::Fragment).use { scenario ->
+      scenario.onFragment { fragment ->
+        Navigator.create(fragment)
+          .navigateOrThrow(
+            suddenly(),
+            disallowingDuplication(),
+            FirstFragment::class,
+            ::SecondFragment
+          )
       }
     }
   }
 
   @Test
   fun navigatesSuddenly() {
-    launchActivity<NavigationActivity>().use { scenario ->
-      scenario.onActivity { activity: NavigationActivity ->
-        activity.navigator.navigate(suddenly(), ::FirstFragment)
-        assertThat(activity).isAt<_, FirstFragment>()
+    launchFragmentInNavigationContainer(::Fragment).use { scenario ->
+      scenario.onFragment { fragment ->
+        Navigator.create(fragment).navigate(suddenly(), ::FirstFragment)
+        assertThat(fragment.requireActivity()).isAt<_, FirstFragment>()
       }
     }
   }
 
   @Test
   fun navigatesWithOpeningTransition() {
-    launchActivity<NavigationActivity>().use { scenario ->
-      scenario.onActivity { activity: NavigationActivity ->
-        activity.navigator.navigate(opening(), ::FirstFragment)
-        assertThat(activity).isAt<_, FirstFragment>()
+    launchFragmentInNavigationContainer(::Fragment).use { scenario ->
+      scenario.onFragment { fragment ->
+        Navigator.create(fragment).navigate(opening(), ::FirstFragment)
+        assertThat(fragment.requireActivity()).isAt<_, FirstFragment>()
       }
     }
   }
 
   @Test
   fun navigatesWithClosingTransition() {
-    launchActivity<NavigationActivity>().use { scenario ->
-      scenario.onActivity { activity: NavigationActivity ->
-        activity.navigator.navigate(closing(), ::FirstFragment)
-        assertThat(activity).isAt<_, FirstFragment>()
+    launchFragmentInNavigationContainer(::Fragment).use { scenario ->
+      scenario.onFragment { fragment ->
+        Navigator.create(fragment).navigate(closing(), ::FirstFragment)
+        assertThat(fragment.requireActivity()).isAt<_, FirstFragment>()
       }
     }
   }
 
   @Test
   fun navigatesTwiceWhenDuplicationIsAllowed() {
-    launchActivity<NavigationActivity>().use { scenario ->
-      scenario.onActivity { activity: NavigationActivity ->
-        repeat(2) { activity.navigator.navigate(suddenly(), ::FirstFragment) }
-        assertThat(activity.supportFragmentManager.fragments.size).isEqualTo(2)
+    launchFragmentInNavigationContainer(::Fragment).use { scenario ->
+      scenario.onFragment { fragment ->
+        repeat(2) { Navigator.create(fragment).navigate(suddenly(), ::FirstFragment) }
+        assertThat(fragment.parentFragmentManager.fragments.size).isEqualTo(3)
       }
     }
   }
 
   @Test
   fun navigatesOnceWhenDuplicationIsDisallowed() {
-    launchActivity<NavigationActivity>().use { scenario ->
-      scenario.onActivity { activity: NavigationActivity ->
+    launchFragmentInNavigationContainer(::Fragment).use { scenario ->
+      scenario.onFragment { fragment ->
         repeat(2) {
-          activity.navigator.navigate(suddenly(), disallowingDuplication(), ::FirstFragment)
+          Navigator.create(fragment).navigate(suddenly(), disallowingDuplication(), ::FirstFragment)
         }
-        assertThat(activity.supportFragmentManager.fragments.size).isEqualTo(1)
+        assertThat(fragment.parentFragmentManager.fragments.size).isEqualTo(2)
       }
     }
   }
 
   @Test
   fun navigatesSequentially() {
-    launchActivity<NavigationActivity>().use { scenario ->
-      scenario.onActivity { activity: NavigationActivity ->
-        with(activity.navigator) {
+    launchFragmentInNavigationContainer(::Fragment).use { scenario ->
+      scenario.onFragment { fragment ->
+        with(Navigator.create(fragment)) {
           navigate(suddenly(), ::FirstFragment)
           navigate(suddenly(), ::SecondFragment)
         }
-        assertThat(activity).isAt<_, SecondFragment>()
-      }
-    }
-  }
-
-  @Test
-  fun addsOnNavigationListener() {
-    launchActivity<NavigationActivity>().use { scenario ->
-      scenario.onActivity { activity: NavigationActivity ->
-        lateinit var fragment: Fragment
-        activity.navigator.addOnNavigationListener { fragment = it }
-        activity.navigator.navigate(suddenly(), ::FirstFragment)
-        assertThat(fragment).isInstanceOf<FirstFragment>()
-      }
-    }
-  }
-
-  @Test
-  fun removesOnNavigationListener() {
-    launchActivity<NavigationActivity>().use { scenario ->
-      scenario.onActivity { activity: NavigationActivity ->
-        var hasListenerBeenNotified = false
-        val listener = Navigator.OnNavigationListener { hasListenerBeenNotified = true }
-        activity.navigator.addOnNavigationListener(listener)
-        activity.navigator.removeOnNavigationListener(listener)
-        activity.navigator.navigate(suddenly(), ::FirstFragment)
-        assertThat(hasListenerBeenNotified).isFalse()
+        assertThat(fragment.requireActivity()).isAt<_, SecondFragment>()
       }
     }
   }

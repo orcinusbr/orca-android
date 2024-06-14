@@ -24,13 +24,11 @@ import br.com.orcinus.orca.ext.intents.browseTo
 import br.com.orcinus.orca.feature.gallery.GalleryActivity
 import br.com.orcinus.orca.feature.postdetails.PostDetailsFragment
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetailsBoundary
+import br.com.orcinus.orca.platform.navigation.BackStack
 import br.com.orcinus.orca.platform.navigation.Navigator
 import java.net.URI
 
-internal class NavigatorProfileDetailsBoundary(
-  private val context: Context,
-  private val navigator: Navigator
-) : ProfileDetailsBoundary {
+internal class MainProfileDetailsBoundary(private val context: Context) : ProfileDetailsBoundary {
   override fun navigateTo(uri: URI) {
     context.browseTo(uri)
   }
@@ -44,7 +42,7 @@ internal class NavigatorProfileDetailsBoundary(
     GalleryActivity.start(context, postID, entrypointIndex, secondary, entrypoint)
   }
 
-  override fun navigateToPostDetails(id: String) {
-    PostDetailsFragment.navigate(navigator, id)
+  override fun navigateToPostDetails(navigator: Navigator, backStack: BackStack, id: String) {
+    PostDetailsFragment.navigate(navigator, backStack, id)
   }
 }

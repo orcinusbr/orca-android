@@ -66,7 +66,7 @@ internal object SearchDefaults {
 @Composable
 internal fun Search(
   viewModel: SearchViewModel,
-  boundary: SearchBoundary,
+  onNavigateToProfileDetails: (id: String) -> Unit,
   onBackwardsNavigation: () -> Unit,
   modifier: Modifier = Modifier
 ) {
@@ -80,7 +80,7 @@ internal fun Search(
         query,
         onQueryChange = viewModel::setQuery,
         resultsLoadable.content,
-        onNavigateToProfileDetails = boundary::navigateToProfileDetails,
+        onNavigateToProfileDetails,
         onBackwardsNavigation,
         modifier
       )

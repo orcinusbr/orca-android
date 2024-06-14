@@ -18,12 +18,11 @@ package br.com.orcinus.orca.app.module.feature.gallery
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.feature.gallery.GalleryModule
-import br.com.orcinus.orca.platform.navigation.Navigator
 import br.com.orcinus.orca.std.injector.Injector
-import br.com.orcinus.orca.std.injector.module.injection.injectionOf
+import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 
-internal class MainGalleryModule(navigator: Navigator) :
+internal object MainGalleryModule :
   GalleryModule(
-    injectionOf { Injector.from<CoreModule>().instanceProvider().provide().postProvider },
-    injectionOf { NavigatorGalleryBoundary(navigator) }
+    lazyInjectionOf { Injector.from<CoreModule>().instanceProvider().provide().postProvider },
+    lazyInjectionOf { MainGalleryBoundary }
   )

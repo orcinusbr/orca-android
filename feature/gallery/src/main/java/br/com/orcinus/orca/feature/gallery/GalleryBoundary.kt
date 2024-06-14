@@ -15,6 +15,9 @@
 
 package br.com.orcinus.orca.feature.gallery
 
+import br.com.orcinus.orca.platform.navigation.BackStack
+import br.com.orcinus.orca.platform.navigation.Navigator
+
 interface GalleryBoundary {
-  fun navigateToPostDetails(id: String)
+  fun navigateToPostDetails(navigator: Navigator, backStack: BackStack, id: String)
 }

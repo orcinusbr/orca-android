@@ -16,7 +16,7 @@
 package br.com.orcinus.orca.feature.registration.ongoing
 
 import assertk.assertThat
-import br.com.orcinus.orca.platform.navigation.navigator
+import br.com.orcinus.orca.platform.navigation.Navigator
 import br.com.orcinus.orca.platform.navigation.test.activity.launchNavigationActivity
 import br.com.orcinus.orca.platform.navigation.test.isAt
 import kotlin.test.Test
@@ -29,7 +29,7 @@ internal class OngoingFragmentTests {
   fun navigates() {
     launchNavigationActivity().use { scenario ->
       scenario.onActivity { activity ->
-        OngoingFragment.navigate(activity.navigator)
+        OngoingFragment.navigate(Navigator.create(activity))
         assertThat(activity).isAt<_, OngoingFragment>()
       }
     }

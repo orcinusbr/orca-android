@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -30,6 +30,8 @@ import br.com.orcinus.orca.composite.composable.ComposableActivity
 import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
 import br.com.orcinus.orca.ext.intents.intentOf
 import br.com.orcinus.orca.feature.gallery.ui.Gallery
+import br.com.orcinus.orca.platform.navigation.BackStack
+import br.com.orcinus.orca.platform.navigation.Navigator
 import br.com.orcinus.orca.platform.navigation.extra
 import br.com.orcinus.orca.platform.starter.on
 import br.com.orcinus.orca.std.injector.Injector
@@ -43,6 +45,8 @@ class GalleryActivity internal constructor() : ComposableActivity() {
   @set:JvmName("_setEntrypoint")
   private var entrypoint by mutableStateOf<(@Composable (ContentScale, Modifier) -> Unit)?>(null)
 
+  private val backStack by lazy { BackStack.named(componentName.className) }
+  private val navigator by lazy { Navigator.create(this, backStack) }
   private val viewModel by
     viewModels<GalleryViewModel> {
       GalleryViewModel.createFactory(application, module.postProvider(), postID)
@@ -55,7 +59,13 @@ class GalleryActivity internal constructor() : ComposableActivity() {
 
   @Composable
   override fun Content() {
-    Gallery(viewModel, module.boundary(), entrypointIndex, secondary, onClose = ::finish) {
+    Gallery(
+      viewModel,
+      entrypointIndex,
+      secondary,
+      onComment = { module.boundary().navigateToPostDetails(navigator, backStack, postID) },
+      onClose = ::finish
+    ) {
       entrypoint?.invoke(ContentScale.FillWidth, it)
     }
   }

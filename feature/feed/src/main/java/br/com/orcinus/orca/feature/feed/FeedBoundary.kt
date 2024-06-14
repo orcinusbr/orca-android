@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -19,10 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
+import br.com.orcinus.orca.platform.navigation.BackStack
+import br.com.orcinus.orca.platform.navigation.Navigator
 import java.net.URI
 
 interface FeedBoundary {
-  fun navigateToSearch()
+  fun navigateToSearch(navigator: Navigator)
 
   fun navigateTo(uri: URI)
 
@@ -33,7 +35,7 @@ interface FeedBoundary {
     entrypoint: @Composable (ContentScale, Modifier) -> Unit
   )
 
-  fun navigateToPostDetails(id: String)
+  fun navigateToPostDetails(navigator: Navigator, backStack: BackStack, id: String)
 
   fun navigateToComposer()
 }

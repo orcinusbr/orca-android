@@ -21,10 +21,10 @@ import androidx.compose.ui.test.runComposeUiTest
 import androidx.fragment.app.testing.launchFragmentInContainer
 import assertk.assertThat
 import br.com.orcinus.orca.platform.autos.test.kit.action.button.onPrimaryButton
-import br.com.orcinus.orca.platform.navigation.navigator
+import br.com.orcinus.orca.platform.navigation.Navigator
 import br.com.orcinus.orca.platform.navigation.test.activity.launchNavigationActivity
 import br.com.orcinus.orca.platform.navigation.test.isAt
-import br.com.orcinus.orca.std.injector.module.injection.injectionOf
+import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 import br.com.orcinus.orca.std.injector.test.InjectorTestRule
 import io.mockk.mockkObject
 import io.mockk.verify
@@ -37,14 +37,14 @@ import org.robolectric.RobolectricTestRunner
 internal class RegistrationFragmentTests {
   @get:Rule
   val injectorRule = InjectorTestRule {
-    register(RegistrationModule(injectionOf { NoOpRegistrationBoundary }))
+    register(RegistrationModule(lazyInjectionOf { NoOpRegistrationBoundary }))
   }
 
   @Test
   fun navigates() {
     launchNavigationActivity().use { scenario ->
       scenario.onActivity { activity ->
-        RegistrationFragment.navigate(activity.navigator)
+        RegistrationFragment.navigate(Navigator.create(activity))
         assertThat(activity).isAt<_, RegistrationFragment>()
       }
     }

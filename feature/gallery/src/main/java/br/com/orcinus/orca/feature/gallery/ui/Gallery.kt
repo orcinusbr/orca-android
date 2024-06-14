@@ -41,7 +41,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import br.com.orcinus.orca.composite.timeline.stat.details.StatsDetails
 import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.samples
-import br.com.orcinus.orca.feature.gallery.GalleryBoundary
 import br.com.orcinus.orca.feature.gallery.GalleryViewModel
 import br.com.orcinus.orca.feature.gallery.ui.page.Page
 import br.com.orcinus.orca.feature.gallery.ui.page.SampleEntrypoint
@@ -58,9 +57,9 @@ fun Gallery(modifier: Modifier = Modifier) {
 @Composable
 internal fun Gallery(
   viewModel: GalleryViewModel,
-  boundary: GalleryBoundary,
   entrypointIndex: Int,
   secondary: List<Attachment>,
+  onComment: () -> Unit,
   onClose: () -> Unit,
   modifier: Modifier = Modifier,
   entrypoint: @Composable (Modifier) -> Unit
@@ -72,7 +71,7 @@ internal fun Gallery(
     secondary,
     onDownload = viewModel::download,
     statsDetails,
-    onComment = { boundary.navigateToPostDetails(viewModel.postID) },
+    onComment,
     onFavorite = viewModel::toggleFavorite,
     onRepost = viewModel::toggleRepost,
     onShare = viewModel::share,

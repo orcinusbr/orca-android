@@ -23,7 +23,6 @@ import androidx.fragment.app.testing.FragmentScenario
 import androidx.test.core.app.launchActivity
 import br.com.orcinus.orca.ext.reflection.access
 import br.com.orcinus.orca.platform.navigation.Navigator
-import br.com.orcinus.orca.platform.navigation.navigator
 import br.com.orcinus.orca.platform.navigation.test.activity.makeNavigable
 import br.com.orcinus.orca.platform.navigation.transition.suddenly
 import kotlin.reflect.full.primaryConstructor
@@ -35,7 +34,6 @@ import kotlin.reflect.full.primaryConstructor
  * @param T [Fragment] to be launched.
  * @param instantiation Creates an instance of the [Fragment].
  * @throws NoSuchMethodException If [FragmentScenario]'s primary constructor isn't found.
- * @see navigator
  */
 @Throws(NoSuchMethodException::class)
 inline fun <reified T : Fragment> launchFragmentInNavigationContainer(
@@ -44,8 +42,9 @@ inline fun <reified T : Fragment> launchFragmentInNavigationContainer(
   val activityScenario =
     launchActivity<EmptyFragmentActivity>().apply {
       onActivity {
-        it?.makeNavigable()
-        it?.navigator?.navigate(suddenly()) {
+        it ?: return@onActivity
+        it.makeNavigable()
+        Navigator.create(it).navigate(suddenly()) {
           instantiation().apply { setTag("FragmentScenario_Fragment_Tag") }
         }
       }

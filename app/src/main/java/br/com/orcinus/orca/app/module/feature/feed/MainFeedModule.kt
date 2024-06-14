@@ -19,13 +19,12 @@ import android.content.Context
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.feature.feed.FeedModule
-import br.com.orcinus.orca.platform.navigation.Navigator
 import br.com.orcinus.orca.std.injector.Injector
-import br.com.orcinus.orca.std.injector.module.injection.injectionOf
+import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 
-internal class MainFeedModule(context: Context, navigator: Navigator) :
+internal class MainFeedModule(context: Context) :
   FeedModule(
-    injectionOf { Injector.from<CoreModule>().instanceProvider().provide().feedProvider },
-    injectionOf { Injector.from<CoreModule>().instanceProvider().provide().postProvider },
-    injectionOf { NavigatorFeedBoundary(context, navigator) }
+    lazyInjectionOf { Injector.from<CoreModule>().instanceProvider().provide().feedProvider },
+    lazyInjectionOf { Injector.from<CoreModule>().instanceProvider().provide().postProvider },
+    lazyInjectionOf { MainFeedBoundary(context) }
   )

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,20 +13,15 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.navigation.test.fragment
+package br.com.orcinus.orca.app.module.feature.gallery
 
-import androidx.fragment.app.Fragment
-import br.com.orcinus.orca.platform.navigation.navigator
-import kotlin.test.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
+import br.com.orcinus.orca.feature.gallery.GalleryBoundary
+import br.com.orcinus.orca.feature.postdetails.PostDetailsFragment
+import br.com.orcinus.orca.platform.navigation.BackStack
+import br.com.orcinus.orca.platform.navigation.Navigator
 
-@RunWith(RobolectricTestRunner::class)
-internal class FragmentScenarioExtensionsTests {
-  @Test
-  fun getsNavigatorFromContainerActivity() {
-    launchFragmentInNavigationContainer(instantiation = ::Fragment).use { scenario ->
-      scenario.onFragment { fragment -> fragment.requireActivity().navigator }
-    }
+internal object MainGalleryBoundary : GalleryBoundary {
+  override fun navigateToPostDetails(navigator: Navigator, backStack: BackStack, id: String) {
+    PostDetailsFragment.navigate(navigator, backStack, id)
   }
 }

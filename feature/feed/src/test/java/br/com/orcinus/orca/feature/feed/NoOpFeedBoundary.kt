@@ -19,10 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
+import br.com.orcinus.orca.platform.navigation.BackStack
+import br.com.orcinus.orca.platform.navigation.Navigator
 import java.net.URI
 
 internal class NoOpFeedBoundary : FeedBoundary {
-  override fun navigateToSearch() {}
+  override fun navigateToSearch(navigator: Navigator) {}
 
   override fun navigateTo(uri: URI) {}
 
@@ -33,7 +35,7 @@ internal class NoOpFeedBoundary : FeedBoundary {
     entrypoint: @Composable (ContentScale, Modifier) -> Unit
   ) {}
 
-  override fun navigateToPostDetails(id: String) {}
+  override fun navigateToPostDetails(navigator: Navigator, backStack: BackStack, id: String) {}
 
   override fun navigateToComposer() {}
 }

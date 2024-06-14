@@ -193,7 +193,8 @@ internal sealed class ProfileDetails : Serializable {
 internal fun ProfileDetails(
   viewModel: ProfileDetailsViewModel,
   boundary: ProfileDetailsBoundary,
-  origin: BackwardsNavigationState,
+  backwardsNavigationState: BackwardsNavigationState,
+  onNavigationToPostDetails: (id: String) -> Unit,
   modifier: Modifier = Modifier
 ) {
   val detailsLoadable by viewModel.detailsLoadableFlow.collectAsState()
@@ -211,9 +212,9 @@ internal fun ProfileDetails(
     },
     onFavorite = viewModel::favorite,
     onRepost = viewModel::repost,
-    boundary::navigateToPostDetails,
+    onNavigationToPostDetails,
     onNext = viewModel::loadPostsAt,
-    origin,
+    backwardsNavigationState,
     boundary::navigateTo,
     onShare = viewModel::share,
     modifier

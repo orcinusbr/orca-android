@@ -15,19 +15,24 @@
 
 package br.com.orcinus.orca.platform.navigation
 
-import android.view.View
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentContainerView
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import kotlin.test.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-/**
- * [Navigator] through which [Fragment] navigation can be performed.
- *
- * **NOTE**: Because the [FragmentContainerView] that this [FragmentActivity] holds needs to have an
- * ID for the [Navigator] to work properly, one is automatically generated and assigned to it if it
- * doesn't already have one.
- *
- * @throws IllegalStateException If a [FragmentContainerView] is not found within the [View] tree.
- */
-val FragmentActivity.navigator
-  @Throws(IllegalStateException::class) get() = Navigator.Pool.get(this)
+@RunWith(RobolectricTestRunner::class)
+internal class BackStackTests {
+  @Test
+  fun createsBackStack() {
+    assertThat(BackStack.named("☁️").name).isEqualTo("☁️")
+  }
+
+  @Test
+  fun getsBackStackFragmentArgument() {
+    val fragment = Fragment().apply { arguments = bundleOf(BackStack.KEY to BackStack.named("")) }
+    assertThat(BackStack.from(fragment).value).isEqualTo(BackStack.named(""))
+  }
+}

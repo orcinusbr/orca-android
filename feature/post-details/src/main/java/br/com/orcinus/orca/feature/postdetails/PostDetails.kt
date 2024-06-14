@@ -75,7 +75,8 @@ internal data class PostDetails(
 @Composable
 internal fun PostDetails(
   viewModel: PostDetailsViewModel,
-  boundary: PostDetailsBoundary,
+  onNavigateToDetails: (postID: String) -> Unit,
+  onBackwardsNavigation: () -> Unit,
   modifier: Modifier = Modifier
 ) {
   val postLoadable by viewModel.detailsLoadableFlow.collectAsState()
@@ -93,9 +94,9 @@ internal fun PostDetails(
     onFavorite = viewModel::favorite,
     onRepost = viewModel::repost,
     onShare = viewModel::share,
-    onNavigateToDetails = boundary::navigateToPostDetails,
+    onNavigateToDetails,
     onNext = viewModel::loadCommentsAt,
-    onBackwardsNavigation = boundary::pop,
+    onBackwardsNavigation,
     modifier
   )
 }
