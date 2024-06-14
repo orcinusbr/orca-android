@@ -20,7 +20,6 @@ import br.com.orcinus.orca.ext.coroutines.replacement.replacementListOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flattenMerge
 import kotlinx.coroutines.flow.map
@@ -84,7 +83,6 @@ private fun <I, O> Flow<Collection<I>>.flatMapEach(
     .map(List<Flow<MutableList<O>>>::merge)
     .flattenMerge()
     .map(MutableList<O>::toList)
-    .distinctUntilChanged()
 }
 
 /**
