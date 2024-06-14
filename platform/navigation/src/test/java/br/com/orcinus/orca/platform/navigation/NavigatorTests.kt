@@ -18,8 +18,6 @@ package br.com.orcinus.orca.platform.navigation
 import androidx.fragment.app.Fragment
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import assertk.assertions.isFalse
-import assertk.assertions.isInstanceOf
 import br.com.orcinus.orca.platform.navigation.duplication.disallowingDuplication
 import br.com.orcinus.orca.platform.navigation.test.fragment.launchFragmentInNavigationContainer
 import br.com.orcinus.orca.platform.navigation.test.isAt
@@ -40,12 +38,13 @@ internal class NavigatorTests {
   fun throwsWhenNavigatingUnsafelyToAFragmentDistinctFromSpecifiedOne() {
     launchFragmentInNavigationContainer(::Fragment).use { scenario ->
       scenario.onFragment { fragment ->
-        fragment.navigator.navigateOrThrow(
-          suddenly(),
-          disallowingDuplication(),
-          FirstFragment::class,
-          ::SecondFragment
-        )
+        Navigator.create(fragment)
+          .navigateOrThrow(
+            suddenly(),
+            disallowingDuplication(),
+            FirstFragment::class,
+            ::SecondFragment
+          )
       }
     }
   }
@@ -54,7 +53,7 @@ internal class NavigatorTests {
   fun navigatesSuddenly() {
     launchFragmentInNavigationContainer(::Fragment).use { scenario ->
       scenario.onFragment { fragment ->
-        fragment.navigator.navigate(suddenly(), ::FirstFragment)
+        Navigator.create(fragment).navigate(suddenly(), ::FirstFragment)
         assertThat(fragment.requireActivity()).isAt<_, FirstFragment>()
       }
     }
@@ -64,7 +63,7 @@ internal class NavigatorTests {
   fun navigatesWithOpeningTransition() {
     launchFragmentInNavigationContainer(::Fragment).use { scenario ->
       scenario.onFragment { fragment ->
-        fragment.navigator.navigate(opening(), ::FirstFragment)
+        Navigator.create(fragment).navigate(opening(), ::FirstFragment)
         assertThat(fragment.requireActivity()).isAt<_, FirstFragment>()
       }
     }
@@ -74,7 +73,7 @@ internal class NavigatorTests {
   fun navigatesWithClosingTransition() {
     launchFragmentInNavigationContainer(::Fragment).use { scenario ->
       scenario.onFragment { fragment ->
-        fragment.navigator.navigate(closing(), ::FirstFragment)
+        Navigator.create(fragment).navigate(closing(), ::FirstFragment)
         assertThat(fragment.requireActivity()).isAt<_, FirstFragment>()
       }
     }
@@ -84,8 +83,8 @@ internal class NavigatorTests {
   fun navigatesTwiceWhenDuplicationIsAllowed() {
     launchFragmentInNavigationContainer(::Fragment).use { scenario ->
       scenario.onFragment { fragment ->
-        repeat(2) { fragment.navigator.navigate(suddenly(), ::FirstFragment) }
-        assertThat(fragment.parentFragmentManager.fragments.size).isEqualTo(2)
+        repeat(2) { Navigator.create(fragment).navigate(suddenly(), ::FirstFragment) }
+        assertThat(fragment.parentFragmentManager.fragments.size).isEqualTo(3)
       }
     }
   }
@@ -95,7 +94,7 @@ internal class NavigatorTests {
     launchFragmentInNavigationContainer(::Fragment).use { scenario ->
       scenario.onFragment { fragment ->
         repeat(2) {
-          fragment.navigator.navigate(suddenly(), disallowingDuplication(), ::FirstFragment)
+          Navigator.create(fragment).navigate(suddenly(), disallowingDuplication(), ::FirstFragment)
         }
         assertThat(fragment.parentFragmentManager.fragments.size).isEqualTo(2)
       }
@@ -106,37 +105,11 @@ internal class NavigatorTests {
   fun navigatesSequentially() {
     launchFragmentInNavigationContainer(::Fragment).use { scenario ->
       scenario.onFragment { fragment ->
-        with(fragment.navigator) {
+        with(Navigator.create(fragment)) {
           navigate(suddenly(), ::FirstFragment)
           navigate(suddenly(), ::SecondFragment)
         }
         assertThat(fragment.requireActivity()).isAt<_, SecondFragment>()
-      }
-    }
-  }
-
-  @Test
-  fun addsOnNavigationListener() {
-    launchFragmentInNavigationContainer(::Fragment).use { scenario ->
-      scenario.onFragment { fragment ->
-        lateinit var destination: Fragment
-        fragment.navigator.addOnNavigationListener { destination = it }
-        fragment.navigator.navigate(suddenly(), ::FirstFragment)
-        assertThat(destination).isInstanceOf<FirstFragment>()
-      }
-    }
-  }
-
-  @Test
-  fun removesOnNavigationListener() {
-    launchFragmentInNavigationContainer(::Fragment).use { scenario ->
-      scenario.onFragment { fragment ->
-        var hasListenerBeenNotified = false
-        val listener = Navigator.OnNavigationListener { hasListenerBeenNotified = true }
-        fragment.navigator.addOnNavigationListener(listener)
-        fragment.navigator.removeOnNavigationListener(listener)
-        fragment.navigator.navigate(suddenly(), ::FirstFragment)
-        assertThat(hasListenerBeenNotified).isFalse()
       }
     }
   }

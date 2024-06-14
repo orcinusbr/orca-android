@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetailsBoundary
+import br.com.orcinus.orca.platform.navigation.BackStack
 import br.com.orcinus.orca.platform.navigation.Navigator
 import java.net.URI
 
@@ -34,5 +35,5 @@ internal object NoOpProfileDetailsBoundary : ProfileDetailsBoundary {
     entrypoint: @Composable (ContentScale, Modifier) -> Unit
   ) {}
 
-  override fun navigateToPostDetails(navigator: Navigator, id: String) {}
+  override fun navigateToPostDetails(navigator: Navigator, backStack: BackStack, id: String) {}
 }

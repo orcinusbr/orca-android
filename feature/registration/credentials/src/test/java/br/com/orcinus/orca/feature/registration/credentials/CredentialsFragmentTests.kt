@@ -29,7 +29,7 @@ internal class CredentialsFragmentTests {
   fun navigates() {
     launchNavigationActivity().use { scenario ->
       scenario.onActivity { activity ->
-        CredentialsFragment.navigate(Navigator.withoutBackStack(activity))
+        CredentialsFragment.navigate(Navigator.create(activity))
         assertThat(activity).isAt<_, CredentialsFragment>()
       }
     }

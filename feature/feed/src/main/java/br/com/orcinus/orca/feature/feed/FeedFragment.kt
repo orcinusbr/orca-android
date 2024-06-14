@@ -15,19 +15,21 @@
 
 package br.com.orcinus.orca.feature.feed
 
-import android.os.Bundle
 import androidx.compose.runtime.Composable
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import br.com.orcinus.orca.composite.composable.ComposableFragment
+import br.com.orcinus.orca.platform.navigation.BackStack
+import br.com.orcinus.orca.platform.navigation.Navigator
 import br.com.orcinus.orca.platform.navigation.application
 import br.com.orcinus.orca.platform.navigation.argument
-import br.com.orcinus.orca.platform.navigation.navigator
 import br.com.orcinus.orca.std.injector.Injector
 
 class FeedFragment internal constructor() : ComposableFragment() {
   private val module by lazy { Injector.from<FeedModule>() }
+  private val backStack by BackStack.from(this)
   private val userID by argument<String>(USER_ID_KEY)
+  private val navigator by lazy { Navigator.create(this, backStack) }
   private val viewModel by
     viewModels<FeedViewModel> {
       FeedViewModel.createFactory(
@@ -45,8 +47,8 @@ class FeedFragment internal constructor() : ComposableFragment() {
   private val boundary
     get() = module.boundary()
 
-  constructor(userID: String) : this() {
-    arguments = createArguments(userID)
+  constructor(backStack: BackStack, userID: String) : this() {
+    arguments = bundleOf(BackStack.KEY to backStack, USER_ID_KEY to userID)
   }
 
   @Composable
@@ -54,16 +56,12 @@ class FeedFragment internal constructor() : ComposableFragment() {
     Feed(
       viewModel,
       onSearch = { boundary.navigateToSearch(navigator) },
-      onPostClick = { boundary.navigateToPostDetails(navigator, it) },
+      onPostClick = { boundary.navigateToPostDetails(navigator, backStack, it) },
       onComposition = { boundary.navigateToComposer() }
     )
   }
 
   companion object {
-    internal const val USER_ID_KEY = "user-id"
-
-    internal fun createArguments(userID: String): Bundle {
-      return bundleOf(USER_ID_KEY to userID)
-    }
+    private const val USER_ID_KEY = "user-id"
   }
 }

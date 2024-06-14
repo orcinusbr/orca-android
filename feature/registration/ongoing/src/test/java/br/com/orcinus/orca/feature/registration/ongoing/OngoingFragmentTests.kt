@@ -29,7 +29,7 @@ internal class OngoingFragmentTests {
   fun navigates() {
     launchNavigationActivity().use { scenario ->
       scenario.onActivity { activity ->
-        OngoingFragment.navigate(Navigator.withoutBackStack(activity))
+        OngoingFragment.navigate(Navigator.create(activity))
         assertThat(activity).isAt<_, OngoingFragment>()
       }
     }

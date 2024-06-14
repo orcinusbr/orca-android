@@ -19,13 +19,15 @@ import android.content.Context
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import br.com.orcinus.orca.composite.composable.ComposableActivity
+import br.com.orcinus.orca.platform.navigation.BackStack
 import br.com.orcinus.orca.platform.navigation.Navigator
 import br.com.orcinus.orca.platform.starter.on
 import br.com.orcinus.orca.std.injector.Injector
 
 class SearchActivity internal constructor() : ComposableActivity() {
   private val module by lazy { Injector.from<SearchModule>() }
-  private val navigator = Navigator.withoutBackStack(this)
+  private val backStack by lazy { BackStack.named(componentName.className) }
+  private val navigator by lazy { Navigator.create(this, backStack) }
   private val viewModel by
     viewModels<SearchViewModel> { SearchViewModel.createFactory(module.searcher()) }
 
@@ -33,7 +35,9 @@ class SearchActivity internal constructor() : ComposableActivity() {
   override fun Content() {
     Search(
       viewModel,
-      onNavigateToProfileDetails = { module.boundary().navigateToProfileDetails(navigator, it) },
+      onNavigateToProfileDetails = {
+        module.boundary().navigateToProfileDetails(navigator, backStack, it)
+      },
       onBackwardsNavigation = ::finish
     )
   }

@@ -19,14 +19,12 @@ import android.view.View
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentContainerView
 import br.com.orcinus.orca.platform.navigation.Navigator
-import br.com.orcinus.orca.platform.navigation.navigator
 
 /**
  * Allows this [FragmentActivity] to have a [Navigator] created for it by overriding its content and
  * setting it as a [FragmentContainerView].
  *
- * @see Navigator.withoutBackStack
- * @see navigator
+ * @see Navigator.create
  */
 fun FragmentActivity.makeNavigable() {
   FragmentContainerView(this).apply { id = View.generateViewId() }.run(::setContentView)

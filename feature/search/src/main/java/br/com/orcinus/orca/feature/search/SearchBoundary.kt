@@ -15,8 +15,9 @@
 
 package br.com.orcinus.orca.feature.search
 
+import br.com.orcinus.orca.platform.navigation.BackStack
 import br.com.orcinus.orca.platform.navigation.Navigator
 
 interface SearchBoundary {
-  fun navigateToProfileDetails(navigator: Navigator, id: String)
+  fun navigateToProfileDetails(navigator: Navigator, backStack: BackStack, id: String)
 }

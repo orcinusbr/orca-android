@@ -16,42 +16,35 @@
 package br.com.orcinus.orca.platform.navigation
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
-import java.util.Objects
+import java.io.Serializable
 
-/** Stack to which [Fragment]s are added. */
-internal sealed class BackStack {
-  /** Prepares for the addition of [Fragment]s onto a `null` back stack. */
-  data object None : BackStack() {
-    override fun add(transaction: FragmentTransaction): FragmentTransaction {
-      return transaction.addToBackStack(null)
+/**
+ * Stack to which [Fragment]s are added.
+ *
+ * @property name Name for identifying the origin from which the [Fragment]s are added.
+ */
+@JvmInline
+value class BackStack private constructor(internal val name: String) : Serializable {
+  companion object {
+    /** [String] with which a [BackStack] is obtained as a [Fragment]'s argument. */
+    const val KEY = "back-stack"
+
+    /**
+     * Creates a [BackStack].
+     *
+     * @param name Name for identifying the origin from which the [Fragment]s are added.
+     */
+    fun named(name: String): BackStack {
+      return BackStack(name)
+    }
+
+    /**
+     * Lazily obtains the [BackStack] passed into the [fragment] as an argument.
+     *
+     * @param fragment [Fragment] from which a [BackStack] will be obtained.
+     */
+    fun from(fragment: Fragment): Lazy<BackStack> {
+      return fragment.argument(KEY)
     }
   }
-
-  /**
-   * [BackStack] whose [Fragment]s are added to a back stack linked to a given origin one.
-   *
-   * @property fragment [Fragment] from which those to be added originate.
-   */
-  class Contextual(private val fragment: Fragment) : BackStack() {
-    override fun add(transaction: FragmentTransaction): FragmentTransaction {
-      return transaction.addToBackStack("$fragment's back stack")
-    }
-
-    override fun equals(other: Any?): Boolean {
-      return other is Contextual && fragment == other.fragment
-    }
-
-    override fun hashCode(): Int {
-      return Objects.hash(fragment)
-    }
-  }
-
-  /**
-   * Adds [Fragment]s onto this [BackStack].
-   *
-   * @param transaction [FragmentTransaction] from which back-stacking configuration can be
-   *   performed.
-   */
-  internal abstract fun add(transaction: FragmentTransaction): FragmentTransaction
 }

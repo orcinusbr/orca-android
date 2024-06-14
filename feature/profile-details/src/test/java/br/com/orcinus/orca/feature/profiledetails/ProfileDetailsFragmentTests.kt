@@ -28,6 +28,7 @@ import br.com.orcinus.orca.feature.profiledetails.navigation.BackwardsNavigation
 import br.com.orcinus.orca.feature.profiledetails.test.TestProfileDetailsModule
 import br.com.orcinus.orca.platform.core.image.sample
 import br.com.orcinus.orca.platform.core.sample
+import br.com.orcinus.orca.platform.navigation.BackStack
 import br.com.orcinus.orca.platform.navigation.test.fragment.launchFragmentInNavigationContainer
 import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import br.com.orcinus.orca.std.injector.test.InjectorTestRule
@@ -64,7 +65,11 @@ internal class ProfileDetailsFragmentTests {
       runTest { profile.toggleFollow() }
     }
     launchFragmentInNavigationContainer {
-        ProfileDetailsFragment(BackwardsNavigationState.Unavailable, profile.id)
+        ProfileDetailsFragment(
+          BackStack.named(ProfileDetailsFragment::class.java.name),
+          BackwardsNavigationState.Unavailable,
+          profile.id
+        )
       }
       .use {
         composeRule

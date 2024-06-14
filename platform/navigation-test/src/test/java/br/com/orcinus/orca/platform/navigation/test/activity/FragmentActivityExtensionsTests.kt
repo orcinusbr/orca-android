@@ -16,7 +16,7 @@
 package br.com.orcinus.orca.platform.navigation.test.activity
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule
-import br.com.orcinus.orca.platform.navigation.navigator
+import br.com.orcinus.orca.platform.navigation.Navigator
 import kotlin.test.Test
 import org.junit.Rule
 import org.junit.runner.RunWith
@@ -27,10 +27,10 @@ internal class FragmentActivityExtensionsTests {
   @get:Rule val activityScenarioRule = ActivityScenarioRule(NavigationActivity::class.java)
 
   @Test
-  fun getsNavigatorWhenMadeNavigable() {
+  fun createsNavigatorWhenMadeNavigable() {
     activityScenarioRule.scenario.onActivity {
       it.makeNavigable()
-      it.navigator
+      Navigator.create(it)
     }
   }
 }

@@ -17,10 +17,11 @@ package br.com.orcinus.orca.app.module.feature.search
 
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetailsFragment
 import br.com.orcinus.orca.feature.search.SearchBoundary
+import br.com.orcinus.orca.platform.navigation.BackStack
 import br.com.orcinus.orca.platform.navigation.Navigator
 
 internal object MainSearchBoundary : SearchBoundary {
-  override fun navigateToProfileDetails(navigator: Navigator, id: String) {
-    ProfileDetailsFragment.navigate(navigator, id)
+  override fun navigateToProfileDetails(navigator: Navigator, backStack: BackStack, id: String) {
+    ProfileDetailsFragment.navigate(navigator, backStack, id)
   }
 }

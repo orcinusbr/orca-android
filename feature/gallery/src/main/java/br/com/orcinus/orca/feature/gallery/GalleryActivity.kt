@@ -30,6 +30,7 @@ import br.com.orcinus.orca.composite.composable.ComposableActivity
 import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
 import br.com.orcinus.orca.ext.intents.intentOf
 import br.com.orcinus.orca.feature.gallery.ui.Gallery
+import br.com.orcinus.orca.platform.navigation.BackStack
 import br.com.orcinus.orca.platform.navigation.Navigator
 import br.com.orcinus.orca.platform.navigation.extra
 import br.com.orcinus.orca.platform.starter.on
@@ -44,7 +45,8 @@ class GalleryActivity internal constructor() : ComposableActivity() {
   @set:JvmName("_setEntrypoint")
   private var entrypoint by mutableStateOf<(@Composable (ContentScale, Modifier) -> Unit)?>(null)
 
-  private val navigator = Navigator.withoutBackStack(this)
+  private val backStack by lazy { BackStack.named(componentName.className) }
+  private val navigator by lazy { Navigator.create(this, backStack) }
   private val viewModel by
     viewModels<GalleryViewModel> {
       GalleryViewModel.createFactory(application, module.postProvider(), postID)
@@ -61,7 +63,7 @@ class GalleryActivity internal constructor() : ComposableActivity() {
       viewModel,
       entrypointIndex,
       secondary,
-      onComment = { module.boundary().navigateToPostDetails(navigator, postID) },
+      onComment = { module.boundary().navigateToPostDetails(navigator, backStack, postID) },
       onClose = ::finish
     ) {
       entrypoint?.invoke(ContentScale.FillWidth, it)

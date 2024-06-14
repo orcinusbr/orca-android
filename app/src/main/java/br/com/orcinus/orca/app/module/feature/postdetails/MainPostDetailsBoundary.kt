@@ -24,6 +24,7 @@ import br.com.orcinus.orca.ext.intents.browseTo
 import br.com.orcinus.orca.feature.gallery.GalleryActivity
 import br.com.orcinus.orca.feature.postdetails.PostDetailsBoundary
 import br.com.orcinus.orca.feature.postdetails.PostDetailsFragment
+import br.com.orcinus.orca.platform.navigation.BackStack
 import br.com.orcinus.orca.platform.navigation.Navigator
 import java.net.URI
 
@@ -41,8 +42,8 @@ internal class MainPostDetailsBoundary(private val context: Context) : PostDetai
     GalleryActivity.start(context, postID, entrypointIndex, secondary, entrypoint)
   }
 
-  override fun navigateToPostDetails(navigator: Navigator, id: String) {
-    PostDetailsFragment.navigate(navigator, id)
+  override fun navigateToPostDetails(navigator: Navigator, backStack: BackStack, id: String) {
+    PostDetailsFragment.navigate(navigator, backStack, id)
   }
 
   override fun pop(navigator: Navigator) {

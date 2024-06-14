@@ -30,6 +30,7 @@ import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.sample.test.instance.SampleInstanceTestRule
 import br.com.orcinus.orca.platform.core.sample
+import br.com.orcinus.orca.platform.navigation.BackStack
 import br.com.orcinus.orca.platform.navigation.test.fragment.launchFragmentInNavigationContainer
 import br.com.orcinus.orca.std.injector.test.InjectorTestRule
 import kotlinx.coroutines.flow.first
@@ -55,7 +56,9 @@ internal class FeedFragmentTests {
         .favorite
         .disable()
     }
-    launchFragmentInNavigationContainer { FeedFragment(Profile.sample.id) }
+    launchFragmentInNavigationContainer {
+        FeedFragment(BackStack.named(FeedFragment::class.java.name), Profile.sample.id)
+      }
       .use {
         composeRule
           .onPostPreviews()

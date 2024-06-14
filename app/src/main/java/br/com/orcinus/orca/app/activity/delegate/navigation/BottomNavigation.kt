@@ -15,19 +15,19 @@
 
 package br.com.orcinus.orca.app.activity.delegate.navigation
 
-import androidx.annotation.IdRes
+import android.view.MenuItem
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import br.com.orcinus.orca.app.R
 import br.com.orcinus.orca.app.activity.delegate.Binding
+import br.com.orcinus.orca.platform.navigation.BackStack
 import br.com.orcinus.orca.platform.navigation.Navigator
 import kotlinx.coroutines.launch
 
 internal interface BottomNavigation : Binding {
   fun navigateOnItemSelection(activity: FragmentActivity) {
-    val navigator = Navigator.withoutBackStack(activity)
     binding?.bottomNavigationView?.setOnItemSelectedListener {
-      navigate(activity, navigator, it.itemId)
+      navigate(activity, it)
       true
     }
   }
@@ -36,7 +36,11 @@ internal interface BottomNavigation : Binding {
     binding?.bottomNavigationView?.selectedItemId = R.id.feed
   }
 
-  private fun navigate(activity: FragmentActivity, navigator: Navigator, @IdRes itemID: Int) {
-    activity.lifecycleScope.launch { BottomNavigationFragmentProvider.navigate(navigator, itemID) }
+  private fun navigate(activity: FragmentActivity, item: MenuItem) {
+    val backStack = BackStack.named(item.title?.toString() ?: return)
+    val navigator = Navigator.create(activity, backStack)
+    activity.lifecycleScope.launch {
+      BottomNavigationFragmentProvider.navigate(navigator, backStack, item.itemId)
+    }
   }
 }

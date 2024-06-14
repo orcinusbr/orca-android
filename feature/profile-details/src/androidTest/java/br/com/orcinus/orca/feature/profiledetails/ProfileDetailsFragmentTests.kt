@@ -23,6 +23,7 @@ import br.com.orcinus.orca.core.sample.test.instance.SampleInstanceTestRule
 import br.com.orcinus.orca.feature.profiledetails.navigation.BackwardsNavigationState
 import br.com.orcinus.orca.feature.profiledetails.test.TestProfileDetailsModule
 import br.com.orcinus.orca.platform.core.sample
+import br.com.orcinus.orca.platform.navigation.BackStack
 import br.com.orcinus.orca.platform.navigation.test.fragment.launchFragmentInNavigationContainer
 import br.com.orcinus.orca.platform.testing.DefaultTimeout
 import br.com.orcinus.orca.std.injector.test.InjectorTestRule
@@ -45,7 +46,11 @@ internal class ProfileDetailsFragmentTests {
   @Test
   fun loadsPosts() {
     launchFragmentInNavigationContainer {
-        ProfileDetailsFragment(BackwardsNavigationState.Unavailable, Profile.sample.id)
+        ProfileDetailsFragment(
+          BackStack.named(ProfileDetailsFragment::class.java.name),
+          BackwardsNavigationState.Unavailable,
+          Profile.sample.id
+        )
       }
       .use {
         @OptIn(ExperimentalTestApi::class)

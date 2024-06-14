@@ -30,6 +30,7 @@ import br.com.orcinus.orca.core.sample.feed.profile.post.content.samples
 import br.com.orcinus.orca.core.sample.image.CoverImageSource
 import br.com.orcinus.orca.feature.gallery.GalleryActivity
 import br.com.orcinus.orca.feature.gallery.R
+import br.com.orcinus.orca.feature.gallery.ui.Gallery
 import br.com.orcinus.orca.platform.core.image.createSample
 import br.com.orcinus.orca.platform.core.withSample
 import br.com.orcinus.orca.platform.testing.context
@@ -41,7 +42,7 @@ import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
  * @param postID ID of the [Post] to which the [Attachment]s belong.
  * @param entrypointIndex Index at which the [entrypoint] is.
  * @param secondary [Attachment]s to be shown in the pages other than the [entrypoint].
- * @param entrypoint Entrypoint page of the [SampleGallery].
+ * @param entrypoint Entrypoint page of the [Gallery].
  */
 fun launchGalleryActivity(
   postID: String = Posts.withSample.single().id,

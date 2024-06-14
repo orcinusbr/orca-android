@@ -17,10 +17,11 @@ package br.com.orcinus.orca.app.module.feature.gallery
 
 import br.com.orcinus.orca.feature.gallery.GalleryBoundary
 import br.com.orcinus.orca.feature.postdetails.PostDetailsFragment
+import br.com.orcinus.orca.platform.navigation.BackStack
 import br.com.orcinus.orca.platform.navigation.Navigator
 
 internal object MainGalleryBoundary : GalleryBoundary {
-  override fun navigateToPostDetails(navigator: Navigator, id: String) {
-    PostDetailsFragment.navigate(navigator, id)
+  override fun navigateToPostDetails(navigator: Navigator, backStack: BackStack, id: String) {
+    PostDetailsFragment.navigate(navigator, backStack, id)
   }
 }

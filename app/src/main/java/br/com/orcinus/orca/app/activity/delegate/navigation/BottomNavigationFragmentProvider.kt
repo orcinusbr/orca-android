@@ -24,6 +24,7 @@ import br.com.orcinus.orca.feature.feed.FeedFragment
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetailsFragment
 import br.com.orcinus.orca.feature.profiledetails.navigation.BackwardsNavigationState
 import br.com.orcinus.orca.feature.settings.SettingsFragment
+import br.com.orcinus.orca.platform.navigation.BackStack
 import br.com.orcinus.orca.platform.navigation.Navigator
 import br.com.orcinus.orca.platform.navigation.duplication.disallowingDuplication
 import br.com.orcinus.orca.platform.navigation.transition.suddenly
@@ -33,23 +34,23 @@ internal enum class BottomNavigationFragmentProvider {
   FEED {
     override val id = R.id.feed
 
-    override suspend fun provide(): FeedFragment {
-      return authenticationLock.scheduleUnlock { FeedFragment(it.id) }
+    override suspend fun provide(backStack: BackStack): FeedFragment {
+      return authenticationLock.scheduleUnlock { FeedFragment(backStack, it.id) }
     }
   },
   PROFILE_DETAILS {
     override val id = R.id.profile_details
 
-    override suspend fun provide(): ProfileDetailsFragment {
+    override suspend fun provide(backStack: BackStack): ProfileDetailsFragment {
       return authenticationLock.scheduleUnlock {
-        ProfileDetailsFragment(BackwardsNavigationState.Unavailable, it.id)
+        ProfileDetailsFragment(backStack, BackwardsNavigationState.Unavailable, it.id)
       }
     }
   },
   SETTINGS {
     override val id = R.id.settings
 
-    override suspend fun provide(): SettingsFragment {
+    override suspend fun provide(backStack: BackStack): SettingsFragment {
       return SettingsFragment()
     }
   };
@@ -59,12 +60,12 @@ internal enum class BottomNavigationFragmentProvider {
   protected val authenticationLock
     get() = Injector.from<CoreModule>().authenticationLock()
 
-  protected abstract suspend fun provide(): Fragment
+  protected abstract suspend fun provide(backStack: BackStack): Fragment
 
   companion object {
-    suspend fun navigate(navigator: Navigator, @IdRes id: Int) {
+    suspend fun navigate(navigator: Navigator, backStack: BackStack, @IdRes id: Int) {
       val provider = entries.find { it.id == id } ?: throw NoSuchElementException("$id")
-      val fragment = provider.provide()
+      val fragment = provider.provide(backStack)
 
       @Suppress("DiscouragedApi")
       navigator.navigateOrThrow(suddenly(), disallowingDuplication(), fragment::class) { fragment }

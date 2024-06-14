@@ -13,20 +13,26 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.navigation.test.fragment
+package br.com.orcinus.orca.platform.navigation
 
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import br.com.orcinus.orca.platform.navigation.navigator
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import kotlin.test.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class FragmentScenarioExtensionsTests {
+internal class BackStackTests {
   @Test
-  fun getsNavigatorFromContainerActivity() {
-    launchFragmentInNavigationContainer(instantiation = ::Fragment).use { scenario ->
-      scenario.onFragment { fragment -> fragment.requireActivity().navigator }
-    }
+  fun createsBackStack() {
+    assertThat(BackStack.named("☁️").name).isEqualTo("☁️")
+  }
+
+  @Test
+  fun getsBackStackFragmentArgument() {
+    val fragment = Fragment().apply { arguments = bundleOf(BackStack.KEY to BackStack.named("")) }
+    assertThat(BackStack.from(fragment).value).isEqualTo(BackStack.named(""))
   }
 }

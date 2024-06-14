@@ -26,6 +26,7 @@ import br.com.orcinus.orca.feature.feed.FeedBoundary
 import br.com.orcinus.orca.feature.gallery.GalleryActivity
 import br.com.orcinus.orca.feature.postdetails.PostDetailsFragment
 import br.com.orcinus.orca.feature.search.SearchActivity
+import br.com.orcinus.orca.platform.navigation.BackStack
 import br.com.orcinus.orca.platform.navigation.Navigator
 import java.net.URI
 
@@ -47,8 +48,8 @@ internal class MainFeedBoundary(private val context: Context) : FeedBoundary {
     GalleryActivity.start(context, postID, entrypointIndex, secondary, entrypoint)
   }
 
-  override fun navigateToPostDetails(navigator: Navigator, id: String) {
-    PostDetailsFragment.navigate(navigator, id)
+  override fun navigateToPostDetails(navigator: Navigator, backStack: BackStack, id: String) {
+    PostDetailsFragment.navigate(navigator, backStack, id)
   }
 
   override fun navigateToComposer() {
