@@ -16,22 +16,17 @@
 package br.com.orcinus.orca.core.mastodon.feed.profile.post
 
 import br.com.orcinus.orca.core.feed.profile.post.DeletablePost
-import br.com.orcinus.orca.core.mastodon.MastodonCoreModule
-import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
-import br.com.orcinus.orca.core.mastodon.instanceProvider
-import br.com.orcinus.orca.std.injector.Injector
 
 /**
  * [DeletablePost] that is deleted by sending a request to the Mastodon API.
  *
- * @param delegate [MastodonPost] to delegate its functionality to.
+ * @property delegate [MastodonPost] to delegate its functionality to.
  */
 internal data class MastodonDeletablePost(private val delegate: MastodonPost) :
   DeletablePost(delegate) {
   override suspend fun delete() {
-    (Injector.from<MastodonCoreModule>().instanceProvider().provide() as SomeMastodonInstance)
-      .requester
+    delegate.requester
       .authenticated()
       .delete({ path("api").path("v1").path("statuses").path(id).build() })
   }

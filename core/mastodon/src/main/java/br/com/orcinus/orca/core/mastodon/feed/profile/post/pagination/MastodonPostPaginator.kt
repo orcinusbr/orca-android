@@ -18,14 +18,10 @@ package br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.type.KTypeCreator
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.type.kTypeCreatorOf
-import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
-import br.com.orcinus.orca.core.module.CoreModule
-import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.ext.coroutines.getValue
 import br.com.orcinus.orca.ext.coroutines.setValue
-import br.com.orcinus.orca.std.injector.Injector
 import io.ktor.client.request.HttpRequest
 import io.ktor.client.statement.HttpResponse
 import kotlin.jvm.optionals.getOrNull
@@ -71,17 +67,15 @@ internal abstract class MastodonPostPaginator<T : Any> : KTypeCreator<T> {
       .onEach { lastResponse = it }
       .map { it.body(this).toPosts() }
 
-  /** [Requester] through which the [HttpRequest]s will be performed. */
-  private val requester
-    get() =
-      (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance).requester
-
   /**
    * Index of the page that's the current one.
    *
    * @see pageFlow
    */
   private var page by pageFlow
+
+  /** [Requester] by which requests will be performed. */
+  protected abstract val requester: Requester
 
   /** URI [String] to which the initial [HttpRequest] should be sent. */
   protected abstract val route: String

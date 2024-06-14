@@ -63,6 +63,6 @@ internal abstract class MastodonStatusesPaginator : MastodonPostPaginator<List<M
   }
 
   final override fun List<MastodonStatus>.toPosts(): List<Post> {
-    return map { it.toPost(context, imageLoaderProvider, commentPaginatorProvider) }
+    return map { it.toPost(context, requester, imageLoaderProvider, commentPaginatorProvider) }
   }
 }

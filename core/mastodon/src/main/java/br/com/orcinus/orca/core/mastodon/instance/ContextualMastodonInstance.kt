@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -52,13 +52,13 @@ import java.net.URI
  * [Context].
  *
  * @param context [Context] with which the [database], [Cache]s and [Fetcher]s will be created.
- * @param domain Unique identifier of the server.
- * @param authorizer [MastodonAuthorizer] by which the user will be authorized.
  * @param actorProvider [ActorProvider] that will provide [Actor]s to the [authenticator], the
  *   [authenticationLock] and the [feedProvider].
  * @param termMuter [TermMuter] by which [Post]s with muted terms will be filtered out.
- * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
- *   will be loaded.
+ * @property domain Unique identifier of the server.
+ * @property authorizer [MastodonAuthorizer] by which the user will be authorized.
+ * @property imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
+ *   images will be loaded.
  */
 internal class ContextualMastodonInstance(
   context: Context,
@@ -78,18 +78,20 @@ internal class ContextualMastodonInstance(
    * by [postFetcher], [feedPostPaginator], [profilePostPaginatorProvider] and [postStorage].
    */
   private val commentPaginatorProvider =
-    MastodonCommentPaginator.Provider { MastodonCommentPaginator(context, imageLoaderProvider, it) }
+    MastodonCommentPaginator.Provider {
+      MastodonCommentPaginator(context, requester, imageLoaderProvider, it)
+    }
 
   /** [MastodonPostFetcher] by which [Post]s will be fetched from the API. */
   private val postFetcher =
-    MastodonPostFetcher(context, imageLoaderProvider, commentPaginatorProvider)
+    MastodonPostFetcher(context, requester, imageLoaderProvider, commentPaginatorProvider)
 
   /**
    * [MastodonFeedPaginator] with which pagination through the feed's [Post]s that have been fetched
    * from the API will be performed.
    */
   private val feedPostPaginator =
-    MastodonFeedPaginator(context, imageLoaderProvider, commentPaginatorProvider)
+    MastodonFeedPaginator(context, requester, imageLoaderProvider, commentPaginatorProvider)
 
   /**
    * [MastodonProfilePostPaginator.Provider] that provides the [MastodonProfilePostPaginator] to be
@@ -97,16 +99,23 @@ internal class ContextualMastodonInstance(
    */
   private val profilePostPaginatorProvider =
     MastodonProfilePostPaginator.Provider {
-      MastodonProfilePostPaginator(context, imageLoaderProvider, commentPaginatorProvider, it)
+      MastodonProfilePostPaginator(
+        context,
+        requester,
+        imageLoaderProvider,
+        commentPaginatorProvider,
+        it
+      )
     }
 
   /** [MastodonProfileFetcher] by which [MastodonProfile]s will be fetched from the API. */
   private val profileFetcher =
-    MastodonProfileFetcher(context, imageLoaderProvider, profilePostPaginatorProvider)
+    MastodonProfileFetcher(context, requester, imageLoaderProvider, profilePostPaginatorProvider)
 
   /** [MastodonProfileStorage] that will store fetched [MastodonProfile]s. */
   private val profileStorage =
     MastodonProfileStorage(
+      requester,
       imageLoaderProvider,
       profilePostPaginatorProvider,
       database.profileEntityDao
@@ -121,7 +130,12 @@ internal class ContextualMastodonInstance(
    * API.
    */
   private val profileSearchResultsFetcher =
-    MastodonProfileSearchResultsFetcher(context, imageLoaderProvider, profilePostPaginatorProvider)
+    MastodonProfileSearchResultsFetcher(
+      context,
+      requester,
+      imageLoaderProvider,
+      profilePostPaginatorProvider
+    )
 
   /** [MastodonProfileSearchResultsStorage] that will store fetched [ProfileSearchResult]s. */
   private val profileSearchResultsStorage =
@@ -139,6 +153,7 @@ internal class ContextualMastodonInstance(
   /** [MastodonPostStorage] that will store fetched [MastodonPost]s. */
   private val postStorage =
     MastodonPostStorage(
+      requester,
       profileCache,
       database.postEntityDao,
       database.styleEntityDao,

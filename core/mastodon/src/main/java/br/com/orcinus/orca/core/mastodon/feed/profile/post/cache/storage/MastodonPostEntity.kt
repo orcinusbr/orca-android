@@ -26,9 +26,11 @@ import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Headline
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Highlight
 import br.com.orcinus.orca.core.feed.profile.post.repost.Repost
+import br.com.orcinus.orca.core.feed.profile.post.stat.Stat
 import br.com.orcinus.orca.core.mastodon.feed.profile.cache.storage.style.MastodonStyleEntity
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.MastodonPost
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentPaginator
+import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.`if`
@@ -81,6 +83,7 @@ internal data class MastodonPostEntity(
   /**
    * Converts this [MastodonPostEntity] into a [Post].
    *
+   * @param requester [Requester] by which [Stat]-related requests are performed.
    * @param profileCache [Cache] from which the [Author]'s [Profile] will be retrieved.
    * @param dao [MastodonPostEntityDao] that will select the persisted
    *   [Mastodon style entities][MastodonStyleEntity].
@@ -91,6 +94,7 @@ internal data class MastodonPostEntity(
    * @see Post.comment
    */
   suspend fun toPost(
+    requester: Requester,
     profileCache: Cache<Profile>,
     dao: MastodonPostEntityDao,
     imageLoaderProvider: SomeImageLoaderProvider<URI>,
@@ -112,6 +116,7 @@ internal data class MastodonPostEntity(
     val publicationDateTime = ZonedDateTime.parse(publicationDateTime)
     val uri = URI(uri)
     return MastodonPost(
+        requester,
         id,
         imageLoaderProvider,
         author,

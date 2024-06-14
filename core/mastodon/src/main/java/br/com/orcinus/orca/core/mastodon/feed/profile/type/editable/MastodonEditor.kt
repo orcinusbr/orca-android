@@ -16,13 +16,10 @@
 package br.com.orcinus.orca.core.mastodon.feed.profile.type.editable
 
 import br.com.orcinus.orca.core.feed.profile.type.editable.Editor
-import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
+import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
-import br.com.orcinus.orca.core.module.CoreModule
-import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import br.com.orcinus.orca.std.image.SomeImageLoader
-import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.markdown.Markdown
 import io.ktor.client.request.forms.InputProvider
 import io.ktor.client.request.forms.formData
@@ -33,8 +30,12 @@ import java.net.URI
 import java.nio.file.Path
 import kotlin.io.path.name
 
-/** [Editor] whose actions communicate with the Mastodon API. */
-internal class MastodonEditor : Editor {
+/**
+ * [Editor] whose actions communicate with the Mastodon API.
+ *
+ * @property requester [Requester] by which editing requests are performed.
+ */
+internal class MastodonEditor(private val requester: Requester) : Editor {
   /** [URI] to which requests for editing a [MastodonEditableProfile] are to be sent. */
   private val editRoute: HostedURLBuilder.() -> URI = {
     path("api").path("v1").path("accounts").path("update_credentials").build()
@@ -49,23 +50,14 @@ internal class MastodonEditor : Editor {
     val contentDisposition = "form-data; name=\"avatar\" filename=\"${file.name}\""
     val headers = Headers.build { append(HttpHeaders.ContentDisposition, contentDisposition) }
     val form = formData { append("avatar", inputProvider, headers) }
-    (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
-      .requester
-      .authenticated()
-      .post(editRoute, form)
+    requester.authenticated().post(editRoute, form)
   }
 
   override suspend fun setName(name: String) {
-    (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
-      .requester
-      .authenticated()
-      .post(editRoute) { parameters { append("display_name", name) } }
+    requester.authenticated().post(editRoute) { parameters { append("display_name", name) } }
   }
 
   override suspend fun setBio(bio: Markdown) {
-    (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
-      .requester
-      .authenticated()
-      .post(editRoute) { parameters { append("note", "$bio") } }
+    requester.authenticated().post(editRoute) { parameters { append("note", "$bio") } }
   }
 }

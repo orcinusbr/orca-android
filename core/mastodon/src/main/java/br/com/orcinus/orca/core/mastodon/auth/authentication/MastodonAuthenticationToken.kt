@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,14 +16,10 @@
 package br.com.orcinus.orca.core.mastodon.auth.authentication
 
 import br.com.orcinus.orca.core.auth.actor.Actor
-import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
-import br.com.orcinus.orca.core.module.CoreModule
-import br.com.orcinus.orca.core.module.instanceProvider
+import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import br.com.orcinus.orca.std.injector.Injector
 import io.ktor.client.call.body
-import io.ktor.client.request.get
 import io.ktor.http.HttpHeaders
 import java.net.URI
 import kotlinx.serialization.Serializable
@@ -40,14 +36,17 @@ internal data class MastodonAuthenticationToken(val accessToken: String) {
    * Converts this [MastodonAuthenticationToken] into an [authenticated][Actor.Authenticated]
    * [Actor].
    *
+   * @param requester [Requester] by which a request to verify the credentials will be performed.
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
    *   avatar will be loaded from a [URI].
    */
-  suspend fun toActor(avatarLoaderProvider: SomeImageLoaderProvider<URI>): Actor.Authenticated {
+  suspend fun toActor(
+    requester: Requester,
+    avatarLoaderProvider: SomeImageLoaderProvider<URI>
+  ): Actor.Authenticated {
     return toActor(
       avatarLoaderProvider,
-      (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
-        .requester
+      requester
         .get({ path("api").path("v1").path("accounts").path("verify_credentials").build() }) {
           headers { append(HttpHeaders.Authorization, "Bearer $accessToken") }
         }

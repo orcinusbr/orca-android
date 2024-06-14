@@ -21,9 +21,11 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.feed.profile.post.repost.Repost
+import br.com.orcinus.orca.core.feed.profile.post.stat.Stat
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.MastodonPost
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentPaginator
+import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.`if`
@@ -37,23 +39,23 @@ import java.time.ZonedDateTime
 import kotlinx.serialization.Serializable
 
 /**
- * Structure returned by the API that is the DTO version of either A [MastodonPost] or a [Repost];
+ * Structure returned by the API that is the DTO version of either a [MastodonPost] or a [Repost];
  * which one it represents is determined by [reblog]'s nullability.
  *
- * @param id Unique identifier.
- * @param createdAt ISO-8601-formatted [String] indicating the date and time of creation.
- * @param account [MastodonAccount] of the author that's created this [MastodonStatus].
- * @param reblogsCount Amount of times it's been reblogged.
- * @param favouritesCount Amount of times it's been favorited.
- * @param repliesCount Amount of replies that's been received.
- * @param url String [URL] that leads to this [MastodonStatus].
- * @param reblog [MastodonStatus] that's being reblogged in this one.
- * @param card [MastodonCard] for the highlighted [URI] that's in the [content].
- * @param content Text that's been written.
- * @param mediaAttachments [MastodonAttachment]s of attached media.
- * @param favourited Whether it's been favorited by the currently
+ * @property id Unique identifier.
+ * @property createdAt ISO-8601-formatted [String] indicating the date and time of creation.
+ * @property account [MastodonAccount] of the author that's created this [MastodonStatus].
+ * @property reblogsCount Amount of times it's been reblogged.
+ * @property favouritesCount Amount of times it's been favorited.
+ * @property repliesCount Amount of replies that's been received.
+ * @property url String [URL] that leads to this [MastodonStatus].
+ * @property reblog [MastodonStatus] that's being reblogged in this one.
+ * @property card [MastodonCard] for the highlighted [URI] that's in the [content].
+ * @property content Text that's been written.
+ * @property mediaAttachments [MastodonAttachment]s of attached media.
+ * @property favourited Whether it's been favorited by the currently
  *   [authenticated][Actor.Authenticated] [Actor].
- * @param reblogged Whether the [authenticated][Actor.Authenticated] [Actor] has reblogged this
+ * @property reblogged Whether the [authenticated][Actor.Authenticated] [Actor] has reblogged this
  *   [MastodonStatus].
  */
 @Serializable
@@ -77,6 +79,7 @@ internal constructor(
    * Converts this [MastodonStatus] into a [Post].
    *
    * @param context [Context] with which the [content] will be converted into [Markdown].
+   * @param requester [Requester] by which [Stat]-related requests are performed.
    * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
    *   images will be loaded from a [URI].
    * @param commentPaginatorProvider [MastodonCommentPaginator.Provider] by which a
@@ -86,6 +89,7 @@ internal constructor(
    */
   internal fun toPost(
     context: Context,
+    requester: Requester,
     imageLoaderProvider: SomeImageLoaderProvider<URI>,
     commentPaginatorProvider: MastodonCommentPaginator.Provider
   ): Post {
@@ -99,6 +103,7 @@ internal constructor(
     val publicationDateTime = ZonedDateTime.parse(reblog?.createdAt ?: createdAt)
     val uri = URI(reblog?.url ?: url)
     return MastodonPost(
+        requester,
         id,
         imageLoaderProvider,
         author,

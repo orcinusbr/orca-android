@@ -21,40 +21,38 @@ import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfile
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
-import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
+import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
-import br.com.orcinus.orca.core.module.CoreModule
-import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.platform.cache.Fetcher
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
-import br.com.orcinus.orca.std.injector.Injector
 import io.ktor.client.call.body
 import java.net.URI
 
 /**
  * [Fetcher] for [MastodonProfile]s.
  *
- * @param context [Context] with which a fetched [MastodonAccount] will be converted into a
+ * @property context [Context] with which a fetched [MastodonAccount] will be converted into a
  *   [Profile].
- * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
+ * @property requester [Requester] by which a request to fetch a [Profile] is performed.
+ * @property avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
  *   [Profile]s' avatars will be loaded from a [URI].
- * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
+ * @property postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
  *   [MastodonProfilePostPaginator] for paginating through a [MastodonProfile]'s [Post]s will be
  *   provided.
  * @see MastodonAccount.toProfile
  */
 internal class MastodonProfileFetcher(
   private val context: Context,
+  private val requester: Requester,
   private val avatarLoaderProvider: SomeImageLoaderProvider<URI>,
   private val postPaginatorProvider: MastodonProfilePostPaginator.Provider
 ) : Fetcher<Profile>() {
   override suspend fun onFetch(key: String): Profile {
-    return (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
-      .requester
+    return requester
       .authenticated()
       .get({ path("api").path("v1").path("accounts").path(key).build() })
       .body<MastodonAccount>()
-      .toProfile(context, avatarLoaderProvider, postPaginatorProvider)
+      .toProfile(context, requester, avatarLoaderProvider, postPaginatorProvider)
   }
 }

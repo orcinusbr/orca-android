@@ -21,6 +21,7 @@ import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfile
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.MastodonPost
+import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.std.image.SomeImageLoader
 import br.com.orcinus.orca.std.markdown.Markdown
 import java.net.URI
@@ -28,11 +29,13 @@ import java.net.URI
 /**
  * [MastodonProfile] that can be edited.
  *
- * @param postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
+ * @property requester [Requester] by which the [editor]'s editing requests are performed.
+ * @property postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
  *   [MastodonProfilePostPaginator] for paginating through the [MastodonProfile]'s [MastodonPost]s
  *   will be provided.
  */
-internal data class MastodonEditableProfile(
+internal class MastodonEditableProfile(
+  private val requester: Requester,
   private val postPaginatorProvider: MastodonProfilePostPaginator.Provider,
   override val id: String,
   override val account: Account,
@@ -55,5 +58,5 @@ internal data class MastodonEditableProfile(
     uri
   ),
   EditableProfile() {
-  override val editor = MastodonEditor()
+  override val editor = MastodonEditor(requester)
 }

@@ -22,6 +22,7 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.post.MastodonContext
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.MastodonPostPaginator
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.type.KTypeCreator
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.type.kTypeCreatorOf
+import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import java.net.URI
@@ -29,16 +30,17 @@ import java.net.URI
 /**
  * [MastodonPostPaginator] for paginating through the comments of a [Post].
  *
- * @param context [Context] with which [MastodonContext]s will be converted into [Post]s.
- * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which images
- *   will be loaded from a [URI].
  * @param id ID of the original [Post].
+ * @property context [Context] with which [MastodonContext]s will be converted into [Post]s.
+ * @property imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
+ *   images will be loaded from a [URI].
  * @see Post.comment
- * @see toPosts
  * @see Post.id
+ * @see toPosts
  */
 internal class MastodonCommentPaginator(
   private val context: Context,
+  override val requester: Requester,
   private val imageLoaderProvider: SomeImageLoaderProvider<URI>,
   id: String
 ) : MastodonPostPaginator<MastodonContext>(), KTypeCreator<MastodonContext> by kTypeCreatorOf() {
@@ -59,7 +61,7 @@ internal class MastodonCommentPaginator(
 
   override fun MastodonContext.toPosts(): List<Post> {
     return descendants.map {
-      it.toPost(context, imageLoaderProvider) { this@MastodonCommentPaginator }
+      it.toPost(context, requester, imageLoaderProvider) { this@MastodonCommentPaginator }
     }
   }
 }

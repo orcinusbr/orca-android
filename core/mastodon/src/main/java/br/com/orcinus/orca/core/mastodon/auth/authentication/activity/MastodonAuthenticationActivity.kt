@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import br.com.orcinus.orca.composite.composable.ComposableActivity
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.instance.InstanceProvider
+import br.com.orcinus.orca.core.mastodon.MastodonCoreModule
 import br.com.orcinus.orca.core.mastodon.auth.authentication.MastodonAuthentication
 import br.com.orcinus.orca.core.mastodon.auth.authentication.MastodonAuthenticationViewModel
 import br.com.orcinus.orca.core.mastodon.instance.ContextualMastodonInstance
@@ -36,7 +37,7 @@ import br.com.orcinus.orca.std.injector.Injector
  */
 class MastodonAuthenticationActivity : ComposableActivity() {
   /** [CoreModule] into which core-HTTP-related dependencies have been injected. */
-  private val module by lazy { Injector.from<CoreModule>() }
+  private val module by lazy { Injector.from<MastodonCoreModule>() }
 
   /** Code provided by the API when the user was authorized. */
   private val authorizationCode by extra<String>(AUTHORIZATION_CODE_KEY)
@@ -49,6 +50,7 @@ class MastodonAuthenticationActivity : ComposableActivity() {
     viewModels<MastodonAuthenticationViewModel> {
       MastodonAuthenticationViewModel.createFactory(
         application,
+        instance.requester,
         instance.imageLoaderProvider,
         authorizationCode
       )

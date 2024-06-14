@@ -18,24 +18,21 @@ package br.com.orcinus.orca.core.mastodon.feed.profile.post.stat
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.stat.toggleable.ToggleableStat
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.MastodonPost
-import br.com.orcinus.orca.core.mastodon.instance.SomeMastodonInstance
+import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
-import br.com.orcinus.orca.core.module.CoreModule
-import br.com.orcinus.orca.core.module.instanceProvider
-import br.com.orcinus.orca.std.injector.Injector
 
 /**
- * Builds a [ToggleableStat] for A [MastodonPost]'s favorites that obtains them from the API.
+ * Builds a [ToggleableStat] for a [MastodonPost]'s favorites that obtains them from the API.
  *
+ * @param requester [Requester] by which a request to toggle the "favorited" status is performed.
  * @param id ID of the [MastodonPost] for which the [ToggleableStat] is.
  * @param count Amount of times that the [MastodonPost] has been marked as favorite.
  */
 @Suppress("FunctionName")
-internal fun FavoriteStat(id: String, count: Int): ToggleableStat<Profile> {
+internal fun FavoriteStat(requester: Requester, id: String, count: Int): ToggleableStat<Profile> {
   return ToggleableStat(count) {
     onSetEnabled { isEnabled ->
-      (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
-        .requester
+      requester
         .authenticated()
         .post({
           path("api")
@@ -50,17 +47,17 @@ internal fun FavoriteStat(id: String, count: Int): ToggleableStat<Profile> {
 }
 
 /**
- * Builds a [ToggleableStat] for A [MastodonPost]'s reblogs that obtains them from the API.
+ * Builds a [ToggleableStat] for a [MastodonPost]'s reposts that obtains them from the API.
  *
+ * @param requester [Requester] by which a request to toggle the "reposted" status is performed.
  * @param id ID of the [MastodonPost] for which the [ToggleableStat] is.
- * @param count Amount of times that the [MastodonPost] has been reblogged.
+ * @param count Amount of times that the [MastodonPost] has been reposted.
  */
 @Suppress("FunctionName")
-internal fun ReblogStat(id: String, count: Int): ToggleableStat<Profile> {
+internal fun RepostStat(requester: Requester, id: String, count: Int): ToggleableStat<Profile> {
   return ToggleableStat(count) {
     onSetEnabled { isEnabled ->
-      (Injector.from<CoreModule>().instanceProvider().provide() as SomeMastodonInstance)
-        .requester
+      requester
         .authenticated()
         .post({
           path("api")
