@@ -56,16 +56,16 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 internal data class MastodonAccount(
-  val id: String,
-  val username: String,
-  val acct: String,
-  val uri: String,
-  val displayName: String,
-  val locked: Boolean,
-  val note: String,
-  val avatar: String,
-  val followersCount: Int,
-  val followingCount: Int
+  private val id: String,
+  private val username: String,
+  private val acct: String,
+  private val uri: String,
+  private val displayName: String,
+  private val locked: Boolean,
+  private val note: String,
+  private val avatar: String,
+  private val followersCount: Int,
+  private val followingCount: Int
 ) {
   /**
    * Converts this [MastodonAccount] into an [Author].
@@ -198,7 +198,7 @@ internal data class MastodonAccount(
         })
         .body<List<MastodonRelationship>>()
         .first()
-        .toFollow(this)
+        .toFollow(locked)
     return MastodonFollowableProfile(
       requester,
       postPaginatorProvider,

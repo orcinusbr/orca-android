@@ -24,11 +24,14 @@ import kotlinx.serialization.Serializable
 /**
  * Structure returned by the API when the user's credentials are verified.
  *
- * @param id Unique identifier of the user.
- * @param avatar URI [String] that leads to the avatar image.
+ * @property id Unique identifier of the user.
+ * @property avatar URI [String] that leads to the avatar image.
  */
 @Serializable
-internal data class MastodonAuthenticationVerification(val id: String, val avatar: String) {
+internal data class MastodonAuthenticationVerification(
+  private val id: String,
+  private val avatar: String
+) {
   /**
    * Converts this [MastodonAuthenticationVerification] into an [authenticated][Actor.Authenticated]
    * [Actor].

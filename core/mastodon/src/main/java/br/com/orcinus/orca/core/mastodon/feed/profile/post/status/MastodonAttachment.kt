@@ -23,11 +23,14 @@ import kotlinx.serialization.Serializable
  * Structure returned by the API that allows displaying media that's been attached to an
  * [MastodonStatus].
  *
- * @param previewUrl [String] URI that leads to the image to be shown as a preview.
- * @param description Describes the contents of the media.
+ * @property previewUrl [String] URI that leads to the image to be shown as a preview.
+ * @property description Describes the contents of the media.
  */
 @Serializable
-internal data class MastodonAttachment(val previewUrl: String, val description: String?) {
+internal data class MastodonAttachment(
+  private val previewUrl: String,
+  private val description: String?
+) {
   /** Converts this [MastodonAttachment] into an [Attachment]. */
   fun toAttachment(): Attachment {
     return Attachment(description?.ifBlank { null }, URI(previewUrl))

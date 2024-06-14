@@ -59,21 +59,20 @@ import kotlinx.serialization.Serializable
  *   [MastodonStatus].
  */
 @Serializable
-data class MastodonStatus
-internal constructor(
-  internal val id: String,
-  internal val createdAt: String,
-  internal val account: MastodonAccount,
-  internal val reblogsCount: Int,
-  internal val favouritesCount: Int,
-  internal val repliesCount: Int,
-  internal val uri: String,
-  internal val reblog: MastodonStatus?,
-  internal val card: MastodonCard?,
-  internal val content: String,
-  internal val mediaAttachments: List<MastodonAttachment>,
-  internal val favourited: Boolean?,
-  internal val reblogged: Boolean?
+internal data class MastodonStatus(
+  private val id: String,
+  private val createdAt: String,
+  private val account: MastodonAccount,
+  private val reblogsCount: Int,
+  private val favouritesCount: Int,
+  private val repliesCount: Int,
+  private val uri: String,
+  private val reblog: MastodonStatus?,
+  private val card: MastodonCard?,
+  private val content: String,
+  private val mediaAttachments: List<MastodonAttachment>,
+  private val favourited: Boolean?,
+  private val reblogged: Boolean?
 ) {
   /**
    * Converts this [MastodonStatus] into a [Post].

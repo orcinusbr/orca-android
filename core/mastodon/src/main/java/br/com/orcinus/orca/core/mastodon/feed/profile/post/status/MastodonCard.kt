@@ -24,17 +24,17 @@ import kotlinx.serialization.Serializable
 /**
  * Structure returned by the API that represents the most prominent content of A [MastodonStatus].
  *
- * @param url URL [String] that leads to the webpage to which this [MastodonCard] refers.
- * @param title Title of the webpage.
- * @param description Description of the webpage.
- * @param image URI [String] that leads to the cover image.
+ * @property url URL [String] that leads to the webpage to which this [MastodonCard] refers.
+ * @property title Title of the webpage.
+ * @property description Description of the webpage.
+ * @property image URI [String] that leads to the cover image.
  */
 @Serializable
 internal data class MastodonCard(
-  val url: String,
-  val title: String,
-  val description: String,
-  val image: String?
+  private val url: String,
+  private val title: String,
+  private val description: String,
+  private val image: String?
 ) {
   /**
    * Converts this [MastodonCard] into a [Headline].

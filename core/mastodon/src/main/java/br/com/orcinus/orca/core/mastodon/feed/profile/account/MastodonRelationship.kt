@@ -22,21 +22,21 @@ import kotlinx.serialization.Serializable
 /**
  * Structure returned by the API when the relationship between two [MastodonAccount]s is requested.
  *
- * @param following Whether the currently [authenticated][Actor.Authenticated] [Actor] is following
- *   the other [MastodonAccount] to which this refers to.
+ * @property following Whether the currently [authenticated][Actor.Authenticated] [Actor] is
+ *   following the other [MastodonAccount] to which this refers to.
  */
 @Serializable
-internal data class MastodonRelationship(val following: Boolean) {
+internal data class MastodonRelationship(private val following: Boolean) {
   /**
-   * Converts this [MastodonRelationship] into a [MastodonAccount].
+   * Converts this [MastodonRelationship] into a follow status.
    *
-   * @param account [MastodonAccount] of the user that has a relationship with the currently
-   *   [authenticated][Actor.Authenticated] [Actor].
+   * @param isAccountLocked Whether the [MastodonAccount] of the user that has a relationship with
+   *   the currently [authenticated][Actor.Authenticated] [Actor] is locked.
    */
-  fun toFollow(account: MastodonAccount): Follow {
+  fun toFollow(isAccountLocked: Boolean): Follow {
     return when {
-      account.locked && following -> Follow.Private.following()
-      account.locked -> Follow.Private.unfollowed()
+      isAccountLocked && following -> Follow.Private.following()
+      isAccountLocked -> Follow.Private.unfollowed()
       following -> Follow.Public.following()
       else -> Follow.Public.unfollowed()
     }
