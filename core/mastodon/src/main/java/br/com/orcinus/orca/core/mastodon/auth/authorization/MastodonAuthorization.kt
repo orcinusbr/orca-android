@@ -30,6 +30,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -48,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import br.com.orcinus.orca.core.instance.domain.Domain
 import br.com.orcinus.orca.core.mastodon.R
 import br.com.orcinus.orca.core.mastodon.auth.authorization.viewmodel.MastodonAuthorizationViewModel
+import br.com.orcinus.orca.platform.autos.colors.LocalContainerColor
 import br.com.orcinus.orca.platform.autos.kit.action.button.PrimaryButton
 import br.com.orcinus.orca.platform.autos.kit.action.button.SecondaryButton
 import br.com.orcinus.orca.platform.autos.kit.input.text.FormTextField
@@ -132,28 +134,30 @@ internal fun MastodonAuthorization(
   Box(modifier) {
     Scaffold(
       bottom = {
-        Column(verticalArrangement = Arrangement.spacedBy(ButtonBarDefaults.spacing)) {
-          FormTextField(
-            domain,
-            onDomainChange,
-            Modifier.focusRequester(focusRequester)
-              .padding(start = ButtonBarDefaults.spacing, end = ButtonBarDefaults.spacing)
-              .fillMaxWidth(),
-            errorDispatcher,
-            KeyboardOptions(imeAction = ImeAction.Go),
-            KeyboardActions(onGo = { onDone() }),
-            isSinglyLined = true
-          ) {
-            Text(stringResource(R.string.core_http_authorization_domain))
-          }
-
-          ButtonBar(lazyListState) {
-            PrimaryButton(onClick = onDone, isEnabled = !containsErrors) {
-              Text(stringResource(R.string.core_http_authorization_sign_in))
+        Surface(color = LocalContainerColor.current) {
+          Column(verticalArrangement = Arrangement.spacedBy(ButtonBarDefaults.spacing)) {
+            FormTextField(
+              domain,
+              onDomainChange,
+              Modifier.focusRequester(focusRequester)
+                .padding(start = ButtonBarDefaults.spacing, end = ButtonBarDefaults.spacing)
+                .fillMaxWidth(),
+              errorDispatcher,
+              KeyboardOptions(imeAction = ImeAction.Go),
+              KeyboardActions(onGo = { onDone() }),
+              isSinglyLined = true
+            ) {
+              Text(stringResource(R.string.core_http_authorization_domain))
             }
 
-            SecondaryButton(onClick = onHelp) {
-              Text(stringResource(R.string.core_http_authorization_help))
+            ButtonBar(lazyListState) {
+              PrimaryButton(onClick = onDone, isEnabled = !containsErrors) {
+                Text(stringResource(R.string.core_http_authorization_sign_in))
+              }
+
+              SecondaryButton(onClick = onHelp) {
+                Text(stringResource(R.string.core_http_authorization_help))
+              }
             }
           }
         }

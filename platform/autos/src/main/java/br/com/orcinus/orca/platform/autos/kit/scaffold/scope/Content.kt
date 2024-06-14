@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import br.com.orcinus.orca.autos.colors.Colors
+import br.com.orcinus.orca.platform.autos.colors.LocalContainerColor
 import br.com.orcinus.orca.platform.autos.colors.asColor
 import br.com.orcinus.orca.platform.autos.forms.asShape
 import br.com.orcinus.orca.platform.autos.kit.bottom
@@ -45,11 +46,7 @@ abstract class Content internal constructor() {
       @Composable get() = RectangleShape
   }
 
-  /**
-   * [Content] that is shown as a result of the selection of a [NavigationBar] tab.
-   *
-   * @see NavigationBarScope.tab
-   */
+  /** [Content] that is shown as a result of the selection of a tab. */
   internal class Navigable(override val value: @Composable () -> Unit) : Content() {
     override val shape
       @Composable get() = AutosTheme.forms.medium.asShape.bottom
@@ -68,7 +65,7 @@ abstract class Content internal constructor() {
         .background(Colors.LIGHT.primary.container.asColor)
         .clip(shape)
         .padding(padding)
-        .background(AutosTheme.colors.background.container.asColor)
+        .background(LocalContainerColor.current)
         .fillMaxSize()
     ) {
       value()

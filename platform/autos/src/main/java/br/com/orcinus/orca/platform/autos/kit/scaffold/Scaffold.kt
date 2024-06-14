@@ -29,6 +29,7 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -79,26 +80,31 @@ fun Scaffold(
   bottom: @Composable () -> Unit = {},
   content: ScaffoldScope.() -> Content
 ) {
-  Scaffold(
-    modifier,
-    topAppBar,
-    bottomBar = bottom,
-    snackbarHost = {
-      SnackbarHost(snackbarPresenter.hostState) {
-        Snackbar(
-          it,
-          shape = AutosTheme.forms.medium.asShape,
-          containerColor = it.orcaVisuals.containerColor,
-          dismissActionContentColor = it.orcaVisuals.contentColor
-        )
-      }
-    },
-    floatingActionButton,
-    floatingActionButtonPosition,
-    LocalContainerColor.current.takeOrElse { AutosTheme.colors.background.container.asColor },
-    contentWindowInsets = LocalWindowInsets.current.takeOrElse(WindowInsets::Zero)
+  CompositionLocalProvider(
+    LocalContainerColor provides
+      LocalContainerColor.current.takeOrElse { AutosTheme.colors.background.container.asColor }
   ) {
-    remember(::ScaffoldScope).content().ClippedValue(it)
+    Scaffold(
+      modifier,
+      topAppBar,
+      bottomBar = bottom,
+      snackbarHost = {
+        SnackbarHost(snackbarPresenter.hostState) {
+          Snackbar(
+            it,
+            shape = AutosTheme.forms.medium.asShape,
+            containerColor = it.orcaVisuals.containerColor,
+            dismissActionContentColor = it.orcaVisuals.contentColor
+          )
+        }
+      },
+      floatingActionButton,
+      floatingActionButtonPosition,
+      LocalContainerColor.current,
+      contentWindowInsets = LocalWindowInsets.current.takeOrElse(WindowInsets::Zero)
+    ) {
+      remember(::ScaffoldScope).content().ClippedValue(it)
+    }
   }
 }
 

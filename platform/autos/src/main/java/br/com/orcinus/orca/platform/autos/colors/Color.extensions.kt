@@ -20,4 +20,4 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 /** [ProvidableCompositionLocal] that provides a [Color] for a container. */
-internal val LocalContainerColor = compositionLocalOf(defaultFactory = Color::Unspecified)
+val LocalContainerColor = compositionLocalOf(defaultFactory = Color::Unspecified)
