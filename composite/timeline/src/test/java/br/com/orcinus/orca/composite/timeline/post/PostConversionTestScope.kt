@@ -38,7 +38,8 @@ import kotlinx.coroutines.test.runTest
  */
 internal class PostConversionTestScope(delegate: TestScope) : CoroutineScope by delegate {
   /** [Post] to be converted. */
-  val post = Posts { add { Post.createSample(ComposableImageLoader.Provider.sample) } }.single()
+  var post = createPost()
+    private set
 
   /** [Colors] with which the [post] is to be converted into a [PostPreview]. */
   val colors = Colors.LIGHT
@@ -58,6 +59,16 @@ internal class PostConversionTestScope(delegate: TestScope) : CoroutineScope by 
   /** [Figure] of the [PostPreview] into which the [post] is to be converted. */
   val figure =
     Figure.of(post.id, post.author.name, post.content, onLinkClick, onThumbnailClickListener)
+
+  /** Undoes any changes made to the [post] and sets it back to its initial state. */
+  fun reset() {
+    post = createPost()
+  }
+
+  /** Creates a sample [Post] on which conversion-testing can be performed. */
+  private fun createPost(): Post {
+    return Posts { add { Post.createSample(ComposableImageLoader.Provider.sample) } }.single()
+  }
 }
 
 /**
@@ -70,5 +81,12 @@ internal inline fun runPostConversionTest(
   crossinline body: suspend PostConversionTestScope.() -> Unit
 ) {
   contract { callsInPlace(body, InvocationKind.EXACTLY_ONCE) }
-  runTest { PostConversionTestScope(this).body() }
+  runTest {
+    val postConversionScope = PostConversionTestScope(this)
+    try {
+      postConversionScope.body()
+    } finally {
+      postConversionScope.reset()
+    }
+  }
 }
