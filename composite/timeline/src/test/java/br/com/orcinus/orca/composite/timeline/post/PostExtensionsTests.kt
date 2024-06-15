@@ -15,9 +15,15 @@
 
 package br.com.orcinus.orca.composite.timeline.post
 
+import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNotEqualTo
+import br.com.orcinus.orca.composite.timeline.stat.details.formatted
+import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
+import br.com.orcinus.orca.platform.core.withSamples
 import kotlin.test.Test
+import kotlinx.coroutines.flow.drop
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
@@ -26,8 +32,61 @@ internal class PostExtensionsTests {
   @Test
   fun convertsIntoPostPreview() {
     runPostConversionTest {
-      assertThat(post.toPostPreview(colors, onLinkClick))
+      assertThat(post.toPostPreview(colors, onLinkClick, onThumbnailClickListener))
         .isEqualTo(PostPreview.getSample(colors).copy(figure = figure))
+    }
+  }
+
+  @Test
+  fun convertsIntoPostPreviewFlow() {
+    runPostConversionTest {
+      post.toPostPreviewFlow(colors, onLinkClick, onThumbnailClickListener).test {
+        assertThat(awaitItem())
+          .isEqualTo(post.toPostPreview(colors, onLinkClick, onThumbnailClickListener))
+      }
+    }
+  }
+
+  @Test
+  fun emitsAnotherPostPreviewToFlowWhenCommentingOnThePost() {
+    runPostConversionTest {
+      post.toPostPreviewFlow(colors, onLinkClick, onThumbnailClickListener).drop(1).test {
+        val previousCount = post.comment.count
+        post.comment.add(Posts.withSamples.first { it != post })
+        assertThat(awaitItem().stats.formattedCommentCount).isEqualTo(previousCount.inc().formatted)
+      }
+    }
+  }
+
+  @Test
+  fun emitsAnotherPostPreviewToFlowWhenFavoritingOrUnfavoritingThePost() {
+    runPostConversionTest {
+      post.toPostPreviewFlow(colors, onLinkClick, onThumbnailClickListener).drop(1).test {
+        val previousCount = post.favorite.count
+        val wasFavorite = post.favorite.isEnabled
+        post.favorite.toggle()
+        awaitItem().let {
+          assertThat(it.stats.isFavorite).isNotEqualTo(wasFavorite)
+          assertThat(it.stats.formattedFavoriteCount)
+            .isEqualTo((previousCount + if (wasFavorite) -1 else 1).formatted)
+        }
+      }
+    }
+  }
+
+  @Test
+  fun emitsAnotherPostPreviewToFlowWhenRepostingOrUnreposting() {
+    runPostConversionTest {
+      post.toPostPreviewFlow(colors, onLinkClick, onThumbnailClickListener).drop(1).test {
+        val previousCount = post.repost.count
+        val wasReposted = post.repost.isEnabled
+        post.repost.toggle()
+        awaitItem().let {
+          assertThat(it.stats.isReposted).isNotEqualTo(wasReposted)
+          assertThat(it.stats.formattedReblogCount)
+            .isEqualTo((previousCount + if (wasReposted) -1 else 1).formatted)
+        }
+      }
     }
   }
 }
