@@ -31,7 +31,7 @@ import org.robolectric.RobolectricTestRunner
 internal class PostExtensionsTests {
   @Test
   fun convertsIntoPostPreview() {
-    runPostConversionTest {
+    runPostToPostPreviewConversionTest {
       assertThat(post.toPostPreview(colors, onLinkClick, onThumbnailClickListener))
         .isEqualTo(PostPreview.getSample(colors).copy(figure = figure))
     }
@@ -39,7 +39,7 @@ internal class PostExtensionsTests {
 
   @Test
   fun convertsIntoPostPreviewFlow() {
-    runPostConversionTest {
+    runPostToPostPreviewConversionTest {
       post.toPostPreviewFlow(colors, onLinkClick, onThumbnailClickListener).test {
         assertThat(awaitItem())
           .isEqualTo(post.toPostPreview(colors, onLinkClick, onThumbnailClickListener))
@@ -49,7 +49,7 @@ internal class PostExtensionsTests {
 
   @Test
   fun emitsAnotherPostPreviewToFlowWhenCommentingOnThePost() {
-    runPostConversionTest {
+    runPostToPostPreviewConversionTest {
       post.toPostPreviewFlow(colors, onLinkClick, onThumbnailClickListener).drop(1).test {
         val previousCount = post.comment.count
         post.comment.add(Posts.withSamples.first { it != post })
@@ -60,7 +60,7 @@ internal class PostExtensionsTests {
 
   @Test
   fun emitsAnotherPostPreviewToFlowWhenFavoritingOrUnfavoritingThePost() {
-    runPostConversionTest {
+    runPostToPostPreviewConversionTest {
       post.toPostPreviewFlow(colors, onLinkClick, onThumbnailClickListener).drop(1).test {
         val previousCount = post.favorite.count
         val wasFavorite = post.favorite.isEnabled
@@ -76,7 +76,7 @@ internal class PostExtensionsTests {
 
   @Test
   fun emitsAnotherPostPreviewToFlowWhenRepostingOrUnreposting() {
-    runPostConversionTest {
+    runPostToPostPreviewConversionTest {
       post.toPostPreviewFlow(colors, onLinkClick, onThumbnailClickListener).drop(1).test {
         val previousCount = post.repost.count
         val wasReposted = post.repost.isEnabled

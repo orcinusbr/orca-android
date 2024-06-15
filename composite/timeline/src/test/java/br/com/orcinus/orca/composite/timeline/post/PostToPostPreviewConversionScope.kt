@@ -36,7 +36,7 @@ import kotlinx.coroutines.test.runTest
  *
  * @param delegate [TestScope] for [CoroutineScope]-like behavior.
  */
-internal class PostConversionScope(delegate: TestScope) : CoroutineScope by delegate {
+internal class PostToPostPreviewConversionScope(delegate: TestScope) : CoroutineScope by delegate {
   /** [Post] to be converted. */
   var post = createPost()
     private set
@@ -77,16 +77,16 @@ internal class PostConversionScope(delegate: TestScope) : CoroutineScope by dele
  * @param body Lambda in which the testing is performed.
  */
 @OptIn(ExperimentalContracts::class)
-internal inline fun runPostConversionTest(
-  crossinline body: suspend PostConversionScope.() -> Unit
+internal inline fun runPostToPostPreviewConversionTest(
+  crossinline body: suspend PostToPostPreviewConversionScope.() -> Unit
 ) {
   contract { callsInPlace(body, InvocationKind.EXACTLY_ONCE) }
   runTest {
-    val postConversionScope = PostConversionScope(this)
+    val conversionScope = PostToPostPreviewConversionScope(this)
     try {
-      postConversionScope.body()
+      conversionScope.body()
     } finally {
-      postConversionScope.reset()
+      conversionScope.reset()
     }
   }
 }
