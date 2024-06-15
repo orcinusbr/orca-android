@@ -13,9 +13,10 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.post
+package br.com.orcinus.orca.composite.timeline.post.conversion
 
 import br.com.orcinus.orca.autos.colors.Colors
+import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.post.figure.Figure
 import br.com.orcinus.orca.composite.timeline.post.figure.gallery.disposition.Disposition
 import br.com.orcinus.orca.core.feed.profile.post.Post
@@ -36,7 +37,9 @@ import kotlinx.coroutines.test.runTest
  *
  * @param delegate [TestScope] for [CoroutineScope]-like behavior.
  */
-internal class PostToPostPreviewConversionScope(delegate: TestScope) : CoroutineScope by delegate {
+internal class PostToPostPreviewConversionScope
+@InternalPostToPostPreviewConversionApi
+constructor(delegate: TestScope) : CoroutineScope by delegate {
   /** [Post] to be converted. */
   var post = createPost()
     private set
@@ -60,14 +63,16 @@ internal class PostToPostPreviewConversionScope(delegate: TestScope) : Coroutine
   val figure =
     Figure.of(post.id, post.author.name, post.content, onLinkClick, onThumbnailClickListener)
 
-  /** Undoes any changes made to the [post] and sets it back to its initial state. */
-  fun reset() {
-    post = createPost()
+  /** Creates a sample [Post] on which conversion-testing can be performed. */
+  @InternalPostToPostPreviewConversionApi
+  fun createPost(): Post {
+    return Posts { add { Post.createSample(ComposableImageLoader.Provider.sample) } }.single()
   }
 
-  /** Creates a sample [Post] on which conversion-testing can be performed. */
-  private fun createPost(): Post {
-    return Posts { add { Post.createSample(ComposableImageLoader.Provider.sample) } }.single()
+  /** Undoes any changes made to the [post] and sets it back to its initial state. */
+  @InternalPostToPostPreviewConversionApi
+  fun reset() {
+    post = createPost()
   }
 }
 

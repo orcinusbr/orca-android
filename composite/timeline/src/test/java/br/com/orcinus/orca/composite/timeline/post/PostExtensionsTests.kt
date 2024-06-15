@@ -19,6 +19,7 @@ import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEqualTo
+import br.com.orcinus.orca.composite.timeline.post.conversion.runPostToPostPreviewConversionTest
 import br.com.orcinus.orca.composite.timeline.stat.details.formatted
 import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
 import br.com.orcinus.orca.platform.core.withSamples
