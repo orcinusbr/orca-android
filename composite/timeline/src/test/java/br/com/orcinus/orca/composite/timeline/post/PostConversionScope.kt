@@ -36,7 +36,7 @@ import kotlinx.coroutines.test.runTest
  *
  * @param delegate [TestScope] for [CoroutineScope]-like behavior.
  */
-internal class PostConversionTestScope(delegate: TestScope) : CoroutineScope by delegate {
+internal class PostConversionScope(delegate: TestScope) : CoroutineScope by delegate {
   /** [Post] to be converted. */
   var post = createPost()
     private set
@@ -78,11 +78,11 @@ internal class PostConversionTestScope(delegate: TestScope) : CoroutineScope by 
  */
 @OptIn(ExperimentalContracts::class)
 internal inline fun runPostConversionTest(
-  crossinline body: suspend PostConversionTestScope.() -> Unit
+  crossinline body: suspend PostConversionScope.() -> Unit
 ) {
   contract { callsInPlace(body, InvocationKind.EXACTLY_ONCE) }
   runTest {
-    val postConversionScope = PostConversionTestScope(this)
+    val postConversionScope = PostConversionScope(this)
     try {
       postConversionScope.body()
     } finally {
