@@ -81,9 +81,9 @@ private fun <I, O> Flow<Collection<I>>.flatMapEach(
   transform: suspend (I) -> Flow<O>
 ): Flow<List<O>> {
   return mapEach { transform(it).onEach(accumulator::add).map { accumulator } }
-    .map(List<Flow<MutableList<O>>>::merge)
+    .map(List<Flow<ReplacementList<O, *>>>::merge)
     .flattenMerge()
-    .map(MutableList<O>::toList)
+    .map(ReplacementList<O, *>::toList)
     .distinctUntilChanged()
 }
 

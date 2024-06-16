@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.feature.feed
 
 import android.app.Application
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -36,20 +37,27 @@ import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import java.net.URI
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 
-internal class FeedViewModel(
+internal class FeedViewModel
+@VisibleForTesting
+constructor(
   application: Application,
+  coroutineContext: CoroutineContext,
   private val feedProvider: FeedProvider,
   private val postProvider: PostProvider,
   private val userID: String,
   private val onLinkClick: (URI) -> Unit,
   private val onThumbnailClickListener: Disposition.OnThumbnailClickListener
 ) : AndroidViewModel(application) {
+  private val scope = viewModelScope + coroutineContext
   private val indexFlow = MutableStateFlow(0)
   private val postPreviewsLoadableNotifierFlow = notifierFlow()
   private val colors by lazy { AutosTheme.getColors(application) }
@@ -67,20 +75,37 @@ internal class FeedViewModel(
       }
       .map { it.toSerializableList().toListLoadable() }
 
+  private constructor(
+    application: Application,
+    feedProvider: FeedProvider,
+    postProvider: PostProvider,
+    userID: String,
+    onLinkClick: (URI) -> Unit,
+    onThumbnailClickListener: Disposition.OnThumbnailClickListener
+  ) : this(
+    application,
+    EmptyCoroutineContext,
+    feedProvider,
+    postProvider,
+    userID,
+    onLinkClick,
+    onThumbnailClickListener
+  )
+
   fun requestRefresh(onRefresh: () -> Unit) {
     postPreviewsLoadableNotifierFlow.notify()
-    viewModelScope.launch {
+    scope.launch {
       postPreviewsLoadableFlow.await()
       onRefresh()
     }
   }
 
   fun favorite(postID: String) {
-    viewModelScope.launch { postProvider.provide(postID).first().favorite.toggle() }
+    scope.launch { postProvider.provide(postID).first().favorite.toggle() }
   }
 
   fun repost(postID: String) {
-    viewModelScope.launch { postProvider.provide(postID).first().repost.toggle() }
+    scope.launch { postProvider.provide(postID).first().repost.toggle() }
   }
 
   fun share(uri: URI) {

@@ -32,8 +32,11 @@ fun InstanceProvider.Companion.createSample(
   imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
 ): InstanceProvider {
   return object : InstanceProvider {
+    /** [Instance] to be provided. */
+    private val instance by lazy { Instance.createSample(imageLoaderProvider) }
+
     override fun provide(): SomeInstance {
-      return Instance.createSample(imageLoaderProvider)
+      return instance
     }
   }
 }
