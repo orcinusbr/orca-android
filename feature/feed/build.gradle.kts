@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -46,7 +46,9 @@ dependencies {
   testImplementation(project(":platform:navigation-test"))
   testImplementation(project(":std:injector-test"))
   testImplementation(libs.android.compose.ui.test.manifest)
+  testImplementation(libs.assertk)
   testImplementation(libs.kotlin.coroutines.test)
   testImplementation(libs.kotlin.test)
   testImplementation(libs.robolectric)
+  testImplementation(libs.turbine)
 }

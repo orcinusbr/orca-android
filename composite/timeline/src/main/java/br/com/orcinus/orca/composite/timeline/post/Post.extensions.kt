@@ -41,13 +41,7 @@ fun Post.toPostPreviewFlow(
   onLinkClick: (URI) -> Unit,
   onThumbnailClickListener: Disposition.OnThumbnailClickListener
 ): Flow<PostPreview> {
-  return combine(
-    comment.countFlow,
-    favorite.isEnabledFlow,
-    favorite.countFlow,
-    repost.isEnabledFlow,
-    repost.countFlow
-  ) { _, _, _, _, _ ->
+  return combine(comment.countFlow, favorite.countFlow, repost.countFlow) { _, _, _ ->
     toPostPreview(colors, onLinkClick, onThumbnailClickListener)
   }
 }

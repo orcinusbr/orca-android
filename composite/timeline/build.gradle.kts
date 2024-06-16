@@ -52,6 +52,9 @@ dependencies {
   implementation(libs.time4j)
 
   testImplementation(project(":ext:uri"))
+  testImplementation(project(":std:visibility"))
   testImplementation(libs.assertk)
   testImplementation(libs.kotlin.test)
 }
+
+kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")

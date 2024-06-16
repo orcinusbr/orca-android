@@ -53,8 +53,9 @@ class MastodonInstanceProvider(
   private val termMuter: TermMuter,
   private val imageLoaderProvider: SomeImageLoaderProvider<URI>
 ) : InstanceProvider {
-  override fun provide(): SomeMastodonInstance {
-    return ContextualMastodonInstance(
+  /** [MastodonInstance] to be provided. */
+  private val instance by lazy {
+    ContextualMastodonInstance(
       context,
       MastodonAuthorizationViewModel.getInstanceDomain(context),
       authorizer,
@@ -64,5 +65,9 @@ class MastodonInstanceProvider(
       termMuter,
       imageLoaderProvider
     )
+  }
+
+  override fun provide(): SomeMastodonInstance {
+    return instance
   }
 }

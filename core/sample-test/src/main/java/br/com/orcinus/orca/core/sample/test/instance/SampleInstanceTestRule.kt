@@ -17,6 +17,7 @@ package br.com.orcinus.orca.core.sample.test.instance
 
 import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
+import org.jetbrains.annotations.VisibleForTesting
 import org.junit.rules.ExternalResource
 
 /**
@@ -24,7 +25,8 @@ import org.junit.rules.ExternalResource
  * [SampleInstance.profileWriter] and [SampleInstance.postWriter]) at the end of every test.
  */
 class SampleInstanceTestRule(private val instance: SampleInstance) : ExternalResource() {
-  override fun after() {
+  @VisibleForTesting
+  public override fun after() {
     instance.profileWriter.reset()
     instance.postWriter.reset()
   }
