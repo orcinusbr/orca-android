@@ -14,3 +14,4 @@
 #
 
 -dontobfuscate
+-keep class br.com.orcinus.orca.** { *; }
