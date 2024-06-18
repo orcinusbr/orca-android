@@ -21,6 +21,7 @@ plugins {
 android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
+  defaultConfig.proguardFile("proguard-rules.pro")
   packagingOptions.resources.excludes +=
     arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
   testOptions.unitTests.isIncludeAndroidResources = true
