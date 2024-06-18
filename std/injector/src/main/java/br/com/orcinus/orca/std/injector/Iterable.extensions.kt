@@ -22,6 +22,7 @@ import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.jvm.jvmErasure
+import kotlin.reflect.typeOf
 
 /**
  * Returns a [List] containing only [KProperty1]s that characterize an injection into a [Module].
@@ -31,14 +32,17 @@ import kotlin.reflect.jvm.jvmErasure
  * - have a return type of [Injection], which allows for operations to be performed within the
  *   [Module] (when it is a lazy one) and provides a dependency.
  *
- * @param T [Module] into which the resulting dependencies of the [KProperty1]s' values will be
+ * @param M [Module] into which the resulting dependencies of the [KProperty1]s' values will be
  *   injected.
  * @see lazyInjectionOf
  */
 @PublishedApi
-internal fun <T : Module> Iterable<KProperty1<T, *>>.filterIsInjection():
-  List<KProperty1<T, Injection<Any>>> {
+internal fun <M : Module> Iterable<KProperty1<out M, *>>.filterIsInjection():
+  List<KProperty1<M, Injection<Any>>> {
   @Suppress("UNCHECKED_CAST")
-  return filter { it.hasAnnotation<Inject>() && it.returnType.jvmErasure == Injection::class }
-    as List<KProperty1<T, Injection<Any>>>
+  return filter {
+    it.any(delimiter = typeOf<Module>()) { hasAnnotation<Inject>() } &&
+      it.returnType.jvmErasure == Injection::class
+  }
+    as List<KProperty1<M, Injection<Any>>>
 }
