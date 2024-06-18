@@ -220,7 +220,7 @@ private constructor(
    * @param provisioning Provides the [Fragment] to which navigation will be performed.
    */
   private fun navigateSynchronously(transition: Transition, provisioning: () -> Fragment) {
-    fragmentManager.commit {
+    fragmentManager.commit(allowStateLoss = true) {
       val fragment = provisioning()
       println(backStack)
       addToBackStack(backStack.name)

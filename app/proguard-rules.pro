@@ -14,3 +14,6 @@
 #
 
 -dontobfuscate
+-keep public class br.com.orcinus.orca.** { public *; }
+-keepclassmembers class * implements android.os.Parcelable { public static ** CREATOR; }
+-keepclassmembers enum net.time4j.** { public static **[] values(); }
