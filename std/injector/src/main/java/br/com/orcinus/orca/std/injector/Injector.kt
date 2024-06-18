@@ -134,7 +134,6 @@ object Injector : Module() {
   /**
    * Injects the dependencies declared within the given [module].
    *
-   * @param T [Module] into which its dependencies will be injected.
    * @param module [Module] whose dependencies will be injected into it.
    */
   @PublishedApi
