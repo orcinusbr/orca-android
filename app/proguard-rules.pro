@@ -1,5 +1,5 @@
 #
-# Copyright © 2023 Orca
+# Copyright © 2023–2024 Orcinus
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the
 # GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,12 +13,4 @@
 # not, see https://www.gnu.org/licenses.
 #
 
--keep class com.jeanbarrossilva.orca.** { *; }
--keepclassmembers class ** implements android.os.Parcelable {
-    public static final android.os.Parcelable$Creator CREATOR;
-}
--keepclassmembers enum kotlin.reflect.jvm.internal.impl.builtins.PrimitiveType {
-    #noinspection ShrinkerUnresolvedReference
-    public static kotlin.reflect.jvm.internal.impl.builtins.PrimitiveType[] values();
-}
--keepclassmembers enum net.time4j.** { public static **[] values(); }
+-dontobfuscate

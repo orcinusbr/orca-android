@@ -1,0 +1,58 @@
+<!--
+  ~ Copyright © 2024 Orcinus
+  ~
+  ~ This program is free software: you can redistribute it and/or modify it under the terms of the
+  ~ GNU General Public License as published by the Free Software Foundation, either version 3 of the
+  ~ License, or (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+  ~ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+  ~ the GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along with this program. If
+  ~ not, see https://www.gnu.org/licenses.
+  -->
+
+<vector
+    xmlns:aapt="http://schemas.android.com/aapt"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:height="108dp"
+    android:viewportHeight="512"
+    android:viewportWidth="512"
+    android:width="108dp">
+  <path android:pathData="M0,0h512v512h-512z">
+    <aapt:attr name="android:fillColor">
+      <gradient
+          android:endX="512"
+          android:endY="443.5"
+          android:startX="0"
+          android:startY="0"
+          android:type="linear">
+        <item
+            android:color="#FF2B2B2B"
+            android:offset="0" />
+        <item
+            android:color="#FF050505"
+            android:offset="1" />
+      </gradient>
+    </aapt:attr>
+  </path>
+  <path
+      android:pathData="M512,280.01V512L-0,511.37V329C49.49,302.7 97.82,286.45 144,276.92C167.43,272.09 190.3,268.98 212.5,267.17C346.59,256.23 455.86,292.51 512,280.01Z">
+    <aapt:attr name="android:fillColor">
+      <gradient
+          android:endX="549.55"
+          android:endY="421.74"
+          android:startX="86.5"
+          android:startY="229.13"
+          android:type="linear">
+        <item
+            android:color="#FFF5F5F5"
+            android:offset="0" />
+        <item
+            android:color="#FFB5B5B5"
+            android:offset="1" />
+      </gradient>
+    </aapt:attr>
+  </path>
+</vector>

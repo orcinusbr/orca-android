@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="10a60ee3-56ed-4741-8321-79d176d49193" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/AndroidManifest.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../profile-details/src/test/java/br/com/orcinus/orca/feature/profiledetails/ProfileDetailsFragmentTests.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../profile-details/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../profile-details/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../profile-details/src/androidTest/java/br/com/orcinus/orca/feature/profiledetails/ProfileDetailsFragmentTests.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../profile-details/src/androidTest/java/br/com/orcinus/orca/feature/profiledetails/ProfileDetailsFragmentTests.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../profile-details/src/androidTest/java/br/com/orcinus/orca/feature/profiledetails/ProfileDetailsTests.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../profile-details/src/test/java/br/com/orcinus/orca/feature/profiledetails/ProfileDetailsTests.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../profile-details/src/androidTest/java/br/com/orcinus/orca/feature/profiledetails/test/Follow.extensions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../profile-details/src/test/java/br/com/orcinus/orca/feature/profiledetails/Follow.extensions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../profile-details/src/androidTest/java/br/com/orcinus/orca/feature/profiledetails/test/FollowableProfile.extensions.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../profile-details/src/androidTest/java/br/com/orcinus/orca/feature/profiledetails/test/TestProfileDetailsBoundary.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/androidTest/java/br/com/orcinus/orca/feature/profile/details/NoOpProfileDetailsBoundary.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../profile-details/src/androidTest/java/br/com/orcinus/orca/feature/profiledetails/test/TestProfileDetailsModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/androidTest/java/br/com/orcinus/orca/feature/profile/details/TestProfileDetailsModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../profile-details/src/test/java/br/com/orcinus/orca/feature/profiledetails/conversion/ProfileConverterFactoryTests.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../profile-details/src/test/java/br/com/orcinus/orca/feature/profiledetails/conversion/ProfileConverterFactoryTests.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../profile-details/src/test/java/br/com/orcinus/orca/feature/profiledetails/conversion/converter/DefaultProfileConverterTests.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../profile-details/src/test/java/br/com/orcinus/orca/feature/profiledetails/conversion/converter/DefaultProfileConverterTests.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../profile-details/src/test/java/br/com/orcinus/orca/feature/profiledetails/conversion/converter/EditableProfileConverterTests.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../profile-details/src/test/java/br/com/orcinus/orca/feature/profiledetails/conversion/converter/EditableProfileConverterTests.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../profile-details/src/test/java/br/com/orcinus/orca/feature/profiledetails/conversion/converter/followable/FollowableProfileConverterTests.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../profile-details/src/test/java/br/com/orcinus/orca/feature/profiledetails/conversion/converter/followable/FollowableProfileConverterTests.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../profile-details/src/test/java/br/com/orcinus/orca/feature/profiledetails/test/ProfileDetails.Default.extensions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../profile-details/src/test/java/br/com/orcinus/orca/feature/profiledetails/ProfileDetails.Default.extensions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../profile-details/src/test/java/br/com/orcinus/orca/feature/profiledetails/test/ProfileDetails.Editable.extensions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../profile-details/src/test/java/br/com/orcinus/orca/feature/profiledetails/ProfileDetails.Editable.extensions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../profile-details/src/test/java/br/com/orcinus/orca/feature/profiledetails/test/ProfileDetails.Followable.extensions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../profile-details/src/test/java/br/com/orcinus/orca/feature/profiledetails/ProfileDetails.Followable.extensions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../settings.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../../settings.gradle.kts" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="GitToolBoxStore">
+    <option name="projectConfigVersion" value="5" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 7
+}]]></component>
+  <component name="ProjectId" id="2eb324hJywRC3kgQi4VP6U1S9fZ" />
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "config/instrumented-tests-workflow",
+    "settings.editor.selected.configurable": "settings.sync"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="10a60ee3-56ed-4741-8321-79d176d49193" name="Changes" comment="" />
+      <created>1712159240102</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1712159240102</updated>
+    </task>
+    <servers />
+  </component>
+</project>
