@@ -14,3 +14,5 @@
 #
 
 -dontobfuscate
+-keep public class br.com.orcinus.orca.** { public *; }
+-keepclassmembers class * implements android.os.Parcelable { static ** CREATOR; }
