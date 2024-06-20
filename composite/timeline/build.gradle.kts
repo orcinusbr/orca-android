@@ -42,6 +42,7 @@ dependencies {
   api(project(":platform:core"))
   api(project(":std:markdown"))
 
+  implementation(project(":ext:reflection"))
   implementation(project(":platform:markdown"))
   implementation(libs.android.compose.material)
   implementation(libs.android.core)

@@ -35,6 +35,7 @@ plugins {
   id(libs.plugins.orca.setup.java.get().pluginId)
   id(libs.plugins.orca.setup.kotlin.get().pluginId)
   id(libs.plugins.orca.setup.lint.get().pluginId)
+  id(libs.plugins.orca.setup.minification.get().pluginId)
   id("build-src")
 }
 

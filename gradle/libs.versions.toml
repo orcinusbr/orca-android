@@ -1,3 +1,18 @@
+#
+# Copyright © 2023–2024 Orcinus
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the
+# GNU General Public License as published by the Free Software Foundation, either version 3 of the
+# License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program. If
+# not, see https://www.gnu.org/licenses.
+#
+
 [libraries]
 accompanist-adapter = { group = "com.google.accompanist", name = "accompanist-themeadapter-material3", version = "0.31.3-beta" }
 android-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "android-activity" }
@@ -59,7 +74,7 @@ loadable-list = { group = "com.jeanbarrossilva.loadable", name = "loadable-list"
 loadable-placeholder = { group = "com.jeanbarrossilva.loadable", name = "loadable-placeholder", version.ref = "loadable" }
 loadable-placeholder-test = { group = "com.jeanbarrossilva.loadable", name = "loadable-placeholder-test", version.ref = "loadable" }
 mockito = { group = "org.mockito", name = "mockito-core", version = "5.12.0" }
-mockk = { group = "io.mockk", name = "mockk-android", version = "1.13.10" }
+mockk = { group = "io.mockk", name = "mockk-android", version = "1.13.11" }
 openTest4J = { group = "org.opentest4j", name = "opentest4j", version = "1.3.0" }
 paginate = { group = "com.chrynan.paginate", name = "paginate-core", version = "0.3.0" }
 robolectric = { group = "org.robolectric", name = "robolectric", version = "4.12" }
@@ -87,6 +102,7 @@ orca-setup-hooks = { id = "br.com.orcinus.orca.setup.hooks" }
 orca-setup-java = { id = "br.com.orcinus.orca.setup.java" }
 orca-setup-kotlin = { id = "br.com.orcinus.orca.setup.kotlin" }
 orca-setup-lint = { id = "br.com.orcinus.orca.setup.lint" }
+orca-setup-minification = { id = "br.com.orcinus.orca.setup.minification" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [versions]
@@ -95,7 +111,7 @@ android-compose = "1.6.6"
 android-compose-compiler = "1.5.11"
 android-fragment = "1.7.0"
 android-lifecycle = "2.7.0"
-android-plugin = "8.3.2"
+android-plugin = "8.5.0"
 android-room = "2.6.1"
 android-sdk-min = "28"
 android-sdk-target = "34"
