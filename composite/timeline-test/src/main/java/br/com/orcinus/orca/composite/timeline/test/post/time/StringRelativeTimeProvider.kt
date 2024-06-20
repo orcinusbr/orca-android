@@ -22,7 +22,7 @@ import java.time.ZonedDateTime
  * [RelativeTimeProvider] that provides the [String] representation of the given [ZonedDateTime].
  */
 object StringRelativeTimeProvider : RelativeTimeProvider() {
-  public override fun onProvide(dateTime: ZonedDateTime): String {
+  public override suspend fun onProvide(dateTime: ZonedDateTime): String {
     return dateTime.toString()
   }
 }

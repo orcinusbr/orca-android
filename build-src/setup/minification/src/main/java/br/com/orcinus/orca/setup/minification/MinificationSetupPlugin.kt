@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,24 +13,21 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.cache
+package br.com.orcinus.orca.setup.minification
 
-/** Fetches values from an external source (normally the network) through [onFetch]. */
-abstract class Fetcher<T> {
-  /**
-   * Fetches a value associated to the given [key].
-   *
-   * @param key Unique identifier of the value to be fetched.
-   */
-  @JvmName("fetch")
-  internal suspend fun fetch(key: String): T {
-    return onFetch(key)
+import com.android.build.api.dsl.CommonExtension
+import org.gradle.api.Plugin
+import org.gradle.api.Project
+
+class MinificationSetupPlugin : Plugin<Project> {
+  override fun apply(target: Project) {
+    target.subprojects { subProject ->
+      subProject.afterEvaluate { evaluatedSubProject ->
+        evaluatedSubProject.extensions
+          .findByType(CommonExtension::class.java)
+          ?.defaultConfig
+          ?.proguardFile(evaluatedSubProject.rootDir.resolve("proguard-rules.pro"))
+      }
+    }
   }
-
-  /**
-   * Fetches a value associated to the given [key].
-   *
-   * @param key Unique identifier of the value to be fetched.
-   */
-  protected abstract suspend fun onFetch(key: String): T
 }

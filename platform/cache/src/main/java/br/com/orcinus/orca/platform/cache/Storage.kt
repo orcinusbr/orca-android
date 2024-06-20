@@ -23,6 +23,7 @@ abstract class Storage<T> {
    * @param key Unique identifier of the [value] to be stored.
    * @param value Value that is associated to the [key] and has been requested to be stored.
    */
+  @JvmName("store")
   internal suspend fun store(key: String, value: T) {
     onStore(key, value)
   }
@@ -41,6 +42,7 @@ abstract class Storage<T> {
    *
    * @param key Unique identifier of the value to be obtained.
    */
+  @JvmName("get")
   internal suspend fun get(key: String): T {
     return onGet(key)
   }

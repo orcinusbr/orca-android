@@ -24,7 +24,7 @@ abstract class RelativeTimeProvider {
    *
    * @param dateTime [ZonedDateTime] whose relative version will be provided.
    */
-  internal fun provide(dateTime: ZonedDateTime): String {
+  internal suspend fun provide(dateTime: ZonedDateTime): String {
     return onProvide(dateTime)
   }
 
@@ -33,5 +33,5 @@ abstract class RelativeTimeProvider {
    *
    * @param dateTime [ZonedDateTime] whose relative version will be provided.
    */
-  protected abstract fun onProvide(dateTime: ZonedDateTime): String
+  protected abstract suspend fun onProvide(dateTime: ZonedDateTime): String
 }

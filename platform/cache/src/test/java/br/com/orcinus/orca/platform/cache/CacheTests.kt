@@ -19,6 +19,7 @@ import br.com.orcinus.orca.platform.cache.memory.InMemoryFetcher
 import br.com.orcinus.orca.platform.cache.memory.InMemoryStorage
 import io.mockk.coVerify
 import io.mockk.spyk
+import kotlin.coroutines.Continuation
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.days
@@ -34,6 +35,23 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class CacheTests {
+  /*
+   * Verifications on calls to spies' suspend methods are performed reflectively due to a
+   * 3+-year-old unresolved bug of MockK (as of 1.13.11) that occurs when running these tests on a
+   * release build.
+   *
+   * Given that their JVM signatures contain both a mangled name and a trailing coroutine
+   * continuation parameter, these methods need to be JvmName-annotated for the actual name to be
+   * enforced and the passing of the continuation parameter to be considered in the verification
+   * (with the latter being the bottleneck when verifying in a non-reflective way).
+   *
+   * Issue on GitHub
+   * https://github.com/mockk/mockk/issues/339
+   *
+   * Reflection workaround, proposed by palatin
+   * https://github.com/mockk/mockk/issues/339#issuecomment-661818071
+   */
+
   @OptIn(ExperimentalCoroutinesApi::class)
   private val coroutineScope = TestScope(UnconfinedTestDispatcher())
 
@@ -44,7 +62,7 @@ internal class CacheTests {
     val fetcher = spyk(InMemoryFetcher())
     coroutineScope.runTest {
       cacheRule.cache.fetchingWith(fetcher).get("0")
-      coVerify { fetcher.fetch("0") }
+      coVerify(exactly = 1) { InMemoryFetcher::fetch.call(fetcher, "0", any<Continuation<Unit>>()) }
     }
   }
 
@@ -52,7 +70,7 @@ internal class CacheTests {
   fun remembersValueWhenItIsObtainedForTheFirstTime() {
     val storage = InMemoryStorage()
     coroutineScope.runTest {
-      val value = cacheRule.cache.storingTo(storage).get("0")
+      val value = cacheRule.cache.storingInto(storage).get("0")
       assertEquals(value, storage.get("0"))
     }
   }
@@ -62,15 +80,13 @@ internal class CacheTests {
     val fetcher = spyk(InMemoryFetcher())
     val storage = spyk(InMemoryStorage())
     val cache =
-      cacheRule.cache.storingTo(storage).fetchingWith(fetcher).idlingFor(1.days).livingFor(1.days)
+      cacheRule.cache.storingInto(storage).fetchingWith(fetcher).idlingFor(1.days).livingFor(1.days)
     coroutineScope.runTest {
       cache.get("0")
-
       @OptIn(ExperimentalCoroutinesApi::class) advanceTimeBy(23.hours)
-
       cache.get("0")
-      coVerify { fetcher.fetch("0") }
-      coVerify { storage.get("0") }
+      coVerify(exactly = 1) { InMemoryFetcher::fetch.call(fetcher, "0", any<Continuation<Unit>>()) }
+      coVerify(exactly = 1) { InMemoryStorage::get.call(storage, "0", any<Continuation<Unit>>()) }
     }
   }
 
@@ -78,15 +94,20 @@ internal class CacheTests {
   fun remembersValueAgainWhenItIsObtainedAfterTimeToIdle() {
     val fetcher = spyk(InMemoryFetcher())
     val storage = spyk(InMemoryStorage())
-    val cache = cacheRule.cache.storingTo(storage).fetchingWith(fetcher).idlingFor(1.days)
+    val cache = cacheRule.cache.storingInto(storage).fetchingWith(fetcher).idlingFor(1.days)
     coroutineScope.runTest {
       cache.get("0")
-
       @OptIn(ExperimentalCoroutinesApi::class) advanceTimeBy(25.hours)
-
       cache.get("0")
-      coVerify(exactly = 2) { fetcher.fetch("0") }
-      coVerify(exactly = 2) { storage.store("0", InMemoryFetcher.FETCHED.first()) }
+      coVerify(exactly = 2) { InMemoryFetcher::fetch.call(fetcher, "0", any<Continuation<Unit>>()) }
+      coVerify(exactly = 2) {
+        InMemoryStorage::store.call(
+          storage,
+          "0",
+          InMemoryFetcher.FETCHED.first(),
+          any<Continuation<Unit>>()
+        )
+      }
     }
   }
 
@@ -94,15 +115,13 @@ internal class CacheTests {
   fun obtainsRememberedValueWhenItIsReadBeforeTimeToLive() {
     val fetcher = spyk(InMemoryFetcher())
     val storage = spyk(InMemoryStorage())
-    val cache = cacheRule.cache.storingTo(storage).fetchingWith(fetcher).livingFor(1.days)
+    val cache = cacheRule.cache.storingInto(storage).fetchingWith(fetcher).livingFor(1.days)
     coroutineScope.runTest {
       cache.get("0")
-
       @OptIn(ExperimentalCoroutinesApi::class) advanceTimeBy(23.hours)
-
       cache.get("0")
-      coVerify { fetcher.fetch("0") }
-      coVerify { storage.get("0") }
+      coVerify(exactly = 1) { InMemoryFetcher::fetch.call(fetcher, "0", any<Continuation<Unit>>()) }
+      coVerify(exactly = 1) { InMemoryStorage::get.call(storage, "0", any<Continuation<Unit>>()) }
     }
   }
 
@@ -110,15 +129,20 @@ internal class CacheTests {
   fun remembersValueAgainWhenItIsObtainedAfterTimeToLive() {
     val fetcher = spyk(InMemoryFetcher())
     val storage = spyk(InMemoryStorage())
-    val cache = cacheRule.cache.storingTo(storage).fetchingWith(fetcher).livingFor(1.days)
+    val cache = cacheRule.cache.storingInto(storage).fetchingWith(fetcher).livingFor(1.days)
     coroutineScope.runTest {
       cache.get("0")
-
       @OptIn(ExperimentalCoroutinesApi::class) advanceTimeBy(25.hours)
-
       cache.get("0")
-      coVerify(exactly = 2) { fetcher.fetch("0") }
-      coVerify(exactly = 2) { storage.store("0", InMemoryFetcher.FETCHED.first()) }
+      coVerify(exactly = 2) { InMemoryFetcher::fetch.call(fetcher, "0", any<Continuation<Unit>>()) }
+      coVerify(exactly = 2) {
+        InMemoryStorage::store.call(
+          storage,
+          "0",
+          InMemoryFetcher.FETCHED.first(),
+          any<Continuation<Unit>>()
+        )
+      }
     }
   }
 }

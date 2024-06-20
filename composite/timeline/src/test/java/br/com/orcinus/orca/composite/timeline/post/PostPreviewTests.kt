@@ -39,8 +39,11 @@ import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.sample.test.instance.SampleInstanceTestRule
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.core.sample
+import com.jeanbarrossilva.loadable.flow.unwrap
 import com.jeanbarrossilva.loadable.placeholder.test.assertIsLoading
 import com.jeanbarrossilva.loadable.placeholder.test.assertIsNotLoading
+import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -99,9 +102,13 @@ internal class PostPreviewTests {
       AutosTheme { LoadedPostPreview(relativeTimeProvider = StringRelativeTimeProvider) }
     }
     composeRule.onPostPreviewMetadata().assertIsNotLoading()
-    composeRule
-      .onPostPreviewMetadata()
-      .assertTextEquals(samplePostPreview.getMetadata(StringRelativeTimeProvider))
+    runTest {
+      composeRule
+        .onPostPreviewMetadata()
+        .assertTextEquals(
+          samplePostPreview.getMetadataLoadableFlow(StringRelativeTimeProvider).unwrap().single()
+        )
+    }
   }
 
   @Test

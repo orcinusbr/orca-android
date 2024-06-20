@@ -19,7 +19,8 @@ include(
   ":setup:hooks",
   ":setup:java",
   ":setup:kotlin",
-  ":setup:lint"
+  ":setup:lint",
+  ":setup:minification"
 )
 
 dependencyResolutionManagement.versionCatalogs.register("libs") {

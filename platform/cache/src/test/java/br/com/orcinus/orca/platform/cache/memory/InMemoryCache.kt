@@ -49,7 +49,7 @@ internal class InMemoryCache(
     return apply { this.fetcher = fetcher }
   }
 
-  fun storingTo(storage: InMemoryStorage): InMemoryCache {
+  fun storingInto(storage: InMemoryStorage): InMemoryCache {
     return apply { this.storage = storage }
   }
 

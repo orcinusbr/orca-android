@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -14,25 +14,20 @@
  */
 
 plugins {
-  alias(libs.plugins.android.library)
-  alias(libs.plugins.kotlin.android)
-  alias(libs.plugins.kotlin.symbolProcessor)
-}
+  alias(libs.plugins.buildconfig)
+  alias(libs.plugins.kotlin.jvm)
 
-android {
-  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-  testOptions.unitTests.isIncludeAndroidResources = true
+  `java-gradle-plugin`
 }
 
 dependencies {
-  ksp(libs.android.room.compiler)
-
-  implementation(libs.android.room.ktx)
-
-  testImplementation(libs.android.test.core)
-  testImplementation(libs.kotlin.coroutines.test)
-  testImplementation(libs.kotlin.reflect)
-  testImplementation(libs.kotlin.test)
-  testImplementation(libs.mockk)
-  testImplementation(libs.robolectric)
+  implementation(libs.android.plugin)
+  implementation(libs.kotlin.gradlePlugin)
 }
+
+gradlePlugin.plugins.register("setup-minification") {
+  id = libs.plugins.orca.setup.minification.get().pluginId
+  implementationClass = "br.com.orcinus.orca.setup.minification.MinificationSetupPlugin"
+}
+
+repositories.google()

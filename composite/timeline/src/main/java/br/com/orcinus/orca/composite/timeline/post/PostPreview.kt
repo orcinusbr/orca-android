@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -35,6 +35,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -68,6 +70,8 @@ import br.com.orcinus.orca.platform.core.withSample
 import br.com.orcinus.orca.platform.core.withSamples
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.compose.SomeComposableImageLoader
+import com.jeanbarrossilva.loadable.Loadable
+import com.jeanbarrossilva.loadable.flow.loadableFlow
 import com.jeanbarrossilva.loadable.placeholder.LargeTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
@@ -75,6 +79,7 @@ import com.jeanbarrossilva.loadable.placeholder.test.Loading
 import java.io.Serializable
 import java.net.URI
 import java.time.ZonedDateTime
+import kotlinx.coroutines.flow.Flow
 
 /** Tag that identifies a [PostPreview]'s name for testing purposes. */
 internal const val POST_PREVIEW_NAME_TAG = "post-preview-name"
@@ -129,13 +134,16 @@ internal constructor(
   internal val uri: URI
 ) : Serializable {
   /**
-   * Gets information about the author and how much time it's been since it was published.
+   * Obtains a [Flow] that gets emitted information about the author and how much time it's been
+   * since it was published.
    *
    * @param relativeTimeProvider [RelativeTimeProvider] for providing relative time of publication.
    */
-  fun getMetadata(relativeTimeProvider: RelativeTimeProvider): String {
-    val timeSincePublication = relativeTimeProvider.provide(publicationDateTime)
-    return "${account.username} • $timeSincePublication"
+  fun getMetadataLoadableFlow(relativeTimeProvider: RelativeTimeProvider): Flow<Loadable<String>> {
+    return loadableFlow {
+      val relativeTimeSincePublication = relativeTimeProvider.provide(publicationDateTime)
+      load("${account.username} • $relativeTimeSincePublication")
+    }
   }
 
   companion object {
@@ -243,14 +251,17 @@ fun PostPreview(
   modifier: Modifier = Modifier,
   relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider()
 ) {
-  val metadata =
-    remember(preview, relativeTimeProvider) { preview.getMetadata(relativeTimeProvider) }
+  val metadataLoadable by
+    remember(preview, relativeTimeProvider) {
+        preview.getMetadataLoadableFlow(relativeTimeProvider)
+      }
+      .collectAsState(initial = Loadable.Loading())
 
   PostPreview(
     avatar = { SmallAvatar(preview.avatarLoader, preview.name) },
     name = { Text(preview.name, nameModifier) },
     metadata = {
-      Text(metadata, metadataModifier)
+      SmallTextualPlaceholder(metadataLoadable) { Text(it, metadataModifier) }
 
       preview.rebloggerName?.let {
         Row(

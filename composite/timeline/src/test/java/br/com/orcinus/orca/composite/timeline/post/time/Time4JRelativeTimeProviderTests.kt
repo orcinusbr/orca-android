@@ -20,6 +20,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import io.mockk.mockkStatic
 import io.mockk.verify
 import java.time.ZonedDateTime
+import kotlinx.coroutines.test.runTest
 import net.time4j.android.ApplicationStarter
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -33,7 +34,7 @@ internal class Time4JRelativeTimeProviderTests {
     val provider = Time4JRelativeTimeProvider(context)
     val zonedDateTime = ZonedDateTime.now()
     mockkStatic(ApplicationStarter::class) {
-      repeat(2) { provider.provide(zonedDateTime) }
+      runTest { repeat(2) { provider.provide(zonedDateTime) } }
       verify(exactly = 1) { ApplicationStarter.initialize(context, any<Boolean>()) }
     }
   }
