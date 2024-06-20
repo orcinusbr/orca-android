@@ -110,7 +110,7 @@ private constructor(
   @OptIn(ExperimentalCoroutinesApi::class)
   private fun getPostPreviewsAt(index: Int): Flow<List<PostPreview>> {
     return profileFlow.filterNotNull().flatMapConcat { profile ->
-      profile.getPosts(index).flatMapEach { post ->
+      profile.getPosts(index).flatMapEach(selector = PostPreview::id) { post ->
         post.toPostPreviewFlow(colors, onLinkClick, onThumbnailClickListener)
       }
     }
