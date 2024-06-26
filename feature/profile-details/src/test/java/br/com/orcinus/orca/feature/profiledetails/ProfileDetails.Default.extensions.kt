@@ -18,7 +18,7 @@ package br.com.orcinus.orca.feature.profiledetails
 import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.sample.test.feed.profile.sample
-import br.com.orcinus.orca.platform.markdown.annotated.toAnnotatedString
+import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.annotated.toAnnotatedString
 
 /** Sample [ProfileDetails.Default]. */
 internal val ProfileDetails.Default.Companion.sample
