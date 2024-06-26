@@ -31,6 +31,7 @@ dependencies {
 
   implementation(project(":ext:coroutines"))
   implementation(project(":ext:reflection"))
+  implementation(project(":platform:markdown"))
   implementation(libs.accompanist.adapter)
   implementation(libs.android.material)
   implementation(libs.loadable.placeholder)

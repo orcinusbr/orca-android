@@ -13,6 +13,8 @@
  * not, see https://www.gnu.org/licenses.
  */
 
+@file:JvmName("SpanStyles")
+
 package br.com.orcinus.orca.platform.markdown.annotated
 
 import android.content.Context
@@ -35,7 +37,9 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.isSpecified
+import androidx.compose.ui.graphics.isUnspecified
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontSynthesis
@@ -48,13 +52,117 @@ import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.isSpecified
+import androidx.compose.ui.unit.isUnspecified
 import androidx.compose.ui.util.lerp
 import androidx.core.graphics.ColorUtils
+import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.ext.reflection.access
 import br.com.orcinus.orca.platform.markdown.spanned.span.DRAW_STYLE_SPAN_NAME
 import br.com.orcinus.orca.platform.markdown.spanned.span.createTextAppearanceSpan
+import br.com.orcinus.orca.std.markdown.Markdown
+import br.com.orcinus.orca.std.markdown.style.Style
+import java.net.URI
+import java.net.URISyntaxException
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
+
+/**
+ * Denotes the start of a [SpanStyle]'s font feature setting category created from a [Style.Link].
+ *
+ * @see CATEGORY_SUFFIX
+ */
+private const val CATEGORY_PREFIX = "category: url("
+
+/**
+ * Denotes the end of a [SpanStyle]'s font feature setting category created from a [Style.Link].
+ *
+ * @see CATEGORY_PREFIX
+ */
+private const val CATEGORY_SUFFIX = ")"
+
+/** Whether this [SpanStyle] has been created for a [Style.Link]. */
+internal val SpanStyle.isForLink
+  get() = fontFeatureSettings?.let { CATEGORY_PREFIX in it } ?: false
+
+/**
+ * [URI] that has been attached as the category of this [SpanStyle].
+ *
+ * @throws IllegalStateException If the font feature settings haven't been defined, no [category] is
+ *   specified or a call within it to `url` containing the [URI] is missing.
+ * @see SpanStyle.fontFeatureSettings
+ */
+internal val SpanStyle.uri
+  @JvmName("getURI")
+  @Throws(IllegalStateException::class, URISyntaxException::class)
+  get() =
+    fontFeatureSettings
+      ?.substringAfter(CATEGORY_PREFIX, missingDelimiterValue = "")
+      ?.substringBefore(CATEGORY_SUFFIX)
+      ?.ifEmpty { throw IllegalStateException("No category has been specified.") }
+      ?.trim()
+      ?.ifEmpty { throw IllegalStateException("Category with missing call to \"url\".") }
+      ?.let(::URI)
+      ?: throw IllegalStateException("Font feature settings haven't been defined.")
+
+/**
+ * [SpanStyle] into which an emboldened portion within [Markdown] will be turned when converting it
+ * into an [AnnotatedString].
+ *
+ * @see Style.Bold
+ * @see toAnnotatedString
+ */
+@JvmField val BoldSpanStyle = SpanStyle(fontWeight = FontWeight.Bold)
+
+/**
+ * [SpanStyle] into which an italicized portion within [Markdown] will be turned when converting it
+ * into an [AnnotatedString].
+ *
+ * @see Style.Italic
+ * @see toAnnotatedString
+ */
+@JvmField val ItalicSpanStyle = SpanStyle(fontStyle = FontStyle.Italic)
+
+/**
+ * Creates a [SpanStyle] into which a [Style.Link] within [Markdown] will be turned when converting
+ * it into an [AnnotatedString].
+ *
+ * @param colors [Colors] by which the [SpanStyle] can be colored.
+ * @param uri [URI] to which the [Style.Link] links.
+ * @see toAnnotatedString
+ * @see category
+ */
+fun createLinkSpanStyle(colors: Colors, uri: URI): SpanStyle {
+  return SpanStyle(
+    Color(colors.link),
+    fontFeatureSettings = CATEGORY_PREFIX + uri + CATEGORY_SUFFIX
+  )
+}
+
+/**
+ * Returns whether the given [SpanStyle] contains all of the attributes that this one has set as
+ * being explicitly defined (that is, neither an "unspecified" instance of the object, such as
+ * [Color.Unspecified], nor `null`).
+ *
+ * @param other [SpanStyle] to compare the receiver one with.
+ */
+internal operator fun SpanStyle.contains(other: SpanStyle): Boolean {
+  return (other.background.isUnspecified || background == other.background) &&
+    (other.baselineShift == null || baselineShift == other.baselineShift) &&
+    (other.brush == null || brush == other.brush) &&
+    (other.color.isUnspecified || color == other.color) &&
+    (other.drawStyle == null || drawStyle == other.drawStyle) &&
+    (other.fontFamily == null || fontFamily == other.fontFamily) &&
+    (other.fontFeatureSettings == null || fontFeatureSettings == other.fontFeatureSettings) &&
+    (other.fontSize.isUnspecified || fontSize == other.fontSize) &&
+    (other.fontStyle == null || fontStyle == other.fontStyle) &&
+    (other.fontSynthesis == null || fontSynthesis == other.fontSynthesis) &&
+    (other.fontWeight == null || fontWeight == other.fontWeight) &&
+    (other.letterSpacing.isUnspecified || letterSpacing == other.letterSpacing) &&
+    (other.localeList?.let { oll -> localeList?.let { ll -> oll.containsAll(ll) } } ?: true) &&
+    (other.platformStyle == null || platformStyle == other.platformStyle) &&
+    (other.shadow == null || shadow == other.shadow) &&
+    (other.textDecoration == null || textDecoration == other.textDecoration)
+}
 
 /**
  * Converts this [SpanStyle] into spans.

@@ -13,7 +13,9 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.text.annotated.span
+@file:JvmName("AnyExtensions")
+
+package br.com.orcinus.orca.platform.markdown.annotated.span
 
 import android.graphics.Typeface
 import android.text.Spanned

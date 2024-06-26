@@ -21,10 +21,10 @@ import br.com.orcinus.orca.composite.timeline.post.figure.Figure
 import br.com.orcinus.orca.composite.timeline.post.figure.gallery.disposition.Disposition
 import br.com.orcinus.orca.composite.timeline.stat.details.asStatsDetails
 import br.com.orcinus.orca.composite.timeline.stat.details.asStatsDetailsFlow
-import br.com.orcinus.orca.composite.timeline.text.annotated.toAnnotatedString
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import br.com.orcinus.orca.platform.markdown.annotated.toAnnotatedString
 import br.com.orcinus.orca.std.image.compose.SomeComposableImageLoader
 import java.net.URI
 import kotlinx.coroutines.flow.Flow

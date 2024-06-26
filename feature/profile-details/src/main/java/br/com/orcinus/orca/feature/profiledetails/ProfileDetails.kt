@@ -182,7 +182,7 @@ internal sealed class ProfileDetails : Serializable {
           Profile.sample.avatarLoader,
           Profile.sample.name,
           Profile.sample.account,
-          Profile.sample.bio.toAnnotatedString(AutosTheme.colors),
+          Profile.sample.bio.toAnnotatedString(),
           Profile.sample.uri
         )
       }

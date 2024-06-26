@@ -13,22 +13,19 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.text.annotated.span
+package br.com.orcinus.orca.platform.markdown.interop
 
-import assertk.assertThat
-import assertk.assertions.isEqualTo
-import br.com.orcinus.orca.autos.colors.Colors
-import br.com.orcinus.orca.std.markdown.style.Style
-import kotlin.test.Test
+import android.view.View
 
-internal class StyleExtensionsTests {
-  @Test
-  fun convertsBoldIntoSpanStyle() {
-    assertThat(Style.Bold(0..1).toSpanStyle(Colors.LIGHT)).isEqualTo(BoldSpanStyle)
-  }
-
-  @Test
-  fun convertsItalicIntoSpanStyle() {
-    assertThat(Style.Italic(0..1).toSpanStyle(Colors.LIGHT)).isEqualTo(ItalicSpanStyle)
-  }
+/**
+ * Provides a layout direction.
+ *
+ * @see provide
+ */
+fun interface LayoutDirectionProvider {
+  /**
+   * Provides the layout direction that determines whether a compound drawable is the leading or
+   * trailing one, returning either [View.LAYOUT_DIRECTION_LTR] or [View.LAYOUT_DIRECTION_RTL].
+   */
+  fun provide(): Int
 }

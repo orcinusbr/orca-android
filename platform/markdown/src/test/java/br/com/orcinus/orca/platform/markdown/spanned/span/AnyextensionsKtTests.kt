@@ -28,7 +28,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class AnyextensionsKtTests {
+internal class AnyExtensionsKtTests {
   private val uri = URIBuilder.url().scheme("https").host("orca.orcinus.com.br").build()
 
   @Test

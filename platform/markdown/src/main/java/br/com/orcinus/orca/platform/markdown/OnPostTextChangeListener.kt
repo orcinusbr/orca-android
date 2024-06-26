@@ -19,28 +19,25 @@ import android.text.Editable
 import android.text.TextWatcher
 
 /**
- * [TextWatcher] that requires only for a single method to be overridden, to which a non-`null`
- * [String] that has been defined as the current text is provided and from which operations based on
- * that modification can be performed.
+ * [TextWatcher] that doesn't perform any operations before or at the moment the text is changed,
+ * but rather is notified only after the modification has been made (which differs from
+ * [OnTextChangeListener]'s behavior of listening to the current input).
  *
- * @see onTextChange
+ * @see onPostTextChange
  */
-internal fun interface OnTextChangeListener : TextWatcher {
+internal interface OnPostTextChangeListener : TextWatcher {
   override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-  override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-    val text = s?.toString() ?: return
-    onTextChange(text)
+  override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+  override fun afterTextChanged(s: Editable?) {
+    s?.run(::onPostTextChange)
   }
 
-  override fun afterTextChanged(s: Editable?) {}
-
   /**
-   * Callback that is executed when the text changes, with the [CharSequence] that is provided to
-   * [onTextChanged] converted into a [String] when it isn't `null`; in case it equals to `null`,
-   * this method doesn't get called.
+   * Callback called after the text has changed.
    *
-   * @param text [String] that has been set as the current text.
+   * @param text [Editable] by which the previous one was replaced.
    */
-  fun onTextChange(text: String)
+  fun onPostTextChange(text: Editable)
 }

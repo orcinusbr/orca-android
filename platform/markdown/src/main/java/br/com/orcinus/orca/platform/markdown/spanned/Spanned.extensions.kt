@@ -17,13 +17,25 @@ package br.com.orcinus.orca.platform.markdown.spanned
 
 import android.content.Context
 import android.text.Spanned
-import androidx.compose.ui.graphics.drawscope.DrawStyle
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.core.text.getSpans
 import br.com.orcinus.orca.platform.markdown.spanned.span.isStructurallyEqual
-import br.com.orcinus.orca.platform.markdown.spanned.span.toSpanStyle
+import br.com.orcinus.orca.std.markdown.Markdown
+import br.com.orcinus.orca.std.markdown.style.Style
+
+/**
+ * Converts this [Spanned] into [Markdown].
+ *
+ * @param context [Context] with which each of this [Spanned]'s [IndexedSpans] can compare its spans
+ *   and their conversions into [Style]s will be performed.
+ * @see Spanned.getIndexedSpans
+ * @see isStructurallyEqual
+ * @see IndexedSpans.toStyles
+ */
+fun Spanned.toMarkdown(context: Context): Markdown {
+  val text = toString()
+  val styles = getIndexedSpans(context).flatMap(IndexedSpans::toStyles)
+  return Markdown.styled(text, styles)
+}
 
 /**
  * Obtains all of the spans by which this [Spanned] is composed, alongside the indices that they are
@@ -35,31 +47,6 @@ import br.com.orcinus.orca.platform.markdown.spanned.span.toSpanStyle
  * @param context [Context] with which [IndexedSpans] can compare its spans structurally.
  * @see isStructurallyEqual
  */
-fun Spanned.getIndexedSpans(context: Context): List<IndexedSpans> {
+internal fun Spanned.getIndexedSpans(context: Context): List<IndexedSpans> {
   return getSpans<Any>().map { IndexedSpans(context, getSpanStart(it)..getSpanEnd(it).dec(), it) }
-}
-
-/**
- * Converts this [Spanned] into an [AnnotatedString].
- *
- * @param context [Context] with which each of this [Spanned]'s [IndexedSpans] can compare its spans
- *   structurally and conversions from spans into [SpanStyle]s will be performed.
- * @throws NoSuchFieldException If the one of the spans is an `androidx.compose.ui:ui-text`
- *   `DrawStyleSpan` but doesn't have a declared member property to which a [DrawStyle] is assigned.
- * @see Spanned.getIndexedSpans
- * @see Spanned.getSpans
- * @see isStructurallyEqual
- */
-@Throws(NoSuchFieldException::class)
-internal fun Spanned.toAnnotatedString(context: Context): AnnotatedString {
-  return buildAnnotatedString {
-    append("${this@toAnnotatedString}")
-    getIndexedSpans(context).forEach { indexedSpans ->
-      indexedSpans.spans
-        .map { span -> span.toSpanStyle(context) }
-        .forEach { spanStyle ->
-          addStyle(spanStyle, indexedSpans.indices.first, indexedSpans.indices.last.inc())
-        }
-    }
-  }
 }
