@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -20,15 +20,11 @@ import android.text.Html
 import android.text.Spanned
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import br.com.orcinus.orca.autos.colors.Colors
-import br.com.orcinus.orca.composite.timeline.text.annotated.span.toSpanStyle
 import br.com.orcinus.orca.composite.timeline.text.pop
-import br.com.orcinus.orca.composite.timeline.text.spanned.toMarkdown
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import br.com.orcinus.orca.platform.markdown.annotated.toAnnotatedString
+import br.com.orcinus.orca.platform.markdown.spanned.toMarkdown
 import br.com.orcinus.orca.std.markdown.Markdown
-import br.com.orcinus.orca.std.markdown.style.Style
 import org.jsoup.Jsoup
 import org.jsoup.parser.Parser
 
@@ -59,23 +55,4 @@ fun Markdown.Companion.fromHtml(context: Context, html: String): Markdown {
 @Composable
 fun Markdown.toAnnotatedString(): AnnotatedString {
   return toAnnotatedString(AutosTheme.colors)
-}
-
-/**
- * Converts this [Markdown] into an [AnnotatedString].
- *
- * @param colors [Colors] by which the [AnnotatedString] can be colored.
- */
-fun Markdown.toAnnotatedString(colors: Colors): AnnotatedString {
-  val conversions = HashMap<Style, SpanStyle>()
-  return buildAnnotatedString {
-    append(this@toAnnotatedString)
-    styles.forEach {
-      addStyle(
-        conversions.getOrPut(it) { it.toSpanStyle(colors) },
-        it.indices.first,
-        it.indices.last.inc()
-      )
-    }
-  }
 }

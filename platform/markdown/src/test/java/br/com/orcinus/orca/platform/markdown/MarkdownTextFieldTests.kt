@@ -23,6 +23,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performTextInput
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.platform.markdown.state.MarkdownTextFieldStateTestRule
 import br.com.orcinus.orca.platform.markdown.test.onMarkdownTextField
 import br.com.orcinus.orca.std.markdown.Markdown
@@ -42,7 +43,14 @@ internal class MarkdownTextFieldTests {
   fun doesNotChangeText() {
     composeRule
       .apply {
-        setContent { MarkdownTextField(stateRule.state, Markdown.empty, onTextChange = {}) }
+        setContent {
+          MarkdownTextField(
+            stateRule.state,
+            MarkdownTextFieldValue.Empty,
+            onValueChange = {},
+            Colors.LIGHT
+          ) {}
+        }
       }
       .onMarkdownTextField()
       .apply { performTextInput(":c") }
@@ -50,25 +58,27 @@ internal class MarkdownTextFieldTests {
   }
 
   @Test
-  fun notifiesChangesToText() {
-    var text by mutableStateOf(Markdown.empty)
+  fun notifiesChangesToValue() {
+    var value by mutableStateOf(MarkdownTextFieldValue.Empty)
     composeRule
       .apply {
-        setContent { MarkdownTextField(stateRule.state, text, onTextChange = { text = it }) }
+        setContent {
+          MarkdownTextField(stateRule.state, value, onValueChange = { value = it }, Colors.LIGHT) {}
+        }
       }
       .onMarkdownTextField()
       .performTextInput(":o")
-    assertThat(text).isEqualTo(":o")
+    assertThat(value).isEqualTo(MarkdownTextFieldValue(Markdown.unstyled(":o"), selection = 2..2))
   }
 
   @Test
   fun notifiesChangeToTextWhenStyleIsApplied() {
-    var text by mutableStateOf(Markdown.unstyled("君の名は。"))
+    var value by mutableStateOf(MarkdownTextFieldValue(Markdown.unstyled("君の名は。")))
     composeRule.setContent {
-      MarkdownTextField(stateRule.state, text, onTextChange = { text = it })
+      MarkdownTextField(stateRule.state, value, onValueChange = { value = it }, Colors.LIGHT) {}
     }
     stateRule.state.toggle(Style.Bold(indices = 0..0))
-    assertThat(text.styles)
+    assertThat(value.text.styles)
       .isEqualTo(
         buildMarkdown {
             bold { +'君' }

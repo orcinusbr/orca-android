@@ -20,7 +20,9 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import br.com.orcinus.orca.composite.timeline.text.annotated.toMarkdown
+import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.toMarkdown
+import br.com.orcinus.orca.platform.markdown.annotated.BoldSpanStyle
+import br.com.orcinus.orca.platform.markdown.annotated.ItalicSpanStyle
 import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.buildMarkdown
 import kotlin.test.Test

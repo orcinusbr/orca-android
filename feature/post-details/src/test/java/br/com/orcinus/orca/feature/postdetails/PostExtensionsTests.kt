@@ -20,11 +20,11 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.composite.timeline.post.figure.Figure
 import br.com.orcinus.orca.composite.timeline.stat.details.asStatsDetails
-import br.com.orcinus.orca.composite.timeline.text.annotated.toAnnotatedString
 import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.sample.test.instance.SampleInstanceTestRule
 import br.com.orcinus.orca.feature.postdetails.conversion.runPostDetailsConversionTest
 import br.com.orcinus.orca.platform.core.sample
+import br.com.orcinus.orca.platform.markdown.annotated.toAnnotatedString
 import br.com.orcinus.orca.std.image.compose.SomeComposableImageLoader
 import kotlin.test.Test
 import org.junit.Rule

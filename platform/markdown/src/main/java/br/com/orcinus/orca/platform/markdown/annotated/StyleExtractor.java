@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.text.annotated.span;
+package br.com.orcinus.orca.platform.markdown.annotated;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

@@ -32,6 +32,8 @@ dependencies {
   androidTestImplementation(libs.kotlin.test)
 
   api(project(":std:markdown"))
+  api(libs.android.compose.material3)
+  api(libs.autos)
 
   implementation(project(":ext:coroutines"))
   implementation(project(":ext:reflection"))
@@ -42,10 +44,13 @@ dependencies {
   testImplementation(project(":ext:uri"))
   testImplementation(project(":platform:markdown-test"))
   testImplementation(project(":platform:testing"))
+  implementation(project(":std:visibility"))
   testImplementation(libs.android.compose.ui.test.junit)
   testImplementation(libs.android.compose.ui.test.manifest)
+  testImplementation(libs.android.test.espresso.core)
   testImplementation(libs.assertk)
   testImplementation(libs.kotlin.test)
+  testImplementation(libs.mockk)
   testImplementation(libs.openTest4J)
   testImplementation(libs.robolectric)
 }

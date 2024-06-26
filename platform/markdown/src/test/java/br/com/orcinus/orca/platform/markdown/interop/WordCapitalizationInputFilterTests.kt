@@ -13,29 +13,29 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.text.annotated.span
+package br.com.orcinus.orca.platform.markdown.interop
 
-import androidx.compose.ui.text.SpanStyle
+import android.text.SpannedString
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import br.com.orcinus.orca.autos.colors.Colors
-import br.com.orcinus.orca.ext.uri.URIBuilder
 import kotlin.test.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-internal class SpanStyleExtensionsTests {
-  @Test(expected = IllegalStateException::class)
-  fun throwsWhenGettingURIFromSpanStyleWithoutFontFeatureSettings() {
-    SpanStyle().uri
-  }
-
-  @Test(expected = IllegalStateException::class)
-  fun throwsWhenGettingURIFromSpanStyleWithFontFeatureSettingsWithoutCategory() {
-    SpanStyle(fontFeatureSettings = "").uri
-  }
-
+@RunWith(RobolectricTestRunner::class)
+internal class WordCapitalizationInputFilterTests {
   @Test
-  fun getsURIFromSpanStyle() {
-    val uri = URIBuilder.url().scheme("https").host("orca.orcinus.com.br").build()
-    assertThat(createLinkSpanStyle(Colors.LIGHT, uri).uri).isEqualTo(uri)
+  fun capitalizesEachWhitespaceSeparatedWord() {
+    assertThat(
+        CapitalizationInputFilter.Word.filter(
+          source = "hello world!",
+          start = 0,
+          end = 5,
+          dest = SpannedString(""),
+          dstart = 0,
+          dend = 1
+        )
+      )
+      .isEqualTo("Hello World!")
   }
 }

@@ -13,14 +13,23 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.text.annotated
+package br.com.orcinus.orca.platform.markdown.interop.truth
 
-import androidx.compose.ui.text.AnnotatedString
-import br.com.orcinus.orca.composite.timeline.text.annotated.span.StyleExtractor
-import br.com.orcinus.orca.std.markdown.Markdown
+import io.mockk.mockk
+import io.mockk.verify
+import kotlin.test.Test
 
-/** Converts this [AnnotatedString] into [Markdown]. */
-fun AnnotatedString.toMarkdown(): Markdown {
-  val styles = spanStyles.flatMap { StyleExtractor.extractAll(it.item, it.start..it.end.dec()) }
-  return Markdown.styled(text, styles)
+internal class SourceOfTruthExtensionsTests {
+  @Test
+  fun isAttachedWhenInUse() {
+    mockk<SourceOfTruth>(relaxUnitFun = true) { use { verify(exactly = 1) { attach() } } }
+  }
+
+  @Test
+  fun isDetachedAfterUsage() {
+    mockk<SourceOfTruth>(relaxUnitFun = true) {
+      use {}
+      verify(exactly = 1) { detach() }
+    }
+  }
 }

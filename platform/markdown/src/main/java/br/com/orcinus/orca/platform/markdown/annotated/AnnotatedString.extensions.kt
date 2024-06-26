@@ -49,7 +49,7 @@ import kotlin.reflect.full.primaryConstructor
  * - [NoSuchMethodException]: when a [SpanStyle]'s specified [Brush] is a [ShaderBrush] or a
  *   [DrawStyle] has been defined and the primary constructor of `androidx.compose.ui:ui-text`'s
  *   `ShaderBrushSpan` or `DrawStyleSpan` isn't found when converting [SpanStyle]s into spans, given
- *   that they're referenced and called through reflection because both are APIs are internal to the
+ *   that they're referenced and called through reflection because both APIs are internal to the
  *   module in which they've been declared as of 1.6.6.
  *
  * @param context [Context] with which conversions from [SpanStyle]s into spans are performed and
@@ -75,8 +75,8 @@ internal fun AnnotatedString.toEditableAsState(context: Context): State<Editable
       /**
        * [InputFilter]s that have been set for constraining changes made to this [Editable].
        *
-       * @see setFilters
        * @see getFilters
+       * @see setFilters
        */
       private var filters = emptyArray<InputFilter>()
 

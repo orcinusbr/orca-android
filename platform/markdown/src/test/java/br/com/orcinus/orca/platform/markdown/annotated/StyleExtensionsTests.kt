@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,21 +13,22 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.feature.profiledetails
+package br.com.orcinus.orca.platform.markdown.annotated
 
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.autos.colors.Colors
-import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
-import br.com.orcinus.orca.core.sample.test.feed.profile.type.sample
-import br.com.orcinus.orca.platform.markdown.annotated.toAnnotatedString
+import br.com.orcinus.orca.std.markdown.style.Style
+import kotlin.test.Test
 
-/** Sample [ProfileDetails.Editable]. */
-internal val ProfileDetails.Editable.Companion.sample
-  get() =
-    ProfileDetails.Editable(
-      EditableProfile.sample.id,
-      EditableProfile.sample.avatarLoader,
-      EditableProfile.sample.name,
-      EditableProfile.sample.account,
-      EditableProfile.sample.bio.toAnnotatedString(Colors.LIGHT),
-      EditableProfile.sample.uri
-    )
+internal class StyleExtensionsTests {
+  @Test
+  fun convertsBoldIntoSpanStyle() {
+    assertThat(Style.Bold(0..1).toSpanStyle(Colors.LIGHT)).isEqualTo(BoldSpanStyle)
+  }
+
+  @Test
+  fun convertsItalicIntoSpanStyle() {
+    assertThat(Style.Italic(0..1).toSpanStyle(Colors.LIGHT)).isEqualTo(ItalicSpanStyle)
+  }
+}

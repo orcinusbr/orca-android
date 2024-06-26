@@ -13,12 +13,12 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.text.annotated.span
+package br.com.orcinus.orca.platform.markdown.interop.scope
 
-import br.com.orcinus.orca.platform.markdown.spanned.IndexedSpans
-import br.com.orcinus.orca.std.markdown.style.Style
+import br.com.orcinus.orca.std.visibility.PackageProtected
 
-/** Converts these [IndexedSpans] into [Style]s. */
-internal fun IndexedSpans.toStyles(): List<Style> {
-  return spans.flatMap { it.toStyles(indices) }
-}
+/** Denotes that the API is to be referenced only by interop-only structures. */
+@PackageProtected(
+  "This API is internal to the interop structures and shouldn't be referenced by external sources."
+)
+internal annotation class InternalInteropEditTextScopeApi
