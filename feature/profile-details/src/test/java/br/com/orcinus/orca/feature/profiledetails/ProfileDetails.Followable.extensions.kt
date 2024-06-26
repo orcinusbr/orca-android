@@ -23,7 +23,7 @@ import br.com.orcinus.orca.core.sample.feed.profile.type.followable.createSample
 import br.com.orcinus.orca.core.sample.test.image.TestSampleImageLoader
 import br.com.orcinus.orca.core.sample.test.instance.sample
 import br.com.orcinus.orca.feature.profiledetails.conversion.converter.followable.toStatus
-import br.com.orcinus.orca.platform.markdown.annotated.toAnnotatedString
+import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.annotated.toAnnotatedString
 
 /**
  * Creates a sample [ProfileDetails.Followable].

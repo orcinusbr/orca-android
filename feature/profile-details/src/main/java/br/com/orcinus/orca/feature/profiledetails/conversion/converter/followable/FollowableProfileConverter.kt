@@ -21,7 +21,7 @@ import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
 import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetails
 import br.com.orcinus.orca.feature.profiledetails.conversion.ProfileConverter
-import br.com.orcinus.orca.platform.markdown.annotated.toAnnotatedString
+import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.annotated.toAnnotatedString
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

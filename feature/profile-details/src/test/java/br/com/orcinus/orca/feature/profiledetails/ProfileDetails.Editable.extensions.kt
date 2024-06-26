@@ -18,7 +18,7 @@ package br.com.orcinus.orca.feature.profiledetails
 import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
 import br.com.orcinus.orca.core.sample.test.feed.profile.type.sample
-import br.com.orcinus.orca.platform.markdown.annotated.toAnnotatedString
+import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.annotated.toAnnotatedString
 
 /** Sample [ProfileDetails.Editable]. */
 internal val ProfileDetails.Editable.Companion.sample

@@ -25,22 +25,26 @@ android {
 }
 
 dependencies {
+  api(project(":std:markdown"))
   api(libs.android.compose.material3)
   api(libs.android.compose.ui.tooling)
   api(libs.autos)
 
   implementation(project(":ext:coroutines"))
   implementation(project(":ext:reflection"))
-  implementation(project(":platform:markdown"))
+  implementation(project(":std:visibility"))
   implementation(libs.accompanist.adapter)
   implementation(libs.android.material)
   implementation(libs.loadable.placeholder)
 
+  testImplementation(project(":ext:uri"))
   testImplementation(project(":platform:autos-test"))
   testImplementation(project(":platform:testing"))
   testImplementation(libs.android.compose.ui.test.manifest)
   testImplementation(libs.assertk)
   testImplementation(libs.kotlin.coroutines.test)
   testImplementation(libs.kotlin.test)
+  testImplementation(libs.mockk)
+  testImplementation(libs.openTest4J)
   testImplementation(libs.robolectric)
 }

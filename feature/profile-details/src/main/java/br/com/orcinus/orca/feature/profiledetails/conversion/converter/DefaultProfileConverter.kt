@@ -19,7 +19,7 @@ import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetails
 import br.com.orcinus.orca.feature.profiledetails.conversion.ProfileConverter
-import br.com.orcinus.orca.platform.markdown.annotated.toAnnotatedString
+import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.annotated.toAnnotatedString
 
 /**
  * [ProfileConverter] that converts a [Profile], regardless of its type, into a

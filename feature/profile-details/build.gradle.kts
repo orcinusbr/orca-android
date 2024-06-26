@@ -51,7 +51,6 @@ dependencies {
   implementation(project(":core"))
   implementation(project(":ext:coroutines"))
   implementation(project(":platform:intents"))
-  implementation(project(":platform:markdown"))
   implementation(project(":std:injector"))
   implementation(libs.android.fragment.ktx)
   implementation(libs.android.lifecycle.viewmodel)

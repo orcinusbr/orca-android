@@ -18,12 +18,8 @@ package br.com.orcinus.orca.composite.timeline.text.annotated
 import android.content.Context
 import android.text.Html
 import android.text.Spanned
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.AnnotatedString
 import br.com.orcinus.orca.composite.timeline.text.pop
-import br.com.orcinus.orca.platform.autos.theme.AutosTheme
-import br.com.orcinus.orca.platform.markdown.annotated.toAnnotatedString
-import br.com.orcinus.orca.platform.markdown.spanned.toMarkdown
+import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.spanned.toMarkdown
 import br.com.orcinus.orca.std.markdown.Markdown
 import org.jsoup.Jsoup
 import org.jsoup.parser.Parser
@@ -49,10 +45,4 @@ fun Markdown.Companion.fromHtml(context: Context, html: String): Markdown {
       Html.FROM_HTML_MODE_LEGACY
     )
     .toMarkdown(context)
-}
-
-/** Converts this [Markdown] into an [AnnotatedString]. */
-@Composable
-fun Markdown.toAnnotatedString(): AnnotatedString {
-  return toAnnotatedString(AutosTheme.colors)
 }

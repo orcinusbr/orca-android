@@ -22,7 +22,7 @@ import br.com.orcinus.orca.composite.timeline.post.figure.gallery.thumbnail.Thum
 import br.com.orcinus.orca.composite.timeline.stat.details.asStatsDetails
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.repost.Repost
-import br.com.orcinus.orca.platform.markdown.annotated.toAnnotatedString
+import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.annotated.toAnnotatedString
 import br.com.orcinus.orca.std.image.compose.SomeComposableImageLoader
 import java.net.URI
 import kotlinx.coroutines.flow.Flow
