@@ -27,8 +27,8 @@ import androidx.compose.ui.text.TextRange
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
-import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.interop.scope.onInteropEditText
-import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.interop.scope.runInteropEditTextTest
+import br.com.orcinus.orca.platform.autos.test.kit.input.text.markdown.interop.scope.onInteropEditText
+import br.com.orcinus.orca.platform.autos.test.kit.input.text.markdown.interop.scope.runInteropEditTextTest
 import kotlin.test.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner

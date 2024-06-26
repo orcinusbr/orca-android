@@ -22,14 +22,11 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.text.InputFilter
 import android.text.InputType
-import android.util.AttributeSet
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
-import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.VisibleForTesting
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.compose.foundation.text.KeyboardActionScope
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -43,7 +40,8 @@ import androidx.compose.ui.text.input.EditProcessor
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.TextFieldValue
-import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.MarkdownTextField
+import br.com.orcinus.orca.platform.autos.InternalPlatformAutosApi
+import com.google.android.material.textfield.TextInputEditText
 
 /**
  * [EditText] by which Jetpack-Compose-specific behavior is translated into that of the Android
@@ -58,16 +56,18 @@ import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.MarkdownTextFi
  * Multi-style text editing has been on the
  * [roadmap](https://developer.android.com/jetpack/androidx/compose-roadmap) since October 2022.
  *
+ * @param context [Context] in which the [View] will be added.
  * @see AnnotatedString.spanStyles
  * @see AnnotatedString.paragraphStyles
  */
-internal class InteropEditText : AppCompatEditText, KeyboardActionScope {
+class InteropEditText @InternalPlatformAutosApi constructor(context: Context) :
+  TextInputEditText(context), KeyboardActionScope {
   /**
    * [LayoutDirectionProvider] that determines whether a compound [Drawable] is the leading or
    * trailing one based on the direction of the layout provided by it.
    */
   private var layoutDirectionProvider = LayoutDirectionProvider {
-    context?.resources?.configuration?.layoutDirection ?: TEXT_DIRECTION_LTR
+    context.resources?.configuration?.layoutDirection ?: TEXT_DIRECTION_LTR
   }
 
   /** [OnSelectionChangeListener]s that are notified whenever selection changes are performed. */
@@ -86,6 +86,7 @@ internal class InteropEditText : AppCompatEditText, KeyboardActionScope {
    *
    * @see setColors
    */
+  @InternalPlatformAutosApi
   @VisibleForTesting
   var colors: TextFieldColors? = null
     private set
@@ -95,6 +96,7 @@ internal class InteropEditText : AppCompatEditText, KeyboardActionScope {
    *
    * @see trailingCompoundDrawableIndex
    */
+  @InternalPlatformAutosApi
   @VisibleForTesting
   val leadingCompoundDrawableIndex
     get() =
@@ -108,6 +110,7 @@ internal class InteropEditText : AppCompatEditText, KeyboardActionScope {
    *
    * @see leadingCompoundDrawableIndex
    */
+  @InternalPlatformAutosApi
   @VisibleForTesting
   val trailingCompoundDrawableIndex
     get() =
@@ -116,43 +119,6 @@ internal class InteropEditText : AppCompatEditText, KeyboardActionScope {
       } else {
         RIGHT_COMPOUND_DRAWABLE_INDEX
       }
-
-  /**
-   * [EditText] presented by the [MarkdownTextField] on which [TextFieldColors] can be applied.
-   *
-   * @param context [Context] in which the [View] will be added.
-   * @see setColors
-   */
-  constructor(
-    context: Context
-  ) : this(context, attributeSet = null, defaultStyleAttributeResourceID = 0)
-
-  /**
-   * [EditText] presented by the [MarkdownTextField] on which [TextFieldColors] can be applied.
-   *
-   * @param context [Context] in which the [View] will be added.
-   * @param attributeSet Attributes specified in the XML.
-   * @see setColors
-   */
-  constructor(
-    context: Context,
-    attributeSet: AttributeSet?
-  ) : this(context, attributeSet, defaultStyleAttributeResourceID = 0)
-
-  /**
-   * [EditText] presented by the [MarkdownTextField] on which [TextFieldColors] can be applied.
-   *
-   * @param context [Context] in which the [View] will be added.
-   * @param attributeSet Attributes specified in the XML.
-   * @param defaultStyleAttributeResourceID Resource ID of the attribute belonging to the default
-   *   style to be set.
-   * @see setColors
-   */
-  constructor(
-    context: Context,
-    attributeSet: AttributeSet?,
-    @AttrRes defaultStyleAttributeResourceID: Int
-  ) : super(context, attributeSet, defaultStyleAttributeResourceID)
 
   override fun setEnabled(enabled: Boolean) {
     super.setEnabled(enabled)
@@ -208,42 +174,11 @@ internal class InteropEditText : AppCompatEditText, KeyboardActionScope {
   }
 
   /**
-   * Changes the [LayoutDirectionProvider] by which a layout direction is to be provided.
-   *
-   * @param layoutDirectionProvider [LayoutDirectionProvider] that determines whether a compound
-   *   [Drawable] is the leading or trailing one based on the direction of the layout provided by
-   *   it.
-   */
-  @VisibleForTesting
-  fun setLayoutDirectionProvider(layoutDirectionProvider: LayoutDirectionProvider) {
-    this.layoutDirectionProvider = layoutDirectionProvider
-  }
-
-  /**
-   * Adds an [OnSelectionChangeListener].
-   *
-   * @param onSelectionChangeListener [OnSelectionChangeListener] that will be notified when
-   *   selection changes.
-   */
-  fun addOnSelectionChangeListener(onSelectionChangeListener: OnSelectionChangeListener) {
-    onSelectionChangeListeners.add(onSelectionChangeListener)
-  }
-
-  /**
-   * Removes an [OnSelectionChangeListener].
-   *
-   * @param onSelectionChangeListener [OnSelectionChangeListener] that won't be further notified of
-   *   changes in selection.
-   */
-  fun removeOnSelectionChangeListener(onSelectionChangeListener: OnSelectionChangeListener) {
-    onSelectionChangeListeners.remove(onSelectionChangeListener)
-  }
-
-  /**
    * Colors this [InteropEditText] with the given [colors].
    *
    * @param [colors] [TextFieldColors] by which this [InteropEditText] will be colored.
    */
+  @InternalPlatformAutosApi
   fun setColors(colors: TextFieldColors?) {
     this.colors =
       colors?.apply {
@@ -260,6 +195,7 @@ internal class InteropEditText : AppCompatEditText, KeyboardActionScope {
    *
    * @param keyboardActions [KeyboardActions] containing the actions to be performed.
    */
+  @InternalPlatformAutosApi
   fun setKeyboardActions(keyboardActions: KeyboardActions?) {
     this.keyboardActions = keyboardActions
   }
@@ -269,13 +205,14 @@ internal class InteropEditText : AppCompatEditText, KeyboardActionScope {
    *
    * @param keyboardOptions [KeyboardOptions] that dictates how the IME will function.
    */
+  @InternalPlatformAutosApi
   fun setKeyboardOptions(keyboardOptions: KeyboardOptions?) {
     keyboardOptions?.let { _ ->
       inputType =
         if (keyboardOptions.autoCorrect) {
           inputType or InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
         } else {
-          inputType and InputType.TYPE_TEXT_FLAG_AUTO_CORRECT.inv()
+          inputType xor InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
         }
       when (keyboardOptions.capitalization) {
         KeyboardCapitalization.Characters -> InputFilter.AllCaps()
@@ -296,6 +233,40 @@ internal class InteropEditText : AppCompatEditText, KeyboardActionScope {
         }
       )
     }
+  }
+
+  /**
+   * Changes the [LayoutDirectionProvider] by which a layout direction is to be provided.
+   *
+   * @param layoutDirectionProvider [LayoutDirectionProvider] that determines whether a compound
+   *   [Drawable] is the leading or trailing one based on the direction of the layout provided by
+   *   it.
+   */
+  @VisibleForTesting
+  internal fun setLayoutDirectionProvider(layoutDirectionProvider: LayoutDirectionProvider) {
+    this.layoutDirectionProvider = layoutDirectionProvider
+  }
+
+  /**
+   * Adds an [OnSelectionChangeListener].
+   *
+   * @param onSelectionChangeListener [OnSelectionChangeListener] that will be notified when
+   *   selection changes.
+   */
+  internal fun addOnSelectionChangeListener(onSelectionChangeListener: OnSelectionChangeListener) {
+    onSelectionChangeListeners.add(onSelectionChangeListener)
+  }
+
+  /**
+   * Removes an [OnSelectionChangeListener].
+   *
+   * @param onSelectionChangeListener [OnSelectionChangeListener] that won't be further notified of
+   *   changes in selection.
+   */
+  internal fun removeOnSelectionChangeListener(
+    onSelectionChangeListener: OnSelectionChangeListener
+  ) {
+    onSelectionChangeListeners.remove(onSelectionChangeListener)
   }
 
   /**
@@ -393,9 +364,9 @@ internal class InteropEditText : AppCompatEditText, KeyboardActionScope {
 
   companion object {
     /** Index of the compound [Drawable] at the left of a [InteropEditText]. */
-    @VisibleForTesting const val LEFT_COMPOUND_DRAWABLE_INDEX = 0
+    @InternalPlatformAutosApi @VisibleForTesting const val LEFT_COMPOUND_DRAWABLE_INDEX = 0
 
     /** Index of the compound [Drawable] at the right of a [InteropEditText]. */
-    @VisibleForTesting const val RIGHT_COMPOUND_DRAWABLE_INDEX = 2
+    @InternalPlatformAutosApi @VisibleForTesting const val RIGHT_COMPOUND_DRAWABLE_INDEX = 2
   }
 }

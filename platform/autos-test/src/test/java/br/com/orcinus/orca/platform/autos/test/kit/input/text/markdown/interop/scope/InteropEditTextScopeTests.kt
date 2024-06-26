@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.autos.kit.input.text.markdown.interop.scope
+package br.com.orcinus.orca.platform.autos.test.kit.input.text.markdown.interop.scope
 
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldColors

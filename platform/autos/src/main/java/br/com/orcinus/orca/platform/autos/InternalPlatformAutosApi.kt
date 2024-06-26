@@ -22,4 +22,4 @@ import br.com.orcinus.orca.std.visibility.PackageProtected
  * implementation of αὐτός.
  */
 @PackageProtected("This API is internal to the platform implementation of αὐτός.")
-internal annotation class InternalPlatformAutosApi
+annotation class InternalPlatformAutosApi

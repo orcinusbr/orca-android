@@ -28,7 +28,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isSameAs
 import assertk.assertions.isTrue
-import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.interop.scope.runInteropEditTextTest
+import br.com.orcinus.orca.platform.autos.test.kit.input.text.markdown.interop.scope.runInteropEditTextTest
 import kotlin.test.Ignore
 import kotlin.test.Test
 import org.hamcrest.Matchers.`is`

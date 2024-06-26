@@ -13,9 +13,8 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.autos.kit.input.text.markdown.interop.scope
+package br.com.orcinus.orca.platform.autos.test.kit.input.text.markdown.interop.scope
 
-import android.content.res.Resources
 import androidx.annotation.ColorInt
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
@@ -32,8 +31,10 @@ import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.runComposeUiTest
 import androidx.compose.ui.viewinterop.AndroidView
+import br.com.orcinus.orca.platform.autos.InternalPlatformAutosApi
 import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.interop.InteropEditText
 import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.interop.proxy
+import br.com.orcinus.orca.platform.autos.theme.AutosContextThemeWrapper
 import br.com.orcinus.orca.platform.testing.context
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
@@ -42,36 +43,40 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.runTest
 
 /** Tag that identifies an [InteropEditText] in a test run by [runInteropEditTextTest]. */
-@InternalInteropEditTextScopeApi internal const val InteropEditTextTag = "interop-edit-text"
+@PublishedApi internal const val InteropEditTextTag = "interop-edit-text"
 
 /** [CoroutineScope] suited for [InteropEditText]-focused tests. */
-internal interface InteropEditTextScope : CoroutineScope, SemanticsNodeInteractionsProvider {
+@InternalPlatformAutosApi
+abstract class InteropEditTextScope @PublishedApi internal constructor() :
+  CoroutineScope, SemanticsNodeInteractionsProvider {
   /** [InteropEditText] under test. */
-  val view: InteropEditText
+  abstract val view: InteropEditText
 
   /** Default ARGB color by which the area targeted by the test can be colored. */
-  @get:ColorInt val color: Int
+  @get:ColorInt abstract val color: Int
 
   /**
    * Adds the content to be displayed.
    *
    * @param content [Composable] that will be added and displayed.
    */
-  fun addContent(content: @Composable () -> Unit)
+  abstract fun addContent(content: @Composable () -> Unit)
 }
 
 /**
- * Runs a [InteropEditText]-focused test.
+ * Runs an [InteropEditText]-focused test.
  *
  * @param coloring Provides the [TextFieldColors] to be set to the [InteropEditText].
  * @param body Lambda in which the testing is performed.
  */
+@InternalPlatformAutosApi
 @OptIn(ExperimentalContracts::class)
-internal inline fun runInteropEditTextTest(
+inline fun runInteropEditTextTest(
   crossinline coloring: @Composable TextFieldDefaults.(Color) -> TextFieldColors = { colors() },
   crossinline body: suspend InteropEditTextScope.() -> Unit
 ) {
   contract { callsInPlace(body, InvocationKind.EXACTLY_ONCE) }
+  val context = AutosContextThemeWrapper(context)
   val view = InteropEditText(context)
   val color = Color.Transparent
   val colorInArgb = color.toArgb()
@@ -96,30 +101,29 @@ internal inline fun runInteropEditTextTest(
       ) {
         it.setCompoundDrawablesRelativeWithIntrinsicBounds(
           android.R.drawable.ic_dialog_alert,
-          Resources.ID_NULL,
+          0,
           android.R.drawable.ic_menu_delete,
-          Resources.ID_NULL
+          0
         )
-        runTest {
-          object :
-              InteropEditTextScope,
-              CoroutineScope by this,
-              SemanticsNodeInteractionsProvider by this@runComposeUiTest {
-              override val view = view
-              override val color = colorInArgb
-
-              override fun addContent(
-                @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE")
-                toBeAddedContent: @Composable () -> Unit
-              ) {
-                if (content == null) {
-                  content = toBeAddedContent
-                }
-              }
-            }
-            .body()
-        }
       }
+    }
+    runTest {
+      object :
+          InteropEditTextScope(),
+          CoroutineScope by this,
+          SemanticsNodeInteractionsProvider by this@runComposeUiTest {
+          override val view = view
+          override val color = colorInArgb
+
+          override fun addContent(
+            @Suppress("PARAMETER_NAME_CHANGED_ON_OVERRIDE") toBeAddedContent: @Composable () -> Unit
+          ) {
+            if (content == null) {
+              content = toBeAddedContent
+            }
+          }
+        }
+        .body()
     }
   }
 }

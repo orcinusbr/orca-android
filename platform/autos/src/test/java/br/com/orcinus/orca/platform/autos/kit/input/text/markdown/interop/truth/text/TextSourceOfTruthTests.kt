@@ -17,8 +17,8 @@ package br.com.orcinus.orca.platform.autos.kit.input.text.markdown.interop.truth
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.interop.scope.runInteropEditTextTest
 import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.interop.truth.use
+import br.com.orcinus.orca.platform.autos.test.kit.input.text.markdown.interop.scope.runInteropEditTextTest
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.std.markdown.Markdown
 import kotlin.test.Test
