@@ -27,6 +27,7 @@ import androidx.compose.ui.semantics.setText
 import androidx.compose.ui.semantics.text
 import androidx.compose.ui.semantics.textSelectionRange
 import androidx.compose.ui.text.TextRange
+import br.com.orcinus.orca.platform.autos.InternalPlatformAutosApi
 import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.annotated.toEditableAsState
 import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.interop.truth.text.OnTextChangeListener
 
@@ -41,7 +42,8 @@ import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.interop.truth.
  * @see setText
  * @see setSelection
  */
-internal fun Modifier.proxy(view: InteropEditText): Modifier {
+@InternalPlatformAutosApi
+fun Modifier.proxy(view: InteropEditText): Modifier {
   return semantics {
     val context = view.context ?: return@semantics
     val setText: () -> Unit = { view.text?.toAnnotatedString(context)?.let { text = it } }

@@ -13,15 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.autos.kit.input.text.markdown.interop.scope
+package br.com.orcinus.orca.platform.autos.test.kit.input.text.markdown.interop.scope
 
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.onNodeWithText
 import assertk.assertThat
+import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
+import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.interop.InteropEditText
 import kotlin.test.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -68,6 +70,13 @@ internal class InteropEditTextScopeTests {
     runInteropEditTextTest {
       assertThat(view.compoundDrawables[view.trailingCompoundDrawableIndex]).isNotNull()
     }
+  }
+
+  @Test
+  fun compoundDrawablesAreUnsetAfterTest() {
+    lateinit var view: InteropEditText
+    runInteropEditTextTest { view = this.view }
+    assertThat(view.compoundDrawables).containsExactly(null, null, null, null)
   }
 
   @Test

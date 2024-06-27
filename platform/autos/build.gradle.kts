@@ -21,20 +21,25 @@ plugins {
 android {
   buildFeatures.compose = true
   composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
+  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
+  androidTestImplementation(project(":platform:autos-test"))
+  androidTestImplementation(libs.assertk)
+  androidTestImplementation(libs.kotlin.test)
+
   api(project(":std:markdown"))
   api(libs.android.compose.material3)
   api(libs.android.compose.ui.tooling)
+  api(libs.android.material)
   api(libs.autos)
 
   implementation(project(":ext:coroutines"))
   implementation(project(":ext:reflection"))
   implementation(project(":std:visibility"))
   implementation(libs.accompanist.adapter)
-  implementation(libs.android.material)
   implementation(libs.loadable.placeholder)
 
   testImplementation(project(":ext:uri"))

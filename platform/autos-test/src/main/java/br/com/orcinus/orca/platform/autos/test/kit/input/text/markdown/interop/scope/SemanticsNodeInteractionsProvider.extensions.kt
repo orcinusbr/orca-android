@@ -13,13 +13,16 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.autos.kit.input.text.markdown.interop.scope
+package br.com.orcinus.orca.platform.autos.test.kit.input.text.markdown.interop.scope
 
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.onNodeWithTag
+import br.com.orcinus.orca.platform.autos.InternalPlatformAutosApi
+import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.interop.InteropEditText
 
-/** [SemanticsNodeInteraction] of an [InteropEditTextScope]. */
-internal fun SemanticsNodeInteractionsProvider.onInteropEditText(): SemanticsNodeInteraction {
+/** [SemanticsNodeInteraction] of an [InteropEditText]. */
+@InternalPlatformAutosApi
+fun SemanticsNodeInteractionsProvider.onInteropEditText(): SemanticsNodeInteraction {
   return onNodeWithTag(InteropEditTextTag)
 }

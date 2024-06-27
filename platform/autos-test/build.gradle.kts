@@ -29,8 +29,7 @@ android {
 }
 
 dependencies {
-  androidTestImplementation(project(":platform:testing"))
-  androidTestImplementation(libs.android.compose.ui.test.manifest)
+  androidTestImplementation(libs.assertk)
   androidTestImplementation(libs.kotlin.test)
 
   api(libs.android.compose.ui.test.junit)
@@ -38,9 +37,10 @@ dependencies {
 
   implementation(project(":ext:reflection"))
   implementation(project(":platform:autos"))
+  implementation(project(":platform:testing"))
 
-  testImplementation(project(":platform:testing"))
   testImplementation(libs.android.compose.ui.test.manifest)
+  testImplementation(libs.assertk)
   testImplementation(libs.kotlin.test)
   testImplementation(libs.robolectric)
 }

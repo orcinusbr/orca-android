@@ -13,37 +13,23 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.autos.kit.input.text.markdown.interop.truth.text
+package br.com.orcinus.orca.platform.autos.kit.input.text.markdown.interop
 
+import android.view.WindowInsets
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.interop.truth.use
 import br.com.orcinus.orca.platform.autos.test.kit.input.text.markdown.interop.scope.runInteropEditTextTest
-import br.com.orcinus.orca.platform.autos.theme.AutosTheme
-import br.com.orcinus.orca.std.markdown.Markdown
 import kotlin.test.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
+import org.hamcrest.Matchers.`is`
 
-@RunWith(RobolectricTestRunner::class)
-internal class TextSourceOfTruthTests {
+internal class InteropEditTextTests {
   @Test
-  fun ensuresViewToComposableConformity() {
+  fun opensImeWhenFocused() {
     runInteropEditTextTest {
-      addContent {
-        AutosTheme {
-          rememberSourceOfTruth(
-              text = Markdown.empty,
-              onTextChange = {},
-              style = { Markdown.unstyled("$it") },
-              view
-            )
-            .use {
-              view.setText(":P")
-              assertThat("${view.text}").isEqualTo("")
-            }
-        }
-      }
+      awaitImeAnimation { onView(`is`(view)).perform(click()) }
+      assertThat(view.rootWindowInsets?.isVisible(WindowInsets.Type.ime())).isEqualTo(true)
     }
   }
 }
