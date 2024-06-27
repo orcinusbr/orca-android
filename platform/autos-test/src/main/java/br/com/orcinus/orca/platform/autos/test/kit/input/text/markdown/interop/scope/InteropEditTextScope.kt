@@ -54,7 +54,7 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 
 /** Tag that identifies an [InteropEditText] in a test run by [runInteropEditTextTest]. */
-@PublishedApi internal const val InteropEditTextTag = "interop-edit-text"
+internal const val InteropEditTextTag = "interop-edit-text"
 
 /**
  * [InteropEditTextScope] implementation provided to the body of an [InteropEditText] test.
@@ -70,8 +70,7 @@ import kotlinx.coroutines.test.runTest
  *   shown and perform recomposition according to the test's setting.
  */
 @OptIn(ExperimentalTestApi::class)
-@PublishedApi
-internal class InteropEditTestEnvironment(
+private class InteropEditTestEnvironment(
   testScope: TestScope,
   private val composeUiTest: AndroidComposeUiTest<ComponentActivity>,
   private val contentState: MutableState<(@Composable () -> Unit)?>,
@@ -124,7 +123,7 @@ internal class InteropEditTestEnvironment(
 
 /** [CoroutineScope] suited for [InteropEditText]-focused tests. */
 @InternalPlatformAutosApi
-abstract class InteropEditTextScope @PublishedApi internal constructor() :
+abstract class InteropEditTextScope internal constructor() :
   CoroutineScope, SemanticsNodeInteractionsProvider {
   /** [InteropEditText] under test. */
   abstract val view: InteropEditText
@@ -155,9 +154,9 @@ abstract class InteropEditTextScope @PublishedApi internal constructor() :
  */
 @InternalPlatformAutosApi
 @OptIn(ExperimentalContracts::class)
-inline fun runInteropEditTextTest(
-  crossinline coloring: @Composable TextFieldDefaults.(Color) -> TextFieldColors = { colors() },
-  crossinline body: suspend InteropEditTextScope.() -> Unit
+fun runInteropEditTextTest(
+  coloring: @Composable TextFieldDefaults.(Color) -> TextFieldColors = { colors() },
+  body: suspend InteropEditTextScope.() -> Unit
 ) {
   contract { callsInPlace(body, InvocationKind.EXACTLY_ONCE) }
 
