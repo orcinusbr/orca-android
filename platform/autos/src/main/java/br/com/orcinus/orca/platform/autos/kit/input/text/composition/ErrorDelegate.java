@@ -194,7 +194,7 @@ class ErrorDelegate {
     ViewKt.doOnLayout(
         textField,
         textField -> {
-          final int errorLineCount = countErrorLines(error);
+          final int errorLineCount = countLines(error);
           final int errorY = (int) rect.top;
           final int errorHeight = (int) rect.height();
           final Context context = textField.getContext();
@@ -224,7 +224,7 @@ class ErrorDelegate {
    *
    * @param error Message stating the invalid state.
    */
-  private int countErrorLines(@NonNull CharSequence error) {
+  private int countLines(@NonNull CharSequence error) {
     final float lineWidth = rect.width();
     if (lineWidth > 0f) {
       int lineCount = 0;
