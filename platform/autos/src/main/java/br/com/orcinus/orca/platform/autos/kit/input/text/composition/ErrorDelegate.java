@@ -30,6 +30,7 @@ import androidx.core.view.ViewKt;
 import br.com.orcinus.orca.platform.autos.R;
 import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.spanned.span.AccessibleObjects;
 import java.lang.reflect.Field;
+import java.util.function.IntUnaryOperator;
 import kotlin.Unit;
 
 /** Helper class for drawing and measuring the error of a {@link CompositionTextField}. */
@@ -193,7 +194,6 @@ class ErrorDelegate {
     ViewKt.doOnLayout(
         textField,
         textField -> {
-          final int textFieldHeight = textField.getHeight();
           final int errorLineCount = countErrorLines(error);
           final int errorY = (int) rect.top;
           final int errorHeight = (int) rect.height();
@@ -201,7 +201,7 @@ class ErrorDelegate {
           final int spacing = CompositionTextField.getSpacing(context);
           lastHeight = errorLineCount * charHeight;
           rect.bottom = lastHeight;
-          animateHeight(textFieldHeight, errorY + errorHeight + spacing);
+          animateHeight(textFieldHeight -> errorY + errorHeight + spacing);
           return Unit.INSTANCE;
         });
   }
@@ -211,11 +211,10 @@ class ErrorDelegate {
     ViewKt.doOnLayout(
         textField,
         textField -> {
-          final int textFieldHeight = textField.getHeight();
           final int errorHeight = (int) rect.height();
           final Context context = textField.getContext();
           final int spacing = CompositionTextField.getSpacing(context);
-          animateHeight(textFieldHeight, errorHeight - textFieldHeight - spacing);
+          animateHeight(textFieldHeight -> errorHeight - textFieldHeight - spacing);
           return Unit.INSTANCE;
         });
   }
@@ -242,13 +241,15 @@ class ErrorDelegate {
   }
 
   /**
-   * Animates {@link ErrorDelegate#textField}'s height from and to the given values.
+   * Animates {@link ErrorDelegate#textField}'s height to the given value.
    *
-   * @param start Initial height.
-   * @param end Final value to which the start one will be animated.
+   * @param height Provides the height to which the current one will be animated.
    */
-  private void animateHeight(int start, int end) {
-    final ValueAnimator valueAnimator = ValueAnimator.ofInt(start, end).setDuration(256);
+  private void animateHeight(IntUnaryOperator height) {
+    final int currentHeight = textField.getHeight();
+    final int animatedHeight = height.applyAsInt(currentHeight);
+    final ValueAnimator valueAnimator =
+        ValueAnimator.ofInt(currentHeight, animatedHeight).setDuration(256);
     valueAnimator.addUpdateListener(
         updatedValueAnimator -> {
           ViewKt.updateLayoutParams(
