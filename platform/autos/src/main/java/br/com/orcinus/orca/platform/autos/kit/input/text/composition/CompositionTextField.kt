@@ -26,7 +26,6 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.setPadding
 import br.com.orcinus.orca.autos.Spacings
 import br.com.orcinus.orca.platform.autos.R
-import br.com.orcinus.orca.platform.autos.kit.Units
 
 /**
  * Text field for composing or editing a post.
@@ -72,9 +71,9 @@ constructor(
      *
      * @param context [Context] with which the color will be resolved from its resource.
      */
+    @ColorInt
     @JvmName("getBackgroundColor")
     @JvmStatic
-    @ColorInt
     internal fun getBackgroundColor(context: Context): Int {
       return context.getColor(R.color.surfaceContainer)
     }
