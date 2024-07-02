@@ -107,7 +107,7 @@ class ErrorDelegate {
    * @param configuration {@link Configuration} with the applied modifications.
    */
   void invalidate(@Nullable Configuration configuration) {
-    if (hasUIModeChanged(configuration)) {
+    if (didUIModeChange(configuration)) {
       textPaint.setColor(getColor());
     }
   }
@@ -170,13 +170,13 @@ class ErrorDelegate {
   }
 
   /**
-   * Determines whether the UI mode of the given {@link Configuration} differs to that of the {@link
-   * ErrorDelegate#textField}.
+   * Determines whether the UI mode of the given {@link Configuration} differs from that of the
+   * {@link ErrorDelegate#textField}.
    *
    * @param configuration {@link Configuration} whose UI mode will be compared to that of the {@link
    *     ErrorDelegate#textField}'s.
    */
-  private boolean hasUIModeChanged(@Nullable Configuration configuration) {
+  private boolean didUIModeChange(@Nullable Configuration configuration) {
     return configuration != null
         && (textField.getContext().getResources().getConfiguration().uiMode
                 & Configuration.UI_MODE_NIGHT_MASK)
