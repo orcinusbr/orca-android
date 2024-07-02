@@ -13,6 +13,8 @@
  * not, see https://www.gnu.org/licenses.
  */
 
+@file:JvmName("AccessibleObjects")
+
 package br.com.orcinus.orca.platform.autos.kit.input.text.markdown.spanned.span
 
 import java.lang.reflect.AccessibleObject
