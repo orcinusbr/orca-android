@@ -48,5 +48,17 @@ fun Spanned.toMarkdown(context: Context): Markdown {
  * @see isStructurallyEqual
  */
 internal fun Spanned.getIndexedSpans(context: Context): List<IndexedSpans> {
-  return getSpans<Any>().map { IndexedSpans(context, getSpanStart(it)..getSpanEnd(it).dec(), it) }
+  return getSpans<Any>()
+    .map { IndexedSpans(context, getSpanStart(it)..getSpanEnd(it), it) }
+    .runningReduce { previous, current ->
+      if (previous.indices == current.indices) {
+        previous.copy(previous.spans + current.spans)
+      } else {
+        current
+      }
+    }
+    .reversed()
+    .distinctBy(IndexedSpans::getIndices)
+    .reversed()
+    .toList()
 }

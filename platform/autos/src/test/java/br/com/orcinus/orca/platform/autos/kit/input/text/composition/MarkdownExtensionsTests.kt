@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,29 +13,35 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.autos.kit.input.text.markdown.spanned
+package br.com.orcinus.orca.platform.autos.kit.input.text.composition
 
 import android.graphics.Typeface
-import android.text.Html
 import android.text.style.StyleSpan
 import assertk.assertThat
-import br.com.orcinus.orca.platform.autos.kit.input.text.composition.areStructurallyEqual
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.markdown.toSpanned
+import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.spanned.IndexedSpans
+import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.spanned.getIndexedSpans
 import br.com.orcinus.orca.platform.testing.context
-import org.junit.Test
+import br.com.orcinus.orca.std.markdown.buildMarkdown
+import kotlin.test.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class SpannedExtensionsTests {
+internal class MarkdownExtensionsTests {
   @Test
-  fun getsIndexedSpans() {
+  fun getsSpans() {
     assertThat(
-        Html.fromHtml("<p><b><i>Hello</i></b>, <i>world</i>!</p>", Html.FROM_HTML_MODE_COMPACT)
+        buildMarkdown {
+            bold { +":)" }
+            italic { +":D" }
+          }
+          .toSpanned(context)
           .getIndexedSpans(context)
       )
       .areStructurallyEqual(
-        IndexedSpans(context, 0..5, StyleSpan(Typeface.ITALIC), StyleSpan(Typeface.BOLD)),
-        IndexedSpans(context, 7..12, StyleSpan(Typeface.ITALIC))
+        IndexedSpans(context, 0..2, StyleSpan(Typeface.BOLD)),
+        IndexedSpans(context, 2..4, StyleSpan(Typeface.ITALIC))
       )
   }
 }
