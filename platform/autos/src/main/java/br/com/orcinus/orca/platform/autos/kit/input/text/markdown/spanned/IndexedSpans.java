@@ -123,7 +123,7 @@ public class IndexedSpans {
 
   /** Converts the spans into {@link Style}s. */
   @NonNull
-  List<Style> toStyles() {
+  public List<Style> toStyles() {
     List<Object> spans = getSpans();
     ArrayList<Style> styles = new ArrayList<>();
     for (Object span : spans) {

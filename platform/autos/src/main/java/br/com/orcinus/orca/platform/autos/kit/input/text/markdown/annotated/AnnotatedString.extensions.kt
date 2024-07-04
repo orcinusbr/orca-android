@@ -17,7 +17,6 @@ package br.com.orcinus.orca.platform.autos.kit.input.text.markdown.annotated
 
 import android.content.Context
 import android.text.Editable
-import android.text.InputFilter
 import android.text.style.TextAppearanceSpan
 import androidx.compose.runtime.State
 import androidx.compose.ui.graphics.Brush
@@ -71,15 +70,7 @@ import kotlin.reflect.full.primaryConstructor
  */
 internal fun AnnotatedString.toEditableAsState(context: Context): State<Editable> {
   return buildState {
-    object : Editable, CharSequence by text {
-      /**
-       * [InputFilter]s that have been set for constraining changes made to this [Editable].
-       *
-       * @see getFilters
-       * @see setFilters
-       */
-      private var filters: Array<InputFilter>? = null
-
+    object : DefaultEditable(), CharSequence by text {
       /**
        * Alias for `getSpans(0, length(), Object.class)`, which obtains all spans that have been set
        * to this [Editable].
@@ -88,15 +79,6 @@ internal fun AnnotatedString.toEditableAsState(context: Context): State<Editable
        */
       private val spans
         get() = getSpans(start = 0, end = length, Object::class.java)
-
-      override fun getChars(start: Int, end: Int, dest: CharArray?, destoff: Int) {
-        dest?.let {
-          var index = destoff
-          for (character in slice(start..end.dec())) {
-            it[index++] = character
-          }
-        }
-      }
 
       override fun <T : Any?> getSpans(start: Int, end: Int, type: Class<T>?): Array<T> {
         @Suppress("UNCHECKED_CAST")
@@ -175,67 +157,14 @@ internal fun AnnotatedString.toEditableAsState(context: Context): State<Editable
         }
       }
 
-      override fun append(text: Char): Editable {
-        return append("$text")
-      }
-
-      override fun append(text: CharSequence?): Editable {
-        return append(text, start = 0, end = length)
-      }
-
-      override fun append(text: CharSequence?, start: Int, end: Int): Editable {
-        return replace(st = length, en = length, text, start, end)
-      }
-
-      override fun getFilters(): Array<InputFilter>? {
-        return filters
-      }
-
-      override fun setFilters(filters: Array<out InputFilter>?) {
-        @Suppress("UNCHECKED_CAST")
-        this.filters = filters as Array<InputFilter>?
-      }
-
-      override fun clear() {
-        delete(st = 0, en = length)
-      }
-
-      override fun delete(st: Int, en: Int): Editable {
-        return replace(st, en, source = "", start = 0, end = 0)
-      }
-
-      override fun insert(where: Int, text: CharSequence?): Editable {
-        return text?.let { insert(where, text, 0, it.length) } ?: this
-      }
-
-      override fun insert(where: Int, text: CharSequence?, start: Int, end: Int): Editable {
-        return replace(st = where, en = where, text, start, end)
-      }
-
-      override fun replace(st: Int, en: Int, text: CharSequence?): Editable {
-        return text?.let { replace(st, en, source = it, 0, it.length) } ?: this
-      }
-
-      override fun replace(
-        st: Int,
-        en: Int,
-        source: CharSequence?,
-        start: Int,
-        end: Int
-      ): Editable {
-        val replacementText = source?.substring(start, end) ?: return this
-        val filteredText =
-          filters.orEmpty().fold(replacementText) { accumulator, filter ->
-            filter.filter(accumulator, start, end, this, st, en)?.toString() ?: accumulator
-          }
-        val replacedText = text.replaceRange(st, en, filteredText)
-        return AnnotatedString(replacedText, spanStyles, paragraphStyles)
-          .toEditableAsState(context)
-          .value
-      }
-
       override fun clearSpans() {
         value = AnnotatedString(text).toEditableAsState(context).value
+      }
+
+      override fun replace(replacement: CharSequence): Editable {
+        return AnnotatedString("$replacement", spanStyles, paragraphStyles)
+          .toEditableAsState(context)
+          .value
       }
     }
   }
