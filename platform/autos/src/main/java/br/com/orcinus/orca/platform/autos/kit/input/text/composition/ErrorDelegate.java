@@ -53,7 +53,7 @@ class ErrorDelegate {
   private final Paint clearingPaint;
 
   /**
-   * {@link RectF} whose bottom coordinate is the only one that gets updated on-demand and will be
+   * {@link RectF} whose bottom coordinate is the only one that gets updated on demand and will be
    * equal to the initial value of {@link ErrorDelegate#lastHeight} until the error is shown (since
    * calculating the height requires measuring the actual message). Is {@code null} until the {@link
    * ErrorDelegate#textField} is laid out.
