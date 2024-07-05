@@ -199,7 +199,7 @@ class ErrorDelegate {
           final int errorHeight = (int) rect.height();
           final Context context = textField.getContext();
           final int spacing = CompositionTextField.getSpacing(context);
-          lastHeight = errorLineCount * charHeight;
+          lastHeight = errorLineCount * charHeight + fontMetrics.leading * charHeight;
           rect.bottom = lastHeight;
           animateHeight(textFieldHeight -> errorY + errorHeight + spacing);
           return Unit.INSTANCE;
