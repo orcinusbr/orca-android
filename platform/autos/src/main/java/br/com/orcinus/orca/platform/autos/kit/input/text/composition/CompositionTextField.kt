@@ -19,13 +19,24 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
+import android.text.Editable
 import android.util.AttributeSet
+import android.view.Window
 import androidx.annotation.ColorInt
 import androidx.annotation.Px
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.setPadding
 import br.com.orcinus.orca.autos.Spacings
 import br.com.orcinus.orca.platform.autos.R
+import br.com.orcinus.orca.std.markdown.Markdown
+import kotlin.coroutines.cancellation.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
 
 /**
  * Text field for composing or editing a post.
@@ -44,6 +55,39 @@ constructor(
   /** Delegate by which the [error] is measured and drawn. */
   private val errorDelegate = ErrorDelegate(this)
 
+  /**
+   * [CoroutineScope] in which [setText]'s [Job]s are launched for defining [Markdown] as being the
+   * current text.
+   */
+  private var markdownTextSettingCoroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+
+  /** [CancellationException] thrown when a [CompositionTextField]'s text is reset. */
+  class ResetTextException internal constructor() :
+    CancellationException("The text has been reset.")
+
+  /**
+   * [CancellationException] thrown when a [CompositionTextField] gets detached from the [Window].
+   *
+   * @see onDetachedFromWindow
+   */
+  class DetachedFromWindowException internal constructor() :
+    CancellationException("The text field got detached from the window.")
+
+  /**
+   * Text field for composing or editing a post.
+   *
+   * @param context [Context] in which it will be added.
+   * @param markdownTextSettingCoroutineScope [CoroutineScope] in which [setText]'s [Job]s are
+   *   launched for defining [Markdown] as being the current text.
+   */
+  @VisibleForTesting
+  internal constructor(
+    context: Context,
+    markdownTextSettingCoroutineScope: CoroutineScope
+  ) : this(context) {
+    this.markdownTextSettingCoroutineScope = markdownTextSettingCoroutineScope
+  }
+
   init {
     setBackgroundColor(getBackgroundColor(context))
     setPadding(getSpacing(context))
@@ -55,6 +99,18 @@ constructor(
     errorDelegate.draw(canvas)
   }
 
+  override fun setText(text: CharSequence?, type: BufferType?) {
+    super.setText(text, type)
+
+    if (text !is Editable || !text.isBasedOnMarkdown) {
+      @Suppress("UNNECESSARY_SAFE_CALL")
+      markdownTextSettingCoroutineScope
+        ?.coroutineContext
+        ?.get(Job)
+        ?.cancelChildren(ResetTextException())
+    }
+  }
+
   override fun setError(error: CharSequence?, icon: Drawable?) {
     super.setError(error, icon)
     errorDelegate.toggle(error)
@@ -63,6 +119,24 @@ constructor(
   override fun onConfigurationChanged(newConfig: Configuration?) {
     errorDelegate.invalidate(newConfig)
     super.onConfigurationChanged(newConfig)
+  }
+
+  override fun onDetachedFromWindow() {
+    super.onDetachedFromWindow()
+    markdownTextSettingCoroutineScope.coroutineContext[Job]?.cancelChildren(
+      DetachedFromWindowException()
+    )
+  }
+
+  /**
+   * Sets the [Markdown] as the current text.
+   *
+   * @param text [Markdown] to be set as the text.
+   */
+  fun setText(text: Markdown) {
+    markdownTextSettingCoroutineScope.launch {
+      text.toEditableAsFlow(context).collect { this@CompositionTextField.text = it }
+    }
   }
 
   companion object {

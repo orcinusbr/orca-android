@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.autos.kit.input.text.composition.markdown
+package br.com.orcinus.orca.platform.autos.kit.input.text.composition
 
 import android.content.Context
 import android.text.Editable
@@ -31,6 +31,10 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.runBlocking
+
+/** Whether this [Editable] has been created from [Markdown]. */
+internal val Editable.isBasedOnMarkdown
+  get() = this is MarkdownEditable
 
 /**
  * [Markdown]-based [Editable].
@@ -56,29 +60,31 @@ private class MarkdownEditable(
   private val context: Context,
   private val flowCollector: FlowCollector<Editable>,
   private val markdown: Markdown
-) : DefaultEditable() {
-  override val length
-    get() = markdown.length
-
-  override fun get(index: Int): Char {
-    return markdown[index]
-  }
-
-  override fun subSequence(startIndex: Int, endIndex: Int): CharSequence {
-    return markdown.subSequence(startIndex, endIndex)
+) : DefaultEditable(), CharSequence by markdown {
+  override fun toString(): String {
+    return markdown.toString()
   }
 
   override fun setSpan(what: Any?, start: Int, end: Int, flags: Int) {
-    what?.toStyles(start..end)?.let {
-      runBlocking { flowCollector.emitAll(Markdown.styled("$this", it).toEditableAsFlow(context)) }
+    what?.toStyles(start until end)?.let {
+      runBlocking {
+        flowCollector.emitAll(
+          Markdown.styled("$this", markdown.styles + it).toEditableAsFlow(context)
+        )
+      }
     }
   }
 
   override fun removeSpan(what: Any?) {
-    what?.let {
+    what?.let { _ ->
       runBlocking {
         flowCollector.emitAll(
-          Markdown.styled("$this", getIndexedSpans(context).flatMap(IndexedSpans::toStyles))
+          Markdown.styled(
+              "$this",
+              getIndexedSpans(context)
+                .map { it.copy(it.spans - what) }
+                .flatMap(IndexedSpans::toStyles)
+            )
             .toEditableAsFlow(context)
         )
       }
@@ -114,7 +120,7 @@ private class MarkdownEditable(
       ?.associateWith { it.indices.first }
       ?.filterKeys { it.toSpan().isStructurallyEqual(context, tag!!) }
       ?.values
-      ?.lastOrNull()
+      ?.firstOrNull()
       ?: -1
   }
 
@@ -158,5 +164,7 @@ private class MarkdownEditable(
  * @see Style.toSpan
  */
 internal fun Markdown.toEditableAsFlow(context: Context): Flow<Editable> {
-  return flow { emit(MarkdownEditable(context, this, this@toEditableAsFlow)) }
+  return flow {
+    emit(@Suppress("DiscouragedApi") MarkdownEditable(context, this, this@toEditableAsFlow))
+  }
 }

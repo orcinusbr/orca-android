@@ -44,6 +44,7 @@ dependencies {
 
   testImplementation(project(":ext:uri"))
   testImplementation(project(":platform:autos-test"))
+  testImplementation(project(":platform:navigation"))
   testImplementation(project(":platform:testing"))
   testImplementation(libs.android.compose.ui.test.manifest)
   testImplementation(libs.assertk)
