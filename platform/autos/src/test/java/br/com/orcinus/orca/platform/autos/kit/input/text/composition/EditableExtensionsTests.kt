@@ -16,18 +16,13 @@
 package br.com.orcinus.orca.platform.autos.kit.input.text.composition
 
 import android.graphics.Typeface
-import android.text.Editable
 import android.text.style.StyleSpan
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import assertk.assertions.isFalse
-import assertk.assertions.isTrue
 import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.spanned.IndexedSpans
 import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.spanned.getIndexedSpans
 import br.com.orcinus.orca.platform.testing.context
-import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.buildMarkdown
-import io.mockk.mockk
 import kotlin.test.Test
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.test.runTest
@@ -36,18 +31,6 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class EditableExtensionsTests {
-  @Test
-  fun editableIsBasedOnMarkdown() {
-    runTest {
-      assertThat(Markdown.empty.toEditableAsFlow(context).single().isBasedOnMarkdown).isTrue()
-    }
-  }
-
-  @Test
-  fun editableIsNotBasedOnMarkdown() {
-    mockk<Editable> { assertThat(this.isBasedOnMarkdown).isFalse() }
-  }
-
   @Test
   fun editableContainsSameTextAsTheMarkdownOnWhichItIsBased() {
     runTest {

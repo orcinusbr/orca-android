@@ -32,10 +32,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.runBlocking
 
-/** Whether this [Editable] has been created from [Markdown]. */
-internal val Editable.isBasedOnMarkdown
-  get() = this is MarkdownEditable
-
 /**
  * [Markdown]-based [Editable].
  *
@@ -164,7 +160,5 @@ private class MarkdownEditable(
  * @see Style.toSpan
  */
 internal fun Markdown.toEditableAsFlow(context: Context): Flow<Editable> {
-  return flow {
-    emit(@Suppress("DiscouragedApi") MarkdownEditable(context, this, this@toEditableAsFlow))
-  }
+  return flow { emit(MarkdownEditable(context, this, this@toEditableAsFlow)) }
 }

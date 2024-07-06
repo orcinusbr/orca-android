@@ -19,7 +19,6 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
-import android.text.Editable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.Window
@@ -104,13 +103,11 @@ constructor(
   override fun setText(text: CharSequence?, type: BufferType?) {
     super.setText(text, type)
 
-    if (text !is Editable || !text.isBasedOnMarkdown) {
-      @Suppress("UNNECESSARY_SAFE_CALL")
-      markdownTextSettingCoroutineScope
-        ?.coroutineContext
-        ?.get(Job)
-        ?.cancelChildren(ResetTextException())
-    }
+    @Suppress("UNNECESSARY_SAFE_CALL")
+    markdownTextSettingCoroutineScope
+      ?.coroutineContext
+      ?.get(Job)
+      ?.cancelChildren(ResetTextException())
   }
 
   override fun getError(): CharSequence? {
