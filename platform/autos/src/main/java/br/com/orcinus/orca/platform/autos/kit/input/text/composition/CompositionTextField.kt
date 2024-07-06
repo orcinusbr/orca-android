@@ -54,7 +54,7 @@ constructor(
   defaultStyleAttribute: Int = android.R.attr.editTextStyle
 ) : AppCompatEditText(context, attributeSet, defaultStyleAttribute) {
   /** Delegate by which the [error] is measured and drawn. */
-  private val errorDelegate = ErrorDelegate(this)
+  private val errorDelegate by lazy { ErrorDelegate(this) }
 
   /**
    * [CoroutineScope] in which [setText]'s [Job]s are launched for defining [Markdown] as being the
