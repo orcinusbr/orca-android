@@ -21,6 +21,7 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.text.Editable
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.Window
 import androidx.annotation.ColorInt
 import androidx.annotation.Px
@@ -92,6 +93,7 @@ constructor(
     setBackgroundColor(getBackgroundColor(context))
     setPadding(getSpacing(context))
     compoundDrawablePadding = getSpacing(context)
+    gravity = Gravity.TOP
   }
 
   override fun onDraw(canvas: Canvas) {
@@ -111,8 +113,11 @@ constructor(
     }
   }
 
+  override fun getError(): CharSequence? {
+    return errorDelegate.error
+  }
+
   override fun setError(error: CharSequence?, icon: Drawable?) {
-    super.setError(error, icon)
     errorDelegate.toggle(error)
   }
 

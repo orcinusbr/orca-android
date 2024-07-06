@@ -26,6 +26,7 @@ import android.widget.TextView;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.core.view.ViewKt;
 import br.com.orcinus.orca.platform.autos.R;
 import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.spanned.span.AccessibleObjects;
@@ -38,33 +39,25 @@ class ErrorDelegate {
   /** {@link CompositionTextField} whose error is to be managed by this delegate. */
   private final CompositionTextField textField;
 
-  /**
-   * {@link TextPaint} for painting the error.
-   *
-   * @see ErrorDelegate#clearingPaint
-   */
+  /** {@link TextPaint} for painting the {@link ErrorDelegate#error}. */
   private final TextPaint textPaint;
 
   /**
-   * {@link Paint} for clearing the drawn error in the {@link Canvas}.
-   *
-   * @see ErrorDelegate#textPaint
-   */
-  private final Paint clearingPaint;
-
-  /**
    * {@link RectF} whose bottom coordinate is the only one that gets updated on demand and will be
-   * equal to the initial value of {@link ErrorDelegate#lastHeight} until the error is shown (since
-   * calculating the height requires measuring the actual message). Is {@code null} until the {@link
-   * ErrorDelegate#textField} is laid out.
+   * equal to its top plus the initial value of {@link ErrorDelegate#lastHeight} until the {@link
+   * ErrorDelegate#error} is shown (since calculating the height requires measuring the actual
+   * message). Is {@code null} until the {@link ErrorDelegate#textField} is laid out.
    *
-   * @see ErrorDelegate#show(CharSequence)
+   * @see ErrorDelegate#showWhenLaidOut()
    * @see ErrorDelegate#initRectWhenLaidOut()
    */
   private RectF rect;
 
-  /** Height of the last error in pixels. */
+  /** Height of the last {@link ErrorDelegate#error} in pixels. */
   private float lastHeight = Float.NaN;
+
+  /** Message to be shown by the {@link ErrorDelegate#textField}, stating the invalid state. */
+  private CharSequence error;
 
   /**
    * Helper class for drawing and measuring the defined error of a {@link CompositionTextField}.
@@ -78,31 +71,34 @@ class ErrorDelegate {
     textPaint = new TextPaint();
     textPaint.set(getTextPaint(textField));
     textPaint.setColor(getColor());
-    clearingPaint = new Paint();
-    clearingPaint.setColor(CompositionTextField.getBackgroundColor(textField.getContext()));
     initRectWhenLaidOut();
   }
 
   /**
-   * Draws the error on the {@link Canvas}.
+   * Obtains the message shown by the {@link ErrorDelegate#textField}, stating the invalid state.
+   */
+  @Nullable
+  CharSequence getError() {
+    return error;
+  }
+
+  /**
+   * Draws the {@link ErrorDelegate#error} on the {@link Canvas}.
    *
-   * @param canvas {@link Canvas} on which the error will be drawn.
+   * @param canvas {@link Canvas} on which the {@link ErrorDelegate#error} will be drawn.
    */
   void draw(@NonNull Canvas canvas) {
-    final CharSequence error = textField.getError();
     final float x = rect.left;
     final float y = rect.top;
     if (error != null) {
       final String text = error.toString();
       canvas.drawText(text, x, y, textPaint);
-    } else {
-      canvas.drawRect(rect, clearingPaint);
     }
   }
 
   /**
-   * Reacts to a change in the {@link Configuration} by invalidating the drawn error. This method
-   * should be called <b>before</b> the actual change occurs.
+   * Reacts to a change in the {@link Configuration} by invalidating the drawn {@link
+   * ErrorDelegate#error}. This method should be called <b>before</b> the actual change occurs.
    *
    * @param configuration {@link Configuration} with the applied modifications.
    */
@@ -115,29 +111,72 @@ class ErrorDelegate {
   /**
    * Either shows or hides the error based on its nullability.
    *
-   * @param error Message stating the invalid state.
+   * @param error Message to be shown by the {@link ErrorDelegate#textField}, stating the invalid
+   *     state.
    */
   void toggle(@Nullable CharSequence error) {
-    if (error != null) {
-      show(error);
-    } else {
-      hide();
+    if (this.error != error) {
+      this.error = error;
+      if (error != null) {
+        showWhenLaidOut();
+      } else {
+        hideWhenLaidOut();
+      }
     }
   }
 
   /**
-   * Initializes the {@link ErrorDelegate#rect} with the coordinates of the error when the {@link
-   * ErrorDelegate#textField} is laid out.
+   * Displays the {@link ErrorDelegate#error} on the {@link ErrorDelegate#textField} when it is laid
+   * out.
+   */
+  @VisibleForTesting
+  void showWhenLaidOut() {
+    final Paint.FontMetrics fontMetrics = textPaint.getFontMetrics();
+    final float charHeight = fontMetrics.descent - fontMetrics.ascent;
+    ViewKt.doOnLayout(
+        textField,
+        textField -> {
+          final int lineCount = countLines();
+          lastHeight = lineCount * charHeight + fontMetrics.leading * lineCount;
+          rect.bottom = rect.top + lastHeight;
+          final int errorY = (int) rect.top;
+          final Context context = textField.getContext();
+          final int spacing = CompositionTextField.getSpacing(context);
+          animateTextFieldHeight(textFieldHeight -> errorY + spacing);
+          return Unit.INSTANCE;
+        });
+  }
+
+  /**
+   * Hides the {@link ErrorDelegate#error} shown by the {@link ErrorDelegate#textField} when it is
+   * laid out.
+   */
+  @VisibleForTesting
+  void hideWhenLaidOut() {
+    ViewKt.doOnLayout(
+        textField,
+        textField -> {
+          final int errorHeight = (int) rect.height();
+          final Context context = textField.getContext();
+          final int spacing = CompositionTextField.getSpacing(context);
+          animateTextFieldHeight(textFieldHeight -> errorHeight - textFieldHeight - spacing);
+          return Unit.INSTANCE;
+        });
+  }
+
+  /**
+   * Initializes the {@link ErrorDelegate#rect} with the coordinates of the {@link
+   * ErrorDelegate#error} when the {@link ErrorDelegate#textField} is laid out.
    */
   private void initRectWhenLaidOut() {
     ViewKt.doOnLayout(
         textField,
-        _textField -> {
+        textField -> {
           final Context context = textField.getContext();
           final float spacing = CompositionTextField.getSpacing(context);
-          final float top = textField.getHeight() + spacing * 2;
+          final float top = textField.getHeight() + spacing;
           final float right = textField.getWidth();
-          rect = new RectF(spacing, top, right, lastHeight);
+          rect = new RectF(spacing, top, right, top + lastHeight);
           return Unit.INSTANCE;
         });
   }
@@ -162,7 +201,7 @@ class ErrorDelegate {
         });
   }
 
-  /** Obtains the color by which the error is colored. */
+  /** Obtains the color by which the drawn {@link ErrorDelegate#error} is colored. */
   @ColorInt
   private int getColor() {
     // TODO: Turn error color into a single one in αὐτός.
@@ -183,48 +222,8 @@ class ErrorDelegate {
             == (configuration.uiMode & Configuration.UI_MODE_NIGHT_MASK);
   }
 
-  /**
-   * Displays the error on the {@link ErrorDelegate#textField}.
-   *
-   * @param error Message stating the invalid state.
-   */
-  private void show(@NonNull CharSequence error) {
-    final Paint.FontMetrics fontMetrics = textPaint.getFontMetrics();
-    final float charHeight = fontMetrics.descent - fontMetrics.ascent;
-    ViewKt.doOnLayout(
-        textField,
-        textField -> {
-          final int errorLineCount = countLines(error);
-          final int errorY = (int) rect.top;
-          final int errorHeight = (int) rect.height();
-          final Context context = textField.getContext();
-          final int spacing = CompositionTextField.getSpacing(context);
-          lastHeight = errorLineCount * charHeight + fontMetrics.leading * charHeight;
-          rect.bottom = lastHeight;
-          animateHeight(textFieldHeight -> errorY + errorHeight + spacing);
-          return Unit.INSTANCE;
-        });
-  }
-
-  /** Hides the error shown by the {@link ErrorDelegate#textField}. */
-  private void hide() {
-    ViewKt.doOnLayout(
-        textField,
-        textField -> {
-          final int errorHeight = (int) rect.height();
-          final Context context = textField.getContext();
-          final int spacing = CompositionTextField.getSpacing(context);
-          animateHeight(textFieldHeight -> errorHeight - textFieldHeight - spacing);
-          return Unit.INSTANCE;
-        });
-  }
-
-  /**
-   * Counts the amount of lines needed to comprise the error.
-   *
-   * @param error Message stating the invalid state.
-   */
-  private int countLines(@NonNull CharSequence error) {
+  /** Counts the amount of lines needed to comprise the {@link ErrorDelegate#error}. */
+  private int countLines() {
     final float lineWidth = rect.width();
     if (lineWidth > 0f) {
       int lineCount = 0;
@@ -245,21 +244,19 @@ class ErrorDelegate {
    *
    * @param height Provides the height to which the current one will be animated.
    */
-  private void animateHeight(IntUnaryOperator height) {
+  private void animateTextFieldHeight(IntUnaryOperator height) {
     final int currentHeight = textField.getHeight();
     final int animatedHeight = height.applyAsInt(currentHeight);
-    final ValueAnimator valueAnimator =
+    final ValueAnimator heightAnimator =
         ValueAnimator.ofInt(currentHeight, animatedHeight).setDuration(256);
-    valueAnimator.addUpdateListener(
-        updatedValueAnimator -> {
-          ViewKt.updateLayoutParams(
-              textField,
-              layoutParams -> {
-                layoutParams.height = (int) updatedValueAnimator.getAnimatedValue();
-                return Unit.INSTANCE;
-              });
-          textField.invalidate();
-        });
-    valueAnimator.start();
+    heightAnimator.addUpdateListener(
+        updatedValueAnimator ->
+            ViewKt.updateLayoutParams(
+                textField,
+                layoutParams -> {
+                  layoutParams.height = (int) updatedValueAnimator.getAnimatedValue();
+                  return Unit.INSTANCE;
+                }));
+    heightAnimator.start();
   }
 }
