@@ -51,7 +51,8 @@ public class IndexedSpans {
    * @see AnyExtensions#isStructurallyEqual(Object, Context, Object)
    * @see IndexedSpans#getSpans()
    */
-  IndexedSpans(@NonNull Context context, @NonNull IntRange indices, @NonNull List<Object> spans) {
+  public IndexedSpans(
+      @NonNull Context context, @NonNull IntRange indices, @NonNull List<Object> spans) {
     this.context = context;
     this.indices = indices;
     this.spans = spans;
@@ -62,11 +63,12 @@ public class IndexedSpans {
    *
    * @param context {@link Context} with which two spans can be compared structurally.
    * @param indices Indices in which the spans are.
-   * @param spans Spans that has been applied to the specified {@link IndexedSpans#indices}.
+   * @param spans Spans that have been applied to the specified {@link IndexedSpans#indices}.
    * @see AnyExtensions#isStructurallyEqual(Object, Context, Object)
    * @see IndexedSpans#getSpans()
    */
-  IndexedSpans(@NonNull Context context, @NonNull IntRange indices, @NonNull Object... spans) {
+  public IndexedSpans(
+      @NonNull Context context, @NonNull IntRange indices, @NonNull Object... spans) {
     this(context, indices, List.of(spans));
   }
 
@@ -80,6 +82,13 @@ public class IndexedSpans {
 
   @Override
   public int hashCode() {
+    /*
+     * Hashing the spans directly probably breaks the equals-hash-code contract, since the system
+     * spans don't normally override these methods. In my point of view, the ideal solution would be
+     * to extract the structural identifiers of each of them (that is, their properties between
+     * which comparison is actually performed by
+     * IndexedSpans#areSpansStructurallyEqual(List<Object>)) and calculate their hash code instead.
+     */
     return Objects.hash(getIndices(), getSpans());
   }
 
@@ -102,9 +111,19 @@ public class IndexedSpans {
     return indices;
   }
 
+  /**
+   * Creates a copy of these spans.
+   *
+   * @param spans Spans that have been applied to the specified indices.
+   */
+  @NonNull
+  public IndexedSpans copy(@NonNull List<Object> spans) {
+    return new IndexedSpans(context, indices, spans);
+  }
+
   /** Converts the spans into {@link Style}s. */
   @NonNull
-  List<Style> toStyles() {
+  public List<Style> toStyles() {
     List<Object> spans = getSpans();
     ArrayList<Style> styles = new ArrayList<>();
     for (Object span : spans) {

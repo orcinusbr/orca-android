@@ -19,8 +19,7 @@ import android.graphics.Typeface
 import android.text.Html
 import android.text.style.StyleSpan
 import assertk.assertThat
-import assertk.assertions.containsExactly
-import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.spanned.span.createStyleSpan
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.areStructurallyEqual
 import br.com.orcinus.orca.platform.testing.context
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,30 +28,14 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 internal class SpannedExtensionsTests {
   @Test
-  fun partitions() {
+  fun getsIndexedSpans() {
     assertThat(
         Html.fromHtml("<p><b><i>Hello</i></b>, <i>world</i>!</p>", Html.FROM_HTML_MODE_COMPACT)
           .getIndexedSpans(context)
       )
-      .containsExactly(
-        br.com.orcinus.orca.platform.autos.kit.input.text.markdown.spanned.IndexedSpans(
-          context,
-          0..4,
-          StyleSpan(Typeface.ITALIC)
-        ),
-        br.com.orcinus.orca.platform.autos.kit.input.text.markdown.spanned.IndexedSpans(
-          context,
-          0..4,
-          br.com.orcinus.orca.platform.autos.kit.input.text.markdown.spanned.span.createStyleSpan(
-            Typeface.BOLD,
-            fontWeightAdjustment = 0
-          )
-        ),
-        br.com.orcinus.orca.platform.autos.kit.input.text.markdown.spanned.IndexedSpans(
-          context,
-          7..11,
-          StyleSpan(Typeface.ITALIC)
-        )
+      .areStructurallyEqual(
+        IndexedSpans(context, 0..5, StyleSpan(Typeface.ITALIC), StyleSpan(Typeface.BOLD)),
+        IndexedSpans(context, 7..12, StyleSpan(Typeface.ITALIC))
       )
   }
 }

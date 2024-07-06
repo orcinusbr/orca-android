@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.platform.autos.kit.input.text.markdown.spanned
 
 import android.content.Context
+import android.text.NoCopySpan
 import android.text.Spanned
 import androidx.core.text.getSpans
 import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.spanned.span.isStructurallyEqual
@@ -38,8 +39,7 @@ fun Spanned.toMarkdown(context: Context): Markdown {
 }
 
 /**
- * Obtains all of the spans by which this [Spanned] is composed, alongside the indices that they are
- * in.
+ * Obtains the spans by which this [Spanned] is composed, alongside the indices that they are in.
  *
  * **NOTE**: Even though [IndexedSpans] themselves can contain no spans at all, portions to which
  * none have been applied are omitted.
@@ -48,5 +48,22 @@ fun Spanned.toMarkdown(context: Context): Markdown {
  * @see isStructurallyEqual
  */
 internal fun Spanned.getIndexedSpans(context: Context): List<IndexedSpans> {
-  return getSpans<Any>().map { IndexedSpans(context, getSpanStart(it)..getSpanEnd(it).dec(), it) }
+  return getSpans<Any>()
+    .filterNot {
+      @Suppress("SpellCheckingInspection")
+      it is NoCopySpan ||
+        it::class.qualifiedName == "androidx.emoji2.viewsintegration.EmojiKeyListener"
+    }
+    .map { IndexedSpans(context, getSpanStart(it)..getSpanEnd(it), it) }
+    .runningReduce { previous, current ->
+      if (previous.indices == current.indices) {
+        previous.copy(previous.spans + current.spans)
+      } else {
+        current
+      }
+    }
+    .reversed()
+    .distinctBy(IndexedSpans::getIndices)
+    .reversed()
+    .toList()
 }

@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.autos.kit.scaffold.bar.bottom;
+package br.com.orcinus.orca.platform.autos.kit.input.text.composition;
 
 import android.content.Context;
 import android.util.TypedValue;
@@ -29,7 +29,7 @@ class Units {
    * @param context {@link Context} through which the conversion will take place.
    * @param dp Amount in DPs to be converted into pixels.
    */
-  static int dp(@NonNull Context context, int dp) {
+  static int dp(@NonNull Context context, float dp) {
     return (int)
         TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());

@@ -54,4 +54,13 @@ internal class IndexedSpansTests {
     assertThat(IndexedSpans(context, 0..8, StyleSpan(Typeface.NORMAL)))
       .isNotEqualTo(IndexedSpans(context, 0..8, StyleSpan(Typeface.BOLD)))
   }
+
+  @Test
+  fun copies() {
+    assertThat(
+        IndexedSpans(context, 0..8, StyleSpan(Typeface.NORMAL))
+          .copy(listOf(StyleSpan(Typeface.BOLD)))
+      )
+      .isEqualTo(IndexedSpans(context, 0..8, StyleSpan(Typeface.BOLD)))
+  }
 }

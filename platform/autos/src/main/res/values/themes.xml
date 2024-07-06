@@ -36,6 +36,8 @@
         <item name="android:fontFamily">@font/rubik</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:textColorHint">@color/tertiary</item>
+        <item name="android:textColorLink">@color/link</item>
         <item name="android:textColorPrimary">@color/backgroundContent</item>
         <item name="android:textColorSecondary">@color/secondary</item>
         <item name="android:textColorTertiary">@color/tertiary</item>
