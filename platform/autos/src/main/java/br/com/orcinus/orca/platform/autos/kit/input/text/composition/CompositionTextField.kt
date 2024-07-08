@@ -24,11 +24,16 @@ import android.view.Gravity
 import android.view.Window
 import androidx.annotation.ColorInt
 import androidx.annotation.Px
-import androidx.annotation.VisibleForTesting
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.setPadding
 import br.com.orcinus.orca.autos.Spacings
+import br.com.orcinus.orca.platform.autos.InternalPlatformAutosApi
 import br.com.orcinus.orca.platform.autos.R
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.CompositionTextFieldValue
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.orEmpty
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.toEditableAsFlow
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.toMarkdown
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.toMarkdown
 import br.com.orcinus.orca.std.markdown.Markdown
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -36,7 +41,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 /**
  * Text field for composing or editing a post.
@@ -52,6 +59,12 @@ constructor(
   attributeSet: AttributeSet? = null,
   defaultStyleAttribute: Int = android.R.attr.editTextStyle
 ) : AppCompatEditText(context, attributeSet, defaultStyleAttribute) {
+  /** [CompositionTextFieldValue] holding both the current text and selection. */
+  private var value = CompositionTextFieldValue.Empty
+
+  /** [OnValueChangeListener] that is notified whenever text-related changes are performed. */
+  private var onValueChangeListener: OnValueChangeListener? = null
+
   /** Delegate by which the [error] is measured and drawn. */
   private val errorDelegate by lazy { ErrorDelegate(this) }
 
@@ -80,11 +93,8 @@ constructor(
    * @param markdownTextSettingCoroutineScope [CoroutineScope] in which [setText]'s [Job]s are
    *   launched for defining [Markdown] as being the current text.
    */
-  @VisibleForTesting
-  internal constructor(
-    context: Context,
-    markdownTextSettingCoroutineScope: CoroutineScope
-  ) : this(context) {
+  @InternalPlatformAutosApi
+  constructor(context: Context, markdownTextSettingCoroutineScope: CoroutineScope) : this(context) {
     this.markdownTextSettingCoroutineScope = markdownTextSettingCoroutineScope
   }
 
@@ -93,6 +103,7 @@ constructor(
     setPadding(getSpacing(context))
     compoundDrawablePadding = getSpacing(context)
     gravity = Gravity.TOP
+    setTextAppearance(context, R.style.Theme_Orca_Typography_BodyMedium)
   }
 
   override fun onDraw(canvas: Canvas) {
@@ -108,6 +119,24 @@ constructor(
       ?.coroutineContext
       ?.get(Job)
       ?.cancelChildren(ResetTextException())
+
+    onValueChangeListener?.let {
+      value = text?.toMarkdown(context)?.let(::CompositionTextFieldValue).orEmpty()
+      it.onValueChange(value)
+    }
+  }
+
+  override fun onSelectionChanged(selStart: Int, selEnd: Int) {
+    super.onSelectionChanged(selStart, selEnd)
+
+    onValueChangeListener?.let { onValueChangeListener ->
+      value =
+        text
+          ?.toMarkdown(context)
+          ?.let { textAsMarkdown -> CompositionTextFieldValue(textAsMarkdown, selStart..selEnd) }
+          .orEmpty()
+      onValueChangeListener.onValueChange(value)
+    }
   }
 
   override fun getError(): CharSequence? {
@@ -131,17 +160,78 @@ constructor(
   }
 
   /**
+   * Changes both the text and the selection.
+   *
+   * @param value [CompositionTextFieldValue] based on which the text and the selection will be set.
+   */
+  fun setValue(value: CompositionTextFieldValue) {
+    if (value != this.value) {
+      setText(value.text)
+      setSelection(value.selection)
+    }
+  }
+
+  /**
    * Sets the [Markdown] as the current text.
    *
    * @param text [Markdown] to be set as the text.
    */
   fun setText(text: Markdown) {
+    val textAsEditableFlow = text.toEditableAsFlow(context)
+    markdownTextSettingCoroutineScope.coroutineContext[Job]?.cancelChildren()
+
+    /*
+     * Because the first editable is emitted immediately, the thread isn't actually blocked.
+     * runBlocking is called for the initial synchronicity to be maintained, given that changes to
+     * the emitted editable are still collected in the background and applied to this text field.
+     *
+     * For a detailed explanation on the reasoning behind such behavior, refer to MarkdownEditable's
+     * documentation (more specifically, the section of notes on its API).
+     */
+    runBlocking { this@CompositionTextField.text = textAsEditableFlow.first() }
+
     markdownTextSettingCoroutineScope.launch {
-      text.toEditableAsFlow(context).collect { this@CompositionTextField.text = it }
+      textAsEditableFlow.collect { this@CompositionTextField.text = it }
+    }
+  }
+
+  /**
+   * Sets an [OnValueChangeListener].
+   *
+   * @param onValueChangeListener [OnValueChangeListener] that will be notified when the [value]
+   *   changes.
+   */
+  fun setOnValueChangeListener(onValueChangeListener: OnValueChangeListener?) {
+    this.onValueChangeListener = onValueChangeListener
+  }
+
+  /**
+   * Defines the given indices as the ones currently selected.
+   *
+   * @param selection Portion of the text to be selected.
+   */
+  private fun setSelection(selection: IntRange) {
+    if (selection.isEmpty()) {
+      setSelection(0)
+    } else {
+      setSelection(selection.first, selection.last)
     }
   }
 
   companion object {
+    /**
+     * Obtains the amount of pixels by which the surroundings are to be padded and drawn components
+     * are to be spaced.
+     *
+     * @param context [Context] with which conversion from DPs to pixels is performed.
+     */
+    @JvmName("getSpacing")
+    @JvmStatic
+    @Px
+    fun getSpacing(context: Context): Int {
+      return Units.dp(context, Spacings.default.medium)
+    }
+
     /**
      * Obtains the color of a [CompositionTextField]'s background.
      *
@@ -152,19 +242,6 @@ constructor(
     @JvmStatic
     internal fun getBackgroundColor(context: Context): Int {
       return context.getColor(R.color.surfaceContainer)
-    }
-
-    /**
-     * Obtains the amount of pixels by which the surroundings are to be padded and drawn components
-     * are to be spaced.
-     *
-     * @param context [Context] with which conversion from DPs to pixels is performed.
-     */
-    @JvmName("getSpacing")
-    @JvmStatic
-    @Px
-    internal fun getSpacing(context: Context): Int {
-      return Units.dp(context, Spacings.default.medium)
     }
   }
 }

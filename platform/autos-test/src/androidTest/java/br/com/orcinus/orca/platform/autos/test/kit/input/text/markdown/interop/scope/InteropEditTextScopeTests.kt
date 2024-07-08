@@ -19,15 +19,16 @@ import android.view.WindowInsets
 import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import br.com.orcinus.orca.platform.autos.test.kit.input.text.composition.interop.scope.runCompositionTextFieldTest
 import kotlin.test.Test
 
 internal class InteropEditTextScopeTests {
   @Test
   fun runsImeAnimationTriggerOnce() {
-    runInteropEditTextTest {
+    runCompositionTextFieldTest {
       var count = 0
       awaitImeAnimation {
-        view.windowInsetsController?.show(WindowInsets.Type.ime())
+        textField.windowInsetsController?.show(WindowInsets.Type.ime())
         count++
       }
       assertThat(count).isEqualTo(1)
@@ -36,22 +37,22 @@ internal class InteropEditTextScopeTests {
 
   @Test
   fun awaitsImeOpeningAnimation() {
-    runInteropEditTextTest {
-      awaitImeAnimation { view.windowInsetsController?.show(WindowInsets.Type.ime()) }
-      assertThat(view.rootWindowInsets?.isVisible(WindowInsets.Type.ime())).isEqualTo(true)
+    runCompositionTextFieldTest {
+      awaitImeAnimation { textField.windowInsetsController?.show(WindowInsets.Type.ime()) }
+      assertThat(textField.rootWindowInsets?.isVisible(WindowInsets.Type.ime())).isEqualTo(true)
     }
   }
 
   @Test
   fun awaitsImeClosingAnimation() {
-    runInteropEditTextTest {
-      awaitImeAnimation { view.windowInsetsController?.show(WindowInsets.Type.ime()) }
+    runCompositionTextFieldTest {
+      awaitImeAnimation { textField.windowInsetsController?.show(WindowInsets.Type.ime()) }
       awaitImeAnimation {
         UiThreadStatement.runOnUiThread {
-          view.windowInsetsController?.hide(WindowInsets.Type.ime())
+          textField.windowInsetsController?.hide(WindowInsets.Type.ime())
         }
       }
-      assertThat(view.rootWindowInsets?.isVisible(WindowInsets.Type.ime())).isEqualTo(false)
+      assertThat(textField.rootWindowInsets?.isVisible(WindowInsets.Type.ime())).isEqualTo(false)
     }
   }
 }

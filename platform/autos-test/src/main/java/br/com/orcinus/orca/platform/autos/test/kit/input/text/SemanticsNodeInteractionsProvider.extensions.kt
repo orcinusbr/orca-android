@@ -18,27 +18,24 @@ package br.com.orcinus.orca.platform.autos.test.kit.input.text
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.onNodeWithTag
-import br.com.orcinus.orca.platform.autos.kit.input.text.CompositionTextField
 import br.com.orcinus.orca.platform.autos.kit.input.text.FormTextField
-import br.com.orcinus.orca.platform.autos.kit.input.text.TEXT_FIELD_ERRORS_TAG
-import br.com.orcinus.orca.platform.autos.kit.input.text.TEXT_FIELD_TAG
+import br.com.orcinus.orca.platform.autos.kit.input.text.FormTextFieldErrorsTag
+import br.com.orcinus.orca.platform.autos.kit.input.text.FormTextFieldTag
 
 /**
- * [SemanticsNodeInteraction] of a text field.
+ * [SemanticsNodeInteraction] of a [FormTextField].
  *
- * @see CompositionTextField
  * @see FormTextField
  */
-fun SemanticsNodeInteractionsProvider.onTextField(): SemanticsNodeInteraction {
-  return onNodeWithTag(TEXT_FIELD_TAG)
+fun SemanticsNodeInteractionsProvider.onFormTextField(): SemanticsNodeInteraction {
+  return onNodeWithTag(FormTextFieldTag)
 }
 
 /**
  * [SemanticsNodeInteraction] of a text field's errors.
  *
- * @see CompositionTextField
  * @see FormTextField
  */
 fun SemanticsNodeInteractionsProvider.onTextFieldErrors(): SemanticsNodeInteraction {
-  return onNodeWithTag(TEXT_FIELD_ERRORS_TAG)
+  return onNodeWithTag(FormTextFieldErrorsTag)
 }

@@ -34,5 +34,6 @@ dependencies {
   implementation(libs.android.activity.ktx)
 
   testImplementation(project(":platform:autos-test"))
+  testImplementation(project(":platform:testing"))
   testImplementation(libs.robolectric)
 }

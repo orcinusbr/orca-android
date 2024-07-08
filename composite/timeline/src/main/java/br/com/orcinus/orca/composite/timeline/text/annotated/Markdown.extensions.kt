@@ -18,11 +18,46 @@ package br.com.orcinus.orca.composite.timeline.text.annotated
 import android.content.Context
 import android.text.Html
 import android.text.Spanned
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.composite.timeline.text.pop
-import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.spanned.toMarkdown
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.annotated.toSpanStyle
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.toMarkdown
+import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.std.markdown.Markdown
+import br.com.orcinus.orca.std.markdown.style.Style
+import kotlin.reflect.KClass
 import org.jsoup.Jsoup
 import org.jsoup.parser.Parser
+
+/** Converts this [Markdown] into an [AnnotatedString]. */
+@Composable
+fun Markdown.toAnnotatedString(): AnnotatedString {
+  return toAnnotatedString(AutosTheme.colors)
+}
+
+/**
+ * Converts this [Markdown] into an [AnnotatedString].
+ *
+ * @param colors [Colors] by which the [AnnotatedString] can be colored.
+ */
+fun Markdown.toAnnotatedString(colors: Colors): AnnotatedString {
+  val conversions = HashMap<KClass<Style>, SpanStyle>()
+  return buildAnnotatedString {
+    append(this@toAnnotatedString)
+    styles.forEach {
+      addStyle(
+        @Suppress("UNCHECKED_CAST")
+        conversions.getOrPut(it::class as KClass<Style>) { it.toSpanStyle(colors) },
+        it.indices.first,
+        it.indices.last.inc()
+      )
+    }
+  }
+}
 
 /**
  * Creates [Markdown] from the [html].

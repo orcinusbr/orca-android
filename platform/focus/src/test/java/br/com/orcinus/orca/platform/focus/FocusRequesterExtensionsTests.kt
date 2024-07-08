@@ -20,7 +20,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.test.assertIsFocused
 import androidx.compose.ui.test.junit4.createComposeRule
 import br.com.orcinus.orca.platform.autos.kit.input.text.FormTextField
-import br.com.orcinus.orca.platform.autos.test.kit.input.text.onTextField
+import br.com.orcinus.orca.platform.autos.test.kit.input.text.onFormTextField
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
 import org.junit.Test
@@ -41,7 +41,7 @@ internal class FocusRequesterExtensionsTests {
       }
       .run {
         mainClock.advanceTimeBy(ImmediateFocusRequesterInitialDelay.inWholeMilliseconds)
-        onTextField().assertIsFocused()
+        onFormTextField().assertIsFocused()
       }
   }
 }

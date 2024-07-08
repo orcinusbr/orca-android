@@ -15,17 +15,17 @@
 
 package br.com.orcinus.orca.feature.composer
 
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.CompositionTextFieldValue
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 internal class ComposerViewModel : ViewModel() {
-  private val textFieldValueMutableFlow = MutableStateFlow(TextFieldValue())
+  private val textFieldValueMutableFlow = MutableStateFlow(CompositionTextFieldValue.Empty)
 
   val textFieldValueFlow = textFieldValueMutableFlow.asStateFlow()
 
-  fun setTextFieldValue(textFieldValue: TextFieldValue) {
+  fun setTextFieldValue(textFieldValue: CompositionTextFieldValue) {
     textFieldValueMutableFlow.value = textFieldValue
   }
 

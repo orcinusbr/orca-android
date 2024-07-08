@@ -24,11 +24,17 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
-import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.spanned.IndexedSpans
-import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.spanned.getIndexedSpans
+import assertk.assertions.isNull
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.CompositionTextFieldValue
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.IndexedSpans
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.getIndexedSpans
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.span.areStructurallyEqual
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.toMarkdown
+import br.com.orcinus.orca.platform.autos.test.kit.input.text.composition.interop.scope.runCompositionTextFieldTest
 import br.com.orcinus.orca.platform.navigation.content
 import br.com.orcinus.orca.platform.testing.activity.scenario.activity
 import br.com.orcinus.orca.platform.testing.context
+import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.buildMarkdown
 import kotlin.test.Test
 import kotlin.time.Duration
@@ -48,42 +54,38 @@ internal class CompositionTextFieldTests {
 
   @Test
   fun setsMarkdownText() {
-    runTest(@OptIn(ExperimentalCoroutinesApi::class) UnconfinedTestDispatcher()) {
-      assertThat(
-          CompositionTextField(context, this)
-            .apply {
-              setText(
-                buildMarkdown {
-                  italic { +"Hello" }
-                  +", "
-                  bold { +"world" }
-                  +'!'
-                }
-              )
-            }
-            .text
-        )
-        .all {
-          transform("text") { it?.toString() }.isEqualTo("Hello, world!")
-          transform("indexed spans") { it?.getIndexedSpans(context) }
-            .isNotNull()
-            .areStructurallyEqual(
-              IndexedSpans(context, 0..5, StyleSpan(Typeface.ITALIC)),
-              IndexedSpans(context, 7..12, StyleSpan(Typeface.BOLD))
-            )
+    runCompositionTextFieldTest(
+      @OptIn(ExperimentalCoroutinesApi::class) UnconfinedTestDispatcher()
+    ) {
+      textField.setText(
+        buildMarkdown {
+          italic { +"Hello" }
+          +", "
+          bold { +"world" }
+          +'!'
         }
+      )
+      assertThat(textField.text).all {
+        transform("text") { it?.toString() }.isEqualTo("Hello, world!")
+        transform("indexed spans") { it?.getIndexedSpans(context) }
+          .isNotNull()
+          .areStructurallyEqual(
+            IndexedSpans(context, 0..5, StyleSpan(Typeface.ITALIC)),
+            IndexedSpans(context, 7..12, StyleSpan(Typeface.BOLD))
+          )
+      }
     }
   }
 
   @Test
   fun cancelsTextSettingsWhenSettingNonMarkdownBasedText() {
-    var exception: CancellationException? = null
-    runTest {
+    runCompositionTextFieldTest {
+      var exception: CancellationException? = null
       launch(Dispatchers.Unconfined) { delay(Duration.INFINITE) }
         .invokeOnCompletion { exception = it as? CancellationException }
-      CompositionTextField(context, this).setText("Hello, world!")
+      textField.setText("Hello, world!")
+      assertThat(exception).isNotNull().isInstanceOf<CompositionTextField.ResetTextException>()
     }
-    assertThat(exception).isNotNull().isInstanceOf<CompositionTextField.ResetTextException>()
   }
 
   @Test
@@ -99,5 +101,66 @@ internal class CompositionTextFieldTests {
     assertThat(exception)
       .isNotNull()
       .isInstanceOf<CompositionTextField.DetachedFromWindowException>()
+  }
+
+  @Test
+  fun setsValue() {
+    runCompositionTextFieldTest {
+      textField.setValue(CompositionTextFieldValue(Markdown.unstyled(":P")))
+      assertThat(textField).all {
+        transform("text") { it.text?.toMarkdown(context) }.isEqualTo(Markdown.unstyled(":P"))
+        transform("selection") { it.selectionStart..it.selectionEnd }.isEqualTo(2..2)
+      }
+    }
+  }
+
+  @Test
+  fun listensToValueChange() {
+    runCompositionTextFieldTest {
+      lateinit var value: CompositionTextFieldValue
+      textField.setOnValueChangeListener { value = it }
+      textField.setValue(CompositionTextFieldValue(text = Markdown.unstyled("Hello, world!")))
+      textField.setOnValueChangeListener(null)
+      assertThat(value)
+        .isEqualTo(CompositionTextFieldValue(text = Markdown.unstyled("Hello, world!")))
+    }
+  }
+
+  @Test
+  fun listensToValueChangeWhenTextIsSet() {
+    runCompositionTextFieldTest {
+      lateinit var value: CompositionTextFieldValue
+      textField.setOnValueChangeListener { value = it }
+      textField.setText("Hello, world!")
+      textField.setOnValueChangeListener(null)
+      assertThat(value)
+        .isEqualTo(CompositionTextFieldValue(text = Markdown.unstyled("Hello, world!")))
+    }
+  }
+
+  @Test
+  fun listensToValueChangeWhenSelectionIsSet() {
+    runCompositionTextFieldTest {
+      lateinit var value: CompositionTextFieldValue
+      textField.setText("Hello, world!")
+      textField.setOnValueChangeListener { value = it }
+      textField.setSelection(7, 12)
+      textField.setOnValueChangeListener(null)
+      assertThat(value)
+        .isEqualTo(
+          CompositionTextFieldValue(text = Markdown.unstyled("Hello, world!"), selection = 7..12)
+        )
+    }
+  }
+
+  @Test
+  fun unsetsOnValueChangeListener() {
+    runCompositionTextFieldTest {
+      var value: CompositionTextFieldValue? = null
+      textField.setOnValueChangeListener { value = it }
+      textField.setOnValueChangeListener(null)
+      textField.setValue(CompositionTextFieldValue(text = Markdown.unstyled("Hello, world!")))
+      assertThat(value).isNull()
+    }
   }
 }

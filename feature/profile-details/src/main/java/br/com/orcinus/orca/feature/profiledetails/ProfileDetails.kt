@@ -50,6 +50,7 @@ import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.post.time.RelativeTimeProvider
 import br.com.orcinus.orca.composite.timeline.post.time.rememberRelativeTimeProvider
 import br.com.orcinus.orca.composite.timeline.refresh.Refresh
+import br.com.orcinus.orca.composite.timeline.text.annotated.toAnnotatedString
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.feature.profiledetails.navigation.BackwardsNavigationState
@@ -57,7 +58,6 @@ import br.com.orcinus.orca.feature.profiledetails.navigation.NavigationButton
 import br.com.orcinus.orca.feature.profiledetails.ui.Header
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.kit.action.button.icon.HoverableIconButton
-import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.annotated.toAnnotatedString
 import br.com.orcinus.orca.platform.autos.kit.menu.DropdownMenu
 import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
