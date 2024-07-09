@@ -49,24 +49,27 @@ data class CompositionTextFieldValue(
   inline fun <reified T : Style> toggle(
     style: (indices: IntRange) -> T
   ): CompositionTextFieldValue {
+    val exclusiveSelection = selection.first until selection.last
     val styles =
       text.styles
         .mapNotNull {
           if (it is T) {
             when {
-              it.indices == selection -> null
-              it.indices.first < selection.first && it.indices.last >= selection.first ->
+              it.indices == exclusiveSelection -> null
+              it.indices.first < exclusiveSelection.first &&
+                it.indices.last >= exclusiveSelection.first ->
                 it.at(it.indices.first..selection.first.dec())
-              it.indices.first <= selection.first && it.indices.last < selection.last ->
-                it.at(selection.last.inc()..it.indices.last)
+              it.indices.first <= exclusiveSelection.first &&
+                it.indices.last < exclusiveSelection.last ->
+                it.at(exclusiveSelection.last.inc()..it.indices.last)
               else -> it
             }
           } else {
             it
           }
         }
-        .`if`({ none { it is T && it.indices.any(selection::contains) } }) {
-          plus(style(selection))
+        .`if`({ none { it is T && it.indices.any(exclusiveSelection::contains) } }) {
+          plus(style(exclusiveSelection))
         }
         .runningReduce { accumulator, current ->
           if (
