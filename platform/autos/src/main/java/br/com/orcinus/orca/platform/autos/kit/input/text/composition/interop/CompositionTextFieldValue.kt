@@ -19,6 +19,7 @@ import androidx.compose.runtime.Immutable
 import br.com.orcinus.orca.platform.autos.kit.input.text.composition.CompositionTextField
 import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.style.Style
+import java.util.Objects
 
 /**
  * Text editing state of a [CompositionTextField].
@@ -27,10 +28,18 @@ import br.com.orcinus.orca.std.markdown.style.Style
  * @property selection Portion of the [text] that is selected.
  */
 @Immutable
-data class CompositionTextFieldValue(
+class CompositionTextFieldValue(
   val text: Markdown,
   val selection: IntRange = text.length..text.length
 ) {
+  override fun equals(other: Any?): Boolean {
+    return other is CompositionTextFieldValue && text == other.text && selection == other.selection
+  }
+
+  override fun hashCode(): Int {
+    return Objects.hash(text, selection)
+  }
+
   /**
    * Whether a portion of the [text] containing the specified [Style] is selected.
    *
@@ -92,7 +101,7 @@ data class CompositionTextFieldValue(
      * @see text
      * @see selection
      */
-    val Empty = CompositionTextFieldValue(text = Markdown.empty, selection = IntRange.EMPTY)
+    val Empty = CompositionTextFieldValue(Markdown.empty, selection = IntRange.EMPTY)
   }
 }
 
