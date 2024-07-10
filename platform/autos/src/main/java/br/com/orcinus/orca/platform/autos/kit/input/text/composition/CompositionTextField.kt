@@ -21,29 +21,20 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.Gravity
-import android.view.Window
 import androidx.annotation.ColorInt
 import androidx.annotation.Px
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.setPadding
 import br.com.orcinus.orca.autos.Spacings
-import br.com.orcinus.orca.platform.autos.InternalPlatformAutosApi
 import br.com.orcinus.orca.platform.autos.R
 import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.CompositionTextFieldValue
 import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.orEmpty
-import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.toEditableAsFlow
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.toEditable
 import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.toMarkdown
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.toSpannable
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.toSpanned
 import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.toMarkdown
 import br.com.orcinus.orca.std.markdown.Markdown
-import kotlin.coroutines.cancellation.CancellationException
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 /**
  * Text field for composing or editing a post.
@@ -59,44 +50,19 @@ constructor(
   attributeSet: AttributeSet? = null,
   defaultStyleAttribute: Int = android.R.attr.editTextStyle
 ) : AppCompatEditText(context, attributeSet, defaultStyleAttribute) {
-  /** [CompositionTextFieldValue] holding both the current text and selection. */
-  private var value = CompositionTextFieldValue.Empty
-
-  /** [OnValueChangeListener] that is notified whenever text-related changes are performed. */
+  /** [OnValueChangeListener] that is notified whenever the [CompositionTextFieldValue] changes. */
   private var onValueChangeListener: OnValueChangeListener? = null
 
   /** Delegate by which the [error] is measured and drawn. */
   private val errorDelegate by lazy { ErrorDelegate(this) }
 
-  /**
-   * [CoroutineScope] in which [setText]'s [Job]s are launched for defining [Markdown] as being the
-   * current text.
-   */
-  private var markdownTextSettingCoroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
-
-  /** [CancellationException] thrown when a [CompositionTextField]'s text is reset. */
-  class ResetTextException internal constructor() :
-    CancellationException("The text has been reset.")
-
-  /**
-   * [CancellationException] thrown when a [CompositionTextField] gets detached from the [Window].
-   *
-   * @see onDetachedFromWindow
-   */
-  class DetachedFromWindowException internal constructor() :
-    CancellationException("The text field got detached from the window.")
-
-  /**
-   * Text field for composing or editing a post.
-   *
-   * @param context [Context] in which it will be added.
-   * @param markdownTextSettingCoroutineScope [CoroutineScope] in which [setText]'s [Job]s are
-   *   launched for defining [Markdown] as being the current text.
-   */
-  @InternalPlatformAutosApi
-  constructor(context: Context, markdownTextSettingCoroutineScope: CoroutineScope) : this(context) {
-    this.markdownTextSettingCoroutineScope = markdownTextSettingCoroutineScope
-  }
+  /** Value containing both the current text and selection. */
+  private val value
+    get() =
+      text
+        ?.toMarkdown(context)
+        ?.let { CompositionTextFieldValue(it, selectionStart..selectionEnd) }
+        .orEmpty()
 
   init {
     setBackgroundColor(getBackgroundColor(context))
@@ -112,25 +78,29 @@ constructor(
   }
 
   override fun setText(text: CharSequence?, type: BufferType?) {
+    @Suppress("NAME_SHADOWING")
+    val text =
+      if (text is Markdown) {
+        when (type) {
+          BufferType.SPANNABLE -> text.toSpannable(context)
+          BufferType.EDITABLE -> text.toEditable(context)
+          else -> text.toSpanned(context)
+        }
+      } else {
+        text
+      }
+
     super.setText(text, type)
-
-    @Suppress("UNNECESSARY_SAFE_CALL")
-    markdownTextSettingCoroutineScope
-      ?.coroutineContext
-      ?.get(Job)
-      ?.cancelChildren(ResetTextException())
-
     onValueChangeListener?.let {
-      value = text?.toMarkdown(context)?.let(::CompositionTextFieldValue).orEmpty()
+      val value = text?.toMarkdown(context)?.let(::CompositionTextFieldValue).orEmpty()
       it.onValueChange(value)
     }
   }
 
   override fun onSelectionChanged(selStart: Int, selEnd: Int) {
     super.onSelectionChanged(selStart, selEnd)
-
     onValueChangeListener?.let { onValueChangeListener ->
-      value =
+      val value =
         text
           ?.toMarkdown(context)
           ?.let { textAsMarkdown -> CompositionTextFieldValue(textAsMarkdown, selStart..selEnd) }
@@ -152,54 +122,23 @@ constructor(
     super.onConfigurationChanged(newConfig)
   }
 
-  override fun onDetachedFromWindow() {
-    super.onDetachedFromWindow()
-    markdownTextSettingCoroutineScope.coroutineContext[Job]?.cancelChildren(
-      DetachedFromWindowException()
-    )
-  }
-
   /**
    * Changes both the text and the selection.
    *
    * @param value [CompositionTextFieldValue] based on which the text and the selection will be set.
    */
   fun setValue(value: CompositionTextFieldValue) {
-    if (value != this.value) {
+    if (this.value != value) {
       setText(value.text)
       setSelection(value.selection)
     }
   }
 
   /**
-   * Sets the [Markdown] as the current text.
-   *
-   * @param text [Markdown] to be set as the text.
-   */
-  fun setText(text: Markdown) {
-    val textAsEditableFlow = text.toEditableAsFlow(context)
-    markdownTextSettingCoroutineScope.coroutineContext[Job]?.cancelChildren()
-
-    /*
-     * Because the first editable is emitted immediately, the thread isn't actually blocked.
-     * runBlocking is called for the initial synchronicity to be maintained, given that changes to
-     * the emitted editable are still collected in the background and applied to this text field.
-     *
-     * For a detailed explanation on the reasoning behind such behavior, refer to MarkdownEditable's
-     * documentation (more specifically, the section of notes on its API).
-     */
-    runBlocking { this@CompositionTextField.text = textAsEditableFlow.first() }
-
-    markdownTextSettingCoroutineScope.launch {
-      textAsEditableFlow.collect { this@CompositionTextField.text = it }
-    }
-  }
-
-  /**
    * Sets an [OnValueChangeListener].
    *
-   * @param onValueChangeListener [OnValueChangeListener] that will be notified when the [value]
-   *   changes.
+   * @param onValueChangeListener [OnValueChangeListener] that will be notified when the
+   *   [CompositionTextFieldValue] changes.
    */
   fun setOnValueChangeListener(onValueChangeListener: OnValueChangeListener?) {
     this.onValueChangeListener = onValueChangeListener

@@ -13,9 +13,8 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop
+package br.com.orcinus.orca.std.markdown.style
 
-import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.`if`
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -29,11 +28,14 @@ import kotlin.contracts.contract
  * @param transform Transformation to be made to the receiver.
  */
 @OptIn(ExperimentalContracts::class)
-@PublishedApi
-internal inline fun <T> T.`if`(condition: T.() -> Boolean, transform: T.() -> T): T {
+inline fun <T> T.`if`(condition: T.() -> Boolean, transform: T.() -> T): T {
   contract {
     callsInPlace(condition, InvocationKind.EXACTLY_ONCE)
     callsInPlace(transform, InvocationKind.AT_MOST_ONCE)
   }
-  return `if`(condition(), transform)
+  return if (condition()) {
+    transform()
+  } else {
+    this
+  }
 }

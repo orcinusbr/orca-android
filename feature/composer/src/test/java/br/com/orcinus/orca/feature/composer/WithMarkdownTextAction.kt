@@ -33,30 +33,36 @@ import org.hamcrest.TypeSafeDiagnosingMatcher
 private class WithMarkdownTextAction(private val text: Markdown) :
   TypeSafeDiagnosingMatcher<View>() {
   override fun describeTo(description: Description?) {
-    description?.appendText("view.getText() is ")?.appendValue(text)?.apply {
+    description?.describe(text)
+  }
+
+  override fun matchesSafely(item: View?, mismatchDescription: Description?): Boolean {
+    if (item is EditText) {
+      val actualText = item.text.toMarkdown(context)
+      if (actualText != text) {
+        mismatchDescription?.describe(actualText)
+        return false
+      }
+    } else {
+      mismatchDescription?.appendValue(item)?.appendText(" is not an EditText")
+      return false
+    }
+    return true
+  }
+
+  /**
+   * Appends text describing the [text].
+   *
+   * @param text [Markdown] to be described.
+   */
+  private fun Description.describe(text: Markdown) {
+    appendText("view.getText() is ")?.appendValue(text)?.apply {
       if (text.styles.isEmpty()) {
         appendText(", unstyled")
       } else {
         appendValueList(", styled with ", ", ", "", text.styles)
       }
     }
-  }
-
-  override fun matchesSafely(item: View?, mismatchDescription: Description?): Boolean {
-    if (item is EditText) {
-      val text = item.text.toMarkdown(context)
-      if (text != this.text) {
-        mismatchDescription?.appendText("view.getText() is ")?.appendValue(text)?.apply {
-          if (text.styles.isEmpty()) {
-            appendText(", unstyled")
-          } else {
-            appendValueList(", styled with ", ", ", "", text.styles)
-          }
-        }
-        return false
-      }
-    }
-    return true
   }
 }
 

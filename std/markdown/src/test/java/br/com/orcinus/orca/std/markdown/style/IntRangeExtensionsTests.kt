@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,20 +15,19 @@
 
 package br.com.orcinus.orca.std.markdown.style
 
-/**
- * Returns whether this [Style] is chopped (that is, starts but overflows) by the [text].
- *
- * @param text [String] that may chop this [Style].
- */
-internal fun Style.isChoppedBy(text: String): Boolean {
-  return indices.first < text.length && indices.last > text.lastIndex
-}
+import assertk.assertThat
+import assertk.assertions.isFalse
+import assertk.assertions.isTrue
+import kotlin.test.Test
 
-/**
- * Returns whether this [Style] is within the [text]'s bounds.
- *
- * @param text [String] in which this [Style] may be present.
- */
-internal fun Style.isWithin(text: String): Boolean {
-  return indices.first >= 0 && indices.last < text.length
+internal class IntRangeExtensionsTests {
+  @Test
+  fun doesNotContainAnotherRange() {
+    assertThat(0..2 in 3..8).isFalse()
+  }
+
+  @Test
+  fun containsAnotherRange() {
+    assertThat(2..4 in 0..8).isTrue()
+  }
 }

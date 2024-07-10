@@ -139,7 +139,7 @@ fun runCompositionTextFieldTest(
   runAndroidComposeUiTest<ComponentActivity> {
     runTest(coroutineContext) {
       val context = AutosContextThemeWrapper(context)
-      val textField = CompositionTextField(context, this)
+      val textField = CompositionTextField(context)
       setContent {
         AndroidView({ textField }, Modifier.proxy(textField).testTag(CompositionTextFieldTag))
       }

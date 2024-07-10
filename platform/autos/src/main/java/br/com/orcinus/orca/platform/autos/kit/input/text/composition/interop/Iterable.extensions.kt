@@ -15,21 +15,26 @@
 
 package br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop
 
-import android.content.Context
-import android.text.Spanned
-import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.toMarkdown
-import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.style.Style
+import br.com.orcinus.orca.std.markdown.style.contains
+import br.com.orcinus.orca.std.markdown.style.`if`
 
 /**
- * Converts this [CharSequence] into [Markdown].
+ * Performs the inverse of [br.com.orcinus.orca.std.markdown.style.minus] by constraining the
+ * [Style]s to the given region.
  *
- * @param context [Context] with which [Style]s are converted into spans.
+ * @param constraint Region to which the [Style]s are to be constrained.
  */
-internal fun CharSequence.toMarkdown(context: Context): Markdown {
-  return when (this) {
-    is Markdown -> this
-    is Spanned -> toMarkdown(context)
-    else -> Markdown.unstyled("$this")
+@PublishedApi
+internal operator fun Iterable<Style>.rem(constraint: IntRange): List<Style> {
+  return mapNotNull {
+    if (it.indices in constraint) {
+      it
+        .`if`({ indices.first <= constraint.first }) { at(constraint.first..indices.last) }
+        .`if`({ indices.last >= constraint.last }) { at(indices.first..constraint.last) }
+        .`if`<Style?>({ this == null || indices == constraint }) { null }
+    } else {
+      it
+    }
   }
 }

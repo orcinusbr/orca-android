@@ -27,7 +27,6 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,7 +42,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import br.com.orcinus.orca.composite.timeline.avatar.SmallAvatar
-import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
 import br.com.orcinus.orca.feature.composer.ui.Toolbar
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.kit.action.button.icon.HoverableIconButton
@@ -58,7 +56,7 @@ import br.com.orcinus.orca.platform.autos.kit.scaffold.plus
 import br.com.orcinus.orca.platform.autos.overlays.asPaddingValues
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
-import br.com.orcinus.orca.platform.core.withSample
+import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.style.Style
 
 @Composable
@@ -67,11 +65,8 @@ internal fun Composer(
   onBackwardsNavigation: () -> Unit,
   modifier: Modifier = Modifier
 ) {
-  val value by viewModel.textFieldValueFlow.collectAsState()
-
   Composer(
-    value,
-    onValueChange = viewModel::setTextFieldValue,
+    onTextChange = viewModel::setText,
     onCompose = viewModel::compose,
     onBackwardsNavigation,
     modifier
@@ -80,8 +75,7 @@ internal fun Composer(
 
 @Composable
 private fun Composer(
-  value: CompositionTextFieldValue,
-  onValueChange: (value: CompositionTextFieldValue) -> Unit,
+  onTextChange: (text: Markdown) -> Unit,
   onCompose: () -> Unit,
   onBackwardsNavigation: () -> Unit,
   modifier: Modifier = Modifier
@@ -92,6 +86,7 @@ private fun Composer(
   val textField = remember(context) { CompositionTextField(context) }
   val textFieldSpacing = with(density) { CompositionTextField.getSpacing(context).toDp() }
   val textFieldStartCompoundDrawable by drawableStateOf { SmallAvatar() }
+  var textFieldValue by remember { mutableStateOf(CompositionTextFieldValue.Empty) }
   var toolbarPadding by remember {
     mutableStateOf(
       PaddingValues(
@@ -148,37 +143,42 @@ private fun Composer(
         ) {
           item {
             AndroidView(
-              { textField },
+              {
+                textField.also(CompositionTextField::requestFocus).apply {
+                  setHint(R.string.feature_composer_hint)
+                  setOnValueChangeListener { value ->
+                    textFieldValue = value
+                    onTextChange(value.text)
+                  }
+                  setImeActionLabel(null, EditorInfo.IME_ACTION_SEND)
+                  setOnEditorActionListener { _, _, _ ->
+                    onCompose()
+                    true
+                  }
+                }
+              },
               Modifier.fillMaxWidth().proxy(textField),
               onRelease = {
                 it.setOnEditorActionListener(null)
                 it.setOnValueChangeListener(null)
               }
             ) {
-              it.requestFocus()
               it.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 textFieldStartCompoundDrawable,
                 null,
                 null,
                 null
               )
-              it.setHint(R.string.feature_composer_hint)
-              it.setValue(value)
-              it.setOnValueChangeListener(onValueChange)
-              it.setImeActionLabel(null, EditorInfo.IME_ACTION_SEND)
-              it.setOnEditorActionListener { _, _, _ ->
-                onCompose()
-                true
-              }
+              it.setValue(textFieldValue)
             }
           }
         }
 
         Toolbar(
-          value.isSelected<Style.Bold>(),
-          onBoldToggle = { onValueChange(value.toggle(Style::Bold)) },
-          value.isSelected<Style.Italic>(),
-          onItalicToggle = { onValueChange(value.toggle(Style::Italic)) },
+          textFieldValue.isSelected<Style.Bold>(),
+          onBoldToggle = { textFieldValue = textFieldValue.toggle(Style::Bold) },
+          textFieldValue.isSelected<Style.Italic>(),
+          onItalicToggle = { textFieldValue = textFieldValue.toggle(Style::Italic) },
           Modifier.padding(toolbarPadding).align(Alignment.BottomStart)
         )
       }
@@ -188,17 +188,6 @@ private fun Composer(
 
 @Composable
 @MultiThemePreview
-private fun EmptyComposerPreview() {
-  AutosTheme { Composer(CompositionTextFieldValue.Empty) }
-}
-
-@Composable
-@MultiThemePreview
-private fun PopulatedComposerPreview() {
-  AutosTheme { Composer(CompositionTextFieldValue(Posts.withSample.single().content.text)) }
-}
-
-@Composable
-private fun Composer(value: CompositionTextFieldValue, modifier: Modifier = Modifier) {
-  Composer(value, onValueChange = {}, onCompose = {}, onBackwardsNavigation = {}, modifier)
+private fun ComposerPreview() {
+  AutosTheme { Composer(onTextChange = {}, onCompose = {}, onBackwardsNavigation = {}) }
 }

@@ -23,7 +23,6 @@ import assertk.assertions.isSameAs
 import br.com.orcinus.orca.std.markdown.style.Style
 import java.net.URI
 import kotlin.test.Test
-import kotlin.test.assertContentEquals
 
 internal class MarkdownTests {
   @Test
@@ -86,15 +85,15 @@ internal class MarkdownTests {
 
   @Test
   fun dropsStylesWhenCopying() {
-    assertContentEquals(
-      listOf(Style.Bold(0..4)),
-      buildMarkdown {
-          bold { +"Lorem" }
-          +" "
-          italic { +"ipsum" }
-        }
-        .copy { take(5) }
-        .styles
-    )
+    assertThat(
+        buildMarkdown {
+            bold { +"Lorem" }
+            +" "
+            italic { +"ipsum" }
+          }
+          .copy { take(5) }
+          .styles
+      )
+      .containsExactly(Style.Bold(0..4))
   }
 }

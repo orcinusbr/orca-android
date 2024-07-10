@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,31 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.std.markdown.style
+package br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop
 
 import assertk.assertThat
-import assertk.assertions.isFalse
-import assertk.assertions.isTrue
+import assertk.assertions.containsExactly
+import br.com.orcinus.orca.std.markdown.style.Style
 import kotlin.test.Test
 
-internal class StyleExtensionsTests {
+internal class IterableExtensionsTests {
   @Test
-  fun isWithin() {
-    assertThat(Style.Bold(0..4).isWithin("Hello!")).isTrue()
-  }
-
-  @Test
-  fun isNotWithin() {
-    assertThat(Style.Bold(0..6).isWithin("Hello.")).isFalse()
-  }
-
-  @Test
-  fun isChopped() {
-    assertThat(Style.Bold(0..Int.MAX_VALUE).isChoppedBy("🦩")).isTrue()
-  }
-
-  @Test
-  fun isNotChopped() {
-    assertThat(Style.Bold(0..4).isChoppedBy("Hello, world!")).isFalse()
+  fun constrainsStyles() {
+    assertThat(setOf(Style.Bold(0..8), Style.Italic(12..24)) % (4..16))
+      .containsExactly(Style.Bold(4..8), Style.Italic(12..16))
   }
 }

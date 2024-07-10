@@ -17,84 +17,87 @@ package br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.sp
 
 import android.content.Context
 import android.text.Editable
+import android.text.Spannable
 import android.text.Spanned
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.rem
 import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.span.isStructurallyEqual
 import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.span.toSpan
 import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.span.toStyles
 import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.style.Style
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.single
-import kotlinx.coroutines.runBlocking
+import br.com.orcinus.orca.std.markdown.style.merge
+
+/** Shorthand for `getMarkdown().getStyles()`. */
+private val MarkdownSpanned.styles
+  get() = markdown.styles
 
 /**
  * [Markdown]-based [Editable].
  *
- * ###### API notes
- *
- * [Markdown] objects are immutable by nature, and that is why an [Editable] of one requires
- * multiples instances of it to be created and have these creations be observed by a consumer in
- * order to provide some sort of functionality that relies on mutability.
- *
- * Each mutation-inducing method ([setSpan], [removeSpan], [replace], [append], [clear], [delete],
- * [insert] and [clearSpans]) causes an emission to be sent to a [Flow]; but, because modifications
- * to a [MarkdownEditable] are emitted blockingly by the [flowCollector], an instance of it must
- * instantly be sent to the [Flow] returned by [Markdown.toEditableAsFlow] (given that this class
- * calls it upon such alterations); otherwise, the [Flow] would never get emitted to.
- *
- * @property flowCollector [FlowCollector] that emits changes (such as setting and removing spans).
- * @see Style.toSpan
+ * @param initialMarkdown [Markdown] to be modified.
+ * @see markdown
  */
-private class MarkdownEditable(
-  private val flowCollector: FlowCollector<Editable>,
-  override val context: Context,
-  override val markdown: Markdown
-) : DefaultEditable(), MarkdownSpanned, CharSequence by markdown {
+private class MarkdownEditable(override val context: Context, initialMarkdown: Markdown) :
+  DefaultEditable(), MarkdownSpannable {
+  override val length
+    get() = markdown.length
+
+  override var markdown = initialMarkdown
+
+  override fun get(index: Int): Char {
+    return markdown[index]
+  }
+
+  override fun subSequence(startIndex: Int, endIndex: Int): CharSequence {
+    return markdown.subSequence(startIndex, endIndex)
+  }
+
   override fun toString(): String {
     return markdown.toString()
   }
 
+  override fun clearSpans() {
+    markdown = Markdown.unstyled("$this")
+  }
+
+  override fun replace(replacement: CharSequence): Editable {
+    markdown = markdown.copy { replacement.toString() }
+    return this
+  }
+}
+
+/**
+ * [Markdown]-based [Spannable].
+ *
+ * @see markdown
+ */
+internal interface MarkdownSpannable : MarkdownSpanned, Spannable {
+  override var markdown: Markdown
+
   override fun setSpan(what: Any?, start: Int, end: Int, flags: Int) {
-    what?.toStyles(start until end)?.let {
-      runBlocking {
-        flowCollector.emitAll(
-          Markdown.styled("$this", markdown.styles + it).toEditableAsFlow(context)
-        )
-      }
-    }
+    val indices = start until end
+    markdown =
+      Markdown.styled(
+        "$this",
+        (what?.toStyles(indices)?.let(styles::plus) ?: (styles % indices)).merge()
+      )
   }
 
   override fun removeSpan(what: Any?) {
     what?.let { _ ->
-      runBlocking {
-        flowCollector.emitAll(
-          Markdown.styled(
-              "$this",
-              getIndexedSpans(context)
-                .map { it.copy(it.spans - what) }
-                .flatMap(IndexedSpans::toStyles)
-            )
-            .toEditableAsFlow(context)
-        )
-      }
-    }
-  }
-
-  override fun clearSpans() {
-    runBlocking { flowCollector.emitAll(Markdown.unstyled("$this").toEditableAsFlow(context)) }
-  }
-
-  override fun replace(replacement: CharSequence): Editable {
-    return runBlocking {
-      markdown.copy { replacement.toString() }.toEditableAsFlow(context).single()
+      getIndexedSpans(context)
+        .flatMap(IndexedSpans::toStyles)
+        .find { it.toSpan().isStructurallyEqual(context, what) }
+        ?.let { markdown = Markdown.styled("$this", styles - it) }
     }
   }
 }
 
-/** [Markdown]-based [Spanned]. */
+/**
+ * [Markdown]-based [Spanned].
+ *
+ * @see markdown
+ */
 internal interface MarkdownSpanned : Spanned {
   /**
    * [Context] with which [Style]s are converted into spans.
@@ -110,7 +113,7 @@ internal interface MarkdownSpanned : Spanned {
     @Suppress("UNCHECKED_CAST")
     return type
       ?.let { _ ->
-        markdown.styles
+        styles
           .filter { it.indices.first >= start && it.indices.last < end }
           .map(Style::toSpan)
           .filterIsInstance(type as Class<T & Any>)
@@ -120,7 +123,7 @@ internal interface MarkdownSpanned : Spanned {
   }
 
   override fun getSpanStart(tag: Any?): Int {
-    return markdown.styles
+    return styles
       .takeIf { tag != null }
       ?.associateWith { it.indices.first }
       ?.filterKeys { it.toSpan().isStructurallyEqual(context, tag!!) }
@@ -130,7 +133,7 @@ internal interface MarkdownSpanned : Spanned {
   }
 
   override fun getSpanEnd(tag: Any?): Int {
-    return markdown.styles
+    return styles
       .takeIf { tag != null }
       ?.associateWith { it.indices.last }
       ?.filterKeys { it.toSpan().isStructurallyEqual(context, tag!!) }
@@ -163,14 +166,45 @@ internal interface MarkdownSpanned : Spanned {
 }
 
 /**
- * Converts this [Markdown] into a [Flow] of [Editable].
+ * Converts this [Markdown] into an [Editable].
  *
  * @param context [Context] with which [Style]s are converted into spans.
  * @see Style.toSpan
  */
-internal fun Markdown.toEditableAsFlow(context: Context): Flow<Editable> {
-  return flow {
-    val editable = MarkdownEditable(this, context, this@toEditableAsFlow)
-    emit(editable)
+internal fun Markdown.toEditable(context: Context): Editable {
+  return MarkdownEditable(context, this)
+}
+
+/**
+ * Converts this [Markdown] into a [Spannable].
+ *
+ * @param context [Context] with which [Style]s are converted into spans.
+ * @see Style.toSpan
+ */
+internal fun Markdown.toSpannable(context: Context): Spannable {
+  return object : MarkdownSpannable, CharSequence by this {
+    override val context = context
+    override var markdown = this@toSpannable
+
+    override fun toString(): String {
+      return this@toSpannable.toString()
+    }
+  }
+}
+
+/**
+ * Converts this [Markdown] into a [Spanned].
+ *
+ * @param context [Context] with which [Style]s are converted into spans.
+ * @see Style.toSpan
+ */
+internal fun Markdown.toSpanned(context: Context): Spanned {
+  return object : MarkdownSpanned, CharSequence by this {
+    override val context = context
+    override val markdown = this@toSpanned
+
+    override fun toString(): String {
+      return this@toSpanned.toString()
+    }
   }
 }

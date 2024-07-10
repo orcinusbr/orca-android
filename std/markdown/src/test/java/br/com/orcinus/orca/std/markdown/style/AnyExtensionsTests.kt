@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop
+package br.com.orcinus.orca.std.markdown.style
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo

@@ -17,14 +17,15 @@ package br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.sp
 
 import android.graphics.Typeface
 import android.text.style.StyleSpan
+import androidx.core.text.getSpans
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.annotated.areStructurallyEqual
 import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.span.areStructurallyEqual
 import br.com.orcinus.orca.platform.testing.context
+import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.buildMarkdown
 import kotlin.test.Test
-import kotlinx.coroutines.flow.single
-import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
@@ -32,37 +33,56 @@ import org.robolectric.RobolectricTestRunner
 internal class MarkdownExtensionsTests {
   @Test
   fun editableContainsSameTextAsTheMarkdownOnWhichItIsBased() {
-    runTest {
-      assertThat(
-          buildMarkdown {
-              bold { +':' }
-              italic { +'p' }
-            }
-            .toEditableAsFlow(context)
-            .single()
-            .toString()
-        )
-        .isEqualTo(":p")
-    }
+    assertThat(
+        buildMarkdown {
+            bold { +':' }
+            italic { +'p' }
+          }
+          .toEditable(context)
+          .toString()
+      )
+      .isEqualTo(":p")
   }
 
   @Test
-  fun spansMarkdownBasedEditable() {
-    runTest {
-      assertThat(
-          buildMarkdown {
-              bold { +":)" }
-              +' '
-              italic { +":D" }
-            }
-            .toEditableAsFlow(context)
-            .single()
-            .getIndexedSpans(context)
-        )
-        .areStructurallyEqual(
-          IndexedSpans(context, 0..2, StyleSpan(Typeface.BOLD)),
-          IndexedSpans(context, 3..5, StyleSpan(Typeface.ITALIC))
-        )
-    }
+  fun spansMarkdownEditable() {
+    assertThat(
+        buildMarkdown {
+            bold { +":)" }
+            +' '
+            italic { +":D" }
+          }
+          .toEditable(context)
+          .getIndexedSpans(context)
+      )
+      .areStructurallyEqual(
+        IndexedSpans(context, 0..2, StyleSpan(Typeface.BOLD)),
+        IndexedSpans(context, 3..5, StyleSpan(Typeface.ITALIC))
+      )
+  }
+
+  @Test
+  fun setsMarkdownEditableSpans() {
+    assertThat(
+        Markdown.unstyled("Hello!")
+          .toEditable(context)
+          .apply { setSpan(StyleSpan(Typeface.BOLD), 0, 5, 0) }
+          .getSpans<StyleSpan>(0, 5)
+      )
+      .areStructurallyEqual(StyleSpan(Typeface.BOLD))
+  }
+
+  @Test
+  fun unsetsMarkdownEditableSpans() {
+    assertThat(
+        buildMarkdown {
+            bold { +"Hello" }
+            italic { +'!' }
+          }
+          .toEditable(context)
+          .apply { setSpan(null, 0, 5, 0) }
+          .getIndexedSpans(context)
+      )
+      .areStructurallyEqual(IndexedSpans(context, 5..6, StyleSpan(Typeface.ITALIC)))
   }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,17 +13,13 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.std.markdown
+package br.com.orcinus.orca.std.markdown.style
 
 /**
- * Applies the given [transform] to the currently iterated element if its [predicate] returns
- * `true`.
+ * Returns whether any of [other]'s [Int]s are contained in this [IntRange].
  *
- * @param I Element of the [Iterable] being conditionally mapped.
- * @param O Element of the resulting [List].
- * @param predicate Returns whether the element should be transformed.
- * @param transform Transformation to be performed on the element.
+ * @param other [IntRange] whose indices' presence in the receiver one will be verified.
  */
-internal fun <I, O : I> Iterable<I>.map(predicate: (I) -> Boolean, transform: (I) -> O): List<I> {
-  return map { if (predicate(it)) transform(it) else it }
+operator fun IntRange.contains(other: IntRange): Boolean {
+  return other.any(::contains)
 }

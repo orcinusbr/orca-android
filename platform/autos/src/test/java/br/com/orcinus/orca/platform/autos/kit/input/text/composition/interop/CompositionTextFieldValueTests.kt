@@ -74,13 +74,20 @@ internal class CompositionTextFieldValueTests {
   @Test
   fun addsStyle() {
     assertThat(
-        CompositionTextFieldValue(Markdown.unstyled("Hello!"), selection = 0..5).toggle(Style::Bold)
+        CompositionTextFieldValue(
+            buildMarkdown {
+              +"Hello"
+              italic { +'!' }
+            },
+            selection = 0..5
+          )
+          .toggle(Style::Bold)
       )
       .isEqualTo(
         CompositionTextFieldValue(
           buildMarkdown {
             bold { +"Hello" }
-            +'!'
+            italic { +'!' }
           },
           selection = 0..5
         )
@@ -93,13 +100,21 @@ internal class CompositionTextFieldValueTests {
         CompositionTextFieldValue(
             buildMarkdown {
               bold { +"Hello" }
-              +'!'
+              italic { +'!' }
             },
             selection = 0..5
           )
           .toggle(Style::Bold)
       )
-      .isEqualTo(CompositionTextFieldValue(Markdown.unstyled("Hello!"), selection = 0..5))
+      .isEqualTo(
+        CompositionTextFieldValue(
+          buildMarkdown {
+            +"Hello"
+            italic { +'!' }
+          },
+          selection = 0..5
+        )
+      )
   }
 
   @Test

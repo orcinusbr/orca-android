@@ -17,34 +17,25 @@ package br.com.orcinus.orca.platform.autos.kit.input.text.composition
 
 import android.app.Activity
 import android.graphics.Typeface
+import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
-import androidx.test.core.app.launchActivity
 import assertk.all
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
+import assertk.assertions.toStringFun
 import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.CompositionTextFieldValue
 import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.IndexedSpans
 import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.getIndexedSpans
 import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.span.areStructurallyEqual
 import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.toMarkdown
 import br.com.orcinus.orca.platform.autos.test.kit.input.text.composition.interop.scope.runCompositionTextFieldTest
-import br.com.orcinus.orca.platform.navigation.content
-import br.com.orcinus.orca.platform.testing.activity.scenario.activity
 import br.com.orcinus.orca.platform.testing.context
 import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.buildMarkdown
 import kotlin.test.Test
-import kotlin.time.Duration
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
@@ -53,54 +44,24 @@ internal class CompositionTextFieldTests {
   class WindowDetachmentActivity : Activity()
 
   @Test
-  fun setsMarkdownText() {
-    runCompositionTextFieldTest(
-      @OptIn(ExperimentalCoroutinesApi::class) UnconfinedTestDispatcher()
-    ) {
-      textField.setText(
-        buildMarkdown {
-          italic { +"Hello" }
-          +", "
-          bold { +"world" }
-          +'!'
-        }
-      )
-      assertThat(textField.text).all {
-        transform("text") { it?.toString() }.isEqualTo("Hello, world!")
-        transform("indexed spans") { it?.getIndexedSpans(context) }
-          .isNotNull()
+  fun setsMarkdownAsText() {
+    runCompositionTextFieldTest {
+      val text = buildMarkdown {
+        bold { +"Hello" }
+        +", "
+        italic { +"world" }
+        +'!'
+      }
+      textField.setText(text)
+      assertThat(textField.text).isNotNull().isInstanceOf<SpannableStringBuilder>().all {
+        toStringFun().isEqualTo("Hello, world!")
+        transform("indexed spans") { it.getIndexedSpans(context) }
           .areStructurallyEqual(
-            IndexedSpans(context, 0..5, StyleSpan(Typeface.ITALIC)),
-            IndexedSpans(context, 7..12, StyleSpan(Typeface.BOLD))
+            IndexedSpans(context, 0..5, StyleSpan(Typeface.BOLD)),
+            IndexedSpans(context, 7..12, StyleSpan(Typeface.ITALIC))
           )
       }
     }
-  }
-
-  @Test
-  fun cancelsTextSettingsWhenSettingNonMarkdownBasedText() {
-    runCompositionTextFieldTest {
-      var exception: CancellationException? = null
-      launch(Dispatchers.Unconfined) { delay(Duration.INFINITE) }
-        .invokeOnCompletion { exception = it as? CancellationException }
-      textField.setText("Hello, world!")
-      assertThat(exception).isNotNull().isInstanceOf<CompositionTextField.ResetTextException>()
-    }
-  }
-
-  @Test
-  fun cancelsTextSettingsWhenDetachedFromTheWindow() {
-    var exception: CancellationException? = null
-    runTest {
-      launch(Dispatchers.Unconfined) { delay(Duration.INFINITE) }
-        .invokeOnCompletion { exception = it as? CancellationException }
-      launchActivity<WindowDetachmentActivity>().use {
-        it.activity?.content?.addView(CompositionTextField(context, this))
-      }
-    }
-    assertThat(exception)
-      .isNotNull()
-      .isInstanceOf<CompositionTextField.DetachedFromWindowException>()
   }
 
   @Test

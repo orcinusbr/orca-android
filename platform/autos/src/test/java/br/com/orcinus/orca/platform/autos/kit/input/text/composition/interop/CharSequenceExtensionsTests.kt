@@ -20,6 +20,7 @@ import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isSameAs
 import br.com.orcinus.orca.platform.testing.context
 import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.buildMarkdown
@@ -32,6 +33,12 @@ internal class CharSequenceExtensionsTests {
   @Test
   fun convertsIntoMarkdown() {
     assertThat("Hello, world!".toMarkdown(context)).isEqualTo(Markdown.unstyled("Hello, world!"))
+  }
+
+  @Test
+  fun returnsReceiverMarkdownWhenConvertingItIntoOne() {
+    val markdown = Markdown.unstyled("Hello, world!")
+    assertThat(markdown.toMarkdown(context)).isSameAs(markdown)
   }
 
   @Test

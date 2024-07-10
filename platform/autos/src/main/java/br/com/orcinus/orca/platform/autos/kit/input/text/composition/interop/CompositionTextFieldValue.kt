@@ -19,6 +19,9 @@ import androidx.compose.runtime.Immutable
 import br.com.orcinus.orca.platform.autos.kit.input.text.composition.CompositionTextField
 import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.style.Style
+import br.com.orcinus.orca.std.markdown.style.contains
+import br.com.orcinus.orca.std.markdown.style.`if`
+import br.com.orcinus.orca.std.markdown.style.merge
 import java.util.Objects
 
 /**
@@ -32,6 +35,9 @@ class CompositionTextFieldValue(
   val text: Markdown,
   val selection: IntRange = text.length..text.length
 ) {
+  /** [selection], but with an exclusive last index. */
+  @PublishedApi internal val exclusiveSelection = selection.first until selection.last
+
   override fun equals(other: Any?): Boolean {
     return other is CompositionTextFieldValue && text == other.text && selection == other.selection
   }
@@ -40,13 +46,17 @@ class CompositionTextFieldValue(
     return Objects.hash(text, selection)
   }
 
+  override fun toString(): String {
+    return "CompositionTextFieldValue(text=$text, selection=$selection)"
+  }
+
   /**
    * Whether a portion of the [text] containing the specified [Style] is selected.
    *
    * @param T [Style] whose presence in the selection will be verified.
    */
   inline fun <reified T : Style> isSelected(): Boolean {
-    return text.styles.filterIsInstance<T>().any { selection.any(it.indices::contains) }
+    return text.styles.filterIsInstance<T>().any { it.indices in exclusiveSelection }
   }
 
   /**
@@ -58,38 +68,12 @@ class CompositionTextFieldValue(
   inline fun <reified T : Style> toggle(
     style: (indices: IntRange) -> T
   ): CompositionTextFieldValue {
-    val exclusiveSelection = selection.first until selection.last
     val styles =
-      text.styles
-        .mapNotNull {
-          if (it is T) {
-            when {
-              it.indices == exclusiveSelection -> null
-              it.indices.first < exclusiveSelection.first &&
-                it.indices.last >= exclusiveSelection.first ->
-                it.at(it.indices.first..selection.first.dec())
-              it.indices.first <= exclusiveSelection.first &&
-                it.indices.last < exclusiveSelection.last ->
-                it.at(exclusiveSelection.last.inc()..it.indices.last)
-              else -> it
-            }
-          } else {
-            it
-          }
-        }
-        .`if`({ none { it is T && it.indices.any(exclusiveSelection::contains) } }) {
+      (text.styles % exclusiveSelection)
+        .`if`({ none { it is T && it.indices in exclusiveSelection } }) {
           plus(style(exclusiveSelection))
         }
-        .runningReduce { accumulator, current ->
-          if (
-            accumulator::class == current::class &&
-              accumulator.indices.last == current.indices.first
-          ) {
-            current.at(accumulator.indices.first..current.indices.last)
-          } else {
-            current
-          }
-        }
+        .merge()
     val text = Markdown.styled("$text", styles)
     return CompositionTextFieldValue(text, selection)
   }
