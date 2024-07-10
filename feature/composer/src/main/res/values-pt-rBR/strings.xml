@@ -16,6 +16,6 @@
 
 <resources>
     <string name="feature_composer">Compor</string>
-    <string name="feature_composer_placeholder">No que você está pensando?</string>
+    <string name="feature_composer_hint">No que você está pensando?</string>
     <string name="feature_composer_send">Enviar</string>
 </resources>

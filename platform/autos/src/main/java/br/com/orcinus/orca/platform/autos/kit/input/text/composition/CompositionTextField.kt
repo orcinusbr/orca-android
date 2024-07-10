@@ -21,22 +21,20 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.Gravity
-import android.view.Window
 import androidx.annotation.ColorInt
 import androidx.annotation.Px
-import androidx.annotation.VisibleForTesting
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.setPadding
 import br.com.orcinus.orca.autos.Spacings
 import br.com.orcinus.orca.platform.autos.R
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.CompositionTextFieldValue
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.orEmpty
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.toEditable
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.toMarkdown
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.toSpannable
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.toSpanned
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.toMarkdown
 import br.com.orcinus.orca.std.markdown.Markdown
-import kotlin.coroutines.cancellation.CancellationException
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.launch
 
 /**
  * Text field for composing or editing a post.
@@ -52,47 +50,26 @@ constructor(
   attributeSet: AttributeSet? = null,
   defaultStyleAttribute: Int = android.R.attr.editTextStyle
 ) : AppCompatEditText(context, attributeSet, defaultStyleAttribute) {
+  /** [OnValueChangeListener] that is notified whenever the [CompositionTextFieldValue] changes. */
+  private var onValueChangeListener: OnValueChangeListener? = null
+
   /** Delegate by which the [error] is measured and drawn. */
   private val errorDelegate by lazy { ErrorDelegate(this) }
 
-  /**
-   * [CoroutineScope] in which [setText]'s [Job]s are launched for defining [Markdown] as being the
-   * current text.
-   */
-  private var markdownTextSettingCoroutineScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
-
-  /** [CancellationException] thrown when a [CompositionTextField]'s text is reset. */
-  class ResetTextException internal constructor() :
-    CancellationException("The text has been reset.")
-
-  /**
-   * [CancellationException] thrown when a [CompositionTextField] gets detached from the [Window].
-   *
-   * @see onDetachedFromWindow
-   */
-  class DetachedFromWindowException internal constructor() :
-    CancellationException("The text field got detached from the window.")
-
-  /**
-   * Text field for composing or editing a post.
-   *
-   * @param context [Context] in which it will be added.
-   * @param markdownTextSettingCoroutineScope [CoroutineScope] in which [setText]'s [Job]s are
-   *   launched for defining [Markdown] as being the current text.
-   */
-  @VisibleForTesting
-  internal constructor(
-    context: Context,
-    markdownTextSettingCoroutineScope: CoroutineScope
-  ) : this(context) {
-    this.markdownTextSettingCoroutineScope = markdownTextSettingCoroutineScope
-  }
+  /** Value containing both the current text and selection. */
+  private val value
+    get() =
+      text
+        ?.toMarkdown(context)
+        ?.let { CompositionTextFieldValue(it, selectionStart..selectionEnd) }
+        .orEmpty()
 
   init {
     setBackgroundColor(getBackgroundColor(context))
     setPadding(getSpacing(context))
     compoundDrawablePadding = getSpacing(context)
     gravity = Gravity.TOP
+    setTextAppearance(context, R.style.Theme_Orca_Typography_BodyMedium)
   }
 
   override fun onDraw(canvas: Canvas) {
@@ -101,13 +78,35 @@ constructor(
   }
 
   override fun setText(text: CharSequence?, type: BufferType?) {
-    super.setText(text, type)
+    @Suppress("NAME_SHADOWING")
+    val text =
+      if (text is Markdown) {
+        when (type) {
+          BufferType.SPANNABLE -> text.toSpannable(context)
+          BufferType.EDITABLE -> text.toEditable(context)
+          else -> text.toSpanned(context)
+        }
+      } else {
+        text
+      }
 
-    @Suppress("UNNECESSARY_SAFE_CALL")
-    markdownTextSettingCoroutineScope
-      ?.coroutineContext
-      ?.get(Job)
-      ?.cancelChildren(ResetTextException())
+    super.setText(text, type)
+    onValueChangeListener?.let {
+      val value = text?.toMarkdown(context)?.let(::CompositionTextFieldValue).orEmpty()
+      it.onValueChange(value)
+    }
+  }
+
+  override fun onSelectionChanged(selStart: Int, selEnd: Int) {
+    super.onSelectionChanged(selStart, selEnd)
+    onValueChangeListener?.let { onValueChangeListener ->
+      val value =
+        text
+          ?.toMarkdown(context)
+          ?.let { textAsMarkdown -> CompositionTextFieldValue(textAsMarkdown, selStart..selEnd) }
+          .orEmpty()
+      onValueChangeListener.onValueChange(value)
+    }
   }
 
   override fun getError(): CharSequence? {
@@ -123,25 +122,55 @@ constructor(
     super.onConfigurationChanged(newConfig)
   }
 
-  override fun onDetachedFromWindow() {
-    super.onDetachedFromWindow()
-    markdownTextSettingCoroutineScope.coroutineContext[Job]?.cancelChildren(
-      DetachedFromWindowException()
-    )
+  /**
+   * Changes both the text and the selection.
+   *
+   * @param value [CompositionTextFieldValue] based on which the text and the selection will be set.
+   */
+  fun setValue(value: CompositionTextFieldValue) {
+    if (this.value != value) {
+      setText(value.text)
+      setSelection(value.selection)
+    }
   }
 
   /**
-   * Sets the [Markdown] as the current text.
+   * Sets an [OnValueChangeListener].
    *
-   * @param text [Markdown] to be set as the text.
+   * @param onValueChangeListener [OnValueChangeListener] that will be notified when the
+   *   [CompositionTextFieldValue] changes.
    */
-  fun setText(text: Markdown) {
-    markdownTextSettingCoroutineScope.launch {
-      text.toEditableAsFlow(context).collect { this@CompositionTextField.text = it }
+  fun setOnValueChangeListener(onValueChangeListener: OnValueChangeListener?) {
+    this.onValueChangeListener = onValueChangeListener
+  }
+
+  /**
+   * Defines the given indices as the ones currently selected.
+   *
+   * @param selection Portion of the text to be selected.
+   */
+  private fun setSelection(selection: IntRange) {
+    if (selection.isEmpty()) {
+      setSelection(0)
+    } else {
+      setSelection(selection.first, selection.last)
     }
   }
 
   companion object {
+    /**
+     * Obtains the amount of pixels by which the surroundings are to be padded and drawn components
+     * are to be spaced.
+     *
+     * @param context [Context] with which conversion from DPs to pixels is performed.
+     */
+    @JvmName("getSpacing")
+    @JvmStatic
+    @Px
+    fun getSpacing(context: Context): Int {
+      return Units.dp(context, Spacings.default.medium)
+    }
+
     /**
      * Obtains the color of a [CompositionTextField]'s background.
      *
@@ -152,19 +181,6 @@ constructor(
     @JvmStatic
     internal fun getBackgroundColor(context: Context): Int {
       return context.getColor(R.color.surfaceContainer)
-    }
-
-    /**
-     * Obtains the amount of pixels by which the surroundings are to be padded and drawn components
-     * are to be spaced.
-     *
-     * @param context [Context] with which conversion from DPs to pixels is performed.
-     */
-    @JvmName("getSpacing")
-    @JvmStatic
-    @Px
-    internal fun getSpacing(context: Context): Int {
-      return Units.dp(context, Spacings.default.medium)
     }
   }
 }

@@ -29,7 +29,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.core.view.ViewKt;
 import br.com.orcinus.orca.platform.autos.R;
-import br.com.orcinus.orca.platform.autos.kit.input.text.markdown.spanned.span.AccessibleObjects;
 import java.lang.reflect.Field;
 import java.util.function.IntUnaryOperator;
 import kotlin.Unit;

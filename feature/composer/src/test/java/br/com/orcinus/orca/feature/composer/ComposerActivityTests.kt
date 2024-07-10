@@ -15,21 +15,16 @@
 
 package br.com.orcinus.orca.feature.composer
 
-import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.filterToOne
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.performClick
-import androidx.compose.ui.test.performTextInput
-import androidx.compose.ui.test.performTextInputSelection
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
-import br.com.orcinus.orca.platform.autos.test.kit.input.text.onTextField
-import org.junit.Ignore
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.CompositionTextField
+import br.com.orcinus.orca.std.markdown.buildMarkdown
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -39,41 +34,44 @@ import org.robolectric.RobolectricTestRunner
 internal class ComposerActivityTests {
   @get:Rule val composeRule = createAndroidComposeRule<ComposerActivity>()
 
-  @OptIn(ExperimentalTestApi::class)
   @Test
   fun stylesSelectedComposition() {
-    composeRule.onTextField().performTextInput("Hello, world!")
-    composeRule.onTextField().performTextInputSelection(TextRange(0, 5))
+    onView(isAssignableFrom(CompositionTextField::class.java))
+      .perform(typeText("Hello, world!"), selectText(0..5))
     composeRule.onToolbar().onChildren().filterToOne(isBoldFormat()).performClick()
-    composeRule
-      .onTextField()
-      .assertTextEquals(
-        buildAnnotatedString {
-          withStyle(SpanStyle(fontWeight = FontWeight.Bold)) { append("Hello") }
-          append(", world!")
-        }
+    onView(isAssignableFrom(CompositionTextField::class.java))
+      .check(
+        matches(
+          withText(
+            buildMarkdown {
+              bold { +"Hello" }
+              +", world!"
+            }
+          )
+        )
       )
   }
 
-  @Ignore(
-    "androidx.compose.ui:ui-text:1.5.0 has a bug that prevents stylization from being kept " +
-      "across selection changes."
-  )
-  @OptIn(ExperimentalTestApi::class)
   @Test
   fun keepsStylizationWhenUnselectingStylizedComposition() {
-    composeRule.onTextField().performTextInput("Hello, world!")
-    composeRule.onTextField().performTextInputSelection(TextRange(7, 12))
+    onView(isAssignableFrom(CompositionTextField::class.java))
+      .perform(typeText("Hello, world!"), selectText(7..12))
     composeRule.onToolbar().onChildren().filterToOne(isItalicFormat()).performClick()
-    repeat(64) { composeRule.onTextField().performTextInputSelection(TextRange((0..12).random())) }
-    composeRule
-      .onTextField()
-      .assertTextEquals(
-        buildAnnotatedString {
-          append("Hello, ")
-          withStyle(SpanStyle(fontStyle = FontStyle.Italic)) { append("world") }
-          append('!')
-        }
+    repeat(64) {
+      onView(isAssignableFrom(CompositionTextField::class.java))
+        .perform(selectText((0..13).random()))
+    }
+    onView(isAssignableFrom(CompositionTextField::class.java))
+      .check(
+        matches(
+          withText(
+            buildMarkdown {
+              +"Hello, "
+              italic { +"world" }
+              +'!'
+            }
+          )
+        )
       )
   }
 }

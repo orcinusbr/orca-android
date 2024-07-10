@@ -16,8 +16,8 @@
 package br.com.orcinus.orca.std.markdown
 
 import br.com.orcinus.orca.std.markdown.style.Style
-import br.com.orcinus.orca.std.markdown.style.isChoppedBy
-import br.com.orcinus.orca.std.markdown.style.isWithin
+import br.com.orcinus.orca.std.markdown.style.merge
+import br.com.orcinus.orca.std.markdown.style.minus
 import java.io.Serializable
 import java.net.URI
 import java.util.Objects
@@ -145,8 +145,7 @@ class Markdown private constructor(private val text: String, val styles: List<St
   }
 
   override fun equals(other: Any?): Boolean {
-    return other is String && toString() == other ||
-      other is Markdown && text == other.text && styles.containsAll(other.styles)
+    return other is Markdown && text == other.text && styles.containsAll(other.styles)
   }
 
   override fun hashCode(): Int {
@@ -165,13 +164,8 @@ class Markdown private constructor(private val text: String, val styles: List<St
    *   this [Markdown]'s applicable [styles] will be applied.
    */
   fun copy(text: String.() -> String): Markdown {
-    val updatedText = toString().text()
-    return Markdown(
-      updatedText,
-      styles
-        .filter { it.isWithin(updatedText) || it.isChoppedBy(updatedText) }
-        .map({ it.isChoppedBy(updatedText) }) { it.at(it.indices.first..updatedText.lastIndex) }
-    )
+    val copiedText = this.text.text()
+    return Markdown(copiedText, styles - { copiedText.length..it.last })
   }
 
   companion object {
@@ -199,7 +193,7 @@ class Markdown private constructor(private val text: String, val styles: List<St
      */
     fun styled(text: String, styles: List<Style>): Markdown {
       val isEmpty = text.isEmpty() && styles.isEmpty()
-      return if (isEmpty) empty else Markdown(text, styles)
+      return if (isEmpty) empty else Markdown(text, styles.merge())
     }
   }
 }

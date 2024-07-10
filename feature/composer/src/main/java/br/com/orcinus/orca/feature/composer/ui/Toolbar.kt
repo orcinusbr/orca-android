@@ -23,7 +23,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.FormatBold
 import androidx.compose.material.icons.rounded.FormatItalic
-import androidx.compose.material.icons.rounded.FormatUnderlined
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
@@ -42,7 +41,6 @@ import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 internal const val COMPOSER_TOOLBAR = "composer-toolbar"
 internal const val COMPOSER_TOOLBAR_BOLD_FORMAT = "composer-toolbar-bold-format"
 internal const val COMPOSER_TOOLBAR_ITALIC_FORMAT = "composer-toolbar-italic-format"
-internal const val COMPOSER_TOOLBAR_UNDERLINE_FORMAT = "composer-toolbar-underline-format"
 
 @Composable
 internal fun Toolbar(
@@ -50,8 +48,6 @@ internal fun Toolbar(
   onBoldToggle: (isBold: Boolean) -> Unit,
   isItalicized: Boolean,
   onItalicToggle: (isItalicized: Boolean) -> Unit,
-  isUnderlined: Boolean,
-  onUnderlineToggle: (isUnderlined: Boolean) -> Unit,
   modifier: Modifier = Modifier
 ) {
   val shape = AutosTheme.forms.large.asShape
@@ -88,16 +84,6 @@ internal fun Toolbar(
           Icon(Icons.Rounded.FormatItalic, contentDescription = "Italic")
         }
       }
-
-      item {
-        FormatIconButton(
-          isEnabled = isUnderlined,
-          onClick = { onUnderlineToggle(!isUnderlined) },
-          Modifier.testTag(COMPOSER_TOOLBAR_UNDERLINE_FORMAT)
-        ) {
-          Icon(Icons.Rounded.FormatUnderlined, contentDescription = "Underline")
-        }
-      }
     }
   }
 }
@@ -106,13 +92,6 @@ internal fun Toolbar(
 @MultiThemePreview
 private fun ToolbarPreview() {
   AutosTheme {
-    Toolbar(
-      isBold = true,
-      onBoldToggle = {},
-      isItalicized = false,
-      onItalicToggle = {},
-      isUnderlined = false,
-      onUnderlineToggle = {}
-    )
+    Toolbar(isBold = true, onBoldToggle = {}, isItalicized = false, onItalicToggle = {})
   }
 }

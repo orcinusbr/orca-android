@@ -22,7 +22,6 @@ import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.text.AnnotatedString
 import br.com.orcinus.orca.feature.composer.ui.COMPOSER_TOOLBAR_BOLD_FORMAT
 import br.com.orcinus.orca.feature.composer.ui.COMPOSER_TOOLBAR_ITALIC_FORMAT
-import br.com.orcinus.orca.feature.composer.ui.COMPOSER_TOOLBAR_UNDERLINE_FORMAT
 import br.com.orcinus.orca.feature.composer.ui.Toolbar
 
 /**
@@ -61,15 +60,5 @@ internal fun isBoldFormat(): SemanticsMatcher {
 internal fun isItalicFormat(): SemanticsMatcher {
   return SemanticsMatcher("is italic format") {
     it.config.getOrNull(SemanticsProperties.TestTag) == COMPOSER_TOOLBAR_ITALIC_FORMAT
-  }
-}
-
-/**
- * [SemanticsMatcher] that indicates whether the [SemanticsNode] if of a [Toolbar]'s underline
- * format.
- */
-internal fun isUnderlineFormat(): SemanticsMatcher {
-  return SemanticsMatcher("is underline format") {
-    it.config.getOrNull(SemanticsProperties.TestTag) == COMPOSER_TOOLBAR_UNDERLINE_FORMAT
   }
 }

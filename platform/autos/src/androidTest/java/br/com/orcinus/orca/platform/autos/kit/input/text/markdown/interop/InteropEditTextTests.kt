@@ -20,16 +20,16 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import br.com.orcinus.orca.platform.autos.test.kit.input.text.markdown.interop.scope.runInteropEditTextTest
+import br.com.orcinus.orca.platform.autos.test.kit.input.text.composition.interop.scope.runCompositionTextFieldTest
 import kotlin.test.Test
 import org.hamcrest.Matchers.`is`
 
 internal class InteropEditTextTests {
   @Test
   fun opensImeWhenFocused() {
-    runInteropEditTextTest {
-      awaitImeAnimation { onView(`is`(view)).perform(click()) }
-      assertThat(view.rootWindowInsets?.isVisible(WindowInsets.Type.ime())).isEqualTo(true)
+    runCompositionTextFieldTest {
+      awaitImeAnimation { onView(`is`(textField)).perform(click()) }
+      assertThat(textField.rootWindowInsets?.isVisible(WindowInsets.Type.ime())).isEqualTo(true)
     }
   }
 }
