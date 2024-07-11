@@ -33,7 +33,7 @@ internal class TermMutingTests {
   @Test
   fun showsErrorWhenTermIsEmptyAndMuteButtonIsClicked() {
     composeRule.setContent { AutosTheme { TermMuting() } }
-    composeRule.onNodeWithTag(SETTINGS_TERM_MUTING_MUTE_BUTTON).performClick()
+    composeRule.onNodeWithTag(SettingsTermMutingMuteButtonTag).performClick()
     composeRule.onTextFieldErrors().assertIsDisplayed()
   }
 }

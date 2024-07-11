@@ -36,7 +36,7 @@ import br.com.orcinus.orca.std.image.compose.SomeComposableImageLoader
 import com.jeanbarrossilva.loadable.placeholder.Placeholder
 
 /** Tag that identifies an avatar for testing purposes. */
-internal const val AVATAR_TAG = "avatar"
+internal const val AvatarTag = "avatar"
 
 /** Default values used by an avatar. */
 private object AvatarDefaults {
@@ -73,7 +73,7 @@ private object AvatarDefaults {
 @Composable
 fun SmallAvatar(modifier: Modifier = Modifier) {
   Placeholder(
-    modifier.requiredSize(AvatarDefaults.SmallSize).testTag(AVATAR_TAG),
+    modifier.requiredSize(AvatarDefaults.SmallSize).testTag(AvatarTag),
     shape = AvatarDefaults.smallShape
   )
 }
@@ -95,7 +95,7 @@ fun SmallAvatar(
     AvatarDefaults.contentDescriptionFor(name),
     AvatarDefaults.smallShape,
     ComposableImageLoader.DefaultContentScale,
-    modifier.requiredSize(AvatarDefaults.SmallSize).testTag(AVATAR_TAG)
+    modifier.requiredSize(AvatarDefaults.SmallSize).testTag(AvatarTag)
   )
 }
 
@@ -107,7 +107,7 @@ fun SmallAvatar(
 @Composable
 fun LargeAvatar(modifier: Modifier = Modifier) {
   Placeholder(
-    modifier.requiredSize(AvatarDefaults.LargeSize).testTag(AVATAR_TAG),
+    modifier.requiredSize(AvatarDefaults.LargeSize).testTag(AvatarTag),
     shape = AvatarDefaults.largeShape
   )
 }
@@ -129,7 +129,7 @@ fun LargeAvatar(
     AvatarDefaults.contentDescriptionFor(name),
     AvatarDefaults.largeShape,
     ComposableImageLoader.DefaultContentScale,
-    modifier.requiredSize(AvatarDefaults.LargeSize).testTag(AVATAR_TAG)
+    modifier.requiredSize(AvatarDefaults.LargeSize).testTag(AvatarTag)
   )
 }
 

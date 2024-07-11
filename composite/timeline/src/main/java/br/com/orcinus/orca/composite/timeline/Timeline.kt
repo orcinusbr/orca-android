@@ -70,27 +70,27 @@ import com.jeanbarrossilva.loadable.list.ListLoadable
 import java.net.URI
 
 /** Tag that identifies an [EmptyTimelineMessage] for testing purposes. */
-internal const val EMPTY_TIMELINE_MESSAGE_TAG = "empty-timeline-tag"
+internal const val EmptyTimelineMessageTag = "empty-timeline-message"
 
 /** Tag that identifies dividers between [PostPreview]s in a [Timeline] for testing purposes. */
-internal const val TIMELINE_DIVIDER_TAG = "timeline-divider"
+internal const val TimelineDividerTag = "timeline-divider"
 
 /** Tag that identifies a [Timeline]'s refresh indicator for testing purposes. */
-const val TIMELINE_REFRESH_INDICATOR = "timeline-refresh-indicator"
+const val TimelineRefreshIndicator = "timeline-refresh-indicator"
 
 /** Tag that identifies a [Timeline] for testing purposes. */
-const val TIMELINE_TAG = "timeline"
+const val TimelineTag = "timeline"
 
 /** [Timeline] content types for Compose to reuse the [Composable]s while lazily displaying them. */
 private enum class TimelineContentType {
   /** Content type of a header. */
-  HEADER,
+  Header,
 
   /** Content type of [PostPreview]s. */
-  POST_PREVIEW,
+  PostPreview,
 
-  /** Content type of a [RenderEffect]. */
-  RENDER_EFFECT
+  /** Content type of a [br.com.orcinus.orca.composite.timeline.RenderEffect]. */
+  RenderEffect
 }
 
 /**
@@ -215,10 +215,10 @@ fun Timeline(
       itemsIndexed(
         postPreviews,
         key = { _, preview -> preview.id },
-        contentType = { _, _ -> TimelineContentType.POST_PREVIEW }
+        contentType = { _, _ -> TimelineContentType.PostPreview }
       ) { index, preview ->
         if (index == 0 && header != null || index != 0 && index != postPreviews.lastIndex) {
-          HorizontalDivider(Modifier.testTag(TIMELINE_DIVIDER_TAG))
+          HorizontalDivider(Modifier.testTag(TimelineDividerTag))
         }
 
         PostPreview(
@@ -275,11 +275,11 @@ fun Timeline(
   }
 
   Box(Modifier.pullRefresh(pullRefreshState)) {
-    LazyColumn(modifier.testTag(TIMELINE_TAG), state, contentPadding) {
-      header?.let { item(contentType = TimelineContentType.HEADER, content = it) }
+    LazyColumn(modifier.testTag(TimelineTag), state, contentPadding) {
+      header?.let { item(contentType = TimelineContentType.Header, content = it) }
       content()
       renderEffect(
-        TimelineContentType.RENDER_EFFECT,
+        TimelineContentType.RenderEffect,
         content,
         itemCount,
         effect = paginateOnChangedItemCount
@@ -289,7 +289,7 @@ fun Timeline(
     PullRefreshIndicator(
       refresh.isInProgress,
       pullRefreshState,
-      Modifier.align(Alignment.TopCenter).testTag(TIMELINE_REFRESH_INDICATOR).semantics {
+      Modifier.align(Alignment.TopCenter).testTag(TimelineRefreshIndicator).semantics {
         isInProgress = refresh.isInProgress
       }
     )
@@ -365,7 +365,7 @@ private fun EmptyTimelineMessage(
   val spacing = AutosTheme.spacings.large.dp
 
   LazyColumn(
-    modifier.testTag(EMPTY_TIMELINE_MESSAGE_TAG).fillMaxSize(),
+    modifier.testTag(EmptyTimelineMessageTag).fillMaxSize(),
     contentPadding = contentPadding,
     verticalArrangement = Arrangement.spacedBy(spacing),
     horizontalAlignment = Alignment.CenterHorizontally

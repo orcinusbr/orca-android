@@ -20,13 +20,13 @@ import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.onNodeWithTag
 import br.com.orcinus.orca.feature.gallery.ui.Actions
-import br.com.orcinus.orca.feature.gallery.ui.GALLERY_ACTIONS_CLOSE_BUTTON_TAG
 import br.com.orcinus.orca.feature.gallery.ui.Gallery
+import br.com.orcinus.orca.feature.gallery.ui.GalleryActionsCloseButtonTag
 import br.com.orcinus.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 
 /** [SemanticsNodeInteraction] of a [Gallery]'s [Actions]' close [HoverableIconButton]. */
 fun SemanticsNodeInteractionsProvider.onCloseActionButton(): SemanticsNodeInteraction {
-  return onNodeWithTag(GALLERY_ACTIONS_CLOSE_BUTTON_TAG)
+  return onNodeWithTag(GalleryActionsCloseButtonTag)
 }
 
 /**

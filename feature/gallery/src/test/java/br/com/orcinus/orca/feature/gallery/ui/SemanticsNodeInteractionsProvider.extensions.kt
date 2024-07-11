@@ -24,7 +24,7 @@ import br.com.orcinus.orca.platform.autos.kit.menu.DropdownMenu
 
 /** [SemanticsNodeInteraction] of a [SampleGallery]'s [Actions]. */
 internal fun SemanticsNodeInteractionsProvider.onActions(): SemanticsNodeInteraction {
-  return onNodeWithTag(GALLERY_ACTIONS_TAG)
+  return onNodeWithTag(GalleryActionsTag)
 }
 
 /**
@@ -34,7 +34,7 @@ internal fun SemanticsNodeInteractionsProvider.onActions(): SemanticsNodeInterac
  * @see onOptionsButton
  */
 internal fun SemanticsNodeInteractionsProvider.onDownloadItem(): SemanticsNodeInteraction {
-  return onNodeWithTag(GALLERY_ACTIONS_OPTIONS_DOWNLOADS_ITEM_TAG)
+  return onNodeWithTag(GalleryActionsOptionsDownloadItemTag)
 }
 
 /**
@@ -43,7 +43,7 @@ internal fun SemanticsNodeInteractionsProvider.onDownloadItem(): SemanticsNodeIn
  * @see onActions
  */
 internal fun SemanticsNodeInteractionsProvider.onOptionsButton(): SemanticsNodeInteraction {
-  return onNodeWithTag(GALLERY_ACTIONS_OPTIONS_BUTTON_TAG)
+  return onNodeWithTag(GalleryActionsOptionsButtonTag)
 }
 
 /**
@@ -52,5 +52,5 @@ internal fun SemanticsNodeInteractionsProvider.onOptionsButton(): SemanticsNodeI
  * @see onActions
  */
 internal fun SemanticsNodeInteractionsProvider.onOptionsMenu(): SemanticsNodeInteraction {
-  return onNodeWithTag(GALLERY_ACTIONS_OPTIONS_MENU_TAG)
+  return onNodeWithTag(GalleryActionsOptionsMenuTag)
 }

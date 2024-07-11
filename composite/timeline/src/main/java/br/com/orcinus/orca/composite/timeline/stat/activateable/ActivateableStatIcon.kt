@@ -44,10 +44,10 @@ import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 
-/** Tag that identifies an [ActivateableStatIconDefaults] for testing purposes. */
-internal const val ACTIVATEABLE_STAT_ICON_TAG = "activateable-stat-icon"
+/** Tag that identifies an [ActivateableStatIcon] for testing purposes. */
+internal const val ActivateableStatIconTag = "activateable-stat-icon"
 
-/** Determines whether a [ActivateableStatIconDefaults] is interactive. */
+/** Determines whether an [ActivateableStatIcon] is interactive. */
 internal sealed class ActivateableStatIconInteractiveness {
   /** Mode of non-interactivity. */
   data object Still : ActivateableStatIconInteractiveness() {
@@ -55,10 +55,10 @@ internal sealed class ActivateableStatIconInteractiveness {
   }
 
   /**
-   * Mode of interactivity in which the [ActivateableStatIconDefaults] can be toggled.
+   * Mode of interactivity in which the [ActivateableStatIcon] can be toggled.
    *
    * @param onInteraction Callback run whenever it's clicked, signalling a request for the state
-   *   this [ActivateableStatIconDefaults] represents to be switched.
+   *   this [ActivateableStatIcon] represents to be switched.
    */
   class Interactive(private val onInteraction: (isActive: Boolean) -> Unit) :
     ActivateableStatIconInteractiveness() {
@@ -70,27 +70,25 @@ internal sealed class ActivateableStatIconInteractiveness {
   /**
    * Performs an action based on the received interaction.
    *
-   * @param isActive Whether the [ActivateableStatIconDefaults] is active.
+   * @param isActive Whether the [ActivateableStatIcon] is active.
    */
   internal abstract fun onInteraction(isActive: Boolean)
 }
 
 /**
- * Provides [Color]s for coloring a [ActivateableStatIconDefaults].
+ * Provides [Color]s for coloring an [ActivateableStatIcon].
  *
- * @param inactiveColor [Color] by which the [ActivateableStatIconDefaults] is colored when it's
- *   inactive.
- * @param activeColor [Color] by which the [ActivateableStatIconDefaults] is colored when it's
- *   active.
+ * @param inactiveColor [Color] by which the [ActivateableStatIcon] is colored when it's inactive.
+ * @param activeColor [Color] by which the [ActivateableStatIcon] is colored when it's active.
  */
 @Immutable
 class ActivateableStatIconColors
 internal constructor(private val inactiveColor: Color, private val activeColor: Color) {
   /**
-   * Provides the [Color] that matches the activeness of the [ActivateableStatIconDefaults]
-   * represented by [isActive].
+   * Provides the [Color] that matches the activeness of the [ActivateableStatIcon] represented by
+   * [isActive].
    *
-   * @param isActive Whether the [ActivateableStatIconDefaults] is active.
+   * @param isActive Whether the [ActivateableStatIcon] is active.
    */
   internal fun color(isActive: Boolean): Color {
     return if (isActive) activeColor else inactiveColor
@@ -170,7 +168,7 @@ internal fun ActivateableStatIcon(
       }
       .scale(scale)
       .size(StatDefaults.IconSize)
-      .testTag(ACTIVATEABLE_STAT_ICON_TAG)
+      .testTag(ActivateableStatIconTag)
       .semantics { selected = isActive },
     tint
   )

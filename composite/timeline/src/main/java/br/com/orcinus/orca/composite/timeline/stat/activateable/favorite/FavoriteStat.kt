@@ -34,7 +34,7 @@ import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 
 /** Tag that identifies a [FavoriteStat] for testing purposes. */
-const val FAVORITE_STAT_TAG = "favorites-stat"
+const val FavoriteStatTag = "favorites-stat"
 
 @Composable
 internal fun FavoriteStat(
@@ -46,7 +46,7 @@ internal fun FavoriteStat(
 ) {
   val isActive = remember(details, details::isFavorite)
 
-  Stat(position, onClick, modifier.testTag(FAVORITE_STAT_TAG)) {
+  Stat(position, onClick, modifier.testTag(FavoriteStatTag)) {
     val contentColor by
       animateColorAsState(
         if (isActive) AutosTheme.colors.activation.favorite.asColor else inactiveContentColor,

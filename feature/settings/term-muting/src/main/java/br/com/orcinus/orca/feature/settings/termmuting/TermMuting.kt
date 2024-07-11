@@ -49,8 +49,8 @@ import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 import br.com.orcinus.orca.platform.focus.rememberImmediateFocusRequester
 
-internal const val SETTINGS_TERM_MUTING_TEXT_FIELD_TAG = "settings-term-muting-text-field"
-internal const val SETTINGS_TERM_MUTING_MUTE_BUTTON = "settings-term-muting-mute-button"
+internal const val SettingsTermMutingTextFieldTag = "settings-term-muting-text-field"
+internal const val SettingsTermMutingMuteButtonTag = "settings-term-muting-mute-button"
 
 @Composable
 internal fun TermMuting(
@@ -117,7 +117,7 @@ private fun TermMuting(
     },
     bottom = {
       ButtonBar(lazyListState) {
-        PrimaryButton(onClick = onDone, Modifier.testTag(SETTINGS_TERM_MUTING_MUTE_BUTTON)) {
+        PrimaryButton(onClick = onDone, Modifier.testTag(SettingsTermMutingMuteButtonTag)) {
           Text(stringResource(R.string.feature_settings_term_muting_mute))
         }
       }
@@ -136,7 +136,7 @@ private fun TermMuting(
             onTermChange,
             Modifier.focusRequester(focusRequester)
               .fillMaxWidth()
-              .testTag(SETTINGS_TERM_MUTING_TEXT_FIELD_TAG),
+              .testTag(SettingsTermMutingTextFieldTag),
             errorDispatcher,
             KeyboardOptions(imeAction = ImeAction.Done),
             KeyboardActions(onDone = { onDone() })

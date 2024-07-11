@@ -32,7 +32,7 @@ import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 
 /** Tag that identifies a [FavoriteStatIcon] for testing purposes. */
-const val FAVORITE_STAT_ICON_TAG = "favorite-stat-icon"
+const val FavoriteStatIconTag = "favorite-stat-icon"
 
 /** Default values of a [FavoriteStatIcon]. */
 internal object FavoriteStatIconDefaults {
@@ -87,7 +87,7 @@ internal fun FavoriteStatIcon(
     isActive,
     interactiveness,
     colors,
-    modifier.testTag(FAVORITE_STAT_ICON_TAG)
+    modifier.testTag(FavoriteStatIconTag)
   )
 }
 

@@ -31,7 +31,7 @@ import br.com.orcinus.orca.composite.timeline.test.post.performScrollToPostPrevi
 import br.com.orcinus.orca.composite.timeline.test.refresh.assertIsNotInProgress
 import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.feature.composer.ComposerActivity
-import br.com.orcinus.orca.feature.feed.FEED_FLOATING_ACTION_BUTTON_TAG
+import br.com.orcinus.orca.feature.feed.FedFloatingActionButtonTag
 import br.com.orcinus.orca.feature.feed.test.onSearchAction
 import br.com.orcinus.orca.feature.gallery.GalleryActivity
 import br.com.orcinus.orca.feature.search.SearchActivity
@@ -90,7 +90,7 @@ internal class FeedTests {
   @Test
   fun navigatesToComposerOnFabClick() {
     intendStartingOf<ComposerActivity> {
-      composeRule.onNodeWithTag(FEED_FLOATING_ACTION_BUTTON_TAG).performClick()
+      composeRule.onNodeWithTag(FedFloatingActionButtonTag).performClick()
     }
   }
 }

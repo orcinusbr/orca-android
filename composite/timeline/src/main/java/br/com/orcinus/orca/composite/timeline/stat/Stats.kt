@@ -35,10 +35,10 @@ import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 
 /** Tag that identifies [Stats]' comment [Stat][_Stat] for testing purposes. */
-const val STATS_COMMENT_STAT_TAG = "stats-comment-stat"
+const val StatsCommentStatTag = "stats-comment-stat"
 
 /** Tag that identifies [Stats]' share [Stat][_Stat] for testing purposes. */
-const val STATS_SHARE_STAT_TAG = "stats-share-stat"
+const val StatsShareStatTag = "stats-share-stat"
 
 /**
  * Actions for a [Post]'s [Stat]s.
@@ -76,7 +76,7 @@ fun Stats(
       AutosTheme.iconography.comment.outlined.asImageVector,
       contentDescription = stringResource(R.string.composite_timeline_stat_comments),
       onClick = onComment,
-      Modifier.testTag(STATS_COMMENT_STAT_TAG),
+      Modifier.testTag(StatsCommentStatTag),
       contentColor
     ) {
       Text(details.formattedCommentCount)
@@ -101,7 +101,7 @@ fun Stats(
       AutosTheme.iconography.share.outlined.asImageVector,
       contentDescription = stringResource(R.string.composite_timeline_stat_share),
       onClick = onShare,
-      Modifier.testTag(STATS_SHARE_STAT_TAG),
+      Modifier.testTag(StatsShareStatTag),
       contentColor
     )
   }

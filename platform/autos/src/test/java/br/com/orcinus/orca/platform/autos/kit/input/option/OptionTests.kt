@@ -44,7 +44,7 @@ internal class OptionTests {
   @Test
   fun showsSelectionIconWhenSelected() {
     composeRule.setContent { AutosTheme { Option(isSelected = true) } }
-    composeRule.onNodeWithTag(OPTION_SELECTION_ICON_TAG, useUnmergedTree = true).assertIsDisplayed()
+    composeRule.onNodeWithTag(OptionSelectionIconTag, useUnmergedTree = true).assertIsDisplayed()
   }
 
   @Test

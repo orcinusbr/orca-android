@@ -17,10 +17,10 @@ package br.com.orcinus.orca.composite.timeline.post.figure.gallery.test
 
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.hasTestTag
-import br.com.orcinus.orca.composite.timeline.post.figure.gallery.GALLERY_PREVIEW_TAG
 import br.com.orcinus.orca.composite.timeline.post.figure.gallery.GalleryPreview
+import br.com.orcinus.orca.composite.timeline.post.figure.gallery.GalleryPreviewTag
 
 /** [SemanticsMatcher] that matches a [GalleryPreview]. */
 internal fun isGalleryPreview(): SemanticsMatcher {
-  return hasTestTag(GALLERY_PREVIEW_TAG)
+  return hasTestTag(GalleryPreviewTag)
 }

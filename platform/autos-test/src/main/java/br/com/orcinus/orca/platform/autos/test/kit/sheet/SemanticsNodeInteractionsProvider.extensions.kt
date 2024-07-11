@@ -18,10 +18,10 @@ package br.com.orcinus.orca.platform.autos.test.kit.sheet
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.onNodeWithTag
-import br.com.orcinus.orca.platform.autos.kit.sheet.SHEET_TAG
 import br.com.orcinus.orca.platform.autos.kit.sheet.Sheet
+import br.com.orcinus.orca.platform.autos.kit.sheet.SheetTag
 
 /** [SemanticsNodeInteraction] of a [Sheet]. */
 fun SemanticsNodeInteractionsProvider.onSheet(): SemanticsNodeInteraction {
-  return onNodeWithTag(SHEET_TAG)
+  return onNodeWithTag(SheetTag)
 }

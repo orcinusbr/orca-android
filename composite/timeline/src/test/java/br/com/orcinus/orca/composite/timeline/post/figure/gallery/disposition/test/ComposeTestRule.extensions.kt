@@ -26,5 +26,5 @@ import br.com.orcinus.orca.composite.timeline.post.figure.gallery.thumbnail.Thum
  * [Thumbnail] over-count.
  */
 internal fun ComposeTestRule.onOverCount(): SemanticsNodeInteraction {
-  return onNodeWithTag(Disposition.Grid.OVER_COUNT_TAG)
+  return onNodeWithTag(Disposition.Grid.OverCountTag)
 }

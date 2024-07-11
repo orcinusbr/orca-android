@@ -18,12 +18,12 @@ package br.com.orcinus.orca.composite.timeline.test
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.onNodeWithTag
-import br.com.orcinus.orca.composite.timeline.TIMELINE_REFRESH_INDICATOR
 import br.com.orcinus.orca.composite.timeline.Timeline
+import br.com.orcinus.orca.composite.timeline.TimelineRefreshIndicator
 
 /** [SemanticsNodeInteraction] of a [Timeline]'s refresh indicator. */
 fun SemanticsNodeInteractionsProvider.onRefreshIndicator(): SemanticsNodeInteraction {
-  return onNodeWithTag(TIMELINE_REFRESH_INDICATOR)
+  return onNodeWithTag(TimelineRefreshIndicator)
 }
 
 /** [SemanticsNodeInteraction] of a [Timeline]. */

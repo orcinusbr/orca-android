@@ -28,7 +28,7 @@ import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 
 /** Tag that identifies a [PrimaryButton] for testing purposes. */
-const val PRIMARY_BUTTON_TAG = "primary-button"
+const val PrimaryButtonTag = "primary-button"
 
 /**
  * [Button] that represents a primary action, performed or requested to be performed through
@@ -50,7 +50,7 @@ fun PrimaryButton(
   Button {
     ElevatedButton(
       onClick = { load(onClick) },
-      modifier.testTag(PRIMARY_BUTTON_TAG),
+      modifier.testTag(PrimaryButtonTag),
       isEnabled,
       _ButtonDefaults.shape,
       colors =

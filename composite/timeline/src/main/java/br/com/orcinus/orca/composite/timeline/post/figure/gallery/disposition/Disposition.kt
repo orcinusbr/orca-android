@@ -113,7 +113,7 @@ sealed class Disposition {
             entrypoint = it
           )
         },
-        modifier.aspectRatio(FULL_RATIO).fillMaxWidth()
+        modifier.aspectRatio(FullRatio).fillMaxWidth()
       )
     }
   }
@@ -137,7 +137,7 @@ sealed class Disposition {
        * Provides a [Shape] for a [Thumbnail] that is the second one, after the leading and before
        * the trailing one.
        */
-      SECOND_OF_THREE {
+      SecondOfThree {
         @Composable
         override fun provide(): Shape {
           return ThumbnailDefaults.shape.withoutTopStart.withoutBottomEnd.withoutBottomStart
@@ -145,7 +145,7 @@ sealed class Disposition {
       },
 
       /** Provides a [Shape] for a [Thumbnail] that is both the second and the trailing one. */
-      TRAILING_OF_TWO {
+      TrailingOfTwo {
         @Composable
         override fun provide(): Shape {
           return ThumbnailDefaults.shape.withoutTopStart.withoutBottomStart
@@ -153,7 +153,7 @@ sealed class Disposition {
       },
 
       /** Provides a [Shape] for a [Thumbnail] that is both the third and the trailing one. */
-      TRAILING_OF_THREE {
+      TrailingOfThree {
         @Composable
         override fun provide(): Shape {
           return ThumbnailDefaults.shape.withoutTopStart.withoutTopEnd.withoutBottomStart
@@ -179,9 +179,9 @@ sealed class Disposition {
           require(position in 2..3) { "Position should be either 2 or 3." }
           val visibleAttachmentCount = minOf(3, attachmentCount)
           return when {
-            position == 2 && visibleAttachmentCount == 2 -> TRAILING_OF_TWO
-            position == 2 && visibleAttachmentCount == 3 -> SECOND_OF_THREE
-            else -> TRAILING_OF_THREE
+            position == 2 && visibleAttachmentCount == 2 -> TrailingOfTwo
+            position == 2 && visibleAttachmentCount == 3 -> SecondOfThree
+            else -> TrailingOfThree
           }
         }
       }
@@ -211,7 +211,7 @@ sealed class Disposition {
               entrypoint = it
             )
           },
-          Modifier.fillMaxWidth(.5f).aspectRatio(LEADING_HALF_WIDTH_RATIO),
+          Modifier.fillMaxWidth(.5f).aspectRatio(LeadingHalfWidthRatio),
           ThumbnailDefaults.shape.withoutTopEnd.withoutBottomEnd
         )
 
@@ -230,8 +230,8 @@ sealed class Disposition {
                 )
               },
               (Modifier as Modifier)
-                .`if`(attachments.size > 2) { aspectRatio(TRAILING_APPROXIMATE_HALF_RATIO) }
-                .`if`(attachments.size == 2) { aspectRatio(TRAILING_APPROXIMATE_HALF_WIDTH_RATIO) }
+                .`if`(attachments.size > 2) { aspectRatio(TrailingApproximateHalfRatio) }
+                .`if`(attachments.size == 2) { aspectRatio(TrailingApproximateHalfWidthRatio) }
                 .fillMaxWidth(),
               SubsequentShapeProvider.of(attachments.size, position = 2).provide()
             )
@@ -253,7 +253,7 @@ sealed class Disposition {
                     entrypoint = copy
                   )
                 },
-                Modifier.fillMaxWidth().aspectRatio(TRAILING_APPROXIMATE_HALF_RATIO),
+                Modifier.fillMaxWidth().aspectRatio(TrailingApproximateHalfRatio),
                 shape
               )
 
@@ -267,7 +267,7 @@ sealed class Disposition {
                     R.string.composite_timeline_post_preview_gallery_thumbnail_over_count,
                     (attachments.size - 2).formatted
                   ),
-                  Modifier.testTag(OVER_COUNT_TAG),
+                  Modifier.testTag(OverCountTag),
                   Color.White,
                   style = AutosTheme.typography.titleLarge
                 )
@@ -280,7 +280,7 @@ sealed class Disposition {
 
     companion object {
       /** Tag that identifies a [Grid]'s [Content]'s [Thumbnail] over-count for testing purposes. */
-      const val OVER_COUNT_TAG = "gallery-grid-disposition-over-count"
+      @Suppress("ConstPropertyName") const val OverCountTag = "gallery-grid-disposition-over-count"
     }
   }
 
@@ -293,26 +293,26 @@ sealed class Disposition {
 
   companion object {
     /** Aspect ratio of a [Thumbnail] that fills the [GalleryPreview]. */
-    internal const val FULL_RATIO = 16f / 9f
+    @Suppress("ConstPropertyName") internal const val FullRatio = 16f / 9f
 
     /**
-     * Aspect ratio of a leading [Thumbnail] that has the same height as a [FULL_RATIO], but half
-     * the width.
+     * Aspect ratio of a leading [Thumbnail] that has the same height as a [FullRatio], but half the
+     * width.
      */
-    internal const val LEADING_HALF_WIDTH_RATIO = 8f / 9f
+    @Suppress("ConstPropertyName") internal const val LeadingHalfWidthRatio = 8f / 9f
 
     /**
-     * Aspect ratio of a [Thumbnail] that is approximately half of a [FULL_RATIO]. This estimate is
+     * Aspect ratio of a [Thumbnail] that is approximately half of a [FullRatio]. This estimate is
      * due to the spacing that a [Grid] has in between its [Thumbnail]s.
      */
-    internal const val TRAILING_APPROXIMATE_HALF_RATIO = 8f / 4.52f
+    @Suppress("ConstPropertyName") internal const val TrailingApproximateHalfRatio = 8f / 4.52f
 
     /**
-     * Aspect ratio of a trailing [Thumbnail] that has the same height as a [FULL_RATIO], but
+     * Aspect ratio of a trailing [Thumbnail] that has the same height as a [FullRatio], but
      * approximately half the width. This estimate is due to the spacing that a [Grid] has in
      * between its [Thumbnail]s.
      */
-    internal const val TRAILING_APPROXIMATE_HALF_WIDTH_RATIO = 8f / 9.2f
+    @Suppress("ConstPropertyName") internal const val TrailingApproximateHalfWidthRatio = 8f / 9.2f
 
     /**
      * Gets the [Disposition] that's the most suitable for the [preview].

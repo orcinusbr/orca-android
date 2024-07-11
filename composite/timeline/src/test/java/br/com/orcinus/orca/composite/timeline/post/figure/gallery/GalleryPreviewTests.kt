@@ -143,10 +143,7 @@ internal class GalleryPreviewTests {
         )
       }
     }
-    composeRule
-      .onThumbnails()
-      .onFirst()
-      .assertAspectRatioEquals(Disposition.LEADING_HALF_WIDTH_RATIO)
+    composeRule.onThumbnails().onFirst().assertAspectRatioEquals(Disposition.LeadingHalfWidthRatio)
   }
 
   @Test
@@ -161,7 +158,7 @@ internal class GalleryPreviewTests {
     composeRule
       .onThumbnails()
       .onLast()
-      .assertAspectRatioEquals(Disposition.TRAILING_APPROXIMATE_HALF_WIDTH_RATIO)
+      .assertAspectRatioEquals(Disposition.TrailingApproximateHalfWidthRatio)
   }
 
   @Test
@@ -171,9 +168,7 @@ internal class GalleryPreviewTests {
         GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples))
       }
     }
-    composeRule
-      .onThumbnails()[1]
-      .assertAspectRatioEquals(Disposition.TRAILING_APPROXIMATE_HALF_RATIO)
+    composeRule.onThumbnails()[1].assertAspectRatioEquals(Disposition.TrailingApproximateHalfRatio)
   }
 
   @Test

@@ -47,10 +47,10 @@ import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 
 /** Tag that identifies a [ButtonBar] for testing purposes. */
-internal const val BUTTON_BAR_TAG = "button-bar"
+internal const val ButtonBarTag = "button-bar"
 
 /** Tag that identifies a [ButtonBar]'s [Divider] for testing purposes. */
-internal const val BUTTON_BAR_DIVIDER_TAG = "button-bar-divider"
+internal const val ButtonBarDividerTag = "button-bar-divider"
 
 /** Default values of a [ButtonBar]. */
 object ButtonBarDefaults {
@@ -117,14 +117,14 @@ private fun ButtonBar(
     )
 
   Column(modifier) {
-    Divider(Modifier.testTag(BUTTON_BAR_DIVIDER_TAG), thickness = borderStrokeWidth)
+    Divider(Modifier.testTag(ButtonBarDividerTag), thickness = borderStrokeWidth)
 
     Layout(
       content,
       Modifier.drawBehind { drawRect(containerColor) }
         .padding(spacing)
         .fillMaxWidth()
-        .testTag(BUTTON_BAR_TAG)
+        .testTag(ButtonBarTag)
     ) { measurables, constraints ->
       val orientation = Orientation.VERTICAL
       val placements = measurables.mapToPlacement(constraints, orientation, spacingInPx)

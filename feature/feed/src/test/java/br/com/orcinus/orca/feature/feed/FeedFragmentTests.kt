@@ -23,7 +23,7 @@ import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
-import br.com.orcinus.orca.composite.timeline.stat.activateable.favorite.FAVORITE_STAT_TAG
+import br.com.orcinus.orca.composite.timeline.stat.activateable.favorite.FavoriteStatTag
 import br.com.orcinus.orca.composite.timeline.test.post.onPostPreviews
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.Profile
@@ -64,7 +64,7 @@ internal class FeedFragmentTests {
           .onPostPreviews()
           .onFirst()
           .onChildren()
-          .filterToOne(hasTestTag(FAVORITE_STAT_TAG))
+          .filterToOne(hasTestTag(FavoriteStatTag))
           .performScrollTo()
           .performClick()
           .assertIsSelected()

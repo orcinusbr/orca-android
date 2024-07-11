@@ -77,7 +77,7 @@ internal class OptionsTests {
     composeRule
       .onOptions()[1]
       .onSiblings()
-      .filter(hasTestTag(OPTIONS_DIVIDER_TAG))
+      .filter(hasTestTag(OptionsDividerTag))
       .assertCountEquals(2)
   }
 

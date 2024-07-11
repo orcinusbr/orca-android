@@ -58,7 +58,7 @@ internal class TimelineTests {
   @Test
   fun showsEmptyMessageWhenListLoadableIsEmpty() {
     composeRule.setContent { AutosTheme { Timeline(ListLoadable.Empty()) } }
-    composeRule.onNodeWithTag(EMPTY_TIMELINE_MESSAGE_TAG).assertIsDisplayed()
+    composeRule.onNodeWithTag(EmptyTimelineMessageTag).assertIsDisplayed()
   }
 
   @Test
@@ -76,7 +76,7 @@ internal class TimelineTests {
       .onChildren()
       .onFirst()
       .onSiblings()
-      .filter(hasTestTag(TIMELINE_DIVIDER_TAG))
+      .filter(hasTestTag(TimelineDividerTag))
       .assertCountEquals(0)
   }
 
@@ -87,7 +87,7 @@ internal class TimelineTests {
       .onTimeline()
       .onChildren()[1]
       .onSiblings()
-      .filter(hasTestTag(TIMELINE_DIVIDER_TAG))
+      .filter(hasTestTag(TimelineDividerTag))
       .assertCountEquals(1)
   }
 
@@ -97,7 +97,7 @@ internal class TimelineTests {
     composeRule
       .onTimeline()
       .onChildren()
-      .filter(hasTestTag(TIMELINE_DIVIDER_TAG))
+      .filter(hasTestTag(TimelineDividerTag))
       .assertCountEquals(0)
   }
 
