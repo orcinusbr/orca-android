@@ -17,6 +17,7 @@ package br.com.orcinus.orca.std.injector.processor.inject
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import br.com.orcinus.orca.std.injector.processor.BuildConfig
 import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.symbolProcessorProviders
@@ -34,12 +35,15 @@ internal class InjectProcessorTests {
             import br.com.orcinus.orca.std.injector.module.Inject
             import br.com.orcinus.orca.std.injector.module.Module
             import br.com.orcinus.orca.std.injector.module.injection.Injection
+            import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 
-            class SubModule(@Inject override val dependency: Injection<Int> = { 0 }) :
-              SuperModule(dependency)
+            class SubModule(
+              @Inject override val dependency: Injection<Int> = lazyInjectionOf { 0 }
+            ) : SuperModule(dependency)
 
-            abstract class SuperModule(@Inject open val dependency: Injection<Int> = { 0 }) :
-              Module()
+            abstract class SuperModule(
+              @Inject open val dependency: Injection<Int> = lazyInjectionOf { 0 }
+            ) : Module()
         """
           .trimIndent()
       )
@@ -47,8 +51,9 @@ internal class InjectProcessorTests {
       KotlinCompilation()
         .apply {
           inheritClassPath = true
+          jvmTarget = BuildConfig.javaVersion
           sources = listOf(source)
-          symbolProcessorProviders = listOf(InjectProcessor.Provider())
+          symbolProcessorProviders += InjectProcessor.Provider()
         }
         .compile()
     assertThat(result.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)

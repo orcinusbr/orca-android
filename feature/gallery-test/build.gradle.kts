@@ -18,13 +18,13 @@ import br.com.orcinus.orca.namespaceFor
 plugins {
   alias(libs.plugins.android.library)
   alias(libs.plugins.kotlin.android)
+  alias(libs.plugins.kotlin.compose)
 }
 
 kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
 
 android {
   buildFeatures.compose = true
-  composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
   defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   namespace = namespaceFor("feature.gallery.test")
   testOptions.unitTests.isIncludeAndroidResources = true

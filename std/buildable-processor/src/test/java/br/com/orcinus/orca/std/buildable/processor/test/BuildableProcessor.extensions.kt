@@ -36,8 +36,9 @@ internal fun BuildableProcessor.Companion.process(vararg files: SourceFile): Jvm
       inheritClassPath = true
       kspIncremental = true
       kspWithCompilation = true
+      languageVersion = "1.9"
       sources = files.toList()
-      symbolProcessorProviders = listOf(BuildableProcessor.Provider())
+      symbolProcessorProviders += BuildableProcessor.Provider()
     }
     .compile()
 }

@@ -60,7 +60,7 @@ kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", vers
 kotlin-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.5.1" }
 kotlin-symbolProcessor = { group = "com.google.devtools.ksp", name = "symbol-processing-api", version.ref = "kotlin-symbolProcessor" }
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
-kctfork-ksp = { group = "dev.zacsweers.kctfork", name = "ksp", version = "0.4.0" }
+kctfork-ksp = { group = "dev.zacsweers.kctfork", name = "ksp", version = "0.5.1" }
 kotlinPoet-ksp = { group = "com.squareup", name = "kotlinpoet-ksp", version = "1.14.2" }
 ktor-client-contentNegotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-serialization-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
@@ -90,6 +90,7 @@ android-library = { id = "com.android.library", version.ref = "android-plugin" }
 android-maps-secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version = "2.0.1" }
 buildconfig = { id = "com.github.gmazzo.buildconfig", version = "3.1.0" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-symbolProcessor = { id = "com.google.devtools.ksp", version.ref = "kotlin-symbolProcessor" }
@@ -107,7 +108,7 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 [versions]
 android-activity = "1.7.0"
-android-compose = "1.6.6"
+android-compose = "1.6.8"
 android-compose-compiler = "1.5.11"
 android-fragment = "1.7.0"
 android-lifecycle = "2.7.0"
@@ -117,9 +118,9 @@ android-sdk-min = "28"
 android-sdk-target = "34"
 android-test-espresso = "3.5.0"
 java = "17"
-kotlin = "1.9.23"
+kotlin = "2.0.0"
 kotlin-coroutines = "1.8.0"
-kotlin-symbolProcessor = "1.9.23-1.0.19"
+kotlin-symbolProcessor = "2.0.0-1.0.22"
 ktor = "2.3.2"
 lint = "31.3.2"
 loadable = "1.6.9"

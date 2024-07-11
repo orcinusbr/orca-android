@@ -18,9 +18,6 @@ package br.com.orcinus.orca.platform.ime.state
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.platform.ime.Ime
-import br.com.orcinus.orca.platform.ime.test.scope.close
-import br.com.orcinus.orca.platform.ime.test.scope.ime
-import br.com.orcinus.orca.platform.ime.test.scope.open
 import br.com.orcinus.orca.platform.ime.test.scope.runImeTest
 import kotlin.test.Test
 

@@ -17,7 +17,7 @@ package br.com.orcinus.orca.platform.autos.kit.action.setting.list
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -112,7 +112,7 @@ private fun Settings(
       }
 
       if (index != scope.settings.lastIndex) {
-        Divider()
+        HorizontalDivider()
       }
     }
   }

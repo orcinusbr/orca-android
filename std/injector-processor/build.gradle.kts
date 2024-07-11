@@ -14,9 +14,16 @@
  */
 
 plugins {
+  alias(libs.plugins.buildconfig)
   alias(libs.plugins.kotlin.jvm)
 
   `java-library`
+}
+
+buildConfig {
+  buildConfigField("String", "javaVersion", "\"${libs.versions.java.get()}\"")
+
+  packageName("br.com.orcinus.orca.std.injector.processor")
 }
 
 dependencies {

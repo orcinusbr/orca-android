@@ -24,8 +24,8 @@ import br.com.orcinus.orca.std.image.compose.ComposableImage
 import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 
 /** [ImageLoader] that loads an image locally through its resource ID. */
-internal class LocalImageLoader(override val source: Int) :
-  ComposableImageLoader<@receiver:DrawableRes Int>() {
+internal class LocalImageLoader(@DrawableRes override val source: Int) :
+  ComposableImageLoader<Int>() {
   override fun load(): ComposableImage {
     return { contentDescription, shape, contentScale, modifier ->
       Image(

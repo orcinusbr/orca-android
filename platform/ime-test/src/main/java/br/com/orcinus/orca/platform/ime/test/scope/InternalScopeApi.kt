@@ -13,25 +13,10 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-plugins {
-  alias(libs.plugins.android.library)
-  alias(libs.plugins.kotlin.android)
-  alias(libs.plugins.kotlin.compose)
-}
+package br.com.orcinus.orca.platform.ime.test.scope
 
-android {
-  buildFeatures.compose = true
-  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-}
+import br.com.orcinus.orca.std.visibility.PackageProtected
 
-dependencies {
-  androidTestImplementation(project(":platform:ime-test"))
-  androidTestImplementation(libs.android.test.runner)
-  androidTestImplementation(libs.kotlin.test)
-
-  implementation(libs.android.compose.ui)
-  implementation(libs.android.core)
-
-  testImplementation(libs.assertk)
-  testImplementation(libs.kotlin.test)
-}
+/** Denotes that an API shouldn't be referenced from non-[ImeScope]-related sources. */
+@PackageProtected("Such API is internal to test-related IME structures.")
+internal annotation class InternalScopeApi

@@ -34,7 +34,10 @@ import io.ktor.client.statement.HttpResponse
 internal fun createHttpClientEngineFactory(
   responseProvider: ClientResponseProvider
 ): HttpClientEngineFactory<MockEngineConfig> {
-  return createHttpClientEngineFactory { MockEngine { with(responseProvider) { provide(it) } } }
+  @Suppress("USELESS_CAST")
+  return createHttpClientEngineFactory(
+    { MockEngine { with(responseProvider) { provide(it) } } } as () -> MockEngine
+  )
 }
 
 /**
