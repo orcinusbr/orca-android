@@ -47,7 +47,7 @@ import com.jeanbarrossilva.loadable.list.toSerializableList
 import java.net.URI
 
 const val FeedSearchActionTag = "feed-search-action"
-const val FedFloatingActionButtonTag = "feed-floating-action-button"
+const val FeedFloatingActionButtonTag = "feed-floating-action-button"
 
 @Composable
 @VisibleForTesting
@@ -144,7 +144,7 @@ private fun Feed(
       if (postPreviewsLoadable.isLoaded) {
         FloatingActionButton(
           onClick = onComposition,
-          Modifier.testTag(FedFloatingActionButtonTag)
+          Modifier.testTag(FeedFloatingActionButtonTag)
         ) {
           Icon(
             AutosTheme.iconography.compose.filled.asImageVector,
