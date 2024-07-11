@@ -20,7 +20,7 @@ plugins {
   alias(libs.plugins.kotlin.symbolProcessor)
 }
 
-android { buildFeatures.compose = true }
+android.buildFeatures.compose = true
 
 dependencies {
   api(project(":composite:composable"))
