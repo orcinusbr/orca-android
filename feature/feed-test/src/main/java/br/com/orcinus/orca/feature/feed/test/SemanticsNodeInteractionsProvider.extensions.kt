@@ -18,11 +18,11 @@ package br.com.orcinus.orca.feature.feed.test
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.onNodeWithTag
-import br.com.orcinus.orca.feature.feed.FEED_SEARCH_ACTION_TAG
 import br.com.orcinus.orca.feature.feed.Feed
+import br.com.orcinus.orca.feature.feed.FeedSearchActionTag
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 
 /** [SemanticsNodeInteraction] of a [Feed]'s [TopAppBar] search action. */
 fun SemanticsNodeInteractionsProvider.onSearchAction(): SemanticsNodeInteraction {
-  return onNodeWithTag(FEED_SEARCH_ACTION_TAG)
+  return onNodeWithTag(FeedSearchActionTag)
 }

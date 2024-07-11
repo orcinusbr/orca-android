@@ -73,7 +73,7 @@ internal class ProfileDetailsFragmentTests {
       }
       .use {
         composeRule
-          .onNodeWithTag(ProfileDetails.Followable.MAIN_ACTION_BUTTON_TAG)
+          .onNodeWithTag(ProfileDetails.Followable.MainActionButtonTag)
           .performClick()
           .assertTextEquals(ProfileDetails.Followable.Status.UNFOLLOWED.label)
       }

@@ -42,13 +42,12 @@ import br.com.orcinus.orca.platform.autos.kit.action.button.icon.HoverableIconBu
 import br.com.orcinus.orca.platform.autos.kit.menu.DropdownMenu
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 
-internal const val GALLERY_ACTIONS_OPTIONS_BUTTON_TAG = "gallery-actions-options-button"
-internal const val GALLERY_ACTIONS_OPTIONS_DOWNLOADS_ITEM_TAG =
-  "gallery-actions-options-download-action"
-internal const val GALLERY_ACTIONS_OPTIONS_MENU_TAG = "gallery-actions-options-menu"
-internal const val GALLERY_ACTIONS_TAG = "gallery-actions"
+internal const val GalleryActionsOptionsButtonTag = "gallery-actions-options-button"
+internal const val GalleryActionsOptionsDownloadItemTag = "gallery-actions-options-download-action"
+internal const val GalleryActionsOptionsMenuTag = "gallery-actions-options-menu"
+internal const val GalleryActionsTag = "gallery-actions"
 
-const val GALLERY_ACTIONS_CLOSE_BUTTON_TAG = "gallery-actions-close-button"
+const val GalleryActionsCloseButtonTag = "gallery-actions-close-button"
 
 @Composable
 @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
@@ -81,12 +80,12 @@ internal fun Actions(
   modifier: Modifier = Modifier
 ) {
   Column(
-    modifier.padding(AutosTheme.spacings.medium.dp).fillMaxHeight().testTag(GALLERY_ACTIONS_TAG),
+    modifier.padding(AutosTheme.spacings.medium.dp).fillMaxHeight().testTag(GalleryActionsTag),
     Arrangement.SpaceBetween
   ) {
     CompositionLocalProvider(LocalContentColor provides Color.White) {
       Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-        HoverableIconButton(onClick = onClose, Modifier.testTag(GALLERY_ACTIONS_CLOSE_BUTTON_TAG)) {
+        HoverableIconButton(onClick = onClose, Modifier.testTag(GalleryActionsCloseButtonTag)) {
           Icon(
             AutosTheme.iconography.close.asImageVector,
             contentDescription = stringResource(R.string.feature_gallery_close)
@@ -96,7 +95,7 @@ internal fun Actions(
         Box {
           HoverableIconButton(
             onClick = { onOptionsVisibilityToggle(true) },
-            Modifier.testTag(GALLERY_ACTIONS_OPTIONS_BUTTON_TAG)
+            Modifier.testTag(GalleryActionsOptionsButtonTag)
           ) {
             Icon(
               AutosTheme.iconography.expand.asImageVector,
@@ -107,7 +106,7 @@ internal fun Actions(
           DropdownMenu(
             areOptionsVisible,
             onDismissal = { onOptionsVisibilityToggle(false) },
-            Modifier.testTag(GALLERY_ACTIONS_OPTIONS_MENU_TAG)
+            Modifier.testTag(GalleryActionsOptionsMenuTag)
           ) {
             DropdownMenuItem(
               text = { Text(stringResource(R.string.feature_gallery_download)) },
@@ -115,7 +114,7 @@ internal fun Actions(
                 onDownload()
                 onOptionsVisibilityToggle(false)
               },
-              Modifier.testTag(GALLERY_ACTIONS_OPTIONS_DOWNLOADS_ITEM_TAG),
+              Modifier.testTag(GalleryActionsOptionsDownloadItemTag),
               leadingIcon = {
                 Icon(
                   AutosTheme.iconography.download.asImageVector,

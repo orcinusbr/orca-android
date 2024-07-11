@@ -39,7 +39,7 @@ import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import br.com.orcinus.orca.std.image.compose.rememberImageLoader
 
 /** Tag that identifies a [Thumbnail] for testing purposes. */
-const val THUMBNAIL_TAG = "thumbnail"
+const val ThumbnailTag = "thumbnail"
 
 /** Default values used by a [Thumbnail]. */
 internal object ThumbnailDefaults {
@@ -95,7 +95,7 @@ internal fun Thumbnail(
     modifier
       .clip(shape)
       .clickable { onClick(thumbnail) }
-      .testTag(THUMBNAIL_TAG)
+      .testTag(ThumbnailTag)
       .semantics { this.shape = shape }
   )
 }

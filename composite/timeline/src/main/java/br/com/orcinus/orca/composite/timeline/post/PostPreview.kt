@@ -82,28 +82,28 @@ import java.time.ZonedDateTime
 import kotlinx.coroutines.flow.Flow
 
 /** Tag that identifies a [PostPreview]'s name for testing purposes. */
-internal const val POST_PREVIEW_NAME_TAG = "post-preview-name"
+internal const val PostPreviewNameTag = "post-preview-name"
 
 /** Tag that identifies [PostPreview]'s metadata for testing purposes. */
-internal const val POST_PREVIEW_METADATA_TAG = "post-preview-metadata"
+internal const val PostPreviewMetadataTag = "post-preview-metadata"
 
 /** Tag that identifies a [PostPreview]'s body for testing purposes. */
-internal const val POST_PREVIEW_BODY_TAG = "post-preview-body"
+internal const val PostPreviewBodyTag = "post-preview-body"
 
 /** Tag that identifies a [PostPreview]'s reblog metadata for testing purposes. */
-internal const val POST_PREVIEW_REPOST_METADATA_TAG = "post-preview-repost-metadata"
+internal const val PostPreviewRepostMetadataTag = "post-preview-repost-metadata"
 
 /** Tag that identifies a [PostPreview] for testing purposes. */
-const val POST_PREVIEW_TAG = "post-preview"
+const val PostPreviewTag = "post-preview"
 
 /** [Modifier] to be applied to a [PostPreview]'s name. */
-private val nameModifier = Modifier.testTag(POST_PREVIEW_NAME_TAG)
+private val nameModifier = Modifier.testTag(PostPreviewNameTag)
 
 /** [Modifier] to be applied to [PostPreview]'s metadata. */
-private val metadataModifier = Modifier.testTag(POST_PREVIEW_METADATA_TAG)
+private val metadataModifier = Modifier.testTag(PostPreviewMetadataTag)
 
 /** [Modifier] to be applied to a [PostPreview]'s body. */
-private val bodyModifier = Modifier.testTag(POST_PREVIEW_BODY_TAG)
+private val bodyModifier = Modifier.testTag(PostPreviewBodyTag)
 
 /**
  * Information to be displayed on a [Post]'s preview.
@@ -265,7 +265,7 @@ fun PostPreview(
 
       preview.rebloggerName?.let {
         Row(
-          Modifier.testTag(POST_PREVIEW_REPOST_METADATA_TAG),
+          Modifier.testTag(PostPreviewRepostMetadataTag),
           Arrangement.spacedBy(AutosTheme.spacings.small.dp),
           Alignment.CenterVertically
         ) {
@@ -326,7 +326,7 @@ private fun PostPreview(
 
   Card(
     onClick ?: {},
-    modifier.testTag(POST_PREVIEW_TAG),
+    modifier.testTag(PostPreviewTag),
     shape = RectangleShape,
     colors = CardDefaults.cardColors(containerColor = Color.Transparent),
     interactionSource = interactionSource

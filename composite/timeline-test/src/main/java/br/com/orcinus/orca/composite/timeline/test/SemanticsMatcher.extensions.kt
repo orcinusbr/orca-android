@@ -18,20 +18,20 @@ package br.com.orcinus.orca.composite.timeline.test
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsMatcher
-import br.com.orcinus.orca.composite.timeline.RENDER_EFFECT_TAG
-import br.com.orcinus.orca.composite.timeline.TIMELINE_TAG
+import br.com.orcinus.orca.composite.timeline.RenderEffectTag
 import br.com.orcinus.orca.composite.timeline.Timeline
+import br.com.orcinus.orca.composite.timeline.TimelineTag
 
 /** [SemanticsMatcher] that matches a [Timeline]. */
 fun isTimeline(): SemanticsMatcher {
   return SemanticsMatcher("is Timeline") {
-    it.config.getOrNull(SemanticsProperties.TestTag) == TIMELINE_TAG
+    it.config.getOrNull(SemanticsProperties.TestTag) == TimelineTag
   }
 }
 
 /** [SemanticsMatcher] that matches a [br.com.orcinus.orca.composite.timeline.RenderEffect]. */
 internal fun isRenderEffect(): SemanticsMatcher {
   return SemanticsMatcher("is RenderEffect") {
-    it.config.getOrNull(SemanticsProperties.TestTag) == RENDER_EFFECT_TAG
+    it.config.getOrNull(SemanticsProperties.TestTag) == RenderEffectTag
   }
 }

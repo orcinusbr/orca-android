@@ -21,12 +21,12 @@ import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.hasTestTag
-import br.com.orcinus.orca.feature.gallery.ui.GALLERY_PAGER_TAG
 import br.com.orcinus.orca.feature.gallery.ui.Gallery
+import br.com.orcinus.orca.feature.gallery.ui.GalleryPagerTag
 
 /** [SemanticsMatcher] that matches a [Gallery]'s [HorizontalPager]. */
 fun isPager(): SemanticsMatcher {
-  return hasTestTag(GALLERY_PAGER_TAG)
+  return hasTestTag(GalleryPagerTag)
 }
 
 /**

@@ -32,7 +32,7 @@ import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 
 /** Tag that identifies a [RepostStatIcon] for testing purposes. */
-const val REPOST_STAT_ICON_TAG = "repost-stat-icon"
+const val RepostStatIconTag = "repost-stat-icon"
 
 /** Default values of a [RepostStatIcon]. */
 internal object RepostStatIconDefaults {
@@ -83,7 +83,7 @@ internal fun RepostStatIcon(
     isActive,
     interactiveness,
     colors,
-    modifier.testTag(REPOST_STAT_ICON_TAG)
+    modifier.testTag(RepostStatIconTag)
   )
 }
 

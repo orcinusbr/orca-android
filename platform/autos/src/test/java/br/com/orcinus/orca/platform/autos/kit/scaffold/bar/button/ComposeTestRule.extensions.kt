@@ -21,5 +21,5 @@ import androidx.compose.ui.test.onNodeWithTag
 
 /** [SemanticsNodeInteraction] of a [ButtonBar]'s divider. */
 internal fun ComposeTestRule.onButtonBarDivider(): SemanticsNodeInteraction {
-  return onNodeWithTag(BUTTON_BAR_DIVIDER_TAG)
+  return onNodeWithTag(ButtonBarDividerTag)
 }

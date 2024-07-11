@@ -33,7 +33,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
 /** Tag that identifies the [SecondaryButton] for testing purposes. */
-const val SECONDARY_BUTTON_TAG = "secondary-button"
+const val SecondaryButtonTag = "secondary-button"
 
 /**
  * [Button][_Button] that executes a secondary action when clicked, and is usually preceded by a
@@ -53,7 +53,7 @@ fun SecondaryButton(
   _Button {
     Button(
       onClick = { load(onClick) },
-      modifier.testTag(SECONDARY_BUTTON_TAG),
+      modifier.testTag(SecondaryButtonTag),
       shape = _ButtonDefaults.shape,
       colors =
         ButtonDefaults.buttonColors(

@@ -46,7 +46,7 @@ import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import br.com.orcinus.orca.std.image.compose.SomeComposableImageLoader
 
 /** Tag that identifies a [LinkCard] for testing purposes. */
-const val LINK_CARD_TAG = "link-card"
+const val LinkCardTag = "link-card"
 
 @Composable
 fun LinkCard(headline: Headline, onClick: () -> Unit, modifier: Modifier = Modifier) {
@@ -58,7 +58,7 @@ fun LinkCard(headline: Headline, onClick: () -> Unit, modifier: Modifier = Modif
       .clip(shape)
       .clickable(onClick = onClick)
       .background(AutosTheme.colors.surface.container.asColor)
-      .testTag(LINK_CARD_TAG)
+      .testTag(LinkCardTag)
   ) {
     Column {
       (headline.coverLoader as SomeComposableImageLoader?)

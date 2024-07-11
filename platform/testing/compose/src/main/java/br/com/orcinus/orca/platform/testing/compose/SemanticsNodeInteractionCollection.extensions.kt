@@ -28,7 +28,7 @@ import androidx.compose.ui.test.SemanticsNodeInteractionCollection
  * [SemanticsNodeInteraction]s within a [SemanticsNodeInteractionCollection], it can be used to
  * indicate that its end has been reached.
  *
- * @see END
+ * @see End
  */
 private val AssertionError.isBecauseIndexIsOutOfBounds
   get() = message?.startsWith("Failed: assertExists.\nCan't retrieve node at index '") ?: false
@@ -39,7 +39,7 @@ private val AssertionError.isBecauseIndexIsOutOfBounds
  *
  * @see java.lang.AssertionError.isBecauseIndexIsOutOfBounds
  */
-private object END
+private object End
 
 /**
  * Performs the given [action] on each of the [SemanticsNodeInteraction]s.
@@ -51,13 +51,13 @@ fun SemanticsNodeInteractionCollection.onEach(
 ): SemanticsNodeInteractionCollection {
   var index = 0
   var current: Any? = null
-  while (current !== END) {
+  while (current !== End) {
     current =
       try {
         get(index).also(SemanticsNodeInteraction::assertExists)
       } catch (error: AssertionError) {
         if (error.isBecauseIndexIsOutOfBounds) {
-          END
+          End
         } else {
           throw error
         }

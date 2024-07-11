@@ -46,8 +46,8 @@ import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import java.net.URI
 
-const val FEED_SEARCH_ACTION_TAG = "feed-search-action-tag"
-const val FEED_FLOATING_ACTION_BUTTON_TAG = "feed-floating-action-button"
+const val FeedSearchActionTag = "feed-search-action"
+const val FeedFloatingActionButtonTag = "feed-floating-action-button"
 
 @Composable
 @VisibleForTesting
@@ -130,7 +130,7 @@ private fun Feed(
       TopAppBar(
         title = { AutoSizeText(stringResource(R.string.feature_feed)) },
         actions = {
-          HoverableIconButton(onClick = onSearch, Modifier.testTag(FEED_SEARCH_ACTION_TAG)) {
+          HoverableIconButton(onClick = onSearch, Modifier.testTag(FeedSearchActionTag)) {
             Icon(
               AutosTheme.iconography.search.asImageVector,
               contentDescription = stringResource(R.string.feature_feed_search)
@@ -144,7 +144,7 @@ private fun Feed(
       if (postPreviewsLoadable.isLoaded) {
         FloatingActionButton(
           onClick = onComposition,
-          Modifier.testTag(FEED_FLOATING_ACTION_BUTTON_TAG)
+          Modifier.testTag(FeedFloatingActionButtonTag)
         ) {
           Icon(
             AutosTheme.iconography.compose.filled.asImageVector,

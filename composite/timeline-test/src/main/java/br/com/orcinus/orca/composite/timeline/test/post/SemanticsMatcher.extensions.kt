@@ -19,13 +19,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsMatcher
-import br.com.orcinus.orca.composite.timeline.post.POST_PREVIEW_TAG
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
+import br.com.orcinus.orca.composite.timeline.post.PostPreviewTag
 
 /** [SemanticsMatcher] that matches a [PostPreview]. */
 fun isPostPreview(): SemanticsMatcher {
   return SemanticsMatcher("is PostPreview") {
-    it.config.getOrNull(SemanticsProperties.TestTag) == POST_PREVIEW_TAG
+    it.config.getOrNull(SemanticsProperties.TestTag) == PostPreviewTag
   }
 }
 

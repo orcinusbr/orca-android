@@ -76,7 +76,7 @@ import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import java.io.Serializable
 import java.net.URI
 
-internal const val PROFILE_DETAILS_TOP_BAR_TAG = "profile-details-top-bar"
+internal const val ProfileDetailsTopBarTag = "profile-details-top-bar"
 
 internal sealed class ProfileDetails : Serializable {
   protected abstract val account: Account
@@ -148,13 +148,12 @@ internal sealed class ProfileDetails : Serializable {
 
     @Composable
     override fun MainActionButton(modifier: Modifier) {
-      Button(onClick = onStatusToggle, modifier.testTag(MAIN_ACTION_BUTTON_TAG)) {
-        Text(status.label)
-      }
+      Button(onClick = onStatusToggle, modifier.testTag(MainActionButtonTag)) { Text(status.label) }
     }
 
     companion object {
-      const val MAIN_ACTION_BUTTON_TAG = "followable-profile-details-main-action-button"
+      @Suppress("ConstPropertyName")
+      const val MainActionButtonTag = "followable-profile-details-main-action-button"
     }
   }
 
@@ -482,7 +481,7 @@ private fun ProfileDetails(
       @OptIn(ExperimentalMaterial3Api::class)
       TopAppBar(
         title,
-        Modifier.testTag(PROFILE_DETAILS_TOP_BAR_TAG),
+        Modifier.testTag(ProfileDetailsTopBarTag),
         navigationIcon = { origin.NavigationButton() },
         actions = actions,
         scrollBehavior = topAppBarScrollBehavior

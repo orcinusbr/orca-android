@@ -53,13 +53,13 @@ import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 
 /** Tag that identifies an [Option] for testing purposes. */
-internal const val OPTION_TAG = "option"
+internal const val OptionTag = "option"
 
 /**
  * Tag that identifies the [Icon] of an [Option] that indicates that it's selected for testing
  * purposes.
  */
-internal const val OPTION_SELECTION_ICON_TAG = "option-selection-icon"
+internal const val OptionSelectionIconTag = "option-selection-icon"
 
 /** Default values of an [Option]. */
 internal object OptionDefaults {
@@ -177,7 +177,7 @@ internal fun CoreOption(
       .background(containerColor)
       .padding(spacing)
       .fillMaxWidth()
-      .testTag(OPTION_TAG)
+      .testTag(OptionTag)
       .semantics { selected = isSelected },
     Arrangement.SpaceBetween,
     Alignment.CenterVertically
@@ -194,7 +194,7 @@ internal fun CoreOption(
           Icon(
             AutosTheme.iconography.selected.asImageVector,
             contentDescription = "Selected",
-            Modifier.testTag(OPTION_SELECTION_ICON_TAG)
+            Modifier.testTag(OptionSelectionIconTag)
           )
         }
       }

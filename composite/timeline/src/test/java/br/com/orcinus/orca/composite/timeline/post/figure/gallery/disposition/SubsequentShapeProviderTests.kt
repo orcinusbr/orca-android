@@ -38,18 +38,18 @@ internal class SubsequentShapeProviderTests {
   @Test
   fun getsTrailingOfTwo() {
     assertThat(Disposition.Grid.SubsequentShapeProvider.of(attachmentCount = 2, position = 2))
-      .isEqualTo(Disposition.Grid.SubsequentShapeProvider.TRAILING_OF_TWO)
+      .isEqualTo(Disposition.Grid.SubsequentShapeProvider.TrailingOfTwo)
   }
 
   @Test
   fun getsSecondOfThree() {
     assertThat(Disposition.Grid.SubsequentShapeProvider.of(attachmentCount = 3, position = 2))
-      .isEqualTo(Disposition.Grid.SubsequentShapeProvider.SECOND_OF_THREE)
+      .isEqualTo(Disposition.Grid.SubsequentShapeProvider.SecondOfThree)
   }
 
   @Test
   fun getsTrailingOfThree() {
     assertThat(Disposition.Grid.SubsequentShapeProvider.of(attachmentCount = 3, position = 3))
-      .isEqualTo(Disposition.Grid.SubsequentShapeProvider.TRAILING_OF_THREE)
+      .isEqualTo(Disposition.Grid.SubsequentShapeProvider.TrailingOfThree)
   }
 }

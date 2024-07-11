@@ -18,10 +18,10 @@ package br.com.orcinus.orca.composite.timeline.stat.activateable.test
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.onNodeWithTag
-import br.com.orcinus.orca.composite.timeline.stat.activateable.ACTIVATEABLE_STAT_ICON_TAG
 import br.com.orcinus.orca.composite.timeline.stat.activateable.ActivateableStatIcon
+import br.com.orcinus.orca.composite.timeline.stat.activateable.ActivateableStatIconTag
 
 /** [SemanticsNodeInteraction] of an [ActivateableStatIcon]. */
 internal fun SemanticsNodeInteractionsProvider.onActivateableStatIcon(): SemanticsNodeInteraction {
-  return onNodeWithTag(ACTIVATEABLE_STAT_ICON_TAG)
+  return onNodeWithTag(ActivateableStatIconTag)
 }

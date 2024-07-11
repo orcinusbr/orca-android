@@ -19,7 +19,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performScrollToIndex
-import br.com.orcinus.orca.composite.timeline.TIMELINE_TAG
+import br.com.orcinus.orca.composite.timeline.TimelineTag
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.test.onTimeline
 import br.com.orcinus.orca.composite.timeline.test.post.time.StringRelativeTimeProvider
@@ -53,6 +53,6 @@ internal class ProfileDetailsTests {
       }
     }
     composeRule.onTimeline().performScrollToIndex(1)
-    composeRule.onNodeWithTag(TIMELINE_TAG).assertIsDisplayed()
+    composeRule.onNodeWithTag(TimelineTag).assertIsDisplayed()
   }
 }

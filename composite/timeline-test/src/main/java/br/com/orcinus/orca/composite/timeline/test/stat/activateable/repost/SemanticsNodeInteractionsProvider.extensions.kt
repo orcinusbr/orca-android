@@ -18,9 +18,9 @@ package br.com.orcinus.orca.composite.timeline.test.stat.activateable.repost
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.onNodeWithTag
-import br.com.orcinus.orca.composite.timeline.stat.activateable.repost.REPOST_STAT_TAG
+import br.com.orcinus.orca.composite.timeline.stat.activateable.repost.RepostStatTag
 
 /** [SemanticsNodeInteraction] of a repost stat. */
 fun SemanticsNodeInteractionsProvider.onRepostStat(): SemanticsNodeInteraction {
-  return onNodeWithTag(REPOST_STAT_TAG, useUnmergedTree = true)
+  return onNodeWithTag(RepostStatTag, useUnmergedTree = true)
 }

@@ -18,9 +18,9 @@ package br.com.orcinus.orca.composite.timeline.test.post.figure.gallery.thumbnai
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.hasTestTag
 import br.com.orcinus.orca.composite.timeline.post.figure.gallery.GalleryPreview
-import br.com.orcinus.orca.composite.timeline.post.figure.gallery.thumbnail.THUMBNAIL_TAG
+import br.com.orcinus.orca.composite.timeline.post.figure.gallery.thumbnail.ThumbnailTag
 
 /** [SemanticsMatcher] that matches a [GalleryPreview]'s thumbnail. */
 fun isThumbnail(): SemanticsMatcher {
-  return hasTestTag(THUMBNAIL_TAG)
+  return hasTestTag(ThumbnailTag)
 }

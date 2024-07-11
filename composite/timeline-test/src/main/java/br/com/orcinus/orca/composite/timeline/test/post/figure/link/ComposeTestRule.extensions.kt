@@ -20,15 +20,15 @@ import androidx.compose.ui.test.SemanticsNodeInteractionCollection
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithTag
-import br.com.orcinus.orca.composite.timeline.post.figure.link.LINK_CARD_TAG
 import br.com.orcinus.orca.composite.timeline.post.figure.link.LinkCard
+import br.com.orcinus.orca.composite.timeline.post.figure.link.LinkCardTag
 
 /** [SemanticsNodeInteraction] of a [LinkCard]. */
 fun ComposeTestRule.onLinkCard(): SemanticsNodeInteraction {
-  return onNodeWithTag(LINK_CARD_TAG)
+  return onNodeWithTag(LinkCardTag)
 }
 
 /** [SemanticsNodeInteractionCollection] of [LinkCard]s. */
 fun ComposeTestRule.onLinkCards(): SemanticsNodeInteractionCollection {
-  return onAllNodesWithTag(LINK_CARD_TAG)
+  return onAllNodesWithTag(LinkCardTag)
 }

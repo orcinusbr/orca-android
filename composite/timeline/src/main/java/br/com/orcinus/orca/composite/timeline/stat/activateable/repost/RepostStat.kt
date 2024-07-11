@@ -34,7 +34,7 @@ import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 
 /** Tag that identifies a [RepostStat] for testing purposes. */
-const val REPOST_STAT_TAG = "repost-stat"
+const val RepostStatTag = "repost-stat"
 
 /**
  * [Stat] of a repost.
@@ -56,7 +56,7 @@ internal fun RepostStat(
 ) {
   val isActive = remember(details, details::isReposted)
 
-  Stat(position, onClick, modifier.testTag(REPOST_STAT_TAG)) {
+  Stat(position, onClick, modifier.testTag(RepostStatTag)) {
     val contentColor by
       animateColorAsState(
         if (isActive) AutosTheme.colors.activation.reposted.asColor else inactiveContentColor,

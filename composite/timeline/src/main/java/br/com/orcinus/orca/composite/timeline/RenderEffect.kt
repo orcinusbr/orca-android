@@ -25,7 +25,7 @@ import androidx.compose.ui.platform.testTag
 import java.io.Serializable
 
 /** Tag that identifies a [RenderEffect] for testing purposes. */
-const val RENDER_EFFECT_TAG = "render-effect"
+const val RenderEffectTag = "render-effect"
 
 /**
  * Key to which a [RenderEffect] is associated when it is added to a lazy list.
@@ -80,5 +80,5 @@ private fun RenderEffect(vararg keys: Any?, effect: () -> Unit) {
     onDispose {}
   }
 
-  Spacer(Modifier.testTag(RENDER_EFFECT_TAG))
+  Spacer(Modifier.testTag(RenderEffectTag))
 }

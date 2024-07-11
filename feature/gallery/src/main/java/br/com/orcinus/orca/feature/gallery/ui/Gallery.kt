@@ -46,7 +46,7 @@ import br.com.orcinus.orca.feature.gallery.ui.page.Page
 import br.com.orcinus.orca.feature.gallery.ui.page.SampleEntrypoint
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 
-const val GALLERY_PAGER_TAG = "gallery-pager-tag"
+const val GalleryPagerTag = "gallery-pager"
 
 @Composable
 @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
@@ -144,7 +144,7 @@ private fun Gallery(
   Box(modifier.background(Color.Black).mandatorySystemGesturesPadding().fillMaxHeight()) {
     HorizontalPager(
       pagerState,
-      Modifier.fillMaxHeight().testTag(GALLERY_PAGER_TAG),
+      Modifier.fillMaxHeight().testTag(GalleryPagerTag),
       beyondBoundsPageCount = 1,
       verticalAlignment = Alignment.CenterVertically
     ) { page ->

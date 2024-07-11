@@ -18,9 +18,9 @@ package br.com.orcinus.orca.composite.timeline.test.stat.activateable.favorite
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.onNodeWithTag
-import br.com.orcinus.orca.composite.timeline.stat.activateable.favorite.FAVORITE_STAT_TAG
+import br.com.orcinus.orca.composite.timeline.stat.activateable.favorite.FavoriteStatTag
 
 /** [SemanticsNodeInteraction] of a favorite stat. */
 fun ComposeTestRule.onFavoriteStat(): SemanticsNodeInteraction {
-  return onNodeWithTag(FAVORITE_STAT_TAG, useUnmergedTree = true)
+  return onNodeWithTag(FavoriteStatTag, useUnmergedTree = true)
 }

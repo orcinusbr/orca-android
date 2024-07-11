@@ -40,7 +40,7 @@ import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 
 /** Tag that identifies a [Sheet] for testing purposes. */
-const val SHEET_TAG = "sheet"
+const val SheetTag = "sheet"
 
 /**
  * Component that overlays the entire UI, intended to display important, relevant information.
@@ -57,7 +57,7 @@ fun Sheet(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
   ) {
     ModalBottomSheet(
       onDismissRequest = {},
-      modifier.statusBarsPadding().testTag(SHEET_TAG),
+      modifier.statusBarsPadding().testTag(SheetTag),
       containerColor = LocalContainerColor.current,
       tonalElevation = 0.dp,
       windowInsets = LocalWindowInsets.current

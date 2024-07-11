@@ -18,29 +18,29 @@ package br.com.orcinus.orca.composite.timeline.post.test
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.onNodeWithTag
-import br.com.orcinus.orca.composite.timeline.post.POST_PREVIEW_BODY_TAG
-import br.com.orcinus.orca.composite.timeline.post.POST_PREVIEW_METADATA_TAG
-import br.com.orcinus.orca.composite.timeline.post.POST_PREVIEW_NAME_TAG
-import br.com.orcinus.orca.composite.timeline.post.POST_PREVIEW_REPOST_METADATA_TAG
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
+import br.com.orcinus.orca.composite.timeline.post.PostPreviewBodyTag
+import br.com.orcinus.orca.composite.timeline.post.PostPreviewMetadataTag
+import br.com.orcinus.orca.composite.timeline.post.PostPreviewNameTag
+import br.com.orcinus.orca.composite.timeline.post.PostPreviewRepostMetadataTag
 
 /** [SemanticsNodeInteraction] of a [PostPreview]'s body. */
 internal fun SemanticsNodeInteractionsProvider.onPostPreviewBody(): SemanticsNodeInteraction {
-  return onNodeWithTag(POST_PREVIEW_BODY_TAG, useUnmergedTree = true)
+  return onNodeWithTag(PostPreviewBodyTag, useUnmergedTree = true)
 }
 
 /** [SemanticsNodeInteraction] of a [PostPreview]'s metadata. */
 internal fun SemanticsNodeInteractionsProvider.onPostPreviewMetadata(): SemanticsNodeInteraction {
-  return onNodeWithTag(POST_PREVIEW_METADATA_TAG, useUnmergedTree = true)
+  return onNodeWithTag(PostPreviewMetadataTag, useUnmergedTree = true)
 }
 
 /** [SemanticsNodeInteraction] of a [PostPreview]'s name. */
 internal fun SemanticsNodeInteractionsProvider.onPostPreviewName(): SemanticsNodeInteraction {
-  return onNodeWithTag(POST_PREVIEW_NAME_TAG, useUnmergedTree = true)
+  return onNodeWithTag(PostPreviewNameTag, useUnmergedTree = true)
 }
 
 /** [SemanticsNodeInteraction] of a [PostPreview]'s repost metadata. */
 internal fun SemanticsNodeInteractionsProvider.onPostPreviewRepostMetadata():
   SemanticsNodeInteraction {
-  return onNodeWithTag(POST_PREVIEW_REPOST_METADATA_TAG, useUnmergedTree = true)
+  return onNodeWithTag(PostPreviewRepostMetadataTag, useUnmergedTree = true)
 }

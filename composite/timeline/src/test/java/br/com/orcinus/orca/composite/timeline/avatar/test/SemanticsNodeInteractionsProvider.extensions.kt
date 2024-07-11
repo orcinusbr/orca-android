@@ -18,9 +18,9 @@ package br.com.orcinus.orca.composite.timeline.avatar.test
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.onNodeWithTag
-import br.com.orcinus.orca.composite.timeline.avatar.AVATAR_TAG
+import br.com.orcinus.orca.composite.timeline.avatar.AvatarTag
 
 /** [SemanticsNodeInteraction] of an avatar. */
 internal fun SemanticsNodeInteractionsProvider.onAvatar(): SemanticsNodeInteraction {
-  return onNodeWithTag(AVATAR_TAG)
+  return onNodeWithTag(AvatarTag)
 }

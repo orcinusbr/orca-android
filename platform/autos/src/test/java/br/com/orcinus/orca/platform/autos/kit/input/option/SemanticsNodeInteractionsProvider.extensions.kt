@@ -23,10 +23,10 @@ import androidx.compose.ui.test.onNodeWithTag
 
 /** [SemanticsNodeInteraction] of an [Option]. */
 internal fun SemanticsNodeInteractionsProvider.onOption(): SemanticsNodeInteraction {
-  return onNodeWithTag(OPTION_TAG)
+  return onNodeWithTag(OptionTag)
 }
 
 /** [SemanticsNodeInteractionCollection] of [Option]s. */
 internal fun SemanticsNodeInteractionsProvider.onOptions(): SemanticsNodeInteractionCollection {
-  return onAllNodesWithTag(OPTION_TAG)
+  return onAllNodesWithTag(OptionTag)
 }

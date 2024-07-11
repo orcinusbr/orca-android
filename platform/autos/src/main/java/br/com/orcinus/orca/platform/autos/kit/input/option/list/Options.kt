@@ -36,7 +36,7 @@ import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 
 /** Tag that identifies [Options]' [Divider]s for testing purposes. */
-internal const val OPTIONS_DIVIDER_TAG = "options-divider"
+internal const val OptionsDividerTag = "options-divider"
 
 /**
  * [Column] of loading [Option]s that are shaped according to their position.
@@ -83,7 +83,7 @@ fun Options(
         else -> option(selectedOptionIndex, RectangleShape)
       }
 
-      Divider(Modifier.testTag(OPTIONS_DIVIDER_TAG))
+      Divider(Modifier.testTag(OptionsDividerTag))
     }
   }
 }

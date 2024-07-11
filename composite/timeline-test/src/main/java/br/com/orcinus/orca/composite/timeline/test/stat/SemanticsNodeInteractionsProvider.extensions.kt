@@ -18,16 +18,16 @@ package br.com.orcinus.orca.composite.timeline.test.stat
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.onNodeWithTag
-import br.com.orcinus.orca.composite.timeline.stat.STATS_COMMENT_STAT_TAG
-import br.com.orcinus.orca.composite.timeline.stat.STATS_SHARE_STAT_TAG
 import br.com.orcinus.orca.composite.timeline.stat.Stats
+import br.com.orcinus.orca.composite.timeline.stat.StatsCommentStatTag
+import br.com.orcinus.orca.composite.timeline.stat.StatsShareStatTag
 
 /** [SemanticsNodeInteraction] of [Stats]' comment stat. */
 fun SemanticsNodeInteractionsProvider.onCommentStat(): SemanticsNodeInteraction {
-  return onNodeWithTag(STATS_COMMENT_STAT_TAG, useUnmergedTree = true)
+  return onNodeWithTag(StatsCommentStatTag, useUnmergedTree = true)
 }
 
 /** [SemanticsNodeInteraction] of [Stats]' share stat. */
 fun SemanticsNodeInteractionsProvider.onShareStat(): SemanticsNodeInteraction {
-  return onNodeWithTag(STATS_SHARE_STAT_TAG, useUnmergedTree = true)
+  return onNodeWithTag(StatsShareStatTag, useUnmergedTree = true)
 }

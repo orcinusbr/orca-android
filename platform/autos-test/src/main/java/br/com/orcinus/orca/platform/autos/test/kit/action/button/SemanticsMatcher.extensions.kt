@@ -17,17 +17,17 @@ package br.com.orcinus.orca.platform.autos.test.kit.action.button
 
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.hasTestTag
-import br.com.orcinus.orca.platform.autos.kit.action.button.PRIMARY_BUTTON_TAG
 import br.com.orcinus.orca.platform.autos.kit.action.button.PrimaryButton
-import br.com.orcinus.orca.platform.autos.kit.action.button.SECONDARY_BUTTON_TAG
+import br.com.orcinus.orca.platform.autos.kit.action.button.PrimaryButtonTag
 import br.com.orcinus.orca.platform.autos.kit.action.button.SecondaryButton
+import br.com.orcinus.orca.platform.autos.kit.action.button.SecondaryButtonTag
 
 /** [SemanticsMatcher] that matches a [PrimaryButton]. */
 fun isPrimaryButton(): SemanticsMatcher {
-  return hasTestTag(PRIMARY_BUTTON_TAG)
+  return hasTestTag(PrimaryButtonTag)
 }
 
 /** [SemanticsMatcher] that matches a [SecondaryButton]. */
 fun isSecondaryButton(): SemanticsMatcher {
-  return hasTestTag(SECONDARY_BUTTON_TAG)
+  return hasTestTag(SecondaryButtonTag)
 }

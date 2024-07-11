@@ -33,7 +33,7 @@ import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 import br.com.orcinus.orca.platform.core.withSample
 
 /** Tag that identifies a [GalleryPreview] for testing purposes. */
-internal const val GALLERY_PREVIEW_TAG = "gallery-preview"
+internal const val GalleryPreviewTag = "gallery-preview"
 
 /**
  * Information to be previewed of a [Post]'s [Attachment]s.
@@ -85,7 +85,7 @@ internal fun GalleryPreview(
 ) {
   val disposition = Disposition.of(preview, onThumbnailClickListener)
 
-  Box(modifier.testTag(GALLERY_PREVIEW_TAG).semantics { this.disposition = disposition }) {
+  Box(modifier.testTag(GalleryPreviewTag).semantics { this.disposition = disposition }) {
     with(disposition) { Content(Modifier) }
   }
 }
