@@ -21,6 +21,7 @@ dependencies {
   implementation(project(":ext:coroutines"))
   implementation(project(":platform:ime"))
   implementation(project(":platform:testing"))
+  implementation(project(":std:visibility"))
   implementation(libs.android.activity.ktx)
 
   testImplementation(libs.kotlin.test)

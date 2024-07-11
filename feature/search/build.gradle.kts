@@ -16,13 +16,11 @@
 plugins {
   alias(libs.plugins.android.library)
   alias(libs.plugins.kotlin.android)
+  alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.kotlin.symbolProcessor)
 }
 
-android {
-  buildFeatures.compose = true
-  composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
-}
+android { buildFeatures.compose = true }
 
 dependencies {
   api(project(":composite:composable"))

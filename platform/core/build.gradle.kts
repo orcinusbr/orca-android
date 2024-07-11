@@ -16,12 +16,10 @@
 plugins {
   alias(libs.plugins.android.library)
   alias(libs.plugins.kotlin.android)
+  alias(libs.plugins.kotlin.compose)
 }
 
-android {
-  buildFeatures.compose = true
-  composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
-}
+android.buildFeatures.compose = true
 
 dependencies {
   api(project(":core:sample"))

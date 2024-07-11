@@ -18,4 +18,4 @@ package br.com.orcinus.orca.platform.ime.test.scope
 import androidx.activity.ComponentActivity
 
 /** [ComponentActivity] that is launched by [runImeTest]. */
-internal class ImeScopeActivity : ComponentActivity()
+class ImeScopeActivity : ComponentActivity()

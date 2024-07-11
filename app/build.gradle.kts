@@ -19,6 +19,7 @@ import br.com.orcinus.orca.namespaceFor
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.android)
+  alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.kotlin.symbolProcessor)
 }
 
@@ -26,7 +27,6 @@ kotlin.compilerOptions.freeCompilerArgs.addAll("-Xcontext-receivers")
 
 android {
   compileSdk = libs.versions.android.sdk.target.get().toInt()
-  composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
   flavorDimensions += Dimensions.VERSION
   lint.disable += "Instantiatable"
   namespace = namespaceFor("app")

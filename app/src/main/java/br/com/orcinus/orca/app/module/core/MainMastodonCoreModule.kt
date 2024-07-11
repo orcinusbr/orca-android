@@ -25,32 +25,32 @@ import br.com.orcinus.orca.core.sharedpreferences.actor.SharedPreferencesActorPr
 import br.com.orcinus.orca.core.sharedpreferences.feed.profile.post.content.SharedPreferencesTermMuter
 import br.com.orcinus.orca.std.image.compose.async.AsyncImageLoader
 import br.com.orcinus.orca.std.injector.Injector
-import br.com.orcinus.orca.std.injector.module.injection.injectionOf
+import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
+
+private val actorProvider by lazy {
+  SharedPreferencesActorProvider(context, MainImageLoaderProviderFactory)
+}
+private val authorizer by lazy { MastodonAuthorizer(context) }
+private val authenticator by lazy { MastodonAuthenticator(context, authorizer, actorProvider) }
+private val authenticationLock by lazy { AuthenticationLock(authenticator, actorProvider) }
+private val termMuter by lazy { SharedPreferencesTermMuter(context) }
+
+private val context
+  get() = Injector.get<Context>()
 
 internal object MainMastodonCoreModule :
   MastodonCoreModule(
-    injectionOf {
+    lazyInjectionOf {
       MastodonInstanceProvider(
-        MainMastodonCoreModule.context,
-        MainMastodonCoreModule.authorizer,
-        MainMastodonCoreModule.authenticator,
-        MainMastodonCoreModule.actorProvider,
-        MainMastodonCoreModule.authenticationLock,
-        MainMastodonCoreModule.termMuter,
+        context,
+        authorizer,
+        authenticator,
+        actorProvider,
+        authenticationLock,
+        termMuter,
         AsyncImageLoader.Provider
       )
     },
-    injectionOf { MainMastodonCoreModule.authenticationLock },
-    injectionOf { MainMastodonCoreModule.termMuter }
-  ) {
-  private val actorProvider by lazy {
-    SharedPreferencesActorProvider(context, MainImageLoaderProviderFactory)
-  }
-  private val authorizer by lazy { MastodonAuthorizer(context) }
-  private val authenticator by lazy { MastodonAuthenticator(context, authorizer, actorProvider) }
-  private val authenticationLock by lazy { AuthenticationLock(authenticator, actorProvider) }
-  private val termMuter by lazy { SharedPreferencesTermMuter(context) }
-
-  private val context
-    get() = Injector.get<Context>()
-}
+    lazyInjectionOf { authenticationLock },
+    lazyInjectionOf { termMuter }
+  )

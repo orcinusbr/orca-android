@@ -15,57 +15,100 @@
 
 package br.com.orcinus.orca.platform.ime.test.scope
 
-import android.os.Build
+import android.annotation.SuppressLint
+import android.view.View
 import android.view.WindowInsets
-import android.view.WindowInsetsAnimation
 import android.view.WindowInsetsController
-import androidx.annotation.RequiresApi
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.test.core.app.launchActivity
 import br.com.orcinus.orca.platform.ime.Ime
 import br.com.orcinus.orca.platform.ime.test.scope.animation.ImeAnimationCallback
+import br.com.orcinus.orca.platform.ime.test.scope.animation.stage.Stage
 import br.com.orcinus.orca.platform.testing.activity.scenario.activity
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
-import kotlin.coroutines.suspendCoroutine
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.runTest
 
 /**
- * Latest visibility to which the IME has changed.
+ * Scope in which [Ime] tests can be run.
  *
- * @throws IllegalStateException If this [ImeScope]'s current IME visibility is invalid.
- * @see Ime
+ * @param delegate [CoroutineScope] to which [CoroutineScope]-like behavior is delegated.
+ * @property activity [ImeScopeActivity] from which the IME will be toggled.
+ * @property onVisibilityChangeListener [CapturingOnImeVisibilityChangeListener] by which the
+ *   current visibility of the IME is captured and provided.
+ * @property animationCallback [ImeAnimationCallback] that suspends this [ImeScope] while animations
+ *   are ongoing.
+ * @property view [View] to which the [ImeAnimationCallback] will be added.
+ * @see Ime.Visibility
+ * @see ImeScope.visibility
+ * @see Stage.ongoing
  */
-inline val ImeScope.ime
-  @Throws(IllegalStateException::class)
-  get() =
-    when (visibility) {
-      Ime.Visibility.UNKNOWN -> Ime.Unknown
-      Ime.Visibility.CLOSED -> Ime.Closed
-      Ime.Visibility.OPEN -> Ime.Open
-      else -> throw IllegalStateException("\"$visibility\" isn't a valid IME visibility.")
-    }
+class ImeScope
+@InternalScopeApi
+@PublishedApi
+internal constructor(
+  private val activity: ImeScopeActivity,
+  private val onVisibilityChangeListener: CapturingOnImeVisibilityChangeListener,
+  internal val animationCallback: ImeAnimationCallback,
+  val view: View,
+  delegate: CoroutineScope,
+) : CoroutineScope by delegate {
+  /**
+   * Gets the latest visibility to which the IME has changed.
+   *
+   * @see Ime.Visibility
+   */
+  @PublishedApi
+  internal val visibility: Int
+    get() = onVisibilityChangeListener.visibility
 
-/**
- * Opens the IME and suspends the execution flow until the [WindowInsetsAnimation] ends.
- *
- * @see ImeScope.open
- */
-@RequiresApi(Build.VERSION_CODES.R)
-suspend fun ImeScope.open() {
-  suspendCoroutine(::open)
-}
+  /**
+   * Latest visibility to which the IME has changed.
+   *
+   * @throws IllegalStateException If the current IME visibility is invalid.
+   * @see Ime
+   */
+  inline val ime
+    @Throws(IllegalStateException::class)
+    get() =
+      when (visibility) {
+        Ime.Visibility.UNKNOWN -> Ime.Unknown
+        Ime.Visibility.CLOSED -> Ime.Closed
+        Ime.Visibility.OPEN -> Ime.Open
+        else -> throw IllegalStateException("\"$visibility\" isn't a valid IME visibility.")
+      }
 
-/**
- * Closes the IME and suspends the execution flow until the [WindowInsetsAnimation] ends.
- *
- * @see ImeScope.close
- */
-@RequiresApi(Build.VERSION_CODES.R)
-suspend fun ImeScope.close() {
-  suspendCoroutine(::close)
+  /** Opens the IME. */
+  @SuppressLint("WrongConstant")
+  suspend fun open() {
+    runAndAwaitAnimation { it.show(Ime.type) }
+  }
+
+  /** Closes the IME. */
+  @SuppressLint("WrongConstant")
+  suspend fun close() {
+    runAndAwaitAnimation { it.hide(Ime.type) }
+  }
+
+  /**
+   * Performs the given action on the [View]'s [WindowInsetsControllerCompat] and awaits the end of
+   * the IME animation.
+   *
+   * @param action Operation to be executed.
+   * @see ImeScope.view
+   * @see WindowCompat.getInsetsController
+   */
+  private suspend fun runAndAwaitAnimation(action: (WindowInsetsControllerCompat) -> Unit) {
+    val window = activity.window
+    val view = view
+    val windowInsetsControllerCompat = WindowCompat.getInsetsController(window, view)
+    activity.runOnUiThread { action(windowInsetsControllerCompat) }
+    animationCallback.awaitAnimation()
+  }
 }
 
 /**
@@ -121,7 +164,7 @@ inline fun runImeTest(noinline body: suspend ImeScope.() -> Unit) {
     windowInsetsControllerCompat.addOnControllableInsetsChangedListener(onVisibilityChangeListener)
     ViewCompat.setWindowInsetsAnimationCallback(view, animationCallback)
     try {
-      ImeScope(activity, view, onVisibilityChangeListener, animationCallback, this).body()
+      ImeScope(activity, onVisibilityChangeListener, animationCallback, view, this).body()
     } finally {
       ViewCompat.setWindowInsetsAnimationCallback(view, null)
       windowInsetsControllerCompat.removeOnControllableInsetsChangedListener(

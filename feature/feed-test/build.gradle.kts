@@ -18,11 +18,11 @@ import br.com.orcinus.orca.namespaceFor
 plugins {
   alias(libs.plugins.android.library)
   alias(libs.plugins.kotlin.android)
+  alias(libs.plugins.kotlin.compose)
 }
 
 android {
   buildFeatures.compose = true
-  composeOptions.kotlinCompilerExtensionVersion = libs.versions.android.compose.compiler.get()
   namespace = namespaceFor("feature.feed.test")
   testOptions.unitTests.isIncludeAndroidResources = true
 }
