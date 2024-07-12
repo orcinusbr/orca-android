@@ -14,6 +14,7 @@ dependencies {
   implementation(project(":platform:focus"))
   implementation(libs.android.constraintLayout.compose)
 
+  testImplementation(project(":platform:autos-test"))
   testImplementation(libs.android.compose.ui.test.junit)
   testImplementation(libs.android.compose.ui.test.manifest)
   testImplementation(libs.assertk)
