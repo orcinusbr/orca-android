@@ -84,13 +84,13 @@ fun SearchTextField(
         Icon(
           AutosTheme.iconography.search.asImageVector,
           stringResource(R.string.platform_autos_search_content_description),
-          tint = AutosTheme.colors.tertiary.asColor
+          tint = AutosTheme.colors.secondary.asColor
         )
 
         if (query.isEmpty()) {
           Text(
             stringResource(R.string.platform_autos_search),
-            style = AutosTheme.typography.labelMedium
+            style = AutosTheme.typography.titleSmall
           )
         } else {
           it()
