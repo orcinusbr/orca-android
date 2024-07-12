@@ -118,7 +118,7 @@ fun Searchable(
               },
               contentPadding =
                 PaddingValues(
-                  end = HoverableIconButtonDefaults.Size.width + SearchTextFieldDefaults.spacing
+                  end = HoverableIconButtonDefaults.Size.width + SearchTextFieldDefaults.spacing * 2
                 )
             )
           }
