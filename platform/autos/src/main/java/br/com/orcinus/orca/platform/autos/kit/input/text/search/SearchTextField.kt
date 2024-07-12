@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.platform.autos.kit.input.text.search
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -87,12 +88,14 @@ fun SearchTextField(
           tint = AutosTheme.colors.secondary.asColor
         )
 
-        if (query.isEmpty()) {
-          Text(
-            stringResource(R.string.platform_autos_search),
-            style = AutosTheme.typography.titleSmall
-          )
-        } else {
+        Box {
+          query.ifEmpty {
+            Text(
+              stringResource(R.string.platform_autos_search),
+              style = AutosTheme.typography.titleSmall
+            )
+          }
+
           it()
         }
       }
