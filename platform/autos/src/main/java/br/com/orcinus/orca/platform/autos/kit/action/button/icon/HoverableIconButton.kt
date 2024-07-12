@@ -24,11 +24,18 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.kit.action.Hoverable
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
+
+/** Default values used by a [HoverableIconButton]. */
+object HoverableIconButtonDefaults {
+  /** Default size of a [HoverableIconButton]. */
+  val Size = DpSize(width = 48.dp, height = 48.dp)
+}
 
 /**
  * [IconButton] that gets visually highlighted when it's hovered.
@@ -47,7 +54,7 @@ fun HoverableIconButton(
     IgnoringMutableInteractionSource(PressInteraction.Press::class, HoverInteraction::class)
   }
 
-  Hoverable(modifier.size(48.dp)) {
+  Hoverable(modifier.size(HoverableIconButtonDefaults.Size)) {
     IconButton(onClick, Modifier.matchParentSize(), interactionSource = interactionSource) {
       content()
     }

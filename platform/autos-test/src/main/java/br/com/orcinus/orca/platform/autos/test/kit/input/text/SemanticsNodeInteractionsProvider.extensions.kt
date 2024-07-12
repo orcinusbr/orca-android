@@ -21,6 +21,8 @@ import androidx.compose.ui.test.onNodeWithTag
 import br.com.orcinus.orca.platform.autos.kit.input.text.FormTextField
 import br.com.orcinus.orca.platform.autos.kit.input.text.FormTextFieldErrorsTag
 import br.com.orcinus.orca.platform.autos.kit.input.text.FormTextFieldTag
+import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextField
+import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextFieldTag
 
 /**
  * [SemanticsNodeInteraction] of a [FormTextField].
@@ -29,6 +31,11 @@ import br.com.orcinus.orca.platform.autos.kit.input.text.FormTextFieldTag
  */
 fun SemanticsNodeInteractionsProvider.onFormTextField(): SemanticsNodeInteraction {
   return onNodeWithTag(FormTextFieldTag)
+}
+
+/** [SemanticsNodeInteraction] of a [SearchTextField]. */
+fun SemanticsNodeInteractionsProvider.onSearchTextField(): SemanticsNodeInteraction {
+  return onNodeWithTag(SearchTextFieldTag)
 }
 
 /**
