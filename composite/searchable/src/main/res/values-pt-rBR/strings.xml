@@ -14,5 +14,5 @@
   -->
 
 <resources>
-    <string name="composite_searchable_close">Fechar</string>
+    <string name="composite_searchable_dismiss">Fechar</string>
 </resources>

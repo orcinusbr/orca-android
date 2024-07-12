@@ -15,14 +15,20 @@
 
 package br.com.orcinus.orca.composite.searchable.searchable
 
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,14 +40,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import br.com.orcinus.orca.composite.searchable.R
-import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.kit.action.button.SecondaryButton
-import br.com.orcinus.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 import br.com.orcinus.orca.platform.autos.kit.input.text.search.SearchTextField
 import br.com.orcinus.orca.platform.autos.kit.input.text.search.SearchTextFieldDefaults
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
@@ -86,41 +87,40 @@ fun Searchable(
   content: @Composable SearchableScope.() -> Unit
 ) {
   Surface(modifier) {
-    BoxWithConstraints(Modifier.animateContentSize()) {
+    BoxWithConstraints {
       val scope = remember(::CapturingSearchableScope)
 
-      if (scope.isSearching) {
-        ConstraintLayout(
-          Modifier.padding(SearchTextFieldDefaults.spacing).statusBarsPadding().width(maxWidth)
-        ) {
-          val (searchTextField, closeButton) = createRefs()
-          val searchTextFieldFocusRequester = rememberImmediateFocusRequester()
+      AnimatedContent(
+        targetState = scope.isSearching,
+        transitionSpec = {
+          slideInVertically(tween(durationMillis = 128, delayMillis = if (targetState) 16 else 0)) {
+            if (targetState) it / 2 else -it / 4
+          } + fadeIn(tween(durationMillis = 128)) togetherWith
+            slideOutVertically() + fadeOut(tween(durationMillis = 32)) using
+            SizeTransform(clip = false)
+        },
+        label = "Searchable"
+      ) { isSearching ->
+        if (isSearching) {
+          Dismissible(
+            onDismissal = scope::dismiss,
+            Modifier.padding(SearchTextFieldDefaults.spacing).statusBarsPadding().width(maxWidth)
+          ) { anchor ->
+            val focusRequester = rememberImmediateFocusRequester()
 
-          SearchTextField(
-            query,
-            onQueryChange,
-            Modifier.focusRequester(searchTextFieldFocusRequester).constrainAs(searchTextField) {
-              width = Dimension.fillToConstraints
-              centerHorizontallyTo(parent)
-            },
-            contentPadding = PaddingValues(end = 48.dp + SearchTextFieldDefaults.spacing)
-          )
-
-          HoverableIconButton(
-            onClick = scope::dismiss,
-            Modifier.constrainAs(closeButton) {
-              centerVerticallyTo(searchTextField)
-              end.linkTo(searchTextField.end)
-            }
-          ) {
-            Icon(
-              AutosTheme.iconography.close.asImageVector,
-              contentDescription = stringResource(R.string.composite_searchable_close)
+            SearchTextField(
+              query,
+              onQueryChange,
+              Modifier.focusRequester(focusRequester).constrainAs(anchor) {
+                width = Dimension.fillToConstraints
+                centerHorizontallyTo(parent)
+              },
+              contentPadding = PaddingValues(end = 48.dp + SearchTextFieldDefaults.spacing)
             )
           }
+        } else {
+          scope.content()
         }
-      } else {
-        scope.content()
       }
     }
   }
