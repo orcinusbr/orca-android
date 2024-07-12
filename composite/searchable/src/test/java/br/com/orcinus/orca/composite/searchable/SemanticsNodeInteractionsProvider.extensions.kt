@@ -18,8 +18,6 @@ package br.com.orcinus.orca.composite.searchable
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.onNodeWithTag
-import br.com.orcinus.orca.composite.searchable.searchable.DismissButtonTag
-import br.com.orcinus.orca.composite.searchable.searchable.Dismissible
 
 /** [SemanticsNodeInteraction] of a [Dismissible]'s "dismiss" button. */
 internal fun SemanticsNodeInteractionsProvider.onDismissButton(): SemanticsNodeInteraction {

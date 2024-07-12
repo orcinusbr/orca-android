@@ -17,7 +17,6 @@ package br.com.orcinus.orca.composite.searchable
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import br.com.orcinus.orca.composite.searchable.searchable.Dismissible
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import kotlin.test.Test
 import org.junit.Rule

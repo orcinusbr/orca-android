@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.searchable.searchable
+package br.com.orcinus.orca.composite.searchable
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform

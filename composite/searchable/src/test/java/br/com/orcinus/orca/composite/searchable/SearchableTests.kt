@@ -26,8 +26,7 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performTextInput
-import br.com.orcinus.orca.composite.searchable.searchable.Searchable
-import br.com.orcinus.orca.platform.autos.test.kit.input.text.search.onSearchTextField
+import br.com.orcinus.orca.platform.autos.test.kit.input.text.onSearchTextField
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import kotlin.test.Test
 import org.junit.Rule

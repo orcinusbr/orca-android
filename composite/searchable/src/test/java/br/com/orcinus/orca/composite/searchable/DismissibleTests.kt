@@ -19,7 +19,6 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performClick
 import assertk.assertThat
 import assertk.assertions.isTrue
-import br.com.orcinus.orca.composite.searchable.searchable.Dismissible
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import kotlin.test.Test
 import org.junit.Rule

@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.searchable.searchable
+package br.com.orcinus.orca.composite.searchable
 
 import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextField
 
