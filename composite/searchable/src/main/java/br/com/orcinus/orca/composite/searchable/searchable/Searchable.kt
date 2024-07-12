@@ -40,10 +40,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.Dimension
 import br.com.orcinus.orca.platform.autos.colors.asColor
 import br.com.orcinus.orca.platform.autos.kit.action.button.SecondaryButton
+import br.com.orcinus.orca.platform.autos.kit.action.button.icon.HoverableIconButtonDefaults
 import br.com.orcinus.orca.platform.autos.kit.input.text.search.SearchTextField
 import br.com.orcinus.orca.platform.autos.kit.input.text.search.SearchTextFieldDefaults
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
@@ -116,7 +116,10 @@ fun Searchable(
                 width = Dimension.fillToConstraints
                 centerHorizontallyTo(parent)
               },
-              contentPadding = PaddingValues(end = 48.dp + SearchTextFieldDefaults.spacing)
+              contentPadding =
+                PaddingValues(
+                  end = HoverableIconButtonDefaults.Size.width + SearchTextFieldDefaults.spacing
+                )
             )
           }
         } else {
