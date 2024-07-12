@@ -15,7 +15,7 @@
 
 package br.com.orcinus.orca.composite.searchable.searchable
 
-import br.com.orcinus.orca.platform.autos.kit.input.text.search.SearchTextField
+import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextField
 
 /** Scope from which a [SearchTextField] can be either shown or dismissed. */
 abstract class SearchableScope internal constructor() {

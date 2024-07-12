@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.autos.kit.input.text.search
+package br.com.orcinus.orca.platform.autos.kit.input.text
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

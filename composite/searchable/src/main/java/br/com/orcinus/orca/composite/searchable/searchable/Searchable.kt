@@ -44,8 +44,8 @@ import androidx.constraintlayout.compose.Dimension
 import br.com.orcinus.orca.platform.autos.colors.asColor
 import br.com.orcinus.orca.platform.autos.kit.action.button.SecondaryButton
 import br.com.orcinus.orca.platform.autos.kit.action.button.icon.HoverableIconButtonDefaults
-import br.com.orcinus.orca.platform.autos.kit.input.text.search.SearchTextField
-import br.com.orcinus.orca.platform.autos.kit.input.text.search.SearchTextFieldDefaults
+import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextField
+import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextFieldDefaults
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview

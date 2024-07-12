@@ -19,6 +19,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import br.com.orcinus.orca.platform.autos.kit.input.text.FormTextField
+import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextField
 import br.com.orcinus.orca.platform.autos.kit.input.text.error.rememberErrorDispatcher
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import org.junit.Rule
@@ -56,6 +57,14 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
         }
       }
       .onTextFieldErrors()
+      .assertIsDisplayed()
+  }
+
+  @Test
+  fun findsSearchTextField() {
+    composeRule
+      .apply { setContent { AutosTheme { SearchTextField(query = "", onQueryChange = {}) } } }
+      .onSearchTextField()
       .assertIsDisplayed()
   }
 }

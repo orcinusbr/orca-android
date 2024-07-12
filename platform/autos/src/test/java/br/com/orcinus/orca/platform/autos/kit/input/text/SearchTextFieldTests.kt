@@ -13,26 +13,38 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.autos.test.kit.input.text.search
+package br.com.orcinus.orca.platform.autos.kit.input.text
 
-import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
-import br.com.orcinus.orca.platform.autos.kit.input.text.search.SearchTextField
+import androidx.compose.ui.test.performTextInput
+import br.com.orcinus.orca.platform.autos.test.kit.input.text.onSearchTextField
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import kotlin.test.Test
 import org.junit.Rule
-import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class SemanticsNodeInteractionsProviderExtensionsTests {
+internal class SearchTextFieldTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun findsSearchTextField() {
+  fun isTypedInto() {
     composeRule
-      .apply { setContent { AutosTheme { SearchTextField(query = "", onQueryChange = {}) } } }
+      .apply {
+        setContent {
+          var query by remember { mutableStateOf("") }
+
+          AutosTheme { SearchTextField(query, onQueryChange = { query = it }) }
+        }
+      }
       .onSearchTextField()
-      .assertIsDisplayed()
+      .also { it.performTextInput("Hello, world!") }
+      .assertTextEquals("Hello, world!")
   }
 }
