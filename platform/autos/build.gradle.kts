@@ -40,6 +40,7 @@ dependencies {
   implementation(project(":ext:reflection"))
   implementation(project(":std:visibility"))
   implementation(libs.accompanist.adapter)
+  implementation(libs.android.core)
   implementation(libs.loadable.placeholder)
 
   testImplementation(project(":ext:uri"))

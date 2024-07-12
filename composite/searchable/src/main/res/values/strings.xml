@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ Copyright © 2023–2024 Orcinus
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright © 2024 Orcinus
   ~
   ~ This program is free software: you can redistribute it and/or modify it under the terms of the
   ~ GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,7 +14,5 @@
   -->
 
 <resources>
-    <string name="platform_autos_search">Pesquisar…</string>
-    <string name="platform_autos_search_content_description">Pesquisa</string>
-    <string name="platform_ui_top_app_bar_with_back_navigation_action">Voltar</string>
+    <string name="composite_searchable_close">Close</string>
 </resources>
