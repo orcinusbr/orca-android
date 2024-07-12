@@ -42,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.Dimension
+import br.com.orcinus.orca.platform.autos.colors.asColor
 import br.com.orcinus.orca.platform.autos.kit.action.button.SecondaryButton
 import br.com.orcinus.orca.platform.autos.kit.input.text.search.SearchTextField
 import br.com.orcinus.orca.platform.autos.kit.input.text.search.SearchTextFieldDefaults
@@ -86,7 +87,7 @@ fun Searchable(
   modifier: Modifier = Modifier,
   content: @Composable SearchableScope.() -> Unit
 ) {
-  Surface(modifier) {
+  Surface(modifier, color = AutosTheme.colors.background.container.asColor) {
     BoxWithConstraints {
       val scope = remember(::CapturingSearchableScope)
 
