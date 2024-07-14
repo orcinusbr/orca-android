@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.testTag
@@ -47,6 +48,10 @@ const val SearchTextFieldTag = "search-text-field"
 
 /** Default values used by a [SearchTextField]. */
 object SearchTextFieldDefaults {
+  /** [Color] by which the container of a [SearchTextField] is colored by default. */
+  val containerColor
+    @Composable get() = AutosTheme.colors.surface.container.asColor
+
   /** [Shape] of a [SearchTextField] by default. */
   val shape
     @Composable get() = AutosTheme.forms.large.asShape
