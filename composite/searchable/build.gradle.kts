@@ -10,9 +10,14 @@ android {
 }
 
 dependencies {
+  api(project(":core"))
+  api(libs.loadable.list)
+
   implementation(project(":platform:autos"))
+  implementation(project(":platform:core"))
   implementation(project(":platform:focus"))
   implementation(libs.android.constraintLayout.compose)
+  implementation(libs.loadable.placeholder)
 
   testImplementation(project(":platform:autos-test"))
   testImplementation(libs.android.compose.ui.test.junit)

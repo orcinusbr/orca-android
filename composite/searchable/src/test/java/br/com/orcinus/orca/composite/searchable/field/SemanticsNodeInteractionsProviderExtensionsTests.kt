@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.searchable
+package br.com.orcinus.orca.composite.searchable.field
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -30,7 +30,7 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @Test
   fun findsDismissButton() {
     composeRule
-      .apply { setContent { AutosTheme { Dismissible(onDismissal = {}) {} } } }
+      .apply { setContent { AutosTheme { ResultSearchTextField() } } }
       .onDismissButton()
       .assertIsDisplayed()
   }

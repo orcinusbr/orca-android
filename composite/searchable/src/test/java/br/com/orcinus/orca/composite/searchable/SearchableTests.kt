@@ -16,7 +16,6 @@
 package br.com.orcinus.orca.composite.searchable
 
 import androidx.compose.material3.Text
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,9 +39,7 @@ internal class SearchableTests {
   @Test
   fun contentIsShownByDefault() {
     composeRule
-      .apply {
-        setContent { AutosTheme { Searchable(query = "", onQueryChange = {}) { Text("🫶🏽") } } }
-      }
+      .apply { setContent { AutosTheme { Searchable { content { Text("🫶🏽") } } } } }
       .onNodeWithText("🫶🏽")
       .assertIsDisplayed()
   }
@@ -50,18 +47,7 @@ internal class SearchableTests {
   @Test
   fun showsSearchTextField() {
     composeRule
-      .apply {
-        setContent {
-          AutosTheme {
-            Searchable(query = "", onQueryChange = {}) {
-              DisposableEffect(Unit) {
-                show()
-                onDispose {}
-              }
-            }
-          }
-        }
-      }
+      .apply { setContent { AutosTheme { Searchable(content = SearchableScope::show) } } }
       .onSearchTextField()
       .assertIsDisplayed()
   }
@@ -74,12 +60,11 @@ internal class SearchableTests {
           AutosTheme {
             var query by remember { mutableStateOf("") }
 
-            Searchable(query, onQueryChange = { query = it }) {
-              DisposableEffect(Unit) {
-                show()
-                onDispose {}
-              }
-            }
+            Searchable(
+              query = query,
+              onQueryChange = { query = it },
+              content = SearchableScope::show
+            )
           }
         }
       }
@@ -94,12 +79,9 @@ internal class SearchableTests {
       .apply {
         setContent {
           AutosTheme {
-            Searchable(query = "", onQueryChange = {}) {
-              DisposableEffect(Unit) {
-                show()
-                dismiss()
-                onDispose {}
-              }
+            Searchable {
+              show()
+              dismiss()
             }
           }
         }

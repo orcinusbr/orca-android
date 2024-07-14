@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.searchable
+package br.com.orcinus.orca.composite.searchable.field
 
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performClick
@@ -26,14 +26,16 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class DismissibleTests {
+internal class ResultSearchTextFieldTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
   fun dismisses() {
     var hasDismissed = false
     composeRule
-      .apply { setContent { AutosTheme { Dismissible(onDismissal = { hasDismissed = true }) {} } } }
+      .apply {
+        setContent { AutosTheme { ResultSearchTextField(onDismissal = { hasDismissed = true }) } }
+      }
       .onDismissButton()
       .performClick()
     assertThat(hasDismissed).isTrue()

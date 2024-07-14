@@ -15,13 +15,61 @@
 
 package br.com.orcinus.orca.composite.searchable
 
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextField
 
-/** Scope from which a [SearchTextField] can be either shown or dismissed. */
-abstract class SearchableScope internal constructor() {
+/** [SearchableScope] implementation provided to the content of a [Searchable]. */
+class SearchableScope internal constructor() {
+  /** [LazyListScope] of the lazy list of decorations. */
+  private var decorationLazyListScope: LazyListScope? = null
+
+  /** Content to be shown by default and that can be replaced. */
+  internal var content by mutableStateOf<(@Composable () -> Unit)?>(null)
+    private set
+
+  /** Whether the [SearchTextField] is currently being shown. */
+  var isSearching by mutableStateOf(false)
+    private set
+
+  /**
+   * Sets the content to be replaced by the [SearchTextField].
+   *
+   * @param content Content to be shown by default and that can be replaced.
+   */
+  fun content(content: @Composable () -> Unit) {
+    this.content = content
+  }
+
   /** Shows the [SearchTextField]. */
-  abstract fun show()
+  fun show() {
+    isSearching = true
+  }
+
+  /**
+   * Provides a [LazyListScope] to which decorations can be added.
+   *
+   * @param decorations Adds contents to be displayed alongside the [SearchTextField].
+   */
+  fun decorations(decorations: LazyListScope.() -> Unit) {
+    decorationLazyListScope?.decorations()
+  }
 
   /** Dismisses the [SearchTextField]. */
-  internal abstract fun dismiss()
+  fun dismiss() {
+    isSearching = false
+  }
+
+  /**
+   * Defines the [LazyListScope] to which decorations are added.
+   *
+   * @param decorationLazyListScope [LazyListScope] of the lazy list of decorations.
+   * @see decorations
+   */
+  internal fun setDecorationLazyListScope(decorationLazyListScope: LazyListScope) {
+    this.decorationLazyListScope = decorationLazyListScope
+  }
 }
