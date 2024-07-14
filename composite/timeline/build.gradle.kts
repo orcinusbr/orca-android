@@ -29,6 +29,7 @@ android {
 dependencies {
   testImplementation(project(":composite:timeline-test"))
   testImplementation(project(":core:sample-test"))
+  testImplementation(project(":platform:autos-test"))
   testImplementation(project(":platform:testing"))
   testImplementation(libs.android.compose.ui.test.manifest)
   testImplementation(libs.android.test.core)
@@ -40,12 +41,15 @@ dependencies {
 
   api(project(":platform:autos"))
   api(project(":platform:core"))
+  api(libs.loadable.list)
 
   implementation(project(":ext:reflection"))
+  implementation(project(":platform:focus"))
+  implementation(project(":std:visibility"))
   implementation(libs.android.compose.material)
+  implementation(libs.android.constraintLayout.compose)
   implementation(libs.android.core)
   implementation(libs.jsoup)
-  implementation(libs.loadable.list)
   implementation(libs.loadable.placeholder)
   implementation(libs.loadable.placeholder.test)
   implementation(libs.time4j)

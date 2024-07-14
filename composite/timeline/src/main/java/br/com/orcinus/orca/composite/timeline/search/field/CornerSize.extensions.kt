@@ -13,13 +13,20 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.searchable.field
+package br.com.orcinus.orca.composite.timeline.search.field
 
-import androidx.compose.ui.test.SemanticsNodeInteraction
-import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
-import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 
-/** [SemanticsNodeInteraction] of a [ResultSearchTextField]'s "dismiss" button. */
-internal fun SemanticsNodeInteractionsProvider.onDismissButton(): SemanticsNodeInteraction {
-  return onNodeWithTag(DismissButtonTag)
+/**
+ * Converts this [CornerSize] into [Dp]s.
+ *
+ * @param shapeSize [Size] of the [Shape].
+ * @param density [Density] from which this [CornerSize] is to be converted into pixels.
+ */
+internal fun CornerSize.toDp(shapeSize: Size, density: Density): Dp {
+  return with(density) { toPx(shapeSize, density).toDp() }
 }

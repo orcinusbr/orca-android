@@ -13,20 +13,10 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.searchable.field
+package br.com.orcinus.orca.composite.timeline
 
-import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.Dp
+import br.com.orcinus.orca.std.visibility.PackageProtected
 
-/**
- * Converts this [CornerSize] into [Dp]s.
- *
- * @param shapeSize [Size] of the [Shape].
- * @param density [Density] from which this [CornerSize] is to be converted into pixels.
- */
-internal fun CornerSize.toDp(shapeSize: Size, density: Density): Dp {
-  return with(density) { toPx(shapeSize, density).toDp() }
-}
+/** Denotes that an API is intended to be referenced only by [Timeline] and its internals. */
+@PackageProtected("This API is to be referenced only by `Timeline` and its internal structures.")
+internal annotation class InternalTimelineApi

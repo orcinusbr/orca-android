@@ -15,6 +15,7 @@
 
 <resources>
     <string name="composite_timeline_avatar">%s\'s avatar</string>
+    <string name="composite_timeline_dismiss">Dismiss</string>
     <string name="composite_timeline_empty">Empty</string>
     <string name="composite_timeline_empty_message">Seems a bit empty in here…</string>
     <string name="composite_timeline_post_preview_gallery_thumbnail">

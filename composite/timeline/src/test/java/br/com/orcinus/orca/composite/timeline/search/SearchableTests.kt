@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.searchable
+package br.com.orcinus.orca.composite.timeline.search
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue

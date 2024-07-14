@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.searchable.field
+package br.com.orcinus.orca.composite.timeline.search.field
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.core.animateDpAsState
@@ -39,7 +39,8 @@ import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintLayoutScope
 import androidx.constraintlayout.compose.Dimension
-import br.com.orcinus.orca.composite.searchable.R
+import br.com.orcinus.orca.composite.timeline.InternalTimelineApi
+import br.com.orcinus.orca.composite.timeline.R
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
@@ -56,10 +57,10 @@ import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.serializableListOf
 
 /** Tag that identifies a [ResultSearchTextField]'s "dismiss" button for testing purposes. */
-internal const val DismissButtonTag = "result-search-text-field-dismiss-button"
+const val DismissButtonTag = "result-search-text-field-dismiss-button"
 
 /** Tag that identifies a [ResultSearchTextField]'s divider for testing purposes. */
-internal const val DividerTag = "result-search-text-field-divider-tag"
+const val DividerTag = "result-search-text-field-divider-tag"
 
 /**
  * [SearchTextField] that presents results for the [query].
@@ -73,8 +74,9 @@ internal const val DividerTag = "result-search-text-field-divider-tag"
  * @param profileSearchResultsLoadable [Profile] results found by the [query].
  */
 @Composable
+@InternalTimelineApi
 @VisibleForTesting
-internal fun ResultSearchTextField(
+fun ResultSearchTextField(
   modifier: Modifier = Modifier,
   query: String = "",
   onQueryChange: (query: String) -> Unit = {},
@@ -195,7 +197,7 @@ private fun ConstraintLayoutScope.DismissibleSearchTextField(
   ) {
     Icon(
       AutosTheme.iconography.close.asImageVector,
-      contentDescription = stringResource(R.string.composite_searchable_dismiss)
+      contentDescription = stringResource(R.string.composite_timeline_dismiss)
     )
   }
 }

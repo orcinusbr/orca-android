@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.searchable.field
+package br.com.orcinus.orca.composite.timeline.search.field
 
 import assertk.assertThat
 import assertk.assertions.containsExactly
@@ -48,7 +48,7 @@ internal class ListLoadableExtensionsTests {
   @Test
   fun runsActionWhenPopulated() {
     lateinit var content: SerializableList<Int>
-    ListLoadable.Populated(serializableListOf(0)).ifPopulated { content = it }
+    ListLoadable.Populated(serializableListOf(0)).ifPopulated { content = this }
     assertThat(content).containsExactly(0)
   }
 }

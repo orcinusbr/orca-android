@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.searchable
+package br.com.orcinus.orca.composite.timeline.search
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.AnimatedContent
@@ -40,7 +40,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
-import br.com.orcinus.orca.composite.searchable.field.ResultSearchTextField
+import br.com.orcinus.orca.composite.timeline.InternalTimelineApi
+import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.platform.autos.colors.asColor
@@ -63,6 +64,7 @@ import com.jeanbarrossilva.loadable.list.ListLoadable
  *   shown through the provided [SearchableScope].
  */
 @Composable
+@InternalTimelineApi
 @VisibleForTesting
 fun Searchable(
   modifier: Modifier = Modifier,

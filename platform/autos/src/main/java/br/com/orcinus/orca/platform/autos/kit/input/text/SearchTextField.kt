@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -46,6 +47,10 @@ const val SearchTextFieldTag = "search-text-field"
 
 /** Default values used by a [SearchTextField]. */
 object SearchTextFieldDefaults {
+  /** [Shape] of a [SearchTextField] by default. */
+  val shape
+    @Composable get() = AutosTheme.forms.large.asShape
+
   /** Amount of [Dp]s by which a [SearchTextField] is spaced by default. */
   val spacing
     @Composable get() = AutosTheme.spacings.medium.dp
@@ -57,6 +62,7 @@ object SearchTextFieldDefaults {
  * @param query Content to be looked up.
  * @param onQueryChange Lambda invoked whenever the [query] changes.
  * @param modifier [Modifier] applied to the underlying [BasicTextField].
+ * @param shape [Shape] by which it is clipped.
  * @param contentPadding [PaddingValues] by which the content of the decoration box is padded.
  */
 @Composable
@@ -64,6 +70,7 @@ fun SearchTextField(
   query: String,
   onQueryChange: (query: String) -> Unit,
   modifier: Modifier = Modifier,
+  shape: Shape = SearchTextFieldDefaults.shape,
   contentPadding: PaddingValues = PaddingValues()
 ) {
   val style = LocalTextStyle.current
@@ -76,7 +83,7 @@ fun SearchTextField(
     textStyle = style,
     cursorBrush = cursorBrush
   ) {
-    Surface(shape = AutosTheme.forms.large.asShape, shadowElevation = 2.dp) {
+    Surface(shape = shape, shadowElevation = 2.dp) {
       Row(
         Modifier.padding(contentPadding).padding(SearchTextFieldDefaults.spacing),
         Arrangement.spacedBy(SearchTextFieldDefaults.spacing),
