@@ -99,19 +99,7 @@ fun Searchable(
     LazyColumn {
       @OptIn(ExperimentalFoundationApi::class)
       stickyHeader {
-        AnimatedContent(
-          targetState = isSearching,
-          transitionSpec = {
-            slideInVertically(
-              tween(durationMillis = 128, delayMillis = if (targetState) 16 else 0)
-            ) {
-              if (targetState) it / 2 else -it / 4
-            } + fadeIn(tween(durationMillis = 128)) togetherWith
-              slideOutVertically() + fadeOut(tween(durationMillis = 32)) using
-              SizeTransform(clip = false)
-          },
-          label = "Searchable"
-        ) { isSearching ->
+        Accordion(isSearching) { isSearching ->
           if (isSearching) {
             Box(Modifier.padding(SearchTextFieldDefaults.spacing).statusBarsPadding()) {
               ResultSearchTextField(
@@ -131,6 +119,38 @@ fun Searchable(
   }
 }
 
+/**
+ * Animates visibility changes of the [content], which are based on whether search is being
+ * performed. Switches between one state to another with an accordion-like transition, collapsing it
+ * when [isSearching] is `true`; otherwise, expands it for it to be displayed again.
+ *
+ * @param isSearching Whether the [SearchTextField] is to be made visible.
+ * @param modifier [Modifier] applied to the underlying [AnimatedContent].
+ * @param content Content to be collapsed and expanded.
+ */
+@Composable
+private fun Accordion(
+  isSearching: Boolean,
+  modifier: Modifier = Modifier,
+  content: @Composable (isSearching: Boolean) -> Unit
+) {
+  AnimatedContent(
+    targetState = isSearching,
+    modifier,
+    transitionSpec = {
+      slideInVertically(tween(durationMillis = 128, delayMillis = if (targetState) 16 else 0)) {
+        if (targetState) it / 2 else -it / 4
+      } + fadeIn(tween(durationMillis = 128)) togetherWith
+        slideOutVertically() + fadeOut(tween(durationMillis = 32)) using
+        SizeTransform(clip = false)
+    },
+    label = "Accordion"
+  ) {
+    content(it)
+  }
+}
+
+/** Preview of a [Searchable]. */
 @Composable
 @MultiThemePreview
 private fun SearchablePreview() {
