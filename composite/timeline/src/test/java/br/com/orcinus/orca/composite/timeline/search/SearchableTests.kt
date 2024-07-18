@@ -37,7 +37,7 @@ internal class SearchableTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun contentIsShownByDefault() {
+  fun mainContentIsShownByDefault() {
     composeRule
       .apply { setContent { AutosTheme { Searchable { content { Text("🫶🏽") } } } } }
       .onNodeWithText("🫶🏽")
@@ -45,9 +45,34 @@ internal class SearchableTests {
   }
 
   @Test
-  fun showsSearchTextField() {
+  fun replaceableContentIsShownByDefault() {
+    composeRule
+      .apply { setContent { AutosTheme { Searchable { content { Replaceable { Text("🧊") } } } } } }
+      .onNodeWithText("🧊")
+      .assertIsDisplayed()
+  }
+
+  @Test
+  fun doesNotShowSearchTextFieldWhenReplaceableContentIsNotComposed() {
     composeRule
       .apply { setContent { AutosTheme { Searchable(content = SearchableScope::show) } } }
+      .onSearchTextField()
+      .assertDoesNotExist()
+  }
+
+  @Test
+  fun showsSearchTextField() {
+    composeRule
+      .apply {
+        setContent {
+          AutosTheme {
+            Searchable {
+              content { Replaceable() }
+              show()
+            }
+          }
+        }
+      }
       .onSearchTextField()
       .assertIsDisplayed()
   }
@@ -58,13 +83,13 @@ internal class SearchableTests {
       .apply {
         setContent {
           AutosTheme {
-            var query by remember { mutableStateOf("") }
-
-            Searchable(
-              query = query,
-              onQueryChange = { query = it },
-              content = SearchableScope::show
-            )
+            Searchable {
+              content {
+                var query by remember { mutableStateOf("") }
+                Replaceable(query = query, onQueryChange = { query = it })
+              }
+              show()
+            }
           }
         }
       }
@@ -80,6 +105,7 @@ internal class SearchableTests {
         setContent {
           AutosTheme {
             Searchable {
+              content { Replaceable() }
               show()
               dismiss()
             }

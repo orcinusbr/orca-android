@@ -15,27 +15,32 @@
 
 package br.com.orcinus.orca.platform.autos.kit.scaffold.scope
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.bottom.OrcaBottomNavigationView
 
 /** Scope from which the [Content] of a [Scaffold] can be defined. */
 class ScaffoldScope internal constructor() {
   /**
    * Creates a [Content] that is displayed all by itself.
    *
+   * @param modifier [Modifier] to be applied to the underlying [Box].
    * @param value [Composable] to be shown.
    */
-  fun expanded(value: @Composable () -> Unit): Content {
-    return Content.Expanded(value)
+  fun expanded(modifier: Modifier = Modifier, value: @Composable () -> Unit): Content {
+    return Content.Expanded(modifier, value)
   }
 
   /**
-   * Creates a [Content] that is shown as a result of the selection of a [NavigationBar] tab.
+   * Creates a [Content] that is shown as a result of the selection of an [OrcaBottomNavigationView]
+   * tab.
    *
+   * @param modifier [Modifier] to be applied to the underlying [Box].
    * @param value [Composable] to be shown.
-   * @see NavigationBarScope.tab
    */
-  fun navigable(value: @Composable () -> Unit): Content {
-    return Content.Navigable(value)
+  fun navigable(modifier: Modifier = Modifier, value: @Composable () -> Unit): Content {
+    return Content.Navigable(modifier, value)
   }
 }

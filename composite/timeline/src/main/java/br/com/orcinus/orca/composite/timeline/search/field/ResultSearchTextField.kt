@@ -76,13 +76,13 @@ import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
 
 /** Tag that identifies a [ResultSearchTextField]'s "dismiss" button for testing purposes. */
-const val DismissButtonTag = "result-search-text-field-dismiss-button"
+@InternalTimelineApi const val DismissButtonTag = "result-search-text-field-dismiss-button"
 
 /** Tag that identifies a [ResultSearchTextField]'s divider for testing purposes. */
-const val DividerTag = "result-search-text-field-divider-tag"
+@InternalTimelineApi const val DividerTag = "result-search-text-field-divider"
 
 /**
- * [SearchTextField] that presents results for the [query].
+ * [SearchTextField] that presents results for the query.
  *
  * This overload is stateless by default and is intended for previewing and testing purposes only.
  *
