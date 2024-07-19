@@ -23,6 +23,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -150,7 +152,7 @@ internal fun ResultSearchTextField(
     ) {
       HorizontalDivider(Modifier.testTag(DividerTag))
 
-      Column(
+      LazyColumn(
         Modifier.constrainAs(createRef()) {
           width = Dimension.fillToConstraints
           centerHorizontallyTo(parent)
@@ -158,8 +160,8 @@ internal fun ResultSearchTextField(
         }
       ) {
         profileSearchResultsLoadable.ifPopulated {
-          forEachIndexed { index, profileSearchResult ->
-            ResultCard(profileSearchResult, isLastOne = index == lastIndex, Modifier.fillMaxWidth())
+          itemsIndexed(this) { index, result ->
+            ResultCard(result, isLastOne = index == lastIndex, Modifier.fillMaxWidth())
           }
         }
       }
