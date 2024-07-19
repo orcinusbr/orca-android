@@ -100,14 +100,14 @@ class SearchableScope internal constructor() {
   }
 
   /**
-   * Displays either the [content] or the [ResultSearchTextField] that presents results for the
-   * query when it is requested to be shown.
+   * Displays either the [content] or the [SearchTextField] that presents results for the query when
+   * it is requested to be shown.
    *
    * @param query Content to be looked up.
    * @param onQueryChange Lambda invoked whenever the [query] changes.
    * @param profileSearchResultsLoadable [Profile] results found by the [query].
-   * @param modifier [Modifier] to be applied to the [ResultSearchTextField].
-   * @param content Content that can be replaced by the [ResultSearchTextField].
+   * @param modifier [Modifier] to be applied to the [SearchTextField].
+   * @param content Content that can be replaced by the [SearchTextField].
    */
   @Composable
   fun Replaceable(
@@ -121,36 +121,15 @@ class SearchableScope internal constructor() {
       val coroutineScope = rememberCoroutineScope()
 
       if (willSearch) {
-        val density = LocalDensity.current
-        val searchTextFieldSpacing = SearchTextFieldDefaults.spacing
-        val searchTextFieldSpacingInPixels =
-          remember(density, searchTextFieldSpacing) {
-            with(density) { searchTextFieldSpacing.roundToPx() }
-          }
-
-        Popup(
-          offset = IntOffset(x = 0, y = searchTextFieldSpacingInPixels),
-          properties = PopupProperties(focusable = true)
-        ) {
-          Box(Modifier.padding(horizontal = searchTextFieldSpacing)) {
-            ResultSearchTextField(
-              query,
-              onQueryChange,
-              onDismissal = ::dismiss,
-              profileSearchResultsLoadable,
-              modifier
-                .focusRequester(rememberImmediateFocusRequester())
-                .searchTextFieldLayout(density, coroutineScope, searchTextFieldSpacing)
-                .fillMaxWidth()
-            )
-          }
-        }
+        SearchTextFieldPopup(
+          coroutineScope,
+          query,
+          onQueryChange,
+          profileSearchResultsLoadable,
+          modifier
+        )
       } else {
-        DisposableEffect(Unit) {
-          coroutineScope.launch { searchTextFieldLayoutHeightAnimatable.animateTo(0.dp) }
-          onDispose {}
-        }
-
+        SearchTextFieldLayoutHeightResetEffect(coroutineScope)
         content()
       }
     }
@@ -253,6 +232,67 @@ class SearchableScope internal constructor() {
       }
     } else {
       this
+    }
+  }
+
+  /**
+   * [Popup] by which a [ResultSearchTextField] is displayed, whose changes in height are observed
+   * and then propagated to [searchTextFieldLayoutHeight]. It is automatically offset and padded
+   * based on the default spacing of a [SearchTextField].
+   *
+   * @param coroutineScope [CoroutineScope] in which [Job]s that animate the
+   *   [searchTextFieldLayoutHeight] are launched.
+   * @param query Content to be looked up.
+   * @param onQueryChange Lambda invoked whenever the [query] changes.
+   * @param profileSearchResultsLoadable [Profile] results found by the [query].
+   * @param modifier [Modifier] to be applied to the [ResultSearchTextField].
+   * @see SearchTextFieldDefaults.spacing
+   */
+  @Composable
+  private fun SearchTextFieldPopup(
+    coroutineScope: CoroutineScope,
+    query: String,
+    onQueryChange: (query: String) -> Unit,
+    profileSearchResultsLoadable: ListLoadable<ProfileSearchResult>,
+    modifier: Modifier = Modifier
+  ) {
+    val density = LocalDensity.current
+    val searchTextFieldSpacing = SearchTextFieldDefaults.spacing
+    val searchTextFieldSpacingInPixels =
+      remember(density, searchTextFieldSpacing) {
+        with(density) { searchTextFieldSpacing.roundToPx() }
+      }
+
+    Popup(
+      offset = IntOffset(x = 0, y = searchTextFieldSpacingInPixels),
+      properties = PopupProperties(focusable = true)
+    ) {
+      Box(Modifier.padding(horizontal = searchTextFieldSpacing)) {
+        ResultSearchTextField(
+          query,
+          onQueryChange,
+          onDismissal = ::dismiss,
+          profileSearchResultsLoadable,
+          modifier
+            .focusRequester(rememberImmediateFocusRequester())
+            .searchTextFieldLayout(density, coroutineScope, searchTextFieldSpacing)
+            .fillMaxWidth()
+        )
+      }
+    }
+  }
+
+  /**
+   * Effect that zeroes the [searchTextFieldLayoutHeight] once.
+   *
+   * @param coroutineScope [CoroutineScope] in which the [Job] that resets the
+   *   [searchTextFieldLayoutHeight] is launched.
+   */
+  @Composable
+  private fun SearchTextFieldLayoutHeightResetEffect(coroutineScope: CoroutineScope) {
+    DisposableEffect(Unit) {
+      coroutineScope.launch { searchTextFieldLayoutHeightAnimatable.animateTo(0.dp) }
+      onDispose {}
     }
   }
 
