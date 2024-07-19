@@ -41,7 +41,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
@@ -60,6 +59,8 @@ import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextField
 import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextFieldDefaults
 import br.com.orcinus.orca.platform.focus.rememberImmediateFocusRequester
 import com.jeanbarrossilva.loadable.list.ListLoadable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 /** [SearchableScope] implementation provided to the content of a [Searchable]. */
@@ -139,7 +140,7 @@ class SearchableScope internal constructor() {
               profileSearchResultsLoadable,
               modifier
                 .focusRequester(rememberImmediateFocusRequester())
-                .searchTextFieldLayout(density, searchTextFieldSpacing)
+                .searchTextFieldLayout(density, coroutineScope, searchTextFieldSpacing)
                 .fillMaxWidth()
             )
           }
@@ -232,24 +233,26 @@ class SearchableScope internal constructor() {
    *
    * @param density [Density] with which the height in pixels of the layout is to be converted into
    *   [Dp].
+   * @param coroutineScope [CoroutineScope] in which [Job]s that animate the
+   *   [searchTextFieldLayoutHeight] are launched.
    * @param spacing Amount of [Dp] that spaces a [SearchTextField] by default, obtainable through
    *   [SearchTextFieldDefaults.spacing].
    */
-  private fun Modifier.searchTextFieldLayout(density: Density, spacing: Dp): Modifier {
-    return composed {
-      val coroutineScope = rememberCoroutineScope()
-
-      if (searchTextFieldLayoutHeight == 0.dp) {
-        onSizeChanged {
-          coroutineScope.launch {
-            searchTextFieldLayoutHeightAnimatable.animateTo(
-              with(density) { it.height.toDp() } + spacing * 2
-            )
-          }
+  private fun Modifier.searchTextFieldLayout(
+    density: Density,
+    coroutineScope: CoroutineScope,
+    spacing: Dp
+  ): Modifier {
+    return if (searchTextFieldLayoutHeight == 0.dp) {
+      onSizeChanged {
+        coroutineScope.launch {
+          searchTextFieldLayoutHeightAnimatable.animateTo(
+            with(density) { it.height.toDp() } + spacing * 2
+          )
         }
-      } else {
-        this
       }
+    } else {
+      this
     }
   }
 
