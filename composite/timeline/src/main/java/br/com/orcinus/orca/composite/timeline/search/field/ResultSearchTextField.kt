@@ -17,7 +17,6 @@ package br.com.orcinus.orca.composite.timeline.search.field
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -38,7 +37,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.onSizeChanged
@@ -150,7 +148,7 @@ internal fun ResultSearchTextField(
         }
         .zIndex(-1f)
     ) {
-      HorizontalDivider(Modifier.background(Color.Red).testTag(DividerTag))
+      HorizontalDivider(Modifier.testTag(DividerTag))
 
       Column(
         Modifier.constrainAs(createRef()) {
