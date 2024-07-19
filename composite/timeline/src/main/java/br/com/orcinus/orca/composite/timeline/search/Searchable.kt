@@ -68,7 +68,7 @@ fun Searchable(modifier: Modifier = Modifier, content: SearchableScope.() -> Uni
 @Composable
 private fun BoxScope.Scrim(searchableScope: SearchableScope, modifier: Modifier = Modifier) {
   val isSearching by remember(searchableScope) { derivedStateOf(searchableScope::isSearching) }
-  val alpha by animateFloatAsState(if (isSearching) .4f else 0f, label = "Scrim alpha")
+  val alpha by animateFloatAsState(if (isSearching) .05f else 0f, label = "Scrim alpha")
   val color = remember(alpha) { Color.Black.copy(alpha = alpha) }
 
   Canvas(
