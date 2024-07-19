@@ -115,7 +115,7 @@ class SearchableScope internal constructor() {
 
   /** Shows the [ResultSearchTextField]. */
   fun show() {
-    isSearching = true
+    isSearching = isReplaceableContentComposed
   }
 
   /**
