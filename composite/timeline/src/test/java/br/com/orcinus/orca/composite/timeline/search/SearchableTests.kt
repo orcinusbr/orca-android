@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.composite.timeline.search
 
 import androidx.compose.material3.Text
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,6 +26,9 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.unit.Dp
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.platform.autos.test.kit.input.text.onSearchTextField
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import kotlin.test.Test
@@ -114,5 +118,47 @@ internal class SearchableTests {
       }
       .onSearchTextField()
       .assertDoesNotExist()
+  }
+
+  @Test
+  fun doesNotUpdateBlurRadiusWhenReplaceableContentIsNotComposed() {
+    composeRule.setContent {
+      AutosTheme {
+        Searchable {
+          show()
+          content {
+            val blurRadius by contentBlurRadiusAsState
+
+            DisposableEffect(Unit) {
+              assertThat(blurRadius).isEqualTo(SearchableScope.MainContentBlurRadii.start)
+              onDispose {}
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @Test
+  fun updatesBlurRadiusWhenSearchTextFieldIsShown() {
+    var contentBlurRadius = Dp.Unspecified
+    composeRule.setContent {
+      AutosTheme {
+        Searchable {
+          show()
+          content {
+            val blurRadius by contentBlurRadiusAsState
+
+            DisposableEffect(blurRadius) {
+              contentBlurRadius = blurRadius
+              onDispose {}
+            }
+
+            Replaceable()
+          }
+        }
+      }
+    }
+    assertThat(contentBlurRadius).isEqualTo(SearchableScope.MainContentBlurRadii.endInclusive)
   }
 }

@@ -65,6 +65,13 @@ import kotlinx.coroutines.launch
 
 /** [SearchableScope] implementation provided to the content of a [Searchable]. */
 class SearchableScope internal constructor() {
+  /**
+   * Whether the content to be replaced by the [ResultSearchTextField] is currently composed.
+   *
+   * @see Replaceable
+   */
+  private var isReplaceableContentComposed by mutableStateOf(false)
+
   /** [Animatable] by which the height of the [ResultSearchTextField] is held and animated. */
   private val searchTextFieldLayoutHeightAnimatable =
     Animatable(initialValue = 0.dp, Dp.VectorConverter)
@@ -73,17 +80,29 @@ class SearchableScope internal constructor() {
   internal var content by mutableStateOf<(@Composable () -> Unit)?>(null)
     private set
 
-  /** Height of the [ResultSearchTextField], or zeroed in case search isn't being performed. */
+  /** Height of the [SearchTextField], or zeroed in case search isn't being performed. */
   val searchTextFieldLayoutHeight by searchTextFieldLayoutHeightAnimatable.asState()
 
-  /** Whether the [ResultSearchTextField] is currently being shown. */
+  /** Whether the [SearchTextField] is currently being shown. */
   var isSearching by mutableStateOf(false)
     private set
 
-  /** [State] with the radius of the blur that should be applied to the [content]. */
+  /**
+   * [State] with the radius of the blur that should be applied to the [content].
+   *
+   * @see MainContentBlurRadii
+   */
   val contentBlurRadiusAsState
     @Composable
-    get() = animateDpAsState(if (isSearching) 16.dp else 0.dp, label = "Content blur radius")
+    get() =
+      animateDpAsState(
+        if (isReplaceableContentComposed && isSearching) {
+          MainContentBlurRadii.endInclusive
+        } else {
+          MainContentBlurRadii.start
+        },
+        label = "Content blur radius"
+      )
 
   /**
    * Sets the content to be replaced by the [ResultSearchTextField].
@@ -117,6 +136,8 @@ class SearchableScope internal constructor() {
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
   ) {
+    ReplaceableCompositionReporterEffect()
+
     Accordion { willSearch ->
       val coroutineScope = rememberCoroutineScope()
 
@@ -163,6 +184,18 @@ class SearchableScope internal constructor() {
   /** Dismisses the [ResultSearchTextField]. */
   internal fun dismiss() {
     isSearching = false
+  }
+
+  /**
+   * Effect that reports whether a [Replaceable] is composed, updating
+   * [isReplaceableContentComposed].
+   */
+  @Composable
+  private fun ReplaceableCompositionReporterEffect() {
+    DisposableEffect(Unit) {
+      isReplaceableContentComposed = true
+      onDispose { isReplaceableContentComposed = false }
+    }
   }
 
   /**
@@ -237,8 +270,8 @@ class SearchableScope internal constructor() {
 
   /**
    * [Popup] by which a [ResultSearchTextField] is displayed, whose changes in height are observed
-   * and then propagated to [searchTextFieldLayoutHeight]. It is automatically offset and padded
-   * based on the default spacing of a [SearchTextField].
+   * and then propagated to [searchTextFieldLayoutHeight]. It is pre-offset and -padded based on the
+   * default spacing of a [SearchTextField].
    *
    * @param coroutineScope [CoroutineScope] in which [Job]s that animate the
    *   [searchTextFieldLayoutHeight] are launched.
@@ -303,5 +336,8 @@ class SearchableScope internal constructor() {
      */
     @Suppress("ConstPropertyName")
     private const val AccordionBaselineAnimationDurationInMilliseconds = 128
+
+    /** Radii of the blur that should be applied to the [content]. */
+    internal val MainContentBlurRadii = 0.dp..16.dp
   }
 }
