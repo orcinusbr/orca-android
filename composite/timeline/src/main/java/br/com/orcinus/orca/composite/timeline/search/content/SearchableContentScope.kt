@@ -71,7 +71,7 @@ import kotlinx.coroutines.launch
  *
  * @property replacementScope [SearchableReplacementScope]
  * @property isReplaceableComposedState [MutableState] whose [Boolean] determines whether the
- *   content to be replaced by the [ResultSearchTextField] is currently composed.
+ *   content to be replaced by the [SearchTextField] is currently composed.
  * @see content
  */
 class SearchableContentScope
@@ -108,7 +108,7 @@ internal constructor(
       )
 
   /**
-   * Sets the content to be replaced by the [ResultSearchTextField].
+   * Sets the content to be replaced by the [SearchTextField].
    *
    * @param content Content to be shown by default and that can be replaced.
    */

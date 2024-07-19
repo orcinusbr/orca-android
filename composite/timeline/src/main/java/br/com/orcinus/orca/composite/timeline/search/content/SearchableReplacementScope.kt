@@ -27,7 +27,7 @@ import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextField
  * Scope of a [Searchable] in which the [SearchTextField] can be either shown or dismissed.
  *
  * @property isReplaceableComposedState [State] whose [Boolean] determines whether the content to be
- *   replaced by the [ResultSearchTextField] is currently composed.
+ *   replaced by the [SearchTextField] is currently composed.
  */
 class SearchableReplacementScope
 internal constructor(private val isReplaceableComposedState: State<Boolean>) {
@@ -35,7 +35,7 @@ internal constructor(private val isReplaceableComposedState: State<Boolean>) {
   internal var isSearching by mutableStateOf(false)
     private set
 
-  /** Shows the [ResultSearchTextField]. */
+  /** Shows the [SearchTextField]. */
   fun show() {
     isSearching = isReplaceableComposedState.value
   }
