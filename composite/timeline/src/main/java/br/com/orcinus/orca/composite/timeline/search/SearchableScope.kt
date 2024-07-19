@@ -80,12 +80,12 @@ class SearchableScope internal constructor() {
   internal var content by mutableStateOf<(@Composable () -> Unit)?>(null)
     private set
 
+  /** Whether the [ResultSearchTextField] is currently being shown. */
+  internal var isSearching by mutableStateOf(false)
+    private set
+
   /** Height of the [SearchTextField], or zeroed in case search isn't being performed. */
   val searchTextFieldLayoutHeight by searchTextFieldLayoutHeightAnimatable.asState()
-
-  /** Whether the [SearchTextField] is currently being shown. */
-  var isSearching by mutableStateOf(false)
-    private set
 
   /**
    * [State] with the radius of the blur that should be applied to the [content].
