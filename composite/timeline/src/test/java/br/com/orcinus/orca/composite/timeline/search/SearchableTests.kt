@@ -31,7 +31,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
-import br.com.orcinus.orca.composite.timeline.search.content.SearchableMainContentScope
+import br.com.orcinus.orca.composite.timeline.search.content.SearchableContentScope
 import br.com.orcinus.orca.composite.timeline.search.content.SearchableReplacementScope
 import br.com.orcinus.orca.platform.autos.test.kit.input.text.onSearchTextField
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
@@ -266,7 +266,7 @@ internal class SearchableTests {
             val blurRadius by contentBlurRadiusAsState
 
             DisposableEffect(Unit) {
-              assertThat(blurRadius).isEqualTo(SearchableMainContentScope.BlurRadii.start)
+              assertThat(blurRadius).isEqualTo(SearchableContentScope.BlurRadii.start)
               onDispose {}
             }
           }
@@ -299,6 +299,6 @@ internal class SearchableTests {
         }
       }
     }
-    assertThat(contentBlurRadius).isEqualTo(SearchableMainContentScope.BlurRadii.endInclusive)
+    assertThat(contentBlurRadius).isEqualTo(SearchableContentScope.BlurRadii.endInclusive)
   }
 }

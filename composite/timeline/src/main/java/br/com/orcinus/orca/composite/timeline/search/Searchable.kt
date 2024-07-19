@@ -35,7 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import br.com.orcinus.orca.composite.timeline.search.content.SearchableMainContentScope
+import br.com.orcinus.orca.composite.timeline.search.content.SearchableContentScope
 import br.com.orcinus.orca.composite.timeline.search.content.SearchableReplacementScope
 import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
@@ -56,7 +56,7 @@ import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
  * @param content Content to be shown.
  */
 @Composable
-fun Searchable(modifier: Modifier = Modifier, content: SearchableMainContentScope.() -> Unit) {
+fun Searchable(modifier: Modifier = Modifier, content: SearchableContentScope.() -> Unit) {
   BoxWithConstraints(modifier.testTag(ContentTag)) {
     val isReplaceableComposedState = remember { mutableStateOf(false) }
     val replacementScope =
@@ -64,7 +64,7 @@ fun Searchable(modifier: Modifier = Modifier, content: SearchableMainContentScop
         SearchableReplacementScope(isReplaceableComposedState)
       }
     remember(replacementScope, content) {
-        SearchableMainContentScope(replacementScope, isReplaceableComposedState).apply(content)
+        SearchableContentScope(replacementScope, isReplaceableComposedState).apply(content)
       }
       .content
       ?.invoke()

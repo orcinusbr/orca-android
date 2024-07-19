@@ -66,7 +66,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 /**
- * Scope of a [Searchable] in which by which the main content (the one to be shown behind the
+ * Scope of a [Searchable] in which by which the content (the one to be shown behind the
  * [SearchTextField]) is set.
  *
  * @property replacementScope [SearchableReplacementScope]
@@ -74,7 +74,7 @@ import kotlinx.coroutines.launch
  *   content to be replaced by the [ResultSearchTextField] is currently composed.
  * @see content
  */
-class SearchableMainContentScope
+class SearchableContentScope
 internal constructor(
   private val replacementScope: SearchableReplacementScope,
   private val isReplaceableComposedState: MutableState<Boolean>
