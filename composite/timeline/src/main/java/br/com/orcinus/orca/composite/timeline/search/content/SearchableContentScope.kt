@@ -69,7 +69,8 @@ import kotlinx.coroutines.launch
  * Scope of a [Searchable] in which by which the content (the one to be shown behind the
  * [SearchTextField]) is set.
  *
- * @property replacementScope [SearchableReplacementScope]
+ * @property replacementScope [SearchableReplacementScope] in which the [SearchTextField] can be
+ *   either shown or dismissed.
  * @property isReplaceableComposedState [MutableState] whose [Boolean] determines whether the
  *   content to be replaced by the [SearchTextField] is currently composed.
  * @see content
