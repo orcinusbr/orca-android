@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.search
+package br.com.orcinus.orca.composite.timeline.search.content
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.AnimatedContent
@@ -63,8 +63,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-/** [SearchableScope] implementation provided to the content of a [Searchable]. */
-class SearchableScope internal constructor() {
+/**
+ * Scope of a [Searchable] in which by which the main content (the one to be shown behind the
+ * [SearchTextField]) is set.
+ *
+ * @see content
+ */
+class SearchableMainContentScope internal constructor() {
   /**
    * Whether the content to be replaced by the [ResultSearchTextField] is currently composed.
    *
@@ -90,16 +95,16 @@ class SearchableScope internal constructor() {
   /**
    * [State] with the radius of the blur that should be applied to the [content].
    *
-   * @see MainContentBlurRadii
+   * @see BlurRadii
    */
   val contentBlurRadiusAsState
     @Composable
     get() =
       animateDpAsState(
         if (isReplaceableContentComposed && isSearching) {
-          MainContentBlurRadii.endInclusive
+          BlurRadii.endInclusive
         } else {
-          MainContentBlurRadii.start
+          BlurRadii.start
         },
         label = "Content blur radius"
       )
@@ -338,6 +343,6 @@ class SearchableScope internal constructor() {
     private const val AccordionBaselineAnimationDurationInMilliseconds = 128
 
     /** Radii of the blur that should be applied to the [content]. */
-    internal val MainContentBlurRadii = 0.dp..16.dp
+    internal val BlurRadii = 0.dp..16.dp
   }
 }

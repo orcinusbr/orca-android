@@ -31,6 +31,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
+import br.com.orcinus.orca.composite.timeline.search.content.SearchableMainContentScope
 import br.com.orcinus.orca.platform.autos.test.kit.input.text.onSearchTextField
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import kotlin.test.Test
@@ -61,7 +62,9 @@ internal class SearchableTests {
   @Test
   fun doesNotShowSearchTextFieldWhenReplaceableContentIsNotComposed() {
     composeRule
-      .apply { setContent { AutosTheme { Searchable(content = SearchableScope::show) } } }
+      .apply {
+        setContent { AutosTheme { Searchable(content = SearchableMainContentScope::show) } }
+      }
       .onSearchTextField()
       .assertDoesNotExist()
   }
@@ -193,7 +196,7 @@ internal class SearchableTests {
             val blurRadius by contentBlurRadiusAsState
 
             DisposableEffect(Unit) {
-              assertThat(blurRadius).isEqualTo(SearchableScope.MainContentBlurRadii.start)
+              assertThat(blurRadius).isEqualTo(SearchableMainContentScope.BlurRadii.start)
               onDispose {}
             }
           }
@@ -226,6 +229,6 @@ internal class SearchableTests {
         }
       }
     }
-    assertThat(contentBlurRadius).isEqualTo(SearchableScope.MainContentBlurRadii.endInclusive)
+    assertThat(contentBlurRadius).isEqualTo(SearchableMainContentScope.BlurRadii.endInclusive)
   }
 }
