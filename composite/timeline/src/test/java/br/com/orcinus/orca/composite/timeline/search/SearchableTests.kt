@@ -32,6 +32,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import br.com.orcinus.orca.composite.timeline.search.content.SearchableMainContentScope
+import br.com.orcinus.orca.composite.timeline.search.content.SearchableReplacementScope
 import br.com.orcinus.orca.platform.autos.test.kit.input.text.onSearchTextField
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import kotlin.test.Test
@@ -60,10 +61,36 @@ internal class SearchableTests {
   }
 
   @Test
-  fun doesNotShowSearchTextFieldWhenReplaceableContentIsNotComposed() {
+  fun doesNotShowSearchTextFieldWhenReplaceableIsNotComposed() {
     composeRule
       .apply {
-        setContent { AutosTheme { Searchable(content = SearchableMainContentScope::show) } }
+        setContent {
+          AutosTheme {
+            Searchable {
+              content {
+                var replacementScope by remember {
+                  mutableStateOf<SearchableReplacementScope?>(null)
+                }
+                var isReplaceableComposed by remember { mutableStateOf(true) }
+
+                if (isReplaceableComposed) {
+                  Replaceable {
+                    DisposableEffect(Unit) {
+                      replacementScope = this@Replaceable
+                      isReplaceableComposed = false
+                      onDispose {}
+                    }
+                  }
+                }
+
+                DisposableEffect(Unit) {
+                  replacementScope?.show()
+                  onDispose {}
+                }
+              }
+            }
+          }
+        }
       }
       .onSearchTextField()
       .assertDoesNotExist()
@@ -125,9 +152,15 @@ internal class SearchableTests {
         setContent {
           AutosTheme {
             Searchable {
-              content { Replaceable() }
-              show()
-              dismiss()
+              content {
+                Replaceable {
+                  DisposableEffect(Unit) {
+                    show()
+                    dismiss()
+                    onDispose {}
+                  }
+                }
+              }
             }
           }
         }
@@ -138,16 +171,48 @@ internal class SearchableTests {
 
   @Test
   fun isNotSearchingByDefault() {
-    composeRule.setContent { AutosTheme { Searchable { assertThat(isSearching).isFalse() } } }
-  }
-
-  @Test
-  fun isNotSearchingWhenSearchTextFieldIsRequestedToBeShownButTheReplaceableContentIsNotComposed() {
     composeRule.setContent {
       AutosTheme {
         Searchable {
-          show()
-          assertThat(isSearching).isFalse()
+          content {
+            Replaceable {
+              DisposableEffect(Unit) {
+                assertThat(isSearching).isFalse()
+                onDispose {}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @Test
+  fun isNotSearchingWhenSearchTextFieldIsRequestedToBeShownButTheReplaceableIsNotComposed() {
+    composeRule.setContent {
+      AutosTheme {
+        Searchable {
+          content {
+            var replacementScope by remember { mutableStateOf<SearchableReplacementScope?>(null) }
+            var isReplaceableComposed by remember { mutableStateOf(true) }
+
+            if (isReplaceableComposed) {
+              Replaceable {
+                DisposableEffect(Unit) {
+                  replacementScope = this@Replaceable
+                  isReplaceableComposed = false
+                  onDispose {}
+                }
+              }
+            }
+
+            DisposableEffect(Unit) {
+              onDispose {
+                replacementScope?.show()
+                assertThat(replacementScope?.isSearching).isEqualTo(false)
+              }
+            }
+          }
         }
       }
     }
@@ -177,21 +242,26 @@ internal class SearchableTests {
     composeRule.setContent {
       AutosTheme {
         Searchable {
-          content { Replaceable() }
-          show()
-          dismiss()
-          assertThat(isSearching).isFalse()
+          content {
+            Replaceable {
+              DisposableEffect(Unit) {
+                show()
+                dismiss()
+                assertThat(isSearching).isFalse()
+                onDispose {}
+              }
+            }
+          }
         }
       }
     }
   }
 
   @Test
-  fun doesNotUpdateBlurRadiusWhenReplaceableContentIsNotComposed() {
+  fun doesNotUpdateBlurRadiusWhenReplaceableIsNotComposed() {
     composeRule.setContent {
       AutosTheme {
         Searchable {
-          show()
           content {
             val blurRadius by contentBlurRadiusAsState
 

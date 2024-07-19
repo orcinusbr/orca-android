@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import br.com.orcinus.orca.composite.timeline.InternalTimelineApi
+import br.com.orcinus.orca.composite.timeline.search.Searchable
 import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
@@ -67,26 +69,22 @@ import kotlinx.coroutines.launch
  * Scope of a [Searchable] in which by which the main content (the one to be shown behind the
  * [SearchTextField]) is set.
  *
+ * @property replacementScope [SearchableReplacementScope]
+ * @property isReplaceableComposedState [MutableState] whose [Boolean] determines whether the
+ *   content to be replaced by the [ResultSearchTextField] is currently composed.
  * @see content
  */
-class SearchableMainContentScope internal constructor() {
-  /**
-   * Whether the content to be replaced by the [ResultSearchTextField] is currently composed.
-   *
-   * @see Replaceable
-   */
-  private var isReplaceableContentComposed by mutableStateOf(false)
-
+class SearchableMainContentScope
+internal constructor(
+  private val replacementScope: SearchableReplacementScope,
+  private val isReplaceableComposedState: MutableState<Boolean>
+) {
   /** [Animatable] by which the height of the [ResultSearchTextField] is held and animated. */
   private val searchTextFieldLayoutHeightAnimatable =
     Animatable(initialValue = 0.dp, Dp.VectorConverter)
 
   /** Content to be shown by default and that can be replaced. */
   internal var content by mutableStateOf<(@Composable () -> Unit)?>(null)
-    private set
-
-  /** Whether the [ResultSearchTextField] is currently being shown. */
-  internal var isSearching by mutableStateOf(false)
     private set
 
   /** Height of the [SearchTextField], or zeroed in case search isn't being performed. */
@@ -101,7 +99,7 @@ class SearchableMainContentScope internal constructor() {
     @Composable
     get() =
       animateDpAsState(
-        if (isReplaceableContentComposed && isSearching) {
+        if (isReplaceableComposedState.value && replacementScope.isSearching) {
           BlurRadii.endInclusive
         } else {
           BlurRadii.start
@@ -116,11 +114,6 @@ class SearchableMainContentScope internal constructor() {
    */
   fun content(content: @Composable () -> Unit) {
     this.content = content
-  }
-
-  /** Shows the [ResultSearchTextField]. */
-  fun show() {
-    isSearching = isReplaceableContentComposed
   }
 
   /**
@@ -139,7 +132,7 @@ class SearchableMainContentScope internal constructor() {
     onQueryChange: (query: String) -> Unit,
     profileSearchResultsLoadable: ListLoadable<ProfileSearchResult>,
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
+    content: @Composable SearchableReplacementScope.() -> Unit
   ) {
     ReplaceableCompositionReporterEffect()
 
@@ -156,7 +149,7 @@ class SearchableMainContentScope internal constructor() {
         )
       } else {
         SearchTextFieldLayoutHeightResetEffect(coroutineScope)
-        content()
+        replacementScope.content()
       }
     }
   }
@@ -181,32 +174,27 @@ class SearchableMainContentScope internal constructor() {
     query: String = "",
     onQueryChange: (query: String) -> Unit = {},
     profileSearchResultsLoadable: ListLoadable<ProfileSearchResult> = ListLoadable.Loading(),
-    content: @Composable () -> Unit = {}
+    content: @Composable SearchableReplacementScope.() -> Unit = {}
   ) {
     Replaceable(query, onQueryChange, profileSearchResultsLoadable, modifier, content)
   }
 
-  /** Dismisses the [ResultSearchTextField]. */
-  internal fun dismiss() {
-    isSearching = false
-  }
-
   /**
-   * Effect that reports whether a [Replaceable] is composed, updating
-   * [isReplaceableContentComposed].
+   * Effect that reports whether a [Replaceable] is composed, updating the value of
+   * [isReplaceableComposedState].
    */
   @Composable
   private fun ReplaceableCompositionReporterEffect() {
-    DisposableEffect(Unit) {
-      isReplaceableContentComposed = true
-      onDispose { isReplaceableContentComposed = false }
+    DisposableEffect(isReplaceableComposedState) {
+      isReplaceableComposedState.value = true
+      onDispose { isReplaceableComposedState.value = false }
     }
   }
 
   /**
    * Animates visibility changes of the [content], which are based on whether search is being
    * performed. Switches between one state to another with an accordion-like transition, collapsing
-   * the [content] when [isSearching] is `true`; otherwise, expands it for it to be displayed again.
+   * the [content] or expanding it for it to be displayed again.
    *
    * @param modifier [Modifier] applied to the underlying [AnimatedContent].
    * @param content Content to be collapsed and expanded.
@@ -217,7 +205,7 @@ class SearchableMainContentScope internal constructor() {
     content: @Composable (willSearch: Boolean) -> Unit
   ) {
     AnimatedContent(
-      targetState = isSearching,
+      targetState = replacementScope.isSearching,
       modifier,
       transitionSpec = {
         slideInVertically(
@@ -309,7 +297,7 @@ class SearchableMainContentScope internal constructor() {
         ResultSearchTextField(
           query,
           onQueryChange,
-          onDismissal = ::dismiss,
+          onDismissal = replacementScope::dismiss,
           profileSearchResultsLoadable,
           modifier
             .focusRequester(rememberImmediateFocusRequester())
