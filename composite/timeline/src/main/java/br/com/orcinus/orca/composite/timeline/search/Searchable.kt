@@ -56,7 +56,10 @@ import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
  * @param content Content to be shown.
  */
 @Composable
-fun Searchable(modifier: Modifier = Modifier, content: SearchableContentScope.() -> Unit) {
+fun Searchable(
+  modifier: Modifier = Modifier,
+  content: @Composable SearchableContentScope.() -> Unit
+) {
   BoxWithConstraints(modifier.testTag(ContentTag)) {
     val isReplaceableComposedState = remember { mutableStateOf(false) }
     val replacementScope =
@@ -64,10 +67,9 @@ fun Searchable(modifier: Modifier = Modifier, content: SearchableContentScope.()
         SearchableReplacementScope(isReplaceableComposedState)
       }
     remember(replacementScope, content) {
-        SearchableContentScope(replacementScope, isReplaceableComposedState).apply(content)
+        SearchableContentScope(replacementScope, isReplaceableComposedState)
       }
-      .content
-      ?.invoke()
+      .content()
     Scrim(replacementScope)
   }
 }
@@ -109,24 +111,22 @@ private fun BoxScope.Scrim(
 private fun SearchablePreview() {
   AutosTheme {
     Searchable {
-      content {
-        Replaceable {
-          @OptIn(ExperimentalMaterial3Api::class)
-          TopAppBar(
-            title = { Text("Main content") },
-            actions = {
-              HoverableIconButton(onClick = ::show) {
-                Icon(
-                  AutosTheme.iconography.search.asImageVector,
-                  stringResource(
-                    br.com.orcinus.orca.platform.autos.R.string
-                      .platform_autos_search_content_description
-                  )
+      Replaceable {
+        @OptIn(ExperimentalMaterial3Api::class)
+        TopAppBar(
+          title = { Text("Main content") },
+          actions = {
+            HoverableIconButton(onClick = ::show) {
+              Icon(
+                AutosTheme.iconography.search.asImageVector,
+                stringResource(
+                  br.com.orcinus.orca.platform.autos.R.string
+                    .platform_autos_search_content_description
                 )
-              }
+              )
             }
-          )
-        }
+          }
+        )
       }
     }
   }

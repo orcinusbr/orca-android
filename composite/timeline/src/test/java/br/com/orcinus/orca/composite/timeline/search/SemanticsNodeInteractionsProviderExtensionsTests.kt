@@ -31,7 +31,7 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @Test
   fun findsContent() {
     composeRule
-      .apply { setContent { AutosTheme { Searchable { content { Text("🧊") } } } } }
+      .apply { setContent { AutosTheme { Searchable { Text("🧊") } } } }
       .onContent()
       .assertIsDisplayed()
   }

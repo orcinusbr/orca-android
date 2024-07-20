@@ -37,10 +37,8 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.onSizeChanged
@@ -72,7 +70,6 @@ import kotlinx.coroutines.launch
  *   either shown or dismissed.
  * @property isReplaceableComposedState [MutableState] whose [Boolean] determines whether the
  *   content to be replaced by the [SearchTextField] is currently composed.
- * @see content
  */
 class SearchableContentScope
 internal constructor(
@@ -83,15 +80,11 @@ internal constructor(
   private val searchTextFieldLayoutHeightAnimatable =
     Animatable(initialValue = 0.dp, Dp.VectorConverter)
 
-  /** Content to be shown by default and that can be replaced. */
-  internal var content by mutableStateOf<(@Composable () -> Unit)?>(null)
-    private set
-
   /** Height of the [SearchTextField], or zeroed in case search isn't being performed. */
   val searchTextFieldLayoutHeight by searchTextFieldLayoutHeightAnimatable.asState()
 
   /**
-   * [State] with the radius of the blur that should be applied to the [content].
+   * [State] with the radius of the blur that should be applied to the content.
    *
    * @see BlurRadii
    */
@@ -106,15 +99,6 @@ internal constructor(
         },
         label = "Content blur radius"
       )
-
-  /**
-   * Sets the content to be replaced by the [SearchTextField].
-   *
-   * @param content Content to be shown by default and that can be replaced.
-   */
-  fun content(content: @Composable () -> Unit) {
-    this.content = content
-  }
 
   /**
    * Displays either the [content] or the [SearchTextField] that presents results for the query when
@@ -338,7 +322,7 @@ internal constructor(
     @Suppress("ConstPropertyName")
     private const val AccordionBaselineAnimationDurationInMilliseconds = 128
 
-    /** Radii of the blur that should be applied to the [content]. */
+    /** Radii of the blur that should be applied to the content. */
     internal val BlurRadii = 0.dp..16.dp
   }
 }
