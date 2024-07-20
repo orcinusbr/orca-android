@@ -66,8 +66,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 /**
- * Scope of a [Searchable] in which by which the content (the one to be shown behind the
- * [SearchTextField]) is set.
+ * Scope of a [Searchable] in which the content behind the [SearchTextField] can be set.
  *
  * @property replacementScope [SearchableReplacementScope] in which the [SearchTextField] can be
  *   either shown or dismissed.
