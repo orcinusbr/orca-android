@@ -58,6 +58,7 @@ dependencies {
   testImplementation(project(":std:visibility"))
   testImplementation(libs.assertk)
   testImplementation(libs.kotlin.test)
+  testImplementation(libs.loadable.placeholder.test)
 }
 
 kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")

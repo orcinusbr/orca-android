@@ -27,6 +27,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ProvideTextStyle
@@ -100,7 +101,7 @@ fun ResultSearchTextField(
   query: String = "",
   onQueryChange: (query: String) -> Unit = {},
   onDismissal: () -> Unit = {},
-  profileSearchResultsLoadable: ListLoadable<ProfileSearchResult> = ListLoadable.Loading()
+  profileSearchResultsLoadable: ListLoadable<ProfileSearchResult> = ListLoadable.Empty()
 ) {
   ResultSearchTextField(query, onQueryChange, onDismissal, profileSearchResultsLoadable, modifier)
 }
@@ -135,6 +136,7 @@ internal fun ResultSearchTextField(
       query,
       onQueryChange,
       SearchTextFieldDefaults.shape.`if`(containsResults) { top },
+      profileSearchResultsLoadable is ListLoadable.Loading,
       onDismissal,
       modifier
         .onSizeChanged { searchTextFieldSize = it.toSize() }
@@ -176,6 +178,8 @@ internal fun ResultSearchTextField(
  * @param query Content to be looked up.
  * @param onQueryChange Lambda invoked whenever the [query] changes.
  * @param shape [Shape] by which the [SearchTextField] is clipped.
+ * @param isLoading Whether it is to be put in a loading state. Ultimately, is reflected on the UI
+ *   by having the "search" icon replaced by a [CircularProgressIndicator] that spins indefinitely.
  * @param onDismissal Callback called when dismissal is requested.
  * @param modifier [Modifier] to be applied to the [SearchTextField].
  */
@@ -185,12 +189,14 @@ private fun ConstraintLayoutScope.DismissibleSearchTextField(
   query: String,
   onQueryChange: (query: String) -> Unit,
   shape: Shape,
+  isLoading: Boolean,
   onDismissal: () -> Unit,
   modifier: Modifier = Modifier
 ) {
   SearchTextField(
     query,
     onQueryChange,
+    isLoading,
     modifier.constrainAs(ref) {},
     shape,
     contentPadding =

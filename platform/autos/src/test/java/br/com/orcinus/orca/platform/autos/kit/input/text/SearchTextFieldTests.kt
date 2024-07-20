@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performTextInput
@@ -34,13 +35,29 @@ internal class SearchTextFieldTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
+  fun displaysLoadingIndicatorWhenLoading() {
+    composeRule
+      .apply { setContent { AutosTheme { SearchTextField(isLoading = true) } } }
+      .onLoadingIndicator()
+      .assertIsDisplayed()
+  }
+
+  @Test
+  fun displaysSearchIconWhenLoaded() {
+    composeRule
+      .apply { setContent { AutosTheme { SearchTextField() } } }
+      .onSearchIcon()
+      .assertIsDisplayed()
+  }
+
+  @Test
   fun isTypedInto() {
     composeRule
       .apply {
         setContent {
           var query by remember { mutableStateOf("") }
 
-          AutosTheme { SearchTextField(query, onQueryChange = { query = it }) }
+          AutosTheme { SearchTextField(query = query, onQueryChange = { query = it }) }
         }
       }
       .onSearchTextField()

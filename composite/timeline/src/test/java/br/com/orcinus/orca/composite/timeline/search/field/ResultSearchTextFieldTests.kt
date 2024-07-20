@@ -20,7 +20,11 @@ import androidx.compose.ui.test.performClick
 import assertk.assertThat
 import assertk.assertions.isTrue
 import br.com.orcinus.orca.composite.timeline.test.search.field.onDismissButton
+import br.com.orcinus.orca.platform.autos.test.kit.input.text.onSearchTextField
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.loadable.list.ListLoadable
+import com.jeanbarrossilva.loadable.placeholder.test.assertIsLoading
+import com.jeanbarrossilva.loadable.placeholder.test.assertIsNotLoading
 import kotlin.test.Test
 import org.junit.Rule
 import org.junit.runner.RunWith
@@ -29,6 +33,28 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 internal class ResultSearchTextFieldTests {
   @get:Rule val composeRule = createComposeRule()
+
+  @Test
+  fun isLoading() {
+    composeRule
+      .apply {
+        setContent {
+          AutosTheme {
+            ResultSearchTextField(profileSearchResultsLoadable = ListLoadable.Loading())
+          }
+        }
+      }
+      .onSearchTextField()
+      .assertIsLoading()
+  }
+
+  @Test
+  fun isLoaded() {
+    composeRule
+      .apply { setContent { AutosTheme { ResultSearchTextField() } } }
+      .onSearchTextField()
+      .assertIsNotLoading()
+  }
 
   @Test
   fun dismisses() {
