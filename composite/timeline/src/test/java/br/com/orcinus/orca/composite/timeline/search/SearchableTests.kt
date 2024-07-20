@@ -18,6 +18,7 @@ package br.com.orcinus.orca.composite.timeline.search
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,9 +38,17 @@ import assertk.assertions.isGreaterThanOrEqualTo
 import assertk.assertions.isTrue
 import br.com.orcinus.orca.composite.timeline.search.content.SearchableContentScope
 import br.com.orcinus.orca.composite.timeline.search.content.SearchableReplacementScope
+import br.com.orcinus.orca.core.feed.profile.account.Account
+import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
+import br.com.orcinus.orca.core.sample.feed.profile.account.sample
 import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextFieldDefaults
 import br.com.orcinus.orca.platform.autos.test.kit.input.text.onSearchTextField
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import br.com.orcinus.orca.platform.core.sample
+import com.jeanbarrossilva.loadable.list.ListLoadable
+import com.jeanbarrossilva.loadable.list.serializableListOf
+import com.jeanbarrossilva.loadable.list.toListLoadable
+import com.jeanbarrossilva.loadable.list.toSerializableList
 import kotlin.test.Test
 import org.junit.Rule
 import org.junit.runner.RunWith
@@ -266,7 +275,7 @@ internal class SearchableTests {
   }
 
   @Test
-  fun updatesBlurRadiusWhenSearchTextFieldIsShown() {
+  fun doesNotUpdateBlurRadiusWhenSearchTextFieldIsShownButNoSearchResultsAreFound() {
     var contentBlurRadius = Dp.Unspecified
     composeRule.setContent {
       AutosTheme {
@@ -287,7 +296,76 @@ internal class SearchableTests {
         }
       }
     }
+    assertThat(contentBlurRadius).isEqualTo(SearchableContentScope.BlurRadii.start)
+  }
+
+  @Test
+  fun updatesBlurRadiusWhenSearchTextFieldIsShownAndSearchResultsAreFound() {
+    var contentBlurRadius = Dp.Unspecified
+    composeRule.setContent {
+      AutosTheme {
+        Searchable {
+          val blurRadius by contentBlurRadiusAsState
+
+          DisposableEffect(blurRadius) {
+            contentBlurRadius = blurRadius
+            onDispose {}
+          }
+
+          Replaceable(
+            profileSearchResultsLoadable =
+              ListLoadable.Populated(serializableListOf(ProfileSearchResult.sample))
+          ) {
+            DisposableEffect(Unit) {
+              show()
+              onDispose {}
+            }
+          }
+        }
+      }
+    }
     assertThat(contentBlurRadius).isEqualTo(SearchableContentScope.BlurRadii.endInclusive)
+  }
+
+  @Test
+  fun zeroesBlurRadiusWhenSearchTextFieldIsShownButSearchResultsAreFoundAndThenAreNot() {
+    var contentBlurRadius = Dp.Unspecified
+    composeRule
+      .apply {
+        setContent {
+          AutosTheme {
+            Searchable {
+              val query by remember { mutableStateOf("") }
+              val profileSearchResultsLoadable by
+                remember(query) {
+                  derivedStateOf {
+                    ProfileSearchResult.sample
+                      .takeIf { query.startsWith("${it.account}") }
+                      .let(::listOfNotNull)
+                      .toSerializableList()
+                      .toListLoadable()
+                  }
+                }
+              val blurRadius by contentBlurRadiusAsState
+
+              DisposableEffect(blurRadius) {
+                contentBlurRadius = blurRadius
+                onDispose {}
+              }
+
+              Replaceable(profileSearchResultsLoadable = profileSearchResultsLoadable) {
+                DisposableEffect(Unit) {
+                  show()
+                  onDispose {}
+                }
+              }
+            }
+          }
+        }
+      }
+      .onSearchTextField()
+      .performTextInput("${Account.sample}".take(1) + "不定")
+    assertThat(contentBlurRadius).isEqualTo(SearchableContentScope.BlurRadii.start)
   }
 
   @Test

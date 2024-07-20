@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.composite.timeline.search
 
 import androidx.annotation.VisibleForTesting
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
@@ -66,11 +67,17 @@ fun Searchable(
       remember(isReplaceableComposedState) {
         SearchableReplacementScope(isReplaceableComposedState)
       }
-    remember(replacementScope, content) {
-        SearchableContentScope(replacementScope, isReplaceableComposedState)
+    val contentScope =
+      remember(replacementScope, content) {
+          SearchableContentScope(replacementScope, isReplaceableComposedState)
+        }
+        .also { it.content() }
+
+    Crossfade(contentScope.containsSearchResults, label = "Scrim") { containsSearchResults ->
+      if (containsSearchResults) {
+        Scrim(replacementScope)
       }
-      .content()
-    Scrim(replacementScope)
+    }
   }
 }
 

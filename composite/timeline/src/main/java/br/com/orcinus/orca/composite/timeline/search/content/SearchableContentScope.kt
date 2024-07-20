@@ -36,9 +36,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.onSizeChanged
@@ -80,6 +83,10 @@ internal constructor(
   private val searchTextFieldLayoutHeightAnimatable =
     Animatable(initialValue = 0.dp, Dp.VectorConverter)
 
+  /** Whether the search currently being performed has yielded any results. */
+  internal var containsSearchResults by mutableStateOf(false)
+    private set
+
   /** Height of the [SearchTextField], or zeroed in case search isn't being performed. */
   val searchTextFieldLayoutHeight by searchTextFieldLayoutHeightAnimatable.asState()
 
@@ -92,7 +99,7 @@ internal constructor(
     @Composable
     get() =
       animateDpAsState(
-        if (isReplaceableComposedState.value && replacementScope.isSearching) {
+        if (containsSearchResults) {
           BlurRadii.endInclusive
         } else {
           BlurRadii.start
@@ -121,6 +128,7 @@ internal constructor(
     content: @Composable SearchableReplacementScope.() -> Unit
   ) {
     ReplaceableCompositionReporterEffect()
+    SearchResultsEffect(profileSearchResultsLoadable)
 
     Accordion { willSearch ->
       val coroutineScope = rememberCoroutineScope()
@@ -180,6 +188,22 @@ internal constructor(
       check(!isReplaceableComposedState.value) { "A replaceable can only be composed once." }
       isReplaceableComposedState.value = true
       onDispose { isReplaceableComposedState.value = false }
+    }
+  }
+
+  /**
+   * Effect that reports whether results for the current search have been found and updates
+   * [containsSearchResults] accordingly.
+   *
+   * @param profileSearchResultsLoadable [Profile] results found by the query.
+   */
+  @Composable
+  private fun SearchResultsEffect(profileSearchResultsLoadable: ListLoadable<ProfileSearchResult>) {
+    val isSearching by remember(replacementScope) { derivedStateOf(replacementScope::isSearching) }
+
+    DisposableEffect(isSearching, profileSearchResultsLoadable) {
+      containsSearchResults = isSearching && profileSearchResultsLoadable is ListLoadable.Populated
+      onDispose { containsSearchResults = false }
     }
   }
 
