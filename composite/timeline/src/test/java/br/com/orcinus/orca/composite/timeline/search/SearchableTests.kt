@@ -15,24 +15,29 @@
 
 package br.com.orcinus.orca.composite.timeline.search
 
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
+import assertk.assertions.isGreaterThanOrEqualTo
 import assertk.assertions.isTrue
 import br.com.orcinus.orca.composite.timeline.search.content.SearchableContentScope
 import br.com.orcinus.orca.composite.timeline.search.content.SearchableReplacementScope
+import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextFieldDefaults
 import br.com.orcinus.orca.platform.autos.test.kit.input.text.onSearchTextField
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import kotlin.test.Test
@@ -300,5 +305,77 @@ internal class SearchableTests {
       }
     }
     assertThat(contentBlurRadius).isEqualTo(SearchableContentScope.BlurRadii.endInclusive)
+  }
+
+  @Test
+  fun searchTextFieldLayoutHeightIsZeroedByDefault() {
+    composeRule.setContent {
+      AutosTheme {
+        Searchable {
+          content {
+            Replaceable()
+
+            DisposableEffect(Unit) {
+              assertThat(searchTextFieldLayoutHeight).isEqualTo(0.dp)
+              onDispose {}
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @Test
+  fun zeroesSearchTextFieldLayoutHeightWhenSearchTextFieldIsDismissed() {
+    composeRule.setContent {
+      AutosTheme {
+        Searchable {
+          content {
+            Replaceable {
+              DisposableEffect(Unit) {
+                show()
+                dismiss()
+                onDispose {}
+              }
+            }
+
+            DisposableEffect(Unit) {
+              onDispose { assertThat(searchTextFieldLayoutHeight).isEqualTo(0.dp) }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @Test
+  fun updatesSearchTextFieldLayoutHeightWhenSearchTextFieldIsShown() {
+    composeRule.setContent {
+      AutosTheme {
+        Searchable {
+          content {
+            val density = LocalDensity.current
+            val textStyle = LocalTextStyle.current
+            val fontSizeInDp =
+              remember(density, textStyle) { with(density) { textStyle.fontSize.toDp() } }
+            val searchTextFieldSpacing = SearchTextFieldDefaults.spacing
+
+            Replaceable {
+              DisposableEffect(Unit) {
+                show()
+                onDispose {}
+              }
+            }
+
+            DisposableEffect(Unit) {
+              onDispose {
+                assertThat(searchTextFieldLayoutHeight)
+                  .isGreaterThanOrEqualTo(fontSizeInDp + searchTextFieldSpacing * 4)
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
