@@ -63,7 +63,7 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @Test
   fun findsSearchTextField() {
     composeRule
-      .apply { setContent { AutosTheme { SearchTextField(query = "", onQueryChange = {}) } } }
+      .apply { setContent { AutosTheme { SearchTextField() } } }
       .onSearchTextField()
       .assertIsDisplayed()
   }

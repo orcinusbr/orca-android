@@ -25,10 +25,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +43,7 @@ import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import br.com.orcinus.orca.platform.autos.InternalPlatformAutosApi
 import br.com.orcinus.orca.platform.autos.R
 import br.com.orcinus.orca.platform.autos.colors.asColor
 import br.com.orcinus.orca.platform.autos.forms.asShape
@@ -71,6 +74,33 @@ object SearchTextFieldDefaults {
   /** Amount of [Dp]s by which a [SearchTextField] is spaced by default. */
   val spacing
     @Composable get() = AutosTheme.spacings.medium.dp
+}
+
+/**
+ * Text field for searching content.
+ *
+ * This overload is stateless by default and is intended for previewing and testing purposes only.
+ *
+ * @param query Content to be looked up.
+ * @param onQueryChange Lambda invoked whenever the [query] changes.
+ * @param isLoading Whether it is to be put in a loading state. Ultimately, is reflected on the UI
+ *   by having the "search" icon replaced by a [CircularProgressIndicator] that spins indefinitely.
+ * @param modifier [Modifier] applied to the underlying [BasicTextField].
+ * @param shape [Shape] by which it is clipped.
+ * @param contentPadding [PaddingValues] by which the content of the decoration box is padded.
+ */
+@Composable
+@InternalPlatformAutosApi
+@VisibleForTesting
+fun SearchTextField(
+  modifier: Modifier = Modifier,
+  query: String = "",
+  onQueryChange: (query: String) -> Unit = {},
+  shape: Shape = SearchTextFieldDefaults.shape,
+  isLoading: Boolean = false,
+  contentPadding: PaddingValues = PaddingValues()
+) {
+  SearchTextField(query, onQueryChange, isLoading, modifier, shape, contentPadding)
 }
 
 /**
@@ -109,15 +139,19 @@ fun SearchTextField(
         Arrangement.spacedBy(SearchTextFieldDefaults.spacing),
         Alignment.CenterVertically
       ) {
-        if (isLoading) {
-          CircularProgressIndicator(Modifier.size(24.dp).testTag(LoadingIndicatorTag))
-        } else {
-          Icon(
-            AutosTheme.iconography.search.asImageVector,
-            stringResource(R.string.platform_autos_search_content_description),
-            Modifier.testTag(SearchIconTag),
-            AutosTheme.colors.secondary.asColor
-          )
+        CompositionLocalProvider(LocalContentColor provides AutosTheme.colors.secondary.asColor) {
+          if (isLoading) {
+            CircularProgressIndicator(
+              Modifier.size(24.dp).testTag(LoadingIndicatorTag),
+              color = LocalContentColor.current
+            )
+          } else {
+            Icon(
+              AutosTheme.iconography.search.asImageVector,
+              stringResource(R.string.platform_autos_search_content_description),
+              Modifier.testTag(SearchIconTag)
+            )
+          }
         }
 
         Box {
@@ -133,32 +167,6 @@ fun SearchTextField(
       }
     }
   }
-}
-
-/**
- * Text field for searching content.
- *
- * This overload is stateless by default and is intended for previewing and testing purposes only.
- *
- * @param query Content to be looked up.
- * @param onQueryChange Lambda invoked whenever the [query] changes.
- * @param isLoading Whether it is to be put in a loading state. Ultimately, is reflected on the UI
- *   by having the "search" icon replaced by a [CircularProgressIndicator] that spins indefinitely.
- * @param modifier [Modifier] applied to the underlying [BasicTextField].
- * @param shape [Shape] by which it is clipped.
- * @param contentPadding [PaddingValues] by which the content of the decoration box is padded.
- */
-@Composable
-@VisibleForTesting
-internal fun SearchTextField(
-  modifier: Modifier = Modifier,
-  query: String = "",
-  onQueryChange: (query: String) -> Unit = {},
-  shape: Shape = SearchTextFieldDefaults.shape,
-  isLoading: Boolean = false,
-  contentPadding: PaddingValues = PaddingValues()
-) {
-  SearchTextField(query, onQueryChange, isLoading, modifier, shape, contentPadding)
 }
 
 /** Preview of an empty, loading [SearchTextField]. */
