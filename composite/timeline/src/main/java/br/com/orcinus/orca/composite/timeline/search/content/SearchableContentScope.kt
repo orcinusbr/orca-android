@@ -125,8 +125,10 @@ internal constructor(
    * @param profileSearchResultsLoadable [Profile] results found by the [query].
    * @param modifier [Modifier] to be applied to the [SearchTextField].
    * @param content Content that can be replaced by the [SearchTextField].
+   * @throws IllegalStateException If a [Replaceable] is already currently composed.
    */
   @Composable
+  @Throws(IllegalStateException::class)
   fun Replaceable(
     query: String,
     onQueryChange: (query: String) -> Unit,
@@ -165,9 +167,11 @@ internal constructor(
    * @param onQueryChange Lambda invoked whenever the [query] changes.
    * @param profileSearchResultsLoadable [Profile] results found by the [query].
    * @param content Content that can be replaced by the [ResultSearchTextField].
+   * @throws IllegalStateException If a [Replaceable] is already currently composed.
    */
   @Composable
   @InternalTimelineApi
+  @Throws(IllegalStateException::class)
   @VisibleForTesting
   internal fun Replaceable(
     modifier: Modifier = Modifier,
@@ -182,10 +186,14 @@ internal constructor(
   /**
    * Effect that reports whether a [Replaceable] is composed, updating the value of
    * [isReplaceableComposedState].
+   *
+   * @throws IllegalStateException If a [Replaceable] is already currently composed.
    */
   @Composable
+  @Throws(IllegalStateException::class)
   private fun ReplaceableCompositionReporterEffect() {
     DisposableEffect(isReplaceableComposedState) {
+      check(!isReplaceableComposedState.value) { "A replaceable can only be composed once." }
       isReplaceableComposedState.value = true
       onDispose { isReplaceableComposedState.value = false }
     }

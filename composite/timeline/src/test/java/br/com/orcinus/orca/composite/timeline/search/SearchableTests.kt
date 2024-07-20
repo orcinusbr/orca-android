@@ -57,6 +57,11 @@ internal class SearchableTests {
       .assertIsDisplayed()
   }
 
+  @Test(expected = IllegalStateException::class)
+  fun throwsWhenMultipleReplaceablesAreComposed() {
+    composeRule.setContent { AutosTheme { Searchable { content { repeat(2) { Replaceable() } } } } }
+  }
+
   @Test
   fun replaceableContentIsShownByDefault() {
     composeRule
