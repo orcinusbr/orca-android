@@ -313,8 +313,7 @@ internal class SearchableTests {
           }
 
           Replaceable(
-            profileSearchResultsLoadable =
-              ListLoadable.Populated(serializableListOf(ProfileSearchResult.sample))
+            resultsLoadable = ListLoadable.Populated(serializableListOf(ProfileSearchResult.sample))
           ) {
             DisposableEffect(Unit) {
               show()
@@ -353,7 +352,7 @@ internal class SearchableTests {
                 onDispose {}
               }
 
-              Replaceable(profileSearchResultsLoadable = profileSearchResultsLoadable) {
+              Replaceable(resultsLoadable = profileSearchResultsLoadable) {
                 DisposableEffect(Unit) {
                   show()
                   onDispose {}

@@ -102,7 +102,7 @@ private const val ResultAppearanceAnimationDurationInMilliseconds = 56
  * @param query Content to be looked up.
  * @param onQueryChange Lambda invoked whenever the [query] changes.
  * @param onDismissal Callback called when dismissal is requested.
- * @param profileSearchResultsLoadable [Profile] results found by the [query].
+ * @param resultsLoadable [Profile] results found by the [query].
  */
 @Composable
 @InternalTimelineApi
@@ -112,9 +112,9 @@ fun ResultSearchTextField(
   query: String = "",
   onQueryChange: (query: String) -> Unit = {},
   onDismissal: () -> Unit = {},
-  profileSearchResultsLoadable: ListLoadable<ProfileSearchResult> = ListLoadable.Empty()
+  resultsLoadable: ListLoadable<ProfileSearchResult> = ListLoadable.Empty()
 ) {
-  ResultSearchTextField(query, onQueryChange, onDismissal, profileSearchResultsLoadable, modifier)
+  ResultSearchTextField(query, onQueryChange, onDismissal, resultsLoadable, modifier)
 }
 
 /**
@@ -123,7 +123,7 @@ fun ResultSearchTextField(
  * @param query Content to be looked up.
  * @param onQueryChange Lambda invoked whenever the [query] changes.
  * @param onDismissal Callback called when dismissal is requested.
- * @param profileSearchResultsLoadable [Profile] results found by the [query].
+ * @param resultsLoadable [Profile] results found by the [query].
  * @param modifier [Modifier] to be applied to the [SearchTextField].
  */
 @Composable
@@ -131,13 +131,10 @@ internal fun ResultSearchTextField(
   query: String,
   onQueryChange: (query: String) -> Unit,
   onDismissal: () -> Unit,
-  profileSearchResultsLoadable: ListLoadable<ProfileSearchResult>,
+  resultsLoadable: ListLoadable<ProfileSearchResult>,
   modifier: Modifier = Modifier
 ) {
-  val containsResults =
-    remember(profileSearchResultsLoadable) {
-      profileSearchResultsLoadable is ListLoadable.Populated
-    }
+  val containsResults = remember(resultsLoadable) { resultsLoadable is ListLoadable.Populated }
   val layoutElevation by
     animateDpAsState(
       if (containsResults) SearchTextFieldDefaults.Elevation else 0.dp,
@@ -188,7 +185,7 @@ internal fun ResultSearchTextField(
         bottomStart = CornerSize(searchTextFieldBottomStartRadius)
       ),
       searchTextFieldElevation,
-      profileSearchResultsLoadable is ListLoadable.Loading,
+      resultsLoadable is ListLoadable.Loading,
       onDismissal,
       modifier
         .onSizeChanged { searchTextFieldSize = it.toSize() }
@@ -215,7 +212,7 @@ internal fun ResultSearchTextField(
           top.linkTo(resultsRef.bottom)
         }
       ) {
-        profileSearchResultsLoadable.ifPopulated {
+        resultsLoadable.ifPopulated {
           itemsIndexed(this) { index, result ->
             ResultCard(result, isLastOne = index == lastIndex, Modifier.fillMaxWidth())
           }
@@ -371,7 +368,7 @@ private fun ResultCard(
 @Composable
 @MultiThemePreview
 private fun ResultSearchTextFieldLoadingResultsPreview() {
-  AutosTheme { ResultSearchTextField(profileSearchResultsLoadable = ListLoadable.Loading()) }
+  AutosTheme { ResultSearchTextField(resultsLoadable = ListLoadable.Loading()) }
 }
 
 /** Preview of a [ResultSearchTextField] without results. */
@@ -388,8 +385,7 @@ private fun ResultSearchTextFieldWithResultsPreview() {
   AutosTheme {
     ResultSearchTextField(
       query = "${Account.sample.username}",
-      profileSearchResultsLoadable =
-        ListLoadable.Populated(serializableListOf(ProfileSearchResult.sample))
+      resultsLoadable = ListLoadable.Populated(serializableListOf(ProfileSearchResult.sample))
     )
   }
 }

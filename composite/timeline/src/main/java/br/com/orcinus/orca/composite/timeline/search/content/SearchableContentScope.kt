@@ -113,7 +113,7 @@ internal constructor(
    *
    * @param query Content to be looked up.
    * @param onQueryChange Lambda invoked whenever the [query] changes.
-   * @param profileSearchResultsLoadable [Profile] results found by the [query].
+   * @param resultsLoadable [Profile] results found by the [query].
    * @param modifier [Modifier] to be applied to the [SearchTextField].
    * @param content Content that can be replaced by the [SearchTextField].
    * @throws IllegalStateException If a [Replaceable] is already currently composed.
@@ -123,24 +123,18 @@ internal constructor(
   fun Replaceable(
     query: String,
     onQueryChange: (query: String) -> Unit,
-    profileSearchResultsLoadable: ListLoadable<ProfileSearchResult>,
+    resultsLoadable: ListLoadable<ProfileSearchResult>,
     modifier: Modifier = Modifier,
     content: @Composable SearchableReplacementScope.() -> Unit
   ) {
     ReplaceableCompositionReporterEffect()
-    SearchResultsEffect(profileSearchResultsLoadable)
+    SearchResultsEffect(resultsLoadable)
 
     Accordion { willSearch ->
       val coroutineScope = rememberCoroutineScope()
 
       if (willSearch) {
-        SearchTextFieldPopup(
-          coroutineScope,
-          query,
-          onQueryChange,
-          profileSearchResultsLoadable,
-          modifier
-        )
+        SearchTextFieldPopup(coroutineScope, query, onQueryChange, resultsLoadable, modifier)
       } else {
         SearchTextFieldLayoutHeightResetEffect(coroutineScope)
         replacementScope.content()
@@ -157,7 +151,7 @@ internal constructor(
    * @param modifier [Modifier] to be applied to the [ResultSearchTextField].
    * @param query Content to be looked up.
    * @param onQueryChange Lambda invoked whenever the [query] changes.
-   * @param profileSearchResultsLoadable [Profile] results found by the [query].
+   * @param resultsLoadable [Profile] results found by the [query].
    * @param content Content that can be replaced by the [ResultSearchTextField].
    * @throws IllegalStateException If a [Replaceable] is already currently composed.
    */
@@ -169,10 +163,10 @@ internal constructor(
     modifier: Modifier = Modifier,
     query: String = "",
     onQueryChange: (query: String) -> Unit = {},
-    profileSearchResultsLoadable: ListLoadable<ProfileSearchResult> = ListLoadable.Loading(),
+    resultsLoadable: ListLoadable<ProfileSearchResult> = ListLoadable.Loading(),
     content: @Composable SearchableReplacementScope.() -> Unit = {}
   ) {
-    Replaceable(query, onQueryChange, profileSearchResultsLoadable, modifier, content)
+    Replaceable(query, onQueryChange, resultsLoadable, modifier, content)
   }
 
   /**
@@ -195,14 +189,14 @@ internal constructor(
    * Effect that reports whether results for the current search have been found and updates
    * [containsSearchResults] accordingly.
    *
-   * @param profileSearchResultsLoadable [Profile] results found by the query.
+   * @param resultsLoadable [Profile] results found by the query.
    */
   @Composable
-  private fun SearchResultsEffect(profileSearchResultsLoadable: ListLoadable<ProfileSearchResult>) {
+  private fun SearchResultsEffect(resultsLoadable: ListLoadable<ProfileSearchResult>) {
     val isSearching by remember(replacementScope) { derivedStateOf(replacementScope::isSearching) }
 
-    DisposableEffect(isSearching, profileSearchResultsLoadable) {
-      containsSearchResults = isSearching && profileSearchResultsLoadable is ListLoadable.Populated
+    DisposableEffect(isSearching, resultsLoadable) {
+      containsSearchResults = isSearching && resultsLoadable is ListLoadable.Populated
       onDispose { containsSearchResults = false }
     }
   }
@@ -286,7 +280,7 @@ internal constructor(
    *   [searchTextFieldLayoutHeight] are launched.
    * @param query Content to be looked up.
    * @param onQueryChange Lambda invoked whenever the [query] changes.
-   * @param profileSearchResultsLoadable [Profile] results found by the [query].
+   * @param resultsLoadable [Profile] results found by the [query].
    * @param modifier [Modifier] to be applied to the [ResultSearchTextField].
    * @see SearchTextFieldDefaults.spacing
    */
@@ -295,7 +289,7 @@ internal constructor(
     coroutineScope: CoroutineScope,
     query: String,
     onQueryChange: (query: String) -> Unit,
-    profileSearchResultsLoadable: ListLoadable<ProfileSearchResult>,
+    resultsLoadable: ListLoadable<ProfileSearchResult>,
     modifier: Modifier = Modifier
   ) {
     val density = LocalDensity.current
@@ -314,7 +308,7 @@ internal constructor(
           query,
           onQueryChange,
           onDismissal = replacementScope::dismiss,
-          profileSearchResultsLoadable,
+          resultsLoadable,
           modifier
             .focusRequester(rememberImmediateFocusRequester())
             .searchTextFieldLayout(density, coroutineScope, searchTextFieldSpacing)

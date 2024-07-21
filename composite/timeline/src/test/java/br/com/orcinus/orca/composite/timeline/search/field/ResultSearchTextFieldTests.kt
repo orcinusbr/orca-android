@@ -39,9 +39,7 @@ internal class ResultSearchTextFieldTests {
     composeRule
       .apply {
         setContent {
-          AutosTheme {
-            ResultSearchTextField(profileSearchResultsLoadable = ListLoadable.Loading())
-          }
+          AutosTheme { ResultSearchTextField(resultsLoadable = ListLoadable.Loading()) }
         }
       }
       .onSearchTextField()
