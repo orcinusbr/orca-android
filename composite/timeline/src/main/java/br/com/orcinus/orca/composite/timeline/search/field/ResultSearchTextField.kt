@@ -38,6 +38,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -87,6 +88,10 @@ import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
 /** Duration in milliseconds of the appearance animation for results. */
 private const val ResultAppearanceAnimationDurationInMilliseconds = 56
 
+/** Duration in milliseconds of the animation of a [ResultSearchTextField]'s bottom corners. */
+private const val BottomRadiusAnimationDuration =
+  ResultAppearanceAnimationDurationInMilliseconds / 2
+
 /** Tag that identifies a [ResultSearchTextField]'s "dismiss" button for testing purposes. */
 @InternalTimelineApi const val DismissButtonTag = "result-search-text-field-dismiss-button"
 
@@ -134,13 +139,11 @@ internal fun ResultSearchTextField(
   resultsLoadable: ListLoadable<ProfileSearchResult>,
   modifier: Modifier = Modifier
 ) {
-  val containsResults = remember(resultsLoadable) { resultsLoadable is ListLoadable.Populated }
+  val defaultElevation = SearchTextFieldDefaults.Elevation
+  val containsResults by
+    remember(resultsLoadable) { mutableStateOf(resultsLoadable is ListLoadable.Populated) }
   val layoutElevation by
-    animateDpAsState(
-      if (containsResults) SearchTextFieldDefaults.Elevation else 0.dp,
-      animationSpec = tween(delayMillis = ResultAppearanceAnimationDurationInMilliseconds * 8),
-      label = "Layout elevation"
-    )
+    remember(containsResults) { derivedStateOf { if (containsResults) defaultElevation else 0.dp } }
 
   ConstraintLayout(
     Modifier.shadow(layoutElevation, SearchTextFieldDefaults.shape).`if`(containsResults) {
@@ -157,7 +160,7 @@ internal fun ResultSearchTextField(
         } else {
           SearchTextFieldDefaults.shape.bottomEnd.toDp(searchTextFieldSize, density)
         },
-        animationSpec = tween(ResultAppearanceAnimationDurationInMilliseconds),
+        animationSpec = tween(BottomRadiusAnimationDuration),
         label = "Bottom end radius"
       )
     val searchTextFieldBottomStartRadius by
@@ -167,14 +170,13 @@ internal fun ResultSearchTextField(
         } else {
           SearchTextFieldDefaults.shape.bottomStart.toDp(searchTextFieldSize, density)
         },
-        animationSpec = tween(ResultAppearanceAnimationDurationInMilliseconds),
+        animationSpec = tween(BottomRadiusAnimationDuration),
         label = "Bottom start radius"
       )
     val searchTextFieldElevation by
-      animateDpAsState(
-        if (containsResults) 0.dp else SearchTextFieldDefaults.Elevation,
-        label = "Search text field elevation"
-      )
+      remember(containsResults) {
+        derivedStateOf { if (containsResults) 0.dp else defaultElevation }
+      }
 
     DismissibleSearchTextField(
       searchTextFieldRef,
