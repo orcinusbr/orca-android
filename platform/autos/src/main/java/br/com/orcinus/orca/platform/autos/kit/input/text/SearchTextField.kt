@@ -63,6 +63,9 @@ const val SearchTextFieldTag = "search-text-field"
 
 /** Default values used by a [SearchTextField]. */
 object SearchTextFieldDefaults {
+  /** Amount in [Dp] by which a [SearchTextField] is elevated by default. */
+  val Elevation = 2.dp
+
   /** [Color] by which the container of a [SearchTextField] is colored by default. */
   val containerColor
     @Composable get() = AutosTheme.colors.surface.container.asColor
@@ -87,6 +90,7 @@ object SearchTextFieldDefaults {
  *   by having the "search" icon replaced by a [CircularProgressIndicator] that spins indefinitely.
  * @param modifier [Modifier] applied to the underlying [BasicTextField].
  * @param shape [Shape] by which it is clipped.
+ * @param elevation Amount in [Dp] by which it is elevated.
  * @param contentPadding [PaddingValues] by which the content of the decoration box is padded.
  */
 @Composable
@@ -97,10 +101,11 @@ fun SearchTextField(
   query: String = "",
   onQueryChange: (query: String) -> Unit = {},
   shape: Shape = SearchTextFieldDefaults.shape,
+  elevation: Dp = SearchTextFieldDefaults.Elevation,
   isLoading: Boolean = false,
   contentPadding: PaddingValues = PaddingValues()
 ) {
-  SearchTextField(query, onQueryChange, isLoading, modifier, shape, contentPadding)
+  SearchTextField(query, onQueryChange, isLoading, modifier, shape, elevation, contentPadding)
 }
 
 /**
@@ -112,6 +117,7 @@ fun SearchTextField(
  *   by having the "search" icon replaced by a [CircularProgressIndicator] that spins indefinitely.
  * @param modifier [Modifier] applied to the underlying [BasicTextField].
  * @param shape [Shape] by which it is clipped.
+ * @param elevation Amount in [Dp] by which it is elevated.
  * @param contentPadding [PaddingValues] by which the content of the decoration box is padded.
  */
 @Composable
@@ -121,6 +127,7 @@ fun SearchTextField(
   isLoading: Boolean,
   modifier: Modifier = Modifier,
   shape: Shape = SearchTextFieldDefaults.shape,
+  elevation: Dp = SearchTextFieldDefaults.Elevation,
   contentPadding: PaddingValues = PaddingValues()
 ) {
   val style = LocalTextStyle.current
@@ -133,7 +140,7 @@ fun SearchTextField(
     textStyle = style,
     cursorBrush = cursorBrush
   ) {
-    Surface(shape = shape, shadowElevation = 2.dp) {
+    Surface(shape = shape, shadowElevation = elevation) {
       Row(
         Modifier.padding(contentPadding).padding(SearchTextFieldDefaults.spacing),
         Arrangement.spacedBy(SearchTextFieldDefaults.spacing),

@@ -17,6 +17,10 @@ package br.com.orcinus.orca.composite.timeline.search.field
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,6 +29,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -39,12 +44,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.zIndex
@@ -66,7 +75,6 @@ import br.com.orcinus.orca.platform.autos.kit.bottom
 import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextField
 import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextFieldDefaults
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.`if`
-import br.com.orcinus.orca.platform.autos.kit.top
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 import br.com.orcinus.orca.platform.core.sample
@@ -75,6 +83,9 @@ import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.serializableListOf
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
+
+/** Duration in milliseconds of the appearance animation for results. */
+private const val ResultAppearanceAnimationDurationInMilliseconds = 56
 
 /** Tag that identifies a [ResultSearchTextField]'s "dismiss" button for testing purposes. */
 @InternalTimelineApi const val DismissButtonTag = "result-search-text-field-dismiss-button"
@@ -123,19 +134,60 @@ internal fun ResultSearchTextField(
   profileSearchResultsLoadable: ListLoadable<ProfileSearchResult>,
   modifier: Modifier = Modifier
 ) {
-  ConstraintLayout {
+  val containsResults =
+    remember(profileSearchResultsLoadable) {
+      profileSearchResultsLoadable is ListLoadable.Populated
+    }
+  val layoutElevation by
+    animateDpAsState(
+      if (containsResults) SearchTextFieldDefaults.Elevation else 0.dp,
+      animationSpec = tween(delayMillis = ResultAppearanceAnimationDurationInMilliseconds * 8),
+      label = "Layout elevation"
+    )
+
+  ConstraintLayout(
+    Modifier.shadow(layoutElevation, SearchTextFieldDefaults.shape).`if`(containsResults) {
+      clip(SearchTextFieldDefaults.shape)
+    }
+  ) {
+    val density = LocalDensity.current
     val (searchTextFieldRef, resultsRef) = createRefs()
     var searchTextFieldSize by remember { mutableStateOf(Size.Unspecified) }
-    val containsResults =
-      remember(profileSearchResultsLoadable) {
-        profileSearchResultsLoadable is ListLoadable.Populated
-      }
+    val searchTextFieldBottomEndRadius by
+      animateDpAsState(
+        if (containsResults) {
+          0.dp
+        } else {
+          SearchTextFieldDefaults.shape.bottomEnd.toDp(searchTextFieldSize, density)
+        },
+        animationSpec = tween(ResultAppearanceAnimationDurationInMilliseconds),
+        label = "Bottom end radius"
+      )
+    val searchTextFieldBottomStartRadius by
+      animateDpAsState(
+        if (containsResults) {
+          0.dp
+        } else {
+          SearchTextFieldDefaults.shape.bottomStart.toDp(searchTextFieldSize, density)
+        },
+        animationSpec = tween(ResultAppearanceAnimationDurationInMilliseconds),
+        label = "Bottom start radius"
+      )
+    val searchTextFieldElevation by
+      animateDpAsState(
+        if (containsResults) 0.dp else SearchTextFieldDefaults.Elevation,
+        label = "Search text field elevation"
+      )
 
     DismissibleSearchTextField(
       searchTextFieldRef,
       query,
       onQueryChange,
-      SearchTextFieldDefaults.shape.`if`(containsResults) { top },
+      SearchTextFieldDefaults.shape.copy(
+        bottomEnd = CornerSize(searchTextFieldBottomEndRadius),
+        bottomStart = CornerSize(searchTextFieldBottomStartRadius)
+      ),
+      searchTextFieldElevation,
       profileSearchResultsLoadable is ListLoadable.Loading,
       onDismissal,
       modifier
@@ -150,7 +202,9 @@ internal fun ResultSearchTextField(
           centerHorizontallyTo(parent)
           top.linkTo(searchTextFieldRef.bottom)
         }
-        .zIndex(-1f)
+        .zIndex(-1f),
+      enter = slideInVertically(tween(ResultAppearanceAnimationDurationInMilliseconds)),
+      exit = slideOutVertically()
     ) {
       HorizontalDivider(Modifier.testTag(DividerTag))
 
@@ -178,6 +232,7 @@ internal fun ResultSearchTextField(
  * @param query Content to be looked up.
  * @param onQueryChange Lambda invoked whenever the [query] changes.
  * @param shape [Shape] by which the [SearchTextField] is clipped.
+ * @param elevation Amount in [Dp] by which it is elevated.
  * @param isLoading Whether it is to be put in a loading state. Ultimately, is reflected on the UI
  *   by having the "search" icon replaced by a [CircularProgressIndicator] that spins indefinitely.
  * @param onDismissal Callback called when dismissal is requested.
@@ -189,6 +244,7 @@ private fun ConstraintLayoutScope.DismissibleSearchTextField(
   query: String,
   onQueryChange: (query: String) -> Unit,
   shape: Shape,
+  elevation: Dp,
   isLoading: Boolean,
   onDismissal: () -> Unit,
   modifier: Modifier = Modifier
@@ -199,6 +255,7 @@ private fun ConstraintLayoutScope.DismissibleSearchTextField(
     isLoading,
     modifier.constrainAs(ref) {},
     shape,
+    elevation,
     contentPadding =
       PaddingValues(
         end = HoverableIconButtonDefaults.Size.width + SearchTextFieldDefaults.spacing * 2
@@ -284,7 +341,16 @@ private fun ResultCard(
     onClick,
     modifier,
     shape = if (isLastOne) SearchTextFieldDefaults.shape.bottom else RectangleShape,
-    colors = CardDefaults.cardColors(containerColor = SearchTextFieldDefaults.containerColor)
+    colors = CardDefaults.cardColors(containerColor = SearchTextFieldDefaults.containerColor),
+    elevation =
+      CardDefaults.cardElevation(
+        defaultElevation = 0.dp,
+        pressedElevation = 0.dp,
+        focusedElevation = 0.dp,
+        hoveredElevation = 0.dp,
+        draggedElevation = 0.dp,
+        disabledElevation = 0.dp
+      )
   ) {
     Row(
       Modifier.padding(SearchTextFieldDefaults.spacing),
