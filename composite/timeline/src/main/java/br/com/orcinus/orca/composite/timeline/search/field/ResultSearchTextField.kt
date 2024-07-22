@@ -359,7 +359,7 @@ private fun ResultCard(
       avatar()
 
       Column(verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.extraSmall.dp)) {
-        ProvideTextStyle(AutosTheme.typography.labelMedium, name)
+        ProvideTextStyle(AutosTheme.typography.titleMedium, name)
         ProvideTextStyle(AutosTheme.typography.labelSmall, account)
       }
     }
