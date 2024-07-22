@@ -259,6 +259,47 @@ internal class SearchableTests {
   }
 
   @Test
+  fun showsFillerWhenSearchTextFieldIsShown() {
+    composeRule
+      .apply {
+        setContent {
+          AutosTheme {
+            Searchable {
+              Replaceable {
+                DisposableEffect(Unit) {
+                  show()
+                  onDispose {}
+                }
+              }
+            }
+          }
+        }
+      }
+      .onFiller()
+      .assertExists()
+  }
+
+  @Test
+  fun removesFillerWhenSearchTextFieldIsDismissed() {
+    composeRule
+      .apply {
+        setContent {
+          Searchable {
+            Replaceable {
+              DisposableEffect(Unit) {
+                show()
+                dismiss()
+                onDispose {}
+              }
+            }
+          }
+        }
+      }
+      .onFiller()
+      .assertDoesNotExist()
+  }
+
+  @Test
   fun doesNotUpdateBlurRadiusWhenReplaceableIsNotComposed() {
     composeRule.setContent {
       AutosTheme {

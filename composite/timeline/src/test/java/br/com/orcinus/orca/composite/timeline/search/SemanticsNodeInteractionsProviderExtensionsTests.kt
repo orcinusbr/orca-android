@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.composite.timeline.search
 
 import androidx.compose.material3.Text
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
@@ -34,5 +35,26 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
       .apply { setContent { AutosTheme { Searchable { Text("🧊") } } } }
       .onContent()
       .assertIsDisplayed()
+  }
+
+  @Test
+  fun findsFiller() {
+    composeRule
+      .apply {
+        setContent {
+          AutosTheme {
+            Searchable {
+              Replaceable {
+                DisposableEffect(Unit) {
+                  show()
+                  onDispose {}
+                }
+              }
+            }
+          }
+        }
+      }
+      .onFiller()
+      .assertExists()
   }
 }

@@ -17,6 +17,8 @@ package br.com.orcinus.orca.composite.timeline.search.content
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutLinearInEasing
@@ -51,6 +53,7 @@ import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
@@ -366,7 +369,22 @@ internal constructor(
   @Composable
   private fun Filler(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     Box(modifier.fillerPeakSizeReporter()) {
-      Canvas(Modifier) { drawRect(fillerColor, topLeft = Offset.Zero, fillerPeakSize) }
+      AnimatedVisibility(
+        visible = replacementScope.isSearching,
+        Modifier.testTag(FillerTag),
+        EnterTransition.None,
+        exit =
+          fadeOut(
+            tween(
+              durationMillis = AccordionBaselineAnimationDurationInMilliseconds,
+              delayMillis = AccordionBaselineAnimationDurationInMilliseconds
+            )
+          ),
+        label = "Filler"
+      ) {
+        Canvas(Modifier) { drawRect(fillerColor, Offset.Zero, fillerPeakSize) }
+      }
+
       content()
     }
   }
@@ -398,6 +416,9 @@ internal constructor(
      */
     @Suppress("ConstPropertyName")
     private const val AccordionBaselineAnimationDurationInMilliseconds = 128
+
+    /** Tag that identifies a [Searchable]'s [Filler] for testing purposes. */
+    @Suppress("ConstPropertyName") internal const val FillerTag = "searchable-filler"
 
     /** Radii of the blur that should be applied to the content. */
     internal val BlurRadii = 0.dp..16.dp
