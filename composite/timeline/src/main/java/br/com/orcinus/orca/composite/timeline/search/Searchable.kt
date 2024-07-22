@@ -36,8 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import br.com.orcinus.orca.composite.timeline.search.content.SearchableContentScope
-import br.com.orcinus.orca.composite.timeline.search.content.SearchableReplacementScope
 import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.kit.action.button.icon.HoverableIconButton
@@ -62,23 +60,17 @@ import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 fun Searchable(
   fillerColor: Color,
   modifier: Modifier = Modifier,
-  content: @Composable SearchableContentScope.() -> Unit
+  content: @Composable SearchableScope.() -> Unit
 ) {
   BoxWithConstraints(modifier.testTag(ContentTag)) {
     val isReplaceableComposedState = remember { mutableStateOf(false) }
-    val replacementScope =
-      remember(isReplaceableComposedState) {
-        SearchableReplacementScope(isReplaceableComposedState)
-      }
-    val contentScope =
-      remember(replacementScope, content, fillerColor) {
-          SearchableContentScope(replacementScope, isReplaceableComposedState, fillerColor)
-        }
+    val searchableScope =
+      remember(content, fillerColor) { SearchableScope(isReplaceableComposedState, fillerColor) }
         .also { it.content() }
 
-    Crossfade(contentScope.containsSearchResults, label = "Scrim") { containsSearchResults ->
+    Crossfade(searchableScope.containsSearchResults, label = "Scrim") { containsSearchResults ->
       if (containsSearchResults) {
-        Scrim(replacementScope)
+        Scrim(searchableScope)
       }
     }
   }
@@ -95,7 +87,7 @@ fun Searchable(
 @Composable
 internal fun Searchable(
   modifier: Modifier = Modifier,
-  content: @Composable SearchableContentScope.() -> Unit
+  content: @Composable SearchableScope.() -> Unit
 ) {
   Searchable(fillerColor = Color.Transparent, modifier, content)
 }
@@ -104,15 +96,12 @@ internal fun Searchable(
  * Dark overlay for contrasting the [ResultSearchTextField] with the content that is laid out behind
  * it.
  *
- * @param replacementScope [SearchableReplacementScope] of the [Searchable].
+ * @param searchableScope [SearchableScope] of the [Searchable].
  * @param modifier [Modifier] to be applied to the underlying [Canvas].
  */
 @Composable
-private fun BoxScope.Scrim(
-  replacementScope: SearchableReplacementScope,
-  modifier: Modifier = Modifier
-) {
-  val isSearching by remember(replacementScope) { derivedStateOf(replacementScope::isSearching) }
+private fun BoxScope.Scrim(searchableScope: SearchableScope, modifier: Modifier = Modifier) {
+  val isSearching by remember(searchableScope) { derivedStateOf(searchableScope::isSearching) }
   val alpha by animateFloatAsState(if (isSearching) .05f else 0f, label = "Scrim alpha")
   val color = remember(alpha) { Color.Black.copy(alpha = alpha) }
 
@@ -122,7 +111,7 @@ private fun BoxScope.Scrim(
         clickable(
           interactionSource = remember(::MutableInteractionSource),
           indication = null,
-          onClick = replacementScope::dismiss
+          onClick = searchableScope::dismiss
         )
       }
       .matchParentSize()

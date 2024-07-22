@@ -36,8 +36,6 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isGreaterThanOrEqualTo
 import assertk.assertions.isTrue
-import br.com.orcinus.orca.composite.timeline.search.content.SearchableContentScope
-import br.com.orcinus.orca.composite.timeline.search.content.SearchableReplacementScope
 import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.core.sample.feed.profile.account.sample
@@ -86,21 +84,15 @@ internal class SearchableTests {
         setContent {
           AutosTheme {
             Searchable {
-              var replacementScope by remember { mutableStateOf<SearchableReplacementScope?>(null) }
               var isReplaceableComposed by remember { mutableStateOf(true) }
 
               if (isReplaceableComposed) {
-                Replaceable {
-                  DisposableEffect(Unit) {
-                    replacementScope = this@Replaceable
-                    isReplaceableComposed = false
-                    onDispose {}
-                  }
-                }
+                Replaceable()
               }
 
               DisposableEffect(Unit) {
-                replacementScope?.show()
+                isReplaceableComposed = false
+                show()
                 onDispose {}
               }
             }
@@ -118,11 +110,11 @@ internal class SearchableTests {
         setContent {
           AutosTheme {
             Searchable {
-              Replaceable {
-                DisposableEffect(Unit) {
-                  show()
-                  onDispose {}
-                }
+              Replaceable()
+
+              DisposableEffect(Unit) {
+                show()
+                onDispose {}
               }
             }
           }
@@ -141,11 +133,11 @@ internal class SearchableTests {
             Searchable {
               var query by remember { mutableStateOf("") }
 
-              Replaceable(query = query, onQueryChange = { query = it }) {
-                DisposableEffect(Unit) {
-                  show()
-                  onDispose {}
-                }
+              Replaceable(query = query, onQueryChange = { query = it })
+
+              DisposableEffect(Unit) {
+                show()
+                onDispose {}
               }
             }
           }
@@ -163,12 +155,12 @@ internal class SearchableTests {
         setContent {
           AutosTheme {
             Searchable {
-              Replaceable {
-                DisposableEffect(Unit) {
-                  show()
-                  dismiss()
-                  onDispose {}
-                }
+              Replaceable()
+
+              DisposableEffect(Unit) {
+                show()
+                dismiss()
+                onDispose {}
               }
             }
           }
@@ -183,11 +175,11 @@ internal class SearchableTests {
     composeRule.setContent {
       AutosTheme {
         Searchable {
-          Replaceable {
-            DisposableEffect(Unit) {
-              assertThat(isSearching).isFalse()
-              onDispose {}
-            }
+          Replaceable()
+
+          DisposableEffect(Unit) {
+            assertThat(isSearching).isFalse()
+            onDispose {}
           }
         }
       }
@@ -199,23 +191,17 @@ internal class SearchableTests {
     composeRule.setContent {
       AutosTheme {
         Searchable {
-          var replacementScope by remember { mutableStateOf<SearchableReplacementScope?>(null) }
           var isReplaceableComposed by remember { mutableStateOf(true) }
 
           if (isReplaceableComposed) {
-            Replaceable {
-              DisposableEffect(Unit) {
-                replacementScope = this@Replaceable
-                isReplaceableComposed = false
-                onDispose {}
-              }
-            }
+            Replaceable()
           }
 
           DisposableEffect(Unit) {
+            isReplaceableComposed = false
             onDispose {
-              replacementScope?.show()
-              assertThat(replacementScope?.isSearching).isEqualTo(false)
+              show()
+              assertThat(isSearching).isFalse()
             }
           }
         }
@@ -228,12 +214,12 @@ internal class SearchableTests {
     composeRule.setContent {
       AutosTheme {
         Searchable {
-          Replaceable {
-            DisposableEffect(Unit) {
-              show()
-              assertThat(isSearching).isTrue()
-              onDispose {}
-            }
+          Replaceable()
+
+          DisposableEffect(Unit) {
+            show()
+            assertThat(isSearching).isTrue()
+            onDispose {}
           }
         }
       }
@@ -245,13 +231,13 @@ internal class SearchableTests {
     composeRule.setContent {
       AutosTheme {
         Searchable {
-          Replaceable {
-            DisposableEffect(Unit) {
-              show()
-              dismiss()
-              assertThat(isSearching).isFalse()
-              onDispose {}
-            }
+          Replaceable()
+
+          DisposableEffect(Unit) {
+            show()
+            dismiss()
+            assertThat(isSearching).isFalse()
+            onDispose {}
           }
         }
       }
@@ -265,11 +251,11 @@ internal class SearchableTests {
         setContent {
           AutosTheme {
             Searchable {
-              Replaceable {
-                DisposableEffect(Unit) {
-                  show()
-                  onDispose {}
-                }
+              Replaceable()
+
+              DisposableEffect(Unit) {
+                show()
+                onDispose {}
               }
             }
           }
@@ -285,12 +271,12 @@ internal class SearchableTests {
       .apply {
         setContent {
           Searchable {
-            Replaceable {
-              DisposableEffect(Unit) {
-                show()
-                dismiss()
-                onDispose {}
-              }
+            Replaceable()
+
+            DisposableEffect(Unit) {
+              show()
+              dismiss()
+              onDispose {}
             }
           }
         }
@@ -307,7 +293,7 @@ internal class SearchableTests {
           val blurRadius by contentBlurRadiusAsState
 
           DisposableEffect(Unit) {
-            assertThat(blurRadius).isEqualTo(SearchableContentScope.BlurRadii.start)
+            assertThat(blurRadius).isEqualTo(SearchableScope.BlurRadii.start)
             onDispose {}
           }
         }
@@ -328,16 +314,16 @@ internal class SearchableTests {
             onDispose {}
           }
 
-          Replaceable {
-            DisposableEffect(Unit) {
-              show()
-              onDispose {}
-            }
+          Replaceable()
+
+          DisposableEffect(Unit) {
+            show()
+            onDispose {}
           }
         }
       }
     }
-    assertThat(contentBlurRadius).isEqualTo(SearchableContentScope.BlurRadii.start)
+    assertThat(contentBlurRadius).isEqualTo(SearchableScope.BlurRadii.start)
   }
 
   @Test
@@ -355,16 +341,16 @@ internal class SearchableTests {
 
           Replaceable(
             resultsLoadable = ListLoadable.Populated(serializableListOf(ProfileSearchResult.sample))
-          ) {
-            DisposableEffect(Unit) {
-              show()
-              onDispose {}
-            }
+          )
+
+          DisposableEffect(Unit) {
+            show()
+            onDispose {}
           }
         }
       }
     }
-    assertThat(contentBlurRadius).isEqualTo(SearchableContentScope.BlurRadii.endInclusive)
+    assertThat(contentBlurRadius).isEqualTo(SearchableScope.BlurRadii.endInclusive)
   }
 
   @Test
@@ -393,11 +379,11 @@ internal class SearchableTests {
                 onDispose {}
               }
 
-              Replaceable(resultsLoadable = profileSearchResultsLoadable) {
-                DisposableEffect(Unit) {
-                  show()
-                  onDispose {}
-                }
+              Replaceable(resultsLoadable = profileSearchResultsLoadable)
+
+              DisposableEffect(Unit) {
+                show()
+                onDispose {}
               }
             }
           }
@@ -405,7 +391,7 @@ internal class SearchableTests {
       }
       .onSearchTextField()
       .performTextInput("${Account.sample}".take(1) + "不定")
-    assertThat(contentBlurRadius).isEqualTo(SearchableContentScope.BlurRadii.start)
+    assertThat(contentBlurRadius).isEqualTo(SearchableScope.BlurRadii.start)
   }
 
   @Test
@@ -429,15 +415,11 @@ internal class SearchableTests {
     composeRule.setContent {
       AutosTheme {
         Searchable {
-          Replaceable {
-            DisposableEffect(Unit) {
-              show()
-              dismiss()
-              onDispose {}
-            }
-          }
+          Replaceable()
 
           DisposableEffect(Unit) {
+            show()
+            dismiss()
             onDispose { assertThat(searchTextFieldLayoutHeight).isEqualTo(0.dp) }
           }
         }
@@ -456,14 +438,10 @@ internal class SearchableTests {
             remember(density, textStyle) { with(density) { textStyle.fontSize.toDp() } }
           val searchTextFieldSpacing = SearchTextFieldDefaults.spacing
 
-          Replaceable {
-            DisposableEffect(Unit) {
-              show()
-              onDispose {}
-            }
-          }
+          Replaceable()
 
           DisposableEffect(Unit) {
+            show()
             onDispose {
               assertThat(searchTextFieldLayoutHeight)
                 .isGreaterThanOrEqualTo(fontSizeInDp + searchTextFieldSpacing * 4)

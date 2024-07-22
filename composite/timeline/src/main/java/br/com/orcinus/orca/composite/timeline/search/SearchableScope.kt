@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.search.content
+package br.com.orcinus.orca.composite.timeline.search
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.AnimatedContent
@@ -39,7 +39,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,7 +62,6 @@ import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import br.com.orcinus.orca.composite.timeline.InternalTimelineApi
-import br.com.orcinus.orca.composite.timeline.search.Searchable
 import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
@@ -76,18 +74,15 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 /**
- * Scope of a [Searchable] in which the content behind the [SearchTextField] can be set.
+ * Scope of a [Searchable] in which the [SearchTextField] can be either shown or dismissed.
  *
- * @property replacementScope [SearchableReplacementScope] in which the [SearchTextField] can be
- *   either shown or dismissed.
  * @property isReplaceableComposedState [MutableState] whose [Boolean] determines whether the
  *   content to be replaced by the [SearchTextField] is currently composed.
  * @property fillerColor [Color] by which the container that fills the space previously occupied by
  *   the content replaced by the [SearchTextField] is colored.
  */
-class SearchableContentScope
+class SearchableScope
 internal constructor(
-  private val replacementScope: SearchableReplacementScope,
   private val isReplaceableComposedState: MutableState<Boolean>,
   private val fillerColor: Color
 ) {
@@ -100,6 +95,10 @@ internal constructor(
 
   /** Whether the search currently being performed has yielded any results. */
   internal var containsSearchResults by mutableStateOf(false)
+    private set
+
+  /** Whether the [ResultSearchTextField] is currently being shown. */
+  var isSearching by mutableStateOf(false)
     private set
 
   /** Height of the [SearchTextField], or zeroed in case search isn't being performed. */
@@ -140,7 +139,7 @@ internal constructor(
     onQueryChange: (query: String) -> Unit,
     resultsLoadable: ListLoadable<ProfileSearchResult>,
     modifier: Modifier = Modifier,
-    content: @Composable SearchableReplacementScope.() -> Unit
+    content: @Composable () -> Unit
   ) {
     val density = LocalDensity.current
 
@@ -162,10 +161,15 @@ internal constructor(
           )
         } else {
           SearchTextFieldLayoutHeightResetEffect(coroutineScope)
-          replacementScope.content()
+          content()
         }
       }
     }
+  }
+
+  /** Shows the [SearchTextField]. */
+  fun show() {
+    isSearching = isReplaceableComposedState.value
   }
 
   /**
@@ -190,9 +194,14 @@ internal constructor(
     query: String = "",
     onQueryChange: (query: String) -> Unit = {},
     resultsLoadable: ListLoadable<ProfileSearchResult> = ListLoadable.Loading(),
-    content: @Composable SearchableReplacementScope.() -> Unit = {}
+    content: @Composable () -> Unit = {}
   ) {
     Replaceable(query, onQueryChange, resultsLoadable, modifier, content)
+  }
+
+  /** Dismisses the [ResultSearchTextField]. */
+  internal fun dismiss() {
+    isSearching = false
   }
 
   /**
@@ -219,8 +228,6 @@ internal constructor(
    */
   @Composable
   private fun SearchResultsEffect(resultsLoadable: ListLoadable<ProfileSearchResult>) {
-    val isSearching by remember(replacementScope) { derivedStateOf(replacementScope::isSearching) }
-
     DisposableEffect(isSearching, resultsLoadable) {
       containsSearchResults = isSearching && resultsLoadable is ListLoadable.Populated
       onDispose { containsSearchResults = false }
@@ -241,7 +248,7 @@ internal constructor(
     content: @Composable (willSearch: Boolean) -> Unit
   ) {
     AnimatedContent(
-      targetState = replacementScope.isSearching,
+      targetState = isSearching,
       modifier,
       transitionSpec = {
         slideInVertically(
@@ -304,7 +311,7 @@ internal constructor(
         ResultSearchTextField(
           query,
           onQueryChange,
-          onDismissal = replacementScope::dismiss,
+          onDismissal = ::dismiss,
           resultsLoadable,
           modifier
             .focusRequester(rememberImmediateFocusRequester())
@@ -370,7 +377,7 @@ internal constructor(
   private fun Filler(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
     Box(modifier.fillerPeakSizeReporter()) {
       AnimatedVisibility(
-        visible = replacementScope.isSearching,
+        visible = isSearching,
         Modifier.testTag(FillerTag),
         EnterTransition.None,
         exit =
@@ -390,12 +397,12 @@ internal constructor(
   }
 
   /**
-   * Observes changes in size and updates [SearchableContentScope.fillerPeakSizeReporter] when a
-   * dimension is greater than the previous composed one.
+   * Observes changes in size and updates [SearchableScope.fillerPeakSizeReporter] when a dimension
+   * is greater than the previous composed one.
    */
   private fun Modifier.fillerPeakSizeReporter(): Modifier {
     return onSizeChanged {
-      if (!replacementScope.isSearching) {
+      if (!isSearching) {
         val changedSize = it.toSize()
         if (fillerPeakSize.isUnspecified) {
           fillerPeakSize = changedSize

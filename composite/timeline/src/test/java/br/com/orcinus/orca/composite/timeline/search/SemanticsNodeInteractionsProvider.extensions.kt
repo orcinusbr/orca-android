@@ -18,14 +18,13 @@ package br.com.orcinus.orca.composite.timeline.search
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.onNodeWithTag
-import br.com.orcinus.orca.composite.timeline.search.content.SearchableContentScope
 
 /** [SemanticsNodeInteraction] of a [Searchable]'s content. */
 internal fun SemanticsNodeInteractionsProvider.onContent(): SemanticsNodeInteraction {
   return onNodeWithTag(ContentTag)
 }
 
-/** [SemanticsNodeInteraction] of a [Searchable]'s [SearchableContentScope.Filler]. */
+/** [SemanticsNodeInteraction] of a [Searchable]'s [SearchableScope.Filler]. */
 internal fun SemanticsNodeInteractionsProvider.onFiller(): SemanticsNodeInteraction {
-  return onNodeWithTag(SearchableContentScope.FillerTag)
+  return onNodeWithTag(SearchableScope.FillerTag)
 }
