@@ -265,36 +265,6 @@ internal constructor(
   }
 
   /**
-   * Considers the [Composable] on which this [Modifier] has been applied to be the layout of the
-   * [ResultSearchTextField]; ultimately, that implies in it having its height changes set as the
-   * value of [searchTextFieldLayoutHeight] so that the main content can be properly padded/spaced.
-   *
-   * @param density [Density] with which the height in pixels of the layout is to be converted into
-   *   [Dp].
-   * @param coroutineScope [CoroutineScope] in which [Job]s that animate the
-   *   [searchTextFieldLayoutHeight] are launched.
-   * @param spacing Amount of [Dp] that spaces a [SearchTextField] by default, obtainable through
-   *   [SearchTextFieldDefaults.spacing].
-   */
-  private fun Modifier.searchTextFieldLayout(
-    density: Density,
-    coroutineScope: CoroutineScope,
-    spacing: Dp
-  ): Modifier {
-    return if (searchTextFieldLayoutHeight == 0.dp) {
-      onSizeChanged {
-        coroutineScope.launch {
-          searchTextFieldLayoutHeightAnimatable.animateTo(
-            with(density) { it.height.toDp() } + spacing * 2
-          )
-        }
-      }
-    } else {
-      this
-    }
-  }
-
-  /**
    * [Popup] by which a [ResultSearchTextField] is displayed, whose changes in height are observed
    * and then propagated to [searchTextFieldLayoutHeight]. It is pre-offset and -padded based on the
    * default spacing of a [SearchTextField].
@@ -339,6 +309,36 @@ internal constructor(
             .fillMaxWidth()
         )
       }
+    }
+  }
+
+  /**
+   * Considers the [Composable] on which this [Modifier] has been applied to be the layout of the
+   * [ResultSearchTextField]; ultimately, that implies in it having its height changes set as the
+   * value of [searchTextFieldLayoutHeight] so that the main content can be properly padded/spaced.
+   *
+   * @param density [Density] with which the height in pixels of the layout is to be converted into
+   *   [Dp].
+   * @param coroutineScope [CoroutineScope] in which [Job]s that animate the
+   *   [searchTextFieldLayoutHeight] are launched.
+   * @param spacing Amount of [Dp] that spaces a [SearchTextField] by default, obtainable through
+   *   [SearchTextFieldDefaults.spacing].
+   */
+  private fun Modifier.searchTextFieldLayout(
+    density: Density,
+    coroutineScope: CoroutineScope,
+    spacing: Dp
+  ): Modifier {
+    return if (searchTextFieldLayoutHeight == 0.dp) {
+      onSizeChanged {
+        coroutineScope.launch {
+          searchTextFieldLayoutHeightAnimatable.animateTo(
+            with(density) { it.height.toDp() } + spacing * 2
+          )
+        }
+      }
+    } else {
+      this
     }
   }
 
