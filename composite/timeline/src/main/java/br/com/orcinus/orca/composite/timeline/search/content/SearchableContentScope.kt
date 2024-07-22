@@ -29,6 +29,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -44,6 +45,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.isUnspecified
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
@@ -51,6 +56,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import br.com.orcinus.orca.composite.timeline.InternalTimelineApi
@@ -73,12 +79,18 @@ import kotlinx.coroutines.launch
  *   either shown or dismissed.
  * @property isReplaceableComposedState [MutableState] whose [Boolean] determines whether the
  *   content to be replaced by the [SearchTextField] is currently composed.
+ * @property fillerColor [Color] by which the container that fills the space previously occupied by
+ *   the content replaced by the [SearchTextField] is colored.
  */
 class SearchableContentScope
 internal constructor(
   private val replacementScope: SearchableReplacementScope,
-  private val isReplaceableComposedState: MutableState<Boolean>
+  private val isReplaceableComposedState: MutableState<Boolean>,
+  private val fillerColor: Color
 ) {
+  /** Maximum [Size] that the [Filler] has had up until now. */
+  private var fillerPeakSize = Size.Unspecified
+
   /** [Animatable] by which the height of the [ResultSearchTextField] is held and animated. */
   private val searchTextFieldLayoutHeightAnimatable =
     Animatable(initialValue = 0.dp, Dp.VectorConverter)
@@ -127,17 +139,28 @@ internal constructor(
     modifier: Modifier = Modifier,
     content: @Composable SearchableReplacementScope.() -> Unit
   ) {
+    val density = LocalDensity.current
+
     ReplaceableCompositionReporterEffect()
     SearchResultsEffect(resultsLoadable)
 
-    Accordion { willSearch ->
-      val coroutineScope = rememberCoroutineScope()
+    Filler {
+      Accordion { willSearch ->
+        val coroutineScope = rememberCoroutineScope()
 
-      if (willSearch) {
-        SearchTextFieldPopup(coroutineScope, query, onQueryChange, resultsLoadable, modifier)
-      } else {
-        SearchTextFieldLayoutHeightResetEffect(coroutineScope)
-        replacementScope.content()
+        if (willSearch) {
+          SearchTextFieldPopup(
+            density,
+            coroutineScope,
+            query,
+            onQueryChange,
+            resultsLoadable,
+            modifier
+          )
+        } else {
+          SearchTextFieldLayoutHeightResetEffect(coroutineScope)
+          replacementScope.content()
+        }
       }
     }
   }
@@ -276,6 +299,7 @@ internal constructor(
    * and then propagated to [searchTextFieldLayoutHeight]. It is pre-offset and -padded based on the
    * default spacing of a [SearchTextField].
    *
+   * @param density [Density] for converting the spacing into pixels.
    * @param coroutineScope [CoroutineScope] in which [Job]s that animate the
    *   [searchTextFieldLayoutHeight] are launched.
    * @param query Content to be looked up.
@@ -286,13 +310,13 @@ internal constructor(
    */
   @Composable
   private fun SearchTextFieldPopup(
+    density: Density,
     coroutineScope: CoroutineScope,
     query: String,
     onQueryChange: (query: String) -> Unit,
     resultsLoadable: ListLoadable<ProfileSearchResult>,
     modifier: Modifier = Modifier
   ) {
-    val density = LocalDensity.current
     val searchTextFieldSpacing = SearchTextFieldDefaults.spacing
     val searchTextFieldSpacingInPixels =
       remember(density, searchTextFieldSpacing) {
@@ -329,6 +353,41 @@ internal constructor(
     DisposableEffect(Unit) {
       coroutineScope.launch { searchTextFieldLayoutHeightAnimatable.animateTo(0.dp) }
       onDispose {}
+    }
+  }
+
+  /**
+   * Fills the maximum space occupied by the [content] with the [fillerColor].
+   *
+   * @param modifier [Modifier] to be applied to the underlying [Box].
+   * @param content Content whose size will be observed for the peak one to be defined as the
+   *   underlying container's to which the [fillerColor] will be applied.
+   */
+  @Composable
+  private fun Filler(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    Box(modifier.fillerPeakSizeReporter()) {
+      Canvas(Modifier) { drawRect(fillerColor, topLeft = Offset.Zero, fillerPeakSize) }
+      content()
+    }
+  }
+
+  /**
+   * Observes changes in size and updates [SearchableContentScope.fillerPeakSizeReporter] when a
+   * dimension is greater than the previous composed one.
+   */
+  private fun Modifier.fillerPeakSizeReporter(): Modifier {
+    return onSizeChanged {
+      val changedSize = it.toSize()
+      if (fillerPeakSize.isUnspecified) {
+        fillerPeakSize = changedSize
+      } else {
+        if (fillerPeakSize.width.isNaN() || fillerPeakSize.width < changedSize.width) {
+          fillerPeakSize = fillerPeakSize.copy(width = changedSize.width)
+        }
+        if (fillerPeakSize.height.isNaN() || fillerPeakSize.height < changedSize.height) {
+          fillerPeakSize = fillerPeakSize.copy(height = changedSize.height)
+        }
+      }
     }
   }
 

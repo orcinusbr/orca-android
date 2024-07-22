@@ -53,11 +53,14 @@ import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 /**
  * Layout that can replace a slot by a [SearchTextField].
  *
+ * @param fillerColor [Color] by which the container that fills the space previously occupied by the
+ *   content replaced by the [SearchTextField] is colored.
  * @param modifier [Modifier] applied to the underlying [Box].
  * @param content Content to be shown.
  */
 @Composable
 fun Searchable(
+  fillerColor: Color,
   modifier: Modifier = Modifier,
   content: @Composable SearchableContentScope.() -> Unit
 ) {
@@ -68,8 +71,8 @@ fun Searchable(
         SearchableReplacementScope(isReplaceableComposedState)
       }
     val contentScope =
-      remember(replacementScope, content) {
-          SearchableContentScope(replacementScope, isReplaceableComposedState)
+      remember(replacementScope, content, fillerColor) {
+          SearchableContentScope(replacementScope, isReplaceableComposedState, fillerColor)
         }
         .also { it.content() }
 
@@ -79,6 +82,22 @@ fun Searchable(
       }
     }
   }
+}
+
+/**
+ * Layout that can replace a slot by a [SearchTextField].
+ *
+ * This overload is stateless by default and is intended for previewing and testing purposes only.
+ *
+ * @param modifier [Modifier] applied to the underlying [Box].
+ * @param content Content to be shown.
+ */
+@Composable
+internal fun Searchable(
+  modifier: Modifier = Modifier,
+  content: @Composable SearchableContentScope.() -> Unit
+) {
+  Searchable(fillerColor = Color.Transparent, modifier, content)
 }
 
 /**
@@ -121,7 +140,7 @@ private fun SearchablePreview() {
       Replaceable {
         @OptIn(ExperimentalMaterial3Api::class)
         TopAppBar(
-          title = { Text("Main content") },
+          title = { Text("Content") },
           actions = {
             HoverableIconButton(onClick = ::show) {
               Icon(
