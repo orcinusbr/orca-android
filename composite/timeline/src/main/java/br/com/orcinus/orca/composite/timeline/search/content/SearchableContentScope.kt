@@ -395,15 +395,17 @@ internal constructor(
    */
   private fun Modifier.fillerPeakSizeReporter(): Modifier {
     return onSizeChanged {
-      val changedSize = it.toSize()
-      if (fillerPeakSize.isUnspecified) {
-        fillerPeakSize = changedSize
-      } else {
-        if (fillerPeakSize.width.isNaN() || fillerPeakSize.width < changedSize.width) {
-          fillerPeakSize = fillerPeakSize.copy(width = changedSize.width)
-        }
-        if (fillerPeakSize.height.isNaN() || fillerPeakSize.height < changedSize.height) {
-          fillerPeakSize = fillerPeakSize.copy(height = changedSize.height)
+      if (!replacementScope.isSearching) {
+        val changedSize = it.toSize()
+        if (fillerPeakSize.isUnspecified) {
+          fillerPeakSize = changedSize
+        } else {
+          if (fillerPeakSize.width.isNaN() || fillerPeakSize.width < changedSize.width) {
+            fillerPeakSize = fillerPeakSize.copy(width = changedSize.width)
+          }
+          if (fillerPeakSize.height.isNaN() || fillerPeakSize.height < changedSize.height) {
+            fillerPeakSize = fillerPeakSize.copy(height = changedSize.height)
+          }
         }
       }
     }
