@@ -61,7 +61,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
-import br.com.orcinus.orca.composite.timeline.InternalTimelineApi
 import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
@@ -186,7 +185,6 @@ internal constructor(
    * @throws IllegalStateException If a [Replaceable] is already currently composed.
    */
   @Composable
-  @InternalTimelineApi
   @Throws(IllegalStateException::class)
   @VisibleForTesting
   internal fun Replaceable(
