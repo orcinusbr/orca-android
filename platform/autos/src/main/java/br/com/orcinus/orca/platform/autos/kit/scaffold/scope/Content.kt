@@ -34,6 +34,9 @@ import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 
 /** Defines how a [Composable] containing a specific context should be laid out. */
 abstract class Content internal constructor() {
+  /** [Modifier] to be applied to the underlying [Box]. */
+  protected abstract val modifier: Modifier
+
   /** [Shape] by which the [Composable] is be shaped. */
   @get:Composable protected abstract val shape: Shape
 
@@ -41,13 +44,19 @@ abstract class Content internal constructor() {
   internal abstract val value: @Composable () -> Unit
 
   /** [Content] that is displayed all by itself. */
-  internal class Expanded(override val value: @Composable () -> Unit) : Content() {
+  internal class Expanded(
+    override val modifier: Modifier,
+    override val value: @Composable () -> Unit
+  ) : Content() {
     override val shape
       @Composable get() = RectangleShape
   }
 
   /** [Content] that is shown as a result of the selection of a tab. */
-  internal class Navigable(override val value: @Composable () -> Unit) : Content() {
+  internal class Navigable(
+    override val modifier: Modifier,
+    override val value: @Composable () -> Unit
+  ) : Content() {
     override val shape
       @Composable get() = AutosTheme.forms.medium.asShape.bottom
   }
@@ -56,14 +65,13 @@ abstract class Content internal constructor() {
    * [value] clipped by the specified [shape].
    *
    * @param padding [PaddingValues] to be passed into the [value].
-   * @param modifier [Modifier] that is applied to the underlying [Box].
    */
   @Composable
-  internal fun ClippedValue(padding: PaddingValues, modifier: Modifier = Modifier) {
+  internal fun ClippedValue(padding: PaddingValues) {
     Box(
-      modifier
-        .background(Colors.LIGHT.primary.container.asColor)
+      Modifier.background(Colors.LIGHT.primary.container.asColor)
         .clip(shape)
+        .then(modifier)
         .padding(padding)
         .background(LocalContainerColor.current)
         .fillMaxSize()

@@ -13,17 +13,15 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.autos.test.kit.input.text
+package br.com.orcinus.orca.composite.timeline.search
 
+import androidx.compose.material3.Text
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import br.com.orcinus.orca.platform.autos.kit.input.text.FormTextField
-import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextField
-import br.com.orcinus.orca.platform.autos.kit.input.text.error.rememberErrorDispatcher
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import kotlin.test.Test
 import org.junit.Rule
-import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
@@ -32,39 +30,31 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun findsFormTextField() {
+  fun findsContent() {
     composeRule
-      .apply { setContent { AutosTheme { FormTextField() } } }
-      .onFormTextField()
+      .apply { setContent { AutosTheme { Searchable { Text("🧊") } } } }
+      .onContent()
       .assertIsDisplayed()
   }
 
   @Test
-  fun findsFormTextFieldErrors() {
+  fun findsFiller() {
     composeRule
       .apply {
         setContent {
           AutosTheme {
-            val errorDispatcher = rememberErrorDispatcher { errorAlways("💀") }
-
-            DisposableEffect(errorDispatcher) {
-              errorDispatcher.dispatch()
-              onDispose {}
+            Searchable {
+              Replaceable {
+                DisposableEffect(Unit) {
+                  show()
+                  onDispose {}
+                }
+              }
             }
-
-            FormTextField(errorDispatcher = errorDispatcher)
           }
         }
       }
-      .onTextFieldErrors()
-      .assertIsDisplayed()
-  }
-
-  @Test
-  fun findsSearchTextField() {
-    composeRule
-      .apply { setContent { AutosTheme { SearchTextField() } } }
-      .onSearchTextField()
-      .assertIsDisplayed()
+      .onFiller()
+      .assertExists()
   }
 }

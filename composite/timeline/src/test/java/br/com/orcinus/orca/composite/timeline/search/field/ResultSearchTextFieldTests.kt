@@ -13,55 +13,56 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.autos.kit.input.text
+package br.com.orcinus.orca.composite.timeline.search.field
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performClick
+import assertk.assertThat
+import assertk.assertions.isTrue
+import br.com.orcinus.orca.composite.timeline.test.search.field.onDismissButton
 import br.com.orcinus.orca.platform.autos.test.kit.input.text.onSearchTextField
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.loadable.list.ListLoadable
+import com.jeanbarrossilva.loadable.placeholder.test.assertIsLoading
+import com.jeanbarrossilva.loadable.placeholder.test.assertIsNotLoading
 import kotlin.test.Test
 import org.junit.Rule
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class SearchTextFieldTests {
+internal class ResultSearchTextFieldTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun displaysLoadingIndicatorWhenLoading() {
-    composeRule
-      .apply { setContent { AutosTheme { SearchTextField(isLoading = true) } } }
-      .onLoadingIndicator()
-      .assertIsDisplayed()
-  }
-
-  @Test
-  fun displaysSearchIconWhenLoaded() {
-    composeRule
-      .apply { setContent { AutosTheme { SearchTextField() } } }
-      .onSearchIcon()
-      .assertIsDisplayed()
-  }
-
-  @Test
-  fun isTypedInto() {
+  fun isLoading() {
     composeRule
       .apply {
         setContent {
-          var query by remember { mutableStateOf("") }
-
-          AutosTheme { SearchTextField(query = query, onQueryChange = { query = it }) }
+          AutosTheme { ResultSearchTextField(resultsLoadable = ListLoadable.Loading()) }
         }
       }
       .onSearchTextField()
-      .also { it.performTextInput("Hello, world!") }
-      .assertTextEquals("Hello, world!")
+      .assertIsLoading()
+  }
+
+  @Test
+  fun isLoaded() {
+    composeRule
+      .apply { setContent { AutosTheme { ResultSearchTextField() } } }
+      .onSearchTextField()
+      .assertIsNotLoading()
+  }
+
+  @Test
+  fun dismisses() {
+    var hasDismissed = false
+    composeRule
+      .apply {
+        setContent { AutosTheme { ResultSearchTextField(onDismissal = { hasDismissed = true }) } }
+      }
+      .onDismissButton()
+      .performClick()
+    assertThat(hasDismissed).isTrue()
   }
 }

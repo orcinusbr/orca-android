@@ -41,6 +41,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.platform.LocalDensity
@@ -61,6 +62,12 @@ import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 
 /** Default values of a [TopAppBar][_TopAppBar]. */
 object TopAppBarDefaults {
+  /** [Color] by which the container of a [TopAppBar][_TopAppBar] is colored when it is idle. */
+  val idleContainerColor
+    @Composable
+    get() =
+      LocalContainerColor.current.takeOrElse { AutosTheme.colors.background.container.asColor }
+
   /** [TopAppBarScrollBehavior] adopted by default by a [TopAppBar][_TopAppBar]. */
   val scrollBehavior
     @Composable
@@ -97,8 +104,7 @@ fun TopAppBar(
   val isOverlapping = remember(overlap) { overlap > 0f }
   val scrolledContainerColor = AutosTheme.colors.surface.container.asColor
   val containerColorTransitionFraction = remember(isOverlapping) { if (isOverlapping) 1f else 0f }
-  val idleContainerColor =
-    LocalContainerColor.current.takeOrElse { AutosTheme.colors.background.container.asColor }
+  val idleContainerColor = _TopAppBarDefaults.idleContainerColor
   val containerColor by
     animateColorAsState(
       lerp(

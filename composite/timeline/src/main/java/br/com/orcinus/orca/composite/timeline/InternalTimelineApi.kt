@@ -13,15 +13,10 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.searchable
+package br.com.orcinus.orca.composite.timeline
 
-import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextField
+import br.com.orcinus.orca.std.visibility.PackageProtected
 
-/** Scope from which a [SearchTextField] can be either shown or dismissed. */
-abstract class SearchableScope internal constructor() {
-  /** Shows the [SearchTextField]. */
-  abstract fun show()
-
-  /** Dismisses the [SearchTextField]. */
-  internal abstract fun dismiss()
-}
+/** Denotes that an API is intended to be referenced only by [Timeline] and its internals. */
+@PackageProtected("This API is to be referenced only by `Timeline` and its internal structures.")
+internal annotation class InternalTimelineApi

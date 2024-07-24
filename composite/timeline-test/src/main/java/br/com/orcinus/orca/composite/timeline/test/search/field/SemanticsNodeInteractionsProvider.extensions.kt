@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,18 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-@file:JvmName("CornerBasedShapes")
+package br.com.orcinus.orca.composite.timeline.test.search.field
 
-package br.com.orcinus.orca.platform.autos.kit
+import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
+import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
 
-import androidx.compose.foundation.shape.CornerBasedShape
-import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.ZeroCornerSize
-
-/** Version of this [CornerBasedShape] with zeroed top [CornerSize]s. */
-val CornerBasedShape.bottom
-  get() = copy(topStart = ZeroCornerSize, topEnd = ZeroCornerSize)
-
-/** Version of this [CornerBasedShape] with zeroed bottom [CornerSize]s. */
-val CornerBasedShape.top
-  get() = copy(bottomEnd = ZeroCornerSize, bottomStart = ZeroCornerSize)
+/**
+ * [SemanticsNodeInteraction] of a [ResultSearchTextField]'s "dismiss" button.
+ *
+ * @see isDismissButton
+ */
+fun SemanticsNodeInteractionsProvider.onDismissButton(): SemanticsNodeInteraction {
+  return onNode(isDismissButton())
+}

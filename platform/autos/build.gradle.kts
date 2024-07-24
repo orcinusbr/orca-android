@@ -42,6 +42,7 @@ dependencies {
   implementation(libs.accompanist.adapter)
   implementation(libs.android.core)
   implementation(libs.loadable.placeholder)
+  implementation(libs.loadable.placeholder.test)
 
   testImplementation(project(":ext:uri"))
   testImplementation(project(":platform:autos-test"))

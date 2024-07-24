@@ -13,29 +13,26 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.searchable
+package br.com.orcinus.orca.composite.timeline.test.search.field
 
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.performClick
-import assertk.assertThat
-import assertk.assertions.isTrue
+import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
-import kotlin.test.Test
 import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class DismissibleTests {
+internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun dismisses() {
-    var hasDismissed = false
+  fun findsDismissButton() {
     composeRule
-      .apply { setContent { AutosTheme { Dismissible(onDismissal = { hasDismissed = true }) {} } } }
+      .apply { setContent { AutosTheme { ResultSearchTextField() } } }
       .onDismissButton()
-      .performClick()
-    assertThat(hasDismissed).isTrue()
+      .assertIsDisplayed()
   }
 }
