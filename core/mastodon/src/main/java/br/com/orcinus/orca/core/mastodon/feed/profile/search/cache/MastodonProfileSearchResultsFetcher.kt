@@ -19,7 +19,6 @@ import android.content.Context
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
-import br.com.orcinus.orca.core.feed.profile.search.toProfileSearchResult
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfile
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
@@ -65,10 +64,6 @@ internal class MastodonProfileSearchResultsFetcher(
       })
       .body<MastodonSearch>()
       .accounts
-      .map {
-        it
-          .toProfile(context, requester, avatarLoaderProvider, postPaginatorProvider)
-          .toProfileSearchResult()
-      }
+      .map { it.toProfileSearchResult(avatarLoaderProvider) }
   }
 }

@@ -21,6 +21,7 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.core.feed.profile.post.Author
+import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfile
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
@@ -105,6 +106,22 @@ internal data class MastodonAccount(
     } else {
       toFollowableProfile(context, requester, avatarLoaderProvider, postPaginatorProvider)
     }
+  }
+
+  /**
+   * Converts this [MastodonAccount] into a [ProfileSearchResult].
+   *
+   * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
+   *   [ProfileSearchResult]'s avatar will be loaded from a [URI].
+   */
+  fun toProfileSearchResult(
+    avatarLoaderProvider: SomeImageLoaderProvider<URI>
+  ): ProfileSearchResult {
+    val account = toAccount()
+    val avatarURI = URI(avatar)
+    val avatarLoader = avatarLoaderProvider.provide(avatarURI)
+    val uri = URI(uri)
+    return ProfileSearchResult(id, account, avatarLoader, displayName, uri)
   }
 
   /** Converts this [MastodonAccount] into an [Account]. */
