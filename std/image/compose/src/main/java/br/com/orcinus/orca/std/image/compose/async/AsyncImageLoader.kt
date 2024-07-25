@@ -46,6 +46,7 @@ import coil.compose.AsyncImagePainter
 import com.jeanbarrossilva.loadable.placeholder.Placeholder
 import com.jeanbarrossilva.loadable.placeholder.PlaceholderDefaults
 import java.net.URI
+import java.util.Objects
 
 /** [ComposableImageLoader] that loads an image asynchronously. */
 class AsyncImageLoader private constructor(override val source: URI) :
@@ -55,6 +56,14 @@ class AsyncImageLoader private constructor(override val source: URI) :
     override fun provide(source: URI): AsyncImageLoader {
       return AsyncImageLoader(source)
     }
+  }
+
+  override fun equals(other: Any?): Boolean {
+    return other is AsyncImageLoader && source == other.source
+  }
+
+  override fun hashCode(): Int {
+    return Objects.hash(source)
   }
 
   override fun load(): ComposableImage {

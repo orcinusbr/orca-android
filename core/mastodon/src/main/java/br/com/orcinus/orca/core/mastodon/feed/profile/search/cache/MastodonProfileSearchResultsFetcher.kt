@@ -19,10 +19,10 @@ import android.content.Context
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
-import br.com.orcinus.orca.core.feed.profile.search.toProfileSearchResult
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfile
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
+import br.com.orcinus.orca.core.mastodon.feed.profile.search.MastodonSearch
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 import br.com.orcinus.orca.platform.cache.Fetcher
@@ -54,13 +54,16 @@ internal class MastodonProfileSearchResultsFetcher(
     return requester
       .authenticated()
       .get({
-        path("api").path("v2").path("accounts").path("search").query().parameter("q", key).build()
+        path("api")
+          .path("v2")
+          .path("search")
+          .query()
+          .parameter("type", "accounts")
+          .parameter("q", key)
+          .build()
       })
-      .body<List<MastodonAccount>>()
-      .map {
-        it
-          .toProfile(context, requester, avatarLoaderProvider, postPaginatorProvider)
-          .toProfileSearchResult()
-      }
+      .body<MastodonSearch>()
+      .accounts
+      .map { it.toProfileSearchResult(avatarLoaderProvider) }
   }
 }
