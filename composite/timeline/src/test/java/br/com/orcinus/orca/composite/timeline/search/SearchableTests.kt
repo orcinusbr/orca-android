@@ -36,6 +36,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isGreaterThanOrEqualTo
 import assertk.assertions.isTrue
+import br.com.orcinus.orca.composite.timeline.test.search.field.onResultCard
 import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.core.sample.feed.profile.account.sample
@@ -450,5 +451,44 @@ internal class SearchableTests {
         }
       }
     }
+  }
+
+  @Test
+  fun showsResultCards() {
+    composeRule
+      .apply {
+        setContent {
+          AutosTheme {
+            Searchable {
+              var query by remember { mutableStateOf("") }
+              val resultsLoadable by
+                remember(query) {
+                  derivedStateOf {
+                    ProfileSearchResult.sample
+                      .takeIf { query.startsWith("${it.account}") }
+                      .let(::listOfNotNull)
+                      .toSerializableList()
+                      .toListLoadable()
+                  }
+                }
+
+              Replaceable(
+                query = query,
+                onQueryChange = { query = it },
+                resultsLoadable = resultsLoadable
+              )
+
+              DisposableEffect(Unit) {
+                show()
+                onDispose {}
+              }
+            }
+          }
+        }
+      }
+      .run {
+        onSearchTextField().performTextInput("${Account.sample}")
+        onResultCard().assertIsDisplayed()
+      }
   }
 }

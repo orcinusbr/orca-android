@@ -18,7 +18,13 @@ package br.com.orcinus.orca.composite.timeline.test.search.field
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
+import br.com.orcinus.orca.core.feed.profile.account.Account
+import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
+import br.com.orcinus.orca.core.sample.feed.profile.account.sample
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import br.com.orcinus.orca.platform.core.sample
+import com.jeanbarrossilva.loadable.list.ListLoadable
+import com.jeanbarrossilva.loadable.list.serializableListOf
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -33,6 +39,24 @@ internal class SemanticsMatcherExtensionsTests {
     composeRule
       .apply { setContent { AutosTheme { ResultSearchTextField() } } }
       .onNode(isDismissButton())
+      .assertIsDisplayed()
+  }
+
+  @Test
+  fun matchesResultCard() {
+    composeRule
+      .apply {
+        setContent {
+          AutosTheme {
+            ResultSearchTextField(
+              query = "${Account.sample}",
+              resultsLoadable =
+                ListLoadable.Populated(serializableListOf(ProfileSearchResult.sample))
+            )
+          }
+        }
+      }
+      .onNode(isResultCard())
       .assertIsDisplayed()
   }
 }

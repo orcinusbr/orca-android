@@ -92,6 +92,9 @@ private const val ResultAppearanceAnimationDurationInMilliseconds = 56
 private const val BottomRadiusAnimationDuration =
   ResultAppearanceAnimationDurationInMilliseconds / 2
 
+/** Tag that identifies a [ResultSearchTextField]'s [ResultCard] for testing purposes. */
+@InternalTimelineApi const val ResultCardTag = "result-search-text-field-result-card"
+
 /** Tag that identifies a [ResultSearchTextField]'s "dismiss" button for testing purposes. */
 @InternalTimelineApi const val DismissButtonTag = "result-search-text-field-dismiss-button"
 
@@ -338,7 +341,7 @@ private fun ResultCard(
 ) {
   Card(
     onClick,
-    modifier,
+    modifier.testTag(ResultCardTag),
     shape = if (isLastOne) SearchTextFieldDefaults.shape.bottom else RectangleShape,
     colors = CardDefaults.cardColors(containerColor = SearchTextFieldDefaults.containerColor),
     elevation =

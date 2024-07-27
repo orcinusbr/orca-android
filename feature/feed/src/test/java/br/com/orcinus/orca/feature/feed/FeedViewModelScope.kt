@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.feature.feed
 
 import android.app.Application
+import androidx.lifecycle.viewModelScope
 import androidx.test.core.app.ApplicationProvider
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.post.figure.gallery.disposition.Disposition
@@ -29,6 +30,7 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
@@ -71,6 +73,7 @@ internal inline fun runFeedViewModelTest(crossinline body: suspend FeedViewModel
       FeedViewModel(
         application,
         coroutineContext,
+        instance.profileSearcher,
         feedProvider,
         instance.postProvider,
         userID,
@@ -86,6 +89,7 @@ internal inline fun runFeedViewModelTest(crossinline body: suspend FeedViewModel
     try {
       FeedViewModelScope(this, viewModel, postID, postPreviewFlow).body()
     } finally {
+      viewModel.viewModelScope.cancel()
       instanceRule.after()
     }
   }

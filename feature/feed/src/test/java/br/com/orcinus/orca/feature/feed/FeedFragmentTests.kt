@@ -42,7 +42,7 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class FeedFragmentTests {
-  @get:Rule val injectorRule = InjectorTestRule { register<FeedModule>(TestFeedModule) }
+  @get:Rule val injectorRule = InjectorTestRule { register<FeedModule>(SampleFeedModule) }
   @get:Rule val sampleInstanceRule = SampleInstanceTestRule(Instance.sample)
   @get:Rule val composeRule = createEmptyComposeRule()
 
