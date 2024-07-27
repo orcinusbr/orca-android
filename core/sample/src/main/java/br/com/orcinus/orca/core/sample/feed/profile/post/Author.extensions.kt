@@ -35,6 +35,22 @@ private val christianSampleAuthorID = UUID.randomUUID().toString()
 private val ramboSampleAuthorID = UUID.randomUUID().toString()
 
 /**
+ * Creates sample [Author]s.
+ *
+ * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
+ *   [Author]s' avatars will be loaded from a [SampleImageSource].
+ */
+fun Author.Companion.createSamples(
+  avatarLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
+): List<Author> {
+  return listOf(
+    createSample(avatarLoaderProvider),
+    createChristianSample(avatarLoaderProvider),
+    createRamboSample(avatarLoaderProvider)
+  )
+}
+
+/**
  * Creates a sample [Author].
  *
  * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the

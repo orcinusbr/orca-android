@@ -34,12 +34,13 @@ class FeedFragment internal constructor() : ComposableFragment() {
     viewModels<FeedViewModel> {
       FeedViewModel.createFactory(
         application,
+        module.profileSearcher(),
         module.feedProvider(),
         module.postProvider(),
         userID,
         onLinkClick = boundary::navigateTo,
         onThumbnailClickListener = { postID, entrypointIndex, secondary, entrypoint ->
-          module.boundary().navigateToGallery(postID, entrypointIndex, secondary, entrypoint)
+          boundary.navigateToGallery(postID, entrypointIndex, secondary, entrypoint)
         }
       )
     }
@@ -55,7 +56,6 @@ class FeedFragment internal constructor() : ComposableFragment() {
   override fun Content() {
     Feed(
       viewModel,
-      onSearch = { boundary.navigateToSearch(navigator) },
       onPostClick = { boundary.navigateToPostDetails(navigator, backStack, it) },
       onComposition = { boundary.navigateToComposer() }
     )

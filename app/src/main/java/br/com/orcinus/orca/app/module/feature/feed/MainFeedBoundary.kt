@@ -25,15 +25,11 @@ import br.com.orcinus.orca.feature.composer.ComposerActivity
 import br.com.orcinus.orca.feature.feed.FeedBoundary
 import br.com.orcinus.orca.feature.gallery.GalleryActivity
 import br.com.orcinus.orca.feature.postdetails.PostDetailsFragment
-import br.com.orcinus.orca.feature.search.SearchActivity
 import br.com.orcinus.orca.platform.navigation.BackStack
 import br.com.orcinus.orca.platform.navigation.Navigator
 import java.net.URI
 
 internal class MainFeedBoundary(private val context: Context) : FeedBoundary {
-  override fun navigateToSearch(navigator: Navigator) {
-    SearchActivity.start(context)
-  }
 
   override fun navigateTo(uri: URI) {
     context.browseTo(uri)

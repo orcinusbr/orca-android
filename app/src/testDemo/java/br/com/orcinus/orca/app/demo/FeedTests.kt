@@ -30,11 +30,10 @@ import br.com.orcinus.orca.composite.timeline.test.post.performScrollToPostPrevi
 import br.com.orcinus.orca.composite.timeline.test.post.performScrollToPostPreviewWithLinkCard
 import br.com.orcinus.orca.composite.timeline.test.refresh.assertIsNotInProgress
 import br.com.orcinus.orca.core.instance.Instance
+import br.com.orcinus.orca.core.sample.feed.profile.account.sample
 import br.com.orcinus.orca.feature.composer.ComposerActivity
 import br.com.orcinus.orca.feature.feed.FeedFloatingActionButtonTag
-import br.com.orcinus.orca.feature.feed.test.onSearchAction
 import br.com.orcinus.orca.feature.gallery.GalleryActivity
-import br.com.orcinus.orca.feature.search.SearchActivity
 import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.platform.intents.test.intendBrowsingTo
 import br.com.orcinus.orca.platform.intents.test.intendStartingOf
@@ -48,11 +47,6 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 internal class FeedTests {
   @get:Rule val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
-
-  @Test
-  fun navigatesToSearch() {
-    intendStartingOf<SearchActivity> { composeRule.onSearchAction().performClick() }
-  }
 
   @Test
   fun refreshes() {

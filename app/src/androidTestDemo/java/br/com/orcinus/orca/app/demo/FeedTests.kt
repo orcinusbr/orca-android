@@ -15,17 +15,26 @@
 
 package br.com.orcinus.orca.app.demo
 
+import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
 import assertk.assertThat
 import br.com.orcinus.orca.composite.timeline.test.onTimeline
 import br.com.orcinus.orca.composite.timeline.test.post.figure.gallery.thumbnail.onThumbnails
 import br.com.orcinus.orca.composite.timeline.test.post.performScrollToPostPreviewWithGalleryPreview
+import br.com.orcinus.orca.composite.timeline.test.search.field.isResultCard
+import br.com.orcinus.orca.composite.timeline.test.search.field.onResultCard
+import br.com.orcinus.orca.core.feed.profile.account.Account
+import br.com.orcinus.orca.core.sample.feed.profile.account.sample
 import br.com.orcinus.orca.feature.feed.FeedFragment
+import br.com.orcinus.orca.feature.feed.test.onSearchAction
 import br.com.orcinus.orca.feature.gallery.test.ui.onCloseActionButton
 import br.com.orcinus.orca.feature.gallery.test.ui.onPager
 import br.com.orcinus.orca.feature.gallery.test.ui.performScrollToEachPage
+import br.com.orcinus.orca.platform.autos.test.kit.input.text.onSearchTextField
 import br.com.orcinus.orca.platform.navigation.test.isAt
 import br.com.orcinus.orca.platform.testing.compose.onEach
 import org.junit.Rule
@@ -33,6 +42,14 @@ import org.junit.Test
 
 internal class FeedTests {
   @get:Rule val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
+
+  @Test
+  fun searches() {
+    composeRule.onSearchAction().performClick()
+    composeRule.onSearchTextField().performTextInput("${Account.sample}")
+    @OptIn(ExperimentalTestApi::class) composeRule.waitUntilExactlyOneExists(isResultCard())
+    composeRule.onResultCard().assertIsDisplayed()
+  }
 
   @Test
   fun navigatesToGalleryAndGoesBackToFeedWhenClosingIt() {

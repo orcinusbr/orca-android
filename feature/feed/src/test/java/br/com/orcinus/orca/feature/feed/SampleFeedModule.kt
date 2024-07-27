@@ -17,11 +17,12 @@ package br.com.orcinus.orca.feature.feed
 
 import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.platform.core.sample
-import br.com.orcinus.orca.std.injector.module.injection.injectionOf
+import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 
-internal object TestFeedModule :
+internal object SampleFeedModule :
   FeedModule(
-    injectionOf { Instance.sample.feedProvider },
-    injectionOf { Instance.sample.postProvider },
-    injectionOf { NoOpFeedBoundary() }
+    lazyInjectionOf { Instance.sample.profileSearcher },
+    lazyInjectionOf { Instance.sample.feedProvider },
+    lazyInjectionOf { Instance.sample.postProvider },
+    lazyInjectionOf { NoOpFeedBoundary() }
   )

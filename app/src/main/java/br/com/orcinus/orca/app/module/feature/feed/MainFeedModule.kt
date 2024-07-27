@@ -24,6 +24,7 @@ import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 
 internal class MainFeedModule(context: Context) :
   FeedModule(
+    lazyInjectionOf { Injector.from<CoreModule>().instanceProvider().provide().profileSearcher },
     lazyInjectionOf { Injector.from<CoreModule>().instanceProvider().provide().feedProvider },
     lazyInjectionOf { Injector.from<CoreModule>().instanceProvider().provide().postProvider },
     lazyInjectionOf { MainFeedBoundary(context) }

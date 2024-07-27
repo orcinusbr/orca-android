@@ -16,6 +16,8 @@
 package br.com.orcinus.orca.feature.feed
 
 import androidx.annotation.VisibleForTesting
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -26,18 +28,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import br.com.orcinus.orca.composite.timeline.Timeline
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.refresh.Refresh
+import br.com.orcinus.orca.composite.timeline.search.Searchable
+import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
+import br.com.orcinus.orca.platform.autos.kit.scaffold.plus
 import br.com.orcinus.orca.platform.autos.overlays.asPaddingValues
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
@@ -58,18 +65,22 @@ fun Feed(modifier: Modifier = Modifier) {
 @Composable
 internal fun Feed(
   viewModel: FeedViewModel,
-  onSearch: () -> Unit,
   onPostClick: (postID: String) -> Unit,
   onComposition: () -> Unit,
   modifier: Modifier = Modifier
 ) {
+  val searchQuery by viewModel.searchQueryFlow.collectAsState()
+  val searchResultsLoadable by
+    viewModel.searchResultsLoadableFlow.collectAsState(ListLoadable.Loading())
   var isTimelineRefreshing by remember { mutableStateOf(false) }
   val postPreviewsLoadable by
     viewModel.postPreviewsLoadableFlow.collectAsState(ListLoadable.Loading())
 
   Feed(
+    searchQuery,
+    onSearchQueryChange = viewModel::search,
+    searchResultsLoadable,
     postPreviewsLoadable,
-    onSearch,
     isTimelineRefreshing,
     onTimelineRefresh = {
       isTimelineRefreshing = true
@@ -92,8 +103,10 @@ internal fun Feed(
   onFavorite: (postID: String) -> Unit = {}
 ) {
   Feed(
+    searchQuery = "",
+    onSearchQueryChange = {},
+    searchResultsLoadable = ListLoadable.Empty(),
     postPreviewsLoadable,
-    onSearch = {},
     isTimelineRefreshing = false,
     onTimelineRefresh = {},
     onFavorite,
@@ -109,8 +122,10 @@ internal fun Feed(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun Feed(
+  searchQuery: String,
+  onSearchQueryChange: (searchQuery: String) -> Unit,
+  searchResultsLoadable: ListLoadable<ProfileSearchResult>,
   postPreviewsLoadable: ListLoadable<PostPreview>,
-  onSearch: () -> Unit,
   isTimelineRefreshing: Boolean,
   onTimelineRefresh: () -> Unit,
   onFavorite: (postID: String) -> Unit,
@@ -123,49 +138,62 @@ private fun Feed(
 ) {
   val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
 
-  Scaffold(
-    modifier,
-    topAppBar = {
-      @OptIn(ExperimentalMaterial3Api::class)
-      TopAppBar(
-        title = { AutoSizeText(stringResource(R.string.feature_feed)) },
-        actions = {
-          HoverableIconButton(onClick = onSearch, Modifier.testTag(FeedSearchActionTag)) {
-            Icon(
-              AutosTheme.iconography.search.asImageVector,
-              contentDescription = stringResource(R.string.feature_feed_search)
-            )
-          }
-        },
-        scrollBehavior = topAppBarScrollBehavior
-      )
-    },
-    floatingActionButton = {
-      if (postPreviewsLoadable.isLoaded) {
-        FloatingActionButton(
-          onClick = onComposition,
-          Modifier.testTag(FeedFloatingActionButtonTag)
-        ) {
-          Icon(
-            AutosTheme.iconography.compose.filled.asImageVector,
-            contentDescription = stringResource(R.string.feature_feed_compose)
+  Searchable(TopAppBarDefaults.idleContainerColor, Modifier.statusBarsPadding()) {
+    val blurRadius by contentBlurRadiusAsState
+
+    Scaffold(
+      modifier,
+      topAppBar = {
+        Replaceable(searchQuery, onSearchQueryChange, searchResultsLoadable) {
+          @OptIn(ExperimentalMaterial3Api::class)
+          TopAppBar(
+            title = { AutoSizeText(stringResource(R.string.feature_feed)) },
+            actions = {
+              HoverableIconButton(onClick = ::show, Modifier.testTag(FeedSearchActionTag)) {
+                Icon(
+                  AutosTheme.iconography.search.asImageVector,
+                  contentDescription = stringResource(R.string.feature_feed_search)
+                )
+              }
+            },
+            scrollBehavior = topAppBarScrollBehavior
           )
         }
+      },
+      floatingActionButton = {
+        if (postPreviewsLoadable.isLoaded) {
+          FloatingActionButton(
+            onClick = {
+              if (!containsSearchResults) {
+                onComposition()
+              }
+            },
+            Modifier.blur(blurRadius, BlurredEdgeTreatment.Unbounded)
+              .testTag(FeedFloatingActionButtonTag)
+          ) {
+            Icon(
+              AutosTheme.iconography.compose.filled.asImageVector,
+              contentDescription = stringResource(R.string.feature_feed_compose)
+            )
+          }
+        }
       }
-    }
-  ) {
-    navigable {
-      Timeline(
-        postPreviewsLoadable,
-        onFavorite,
-        onRepost,
-        onShare,
-        onPostClick,
-        onNext,
-        Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-        contentPadding = AutosTheme.overlays.fab.asPaddingValues,
-        refresh = Refresh(isTimelineRefreshing, onTimelineRefresh)
-      )
+    ) {
+      navigable(Modifier.blur(blurRadius)) {
+        Timeline(
+          postPreviewsLoadable,
+          onFavorite,
+          onRepost,
+          onShare,
+          onPostClick,
+          onNext,
+          Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+          contentPadding =
+            PaddingValues(top = searchTextFieldLayoutHeight) +
+              AutosTheme.overlays.fab.asPaddingValues,
+          refresh = Refresh(isTimelineRefreshing, onTimelineRefresh)
+        )
+      }
     }
   }
 }

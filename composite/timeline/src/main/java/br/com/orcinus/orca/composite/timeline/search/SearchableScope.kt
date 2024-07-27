@@ -92,12 +92,12 @@ internal constructor(
   private val searchTextFieldLayoutHeightAnimatable =
     Animatable(initialValue = 0.dp, Dp.VectorConverter)
 
-  /** Whether the search currently being performed has yielded any results. */
-  internal var containsSearchResults by mutableStateOf(false)
-    private set
-
   /** Whether the [ResultSearchTextField] is currently being shown. */
   var isSearching by mutableStateOf(false)
+    private set
+
+  /** Whether the search currently being performed has yielded any results. */
+  var containsSearchResults by mutableStateOf(false)
     private set
 
   /** Height of the [SearchTextField], or zeroed in case search isn't being performed. */

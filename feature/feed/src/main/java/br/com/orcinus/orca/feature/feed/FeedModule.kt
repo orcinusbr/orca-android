@@ -17,11 +17,13 @@ package br.com.orcinus.orca.feature.feed
 
 import br.com.orcinus.orca.core.feed.FeedProvider
 import br.com.orcinus.orca.core.feed.profile.post.provider.PostProvider
+import br.com.orcinus.orca.core.feed.profile.search.ProfileSearcher
 import br.com.orcinus.orca.std.injector.module.Inject
 import br.com.orcinus.orca.std.injector.module.Module
 import br.com.orcinus.orca.std.injector.module.injection.Injection
 
 open class FeedModule(
+  @Inject internal val profileSearcher: Injection<ProfileSearcher>,
   @Inject internal val feedProvider: Injection<FeedProvider>,
   @Inject internal val postProvider: Injection<PostProvider>,
   @Inject internal val boundary: Injection<FeedBoundary>

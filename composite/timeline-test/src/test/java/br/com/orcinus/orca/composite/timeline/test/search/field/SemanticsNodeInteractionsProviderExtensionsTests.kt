@@ -15,10 +15,23 @@
 
 package br.com.orcinus.orca.composite.timeline.test.search.field
 
+import androidx.compose.ui.test.assertAll
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
+import br.com.orcinus.orca.core.feed.profile.account.Account
+import br.com.orcinus.orca.core.feed.profile.post.Author
+import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
+import br.com.orcinus.orca.core.sample.feed.profile.account.sample
+import br.com.orcinus.orca.core.sample.feed.profile.post.createSamples
+import br.com.orcinus.orca.platform.autos.test.isDisplayed
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.platform.core.sample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
+import com.jeanbarrossilva.loadable.list.ListLoadable
+import com.jeanbarrossilva.loadable.list.serializableListOf
+import com.jeanbarrossilva.loadable.list.toSerializableList
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -34,5 +47,52 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
       .apply { setContent { AutosTheme { ResultSearchTextField() } } }
       .onDismissButton()
       .assertIsDisplayed()
+  }
+
+  @Test
+  fun findsResultCard() {
+    composeRule
+      .apply {
+        setContent {
+          AutosTheme {
+            ResultSearchTextField(
+              query = "${Account.sample}",
+              resultsLoadable =
+                ListLoadable.Populated(serializableListOf(ProfileSearchResult.sample))
+            )
+          }
+        }
+      }
+      .onResultCard()
+      .assertIsDisplayed()
+  }
+
+  @Test
+  fun findsResultCards() {
+    composeRule
+      .apply {
+        setContent {
+          AutosTheme {
+            ResultSearchTextField(
+              resultsLoadable =
+                ListLoadable.Populated(
+                  Author.createSamples(ComposableImageLoader.Provider.sample)
+                    .map {
+                      ProfileSearchResult(
+                        it.id,
+                        it.account,
+                        it.avatarLoader,
+                        it.name,
+                        it.profileURI
+                      )
+                    }
+                    .toSerializableList()
+                )
+            )
+          }
+        }
+      }
+      .onResultCards()
+      .assertAll(isDisplayed())
   }
 }

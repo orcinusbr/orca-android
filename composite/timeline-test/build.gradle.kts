@@ -33,6 +33,8 @@ dependencies {
 
   api(libs.android.compose.ui.test.junit)
 
+  testImplementation(project(":core:sample"))
+  testImplementation(project(":platform:autos-test"))
   testImplementation(libs.android.compose.ui.test.manifest)
   testImplementation(libs.assertk)
   testImplementation(libs.robolectric)

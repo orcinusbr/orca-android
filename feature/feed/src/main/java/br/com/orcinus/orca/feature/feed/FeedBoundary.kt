@@ -24,8 +24,6 @@ import br.com.orcinus.orca.platform.navigation.Navigator
 import java.net.URI
 
 interface FeedBoundary {
-  fun navigateToSearch(navigator: Navigator)
-
   fun navigateTo(uri: URI)
 
   fun navigateToGallery(

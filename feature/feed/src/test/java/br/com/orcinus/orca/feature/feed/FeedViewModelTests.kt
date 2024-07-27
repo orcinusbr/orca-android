@@ -17,16 +17,34 @@ package br.com.orcinus.orca.feature.feed
 
 import app.cash.turbine.test
 import assertk.assertThat
+import assertk.assertions.containsExactly
 import assertk.assertions.isNotEqualTo
 import assertk.assertions.prop
 import br.com.orcinus.orca.composite.timeline.stat.details.StatsDetails
+import br.com.orcinus.orca.core.feed.profile.account.Account
+import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
+import br.com.orcinus.orca.core.sample.feed.profile.account.sample
+import br.com.orcinus.orca.platform.core.sample
+import com.jeanbarrossilva.loadable.list.ListLoadable
 import kotlin.test.Test
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.map
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class FeedViewModelTests {
+  @Test
+  fun searches() {
+    runFeedViewModelTest {
+      viewModel.search("${Account.sample}")
+      viewModel.searchResultsLoadableFlow
+        .filterIsInstance<ListLoadable.Populated<ProfileSearchResult>>()
+        .map { it.content }
+        .test { assertThat(awaitItem()).containsExactly(ProfileSearchResult.sample) }
+    }
+  }
+
   @Test
   fun emitsToPostPreviewLoadableFlowWhenFavoritingOrUnfavoritingAPost() {
     runFeedViewModelTest {

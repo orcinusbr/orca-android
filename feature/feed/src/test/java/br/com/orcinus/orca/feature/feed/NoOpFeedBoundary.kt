@@ -24,7 +24,6 @@ import br.com.orcinus.orca.platform.navigation.Navigator
 import java.net.URI
 
 internal class NoOpFeedBoundary : FeedBoundary {
-  override fun navigateToSearch(navigator: Navigator) {}
 
   override fun navigateTo(uri: URI) {}
 

@@ -15,7 +15,9 @@
 
 package br.com.orcinus.orca.composite.timeline.test.search.field
 
+import androidx.compose.material3.Card
 import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.SemanticsNodeInteractionCollection
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
 
@@ -26,4 +28,24 @@ import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
  */
 fun SemanticsNodeInteractionsProvider.onDismissButton(): SemanticsNodeInteraction {
   return onNode(isDismissButton())
+}
+
+/**
+ * [SemanticsNodeInteraction] of a [ResultSearchTextField]'s result [Card].
+ *
+ * @see onResultCards
+ * @see isResultCard
+ */
+fun SemanticsNodeInteractionsProvider.onResultCard(): SemanticsNodeInteraction {
+  return onNode(isResultCard())
+}
+
+/**
+ * [SemanticsNodeInteraction] of a [ResultSearchTextField]'s result [Card]s.
+ *
+ * @see onResultCard
+ * @see isResultCard
+ */
+fun SemanticsNodeInteractionsProvider.onResultCards(): SemanticsNodeInteractionCollection {
+  return onAllNodes(isResultCard())
 }

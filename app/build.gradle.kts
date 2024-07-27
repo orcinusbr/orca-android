@@ -73,7 +73,9 @@ android {
 dependencies {
   "androidTestDemoImplementation"(project(":composite:timeline"))
   "androidTestDemoImplementation"(project(":composite:timeline-test"))
+  "androidTestDemoImplementation"(project(":feature:feed-test"))
   "androidTestDemoImplementation"(project(":feature:gallery-test"))
+  "androidTestDemoImplementation"(project(":platform:autos-test"))
   "androidTestDemoImplementation"(project(":platform:intents-test"))
   "androidTestDemoImplementation"(project(":platform:navigation-test"))
   "androidTestDemoImplementation"(project(":platform:testing"))
@@ -108,7 +110,6 @@ dependencies {
   "testDemoImplementation"(project(":composite:timeline"))
   "testDemoImplementation"(project(":composite:timeline-test"))
   "testDemoImplementation"(project(":core:sample-test"))
-  "testDemoImplementation"(project(":feature:feed-test"))
   "testDemoImplementation"(project(":feature:gallery-test"))
   "testDemoImplementation"(project(":platform:intents-test"))
   "testDemoImplementation"(project(":platform:navigation-test"))
