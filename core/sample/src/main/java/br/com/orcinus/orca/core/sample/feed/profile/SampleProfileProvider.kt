@@ -49,6 +49,10 @@ internal constructor(
     return id in ids
   }
 
+  public override fun createNonexistentProfileException(): NonexistentProfileException {
+    return NonexistentProfileException(cause = null)
+  }
+
   override suspend fun onProvide(id: String): Flow<Profile> {
     return profilesFlow.mapNotNull { profiles -> profiles.find { profile -> profile.id == id } }
   }

@@ -78,7 +78,7 @@ class SampleProfileWriter internal constructor(private val provider: SampleProfi
         profiles.replacingOnceBy(update) { profile -> profile.id == id }
       }
     } else {
-      throw ProfileProvider.NonexistentProfileException(id)
+      throw provider.createNonexistentProfileException()
     }
   }
 }

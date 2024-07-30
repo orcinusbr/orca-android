@@ -164,8 +164,9 @@ internal class ContextualMastodonInstance(
   /** [Cache] that decides how to obtain [MastodonPost]s. */
   private val postCache = Cache.of(context, name = "post-cache", postFetcher, postStorage)
 
-  override val feedProvider = MastodonFeedProvider(actorProvider, termMuter, feedPostPaginator)
-  override val profileProvider = MastodonProfileProvider(profileCache)
+  override val feedProvider =
+    MastodonFeedProvider(context, actorProvider, termMuter, feedPostPaginator)
+  override val profileProvider = MastodonProfileProvider(profileCache, context)
   override val profileSearcher = MastodonProfileSearcher(profileSearchResultsCache)
   override val postProvider = MastodonPostProvider(authenticationLock, postCache)
 }

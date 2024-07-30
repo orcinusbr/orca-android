@@ -20,9 +20,15 @@ import br.com.orcinus.orca.core.auth.Authenticator
 import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
 
 /** [AuthenticationLock] returned by [sample]. */
-private val sampleAuthenticationLock: AuthenticationLock<Authenticator> =
-  AuthenticationLock(SampleAuthenticator, SampleActorProvider)
+private object SampleAuthenticationLock : AuthenticationLock<Authenticator>() {
+  override val authenticator = SampleAuthenticator
+  override val actorProvider = SampleActorProvider
+
+  override fun createFailedAuthenticationException(): FailedAuthenticationException {
+    return FailedAuthenticationException(cause = null)
+  }
+}
 
 /** Sample [AuthenticationLock]. */
-internal val AuthenticationLock.Companion.sample
-  get() = sampleAuthenticationLock
+internal val AuthenticationLock.Companion.sample: AuthenticationLock<Authenticator>
+  get() = SampleAuthenticationLock

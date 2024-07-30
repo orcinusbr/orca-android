@@ -26,5 +26,13 @@
     <string name="core_http_authorization_sign_in">Entrar</string>
     <string name="core_http_authorization_welcome">Bem-vindo!</string>
     <string name="core_mastodon_close_tab">Fechar aba</string>
+    <string name="core_mastodon_failed_authentication_error">
+        Não foi possível autenticar. Isso pode acontecer tanto por uma falha na sua conexão com a
+        internet quanto devido a um problema no servidor do Mastodon.
+    </string>
+    <string name="core_mastodon_feed_provisioning_error">
+        O feed não pode ser carregado porque o usuário não existe.
+    </string>
+    <string name="core_mastodon_nonexistent_profile_error">Este perfil não existe.</string>
     <string name="core_mastodon_share">Compartilhar</string>
 </resources>

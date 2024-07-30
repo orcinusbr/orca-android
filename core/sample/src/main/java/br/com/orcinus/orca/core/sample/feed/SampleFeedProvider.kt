@@ -45,13 +45,17 @@ internal class SampleFeedProvider(
   /** [Flow] with the [Post]s to be provided in the feed. */
   private val postsFlow = postProvider.postsFlow.asSharedFlow()
 
-  override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
-    return postsFlow.map { posts ->
-      posts.chunked(SAMPLE_POSTS_PER_PAGE).getOrElse(page) { posts.takeLast(1) }
-    }
+  override fun createNonexistentUserException(): NonexistentUserException {
+    return NonexistentUserException(cause = null)
   }
 
   override suspend fun containsUser(userID: String): Boolean {
     return userID == Profile.createSample(postProvider, profileAvatarLoaderProvider).id
+  }
+
+  override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
+    return postsFlow.map { posts ->
+      posts.chunked(SAMPLE_POSTS_PER_PAGE).getOrElse(page) { posts.takeLast(1) }
+    }
   }
 }

@@ -36,6 +36,10 @@ internal class FeedProviderTests {
       object : FeedProvider() {
         override val termMuter = SampleTermMuter()
 
+        override fun createNonexistentUserException(): NonexistentUserException {
+          return NonexistentUserException(cause = null)
+        }
+
         override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
           return emptyFlow()
         }
@@ -55,12 +59,16 @@ internal class FeedProviderTests {
       object : FeedProvider() {
         override val termMuter = SampleTermMuter()
 
-        override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
-          return emptyFlow()
-        }
-
         override suspend fun containsUser(userID: String): Boolean {
           return true
+        }
+
+        override fun createNonexistentUserException(): NonexistentUserException {
+          return NonexistentUserException(cause = null)
+        }
+
+        override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
+          return emptyFlow()
         }
       }
     assertFailsWith<IndexOutOfBoundsException> {
@@ -74,12 +82,16 @@ internal class FeedProviderTests {
       object : FeedProvider() {
         override val termMuter = SampleTermMuter()
 
-        override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
-          return flowOf(Posts.withSamples)
-        }
-
         override suspend fun containsUser(userID: String): Boolean {
           return true
+        }
+
+        override fun createNonexistentUserException(): NonexistentUserException {
+          return NonexistentUserException(cause = null)
+        }
+
+        override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
+          return flowOf(Posts.withSamples)
         }
       }
     runTest {
@@ -94,12 +106,16 @@ internal class FeedProviderTests {
       object : FeedProvider() {
         override val termMuter = termMuter
 
-        override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
-          return flowOf(Posts.withSamples.take(1))
-        }
-
         override suspend fun containsUser(userID: String): Boolean {
           return true
+        }
+
+        override fun createNonexistentUserException(): NonexistentUserException {
+          return NonexistentUserException(cause = null)
+        }
+
+        override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
+          return flowOf(Posts.withSamples.take(1))
         }
       }
     runTest {
