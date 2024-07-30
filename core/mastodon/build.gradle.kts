@@ -54,7 +54,6 @@ dependencies {
   implementation(project(":composite:timeline"))
   implementation(project(":core:sample"))
   implementation(project(":ext:coroutines"))
-  implementation(project(":ext:reflection"))
   implementation(project(":ext:uri"))
   implementation(project(":platform:autos"))
   implementation(project(":platform:cache"))
