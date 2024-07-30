@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.i18n
+package br.com.orcinus.orca.platform.autos.i18n
 
 import android.os.LocaleList
 import assertk.assertThat
