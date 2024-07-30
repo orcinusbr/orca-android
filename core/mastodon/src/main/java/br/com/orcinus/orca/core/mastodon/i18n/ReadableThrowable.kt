@@ -21,13 +21,13 @@ import androidx.annotation.StringRes
 import java.util.Locale
 
 /**
- * [Exception] that defines a [Locale]-specific message which translates the cause of an issue to
- * non-technical vocabulary for non-engineers to be able to understand plainly what has happened and
- * (possibly) take action regarding the problem.
+ * [Throwable] that defines a [Locale]-specific message which explains an issue in non-technical
+ * vocabulary for non-engineers to be able to understand plainly what has happened and (possibly)
+ * take action regarding the problem.
  *
  * All [Exception]s directly thrown by core structures in the Mastodon variant should have a
- * [ReadableException] as a [cause] as a mean to provide a description of the occurrence in all
- * supported languages. Such thrown [Exception]s are intended to be caught and have their [cause]s
+ * [ReadableThrowable] as a [cause] as a mean to provide a description of the occurrence in all
+ * supported languages. Such [Exception]s are intended to be caught and have their [cause]s
  * presented to the user in the UI, explained by the localized version of the message.
  *
  * @property context [Context] from which default and localized messages are to be obtained.
@@ -47,10 +47,10 @@ import java.util.Locale
  * @see message
  * @see getLocalizedMessage
  */
-internal class ReadableException(
+internal class ReadableThrowable(
   private val context: Context,
   @StringRes private val messageResourceID: Int
-) : Exception() {
+) : Throwable() {
   override val message
     @Throws(IllegalStateException::class, Resources.NotFoundException::class)
     get() = context.getDefaultString(messageResourceID)

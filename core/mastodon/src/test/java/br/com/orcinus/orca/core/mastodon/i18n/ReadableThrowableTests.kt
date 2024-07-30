@@ -25,28 +25,28 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class ReadableExceptionTests {
+internal class ReadableThrowableTests {
   @Test
   fun messageIsDefaultStringInDefaultLocale() {
-    assertThat(ReadableException(context, R.string.default_string).message).isEqualTo("0")
+    assertThat(ReadableThrowable(context, R.string.default_string).message).isEqualTo("0")
   }
 
   @Test
   fun messageIsDefaultStringInNonDefaultLocale() {
     val nonDefaultLocale = Locale.getAvailableLocales().first { it != Locale.getDefault() }
-    assertThat(ReadableException(context.at(nonDefaultLocale), R.string.default_string).message)
+    assertThat(ReadableThrowable(context.at(nonDefaultLocale), R.string.default_string).message)
       .isEqualTo("0")
   }
 
   @Test
   fun localizedMessageIsLocalizedInDefaultLocale() {
-    assertThat(ReadableException(context, R.string.default_string).localizedMessage).isEqualTo("0")
+    assertThat(ReadableThrowable(context, R.string.default_string).localizedMessage).isEqualTo("0")
   }
 
   @Test
   fun localizedMessageIsLocalizedInNonDefaultLocale() {
     assertThat(
-        ReadableException(context.at(Locale.forLanguageTag("pt-BR")), R.string.default_string)
+        ReadableThrowable(context.at(Locale.forLanguageTag("pt-BR")), R.string.default_string)
           .localizedMessage
       )
       .isEqualTo("1")

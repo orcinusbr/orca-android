@@ -19,7 +19,7 @@ import android.content.Context
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.ProfileProvider
 import br.com.orcinus.orca.core.mastodon.R
-import br.com.orcinus.orca.core.mastodon.i18n.ReadableException
+import br.com.orcinus.orca.core.mastodon.i18n.ReadableThrowable
 import br.com.orcinus.orca.platform.cache.Cache
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -44,7 +44,7 @@ internal constructor(private val cache: Cache<Profile>, private val context: Con
 
   override fun createNonexistentProfileException(): NonexistentProfileException {
     return NonexistentProfileException(
-      cause = ReadableException(context, R.string.core_mastodon_nonexistent_profile_error)
+      cause = ReadableThrowable(context, R.string.core_mastodon_nonexistent_profile_error)
     )
   }
 }

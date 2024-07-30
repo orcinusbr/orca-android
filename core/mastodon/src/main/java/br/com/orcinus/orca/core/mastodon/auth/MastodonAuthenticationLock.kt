@@ -20,7 +20,7 @@ import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.mastodon.R
 import br.com.orcinus.orca.core.mastodon.auth.authentication.MastodonAuthenticator
-import br.com.orcinus.orca.core.mastodon.i18n.ReadableException
+import br.com.orcinus.orca.core.mastodon.i18n.ReadableThrowable
 
 /**
  * [AuthenticationLock] whose [authenticator] authenticates via the Mastodon API.
@@ -35,7 +35,7 @@ class MastodonAuthenticationLock(
 ) : AuthenticationLock<MastodonAuthenticator>() {
   override fun createFailedAuthenticationException(): FailedAuthenticationException {
     return FailedAuthenticationException(
-      cause = ReadableException(context, R.string.core_mastodon_failed_authentication_error)
+      cause = ReadableThrowable(context, R.string.core_mastodon_failed_authentication_error)
     )
   }
 }

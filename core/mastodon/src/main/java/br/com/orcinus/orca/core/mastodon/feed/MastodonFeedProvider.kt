@@ -22,7 +22,7 @@ import br.com.orcinus.orca.core.feed.FeedProvider
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.TermMuter
 import br.com.orcinus.orca.core.mastodon.R
-import br.com.orcinus.orca.core.mastodon.i18n.ReadableException
+import br.com.orcinus.orca.core.mastodon.i18n.ReadableThrowable
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -48,7 +48,7 @@ internal constructor(
 
   override fun createNonexistentUserException(): NonexistentUserException {
     return NonexistentUserException(
-      cause = ReadableException(context, R.string.core_mastodon_feed_provisioning_error)
+      cause = ReadableThrowable(context, R.string.core_mastodon_feed_provisioning_error)
     )
   }
 
