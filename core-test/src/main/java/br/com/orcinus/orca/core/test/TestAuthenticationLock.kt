@@ -27,9 +27,11 @@ import br.com.orcinus.orca.core.auth.actor.Actor
  *   [unauthenticated][Actor.Unauthenticated] or [authenticated][Actor.Authenticated].
  */
 @Suppress("FunctionName")
-fun TestAuthenticationLock(
-  actorProvider: TestActorProvider = TestActorProvider(),
-  authenticator: TestAuthenticator = TestAuthenticator(actorProvider = actorProvider)
-): AuthenticationLock<TestAuthenticator> {
-  return AuthenticationLock(authenticator, actorProvider)
+class TestAuthenticationLock(
+  override val actorProvider: TestActorProvider = TestActorProvider(),
+  override val authenticator: TestAuthenticator = TestAuthenticator(actorProvider = actorProvider)
+) : AuthenticationLock<TestAuthenticator>() {
+  override fun createFailedAuthenticationException(): FailedAuthenticationException {
+    return FailedAuthenticationException(cause = null)
+  }
 }

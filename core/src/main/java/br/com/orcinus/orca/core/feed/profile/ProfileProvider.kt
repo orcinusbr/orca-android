@@ -23,11 +23,9 @@ abstract class ProfileProvider @InternalCoreApi constructor() {
   /**
    * [IllegalArgumentException] thrown when a [Profile] that doesn't exist is requested to be
    * provided.
-   *
-   * @param id ID of the [Profile] requested to be provided.
    */
-  class NonexistentProfileException @InternalCoreApi constructor(id: String) :
-    IllegalArgumentException("Profile identified as \"$id\" doesn't exist.")
+  class NonexistentProfileException @InternalCoreApi constructor(override val cause: Throwable?) :
+    IllegalArgumentException("This profile doesn't exist.")
 
   /**
    * Gets the [Profile] identified as [id].
@@ -37,7 +35,7 @@ abstract class ProfileProvider @InternalCoreApi constructor() {
    * @see Profile.id
    */
   suspend fun provide(id: String): Flow<Profile> {
-    return if (contains(id)) onProvide(id) else throw NonexistentProfileException(id)
+    return if (contains(id)) onProvide(id) else throw createNonexistentProfileException()
   }
 
   /**
@@ -54,4 +52,7 @@ abstract class ProfileProvider @InternalCoreApi constructor() {
    * @see Profile.id
    */
   protected abstract suspend fun onProvide(id: String): Flow<Profile>
+
+  /** Creates a variant-specific [NonexistentProfileException]. */
+  protected abstract fun createNonexistentProfileException(): NonexistentProfileException
 }

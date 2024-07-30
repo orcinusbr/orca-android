@@ -26,6 +26,14 @@
     <string name="core_http_authorization_sign_in">Sign in</string>
     <string name="core_http_authorization_welcome">Welcome!</string>
     <string name="core_mastodon_close_tab">Close tab</string>
+    <string name="core_mastodon_failed_authentication_error">
+        Authentication has failed. This can happen due to either a loss in your internet connection
+        or a failure in the Mastodon server.
+    </string>
+    <string name="core_mastodon_feed_provisioning_error">
+        Feed cannot be loaded because the user doesn\'t exist.
+    </string>
+    <string name="core_mastodon_nonexistent_profile_error">This profile doesn\'t exist.</string>
     <string name="core_mastodon_share">Share</string>
     <string
         name="redirect_uri"

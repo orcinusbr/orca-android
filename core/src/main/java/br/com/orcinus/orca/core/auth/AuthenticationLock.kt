@@ -32,17 +32,10 @@ typealias SomeAuthenticationLock = AuthenticationLock<*>
 /**
  * Ensures that operations are only performed by an [authenticated][Actor.Authenticated] [Actor].
  *
- * @param A [Authenticator] to authenticate the [Actor] with.
- * @param authenticator [Authenticator] through which the [Actor] will be requested to be
- *   [authenticated][Actor.Authenticated].
- * @param actorProvider [ActorProvider] whose provided [Actor] will be ensured to be
- *   [authenticated][Actor.Authenticated].
- * @see scheduleUnlock
+ * @param T [Authenticator] to authenticate the [Actor] with.
  * @see scheduleUnlock
  */
-class AuthenticationLock<A : Authenticator>
-@InternalCoreApi
-constructor(private val authenticator: A, private val actorProvider: ActorProvider) {
+abstract class AuthenticationLock<T : Authenticator> @InternalCoreApi constructor() {
   /**
    * [MutableStateFlow] to which [Boolean]s that indicate whether this [AuthenticationLock] has
    * ongoing unlocks are emitted.
@@ -56,6 +49,18 @@ constructor(private val authenticator: A, private val actorProvider: ActorProvid
   private val schedule = hashMapOf<SomeOnUnlockListener, Continuation<*>>()
 
   /**
+   * [Authenticator] through which the [Actor] will be requested to be
+   * [authenticated][Actor.Authenticated].
+   */
+  protected abstract val authenticator: T
+
+  /**
+   * [ActorProvider] whose provided [Actor] will be ensured to be
+   * [authenticated][Actor.Authenticated].
+   */
+  protected abstract val actorProvider: ActorProvider
+
+  /**
    * Result of a successful unlock.
    *
    * @param R Type of the [value].
@@ -65,8 +70,8 @@ constructor(private val authenticator: A, private val actorProvider: ActorProvid
   private class Unlock<R>(val actor: Actor.Authenticated, val value: R)
 
   /** [IllegalStateException] thrown if authentication fails. */
-  class FailedAuthenticationException internal constructor() :
-    IllegalStateException("Could not authenticate properly.")
+  class FailedAuthenticationException @InternalCoreApi constructor(override val cause: Throwable?) :
+    IllegalStateException("Authentication has failed.")
 
   /**
    * Listens to an unlock.
@@ -103,6 +108,9 @@ constructor(private val authenticator: A, private val actorProvider: ActorProvid
     val isActive = activenessFlow.value
     return if (isActive) awaitUnlock(listener) else requestUnlock(listener)
   }
+
+  /** Creates a variant-specific [FailedAuthenticationException]. */
+  protected abstract fun createFailedAuthenticationException(): FailedAuthenticationException
 
   /**
    * Suspends until the [Continuation] associated to the given [listener] is resumed with the value
@@ -167,7 +175,7 @@ constructor(private val authenticator: A, private val actorProvider: ActorProvid
       if (actor is Actor.Authenticated) {
         listener.onUnlock(actor)
       } else {
-        throw FailedAuthenticationException()
+        throw createFailedAuthenticationException()
       }
     return Unlock(actor, returned)
   }

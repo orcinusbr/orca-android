@@ -29,11 +29,9 @@ abstract class FeedProvider @InternalCoreApi constructor() {
 
   /**
    * [IllegalArgumentException] thrown when a user that doesn't exist is requested to be provided.
-   *
-   * @param id ID of the user requested to be provided.
    */
-  class NonexistentUserException internal constructor(id: String) :
-    IllegalArgumentException("User identified as \"$id\" doesn't exist.")
+  class NonexistentUserException @InternalCoreApi constructor(override val cause: Throwable?) :
+    IllegalArgumentException("Feed cannot be loaded because the user doesn't exist.")
 
   /**
    * Provides the feed of the user identified as [userID].
@@ -51,19 +49,22 @@ abstract class FeedProvider @InternalCoreApi constructor() {
   }
 
   /**
+   * Whether a user identified as [userID] exists.
+   *
+   * @param userID ID of the user whose existence will be checked.
+   */
+  protected abstract suspend fun containsUser(userID: String): Boolean
+
+  /** Creates a variant-specific [NonexistentUserException]. */
+  protected abstract fun createNonexistentUserException(): NonexistentUserException
+
+  /**
    * Provides the feed of the user identified as [userID].
    *
    * @param userID ID of the user whose feed will be provided.
    * @param page Index of the [Post]s that compose the feed.
    */
   protected abstract suspend fun onProvide(userID: String, page: Int): Flow<List<Post>>
-
-  /**
-   * Whether a user identified as [userID] exists.
-   *
-   * @param userID ID of the user whose existence will be checked.
-   */
-  protected abstract suspend fun containsUser(userID: String): Boolean
 
   /**
    * Ensures that a user identified as [userID] exists.
@@ -73,7 +74,7 @@ abstract class FeedProvider @InternalCoreApi constructor() {
    */
   private suspend fun ensureContainsUser(userID: String) {
     if (!containsUser(userID)) {
-      throw NonexistentUserException(userID)
+      throw createNonexistentUserException()
     }
   }
 

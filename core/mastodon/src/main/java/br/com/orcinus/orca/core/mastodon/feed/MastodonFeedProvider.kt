@@ -15,33 +15,44 @@
 
 package br.com.orcinus.orca.core.mastodon.feed
 
+import android.content.Context
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.feed.FeedProvider
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.TermMuter
+import br.com.orcinus.orca.core.mastodon.R
+import br.com.orcinus.orca.core.mastodon.i18n.ReadableException
 import kotlinx.coroutines.flow.Flow
 
 /**
  * [FeedProvider] that requests the feed's [Post]s to the API.
  *
- * @param actorProvider [ActorProvider] by which the current [Actor] will be provided.
- * @param postPaginator [MastodonFeedPaginator] that will paginate through the [Post]s in the feed.
+ * @property actorProvider [ActorProvider] by which the current [Actor] will be provided.
+ * @property postPaginator [MastodonFeedPaginator] that will paginate through the [Post]s in the
+ *   feed.
  */
 class MastodonFeedProvider
 internal constructor(
+  private val context: Context,
   private val actorProvider: ActorProvider,
   override val termMuter: TermMuter,
   private val postPaginator: MastodonFeedPaginator
 ) : FeedProvider() {
-  override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
-    return postPaginator.paginateTo(page)
-  }
-
   override suspend fun containsUser(userID: String): Boolean {
     return when (actorProvider.provide()) {
       is Actor.Unauthenticated -> false
       is Actor.Authenticated -> true
     }
+  }
+
+  override fun createNonexistentUserException(): NonexistentUserException {
+    return NonexistentUserException(
+      cause = ReadableException(context, R.string.core_mastodon_feed_provisioning_error)
+    )
+  }
+
+  override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
+    return postPaginator.paginateTo(page)
   }
 }

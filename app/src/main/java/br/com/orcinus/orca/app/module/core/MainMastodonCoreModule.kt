@@ -16,8 +16,8 @@
 package br.com.orcinus.orca.app.module.core
 
 import android.content.Context
-import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.mastodon.MastodonCoreModule
+import br.com.orcinus.orca.core.mastodon.auth.MastodonAuthenticationLock
 import br.com.orcinus.orca.core.mastodon.auth.authentication.MastodonAuthenticator
 import br.com.orcinus.orca.core.mastodon.auth.authorization.MastodonAuthorizer
 import br.com.orcinus.orca.core.mastodon.instance.MastodonInstanceProvider
@@ -32,7 +32,9 @@ private val actorProvider by lazy {
 }
 private val authorizer by lazy { MastodonAuthorizer(context) }
 private val authenticator by lazy { MastodonAuthenticator(context, authorizer, actorProvider) }
-private val authenticationLock by lazy { AuthenticationLock(authenticator, actorProvider) }
+private val authenticationLock by lazy {
+  MastodonAuthenticationLock(context, authenticator, actorProvider)
+}
 private val termMuter by lazy { SharedPreferencesTermMuter(context) }
 
 private val context

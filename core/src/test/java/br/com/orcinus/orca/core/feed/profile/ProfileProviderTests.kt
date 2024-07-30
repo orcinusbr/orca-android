@@ -37,6 +37,10 @@ internal class ProfileProviderTests {
         override suspend fun onProvide(id: String): Flow<Profile> {
           return emptyFlow()
         }
+
+        override fun createNonexistentProfileException(): NonexistentProfileException {
+          return NonexistentProfileException(cause = null)
+        }
       }
     assertFailsWith<ProfileProvider.NonexistentProfileException> {
       runTest { provider.provide("🫥") }
@@ -53,6 +57,10 @@ internal class ProfileProviderTests {
 
         override suspend fun onProvide(id: String): Flow<Profile> {
           return flowOf(Profile.sample)
+        }
+
+        override fun createNonexistentProfileException(): NonexistentProfileException {
+          return NonexistentProfileException(cause = null)
         }
       }
     runTest { assertEquals(Profile.sample, provider.provide(Profile.sample.id).first()) }

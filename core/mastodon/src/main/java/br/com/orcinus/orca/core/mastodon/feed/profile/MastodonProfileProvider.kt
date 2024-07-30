@@ -15,8 +15,11 @@
 
 package br.com.orcinus.orca.core.mastodon.feed.profile
 
+import android.content.Context
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.ProfileProvider
+import br.com.orcinus.orca.core.mastodon.R
+import br.com.orcinus.orca.core.mastodon.i18n.ReadableException
 import br.com.orcinus.orca.platform.cache.Cache
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -27,7 +30,8 @@ import kotlinx.coroutines.flow.flowOf
  *
  * @param cache [Cache] of [MastodonProfile] by which [MastodonProfile]s will be obtained.
  */
-class MastodonProfileProvider internal constructor(private val cache: Cache<Profile>) :
+class MastodonProfileProvider
+internal constructor(private val cache: Cache<Profile>, private val context: Context) :
   ProfileProvider() {
   override suspend fun contains(id: String): Boolean {
     return true
@@ -36,5 +40,11 @@ class MastodonProfileProvider internal constructor(private val cache: Cache<Prof
   override suspend fun onProvide(id: String): Flow<Profile> {
     val profile = cache.get(id)
     return flowOf(profile)
+  }
+
+  override fun createNonexistentProfileException(): NonexistentProfileException {
+    return NonexistentProfileException(
+      cause = ReadableException(context, R.string.core_mastodon_nonexistent_profile_error)
+    )
   }
 }
