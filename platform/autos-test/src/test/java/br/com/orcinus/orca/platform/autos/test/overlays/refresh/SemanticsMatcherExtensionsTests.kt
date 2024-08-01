@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,23 +13,26 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.i18n
+package br.com.orcinus.orca.platform.autos.test.overlays.refresh
 
-import android.os.LocaleList
-import assertk.assertThat
-import assertk.assertions.isEqualTo
-import br.com.orcinus.orca.platform.testing.context
-import java.util.Locale
-import kotlin.test.Test
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createComposeRule
+import br.com.orcinus.orca.platform.autos.overlays.refresh.Refresh
+import br.com.orcinus.orca.platform.autos.overlays.refresh.Refreshable
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class ContextExtensionsTests {
+internal class SemanticsMatcherExtensionsTests {
+  @get:Rule val composeRule = createComposeRule()
+
   @Test
-  fun createsLocalizedContext() {
-    val arabicLocale = Locale.forLanguageTag("ar-SA")
-    assertThat(context.at(arabicLocale).resources.configuration.locales)
-      .isEqualTo(LocaleList(arabicLocale))
+  fun matchesNodeThatIsInProgress() {
+    composeRule
+      .apply { setContent { Refreshable(Refresh.Indefinite) {} } }
+      .onNode(isInProgress())
+      .assertIsDisplayed()
   }
 }

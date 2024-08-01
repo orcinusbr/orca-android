@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,14 +13,16 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.test
+package br.com.orcinus.orca.platform.autos.test.kit.scaffold.bar.snack
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import br.com.orcinus.orca.composite.timeline.Timeline
-import br.com.orcinus.orca.composite.timeline.refresh.Refresh
+import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold
+import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.rememberSnackbarPresenter
+import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import kotlin.test.Test
 import org.junit.Rule
-import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
@@ -29,8 +31,18 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun findsTimelineRefreshIndicator() {
-    composeRule.setContent { Timeline(onNext = {}, refresh = Refresh.Indefinite) {} }
-    composeRule.onRefreshIndicator().assertIsDisplayed()
+  fun findsSnackbar() {
+    composeRule
+      .apply {
+        setContent {
+          AutosTheme {
+            val snackbarPresenter = rememberSnackbarPresenter()
+            Scaffold(snackbarPresenter = snackbarPresenter) { expanded {} }
+            LaunchedEffect(snackbarPresenter) { snackbarPresenter.presentInfo("Hello, world!") }
+          }
+        }
+      }
+      .onSnackbar()
+      .assertIsDisplayed()
   }
 }

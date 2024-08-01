@@ -35,18 +35,22 @@ import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
-import br.com.orcinus.orca.composite.timeline.refresh.Refresh
-import br.com.orcinus.orca.composite.timeline.test.onRefreshIndicator
 import br.com.orcinus.orca.composite.timeline.test.onTimeline
 import br.com.orcinus.orca.composite.timeline.test.performScrollToBottom
 import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.sample.test.instance.SampleInstanceTestRule
+import br.com.orcinus.orca.platform.autos.i18n.ReadableThrowable
+import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold
+import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.rememberSnackbarPresenter
+import br.com.orcinus.orca.platform.autos.overlays.refresh.Refresh
+import br.com.orcinus.orca.platform.autos.test.kit.scaffold.bar.snack.onSnackbar
+import br.com.orcinus.orca.platform.autos.test.overlays.refresh.onRefreshIndicator
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.core.sample
 import com.jeanbarrossilva.loadable.list.ListLoadable
+import kotlin.test.Test
 import kotlin.time.Duration.Companion.days
 import org.junit.Rule
-import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
@@ -57,7 +61,7 @@ internal class TimelineTests {
 
   @Test
   fun showsEmptyMessageWhenListLoadableIsEmpty() {
-    composeRule.setContent { AutosTheme { Timeline(ListLoadable.Empty()) } }
+    composeRule.setContent { AutosTheme { LoadedTimeline(ListLoadable.Empty()) } }
     composeRule.onNodeWithTag(EmptyTimelineMessageTag).assertIsDisplayed()
   }
 
@@ -70,7 +74,7 @@ internal class TimelineTests {
 
   @Test
   fun showsDividerWhenHeaderIsNotAddedOnPostPreviewBeforeLastOne() {
-    composeRule.setContent { AutosTheme { Timeline(PostPreview.samples.take(2)) } }
+    composeRule.setContent { AutosTheme { LoadedTimeline(PostPreview.samples.take(2)) } }
     composeRule
       .onTimeline()
       .onChildren()
@@ -82,7 +86,7 @@ internal class TimelineTests {
 
   @Test
   fun showsDividersWhenHeaderIsAddedOnPostPreviewBeforeLastOne() {
-    composeRule.setContent { AutosTheme { Timeline(PostPreview.samples.take(2)) {} } }
+    composeRule.setContent { AutosTheme { LoadedTimeline(PostPreview.samples.take(2)) {} } }
     composeRule
       .onTimeline()
       .onChildren()[1]
@@ -93,7 +97,7 @@ internal class TimelineTests {
 
   @Test
   fun doesNotShowDividersOnLastPostPreview() {
-    composeRule.setContent { AutosTheme { Timeline(PostPreview.samples.take(1)) } }
+    composeRule.setContent { AutosTheme { LoadedTimeline(PostPreview.samples.take(1)) } }
     composeRule
       .onTimeline()
       .onChildren()
@@ -133,5 +137,49 @@ internal class TimelineTests {
       .performTouchInput(TouchInjectionScope::swipeDown)
       .performScrollToBottom()
     assertThat(indices).isEqualTo(hashSetOf(1))
+  }
+
+  @Test(UnsupportedOperationException::class)
+  fun throwsWhenExceptionCausedByANonReadableThrowableIsThrown() {
+    composeRule.apply {
+      setContent {
+        AutosTheme {
+          val snackbarPresenter = rememberSnackbarPresenter()
+
+          Scaffold(snackbarPresenter = snackbarPresenter) {
+            expanded {
+              LoadedTimeline(
+                postPreviewsLoadable =
+                  ListLoadable.Failed(UnsupportedOperationException(Exception())),
+                snackbarPresenter = snackbarPresenter
+              )
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @Test
+  fun showsSnackbarWhenExceptionCausedByAReadableThrowableIsThrown() {
+    composeRule
+      .apply {
+        setContent {
+          AutosTheme {
+            val snackbarPresenter = rememberSnackbarPresenter()
+
+            Scaffold(snackbarPresenter = snackbarPresenter) {
+              expanded {
+                LoadedTimeline(
+                  postPreviewsLoadable = ListLoadable.Failed(Exception(ReadableThrowable.default)),
+                  snackbarPresenter = snackbarPresenter
+                )
+              }
+            }
+          }
+        }
+      }
+      .onSnackbar()
+      .assertIsDisplayed()
   }
 }

@@ -22,7 +22,7 @@ import br.com.orcinus.orca.core.feed.FeedProvider
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.TermMuter
 import br.com.orcinus.orca.core.mastodon.R
-import br.com.orcinus.orca.core.mastodon.i18n.ReadableThrowable
+import br.com.orcinus.orca.platform.autos.i18n.ReadableThrowable
 import kotlinx.coroutines.flow.Flow
 
 /**

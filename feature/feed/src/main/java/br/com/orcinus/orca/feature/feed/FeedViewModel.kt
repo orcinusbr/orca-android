@@ -37,7 +37,6 @@ import br.com.orcinus.orca.ext.coroutines.pagination.paginate
 import br.com.orcinus.orca.ext.intents.share
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import com.jeanbarrossilva.loadable.list.flow.listLoadableFlow
-import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import java.net.URI
 import kotlin.coroutines.CoroutineContext
@@ -84,14 +83,16 @@ constructor(
       .collect(::load)
   }
 
-  val postPreviewsLoadableFlow =
+  val postPreviewsLoadableFlow = listLoadableFlow {
     indexFlow
       .combine(postPreviewsLoadableNotifierFlow) { index, _ -> index }
       .paginate { feedProvider.provide(userID, page = it) }
       .flatMapEach(selector = PostPreview::id) {
         it.toPostPreviewFlow(colors, onLinkClick, onThumbnailClickListener)
       }
-      .map { it.toSerializableList().toListLoadable() }
+      .map(List<PostPreview>::toSerializableList)
+      .collect(::load)
+  }
 
   private constructor(
     application: Application,

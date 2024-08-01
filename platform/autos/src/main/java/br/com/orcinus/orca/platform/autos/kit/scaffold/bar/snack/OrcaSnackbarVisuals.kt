@@ -33,7 +33,8 @@ import br.com.orcinus.orca.platform.autos.theme.AutosTheme
  * @see Error
  */
 internal sealed class OrcaSnackbarVisuals : SnackbarVisuals {
-  override val withDismissAction = false
+  final override val actionLabel = null
+  final override val withDismissAction = false
 
   /** [Color] of the [Snackbar] container. */
   @get:Composable abstract val containerColor: Color
@@ -44,7 +45,6 @@ internal sealed class OrcaSnackbarVisuals : SnackbarVisuals {
 
   /** Denotes that the [Snackbar] should be styled in a non-intrusive manner. */
   data class Info(override val message: String) : OrcaSnackbarVisuals() {
-    override val actionLabel = null
     override val duration = SnackbarDuration.Short
 
     override val containerColor
@@ -56,7 +56,6 @@ internal sealed class OrcaSnackbarVisuals : SnackbarVisuals {
    * the user to it, for notifying the occurrence of an error.
    */
   data class Error(override val message: String) : OrcaSnackbarVisuals() {
-    override val actionLabel = "Retry"
     override val duration = SnackbarDuration.Indefinite
 
     override val containerColor

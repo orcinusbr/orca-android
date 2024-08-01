@@ -15,8 +15,8 @@
 
 package br.com.orcinus.orca.composite.timeline
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -29,15 +29,13 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -52,18 +50,20 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.post.time.RelativeTimeProvider
 import br.com.orcinus.orca.composite.timeline.post.time.rememberRelativeTimeProvider
-import br.com.orcinus.orca.composite.timeline.refresh.Refresh
-import br.com.orcinus.orca.composite.timeline.refresh.isInProgress
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.platform.autos.colors.asColor
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
+import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.ErrorPresentation
+import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.SnackbarPresenter
+import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.rememberSnackbarPresenter
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
+import br.com.orcinus.orca.platform.autos.overlays.refresh.Refresh
+import br.com.orcinus.orca.platform.autos.overlays.refresh.Refreshable
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.loadable.list.ListLoadable
@@ -74,9 +74,6 @@ internal const val EmptyTimelineMessageTag = "empty-timeline-message"
 
 /** Tag that identifies dividers between [PostPreview]s in a [Timeline] for testing purposes. */
 internal const val TimelineDividerTag = "timeline-divider"
-
-/** Tag that identifies a [Timeline]'s refresh indicator for testing purposes. */
-const val TimelineRefreshIndicator = "timeline-refresh-indicator"
 
 /** Tag that identifies a [Timeline] for testing purposes. */
 const val TimelineTag = "timeline"
@@ -93,6 +90,13 @@ private enum class TimelineContentType {
   RenderEffect
 }
 
+/** Default values of a [Timeline]. */
+@Immutable
+object TimelineDefaults {
+  /** Index from which pagination starts in a [Timeline]. */
+  @Suppress("ConstPropertyName") const val InitialSubsequentPaginationIndex = 1
+}
+
 /**
  * Displays [PostPreview]s in a paginated way.
  *
@@ -107,12 +111,14 @@ private enum class TimelineContentType {
  * @param onNext Operation to be performed whenever pagination is requested. Provided index starts
  *   at one, mainly because it is implied that the current page is 0 if the content has already been
  *   loaded.
- * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
+ * @param modifier [Modifier] to be applied to the underlying [Composable].
  * @param state [LazyListState] through which scroll will be observed.
  * @param contentPadding [PaddingValues] to pad the content with.
  * @param refresh Configuration for the swipe-to-refresh behavior to be adopted.
  * @param relativeTimeProvider [RelativeTimeProvider] that provides the time that's passed since a
  *   [Post] was published.
+ * @param snackbarPresenter [SnackbarPresenter] by which [Snackbar]s informing of load errors are
+ *   presented.
  * @param header [Composable] to be shown above the [PostPreview]s.
  */
 @Composable
@@ -128,14 +134,16 @@ fun Timeline(
   contentPadding: PaddingValues = PaddingValues(),
   refresh: Refresh = Refresh.Disabled,
   relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider(),
+  snackbarPresenter: SnackbarPresenter = rememberSnackbarPresenter(),
   header: @Composable (() -> Unit)? = null
 ) {
   when (postPreviewsLoadable) {
     is ListLoadable.Empty ->
-      EmptyTimelineMessage(header?.let { { it() } }, contentPadding, modifier)
-    is ListLoadable.Loading -> Timeline(modifier, contentPadding, header?.let { { it() } })
+      EmptyTimelineMessage(onNext, contentPadding, modifier, header?.let { { it() } })
+    is ListLoadable.Loading ->
+      LoadingTimeline(onNext, modifier, contentPadding, header?.let { { it() } })
     is ListLoadable.Populated ->
-      Timeline(
+      LoadedTimeline(
         postPreviewsLoadable.content,
         onFavorite,
         onRepost,
@@ -149,30 +157,47 @@ fun Timeline(
         relativeTimeProvider,
         header
       )
-    is ListLoadable.Failed -> Unit
+    is ListLoadable.Failed ->
+      ErrorPresentation(
+        postPreviewsLoadable.error,
+        refreshListener = { onNext(TimelineDefaults.InitialSubsequentPaginationIndex) },
+        snackbarPresenter,
+        modifier,
+        state
+      )
   }
 }
 
 /**
  * [LazyColumn] for displaying loading [PostPreview]s.
  *
- * @param header [Composable] to be shown above the [PostPreview]s.
+ * @param onNext Operation to be performed whenever pagination is requested. Provided index starts
+ *   at one, mainly because it is implied that the current page is 0 if the content has already been
+ *   loaded.
  * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
  * @param contentPadding [PaddingValues] to pad the content with.
+ * @param header [Composable] to be shown above the [PostPreview]s.
  */
 @Composable
-fun Timeline(
+fun LoadingTimeline(
+  onNext: (index: Int) -> Unit,
   modifier: Modifier = Modifier,
   contentPadding: PaddingValues = PaddingValues(),
   header: @Composable (LazyItemScope.() -> Unit)? = null
 ) {
-  Timeline(onNext = {}, modifier, header, contentPadding = contentPadding) {
+  Timeline(
+    onNext = {},
+    modifier,
+    header,
+    contentPadding = contentPadding,
+    refresh = Refresh.immediate { onNext(TimelineDefaults.InitialSubsequentPaginationIndex) }
+  ) {
     items(128) { PostPreview() }
   }
 }
 
 /**
- * [LazyColumn] for displaying paged [PostPreview]s.
+ * [LazyColumn] for displaying paged, loaded [PostPreview]s.
  *
  * @param postPreviews [PostPreview]s to be lazily shown.
  * @param onFavorite Callback run whenever the [PostPreview] associated to the given ID requests the
@@ -194,7 +219,7 @@ fun Timeline(
  * @param header [Composable] to be shown above the [PostPreview]s.
  */
 @Composable
-fun Timeline(
+fun LoadedTimeline(
   postPreviews: List<PostPreview>,
   onFavorite: (id: String) -> Unit,
   onRepost: (id: String) -> Unit,
@@ -209,7 +234,7 @@ fun Timeline(
   header: @Composable (() -> Unit)? = null
 ) {
   if (postPreviews.isEmpty()) {
-    EmptyTimelineMessage(header?.let { { it() } }, contentPadding, modifier)
+    EmptyTimelineMessage(onNext, contentPadding, modifier, header?.let { { it() } })
   } else {
     Timeline(onNext, modifier, header?.let { { it() } }, state, contentPadding, refresh) {
       itemsIndexed(
@@ -248,7 +273,6 @@ fun Timeline(
  * @param content Content to be lazily shown below the [header].
  */
 @Composable
-@OptIn(ExperimentalMaterialApi::class)
 fun Timeline(
   onNext: (index: Int) -> Unit,
   modifier: Modifier = Modifier,
@@ -258,12 +282,11 @@ fun Timeline(
   refresh: Refresh = Refresh.Disabled,
   content: LazyListScope.() -> Unit
 ) {
-  val pullRefreshState = rememberPullRefreshState(refresh.isInProgress, refresh.listener::onRefresh)
   val itemCount by remember {
     derivedStateOf(structuralEqualityPolicy()) { state.layoutInfo.totalItemsCount }
   }
   var itemCountPriorToLastPagination by remember { mutableStateOf<Int?>(null) }
-  var index by remember { mutableIntStateOf(1) }
+  var index by remember { mutableIntStateOf(TimelineDefaults.InitialSubsequentPaginationIndex) }
   val paginate by rememberUpdatedState {
     itemCountPriorToLastPagination = itemCount
     onNext(index++)
@@ -274,7 +297,7 @@ fun Timeline(
     }
   }
 
-  Box(Modifier.pullRefresh(pullRefreshState)) {
+  Refreshable(refresh) {
     LazyColumn(modifier.testTag(TimelineTag), state, contentPadding) {
       header?.let { item(contentType = TimelineContentType.Header, content = it) }
       content()
@@ -285,28 +308,26 @@ fun Timeline(
         effect = paginateOnChangedItemCount
       )
     }
-
-    PullRefreshIndicator(
-      refresh.isInProgress,
-      pullRefreshState,
-      Modifier.align(Alignment.TopCenter).testTag(TimelineRefreshIndicator).semantics {
-        isInProgress = refresh.isInProgress
-      }
-    )
   }
 }
 
 /**
  * Displays [PostPreview]s in a paginated way.
  *
+ * This overload is stateless by default and is intended for previewing and testing purposes only.
+ *
  * @param postPreviewsLoadable [ListLoadable] of [PostPreview]s to be lazily shown.
- * @param modifier [Modifier] to be applied to the underlying [Timeline].
+ * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
+ * @param snackbarPresenter [SnackbarPresenter] by which [Snackbar]s informing of load errors are
+ *   presented.
  * @param header [Composable] to be shown above the [PostPreview]s.
  */
 @Composable
-internal fun Timeline(
+@VisibleForTesting
+internal fun LoadedTimeline(
   postPreviewsLoadable: ListLoadable<PostPreview>,
   modifier: Modifier = Modifier,
+  snackbarPresenter: SnackbarPresenter = rememberSnackbarPresenter(),
   header: @Composable (() -> Unit)? = null
 ) {
   Timeline(
@@ -317,27 +338,31 @@ internal fun Timeline(
     onClick = {},
     onNext = {},
     modifier,
+    snackbarPresenter = snackbarPresenter,
     header = header
   )
 }
 
 /**
- * [Timeline] that's populated with sample [PostPreview]s.
+ * [LazyColumn] for displaying paged, loaded [PostPreview]s.
+ *
+ * This overload is stateless by default and is intended for previewing and testing purposes only.
  *
  * @param postPreviews [PostPreview]s to be lazily shown.
- * @param modifier [Modifier] to be applied to the underlying [Timeline].
+ * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
  * @param onNext Callback run whenever the bottom is being reached.
  * @param header [Composable] to be shown above the [PostPreview]s.
  * @see PostPreview.samples
  */
 @Composable
-internal fun Timeline(
+@VisibleForTesting
+internal fun LoadedTimeline(
   postPreviews: List<PostPreview>,
   modifier: Modifier = Modifier,
   onNext: (index: Int) -> Unit = {},
   header: @Composable (() -> Unit)? = null
 ) {
-  Timeline(
+  LoadedTimeline(
     postPreviews,
     onFavorite = {},
     onRepost = {},
@@ -352,49 +377,55 @@ internal fun Timeline(
 /**
  * Message stating that the [Timeline] is empty.
  *
+ * @param onNext Operation to be performed whenever pagination is requested. Provided index starts
+ *   at one, mainly because it is implied that the current page is 0 if the content has already been
+ *   loaded.
  * @param header [Composable] to be shown above the message.
  * @param contentPadding [PaddingValues] to pad the contents with.
  * @param modifier [Modifier] to be applied to the underlying [Column].
  */
 @Composable
 private fun EmptyTimelineMessage(
-  header: (@Composable LazyItemScope.() -> Unit)?,
+  onNext: (index: Int) -> Unit,
   contentPadding: PaddingValues,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
+  header: @Composable (LazyItemScope.() -> Unit)?
 ) {
   val spacing = AutosTheme.spacings.large.dp
 
-  LazyColumn(
-    modifier.testTag(EmptyTimelineMessageTag).fillMaxSize(),
-    contentPadding = contentPadding,
-    verticalArrangement = Arrangement.spacedBy(spacing),
-    horizontalAlignment = Alignment.CenterHorizontally
-  ) {
-    header?.let { item(content = it) }
+  Refreshable(Refresh.immediate { onNext(TimelineDefaults.InitialSubsequentPaginationIndex) }) {
+    LazyColumn(
+      modifier.testTag(EmptyTimelineMessageTag).fillMaxSize(),
+      contentPadding = contentPadding,
+      verticalArrangement = Arrangement.spacedBy(spacing),
+      horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+      header?.let { item(content = it) }
 
-    item {
-      BoxWithConstraints {
-        Column(
-          Modifier.fillParentMaxSize().drawWithContent {
-            translate(top = -(center.y / 2f + center.y - size.height / 2f)) {
-              this@drawWithContent.drawContent()
-            }
-          },
-          verticalArrangement = Arrangement.spacedBy(spacing, Alignment.CenterVertically),
-          horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-          Icon(
-            AutosTheme.iconography.empty.asImageVector,
-            contentDescription = stringResource(R.string.composite_timeline_empty),
-            Modifier.size(32.dp),
-            tint = AutosTheme.colors.secondary.asColor
-          )
+      item {
+        BoxWithConstraints {
+          Column(
+            Modifier.fillParentMaxSize().drawWithContent {
+              translate(top = -(center.y / 2f + center.y - size.height / 2f)) {
+                this@drawWithContent.drawContent()
+              }
+            },
+            verticalArrangement = Arrangement.spacedBy(spacing, Alignment.CenterVertically),
+            horizontalAlignment = Alignment.CenterHorizontally
+          ) {
+            Icon(
+              AutosTheme.iconography.empty.asImageVector,
+              contentDescription = stringResource(R.string.composite_timeline_empty),
+              Modifier.size(32.dp),
+              tint = AutosTheme.colors.secondary.asColor
+            )
 
-          Text(
-            stringResource(R.string.composite_timeline_empty_message),
-            textAlign = TextAlign.Center,
-            style = AutosTheme.typography.headlineMedium
-          )
+            Text(
+              stringResource(R.string.composite_timeline_empty_message),
+              textAlign = TextAlign.Center,
+              style = AutosTheme.typography.headlineMedium
+            )
+          }
         }
       }
     }
@@ -405,7 +436,9 @@ private fun EmptyTimelineMessage(
 @Composable
 @MultiThemePreview
 private fun LoadingTimelinePreview() {
-  AutosTheme { Surface(color = AutosTheme.colors.background.container.asColor) { Timeline() } }
+  AutosTheme {
+    Surface(color = AutosTheme.colors.background.container.asColor) { LoadingTimeline() }
+  }
 }
 
 /** Preview of an empty [Timeline]. */
@@ -414,7 +447,7 @@ private fun LoadingTimelinePreview() {
 private fun EmptyTimelinePreview() {
   AutosTheme {
     Surface(color = AutosTheme.colors.background.container.asColor) {
-      Timeline(ListLoadable.Empty())
+      LoadedTimeline(ListLoadable.Empty())
     }
   }
 }
@@ -425,7 +458,7 @@ private fun EmptyTimelinePreview() {
 private fun EmptyTimelineWithHeaderPreview() {
   AutosTheme {
     Surface(color = AutosTheme.colors.background.container.asColor) {
-      Timeline(ListLoadable.Empty()) {
+      LoadedTimeline(emptyList()) {
         AutoSizeText(
           "Header",
           Modifier.padding(
@@ -445,7 +478,11 @@ private fun EmptyTimelineWithHeaderPreview() {
 @Composable
 @MultiThemePreview
 private fun PopulatedTimelinePreview() {
-  AutosTheme { Surface(color = AutosTheme.colors.background.container.asColor) { Timeline() } }
+  AutosTheme {
+    Surface(color = AutosTheme.colors.background.container.asColor) {
+      LoadedTimeline(PostPreview.samples)
+    }
+  }
 }
 
 /** Preview of a populated [Timeline] with a header. */
@@ -454,7 +491,7 @@ private fun PopulatedTimelinePreview() {
 private fun PopulatedTimelineWithHeaderPreview() {
   AutosTheme {
     Surface(color = AutosTheme.colors.background.container.asColor) {
-      Timeline {
+      LoadingTimeline {
         AutoSizeText(
           "Header",
           Modifier.padding(
@@ -468,4 +505,18 @@ private fun PopulatedTimelineWithHeaderPreview() {
       }
     }
   }
+}
+
+/**
+ * [LazyColumn] for displaying loading [PostPreview]s.
+ *
+ * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
+ * @param header [Composable] to be shown above the [PostPreview]s.
+ */
+@Composable
+private fun LoadingTimeline(
+  modifier: Modifier = Modifier,
+  header: (@Composable LazyItemScope.() -> Unit)? = null
+) {
+  LoadingTimeline(onNext = {}, modifier, header = header)
 }

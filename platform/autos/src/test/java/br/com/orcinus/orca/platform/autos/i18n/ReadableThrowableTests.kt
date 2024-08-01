@@ -13,11 +13,11 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.i18n
+package br.com.orcinus.orca.platform.autos.i18n
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import br.com.orcinus.orca.core.mastodon.test.R
+import br.com.orcinus.orca.platform.autos.test.R
 import br.com.orcinus.orca.platform.testing.context
 import java.util.Locale
 import kotlin.test.Test

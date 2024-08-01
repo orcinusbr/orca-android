@@ -35,6 +35,8 @@ dependencies {
   api(libs.android.compose.ui.test.junit)
   api(libs.android.test.espresso.core)
 
+  compileOnly(libs.android.compose.material)
+
   implementation(project(":ext:reflection"))
   implementation(project(":platform:autos"))
   implementation(project(":platform:testing"))

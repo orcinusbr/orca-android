@@ -61,6 +61,7 @@ dependencies {
   testImplementation(project(":core:sample-test"))
   testImplementation(project(":feature:profile-details-test"))
   testImplementation(project(":platform:navigation-test"))
+  testImplementation(project(":platform:autos-test"))
   testImplementation(project(":platform:testing"))
   testImplementation(project(":std:injector-test"))
   testImplementation(libs.kotlin.coroutines.test)

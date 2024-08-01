@@ -46,7 +46,6 @@ dependencies {
   implementation(project(":ext:reflection"))
   implementation(project(":platform:focus"))
   implementation(project(":std:visibility"))
-  implementation(libs.android.compose.material)
   implementation(libs.android.constraintLayout.compose)
   implementation(libs.android.core)
   implementation(libs.jsoup)

@@ -20,7 +20,7 @@ import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.mastodon.R
 import br.com.orcinus.orca.core.mastodon.auth.authentication.MastodonAuthenticator
-import br.com.orcinus.orca.core.mastodon.i18n.ReadableThrowable
+import br.com.orcinus.orca.platform.autos.i18n.ReadableThrowable
 
 /**
  * [AuthenticationLock] whose [authenticator] authenticates via the Mastodon API.

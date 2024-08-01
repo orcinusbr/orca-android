@@ -13,15 +13,16 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.refresh
+package br.com.orcinus.orca.platform.autos.overlays.refresh
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import br.com.orcinus.orca.composite.timeline.Timeline
+import androidx.compose.runtime.remember
 
 /**
- * Swipe-to-refresh behavior configuration for a [Timeline].
+ * Swipe-to-refresh behavior configuration for a [Refreshable].
  *
- * @param isInProgress Whether the [Timeline] is currently being refreshed.
+ * @param isInProgress Whether the [Refreshable] is currently being refreshed.
  * @param listener [Listener] to be notified of refreshes.
  */
 @Immutable
@@ -32,19 +33,34 @@ data class Refresh(val isInProgress: Boolean, val listener: Listener) {
    * @see onRefresh
    */
   fun interface Listener {
-    /** Callback run whenever the [Timeline] is refreshed. */
+    /** Callback run whenever the [Refreshable] is refreshed. */
     fun onRefresh()
+
+    companion object {
+      /** A no-op [Listener]. */
+      val Empty = Listener {}
+    }
   }
 
   companion object {
     /** Never-active, no-op [Refresh]. */
-    internal val Disabled = Refresh(isInProgress = false) {}
+    val Disabled = Refresh(isInProgress = false, Listener.Empty)
 
     /**
      * [Refresh] that remains active indefinitely.
      *
      * @see isInProgress
      */
-    val Indefinite = Refresh(isInProgress = true) {}
+    val Indefinite = Refresh(isInProgress = true, Listener.Empty)
+
+    /**
+     * Creates a [Refresh] that can be active but doesn't report its actual progress.
+     *
+     * @param listener [Listener] to be notified of refreshes.
+     */
+    @Composable
+    fun immediate(listener: Listener): Refresh {
+      return remember { Refresh(isInProgress = false) { listener.onRefresh() } }
+    }
   }
 }

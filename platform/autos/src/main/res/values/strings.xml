@@ -15,6 +15,9 @@
   -->
 
 <resources>
+    <string name="platform_autos_error">
+        An error has occurred. Check your internet connection and try again later.
+    </string>
     <string name="platform_autos_search">Search…</string>
     <string name="platform_autos_search_content_description">Search</string>
     <string

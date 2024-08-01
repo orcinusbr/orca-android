@@ -42,8 +42,10 @@ dependencies {
 
   testImplementation(project(":composite:timeline-test"))
   testImplementation(project(":core:sample-test"))
+  testImplementation(project(":platform:autos-test"))
   testImplementation(project(":platform:core"))
   testImplementation(project(":platform:navigation-test"))
+  testImplementation(project(":platform:testing"))
   testImplementation(project(":std:injector-test"))
   testImplementation(libs.android.compose.ui.test.manifest)
   testImplementation(libs.assertk)

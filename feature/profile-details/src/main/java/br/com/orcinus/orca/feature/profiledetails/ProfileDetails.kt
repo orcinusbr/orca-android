@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.feature.profiledetails
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -45,11 +46,12 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import br.com.orcinus.orca.composite.timeline.LoadingTimeline
 import br.com.orcinus.orca.composite.timeline.Timeline
+import br.com.orcinus.orca.composite.timeline.TimelineDefaults
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.post.time.RelativeTimeProvider
 import br.com.orcinus.orca.composite.timeline.post.time.rememberRelativeTimeProvider
-import br.com.orcinus.orca.composite.timeline.refresh.Refresh
 import br.com.orcinus.orca.composite.timeline.text.annotated.toAnnotatedString
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.account.Account
@@ -60,10 +62,14 @@ import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 import br.com.orcinus.orca.platform.autos.kit.menu.DropdownMenu
 import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold
+import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.ErrorPresentation
+import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.SnackbarPresenter
+import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.rememberSnackbarPresenter
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults as _TopAppBarDefaults
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.`if`
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
+import br.com.orcinus.orca.platform.autos.overlays.refresh.Refresh
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 import br.com.orcinus.orca.platform.core.sample
@@ -221,7 +227,9 @@ internal fun ProfileDetails(
 }
 
 @Composable
+@VisibleForTesting
 internal fun ProfileDetails(
+  profileDetailsLoadable: Loadable<ProfileDetails>,
   postPreviewsLoadable: ListLoadable<PostPreview>,
   modifier: Modifier = Modifier,
   isTopBarDropdownMenuExpanded: Boolean = false,
@@ -229,7 +237,7 @@ internal fun ProfileDetails(
   relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider()
 ) {
   ProfileDetails(
-    Loadable.Loaded(ProfileDetails.sample),
+    profileDetailsLoadable,
     postPreviewsLoadable,
     isTimelineRefreshing = false,
     onTimelineRefresh = {},
@@ -241,6 +249,7 @@ internal fun ProfileDetails(
 }
 
 @Composable
+@VisibleForTesting
 internal fun ProfileDetails(
   detailsLoadable: Loadable<ProfileDetails>,
   postPreviewsLoadable: ListLoadable<PostPreview>,
@@ -291,7 +300,7 @@ private fun ProfileDetails(
   relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider()
 ) {
   when (detailsLoadable) {
-    is Loadable.Loading -> ProfileDetails(origin, modifier)
+    is Loadable.Loading -> ProfileDetails(onNext, origin, modifier)
     is Loadable.Loaded ->
       ProfileDetails(
         boundary,
@@ -311,12 +320,16 @@ private fun ProfileDetails(
         initialFirstVisibleTimelineItemIndex,
         relativeTimeProvider
       )
-    is Loadable.Failed -> Unit
+    is Loadable.Failed -> ProfileDetails(detailsLoadable.error, onNext, modifier)
   }
 }
 
 @Composable
-private fun ProfileDetails(origin: BackwardsNavigationState, modifier: Modifier = Modifier) {
+private fun ProfileDetails(
+  onNext: (index: Int) -> Unit,
+  origin: BackwardsNavigationState,
+  modifier: Modifier = Modifier
+) {
   @OptIn(ExperimentalMaterial3Api::class)
   val topAppBarScrollBehavior = _TopAppBarDefaults.scrollBehavior
 
@@ -327,7 +340,8 @@ private fun ProfileDetails(origin: BackwardsNavigationState, modifier: Modifier 
     actions = {},
     timelineState = rememberLazyListState(),
     timeline = { shouldNestScrollToTopAppBar ->
-      Timeline(
+      LoadingTimeline(
+        onNext,
         (Modifier as Modifier).`if`(shouldNestScrollToTopAppBar) {
           nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
         }
@@ -336,6 +350,7 @@ private fun ProfileDetails(origin: BackwardsNavigationState, modifier: Modifier 
       }
     },
     floatingActionButton = {},
+    rememberSnackbarPresenter(),
     origin,
     modifier
   )
@@ -365,6 +380,7 @@ private fun ProfileDetails(
   val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
   var isTopBarDropdownExpanded by
     remember(isTopBarDropdownMenuExpanded) { mutableStateOf(isTopBarDropdownMenuExpanded) }
+  val snackbarPresenter = rememberSnackbarPresenter()
   val timelineState = rememberLazyListState(initialFirstVisibleTimelineItemIndex)
 
   ProfileDetails(
@@ -444,6 +460,7 @@ private fun ProfileDetails(
       }
     },
     floatingActionButton = { details.FloatingActionButton(boundary) },
+    snackbarPresenter,
     origin,
     modifier
   )
@@ -458,6 +475,7 @@ private fun ProfileDetails(
   timelineState: LazyListState,
   timeline: @Composable (shouldNestScrollToTopAppBar: Boolean) -> Unit,
   floatingActionButton: @Composable () -> Unit,
+  snackbarPresenter: SnackbarPresenter,
   origin: BackwardsNavigationState,
   modifier: Modifier = Modifier
 ) {
@@ -471,7 +489,9 @@ private fun ProfileDetails(
   }
 
   Box(modifier) {
-    Scaffold(floatingActionButton = floatingActionButton) { navigable { timeline(isHeaderHidden) } }
+    Scaffold(floatingActionButton = floatingActionButton, snackbarPresenter = snackbarPresenter) {
+      navigable { timeline(isHeaderHidden) }
+    }
 
     AnimatedVisibility(
       visible = isHeaderHidden,
@@ -491,22 +511,49 @@ private fun ProfileDetails(
 }
 
 @Composable
+private fun ProfileDetails(
+  error: Throwable,
+  onNext: (index: Int) -> Unit,
+  modifier: Modifier = Modifier
+) {
+  val snackbarPresenter = rememberSnackbarPresenter()
+
+  Scaffold(modifier, snackbarPresenter = snackbarPresenter) {
+    navigable {
+      ErrorPresentation(
+        error,
+        refreshListener = { onNext(TimelineDefaults.InitialSubsequentPaginationIndex) },
+        snackbarPresenter
+      )
+    }
+  }
+}
+
+@Composable
 @MultiThemePreview
 private fun LoadingProfileDetailsPreview() {
-  AutosTheme { ProfileDetails(BackwardsNavigationState.Unavailable) }
+  AutosTheme { ProfileDetails(onNext = {}, BackwardsNavigationState.Unavailable) }
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadedProfileDetailsWithoutPostsPreview() {
-  AutosTheme { ProfileDetails(postPreviewsLoadable = ListLoadable.Empty()) }
+  AutosTheme {
+    ProfileDetails(
+      Loadable.Loaded(ProfileDetails.sample),
+      postPreviewsLoadable = ListLoadable.Empty()
+    )
+  }
 }
 
 @Composable
 @MultiThemePreview
 private fun LoadedProfileDetailsWithPostsPreview() {
   AutosTheme {
-    ProfileDetails(postPreviewsLoadable = PostPreview.samples.toSerializableList().toListLoadable())
+    ProfileDetails(
+      Loadable.Loaded(ProfileDetails.sample),
+      PostPreview.samples.toSerializableList().toListLoadable()
+    )
   }
 }
 
@@ -515,7 +562,8 @@ private fun LoadedProfileDetailsWithPostsPreview() {
 private fun LoadedProfileDetailsWithExpandedTopBarDropdownMenuPreview() {
   AutosTheme {
     ProfileDetails(
-      postPreviewsLoadable = PostPreview.samples.toSerializableList().toListLoadable(),
+      Loadable.Loaded(ProfileDetails.sample),
+      PostPreview.samples.toSerializableList().toListLoadable(),
       isTopBarDropdownMenuExpanded = true,
       initialFirstVisibleTimelineItemIndex = 1
     )

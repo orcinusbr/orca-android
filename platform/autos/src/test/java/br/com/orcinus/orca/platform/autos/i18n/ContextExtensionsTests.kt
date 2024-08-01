@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,13 +13,23 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.test.refresh
+package br.com.orcinus.orca.platform.autos.i18n
 
-import androidx.compose.ui.semantics.SemanticsNode
-import androidx.compose.ui.test.SemanticsNodeInteraction
-import androidx.compose.ui.test.assert
+import android.os.LocaleList
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import br.com.orcinus.orca.platform.testing.context
+import java.util.Locale
+import kotlin.test.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-/** Asserts that the [SemanticsNode] isn't in a temporarily active state. */
-fun SemanticsNodeInteraction.assertIsNotInProgress(): SemanticsNodeInteraction {
-  return assert(isInProgress().not())
+@RunWith(RobolectricTestRunner::class)
+internal class ContextExtensionsTests {
+  @Test
+  fun createsLocalizedContext() {
+    val arabicLocale = Locale.forLanguageTag("ar-SA")
+    assertThat(context.at(arabicLocale).resources.configuration.locales)
+      .isEqualTo(LocaleList(arabicLocale))
+  }
 }

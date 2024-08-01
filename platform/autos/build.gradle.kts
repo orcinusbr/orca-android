@@ -40,6 +40,7 @@ dependencies {
   implementation(project(":ext:reflection"))
   implementation(project(":std:visibility"))
   implementation(libs.accompanist.adapter)
+  implementation(libs.android.compose.material)
   implementation(libs.android.core)
   implementation(libs.loadable.placeholder)
   implementation(libs.loadable.placeholder.test)

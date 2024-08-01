@@ -19,7 +19,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.test.assertAny
 import androidx.compose.ui.test.junit4.createComposeRule
 import br.com.orcinus.orca.autos.colors.Colors
-import br.com.orcinus.orca.composite.timeline.Timeline
+import br.com.orcinus.orca.composite.timeline.LoadedTimeline
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.test.onTimeline
 import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
@@ -48,7 +48,7 @@ internal class SemanticsNodeInteractionExtensionsTests {
               }
             }
 
-            Timeline(
+            LoadedTimeline(
               PostPreview.samples,
               onFavorite = {},
               onRepost = {},

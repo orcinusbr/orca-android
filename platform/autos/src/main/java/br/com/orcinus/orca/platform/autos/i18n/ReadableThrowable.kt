@@ -13,11 +13,14 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.i18n
+package br.com.orcinus.orca.platform.autos.i18n
 
 import android.content.Context
 import android.content.res.Resources
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import br.com.orcinus.orca.platform.autos.R
 import java.util.Locale
 
 /**
@@ -25,10 +28,10 @@ import java.util.Locale
  * vocabulary for non-engineers to be able to understand plainly what has happened and (possibly)
  * take action regarding the problem.
  *
- * All [Exception]s directly thrown by core structures in the Mastodon variant should have a
- * [ReadableThrowable] as a [cause] as a mean to provide a description of the occurrence in all
- * supported languages. Such [Exception]s are intended to be caught and have their [cause]s
- * presented to the user in the UI, explained by the localized version of the message.
+ * [Exception]s caused by a [ReadableThrowable] are intended to be caught and have their [cause]s
+ * explicitly and prominently presented to the user in the UI, explained by the localized version of
+ * the message. Such explanation should adhere to the constraints specified in the
+ * [messageResourceID] documentation.
  *
  * @property context [Context] from which default and localized messages are to be obtained.
  * @property messageResourceID Resource identifier of the message that explains in practical,
@@ -47,7 +50,7 @@ import java.util.Locale
  * @see message
  * @see getLocalizedMessage
  */
-internal class ReadableThrowable(
+class ReadableThrowable(
   private val context: Context,
   @StringRes private val messageResourceID: Int
 ) : Throwable() {
@@ -58,6 +61,29 @@ internal class ReadableThrowable(
   @Throws(Resources.NotFoundException::class)
   override fun getLocalizedMessage(): String {
     return context.getString(messageResourceID)
+  }
+
+  companion object {
+    /**
+     * [ReadableThrowable] for when a generic error occurs. Presenting it is highly discouraged
+     * because it isn't specific and doesn't provide contextualized information on how to fix the
+     * issue itself.
+     *
+     * @see getDefault
+     */
+    val default
+      @Composable get() = getDefault(LocalContext.current)
+
+    /**
+     * [ReadableThrowable] for when a generic error occurs. Presenting it is highly discouraged
+     * because it isn't specific and doesn't provide contextualized information on how to fix the
+     * issue itself.
+     *
+     * @param context [Context] from which the default and the localized message are obtained.
+     */
+    fun getDefault(context: Context): ReadableThrowable {
+      return ReadableThrowable(context, R.string.platform_autos_error)
+    }
   }
 }
 

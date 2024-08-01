@@ -35,12 +35,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.takeOrElse
+import androidx.compose.ui.platform.testTag
 import br.com.orcinus.orca.platform.autos.colors.LocalContainerColor
 import br.com.orcinus.orca.platform.autos.colors.asColor
 import br.com.orcinus.orca.platform.autos.forms.asShape
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold as _Scaffold
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.button.ButtonBar
+import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.SnackbarTag
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.orcaVisuals
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.SnackbarPresenter
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.rememberSnackbarPresenter
@@ -92,9 +94,9 @@ fun Scaffold(
         SnackbarHost(snackbarPresenter.hostState) {
           Snackbar(
             it,
-            shape = AutosTheme.forms.medium.asShape,
-            containerColor = it.orcaVisuals.containerColor,
-            dismissActionContentColor = it.orcaVisuals.contentColor
+            Modifier.testTag(SnackbarTag),
+            shape = AutosTheme.forms.large.asShape,
+            containerColor = it.orcaVisuals.containerColor
           )
         }
       },
@@ -117,7 +119,7 @@ private fun ScaffoldPreview() {
 
   LaunchedEffect(snackbarPresenter) {
     snackbarPresenter.presentInfo("Info")
-    snackbarPresenter.presentError("Error") {}
+    snackbarPresenter.presentError("Error")
   }
 
   AutosTheme {

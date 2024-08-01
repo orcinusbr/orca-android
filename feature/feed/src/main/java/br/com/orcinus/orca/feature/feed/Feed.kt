@@ -35,17 +35,18 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import br.com.orcinus.orca.composite.timeline.Timeline
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
-import br.com.orcinus.orca.composite.timeline.refresh.Refresh
 import br.com.orcinus.orca.composite.timeline.search.Searchable
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold
+import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.rememberSnackbarPresenter
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
 import br.com.orcinus.orca.platform.autos.kit.scaffold.plus
 import br.com.orcinus.orca.platform.autos.overlays.asPaddingValues
+import br.com.orcinus.orca.platform.autos.overlays.refresh.Refresh
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.loadable.list.ListLoadable
@@ -136,10 +137,10 @@ private fun Feed(
   onComposition: () -> Unit,
   modifier: Modifier = Modifier
 ) {
-  val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
-
   Searchable(TopAppBarDefaults.idleContainerColor, Modifier.statusBarsPadding()) {
-    val blurRadius by contentBlurRadiusAsState
+    val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
+    val snackbarPresenter = rememberSnackbarPresenter()
+    val contentBlurRadius by contentBlurRadiusAsState
 
     Scaffold(
       modifier,
@@ -168,7 +169,7 @@ private fun Feed(
                 onComposition()
               }
             },
-            Modifier.blur(blurRadius, BlurredEdgeTreatment.Unbounded)
+            Modifier.blur(contentBlurRadius, BlurredEdgeTreatment.Unbounded)
               .testTag(FeedFloatingActionButtonTag)
           ) {
             Icon(
@@ -177,9 +178,10 @@ private fun Feed(
             )
           }
         }
-      }
+      },
+      snackbarPresenter = snackbarPresenter
     ) {
-      navigable(Modifier.blur(blurRadius)) {
+      navigable(Modifier.blur(contentBlurRadius)) {
         Timeline(
           postPreviewsLoadable,
           onFavorite,
@@ -191,7 +193,8 @@ private fun Feed(
           contentPadding =
             PaddingValues(top = searchTextFieldLayoutHeight) +
               AutosTheme.overlays.fab.asPaddingValues,
-          refresh = Refresh(isTimelineRefreshing, onTimelineRefresh)
+          refresh = Refresh(isTimelineRefreshing, onTimelineRefresh),
+          snackbarPresenter = snackbarPresenter
         )
       }
     }
