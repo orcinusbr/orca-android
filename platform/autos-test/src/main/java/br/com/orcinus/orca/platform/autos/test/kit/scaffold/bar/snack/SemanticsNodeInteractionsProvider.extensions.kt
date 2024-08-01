@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,18 +13,15 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.refresh
+package br.com.orcinus.orca.platform.autos.test.kit.scaffold.bar.snack
 
-import androidx.compose.ui.semantics.SemanticsProperties
-import androidx.compose.ui.semantics.SemanticsPropertyKey
+import androidx.compose.material3.Snackbar
+import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
+import androidx.compose.ui.test.onNodeWithTag
+import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.SnackbarTag
 
-/** [SemanticsPropertyKey] returned by [InProgress]. */
-private val inProgressSemanticsPropertyKey = SemanticsPropertyKey<Boolean>(name = "InProgress")
-
-/**
- * [SemanticsPropertyKey] that indicates whether the node is currently in a temporarily active
- * state.
- */
-@Suppress("UnusedReceiverParameter")
-val SemanticsProperties.InProgress
-  get() = inProgressSemanticsPropertyKey
+/** [SemanticsNodeInteraction] of a [Snackbar]. */
+fun SemanticsNodeInteractionsProvider.onSnackbar(): SemanticsNodeInteraction {
+  return onNodeWithTag(SnackbarTag)
+}

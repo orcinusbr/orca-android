@@ -13,24 +13,26 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.test
+package br.com.orcinus.orca.platform.autos.test.overlays.refresh
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import br.com.orcinus.orca.composite.timeline.Timeline
-import br.com.orcinus.orca.composite.timeline.refresh.Refresh
+import br.com.orcinus.orca.platform.autos.overlays.refresh.Refresh
+import br.com.orcinus.orca.platform.autos.overlays.refresh.Refreshable
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class SemanticsNodeInteractionsProviderExtensionsTests {
+internal class SemanticsMatcherExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun findsTimelineRefreshIndicator() {
-    composeRule.setContent { Timeline(onNext = {}, refresh = Refresh.Indefinite) {} }
-    composeRule.onRefreshIndicator().assertIsDisplayed()
+  fun matchesNodeThatIsInProgress() {
+    composeRule
+      .apply { setContent { Refreshable(Refresh.Indefinite) {} } }
+      .onNode(isInProgress())
+      .assertIsDisplayed()
   }
 }

@@ -111,6 +111,7 @@ dependencies {
   "testDemoImplementation"(project(":composite:timeline-test"))
   "testDemoImplementation"(project(":core:sample-test"))
   "testDemoImplementation"(project(":feature:gallery-test"))
+  "testDemoImplementation"(project(":platform:autos-test"))
   "testDemoImplementation"(project(":platform:intents-test"))
   "testDemoImplementation"(project(":platform:navigation-test"))
   "testDemoImplementation"(project(":platform:testing"))

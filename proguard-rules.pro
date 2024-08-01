@@ -13,18 +13,17 @@
 # not, see https://www.gnu.org/licenses.
 #
 
--dontobfuscate
--keep public class br.com.orcinus.orca.** { *; }
-
 #noinspection ShrinkerUnresolvedReference
+
+-dontobfuscate
+-dontwarn androidx.compose.runtime.internal.ComposableFunction2
+-keep public class br.com.orcinus.orca.** { *; }
 -keepclassmembers class * implements android.os.Parcelable {
   #noinspection ShrinkerUnresolvedReference
   public static final android.os.Parcelable$Creator CREATOR;
 }
-
 -keepclassmembers class br.com.orcinus.orca.platform.autos.kit.input.text.composition.ErrorDelegate {
   java.lang.CharSequence getError();
   void toggle(java.lang.CharSequence);
 }
-
 -keepclassmembers public enum net.time4j.** { public static **[] values(); }

@@ -30,7 +30,6 @@ import androidx.compose.ui.text.AnnotatedString
 import br.com.orcinus.orca.composite.timeline.Timeline
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.post.figure.Figure
-import br.com.orcinus.orca.composite.timeline.refresh.Refresh
 import br.com.orcinus.orca.composite.timeline.stat.details.StatsDetails
 import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
@@ -41,6 +40,7 @@ import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBarWithBackNavigation
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
+import br.com.orcinus.orca.platform.autos.overlays.refresh.Refresh
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 import br.com.orcinus.orca.platform.core.withSample

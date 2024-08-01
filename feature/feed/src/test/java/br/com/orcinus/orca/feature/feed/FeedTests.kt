@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.feature.feed
 
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.filterToOne
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -25,7 +26,10 @@ import androidx.compose.ui.test.performScrollTo
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.stat.activateable.favorite.FavoriteStatTag
 import br.com.orcinus.orca.composite.timeline.test.post.onPostPreviews
+import br.com.orcinus.orca.platform.autos.i18n.ReadableThrowable
+import br.com.orcinus.orca.platform.autos.test.kit.scaffold.bar.snack.onSnackbar
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
 import org.junit.Assert.assertTrue
@@ -57,5 +61,17 @@ internal class FeedTests {
       .performScrollTo()
       .performClick()
     assertTrue(hasCallbackBeenRun)
+  }
+
+  @Test
+  fun showsSnackbarWhenAnExceptionCausedByAReadableThrowableIsThrown() {
+    composeRule
+      .apply {
+        setContent {
+          AutosTheme { Feed(ListLoadable.Failed(Exception(ReadableThrowable.default))) }
+        }
+      }
+      .onSnackbar()
+      .assertIsDisplayed()
   }
 }

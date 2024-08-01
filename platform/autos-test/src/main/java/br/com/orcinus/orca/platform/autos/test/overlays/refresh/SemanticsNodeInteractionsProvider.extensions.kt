@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,13 +13,16 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.test.refresh
+package br.com.orcinus.orca.platform.autos.test.overlays.refresh
 
-import androidx.compose.ui.semantics.SemanticsNode
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.ui.test.SemanticsNodeInteraction
-import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
+import androidx.compose.ui.test.onNodeWithTag
+import br.com.orcinus.orca.platform.autos.overlays.refresh.RefreshIndicatorTag
+import br.com.orcinus.orca.platform.autos.overlays.refresh.Refreshable
 
-/** Asserts that the [SemanticsNode] isn't in a temporarily active state. */
-fun SemanticsNodeInteraction.assertIsNotInProgress(): SemanticsNodeInteraction {
-  return assert(isInProgress().not())
+/** [SemanticsNodeInteraction] of a [Refreshable]'s [PullRefreshIndicator]. */
+fun SemanticsNodeInteractionsProvider.onRefreshIndicator(): SemanticsNodeInteraction {
+  return onNodeWithTag(RefreshIndicatorTag)
 }

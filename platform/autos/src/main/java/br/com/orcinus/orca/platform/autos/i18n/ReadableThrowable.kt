@@ -18,6 +18,9 @@ package br.com.orcinus.orca.platform.autos.i18n
 import android.content.Context
 import android.content.res.Resources
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import br.com.orcinus.orca.platform.autos.R
 import java.util.Locale
 
 /**
@@ -58,6 +61,29 @@ class ReadableThrowable(
   @Throws(Resources.NotFoundException::class)
   override fun getLocalizedMessage(): String {
     return context.getString(messageResourceID)
+  }
+
+  companion object {
+    /**
+     * [ReadableThrowable] for when a generic error occurs. Presenting it is highly discouraged
+     * because it isn't specific and doesn't provide contextualized information on how to fix the
+     * issue itself.
+     *
+     * @see getDefault
+     */
+    val default
+      @Composable get() = getDefault(LocalContext.current)
+
+    /**
+     * [ReadableThrowable] for when a generic error occurs. Presenting it is highly discouraged
+     * because it isn't specific and doesn't provide contextualized information on how to fix the
+     * issue itself.
+     *
+     * @param context [Context] from which the default and the localized message are obtained.
+     */
+    fun getDefault(context: Context): ReadableThrowable {
+      return ReadableThrowable(context, R.string.platform_autos_error)
+    }
   }
 }
 

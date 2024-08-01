@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,13 +13,10 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.test
+package br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack
 
-import androidx.compose.ui.test.SemanticsNodeInteraction
-import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
-import br.com.orcinus.orca.composite.timeline.Timeline
+import androidx.compose.material3.Snackbar
+import br.com.orcinus.orca.platform.autos.InternalPlatformAutosApi
 
-/** [SemanticsNodeInteraction] of a [Timeline]. */
-fun SemanticsNodeInteractionsProvider.onTimeline(): SemanticsNodeInteraction {
-  return onNode(isTimeline())
-}
+/** Tag that identifies a [Snackbar] for testing purposes. */
+@InternalPlatformAutosApi const val SnackbarTag = "snackbar"

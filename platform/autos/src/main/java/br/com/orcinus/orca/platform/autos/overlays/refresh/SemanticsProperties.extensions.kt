@@ -13,16 +13,18 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.test.refresh
+package br.com.orcinus.orca.platform.autos.overlays.refresh
 
-import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.semantics.SemanticsProperties
-import androidx.compose.ui.test.SemanticsMatcher
-import br.com.orcinus.orca.composite.timeline.refresh.InProgress
+import androidx.compose.ui.semantics.SemanticsPropertyKey
 
-/** [SemanticsMatcher] that matches a [SemanticsNode] that's in a temporarily active state. */
-internal fun isInProgress(): SemanticsMatcher {
-  return SemanticsMatcher("is in progress") {
-    it.config.getOrElse(SemanticsProperties.InProgress) { false }
-  }
-}
+/** [SemanticsPropertyKey] returned by [InProgress]. */
+private val InProgressSemanticsPropertyKey = SemanticsPropertyKey<Boolean>(name = "InProgress")
+
+/**
+ * [SemanticsPropertyKey] that indicates whether the node is currently in a temporarily active
+ * state.
+ */
+@Suppress("UnusedReceiverParameter")
+val SemanticsProperties.InProgress
+  get() = InProgressSemanticsPropertyKey

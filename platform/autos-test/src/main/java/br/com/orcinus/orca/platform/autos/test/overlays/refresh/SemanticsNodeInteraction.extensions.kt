@@ -13,13 +13,13 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline.test
+package br.com.orcinus.orca.platform.autos.test.overlays.refresh
 
+import androidx.compose.ui.semantics.SemanticsNode
 import androidx.compose.ui.test.SemanticsNodeInteraction
-import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
-import br.com.orcinus.orca.composite.timeline.Timeline
+import androidx.compose.ui.test.assert
 
-/** [SemanticsNodeInteraction] of a [Timeline]. */
-fun SemanticsNodeInteractionsProvider.onTimeline(): SemanticsNodeInteraction {
-  return onNode(isTimeline())
+/** Asserts that the [SemanticsNode] isn't in a temporarily active state. */
+fun SemanticsNodeInteraction.assertIsNotInProgress(): SemanticsNodeInteraction {
+  return assert(isInProgress().not())
 }
