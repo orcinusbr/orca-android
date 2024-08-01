@@ -29,7 +29,7 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
-  fun findsIndicator() {
+  fun findsRefreshIndicator() {
     composeRule
       .apply { setContent { Refreshable(Refresh.Indefinite) {} } }
       .onRefreshIndicator()
