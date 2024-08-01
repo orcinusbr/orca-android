@@ -44,14 +44,14 @@ data class Refresh(val isInProgress: Boolean, val listener: Listener) {
 
   companion object {
     /** Never-active, no-op [Refresh]. */
-    val Disabled = Refresh(isInProgress = false) {}
+    val Disabled = Refresh(isInProgress = false, Listener.Empty)
 
     /**
      * [Refresh] that remains active indefinitely.
      *
      * @see isInProgress
      */
-    val Indefinite = Refresh(isInProgress = true) {}
+    val Indefinite = Refresh(isInProgress = true, Listener.Empty)
 
     /**
      * Creates a [Refresh] that can be active but doesn't report its actual progress.
