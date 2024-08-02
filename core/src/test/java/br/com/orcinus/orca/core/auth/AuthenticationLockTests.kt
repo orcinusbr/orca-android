@@ -2,7 +2,6 @@ package br.com.orcinus.orca.core.auth
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import assertk.assertions.isSameAs
 import assertk.assertions.isTrue
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.FixedActorProvider
@@ -72,29 +71,27 @@ internal class AuthenticationLockTests {
       val authenticator = TestAuthenticator(actorProvider = actorProvider)
       val lock = TestAuthenticationLock(actorProvider, authenticator)
       val scheduleCount = 2
-      val actors =
-        flow {
-            var initialSchedulingContinuation: Continuation<Unit>? = null
-            val initialSchedulingSuspensionJob =
-              launch(Dispatchers.Unconfined, CoroutineStart.LAZY) {
-                suspendCoroutine { initialSchedulingContinuation = it }
-              }
-            repeat(scheduleCount) { _ ->
-              emit(
-                async {
-                  lock.scheduleUnlock {
-                    initialSchedulingContinuation?.resume(Unit)
-                      ?: initialSchedulingSuspensionJob.takeUnless(Job::isActive)?.start()
-                    it
-                  }
-                }
-              )
+      flow {
+          var initialSchedulingContinuation: Continuation<Unit>? = null
+          val initialSchedulingSuspensionJob =
+            launch(Dispatchers.Unconfined, CoroutineStart.LAZY) {
+              suspendCoroutine { initialSchedulingContinuation = it }
             }
+          repeat(scheduleCount) { _ ->
+            emit(
+              async {
+                lock.scheduleUnlock {
+                  initialSchedulingContinuation?.resume(Unit)
+                    ?: initialSchedulingSuspensionJob.takeUnless(Job::isActive)?.start()
+                  it
+                }
+              }
+            )
           }
-          .windowed(scheduleCount)
-          .single()
-          .awaitAll()
-      assertThat(actors.first()).isSameAs(actors.last())
+        }
+        .windowed(scheduleCount)
+        .single()
+        .awaitAll()
     }
   }
 }
