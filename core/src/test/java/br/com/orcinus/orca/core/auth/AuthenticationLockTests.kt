@@ -22,8 +22,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 
@@ -70,27 +68,21 @@ internal class AuthenticationLockTests {
       val actorProvider = FixedActorProvider(Actor.Authenticated.sample)
       val authenticator = TestAuthenticator(actorProvider = actorProvider)
       val lock = TestAuthenticationLock(actorProvider, authenticator)
-      val scheduleCount = 2
-      flow {
-          var initialSchedulingContinuation: Continuation<Unit>? = null
-          val initialSchedulingSuspensionJob =
-            launch(Dispatchers.Unconfined, CoroutineStart.LAZY) {
-              suspendCoroutine { initialSchedulingContinuation = it }
+      var initialUnlockContinuation: Continuation<Unit>? = null
+      val initialUnlockSuspensionJob =
+        launch(Dispatchers.Unconfined, CoroutineStart.LAZY) {
+          suspendCoroutine { initialUnlockContinuation = it }
+        }
+      val unlockCount = 2
+      List(size = unlockCount) {
+          async {
+            lock.scheduleUnlock {
+              initialUnlockContinuation?.resume(Unit)
+                ?: initialUnlockSuspensionJob.takeUnless(Job::isActive)?.start()
+              it
             }
-          repeat(scheduleCount) { _ ->
-            emit(
-              async {
-                lock.scheduleUnlock {
-                  initialSchedulingContinuation?.resume(Unit)
-                    ?: initialSchedulingSuspensionJob.takeUnless(Job::isActive)?.start()
-                  it
-                }
-              }
-            )
           }
         }
-        .windowed(scheduleCount)
-        .single()
         .awaitAll()
     }
   }
