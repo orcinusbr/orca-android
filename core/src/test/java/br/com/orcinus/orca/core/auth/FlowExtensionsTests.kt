@@ -18,7 +18,7 @@ package br.com.orcinus.orca.core.auth
 import app.cash.turbine.TurbineTestContext
 import app.cash.turbine.test
 import assertk.assertThat
-import assertk.assertions.isEqualTo
+import assertk.assertions.containsExactly
 import kotlin.test.Test
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -40,8 +40,8 @@ internal class FlowExtensionsTests {
   fun windows() {
     runTest {
       flowOf(0, 2, 4, 16, 256).windowed(2).test {
-        assertThat(awaitItem()).isEqualTo(listOf(0, 2))
-        assertThat(awaitItem()).isEqualTo(listOf(4, 16))
+        assertThat(awaitItem()).containsExactly(0, 2)
+        assertThat(awaitItem()).containsExactly(4, 16)
         awaitComplete()
       }
     }

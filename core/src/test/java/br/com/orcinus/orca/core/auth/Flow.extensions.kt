@@ -33,25 +33,21 @@ import kotlinx.coroutines.flow.transform
 @Throws(IllegalStateException::class)
 internal fun <T> Flow<T>.windowed(size: Int): Flow<List<T>> {
   require(size >= 0) { "Window size should be positive." }
-  val previousWindow = ArrayList<T>(size)
   return when (size) {
     0 -> emptyFlow()
     1 -> map(::listOf)
-    else ->
+    else -> {
+      val window = ArrayList<T>(size)
       transform {
-        val nextWindowSize = previousWindow.size.inc()
+        val nextWindowSize = window.size.inc()
         if (nextWindowSize < size) {
-          previousWindow += it
-        } else {
-          val currentWindow =
-            ArrayList<T>(nextWindowSize).apply {
-              for (element in previousWindow + it) {
-                add(element)
-              }
-            }
-          emit(currentWindow)
-          previousWindow.clear()
+          window += it
+        } else if (nextWindowSize == size) {
+          window += it
+          emit(window.toList())
+          window.clear()
         }
       }
+    }
   }
 }
