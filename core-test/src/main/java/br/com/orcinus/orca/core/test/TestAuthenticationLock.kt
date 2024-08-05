@@ -19,6 +19,7 @@ import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.Authenticator
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.test.auth.Authenticator
+import br.com.orcinus.orca.core.test.auth.actor.InMemoryActorProvider
 
 /**
  * [AuthenticationLock] with test-specific default structures.

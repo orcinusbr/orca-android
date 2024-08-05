@@ -19,7 +19,7 @@ import br.com.orcinus.orca.core.auth.Authenticator
 import br.com.orcinus.orca.core.auth.Authorizer
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
-import br.com.orcinus.orca.core.test.InMemoryActorProvider
+import br.com.orcinus.orca.core.test.auth.actor.InMemoryActorProvider
 
 /**
  * Creates an [Authenticator].

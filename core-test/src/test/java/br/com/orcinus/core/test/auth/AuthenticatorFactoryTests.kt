@@ -19,9 +19,9 @@ import assertk.assertThat
 import assertk.assertions.isSameAs
 import assertk.assertions.isTrue
 import br.com.orcinus.orca.core.auth.actor.Actor
-import br.com.orcinus.orca.core.test.InMemoryActorProvider
 import br.com.orcinus.orca.core.test.auth.Authenticator
 import br.com.orcinus.orca.core.test.auth.AuthorizerBuilder
+import br.com.orcinus.orca.core.test.auth.actor.InMemoryActorProvider
 import br.com.orcinus.orca.std.image.test.TestImageLoader
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
