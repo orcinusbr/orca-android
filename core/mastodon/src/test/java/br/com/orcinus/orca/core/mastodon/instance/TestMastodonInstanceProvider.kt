@@ -24,7 +24,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequest
 
 /**
- * [InstanceProvider] that provides a [TestMastodonInstance].
+ * [InstanceProvider] that provides a [SampleMastodonInstance].
  *
  * @param authorizer [Authorizer] with which the user will be authorized.
  * @param authenticator [Authenticator] through which authentication can be done.
@@ -39,15 +39,15 @@ internal class TestMastodonInstanceProvider(
   private val clientResponseProvider: ClientResponseProvider
 ) : InstanceProvider {
   /**
-   * [TestMastodonInstance] to be provided.
+   * [SampleMastodonInstance] to be provided.
    *
    * @see provide
    */
   private val instance by lazy {
-    TestMastodonInstance(authorizer, authenticator, authenticationLock, clientResponseProvider)
+    SampleMastodonInstance(authorizer, authenticator, authenticationLock, clientResponseProvider)
   }
 
-  override fun provide(): TestMastodonInstance {
+  override fun provide(): SampleMastodonInstance {
     return instance
   }
 }

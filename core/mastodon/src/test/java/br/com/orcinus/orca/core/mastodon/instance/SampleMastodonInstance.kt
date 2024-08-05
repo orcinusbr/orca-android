@@ -30,12 +30,13 @@ import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.request.HttpRequest
 
 /**
- * [MastodonInstance] whose [requester] responds OK to each sent [HttpRequest].
+ * [MastodonInstance] with sample structures and whose [requester] responds OK to each sent
+ * [HttpRequest].
  *
  * @param authorizer [Authorizer] with which the user will be authorized.
- * @param clientResponseProvider Defines how the [requester] to an [HttpRequest].
+ * @property clientResponseProvider Defines how the [requester] to an [HttpRequest].
  */
-internal class TestMastodonInstance(
+internal class SampleMastodonInstance(
   authorizer: Authorizer,
   override val authenticator: Authenticator,
   override val authenticationLock: AuthenticationLock<Authenticator>,
