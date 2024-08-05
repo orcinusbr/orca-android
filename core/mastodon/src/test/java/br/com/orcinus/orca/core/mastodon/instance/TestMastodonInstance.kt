@@ -23,8 +23,8 @@ import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.createHttpClientEngineFactory
 import br.com.orcinus.orca.core.sample.test.instance.sample
 import br.com.orcinus.orca.core.test.ConstantAuthorizer
+import br.com.orcinus.orca.core.test.DefaultAuthenticator
 import br.com.orcinus.orca.core.test.TestAuthenticationLock
-import br.com.orcinus.orca.core.test.TestAuthenticator
 import br.com.orcinus.orca.ext.uri.URIBuilder
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.engine.mock.MockEngine
@@ -38,11 +38,11 @@ import io.ktor.client.request.HttpRequest
  */
 internal class TestMastodonInstance(
   authorizer: ConstantAuthorizer = ConstantAuthorizer(),
-  override val authenticator: TestAuthenticator = TestAuthenticator(authorizer),
-  override val authenticationLock: AuthenticationLock<TestAuthenticator> =
+  override val authenticator: DefaultAuthenticator = DefaultAuthenticator(authorizer),
+  override val authenticationLock: AuthenticationLock<DefaultAuthenticator> =
     TestAuthenticationLock(authenticator = authenticator),
   private val clientResponseProvider: ClientResponseProvider
-) : MastodonInstance<ConstantAuthorizer, TestAuthenticator>(Instance.sample.domain, authorizer) {
+) : MastodonInstance<ConstantAuthorizer, DefaultAuthenticator>(Instance.sample.domain, authorizer) {
   /**
    * [HttpClientEngineFactory] that creates a [MockEngine] that sends an OK response to each
    * [HttpRequest].

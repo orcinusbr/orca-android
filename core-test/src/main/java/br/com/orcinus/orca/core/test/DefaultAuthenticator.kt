@@ -20,28 +20,26 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 
 /**
- * [Authenticator] that switches the [Actor] locally on authentication.
+ * [Authenticator] that calls the [callback] and returns an [Actor] provided by the [actorProvider]
+ * when authentication is performed.
  *
  * @param authorizer [ConstantAuthorizer] with which the user will be authorized.
- * @param actorProvider [ActorProvider] to which the authenticated [Actor] will be sent to be
- *   remembered when authentication occurs.
- * @param onOnAuthenticate Operation to be performed when [onAuthenticate] is called.
+ * @param actorProvider [ActorProvider] that provides the [Actor] to be returned upon
+ *   authentication.
+ * @param callback Operation to be performed when [onAuthenticate] is called.
  */
-class TestAuthenticator(
+class DefaultAuthenticator(
   override val authorizer: ConstantAuthorizer = ConstantAuthorizer(),
   override val actorProvider: ActorProvider = InMemoryActorProvider(),
-  private val onOnAuthenticate: suspend (authorizationCode: String) -> Unit = {}
+  private val callback: suspend (authorizationCode: String) -> Unit = noOpCallback
 ) : Authenticator() {
-  /** Current actor. */
-  private var actor: Actor = Actor.Unauthenticated
-
   override suspend fun onAuthenticate(authorizationCode: String): Actor {
-    onOnAuthenticate(authorizationCode)
-    actor =
-      when (actor) {
-        is Actor.Unauthenticated -> actorProvider.provide()
-        is Actor.Authenticated -> actor
-      }
-    return actor
+    callback(authorizationCode)
+    return actorProvider.provide()
+  }
+
+  companion object {
+    /** No-op callback that is the default one of a [DefaultAuthenticator]. */
+    private val noOpCallback: suspend (authorizationCode: String) -> Unit = {}
   }
 }
