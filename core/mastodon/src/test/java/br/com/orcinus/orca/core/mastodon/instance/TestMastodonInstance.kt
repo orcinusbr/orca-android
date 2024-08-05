@@ -16,15 +16,16 @@
 package br.com.orcinus.orca.core.mastodon.instance
 
 import br.com.orcinus.orca.core.auth.AuthenticationLock
+import br.com.orcinus.orca.core.auth.Authorizer
 import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvider
 import br.com.orcinus.orca.core.mastodon.instance.requester.NoOpLogger
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.createHttpClientEngineFactory
 import br.com.orcinus.orca.core.sample.test.instance.sample
-import br.com.orcinus.orca.core.test.ConstantAuthorizer
 import br.com.orcinus.orca.core.test.DefaultAuthenticator
 import br.com.orcinus.orca.core.test.TestAuthenticationLock
+import br.com.orcinus.orca.core.test.auth.AuthorizerBuilder
 import br.com.orcinus.orca.ext.uri.URIBuilder
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.engine.mock.MockEngine
@@ -33,16 +34,16 @@ import io.ktor.client.request.HttpRequest
 /**
  * [MastodonInstance] whose [requester] responds OK to each sent [HttpRequest].
  *
- * @param authorizer [ConstantAuthorizer] with which the user will be authorized.
+ * @param authorizer [Authorizer] with which the user will be authorized.
  * @param clientResponseProvider Defines how the [requester] to an [HttpRequest].
  */
 internal class TestMastodonInstance(
-  authorizer: ConstantAuthorizer = ConstantAuthorizer(),
+  authorizer: Authorizer = AuthorizerBuilder().build(),
   override val authenticator: DefaultAuthenticator = DefaultAuthenticator(authorizer),
   override val authenticationLock: AuthenticationLock<DefaultAuthenticator> =
     TestAuthenticationLock(authenticator = authenticator),
   private val clientResponseProvider: ClientResponseProvider
-) : MastodonInstance<ConstantAuthorizer, DefaultAuthenticator>(Instance.sample.domain, authorizer) {
+) : MastodonInstance<Authorizer, DefaultAuthenticator>(Instance.sample.domain, authorizer) {
   /**
    * [HttpClientEngineFactory] that creates a [MockEngine] that sends an OK response to each
    * [HttpRequest].

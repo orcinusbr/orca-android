@@ -22,4 +22,8 @@ plugins {
 dependencies {
   implementation(project(":core"))
   implementation(project(":std:image-test"))
+
+  testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.coroutines.test)
+  testImplementation(libs.kotlin.test)
 }

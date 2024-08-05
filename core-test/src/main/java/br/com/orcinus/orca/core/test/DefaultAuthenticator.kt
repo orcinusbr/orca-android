@@ -16,20 +16,22 @@
 package br.com.orcinus.orca.core.test
 
 import br.com.orcinus.orca.core.auth.Authenticator
+import br.com.orcinus.orca.core.auth.Authorizer
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
+import br.com.orcinus.orca.core.test.auth.AuthorizerBuilder
 
 /**
  * [Authenticator] that calls the [callback] and returns an [Actor] provided by the [actorProvider]
  * when authentication is performed.
  *
- * @param authorizer [ConstantAuthorizer] with which the user will be authorized.
+ * @param authorizer [Authorizer] with which the user will be authorized.
  * @param actorProvider [ActorProvider] that provides the [Actor] to be returned upon
  *   authentication.
  * @param callback Operation to be performed when [onAuthenticate] is called.
  */
 class DefaultAuthenticator(
-  override val authorizer: ConstantAuthorizer = ConstantAuthorizer(),
+  override val authorizer: Authorizer = AuthorizerBuilder().build(),
   override val actorProvider: ActorProvider = InMemoryActorProvider(),
   private val callback: suspend (authorizationCode: String) -> Unit = noOpCallback
 ) : Authenticator() {

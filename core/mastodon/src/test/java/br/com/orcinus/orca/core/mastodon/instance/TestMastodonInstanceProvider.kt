@@ -16,9 +16,9 @@
 package br.com.orcinus.orca.core.mastodon.instance
 
 import br.com.orcinus.orca.core.auth.AuthenticationLock
+import br.com.orcinus.orca.core.auth.Authorizer
 import br.com.orcinus.orca.core.instance.InstanceProvider
 import br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvider
-import br.com.orcinus.orca.core.test.ConstantAuthorizer
 import br.com.orcinus.orca.core.test.DefaultAuthenticator
 import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequest
@@ -26,14 +26,14 @@ import io.ktor.client.request.HttpRequest
 /**
  * [InstanceProvider] that provides a [TestMastodonInstance].
  *
- * @param authorizer [ConstantAuthorizer] with which the user will be authorized.
+ * @param authorizer [Authorizer] with which the user will be authorized.
  * @param authenticator [DefaultAuthenticator] through which authentication can be done.
  * @param authenticationLock [AuthenticationLock] by which features can be locked or unlocked by an
  *   authentication "wall".
  * @param clientResponseProvider Defines how the [HttpClient] to an [HttpRequest].
  */
 internal class TestMastodonInstanceProvider(
-  private val authorizer: ConstantAuthorizer,
+  private val authorizer: Authorizer,
   private val authenticator: DefaultAuthenticator,
   private val authenticationLock: AuthenticationLock<DefaultAuthenticator>,
   private val clientResponseProvider: ClientResponseProvider
