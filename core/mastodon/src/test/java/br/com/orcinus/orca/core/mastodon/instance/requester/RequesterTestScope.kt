@@ -20,12 +20,13 @@ import br.com.orcinus.orca.core.mastodon.MastodonCoreModule
 import br.com.orcinus.orca.core.mastodon.instance.TestMastodonInstanceProvider
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.SampleTermMuter
-import br.com.orcinus.orca.core.test.DefaultAuthenticator
 import br.com.orcinus.orca.core.test.InMemoryActorProvider
 import br.com.orcinus.orca.core.test.TestAuthenticationLock
+import br.com.orcinus.orca.core.test.auth.Authenticator
 import br.com.orcinus.orca.core.test.auth.AuthorizerBuilder
 import br.com.orcinus.orca.ext.uri.URIBuilder
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
+import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 import io.ktor.client.HttpClient
@@ -95,7 +96,11 @@ internal inline fun runRequesterTest(
   }
   val authorizer = AuthorizerBuilder().build()
   val actorProvider = InMemoryActorProvider()
-  val authenticator = DefaultAuthenticator(authorizer, actorProvider) { onAuthentication() }
+  val authenticator =
+    Authenticator(authorizer, actorProvider) {
+      onAuthentication()
+      Actor.Authenticated.sample
+    }
   val authenticationLock = TestAuthenticationLock(actorProvider, authenticator)
   val instanceProvider =
     TestMastodonInstanceProvider(

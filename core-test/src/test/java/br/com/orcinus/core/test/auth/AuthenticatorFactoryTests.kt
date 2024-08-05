@@ -16,48 +16,41 @@
 package br.com.orcinus.core.test.auth
 
 import assertk.assertThat
-import assertk.assertions.isEqualTo
+import assertk.assertions.isSameAs
 import assertk.assertions.isTrue
 import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.test.InMemoryActorProvider
 import br.com.orcinus.orca.core.test.auth.Authenticator
 import br.com.orcinus.orca.core.test.auth.AuthorizerBuilder
-import java.util.UUID
+import br.com.orcinus.orca.std.image.test.TestImageLoader
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
-internal class AuthorizerBuilderTests {
+internal class AuthenticatorFactoryTests {
   @Test
-  fun buildsAnAuthorizerWhoseBeforeCallbackIsCalledPriorToTheProvisioningOfTheAuthorizationCode() {
+  fun createdAuthenticatorDelegatesAuthorizationToTheSpecifiedAuthorizer() {
     runTest {
-      var hasBeforeCallbackBeenCalled = false
-      val authorizer = AuthorizerBuilder().before { hasBeforeCallbackBeenCalled = true }.build()
+      var isAuthorized = false
+      val authorizer = AuthorizerBuilder().before { isAuthorized = true }.build()
       Authenticator(authorizer).authenticate()
-      assertThat(hasBeforeCallbackBeenCalled).isTrue()
+      assertThat(isAuthorized).isTrue()
     }
   }
 
   @Test
-  fun buildsAnAuthorizerWithTheDefaultAuthorizationCodeByDefault() {
+  fun createdAuthenticatorProvidesActorProvidedByTheActorProviderUponAuthenticationByDefault() {
     runTest {
-      val authorizer = AuthorizerBuilder().build()
-      Authenticator(authorizer) {
-          assertThat(it).isEqualTo(AuthorizerBuilder.DEFAULT_AUTHORIZATION_CODE)
-          Actor.Unauthenticated
-        }
-        .authenticate()
+      val actor = Actor.Authenticated("id", "access-token", TestImageLoader)
+      val actorProvider = InMemoryActorProvider().apply { remember(actor) }
+      assertThat(Authenticator(actorProvider = actorProvider).authenticate()).isSameAs(actor)
     }
   }
 
   @Test
-  fun buildsAnAuthorizerWithTheSpecifiedAuthorizationCode() {
+  fun createdAuthenticatorDelegatesAuthenticationToTheSpecifiedCallback() {
     runTest {
-      val authorizationCode = UUID.randomUUID().toString()
-      val authorizer = AuthorizerBuilder().authorizationCode(authorizationCode).build()
-      Authenticator(authorizer) {
-          assertThat(it).isEqualTo(authorizationCode)
-          Actor.Unauthenticated
-        }
-        .authenticate()
+      val actor = Actor.Authenticated("id", "access-token", TestImageLoader)
+      assertThat(Authenticator { actor }.authenticate()).isSameAs(actor)
     }
   }
 }

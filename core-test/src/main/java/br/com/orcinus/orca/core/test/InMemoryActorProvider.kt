@@ -27,7 +27,7 @@ class InMemoryActorProvider : ActorProvider() {
    */
   private var actor: Actor = Actor.Unauthenticated
 
-  override suspend fun remember(actor: Actor) {
+  public override suspend fun remember(actor: Actor) {
     this.actor = actor
   }
 

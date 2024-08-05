@@ -16,21 +16,22 @@
 package br.com.orcinus.orca.core.test
 
 import br.com.orcinus.orca.core.auth.AuthenticationLock
+import br.com.orcinus.orca.core.auth.Authenticator
 import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.test.auth.Authenticator
 
 /**
  * [AuthenticationLock] with test-specific default structures.
  *
- * @param authenticator [DefaultAuthenticator] through which the [Actor] will be authenticated if it
+ * @property actorProvider [InMemoryActorProvider] whose provided [Actor] will be ensured to be
+ *   either unauthenticated or authenticated.
+ * @property authenticator [Authenticator] through which the [Actor] will be authenticated if it
  *   isn't and [scheduleUnlock] is called.
- * @param actorProvider [InMemoryActorProvider] whose provided [Actor] will be ensured to be either
- *   unauthenticated or authenticated.
  */
 class TestAuthenticationLock(
   override val actorProvider: InMemoryActorProvider = InMemoryActorProvider(),
-  override val authenticator: DefaultAuthenticator =
-    DefaultAuthenticator(actorProvider = actorProvider)
-) : AuthenticationLock<DefaultAuthenticator>() {
+  override val authenticator: Authenticator = Authenticator(actorProvider = actorProvider)
+) : AuthenticationLock<Authenticator>() {
   override fun createFailedAuthenticationException(): FailedAuthenticationException {
     return FailedAuthenticationException(cause = null)
   }

@@ -15,8 +15,8 @@
 
 package br.com.orcinus.orca.core.auth.actor
 
-import br.com.orcinus.orca.core.test.DefaultAuthenticator
 import br.com.orcinus.orca.core.test.InMemoryActorProvider
+import br.com.orcinus.orca.core.test.auth.Authenticator
 import kotlin.test.assertEquals
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -25,7 +25,7 @@ internal class ActorProviderTests {
   @Test
   fun `GIVEN a provider WHEN authenticating THEN it provides the resulting actor`() {
     val actorProvider = InMemoryActorProvider()
-    val authenticator = DefaultAuthenticator(actorProvider = actorProvider)
+    val authenticator = Authenticator(actorProvider = actorProvider)
     runTest {
       val actor = authenticator.authenticate()
       assertEquals(actor, actorProvider.provide())

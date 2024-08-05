@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.core.mastodon.instance
 
 import br.com.orcinus.orca.core.auth.AuthenticationLock
+import br.com.orcinus.orca.core.auth.Authenticator
 import br.com.orcinus.orca.core.auth.Authorizer
 import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvider
@@ -23,8 +24,8 @@ import br.com.orcinus.orca.core.mastodon.instance.requester.NoOpLogger
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.createHttpClientEngineFactory
 import br.com.orcinus.orca.core.sample.test.instance.sample
-import br.com.orcinus.orca.core.test.DefaultAuthenticator
 import br.com.orcinus.orca.core.test.TestAuthenticationLock
+import br.com.orcinus.orca.core.test.auth.Authenticator
 import br.com.orcinus.orca.core.test.auth.AuthorizerBuilder
 import br.com.orcinus.orca.ext.uri.URIBuilder
 import io.ktor.client.engine.HttpClientEngineFactory
@@ -39,11 +40,11 @@ import io.ktor.client.request.HttpRequest
  */
 internal class TestMastodonInstance(
   authorizer: Authorizer = AuthorizerBuilder().build(),
-  override val authenticator: DefaultAuthenticator = DefaultAuthenticator(authorizer),
-  override val authenticationLock: AuthenticationLock<DefaultAuthenticator> =
+  override val authenticator: Authenticator = Authenticator(authorizer),
+  override val authenticationLock: AuthenticationLock<Authenticator> =
     TestAuthenticationLock(authenticator = authenticator),
   private val clientResponseProvider: ClientResponseProvider
-) : MastodonInstance<Authorizer, DefaultAuthenticator>(Instance.sample.domain, authorizer) {
+) : MastodonInstance<Authorizer, Authenticator>(Instance.sample.domain, authorizer) {
   /**
    * [HttpClientEngineFactory] that creates a [MockEngine] that sends an OK response to each
    * [HttpRequest].

@@ -18,13 +18,15 @@ package br.com.orcinus.orca.core.feed.profile.post.provider
 import assertk.assertThat
 import assertk.assertions.isSameAs
 import assertk.assertions.isTrue
+import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.post.DeletablePost
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
+import br.com.orcinus.orca.core.sample.test.auth.actor.sample
 import br.com.orcinus.orca.core.sample.test.feed.profile.post.withSample
-import br.com.orcinus.orca.core.test.DefaultAuthenticator
 import br.com.orcinus.orca.core.test.InMemoryActorProvider
 import br.com.orcinus.orca.core.test.TestAuthenticationLock
+import br.com.orcinus.orca.core.test.auth.Authenticator
 import kotlin.test.Test
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -37,7 +39,10 @@ internal class PostExtensionsTests {
     var hasAuthenticationBeenScheduled = false
     val actorProvider = InMemoryActorProvider()
     val authenticator =
-      DefaultAuthenticator(actorProvider = actorProvider) { hasAuthenticationBeenScheduled = true }
+      Authenticator(actorProvider = actorProvider) {
+        hasAuthenticationBeenScheduled = true
+        Actor.Authenticated.sample
+      }
     val authenticationLock = TestAuthenticationLock(actorProvider, authenticator)
     val post = Posts.withSample.single()
     runTest {
