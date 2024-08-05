@@ -16,8 +16,8 @@
 package br.com.orcinus.orca.core.auth
 
 import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.test.ConstantAuthorizer
 import br.com.orcinus.orca.core.test.TestAuthenticator
-import br.com.orcinus.orca.core.test.TestAuthorizer
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
@@ -28,7 +28,7 @@ internal class AuthenticatorTests {
   @Test
   fun `GIVEN an authentication WHEN verifying if the actor is authorized THEN it is`() {
     var isAuthorized = false
-    val authorizer = TestAuthorizer { isAuthorized = true }
+    val authorizer = ConstantAuthorizer { isAuthorized = true }
     runTest { TestAuthenticator(authorizer).authenticate() }
     assertTrue(isAuthorized)
   }
@@ -36,15 +36,13 @@ internal class AuthenticatorTests {
   @Test
   fun `GIVEN an authentication WHEN comparing the authorization code provided by the authorizer and the one the authenticator receives THEN they're the same`() {
     lateinit var providedAuthorizationCode: String
-    val authorizer = TestAuthorizer()
     val authenticator = TestAuthenticator { providedAuthorizationCode = it }
     runTest { authenticator.authenticate() }
-    assertEquals(TestAuthorizer.AUTHORIZATION_CODE, providedAuthorizationCode)
+    assertEquals(ConstantAuthorizer.AUTHORIZATION_CODE, providedAuthorizationCode)
   }
 
   @Test
   fun `GIVEN an authentication WHEN getting the resulting actor THEN it's authenticated`() {
-    val authorizer = TestAuthorizer()
     val authenticator = TestAuthenticator()
     runTest { assertIs<Actor.Authenticated>(authenticator.authenticate()) }
   }

@@ -16,20 +16,19 @@
 package br.com.orcinus.orca.core.test
 
 import br.com.orcinus.orca.core.auth.Authenticator
-import br.com.orcinus.orca.core.auth.Authorizer
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 
 /**
  * [Authenticator] that switches the [Actor] locally on authentication.
  *
- * @param authorizer [Authorizer] with which the user will be authorized.
+ * @param authorizer [ConstantAuthorizer] with which the user will be authorized.
  * @param actorProvider [ActorProvider] to which the authenticated [Actor] will be sent to be
  *   remembered when authentication occurs.
  * @param onOnAuthenticate Operation to be performed when [onAuthenticate] is called.
  */
 class TestAuthenticator(
-  override val authorizer: TestAuthorizer = TestAuthorizer(),
+  override val authorizer: ConstantAuthorizer = ConstantAuthorizer(),
   override val actorProvider: ActorProvider = InMemoryActorProvider(),
   private val onOnAuthenticate: suspend (authorizationCode: String) -> Unit = {}
 ) : Authenticator() {

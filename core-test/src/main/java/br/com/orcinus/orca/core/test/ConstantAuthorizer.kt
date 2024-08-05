@@ -18,18 +18,22 @@ package br.com.orcinus.orca.core.test
 import br.com.orcinus.orca.core.auth.Authorizer
 
 /**
- * [Authorizer] that provides a fixed authorization code.
+ * [Authorizer] that provides a constant authorization code.
  *
- * @param onAuthorize Operation to be performed when [authorize] is called.
+ * @param onAuthorization Operation to be executed when authorization is requested to be performed.
  * @see AUTHORIZATION_CODE
  */
-class TestAuthorizer(private val onAuthorize: () -> Unit = {}) : Authorizer() {
+class ConstantAuthorizer(private val onAuthorization: () -> Unit = noOpOnAuthorization) :
+  Authorizer() {
   override suspend fun authorize(): String {
-    onAuthorize()
+    onAuthorization()
     return AUTHORIZATION_CODE
   }
 
   companion object {
+    /** Default authorization callback of a [ConstantAuthorizer] which does nothing. */
+    private val noOpOnAuthorization = {}
+
     /** Authorization code provided by [authorize]. */
     const val AUTHORIZATION_CODE = "authorization-code"
   }
