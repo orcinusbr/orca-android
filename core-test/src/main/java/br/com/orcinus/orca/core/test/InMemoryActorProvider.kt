@@ -18,20 +18,20 @@ package br.com.orcinus.orca.core.test
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 
-/** [ActorProvider] that remembers and retrieves [Actor]s locally. */
-open class TestActorProvider : ActorProvider() {
+/** [ActorProvider] that remembers and retrieves [Actor]s from memory. */
+class InMemoryActorProvider : ActorProvider() {
   /**
-   * [Actor] that's been remembered.
+   * [Actor] that has been remembered.
    *
    * @see remember
    */
-  private var rememberedActor: Actor = Actor.Unauthenticated
+  private var actor: Actor = Actor.Unauthenticated
 
   override suspend fun remember(actor: Actor) {
-    rememberedActor = actor
+    this.actor = actor
   }
 
   override suspend fun retrieve(): Actor {
-    return rememberedActor
+    return actor
   }
 }

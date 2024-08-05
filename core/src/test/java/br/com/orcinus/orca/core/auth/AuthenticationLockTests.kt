@@ -3,7 +3,7 @@ package br.com.orcinus.orca.core.auth
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
-import br.com.orcinus.orca.core.test.TestActorProvider
+import br.com.orcinus.orca.core.test.InMemoryActorProvider
 import br.com.orcinus.orca.core.test.TestAuthenticationLock
 import br.com.orcinus.orca.core.test.TestAuthenticator
 import kotlin.test.Test
@@ -24,7 +24,7 @@ internal class AuthenticationLockTests {
 
   @Test
   fun unlocksWhenActorIsAuthenticated() {
-    val actorProvider = TestActorProvider()
+    val actorProvider = InMemoryActorProvider()
     val authenticator = TestAuthenticator(actorProvider = actorProvider)
     var hasListenerBeenNotified = false
     runTest {

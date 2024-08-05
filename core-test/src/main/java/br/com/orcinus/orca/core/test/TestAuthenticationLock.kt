@@ -23,11 +23,11 @@ import br.com.orcinus.orca.core.auth.actor.Actor
  *
  * @param authenticator [TestAuthenticator] through which the [Actor] will be authenticated if it
  *   isn't and [requestUnlock][AuthenticationLock.scheduleUnlock] is called.
- * @param actorProvider [TestActorProvider] whose provided [Actor] will be ensured to be either
+ * @param actorProvider [InMemoryActorProvider] whose provided [Actor] will be ensured to be either
  *   [unauthenticated][Actor.Unauthenticated] or [authenticated][Actor.Authenticated].
  */
 class TestAuthenticationLock(
-  override val actorProvider: TestActorProvider = TestActorProvider(),
+  override val actorProvider: InMemoryActorProvider = InMemoryActorProvider(),
   override val authenticator: TestAuthenticator = TestAuthenticator(actorProvider = actorProvider)
 ) : AuthenticationLock<TestAuthenticator>() {
   override fun createFailedAuthenticationException(): FailedAuthenticationException {

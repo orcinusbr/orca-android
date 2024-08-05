@@ -22,7 +22,7 @@ import br.com.orcinus.orca.core.feed.profile.post.DeletablePost
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
 import br.com.orcinus.orca.core.sample.test.feed.profile.post.withSample
-import br.com.orcinus.orca.core.test.TestActorProvider
+import br.com.orcinus.orca.core.test.InMemoryActorProvider
 import br.com.orcinus.orca.core.test.TestAuthenticationLock
 import br.com.orcinus.orca.core.test.TestAuthenticator
 import kotlin.test.Test
@@ -35,7 +35,7 @@ internal class PostExtensionsTests {
   @Test
   fun schedulesAuthenticationUnlockWhenObtainingDeletableVersionOfPost() {
     var hasAuthenticationBeenScheduled = false
-    val actorProvider = TestActorProvider()
+    val actorProvider = InMemoryActorProvider()
     val authenticator =
       TestAuthenticator(actorProvider = actorProvider) { hasAuthenticationBeenScheduled = true }
     val authenticationLock = TestAuthenticationLock(actorProvider, authenticator)
