@@ -19,19 +19,18 @@ import br.com.orcinus.orca.core.auth.Authenticator
 import br.com.orcinus.orca.core.auth.Authorizer
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
-import br.com.orcinus.orca.core.test.auth.actor.InMemoryActorProvider
 
 /**
  * Creates an [Authenticator].
  *
- * @param authorizer [Authorizer] with which the user will be authorized.
  * @param actorProvider [ActorProvider] to which the authenticated [Actor] will be sent to be
  *   remembered when authentication occurs.
+ * @param authorizer [Authorizer] with which the user will be authorized.
  * @param onAuthenticate Tries to authenticate the user.
  */
 fun Authenticator(
+  actorProvider: ActorProvider,
   authorizer: Authorizer = AuthorizerBuilder().build(),
-  actorProvider: ActorProvider = InMemoryActorProvider(),
   onAuthenticate: suspend (authorizationCode: String) -> Actor = { actorProvider.provide() }
 ): Authenticator {
   return object : Authenticator() {

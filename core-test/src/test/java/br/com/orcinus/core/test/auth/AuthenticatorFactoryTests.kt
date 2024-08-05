@@ -18,6 +18,7 @@ package br.com.orcinus.core.test.auth
 import assertk.assertThat
 import assertk.assertions.isSameAs
 import assertk.assertions.isTrue
+import br.com.orcinus.core.test.auth.actor.FixedActorProvider
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.test.auth.Authenticator
 import br.com.orcinus.orca.core.test.auth.AuthorizerBuilder
@@ -30,9 +31,10 @@ internal class AuthenticatorFactoryTests {
   @Test
   fun createdAuthenticatorDelegatesAuthorizationToTheSpecifiedAuthorizer() {
     runTest {
+      val actorProvider = InMemoryActorProvider()
       var isAuthorized = false
       val authorizer = AuthorizerBuilder().before { isAuthorized = true }.build()
-      Authenticator(authorizer).authenticate()
+      Authenticator(actorProvider, authorizer).authenticate()
       assertThat(isAuthorized).isTrue()
     }
   }
@@ -50,7 +52,8 @@ internal class AuthenticatorFactoryTests {
   fun createdAuthenticatorDelegatesAuthenticationToTheSpecifiedCallback() {
     runTest {
       val actor = Actor.Authenticated("id", "access-token", TestImageLoader)
-      assertThat(Authenticator { actor }.authenticate()).isSameAs(actor)
+      val actorProvider = FixedActorProvider(actor)
+      assertThat(Authenticator(actorProvider) { actor }.authenticate()).isSameAs(actor)
     }
   }
 }

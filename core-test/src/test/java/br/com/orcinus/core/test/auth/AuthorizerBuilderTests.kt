@@ -21,6 +21,7 @@ import assertk.assertions.isTrue
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.test.auth.Authenticator
 import br.com.orcinus.orca.core.test.auth.AuthorizerBuilder
+import br.com.orcinus.orca.core.test.auth.actor.InMemoryActorProvider
 import java.util.UUID
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
@@ -29,9 +30,10 @@ internal class AuthorizerBuilderTests {
   @Test
   fun buildsAnAuthorizerWhoseBeforeCallbackIsCalledPriorToTheProvisioningOfTheAuthorizationCode() {
     runTest {
+      val actorProvider = InMemoryActorProvider()
       var hasBeforeCallbackBeenCalled = false
       val authorizer = AuthorizerBuilder().before { hasBeforeCallbackBeenCalled = true }.build()
-      Authenticator(authorizer).authenticate()
+      Authenticator(actorProvider, authorizer).authenticate()
       assertThat(hasBeforeCallbackBeenCalled).isTrue()
     }
   }
@@ -39,8 +41,9 @@ internal class AuthorizerBuilderTests {
   @Test
   fun buildsAnAuthorizerWithTheDefaultAuthorizationCodeByDefault() {
     runTest {
+      val actorProvider = InMemoryActorProvider()
       val authorizer = AuthorizerBuilder().build()
-      Authenticator(authorizer) {
+      Authenticator(actorProvider, authorizer) {
           assertThat(it).isEqualTo(AuthorizerBuilder.DEFAULT_AUTHORIZATION_CODE)
           Actor.Unauthenticated
         }
@@ -51,9 +54,10 @@ internal class AuthorizerBuilderTests {
   @Test
   fun buildsAnAuthorizerWithTheSpecifiedAuthorizationCode() {
     runTest {
+      val actorProvider = InMemoryActorProvider()
       val authorizationCode = UUID.randomUUID().toString()
       val authorizer = AuthorizerBuilder().authorizationCode(authorizationCode).build()
-      Authenticator(authorizer) {
+      Authenticator(actorProvider, authorizer) {
           assertThat(it).isEqualTo(authorizationCode)
           Actor.Unauthenticated
         }

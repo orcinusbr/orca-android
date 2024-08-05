@@ -24,7 +24,7 @@ import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
 import br.com.orcinus.orca.core.sample.test.auth.actor.sample
 import br.com.orcinus.orca.core.sample.test.feed.profile.post.withSample
-import br.com.orcinus.orca.core.test.TestAuthenticationLock
+import br.com.orcinus.orca.core.test.auth.AuthenticationLock
 import br.com.orcinus.orca.core.test.auth.Authenticator
 import br.com.orcinus.orca.core.test.auth.actor.InMemoryActorProvider
 import kotlin.test.Test
@@ -43,7 +43,7 @@ internal class PostExtensionsTests {
         hasAuthenticationBeenScheduled = true
         Actor.Authenticated.sample
       }
-    val authenticationLock = TestAuthenticationLock(actorProvider, authenticator)
+    val authenticationLock = AuthenticationLock(authenticator, actorProvider)
     val post = Posts.withSample.single()
     runTest {
       object : PostProvider() {
@@ -62,11 +62,14 @@ internal class PostExtensionsTests {
 
   @Test
   fun returnsItselfWhenMakingDeletablePostDeletable() {
-    val authenticationLock = TestAuthenticationLock()
-    val post =
-      object : DeletablePost(Posts.withSample.single()) {
-        override suspend fun delete() {}
-      }
-    runTest { assertThat(post.asDeletable(authenticationLock)).isSameAs(post) }
+    runTest {
+      val actorProvider = InMemoryActorProvider().apply { remember(Actor.Authenticated.sample) }
+      val authenticationLock = AuthenticationLock(actorProvider)
+      val post =
+        object : DeletablePost(Posts.withSample.single()) {
+          override suspend fun delete() {}
+        }
+      assertThat(post.asDeletable(authenticationLock)).isSameAs(post)
+    }
   }
 }

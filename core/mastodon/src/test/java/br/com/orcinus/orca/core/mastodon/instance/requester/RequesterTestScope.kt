@@ -20,7 +20,7 @@ import br.com.orcinus.orca.core.mastodon.MastodonCoreModule
 import br.com.orcinus.orca.core.mastodon.instance.TestMastodonInstanceProvider
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.SampleTermMuter
-import br.com.orcinus.orca.core.test.TestAuthenticationLock
+import br.com.orcinus.orca.core.test.auth.AuthenticationLock
 import br.com.orcinus.orca.core.test.auth.Authenticator
 import br.com.orcinus.orca.core.test.auth.AuthorizerBuilder
 import br.com.orcinus.orca.core.test.auth.actor.InMemoryActorProvider
@@ -97,11 +97,11 @@ internal inline fun runRequesterTest(
   val authorizer = AuthorizerBuilder().build()
   val actorProvider = InMemoryActorProvider()
   val authenticator =
-    Authenticator(authorizer, actorProvider) {
+    Authenticator(actorProvider, authorizer) {
       onAuthentication()
       Actor.Authenticated.sample
     }
-  val authenticationLock = TestAuthenticationLock(actorProvider, authenticator)
+  val authenticationLock = AuthenticationLock(authenticator, actorProvider)
   val instanceProvider =
     TestMastodonInstanceProvider(
       authorizer,

@@ -24,9 +24,6 @@ import br.com.orcinus.orca.core.mastodon.instance.requester.NoOpLogger
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.createHttpClientEngineFactory
 import br.com.orcinus.orca.core.sample.test.instance.sample
-import br.com.orcinus.orca.core.test.TestAuthenticationLock
-import br.com.orcinus.orca.core.test.auth.Authenticator
-import br.com.orcinus.orca.core.test.auth.AuthorizerBuilder
 import br.com.orcinus.orca.ext.uri.URIBuilder
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.engine.mock.MockEngine
@@ -39,10 +36,9 @@ import io.ktor.client.request.HttpRequest
  * @param clientResponseProvider Defines how the [requester] to an [HttpRequest].
  */
 internal class TestMastodonInstance(
-  authorizer: Authorizer = AuthorizerBuilder().build(),
-  override val authenticator: Authenticator = Authenticator(authorizer),
-  override val authenticationLock: AuthenticationLock<Authenticator> =
-    TestAuthenticationLock(authenticator = authenticator),
+  authorizer: Authorizer,
+  override val authenticator: Authenticator,
+  override val authenticationLock: AuthenticationLock<Authenticator>,
   private val clientResponseProvider: ClientResponseProvider
 ) : MastodonInstance<Authorizer, Authenticator>(Instance.sample.domain, authorizer) {
   /**

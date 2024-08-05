@@ -19,9 +19,9 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.sample.test.auth.actor.sample
 import br.com.orcinus.orca.core.test.auth.Authenticator
 import br.com.orcinus.orca.core.test.auth.AuthorizerBuilder
+import br.com.orcinus.orca.core.test.auth.actor.InMemoryActorProvider
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertIs
 import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
 
@@ -29,25 +29,22 @@ internal class AuthenticatorTests {
   @Test
   fun `GIVEN an authentication WHEN verifying if the actor is authorized THEN it is`() {
     var isAuthorized = false
+    val actorProvider = InMemoryActorProvider()
     val authorizer = AuthorizerBuilder().before { isAuthorized = true }.build()
-    runTest { Authenticator(authorizer).authenticate() }
+    runTest { Authenticator(actorProvider, authorizer).authenticate() }
     assertTrue(isAuthorized)
   }
 
   @Test
   fun `GIVEN an authentication WHEN comparing the authorization code provided by the authorizer and the one the authenticator receives THEN they're the same`() {
+    val actorProvider = InMemoryActorProvider()
     lateinit var providedAuthorizationCode: String
-    val authenticator = Authenticator {
-      providedAuthorizationCode = it
-      Actor.Authenticated.sample
-    }
+    val authenticator =
+      Authenticator(actorProvider) {
+        providedAuthorizationCode = it
+        Actor.Authenticated.sample
+      }
     runTest { authenticator.authenticate() }
     assertEquals(AuthorizerBuilder.DEFAULT_AUTHORIZATION_CODE, providedAuthorizationCode)
-  }
-
-  @Test
-  fun `GIVEN an authentication WHEN getting the resulting actor THEN it's authenticated`() {
-    val authenticator = Authenticator()
-    runTest { assertIs<Actor.Authenticated>(authenticator.authenticate()) }
   }
 }

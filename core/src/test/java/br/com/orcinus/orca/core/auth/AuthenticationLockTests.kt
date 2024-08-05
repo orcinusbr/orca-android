@@ -5,7 +5,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.sample.test.auth.actor.sample
-import br.com.orcinus.orca.core.test.TestAuthenticationLock
+import br.com.orcinus.orca.core.test.auth.AuthenticationLock
 import br.com.orcinus.orca.core.test.auth.Authenticator
 import br.com.orcinus.orca.core.test.auth.actor.InMemoryActorProvider
 import kotlin.test.Test
@@ -18,33 +18,36 @@ import kotlinx.coroutines.test.runTest
 internal class AuthenticationLockTests {
   @Test
   fun authenticatesWhenUnlockingWithUnauthenticatedActor() {
+    val actorProvider = InMemoryActorProvider()
     var hasBeenAuthenticated = false
-    val authenticator = Authenticator {
-      hasBeenAuthenticated = true
-      Actor.Authenticated.sample
-    }
-    runTest { TestAuthenticationLock(authenticator = authenticator).scheduleUnlock {} }
+    val authenticator =
+      Authenticator(actorProvider) {
+        hasBeenAuthenticated = true
+        Actor.Authenticated.sample
+      }
+    runTest { AuthenticationLock(authenticator, actorProvider).scheduleUnlock {} }
     assertThat(hasBeenAuthenticated).isTrue()
   }
 
   @Test
   fun unlocksWhenActorIsAuthenticated() {
-    val actorProvider = InMemoryActorProvider()
-    val authenticator = Authenticator(actorProvider = actorProvider)
-    var hasListenerBeenNotified = false
     runTest {
+      val actorProvider = InMemoryActorProvider().apply { remember(Actor.Authenticated.sample) }
+      val authenticator = Authenticator(actorProvider = actorProvider)
+      var hasListenerBeenNotified = false
       authenticator.authenticate()
-      TestAuthenticationLock(actorProvider, authenticator).scheduleUnlock {
+      AuthenticationLock(authenticator, actorProvider).scheduleUnlock {
         hasListenerBeenNotified = true
       }
+      assertThat(hasListenerBeenNotified).isTrue()
     }
-    assertThat(hasListenerBeenNotified).isTrue()
   }
 
   @Test
   fun schedulesUnlocksForWhenOngoingOnesAreFinished() {
-    val lock = TestAuthenticationLock()
     runTest {
+      val actorProvider = InMemoryActorProvider().apply { remember(Actor.Authenticated.sample) }
+      val lock = AuthenticationLock(actorProvider)
       lock.scheduleUnlock { delay(32.seconds) }
       repeat(1_024) { lock.scheduleUnlock { delay(8.seconds) } }
       assertThat(
