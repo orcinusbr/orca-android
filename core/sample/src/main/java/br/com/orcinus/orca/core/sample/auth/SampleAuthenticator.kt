@@ -26,7 +26,7 @@ internal object SampleAuthenticator : Authenticator() {
   override val authorizer: Authorizer = Authorizer.sample
   override val actorProvider = ActorProvider.sample
 
-  override suspend fun onAuthenticate(authorizationCode: String): Actor {
+  override suspend fun onAuthentication(authorizationCode: String): Actor {
     return Actor.Authenticated.sample
   }
 }

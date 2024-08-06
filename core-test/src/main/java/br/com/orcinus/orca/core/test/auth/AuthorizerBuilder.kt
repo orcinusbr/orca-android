@@ -54,7 +54,7 @@ class AuthorizerBuilder {
   /** Builds the [Authorizer]. */
   fun build(): Authorizer {
     return object : Authorizer() {
-      public override suspend fun authorize(): String {
+      public override suspend fun onAuthorization(): String {
         before?.invoke()
         return authorizationCode
       }

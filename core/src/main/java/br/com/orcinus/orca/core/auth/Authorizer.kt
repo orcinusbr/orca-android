@@ -24,17 +24,16 @@ abstract class Authorizer @InternalCoreApi constructor() {
    *
    * @return Resulting authorization code.
    */
-  @Suppress("FunctionName")
-  internal suspend fun _authorize(): String {
-    return authorize()
+  internal suspend fun authorize(): String {
+    return onAuthorization()
   }
 
   /**
-   * Authorizes the user, allowing the application to perform operations on their behalf.
+   * Callback called whenever authorization is requested to be performed.
    *
    * @return Resulting authorization code.
    */
-  protected abstract suspend fun authorize(): String
+  protected abstract suspend fun onAuthorization(): String
 
   companion object
 }

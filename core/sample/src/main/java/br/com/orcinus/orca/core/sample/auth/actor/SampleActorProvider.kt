@@ -20,7 +20,7 @@ import br.com.orcinus.orca.core.auth.actor.ActorProvider
 
 /** [ActorProvider] that always provides a sample [authenticated][Actor.Authenticated] [Actor]. */
 internal object SampleActorProvider : ActorProvider() {
-  override suspend fun remember(actor: Actor) {}
+  override suspend fun onRemembrance(actor: Actor) {}
 
   override suspend fun retrieve(): Actor {
     return Actor.Authenticated.sample

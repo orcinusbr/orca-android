@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,18 +13,22 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.sample.auth
+package br.com.orcinus.core.test.auth.actor
 
-import br.com.orcinus.orca.core.auth.Authorizer
+import assertk.assertThat
+import assertk.assertions.isSameAs
+import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.test.auth.actor.InMemoryActorProvider
+import br.com.orcinus.orca.std.image.test.NoOpImageLoader
+import kotlin.test.Test
+import kotlinx.coroutines.test.runTest
 
-/** [Authorizer] returned by [sample]. */
-private val sampleAuthorizer =
-  object : Authorizer() {
-    override suspend fun onAuthorization(): String {
-      return "sample-authorization-code"
+internal class InMemoryActorProviderTests {
+  @Test
+  fun remembers() {
+    runTest {
+      val actor = Actor.Authenticated("id", "access-token", NoOpImageLoader)
+      assertThat(InMemoryActorProvider().apply { remember(actor) }.provide()).isSameAs(actor)
     }
   }
-
-/** [Authorizer] that provides a sample authorization code. */
-val Authorizer.Companion.sample
-  get() = sampleAuthorizer
+}

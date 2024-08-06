@@ -17,17 +17,32 @@ package br.com.orcinus.orca.core.test.auth.actor
 
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
+import kotlinx.coroutines.runBlocking
 
 /** [ActorProvider] that remembers and retrieves [Actor]s from memory. */
 class InMemoryActorProvider : ActorProvider() {
   /**
    * [Actor] that has been remembered.
    *
-   * @see remember
+   * @see ActorProvider.remember
    */
   private var actor: Actor = Actor.Unauthenticated
 
-  public override suspend fun remember(actor: Actor) {
+  /**
+   * Remembers the given [actor] so that it can be retrieved later.
+   *
+   * @param actor [Actor] to remember.
+   * @see retrieve
+   */
+  fun remember(actor: Actor) {
+    /*
+     * InMemoryActorProvider's onRemembrance(Actor) doesn't actually suspend, so calling it
+     * blockingly doesn't interrupt the execution flow.
+     */
+    runBlocking { onRemembrance(actor) }
+  }
+
+  override suspend fun onRemembrance(actor: Actor) {
     this.actor = actor
   }
 

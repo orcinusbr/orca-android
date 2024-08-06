@@ -24,7 +24,7 @@ import br.com.orcinus.orca.core.auth.actor.ActorProvider
  * @property actor [Actor] to be provided.
  */
 internal class FixedActorProvider(private val actor: Actor) : ActorProvider() {
-  override suspend fun remember(actor: Actor) {}
+  override suspend fun onRemembrance(actor: Actor) {}
 
   override suspend fun retrieve(): Actor {
     return actor

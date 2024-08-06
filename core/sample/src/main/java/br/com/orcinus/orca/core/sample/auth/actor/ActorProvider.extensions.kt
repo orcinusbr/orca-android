@@ -21,7 +21,7 @@ import br.com.orcinus.orca.core.auth.actor.ActorProvider
 /** [ActorProvider] returned by [sample]. */
 private val sampleActorProvider =
   object : ActorProvider() {
-    override suspend fun remember(actor: Actor) {}
+    override suspend fun onRemembrance(actor: Actor) {}
 
     override suspend fun retrieve(): Actor {
       return Actor.Authenticated.sample
