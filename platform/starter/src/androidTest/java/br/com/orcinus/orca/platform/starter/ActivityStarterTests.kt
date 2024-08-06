@@ -22,14 +22,14 @@ import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
 internal class ActivityStarterTests {
-  internal class TestStartableActivity : StartableActivity()
+  internal class EmptyStartableActivity : StartableActivity()
 
   @Test
   fun notifiesListenerWhenActivityIsStarted() {
     runTest {
       @Suppress("RemoveExplicitTypeArguments")
-      suspendCoroutine<TestStartableActivity> { continuation ->
-        context.on<TestStartableActivity>().asNewTask().start { activity ->
+      suspendCoroutine<EmptyStartableActivity> { continuation ->
+        context.on<EmptyStartableActivity>().asNewTask().start { activity ->
           activity.finish()
           continuation.resume(activity)
         }

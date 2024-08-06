@@ -24,12 +24,12 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class ActivityStarterTests {
-  internal class TestStartableActivity : StartableActivity()
+  internal class EmptyStartableActivity : StartableActivity()
 
   @Test
   fun startsActivity() {
     val spiedContext = spyk(context)
-    spiedContext.on<TestStartableActivity>().asNewTask().start(StartableActivity::finish)
+    spiedContext.on<EmptyStartableActivity>().asNewTask().start(StartableActivity::finish)
     verify { spiedContext.startActivity(any()) }
   }
 }
