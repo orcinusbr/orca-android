@@ -19,7 +19,7 @@ import br.com.orcinus.orca.core.auth.Authorizer
 
 /** [Authorizer] that provides a sample authorization code. */
 internal object SampleAuthorizer : Authorizer() {
-  override suspend fun authorize(): String {
+  override suspend fun onAuthorization(): String {
     return "sample-authorization-code"
   }
 }

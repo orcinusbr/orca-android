@@ -33,7 +33,7 @@ class MastodonAuthorizer(private val context: Context) : Authorizer() {
   /** [Continuation] of the coroutine that's suspended on authorization. */
   private var continuation: Continuation<String>? = null
 
-  override suspend fun authorize(): String {
+  override suspend fun onAuthorization(): String {
     return suspendCoroutine {
       continuation = it
       context.on<MastodonAuthorizationActivity>().asNewTask().start()

@@ -20,7 +20,7 @@ import br.com.orcinus.orca.core.auth.Authorizer
 /** [Authorizer] returned by [sample]. */
 private val sampleAuthorizer =
   object : Authorizer() {
-    override suspend fun authorize(): String {
+    override suspend fun onAuthorization(): String {
       return "sample-authorization-code"
     }
   }
