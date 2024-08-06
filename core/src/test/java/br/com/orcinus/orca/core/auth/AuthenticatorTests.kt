@@ -16,11 +16,12 @@
 package br.com.orcinus.orca.core.auth
 
 import br.com.orcinus.orca.core.auth.actor.Actor
-import br.com.orcinus.orca.core.test.TestAuthenticator
-import br.com.orcinus.orca.core.test.TestAuthorizer
+import br.com.orcinus.orca.core.sample.test.auth.actor.sample
+import br.com.orcinus.orca.core.test.auth.Authenticator
+import br.com.orcinus.orca.core.test.auth.AuthorizerBuilder
+import br.com.orcinus.orca.core.test.auth.actor.InMemoryActorProvider
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertIs
 import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
 
@@ -28,24 +29,22 @@ internal class AuthenticatorTests {
   @Test
   fun `GIVEN an authentication WHEN verifying if the actor is authorized THEN it is`() {
     var isAuthorized = false
-    val authorizer = TestAuthorizer { isAuthorized = true }
-    runTest { TestAuthenticator(authorizer).authenticate() }
+    val actorProvider = InMemoryActorProvider()
+    val authorizer = AuthorizerBuilder().before { isAuthorized = true }.build()
+    runTest { Authenticator(actorProvider, authorizer).authenticate() }
     assertTrue(isAuthorized)
   }
 
   @Test
   fun `GIVEN an authentication WHEN comparing the authorization code provided by the authorizer and the one the authenticator receives THEN they're the same`() {
+    val actorProvider = InMemoryActorProvider()
     lateinit var providedAuthorizationCode: String
-    val authorizer = TestAuthorizer()
-    val authenticator = TestAuthenticator { providedAuthorizationCode = it }
+    val authenticator =
+      Authenticator(actorProvider) {
+        providedAuthorizationCode = it
+        Actor.Authenticated.sample
+      }
     runTest { authenticator.authenticate() }
-    assertEquals(TestAuthorizer.AUTHORIZATION_CODE, providedAuthorizationCode)
-  }
-
-  @Test
-  fun `GIVEN an authentication WHEN getting the resulting actor THEN it's authenticated`() {
-    val authorizer = TestAuthorizer()
-    val authenticator = TestAuthenticator()
-    runTest { assertIs<Actor.Authenticated>(authenticator.authenticate()) }
+    assertEquals(AuthorizerBuilder.DEFAULT_AUTHORIZATION_CODE, providedAuthorizationCode)
   }
 }

@@ -18,8 +18,10 @@ package br.com.orcinus.orca.core.mastodon.instance.requester.authentication
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
+import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.runRequesterTest
+import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.std.injector.Injector
 import kotlin.test.Test
 
@@ -62,7 +64,7 @@ internal class AuthenticatedRequesterTests {
   fun addsAuthorizationHeaderToDeleteRequest() {
     runAuthenticatedRequesterTest {
       assertThatRequestAuthorizationHeaderOf(requester.delete(route))
-        .isEqualTo("Bearer test-access-token")
+        .isEqualTo("Bearer ${Actor.Authenticated.sample.accessToken}")
     }
   }
 
@@ -70,7 +72,7 @@ internal class AuthenticatedRequesterTests {
   fun addsAuthorizationHeaderToGetRequest() {
     runAuthenticatedRequesterTest {
       assertThatRequestAuthorizationHeaderOf(requester.get(route))
-        .isEqualTo("Bearer test-access-token")
+        .isEqualTo("Bearer ${Actor.Authenticated.sample.accessToken}")
     }
   }
 
@@ -78,7 +80,7 @@ internal class AuthenticatedRequesterTests {
   fun addsAuthorizationHeaderToPostRequest() {
     runAuthenticatedRequesterTest {
       assertThatRequestAuthorizationHeaderOf(requester.post(route))
-        .isEqualTo("Bearer test-access-token")
+        .isEqualTo("Bearer ${Actor.Authenticated.sample.accessToken}")
     }
   }
 }

@@ -17,15 +17,16 @@ package br.com.orcinus.orca.core.mastodon.instance.requester
 
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.MastodonCoreModule
-import br.com.orcinus.orca.core.mastodon.instance.TestMastodonInstanceProvider
+import br.com.orcinus.orca.core.mastodon.instance.SampleMastodonInstanceProvider
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.SampleTermMuter
-import br.com.orcinus.orca.core.test.TestActorProvider
-import br.com.orcinus.orca.core.test.TestAuthenticationLock
-import br.com.orcinus.orca.core.test.TestAuthenticator
-import br.com.orcinus.orca.core.test.TestAuthorizer
+import br.com.orcinus.orca.core.test.auth.AuthenticationLock
+import br.com.orcinus.orca.core.test.auth.Authenticator
+import br.com.orcinus.orca.core.test.auth.AuthorizerBuilder
+import br.com.orcinus.orca.core.test.auth.actor.InMemoryActorProvider
 import br.com.orcinus.orca.ext.uri.URIBuilder
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
+import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 import io.ktor.client.HttpClient
@@ -93,12 +94,16 @@ internal inline fun runRequesterTest(
     callsInPlace(onAuthentication, InvocationKind.AT_MOST_ONCE)
     callsInPlace(body, InvocationKind.EXACTLY_ONCE)
   }
-  val authorizer = TestAuthorizer()
-  val actorProvider = TestActorProvider()
-  val authenticator = TestAuthenticator(authorizer, actorProvider) { onAuthentication() }
-  val authenticationLock = TestAuthenticationLock(actorProvider, authenticator)
+  val authorizer = AuthorizerBuilder().build()
+  val actorProvider = InMemoryActorProvider()
+  val authenticator =
+    Authenticator(actorProvider, authorizer) {
+      onAuthentication()
+      Actor.Authenticated.sample
+    }
+  val authenticationLock = AuthenticationLock(authenticator, actorProvider)
   val instanceProvider =
-    TestMastodonInstanceProvider(
+    SampleMastodonInstanceProvider(
       authorizer,
       authenticator,
       authenticationLock,

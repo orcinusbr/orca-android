@@ -16,33 +16,32 @@
 package br.com.orcinus.orca.core.mastodon.instance
 
 import br.com.orcinus.orca.core.auth.AuthenticationLock
+import br.com.orcinus.orca.core.auth.Authenticator
+import br.com.orcinus.orca.core.auth.Authorizer
 import br.com.orcinus.orca.core.instance.Instance
+import br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvider
 import br.com.orcinus.orca.core.mastodon.instance.requester.NoOpLogger
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.createHttpClientEngineFactory
 import br.com.orcinus.orca.core.sample.test.instance.sample
-import br.com.orcinus.orca.core.test.TestAuthenticationLock
-import br.com.orcinus.orca.core.test.TestAuthenticator
-import br.com.orcinus.orca.core.test.TestAuthorizer
 import br.com.orcinus.orca.ext.uri.URIBuilder
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.request.HttpRequest
 
 /**
- * [MastodonInstance] whose [requester] responds OK to each sent [HttpRequest].
+ * [MastodonInstance] with sample structures and whose [requester] responds OK to each sent
+ * [HttpRequest].
  *
- * @param authorizer [TestAuthorizer] with which the user will be authorized.
- * @param clientResponseProvider Defines how the [requester] to an [HttpRequest].
+ * @param authorizer [Authorizer] with which the user will be authorized.
+ * @property clientResponseProvider Defines how the [requester] to an [HttpRequest].
  */
-internal class TestMastodonInstance(
-  authorizer: TestAuthorizer = TestAuthorizer(),
-  override val authenticator: TestAuthenticator = TestAuthenticator(authorizer),
-  override val authenticationLock: AuthenticationLock<TestAuthenticator> =
-    TestAuthenticationLock(authenticator = authenticator),
-  private val clientResponseProvider:
-    br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvider
-) : MastodonInstance<TestAuthorizer, TestAuthenticator>(Instance.sample.domain, authorizer) {
+internal class SampleMastodonInstance(
+  authorizer: Authorizer,
+  override val authenticator: Authenticator,
+  override val authenticationLock: AuthenticationLock<Authenticator>,
+  private val clientResponseProvider: ClientResponseProvider
+) : MastodonInstance<Authorizer, Authenticator>(Instance.sample.domain, authorizer) {
   /**
    * [HttpClientEngineFactory] that creates a [MockEngine] that sends an OK response to each
    * [HttpRequest].

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,24 +13,20 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.test
+package br.com.orcinus.core.test.auth.actor
 
-import br.com.orcinus.orca.core.auth.Authorizer
+import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.auth.actor.ActorProvider
 
 /**
- * [Authorizer] that provides a fixed authorization code.
+ * [ActorProvider] that always provides a certain [Actor] (regardless of remembrances).
  *
- * @param onAuthorize Operation to be performed when [authorize] is called.
- * @see AUTHORIZATION_CODE
+ * @property actor [Actor] to be provided.
  */
-class TestAuthorizer(private val onAuthorize: () -> Unit = {}) : Authorizer() {
-  override suspend fun authorize(): String {
-    onAuthorize()
-    return AUTHORIZATION_CODE
-  }
+internal class FixedActorProvider(private val actor: Actor) : ActorProvider() {
+  override suspend fun remember(actor: Actor) {}
 
-  companion object {
-    /** Authorization code provided by [authorize]. */
-    const val AUTHORIZATION_CODE = "authorization-code"
+  override suspend fun retrieve(): Actor {
+    return actor
   }
 }

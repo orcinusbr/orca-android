@@ -19,12 +19,12 @@ import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.sample.feed.profile.createSample
 import br.com.orcinus.orca.core.sample.test.feed.profile.post.content.highlight.sample
-import br.com.orcinus.orca.core.sample.test.image.TestSampleImageLoader
+import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 import br.com.orcinus.orca.core.sample.test.instance.sample
 
 /** [Profile] returned by [sample]. */
 private val testSampleProfile =
-  Profile.createSample(Instance.sample.postProvider, TestSampleImageLoader.Provider)
+  Profile.createSample(Instance.sample.postProvider, NoOpSampleImageLoader.Provider)
 
 /** Test sample [Profile]. */
 val Profile.Companion.sample

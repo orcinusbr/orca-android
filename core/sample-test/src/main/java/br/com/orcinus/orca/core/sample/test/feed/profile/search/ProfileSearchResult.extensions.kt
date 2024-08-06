@@ -18,11 +18,11 @@ package br.com.orcinus.orca.core.sample.test.feed.profile.search
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.core.sample.feed.profile.search.createSample
 import br.com.orcinus.orca.core.sample.test.feed.profile.post.content.highlight.sample
-import br.com.orcinus.orca.core.sample.test.image.TestSampleImageLoader
+import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 
 /** [ProfileSearchResult] returned by [sample]. */
 private val testSampleProfileSearchResult =
-  ProfileSearchResult.createSample(TestSampleImageLoader.Provider)
+  ProfileSearchResult.createSample(NoOpSampleImageLoader.Provider)
 
 /** Test sample [ProfileSearchResult]. */
 val ProfileSearchResult.Companion.sample

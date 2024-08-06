@@ -17,10 +17,10 @@ package br.com.orcinus.orca.core.sample.test.feed.profile.post
 
 import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.sample.feed.profile.post.createSample
-import br.com.orcinus.orca.core.sample.test.image.TestSampleImageLoader
+import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 
 /** [Author] returned by [withSample]. */
-private val testSampleAuthor = Author.createSample(TestSampleImageLoader.Provider)
+private val testSampleAuthor = Author.createSample(NoOpSampleImageLoader.Provider)
 
 /** Test sample [Author]. */
 val Author.Companion.sample

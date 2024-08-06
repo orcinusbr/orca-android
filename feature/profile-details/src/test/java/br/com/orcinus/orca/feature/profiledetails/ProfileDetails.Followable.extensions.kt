@@ -21,7 +21,7 @@ import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
 import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
 import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.sample.feed.profile.type.followable.createSample
-import br.com.orcinus.orca.core.sample.test.image.TestSampleImageLoader
+import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 import br.com.orcinus.orca.core.sample.test.instance.sample
 import br.com.orcinus.orca.feature.profiledetails.conversion.converter.followable.toStatus
 
@@ -39,7 +39,7 @@ internal fun ProfileDetails.Followable.Companion.createSample(
       Instance.sample.profileWriter,
       Instance.sample.postProvider,
       Follow.Public.following(),
-      TestSampleImageLoader.Provider
+      NoOpSampleImageLoader.Provider
     )
   return ProfileDetails.Followable(
     profile.id,

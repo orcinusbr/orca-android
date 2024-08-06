@@ -16,38 +16,38 @@
 package br.com.orcinus.orca.core.mastodon.instance
 
 import br.com.orcinus.orca.core.auth.AuthenticationLock
+import br.com.orcinus.orca.core.auth.Authenticator
+import br.com.orcinus.orca.core.auth.Authorizer
 import br.com.orcinus.orca.core.instance.InstanceProvider
 import br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvider
-import br.com.orcinus.orca.core.test.TestAuthenticator
-import br.com.orcinus.orca.core.test.TestAuthorizer
 import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequest
 
 /**
- * [InstanceProvider] that provides a [TestMastodonInstance].
+ * [InstanceProvider] that provides a [SampleMastodonInstance].
  *
- * @param authorizer [TestAuthorizer] with which the user will be authorized.
- * @param authenticator [TestAuthenticator] through which authentication can be done.
- * @param authenticationLock [AuthenticationLock] by which features can be locked or unlocked by an
- *   authentication "wall".
- * @param clientResponseProvider Defines how the [HttpClient] to an [HttpRequest].
+ * @property authorizer [Authorizer] with which the user will be authorized.
+ * @property authenticator [Authenticator] through which authentication can be done.
+ * @property authenticationLock [AuthenticationLock] by which features can be locked or unlocked by
+ *   an authentication "wall".
+ * @property clientResponseProvider Defines how the [HttpClient] to an [HttpRequest].
  */
-internal class TestMastodonInstanceProvider(
-  private val authorizer: TestAuthorizer,
-  private val authenticator: TestAuthenticator,
-  private val authenticationLock: AuthenticationLock<TestAuthenticator>,
+internal class SampleMastodonInstanceProvider(
+  private val authorizer: Authorizer,
+  private val authenticator: Authenticator,
+  private val authenticationLock: AuthenticationLock<Authenticator>,
   private val clientResponseProvider: ClientResponseProvider
 ) : InstanceProvider {
   /**
-   * [TestMastodonInstance] to be provided.
+   * [SampleMastodonInstance] to be provided.
    *
    * @see provide
    */
   private val instance by lazy {
-    TestMastodonInstance(authorizer, authenticator, authenticationLock, clientResponseProvider)
+    SampleMastodonInstance(authorizer, authenticator, authenticationLock, clientResponseProvider)
   }
 
-  override fun provide(): TestMastodonInstance {
+  override fun provide(): SampleMastodonInstance {
     return instance
   }
 }

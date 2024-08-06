@@ -20,7 +20,7 @@ import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.sample.feed.profile.type.editable.createSample
 import br.com.orcinus.orca.core.sample.test.feed.profile.post.content.highlight.sample
 import br.com.orcinus.orca.core.sample.test.feed.profile.sample
-import br.com.orcinus.orca.core.sample.test.image.TestSampleImageLoader
+import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 import br.com.orcinus.orca.core.sample.test.instance.sample
 
 /** [EditableProfile] returned by [sample]. */
@@ -28,7 +28,7 @@ private val testSampleEditableProfile =
   EditableProfile.createSample(
     Instance.sample.profileWriter,
     Instance.sample.postProvider,
-    TestSampleImageLoader.Provider
+    NoOpSampleImageLoader.Provider
   )
 
 /** Test sample [EditableProfile]. */

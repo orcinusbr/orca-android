@@ -13,20 +13,25 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.std.image.test
+package br.com.orcinus.orca.core.test.auth.actor
 
-import br.com.orcinus.orca.std.image.ImageLoader
+import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.auth.actor.ActorProvider
 
-/** [ImageLoader] that loads an empty image. */
-object TestImageLoader : ImageLoader<Unit, Unit> {
-  override val source = Unit
+/** [ActorProvider] that remembers and retrieves [Actor]s from memory. */
+class InMemoryActorProvider : ActorProvider() {
+  /**
+   * [Actor] that has been remembered.
+   *
+   * @see remember
+   */
+  private var actor: Actor = Actor.Unauthenticated
 
-  /** [ImageLoader.Provider] that provides the [TestImageLoader]. */
-  object Provider : ImageLoader.Provider<Unit, Unit> {
-    override fun provide(source: Unit): TestImageLoader {
-      return TestImageLoader
-    }
+  public override suspend fun remember(actor: Actor) {
+    this.actor = actor
   }
 
-  override fun load() {}
+  override suspend fun retrieve(): Actor {
+    return actor
+  }
 }

@@ -15,7 +15,7 @@
 
 package br.com.orcinus.orca.core.sharedpreferences.actor.mirror.image
 
-import br.com.orcinus.orca.core.sample.test.image.TestSampleImageLoader
+import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import java.net.URI
@@ -27,7 +27,7 @@ import java.net.URI
 internal object NoOpImageLoaderProviderFactory : ImageLoaderProviderFactory() {
   override fun createForSampleImageSource(): SomeImageLoaderProvider<Any> {
     @Suppress("UNCHECKED_CAST")
-    return TestSampleImageLoader.Provider as SomeImageLoaderProvider<Any>
+    return NoOpSampleImageLoader.Provider as SomeImageLoaderProvider<Any>
   }
 
   override fun createForURI(): SomeImageLoaderProvider<URI> {

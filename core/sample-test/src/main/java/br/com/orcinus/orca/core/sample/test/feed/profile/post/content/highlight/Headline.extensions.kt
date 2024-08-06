@@ -17,10 +17,10 @@ package br.com.orcinus.orca.core.sample.test.feed.profile.post.content.highlight
 
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Headline
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.highlight.createSample
-import br.com.orcinus.orca.core.sample.test.image.TestSampleImageLoader
+import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 
 /** [Headline] returned by [sample]. */
-private val testSampleHeadline = Headline.createSample(TestSampleImageLoader.Provider)
+private val testSampleHeadline = Headline.createSample(NoOpSampleImageLoader.Provider)
 
 /** Test sample [Headline]. */
 val Headline.Companion.sample

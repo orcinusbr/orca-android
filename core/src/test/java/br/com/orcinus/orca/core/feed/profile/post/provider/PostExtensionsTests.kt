@@ -18,13 +18,15 @@ package br.com.orcinus.orca.core.feed.profile.post.provider
 import assertk.assertThat
 import assertk.assertions.isSameAs
 import assertk.assertions.isTrue
+import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.post.DeletablePost
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
+import br.com.orcinus.orca.core.sample.test.auth.actor.sample
 import br.com.orcinus.orca.core.sample.test.feed.profile.post.withSample
-import br.com.orcinus.orca.core.test.TestActorProvider
-import br.com.orcinus.orca.core.test.TestAuthenticationLock
-import br.com.orcinus.orca.core.test.TestAuthenticator
+import br.com.orcinus.orca.core.test.auth.AuthenticationLock
+import br.com.orcinus.orca.core.test.auth.Authenticator
+import br.com.orcinus.orca.core.test.auth.actor.InMemoryActorProvider
 import kotlin.test.Test
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -35,10 +37,13 @@ internal class PostExtensionsTests {
   @Test
   fun schedulesAuthenticationUnlockWhenObtainingDeletableVersionOfPost() {
     var hasAuthenticationBeenScheduled = false
-    val actorProvider = TestActorProvider()
+    val actorProvider = InMemoryActorProvider()
     val authenticator =
-      TestAuthenticator(actorProvider = actorProvider) { hasAuthenticationBeenScheduled = true }
-    val authenticationLock = TestAuthenticationLock(actorProvider, authenticator)
+      Authenticator(actorProvider = actorProvider) {
+        hasAuthenticationBeenScheduled = true
+        Actor.Authenticated.sample
+      }
+    val authenticationLock = AuthenticationLock(authenticator, actorProvider)
     val post = Posts.withSample.single()
     runTest {
       object : PostProvider() {
@@ -57,11 +62,14 @@ internal class PostExtensionsTests {
 
   @Test
   fun returnsItselfWhenMakingDeletablePostDeletable() {
-    val authenticationLock = TestAuthenticationLock()
-    val post =
-      object : DeletablePost(Posts.withSample.single()) {
-        override suspend fun delete() {}
-      }
-    runTest { assertThat(post.asDeletable(authenticationLock)).isSameAs(post) }
+    runTest {
+      val actorProvider = InMemoryActorProvider().apply { remember(Actor.Authenticated.sample) }
+      val authenticationLock = AuthenticationLock(actorProvider)
+      val post =
+        object : DeletablePost(Posts.withSample.single()) {
+          override suspend fun delete() {}
+        }
+      assertThat(post.asDeletable(authenticationLock)).isSameAs(post)
+    }
   }
 }

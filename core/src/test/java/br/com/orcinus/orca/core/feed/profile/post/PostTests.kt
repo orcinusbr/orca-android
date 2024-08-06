@@ -15,7 +15,9 @@
 
 package br.com.orcinus.orca.core.feed.profile.post
 
-import br.com.orcinus.orca.core.feed.profile.post.test.TestPost
+import br.com.orcinus.orca.core.feed.profile.post.test.DelegatorPost
+import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
+import br.com.orcinus.orca.core.sample.test.feed.profile.post.withSample
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -24,41 +26,45 @@ import kotlinx.coroutines.test.runTest
 internal class PostTests {
   @Test
   fun `GIVEN an unliked post WHEN liking it THEN it's liked`() {
-    val post = TestPost()
+    val delegate = Posts.withSample.single()
+    val delegator = DelegatorPost(delegate)
     runTest {
-      post.favorite.disable()
-      post.favorite.enable()
-      assertTrue(post.favorite.isEnabled)
+      delegator.favorite.disable()
+      delegator.favorite.enable()
+      assertTrue(delegator.favorite.isEnabled)
     }
   }
 
   @Test
   fun `GIVEN a liked post WHEN unliking it THEN it isn't liked`() {
-    val post = TestPost()
+    val delegate = Posts.withSample.single()
+    val delegator = DelegatorPost(delegate)
     runTest {
-      post.favorite.enable()
-      post.favorite.disable()
-      assertFalse(post.favorite.isEnabled)
+      delegator.favorite.enable()
+      delegator.favorite.disable()
+      assertFalse(delegator.favorite.isEnabled)
     }
   }
 
   @Test
   fun `GIVEN a post WHEN reposting it THEN it's reposted`() {
-    val post = TestPost()
+    val delegate = Posts.withSample.single()
+    val delegator = DelegatorPost(delegate)
     runTest {
-      post.repost.disable()
-      post.repost.enable()
-      assertTrue(post.repost.isEnabled)
+      delegator.repost.disable()
+      delegator.repost.enable()
+      assertTrue(delegator.repost.isEnabled)
     }
   }
 
   @Test
   fun `GIVEN a repost WHEN unreposting it THEN it isn't reposted`() {
-    val post = TestPost()
+    val delegate = Posts.withSample.single()
+    val delegator = DelegatorPost(delegate)
     runTest {
-      post.repost.enable()
-      post.repost.disable()
-      assertFalse(post.repost.isEnabled)
+      delegator.repost.enable()
+      delegator.repost.disable()
+      assertFalse(delegator.repost.isEnabled)
     }
   }
 }

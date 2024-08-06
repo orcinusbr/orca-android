@@ -17,10 +17,10 @@ package br.com.orcinus.orca.core.sample.test.feed.profile.post.content.highlight
 
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Highlight
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.highlight.createSample
-import br.com.orcinus.orca.core.sample.test.image.TestSampleImageLoader
+import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 
 /** [Highlight] returned by [sample]. */
-private val testSampleHighlight = Highlight.createSample(TestSampleImageLoader.Provider)
+private val testSampleHighlight = Highlight.createSample(NoOpSampleImageLoader.Provider)
 
 /** Test sample [Highlight]. */
 val Highlight.Companion.sample

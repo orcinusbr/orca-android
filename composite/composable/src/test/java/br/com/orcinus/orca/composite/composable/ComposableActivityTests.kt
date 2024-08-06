@@ -25,9 +25,9 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class ComposableActivityTests {
-  @get:Rule val composeRule = createAndroidComposeRule<TestComposableActivity>()
+  @get:Rule val composeRule = createAndroidComposeRule<EmptyComposableActivity>()
 
-  class TestComposableActivity : ComposableActivity() {
+  class EmptyComposableActivity : ComposableActivity() {
     @Composable @Suppress("TestFunctionName") override fun Content() {}
   }
 
