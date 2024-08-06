@@ -21,11 +21,11 @@ import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.core.sample.instance.createSample
 import br.com.orcinus.orca.core.sample.test.feed.profile.post.content.highlight.sample
 import br.com.orcinus.orca.core.sample.test.feed.profile.post.withSamples
-import br.com.orcinus.orca.core.sample.test.image.TestSampleImageLoader
+import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 
 /** [SampleInstance] returned by [sample]. */
 private val testSampleInstance =
-  Instance.createSample(TestSampleImageLoader.Provider, Posts.withSamples)
+  Instance.createSample(NoOpSampleImageLoader.Provider, Posts.withSamples)
 
 /** Test [SampleInstance]. */
 val Instance.Companion.sample

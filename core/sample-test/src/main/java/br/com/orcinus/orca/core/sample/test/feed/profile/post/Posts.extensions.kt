@@ -19,16 +19,16 @@ import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
 import br.com.orcinus.orca.core.sample.feed.profile.post.createSample
 import br.com.orcinus.orca.core.sample.feed.profile.post.createSamples
-import br.com.orcinus.orca.core.sample.test.image.TestSampleImageLoader
+import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 
 /** [Posts] returned by [withSample]. */
 private val testPostsWithSample = Posts {
-  add { Post.createSample(TestSampleImageLoader.Provider) }
+  add { Post.createSample(NoOpSampleImageLoader.Provider) }
 }
 
 /** [Posts] returned by [withSamples]. */
 private val testPostsWithSamples = Posts {
-  addAll { Post.createSamples(TestSampleImageLoader.Provider) }
+  addAll { Post.createSamples(NoOpSampleImageLoader.Provider) }
 }
 
 /** Test [Posts] with a sample. */

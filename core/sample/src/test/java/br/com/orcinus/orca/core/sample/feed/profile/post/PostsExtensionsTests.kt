@@ -16,12 +16,12 @@
 package br.com.orcinus.orca.core.sample.feed.profile.post
 
 import br.com.orcinus.orca.core.feed.profile.post.Post
-import br.com.orcinus.orca.core.sample.test.image.TestSampleImageLoader
+import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 import kotlin.test.Test
 
 internal class PostsExtensionsTests {
   @Test
   fun createsPosts() {
-    Posts { addAll { Post.createSamples(TestSampleImageLoader.Provider) } }
+    Posts { addAll { Post.createSamples(NoOpSampleImageLoader.Provider) } }
   }
 }

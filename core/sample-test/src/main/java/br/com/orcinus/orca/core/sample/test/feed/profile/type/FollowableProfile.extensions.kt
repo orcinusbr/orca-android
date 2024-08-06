@@ -21,7 +21,7 @@ import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.sample.feed.profile.type.followable.createSample
 import br.com.orcinus.orca.core.sample.test.feed.profile.post.content.highlight.sample
 import br.com.orcinus.orca.core.sample.test.feed.profile.sample
-import br.com.orcinus.orca.core.sample.test.image.TestSampleImageLoader
+import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 import br.com.orcinus.orca.core.sample.test.instance.sample
 
 /** [FollowableProfile] returned by [sample]. */
@@ -30,7 +30,7 @@ private val testSampleFollowableProfile =
     Instance.sample.profileWriter,
     Instance.sample.postProvider,
     Follow.Public.following(),
-    TestSampleImageLoader.Provider
+    NoOpSampleImageLoader.Provider
   )
 
 /** Test sample [FollowableProfile]. */

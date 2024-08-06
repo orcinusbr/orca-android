@@ -21,7 +21,7 @@ import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.core.feed.profile.post.DeletablePost
 import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.sample.test.feed.profile.post.withSamples
-import br.com.orcinus.orca.core.sample.test.image.TestSampleImageLoader
+import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 import br.com.orcinus.orca.core.sample.test.instance.SampleInstanceTestRule
 import br.com.orcinus.orca.core.sample.test.instance.sample
 import br.com.orcinus.orca.ext.testing.hasPropertiesEqualToThoseOf
@@ -55,7 +55,7 @@ internal class SamplePostProviderTests {
   @Test
   fun doesNotProvidePostWhenItIsDeleted() {
     assertThat(
-        Posts { add { DeletablePost.createSample(TestSampleImageLoader.Provider) } }
+        Posts { add { DeletablePost.createSample(NoOpSampleImageLoader.Provider) } }
           .additionScope
           .writerProvider
           .provide()

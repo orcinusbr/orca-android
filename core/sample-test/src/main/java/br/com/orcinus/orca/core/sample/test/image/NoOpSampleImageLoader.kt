@@ -18,13 +18,13 @@ package br.com.orcinus.orca.core.sample.test.image
 import br.com.orcinus.orca.core.sample.image.SampleImageSource
 import br.com.orcinus.orca.std.image.ImageLoader
 
-/** [ImageLoader] that loads an empty image from a [SampleImageSource]. */
-class TestSampleImageLoader private constructor() : ImageLoader<SampleImageSource, Unit> {
+/** [ImageLoader] that does not load an image from a [SampleImageSource]. */
+class NoOpSampleImageLoader private constructor() : ImageLoader<SampleImageSource, Unit> {
   override val source = SampleImageSource.None
 
-  /** [ImageLoader.Provider] that provides a [TestSampleImageLoader]. */
+  /** [ImageLoader.Provider] that provides a [NoOpSampleImageLoader]. */
   object Provider : ImageLoader.Provider<SampleImageSource, Unit> {
-    override fun provide(source: SampleImageSource): TestSampleImageLoader {
+    override fun provide(source: SampleImageSource): NoOpSampleImageLoader {
       return instance
     }
   }
@@ -32,7 +32,7 @@ class TestSampleImageLoader private constructor() : ImageLoader<SampleImageSourc
   override fun load() {}
 
   companion object {
-    /** Single instance of a [TestSampleImageLoader]. */
-    private val instance = TestSampleImageLoader()
+    /** Single instance of a [NoOpSampleImageLoader]. */
+    private val instance = NoOpSampleImageLoader()
   }
 }
