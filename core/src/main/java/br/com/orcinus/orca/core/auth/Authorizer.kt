@@ -17,7 +17,7 @@ package br.com.orcinus.orca.core.auth
 
 import br.com.orcinus.orca.core.InternalCoreApi
 
-/** Authorizes the user through [onAuthorization]. */
+/** Authorizes the user through [authorize]. */
 abstract class Authorizer @InternalCoreApi constructor() {
   /**
    * Authorizes the user, allowing the application to perform operations on their behalf.
