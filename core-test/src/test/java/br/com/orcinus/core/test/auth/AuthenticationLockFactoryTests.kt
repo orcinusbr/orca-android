@@ -29,7 +29,7 @@ import br.com.orcinus.orca.core.test.auth.AuthenticationLock
 import br.com.orcinus.orca.core.test.auth.Authenticator
 import br.com.orcinus.orca.core.test.auth.AuthorizerBuilder
 import br.com.orcinus.orca.core.test.auth.actor.InMemoryActorProvider
-import br.com.orcinus.orca.std.image.test.TestImageLoader
+import br.com.orcinus.orca.std.image.test.NoOpImageLoader
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
@@ -54,7 +54,7 @@ internal class AuthenticationLockFactoryTests {
   @Test
   fun createdAuthenticationLockUnlocksWithActorProvidedByTheSpecifiedProvider() {
     runTest {
-      val actor = Actor.Authenticated("id", "access-token", TestImageLoader)
+      val actor = Actor.Authenticated("id", "access-token", NoOpImageLoader)
       val actorProvider = InMemoryActorProvider().apply { remember(actor) }
       AuthenticationLock(actorProvider).scheduleUnlock { assertThat(it).isSameAs(actor) }
     }
@@ -69,7 +69,7 @@ internal class AuthenticationLockFactoryTests {
       val authenticator =
         Authenticator(actorProvider, authorizer) {
           if (hasAuthorized) {
-            Actor.Authenticated("id", "access-token", TestImageLoader)
+            Actor.Authenticated("id", "access-token", NoOpImageLoader)
           } else {
             Actor.Unauthenticated
           }

@@ -20,7 +20,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isSameAs
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.test.auth.Authenticator
-import br.com.orcinus.orca.std.image.test.TestImageLoader
+import br.com.orcinus.orca.std.image.test.NoOpImageLoader
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
@@ -28,7 +28,7 @@ internal class FixedActorProviderTests {
   @Test
   fun providesSpecifiedActor() {
     runTest {
-      val actor = Actor.Authenticated("id", "access-token", TestImageLoader)
+      val actor = Actor.Authenticated("id", "access-token", NoOpImageLoader)
       assertThat(FixedActorProvider(actor).provide()).isSameAs(actor)
     }
   }

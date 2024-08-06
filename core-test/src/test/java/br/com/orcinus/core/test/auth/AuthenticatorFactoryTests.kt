@@ -23,7 +23,7 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.test.auth.Authenticator
 import br.com.orcinus.orca.core.test.auth.AuthorizerBuilder
 import br.com.orcinus.orca.core.test.auth.actor.InMemoryActorProvider
-import br.com.orcinus.orca.std.image.test.TestImageLoader
+import br.com.orcinus.orca.std.image.test.NoOpImageLoader
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
@@ -42,7 +42,7 @@ internal class AuthenticatorFactoryTests {
   @Test
   fun createdAuthenticatorProvidesActorProvidedByTheActorProviderUponAuthenticationByDefault() {
     runTest {
-      val actor = Actor.Authenticated("id", "access-token", TestImageLoader)
+      val actor = Actor.Authenticated("id", "access-token", NoOpImageLoader)
       val actorProvider = InMemoryActorProvider().apply { remember(actor) }
       assertThat(Authenticator(actorProvider = actorProvider).authenticate()).isSameAs(actor)
     }
@@ -51,7 +51,7 @@ internal class AuthenticatorFactoryTests {
   @Test
   fun createdAuthenticatorDelegatesAuthenticationToTheSpecifiedCallback() {
     runTest {
-      val actor = Actor.Authenticated("id", "access-token", TestImageLoader)
+      val actor = Actor.Authenticated("id", "access-token", NoOpImageLoader)
       val actorProvider = FixedActorProvider(actor)
       assertThat(Authenticator(actorProvider) { actor }.authenticate()).isSameAs(actor)
     }

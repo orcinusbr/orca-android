@@ -17,14 +17,14 @@ package br.com.orcinus.orca.std.image.test
 
 import br.com.orcinus.orca.std.image.ImageLoader
 
-/** [ImageLoader] that loads an empty image. */
-object TestImageLoader : ImageLoader<Unit, Unit> {
+/** [ImageLoader] that does not load an image. */
+object NoOpImageLoader : ImageLoader<Unit, Unit> {
   override val source = Unit
 
-  /** [ImageLoader.Provider] that provides the [TestImageLoader]. */
+  /** [ImageLoader.Provider] that provides the [NoOpImageLoader]. */
   object Provider : ImageLoader.Provider<Unit, Unit> {
-    override fun provide(source: Unit): TestImageLoader {
-      return TestImageLoader
+    override fun provide(source: Unit): NoOpImageLoader {
+      return NoOpImageLoader
     }
   }
 

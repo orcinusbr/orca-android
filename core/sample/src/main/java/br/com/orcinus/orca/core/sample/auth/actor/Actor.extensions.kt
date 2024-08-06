@@ -18,14 +18,14 @@ package br.com.orcinus.orca.core.sample.auth.actor
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoader
-import br.com.orcinus.orca.std.image.test.TestImageLoader
+import br.com.orcinus.orca.std.image.test.NoOpImageLoader
 
 /**
  * [Authenticated][Actor.Authenticated] [Actor] returned by [Actor.Authenticated.Companion.sample].
  */
-private val testSampleAuthenticatedActor = Actor.Authenticated.createSample(TestImageLoader)
+private val testSampleAuthenticatedActor = Actor.Authenticated.createSample(NoOpImageLoader)
 
-/** [Authenticated][Actor.Authenticated] [Actor] whose avatar is loaded by a [TestImageLoader]. */
+/** [Authenticated][Actor.Authenticated] [Actor] whose avatar is loaded by a [NoOpImageLoader]. */
 val Actor.Authenticated.Companion.sample
   get() = testSampleAuthenticatedActor
 
