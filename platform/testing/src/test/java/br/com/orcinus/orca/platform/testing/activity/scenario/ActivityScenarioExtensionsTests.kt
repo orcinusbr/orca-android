@@ -26,9 +26,9 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class ActivityScenarioExtensionsTests {
-  @get:Rule val activityScenarioRule = ActivityScenarioRule(TestActivity::class.java)
+  @get:Rule val activityScenarioRule = ActivityScenarioRule(EmptyActivity::class.java)
 
-  class TestActivity : Activity()
+  class EmptyActivity : Activity()
 
   @Test
   fun getsActivity() {

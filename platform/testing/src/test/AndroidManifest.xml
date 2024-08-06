@@ -17,6 +17,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
         <activity
-            android:name="br.com.orcinus.orca.platform.testing.activity.scenario.ActivityScenarioExtensionsTests$TestActivity" />
+            android:name="br.com.orcinus.orca.platform.testing.activity.scenario.ActivityScenarioExtensionsTests$EmptyActivity" />
     </application>
 </manifest>
