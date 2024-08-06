@@ -26,13 +26,13 @@ import io.ktor.client.request.HttpRequest
 /**
  * [InstanceProvider] that provides a [SampleMastodonInstance].
  *
- * @param authorizer [Authorizer] with which the user will be authorized.
- * @param authenticator [Authenticator] through which authentication can be done.
- * @param authenticationLock [AuthenticationLock] by which features can be locked or unlocked by an
- *   authentication "wall".
- * @param clientResponseProvider Defines how the [HttpClient] to an [HttpRequest].
+ * @property authorizer [Authorizer] with which the user will be authorized.
+ * @property authenticator [Authenticator] through which authentication can be done.
+ * @property authenticationLock [AuthenticationLock] by which features can be locked or unlocked by
+ *   an authentication "wall".
+ * @property clientResponseProvider Defines how the [HttpClient] to an [HttpRequest].
  */
-internal class TestMastodonInstanceProvider(
+internal class SampleMastodonInstanceProvider(
   private val authorizer: Authorizer,
   private val authenticator: Authenticator,
   private val authenticationLock: AuthenticationLock<Authenticator>,
