@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,21 +13,22 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.sample.auth.actor
+package br.com.orcinus.core.test.auth.actor
 
+import assertk.assertThat
+import assertk.assertions.isSameAs
 import br.com.orcinus.orca.core.auth.actor.Actor
-import br.com.orcinus.orca.core.auth.actor.ActorProvider
+import br.com.orcinus.orca.core.test.auth.actor.InMemoryActorProvider
+import br.com.orcinus.orca.std.image.test.NoOpImageLoader
+import kotlin.test.Test
+import kotlinx.coroutines.test.runTest
 
-/** [ActorProvider] returned by [sample]. */
-private val sampleActorProvider =
-  object : ActorProvider() {
-    override suspend fun onRemembrance(actor: Actor) {}
-
-    override suspend fun retrieve(): Actor {
-      return Actor.Authenticated.sample
+internal class InMemoryActorProviderTests {
+  @Test
+  fun remembers() {
+    runTest {
+      val actor = Actor.Authenticated("id", "access-token", NoOpImageLoader)
+      assertThat(InMemoryActorProvider().apply { remember(actor) }.provide()).isSameAs(actor)
     }
   }
-
-/** [ActorProvider] that always provides a sample [authenticated][Actor.Authenticated] [Actor]. */
-val ActorProvider.Companion.sample
-  get() = sampleActorProvider
+}

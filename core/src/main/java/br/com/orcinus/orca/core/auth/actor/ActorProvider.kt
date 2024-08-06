@@ -27,24 +27,25 @@ abstract class ActorProvider @InternalCoreApi constructor() {
   /**
    * Remembers the given [actor] so that it can be retrieved later.
    *
+   * @param actor [Actor] to remember.
    * @see retrieve
    */
-  @Suppress("FunctionName")
-  internal suspend fun _remember(actor: Actor) {
-    remember(actor)
+  internal suspend fun remember(actor: Actor) {
+    onRemembrance(actor)
   }
 
   /**
-   * Remembers the given [actor] so that it can be retrieved later.
+   * Callback called whenever an [Actor] is requested to be remembered.
    *
+   * @param actor [Actor] to remember.
    * @see retrieve
    */
-  protected abstract suspend fun remember(actor: Actor)
+  protected abstract suspend fun onRemembrance(actor: Actor)
 
   /**
    * Retrieves a remembered [Actor].
    *
-   * @see remember
+   * @see onRemembrance
    */
   protected abstract suspend fun retrieve(): Actor
 

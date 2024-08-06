@@ -4,6 +4,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
 import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.sample.test.auth.actor.sample
 import br.com.orcinus.orca.core.test.auth.AuthenticationLock
 import br.com.orcinus.orca.core.test.auth.Authenticator
@@ -32,7 +33,10 @@ internal class AuthenticationLockTests {
   @Test
   fun unlocksWhenActorIsAuthenticated() {
     runTest {
-      val actorProvider = InMemoryActorProvider().apply { remember(Actor.Authenticated.sample) }
+      val actorProvider =
+        InMemoryActorProvider().apply {
+          (this as ActorProvider).remember(Actor.Authenticated.sample)
+        }
       val authenticator = Authenticator(actorProvider = actorProvider)
       var hasListenerBeenNotified = false
       authenticator.authenticate()
@@ -46,7 +50,10 @@ internal class AuthenticationLockTests {
   @Test
   fun schedulesUnlocksForWhenOngoingOnesAreFinished() {
     runTest {
-      val actorProvider = InMemoryActorProvider().apply { remember(Actor.Authenticated.sample) }
+      val actorProvider =
+        InMemoryActorProvider().apply {
+          (this as ActorProvider).remember(Actor.Authenticated.sample)
+        }
       val lock = AuthenticationLock(actorProvider)
       lock.scheduleUnlock { delay(32.seconds) }
       repeat(1_024) { lock.scheduleUnlock { delay(8.seconds) } }

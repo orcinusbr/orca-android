@@ -19,6 +19,7 @@ import assertk.assertThat
 import assertk.assertions.isSameAs
 import assertk.assertions.isTrue
 import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.feed.profile.post.DeletablePost
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
@@ -63,7 +64,10 @@ internal class PostExtensionsTests {
   @Test
   fun returnsItselfWhenMakingDeletablePostDeletable() {
     runTest {
-      val actorProvider = InMemoryActorProvider().apply { remember(Actor.Authenticated.sample) }
+      val actorProvider =
+        InMemoryActorProvider().apply {
+          (this as ActorProvider).remember(Actor.Authenticated.sample)
+        }
       val authenticationLock = AuthenticationLock(actorProvider)
       val post =
         object : DeletablePost(Posts.withSample.single()) {
