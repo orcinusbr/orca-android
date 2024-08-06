@@ -33,7 +33,7 @@ abstract class Authenticator @InternalCoreApi constructor() {
   /** Authorizes the user with the [authorizer] and then tries to authenticates them. */
   suspend fun authenticate(): Actor {
     val authorizationCode = authorizer.authorize()
-    val actor = onAuthenticate(authorizationCode)
+    val actor = onAuthentication(authorizationCode)
     actorProvider.remember(actor)
     return actor
   }
@@ -43,5 +43,5 @@ abstract class Authenticator @InternalCoreApi constructor() {
    *
    * @param authorizationCode Code that resulted from authorizing the user.
    */
-  protected abstract suspend fun onAuthenticate(authorizationCode: String): Actor
+  protected abstract suspend fun onAuthentication(authorizationCode: String): Actor
 }

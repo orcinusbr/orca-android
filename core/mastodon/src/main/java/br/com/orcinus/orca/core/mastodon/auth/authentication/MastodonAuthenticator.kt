@@ -40,7 +40,7 @@ class MastodonAuthenticator(
   /** [Continuation] of the coroutine that's suspended on authentication. */
   private var continuation: Continuation<Actor>? = null
 
-  override suspend fun onAuthenticate(authorizationCode: String): Actor {
+  override suspend fun onAuthentication(authorizationCode: String): Actor {
     return suspendCoroutine {
       continuation = it
       MastodonAuthenticationActivity.start(context, authorizationCode)

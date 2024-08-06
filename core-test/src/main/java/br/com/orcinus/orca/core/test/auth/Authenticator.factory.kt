@@ -37,7 +37,7 @@ fun Authenticator(
     override val authorizer = authorizer
     override val actorProvider = actorProvider
 
-    override suspend fun onAuthenticate(authorizationCode: String): Actor {
+    override suspend fun onAuthentication(authorizationCode: String): Actor {
       return onAuthenticate(authorizationCode)
     }
   }
