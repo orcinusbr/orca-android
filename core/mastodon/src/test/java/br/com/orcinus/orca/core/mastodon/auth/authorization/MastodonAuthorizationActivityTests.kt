@@ -21,20 +21,24 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performImeAction
 import androidx.compose.ui.test.performTextInput
-import br.com.orcinus.orca.core.instance.Instance
-import br.com.orcinus.orca.core.instance.InstanceProvider
 import br.com.orcinus.orca.core.instance.domain.Domain
 import br.com.orcinus.orca.core.mastodon.R
 import br.com.orcinus.orca.core.mastodon.auth.authorization.viewmodel.MastodonAuthorizationViewModel
 import br.com.orcinus.orca.core.module.CoreModule
+import br.com.orcinus.orca.core.sample.auth.SampleAuthenticationLock
+import br.com.orcinus.orca.core.sample.auth.SampleAuthenticator
+import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.SampleTermMuter
+import br.com.orcinus.orca.core.sample.instance.SampleInstanceProvider
 import br.com.orcinus.orca.core.sample.instance.domain.sample
 import br.com.orcinus.orca.platform.autos.test.kit.input.text.onTextFieldErrors
+import br.com.orcinus.orca.platform.core.image.sample
 import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.platform.intents.test.intendBrowsingTo
 import br.com.orcinus.orca.platform.testing.asString
 import br.com.orcinus.orca.platform.testing.context
-import br.com.orcinus.orca.std.injector.module.injection.injectionOf
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
+import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 import br.com.orcinus.orca.std.injector.test.InjectorTestRule
 import org.junit.Rule
 import org.junit.Test
@@ -47,9 +51,9 @@ internal class MastodonAuthorizationActivityTests {
   val injectorRule = InjectorTestRule {
     register(
       CoreModule(
-        injectionOf { InstanceProvider.sample },
-        injectionOf { Instance.sample.authenticationLock },
-        injectionOf { SampleTermMuter() }
+        lazyInjectionOf { SampleInstanceProvider(ComposableImageLoader.Provider.sample) },
+        lazyInjectionOf { SampleAuthenticationLock(SampleAuthenticator(), SampleActorProvider()) },
+        lazyInjectionOf { SampleTermMuter() }
       )
     )
   }

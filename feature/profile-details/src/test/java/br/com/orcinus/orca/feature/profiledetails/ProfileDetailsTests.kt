@@ -24,10 +24,13 @@ import br.com.orcinus.orca.composite.timeline.TimelineTag
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.test.onTimeline
 import br.com.orcinus.orca.composite.timeline.test.post.time.StringRelativeTimeProvider
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.platform.autos.i18n.ReadableThrowable
 import br.com.orcinus.orca.platform.autos.test.kit.scaffold.bar.snack.onSnackbar
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import br.com.orcinus.orca.platform.core.image.sample
 import br.com.orcinus.orca.platform.testing.screen.screen
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.toListLoadable
@@ -50,7 +53,14 @@ internal class ProfileDetailsTests {
           Loadable.Loaded(ProfileDetails.sample),
           postPreviewsLoadable =
             List(size = screen.height.inPixels) {
-                PostPreview.sample.copy(id = "${UUID.randomUUID()}")
+                PostPreview.createSample(
+                    SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+                      .withDefaultProfiles()
+                      .withDefaultPosts()
+                      .build()
+                      .postProvider
+                  )
+                  .copy(id = "${UUID.randomUUID()}")
               }
               .toSerializableList()
               .toListLoadable(),

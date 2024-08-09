@@ -19,15 +19,9 @@ import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isSameAs
-import br.com.orcinus.orca.core.instance.Instance
-import br.com.orcinus.orca.core.sample.test.instance.SampleInstanceTestRule
-import br.com.orcinus.orca.platform.core.sample
 import kotlin.test.Test
-import org.junit.Rule
 
 internal class PostDetailsConversionScopeTests {
-  @get:Rule val sampleInstanceRule = SampleInstanceTestRule(Instance.sample)
-
   @Test
   fun providesSameDetailingMultipleTimes() {
     runPostDetailsConversionTest { assertThat(detailed()).isSameAs(detailed()) }
@@ -37,12 +31,11 @@ internal class PostDetailsConversionScopeTests {
   fun favorites() {
     runPostDetailsConversionTest {
       unfavorite()
-      post().favorite.get(page = 0).test {
+      post.favorite.get(page = 0).test {
         awaitItem()
         favorite()
         assertThatIDsOf(awaitItem()).containsExactly(actor.id)
       }
-      unfavorite()
     }
   }
 
@@ -50,12 +43,11 @@ internal class PostDetailsConversionScopeTests {
   fun reposts() {
     runPostDetailsConversionTest {
       unrepost()
-      post().repost.get(page = 0).test {
+      post.repost.get(page = 0).test {
         awaitItem()
         repost()
         assertThatIDsOf(awaitItem()).containsExactly(actor.id)
       }
-      unrepost()
     }
   }
 }

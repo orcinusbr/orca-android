@@ -19,10 +19,19 @@ import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.post.figure.Figure
 import br.com.orcinus.orca.composite.timeline.post.figure.gallery.disposition.Disposition
+import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.post.Post
-import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
-import br.com.orcinus.orca.core.sample.feed.profile.post.createSample
+import br.com.orcinus.orca.core.sample.auth.SampleAuthenticationLock
+import br.com.orcinus.orca.core.sample.auth.SampleAuthenticator
+import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
+import br.com.orcinus.orca.core.sample.feed.SampleFeedProvider
+import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
+import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
+import br.com.orcinus.orca.core.sample.feed.profile.post.content.SampleTermMuter
+import br.com.orcinus.orca.core.sample.feed.profile.search.SampleProfileSearcher
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import java.net.URI
 import kotlin.contracts.ExperimentalContracts
@@ -36,10 +45,44 @@ import kotlinx.coroutines.test.runTest
  * [CoroutineScope] in which [Post]-to-[PostPreview] conversions can be tested.
  *
  * @param delegate [TestScope] for [CoroutineScope]-like behavior.
+ * @property authenticator [SampleAuthenticator] that authenticates the [Actor].
+ * @property authenticationLock [SampleAuthenticationLock] for requiring authentication.
+ * @property postProvider [SamplePostProvider] in which the [post] is added and by which it is
+ *   provided.
  */
 internal class PostToPostPreviewConversionScope
 @InternalPostToPostPreviewConversionApi
-constructor(delegate: TestScope) : CoroutineScope by delegate {
+constructor(
+  private val authenticator: SampleAuthenticator,
+  private val authenticationLock: SampleAuthenticationLock,
+  val postProvider: SamplePostProvider,
+  delegate: TestScope
+) : CoroutineScope by delegate {
+  /**
+   * [SampleProfileProvider] to create the [SampleInstance] from which the [Post] is created with.
+   *
+   * @see createPost
+   */
+  private val profileProvider = SampleProfileProvider()
+
+  /**
+   * [SampleProfileSearcher] to create the [SampleInstance] from which the [Post] is created with.
+   *
+   * @see createPost
+   */
+  private val profileSearcher = SampleProfileSearcher(profileProvider)
+
+  /** [ImageLoader.Provider] that provides the [ImageLoader] by which images are to be loaded. */
+  private val imageLoaderProvider = ComposableImageLoader.Provider.sample
+
+  /**
+   * [SampleFeedProvider] to create the [SampleInstance] from which the [Post] is created with.
+   *
+   * @see createPost
+   */
+  private val feedProvider =
+    SampleFeedProvider(profileProvider, postProvider, SampleTermMuter(), imageLoaderProvider)
+
   /** [Post] to be converted. */
   var post = createPost()
     private set
@@ -66,7 +109,20 @@ constructor(delegate: TestScope) : CoroutineScope by delegate {
   /** Creates a sample [Post] on which conversion-testing can be performed. */
   @InternalPostToPostPreviewConversionApi
   fun createPost(): Post {
-    return Posts { add { Post.createSample(ComposableImageLoader.Provider.sample) } }.single()
+    return SampleInstance.Builder.create(
+        authenticator,
+        authenticationLock,
+        feedProvider,
+        profileProvider,
+        profileSearcher,
+        postProvider,
+        imageLoaderProvider
+      )
+      .withDefaultProfiles()
+      .withDefaultPosts()
+      .build()
+      .postProvider
+      .provideOneCurrent()
   }
 
   /** Undoes any changes made to the [post] and sets it back to its initial state. */
@@ -87,7 +143,12 @@ internal inline fun runPostToPostPreviewConversionTest(
 ) {
   contract { callsInPlace(body, InvocationKind.EXACTLY_ONCE) }
   runTest {
-    val conversionScope = PostToPostPreviewConversionScope(this)
+    val authenticator = SampleAuthenticator()
+    val actorProvider = SampleActorProvider()
+    val authenticationLock = SampleAuthenticationLock(authenticator, actorProvider)
+    val postProvider = SamplePostProvider(authenticationLock)
+    val conversionScope =
+      PostToPostPreviewConversionScope(authenticator, authenticationLock, postProvider, this)
     try {
       conversionScope.body()
     } finally {

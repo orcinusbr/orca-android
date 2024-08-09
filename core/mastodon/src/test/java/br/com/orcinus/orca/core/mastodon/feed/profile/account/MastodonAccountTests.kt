@@ -21,43 +21,55 @@ import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
 import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.ext.uri.URIBuilder
-import br.com.orcinus.orca.platform.core.sample
+import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import br.com.orcinus.orca.std.image.compose.async.AsyncImageLoader
 import kotlin.test.Test
 
 internal class MastodonAccountTests {
   @Test
   fun convertsIntoProfileSearchResult() {
-    with(Profile.sample) {
-      val avatarURI =
-        URIBuilder.url()
-          .scheme("https")
-          .host("orca.orcinus.com.br")
-          .path("api")
-          .path("v1")
-          .path("accounts")
-          .path(id)
-          .path("avatar")
-          .build()
-      assertThat(
-          MastodonAccount(
-              id,
-              account.username.toString(),
-              acct = "$account",
-              "$uri",
-              displayName = name,
-              locked = (this as? FollowableProfile<*>)?.follow is Follow.Private,
-              note = "$bio",
-              avatar = "$avatarURI",
-              followersCount = followerCount,
-              followingCount
-            )
-            .toProfileSearchResult(avatarLoaderProvider = AsyncImageLoader.Provider)
+    val profile =
+      SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+        .withDefaultProfiles()
+        .build()
+        .profileProvider
+        .provideCurrent<Profile>()
+    val avatarURI =
+      URIBuilder.url()
+        .scheme("https")
+        .host("orca.orcinus.com.br")
+        .path("api")
+        .path("v1")
+        .path("accounts")
+        .path(profile.id)
+        .path("avatar")
+        .build()
+    assertThat(
+        MastodonAccount(
+            profile.id,
+            profile.account.username.toString(),
+            acct = "${profile.account}",
+            "${profile.uri}",
+            displayName = profile.name,
+            locked = (profile as? FollowableProfile<*>)?.follow is Follow.Private,
+            note = "${profile.bio}",
+            avatar = "$avatarURI",
+            followersCount = profile.followerCount,
+            profile.followingCount
+          )
+          .toProfileSearchResult(avatarLoaderProvider = AsyncImageLoader.Provider)
+      )
+      .isEqualTo(
+        ProfileSearchResult(
+          profile.id,
+          profile.account,
+          AsyncImageLoader.Provider.provide(avatarURI),
+          profile.name,
+          profile.uri
         )
-        .isEqualTo(
-          ProfileSearchResult(id, account, AsyncImageLoader.Provider.provide(avatarURI), name, uri)
-        )
-    }
+      )
   }
 }

@@ -13,25 +13,33 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.sample.feed.profile.post
+package br.com.orcinus.orca.core.mastodon.instance.requester
 
 import assertk.assertThat
-import assertk.assertions.containsOnly
-import assertk.assertions.containsSubList
-import br.com.orcinus.orca.core.sample.test.feed.profile.post.withSample
-import br.com.orcinus.orca.core.sample.test.feed.profile.post.withSamples
+import assertk.assertions.isEqualTo
+import io.ktor.client.request.forms.FormDataContent
+import io.ktor.client.statement.request
+import io.ktor.http.parametersOf
 import kotlin.test.Test
 
-internal class PostsBuilderTests {
+internal class UrlEncodedConfigurationEmptyTests {
   @Test
-  fun addsOnePost() {
-    val post = Posts.withSample.single()
-    assertThat(Posts { add { post } }).containsOnly(post)
-  }
-
-  @Test
-  fun addsMultiplePosts() {
-    val posts = Posts.withSamples
-    assertThat(Posts { addAll { posts } }).containsSubList(posts)
+  fun appendsParameters() {
+    runRequesterTest {
+      assertThat(
+          requester
+            .post(route) {
+              parameters {
+                append("id", "0")
+                append("name", "Jean")
+              }
+            }
+            .request
+            .content
+            .let { it as FormDataContent }
+            .formData
+        )
+        .isEqualTo(parametersOf("id" to listOf("0"), "name" to listOf("Jean")))
+    }
   }
 }

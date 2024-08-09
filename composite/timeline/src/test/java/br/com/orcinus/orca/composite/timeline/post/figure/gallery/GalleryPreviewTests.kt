@@ -41,7 +41,10 @@ import br.com.orcinus.orca.composite.timeline.test.post.figure.gallery.thumbnail
 import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.samples
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -56,7 +59,14 @@ internal class GalleryPreviewTests {
     composeRule.setContent {
       AutosTheme {
         GalleryPreview(
-          preview = GalleryPreview.sample.copy(attachments = Attachment.samples.take(1))
+          GalleryPreview.createSample(
+              SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+                .withDefaultProfiles()
+                .withDefaultPosts()
+                .build()
+                .postProvider
+            )
+            .copy(attachments = Attachment.samples.take(1))
         )
       }
     }
@@ -68,7 +78,14 @@ internal class GalleryPreviewTests {
     composeRule.setContent {
       AutosTheme {
         GalleryPreview(
-          preview = GalleryPreview.sample.copy(attachments = Attachment.samples.take(2))
+          GalleryPreview.createSample(
+              SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+                .withDefaultProfiles()
+                .withDefaultPosts()
+                .build()
+                .postProvider
+            )
+            .copy(attachments = Attachment.samples.take(2))
         )
       }
     }
@@ -80,7 +97,16 @@ internal class GalleryPreviewTests {
     val context = InstrumentationRegistry.getInstrumentation().context
     composeRule.setContent {
       AutosTheme {
-        GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples))
+        GalleryPreview(
+          GalleryPreview.createSample(
+              SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+                .withDefaultProfiles()
+                .withDefaultPosts()
+                .build()
+                .postProvider
+            )
+            .copy(attachments = Attachment.samples)
+        )
       }
     }
     composeRule
@@ -100,7 +126,16 @@ internal class GalleryPreviewTests {
     val context = InstrumentationRegistry.getInstrumentation().context
     composeRule.setContent {
       AutosTheme {
-        GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples))
+        GalleryPreview(
+          GalleryPreview.createSample(
+              SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+                .withDefaultProfiles()
+                .withDefaultPosts()
+                .build()
+                .postProvider
+            )
+            .copy(attachments = Attachment.samples)
+        )
       }
     }
     composeRule
@@ -119,7 +154,16 @@ internal class GalleryPreviewTests {
     val context = InstrumentationRegistry.getInstrumentation().context
     composeRule.setContent {
       AutosTheme {
-        GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples))
+        GalleryPreview(
+          GalleryPreview.createSample(
+              SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+                .withDefaultProfiles()
+                .withDefaultPosts()
+                .build()
+                .postProvider
+            )
+            .copy(attachments = Attachment.samples)
+        )
       }
     }
     composeRule
@@ -139,7 +183,14 @@ internal class GalleryPreviewTests {
     composeRule.setContent {
       AutosTheme {
         GalleryPreview(
-          preview = GalleryPreview.sample.copy(attachments = Attachment.samples.take(2))
+          GalleryPreview.createSample(
+              SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+                .withDefaultProfiles()
+                .withDefaultPosts()
+                .build()
+                .postProvider
+            )
+            .copy(attachments = Attachment.samples.take(2))
         )
       }
     }
@@ -151,7 +202,14 @@ internal class GalleryPreviewTests {
     composeRule.setContent {
       AutosTheme {
         GalleryPreview(
-          preview = GalleryPreview.sample.copy(attachments = Attachment.samples.take(2))
+          GalleryPreview.createSample(
+              SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+                .withDefaultProfiles()
+                .withDefaultPosts()
+                .build()
+                .postProvider
+            )
+            .copy(attachments = Attachment.samples.take(2))
         )
       }
     }
@@ -165,7 +223,16 @@ internal class GalleryPreviewTests {
   fun secondThumbnailHasHalfTheFullSizeWhenGivenMoreThanTwoAttachments() {
     composeRule.setContent {
       AutosTheme {
-        GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples))
+        GalleryPreview(
+          GalleryPreview.createSample(
+              SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+                .withDefaultProfiles()
+                .withDefaultPosts()
+                .build()
+                .postProvider
+            )
+            .copy(attachments = Attachment.samples)
+        )
       }
     }
     composeRule.onThumbnails()[1].assertAspectRatioEquals(Disposition.TrailingApproximateHalfRatio)
@@ -176,7 +243,14 @@ internal class GalleryPreviewTests {
     composeRule.setContent {
       AutosTheme {
         GalleryPreview(
-          preview = GalleryPreview.sample.copy(attachments = Attachment.samples.take(1))
+          GalleryPreview.createSample(
+              SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+                .withDefaultProfiles()
+                .withDefaultPosts()
+                .build()
+                .postProvider
+            )
+            .copy(attachments = Attachment.samples.take(1))
         )
       }
     }
@@ -188,7 +262,14 @@ internal class GalleryPreviewTests {
     composeRule.setContent {
       AutosTheme {
         GalleryPreview(
-          preview = GalleryPreview.sample.copy(attachments = Attachment.samples.take(2))
+          GalleryPreview.createSample(
+              SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+                .withDefaultProfiles()
+                .withDefaultPosts()
+                .build()
+                .postProvider
+            )
+            .copy(attachments = Attachment.samples.take(2))
         )
       }
     }
@@ -202,7 +283,16 @@ internal class GalleryPreviewTests {
   fun leadingThumbnailWithinGridOfThreeIsClippedByDefaultShapeWithZeroedTopEndAndBottomEndCorners() {
     composeRule.setContent {
       AutosTheme {
-        GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples))
+        GalleryPreview(
+          GalleryPreview.createSample(
+              SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+                .withDefaultProfiles()
+                .withDefaultPosts()
+                .build()
+                .postProvider
+            )
+            .copy(attachments = Attachment.samples)
+        )
       }
     }
     composeRule
@@ -215,7 +305,16 @@ internal class GalleryPreviewTests {
   fun secondThumbnailWithinGridOfThreeIsClippedByDefaultShapeWithZeroedTopStartAndBottomStartAndEndCorners() {
     composeRule.setContent {
       AutosTheme {
-        GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples))
+        GalleryPreview(
+          GalleryPreview.createSample(
+              SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+                .withDefaultProfiles()
+                .withDefaultPosts()
+                .build()
+                .postProvider
+            )
+            .copy(attachments = Attachment.samples)
+        )
       }
     }
     composeRule
@@ -233,7 +332,14 @@ internal class GalleryPreviewTests {
     composeRule.setContent {
       AutosTheme {
         GalleryPreview(
-          preview = GalleryPreview.sample.copy(attachments = Attachment.samples.take(2))
+          GalleryPreview.createSample(
+              SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+                .withDefaultProfiles()
+                .withDefaultPosts()
+                .build()
+                .postProvider
+            )
+            .copy(attachments = Attachment.samples.take(2))
         )
       }
     }
@@ -249,7 +355,16 @@ internal class GalleryPreviewTests {
   fun trailingThumbnailWithinGridOfThreeIsClippedByDefaultShapeWithZeroedTopStartAndEndAndBottomStartCorners() {
     composeRule.setContent {
       AutosTheme {
-        GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples))
+        GalleryPreview(
+          GalleryPreview.createSample(
+              SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+                .withDefaultProfiles()
+                .withDefaultPosts()
+                .build()
+                .postProvider
+            )
+            .copy(attachments = Attachment.samples)
+        )
       }
     }
     composeRule
@@ -265,7 +380,16 @@ internal class GalleryPreviewTests {
     val context = InstrumentationRegistry.getInstrumentation().context
     composeRule.setContent {
       AutosTheme {
-        GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples))
+        GalleryPreview(
+          GalleryPreview.createSample(
+              SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+                .withDefaultProfiles()
+                .withDefaultPosts()
+                .build()
+                .postProvider
+            )
+            .copy(attachments = Attachment.samples)
+        )
       }
     }
     composeRule

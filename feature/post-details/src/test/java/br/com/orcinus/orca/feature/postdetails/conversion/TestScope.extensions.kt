@@ -20,23 +20,39 @@ import br.com.orcinus.orca.composite.timeline.post.figure.gallery.GalleryPreview
 import br.com.orcinus.orca.composite.timeline.post.figure.gallery.disposition.Disposition
 import br.com.orcinus.orca.composite.timeline.post.figure.link.LinkCard
 import br.com.orcinus.orca.composite.timeline.stat.details.StatsDetails
+import br.com.orcinus.orca.core.auth.AuthenticationLock
+import br.com.orcinus.orca.core.auth.Authenticator
 import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.auth.actor.ActorProvider
+import br.com.orcinus.orca.core.feed.FeedProvider
+import br.com.orcinus.orca.core.feed.profile.Profile
+import br.com.orcinus.orca.core.feed.profile.ProfileProvider
 import br.com.orcinus.orca.core.feed.profile.post.Post
+import br.com.orcinus.orca.core.feed.profile.post.content.TermMuter
 import br.com.orcinus.orca.core.feed.profile.post.provider.PostProvider
 import br.com.orcinus.orca.core.feed.profile.post.stat.Stat
+import br.com.orcinus.orca.core.feed.profile.search.ProfileSearcher
 import br.com.orcinus.orca.core.instance.Instance
-import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
+import br.com.orcinus.orca.core.sample.auth.SampleAuthenticationLock
+import br.com.orcinus.orca.core.sample.auth.SampleAuthenticator
+import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
+import br.com.orcinus.orca.core.sample.feed.SampleFeedProvider
+import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
+import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
+import br.com.orcinus.orca.core.sample.feed.profile.post.content.SampleTermMuter
+import br.com.orcinus.orca.core.sample.feed.profile.search.SampleProfileSearcher
+import br.com.orcinus.orca.core.sample.image.SampleImageSource
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.feature.postdetails.PostDetails
 import br.com.orcinus.orca.feature.postdetails.toPostDetails
 import br.com.orcinus.orca.feature.postdetails.toPostDetailsFlow
+import br.com.orcinus.orca.platform.core.image.sample
 import br.com.orcinus.orca.platform.core.sample
-import br.com.orcinus.orca.platform.core.withSample
-import br.com.orcinus.orca.platform.core.withSamples
 import br.com.orcinus.orca.std.image.ImageLoader
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import java.net.URI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 
@@ -45,11 +61,39 @@ import kotlinx.coroutines.test.runTest
  * [Post]-to-[PostDetails]-conversion-specific functionality.
  *
  * @param delegate [TestScope] to which [CoroutineScope]-like behavior is delegated.
- * @param postID ID of the [Post] that serves as the base for all underlying operations.
- * @see Post.id
  */
-internal class PostDetailsConversionScope(delegate: TestScope, private val postID: String) :
-  CoroutineScope by delegate {
+internal class PostDetailsConversionScope(delegate: TestScope) : CoroutineScope by delegate {
+  /** [Instance]-specific [Authenticator] through which authentication can be done. */
+  private val authenticator = SampleAuthenticator()
+
+  /** [ActorProvider] whose provided [Actor] will be ensured to be authenticated. */
+  private val actorProvider = SampleActorProvider()
+
+  /**
+   * [Instance]-specific [AuthenticationLock] by which features can be locked or unlocked
+   * authentication "wall".
+   */
+  private val authenticationLock = SampleAuthenticationLock(authenticator, actorProvider)
+
+  /** [Instance]-specific [ProfileProvider] for providing [Profile]s. */
+  private val profileProvider = SampleProfileProvider()
+
+  /** [Instance]-specific [ProfileSearcher] by which search for [Profile]s can be made. */
+  private val profileSearcher = SampleProfileSearcher(profileProvider)
+
+  /** Provides the [ImageLoader] by which images are to be loaded from a [SampleImageSource]. */
+  private val imageLoaderProvider = ComposableImageLoader.Provider.sample
+
+  /** [TermMuter] by which [Post]s with muted terms will be filtered out. */
+  private val termMuter = SampleTermMuter()
+
+  /** [Instance]-specific [PostProvider] that provides [Post]s. */
+  val postProvider = SamplePostProvider(authenticationLock)
+
+  /** [Instance]-specific [FeedProvider] that provides the [Post]s in the timeline. */
+  private val feedProvider =
+    SampleFeedProvider(profileProvider, postProvider, termMuter, imageLoaderProvider)
+
   /** [Detailing] to be returned by [detailed]. */
   private val detailing by lazy(::Detailing)
 
@@ -58,7 +102,8 @@ internal class PostDetailsConversionScope(delegate: TestScope, private val postI
    *
    * @see comment
    */
-  private val comment = Posts.withSamples.last()
+  private val comment
+    get() = postProvider.provideAllCurrent().first { it.author.id != Actor.Authenticated.sample.id }
 
   /**
    * Authenticated [Actor] whose avatar [ImageLoader] will be used to load the image.
@@ -67,6 +112,10 @@ internal class PostDetailsConversionScope(delegate: TestScope, private val postI
    * @see Actor.Authenticated.avatarLoader
    */
   val actor = Actor.Authenticated.sample
+
+  /** A sample [Post]. */
+  val post
+    get() = postProvider.provideOneCurrent()
 
   /**
    * [Colors] by which the text of a [PostDetails] can be colored.
@@ -88,7 +137,7 @@ internal class PostDetailsConversionScope(delegate: TestScope, private val postI
   val onThumbnailClickListener = Disposition.OnThumbnailClickListener.empty
 
   /**
-   * Offers multiple ways to obtain [PostDetails] from the given [post].
+   * Offers multiple ways to obtain [PostDetails] from the [post].
    *
    * @see withCommentCountOf
    * @see favorited
@@ -99,69 +148,75 @@ internal class PostDetailsConversionScope(delegate: TestScope, private val postI
    */
   inner class Detailing {
     /**
-     * Converts the [post] into [PostDetails] that have an exact amount of comments.
+     * Converts the sample [Post] into [PostDetails] that have an exact amount of comments.
      *
      * @param commentCount Quantity of comments for the returned [PostDetails] to have.
      */
-    suspend fun withCommentCountOf(commentCount: Int): PostDetails {
+    fun withCommentCountOf(commentCount: Int): PostDetails {
       return withStats { copy(commentCount = commentCount) }
     }
 
-    /** Converts the [post] into favorited [PostDetails]. */
-    suspend fun favorited(): PostDetails {
+    /** Converts the sample [Post] into favorited [PostDetails]. */
+    fun favorited(): PostDetails {
       return withStats { copy(isFavorite = true) }
     }
 
-    /** Converts the [post] into unfavorited [PostDetails]. */
-    suspend fun unfavorited(): PostDetails {
+    /** Converts the sample [Post] into unfavorited [PostDetails]. */
+    fun unfavorited(): PostDetails {
       return withStats { copy(isFavorite = false) }
     }
 
-    /** Converts the [post] into reposted [PostDetails]. */
-    suspend fun reposted(): PostDetails {
+    /** Converts the sample [Post] into reposted [PostDetails]. */
+    fun reposted(): PostDetails {
       return withStats { copy(isReposted = true) }
     }
 
     /** Converts the [post] into unreposted [PostDetails]. */
-    suspend fun unreposted(): PostDetails {
+    fun unreposted(): PostDetails {
       return withStats { copy(isReposted = false) }
     }
 
     /**
-     * Converts the [post] into a [Flow] of [PostDetails], to which emissions are performed whenever
-     * one of its [Stat]s is updated.
+     * Converts the sample [Post] into a [Flow] of [PostDetails], to which emissions are performed
+     * whenever one of its [Stat]s is updated.
      */
-    suspend fun asFlow(): Flow<PostDetails> {
-      return post().toPostDetailsFlow(colors, onLinkClick, onThumbnailClickListener)
+    fun asFlow(): Flow<PostDetails> {
+      return post.toPostDetailsFlow(colors, onLinkClick, onThumbnailClickListener)
     }
 
     /**
-     * Converts the [post] into [PostDetails] to whose [StatsDetails] the [update] is applied.
+     * Converts the sample [Post] into [PostDetails] to whose [StatsDetails] the [update] is
+     * applied.
      *
-     * @param update Updates the current [StatsDetails] of the [PostDetails] to which the [post] has
-     *   been converted.
+     * @param update Updates the current [StatsDetails] of the [PostDetails] to which the sample
+     *   [Post] has been converted.
      * @see PostDetails.stats
      */
-    private suspend fun withStats(update: StatsDetails.() -> StatsDetails): PostDetails {
-      val details = post().toPostDetails(colors, onLinkClick, onThumbnailClickListener)
+    private fun withStats(update: StatsDetails.() -> StatsDetails): PostDetails {
+      val details = post.toPostDetails(colors, onLinkClick, onThumbnailClickListener)
       val stats = details.stats.update()
       return details.copy(stats = stats)
     }
   }
 
-  /**
-   * Obtains the [Post] identified as [postID] provided by the sample [Instance]'s [PostProvider].
-   *
-   * @see Instance.Companion.sample
-   * @see PostProvider
-   */
-  suspend fun post(): Post {
-    return Instance.sample.postProvider.provide(postID).first()
+  init {
+    SampleInstance.Builder.create(
+        authenticator,
+        authenticationLock,
+        feedProvider,
+        profileProvider,
+        profileSearcher,
+        postProvider,
+        imageLoaderProvider
+      )
+      .withDefaultProfiles()
+      .withDefaultPosts()
   }
 
   /**
-   * Obtains a [Detailing] through which [PostDetails] derived from the [post] can be obtained in
-   * various ways (i. e., as a single instance with a specific amount of comments or as a [Flow]).
+   * Obtains a [Detailing] through which [PostDetails] derived from the sample [Post] can be
+   * obtained in various ways (i. e., as a single instance with a specific amount of comments or as
+   * a [Flow]).
    *
    * @see Detailing.withCommentCountOf
    * @see Detailing.asFlow
@@ -171,72 +226,66 @@ internal class PostDetailsConversionScope(delegate: TestScope, private val postI
   }
 
   /**
-   * Adds a comment to the [post].
+   * Adds a comment to the sample [Post].
    *
    * @see uncomment
    */
   suspend fun comment() {
-    post().comment.add(comment)
+    post.comment.add(comment)
   }
 
   /**
-   * Removes the sample comment added to the [post].
+   * Removes the sample comment added to the sample [Post].
    *
    * @see comment
    */
   suspend fun uncomment() {
-    post().comment.remove(comment)
+    post.comment.remove(comment)
   }
 
   /**
-   * Favorites the [post].
+   * Favorites the sample [Post].
    *
    * @see unfavorite
    */
   suspend fun favorite() {
-    post().favorite.enable()
+    post.favorite.enable()
   }
 
   /**
-   * Unfavorites the [post].
+   * Unfavorites the sample [Post].
    *
    * @see favorite
    */
   suspend fun unfavorite() {
-    post().favorite.disable()
+    post.favorite.disable()
   }
 
   /**
-   * Reposts the [post].
+   * Reposts the sample [Post].
    *
    * @see unrepost
    */
   suspend fun repost() {
-    post().repost.enable()
+    post.repost.enable()
   }
 
   /**
-   * Unreposts the [post].
+   * Unreposts the sample [Post].
    *
    * @see repost
    */
   suspend fun unrepost() {
-    post().repost.disable()
+    post.repost.disable()
   }
 }
 
 /**
  * Creates an environment for testing [Post]-to-[PostDetails] conversion.
  *
- * @param postID ID of the [Post] that serves as the base for all underlying operations. Defaults to
- *   that of the sample one.
  * @param body Testing to be performed.
  * @see Post.id
- * @see Posts.Companion.withSample
  */
-internal fun runPostDetailsConversionTest(
-  postID: String = Posts.withSample.single().id,
-  body: suspend PostDetailsConversionScope.() -> Unit
-) {
-  runTest { PostDetailsConversionScope(delegate = this, postID).body() }
+internal fun runPostDetailsConversionTest(body: suspend PostDetailsConversionScope.() -> Unit) {
+  runTest { PostDetailsConversionScope(delegate = this).body() }
 }

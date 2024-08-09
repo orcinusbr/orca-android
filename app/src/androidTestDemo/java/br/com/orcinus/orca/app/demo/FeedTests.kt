@@ -41,6 +41,9 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class FeedTests {
+  private val feedProvider
+    get() = composeRule.activity.coreModule.instance.feedProvider
+
   @get:Rule val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
 
   @Test
@@ -54,7 +57,7 @@ internal class FeedTests {
   @Test
   fun navigatesToGalleryAndGoesBackToFeedWhenClosingIt() {
     with(composeRule) {
-      onTimeline().performScrollToPostPreviewWithGalleryPreview {
+      onTimeline().performScrollToPostPreviewWithGalleryPreview(feedProvider) {
         onThumbnails().onFirst().performClick()
         onCloseActionButton().performClick()
         assertThat(composeRule.activity).isAt<_, FeedFragment>()
@@ -65,7 +68,7 @@ internal class FeedTests {
   @Test
   fun showsImageWhoseThumbnailWasClickedWhenNavigatingToGallery() {
     with(composeRule) {
-      onTimeline().performScrollToPostPreviewWithGalleryPreview { post ->
+      onTimeline().performScrollToPostPreviewWithGalleryPreview(feedProvider) { post ->
         onThumbnails().onEach { index ->
           performClick()
           onPager().performScrollToEachPage {

@@ -16,13 +16,26 @@
 package br.com.orcinus.orca.feature.postdetails.conversion
 
 import assertk.assertions.containsExactly
-import br.com.orcinus.orca.core.feed.profile.Profile
+import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
+import br.com.orcinus.orca.platform.core.image.sample
 import br.com.orcinus.orca.platform.core.sample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import kotlin.test.Test
 
 internal class AssertExtensionsTests {
   @Test
   fun assertsOnProfileIDs() {
-    assertThatIDsOf(listOf(Profile.sample)).containsExactly(Profile.sample.id)
+    assertThatIDsOf(
+        listOf(
+          SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+            .withDefaultProfiles()
+            .build()
+            .profileProvider
+            .provideCurrent<EditableProfile>()
+        )
+      )
+      .containsExactly(Actor.Authenticated.sample.id)
   }
 }

@@ -26,78 +26,108 @@ import br.com.orcinus.orca.composite.timeline.post.figure.link.LinkCard
 import br.com.orcinus.orca.composite.timeline.test.isTimeline
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.post.Post
-import br.com.orcinus.orca.core.instance.Instance
+import br.com.orcinus.orca.core.sample.feed.SampleFeedProvider
 import br.com.orcinus.orca.core.sample.feed.profile.SAMPLE_POSTS_PER_PAGE
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.platform.core.sample
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.test.runTest
 
 /**
  * Scrolls to the first [PostPreview] containing a [GalleryPreview].
  *
+ * @param feedProvider [SampleFeedProvider] that provides the feed in which the [Post] is expected
+ *   to be.
  * @param onPost Action to be run on the underlying [Post] after scrolling to its index has been
  *   performed.
  * @throws AssertionError If the [SemanticsNode] isn't that of a [Timeline].
+ * @throws NoSuchElementException If no matching [Post] is found.
  */
-@Throws(AssertionError::class)
+@Throws(AssertionError::class, NoSuchElementException::class)
 fun SemanticsNodeInteraction.performScrollToPostPreviewWithGalleryPreview(
+  feedProvider: SampleFeedProvider,
   onPost: (Post) -> Unit = {}
 ): SemanticsNodeInteraction {
   assert(isTimeline()) { "Can only scroll to the PostPreview with a GalleryPreview of a Timeline." }
-  return performScrollToPostIndex({ it.content.attachments.isNotEmpty() }, onPost)
+  return performScrollToPostIndex(
+    feedProvider,
+    predicate = { _, foundPost -> foundPost.content.attachments.isNotEmpty() },
+    onPost
+  )
 }
 
 /**
  * Scrolls to the first [PostPreview] containing a [LinkCard].
  *
+ * @param feedProvider [SampleFeedProvider] that provides the feed in which the [Post] is expected
+ *   to be.
  * @throws AssertionError If the [SemanticsNode] isn't that of a [Timeline].
+ * @throws NoSuchElementException If no matching [Post] is found.
  */
-@Throws(AssertionError::class)
-fun SemanticsNodeInteraction.performScrollToPostPreviewWithLinkCard() {
+@Throws(AssertionError::class, NoSuchElementException::class)
+fun SemanticsNodeInteraction.performScrollToPostPreviewWithLinkCard(
+  feedProvider: SampleFeedProvider
+) {
   assert(isTimeline()) { "Can only scroll to the PostPreview with a LinkCard of a Timeline." }
-  performScrollToPostIndex({ it.content.highlight != null })
+  performScrollToPostIndex(
+    feedProvider,
+    predicate = { _, foundPost -> foundPost.content.highlight != null }
+  )
 }
 
 /**
- * Scrolls to the index of a [Post] from the sample [Instance] that matches the [predicate].
+ * Scrolls to the index of a [Post] from a [SampleInstance] that matches the [predicate].
  *
+ * @param feedProvider [SampleFeedProvider] that provides the feed in which the [Post] is expected
+ *   to be.
  * @param predicate Returns whether the index of the given [Post] should be the one to which
  *   scrolling will be performed.
  * @param onPost Action to be run on the [Post] that matched the [predicate] after scrolling to its
  *   index has been performed.
- * @see Instance.Companion.sample
+ * @throws NoSuchElementException If no matching [Post] is found.
+ * @see SampleInstance
  */
+@Throws(NoSuchElementException::class)
 internal fun SemanticsNodeInteraction.performScrollToPostIndex(
-  predicate: (Post) -> Boolean,
+  feedProvider: SampleFeedProvider,
+  predicate: (inPagePosts: List<Post>, foundPost: Post) -> Boolean,
   onPost: (Post) -> Unit = {}
 ): SemanticsNodeInteraction {
-  var indexedPost: IndexedValue<Post>? = null
-  runTest { indexedPost = findIndexedPost(predicate = predicate) }
-  return indexedPost?.let { (index, post) -> performScrollToIndex(index).also { onPost(post) } }
-    ?: this
+  val (index, post) = findIndexedPost(feedProvider, predicate = predicate)
+  return performScrollToIndex(index).also { onPost(post) }
 }
 
 /**
- * Finds a [Post] within the sample feed that matches the [predicate], returning it alongside its
+ * Finds a [Post] within a sample feed that matches the [predicate], returning it alongside its
  * index.
  *
+ * @param feedProvider [SampleFeedProvider] that provides the feed in which the [Post] is expected
+ *   to be.
  * @param page Feed page at which the [Post] will be looked for.
  * @param lastIndex Index of the last [Post] that's been provided while trying to find the matching
  *   one.
  * @param predicate Returns whether the given [Post] is the one to be provided.
- * @see Instance.Companion.sample
- * @see Instance.feedProvider
+ * @throws NoSuchElementException If no matching [Post] is found.
+ * @see SampleFeedProvider
  * @see IndexedValue.index
  */
-private suspend fun findIndexedPost(
+@Throws(NoSuchElementException::class)
+private fun findIndexedPost(
+  feedProvider: SampleFeedProvider,
   page: Int = 0,
   lastIndex: Int = 0,
-  predicate: (Post) -> Boolean
+  predicate: (inPagePosts: List<Post>, foundPost: Post) -> Boolean
 ): IndexedValue<Post> {
-  return Instance.sample.feedProvider
-    .provide(Actor.Authenticated.sample.id, page)
-    .firstOrNull()
-    ?.mapIndexed { index, post -> IndexedValue(lastIndex + index, post) }
-    ?.find { (_, post) -> predicate(post) }
-    ?: findIndexedPost(page.inc(), lastIndex = SAMPLE_POSTS_PER_PAGE * page.inc(), predicate)
+  return feedProvider
+    .provideCurrent(Actor.Authenticated.sample.id, page)
+    .ifEmpty { throw NoSuchElementException("No post matching the given predicate was found.") }
+    .let { inPagePosts ->
+      inPagePosts
+        .mapIndexed { index, post -> IndexedValue(lastIndex + index, post) }
+        .find { (_, foundPost) -> predicate(inPagePosts, foundPost) }
+    }
+    ?: findIndexedPost(
+      feedProvider,
+      page.inc(),
+      lastIndex = SAMPLE_POSTS_PER_PAGE * page.inc(),
+      predicate
+    )
 }

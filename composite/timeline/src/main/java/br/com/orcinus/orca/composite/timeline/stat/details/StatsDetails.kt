@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -17,8 +17,8 @@ package br.com.orcinus.orca.composite.timeline.stat.details
 
 import androidx.compose.runtime.Immutable
 import br.com.orcinus.orca.core.feed.profile.post.Post
-import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
-import br.com.orcinus.orca.platform.core.withSample
+import br.com.orcinus.orca.core.feed.profile.post.stat.Stat
+import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
 
 /**
  * Details of a [Post]'s [Stat]s.
@@ -58,7 +58,14 @@ internal constructor(
         repostCount = 0
       )
 
-    /** Sample [StatsDetails]. */
-    val sample = Posts.withSample.single().asStatsDetails()
+    /**
+     * Creates sample [StatsDetails].
+     *
+     * @param postProvider [SamplePostProvider] that provides the [Post] from which [StatsDetails]
+     *   are to be created.
+     */
+    fun createSample(postProvider: SamplePostProvider): StatsDetails {
+      return postProvider.provideOneCurrent().asStatsDetails()
+    }
   }
 }

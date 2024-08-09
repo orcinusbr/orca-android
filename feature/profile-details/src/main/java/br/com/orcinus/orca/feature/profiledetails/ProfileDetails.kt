@@ -39,6 +39,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -52,9 +53,9 @@ import br.com.orcinus.orca.composite.timeline.TimelineDefaults
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.post.time.RelativeTimeProvider
 import br.com.orcinus.orca.composite.timeline.post.time.rememberRelativeTimeProvider
-import br.com.orcinus.orca.composite.timeline.text.annotated.toAnnotatedString
-import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.account.Account
+import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.feature.profiledetails.navigation.BackwardsNavigationState
 import br.com.orcinus.orca.feature.profiledetails.navigation.NavigationButton
 import br.com.orcinus.orca.feature.profiledetails.ui.Header
@@ -72,8 +73,9 @@ import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
 import br.com.orcinus.orca.platform.autos.overlays.refresh.Refresh
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
-import br.com.orcinus.orca.platform.core.sample
+import br.com.orcinus.orca.platform.core.image.sample
 import br.com.orcinus.orca.std.image.SomeImageLoader
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.toListLoadable
@@ -182,14 +184,14 @@ internal sealed class ProfileDetails : Serializable {
     val sample: ProfileDetails
       @Composable
       get() {
-        return Default(
-          Profile.sample.id,
-          Profile.sample.avatarLoader,
-          Profile.sample.name,
-          Profile.sample.account,
-          Profile.sample.bio.toAnnotatedString(),
-          Profile.sample.uri
-        )
+        val coroutineScope = rememberCoroutineScope()
+        return SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+          .withDefaultProfiles()
+          .withDefaultPosts()
+          .build()
+          .profileProvider
+          .provideCurrent<EditableProfile>()
+          .toProfileDetails(coroutineScope, AutosTheme.colors)
       }
   }
 }
@@ -552,7 +554,15 @@ private fun LoadedProfileDetailsWithPostsPreview() {
   AutosTheme {
     ProfileDetails(
       Loadable.Loaded(ProfileDetails.sample),
-      PostPreview.samples.toSerializableList().toListLoadable()
+      PostPreview.createSamples(
+          SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+            .withDefaultProfiles()
+            .withDefaultPosts()
+            .build()
+            .postProvider
+        )
+        .toSerializableList()
+        .toListLoadable()
     )
   }
 }
@@ -563,7 +573,15 @@ private fun LoadedProfileDetailsWithExpandedTopBarDropdownMenuPreview() {
   AutosTheme {
     ProfileDetails(
       Loadable.Loaded(ProfileDetails.sample),
-      PostPreview.samples.toSerializableList().toListLoadable(),
+      PostPreview.createSamples(
+          SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+            .withDefaultProfiles()
+            .withDefaultPosts()
+            .build()
+            .postProvider
+        )
+        .toSerializableList()
+        .toListLoadable(),
       isTopBarDropdownMenuExpanded = true,
       initialFirstVisibleTimelineItemIndex = 1
     )

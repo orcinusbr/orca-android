@@ -18,11 +18,14 @@ package br.com.orcinus.orca.feature.gallery
 import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import br.com.orcinus.orca.composite.timeline.stat.details.formatted
-import br.com.orcinus.orca.feature.gallery.test.TestGalleryModule
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
+import br.com.orcinus.orca.feature.gallery.test.UnnavigableGalleryModule
 import br.com.orcinus.orca.feature.gallery.test.launchGalleryActivity
 import br.com.orcinus.orca.feature.gallery.test.ui.onPager
 import br.com.orcinus.orca.feature.gallery.test.ui.performScrollToEachPage
+import br.com.orcinus.orca.platform.core.image.sample
 import br.com.orcinus.orca.platform.testing.asString
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import br.com.orcinus.orca.std.injector.module.binding.boundTo
 import br.com.orcinus.orca.std.injector.test.InjectorTestRule
 import kotlin.test.Test
@@ -32,14 +35,23 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class GalleryActivityTests {
+  private val postProvider =
+    SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+      .withDefaultProfiles()
+      .withDefaultPosts()
+      .build()
+      .postProvider
+
   @get:Rule
-  val injectorRule = InjectorTestRule { register(TestGalleryModule.boundTo<GalleryModule, _>()) }
+  val injectorRule = InjectorTestRule {
+    register(UnnavigableGalleryModule(postProvider).boundTo<GalleryModule, _>())
+  }
 
   @get:Rule val composeRule = createEmptyComposeRule()
 
   @Test
   fun describesEachPage() {
-    launchGalleryActivity().use {
+    launchGalleryActivity(postProvider).use {
       with(composeRule) {
         onPager().performScrollToEachPage {
           assertContentDescriptionEquals(R.string.feature_gallery_attachment.asString(it.formatted))

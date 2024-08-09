@@ -18,21 +18,51 @@ package br.com.orcinus.orca.composite.timeline.post.figure.gallery.disposition
 import br.com.orcinus.orca.composite.timeline.post.figure.gallery.GalleryPreview
 import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.samples
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
+import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import kotlin.test.Test
 
 internal class GridTests {
   @Test(expected = IllegalArgumentException::class)
   fun throwsWhenCreatingGridWithLessThanTwoAttachments() {
-    Disposition.Grid(GalleryPreview.sample.copy(attachments = Attachment.samples.take(1)))
+    Disposition.Grid(
+      GalleryPreview.createSample(
+          SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+            .withDefaultProfiles()
+            .withDefaultPosts()
+            .build()
+            .postProvider
+        )
+        .copy(attachments = Attachment.samples.take(1))
+    )
   }
 
   @Test
   fun createsGridWithTwoAttachments() {
-    Disposition.Grid(GalleryPreview.sample.copy(attachments = Attachment.samples.take(2)))
+    Disposition.Grid(
+      GalleryPreview.createSample(
+          SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+            .withDefaultProfiles()
+            .withDefaultPosts()
+            .build()
+            .postProvider
+        )
+        .copy(attachments = Attachment.samples.take(2))
+    )
   }
 
   @Test
   fun createsGridWithMoreThanTwoAttachments() {
-    Disposition.Grid(GalleryPreview.sample.copy(attachments = Attachment.samples))
+    Disposition.Grid(
+      GalleryPreview.createSample(
+          SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+            .withDefaultProfiles()
+            .withDefaultPosts()
+            .build()
+            .postProvider
+        )
+        .copy(attachments = Attachment.samples)
+    )
   }
 }

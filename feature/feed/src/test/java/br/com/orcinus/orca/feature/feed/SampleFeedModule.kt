@@ -15,14 +15,23 @@
 
 package br.com.orcinus.orca.feature.feed
 
-import br.com.orcinus.orca.core.instance.Instance
-import br.com.orcinus.orca.platform.core.sample
+import br.com.orcinus.orca.core.feed.FeedProvider
+import br.com.orcinus.orca.core.feed.profile.post.provider.PostProvider
+import br.com.orcinus.orca.core.feed.profile.search.ProfileSearcher
+import br.com.orcinus.orca.core.sample.feed.SampleFeedProvider
+import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
+import br.com.orcinus.orca.core.sample.feed.profile.search.SampleProfileSearcher
+import br.com.orcinus.orca.std.injector.module.injection.immediateInjectionOf
 import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 
-internal object SampleFeedModule :
+internal class SampleFeedModule(
+  profileSearcher: SampleProfileSearcher,
+  feedProvider: SampleFeedProvider,
+  postProvider: SamplePostProvider
+) :
   FeedModule(
-    lazyInjectionOf { Instance.sample.profileSearcher },
-    lazyInjectionOf { Instance.sample.feedProvider },
-    lazyInjectionOf { Instance.sample.postProvider },
+    immediateInjectionOf<ProfileSearcher>(profileSearcher),
+    immediateInjectionOf<FeedProvider>(feedProvider),
+    immediateInjectionOf<PostProvider>(postProvider),
     lazyInjectionOf { NoOpFeedBoundary() }
   )

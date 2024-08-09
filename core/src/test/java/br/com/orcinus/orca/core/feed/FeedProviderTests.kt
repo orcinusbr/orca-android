@@ -16,17 +16,27 @@
 package br.com.orcinus.orca.core.feed
 
 import app.cash.turbine.test
+import assertk.assertThat
+import assertk.assertions.containsExactly
+import assertk.assertions.isEmpty
+import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.post.Post
-import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
+import br.com.orcinus.orca.core.sample.auth.SampleAuthenticationLock
+import br.com.orcinus.orca.core.sample.auth.SampleAuthenticator
+import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
+import br.com.orcinus.orca.core.sample.feed.SampleFeedProvider
+import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
+import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.SampleTermMuter
-import br.com.orcinus.orca.core.sample.test.feed.profile.post.withSamples
+import br.com.orcinus.orca.core.sample.feed.profile.search.SampleProfileSearcher
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
+import br.com.orcinus.orca.core.sample.test.auth.actor.sample
+import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 import kotlin.test.Test
-import kotlin.test.assertContentEquals
 import kotlin.test.assertFailsWith
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 
 internal class FeedProviderTests {
@@ -78,51 +88,49 @@ internal class FeedProviderTests {
 
   @Test
   fun `GIVEN a user ID WHEN requesting a feed to be provided with it THEN it's provided`() {
-    val provider =
-      object : FeedProvider() {
-        override val termMuter = SampleTermMuter()
-
-        override suspend fun containsUser(userID: String): Boolean {
-          return true
-        }
-
-        override fun createNonexistentUserException(): NonexistentUserException {
-          return NonexistentUserException(cause = null)
-        }
-
-        override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
-          return flowOf(Posts.withSamples)
-        }
-      }
     runTest {
-      assertContentEquals(Posts.withSamples, provider.provide(userID = "🥸", page = 0).first())
+      val instance =
+        SampleInstance.Builder.create(NoOpSampleImageLoader.Provider)
+          .withDefaultProfiles()
+          .withDefaultPosts()
+          .build()
+      val feed = instance.feedProvider.provide(Actor.Authenticated.sample.id, page = 0).first()
+      val providedPosts = instance.postProvider.provideAllCurrent().toTypedArray()
+      assertThat(feed).containsExactly(*providedPosts)
     }
   }
 
   @Test
   fun `GIVEN some muted terms WHEN providing a feed THEN posts with these terms are filtered out`() {
+    val authenticator = SampleAuthenticator()
+    val actorProvider = SampleActorProvider()
+    val authenticationLock = SampleAuthenticationLock(authenticator, actorProvider)
+    val profileProvider = SampleProfileProvider()
+    val profileSearcher = SampleProfileSearcher(profileProvider)
+    val postProvider = SamplePostProvider(authenticationLock)
     val termMuter = SampleTermMuter()
-    val provider =
-      object : FeedProvider() {
-        override val termMuter = termMuter
-
-        override suspend fun containsUser(userID: String): Boolean {
-          return true
-        }
-
-        override fun createNonexistentUserException(): NonexistentUserException {
-          return NonexistentUserException(cause = null)
-        }
-
-        override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
-          return flowOf(Posts.withSamples.take(1))
-        }
-      }
+    val imageLoaderProvider = NoOpSampleImageLoader.Provider
+    val feedProvider =
+      SampleFeedProvider(profileProvider, postProvider, termMuter, imageLoaderProvider)
+    SampleInstance.Builder.create(
+        authenticator,
+        authenticationLock,
+        feedProvider,
+        profileProvider,
+        profileSearcher,
+        postProvider,
+        imageLoaderProvider
+      )
+      .withDefaultProfiles()
+      .withDefaultPosts()
     runTest {
-      Posts.withSamples.first().content.text.split(' ').take(2).forEach { termMuter.mute(it) }
-      provider.provide(userID = "😶‍🌫️", page = 0).test {
-        assertContentEquals(emptyList(), awaitItem())
-        awaitComplete()
+      postProvider
+        .provideAllCurrent()
+        .flatMap { it.content.text.split(' ') }
+        .toHashSet()
+        .forEach { termMuter.mute(it) }
+      feedProvider.provide(Actor.Authenticated.sample.id, page = 0).test {
+        assertThat(awaitItem()).isEmpty()
       }
     }
   }

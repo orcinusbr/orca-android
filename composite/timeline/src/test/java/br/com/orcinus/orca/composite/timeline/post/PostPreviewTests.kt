@@ -35,10 +35,10 @@ import br.com.orcinus.orca.composite.timeline.test.stat.activateable.repost.onRe
 import br.com.orcinus.orca.composite.timeline.test.stat.onCommentStat
 import br.com.orcinus.orca.composite.timeline.test.stat.onShareStat
 import br.com.orcinus.orca.core.feed.profile.post.Author
-import br.com.orcinus.orca.core.instance.Instance
-import br.com.orcinus.orca.core.sample.test.instance.SampleInstanceTestRule
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
-import br.com.orcinus.orca.platform.core.sample
+import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import com.jeanbarrossilva.loadable.flow.unwrap
 import com.jeanbarrossilva.loadable.placeholder.test.assertIsLoading
 import com.jeanbarrossilva.loadable.placeholder.test.assertIsNotLoading
@@ -51,12 +51,18 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class PostPreviewTests {
-  @get:Rule val coreSampleRule = SampleInstanceTestRule(Instance.sample)
-
   @get:Rule val composeRule = createComposeRule()
 
   private val samplePostPreview
-    get() = PostPreview.getSample(AutosTheme.getColors(context))
+    get() =
+      PostPreview.createSample(
+        SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+          .withDefaultProfiles()
+          .withDefaultPosts()
+          .build()
+          .postProvider,
+        AutosTheme.getColors(context)
+      )
 
   private val context
     get() = InstrumentationRegistry.getInstrumentation().context
@@ -70,7 +76,9 @@ internal class PostPreviewTests {
   @Test
   fun isShownWhenLoaded() {
     composeRule.setContent {
-      AutosTheme { LoadedPostPreview(relativeTimeProvider = StringRelativeTimeProvider) }
+      AutosTheme {
+        LoadedPostPreview(samplePostPreview, relativeTimeProvider = StringRelativeTimeProvider)
+      }
     }
     composeRule.onPostPreview().assertIsDisplayed()
   }
@@ -84,7 +92,9 @@ internal class PostPreviewTests {
   @Test
   fun nameIsShownWhenLoaded() {
     composeRule.setContent {
-      AutosTheme { LoadedPostPreview(relativeTimeProvider = StringRelativeTimeProvider) }
+      AutosTheme {
+        LoadedPostPreview(samplePostPreview, relativeTimeProvider = StringRelativeTimeProvider)
+      }
     }
     composeRule.onPostPreviewName().assertIsNotLoading()
     composeRule.onPostPreviewName().assertTextEquals(samplePostPreview.name)
@@ -99,7 +109,9 @@ internal class PostPreviewTests {
   @Test
   fun metadataIsShownWhenLoaded() {
     composeRule.setContent {
-      AutosTheme { LoadedPostPreview(relativeTimeProvider = StringRelativeTimeProvider) }
+      AutosTheme {
+        LoadedPostPreview(samplePostPreview, relativeTimeProvider = StringRelativeTimeProvider)
+      }
     }
     composeRule.onPostPreviewMetadata().assertIsNotLoading()
     runTest {
@@ -122,7 +134,7 @@ internal class PostPreviewTests {
     composeRule.setContent {
       AutosTheme {
         LoadedPostPreview(
-          preview = PostPreview.sample.copy(rebloggerName = Author.sample.name),
+          preview = samplePostPreview.copy(rebloggerName = Author.sample.name),
           relativeTimeProvider = StringRelativeTimeProvider
         )
       }
@@ -145,7 +157,9 @@ internal class PostPreviewTests {
   @Test
   fun bodyIsShownWhenLoaded() {
     composeRule.setContent {
-      AutosTheme { LoadedPostPreview(relativeTimeProvider = StringRelativeTimeProvider) }
+      AutosTheme {
+        LoadedPostPreview(samplePostPreview, relativeTimeProvider = StringRelativeTimeProvider)
+      }
     }
     composeRule.onPostPreviewBody().assertIsNotLoading()
     composeRule.onPostPreviewBody().assertTextEquals(samplePostPreview.text.text)
@@ -160,7 +174,9 @@ internal class PostPreviewTests {
   @Test
   fun commentCountStatIsShownWhenLoaded() {
     composeRule.setContent {
-      AutosTheme { LoadedPostPreview(relativeTimeProvider = StringRelativeTimeProvider) }
+      AutosTheme {
+        LoadedPostPreview(samplePostPreview, relativeTimeProvider = StringRelativeTimeProvider)
+      }
     }
     composeRule.onCommentStat().assertIsDisplayed()
     composeRule
@@ -178,7 +194,9 @@ internal class PostPreviewTests {
   @Test
   fun favoriteCountStatIsShownWhenLoaded() {
     composeRule.setContent {
-      AutosTheme { LoadedPostPreview(relativeTimeProvider = StringRelativeTimeProvider) }
+      AutosTheme {
+        LoadedPostPreview(samplePostPreview, relativeTimeProvider = StringRelativeTimeProvider)
+      }
     }
     composeRule.onFavoriteStat().assertIsDisplayed()
     composeRule
@@ -196,7 +214,9 @@ internal class PostPreviewTests {
   @Test
   fun reblogCountStatIsShownWhenLoaded() {
     composeRule.setContent {
-      AutosTheme { LoadedPostPreview(relativeTimeProvider = StringRelativeTimeProvider) }
+      AutosTheme {
+        LoadedPostPreview(samplePostPreview, relativeTimeProvider = StringRelativeTimeProvider)
+      }
     }
     composeRule.onRepostStat().assertIsDisplayed()
     composeRule
@@ -214,7 +234,9 @@ internal class PostPreviewTests {
   @Test
   fun shareActionIsShownWhenLoaded() {
     composeRule.setContent {
-      AutosTheme { LoadedPostPreview(relativeTimeProvider = StringRelativeTimeProvider) }
+      AutosTheme {
+        LoadedPostPreview(samplePostPreview, relativeTimeProvider = StringRelativeTimeProvider)
+      }
     }
     composeRule.onShareStat().assertIsDisplayed()
   }

@@ -17,30 +17,24 @@ package br.com.orcinus.orca.feature.profiledetails
 
 import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.composite.timeline.text.annotated.toAnnotatedString
-import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
 import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
-import br.com.orcinus.orca.core.instance.Instance
-import br.com.orcinus.orca.core.sample.feed.profile.type.followable.createSample
-import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
-import br.com.orcinus.orca.core.sample.test.instance.sample
+import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
 import br.com.orcinus.orca.feature.profiledetails.conversion.converter.followable.toStatus
 
 /**
  * Creates a sample [ProfileDetails.Followable].
  *
- * @param onStatusToggle Operation to be performed whenever the [ProfileDetails.Followable]'s
- *   [status][ProfileDetails.Followable.status] is changed.
+ * @param profileProvider [SampleProfileProvider] from which a [FollowableProfile] to be converted
+ *   into the created [ProfileDetails.Followable] is provided.
+ * @param onStatusToggle Operation to be performed whenever the [ProfileDetails.Followable]'s status
+ *   is changed.
+ * @see ProfileDetails.Followable.status
  */
 internal fun ProfileDetails.Followable.Companion.createSample(
+  profileProvider: SampleProfileProvider,
   onStatusToggle: () -> Unit
 ): ProfileDetails.Followable {
-  val profile =
-    FollowableProfile.createSample(
-      Instance.sample.profileWriter,
-      Instance.sample.postProvider,
-      Follow.Public.following(),
-      NoOpSampleImageLoader.Provider
-    )
+  val profile = profileProvider.provideCurrent<FollowableProfile<*>>()
   return ProfileDetails.Followable(
     profile.id,
     profile.avatarLoader,

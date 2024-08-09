@@ -71,7 +71,7 @@ abstract class Module {
   @OptIn(ExperimentalContracts::class)
   inline fun <reified T : Any> injectLazily(crossinline creation: Module.() -> T) {
     contract { callsInPlace(creation, InvocationKind.AT_MOST_ONCE) }
-    val injection = lazyInjectionOf(creation)
+    val injection = lazyInjectionOf<T>(creation)
     inject(injection)
   }
 
@@ -83,7 +83,7 @@ abstract class Module {
    * @see injectLazily
    */
   inline fun <reified T : Any> injectImmediately(dependency: T) {
-    val injection = immediateInjectionOf(dependency)
+    val injection = immediateInjectionOf<T>(dependency)
     inject(injection)
   }
 

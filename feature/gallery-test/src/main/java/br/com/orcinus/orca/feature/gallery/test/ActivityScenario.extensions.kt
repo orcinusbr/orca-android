@@ -15,48 +15,40 @@
 
 package br.com.orcinus.orca.feature.gallery.test
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.launchActivity
 import br.com.orcinus.orca.composite.timeline.stat.details.formatted
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
-import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
+import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.samples
 import br.com.orcinus.orca.core.sample.image.CoverImageSource
 import br.com.orcinus.orca.feature.gallery.GalleryActivity
 import br.com.orcinus.orca.feature.gallery.R
-import br.com.orcinus.orca.feature.gallery.ui.Gallery
 import br.com.orcinus.orca.platform.core.image.createSample
-import br.com.orcinus.orca.platform.core.withSample
 import br.com.orcinus.orca.platform.testing.context
 import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 
 /**
  * Launches a [GalleryActivity].
  *
- * @param postID ID of the [Post] to which the [Attachment]s belong.
- * @param entrypointIndex Index at which the [entrypoint] is.
- * @param secondary [Attachment]s to be shown in the pages other than the [entrypoint].
- * @param entrypoint Entrypoint page of the [Gallery].
+ * @param postProvider [SamplePostProvider] by which the [Post] to which the [Attachment]s to be
+ *   shown belong.
  */
-fun launchGalleryActivity(
-  postID: String = Posts.withSample.single().id,
-  entrypointIndex: Int = 0,
-  secondary: List<Attachment> = Attachment.samples,
-  entrypoint: @Composable (ContentScale, Modifier) -> Unit = { contentScale, modifier ->
-    ComposableImageLoader.createSample(CoverImageSource.Default).load()(
-      stringResource(R.string.feature_gallery_attachment, 1.formatted),
-      RectangleShape,
-      contentScale,
-      modifier
-    )
+fun launchGalleryActivity(postProvider: SamplePostProvider): ActivityScenario<GalleryActivity> {
+  val postID = postProvider.provideOneCurrent().id
+  val intent =
+    GalleryActivity.getIntent(context, postID, entrypointIndex = 0, secondary = Attachment.samples)
+  return launchActivity<GalleryActivity>(intent).onActivity {
+    it.setEntrypoint { contentScale, modifier ->
+      ComposableImageLoader.createSample(CoverImageSource.Default).load()(
+        stringResource(R.string.feature_gallery_attachment, 1.formatted),
+        RectangleShape,
+        contentScale,
+        modifier
+      )
+    }
   }
-): ActivityScenario<GalleryActivity> {
-  val intent = GalleryActivity.getIntent(context, postID, entrypointIndex, secondary)
-  return launchActivity<GalleryActivity>(intent).onActivity { it.setEntrypoint(entrypoint) }
 }

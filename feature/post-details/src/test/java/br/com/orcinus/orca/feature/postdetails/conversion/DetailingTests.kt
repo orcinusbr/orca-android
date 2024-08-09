@@ -32,7 +32,9 @@ internal class DetailingTests {
   fun createsDetailsWithSpecifiedCommentCount() {
     runPostDetailsConversionTest {
       assertThat(detailed().withCommentCountOf(1).stats.formattedCommentCount)
-        .isEqualTo(StatsDetails.sample.copy(commentCount = 1).formattedCommentCount)
+        .isEqualTo(
+          StatsDetails.createSample(postProvider).copy(commentCount = 1).formattedCommentCount
+        )
     }
   }
 
@@ -61,7 +63,7 @@ internal class DetailingTests {
     runPostDetailsConversionTest {
       detailed().asFlow().test {
         assertThat(awaitItem())
-          .isEqualTo(post().toPostDetails(colors, onLinkClick, onThumbnailClickListener))
+          .isEqualTo(post.toPostDetails(colors, onLinkClick, onThumbnailClickListener))
       }
     }
   }

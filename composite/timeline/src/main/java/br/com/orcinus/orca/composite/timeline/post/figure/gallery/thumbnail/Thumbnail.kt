@@ -19,6 +19,7 @@ import androidx.annotation.IntRange
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
@@ -32,9 +33,11 @@ import br.com.orcinus.orca.composite.timeline.R
 import br.com.orcinus.orca.composite.timeline.post.figure.gallery.GalleryPreview
 import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.platform.autos.forms.asShape
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
+import br.com.orcinus.orca.platform.core.image.sample
 import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import br.com.orcinus.orca.std.image.compose.rememberImageLoader
 
@@ -105,9 +108,19 @@ internal fun Thumbnail(
 @MultiThemePreview
 private fun ThumbnailPreview() {
   AutosTheme {
+    val samplePreview = remember {
+      GalleryPreview.createSample(
+        SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+          .withDefaultProfiles()
+          .withDefaultPosts()
+          .build()
+          .postProvider
+      )
+    }
+
     Thumbnail(
-      GalleryPreview.sample.authorName,
-      GalleryPreview.sample.attachments.first(),
+      samplePreview.authorName,
+      samplePreview.attachments.first(),
       position = 1,
       onClick = {}
     )

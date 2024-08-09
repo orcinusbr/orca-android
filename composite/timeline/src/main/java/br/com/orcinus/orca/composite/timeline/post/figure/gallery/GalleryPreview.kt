@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -26,11 +26,13 @@ import br.com.orcinus.orca.composite.timeline.post.figure.gallery.thumbnail.Thum
 import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
-import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
+import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.samples
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
-import br.com.orcinus.orca.platform.core.withSample
+import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 
 /** Tag that identifies a [GalleryPreview] for testing purposes. */
 internal const val GalleryPreviewTag = "gallery-preview"
@@ -48,8 +50,17 @@ data class GalleryPreview(
   val attachments: List<Attachment>
 ) {
   companion object {
-    /** Sample [GalleryPreview]. */
-    internal val sample = Posts.withSample.single().asGalleryPreview()
+    /**
+     * Creates a sample [GalleryPreview].
+     *
+     * @param postProvider [SamplePostProvider] that provides a sample [Post] to be converted into a
+     *   [GalleryPreview].
+     */
+    fun createSample(postProvider: SamplePostProvider): GalleryPreview {
+      return postProvider.provideAllCurrent().map(Post::asGalleryPreview).first {
+        it.attachments.isNotEmpty()
+      }
+    }
   }
 }
 
@@ -61,10 +72,7 @@ data class GalleryPreview(
  * @see GalleryPreview.attachments
  */
 @Composable
-internal fun GalleryPreview(
-  modifier: Modifier = Modifier,
-  preview: GalleryPreview = GalleryPreview.sample
-) {
+internal fun GalleryPreview(preview: GalleryPreview, modifier: Modifier = Modifier) {
   GalleryPreview(preview, Disposition.OnThumbnailClickListener.empty, modifier)
 }
 
@@ -95,7 +103,16 @@ internal fun GalleryPreview(
 @MultiThemePreview
 private fun SingleThumbnailGalleryPreviewPreview() {
   AutosTheme {
-    GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples.take(1)))
+    GalleryPreview(
+      GalleryPreview.createSample(
+          SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+            .withDefaultProfiles()
+            .withDefaultPosts()
+            .build()
+            .postProvider
+        )
+        .copy(attachments = Attachment.samples.take(1))
+    )
   }
 }
 
@@ -104,7 +121,16 @@ private fun SingleThumbnailGalleryPreviewPreview() {
 @MultiThemePreview
 private fun TwoThumbnailGalleryPreviewPreview() {
   AutosTheme {
-    GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples.take(2)))
+    GalleryPreview(
+      GalleryPreview.createSample(
+          SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+            .withDefaultProfiles()
+            .withDefaultPosts()
+            .build()
+            .postProvider
+        )
+        .copy(attachments = Attachment.samples.take(2))
+    )
   }
 }
 
@@ -113,7 +139,16 @@ private fun TwoThumbnailGalleryPreviewPreview() {
 @MultiThemePreview
 private fun ThreeThumbnailGalleryPreviewPreview() {
   AutosTheme {
-    GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples.take(3)))
+    GalleryPreview(
+      GalleryPreview.createSample(
+          SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+            .withDefaultProfiles()
+            .withDefaultPosts()
+            .build()
+            .postProvider
+        )
+        .copy(attachments = Attachment.samples.take(3))
+    )
   }
 }
 
@@ -122,6 +157,15 @@ private fun ThreeThumbnailGalleryPreviewPreview() {
 @MultiThemePreview
 private fun ThreePlusThumbnailGalleryPreviewPreview() {
   AutosTheme {
-    GalleryPreview(preview = GalleryPreview.sample.copy(attachments = Attachment.samples))
+    GalleryPreview(
+      GalleryPreview.createSample(
+          SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+            .withDefaultProfiles()
+            .withDefaultPosts()
+            .build()
+            .postProvider
+        )
+        .copy(attachments = Attachment.samples)
+    )
   }
 }

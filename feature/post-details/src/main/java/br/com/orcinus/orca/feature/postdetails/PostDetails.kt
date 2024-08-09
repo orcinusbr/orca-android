@@ -32,7 +32,7 @@ import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.post.figure.Figure
 import br.com.orcinus.orca.composite.timeline.stat.details.StatsDetails
 import br.com.orcinus.orca.core.feed.profile.account.Account
-import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.feature.postdetails.ui.header.Header
 import br.com.orcinus.orca.feature.postdetails.ui.header.formatted
 import br.com.orcinus.orca.feature.postdetails.viewmodel.PostDetailsViewModel
@@ -43,8 +43,10 @@ import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
 import br.com.orcinus.orca.platform.autos.overlays.refresh.Refresh
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
-import br.com.orcinus.orca.platform.core.withSample
+import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.std.image.SomeImageLoader
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import java.io.Serializable
@@ -68,7 +70,15 @@ internal data class PostDetails(
 
   companion object {
     val sample
-      @Composable get() = Posts.withSample.single().toPostDetails()
+      @Composable
+      get() =
+        SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+          .withDefaultProfiles()
+          .withDefaultPosts()
+          .build()
+          .postProvider
+          .provideOneCurrent()
+          .toPostDetails()
   }
 }
 

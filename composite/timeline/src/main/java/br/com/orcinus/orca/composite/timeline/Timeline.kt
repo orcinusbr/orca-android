@@ -56,6 +56,7 @@ import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.post.time.RelativeTimeProvider
 import br.com.orcinus.orca.composite.timeline.post.time.rememberRelativeTimeProvider
 import br.com.orcinus.orca.core.feed.profile.post.Post
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.platform.autos.colors.asColor
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.ErrorPresentation
@@ -66,6 +67,8 @@ import br.com.orcinus.orca.platform.autos.overlays.refresh.Refresh
 import br.com.orcinus.orca.platform.autos.overlays.refresh.Refreshable
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
+import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import java.net.URI
 
@@ -352,7 +355,7 @@ internal fun LoadedTimeline(
  * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
  * @param onNext Callback run whenever the bottom is being reached.
  * @param header [Composable] to be shown above the [PostPreview]s.
- * @see PostPreview.samples
+ * @see PostPreview.createSamples
  */
 @Composable
 @VisibleForTesting
@@ -480,7 +483,16 @@ private fun EmptyTimelineWithHeaderPreview() {
 private fun PopulatedTimelinePreview() {
   AutosTheme {
     Surface(color = AutosTheme.colors.background.container.asColor) {
-      LoadedTimeline(PostPreview.samples)
+      LoadedTimeline(
+        PostPreview.createSamples(
+          SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+            .withDefaultProfiles()
+            .withDefaultPosts()
+            .build()
+            .postProvider,
+          AutosTheme.colors
+        )
+      )
     }
   }
 }

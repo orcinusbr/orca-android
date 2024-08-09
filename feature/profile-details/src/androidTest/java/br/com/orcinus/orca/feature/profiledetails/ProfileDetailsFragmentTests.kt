@@ -17,15 +17,15 @@ package br.com.orcinus.orca.feature.profiledetails
 
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
-import br.com.orcinus.orca.core.feed.profile.Profile
-import br.com.orcinus.orca.core.instance.Instance
-import br.com.orcinus.orca.core.sample.test.instance.SampleInstanceTestRule
+import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.feature.profiledetails.navigation.BackwardsNavigationState
-import br.com.orcinus.orca.feature.profiledetails.test.TestProfileDetailsModule
-import br.com.orcinus.orca.platform.core.sample
+import br.com.orcinus.orca.feature.profiledetails.test.UnnavigableProfileDetailsModule
+import br.com.orcinus.orca.platform.core.image.sample
 import br.com.orcinus.orca.platform.navigation.BackStack
 import br.com.orcinus.orca.platform.navigation.test.fragment.launchFragmentInNavigationContainer
 import br.com.orcinus.orca.platform.testing.DefaultTimeout
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import br.com.orcinus.orca.std.injector.test.InjectorTestRule
 import com.jeanbarrossilva.loadable.placeholder.test.isLoading
 import kotlin.test.Test
@@ -33,15 +33,20 @@ import org.junit.Rule
 import org.junit.rules.RuleChain
 
 internal class ProfileDetailsFragmentTests {
+  private val instance =
+    SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+      .withDefaultProfiles()
+      .withDefaultPosts()
+      .build()
+  private val profileProvider = instance.profileProvider
   private val injectorRule = InjectorTestRule {
-    register<ProfileDetailsModule>(TestProfileDetailsModule)
+    register<ProfileDetailsModule>(
+      UnnavigableProfileDetailsModule(profileProvider, instance.postProvider)
+    )
   }
-  private val sampleInstanceRule = SampleInstanceTestRule(Instance.sample)
   private val composeRule = createEmptyComposeRule()
 
-  @get:Rule
-  val ruleChain: RuleChain =
-    RuleChain.outerRule(injectorRule).around(sampleInstanceRule).around(composeRule)
+  @get:Rule val ruleChain: RuleChain = RuleChain.outerRule(injectorRule).around(composeRule)
 
   @Test
   fun loadsPosts() {
@@ -49,7 +54,7 @@ internal class ProfileDetailsFragmentTests {
         ProfileDetailsFragment(
           BackStack.named(ProfileDetailsFragment::class.java.name),
           BackwardsNavigationState.Unavailable,
-          Profile.sample.id
+          profileProvider.provideCurrent().filterIsInstance<EditableProfile>().first().id
         )
       }
       .use {

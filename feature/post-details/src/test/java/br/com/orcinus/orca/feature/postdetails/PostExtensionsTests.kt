@@ -21,41 +21,35 @@ import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.composite.timeline.post.figure.Figure
 import br.com.orcinus.orca.composite.timeline.stat.details.asStatsDetails
 import br.com.orcinus.orca.composite.timeline.text.annotated.toAnnotatedString
-import br.com.orcinus.orca.core.instance.Instance
-import br.com.orcinus.orca.core.sample.test.instance.SampleInstanceTestRule
 import br.com.orcinus.orca.feature.postdetails.conversion.runPostDetailsConversionTest
-import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.std.image.compose.SomeComposableImageLoader
 import kotlin.test.Test
-import org.junit.Rule
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class PostExtensionsTests {
-  @get:Rule val sampleInstanceRule = SampleInstanceTestRule(Instance.sample)
-
   @Test
   fun convertsPostIntoDetails() {
     runPostDetailsConversionTest {
-      assertThat(post().toPostDetails(colors, onLinkClick, onThumbnailClickListener))
+      assertThat(post.toPostDetails(colors, onLinkClick, onThumbnailClickListener))
         .isEqualTo(
           PostDetails(
-            post().id,
-            post().author.avatarLoader as SomeComposableImageLoader,
-            post().author.name,
-            post().author.account,
-            post().content.text.toAnnotatedString(colors),
+            post.id,
+            post.author.avatarLoader as SomeComposableImageLoader,
+            post.author.name,
+            post.author.account,
+            post.content.text.toAnnotatedString(colors),
             Figure.of(
-              post().id,
-              post().author.name,
-              post().content,
+              post.id,
+              post.author.name,
+              post.content,
               onLinkClick,
               onThumbnailClickListener
             ),
-            post().publicationDateTime,
-            post().asStatsDetails(),
-            post().uri
+            post.publicationDateTime,
+            post.asStatsDetails(),
+            post.uri
           )
         )
     }
@@ -64,8 +58,8 @@ internal class PostExtensionsTests {
   @Test
   fun emitsWhenConvertingPostIntoFlowOfDetailsAfterCommentIsAdded() {
     runPostDetailsConversionTest {
-      post().comment.count.let { previousCommentCount ->
-        post().toPostDetailsFlow(colors, onLinkClick, onThumbnailClickListener).test {
+      post.comment.count.let { previousCommentCount ->
+        post.toPostDetailsFlow(colors, onLinkClick, onThumbnailClickListener).test {
           awaitItem()
           comment()
           assertThat(awaitItem())
@@ -79,8 +73,8 @@ internal class PostExtensionsTests {
   fun emitsWhenConvertingPostIntoFlowOfDetailsAfterCommentIsRemoved() {
     runPostDetailsConversionTest {
       comment()
-      post().comment.count.let { previousCommentCount ->
-        post().toPostDetailsFlow(colors, onLinkClick, onThumbnailClickListener).test {
+      post.comment.count.let { previousCommentCount ->
+        post.toPostDetailsFlow(colors, onLinkClick, onThumbnailClickListener).test {
           awaitItem()
           uncomment()
           assertThat(awaitItem())
@@ -93,7 +87,7 @@ internal class PostExtensionsTests {
   @Test
   fun emitsWhenConvertingPostIntoFlowOfDetailsAfterFavoriting() {
     runPostDetailsConversionTest {
-      post().toPostDetailsFlow(colors, onLinkClick, onThumbnailClickListener).test {
+      post.toPostDetailsFlow(colors, onLinkClick, onThumbnailClickListener).test {
         awaitItem()
         favorite()
         assertThat(awaitItem()).isEqualTo(detailed().favorited())
@@ -105,7 +99,7 @@ internal class PostExtensionsTests {
   fun emitsWhenConvertingPostIntoFlowOfDetailsAfterUnfavoriting() {
     runPostDetailsConversionTest {
       favorite()
-      post().toPostDetailsFlow(colors, onLinkClick, onThumbnailClickListener).test {
+      post.toPostDetailsFlow(colors, onLinkClick, onThumbnailClickListener).test {
         awaitItem()
         unfavorite()
         assertThat(awaitItem()).isEqualTo(detailed().unfavorited())
@@ -116,7 +110,7 @@ internal class PostExtensionsTests {
   @Test
   fun emitsWhenConvertingPostIntoFlowOfDetailsAfterReposting() {
     runPostDetailsConversionTest {
-      post().toPostDetailsFlow(colors, onLinkClick, onThumbnailClickListener).test {
+      post.toPostDetailsFlow(colors, onLinkClick, onThumbnailClickListener).test {
         awaitItem()
         repost()
         assertThat(awaitItem()).isEqualTo(detailed().reposted())
@@ -128,7 +122,7 @@ internal class PostExtensionsTests {
   fun emitsWhenConvertingPostIntoFlowOfDetailsAfterUnreposting() {
     runPostDetailsConversionTest {
       repost()
-      post().toPostDetailsFlow(colors, onLinkClick, onThumbnailClickListener).test {
+      post.toPostDetailsFlow(colors, onLinkClick, onThumbnailClickListener).test {
         awaitItem()
         unrepost()
         assertThat(awaitItem()).isEqualTo(detailed().unreposted())

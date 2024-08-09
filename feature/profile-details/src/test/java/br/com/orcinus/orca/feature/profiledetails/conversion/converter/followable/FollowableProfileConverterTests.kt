@@ -15,17 +15,21 @@
 
 package br.com.orcinus.orca.feature.profiledetails.conversion.converter.followable
 
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import assertk.assertions.isNull
 import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
 import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
-import br.com.orcinus.orca.core.sample.test.feed.profile.sample
-import br.com.orcinus.orca.core.sample.test.feed.profile.type.sample
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetails
 import br.com.orcinus.orca.feature.profiledetails.createSample
+import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
+import kotlin.reflect.typeOf
 import kotlin.test.Test
 import kotlinx.coroutines.test.TestScope
-import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 
 internal class FollowableProfileConverterTests {
@@ -34,23 +38,48 @@ internal class FollowableProfileConverterTests {
 
   @Test
   fun convertsFollowableProfile() {
+    val profileProvider =
+      SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+        .withDefaultProfiles()
+        .build()
+        .profileProvider
     val onStatusToggle = {}
-    assertEquals(
-      ProfileDetails.Followable.createSample(onStatusToggle),
-      converter
-        .convert(FollowableProfile.sample, Colors.LIGHT)
-        .let { it as ProfileDetails.Followable }
-        .copy(onStatusToggle = onStatusToggle)
-    )
+    assertThat(
+        converter
+          .convert(profileProvider.provideCurrent<FollowableProfile<*>>(), Colors.LIGHT)
+          .let { it as ProfileDetails.Followable }
+          .copy(onStatusToggle = onStatusToggle)
+      )
+      .isEqualTo(ProfileDetails.Followable.createSample(profileProvider, onStatusToggle))
   }
 
   @Test
   fun doesNotConvertDefaultProfile() {
-    assertNull(converter.convert(Profile.sample, Colors.LIGHT))
+    assertThat(
+        converter.convert(
+          SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+            .withDefaultProfiles()
+            .build()
+            .profileProvider
+            .provideCurrent()
+            .first { it::class.supertypes[1] == typeOf<Profile>() },
+          Colors.LIGHT
+        )
+      )
+      .isNull()
   }
 
   @Test
   fun doesNotConvertEditableProfile() {
-    assertNull(converter.convert(EditableProfile.sample, Colors.LIGHT))
+    assertNull(
+      converter.convert(
+        SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+          .withDefaultProfiles()
+          .build()
+          .profileProvider
+          .provideCurrent<EditableProfile>(),
+        Colors.LIGHT
+      )
+    )
   }
 }

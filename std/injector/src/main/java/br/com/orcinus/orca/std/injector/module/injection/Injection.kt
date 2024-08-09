@@ -40,9 +40,8 @@ sealed class Injection<T : Any> {
    * @param T Dependency to be provided.
    * @param dependency Pre-instantiated dependency to be provided and injected.
    */
-  internal class Immediate<T : Any>(private val dependency: T) : Injection<T>() {
-    @Suppress("UNCHECKED_CAST") override val dependencyClass = dependency::class as KClass<T>
-
+  @PublishedApi
+  internal abstract class Immediate<T : Any>(private val dependency: T) : Injection<T>() {
     override fun Module.provide(): T {
       return create()
     }

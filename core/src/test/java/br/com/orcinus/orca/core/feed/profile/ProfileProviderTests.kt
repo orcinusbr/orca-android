@@ -15,14 +15,18 @@
 
 package br.com.orcinus.orca.core.feed.profile
 
-import br.com.orcinus.orca.core.sample.test.feed.profile.sample
+import app.cash.turbine.test
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
+import br.com.orcinus.orca.core.sample.test.auth.actor.sample
+import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.test.runTest
 
 internal class ProfileProviderTests {
@@ -49,20 +53,12 @@ internal class ProfileProviderTests {
 
   @Test
   fun `GIVEN a profile WHEN requesting it to be provided THEN it's provided`() {
+    val id = Actor.Authenticated.sample.id
     val provider =
-      object : ProfileProvider() {
-        override suspend fun contains(id: String): Boolean {
-          return true
-        }
-
-        override suspend fun onProvide(id: String): Flow<Profile> {
-          return flowOf(Profile.sample)
-        }
-
-        override fun createNonexistentProfileException(): NonexistentProfileException {
-          return NonexistentProfileException(cause = null)
-        }
-      }
-    runTest { assertEquals(Profile.sample, provider.provide(Profile.sample.id).first()) }
+      SampleInstance.Builder.create(NoOpSampleImageLoader.Provider)
+        .withDefaultProfiles()
+        .build()
+        .profileProvider
+    runTest { provider.provide(id).map { it.id }.test { assertThat(awaitItem()).isEqualTo(id) } }
   }
 }

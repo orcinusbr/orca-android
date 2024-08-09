@@ -21,35 +21,61 @@ import br.com.orcinus.orca.composite.timeline.avatar.sample
 import br.com.orcinus.orca.composite.timeline.post.figure.gallery.GalleryPreview
 import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
-import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.samples
-import br.com.orcinus.orca.platform.core.withSample
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
+import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import kotlin.test.Test
 
 internal class DispositionTests {
   @Test(expected = IllegalArgumentException::class)
   fun throwsWhenGettingDispositionWithoutAttachments() {
+    val postProvider =
+      SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+        .withDefaultProfiles()
+        .withDefaultPosts()
+        .build()
+        .postProvider
     Disposition.of(
-      GalleryPreview.sample.copy(
-        Posts.withSample.single().id,
-        Author.sample.name,
-        attachments = emptyList()
-      ),
+      GalleryPreview.createSample(postProvider)
+        .copy(postProvider.provideOneCurrent().id, Author.sample.name, attachments = emptyList()),
       Disposition.OnThumbnailClickListener.empty
     )
   }
 
   @Test
   fun getsSingleDispositionForOneAttachment() {
-    assertThat(Disposition.of(GalleryPreview.sample.copy(attachments = Attachment.samples.take(1))))
+    val postProvider =
+      SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+        .withDefaultProfiles()
+        .withDefaultPosts()
+        .build()
+        .postProvider
+    assertThat(
+        Disposition.of(
+          GalleryPreview.createSample(postProvider).copy(attachments = Attachment.samples.take(1))
+        )
+      )
       .isEqualTo(
-        Disposition.Single(GalleryPreview.sample.copy(attachments = Attachment.samples.take(1)))
+        Disposition.Single(
+          GalleryPreview.createSample(postProvider).copy(attachments = Attachment.samples.take(1))
+        )
       )
   }
 
   @Test
   fun getsGridDispositionForMultipleThumbnails() {
-    assertThat(Disposition.of(GalleryPreview.sample.copy(attachments = Attachment.samples)))
-      .isEqualTo(Disposition.Grid(GalleryPreview.sample))
+    val postProvider =
+      SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+        .withDefaultProfiles()
+        .withDefaultPosts()
+        .build()
+        .postProvider
+    assertThat(
+        Disposition.of(
+          GalleryPreview.createSample(postProvider).copy(attachments = Attachment.samples)
+        )
+      )
+      .isEqualTo(Disposition.Grid(GalleryPreview.createSample(postProvider)))
   }
 }

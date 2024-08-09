@@ -15,15 +15,16 @@
 
 package br.com.orcinus.orca.app.demo.module.core
 
-import br.com.orcinus.orca.core.instance.InstanceProvider
+import androidx.annotation.VisibleForTesting
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.SampleTermMuter
-import br.com.orcinus.orca.platform.core.sample
-import br.com.orcinus.orca.std.injector.module.injection.injectionOf
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
+import br.com.orcinus.orca.core.sample.instance.SampleInstanceProvider
+import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 
-internal object DemoCoreModule :
+internal class DemoCoreModule(@get:VisibleForTesting val instance: SampleInstance) :
   CoreModule(
-    injectionOf { InstanceProvider.sample },
-    injectionOf { InstanceProvider.sample.provide().authenticationLock },
-    injectionOf { SampleTermMuter() }
+    lazyInjectionOf { SampleInstanceProvider { instance } },
+    lazyInjectionOf { instance.authenticationLock },
+    lazyInjectionOf { SampleTermMuter() }
   )

@@ -17,17 +17,26 @@ package br.com.orcinus.orca.feature.profiledetails
 
 import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.composite.timeline.text.annotated.toAnnotatedString
+import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
-import br.com.orcinus.orca.core.sample.test.feed.profile.type.sample
+import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
 
-/** Sample [ProfileDetails.Editable]. */
-internal val ProfileDetails.Editable.Companion.sample
-  get() =
-    ProfileDetails.Editable(
-      EditableProfile.sample.id,
-      EditableProfile.sample.avatarLoader,
-      EditableProfile.sample.name,
-      EditableProfile.sample.account,
-      EditableProfile.sample.bio.toAnnotatedString(Colors.LIGHT),
-      EditableProfile.sample.uri
-    )
+/**
+ * Creates a sample [ProfileDetails.Editable].
+ *
+ * @param profileProvider [SampleProfileProvider] from which a [Profile] to be converted into the
+ *   created [ProfileDetails.Editable] is provided.
+ */
+internal fun ProfileDetails.Editable.Companion.createSample(
+  profileProvider: SampleProfileProvider
+): ProfileDetails.Editable {
+  val profile = profileProvider.provideCurrent<EditableProfile>()
+  return ProfileDetails.Editable(
+    profile.id,
+    profile.avatarLoader,
+    profile.name,
+    profile.account,
+    profile.bio.toAnnotatedString(Colors.LIGHT),
+    profile.uri
+  )
+}

@@ -64,7 +64,9 @@ dependencies {
   testImplementation(project(":platform:autos-test"))
   testImplementation(project(":platform:testing"))
   testImplementation(project(":std:injector-test"))
+  testImplementation(libs.assertk)
   testImplementation(libs.kotlin.coroutines.test)
+  testImplementation(libs.kotlin.reflect)
   testImplementation(libs.kotlin.test)
   testImplementation(libs.robolectric)
 }

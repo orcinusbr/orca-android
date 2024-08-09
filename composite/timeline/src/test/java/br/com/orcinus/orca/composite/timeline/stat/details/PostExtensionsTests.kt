@@ -19,8 +19,9 @@ import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
-import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
-import br.com.orcinus.orca.platform.core.withSample
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
+import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,7 +31,13 @@ import org.robolectric.RobolectricTestRunner
 internal class PostExtensionsTests {
   @Test
   fun favoriteCountDependsOnEnableabilityWhenConvertingPostIntoStatDetailsFlow() {
-    val post = Posts.withSample.single()
+    val post =
+      SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+        .withDefaultProfiles()
+        .withDefaultPosts()
+        .build()
+        .postProvider
+        .provideOneCurrent()
     val previousFavoriteCount = post.favorite.count
     runTest {
       post.asStatsDetailsFlow().test {
@@ -46,7 +53,13 @@ internal class PostExtensionsTests {
 
   @Test
   fun repostCountDependsOnEnableabilityWhenConvertingPostIntoStatDetailsFlow() {
-    val post = Posts.withSample.single()
+    val post =
+      SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+        .withDefaultProfiles()
+        .withDefaultPosts()
+        .build()
+        .postProvider
+        .provideOneCurrent()
     val previousRepostCount = post.repost.count
     runTest {
       post.asStatsDetailsFlow().test {

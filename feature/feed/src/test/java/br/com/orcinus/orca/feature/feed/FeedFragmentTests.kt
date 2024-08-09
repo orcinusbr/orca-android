@@ -26,12 +26,12 @@ import androidx.compose.ui.test.performScrollTo
 import br.com.orcinus.orca.composite.timeline.stat.activateable.favorite.FavoriteStatTag
 import br.com.orcinus.orca.composite.timeline.test.post.onPostPreviews
 import br.com.orcinus.orca.core.auth.actor.Actor
-import br.com.orcinus.orca.core.feed.profile.Profile
-import br.com.orcinus.orca.core.instance.Instance
-import br.com.orcinus.orca.core.sample.test.instance.SampleInstanceTestRule
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
+import br.com.orcinus.orca.platform.core.image.sample
 import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.platform.navigation.BackStack
 import br.com.orcinus.orca.platform.navigation.test.fragment.launchFragmentInNavigationContainer
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import br.com.orcinus.orca.std.injector.test.InjectorTestRule
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -42,14 +42,24 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class FeedFragmentTests {
-  @get:Rule val injectorRule = InjectorTestRule { register<FeedModule>(SampleFeedModule) }
-  @get:Rule val sampleInstanceRule = SampleInstanceTestRule(Instance.sample)
+  private val instance =
+    SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+      .withDefaultProfiles()
+      .withDefaultPosts()
+      .build()
+
+  @get:Rule
+  val injectorRule = InjectorTestRule {
+    register<FeedModule>(
+      SampleFeedModule(instance.profileSearcher, instance.feedProvider, instance.postProvider)
+    )
+  }
   @get:Rule val composeRule = createEmptyComposeRule()
 
   @Test
   fun favoritesPost() {
     runTest {
-      Instance.sample.feedProvider
+      instance.feedProvider
         .provide(Actor.Authenticated.sample.id, page = 0)
         .first()
         .first()
@@ -57,7 +67,7 @@ internal class FeedFragmentTests {
         .disable()
     }
     launchFragmentInNavigationContainer {
-        FeedFragment(BackStack.named(FeedFragment::class.java.name), Profile.sample.id)
+        FeedFragment(BackStack.named(FeedFragment::class.java.name), Actor.Authenticated.sample.id)
       }
       .use {
         composeRule

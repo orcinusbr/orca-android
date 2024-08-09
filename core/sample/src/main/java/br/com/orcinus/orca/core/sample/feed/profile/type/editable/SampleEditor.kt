@@ -15,20 +15,21 @@
 
 package br.com.orcinus.orca.core.sample.feed.profile.type.editable
 
-import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.type.editable.Editor
-import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileWriter
+import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
 import br.com.orcinus.orca.std.image.SomeImageLoader
 import br.com.orcinus.orca.std.markdown.Markdown
 
 /**
  * [Editor] that edits [SampleEditableProfile]s.
  *
- * @param profileWriter [SampleProfileWriter] for performing write operations on the [Profile].
- * @param id ID of the [Profile] to be edited.
+ * @param profileProvider [SampleProfileProvider] for performing write operations on the
+ *   [SampleEditableProfile].
+ * @param id ID of the [SampleEditableProfile] to be edited.
+ * @see SampleEditableProfile.id
  */
 internal class SampleEditor(
-  private val profileWriter: SampleProfileWriter,
+  private val profileProvider: SampleProfileProvider,
   private val id: String
 ) : Editor {
   override suspend fun setAvatarLoader(avatarLoader: SomeImageLoader) {
@@ -44,12 +45,12 @@ internal class SampleEditor(
   }
 
   /**
-   * Applies the [edit] to the [SampleEditableProfile] whose [ID][SampleEditableProfile.id] matches
-   * [id].
+   * Applies the [edit] to the [SampleEditableProfile] whose ID matches [id].
    *
    * @param edit Editing to be made to the matching [SampleEditableProfile].
+   * @see SampleEditableProfile.id
    */
   private suspend inline fun edit(crossinline edit: SampleEditableProfile.() -> Unit) {
-    profileWriter.update(id) { (this as SampleEditableProfile).apply(edit) }
+    profileProvider.update(id) { (this as SampleEditableProfile).apply(edit) }
   }
 }
