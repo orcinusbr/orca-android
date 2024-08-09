@@ -17,14 +17,21 @@ package br.com.orcinus.orca.core.feed.profile.account.reblog
 
 import br.com.orcinus.orca.core.feed.profile.post.DeletablePost
 import br.com.orcinus.orca.core.feed.profile.post.repost.Repost
-import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
-import br.com.orcinus.orca.core.sample.test.feed.profile.post.withSamples
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
+import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class RepostTests {
-  private val sampleRepost
-    get() = Posts.withSamples.filterIsInstance<Repost>().first()
+  private val sampleRepost =
+    SampleInstance.Builder.create(NoOpSampleImageLoader.Provider)
+      .withDefaultProfiles()
+      .withDefaultPosts()
+      .build()
+      .postProvider
+      .provideAllCurrent()
+      .filterIsInstance<Repost>()
+      .first()
 
   @Test
   fun createsRepost() {

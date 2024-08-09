@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -20,30 +20,76 @@ import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.post.DeletablePost
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
+import br.com.orcinus.orca.core.feed.profile.post.stat.addable.AddableStat
 import br.com.orcinus.orca.core.feed.profile.post.stat.toggleable.ToggleableStat
-import br.com.orcinus.orca.core.sample.feed.profile.post.stat.createSampleAddableStat
-import java.net.URI
+import br.com.orcinus.orca.core.instance.domain.Domain
+import br.com.orcinus.orca.core.sample.instance.domain.sample
+import br.com.orcinus.orca.ext.coroutines.getValue
+import br.com.orcinus.orca.ext.coroutines.setValue
+import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import java.time.ZonedDateTime
+import java.util.UUID
+import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
  * [Post] whose operations are performed in memory and serves as a sample.
  *
- * @param writerProvider [SamplePostWriter.Provider] by which a [SamplePostWriter] for creating a
- *   [SampleDeletablePost] from this [SamplePost] can be provided.
+ * @property provider [SamplePostProvider] by which a [SampleDeletablePost] into which this
+ *   [SamplePost] can be converted is deleted.
+ * @property owner [Profile] in which this [SamplePost] is.
+ * @see SamplePost.asDeletable
+ * @see SampleDeletablePost.delete
  */
 internal data class SamplePost(
-  override val id: String,
-  override val author: Author,
+  internal val provider: SamplePostProvider,
+  private val owner: Profile,
   override val content: Content,
-  override val publicationDateTime: ZonedDateTime,
-  override val favorite: ToggleableStat<Profile>,
-  override val repost: ToggleableStat<Profile>,
-  override val uri: URI,
-  val writerProvider: SamplePostWriter.Provider
+  override val publicationDateTime: ZonedDateTime
 ) : Post {
-  override val comment = createSampleAddableStat<Post>()
+  override val id = UUID.randomUUID().toString()
+  override val author = Author(owner.id, owner.avatarLoader, owner.name, owner.account, owner.uri)
+  override val comment = createInMemoryCommentsStat()
+  override val favorite = createInMemoryToggleableStat()
+  override val repost = createInMemoryToggleableStat()
+  override val uri =
+    HostedURLBuilder.from(Domain.sample.uri)
+      .path("${owner.account.username}")
+      .path("posts")
+      .path(id)
+      .build()
+
+  override fun toString(): String {
+    return "Post $id by ${author.account}"
+  }
 
   override fun asDeletable(): DeletablePost {
-    return SampleDeletablePost(this)
+    return SampleDeletablePost(provider, this)
+  }
+
+  /** Create an in-memory [AddableStat] for comments. */
+  private fun createInMemoryCommentsStat(): AddableStat<Post> {
+    return AddableStat {
+      val commentsFlow = MutableStateFlow(emptyList<Post>())
+      var comments by commentsFlow
+      get { commentsFlow }
+      onAdd { comments += it }
+      onRemove { comments -= it }
+    }
+  }
+
+  /** Creates an in-memory [ToggleableStat] for a [Profile]. */
+  private fun createInMemoryToggleableStat(): ToggleableStat<Profile> {
+    return ToggleableStat {
+      val profilesFlow = MutableStateFlow(emptyList<Profile>())
+      var profiles by profilesFlow
+      get { profilesFlow }
+      onSetEnabled { isEnabled ->
+        if (isEnabled) {
+          profiles += owner
+        } else {
+          profiles -= owner
+        }
+      }
+    }
   }
 }

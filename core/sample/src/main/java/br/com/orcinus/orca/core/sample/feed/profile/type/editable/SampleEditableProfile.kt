@@ -15,33 +15,33 @@
 
 package br.com.orcinus.orca.core.sample.feed.profile.type.editable
 
-import br.com.orcinus.orca.core.feed.profile.account.Account
+import br.com.orcinus.orca.core.feed.profile.Profile
+import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
 import br.com.orcinus.orca.core.feed.profile.type.editable.Editor
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfile
-import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileWriter
+import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
 import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
 import br.com.orcinus.orca.std.image.SomeImageLoader
 import br.com.orcinus.orca.std.markdown.Markdown
-import java.net.URI
 
 /**
  * [SampleProfile] that's also editable.
  *
- * @param writer [SampleProfileWriter] through which the [editor] can edit this [EditableProfile].
+ * @param provider [SampleProfileProvider] through which the [editor] can perform edits.
  * @see EditableProfile
  */
 internal data class SampleEditableProfile(
-  override val id: String,
-  override val account: Account,
-  override var avatarLoader: SomeImageLoader,
-  override var name: String,
+  private val provider: SampleProfileProvider,
+  private val postProvider: SamplePostProvider,
+  private val delegate: Author,
   override var bio: Markdown,
   override val followerCount: Int,
-  override val followingCount: Int,
-  override val uri: URI,
-  override val postProvider: SamplePostProvider,
-  private val writer: SampleProfileWriter
-) : SampleProfile, EditableProfile() {
-  override val editor: Editor by lazy { SampleEditor(writer, id) }
+  override val followingCount: Int
+) :
+  EditableProfile(),
+  Profile by SampleProfile(postProvider, delegate, bio, followerCount, followingCount) {
+  override var avatarLoader: SomeImageLoader = delegate.avatarLoader
+  override var name = delegate.name
+  override val editor: Editor by lazy { SampleEditor(provider, id) }
 }

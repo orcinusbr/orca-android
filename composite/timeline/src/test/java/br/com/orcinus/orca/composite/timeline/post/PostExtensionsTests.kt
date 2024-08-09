@@ -19,10 +19,22 @@ import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEqualTo
+import br.com.orcinus.orca.composite.timeline.avatar.sample
 import br.com.orcinus.orca.composite.timeline.post.conversion.runPostToPostPreviewConversionTest
 import br.com.orcinus.orca.composite.timeline.stat.details.formatted
-import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
-import br.com.orcinus.orca.platform.core.withSamples
+import br.com.orcinus.orca.core.feed.profile.Profile
+import br.com.orcinus.orca.core.feed.profile.post.Author
+import br.com.orcinus.orca.core.feed.profile.post.DeletablePost
+import br.com.orcinus.orca.core.feed.profile.post.Post
+import br.com.orcinus.orca.core.feed.profile.post.content.Content
+import br.com.orcinus.orca.core.feed.profile.post.stat.addable.AddableStat
+import br.com.orcinus.orca.core.feed.profile.post.stat.toggleable.ToggleableStat
+import br.com.orcinus.orca.core.instance.domain.Domain
+import br.com.orcinus.orca.core.sample.instance.domain.sample
+import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
+import br.com.orcinus.orca.std.markdown.Markdown
+import java.time.ZonedDateTime
+import java.util.UUID
 import kotlin.test.Test
 import kotlinx.coroutines.flow.drop
 import org.junit.runner.RunWith
@@ -34,7 +46,7 @@ internal class PostExtensionsTests {
   fun convertsIntoPostPreview() {
     runPostToPostPreviewConversionTest {
       assertThat(post.toPostPreview(colors, onLinkClick, onThumbnailClickListener))
-        .isEqualTo(PostPreview.getSample(colors).copy(figure = figure))
+        .isEqualTo(PostPreview.createSample(postProvider, colors).copy(figure = figure))
     }
   }
 
@@ -53,7 +65,28 @@ internal class PostExtensionsTests {
     runPostToPostPreviewConversionTest {
       post.toPostPreviewFlow(colors, onLinkClick, onThumbnailClickListener).drop(1).test {
         val previousCount = post.comment.count
-        post.comment.add(Posts.withSamples.first { it != post })
+        post.comment.add(
+          object : Post {
+            override val id = UUID.randomUUID().toString()
+            override val author = Author.sample
+            override val content = Content.from(Domain.sample, text = Markdown.empty) { null }
+            override val publicationDateTime = ZonedDateTime.now()
+            override val comment = AddableStat<Post>()
+            override val favorite = ToggleableStat<Profile>()
+            override val repost = ToggleableStat<Profile>()
+            override val uri =
+              HostedURLBuilder.from(Domain.sample.uri)
+                .path("${author.account.username}")
+                .path("posts")
+                .path(id)
+                .build()
+
+            @Throws(UnsupportedOperationException::class)
+            override fun asDeletable(): DeletablePost {
+              throw UnsupportedOperationException()
+            }
+          }
+        )
         assertThat(awaitItem().stats.formattedCommentCount).isEqualTo(previousCount.inc().formatted)
       }
     }

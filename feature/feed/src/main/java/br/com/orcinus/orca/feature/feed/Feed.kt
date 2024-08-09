@@ -37,6 +37,7 @@ import br.com.orcinus.orca.composite.timeline.Timeline
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.search.Searchable
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold
@@ -49,6 +50,8 @@ import br.com.orcinus.orca.platform.autos.overlays.asPaddingValues
 import br.com.orcinus.orca.platform.autos.overlays.refresh.Refresh
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
+import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
@@ -60,7 +63,19 @@ const val FeedFloatingActionButtonTag = "feed-floating-action-button"
 @Composable
 @VisibleForTesting
 fun Feed(modifier: Modifier = Modifier) {
-  Feed(PostPreview.samples.toSerializableList().toListLoadable(), modifier)
+  Feed(
+    PostPreview.createSamples(
+        SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+          .withDefaultProfiles()
+          .withDefaultPosts()
+          .build()
+          .postProvider,
+        AutosTheme.colors
+      )
+      .toSerializableList()
+      .toListLoadable(),
+    modifier
+  )
 }
 
 @Composable
@@ -216,5 +231,17 @@ private fun EmptyFeedPreview() {
 @Composable
 @MultiThemePreview
 private fun PopulatedFeedPreview() {
-  AutosTheme { Feed(PostPreview.samples.toSerializableList().toListLoadable()) }
+  AutosTheme {
+    Feed(
+      PostPreview.createSamples(
+          SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+            .withDefaultProfiles()
+            .withDefaultPosts()
+            .build()
+            .postProvider
+        )
+        .toSerializableList()
+        .toListLoadable()
+    )
+  }
 }

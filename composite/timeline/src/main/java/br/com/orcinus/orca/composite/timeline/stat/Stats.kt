@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.composite.timeline.stat
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Text
@@ -30,9 +31,12 @@ import br.com.orcinus.orca.composite.timeline.stat.activateable.repost.RepostSta
 import br.com.orcinus.orca.composite.timeline.stat.details.StatsDetails
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.stat.Stat
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
+import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 
 /** Tag that identifies [Stats]' comment [Stat][_Stat] for testing purposes. */
 const val StatsCommentStatTag = "stats-comment-stat"
@@ -43,11 +47,27 @@ const val StatsShareStatTag = "stats-share-stat"
 /**
  * Actions for a [Post]'s [Stat]s.
  *
+ * This overload is stateless by default and is intended for previewing and testing purposes only.
+ *
  * @param modifier [Modifier] to be applied to the underlying [Row].
  */
 @Composable
+@VisibleForTesting
 fun Stats(modifier: Modifier = Modifier) {
-  Stats(StatsDetails.sample, onComment = {}, onFavorite = {}, onRepost = {}, onShare = {}, modifier)
+  Stats(
+    StatsDetails.createSample(
+      SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+        .withDefaultProfiles()
+        .withDefaultPosts()
+        .build()
+        .postProvider
+    ),
+    onComment = {},
+    onFavorite = {},
+    onRepost = {},
+    onShare = {},
+    modifier
+  )
 }
 
 /**

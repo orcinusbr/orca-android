@@ -21,10 +21,10 @@ import androidx.compose.ui.test.performClick
 import br.com.orcinus.orca.composite.timeline.test.onTimeline
 import br.com.orcinus.orca.composite.timeline.test.post.figure.link.onLinkCards
 import br.com.orcinus.orca.composite.timeline.test.post.performScrollToPostPreviewWithLinkCard
-import br.com.orcinus.orca.core.instance.Instance
-import br.com.orcinus.orca.platform.core.sample
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
+import br.com.orcinus.orca.platform.core.image.sample
 import br.com.orcinus.orca.platform.intents.test.intendBrowsingTo
-import kotlinx.coroutines.flow.first
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -38,14 +38,15 @@ internal class PostDetailsTests {
   @Test
   fun navigatesToPostLink() {
     runTest {
+      val instance =
+        SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+          .withDefaultProfiles()
+          .withDefaultPosts()
+          .build()
       intendBrowsingTo(
-        Instance.sample.postProvider
-          .provideAll()
-          .first()
-          .firstNotNullOf { it.content.highlight }
-          .uri
+        instance.postProvider.provideAllCurrent().firstNotNullOf { it.content.highlight }.uri
       ) {
-        composeRule.onTimeline().performScrollToPostPreviewWithLinkCard()
+        composeRule.onTimeline().performScrollToPostPreviewWithLinkCard(instance.feedProvider)
         composeRule.onLinkCards().onFirst().performClick()
       }
     }

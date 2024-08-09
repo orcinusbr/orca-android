@@ -28,14 +28,15 @@ import br.com.orcinus.orca.composite.timeline.test.isTimeline
 import br.com.orcinus.orca.composite.timeline.test.post.figure.link.onLinkCards
 import br.com.orcinus.orca.composite.timeline.test.post.onPostPreviews
 import br.com.orcinus.orca.composite.timeline.test.post.performScrollToPostPreviewWithLinkCard
-import br.com.orcinus.orca.core.feed.profile.Profile
-import br.com.orcinus.orca.core.instance.Instance
+import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.feature.postdetails.PostDetailsFragment
+import br.com.orcinus.orca.platform.core.image.sample
 import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.platform.intents.test.intendBrowsingTo
 import br.com.orcinus.orca.platform.navigation.test.isAt
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import kotlin.test.BeforeTest
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -54,14 +55,21 @@ internal class ProfileDetailsTests {
   @Test
   fun navigatesToPostLink() {
     runTest {
+      val instance =
+        SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+          .withDefaultProfiles()
+          .withDefaultPosts()
+          .build()
       intendBrowsingTo(
-        Instance.sample.postProvider
-          .provideBy(Profile.sample.id)
-          .first()
+        instance.postProvider
+          .provideAllCurrentBy(Actor.Authenticated.sample.id)
           .firstNotNullOf { it.content.highlight }
           .uri
       ) {
-        composeRule.onAllNodes(isTimeline()).onLast().performScrollToPostPreviewWithLinkCard()
+        composeRule
+          .onAllNodes(isTimeline())
+          .onLast()
+          .performScrollToPostPreviewWithLinkCard(instance.feedProvider)
         composeRule.onLinkCards().onFirst().performClick()
       }
     }

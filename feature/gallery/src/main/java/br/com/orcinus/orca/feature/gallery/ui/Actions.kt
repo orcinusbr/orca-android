@@ -36,11 +36,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.orcinus.orca.composite.timeline.stat.details.StatsDetails
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.feature.gallery.R
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 import br.com.orcinus.orca.platform.autos.kit.menu.DropdownMenu
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 
 internal const val GalleryActionsOptionsButtonTag = "gallery-actions-options-button"
 internal const val GalleryActionsOptionsDownloadItemTag = "gallery-actions-options-download-action"
@@ -56,7 +59,13 @@ fun Actions(modifier: Modifier = Modifier, areOptionsVisible: Boolean = false) {
     areOptionsVisible,
     onOptionsVisibilityToggle = {},
     onDownload = {},
-    StatsDetails.sample,
+    StatsDetails.createSample(
+      SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+        .withDefaultProfiles()
+        .withDefaultPosts()
+        .build()
+        .postProvider
+    ),
     onComment = {},
     onFavorite = {},
     onRepost = {},

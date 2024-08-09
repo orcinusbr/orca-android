@@ -15,19 +15,17 @@
 
 package br.com.orcinus.orca.feature.gallery.test
 
-import br.com.orcinus.orca.core.feed.profile.post.provider.PostProvider
-import br.com.orcinus.orca.core.instance.Instance
+import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
 import br.com.orcinus.orca.feature.gallery.GalleryBoundary
 import br.com.orcinus.orca.feature.gallery.GalleryModule
-import br.com.orcinus.orca.platform.core.sample
-import br.com.orcinus.orca.std.injector.module.injection.injectionOf
+import br.com.orcinus.orca.std.injector.module.injection.immediateInjectionOf
+import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 
 /**
- * [GalleryModule] to which a sample [PostProvider] and a no-op [GalleryBoundary] are injected.
+ * [GalleryModule] to which a no-op [GalleryBoundary] is injected.
  *
- * @see Instance.Companion.sample
- * @see Instance.postProvider
+ * @param postProvider [SamplePostProvider] to be injected.
  * @see NoOpGalleryBoundary
  */
-object TestGalleryModule :
-  GalleryModule(injectionOf { Instance.sample.postProvider }, injectionOf { NoOpGalleryBoundary })
+class UnnavigableGalleryModule(postProvider: SamplePostProvider) :
+  GalleryModule(immediateInjectionOf(postProvider), lazyInjectionOf { NoOpGalleryBoundary })

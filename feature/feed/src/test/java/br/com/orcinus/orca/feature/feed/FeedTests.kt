@@ -26,9 +26,12 @@ import androidx.compose.ui.test.performScrollTo
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.stat.activateable.favorite.FavoriteStatTag
 import br.com.orcinus.orca.composite.timeline.test.post.onPostPreviews
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.platform.autos.i18n.ReadableThrowable
 import br.com.orcinus.orca.platform.autos.test.kit.scaffold.bar.snack.onSnackbar
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.list.toSerializableList
@@ -48,7 +51,15 @@ internal class FeedTests {
     composeRule.setContent {
       AutosTheme {
         Feed(
-          PostPreview.samples.toSerializableList().toListLoadable(),
+          PostPreview.createSamples(
+              SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+                .withDefaultProfiles()
+                .withDefaultPosts()
+                .build()
+                .postProvider
+            )
+            .toSerializableList()
+            .toListLoadable(),
           onFavorite = { hasCallbackBeenRun = true }
         )
       }

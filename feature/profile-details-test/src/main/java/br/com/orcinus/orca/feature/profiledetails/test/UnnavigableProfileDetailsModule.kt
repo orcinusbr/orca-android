@@ -15,27 +15,32 @@
 
 package br.com.orcinus.orca.feature.profiledetails.test
 
+import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.ProfileProvider
+import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.provider.PostProvider
-import br.com.orcinus.orca.core.instance.Instance
+import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
+import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetailsBoundary
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetailsModule
-import br.com.orcinus.orca.platform.core.sample
-import br.com.orcinus.orca.std.injector.module.injection.injectionOf
+import br.com.orcinus.orca.std.injector.module.injection.immediateInjectionOf
+import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 
 /**
- * [ProfileDetailsModule] into which a sample [ProfileProvider], a sample [PostProvider] and a no-op
- * [ProfileDetailsBoundary] are injected.
+ * [ProfileDetailsModule] into which a no-op [ProfileDetailsBoundary] is injected.
  *
- * @see Instance.Companion.sample
- * @see Instance.profileProvider
- * @see Instance.postProvider
+ * @param profileProvider [SampleProfileProvider] by which the [Profile] whose details are shown is
+ *   provided.
+ * @param postProvider [SamplePostProvider] that provides the [Profile]'s [Post]s.
  * @see NoOpProfileDetailsBoundary
  * @see inject
  */
-object TestProfileDetailsModule :
+class UnnavigableProfileDetailsModule(
+  profileProvider: SampleProfileProvider,
+  postProvider: SamplePostProvider
+) :
   ProfileDetailsModule(
-    injectionOf { Instance.sample.profileProvider },
-    injectionOf { Instance.sample.postProvider },
-    injectionOf { NoOpProfileDetailsBoundary }
+    immediateInjectionOf<ProfileProvider>(profileProvider),
+    immediateInjectionOf<PostProvider>(postProvider),
+    lazyInjectionOf { NoOpProfileDetailsBoundary }
   )

@@ -15,36 +15,33 @@
 
 package br.com.orcinus.orca.core.sample.feed.profile.type.followable
 
-import br.com.orcinus.orca.core.feed.profile.account.Account
+import br.com.orcinus.orca.core.feed.profile.Profile
+import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
 import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfile
-import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileWriter
+import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
 import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
-import br.com.orcinus.orca.std.image.SomeImageLoader
 import br.com.orcinus.orca.std.markdown.Markdown
-import java.net.URI
 
 /**
  * [SampleProfile] that's also followable.
  *
- * @param writer [SampleProfileWriter] through which the [Follow] status can be updated.
+ * @param provider [SampleProfileProvider] through which the [Follow] status can be updated.
  * @see FollowableProfile
  */
 internal data class SampleFollowableProfile<T : Follow>(
-  override val id: String,
-  override val account: Account,
-  override val avatarLoader: SomeImageLoader,
-  override val name: String,
+  private val provider: SampleProfileProvider,
+  private val postProvider: SamplePostProvider,
+  private val delegate: Author,
   override val bio: Markdown,
   override val follow: T,
   override val followerCount: Int,
-  override val followingCount: Int,
-  override val uri: URI,
-  val writer: SampleProfileWriter,
-  override val postProvider: SamplePostProvider
-) : SampleProfile, FollowableProfile<T>() {
+  override val followingCount: Int
+) :
+  Profile by SampleProfile(postProvider, delegate, bio, followerCount, followingCount),
+  FollowableProfile<T>() {
   override suspend fun onChangeFollowTo(follow: T) {
-    writer.updateFollow(id, follow)
+    provider.updateFollow(id, follow)
   }
 }

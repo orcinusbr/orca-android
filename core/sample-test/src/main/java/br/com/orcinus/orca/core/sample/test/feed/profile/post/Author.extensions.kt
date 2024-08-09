@@ -19,7 +19,7 @@ import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.sample.feed.profile.post.createSample
 import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 
-/** [Author] returned by [withSample]. */
+/** [Author] returned by [Author.Companion.sample]. */
 private val testSampleAuthor = Author.createSample(NoOpSampleImageLoader.Provider)
 
 /** Test sample [Author]. */

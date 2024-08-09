@@ -22,9 +22,10 @@ import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.composite.timeline.LoadedTimeline
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.test.onTimeline
-import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
-import br.com.orcinus.orca.platform.core.withSamples
+import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,6 +37,11 @@ internal class SemanticsNodeInteractionExtensionsTests {
 
   @Test
   fun performsScrollToPostIndex() {
+    val instance =
+      SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+        .withDefaultProfiles()
+        .withDefaultPosts()
+        .build()
     lateinit var colors: Colors
     composeRule
       .apply {
@@ -49,7 +55,7 @@ internal class SemanticsNodeInteractionExtensionsTests {
             }
 
             LoadedTimeline(
-              PostPreview.samples,
+              PostPreview.createSamples(instance.postProvider),
               onFavorite = {},
               onRepost = {},
               onShare = {},
@@ -60,8 +66,13 @@ internal class SemanticsNodeInteractionExtensionsTests {
         }
       }
       .run {
-        onTimeline().performScrollToPostIndex({ it == Posts.withSamples.last() })
-        onPostPreviews().assertAny(isPostPreview(PostPreview.getSamples(colors).last()))
+        onTimeline()
+          .performScrollToPostIndex(
+            instance.feedProvider,
+            { _, foundPost -> foundPost == instance.postProvider.provideAllCurrent().last() }
+          )
+        onPostPreviews()
+          .assertAny(isPostPreview(PostPreview.createSamples(instance.postProvider, colors).last()))
       }
   }
 }

@@ -29,8 +29,10 @@ import kotlin.contracts.contract
  * @see Injection.Immediate
  * @see lazyInjectionOf
  */
-fun <T : Any> immediateInjectionOf(dependency: T): Injection<T> {
-  return Injection.Immediate(dependency)
+inline fun <reified T : Any> immediateInjectionOf(dependency: T): Injection<T> {
+  return object : Injection.Immediate<T>(dependency) {
+    override val dependencyClass = T::class
+  }
 }
 
 /**

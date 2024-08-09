@@ -60,15 +60,16 @@ import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.stat.Stat
-import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
+import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.platform.autos.colors.asColor
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.kit.action.button.icon.IgnoringMutableInteractionSource
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
-import br.com.orcinus.orca.platform.core.withSample
-import br.com.orcinus.orca.platform.core.withSamples
+import br.com.orcinus.orca.platform.core.image.sample
 import br.com.orcinus.orca.std.image.ImageLoader
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import br.com.orcinus.orca.std.image.compose.SomeComposableImageLoader
 import com.jeanbarrossilva.loadable.Loadable
 import com.jeanbarrossilva.loadable.flow.loadableFlow
@@ -147,32 +148,50 @@ internal constructor(
   }
 
   companion object {
-    /** [PostPreview] sample. */
-    val sample
-      @Composable get() = getSample(AutosTheme.colors)
-
-    /** [PostPreview] samples. */
-    val samples
-      @Composable get() = getSamples(AutosTheme.colors)
-
     /**
-     * Gets a sample [PostPreview].
+     * Creates a sample [PostPreview].
      *
-     * @param colors [Colors] by which the resulting [PostPreview]'s [text][PostPreview.text] can be
-     *   colored.
+     * @param postProvider [SamplePostProvider] that provides a sample [Post] to be converted into a
+     *   [PostPreview].
      */
-    fun getSample(colors: Colors): PostPreview {
-      return Posts.withSample.single().toPostPreview(colors)
+    @Composable
+    fun createSample(postProvider: SamplePostProvider): PostPreview {
+      return createSample(postProvider, AutosTheme.colors)
     }
 
     /**
-     * Gets sample [PostPreview]s.
+     * Creates a sample [PostPreview].
      *
+     * @param postProvider [SamplePostProvider] that provides a sample [Post] to be converted into a
+     *   [PostPreview].
+     * @param colors [Colors] by which the resulting [PostPreview]'s [text][PostPreview.text] can be
+     *   colored.
+     */
+    fun createSample(postProvider: SamplePostProvider, colors: Colors): PostPreview {
+      return postProvider.provideOneCurrent().toPostPreview(colors)
+    }
+
+    /**
+     * Creates sample [PostPreview]s.
+     *
+     * @param postProvider [SamplePostProvider] that provides a sample [Post] to be converted into a
+     *   [PostPreview].
+     */
+    @Composable
+    fun createSamples(postProvider: SamplePostProvider): List<PostPreview> {
+      return createSamples(postProvider, AutosTheme.colors)
+    }
+
+    /**
+     * Creates sample [PostPreview]s.
+     *
+     * @param postProvider [SamplePostProvider] that provides a sample [Post] to be converted into a
+     *   [PostPreview].
      * @param colors [Colors] by which the resulting [PostPreview]s' [text][PostPreview.text]s can
      *   be colored.
      */
-    fun getSamples(colors: Colors): List<PostPreview> {
-      return Posts.withSamples.map { it.toPostPreview(colors) }
+    fun createSamples(postProvider: SamplePostProvider, colors: Colors): List<PostPreview> {
+      return postProvider.provideAllCurrent().map { it.toPostPreview(colors) }
     }
   }
 }
@@ -206,16 +225,16 @@ fun PostPreview(modifier: Modifier = Modifier) {
 /**
  * Preview of a [Post].
  *
- * @param modifier [Modifier] to be applied to the underlying [Card].
  * @param preview [PostPreview] that holds the overall data to be displayed.
+ * @param modifier [Modifier] to be applied to the underlying [Card].
  * @param relativeTimeProvider [RelativeTimeProvider] that provides the time that's passed since the
  *   [Post] was published.
  */
 @Composable
 @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
 fun LoadedPostPreview(
+  preview: PostPreview,
   modifier: Modifier = Modifier,
-  preview: PostPreview = PostPreview.sample,
   relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider()
 ) {
   PostPreview(
@@ -368,11 +387,21 @@ private fun LoadingPostPreviewPreview() {
 private fun LoadedPostPreviewWithDisabledStatsPreview() {
   AutosTheme {
     Surface(color = AutosTheme.colors.background.container.asColor) {
+      val postProvider = remember {
+        SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+          .withDefaultProfiles()
+          .withDefaultPosts()
+          .build()
+          .postProvider
+      }
+
       LoadedPostPreview(
         preview =
-          PostPreview.sample.copy(
-            stats = StatsDetails.sample.copy(isFavorite = false, isReposted = false)
-          )
+          PostPreview.createSample(postProvider)
+            .copy(
+              stats =
+                StatsDetails.createSample(postProvider).copy(isFavorite = false, isReposted = false)
+            )
       )
     }
   }
@@ -384,11 +413,21 @@ private fun LoadedPostPreviewWithDisabledStatsPreview() {
 private fun LoadedPostPreviewWithEnabledStatsPreview() {
   AutosTheme {
     Surface(color = AutosTheme.colors.background.container.asColor) {
+      val postProvider = remember {
+        SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+          .withDefaultProfiles()
+          .withDefaultPosts()
+          .build()
+          .postProvider
+      }
+
       LoadedPostPreview(
         preview =
-          PostPreview.sample.copy(
-            stats = StatsDetails.sample.copy(isFavorite = true, isReposted = true)
-          )
+          PostPreview.createSample(postProvider)
+            .copy(
+              stats =
+                StatsDetails.createSample(postProvider).copy(isFavorite = true, isReposted = true)
+            )
       )
     }
   }

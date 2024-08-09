@@ -16,11 +16,23 @@
 package br.com.orcinus.orca.composite.timeline.post.figure.gallery
 
 import br.com.orcinus.orca.composite.timeline.post.figure.Figure
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
+import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import kotlin.test.Test
 
 internal class GalleryTests {
   @Test(expected = IllegalArgumentException::class)
   fun throwsWhenNoAttachmentsAreProvided() {
-    Figure.Gallery(GalleryPreview.sample.copy(attachments = emptyList()))
+    Figure.Gallery(
+      GalleryPreview.createSample(
+          SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+            .withDefaultProfiles()
+            .withDefaultPosts()
+            .build()
+            .postProvider
+        )
+        .copy(attachments = emptyList())
+    )
   }
 }

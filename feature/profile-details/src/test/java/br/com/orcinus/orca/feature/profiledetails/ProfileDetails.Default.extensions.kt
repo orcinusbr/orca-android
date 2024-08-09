@@ -18,16 +18,58 @@ package br.com.orcinus.orca.feature.profiledetails
 import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.composite.timeline.text.annotated.toAnnotatedString
 import br.com.orcinus.orca.core.feed.profile.Profile
-import br.com.orcinus.orca.core.sample.test.feed.profile.sample
+import br.com.orcinus.orca.core.feed.profile.post.Post
+import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
+import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
+import kotlinx.coroutines.flow.Flow
 
-/** Sample [ProfileDetails.Default]. */
-internal val ProfileDetails.Default.Companion.sample
-  get() =
-    ProfileDetails.Default(
-      Profile.sample.id,
-      Profile.sample.avatarLoader,
-      Profile.sample.name,
-      Profile.sample.account,
-      Profile.sample.bio.toAnnotatedString(Colors.LIGHT),
-      Profile.sample.uri
-    )
+/**
+ * Creates a sample [ProfileDetails.Default].
+ *
+ * @param profileProvider [SampleProfileProvider] from which a [Profile] to be converted into the
+ *   created [ProfileDetails.Default] is provided.
+ */
+internal fun ProfileDetails.Default.Companion.createSample(
+  profileProvider: SampleProfileProvider,
+  delegateProfile: Profile = getSampleDelegateProfile(profileProvider)
+): ProfileDetails.Default {
+  return ProfileDetails.Default(
+    delegateProfile.id,
+    delegateProfile.avatarLoader,
+    delegateProfile.name,
+    delegateProfile.account,
+    delegateProfile.bio.toAnnotatedString(Colors.LIGHT),
+    delegateProfile.uri
+  )
+}
+
+/**
+ * Obtains the [Profile] based on which a sample default [ProfileDetails] is created.
+ *
+ * @param profileProvider [SampleProfileProvider] by which the [Profile] will be provided.
+ * @see ProfileDetails.Default.Companion.createSample
+ */
+internal fun ProfileDetails.Default.Companion.getSampleDelegateProfile(
+  profileProvider: SampleProfileProvider
+): Profile {
+  return object : Profile {
+    /**
+     * [Profile] to which this one's characteristics (expect for its [id]) and behavior is
+     * delegated.
+     */
+    private val delegate = profileProvider.provideCurrent<EditableProfile>()
+
+    override val id = delegate.id
+    override val account = delegate.account
+    override val avatarLoader = delegate.avatarLoader
+    override val name = delegate.name
+    override val bio = delegate.bio
+    override val followerCount = delegate.followerCount
+    override val followingCount = delegate.followingCount
+    override val uri = delegate.uri
+
+    override suspend fun getPosts(page: Int): Flow<List<Post>> {
+      return delegate.getPosts(page)
+    }
+  }
+}

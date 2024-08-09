@@ -22,9 +22,9 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.feed.profile.post.DeletablePost
 import br.com.orcinus.orca.core.feed.profile.post.Post
-import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.core.sample.test.auth.actor.sample
-import br.com.orcinus.orca.core.sample.test.feed.profile.post.withSample
+import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 import br.com.orcinus.orca.core.test.auth.AuthenticationLock
 import br.com.orcinus.orca.core.test.auth.Authenticator
 import br.com.orcinus.orca.core.test.auth.actor.InMemoryActorProvider
@@ -35,6 +35,15 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 
 internal class PostExtensionsTests {
+  val samplePost
+    get() =
+      SampleInstance.Builder.create(NoOpSampleImageLoader.Provider)
+        .withDefaultProfiles()
+        .withDefaultPosts()
+        .build()
+        .postProvider
+        .provideOneCurrent()
+
   @Test
   fun schedulesAuthenticationUnlockWhenObtainingDeletableVersionOfPost() {
     var hasAuthenticationBeenScheduled = false
@@ -45,16 +54,15 @@ internal class PostExtensionsTests {
         Actor.Authenticated.sample
       }
     val authenticationLock = AuthenticationLock(authenticator, actorProvider)
-    val post = Posts.withSample.single()
     runTest {
       object : PostProvider() {
           override val authenticationLock = authenticationLock
 
           override suspend fun onProvide(id: String): Flow<Post> {
-            return flowOf(post)
+            return flowOf(samplePost)
           }
         }
-        .provide(post.id)
+        .provide(samplePost.id)
         .first()
         .asDeletable(authenticationLock)
     }
@@ -70,7 +78,7 @@ internal class PostExtensionsTests {
         }
       val authenticationLock = AuthenticationLock(actorProvider)
       val post =
-        object : DeletablePost(Posts.withSample.single()) {
+        object : DeletablePost(samplePost) {
           override suspend fun delete() {}
         }
       assertThat(post.asDeletable(authenticationLock)).isSameAs(post)

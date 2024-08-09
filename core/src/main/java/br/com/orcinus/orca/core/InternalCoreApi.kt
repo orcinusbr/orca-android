@@ -22,4 +22,4 @@ import br.com.orcinus.orca.std.visibility.PackageProtected
  * should only be referenced from one of the core variants.
  */
 @PackageProtected(message = "This API should only be referenced from a core variant.")
-annotation class InternalCoreApi
+internal annotation class InternalCoreApi

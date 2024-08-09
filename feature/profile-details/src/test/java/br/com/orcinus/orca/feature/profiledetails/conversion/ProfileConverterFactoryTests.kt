@@ -15,47 +15,64 @@
 
 package br.com.orcinus.orca.feature.profiledetails.conversion
 
+import assertk.assertThat
+import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.autos.colors.Colors
-import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
 import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
-import br.com.orcinus.orca.core.sample.test.feed.profile.sample
-import br.com.orcinus.orca.core.sample.test.feed.profile.type.sample
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetails
 import br.com.orcinus.orca.feature.profiledetails.createSample
-import br.com.orcinus.orca.feature.profiledetails.sample
+import br.com.orcinus.orca.feature.profiledetails.getSampleDelegateProfile
+import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import kotlin.test.Test
 import kotlinx.coroutines.test.TestScope
-import org.junit.Assert.assertEquals
 
 internal class ProfileConverterFactoryTests {
   private val coroutineScope = TestScope()
 
   @Test
   fun createdConverterConvertsDefaultProfile() {
-    assertEquals(
-      ProfileDetails.Default.sample,
-      ProfileConverterFactory.create(coroutineScope).convert(Profile.sample, Colors.LIGHT)
-    )
+    val profileProvider =
+      SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+        .withDefaultProfiles()
+        .build()
+        .profileProvider
+    val defaultProfile = ProfileDetails.Default.getSampleDelegateProfile(profileProvider)
+    assertThat(ProfileConverterFactory.create(coroutineScope).convert(defaultProfile, Colors.LIGHT))
+      .isEqualTo(ProfileDetails.Default.createSample(profileProvider, defaultProfile))
   }
 
   @Test
   fun createdConverterConvertsEditableProfile() {
-    assertEquals(
-      ProfileDetails.Editable.sample,
-      ProfileConverterFactory.create(coroutineScope).convert(EditableProfile.sample, Colors.LIGHT)
-    )
+    val profileProvider =
+      SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+        .withDefaultProfiles()
+        .build()
+        .profileProvider
+    val editableProfile = profileProvider.provideCurrent<EditableProfile>()
+    assertThat(
+        ProfileConverterFactory.create(coroutineScope).convert(editableProfile, Colors.LIGHT)
+      )
+      .isEqualTo(ProfileDetails.Editable.createSample(profileProvider))
   }
 
   @Test
   fun createdConverterConvertsFollowableProfile() {
+    val profileProvider =
+      SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+        .withDefaultProfiles()
+        .build()
+        .profileProvider
+    val followableProfile = profileProvider.provideCurrent<FollowableProfile<*>>()
     val onStatusToggle = {}
-    assertEquals(
-      ProfileDetails.Followable.createSample(onStatusToggle),
-      ProfileConverterFactory.create(coroutineScope)
-        .convert(FollowableProfile.sample, Colors.LIGHT)
-        .let { it as ProfileDetails.Followable }
-        .copy(onStatusToggle = onStatusToggle)
-    )
+    assertThat(
+        ProfileConverterFactory.create(coroutineScope)
+          .convert(followableProfile, Colors.LIGHT)
+          .let { it as ProfileDetails.Followable }
+          .copy(onStatusToggle = onStatusToggle)
+      )
+      .isEqualTo(ProfileDetails.Followable.createSample(profileProvider, onStatusToggle))
   }
 }

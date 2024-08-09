@@ -22,7 +22,7 @@ import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.sample.auth.actor.sample
 
 /** [Authenticator] that provides a sample [Actor]. */
-internal object SampleAuthenticator : Authenticator() {
+class SampleAuthenticator : Authenticator() {
   override val authorizer: Authorizer = Authorizer.sample
   override val actorProvider = ActorProvider.sample
 

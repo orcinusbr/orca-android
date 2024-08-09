@@ -37,8 +37,7 @@ import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.test.onTimeline
 import br.com.orcinus.orca.composite.timeline.test.performScrollToBottom
-import br.com.orcinus.orca.core.instance.Instance
-import br.com.orcinus.orca.core.sample.test.instance.SampleInstanceTestRule
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.platform.autos.i18n.ReadableThrowable
 import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.rememberSnackbarPresenter
@@ -46,7 +45,8 @@ import br.com.orcinus.orca.platform.autos.overlays.refresh.Refresh
 import br.com.orcinus.orca.platform.autos.test.kit.scaffold.bar.snack.onSnackbar
 import br.com.orcinus.orca.platform.autos.test.overlays.refresh.onRefreshIndicator
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
-import br.com.orcinus.orca.platform.core.sample
+import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import kotlin.test.Test
 import kotlin.time.Duration.Companion.days
@@ -56,7 +56,6 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class TimelineTests {
-  @get:Rule val sampleInstanceRule = SampleInstanceTestRule(Instance.sample)
   @get:Rule val composeRule = createComposeRule()
 
   @Test
@@ -74,7 +73,20 @@ internal class TimelineTests {
 
   @Test
   fun showsDividerWhenHeaderIsNotAddedOnPostPreviewBeforeLastOne() {
-    composeRule.setContent { AutosTheme { LoadedTimeline(PostPreview.samples.take(2)) } }
+    composeRule.setContent {
+      AutosTheme {
+        LoadedTimeline(
+          PostPreview.createSamples(
+              SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+                .withDefaultProfiles()
+                .withDefaultPosts()
+                .build()
+                .postProvider
+            )
+            .take(2)
+        )
+      }
+    }
     composeRule
       .onTimeline()
       .onChildren()
@@ -86,7 +98,20 @@ internal class TimelineTests {
 
   @Test
   fun showsDividersWhenHeaderIsAddedOnPostPreviewBeforeLastOne() {
-    composeRule.setContent { AutosTheme { LoadedTimeline(PostPreview.samples.take(2)) {} } }
+    composeRule.setContent {
+      AutosTheme {
+        LoadedTimeline(
+          PostPreview.createSamples(
+              SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+                .withDefaultProfiles()
+                .withDefaultPosts()
+                .build()
+                .postProvider
+            )
+            .take(2)
+        ) {}
+      }
+    }
     composeRule
       .onTimeline()
       .onChildren()[1]
@@ -97,7 +122,20 @@ internal class TimelineTests {
 
   @Test
   fun doesNotShowDividersOnLastPostPreview() {
-    composeRule.setContent { AutosTheme { LoadedTimeline(PostPreview.samples.take(1)) } }
+    composeRule.setContent {
+      AutosTheme {
+        LoadedTimeline(
+          PostPreview.createSamples(
+              SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+                .withDefaultProfiles()
+                .withDefaultPosts()
+                .build()
+                .postProvider
+            )
+            .take(1)
+        )
+      }
+    }
     composeRule
       .onTimeline()
       .onChildren()
@@ -149,8 +187,7 @@ internal class TimelineTests {
           Scaffold(snackbarPresenter = snackbarPresenter) {
             expanded {
               LoadedTimeline(
-                postPreviewsLoadable =
-                  ListLoadable.Failed(UnsupportedOperationException(Exception())),
+                ListLoadable.Failed(UnsupportedOperationException(Exception())),
                 snackbarPresenter = snackbarPresenter
               )
             }
@@ -171,7 +208,7 @@ internal class TimelineTests {
             Scaffold(snackbarPresenter = snackbarPresenter) {
               expanded {
                 LoadedTimeline(
-                  postPreviewsLoadable = ListLoadable.Failed(Exception(ReadableThrowable.default)),
+                  ListLoadable.Failed(Exception(ReadableThrowable.default)),
                   snackbarPresenter = snackbarPresenter
                 )
               }

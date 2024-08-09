@@ -13,22 +13,19 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.sample.feed.profile.post
+package br.com.orcinus.orca.core.sample.instance
 
 import assertk.assertThat
-import assertk.assertions.containsSubList
-import assertk.assertions.isEmpty
-import br.com.orcinus.orca.core.sample.test.feed.profile.post.withSample
+import assertk.assertions.isEqualTo
+import br.com.orcinus.orca.core.instance.domain.Domain
+import br.com.orcinus.orca.core.sample.instance.domain.sample
+import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 import kotlin.test.Test
 
-internal class PostsTests {
+internal class SampleInstanceTests {
   @Test
-  fun adds() {
-    assertThat(Posts() + Posts.withSample.single()).containsSubList(Posts.withSample)
-  }
-
-  @Test
-  fun subtracts() {
-    assertThat(Posts.withSample - Posts.withSample.single()).isEmpty()
+  fun domainIsSampleOne() {
+    assertThat(SampleInstance.Builder.create(NoOpSampleImageLoader.Provider).build().domain)
+      .isEqualTo(Domain.sample)
   }
 }

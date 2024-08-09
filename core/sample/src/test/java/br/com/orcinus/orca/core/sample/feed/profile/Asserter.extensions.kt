@@ -15,45 +15,46 @@
 
 package br.com.orcinus.orca.core.sample.feed.profile
 
+import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
-import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
-import br.com.orcinus.orca.core.instance.Instance
+import br.com.orcinus.orca.core.sample.auth.SampleAuthenticationLock
+import br.com.orcinus.orca.core.sample.auth.SampleAuthenticator
+import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
+import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
+import br.com.orcinus.orca.core.sample.feed.profile.post.createSample
 import br.com.orcinus.orca.core.sample.feed.profile.type.followable.SampleFollowableProfile
-import br.com.orcinus.orca.core.sample.feed.profile.type.followable.createSample
-import br.com.orcinus.orca.core.sample.test.instance.sample
+import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
+import br.com.orcinus.orca.std.markdown.Markdown
 import kotlin.test.assertEquals
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.onEach
 
 /**
- * Asserts that toggling an [SampleFollowableProfile]'s [follow][SampleFollowableProfile.follow]
- * status that's been initially set to [before] results in [after].
+ * Asserts that toggling an [SampleFollowableProfile]'s follow status that's been initially set to
+ * [before] results in [after].
  *
- * @param before [Follow] status before the [toggle][SampleFollowableProfile.toggleFollow].
- * @param after [Follow] status after the [toggle][SampleFollowableProfile.toggleFollow].
+ * @param before [Follow] status before the toggle.
+ * @param after [Follow] status after the toggle.
+ * @see SampleFollowableProfile.follow
+ * @see SampleFollowableProfile.toggleFollow
  */
 internal suspend fun <T : Follow> assertTogglingEquals(after: T, before: T) {
-  val instance = Instance.sample
-  val profile =
-    FollowableProfile.createSample(
-      instance.profileWriter,
-      instance.postProvider,
-      follow = before,
-      instance.imageLoaderProvider
-    )
   val matchingAfter = Follow.requireVisibilityMatch(before, after)
-  instance.profileWriter.insert(profile)
-  assertEquals(
-    matchingAfter,
-    instance.profileProvider
-      .provide(profile.id)
-      .filterIsInstance<FollowableProfile<T>>()
-      .onEach(FollowableProfile<T>::toggleFollow)
-      .drop(1)
-      .first()
-      .follow
-  )
-  instance.profileWriter.delete(profile.id)
+  val authenticator = SampleAuthenticator()
+  val actorProvider = SampleActorProvider()
+  val authenticationLock = SampleAuthenticationLock(authenticator, actorProvider)
+  val profileProvider = SampleProfileProvider()
+  val postProvider = SamplePostProvider(authenticationLock)
+  val profileDelegate = Author.createSample(NoOpSampleImageLoader.Provider)
+  val profile =
+    SampleFollowableProfile(
+      profileProvider,
+      postProvider,
+      profileDelegate,
+      bio = Markdown.empty,
+      follow = before,
+      followerCount = 0,
+      followingCount = 0
+    )
+  profileProvider.add(profile)
+  profile.toggleFollow()
+  assertEquals(matchingAfter, profileProvider.provideCurrent<SampleFollowableProfile<T>>().follow)
 }

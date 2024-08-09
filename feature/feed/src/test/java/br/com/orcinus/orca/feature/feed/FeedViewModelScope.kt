@@ -20,11 +20,12 @@ import androidx.lifecycle.viewModelScope
 import androidx.test.core.app.ApplicationProvider
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.post.figure.gallery.disposition.Disposition
-import br.com.orcinus.orca.core.feed.profile.Profile
+import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.post.Post
-import br.com.orcinus.orca.core.instance.Instance
-import br.com.orcinus.orca.core.sample.test.instance.SampleInstanceTestRule
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
+import br.com.orcinus.orca.platform.core.image.sample
 import br.com.orcinus.orca.platform.core.sample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
@@ -64,10 +65,13 @@ internal inline fun runFeedViewModelTest(crossinline body: suspend FeedViewModel
   contract { callsInPlace(body, InvocationKind.EXACTLY_ONCE) }
   runTest {
     val application = ApplicationProvider.getApplicationContext<Application>()
-    val instance = Instance.sample
-    val instanceRule = SampleInstanceTestRule(instance)
+    val instance =
+      SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+        .withDefaultProfiles()
+        .withDefaultPosts()
+        .build()
     val feedProvider = instance.feedProvider
-    val userID = Profile.sample.id
+    val userID = Actor.Authenticated.sample.id
     val postID = feedProvider.provide(userID, page = 0).first().first().id
     val viewModel =
       FeedViewModel(
@@ -90,7 +94,6 @@ internal inline fun runFeedViewModelTest(crossinline body: suspend FeedViewModel
       FeedViewModelScope(this, viewModel, postID, postPreviewFlow).body()
     } finally {
       viewModel.viewModelScope.cancel()
-      instanceRule.after()
     }
   }
 }

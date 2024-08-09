@@ -27,16 +27,13 @@ import br.com.orcinus.orca.composite.timeline.test.post.figure.gallery.thumbnail
 import br.com.orcinus.orca.composite.timeline.test.post.figure.link.onLinkCards
 import br.com.orcinus.orca.composite.timeline.test.post.performScrollToPostPreviewWithGalleryPreview
 import br.com.orcinus.orca.composite.timeline.test.post.performScrollToPostPreviewWithLinkCard
-import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.feature.composer.ComposerActivity
 import br.com.orcinus.orca.feature.feed.FeedFloatingActionButtonTag
 import br.com.orcinus.orca.feature.gallery.GalleryActivity
 import br.com.orcinus.orca.platform.autos.test.overlays.refresh.assertIsNotInProgress
 import br.com.orcinus.orca.platform.autos.test.overlays.refresh.onRefreshIndicator
-import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.platform.intents.test.intendBrowsingTo
 import br.com.orcinus.orca.platform.intents.test.intendStartingOf
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -45,6 +42,9 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class FeedTests {
+  private val instance
+    get() = composeRule.activity.coreModule.instance
+
   @get:Rule val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
 
   @Test
@@ -57,13 +57,9 @@ internal class FeedTests {
   fun navigatesToPostLink() {
     runTest {
       intendBrowsingTo(
-        Instance.sample.postProvider
-          .provideAll()
-          .first()
-          .firstNotNullOf { it.content.highlight }
-          .uri
+        instance.postProvider.provideAllCurrent().firstNotNullOf { it.content.highlight }.uri
       ) {
-        composeRule.onTimeline().performScrollToPostPreviewWithLinkCard()
+        composeRule.onTimeline().performScrollToPostPreviewWithLinkCard(instance.feedProvider)
         composeRule.onLinkCards().onFirst().performClick()
       }
     }
@@ -73,7 +69,7 @@ internal class FeedTests {
   fun navigatesToGalleryOnThumbnailClick() {
     intendStartingOf<GalleryActivity> {
       with(composeRule) {
-        onTimeline().performScrollToPostPreviewWithGalleryPreview {
+        onTimeline().performScrollToPostPreviewWithGalleryPreview(instance.feedProvider) {
           onThumbnails().onFirst().performClick()
         }
       }

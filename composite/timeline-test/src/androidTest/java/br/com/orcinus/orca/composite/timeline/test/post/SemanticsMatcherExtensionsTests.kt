@@ -23,7 +23,10 @@ import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.composite.timeline.post.LoadedPostPreview
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.test.post.time.StringRelativeTimeProvider
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import org.junit.Rule
 import org.junit.Test
 
@@ -38,6 +41,12 @@ internal class SemanticsMatcherExtensionsTests {
 
   @Test
   fun matchesLinkedPostPreviewNode() {
+    val postProvider =
+      SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+        .withDefaultProfiles()
+        .withDefaultPosts()
+        .build()
+        .postProvider
     lateinit var colors: Colors
     composeRule.setContent {
       AutosTheme {
@@ -48,9 +57,14 @@ internal class SemanticsMatcherExtensionsTests {
           }
         }
 
-        LoadedPostPreview(relativeTimeProvider = StringRelativeTimeProvider)
+        LoadedPostPreview(
+          PostPreview.createSample(postProvider),
+          relativeTimeProvider = StringRelativeTimeProvider
+        )
       }
     }
-    composeRule.onPostPreview().assert(isPostPreview(PostPreview.getSample(colors)))
+    composeRule
+      .onPostPreview()
+      .assert(isPostPreview(PostPreview.createSample(postProvider, colors)))
   }
 }

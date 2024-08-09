@@ -15,9 +15,20 @@
 
 package br.com.orcinus.orca.app.demo
 
+import androidx.annotation.VisibleForTesting
 import br.com.orcinus.orca.app.activity.OrcaActivity
 import br.com.orcinus.orca.app.demo.module.core.DemoCoreModule
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
+import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 
 internal open class DemoOrcaActivity : OrcaActivity() {
-  override val coreModule = DemoCoreModule
+  @VisibleForTesting
+  public override val coreModule =
+    DemoCoreModule(
+      SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+        .withDefaultProfiles()
+        .withDefaultPosts()
+        .build()
+    )
 }

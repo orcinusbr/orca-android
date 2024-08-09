@@ -16,17 +16,25 @@
 package br.com.orcinus.orca.core.feed.profile.post
 
 import br.com.orcinus.orca.core.feed.profile.post.test.DelegatorPost
-import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
-import br.com.orcinus.orca.core.sample.test.feed.profile.post.withSample
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
+import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runTest
 
 internal class PostTests {
+  private val delegate
+    get() =
+      SampleInstance.Builder.create(NoOpSampleImageLoader.Provider)
+        .withDefaultProfiles()
+        .withDefaultPosts()
+        .build()
+        .postProvider
+        .provideOneCurrent()
+
   @Test
   fun `GIVEN an unliked post WHEN liking it THEN it's liked`() {
-    val delegate = Posts.withSample.single()
     val delegator = DelegatorPost(delegate)
     runTest {
       delegator.favorite.disable()
@@ -37,7 +45,6 @@ internal class PostTests {
 
   @Test
   fun `GIVEN a liked post WHEN unliking it THEN it isn't liked`() {
-    val delegate = Posts.withSample.single()
     val delegator = DelegatorPost(delegate)
     runTest {
       delegator.favorite.enable()
@@ -48,7 +55,6 @@ internal class PostTests {
 
   @Test
   fun `GIVEN a post WHEN reposting it THEN it's reposted`() {
-    val delegate = Posts.withSample.single()
     val delegator = DelegatorPost(delegate)
     runTest {
       delegator.repost.disable()
@@ -59,7 +65,6 @@ internal class PostTests {
 
   @Test
   fun `GIVEN a repost WHEN unreposting it THEN it isn't reposted`() {
-    val delegate = Posts.withSample.single()
     val delegator = DelegatorPost(delegate)
     runTest {
       delegator.repost.enable()

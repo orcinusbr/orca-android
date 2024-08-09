@@ -29,10 +29,10 @@ import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import java.util.UUID
 
 /** ID of an [Author] created by [createChristianSample]. */
-private val christianSampleAuthorID = UUID.randomUUID().toString()
+internal val christianSampleAuthorID = UUID.randomUUID().toString()
 
 /** ID of an [Author] created by [createRamboSample]. */
-private val ramboSampleAuthorID = UUID.randomUUID().toString()
+internal val ramboSampleAuthorID = UUID.randomUUID().toString()
 
 /**
  * Creates sample [Author]s.

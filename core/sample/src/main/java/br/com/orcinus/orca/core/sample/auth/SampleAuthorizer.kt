@@ -18,7 +18,7 @@ package br.com.orcinus.orca.core.sample.auth
 import br.com.orcinus.orca.core.auth.Authorizer
 
 /** [Authorizer] that provides a sample authorization code. */
-internal object SampleAuthorizer : Authorizer() {
+object SampleAuthorizer : Authorizer() {
   override suspend fun onAuthorization(): String {
     return "sample-authorization-code"
   }

@@ -24,9 +24,8 @@ import br.com.orcinus.orca.core.sample.instance.domain.sample
 import br.com.orcinus.orca.core.sample.instance.domain.samples
 
 /**
- * [Registrar] that emits a successful [Registration] for the sample [Instance]'s [Domain].
+ * [Registrar] that emits a successful [Registration] for a sample [Domain].
  *
- * @see Instance.Companion.createSample
  * @see Instance.domain
  */
 internal object SampleRegistrar : Registrar() {

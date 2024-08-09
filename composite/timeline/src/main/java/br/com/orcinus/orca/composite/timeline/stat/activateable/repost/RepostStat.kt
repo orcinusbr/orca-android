@@ -29,9 +29,12 @@ import br.com.orcinus.orca.composite.timeline.stat.StatDefaults
 import br.com.orcinus.orca.composite.timeline.stat.StatPosition
 import br.com.orcinus.orca.composite.timeline.stat.activateable.ActivateableStatIconInteractiveness
 import br.com.orcinus.orca.composite.timeline.stat.details.StatsDetails
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.platform.autos.colors.asColor
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
+import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 
 /** Tag that identifies a [RepostStat] for testing purposes. */
 const val RepostStatTag = "repost-stat"
@@ -79,7 +82,18 @@ internal fun RepostStat(
 @MultiThemePreview
 private fun InactiveReblogStatPreview() {
   AutosTheme {
-    RepostStat(StatPosition.Subsequent, StatsDetails.sample.copy(isReposted = false), onClick = {})
+    RepostStat(
+      StatPosition.Subsequent,
+      StatsDetails.createSample(
+          SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+            .withDefaultProfiles()
+            .withDefaultPosts()
+            .build()
+            .postProvider
+        )
+        .copy(isReposted = false),
+      onClick = {}
+    )
   }
 }
 
@@ -88,6 +102,17 @@ private fun InactiveReblogStatPreview() {
 @MultiThemePreview
 private fun ActiveReblogStatPreview() {
   AutosTheme {
-    RepostStat(StatPosition.Subsequent, StatsDetails.sample.copy(isReposted = true), onClick = {})
+    RepostStat(
+      StatPosition.Subsequent,
+      StatsDetails.createSample(
+          SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+            .withDefaultProfiles()
+            .withDefaultPosts()
+            .build()
+            .postProvider
+        )
+        .copy(isReposted = true),
+      onClick = {}
+    )
   }
 }

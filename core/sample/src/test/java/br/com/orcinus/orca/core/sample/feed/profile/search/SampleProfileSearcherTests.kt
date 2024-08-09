@@ -20,10 +20,10 @@ import assertk.assertThat
 import assertk.assertions.containsExactly
 import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
-import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.sample.feed.profile.account.sample
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.core.sample.test.feed.profile.search.sample
-import br.com.orcinus.orca.core.sample.test.instance.sample
+import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
@@ -31,9 +31,12 @@ internal class SampleProfileSearcherTests {
   @Test
   fun searches() {
     runTest {
-      Instance.sample.profileSearcher.search("${Account.sample}").test {
-        assertThat(awaitItem()).containsExactly(ProfileSearchResult.sample)
-      }
+      SampleInstance.Builder.create(NoOpSampleImageLoader.Provider)
+        .withDefaultProfiles()
+        .build()
+        .profileSearcher
+        .search("${Account.sample}")
+        .test { assertThat(awaitItem()).containsExactly(ProfileSearchResult.sample) }
     }
   }
 }

@@ -41,10 +41,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import br.com.orcinus.orca.composite.timeline.stat.details.StatsDetails
 import br.com.orcinus.orca.core.feed.profile.post.content.Attachment
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.samples
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.feature.gallery.GalleryViewModel
 import br.com.orcinus.orca.feature.gallery.ui.page.Page
 import br.com.orcinus.orca.feature.gallery.ui.page.SampleEntrypoint
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 
 const val GalleryPagerTag = "gallery-pager"
 
@@ -95,7 +98,13 @@ internal fun SampleGallery(
     entrypointIndex = 0,
     Attachment.samples,
     onDownload,
-    StatsDetails.sample,
+    StatsDetails.createSample(
+      SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+        .withDefaultProfiles()
+        .withDefaultPosts()
+        .build()
+        .postProvider
+    ),
     onComment,
     onFavorite,
     onRepost,

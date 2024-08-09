@@ -27,12 +27,13 @@ import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Headline
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Highlight
 import br.com.orcinus.orca.core.instance.domain.Domain
-import br.com.orcinus.orca.core.sample.feed.profile.post.Posts
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.sample
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.samples
+import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.core.sample.instance.domain.sample
+import br.com.orcinus.orca.platform.core.image.sample
 import br.com.orcinus.orca.platform.core.sample
-import br.com.orcinus.orca.platform.core.withSample
+import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.buildMarkdown
 import java.net.URI
@@ -41,29 +42,47 @@ import kotlin.test.Test
 internal class FigureTests {
   @Test
   fun createsGalleryFromContentWithHighlightAndAttachments() {
-    assertThat(Figure.of(Posts.withSample.single().id, Author.sample.name, Content.sample))
-      .isEqualTo(Figure.Gallery(GalleryPreview.sample))
+    val postProvider =
+      SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+        .withDefaultProfiles()
+        .withDefaultPosts()
+        .build()
+        .postProvider
+    assertThat(Figure.of(postProvider.provideOneCurrent().id, Author.sample.name, Content.sample))
+      .isEqualTo(Figure.Gallery(GalleryPreview.createSample(postProvider)))
   }
 
   @Test
   fun createsGalleryFromContentWithAttachmentsAndWithoutHighlight() {
+    val postProvider =
+      SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+        .withDefaultProfiles()
+        .withDefaultPosts()
+        .build()
+        .postProvider
     assertThat(
         Figure.of(
-          Posts.withSample.single().id,
+          postProvider.provideOneCurrent().id,
           Author.sample.name,
           Content.from(Domain.sample, text = Markdown.empty, Attachment.samples) { null },
           onLinkClick = {}
         )
       )
-      .isEqualTo(Figure.Gallery(GalleryPreview.sample))
+      .isEqualTo(Figure.Gallery(GalleryPreview.createSample(postProvider)))
   }
 
   @Test
   fun createsLinkFromContentWithHighlightAndWithoutAttachments() {
+    val postProvider =
+      SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+        .withDefaultProfiles()
+        .withDefaultPosts()
+        .build()
+        .postProvider
     val onLinkClick = { _: URI -> }
     assertThat(
         Figure.of(
-          Posts.withSample.single().id,
+          postProvider.provideOneCurrent().id,
           Author.sample.name,
           Content.from(Domain.sample, text = buildMarkdown { +Highlight.sample.uri.toString() }) {
             Headline.sample
