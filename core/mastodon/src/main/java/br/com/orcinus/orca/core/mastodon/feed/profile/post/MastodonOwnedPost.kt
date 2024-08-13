@@ -13,14 +13,21 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.feature.gallery
+package br.com.orcinus.orca.core.mastodon.feed.profile.post
 
-import br.com.orcinus.orca.core.feed.profile.post.PostProvider
-import br.com.orcinus.orca.std.injector.module.Inject
-import br.com.orcinus.orca.std.injector.module.Module
-import br.com.orcinus.orca.std.injector.module.injection.Injection
+import br.com.orcinus.orca.core.feed.profile.post.OwnedPost
+import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 
-open class GalleryModule(
-  @Inject val postProvider: Injection<PostProvider>,
-  @Inject val boundary: Injection<GalleryBoundary>
-) : Module()
+/**
+ * [OwnedPost] that is deleted by sending a request to the Mastodon API.
+ *
+ * @property delegate [MastodonPost] to delegate its functionality to.
+ */
+data class MastodonOwnedPost internal constructor(private val delegate: MastodonPost) :
+  OwnedPost(delegate) {
+  override suspend fun delete() {
+    delegate.requester
+      .authenticated()
+      .delete({ path("api").path("v1").path("statuses").path(id).build() })
+  }
+}

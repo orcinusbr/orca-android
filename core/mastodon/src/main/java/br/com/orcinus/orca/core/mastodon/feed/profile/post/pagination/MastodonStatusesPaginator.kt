@@ -16,6 +16,8 @@
 package br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination
 
 import android.content.Context
+import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentPaginator
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus
@@ -39,10 +41,12 @@ internal abstract class MastodonStatusesPaginator : MastodonPostPaginator<List<M
   protected abstract val context: Context
 
   /**
-   * [ImageLoader.Provider] that provides the [ImageLoader] by which images will be loaded from a
-   * [URI].
+   * [ActorProvider] for determining whether ownership of [Post]s can be given to the current
+   * [Actor].
+   *
+   * @see Post.own
    */
-  protected abstract val imageLoaderProvider: SomeImageLoaderProvider<URI>
+  protected abstract val actorProvider: ActorProvider
 
   /**
    * [MastodonCommentPaginator.Provider] through which a [MastodonCommentPaginator] for paginating
@@ -51,6 +55,12 @@ internal abstract class MastodonStatusesPaginator : MastodonPostPaginator<List<M
    * @see Post.comment
    */
   protected abstract val commentPaginatorProvider: MastodonCommentPaginator.Provider
+
+  /**
+   * [ImageLoader.Provider] that provides the [ImageLoader] by which images will be loaded from a
+   * [URI].
+   */
+  protected abstract val imageLoaderProvider: SomeImageLoaderProvider<URI>
 
   @Suppress("UNCHECKED_CAST")
   final override val kClass = List::class as KClass<List<MastodonStatus>>
@@ -63,6 +73,8 @@ internal abstract class MastodonStatusesPaginator : MastodonPostPaginator<List<M
   }
 
   final override fun List<MastodonStatus>.toPosts(): List<Post> {
-    return map { it.toPost(context, requester, imageLoaderProvider, commentPaginatorProvider) }
+    return map {
+      it.toPost(context, requester, actorProvider, commentPaginatorProvider, imageLoaderProvider)
+    }
   }
 }

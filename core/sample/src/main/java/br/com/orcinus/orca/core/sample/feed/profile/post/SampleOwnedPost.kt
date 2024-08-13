@@ -13,21 +13,23 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.feed.profile.post
+package br.com.orcinus.orca.core.sample.feed.profile.post
 
-import br.com.orcinus.orca.core.feed.profile.post.DeletablePost
-import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
+import br.com.orcinus.orca.core.feed.profile.post.OwnedPost
+import br.com.orcinus.orca.core.feed.profile.post.Post
 
 /**
- * [DeletablePost] that is deleted by sending a request to the Mastodon API.
+ * [OwnedPost] whose deletion is performed by the [writer].
  *
- * @property delegate [MastodonPost] to delegate its functionality to.
+ * @property provider [SamplePostProvider] by which this is deleted.
+ * @property delegate [SamplePost] to which this [SampleOwnedPost]'s functionality will be
+ *   delegated.
  */
-internal data class MastodonDeletablePost(private val delegate: MastodonPost) :
-  DeletablePost(delegate) {
+internal data class SampleOwnedPost(
+  private val provider: SamplePostProvider,
+  private val delegate: Post
+) : OwnedPost(delegate) {
   override suspend fun delete() {
-    delegate.requester
-      .authenticated()
-      .delete({ path("api").path("v1").path("statuses").path(id).build() })
+    provider.delete(id)
   }
 }

@@ -15,8 +15,8 @@
 
 package br.com.orcinus.orca.core.mastodon.feed.profile.post
 
+import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.feed.profile.post.Author
-import br.com.orcinus.orca.core.feed.profile.post.DeletablePost
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.FavoriteStat
@@ -46,8 +46,9 @@ import java.time.ZonedDateTime
 class MastodonPost
 internal constructor(
   internal val requester: Requester,
-  override val id: String,
+  override val actorProvider: ActorProvider,
   private val imageLoaderProvider: SomeImageLoaderProvider<URI>,
+  override val id: String,
   override val author: Author,
   override val content: Content,
   override val publicationDateTime: ZonedDateTime,
@@ -56,12 +57,12 @@ internal constructor(
   private val favoriteCount: Int,
   private val reblogCount: Int,
   override val uri: URI
-) : Post {
+) : Post() {
   override val comment = CommentStat(requester, id, commentCount, commentPaginatorProvider)
   override val favorite = FavoriteStat(requester, id, favoriteCount)
   override val repost = RepostStat(requester, id, reblogCount)
 
-  override fun asDeletable(): DeletablePost {
-    return MastodonDeletablePost(this)
+  override suspend fun toOwnedPost(): MastodonOwnedPost {
+    return MastodonOwnedPost(this)
   }
 }

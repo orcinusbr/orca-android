@@ -22,14 +22,16 @@ import assertk.assertions.isNotEqualTo
 import br.com.orcinus.orca.composite.timeline.avatar.sample
 import br.com.orcinus.orca.composite.timeline.post.conversion.runPostToPostPreviewConversionTest
 import br.com.orcinus.orca.composite.timeline.stat.details.formatted
+import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Author
-import br.com.orcinus.orca.core.feed.profile.post.DeletablePost
+import br.com.orcinus.orca.core.feed.profile.post.OwnedPost
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.feed.profile.post.stat.addable.AddableStat
 import br.com.orcinus.orca.core.feed.profile.post.stat.toggleable.ToggleableStat
 import br.com.orcinus.orca.core.instance.domain.Domain
+import br.com.orcinus.orca.core.sample.auth.actor.sample
 import br.com.orcinus.orca.core.sample.instance.domain.sample
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import br.com.orcinus.orca.std.markdown.Markdown
@@ -66,7 +68,8 @@ internal class PostExtensionsTests {
       post.toPostPreviewFlow(colors, onLinkClick, onThumbnailClickListener).drop(1).test {
         val previousCount = post.comment.count
         post.comment.add(
-          object : Post {
+          object : Post() {
+            override val actorProvider = ActorProvider.sample
             override val id = UUID.randomUUID().toString()
             override val author = Author.sample
             override val content = Content.from(Domain.sample, text = Markdown.empty) { null }
@@ -82,7 +85,7 @@ internal class PostExtensionsTests {
                 .build()
 
             @Throws(UnsupportedOperationException::class)
-            override fun asDeletable(): DeletablePost {
+            override suspend fun toOwnedPost(): OwnedPost {
               throw UnsupportedOperationException()
             }
           }

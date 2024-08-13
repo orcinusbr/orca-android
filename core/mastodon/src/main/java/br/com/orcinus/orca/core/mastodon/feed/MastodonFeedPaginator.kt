@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.core.mastodon.feed
 
 import android.content.Context
+import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.MastodonPost
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.MastodonPostPaginator
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.MastodonStatusesPaginator
@@ -28,8 +29,9 @@ import java.net.URI
 internal class MastodonFeedPaginator(
   override val context: Context,
   override val requester: Requester,
-  override val imageLoaderProvider: SomeImageLoaderProvider<URI>,
-  override val commentPaginatorProvider: MastodonCommentPaginator.Provider
+  override val actorProvider: ActorProvider,
+  override val commentPaginatorProvider: MastodonCommentPaginator.Provider,
+  override val imageLoaderProvider: SomeImageLoaderProvider<URI>
 ) : MastodonStatusesPaginator() {
   override val route = "/api/v1/timelines/home"
 }

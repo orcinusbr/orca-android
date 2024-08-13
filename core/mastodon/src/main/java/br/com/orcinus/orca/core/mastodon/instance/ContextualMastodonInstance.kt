@@ -34,9 +34,9 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfileProvider
 import br.com.orcinus.orca.core.mastodon.feed.profile.cache.MastodonProfileFetcher
 import br.com.orcinus.orca.core.mastodon.feed.profile.cache.storage.MastodonProfileStorage
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.MastodonPost
+import br.com.orcinus.orca.core.mastodon.feed.profile.post.MastodonPostProvider
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.cache.MastodonPostFetcher
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.cache.storage.MastodonPostStorage
-import br.com.orcinus.orca.core.mastodon.feed.profile.post.provider.MastodonPostProvider
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentPaginator
 import br.com.orcinus.orca.core.mastodon.feed.profile.search.MastodonProfileSearcher
 import br.com.orcinus.orca.core.mastodon.feed.profile.search.cache.MastodonProfileSearchResultsFetcher
@@ -79,19 +79,31 @@ internal class ContextualMastodonInstance(
    */
   private val commentPaginatorProvider =
     MastodonCommentPaginator.Provider {
-      MastodonCommentPaginator(context, requester, imageLoaderProvider, it)
+      MastodonCommentPaginator(context, requester, actorProvider, imageLoaderProvider, it)
     }
 
   /** [MastodonPostFetcher] by which [Post]s will be fetched from the API. */
   private val postFetcher =
-    MastodonPostFetcher(context, requester, imageLoaderProvider, commentPaginatorProvider)
+    MastodonPostFetcher(
+      context,
+      requester,
+      actorProvider,
+      commentPaginatorProvider,
+      imageLoaderProvider
+    )
 
   /**
    * [MastodonFeedPaginator] with which pagination through the feed's [Post]s that have been fetched
    * from the API will be performed.
    */
   private val feedPostPaginator =
-    MastodonFeedPaginator(context, requester, imageLoaderProvider, commentPaginatorProvider)
+    MastodonFeedPaginator(
+      context,
+      requester,
+      actorProvider,
+      commentPaginatorProvider,
+      imageLoaderProvider
+    )
 
   /**
    * [MastodonProfilePostPaginator.Provider] that provides the [MastodonProfilePostPaginator] to be
@@ -102,8 +114,9 @@ internal class ContextualMastodonInstance(
       MastodonProfilePostPaginator(
         context,
         requester,
-        imageLoaderProvider,
+        actorProvider,
         commentPaginatorProvider,
+        imageLoaderProvider,
         it
       )
     }
@@ -157,6 +170,7 @@ internal class ContextualMastodonInstance(
       profileCache,
       database.postEntityDao,
       database.styleEntityDao,
+      actorProvider,
       imageLoaderProvider,
       commentPaginatorProvider
     )

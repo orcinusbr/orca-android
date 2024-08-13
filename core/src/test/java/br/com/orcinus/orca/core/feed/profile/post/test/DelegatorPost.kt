@@ -17,7 +17,7 @@ package br.com.orcinus.orca.core.feed.profile.post.test
 
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Author
-import br.com.orcinus.orca.core.feed.profile.post.DeletablePost
+import br.com.orcinus.orca.core.feed.profile.post.OwnedPost
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.feed.profile.post.stat.addable.AddableStat
@@ -30,7 +30,8 @@ import java.time.ZonedDateTime
  *
  * @property delegate [Post] to which functionality is delegated.
  */
-internal class DelegatorPost(private val delegate: Post) : Post {
+internal class DelegatorPost(private val delegate: Post) : Post() {
+  override val actorProvider = delegate.getActorProvider()
   override val id: String = delegate.id
   override val author: Author = delegate.author
   override val content: Content = delegate.content
@@ -40,7 +41,7 @@ internal class DelegatorPost(private val delegate: Post) : Post {
   override val repost: ToggleableStat<Profile> = delegate.repost
   override val uri: URI = delegate.uri
 
-  override fun asDeletable(): DeletablePost {
-    return delegate.asDeletable()
+  override suspend fun toOwnedPost(): OwnedPost {
+    return delegate.own() as OwnedPost
   }
 }

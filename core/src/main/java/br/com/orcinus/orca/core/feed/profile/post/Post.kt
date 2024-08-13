@@ -15,6 +15,8 @@
 
 package br.com.orcinus.orca.core.feed.profile.post
 
+import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.feed.profile.post.stat.Stat
@@ -24,33 +26,68 @@ import java.net.URI
 import java.time.ZonedDateTime
 
 /** Content that's been posted by a user, the [author]. */
-interface Post {
+abstract class Post {
+  /**
+   * [ActorProvider] for determining whether ownership can be given to the current [Actor].
+   *
+   * @see own
+   */
+  protected abstract val actorProvider: ActorProvider
+
   /** Unique identifier. */
-  val id: String
+  abstract val id: String
 
   /** [Author] that has authored this [Post]. */
-  val author: Author
+  abstract val author: Author
 
   /** [Content] that's been composed by the [author]. */
-  val content: Content
+  abstract val content: Content
 
   /** Zoned moment in time in which this [Post] was published. */
-  val publicationDateTime: ZonedDateTime
+  abstract val publicationDateTime: ZonedDateTime
 
   /** [Stat] for comments. */
-  val comment: AddableStat<Post>
+  abstract val comment: AddableStat<Post>
 
   /** [Stat] for favorites. */
-  val favorite: ToggleableStat<Profile>
+  abstract val favorite: ToggleableStat<Profile>
 
   /** [Stat] for reposts. */
-  val repost: ToggleableStat<Profile>
+  abstract val repost: ToggleableStat<Profile>
 
   /** [URI] that leads to this [Post]. */
-  val uri: URI
+  abstract val uri: URI
 
-  /** Creates a [DeletablePost] from this [Post]. */
-  fun asDeletable(): DeletablePost
+  /**
+   * Attempts to own this [Post], returning an equivalent [OwnedPost] if it does, in fact, belong to
+   * the currently authenticated [Actor] by which ownership was requested. Otherwise, returns this
+   * [Post].
+   */
+  suspend fun own(): Post {
+    val actor = actorProvider.provide()
+    return when (actor) {
+      is Actor.Unauthenticated -> this
+      is Actor.Authenticated -> toOwnedPost()
+    }
+  }
+
+  /**
+   * Obtains the [ActorProvider] for determining whether ownership can be given to the current
+   * [Actor].
+   *
+   * @see own
+   */
+  internal fun getActorProvider(): ActorProvider {
+    return actorProvider
+  }
+
+  /**
+   * Converts this [Post] into an owned one. Called when ownership of it is requested and
+   * subsequently conceived.
+   *
+   * @see own
+   */
+  protected abstract suspend fun toOwnedPost(): OwnedPost
 
   companion object
 }

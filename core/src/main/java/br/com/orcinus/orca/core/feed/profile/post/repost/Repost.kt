@@ -20,7 +20,7 @@ import br.com.orcinus.orca.core.feed.profile.post.Post
 import java.util.Objects
 
 /** [Post] that has been reposted by someone else. */
-abstract class Repost internal constructor() : Post {
+abstract class Repost internal constructor() : Post() {
   /** [Author] by which this [Repost] has been created. */
   abstract val reposter: Author
 

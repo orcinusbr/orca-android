@@ -22,6 +22,7 @@ import assertk.assertions.doesNotContain
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEmpty
 import br.com.orcinus.orca.core.feed.profile.post.Author
+import br.com.orcinus.orca.core.feed.profile.post.OwnedPost
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.instance.domain.Domain
@@ -75,7 +76,8 @@ internal class SamplePostProviderTests {
           .withDefaultPosts()
           .build()
           .postProvider
-      val deletedPost = postProvider.provideOneCurrent().asDeletable().apply { delete() }
+      val deletedPost =
+        postProvider.provideOneCurrent().own().apply { (this as OwnedPost).delete() }
       val posts = postProvider.provideAllCurrent()
       assertThat(posts).doesNotContain(deletedPost)
     }
@@ -113,7 +115,7 @@ internal class SamplePostProviderTests {
       val postContent = Content.from(Domain.sample, text = Markdown.empty) { null }
       val post = SamplePost(postProvider, postOwner, postContent, postPublicationDateTime)
       postProvider.add(post)
-      postProvider.provide(post.id).test { assertThat(awaitItem()).isEqualTo(post.asDeletable()) }
+      postProvider.provide(post.id).test { assertThat(awaitItem()).isEqualTo(post.own()) }
     }
   }
 }

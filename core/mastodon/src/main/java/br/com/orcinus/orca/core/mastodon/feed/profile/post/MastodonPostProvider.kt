@@ -13,23 +13,28 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.sample.feed.profile.post
+package br.com.orcinus.orca.core.mastodon.feed.profile.post
 
-import br.com.orcinus.orca.core.feed.profile.post.DeletablePost
+import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
 import br.com.orcinus.orca.core.feed.profile.post.Post
+import br.com.orcinus.orca.core.feed.profile.post.PostProvider
+import br.com.orcinus.orca.platform.cache.Cache
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
 /**
- * [DeletablePost] whose deletion is performed by the [writer].
+ * [PostProvider] that either requests [Post]s to the API or retrieves cached ones if they're
+ * available.
  *
- * @property provider [SamplePostProvider] by which this is deleted.
- * @property delegate [SamplePost] to which this [SampleDeletablePost]'s functionality will be
- *   delegated.
+ * @param cache [Cache] of [Post]s by which [Post]s will be obtained.
  */
-internal data class SampleDeletablePost(
-  private val provider: SamplePostProvider,
-  private val delegate: Post
-) : DeletablePost(delegate) {
-  override suspend fun delete() {
-    provider.delete(id)
+class MastodonPostProvider
+internal constructor(
+  override val authenticationLock: SomeAuthenticationLock,
+  private val cache: Cache<Post>
+) : PostProvider() {
+  override suspend fun onProvide(id: String): Flow<Post> {
+    val post = cache.get(id)
+    return flowOf(post)
   }
 }
