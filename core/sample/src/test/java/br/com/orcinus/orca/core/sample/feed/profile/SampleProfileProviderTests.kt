@@ -24,9 +24,6 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.account.at
 import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
-import br.com.orcinus.orca.core.sample.auth.SampleAuthenticationLock
-import br.com.orcinus.orca.core.sample.auth.SampleAuthenticator
-import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
 import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
 import br.com.orcinus.orca.core.sample.feed.profile.post.createRamboSample
 import br.com.orcinus.orca.core.sample.feed.profile.type.editable.SampleEditableProfile
@@ -42,10 +39,6 @@ import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
 internal class SampleProfileProviderTests {
-  private val authenticator = SampleAuthenticator()
-  private val actorProvider = SampleActorProvider()
-  private val authenticationLock = SampleAuthenticationLock(authenticator, actorProvider)
-
   @Test
   fun isInitiallyEmpty() {
     val profiles = SampleProfileProvider().provideCurrent()
@@ -55,7 +48,7 @@ internal class SampleProfileProviderTests {
   @Test
   fun providesCurrentOneOfASpecificType() {
     val profileProvider = SampleProfileProvider()
-    val postProvider = SamplePostProvider(authenticationLock)
+    val postProvider = SamplePostProvider()
     val profile =
       SampleFollowableProfile(
         profileProvider,
@@ -74,7 +67,7 @@ internal class SampleProfileProviderTests {
   @Test
   fun providesCurrentOnes() {
     val profileProvider = SampleProfileProvider()
-    val postProvider = SamplePostProvider(authenticationLock)
+    val postProvider = SamplePostProvider()
     val profiles =
       arrayOf(
         SampleEditableProfile(
@@ -103,7 +96,7 @@ internal class SampleProfileProviderTests {
   @Test
   fun providesCurrentIdentifiedAsTheSpecifiedID() {
     val profileProvider = SampleProfileProvider()
-    val postProvider = SamplePostProvider(authenticationLock)
+    val postProvider = SamplePostProvider()
     val profile =
       SampleEditableProfile(
         profileProvider,
@@ -121,7 +114,7 @@ internal class SampleProfileProviderTests {
   @Test
   fun adds() {
     val profileProvider = SampleProfileProvider()
-    val postProvider = SamplePostProvider(authenticationLock)
+    val postProvider = SamplePostProvider()
     val profileDelegateID = "${UUID.randomUUID()}"
     val profileDelegateAvatarLoader = NoOpSampleImageLoader.Provider.provide(SampleImageSource.None)
     val profileDelegate =
@@ -152,7 +145,7 @@ internal class SampleProfileProviderTests {
   fun updatesFollow() {
     runTest {
       val profileProvider = SampleProfileProvider()
-      val postProvider = SamplePostProvider(authenticationLock)
+      val postProvider = SamplePostProvider()
       val profileDelegate = Author.createRamboSample(NoOpSampleImageLoader.Provider)
       val profile =
         SampleFollowableProfile(
@@ -175,7 +168,7 @@ internal class SampleProfileProviderTests {
   fun updates() {
     runTest {
       val profileProvider = SampleProfileProvider()
-      val postProvider = SamplePostProvider(authenticationLock)
+      val postProvider = SamplePostProvider()
       val profileDelegate = Author.createRamboSample(NoOpSampleImageLoader.Provider)
       val profile =
         SampleFollowableProfile(

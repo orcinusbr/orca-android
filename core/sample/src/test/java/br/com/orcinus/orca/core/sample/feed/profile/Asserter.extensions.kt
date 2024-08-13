@@ -17,9 +17,6 @@ package br.com.orcinus.orca.core.sample.feed.profile
 
 import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
-import br.com.orcinus.orca.core.sample.auth.SampleAuthenticationLock
-import br.com.orcinus.orca.core.sample.auth.SampleAuthenticator
-import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
 import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
 import br.com.orcinus.orca.core.sample.feed.profile.post.createSample
 import br.com.orcinus.orca.core.sample.feed.profile.type.followable.SampleFollowableProfile
@@ -38,11 +35,8 @@ import kotlin.test.assertEquals
  */
 internal suspend fun <T : Follow> assertTogglingEquals(after: T, before: T) {
   val matchingAfter = Follow.requireVisibilityMatch(before, after)
-  val authenticator = SampleAuthenticator()
-  val actorProvider = SampleActorProvider()
-  val authenticationLock = SampleAuthenticationLock(authenticator, actorProvider)
   val profileProvider = SampleProfileProvider()
-  val postProvider = SamplePostProvider(authenticationLock)
+  val postProvider = SamplePostProvider()
   val profileDelegate = Author.createSample(NoOpSampleImageLoader.Provider)
   val profile =
     SampleFollowableProfile(

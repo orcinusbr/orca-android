@@ -21,7 +21,7 @@ import br.com.orcinus.orca.core.feed.profile.post.Post
 /**
  * [OwnedPost] whose removal is performed by the [writer].
  *
- * @property provider [SamplePostProvider] by which this is deleted.
+ * @property provider [SamplePostProvider] by which this is removed.
  * @property delegate [SamplePost] to which this [SampleOwnedPost]'s functionality will be
  *   delegated.
  */

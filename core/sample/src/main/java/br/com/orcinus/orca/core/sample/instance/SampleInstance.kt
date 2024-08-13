@@ -312,7 +312,7 @@ class SampleInstance(
         val authenticationLock = SampleAuthenticationLock(authenticator, actorProvider)
         val profileProvider = SampleProfileProvider()
         val profileSearcher = SampleProfileSearcher(profileProvider)
-        val postProvider = SamplePostProvider(authenticationLock)
+        val postProvider = SamplePostProvider()
         val termMuter = SampleTermMuter()
         val feedProvider =
           SampleFeedProvider(profileProvider, postProvider, termMuter, imageLoaderProvider)

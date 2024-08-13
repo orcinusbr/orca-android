@@ -16,19 +16,11 @@
 package br.com.orcinus.orca.core.feed.profile.post
 
 import br.com.orcinus.orca.core.InternalCoreApi
-import br.com.orcinus.orca.core.auth.AuthenticationLock
-import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 /** Provides [Post]s. */
 abstract class PostProvider @InternalCoreApi constructor() {
-  /**
-   * [AuthenticationLock] for distinguishing standard [Post]s from those that can be deleted when
-   * providing them.
-   */
-  protected abstract val authenticationLock: SomeAuthenticationLock
-
   /**
    * Provides the [Post] identified as [id].
    *

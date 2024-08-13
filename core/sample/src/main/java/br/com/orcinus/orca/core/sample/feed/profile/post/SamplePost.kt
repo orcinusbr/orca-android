@@ -37,7 +37,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
  * [Post] whose operations are performed in memory and serves as a sample.
  *
  * @property provider [SamplePostProvider] by which a [SampleOwnedPost] into which this [SamplePost]
- *   can be converted is deleted.
+ *   can be converted is removed.
  * @property owner [Profile] in which this [SamplePost] is.
  * @see SamplePost.own
  * @see SampleOwnedPost.remove

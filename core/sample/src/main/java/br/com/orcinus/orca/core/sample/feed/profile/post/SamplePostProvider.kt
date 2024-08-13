@@ -15,7 +15,6 @@
 
 package br.com.orcinus.orca.core.sample.feed.profile.post
 
-import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.PostProvider
@@ -29,7 +28,7 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.runBlocking
 
 /** [PostProvider] that provides sample [Post]s. */
-class SamplePostProvider(override val authenticationLock: SomeAuthenticationLock) : PostProvider() {
+class SamplePostProvider : PostProvider() {
   /** [MutableStateFlow] that provides the [Post]s. */
   internal val postsFlow = MutableStateFlow(emptyList<Post>())
 
@@ -79,7 +78,7 @@ class SamplePostProvider(override val authenticationLock: SomeAuthenticationLock
   /**
    * Removes the [Post] identified by the [id].
    *
-   * @param id ID of the [Post] to be deleted.
+   * @param id ID of the [Post] to be removed.
    * @see Post.id
    */
   fun remove(id: String) {

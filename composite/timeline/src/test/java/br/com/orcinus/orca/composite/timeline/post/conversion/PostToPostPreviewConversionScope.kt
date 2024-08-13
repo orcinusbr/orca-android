@@ -45,19 +45,16 @@ import kotlinx.coroutines.test.runTest
  * [CoroutineScope] in which [Post]-to-[PostPreview] conversions can be tested.
  *
  * @param delegate [TestScope] for [CoroutineScope]-like behavior.
- * @property authenticator [SampleAuthenticator] that authenticates the [Actor].
- * @property authenticationLock [SampleAuthenticationLock] for requiring authentication.
- * @property postProvider [SamplePostProvider] in which the [post] is added and by which it is
- *   provided.
  */
 internal class PostToPostPreviewConversionScope
 @InternalPostToPostPreviewConversionApi
-constructor(
-  private val authenticator: SampleAuthenticator,
-  private val authenticationLock: SampleAuthenticationLock,
-  val postProvider: SamplePostProvider,
-  delegate: TestScope
-) : CoroutineScope by delegate {
+constructor(delegate: TestScope) : CoroutineScope by delegate {
+  /** [SampleAuthenticator] that authenticates the [Actor]. */
+  private val authenticator = SampleAuthenticator()
+
+  /** [SampleAuthenticationLock] for requiring authentication. */
+  private val authenticationLock = SampleAuthenticationLock(authenticator, SampleActorProvider())
+
   /**
    * [SampleProfileProvider] to create the [SampleInstance] from which the [Post] is created with.
    *
@@ -74,6 +71,9 @@ constructor(
 
   /** [ImageLoader.Provider] that provides the [ImageLoader] by which images are to be loaded. */
   private val imageLoaderProvider = ComposableImageLoader.Provider.sample
+
+  /** [SamplePostProvider] in which the [post] is added and by which it is provided. */
+  val postProvider = SamplePostProvider()
 
   /**
    * [SampleFeedProvider] to create the [SampleInstance] from which the [Post] is created with.
@@ -143,12 +143,7 @@ internal inline fun runPostToPostPreviewConversionTest(
 ) {
   contract { callsInPlace(body, InvocationKind.EXACTLY_ONCE) }
   runTest {
-    val authenticator = SampleAuthenticator()
-    val actorProvider = SampleActorProvider()
-    val authenticationLock = SampleAuthenticationLock(authenticator, actorProvider)
-    val postProvider = SamplePostProvider(authenticationLock)
-    val conversionScope =
-      PostToPostPreviewConversionScope(authenticator, authenticationLock, postProvider, this)
+    val conversionScope = PostToPostPreviewConversionScope(this)
     try {
       conversionScope.body()
     } finally {

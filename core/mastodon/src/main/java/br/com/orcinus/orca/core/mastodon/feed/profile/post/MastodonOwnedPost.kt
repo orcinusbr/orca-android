@@ -19,7 +19,7 @@ import br.com.orcinus.orca.core.feed.profile.post.OwnedPost
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 
 /**
- * [OwnedPost] that is deleted by sending a request to the Mastodon API.
+ * [OwnedPost] that is removed by sending a request to the Mastodon API.
  *
  * @property delegate [MastodonPost] to delegate its functionality to.
  */

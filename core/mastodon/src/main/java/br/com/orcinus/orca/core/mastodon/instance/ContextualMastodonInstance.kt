@@ -182,5 +182,5 @@ internal class ContextualMastodonInstance(
     MastodonFeedProvider(context, actorProvider, termMuter, feedPostPaginator)
   override val profileProvider = MastodonProfileProvider(profileCache, context)
   override val profileSearcher = MastodonProfileSearcher(profileSearchResultsCache)
-  override val postProvider = MastodonPostProvider(authenticationLock, postCache)
+  override val postProvider = MastodonPostProvider(postCache)
 }

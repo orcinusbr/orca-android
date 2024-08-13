@@ -15,7 +15,6 @@
 
 package br.com.orcinus.orca.core.mastodon.feed.profile.post
 
-import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.PostProvider
 import br.com.orcinus.orca.platform.cache.Cache
@@ -28,11 +27,7 @@ import kotlinx.coroutines.flow.flowOf
  *
  * @param cache [Cache] of [Post]s by which [Post]s will be obtained.
  */
-class MastodonPostProvider
-internal constructor(
-  override val authenticationLock: SomeAuthenticationLock,
-  private val cache: Cache<Post>
-) : PostProvider() {
+class MastodonPostProvider internal constructor(private val cache: Cache<Post>) : PostProvider() {
   override suspend fun onProvide(id: String): Flow<Post> {
     val post = cache.get(id)
     return flowOf(post)

@@ -26,9 +26,6 @@ import br.com.orcinus.orca.core.feed.profile.post.OwnedPost
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.instance.domain.Domain
-import br.com.orcinus.orca.core.sample.auth.SampleAuthenticationLock
-import br.com.orcinus.orca.core.sample.auth.SampleAuthenticator
-import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfile
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.core.sample.instance.domain.sample
@@ -98,10 +95,7 @@ internal class SamplePostProviderTests {
   @Test
   fun adds() {
     runTest {
-      val authenticator = SampleAuthenticator()
-      val actorProvider = SampleActorProvider()
-      val authenticationLock = SampleAuthenticationLock(authenticator, actorProvider)
-      val postProvider = SamplePostProvider(authenticationLock)
+      val postProvider = SamplePostProvider()
       val postAuthor = Author.createSample(NoOpSampleImageLoader.Provider)
       val postOwner =
         SampleProfile(

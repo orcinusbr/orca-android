@@ -107,7 +107,7 @@ internal class FeedProviderTests {
     val authenticationLock = SampleAuthenticationLock(authenticator, actorProvider)
     val profileProvider = SampleProfileProvider()
     val profileSearcher = SampleProfileSearcher(profileProvider)
-    val postProvider = SamplePostProvider(authenticationLock)
+    val postProvider = SamplePostProvider()
     val termMuter = SampleTermMuter()
     val imageLoaderProvider = NoOpSampleImageLoader.Provider
     val feedProvider =
