@@ -19,7 +19,7 @@ import br.com.orcinus.orca.core.feed.profile.post.OwnedPost
 import br.com.orcinus.orca.core.feed.profile.post.Post
 
 /**
- * [OwnedPost] whose deletion is performed by the [writer].
+ * [OwnedPost] whose removal is performed by the [writer].
  *
  * @property provider [SamplePostProvider] by which this is deleted.
  * @property delegate [SamplePost] to which this [SampleOwnedPost]'s functionality will be
@@ -29,7 +29,7 @@ internal data class SampleOwnedPost(
   private val provider: SamplePostProvider,
   private val delegate: Post
 ) : OwnedPost(delegate) {
-  override suspend fun delete() {
-    provider.delete(id)
+  override suspend fun remove() {
+    provider.remove(id)
   }
 }

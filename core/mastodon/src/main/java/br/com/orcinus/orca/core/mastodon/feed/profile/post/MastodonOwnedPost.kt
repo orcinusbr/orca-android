@@ -25,7 +25,7 @@ import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authe
  */
 data class MastodonOwnedPost internal constructor(private val delegate: MastodonPost) :
   OwnedPost(delegate) {
-  override suspend fun delete() {
+  override suspend fun remove() {
     delegate.requester
       .authenticated()
       .delete({ path("api").path("v1").path("statuses").path(id).build() })

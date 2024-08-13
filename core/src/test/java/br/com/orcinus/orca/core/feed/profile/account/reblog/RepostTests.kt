@@ -53,7 +53,7 @@ internal class RepostTests {
         override suspend fun toOwnedPost(): OwnedPost {
           return let {
             object : OwnedPost(it) {
-              override suspend fun delete() {}
+              override suspend fun remove() {}
             }
           }
         }
@@ -71,7 +71,7 @@ internal class RepostTests {
         sampleRepost.uri
       ) {
         object : OwnedPost(it) {
-          override suspend fun delete() {}
+          override suspend fun remove() {}
         }
       }
     )

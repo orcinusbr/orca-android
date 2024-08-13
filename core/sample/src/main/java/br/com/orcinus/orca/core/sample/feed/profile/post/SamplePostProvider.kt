@@ -77,12 +77,12 @@ class SamplePostProvider(override val authenticationLock: SomeAuthenticationLock
   }
 
   /**
-   * Deletes the [Post] identified by the [id].
+   * Removes the [Post] identified by the [id].
    *
    * @param id ID of the [Post] to be deleted.
    * @see Post.id
    */
-  fun delete(id: String) {
+  fun remove(id: String) {
     postsFlow.value -= provideAllCurrent().single { post -> post.id == id }
   }
 

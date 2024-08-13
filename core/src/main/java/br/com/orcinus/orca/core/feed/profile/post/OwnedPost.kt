@@ -38,8 +38,8 @@ abstract class OwnedPost @InternalCoreApi constructor(private val delegate: Post
     return this
   }
 
-  /** Deletes this [OwnedPost]. */
-  abstract suspend fun delete()
+  /** Removes this [OwnedPost]. */
+  abstract suspend fun remove()
 
   companion object
 }

@@ -40,7 +40,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
  *   can be converted is deleted.
  * @property owner [Profile] in which this [SamplePost] is.
  * @see SamplePost.own
- * @see SampleOwnedPost.delete
+ * @see SampleOwnedPost.remove
  */
 internal data class SamplePost(
   internal val provider: SamplePostProvider,

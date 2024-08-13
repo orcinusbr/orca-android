@@ -35,7 +35,7 @@ internal class OwnedPostTests {
         .provideOneCurrent()
     val ownedPost =
       object : OwnedPost(delegatePost) {
-        override suspend fun delete() {}
+        override suspend fun remove() {}
       }
     assertThat(ownedPost).hasPropertiesEqualToThoseOf(delegatePost)
   }
@@ -52,11 +52,11 @@ internal class OwnedPostTests {
           .provideOneCurrent()
       var hasBeenDeleted = false
       object : OwnedPost(delegatePost) {
-          override suspend fun delete() {
+          override suspend fun remove() {
             hasBeenDeleted = true
           }
         }
-        .delete()
+        .remove()
       assertThat(hasBeenDeleted).isTrue()
     }
   }

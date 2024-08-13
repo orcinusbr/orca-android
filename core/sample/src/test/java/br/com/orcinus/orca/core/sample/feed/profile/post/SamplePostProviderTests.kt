@@ -77,7 +77,7 @@ internal class SamplePostProviderTests {
           .build()
           .postProvider
       val deletedPost =
-        postProvider.provideOneCurrent().own().apply { (this as OwnedPost).delete() }
+        postProvider.provideOneCurrent().own().apply { (this as OwnedPost).remove() }
       val posts = postProvider.provideAllCurrent()
       assertThat(posts).doesNotContain(deletedPost)
     }
