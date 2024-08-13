@@ -15,9 +15,11 @@
 
 package br.com.orcinus.orca.core.feed.profile.post.repost
 
+import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Author
-import br.com.orcinus.orca.core.feed.profile.post.DeletablePost
+import br.com.orcinus.orca.core.feed.profile.post.OwnedPost
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.feed.profile.post.stat.Stat
@@ -34,6 +36,7 @@ import java.time.ZonedDateTime
  */
 fun Repost(original: Post, reblogger: Author): Repost {
   return Repost(
+    original.getActorProvider(),
     original.id,
     original.author,
     reblogger,
@@ -44,13 +47,15 @@ fun Repost(original: Post, reblogger: Author): Repost {
     original.repost,
     original.uri
   ) {
-    original.asDeletable()
+    original.own() as OwnedPost
   }
 }
 
 /**
  * [Post] that has been reposted by someone else.
  *
+ * @param actorProvider [ActorProvider] for determining whether ownership can be given to the
+ *   current [Actor].
  * @param id Unique identifier.
  * @param author [Author] that has authored the [Post].
  * @param reblogger [Author] by which the [Post] has been reblogged.
@@ -60,9 +65,12 @@ fun Repost(original: Post, reblogger: Author): Repost {
  * @param favorite [Stat] for the [Post]'s favorites.
  * @param reblog [Stat] for the [Post]'s reblogs.
  * @param uri [URI] that leads to the [Post].
- * @param asDeletable Creates a [DeletablePost] from this [Repost].
+ * @param toOwnedPost Converts this [Post] into an owned one. Called when ownership of it is
+ *   requested and subsequently conceived.
+ * @see Repost.own
  */
 fun Repost(
+  actorProvider: ActorProvider,
   id: String,
   author: Author,
   reblogger: Author,
@@ -72,9 +80,10 @@ fun Repost(
   favorite: ToggleableStat<Profile>,
   reblog: ToggleableStat<Profile>,
   uri: URI,
-  asDeletable: (Repost) -> DeletablePost
+  toOwnedPost: suspend (Repost) -> OwnedPost
 ): Repost {
   return object : Repost() {
+    override val actorProvider = actorProvider
     override val id = id
     override val author = author
     override val reposter = reblogger
@@ -85,8 +94,8 @@ fun Repost(
     override val repost = reblog
     override val uri = uri
 
-    override fun asDeletable(): DeletablePost {
-      return asDeletable(this)
+    override suspend fun toOwnedPost(): OwnedPost {
+      return toOwnedPost(this)
     }
   }
 }

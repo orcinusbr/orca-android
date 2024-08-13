@@ -15,8 +15,10 @@
 
 package br.com.orcinus.orca.core.feed.profile.account.reblog
 
-import br.com.orcinus.orca.core.feed.profile.post.DeletablePost
+import br.com.orcinus.orca.core.auth.actor.ActorProvider
+import br.com.orcinus.orca.core.feed.profile.post.OwnedPost
 import br.com.orcinus.orca.core.feed.profile.post.repost.Repost
+import br.com.orcinus.orca.core.sample.auth.actor.sample
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 import kotlin.test.Test
@@ -37,6 +39,7 @@ internal class RepostTests {
   fun createsRepost() {
     assertEquals(
       object : Repost() {
+        override val actorProvider = ActorProvider.sample
         override val id = sampleRepost.id
         override val author = sampleRepost.author
         override val reposter = sampleRepost.reposter
@@ -47,15 +50,16 @@ internal class RepostTests {
         override val repost = sampleRepost.repost
         override val uri = sampleRepost.uri
 
-        override fun asDeletable(): DeletablePost {
+        override suspend fun toOwnedPost(): OwnedPost {
           return let {
-            object : DeletablePost(it) {
-              override suspend fun delete() {}
+            object : OwnedPost(it) {
+              override suspend fun remove() {}
             }
           }
         }
       },
       Repost(
+        sampleRepost.getActorProvider(),
         sampleRepost.id,
         sampleRepost.author,
         sampleRepost.reposter,
@@ -66,8 +70,8 @@ internal class RepostTests {
         sampleRepost.repost,
         sampleRepost.uri
       ) {
-        object : DeletablePost(it) {
-          override suspend fun delete() {}
+        object : OwnedPost(it) {
+          override suspend fun remove() {}
         }
       }
     )

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,7 +16,7 @@
 package br.com.orcinus.orca.feature.feed
 
 import br.com.orcinus.orca.core.feed.FeedProvider
-import br.com.orcinus.orca.core.feed.profile.post.provider.PostProvider
+import br.com.orcinus.orca.core.feed.profile.post.PostProvider
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearcher
 import br.com.orcinus.orca.std.injector.module.Inject
 import br.com.orcinus.orca.std.injector.module.Module

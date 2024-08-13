@@ -18,6 +18,7 @@ package br.com.orcinus.orca.core.mastodon.feed.profile.post.status
 import android.content.Context
 import br.com.orcinus.orca.composite.timeline.text.annotated.fromHtml
 import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.feed.profile.post.repost.Repost
@@ -79,18 +80,22 @@ internal data class MastodonStatus(
    *
    * @param context [Context] with which the [content] will be converted into [Markdown].
    * @param requester [Requester] by which [Stat]-related requests are performed.
-   * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
-   *   images will be loaded from a [URI].
+   * @param actorProvider [ActorProvider] for determining whether ownership of the resulting [Post]
+   *   can be given to the current [Actor].
    * @param commentPaginatorProvider [MastodonCommentPaginator.Provider] by which a
    *   [MastodonCommentPaginator] for paginating through the comments will be provided.
+   * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
+   *   images will be loaded from a [URI].
    * @see Markdown.Companion.fromHtml
+   * @see Post.own
    * @see Post.comment
    */
   internal fun toPost(
     context: Context,
     requester: Requester,
-    imageLoaderProvider: SomeImageLoaderProvider<URI>,
-    commentPaginatorProvider: MastodonCommentPaginator.Provider
+    actorProvider: ActorProvider,
+    commentPaginatorProvider: MastodonCommentPaginator.Provider,
+    imageLoaderProvider: SomeImageLoaderProvider<URI>
   ): Post {
     val author =
       reblog?.account?.toAuthor(imageLoaderProvider) ?: account.toAuthor(imageLoaderProvider)
@@ -103,8 +108,9 @@ internal data class MastodonStatus(
     val uri = URI(reblog?.uri ?: uri)
     return MastodonPost(
         requester,
-        id,
+        actorProvider,
         imageLoaderProvider,
+        id,
         author,
         content,
         publicationDateTime,

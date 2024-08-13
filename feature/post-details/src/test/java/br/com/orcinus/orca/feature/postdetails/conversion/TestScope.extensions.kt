@@ -28,8 +28,8 @@ import br.com.orcinus.orca.core.feed.FeedProvider
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.ProfileProvider
 import br.com.orcinus.orca.core.feed.profile.post.Post
+import br.com.orcinus.orca.core.feed.profile.post.PostProvider
 import br.com.orcinus.orca.core.feed.profile.post.content.TermMuter
-import br.com.orcinus.orca.core.feed.profile.post.provider.PostProvider
 import br.com.orcinus.orca.core.feed.profile.post.stat.Stat
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearcher
 import br.com.orcinus.orca.core.instance.Instance
@@ -88,7 +88,7 @@ internal class PostDetailsConversionScope(delegate: TestScope) : CoroutineScope 
   private val termMuter = SampleTermMuter()
 
   /** [Instance]-specific [PostProvider] that provides [Post]s. */
-  val postProvider = SamplePostProvider(authenticationLock)
+  val postProvider = SamplePostProvider()
 
   /** [Instance]-specific [FeedProvider] that provides the [Post]s in the timeline. */
   private val feedProvider =

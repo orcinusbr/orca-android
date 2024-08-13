@@ -16,6 +16,8 @@
 package br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.comment
 
 import android.content.Context
+import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.MastodonContext
@@ -32,15 +34,19 @@ import java.net.URI
  *
  * @param id ID of the original [Post].
  * @property context [Context] with which [MastodonContext]s will be converted into [Post]s.
+ * @property actorProvider [ActorProvider] for determining whether ownership of [Post]s can be given
+ *   to the current [Actor].
  * @property imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
  *   images will be loaded from a [URI].
  * @see Post.comment
  * @see Post.id
  * @see toPosts
+ * @see Post.own
  */
 internal class MastodonCommentPaginator(
   private val context: Context,
   override val requester: Requester,
+  private val actorProvider: ActorProvider,
   private val imageLoaderProvider: SomeImageLoaderProvider<URI>,
   id: String
 ) : MastodonPostPaginator<MastodonContext>(), KTypeCreator<MastodonContext> by kTypeCreatorOf() {
@@ -61,7 +67,13 @@ internal class MastodonCommentPaginator(
 
   override fun MastodonContext.toPosts(): List<Post> {
     return descendants.map {
-      it.toPost(context, requester, imageLoaderProvider) { this@MastodonCommentPaginator }
+      it.toPost(
+        context,
+        requester,
+        actorProvider,
+        commentPaginatorProvider = { this@MastodonCommentPaginator },
+        imageLoaderProvider
+      )
     }
   }
 }

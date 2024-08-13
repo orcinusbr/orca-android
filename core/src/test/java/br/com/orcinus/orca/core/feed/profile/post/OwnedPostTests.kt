@@ -23,37 +23,41 @@ import br.com.orcinus.orca.ext.testing.hasPropertiesEqualToThoseOf
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
-internal class DeletablePostTests {
-  private val delegate
-    get() =
+internal class OwnedPostTests {
+  @Test
+  fun delegatesCommonCharacteristicsToDelegate() {
+    val delegatePost =
       SampleInstance.Builder.create(NoOpSampleImageLoader.Provider)
         .withDefaultProfiles()
         .withDefaultPosts()
         .build()
         .postProvider
         .provideOneCurrent()
-
-  @Test
-  fun delegatesNonDeletionFunctionalityToDelegate() {
-    assertThat(
-        object : DeletablePost(delegate) {
-          override suspend fun delete() {}
-        }
-      )
-      .hasPropertiesEqualToThoseOf(delegate)
+    val ownedPost =
+      object : OwnedPost(delegatePost) {
+        override suspend fun remove() {}
+      }
+    assertThat(ownedPost).hasPropertiesEqualToThoseOf(delegatePost)
   }
 
   @Test
   fun isDeleted() {
-    var hasBeenDeleted = false
     runTest {
-      object : DeletablePost(delegate) {
-          override suspend fun delete() {
+      val delegatePost =
+        SampleInstance.Builder.create(NoOpSampleImageLoader.Provider)
+          .withDefaultProfiles()
+          .withDefaultPosts()
+          .build()
+          .postProvider
+          .provideOneCurrent()
+      var hasBeenDeleted = false
+      object : OwnedPost(delegatePost) {
+          override suspend fun remove() {
             hasBeenDeleted = true
           }
         }
-        .delete()
+        .remove()
+      assertThat(hasBeenDeleted).isTrue()
     }
-    assertThat(hasBeenDeleted).isTrue()
   }
 }

@@ -22,12 +22,10 @@ import assertk.assertions.doesNotContain
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEmpty
 import br.com.orcinus.orca.core.feed.profile.post.Author
+import br.com.orcinus.orca.core.feed.profile.post.OwnedPost
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.instance.domain.Domain
-import br.com.orcinus.orca.core.sample.auth.SampleAuthenticationLock
-import br.com.orcinus.orca.core.sample.auth.SampleAuthenticator
-import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfile
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.core.sample.instance.domain.sample
@@ -75,7 +73,8 @@ internal class SamplePostProviderTests {
           .withDefaultPosts()
           .build()
           .postProvider
-      val deletedPost = postProvider.provideOneCurrent().asDeletable().apply { delete() }
+      val deletedPost =
+        postProvider.provideOneCurrent().own().apply { (this as OwnedPost).remove() }
       val posts = postProvider.provideAllCurrent()
       assertThat(posts).doesNotContain(deletedPost)
     }
@@ -96,10 +95,7 @@ internal class SamplePostProviderTests {
   @Test
   fun adds() {
     runTest {
-      val authenticator = SampleAuthenticator()
-      val actorProvider = SampleActorProvider()
-      val authenticationLock = SampleAuthenticationLock(authenticator, actorProvider)
-      val postProvider = SamplePostProvider(authenticationLock)
+      val postProvider = SamplePostProvider()
       val postAuthor = Author.createSample(NoOpSampleImageLoader.Provider)
       val postOwner =
         SampleProfile(
@@ -113,7 +109,7 @@ internal class SamplePostProviderTests {
       val postContent = Content.from(Domain.sample, text = Markdown.empty) { null }
       val post = SamplePost(postProvider, postOwner, postContent, postPublicationDateTime)
       postProvider.add(post)
-      postProvider.provide(post.id).test { assertThat(awaitItem()).isEqualTo(post.asDeletable()) }
+      postProvider.provide(post.id).test { assertThat(awaitItem()).isEqualTo(post.own()) }
     }
   }
 }

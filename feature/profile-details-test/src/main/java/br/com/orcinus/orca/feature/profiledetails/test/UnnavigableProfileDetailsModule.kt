@@ -18,7 +18,7 @@ package br.com.orcinus.orca.feature.profiledetails.test
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.ProfileProvider
 import br.com.orcinus.orca.core.feed.profile.post.Post
-import br.com.orcinus.orca.core.feed.profile.post.provider.PostProvider
+import br.com.orcinus.orca.core.feed.profile.post.PostProvider
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
 import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetailsBoundary

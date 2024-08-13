@@ -19,6 +19,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.post.Post
@@ -87,18 +88,22 @@ internal data class MastodonPostEntity(
    * @param profileCache [Cache] from which the [Author]'s [Profile] will be retrieved.
    * @param dao [MastodonPostEntityDao] that will select the persisted
    *   [Mastodon style entities][MastodonStyleEntity].
-   * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by images
-   *   will be loaded from a [URI].
+   * @param actorProvider [ActorProvider] for determining whether ownership of the resulting [Post]
+   *   can be given to the current [Actor].
    * @param commentPaginatorProvider [MastodonCommentPaginator.Provider] by which a
    *   [MastodonCommentPaginator] for paginating through the [Post]'s comments will be provided.
+   * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by images
+   *   will be loaded from a [URI].
+   * @see Post.own
    * @see Post.comment
    */
   suspend fun toPost(
     requester: Requester,
     profileCache: Cache<Profile>,
     dao: MastodonPostEntityDao,
-    imageLoaderProvider: SomeImageLoaderProvider<URI>,
-    commentPaginatorProvider: MastodonCommentPaginator.Provider
+    actorProvider: ActorProvider,
+    commentPaginatorProvider: MastodonCommentPaginator.Provider,
+    imageLoaderProvider: SomeImageLoaderProvider<URI>
   ): Post {
     val author = profileCache.get(authorID).toAuthor()
     val domain = Injector.from<CoreModule>().instanceProvider().provide().domain
@@ -117,8 +122,9 @@ internal data class MastodonPostEntity(
     val uri = URI(uri)
     return MastodonPost(
         requester,
-        id,
+        actorProvider,
         imageLoaderProvider,
+        id,
         author,
         content,
         publicationDateTime,

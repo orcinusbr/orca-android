@@ -16,6 +16,8 @@
 package br.com.orcinus.orca.core.mastodon.feed.profile.post.cache
 
 import android.content.Context
+import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.stat.Stat
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentPaginator
@@ -34,24 +36,28 @@ import java.net.URI
  * @property context [Context] with which a fetched [MastodonStatus] will be converted into a
  *   [Post].
  * @property requester [Requester] by which [Stat]-related requests are performed.
- * @property imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
- *   images will be loaded from a [URI].
+ * @property actorProvider [ActorProvider] for determining whether ownership of [Post]s can be given
+ *   to the current [Actor].
  * @property commentPaginatorProvider [MastodonCommentPaginator] by which a
  *   [MastodonCommentPaginator] for paginating through the fetched [Post]s will be provided.
+ * @property imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
+ *   images will be loaded from a [URI].
  * @see MastodonStatus.toPost
+ * @see Post.own
  * @see Post.comment
  */
 internal class MastodonPostFetcher(
   private val context: Context,
   private val requester: Requester,
-  private val imageLoaderProvider: SomeImageLoaderProvider<URI>,
-  private val commentPaginatorProvider: MastodonCommentPaginator.Provider
+  private val actorProvider: ActorProvider,
+  private val commentPaginatorProvider: MastodonCommentPaginator.Provider,
+  private val imageLoaderProvider: SomeImageLoaderProvider<URI>
 ) : Fetcher<Post>() {
   override suspend fun onFetch(key: String): Post {
     return requester
       .authenticated()
       .get({ path("api").path("v1").path("statuses").path(key).build() })
       .body<MastodonStatus>()
-      .toPost(context, requester, imageLoaderProvider, commentPaginatorProvider)
+      .toPost(context, requester, actorProvider, commentPaginatorProvider, imageLoaderProvider)
   }
 }

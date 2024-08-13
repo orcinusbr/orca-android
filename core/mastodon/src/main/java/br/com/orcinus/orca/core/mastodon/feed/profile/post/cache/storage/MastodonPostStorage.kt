@@ -15,6 +15,8 @@
 
 package br.com.orcinus.orca.core.mastodon.feed.profile.post.cache.storage
 
+import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
@@ -41,12 +43,15 @@ import java.net.URI
  *   [Mastodon post entities][MastodonPostEntity].
  * @property styleEntityDao [MastodonStyleEntityDao] for inserting and deleting
  *   [Mastodon style entities][MastodonStyleEntity].
+ * @property actorProvider [ActorProvider] for determining whether ownership of [Post]s can be given
+ *   to the current [Actor].
  * @property coverLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which a
  *   [Post]'s [content][Post.content]'s [highlight][Content.highlight]'s
  *   [headline][Highlight.headline] cover will be loaded from a [URI].
  * @property commentPaginatorProvider [MastodonCommentPaginator.Provider] by which a
  *   [MastodonCommentPaginator] for paginating through the stored [Post]s' comments will be
  *   provided.
+ * @see Post.own
  * @see Post.comment
  */
 internal class MastodonPostStorage(
@@ -54,6 +59,7 @@ internal class MastodonPostStorage(
   private val profileCache: Cache<Profile>,
   private val postEntityDao: MastodonPostEntityDao,
   private val styleEntityDao: MastodonStyleEntityDao,
+  private val actorProvider: ActorProvider,
   private val coverLoaderProvider: SomeImageLoaderProvider<URI>,
   private val commentPaginatorProvider: MastodonCommentPaginator.Provider
 ) : Storage<Post>() {
@@ -71,7 +77,14 @@ internal class MastodonPostStorage(
   override suspend fun onGet(key: String): Post {
     return postEntityDao
       .selectByID(key)
-      .toPost(requester, profileCache, postEntityDao, coverLoaderProvider, commentPaginatorProvider)
+      .toPost(
+        requester,
+        profileCache,
+        postEntityDao,
+        actorProvider,
+        commentPaginatorProvider,
+        coverLoaderProvider
+      )
   }
 
   override suspend fun onRemove(key: String) {

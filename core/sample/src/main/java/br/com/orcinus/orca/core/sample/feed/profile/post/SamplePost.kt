@@ -15,14 +15,16 @@
 
 package br.com.orcinus.orca.core.sample.feed.profile.post
 
+import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Author
-import br.com.orcinus.orca.core.feed.profile.post.DeletablePost
+import br.com.orcinus.orca.core.feed.profile.post.OwnedPost
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.feed.profile.post.stat.addable.AddableStat
 import br.com.orcinus.orca.core.feed.profile.post.stat.toggleable.ToggleableStat
 import br.com.orcinus.orca.core.instance.domain.Domain
+import br.com.orcinus.orca.core.sample.auth.actor.sample
 import br.com.orcinus.orca.core.sample.instance.domain.sample
 import br.com.orcinus.orca.ext.coroutines.getValue
 import br.com.orcinus.orca.ext.coroutines.setValue
@@ -34,18 +36,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 /**
  * [Post] whose operations are performed in memory and serves as a sample.
  *
- * @property provider [SamplePostProvider] by which a [SampleDeletablePost] into which this
- *   [SamplePost] can be converted is deleted.
+ * @property provider [SamplePostProvider] by which a [SampleOwnedPost] into which this [SamplePost]
+ *   can be converted is removed.
  * @property owner [Profile] in which this [SamplePost] is.
- * @see SamplePost.asDeletable
- * @see SampleDeletablePost.delete
+ * @see SamplePost.own
+ * @see SampleOwnedPost.remove
  */
 internal data class SamplePost(
   internal val provider: SamplePostProvider,
   private val owner: Profile,
   override val content: Content,
   override val publicationDateTime: ZonedDateTime
-) : Post {
+) : Post() {
+  override val actorProvider = ActorProvider.sample
   override val id = UUID.randomUUID().toString()
   override val author = Author(owner.id, owner.avatarLoader, owner.name, owner.account, owner.uri)
   override val comment = createInMemoryCommentsStat()
@@ -62,8 +65,8 @@ internal data class SamplePost(
     return "Post $id by ${author.account}"
   }
 
-  override fun asDeletable(): DeletablePost {
-    return SampleDeletablePost(provider, this)
+  override suspend fun toOwnedPost(): OwnedPost {
+    return SampleOwnedPost(provider, this)
   }
 
   /** Create an in-memory [AddableStat] for comments. */

@@ -23,10 +23,10 @@ import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.ProfileProvider
 import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.post.Post
+import br.com.orcinus.orca.core.feed.profile.post.PostProvider
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Headline
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Highlight
-import br.com.orcinus.orca.core.feed.profile.post.provider.PostProvider
 import br.com.orcinus.orca.core.feed.profile.post.repost.Repost
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearcher
 import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
@@ -312,7 +312,7 @@ class SampleInstance(
         val authenticationLock = SampleAuthenticationLock(authenticator, actorProvider)
         val profileProvider = SampleProfileProvider()
         val profileSearcher = SampleProfileSearcher(profileProvider)
-        val postProvider = SamplePostProvider(authenticationLock)
+        val postProvider = SamplePostProvider()
         val termMuter = SampleTermMuter()
         val feedProvider =
           SampleFeedProvider(profileProvider, postProvider, termMuter, imageLoaderProvider)

@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.core.mastodon.feed.profile
 
 import android.content.Context
+import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.MastodonPostPaginator
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.MastodonStatusesPaginator
@@ -34,8 +35,9 @@ import java.net.URI
 internal class MastodonProfilePostPaginator(
   override val context: Context,
   override val requester: Requester,
-  override val imageLoaderProvider: SomeImageLoaderProvider<URI>,
+  override val actorProvider: ActorProvider,
   override val commentPaginatorProvider: MastodonCommentPaginator.Provider,
+  override val imageLoaderProvider: SomeImageLoaderProvider<URI>,
   id: String
 ) : MastodonStatusesPaginator() {
   override val route = "/api/v1/accounts/$id/statuses"

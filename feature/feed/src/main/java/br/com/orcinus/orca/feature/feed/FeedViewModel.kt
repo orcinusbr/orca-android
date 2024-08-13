@@ -26,7 +26,7 @@ import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.post.figure.gallery.disposition.Disposition
 import br.com.orcinus.orca.composite.timeline.post.toPostPreviewFlow
 import br.com.orcinus.orca.core.feed.FeedProvider
-import br.com.orcinus.orca.core.feed.profile.post.provider.PostProvider
+import br.com.orcinus.orca.core.feed.profile.post.PostProvider
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearcher
 import br.com.orcinus.orca.ext.coroutines.await

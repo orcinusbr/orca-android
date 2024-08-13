@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,23 +13,14 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.feed.profile.post.provider
+package br.com.orcinus.orca.core.feed.profile.post
 
 import br.com.orcinus.orca.core.InternalCoreApi
-import br.com.orcinus.orca.core.auth.AuthenticationLock
-import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
-import br.com.orcinus.orca.core.feed.profile.post.Post
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 /** Provides [Post]s. */
 abstract class PostProvider @InternalCoreApi constructor() {
-  /**
-   * [AuthenticationLock] for distinguishing standard [Post]s from those that can be deleted when
-   * providing them.
-   */
-  protected abstract val authenticationLock: SomeAuthenticationLock
-
   /**
    * Provides the [Post] identified as [id].
    *
@@ -37,7 +28,7 @@ abstract class PostProvider @InternalCoreApi constructor() {
    * @see Post.id
    */
   suspend fun provide(id: String): Flow<Post> {
-    return onProvide(id).map { it.asDeletable(authenticationLock) }
+    return onProvide(id).map(Post::own)
   }
 
   /**

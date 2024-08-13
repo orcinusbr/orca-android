@@ -16,15 +16,15 @@
 package br.com.orcinus.orca.core.feed.profile.post
 
 import br.com.orcinus.orca.core.InternalCoreApi
+import br.com.orcinus.orca.core.auth.actor.Actor
 
 /**
- * [Post] that can be deleted.
+ * [Post] that belongs to the authenticated [Actor].
  *
- * @param delegate [Post] to which this [DeletablePost]'s functionality (apart from its deletion)
- *   will be delegated.
- * @see delete
+ * @param delegate [Post] to which this [OwnedPost]'s characteristics will be delegated.
  */
-abstract class DeletablePost @InternalCoreApi constructor(private val delegate: Post) : Post {
+abstract class OwnedPost @InternalCoreApi constructor(private val delegate: Post) : Post() {
+  override val actorProvider = delegate.getActorProvider()
   override val id = delegate.id
   override val author = delegate.author
   override val content = delegate.content
@@ -34,12 +34,12 @@ abstract class DeletablePost @InternalCoreApi constructor(private val delegate: 
   override val repost = delegate.repost
   override val uri = delegate.uri
 
-  final override fun asDeletable(): DeletablePost {
+  final override suspend fun toOwnedPost(): OwnedPost {
     return this
   }
 
-  /** Deletes this [DeletablePost]. */
-  abstract suspend fun delete()
+  /** Removes this [OwnedPost]. */
+  abstract suspend fun remove()
 
   companion object
 }

@@ -15,17 +15,17 @@
 
 package br.com.orcinus.orca.core.mastodon.feed.profile.post
 
-import br.com.orcinus.orca.core.feed.profile.post.DeletablePost
+import br.com.orcinus.orca.core.feed.profile.post.OwnedPost
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 
 /**
- * [DeletablePost] that is deleted by sending a request to the Mastodon API.
+ * [OwnedPost] that is removed by sending a request to the Mastodon API.
  *
  * @property delegate [MastodonPost] to delegate its functionality to.
  */
-internal data class MastodonDeletablePost(private val delegate: MastodonPost) :
-  DeletablePost(delegate) {
-  override suspend fun delete() {
+data class MastodonOwnedPost internal constructor(private val delegate: MastodonPost) :
+  OwnedPost(delegate) {
+  override suspend fun remove() {
     delegate.requester
       .authenticated()
       .delete({ path("api").path("v1").path("statuses").path(id).build() })

@@ -13,14 +13,23 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.feature.gallery
+package br.com.orcinus.orca.core.sample.feed.profile.post
 
-import br.com.orcinus.orca.core.feed.profile.post.PostProvider
-import br.com.orcinus.orca.std.injector.module.Inject
-import br.com.orcinus.orca.std.injector.module.Module
-import br.com.orcinus.orca.std.injector.module.injection.Injection
+import br.com.orcinus.orca.core.feed.profile.post.OwnedPost
+import br.com.orcinus.orca.core.feed.profile.post.Post
 
-open class GalleryModule(
-  @Inject val postProvider: Injection<PostProvider>,
-  @Inject val boundary: Injection<GalleryBoundary>
-) : Module()
+/**
+ * [OwnedPost] whose removal is performed by the [writer].
+ *
+ * @property provider [SamplePostProvider] by which this is removed.
+ * @property delegate [SamplePost] to which this [SampleOwnedPost]'s functionality will be
+ *   delegated.
+ */
+internal data class SampleOwnedPost(
+  private val provider: SamplePostProvider,
+  private val delegate: Post
+) : OwnedPost(delegate) {
+  override suspend fun remove() {
+    provider.remove(id)
+  }
+}
