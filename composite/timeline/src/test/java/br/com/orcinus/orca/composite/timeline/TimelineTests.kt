@@ -16,28 +16,21 @@
 package br.com.orcinus.orca.composite.timeline
 
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.TouchInjectionScope
-import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.filter
-import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onChildren
-import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.test.onSiblings
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
-import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.test.onTimeline
 import br.com.orcinus.orca.composite.timeline.test.performScrollToBottom
-import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.platform.autos.i18n.ReadableThrowable
 import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.rememberSnackbarPresenter
@@ -45,8 +38,6 @@ import br.com.orcinus.orca.platform.autos.overlays.refresh.Refresh
 import br.com.orcinus.orca.platform.autos.test.kit.scaffold.bar.snack.onSnackbar
 import br.com.orcinus.orca.platform.autos.test.overlays.refresh.onRefreshIndicator
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
-import br.com.orcinus.orca.platform.core.image.sample
-import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import kotlin.test.Test
 import kotlin.time.Duration.Companion.days
@@ -72,78 +63,6 @@ internal class TimelineTests {
   }
 
   @Test
-  fun showsDividerWhenHeaderIsNotAddedOnPostPreviewBeforeLastOne() {
-    composeRule.setContent {
-      AutosTheme {
-        LoadedTimeline(
-          PostPreview.createSamples(
-              SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
-                .withDefaultProfiles()
-                .withDefaultPosts()
-                .build()
-                .postProvider
-            )
-            .take(2)
-        )
-      }
-    }
-    composeRule
-      .onTimeline()
-      .onChildren()
-      .onFirst()
-      .onSiblings()
-      .filter(hasTestTag(TimelineDividerTag))
-      .assertCountEquals(0)
-  }
-
-  @Test
-  fun showsDividersWhenHeaderIsAddedOnPostPreviewBeforeLastOne() {
-    composeRule.setContent {
-      AutosTheme {
-        LoadedTimeline(
-          PostPreview.createSamples(
-              SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
-                .withDefaultProfiles()
-                .withDefaultPosts()
-                .build()
-                .postProvider
-            )
-            .take(2)
-        ) {}
-      }
-    }
-    composeRule
-      .onTimeline()
-      .onChildren()[1]
-      .onSiblings()
-      .filter(hasTestTag(TimelineDividerTag))
-      .assertCountEquals(1)
-  }
-
-  @Test
-  fun doesNotShowDividersOnLastPostPreview() {
-    composeRule.setContent {
-      AutosTheme {
-        LoadedTimeline(
-          PostPreview.createSamples(
-              SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
-                .withDefaultProfiles()
-                .withDefaultPosts()
-                .build()
-                .postProvider
-            )
-            .take(1)
-        )
-      }
-    }
-    composeRule
-      .onTimeline()
-      .onChildren()
-      .filter(hasTestTag(TimelineDividerTag))
-      .assertCountEquals(0)
-  }
-
-  @Test
   fun providesNextIndexWhenReachingBottom() {
     val indices = mutableStateListOf<Int>()
     composeRule.setContent {
@@ -154,7 +73,7 @@ internal class TimelineTests {
           }
         }
       ) {
-        items(indices) { Spacer(Modifier.fillParentMaxSize()) }
+        items(indices) { Spacer(Modifier.fillMaxWidth()) }
       }
     }
     composeRule.onTimeline().performScrollToBottom().performScrollToBottom()
@@ -167,7 +86,7 @@ internal class TimelineTests {
     composeRule
       .apply {
         setContent {
-          Timeline(onNext = { indices += it }) { item { Spacer(Modifier.fillParentMaxSize()) } }
+          Timeline(onNext = { indices += it }) { item { Spacer(Modifier.fillMaxWidth()) } }
         }
       }
       .onTimeline()

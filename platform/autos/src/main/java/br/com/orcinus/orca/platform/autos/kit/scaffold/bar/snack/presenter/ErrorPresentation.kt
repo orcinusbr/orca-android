@@ -16,9 +16,10 @@
 package br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter
 
 import androidx.annotation.VisibleForTesting
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.Snackbar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,15 +41,16 @@ import java.nio.channels.UnresolvedAddressException
  * @param snackbarPresenter [SnackbarPresenter] by which a [Snackbar] informing the error is
  *   presented when it is caused by a [ReadableThrowable] or is an [UnresolvedAddressException].
  * @param modifier [Modifier] to be applied to the underlying [Refreshable].
- * @param lazyListState [LazyListState] through which scroll will be observed.
+ * @param lazyStaggeredGridState [LazyStaggeredGridState] through which scroll will be observed.
  */
 @Composable
+@Throws
 fun ErrorPresentation(
   error: Throwable,
   refreshListener: Refresh.Listener,
   snackbarPresenter: SnackbarPresenter,
   modifier: Modifier = Modifier,
-  lazyListState: LazyListState = rememberLazyListState()
+  lazyStaggeredGridState: LazyStaggeredGridState = rememberLazyStaggeredGridState()
 ) {
   Refreshable(Refresh.immediate(refreshListener), modifier) {
     val defaultError = ReadableThrowable.default
@@ -64,7 +66,10 @@ fun ErrorPresentation(
       }
     }
 
-    LazyColumn(state = lazyListState) {}
+    LazyVerticalStaggeredGrid(
+      StaggeredGridCells.Fixed(count = 1),
+      state = lazyStaggeredGridState
+    ) {}
   }
 }
 

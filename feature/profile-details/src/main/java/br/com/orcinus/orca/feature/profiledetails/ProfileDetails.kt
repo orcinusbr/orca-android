@@ -22,8 +22,8 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -340,7 +340,7 @@ private fun ProfileDetails(
     topAppBarScrollBehavior,
     title = { MediumTextualPlaceholder() },
     actions = {},
-    timelineState = rememberLazyListState(),
+    timelineState = rememberLazyStaggeredGridState(),
     timeline = { shouldNestScrollToTopAppBar ->
       LoadingTimeline(
         onNext,
@@ -383,7 +383,7 @@ private fun ProfileDetails(
   var isTopBarDropdownExpanded by
     remember(isTopBarDropdownMenuExpanded) { mutableStateOf(isTopBarDropdownMenuExpanded) }
   val snackbarPresenter = rememberSnackbarPresenter()
-  val timelineState = rememberLazyListState(initialFirstVisibleTimelineItemIndex)
+  val timelineState = rememberLazyStaggeredGridState(initialFirstVisibleTimelineItemIndex)
 
   ProfileDetails(
     topAppBarScrollBehavior,
@@ -474,7 +474,7 @@ private fun ProfileDetails(
   topAppBarScrollBehavior: TopAppBarScrollBehavior,
   title: @Composable () -> Unit,
   actions: @Composable RowScope.() -> Unit,
-  timelineState: LazyListState,
+  timelineState: LazyStaggeredGridState,
   timeline: @Composable (shouldNestScrollToTopAppBar: Boolean) -> Unit,
   floatingActionButton: @Composable () -> Unit,
   snackbarPresenter: SnackbarPresenter,
