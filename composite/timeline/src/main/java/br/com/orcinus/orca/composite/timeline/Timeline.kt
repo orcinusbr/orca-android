@@ -41,9 +41,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.Alignment
@@ -176,7 +174,7 @@ fun Timeline(
  * @param onNext Operation to be performed whenever pagination is requested. Provided index starts
  *   at one, mainly because it is implied that the current page is 0 if the content has already been
  *   loaded.
- * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
+ * @param modifier [Modifier] to be applied to the underlying [LazyVerticalStaggeredGrid].
  * @param contentPadding [PaddingValues] to pad the content with.
  * @param header [Composable] to be shown above the [PostPreview]s.
  */
@@ -212,7 +210,7 @@ fun LoadingTimeline(
  * @param onNext Operation to be performed whenever pagination is requested. Provided index starts
  *   at one, mainly because it is implied that the current page is 0 if the content has already been
  *   loaded.
- * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
+ * @param modifier [Modifier] to be applied to the underlying [LazyVerticalStaggeredGrid].
  * @param state [LazyStaggeredGridState] through which scroll will be observed.
  * @param contentPadding [PaddingValues] to pad the content with.
  * @param refresh Configuration for the swipe-to-refresh behavior to be adopted.
@@ -263,7 +261,7 @@ fun LoadedTimeline(
  * @param onNext Operation to be performed whenever pagination is requested. Provided index starts
  *   at one, mainly because it is implied that the current page is 0 if the content has already been
  *   loaded.
- * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
+ * @param modifier [Modifier] to be applied to the underlying [LazyVerticalStaggeredGrid].
  * @param header [Composable] to be shown above the [content].
  * @param state [LazyStaggeredGridState] through which scroll will be observed.
  * @param contentPadding [PaddingValues] to pad the contents ([header] + [content]) with.
@@ -281,19 +279,15 @@ fun Timeline(
   content: LazyStaggeredGridScope.() -> Unit
 ) {
   Refreshable(refresh) {
-    val itemCount by remember {
+    val currentItemCount by remember {
       derivedStateOf(structuralEqualityPolicy()) { state.layoutInfo.totalItemsCount }
     }
-    var itemCountPriorToLastPagination by remember { mutableStateOf<Int?>(null) }
+    var previousItemCount by remember { mutableIntStateOf(currentItemCount) }
     var index by remember { mutableIntStateOf(TimelineDefaults.InitialSubsequentPaginationIndex) }
-    val paginate by rememberUpdatedState {
-      itemCountPriorToLastPagination = itemCount
+
+    fun paginate() {
+      previousItemCount = currentItemCount
       onNext(index++)
-    }
-    val paginateOnChangedItemCount by rememberUpdatedState {
-      if (itemCount != itemCountPriorToLastPagination) {
-        paginate()
-      }
     }
 
     LazyVerticalStaggeredGrid(
@@ -304,12 +298,11 @@ fun Timeline(
     ) {
       header?.let { item(contentType = TimelineContentType.Header, content = it) }
       content()
-      renderEffect(
-        TimelineContentType.RenderEffect,
-        content,
-        itemCount,
-        effect = paginateOnChangedItemCount
-      )
+      renderEffect(TimelineContentType.RenderEffect, content, currentItemCount) {
+        if (currentItemCount != previousItemCount) {
+          paginate()
+        }
+      }
     }
   }
 }
@@ -320,7 +313,7 @@ fun Timeline(
  * This overload is stateless by default and is intended for previewing and testing purposes only.
  *
  * @param postPreviewsLoadable [ListLoadable] of [PostPreview]s to be lazily shown.
- * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
+ * @param modifier [Modifier] to be applied to the underlying [LazyVerticalStaggeredGrid].
  * @param snackbarPresenter [SnackbarPresenter] by which [Snackbar]s informing of load errors are
  *   presented.
  * @param header [Composable] to be shown above the [PostPreview]s.
@@ -352,7 +345,7 @@ internal fun LoadedTimeline(
  * This overload is stateless by default and is intended for previewing and testing purposes only.
  *
  * @param postPreviews [PostPreview]s to be lazily shown.
- * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
+ * @param modifier [Modifier] to be applied to the underlying [LazyVerticalStaggeredGrid].
  * @param onNext Callback run whenever the bottom is being reached.
  * @param header [Composable] to be shown above the [PostPreview]s.
  * @see PostPreview.createSamples
@@ -522,7 +515,7 @@ private fun PopulatedTimelineWithHeaderPreview() {
 /**
  * [LazyColumn] for displaying loading [PostPreview]s.
  *
- * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
+ * @param modifier [Modifier] to be applied to the underlying [LazyVerticalStaggeredGrid].
  * @param header [Composable] to be shown above the [PostPreview]s.
  */
 @Composable

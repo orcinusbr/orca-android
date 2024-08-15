@@ -33,8 +33,10 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import br.com.orcinus.orca.composite.timeline.Timeline
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
+import br.com.orcinus.orca.composite.timeline.post.PostPreviewDefaults
 import br.com.orcinus.orca.composite.timeline.search.Searchable
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
@@ -45,8 +47,6 @@ import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.remem
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
-import br.com.orcinus.orca.platform.autos.kit.scaffold.plus
-import br.com.orcinus.orca.platform.autos.overlays.asPaddingValues
 import br.com.orcinus.orca.platform.autos.overlays.refresh.Refresh
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
@@ -206,8 +206,10 @@ private fun Feed(
           onNext,
           Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
           contentPadding =
-            PaddingValues(top = searchTextFieldLayoutHeight) +
-              AutosTheme.overlays.fab.asPaddingValues,
+            PaddingValues(
+              top = searchTextFieldLayoutHeight,
+              bottom = PostPreviewDefaults.spacing + 56.dp
+            ),
           refresh = Refresh(isTimelineRefreshing, onTimelineRefresh),
           snackbarPresenter = snackbarPresenter
         )

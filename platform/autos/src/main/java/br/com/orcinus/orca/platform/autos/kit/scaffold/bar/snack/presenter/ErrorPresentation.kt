@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter
 
 import androidx.annotation.VisibleForTesting
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -24,6 +25,7 @@ import androidx.compose.material3.Snackbar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import br.com.orcinus.orca.platform.autos.i18n.ReadableThrowable
 import br.com.orcinus.orca.platform.autos.overlays.refresh.Refresh
 import br.com.orcinus.orca.platform.autos.overlays.refresh.Refreshable
@@ -67,7 +69,8 @@ fun ErrorPresentation(
     }
 
     LazyVerticalStaggeredGrid(
-      StaggeredGridCells.Fixed(count = 1),
+      StaggeredGridCells.Adaptive(minSize = 1.dp),
+      Modifier.fillMaxSize(),
       state = lazyStaggeredGridState
     ) {}
   }

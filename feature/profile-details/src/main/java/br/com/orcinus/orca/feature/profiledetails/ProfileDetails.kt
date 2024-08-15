@@ -20,6 +20,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
@@ -47,10 +48,12 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.unit.dp
 import br.com.orcinus.orca.composite.timeline.LoadingTimeline
 import br.com.orcinus.orca.composite.timeline.Timeline
 import br.com.orcinus.orca.composite.timeline.TimelineDefaults
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
+import br.com.orcinus.orca.composite.timeline.post.PostPreviewDefaults
 import br.com.orcinus.orca.composite.timeline.post.time.RelativeTimeProvider
 import br.com.orcinus.orca.composite.timeline.post.time.rememberRelativeTimeProvider
 import br.com.orcinus.orca.core.feed.profile.account.Account
@@ -455,8 +458,13 @@ private fun ProfileDetails(
           nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
         },
         timelineState,
-        refresh = Refresh(isTimelineRefreshing, onTimelineRefresh),
-        relativeTimeProvider = relativeTimeProvider
+        contentPadding =
+          PaddingValues(
+            bottom =
+              PostPreviewDefaults.spacing + if (details is ProfileDetails.Editable) 56.dp else 0.dp
+          ),
+        Refresh(isTimelineRefreshing, onTimelineRefresh),
+        relativeTimeProvider
       ) {
         Header(details)
       }

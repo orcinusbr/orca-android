@@ -15,11 +15,8 @@
 
 package br.com.orcinus.orca.composite.timeline
 
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.TouchInjectionScope
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -65,18 +62,23 @@ internal class TimelineTests {
   @Test
   fun providesNextIndexWhenReachingBottom() {
     val indices = mutableStateListOf<Int>()
-    composeRule.setContent {
-      Timeline(
-        onNext = {
-          if (indices.size < 2) {
-            indices += it
+    composeRule
+      .apply {
+        setContent {
+          Timeline(
+            onNext = {
+              if (indices.size < 2) {
+                indices += it
+              }
+            }
+          ) {
+            items(indices) {}
           }
         }
-      ) {
-        items(indices) { Spacer(Modifier.fillMaxWidth()) }
       }
-    }
-    composeRule.onTimeline().performScrollToBottom().performScrollToBottom()
+      .onTimeline()
+      .performScrollToBottom()
+      .performScrollToBottom()
     assertThat(indices).containsExactly(1, 2)
   }
 
@@ -84,11 +86,7 @@ internal class TimelineTests {
   fun doesNotProvideNextIndexWhenReachingBottomMultipleTimesAndNoItemsHaveBeenAdded() {
     val indices = hashSetOf<Int>()
     composeRule
-      .apply {
-        setContent {
-          Timeline(onNext = { indices += it }) { item { Spacer(Modifier.fillMaxWidth()) } }
-        }
-      }
+      .apply { setContent { Timeline(onNext = { indices += it }) {} } }
       .onTimeline()
       .performScrollToBottom()
       .performTouchInput(TouchInjectionScope::swipeDown)

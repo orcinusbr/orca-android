@@ -47,6 +47,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.composite.timeline.R
@@ -196,6 +197,13 @@ internal constructor(
   }
 }
 
+/** Default values used by a [PostPreview]. */
+object PostPreviewDefaults {
+  /** Amount of [Dp] by which a [PostPreview] is spaced by default. */
+  val spacing
+    @Composable get() = AutosTheme.spacings.medium.dp
+}
+
 /**
  * Loading preview of a [Post].
  *
@@ -340,7 +348,6 @@ private fun PostPreview(
       onClick?.let { IgnoringMutableInteractionSource(HoverInteraction::class) }
         ?: EmptyMutableInteractionSource()
     }
-  val spacing = AutosTheme.spacings.medium.dp
   val metadataTextStyle = AutosTheme.typography.bodySmall
 
   Card(
@@ -350,11 +357,14 @@ private fun PostPreview(
     colors = CardDefaults.cardColors(containerColor = Color.Transparent),
     interactionSource = interactionSource
   ) {
-    Column(Modifier.padding(spacing), Arrangement.spacedBy(spacing)) {
-      Row(horizontalArrangement = Arrangement.spacedBy(spacing)) {
+    Column(
+      Modifier.padding(PostPreviewDefaults.spacing),
+      Arrangement.spacedBy(PostPreviewDefaults.spacing)
+    ) {
+      Row(horizontalArrangement = Arrangement.spacedBy(PostPreviewDefaults.spacing)) {
         avatar()
 
-        Column(verticalArrangement = Arrangement.spacedBy(spacing)) {
+        Column(verticalArrangement = Arrangement.spacedBy(PostPreviewDefaults.spacing)) {
           Column(verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.extraSmall.dp)) {
             ProvideTextStyle(AutosTheme.typography.bodyLarge, name)
 
