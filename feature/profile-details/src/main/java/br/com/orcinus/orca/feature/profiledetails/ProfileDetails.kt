@@ -20,10 +20,11 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -47,6 +48,7 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.unit.dp
 import br.com.orcinus.orca.composite.timeline.LoadingTimeline
 import br.com.orcinus.orca.composite.timeline.Timeline
 import br.com.orcinus.orca.composite.timeline.TimelineDefaults
@@ -340,7 +342,7 @@ private fun ProfileDetails(
     topAppBarScrollBehavior,
     title = { MediumTextualPlaceholder() },
     actions = {},
-    timelineState = rememberLazyListState(),
+    timelineState = rememberLazyStaggeredGridState(),
     timeline = { shouldNestScrollToTopAppBar ->
       LoadingTimeline(
         onNext,
@@ -383,7 +385,7 @@ private fun ProfileDetails(
   var isTopBarDropdownExpanded by
     remember(isTopBarDropdownMenuExpanded) { mutableStateOf(isTopBarDropdownMenuExpanded) }
   val snackbarPresenter = rememberSnackbarPresenter()
-  val timelineState = rememberLazyListState(initialFirstVisibleTimelineItemIndex)
+  val timelineState = rememberLazyStaggeredGridState(initialFirstVisibleTimelineItemIndex)
 
   ProfileDetails(
     topAppBarScrollBehavior,
@@ -455,8 +457,10 @@ private fun ProfileDetails(
           nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
         },
         timelineState,
-        refresh = Refresh(isTimelineRefreshing, onTimelineRefresh),
-        relativeTimeProvider = relativeTimeProvider
+        contentPadding =
+          PaddingValues(bottom = if (details is ProfileDetails.Editable) 56.dp else 0.dp),
+        Refresh(isTimelineRefreshing, onTimelineRefresh),
+        relativeTimeProvider
       ) {
         Header(details)
       }
@@ -474,7 +478,7 @@ private fun ProfileDetails(
   topAppBarScrollBehavior: TopAppBarScrollBehavior,
   title: @Composable () -> Unit,
   actions: @Composable RowScope.() -> Unit,
-  timelineState: LazyListState,
+  timelineState: LazyStaggeredGridState,
   timeline: @Composable (shouldNestScrollToTopAppBar: Boolean) -> Unit,
   floatingActionButton: @Composable () -> Unit,
   snackbarPresenter: SnackbarPresenter,

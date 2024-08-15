@@ -25,11 +25,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridItemScope
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridScope
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Surface
@@ -39,9 +41,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.structuralEqualityPolicy
 import androidx.compose.ui.Alignment
@@ -53,6 +53,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
+import br.com.orcinus.orca.composite.timeline.post.PostPreviewDefaults
 import br.com.orcinus.orca.composite.timeline.post.time.RelativeTimeProvider
 import br.com.orcinus.orca.composite.timeline.post.time.rememberRelativeTimeProvider
 import br.com.orcinus.orca.core.feed.profile.post.Post
@@ -63,6 +64,7 @@ import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.Error
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.SnackbarPresenter
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.rememberSnackbarPresenter
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
+import br.com.orcinus.orca.platform.autos.kit.scaffold.plus
 import br.com.orcinus.orca.platform.autos.overlays.refresh.Refresh
 import br.com.orcinus.orca.platform.autos.overlays.refresh.Refreshable
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
@@ -75,11 +77,8 @@ import java.net.URI
 /** Tag that identifies an [EmptyTimelineMessage] for testing purposes. */
 internal const val EmptyTimelineMessageTag = "empty-timeline-message"
 
-/** Tag that identifies dividers between [PostPreview]s in a [Timeline] for testing purposes. */
-internal const val TimelineDividerTag = "timeline-divider"
-
 /** Tag that identifies a [Timeline] for testing purposes. */
-const val TimelineTag = "timeline"
+@InternalTimelineApi const val TimelineTag = "timeline"
 
 /** [Timeline] content types for Compose to reuse the [Composable]s while lazily displaying them. */
 private enum class TimelineContentType {
@@ -115,7 +114,7 @@ object TimelineDefaults {
  *   at one, mainly because it is implied that the current page is 0 if the content has already been
  *   loaded.
  * @param modifier [Modifier] to be applied to the underlying [Composable].
- * @param state [LazyListState] through which scroll will be observed.
+ * @param state [LazyStaggeredGridState] through which scroll will be observed.
  * @param contentPadding [PaddingValues] to pad the content with.
  * @param refresh Configuration for the swipe-to-refresh behavior to be adopted.
  * @param relativeTimeProvider [RelativeTimeProvider] that provides the time that's passed since a
@@ -133,7 +132,7 @@ fun Timeline(
   onClick: (id: String) -> Unit,
   onNext: (index: Int) -> Unit,
   modifier: Modifier = Modifier,
-  state: LazyListState = rememberLazyListState(),
+  state: LazyStaggeredGridState = rememberLazyStaggeredGridState(),
   contentPadding: PaddingValues = PaddingValues(),
   refresh: Refresh = Refresh.Disabled,
   relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider(),
@@ -177,7 +176,7 @@ fun Timeline(
  * @param onNext Operation to be performed whenever pagination is requested. Provided index starts
  *   at one, mainly because it is implied that the current page is 0 if the content has already been
  *   loaded.
- * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
+ * @param modifier [Modifier] to be applied to the underlying [LazyVerticalStaggeredGrid].
  * @param contentPadding [PaddingValues] to pad the content with.
  * @param header [Composable] to be shown above the [PostPreview]s.
  */
@@ -186,13 +185,13 @@ fun LoadingTimeline(
   onNext: (index: Int) -> Unit,
   modifier: Modifier = Modifier,
   contentPadding: PaddingValues = PaddingValues(),
-  header: @Composable (LazyItemScope.() -> Unit)? = null
+  header: @Composable (LazyStaggeredGridItemScope.() -> Unit)? = null
 ) {
   Timeline(
     onNext = {},
     modifier,
     header,
-    contentPadding = contentPadding,
+    contentPadding = contentPadding + PaddingValues(bottom = PostPreviewDefaults.spacing),
     refresh = Refresh.immediate { onNext(TimelineDefaults.InitialSubsequentPaginationIndex) }
   ) {
     items(128) { PostPreview() }
@@ -213,8 +212,8 @@ fun LoadingTimeline(
  * @param onNext Operation to be performed whenever pagination is requested. Provided index starts
  *   at one, mainly because it is implied that the current page is 0 if the content has already been
  *   loaded.
- * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
- * @param state [LazyListState] through which scroll will be observed.
+ * @param modifier [Modifier] to be applied to the underlying [LazyVerticalStaggeredGrid].
+ * @param state [LazyStaggeredGridState] through which scroll will be observed.
  * @param contentPadding [PaddingValues] to pad the content with.
  * @param refresh Configuration for the swipe-to-refresh behavior to be adopted.
  * @param relativeTimeProvider [RelativeTimeProvider] that provides the time that's passed since a
@@ -230,7 +229,7 @@ fun LoadedTimeline(
   onClick: (id: String) -> Unit,
   onNext: (index: Int) -> Unit,
   modifier: Modifier = Modifier,
-  state: LazyListState = rememberLazyListState(),
+  state: LazyStaggeredGridState = rememberLazyStaggeredGridState(),
   contentPadding: PaddingValues = PaddingValues(),
   refresh: Refresh = Refresh.Disabled,
   relativeTimeProvider: RelativeTimeProvider = rememberRelativeTimeProvider(),
@@ -239,22 +238,25 @@ fun LoadedTimeline(
   if (postPreviews.isEmpty()) {
     EmptyTimelineMessage(onNext, contentPadding, modifier, header?.let { { it() } })
   } else {
-    Timeline(onNext, modifier, header?.let { { it() } }, state, contentPadding, refresh) {
-      itemsIndexed(
+    Timeline(
+      onNext,
+      modifier,
+      header?.let { { it() } },
+      state,
+      contentPadding + PaddingValues(bottom = PostPreviewDefaults.spacing),
+      refresh
+    ) {
+      items(
         postPreviews,
-        key = { _, preview -> preview.id },
-        contentType = { _, _ -> TimelineContentType.PostPreview }
-      ) { index, preview ->
-        if (index == 0 && header != null || index != 0 && index != postPreviews.lastIndex) {
-          HorizontalDivider(Modifier.testTag(TimelineDividerTag))
-        }
-
+        key = PostPreview::id,
+        contentType = { TimelineContentType.PostPreview }
+      ) {
         PostPreview(
-          preview,
-          onFavorite = { onFavorite(preview.id) },
-          onRepost = { onRepost(preview.id) },
-          onShare = { onShare(preview.uri) },
-          onClick = { onClick(preview.id) },
+          it,
+          onFavorite = { onFavorite(it.id) },
+          onRepost = { onRepost(it.id) },
+          onShare = { onShare(it.uri) },
+          onClick = { onClick(it.id) },
           relativeTimeProvider = relativeTimeProvider
         )
       }
@@ -268,9 +270,9 @@ fun LoadedTimeline(
  * @param onNext Operation to be performed whenever pagination is requested. Provided index starts
  *   at one, mainly because it is implied that the current page is 0 if the content has already been
  *   loaded.
- * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
+ * @param modifier [Modifier] to be applied to the underlying [LazyVerticalStaggeredGrid].
  * @param header [Composable] to be shown above the [content].
- * @param state [LazyListState] through which scroll will be observed.
+ * @param state [LazyStaggeredGridState] through which scroll will be observed.
  * @param contentPadding [PaddingValues] to pad the contents ([header] + [content]) with.
  * @param refresh Configuration for the swipe-to-refresh behavior to be adopted.
  * @param content Content to be lazily shown below the [header].
@@ -279,37 +281,37 @@ fun LoadedTimeline(
 fun Timeline(
   onNext: (index: Int) -> Unit,
   modifier: Modifier = Modifier,
-  header: (@Composable LazyItemScope.() -> Unit)? = null,
-  state: LazyListState = rememberLazyListState(),
+  header: (@Composable LazyStaggeredGridItemScope.() -> Unit)? = null,
+  state: LazyStaggeredGridState = rememberLazyStaggeredGridState(),
   contentPadding: PaddingValues = PaddingValues(),
   refresh: Refresh = Refresh.Disabled,
-  content: LazyListScope.() -> Unit
+  content: LazyStaggeredGridScope.() -> Unit
 ) {
-  val itemCount by remember {
-    derivedStateOf(structuralEqualityPolicy()) { state.layoutInfo.totalItemsCount }
-  }
-  var itemCountPriorToLastPagination by remember { mutableStateOf<Int?>(null) }
-  var index by remember { mutableIntStateOf(TimelineDefaults.InitialSubsequentPaginationIndex) }
-  val paginate by rememberUpdatedState {
-    itemCountPriorToLastPagination = itemCount
-    onNext(index++)
-  }
-  val paginateOnChangedItemCount by rememberUpdatedState {
-    if (itemCount != itemCountPriorToLastPagination) {
-      paginate()
-    }
-  }
-
   Refreshable(refresh) {
-    LazyColumn(modifier.testTag(TimelineTag), state, contentPadding) {
+    val currentItemCount by remember {
+      derivedStateOf(structuralEqualityPolicy()) { state.layoutInfo.totalItemsCount }
+    }
+    var previousItemCount by remember { mutableIntStateOf(currentItemCount) }
+    var index by remember { mutableIntStateOf(TimelineDefaults.InitialSubsequentPaginationIndex) }
+
+    fun paginate() {
+      previousItemCount = currentItemCount
+      onNext(index++)
+    }
+
+    LazyVerticalStaggeredGrid(
+      StaggeredGridCells.Adaptive(minSize = 300.dp),
+      modifier.testTag(TimelineTag),
+      state,
+      contentPadding
+    ) {
       header?.let { item(contentType = TimelineContentType.Header, content = it) }
       content()
-      renderEffect(
-        TimelineContentType.RenderEffect,
-        content,
-        itemCount,
-        effect = paginateOnChangedItemCount
-      )
+      renderEffect(TimelineContentType.RenderEffect, content, currentItemCount) {
+        if (currentItemCount != previousItemCount) {
+          paginate()
+        }
+      }
     }
   }
 }
@@ -320,7 +322,7 @@ fun Timeline(
  * This overload is stateless by default and is intended for previewing and testing purposes only.
  *
  * @param postPreviewsLoadable [ListLoadable] of [PostPreview]s to be lazily shown.
- * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
+ * @param modifier [Modifier] to be applied to the underlying [LazyVerticalStaggeredGrid].
  * @param snackbarPresenter [SnackbarPresenter] by which [Snackbar]s informing of load errors are
  *   presented.
  * @param header [Composable] to be shown above the [PostPreview]s.
@@ -352,7 +354,7 @@ internal fun LoadedTimeline(
  * This overload is stateless by default and is intended for previewing and testing purposes only.
  *
  * @param postPreviews [PostPreview]s to be lazily shown.
- * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
+ * @param modifier [Modifier] to be applied to the underlying [LazyVerticalStaggeredGrid].
  * @param onNext Callback run whenever the bottom is being reached.
  * @param header [Composable] to be shown above the [PostPreview]s.
  * @see PostPreview.createSamples
@@ -522,13 +524,13 @@ private fun PopulatedTimelineWithHeaderPreview() {
 /**
  * [LazyColumn] for displaying loading [PostPreview]s.
  *
- * @param modifier [Modifier] to be applied to the underlying [LazyColumn].
+ * @param modifier [Modifier] to be applied to the underlying [LazyVerticalStaggeredGrid].
  * @param header [Composable] to be shown above the [PostPreview]s.
  */
 @Composable
 private fun LoadingTimeline(
   modifier: Modifier = Modifier,
-  header: (@Composable LazyItemScope.() -> Unit)? = null
+  header: (@Composable LazyStaggeredGridItemScope.() -> Unit)? = null
 ) {
   LoadingTimeline(onNext = {}, modifier, header = header)
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,7 +16,8 @@
 package br.com.orcinus.orca.composite.timeline
 
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridScope
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Immutable
@@ -25,12 +26,12 @@ import androidx.compose.ui.platform.testTag
 import java.io.Serializable
 
 /** Tag that identifies a [RenderEffect] for testing purposes. */
-const val RenderEffectTag = "render-effect"
+@InternalTimelineApi const val RenderEffectTag = "render-effect"
 
 /**
  * Key to which a [RenderEffect] is associated when it is added to a lazy list.
  *
- * @see LazyListScope.renderEffect
+ * @see LazyStaggeredGridScope.renderEffect
  */
 @Immutable
 private object RenderEffectKey : Serializable {
@@ -61,8 +62,14 @@ private object RenderEffectKey : Serializable {
  *   [RenderEffect] item to be added.
  * @param effect Callback run when the [RenderEffect] is rendered.
  */
-internal fun LazyListScope.renderEffect(contentType: Any, vararg keys: Any?, effect: () -> Unit) {
-  item(RenderEffectKey, contentType) { RenderEffect(*keys, effect = effect) }
+internal fun LazyStaggeredGridScope.renderEffect(
+  contentType: Any,
+  vararg keys: Any?,
+  effect: () -> Unit
+) {
+  item(RenderEffectKey, contentType, span = StaggeredGridItemSpan.FullLine) {
+    RenderEffect(*keys, effect = effect)
+  }
 }
 
 /**

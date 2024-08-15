@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.composite.timeline.test
 
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
@@ -41,10 +42,10 @@ internal class SemanticsNodeInteractionExtensionsTests {
 
   @Test
   fun scrollsToTimelineBottom() {
-    composeRule.setContent {
-      Timeline(onNext = {}) { items(2) { Spacer(Modifier.fillParentMaxSize()) } }
-    }
     composeRule
+      .apply {
+        setContent { Timeline(onNext = {}) { items(2) { Spacer(Modifier.fillMaxSize()) } } }
+      }
       .onTimeline()
       .performScrollToBottom()
       .onChildren()
