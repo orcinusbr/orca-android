@@ -36,7 +36,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import br.com.orcinus.orca.composite.timeline.Timeline
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
-import br.com.orcinus.orca.composite.timeline.post.PostPreviewDefaults
 import br.com.orcinus.orca.composite.timeline.search.Searchable
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
@@ -205,11 +204,7 @@ private fun Feed(
           onPostClick,
           onNext,
           Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-          contentPadding =
-            PaddingValues(
-              top = searchTextFieldLayoutHeight,
-              bottom = PostPreviewDefaults.spacing + 56.dp
-            ),
+          contentPadding = PaddingValues(top = searchTextFieldLayoutHeight, bottom = 56.dp),
           refresh = Refresh(isTimelineRefreshing, onTimelineRefresh),
           snackbarPresenter = snackbarPresenter
         )

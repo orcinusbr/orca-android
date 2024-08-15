@@ -53,7 +53,6 @@ import br.com.orcinus.orca.composite.timeline.LoadingTimeline
 import br.com.orcinus.orca.composite.timeline.Timeline
 import br.com.orcinus.orca.composite.timeline.TimelineDefaults
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
-import br.com.orcinus.orca.composite.timeline.post.PostPreviewDefaults
 import br.com.orcinus.orca.composite.timeline.post.time.RelativeTimeProvider
 import br.com.orcinus.orca.composite.timeline.post.time.rememberRelativeTimeProvider
 import br.com.orcinus.orca.core.feed.profile.account.Account
@@ -459,10 +458,7 @@ private fun ProfileDetails(
         },
         timelineState,
         contentPadding =
-          PaddingValues(
-            bottom =
-              PostPreviewDefaults.spacing + if (details is ProfileDetails.Editable) 56.dp else 0.dp
-          ),
+          PaddingValues(bottom = if (details is ProfileDetails.Editable) 56.dp else 0.dp),
         Refresh(isTimelineRefreshing, onTimelineRefresh),
         relativeTimeProvider
       ) {

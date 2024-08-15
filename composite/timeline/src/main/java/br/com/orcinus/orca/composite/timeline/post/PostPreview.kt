@@ -107,6 +107,13 @@ private val metadataModifier = Modifier.testTag(PostPreviewMetadataTag)
 /** [Modifier] to be applied to a [PostPreview]'s body. */
 private val bodyModifier = Modifier.testTag(PostPreviewBodyTag)
 
+/** Default values used by a [PostPreview]. */
+internal object PostPreviewDefaults {
+  /** Amount of [Dp] by which a [PostPreview] is spaced by default. */
+  val spacing
+    @Composable get() = AutosTheme.spacings.medium.dp
+}
+
 /**
  * Information to be displayed on a [Post]'s preview.
  *
@@ -195,13 +202,6 @@ internal constructor(
       return postProvider.provideAllCurrent().map { it.toPostPreview(colors) }
     }
   }
-}
-
-/** Default values used by a [PostPreview]. */
-object PostPreviewDefaults {
-  /** Amount of [Dp] by which a [PostPreview] is spaced by default. */
-  val spacing
-    @Composable get() = AutosTheme.spacings.medium.dp
 }
 
 /**

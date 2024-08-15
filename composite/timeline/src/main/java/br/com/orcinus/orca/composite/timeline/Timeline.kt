@@ -53,6 +53,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
+import br.com.orcinus.orca.composite.timeline.post.PostPreviewDefaults
 import br.com.orcinus.orca.composite.timeline.post.time.RelativeTimeProvider
 import br.com.orcinus.orca.composite.timeline.post.time.rememberRelativeTimeProvider
 import br.com.orcinus.orca.core.feed.profile.post.Post
@@ -63,6 +64,7 @@ import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.Error
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.SnackbarPresenter
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.rememberSnackbarPresenter
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
+import br.com.orcinus.orca.platform.autos.kit.scaffold.plus
 import br.com.orcinus.orca.platform.autos.overlays.refresh.Refresh
 import br.com.orcinus.orca.platform.autos.overlays.refresh.Refreshable
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
@@ -189,7 +191,7 @@ fun LoadingTimeline(
     onNext = {},
     modifier,
     header,
-    contentPadding = contentPadding,
+    contentPadding = contentPadding + PaddingValues(bottom = PostPreviewDefaults.spacing),
     refresh = Refresh.immediate { onNext(TimelineDefaults.InitialSubsequentPaginationIndex) }
   ) {
     items(128) { PostPreview() }
@@ -236,7 +238,14 @@ fun LoadedTimeline(
   if (postPreviews.isEmpty()) {
     EmptyTimelineMessage(onNext, contentPadding, modifier, header?.let { { it() } })
   } else {
-    Timeline(onNext, modifier, header?.let { { it() } }, state, contentPadding, refresh) {
+    Timeline(
+      onNext,
+      modifier,
+      header?.let { { it() } },
+      state,
+      contentPadding + PaddingValues(bottom = PostPreviewDefaults.spacing),
+      refresh
+    ) {
       items(
         postPreviews,
         key = PostPreview::id,
