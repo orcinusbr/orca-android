@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.app.activity.delegate.navigation
+package br.com.orcinus.orca.app.activity
 
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment

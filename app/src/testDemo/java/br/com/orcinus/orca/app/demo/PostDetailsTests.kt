@@ -18,6 +18,7 @@ package br.com.orcinus.orca.app.demo
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.performClick
+import br.com.orcinus.orca.app.activity.OrcaActivity
 import br.com.orcinus.orca.composite.timeline.test.onTimeline
 import br.com.orcinus.orca.composite.timeline.test.post.figure.link.onLinkCards
 import br.com.orcinus.orca.composite.timeline.test.post.performScrollToPostPreviewWithLinkCard
@@ -33,7 +34,7 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class PostDetailsTests {
-  @get:Rule val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
+  @get:Rule val composeRule = createAndroidComposeRule<OrcaActivity>()
 
   @Test
   fun navigatesToPostLink() {

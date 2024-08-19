@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,15 +15,20 @@
 
 package br.com.orcinus.orca.app.demo
 
-import androidx.annotation.VisibleForTesting
-import br.com.orcinus.orca.app.activity.OrcaActivity
+import br.com.orcinus.orca.app.OrcaApplication
 import br.com.orcinus.orca.app.demo.module.core.DemoCoreModule
+import br.com.orcinus.orca.core.feed.profile.Profile
+import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.platform.core.image.sample
 import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 
-internal open class DemoOrcaActivity : OrcaActivity() {
-  @VisibleForTesting
+/**
+ * [OrcaApplication] whose [coreModule] is a demo one which has structures that store and read data
+ * from memory, containing sample [Profile]s and [Post]s by default that can be interacted with in
+ * order to demonstrate the overall behavior and functionality of the application.
+ */
+internal class DemoOrcaApplication : OrcaApplication() {
   public override val coreModule =
     DemoCoreModule(
       SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)

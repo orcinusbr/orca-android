@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright © 2023–2024 Orcinus
+  ~ Copyright © 2024 Orcinus
   ~
   ~ This program is free software: you can redistribute it and/or modify it under the terms of the
   ~ GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -17,8 +17,9 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <application
-        android:name=".demo.DemoOrcaApplication"
-        tools:ignore="MissingApplicationIcon"
-        tools:replace="android:name" />
+    <application tools:ignore="MissingApplicationIcon">
+        <!--suppress AndroidDomInspection -->
+        <activity
+            android:name="br.com.orcinus.orca.app.demo.activity.NonDependencyDejectingOrcaActivity" />
+    </application>
 </manifest>

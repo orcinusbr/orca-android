@@ -21,6 +21,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import assertk.assertThat
 import br.com.orcinus.orca.app.R
+import br.com.orcinus.orca.app.activity.OrcaActivity
 import br.com.orcinus.orca.feature.feed.FeedFragment
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetailsFragment
 import org.junit.Rule
@@ -30,7 +31,7 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class BottomNavigationTests {
-  @get:Rule val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
+  @get:Rule val composeRule = createAndroidComposeRule<OrcaActivity>()
 
   @Test
   fun navigatesOnceWhenClickingFeedItemMultipleTimes() {
