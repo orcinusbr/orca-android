@@ -20,7 +20,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.Window
-import androidx.annotation.VisibleForTesting
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -56,8 +55,7 @@ internal open class OrcaActivity : StartableActivity() {
   /** Whether all injected dependencies should be dejected when [onDestroy] is finally called. */
   protected open val areDependenciesDejectedOnDestruction = true
 
-  @VisibleForTesting
-  public override fun onCreate(savedInstanceState: Bundle?) {
+  override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     WindowCompat.setDecorFitsSystemWindows(window, false)
     binding = ActivityOrcaBinding.inflate(layoutInflater)
