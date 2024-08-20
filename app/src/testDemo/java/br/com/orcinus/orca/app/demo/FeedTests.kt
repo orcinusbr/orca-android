@@ -22,6 +22,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.swipeDown
+import br.com.orcinus.orca.app.activity.OrcaActivity
 import br.com.orcinus.orca.composite.timeline.test.onTimeline
 import br.com.orcinus.orca.composite.timeline.test.post.figure.gallery.thumbnail.onThumbnails
 import br.com.orcinus.orca.composite.timeline.test.post.figure.link.onLinkCards
@@ -43,9 +44,9 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 internal class FeedTests {
   private val instance
-    get() = composeRule.activity.coreModule.instance
+    get() = (composeRule.activity.application as DemoOrcaApplication).coreModule.instance
 
-  @get:Rule val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
+  @get:Rule val composeRule = createAndroidComposeRule<OrcaActivity>()
 
   @Test
   fun refreshes() {

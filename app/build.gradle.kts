@@ -28,7 +28,24 @@ kotlin.compilerOptions.freeCompilerArgs.addAll("-Xcontext-receivers")
 android {
   compileSdk = libs.versions.android.sdk.target.get().toInt()
   flavorDimensions += Dimensions.VERSION
-  lint.disable += "Instantiatable"
+  lint.disable +=
+    arrayOf(
+      "Instantiatable",
+
+      /*
+       * Application modules do not currently support having a separate manifest for the androidTest
+       * variant, precisely because such distinction is only available for build types (main,
+       * release, test, ...); given that it is not one, this approach cannot be adopted as of AGP
+       * 8.5.2.
+       *
+       * As a workaround, the debug manifest (at app/debug/AndroidManifest.xml) is arbitrarily
+       * considered to be the one for instrumentation testing. However, classes declared at
+       * androidTest/java are not resolvable by the debug build type — hence the suppression.
+       *
+       * https://stackoverflow.com/a/27884436/10252241
+       */
+      "MissingClass"
+    )
   namespace = namespaceFor("app")
   testOptions.unitTests.isIncludeAndroidResources = true
 
@@ -82,6 +99,7 @@ dependencies {
   "androidTestDemoImplementation"(project(":platform:testing:compose"))
   "androidTestDemoImplementation"(libs.assertk)
   "androidTestDemoImplementation"(libs.android.compose.ui.test.manifest)
+  "androidTestDemoImplementation"(libs.kotlin.test)
 
   "demoImplementation"(project(":platform:core"))
 

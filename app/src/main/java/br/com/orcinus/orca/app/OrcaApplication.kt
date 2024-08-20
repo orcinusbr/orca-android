@@ -15,13 +15,73 @@
 
 package br.com.orcinus.orca.app
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
+import androidx.fragment.app.Fragment
+import br.com.orcinus.orca.app.activity.OrcaActivity
+import br.com.orcinus.orca.app.module.core.MainMastodonCoreModule
+import br.com.orcinus.orca.app.module.feature.feed.MainFeedModule
+import br.com.orcinus.orca.app.module.feature.gallery.MainGalleryModule
+import br.com.orcinus.orca.app.module.feature.postdetails.MainPostDetailsModule
+import br.com.orcinus.orca.app.module.feature.profiledetails.MainProfileDetailsModule
+import br.com.orcinus.orca.app.module.feature.search.MainSearchModule
+import br.com.orcinus.orca.app.module.feature.settings.MainSettingsModule
+import br.com.orcinus.orca.app.module.feature.settings.termmuting.MainTermMutingModule
+import br.com.orcinus.orca.core.module.CoreModule
+import br.com.orcinus.orca.feature.feed.FeedModule
+import br.com.orcinus.orca.feature.gallery.GalleryModule
+import br.com.orcinus.orca.feature.postdetails.PostDetailsModule
+import br.com.orcinus.orca.feature.profiledetails.ProfileDetailsModule
+import br.com.orcinus.orca.feature.search.SearchModule
+import br.com.orcinus.orca.feature.settings.SettingsModule
+import br.com.orcinus.orca.feature.settings.termmuting.TermMutingModule
 import br.com.orcinus.orca.std.injector.Injector
 
-internal class OrcaApplication : Application() {
+/**
+ * Class whose instance lives throughout the whole lifecycle of the application.
+ *
+ * When created, some dependencies are injected, such as boundaries (interfaces to which navigation
+ * from one context to another is delegated) and core structures (responsible for the main intended
+ * behavior of the program); these tend to then be retrieved by features, such as the feed's or the
+ * profile details'. By default, they are dejected when the running [OrcaActivity] is destroyed.
+ *
+ * It is primarily intended to extend the default functionality of the base [Application] class,
+ * configuring state to be maintained for as long as the process is alive. Any other setting which
+ * does not have this requirement should be performed in the specific context by which it is needed
+ * (e. g., the [Activity] or the [Fragment] of a given feature).
+ *
+ * @see onCreate
+ * @see Injector.inject
+ * @see OrcaActivity.onDestroy
+ */
+internal open class OrcaApplication : Application() {
+  /**
+   * [CoreModule] to be registered. Overridability is useful because the application can be built
+   * with distinct flavors with different core structures (e. g., in the default, main flavor, ones
+   * that access the API through network requests; in the demo flavor, ones that store and retrieve
+   * data locally).
+   *
+   * @see Injector.register
+   * @see MainMastodonCoreModule
+   */
+  protected open val coreModule: CoreModule = MainMastodonCoreModule
+
   override fun onCreate() {
     super.onCreate()
     Injector.injectLazily<Context> { this@OrcaApplication }
+    Injector.register(coreModule)
+    Injector.register<FeedModule>(MainFeedModule(this))
+    Injector.register<GalleryModule>(MainGalleryModule)
+    Injector.register<PostDetailsModule>(MainPostDetailsModule(this))
+    Injector.register<ProfileDetailsModule>(MainProfileDetailsModule(this))
+    Injector.register<SearchModule>(MainSearchModule)
+    Injector.register<SettingsModule>(MainSettingsModule(this))
+    Injector.register<TermMutingModule>(MainTermMutingModule)
+  }
+
+  override fun onTerminate() {
+    super.onTerminate()
+    Injector.clear()
   }
 }

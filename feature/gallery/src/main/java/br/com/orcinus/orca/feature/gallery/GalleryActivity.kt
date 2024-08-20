@@ -102,6 +102,7 @@ class GalleryActivity internal constructor() : ComposableActivity() {
     ) {
       context
         .on<GalleryActivity>()
+        .asNewTask()
         .with(
           POST_ID_KEY to postID,
           ENTRYPOINT_INDEX_KEY to entrypointIndex,

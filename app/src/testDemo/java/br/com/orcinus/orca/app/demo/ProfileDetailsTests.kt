@@ -24,6 +24,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import assertk.assertThat
 import br.com.orcinus.orca.app.R
+import br.com.orcinus.orca.app.activity.OrcaActivity
 import br.com.orcinus.orca.composite.timeline.test.isTimeline
 import br.com.orcinus.orca.composite.timeline.test.post.figure.link.onLinkCards
 import br.com.orcinus.orca.composite.timeline.test.post.onPostPreviews
@@ -45,7 +46,7 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class ProfileDetailsTests {
-  @get:Rule val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
+  @get:Rule val composeRule = createAndroidComposeRule<OrcaActivity>()
 
   @BeforeTest
   fun setUp() {
