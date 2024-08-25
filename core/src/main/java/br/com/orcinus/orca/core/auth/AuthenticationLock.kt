@@ -19,7 +19,6 @@ import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterNotNull
@@ -45,11 +44,8 @@ abstract class AuthenticationLock<T : Authenticator> @InternalCoreApi constructo
    */
   private val actorFlow = MutableStateFlow<Actor.Authenticated?>(null)
 
-  /**
-   * [Continuation]s associated to their respective [OnUnlockListener]s of unlocks that are awaiting
-   * the one being currently performed.
-   */
-  private val schedule = hashMapOf<SomeOnUnlockListener, Continuation<*>>()
+  /** [OnUnlockListener]s of unlocks that are awaiting the one being currently performed. */
+  private val schedule = mutableListOf<SomeOnUnlockListener>()
 
   /** [Authenticator] through which the [Actor] will be requested to be authenticated. */
   protected abstract val authenticator: T
@@ -178,9 +174,8 @@ abstract class AuthenticationLock<T : Authenticator> @InternalCoreApi constructo
    */
   private suspend fun requestScheduledUnlocks() {
     val actor = actorFlow.filterNotNull().first()
-    for ((listener, continuation) in schedule) {
-      val value = listener.onUnlock(actor)
-      @Suppress("UNCHECKED_CAST") (continuation as Continuation<Any?>).resume(value)
+    for (listener in schedule) {
+      listener.onUnlock(actor)
       schedule.remove(listener)
     }
   }
