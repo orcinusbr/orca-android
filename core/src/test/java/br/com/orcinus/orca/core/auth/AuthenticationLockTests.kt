@@ -5,15 +5,19 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
+import br.com.orcinus.orca.core.auth.actor.FixedActorProvider
 import br.com.orcinus.orca.core.sample.test.auth.actor.sample
 import br.com.orcinus.orca.core.test.auth.AuthenticationLock
 import br.com.orcinus.orca.core.test.auth.Authenticator
 import br.com.orcinus.orca.core.test.auth.actor.InMemoryActorProvider
 import kotlin.test.Test
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.nanoseconds
 import kotlin.time.Duration.Companion.seconds
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 
 internal class AuthenticationLockTests {
@@ -62,6 +66,25 @@ internal class AuthenticationLockTests {
           testScheduler.currentTime.milliseconds.inWholeSeconds
         )
         .isEqualTo(8_224)
+    }
+  }
+
+  @Test
+  fun unlocksWhileAnotherUnlockIsOngoing() {
+    runTest {
+      val actorProvider = FixedActorProvider(Actor.Authenticated.sample)
+      val authenticator = Authenticator(actorProvider)
+      val lock = AuthenticationLock(authenticator, actorProvider)
+      lock.scheduleUnlock {
+        repeat(2_048) {
+          launch(Dispatchers.Unconfined) {
+            lock.scheduleUnlock {
+              delay(1.nanoseconds)
+              lock.scheduleUnlock {}
+            }
+          }
+        }
+      }
     }
   }
 }

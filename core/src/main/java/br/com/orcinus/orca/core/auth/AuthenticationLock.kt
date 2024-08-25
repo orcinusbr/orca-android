@@ -19,9 +19,11 @@ import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.take
 
 /** An [AuthenticationLock.OnUnlockListener] with a generic return type. */
 private typealias SomeOnUnlockListener = AuthenticationLock.OnUnlockListener<*>
@@ -30,41 +32,32 @@ private typealias SomeOnUnlockListener = AuthenticationLock.OnUnlockListener<*>
 typealias SomeAuthenticationLock = AuthenticationLock<*>
 
 /**
- * Ensures that operations are only performed by an [authenticated][Actor.Authenticated] [Actor].
+ * Ensures that operations are only performed by an authenticated [Actor].
  *
  * @param T [Authenticator] to authenticate the [Actor] with.
  * @see scheduleUnlock
  */
 abstract class AuthenticationLock<T : Authenticator> @InternalCoreApi constructor() {
   /**
-   * [MutableStateFlow] to which [Boolean]s that indicate whether this [AuthenticationLock] has
-   * ongoing unlocks are emitted.
+   * Authenticated [Actor] which has been obtained from the [actorProvider] before an initial
+   * unlock.
    */
-  private val activenessFlow = MutableStateFlow(false)
+  private val actorFlow = MutableStateFlow<Actor.Authenticated?>(null)
 
-  /**
-   * [Continuation]s associated to their respective [OnUnlockListener]s of unlocks that are awaiting
-   * the one being currently performed.
-   */
-  private val schedule = hashMapOf<SomeOnUnlockListener, Continuation<*>>()
+  /** [OnUnlockListener]s of unlocks that are awaiting the one being currently performed. */
+  private val schedule = mutableListOf<SomeOnUnlockListener>()
 
-  /**
-   * [Authenticator] through which the [Actor] will be requested to be
-   * [authenticated][Actor.Authenticated].
-   */
+  /** [Authenticator] through which the [Actor] will be requested to be authenticated. */
   protected abstract val authenticator: T
 
-  /**
-   * [ActorProvider] whose provided [Actor] will be ensured to be
-   * [authenticated][Actor.Authenticated].
-   */
+  /** [ActorProvider] whose provided [Actor] will be ensured to be authenticated. */
   protected abstract val actorProvider: ActorProvider
 
   /**
    * Result of a successful unlock.
    *
    * @param R Type of the [value].
-   * @param actor [Actor] that has been [authenticated][Actor.Authenticated].
+   * @param actor [Actor] that has been authenticated.
    * @param value [R] that's been returned by the [OnUnlockListener].
    */
   private class Unlock<R>(val actor: Actor.Authenticated, val value: R)
@@ -80,33 +73,30 @@ abstract class AuthenticationLock<T : Authenticator> @InternalCoreApi constructo
    */
   fun interface OnUnlockListener<R> {
     /**
-     * Callback run when the [Actor] provided by the [actorProvider] is
-     * [authenticated][Actor.Authenticated].
+     * Callback run when the [Actor] provided by the [actorProvider] is authenticated.
      *
-     * @param actor Provided [authenticated][Actor.Authenticated] [Actor].
+     * @param actor Provided authenticated [Actor].
      */
     suspend fun onUnlock(actor: Actor.Authenticated): R
   }
 
   /**
-   * Ensures that the operation in the [listener]'s [onUnlock][OnUnlockListener.onUnlock] callback
-   * is only performed when the [Actor] is [authenticated][Actor.Authenticated]; if it isn't, then
-   * authentication is requested and, if it succeeds, the operation is performed.
+   * Ensures that the operation in the [listener]'s callback is only performed when the [Actor] is
+   * authenticated; if it isn't, then authentication is requested and, if it succeeds, the operation
+   * is performed.
    *
    * If an unlock has already been requested and is still ongoing, this one is queued for it to be
    * run as soon as the current finishes (suspending this method's execution flow until then),
    * reusing the [Actor] that's been first obtained from the [actorProvider] by the preceding
    * unlock.
    *
-   * @param T Value returned by the [listener]'s [onUnlock][OnUnlockListener.onUnlock].
-   * @param listener [OnUnlockListener] to be notified when the [Actor] is
-   *   [authenticated][Actor.Authenticated].
+   * @param T Value returned by the [listener]'s callback.
+   * @param listener [OnUnlockListener] to be notified when the [Actor] is authenticated.
    * @throws FailedAuthenticationException If authentication fails.
    */
   @Throws(FailedAuthenticationException::class)
   suspend fun <T> scheduleUnlock(listener: OnUnlockListener<T>): T {
-    val isActive = activenessFlow.value
-    return if (isActive) awaitUnlock(listener) else requestUnlock(listener)
+    return actorFlow.first()?.let { _ -> awaitUnlock(listener) } ?: requestUnlock(listener)
   }
 
   /** Creates a variant-specific [FailedAuthenticationException]. */
@@ -116,39 +106,39 @@ abstract class AuthenticationLock<T : Authenticator> @InternalCoreApi constructo
    * Suspends until the [Continuation] associated to the given [listener] is resumed with the value
    * returned by its [onUnlock][OnUnlockListener.onUnlock] callback.
    *
-   * @param T Value returned by the [listener]'s [onUnlock][OnUnlockListener.onUnlock].
+   * @param T Value returned by the [listener]'s callback.
    * @param listener [OnUnlockListener] whose returned value will be awaited.
    */
   private suspend fun <T> awaitUnlock(listener: OnUnlockListener<T>): T {
-    return suspendCoroutine { schedule[listener] = it }
+    actorFlow.filterNotNull().take(1).collect()
+    return requestUnlock(listener)
   }
 
   /**
-   * Ensures that the operation in the [listener]'s [onUnlock][OnUnlockListener.onUnlock] callback
-   * is only performed when the [Actor] is [authenticated][Actor.Authenticated]; if it isn't, then
-   * authentication is requested and, if it succeeds, the operation is performed.
+   * Ensures that the operation in the [listener]'s callback is only performed when the [Actor] is
+   * authenticated; if it isn't, then authentication is requested and, if it succeeds, the operation
+   * is performed.
    *
-   * @param T Value returned by the [listener]'s [onUnlock][OnUnlockListener.onUnlock].
-   * @param listener [OnUnlockListener] to be notified when the [Actor] is
-   *   [authenticated][Actor.Authenticated].
-   * @return Result of the [listener]'s [onUnlock][OnUnlockListener.onUnlock].
+   * @param T Value returned by the [listener]'s callback.
+   * @param listener [OnUnlockListener] to be notified when the [Actor] is authenticated.
+   * @return Result of the [listener]'s callback.
    * @throws FailedAuthenticationException If authentication fails.
    */
   @Throws(FailedAuthenticationException::class)
   private suspend fun <T> requestUnlock(listener: OnUnlockListener<T>): T {
-    val unlock = activate { requestUnlockWithProvidedActor(listener) }
-    requestScheduledUnlocks(unlock.actor)
+    val unlock = requestUnlockWithProvidedActor(listener)
+    actorFlow.emit(unlock.actor)
+    requestScheduledUnlocks()
     return unlock.value
   }
 
   /**
-   * Suspends until the [Actor] provided by the [actorProvider] is
-   * [authenticated][Actor.Authenticated], requesting the authentication process to be performed if
-   * it currently isn't. After it's finished, the [listener] is notified.
+   * Suspends until the [Actor] provided by the [actorProvider] is authenticated, requesting the
+   * authentication process to be performed if it currently isn't. After it's finished, the
+   * [listener] is notified.
    *
-   * @param T Value returned by the [listener]'s [onUnlock][OnUnlockListener.onUnlock].
-   * @param listener [OnUnlockListener] to be notified when the [Actor] is
-   *   [authenticated][Actor.Authenticated].
+   * @param T Value returned by the [listener]'s callback.
+   * @param listener [OnUnlockListener] to be notified when the [Actor] is authenticated.
    * @throws FailedAuthenticationException If authentication fails.
    */
   @Throws(FailedAuthenticationException::class)
@@ -160,53 +150,34 @@ abstract class AuthenticationLock<T : Authenticator> @InternalCoreApi constructo
   }
 
   /**
-   * Authenticates and notifies the [listener] if the resulting [Actor] is
-   * [authenticated][Actor.Authenticated].
+   * Authenticates and notifies the [listener] if the resulting [Actor] is authenticated.
    *
-   * @param T Value returned by the [listener]'s [onUnlock][OnUnlockListener.onUnlock].
-   * @param listener [OnUnlockListener] to be notified when the [Actor] is
-   *   [authenticated][Actor.Authenticated].
+   * @param T Value returned by the [listener]'s callback.
+   * @param listener [OnUnlockListener] to be notified when the [Actor] is authenticated.
    * @throws FailedAuthenticationException If authentication fails.
    */
   @Throws(FailedAuthenticationException::class)
   private suspend fun <T> authenticateAndUnlock(listener: OnUnlockListener<T>): Unlock<T> {
-    val actor = authenticator.authenticate()
-    val returned =
-      if (actor is Actor.Authenticated) {
-        listener.onUnlock(actor)
-      } else {
+    return when (val actor = authenticator.authenticate()) {
+      is Actor.Unauthenticated -> {
+        actorFlow.value = null
         throw createFailedAuthenticationException()
       }
-    return Unlock(actor, returned)
-  }
-
-  /**
-   * Requests scheduled unlocks to be performed, resuming their associated [Continuation]s with the
-   * value returned by their [OnUnlockListener].
-   *
-   * Also prevents an [Actor] from having to be retrieved multiple times by propagating the one
-   * obtained from the first ongoing unlock to those that have been scheduled to be performed after
-   * it consecutively.
-   *
-   * @param actor [Actor] to be provided to the scheduled unlocks.
-   */
-  private suspend fun requestScheduledUnlocks(actor: Actor.Authenticated) {
-    schedule.forEach { (listener, continuation) ->
-      val value = activate { listener.onUnlock(actor) }
-      @Suppress("UNCHECKED_CAST") (continuation as Continuation<Any?>).resume(value)
-      schedule.remove(listener)
+      is Actor.Authenticated -> Unlock(actor, listener.onUnlock(actor))
     }
   }
 
   /**
-   * Considers this [AuthenticationLock] to be active while the given [action] is being performed.
-   *
-   * @param action Operation to be performed while in an active state.
-   * @see activenessFlow
+   * Requests scheduled unlocks to be performed, resuming their associated [Continuation]s with the
+   * value returned by their [OnUnlockListener]. Since authentication is implied to have already
+   * been performed by a previous unlock, the resulting [Actor] is reused.
    */
-  private inline fun <T> activate(action: () -> T): T {
-    activenessFlow.value = true
-    return action().also { activenessFlow.value = false }
+  private suspend fun requestScheduledUnlocks() {
+    val actor = actorFlow.filterNotNull().first()
+    for (listener in schedule) {
+      listener.onUnlock(actor)
+      schedule.remove(listener)
+    }
   }
 
   companion object
