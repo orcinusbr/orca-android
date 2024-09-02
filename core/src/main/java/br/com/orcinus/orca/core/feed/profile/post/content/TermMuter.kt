@@ -15,31 +15,34 @@
 
 package br.com.orcinus.orca.core.feed.profile.post.content
 
-import br.com.orcinus.orca.std.buildable.Buildable
+import br.com.orcinus.orca.core.InternalCoreApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 
-/**
- * Mutes and retrieves terms that have been muted.
- *
- * An instance of this class can be created via its factory method.
- */
-@Buildable
-abstract class TermMuter internal constructor() {
+/** Mutes and retrieves terms that have been muted. */
+abstract class TermMuter @InternalCoreApi constructor() {
+  /** [MutableSharedFlow] to which the muted terms are emitted. */
+  private val termsMutableFlow = MutableSharedFlow<HashSet<String>>(replay = 1)
+
+  /** Terms that are currently muted. */
+  private val currentTerms
+    get() = termsMutableFlow.replayCache.singleOrNull() ?: initialTerms
+
+  /** Terms which are muted by default. */
+  protected abstract val initialTerms: HashSet<String>
+
+  /** [Flow] to which the muted terms are emitted. */
+  val termsFlow = termsMutableFlow.onStart { emit(initialTerms) }.map(HashSet<String>::toList)
+
   /**
    * Whether the [content] contains muted terms.
    *
    * @param content [Content] whose terms will be verified.
    */
-  suspend fun isMuted(content: Content): Boolean {
-    val terms = getTerms().first()
-    return terms.any { it in content.text }
-  }
-
-  /** Gets the [Flow] to which the muted terms are emitted. */
-  open fun getTerms(): Flow<List<String>> {
-    return flowOf(emptyList())
+  fun isMuted(content: Content): Boolean {
+    return currentTerms.any { it in content.text }
   }
 
   /**
@@ -47,12 +50,32 @@ abstract class TermMuter internal constructor() {
    *
    * @param term Term to be muted.
    */
-  open suspend fun mute(term: String) {}
+  suspend fun mute(term: String) {
+    onMuting(term)
+    termsMutableFlow.emit(HashSet(currentTerms + term))
+  }
 
   /**
    * Unmutes the given [term].
    *
    * @param term Term to be unmuted.
    */
-  open suspend fun unmute(term: String) {}
+  suspend fun unmute(term: String) {
+    onUnmuting(term)
+    termsMutableFlow.emit(HashSet(currentTerms - term))
+  }
+
+  /**
+   * Callback called when the given [term] is requested to be muted.
+   *
+   * @param term Term to be muted.
+   */
+  protected abstract suspend fun onMuting(term: String)
+
+  /**
+   * Callback called when the given [term] is requested to be unmuted.
+   *
+   * @param term Term to be unmuted.
+   */
+  protected abstract suspend fun onUnmuting(term: String)
 }
