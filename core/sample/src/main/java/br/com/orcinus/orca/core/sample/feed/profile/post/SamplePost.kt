@@ -21,17 +21,14 @@ import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.post.OwnedPost
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
-import br.com.orcinus.orca.core.feed.profile.post.stat.addable.AddableStat
-import br.com.orcinus.orca.core.feed.profile.post.stat.toggleable.ToggleableStat
 import br.com.orcinus.orca.core.instance.domain.Domain
 import br.com.orcinus.orca.core.sample.auth.actor.sample
+import br.com.orcinus.orca.core.sample.feed.profile.post.stat.addable.SampleAddableStat
+import br.com.orcinus.orca.core.sample.feed.profile.post.stat.toggleable.SampleToggleableStat
 import br.com.orcinus.orca.core.sample.instance.domain.sample
-import br.com.orcinus.orca.ext.coroutines.getValue
-import br.com.orcinus.orca.ext.coroutines.setValue
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import java.time.ZonedDateTime
 import java.util.UUID
-import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
  * [Post] whose operations are performed in memory and serves as a sample.
@@ -51,9 +48,9 @@ internal data class SamplePost(
   override val actorProvider = ActorProvider.sample
   override val id = UUID.randomUUID().toString()
   override val author = Author(owner.id, owner.avatarLoader, owner.name, owner.account, owner.uri)
-  override val comment = createInMemoryCommentsStat()
-  override val favorite = createInMemoryToggleableStat()
-  override val repost = createInMemoryToggleableStat()
+  override val comment = SampleAddableStat<Post>()
+  override val favorite = SampleToggleableStat(owner)
+  override val repost = SampleToggleableStat(owner)
   override val uri =
     HostedURLBuilder.from(Domain.sample.uri)
       .path("${owner.account.username}")
@@ -67,32 +64,5 @@ internal data class SamplePost(
 
   override suspend fun toOwnedPost(): OwnedPost {
     return SampleOwnedPost(provider, this)
-  }
-
-  /** Create an in-memory [AddableStat] for comments. */
-  private fun createInMemoryCommentsStat(): AddableStat<Post> {
-    return AddableStat {
-      val commentsFlow = MutableStateFlow(emptyList<Post>())
-      var comments by commentsFlow
-      get { commentsFlow }
-      onAdd { comments += it }
-      onRemove { comments -= it }
-    }
-  }
-
-  /** Creates an in-memory [ToggleableStat] for a [Profile]. */
-  private fun createInMemoryToggleableStat(): ToggleableStat<Profile> {
-    return ToggleableStat {
-      val profilesFlow = MutableStateFlow(emptyList<Profile>())
-      var profiles by profilesFlow
-      get { profilesFlow }
-      onSetEnabled { isEnabled ->
-        if (isEnabled) {
-          profiles += owner
-        } else {
-          profiles -= owner
-        }
-      }
-    }
   }
 }

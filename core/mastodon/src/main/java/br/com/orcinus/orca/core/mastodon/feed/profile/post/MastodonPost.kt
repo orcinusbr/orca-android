@@ -15,14 +15,19 @@
 
 package br.com.orcinus.orca.core.mastodon.feed.profile.post
 
+import android.content.Context
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
+import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
-import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.FavoriteStat
-import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.RepostStat
-import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.comment.CommentStat
+import br.com.orcinus.orca.core.feed.profile.post.stat.Stat
+import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
+import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentPaginator
+import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentStat
+import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.toggleable.MastodonFavoriteStat
+import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.toggleable.MastodonRepostStat
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
@@ -32,6 +37,10 @@ import java.time.ZonedDateTime
 /**
  * [Post] whose actions communicate with the Mastodon API.
  *
+ * @param context [Context] for converting [MastodonAccount]s fetched by the [Stat]s into
+ *   [Profile]s.
+ * @param profilePostPaginatorProvider Paginates through the [MastodonPost]s of [Profile]s that are
+ *   obtained by the [Stat]s.
  * @property requester [Requester] by which [comment]-, [favorite]- and [repost]-related requests
  *   are performed.
  * @property imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
@@ -40,13 +49,16 @@ import java.time.ZonedDateTime
  *   [MastodonCommentPaginator] for paginating through the comments will be provided.
  * @property commentCount Amount of comments that this [MastodonPost] has received.
  * @property favoriteCount Amount of times that this [MastodonPost] has been marked as favorite.
- * @property reblogCount Amount of times that this [MastodonPost] has been reblogged.
+ * @property repostCount Amount of times that this [MastodonPost] has been reposted.
  * @see comment
+ * @see favorite
+ * @see repost
  */
-class MastodonPost
-internal constructor(
+internal class MastodonPost(
+  context: Context,
   internal val requester: Requester,
   override val actorProvider: ActorProvider,
+  profilePostPaginatorProvider: MastodonProfilePostPaginator.Provider,
   private val imageLoaderProvider: SomeImageLoaderProvider<URI>,
   override val id: String,
   override val author: Author,
@@ -55,12 +67,28 @@ internal constructor(
   private val commentPaginatorProvider: MastodonCommentPaginator.Provider,
   private val commentCount: Int,
   private val favoriteCount: Int,
-  private val reblogCount: Int,
+  private val repostCount: Int,
   override val uri: URI
 ) : Post() {
-  override val comment = CommentStat(requester, id, commentCount, commentPaginatorProvider)
-  override val favorite = FavoriteStat(requester, id, favoriteCount)
-  override val repost = RepostStat(requester, id, reblogCount)
+  override val comment = MastodonCommentStat(requester, commentPaginatorProvider, id, commentCount)
+  override val favorite =
+    MastodonFavoriteStat(
+      context,
+      requester,
+      profilePostPaginatorProvider,
+      imageLoaderProvider,
+      id,
+      favoriteCount
+    )
+  override val repost =
+    MastodonRepostStat(
+      context,
+      requester,
+      profilePostPaginatorProvider,
+      imageLoaderProvider,
+      id,
+      repostCount
+    )
 
   override suspend fun toOwnedPost(): MastodonOwnedPost {
     return MastodonOwnedPost(this)

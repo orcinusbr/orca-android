@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,10 +15,10 @@
 
 package br.com.orcinus.orca.core.feed.profile.post.stat.toggleable
 
+import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.feed.profile.post.stat.Stat
 import br.com.orcinus.orca.ext.coroutines.getValue
 import br.com.orcinus.orca.ext.coroutines.setValue
-import br.com.orcinus.orca.std.buildable.Buildable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,8 +28,7 @@ import kotlinx.coroutines.flow.asStateFlow
  *
  * @param count Initial amount of elements.
  */
-@Buildable
-abstract class ToggleableStat<T> internal constructor(count: Int = 0) : Stat<T>(count) {
+abstract class ToggleableStat<T> @InternalCoreApi constructor(count: Int) : Stat<T>(count) {
   /** [MutableStateFlow] that gets emitted to whenever this [ToggleableStat] is toggled. */
   private val isEnabledMutableFlow = MutableStateFlow(false)
 
@@ -64,7 +63,7 @@ abstract class ToggleableStat<T> internal constructor(count: Int = 0) : Stat<T>(
    *
    * @param isEnabled Whether it's being enabled.
    */
-  protected open suspend fun onSetEnabled(isEnabled: Boolean) {}
+  protected abstract suspend fun onSetEnabled(isEnabled: Boolean)
 
   /**
    * Defines whether this [ToggleableStat] is enabled.

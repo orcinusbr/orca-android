@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.mastodon.feed.profile.post.cache.storage
 
+import android.content.Context
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -28,6 +29,8 @@ import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Headline
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Highlight
 import br.com.orcinus.orca.core.feed.profile.post.repost.Repost
 import br.com.orcinus.orca.core.feed.profile.post.stat.Stat
+import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
+import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
 import br.com.orcinus.orca.core.mastodon.feed.profile.cache.storage.style.MastodonStyleEntity
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.MastodonPost
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentPaginator
@@ -84,12 +87,16 @@ internal data class MastodonPostEntity(
   /**
    * Converts this [MastodonPostEntity] into a [Post].
    *
+   * @param context [Context] for converting [MastodonAccount]s fetched by the [Stat]s into
+   *   [Profile]s.
    * @param requester [Requester] by which [Stat]-related requests are performed.
    * @param profileCache [Cache] from which the [Author]'s [Profile] will be retrieved.
    * @param dao [MastodonPostEntityDao] that will select the persisted
    *   [Mastodon style entities][MastodonStyleEntity].
    * @param actorProvider [ActorProvider] for determining whether ownership of the resulting [Post]
    *   can be given to the current [Actor].
+   * @param profilePostPaginatorProvider Paginates through the [Post]s of [Profile]s that are
+   *   obtained by the [Stat]s.
    * @param commentPaginatorProvider [MastodonCommentPaginator.Provider] by which a
    *   [MastodonCommentPaginator] for paginating through the [Post]'s comments will be provided.
    * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by images
@@ -98,10 +105,12 @@ internal data class MastodonPostEntity(
    * @see Post.comment
    */
   suspend fun toPost(
+    context: Context,
     requester: Requester,
     profileCache: Cache<Profile>,
     dao: MastodonPostEntityDao,
     actorProvider: ActorProvider,
+    profilePostPaginatorProvider: MastodonProfilePostPaginator.Provider,
     commentPaginatorProvider: MastodonCommentPaginator.Provider,
     imageLoaderProvider: SomeImageLoaderProvider<URI>
   ): Post {
@@ -121,8 +130,10 @@ internal data class MastodonPostEntity(
     val publicationDateTime = ZonedDateTime.parse(publicationDateTime)
     val uri = URI(uri)
     return MastodonPost(
+        context,
         requester,
         actorProvider,
+        profilePostPaginatorProvider,
         imageLoaderProvider,
         id,
         author,

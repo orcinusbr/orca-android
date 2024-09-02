@@ -83,7 +83,6 @@ internal inline fun retryCountOf(
  * @param onAuthentication Action run whenever the [Actor] is authenticated.
  * @param body Operation to be performed with the [Requester].
  */
-@InternalRequesterApi
 @OptIn(ExperimentalContracts::class)
 internal inline fun runRequesterTest(
   clientResponseProvider: ClientResponseProvider = ClientResponseProvider.ok,
@@ -121,7 +120,21 @@ internal inline fun runRequesterTest(
     try {
       val baseURI = URIBuilder.url().scheme("https").host("orca.orcinus.com.br").path("app").build()
       val clientEngineFactory = createHttpClientEngineFactory<MockEngineConfig>(client::engine)
-      val requester = Requester(NoOpLogger, baseURI, clientEngineFactory)
+      val requester =
+        Requester(
+          object : Logger() {
+            override fun info(info: String) {
+              println("INFO: $info")
+            }
+
+            override fun error(error: String) {
+              println("ERROR: $error")
+            }
+          },
+          baseURI,
+          clientEngineFactory
+        )
+
       RequesterTestScope(this, requester) { path("api").path("v1").path("resource").build() }.body()
     } finally {
       Injector.unregister<CoreModule>()

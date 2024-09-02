@@ -21,20 +21,16 @@ import io.ktor.http.LinkHeader
 import io.ktor.util.filter
 import io.ktor.util.toMap
 
-/**
- * Parametrized URIs present in the Link header, each represented by a [LinkHeader].
- *
- * @see HttpHeaders.Link
- */
-internal val Headers.links
-  get() =
-    filter { key, _ -> key.equals(HttpHeaders.Link, ignoreCase = true) }
-      .toMap()
-      .values
-      .flatten()
-      .map {
-        LinkHeader(
-          uri = it.substringAfter('<').substringBefore('>'),
-          rel = it.substringAfter("rel=\"").substringBeforeLast('"')
-        )
-      }
+/** Returns a [List] containing only [LinkHeader]s. */
+internal fun Headers.filterIsLink(): List<LinkHeader> {
+  return filter { key, _ -> key.equals(HttpHeaders.Link, ignoreCase = true) }
+    .toMap()
+    .values
+    .flatten()
+    .map {
+      LinkHeader(
+        uri = it.substringAfter('<').substringBefore('>'),
+        rel = it.substringAfter("rel=").substringBeforeLast('"')
+      )
+    }
+}

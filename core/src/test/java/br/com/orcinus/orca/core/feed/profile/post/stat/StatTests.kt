@@ -20,17 +20,18 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isZero
 import kotlin.test.Test
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.test.runTest
 
 internal class StatTests {
   @Test
-  fun hasZeroElementsInitially() {
-    Stat<Any> {}.apply { runTest { countFlow.test { assertThat(awaitItem()).isZero() } } }
-  }
-
-  @Test
   fun emitsChangedCount() {
-    Stat<Any> {}
+    object : Stat<Any>(count = 0) {
+        override fun get(page: Int): Flow<List<Any>> {
+          return emptyFlow()
+        }
+      }
       .apply {
         runTest {
           countFlow.test {
