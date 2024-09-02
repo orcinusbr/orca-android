@@ -27,10 +27,7 @@ dependencies {
 
   implementation(project(":ext:coroutines"))
   implementation(project(":ext:uri"))
-  implementation(project(":std:buildable"))
   implementation(project(":std:visibility"))
-
-  ksp(project(":std:buildable-processor"))
 
   testImplementation(project(":core:sample"))
   testImplementation(project(":core:sample-test"))
