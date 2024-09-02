@@ -29,15 +29,15 @@ internal class SampleToggleableStat<T>(private val toggle: T) : ToggleableStat<T
   /** [MutableStateFlow] containing the elements. */
   private val elementsFlow = MutableStateFlow(emptyList<T>())
 
-  override suspend fun get(page: Int): StateFlow<List<T>> {
+  override fun get(page: Int): StateFlow<List<T>> {
     return elementsFlow
   }
 
   override suspend fun onSetEnabled(isEnabled: Boolean) {
     if (isEnabled) {
-      elementsFlow.value -= toggle
-    } else {
       elementsFlow.value += toggle
+    } else {
+      elementsFlow.value -= toggle
     }
   }
 }

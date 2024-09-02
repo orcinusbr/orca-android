@@ -22,6 +22,8 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.post.MastodonPost
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 
 /**
  * [AddableStat] for adding comments to and removing them from a [MastodonPost]. Both the obtainance
@@ -41,8 +43,8 @@ internal class MastodonCommentStat(
   private val id: String,
   count: Int
 ) : AddableStat<Post>(count) {
-  override suspend fun get(page: Int): Flow<List<Post>> {
-    return paginatorProvider.provide(id).paginateTo(page)
+  override fun get(page: Int): Flow<List<Post>> {
+    return flow { emitAll(paginatorProvider.provide(id).paginateTo(page)) }
   }
 
   override suspend fun onAddition(element: Post) {

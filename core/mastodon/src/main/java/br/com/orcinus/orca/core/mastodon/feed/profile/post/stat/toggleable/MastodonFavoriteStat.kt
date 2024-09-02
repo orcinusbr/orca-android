@@ -55,7 +55,7 @@ internal class MastodonFavoriteStat(
   private val id: String,
   count: Int
 ) : ToggleableStat<Profile>(count) {
-  override suspend fun get(page: Int): Flow<List<Profile>> {
+  override fun get(page: Int): Flow<List<Profile>> {
     return flow {
       emit(
         requester

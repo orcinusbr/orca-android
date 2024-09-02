@@ -24,7 +24,7 @@ internal class SampleAddableStat<T> : AddableStat<T>(count = 0) {
   /** [MutableStateFlow] containing the elements. */
   private val elementsFlow = MutableStateFlow(emptyList<T>())
 
-  override suspend fun get(page: Int): StateFlow<List<T>> {
+  override fun get(page: Int): StateFlow<List<T>> {
     return elementsFlow
   }
 
