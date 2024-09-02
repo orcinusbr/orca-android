@@ -71,10 +71,4 @@ internal abstract class MastodonStatusesPaginator : MastodonPostPaginator<List<M
     val arguments = listOf(statusProjection)
     return kClass.createType(arguments)
   }
-
-  final override fun List<MastodonStatus>.toPosts(): List<Post> {
-    return map {
-      it.toPost(context, requester, actorProvider, commentPaginatorProvider, imageLoaderProvider)
-    }
-  }
 }

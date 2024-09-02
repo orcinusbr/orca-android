@@ -20,17 +20,35 @@ import assertk.assertThat
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import kotlin.test.Test
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.test.runTest
 
 internal class ToggleableStatTests {
   @Test
   fun isInitiallyDisabled() {
-    runTest { ToggleableStat<Any> {}.isEnabledFlow.test { assertThat(awaitItem()).isFalse() } }
+    runTest {
+      object : ToggleableStat<Any>(count = 0) {
+          override fun get(page: Int): Flow<List<Any>> {
+            return emptyFlow()
+          }
+
+          override suspend fun onSetEnabled(isEnabled: Boolean) {}
+        }
+        .isEnabledFlow
+        .test { assertThat(awaitItem()).isFalse() }
+    }
   }
 
   @Test
   fun enables() {
-    ToggleableStat<Any> {}
+    object : ToggleableStat<Any>(count = 0) {
+        override fun get(page: Int): Flow<List<Any>> {
+          return emptyFlow()
+        }
+
+        override suspend fun onSetEnabled(isEnabled: Boolean) {}
+      }
       .apply {
         runTest {
           isEnabledFlow.test {
@@ -44,7 +62,13 @@ internal class ToggleableStatTests {
 
   @Test
   fun disables() {
-    ToggleableStat<Any> {}
+    object : ToggleableStat<Any>(count = 0) {
+        override fun get(page: Int): Flow<List<Any>> {
+          return emptyFlow()
+        }
+
+        override suspend fun onSetEnabled(isEnabled: Boolean) {}
+      }
       .apply {
         runTest {
           enable()

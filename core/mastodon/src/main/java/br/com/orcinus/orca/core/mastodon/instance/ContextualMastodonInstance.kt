@@ -74,12 +74,35 @@ internal class ContextualMastodonInstance(
   private val database = MastodonDatabase.getInstance(context)
 
   /**
+   * [MastodonProfilePostPaginator.Provider] that provides the [MastodonProfilePostPaginator] to be
+   * used by [profileFetcher], [profileStorage] and [profileSearchResultsFetcher].
+   */
+  private val profilePostPaginatorProvider: MastodonProfilePostPaginator.Provider =
+    MastodonProfilePostPaginator.Provider {
+      MastodonProfilePostPaginator(
+        context,
+        requester,
+        actorProvider,
+        commentPaginatorProvider::provide,
+        imageLoaderProvider,
+        it
+      )
+    }
+
+  /**
    * [MastodonCommentPaginator.Provider] that provides the [MastodonProfilePostPaginator] to be used
    * by [postFetcher], [feedPostPaginator], [profilePostPaginatorProvider] and [postStorage].
    */
   private val commentPaginatorProvider =
     MastodonCommentPaginator.Provider {
-      MastodonCommentPaginator(context, requester, actorProvider, imageLoaderProvider, it)
+      MastodonCommentPaginator(
+        context,
+        requester,
+        actorProvider,
+        profilePostPaginatorProvider,
+        imageLoaderProvider,
+        it
+      )
     }
 
   /** [MastodonPostFetcher] by which [Post]s will be fetched from the API. */
@@ -88,6 +111,7 @@ internal class ContextualMastodonInstance(
       context,
       requester,
       actorProvider,
+      profilePostPaginatorProvider,
       commentPaginatorProvider,
       imageLoaderProvider
     )
@@ -101,25 +125,10 @@ internal class ContextualMastodonInstance(
       context,
       requester,
       actorProvider,
+      profilePostPaginatorProvider,
       commentPaginatorProvider,
       imageLoaderProvider
     )
-
-  /**
-   * [MastodonProfilePostPaginator.Provider] that provides the [MastodonProfilePostPaginator] to be
-   * used by [profileFetcher], [profileStorage] and [profileSearchResultsFetcher].
-   */
-  private val profilePostPaginatorProvider =
-    MastodonProfilePostPaginator.Provider {
-      MastodonProfilePostPaginator(
-        context,
-        requester,
-        actorProvider,
-        commentPaginatorProvider,
-        imageLoaderProvider,
-        it
-      )
-    }
 
   /** [MastodonProfileFetcher] by which [MastodonProfile]s will be fetched from the API. */
   private val profileFetcher =
@@ -166,8 +175,10 @@ internal class ContextualMastodonInstance(
   /** [MastodonPostStorage] that will store fetched [MastodonPost]s. */
   private val postStorage =
     MastodonPostStorage(
+      context,
       requester,
       profileCache,
+      profilePostPaginatorProvider,
       database.postEntityDao,
       database.styleEntityDao,
       actorProvider,

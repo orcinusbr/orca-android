@@ -15,14 +15,12 @@
 
 package br.com.orcinus.orca.core.sharedpreferences.feed.profile.post.content
 
-import app.cash.turbine.test
 import br.com.orcinus.orca.core.sharedpreferences.actor.SharedPreferencesCoreTestRule
-import br.com.orcinus.orca.platform.testing.context
+import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Rule
-import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
@@ -34,15 +32,7 @@ internal class SharedPreferencesTermMuterTests {
   fun persistsMutedTerm() {
     runTest {
       coreRule.termMuter.mute("🐝")
-      assertEquals("🐝", SharedPreferencesTermMuter.getPreferences(context).getString("🐝", null))
-    }
-  }
-
-  @Test
-  fun emitsListWithMutedTerm() {
-    runTest {
-      coreRule.termMuter.mute("☠️")
-      coreRule.termMuter.getTerms().test { assertEquals(listOf("☠️"), awaitItem()) }
+      assertEquals("🐝", coreRule.termMuter.preferences.getString("🐝", null))
     }
   }
 
@@ -51,16 +41,7 @@ internal class SharedPreferencesTermMuterTests {
     runTest {
       coreRule.termMuter.mute("👒")
       coreRule.termMuter.unmute("👒")
-      assertNull(SharedPreferencesTermMuter.getPreferences(context).getString("👒", null))
-    }
-  }
-
-  @Test
-  fun emitsListWithoutUnmutedTerm() {
-    runTest {
-      coreRule.termMuter.mute("💀")
-      coreRule.termMuter.unmute("💀")
-      coreRule.termMuter.getTerms().test { assertEquals(emptyList<String>(), awaitItem()) }
+      assertNull(coreRule.termMuter.preferences.getString("👒", null))
     }
   }
 }

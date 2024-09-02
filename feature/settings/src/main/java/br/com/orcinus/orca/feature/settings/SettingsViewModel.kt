@@ -28,9 +28,11 @@ import kotlinx.coroutines.launch
 internal class SettingsViewModel private constructor(private val termMuter: TermMuter) :
   ViewModel() {
   val mutedTermsFlow =
-    termMuter
-      .getTerms()
-      .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), initialValue = emptyList())
+    termMuter.termsFlow.stateIn(
+      viewModelScope,
+      SharingStarted.WhileSubscribed(),
+      initialValue = emptyList()
+    )
 
   fun unmute(term: String) {
     viewModelScope.launch { termMuter.unmute(term) }

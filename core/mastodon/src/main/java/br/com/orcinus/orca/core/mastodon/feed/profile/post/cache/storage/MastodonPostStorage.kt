@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.mastodon.feed.profile.post.cache.storage
 
+import android.content.Context
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.feed.profile.Profile
@@ -22,6 +23,8 @@ import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Highlight
 import br.com.orcinus.orca.core.feed.profile.post.stat.Stat
+import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
+import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
 import br.com.orcinus.orca.core.mastodon.feed.profile.cache.storage.style.MastodonStyleEntity
 import br.com.orcinus.orca.core.mastodon.feed.profile.cache.storage.style.MastodonStyleEntityDao
 import br.com.orcinus.orca.core.mastodon.feed.profile.cache.storage.style.toHttpStyleEntity
@@ -36,9 +39,13 @@ import java.net.URI
 /**
  * [Storage] for [Post]s.
  *
+ * @property context [Context] for converting [MastodonAccount]s fetched by the [Stat]s into
+ *   [Profile]s.
  * @property requester [Requester] by which [Stat]-related requests are performed.
  * @property profileCache [Cache] of [Profile]s with which
  *   [Mastodon post entities][MastodonPostEntity] will be converted to [Post]s.
+ * @property profilePostPaginatorProvider Paginates through the [Post]s of [Profile]s that are
+ *   obtained by the [Stat]s.
  * @property postEntityDao [MastodonStyleEntityDao] that will perform SQL transactions on
  *   [Mastodon post entities][MastodonPostEntity].
  * @property styleEntityDao [MastodonStyleEntityDao] for inserting and deleting
@@ -55,8 +62,10 @@ import java.net.URI
  * @see Post.comment
  */
 internal class MastodonPostStorage(
+  private val context: Context,
   private val requester: Requester,
   private val profileCache: Cache<Profile>,
+  private val profilePostPaginatorProvider: MastodonProfilePostPaginator.Provider,
   private val postEntityDao: MastodonPostEntityDao,
   private val styleEntityDao: MastodonStyleEntityDao,
   private val actorProvider: ActorProvider,
@@ -78,10 +87,12 @@ internal class MastodonPostStorage(
     return postEntityDao
       .selectByID(key)
       .toPost(
+        context,
         requester,
         profileCache,
         postEntityDao,
         actorProvider,
+        profilePostPaginatorProvider,
         commentPaginatorProvider,
         coverLoaderProvider
       )

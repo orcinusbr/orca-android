@@ -38,7 +38,9 @@ import br.com.orcinus.orca.std.markdown.Markdown
 import java.time.ZonedDateTime
 import java.util.UUID
 import kotlin.test.Test
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.emptyFlow
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
@@ -74,9 +76,32 @@ internal class PostExtensionsTests {
             override val author = Author.sample
             override val content = Content.from(Domain.sample, text = Markdown.empty) { null }
             override val publicationDateTime = ZonedDateTime.now()
-            override val comment = AddableStat<Post>()
-            override val favorite = ToggleableStat<Profile>()
-            override val repost = ToggleableStat<Profile>()
+            override val comment =
+              object : AddableStat<Post>(count = 0) {
+                override fun get(page: Int): Flow<List<Post>> {
+                  return emptyFlow()
+                }
+
+                override suspend fun onAddition(element: Post) {}
+
+                override suspend fun onRemoval(element: Post) {}
+              }
+            override val favorite =
+              object : ToggleableStat<Profile>(count = 0) {
+                override fun get(page: Int): Flow<List<Profile>> {
+                  return emptyFlow()
+                }
+
+                override suspend fun onSetEnabled(isEnabled: Boolean) {}
+              }
+            override val repost =
+              object : ToggleableStat<Profile>(count = 0) {
+                override fun get(page: Int): Flow<List<Profile>> {
+                  return emptyFlow()
+                }
+
+                override suspend fun onSetEnabled(isEnabled: Boolean) {}
+              }
             override val uri =
               HostedURLBuilder.from(Domain.sample.uri)
                 .path("${author.account.username}")

@@ -15,8 +15,8 @@
 
 package br.com.orcinus.orca.core.feed.profile.post.stat.addable
 
+import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.feed.profile.post.stat.Stat
-import br.com.orcinus.orca.std.buildable.Buildable
 
 /**
  * [Stat] to and from which elements can be added and removed.
@@ -24,8 +24,7 @@ import br.com.orcinus.orca.std.buildable.Buildable
  * @param T Element to be either added or removed.
  * @param count Initial amount of elements.
  */
-@Buildable
-abstract class AddableStat<T> internal constructor(count: Int = 0) : Stat<T>(count) {
+abstract class AddableStat<T> @InternalCoreApi constructor(count: Int) : Stat<T>(count) {
   /**
    * Adds the given [element].
    *
@@ -33,7 +32,7 @@ abstract class AddableStat<T> internal constructor(count: Int = 0) : Stat<T>(cou
    */
   suspend fun add(element: T) {
     count++
-    onAdd(element)
+    onAddition(element)
   }
 
   /**
@@ -43,7 +42,7 @@ abstract class AddableStat<T> internal constructor(count: Int = 0) : Stat<T>(cou
    */
   suspend fun remove(element: T) {
     count--
-    onRemove(element)
+    onRemoval(element)
   }
 
   /**
@@ -51,12 +50,12 @@ abstract class AddableStat<T> internal constructor(count: Int = 0) : Stat<T>(cou
    *
    * @param element Element to be added.
    */
-  protected open suspend fun onAdd(element: T) {}
+  protected abstract suspend fun onAddition(element: T)
 
   /**
    * Callback called when the given [element] is requested to be removed.
    *
    * @param element Element to be removed.
    */
-  protected open suspend fun onRemove(element: T) {}
+  protected abstract suspend fun onRemoval(element: T)
 }

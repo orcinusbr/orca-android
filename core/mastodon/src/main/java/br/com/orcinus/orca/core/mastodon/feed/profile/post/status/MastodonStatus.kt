@@ -19,10 +19,12 @@ import android.content.Context
 import br.com.orcinus.orca.composite.timeline.text.annotated.fromHtml
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
+import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.feed.profile.post.repost.Repost
 import br.com.orcinus.orca.core.feed.profile.post.stat.Stat
+import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.MastodonPost
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.stat.comment.MastodonCommentPaginator
@@ -82,6 +84,8 @@ internal data class MastodonStatus(
    * @param requester [Requester] by which [Stat]-related requests are performed.
    * @param actorProvider [ActorProvider] for determining whether ownership of the resulting [Post]
    *   can be given to the current [Actor].
+   * @param profilePostPaginatorProvider Paginates through the [Post]s of [Profile]s that are
+   *   obtained by the [Stat]s.
    * @param commentPaginatorProvider [MastodonCommentPaginator.Provider] by which a
    *   [MastodonCommentPaginator] for paginating through the comments will be provided.
    * @param imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
@@ -94,6 +98,7 @@ internal data class MastodonStatus(
     context: Context,
     requester: Requester,
     actorProvider: ActorProvider,
+    profilePostPaginatorProvider: MastodonProfilePostPaginator.Provider,
     commentPaginatorProvider: MastodonCommentPaginator.Provider,
     imageLoaderProvider: SomeImageLoaderProvider<URI>
   ): Post {
@@ -107,8 +112,10 @@ internal data class MastodonStatus(
     val publicationDateTime = ZonedDateTime.parse(reblog?.createdAt ?: createdAt)
     val uri = URI(reblog?.uri ?: uri)
     return MastodonPost(
+        context,
         requester,
         actorProvider,
+        profilePostPaginatorProvider,
         imageLoaderProvider,
         id,
         author,

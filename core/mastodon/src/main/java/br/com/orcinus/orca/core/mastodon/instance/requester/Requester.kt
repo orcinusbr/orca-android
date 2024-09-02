@@ -16,7 +16,6 @@
 package br.com.orcinus.orca.core.mastodon.instance.requester
 
 import androidx.annotation.CallSuper
-import androidx.annotation.VisibleForTesting
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.AuthenticatedRequester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
@@ -365,8 +364,6 @@ internal open class Requester(
    *
    * @param route Builds the route from the [baseURI] to which the request will be sent.
    */
-  @InternalRequesterApi
-  @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
   internal fun absolute(route: HostedURLBuilder.() -> URI): URI {
     return HostedURLBuilder.from(baseURI).route()
   }

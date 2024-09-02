@@ -73,8 +73,6 @@ include(
   ":platform:starter:lifecycle",
   ":platform:testing",
   ":platform:testing:compose",
-  ":std:buildable",
-  ":std:buildable-processor",
   ":std:image",
   ":std:image:compose",
   ":std:image-test",

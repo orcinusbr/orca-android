@@ -26,7 +26,6 @@ import io.ktor.client.request.HttpResponseData
  *
  * @see provide
  */
-@InternalRequesterApi
 internal fun interface ClientResponseProvider {
   /**
    * Provides [HttpResponseData] related to a response that's been given to a request.

@@ -15,7 +15,6 @@
 
 package br.com.orcinus.orca.core.sharedpreferences.actor
 
-import br.com.orcinus.orca.core.feed.profile.post.content.TermMuter
 import br.com.orcinus.orca.core.sharedpreferences.actor.mirror.image.NoOpImageLoaderProviderFactory
 import br.com.orcinus.orca.core.sharedpreferences.feed.profile.post.content.SharedPreferencesTermMuter
 import br.com.orcinus.orca.platform.testing.context
@@ -25,7 +24,7 @@ internal class SharedPreferencesCoreTestRule : ExternalResource() {
   lateinit var actorProvider: SharedPreferencesActorProvider
     private set
 
-  lateinit var termMuter: TermMuter
+  lateinit var termMuter: SharedPreferencesTermMuter
     private set
 
   override fun before() {
@@ -35,6 +34,6 @@ internal class SharedPreferencesCoreTestRule : ExternalResource() {
 
   override fun after() {
     actorProvider.reset()
-    SharedPreferencesTermMuter.reset(context)
+    termMuter.reset()
   }
 }
