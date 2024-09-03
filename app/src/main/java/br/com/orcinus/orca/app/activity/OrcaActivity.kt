@@ -22,13 +22,13 @@ import android.view.View
 import android.view.Window
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import br.com.orcinus.orca.app.OrcaApplication
 import br.com.orcinus.orca.app.R
 import br.com.orcinus.orca.app.databinding.ActivityOrcaBinding
 import br.com.orcinus.orca.platform.navigation.BackStack
 import br.com.orcinus.orca.platform.navigation.Navigator
-import br.com.orcinus.orca.platform.starter.StartableActivity
 import br.com.orcinus.orca.std.injector.Injector
 import kotlinx.coroutines.launch
 
@@ -45,7 +45,7 @@ import kotlinx.coroutines.launch
  * @see getWindow
  * @see onDestroy
  */
-internal open class OrcaActivity : StartableActivity() {
+internal open class OrcaActivity : FragmentActivity() {
   /**
    * [ActivityOrcaBinding] containing references to the [View]s specified in the layout XML file.
    * Gets assigned a non-null value on creation and is nullified after destruction.
