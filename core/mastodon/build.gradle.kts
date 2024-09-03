@@ -82,6 +82,7 @@ dependencies {
   testImplementation(project(":core:sample"))
   testImplementation(project(":core:sample-test"))
   testImplementation(project(":core-test"))
+  testImplementation(project(":ext:testing"))
   testImplementation(project(":platform:autos-test"))
   testImplementation(project(":platform:intents-test"))
   testImplementation(project(":platform:testing"))
