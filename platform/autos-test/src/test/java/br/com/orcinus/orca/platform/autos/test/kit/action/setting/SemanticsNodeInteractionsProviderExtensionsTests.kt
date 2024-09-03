@@ -15,14 +15,25 @@
 
 package br.com.orcinus.orca.platform.autos.test.kit.action.setting
 
-import androidx.compose.ui.semantics.SemanticsProperties
-import androidx.compose.ui.semantics.getOrNull
-import androidx.compose.ui.test.SemanticsMatcher
-import br.com.orcinus.orca.platform.autos.kit.action.setting.SettingTag
+import androidx.compose.material3.Text
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createComposeRule
+import br.com.orcinus.orca.platform.autos.kit.action.setting.list.Settings
+import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import kotlin.test.Test
+import org.junit.Rule
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-/** [SemanticsMatcher] that matches a setting. */
-internal fun isSetting(): SemanticsMatcher {
-  return SemanticsMatcher("is setting") {
-    it.config.getOrNull(SemanticsProperties.TestTag)?.equals(SettingTag) ?: false
+@RunWith(RobolectricTestRunner::class)
+internal class SemanticsNodeInteractionsProviderExtensionsTests {
+  @get:Rule val composeRule = createComposeRule()
+
+  @Test
+  fun findsSetting() {
+    composeRule
+      .apply { setContent { AutosTheme { Settings { setting({ Text("🤍") }) } } } }
+      .onSetting("🤍")
+      .assertIsDisplayed()
   }
 }

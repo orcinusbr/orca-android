@@ -15,14 +15,21 @@
 
 package br.com.orcinus.orca.platform.autos.test.kit.action.setting
 
-import androidx.compose.ui.semantics.SemanticsProperties
-import androidx.compose.ui.semantics.getOrNull
-import androidx.compose.ui.test.SemanticsMatcher
-import br.com.orcinus.orca.platform.autos.kit.action.setting.SettingTag
+import androidx.compose.ui.test.SemanticsNodeInteraction
+import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
+import androidx.compose.ui.test.filterToOne
+import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.hasTextExactly
+import androidx.compose.ui.test.onAncestors
+import br.com.orcinus.orca.platform.autos.kit.action.setting.LabelTag
 
-/** [SemanticsMatcher] that matches a setting. */
-internal fun isSetting(): SemanticsMatcher {
-  return SemanticsMatcher("is setting") {
-    it.config.getOrNull(SemanticsProperties.TestTag)?.equals(SettingTag) ?: false
-  }
+/**
+ * [SemanticsNodeInteraction] of a setting.
+ *
+ * @param label Label of the setting.
+ */
+fun SemanticsNodeInteractionsProvider.onSetting(label: String): SemanticsNodeInteraction {
+  return onNode(hasTestTag(LabelTag) and hasTextExactly(label, includeEditableText = false))
+    .onAncestors()
+    .filterToOne(isSetting())
 }
