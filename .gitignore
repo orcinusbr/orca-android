@@ -5,6 +5,8 @@
 .idea/*
 .kotlin/
 !.idea/icon.svg
+!.idea/codeStyles
+!.idea/copyright
 build/
 /app/default/release
 /captures
