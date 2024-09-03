@@ -31,13 +31,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import br.com.orcinus.orca.platform.autos.InternalPlatformAutosApi
 import br.com.orcinus.orca.platform.autos.colors.asColor
 import br.com.orcinus.orca.platform.autos.forms.asShape
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
+
+/** Tag that identifies a [Setting] for testing purposes. */
+@InternalPlatformAutosApi const val SettingTag = "setting"
 
 /** Default values of a [Setting]. */
 internal object SettingDefaults {
@@ -69,7 +74,7 @@ internal fun Setting(
   icon: @Composable () -> Unit = {},
   action: ActionScope.() -> Unit = {}
 ) {
-  Surface(Modifier.fillMaxWidth(), shape) {
+  Surface(Modifier.fillMaxWidth().testTag(SettingTag), shape) {
     Row(
       Modifier.clickable(onClick = onClick).padding(SettingDefaults.spacing).then(modifier),
       Arrangement.SpaceBetween,
