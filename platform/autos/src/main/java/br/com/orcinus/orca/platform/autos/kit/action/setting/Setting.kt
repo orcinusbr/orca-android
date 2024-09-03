@@ -17,6 +17,7 @@ package br.com.orcinus.orca.platform.autos.kit.action.setting
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,13 +32,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import br.com.orcinus.orca.platform.autos.InternalPlatformAutosApi
 import br.com.orcinus.orca.platform.autos.colors.asColor
 import br.com.orcinus.orca.platform.autos.forms.asShape
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
+
+/** Tag that identifies a [Setting] for testing purposes. */
+@InternalPlatformAutosApi const val SettingTag = "setting"
+
+/** Tag that identifies a [Setting]'s label for testing purposes. */
+@InternalPlatformAutosApi const val LabelTag = "setting-label"
 
 /** Default values of a [Setting]. */
 internal object SettingDefaults {
@@ -69,7 +79,7 @@ internal fun Setting(
   icon: @Composable () -> Unit = {},
   action: ActionScope.() -> Unit = {}
 ) {
-  Surface(Modifier.fillMaxWidth(), shape) {
+  Surface(Modifier.fillMaxWidth().testTag(SettingTag), shape) {
     Row(
       Modifier.clickable(onClick = onClick).padding(SettingDefaults.spacing).then(modifier),
       Arrangement.SpaceBetween,
@@ -81,12 +91,14 @@ internal fun Setting(
       ) {
         icon()
 
-        ProvideTextStyle(
-          AutosTheme.typography.labelMedium.copy(
-            color = AutosTheme.colors.background.content.asColor
-          ),
-          label
-        )
+        Box(Modifier.testTag(LabelTag).semantics(mergeDescendants = true) {}) {
+          ProvideTextStyle(
+            AutosTheme.typography.labelMedium.copy(
+              color = AutosTheme.colors.background.content.asColor
+            ),
+            label
+          )
+        }
       }
 
       Spacer(Modifier.width(SettingDefaults.spacing))

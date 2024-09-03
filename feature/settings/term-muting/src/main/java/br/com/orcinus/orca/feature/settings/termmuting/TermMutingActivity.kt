@@ -34,7 +34,7 @@ class TermMutingActivity internal constructor() : ComposableActivity() {
 
   companion object {
     fun start(context: Context) {
-      context.on<TermMutingActivity>().start()
+      context.on<TermMutingActivity>().asNewTask().start()
     }
   }
 }
