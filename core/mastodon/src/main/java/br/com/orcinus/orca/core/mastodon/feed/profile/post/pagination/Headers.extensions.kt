@@ -30,7 +30,7 @@ internal fun Headers.filterIsLink(): List<LinkHeader> {
     .map {
       LinkHeader(
         uri = it.substringAfter('<').substringBefore('>'),
-        rel = it.substringAfter("rel=").substringBeforeLast('"')
+        rel = it.substringAfter("rel=").removePrefix("\"").substringBefore(',').substringBefore('"')
       )
     }
 }
