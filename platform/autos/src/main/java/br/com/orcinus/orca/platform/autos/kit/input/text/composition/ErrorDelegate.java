@@ -28,6 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.core.view.ViewKt;
+import br.com.orcinus.orca.ext.reflection.java.AccessibleObjects;
 import br.com.orcinus.orca.platform.autos.R;
 import java.lang.reflect.Field;
 import java.util.function.IntUnaryOperator;

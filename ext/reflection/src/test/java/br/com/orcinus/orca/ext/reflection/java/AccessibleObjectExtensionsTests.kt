@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.autos.kit.input.text.composition
+package br.com.orcinus.orca.ext.reflection.java
 
 import assertk.assertThat
 import assertk.assertions.isFalse
@@ -29,13 +29,14 @@ internal class AccessibleObjectExtensionsTests {
           }::class
           .java
           .getDeclaredField("msg")
-          .access { isAccessible }
+          .access { @Suppress("DEPRECATION") isAccessible }
       )
       .isTrue()
   }
 
   @Test
   fun changesAccessibilityToPreviousOneAfterAccessing() {
+    @Suppress("DEPRECATION")
     assertThat(
         object {
             @Suppress("unused") private val msg = "⌛️"
