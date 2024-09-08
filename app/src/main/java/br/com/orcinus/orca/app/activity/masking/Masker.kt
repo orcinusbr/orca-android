@@ -107,8 +107,8 @@ enum class Masker {
 
   /**
    * Obtains the radius in pixels of the equivalent corner of the display, defaulting to that of
-   * αὐτός' large form in case it is not provided or the current API level is an unsupported one —
-   * that is, < 31 (S).
+   * αὐτός' large form in case there are no rounded corners, they are unavailable or the current API
+   * level is an unsupported one — that is, < 31 (S).
    *
    * @param view [View] to which the mask is to be applied.
    * @see Forms.large
@@ -117,9 +117,7 @@ enum class Masker {
     return getRoundedCornerRadius(hardwareRoundedCorners, view.layoutDirection).`if`<Float?>({
       this == null || isNaN()
     }) {
-      view.context?.resources?.displayMetrics?.let {
-        getDefaultRadius(it).`if`<Float?>({ this != null && isNaN() }) { null }
-      }
+      view.context?.resources?.displayMetrics?.let(::getDefaultRadius)
     }
       ?: Float.NaN
   }
@@ -135,7 +133,7 @@ enum class Masker {
 
   /**
    * Obtains the radius which is equivalent to the radius of the matching corner of the display.
-   * Returns NaN when it has no rounded corners.
+   * Returns NaN when it has no rounded corners, they are unavailable or unsupported.
    *
    * @param hardwareRoundedCorners Provider that allows for retrieving the radius of each applicable
    *   corner of the display.
@@ -172,8 +170,8 @@ enum class Masker {
 
     /**
      * Applies to the [view] the radii that are either adapted to the applicable corners of the
-     * display or that of αὐτός' large form in case it is not provided or the current API level is
-     * an unsupported one — that is, < 31 (S).
+     * display or that of αὐτός' large form in case there are no rounded corners, they are
+     * unavailable or the current API level is an unsupported one — that is, < 31 (S).
      *
      * @param view [MaskableFrameLayout] to which the radius will be applied.
      */
@@ -185,8 +183,9 @@ enum class Masker {
 
     /**
      * Applies to the [view] the radii that are either adapted to the corners whose radii are
-     * retrievable from the given provider or that of αὐτός' large form in case it is not provided
-     * or the current API level is an unsupported one — that is, < 31 (S).
+     * retrievable from the given provider or that of αὐτός' large form in case there are no rounded
+     * corners, they are unavailable or the current API level is an unsupported one — that is, < 31
+     * (S).
      *
      * @param hardwareRoundedCorners Provider that allows for retrieving the radius of each
      *   applicable corner of the display.
