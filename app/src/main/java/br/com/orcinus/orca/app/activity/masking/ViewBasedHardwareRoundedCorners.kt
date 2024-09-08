@@ -18,7 +18,6 @@ package br.com.orcinus.orca.app.activity.masking
 import android.os.Build
 import android.view.RoundedCorner
 import android.view.View
-import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.annotation.RequiresApi
 
 /**
@@ -27,18 +26,6 @@ import androidx.annotation.RequiresApi
  * @param view [View] from which information about the corners of the display are retrieved.
  */
 internal class ViewBasedHardwareRoundedCorners(private val view: View) : HardwareRoundedCorners {
-  @ChecksSdkIntAtLeast(Build.VERSION_CODES.S)
-  override fun areAvailable(): Boolean {
-    /*
-     * API level must be >= 31 (S) because neither the RoundedCorner class nor the
-     * Display.getRoundedCorner(Int) method are supported in lower ones.
-     *
-     * As for the display, it will not be available if the view was created in a non-visual context
-     * (such as the application's or that of the instrumentation registry).
-     */
-    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && view.display != null
-  }
-
   @RequiresApi(Build.VERSION_CODES.S)
   override fun bottomRight(): Float {
     return getRadiusOrNaN(RoundedCorner.POSITION_BOTTOM_RIGHT)
@@ -59,13 +46,11 @@ internal class ViewBasedHardwareRoundedCorners(private val view: View) : Hardwar
    *   obtained is.
    */
   private fun getRadiusOrNaN(position: Int): Float {
-    return synchronized(view) {
-      if (areAvailable()) {
-        // As per this implementation's notion of availability, the display should not be null.
-        view.display!!.getRoundedCorner(position)?.radius?.toFloat()
-      } else {
-        null
-      }
+    val display = view.display
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && display != null) {
+      view.display!!.getRoundedCorner(position)?.radius?.toFloat()
+    } else {
+      null
     }
       ?: Float.NaN
   }

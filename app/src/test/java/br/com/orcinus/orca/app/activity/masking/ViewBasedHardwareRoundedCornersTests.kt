@@ -17,9 +17,10 @@ package br.com.orcinus.orca.app.activity.masking
 
 import android.os.Build
 import android.view.View
+import assertk.all
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import assertk.assertions.isFalse
+import assertk.assertions.prop
 import br.com.orcinus.orca.platform.testing.context
 import kotlin.test.Test
 import org.junit.runner.RunWith
@@ -33,7 +34,10 @@ internal class ViewBasedHardwareRoundedCornersTests {
   fun areNotAvailableWhenApiLevelIsLowerThanS() {
     val view = View(context)
     val roundedCorners = ViewBasedHardwareRoundedCorners(view)
-    assertThat(roundedCorners.areAvailable()).isFalse()
+    assertThat(roundedCorners).all {
+      prop(ViewBasedHardwareRoundedCorners::bottomRight).isEqualTo(Float.NaN)
+      prop(ViewBasedHardwareRoundedCorners::bottomLeft).isEqualTo(Float.NaN)
+    }
   }
 
   @Test

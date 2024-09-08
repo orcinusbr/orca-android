@@ -29,10 +29,7 @@ internal class MaskerTests {
   @Test
   fun masksWithRoundedCornersWhenTheyAreAvailable() {
     runMaskerTest {
-      Masker.mask(
-        HardwareRoundedCorners.Builder().areAvailable(true).bottomRight(4f).bottomLeft(2f).build(),
-        view
-      )
+      Masker.mask(HardwareRoundedCorners.Builder().bottomRight(4f).bottomLeft(2f).build(), view)
       assertThat(maskRadii).containsExactly(0f, 0f, 0f, 0f, 4f, 4f, 2f, 2f)
     }
   }
@@ -59,7 +56,7 @@ internal class MaskerTests {
   @Test
   fun masksWithDefaultFormWhenRoundedCornersAreUnavailable() {
     runMaskerTest {
-      Masker.mask(HardwareRoundedCorners.Builder().areAvailable(false).build(), view)
+      Masker.mask(HardwareRoundedCorners.Builder().build(), view)
       assertThat(maskRadii)
         .containsExactly(
           0f,

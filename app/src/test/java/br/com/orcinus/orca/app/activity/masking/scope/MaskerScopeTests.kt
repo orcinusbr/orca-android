@@ -42,10 +42,7 @@ internal class MaskerScopeTests {
   @Test
   fun getsMaskRadii() {
     runMaskerTest {
-      Masker.mask(
-        HardwareRoundedCorners.Builder().areAvailable(true).bottomRight(4f).bottomLeft(2f).build(),
-        view
-      )
+      Masker.mask(HardwareRoundedCorners.Builder().bottomRight(4f).bottomLeft(2f).build(), view)
       assertThat(maskRadii)
         .containsExactly(
           0f,

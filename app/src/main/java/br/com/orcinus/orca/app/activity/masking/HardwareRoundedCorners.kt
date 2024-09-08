@@ -23,9 +23,6 @@ interface HardwareRoundedCorners {
    * such a class should ideally be as concise as possible.
    */
   class Builder internal constructor() {
-    /** Whether the radii of the corners can be obtained. */
-    private var areAvailable = false
-
     /** Radius of the bottom right corner of the display. */
     private var bottomRight = Float.NaN
 
@@ -34,10 +31,6 @@ interface HardwareRoundedCorners {
 
     /** [HardwareRoundedCorners] instantiated by a [Builder]. */
     private inner class BuiltHardwareRoundedCorners : HardwareRoundedCorners {
-      override fun areAvailable(): Boolean {
-        return areAvailable
-      }
-
       override fun bottomRight(): Float {
         return bottomRight
       }
@@ -45,16 +38,6 @@ interface HardwareRoundedCorners {
       override fun bottomLeft(): Float {
         return bottomLeft
       }
-    }
-
-    /**
-     * Defines whether the radii of the corners can be obtained.
-     *
-     * @param areAvailable Availability to be set.
-     */
-    internal fun areAvailable(areAvailable: Boolean): Builder {
-      this.areAvailable = areAvailable
-      return this
     }
 
     /**
@@ -82,13 +65,6 @@ interface HardwareRoundedCorners {
       return BuiltHardwareRoundedCorners()
     }
   }
-
-  /**
-   * Determines whether the radii of the corners can be obtained. If this method returns `false`,
-   * any attempt to retrieve them (such as calling [bottomRight] or [bottomLeft]) will invariably
-   * return a NaN.
-   */
-  fun areAvailable(): Boolean
 
   /** Obtains the radius of the bottom right corner of the display. */
   fun bottomRight(): Float

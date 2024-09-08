@@ -18,26 +18,10 @@ package br.com.orcinus.orca.app.activity.masking
 import assertk.all
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import assertk.assertions.isFalse
-import assertk.assertions.isTrue
 import assertk.assertions.prop
 import kotlin.test.Test
 
 internal class HardwareRoundedCornersBuilderTests {
-  @Test
-  fun buildsUnavailableHardwareRoundedCornersWhenAvailabilityIsUnspecified() {
-    assertThat(HardwareRoundedCorners.Builder().build())
-      .prop(HardwareRoundedCorners::areAvailable)
-      .isFalse()
-  }
-
-  @Test
-  fun buildsAvailableHardwareRoundedCorners() {
-    assertThat(HardwareRoundedCorners.Builder().areAvailable(true).build())
-      .prop(HardwareRoundedCorners::areAvailable)
-      .isTrue()
-  }
-
   @Test
   fun buildsHardwareRoundedCornersWithNaNBottomRightOneWhenUnspecified() {
     assertThat(HardwareRoundedCorners.Builder().build())
@@ -68,13 +52,9 @@ internal class HardwareRoundedCornersBuilderTests {
 
   @Test
   fun builds() {
-    assertThat(
-        HardwareRoundedCorners.Builder().areAvailable(true).bottomRight(4f).bottomLeft(2f).build()
-      )
-      .all {
-        prop(HardwareRoundedCorners::areAvailable).isTrue()
-        prop(HardwareRoundedCorners::bottomRight).isEqualTo(4f)
-        prop(HardwareRoundedCorners::bottomLeft).isEqualTo(2f)
-      }
+    assertThat(HardwareRoundedCorners.Builder().bottomRight(4f).bottomLeft(2f).build()).all {
+      prop(HardwareRoundedCorners::bottomRight).isEqualTo(4f)
+      prop(HardwareRoundedCorners::bottomLeft).isEqualTo(2f)
+    }
   }
 }

@@ -24,7 +24,6 @@ import android.view.View
 import androidx.annotation.VisibleForTesting
 import br.com.orcinus.orca.autos.forms.Form
 import br.com.orcinus.orca.autos.forms.Forms
-import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.`if`
 import br.com.orcinus.orca.std.markdown.style.`if`
 
 /**
@@ -115,15 +114,13 @@ enum class Masker {
    * @see Forms.large
    */
   protected fun getRadius(hardwareRoundedCorners: HardwareRoundedCorners, view: View): Float {
-    return (null as Float?)
-      .`if`(hardwareRoundedCorners.areAvailable()) {
-        getRoundedCornerRadius(hardwareRoundedCorners, view.layoutDirection)
+    return getRoundedCornerRadius(hardwareRoundedCorners, view.layoutDirection).`if`<Float?>({
+      this == null || isNaN()
+    }) {
+      view.context?.resources?.displayMetrics?.let {
+        getDefaultRadius(it).`if`<Float?>({ this != null && isNaN() }) { null }
       }
-      .`if`({ this == null || isNaN() }) {
-        view.context?.resources?.displayMetrics?.let {
-          getDefaultRadius(it).`if`<Float?>({ this != null && isNaN() }) { null }
-        }
-      }
+    }
       ?: Float.NaN
   }
 
