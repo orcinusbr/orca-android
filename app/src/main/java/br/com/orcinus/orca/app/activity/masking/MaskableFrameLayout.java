@@ -51,7 +51,7 @@ import androidx.annotation.Nullable;
  * -  Annotated non-null parameters of overridden methods with androidx.annotation.NonNull;
  * -  Fixed grammatical inconsistencies in logs;
  * -  Referenced original source at GitHub;
- * -  Reformatted class creation date in its Javadoc as per ISO 8601.
+ * -  Reformatted class creation date in its Javadoc as per ISO 8601;
  * -  Removed API level checks for <= 28 (P);
  * -  Removed redundant comments;
  * -  Removed void MaskableFrameLayout#setMask(Int);
@@ -63,7 +63,8 @@ import androidx.annotation.Nullable;
  * -  Matched void MaskableFrameLayout#invalidateDrawable(Drawable)'s parameter name with overridden
  *    method's;
  * -  Replaced call to Drawable Resources#getDrawable(int) by one to Drawable
- *    ContextCompat#getDrawable(Resources, int).
+ *    ContextCompat#getDrawable(Resources, int);
+ * -  Replaced usage of support libraries (android.support.*) by that of AndroidX ones (androidx.*);
  * -  Turned void MaskableFrameLayout#invalidateDrawable(Drawable) into a proxy for void
  *    MaskableFrameLayout#setMask(Drawable).
  */
