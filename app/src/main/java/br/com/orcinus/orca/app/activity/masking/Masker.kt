@@ -174,7 +174,6 @@ enum class Masker {
      *
      * @param view [MaskableFrameLayout] to which the radius will be applied.
      */
-    @JvmName("maskApplicableCorners")
     @JvmStatic
     internal fun mask(view: MaskableFrameLayout) {
       mask(ViewBasedHardwareRoundedCorners(view), view)
@@ -190,7 +189,6 @@ enum class Masker {
      *   applicable corner of the display.
      * @param view [MaskableFrameLayout] to which the radius will be applied.
      */
-    @JvmName("maskApplicableCorners")
     @JvmStatic
     @VisibleForTesting
     internal fun mask(hardwareRoundedCorners: HardwareRoundedCorners, view: MaskableFrameLayout) {
