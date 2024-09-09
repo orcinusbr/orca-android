@@ -194,11 +194,7 @@ enum class Masker {
     @JvmStatic
     @VisibleForTesting
     internal fun mask(hardwareRoundedCorners: HardwareRoundedCorners, view: MaskableFrameLayout) {
-      val mask =
-        ShapeDrawable().apply {
-          intrinsicWidth = view.width
-          intrinsicHeight = view.height
-        }
+      val mask = ShapeDrawable()
       val cornerRadii = FloatArray(size = 8) { 0f }
       for (masker in entries) {
         val cornerRadiiIndices = masker.getCornerRadiiIndices(view.layoutDirection)
