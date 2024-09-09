@@ -43,7 +43,7 @@ enum class Masker {
       }
     }
 
-    override fun getRoundedCornerRadius(
+    override fun getHardwareRoundedCornerRadius(
       hardwareRoundedCorners: HardwareRoundedCorners,
       layoutDirection: Int
     ): Float {
@@ -73,7 +73,7 @@ enum class Masker {
       }
     }
 
-    override fun getRoundedCornerRadius(
+    override fun getHardwareRoundedCornerRadius(
       hardwareRoundedCorners: HardwareRoundedCorners,
       layoutDirection: Int
     ): Float {
@@ -113,9 +113,9 @@ enum class Masker {
    * @see Forms.large
    */
   protected fun getRadius(hardwareRoundedCorners: HardwareRoundedCorners, view: View): Float {
-    return getRoundedCornerRadius(hardwareRoundedCorners, view.layoutDirection).`if`<Float?>({
-      this == null || isNaN()
-    }) {
+    return getHardwareRoundedCornerRadius(hardwareRoundedCorners, view.layoutDirection).`if`<
+      Float?
+    >({ this == null || isNaN() }) {
       view.context?.resources?.displayMetrics?.let(::getDefaultRadius)
     }
       ?: Float.NaN
@@ -123,8 +123,8 @@ enum class Masker {
 
   /**
    * Obtains the default radius. For when the display-corner-matching one has been tried to be
-   * retrieved but could not due to it not being available or supported by the current system API
-   * level.
+   * retrieved but could not due to it not being existent, available or supported by the current
+   * system API level.
    *
    * @param displayMetrics Metrics of the display of the device.
    */
@@ -132,7 +132,7 @@ enum class Masker {
 
   /**
    * Obtains the radius which is equivalent to the radius of the matching corner of the display.
-   * Returns NaN when it has no rounded corners, they are unavailable or unsupported.
+   * Returns NaN when it has no rounded corners, they are nonexistent, unavailable or unsupported.
    *
    * @param hardwareRoundedCorners Provider that allows for retrieving the radius of each applicable
    *   corner of the display.
@@ -141,7 +141,7 @@ enum class Masker {
    *   [View.LAYOUT_DIRECTION_RTL]. If the actual value is neither of those, this method will
    *   default to returning the radius it would for LTR.
    */
-  protected abstract fun getRoundedCornerRadius(
+  protected abstract fun getHardwareRoundedCornerRadius(
     hardwareRoundedCorners: HardwareRoundedCorners,
     layoutDirection: Int
   ): Float
