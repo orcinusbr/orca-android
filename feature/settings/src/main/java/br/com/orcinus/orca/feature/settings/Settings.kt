@@ -31,6 +31,7 @@ import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
+import br.com.orcinus.orca.platform.autos.kit.scaffold.plus
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 
@@ -70,16 +71,14 @@ private fun Settings(
       )
     }
   ) {
-    navigable {
-      LazyColumn(
-        Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-        state = lazyListState,
-        contentPadding = PaddingValues(AutosTheme.spacings.medium.dp)
-      ) {
-        item {
-          Section(stringResource(R.string.feature_settings_general)) {
-            muting(mutedTerms, onNavigationToTermMuting, onTermUnmute)
-          }
+    LazyColumn(
+      Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+      state = lazyListState,
+      contentPadding = it + PaddingValues(AutosTheme.spacings.medium.dp)
+    ) {
+      item {
+        Section(stringResource(R.string.feature_settings_general)) {
+          muting(mutedTerms, onNavigationToTermMuting, onTermUnmute)
         }
       }
     }

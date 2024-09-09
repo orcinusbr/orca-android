@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -163,17 +164,15 @@ internal fun MastodonRegistration(
         }
       }
     }
-  ) {
-    expanded {
-      AndroidView(::WebView, Modifier.fillMaxSize()) { webView ->
-        webView.webViewClient = LoadingFinishingListenerWebViewClient { hasLoadedSuccessfully ->
-          onWebpageLoad(webView, hasLoadedSuccessfully && webpageLoadingProgress == 1f)
-        }
-        webView.webChromeClient = LoadingProgressChangeListenerWebChromeClient {
-          webpageLoadingProgress = it
-        }
-        webView.loadUrl("$uri")
+  ) { padding ->
+    AndroidView(::WebView, Modifier.padding(padding).fillMaxSize()) { webView ->
+      webView.webViewClient = LoadingFinishingListenerWebViewClient { hasLoadedSuccessfully ->
+        onWebpageLoad(webView, hasLoadedSuccessfully && webpageLoadingProgress == 1f)
       }
+      webView.webChromeClient = LoadingProgressChangeListenerWebChromeClient { loadingProgress ->
+        webpageLoadingProgress = loadingProgress
+      }
+      webView.loadUrl("$uri")
     }
   }
 }

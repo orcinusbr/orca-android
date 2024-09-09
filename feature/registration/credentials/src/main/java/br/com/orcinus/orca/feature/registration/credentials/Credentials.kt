@@ -37,6 +37,7 @@ import br.com.orcinus.orca.platform.autos.kit.action.button.PrimaryButton
 import br.com.orcinus.orca.platform.autos.kit.input.text.FormTextField
 import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.button.ButtonBar
+import br.com.orcinus.orca.platform.autos.kit.scaffold.plus
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 
@@ -75,49 +76,47 @@ private fun Credentials(
       }
     }
   ) {
-    expanded {
-      LazyColumn(
-        Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(spacing),
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally
-      ) {
-        item { Spacer(spacerModifier) }
+    LazyColumn(
+      Modifier.fillMaxSize(),
+      contentPadding = it + PaddingValues(spacing),
+      verticalArrangement = Arrangement.SpaceBetween,
+      horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+      item { Spacer(spacerModifier) }
 
-        item {
-          Column(
-            Modifier.fillMaxWidth(),
-            Arrangement.spacedBy(AutosTheme.spacings.medium.dp),
-            Alignment.CenterHorizontally
-          ) {
-            Text(
-              stringResource(R.string.feature_registration_credentials),
-              textAlign = TextAlign.Center,
-              style = AutosTheme.typography.headlineLarge
-            )
+      item {
+        Column(
+          Modifier.fillMaxWidth(),
+          Arrangement.spacedBy(AutosTheme.spacings.medium.dp),
+          Alignment.CenterHorizontally
+        ) {
+          Text(
+            stringResource(R.string.feature_registration_credentials),
+            textAlign = TextAlign.Center,
+            style = AutosTheme.typography.headlineLarge
+          )
 
-            Text(
-              stringResource(R.string.feature_registration_credentials_explanation),
-              textAlign = TextAlign.Center,
-              style = AutosTheme.typography.headlineSmall
-            )
-          }
+          Text(
+            stringResource(R.string.feature_registration_credentials_explanation),
+            textAlign = TextAlign.Center,
+            style = AutosTheme.typography.headlineSmall
+          )
         }
-
-        item {
-          Column(verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.small.dp)) {
-            FormTextField(email, onEmailChange) {
-              Text(stringResource(R.string.feature_registration_credentials_email))
-            }
-
-            FormTextField(password, onPasswordChange) {
-              Text(stringResource(R.string.feature_registration_credentials_password))
-            }
-          }
-        }
-
-        item { Spacer(spacerModifier) }
       }
+
+      item {
+        Column(verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.small.dp)) {
+          FormTextField(email, onEmailChange) {
+            Text(stringResource(R.string.feature_registration_credentials_email))
+          }
+
+          FormTextField(password, onPasswordChange) {
+            Text(stringResource(R.string.feature_registration_credentials_password))
+          }
+        }
+      }
+
+      item { Spacer(spacerModifier) }
     }
   }
 }

@@ -102,12 +102,11 @@ internal class TimelineTests {
           val snackbarPresenter = rememberSnackbarPresenter()
 
           Scaffold(snackbarPresenter = snackbarPresenter) {
-            expanded {
-              LoadedTimeline(
-                ListLoadable.Failed(UnsupportedOperationException(Exception())),
-                snackbarPresenter = snackbarPresenter
-              )
-            }
+            LoadedTimeline(
+              ListLoadable.Failed(UnsupportedOperationException(Exception())),
+              contentPadding = it,
+              snackbarPresenter = snackbarPresenter
+            )
           }
         }
       }
@@ -123,12 +122,11 @@ internal class TimelineTests {
             val snackbarPresenter = rememberSnackbarPresenter()
 
             Scaffold(snackbarPresenter = snackbarPresenter) {
-              expanded {
-                LoadedTimeline(
-                  ListLoadable.Failed(Exception(ReadableThrowable.default)),
-                  snackbarPresenter = snackbarPresenter
-                )
-              }
+              LoadedTimeline(
+                ListLoadable.Failed(Exception(ReadableThrowable.default)),
+                contentPadding = it,
+                snackbarPresenter = snackbarPresenter
+              )
             }
           }
         }

@@ -45,6 +45,7 @@ import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.button.ButtonBar
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBarWithBackNavigation
+import br.com.orcinus.orca.platform.autos.kit.scaffold.plus
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 import br.com.orcinus.orca.platform.focus.rememberImmediateFocusRequester
@@ -123,34 +124,32 @@ private fun TermMuting(
       }
     }
   ) {
-    navigable {
-      LazyColumn(
-        Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-        lazyListState,
-        verticalArrangement = Arrangement.spacedBy(spacing),
-        contentPadding = PaddingValues(spacing)
-      ) {
-        item {
-          FormTextField(
-            term,
-            onTermChange,
-            Modifier.focusRequester(focusRequester)
-              .fillMaxWidth()
-              .testTag(SettingsTermMutingTextFieldTag),
-            errorDispatcher,
-            KeyboardOptions(imeAction = ImeAction.Done),
-            KeyboardActions(onDone = { onDone() })
-          ) {
-            Text(stringResource(R.string.feature_settings_term_muting_term))
-          }
+    LazyColumn(
+      Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+      lazyListState,
+      contentPadding = it + PaddingValues(spacing),
+      verticalArrangement = Arrangement.spacedBy(spacing)
+    ) {
+      item {
+        FormTextField(
+          term,
+          onTermChange,
+          Modifier.focusRequester(focusRequester)
+            .fillMaxWidth()
+            .testTag(SettingsTermMutingTextFieldTag),
+          errorDispatcher,
+          KeyboardOptions(imeAction = ImeAction.Done),
+          KeyboardActions(onDone = { onDone() })
+        ) {
+          Text(stringResource(R.string.feature_settings_term_muting_term))
         }
+      }
 
-        item {
-          Text(
-            stringResource(R.string.feature_settings_term_muting_explanation),
-            style = AutosTheme.typography.bodySmall
-          )
-        }
+      item {
+        Text(
+          stringResource(R.string.feature_settings_term_muting_explanation),
+          style = AutosTheme.typography.bodySmall
+        )
       }
     }
   }

@@ -39,7 +39,7 @@ internal class ButtonBarTests {
     composeRule.setContent {
       AutosTheme {
         Scaffold(bottom = { ButtonBar(lazyListState) }) {
-          expanded { LazyColumn(state = lazyListState) { item { Spacer(Modifier) } } }
+          LazyColumn(state = lazyListState, contentPadding = it) { item { Spacer(Modifier) } }
         }
       }
     }
@@ -52,8 +52,8 @@ internal class ButtonBarTests {
     composeRule.setContent {
       AutosTheme {
         Scaffold(bottom = { ButtonBar(lazyListState) }) {
-          expanded {
-            LazyColumn(state = lazyListState) { item { Spacer(Modifier.fillScreenSize()) } }
+          LazyColumn(state = lazyListState, contentPadding = it) {
+            item { Spacer(Modifier.fillScreenSize()) }
           }
         }
       }

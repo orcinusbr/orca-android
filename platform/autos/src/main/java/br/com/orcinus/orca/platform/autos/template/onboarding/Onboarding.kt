@@ -19,6 +19,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -68,18 +69,21 @@ private enum class OnboardingContentType {
  * @param description Provides more details on the subject being presented, expanding on what the
  *   [title] says.
  * @param modifier [Modifier] for the underlying [LazyColumn].
+ * @param contentPadding [PaddingValues] applied to the content.
  */
 @Composable
 fun Onboarding(
   illustration: @Composable () -> Unit,
   title: @Composable () -> Unit,
   description: @Composable () -> Unit,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
+  contentPadding: PaddingValues = PaddingValues()
 ) {
   val spacing = AutosTheme.spacings.large.dp
 
   LazyColumn(
     modifier.fillMaxHeight(),
+    contentPadding = contentPadding,
     verticalArrangement = Arrangement.SpaceBetween,
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
@@ -112,31 +116,30 @@ private fun OnboardingPreview() {
         }
       }
     ) {
-      expanded {
-        Onboarding(
-          illustration = {
-            Box(contentAlignment = Alignment.Center) {
-              Canvas(Modifier.matchParentSize()) {
-                drawCircle(leadingBackdropColor, center = center / 2f)
-                drawCircle(trailingBackdropColor, center = center * 1.5f)
-              }
-
-              Icon(
-                AutosTheme.iconography.home.filled.asImageVector,
-                contentDescription = "Illustration",
-                Modifier.size(128.dp)
-              )
+      Onboarding(
+        illustration = {
+          Box(contentAlignment = Alignment.Center) {
+            Canvas(Modifier.matchParentSize()) {
+              drawCircle(leadingBackdropColor, center = center / 2f)
+              drawCircle(trailingBackdropColor, center = center * 1.5f)
             }
-          },
-          title = { Text("Greatest feature of all") },
-          description = {
-            Text(
-              "And then here goes a very detailed description of it: what it is, what and who it " +
-                "is for, what it does..."
+
+            Icon(
+              AutosTheme.iconography.home.filled.asImageVector,
+              contentDescription = "Illustration",
+              Modifier.size(128.dp)
             )
           }
-        )
-      }
+        },
+        title = { Text("Greatest feature of all") },
+        description = {
+          Text(
+            "And then here goes a very detailed description of it: what it is, what and who it " +
+              "is for, what it does..."
+          )
+        },
+        contentPadding = it
+      )
     }
   }
 }

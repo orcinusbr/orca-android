@@ -195,20 +195,19 @@ private fun Feed(
       },
       snackbarPresenter = snackbarPresenter
     ) {
-      navigable(Modifier.blur(contentBlurRadius)) {
-        Timeline(
-          postPreviewsLoadable,
-          onFavorite,
-          onRepost,
-          onShare,
-          onPostClick,
-          onNext,
-          Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-          contentPadding = PaddingValues(top = searchTextFieldLayoutHeight, bottom = 56.dp),
-          refresh = Refresh(isTimelineRefreshing, onTimelineRefresh),
-          snackbarPresenter = snackbarPresenter
-        )
-      }
+      Timeline(
+        postPreviewsLoadable,
+        onFavorite,
+        onRepost,
+        onShare,
+        onPostClick,
+        onNext,
+        Modifier.blur(contentBlurRadius)
+          .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+        contentPadding = PaddingValues(top = searchTextFieldLayoutHeight, bottom = 56.dp),
+        refresh = Refresh(isTimelineRefreshing, onTimelineRefresh),
+        snackbarPresenter = snackbarPresenter
+      )
     }
   }
 }

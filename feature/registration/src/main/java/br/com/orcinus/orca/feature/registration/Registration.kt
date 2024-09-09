@@ -45,6 +45,7 @@ import br.com.orcinus.orca.platform.autos.colors.asColor
 import br.com.orcinus.orca.platform.autos.kit.action.button.PrimaryButton
 import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.button.ButtonBar
+import br.com.orcinus.orca.platform.autos.kit.scaffold.plus
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 import br.com.orcinus.orca.platform.stack.Stack
@@ -77,62 +78,60 @@ private fun Registration(
       ButtonBar { PrimaryButton(onClick = boundary::navigateToCredentials) { Text("Continue") } }
     }
   ) {
-    expanded {
-      LazyColumn(
-        Modifier.fillMaxHeight(),
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues(spacing)
-      ) {
-        item { Spacer(spacerModifier) }
+    LazyColumn(
+      Modifier.fillMaxHeight(),
+      verticalArrangement = Arrangement.SpaceBetween,
+      horizontalAlignment = Alignment.CenterHorizontally,
+      contentPadding = it + PaddingValues(spacing)
+    ) {
+      item { Spacer(spacerModifier) }
 
-        item {
-          Box(contentAlignment = Alignment.Center) {
-            Canvas(Modifier.size(256.dp)) { drawCircle(backdropColor) }
+      item {
+        Box(contentAlignment = Alignment.Center) {
+          Canvas(Modifier.size(256.dp)) { drawCircle(backdropColor) }
 
-            Animator(motion) { (failedStatusCard, succeededStatusCard) ->
-              Stack {
-                item {
-                  failedStatusCard.Animate {
-                    StatusCard(rememberStatusCardState(Status.Failed, statusCardDelay)) {
-                      Text("Instance 1")
-                    }
+          Animator(motion) { (failedStatusCard, succeededStatusCard) ->
+            Stack {
+              item {
+                failedStatusCard.Animate {
+                  StatusCard(rememberStatusCardState(Status.Failed, statusCardDelay)) {
+                    Text("Instance 1")
                   }
                 }
+              }
 
-                item {
-                  succeededStatusCard.Animate(
-                    statusCardEnterTransition,
-                    after(failedStatusCard) + statusCardDelay * 1.5
-                  ) {
-                    StatusCard(rememberStatusCardState(Status.Succeeded, statusCardDelay)) {
-                      Text("Instance 2")
-                    }
+              item {
+                succeededStatusCard.Animate(
+                  statusCardEnterTransition,
+                  after(failedStatusCard) + statusCardDelay * 1.5
+                ) {
+                  StatusCard(rememberStatusCardState(Status.Succeeded, statusCardDelay)) {
+                    Text("Instance 2")
                   }
                 }
               }
             }
           }
         }
-
-        item { Spacer(spacerModifier) }
-
-        item {
-          Column(verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.large.dp)) {
-            Text(
-              stringResource(R.string.feature_registration),
-              style = AutosTheme.typography.headlineLarge
-            )
-
-            Text(
-              stringResource(R.string.feature_registration_explanation),
-              style = AutosTheme.typography.headlineSmall
-            )
-          }
-        }
-
-        item { Spacer(spacerModifier) }
       }
+
+      item { Spacer(spacerModifier) }
+
+      item {
+        Column(verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.large.dp)) {
+          Text(
+            stringResource(R.string.feature_registration),
+            style = AutosTheme.typography.headlineLarge
+          )
+
+          Text(
+            stringResource(R.string.feature_registration_explanation),
+            style = AutosTheme.typography.headlineSmall
+          )
+        }
+      }
+
+      item { Spacer(spacerModifier) }
     }
   }
 }
