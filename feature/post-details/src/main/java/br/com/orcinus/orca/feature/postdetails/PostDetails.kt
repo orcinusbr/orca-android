@@ -139,27 +139,28 @@ private fun PostDetails(
       )
     }
   ) {
-    Timeline(
-      commentsLoadable,
-      onFavorite,
-      onRepost,
-      onShare,
-      onClick = onNavigateToDetails,
-      onNext,
-      Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-      contentPadding = it,
-      refresh = Refresh(isTimelineRefreshing, onTimelineRefresh)
-    ) {
-      when (postLoadable) {
-        is Loadable.Loading -> Header()
-        is Loadable.Loaded ->
-          Header(
-            postLoadable.content,
-            onFavorite = { onFavorite(postLoadable.content.id) },
-            onRepost = { onRepost(postLoadable.content.id) },
-            onShare = { onShare(postLoadable.content.uri) }
-          )
-        is Loadable.Failed -> Unit
+    navigable {
+      Timeline(
+        commentsLoadable,
+        onFavorite,
+        onRepost,
+        onShare,
+        onClick = onNavigateToDetails,
+        onNext,
+        Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
+        refresh = Refresh(isTimelineRefreshing, onTimelineRefresh)
+      ) {
+        when (postLoadable) {
+          is Loadable.Loading -> Header()
+          is Loadable.Loaded ->
+            Header(
+              postLoadable.content,
+              onFavorite = { onFavorite(postLoadable.content.id) },
+              onRepost = { onRepost(postLoadable.content.id) },
+              onShare = { onShare(postLoadable.content.uri) }
+            )
+          is Loadable.Failed -> Unit
+        }
       }
     }
   }

@@ -323,7 +323,6 @@ fun Timeline(
  *
  * @param postPreviewsLoadable [ListLoadable] of [PostPreview]s to be lazily shown.
  * @param modifier [Modifier] to be applied to the underlying [LazyVerticalStaggeredGrid].
- * @param contentPadding [PaddingValues] to pad the content with.
  * @param snackbarPresenter [SnackbarPresenter] by which [Snackbar]s informing of load errors are
  *   presented.
  * @param header [Composable] to be shown above the [PostPreview]s.
@@ -333,7 +332,6 @@ fun Timeline(
 internal fun LoadedTimeline(
   postPreviewsLoadable: ListLoadable<PostPreview>,
   modifier: Modifier = Modifier,
-  contentPadding: PaddingValues = PaddingValues(),
   snackbarPresenter: SnackbarPresenter = rememberSnackbarPresenter(),
   header: @Composable (() -> Unit)? = null
 ) {
@@ -345,7 +343,6 @@ internal fun LoadedTimeline(
     onClick = {},
     onNext = {},
     modifier,
-    contentPadding = contentPadding,
     snackbarPresenter = snackbarPresenter,
     header = header
   )

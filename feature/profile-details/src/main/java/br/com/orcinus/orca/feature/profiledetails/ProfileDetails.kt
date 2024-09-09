@@ -22,7 +22,6 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
@@ -73,7 +72,6 @@ import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults as _TopAppBarDefaults
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.`if`
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
-import br.com.orcinus.orca.platform.autos.kit.scaffold.plus
 import br.com.orcinus.orca.platform.autos.overlays.refresh.Refresh
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
@@ -345,13 +343,12 @@ private fun ProfileDetails(
     title = { MediumTextualPlaceholder() },
     actions = {},
     timelineState = rememberLazyStaggeredGridState(),
-    timeline = { padding, shouldNestScrollToTopAppBar ->
+    timeline = { shouldNestScrollToTopAppBar ->
       LoadingTimeline(
         onNext,
         (Modifier as Modifier).`if`(shouldNestScrollToTopAppBar) {
           nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
-        },
-        contentPadding = padding
+        }
       ) {
         Header()
       }
@@ -448,7 +445,7 @@ private fun ProfileDetails(
       }
     },
     timelineState,
-    timeline = { padding, shouldNestScrollToTopAppBar ->
+    timeline = { shouldNestScrollToTopAppBar ->
       Timeline(
         postsLoadable,
         onFavorite,
@@ -461,7 +458,7 @@ private fun ProfileDetails(
         },
         timelineState,
         contentPadding =
-          padding + PaddingValues(bottom = if (details is ProfileDetails.Editable) 56.dp else 0.dp),
+          PaddingValues(bottom = if (details is ProfileDetails.Editable) 56.dp else 0.dp),
         Refresh(isTimelineRefreshing, onTimelineRefresh),
         relativeTimeProvider
       ) {
@@ -482,7 +479,7 @@ private fun ProfileDetails(
   title: @Composable () -> Unit,
   actions: @Composable RowScope.() -> Unit,
   timelineState: LazyStaggeredGridState,
-  timeline: @Composable (padding: PaddingValues, shouldNestScrollToTopAppBar: Boolean) -> Unit,
+  timeline: @Composable (shouldNestScrollToTopAppBar: Boolean) -> Unit,
   floatingActionButton: @Composable () -> Unit,
   snackbarPresenter: SnackbarPresenter,
   origin: BackwardsNavigationState,
@@ -499,7 +496,7 @@ private fun ProfileDetails(
 
   Box(modifier) {
     Scaffold(floatingActionButton = floatingActionButton, snackbarPresenter = snackbarPresenter) {
-      timeline(it, isHeaderHidden)
+      navigable { timeline(isHeaderHidden) }
     }
 
     AnimatedVisibility(
@@ -528,12 +525,13 @@ private fun ProfileDetails(
   val snackbarPresenter = rememberSnackbarPresenter()
 
   Scaffold(modifier, snackbarPresenter = snackbarPresenter) {
-    ErrorPresentation(
-      error,
-      refreshListener = { onNext(TimelineDefaults.InitialSubsequentPaginationIndex) },
-      snackbarPresenter,
-      Modifier.padding(it)
-    )
+    navigable {
+      ErrorPresentation(
+        error,
+        refreshListener = { onNext(TimelineDefaults.InitialSubsequentPaginationIndex) },
+        snackbarPresenter
+      )
+    }
   }
 }
 

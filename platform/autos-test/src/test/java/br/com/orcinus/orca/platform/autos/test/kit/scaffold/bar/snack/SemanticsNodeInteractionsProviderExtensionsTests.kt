@@ -37,7 +37,7 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
         setContent {
           AutosTheme {
             val snackbarPresenter = rememberSnackbarPresenter()
-            Scaffold(snackbarPresenter = snackbarPresenter) {}
+            Scaffold(snackbarPresenter = snackbarPresenter) { expanded {} }
             LaunchedEffect(snackbarPresenter) { snackbarPresenter.presentInfo("Hello, world!") }
           }
         }

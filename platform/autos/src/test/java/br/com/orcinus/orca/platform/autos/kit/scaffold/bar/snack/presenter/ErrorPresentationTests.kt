@@ -15,8 +15,6 @@
 
 package br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -50,11 +48,12 @@ internal class ErrorPresentationTests {
             val snackbarPresenter = rememberSnackbarPresenter()
 
             Scaffold(snackbarPresenter = snackbarPresenter) {
-              ErrorPresentation(
-                error = UnresolvedAddressException(),
-                Modifier.padding(it),
-                snackbarPresenter = snackbarPresenter
-              )
+              expanded {
+                ErrorPresentation(
+                  error = UnresolvedAddressException(),
+                  snackbarPresenter = snackbarPresenter
+                )
+              }
             }
           }
         }
@@ -74,11 +73,12 @@ internal class ErrorPresentationTests {
             val snackbarPresenter = rememberSnackbarPresenter()
 
             Scaffold(snackbarPresenter = snackbarPresenter) {
-              ErrorPresentation(
-                error = Throwable(ReadableThrowable.default),
-                Modifier.padding(it),
-                snackbarPresenter = snackbarPresenter
-              )
+              expanded {
+                ErrorPresentation(
+                  error = Throwable(ReadableThrowable.default),
+                  snackbarPresenter = snackbarPresenter
+                )
+              }
             }
           }
         }

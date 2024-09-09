@@ -183,17 +183,18 @@ private fun Search(
       }
     }
   ) {
-    LazyColumn(
-      Modifier
-        // TODO: Add bottom bar overlay to Overlays.
-        .consumeWindowInsets(PaddingValues(104.dp))
-        .imePadding()
-        .fillMaxSize(),
-      contentPadding = it,
-      verticalArrangement = verticalArrangement,
-      horizontalAlignment = horizontalAlignment,
-      content = content
-    )
+    expanded {
+      LazyColumn(
+        Modifier
+          // TODO: Add bottom bar overlay to Overlays.
+          .consumeWindowInsets(PaddingValues(104.dp))
+          .imePadding()
+          .fillMaxSize(),
+        verticalArrangement = verticalArrangement,
+        horizontalAlignment = horizontalAlignment,
+        content = content
+      )
+    }
   }
 }
 

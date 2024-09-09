@@ -60,7 +60,6 @@ import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.button.ButtonBar
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.button.ButtonBarDefaults
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
-import br.com.orcinus.orca.platform.autos.kit.scaffold.plus
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 import br.com.orcinus.orca.platform.focus.rememberImmediateFocusRequester
@@ -164,21 +163,27 @@ internal fun MastodonAuthorization(
         }
       }
     ) {
-      LazyColumn(
-        state = lazyListState,
-        contentPadding = it + PaddingValues(spacing),
-        verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.small.dp)
-      ) {
-        item {
-          Text(
-            stringResource(R.string.core_http_authorization_welcome),
-            textAlign = TextAlign.Center,
-            style = AutosTheme.typography.headlineLarge
-          )
-        }
+      expanded {
+        LazyColumn(
+          state = lazyListState,
+          contentPadding = PaddingValues(spacing),
+          verticalArrangement = Arrangement.spacedBy(AutosTheme.spacings.small.dp)
+        ) {
+          item {
+            Text(
+              stringResource(R.string.core_http_authorization_welcome),
+              textAlign = TextAlign.Center,
+              style = AutosTheme.typography.headlineLarge
+            )
+          }
 
-        item {
-          Text(headerTitle, textAlign = TextAlign.Center, style = AutosTheme.typography.titleSmall)
+          item {
+            Text(
+              headerTitle,
+              textAlign = TextAlign.Center,
+              style = AutosTheme.typography.titleSmall
+            )
+          }
         }
       }
     }

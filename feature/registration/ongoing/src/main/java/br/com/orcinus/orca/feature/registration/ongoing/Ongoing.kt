@@ -90,11 +90,13 @@ private fun Ongoing(
   }
 
   Scaffold(modifier) {
-    Onboarding(
-      illustration = { Stack { statusCardStackScope = this } },
-      title = { Text(stringResource(R.string.feature_registration_ongoing)) },
-      description = { Text(stringResource(R.string.feature_registration_ongoing_description)) }
-    )
+    expanded {
+      Onboarding(
+        illustration = { Stack { statusCardStackScope = this } },
+        title = { Text(stringResource(R.string.feature_registration_ongoing)) },
+        description = { Text(stringResource(R.string.feature_registration_ongoing_description)) }
+      )
+    }
   }
 }
 

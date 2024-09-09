@@ -134,54 +134,54 @@ private fun Composer(
       }
     },
     FabPosition.End
-  ) { padding ->
-    Box(Modifier.fillMaxSize()) {
-      LazyColumn(
-        contentPadding =
-          AutosTheme.overlays.fab.asPaddingValues +
-            padding +
-            PaddingValues(bottom = textFieldSpacing)
-      ) {
-        item {
-          AndroidView(
-            {
-              textField.also(CompositionTextField::requestFocus).apply {
-                setHint(R.string.feature_composer_hint)
-                setOnValueChangeListener { value ->
-                  textFieldValue = value
-                  onTextChange(value.text)
+  ) {
+    expanded {
+      Box(Modifier.fillMaxSize()) {
+        LazyColumn(
+          contentPadding =
+            PaddingValues(bottom = textFieldSpacing) + AutosTheme.overlays.fab.asPaddingValues
+        ) {
+          item {
+            AndroidView(
+              {
+                textField.also(CompositionTextField::requestFocus).apply {
+                  setHint(R.string.feature_composer_hint)
+                  setOnValueChangeListener { value ->
+                    textFieldValue = value
+                    onTextChange(value.text)
+                  }
+                  setImeActionLabel(null, EditorInfo.IME_ACTION_SEND)
+                  setOnEditorActionListener { _, _, _ ->
+                    onCompose()
+                    true
+                  }
                 }
-                setImeActionLabel(null, EditorInfo.IME_ACTION_SEND)
-                setOnEditorActionListener { _, _, _ ->
-                  onCompose()
-                  true
-                }
+              },
+              Modifier.fillMaxWidth().proxy(textField),
+              onRelease = {
+                it.setOnEditorActionListener(null)
+                it.setOnValueChangeListener(null)
               }
-            },
-            Modifier.fillMaxWidth().proxy(textField),
-            onRelease = { textField ->
-              textField.setOnEditorActionListener(null)
-              textField.setOnValueChangeListener(null)
+            ) {
+              it.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                textFieldStartCompoundDrawable,
+                null,
+                null,
+                null
+              )
+              it.setValue(textFieldValue)
             }
-          ) { textField ->
-            textField.setCompoundDrawablesRelativeWithIntrinsicBounds(
-              textFieldStartCompoundDrawable,
-              null,
-              null,
-              null
-            )
-            textField.setValue(textFieldValue)
           }
         }
-      }
 
-      Toolbar(
-        textFieldValue.isSelected<Style.Bold>(),
-        onBoldToggle = { textFieldValue = textFieldValue.toggle(Style::Bold) },
-        textFieldValue.isSelected<Style.Italic>(),
-        onItalicToggle = { textFieldValue = textFieldValue.toggle(Style::Italic) },
-        Modifier.padding(toolbarPadding).align(Alignment.BottomStart)
-      )
+        Toolbar(
+          textFieldValue.isSelected<Style.Bold>(),
+          onBoldToggle = { textFieldValue = textFieldValue.toggle(Style::Bold) },
+          textFieldValue.isSelected<Style.Italic>(),
+          onItalicToggle = { textFieldValue = textFieldValue.toggle(Style::Italic) },
+          Modifier.padding(toolbarPadding).align(Alignment.BottomStart)
+        )
+      }
     }
   }
 }

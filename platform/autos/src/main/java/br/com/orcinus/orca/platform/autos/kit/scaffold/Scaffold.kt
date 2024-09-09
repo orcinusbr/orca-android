@@ -16,7 +16,6 @@
 package br.com.orcinus.orca.platform.autos.kit.scaffold
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.takeOrElse
@@ -48,6 +48,8 @@ import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.Snack
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.rememberSnackbarPresenter
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
+import br.com.orcinus.orca.platform.autos.kit.scaffold.scope.Content
+import br.com.orcinus.orca.platform.autos.kit.scaffold.scope.ScaffoldScope
 import br.com.orcinus.orca.platform.autos.kit.sheet.LocalWindowInsets
 import br.com.orcinus.orca.platform.autos.kit.sheet.Zero
 import br.com.orcinus.orca.platform.autos.kit.sheet.takeOrElse
@@ -67,6 +69,8 @@ import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
  * @param snackbarPresenter [SnackbarPresenter] through which [Snackbar]s can be presented.
  * @param bottom [Composable] to be placed at the utmost bottom, such as a [ButtonBar].
  * @param content Main content of the current context.
+ * @see ScaffoldScope.expanded
+ * @see ScaffoldScope.navigable
  */
 @Composable
 fun Scaffold(
@@ -76,7 +80,7 @@ fun Scaffold(
   floatingActionButtonPosition: FabPosition = FabPosition.End,
   snackbarPresenter: SnackbarPresenter = rememberSnackbarPresenter(),
   bottom: @Composable () -> Unit = {},
-  content: @Composable (padding: PaddingValues) -> Unit
+  content: ScaffoldScope.() -> Content
 ) {
   CompositionLocalProvider(
     LocalContainerColor provides
@@ -99,9 +103,10 @@ fun Scaffold(
       floatingActionButton,
       floatingActionButtonPosition,
       LocalContainerColor.current,
-      contentWindowInsets = LocalWindowInsets.current.takeOrElse(WindowInsets::Zero),
-      content = content
-    )
+      contentWindowInsets = LocalWindowInsets.current.takeOrElse(WindowInsets::Zero)
+    ) {
+      remember(::ScaffoldScope).content().ClippedValue(it)
+    }
   }
 }
 
@@ -130,14 +135,16 @@ private fun ScaffoldPreview() {
       snackbarPresenter = snackbarPresenter,
       bottom = { ButtonBar(lazyListState) }
     ) {
-      LazyColumn(
-        Modifier.fillMaxSize(),
-        lazyListState,
-        contentPadding = AutosTheme.overlays.fab.asPaddingValues + it,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-      ) {
-        item { Text("Content", style = AutosTheme.typography.bodyMedium) }
+      expanded {
+        LazyColumn(
+          Modifier.fillMaxSize(),
+          state = lazyListState,
+          verticalArrangement = Arrangement.Center,
+          horizontalAlignment = Alignment.CenterHorizontally,
+          contentPadding = AutosTheme.overlays.fab.asPaddingValues
+        ) {
+          item { Text("Content", style = AutosTheme.typography.bodyMedium) }
+        }
       }
     }
   }
