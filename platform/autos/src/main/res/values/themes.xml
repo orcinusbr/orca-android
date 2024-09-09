@@ -23,6 +23,7 @@
     <color name="errorContainer">#E15050</color>
     <color name="errorContent">@android:color/white</color>
     <color name="link">#10A9FF</color>
+    <color name="panel">@android:color/black</color>
     <color name="placeholder">#F5F5F5</color>
     <color name="primaryContainer">@android:color/black</color>
     <color name="primaryContent">@android:color/white</color>

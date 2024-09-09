@@ -21,7 +21,7 @@ import android.os.LocaleList
 import android.os.Parcel
 import android.text.style.TextAppearanceSpan
 import androidx.annotation.ColorInt
-import br.com.orcinus.orca.platform.autos.kit.input.text.composition.access
+import br.com.orcinus.orca.ext.reflection.java.access
 
 /** Creates a [TextAppearanceSpan]. */
 internal fun createTextAppearanceSpan(

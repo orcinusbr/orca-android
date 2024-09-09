@@ -17,20 +17,28 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/container"
-        android:layout_width="match_parent"
+    tools:background="@color/panel"
+    tools:context=".activity.OrcaActivity">
+    <br.com.orcinus.orca.app.activity.masking.MaskableFrameLayout
+        android:id="@+id/container_layout"
         android:layout_height="0dp"
+        android:layout_width="match_parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/bottom_navigation_view" />
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation_view">
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/container"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent" />
+    </br.com.orcinus.orca.app.activity.masking.MaskableFrameLayout>
 
     <br.com.orcinus.orca.platform.autos.kit.scaffold.bar.bottom.OrcaBottomNavigationView
         android:id="@+id/bottom_navigation_view"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:menu="@menu/bottom_navigation"
+        android:layout_width="match_parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/bottom_navigation" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,6 +22,11 @@ import androidx.compose.ui.Modifier
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.bottom.OrcaBottomNavigationView
 
 /** Scope from which the [Content] of a [Scaffold] can be defined. */
+@Deprecated(
+  "Masking applied to the content, that was previously defined by whether it was \"expanded\" " +
+    "or \"navigable\", is now determined by the view by which the scaffold is shown; thus, " +
+    "specifying one of the two is redundant and a no-op."
+)
 class ScaffoldScope internal constructor() {
   /**
    * Creates a [Content] that is displayed all by itself.

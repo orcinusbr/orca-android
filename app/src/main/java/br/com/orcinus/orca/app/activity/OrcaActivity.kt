@@ -21,11 +21,13 @@ import android.view.MenuItem
 import android.view.View
 import android.view.Window
 import androidx.core.view.WindowCompat
+import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import br.com.orcinus.orca.app.OrcaApplication
 import br.com.orcinus.orca.app.R
+import br.com.orcinus.orca.app.activity.masking.Masker
 import br.com.orcinus.orca.app.databinding.ActivityOrcaBinding
 import br.com.orcinus.orca.platform.navigation.BackStack
 import br.com.orcinus.orca.platform.navigation.Navigator
@@ -62,6 +64,11 @@ internal open class OrcaActivity : FragmentActivity() {
     setContentView(binding?.root)
     navigateOnBottomNavigationItemSelection()
     selectDefaultBottomNavigationItem()
+  }
+
+  override fun setContentView(view: View?) {
+    super.setContentView(view)
+    view?.doOnLayout { binding?.containerLayout?.let(Masker::mask) }
   }
 
   override fun onDestroy() {
