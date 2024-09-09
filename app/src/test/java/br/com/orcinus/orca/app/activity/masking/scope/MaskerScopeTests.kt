@@ -28,6 +28,21 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 internal class MaskerScopeTests {
   @Test
+  fun unsetMaskRadiiContainsEightNaNs() {
+    assertThat(MaskerScope.UNSET_MASK_RADII)
+      .containsExactly(
+        Float.NaN,
+        Float.NaN,
+        Float.NaN,
+        Float.NaN,
+        Float.NaN,
+        Float.NaN,
+        Float.NaN,
+        Float.NaN
+      )
+  }
+
+  @Test
   fun runsBodyOnce() {
     var bodyRunCount = 0
     runMaskerTest { bodyRunCount++ }
