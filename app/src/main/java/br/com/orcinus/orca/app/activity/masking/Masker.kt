@@ -15,7 +15,6 @@
 
 package br.com.orcinus.orca.app.activity.masking
 
-import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.RoundRectShape
 import android.util.DisplayMetrics
@@ -95,8 +94,8 @@ enum class Masker {
   };
 
   /**
-   * Obtains the indices at which the radii for the equivalent corner are, as defined by
-   * [GradientDrawable].
+   * Obtains the indices at which the radii for the equivalent corner are, as specified by a
+   * [RoundRectShape]'s outer radii.
    *
    * @param layoutDirection Integer that represents the current direction of the layout.
    *   Left-to-right (LTR) is denoted by [View.LAYOUT_DIRECTION_LTR]; right-to-left (RTL),
