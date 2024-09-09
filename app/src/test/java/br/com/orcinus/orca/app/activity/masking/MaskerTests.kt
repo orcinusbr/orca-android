@@ -30,7 +30,8 @@ internal class MaskerTests {
   fun masksWithRoundedCornersWhenTheyAreAvailable() {
     runMaskerTest {
       Masker.mask(HardwareRoundedCorners.Builder().bottomRight(4f).bottomLeft(2f).build(), view)
-      assertThat(maskRadii).containsExactly(0f, 0f, 0f, 0f, 4f, 4f, 2f, 2f)
+      assertThat(maskRadii)
+        .containsExactly(Float.NaN, Float.NaN, Float.NaN, Float.NaN, 4f, 4f, 2f, 2f)
     }
   }
 
@@ -41,10 +42,10 @@ internal class MaskerTests {
       Masker.mask(view)
       assertThat(maskRadii)
         .containsExactly(
-          0f,
-          0f,
-          0f,
-          0f,
+          Float.NaN,
+          Float.NaN,
+          Float.NaN,
+          Float.NaN,
           Masker.defaultForm.bottomEnd,
           Masker.defaultForm.bottomEnd,
           Masker.defaultForm.bottomStart,
@@ -59,10 +60,10 @@ internal class MaskerTests {
       Masker.mask(HardwareRoundedCorners.Builder().build(), view)
       assertThat(maskRadii)
         .containsExactly(
-          0f,
-          0f,
-          0f,
-          0f,
+          Float.NaN,
+          Float.NaN,
+          Float.NaN,
+          Float.NaN,
           Masker.defaultForm.bottomEnd,
           Masker.defaultForm.bottomEnd,
           Masker.defaultForm.bottomStart,

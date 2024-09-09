@@ -45,10 +45,10 @@ internal class MaskerScopeTests {
       Masker.mask(HardwareRoundedCorners.Builder().bottomRight(4f).bottomLeft(2f).build(), view)
       assertThat(maskRadii)
         .containsExactly(
-          0f,
-          0f,
-          0f,
-          0f,
+          Float.NaN,
+          Float.NaN,
+          Float.NaN,
+          Float.NaN,
           4f,
           4f,
           2f,
