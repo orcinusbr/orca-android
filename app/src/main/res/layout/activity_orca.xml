@@ -20,6 +20,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
+    tools:background="@color/panel"
     tools:context=".activity.OrcaActivity">
     <br.com.orcinus.orca.app.activity.masking.MaskableFrameLayout
         android:id="@+id/container_layout"

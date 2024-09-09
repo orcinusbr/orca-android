@@ -15,29 +15,19 @@
 
 package br.com.orcinus.orca.platform.autos.kit.scaffold.scope
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.Shape
-import br.com.orcinus.orca.autos.colors.Colors
-import br.com.orcinus.orca.platform.autos.colors.LocalContainerColor
-import br.com.orcinus.orca.platform.autos.colors.asColor
-import br.com.orcinus.orca.platform.autos.forms.asShape
-import br.com.orcinus.orca.platform.autos.kit.bottom
-import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 
 /** Defines how a [Composable] containing a specific context should be laid out. */
+@Deprecated(
+  "Masking applied to the content, that was previously defined by whether it was \"expanded\" " +
+    "or \"navigable\", is now determined by the view by which the scaffold is shown; thus, " +
+    "specifying one of the two is redundant and a no-op."
+)
 abstract class Content internal constructor() {
   /** [Modifier] to be applied to the underlying [Box]. */
   protected abstract val modifier: Modifier
-
-  /** [Shape] by which the [Composable] is be shaped. */
-  @get:Composable protected abstract val shape: Shape
 
   /** [Composable] to be shown. */
   internal abstract val value: @Composable () -> Unit
@@ -46,35 +36,11 @@ abstract class Content internal constructor() {
   internal class Expanded(
     override val modifier: Modifier,
     override val value: @Composable () -> Unit
-  ) : Content() {
-    override val shape
-      @Composable get() = RectangleShape
-  }
+  ) : Content()
 
   /** [Content] that is shown as a result of the selection of a tab. */
   internal class Navigable(
     override val modifier: Modifier,
     override val value: @Composable () -> Unit
-  ) : Content() {
-    override val shape
-      @Composable get() = AutosTheme.forms.medium.asShape.bottom
-  }
-
-  /**
-   * [value] clipped by the specified [shape].
-   *
-   * @param padding [PaddingValues] to be passed into the [value].
-   */
-  @Composable
-  internal fun ClippedValue(padding: PaddingValues) {
-    Box(
-      Modifier.background(Colors.LIGHT.primary.container.asColor)
-        .then(modifier)
-        .padding(padding)
-        .background(LocalContainerColor.current)
-        .fillMaxSize()
-    ) {
-      value()
-    }
-  }
+  ) : Content()
 }

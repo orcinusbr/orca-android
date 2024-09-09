@@ -15,9 +15,12 @@
 
 package br.com.orcinus.orca.platform.autos.kit.scaffold
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,7 +43,6 @@ import br.com.orcinus.orca.platform.autos.colors.LocalContainerColor
 import br.com.orcinus.orca.platform.autos.colors.asColor
 import br.com.orcinus.orca.platform.autos.forms.asShape
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
-import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold as _Scaffold
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.button.ButtonBar
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.SnackbarTag
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.orcaVisuals
@@ -58,7 +60,7 @@ import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 
 /**
- * Orca-specific [Scaffold].
+ * Orca-specific scaffold.
  *
  * @param modifier [Modifier] to be applied to the underlying [Scaffold].
  * @param topAppBar [TopAppBar] to be placed at the top.
@@ -73,6 +75,16 @@ import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
  * @see ScaffoldScope.navigable
  */
 @Composable
+@Deprecated(
+  "Masking applied to the content, that was previously defined by whether it was \"expanded\" " +
+    "or \"navigable\", is now determined by the view by which this composable is shown; thus, " +
+    "specifying one of the two is redundant and a no-op. Prefer an unscoped scaffold instead.",
+  ReplaceWith(
+    "UnscopedScaffold(modifier, topAppBar, floatingActionButton, floatingActionButtonPosition, " +
+      "snackbarPresenter, bottom, content)",
+    "br.com.orcinus.orca.platform.autos.kit.scaffold.UnscopedScaffold"
+  )
+)
 fun Scaffold(
   modifier: Modifier = Modifier,
   topAppBar: @Composable () -> Unit = {},
@@ -81,6 +93,41 @@ fun Scaffold(
   snackbarPresenter: SnackbarPresenter = rememberSnackbarPresenter(),
   bottom: @Composable () -> Unit = {},
   content: ScaffoldScope.() -> Content
+) {
+  UnscopedScaffold(
+    modifier,
+    topAppBar,
+    floatingActionButton,
+    floatingActionButtonPosition,
+    snackbarPresenter,
+    bottom
+  ) {
+    remember(::ScaffoldScope).content().value()
+  }
+}
+
+/**
+ * Orca-specific scaffold.
+ *
+ * @param modifier [Modifier] to be applied to the underlying [Scaffold].
+ * @param topAppBar [TopAppBar] to be placed at the top.
+ * @param floatingActionButton [FloatingActionButton] to be placed at the bottom, above the [bottom]
+ *   and below the [SnackbarHost], horizontally centered.
+ * @param floatingActionButtonPosition [FabPosition] that determines where the
+ *   [floatingActionButton] will be placed.
+ * @param snackbarPresenter [SnackbarPresenter] through which [Snackbar]s can be presented.
+ * @param bottom [Composable] to be placed at the utmost bottom, such as a [ButtonBar].
+ * @param content Main content of the current context.
+ */
+@Composable
+fun UnscopedScaffold(
+  modifier: Modifier = Modifier,
+  topAppBar: @Composable () -> Unit = {},
+  floatingActionButton: @Composable () -> Unit = {},
+  floatingActionButtonPosition: FabPosition = FabPosition.End,
+  snackbarPresenter: SnackbarPresenter = rememberSnackbarPresenter(),
+  bottom: @Composable () -> Unit = {},
+  content: @Composable () -> Unit
 ) {
   CompositionLocalProvider(
     LocalContainerColor provides
@@ -105,15 +152,15 @@ fun Scaffold(
       LocalContainerColor.current,
       contentWindowInsets = LocalWindowInsets.current.takeOrElse(WindowInsets::Zero)
     ) {
-      remember(::ScaffoldScope).content().ClippedValue(it)
+      Box(Modifier.background(LocalContainerColor.current).padding(it)) { content() }
     }
   }
 }
 
-/** Preview of a [Scaffold][_Scaffold]. */
+/** Preview of an [UnscopedScaffold]. */
 @Composable
 @MultiThemePreview
-private fun ScaffoldPreview() {
+private fun UnscopedScaffoldPreview() {
   val lazyListState = rememberLazyListState()
   val snackbarPresenter = rememberSnackbarPresenter()
 
@@ -123,7 +170,7 @@ private fun ScaffoldPreview() {
   }
 
   AutosTheme {
-    _Scaffold(
+    UnscopedScaffold(
       topAppBar = {
         @OptIn(ExperimentalMaterial3Api::class) TopAppBar(title = { AutoSizeText("Scaffold") })
       },
@@ -135,16 +182,14 @@ private fun ScaffoldPreview() {
       snackbarPresenter = snackbarPresenter,
       bottom = { ButtonBar(lazyListState) }
     ) {
-      expanded {
-        LazyColumn(
-          Modifier.fillMaxSize(),
-          state = lazyListState,
-          verticalArrangement = Arrangement.Center,
-          horizontalAlignment = Alignment.CenterHorizontally,
-          contentPadding = AutosTheme.overlays.fab.asPaddingValues
-        ) {
-          item { Text("Content", style = AutosTheme.typography.bodyMedium) }
-        }
+      LazyColumn(
+        Modifier.fillMaxSize(),
+        state = lazyListState,
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        contentPadding = AutosTheme.overlays.fab.asPaddingValues
+      ) {
+        item { Text("Content", style = AutosTheme.typography.bodyMedium) }
       }
     }
   }
