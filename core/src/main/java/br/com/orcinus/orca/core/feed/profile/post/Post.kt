@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.feed.profile.post
 
+import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.feed.profile.Profile
@@ -26,7 +27,7 @@ import java.net.URI
 import java.time.ZonedDateTime
 
 /** Content that's been posted by a user, the [author]. */
-abstract class Post {
+abstract class Post @InternalCoreApi constructor() {
   /**
    * [ActorProvider] for determining whether ownership can be given to the current [Actor].
    *

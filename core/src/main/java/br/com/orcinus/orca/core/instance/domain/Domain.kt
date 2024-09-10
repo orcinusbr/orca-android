@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.instance.domain
 
+import br.com.orcinus.orca.core.InternalCoreApi
 import br.com.orcinus.orca.ext.uri.URIBuilder
 import java.io.Serializable
 import java.net.URI
@@ -25,7 +26,7 @@ import java.net.URI
  * @param value [String] that represents this [Domain].
  */
 @JvmInline
-value class Domain(private val value: String) : Serializable {
+value class Domain @InternalCoreApi constructor(private val value: String) : Serializable {
   /** [URI] that leads to this [Domain]. */
   val uri
     get() = URIBuilder.url().scheme("https").host(value).build()

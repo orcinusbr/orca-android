@@ -33,6 +33,7 @@ dependencies {
   testImplementation(project(":core:sample-test"))
   testImplementation(project(":core-test"))
   testImplementation(project(":ext:testing"))
+  testImplementation(libs.konsist)
   testImplementation(libs.kotlin.coroutines.test)
   testImplementation(libs.kotlin.test)
   testImplementation(libs.turbine)
