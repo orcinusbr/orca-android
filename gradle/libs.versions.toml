@@ -51,6 +51,7 @@ autos = { group = "br.com.orcinus.orca.autos", name = "autos", version = "1.0.6"
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version = "2.4.0" }
 junit = { group = "junit", name = "junit", version = "4.13.2" }
 jsoup = { group = "org.jsoup", name = "jsoup", version = "1.16.2" }
+konsist = { group = "com.lemonappdev", name = "konsist", version = "0.16.0" }
 kotlin-compiler-embeddable = { group = "org.jetbrains.kotlin", name = "kotlin-compiler-embeddable", version.ref = "kotlin" }
 kotlin-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlin-coroutines" }
 kotlin-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlin-coroutines" }
