@@ -68,7 +68,7 @@ internal class CoreTests {
           .ifEmpty { untestedFunctionalClassesIndices += functionalClassIndex }
       }
       if (untestedFunctionalClassesIndices.isNotEmpty()) {
-        error(
+        throw AssertionError(
           "Each functional class should be thoroughly tested. No tests were found for:\n" +
             "${untestedFunctionalClassesIndices.joinToString(separator = ";\n", prefix = "- ") { functionalClasses[it].name }}."
         )
