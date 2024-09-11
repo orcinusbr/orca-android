@@ -74,8 +74,8 @@ internal data class MastodonStatus(
   private val card: MastodonCard?,
   private val content: String,
   private val mediaAttachments: List<MastodonAttachment>,
-  private val favourited: Boolean?,
-  private val reblogged: Boolean?
+  val favourited: Boolean?,
+  val reblogged: Boolean?
 ) {
   /**
    * Converts this [MastodonStatus] into a [Post].
@@ -123,7 +123,9 @@ internal data class MastodonStatus(
         publicationDateTime,
         commentPaginatorProvider,
         commentCount = reblog?.repliesCount ?: repliesCount,
+        isFavorited = favourited ?: false,
         favouritesCount,
+        isReposted = reblogged ?: false,
         reblogsCount,
         uri
       )

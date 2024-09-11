@@ -87,7 +87,7 @@ internal class PostExtensionsTests {
                 override suspend fun onRemoval(element: Post) {}
               }
             override val favorite =
-              object : ToggleableStat<Profile>(count = 0) {
+              object : ToggleableStat<Profile>(isEnabled = false, count = 0) {
                 override fun get(page: Int): Flow<List<Profile>> {
                   return emptyFlow()
                 }
@@ -95,7 +95,7 @@ internal class PostExtensionsTests {
                 override suspend fun onSetEnabled(isEnabled: Boolean) {}
               }
             override val repost =
-              object : ToggleableStat<Profile>(count = 0) {
+              object : ToggleableStat<Profile>(isEnabled = false, count = 0) {
                 override fun get(page: Int): Flow<List<Profile>> {
                   return emptyFlow()
                 }

@@ -26,9 +26,9 @@ import kotlinx.coroutines.test.runTest
 
 internal class ToggleableStatTests {
   @Test
-  fun isInitiallyDisabled() {
+  fun emitsInitialEnableability() {
     runTest {
-      object : ToggleableStat<Any>(count = 0) {
+      object : ToggleableStat<Any>(isEnabled = false, count = 0) {
           override fun get(page: Int): Flow<List<Any>> {
             return emptyFlow()
           }
@@ -42,7 +42,7 @@ internal class ToggleableStatTests {
 
   @Test
   fun enables() {
-    object : ToggleableStat<Any>(count = 0) {
+    object : ToggleableStat<Any>(isEnabled = false, count = 0) {
         override fun get(page: Int): Flow<List<Any>> {
           return emptyFlow()
         }
@@ -62,7 +62,7 @@ internal class ToggleableStatTests {
 
   @Test
   fun disables() {
-    object : ToggleableStat<Any>(count = 0) {
+    object : ToggleableStat<Any>(isEnabled = false, count = 0) {
         override fun get(page: Int): Flow<List<Any>> {
           return emptyFlow()
         }

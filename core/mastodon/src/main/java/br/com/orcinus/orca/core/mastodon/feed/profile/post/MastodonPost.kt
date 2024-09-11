@@ -41,6 +41,8 @@ import java.time.ZonedDateTime
  *   [Profile]s.
  * @param profilePostPaginatorProvider Paginates through the [MastodonPost]s of [Profile]s that are
  *   obtained by the [Stat]s.
+ * @param isFavorited Whether the [MastodonPost] is initially favorited.
+ * @param isReposted Whether the [MastodonPost] is reposted by default.
  * @property requester [Requester] by which [comment]-, [favorite]- and [repost]-related requests
  *   are performed.
  * @property imageLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which
@@ -66,7 +68,9 @@ internal class MastodonPost(
   override val publicationDateTime: ZonedDateTime,
   private val commentPaginatorProvider: MastodonCommentPaginator.Provider,
   private val commentCount: Int,
+  isFavorited: Boolean,
   private val favoriteCount: Int,
+  isReposted: Boolean,
   private val repostCount: Int,
   override val uri: URI
 ) : Post() {
@@ -78,7 +82,8 @@ internal class MastodonPost(
       profilePostPaginatorProvider,
       imageLoaderProvider,
       id,
-      favoriteCount
+      favoriteCount,
+      isFavorited
     )
   override val repost =
     MastodonRepostStat(
@@ -87,7 +92,8 @@ internal class MastodonPost(
       profilePostPaginatorProvider,
       imageLoaderProvider,
       id,
-      repostCount
+      repostCount,
+      isReposted
     )
 
   override suspend fun toOwnedPost(): MastodonOwnedPost {
