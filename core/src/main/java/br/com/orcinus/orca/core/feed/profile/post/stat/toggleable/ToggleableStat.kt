@@ -24,13 +24,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 /**
- * [Stat] that can have its enable-ability toggled.
+ * [Stat] that can have its enableability toggled.
  *
+ * @param isEnabled Whether this [ToggleableStat] is enabled by default.
  * @param count Initial amount of elements.
  */
-abstract class ToggleableStat<T> @InternalCoreApi constructor(count: Int) : Stat<T>(count) {
+abstract class ToggleableStat<T> @InternalCoreApi constructor(isEnabled: Boolean, count: Int) :
+  Stat<T>(count) {
   /** [MutableStateFlow] that gets emitted to whenever this [ToggleableStat] is toggled. */
-  private val isEnabledMutableFlow = MutableStateFlow(false)
+  private val isEnabledMutableFlow = MutableStateFlow(isEnabled)
 
   /** [StateFlow] to which the current enable-ability state will be emitted. */
   val isEnabledFlow = isEnabledMutableFlow.asStateFlow()

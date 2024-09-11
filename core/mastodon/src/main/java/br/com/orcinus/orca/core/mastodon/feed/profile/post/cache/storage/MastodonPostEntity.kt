@@ -61,7 +61,7 @@ import java.time.ZonedDateTime
  * @param publicationDateTime [String] representation of the moment in which the [Post] was
  *   published.
  * @param commentCount Amount of comments that the [Post] has received.
- * @param isFavorite Whether the [Post] has been favorited by the currently
+ * @param isFavorited Whether the [Post] has been favorited by the currently
  *   [authenticated][Actor.Authenticated] [Actor].
  * @param isReposted Whether the [Post] is reblogged.
  * @param repostCount Amount of times the [Post] has been reblogged.
@@ -78,7 +78,7 @@ internal data class MastodonPostEntity(
   @ColumnInfo(name = "headline_cover_uri") val headlineCoverURI: String?,
   @ColumnInfo(name = "publication_date_time") val publicationDateTime: String,
   @ColumnInfo(name = "comment_count") val commentCount: Int,
-  @ColumnInfo(name = "is_favorite") val isFavorite: Boolean,
+  @ColumnInfo(name = "is_favorited") val isFavorited: Boolean,
   @ColumnInfo(name = "favorite_count") val favoriteCount: Int,
   @ColumnInfo(name = "is_reposted") val isReposted: Boolean,
   @ColumnInfo(name = "repost_count") val repostCount: Int,
@@ -141,7 +141,9 @@ internal data class MastodonPostEntity(
         publicationDateTime,
         commentPaginatorProvider,
         commentCount,
+        isFavorited,
         favoriteCount,
+        isReposted,
         repostCount,
         uri
       )

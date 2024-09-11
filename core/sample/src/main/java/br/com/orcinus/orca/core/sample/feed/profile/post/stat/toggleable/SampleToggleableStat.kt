@@ -25,7 +25,8 @@ import kotlinx.coroutines.flow.StateFlow
  * @param T Element which can be added or retrieved.
  * @property toggle Object that will get added this is enabled or removed when it is disabled.
  */
-internal class SampleToggleableStat<T>(private val toggle: T) : ToggleableStat<T>(count = 0) {
+internal class SampleToggleableStat<T>(private val toggle: T) :
+  ToggleableStat<T>(isEnabled = false, count = 0) {
   /** [MutableStateFlow] containing the elements. */
   private val elementsFlow = MutableStateFlow(emptyList<T>())
 

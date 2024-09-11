@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.flow
  * performed through the API.
  *
  * @param count Initial amount of [Profile]s by which the [MastodonPost] has been reposted.
+ * @param isReposted Whether the [MastodonPost] is initially reposted.
  * @property context [Context] with which the fetched [MastodonAccount]s are converted into
  *   [Profile]s.
  * @property requester [Requester] by which the network calls are made.
@@ -44,8 +45,8 @@ import kotlinx.coroutines.flow.flow
  * @property avatarLoaderProvider [ImageLoader.Provider] that loads the avatar of converted
  *   [Profile]s.
  * @property id ID of the [MastodonPost].
- * @see MastodonPost.id
  * @see MastodonAccount.toProfile
+ * @see MastodonPost.id
  */
 internal class MastodonRepostStat(
   private val context: Context,
@@ -53,8 +54,9 @@ internal class MastodonRepostStat(
   private val profilePostPaginatorProvider: MastodonProfilePostPaginator.Provider,
   private val avatarLoaderProvider: SomeImageLoaderProvider<URI>,
   private val id: String,
-  count: Int
-) : ToggleableStat<Profile>(count) {
+  count: Int,
+  isReposted: Boolean
+) : ToggleableStat<Profile>(isReposted, count) {
   override fun get(page: Int): Flow<List<Profile>> {
     return flow {
       emit(
