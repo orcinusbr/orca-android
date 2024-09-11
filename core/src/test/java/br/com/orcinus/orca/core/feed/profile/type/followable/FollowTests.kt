@@ -15,11 +15,38 @@
 
 package br.com.orcinus.orca.core.feed.profile.type.followable
 
+import assertk.assertThat
+import assertk.assertions.isSameAs
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 internal class FollowTests {
+  @Test
+  fun publicUnfollowedStatusIsInitializedOnce() {
+    assertThat(Follow.Public.unfollowed()).isSameAs(Follow.Public.unfollowed())
+  }
+
+  @Test
+  fun publicFollowingStatusIsInitializedOnce() {
+    assertThat(Follow.Public.following()).isSameAs(Follow.Public.following())
+  }
+
+  @Test
+  fun privateUnfollowedStatusIsInitializedOnce() {
+    assertThat(Follow.Private.unfollowed()).isSameAs(Follow.Private.unfollowed())
+  }
+
+  @Test
+  fun privateRequestedStatusIsInitializedOnce() {
+    assertThat(Follow.Private.requested()).isSameAs(Follow.Private.requested())
+  }
+
+  @Test
+  fun privateFollowingStatusIsInitializedOnce() {
+    assertThat(Follow.Private.following()).isSameAs(Follow.Private.following())
+  }
+
   @Test
   fun `GIVEN a blank string WHEN parsing it into a follow status THEN it throws`() {
     assertFailsWith<Follow.Companion.BlankStringException> { Follow.of(" ") }
