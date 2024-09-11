@@ -28,42 +28,62 @@ abstract class Follow private constructor() : Serializable {
     override val visibilityName = "public"
 
     companion object {
+      /** [Follow] returned by [unfollowed]. */
+      @JvmStatic private lateinit var _unfollowed: Public
+
+      /** [Follow] returned by [following]. */
+      @JvmStatic private lateinit var _following: Public
+
       /**
        * [Follow] status in which a user doesn't receive any updates related to the other's
        * activity.
        */
       @InternalCoreApi
+      @JvmStatic
       fun unfollowed(): Public {
-        return object : Public() {
-          override fun toString(): String {
-            return "Follow.Public.unfollowed"
-          }
+        return if (::_unfollowed.isInitialized) {
+          _unfollowed
+        } else {
+          _unfollowed =
+            object : Public() {
+              override fun toString(): String {
+                return "Follow.Public.unfollowed"
+              }
 
-          override fun toggled(): Follow {
-            return following()
-          }
+              override fun toggled(): Follow {
+                return following()
+              }
 
-          override fun next(): Follow {
-            return following()
-          }
+              override fun next(): Follow {
+                return following()
+              }
+            }
+          _unfollowed
         }
       }
 
       /** [Follow] status in which a user has subscribed to receive updates from another. */
       @InternalCoreApi
+      @JvmStatic
       fun following(): Public {
-        return object : Public() {
-          override fun toString(): String {
-            return "Follow.Public.following"
-          }
+        return if (::_following.isInitialized) {
+          _following
+        } else {
+          _following =
+            object : Public() {
+              override fun toString(): String {
+                return "Follow.Public.following"
+              }
 
-          override fun toggled(): Follow {
-            return unfollowed()
-          }
+              override fun toggled(): Follow {
+                return unfollowed()
+              }
 
-          override fun next(): Follow? {
-            return null
-          }
+              override fun next(): Follow? {
+                return null
+              }
+            }
+          _following
         }
       }
     }
@@ -74,24 +94,40 @@ abstract class Follow private constructor() : Serializable {
     override val visibilityName = "private"
 
     companion object {
+      /** [Follow] returned by [unfollowed]. */
+      @JvmStatic private lateinit var _unfollowed: Private
+
+      /** [Follow] returned by [requested]. */
+      @JvmStatic private lateinit var _requested: Private
+
+      /** [Follow] returned by [following]. */
+      @JvmStatic private lateinit var _following: Private
+
       /**
        * [Follow] status in which a user doesn't receive any updates related to the other's
        * activity.
        */
       @InternalCoreApi
+      @JvmStatic
       fun unfollowed(): Private {
-        return object : Private() {
-          override fun toString(): String {
-            return "Follow.Private.unfollowed"
-          }
+        return if (::_unfollowed.isInitialized) {
+          _unfollowed
+        } else {
+          _unfollowed =
+            object : Private() {
+              override fun toString(): String {
+                return "Follow.Private.unfollowed"
+              }
 
-          override fun toggled(): Follow {
-            return requested()
-          }
+              override fun toggled(): Follow {
+                return requested()
+              }
 
-          override fun next(): Follow {
-            return requested()
-          }
+              override fun next(): Follow {
+                return requested()
+              }
+            }
+          _unfollowed
         }
       }
 
@@ -100,37 +136,51 @@ abstract class Follow private constructor() : Serializable {
        * accepted or denied.
        */
       @InternalCoreApi
+      @JvmStatic
       fun requested(): Private {
-        return object : Private() {
-          override fun toString(): String {
-            return "Follow.Private.requested"
-          }
+        return if (::_requested.isInitialized) {
+          _requested
+        } else {
+          _requested =
+            object : Private() {
+              override fun toString(): String {
+                return "Follow.Private.requested"
+              }
 
-          override fun toggled(): Follow {
-            return unfollowed()
-          }
+              override fun toggled(): Follow {
+                return unfollowed()
+              }
 
-          override fun next(): Follow {
-            return following()
-          }
+              override fun next(): Follow {
+                return following()
+              }
+            }
+          _requested
         }
       }
 
       /** [Follow] status in which a user has subscribed to receive updates from another. */
       @InternalCoreApi
+      @JvmStatic
       fun following(): Private {
-        return object : Private() {
-          override fun toString(): String {
-            return "Follow.Private.following"
-          }
+        return if (::_following.isInitialized) {
+          _following
+        } else {
+          _following =
+            object : Private() {
+              override fun toString(): String {
+                return "Follow.Private.following"
+              }
 
-          override fun toggled(): Follow {
-            return unfollowed()
-          }
+              override fun toggled(): Follow {
+                return unfollowed()
+              }
 
-          override fun next(): Follow? {
-            return null
-          }
+              override fun next(): Follow? {
+                return null
+              }
+            }
+          _following
         }
       }
     }
