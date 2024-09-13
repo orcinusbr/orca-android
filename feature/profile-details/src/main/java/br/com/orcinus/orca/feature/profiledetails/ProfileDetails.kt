@@ -57,6 +57,8 @@ import br.com.orcinus.orca.composite.timeline.post.time.RelativeTimeProvider
 import br.com.orcinus.orca.composite.timeline.post.time.rememberRelativeTimeProvider
 import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
+import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
+import br.com.orcinus.orca.core.sample.feed.profile.type.followable.SampleFollowService
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.feature.profiledetails.navigation.BackwardsNavigationState
 import br.com.orcinus.orca.feature.profiledetails.navigation.NavigationButton
@@ -187,13 +189,15 @@ internal sealed class ProfileDetails : Serializable {
       @Composable
       get() {
         val coroutineScope = rememberCoroutineScope()
+        val profileProvider = SampleProfileProvider()
+        val followService = SampleFollowService(profileProvider)
         return SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
           .withDefaultProfiles()
           .withDefaultPosts()
           .build()
           .profileProvider
           .provideCurrent<EditableProfile>()
-          .toProfileDetails(coroutineScope, AutosTheme.colors)
+          .toProfileDetails(coroutineScope, followService, AutosTheme.colors)
       }
   }
 }

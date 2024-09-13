@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,12 +16,19 @@
 package br.com.orcinus.orca.core.feed.profile.type.followable
 
 import br.com.orcinus.orca.core.InternalCoreApi
-import br.com.orcinus.orca.core.feed.profile.Profile
+import br.com.orcinus.orca.core.auth.actor.Actor
 
-/** [Profile] whose [follow] status can be toggled. */
-abstract class FollowableProfile<T : Follow> @InternalCoreApi constructor() : Profile {
-  /** Current [Follow] status. */
-  abstract val follow: T
-
-  companion object
+/**
+ * Service by which the [Follow] status of a [FollowableProfile] in relation to another is changed.
+ */
+abstract class FollowService @InternalCoreApi constructor() {
+  /**
+   * Toggles the [Follow] status of the currently authenticated [Actor] regarding the specified
+   * [FollowableProfile].
+   *
+   * @param profileID ID of the [FollowableProfile] to follow, request to follow or unfollow.
+   * @see FollowableProfile.follow
+   * @see FollowableProfile.id
+   */
+  abstract suspend fun toggle(profileID: String, follow: Follow)
 }

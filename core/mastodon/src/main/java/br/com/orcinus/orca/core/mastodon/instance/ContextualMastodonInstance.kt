@@ -45,6 +45,7 @@ import br.com.orcinus.orca.platform.cache.Cache
 import br.com.orcinus.orca.platform.cache.Fetcher
 import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
+import br.com.orcinus.orca.std.injector.Injector
 import java.net.URI
 
 /**
@@ -81,7 +82,7 @@ internal class ContextualMastodonInstance(
     MastodonProfilePostPaginator.Provider {
       MastodonProfilePostPaginator(
         context,
-        requester,
+        requester = Injector.get(),
         actorProvider,
         commentPaginatorProvider::provide,
         imageLoaderProvider,
@@ -97,7 +98,7 @@ internal class ContextualMastodonInstance(
     MastodonCommentPaginator.Provider {
       MastodonCommentPaginator(
         context,
-        requester,
+        requester = Injector.get(),
         actorProvider,
         profilePostPaginatorProvider,
         imageLoaderProvider,
@@ -109,7 +110,7 @@ internal class ContextualMastodonInstance(
   private val postFetcher =
     MastodonPostFetcher(
       context,
-      requester,
+      requester = Injector.get(),
       actorProvider,
       profilePostPaginatorProvider,
       commentPaginatorProvider,
@@ -123,7 +124,7 @@ internal class ContextualMastodonInstance(
   private val feedPostPaginator =
     MastodonFeedPaginator(
       context,
-      requester,
+      requester = Injector.get(),
       actorProvider,
       profilePostPaginatorProvider,
       commentPaginatorProvider,
@@ -132,12 +133,17 @@ internal class ContextualMastodonInstance(
 
   /** [MastodonProfileFetcher] by which [MastodonProfile]s will be fetched from the API. */
   private val profileFetcher =
-    MastodonProfileFetcher(context, requester, imageLoaderProvider, profilePostPaginatorProvider)
+    MastodonProfileFetcher(
+      context,
+      requester = Injector.get(),
+      imageLoaderProvider,
+      profilePostPaginatorProvider
+    )
 
   /** [MastodonProfileStorage] that will store fetched [MastodonProfile]s. */
   private val profileStorage =
     MastodonProfileStorage(
-      requester,
+      requester = Injector.get(),
       imageLoaderProvider,
       profilePostPaginatorProvider,
       database.profileEntityDao
@@ -154,7 +160,7 @@ internal class ContextualMastodonInstance(
   private val profileSearchResultsFetcher =
     MastodonProfileSearchResultsFetcher(
       context,
-      requester,
+      requester = Injector.get(),
       imageLoaderProvider,
       profilePostPaginatorProvider
     )
@@ -176,7 +182,7 @@ internal class ContextualMastodonInstance(
   private val postStorage =
     MastodonPostStorage(
       context,
-      requester,
+      requester = Injector.get(),
       profileCache,
       profilePostPaginatorProvider,
       database.postEntityDao,

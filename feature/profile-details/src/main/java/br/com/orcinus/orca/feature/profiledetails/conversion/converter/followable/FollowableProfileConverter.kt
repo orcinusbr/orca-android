@@ -19,6 +19,7 @@ import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.composite.timeline.text.annotated.toAnnotatedString
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
+import br.com.orcinus.orca.core.feed.profile.type.followable.FollowService
 import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetails
 import br.com.orcinus.orca.feature.profiledetails.conversion.ProfileConverter
@@ -30,9 +31,12 @@ import kotlinx.coroutines.launch
  *
  * @param coroutineScope [CoroutineScope] through which converted [Profile]'s [Follow] status toggle
  *   will be performed.
+ * @param followService [FollowService] by which the [Follow] status can be toggled.
+ * @see Follow.toggled
  */
 internal class FollowableProfileConverter(
   private val coroutineScope: CoroutineScope,
+  private val followService: FollowService,
   override val next: ProfileConverter?
 ) : ProfileConverter() {
   override fun onConvert(profile: Profile, colors: Colors): ProfileDetails? {
@@ -46,7 +50,7 @@ internal class FollowableProfileConverter(
         profile.uri,
         profile.follow.toStatus()
       ) {
-        coroutineScope.launch { profile.toggleFollow() }
+        coroutineScope.launch { followService.toggle(profile.id, profile.follow) }
       }
     } else {
       null

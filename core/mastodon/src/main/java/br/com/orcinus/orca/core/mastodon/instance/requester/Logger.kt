@@ -28,7 +28,7 @@ import io.ktor.client.statement.request
 import io.ktor.http.isSuccess
 
 /** Logs messages with different severity levels. */
-internal abstract class Logger {
+abstract class Logger @InternalRequesterApi internal constructor() {
   /** [Logger] that forwards logs to the Android [Log]. */
   object Android : Logger() {
     /** Tag by which sent logs will be tagged. */
@@ -49,7 +49,7 @@ internal abstract class Logger {
    * @param clientConfig [HttpClientConfig] whose [HttpResponse]s will be logged.
    */
   @InternalRequesterApi
-  fun start(clientConfig: HttpClientConfig<*>) {
+  internal fun start(clientConfig: HttpClientConfig<*>) {
     clientConfig.ResponseObserver {
       val message = it.format()
       val logging = if (it.status.isSuccess()) ::info else ::error
@@ -80,7 +80,7 @@ internal abstract class Logger {
    * itself.
    */
   @InternalRequesterApi
-  suspend fun HttpResponse.format(): String {
+  internal suspend fun HttpResponse.format(): String {
     val requestContent = request.content
     val requestFormDataParamsAsString =
       if (requestContent is FormDataContent) " (${requestContent.formData})" else ""

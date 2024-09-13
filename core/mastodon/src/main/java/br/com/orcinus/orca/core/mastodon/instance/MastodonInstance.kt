@@ -19,9 +19,6 @@ import br.com.orcinus.orca.core.auth.Authenticator
 import br.com.orcinus.orca.core.auth.Authorizer
 import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.instance.domain.Domain
-import br.com.orcinus.orca.core.mastodon.instance.requester.Logger
-import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
-import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.HttpRequest
 import io.ktor.http.URLBuilder
 import io.ktor.http.Url
@@ -42,8 +39,4 @@ internal constructor(final override val domain: Domain, internal val authorizer:
   Instance<S>() {
   /** [Url] to which routes will be appended when [HttpRequest]s are sent. */
   internal val url = URLBuilder().apply { set(scheme = "https", host = "$domain") }.build()
-
-  /** [Requester] by which requests are performed. */
-  internal open val requester =
-    Requester(Logger.Android, baseURI = domain.uri, clientEngineFactory = CIO)
 }

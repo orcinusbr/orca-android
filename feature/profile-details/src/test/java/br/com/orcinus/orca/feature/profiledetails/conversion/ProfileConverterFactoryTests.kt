@@ -20,6 +20,7 @@ import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
 import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
+import br.com.orcinus.orca.core.sample.feed.profile.type.followable.SampleFollowService
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetails
 import br.com.orcinus.orca.feature.profiledetails.createSample
@@ -39,8 +40,12 @@ internal class ProfileConverterFactoryTests {
         .withDefaultProfiles()
         .build()
         .profileProvider
+    val followService = SampleFollowService(profileProvider)
     val defaultProfile = ProfileDetails.Default.getSampleDelegateProfile(profileProvider)
-    assertThat(ProfileConverterFactory.create(coroutineScope).convert(defaultProfile, Colors.LIGHT))
+    assertThat(
+        ProfileConverterFactory.create(coroutineScope, followService)
+          .convert(defaultProfile, Colors.LIGHT)
+      )
       .isEqualTo(ProfileDetails.Default.createSample(profileProvider, defaultProfile))
   }
 
@@ -51,9 +56,11 @@ internal class ProfileConverterFactoryTests {
         .withDefaultProfiles()
         .build()
         .profileProvider
+    val followService = SampleFollowService(profileProvider)
     val editableProfile = profileProvider.provideCurrent<EditableProfile>()
     assertThat(
-        ProfileConverterFactory.create(coroutineScope).convert(editableProfile, Colors.LIGHT)
+        ProfileConverterFactory.create(coroutineScope, followService)
+          .convert(editableProfile, Colors.LIGHT)
       )
       .isEqualTo(ProfileDetails.Editable.createSample(profileProvider))
   }
@@ -65,10 +72,11 @@ internal class ProfileConverterFactoryTests {
         .withDefaultProfiles()
         .build()
         .profileProvider
+    val followService = SampleFollowService(profileProvider)
     val followableProfile = profileProvider.provideCurrent<FollowableProfile<*>>()
     val onStatusToggle = {}
     assertThat(
-        ProfileConverterFactory.create(coroutineScope)
+        ProfileConverterFactory.create(coroutineScope, followService)
           .convert(followableProfile, Colors.LIGHT)
           .let { it as ProfileDetails.Followable }
           .copy(onStatusToggle = onStatusToggle)

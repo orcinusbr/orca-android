@@ -30,7 +30,6 @@ import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.mock.MockEngineConfig
 import io.ktor.client.engine.mock.respondError
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
@@ -102,39 +101,19 @@ internal inline fun runRequesterTest(
     }
   val authenticationLock = AuthenticationLock(authenticator, actorProvider)
   val instanceProvider =
-    SampleMastodonInstanceProvider(
-      authorizer,
-      authenticator,
-      authenticationLock,
-      clientResponseProvider
-    )
+    SampleMastodonInstanceProvider(authorizer, authenticator, authenticationLock)
   val module =
     MastodonCoreModule(
       lazyInjectionOf { instanceProvider },
       lazyInjectionOf { authenticationLock },
       lazyInjectionOf { SampleTermMuter() }
     )
-  val client = instanceProvider.provide().requester.client
   Injector.register<CoreModule>(module)
   runTest {
     try {
       val baseURI = URIBuilder.url().scheme("https").host("orca.orcinus.com.br").path("app").build()
-      val clientEngineFactory = createHttpClientEngineFactory<MockEngineConfig>(client::engine)
-      val requester =
-        Requester(
-          object : Logger() {
-            override fun info(info: String) {
-              println("INFO: $info")
-            }
-
-            override fun error(error: String) {
-              println("ERROR: $error")
-            }
-          },
-          baseURI,
-          clientEngineFactory
-        )
-
+      val clientEngineFactory = createHttpClientEngineFactory(clientResponseProvider)
+      val requester = Requester(NoOpLogger, baseURI, clientEngineFactory)
       RequesterTestScope(this, requester) { path("api").path("v1").path("resource").build() }.body()
     } finally {
       Injector.unregister<CoreModule>()

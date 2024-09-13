@@ -102,6 +102,7 @@ dependencies {
   "androidTestDemoImplementation"(libs.kotlin.test)
 
   "demoImplementation"(project(":platform:core"))
+  "demoImplementation"(project(":ext:uri"))
 
   ksp(project(":std:injector-processor"))
 

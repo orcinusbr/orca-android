@@ -40,8 +40,4 @@ internal data class SampleFollowableProfile<T : Follow>(
   override val followingCount: Int
 ) :
   Profile by SampleProfile(postProvider, delegate, bio, followerCount, followingCount),
-  FollowableProfile<T>() {
-  override suspend fun onChangeFollowTo(follow: T) {
-    provider.updateFollow(id, follow)
-  }
-}
+  FollowableProfile<T>()

@@ -22,6 +22,7 @@ import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
 import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
+import br.com.orcinus.orca.core.sample.feed.profile.type.followable.SampleFollowService
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetails
 import br.com.orcinus.orca.feature.profiledetails.createSample
@@ -34,15 +35,16 @@ import org.junit.Assert.assertNull
 
 internal class FollowableProfileConverterTests {
   private val coroutineScope = TestScope()
-  private val converter = FollowableProfileConverter(coroutineScope, next = null)
+  private val profileProvider =
+    SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
+      .withDefaultProfiles()
+      .build()
+      .profileProvider
+  private val followService = SampleFollowService(profileProvider)
+  private val converter = FollowableProfileConverter(coroutineScope, followService, next = null)
 
   @Test
   fun convertsFollowableProfile() {
-    val profileProvider =
-      SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
-        .withDefaultProfiles()
-        .build()
-        .profileProvider
     val onStatusToggle = {}
     assertThat(
         converter

@@ -57,7 +57,7 @@ class MastodonInstanceProvider(
   private val instance by lazy {
     ContextualMastodonInstance(
       context,
-      MastodonAuthorizationViewModel.getInstanceDomain(context),
+      MastodonAuthorizationViewModel.getDomain(context),
       authorizer,
       authenticator,
       actorProvider,
