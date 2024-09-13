@@ -17,6 +17,8 @@ package br.com.orcinus.orca.feature.profiledetails
 
 import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.core.feed.profile.Profile
+import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
+import br.com.orcinus.orca.core.feed.profile.type.followable.FollowService
 import br.com.orcinus.orca.feature.profiledetails.conversion.ProfileConverterFactory
 import kotlinx.coroutines.CoroutineScope
 
@@ -25,12 +27,15 @@ import kotlinx.coroutines.CoroutineScope
  *
  * @param coroutineScope [CoroutineScope] through which converted [Profile]-related suspending will
  *   be performed.
+ * @param followService [FollowService] by which the [Follow] status can be toggled.
  * @param colors [Colors] by which visuals can be colored.
+ * @see Follow.toggled
  */
 internal fun Profile.toProfileDetails(
   coroutineScope: CoroutineScope,
+  followService: FollowService,
   colors: Colors
 ): ProfileDetails {
-  val details = ProfileConverterFactory.create(coroutineScope).convert(this, colors)
+  val details = ProfileConverterFactory.create(coroutineScope, followService).convert(this, colors)
   return requireNotNull(details)
 }

@@ -19,9 +19,6 @@ import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.Authenticator
 import br.com.orcinus.orca.core.auth.Authorizer
 import br.com.orcinus.orca.core.instance.InstanceProvider
-import br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvider
-import io.ktor.client.HttpClient
-import io.ktor.client.request.HttpRequest
 
 /**
  * [InstanceProvider] that provides a [SampleMastodonInstance].
@@ -30,13 +27,11 @@ import io.ktor.client.request.HttpRequest
  * @property authenticator [Authenticator] through which authentication can be done.
  * @property authenticationLock [AuthenticationLock] by which features can be locked or unlocked by
  *   an authentication "wall".
- * @property clientResponseProvider Defines how the [HttpClient] to an [HttpRequest].
  */
 internal class SampleMastodonInstanceProvider(
   private val authorizer: Authorizer,
   private val authenticator: Authenticator,
-  private val authenticationLock: AuthenticationLock<Authenticator>,
-  private val clientResponseProvider: ClientResponseProvider
+  private val authenticationLock: AuthenticationLock<Authenticator>
 ) : InstanceProvider {
   /**
    * [SampleMastodonInstance] to be provided.
@@ -44,7 +39,7 @@ internal class SampleMastodonInstanceProvider(
    * @see provide
    */
   private val instance by lazy {
-    SampleMastodonInstance(authorizer, authenticator, authenticationLock, clientResponseProvider)
+    SampleMastodonInstance(authorizer, authenticator, authenticationLock)
   }
 
   override fun provide(): SampleMastodonInstance {

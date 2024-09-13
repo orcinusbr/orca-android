@@ -142,29 +142,6 @@ internal class SampleProfileProviderTests {
   }
 
   @Test
-  fun updatesFollow() {
-    runTest {
-      val profileProvider = SampleProfileProvider()
-      val postProvider = SamplePostProvider()
-      val profileDelegate = Author.createRamboSample(NoOpSampleImageLoader.Provider)
-      val profile =
-        SampleFollowableProfile(
-          profileProvider,
-          postProvider,
-          profileDelegate,
-          bio = Markdown.empty,
-          Follow.Private.unfollowed(),
-          followerCount = 0,
-          followingCount = 0
-        )
-      profileProvider.add(profile)
-      profileProvider.updateFollow(profile.id, Follow.Private.requested())
-      val follow = profileProvider.provideCurrent<SampleFollowableProfile<Follow.Private>>().follow
-      assertThat(follow).isEqualTo(Follow.Private.requested())
-    }
-  }
-
-  @Test
   fun updates() {
     runTest {
       val profileProvider = SampleProfileProvider()

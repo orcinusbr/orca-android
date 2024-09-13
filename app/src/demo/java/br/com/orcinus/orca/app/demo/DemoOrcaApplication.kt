@@ -17,6 +17,7 @@ package br.com.orcinus.orca.app.demo
 
 import br.com.orcinus.orca.app.OrcaApplication
 import br.com.orcinus.orca.app.demo.module.core.DemoCoreModule
+import br.com.orcinus.orca.app.demo.module.feature.profiledetails.DemoProfileDetailsModule
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
@@ -36,4 +37,5 @@ internal class DemoOrcaApplication : OrcaApplication() {
         .withDefaultPosts()
         .build()
     )
+  override val profileDetailsModule = DemoProfileDetailsModule
 }

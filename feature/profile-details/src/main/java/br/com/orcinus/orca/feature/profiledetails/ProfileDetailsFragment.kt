@@ -39,6 +39,7 @@ class ProfileDetailsFragment internal constructor() : ComposableFragment() {
       ProfileDetailsViewModel.createFactory(
         application,
         module.profileProvider(),
+        module.followService(),
         module.postProvider(),
         id,
         onLinkClick = boundary::navigateTo,

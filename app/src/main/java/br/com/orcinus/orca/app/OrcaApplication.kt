@@ -24,7 +24,6 @@ import br.com.orcinus.orca.app.module.core.MainMastodonCoreModule
 import br.com.orcinus.orca.app.module.feature.feed.MainFeedModule
 import br.com.orcinus.orca.app.module.feature.gallery.MainGalleryModule
 import br.com.orcinus.orca.app.module.feature.postdetails.MainPostDetailsModule
-import br.com.orcinus.orca.app.module.feature.profiledetails.MainProfileDetailsModule
 import br.com.orcinus.orca.app.module.feature.search.MainSearchModule
 import br.com.orcinus.orca.app.module.feature.settings.MainSettingsModule
 import br.com.orcinus.orca.app.module.feature.settings.termmuting.MainTermMutingModule
@@ -37,6 +36,7 @@ import br.com.orcinus.orca.feature.search.SearchModule
 import br.com.orcinus.orca.feature.settings.SettingsModule
 import br.com.orcinus.orca.feature.settings.termmuting.TermMutingModule
 import br.com.orcinus.orca.std.injector.Injector
+import br.com.orcinus.orca.std.injector.module.Module
 
 /**
  * Class whose instance lives throughout the whole lifecycle of the application.
@@ -55,17 +55,20 @@ import br.com.orcinus.orca.std.injector.Injector
  * @see Injector.inject
  * @see OrcaActivity.onDestroy
  */
-internal open class OrcaApplication : Application() {
+internal abstract class OrcaApplication : Application() {
   /**
    * [CoreModule] to be registered. Overridability is useful because the application can be built
-   * with distinct flavors with different core structures (e. g., in the default, main flavor, ones
-   * that access the API through network requests; in the demo flavor, ones that store and retrieve
+   * with distinct flavors with different core structures (e. g., in the default, main version, ones
+   * that access the API through network requests; in the demo version, ones that store and retrieve
    * data locally).
    *
    * @see Injector.register
    * @see MainMastodonCoreModule
    */
-  protected open val coreModule: CoreModule = MainMastodonCoreModule
+  protected abstract val coreModule: CoreModule
+
+  /** [Module] into which the dependencies required by the profile details feature are injected. */
+  protected abstract val profileDetailsModule: ProfileDetailsModule
 
   override fun onCreate() {
     super.onCreate()
@@ -74,7 +77,7 @@ internal open class OrcaApplication : Application() {
     Injector.register<FeedModule>(MainFeedModule(this))
     Injector.register<GalleryModule>(MainGalleryModule)
     Injector.register<PostDetailsModule>(MainPostDetailsModule(this))
-    Injector.register<ProfileDetailsModule>(MainProfileDetailsModule(this))
+    Injector.register(profileDetailsModule)
     Injector.register<SearchModule>(MainSearchModule)
     Injector.register<SettingsModule>(MainSettingsModule(this))
     Injector.register<TermMutingModule>(MainTermMutingModule)

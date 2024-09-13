@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,18 +13,19 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.feature.profiledetails
+package br.com.orcinus.orca.core.sample.feed.profile.type.followable
 
-import br.com.orcinus.orca.core.feed.profile.ProfileProvider
-import br.com.orcinus.orca.core.feed.profile.post.PostProvider
+import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
 import br.com.orcinus.orca.core.feed.profile.type.followable.FollowService
-import br.com.orcinus.orca.std.injector.module.Inject
-import br.com.orcinus.orca.std.injector.module.Module
-import br.com.orcinus.orca.std.injector.module.injection.Injection
+import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
 
-abstract class ProfileDetailsModule(
-  @Inject internal val profileProvider: Injection<ProfileProvider>,
-  @Inject internal val followService: Injection<FollowService>,
-  @Inject internal val postProvider: Injection<PostProvider>,
-  @Inject internal val boundary: Injection<ProfileDetailsBoundary>
-) : Module()
+/** [FollowService] that toggles the [Follow] status of a [SampleFollowableProfile] in memory. */
+class SampleFollowService(private val profileProvider: SampleProfileProvider) : FollowService() {
+  @Throws(ClassCastException::class)
+  override suspend fun toggle(profileID: String, follow: Follow) {
+    profileProvider.update(profileID) {
+      @Suppress("UNCHECKED_CAST")
+      (this as SampleFollowableProfile<Follow>).copy(follow = follow.toggled())
+    }
+  }
+}

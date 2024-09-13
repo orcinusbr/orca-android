@@ -17,6 +17,7 @@ package br.com.orcinus.orca.core
 
 import com.lemonappdev.konsist.api.Konsist.scopeFromProject
 import com.lemonappdev.konsist.api.declaration.KoClassDeclaration
+import com.lemonappdev.konsist.api.declaration.KoFunctionDeclaration
 import com.lemonappdev.konsist.api.ext.list.constructors
 import com.lemonappdev.konsist.api.provider.KoKDocProvider
 import com.lemonappdev.konsist.api.provider.modifier.KoCompanionModifierProvider
@@ -53,9 +54,10 @@ internal class CoreTests {
   fun areFunctionalClassesTested() {
     val functionalClasses =
       scope.classes().filter { `class` ->
-        `class`.hasFunction { function ->
-          !function.hasNameMatching(Regex("equals|hashCode|toString"))
-        }
+        `class`
+          .functions(includeLocal = false)
+          .filterNot(KoFunctionDeclaration::hasAbstractModifier)
+          .any { function -> !function.hasNameMatching(Regex("equals|hashCode|toString")) }
       }
     if (functionalClasses.isNotEmpty()) {
       val testScope = scopeFromProject(MODULE_NAME, sourceSetName = "test")

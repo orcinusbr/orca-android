@@ -16,7 +16,6 @@
 package br.com.orcinus.orca.core.mastodon.instance.requester
 
 import io.ktor.client.engine.HttpClientEngine
-import io.ktor.client.engine.HttpClientEngineConfig
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.MockEngineConfig
@@ -34,30 +33,9 @@ import io.ktor.client.statement.HttpResponse
 internal fun createHttpClientEngineFactory(
   responseProvider: ClientResponseProvider
 ): HttpClientEngineFactory<MockEngineConfig> {
-  @Suppress("USELESS_CAST")
-  return createHttpClientEngineFactory(
-    { MockEngine { with(responseProvider) { provide(it) } } } as () -> MockEngine
-  )
-}
-
-/**
- * Creates an [HttpClientEngineFactory] that produces the [engine].
- *
- * @param T [HttpClientEngineConfig] with which the [engine] is configured.
- * @param engine Returns [HttpClientEngine] to be created by the [HttpClientEngineFactory] when it's
- *   requested to produce a new one.
- * @throws ClassCastException If the [engine]'s configuration isn't of type [T].
- * @see HttpClientEngine.config
- * @see HttpClientEngineFactory.create
- */
-@InternalRequesterApi
-@Throws(ClassCastException::class)
-internal fun <T : HttpClientEngineConfig> createHttpClientEngineFactory(
-  engine: () -> HttpClientEngine
-): HttpClientEngineFactory<T> {
-  return object : HttpClientEngineFactory<T> {
-    override fun create(block: T.() -> Unit): HttpClientEngine {
-      return engine().apply { @Suppress("UNCHECKED_CAST") (config as T).block() }
+  return object : HttpClientEngineFactory<MockEngineConfig> {
+    override fun create(block: MockEngineConfig.() -> Unit): HttpClientEngine {
+      return MockEngine { with(responseProvider) { provide(it) } }.apply { config.block() }
     }
   }
 }

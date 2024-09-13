@@ -94,7 +94,7 @@ internal constructor(
       EDITABLE_TYPE ->
         toMastodonEditableProfile(requester, avatarLoaderProvider, dao, postPaginatorProvider)
       FOLLOWABLE_TYPE ->
-        toMastodonFollowableProfile(requester, avatarLoaderProvider, dao, postPaginatorProvider)
+        toMastodonFollowableProfile(avatarLoaderProvider, dao, postPaginatorProvider)
       else -> throw IllegalStateException("Unknown profile entity type: $type.")
     }
   }
@@ -139,7 +139,6 @@ internal constructor(
   /**
    * Converts this [MastodonProfileEntity] into a [MastodonFollowableProfile].
    *
-   * @param requester [Requester] by which a request to change the follow status is performed.
    * @param avatarLoaderProvider [ImageLoader.Provider] that provides the [ImageLoader] by which the
    *   [MastodonFollowableProfile]'s avatar will be loaded from a [URI].
    * @param dao [MastodonProfileEntityDao] that will select the persisted
@@ -149,7 +148,6 @@ internal constructor(
    *   [MastodonFollowableProfile]'s [Post]s will be provided.
    */
   private suspend fun toMastodonFollowableProfile(
-    requester: Requester,
     avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     dao: MastodonProfileEntityDao,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
@@ -161,7 +159,6 @@ internal constructor(
     val follow = Follow.of(checkNotNull(follow))
     val uri = URI(uri)
     return MastodonFollowableProfile(
-      requester,
       postPaginatorProvider,
       id,
       account,

@@ -19,33 +19,24 @@ import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.Authenticator
 import br.com.orcinus.orca.core.auth.Authorizer
 import br.com.orcinus.orca.core.instance.domain.Domain
-import br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvider
-import br.com.orcinus.orca.core.mastodon.instance.requester.NoOpLogger
-import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
-import br.com.orcinus.orca.core.mastodon.instance.requester.createHttpClientEngineFactory
 import br.com.orcinus.orca.core.sample.feed.SampleFeedProvider
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
 import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.SampleTermMuter
 import br.com.orcinus.orca.core.sample.feed.profile.search.SampleProfileSearcher
 import br.com.orcinus.orca.core.sample.instance.domain.sample
-import br.com.orcinus.orca.ext.uri.URIBuilder
 import br.com.orcinus.orca.platform.core.image.sample
 import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
-import io.ktor.client.request.HttpRequest
 
 /**
- * [MastodonInstance] with sample structures and whose [requester] responds OK to each sent
- * [HttpRequest].
+ * [MastodonInstance] with sample structures.
  *
  * @param authorizer [Authorizer] with which the user will be authorized.
- * @property clientResponseProvider Defines how the [requester] to an [HttpRequest].
  */
 internal class SampleMastodonInstance(
   authorizer: Authorizer,
   override val authenticator: Authenticator,
-  override val authenticationLock: AuthenticationLock<Authenticator>,
-  private val clientResponseProvider: ClientResponseProvider
+  override val authenticationLock: AuthenticationLock<Authenticator>
 ) : MastodonInstance<Authorizer, Authenticator>(Domain.sample, authorizer) {
   override val profileProvider = SampleProfileProvider()
   override val profileSearcher = SampleProfileSearcher(profileProvider)
@@ -56,11 +47,5 @@ internal class SampleMastodonInstance(
       postProvider,
       SampleTermMuter(),
       ComposableImageLoader.Provider.sample
-    )
-  override val requester =
-    Requester(
-      NoOpLogger,
-      baseURI = URIBuilder.url().scheme("https").host("orca.orcinus.com.br").path("app").build(),
-      createHttpClientEngineFactory(clientResponseProvider)
     )
 }

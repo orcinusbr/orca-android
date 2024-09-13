@@ -43,7 +43,7 @@ import kotlinx.coroutines.flow.asStateFlow
  * @param onAccessTokenRequestListener [OnAccessTokenRequestListener] to be notified when an access
  *   token is requested.
  */
-internal class MastodonAuthorizationViewModel
+class MastodonAuthorizationViewModel
 private constructor(
   application: Application,
   private val onAccessTokenRequestListener: OnAccessTokenRequestListener
@@ -56,10 +56,10 @@ private constructor(
     @JvmName("_application") get() = getApplication<Application>()
 
   /** [StateFlow] version of the [domainMutableFlow]. */
-  val domainFlow = domainMutableFlow.asStateFlow()
+  internal val domainFlow = domainMutableFlow.asStateFlow()
 
   /** [URI] to be opened in order to authorize. */
-  val uri
+  internal val uri
     get() = createURI(application, Domain(domainFlow.value))
 
   /**
@@ -67,7 +67,7 @@ private constructor(
    *
    * @param domain [String] representation of the [Domain] to be emitted.
    */
-  fun setDomain(domain: String) {
+  internal fun setDomain(domain: String) {
     domainMutableFlow.value = domain
   }
 
@@ -75,14 +75,14 @@ private constructor(
    * Persists the current [Domain], injects the derived [MastodonInstance] and notifies the
    * [onAccessTokenRequestListener].
    */
-  fun authorize() {
+  internal fun authorize() {
     persistDomain()
     onAccessTokenRequestListener.onAccessTokenRequest()
   }
 
   /** Persists the current value of the [domainFlow]. */
   private fun persistDomain() {
-    getPreferences(application).edit { putString(INSTANCE_DOMAIN_PREFERENCE_KEY, domainFlow.value) }
+    getPreferences(application).edit { putString(DOMAIN_PREFERENCE_KEY, domainFlow.value) }
   }
 
   companion object {
@@ -90,7 +90,19 @@ private constructor(
      * Key through which the [Domain] of the [Instance] in which the user has been authorized can be
      * retrieved.
      */
-    private const val INSTANCE_DOMAIN_PREFERENCE_KEY = "instance-domain"
+    private const val DOMAIN_PREFERENCE_KEY = "domain"
+
+    /**
+     * Gets the [Domain] that's been persisted when the user was authorized.
+     *
+     * @throws IllegalStateException If this method is called before authorization has completed.
+     */
+    @JvmStatic
+    @Throws(IllegalStateException::class)
+    fun getDomain(context: Context): Domain {
+      return getPreferences(context).getString(DOMAIN_PREFERENCE_KEY, null)?.let(::Domain)
+        ?: error("Cannot retrieve the instance domain because it has not been persisted yet.")
+    }
 
     /**
      * Creates a [ViewModelProvider.Factory] that provides a [MastodonAuthorizationViewModel].
@@ -99,7 +111,7 @@ private constructor(
      * @param onAccessTokenRequestListener [OnAccessTokenRequestListener] to be notified when an
      *   access token is requested.
      */
-    fun createFactory(
+    internal fun createFactory(
       application: Application,
       onAccessTokenRequestListener: OnAccessTokenRequestListener
     ): ViewModelProvider.Factory {
@@ -129,25 +141,13 @@ private constructor(
     }
 
     /**
-     * Gets the [Domain] that's been persisted when the user was authorized.
-     *
-     * @throws IllegalStateException If this method is called before authorization has completed.
-     */
-    @Throws(IllegalStateException::class)
-    fun getInstanceDomain(context: Context): Domain {
-      return getPreferences(context)
-        .getString(INSTANCE_DOMAIN_PREFERENCE_KEY, null)
-        .let(::checkNotNull)
-        .let(::Domain)
-    }
-
-    /**
      * Gets the [SharedPreferences] related to the authorization process.
      *
      * @param context [Context] from which the [SharedPreferences] will be obtained.
      */
+    @JvmStatic
     private fun getPreferences(context: Context): SharedPreferences {
-      return context.getSharedPreferences("http-authorization", Context.MODE_PRIVATE)
+      return context.getSharedPreferences("mastodon-authorization", Context.MODE_PRIVATE)
     }
   }
 }

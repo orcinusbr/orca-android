@@ -26,6 +26,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.HttpClientEngineFactory
+import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.HttpRequestBuilder
@@ -64,7 +65,8 @@ import kotlinx.serialization.json.JsonNamingStrategy
  * @see get
  * @see post
  */
-internal open class Requester(
+open class Requester
+internal constructor(
   @get:InternalRequesterApi internal val logger: Logger,
   @get:InternalRequesterApi internal val baseURI: URI,
   @get:InternalRequesterApi internal val clientEngineFactory: HttpClientEngineFactory<*>
@@ -83,7 +85,7 @@ internal open class Requester(
    *
    * @property headers [Headers] that have been appended.
    */
-  open class Configuration
+  internal open class Configuration
   @InternalRequesterApi
   constructor(@get:InternalRequesterApi val headers: Headers) {
     /**
@@ -222,7 +224,7 @@ internal open class Requester(
    * @param route Builds the route from the [baseURI] to which the request will be sent.
    * @param config Additionally configures the request.
    */
-  suspend fun delete(
+  internal suspend fun delete(
     route: HostedURLBuilder.() -> URI,
     config: Configuration.Builder.() -> Unit = Configuration.noOpBuild
   ): HttpResponse {
@@ -235,7 +237,7 @@ internal open class Requester(
    * @param route Builds the route from the [baseURI] to which the request will be sent.
    * @param config Additionally configures the request.
    */
-  suspend fun get(
+  internal suspend fun get(
     route: HostedURLBuilder.() -> URI,
     config: Configuration.Builder.() -> Unit = Configuration.noOpBuild
   ): HttpResponse {
@@ -248,7 +250,7 @@ internal open class Requester(
    * @param route Builds the route from the [baseURI] to which the request will be sent.
    * @param config Additionally configures the request.
    */
-  suspend fun post(
+  internal suspend fun post(
     route: HostedURLBuilder.() -> URI,
     config: Configuration.UrlEncoded.Builder.() -> Unit = Configuration.noOpBuild
   ): HttpResponse {
@@ -262,7 +264,7 @@ internal open class Requester(
    * @param form `multipart/form-data`-encoded parts to be added as headers.
    * @param config Additionally configures the request.
    */
-  suspend fun post(
+  internal suspend fun post(
     route: HostedURLBuilder.() -> URI,
     form: List<PartData>,
     config: Configuration.Builder.() -> Unit = Configuration.noOpBuild
@@ -397,5 +399,15 @@ internal open class Requester(
   companion object {
     /** Lambda in which a request being built isn't modified. */
     private val noOpRequestBuild: HttpRequestBuilder.() -> Unit = {}
+
+    /**
+     * Creates a [Requester].
+     *
+     * @param baseURI [URI] from which routes are constructed.
+     */
+    @JvmStatic
+    fun create(baseURI: URI): Requester {
+      return Requester(Logger.Android, baseURI, clientEngineFactory = CIO)
+    }
   }
 }

@@ -16,6 +16,8 @@
 package br.com.orcinus.orca.feature.profiledetails.conversion
 
 import br.com.orcinus.orca.core.feed.profile.Profile
+import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
+import br.com.orcinus.orca.core.feed.profile.type.followable.FollowService
 import br.com.orcinus.orca.feature.profiledetails.conversion.converter.DefaultProfileConverter
 import br.com.orcinus.orca.feature.profiledetails.conversion.converter.EditableProfileConverter
 import br.com.orcinus.orca.feature.profiledetails.conversion.converter.followable.FollowableProfileConverter
@@ -28,10 +30,12 @@ internal object ProfileConverterFactory {
    *
    * @param coroutineScope [CoroutineScope] through which converted [Profile]-related suspending
    *   will be performed.
+   * @param followService [FollowService] by which the [Follow] status can be toggled.
+   * @see Follow.toggled
    */
-  fun create(coroutineScope: CoroutineScope): ProfileConverter {
+  fun create(coroutineScope: CoroutineScope, followService: FollowService): ProfileConverter {
     val defaultConverter = DefaultProfileConverter(next = null)
     val editableConverter = EditableProfileConverter(next = defaultConverter)
-    return FollowableProfileConverter(coroutineScope, next = editableConverter)
+    return FollowableProfileConverter(coroutineScope, followService, next = editableConverter)
   }
 }

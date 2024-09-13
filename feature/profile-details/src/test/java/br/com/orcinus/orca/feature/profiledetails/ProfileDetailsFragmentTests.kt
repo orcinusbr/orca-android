@@ -20,6 +20,7 @@ import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
+import br.com.orcinus.orca.core.sample.feed.profile.type.followable.SampleFollowService
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.feature.profiledetails.navigation.BackwardsNavigationState
 import br.com.orcinus.orca.feature.profiledetails.test.UnnavigableProfileDetailsModule
@@ -40,11 +41,16 @@ internal class ProfileDetailsFragmentTests {
     SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
       .withDefaultProfiles()
       .build()
+  private val followService = SampleFollowService(instance.profileProvider)
 
   @get:Rule
   val injectorRule = InjectorTestRule {
     register<ProfileDetailsModule>(
-      UnnavigableProfileDetailsModule(instance.profileProvider, instance.postProvider)
+      UnnavigableProfileDetailsModule(
+        instance.profileProvider,
+        followService,
+        instance.postProvider
+      )
     )
   }
   @get:Rule val composeRule = createEmptyComposeRule()
@@ -53,7 +59,7 @@ internal class ProfileDetailsFragmentTests {
   fun unfollowsFollowedProfileWhenClickingActionButton() {
     val profile = instance.profileProvider.provideCurrent<FollowableProfile<*>>()
     if (!profile.follow.isFollowingType) {
-      runTest { profile.toggleFollow() }
+      runTest { followService.toggle(profile.id, profile.follow) }
     }
     launchFragmentInNavigationContainer {
         ProfileDetailsFragment(

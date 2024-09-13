@@ -49,7 +49,7 @@ class MastodonAuthenticationActivity : ComposableActivity() {
     viewModels<MastodonAuthenticationViewModel> {
       MastodonAuthenticationViewModel.createFactory(
         application,
-        instance.requester,
+        requester = Injector.get(),
         instance.imageLoaderProvider,
         authorizationCode
       )

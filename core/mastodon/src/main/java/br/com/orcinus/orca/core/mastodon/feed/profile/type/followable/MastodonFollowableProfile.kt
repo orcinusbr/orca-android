@@ -22,8 +22,6 @@ import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
 import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfile
 import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfilePostPaginator
-import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
-import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 import br.com.orcinus.orca.std.image.SomeImageLoader
 import br.com.orcinus.orca.std.markdown.Markdown
 import java.net.URI
@@ -31,13 +29,11 @@ import java.net.URI
 /**
  * [MastodonProfile] that can be followed.
  *
- * @property requester [Requester] by which a request to change the follow status is performed.
  * @property postPaginatorProvider [MastodonProfilePostPaginator.Provider] by which a
  *   [MastodonProfilePostPaginator] for paginating through the [MastodonProfile]'s [Post]s will be
  *   provided.
  */
 internal class MastodonFollowableProfile<T : Follow>(
-  private val requester: Requester,
   private val postPaginatorProvider: MastodonProfilePostPaginator.Provider,
   override val id: String,
   override val account: Account,
@@ -60,24 +56,4 @@ internal class MastodonFollowableProfile<T : Follow>(
     followingCount,
     uri
   ),
-  FollowableProfile<T>() {
-  override suspend fun onChangeFollowTo(follow: T) {
-    requester
-      .authenticated()
-      .post({
-        path("api")
-          .path("v1")
-          .path("accounts")
-          .path(id)
-          .run {
-            when (follow) {
-              Follow.Public.following(),
-              Follow.Private.requested(),
-              Follow.Private.following() -> path("follow")
-              else -> path("unfollow")
-            }
-          }
-          .build()
-      })
-  }
-}
+  FollowableProfile<T>()

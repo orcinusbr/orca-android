@@ -217,7 +217,6 @@ internal data class MastodonAccount(
         .first()
         .toFollow(locked)
     return MastodonFollowableProfile(
-      requester,
       postPaginatorProvider,
       id,
       account,

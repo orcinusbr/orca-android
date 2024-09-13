@@ -17,9 +17,7 @@ package br.com.orcinus.orca.core.sample.feed.profile
 
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.ProfileProvider
-import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
 import br.com.orcinus.orca.core.sample.feed.profile.type.editable.replacingOnceBy
-import br.com.orcinus.orca.core.sample.feed.profile.type.followable.SampleFollowableProfile
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -84,22 +82,6 @@ class SampleProfileProvider : ProfileProvider() {
    */
   internal fun add(vararg profiles: Profile) {
     profilesFlow.value += profiles
-  }
-
-  /**
-   * Updates the follow status of the [Profile] whose ID is equal the given [id].
-   *
-   * @param id The [Profile]'s ID.
-   * @param follow [Follow] status to update the follow status to.
-   * @throws ProfileProvider.NonexistentProfileException If no [Profile] with such an ID exists.
-   * @see SampleFollowableProfile.follow
-   * @see SampleFollowableProfile.id
-   */
-  @Throws(NonexistentProfileException::class)
-  internal suspend fun <T : Follow> updateFollow(id: String, follow: T) {
-    update(id) {
-      @Suppress("UNCHECKED_CAST") (this as SampleFollowableProfile<T>).copy(follow = follow)
-    }
   }
 
   /**

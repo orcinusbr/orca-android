@@ -195,7 +195,7 @@ abstract class Follow private constructor() : Serializable {
   }
 
   /** Provides the [Follow] status that's contrary to this one. */
-  internal abstract fun toggled(): Follow
+  @InternalCoreApi abstract fun toggled(): Follow
 
   /** Provides the [Follow] status that succeeds this one. */
   internal abstract fun next(): Follow?

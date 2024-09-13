@@ -21,6 +21,7 @@ import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.PostProvider
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
 import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
+import br.com.orcinus.orca.core.sample.feed.profile.type.followable.SampleFollowService
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetailsBoundary
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetailsModule
 import br.com.orcinus.orca.std.injector.module.injection.immediateInjectionOf
@@ -37,10 +38,12 @@ import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
  */
 class UnnavigableProfileDetailsModule(
   profileProvider: SampleProfileProvider,
+  followService: SampleFollowService,
   postProvider: SamplePostProvider
 ) :
   ProfileDetailsModule(
     immediateInjectionOf<ProfileProvider>(profileProvider),
+    immediateInjectionOf(followService),
     immediateInjectionOf<PostProvider>(postProvider),
     lazyInjectionOf { NoOpProfileDetailsBoundary }
   )

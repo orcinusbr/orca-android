@@ -25,6 +25,7 @@ import br.com.orcinus.orca.composite.timeline.post.figure.gallery.disposition.Di
 import br.com.orcinus.orca.composite.timeline.post.toPostPreviewFlow
 import br.com.orcinus.orca.core.feed.profile.ProfileProvider
 import br.com.orcinus.orca.core.feed.profile.post.PostProvider
+import br.com.orcinus.orca.core.feed.profile.type.followable.FollowService
 import br.com.orcinus.orca.ext.coroutines.await
 import br.com.orcinus.orca.ext.coroutines.flatMapEach
 import br.com.orcinus.orca.ext.coroutines.notifier.notifierFlow
@@ -52,6 +53,7 @@ internal class ProfileDetailsViewModel
 private constructor(
   application: Application,
   private val profileProvider: ProfileProvider,
+  private val followService: FollowService,
   private val postProvider: PostProvider,
   coroutineDispatcher: CoroutineDispatcher,
   private val id: String,
@@ -75,7 +77,9 @@ private constructor(
     get() = getApplication<Application>()
 
   val detailsLoadableFlow =
-    profileFlow.map { it.toProfileDetails(coroutineScope, colors) }.loadable(coroutineScope)
+    profileFlow
+      .map { it.toProfileDetails(coroutineScope, followService, colors) }
+      .loadable(coroutineScope)
 
   @OptIn(ExperimentalCoroutinesApi::class)
   val postPreviewsLoadableFlow =
@@ -120,6 +124,7 @@ private constructor(
     fun createFactory(
       application: Application,
       profileProvider: ProfileProvider,
+      followService: FollowService,
       postProvider: PostProvider,
       id: String,
       onLinkClick: (URI) -> Unit,
@@ -130,6 +135,7 @@ private constructor(
           ProfileDetailsViewModel(
             application,
             profileProvider,
+            followService,
             postProvider,
             Dispatchers.Main.immediate,
             id,
