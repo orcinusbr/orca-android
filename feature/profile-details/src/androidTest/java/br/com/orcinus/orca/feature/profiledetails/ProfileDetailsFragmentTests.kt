@@ -18,6 +18,7 @@ package br.com.orcinus.orca.feature.profiledetails
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
+import br.com.orcinus.orca.core.sample.feed.profile.type.followable.SampleFollowService
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.feature.profiledetails.navigation.BackwardsNavigationState
 import br.com.orcinus.orca.feature.profiledetails.test.UnnavigableProfileDetailsModule
@@ -39,9 +40,10 @@ internal class ProfileDetailsFragmentTests {
       .withDefaultPosts()
       .build()
   private val profileProvider = instance.profileProvider
+  private val followService = SampleFollowService(profileProvider)
   private val injectorRule = InjectorTestRule {
     register<ProfileDetailsModule>(
-      UnnavigableProfileDetailsModule(profileProvider, instance.postProvider)
+      UnnavigableProfileDetailsModule(profileProvider, followService, instance.postProvider)
     )
   }
   private val composeRule = createEmptyComposeRule()
