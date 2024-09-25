@@ -17,6 +17,8 @@ package br.com.orcinus.orca.core.sample.feed.profile
 
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.ProfileProvider
+import br.com.orcinus.orca.core.sample.feed.profile.composition.Composer
+import br.com.orcinus.orca.core.sample.feed.profile.type.editable.SampleEditableProfile
 import br.com.orcinus.orca.core.sample.feed.profile.type.editable.replacingOnceBy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,11 +29,11 @@ import kotlinx.coroutines.runBlocking
 
 /** [ProfileProvider] that provides sample [Profile]s. */
 class SampleProfileProvider : ProfileProvider() {
-  /** [MutableStateFlow] that provides the [Profile]s. */
-  @PublishedApi internal val profilesFlow = MutableStateFlow(emptyList<Profile>())
+  /** [MutableStateFlow] that provides the [Composer]s. */
+  @PublishedApi internal val composersFlow = MutableStateFlow(emptyList<Composer>())
 
   public override suspend fun contains(id: String): Boolean {
-    val ids = provideCurrent().map(Profile::id)
+    val ids = provideCurrent().map(Composer::id)
     return id in ids
   }
 
@@ -39,62 +41,69 @@ class SampleProfileProvider : ProfileProvider() {
     return NonexistentProfileException(cause = null)
   }
 
-  override suspend fun onProvide(id: String): Flow<Profile> {
-    return profilesFlow.mapNotNull { profiles -> profiles.find { profile -> profile.id == id } }
+  override suspend fun onProvide(id: String): Flow<Composer> {
+    return composersFlow.mapNotNull { composers ->
+      composers.find { composer -> composer.id == id }
+    }
+  }
+
+  /** Provides one [Composer] out of the current ones. */
+  fun provideOneCurrent(): Composer {
+    return provideCurrent<SampleEditableProfile>()
   }
 
   /**
-   * Provides a [Profile] of the specified type.
+   * Provides a [Composer] of the specified type.
    *
-   * @param T [Profile] to be obtained.
-   * @throws NoSuchElementException If no [Profile] whose type is the specified one is found.
+   * @param T [Composer] to be obtained.
+   * @throws NoSuchElementException If no [Composer] whose type is the specified one is found.
    */
   @Throws(NoSuchElementException::class)
-  inline fun <reified T : Profile> provideCurrent(): T {
+  inline fun <reified T : Composer> provideCurrent(): T {
     return provideCurrent().find { it is T } as? T
       ?: throw NoSuchElementException("${T::class.qualifiedName}")
   }
 
-  /** Provides the [Profile]s currently added. */
-  fun provideCurrent(): List<Profile> {
-    return profilesFlow.value
+  /** Provides the [Composer]s currently added. */
+  fun provideCurrent(): List<Composer> {
+    return composersFlow.value
   }
 
   /**
-   * Provides the current [Profile] identified as [id].
+   * Provides the current [Composer] identified as [id].
    *
-   * @param id ID of the [Profile] to be provided.
-   * @see Profile.id
+   * @param id ID of the [Composer] to be provided.
+   * @see Composer.id
    */
   @PublishedApi
-  internal fun provideCurrent(id: String): Profile {
+  internal fun provideCurrent(id: String): Composer {
     /*
-     * Profiles emitted to SampleProfileProvider's onProvide(String): Flow<Profile>'s flow are
+     * Profiles emitted to SampleProfileProvider's onProvide(String): Flow<Composer>'s flow are
      * obtained through an in-memory, non-blocking lookup.
      */
-    return runBlocking { provide(id).first() }
+    return runBlocking { provide(id).first() as Composer }
   }
 
   /**
-   * Adds various [Profile]s.
+   * Adds various [Composer]s.
    *
-   * @param profiles [Profile]s to be added.
+   * @param composers [Composer]s to be added.
    */
-  internal fun add(vararg profiles: Profile) {
-    profilesFlow.value += profiles
+  internal fun add(vararg composers: Composer) {
+    composersFlow.value += composers
   }
 
   /**
-   * Replaces the currently existing [Profile] identified as [id] by its updated version.
+   * Replaces the currently existing [Composer] identified as [id] by its updated version.
    *
-   * @param id ID of the [Profile] to be updated.
-   * @param update Changes to be made to the existing [Profile].
-   * @throws ProfileProvider.NonexistentProfileException If no [Profile] with such an ID exists.
-   * @see Profile.id
+   * @param id ID of the [Composer] to be updated.
+   * @param update Changes to be made to the existing [Composer].
+   * @throws ProfileProvider.NonexistentProfileException If no [Composer] with such an ID exists.
+   * @see Composer.id
    */
-  internal suspend fun update(id: String, update: Profile.() -> Profile) {
+  internal suspend fun update(id: String, update: Composer.() -> Composer) {
     if (contains(id)) {
-      profilesFlow.update { profiles ->
+      composersFlow.update { profiles ->
         profiles.replacingOnceBy(update) { profile -> profile.id == id }
       }
     } else {

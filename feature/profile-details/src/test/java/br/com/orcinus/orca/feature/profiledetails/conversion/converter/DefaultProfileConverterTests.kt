@@ -18,8 +18,8 @@ package br.com.orcinus.orca.feature.profiledetails.conversion.converter
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.autos.colors.Colors
-import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
-import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
+import br.com.orcinus.orca.core.sample.feed.profile.type.editable.SampleEditableProfile
+import br.com.orcinus.orca.core.sample.feed.profile.type.followable.SampleFollowableProfile
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetails
 import br.com.orcinus.orca.feature.profiledetails.createSample
@@ -50,7 +50,7 @@ internal class DefaultProfileConverterTests {
         .withDefaultProfiles()
         .build()
         .profileProvider
-    val editableProfile = profileProvider.provideCurrent<EditableProfile>()
+    val editableProfile = profileProvider.provideCurrent<SampleEditableProfile>()
     val profileDetails = ProfileDetails.Default.createSample(profileProvider, editableProfile)
     assertThat(converter.convert(editableProfile, Colors.LIGHT)).isEqualTo(profileDetails)
   }
@@ -62,7 +62,7 @@ internal class DefaultProfileConverterTests {
         .withDefaultProfiles()
         .build()
         .profileProvider
-    val followableProfile = profileProvider.provideCurrent<FollowableProfile<*>>()
+    val followableProfile = profileProvider.provideCurrent<SampleFollowableProfile<*>>()
     val profileDetails = ProfileDetails.Default.createSample(profileProvider, followableProfile)
     assertThat(converter.convert(followableProfile, Colors.LIGHT)).isEqualTo(profileDetails)
   }

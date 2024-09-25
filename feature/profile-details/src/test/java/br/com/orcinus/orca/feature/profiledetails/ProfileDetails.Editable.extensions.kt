@@ -18,8 +18,8 @@ package br.com.orcinus.orca.feature.profiledetails
 import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.composite.timeline.text.annotated.toAnnotatedString
 import br.com.orcinus.orca.core.feed.profile.Profile
-import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
+import br.com.orcinus.orca.core.sample.feed.profile.type.editable.SampleEditableProfile
 
 /**
  * Creates a sample [ProfileDetails.Editable].
@@ -30,7 +30,7 @@ import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
 internal fun ProfileDetails.Editable.Companion.createSample(
   profileProvider: SampleProfileProvider
 ): ProfileDetails.Editable {
-  val profile = profileProvider.provideCurrent<EditableProfile>()
+  val profile = profileProvider.provideCurrent<SampleEditableProfile>()
   return ProfileDetails.Editable(
     profile.id,
     profile.avatarLoader,

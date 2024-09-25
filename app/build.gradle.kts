@@ -123,7 +123,7 @@ dependencies {
   implementation(libs.android.appcompat)
   implementation(libs.android.constraintLayout)
 
-  releaseImplementation(libs.kotlin.reflect)
+  releaseCompileOnly(libs.lombok)
 
   "testDemoImplementation"(project(":composite:timeline"))
   "testDemoImplementation"(project(":core:sample-test"))

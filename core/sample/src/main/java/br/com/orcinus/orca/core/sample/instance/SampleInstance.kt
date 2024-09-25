@@ -27,7 +27,6 @@ import br.com.orcinus.orca.core.feed.profile.post.PostProvider
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Headline
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Highlight
-import br.com.orcinus.orca.core.feed.profile.post.repost.Repost
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearcher
 import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
 import br.com.orcinus.orca.core.instance.Instance
@@ -38,7 +37,10 @@ import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
 import br.com.orcinus.orca.core.sample.auth.actor.sample
 import br.com.orcinus.orca.core.sample.feed.SampleFeedProvider
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
-import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePost
+import br.com.orcinus.orca.core.sample.feed.profile.composition.Composers.compose
+import br.com.orcinus.orca.core.sample.feed.profile.composition.Composers.toAuthor
+import br.com.orcinus.orca.core.sample.feed.profile.composition.TimedComposition.PublishingStrategy.asOwned
+import br.com.orcinus.orca.core.sample.feed.profile.composition.TimedComposition.PublishingStrategy.asRepostFrom
 import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
 import br.com.orcinus.orca.core.sample.feed.profile.post.christianSampleAuthorID
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.SampleTermMuter
@@ -62,7 +64,8 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 /** [Instance] made out of sample underlying core structures. */
-class SampleInstance(
+class SampleInstance
+private constructor(
   override val authenticator: SampleAuthenticator,
   override val authenticationLock: SampleAuthenticationLock,
   override val feedProvider: SampleFeedProvider,
@@ -151,36 +154,29 @@ class SampleInstance(
         profileProvider.add(
           SampleEditableProfile(
             profileProvider,
-            postProvider,
             Author.createSample(imageLoaderProvider),
             bio = Markdown.unstyled("Founder of Orcinus, software engineer and content creator."),
             followerCount = 1_024,
             followingCount = 64
           ),
           SampleFollowableProfile(
-            profileProvider,
-            postProvider,
-            Author.createChristianSample(imageLoaderProvider),
-            bio =
-              Markdown.unstyled(
-                "iOS developer, creator of Apollo and Pixel Pals. Previously at \uF8FF. he/him. " +
-                  "i love animals. 🌱"
-              ),
+            /* delegate = */ Author.createChristianSample(imageLoaderProvider),
+            /* bio = */ Markdown.unstyled(
+              "iOS developer, creator of Apollo and Pixel Pals. Previously at \uF8FF. he/him. i " +
+                "love animals. 🌱"
+            ),
             Follow.Public.following(),
-            followerCount = 45_113,
-            followingCount = 478
+            /* followerCount = */ 45_113,
+            /* followingCount = */ 478
           ),
           SampleFollowableProfile(
-            profileProvider,
-            postProvider,
-            Author.createRamboSample(imageLoaderProvider),
-            bio =
-              Markdown.unstyled(
-                "I know a thing or two about AirPods. App developer, security researcher. 🏳️‍🌈🧩"
-              ),
+            /* delegate = */ Author.createRamboSample(imageLoaderProvider),
+            /* bio = */ Markdown.unstyled(
+              "I know a thing or two about AirPods. App developer, security researcher. 🏳️‍🌈🧩"
+            ),
             Follow.Public.following(),
-            followerCount = 12_641,
-            followingCount = 239
+            /* followerCount = */ 12_641,
+            /* followingCount = */ 239
           )
         )
       }
@@ -211,39 +207,13 @@ class SampleInstance(
       override val imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
     ) : Builder() {
       init {
-        postProvider.add(
-          SamplePost(
-            postProvider,
-            owner = profileProvider.provideCurrent(Actor.Authenticated.sample.id),
-            Content.sample,
-            publicationDateTime = ZonedDateTime.of(2_003, 10, 8, 8, 0, 0, 0, ZoneId.of("GMT-3"))
-          ),
-          Repost(
-            SamplePost(
-              postProvider,
-              owner = profileProvider.provideCurrent(ramboSampleAuthorID),
-              Content.from(
-                Domain.sample,
-                text =
-                  Markdown.unstyled(
-                    "Programming life hack. Looking for real-world examples of how an API is " +
-                      "used? Search for code on GitHub like so: “APINameHere path:*.extension”. " +
-                      "Practical example for a MusicKit API in Swift: " +
-                      "“MusicCatalogResourceRequest extension:*.swift”. I can usually find lots " +
-                      "of examples to help me get things going without having to read the entire " +
-                      "documentation for a given API."
-                  )
-              ) {
-                null
-              },
-              publicationDateTime =
-                ZonedDateTime.of(2023, 8, 16, 16, 48, 43, 384, ZoneId.of("GMT-3"))
-            ),
-            reblogger = Author.createSample(imageLoaderProvider)
-          ),
-          SamplePost(
-            postProvider,
-            owner = profileProvider.provideCurrent(Actor.Authenticated.sample.id),
+        profileProvider
+          .provideCurrent(Actor.Authenticated.sample.id)
+          .compose(Content.sample)
+          .on(ZonedDateTime.of(2_003, 10, 8, 8, 0, 0, 0, ZoneId.of("GMT-3")))
+          .publish(asOwned())
+          .and()
+          .compose(
             Content.from(
               Domain.sample,
               text =
@@ -262,12 +232,31 @@ class SampleInstance(
                     "abilities to the world, and should be encouraged and celebrated.",
                 imageLoaderProvider.provide(CoverImageSource.ThePowerOfIntroverts)
               )
-            },
-            publicationDateTime = ZonedDateTime.of(2_024, 4, 5, 9, 32, 0, 0, ZoneId.of("GMT-3")),
-          ),
-          SamplePost(
-            postProvider,
-            profileProvider.provideCurrent(christianSampleAuthorID),
+            }
+          )
+          .on(ZonedDateTime.of(2_024, 4, 5, 9, 32, 0, 0, ZoneId.of("GMT-3")))
+          .publish(asOwned())
+          .and()
+          .compose(
+            Content.from(
+              Domain.sample,
+              text =
+                Markdown.unstyled(
+                  "Programming life hack. Looking for real-world examples of how an API is used? " +
+                    "Search for code on GitHub like so: “APINameHere path:*.extension”. " +
+                    "Practical example for a MusicKit API in Swift: “MusicCatalogResourceRequest " +
+                    "extension:*.swift”. I can usually find lots of examples to help me get " +
+                    "things going without having to read the entire documentation for a given API."
+                )
+            ) {
+              null
+            }
+          )
+          .on(ZonedDateTime.of(2023, 8, 16, 16, 48, 43, 384, ZoneId.of("GMT-3")))
+          .publish(asRepostFrom(profileProvider.provideCurrent(ramboSampleAuthorID).toAuthor()))
+        profileProvider
+          .provideCurrent(christianSampleAuthorID)
+          .compose(
             Content.from(
               Domain.sample,
               text =
@@ -279,11 +268,10 @@ class SampleInstance(
                 }
             ) {
               Headline.createSample(imageLoaderProvider)
-            },
-            publicationDateTime =
-              ZonedDateTime.of(2_023, 11, 27, 18, 26, 0, 0, ZoneId.of("America/Halifax"))
+            }
           )
-        )
+          .on(ZonedDateTime.of(2_023, 11, 27, 18, 26, 0, 0, ZoneId.of("America/Halifax")))
+          .publish(asOwned())
       }
     }
 
@@ -312,7 +300,7 @@ class SampleInstance(
         val authenticationLock = SampleAuthenticationLock(authenticator, actorProvider)
         val profileProvider = SampleProfileProvider()
         val profileSearcher = SampleProfileSearcher(profileProvider)
-        val postProvider = SamplePostProvider()
+        val postProvider = SamplePostProvider(profileProvider)
         val termMuter = SampleTermMuter()
         val feedProvider =
           SampleFeedProvider(profileProvider, postProvider, termMuter, imageLoaderProvider)

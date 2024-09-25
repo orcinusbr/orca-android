@@ -18,9 +18,9 @@ package br.com.orcinus.orca.feature.profiledetails.conversion
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.autos.colors.Colors
-import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
-import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
+import br.com.orcinus.orca.core.sample.feed.profile.type.editable.SampleEditableProfile
 import br.com.orcinus.orca.core.sample.feed.profile.type.followable.SampleFollowService
+import br.com.orcinus.orca.core.sample.feed.profile.type.followable.SampleFollowableProfile
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetails
 import br.com.orcinus.orca.feature.profiledetails.createSample
@@ -57,7 +57,7 @@ internal class ProfileConverterFactoryTests {
         .build()
         .profileProvider
     val followService = SampleFollowService(profileProvider)
-    val editableProfile = profileProvider.provideCurrent<EditableProfile>()
+    val editableProfile = profileProvider.provideCurrent<SampleEditableProfile>()
     assertThat(
         ProfileConverterFactory.create(coroutineScope, followService)
           .convert(editableProfile, Colors.LIGHT)
@@ -73,7 +73,7 @@ internal class ProfileConverterFactoryTests {
         .build()
         .profileProvider
     val followService = SampleFollowService(profileProvider)
-    val followableProfile = profileProvider.provideCurrent<FollowableProfile<*>>()
+    val followableProfile = profileProvider.provideCurrent<SampleFollowableProfile<*>>()
     val onStatusToggle = {}
     assertThat(
         ProfileConverterFactory.create(coroutineScope, followService)

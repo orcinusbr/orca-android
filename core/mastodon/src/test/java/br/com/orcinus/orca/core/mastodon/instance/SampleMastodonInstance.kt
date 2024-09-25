@@ -40,7 +40,7 @@ internal class SampleMastodonInstance(
 ) : MastodonInstance<Authorizer, Authenticator>(Domain.sample, authorizer) {
   override val profileProvider = SampleProfileProvider()
   override val profileSearcher = SampleProfileSearcher(profileProvider)
-  override val postProvider = SamplePostProvider()
+  override val postProvider = SamplePostProvider(profileProvider)
   override val feedProvider =
     SampleFeedProvider(
       profileProvider,

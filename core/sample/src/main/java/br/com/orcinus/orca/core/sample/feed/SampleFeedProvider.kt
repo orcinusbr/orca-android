@@ -19,8 +19,8 @@ import br.com.orcinus.orca.core.feed.FeedProvider
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.TermMuter
-import br.com.orcinus.orca.core.sample.feed.profile.SAMPLE_POSTS_PER_PAGE
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
+import br.com.orcinus.orca.core.sample.feed.profile.composition.Composer
 import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
 import br.com.orcinus.orca.core.sample.image.SampleImageSource
 import br.com.orcinus.orca.std.image.ImageLoader
@@ -54,7 +54,7 @@ class SampleFeedProvider(
 
   override suspend fun onProvide(userID: String, page: Int): Flow<List<Post>> {
     return postProvider.postsFlow.map { posts ->
-      posts.chunked(SAMPLE_POSTS_PER_PAGE).getOrElse(page) { emptyList() }
+      posts.chunked(Composer.MAX_POST_COUNT_PER_PAGE).getOrElse(page) { emptyList() }
     }
   }
 

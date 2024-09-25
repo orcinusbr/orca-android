@@ -20,17 +20,25 @@ import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.PostProvider
 import br.com.orcinus.orca.core.feed.profile.post.repost.Repost
 import br.com.orcinus.orca.core.sample.auth.actor.sample
+import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
+import br.com.orcinus.orca.core.sample.feed.profile.composition.Composers.posts
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.runBlocking
 
-/** [PostProvider] that provides sample [Post]s. */
-class SamplePostProvider : PostProvider() {
-  /** [MutableStateFlow] that provides the [Post]s. */
-  internal val postsFlow = MutableStateFlow(emptyList<Post>())
+/**
+ * [PostProvider] that provides sample [Post]s.
+ *
+ * @param profileProvider [SampleProfileProvider] from which all [Post]s are obtained.
+ */
+class SamplePostProvider(private val profileProvider: SampleProfileProvider) : PostProvider() {
+  /** [Flow] that provides the [Post]s. */
+  internal val postsFlow =
+    profileProvider.composersFlow.map { composers ->
+      composers.flatMap { composer -> composer.posts }
+    }
 
   override suspend fun onProvide(id: String): Flow<Post> {
     return postsFlow.mapNotNull { posts -> posts.find { post -> post.id == id } }
@@ -41,25 +49,13 @@ class SamplePostProvider : PostProvider() {
     return provideAllCurrentBy(Actor.Authenticated.sample.id).filterNot { it is Repost }.first()
   }
 
-  /**
-   * Adds various [Post]s.
-   *
-   * @param posts [Post]s to be added.
-   * @throws IllegalArgumentException If a [Post] with the same ID as that of one that is already
-   *   present is added.
-   */
-  @Throws(IllegalArgumentException::class)
-  fun add(vararg posts: Post) {
-    posts.forEach {
-      val isUnique = it.id !in provideAllCurrent().map(Post::id)
-      require(isUnique) { "A post with the same ID (${it.id}) already exists." }
-      postsFlow.value += it
-    }
-  }
-
   /** Provides all current [Post]s. */
   fun provideAllCurrent(): List<Post> {
-    return postsFlow.value
+    /*
+     * SampleProfileProvider's composersFlow emits immediately (given that it is a stateful one),
+     * and so does postsFlow; thus, the execution flow does not get blocked.
+     */
+    return runBlocking { postsFlow.first() }
   }
 
   /**
@@ -76,21 +72,11 @@ class SamplePostProvider : PostProvider() {
   }
 
   /**
-   * Removes the [Post] identified by the [id].
-   *
-   * @param id ID of the [Post] to be removed.
-   * @see Post.id
-   */
-  fun remove(id: String) {
-    postsFlow.value -= provideAllCurrent().single { post -> post.id == id }
-  }
-
-  /**
    * Provides the [Post]s made by the author whose ID equals to the given one.
    *
    * @param authorID ID of the author whose [Post]s will be provided.
    */
-  internal fun provideAllBy(authorID: String): Flow<List<Post>> {
+  private fun provideAllBy(authorID: String): Flow<List<Post>> {
     return postsFlow.map { posts -> posts.filter { post -> post.author.id == authorID } }
   }
 }

@@ -88,7 +88,7 @@ internal class PostDetailsConversionScope(delegate: TestScope) : CoroutineScope 
   private val termMuter = SampleTermMuter()
 
   /** [Instance]-specific [PostProvider] that provides [Post]s. */
-  val postProvider = SamplePostProvider()
+  val postProvider = SamplePostProvider(profileProvider)
 
   /** [Instance]-specific [FeedProvider] that provides the [Post]s in the timeline. */
   private val feedProvider =

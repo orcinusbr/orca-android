@@ -19,6 +19,7 @@ import br.com.orcinus.orca.core.feed.profile.type.editable.Editor
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
 import br.com.orcinus.orca.std.image.SomeImageLoader
 import br.com.orcinus.orca.std.markdown.Markdown
+import kotlin.reflect.KMutableProperty1
 
 /**
  * [Editor] that edits [SampleEditableProfile]s.
@@ -33,11 +34,20 @@ internal class SampleEditor(
   private val id: String
 ) : Editor {
   override suspend fun setAvatarLoader(avatarLoader: SomeImageLoader) {
-    edit { this.avatarLoader = avatarLoader }
+    edit {
+      @Suppress("UNCHECKED_CAST")
+      (this::avatarLoader as KMutableProperty1<SampleEditableProfile, SomeImageLoader>).set(
+        this,
+        avatarLoader
+      )
+    }
   }
 
   override suspend fun setName(name: String) {
-    edit { this.name = name }
+    edit {
+      @Suppress("UNCHECKED_CAST")
+      (this::name as KMutableProperty1<SampleEditableProfile, String>).set(this, name)
+    }
   }
 
   override suspend fun setBio(bio: Markdown) {

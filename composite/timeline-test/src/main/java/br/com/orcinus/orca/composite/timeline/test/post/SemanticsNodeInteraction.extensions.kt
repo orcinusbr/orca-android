@@ -27,7 +27,7 @@ import br.com.orcinus.orca.composite.timeline.test.isTimeline
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.sample.feed.SampleFeedProvider
-import br.com.orcinus.orca.core.sample.feed.profile.SAMPLE_POSTS_PER_PAGE
+import br.com.orcinus.orca.core.sample.feed.profile.composition.Composer
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.platform.core.sample
 
@@ -127,7 +127,7 @@ private fun findIndexedPost(
     ?: findIndexedPost(
       feedProvider,
       page.inc(),
-      lastIndex = SAMPLE_POSTS_PER_PAGE * page.inc(),
+      lastIndex = Composer.MAX_POST_COUNT_PER_PAGE * page.inc(),
       predicate
     )
 }

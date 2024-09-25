@@ -18,8 +18,11 @@
 -dontobfuscate
 -dontwarn androidx.compose.runtime.internal.ComposableFunction2
 -keep public class br.com.orcinus.orca.** { *; }
+-keep public class lombok.Generated
+-keep public class lombok.NonNull
 -keepclassmembers class * implements android.os.Parcelable {
   #noinspection ShrinkerUnresolvedReference
+
   public static final android.os.Parcelable$Creator CREATOR;
 }
 -keepclassmembers class br.com.orcinus.orca.platform.autos.kit.input.text.composition.ErrorDelegate {

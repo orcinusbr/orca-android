@@ -15,13 +15,18 @@
 
 plugins {
   alias(libs.plugins.kotlin.jvm)
+  alias(libs.plugins.kotlin.lombok)
   alias(libs.plugins.kotlin.symbolProcessor)
 
   `java-library`
 }
 
 dependencies {
+  annotationProcessor(libs.lombok)
+
   api(project(":core-module"))
+
+  compileOnly(libs.lombok)
 
   implementation(project(":ext:coroutines"))
   implementation(project(":ext:uri"))
@@ -36,5 +41,3 @@ dependencies {
   testImplementation(libs.kotlin.test)
   testImplementation(libs.turbine)
 }
-
-kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")

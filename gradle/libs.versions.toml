@@ -74,6 +74,7 @@ loadable = { group = "com.jeanbarrossilva.loadable", name = "loadable", version.
 loadable-list = { group = "com.jeanbarrossilva.loadable", name = "loadable-list", version.ref = "loadable" }
 loadable-placeholder = { group = "com.jeanbarrossilva.loadable", name = "loadable-placeholder", version.ref = "loadable" }
 loadable-placeholder-test = { group = "com.jeanbarrossilva.loadable", name = "loadable-placeholder-test", version.ref = "loadable" }
+lombok = { group = "org.projectlombok", name = "lombok", version = "1.18.34" }
 mockito = { group = "org.mockito", name = "mockito-core", version = "5.12.0" }
 mockk = { group = "io.mockk", name = "mockk-android", version = "1.13.11" }
 openTest4J = { group = "org.opentest4j", name = "opentest4j", version = "1.3.0" }
@@ -93,6 +94,7 @@ buildconfig = { id = "com.github.gmazzo.buildconfig", version = "3.1.0" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-lombok = { id = "org.jetbrains.kotlin.plugin.lombok", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-symbolProcessor = { id = "com.google.devtools.ksp", version.ref = "kotlin-symbolProcessor" }
 lint = { id = "com.android.lint", version.ref = "android-plugin" }

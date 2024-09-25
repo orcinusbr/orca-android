@@ -73,7 +73,7 @@ constructor(delegate: TestScope) : CoroutineScope by delegate {
   private val imageLoaderProvider = ComposableImageLoader.Provider.sample
 
   /** [SamplePostProvider] in which the [post] is added and by which it is provided. */
-  val postProvider = SamplePostProvider()
+  val postProvider = SamplePostProvider(profileProvider)
 
   /**
    * [SampleFeedProvider] to create the [SampleInstance] from which the [Post] is created with.

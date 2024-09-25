@@ -56,8 +56,8 @@ import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.post.time.RelativeTimeProvider
 import br.com.orcinus.orca.composite.timeline.post.time.rememberRelativeTimeProvider
 import br.com.orcinus.orca.core.feed.profile.account.Account
-import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
+import br.com.orcinus.orca.core.sample.feed.profile.type.editable.SampleEditableProfile
 import br.com.orcinus.orca.core.sample.feed.profile.type.followable.SampleFollowService
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.feature.profiledetails.navigation.BackwardsNavigationState
@@ -196,7 +196,7 @@ internal sealed class ProfileDetails : Serializable {
           .withDefaultPosts()
           .build()
           .profileProvider
-          .provideCurrent<EditableProfile>()
+          .provideCurrent<SampleEditableProfile>()
           .toProfileDetails(coroutineScope, followService, AutosTheme.colors)
       }
   }

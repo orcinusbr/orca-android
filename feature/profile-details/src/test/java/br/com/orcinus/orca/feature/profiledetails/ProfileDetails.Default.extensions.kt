@@ -19,8 +19,8 @@ import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.composite.timeline.text.annotated.toAnnotatedString
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Post
-import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
+import br.com.orcinus.orca.core.sample.feed.profile.type.editable.SampleEditableProfile
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -57,7 +57,7 @@ internal fun ProfileDetails.Default.Companion.getSampleDelegateProfile(
      * [Profile] to which this one's characteristics (expect for its [id]) and behavior is
      * delegated.
      */
-    private val delegate = profileProvider.provideCurrent<EditableProfile>()
+    private val delegate = profileProvider.provideCurrent<SampleEditableProfile>()
 
     override val id = delegate.id
     override val account = delegate.account

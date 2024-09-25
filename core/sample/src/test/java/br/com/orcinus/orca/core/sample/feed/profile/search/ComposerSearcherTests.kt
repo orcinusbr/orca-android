@@ -27,7 +27,7 @@ import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
-internal class SampleProfileSearcherTests {
+internal class ComposerSearcherTests {
   @Test
   fun searches() {
     runTest {

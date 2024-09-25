@@ -33,7 +33,7 @@ internal class SampleFollowServiceTests {
         .withDefaultProfiles()
         .build()
         .profileProvider
-    val getProfile = { profileProvider.provideCurrent<FollowableProfile<Follow.Public>>() }
+    val getProfile = { profileProvider.provideCurrent<SampleFollowableProfile<Follow.Public>>() }
     val untoggledFollowProfile = getProfile()
     runTest {
       SampleFollowService(profileProvider)
