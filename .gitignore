@@ -4,6 +4,7 @@
 .gradle/
 .idea/*
 .kotlin/
+!.idea/externalDependencies.xml
 !.idea/icon.svg
 !.idea/codeStyles
 !.idea/copyright

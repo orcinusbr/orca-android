@@ -19,19 +19,11 @@ import app.cash.turbine.TurbineTestContext
 import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.doesNotContain
-import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEmpty
-import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.post.OwnedPost
 import br.com.orcinus.orca.core.feed.profile.post.Post
-import br.com.orcinus.orca.core.feed.profile.post.content.Content
-import br.com.orcinus.orca.core.instance.domain.Domain
-import br.com.orcinus.orca.core.sample.feed.profile.SampleProfile
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
-import br.com.orcinus.orca.core.sample.instance.domain.sample
 import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
-import br.com.orcinus.orca.std.markdown.Markdown
-import java.time.ZonedDateTime
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
@@ -77,39 +69,6 @@ internal class SamplePostProviderTests {
         postProvider.provideOneCurrent().own().apply { (this as OwnedPost).remove() }
       val posts = postProvider.provideAllCurrent()
       assertThat(posts).doesNotContain(deletedPost)
-    }
-  }
-
-  @Test(expected = IllegalArgumentException::class)
-  fun throwsWhenAddingDuplicatePost() {
-    val postProvider =
-      SampleInstance.Builder.create(NoOpSampleImageLoader.Provider)
-        .withDefaultProfiles()
-        .withDefaultPosts()
-        .build()
-        .postProvider
-    val duplicatePost = postProvider.provideAllCurrent().first()
-    postProvider.add(duplicatePost)
-  }
-
-  @Test
-  fun adds() {
-    runTest {
-      val postProvider = SamplePostProvider()
-      val postAuthor = Author.createSample(NoOpSampleImageLoader.Provider)
-      val postOwner =
-        SampleProfile(
-          postProvider,
-          postAuthor,
-          bio = Markdown.empty,
-          followerCount = 0,
-          followingCount = 0
-        )
-      val postPublicationDateTime = ZonedDateTime.now()
-      val postContent = Content.from(Domain.sample, text = Markdown.empty) { null }
-      val post = SamplePost(postProvider, postOwner, postContent, postPublicationDateTime)
-      postProvider.add(post)
-      postProvider.provide(post.id).test { assertThat(awaitItem()).isEqualTo(post.own()) }
     }
   }
 }

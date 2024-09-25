@@ -19,6 +19,7 @@ import br.com.orcinus.orca.autos.colors.Colors
 import br.com.orcinus.orca.composite.timeline.text.annotated.toAnnotatedString
 import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
+import br.com.orcinus.orca.core.sample.feed.profile.type.followable.SampleFollowableProfile
 import br.com.orcinus.orca.feature.profiledetails.conversion.converter.followable.toStatus
 
 /**
@@ -34,7 +35,7 @@ internal fun ProfileDetails.Followable.Companion.createSample(
   profileProvider: SampleProfileProvider,
   onStatusToggle: () -> Unit
 ): ProfileDetails.Followable {
-  val profile = profileProvider.provideCurrent<FollowableProfile<*>>()
+  val profile = profileProvider.provideCurrent<SampleFollowableProfile<*>>()
   return ProfileDetails.Followable(
     profile.id,
     profile.avatarLoader,

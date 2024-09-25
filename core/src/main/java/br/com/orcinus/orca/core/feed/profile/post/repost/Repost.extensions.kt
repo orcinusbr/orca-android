@@ -13,6 +13,8 @@
  * not, see https://www.gnu.org/licenses.
  */
 
+@file:JvmName("Reposts")
+
 package br.com.orcinus.orca.core.feed.profile.post.repost
 
 import br.com.orcinus.orca.core.auth.actor.Actor
@@ -32,14 +34,15 @@ import java.time.ZonedDateTime
  * [Post] that has been reposted by someone else.
  *
  * @param original [Post] from which the [Repost] derives.
- * @param reblogger [Author] by which the [Post] has been reblogged.
+ * @param reposter [Author] by which the [Post] has been reposted.
  */
-fun Repost(original: Post, reblogger: Author): Repost {
+@JvmName("create")
+fun Repost(original: Post, reposter: Author): Repost {
   return Repost(
     original.getActorProvider(),
     original.id,
     original.author,
-    reblogger,
+    reposter,
     original.content,
     original.publicationDateTime,
     original.comment,
@@ -58,27 +61,28 @@ fun Repost(original: Post, reblogger: Author): Repost {
  *   current [Actor].
  * @param id Unique identifier.
  * @param author [Author] that has authored the [Post].
- * @param reblogger [Author] by which the [Post] has been reblogged.
+ * @param reposter [Author] by which the [Post] has been reposted.
  * @param content [Content] that's been composed by the [author].
  * @param publicationDateTime Zoned moment in time in which the [Post] was published.
  * @param comment [Stat] for the [Post]'s comments.
  * @param favorite [Stat] for the [Post]'s favorites.
- * @param reblog [Stat] for the [Post]'s reblogs.
+ * @param repost [Stat] for the [Post]'s reposts.
  * @param uri [URI] that leads to the [Post].
  * @param toOwnedPost Converts this [Post] into an owned one. Called when ownership of it is
  *   requested and subsequently conceived.
  * @see Repost.own
  */
+@JvmName("create")
 fun Repost(
   actorProvider: ActorProvider,
   id: String,
   author: Author,
-  reblogger: Author,
+  reposter: Author,
   content: Content,
   publicationDateTime: ZonedDateTime,
   comment: AddableStat<Post>,
   favorite: ToggleableStat<Profile>,
-  reblog: ToggleableStat<Profile>,
+  repost: ToggleableStat<Profile>,
   uri: URI,
   toOwnedPost: suspend (Repost) -> OwnedPost
 ): Repost {
@@ -86,12 +90,12 @@ fun Repost(
     override val actorProvider = actorProvider
     override val id = id
     override val author = author
-    override val reposter = reblogger
+    override val reposter = reposter
     override val content = content
     override val publicationDateTime = publicationDateTime
     override val comment = comment
     override val favorite = favorite
-    override val repost = reblog
+    override val repost = repost
     override val uri = uri
 
     override suspend fun toOwnedPost(): OwnedPost {

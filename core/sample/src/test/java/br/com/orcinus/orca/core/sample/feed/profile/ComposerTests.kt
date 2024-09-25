@@ -19,7 +19,7 @@ import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
-internal class SampleProfileTests {
+internal class ComposerTests {
   @Test
   fun `GIVEN a public unfollowed profile WHEN toggling its follow status THEN it's followed`() {
     runTest { assertTogglingEquals(Follow.Public.following(), Follow.Public.unfollowed()) }

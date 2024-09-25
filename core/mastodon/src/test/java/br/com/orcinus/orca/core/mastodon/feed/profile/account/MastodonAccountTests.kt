@@ -17,10 +17,10 @@ package br.com.orcinus.orca.core.mastodon.feed.profile.account
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
 import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
+import br.com.orcinus.orca.core.sample.feed.profile.composition.Composer
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.ext.uri.URIBuilder
 import br.com.orcinus.orca.platform.core.image.sample
@@ -31,12 +31,12 @@ import kotlin.test.Test
 internal class MastodonAccountTests {
   @Test
   fun convertsIntoProfileSearchResult() {
-    val profile =
+    val composer =
       SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)
         .withDefaultProfiles()
         .build()
         .profileProvider
-        .provideCurrent<Profile>()
+        .provideCurrent<Composer>()
     val avatarURI =
       URIBuilder.url()
         .scheme("https")
@@ -44,31 +44,31 @@ internal class MastodonAccountTests {
         .path("api")
         .path("v1")
         .path("accounts")
-        .path(profile.id)
+        .path(composer.id)
         .path("avatar")
         .build()
     assertThat(
         MastodonAccount(
-            profile.id,
-            profile.account.username.toString(),
-            acct = "${profile.account}",
-            "${profile.uri}",
-            displayName = profile.name,
-            locked = (profile as? FollowableProfile<*>)?.follow is Follow.Private,
-            note = "${profile.bio}",
+            composer.id,
+            composer.account.username.toString(),
+            acct = "${composer.account}",
+            "${composer.uri}",
+            displayName = composer.name,
+            locked = (composer as? FollowableProfile<*>)?.follow is Follow.Private,
+            note = "${composer.bio}",
             avatar = "$avatarURI",
-            followersCount = profile.followerCount,
-            profile.followingCount
+            followersCount = composer.followerCount,
+            composer.followingCount
           )
           .toProfileSearchResult(avatarLoaderProvider = AsyncImageLoader.Provider)
       )
       .isEqualTo(
         ProfileSearchResult(
-          profile.id,
-          profile.account,
+          composer.id,
+          composer.account,
           AsyncImageLoader.Provider.provide(avatarURI),
-          profile.name,
-          profile.uri
+          composer.name,
+          composer.uri
         )
       )
   }

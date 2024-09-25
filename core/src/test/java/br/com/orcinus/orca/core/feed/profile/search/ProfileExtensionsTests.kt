@@ -17,7 +17,7 @@ package br.com.orcinus.orca.core.feed.profile.search
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
+import br.com.orcinus.orca.core.sample.feed.profile.type.editable.SampleEditableProfile
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.core.sample.test.feed.profile.search.sample
 import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
@@ -31,7 +31,7 @@ internal class ProfileExtensionsTests {
         .withDefaultProfiles()
         .build()
         .profileProvider
-        .provideCurrent<EditableProfile>()
+        .provideCurrent<SampleEditableProfile>()
     assertThat(profile.toProfileSearchResult()).isEqualTo(ProfileSearchResult.sample)
   }
 }

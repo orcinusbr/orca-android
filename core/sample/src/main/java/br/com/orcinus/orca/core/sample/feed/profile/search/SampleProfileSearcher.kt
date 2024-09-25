@@ -30,10 +30,10 @@ import kotlinx.coroutines.flow.map
  */
 class SampleProfileSearcher(private val provider: SampleProfileProvider) : ProfileSearcher() {
   override suspend fun onSearch(query: String): Flow<List<ProfileSearchResult>> {
-    return provider.profilesFlow.map { profiles ->
-      profiles.map(Profile::toProfileSearchResult).filter { profile ->
-        profile.account.toString().contains(query, ignoreCase = true) ||
-          profile.name.contains(query, ignoreCase = true)
+    return provider.composersFlow.map { composers ->
+      composers.map(Profile::toProfileSearchResult).filter { composer ->
+        composer.account.toString().contains(query, ignoreCase = true) ||
+          composer.name.contains(query, ignoreCase = true)
       }
     }
   }

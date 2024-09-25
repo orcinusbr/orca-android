@@ -25,7 +25,7 @@ class SampleFollowService(private val profileProvider: SampleProfileProvider) : 
   override suspend fun toggle(profileID: String, follow: Follow) {
     profileProvider.update(profileID) {
       @Suppress("UNCHECKED_CAST")
-      (this as SampleFollowableProfile<Follow>).copy(follow = follow.toggled())
+      (this as SampleFollowableProfile<Follow>).withFollow(follow.toggled())
     }
   }
 }

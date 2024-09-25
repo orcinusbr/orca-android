@@ -19,8 +19,8 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
 import br.com.orcinus.orca.core.sample.feed.profile.type.followable.SampleFollowService
+import br.com.orcinus.orca.core.sample.feed.profile.type.followable.SampleFollowableProfile
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.feature.profiledetails.navigation.BackwardsNavigationState
 import br.com.orcinus.orca.feature.profiledetails.test.UnnavigableProfileDetailsModule
@@ -57,7 +57,7 @@ internal class ProfileDetailsFragmentTests {
 
   @Test
   fun unfollowsFollowedProfileWhenClickingActionButton() {
-    val profile = instance.profileProvider.provideCurrent<FollowableProfile<*>>()
+    val profile = instance.profileProvider.provideCurrent<SampleFollowableProfile<*>>()
     if (!profile.follow.isFollowingType) {
       runTest { followService.toggle(profile.id, profile.follow) }
     }

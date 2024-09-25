@@ -17,7 +17,7 @@ package br.com.orcinus.orca.feature.postdetails.conversion
 
 import assertk.assertions.containsExactly
 import br.com.orcinus.orca.core.auth.actor.Actor
-import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
+import br.com.orcinus.orca.core.sample.feed.profile.type.editable.SampleEditableProfile
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.platform.core.image.sample
 import br.com.orcinus.orca.platform.core.sample
@@ -33,7 +33,7 @@ internal class AssertExtensionsTests {
             .withDefaultProfiles()
             .build()
             .profileProvider
-            .provideCurrent<EditableProfile>()
+            .provideCurrent<SampleEditableProfile>()
         )
       )
       .containsExactly(Actor.Authenticated.sample.id)

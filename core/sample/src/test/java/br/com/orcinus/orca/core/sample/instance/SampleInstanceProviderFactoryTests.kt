@@ -16,7 +16,9 @@
 package br.com.orcinus.orca.core.sample.instance
 
 import assertk.assertThat
-import assertk.assertions.hasSameSizeAs
+import assertk.assertions.isNotEmpty
+import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.sample.auth.actor.sample
 import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 import kotlin.test.Test
 
@@ -26,15 +28,8 @@ internal class SampleInstanceProviderFactoryTests {
     val imageLoaderProvider = NoOpSampleImageLoader.Provider
     val providedInstance = SampleInstanceProvider(imageLoaderProvider).provide()
     val providedProfiles = providedInstance.profileProvider.provideCurrent()
-    val providedPosts = providedInstance.postProvider.provideAllCurrent()
-    val defaultInstance =
-      SampleInstance.Builder.create(imageLoaderProvider)
-        .withDefaultProfiles()
-        .withDefaultPosts()
-        .build()
-    val defaultProfiles = defaultInstance.profileProvider.provideCurrent()
-    val defaultPosts = defaultInstance.postProvider.provideAllCurrent()
-    assertThat(providedProfiles).hasSameSizeAs(defaultProfiles)
-    assertThat(providedPosts).hasSameSizeAs(defaultPosts)
+    val feed = providedInstance.feedProvider.provideCurrent(Actor.Authenticated.sample.id, page = 0)
+    assertThat(providedProfiles).isNotEmpty()
+    assertThat(feed).isNotEmpty()
   }
 }

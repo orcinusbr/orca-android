@@ -24,7 +24,6 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.account.at
 import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
-import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
 import br.com.orcinus.orca.core.sample.feed.profile.post.createRamboSample
 import br.com.orcinus.orca.core.sample.feed.profile.type.editable.SampleEditableProfile
 import br.com.orcinus.orca.core.sample.feed.profile.type.followable.SampleFollowableProfile
@@ -48,16 +47,13 @@ internal class SampleProfileProviderTests {
   @Test
   fun providesCurrentOneOfASpecificType() {
     val profileProvider = SampleProfileProvider()
-    val postProvider = SamplePostProvider()
     val profile =
       SampleFollowableProfile(
-        profileProvider,
-        postProvider,
-        delegate = Author.createRamboSample(NoOpSampleImageLoader.Provider),
-        bio = Markdown.empty,
+        /* delegate = */ Author.createRamboSample(NoOpSampleImageLoader.Provider),
+        /* bio = */ Markdown.empty,
         Follow.Public.following(),
-        followerCount = 0,
-        followingCount = 0
+        /* followerCount = */ 0,
+        /* followingCount = */ 0
       )
     profileProvider.add(profile)
     val providedProfile = profileProvider.provideCurrent<SampleFollowableProfile<Follow.Public>>()
@@ -67,25 +63,21 @@ internal class SampleProfileProviderTests {
   @Test
   fun providesCurrentOnes() {
     val profileProvider = SampleProfileProvider()
-    val postProvider = SamplePostProvider()
     val profiles =
       arrayOf(
         SampleEditableProfile(
           profileProvider,
-          postProvider,
           delegate = Author.sample,
           bio = Markdown.empty,
           followerCount = 0,
           followingCount = 0
         ),
         SampleFollowableProfile(
-          profileProvider,
-          postProvider,
-          delegate = Author.createRamboSample(NoOpSampleImageLoader.Provider),
-          bio = Markdown.empty,
+          /* delegate = */ Author.createRamboSample(NoOpSampleImageLoader.Provider),
+          /* bio = */ Markdown.empty,
           Follow.Public.following(),
-          followerCount = 0,
-          followingCount = 0
+          /* followerCount = */ 0,
+          /* followingCount = */ 0
         )
       )
     profileProvider.add(*profiles)
@@ -96,11 +88,9 @@ internal class SampleProfileProviderTests {
   @Test
   fun providesCurrentIdentifiedAsTheSpecifiedID() {
     val profileProvider = SampleProfileProvider()
-    val postProvider = SamplePostProvider()
     val profile =
       SampleEditableProfile(
         profileProvider,
-        postProvider,
         delegate = Author.sample,
         bio = Markdown.empty,
         followerCount = 0,
@@ -114,7 +104,6 @@ internal class SampleProfileProviderTests {
   @Test
   fun adds() {
     val profileProvider = SampleProfileProvider()
-    val postProvider = SamplePostProvider()
     val profileDelegateID = "${UUID.randomUUID()}"
     val profileDelegateAvatarLoader = NoOpSampleImageLoader.Provider.provide(SampleImageSource.None)
     val profileDelegate =
@@ -128,13 +117,11 @@ internal class SampleProfileProviderTests {
       )
     val addedProfile =
       SampleFollowableProfile(
-        profileProvider,
-        postProvider,
         profileDelegate,
-        bio = Markdown.empty,
+        /* bio = */ Markdown.empty,
         Follow.Public.unfollowed(),
-        followerCount = 3_604,
-        followingCount = 364
+        /* followerCount = */ 3_604,
+        /* followingCount = */ 364
       )
     profileProvider.add(addedProfile)
     val providedProfiles = profileProvider.provideCurrent()
@@ -145,23 +132,20 @@ internal class SampleProfileProviderTests {
   fun updates() {
     runTest {
       val profileProvider = SampleProfileProvider()
-      val postProvider = SamplePostProvider()
       val profileDelegate = Author.createRamboSample(NoOpSampleImageLoader.Provider)
       val profile =
         SampleFollowableProfile(
-          profileProvider,
-          postProvider,
           profileDelegate,
-          bio = Markdown.empty,
+          /* bio = */ Markdown.empty,
           Follow.Public.following(),
-          followerCount = 0,
-          followingCount = 0
+          /* followerCount = */ 0,
+          /* followingCount = 0 */ 0
         )
       val profileUpdatedBio = Markdown.unstyled("😎")
       profileProvider.add(profile)
       profileProvider.update(profile.id) {
         @Suppress("UNCHECKED_CAST")
-        (this as SampleFollowableProfile<Follow.Public>).copy(bio = profileUpdatedBio)
+        (this as SampleFollowableProfile<Follow.Public>).withBio(profileUpdatedBio)
       }
       val profileBio = profileProvider.provideCurrent(profile.id).bio
       assertThat(profileBio).isEqualTo(profileUpdatedBio)

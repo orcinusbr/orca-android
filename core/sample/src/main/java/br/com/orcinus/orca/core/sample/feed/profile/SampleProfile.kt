@@ -15,42 +15,98 @@
 
 package br.com.orcinus.orca.core.sample.feed.profile
 
+import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Author
+import br.com.orcinus.orca.core.feed.profile.post.OwnedPost
 import br.com.orcinus.orca.core.feed.profile.post.Post
-import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
-import br.com.orcinus.orca.std.markdown.Markdown
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
-
-/** Maximum amount of [Post]s emitted by [SampleProfile.getPosts]. */
-const val SAMPLE_POSTS_PER_PAGE = 50
+import br.com.orcinus.orca.core.feed.profile.post.content.Content
+import br.com.orcinus.orca.core.feed.profile.post.stat.addable.AddableStat
+import br.com.orcinus.orca.core.feed.profile.post.stat.toggleable.ToggleableStat
+import br.com.orcinus.orca.core.sample.auth.actor.sample
+import br.com.orcinus.orca.core.sample.feed.profile.composition.Composer
+import br.com.orcinus.orca.core.sample.feed.profile.post.stat.addable.SampleAddableStat
+import br.com.orcinus.orca.ext.uri.URIBuilder
+import java.time.ZonedDateTime
+import java.util.UUID
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * [Profile] whose operations are performed in memory and serves as a sample.
  *
- * @property postProvider [SamplePostProvider] by which this [SampleProfile]'s [Post]s will be
- *   provided.
- * @property delegate [Author] whose equivalent information is to be attributed to this
- *   [SampleProfile].
+ * @property delegate [Author] whose equivalent information is to be attributed to this [Composer].
  */
-internal data class SampleProfile(
-  private val postProvider: SamplePostProvider,
-  private val delegate: Author,
-  override val bio: Markdown,
-  override val followerCount: Int,
-  override val followingCount: Int
-) : Profile {
+internal abstract class SampleProfile(private val delegate: Author) : Composer {
   override val id = delegate.id
   override val account = delegate.account
   override val avatarLoader = delegate.avatarLoader
   override val name = delegate.name
   override val uri = delegate.profileURI
 
-  override suspend fun getPosts(page: Int): Flow<List<Post>> {
-    return postProvider.provideAllBy(id).filterNotNull().map {
-      it.windowed(SAMPLE_POSTS_PER_PAGE, partialWindows = true).getOrElse(page) { emptyList() }
+  override val postsFlow = MutableStateFlow(emptyList<Post>())
+
+  /** [Post] whose operations are performed in memory and serves as a sample. */
+  private inner class SamplePost(
+    override val author: Author,
+    override val content: Content,
+    override val publicationDateTime: ZonedDateTime
+  ) : Post() {
+    override val actorProvider = ActorProvider.sample
+    override val id = UUID.randomUUID().toString()
+    override val favorite: ToggleableStat<Profile> = SampleToggleableStat(this@SampleProfile)
+    override val repost: ToggleableStat<Profile> = SampleToggleableStat(this@SampleProfile)
+    override val comment: AddableStat<Post> = SampleAddableStat()
+    override val uri =
+      URIBuilder.url()
+        .scheme("https")
+        .host("orca.orcinus.com.br")
+        .path("app")
+        .path("posts")
+        .path(id)
+        .build()
+
+    /**
+     * [ToggleableStat] whose elements are stored and toggled in memory.
+     *
+     * @param T Element which can be added or retrieved.
+     * @property toggle Object that will get added this is enabled or removed when it is disabled.
+     */
+    private inner class SampleToggleableStat<T>(private val toggle: T) :
+      ToggleableStat<T>(isEnabled = false, count = 0) {
+      /** [MutableStateFlow] containing the elements. */
+      private val elementsFlow = MutableStateFlow(emptyList<T>())
+
+      override fun get(page: Int): StateFlow<List<T>> {
+        return elementsFlow
+      }
+
+      override suspend fun onSetEnabled(isEnabled: Boolean) {
+        if (isEnabled) {
+          elementsFlow.value += toggle
+        } else {
+          elementsFlow.value -= toggle
+        }
+      }
     }
+
+    override suspend fun toOwnedPost(): OwnedPost {
+      return SampleOwnedPost(this)
+    }
+  }
+
+  /** [OwnedPost] that can be removed from the [Composer]. */
+  private inner class SampleOwnedPost(delegate: SamplePost) : OwnedPost(delegate) {
+    override suspend fun remove() {
+      postsFlow.value.find { post -> post.id == id }?.let { postsFlow.value -= it }
+    }
+  }
+
+  override fun createPost(
+    author: Author,
+    content: Content,
+    publicationDateTime: ZonedDateTime
+  ): Post {
+    return SamplePost(author, content, publicationDateTime)
   }
 }

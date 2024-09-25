@@ -19,10 +19,10 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
 import br.com.orcinus.orca.autos.colors.Colors
-import br.com.orcinus.orca.core.feed.profile.Profile
-import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
-import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
+import br.com.orcinus.orca.core.sample.feed.profile.composition.Composer
+import br.com.orcinus.orca.core.sample.feed.profile.type.editable.SampleEditableProfile
 import br.com.orcinus.orca.core.sample.feed.profile.type.followable.SampleFollowService
+import br.com.orcinus.orca.core.sample.feed.profile.type.followable.SampleFollowableProfile
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetails
 import br.com.orcinus.orca.feature.profiledetails.createSample
@@ -48,7 +48,7 @@ internal class FollowableProfileConverterTests {
     val onStatusToggle = {}
     assertThat(
         converter
-          .convert(profileProvider.provideCurrent<FollowableProfile<*>>(), Colors.LIGHT)
+          .convert(profileProvider.provideCurrent<SampleFollowableProfile<*>>(), Colors.LIGHT)
           .let { it as ProfileDetails.Followable }
           .copy(onStatusToggle = onStatusToggle)
       )
@@ -64,7 +64,7 @@ internal class FollowableProfileConverterTests {
             .build()
             .profileProvider
             .provideCurrent()
-            .first { it::class.supertypes[1] == typeOf<Profile>() },
+            .first { it::class.supertypes[1] == typeOf<Composer>() },
           Colors.LIGHT
         )
       )
@@ -79,7 +79,7 @@ internal class FollowableProfileConverterTests {
           .withDefaultProfiles()
           .build()
           .profileProvider
-          .provideCurrent<EditableProfile>(),
+          .provideCurrent<SampleEditableProfile>(),
         Colors.LIGHT
       )
     )

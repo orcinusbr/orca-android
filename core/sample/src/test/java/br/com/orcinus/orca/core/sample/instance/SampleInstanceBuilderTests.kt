@@ -18,6 +18,8 @@ package br.com.orcinus.orca.core.sample.instance
 import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isNotEmpty
+import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.sample.auth.actor.sample
 import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 import kotlin.test.Test
 
@@ -37,9 +39,9 @@ internal class SampleInstanceBuilderTests {
     val instance =
       SampleInstance.Builder.create(NoOpSampleImageLoader.Provider).withDefaultProfiles().build()
     val profiles = instance.profileProvider.provideCurrent()
-    val posts = instance.postProvider.provideAllCurrent()
+    val feed = instance.feedProvider.provideCurrent(Actor.Authenticated.sample.id, page = 0)
     assertThat(profiles).isNotEmpty()
-    assertThat(posts).isEmpty()
+    assertThat(feed).isEmpty()
   }
 
   @Test
@@ -50,8 +52,8 @@ internal class SampleInstanceBuilderTests {
         .withDefaultPosts()
         .build()
     val profiles = instance.profileProvider.provideCurrent()
-    val posts = instance.postProvider.provideAllCurrent()
+    val feed = instance.feedProvider.provideCurrent(Actor.Authenticated.sample.id, page = 0)
     assertThat(profiles).isNotEmpty()
-    assertThat(posts).isNotEmpty()
+    assertThat(feed).isNotEmpty()
   }
 }

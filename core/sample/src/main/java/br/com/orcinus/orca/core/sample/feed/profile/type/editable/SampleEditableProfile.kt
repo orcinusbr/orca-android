@@ -15,14 +15,13 @@
 
 package br.com.orcinus.orca.core.sample.feed.profile.type.editable
 
-import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.type.editable.EditableProfile
 import br.com.orcinus.orca.core.feed.profile.type.editable.Editor
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfile
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
-import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
-import br.com.orcinus.orca.std.image.SomeImageLoader
+import br.com.orcinus.orca.core.sample.feed.profile.composition.Composer
+import br.com.orcinus.orca.core.sample.feed.profile.composition.Composers
 import br.com.orcinus.orca.std.markdown.Markdown
 
 /**
@@ -31,17 +30,28 @@ import br.com.orcinus.orca.std.markdown.Markdown
  * @param provider [SampleProfileProvider] through which the [editor] can perform edits.
  * @see EditableProfile
  */
-internal data class SampleEditableProfile(
+class SampleEditableProfile
+internal constructor(
   private val provider: SampleProfileProvider,
-  private val postProvider: SamplePostProvider,
   private val delegate: Author,
   override var bio: Markdown,
   override val followerCount: Int,
   override val followingCount: Int
 ) :
   EditableProfile(),
-  Profile by SampleProfile(postProvider, delegate, bio, followerCount, followingCount) {
-  override var avatarLoader: SomeImageLoader = delegate.avatarLoader
-  override var name = delegate.name
+  Composer by object : SampleProfile(delegate) {
+    override var name = super.name
+    override val bio = bio
+    override val followerCount = followerCount
+    override val followingCount = followingCount
+  } {
   override val editor: Editor by lazy { SampleEditor(provider, id) }
+
+  override fun equals(other: Any?): Boolean {
+    return other is SampleEditableProfile && Composers.equals(this, other) && editor == other.editor
+  }
+
+  override fun hashCode(): Int {
+    return Composers.hash(this, editor)
+  }
 }
