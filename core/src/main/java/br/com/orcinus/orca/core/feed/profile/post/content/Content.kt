@@ -57,7 +57,9 @@ private constructor(
 
   companion object {
     /** [Content] with an empty [text], no [attachments] and without a [highlight]. */
-    @JvmStatic val empty = Content(text = Markdown.empty, attachments = emptyList(), highlight = null)
+    @InternalCoreApi
+    @JvmStatic
+    val empty = Content(text = Markdown.empty, attachments = emptyList(), highlight = null)
 
     /**
      * Creates [Content], automatically defining a [Highlight] based on a URL which may be present
