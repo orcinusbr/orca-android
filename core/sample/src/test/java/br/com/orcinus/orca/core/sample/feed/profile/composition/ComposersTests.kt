@@ -26,7 +26,6 @@ import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.feed.profile.post.repost.Repost
-import br.com.orcinus.orca.core.instance.domain.Domain
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfile
 import br.com.orcinus.orca.core.sample.feed.profile.account.sample
 import br.com.orcinus.orca.core.sample.feed.profile.composition.Composers.compose
@@ -39,7 +38,6 @@ import br.com.orcinus.orca.core.sample.feed.profile.post.content.sample
 import br.com.orcinus.orca.core.sample.feed.profile.post.createChristianSample
 import br.com.orcinus.orca.core.sample.image.AuthorImageSource
 import br.com.orcinus.orca.core.sample.image.SampleImageSource
-import br.com.orcinus.orca.core.sample.instance.domain.sample
 import br.com.orcinus.orca.core.sample.test.feed.profile.post.sample
 import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 import br.com.orcinus.orca.std.image.ImageLoader
@@ -59,7 +57,7 @@ internal class ComposersTests {
             override val followingCount = 0
           }
           .apply {
-            compose(Content.from(Domain.sample, text = Markdown.empty) { null })
+            compose(Content.empty)
               .on(ZonedDateTime.now())
               .publish(asOwned())
               .also { publishedPosts[0] = it.get() }
@@ -82,8 +80,7 @@ internal class ComposersTests {
         override val followerCount = 0
         override val followingCount = 0
       }
-    val content = Content.from(Domain.sample, text = Markdown.empty) { null }
-    assertThat(profile.compose(content)).isEqualTo(Composition(profile, content))
+    assertThat(profile.compose(Content.empty)).isEqualTo(Composition(profile, Content.empty))
   }
 
   @Test
@@ -317,7 +314,7 @@ internal class ComposersTests {
         override val followingCount = 0
       }
       .apply {
-        compose(Content.from(Domain.sample, text = Markdown.empty) { null })
+        compose(Content.empty)
           .on(ZonedDateTime.now())
           .publish(asRepostFrom(Author.createChristianSample(NoOpSampleImageLoader.Provider)))
       }
@@ -333,11 +330,11 @@ internal class ComposersTests {
             override val followingCount = 0
           }
           .apply {
-            compose(Content.from(Domain.sample, text = Markdown.empty) { null })
+            compose(Content.empty)
               .on(ZonedDateTime.now())
               .publish(asRepostFrom(Author.createChristianSample(NoOpSampleImageLoader.Provider)))
               .and()
-              .compose(Content.from(Domain.sample, text = Markdown.empty) { null })
+              .compose(Content.empty)
               .on(ZonedDateTime.now())
               .publish(asOwned())
               .get()

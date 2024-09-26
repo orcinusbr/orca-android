@@ -18,10 +18,7 @@ package br.com.orcinus.orca.core.sample.feed.profile.composition
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
-import br.com.orcinus.orca.core.instance.domain.Domain
 import br.com.orcinus.orca.core.sample.feed.profile.composition.Composers.compose
-import br.com.orcinus.orca.core.sample.instance.domain.sample
-import br.com.orcinus.orca.std.markdown.Markdown
 import java.time.ZonedDateTime
 import kotlin.test.Test
 
@@ -29,7 +26,7 @@ internal class CompositionTests {
   @Test
   fun createsATimedComposition() {
     val composer = HardcodedComposer()
-    val content = Content.from(Domain.sample, text = Markdown.empty) { null }
+    val content = Content.empty
     val dateTime = ZonedDateTime.now()
     assertThat(composer.compose(content).on(dateTime))
       .isEqualTo(TimedComposition(composer, content, dateTime))

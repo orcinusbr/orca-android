@@ -15,6 +15,8 @@
 
 package br.com.orcinus.orca.core.feed.profile.post.content
 
+import assertk.assertThat
+import assertk.assertions.isSameAs
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Headline
 import br.com.orcinus.orca.core.feed.profile.post.content.highlight.Highlight
 import br.com.orcinus.orca.core.instance.domain.Domain
@@ -27,6 +29,11 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 internal class ContentTests {
+  @Test
+  fun returnsTheEmptyContentWhenCreatingOneWithAnEmptyTextAndWithoutAttachments() {
+    assertThat(Content.empty).isSameAs(Content.empty)
+  }
+
   @Test
   fun `GIVEN a text with a trailing link and a headline WHEN creating content from them THEN the link is removed`() {
     assertEquals(

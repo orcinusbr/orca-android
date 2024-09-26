@@ -26,15 +26,12 @@ import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.feed.profile.post.repost.Repost
-import br.com.orcinus.orca.core.instance.domain.Domain
 import br.com.orcinus.orca.core.sample.feed.profile.composition.Composers.compose
 import br.com.orcinus.orca.core.sample.feed.profile.composition.Composers.toAuthor
 import br.com.orcinus.orca.core.sample.feed.profile.composition.TimedComposition.PublishingStrategy.asOwned
 import br.com.orcinus.orca.core.sample.feed.profile.composition.TimedComposition.PublishingStrategy.asRepostFrom
 import br.com.orcinus.orca.core.sample.feed.profile.post.createChristianSample
-import br.com.orcinus.orca.core.sample.instance.domain.sample
 import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
-import br.com.orcinus.orca.std.markdown.Markdown
 import java.time.ZonedDateTime
 import kotlin.test.Test
 
@@ -42,11 +39,10 @@ internal class TimedCompositionTests {
   @Test
   fun posts() {
     val composer = HardcodedComposer()
-    val content = Content.from(Domain.sample, text = Markdown.empty) { null }
     val dateTime = ZonedDateTime.now()
-    composer.compose(content).on(dateTime).publish(asOwned())
+    composer.compose(Content.empty).on(dateTime).publish(asOwned())
     assertThat(composer.postsFlow.value).single().all {
-      prop(Post::content).isSameAs(content)
+      prop(Post::content).isSameAs(Content.empty)
       prop(Post::publicationDateTime).isSameAs(dateTime)
     }
   }
@@ -54,14 +50,13 @@ internal class TimedCompositionTests {
   @Test
   fun reposts() {
     val composer = HardcodedComposer()
-    val content = Content.from(Domain.sample, text = Markdown.empty) { null }
     val dateTime = ZonedDateTime.now()
     composer
-      .compose(content)
+      .compose(Content.empty)
       .on(dateTime)
       .publish(asRepostFrom(Author.createChristianSample(NoOpSampleImageLoader.Provider)))
     assertThat(composer.postsFlow.value).single().isInstanceOf<Repost>().all {
-      prop(Repost::content).isSameAs(content)
+      prop(Repost::content).isSameAs(Content.empty)
       prop(Repost::publicationDateTime).isSameAs(dateTime)
       prop(Repost::reposter).isEqualTo(composer.toAuthor())
     }
