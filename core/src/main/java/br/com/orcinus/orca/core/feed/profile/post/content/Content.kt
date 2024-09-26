@@ -24,6 +24,7 @@ import br.com.orcinus.orca.core.instance.domain.Domain
 import br.com.orcinus.orca.core.instance.domain.isOfResourceFrom
 import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.style.Style
+import java.net.URI
 import java.util.Objects
 
 /**
@@ -37,7 +38,7 @@ class Content
 private constructor(
   val text: Markdown,
   val attachments: List<Attachment>,
-  val highlight: Highlight? = null
+  val highlight: Highlight?
 ) {
   override fun equals(other: Any?): Boolean {
     return other is Content &&
@@ -55,6 +56,36 @@ private constructor(
   }
 
   companion object {
+    /** [Content] with an empty [text], no [attachments] and without a [highlight]. */
+    @JvmStatic val empty = Content(text = Markdown.empty, attachments = emptyList(), highlight = null)
+
+    /**
+     * Creates [Content], automatically defining a [Highlight] based on a URL which may be present
+     * in the [text]. It might then be removed from the final [text], depending on whether it was a
+     * trailing one and not related to the [domain].
+     *
+     * @param domain [Domain] of the [Instance] from which the [Content] is being created.
+     * @param text [String] from which [Content] will be created.
+     * @param attachments [Attachment]s containing the attached media.
+     * @param headlineProvider [HeadlineProvider] that provides the [Headline].
+     * @see URI.isOfResourceFrom
+     */
+    @InternalCoreApi
+    @JvmStatic
+    fun from(
+      domain: Domain,
+      text: Markdown,
+      attachments: List<Attachment> = emptyList(),
+      headlineProvider: HeadlineProvider
+    ): Content {
+      val isEmpty = text === Markdown.empty && attachments.isEmpty()
+      return if (isEmpty) {
+        empty
+      } else {
+        create(domain, text, attachments, headlineProvider)
+      }
+    }
+
     /**
      * Creates [Content] from the given [text].
      *
@@ -63,25 +94,25 @@ private constructor(
      * @param attachments [Attachment]s containing the attached media.
      * @param headlineProvider [HeadlineProvider] that provides the [Headline].
      */
-    @InternalCoreApi
-    fun from(
+    @JvmStatic
+    private fun create(
       domain: Domain,
       text: Markdown,
-      attachments: List<Attachment> = emptyList(),
+      attachments: List<Attachment>,
       headlineProvider: HeadlineProvider
     ): Content {
-      val links = text.styles.filterIsInstance<Style.Link>()
-      val externalLinks = links.filterNot { it.uri.isOfResourceFrom(domain) }
-      val highlightLink = externalLinks.firstOrNull()
-      val highlightUrl = highlightLink?.uri
-      val headline = highlightUrl?.let { headlineProvider.provide(it) }
-      val highlight = headline?.let { Highlight(it, highlightUrl) }
-      val isHighlightLinkRemovable = text.isHighlightLinkRemovable(externalLinks, highlightLink)
-
-      @Suppress("LocalVariableName")
-      val _text = if (isHighlightLinkRemovable) text.withoutHighlightLink(highlightLink) else text
-
-      return Content(_text, attachments, highlight)
+      return with(text) {
+        styles
+          .filterIsInstance<Style.Link>()
+          .filterNot { it.uri.isOfResourceFrom(domain) }
+          .singleOrNull()
+          ?.takeIf { trimEnd().endsWith(substring(it.indices)) }
+          ?.let { link -> headlineProvider.provide(link.uri)?.let { headline -> link to headline } }
+          ?.let { (link, headline) -> link.indices to Highlight(headline, link.uri) }
+          ?.let { (it as Pair<Any, Highlight>).copy(first = copy { removeRange(it.first).trim() }) }
+          ?.let { (newText, highlight) -> Content(newText as Markdown, attachments, highlight) }
+      }
+        ?: Content(text, attachments, highlight = null)
     }
   }
 }

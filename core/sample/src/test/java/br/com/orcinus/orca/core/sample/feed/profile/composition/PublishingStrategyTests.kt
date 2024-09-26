@@ -24,7 +24,6 @@ import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.content.Content
 import br.com.orcinus.orca.core.feed.profile.post.repost.Repost
-import br.com.orcinus.orca.core.instance.domain.Domain
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfile
 import br.com.orcinus.orca.core.sample.feed.profile.composition.Composers.compose
 import br.com.orcinus.orca.core.sample.feed.profile.composition.TimedComposition.PublishingStrategy.asOwned
@@ -47,7 +46,7 @@ internal class PublishingStrategyTests {
           override val followerCount = 0
           override val followingCount = 0
         }
-        .compose(Content.from(Domain.sample, text = Markdown.empty) { null })
+        .compose(Content.empty)
         .on(ZonedDateTime.now())
     assertThat(asOwned().createPost(timedComposition)).prop(Post::author).isEqualTo(profileDelegate)
   }
@@ -62,7 +61,7 @@ internal class PublishingStrategyTests {
           override val followerCount = 0
           override val followingCount = 0
         }
-        .compose(Content.from(Domain.sample, text = Markdown.empty) { null })
+        .compose(Content.empty)
         .on(ZonedDateTime.now())
     assertThat(asRepostFrom(author).createPost(timedComposition)).isInstanceOf<Repost>().all {
       prop(Repost::author).isEqualTo(author)

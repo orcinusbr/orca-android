@@ -34,7 +34,6 @@ import br.com.orcinus.orca.core.instance.domain.Domain
 import br.com.orcinus.orca.core.sample.auth.actor.sample
 import br.com.orcinus.orca.core.sample.instance.domain.sample
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
-import br.com.orcinus.orca.std.markdown.Markdown
 import java.time.ZonedDateTime
 import java.util.UUID
 import kotlin.test.Test
@@ -74,7 +73,7 @@ internal class PostExtensionsTests {
             override val actorProvider = ActorProvider.sample
             override val id = UUID.randomUUID().toString()
             override val author = Author.sample
-            override val content = Content.from(Domain.sample, text = Markdown.empty) { null }
+            override val content = Content.empty
             override val publicationDateTime = ZonedDateTime.now()
             override val comment =
               object : AddableStat<Post>(count = 0) {
