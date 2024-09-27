@@ -20,13 +20,8 @@ import java.io.Serializable
 
 /** Status that indicates in which "following" state a user is related to another. */
 abstract class Follow private constructor() : Serializable {
-  /** Name that describes the visibility for which this [Follow] status is intended. */
-  protected abstract val visibilityName: String
-
   /** Public [Follow] status. */
   abstract class Public private constructor() : Follow() {
-    override val visibilityName = "public"
-
     companion object {
       /** [Follow] returned by [unfollowed]. */
       @JvmStatic private lateinit var _unfollowed: Public
@@ -91,8 +86,6 @@ abstract class Follow private constructor() : Serializable {
 
   /** Private [Follow] status. */
   abstract class Private private constructor() : Follow() {
-    override val visibilityName = "private"
-
     companion object {
       /** [Follow] returned by [unfollowed]. */
       @JvmStatic private lateinit var _unfollowed: Private
@@ -245,30 +238,6 @@ abstract class Follow private constructor() : Serializable {
         Private.requested().toString() -> Private.requested()
         Private.following().toString() -> Private.following()
         else -> throw InvalidFollowString(formattedString)
-      }
-    }
-
-    /**
-     * Requires both statuses to have the same visibility: either [public][Follow.Public] or
-     * [private][Follow.Private].
-     *
-     * @param expected Status that indicates which visibility [actual]'s should match.
-     * @param actual Status whose visibility should match [expected]'s.
-     * @return [actual] as [T].
-     * @throws IllegalArgumentException If [expected] and [actual] have different visibilities.
-     * @see visibilityName
-     */
-    @InternalCoreApi
-    fun <T : Follow> requireVisibilityMatch(expected: T, actual: Follow): T {
-      val isCohesive = actual.visibilityName == expected.visibilityName
-      return if (isCohesive) {
-        @Suppress("UNCHECKED_CAST")
-        actual as T
-      } else {
-        throw IllegalArgumentException(
-          "$actual is a ${actual.visibilityName} status instead of a " +
-            "${expected.visibilityName} one."
-        )
       }
     }
   }

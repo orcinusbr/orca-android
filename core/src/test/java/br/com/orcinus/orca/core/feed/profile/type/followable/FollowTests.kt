@@ -101,16 +101,4 @@ internal class FollowTests {
   fun `GIVEN a private requested status WHEN toggling it THEN it's unfollowed`() {
     assertEquals(Follow.Private.unfollowed(), Follow.Private.requested().toggled())
   }
-
-  @Test
-  fun `GIVEN a cohesive status WHEN requiring it to be cohesive THEN it is`() {
-    Follow.requireVisibilityMatch(Follow.Public.unfollowed(), Follow.Public.following())
-  }
-
-  @Test
-  fun `GIVEN a non-cohesive status WHEN requiring it to be cohesive THEN it throws`() {
-    assertFailsWith<IllegalArgumentException> {
-      Follow.requireVisibilityMatch(Follow.Public.unfollowed(), Follow.Private.unfollowed())
-    }
-  }
 }
