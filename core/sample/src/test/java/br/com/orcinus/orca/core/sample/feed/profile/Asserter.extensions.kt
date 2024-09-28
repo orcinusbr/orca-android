@@ -46,6 +46,6 @@ internal suspend fun <T : Follow> assertTogglingEquals(after: T, before: T) {
     )
   val followService = SampleFollowService(profileProvider)
   profileProvider.add(profile)
-  followService.toggle(profile.id, profile.follow)
+  followService.toggle(profile.id)
   assertEquals(after, profileProvider.provideCurrent<SampleFollowableProfile<T>>().follow)
 }
