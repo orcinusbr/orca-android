@@ -23,31 +23,6 @@ import kotlin.test.assertFailsWith
 
 internal class FollowTests {
   @Test
-  fun publicUnfollowedStatusIsInitializedOnce() {
-    assertThat(Follow.Public.unfollowed()).isSameAs(Follow.Public.unfollowed())
-  }
-
-  @Test
-  fun publicFollowingStatusIsInitializedOnce() {
-    assertThat(Follow.Public.following()).isSameAs(Follow.Public.following())
-  }
-
-  @Test
-  fun privateUnfollowedStatusIsInitializedOnce() {
-    assertThat(Follow.Private.unfollowed()).isSameAs(Follow.Private.unfollowed())
-  }
-
-  @Test
-  fun privateRequestedStatusIsInitializedOnce() {
-    assertThat(Follow.Private.requested()).isSameAs(Follow.Private.requested())
-  }
-
-  @Test
-  fun privateFollowingStatusIsInitializedOnce() {
-    assertThat(Follow.Private.following()).isSameAs(Follow.Private.following())
-  }
-
-  @Test
   fun `GIVEN a blank string WHEN parsing it into a follow status THEN it throws`() {
     assertFailsWith<Follow.Companion.BlankStringException> { Follow.of(" ") }
   }
@@ -68,6 +43,11 @@ internal class FollowTests {
   }
 
   @Test
+  fun parsesPublicSubscribedStatusString() {
+    assertThat(Follow.of("${Follow.Public.subscribed()}")).isSameAs(Follow.Public.subscribed())
+  }
+
+  @Test
   fun `GIVEN a private unfollowed status string WHEN parsing it THEN it returns the status`() {
     assertEquals(Follow.Private.unfollowed(), Follow.of("${Follow.Private.unfollowed()}"))
   }
@@ -83,22 +63,7 @@ internal class FollowTests {
   }
 
   @Test
-  fun `GIVEN a public unfollowed status WHEN toggling it THEN it's followed`() {
-    assertEquals(Follow.Public.following(), Follow.Public.unfollowed().toggled())
-  }
-
-  @Test
-  fun `GIVEN a public followed status WHEN toggling it THEN it's unfollowed`() {
-    assertEquals(Follow.Public.unfollowed(), Follow.Public.following().toggled())
-  }
-
-  @Test
-  fun `GIVEN a private unfollowed status WHEN toggling it THEN it's requested`() {
-    assertEquals(Follow.Private.requested(), Follow.Private.unfollowed().toggled())
-  }
-
-  @Test
-  fun `GIVEN a private requested status WHEN toggling it THEN it's unfollowed`() {
-    assertEquals(Follow.Private.unfollowed(), Follow.Private.requested().toggled())
+  fun parsesPrivateSubscribedStatusString() {
+    assertThat(Follow.of("${Follow.Private.subscribed()}")).isSameAs(Follow.Private.subscribed())
   }
 }

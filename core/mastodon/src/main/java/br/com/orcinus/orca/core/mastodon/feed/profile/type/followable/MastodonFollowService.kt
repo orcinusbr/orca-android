@@ -37,8 +37,10 @@ class MastodonFollowService(private val requester: Requester) : FollowService() 
           .run {
             when (follow.toggled()) {
               Follow.Public.following(),
+              Follow.Public.subscribed(),
               Follow.Private.requested(),
-              Follow.Private.following() -> path("follow")
+              Follow.Private.following(),
+              Follow.Private.subscribed() -> path("follow")
               else -> path("unfollow")
             }
           }

@@ -34,7 +34,6 @@ import kotlin.test.assertEquals
  * @see SampleFollowService.toggle
  */
 internal suspend fun <T : Follow> assertTogglingEquals(after: T, before: T) {
-  val matchingAfter = Follow.requireVisibilityMatch(before, after)
   val profileProvider = SampleProfileProvider()
   val profileDelegate = Author.createSample(NoOpSampleImageLoader.Provider)
   val profile =
@@ -48,5 +47,5 @@ internal suspend fun <T : Follow> assertTogglingEquals(after: T, before: T) {
   val followService = SampleFollowService(profileProvider)
   profileProvider.add(profile)
   followService.toggle(profile.id, profile.follow)
-  assertEquals(matchingAfter, profileProvider.provideCurrent<SampleFollowableProfile<T>>().follow)
+  assertEquals(after, profileProvider.provideCurrent<SampleFollowableProfile<T>>().follow)
 }

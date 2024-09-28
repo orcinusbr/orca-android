@@ -16,110 +16,206 @@
 package br.com.orcinus.orca.core.feed.profile.type.followable
 
 import br.com.orcinus.orca.core.InternalCoreApi
-import java.io.Serializable
 
 /** Status that indicates in which "following" state a user is related to another. */
-abstract class Follow private constructor() : Serializable {
+@InternalCoreApi
+sealed class Follow private constructor() {
   /** Public [Follow] status. */
-  abstract class Public private constructor() : Follow() {
+  sealed class Public : Follow() {
+    /**
+     * [Follow] status in which a user doesn't receive any updates related to the other's activity.
+     */
+    class Unfollowed internal constructor() : Public() {
+      override fun toString(): String {
+        return "Follow.Public.Unfollowed"
+      }
+
+      override fun toggled(): Following {
+        return following()
+      }
+
+      override fun next(): Following {
+        return following()
+      }
+    }
+
+    /** [Follow] status in which a user receives updates from another in the feed. */
+    class Following internal constructor() : Public() {
+      override fun toString(): String {
+        return "Follow.Public.Following"
+      }
+
+      override fun toggled(): Unfollowed {
+        return unfollowed()
+      }
+
+      override fun next(): Subscribed {
+        return subscribed()
+      }
+    }
+
+    /**
+     * [Follow] status in which a user is notified of updates from another user apart from receiving
+     * them in the feed.
+     */
+    class Subscribed internal constructor() : Public() {
+      override fun toString(): String {
+        return "Follow.Public.Subscribed"
+      }
+
+      override fun toggled(): Unfollowed {
+        return unfollowed()
+      }
+
+      override fun next(): Unfollowed {
+        return unfollowed()
+      }
+    }
+
     companion object {
       /** [Follow] returned by [unfollowed]. */
-      @JvmStatic private lateinit var _unfollowed: Public
+      @JvmStatic private lateinit var _unfollowed: Unfollowed
 
       /** [Follow] returned by [following]. */
-      @JvmStatic private lateinit var _following: Public
+      @JvmStatic private lateinit var _following: Following
+
+      /** [Follow] returned by [subscribed]. */
+      @JvmStatic private lateinit var _subscribed: Subscribed
 
       /**
        * [Follow] status in which a user doesn't receive any updates related to the other's
        * activity.
        */
-      @InternalCoreApi
       @JvmStatic
-      fun unfollowed(): Public {
+      fun unfollowed(): Unfollowed {
         return if (::_unfollowed.isInitialized) {
           _unfollowed
         } else {
-          _unfollowed =
-            object : Public() {
-              override fun toString(): String {
-                return "Follow.Public.unfollowed"
-              }
-
-              override fun toggled(): Follow {
-                return following()
-              }
-
-              override fun next(): Follow {
-                return following()
-              }
-            }
+          _unfollowed = Unfollowed()
           _unfollowed
         }
       }
 
-      /** [Follow] status in which a user has subscribed to receive updates from another. */
-      @InternalCoreApi
+      /** [Follow] status in which a user receives updates from another in the feed. */
       @JvmStatic
-      fun following(): Public {
+      fun following(): Following {
         return if (::_following.isInitialized) {
           _following
         } else {
-          _following =
-            object : Public() {
-              override fun toString(): String {
-                return "Follow.Public.following"
-              }
-
-              override fun toggled(): Follow {
-                return unfollowed()
-              }
-
-              override fun next(): Follow? {
-                return null
-              }
-            }
+          _following = Following()
           _following
+        }
+      }
+
+      /**
+       * [Follow] status in which a user is notified of updates from another user apart from
+       * receiving them in the feed.
+       */
+      @JvmStatic
+      fun subscribed(): Subscribed {
+        return if (::_subscribed.isInitialized) {
+          _subscribed
+        } else {
+          _subscribed = Subscribed()
+          _subscribed
         }
       }
     }
   }
 
   /** Private [Follow] status. */
-  abstract class Private private constructor() : Follow() {
+  sealed class Private : Follow() {
+    /**
+     * [Follow] status in which a user doesn't receive any updates related to the other's activity.
+     */
+    class Unfollowed internal constructor() : Private() {
+      override fun toString(): String {
+        return "Follow.Private.Unfollowed"
+      }
+
+      override fun toggled(): Requested {
+        return requested()
+      }
+
+      override fun next(): Requested {
+        return requested()
+      }
+    }
+
+    /**
+     * [Follow] status in which a user has requested to follow another and is waiting for it to be
+     * accepted or denied.
+     */
+    class Requested internal constructor() : Private() {
+      override fun toString(): String {
+        return "Follow.Private.Requested"
+      }
+
+      override fun toggled(): Unfollowed {
+        return unfollowed()
+      }
+
+      override fun next(): Following {
+        return following()
+      }
+    }
+
+    /** [Follow] status in which a user receives updates from another in the feed. */
+    open class Following internal constructor() : Private() {
+      override fun toString(): String {
+        return "Follow.Private.Following"
+      }
+
+      override fun toggled(): Unfollowed {
+        return unfollowed()
+      }
+
+      override fun next(): Subscribed {
+        return subscribed()
+      }
+    }
+
+    /**
+     * [Follow] status in which a user is notified of updates from another user apart from receiving
+     * them in the feed.
+     */
+    class Subscribed internal constructor() : Private() {
+      override fun toString(): String {
+        return "Follow.Private.Subscribed"
+      }
+
+      override fun toggled(): Unfollowed {
+        return unfollowed()
+      }
+
+      override fun next(): Unfollowed {
+        return unfollowed()
+      }
+    }
+
     companion object {
       /** [Follow] returned by [unfollowed]. */
-      @JvmStatic private lateinit var _unfollowed: Private
+      @JvmStatic private lateinit var _unfollowed: Unfollowed
 
       /** [Follow] returned by [requested]. */
-      @JvmStatic private lateinit var _requested: Private
+      @JvmStatic private lateinit var _requested: Requested
 
       /** [Follow] returned by [following]. */
-      @JvmStatic private lateinit var _following: Private
+      @JvmStatic private lateinit var _following: Following
+
+      /** [Follow] returned by [subscribed]. */
+      @JvmStatic private lateinit var _subscribed: Subscribed
 
       /**
        * [Follow] status in which a user doesn't receive any updates related to the other's
        * activity.
        */
-      @InternalCoreApi
       @JvmStatic
-      fun unfollowed(): Private {
+      fun unfollowed(): Unfollowed {
         return if (::_unfollowed.isInitialized) {
           _unfollowed
         } else {
-          _unfollowed =
-            object : Private() {
-              override fun toString(): String {
-                return "Follow.Private.unfollowed"
-              }
-
-              override fun toggled(): Follow {
-                return requested()
-              }
-
-              override fun next(): Follow {
-                return requested()
-              }
-            }
+          _unfollowed = Unfollowed()
           _unfollowed
         }
       }
@@ -128,52 +224,38 @@ abstract class Follow private constructor() : Serializable {
        * [Follow] status in which a user has requested to follow another and is waiting for it to be
        * accepted or denied.
        */
-      @InternalCoreApi
       @JvmStatic
-      fun requested(): Private {
+      fun requested(): Requested {
         return if (::_requested.isInitialized) {
           _requested
         } else {
-          _requested =
-            object : Private() {
-              override fun toString(): String {
-                return "Follow.Private.requested"
-              }
-
-              override fun toggled(): Follow {
-                return unfollowed()
-              }
-
-              override fun next(): Follow {
-                return following()
-              }
-            }
+          _requested = Requested()
           _requested
         }
       }
 
-      /** [Follow] status in which a user has subscribed to receive updates from another. */
-      @InternalCoreApi
+      /** [Follow] status in which a user receives updates from another in the feed. */
       @JvmStatic
-      fun following(): Private {
+      fun following(): Following {
         return if (::_following.isInitialized) {
           _following
         } else {
-          _following =
-            object : Private() {
-              override fun toString(): String {
-                return "Follow.Private.following"
-              }
-
-              override fun toggled(): Follow {
-                return unfollowed()
-              }
-
-              override fun next(): Follow? {
-                return null
-              }
-            }
+          _following = Following()
           _following
+        }
+      }
+
+      /**
+       * [Follow] status in which a user is notified of updates from another user apart from
+       * receiving them in the feed.
+       */
+      @JvmStatic
+      fun subscribed(): Subscribed {
+        return if (::_subscribed.isInitialized) {
+          _subscribed
+        } else {
+          _subscribed = Subscribed()
+          _subscribed
         }
       }
     }
@@ -191,7 +273,7 @@ abstract class Follow private constructor() : Serializable {
   @InternalCoreApi abstract fun toggled(): Follow
 
   /** Provides the [Follow] status that succeeds this one. */
-  internal abstract fun next(): Follow?
+  internal abstract fun next(): Follow
 
   companion object {
     /**
@@ -227,16 +309,18 @@ abstract class Follow private constructor() : Serializable {
      * @throws BlankStringException If the [string] is blank.
      * @throws InvalidFollowString If the [string] is not a valid [Follow] representation.
      */
-    @InternalCoreApi
+    @JvmStatic
     fun of(string: String): Follow {
       val formattedString = string.trim()
       formattedString.ifBlank { throw BlankStringException() }
       return when (formattedString) {
         Public.unfollowed().toString() -> Public.unfollowed()
         Public.following().toString() -> Public.following()
+        Public.subscribed().toString() -> Public.subscribed()
         Private.unfollowed().toString() -> Private.unfollowed()
         Private.requested().toString() -> Private.requested()
         Private.following().toString() -> Private.following()
+        Private.subscribed().toString() -> Private.subscribed()
         else -> throw InvalidFollowString(formattedString)
       }
     }
