@@ -49,6 +49,7 @@ android-test-runner = { group = "androidx.test", name = "runner", version = "1.5
 assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version = "0.27.0" }
 autos = { group = "br.com.orcinus.orca.autos", name = "autos", version = "1.0.6" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version = "2.4.0" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx", version = "24.0.2" }
 junit = { group = "junit", name = "junit", version = "4.13.2" }
 jsoup = { group = "org.jsoup", name = "jsoup", version = "1.16.2" }
 konsist = { group = "com.lemonappdev", name = "konsist", version = "0.16.0" }
@@ -91,6 +92,7 @@ android-application = { id = "com.android.application", version.ref = "android-p
 android-library = { id = "com.android.library", version.ref = "android-plugin" }
 android-maps-secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version = "2.0.1" }
 buildconfig = { id = "com.github.gmazzo.buildconfig", version = "3.1.0" }
+googleServices = { id = "com.google.gms.google-services", version = "4.4.2" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

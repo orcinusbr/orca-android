@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.core.mastodon.feed.profile.account
 
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import br.com.orcinus.orca.composite.timeline.text.annotated.fromHtml
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.Profile
@@ -59,7 +60,7 @@ import kotlinx.serialization.Serializable
 internal data class MastodonAccount(
   private val id: String,
   private val username: String,
-  private val acct: String,
+  val acct: String,
   private val uri: String,
   private val displayName: String,
   private val locked: Boolean,
@@ -101,11 +102,20 @@ internal data class MastodonAccount(
     avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): Profile {
-    return if (isOwner()) {
+    return if (isOwned()) {
       toEditableProfile(context, requester, avatarLoaderProvider, postPaginatorProvider)
     } else {
       toFollowableProfile(context, requester, avatarLoaderProvider, postPaginatorProvider)
     }
+  }
+
+  /** Whether the currently authenticated [Actor] is the owner of this [Account]. */
+  suspend fun isOwned(): Boolean {
+    return Injector.from<CoreModule>()
+      .instanceProvider()
+      .provide()
+      .authenticationLock
+      .scheduleUnlock { it.id == id }
   }
 
   /**
@@ -127,18 +137,6 @@ internal data class MastodonAccount(
   /** Converts this [MastodonAccount] into an [Account]. */
   private fun toAccount(): Account {
     return Account.of(acct, fallbackDomain = "mastodon.social")
-  }
-
-  /**
-   * Whether the currently [authenticated][Actor.Authenticated] [Actor] is the owner of this
-   * [Account].
-   */
-  private suspend fun isOwner(): Boolean {
-    return Injector.from<CoreModule>()
-      .instanceProvider()
-      .provide()
-      .authenticationLock
-      .scheduleUnlock { it.id == id }
   }
 
   /**
@@ -228,5 +226,27 @@ internal data class MastodonAccount(
       followingCount,
       uri
     )
+  }
+
+  companion object {
+    /**
+     * [MastodonAccount] whose fields are assigned default values (empty [String]s, zeroed [Number]s
+     * and `false` [Boolean]s).
+     */
+    @JvmStatic
+    @VisibleForTesting
+    val default =
+      MastodonAccount(
+        id = "0",
+        username = "",
+        acct = "",
+        uri = "",
+        displayName = "",
+        locked = false,
+        note = "",
+        avatar = "",
+        followersCount = 0,
+        followingCount = 0
+      )
   }
 }
