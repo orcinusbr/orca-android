@@ -637,7 +637,7 @@ final class MastodonNotification {
      * @see Type#getChannelDescription(Context)
      */
     @NonNull
-    final NotificationChannel toNotificationChannel(Context context) {
+    final NotificationChannel toNotificationChannel(final Context context) {
       final NotificationChannel channel =
           new NotificationChannel(
               getChannelID(), getChannelName(context), NotificationManager.IMPORTANCE_DEFAULT);
@@ -665,7 +665,7 @@ final class MastodonNotification {
      */
     @NonNull
     @VisibleForTesting
-    final String getChannelName(Context context) {
+    final String getChannelName(final Context context) {
       return context.getString(getChannelNameResourceID());
     }
 
@@ -679,7 +679,7 @@ final class MastodonNotification {
      */
     @NonNull
     @VisibleForTesting
-    final String getChannelDescription(Context context) {
+    final String getChannelDescription(final Context context) {
       return context.getString(getChannelDescriptionResourceID());
     }
 
@@ -763,7 +763,7 @@ final class MastodonNotification {
   }
 
   @Override
-  public boolean equals(Object other) {
+  public boolean equals(final Object other) {
     return other instanceof MastodonNotification
         && id.equals(((MastodonNotification) other).id)
         && type.equals(((MastodonNotification) other).type)
