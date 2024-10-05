@@ -88,7 +88,7 @@ dependencies {
   testImplementation(project(":platform:intents-test"))
   testImplementation(project(":platform:testing"))
   testImplementation(project(":std:injector-test"))
-  testImplementation(libs.assertk)
+  testImplementation(libs.assertk.coroutines)
   testImplementation(libs.kotlin.coroutines.test)
   testImplementation(libs.kotlin.test)
   testImplementation(libs.ktor.client.mock)

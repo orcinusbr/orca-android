@@ -17,18 +17,49 @@ package br.com.orcinus.orca.core.mastodon.feed.profile.account
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
+import assertk.assertions.isTrue
+import assertk.coroutines.assertions.suspendCall
+import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
 import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
+import br.com.orcinus.orca.core.sample.auth.actor.sample
 import br.com.orcinus.orca.core.sample.feed.profile.composition.Composer
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
+import br.com.orcinus.orca.core.test.auth.AuthenticationLock
 import br.com.orcinus.orca.ext.uri.URIBuilder
 import br.com.orcinus.orca.platform.core.image.sample
 import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 import br.com.orcinus.orca.std.image.compose.async.AsyncImageLoader
 import kotlin.test.Test
+import kotlinx.coroutines.test.runTest
 
 internal class MastodonAccountTests {
+  @Test
+  fun isOwned() {
+    val actorProvider = ActorProvider.sample
+    val authenticationLock = AuthenticationLock(actorProvider)
+    runTest {
+      val actor = actorProvider.provide() as Actor.Authenticated
+      assertThat(MastodonAccount.default.copy(id = actor.id))
+        .suspendCall("isOwned") { it.isOwned(authenticationLock) }
+        .isTrue()
+    }
+  }
+
+  @Test
+  fun isNotOwned() {
+    val actorProvider = ActorProvider.sample
+    val authenticationLock = AuthenticationLock(actorProvider)
+    runTest {
+      assertThat(MastodonAccount.default)
+        .suspendCall("isOwned") { it.isOwned(authenticationLock) }
+        .isFalse()
+    }
+  }
+
   @Test
   fun convertsIntoProfileSearchResult() {
     val composer =

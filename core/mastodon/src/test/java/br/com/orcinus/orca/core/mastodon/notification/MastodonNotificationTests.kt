@@ -26,27 +26,16 @@ import assertk.assertions.isNotZero
 import assertk.assertions.isSameAs
 import assertk.assertions.isTrue
 import assertk.assertions.prop
-import br.com.orcinus.orca.core.auth.actor.Actor
-import br.com.orcinus.orca.core.mastodon.MastodonCoreModule
+import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus
-import br.com.orcinus.orca.core.mastodon.instance.SampleMastodonInstanceProvider
-import br.com.orcinus.orca.core.module.CoreModule
-import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
-import br.com.orcinus.orca.core.sample.feed.profile.post.content.SampleTermMuter
+import br.com.orcinus.orca.core.sample.auth.actor.sample
 import br.com.orcinus.orca.core.test.auth.AuthenticationLock
-import br.com.orcinus.orca.core.test.auth.Authenticator
-import br.com.orcinus.orca.core.test.auth.AuthorizerBuilder
-import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.platform.testing.context
-import br.com.orcinus.orca.std.injector.Injector
-import br.com.orcinus.orca.std.injector.module.injection.immediateInjectionOf
-import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 import java.time.ZonedDateTime
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 import kotlin.test.Test
-import kotlin.test.assertFailsWith
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
@@ -57,7 +46,7 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class MastodonNotificationTests {
-  private val actor = Actor.Authenticated.sample
+  private val authenticationLock = AuthenticationLock(ActorProvider.sample)
   private val createdAtAsZonedDateTime = ZonedDateTime.now()
   private val createdAt = MastodonNotification.createdAt(createdAtAsZonedDateTime)
 
@@ -167,54 +156,24 @@ internal class MastodonNotificationTests {
   }
 
   @Test
-  fun getsContentTitleWhenCoreModuleIsNotRequiredToBeRegistered() {
+  fun getsContentTitleAsync() {
     runTest {
-      assertThat(
-          MastodonNotification.Type.entries.filterNot(
-            MastodonNotification.Type::isCoreModuleRegistrationUponContentTitleObtainanceRequired
-          ),
-          "types"
-        )
-        .each { typeAssert ->
-          typeAssert.given { type ->
-            val parent =
-              MastodonNotification(
-                /* id = */ "",
-                type,
-                createdAt,
-                MastodonAccount.default,
-                MastodonStatus.default
-              )
-            type.getContentTitleAsync(context, this, parent).toCompletableFuture().get()
-          }
+      assertThat(MastodonNotification.Type.entries).each { typeAssert ->
+        typeAssert.given { type ->
+          val parent =
+            MastodonNotification(
+              /* id = */ "0",
+              type,
+              createdAt,
+              MastodonAccount.default,
+              MastodonStatus.default
+            )
+          type
+            .getContentTitleAsync(context, authenticationLock, this, parent)
+            .toCompletableFuture()
+            .get()
         }
-    }
-  }
-
-  @Test
-  fun throwsWhenCoreModuleIsRequiredToBeRegisteredWhenContentTitleIsObtained() {
-    runTest {
-      assertThat(
-          MastodonNotification.Type.entries.filter(
-            MastodonNotification.Type::isCoreModuleRegistrationUponContentTitleObtainanceRequired
-          ),
-          "types"
-        )
-        .each { typeAssert ->
-          typeAssert.given { type ->
-            val parent =
-              MastodonNotification(
-                /* id = */ "",
-                type,
-                createdAt,
-                MastodonAccount.default,
-                MastodonStatus.default
-              )
-            assertFailsWith<Injector.ModuleNotRegisteredException> {
-              type.getContentTitleAsync(context, this, parent).toCompletableFuture().get()
-            }
-          }
-        }
+      }
     }
   }
 
@@ -250,21 +209,6 @@ internal class MastodonNotificationTests {
     runTest {
       assertThat(MastodonNotification.Type.entries, "types").each { typeAssert ->
         typeAssert.given { type ->
-          if (type.isCoreModuleRegistrationUponContentTitleObtainanceRequired) {
-            val authorizer = AuthorizerBuilder().build()
-            val actorProvider = SampleActorProvider()
-            val authenticator = Authenticator(actorProvider, authorizer) { actor }
-            val authenticationLock = AuthenticationLock(authenticator, actorProvider)
-            val module =
-              MastodonCoreModule(
-                lazyInjectionOf {
-                  SampleMastodonInstanceProvider(authorizer, authenticator, authenticationLock)
-                },
-                immediateInjectionOf(authenticationLock),
-                lazyInjectionOf { SampleTermMuter() }
-              )
-            Injector.register<CoreModule>(module)
-          }
           assertThat(
               MastodonNotification(
                 /* id = */ "",
@@ -275,15 +219,12 @@ internal class MastodonNotificationTests {
               )
             )
             .transform("toNotificationAsync") { transformationParent ->
-              transformationParent.toNotificationAsync(context, this@runTest)
+              transformationParent.toNotificationAsync(context, authenticationLock, this@runTest)
             }
             .prop(CompletionStage<Notification>::toCompletableFuture)
             .prop(CompletableFuture<Notification>::get)
             .prop(Notification::getChannelId)
             .isSameAs(type.channelID)
-          if (type.isCoreModuleRegistrationUponContentTitleObtainanceRequired) {
-            Injector.unregister<CoreModule>()
-          }
         }
       }
     }
@@ -294,21 +235,6 @@ internal class MastodonNotificationTests {
     runTest {
       assertThat(MastodonNotification.Type.entries, "types").each { typeAssert ->
         typeAssert.given { type ->
-          if (type.isCoreModuleRegistrationUponContentTitleObtainanceRequired) {
-            val authorizer = AuthorizerBuilder().build()
-            val actorProvider = SampleActorProvider()
-            val authenticator = Authenticator(actorProvider, authorizer) { actor }
-            val authenticationLock = AuthenticationLock(authenticator, actorProvider)
-            val module =
-              MastodonCoreModule(
-                lazyInjectionOf {
-                  SampleMastodonInstanceProvider(authorizer, authenticator, authenticationLock)
-                },
-                immediateInjectionOf(authenticationLock),
-                lazyInjectionOf { SampleTermMuter() }
-              )
-            Injector.register<CoreModule>(module)
-          }
           assertThat(
               MastodonNotification(
                 /* id = */ "",
@@ -319,16 +245,13 @@ internal class MastodonNotificationTests {
               )
             )
             .transform("toNotificationAsync") { transformationParent ->
-              transformationParent.toNotificationAsync(context, this@runTest)
+              transformationParent.toNotificationAsync(context, authenticationLock, this@runTest)
             }
             .prop(CompletionStage<Notification>::toCompletableFuture)
             .prop(CompletableFuture<Notification>::get)
             .prop(Notification::flags)
             .transform("is auto-cancel enabled", Notification.FLAG_AUTO_CANCEL::and)
             .isNotZero()
-          if (type.isCoreModuleRegistrationUponContentTitleObtainanceRequired) {
-            Injector.unregister<CoreModule>()
-          }
         }
       }
     }
@@ -347,24 +270,13 @@ internal class MastodonNotificationTests {
               MastodonAccount.default,
               MastodonStatus.default
             )
-          if (type.isCoreModuleRegistrationUponContentTitleObtainanceRequired) {
-            val authorizer = AuthorizerBuilder().build()
-            val actorProvider = SampleActorProvider()
-            val authenticator = Authenticator(actorProvider, authorizer) { actor }
-            val authenticationLock = AuthenticationLock(authenticator, actorProvider)
-            val module =
-              MastodonCoreModule(
-                lazyInjectionOf {
-                  SampleMastodonInstanceProvider(authorizer, authenticator, authenticationLock)
-                },
-                immediateInjectionOf(authenticationLock),
-                lazyInjectionOf { SampleTermMuter() }
-              )
-            Injector.register<CoreModule>(module)
-          }
           assertThat(mastodonNotification)
             .transform("toNotificationAsync") { transformationMastodonNotification ->
-              transformationMastodonNotification.toNotificationAsync(context, this@runTest)
+              transformationMastodonNotification.toNotificationAsync(
+                context,
+                authenticationLock,
+                this@runTest
+              )
             }
             .prop(CompletionStage<Notification>::toCompletableFuture)
             .prop(CompletableFuture<Notification>::get)
@@ -374,13 +286,10 @@ internal class MastodonNotificationTests {
             }
             .isEqualTo(
               type
-                .getContentTitleAsync(context, this, mastodonNotification)
+                .getContentTitleAsync(context, authenticationLock, this, mastodonNotification)
                 .toCompletableFuture()
                 .get()
             )
-          if (type.isCoreModuleRegistrationUponContentTitleObtainanceRequired) {
-            Injector.unregister<CoreModule>()
-          }
         }
       }
     }
@@ -391,21 +300,6 @@ internal class MastodonNotificationTests {
     runTest {
       assertThat(MastodonNotification.Type.entries, "types").each { typeAssert ->
         typeAssert.given { type ->
-          if (type.isCoreModuleRegistrationUponContentTitleObtainanceRequired) {
-            val authorizer = AuthorizerBuilder().build()
-            val actorProvider = SampleActorProvider()
-            val authenticator = Authenticator(actorProvider, authorizer) { actor }
-            val authenticationLock = AuthenticationLock(authenticator, actorProvider)
-            val module =
-              MastodonCoreModule(
-                lazyInjectionOf {
-                  SampleMastodonInstanceProvider(authorizer, authenticator, authenticationLock)
-                },
-                immediateInjectionOf(authenticationLock),
-                lazyInjectionOf { SampleTermMuter() }
-              )
-            Injector.register<CoreModule>(module)
-          }
           assertThat(
               MastodonNotification(
                 /* id = */ "",
@@ -416,7 +310,7 @@ internal class MastodonNotificationTests {
               )
             )
             .transform("toNotificationAsync") { transformationParent ->
-              transformationParent.toNotificationAsync(context, this@runTest)
+              transformationParent.toNotificationAsync(context, authenticationLock, this@runTest)
             }
             .prop(CompletionStage<Notification>::toCompletableFuture)
             .prop(CompletableFuture<Notification>::get)
@@ -429,9 +323,6 @@ internal class MastodonNotificationTests {
               prop(Notification::`when`)
                 .isEqualTo(createdAtAsZonedDateTime.toInstant().toEpochMilli())
             }
-          if (type.isCoreModuleRegistrationUponContentTitleObtainanceRequired) {
-            Injector.unregister<CoreModule>()
-          }
         }
       }
     }

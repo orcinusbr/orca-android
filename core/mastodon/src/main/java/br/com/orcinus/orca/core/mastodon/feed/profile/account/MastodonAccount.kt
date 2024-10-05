@@ -18,6 +18,8 @@ package br.com.orcinus.orca.core.mastodon.feed.profile.account
 import android.content.Context
 import androidx.annotation.VisibleForTesting
 import br.com.orcinus.orca.composite.timeline.text.annotated.fromHtml
+import br.com.orcinus.orca.core.auth.AuthenticationLock
+import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.account.Account
@@ -109,13 +111,14 @@ internal data class MastodonAccount(
     }
   }
 
-  /** Whether the currently authenticated [Actor] is the owner of this [Account]. */
-  suspend fun isOwned(): Boolean {
-    return Injector.from<CoreModule>()
-      .instanceProvider()
-      .provide()
-      .authenticationLock
-      .scheduleUnlock { it.id == id }
+  /**
+   * Whether the currently authenticated [Actor] is the owner of this [Account].
+   *
+   * @param authenticationLock [AuthenticationLock] through which the ID of the [Actor] will be
+   *   compared to that of this [MastodonAccount].
+   */
+  suspend fun isOwned(authenticationLock: SomeAuthenticationLock): Boolean {
+    return authenticationLock.scheduleUnlock { it.id == id }
   }
 
   /**
@@ -137,6 +140,24 @@ internal data class MastodonAccount(
   /** Converts this [MastodonAccount] into an [Account]. */
   private fun toAccount(): Account {
     return Account.of(acct, fallbackDomain = "mastodon.social")
+  }
+
+  /**
+   * Whether the currently authenticated [Actor] is the owner of this [Account].
+   *
+   * @throws Injector.ModuleNotRegisteredException If a [CoreModule] is not registered in the
+   *   [Injector].
+   */
+  @Deprecated(
+    "This method has a hidden dependency on the `CoreModule` that is expected to have been " +
+      "registered in the `Injector`. Prefer calling its overload that explicitly requires an " +
+      "`AuthenticationLock`.",
+    ReplaceWith("isOwned(authenticationLock)")
+  )
+  private suspend fun isOwned(): Boolean {
+    val authenticationLock =
+      Injector.from<CoreModule>().instanceProvider().provide().authenticationLock
+    return isOwned(authenticationLock)
   }
 
   /**

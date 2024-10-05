@@ -18,6 +18,7 @@ package br.com.orcinus.orca.core.mastodon.notification
 import android.app.NotificationManager
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.getSystemService
+import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
@@ -39,7 +40,8 @@ import kotlinx.coroutines.launch
 
 internal class NotificationService(
   private val requester: Requester,
-  private val coroutineContext: CoroutineContext
+  private val authenticationLock: SomeAuthenticationLock,
+  coroutineContext: CoroutineContext
 ) : FirebaseMessagingService() {
   private val activeChannelIds = arrayOfNulls<String>(MastodonNotification.Type.entries.size)
   private var lastActiveChannelIDIndex = 0
@@ -62,7 +64,11 @@ internal class NotificationService(
 
   @Throws(Module.DependencyNotInjectedException::class)
   constructor() :
-    this(requester = Injector.get(), coroutineContext = SupervisorJob() + Dispatchers.IO)
+    this(
+      requester = Injector.get(),
+      authenticationLock = Injector.get(),
+      coroutineContext = SupervisorJob() + Dispatchers.IO
+    )
 
   override fun onMessageReceived(message: RemoteMessage) {
     super.onMessageReceived(message)
@@ -87,12 +93,12 @@ internal class NotificationService(
   }
 
   private fun sendNotification(payload: Map<String, String>) {
-    val mastodonNotification = MastodonNotification.from(payload)
-    val channel = mastodonNotification.type.toNotificationChannel(this)
+    val dto = MastodonNotification.from(payload)
+    val channel = dto.type.toNotificationChannel(this)
     coroutineScope.launch {
-      val notification = mastodonNotification.toNotification(this@NotificationService)
+      val notification = dto.toNotification(this@NotificationService, authenticationLock)
       manager.createNotificationChannel(channel)
-      manager.notify(mastodonNotification.normalizedID, notification)
+      manager.notify(dto.normalizedID, notification)
       activeChannelIds[lastActiveChannelIDIndex++] = channel.id
     }
   }

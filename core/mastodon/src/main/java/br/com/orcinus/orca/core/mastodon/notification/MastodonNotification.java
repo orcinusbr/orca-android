@@ -25,6 +25,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.OptIn;
 import androidx.annotation.StringRes;
 import androidx.annotation.VisibleForTesting;
+import br.com.orcinus.orca.core.auth.AuthenticationLock;
+import br.com.orcinus.orca.core.auth.actor.Actor;
 import br.com.orcinus.orca.core.mastodon.R;
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount;
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus;
@@ -48,6 +50,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Supplier;
 import kotlin.Unit;
 import kotlin.collections.MapsKt;
+import kotlin.coroutines.Continuation;
 import kotlin.coroutines.CoroutineContext;
 import kotlin.jvm.functions.Function2;
 import kotlinx.coroutines.BuildersKt;
@@ -244,6 +247,7 @@ final class MastodonNotification {
       @Override
       final CompletableFuture<String> getContentTitleAsync(
           final Context context,
+          final AuthenticationLock<?> authenticationLock,
           final CoroutineScope coroutineScope,
           final MastodonNotification parent) {
         final MastodonStatus status = parent.status;
@@ -283,6 +287,7 @@ final class MastodonNotification {
       @Override
       final CompletableFuture<String> getContentTitleAsync(
           final Context context,
+          final AuthenticationLock<?> authenticationLock,
           final CoroutineScope coroutineScope,
           final MastodonNotification parent) {
         return CompletableFuture.completedFuture(
@@ -317,6 +322,7 @@ final class MastodonNotification {
       @Override
       final CompletableFuture<String> getContentTitleAsync(
           final Context context,
+          final AuthenticationLock<?> authenticationLock,
           final CoroutineScope coroutineScope,
           final MastodonNotification parent) {
         return CompletableFuture.completedFuture(
@@ -352,6 +358,7 @@ final class MastodonNotification {
       @Override
       final CompletableFuture<String> getContentTitleAsync(
           final Context context,
+          final AuthenticationLock<?> authenticationLock,
           final CoroutineScope coroutineScope,
           final MastodonNotification parent) {
         final MastodonStatus status = parent.status;
@@ -391,24 +398,15 @@ final class MastodonNotification {
       @Override
       final CompletionStage<String> getContentTitleAsync(
           final Context context,
+          final AuthenticationLock<?> authenticationLock,
           final CoroutineScope coroutineScope,
           final MastodonNotification parent) {
         final MastodonStatus status = parent.status;
         final CompletableContinuation<Boolean> pollOwnershipContinuation =
             new CompletableContinuation<>();
-
-        /*
-         * Checking whether a Mastodon account belongs to the authenticated actor requires
-         * interacting with an authentication lock, which this method assumes to be injected into
-         * the core module that is also implied to be registered in the injector.
-         *
-         * Maybe these implicit assumptions should be made more explicit instead of having a method
-         * be implemented by each type for the sole purpose of denoting whether the module should be
-         * registered (i. e., by requiring the lock to be passed in as an argument)?
-         */
         CompletableContinuations.resume(
-            pollOwnershipContinuation, (Boolean) parent.account.isOwned(pollOwnershipContinuation));
-
+            pollOwnershipContinuation,
+            (Boolean) parent.account.isOwned(authenticationLock, pollOwnershipContinuation));
         return pollOwnershipContinuation
             .getCompletionStage()
             .thenApply(
@@ -452,6 +450,7 @@ final class MastodonNotification {
       @Override
       final CompletableFuture<String> getContentTitleAsync(
           final Context context,
+          final AuthenticationLock<?> authenticationLock,
           final CoroutineScope coroutineScope,
           final MastodonNotification parent) {
         final MastodonStatus status = parent.status;
@@ -491,6 +490,7 @@ final class MastodonNotification {
       @Override
       final CompletableFuture<String> getContentTitleAsync(
           final Context context,
+          final AuthenticationLock<?> authenticationLock,
           final CoroutineScope coroutineScope,
           final MastodonNotification parent) {
         return CompletableFuture.completedFuture(
@@ -525,6 +525,7 @@ final class MastodonNotification {
       @Override
       final CompletableFuture<String> getContentTitleAsync(
           final Context context,
+          final AuthenticationLock<?> authenticationLock,
           final CoroutineScope coroutineScope,
           final MastodonNotification parent) {
         final MastodonStatus status = parent.status;
@@ -564,6 +565,7 @@ final class MastodonNotification {
       @Override
       final CompletableFuture<String> getContentTitleAsync(
           final Context context,
+          final AuthenticationLock<?> authenticationLock,
           final CoroutineScope coroutineScope,
           final MastodonNotification parent) {
         final MastodonStatus status = parent.status;
@@ -705,31 +707,30 @@ final class MastodonNotification {
      * Obtains a {@link CompletionStage} of the title of the content displayed by a {@link
      * Notification}.
      *
-     * <p>Note that an {@link Injector.ModuleNotRegisteredException} is guaranteed to be thrown if
-     * {@link Type#isCoreModuleRegistrationUponContentTitleObtainanceRequired()} returns {@code
-     * true} and a {@link CoreModule} is not injected when the value produced by the {@link
-     * CompletableFuture} into which the returned {@link CompletionStage} can be converted is
-     * requested to be retrieved.
-     *
      * @param context {@link Context} from which the {@link String} will be retrieved given its
      *     resource ID.
+     * @param authenticationLock {@link AuthenticationLock} for checking whether the related {@link
+     *     MastodonAccount} is owned by the current {@link Actor}.
      * @param coroutineScope {@link CoroutineScope} in which whether the {@link MastodonAccount} is
      *     owned or not will be fetched.
      * @param parent {@link MastodonNotification} to which this {@link Type} belongs.
-     * @see MastodonNotification#toNotificationAsync(Context, CoroutineScope)
-     * @see CompletionStage#toCompletableFuture()
+     * @see MastodonNotification#toNotificationAsync(Context, AuthenticationLock, CoroutineScope)
+     * @see MastodonNotification#account
+     * @see MastodonAccount#isOwned(AuthenticationLock, Continuation)
      */
     @NonNull
     abstract CompletionStage<String> getContentTitleAsync(
         final Context context,
+        final AuthenticationLock<?> authenticationLock,
         final CoroutineScope coroutineScope,
         final MastodonNotification parent);
 
     /**
      * Whether a {@link CoreModule} needs to be registered in the {@link Injector} for the content
      * title of a {@link Notification} to be obtained. If it does and it has not been by the time
-     * {@link Type#getContentTitleAsync(Context, CoroutineScope, MastodonNotification)} is called, a
-     * {@link Module.DependencyNotInjectedException} is guaranteed to be thrown.
+     * {@link Type#getContentTitleAsync(Context, AuthenticationLock, CoroutineScope,
+     * MastodonNotification)} is called, a {@link Module.DependencyNotInjectedException} is
+     * guaranteed to be thrown.
      */
     @VisibleForTesting
     abstract boolean isCoreModuleRegistrationUponContentTitleObtainanceRequired();
@@ -860,15 +861,22 @@ final class MastodonNotification {
    *
    * @param context {@link Context} with which the underlying {@link Notification.Builder} will be
    *     instantiated.
+   * @param authenticationLock {@link AuthenticationLock} for checking whether the {@link
+   *     MastodonNotification#account} is owned by the current {@link Actor}.
    * @param coroutineScope {@link CoroutineScope} in which the {@link Job} for obtaining the title
    *     of the content will be launched.
-   * @see Type#getContentTitleAsync(Context, CoroutineScope, MastodonNotification)
+   * @see Type#getContentTitleAsync(Context, AuthenticationLock, CoroutineScope,
+   *     MastodonNotification)
    * @see BuildersKt#launch(CoroutineScope, CoroutineContext, CoroutineStart, Function2)
+   * @see MastodonNotification#account
+   * @see MastodonAccount#isOwned(AuthenticationLock, Continuation)
    */
   @NonNull
   CompletionStage<Notification> toNotificationAsync(
-      @NonNull final Context context, @NonNull final CoroutineScope coroutineScope) {
-    return type.getContentTitleAsync(context, coroutineScope, this)
+      @NonNull final Context context,
+      @NonNull final AuthenticationLock<?> authenticationLock,
+      @NonNull final CoroutineScope coroutineScope) {
+    return type.getContentTitleAsync(context, authenticationLock, coroutineScope, this)
         .thenApply(
             (contentTitle) ->
                 new Notification.Builder(context, type.getChannelID())

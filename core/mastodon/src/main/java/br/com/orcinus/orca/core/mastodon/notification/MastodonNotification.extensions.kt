@@ -17,6 +17,10 @@ package br.com.orcinus.orca.core.mastodon.notification
 
 import android.app.Notification
 import android.content.Context
+import br.com.orcinus.orca.core.auth.AuthenticationLock
+import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
+import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.future.await
 
@@ -24,7 +28,14 @@ import kotlinx.coroutines.future.await
  * Converts this [MastodonNotification] into a [Notification].
  *
  * @param context [Context] with which the underlying [Notification.Builder] will be instantiated.
+ * @param authenticationLock [AuthenticationLock] for checking whether the [MastodonAccount] is
+ *   owned by the current [Actor].
+ * @see MastodonNotification.account
+ * @see MastodonAccount.isOwned
  */
-internal suspend fun MastodonNotification.toNotification(context: Context): Notification {
-  return coroutineScope { toNotificationAsync(context, this).await() }
+internal suspend fun MastodonNotification.toNotification(
+  context: Context,
+  authenticationLock: SomeAuthenticationLock
+): Notification {
+  return coroutineScope { toNotificationAsync(context, authenticationLock, this).await() }
 }

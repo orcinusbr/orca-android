@@ -26,11 +26,14 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
 import assertk.assertions.prop
 import assertk.assertions.single
+import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.mastodon.BuildConfig
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.runAuthenticatedRequesterTest
 import br.com.orcinus.orca.core.mastodon.instance.requester.runRequesterTest
+import br.com.orcinus.orca.core.sample.auth.actor.sample
+import br.com.orcinus.orca.core.test.auth.AuthenticationLock
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import br.com.orcinus.orca.platform.testing.context
 import br.com.orcinus.orca.std.injector.Injector
@@ -50,17 +53,35 @@ import org.robolectric.android.controller.ServiceController
 
 @RunWith(RobolectricTestRunner::class)
 internal class NotificationServiceTests {
+  private val authenticationLock = AuthenticationLock(ActorProvider.sample)
+
   @Test
   fun instantiatingFromEmptyConstructorRetrievesInjectedRequester() {
-    var hasInjectedRequesterBeenRetrieved = false
+    var isRetrieved = false
     runRequesterTest {
       Injector.injectLazily {
-        hasInjectedRequesterBeenRetrieved = true
+        isRetrieved = true
         requester
+      }
+      Injector.injectImmediately(authenticationLock)
+    }
+    NotificationService()
+    assertThat(isRetrieved).isTrue()
+    Injector.clear()
+  }
+
+  @Test
+  fun instantiatingFromEmptyConstructorRetrievesInjectedAuthenticationLock() {
+    var isRetrieved = false
+    runRequesterTest {
+      Injector.injectImmediately(requester)
+      Injector.injectLazily {
+        isRetrieved = true
+        authenticationLock
       }
     }
     NotificationService()
-    assertThat(hasInjectedRequesterBeenRetrieved).isTrue()
+    assertThat(isRetrieved).isTrue()
     Injector.clear()
   }
 
@@ -75,7 +96,7 @@ internal class NotificationServiceTests {
       },
       context = @OptIn(ExperimentalCoroutinesApi::class) UnconfinedTestDispatcher()
     ) {
-      val service = NotificationService(requester, coroutineContext)
+      val service = NotificationService(requester, authenticationLock, coroutineContext)
       val intent = Intent(context, NotificationService::class.java)
       val controller =
         ServiceController.of(service, intent).apply(ServiceController<NotificationService>::bind)
@@ -96,7 +117,7 @@ internal class NotificationServiceTests {
     runAuthenticatedRequesterTest(
       context = @OptIn(ExperimentalCoroutinesApi::class) UnconfinedTestDispatcher()
     ) {
-      val service = NotificationService(requester, coroutineContext)
+      val service = NotificationService(requester, authenticationLock, coroutineContext)
       val intent = Intent(context, NotificationService::class.java)
       val controller = ServiceController.of(service, intent)
       assertThat(MastodonNotification.Type.entries).each { typeAssert ->
@@ -116,11 +137,14 @@ internal class NotificationServiceTests {
               .setMessageId("0")
               .setData(mastodonNotification.toMap())
               .build()
-          val notification = runBlocking { mastodonNotification.toNotification(context) }
+          val notification = runBlocking {
+            mastodonNotification.toNotification(context, authenticationLock)
+          }
           controller.bind()
           service.onMessageReceived(message)
           controller.unbind()
-          assertThat(service.manager.activeNotifications.toSet())
+          assertThat(service.manager.activeNotifications)
+            .prop(Array<StatusBarNotification>::toSet)
             .single()
             .prop(StatusBarNotification::getNotification)
             .all {
@@ -132,6 +156,7 @@ internal class NotificationServiceTests {
                   type
                     .getContentTitleAsync(
                       context,
+                      authenticationLock,
                       this@runAuthenticatedRequesterTest,
                       mastodonNotification
                     )

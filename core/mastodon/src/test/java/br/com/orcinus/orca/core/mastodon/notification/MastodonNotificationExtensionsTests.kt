@@ -21,22 +21,12 @@ import assertk.assertThat
 import assertk.assertions.each
 import assertk.assertions.isEqualTo
 import assertk.assertions.prop
-import br.com.orcinus.orca.core.auth.actor.Actor
-import br.com.orcinus.orca.core.mastodon.MastodonCoreModule
+import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus
-import br.com.orcinus.orca.core.mastodon.instance.SampleMastodonInstanceProvider
-import br.com.orcinus.orca.core.module.CoreModule
-import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
-import br.com.orcinus.orca.core.sample.feed.profile.post.content.SampleTermMuter
+import br.com.orcinus.orca.core.sample.auth.actor.sample
 import br.com.orcinus.orca.core.test.auth.AuthenticationLock
-import br.com.orcinus.orca.core.test.auth.Authenticator
-import br.com.orcinus.orca.core.test.auth.AuthorizerBuilder
-import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.platform.testing.context
-import br.com.orcinus.orca.std.injector.Injector
-import br.com.orcinus.orca.std.injector.module.injection.immediateInjectionOf
-import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.test.Test
@@ -49,13 +39,13 @@ import org.robolectric.RobolectricTestRunner
 internal class MastodonNotificationExtensionsTests {
   @Test
   fun convertsIntoNotification() {
-    val actor = Actor.Authenticated.sample
+    val authenticationLock = AuthenticationLock(ActorProvider.sample)
     val createdAtAsZonedDateTime = ZonedDateTime.now()
     val createdAt = createdAtAsZonedDateTime.format(DateTimeFormatter.ISO_INSTANT)
     runTest {
       assertThat(MastodonNotification.Type.entries, "types").each { typeAssert ->
         typeAssert.given { type ->
-          val parent =
+          val mastodonNotification =
             MastodonNotification(
               /* id = */ "",
               type,
@@ -63,23 +53,10 @@ internal class MastodonNotificationExtensionsTests {
               MastodonAccount.default,
               MastodonStatus.default
             )
-          if (type.isCoreModuleRegistrationUponContentTitleObtainanceRequired) {
-            val authorizer = AuthorizerBuilder().build()
-            val actorProvider = SampleActorProvider()
-            val authenticator = Authenticator(actorProvider, authorizer) { actor }
-            val authenticationLock = AuthenticationLock(authenticator, actorProvider)
-            val module =
-              MastodonCoreModule(
-                lazyInjectionOf {
-                  SampleMastodonInstanceProvider(authorizer, authenticator, authenticationLock)
-                },
-                immediateInjectionOf(authenticationLock),
-                lazyInjectionOf { SampleTermMuter() }
-              )
-            Injector.register<CoreModule>(module)
-          }
-          assertThat(parent)
-            .transform("toNotification") { runBlocking { parent.toNotification(context) } }
+          assertThat(mastodonNotification)
+            .transform("toNotification") {
+              runBlocking { mastodonNotification.toNotification(context, authenticationLock) }
+            }
             .all {
               prop(Notification::extras)
                 .transform("getString(Notification.EXTRA_TITLE)") { notification ->
@@ -87,16 +64,18 @@ internal class MastodonNotificationExtensionsTests {
                 }
                 .isEqualTo(
                   type
-                    .getContentTitleAsync(context, this@runTest, parent)
+                    .getContentTitleAsync(
+                      context,
+                      authenticationLock,
+                      this@runTest,
+                      mastodonNotification
+                    )
                     .toCompletableFuture()
                     .get()
                 )
               prop(Notification::`when`)
                 .isEqualTo(createdAtAsZonedDateTime.toInstant().toEpochMilli())
             }
-          if (type.isCoreModuleRegistrationUponContentTitleObtainanceRequired) {
-            Injector.unregister<CoreModule>()
-          }
         }
       }
     }
