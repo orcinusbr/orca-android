@@ -57,8 +57,8 @@ import kotlinx.coroutines.Job;
 import kotlinx.serialization.ExperimentalSerializationApi;
 import kotlinx.serialization.KSerializer;
 import kotlinx.serialization.SerializationException;
+import kotlinx.serialization.SerializationStrategy;
 import kotlinx.serialization.builtins.BuiltinSerializersKt;
-import kotlinx.serialization.descriptors.ClassSerialDescriptorBuilder;
 import kotlinx.serialization.descriptors.SerialDescriptor;
 import kotlinx.serialization.descriptors.SerialDescriptorsKt;
 import kotlinx.serialization.encoding.Decoder;
@@ -82,16 +82,6 @@ final class MastodonNotification {
   /** Unique identifier in the database. */
   @NonNull private final String id;
 
-  /**
-   * Ordered keys expected to be present in a {@link Map} from which a {@link MastodonNotification}
-   * is created.
-   *
-   * @see MastodonNotification#from(Map)
-   */
-  @NonNull @VisibleForTesting
-  static final String[] expectedKeys =
-      new String[] {"id", "type", "createdAt", "account", "status"};
-
   /** Defines what this {@link MastodonNotification} is about. */
   @NonNull final Type type;
 
@@ -113,6 +103,17 @@ final class MastodonNotification {
 
   /** {@link KSerializer} for serializing and deserializing a {@link MastodonNotification}. */
   static final class Serializer implements KSerializer<MastodonNotification> {
+    /** Ordered {@link Element}s that map to the fields of a {@link MastodonNotification}. */
+    @VisibleForTesting
+    static Element[] elements =
+        new Element[] {
+          new Element("id", KSerializers.string()),
+          new Element("type", Type.Serializer.instance),
+          new Element("createdAt", KSerializers.string()),
+          new Element("account", KSerializers.mastodonAccount()),
+          new Element("status", KSerializers.mastodonStatus())
+        };
+
     /** {@link SerialDescriptor} that describes the structure of a {@link MastodonNotification}. */
     @NonNull
     @OptIn(markerClass = ExperimentalSerializationApi.class)
@@ -120,33 +121,39 @@ final class MastodonNotification {
         SerialDescriptorsKt.buildClassSerialDescriptor(
             Serializer.class.getSimpleName(),
             new SerialDescriptor[] {},
-            (ClassSerialDescriptorBuilder builder) -> {
+            (builder) -> {
               final List<Annotation> annotations = List.of();
               final boolean isOptional = false;
-              builder.element(
-                  expectedKeys[0], KSerializers.string().getDescriptor(), annotations, isOptional);
-              builder.element(
-                  expectedKeys[1],
-                  Type.Serializer.instance.getDescriptor(),
-                  annotations,
-                  isOptional);
-              builder.element(
-                  expectedKeys[2], KSerializers.string().getDescriptor(), annotations, isOptional);
-              builder.element(
-                  expectedKeys[3],
-                  KSerializers.mastodonAccount().getDescriptor(),
-                  annotations,
-                  isOptional);
-              builder.element(
-                  expectedKeys[4],
-                  KSerializers.mastodonStatus().getDescriptor(),
-                  annotations,
-                  isOptional);
+              for (Element element : elements) {
+                builder.element(
+                    element.name, element.strategy.getDescriptor(), annotations, isOptional);
+              }
               return Unit.INSTANCE;
             });
 
     /** Single instance of a {@link Serializer}. */
-    @NonNull static final Serializer instance = new Serializer();
+    @NonNull @VisibleForTesting static final Serializer instance = new Serializer();
+
+    /** Unit which composes the description of a {@link MastodonNotification}. */
+    static final class Element {
+      /** Name of the field to which this {@link Element} refers. */
+      @NonNull final String name;
+
+      /** {@link SerializationStrategy} for serializing the value. */
+      @NonNull final SerializationStrategy<?> strategy;
+
+      /**
+       * Unit which composes the description of a {@link MastodonNotification}.
+       *
+       * @param name Name of the field to which this {@link Element} refers.
+       * @param strategy {@link SerialDescriptor} that describes the structure of the value.
+       */
+      private Element(
+          @NonNull final String name, @NonNull final SerializationStrategy<?> strategy) {
+        this.name = name;
+        this.strategy = strategy;
+      }
+    }
 
     /** {@link KSerializer} for serializing and deserializing a {@link MastodonNotification}. */
     private Serializer() {}
@@ -163,14 +170,16 @@ final class MastodonNotification {
           encoder,
           getDescriptor(),
           (compositeEncoder) -> {
-            compositeEncoder.encodeStringElement(getDescriptor(), /* index= */ 0, value.id);
-            compositeEncoder.encodeSerializableElement(
-                getDescriptor(), /* index= */ 1, Type.Serializer.instance, value.type);
-            compositeEncoder.encodeStringElement(getDescriptor(), /* index= */ 2, value.createdAt);
-            compositeEncoder.encodeSerializableElement(
-                getDescriptor(), /* index= */ 3, KSerializers.mastodonAccount(), value.account);
-            compositeEncoder.encodeSerializableElement(
-                getDescriptor(), /* index= */ 4, KSerializers.mastodonStatus(), value.status);
+            final Object[] objects =
+                new Object[] {value.id, value.type, value.createdAt, value.account, value.status};
+            for (int index = 0; index < objects.length; index++) {
+              final Element element = elements[index];
+              final Object object = objects[index];
+
+              //noinspection unchecked
+              compositeEncoder.encodeSerializableElement(
+                  getDescriptor(), index, (SerializationStrategy<Object>) element.strategy, object);
+            }
             return Unit.INSTANCE;
           });
     }
@@ -574,12 +583,15 @@ final class MastodonNotification {
 
     /** {@link KSerializer} for serializing and deserializing a {@link Type}. */
     static final class Serializer implements KSerializer<Type> {
+      /** Single instance of a {@link Serializer}. */
+      private static final Serializer instance = new Serializer();
+
       /** {@link SerialDescriptor} that describes the structure of a {@link Type}. */
       @NonNull
       @OptIn(markerClass = ExperimentalSerializationApi.class)
       private final SerialDescriptor descriptor =
           SerialDescriptorsKt.buildClassSerialDescriptor(
-              Serializer.class.getName(),
+              Serializer.class.getSimpleName(),
               new SerialDescriptor[] {},
               (builder) -> {
                 final List<Annotation> annotations = List.of();
@@ -590,9 +602,6 @@ final class MastodonNotification {
                 }
                 return Unit.INSTANCE;
               });
-
-      /** Single instance of a {@link Serializer}. */
-      @NonNull static final Serializer instance = new Serializer();
 
       /** {@link KSerializer} for serializing and deserializing a {@link Type}. */
       private Serializer() {}
@@ -885,7 +894,7 @@ final class MastodonNotification {
   private static Map<String, String> rearrangeOrReturn(final Map<String, String> map) {
     final List<String> actualKeys = new ArrayList<>(map.keySet());
     int expectedKeyIndex = 0;
-    for (final String expectedKey : expectedKeys) {
+    for (final Serializer.Element element : Serializer.elements) {
       final String actualKey;
       try {
         actualKey = actualKeys.get(expectedKeyIndex++);
@@ -893,7 +902,7 @@ final class MastodonNotification {
         // A key is missing; exiting early so that the serialization exception is thrown externally.
         break;
       }
-      final boolean isUnordered = !expectedKey.contentEquals(actualKey);
+      final boolean isUnordered = !element.name.contentEquals(actualKey);
       if (isUnordered) {
         return rearrange(map);
       }
@@ -912,13 +921,13 @@ final class MastodonNotification {
    */
   private static Map<String, String> rearrange(final Map<String, String> map) {
     final Map<String, String> rearrangedMap = new LinkedHashMap<>(map.size());
-    for (final String expectedKey : expectedKeys) {
-      final String actualValue = map.get(expectedKey);
+    for (final Serializer.Element element : Serializer.elements) {
+      final String actualValue = map.get(element.name);
       if (actualValue == null) {
         // As in rearrangeOrReturn(Map), exiting for the caller to throw a serialization exception.
         break;
       }
-      rearrangedMap.put(expectedKey, actualValue);
+      rearrangedMap.put(element.name, actualValue);
     }
     return rearrangedMap;
   }

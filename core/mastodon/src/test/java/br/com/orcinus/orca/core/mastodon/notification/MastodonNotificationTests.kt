@@ -65,7 +65,7 @@ internal class MastodonNotificationTests {
   fun throwsWhenCreatingFromIncompleteMap() {
     assertThat(MastodonNotification.Type.entries).each { typeAssert ->
       typeAssert.given { type ->
-        for (expectedKey in MastodonNotification.expectedKeys) {
+        for (element in MastodonNotification.Serializer.elements) {
           assertFailure {
               MastodonNotification.from(
                 MastodonNotification(
@@ -76,7 +76,7 @@ internal class MastodonNotificationTests {
                     MastodonStatus.default
                   )
                   .toMap()
-                  .apply { remove(expectedKey) }
+                  .apply { remove(element.name) }
               )
             }
             .isInstanceOf<SerializationException>()
