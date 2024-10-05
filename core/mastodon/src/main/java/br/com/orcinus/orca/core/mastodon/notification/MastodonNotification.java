@@ -33,9 +33,6 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus
 import br.com.orcinus.orca.core.mastodon.notification.interop.CompletableContinuation;
 import br.com.orcinus.orca.core.mastodon.notification.interop.CompletableContinuations;
 import br.com.orcinus.orca.core.mastodon.notification.interop.KSerializers;
-import br.com.orcinus.orca.core.module.CoreModule;
-import br.com.orcinus.orca.std.injector.Injector;
-import br.com.orcinus.orca.std.injector.module.Module;
 import java.lang.annotation.Annotation;
 import java.time.Instant;
 import java.time.ZonedDateTime;
@@ -258,11 +255,6 @@ final class MastodonNotification {
                 parent.account.getAcct(),
                 status.getSummarizedContent()));
       }
-
-      @Override
-      final boolean isCoreModuleRegistrationUponContentTitleObtainanceRequired() {
-        return false;
-      }
     },
 
     /** Someone has followed the user. */
@@ -292,11 +284,6 @@ final class MastodonNotification {
           final MastodonNotification parent) {
         return CompletableFuture.completedFuture(
             context.getString(R.string.someone_has_followed_you, parent.account.getAcct()));
-      }
-
-      @Override
-      final boolean isCoreModuleRegistrationUponContentTitleObtainanceRequired() {
-        return false;
       }
     },
 
@@ -328,11 +315,6 @@ final class MastodonNotification {
         return CompletableFuture.completedFuture(
             context.getString(
                 R.string.someone_has_requested_to_follow_you, parent.account.getAcct()));
-      }
-
-      @Override
-      final boolean isCoreModuleRegistrationUponContentTitleObtainanceRequired() {
-        return false;
       }
     },
 
@@ -368,11 +350,6 @@ final class MastodonNotification {
                 R.string.someone_has_mentioned_you,
                 parent.account.getAcct(),
                 status.getSummarizedContent()));
-      }
-
-      @Override
-      final boolean isCoreModuleRegistrationUponContentTitleObtainanceRequired() {
-        return false;
       }
     },
 
@@ -421,11 +398,6 @@ final class MastodonNotification {
                           status.getSummarizedContent());
                 });
       }
-
-      @Override
-      final boolean isCoreModuleRegistrationUponContentTitleObtainanceRequired() {
-        return true;
-      }
     },
 
     /** Someone has reposted a {@link MastodonStatus} authored by the user. */
@@ -461,11 +433,6 @@ final class MastodonNotification {
                 parent.account.getAcct(),
                 status.getSummarizedContent()));
       }
-
-      @Override
-      final boolean isCoreModuleRegistrationUponContentTitleObtainanceRequired() {
-        return false;
-      }
     },
 
     /** Someone the user follows has been severed, either because of moderation or blocking. */
@@ -495,11 +462,6 @@ final class MastodonNotification {
           final MastodonNotification parent) {
         return CompletableFuture.completedFuture(
             context.getString(R.string.relationship_has_been_severed));
-      }
-
-      @Override
-      final boolean isCoreModuleRegistrationUponContentTitleObtainanceRequired() {
-        return false;
       }
     },
 
@@ -536,11 +498,6 @@ final class MastodonNotification {
                 parent.account.getAcct(),
                 status.getSummarizedContent()));
       }
-
-      @Override
-      final boolean isCoreModuleRegistrationUponContentTitleObtainanceRequired() {
-        return false;
-      }
     },
 
     /** A {@link MastodonStatus} with which the user has interacted has been edited. */
@@ -575,11 +532,6 @@ final class MastodonNotification {
                 R.string.someone_has_edited,
                 parent.account.getAcct(),
                 status.getSummarizedContent()));
-      }
-
-      @Override
-      final boolean isCoreModuleRegistrationUponContentTitleObtainanceRequired() {
-        return false;
       }
     };
 
@@ -724,16 +676,6 @@ final class MastodonNotification {
         final AuthenticationLock<?> authenticationLock,
         final CoroutineScope coroutineScope,
         final MastodonNotification parent);
-
-    /**
-     * Whether a {@link CoreModule} needs to be registered in the {@link Injector} for the content
-     * title of a {@link Notification} to be obtained. If it does and it has not been by the time
-     * {@link Type#getContentTitleAsync(Context, AuthenticationLock, CoroutineScope,
-     * MastodonNotification)} is called, a {@link Module.DependencyNotInjectedException} is
-     * guaranteed to be thrown.
-     */
-    @VisibleForTesting
-    abstract boolean isCoreModuleRegistrationUponContentTitleObtainanceRequired();
   }
 
   /**
