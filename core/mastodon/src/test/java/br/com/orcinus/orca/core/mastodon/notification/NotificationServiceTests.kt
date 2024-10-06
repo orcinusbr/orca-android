@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.core.mastodon.notification
 
 import android.app.Notification
+import android.app.NotificationManager
 import android.content.Intent
 import android.service.notification.StatusBarNotification
 import app.cash.turbine.test
@@ -23,9 +24,9 @@ import assertk.all
 import assertk.assertThat
 import assertk.assertions.each
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import assertk.assertions.prop
-import assertk.assertions.single
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.mastodon.BuildConfig
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
@@ -53,6 +54,7 @@ import org.robolectric.android.controller.ServiceController
 @RunWith(RobolectricTestRunner::class)
 internal class NotificationServiceTests {
   private val authenticationLock = AuthenticationLock(ActorProvider.sample)
+  private val dtoCreatedAt = MastodonNotification.createdAt(ZonedDateTime.now())
 
   @Test
   fun instantiatingFromEmptyConstructorRetrievesInjectedRequester() {
@@ -112,48 +114,58 @@ internal class NotificationServiceTests {
 
   @Test
   fun sendsNotificationWhenMessageIsReceived() {
-    val createdAt = MastodonNotification.createdAt(ZonedDateTime.now())
     runAuthenticatedRequesterTest(
       context = @OptIn(ExperimentalCoroutinesApi::class) UnconfinedTestDispatcher()
     ) {
       val service = NotificationService(requester, authenticationLock, coroutineContext)
       val intent = Intent(context, NotificationService::class.java)
       val controller = ServiceController.of(service, intent)
+      val messageBuilder = RemoteMessage.Builder(MESSAGE_RECIPIENT)
       assertThat(MastodonNotification.Type.entries).each { typeAssert ->
+        controller.bind()
         typeAssert.given { type ->
-          val mastodonNotification =
+          val dto =
             MastodonNotification(
-              /* id = */ "0",
+              /* id = */ "${type.ordinal}",
               type,
-              createdAt,
+              dtoCreatedAt,
               MastodonAccount.default,
               MastodonStatus.default
             )
-          val message =
-            RemoteMessage.Builder(
-                "${BuildConfig.mastodonfirebaseCloudMessagingSenderID}@fcm.googleapis.com"
-              )
-              .setMessageId("0")
-              .setData(mastodonNotification.toMap())
-              .build()
-          controller.bind()
+          val message = messageBuilder.setData(dto.toMap()).build()
+
+          fun hasNotificationNotBeenSent(): Boolean {
+            return service.manager.activeNotifications
+              .map(StatusBarNotification::getId)
+              .contains(dto.normalizedID)
+              .not()
+          }
+
           service.onMessageReceived(message)
-          controller.unbind()
-          assertThat(service.manager.activeNotifications)
-            .prop(Array<StatusBarNotification>::toSet)
-            .single()
+          @Suppress("ControlFlowWithEmptyBody") while (hasNotificationNotBeenSent()) {}
+          assertThat(service)
+            .prop(NotificationService::manager)
+            .prop(NotificationManager::getActiveNotifications)
+            .transform("of $type") { statusBarNotifications ->
+              statusBarNotifications.find { statusBarNotification ->
+                statusBarNotification.id == dto.normalizedID
+              }
+            }
+            .isNotNull()
             .prop(StatusBarNotification::getNotification)
             .all {
               prop(Notification::getChannelId).isEqualTo(type.channelID)
-              transform("extras.getString(Notification.EXTRA_TITLE)") {
-                  it.extras.getString(Notification.EXTRA_TITLE)
-                }
-                .isEqualTo(
-                  type.getContentTitleAsync(context, authenticationLock, mastodonNotification).get()
-                )
+              transform("title") { it.extras.getString(Notification.EXTRA_TITLE) }
+                .isEqualTo(type.getContentTitleAsync(context, authenticationLock, dto).get())
             }
         }
+        controller.unbind()
       }
     }
+  }
+
+  companion object {
+    private const val MESSAGE_RECIPIENT =
+      "${BuildConfig.mastodonfirebaseCloudMessagingSenderID}@fcm.googleapis.com"
   }
 }

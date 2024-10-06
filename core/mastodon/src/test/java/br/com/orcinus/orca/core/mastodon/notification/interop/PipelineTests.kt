@@ -16,8 +16,10 @@
 package br.com.orcinus.orca.core.mastodon.notification.interop
 
 import assertk.assertThat
+import assertk.assertions.isEqualTo
 import assertk.assertions.isZero
 import assertk.coroutines.assertions.suspendCall
+import br.com.orcinus.orca.core.mastodon.notification.async.Pipeline
 import br.com.orcinus.orca.core.mastodon.notification.async.pipeline
 import br.com.orcinus.orca.core.mastodon.notification.async.pipelineOf
 import java.util.concurrent.CompletionStage
@@ -37,6 +39,26 @@ internal class PipelineTests {
   fun createsWithAsyncValue() {
     runTest {
       assertThat(pipeline<Byte> { 0 }).suspendCall("await", CompletionStage<Byte>::await).isZero()
+    }
+  }
+
+  @Test
+  fun composesAtopImmediateValue() {
+    runTest {
+      assertThat(pipelineOf<Byte>(0))
+        .transform("thenApply") { it.thenApply(2::plus) }
+        .suspendCall("await", Pipeline<Int>::await)
+        .isEqualTo(2)
+    }
+  }
+
+  @Test
+  fun composesAtopAsyncValue() {
+    runTest {
+      assertThat(pipelineOf<Byte>(0))
+        .transform("thenApply") { it.thenApply(2::plus) }
+        .suspendCall("await", Pipeline<Int>::await)
+        .isEqualTo(2)
     }
   }
 }

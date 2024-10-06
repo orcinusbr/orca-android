@@ -43,8 +43,7 @@ internal class NotificationService(
   private val authenticationLock: SomeAuthenticationLock,
   coroutineContext: CoroutineContext
 ) : FirebaseMessagingService() {
-  private val activeChannelIds = arrayOfNulls<String>(MastodonNotification.Type.entries.size)
-  private var lastActiveChannelIDIndex = 0
+  private val activeNotificationIDs = mutableSetOf<Int>()
   private val authKey by lazy { ByteArray(16).apply(SecureRandom()::nextBytes).decodeToString() }
   private val publicKey by lazy {
     KeyPairGenerator.getInstance("EC")
@@ -95,11 +94,12 @@ internal class NotificationService(
   private fun sendNotification(payload: Map<String, String>) {
     val dto = MastodonNotification.from(payload)
     val channel = dto.type.toNotificationChannel(this)
+    val id = dto.normalizedID
     coroutineScope.launch {
       val notification = dto.toNotification(this@NotificationService, authenticationLock)
       manager.createNotificationChannel(channel)
-      manager.notify(dto.normalizedID, notification)
-      activeChannelIds[lastActiveChannelIDIndex++] = channel.id
+      manager.notify(id, notification)
+      activeNotificationIDs += id
     }
   }
 
@@ -129,15 +129,7 @@ internal class NotificationService(
   }
 
   private fun cancelSentNotifications() {
-    for (notification in
-      manager.activeNotifications
-        ?.filterNotNull()
-        ?.filter { it.notification?.channelId in activeChannelIds }
-        .orEmpty()) {
-      manager.cancel(notification.id)
-    }
-    activeChannelIds.fill(null)
-    lastActiveChannelIDIndex = 0
+    activeNotificationIDs.onEach(manager::cancel).clear()
   }
 
   companion object {
