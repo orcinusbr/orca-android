@@ -200,6 +200,7 @@ internal class NotificationService(
     }
   }
 
+  /** Cancels all system notifications that have been sent by this [NotificationService]. */
   private fun cancelSentNotifications() {
     activeNotificationIDs.onEach(notificationManager::cancel).clear()
   }
