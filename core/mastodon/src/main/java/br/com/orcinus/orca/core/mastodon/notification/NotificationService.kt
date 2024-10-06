@@ -15,10 +15,14 @@
 
 package br.com.orcinus.orca.core.mastodon.notification
 
+import android.app.Notification
 import android.app.NotificationManager
+import android.service.notification.StatusBarNotification
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.getSystemService
+import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
+import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
@@ -37,14 +41,44 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.serialization.SerializationException
 
+/**
+ * [FirebaseMessagingService] that subscribes to the receipt of updates regarding the authenticated
+ * [Actor] from the Mastodon server and forwards them to their device via system notifications. Each
+ * notification type defined by the Mastodon documentation as of v1 ("favourite", "follow", "follow
+ * request", "mention", "poll", "reblog", "severed relationships", "status" and "update") will have
+ * a channel of its own when their notifications are sent.
+ *
+ * @param coroutineContext [CoroutineContext] in which payload conversions and requests are
+ *   performed.
+ * @property requester [Requester] by which push subscriptions are performed.
+ * @property authenticationLock [AuthenticationLock] for requiring an authenticated [Actor] when
+ *   converting received payloads into system notifications.
+ * @see MastodonNotification.Type
+ * @see MastodonNotification.Type.toNotificationChannel
+ */
 internal class NotificationService(
   private val requester: Requester,
   private val authenticationLock: SomeAuthenticationLock,
   coroutineContext: CoroutineContext
 ) : FirebaseMessagingService() {
+  /**
+   * IDs of [Notification]s that have been sent and have not yet been cleared by this
+   * [NotificationService].
+   *
+   * @see StatusBarNotification.getId
+   */
   private val activeNotificationIDs = mutableSetOf<Int>()
+
+  /** Private randomly generated key that identifies this [NotificationService]. */
   private val authKey by lazy { ByteArray(16).apply(SecureRandom()::nextBytes).decodeToString() }
+
+  /**
+   * Base64-encoded [String] consisting of three sequences of bytes: an
+   * [UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER] and the x and y affine coordinates of the generated
+   * elliptic curve key.
+   */
   private val publicKey by lazy {
     KeyPairGenerator.getInstance("EC")
       .apply { initialize(/* keysize = */ 256) }
@@ -55,8 +89,20 @@ internal class NotificationService(
       .let(Base64.getUrlEncoder().withoutPadding()::encodeToString)
   }
 
+  /**
+   * [CoroutineScope] in which remotely received payloads are converted into [MastodonNotification]
+   * DTOs and requests to subscribe to the receipt of notifications from the Mastodon server are
+   * sent.
+   *
+   * @see sendNotificationIfNotEmpty
+   * @see pushSubscription
+   */
   @VisibleForTesting val coroutineScope = CoroutineScope(coroutineContext)
 
+  /**
+   * [NotificationManager] through which updates received from the server will be forwarded in the
+   * form of system notifications.
+   */
   @VisibleForTesting
   val notificationManager
     get() = getSystemService<NotificationManager>() as NotificationManager
@@ -85,12 +131,33 @@ internal class NotificationService(
     coroutineScope.cancel("Service has been destroyed.")
   }
 
+  /**
+   * Sends a system notification in case the given [payload] is not empty. In case it is, indeed,
+   * not empty, but contains unknown values or does not have the ones required by a
+   * [MastodonNotification], a [SerializationException] will be thrown.
+   *
+   * @param payload JSON [Map] structured as a notification DTO.
+   * @throws SerializationException If the [payload] is missing required values or has unknown ones.
+   * @see sendNotification
+   */
+  @Throws(SerializationException::class)
   private fun sendNotificationIfNotEmpty(payload: Map<String, String>) {
     if (payload.isNotEmpty()) {
       sendNotification(payload)
     }
   }
 
+  /**
+   * Sends a system notification based on the given [payload], disregarding whether it is empty or
+   * not. As converting a [MastodonNotification] into a system notification is a suspending
+   * operation, it is sent in the [coroutineScope]; thus, this method will probably return _before_
+   * the notification is delivered to the device (this is specially important to keep in mind for
+   * testing scenarios).
+   *
+   * @param payload (Non-empty) JSON [Map] structured as a notification DTO.
+   * @throws SerializationException If the [payload] is missing required values or has unknown ones.
+   */
+  @Throws(SerializationException::class)
   private fun sendNotification(payload: Map<String, String>) {
     val dto = MastodonNotification.from(payload)
     val channel = dto.type.toNotificationChannel(this)
@@ -103,6 +170,11 @@ internal class NotificationService(
     }
   }
 
+  /**
+   * Subscribes to the receipt of updates from the Mastodon server.
+   *
+   * @param token Key that identifies each Firebase Cloud Messaging (FCM) client instance.
+   */
   private fun pushSubscription(token: String) {
     coroutineScope.launch {
       requester.authenticated().post(
