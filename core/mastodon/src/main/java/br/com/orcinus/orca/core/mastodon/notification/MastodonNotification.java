@@ -66,8 +66,8 @@ final class MastodonNotification {
    * {@link Json} based on which {@link MastodonNotification}s and {@link Map}s are converted into
    * each other.
    *
-   * @see MastodonNotification#from(Map)
-   * @see MastodonNotification#toMap()
+   * @see #from(Map)
+   * @see #toMap()
    */
   private static final Json json = Json.Default;
 
@@ -88,8 +88,8 @@ final class MastodonNotification {
 
   /**
    * {@link MastodonStatus} to which this {@link MastodonNotification} is related. Only present when
-   * the {@link MastodonNotification#type} is {@link Type#FAVOURITE}, {@link Type#MENTION}, {@link
-   * Type#POLL}, {@link Type#REBLOG}, {@link Type#STATUS} or {@link Type#UPDATE}.
+   * the {@link #type} is {@link Type#FAVOURITE}, {@link Type#MENTION}, {@link Type#POLL}, {@link
+   * Type#REBLOG}, {@link Type#STATUS} or {@link Type#UPDATE}.
    */
   @Nullable final MastodonStatus status;
 
@@ -642,8 +642,8 @@ final class MastodonNotification {
      * @param authenticationLock {@link AuthenticationLock} for checking whether the related {@link
      *     MastodonAccount} is owned by the current {@link Actor}.
      * @param parent {@link MastodonNotification} to which this {@link Type} belongs.
-     * @see MastodonNotification#toNotificationAsync(Context, AuthenticationLock)
-     * @see MastodonNotification#account
+     * @see #toNotificationAsync(Context, AuthenticationLock)
+     * @see #account
      * @see MastodonAccount#isOwnedAsync(AuthenticationLock)
      */
     @NonNull
@@ -662,9 +662,8 @@ final class MastodonNotification {
    * @param account {@link MastodonAccount} responsible for the event that resulted in this {@link
    *     MastodonNotification} being sent.
    * @param status {@link MastodonStatus} to which this {@link MastodonNotification} is related.
-   *     Only present when the {@link MastodonNotification#type} is {@link Type#FAVOURITE}, {@link
-   *     Type#MENTION}, {@link Type#POLL}, {@link Type#REBLOG}, {@link Type#STATUS} or {@link
-   *     Type#UPDATE}.
+   *     Only present when the {@link #type} is {@link Type#FAVOURITE}, {@link Type#MENTION}, {@link
+   *     Type#POLL}, {@link Type#REBLOG}, {@link Type#STATUS} or {@link Type#UPDATE}.
    */
   MastodonNotification(
       @NonNull final String id,
@@ -711,7 +710,7 @@ final class MastodonNotification {
   }
 
   /**
-   * Converts a {@link ZonedDateTime} into a {@link MastodonNotification#createdAt} {@link String}.
+   * Converts a {@link ZonedDateTime} into a {@link #createdAt} {@link String}.
    *
    * @param zonedDateTime {@link ZonedDateTime} to be converted.
    */
@@ -726,7 +725,7 @@ final class MastodonNotification {
    *
    * @param map {@link Map} containing the name of the fields as keys to their {@link
    *     String}-converted values.
-   * @see MastodonNotification#toMap()
+   * @see #toMap()
    * @see JsonElements#toNonLiteralString(JsonElement)
    * @throws SerializationException If the {@link Map} contains a key that does not match a {@link
    *     MastodonNotification} field or one of the {@link JsonElement} {@link String} values are
@@ -744,11 +743,11 @@ final class MastodonNotification {
   }
 
   /**
-   * Obtains a normalized version of the {@link MastodonNotification#id}. Given that the original
-   * one is a {@link String}, it is converted into an integer in case it contains only digits;
-   * otherwise, its hash code is returned.
+   * Obtains a normalized version of the {@link #id}. Given that the original one is a {@link
+   * String}, it is converted into an integer in case it contains only digits; otherwise, its hash
+   * code is returned.
    *
-   * @return {@link MastodonNotification#id} as an integer (if it is digit-only) or its hash code.
+   * @return {@link #id} as an integer (if it is digit-only) or its hash code.
    */
   int getNormalizedID() {
     return TextUtils.isDigitsOnly(id) ? Integer.parseInt(id) : id.hashCode();
@@ -759,7 +758,7 @@ final class MastodonNotification {
    * JsonElement} {@link String}s.
    *
    * @see JsonElements#toNonLiteralString(JsonElement)
-   * @see MastodonNotification#from(Map)
+   * @see #from(Map)
    */
   @NonNull
   Map<String, String> toMap() {
@@ -778,10 +777,10 @@ final class MastodonNotification {
    *
    * @param context {@link Context} with which the underlying {@link Notification.Builder} will be
    *     instantiated.
-   * @param authenticationLock {@link AuthenticationLock} for checking whether the {@link
-   *     MastodonNotification#account} is owned by the current {@link Actor}.
+   * @param authenticationLock {@link AuthenticationLock} for checking whether the {@link #account}
+   *     is owned by the current {@link Actor}.
    * @see Type#getContentTitleAsync(Context, AuthenticationLock, MastodonNotification)
-   * @see MastodonNotification#account
+   * @see #account
    * @see MastodonAccount#isOwnedAsync(AuthenticationLock)
    */
   @NonNull
