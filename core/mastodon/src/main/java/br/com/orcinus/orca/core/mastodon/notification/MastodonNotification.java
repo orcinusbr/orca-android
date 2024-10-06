@@ -42,7 +42,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.CompletionStage;
 import java.util.function.Supplier;
 import kotlin.Unit;
 import kotlin.collections.MapsKt;
@@ -772,8 +771,8 @@ final class MastodonNotification {
   }
 
   /**
-   * Obtains a {@link CompletionStage} of a conversion of this {@link MastodonNotification} into a
-   * {@link Notification}.
+   * Creates a {@link Pipeline} in which a conversion of this {@link MastodonNotification} into a
+   * {@link Notification} is computed.
    *
    * @param context {@link Context} with which the underlying {@link Notification.Builder} will be
    *     instantiated.
