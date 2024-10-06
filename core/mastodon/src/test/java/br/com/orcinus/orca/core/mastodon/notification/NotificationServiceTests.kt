@@ -136,7 +136,7 @@ internal class NotificationServiceTests {
           val message = messageBuilder.setData(dto.toMap()).build()
 
           fun hasNotificationNotBeenSent(): Boolean {
-            return service.manager.activeNotifications
+            return service.notificationManager.activeNotifications
               .map(StatusBarNotification::getId)
               .contains(dto.normalizedID)
               .not()
@@ -145,7 +145,7 @@ internal class NotificationServiceTests {
           service.onMessageReceived(message)
           @Suppress("ControlFlowWithEmptyBody") while (hasNotificationNotBeenSent()) {}
           assertThat(service)
-            .prop(NotificationService::manager)
+            .prop(NotificationService::notificationManager)
             .prop(NotificationManager::getActiveNotifications)
             .transform("of $type") { statusBarNotifications ->
               statusBarNotifications.find { statusBarNotification ->
@@ -183,10 +183,10 @@ internal class NotificationServiceTests {
           )
         }
         .map { it.normalizedID to it.toNotification(context, authenticationLock) }
-        .forEach { (id, notification) -> service.manager.notify(id, notification) }
+        .forEach { (id, notification) -> service.notificationManager.notify(id, notification) }
       controller.unbind()
       assertThat(service)
-        .prop(NotificationService::manager)
+        .prop(NotificationService::notificationManager)
         .prop(NotificationManager::getActiveNotifications)
         .isNotEmpty()
     }

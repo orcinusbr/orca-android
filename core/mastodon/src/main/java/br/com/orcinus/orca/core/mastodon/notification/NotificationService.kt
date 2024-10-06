@@ -58,7 +58,7 @@ internal class NotificationService(
   @VisibleForTesting val coroutineScope = CoroutineScope(coroutineContext)
 
   @VisibleForTesting
-  val manager
+  val notificationManager
     get() = getSystemService<NotificationManager>() as NotificationManager
 
   @Throws(Module.DependencyNotInjectedException::class)
@@ -97,8 +97,8 @@ internal class NotificationService(
     val id = dto.normalizedID
     coroutineScope.launch {
       val notification = dto.toNotification(this@NotificationService, authenticationLock)
-      manager.createNotificationChannel(channel)
-      manager.notify(id, notification)
+      notificationManager.createNotificationChannel(channel)
+      notificationManager.notify(id, notification)
       activeNotificationIDs += id
     }
   }
@@ -129,7 +129,7 @@ internal class NotificationService(
   }
 
   private fun cancelSentNotifications() {
-    activeNotificationIDs.onEach(manager::cancel).clear()
+    activeNotificationIDs.onEach(notificationManager::cancel).clear()
   }
 
   companion object {
