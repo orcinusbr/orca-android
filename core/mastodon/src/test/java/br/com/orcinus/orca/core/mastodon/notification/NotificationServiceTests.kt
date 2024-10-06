@@ -24,6 +24,7 @@ import assertk.all
 import assertk.assertThat
 import assertk.assertions.each
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNotEmpty
 import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import assertk.assertions.prop
@@ -161,6 +162,33 @@ internal class NotificationServiceTests {
         }
         controller.unbind()
       }
+    }
+  }
+
+  @Test
+  fun cancelsSentNotificationsWhenUnbound() {
+    runAuthenticatedRequesterTest {
+      val service = NotificationService(requester, authenticationLock, coroutineContext)
+      val intent = Intent(context, NotificationService::class.java)
+      val controller =
+        ServiceController.of(service, intent).apply(ServiceController<NotificationService>::bind)
+      MastodonNotification.Type.entries
+        .map {
+          MastodonNotification(
+            /* id = */ "0",
+            /* type = */ it,
+            dtoCreatedAt,
+            MastodonAccount.default,
+            MastodonStatus.default
+          )
+        }
+        .map { it.normalizedID to it.toNotification(context, authenticationLock) }
+        .forEach { (id, notification) -> service.manager.notify(id, notification) }
+      controller.unbind()
+      assertThat(service)
+        .prop(NotificationService::manager)
+        .prop(NotificationManager::getActiveNotifications)
+        .isNotEmpty()
     }
   }
 
