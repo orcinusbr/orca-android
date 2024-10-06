@@ -29,6 +29,7 @@ import assertk.assertions.prop
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus
+import br.com.orcinus.orca.core.mastodon.notification.async.Pipeline
 import br.com.orcinus.orca.core.sample.auth.actor.sample
 import br.com.orcinus.orca.core.test.auth.AuthenticationLock
 import br.com.orcinus.orca.platform.testing.context
@@ -168,10 +169,7 @@ internal class MastodonNotificationTests {
               MastodonAccount.default,
               MastodonStatus.default
             )
-          type
-            .getContentTitleAsync(context, authenticationLock, this, parent)
-            .toCompletableFuture()
-            .get()
+          type.getContentTitleAsync(context, authenticationLock, parent).get()
         }
       }
     }
@@ -219,10 +217,9 @@ internal class MastodonNotificationTests {
               )
             )
             .transform("toNotificationAsync") { transformationParent ->
-              transformationParent.toNotificationAsync(context, authenticationLock, this@runTest)
+              transformationParent.toNotificationAsync(context, authenticationLock)
             }
-            .prop(CompletionStage<Notification>::toCompletableFuture)
-            .prop(CompletableFuture<Notification>::get)
+            .prop(Pipeline<Notification>::get)
             .prop(Notification::getChannelId)
             .isSameAs(type.channelID)
         }
@@ -245,7 +242,7 @@ internal class MastodonNotificationTests {
               )
             )
             .transform("toNotificationAsync") { transformationParent ->
-              transformationParent.toNotificationAsync(context, authenticationLock, this@runTest)
+              transformationParent.toNotificationAsync(context, authenticationLock)
             }
             .prop(CompletionStage<Notification>::toCompletableFuture)
             .prop(CompletableFuture<Notification>::get)
@@ -272,11 +269,7 @@ internal class MastodonNotificationTests {
             )
           assertThat(mastodonNotification)
             .transform("toNotificationAsync") { transformationMastodonNotification ->
-              transformationMastodonNotification.toNotificationAsync(
-                context,
-                authenticationLock,
-                this@runTest
-              )
+              transformationMastodonNotification.toNotificationAsync(context, authenticationLock)
             }
             .prop(CompletionStage<Notification>::toCompletableFuture)
             .prop(CompletableFuture<Notification>::get)
@@ -286,7 +279,7 @@ internal class MastodonNotificationTests {
             }
             .isEqualTo(
               type
-                .getContentTitleAsync(context, authenticationLock, this, mastodonNotification)
+                .getContentTitleAsync(context, authenticationLock, mastodonNotification)
                 .toCompletableFuture()
                 .get()
             )
@@ -310,7 +303,7 @@ internal class MastodonNotificationTests {
               )
             )
             .transform("toNotificationAsync") { transformationParent ->
-              transformationParent.toNotificationAsync(context, authenticationLock, this@runTest)
+              transformationParent.toNotificationAsync(context, authenticationLock)
             }
             .prop(CompletionStage<Notification>::toCompletableFuture)
             .prop(CompletableFuture<Notification>::get)

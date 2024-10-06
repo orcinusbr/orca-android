@@ -21,7 +21,6 @@ import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.future.await
 
 /**
@@ -37,5 +36,5 @@ internal suspend fun MastodonNotification.toNotification(
   context: Context,
   authenticationLock: SomeAuthenticationLock
 ): Notification {
-  return coroutineScope { toNotificationAsync(context, authenticationLock, this).await() }
+  return toNotificationAsync(context, authenticationLock).await()
 }

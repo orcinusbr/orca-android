@@ -17,17 +17,26 @@ package br.com.orcinus.orca.core.mastodon.notification.interop
 
 import assertk.assertThat
 import assertk.assertions.isZero
-import kotlin.coroutines.resume
+import assertk.coroutines.assertions.suspendCall
+import br.com.orcinus.orca.core.mastodon.notification.async.pipeline
+import br.com.orcinus.orca.core.mastodon.notification.async.pipelineOf
+import java.util.concurrent.CompletionStage
 import kotlin.test.Test
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.test.runTest
 
-internal class CompletableContinuationTests {
+internal class PipelineTests {
   @Test
-  fun completionStageIsCompletedOnResumption() {
+  fun createsWithImmediateValue() {
     runTest {
-      assertThat(CompletableContinuation<Byte>().apply { resume(0) }.completionStage.await())
-        .isZero()
+      assertThat(pipelineOf<Byte>(0)).suspendCall("await", CompletionStage<Byte>::await).isZero()
+    }
+  }
+
+  @Test
+  fun createsWithAsyncValue() {
+    runTest {
+      assertThat(pipeline<Byte> { 0 }).suspendCall("await", CompletionStage<Byte>::await).isZero()
     }
   }
 }

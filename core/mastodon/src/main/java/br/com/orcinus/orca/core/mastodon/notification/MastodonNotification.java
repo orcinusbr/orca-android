@@ -30,8 +30,8 @@ import br.com.orcinus.orca.core.auth.actor.Actor;
 import br.com.orcinus.orca.core.mastodon.R;
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount;
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus;
-import br.com.orcinus.orca.core.mastodon.notification.interop.CompletableContinuation;
-import br.com.orcinus.orca.core.mastodon.notification.interop.CompletableContinuations;
+import br.com.orcinus.orca.core.mastodon.notification.async.Pipeline;
+import br.com.orcinus.orca.core.mastodon.notification.async.Pipelines;
 import br.com.orcinus.orca.core.mastodon.notification.interop.KSerializers;
 import java.lang.annotation.Annotation;
 import java.time.Instant;
@@ -42,18 +42,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Supplier;
 import kotlin.Unit;
 import kotlin.collections.MapsKt;
-import kotlin.coroutines.Continuation;
-import kotlin.coroutines.CoroutineContext;
-import kotlin.jvm.functions.Function2;
-import kotlinx.coroutines.BuildersKt;
-import kotlinx.coroutines.CoroutineScope;
-import kotlinx.coroutines.CoroutineStart;
-import kotlinx.coroutines.Job;
 import kotlinx.serialization.ExperimentalSerializationApi;
 import kotlinx.serialization.KSerializer;
 import kotlinx.serialization.SerializationException;
@@ -242,14 +234,13 @@ final class MastodonNotification {
 
       @NonNull
       @Override
-      final CompletableFuture<String> getContentTitleAsync(
+      final Pipeline<String> getContentTitleAsync(
           final Context context,
           final AuthenticationLock<?> authenticationLock,
-          final CoroutineScope coroutineScope,
           final MastodonNotification parent) {
         final MastodonStatus status = parent.status;
         assert status != null;
-        return CompletableFuture.completedFuture(
+        return Pipelines.immediate(
             context.getString(
                 R.string.someone_has_favorited_your_post,
                 parent.account.getAcct(),
@@ -277,12 +268,11 @@ final class MastodonNotification {
 
       @NonNull
       @Override
-      final CompletableFuture<String> getContentTitleAsync(
+      final Pipeline<String> getContentTitleAsync(
           final Context context,
           final AuthenticationLock<?> authenticationLock,
-          final CoroutineScope coroutineScope,
           final MastodonNotification parent) {
-        return CompletableFuture.completedFuture(
+        return Pipelines.immediate(
             context.getString(R.string.someone_has_followed_you, parent.account.getAcct()));
       }
     },
@@ -307,12 +297,11 @@ final class MastodonNotification {
 
       @NonNull
       @Override
-      final CompletableFuture<String> getContentTitleAsync(
+      final Pipeline<String> getContentTitleAsync(
           final Context context,
           final AuthenticationLock<?> authenticationLock,
-          final CoroutineScope coroutineScope,
           final MastodonNotification parent) {
-        return CompletableFuture.completedFuture(
+        return Pipelines.immediate(
             context.getString(
                 R.string.someone_has_requested_to_follow_you, parent.account.getAcct()));
       }
@@ -338,14 +327,13 @@ final class MastodonNotification {
 
       @NonNull
       @Override
-      final CompletableFuture<String> getContentTitleAsync(
+      final Pipeline<String> getContentTitleAsync(
           final Context context,
           final AuthenticationLock<?> authenticationLock,
-          final CoroutineScope coroutineScope,
           final MastodonNotification parent) {
         final MastodonStatus status = parent.status;
         assert status != null;
-        return CompletableFuture.completedFuture(
+        return Pipelines.immediate(
             context.getString(
                 R.string.someone_has_mentioned_you,
                 parent.account.getAcct(),
@@ -373,23 +361,18 @@ final class MastodonNotification {
 
       @NonNull
       @Override
-      final CompletionStage<String> getContentTitleAsync(
+      final Pipeline<String> getContentTitleAsync(
           final Context context,
           final AuthenticationLock<?> authenticationLock,
-          final CoroutineScope coroutineScope,
           final MastodonNotification parent) {
-        final MastodonStatus status = parent.status;
-        final CompletableContinuation<Boolean> pollOwnershipContinuation =
-            new CompletableContinuation<>();
-        CompletableContinuations.resume(
-            pollOwnershipContinuation,
-            (Boolean) parent.account.isOwned(authenticationLock, pollOwnershipContinuation));
-        return pollOwnershipContinuation
-            .getCompletionStage()
+        return parent
+            .account
+            .isOwnedAsync(authenticationLock)
             .thenApply(
-                (isPollOwned) -> {
+                (isAccountOwned) -> {
+                  final MastodonStatus status = parent.status;
                   assert status != null;
-                  return isPollOwned
+                  return isAccountOwned
                       ? context.getString(
                           R.string.poll_created_by_you_has_ended, status.getSummarizedContent())
                       : context.getString(
@@ -420,14 +403,13 @@ final class MastodonNotification {
 
       @NonNull
       @Override
-      final CompletableFuture<String> getContentTitleAsync(
+      final Pipeline<String> getContentTitleAsync(
           final Context context,
           final AuthenticationLock<?> authenticationLock,
-          final CoroutineScope coroutineScope,
           final MastodonNotification parent) {
         final MastodonStatus status = parent.status;
         assert status != null;
-        return CompletableFuture.completedFuture(
+        return Pipelines.immediate(
             context.getString(
                 R.string.someone_has_reposted_your_post,
                 parent.account.getAcct(),
@@ -455,13 +437,11 @@ final class MastodonNotification {
 
       @NonNull
       @Override
-      final CompletableFuture<String> getContentTitleAsync(
+      final Pipeline<String> getContentTitleAsync(
           final Context context,
           final AuthenticationLock<?> authenticationLock,
-          final CoroutineScope coroutineScope,
           final MastodonNotification parent) {
-        return CompletableFuture.completedFuture(
-            context.getString(R.string.relationship_has_been_severed));
+        return Pipelines.immediate(context.getString(R.string.relationship_has_been_severed));
       }
     },
 
@@ -485,14 +465,13 @@ final class MastodonNotification {
 
       @NonNull
       @Override
-      final CompletableFuture<String> getContentTitleAsync(
+      final Pipeline<String> getContentTitleAsync(
           final Context context,
           final AuthenticationLock<?> authenticationLock,
-          final CoroutineScope coroutineScope,
           final MastodonNotification parent) {
         final MastodonStatus status = parent.status;
         assert status != null;
-        return CompletableFuture.completedFuture(
+        return Pipelines.immediate(
             context.getString(
                 R.string.someone_has_published,
                 parent.account.getAcct(),
@@ -520,14 +499,13 @@ final class MastodonNotification {
 
       @NonNull
       @Override
-      final CompletableFuture<String> getContentTitleAsync(
+      final Pipeline<String> getContentTitleAsync(
           final Context context,
           final AuthenticationLock<?> authenticationLock,
-          final CoroutineScope coroutineScope,
           final MastodonNotification parent) {
         final MastodonStatus status = parent.status;
         assert status != null;
-        return CompletableFuture.completedFuture(
+        return Pipelines.immediate(
             context.getString(
                 R.string.someone_has_edited,
                 parent.account.getAcct(),
@@ -656,25 +634,22 @@ final class MastodonNotification {
     abstract int getChannelDescriptionResourceID();
 
     /**
-     * Obtains a {@link CompletionStage} of the title of the content displayed by a {@link
-     * Notification}.
+     * Creates a {@link Pipeline} in which the title of the content displayed by a {@link
+     * Notification} is computed.
      *
      * @param context {@link Context} from which the {@link String} will be retrieved given its
      *     resource ID.
      * @param authenticationLock {@link AuthenticationLock} for checking whether the related {@link
      *     MastodonAccount} is owned by the current {@link Actor}.
-     * @param coroutineScope {@link CoroutineScope} in which whether the {@link MastodonAccount} is
-     *     owned or not will be fetched.
      * @param parent {@link MastodonNotification} to which this {@link Type} belongs.
-     * @see MastodonNotification#toNotificationAsync(Context, AuthenticationLock, CoroutineScope)
+     * @see MastodonNotification#toNotificationAsync(Context, AuthenticationLock)
      * @see MastodonNotification#account
-     * @see MastodonAccount#isOwned(AuthenticationLock, Continuation)
+     * @see MastodonAccount#isOwnedAsync(AuthenticationLock)
      */
     @NonNull
-    abstract CompletionStage<String> getContentTitleAsync(
+    abstract Pipeline<String> getContentTitleAsync(
         final Context context,
         final AuthenticationLock<?> authenticationLock,
-        final CoroutineScope coroutineScope,
         final MastodonNotification parent);
   }
 
@@ -805,20 +780,14 @@ final class MastodonNotification {
    *     instantiated.
    * @param authenticationLock {@link AuthenticationLock} for checking whether the {@link
    *     MastodonNotification#account} is owned by the current {@link Actor}.
-   * @param coroutineScope {@link CoroutineScope} in which the {@link Job} for obtaining the title
-   *     of the content will be launched.
-   * @see Type#getContentTitleAsync(Context, AuthenticationLock, CoroutineScope,
-   *     MastodonNotification)
-   * @see BuildersKt#launch(CoroutineScope, CoroutineContext, CoroutineStart, Function2)
+   * @see Type#getContentTitleAsync(Context, AuthenticationLock, MastodonNotification)
    * @see MastodonNotification#account
-   * @see MastodonAccount#isOwned(AuthenticationLock, Continuation)
+   * @see MastodonAccount#isOwnedAsync(AuthenticationLock)
    */
   @NonNull
-  CompletionStage<Notification> toNotificationAsync(
-      @NonNull final Context context,
-      @NonNull final AuthenticationLock<?> authenticationLock,
-      @NonNull final CoroutineScope coroutineScope) {
-    return type.getContentTitleAsync(context, authenticationLock, coroutineScope, this)
+  Pipeline<Notification> toNotificationAsync(
+      @NonNull final Context context, @NonNull final AuthenticationLock<?> authenticationLock) {
+    return type.getContentTitleAsync(context, authenticationLock, this)
         .thenApply(
             (contentTitle) ->
                 new Notification.Builder(context, type.getChannelID())

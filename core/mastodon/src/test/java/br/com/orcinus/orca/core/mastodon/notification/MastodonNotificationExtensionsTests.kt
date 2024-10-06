@@ -63,15 +63,7 @@ internal class MastodonNotificationExtensionsTests {
                   notification.getString(Notification.EXTRA_TITLE)
                 }
                 .isEqualTo(
-                  type
-                    .getContentTitleAsync(
-                      context,
-                      authenticationLock,
-                      this@runTest,
-                      mastodonNotification
-                    )
-                    .toCompletableFuture()
-                    .get()
+                  type.getContentTitleAsync(context, authenticationLock, mastodonNotification).get()
                 )
               prop(Notification::`when`)
                 .isEqualTo(createdAtAsZonedDateTime.toInstant().toEpochMilli())

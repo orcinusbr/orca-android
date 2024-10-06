@@ -33,6 +33,8 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.type.editable.MastodonEdit
 import br.com.orcinus.orca.core.mastodon.feed.profile.type.followable.MastodonFollowableProfile
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
+import br.com.orcinus.orca.core.mastodon.notification.async.Pipeline
+import br.com.orcinus.orca.core.mastodon.notification.async.pipeline
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.std.image.ImageLoader
@@ -41,6 +43,9 @@ import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.markdown.Markdown
 import io.ktor.client.call.body
 import java.net.URI
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.future.await
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 
 /**
@@ -118,7 +123,18 @@ internal data class MastodonAccount(
    *   compared to that of this [MastodonAccount].
    */
   suspend fun isOwned(authenticationLock: SomeAuthenticationLock): Boolean {
-    return authenticationLock.scheduleUnlock { it.id == id }
+    return coroutineScope { isOwnedAsync(authenticationLock).await() }
+  }
+
+  /**
+   * Creates a [Pipeline] in which whether the currently authenticated [Actor] is the owner os this
+   * [Account] is computed.
+   *
+   * @param authenticationLock [AuthenticationLock] through which the ID of the [Actor] will be
+   *   compared to that of this [MastodonAccount].
+   */
+  fun isOwnedAsync(authenticationLock: SomeAuthenticationLock): Pipeline<Boolean> {
+    return pipeline { runBlocking { authenticationLock.scheduleUnlock { id == it.id } } }
   }
 
   /**

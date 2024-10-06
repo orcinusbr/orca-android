@@ -36,7 +36,7 @@ import br.com.orcinus.orca.std.image.compose.async.AsyncImageLoader
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 
-internal class MastodonAccountTests {
+internal class MastodonAccountsTests {
   @Test
   fun isOwned() {
     val actorProvider = ActorProvider.sample

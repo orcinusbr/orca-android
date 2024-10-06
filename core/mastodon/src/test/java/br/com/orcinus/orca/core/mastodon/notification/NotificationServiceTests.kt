@@ -45,7 +45,6 @@ import java.time.ZonedDateTime
 import kotlin.test.Test
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -137,9 +136,6 @@ internal class NotificationServiceTests {
               .setMessageId("0")
               .setData(mastodonNotification.toMap())
               .build()
-          val notification = runBlocking {
-            mastodonNotification.toNotification(context, authenticationLock)
-          }
           controller.bind()
           service.onMessageReceived(message)
           controller.unbind()
@@ -148,20 +144,12 @@ internal class NotificationServiceTests {
             .single()
             .prop(StatusBarNotification::getNotification)
             .all {
-              prop(Notification::getChannelId).isEqualTo(notification.channelId)
+              prop(Notification::getChannelId).isEqualTo(type.channelID)
               transform("extras.getString(Notification.EXTRA_TITLE)") {
                   it.extras.getString(Notification.EXTRA_TITLE)
                 }
                 .isEqualTo(
-                  type
-                    .getContentTitleAsync(
-                      context,
-                      authenticationLock,
-                      this@runAuthenticatedRequesterTest,
-                      mastodonNotification
-                    )
-                    .toCompletableFuture()
-                    .get()
+                  type.getContentTitleAsync(context, authenticationLock, mastodonNotification).get()
                 )
             }
         }
