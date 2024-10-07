@@ -23,8 +23,8 @@ import app.cash.turbine.test
 import assertk.all
 import assertk.assertThat
 import assertk.assertions.each
+import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
-import assertk.assertions.isNotEmpty
 import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import assertk.assertions.prop
@@ -166,29 +166,32 @@ internal class NotificationServiceTests {
   }
 
   @Test
-  fun cancelsSentNotificationsWhenUnbound() {
+  fun cancelsSentNotificationsWhenDestroyed() {
     runAuthenticatedRequesterTest {
       val service = NotificationService(requester, authenticationLock, coroutineContext)
       val intent = Intent(context, NotificationService::class.java)
       val controller =
         ServiceController.of(service, intent).apply(ServiceController<NotificationService>::bind)
+      val messageBuilder = RemoteMessage.Builder(MESSAGE_RECIPIENT)
+
       MastodonNotification.Type.entries
         .map {
           MastodonNotification(
-            /* id = */ "0",
-            /* type = */ it,
-            dtoCreatedAt,
-            MastodonAccount.default,
-            MastodonStatus.default
-          )
+              /* id = */ "0",
+              /* type = */ it,
+              dtoCreatedAt,
+              MastodonAccount.default,
+              MastodonStatus.default
+            )
+            .toMap()
         }
-        .map { it.normalizedID to it.toNotification(context, authenticationLock) }
-        .forEach { (id, notification) -> service.notificationManager.notify(id, notification) }
+        .map { messageBuilder.setData(it).build() }
+        .forEach(service::onMessageReceived)
       controller.unbind()
       assertThat(service)
         .prop(NotificationService::notificationManager)
         .prop(NotificationManager::getActiveNotifications)
-        .isNotEmpty()
+        .isEmpty()
     }
   }
 
