@@ -53,7 +53,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.android.controller.ServiceController
 
 @RunWith(RobolectricTestRunner::class)
-internal class NotificationServiceTests {
+internal class MastodonNotificationServiceTests {
   private val authenticationLock = AuthenticationLock(ActorProvider.sample)
   private val dtoCreatedAt = MastodonNotification.createdAt(ZonedDateTime.now())
 
@@ -67,7 +67,7 @@ internal class NotificationServiceTests {
       }
       Injector.injectImmediately(authenticationLock)
     }
-    NotificationService()
+    MastodonNotificationService()
     assertThat(isRetrieved).isTrue()
     Injector.clear()
   }
@@ -82,7 +82,7 @@ internal class NotificationServiceTests {
         authenticationLock
       }
     }
-    NotificationService()
+    MastodonNotificationService()
     assertThat(isRetrieved).isTrue()
     Injector.clear()
   }
@@ -98,10 +98,11 @@ internal class NotificationServiceTests {
       },
       context = @OptIn(ExperimentalCoroutinesApi::class) UnconfinedTestDispatcher()
     ) {
-      val service = NotificationService(requester, authenticationLock, coroutineContext)
-      val intent = Intent(context, NotificationService::class.java)
+      val service = MastodonNotificationService(requester, authenticationLock, coroutineContext)
+      val intent = Intent(context, service::class.java)
       val controller =
-        ServiceController.of(service, intent).apply(ServiceController<NotificationService>::bind)
+        ServiceController.of(service, intent)
+          .apply(ServiceController<MastodonNotificationService>::bind)
       service.onNewToken("🤔🌼")
       requestURIFlow.test {
         assertThat(awaitItem())
@@ -118,8 +119,8 @@ internal class NotificationServiceTests {
     runAuthenticatedRequesterTest(
       context = @OptIn(ExperimentalCoroutinesApi::class) UnconfinedTestDispatcher()
     ) {
-      val service = NotificationService(requester, authenticationLock, coroutineContext)
-      val intent = Intent(context, NotificationService::class.java)
+      val service = MastodonNotificationService(requester, authenticationLock, coroutineContext)
+      val intent = Intent(context, service::class.java)
       val controller = ServiceController.of(service, intent)
       val messageBuilder = RemoteMessage.Builder(MESSAGE_RECIPIENT)
       assertThat(MastodonNotification.Type.entries).each { typeAssert ->
@@ -145,7 +146,7 @@ internal class NotificationServiceTests {
           service.onMessageReceived(message)
           @Suppress("ControlFlowWithEmptyBody") while (hasNotificationNotBeenSent()) {}
           assertThat(service)
-            .prop(NotificationService::notificationManager)
+            .prop(MastodonNotificationService::notificationManager)
             .prop(NotificationManager::getActiveNotifications)
             .transform("of $type") { statusBarNotifications ->
               statusBarNotifications.find { statusBarNotification ->
@@ -168,10 +169,11 @@ internal class NotificationServiceTests {
   @Test
   fun cancelsSentNotificationsWhenDestroyed() {
     runAuthenticatedRequesterTest {
-      val service = NotificationService(requester, authenticationLock, coroutineContext)
-      val intent = Intent(context, NotificationService::class.java)
+      val service = MastodonNotificationService(requester, authenticationLock, coroutineContext)
+      val intent = Intent(context, service::class.java)
       val controller =
-        ServiceController.of(service, intent).apply(ServiceController<NotificationService>::bind)
+        ServiceController.of(service, intent)
+          .apply(ServiceController<MastodonNotificationService>::bind)
       val messageBuilder = RemoteMessage.Builder(MESSAGE_RECIPIENT)
 
       MastodonNotification.Type.entries
@@ -189,7 +191,7 @@ internal class NotificationServiceTests {
         .forEach(service::onMessageReceived)
       controller.unbind()
       assertThat(service)
-        .prop(NotificationService::notificationManager)
+        .prop(MastodonNotificationService::notificationManager)
         .prop(NotificationManager::getActiveNotifications)
         .isEmpty()
     }

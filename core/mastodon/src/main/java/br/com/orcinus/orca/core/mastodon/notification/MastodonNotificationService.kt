@@ -58,20 +58,20 @@ import kotlinx.serialization.SerializationException
  * @see MastodonNotification.Type
  * @see MastodonNotification.Type.toNotificationChannel
  */
-internal class NotificationService(
+internal class MastodonNotificationService(
   private val requester: Requester,
   private val authenticationLock: SomeAuthenticationLock,
   coroutineContext: CoroutineContext
 ) : FirebaseMessagingService() {
   /**
    * IDs of [Notification]s that have been sent and have not yet been cleared by this
-   * [NotificationService].
+   * [MastodonNotificationService].
    *
    * @see StatusBarNotification.getId
    */
   private val activeNotificationIDs = mutableSetOf<Int>()
 
-  /** Private randomly generated key that identifies this [NotificationService]. */
+  /** Private randomly generated key that identifies this [MastodonNotificationService]. */
   private val authKey by lazy { ByteArray(16).apply(SecureRandom()::nextBytes).decodeToString() }
 
   /**
@@ -164,7 +164,7 @@ internal class NotificationService(
     val id = dto.normalizedID
     notificationManager.createNotificationChannel(channel)
     coroutineScope.launch {
-      val notification = dto.toNotification(this@NotificationService, authenticationLock)
+      val notification = dto.toNotification(this@MastodonNotificationService, authenticationLock)
       notificationManager.notify(id, notification)
       activeNotificationIDs += id
     }
@@ -200,7 +200,7 @@ internal class NotificationService(
     }
   }
 
-  /** Cancels all system notifications that have been sent by this [NotificationService]. */
+  /** Cancels all system notifications that have been sent by this [MastodonNotificationService]. */
   private fun cancelSentNotifications() {
     activeNotificationIDs.onEach(notificationManager::cancel).clear()
   }
