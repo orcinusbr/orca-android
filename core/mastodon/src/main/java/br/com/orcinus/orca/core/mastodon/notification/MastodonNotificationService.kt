@@ -178,7 +178,7 @@ internal class MastodonNotificationService(
   private fun pushSubscription(token: String) {
     coroutineScope.launch {
       requester.authenticated().post(
-        route = HostedURLBuilder::buildForNotificationSubscriptionPushing
+        route = HostedURLBuilder::buildNotificationSubscriptionPushingRoute
       ) {
         parameters {
           append("data[alerts][admin.report]", "true")
@@ -220,6 +220,6 @@ internal class MastodonNotificationService(
  * [MastodonNotification]s is sent.
  */
 @VisibleForTesting
-fun HostedURLBuilder.buildForNotificationSubscriptionPushing(): URI {
+fun HostedURLBuilder.buildNotificationSubscriptionPushingRoute(): URI {
   return path("api").path("v1").path("push").path("subscription").build()
 }

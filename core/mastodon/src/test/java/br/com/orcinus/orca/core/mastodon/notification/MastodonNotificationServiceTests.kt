@@ -107,7 +107,7 @@ internal class MastodonNotificationServiceTests {
       requestURIFlow.test {
         assertThat(awaitItem())
           .isEqualTo(
-            HostedURLBuilder.from(requester.baseURI).buildForNotificationSubscriptionPushing()
+            HostedURLBuilder.from(requester.baseURI).buildNotificationSubscriptionPushingRoute()
           )
       }
       controller.unbind()
