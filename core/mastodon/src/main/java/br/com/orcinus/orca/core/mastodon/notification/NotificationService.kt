@@ -162,9 +162,9 @@ internal class NotificationService(
     val dto = MastodonNotification.from(payload)
     val channel = dto.type.toNotificationChannel(this)
     val id = dto.normalizedID
+    notificationManager.createNotificationChannel(channel)
     coroutineScope.launch {
       val notification = dto.toNotification(this@NotificationService, authenticationLock)
-      notificationManager.createNotificationChannel(channel)
       notificationManager.notify(id, notification)
       activeNotificationIDs += id
     }
