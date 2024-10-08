@@ -50,8 +50,10 @@ import io.ktor.http.toURI
 import java.net.URI
 import java.time.ZonedDateTime
 import kotlin.test.Test
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -241,6 +243,17 @@ internal class MastodonNotificationServiceTests {
         .prop(MastodonNotificationService::notificationManager)
         .prop(NotificationManager::getActiveNotifications)
         .isEmpty()
+    }
+  }
+
+  @Test
+  fun cancelsCoroutineScopeWhenDestroyed() {
+    runMastodonNotificationServiceTest {
+      create().bind().unbind().destroy()
+      assertThat(get())
+        .prop(MastodonNotificationService::coroutineScope)
+        .prop(CoroutineScope::isActive)
+        .isFalse()
     }
   }
 
