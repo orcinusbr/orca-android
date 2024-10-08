@@ -36,7 +36,7 @@ internal class MastodonNotificationServiceTestScopeTests {
   @Test
   fun serviceIsInitializedByDefault() {
     runMastodonNotificationServiceTest {
-      assertThat(get())
+      assertThat(controller.get())
         .prop(MastodonNotificationService::lifecycleState)
         .isSameInstanceAs(Lifecycle.State.INITIALIZED)
     }
@@ -45,7 +45,7 @@ internal class MastodonNotificationServiceTestScopeTests {
   @Test
   fun serviceIsDestroyedAfterTest() {
     var service: MastodonNotificationService
-    runMastodonNotificationServiceTest { service = get() }
+    runMastodonNotificationServiceTest { service = controller.get() }
     assertThat(service)
       .prop(MastodonNotificationService::lifecycleState)
       .isSameInstanceAs(Lifecycle.State.DESTROYED)

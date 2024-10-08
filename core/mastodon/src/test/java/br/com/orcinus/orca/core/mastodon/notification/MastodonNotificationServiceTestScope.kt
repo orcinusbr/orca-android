@@ -26,8 +26,31 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.test.TestScope
 import org.robolectric.android.controller.ServiceController
+
+/**
+ * Default implementation of a [MastodonNotificationServiceTestScope] which will be used in the
+ * tests.
+ *
+ * @param delegate [TestScope] to which [CoroutineScope] behavior will be delegated.
+ */
+private class MastodonNotificationServiceEnvironment(
+  override val controller: ServiceController<MastodonNotificationService>,
+  override val requester: AuthenticatedRequester,
+  delegate: TestScope
+) : MastodonNotificationServiceTestScope, CoroutineScope by delegate
+
+/** Scope in which a [MastodonNotificationService] test is run. */
+internal sealed interface MastodonNotificationServiceTestScope : CoroutineScope {
+  /** [ServiceController] by which the lifecycle of the [MastodonNotificationService] is managed. */
+  val controller: ServiceController<MastodonNotificationService>
+
+  /** [AuthenticatedRequester] by which subscriptions are pushed. */
+  val requester: AuthenticatedRequester
+}
 
 /**
  * Runs a [MastodonNotificationService]-focused test.
@@ -40,7 +63,7 @@ import org.robolectric.android.controller.ServiceController
 internal fun runMastodonNotificationServiceTest(
   clientResponseProvider: ClientResponseProvider = ClientResponseProvider.ok,
   coroutineContext: CoroutineContext = EmptyCoroutineContext,
-  body: suspend ServiceController<MastodonNotificationService>.(AuthenticatedRequester) -> Unit
+  body: suspend MastodonNotificationServiceTestScope.() -> Unit
 ) {
   contract { callsInPlace(body, InvocationKind.EXACTLY_ONCE) }
   runAuthenticatedRequesterTest(clientResponseProvider, context = coroutineContext) {
@@ -48,7 +71,7 @@ internal fun runMastodonNotificationServiceTest(
     val intent = Intent(context, service::class.java)
     val controller = ServiceController.of(service, intent)
     try {
-      controller.body(requester)
+      MastodonNotificationServiceEnvironment(controller, requester, delegate).body()
     } finally {
       controller.unbind().destroy()
     }

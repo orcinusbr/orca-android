@@ -67,7 +67,7 @@ internal class MastodonNotificationServiceTests {
   @Test
   fun initialLifecycleStateIsInitializedOne() {
     runMastodonNotificationServiceTest {
-      assertThat(get())
+      assertThat(controller.get())
         .prop(MastodonNotificationService::lifecycleState)
         .isSameInstanceAs(Lifecycle.State.INITIALIZED)
     }
@@ -76,8 +76,8 @@ internal class MastodonNotificationServiceTests {
   @Test
   fun postCreationLifecycleStateIsCreatedOne() {
     runMastodonNotificationServiceTest {
-      create()
-      assertThat(get())
+      controller.create()
+      assertThat(controller.get())
         .prop(MastodonNotificationService::lifecycleState)
         .isSameInstanceAs(Lifecycle.State.CREATED)
     }
@@ -86,8 +86,8 @@ internal class MastodonNotificationServiceTests {
   @Test
   fun postDestructionLifecycleStateIsDestroyedOne() {
     runMastodonNotificationServiceTest {
-      create().bind().unbind().destroy()
-      assertThat(get())
+      controller.create().bind().unbind().destroy()
+      assertThat(controller.get())
         .prop(MastodonNotificationService::lifecycleState)
         .isSameInstanceAs(Lifecycle.State.DESTROYED)
     }
@@ -125,14 +125,14 @@ internal class MastodonNotificationServiceTests {
 
   @Test
   fun coroutineScopeIsActiveByDefault() {
-    runMastodonNotificationServiceTest { get().coroutineScope.ensureActive() }
+    runMastodonNotificationServiceTest { controller.get().coroutineScope.ensureActive() }
   }
 
   @Test
   fun defaultFirebaseApplicationIsObtainableWhenSdkIsRunning() {
     runMastodonNotificationServiceTest {
-      create().bind()
-      assertThat(get()).prop(MastodonNotificationService::isFirebaseSdkRunning).isTrue()
+      controller.create().bind()
+      assertThat(controller.get()).prop(MastodonNotificationService::isFirebaseSdkRunning).isTrue()
       Firebase.app
     }
   }
@@ -140,8 +140,8 @@ internal class MastodonNotificationServiceTests {
   @Test
   fun defaultFirebaseApplicationThrowsWhenObtainedWhileSdkIsNotRunning() {
     runMastodonNotificationServiceTest {
-      create().bind().unbind().destroy()
-      assertThat(get()).prop(MastodonNotificationService::isFirebaseSdkRunning).isFalse()
+      controller.create().bind().unbind().destroy()
+      assertThat(controller.get()).prop(MastodonNotificationService::isFirebaseSdkRunning).isFalse()
       assertFailure { Firebase.app }.isInstanceOf<IllegalStateException>()
     }
   }
@@ -149,8 +149,8 @@ internal class MastodonNotificationServiceTests {
   @Test
   fun startsFirebaseSdkWhenCreated() {
     runMastodonNotificationServiceTest {
-      create().bind()
-      assertThat(get()).prop(MastodonNotificationService::isFirebaseSdkRunning).isTrue()
+      controller.create().bind()
+      assertThat(controller.get()).prop(MastodonNotificationService::isFirebaseSdkRunning).isTrue()
     }
   }
 
@@ -162,10 +162,12 @@ internal class MastodonNotificationServiceTests {
       requestURIFlow.emit(requestURI)
       respondOk()
     }) {
-      create().bind().get().onNewToken("🤔🌼")
+      controller.create().bind().get().onNewToken("🤔🌼")
       requestURIFlow.test {
         assertThat(awaitItem())
-          .isEqualTo(HostedURLBuilder.from(it.baseURI).buildNotificationSubscriptionPushingRoute())
+          .isEqualTo(
+            HostedURLBuilder.from(requester.baseURI).buildNotificationSubscriptionPushingRoute()
+          )
       }
     }
   }
@@ -173,9 +175,9 @@ internal class MastodonNotificationServiceTests {
   @Test
   fun sendsNotificationWhenMessageIsReceived() {
     runMastodonNotificationServiceTest {
-      create()
+      controller.create()
       assertThat(MastodonNotification.Type.entries).each { typeAssert ->
-        bind()
+        controller.bind()
         typeAssert.given { type ->
           val dto =
             MastodonNotification(
@@ -188,7 +190,8 @@ internal class MastodonNotificationServiceTests {
           val message = messageBuilder.setData(dto.toMap()).build()
 
           fun hasNotificationNotBeenSent(): Boolean {
-            return get()
+            return controller
+              .get()
               .notificationManager
               .activeNotifications
               .map(StatusBarNotification::getId)
@@ -196,9 +199,9 @@ internal class MastodonNotificationServiceTests {
               .not()
           }
 
-          get().onMessageReceived(message)
+          controller.get().onMessageReceived(message)
           @Suppress("ControlFlowWithEmptyBody") while (hasNotificationNotBeenSent()) {}
-          assertThat(get())
+          assertThat(controller.get())
             .prop(MastodonNotificationService::notificationManager)
             .prop(NotificationManager::getActiveNotifications)
             .transform("of $type") { statusBarNotifications ->
@@ -211,10 +214,10 @@ internal class MastodonNotificationServiceTests {
             .all {
               prop(Notification::getChannelId).isEqualTo(type.channelID)
               transform("title") { it.extras.getString(Notification.EXTRA_TITLE) }
-                .isEqualTo(type.getContentTitleAsync(context, it.lock, dto).get())
+                .isEqualTo(type.getContentTitleAsync(context, requester.lock, dto).get())
             }
         }
-        unbind()
+        controller.unbind()
       }
     }
   }
@@ -224,7 +227,7 @@ internal class MastodonNotificationServiceTests {
     runMastodonNotificationServiceTest(
       coroutineContext = @OptIn(ExperimentalCoroutinesApi::class) UnconfinedTestDispatcher()
     ) {
-      create()
+      controller.create()
       for (type in MastodonNotification.Type.entries) {
         val data =
           MastodonNotification(
@@ -236,11 +239,11 @@ internal class MastodonNotificationServiceTests {
             )
             .toMap()
         val message = messageBuilder.setData(data).build()
-        bind().get().onMessageReceived(message)
-        unbind()
+        controller.bind().get().onMessageReceived(message)
+        controller.unbind()
       }
-      destroy()
-      assertThat(get())
+      controller.destroy()
+      assertThat(controller.get())
         .prop(MastodonNotificationService::notificationManager)
         .prop(NotificationManager::getActiveNotifications)
         .isEmpty()
@@ -250,8 +253,8 @@ internal class MastodonNotificationServiceTests {
   @Test
   fun cancelsCoroutineScopeWhenDestroyed() {
     runMastodonNotificationServiceTest {
-      create().bind().unbind().destroy()
-      assertThat(get())
+      controller.create().bind().unbind().destroy()
+      assertThat(controller.get())
         .prop(MastodonNotificationService::coroutineScope)
         .prop(CoroutineScope::isActive)
         .isFalse()
@@ -261,8 +264,8 @@ internal class MastodonNotificationServiceTests {
   @Test
   fun stopsFirebaseSdkWhenDestroyed() {
     runMastodonNotificationServiceTest {
-      create().bind().unbind().destroy()
-      assertThat(get()).prop(MastodonNotificationService::isFirebaseSdkRunning).isFalse()
+      controller.create().bind().unbind().destroy()
+      assertThat(controller.get()).prop(MastodonNotificationService::isFirebaseSdkRunning).isFalse()
     }
   }
 
