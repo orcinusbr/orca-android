@@ -19,10 +19,7 @@ import android.content.Intent
 import br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvider
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.AuthenticatedRequester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.runAuthenticatedRequesterTest
-import br.com.orcinus.orca.core.module.CoreModule
-import br.com.orcinus.orca.core.module.authenticationLock
 import br.com.orcinus.orca.platform.testing.context
-import br.com.orcinus.orca.std.injector.Injector
 import io.ktor.client.HttpClient
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
@@ -47,8 +44,7 @@ internal fun runMastodonNotificationServiceTest(
 ) {
   contract { callsInPlace(body, InvocationKind.EXACTLY_ONCE) }
   runAuthenticatedRequesterTest(clientResponseProvider, context = coroutineContext) {
-    val authenticationLock = Injector.from<CoreModule>().authenticationLock()
-    val service = MastodonNotificationService(requester, authenticationLock, coroutineContext)
+    val service = MastodonNotificationService(requester, requester.lock, coroutineContext)
     val intent = Intent(context, service::class.java)
     val controller = ServiceController.of(service, intent)
     try {
