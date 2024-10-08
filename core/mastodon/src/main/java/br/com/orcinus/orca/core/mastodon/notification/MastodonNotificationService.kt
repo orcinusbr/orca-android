@@ -20,14 +20,21 @@ import android.app.NotificationManager
 import android.service.notification.StatusBarNotification
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.getSystemService
+import androidx.lifecycle.Lifecycle
 import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.Actor
+import br.com.orcinus.orca.core.mastodon.BuildConfig
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.injector.module.Module
+import com.google.firebase.Firebase
+import com.google.firebase.FirebaseApp
+import com.google.firebase.FirebaseOptions
+import com.google.firebase.app
+import com.google.firebase.initialize
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import java.net.URI
@@ -100,12 +107,41 @@ internal class MastodonNotificationService(
   @VisibleForTesting val coroutineScope = CoroutineScope(coroutineContext)
 
   /**
+   * Current [Lifecycle.State] in which this [MastodonNotificationService] is, constrained to
+   * representing only _initialized_, _created_ or _destroyed_ states. As of now, it has no actual
+   * use in production and exists only for testing purposes.
+   *
+   * @see Lifecycle.State.INITIALIZED
+   * @see Lifecycle.State.CREATED
+   * @see Lifecycle.State.DESTROYED
+   */
+  @VisibleForTesting
+  var lifecycleState = Lifecycle.State.INITIALIZED
+    private set
+
+  /**
    * [NotificationManager] through which updates received from the server will be forwarded in the
    * form of system notifications.
    */
   @VisibleForTesting
   val notificationManager
     get() = getSystemService<NotificationManager>() as NotificationManager
+
+  /**
+   * Whether the Firebase SDK is currently running.
+   *
+   * @see startFirebaseSdk
+   * @see stopFirebaseSdkIfRunning
+   */
+  @VisibleForTesting
+  val isFirebaseSdkRunning
+    get() =
+      try {
+        Firebase.app
+        true
+      } catch (_: IllegalStateException) {
+        false
+      }
 
   @Throws(Module.DependencyNotInjectedException::class)
   constructor() :
@@ -114,6 +150,12 @@ internal class MastodonNotificationService(
       authenticationLock = Injector.get(),
       coroutineContext = SupervisorJob() + Dispatchers.IO
     )
+
+  override fun onCreate() {
+    super.onCreate()
+    startFirebaseSdkIfNotRunning()
+    lifecycleState = Lifecycle.State.CREATED
+  }
 
   override fun onMessageReceived(message: RemoteMessage) {
     super.onMessageReceived(message)
@@ -129,6 +171,38 @@ internal class MastodonNotificationService(
     super.onDestroy()
     cancelSentNotifications()
     coroutineScope.cancel("Service has been destroyed.")
+    stopFirebaseSdkIfRunning()
+    lifecycleState = Lifecycle.State.DESTROYED
+  }
+
+  /**
+   * Starts the Firebase SDK in case it has not been started yet.
+   *
+   * @see startFirebaseSdk
+   */
+  private fun startFirebaseSdkIfNotRunning() {
+    if (!isFirebaseSdkRunning) {
+      startFirebaseSdk()
+    }
+  }
+
+  /**
+   * Starts the Firebase SDK manually with the respective project info and API key.
+   *
+   * This approach is preferred because the
+   * [`google-services.json`-based one](https://firebase.google.com/docs/android/setup?hl=pt-br#add-config-file)
+   * requires the application of a plugin and the addition of such file — both in the `:app` module.
+   * Doing so, however, would propagate the responsibility of configuring the Firebase SDK, which
+   * belongs only to the Mastodon-specific core.
+   */
+  private fun startFirebaseSdk() {
+    FirebaseOptions.Builder()
+      .setApiKey(BuildConfig.mastodonfirebaseApiKey)
+      .setApplicationId(BuildConfig.mastodonfirebaseApplicationID)
+      .setProjectId("orcinusbr-orca")
+      .setStorageBucket("orcinusbr-orca.appspot.com")
+      .build()
+      .let { Firebase.initialize(this@MastodonNotificationService, /* options = */ it) }
   }
 
   /**
@@ -203,6 +277,13 @@ internal class MastodonNotificationService(
   /** Cancels all system notifications that have been sent by this [MastodonNotificationService]. */
   private fun cancelSentNotifications() {
     activeNotificationIDs.onEach(notificationManager::cancel).clear()
+  }
+
+  /** Deletes the default [FirebaseApp] in case is currently running. */
+  private fun stopFirebaseSdkIfRunning() {
+    if (isFirebaseSdkRunning) {
+      Firebase.app.delete()
+    }
   }
 
   companion object {

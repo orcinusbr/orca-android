@@ -19,13 +19,18 @@ import android.app.Notification
 import android.app.NotificationManager
 import android.content.Intent
 import android.service.notification.StatusBarNotification
+import androidx.lifecycle.Lifecycle
 import app.cash.turbine.test
 import assertk.all
+import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.each
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
+import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
+import assertk.assertions.isSameInstanceAs
 import assertk.assertions.isTrue
 import assertk.assertions.prop
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
@@ -39,6 +44,8 @@ import br.com.orcinus.orca.core.test.auth.AuthenticationLock
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import br.com.orcinus.orca.platform.testing.context
 import br.com.orcinus.orca.std.injector.Injector
+import com.google.firebase.Firebase
+import com.google.firebase.app
 import com.google.firebase.messaging.RemoteMessage
 import io.ktor.client.engine.mock.respondOk
 import io.ktor.http.toURI
@@ -56,6 +63,35 @@ import org.robolectric.android.controller.ServiceController
 internal class MastodonNotificationServiceTests {
   private val authenticationLock = AuthenticationLock(ActorProvider.sample)
   private val dtoCreatedAt = MastodonNotification.createdAt(ZonedDateTime.now())
+
+  @Test
+  fun initialLifecycleStateIsInitializedOne() {
+    runMastodonNotificationServiceTest {
+      assertThat(get())
+        .prop(MastodonNotificationService::lifecycleState)
+        .isSameInstanceAs(Lifecycle.State.INITIALIZED)
+    }
+  }
+
+  @Test
+  fun postCreationLifecycleStateIsCreatedOne() {
+    runMastodonNotificationServiceTest {
+      create()
+      assertThat(get())
+        .prop(MastodonNotificationService::lifecycleState)
+        .isSameInstanceAs(Lifecycle.State.CREATED)
+    }
+  }
+
+  @Test
+  fun postDestructionLifecycleStateIsDestroyedOne() {
+    runMastodonNotificationServiceTest {
+      create().bind().unbind().destroy()
+      assertThat(get())
+        .prop(MastodonNotificationService::lifecycleState)
+        .isSameInstanceAs(Lifecycle.State.DESTROYED)
+    }
+  }
 
   @Test
   fun instantiatingFromEmptyConstructorRetrievesInjectedRequester() {
@@ -85,6 +121,32 @@ internal class MastodonNotificationServiceTests {
     MastodonNotificationService()
     assertThat(isRetrieved).isTrue()
     Injector.clear()
+  }
+
+  @Test
+  fun defaultFirebaseApplicationIsObtainableWhenSdkIsRunning() {
+    runMastodonNotificationServiceTest {
+      create().bind()
+      assertThat(get()).prop(MastodonNotificationService::isFirebaseSdkRunning).isTrue()
+      Firebase.app
+    }
+  }
+
+  @Test
+  fun defaultFirebaseApplicationThrowsWhenObtainedWhileSdkIsNotRunning() {
+    runMastodonNotificationServiceTest {
+      create().bind().unbind().destroy()
+      assertThat(get()).prop(MastodonNotificationService::isFirebaseSdkRunning).isFalse()
+      assertFailure { Firebase.app }.isInstanceOf<IllegalStateException>()
+    }
+  }
+
+  @Test
+  fun startsFirebaseSdkWhenCreated() {
+    runMastodonNotificationServiceTest {
+      create().bind()
+      assertThat(get()).prop(MastodonNotificationService::isFirebaseSdkRunning).isTrue()
+    }
   }
 
   @Test
@@ -194,6 +256,14 @@ internal class MastodonNotificationServiceTests {
         .prop(MastodonNotificationService::notificationManager)
         .prop(NotificationManager::getActiveNotifications)
         .isEmpty()
+    }
+  }
+
+  @Test
+  fun stopsFirebaseSdkWhenDestroyed() {
+    runMastodonNotificationServiceTest {
+      create().bind().unbind().destroy()
+      assertThat(get()).prop(MastodonNotificationService::isFirebaseSdkRunning).isFalse()
     }
   }
 
