@@ -10,7 +10,6 @@
 !.idea/copyright
 build/
 /app/default/release
-/app/google-services.json
 /captures
 /.signing
 *.iml
