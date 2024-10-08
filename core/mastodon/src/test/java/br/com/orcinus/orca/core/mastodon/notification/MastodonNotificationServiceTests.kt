@@ -155,6 +155,17 @@ internal class MastodonNotificationServiceTests {
   }
 
   @Test
+  fun disablesFirebaseSdkAutomaticDataCollection() {
+    runMastodonNotificationServiceTest {
+      controller.create().bind()
+      assertThat(Firebase)
+        .prop("app") { it.app }
+        .prop("isDataCollectionDefaultEnabled") { it.isDataCollectionDefaultEnabled }
+        .isFalse()
+    }
+  }
+
+  @Test
   fun pushesSubscriptionWhenTokenIsReceived() {
     val requestURIFlow = MutableSharedFlow<URI>(replay = 1)
     runMastodonNotificationServiceTest({

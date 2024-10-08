@@ -204,6 +204,7 @@ internal class MastodonNotificationService(
       .setStorageBucket("orcinusbr-orca.appspot.com")
       .build()
       .let { Firebase.initialize(this@MastodonNotificationService, /* options = */ it) }
+      .apply { @Suppress("DEPRECATION") setDataCollectionDefaultEnabled(false) }
   }
 
   /**
