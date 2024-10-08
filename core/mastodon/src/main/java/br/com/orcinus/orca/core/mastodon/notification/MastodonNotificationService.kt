@@ -179,6 +179,7 @@ internal class MastodonNotificationService(
    * Starts the Firebase SDK in case it has not been started yet.
    *
    * @see startFirebaseSdk
+   * @see isFirebaseSdkRunning
    */
   private fun startFirebaseSdkIfNotRunning() {
     if (!isFirebaseSdkRunning) {
@@ -279,7 +280,11 @@ internal class MastodonNotificationService(
     activeNotificationIDs.onEach(notificationManager::cancel).clear()
   }
 
-  /** Deletes the default [FirebaseApp] in case is currently running. */
+  /**
+   * Deletes the default [FirebaseApp] in case it is currently running.
+   *
+   * @see isFirebaseSdkRunning
+   */
   private fun stopFirebaseSdkIfRunning() {
     if (isFirebaseSdkRunning) {
       Firebase.app.delete()
