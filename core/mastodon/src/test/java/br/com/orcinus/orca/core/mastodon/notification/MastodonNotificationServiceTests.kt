@@ -151,14 +151,11 @@ internal class MastodonNotificationServiceTests {
   @Test
   fun pushesSubscriptionWhenTokenIsReceived() {
     val requestURIFlow = MutableSharedFlow<URI>(replay = 1)
-    runMastodonNotificationServiceTest(
-      clientResponseProvider = {
-        val requestURI = it.url.toURI()
-        requestURIFlow.emit(requestURI)
-        respondOk()
-      },
-      coroutineContext = @OptIn(ExperimentalCoroutinesApi::class) UnconfinedTestDispatcher()
-    ) {
+    runMastodonNotificationServiceTest({
+      val requestURI = it.url.toURI()
+      requestURIFlow.emit(requestURI)
+      respondOk()
+    }) {
       create().bind().get().onNewToken("🤔🌼")
       requestURIFlow.test {
         assertThat(awaitItem())
@@ -169,9 +166,7 @@ internal class MastodonNotificationServiceTests {
 
   @Test
   fun sendsNotificationWhenMessageIsReceived() {
-    runMastodonNotificationServiceTest(
-      coroutineContext = @OptIn(ExperimentalCoroutinesApi::class) UnconfinedTestDispatcher()
-    ) {
+    runMastodonNotificationServiceTest {
       create()
       assertThat(MastodonNotification.Type.entries).each { typeAssert ->
         bind()
