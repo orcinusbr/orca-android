@@ -17,6 +17,7 @@ package br.com.orcinus.orca.core.mastodon.notification
 
 import android.content.Intent
 import br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvider
+import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.AuthenticatedRequester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.runAuthenticatedRequesterTest
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.authenticationLock
@@ -42,7 +43,7 @@ import org.robolectric.android.controller.ServiceController
 internal fun runMastodonNotificationServiceTest(
   clientResponseProvider: ClientResponseProvider = ClientResponseProvider.ok,
   coroutineContext: CoroutineContext = EmptyCoroutineContext,
-  body: suspend ServiceController<MastodonNotificationService>.() -> Unit
+  body: suspend ServiceController<MastodonNotificationService>.(AuthenticatedRequester) -> Unit
 ) {
   contract { callsInPlace(body, InvocationKind.EXACTLY_ONCE) }
   runAuthenticatedRequesterTest(clientResponseProvider, context = coroutineContext) {
@@ -51,7 +52,7 @@ internal fun runMastodonNotificationServiceTest(
     val intent = Intent(context, service::class.java)
     val controller = ServiceController.of(service, intent)
     try {
-      controller.body()
+      controller.body(requester)
     } finally {
       controller.unbind().destroy()
     }

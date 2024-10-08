@@ -17,7 +17,6 @@ package br.com.orcinus.orca.core.mastodon.notification
 
 import android.app.Notification
 import android.app.NotificationManager
-import android.content.Intent
 import android.service.notification.StatusBarNotification
 import androidx.lifecycle.Lifecycle
 import app.cash.turbine.test
@@ -37,7 +36,6 @@ import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.mastodon.BuildConfig
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus
-import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.runAuthenticatedRequesterTest
 import br.com.orcinus.orca.core.mastodon.instance.requester.runRequesterTest
 import br.com.orcinus.orca.core.sample.auth.actor.sample
 import br.com.orcinus.orca.core.test.auth.AuthenticationLock
@@ -57,11 +55,10 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.android.controller.ServiceController
 
 @RunWith(RobolectricTestRunner::class)
 internal class MastodonNotificationServiceTests {
-  private val authenticationLock = AuthenticationLock(ActorProvider.sample)
+  private val messageBuilder = RemoteMessage.Builder(MESSAGE_RECIPIENT)
   private val dtoCreatedAt = MastodonNotification.createdAt(ZonedDateTime.now())
 
   @Test
@@ -101,7 +98,7 @@ internal class MastodonNotificationServiceTests {
         isRetrieved = true
         requester
       }
-      Injector.injectImmediately(authenticationLock)
+      Injector.injectLazily { AuthenticationLock(ActorProvider.sample) }
     }
     MastodonNotificationService()
     assertThat(isRetrieved).isTrue()
@@ -115,7 +112,7 @@ internal class MastodonNotificationServiceTests {
       Injector.injectImmediately(requester)
       Injector.injectLazily {
         isRetrieved = true
-        authenticationLock
+        AuthenticationLock(ActorProvider.sample)
       }
     }
     MastodonNotificationService()
@@ -152,41 +149,30 @@ internal class MastodonNotificationServiceTests {
   @Test
   fun pushesSubscriptionWhenTokenIsReceived() {
     val requestURIFlow = MutableSharedFlow<URI>(replay = 1)
-    runAuthenticatedRequesterTest(
+    runMastodonNotificationServiceTest(
       clientResponseProvider = {
         val requestURI = it.url.toURI()
         requestURIFlow.emit(requestURI)
         respondOk()
       },
-      context = @OptIn(ExperimentalCoroutinesApi::class) UnconfinedTestDispatcher()
+      coroutineContext = @OptIn(ExperimentalCoroutinesApi::class) UnconfinedTestDispatcher()
     ) {
-      val service = MastodonNotificationService(requester, authenticationLock, coroutineContext)
-      val intent = Intent(context, service::class.java)
-      val controller =
-        ServiceController.of(service, intent)
-          .apply(ServiceController<MastodonNotificationService>::bind)
-      service.onNewToken("🤔🌼")
+      create().bind().get().onNewToken("🤔🌼")
       requestURIFlow.test {
         assertThat(awaitItem())
-          .isEqualTo(
-            HostedURLBuilder.from(requester.baseURI).buildNotificationSubscriptionPushingRoute()
-          )
+          .isEqualTo(HostedURLBuilder.from(it.baseURI).buildNotificationSubscriptionPushingRoute())
       }
-      controller.unbind()
     }
   }
 
   @Test
   fun sendsNotificationWhenMessageIsReceived() {
-    runAuthenticatedRequesterTest(
-      context = @OptIn(ExperimentalCoroutinesApi::class) UnconfinedTestDispatcher()
+    runMastodonNotificationServiceTest(
+      coroutineContext = @OptIn(ExperimentalCoroutinesApi::class) UnconfinedTestDispatcher()
     ) {
-      val service = MastodonNotificationService(requester, authenticationLock, coroutineContext)
-      val intent = Intent(context, service::class.java)
-      val controller = ServiceController.of(service, intent)
-      val messageBuilder = RemoteMessage.Builder(MESSAGE_RECIPIENT)
+      create()
       assertThat(MastodonNotification.Type.entries).each { typeAssert ->
-        controller.bind()
+        bind()
         typeAssert.given { type ->
           val dto =
             MastodonNotification(
@@ -199,15 +185,17 @@ internal class MastodonNotificationServiceTests {
           val message = messageBuilder.setData(dto.toMap()).build()
 
           fun hasNotificationNotBeenSent(): Boolean {
-            return service.notificationManager.activeNotifications
+            return get()
+              .notificationManager
+              .activeNotifications
               .map(StatusBarNotification::getId)
               .contains(dto.normalizedID)
               .not()
           }
 
-          service.onMessageReceived(message)
+          get().onMessageReceived(message)
           @Suppress("ControlFlowWithEmptyBody") while (hasNotificationNotBeenSent()) {}
-          assertThat(service)
+          assertThat(get())
             .prop(MastodonNotificationService::notificationManager)
             .prop(NotificationManager::getActiveNotifications)
             .transform("of $type") { statusBarNotifications ->
@@ -220,39 +208,36 @@ internal class MastodonNotificationServiceTests {
             .all {
               prop(Notification::getChannelId).isEqualTo(type.channelID)
               transform("title") { it.extras.getString(Notification.EXTRA_TITLE) }
-                .isEqualTo(type.getContentTitleAsync(context, authenticationLock, dto).get())
+                .isEqualTo(type.getContentTitleAsync(context, it.lock, dto).get())
             }
         }
-        controller.unbind()
+        unbind()
       }
     }
   }
 
   @Test
   fun cancelsSentNotificationsWhenDestroyed() {
-    runAuthenticatedRequesterTest {
-      val service = MastodonNotificationService(requester, authenticationLock, coroutineContext)
-      val intent = Intent(context, service::class.java)
-      val controller =
-        ServiceController.of(service, intent)
-          .apply(ServiceController<MastodonNotificationService>::bind)
-      val messageBuilder = RemoteMessage.Builder(MESSAGE_RECIPIENT)
-
-      MastodonNotification.Type.entries
-        .map {
+    runMastodonNotificationServiceTest(
+      coroutineContext = @OptIn(ExperimentalCoroutinesApi::class) UnconfinedTestDispatcher()
+    ) {
+      create()
+      for (type in MastodonNotification.Type.entries) {
+        val data =
           MastodonNotification(
-              /* id = */ "0",
-              /* type = */ it,
+              /* id = */ "${type.ordinal}",
+              type,
               dtoCreatedAt,
               MastodonAccount.default,
               MastodonStatus.default
             )
             .toMap()
-        }
-        .map { messageBuilder.setData(it).build() }
-        .forEach(service::onMessageReceived)
-      controller.unbind()
-      assertThat(service)
+        val message = messageBuilder.setData(data).build()
+        bind().get().onMessageReceived(message)
+        unbind()
+      }
+      destroy()
+      assertThat(get())
         .prop(MastodonNotificationService::notificationManager)
         .prop(NotificationManager::getActiveNotifications)
         .isEmpty()
