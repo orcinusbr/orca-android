@@ -90,9 +90,6 @@ internal class MastodonNotificationServiceTests {
   @Test
   fun postDestructionLifecycleStateIsDestroyedOne() {
     runMastodonNotificationServiceTest {
-      create()
-      bind()
-      unbind()
       destroy()
       assertThat(service)
         .prop(MastodonNotificationService::lifecycleState)
@@ -165,7 +162,6 @@ internal class MastodonNotificationServiceTests {
   fun defaultFirebaseApplicationIsObtainableWhenSdkIsRunning() {
     runMastodonNotificationServiceTest {
       create()
-      bind()
       assertThat(service).prop(MastodonNotificationService::isFirebaseSdkRunning).isTrue()
       Firebase.app
     }
@@ -174,9 +170,6 @@ internal class MastodonNotificationServiceTests {
   @Test
   fun defaultFirebaseApplicationThrowsWhenObtainedWhileSdkIsNotRunning() {
     runMastodonNotificationServiceTest {
-      create()
-      bind()
-      unbind()
       destroy()
       assertThat(service).prop(MastodonNotificationService::isFirebaseSdkRunning).isFalse()
       assertFailure { Firebase.app }.isInstanceOf<IllegalStateException>()
@@ -187,7 +180,6 @@ internal class MastodonNotificationServiceTests {
   fun startsFirebaseSdkWhenCreated() {
     runMastodonNotificationServiceTest {
       create()
-      bind()
       assertThat(service).prop(MastodonNotificationService::isFirebaseSdkRunning).isTrue()
     }
   }
@@ -196,7 +188,6 @@ internal class MastodonNotificationServiceTests {
   fun disablesFirebaseSdkAutomaticDataCollection() {
     runMastodonNotificationServiceTest {
       create()
-      bind()
       assertThat(Firebase)
         .prop("app") { it.app }
         .prop("isDataCollectionDefaultEnabled") { it.isDataCollectionDefaultEnabled }
@@ -213,7 +204,6 @@ internal class MastodonNotificationServiceTests {
       respondOk()
     }) {
       create()
-      bind()
       service.onNewToken("🤔🌼")
       requestURIFlow.test {
         assertThat(awaitItem())
@@ -231,7 +221,6 @@ internal class MastodonNotificationServiceTests {
     ) {
       create()
       assertThat(MastodonNotification.Type.entries).each { typeAssert ->
-        bind()
         typeAssert.given { type ->
           val dto =
             MastodonNotification(
@@ -261,7 +250,6 @@ internal class MastodonNotificationServiceTests {
                 .isEqualTo(type.getContentTitleAsync(context, requester.lock, dto).get())
             }
         }
-        unbind()
       }
     }
   }
@@ -283,9 +271,7 @@ internal class MastodonNotificationServiceTests {
             )
             .toMap()
         val message = messageBuilder.setData(data).build()
-        bind()
         service.onMessageReceived(message)
-        unbind()
       }
       destroy()
       assertThat(service)
@@ -298,9 +284,6 @@ internal class MastodonNotificationServiceTests {
   @Test
   fun cancelsCoroutineScopeWhenDestroyed() {
     runMastodonNotificationServiceTest {
-      create()
-      bind()
-      unbind()
       destroy()
       assertThat(service)
         .prop(MastodonNotificationService::coroutineScope)
@@ -312,9 +295,6 @@ internal class MastodonNotificationServiceTests {
   @Test
   fun stopsFirebaseSdkWhenDestroyed() {
     runMastodonNotificationServiceTest {
-      create()
-      bind()
-      unbind()
       destroy()
       assertThat(service).prop(MastodonNotificationService::isFirebaseSdkRunning).isFalse()
     }

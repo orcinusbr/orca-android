@@ -72,24 +72,6 @@ internal sealed class MastodonNotificationServiceTestScope : CoroutineScope {
   }
 
   /**
-   * Binds a connection to the [service].
-   *
-   * @see MastodonNotificationService.onBind
-   */
-  fun bind() {
-    controller.bind()
-  }
-
-  /**
-   * Unbinds a connection to the [service].
-   *
-   * @see MastodonNotificationService.onUnbind
-   */
-  fun unbind() {
-    controller.unbind()
-  }
-
-  /**
    * Destroys the [service].
    *
    * @see MastodonNotificationService.onDestroy
@@ -120,7 +102,6 @@ internal fun runMastodonNotificationServiceTest(
       try {
         body()
       } finally {
-        unbind()
         destroy()
       }
     }
