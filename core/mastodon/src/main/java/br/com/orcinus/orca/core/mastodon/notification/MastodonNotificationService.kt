@@ -77,7 +77,7 @@ internal class MastodonNotificationService(
    *
    * @see StatusBarNotification.getId
    */
-  private val activeNotificationIDs = mutableSetOf<Int>()
+  private val sentNotificationIds = mutableSetOf<Int>()
 
   /** Private randomly generated key that identifies this [MastodonNotificationService]. */
   private val authKey by lazy { ByteArray(16).apply(SecureRandom()::nextBytes).decodeToString() }
@@ -267,7 +267,7 @@ internal class MastodonNotificationService(
     coroutineScope.launch {
       val notification = dto.toNotification(this@MastodonNotificationService, authenticationLock)
       notificationManager.notify(id, notification)
-      activeNotificationIDs += id
+      sentNotificationIds += id
     }
   }
 
@@ -316,7 +316,7 @@ internal class MastodonNotificationService(
 
   /** Cancels all system notifications that have been sent by this [MastodonNotificationService]. */
   private fun cancelSentNotifications() {
-    activeNotificationIDs.onEach(notificationManager::cancel).clear()
+    sentNotificationIds.onEach(notificationManager::cancel).clear()
   }
 
   /**
