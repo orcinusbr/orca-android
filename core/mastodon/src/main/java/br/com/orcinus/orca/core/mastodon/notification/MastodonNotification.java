@@ -742,13 +742,13 @@ final class MastodonNotification {
   }
 
   /**
-   * Obtains a normalized version of the {@link #id}. Given that the original one is a {@link
-   * String}, it is converted into an integer in case it contains only digits; otherwise, its hash
-   * code is returned.
+   * Creates a version of the {@link #id} suited for a notification to be sent to the device. Given
+   * that the original one is a {@link String}, it is converted into an integer in case it contains
+   * only digits; otherwise, its hash code is returned.
    *
    * @return {@link #id} as an integer (if it is digit-only) or its hash code.
    */
-  int getNormalizedID() {
+  int generateSystemNotificationID() {
     return TextUtils.isDigitsOnly(id) ? Integer.parseInt(id) : id.hashCode();
   }
 

@@ -262,7 +262,7 @@ internal class MastodonNotificationService(
   private fun sendNotification(payload: Map<String, String>) {
     val dto = MastodonNotification.from(payload)
     val channel = dto.type.toNotificationChannel(this)
-    val id = dto.normalizedID
+    val id = dto.generateSystemNotificationID()
     notificationManager.createNotificationChannel(channel)
     coroutineScope.launch {
       val notification = dto.toNotification(this@MastodonNotificationService, authenticationLock)

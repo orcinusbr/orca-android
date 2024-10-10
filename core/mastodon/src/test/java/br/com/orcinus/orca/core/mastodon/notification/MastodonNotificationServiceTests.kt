@@ -233,13 +233,13 @@ internal class MastodonNotificationServiceTests {
           val message = messageBuilder.setData(dto.toMap()).build()
 
           service.onMessageReceived(message)
-          service.waitUntilSent(dto.normalizedID)
+          service.waitUntilSent(dto.generateSystemNotificationID())
           assertThat(service)
             .prop(MastodonNotificationService::notificationManager)
             .prop(NotificationManager::getActiveNotifications)
             .transform("of $type") { statusBarNotifications ->
               statusBarNotifications.find { statusBarNotification ->
-                statusBarNotification.id == dto.normalizedID
+                statusBarNotification.id == dto.generateSystemNotificationID()
               }
             }
             .isNotNull()

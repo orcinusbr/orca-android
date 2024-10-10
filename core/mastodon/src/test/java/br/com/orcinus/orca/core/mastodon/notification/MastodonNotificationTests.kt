@@ -127,7 +127,7 @@ internal class MastodonNotificationTests {
   }
 
   @Test
-  fun normalizedIDIsHashCodeOfOriginalOneWhenItIsNotDigitOnly() {
+  fun generatedSystemNotificationIDIsHashCodeOfOriginalOneWhenItIsNotDigitOnly() {
     assertThat(
         MastodonNotification(
           /* id = */ "🪫",
@@ -137,12 +137,12 @@ internal class MastodonNotificationTests {
           /* status = */ null
         )
       )
-      .prop(MastodonNotification::getNormalizedID)
+      .prop(MastodonNotification::generateSystemNotificationID)
       .isEqualTo("🪫".hashCode())
   }
 
   @Test
-  fun normalizedIDIsOriginalOneConvertedIntoAnIntegerWhenItIsDigitOnly() {
+  fun generatedSystemNotificationIDIsOriginalOneConvertedIntoAnIntegerWhenItIsDigitOnly() {
     assertThat(
         MastodonNotification(
           /* id = */ "8102024",
@@ -152,7 +152,7 @@ internal class MastodonNotificationTests {
           /* status = */ null
         )
       )
-      .prop(MastodonNotification::getNormalizedID)
+      .prop(MastodonNotification::generateSystemNotificationID)
       .isEqualTo(8102024)
   }
 
