@@ -15,7 +15,9 @@
 
 package br.com.orcinus.orca.core.mastodon.notification
 
+import android.content.Context
 import android.content.Intent
+import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvider
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.AuthenticatedRequester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.runAuthenticatedRequesterTest
@@ -34,46 +36,93 @@ import org.robolectric.android.controller.ServiceController
 /**
  * Default implementation of a [MastodonNotificationServiceTestScope] which will be used in the
  * tests.
- *
- * @param delegate [TestScope] to which [CoroutineScope] behavior will be delegated.
  */
 private class MastodonNotificationServiceEnvironment(
-  override val controller: ServiceController<MastodonNotificationService>,
   override val requester: AuthenticatedRequester,
+  override val context: Context,
   delegate: TestScope
-) : MastodonNotificationServiceTestScope, CoroutineScope by delegate
+) : MastodonNotificationServiceTestScope(), CoroutineScope by delegate
 
 /** Scope in which a [MastodonNotificationService] test is run. */
-internal sealed interface MastodonNotificationServiceTestScope : CoroutineScope {
+internal sealed class MastodonNotificationServiceTestScope : CoroutineScope {
   /** [ServiceController] by which the lifecycle of the [MastodonNotificationService] is managed. */
-  val controller: ServiceController<MastodonNotificationService>
+  private val controller by lazy {
+    MastodonNotificationService(requester, requester.lock)
+      .apply { setCoroutineContext(coroutineContext) }
+      .let { ServiceController.of(it, Intent(context, it::class.java)) }
+  }
+
+  /** [Context] in which the [service] is instantiated. */
+  protected abstract val context: Context
 
   /** [AuthenticatedRequester] by which subscriptions are pushed. */
-  val requester: AuthenticatedRequester
+  abstract val requester: AuthenticatedRequester
+
+  /** [MastodonNotificationService] being tested. */
+  val service: MastodonNotificationService
+    get() = controller.get()
+
+  /**
+   * Creates the [service].
+   *
+   * @see MastodonNotificationService.onCreate
+   */
+  fun create() {
+    controller.create()
+  }
+
+  /**
+   * Binds a connection to the [service].
+   *
+   * @see MastodonNotificationService.onBind
+   */
+  fun bind() {
+    controller.bind()
+  }
+
+  /**
+   * Unbinds a connection to the [service].
+   *
+   * @see MastodonNotificationService.onUnbind
+   */
+  fun unbind() {
+    controller.unbind()
+  }
+
+  /**
+   * Destroys the [service].
+   *
+   * @see MastodonNotificationService.onDestroy
+   */
+  fun destroy() {
+    controller.destroy()
+  }
 }
 
 /**
  * Runs a [MastodonNotificationService]-focused test.
  *
  * @param clientResponseProvider Defines how the [HttpClient] will respond to requests.
+ * @param onAuthentication Action run whenever the [Actor] is authenticated.
  * @param coroutineContext [CoroutineContext] in which [Job]s are launched by default.
  * @param body Testing to be performed on a [MastodonNotificationService].
  */
 @OptIn(ExperimentalContracts::class)
 internal fun runMastodonNotificationServiceTest(
   clientResponseProvider: ClientResponseProvider = ClientResponseProvider.ok,
+  onAuthentication: () -> Unit = {},
   coroutineContext: CoroutineContext = EmptyCoroutineContext,
   body: suspend MastodonNotificationServiceTestScope.() -> Unit
 ) {
   contract { callsInPlace(body, InvocationKind.EXACTLY_ONCE) }
-  runAuthenticatedRequesterTest(clientResponseProvider, context = coroutineContext) {
-    val service = MastodonNotificationService(requester, requester.lock, coroutineContext)
-    val intent = Intent(context, service::class.java)
-    val controller = ServiceController.of(service, intent)
-    try {
-      MastodonNotificationServiceEnvironment(controller, requester, delegate).body()
-    } finally {
-      controller.unbind().destroy()
+  runAuthenticatedRequesterTest(clientResponseProvider, onAuthentication, coroutineContext) {
+    MastodonNotificationServiceEnvironment(requester, context, delegate).run {
+      try {
+        body()
+      } finally {
+        unbind()
+        destroy()
+      }
     }
   }
 }

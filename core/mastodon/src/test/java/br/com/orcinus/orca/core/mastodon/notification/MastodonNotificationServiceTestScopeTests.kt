@@ -20,7 +20,11 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isSameInstanceAs
 import assertk.assertions.prop
+import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.job
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
@@ -36,16 +40,49 @@ internal class MastodonNotificationServiceTestScopeTests {
   @Test
   fun serviceIsInitializedByDefault() {
     runMastodonNotificationServiceTest {
-      assertThat(controller.get())
+      assertThat(service)
         .prop(MastodonNotificationService::lifecycleState)
         .isSameInstanceAs(Lifecycle.State.INITIALIZED)
     }
   }
 
   @Test
+  fun createsService() {
+    runMastodonNotificationServiceTest {
+      create()
+      assertThat(service)
+        .prop(MastodonNotificationService::lifecycleState)
+        .isSameInstanceAs(Lifecycle.State.CREATED)
+    }
+  }
+
+  @Test
+  fun setsServiceCoroutineContextToItsOwn() {
+    runMastodonNotificationServiceTest {
+      assertThat(service)
+        .prop(MastodonNotificationService::coroutineScope)
+        .prop(CoroutineScope::coroutineContext)
+        .prop(CoroutineContext::job)
+        .prop(Job::key)
+        .isEqualTo(coroutineContext.job.key)
+    }
+  }
+
+  @Test
+  fun destroysService() {
+    runMastodonNotificationServiceTest {
+      create()
+      destroy()
+      assertThat(service)
+        .prop(MastodonNotificationService::lifecycleState)
+        .isSameInstanceAs(Lifecycle.State.DESTROYED)
+    }
+  }
+
+  @Test
   fun serviceIsDestroyedAfterTest() {
     var service: MastodonNotificationService
-    runMastodonNotificationServiceTest { service = controller.get() }
+    runMastodonNotificationServiceTest { service = this.service }
     assertThat(service)
       .prop(MastodonNotificationService::lifecycleState)
       .isSameInstanceAs(Lifecycle.State.DESTROYED)

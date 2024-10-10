@@ -27,6 +27,8 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.BuildConfig
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
+import br.com.orcinus.orca.core.module.CoreModule
+import br.com.orcinus.orca.core.module.authenticationLock
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.injector.module.Module
@@ -43,8 +45,10 @@ import java.security.SecureRandom
 import java.security.interfaces.ECPublicKey
 import java.util.Base64
 import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -57,8 +61,6 @@ import kotlinx.serialization.SerializationException
  * request", "mention", "poll", "reblog", "severed relationships", "status" and "update") will have
  * a channel of its own when their notifications are sent.
  *
- * @param coroutineContext [CoroutineContext] in which payload conversions and requests are
- *   performed.
  * @property requester [Requester] by which push subscriptions are performed.
  * @property authenticationLock [AuthenticationLock] for requiring an authenticated [Actor] when
  *   converting received payloads into system notifications.
@@ -67,8 +69,7 @@ import kotlinx.serialization.SerializationException
  */
 internal class MastodonNotificationService(
   private val requester: Requester,
-  private val authenticationLock: SomeAuthenticationLock,
-  coroutineContext: CoroutineContext
+  private val authenticationLock: SomeAuthenticationLock
 ) : FirebaseMessagingService() {
   /**
    * IDs of [Notification]s that have been sent and have not yet been cleared by this
@@ -104,7 +105,9 @@ internal class MastodonNotificationService(
    * @see sendNotificationIfNotEmpty
    * @see pushSubscription
    */
-  @VisibleForTesting val coroutineScope = CoroutineScope(coroutineContext)
+  @VisibleForTesting
+  var coroutineScope = CoroutineScope(Dispatchers.Default)
+    private set
 
   /**
    * Current [Lifecycle.State] in which this [MastodonNotificationService] is, constrained to
@@ -145,11 +148,9 @@ internal class MastodonNotificationService(
 
   @Throws(Module.DependencyNotInjectedException::class)
   constructor() :
-    this(
-      requester = Injector.get(),
-      authenticationLock = Injector.get(),
-      coroutineContext = SupervisorJob() + Dispatchers.IO
-    )
+    this(requester = Injector.get(), Injector.from<CoreModule>().authenticationLock()) {
+    setCoroutineContext(SupervisorJob() + Dispatchers.IO)
+  }
 
   override fun onCreate() {
     super.onCreate()
@@ -173,6 +174,30 @@ internal class MastodonNotificationService(
     coroutineScope.cancel("Service has been destroyed.")
     stopFirebaseSdkIfRunning()
     lifecycleState = Lifecycle.State.DESTROYED
+  }
+
+  /**
+   * Changes the context in which subscription pushes and notification DTO conversions into system
+   * notifications are performed in the [coroutineScope]. All active [Job]s (if any) are cancelled
+   * when this method is called.
+   *
+   * @param coroutineContext [CoroutineContext] to switch to and run suspending operations in.
+   */
+  @VisibleForTesting
+  fun setCoroutineContext(coroutineContext: CoroutineContext) {
+    coroutineScope.cancel(CancellationException("Service context is being changed."))
+    coroutineScope = CoroutineScope(coroutineContext + Job(parent = coroutineContext[Job]))
+  }
+
+  /**
+   * Blocks the [Thread] until the specified system notification gets sent.
+   *
+   * @param id ID of the [Notification] whose delivery will be synchronously awaited.
+   * @see StatusBarNotification.getId
+   */
+  @VisibleForTesting
+  fun waitUntilSent(id: Int) {
+    @Suppress("ControlFlowWithEmptyBody") while (hasNotBeenSent(id)) {}
   }
 
   /**
@@ -244,6 +269,19 @@ internal class MastodonNotificationService(
       notificationManager.notify(id, notification)
       activeNotificationIDs += id
     }
+  }
+
+  /**
+   * Verifies whether the specified [Notification] has _not_ been sent.
+   *
+   * @param id ID of the [Notification] whose current absence of delivery will be checked.
+   */
+  private fun hasNotBeenSent(id: Int): Boolean {
+    return notificationManager.activeNotifications
+      ?.map(StatusBarNotification::getId)
+      ?.contains(id)
+      ?.not()
+      ?: true
   }
 
   /**
