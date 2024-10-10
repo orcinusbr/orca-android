@@ -32,6 +32,7 @@ import br.com.orcinus.orca.core.module.authenticationLock
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.injector.module.Module
+import br.com.orcinus.orca.std.markdown.style.`if`
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
@@ -43,6 +44,7 @@ import java.net.URI
 import java.security.KeyPairGenerator
 import java.security.SecureRandom
 import java.security.interfaces.ECPublicKey
+import java.security.spec.ECGenParameterSpec
 import java.util.Base64
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
@@ -88,10 +90,12 @@ internal class MastodonNotificationService(
    */
   private val publicKey by lazy {
     KeyPairGenerator.getInstance("EC")
-      .apply { initialize(/* keysize = */ 256) }
+      .apply { initialize(ECGenParameterSpec("prime256v1")) }
       .generateKeyPair()
-      .let { it.public as ECPublicKey }
-      .let { it.w.affineX.toByteArray() to it.w.affineY.toByteArray() }
+      .public
+      .let { (it as ECPublicKey).w }
+      .let { arrayOf(it.affineX, it.affineY) }
+      .map { it.toByteArray().`if`({ size < PUBLIC_KEY_AFFINE_COORDINATE_SIZE }) { pad() } }
       .let { (x, y) -> byteArrayOf(UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER, *x, *y) }
       .let(Base64.getUrlEncoder().withoutPadding()::encodeToString)
   }
@@ -337,6 +341,27 @@ internal class MastodonNotificationService(
      * its x and y affine coordinates.
      */
     private const val UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER: Byte = 0x04
+
+    /**
+     * Minimum and maximum amount of bytes in an affine coordinate of a [publicKey], same as the
+     * [one defined in the official Mastodon Android app](https://github.com/mastodon/mastodon-android/blob/1ad2d08e2722dc812320708ddd43738209c12d5f/mastodon/src/main/java/org/joinmastodon/android/api/PushSubscriptionManager.java#L236).
+     * As the original implementation, the last 32 bytes of the coordinates are encoded into the
+     * final [String], and left-zero-padded in case their sizes are lesser than this predefined one.
+     *
+     * @see ByteArray.pad
+     */
+    private const val PUBLIC_KEY_AFFINE_COORDINATE_SIZE = 32
+
+    /**
+     * Creates a copy of this [ByteArray] which consists of an initial padding — whose length is the
+     * predefined size for a [publicKey] coordinate minus this one's size — and its content.
+     * Essentially, converts it into an array with 32 bytes.
+     *
+     * @see PUBLIC_KEY_AFFINE_COORDINATE_SIZE
+     */
+    private fun ByteArray.pad(): ByteArray {
+      return ByteArray(PUBLIC_KEY_AFFINE_COORDINATE_SIZE - size) + this
+    }
   }
 }
 
