@@ -181,6 +181,7 @@ internal class MastodonNotificationService(
    * when this method is called.
    *
    * @param coroutineContext [CoroutineContext] to switch to and run suspending operations in.
+   * @see Job.isActive
    */
   @VisibleForTesting
   fun setCoroutineContext(coroutineContext: CoroutineContext) {

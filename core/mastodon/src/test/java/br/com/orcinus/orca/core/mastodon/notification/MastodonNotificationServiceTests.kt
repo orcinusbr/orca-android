@@ -150,11 +150,11 @@ internal class MastodonNotificationServiceTests {
   }
 
   @Test
-  fun cancelsOngoingJobsWhenSettingCoroutineContext() {
+  fun cancelsActiveJobsWhenSettingCoroutineContext() {
     runMastodonNotificationServiceTest {
-      val ongoingJob = service.coroutineScope.launch { awaitCancellation() }
+      val job = service.coroutineScope.launch { awaitCancellation() }
       service.setCoroutineContext(Dispatchers.IO)
-      assertThat(ongoingJob).prop(Job::isCancelled).isTrue()
+      assertThat(job).prop(Job::isCancelled).isTrue()
     }
   }
 
