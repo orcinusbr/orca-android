@@ -39,6 +39,16 @@ In order to build the project, you have to first obtain a few API keys. Except f
 
 Each item links to a documentation explaining how to obtain the respective key, and, below, how they should be added to the root `local.properties` file.
 
+- [Firebase](https://firebase.google.com/docs/android/setup)
+
+```properties
+mastodon.firebaseApiKey=your-api-key
+mastodon.firebaseApplicationID=your-application-id
+mastodon.firebaseCloudMessagingSenderID=your-sender-id
+mastodon.firebaseProjectID=your-project-id
+mastodon.firebaseStorageBucket=your-storage-bucket
+```
+
 - [GitHub personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic):
 
 ```properties
