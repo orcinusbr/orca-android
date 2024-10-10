@@ -142,6 +142,23 @@ internal class MastodonNotificationTests {
   }
 
   @Test
+  fun generatedSystemNotificationIDIsHashCodeOfOriginalOneWhenItIsDigitOnlyButIsZeroPadded() {
+    repeat(4) { index ->
+      assertThat(
+          MastodonNotification(
+            /* id = */ "0".repeat(index.inc()) + "${index.inc()}",
+            MastodonNotification.Type.FOLLOW,
+            /* createdAt = */ "",
+            MastodonAccount.default,
+            /* status = */ null
+          )
+        )
+        .prop(MastodonNotification::generateSystemNotificationID)
+        .all { given { systemNotificationID -> isEqualTo(systemNotificationID.hashCode()) } }
+    }
+  }
+
+  @Test
   fun generatedSystemNotificationIDIsOriginalOneConvertedIntoAnIntegerWhenItIsDigitOnly() {
     assertThat(
         MastodonNotification(

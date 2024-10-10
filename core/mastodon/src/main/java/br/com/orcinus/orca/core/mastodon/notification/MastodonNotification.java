@@ -19,7 +19,6 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.OptIn;
@@ -749,7 +748,13 @@ final class MastodonNotification {
    * @return {@link #id} as an integer (if it is digit-only) or its hash code.
    */
   int generateSystemNotificationID() {
-    return TextUtils.isDigitsOnly(id) ? Integer.parseInt(id) : id.hashCode();
+    try {
+      if (!id.startsWith("0")) {
+        return Integer.parseInt(id);
+      }
+    } catch (NumberFormatException exception) {
+    }
+    return id.hashCode();
   }
 
   /**
