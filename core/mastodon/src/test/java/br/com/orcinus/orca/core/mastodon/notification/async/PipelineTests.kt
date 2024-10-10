@@ -13,15 +13,12 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification.interop
+package br.com.orcinus.orca.core.mastodon.notification.async
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isZero
 import assertk.coroutines.assertions.suspendCall
-import br.com.orcinus.orca.core.mastodon.notification.async.Pipeline
-import br.com.orcinus.orca.core.mastodon.notification.async.pipeline
-import br.com.orcinus.orca.core.mastodon.notification.async.pipelineOf
 import java.util.concurrent.CompletionStage
 import kotlin.test.Test
 import kotlinx.coroutines.future.await
