@@ -39,7 +39,7 @@ In order to build the project, you have to first obtain a few API keys. Except f
 
 Each item links to a documentation explaining how to obtain the respective key, and, below, how they should be added to the root `local.properties` file.
 
-- [Firebase](https://firebase.google.com/docs/android/setup)
+- [Firebase](https://firebase.google.com/docs/android/setup):
 
 ```properties
 mastodon.firebaseApiKey=your-api-key
