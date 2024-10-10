@@ -225,8 +225,8 @@ internal class MastodonNotificationService(
     FirebaseOptions.Builder()
       .setApiKey(BuildConfig.mastodonfirebaseApiKey)
       .setApplicationId(BuildConfig.mastodonfirebaseApplicationID)
-      .setProjectId("orcinusbr-orca")
-      .setStorageBucket("orcinusbr-orca.appspot.com")
+      .setProjectId(BuildConfig.mastodonfirebaseProjectID)
+      .setStorageBucket(BuildConfig.mastodonfirebaseStorageBucket)
       .build()
       .let { Firebase.initialize(this@MastodonNotificationService, /* options = */ it) }
       .apply { @Suppress("DEPRECATION") setDataCollectionDefaultEnabled(false) }
