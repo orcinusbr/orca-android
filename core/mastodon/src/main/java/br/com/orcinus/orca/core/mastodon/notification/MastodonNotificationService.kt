@@ -45,7 +45,6 @@ import java.security.SecureRandom
 import java.security.interfaces.ECPublicKey
 import java.util.Base64
 import kotlin.coroutines.CoroutineContext
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -185,7 +184,7 @@ internal class MastodonNotificationService(
    */
   @VisibleForTesting
   fun setCoroutineContext(coroutineContext: CoroutineContext) {
-    coroutineScope.cancel(CancellationException("Service context is being changed."))
+    coroutineScope.cancel("Service coroutine context is being changed.")
     coroutineScope = CoroutineScope(coroutineContext + Job(parent = coroutineContext[Job]))
   }
 
