@@ -53,7 +53,6 @@ import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.SerializationException
@@ -155,7 +154,7 @@ internal class MastodonNotificationService(
   @Throws(Module.DependencyNotInjectedException::class)
   constructor() :
     this(requester = Injector.get(), Injector.from<CoreModule>().authenticationLock()) {
-    setCoroutineContext(SupervisorJob() + Dispatchers.IO)
+    setCoroutineContext(Dispatchers.IO)
   }
 
   override fun onCreate() {
