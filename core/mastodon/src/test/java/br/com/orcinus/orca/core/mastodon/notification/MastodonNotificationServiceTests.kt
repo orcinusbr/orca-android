@@ -18,6 +18,7 @@ package br.com.orcinus.orca.core.mastodon.notification
 import android.app.Notification
 import android.app.NotificationManager
 import android.content.Intent
+import android.content.ServiceConnection
 import android.service.notification.StatusBarNotification
 import androidx.lifecycle.Lifecycle
 import app.cash.turbine.test
@@ -46,6 +47,9 @@ import com.google.firebase.app
 import com.google.firebase.messaging.RemoteMessage
 import io.ktor.client.engine.mock.respondOk
 import io.ktor.http.toURI
+import io.mockk.clearMocks
+import io.mockk.spyk
+import io.mockk.verify
 import java.net.URI
 import java.time.ZonedDateTime
 import kotlin.test.Test
@@ -130,6 +134,16 @@ internal class MastodonNotificationServiceTests {
     }
     assertThat(isRetrieved).isTrue()
     Injector.clear()
+  }
+
+  @Test
+  fun binds() {
+    val context = spyk(context)
+    MastodonNotificationService.bind(context)
+    verify(exactly = 1) {
+      context.bindService(any<Intent>(), any<ServiceConnection>(), /* flags = */ any<Int>())
+    }
+    clearMocks(context)
   }
 
   @Test
