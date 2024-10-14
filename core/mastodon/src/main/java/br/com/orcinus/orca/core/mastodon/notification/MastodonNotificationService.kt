@@ -377,6 +377,7 @@ internal class MastodonNotificationService(
      *
      * @see PUBLIC_KEY_AFFINE_COORDINATE_SIZE
      */
+    @JvmStatic
     private fun ByteArray.pad(): ByteArray {
       return ByteArray(PUBLIC_KEY_AFFINE_COORDINATE_SIZE - size) + this
     }
