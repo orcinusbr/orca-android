@@ -356,12 +356,12 @@ internal class MastodonNotificationService(
     private const val PUBLIC_KEY_AFFINE_COORDINATE_SIZE = 32
 
     /**
-     * Starts a [MastodonNotificationService].
+     * Binds a connection to a [MastodonNotificationService].
      *
      * @param context [Context] in which it is to be started.
      */
     @JvmStatic
-    fun start(context: Context) {
+    fun bind(context: Context) {
       val intent = Intent(context, MastodonNotificationService::class.java)
       var flags = Context.BIND_AUTO_CREATE
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

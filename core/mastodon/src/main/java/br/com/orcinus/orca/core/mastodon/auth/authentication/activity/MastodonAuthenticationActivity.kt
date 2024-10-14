@@ -81,7 +81,7 @@ class MastodonAuthenticationActivity : ComposableActivity() {
   private fun authenticate() {
     viewModel.request {
       instance.authenticator.receive(it)
-      MastodonNotificationService.start(applicationContext)
+      MastodonNotificationService.bind(applicationContext)
       finish()
     }
   }
