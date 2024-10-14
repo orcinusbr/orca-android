@@ -357,7 +357,7 @@ internal class MastodonNotificationService(
     /**
      * Binds a connection to a [MastodonNotificationService].
      *
-     * @param context [Context] in which it is to be started.
+     * @param context [Context] in which the binding is performed.
      */
     @JvmStatic
     fun bind(context: Context) {
