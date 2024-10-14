@@ -93,7 +93,7 @@ internal class MastodonNotificationService(
    */
   private val publicKey by lazy {
     KeyPairGenerator.getInstance("EC")
-      .apply { initialize(ECGenParameterSpec("prime256v1")) }
+      .apply { initialize(ECGenParameterSpec("secp256r1")) }
       .generateKeyPair()
       .public
       .let { (it as ECPublicKey).w }
