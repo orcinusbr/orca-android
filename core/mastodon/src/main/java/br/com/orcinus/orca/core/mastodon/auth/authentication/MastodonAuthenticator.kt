@@ -24,8 +24,6 @@ import br.com.orcinus.orca.core.mastodon.auth.authentication.activity.MastodonAu
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.isActive
 
 /**
  * [Authenticator] that starts a [MastodonAuthenticationActivity] when the user is requested to be
@@ -42,13 +40,6 @@ class MastodonAuthenticator(
   /** [Continuation] of the coroutine that's suspended on authentication. */
   private var continuation: Continuation<Actor>? = null
 
-  /**
-   * Listeners to be notified when an [Actor] is received, before [onAuthentication] returns.
-   *
-   * @see receive
-   */
-  private val onActorReceiptListeners = mutableListOf<(Actor) -> Unit>()
-
   override suspend fun onAuthentication(authorizationCode: String): Actor {
     return suspendCoroutine {
       continuation = it
@@ -57,36 +48,12 @@ class MastodonAuthenticator(
   }
 
   /**
-   * Adds a listener to be notified when an [Actor] is received.
-   *
-   * @param onActorReceiptListener Listener lambda that will be invoked with the received [Actor].
-   */
-  internal fun addOnActorReceiptListener(onActorReceiptListener: (Actor) -> Unit) {
-    val isActorYetToBeReceived = continuation?.context?.get(Job)?.isActive ?: true
-    if (isActorYetToBeReceived) {
-      onActorReceiptListeners.add(onActorReceiptListener)
-    }
-  }
-
-  /**
-   * Removes a listener that would be notified when an [Actor] were to be received.
-   *
-   * @param onActorReceiptListener Listener to be removed.
-   */
-  internal fun removeOnActorReceiptListener(onActorReceiptListener: (Actor) -> Unit) {
-    onActorReceiptListeners.remove(onActorReceiptListener)
-  }
-
-  /**
    * Notifies this [MastodonAuthenticator] that the [actor] has been successfully retrieved,
-   * consequently notifying the added on-actor-receipt listeners and resuming the suspended
-   * coroutine.
+   * consequently resuming the suspended coroutine.
    *
    * @param actor [Actor] to be received.
-   * @see onActorReceiptListeners
    */
   internal fun receive(actor: Actor) {
-    continuation?.takeIf { it.context.isActive }?.resume(actor)
-    onActorReceiptListeners.onEach { it(actor) }.clear()
+    continuation?.resume(actor)
   }
 }
