@@ -339,9 +339,9 @@ internal class MastodonNotificationService(
 
   companion object {
     /**
-     * Standardized by "SEC 1: Elliptic Curve Cryptography", it is the leading byte of an elliptic
-     * curve key which denotes that it is uncompressed — that is, the two bytes that follow are both
-     * its x and y affine coordinates.
+     * Standardized by ["SEC 1: Elliptic Curve Cryptography"](https://www.secg.org/sec1-v2.pdf), it
+     * is the leading byte of an elliptic curve key which denotes that it is uncompressed — that is,
+     * the two bytes that follow are both its x and y affine coordinates.
      */
     private const val UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER: Byte = 0x04
 
