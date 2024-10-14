@@ -17,6 +17,9 @@ package br.com.orcinus.orca.core.mastodon.notification
 
 import android.app.Notification
 import android.app.NotificationManager
+import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.service.notification.StatusBarNotification
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.getSystemService
@@ -351,6 +354,21 @@ internal class MastodonNotificationService(
      * @see ByteArray.pad
      */
     private const val PUBLIC_KEY_AFFINE_COORDINATE_SIZE = 32
+
+    /**
+     * Starts a [MastodonNotificationService].
+     *
+     * @param context [Context] in which it is to be started.
+     */
+    @JvmStatic
+    fun start(context: Context) {
+      val intent = Intent(context, MastodonNotificationService::class.java)
+      var flags = Context.BIND_AUTO_CREATE
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        flags = flags or Context.BIND_NOT_PERCEPTIBLE
+      }
+      context.bindService(intent, NoOpServiceConnection, flags)
+    }
 
     /**
      * Creates a copy of this [ByteArray] which consists of an initial padding — whose length is the

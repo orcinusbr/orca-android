@@ -25,6 +25,7 @@ import br.com.orcinus.orca.core.instance.InstanceProvider
 import br.com.orcinus.orca.core.mastodon.auth.authentication.MastodonAuthentication
 import br.com.orcinus.orca.core.mastodon.auth.authentication.MastodonAuthenticationViewModel
 import br.com.orcinus.orca.core.mastodon.instance.ContextualMastodonInstance
+import br.com.orcinus.orca.core.mastodon.notification.MastodonNotificationService
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.platform.starter.on
@@ -80,6 +81,7 @@ class MastodonAuthenticationActivity : ComposableActivity() {
   private fun authenticate() {
     viewModel.request {
       instance.authenticator.receive(it)
+      MastodonNotificationService.start(applicationContext)
       finish()
     }
   }
