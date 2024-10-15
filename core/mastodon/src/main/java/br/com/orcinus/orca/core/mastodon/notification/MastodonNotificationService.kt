@@ -21,6 +21,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.service.notification.StatusBarNotification
+import android.util.Base64
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.getSystemService
 import androidx.lifecycle.Lifecycle
@@ -48,7 +49,6 @@ import java.security.KeyPairGenerator
 import java.security.SecureRandom
 import java.security.interfaces.ECPublicKey
 import java.security.spec.ECGenParameterSpec
-import java.util.Base64
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -76,9 +76,6 @@ constructor(
   private val requester: Requester,
   private val authenticationLock: SomeAuthenticationLock
 ) : FirebaseMessagingService() {
-  /** [Base64.Encoder] by which [authenticationKey]'s and [publicKey]'s bytes are encoded. */
-  private val base64Encoder by lazy { Base64.getUrlEncoder().withoutPadding() }
-
   /**
    * IDs of [Notification]s that have been sent and have not yet been cleared by this
    * [MastodonNotificationService].
@@ -92,10 +89,10 @@ constructor(
    * [that of the official Mastodon Android app](https://github.com/mastodon/mastodon-android/blob/1ad2d08e2722dc812320708ddd43738209c12d5f/mastodon/src/main/java/org/joinmastodon/android/api/PushSubscriptionManager.java#L142-L152),
    * with the instantiation of a random 16-byte array encoded to a Base64 [String].
    *
-   * @see base64Encoder
+   * @see ByteArray.encodeToBase64
    */
   private val authenticationKey by lazy {
-    ByteArray(size = 16).apply(SecureRandom()::nextBytes).let(base64Encoder::encodeToString)
+    ByteArray(size = 16).apply(SecureRandom()::nextBytes).encodeToBase64()
   }
 
   /**
@@ -104,7 +101,7 @@ constructor(
    * p256v1 (or secp256r1 — its alias) elliptic curve key. The underlying algorithm is based on
    * [that of the official Mastodon Android app](https://github.com/mastodon/mastodon-android/blob/1ad2d08e2722dc812320708ddd43738209c12d5f/mastodon/src/main/java/org/joinmastodon/android/api/PushSubscriptionManager.java#L135-L151).
    *
-   * @see base64Encoder
+   * @see ByteArray.encodeToBase64
    */
   private val publicKey by lazy {
     KeyPairGenerator.getInstance("EC")
@@ -115,7 +112,7 @@ constructor(
       .let { arrayOf(it.affineX, it.affineY) }
       .map { it.toByteArray().`if`({ size < PUBLIC_KEY_AFFINE_COORDINATE_SIZE }) { pad() } }
       .let { (x, y) -> byteArrayOf(UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER, *x, *y) }
-      .let(base64Encoder::encodeToString)
+      .encodeToBase64()
   }
 
   /**
@@ -398,6 +395,12 @@ constructor(
     @JvmStatic
     private fun ByteArray.pad(): ByteArray {
       return ByteArray(PUBLIC_KEY_AFFINE_COORDINATE_SIZE - size) + this
+    }
+
+    /** Encodes this [ByteArray] to a non-padded, unwrapped, URL-safe Base64 [String]. */
+    @JvmStatic
+    private fun ByteArray.encodeToBase64(): String {
+      return Base64.encodeToString(this, Base64.NO_PADDING or Base64.NO_WRAP or Base64.URL_SAFE)
     }
   }
 }
