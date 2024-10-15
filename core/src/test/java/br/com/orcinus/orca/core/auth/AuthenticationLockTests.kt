@@ -44,6 +44,29 @@ internal class AuthenticationLockTests {
   }
 
   @Test
+  fun isNotifiedOfSubsequentUnlock() {
+    var notificationCount = 0
+    val lock =
+      object : AuthenticationLock<Authenticator>() {
+        override val authenticator = SampleAuthenticator()
+        override val actorProvider = InMemoryActorProvider()
+
+        override suspend fun onUnlock(actor: Actor.Authenticated) {
+          notificationCount++
+        }
+
+        override fun createFailedAuthenticationException(): FailedAuthenticationException {
+          return FailedAuthenticationException(null)
+        }
+      }
+    runTest {
+      lock.scheduleUnlock {}
+      lock.scheduleUnlock {}
+    }
+    assertThat(notificationCount).isEqualTo(2)
+  }
+
+  @Test
   fun authenticatesWhenUnlockingWithUnauthenticatedActor() {
     val actorProvider = InMemoryActorProvider()
     var hasBeenAuthenticated = false
