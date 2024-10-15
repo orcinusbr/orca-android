@@ -358,7 +358,7 @@ internal class MastodonNotificationService(
     private const val PUBLIC_KEY_AFFINE_COORDINATE_SIZE = 32
 
     /**
-     * Binds a connection to a [MastodonNotificationService].
+     * Binds a connection to a [MastodonNotificationService] if none has been bound yet.
      *
      * @param context [Context] in which the binding is performed.
      */
