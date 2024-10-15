@@ -127,8 +127,8 @@ internal data class MastodonAccount(
   }
 
   /**
-   * Creates a [Pipeline] in which whether the currently authenticated [Actor] is the owner os this
-   * [Account] is computed.
+   * Creates a [Pipeline] in which whether the currently authenticated [Actor] is the owner of this
+   * [MastodonAccount] is computed.
    *
    * @param authenticationLock [AuthenticationLock] through which the ID of the [Actor] will be
    *   compared to that of this [MastodonAccount].
@@ -159,7 +159,7 @@ internal data class MastodonAccount(
   }
 
   /**
-   * Whether the currently authenticated [Actor] is the owner of this [Account].
+   * Whether the currently authenticated [Actor] is the owner of this [MastodonAccount].
    *
    * @throws Injector.ModuleNotRegisteredException If a [CoreModule] is not registered in the
    *   [Injector].
