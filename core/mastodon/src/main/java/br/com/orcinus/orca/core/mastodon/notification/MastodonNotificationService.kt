@@ -74,6 +74,9 @@ internal class MastodonNotificationService(
   private val requester: Requester,
   private val authenticationLock: SomeAuthenticationLock
 ) : FirebaseMessagingService() {
+  /** [Base64.Encoder] by which [authKey]'s and [publicKey]'s bytes are encoded. */
+  private val base64Encoder by lazy { Base64.getUrlEncoder().withoutPadding() }
+
   /**
    * IDs of [Notification]s that have been sent and have not yet been cleared by this
    * [MastodonNotificationService].
@@ -82,13 +85,24 @@ internal class MastodonNotificationService(
    */
   private val sentNotificationIds = mutableSetOf<Int>()
 
-  /** Private randomly generated key that identifies this [MastodonNotificationService]. */
-  private val authKey by lazy { ByteArray(16).apply(SecureRandom()::nextBytes).decodeToString() }
+  /**
+   * Private key that identifies this [MastodonNotificationService]. Its generation is based on
+   * [that of the official Mastodon Android app](https://github.com/mastodon/mastodon-android/blob/1ad2d08e2722dc812320708ddd43738209c12d5f/mastodon/src/main/java/org/joinmastodon/android/api/PushSubscriptionManager.java#L142-L152),
+   * with the instantiation of a random 16-byte array encoded to a Base64 [String].
+   *
+   * @see base64Encoder
+   */
+  private val authKey by lazy {
+    ByteArray(size = 16).apply(SecureRandom()::nextBytes).let(base64Encoder::encodeToString)
+  }
 
   /**
    * Base64-encoded [String] consisting of three sequences of bytes: an
    * [UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER] and the x and y affine coordinates of the generated
-   * elliptic curve key.
+   * p256v1 (or secp256r1 — its alias) elliptic curve key. The underlying algorithm is based on
+   * [that of the official Mastodon Android app](https://github.com/mastodon/mastodon-android/blob/1ad2d08e2722dc812320708ddd43738209c12d5f/mastodon/src/main/java/org/joinmastodon/android/api/PushSubscriptionManager.java#L135-L151).
+   *
+   * @see base64Encoder
    */
   private val publicKey by lazy {
     KeyPairGenerator.getInstance("EC")
@@ -99,7 +113,7 @@ internal class MastodonNotificationService(
       .let { arrayOf(it.affineX, it.affineY) }
       .map { it.toByteArray().`if`({ size < PUBLIC_KEY_AFFINE_COORDINATE_SIZE }) { pad() } }
       .let { (x, y) -> byteArrayOf(UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER, *x, *y) }
-      .let(Base64.getUrlEncoder().withoutPadding()::encodeToString)
+      .let(base64Encoder::encodeToString)
   }
 
   /**
