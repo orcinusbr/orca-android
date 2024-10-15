@@ -74,7 +74,7 @@ internal class MastodonNotificationService(
   private val requester: Requester,
   private val authenticationLock: SomeAuthenticationLock
 ) : FirebaseMessagingService() {
-  /** [Base64.Encoder] by which [authKey]'s and [publicKey]'s bytes are encoded. */
+  /** [Base64.Encoder] by which [authenticationKey]'s and [publicKey]'s bytes are encoded. */
   private val base64Encoder by lazy { Base64.getUrlEncoder().withoutPadding() }
 
   /**
@@ -92,7 +92,7 @@ internal class MastodonNotificationService(
    *
    * @see base64Encoder
    */
-  private val authKey by lazy {
+  private val authenticationKey by lazy {
     ByteArray(size = 16).apply(SecureRandom()::nextBytes).let(base64Encoder::encodeToString)
   }
 
@@ -330,7 +330,7 @@ internal class MastodonNotificationService(
           append("data[alerts][update]", "true")
           append("data[policy]", "all")
           append("subscription[endpoint]", "https://fcm.googleapis.com/fcm/send/$token")
-          append("subscription[keys][auth]", authKey)
+          append("subscription[keys][auth]", authenticationKey)
           append("subscription[keys][p256dh]", publicKey)
         }
       }
