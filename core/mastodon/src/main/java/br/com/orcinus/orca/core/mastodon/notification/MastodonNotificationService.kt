@@ -151,7 +151,10 @@ internal class MastodonNotificationService(
         false
       }
 
-  @Throws(Module.DependencyNotInjectedException::class)
+  @Throws(
+    Injector.ModuleNotRegisteredException::class,
+    Module.DependencyNotInjectedException::class
+  )
   constructor() :
     this(requester = Injector.get(), Injector.from<CoreModule>().authenticationLock()) {
     setCoroutineContext(Dispatchers.IO)
