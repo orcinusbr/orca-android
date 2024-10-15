@@ -44,6 +44,7 @@ import com.google.firebase.app
 import com.google.firebase.initialize
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import io.ktor.util.StringValuesBuilder
 import java.net.URI
 import java.security.KeyPairGenerator
 import java.security.SecureRandom
@@ -212,6 +213,35 @@ constructor(
   }
 
   /**
+   * Appends form data for the `application/x-www-form-urlencoded`-MIME-typed subscription request
+   * to the [builder], defining that all updates should be received from the Mastodon server and
+   * forwarded to the device.
+   *
+   * @param builder [StringValuesBuilder] to which the data is to be appended.
+   * @param token Key that identifies each Firebase Cloud Messaging (FCM) client instance.
+   * @see pushSubscription
+   */
+  @VisibleForTesting
+  fun appendSubscriptionFormData(builder: StringValuesBuilder, token: String) {
+    builder.apply {
+      append("data[alerts][admin.report]", "true")
+      append("data[alerts][admin.sign_up]", "true")
+      append("data[alerts][favourite]", "true")
+      append("data[alerts][follow]", "true")
+      append("data[alerts][follow_request]", "true")
+      append("data[alerts][mention]", "true")
+      append("data[alerts][poll]", "true")
+      append("data[alerts][reblog]", "true")
+      append("data[alerts][status]", "true")
+      append("data[alerts][update]", "true")
+      append("data[policy]", "all")
+      append("subscription[endpoint]", "https://fcm.googleapis.com/fcm/send/$token")
+      append("subscription[keys][auth]", authenticationKey)
+      append("subscription[keys][p256dh]", publicKey)
+    }
+  }
+
+  /**
    * Blocks the [Thread] until the specified system notification gets sent.
    *
    * @param id ID of the [Notification] whose delivery will be synchronously awaited.
@@ -313,25 +343,8 @@ constructor(
    */
   private fun pushSubscription(token: String) {
     coroutineScope.launch {
-      requester.authenticated().post(
-        route = HostedURLBuilder::buildNotificationSubscriptionPushingRoute
-      ) {
-        parameters {
-          append("data[alerts][admin.report]", "true")
-          append("data[alerts][admin.sign_up]", "true")
-          append("data[alerts][favourite]", "true")
-          append("data[alerts][follow]", "true")
-          append("data[alerts][follow_request]", "true")
-          append("data[alerts][mention]", "true")
-          append("data[alerts][poll]", "true")
-          append("data[alerts][reblog]", "true")
-          append("data[alerts][status]", "true")
-          append("data[alerts][update]", "true")
-          append("data[policy]", "all")
-          append("subscription[endpoint]", "https://fcm.googleapis.com/fcm/send/$token")
-          append("subscription[keys][auth]", authenticationKey)
-          append("subscription[keys][p256dh]", publicKey)
-        }
+      requester.authenticated().post(HostedURLBuilder::buildNotificationSubscriptionPushingRoute) {
+        parameters { appendSubscriptionFormData(this, token) }
       }
     }
   }
@@ -410,6 +423,6 @@ constructor(
  * [MastodonNotification]s is sent.
  */
 @VisibleForTesting
-fun HostedURLBuilder.buildNotificationSubscriptionPushingRoute(): URI {
+internal fun HostedURLBuilder.buildNotificationSubscriptionPushingRoute(): URI {
   return path("api").path("v1").path("push").path("subscription").build()
 }

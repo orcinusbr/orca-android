@@ -46,6 +46,8 @@ import com.google.firebase.Firebase
 import com.google.firebase.app
 import com.google.firebase.messaging.RemoteMessage
 import io.ktor.client.engine.mock.respondOk
+import io.ktor.client.request.forms.FormDataContent
+import io.ktor.http.ParametersBuilder
 import io.ktor.http.toURI
 import io.mockk.clearMocks
 import io.mockk.spyk
@@ -217,12 +219,32 @@ internal class MastodonNotificationServiceTests {
       requestURIFlow.emit(requestURI)
       respondOk()
     }) {
-      create()
       service.onNewToken("🤔🌼")
       requestURIFlow.test {
         assertThat(awaitItem())
           .isEqualTo(
             HostedURLBuilder.from(requester.baseURI).buildNotificationSubscriptionPushingRoute()
+          )
+      }
+    }
+  }
+
+  @Test
+  fun pushedSubscriptionFormIsComplete() {
+    val requestBodyFlow = MutableSharedFlow<FormDataContent>(replay = 1)
+    runMastodonNotificationServiceTest({
+      requestBodyFlow.emit(it.body as FormDataContent)
+      respondOk()
+    }) {
+      service.onNewToken("🎈")
+      requestBodyFlow.test {
+        val requestBody = awaitItem()
+        assertThat(requestBody)
+          .prop(FormDataContent::formData)
+          .isEqualTo(
+            ParametersBuilder(requestBody.formData.entries().size)
+              .apply { service.appendSubscriptionFormData(this, token = "🎈") }
+              .build()
           )
       }
     }
