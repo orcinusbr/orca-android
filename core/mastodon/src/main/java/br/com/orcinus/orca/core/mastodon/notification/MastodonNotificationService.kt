@@ -70,7 +70,9 @@ import kotlinx.serialization.SerializationException
  * @see MastodonNotification.Type
  * @see MastodonNotification.Type.toNotificationChannel
  */
-internal class MastodonNotificationService(
+internal class MastodonNotificationService
+@VisibleForTesting
+constructor(
   private val requester: Requester,
   private val authenticationLock: SomeAuthenticationLock
 ) : FirebaseMessagingService() {
