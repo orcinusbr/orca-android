@@ -19,7 +19,6 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.prop
 import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
-import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 import kotlin.test.Test
@@ -35,12 +34,9 @@ internal class SampleFollowServiceTests {
         .profileProvider
     val getProfile = { profileProvider.provideCurrent<SampleFollowableProfile<Follow.Public>>() }
     val untoggledFollowProfile = getProfile()
-    runTest {
-      SampleFollowService(profileProvider)
-        .toggle(untoggledFollowProfile.id, untoggledFollowProfile.follow)
-    }
+    runTest { SampleFollowService(profileProvider).toggle(untoggledFollowProfile.id) }
     assertThat(getProfile())
-      .prop(FollowableProfile<*>::follow)
+      .prop(SampleFollowableProfile<*>::follow)
       .isEqualTo(untoggledFollowProfile.follow.toggled())
   }
 }

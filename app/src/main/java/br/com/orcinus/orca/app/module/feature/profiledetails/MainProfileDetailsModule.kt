@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.app.module.feature.profiledetails
 
 import android.content.Context
+import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfileProvider
 import br.com.orcinus.orca.core.mastodon.feed.profile.type.followable.MastodonFollowService
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.module.CoreModule
@@ -26,8 +27,15 @@ import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 
 internal class MainProfileDetailsModule(context: Context) :
   ProfileDetailsModule(
-    lazyInjectionOf { Injector.from<CoreModule>().instanceProvider().provide().profileProvider },
-    lazyInjectionOf { MastodonFollowService(Injector.get<Requester>()) },
+    lazyInjectionOf { profileProvider },
+    lazyInjectionOf { MastodonFollowService(Injector.get<Requester>(), profileProvider) },
     lazyInjectionOf { Injector.from<CoreModule>().instanceProvider().provide().postProvider },
     lazyInjectionOf { MainProfileDetailsBoundary(context) }
-  )
+  ) {
+  companion object {
+    private val profileProvider
+      get() =
+        Injector.from<CoreModule>().instanceProvider().provide().profileProvider
+          as MastodonProfileProvider
+  }
+}

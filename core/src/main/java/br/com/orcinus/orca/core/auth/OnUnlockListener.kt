@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,19 +13,22 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.auth
+package br.com.orcinus.orca.core.auth
 
-import br.com.orcinus.orca.core.mastodon.BuildConfig
+import br.com.orcinus.orca.core.InternalCoreApi
+import br.com.orcinus.orca.core.auth.actor.Actor
 
-/** API configuration for authorization and authentication. */
-internal object Mastodon {
-  /** Identifies Orca amongst all Mastodon clients. */
-  @Suppress("SpellCheckingInspection")
-  const val CLIENT_ID = "F2Rx9d7C3x45KRVJ9rU4IjIJgrsjzaq74bSLo__VUG0"
-
-  /** Private code. */
-  const val CLIENT_SECRET = BuildConfig.mastodonclientSecret
-
-  /** Scopes required by Orca for its functionalities to work properly. */
-  const val SCOPES = "follow push read write"
+/**
+ * Listens to an unlock.
+ *
+ * @param R Value returned by [onUnlock].
+ */
+fun interface OnUnlockListener<R> {
+  /**
+   * Callback run when an unlock is performed.
+   *
+   * @param actor Authenticated [Actor] resulted from the authentication performed by the unlock to
+   *   which this listener listened or a previous one.
+   */
+  @InternalCoreApi suspend fun onUnlock(actor: Actor.Authenticated): R
 }

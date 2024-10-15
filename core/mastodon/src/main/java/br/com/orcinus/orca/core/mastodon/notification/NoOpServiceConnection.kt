@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,19 +13,16 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.auth
+package br.com.orcinus.orca.core.mastodon.notification
 
-import br.com.orcinus.orca.core.mastodon.BuildConfig
+import android.app.Service
+import android.content.ComponentName
+import android.content.ServiceConnection
+import android.os.IBinder
 
-/** API configuration for authorization and authentication. */
-internal object Mastodon {
-  /** Identifies Orca amongst all Mastodon clients. */
-  @Suppress("SpellCheckingInspection")
-  const val CLIENT_ID = "F2Rx9d7C3x45KRVJ9rU4IjIJgrsjzaq74bSLo__VUG0"
+/** [ServiceConnection] which does nothing upon connection or disconnection to a [Service]. */
+internal object NoOpServiceConnection : ServiceConnection {
+  override fun onServiceConnected(name: ComponentName?, service: IBinder?) {}
 
-  /** Private code. */
-  const val CLIENT_SECRET = BuildConfig.mastodonclientSecret
-
-  /** Scopes required by Orca for its functionalities to work properly. */
-  const val SCOPES = "follow push read write"
+  override fun onServiceDisconnected(name: ComponentName?) {}
 }

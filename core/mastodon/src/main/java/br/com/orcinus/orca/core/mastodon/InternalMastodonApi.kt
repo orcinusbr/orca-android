@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,19 +13,10 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.auth
+package br.com.orcinus.orca.core.mastodon
 
-import br.com.orcinus.orca.core.mastodon.BuildConfig
+import br.com.orcinus.orca.std.visibility.PackageProtected
 
-/** API configuration for authorization and authentication. */
-internal object Mastodon {
-  /** Identifies Orca amongst all Mastodon clients. */
-  @Suppress("SpellCheckingInspection")
-  const val CLIENT_ID = "F2Rx9d7C3x45KRVJ9rU4IjIJgrsjzaq74bSLo__VUG0"
-
-  /** Private code. */
-  const val CLIENT_SECRET = BuildConfig.mastodonclientSecret
-
-  /** Scopes required by Orca for its functionalities to work properly. */
-  const val SCOPES = "follow push read write"
-}
+/** Denotes that a structure should only be referenced from the Mastodon core variant. */
+@PackageProtected("This structure is internal to the Mastodon core variant.")
+internal annotation class InternalMastodonApi
