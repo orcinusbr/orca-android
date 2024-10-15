@@ -127,7 +127,6 @@ internal class MastodonNotificationServiceTests {
       Injector.injectImmediately<Requester>(requester)
       MastodonNotificationService()
         .let { ServiceController.of(it, Intent(context, it::class.java)) }
-        ?.create()
         ?.also {
           it.get()?.setCoroutineContext(coroutineContext)
           it.get()?.onNewToken("⌘")
@@ -255,7 +254,6 @@ internal class MastodonNotificationServiceTests {
     runMastodonNotificationServiceTest(
       coroutineContext = @OptIn(ExperimentalCoroutinesApi::class) UnconfinedTestDispatcher()
     ) {
-      create()
       assertThat(MastodonNotification.Type.entries).each { typeAssert ->
         typeAssert.given { type ->
           val dto =
@@ -295,7 +293,6 @@ internal class MastodonNotificationServiceTests {
     runMastodonNotificationServiceTest(
       coroutineContext = @OptIn(ExperimentalCoroutinesApi::class) UnconfinedTestDispatcher()
     ) {
-      create()
       for (type in MastodonNotification.Type.entries) {
         val data =
           MastodonNotification(
