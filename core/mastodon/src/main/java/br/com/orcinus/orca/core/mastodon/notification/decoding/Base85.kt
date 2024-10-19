@@ -40,7 +40,7 @@ private val constrainedPrintableAsciiCharacterCodes = 0x20.toByte()..0x7F.toShor
  * [one from the official Mastodon Android app](https://github.com/mastodon/mastodon-android/blob/1ad2d08e2722dc812320708ddd43738209c12d5f/mastodon/src/main/java/org/joinmastodon/android/api/PushSubscriptionManager.java#L60).
  *
  * @see Char.code
- * @see String.decodeBase85
+ * @see String.decodeFromBase85
  */
 private val table =
   byteArrayOf(
@@ -154,13 +154,13 @@ private val Char.isDecodable
  * Returns whether this is a constrained printable ASCII character.
  *
  * For an explanation on the constraining aspect, refer to
- * [constrainedPrintableAsciiCharacterCodes]'s and [CharSequence.decodeBase85]'s documentation.
+ * [constrainedPrintableAsciiCharacterCodes]'s and [CharSequence.decodeFromBase85]'s documentation.
  */
 private val Char.isConstrainedPrintableAscii
   get() = code in constrainedPrintableAsciiCharacterCodes
 
 /**
- * Decodes this Base85 [CharSequence].
+ * Decodes this Base85-encoded [CharSequence].
  *
  * As per [Wikipedia](https://en.wikipedia.org/wiki/Ascii85):
  *
@@ -176,7 +176,7 @@ private val Char.isConstrainedPrintableAscii
  *
  * @see table
  */
-internal fun CharSequence.decodeBase85(): ByteArray {
+internal fun CharSequence.decodeFromBase85(): ByteArray {
   val outputStream = ByteArrayOutputStream(/* size = */ BLOCK_SIZE * (length / BLOCK_SIZE.dec()))
   var block = 0
   var blockSize = 0
@@ -195,7 +195,9 @@ internal fun CharSequence.decodeBase85(): ByteArray {
   return outputStream.toByteArray()
 }
 
-/** Decodes this Mastodon-specific Base85 (described in [CharSequence.decodeBase85]) character. */
+/**
+ * Decodes this Mastodon-specific Base85 (described in [CharSequence.decodeFromBase85]) character.
+ */
 private fun Char.decode(): Byte {
   return table[code - constrainedPrintableAsciiCharacterCodes.first]
 }

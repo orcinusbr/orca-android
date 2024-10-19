@@ -17,30 +17,14 @@ package br.com.orcinus.orca.core.mastodon.notification.decoding
 
 import assertk.assertThat
 import assertk.assertions.containsExactly
+import assertk.assertions.prop
 import kotlin.test.Test
 
 internal class Base85Tests {
   @Test
   fun decodes() {
     assertThat("nm=QNz.92Pz/PV8aPIGx")
-      .transform("decodeBase85", String::decodeBase85)
-      .containsExactly(
-        0x48,
-        0x65,
-        0x6C,
-        0x6C,
-        0x6F,
-        0x2C,
-        0x20,
-        0x77,
-        0x6F,
-        0x72,
-        0x6C,
-        0x64,
-        0x21,
-        0x00,
-        0x00,
-        0x00
-      )
+      .prop(String::decodeFromBase85)
+      .containsExactly(*"Hello, world!".toByteArray(Charsets.US_ASCII) + ByteArray(size = 3))
   }
 }
