@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.mastodon.notification.security
 
+import androidx.annotation.VisibleForTesting
 import br.com.orcinus.orca.core.mastodon.notification.security.encoding.encodeToBase64
 import java.math.BigInteger
 import java.security.KeyPairGenerator
@@ -64,13 +65,6 @@ internal class Keychain {
 
   companion object {
     /**
-     * Standardized by ["SEC 1: Elliptic Curve Cryptography"](https://www.secg.org/sec1-v2.pdf), it
-     * is the leading byte of an elliptic curve key which denotes that it is uncompressed — that is,
-     * the two bytes that follow are both its x and y affine coordinates.
-     */
-    private const val UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER: Byte = 0x04
-
-    /**
      * Minimum and maximum amount of bytes in an affine coordinate of a [publicKey], same as the
      * [one defined in the official Mastodon Android app](https://github.com/mastodon/mastodon-android/blob/1ad2d08e2722dc812320708ddd43738209c12d5f/mastodon/src/main/java/org/joinmastodon/android/api/PushSubscriptionManager.java#L236).
      * As the original implementation, the last 32 bytes of the coordinates are encoded into the
@@ -79,6 +73,13 @@ internal class Keychain {
      * @see ByteArray.pad
      */
     private const val PUBLIC_KEY_AFFINE_COORDINATE_SIZE = 32
+
+    /**
+     * Standardized by ["SEC 1: Elliptic Curve Cryptography"](https://www.secg.org/sec1-v2.pdf), it
+     * is the leading byte of an elliptic curve key which denotes that it is uncompressed — that is,
+     * the two bytes that follow are both its x and y affine coordinates.
+     */
+    @VisibleForTesting const val UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER: Byte = 0x04
 
     /**
      * Creates a copy of this array with the size of a [publicKey] affine coordinate or returns

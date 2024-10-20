@@ -16,7 +16,9 @@
 package br.com.orcinus.orca.core.mastodon.notification.security
 
 import assertk.assertThat
+import assertk.assertions.first
 import assertk.assertions.hasSize
+import assertk.assertions.isEqualTo
 import assertk.assertions.prop
 import java.util.Base64
 import kotlin.test.Test
@@ -34,6 +36,16 @@ internal class KeychainTests {
       .prop(Keychain::publicKey)
       .transform("decoded", base64Decoder::decode)
       .hasSize(65)
+  }
+
+  @Test
+  fun publicKeyIsUncompressed() {
+    assertThat(keychain)
+      .prop(Keychain::publicKey)
+      .transform("decoded", base64Decoder::decode)
+      .prop(ByteArray::toSet)
+      .first()
+      .isEqualTo(Keychain.UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER)
   }
 
   @Test
