@@ -31,7 +31,7 @@ import java.security.spec.ECPoint
  * [`PushNotificationManager`](https://github.com/mastodon/mastodon-android/blob/1ad2d08e2722dc812320708ddd43738209c12d5f/mastodon/src/main/java/org/joinmastodon/android/api/PushSubscriptionManager.java)
  * (PNM) of the official Android app.
  */
-internal class Keychain {
+internal class Locksmith {
   /**
    * Base64-encoded key consisting of three sequences of bytes: an
    * [UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER] and the x and y affine coordinates of the generated
@@ -53,7 +53,7 @@ internal class Keychain {
   }
 
   /**
-   * Key that identifies this [Keychain]. Its generation is based on
+   * Key that identifies this [Locksmith]. Its generation is based on
    * [that of the official Mastodon Android app](https://github.com/mastodon/mastodon-android/blob/1ad2d08e2722dc812320708ddd43738209c12d5f/mastodon/src/main/java/org/joinmastodon/android/api/PushSubscriptionManager.java#L135-L144),
    * with the instantiation of a random 16-byte array encoded to a Base64 [String].
    *

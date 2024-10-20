@@ -27,45 +27,45 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class KeychainTests {
-  private val keychain = Keychain()
+internal class LocksmithTests {
+  private val locksmith = Locksmith()
   private val base64Decoder: Base64.Decoder = Base64.getUrlDecoder()
 
   @Test
   fun publicKeyIs65ByteLong() {
-    assertThat(keychain)
-      .prop(Keychain::publicKey)
+    assertThat(locksmith)
+      .prop(Locksmith::publicKey)
       .transform("decoded", base64Decoder::decode)
       .hasSize(65)
   }
 
   @Test
   fun publicKeyIsUncompressed() {
-    assertThat(keychain)
-      .prop(Keychain::publicKey)
+    assertThat(locksmith)
+      .prop(Locksmith::publicKey)
       .transform("decoded", base64Decoder::decode)
       .prop(ByteArray::toSet)
       .first()
-      .isEqualTo(Keychain.UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER)
+      .isEqualTo(Locksmith.UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER)
   }
 
   @Test
   fun publicKeyIsRandom() {
-    assertThat(keychain).prop(Keychain::publicKey).isNotEqualTo(Keychain().publicKey)
+    assertThat(locksmith).prop(Locksmith::publicKey).isNotEqualTo(Locksmith().publicKey)
   }
 
   @Test
   fun authenticationKeyIs16ByteLong() {
-    assertThat(keychain)
-      .prop(Keychain::authenticationKey)
+    assertThat(locksmith)
+      .prop(Locksmith::authenticationKey)
       .transform("decoded", base64Decoder::decode)
       .hasSize(16)
   }
 
   @Test
   fun authenticationKeyIsRandom() {
-    assertThat(keychain)
-      .prop(Keychain::authenticationKey)
-      .isNotEqualTo(Keychain().authenticationKey)
+    assertThat(locksmith)
+      .prop(Locksmith::authenticationKey)
+      .isNotEqualTo(Locksmith().authenticationKey)
   }
 }

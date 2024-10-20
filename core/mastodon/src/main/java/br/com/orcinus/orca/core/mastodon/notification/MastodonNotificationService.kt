@@ -30,7 +30,7 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.BuildConfig
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
-import br.com.orcinus.orca.core.mastodon.notification.security.Keychain
+import br.com.orcinus.orca.core.mastodon.notification.security.Locksmith
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.authenticationLock
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
@@ -63,7 +63,7 @@ import kotlinx.serialization.SerializationException
  * @property requester [Requester] by which push subscriptions are performed.
  * @property authenticationLock [AuthenticationLock] for requiring an authenticated [Actor] when
  *   converting received payloads into system notifications.
- * @property keychain [Keychain] by which the keys for encryption and decryption of received updates
+ * @property locksmith [Locksmith] by which the keys for encryption and decryption of received updates
  *   are provided.
  * @see MastodonNotification.Type
  * @see MastodonNotification.Type.toNotificationChannel
@@ -73,7 +73,7 @@ internal class MastodonNotificationService
 constructor(
   private val requester: Requester,
   private val authenticationLock: SomeAuthenticationLock,
-  private val keychain: Keychain
+  private val locksmith: Locksmith
 ) : FirebaseMessagingService() {
   /**
    * IDs of [Notification]s that have been sent and have not yet been cleared by this
@@ -137,7 +137,7 @@ constructor(
     Module.DependencyNotInjectedException::class
   )
   constructor() :
-    this(requester = Injector.get(), Injector.from<CoreModule>().authenticationLock(), Keychain()) {
+    this(requester = Injector.get(), Injector.from<CoreModule>().authenticationLock(), Locksmith()) {
     setCoroutineContext(Dispatchers.IO)
   }
 
@@ -203,8 +203,8 @@ constructor(
       append("data[alerts][update]", "true")
       append("data[policy]", "all")
       append("subscription[endpoint]", "https://fcm.googleapis.com/fcm/send/$token")
-      append("subscription[keys][auth]", keychain.authenticationKey)
-      append("subscription[keys][p256dh]", keychain.publicKey)
+      append("subscription[keys][auth]", locksmith.authenticationKey)
+      append("subscription[keys][p256dh]", locksmith.publicKey)
     }
   }
 
