@@ -30,13 +30,12 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.BuildConfig
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
-import br.com.orcinus.orca.core.mastodon.notification.encoding.encodeToBase64
+import br.com.orcinus.orca.core.mastodon.notification.security.Keychain
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.authenticationLock
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.injector.module.Module
-import br.com.orcinus.orca.std.markdown.style.`if`
 import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
@@ -46,10 +45,6 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import io.ktor.util.StringValuesBuilder
 import java.net.URI
-import java.security.KeyPairGenerator
-import java.security.SecureRandom
-import java.security.interfaces.ECPublicKey
-import java.security.spec.ECGenParameterSpec
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -78,43 +73,17 @@ constructor(
   private val authenticationLock: SomeAuthenticationLock
 ) : FirebaseMessagingService() {
   /**
+   * [Keychain] by which the keys for encryption and decryption of received updates are provided.
+   */
+  private val keychain = Keychain()
+
+  /**
    * IDs of [Notification]s that have been sent and have not yet been cleared by this
    * [MastodonNotificationService].
    *
    * @see StatusBarNotification.getId
    */
   private val sentNotificationIds = mutableSetOf<Int>()
-
-  /**
-   * Private key that identifies this [MastodonNotificationService]. Its generation is based on
-   * [that of the official Mastodon Android app](https://github.com/mastodon/mastodon-android/blob/1ad2d08e2722dc812320708ddd43738209c12d5f/mastodon/src/main/java/org/joinmastodon/android/api/PushSubscriptionManager.java#L142-L152),
-   * with the instantiation of a random 16-byte array encoded to a Base64 [String].
-   *
-   * @see ByteArray.encodeToBase64
-   */
-  private val authenticationKey by lazy {
-    ByteArray(size = 16).apply(SecureRandom()::nextBytes).encodeToBase64()
-  }
-
-  /**
-   * Base64-encoded [String] consisting of three sequences of bytes: an
-   * [UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER] and the x and y affine coordinates of the generated
-   * p256v1 (or secp256r1 — its alias) elliptic curve key. The underlying algorithm is based on
-   * [that of the official Mastodon Android app](https://github.com/mastodon/mastodon-android/blob/1ad2d08e2722dc812320708ddd43738209c12d5f/mastodon/src/main/java/org/joinmastodon/android/api/PushSubscriptionManager.java#L135-L151).
-   *
-   * @see ByteArray.encodeToBase64
-   */
-  private val publicKey by lazy {
-    KeyPairGenerator.getInstance("EC")
-      .apply { initialize(ECGenParameterSpec("secp256r1")) }
-      .generateKeyPair()
-      .public
-      .let { (it as ECPublicKey).w }
-      .let { arrayOf(it.affineX, it.affineY) }
-      .map { it.toByteArray().`if`({ size < PUBLIC_KEY_AFFINE_COORDINATE_SIZE }) { pad() } }
-      .let { (x, y) -> byteArrayOf(UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER, *x, *y) }
-      .encodeToBase64()
-  }
 
   /**
    * [CoroutineScope] in which remotely received payloads are converted into [MastodonNotification]
@@ -236,8 +205,8 @@ constructor(
       append("data[alerts][update]", "true")
       append("data[policy]", "all")
       append("subscription[endpoint]", "https://fcm.googleapis.com/fcm/send/$token")
-      append("subscription[keys][auth]", authenticationKey)
-      append("subscription[keys][p256dh]", publicKey)
+      append("subscription[keys][auth]", keychain.authenticationKey)
+      append("subscription[keys][p256dh]", keychain.publicKey)
     }
   }
 
@@ -367,23 +336,6 @@ constructor(
 
   companion object {
     /**
-     * Standardized by ["SEC 1: Elliptic Curve Cryptography"](https://www.secg.org/sec1-v2.pdf), it
-     * is the leading byte of an elliptic curve key which denotes that it is uncompressed — that is,
-     * the two bytes that follow are both its x and y affine coordinates.
-     */
-    private const val UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER: Byte = 0x04
-
-    /**
-     * Minimum and maximum amount of bytes in an affine coordinate of a [publicKey], same as the
-     * [one defined in the official Mastodon Android app](https://github.com/mastodon/mastodon-android/blob/1ad2d08e2722dc812320708ddd43738209c12d5f/mastodon/src/main/java/org/joinmastodon/android/api/PushSubscriptionManager.java#L236).
-     * As the original implementation, the last 32 bytes of the coordinates are encoded into the
-     * final [String], and left-zero-padded in case their sizes are lesser than this predefined one.
-     *
-     * @see ByteArray.pad
-     */
-    private const val PUBLIC_KEY_AFFINE_COORDINATE_SIZE = 32
-
-    /**
      * Binds a connection to a [MastodonNotificationService] if none has been bound yet.
      *
      * @param context [Context] in which the binding is performed.
@@ -396,18 +348,6 @@ constructor(
         flags = flags or Context.BIND_NOT_PERCEPTIBLE
       }
       context.bindService(intent, NoOpServiceConnection, flags)
-    }
-
-    /**
-     * Creates a copy of this [ByteArray] which consists of an initial padding — whose length is the
-     * predefined size for a [publicKey] coordinate minus this one's size — and its content.
-     * Essentially, converts it into an array with 32 bytes.
-     *
-     * @see PUBLIC_KEY_AFFINE_COORDINATE_SIZE
-     */
-    @JvmStatic
-    private fun ByteArray.pad(): ByteArray {
-      return ByteArray(PUBLIC_KEY_AFFINE_COORDINATE_SIZE - size) + this
     }
   }
 }
