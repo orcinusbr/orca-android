@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification.decoding
+package br.com.orcinus.orca.core.mastodon.notification.encoding
 
 import assertk.assertThat
 import assertk.assertions.containsExactly
