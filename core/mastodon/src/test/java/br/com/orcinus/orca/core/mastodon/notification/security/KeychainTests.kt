@@ -19,6 +19,7 @@ import assertk.assertThat
 import assertk.assertions.first
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNotEqualTo
 import assertk.assertions.prop
 import java.util.Base64
 import kotlin.test.Test
@@ -49,10 +50,22 @@ internal class KeychainTests {
   }
 
   @Test
+  fun publicKeyIsRandom() {
+    assertThat(keychain).prop(Keychain::publicKey).isNotEqualTo(Keychain().publicKey)
+  }
+
+  @Test
   fun authenticationKeyIs16ByteLong() {
     assertThat(keychain)
       .prop(Keychain::authenticationKey)
       .transform("decoded", base64Decoder::decode)
       .hasSize(16)
+  }
+
+  @Test
+  fun authenticationKeyIsRandom() {
+    assertThat(keychain)
+      .prop(Keychain::authenticationKey)
+      .isNotEqualTo(Keychain().authenticationKey)
   }
 }
