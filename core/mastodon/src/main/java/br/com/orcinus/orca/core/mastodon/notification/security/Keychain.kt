@@ -29,7 +29,7 @@ import java.security.spec.ECPoint
  * subscriptions are encrypted and received updates from the Mastodon server are decrypted, based on
  * the implementation of both in the
  * [`PushNotificationManager`](https://github.com/mastodon/mastodon-android/blob/1ad2d08e2722dc812320708ddd43738209c12d5f/mastodon/src/main/java/org/joinmastodon/android/api/PushSubscriptionManager.java)
- * of the official Android app.
+ * (PNM) of the official Android app.
  */
 internal class Keychain {
   /**
@@ -47,7 +47,7 @@ internal class Keychain {
       .public
       .let { (it as ECPublicKey).w as ECPoint }
       .let { arrayOf<BigInteger>(it.affineX, it.affineY) }
-      .map { it.toByteArray().size() }
+      .map { it.toByteArray().sizeAsPnmEllipticCurveKeyAffineCoordinate() }
       .let { (x, y) -> byteArrayOf(UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER, *x, *y) }
       .encodeToBase64()
   }
@@ -70,9 +70,9 @@ internal class Keychain {
      * As the original implementation, the last 32 bytes of the coordinates are encoded into the
      * final [String], and left-zero-padded in case their sizes are lesser than this predefined one.
      *
-     * @see ByteArray.pad
+     * @see ByteArray.padAsPnmEllipticCurveKeyAffineCoordinate
      */
-    private const val PUBLIC_KEY_AFFINE_COORDINATE_SIZE = 32
+    private const val PUBLIC_KEY_AFFINE_COORDINATE_PNM_SIZE = 32
 
     /**
      * Standardized by ["SEC 1: Elliptic Curve Cryptography"](https://www.secg.org/sec1-v2.pdf), it
@@ -83,15 +83,15 @@ internal class Keychain {
 
     /**
      * Creates a copy of this array with the size of a [publicKey] affine coordinate or returns
-     * itself in case it is already a 32-byte one.
+     * itself in case it already is a 32-byte one.
      *
-     * @see PUBLIC_KEY_AFFINE_COORDINATE_SIZE
+     * @see PUBLIC_KEY_AFFINE_COORDINATE_PNM_SIZE
      */
-    private fun ByteArray.size(): ByteArray {
+    private fun ByteArray.sizeAsPnmEllipticCurveKeyAffineCoordinate(): ByteArray {
       return when {
-        size == PUBLIC_KEY_AFFINE_COORDINATE_SIZE -> this
-        size < PUBLIC_KEY_AFFINE_COORDINATE_SIZE -> pad()
-        else -> trim()
+        size == PUBLIC_KEY_AFFINE_COORDINATE_PNM_SIZE -> this
+        size < PUBLIC_KEY_AFFINE_COORDINATE_PNM_SIZE -> padAsPnmEllipticCurveKeyAffineCoordinate()
+        else -> trimAsPnmEllipticCurveKeyAffineCoordinate()
       }
     }
 
@@ -100,23 +100,23 @@ internal class Keychain {
      * predefined size for a [publicKey] coordinate minus this one's size — and its content.
      * Essentially, converts it into an array with 32 bytes.
      *
-     * @see PUBLIC_KEY_AFFINE_COORDINATE_SIZE
+     * @see PUBLIC_KEY_AFFINE_COORDINATE_PNM_SIZE
      */
     @JvmStatic
-    private fun ByteArray.pad(): ByteArray {
-      return ByteArray(PUBLIC_KEY_AFFINE_COORDINATE_SIZE - size) + this
+    private fun ByteArray.padAsPnmEllipticCurveKeyAffineCoordinate(): ByteArray {
+      return ByteArray(PUBLIC_KEY_AFFINE_COORDINATE_PNM_SIZE - size) + this
     }
 
     /**
      * Creates a copy of this [ByteArray] consisting of its last bytes, whose size is that of a
-     * [publicKey]'s affine coordinate. Similarly to [pad], also converts the receiver into an array
-     * of 32 bytes.
+     * [publicKey]'s affine coordinate. Similarly to [padAsPnmEllipticCurveKeyAffineCoordinate],
+     * also converts the receiver into an array of 32 bytes.
      *
-     * @see PUBLIC_KEY_AFFINE_COORDINATE_SIZE
+     * @see PUBLIC_KEY_AFFINE_COORDINATE_PNM_SIZE
      */
     @JvmStatic
-    private fun ByteArray.trim(): ByteArray {
-      return ByteArray(PUBLIC_KEY_AFFINE_COORDINATE_SIZE) { get(lastIndex - it) }
+    private fun ByteArray.trimAsPnmEllipticCurveKeyAffineCoordinate(): ByteArray {
+      return ByteArray(PUBLIC_KEY_AFFINE_COORDINATE_PNM_SIZE) { get(lastIndex - it) }
     }
   }
 }
