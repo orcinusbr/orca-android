@@ -21,7 +21,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.service.notification.StatusBarNotification
-import android.util.Base64
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.getSystemService
 import androidx.lifecycle.Lifecycle
@@ -31,6 +30,7 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.BuildConfig
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
+import br.com.orcinus.orca.core.mastodon.notification.encoding.encodeToBase64
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.authenticationLock
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
@@ -408,12 +408,6 @@ constructor(
     @JvmStatic
     private fun ByteArray.pad(): ByteArray {
       return ByteArray(PUBLIC_KEY_AFFINE_COORDINATE_SIZE - size) + this
-    }
-
-    /** Encodes this [ByteArray] to a non-padded, unwrapped, URL-safe Base64 [String]. */
-    @JvmStatic
-    private fun ByteArray.encodeToBase64(): String {
-      return Base64.encodeToString(this, Base64.NO_PADDING or Base64.NO_WRAP or Base64.URL_SAFE)
     }
   }
 }
