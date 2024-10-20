@@ -87,6 +87,7 @@ internal class Keychain {
      *
      * @see PUBLIC_KEY_AFFINE_COORDINATE_PNM_SIZE
      */
+    @JvmStatic
     private fun ByteArray.sizeAsPnmEllipticCurveKeyAffineCoordinate(): ByteArray {
       return when {
         size == PUBLIC_KEY_AFFINE_COORDINATE_PNM_SIZE -> this
