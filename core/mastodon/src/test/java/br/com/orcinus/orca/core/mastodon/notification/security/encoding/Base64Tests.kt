@@ -13,18 +13,22 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification.encoding
+package br.com.orcinus.orca.core.mastodon.notification.security.encoding
 
 import assertk.assertThat
-import assertk.assertions.containsExactly
+import assertk.assertions.isEqualTo
 import assertk.assertions.prop
 import kotlin.test.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-internal class Base85Tests {
+@RunWith(RobolectricTestRunner::class)
+internal class Base64Tests {
   @Test
-  fun decodes() {
-    assertThat("nm=QNz.92Pz/PV8aPIGx")
-      .prop(String::decodeFromBase85)
-      .containsExactly(*"Hello, world!".toByteArray(Charsets.US_ASCII) + ByteArray(size = 3))
+  fun encodes() {
+    @Suppress("SpellCheckingInspection")
+    assertThat("Hello, world\n?".toByteArray(Charsets.US_ASCII))
+      .prop(ByteArray::encodeToBase64)
+      .isEqualTo("SGVsbG8sIHdvcmxkCj8")
   }
 }

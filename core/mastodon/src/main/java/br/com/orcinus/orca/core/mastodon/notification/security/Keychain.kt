@@ -15,7 +15,7 @@
 
 package br.com.orcinus.orca.core.mastodon.notification.security
 
-import br.com.orcinus.orca.core.mastodon.notification.encoding.encodeToBase64
+import br.com.orcinus.orca.core.mastodon.notification.security.encoding.encodeToBase64
 import java.math.BigInteger
 import java.security.KeyPairGenerator
 import java.security.SecureRandom

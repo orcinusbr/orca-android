@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification.encoding
+package br.com.orcinus.orca.core.mastodon.notification.security.encoding
 
 import android.util.Base64
 
