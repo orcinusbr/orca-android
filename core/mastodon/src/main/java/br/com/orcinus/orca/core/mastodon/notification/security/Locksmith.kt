@@ -129,7 +129,8 @@ internal class Locksmith {
    * elliptic curve; the returned [ByteArray] is then derived from that point's coordinates.
    *
    * This method differs from [generateSharedSecret] in that multiple calls to it **do** generate
-   * distinct keys.
+   * keys each time (even if the given [serverKey] equals to the previous one that was provided to
+   * it).
    *
    * @param serverKey [Key] provided by the Mastodon server.
    */
