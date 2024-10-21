@@ -86,7 +86,7 @@ internal class Locksmith {
   }
 
   /**
-   * Generates a key from the client-side, private one and the another provided by the Mastodon
+   * Generates a key from the client-side, private one and another one provided by the Mastodon
    * server. In essence, the first is multiplied by the second, which results in a point on the
    * elliptic curve; the returned [ByteArray] is then derived from that point's coordinates.
    *
@@ -124,7 +124,7 @@ internal class Locksmith {
   }
 
   /**
-   * Generates a key from the client-side, private one and the another provided by the Mastodon
+   * Generates a key from the client-side, private one and another one provided by the Mastodon
    * server. In essence, the first is multiplied by the second, which results in a point on the
    * elliptic curve; the returned [ByteArray] is then derived from that point's coordinates.
    *
