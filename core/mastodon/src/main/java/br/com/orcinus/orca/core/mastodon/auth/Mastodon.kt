@@ -27,5 +27,5 @@ internal object Mastodon {
   const val CLIENT_SECRET = BuildConfig.mastodonclientSecret
 
   /** Scopes required by Orca for its functionalities to work properly. */
-  const val SCOPES = "read write follow"
+  const val SCOPES = "follow push read write"
 }

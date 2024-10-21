@@ -16,7 +16,10 @@
 package br.com.orcinus.orca.core.mastodon.feed.profile.account
 
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import br.com.orcinus.orca.composite.timeline.text.annotated.fromHtml
+import br.com.orcinus.orca.core.auth.AuthenticationLock
+import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.account.Account
@@ -30,6 +33,8 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.type.editable.MastodonEdit
 import br.com.orcinus.orca.core.mastodon.feed.profile.type.followable.MastodonFollowableProfile
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
+import br.com.orcinus.orca.core.mastodon.notification.async.Pipeline
+import br.com.orcinus.orca.core.mastodon.notification.async.pipeline
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.std.image.ImageLoader
@@ -38,6 +43,9 @@ import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.markdown.Markdown
 import io.ktor.client.call.body
 import java.net.URI
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.future.await
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 
 /**
@@ -59,7 +67,7 @@ import kotlinx.serialization.Serializable
 internal data class MastodonAccount(
   private val id: String,
   private val username: String,
-  private val acct: String,
+  val acct: String,
   private val uri: String,
   private val displayName: String,
   private val locked: Boolean,
@@ -101,11 +109,32 @@ internal data class MastodonAccount(
     avatarLoaderProvider: SomeImageLoaderProvider<URI>,
     postPaginatorProvider: MastodonProfilePostPaginator.Provider
   ): Profile {
-    return if (isOwner()) {
+    return if (isOwned()) {
       toEditableProfile(context, requester, avatarLoaderProvider, postPaginatorProvider)
     } else {
       toFollowableProfile(context, requester, avatarLoaderProvider, postPaginatorProvider)
     }
+  }
+
+  /**
+   * Whether the currently authenticated [Actor] is the owner of this [Account].
+   *
+   * @param authenticationLock [AuthenticationLock] through which the ID of the [Actor] will be
+   *   compared to that of this [MastodonAccount].
+   */
+  suspend fun isOwned(authenticationLock: SomeAuthenticationLock): Boolean {
+    return coroutineScope { isOwnedAsync(authenticationLock).await() }
+  }
+
+  /**
+   * Creates a [Pipeline] in which whether the currently authenticated [Actor] is the owner of this
+   * [MastodonAccount] is computed.
+   *
+   * @param authenticationLock [AuthenticationLock] through which the ID of the [Actor] will be
+   *   compared to that of this [MastodonAccount].
+   */
+  fun isOwnedAsync(authenticationLock: SomeAuthenticationLock): Pipeline<Boolean> {
+    return pipeline { runBlocking { authenticationLock.scheduleUnlock { id == it.id } } }
   }
 
   /**
@@ -130,15 +159,21 @@ internal data class MastodonAccount(
   }
 
   /**
-   * Whether the currently [authenticated][Actor.Authenticated] [Actor] is the owner of this
-   * [Account].
+   * Whether the currently authenticated [Actor] is the owner of this [MastodonAccount].
+   *
+   * @throws Injector.ModuleNotRegisteredException If a [CoreModule] is not registered in the
+   *   [Injector].
    */
-  private suspend fun isOwner(): Boolean {
-    return Injector.from<CoreModule>()
-      .instanceProvider()
-      .provide()
-      .authenticationLock
-      .scheduleUnlock { it.id == id }
+  @Deprecated(
+    "This method has a hidden dependency on the `CoreModule` that is expected to have been " +
+      "registered in the `Injector`. Prefer calling its overload that explicitly requires an " +
+      "`AuthenticationLock`.",
+    ReplaceWith("isOwned(authenticationLock)")
+  )
+  private suspend fun isOwned(): Boolean {
+    val authenticationLock =
+      Injector.from<CoreModule>().instanceProvider().provide().authenticationLock
+    return isOwned(authenticationLock)
   }
 
   /**
@@ -228,5 +263,27 @@ internal data class MastodonAccount(
       followingCount,
       uri
     )
+  }
+
+  companion object {
+    /**
+     * [MastodonAccount] whose fields are assigned default values (empty [String]s, zeroed [Number]s
+     * and `false` [Boolean]s).
+     */
+    @JvmStatic
+    @VisibleForTesting
+    val default =
+      MastodonAccount(
+        id = "0",
+        username = "",
+        acct = "",
+        uri = "",
+        displayName = "",
+        locked = false,
+        note = "",
+        avatar = "",
+        followersCount = 0,
+        followingCount = 0
+      )
   }
 }
