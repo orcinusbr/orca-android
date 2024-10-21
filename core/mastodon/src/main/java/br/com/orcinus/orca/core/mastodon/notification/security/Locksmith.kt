@@ -18,33 +18,55 @@ package br.com.orcinus.orca.core.mastodon.notification.security
 import androidx.annotation.VisibleForTesting
 import br.com.orcinus.orca.core.mastodon.notification.security.encoding.encodeToBase64
 import java.math.BigInteger
+import java.security.Key
+import java.security.KeyFactory
+import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.SecureRandom
+import java.security.interfaces.ECPrivateKey
 import java.security.interfaces.ECPublicKey
 import java.security.spec.ECGenParameterSpec
 import java.security.spec.ECPoint
+import java.security.spec.PKCS8EncodedKeySpec
+import javax.crypto.KeyAgreement
 
 /**
- * Generator of a public-private key pair and an authentication key with which sent push
- * subscriptions are encrypted and received updates from the Mastodon server are decrypted, based on
- * the implementation of both in the
+ * Generator of a public and an authentication key alongside a shared secret with which sent push
+ * subscriptions can be encrypted and received updates from the Mastodon server can be decrypted,
+ * based on the implementation of the
  * [`PushNotificationManager`](https://github.com/mastodon/mastodon-android/blob/1ad2d08e2722dc812320708ddd43738209c12d5f/mastodon/src/main/java/org/joinmastodon/android/api/PushSubscriptionManager.java)
  * (PNM) of the official Android app.
  */
 internal class Locksmith {
+  /** Generated p256v1 (or secp256r1 — its alias) elliptic curve pair of keys. */
+  private val keyPair by lazy<KeyPair>(keyPairGenerator::generateKeyPair)
+
   /**
-   * Base64-encoded key consisting of three sequences of bytes: an
+   * [Key] provided by the Mastodon server the last time a shared secret was generated.
+   *
+   * @see sharedSecret
+   * @see generateSharedSecret
+   */
+  private lateinit var serverKey: Key
+
+  /**
+   * Shared secret that has already been generated from the private elliptic curve key and one
+   * provided by the Mastodon server. Is stored so that it can be later returned by
+   * [generateSharedSecret] in case it gets called multiple times, preventing the key from being
+   * generated more than once.
+   */
+  private lateinit var sharedSecret: ByteArray
+
+  /**
+   * Base64-encoded [String] consisting of three sequences of bytes: an
    * [UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER] and the x and y affine coordinates of the generated
-   * p256v1 (or secp256r1 — its alias) elliptic curve. The underlying algorithm is based on
+   * p256v1 elliptic curve public key. The underlying algorithm is based on
    * [that of the official Mastodon Android app](https://github.com/mastodon/mastodon-android/blob/1ad2d08e2722dc812320708ddd43738209c12d5f/mastodon/src/main/java/org/joinmastodon/android/api/PushSubscriptionManager.java#L135-L141).
    *
    * @see ByteArray.encodeToBase64
    */
   val publicKey by lazy {
-    KeyPairGenerator.getInstance("EC")
-      .apply { initialize(ECGenParameterSpec("secp256r1")) }
-      .generateKeyPair()
-      .public
+    keyPair.public
       .let { (it as ECPublicKey).w as ECPoint }
       .let { arrayOf<BigInteger>(it.affineX, it.affineY) }
       .map { it.toByteArray().sizeAsPnmEllipticCurveKeyAffineCoordinate() }
@@ -63,7 +85,73 @@ internal class Locksmith {
     ByteArray(size = 16).apply(SecureRandom()::nextBytes).encodeToBase64()
   }
 
+  /**
+   * Generates a key from the client-side, private one and the another provided by the Mastodon
+   * server. In essence, the first is multiplied by the second, which results in a point on the
+   * elliptic curve; the returned [ByteArray] is then derived from that point's coordinates.
+   *
+   * Calling this method more than once with a [serverKey] that equals to the previous will not
+   * generate a distinct key each time; rather, the initial one is guaranteed to be returned.
+   *
+   * @param serverKey [Key] provided by the Mastodon server.
+   */
+  fun generateSharedSecret(serverKey: Key): ByteArray {
+    return if (hasAlreadyGeneratedSharedSecretFor(serverKey)) {
+      sharedSecret
+    } else {
+      this.serverKey = serverKey
+      sharedSecret = generateSharedSecretEagerly(serverKey)
+      sharedSecret
+    }
+  }
+
+  /**
+   * Determines whether the previous request for generating a shared secret is equal to the current
+   * one and, thus, can be responded to with the key that has already been generated. Returns
+   * `false` if this is the first time the request is performed.
+   *
+   * @param serverKey [Key] provided by the Mastodon server.
+   */
+  private fun hasAlreadyGeneratedSharedSecretFor(serverKey: Key): Boolean {
+    return ::sharedSecret.isInitialized &&
+      /*
+       * Locksmith's serverKey is implied to have already been initialized (as it, in fact, has
+       * been, by generateSharedSecret(Key)) if this expression is evaluated. Given that it is
+       * strictly necessary for it to be storing a value at this point, such "is initialized" check
+       * can be safely skipped here.
+       */
+      this.serverKey.encoded.contentEquals(serverKey.encoded)
+  }
+
+  /**
+   * Generates a key from the client-side, private one and the another provided by the Mastodon
+   * server. In essence, the first is multiplied by the second, which results in a point on the
+   * elliptic curve; the returned [ByteArray] is then derived from that point's coordinates.
+   *
+   * This method differs from [generateSharedSecret] in that multiple calls to it **do** generate
+   * distinct keys.
+   *
+   * @param serverKey [Key] provided by the Mastodon server.
+   */
+  private fun generateSharedSecretEagerly(serverKey: Key): ByteArray {
+    return PKCS8EncodedKeySpec((keyPair.private as ECPrivateKey).encoded)
+      .let { (KeyFactory.getInstance(ELLIPTIC_CURVE) as KeyFactory).generatePrivate(it) }
+      .let { (KeyAgreement.getInstance("ECDH") as KeyAgreement).apply { init(it) } }
+      .also { it.doPhase(serverKey, /* lastPhase = */ true) }
+      .generateSecret()
+  }
+
   companion object {
+    /**
+     * Name of the elliptic curve algorithm as specified by the
+     * [Java Security Standard Algorithm Names](https://docs.oracle.com/en/java/javase/11/docs/specs/security/standard-names.html)
+     * document, used for generating the pair of keys containing both the public and the private
+     * one.
+     *
+     * @see keyPair
+     */
+    private const val ELLIPTIC_CURVE = "EC"
+
     /**
      * Minimum and maximum amount of bytes in an affine coordinate of a [publicKey], same as the
      * [one defined in the official Mastodon Android app](https://github.com/mastodon/mastodon-android/blob/1ad2d08e2722dc812320708ddd43738209c12d5f/mastodon/src/main/java/org/joinmastodon/android/api/PushSubscriptionManager.java#L236).
@@ -80,6 +168,13 @@ internal class Locksmith {
      * the two bytes that follow are both its x and y affine coordinates.
      */
     @VisibleForTesting const val UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER: Byte = 0x04
+
+    /** [KeyPairGenerator] by which the [keyPair] is generated. */
+    @VisibleForTesting
+    val keyPairGenerator =
+      KeyPairGenerator.getInstance(ELLIPTIC_CURVE).apply<KeyPairGenerator> {
+        initialize(ECGenParameterSpec("secp256r1"))
+      }
 
     /**
      * Creates a copy of this array with the size of a [publicKey] affine coordinate or returns

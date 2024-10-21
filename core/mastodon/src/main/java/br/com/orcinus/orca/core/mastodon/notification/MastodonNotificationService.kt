@@ -63,8 +63,8 @@ import kotlinx.serialization.SerializationException
  * @property requester [Requester] by which push subscriptions are performed.
  * @property authenticationLock [AuthenticationLock] for requiring an authenticated [Actor] when
  *   converting received payloads into system notifications.
- * @property locksmith [Locksmith] by which the keys for encryption and decryption of received updates
- *   are provided.
+ * @property locksmith [Locksmith] by which the keys for encryption and decryption of received
+ *   updates are provided.
  * @see MastodonNotification.Type
  * @see MastodonNotification.Type.toNotificationChannel
  */
@@ -137,7 +137,11 @@ constructor(
     Module.DependencyNotInjectedException::class
   )
   constructor() :
-    this(requester = Injector.get(), Injector.from<CoreModule>().authenticationLock(), Locksmith()) {
+    this(
+      requester = Injector.get(),
+      Injector.from<CoreModule>().authenticationLock(),
+      Locksmith()
+    ) {
     setCoroutineContext(Dispatchers.IO)
   }
 
