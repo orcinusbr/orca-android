@@ -48,7 +48,7 @@ internal class Locksmith {
     keyPair.public
       .let { (it as ECPublicKey).w as ECPoint }
       .let { arrayOf<BigInteger>(it.affineX, it.affineY) }
-      .map { it.toByteArray().sizeAsPnmEllipticCurveKeyAffineCoordinate() }
+      .map { it.toByteArray().sizeAsPsmEllipticCurveKeyAffineCoordinate() }
       .let { (x, y) -> byteArrayOf(UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER, *x, *y) }
       .encodeToBase64()
   }
@@ -81,7 +81,7 @@ internal class Locksmith {
      * As the original implementation, the last 32 bytes of the coordinates are encoded into the
      * final [String], and left-zero-padded in case their sizes are lesser than this predefined one.
      *
-     * @see ByteArray.padAsPnmEllipticCurveKeyAffineCoordinate
+     * @see ByteArray.padAsPsmEllipticCurveKeyAffineCoordinate
      */
     private const val PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE = 32
 
@@ -106,11 +106,11 @@ internal class Locksmith {
      * @see PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE
      */
     @JvmStatic
-    private fun ByteArray.sizeAsPnmEllipticCurveKeyAffineCoordinate(): ByteArray {
+    private fun ByteArray.sizeAsPsmEllipticCurveKeyAffineCoordinate(): ByteArray {
       return when {
         size == PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE -> this
-        size < PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE -> padAsPnmEllipticCurveKeyAffineCoordinate()
-        else -> trimAsPnmEllipticCurveKeyAffineCoordinate()
+        size < PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE -> padAsPsmEllipticCurveKeyAffineCoordinate()
+        else -> trimAsPsmEllipticCurveKeyAffineCoordinate()
       }
     }
 
@@ -122,19 +122,19 @@ internal class Locksmith {
      * @see PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE
      */
     @JvmStatic
-    private fun ByteArray.padAsPnmEllipticCurveKeyAffineCoordinate(): ByteArray {
+    private fun ByteArray.padAsPsmEllipticCurveKeyAffineCoordinate(): ByteArray {
       return ByteArray(PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE - size) + this
     }
 
     /**
      * Creates a copy of this [ByteArray] consisting of its last bytes, whose size is that of a
-     * [publicKey]'s affine coordinate. Similarly to [padAsPnmEllipticCurveKeyAffineCoordinate],
+     * [publicKey]'s affine coordinate. Similarly to [padAsPsmEllipticCurveKeyAffineCoordinate],
      * also converts the receiver into an array of 32 bytes.
      *
      * @see PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE
      */
     @JvmStatic
-    private fun ByteArray.trimAsPnmEllipticCurveKeyAffineCoordinate(): ByteArray {
+    private fun ByteArray.trimAsPsmEllipticCurveKeyAffineCoordinate(): ByteArray {
       return ByteArray(PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE) { get(lastIndex - it) }
     }
   }
