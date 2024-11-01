@@ -318,7 +318,10 @@ constructor(
 
   /** Cancels all system notifications that have been sent by this [MastodonNotificationService]. */
   private fun cancelSentNotifications() {
-    sentNotificationIds.onEach(notificationManager::cancel).clear()
+    for (sentNotificationID in sentNotificationIds) {
+      notificationManager.cancel(sentNotificationID)
+    }
+    sentNotificationIds.clear()
   }
 
   /**

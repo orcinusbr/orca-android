@@ -307,6 +307,7 @@ internal class MastodonNotificationServiceTests {
           )
         clientResponseProvider.setNotification(dto)
         service.onMessageReceived(message)
+        service.awaitUntilSent(dto.generateSystemNotificationID())
       }
       destroy()
       assertThat(service)
