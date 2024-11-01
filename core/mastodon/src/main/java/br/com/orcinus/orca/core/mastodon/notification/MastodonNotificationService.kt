@@ -267,6 +267,19 @@ constructor(
    * converting a DTO into a system notification is a suspending operation, it is sent in the
    * [coroutineScope]; thus, this method will probably return _before_ the notification is delivered
    * to the device (this is specially important to keep in mind for testing scenarios).
+   *
+   * ###### Implementation notes
+   *
+   * Sending the notification received in the actual message instead of requesting the last one is a
+   * more straightforward approach, but also a complex one — in the official source code, there are
+   * the AES/GCM-decrypting and the Base85-decoding phases, which would require Orca to test both of
+   * them and, thus, compute encrypted and encoded inputs and test encryption and encoding
+   * themselves. There has not been much of a success in my end in trying (for weeks) to
+   * reverse-engineer how an input is to be encoded in the specific Base85 coding adopted by
+   * Mastodon (which can be due to my limited cognitive ability).
+   *
+   * While not ideal, performing a request to fetch the last notification (done by
+   * [getLastNotificationDto]) seems to be the plausible solution for now.
    */
   private fun sendLastNotification() {
     coroutineScope.launch {
