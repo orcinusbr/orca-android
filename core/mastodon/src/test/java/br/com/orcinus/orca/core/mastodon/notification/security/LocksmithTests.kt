@@ -20,10 +20,7 @@ import assertk.assertions.first
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEqualTo
-import assertk.assertions.isSameInstanceAs
 import assertk.assertions.prop
-import java.security.KeyPair
-import java.security.interfaces.ECPublicKey
 import java.util.Base64
 import kotlin.test.Test
 import org.junit.runner.RunWith
@@ -70,29 +67,5 @@ internal class LocksmithTests {
     assertThat(locksmith)
       .prop(Locksmith::authenticationKey)
       .isNotEqualTo(Locksmith().authenticationKey)
-  }
-
-  @Test
-  fun returnsPreviouslyGeneratedSharedSecretWhenRequestingToGenerateItTwiceWithAnEqualServerKey() {
-    val originalServerKey = generateServerKey()
-
-    fun cloneServerKey(): ECPublicKey {
-      return object : ECPublicKey by originalServerKey {}
-    }
-
-    assertThat(locksmith)
-      .transform("generated shared secret") { it.generateSharedSecret(cloneServerKey()) }
-      .isSameInstanceAs(locksmith.generateSharedSecret(cloneServerKey()))
-  }
-
-  @Test
-  fun returnsDistinctSharedSecretsWhenRequestingToGenerateThemWithDifferentServerKeys() {
-    assertThat(locksmith)
-      .transform("generated shared secret") { it.generateSharedSecret(generateServerKey()) }
-      .isNotEqualTo(locksmith.generateSharedSecret(generateServerKey()))
-  }
-
-  private fun generateServerKey(): ECPublicKey {
-    return (Locksmith.keyPairGenerator.generateKeyPair() as KeyPair).public as ECPublicKey
   }
 }

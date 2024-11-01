@@ -36,39 +36,23 @@ import java.lang.annotation.Annotation;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 import kotlin.Unit;
-import kotlin.collections.MapsKt;
 import kotlinx.serialization.ExperimentalSerializationApi;
 import kotlinx.serialization.KSerializer;
-import kotlinx.serialization.SerializationException;
 import kotlinx.serialization.SerializationStrategy;
-import kotlinx.serialization.builtins.BuiltinSerializersKt;
 import kotlinx.serialization.descriptors.SerialDescriptor;
 import kotlinx.serialization.descriptors.SerialDescriptorsKt;
 import kotlinx.serialization.encoding.Decoder;
 import kotlinx.serialization.encoding.DecodingKt;
 import kotlinx.serialization.encoding.Encoder;
 import kotlinx.serialization.encoding.EncodingKt;
-import kotlinx.serialization.json.Json;
-import kotlinx.serialization.json.JsonElement;
+import org.jetbrains.annotations.NotNull;
 
 /** Structure returned by the API when the user is notified of an occurrence related to them. */
 final class MastodonNotification {
-  /**
-   * {@link Json} based on which {@link MastodonNotification}s and {@link Map}s are converted into
-   * each other.
-   *
-   * @see #from(Map)
-   * @see #toMap()
-   */
-  private static final Json json = Json.Default;
-
   /** Unique identifier in the database. */
   @NonNull private final String id;
 
@@ -92,7 +76,7 @@ final class MastodonNotification {
   @Nullable final MastodonStatus status;
 
   /** {@link KSerializer} for serializing and deserializing a {@link MastodonNotification}. */
-  static final class Serializer implements KSerializer<MastodonNotification> {
+  static final class Serializer implements KSerializer<@NotNull MastodonNotification> {
     /** Ordered {@link Element}s that map to the fields of a {@link MastodonNotification}. */
     @VisibleForTesting
     static Element[] elements =
@@ -122,7 +106,7 @@ final class MastodonNotification {
             });
 
     /** Single instance of a {@link Serializer}. */
-    @NonNull @VisibleForTesting static final Serializer instance = new Serializer();
+    @NonNull static final Serializer instance = new Serializer();
 
     /** Unit which composes the description of a {@link MastodonNotification}. */
     static final class Element {
@@ -719,28 +703,6 @@ final class MastodonNotification {
   }
 
   /**
-   * Creates a {@link MastodonNotification} from a {@link Map}.
-   *
-   * @param map {@link Map} containing the name of the fields as keys to their {@link
-   *     String}-converted values.
-   * @see #toMap()
-   * @see JsonElements#toNonLiteralString(JsonElement)
-   * @throws SerializationException If the {@link Map} contains a key that does not match a {@link
-   *     MastodonNotification} field or one of the {@link JsonElement} {@link String} values are
-   *     malformed (e. g., some of its nested or non-nested children are non-literal {@link
-   *     String}s).
-   */
-  @NonNull
-  static MastodonNotification from(@NonNull final Map<String, String> map)
-      throws SerializationException {
-    final Map<String, String> rearrangedMap = rearrangeOrReturn(map);
-    final KSerializer<Map<String, String>> mapSerializer =
-        BuiltinSerializersKt.MapSerializer(KSerializers.string(), KSerializers.string());
-    final JsonElement jsonElement = json.encodeToJsonElement(mapSerializer, rearrangedMap);
-    return json.decodeFromString(Serializer.instance, JsonElements.toNonLiteralString(jsonElement));
-  }
-
-  /**
    * Creates a version of the {@link #id} suited for a notification to be sent to the device. Given
    * that the original one is a {@link String}, it is converted into an integer in case it contains
    * only digits; otherwise, its hash code is returned.
@@ -755,24 +717,6 @@ final class MastodonNotification {
     } catch (NumberFormatException exception) {
     }
     return id.hashCode();
-  }
-
-  /**
-   * Converts this {@link MastodonNotification} into a {@link Map} whose values are literal {@link
-   * JsonElement} {@link String}s.
-   *
-   * @see JsonElements#toNonLiteralString(JsonElement)
-   * @see #from(Map)
-   */
-  @NonNull
-  Map<String, String> toMap() {
-    final JsonElement jsonElement = json.encodeToJsonElement(Serializer.instance, this);
-    final KSerializer<Map<String, JsonElement>> mapSerializer =
-        BuiltinSerializersKt.MapSerializer(
-            KSerializers.string(), JsonElement.Companion.serializer());
-    return MapsKt.mapValues(
-        json.decodeFromJsonElement(mapSerializer, jsonElement),
-        (entry) -> entry.getValue().toString());
   }
 
   /**
@@ -799,58 +743,5 @@ final class MastodonNotification {
                     .setShowWhen(true)
                     .setWhen(Instant.parse(createdAt).toEpochMilli())
                     .build());
-  }
-
-  /**
-   * In case the given {@link Map} representing the structure of a {@link MastodonNotification} is
-   * unordered, creates a copy of it whose entries are reordered to match the order in which they
-   * are respectively serialized and deserialized.
-   *
-   * @param map {@link Map} to be rearranged.
-   * @see Serializer#serialize(Encoder, MastodonNotification)
-   * @see Serializer#deserialize(Decoder)
-   * @return The {@link Map} with its entries arranged according to {@link MastodonNotification}'s
-   *     serialization order, or the original one if it is already correctly ordered or is missing a
-   *     value.
-   */
-  private static Map<String, String> rearrangeOrReturn(final Map<String, String> map) {
-    final List<String> actualKeys = new ArrayList<>(map.keySet());
-    int expectedKeyIndex = 0;
-    for (final Serializer.Element element : Serializer.elements) {
-      final String actualKey;
-      try {
-        actualKey = actualKeys.get(expectedKeyIndex++);
-      } catch (IndexOutOfBoundsException exception) {
-        // A key is missing; exiting early so that the serialization exception is thrown externally.
-        break;
-      }
-      final boolean isUnordered = !element.name.contentEquals(actualKey);
-      if (isUnordered) {
-        return rearrange(map);
-      }
-    }
-    return map;
-  }
-
-  /**
-   * Copies the given {@link Map} representing the structure of a {@link MastodonNotification},
-   * returning one whose entries are arranged according to the order in which they are both
-   * serialized and deserialized.
-   *
-   * @param map {@link Map} to be rearranged.
-   * @see Serializer#serialize(Encoder, MastodonNotification)
-   * @see Serializer#deserialize(Decoder)
-   */
-  private static Map<String, String> rearrange(final Map<String, String> map) {
-    final Map<String, String> rearrangedMap = new LinkedHashMap<>(map.size());
-    for (final Serializer.Element element : Serializer.elements) {
-      final String actualValue = map.get(element.name);
-      if (actualValue == null) {
-        // As in rearrangeOrReturn(Map), exiting for the caller to throw a serialization exception.
-        break;
-      }
-      rearrangedMap.put(element.name, actualValue);
-    }
-    return rearrangedMap;
   }
 }

@@ -37,6 +37,7 @@ import assertk.assertions.prop
 import br.com.orcinus.orca.core.mastodon.BuildConfig
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus
+import br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvider
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.runAuthenticatedRequesterTest
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
@@ -71,7 +72,7 @@ import org.robolectric.android.controller.ServiceController
 
 @RunWith(RobolectricTestRunner::class)
 internal class MastodonNotificationServiceTests {
-  private val messageBuilder = RemoteMessage.Builder(MESSAGE_RECIPIENT)
+  private val message = RemoteMessage.Builder(MESSAGE_RECIPIENT).build()
   private val dtoCreatedAt = MastodonNotification.createdAt(ZonedDateTime.now())
 
   @Test
@@ -264,10 +265,9 @@ internal class MastodonNotificationServiceTests {
               MastodonAccount.default,
               MastodonStatus.default
             )
-          val message = messageBuilder.setData(dto.toMap()).build()
-
+          clientResponseProvider.setNotification(dto)
           service.onMessageReceived(message)
-          service.waitUntilSent(dto.generateSystemNotificationID())
+          launch { service.awaitUntilSent(dto.generateSystemNotificationID()) }
           assertThat(service)
             .prop(MastodonNotificationService::notificationManager)
             .prop(NotificationManager::getActiveNotifications)
@@ -290,20 +290,22 @@ internal class MastodonNotificationServiceTests {
 
   @Test
   fun cancelsSentNotificationsWhenDestroyed() {
+    lateinit var baseURI: URI
     runMastodonNotificationServiceTest(
+      MastodonNotificationsClientResponseProvider({ baseURI }, ClientResponseProvider.ok),
       coroutineContext = @OptIn(ExperimentalCoroutinesApi::class) UnconfinedTestDispatcher()
     ) {
+      baseURI = requester.baseURI
       for (type in MastodonNotification.Type.entries) {
-        val data =
+        val dto =
           MastodonNotification(
-              /* id = */ "${type.ordinal}",
-              type,
-              dtoCreatedAt,
-              MastodonAccount.default,
-              MastodonStatus.default
-            )
-            .toMap()
-        val message = messageBuilder.setData(data).build()
+            /* id = */ "${type.ordinal}",
+            type,
+            dtoCreatedAt,
+            MastodonAccount.default,
+            MastodonStatus.default
+          )
+        clientResponseProvider.setNotification(dto)
         service.onMessageReceived(message)
       }
       destroy()

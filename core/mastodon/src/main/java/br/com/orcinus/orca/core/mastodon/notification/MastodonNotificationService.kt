@@ -43,15 +43,19 @@ import com.google.firebase.app
 import com.google.firebase.initialize
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import io.ktor.client.statement.bodyAsText
 import io.ktor.util.StringValuesBuilder
 import java.net.URI
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import kotlinx.serialization.SerializationException
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.json.Json
 
 /**
  * [FirebaseMessagingService] that subscribes to the receipt of updates regarding the authenticated
@@ -88,7 +92,7 @@ constructor(
    * DTOs and requests to subscribe to the receipt of notifications from the Mastodon server are
    * sent.
    *
-   * @see sendNotificationIfNotEmpty
+   * @see sendLastNotification
    * @see pushSubscription
    */
   @VisibleForTesting
@@ -153,7 +157,7 @@ constructor(
 
   override fun onMessageReceived(message: RemoteMessage) {
     super.onMessageReceived(message)
-    sendNotificationIfNotEmpty(message.data)
+    sendLastNotification()
   }
 
   override fun onNewToken(token: String) {
@@ -213,14 +217,17 @@ constructor(
   }
 
   /**
-   * Blocks the [Thread] until the specified system notification gets sent.
+   * Suspends until the specified system notification gets sent.
    *
    * @param id ID of the [Notification] whose delivery will be synchronously awaited.
    * @see StatusBarNotification.getId
    */
   @VisibleForTesting
-  fun waitUntilSent(id: Int) {
-    @Suppress("ControlFlowWithEmptyBody") while (hasNotBeenSent(id)) {}
+  suspend fun awaitUntilSent(id: Int) {
+    suspendCoroutine {
+      @Suppress("ControlFlowWithEmptyBody") while (hasNotBeenSent(id)) {}
+      it.resume(Unit)
+    }
   }
 
   /**
@@ -256,42 +263,31 @@ constructor(
   }
 
   /**
-   * Sends a system notification in case the given [payload] is not empty. In case it is, indeed,
-   * not empty, but contains unknown values or does not have the ones required by a
-   * [MastodonNotification], a [SerializationException] will be thrown.
-   *
-   * @param payload JSON [Map] structured as a notification DTO.
-   * @throws SerializationException If the [payload] is missing required values or has unknown ones.
-   * @see sendNotification
+   * Sends a system notification based on the last one received from the Mastodon server. As
+   * converting a DTO into a system notification is a suspending operation, it is sent in the
+   * [coroutineScope]; thus, this method will probably return _before_ the notification is delivered
+   * to the device (this is specially important to keep in mind for testing scenarios).
    */
-  @Throws(SerializationException::class)
-  private fun sendNotificationIfNotEmpty(payload: Map<String, String>) {
-    if (payload.isNotEmpty()) {
-      sendNotification(payload)
-    }
-  }
-
-  /**
-   * Sends a system notification based on the given [payload], disregarding whether it is empty or
-   * not. As converting a [MastodonNotification] into a system notification is a suspending
-   * operation, it is sent in the [coroutineScope]; thus, this method will probably return _before_
-   * the notification is delivered to the device (this is specially important to keep in mind for
-   * testing scenarios).
-   *
-   * @param payload (Non-empty) JSON [Map] structured as a notification DTO.
-   * @throws SerializationException If the [payload] is missing required values or has unknown ones.
-   */
-  @Throws(SerializationException::class)
-  private fun sendNotification(payload: Map<String, String>) {
-    val dto = MastodonNotification.from(payload)
-    val channel = dto.type.toNotificationChannel(this)
-    val id = dto.generateSystemNotificationID()
-    notificationManager.createNotificationChannel(channel)
+  private fun sendLastNotification() {
     coroutineScope.launch {
+      val dto = getLastNotificationDto()
+      val channel = dto.type.toNotificationChannel(this@MastodonNotificationService)
+      val id = dto.generateSystemNotificationID()
       val notification = dto.toNotification(this@MastodonNotificationService, authenticationLock)
+      notificationManager.createNotificationChannel(channel)
       notificationManager.notify(id, notification)
       sentNotificationIds += id
     }
+  }
+
+  /** Obtains the DTO of the notification received lastly from the Mastodon server. */
+  private suspend fun getLastNotificationDto(): MastodonNotification {
+    return requester
+      .authenticated()
+      .get(HostedURLBuilder::buildNotificationsRoute)
+      .bodyAsText()
+      .let { Json.decodeFromString(ListSerializer(MastodonNotification.Serializer.instance), it) }
+      .last()
   }
 
   /**
@@ -356,9 +352,15 @@ constructor(
 
 /**
  * Builds a [URI] to which `POST` HTTP requests intended to push a subscription for receiving
- * [MastodonNotification]s is sent.
+ * [MastodonNotification]s are sent.
  */
 @VisibleForTesting
 internal fun HostedURLBuilder.buildNotificationSubscriptionPushingRoute(): URI {
   return path("api").path("v1").path("push").path("subscription").build()
+}
+
+/** Builds a [URI] to which `POST` HTTP requests for fetching notifications are sent. */
+@VisibleForTesting
+internal fun HostedURLBuilder.buildNotificationsRoute(): URI {
+  return path("api").path("v1").path("notifications").build()
 }

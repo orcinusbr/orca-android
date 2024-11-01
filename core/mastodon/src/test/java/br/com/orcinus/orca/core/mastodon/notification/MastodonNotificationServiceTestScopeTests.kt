@@ -17,14 +17,20 @@ package br.com.orcinus.orca.core.mastodon.notification
 
 import androidx.lifecycle.Lifecycle
 import assertk.assertThat
+import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isSameInstanceAs
 import assertk.assertions.prop
+import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
+import io.ktor.client.call.body
+import io.ktor.client.statement.bodyAsText
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.job
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.json.Json
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
@@ -65,6 +71,28 @@ internal class MastodonNotificationServiceTestScopeTests {
         .prop(CoroutineContext::job)
         .prop(Job::key)
         .isEqualTo(coroutineContext.job.key)
+    }
+  }
+
+  @Test
+  fun respondsToRequestForObtainingNotifications() {
+    runMastodonNotificationServiceTest {
+      assertThat(requester)
+        .transform("get") { it.get(HostedURLBuilder::buildNotificationsRoute) }
+        .transform("bodyAsText") { it.bodyAsText() }
+        .transform("Json.decodeFromString") {
+          Json.decodeFromString(ListSerializer(MastodonNotification.Serializer.instance), it)
+        }
+    }
+  }
+
+  @Test
+  fun responseIsProvidedBySpecifiedProviderWhenRequestIsNotForObtainingNotifications() {
+    runMastodonNotificationServiceTest {
+      assertThat(requester)
+        .transform("get") { it.get(HostedURLBuilder::buildNotificationSubscriptionPushingRoute) }
+        .transform("body") { it.body<String>() }
+        .isEmpty()
     }
   }
 

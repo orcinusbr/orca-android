@@ -24,6 +24,7 @@ import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.runAu
 import br.com.orcinus.orca.core.mastodon.notification.security.Locksmith
 import br.com.orcinus.orca.platform.testing.context
 import io.ktor.client.HttpClient
+import java.net.URI
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -40,6 +41,7 @@ import org.robolectric.android.controller.ServiceController
  */
 private class MastodonNotificationServiceEnvironment(
   override val requester: AuthenticatedRequester,
+  override val clientResponseProvider: MastodonNotificationsClientResponseProvider,
   override val context: Context,
   delegate: TestScope
 ) : MastodonNotificationServiceTestScope(), CoroutineScope by delegate
@@ -58,6 +60,9 @@ internal sealed class MastodonNotificationServiceTestScope : CoroutineScope {
 
   /** [AuthenticatedRequester] by which subscriptions are pushed. */
   abstract val requester: AuthenticatedRequester
+
+  /** [MastodonNotificationsClientResponseProvider] by which responses to requests are provided. */
+  abstract val clientResponseProvider: MastodonNotificationsClientResponseProvider
 
   /** [MastodonNotificationService] being tested. */
   val service: MastodonNotificationService
@@ -98,13 +103,30 @@ internal fun runMastodonNotificationServiceTest(
   body: suspend MastodonNotificationServiceTestScope.() -> Unit
 ) {
   contract { callsInPlace(body, InvocationKind.EXACTLY_ONCE) }
-  runAuthenticatedRequesterTest(clientResponseProvider, onAuthentication, coroutineContext) {
-    MastodonNotificationServiceEnvironment(requester, context, delegate).run {
-      try {
-        body()
-      } finally {
-        destroy()
+  lateinit var baseURI: URI
+
+  /*
+   * Responses are provided by a MastodonNotificationsClientResponseProvider, which responds to
+   * requests that aim to obtain the notifications received from the Mastodon server. The specified
+   * provider is used only if they do not.
+   */
+  val defaultClientResponseProvider =
+    MastodonNotificationsClientResponseProvider({ baseURI }, next = clientResponseProvider)
+
+  runAuthenticatedRequesterTest(defaultClientResponseProvider, onAuthentication, coroutineContext) {
+    baseURI = requester.baseURI
+    MastodonNotificationServiceEnvironment(
+        requester,
+        defaultClientResponseProvider,
+        context,
+        delegate
+      )
+      .run {
+        try {
+          body()
+        } finally {
+          destroy()
+        }
       }
-    }
   }
 }

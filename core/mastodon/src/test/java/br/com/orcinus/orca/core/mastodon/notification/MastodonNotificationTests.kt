@@ -17,11 +17,9 @@ package br.com.orcinus.orca.core.mastodon.notification
 
 import android.app.Notification
 import assertk.all
-import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.each
 import assertk.assertions.isEqualTo
-import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotZero
 import assertk.assertions.isSameAs
 import assertk.assertions.isTrue
@@ -38,10 +36,6 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
-import kotlinx.serialization.SerializationException
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.encodeToJsonElement
-import kotlinx.serialization.json.jsonObject
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
@@ -50,76 +44,6 @@ internal class MastodonNotificationTests {
   private val authenticationLock = AuthenticationLock(ActorProvider.sample)
   private val createdAtAsZonedDateTime = ZonedDateTime.now()
   private val createdAt = MastodonNotification.createdAt(createdAtAsZonedDateTime)
-
-  @Test
-  fun throwsWhenCreatingFromIncompleteMap() {
-    assertThat(MastodonNotification.Type.entries).each { typeAssert ->
-      typeAssert.given { type ->
-        for (element in MastodonNotification.Serializer.elements) {
-          assertFailure {
-              MastodonNotification.from(
-                MastodonNotification(
-                    /* id = */ "0",
-                    type,
-                    createdAt,
-                    MastodonAccount.default,
-                    MastodonStatus.default
-                  )
-                  .toMap()
-                  .apply { remove(element.name) }
-              )
-            }
-            .isInstanceOf<SerializationException>()
-        }
-      }
-    }
-  }
-
-  @Test
-  fun throwsWhenCreatingFromMapWithUnknownField() {
-    assertThat(MastodonNotification.Type.entries).each { typeAssert ->
-      typeAssert.given { type ->
-        assertFailure {
-            MastodonNotification.from(
-              MastodonNotification(
-                  /* id = */ "0",
-                  type,
-                  createdAt,
-                  MastodonAccount.default,
-                  MastodonStatus.default
-                )
-                .toMap()
-                .apply { put("🌫️", "😕") }
-            )
-          }
-          .isInstanceOf<SerializationException>()
-      }
-    }
-  }
-
-  @Test
-  fun createsFromMap() {
-    assertThat(MastodonNotification.Type.entries).each { typeAssert ->
-      typeAssert.given { type ->
-        val notification =
-          MastodonNotification(
-            /* id = */ "0",
-            type,
-            createdAt,
-            MastodonAccount.default,
-            MastodonStatus.default
-          )
-        assertThat(
-            MastodonNotification.from(
-              Json.encodeToJsonElement(MastodonNotification.Serializer.instance, notification)
-                .jsonObject
-                .mapValues { it.value.toString() }
-            )
-          )
-          .isEqualTo(notification)
-      }
-    }
-  }
 
   @Test
   fun convertsZonedDateTimeIntoCreatedAtString() {
@@ -188,33 +112,6 @@ internal class MastodonNotificationTests {
             )
           type.getContentTitleAsync(context, authenticationLock, parent).get()
         }
-      }
-    }
-  }
-
-  @Test
-  fun convertsIntoMap() {
-    assertThat(MastodonNotification.Type.entries).each { typeAssert ->
-      typeAssert.given { type ->
-        assertThat(
-            MastodonNotification(
-              /* id = */ "0",
-              type,
-              createdAt,
-              MastodonAccount.default,
-              MastodonStatus.default
-            )
-          )
-          .prop(MastodonNotification::toMap)
-          .isEqualTo(
-            mapOf(
-              "id" to "\"0\"",
-              "type" to "\"${type.name}\"",
-              "createdAt" to "\"$createdAt\"",
-              "account" to Json.encodeToJsonElement(MastodonAccount.default).toString(),
-              "status" to Json.encodeToJsonElement(MastodonStatus.default).toString()
-            )
-          )
       }
     }
   }
