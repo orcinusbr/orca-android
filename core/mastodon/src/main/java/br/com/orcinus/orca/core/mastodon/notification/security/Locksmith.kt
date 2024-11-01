@@ -29,8 +29,8 @@ import java.security.spec.ECPoint
  * Generator of a public and an authentication key with which sent push subscriptions can be
  * encrypted and received updates from the Mastodon server can be decrypted, based on the
  * implementation of the
- * [`PushNotificationManager`](https://github.com/mastodon/mastodon-android/blob/1ad2d08e2722dc812320708ddd43738209c12d5f/mastodon/src/main/java/org/joinmastodon/android/api/PushSubscriptionManager.java)
- * (PNM) of the official Android app.
+ * [`PushSubscriptionManager`](https://github.com/mastodon/mastodon-android/blob/1ad2d08e2722dc812320708ddd43738209c12d5f/mastodon/src/main/java/org/joinmastodon/android/api/PushSubscriptionManager.java)
+ * (PSM) of the official Android app.
  */
 internal class Locksmith {
   /** Generated p256v1 (or secp256r1 — its alias) elliptic curve pair of keys. */
@@ -83,7 +83,7 @@ internal class Locksmith {
      *
      * @see ByteArray.padAsPnmEllipticCurveKeyAffineCoordinate
      */
-    private const val PUBLIC_KEY_AFFINE_COORDINATE_PNM_SIZE = 32
+    private const val PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE = 32
 
     /**
      * Standardized by ["SEC 1: Elliptic Curve Cryptography"](https://www.secg.org/sec1-v2.pdf), it
@@ -103,13 +103,13 @@ internal class Locksmith {
      * Creates a copy of this array with the size of a [publicKey] affine coordinate or returns
      * itself in case it already is a 32-byte one.
      *
-     * @see PUBLIC_KEY_AFFINE_COORDINATE_PNM_SIZE
+     * @see PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE
      */
     @JvmStatic
     private fun ByteArray.sizeAsPnmEllipticCurveKeyAffineCoordinate(): ByteArray {
       return when {
-        size == PUBLIC_KEY_AFFINE_COORDINATE_PNM_SIZE -> this
-        size < PUBLIC_KEY_AFFINE_COORDINATE_PNM_SIZE -> padAsPnmEllipticCurveKeyAffineCoordinate()
+        size == PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE -> this
+        size < PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE -> padAsPnmEllipticCurveKeyAffineCoordinate()
         else -> trimAsPnmEllipticCurveKeyAffineCoordinate()
       }
     }
@@ -119,11 +119,11 @@ internal class Locksmith {
      * predefined size for a [publicKey] coordinate minus this one's size — and its content.
      * Essentially, converts it into an array with 32 bytes.
      *
-     * @see PUBLIC_KEY_AFFINE_COORDINATE_PNM_SIZE
+     * @see PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE
      */
     @JvmStatic
     private fun ByteArray.padAsPnmEllipticCurveKeyAffineCoordinate(): ByteArray {
-      return ByteArray(PUBLIC_KEY_AFFINE_COORDINATE_PNM_SIZE - size) + this
+      return ByteArray(PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE - size) + this
     }
 
     /**
@@ -131,11 +131,11 @@ internal class Locksmith {
      * [publicKey]'s affine coordinate. Similarly to [padAsPnmEllipticCurveKeyAffineCoordinate],
      * also converts the receiver into an array of 32 bytes.
      *
-     * @see PUBLIC_KEY_AFFINE_COORDINATE_PNM_SIZE
+     * @see PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE
      */
     @JvmStatic
     private fun ByteArray.trimAsPnmEllipticCurveKeyAffineCoordinate(): ByteArray {
-      return ByteArray(PUBLIC_KEY_AFFINE_COORDINATE_PNM_SIZE) { get(lastIndex - it) }
+      return ByteArray(PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE) { get(lastIndex - it) }
     }
   }
 }
