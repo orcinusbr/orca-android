@@ -26,8 +26,6 @@ import io.ktor.http.Url
 import io.ktor.http.toURI
 import java.net.URI
 import java.time.ZonedDateTime
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 
 /**
@@ -65,7 +63,12 @@ internal class MastodonNotificationsClientResponseProvider(
 
   override suspend fun MockRequestHandleScope.provide(requestData: HttpRequestData) =
     if (requestData.url.isOfNotifications) {
-      respondOk(Json.encodeToString(serializer, listOf(notification)))
+      respondOk(
+        Json.encodeToString(
+          MastodonNotificationService.notificationsSerializer,
+          listOf(notification)
+        )
+      )
     } else {
       with(next) { provide(requestData) }
     }
@@ -77,10 +80,5 @@ internal class MastodonNotificationsClientResponseProvider(
    */
   fun setNotification(notification: MastodonNotification) {
     this.notification = notification
-  }
-
-  companion object {
-    /** [KSerializer] by which the body of a response can be serialized or deserialized. */
-    @JvmStatic val serializer = ListSerializer(MastodonNotification.Serializer.instance)
   }
 }

@@ -54,6 +54,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 
@@ -349,6 +350,11 @@ constructor(
   }
 
   companion object {
+    /** [KSerializer] that serializes the response to a request for obtaining notifications. */
+    @JvmStatic
+    @VisibleForTesting
+    val notificationsSerializer = ListSerializer(MastodonNotification.Serializer.instance)
+
     /**
      * Binds a connection to a [MastodonNotificationService] if none has been bound yet.
      *
