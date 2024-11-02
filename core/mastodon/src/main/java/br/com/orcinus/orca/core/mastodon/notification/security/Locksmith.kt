@@ -34,7 +34,12 @@ import java.security.spec.ECPoint
  */
 internal class Locksmith {
   /** Generated p256v1 (or secp256r1 — its alias) elliptic curve pair of keys. */
-  private val keyPair by lazy<KeyPair>(keyPairGenerator::generateKeyPair)
+  private val keyPair by
+    lazy<KeyPair> {
+      KeyPairGenerator.getInstance(ELLIPTIC_CURVE)
+        .apply<KeyPairGenerator> { initialize(ECGenParameterSpec("secp256r1")) }
+        .generateKeyPair()
+    }
 
   /**
    * Base64-encoded [String] consisting of three sequences of bytes: an
@@ -48,7 +53,7 @@ internal class Locksmith {
     keyPair.public
       .let { (it as ECPublicKey).w as ECPoint }
       .let { arrayOf<BigInteger>(it.affineX, it.affineY) }
-      .map { (it.toByteArray() as ByteArray).sizeAsPsmEllipticCurvePublicKeyAffineCoordinate() }
+      .map { it.toPsmEllipticCurvePublicKeyAffineCoordinate() }
       .let { (x, y) -> byteArrayOf(UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER, *x, *y) }
       .encodeToBase64()
   }
@@ -76,12 +81,13 @@ internal class Locksmith {
     private const val ELLIPTIC_CURVE = "EC"
 
     /**
-     * Minimum and maximum amount of bytes in an affine coordinate of a [publicKey], same as the
+     * Required amount of bytes in an affine coordinate of a [publicKey], same as the
      * [one defined in the official Mastodon Android app](https://github.com/mastodon/mastodon-android/blob/1ad2d08e2722dc812320708ddd43738209c12d5f/mastodon/src/main/java/org/joinmastodon/android/api/PushSubscriptionManager.java#L236).
-     * As the original implementation, the last 32 bytes of the coordinates are encoded into the
-     * final [String], and left-zero-padded in case their sizes are lesser than this predefined one.
+     * As the original implementation, the least significant 32 bytes of the coordinates are encoded
+     * into the final [String], and left-zero-padded in case their sizes are lesser than this
+     * predefined one.
      *
-     * @see ByteArray.sizeAsPsmEllipticCurvePublicKeyAffineCoordinate
+     * @see BigInteger.toPsmEllipticCurvePublicKeyAffineCoordinate
      */
     private const val PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE = 32
 
@@ -92,52 +98,16 @@ internal class Locksmith {
      */
     @VisibleForTesting const val UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER: Byte = 0x04
 
-    /** [KeyPairGenerator] by which the [keyPair] is generated. */
-    @VisibleForTesting
-    val keyPairGenerator =
-      KeyPairGenerator.getInstance(ELLIPTIC_CURVE).apply<KeyPairGenerator> {
-        initialize(ECGenParameterSpec("secp256r1"))
-      }
-
-    /**
-     * Creates a copy of this array with the size of a [publicKey] affine coordinate or returns
-     * itself in case it already is a 32-byte one.
-     *
-     * @see PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE
-     */
+    /** Converts this [BigInteger] into a 32-bit [publicKey] affine coordinate. */
     @JvmStatic
-    private fun ByteArray.sizeAsPsmEllipticCurvePublicKeyAffineCoordinate(): ByteArray {
-      return when {
-        size == PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE -> this
-        size < PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE ->
-          padAsPsmEllipticCurvePublicKeyAffineCoordinate()
-        else -> trimAsPsmEllipticCurvePublicKeyAffineCoordinate()
-      }
-    }
-
-    /**
-     * Creates a copy of this [ByteArray] which consists of an initial padding — whose length is the
-     * predefined size for a [publicKey] coordinate minus this one's size — and its content.
-     * Essentially, converts it into an array with 32 bytes.
-     *
-     * @see PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE
-     */
-    @JvmStatic
-    private fun ByteArray.padAsPsmEllipticCurvePublicKeyAffineCoordinate(): ByteArray {
-      return ByteArray(PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE - size) + this
-    }
-
-    /**
-     * Creates a copy of this [ByteArray] consisting of its last bytes, whose size is that of a
-     * [publicKey]'s affine coordinate. Similarly to
-     * [padAsPsmEllipticCurvePublicKeyAffineCoordinate], also converts the receiver into an array of
-     * 32 bytes.
-     *
-     * @see PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE
-     */
-    @JvmStatic
-    private fun ByteArray.trimAsPsmEllipticCurvePublicKeyAffineCoordinate(): ByteArray {
-      return ByteArray(PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE) { get(lastIndex - it) }
+    private fun BigInteger.toPsmEllipticCurvePublicKeyAffineCoordinate(): ByteArray {
+      val source = toByteArray()
+      val destination = ByteArray(PUBLIC_KEY_AFFINE_COORDINATE_PSM_SIZE)
+      val sourceOffset = maxOf(0, source.size - destination.size)
+      val destinationOffset = maxOf(0, destination.size - source.size)
+      val size = minOf(destination.size, source.size)
+      System.arraycopy(source, sourceOffset, destination, destinationOffset, size)
+      return destination
     }
   }
 }
