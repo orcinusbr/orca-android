@@ -300,7 +300,7 @@ constructor(
       .authenticated()
       .get(HostedURLBuilder::buildNotificationsRoute)
       .bodyAsText()
-      .let { Json.decodeFromString(ListSerializer(MastodonNotification.Serializer.instance), it) }
+      .let { Json.decodeFromString(dtosSerializer, it) }
       .last()
   }
 
@@ -353,7 +353,7 @@ constructor(
     /** [KSerializer] that serializes the response to a request for obtaining notifications. */
     @JvmStatic
     @VisibleForTesting
-    val notificationsSerializer = ListSerializer(MastodonNotification.Serializer.instance)
+    val dtosSerializer = ListSerializer(MastodonNotification.Serializer.instance)
 
     /**
      * Binds a connection to a [MastodonNotificationService] if none has been bound yet.

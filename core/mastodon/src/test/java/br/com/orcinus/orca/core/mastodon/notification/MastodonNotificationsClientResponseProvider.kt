@@ -64,10 +64,7 @@ internal class MastodonNotificationsClientResponseProvider(
   override suspend fun MockRequestHandleScope.provide(requestData: HttpRequestData) =
     if (requestData.url.isOfNotifications) {
       respondOk(
-        Json.encodeToString(
-          MastodonNotificationService.notificationsSerializer,
-          listOf(notification)
-        )
+        Json.encodeToString(MastodonNotificationService.dtosSerializer, listOf(notification))
       )
     } else {
       with(next) { provide(requestData) }

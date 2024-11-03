@@ -63,7 +63,7 @@ internal class MastodonNotificationsClientResponseProviderTests {
         .transform("get") { it.get(HostedURLBuilder::buildNotificationsRoute) }
         .transform { it.bodyAsText() }
         .transform("Json.decodeFromString") {
-          Json.decodeFromString(MastodonNotificationService.notificationsSerializer, it)
+          Json.decodeFromString(MastodonNotificationService.dtosSerializer, it)
         }
         .containsExactly(notification)
     }
