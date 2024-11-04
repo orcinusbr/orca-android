@@ -94,7 +94,7 @@ constructor(
    * sent.
    *
    * @see sendLastNotification
-   * @see pushSubscription
+   * @see subscribe
    */
   @VisibleForTesting
   var coroutineScope = CoroutineScope(Dispatchers.Default)
@@ -163,7 +163,7 @@ constructor(
 
   override fun onNewToken(token: String) {
     super.onNewToken(token)
-    pushSubscription(token)
+    subscribe(token)
   }
 
   override fun onDestroy() {
@@ -195,7 +195,7 @@ constructor(
    *
    * @param builder [StringValuesBuilder] to which the data is to be appended.
    * @param token Key that identifies each Firebase Cloud Messaging (FCM) client instance.
-   * @see pushSubscription
+   * @see subscribe
    */
   @VisibleForTesting
   fun appendSubscriptionFormData(builder: StringValuesBuilder, token: String) {
@@ -322,7 +322,7 @@ constructor(
    *
    * @param token Key that identifies each Firebase Cloud Messaging (FCM) client instance.
    */
-  private fun pushSubscription(token: String) {
+  private fun subscribe(token: String) {
     coroutineScope.launch {
       requester.authenticated().post(HostedURLBuilder::buildNotificationSubscriptionPushingRoute) {
         parameters { appendSubscriptionFormData(this, token) }
