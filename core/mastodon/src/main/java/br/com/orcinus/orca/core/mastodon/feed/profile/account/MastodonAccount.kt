@@ -33,8 +33,8 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.type.editable.MastodonEdit
 import br.com.orcinus.orca.core.mastodon.feed.profile.type.followable.MastodonFollowableProfile
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
-import br.com.orcinus.orca.core.mastodon.notification.async.Pipeline
-import br.com.orcinus.orca.core.mastodon.notification.async.pipeline
+import br.com.orcinus.orca.core.mastodon.notification.service.async.Pipeline
+import br.com.orcinus.orca.core.mastodon.notification.service.async.pipeline
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.std.image.ImageLoader

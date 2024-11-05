@@ -73,6 +73,7 @@ dependencies {
   implementation(libs.ktor.serialization.json)
   implementation(libs.loadable)
   implementation(libs.paginate)
+  implementation(libs.unifiedPush)
 
   ksp(libs.android.room.compiler)
 
