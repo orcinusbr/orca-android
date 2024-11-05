@@ -388,7 +388,7 @@ constructor(
     private const val ENDPOINT_EXTRA_KEY = "endpoint"
 
     /** [KSerializer] that serializes the response to a request for obtaining notifications. */
-    @JvmStatic
+    @JvmField
     @VisibleForTesting
     val dtosSerializer = ListSerializer(MastodonNotification.Serializer.instance)
 
