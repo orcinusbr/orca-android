@@ -33,6 +33,7 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.BuildConfig
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
+import br.com.orcinus.orca.core.mastodon.notification.InternalNotificationApi
 import br.com.orcinus.orca.core.mastodon.notification.service.security.Locksmith
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.authenticationLock
@@ -81,6 +82,7 @@ import kotlinx.serialization.json.Json
  * @see MastodonNotification.Type.toNotificationChannel
  * @see Intent.putExtra
  */
+@InternalNotificationApi
 internal class MastodonNotificationService
 @VisibleForTesting
 constructor(

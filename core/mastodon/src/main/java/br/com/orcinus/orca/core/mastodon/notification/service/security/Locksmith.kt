@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.core.mastodon.notification.service.security
 
 import androidx.annotation.VisibleForTesting
+import br.com.orcinus.orca.core.mastodon.notification.InternalNotificationApi
 import br.com.orcinus.orca.core.mastodon.notification.service.security.encoding.encodeToBase64
 import java.math.BigInteger
 import java.security.KeyPair
@@ -32,6 +33,7 @@ import java.security.spec.ECPoint
  * [`PushSubscriptionManager`](https://github.com/mastodon/mastodon-android/blob/1ad2d08e2722dc812320708ddd43738209c12d5f/mastodon/src/main/java/org/joinmastodon/android/api/PushSubscriptionManager.java)
  * (PSM) of the official Android app.
  */
+@InternalNotificationApi
 internal class Locksmith {
   /** Generated p256v1 (or secp256r1 — its alias) elliptic curve pair of keys. */
   private val keyPair by

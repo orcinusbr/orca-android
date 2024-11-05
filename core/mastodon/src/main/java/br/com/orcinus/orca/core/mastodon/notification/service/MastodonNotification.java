@@ -29,6 +29,7 @@ import br.com.orcinus.orca.core.auth.actor.Actor;
 import br.com.orcinus.orca.core.mastodon.R;
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount;
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus;
+import br.com.orcinus.orca.core.mastodon.notification.InternalNotificationApi;
 import br.com.orcinus.orca.core.mastodon.notification.service.async.Pipeline;
 import br.com.orcinus.orca.core.mastodon.notification.service.async.Pipelines;
 import br.com.orcinus.orca.core.mastodon.notification.service.interop.KSerializers;
@@ -52,6 +53,7 @@ import kotlinx.serialization.encoding.EncodingKt;
 import org.jetbrains.annotations.NotNull;
 
 /** Structure returned by the API when the user is notified of an occurrence related to them. */
+@InternalNotificationApi
 final class MastodonNotification {
   /** Unique identifier in the database. */
   @NonNull private final String id;

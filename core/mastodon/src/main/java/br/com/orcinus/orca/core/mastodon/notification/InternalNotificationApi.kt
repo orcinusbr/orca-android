@@ -13,20 +13,18 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification.service.security.encoding
+package br.com.orcinus.orca.core.mastodon.notification
 
-import android.util.Base64
-import br.com.orcinus.orca.core.mastodon.notification.InternalNotificationApi
+import br.com.orcinus.orca.std.visibility.PackageProtected
 
 /**
- * Encodes this [ByteArray] to a non-padded, unwrapped, URL-safe Base64 [String] by having each
- * character's code right-shifted two bits, which will produce a value whose decimal is then mapped
- * to the table specified by
- * [RFC 4648 § 4](https://datatracker.ietf.org/doc/html/rfc4648#section-4).
- *
- * @see Char.code
+ * Denotes that a structure should not be referenced from APIs unrelated to Mastodon notifications.
  */
-@InternalNotificationApi
-internal fun ByteArray.encodeToBase64(): String {
-  return Base64.encodeToString(this, Base64.NO_PADDING or Base64.NO_WRAP or Base64.URL_SAFE)
-}
+@PackageProtected(
+  "This API is to be referenced only by structures related to the subscription to and receipt of " +
+    "push updates forwarded from the Mastodon server to the device in the form of system " +
+    "notifications. These reside exclusively in the " +
+    "`br.com.orcinus.orca.core.mastodon.notification` package."
+)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.TYPEALIAS)
+internal annotation class InternalNotificationApi

@@ -15,5 +15,8 @@
 
 package br.com.orcinus.orca.core.mastodon.notification.service
 
+import br.com.orcinus.orca.core.mastodon.notification.InternalNotificationApi
+
 /** Listener that is notified whenever a message containing a notification DTO is received. */
+@InternalNotificationApi
 internal typealias OnMessageReceiptListener = () -> Unit

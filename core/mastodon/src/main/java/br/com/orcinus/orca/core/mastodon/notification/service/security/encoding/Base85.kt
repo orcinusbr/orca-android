@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.core.mastodon.notification.service.security.encoding
 
+import br.com.orcinus.orca.core.mastodon.notification.InternalNotificationApi
 import java.io.ByteArrayOutputStream
 
 /**
@@ -176,6 +177,7 @@ private val Char.isConstrainedPrintableAscii
  *
  * @see table
  */
+@InternalNotificationApi
 internal fun CharSequence.decodeFromBase85(): ByteArray {
   val outputStream = ByteArrayOutputStream(/* size = */ BLOCK_SIZE * (length / BLOCK_SIZE.dec()))
   var block = 0
