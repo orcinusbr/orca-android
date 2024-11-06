@@ -19,9 +19,11 @@ import android.app.Service
 import android.content.ComponentName
 import android.content.ServiceConnection
 import android.os.IBinder
+import br.com.orcinus.orca.core.mastodon.notification.InternalNotificationApi
 
 /** [ServiceConnection] which does nothing upon connection or disconnection to a [Service]. */
-internal object NoOpServiceConnection : ServiceConnection {
+@InternalNotificationApi
+internal class NoOpServiceConnection : ServiceConnection {
   override fun onServiceConnected(name: ComponentName?, service: IBinder?) {}
 
   override fun onServiceDisconnected(name: ComponentName?) {}

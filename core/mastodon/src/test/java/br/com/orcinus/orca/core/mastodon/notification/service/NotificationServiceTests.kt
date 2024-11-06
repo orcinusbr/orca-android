@@ -30,6 +30,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
+import assertk.assertions.isNotSameInstanceAs
 import assertk.assertions.isNull
 import assertk.assertions.isSameInstanceAs
 import assertk.assertions.isTrue
@@ -129,6 +130,21 @@ internal class NotificationServiceTests {
         .isInstanceOf<URISyntaxException>()
     }
     Injector.clear()
+  }
+
+  @Test
+  fun returnsANewConnectionWhenBinding() {
+    val intent = NotificationServiceTestScope.createIntent(context)
+    assertThat(NotificationService)
+      .transform("bind") { it.bind(context, intent) }
+      .isNotSameInstanceAs(NotificationService.bind(context, intent))
+  }
+
+  @Test
+  fun returnsNoOpConnectionWhenBinding() {
+    assertThat(NotificationService)
+      .transform("bind") { it.bind(context, NotificationServiceTestScope.createIntent(context)) }
+      .isInstanceOf<NoOpServiceConnection>()
   }
 
   @Test

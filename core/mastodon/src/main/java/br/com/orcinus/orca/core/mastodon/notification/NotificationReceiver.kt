@@ -18,6 +18,7 @@ package br.com.orcinus.orca.core.mastodon.notification
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.ServiceConnection
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.ContextCompat
 import br.com.orcinus.orca.core.mastodon.notification.service.NotificationService
@@ -40,22 +41,21 @@ import org.unifiedpush.android.connector.data.PushMessage
 internal class NotificationReceiver @InternalNotificationApi @VisibleForTesting constructor() :
   MessagingReceiver() {
   /**
-   * [Intent]s with which unstopped services to which a connection has been bound have been created
-   * by this receiver. Useful for when the endpoint is updated, allowing for them to be stopped and
-   * preventing forwarding the notifications to outdated endpoints.
+   * [Intent]s with which services have been bound by this receiver, paired to their connections.
+   * Useful for when the endpoint is updated, allowing for them to be killed and preventing
+   * forwarding the notifications to outdated endpoints.
    *
-   * @see stopBoundServices
+   * @see killBoundServices
    */
-  private val boundServicesIntents = mutableListOf<Intent>()
+  private val bindings = mutableListOf<Pair<Intent, ServiceConnection>>()
 
   override fun onRegistrationFailed(context: Context, reason: FailedReason, instance: String) {
-    stopBoundServices(context)
+    killBoundServices(context)
   }
 
   override fun onNewEndpoint(context: Context, endpoint: PushEndpoint, instance: String) {
     val intent = NotificationService.createIntent(context, endpoint.url)
-    NotificationService.bind(context, intent)
-    boundServicesIntents += intent
+    bindings += intent to NotificationService.bind(context, intent)
   }
 
   @Throws(Module.DependencyNotInjectedException::class)
@@ -64,19 +64,20 @@ internal class NotificationReceiver @InternalNotificationApi @VisibleForTesting 
   }
 
   override fun onUnregistered(context: Context, instance: String) {
-    stopBoundServices(context)
+    killBoundServices(context)
   }
 
   /**
-   * Stops the services to which a connection is currently bound.
+   * Unbinds and stops bound services.
    *
-   * @param context [Context] in which the services have been created.
+   * @param context [Context] in which the services have been bound.
    */
-  private fun stopBoundServices(context: Context) {
-    for (boundServiceIntent in boundServicesIntents) {
-      context.stopService(boundServiceIntent)
+  private fun killBoundServices(context: Context) {
+    for ((intent, connection) in bindings) {
+      context.unbindService(connection)
+      context.stopService(intent)
     }
-    boundServicesIntents.clear()
+    bindings.clear()
   }
 
   companion object {
