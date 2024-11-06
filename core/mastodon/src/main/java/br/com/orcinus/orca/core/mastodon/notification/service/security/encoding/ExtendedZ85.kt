@@ -19,29 +19,28 @@ import br.com.orcinus.orca.core.mastodon.notification.InternalNotificationApi
 import java.io.ByteArrayOutputStream
 
 /**
- * Code that denotes that a character is not Base85-decodable.
+ * Code that denotes that a character is not extended-Z85-decodable.
  *
  * @see Char.code
  */
 private const val UNDECODABLE = 0xFF.toByte()
 
-/** Amount of bytes contained in a Base85 block. */
+/** Amount of bytes contained in an extended Z85 block. */
 private const val BLOCK_SIZE = 4.toByte()
 
 /**
- * Codes of ASCII printable characters. "Constrained" because Mastodon's official app's Base85
- * decoding considers only the first 85 ones.
+ * Codes of ASCII printable characters. "Constrained" because the Z85 encoding considers only the
+ * first 85 ones.
  *
  * @see Char.code
  */
 private val constrainedPrintableAsciiCharacterCodes = 0x20.toByte()..0x7F.toShort()
 
 /**
- * Codes of the characters used for Base85 decoding, based on the
- * [one from the official Mastodon Android app](https://github.com/mastodon/mastodon-android/blob/1ad2d08e2722dc812320708ddd43738209c12d5f/mastodon/src/main/java/org/joinmastodon/android/api/PushSubscriptionManager.java#L60).
+ * Codes of the characters used for extended-Z85 encoding.
  *
  * @see Char.code
- * @see String.decodeFromBase85
+ * @see String.decodeFromExtendedZ85
  */
 private val table =
   byteArrayOf(
@@ -144,7 +143,7 @@ private val table =
   )
 
 /**
- * Returns whether this character has an equivalent code on the Mastodon-specific Base85 [table].
+ * Returns whether this character has an equivalent code on the extended Z85 [table].
  *
  * @see Char.code
  */
@@ -155,30 +154,51 @@ private val Char.isDecodable
  * Returns whether this is a constrained printable ASCII character.
  *
  * For an explanation on the constraining aspect, refer to
- * [constrainedPrintableAsciiCharacterCodes]'s and [CharSequence.decodeFromBase85]'s documentation.
+ * [constrainedPrintableAsciiCharacterCodes]'s and [CharSequence.decodeFromExtendedZ85]'s
+ * documentation.
  */
 private val Char.isConstrainedPrintableAscii
   get() = code in constrainedPrintableAsciiCharacterCodes
 
 /**
- * Decodes this Base85-encoded [CharSequence].
+ * Decodes this extended-Z85-encoded [CharSequence].
  *
- * As per [Wikipedia](https://en.wikipedia.org/wiki/Ascii85):
+ * As per the [specification](https://rfc.zeromq.org/spec/32):
  *
- * "Ascii85, also called Base85, is a form of binary-to-text encoding developed by Paul E. Rutter
- * for the btoa utility. By using five ASCII characters to represent four bytes of binary data
- * (making the encoded size ¼ larger than the original, assuming eight bits per ASCII character), it
- * is more efficient than uuencode or Base64, which use four characters to represent three bytes of
- * data (⅓ increase, assuming eight bits per ASCII character)."
+ * "A Z85 implementation takes a binary frame and encodes it as a printable ASCII string, or takes
+ * an ASCII encoded string and decodes it into a binary frame.
  *
- * Note that the performed Base85 decoding is Mastodon-specific, since it is based on
- * [the one in the official Android app](https://github.com/mastodon/mastodon-android/blob/1ad2d08e2722dc812320708ddd43738209c12d5f/mastodon/src/main/java/org/joinmastodon/android/api/PushSubscriptionManager.java#L251),
- * which iterates from characters 0x00 (NULL) to 0x7F (DEL) instead of from 0x21 (!) to 0x75 (u).
+ * (…) The string frame SHALL have a length that is divisible by 5 with no remainder. It is up to
+ * the application to ensure that frames and strings are padded if necessary.
  *
- * @see table
+ * The encoding and decoding SHALL use this representation for each base-85 value from zero to 84:
+ * ```
+ * 0 - 9:   0 1 2 3 4 5 6 7 8 9
+ * 10 - 19: a b c d e f g h i j
+ * 20 - 29: k l m n o p q r s t
+ * 30 - 39: u v w x y z A B C D
+ * 40 - 49: E F G H I J K L M N
+ * 50 - 59: O P Q R S T U V W X
+ * 60 - 69: Y Z . - : + = ^ ! /
+ * 70 - 79: * ? & < > ( ) [ ] {
+ * 80 - 84: } @ % $ #
+ * ```
+ *
+ * To encode a frame, an implementation SHALL take four octets at a time from the binary frame and
+ * convert them into five printable characters. The four octets SHALL be treated as an unsigned
+ * 32-bit integer in network byte order (big endian). The five characters SHALL be output from most
+ * significant to least significant (big endian).
+ *
+ * To decode a string, an implementation SHALL take five characters at a time from the string and
+ * convert them into four octets of data representing a 32-bit unsigned integer in network byte
+ * order. The five characters SHALL each be converted into a value 0 to 84, and accumulated by
+ * multiplication by 85, from most to least significant."
+ *
+ * Note that the encoded input can be of any length and, thus, is not limited to being a multiple of
+ * 4 bytes.
  */
 @InternalNotificationApi
-internal fun CharSequence.decodeFromBase85(): ByteArray {
+internal fun CharSequence.decodeFromExtendedZ85(): ByteArray {
   val outputStream = ByteArrayOutputStream(/* size = */ BLOCK_SIZE * (length / BLOCK_SIZE.dec()))
   var block = 0
   var blockSize = 0
@@ -197,9 +217,7 @@ internal fun CharSequence.decodeFromBase85(): ByteArray {
   return outputStream.toByteArray()
 }
 
-/**
- * Decodes this Mastodon-specific Base85 (described in [CharSequence.decodeFromBase85]) character.
- */
+/** Decodes this extended Z85 character. */
 private fun Char.decode(): Byte {
   return table[code - constrainedPrintableAsciiCharacterCodes.first]
 }

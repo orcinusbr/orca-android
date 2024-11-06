@@ -20,11 +20,11 @@ import assertk.assertions.containsExactly
 import assertk.assertions.prop
 import kotlin.test.Test
 
-internal class Base85Tests {
+internal class ExtendedZ85Tests {
   @Test
   fun decodes() {
     assertThat("nm=QNz.92Pz/PV8aPIGx")
-      .prop(String::decodeFromBase85)
+      .prop(String::decodeFromExtendedZ85)
       .containsExactly(*"Hello, world!".toByteArray(Charsets.US_ASCII) + ByteArray(size = 3))
   }
 }

@@ -35,6 +35,7 @@ import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 import br.com.orcinus.orca.core.mastodon.notification.InternalNotificationApi
 import br.com.orcinus.orca.core.mastodon.notification.service.security.Locksmith
+import br.com.orcinus.orca.core.mastodon.notification.service.security.encoding.decodeFromExtendedZ85
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.authenticationLock
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
@@ -327,16 +328,15 @@ constructor(
    *
    * Sending the notification received in the actual message instead of requesting the last one is a
    * more straightforward approach, but also a complex one — in the official source code, there are
-   * the AES/GCM-decrypting and the Base85-decoding phases, which would require Orca to test both of
-   * them and, thus, compute encrypted and encoded inputs and test encryption and encoding
-   * themselves. There has not been much of a success in my end in trying (for weeks) to
-   * reverse-engineer how an input is to be encoded in the specific Base85 coding adopted by
-   * Mastodon (which can be due to my limited cognitive ability).
+   * the AES/GCM-decrypting and the extended-Z85-decoding phases, which would require Orca to test
+   * both of them and, thus, compute encrypted and encoded inputs and test encryption and encoding
+   * themselves.
    *
-   * While not ideal, performing a request to fetch the last notification (done by
-   * [getLastNotificationDto]) seems to be the plausible solution for now.
+   * While not ideal, performing a request to fetch the last notification seems to be the plausible
+   * solution for now.
    *
    * @see OnMessageReceiptListener
+   * @see decodeFromExtendedZ85
    */
   private fun sendLastNotification() {
     coroutineScope.launch {
