@@ -33,6 +33,7 @@ import br.com.orcinus.orca.core.mastodon.notification.service.NotificationServic
 import br.com.orcinus.orca.core.mastodon.notification.service.OnMessageReceiptListener
 import br.com.orcinus.orca.platform.testing.context
 import br.com.orcinus.orca.std.injector.Injector
+import com.google.common.collect.ImmutableList
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -55,9 +56,11 @@ internal class NotificationReceiverTests {
   fun registers() =
     // Needless for the receiver to be registered here, as it already has been in the setup.
     assertThatShadowApplication()
-      .prop(ShadowApplication::getRegisteredReceivers)
-      .extracting { (it.getBroadcastReceiver() as BroadcastReceiver)::class }
-      .contains(NotificationReceiver::class)
+      .prop<_, ImmutableList<ShadowApplication.Wrapper>, _>(
+        ShadowApplication::getRegisteredReceivers
+      )
+      .extracting<_, BroadcastReceiver>(ShadowApplication.Wrapper::getBroadcastReceiver)
+      .contains(receiver)
 
   @Test
   fun stopsBoundServicesWhenRegistrationFails() {
