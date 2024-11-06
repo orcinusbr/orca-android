@@ -19,6 +19,7 @@ import android.app.Application
 import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Intent
+import android.security.keystore.KeyGenParameterSpec
 import androidx.test.core.app.ApplicationProvider
 import assertk.assertThat
 import assertk.assertions.contains
@@ -28,12 +29,24 @@ import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import assertk.assertions.prop
 import assertk.assertions.single
+import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.notification.service.NotificationService
 import br.com.orcinus.orca.core.mastodon.notification.service.NotificationServiceTestScope
 import br.com.orcinus.orca.core.mastodon.notification.service.OnMessageReceiptListener
+import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.platform.testing.context
 import br.com.orcinus.orca.std.injector.Injector
 import com.google.common.collect.ImmutableList
+import io.mockk.clearMocks
+import io.mockk.clearStaticMockk
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkStatic
+import java.security.KeyStore
+import javax.crypto.KeyGenerator
+import javax.crypto.SecretKey
+import javax.crypto.SecretKeyFactory
+import javax.crypto.spec.SecretKeySpec
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -42,6 +55,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowApplication
 import org.unifiedpush.android.connector.FailedReason
+import org.unifiedpush.android.connector.UnifiedPush
 import org.unifiedpush.android.connector.data.PushEndpoint
 import org.unifiedpush.android.connector.data.PushMessage
 
@@ -49,8 +63,23 @@ import org.unifiedpush.android.connector.data.PushMessage
 internal class NotificationReceiverTests {
   private val receiver = NotificationReceiver()
   private val endpoint = PushEndpoint(NotificationServiceTestScope.endpoint, pubKeySet = null)
+  private val keyStore = mockk<KeyStore>()
+  private val keyGenerator = mockk<KeyGenerator>()
 
-  @BeforeTest fun setUp() = NotificationReceiver.register(context, receiver)
+  @BeforeTest
+  fun setUp() {
+    mockkStatic(KeyGenerator::class, KeyStore::class, UnifiedPush::class)
+    every { keyStore.load(/* param = */ null) } returns Unit
+    every { KeyStore.getInstance("AndroidKeyStore") } returns keyStore
+    every { keyGenerator.init(any<KeyGenParameterSpec>()) } returns Unit
+    every { keyGenerator.generateKey() } returns
+      (SecretKeyFactory.getInstance("AES") as SecretKeyFactory).generateSecret(
+        SecretKeySpec(ByteArray(size = 16, Int::toByte), "AES/GCM/NoPadding")
+      ) as SecretKey
+    every { KeyGenerator.getInstance("AES", "AndroidKeyStore") } returns keyGenerator
+    every { UnifiedPush.getDistributors(context) } returns listOf("orca")
+    NotificationReceiver.register(context, receiver, Actor.Authenticated.sample)
+  }
 
   @Test
   fun registers() =
@@ -61,6 +90,12 @@ internal class NotificationReceiverTests {
       )
       .extracting<_, BroadcastReceiver>(ShadowApplication.Wrapper::getBroadcastReceiver)
       .contains(receiver)
+
+  @Test
+  fun setsUpUnifiedPush() =
+    assertThat(UnifiedPush)
+      .transform("getSavedDistributor") { it.getSavedDistributor(context) }
+      .isEqualTo("orca")
 
   @Test
   fun stopsBoundServicesWhenRegistrationFails() {
@@ -102,8 +137,11 @@ internal class NotificationReceiverTests {
 
   @AfterTest
   fun tearDown() {
+    UnifiedPush.forceRemoveDistributor(context)
     Injector.clear()
     context.unregisterReceiver(receiver)
+    clearMocks(keyStore, keyGenerator)
+    clearStaticMockk(KeyGenerator::class, KeyStore::class, UnifiedPush::class)
   }
 
   private fun assertThatShadowApplication() =

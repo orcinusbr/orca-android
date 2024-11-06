@@ -36,7 +36,7 @@ class MastodonAuthenticationLock(
   override val actorProvider: ActorProvider
 ) : AuthenticationLock<MastodonAuthenticator>() {
   override suspend fun onUnlock(actor: Actor.Authenticated) {
-    NotificationReceiver.register(context)
+    NotificationReceiver.register(context, actor)
   }
 
   override fun createFailedAuthenticationException(): FailedAuthenticationException {
