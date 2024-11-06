@@ -35,7 +35,6 @@ import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 import br.com.orcinus.orca.core.mastodon.notification.InternalNotificationApi
 import br.com.orcinus.orca.core.mastodon.notification.service.security.Locksmith
-import br.com.orcinus.orca.core.mastodon.notification.service.security.encoding.decodeFromExtendedZ85
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.authenticationLock
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
@@ -336,7 +335,6 @@ constructor(
    * solution for now.
    *
    * @see OnMessageReceiptListener
-   * @see decodeFromExtendedZ85
    */
   private fun sendLastNotification() {
     coroutineScope.launch {
