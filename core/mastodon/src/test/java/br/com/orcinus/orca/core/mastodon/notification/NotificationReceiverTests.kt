@@ -20,7 +20,6 @@ import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
-import assertk.Assert
 import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.extracting
@@ -64,7 +63,7 @@ internal class NotificationReceiverTests {
   fun stopsBoundServicesWhenRegistrationFails() {
     receiver.onNewEndpoint(context, endpoint, instance = "")
     receiver.onRegistrationFailed(context, FailedReason.INTERNAL_ERROR, instance = "")
-    assertThatBoundServiceIsStopped()
+    assertThat<NotificationService>().isLastlyStopped()
   }
 
   @Test
@@ -95,7 +94,7 @@ internal class NotificationReceiverTests {
   fun stopsBoundServicesWhenUnregistering() {
     receiver.onNewEndpoint(context, endpoint, instance = "")
     receiver.onUnregistered(context, instance = "")
-    assertThatBoundServiceIsStopped()
+    assertThat<NotificationService>().isLastlyStopped()
   }
 
   @AfterTest
@@ -104,16 +103,8 @@ internal class NotificationReceiverTests {
     context.unregisterReceiver(receiver)
   }
 
-  private fun assertThatBoundServiceIsStopped() =
-    assertThatShadowApplication()
-      .prop(ShadowApplication::getNextStoppedService)
-      .isNotNull()
-      .prop(Intent::getComponent)
-      .isNotNull()
-      .prop(ComponentName::getClassName)
-      .isEqualTo(NotificationService::class.qualifiedName)
-
-  private fun assertThatShadowApplication(): Assert<ShadowApplication> =
-    assertThat<Application>(ApplicationProvider.getApplicationContext<Application>())
-      .prop(::shadowOf)
+  private fun assertThatShadowApplication() =
+    assertThat<ShadowApplication>(
+      shadowOf(ApplicationProvider.getApplicationContext<Application>())
+    )
 }
