@@ -83,7 +83,7 @@ import kotlinx.serialization.json.Json
  * @see Intent.putExtra
  */
 @InternalNotificationApi
-internal class MastodonNotificationService
+internal class NotificationService
 @VisibleForTesting
 constructor(
   private val requester: Requester,
@@ -101,8 +101,8 @@ constructor(
 
   /**
    * [String] form of the [URI] to which server updates are forwarded, obtained from the [Intent]
-   * with which a connection to this [MastodonNotificationService] was bound. Guaranteed to be a
-   * valid URL if not `null`.
+   * with which a connection to this [NotificationService] was bound. Guaranteed to be a valid URL
+   * if not `null`.
    */
   private var endpoint: String? = null
     @Throws(URISyntaxException::class)
@@ -113,7 +113,7 @@ constructor(
 
   /**
    * IDs of [Notification]s that have been sent and have not yet been cleared by this
-   * [MastodonNotificationService].
+   * [NotificationService].
    *
    * @see StatusBarNotification.getId
    */
@@ -132,9 +132,9 @@ constructor(
     private set
 
   /**
-   * Current [Lifecycle.State] in which this [MastodonNotificationService] is, constrained to
-   * representing only _initialized_, _created_ or _destroyed_ states. As of now, it has no actual
-   * use in production and exists only for testing purposes.
+   * Current [Lifecycle.State] in which this [NotificationService] is, constrained to representing
+   * only _initialized_, _created_ or _destroyed_ states. As of now, it has no actual use in
+   * production and exists only for testing purposes.
    *
    * @see Lifecycle.State.INITIALIZED
    * @see Lifecycle.State.CREATED
@@ -291,7 +291,7 @@ constructor(
       .setProjectId(BuildConfig.mastodonfirebaseProjectID)
       .setStorageBucket(BuildConfig.mastodonfirebaseStorageBucket)
       .build()
-      .let { Firebase.initialize(this@MastodonNotificationService, /* options = */ it) }
+      .let { Firebase.initialize(this@NotificationService, /* options = */ it) }
       .apply { @Suppress("DEPRECATION") setDataCollectionDefaultEnabled(false) }
   }
 
@@ -341,9 +341,9 @@ constructor(
   private fun sendLastNotification() {
     coroutineScope.launch {
       val dto = getLastNotificationDto()
-      val channel = dto.type.toNotificationChannel(this@MastodonNotificationService)
+      val channel = dto.type.toNotificationChannel(this@NotificationService)
       val id = dto.generateSystemNotificationID()
-      val notification = dto.toNotification(this@MastodonNotificationService, authenticationLock)
+      val notification = dto.toNotification(this@NotificationService, authenticationLock)
       notificationManager.createNotificationChannel(channel)
       notificationManager.notify(id, notification)
       sentNotificationIds += id
@@ -360,7 +360,7 @@ constructor(
       .last()
   }
 
-  /** Cancels all system notifications that have been sent by this [MastodonNotificationService]. */
+  /** Cancels all system notifications that have been sent by this [NotificationService]. */
   private fun cancelSentNotifications() {
     for (sentNotificationID in sentNotificationIds) {
       notificationManager.cancel(sentNotificationID)
@@ -395,7 +395,7 @@ constructor(
     /**
      * Endpoint put into this [Intent] as an extra.
      *
-     * @see MastodonNotificationService.endpoint
+     * @see NotificationService.endpoint
      * @see Intent.putExtra
      */
     @JvmStatic
@@ -404,7 +404,7 @@ constructor(
       get() = getStringExtra(ENDPOINT_EXTRA_KEY)
 
     /**
-     * Binds a connection to a [MastodonNotificationService] if none has been bound yet.
+     * Binds a connection to a [NotificationService] if none has been bound yet.
      *
      * @param context [Context] in which the binding is performed.
      * @param intent [Intent] with which the connection is to be bound.
@@ -420,14 +420,14 @@ constructor(
     }
 
     /**
-     * Creates an [Intent] with which a connection to a [MastodonNotificationService] is bound.
+     * Creates an [Intent] with which a connection to a [NotificationService] is bound.
      *
      * @param context [Context] of the package in which the class is.
      * @param endpoint [String] of the [URI] to which server updates are forwarded.
      */
     @JvmStatic
     fun createIntent(context: Context, endpoint: String): Intent {
-      return Intent(context, MastodonNotificationService::class.java).apply {
+      return Intent(context, NotificationService::class.java).apply {
         putExtra(ENDPOINT_EXTRA_KEY, endpoint)
       }
     }

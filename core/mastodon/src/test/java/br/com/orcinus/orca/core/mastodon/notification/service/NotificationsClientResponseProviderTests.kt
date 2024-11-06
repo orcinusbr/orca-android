@@ -29,11 +29,11 @@ import java.time.ZonedDateTime
 import kotlin.test.Test
 import kotlinx.serialization.json.Json
 
-internal class MastodonNotificationsClientResponseProviderTests {
+internal class NotificationsClientResponseProviderTests {
   @Test
   fun responseIsProvidedByFallbackWhenURLIsNotThatOfARequestForFetchingNotifications() {
     lateinit var baseURI: URI
-    runRequesterTest(MastodonNotificationsClientResponseProvider({ baseURI })) {
+    runRequesterTest(NotificationsClientResponseProvider({ baseURI })) {
       baseURI = requester.baseURI
       assertThat(requester)
         .transform("get") { it.get(route) }
@@ -54,16 +54,14 @@ internal class MastodonNotificationsClientResponseProviderTests {
         MastodonStatus.default
       )
     runRequesterTest(
-      MastodonNotificationsClientResponseProvider({ baseURI }).apply {
-        this.notification = notification
-      }
+      NotificationsClientResponseProvider({ baseURI }).apply { this.notification = notification }
     ) {
       baseURI = requester.baseURI
       assertThat(requester)
         .transform("get") { it.get(HostedURLBuilder::buildNotificationsRoute) }
         .transform { it.bodyAsText() }
         .transform("Json.decodeFromString") {
-          Json.decodeFromString(MastodonNotificationService.dtosSerializer, it)
+          Json.decodeFromString(NotificationService.dtosSerializer, it)
         }
         .containsExactly(notification)
     }

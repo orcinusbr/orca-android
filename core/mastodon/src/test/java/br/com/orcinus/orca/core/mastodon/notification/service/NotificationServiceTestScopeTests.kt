@@ -35,38 +35,38 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class MastodonNotificationServiceTestScopeTests {
+internal class NotificationServiceTestScopeTests {
   @Test
   fun runsBodyOnce() {
     var runCount = 0
-    runMastodonNotificationServiceTest { runCount++ }
+    runNotificationServiceTest { runCount++ }
     assertThat(runCount).isEqualTo(1)
   }
 
   @Test
   fun serviceIsInitializedByDefault() {
-    runMastodonNotificationServiceTest {
+    runNotificationServiceTest {
       assertThat(service)
-        .prop(MastodonNotificationService::lifecycleState)
+        .prop(NotificationService::lifecycleState)
         .isSameInstanceAs(Lifecycle.State.INITIALIZED)
     }
   }
 
   @Test
   fun createsService() {
-    runMastodonNotificationServiceTest {
+    runNotificationServiceTest {
       create()
       assertThat(service)
-        .prop(MastodonNotificationService::lifecycleState)
+        .prop(NotificationService::lifecycleState)
         .isSameInstanceAs(Lifecycle.State.CREATED)
     }
   }
 
   @Test
   fun setsServiceCoroutineContextToItsOwn() {
-    runMastodonNotificationServiceTest {
+    runNotificationServiceTest {
       assertThat(service)
-        .prop(MastodonNotificationService::coroutineScope)
+        .prop(NotificationService::coroutineScope)
         .prop(CoroutineScope::coroutineContext)
         .prop(CoroutineContext::job)
         .prop(Job::key)
@@ -76,7 +76,7 @@ internal class MastodonNotificationServiceTestScopeTests {
 
   @Test
   fun respondsToRequestForObtainingNotifications() {
-    runMastodonNotificationServiceTest {
+    runNotificationServiceTest {
       assertThat(requester)
         .transform("get") { it.get(HostedURLBuilder::buildNotificationsRoute) }
         .transform("bodyAsText") { it.bodyAsText() }
@@ -88,7 +88,7 @@ internal class MastodonNotificationServiceTestScopeTests {
 
   @Test
   fun responseIsProvidedBySpecifiedProviderWhenRequestIsNotForObtainingNotifications() {
-    runMastodonNotificationServiceTest {
+    runNotificationServiceTest {
       assertThat(requester)
         .transform("get") { it.get(HostedURLBuilder::buildNotificationSubscriptionPushingRoute) }
         .transform("body") { it.body<String>() }
@@ -98,21 +98,21 @@ internal class MastodonNotificationServiceTestScopeTests {
 
   @Test
   fun destroysService() {
-    runMastodonNotificationServiceTest {
+    runNotificationServiceTest {
       create()
       destroy()
       assertThat(service)
-        .prop(MastodonNotificationService::lifecycleState)
+        .prop(NotificationService::lifecycleState)
         .isSameInstanceAs(Lifecycle.State.DESTROYED)
     }
   }
 
   @Test
   fun serviceIsDestroyedAfterTest() {
-    var service: MastodonNotificationService
-    runMastodonNotificationServiceTest { service = this.service }
+    var service: NotificationService
+    runNotificationServiceTest { service = this.service }
     assertThat(service)
-      .prop(MastodonNotificationService::lifecycleState)
+      .prop(NotificationService::lifecycleState)
       .isSameInstanceAs(Lifecycle.State.DESTROYED)
   }
 }

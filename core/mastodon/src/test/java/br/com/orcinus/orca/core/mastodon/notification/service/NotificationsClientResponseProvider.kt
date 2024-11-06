@@ -37,7 +37,7 @@ import kotlinx.serialization.json.Json
  * @param next [ClientResponseProvider] to fall back to when the request is not for fetching
  *   notifications.
  */
-internal class MastodonNotificationsClientResponseProvider(
+internal class NotificationsClientResponseProvider(
   private val getBaseURI: () -> URI,
   private val next: ClientResponseProvider = ClientResponseProvider.ok
 ) : ClientResponseProvider {
@@ -63,9 +63,7 @@ internal class MastodonNotificationsClientResponseProvider(
 
   override suspend fun MockRequestHandleScope.provide(requestData: HttpRequestData) =
     if (requestData.url.isOfNotifications) {
-      respondOk(
-        Json.encodeToString(MastodonNotificationService.dtosSerializer, listOf(notification))
-      )
+      respondOk(Json.encodeToString(NotificationService.dtosSerializer, listOf(notification)))
     } else {
       with(next) { provide(requestData) }
     }

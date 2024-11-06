@@ -32,7 +32,7 @@
         <activity android:name=".auth.authentication.activity.MastodonAuthenticationActivity" />
 
         <service
-            android:name=".notification.service.MastodonNotificationService"
+            android:name=".notification.service.NotificationService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

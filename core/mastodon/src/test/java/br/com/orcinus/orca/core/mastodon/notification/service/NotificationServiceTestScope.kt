@@ -36,22 +36,19 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.TestScope
 import org.robolectric.android.controller.ServiceController
 
-/**
- * Default implementation of a [MastodonNotificationServiceTestScope] which will be used in the
- * tests.
- */
-private class MastodonNotificationServiceEnvironment(
+/** Default implementation of a [NotificationServiceTestScope] which will be used in the tests. */
+private class NotificationServiceEnvironment(
   override val requester: AuthenticatedRequester,
-  override val clientResponseProvider: MastodonNotificationsClientResponseProvider,
+  override val clientResponseProvider: NotificationsClientResponseProvider,
   override val intent: Intent,
   delegate: TestScope
-) : MastodonNotificationServiceTestScope(), CoroutineScope by delegate
+) : NotificationServiceTestScope(), CoroutineScope by delegate
 
-/** Scope in which a [MastodonNotificationService] test is run. */
-internal sealed class MastodonNotificationServiceTestScope : CoroutineScope {
-  /** [ServiceController] by which the lifecycle of the [MastodonNotificationService] is managed. */
+/** Scope in which a [NotificationService] test is run. */
+internal sealed class NotificationServiceTestScope : CoroutineScope {
+  /** [ServiceController] by which the lifecycle of the [NotificationService] is managed. */
   private val controller by lazy {
-    MastodonNotificationService(requester, requester.lock, Locksmith())
+    NotificationService(requester, requester.lock, Locksmith())
       .apply { setCoroutineContext(coroutineContext) }
       .let { ServiceController.of(it, intent) }
   }
@@ -59,20 +56,20 @@ internal sealed class MastodonNotificationServiceTestScope : CoroutineScope {
   /** [AuthenticatedRequester] by which subscriptions are pushed. */
   abstract val requester: AuthenticatedRequester
 
-  /** [MastodonNotificationsClientResponseProvider] by which responses to requests are provided. */
-  abstract val clientResponseProvider: MastodonNotificationsClientResponseProvider
+  /** [NotificationsClientResponseProvider] by which responses to requests are provided. */
+  abstract val clientResponseProvider: NotificationsClientResponseProvider
 
   /** [Intent] with which the [controller] is instantiated. */
   abstract val intent: Intent
 
-  /** [MastodonNotificationService] being tested. */
-  val service: MastodonNotificationService
+  /** [NotificationService] being tested. */
+  val service: NotificationService
     get() = controller.get()
 
   /**
    * Creates the [service].
    *
-   * @see MastodonNotificationService.onCreate
+   * @see NotificationService.onCreate
    */
   fun create() {
     controller.create()
@@ -81,7 +78,7 @@ internal sealed class MastodonNotificationServiceTestScope : CoroutineScope {
   /**
    * Destroys the [service].
    *
-   * @see MastodonNotificationService.onDestroy
+   * @see NotificationService.onDestroy
    */
   fun destroy() {
     controller.destroy()
@@ -103,31 +100,31 @@ internal sealed class MastodonNotificationServiceTestScope : CoroutineScope {
         .toString()
 
     /**
-     * Creates an [Intent] for registering a [MastodonNotificationService] with the [endpoint].
+     * Creates an [Intent] for registering a [NotificationService] with the [endpoint].
      *
      * @param context [Context] of the package in which the class is.
      */
     @JvmStatic
     fun createIntent(context: Context): Intent {
-      return MastodonNotificationService.createIntent(context, endpoint)
+      return NotificationService.createIntent(context, endpoint)
     }
   }
 }
 
 /**
- * Runs a [MastodonNotificationService]-focused test.
+ * Runs a [NotificationService]-focused test.
  *
  * @param clientResponseProvider Defines how the [HttpClient] will respond to requests.
  * @param onAuthentication Action run whenever the [Actor] is authenticated.
  * @param coroutineContext [CoroutineContext] in which [Job]s are launched by default.
- * @param body Testing to be performed on a [MastodonNotificationService].
+ * @param body Testing to be performed on a [NotificationService].
  */
 @OptIn(ExperimentalContracts::class)
-internal fun runMastodonNotificationServiceTest(
+internal fun runNotificationServiceTest(
   clientResponseProvider: ClientResponseProvider = ClientResponseProvider.ok,
   onAuthentication: () -> Unit = {},
   coroutineContext: CoroutineContext = EmptyCoroutineContext,
-  body: suspend MastodonNotificationServiceTestScope.() -> Unit
+  body: suspend NotificationServiceTestScope.() -> Unit
 ) {
   contract { callsInPlace(body, InvocationKind.EXACTLY_ONCE) }
   lateinit var baseURI: URI
@@ -138,25 +135,19 @@ internal fun runMastodonNotificationServiceTest(
    * provider is used only if they do not.
    */
   val defaultClientResponseProvider =
-    MastodonNotificationsClientResponseProvider({ baseURI }, next = clientResponseProvider)
+    NotificationsClientResponseProvider({ baseURI }, next = clientResponseProvider)
 
-  val intent = MastodonNotificationServiceTestScope.createIntent(context)
+  val intent = NotificationServiceTestScope.createIntent(context)
 
   runAuthenticatedRequesterTest(defaultClientResponseProvider, onAuthentication, coroutineContext) {
     baseURI = requester.baseURI
-    MastodonNotificationServiceEnvironment(
-        requester,
-        defaultClientResponseProvider,
-        intent,
-        delegate
-      )
-      .run {
-        try {
-          body()
-        } finally {
-          destroy()
-          service.stopSelf()
-        }
+    NotificationServiceEnvironment(requester, defaultClientResponseProvider, intent, delegate).run {
+      try {
+        body()
+      } finally {
+        destroy()
+        service.stopSelf()
       }
+    }
   }
 }

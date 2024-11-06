@@ -20,7 +20,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.ContextCompat
-import br.com.orcinus.orca.core.mastodon.notification.service.MastodonNotificationService
+import br.com.orcinus.orca.core.mastodon.notification.service.NotificationService
 import br.com.orcinus.orca.core.mastodon.notification.service.OnMessageReceiptListener
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.injector.module.Module
@@ -30,14 +30,14 @@ import org.unifiedpush.android.connector.data.PushEndpoint
 import org.unifiedpush.android.connector.data.PushMessage
 
 /**
- * Starts a [MastodonNotificationService], by which updates received from the Mastodon server are
- * sent as system notifications, and notifies the on-message-receipt listener injected by such
- * service whenever an update is received.
+ * Starts a [NotificationService], by which updates received from the Mastodon server are sent as
+ * system notifications, and notifies the on-message-receipt listener injected by such service
+ * whenever an update is received.
  *
  * @see OnMessageReceiptListener
  * @see Injector.inject
  */
-internal class MastodonNotificationReceiver @VisibleForTesting constructor() : MessagingReceiver() {
+internal class NotificationReceiver @VisibleForTesting constructor() : MessagingReceiver() {
   /**
    * [Intent]s with which unstopped services to which a connection has been bound have been created
    * by this receiver. Useful for when the endpoint is updated, allowing for them to be stopped and
@@ -52,8 +52,8 @@ internal class MastodonNotificationReceiver @VisibleForTesting constructor() : M
   }
 
   override fun onNewEndpoint(context: Context, endpoint: PushEndpoint, instance: String) {
-    val intent = MastodonNotificationService.createIntent(context, endpoint.url)
-    MastodonNotificationService.bind(context, intent)
+    val intent = NotificationService.createIntent(context, endpoint.url)
+    NotificationService.bind(context, intent)
     boundServicesIntents += intent
   }
 
@@ -95,13 +95,13 @@ internal class MastodonNotificationReceiver @VisibleForTesting constructor() : M
       }
 
     /**
-     * Registers a [MastodonNotificationReceiver].
+     * Registers a [NotificationReceiver].
      *
      * @param context [Context] in which the receiver will be registered.
      */
     @JvmStatic
     fun register(context: Context) {
-      val receiver = MastodonNotificationReceiver()
+      val receiver = NotificationReceiver()
       register(context, receiver)
     }
 
@@ -109,11 +109,11 @@ internal class MastodonNotificationReceiver @VisibleForTesting constructor() : M
      * Registers the [receiver].
      *
      * @param context [Context] in which the [receiver] will be registered.
-     * @param receiver [MastodonNotificationReceiver] to be registered.
+     * @param receiver [NotificationReceiver] to be registered.
      */
     @JvmStatic
     @VisibleForTesting
-    fun register(context: Context, receiver: MastodonNotificationReceiver) {
+    fun register(context: Context, receiver: NotificationReceiver) {
       ContextCompat.registerReceiver(context, receiver, filter, ContextCompat.RECEIVER_EXPORTED)
     }
   }

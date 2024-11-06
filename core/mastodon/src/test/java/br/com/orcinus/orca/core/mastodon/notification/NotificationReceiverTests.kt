@@ -29,8 +29,8 @@ import assertk.assertions.isNotNull
 import assertk.assertions.isTrue
 import assertk.assertions.prop
 import assertk.assertions.single
-import br.com.orcinus.orca.core.mastodon.notification.service.MastodonNotificationService
-import br.com.orcinus.orca.core.mastodon.notification.service.MastodonNotificationServiceTestScope
+import br.com.orcinus.orca.core.mastodon.notification.service.NotificationService
+import br.com.orcinus.orca.core.mastodon.notification.service.NotificationServiceTestScope
 import br.com.orcinus.orca.core.mastodon.notification.service.OnMessageReceiptListener
 import br.com.orcinus.orca.platform.testing.context
 import br.com.orcinus.orca.std.injector.Injector
@@ -46,12 +46,11 @@ import org.unifiedpush.android.connector.data.PushEndpoint
 import org.unifiedpush.android.connector.data.PushMessage
 
 @RunWith(RobolectricTestRunner::class)
-internal class MastodonNotificationReceiverTests {
-  private val receiver = MastodonNotificationReceiver()
-  private val endpoint =
-    PushEndpoint(MastodonNotificationServiceTestScope.endpoint, pubKeySet = null)
+internal class NotificationReceiverTests {
+  private val receiver = NotificationReceiver()
+  private val endpoint = PushEndpoint(NotificationServiceTestScope.endpoint, pubKeySet = null)
 
-  @BeforeTest fun setUp() = MastodonNotificationReceiver.register(context, receiver)
+  @BeforeTest fun setUp() = NotificationReceiver.register(context, receiver)
 
   @Test
   fun registers() =
@@ -59,7 +58,7 @@ internal class MastodonNotificationReceiverTests {
     assertThatShadowApplication()
       .prop(ShadowApplication::getRegisteredReceivers)
       .extracting { (it.getBroadcastReceiver() as BroadcastReceiver)::class }
-      .contains(MastodonNotificationReceiver::class)
+      .contains(NotificationReceiver::class)
 
   @Test
   fun stopsBoundServicesWhenRegistrationFails() {
@@ -77,7 +76,7 @@ internal class MastodonNotificationReceiverTests {
       .prop(Intent::getComponent)
       .isNotNull()
       .prop(ComponentName::getClassName)
-      .isEqualTo(MastodonNotificationService::class.qualifiedName)
+      .isEqualTo(NotificationService::class.qualifiedName)
   }
 
   @Test
@@ -112,7 +111,7 @@ internal class MastodonNotificationReceiverTests {
       .prop(Intent::getComponent)
       .isNotNull()
       .prop(ComponentName::getClassName)
-      .isEqualTo(MastodonNotificationService::class.qualifiedName)
+      .isEqualTo(NotificationService::class.qualifiedName)
 
   private fun assertThatShadowApplication(): Assert<ShadowApplication> =
     assertThat<Application>(ApplicationProvider.getApplicationContext<Application>())
