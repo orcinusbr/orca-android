@@ -37,7 +37,8 @@ import org.unifiedpush.android.connector.data.PushMessage
  * @see OnMessageReceiptListener
  * @see Injector.inject
  */
-internal class NotificationReceiver @VisibleForTesting constructor() : MessagingReceiver() {
+internal class NotificationReceiver @InternalNotificationApi @VisibleForTesting constructor() :
+  MessagingReceiver() {
   /**
    * [Intent]s with which unstopped services to which a connection has been bound have been created
    * by this receiver. Useful for when the endpoint is updated, allowing for them to be stopped and
@@ -111,6 +112,7 @@ internal class NotificationReceiver @VisibleForTesting constructor() : Messaging
      * @param context [Context] in which the [receiver] will be registered.
      * @param receiver [NotificationReceiver] to be registered.
      */
+    @InternalNotificationApi
     @JvmStatic
     @VisibleForTesting
     fun register(context: Context, receiver: NotificationReceiver) {

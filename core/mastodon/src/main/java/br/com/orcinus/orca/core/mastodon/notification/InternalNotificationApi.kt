@@ -26,5 +26,10 @@ import br.com.orcinus.orca.std.visibility.PackageProtected
     "notifications. These reside exclusively in the " +
     "`br.com.orcinus.orca.core.mastodon.notification` package."
 )
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.TYPEALIAS)
+@Target(
+  AnnotationTarget.CLASS,
+  AnnotationTarget.CONSTRUCTOR,
+  AnnotationTarget.FUNCTION,
+  AnnotationTarget.TYPEALIAS
+)
 internal annotation class InternalNotificationApi
