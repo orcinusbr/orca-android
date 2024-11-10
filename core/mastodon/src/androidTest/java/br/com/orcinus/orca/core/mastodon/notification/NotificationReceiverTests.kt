@@ -13,18 +13,19 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.app.demo.activity
+package br.com.orcinus.orca.core.mastodon.notification
 
-import androidx.test.core.app.launchActivity
-import br.com.orcinus.orca.std.injector.Injector
+import assertk.assertFailure
+import assertk.assertions.isInstanceOf
+import br.com.orcinus.orca.core.mastodon.test.notification.runNotificationReceiverTest
+import br.com.orcinus.orca.platform.testing.context
 import kotlin.test.Test
 
-internal class NonDependencyDejectingOrcaActivityTests {
+internal class NotificationReceiverTests {
   @Test
-  fun doesNotDejectDependenciesAfterBeingDestroyed() {
-    Injector.injectLazily { 0 }
-    launchActivity<NonDependencyDejectingOrcaActivity>().close()
-    Injector.get<Int>()
-    Injector.clear()
-  }
+  fun throwsWhenSelectingADistributorInNonUIContextWhileRegistering() =
+    runNotificationReceiverTest(context) {
+      assertFailure { NotificationReceiver.register(context, receiver, actor) }
+        .isInstanceOf<IllegalArgumentException>()
+    }
 }

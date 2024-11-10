@@ -15,14 +15,19 @@
 
 package br.com.orcinus.orca.core.mastodon.notification
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.ServiceConnection
+import android.os.Build
+import androidx.annotation.Discouraged
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.BuildConfig
+import br.com.orcinus.orca.core.mastodon.InternalMastodonApi
 import br.com.orcinus.orca.core.mastodon.notification.service.NotificationService
 import br.com.orcinus.orca.core.mastodon.notification.service.OnMessageReceiptListener
 import br.com.orcinus.orca.std.injector.Injector
@@ -32,19 +37,25 @@ import org.unifiedpush.android.connector.MessagingReceiver
 import org.unifiedpush.android.connector.UnifiedPush
 import org.unifiedpush.android.connector.data.PushEndpoint
 import org.unifiedpush.android.connector.data.PushMessage
+import org.unifiedpush.android.connector.ui.SelectDistributorDialogsBuilder
 
 /**
  * Starts a [NotificationService], by which updates received from the Mastodon server are sent as
  * system notifications, and notifies the on-message-receipt listener injected by such service
  * whenever an update is received.
  *
- * @property context [Context] in which this receiver is registered.
- * @property actor Authenticated [Actor] for configuring UnifiedPush.
  * @see OnMessageReceiptListener
  * @see Injector.inject
  */
-internal class NotificationReceiver @InternalNotificationApi @VisibleForTesting constructor() :
-  MessagingReceiver() {
+@InternalMastodonApi
+class NotificationReceiver
+@Discouraged(
+  "Prefer calling" +
+    "`NotificationReceiver.Companion.register(Context, Author, DistributorSelectionScope.() -> Unit)`, " +
+    "since it automatically configures UnifiedPush and registers a receiver. Constructing an " +
+    "instance directly requires for such set up to be performed manually and, thus, is errorprone."
+)
+constructor() : MessagingReceiver() {
   /**
    * [Intent]s with which services have been bound by this receiver, paired to their connections.
    * Useful for when the endpoint is updated, allowing for them to be killed and preventing
@@ -93,7 +104,8 @@ internal class NotificationReceiver @InternalNotificationApi @VisibleForTesting 
      * @see register
      */
     @JvmStatic
-    private val filter =
+    @VisibleForTesting
+    val filter =
       IntentFilter().apply {
         addAction("org.unifiedpush.android.connector.MESSAGE")
         addAction("org.unifiedpush.android.connector.NEW_ENDPOINT")
@@ -105,22 +117,24 @@ internal class NotificationReceiver @InternalNotificationApi @VisibleForTesting 
      * Registers a [NotificationReceiver].
      *
      * @param context [Context] in which the receiver will be registered.
-     * @property actor Authenticated [Actor] for configuring UnifiedPush.
+     * @param actor Authenticated [Actor] for configuring UnifiedPush.
      */
     @JvmStatic
     fun register(context: Context, actor: Actor.Authenticated) =
-      register(context, NotificationReceiver(), actor)
+      register(context, @Suppress("DiscouragedApi") NotificationReceiver(), actor)
 
     /**
      * Registers the [receiver].
      *
+     * This method is intended for testing purposes and should not be called in production.
+     *
      * @param context [Context] in which the [receiver] will be registered.
      * @param receiver [NotificationReceiver] to be registered.
      * @param actor Authenticated [Actor] for configuring UnifiedPush.
+     * @throws IllegalArgumentException If the [context] cannot interact with the UI.
      */
-    @InternalNotificationApi
     @JvmStatic
-    @VisibleForTesting
+    @Throws(IllegalArgumentException::class)
     fun register(context: Context, receiver: NotificationReceiver, actor: Actor.Authenticated) {
       setUpOrRegisterUnifiedPushApp(context, actor)
       ContextCompat.registerReceiver(context, receiver, filter, ContextCompat.RECEIVER_EXPORTED)
@@ -134,9 +148,11 @@ internal class NotificationReceiver @InternalNotificationApi @VisibleForTesting 
      *
      * @param context [Context] in which the SDK is set up and the app is registered.
      * @param actor Authenticated [Actor] whose access token will be defined as the instance.
+     * @throws IllegalArgumentException If the [context] cannot interact with the UI.
      * @see registerUnifiedPushApp
      * @see Actor.Authenticated.accessToken
      */
+    @Throws(IllegalArgumentException::class)
     private fun setUpOrRegisterUnifiedPushApp(context: Context, actor: Actor.Authenticated) =
       if (isUnifiedPushNotSetUp(context)) {
         setUpUnifiedPush(context, actor)
@@ -158,14 +174,31 @@ internal class NotificationReceiver @InternalNotificationApi @VisibleForTesting 
      *
      * @param context [Context] from which the distributors are obtained and the app is registered.
      * @param actor Authenticated [Actor] whose access token will be defined as the instance.
+     * @throws IllegalStateException If the [context] cannot interact with the UI.
      * @see registerUnifiedPushApp
      * @see Actor.Authenticated.accessToken
      */
+    @Throws(IllegalArgumentException::class)
     private fun setUpUnifiedPush(context: Context, actor: Actor.Authenticated) {
-      val distributor = UnifiedPush.getDistributors(context).lastOrNull() ?: return
-      UnifiedPush.saveDistributor(context, distributor)
+      requireUIContext(context)
+      SelectDistributorDialogsBuilder(context, DelegatorUnifiedPushFunctions(context)).run()
       registerUnifiedPushApp(context, actor)
     }
+
+    /**
+     * Ensures that the [context] is one from which the UI can be accessed (an [Activity], that of a
+     * [Fragment], etc); otherwise, if such characteristic can be verified — on API level >= 31 —
+     * throws an [IllegalStateException].
+     *
+     * @param context [Context] to be required to be a UI one.
+     * @return The given [context].
+     * @throws IllegalStateException If the [context] cannot interact with the UI.
+     */
+    @Throws(IllegalArgumentException::class)
+    private fun requireUIContext(context: Context) =
+      require(Build.VERSION.SDK_INT < Build.VERSION_CODES.S || context.isUiContext) {
+        "Selection can only occur in a UI context — $context is not one."
+      }
 
     /**
      * Registers a UnifiedPush app.

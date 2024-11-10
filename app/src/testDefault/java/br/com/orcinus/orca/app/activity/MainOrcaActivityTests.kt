@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,11 +13,19 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.app.demo.activity
+package br.com.orcinus.orca.app.activity
 
-import br.com.orcinus.orca.app.activity.OrcaActivity
+import androidx.test.core.app.launchActivity
+import br.com.orcinus.orca.core.mastodon.auth.authorization.MastodonAuthorizationActivity
+import br.com.orcinus.orca.platform.intents.test.intendStartingOf
+import kotlin.test.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-/** [OrcaActivity] that does not deject dependencies when it gets destroyed. */
-internal class NonDependencyDejectingOrcaActivity : OrcaActivity() {
-  override val areDependenciesDejectedOnDestruction = false
+@RunWith(RobolectricTestRunner::class)
+internal class MainOrcaActivityTests {
+  @Test
+  fun navigatesToAuthorization() {
+    intendStartingOf<MastodonAuthorizationActivity> { launchActivity<MainOrcaActivity>().close() }
+  }
 }

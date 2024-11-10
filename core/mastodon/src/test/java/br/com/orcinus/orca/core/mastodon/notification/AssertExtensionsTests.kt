@@ -16,11 +16,13 @@
 package br.com.orcinus.orca.core.mastodon.notification
 
 import android.app.Service
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
 import android.os.Binder
 import assertk.assertFailure
 import assertk.assertions.isInstanceOf
-import assertk.assertions.isSameInstanceAs
+import br.com.orcinus.orca.ext.testing.assertThat
 import br.com.orcinus.orca.platform.testing.context
 import kotlin.test.Test
 import org.junit.runner.RunWith
@@ -47,14 +49,13 @@ internal class AssertExtensionsTests {
     }
   }
 
-  @Test
-  fun createsAssertWithKClass() {
-    assertThat<Any>().isSameInstanceAs(Any::class)
+  private class AssertionBroadcastReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context?, intent: Intent?) = Unit
   }
 
   @Test
   fun failsWhenAssertingThatNonLastlyStoppedServiceIsLastlyStopped() {
-    assertFailure { assertThat<AssertionService>().isLastlyStopped() }
+    assertFailure(assertThat<AssertionService>()::isLastlyStopped)
       .isInstanceOf<AssertionFailedError>()
   }
 
@@ -64,5 +65,22 @@ internal class AssertExtensionsTests {
     context.startService(intent)
     context.stopService(intent)
     assertThat<AssertionService>().isLastlyStopped()
+  }
+
+  @Test
+  fun failsWhenAssertingThatUnregisteredBroadcastReceiverIsRegistered() {
+    assertFailure(assertThat<AssertionBroadcastReceiver>()::isRegistered)
+      .isInstanceOf<AssertionFailedError>()
+  }
+
+  @Test
+  fun passesWhenAssertingThatRegisteredBroadcastReceiverIsRegistered() {
+    context.registerReceiver(
+      AssertionBroadcastReceiver(),
+      /** filter = */
+      null,
+      Context.RECEIVER_NOT_EXPORTED
+    )
+    assertThat<AssertionBroadcastReceiver>().isRegistered()
   }
 }

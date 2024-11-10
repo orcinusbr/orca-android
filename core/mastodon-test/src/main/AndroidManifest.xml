@@ -14,12 +14,8 @@
   ~ not, see https://www.gnu.org/licenses.
   -->
 
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
-    <application tools:ignore="MissingApplicationIcon">
-        <!--suppress AndroidDomInspection -->
-        <activity
-            android:name="br.com.orcinus.orca.app.demo.activity.NonDependencyDejectingOrcaActivity" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <activity android:name=".notification.NotificationReceiverActivity" />
     </application>
 </manifest>
