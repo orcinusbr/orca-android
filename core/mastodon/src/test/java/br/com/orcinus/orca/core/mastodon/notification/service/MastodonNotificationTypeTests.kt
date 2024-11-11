@@ -21,7 +21,7 @@ import assertk.all
 import assertk.assertThat
 import assertk.assertions.each
 import assertk.assertions.isEqualTo
-import assertk.assertions.isSameAs
+import assertk.assertions.isSameInstanceAs
 import assertk.assertions.prop
 import br.com.orcinus.orca.platform.testing.context
 import kotlin.test.Test
@@ -62,7 +62,8 @@ internal class MastodonNotificationTypeTests {
       typeAssert
         .transform("toNotificationChannel") { type -> type.toNotificationChannel(context) }
         .all {
-          prop(NotificationChannel::getImportance).isSameAs(NotificationManager.IMPORTANCE_DEFAULT)
+          prop(NotificationChannel::getImportance)
+            .isSameInstanceAs(NotificationManager.IMPORTANCE_DEFAULT)
         }
     }
   }

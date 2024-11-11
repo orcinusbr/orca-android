@@ -21,19 +21,17 @@ import assertk.assertThat
 import assertk.assertions.each
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotZero
-import assertk.assertions.isSameAs
+import assertk.assertions.isSameInstanceAs
 import assertk.assertions.isTrue
 import assertk.assertions.prop
+import assertk.coroutines.assertions.suspendCall
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus
-import br.com.orcinus.orca.core.mastodon.notification.service.async.Pipeline
 import br.com.orcinus.orca.core.sample.auth.actor.sample
 import br.com.orcinus.orca.core.test.auth.AuthenticationLock
 import br.com.orcinus.orca.platform.testing.context
 import java.time.ZonedDateTime
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.CompletionStage
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
@@ -46,12 +44,11 @@ internal class MastodonNotificationTests {
   private val createdAt = MastodonNotification.createdAt(createdAtAsZonedDateTime)
 
   @Test
-  fun convertsZonedDateTimeIntoCreatedAtString() {
+  fun convertsZonedDateTimeIntoCreatedAtString() =
     assertThat(MastodonNotification.createdAt(createdAtAsZonedDateTime)).isEqualTo(createdAt)
-  }
 
   @Test
-  fun generatedSystemNotificationIDIsHashCodeOfOriginalOneWhenItIsNotDigitOnly() {
+  fun generatedSystemNotificationIDIsHashCodeOfOriginalOneWhenItIsNotDigitOnly() =
     assertThat(
         MastodonNotification(
           /* id = */ "🪫",
@@ -63,10 +60,9 @@ internal class MastodonNotificationTests {
       )
       .prop(MastodonNotification::generateSystemNotificationID)
       .isEqualTo("🪫".hashCode())
-  }
 
   @Test
-  fun generatedSystemNotificationIDIsHashCodeOfOriginalOneWhenItIsDigitOnlyButIsZeroPadded() {
+  fun generatedSystemNotificationIDIsHashCodeOfOriginalOneWhenItIsDigitOnlyButIsZeroPadded() =
     repeat(4) { index ->
       assertThat(
           MastodonNotification(
@@ -80,10 +76,9 @@ internal class MastodonNotificationTests {
         .prop(MastodonNotification::generateSystemNotificationID)
         .all { given { systemNotificationID -> isEqualTo(systemNotificationID.hashCode()) } }
     }
-  }
 
   @Test
-  fun generatedSystemNotificationIDIsOriginalOneConvertedIntoAnIntegerWhenItIsDigitOnly() {
+  fun generatedSystemNotificationIDIsOriginalOneConvertedIntoAnIntegerWhenItIsDigitOnly() =
     assertThat(
         MastodonNotification(
           /* id = */ "8102024",
@@ -95,14 +90,15 @@ internal class MastodonNotificationTests {
       )
       .prop(MastodonNotification::generateSystemNotificationID)
       .isEqualTo(8102024)
-  }
 
   @Test
-  fun getsContentTitleAsync() {
-    runTest {
-      assertThat(MastodonNotification.Type.entries).each { typeAssert ->
-        typeAssert.given { type ->
-          val parent =
+  fun getsContentTitle() =
+    assertThat(MastodonNotification.Type.entries).each { typeAssert ->
+      runTest {
+        typeAssert.suspendCall("getContentTitle") { type ->
+          type.getContentTitle(
+            context,
+            authenticationLock,
             MastodonNotification(
               /* id = */ "0",
               type,
@@ -110,17 +106,16 @@ internal class MastodonNotificationTests {
               MastodonAccount.default,
               MastodonStatus.default
             )
-          type.getContentTitleAsync(context, authenticationLock, parent).get()
+          )
         }
       }
     }
-  }
 
   @Test
-  fun notificationChannelIsThatOfItsType() {
-    runTest {
-      assertThat(MastodonNotification.Type.entries, "types").each { typeAssert ->
-        typeAssert.given { type ->
+  fun notificationChannelIsThatOfItsType() =
+    assertThat(MastodonNotification.Type.entries, "types").each { typeAssert ->
+      typeAssert.given { type ->
+        runTest {
           assertThat(
               MastodonNotification(
                 /* id = */ "",
@@ -130,21 +125,19 @@ internal class MastodonNotificationTests {
                 MastodonStatus.default
               )
             )
-            .transform("toNotificationAsync") { transformationParent ->
-              transformationParent.toNotificationAsync(context, authenticationLock)
+            .suspendCall("toNotification") { dto ->
+              dto.toNotification(context, authenticationLock)
             }
-            .prop(Pipeline<Notification>::get)
             .prop(Notification::getChannelId)
-            .isSameAs(type.channelID)
+            .isSameInstanceAs(type.channelID)
         }
       }
     }
-  }
 
   @Test
-  fun notificationIsCancelledAutomatically() {
-    runTest {
-      assertThat(MastodonNotification.Type.entries, "types").each { typeAssert ->
+  fun notificationIsCancelledAutomatically() =
+    assertThat(MastodonNotification.Type.entries, "types").each { typeAssert ->
+      runTest {
         typeAssert.given { type ->
           assertThat(
               MastodonNotification(
@@ -155,58 +148,45 @@ internal class MastodonNotificationTests {
                 MastodonStatus.default
               )
             )
-            .transform("toNotificationAsync") { transformationParent ->
-              transformationParent.toNotificationAsync(context, authenticationLock)
+            .suspendCall("toNotification") { dto ->
+              dto.toNotification(context, authenticationLock)
             }
-            .prop(CompletionStage<Notification>::toCompletableFuture)
-            .prop(CompletableFuture<Notification>::get)
             .prop(Notification::flags)
-            .transform("is auto-cancel enabled", Notification.FLAG_AUTO_CANCEL::and)
+            .prop("isAutoCancelled", Notification.FLAG_AUTO_CANCEL::and)
             .isNotZero()
         }
       }
     }
-  }
 
   @Test
-  fun notificationTitleIsThatObtainableThroughItsType() {
-    runTest {
-      assertThat(MastodonNotification.Type.entries, "types").each { typeAssert ->
-        typeAssert.given { type ->
-          val mastodonNotification =
-            MastodonNotification(
-              /* id = */ "",
-              type,
-              createdAt,
-              MastodonAccount.default,
-              MastodonStatus.default
-            )
-          assertThat(mastodonNotification)
-            .transform("toNotificationAsync") { transformationMastodonNotification ->
-              transformationMastodonNotification.toNotificationAsync(context, authenticationLock)
+  fun notificationTitleIsThatObtainableThroughItsType() =
+    assertThat(MastodonNotification.Type.entries, "types").each { typeAssert ->
+      typeAssert.given { type ->
+        val dto =
+          MastodonNotification(
+            /* id = */ "",
+            type,
+            createdAt,
+            MastodonAccount.default,
+            MastodonStatus.default
+          )
+        runTest {
+          assertThat(dto)
+            .suspendCall("toNotification") { transformationDto ->
+              transformationDto.toNotification(context, authenticationLock)
             }
-            .prop(CompletionStage<Notification>::toCompletableFuture)
-            .prop(CompletableFuture<Notification>::get)
             .prop(Notification::extras)
-            .transform("getString(Notification.EXTRA_TITLE)") {
-              it.getString(Notification.EXTRA_TITLE)
-            }
-            .isEqualTo(
-              type
-                .getContentTitleAsync(context, authenticationLock, mastodonNotification)
-                .toCompletableFuture()
-                .get()
-            )
+            .prop("title") { it.getString(Notification.EXTRA_TITLE) }
+            .isEqualTo(type.getContentTitle(context, authenticationLock, dto))
         }
       }
     }
-  }
 
   @Test
-  fun notificationIsTimestamped() {
-    runTest {
-      assertThat(MastodonNotification.Type.entries, "types").each { typeAssert ->
-        typeAssert.given { type ->
+  fun notificationIsTimestamped() =
+    assertThat(MastodonNotification.Type.entries, "types").each { typeAssert ->
+      typeAssert.given { type ->
+        runTest {
           assertThat(
               MastodonNotification(
                 /* id = */ "",
@@ -216,16 +196,12 @@ internal class MastodonNotificationTests {
                 MastodonStatus.default
               )
             )
-            .transform("toNotificationAsync") { transformationParent ->
-              transformationParent.toNotificationAsync(context, authenticationLock)
+            .suspendCall("toNotification") { dto ->
+              dto.toNotification(context, authenticationLock)
             }
-            .prop(CompletionStage<Notification>::toCompletableFuture)
-            .prop(CompletableFuture<Notification>::get)
             .all {
               prop(Notification::extras)
-                .transform("getBoolean(Notification.EXTRA_SHOW_WHEN)") {
-                  it.getBoolean(Notification.EXTRA_SHOW_WHEN)
-                }
+                .prop("showWhen") { it.getBoolean(Notification.EXTRA_SHOW_WHEN) }
                 .isTrue()
               prop(Notification::`when`)
                 .isEqualTo(createdAtAsZonedDateTime.toInstant().toEpochMilli())
@@ -233,5 +209,4 @@ internal class MastodonNotificationTests {
         }
       }
     }
-  }
 }

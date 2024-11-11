@@ -29,7 +29,6 @@ import kotlin.test.Test
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.job
-import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -81,7 +80,7 @@ internal class NotificationServiceTestScopeTests {
         .transform("get") { it.get(HostedURLBuilder::buildNotificationsRoute) }
         .transform("bodyAsText") { it.bodyAsText() }
         .transform("Json.decodeFromString") {
-          Json.decodeFromString(ListSerializer(MastodonNotification.Serializer.instance), it)
+          Json.decodeFromString(NotificationService.dtosSerializer, it)
         }
     }
   }

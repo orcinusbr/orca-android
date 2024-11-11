@@ -389,7 +389,7 @@ constructor(
     /** [KSerializer] that serializes the response to a request for obtaining notifications. */
     @JvmField
     @VisibleForTesting
-    val dtosSerializer = ListSerializer(MastodonNotification.Serializer.instance)
+    val dtosSerializer = ListSerializer(MastodonNotification.serializer())
 
     /**
      * Endpoint put into this [Intent] as an extra.

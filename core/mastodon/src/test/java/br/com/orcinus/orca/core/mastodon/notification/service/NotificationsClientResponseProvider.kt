@@ -26,6 +26,7 @@ import io.ktor.http.Url
 import io.ktor.http.toURI
 import java.net.URI
 import java.time.ZonedDateTime
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 /**
@@ -63,7 +64,7 @@ internal class NotificationsClientResponseProvider(
 
   override suspend fun MockRequestHandleScope.provide(requestData: HttpRequestData) =
     if (requestData.url.isOfNotifications) {
-      respondOk(Json.encodeToString(NotificationService.dtosSerializer, listOf(notification)))
+      respondOk(Json.encodeToString(listOf(notification)))
     } else {
       with(next) { provide(requestData) }
     }
