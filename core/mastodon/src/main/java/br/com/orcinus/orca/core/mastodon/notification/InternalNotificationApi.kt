@@ -32,4 +32,4 @@ import br.com.orcinus.orca.std.visibility.PackageProtected
   AnnotationTarget.FUNCTION,
   AnnotationTarget.PROPERTY
 )
-annotation class InternalNotificationApi
+internal annotation class InternalNotificationApi
