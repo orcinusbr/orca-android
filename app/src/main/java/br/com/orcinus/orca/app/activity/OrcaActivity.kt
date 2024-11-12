@@ -16,77 +16,52 @@
 package br.com.orcinus.orca.app.activity
 
 import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.Window
-import androidx.annotation.CallSuper
 import androidx.core.view.WindowCompat
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
+import br.com.orcinus.orca.app.OrcaApplication
 import br.com.orcinus.orca.app.R
 import br.com.orcinus.orca.app.activity.masking.Masker
 import br.com.orcinus.orca.app.databinding.ActivityOrcaBinding
-import br.com.orcinus.orca.app.module.feature.feed.MainFeedModule
-import br.com.orcinus.orca.app.module.feature.gallery.MainGalleryModule
-import br.com.orcinus.orca.app.module.feature.postdetails.MainPostDetailsModule
-import br.com.orcinus.orca.app.module.feature.search.MainSearchModule
-import br.com.orcinus.orca.app.module.feature.settings.MainSettingsModule
-import br.com.orcinus.orca.app.module.feature.settings.termmuting.MainTermMutingModule
-import br.com.orcinus.orca.core.module.CoreModule
-import br.com.orcinus.orca.feature.feed.FeedModule
-import br.com.orcinus.orca.feature.gallery.GalleryModule
-import br.com.orcinus.orca.feature.postdetails.PostDetailsModule
-import br.com.orcinus.orca.feature.profiledetails.ProfileDetailsModule
-import br.com.orcinus.orca.feature.search.SearchModule
-import br.com.orcinus.orca.feature.settings.SettingsModule
-import br.com.orcinus.orca.feature.settings.termmuting.TermMutingModule
 import br.com.orcinus.orca.platform.navigation.BackStack
 import br.com.orcinus.orca.platform.navigation.Navigator
 import br.com.orcinus.orca.std.injector.Injector
-import br.com.orcinus.orca.std.injector.module.Module
 import kotlinx.coroutines.launch
 
 /**
  * Main [Activity] that gets started when the app launches.
  *
- * It is primarily intended for configuring state which requires a pre-lifecycle-ending
- * deconfiguration (in this case, such "teardown" should be performed in [onDestroy]) and/or is
- * directly intrinsic to the [Window].
+ * It is primarily intended for configuring state which either cannot be set up by the
+ * [OrcaApplication] because it requires a pre-lifecycle-ending deconfiguration (in this case, such
+ * "teardown" should be performed in [onDestroy]) or is directly intrinsic to the [Window].
+ *
+ * When it is destroyed, all dependencies that were previously injected are dejected by default.
+ * This behavior can be modified by overriding [areDependenciesDejectedOnDestruction].
  *
  * @see getWindow
  * @see onDestroy
  */
-internal abstract class OrcaActivity : FragmentActivity() {
+internal open class OrcaActivity : FragmentActivity() {
   /**
    * [ActivityOrcaBinding] containing references to the [View]s specified in the layout XML file.
    * Gets assigned a non-null value on creation and is nullified after destruction.
    */
   private var binding: ActivityOrcaBinding? = null
 
-  /**
-   * [CoreModule] to be registered. Overridability is useful because the application can be built
-   * with distinct flavors with different core structures (e. g., in the default, main version, ones
-   * that access the API through network requests; in the demo version, ones that store and retrieve
-   * data locally).
-   *
-   * @see Injector.register
-   * @see MainMastodonCoreModule
-   */
-  protected abstract val coreModule: CoreModule
-
-  /** [Module] into which the dependencies required by the profile details feature are injected. */
-  protected abstract val profileDetailsModule: ProfileDetailsModule
+  /** Whether all injected dependencies should be dejected when [onDestroy] is finally called. */
+  protected open val areDependenciesDejectedOnDestruction = true
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     WindowCompat.setDecorFitsSystemWindows(window, false)
     binding = ActivityOrcaBinding.inflate(layoutInflater)
     setContentView(binding?.root)
-    inject()
     navigateOnBottomNavigationItemSelection()
     selectDefaultBottomNavigationItem()
   }
@@ -99,25 +74,9 @@ internal abstract class OrcaActivity : FragmentActivity() {
   override fun onDestroy() {
     super.onDestroy()
     binding = null
-    Injector.clear()
-  }
-
-  /**
-   * Injects this [OrcaActivity] as a UI [Context] and registers feature [Module]s.
-   *
-   * @see deject
-   */
-  @CallSuper
-  open fun inject() {
-    Injector.injectLazily<Context> { this@OrcaActivity }
-    Injector.register(coreModule)
-    Injector.register<FeedModule>(MainFeedModule(this))
-    Injector.register<GalleryModule>(MainGalleryModule)
-    Injector.register<PostDetailsModule>(MainPostDetailsModule(this))
-    Injector.register(profileDetailsModule)
-    Injector.register<SearchModule>(MainSearchModule)
-    Injector.register<SettingsModule>(MainSettingsModule(this))
-    Injector.register<TermMutingModule>(MainTermMutingModule)
+    if (areDependenciesDejectedOnDestruction) {
+      Injector.clear()
+    }
   }
 
   /**

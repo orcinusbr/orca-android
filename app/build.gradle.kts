@@ -126,6 +126,7 @@ dependencies {
   releaseCompileOnly(libs.lombok)
 
   "testDemoImplementation"(project(":composite:timeline"))
+  "testDemoImplementation"(project(":core:sample-test"))
   "testDemoImplementation"(project(":feature:gallery-test"))
   "testDemoImplementation"(project(":platform:autos-test"))
   "testDemoImplementation"(project(":platform:navigation-test"))
@@ -134,7 +135,6 @@ dependencies {
 
   testImplementation(project(":composite:timeline-test"))
   testImplementation(project(":ext:reflection"))
-  testImplementation(project(":feature:profile-details-test"))
   testImplementation(project(":platform:intents-test"))
   testImplementation(project(":platform:testing"))
   testImplementation(libs.assertk)

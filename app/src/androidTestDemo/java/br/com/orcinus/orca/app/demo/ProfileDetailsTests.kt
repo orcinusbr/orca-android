@@ -23,7 +23,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import br.com.orcinus.orca.app.R
-import br.com.orcinus.orca.app.demo.activity.DemoOrcaActivity
+import br.com.orcinus.orca.app.demo.activity.NonDependencyDejectingOrcaActivity
 import br.com.orcinus.orca.composite.timeline.test.isTimeline
 import br.com.orcinus.orca.composite.timeline.test.post.figure.link.onLinkCards
 import br.com.orcinus.orca.composite.timeline.test.post.performScrollToPostPreviewWithLinkCard
@@ -38,7 +38,7 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class ProfileDetailsTests {
-  @get:Rule val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
+  @get:Rule val composeRule = createAndroidComposeRule<NonDependencyDejectingOrcaActivity>()
 
   @BeforeTest
   fun setUp() {

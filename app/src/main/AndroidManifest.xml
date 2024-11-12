@@ -19,11 +19,12 @@
         android:allowBackup="true"
         android:icon="@mipmap/icon_launcher"
         android:label="@string/app_name"
+        android:name=".MainOrcaApplication"
         android:roundIcon="@mipmap/icon_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Autos">
         <activity
-            android:name=".activity.MainOrcaActivity"
+            android:name=".activity.OrcaActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -31,8 +32,5 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!--suppress AndroidDomInspection -->
-        <activity android:name="br.com.orcinus.orca.app.activity.SampleOrcaActivity" />
     </application>
 </manifest>

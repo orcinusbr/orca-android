@@ -31,7 +31,6 @@ include(
   ":composite:timeline-test",
   ":core",
   ":core:mastodon",
-  ":core:mastodon-test",
   ":core:sample",
   ":core:sample-test",
   ":core:shared-preferences",

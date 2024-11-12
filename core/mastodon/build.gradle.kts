@@ -41,13 +41,11 @@ android {
 }
 
 dependencies {
-  androidTestImplementation(project(":core:mastodon-test"))
   androidTestImplementation(project(":platform:testing"))
   androidTestImplementation(libs.android.test.runner)
   androidTestImplementation(libs.assertk)
   androidTestImplementation(libs.kotlin.coroutines.test)
   androidTestImplementation(libs.kotlin.test)
-  androidTestImplementation(libs.mockk)
   androidTestImplementation(libs.openTest4J)
 
   api(project(":core-module"))
@@ -77,8 +75,6 @@ dependencies {
   implementation(libs.ktor.serialization.json)
   implementation(libs.loadable)
   implementation(libs.paginate)
-  implementation(libs.unifiedPush.connector)
-  implementation(libs.unifiedPush.connector.ui)
 
   ksp(libs.android.room.compiler)
 
@@ -86,7 +82,6 @@ dependencies {
     because("Ktor references \"StaticLoggerBinder\" and it is missing on minification.")
   }
 
-  testImplementation(project(":core:mastodon-test"))
   testImplementation(project(":core:sample"))
   testImplementation(project(":core:sample-test"))
   testImplementation(project(":core-test"))

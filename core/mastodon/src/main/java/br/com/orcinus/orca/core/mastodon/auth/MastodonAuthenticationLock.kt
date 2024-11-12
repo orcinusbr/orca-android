@@ -21,7 +21,7 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.mastodon.R
 import br.com.orcinus.orca.core.mastodon.auth.authentication.MastodonAuthenticator
-import br.com.orcinus.orca.core.mastodon.notification.NotificationReceiver
+import br.com.orcinus.orca.core.mastodon.notification.NotificationService
 import br.com.orcinus.orca.platform.autos.i18n.ReadableThrowable
 
 /**
@@ -36,7 +36,7 @@ class MastodonAuthenticationLock(
   override val actorProvider: ActorProvider
 ) : AuthenticationLock<MastodonAuthenticator>() {
   override suspend fun onUnlock(actor: Actor.Authenticated) {
-    NotificationReceiver.register(context, actor)
+    NotificationService.bind(context)
   }
 
   override fun createFailedAuthenticationException(): FailedAuthenticationException {

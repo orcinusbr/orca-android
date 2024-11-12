@@ -21,8 +21,9 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.test.core.app.ApplicationProvider
 import assertk.assertThat
-import br.com.orcinus.orca.app.demo.activity.DemoOrcaActivity
+import br.com.orcinus.orca.app.demo.activity.NonDependencyDejectingOrcaActivity
 import br.com.orcinus.orca.composite.timeline.test.onTimeline
 import br.com.orcinus.orca.composite.timeline.test.post.figure.gallery.thumbnail.onThumbnails
 import br.com.orcinus.orca.composite.timeline.test.post.performScrollToPostPreviewWithGalleryPreview
@@ -42,10 +43,14 @@ import org.junit.Rule
 import org.junit.Test
 
 internal class FeedTests {
-  private inline val feedProvider
-    get() = composeRule.activity.coreModule.instance.feedProvider
+  private val feedProvider
+    get() =
+      ApplicationProvider.getApplicationContext<DemoOrcaApplication>()
+        .coreModule
+        .instance
+        .feedProvider
 
-  @get:Rule val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
+  @get:Rule val composeRule = createAndroidComposeRule<NonDependencyDejectingOrcaActivity>()
 
   @Test
   fun searches() {

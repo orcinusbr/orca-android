@@ -15,22 +15,6 @@
 
 package br.com.orcinus.orca.core.mastodon.notification
 
-import br.com.orcinus.orca.std.visibility.PackageProtected
-
-/**
- * Denotes that a structure should not be referenced from APIs unrelated to Mastodon notifications.
- */
-@PackageProtected(
-  "This API is to be referenced only by structures related to the subscription to and receipt of " +
-    "push updates forwarded from the Mastodon server to the device in the form of system " +
-    "notifications. These reside exclusively in the " +
-    "`br.com.orcinus.orca.core.mastodon.notification` package."
-)
-@Target(
-  AnnotationTarget.CLASS,
-  AnnotationTarget.CONSTRUCTOR,
-  AnnotationTarget.FUNCTION,
-  AnnotationTarget.PROPERTY,
-  AnnotationTarget.TYPEALIAS
-)
-annotation class InternalNotificationApi
+/** Listener that is notified whenever a message containing a notification DTO is received. */
+@InternalNotificationApi
+internal typealias OnMessageReceiptListener = () -> Unit
