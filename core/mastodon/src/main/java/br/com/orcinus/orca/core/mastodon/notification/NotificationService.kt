@@ -297,7 +297,7 @@ constructor(private val requester: Requester, private val locksmith: Locksmith) 
    * While not ideal, performing a request to fetch the last notification seems to be the plausible
    * solution for now.
    *
-   * @see OnMessageReceiptListener
+   * @see onMessageReceived
    */
   private fun sendLastNotification() {
     coroutineScope.launch {
