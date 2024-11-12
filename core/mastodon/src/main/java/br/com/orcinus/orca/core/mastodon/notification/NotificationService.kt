@@ -35,6 +35,7 @@ import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authe
 import br.com.orcinus.orca.core.mastodon.notification.security.Locksmith
 import br.com.orcinus.orca.ext.uri.URIBuilder
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
+import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.`if`
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.injector.module.Module
 import com.google.firebase.Firebase
@@ -366,8 +367,22 @@ constructor(private val requester: Requester, private val locksmith: Locksmith) 
   }
 
   companion object {
-    /** [AtomicReference] to the [SingleConnection] currently bound to a [NotificationService]. */
-    @JvmStatic private var currentConnectionRef = AtomicReference<SingleConnection?>(null)
+    /**
+     * Flags with which a connection to a [NotificationService] is bound.
+     *
+     * @see bind
+     * @see Context.BindServiceFlags
+     */
+    @JvmStatic
+    private val flags =
+      Context.BIND_AUTO_CREATE.`if`(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        or(@Suppress("InlinedApi") Context.BIND_NOT_PERCEPTIBLE)
+      }
+
+    /**
+     * [AtomicReference] to the [Context] in which a connection to a [NotificationService] is bound.
+     */
+    @JvmStatic private var bindingContextRef = AtomicReference<Context?>(null)
 
     /** [KSerializer] that serializes the response to a request for obtaining notifications. */
     @InternalNotificationApi
@@ -379,23 +394,18 @@ constructor(private val requester: Requester, private val locksmith: Locksmith) 
      * Connection bound to the (possibly) singly living instance of a [NotificationService]. The
      * existing [NotificationService] is guaranteed to be the only running one if (and only if) a
      * connection to it was bound by calling [bind] — the method by which this class is instantiated
-     * and such singularity is ensured.
+     * and such singularity is ensured. Ultimately, nullifies the binding [Context] when such
+     * connection is undone (i. e., upon a call to [Context.unbindService]).
      *
-     * Ultimately, sets its instance as the current connection when a connection is established to
-     * the [NotificationService] and sets the [currentConnectionRef] to `null` when such connection
-     * is undone (i. e., upon a call to [Context.unbindService]).
-     *
-     * @property context [Context] in which the connection is established.
+     * @property context [Context] to be set as the binding one.
+     * @see bindingContextRef
      * @see AtomicReference.set
      */
-    private data class SingleConnection(private val context: Context) : ServiceConnection {
-      override fun onServiceConnected(name: ComponentName, service: IBinder) {
-        currentConnectionRef.set(this)
-      }
+    private class SingleConnection(private val context: Context) : ServiceConnection {
+      override fun onServiceConnected(name: ComponentName, service: IBinder) =
+        bindingContextRef.set(context)
 
-      override fun onServiceDisconnected(name: ComponentName) {
-        currentConnectionRef.set(null)
-      }
+      override fun onServiceDisconnected(name: ComponentName) = bindingContextRef.set(null)
     }
 
     /**
@@ -405,16 +415,12 @@ constructor(private val requester: Requester, private val locksmith: Locksmith) 
      */
     @JvmStatic
     fun bind(context: Context) {
-      val connection = SingleConnection(context)
-      val isNotBound = currentConnectionRef.get() != connection
+      val isNotBound = bindingContextRef.get() != context
       if (isNotBound) {
         val intent = Intent(context, NotificationService::class.java)
-        var flags = Context.BIND_AUTO_CREATE
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-          flags = flags or Context.BIND_NOT_PERCEPTIBLE
-        }
+        val connection = SingleConnection(context)
         context.bindService(intent, connection, flags)
-        currentConnectionRef.set(connection)
+        bindingContextRef.set(context)
       }
     }
   }
