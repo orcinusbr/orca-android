@@ -291,7 +291,7 @@ internal class NotificationServiceTests {
               prop(Notification::getChannelId).isEqualTo(type.channelID)
               launch {
                 transform("title") { it.extras.getString(Notification.EXTRA_TITLE) }
-                  .isEqualTo(type.getContentTitle(context, requester.lock, dto))
+                  .isEqualTo(type.getContentTitle(context, requester.lock, dto.account, dto.status))
               }
             }
         }

@@ -66,12 +66,13 @@ internal data class MastodonNotification(
       override suspend fun getContentTitle(
         context: Context,
         authenticationLock: SomeAuthenticationLock,
-        parent: MastodonNotification
+        account: MastodonAccount?,
+        status: MastodonStatus?
       ) =
         context.getString(
           R.string.someone_has_favorited_your_post,
-          parent.account?.acct,
-          parent.status?.summarizedContent
+          account?.acct,
+          status?.summarizedContent
         )
     },
 
@@ -84,8 +85,9 @@ internal data class MastodonNotification(
       override suspend fun getContentTitle(
         context: Context,
         authenticationLock: SomeAuthenticationLock,
-        parent: MastodonNotification
-      ) = context.getString(R.string.someone_has_followed_you, parent.account?.acct)
+        account: MastodonAccount?,
+        status: MastodonStatus?
+      ) = context.getString(R.string.someone_has_followed_you, account?.acct)
     },
 
     /** Someone has requested to follow the user. */
@@ -98,8 +100,9 @@ internal data class MastodonNotification(
       override suspend fun getContentTitle(
         context: Context,
         authenticationLock: SomeAuthenticationLock,
-        parent: MastodonNotification
-      ) = context.getString(R.string.someone_has_requested_to_follow_you, parent.account?.acct)
+        account: MastodonAccount?,
+        status: MastodonStatus?
+      ) = context.getString(R.string.someone_has_requested_to_follow_you, account?.acct)
     },
 
     /** Someone has mentioned the user. */
@@ -111,12 +114,13 @@ internal data class MastodonNotification(
       override suspend fun getContentTitle(
         context: Context,
         authenticationLock: SomeAuthenticationLock,
-        parent: MastodonNotification
+        account: MastodonAccount?,
+        status: MastodonStatus?
       ) =
         context.getString(
           R.string.someone_has_mentioned_you,
-          parent.account?.acct,
-          parent.status?.summarizedContent
+          account?.acct,
+          status?.summarizedContent
         )
     },
 
@@ -129,18 +133,16 @@ internal data class MastodonNotification(
       override suspend fun getContentTitle(
         context: Context,
         authenticationLock: SomeAuthenticationLock,
-        parent: MastodonNotification
+        account: MastodonAccount?,
+        status: MastodonStatus?
       ) =
-        if (parent.account != null && parent.account.isOwned(authenticationLock)) {
-          context.getString(
-            R.string.poll_created_by_you_has_ended,
-            parent.status?.summarizedContent
-          )
+        if (account != null && account.isOwned(authenticationLock)) {
+          context.getString(R.string.poll_created_by_you_has_ended, status?.summarizedContent)
         } else {
           context.getString(
             R.string.poll_created_by_someone_has_ended,
-            parent.account?.acct,
-            parent.status?.summarizedContent
+            account?.acct,
+            status?.summarizedContent
           )
         }
     },
@@ -155,12 +157,13 @@ internal data class MastodonNotification(
       override suspend fun getContentTitle(
         context: Context,
         authenticationLock: SomeAuthenticationLock,
-        parent: MastodonNotification
+        account: MastodonAccount?,
+        status: MastodonStatus?
       ) =
         context.getString(
           R.string.someone_has_reposted_your_post,
-          parent.account?.acct,
-          parent.status?.summarizedContent
+          account?.acct,
+          status?.summarizedContent
         )
     },
 
@@ -174,7 +177,8 @@ internal data class MastodonNotification(
       override suspend fun getContentTitle(
         context: Context,
         authenticationLock: SomeAuthenticationLock,
-        parent: MastodonNotification
+        account: MastodonAccount?,
+        status: MastodonStatus?
       ) = context.getString(R.string.relationship_has_been_severed)
     },
 
@@ -188,13 +192,10 @@ internal data class MastodonNotification(
       override suspend fun getContentTitle(
         context: Context,
         authenticationLock: SomeAuthenticationLock,
-        parent: MastodonNotification
+        account: MastodonAccount?,
+        status: MastodonStatus?
       ) =
-        context.getString(
-          R.string.someone_has_published,
-          parent.account?.acct,
-          parent.status?.summarizedContent
-        )
+        context.getString(R.string.someone_has_published, account?.acct, status?.summarizedContent)
     },
 
     /** A [MastodonStatus] with which the user has interacted has been edited. */
@@ -206,13 +207,9 @@ internal data class MastodonNotification(
       override suspend fun getContentTitle(
         context: Context,
         authenticationLock: SomeAuthenticationLock,
-        parent: MastodonNotification
-      ) =
-        context.getString(
-          R.string.someone_has_edited,
-          parent.account?.acct,
-          parent.status?.summarizedContent
-        )
+        account: MastodonAccount?,
+        status: MastodonStatus?
+      ) = context.getString(R.string.someone_has_edited, account?.acct, status?.summarizedContent)
     };
 
     /**
@@ -285,7 +282,10 @@ internal data class MastodonNotification(
      * @param context [Context] from which the [String] will be retrieved given its resource ID.
      * @param authenticationLock [AuthenticationLock] for checking whether the related
      *   [MastodonAccount] is owned by the current [Actor].
-     * @param parent [MastodonNotification] to which this [Type] belongs.
+     * @param account [MastodonAccount] responsible for the event that resulted in the
+     *   [MastodonNotification] being sent.
+     * @param status [MastodonStatus] to which the [MastodonNotification] is related. Only present
+     *   when this is a [FAVOURITE], a [MENTION], a [POLL], a [REBLOG], a [STATUS] or an [UPDATE].
      * @see toNotification
      * @see account
      * @see MastodonAccount.isOwned
@@ -294,7 +294,8 @@ internal data class MastodonNotification(
     abstract suspend fun getContentTitle(
       context: Context,
       authenticationLock: SomeAuthenticationLock,
-      parent: MastodonNotification
+      account: MastodonAccount?,
+      status: MastodonStatus?
     ): String
   }
 
@@ -325,7 +326,7 @@ internal data class MastodonNotification(
   suspend fun toNotification(context: Context, authenticationLock: SomeAuthenticationLock) =
     Notification.Builder(context, type.channelID)
       .setAutoCancel(true)
-      .setContentTitle(type.getContentTitle(context, authenticationLock, parent = this))
+      .setContentTitle(type.getContentTitle(context, authenticationLock, account, status))
       .setShowWhen(true)
       .setWhen(Instant.parse(createdAt).toEpochMilli())
       .build()

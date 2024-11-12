@@ -99,13 +99,8 @@ internal class MastodonNotificationTests {
           type.getContentTitle(
             context,
             authenticationLock,
-            MastodonNotification(
-              /* id = */ "0",
-              type,
-              createdAt,
-              MastodonAccount.default,
-              MastodonStatus.default
-            )
+            MastodonAccount.default,
+            MastodonStatus.default
           )
         }
       }
@@ -177,7 +172,7 @@ internal class MastodonNotificationTests {
             }
             .prop(Notification::extras)
             .prop("title") { it.getString(Notification.EXTRA_TITLE) }
-            .isEqualTo(type.getContentTitle(context, authenticationLock, dto))
+            .isEqualTo(type.getContentTitle(context, authenticationLock, dto.account, dto.status))
         }
       }
     }
