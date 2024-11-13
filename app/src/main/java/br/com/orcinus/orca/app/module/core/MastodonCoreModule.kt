@@ -21,17 +21,22 @@ import br.com.orcinus.orca.core.mastodon.auth.MastodonAuthenticationLock
 import br.com.orcinus.orca.core.mastodon.auth.authentication.MastodonAuthenticator
 import br.com.orcinus.orca.core.mastodon.auth.authorization.MastodonAuthorizer
 import br.com.orcinus.orca.core.mastodon.instance.MastodonInstanceProvider
+import br.com.orcinus.orca.core.mastodon.notification.NotificationPermissionLock
 import br.com.orcinus.orca.core.sharedpreferences.actor.SharedPreferencesActorProvider
 import br.com.orcinus.orca.core.sharedpreferences.feed.profile.post.content.SharedPreferencesTermMuter
 import br.com.orcinus.orca.std.image.compose.async.AsyncImageLoader
 import br.com.orcinus.orca.std.injector.module.injection.immediateInjectionOf
 import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 
-internal fun MastodonCoreModule(context: Context): MastodonCoreModule {
+internal fun MastodonCoreModule(
+  context: Context,
+  notificationPermissionLock: NotificationPermissionLock
+): MastodonCoreModule {
   val actorProvider = SharedPreferencesActorProvider(context, MainImageLoaderProviderFactory)
   val authorizer = MastodonAuthorizer(context)
   val authenticator = MastodonAuthenticator(context, authorizer, actorProvider)
-  val authenticationLock = MastodonAuthenticationLock(context, authenticator, actorProvider)
+  val authenticationLock =
+    MastodonAuthenticationLock(context, notificationPermissionLock, authenticator, actorProvider)
   val termMuter = SharedPreferencesTermMuter(context)
   return MastodonCoreModule(
     lazyInjectionOf {

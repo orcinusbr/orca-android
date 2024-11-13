@@ -74,8 +74,8 @@ import kotlinx.serialization.json.Json
  * @see MastodonNotification.Type
  * @see MastodonNotification.Type.toNotificationChannel
  */
-internal class NotificationService
 @InternalNotificationApi
+internal class NotificationService
 @VisibleForTesting
 constructor(private val requester: Requester, private val locksmith: Locksmith) :
   FirebaseMessagingService() {
@@ -102,7 +102,6 @@ constructor(private val requester: Requester, private val locksmith: Locksmith) 
    * @see sendLastNotification
    * @see subscribe
    */
-  @InternalNotificationApi
   @VisibleForTesting
   var coroutineScope = CoroutineScope(Dispatchers.Default)
     private set
@@ -116,7 +115,6 @@ constructor(private val requester: Requester, private val locksmith: Locksmith) 
    * @see Lifecycle.State.CREATED
    * @see Lifecycle.State.DESTROYED
    */
-  @InternalNotificationApi
   @VisibleForTesting
   var lifecycleState = Lifecycle.State.INITIALIZED
     private set
@@ -125,7 +123,6 @@ constructor(private val requester: Requester, private val locksmith: Locksmith) 
    * [NotificationManager] through which updates received from the server will be forwarded in the
    * form of system notifications.
    */
-  @InternalNotificationApi
   @VisibleForTesting
   inline val notificationManager
     get() = getSystemService<NotificationManager>() as NotificationManager
@@ -136,7 +133,6 @@ constructor(private val requester: Requester, private val locksmith: Locksmith) 
    * @see startFirebaseSdk
    * @see stopFirebaseSdkIfRunning
    */
-  @InternalNotificationApi
   @VisibleForTesting
   inline val isFirebaseSdkRunning
     get() =
@@ -187,7 +183,6 @@ constructor(private val requester: Requester, private val locksmith: Locksmith) 
    * @param coroutineContext [CoroutineContext] to switch to and run suspending operations in.
    * @see Job.isActive
    */
-  @InternalNotificationApi
   @VisibleForTesting
   fun setCoroutineContext(coroutineContext: CoroutineContext) {
     coroutineScope.cancel("Service coroutine context is being changed.")
@@ -204,7 +199,6 @@ constructor(private val requester: Requester, private val locksmith: Locksmith) 
    * @param token Key that identifies each Firebase Cloud Messaging (FCM) client instance.
    * @see subscribe
    */
-  @InternalNotificationApi
   @VisibleForTesting
   fun appendSubscriptionFormData(builder: StringValuesBuilder, actorID: String, token: String) {
     builder.apply {
@@ -242,7 +236,6 @@ constructor(private val requester: Requester, private val locksmith: Locksmith) 
    * @param id ID of the [Notification] whose delivery will be synchronously awaited.
    * @see StatusBarNotification.getId
    */
-  @InternalNotificationApi
   @VisibleForTesting
   suspend fun awaitUntilSent(id: Int) = suspendCoroutine {
     @Suppress("ControlFlowWithEmptyBody") while (hasNotBeenSent(id)) {}
@@ -385,7 +378,6 @@ constructor(private val requester: Requester, private val locksmith: Locksmith) 
     @JvmStatic private var bindingContextRef = AtomicReference<Context?>(null)
 
     /** [KSerializer] that serializes the response to a request for obtaining notifications. */
-    @InternalNotificationApi
     @JvmStatic
     @VisibleForTesting
     val dtosSerializer = ListSerializer(MastodonNotification.serializer())
@@ -402,7 +394,7 @@ constructor(private val requester: Requester, private val locksmith: Locksmith) 
      * @see AtomicReference.set
      */
     private class SingleConnection(private val context: Context) : ServiceConnection {
-      override fun onServiceConnected(name: ComponentName, service: IBinder) =
+      override fun onServiceConnected(name: ComponentName?, service: IBinder?) =
         bindingContextRef.set(context)
 
       override fun onServiceDisconnected(name: ComponentName) = bindingContextRef.set(null)

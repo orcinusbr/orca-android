@@ -54,6 +54,19 @@ internal class AssertExtensionsTests {
   }
 
   @Test
+  fun failsWhenAssertingThatUnboundServiceIsBound() {
+    assertFailure(assertThat<AssertionService>()::isBound).isInstanceOf<AssertionFailedError>()
+  }
+
+  @Test
+  fun passesWhenAssertingThatBoundServiceIsBound() {
+    val intent = Intent(context, AssertionService::class.java)
+    context.startService(intent)
+    assertThat<AssertionService>().isBound()
+    context.stopService(intent)
+  }
+
+  @Test
   fun failsWhenAssertingThatNonLastlyStoppedServiceIsLastlyStopped() {
     assertFailure(assertThat<AssertionService>()::isLastlyStopped)
       .isInstanceOf<AssertionFailedError>()

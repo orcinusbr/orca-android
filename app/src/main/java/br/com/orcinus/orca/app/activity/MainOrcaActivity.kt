@@ -19,6 +19,7 @@ import br.com.orcinus.orca.app.module.core.MastodonCoreModule
 import br.com.orcinus.orca.app.module.feature.profiledetails.MainProfileDetailsModule
 import br.com.orcinus.orca.core.mastodon.auth.authorization.viewmodel.MastodonAuthorizationViewModel
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
+import br.com.orcinus.orca.core.mastodon.notification.NotificationPermissionLock
 import br.com.orcinus.orca.std.injector.Injector
 
 /**
@@ -27,7 +28,10 @@ import br.com.orcinus.orca.std.injector.Injector
  * created.
  */
 internal class MainOrcaActivity : OrcaActivity() {
-  override val coreModule by lazy { MastodonCoreModule(this) }
+  /** [NotificationPermissionLock] for unlocking notification sending. */
+  private val notificationPermissionLock = NotificationPermissionLock(this)
+
+  override val coreModule by lazy { MastodonCoreModule(this, notificationPermissionLock) }
   override val profileDetailsModule by lazy { MainProfileDetailsModule(this) }
 
   override fun inject() {

@@ -18,7 +18,6 @@ package br.com.orcinus.orca.core.mastodon.notification
 import android.app.Application
 import android.app.Notification
 import android.app.NotificationManager
-import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
 import android.service.notification.StatusBarNotification
@@ -29,7 +28,6 @@ import assertk.all
 import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.each
-import assertk.assertions.exactly
 import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
@@ -45,6 +43,7 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus
 import br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvider
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.runAuthenticatedRequesterTest
+import br.com.orcinus.orca.ext.testing.assertThat
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import br.com.orcinus.orca.platform.testing.context
 import br.com.orcinus.orca.std.injector.Injector
@@ -141,15 +140,7 @@ internal class NotificationServiceTests {
     val shadowApplication: ShadowApplication =
       shadowOf(ApplicationProvider.getApplicationContext<Application>())
     NotificationService.bind(context)
-    assertThat(shadowApplication)
-      .prop<_, List<Intent>, _>(ShadowApplication::getAllStartedServices)
-      .exactly(1) {
-        it
-          .prop(Intent::getComponent)
-          .isNotNull()
-          .prop(ComponentName::getClassName)
-          .isEqualTo(NotificationService::class.qualifiedName)
-      }
+    assertThat<NotificationService>().isBound()
     shadowApplication.clearStartedServices()
   }
 
