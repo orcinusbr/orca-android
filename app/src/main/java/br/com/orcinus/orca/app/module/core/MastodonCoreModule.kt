@@ -24,24 +24,16 @@ import br.com.orcinus.orca.core.mastodon.instance.MastodonInstanceProvider
 import br.com.orcinus.orca.core.sharedpreferences.actor.SharedPreferencesActorProvider
 import br.com.orcinus.orca.core.sharedpreferences.feed.profile.post.content.SharedPreferencesTermMuter
 import br.com.orcinus.orca.std.image.compose.async.AsyncImageLoader
-import br.com.orcinus.orca.std.injector.Injector
+import br.com.orcinus.orca.std.injector.module.injection.immediateInjectionOf
 import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 
-private val actorProvider by lazy {
-  SharedPreferencesActorProvider(context, MainImageLoaderProviderFactory)
-}
-private val authorizer by lazy { MastodonAuthorizer(context) }
-private val authenticator by lazy { MastodonAuthenticator(context, authorizer, actorProvider) }
-private val authenticationLock by lazy {
-  MastodonAuthenticationLock(context, authenticator, actorProvider)
-}
-private val termMuter by lazy { SharedPreferencesTermMuter(context) }
-
-private val context
-  get() = Injector.get<Context>()
-
-internal object MainMastodonCoreModule :
-  MastodonCoreModule(
+internal fun MastodonCoreModule(context: Context): MastodonCoreModule {
+  val actorProvider = SharedPreferencesActorProvider(context, MainImageLoaderProviderFactory)
+  val authorizer = MastodonAuthorizer(context)
+  val authenticator = MastodonAuthenticator(context, authorizer, actorProvider)
+  val authenticationLock = MastodonAuthenticationLock(context, authenticator, actorProvider)
+  val termMuter = SharedPreferencesTermMuter(context)
+  return MastodonCoreModule(
     lazyInjectionOf {
       MastodonInstanceProvider(
         context,
@@ -53,6 +45,7 @@ internal object MainMastodonCoreModule :
         AsyncImageLoader.Provider
       )
     },
-    lazyInjectionOf { authenticationLock },
-    lazyInjectionOf { termMuter }
+    immediateInjectionOf(authenticationLock),
+    immediateInjectionOf(termMuter)
   )
+}

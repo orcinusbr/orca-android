@@ -13,9 +13,9 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.app.demo
+package br.com.orcinus.orca.app.demo.activity
 
-import br.com.orcinus.orca.app.OrcaApplication
+import br.com.orcinus.orca.app.activity.OrcaActivity
 import br.com.orcinus.orca.app.demo.module.core.DemoCoreModule
 import br.com.orcinus.orca.app.demo.module.feature.profiledetails.DemoProfileDetailsModule
 import br.com.orcinus.orca.core.feed.profile.Profile
@@ -25,11 +25,11 @@ import br.com.orcinus.orca.platform.core.image.sample
 import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
 
 /**
- * [OrcaApplication] whose [coreModule] is a demo one which has structures that store and read data
+ * [OrcaActivity] whose [coreModule] is a demo one which has structures that store and read data
  * from memory, containing sample [Profile]s and [Post]s by default that can be interacted with in
  * order to demonstrate the overall behavior and functionality of the application.
  */
-internal class DemoOrcaApplication : OrcaApplication() {
+internal class DemoOrcaActivity : OrcaActivity() {
   public override val coreModule =
     DemoCoreModule(
       SampleInstance.Builder.create(ComposableImageLoader.Provider.sample)

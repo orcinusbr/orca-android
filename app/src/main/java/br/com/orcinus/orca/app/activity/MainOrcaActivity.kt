@@ -13,27 +13,27 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.app
+package br.com.orcinus.orca.app.activity
 
-import br.com.orcinus.orca.app.module.core.MainMastodonCoreModule
+import br.com.orcinus.orca.app.module.core.MastodonCoreModule
 import br.com.orcinus.orca.app.module.feature.profiledetails.MainProfileDetailsModule
 import br.com.orcinus.orca.core.mastodon.auth.authorization.viewmodel.MastodonAuthorizationViewModel
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.std.injector.Injector
 
 /**
- * [OrcaApplication] for the main version of Orca, whose [coreModule] contains core structures which
+ * [OrcaActivity] for the main version of Orca, whose [coreModule] contains core structures which
  * perform HTTP requests to the Mastodon API through the [Requester] that gets injected when it is
  * created.
  */
-internal class MainOrcaApplication : OrcaApplication() {
-  override val coreModule = MainMastodonCoreModule
-  override val profileDetailsModule = MainProfileDetailsModule(this)
+internal class MainOrcaActivity : OrcaActivity() {
+  override val coreModule by lazy { MastodonCoreModule(this) }
+  override val profileDetailsModule by lazy { MainProfileDetailsModule(this) }
 
-  override fun onCreate() {
-    super.onCreate()
+  override fun inject() {
+    super.inject()
     Injector.injectLazily {
-      Requester.create(MastodonAuthorizationViewModel.getDomain(context = Injector.get()).uri)
+      Requester.create(MastodonAuthorizationViewModel.getDomain(this@MainOrcaActivity).uri)
     }
   }
 }

@@ -16,12 +16,13 @@
 package br.com.orcinus.orca.app.demo
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.fragment.app.Fragment
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import assertk.assertThat
 import br.com.orcinus.orca.app.R
-import br.com.orcinus.orca.app.activity.OrcaActivity
+import br.com.orcinus.orca.app.demo.activity.DemoOrcaActivity
 import br.com.orcinus.orca.feature.feed.FeedFragment
 import br.com.orcinus.orca.feature.profiledetails.ProfileDetailsFragment
 import org.junit.Rule
@@ -31,19 +32,21 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class BottomNavigationTests {
-  @get:Rule val composeRule = createAndroidComposeRule<OrcaActivity>()
+  private inline val fragments
+    get() = composeRule.activity.supportFragmentManager.fragments as List<Fragment>
+
+  @get:Rule val composeRule = createAndroidComposeRule<DemoOrcaActivity>()
 
   @Test
   fun navigatesOnceWhenClickingFeedItemMultipleTimes() {
     repeat(2) { onView(withId(R.id.feed)).perform(click()) }
-    assertThat(composeRule.activity.supportFragmentManager.fragments)
-      .containsExactlyInstancesOf(FeedFragment::class)
+    assertThat(fragments).containsExactlyInstancesOf(FeedFragment::class)
   }
 
   @Test
   fun navigatesOnceWhenClickingProfileDetailsItemMultipleTimes() {
     repeat(2) { onView(withId(R.id.profile_details)).perform(click()) }
-    assertThat(composeRule.activity.supportFragmentManager.fragments)
+    assertThat(fragments)
       .containsExactlyInstancesOf(FeedFragment::class, ProfileDetailsFragment::class)
   }
 }
