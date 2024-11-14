@@ -33,6 +33,11 @@ import io.mockk.every
 import io.mockk.spyk
 import io.mockk.verify
 import kotlin.test.Test
+import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.currentTime
+import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
@@ -85,9 +90,56 @@ internal class NotificationLockTests {
     every { launcher.launch(Manifest.permission.POST_NOTIFICATIONS) } returns Unit
     launchActivity<RequestActivity>()
       .moveToState(Lifecycle.State.CREATED)
-      ?.onActivity { activity -> NotificationLock(activity, launcher).unlock() }
+      ?.onActivity { NotificationLock(it, launcher).unlock() }
       ?.close()
     verify(exactly = 1) { launcher.launch(Manifest.permission.POST_NOTIFICATIONS) }
+    clearMocks(launcher)
+  }
+
+  @Config(sdk = [Build.VERSION_CODES.TIRAMISU, Build.VERSION_CODES.UPSIDE_DOWN_CAKE])
+  @Test
+  fun doesNotRequestPermissionAgainBeforeIntervalInAnApiLevelInWhichItIsSupported() {
+    val launcher = spyk<ActivityResultLauncher<String>>()
+    every { launcher.launch(Manifest.permission.POST_NOTIFICATIONS) } returns Unit
+    runTest {
+      @OptIn(ExperimentalCoroutinesApi::class)
+      launchActivity<RequestActivity>()
+        .moveToState(Lifecycle.State.CREATED)
+        ?.onActivity {
+          val lock =
+            object : NotificationLock(it, launcher) {
+                override fun getElapsedTime() = currentTime.milliseconds
+              }
+              .apply(NotificationLock::unlock)
+          for (index in NotificationLock.permissionRequestInterval.inWholeMilliseconds until 1) {
+            advanceTimeBy(NotificationLock.permissionRequestInterval - index.milliseconds)
+            lock.unlock()
+            verify(exactly = 0) { launcher.launch(Manifest.permission.POST_NOTIFICATIONS) }
+          }
+        }
+        ?.close()
+    }
+    clearMocks(launcher)
+  }
+
+  @Config(sdk = [Build.VERSION_CODES.TIRAMISU, Build.VERSION_CODES.UPSIDE_DOWN_CAKE])
+  @Test
+  fun requestsPermissionAgainAfterIntervalInAnApiLevelInWhichItIsSupported() {
+    val launcher = spyk<ActivityResultLauncher<String>>()
+    every { launcher.launch(Manifest.permission.POST_NOTIFICATIONS) } returns Unit
+    runTest {
+      @OptIn(ExperimentalCoroutinesApi::class)
+      launchActivity<RequestActivity>().moveToState(Lifecycle.State.CREATED)?.onActivity {
+        val lock =
+          object : NotificationLock(it, launcher) {
+            override fun getElapsedTime() = currentTime.milliseconds
+          }
+        lock.unlock()
+        advanceTimeBy(NotificationLock.permissionRequestInterval)
+        lock.unlock()
+      }
+    }
+    verify(exactly = 2) { launcher.launch(Manifest.permission.POST_NOTIFICATIONS) }
     clearMocks(launcher)
   }
 }
