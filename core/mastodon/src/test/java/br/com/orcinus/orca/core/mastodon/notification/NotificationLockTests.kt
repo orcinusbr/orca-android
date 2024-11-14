@@ -39,7 +39,7 @@ import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
-internal class NotificationPermissionLockTests {
+internal class NotificationLockTests {
   private class RequestActivity : ComponentActivity()
 
   @Test
@@ -52,8 +52,7 @@ internal class NotificationPermissionLockTests {
         .each { assert ->
           assert.given { state ->
             scenario.moveToState(state)?.onActivity { activity: RequestActivity ->
-              assertFailure { NotificationPermissionLock(activity) }
-                .isInstanceOf<IllegalStateException>()
+              assertFailure { NotificationLock(activity) }.isInstanceOf<IllegalStateException>()
             }
           }
         }
@@ -73,7 +72,7 @@ internal class NotificationPermissionLockTests {
   fun bindsServiceWhenUnlockingInAnApiLevelInWhichThePermissionIsUnsupported() {
     launchActivity<RequestActivity>()
       .moveToState(Lifecycle.State.CREATED)
-      ?.onActivity { NotificationPermissionLock(it).unlock() }
+      ?.onActivity { NotificationLock(it).unlock() }
       ?.close()
     assertThat<NotificationService>().isBound()
     shadowOf(ApplicationProvider.getApplicationContext<Application>())?.clearStartedServices()
@@ -86,8 +85,7 @@ internal class NotificationPermissionLockTests {
     every { launcher.launch(Manifest.permission.POST_NOTIFICATIONS) } returns Unit
     launchActivity<RequestActivity>()
       .moveToState(Lifecycle.State.CREATED)
-      ?.onActivity { activity -> NotificationPermissionLock(activity, launcher).unlock() }
-      ?.moveToState(Lifecycle.State.RESUMED)
+      ?.onActivity { activity -> NotificationLock(activity, launcher).unlock() }
       ?.close()
     verify(exactly = 1) { launcher.launch(Manifest.permission.POST_NOTIFICATIONS) }
     clearMocks(launcher)

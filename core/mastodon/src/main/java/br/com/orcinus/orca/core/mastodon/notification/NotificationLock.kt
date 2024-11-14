@@ -42,7 +42,7 @@ import java.lang.ref.WeakReference
  * @see ComponentActivity.registerForActivityResult
  * @see ActivityResultLauncher.launch
  */
-class NotificationPermissionLock
+class NotificationLock
 private constructor(
   private val contextRef: WeakReference<Context>,
   private val launcher: ActivityResultLauncher<String>
@@ -99,8 +99,8 @@ private constructor(
  * @throws IllegalStateException If the [activity] has already been started.
  */
 @Throws(IllegalStateException::class)
-fun NotificationPermissionLock(activity: ComponentActivity) =
-  NotificationPermissionLock(
+fun NotificationLock(activity: ComponentActivity) =
+  NotificationLock(
     activity,
     activity.registerForActivityResult(RequestPermission()) { isGranted ->
       if (isGranted) {
