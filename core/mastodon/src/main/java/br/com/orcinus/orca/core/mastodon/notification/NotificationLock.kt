@@ -85,15 +85,11 @@ private constructor(
 }
 
 /**
- * Handles requesting permission for sending notifications in API levels in which such request is
- * supported or directly binding the [Service] by which updates are listened to from the Mastodon
- * server and forwarded to the device as system notifications; this distinction is necessary because
- * [Manifest.permission.POST_NOTIFICATIONS] is not available in OS versions older than 33
- * (Tiramisu).
+ * Creates a [NotificationLock].
  *
  * This factory method _must_ be called before the [activity] is started, since it registers a
- * request to receive a result — that of asking for the permission — at the very moment the class
- * instance gets created.
+ * request to receive a result — that of asking for the permission — right before the class instance
+ * gets created; not doing so will result in an [IllegalStateException] being thrown.
  *
  * @param activity [ComponentActivity] in which the request is performed.
  * @throws IllegalStateException If the [activity] has already been started.
