@@ -16,6 +16,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application>
         <activity
-            android:name="br.com.orcinus.orca.core.mastodon.notification.NotificationPermissionRequestActivity" />
+            android:name="br.com.orcinus.orca.core.mastodon.notification.DefaultNotificationLockTests$RequestActivity" />
     </application>
 </manifest>

@@ -17,6 +17,7 @@ package br.com.orcinus.orca.core.mastodon.notification
 
 import android.app.Application
 import android.os.Build
+import androidx.activity.ComponentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.launchActivity
@@ -33,17 +34,18 @@ import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 internal class DefaultNotificationLockTests {
+  private class RequestActivity : ComponentActivity()
+
   @Test
   fun throwsWhenConstructedInActivityInStartOrPosteriorState() =
-    launchActivity<NotificationPermissionRequestActivity>().use { scenario ->
+    launchActivity<RequestActivity>().use { scenario ->
       assertThat(Lifecycle.State.entries)
         .transform(">= ${Lifecycle.State.STARTED}") { states ->
           states.filter { state -> state >= Lifecycle.State.STARTED }
         }
         .each { assert ->
           assert.given { state ->
-            scenario.moveToState(state)?.onActivity {
-              activity: NotificationPermissionRequestActivity ->
+            scenario.moveToState(state)?.onActivity { activity: RequestActivity ->
               assertFailure { NotificationLock(activity) }.isInstanceOf<IllegalStateException>()
             }
           }
@@ -62,7 +64,7 @@ internal class DefaultNotificationLockTests {
   )
   @Test
   fun bindsServiceWhenUnlockingInAnApiLevelInWhichThePermissionIsUnsupported() {
-    launchActivity<NotificationPermissionRequestActivity>()
+    launchActivity<RequestActivity>()
       .moveToState(Lifecycle.State.CREATED)
       ?.onActivity { NotificationLock(it).requestUnlock() }
       ?.close()
