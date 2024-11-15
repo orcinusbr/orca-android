@@ -78,7 +78,7 @@ internal class DefaultNotificationLockTests {
   fun doesNotBindServiceBeforePermissionIsGrantedWhenRequestingAnUnlockTwiceInAnApiLevelInWhichThePermissionIsSupported() {
     launchActivity<RequestActivity>()
       .moveToState(Lifecycle.State.CREATED)
-      ?.onActivity { repeat(2) { _ -> NotificationLock(it).requestUnlock() } }
+      ?.onActivity { NotificationLock(it).apply { repeat(2) { _ -> requestUnlock() } } }
       ?.close()
     assertFailure { assertThat<NotificationService>().isBound() }
       .isInstanceOf<AssertionFailedError>()
