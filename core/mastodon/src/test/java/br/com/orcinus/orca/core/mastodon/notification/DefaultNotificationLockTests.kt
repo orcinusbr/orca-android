@@ -28,6 +28,7 @@ import assertk.assertions.isInstanceOf
 import br.com.orcinus.orca.ext.testing.assertThat
 import kotlin.test.Test
 import org.junit.runner.RunWith
+import org.opentest4j.AssertionFailedError
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
@@ -70,5 +71,16 @@ internal class DefaultNotificationLockTests {
       ?.close()
     assertThat<NotificationService>().isBound()
     shadowOf(ApplicationProvider.getApplicationContext<Application>())?.clearStartedServices()
+  }
+
+  @Config(sdk = [Build.VERSION_CODES.TIRAMISU, Build.VERSION_CODES.UPSIDE_DOWN_CAKE])
+  @Test
+  fun doesNotBindServiceBeforePermissionIsGrantedWhenRequestingAnUnlockTwiceInAnApiLevelInWhichThePermissionIsSupported() {
+    launchActivity<RequestActivity>()
+      .moveToState(Lifecycle.State.CREATED)
+      ?.onActivity { repeat(2) { _ -> NotificationLock(it).requestUnlock() } }
+      ?.close()
+    assertFailure { assertThat<NotificationService>().isBound() }
+      .isInstanceOf<AssertionFailedError>()
   }
 }

@@ -145,14 +145,15 @@ private constructor(private val contextRef: WeakReference<Context>) {
    * level does not support requesting such permission, it is directly bound.
    */
   fun requestUnlock() {
-    if (
-      Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      if (
         isPermissionNotGranted &&
-        (timeSinceLastPermissionRequest.isInfinite() ||
-          timeSinceLastPermissionRequest >= permissionRequestInterval)
-    ) {
-      requestPermission()
-      lastPermissionRequestTime = getElapsedTime()
+          (timeSinceLastPermissionRequest.isInfinite() ||
+            timeSinceLastPermissionRequest >= permissionRequestInterval)
+      ) {
+        requestPermission()
+        lastPermissionRequestTime = getElapsedTime()
+      }
     } else {
       lastPermissionRequestTime = null
       onUnlock(context)
