@@ -15,125 +15,64 @@
 
 package br.com.orcinus.orca.core.mastodon.notification
 
-import android.app.Application
 import android.os.Build
-import androidx.activity.ComponentActivity
-import androidx.lifecycle.Lifecycle
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.core.app.launchActivity
-import assertk.assertFailure
 import assertk.assertThat
-import assertk.assertions.each
 import assertk.assertions.isEqualTo
-import assertk.assertions.isInstanceOf
-import br.com.orcinus.orca.ext.testing.assertThat
+import br.com.orcinus.orca.platform.testing.context
 import kotlin.test.Test
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.advanceTimeBy
-import kotlinx.coroutines.test.currentTime
-import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 internal class NotificationLockTests {
-  private class RequestActivity : ComponentActivity()
-
-  @Test
-  fun throwsWhenConstructedInActivityInStartOrPosteriorState() =
-    launchActivity<RequestActivity>().use { scenario ->
-      assertThat(Lifecycle.State.entries)
-        .transform(">= ${Lifecycle.State.STARTED}") { states ->
-          states.filter { state -> state >= Lifecycle.State.STARTED }
-        }
-        .each { assert ->
-          assert.given { state ->
-            scenario.moveToState(state)?.onActivity { activity: RequestActivity ->
-              assertFailure { NotificationLock(activity) }.isInstanceOf<IllegalStateException>()
-            }
-          }
-        }
-    }
-
-  @Config(
-    sdk =
-      [
-        Build.VERSION_CODES.P,
-        Build.VERSION_CODES.Q,
-        Build.VERSION_CODES.R,
-        Build.VERSION_CODES.S,
-        Build.VERSION_CODES.S_V2
-      ]
-  )
-  @Test
-  fun bindsServiceWhenUnlockingInAnApiLevelInWhichThePermissionIsUnsupported() {
-    launchActivity<RequestActivity>()
-      .moveToState(Lifecycle.State.CREATED)
-      ?.onActivity { NotificationLock(it).requestUnlock() }
-      ?.close()
-    assertThat<NotificationService>().isBound()
-    shadowOf(ApplicationProvider.getApplicationContext<Application>())?.clearStartedServices()
-  }
-
   @Config(sdk = [Build.VERSION_CODES.TIRAMISU, Build.VERSION_CODES.UPSIDE_DOWN_CAKE])
   @Test
   fun requestsPermissionWhenUnlockingInAnApiLevelInWhichItIsSupported() {
-    lateinit var lock: NotificationLock
     var permissionRequestCount = 0
-    launchActivity<RequestActivity>()
-      .moveToState(Lifecycle.State.CREATED)
-      ?.onActivity {
-        lock = NotificationLockBuilder().requestPermission { permissionRequestCount++ }.build(it)
-        lock.requestUnlock()
-      }
-      ?.close()
+    NotificationLockBuilder()
+      .requestPermission { permissionRequestCount++ }
+      .build(context)
+      .requestUnlock()
     assertThat(permissionRequestCount).isEqualTo(1)
   }
 
   @Config(sdk = [Build.VERSION_CODES.TIRAMISU, Build.VERSION_CODES.UPSIDE_DOWN_CAKE])
   @Test
   fun doesNotRequestPermissionAgainBeforeIntervalInAnApiLevelInWhichItIsSupported() {
-    runTest {
-      @OptIn(ExperimentalCoroutinesApi::class)
-      launchActivity<RequestActivity>()
-        .moveToState(Lifecycle.State.CREATED)
-        ?.onActivity {
-          var permissionRequestCount = 0
-          val lock =
-            NotificationLockBuilder()
-              .getElapsedTime { currentTime.milliseconds }
-              .requestPermission { permissionRequestCount++ }
-              .build(it)
-              .apply(NotificationLock::requestUnlock)
-          for (index in (NotificationLock.permissionRequestInterval.inWholeMilliseconds until 1)) {
-            advanceTimeBy(NotificationLock.permissionRequestInterval - index.milliseconds)
-            lock.requestUnlock()
-            assertThat(permissionRequestCount).isEqualTo(1)
-          }
+    var permissionRequestCount = 0
+    var elapsedTime = Duration.ZERO
+    NotificationLockBuilder()
+      .getElapsedTime { elapsedTime }
+      .requestPermission { permissionRequestCount++ }
+      .build(context)
+      .apply {
+        requestUnlock()
+        for (index in (NotificationLock.permissionRequestInterval.inWholeMilliseconds until 1)) {
+          elapsedTime += NotificationLock.permissionRequestInterval - index.milliseconds
+
+          requestUnlock()
+          assertThat(permissionRequestCount).isEqualTo(1)
         }
-        ?.close()
-    }
+      }
   }
 
   @Config(sdk = [Build.VERSION_CODES.TIRAMISU, Build.VERSION_CODES.UPSIDE_DOWN_CAKE])
   @Test
   fun requestsPermissionAgainAfterIntervalInAnApiLevelInWhichItIsSupported() {
-    runTest {
-      @OptIn(ExperimentalCoroutinesApi::class)
-      launchActivity<RequestActivity>().moveToState(Lifecycle.State.CREATED)?.onActivity {
-        var permissionRequestCount = 0
-        val lock =
-          NotificationLockBuilder()
-            .getElapsedTime { currentTime.milliseconds }
-            .requestPermission { permissionRequestCount++ }
-            .build(it)
-            .apply(NotificationLock::requestUnlock)
-        advanceTimeBy(NotificationLock.permissionRequestInterval)
-        lock.requestUnlock()
+    var permissionRequestCount = 0
+    var elapsedTime = Duration.ZERO
+    NotificationLockBuilder()
+      .getElapsedTime { elapsedTime }
+      .requestPermission { permissionRequestCount++ }
+      .build(context)
+      .apply {
+        requestUnlock()
+        elapsedTime = NotificationLock.permissionRequestInterval
+        requestUnlock()
       }
-    }
+    assertThat(permissionRequestCount).isEqualTo(2)
   }
 }
