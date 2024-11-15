@@ -106,7 +106,8 @@ private constructor(private val contextRef: WeakReference<Context>) {
     }
 
   /**
-   * Moment at which permission for sending notifications was last requested. `null` when such a
+   * Moment at which permission for sending notifications was last requested. `null` when the
+   * [preferences] are unavailable (because the [context] has been garbage-collected) or such a
    * request has never been performed.
    */
   private inline var lastPermissionRequestTime
