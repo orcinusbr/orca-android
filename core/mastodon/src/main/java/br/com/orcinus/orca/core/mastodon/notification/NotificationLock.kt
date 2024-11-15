@@ -33,18 +33,26 @@ import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
- * [NotificationLock] whose [elapsedTime] is provided by the system.
+ * [NotificationLock] whose elapsed time is provided by the system and that launches the [launcher]
+ * with the notification permission upon an unlock. Implementation constructed by the public factory
+ * method.
  *
  * @param context [Context] in which the request is performed.
  * @param launcher [ActivityResultLauncher] by which permission to send notifications is requested
  *   to be granted by the user. Because asking for this specific one requires an API level of >= 33,
- *   when [unlock] is called, it will be launched only in case such condition is met.
+ *   when [requestUnlock] is called, it will be launched only in case such condition is met.
+ * @see ActivityResultLauncher.launch
+ * @see Manifest.permission.POST_NOTIFICATIONS
+ * @see requestUnlock
  */
-private class SystemTimeBasedNotificationLock(
+private class DefaultNotificationLock(
   context: Context,
-  launcher: ActivityResultLauncher<String>
-) : NotificationLock(context, launcher) {
+  private val launcher: ActivityResultLauncher<String>
+) : NotificationLock(context) {
   override fun getElapsedTime() = System.currentTimeMillis().milliseconds
+
+  @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+  override fun requestPermission() = launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
 }
 
 /**
@@ -55,19 +63,13 @@ private class SystemTimeBasedNotificationLock(
  * versions older than 33 (Tiramisu).
  *
  * @property contextRef [WeakReference] to the [Context] in which the request is performed.
- * @property launcher [ActivityResultLauncher] by which permission to send notifications is
- *   requested to be granted by the user. Because asking for this specific one requires an API level
- *   of >= 33, when [unlock] is called, it will be launched only in case such condition is met.
  * @see permissionRequestInterval
  * @see Build.VERSION_CODES.TIRAMISU
  * @see ComponentActivity.registerForActivityResult
  * @see ActivityResultLauncher.launch
  */
 abstract class NotificationLock
-private constructor(
-  private val contextRef: WeakReference<Context>,
-  private val launcher: ActivityResultLauncher<String>
-) {
+private constructor(private val contextRef: WeakReference<Context>) {
   /**
    * [SharedPreferences] for storing the Unix moment in time at which the request was last
    * performed. Since notifications are not an integral, yet important functionality of the default
@@ -92,8 +94,16 @@ private constructor(
    *
    * @see Duration.INFINITE
    */
-  private inline val timeSinceLastPermissionRequest
-    get() = lastPermissionRequestTime?.let(getElapsedTime()::minus) ?: Duration.INFINITE
+  private inline val timeSinceLastPermissionRequest: Duration
+    get() {
+      val elapsedTime = getElapsedTime()
+      val lastPermissionRequestTime = lastPermissionRequestTime
+      return if (elapsedTime.isFinite() && lastPermissionRequestTime != null) {
+        elapsedTime - lastPermissionRequestTime
+      } else {
+        Duration.INFINITE
+      }
+    }
 
   /**
    * Moment at which permission for sending notifications was last requested. `null` when such a
@@ -126,25 +136,21 @@ private constructor(
         ?.equals(PackageManager.PERMISSION_DENIED)
         ?: true
 
-  @InternalNotificationApi
-  @VisibleForTesting
-  internal constructor(
-    context: Context,
-    launcher: ActivityResultLauncher<String>
-  ) : this(WeakReference(context), launcher)
+  @InternalNotificationApi internal constructor(context: Context?) : this(WeakReference(context))
 
   /**
    * Requests, within the [permissionRequestInterval], the user for permission to send notifications
-   * and then invokes the [onUnlock] listener lambda in case it is granted. If the current API level
-   * does not support requesting such permission, that lambda is invoked directly.
+   * and then invokes binds the notification [Service] in case it is granted. If the current API
+   * level does not support requesting such permission, it is directly bound.
    */
-  fun unlock() {
+  fun requestUnlock() {
     if (
       Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
         isPermissionNotGranted &&
-        timeSinceLastPermissionRequest >= permissionRequestInterval
+        (timeSinceLastPermissionRequest.isInfinite() ||
+          timeSinceLastPermissionRequest >= permissionRequestInterval)
     ) {
-      launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+      requestPermission()
       lastPermissionRequestTime = getElapsedTime()
     } else {
       lastPermissionRequestTime = null
@@ -154,6 +160,9 @@ private constructor(
 
   /** Obtains the amount of time that has elapsed until now. */
   protected abstract fun getElapsedTime(): Duration
+
+  /** Requests to the user permission for sending notifications. */
+  @RequiresApi(Build.VERSION_CODES.TIRAMISU) protected abstract fun requestPermission()
 
   @InternalNotificationApi
   @VisibleForTesting
@@ -190,7 +199,7 @@ private constructor(
  */
 @Throws(IllegalStateException::class)
 fun NotificationLock(activity: ComponentActivity): NotificationLock =
-  SystemTimeBasedNotificationLock(
+  DefaultNotificationLock(
     activity,
     activity.registerForActivityResult(RequestPermission()) { isGranted ->
       if (isGranted) {
@@ -198,22 +207,6 @@ fun NotificationLock(activity: ComponentActivity): NotificationLock =
       }
     }
   )
-
-/**
- * Creates a system-time-based [NotificationLock].
- *
- * @param activity [ComponentActivity] in which the request is performed.
- * @param launcher [ActivityResultLauncher] by which permission to send notifications is requested
- *   to be granted by the user. Because asking for this specific one requires an API level of >= 33,
- *   when [unlock][NotificationLock.unlock] is called, it will be launched only in case such
- *   condition is met.
- */
-@InternalNotificationApi
-@VisibleForTesting
-internal fun NotificationLock(
-  activity: ComponentActivity,
-  launcher: ActivityResultLauncher<String>
-): NotificationLock = SystemTimeBasedNotificationLock(activity, launcher)
 
 /**
  * Callback called whenever either permission to send notifications is granted or the current API

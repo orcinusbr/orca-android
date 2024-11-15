@@ -39,7 +39,7 @@ class MastodonAuthenticationLock(
   override val actorProvider: ActorProvider
 ) : AuthenticationLock<MastodonAuthenticator>() {
   override suspend fun onUnlock(actor: Actor.Authenticated) {
-    notificationLock.unlock()
+    notificationLock.requestUnlock()
   }
 
   override fun createFailedAuthenticationException(): FailedAuthenticationException {

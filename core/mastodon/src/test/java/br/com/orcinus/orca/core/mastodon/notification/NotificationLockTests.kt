@@ -15,23 +15,18 @@
 
 package br.com.orcinus.orca.core.mastodon.notification
 
-import android.Manifest
 import android.app.Application
 import android.os.Build
 import androidx.activity.ComponentActivity
-import androidx.activity.result.ActivityResultLauncher
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.launchActivity
 import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.each
+import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import br.com.orcinus.orca.ext.testing.assertThat
-import io.mockk.clearMocks
-import io.mockk.every
-import io.mockk.spyk
-import io.mockk.verify
 import kotlin.test.Test
 import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -77,7 +72,7 @@ internal class NotificationLockTests {
   fun bindsServiceWhenUnlockingInAnApiLevelInWhichThePermissionIsUnsupported() {
     launchActivity<RequestActivity>()
       .moveToState(Lifecycle.State.CREATED)
-      ?.onActivity { NotificationLock(it).unlock() }
+      ?.onActivity { NotificationLock(it).requestUnlock() }
       ?.close()
     assertThat<NotificationService>().isBound()
     shadowOf(ApplicationProvider.getApplicationContext<Application>())?.clearStartedServices()
@@ -86,60 +81,59 @@ internal class NotificationLockTests {
   @Config(sdk = [Build.VERSION_CODES.TIRAMISU, Build.VERSION_CODES.UPSIDE_DOWN_CAKE])
   @Test
   fun requestsPermissionWhenUnlockingInAnApiLevelInWhichItIsSupported() {
-    val launcher = spyk<ActivityResultLauncher<String>>()
-    every { launcher.launch(Manifest.permission.POST_NOTIFICATIONS) } returns Unit
+    lateinit var lock: NotificationLock
+    var permissionRequestCount = 0
     launchActivity<RequestActivity>()
       .moveToState(Lifecycle.State.CREATED)
-      ?.onActivity { NotificationLock(it, launcher).unlock() }
+      ?.onActivity {
+        lock = NotificationLockBuilder().requestPermission { permissionRequestCount++ }.build(it)
+        lock.requestUnlock()
+      }
       ?.close()
-    verify(exactly = 1) { launcher.launch(Manifest.permission.POST_NOTIFICATIONS) }
-    clearMocks(launcher)
+    assertThat(permissionRequestCount).isEqualTo(1)
   }
 
   @Config(sdk = [Build.VERSION_CODES.TIRAMISU, Build.VERSION_CODES.UPSIDE_DOWN_CAKE])
   @Test
   fun doesNotRequestPermissionAgainBeforeIntervalInAnApiLevelInWhichItIsSupported() {
-    val launcher = spyk<ActivityResultLauncher<String>>()
-    every { launcher.launch(Manifest.permission.POST_NOTIFICATIONS) } returns Unit
     runTest {
       @OptIn(ExperimentalCoroutinesApi::class)
       launchActivity<RequestActivity>()
         .moveToState(Lifecycle.State.CREATED)
         ?.onActivity {
+          var permissionRequestCount = 0
           val lock =
-            object : NotificationLock(it, launcher) {
-                override fun getElapsedTime() = currentTime.milliseconds
-              }
-              .apply(NotificationLock::unlock)
-          for (index in NotificationLock.permissionRequestInterval.inWholeMilliseconds until 1) {
+            NotificationLockBuilder()
+              .getElapsedTime { currentTime.milliseconds }
+              .requestPermission { permissionRequestCount++ }
+              .build(it)
+              .apply(NotificationLock::requestUnlock)
+          for (index in (NotificationLock.permissionRequestInterval.inWholeMilliseconds until 1)) {
             advanceTimeBy(NotificationLock.permissionRequestInterval - index.milliseconds)
-            lock.unlock()
-            verify(exactly = 0) { launcher.launch(Manifest.permission.POST_NOTIFICATIONS) }
+            lock.requestUnlock()
+            assertThat(permissionRequestCount).isEqualTo(1)
           }
         }
         ?.close()
     }
-    clearMocks(launcher)
   }
 
   @Config(sdk = [Build.VERSION_CODES.TIRAMISU, Build.VERSION_CODES.UPSIDE_DOWN_CAKE])
   @Test
   fun requestsPermissionAgainAfterIntervalInAnApiLevelInWhichItIsSupported() {
-    val launcher = spyk<ActivityResultLauncher<String>>()
-    every { launcher.launch(Manifest.permission.POST_NOTIFICATIONS) } returns Unit
     runTest {
       @OptIn(ExperimentalCoroutinesApi::class)
       launchActivity<RequestActivity>().moveToState(Lifecycle.State.CREATED)?.onActivity {
+        var permissionRequestCount = 0
         val lock =
-          object : NotificationLock(it, launcher) {
-            override fun getElapsedTime() = currentTime.milliseconds
-          }
-        lock.unlock()
+          NotificationLockBuilder()
+            .getElapsedTime { currentTime.milliseconds }
+            .requestPermission { permissionRequestCount++ }
+            .build(it)
+            .apply(NotificationLock::requestUnlock)
         advanceTimeBy(NotificationLock.permissionRequestInterval)
-        lock.unlock()
+        lock.requestUnlock()
       }
     }
-    verify(exactly = 2) { launcher.launch(Manifest.permission.POST_NOTIFICATIONS) }
-    clearMocks(launcher)
   }
 }
