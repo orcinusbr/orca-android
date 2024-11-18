@@ -34,8 +34,7 @@ typealias SomeAuthenticationLock = AuthenticationLock<*>
  * @param T [Authenticator] to authenticate the [Actor] with.
  * @see scheduleUnlock
  */
-abstract class AuthenticationLock<T : Authenticator> @InternalCoreApi constructor() :
-  OnUnlockListener<Unit> {
+abstract class AuthenticationLock<T : Authenticator> @InternalCoreApi constructor() {
   /**
    * Authenticated [Actor] which has been obtained from the [actorProvider] before an initial
    * unlock.
@@ -85,6 +84,14 @@ abstract class AuthenticationLock<T : Authenticator> @InternalCoreApi constructo
 
   /** Creates a variant-specific [FailedAuthenticationException]. */
   protected abstract fun createFailedAuthenticationException(): FailedAuthenticationException
+
+  /**
+   * Callback run when an unlock is performed.
+   *
+   * @param actor Authenticated [Actor] resulted from the authentication performed by the unlock to
+   *   which this listener listened or a previous one.
+   */
+  protected abstract suspend fun onUnlock(actor: Actor.Authenticated)
 
   /**
    * Suspends until the [Continuation] associated to the given [listener] is resumed with the value
