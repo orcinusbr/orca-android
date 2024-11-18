@@ -23,7 +23,6 @@ import android.content.Context
 import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
 import assertk.Assert
-import assertk.assertions.any
 import assertk.assertions.contains
 import assertk.assertions.extracting
 import assertk.assertions.isEqualTo
@@ -34,31 +33,6 @@ import kotlin.reflect.KClass
 import org.opentest4j.AssertionFailedError
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowApplication
-
-/**
- * Asserts that a connection is bound to the [Service].
- *
- * @param T [Service] on which the assertion is being performed.
- * @throws AssertionFailedError If a connection is not currently bound to the [Service].
- * @see Context.bindService
- */
-@Throws(AssertionFailedError::class)
-internal inline fun <reified T : Service> Assert<KClass<T>>.isBound(): Assert<KClass<T>> {
-  given { kClass ->
-    assertThat<ShadowApplication>(
-        shadowOf(ApplicationProvider.getApplicationContext<Application>())
-      )
-      .prop<_, List<Intent>, _>(ShadowApplication::getAllStartedServices)
-      .any { intent ->
-        intent
-          .prop(Intent::getComponent)
-          .isNotNull()
-          .prop(ComponentName::getClassName)
-          .isEqualTo(kClass.java.name)
-      }
-  }
-  return this
-}
 
 /**
  * Asserts that the [Service] was the last one to be stopped.
@@ -105,4 +79,20 @@ internal inline fun <reified T : BroadcastReceiver> Assert<KClass<T>>.isRegister
       .contains(T::class)
   }
   return this
+}
+
+/**
+ * Creates an [Assert] on the amount of connections bound to the [Service].
+ *
+ * @param T [Service] on which the assertion is being performed.
+ * @see Context.bindService
+ */
+internal inline fun <reified T : Service> Assert<KClass<T>>.bindingCount(): Assert<Int> {
+  return transform("${T::class.simpleName} binding count") { kClass ->
+    shadowOf(ApplicationProvider.getApplicationContext<Application>())
+      ?.allStartedServices
+      ?.filter { intent -> intent.component?.className == kClass.java.name }
+      ?.size
+      ?: 0
+  }
 }

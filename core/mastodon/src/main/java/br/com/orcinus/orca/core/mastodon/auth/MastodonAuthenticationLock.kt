@@ -38,8 +38,14 @@ class MastodonAuthenticationLock(
   override val authenticator: MastodonAuthenticator,
   override val actorProvider: ActorProvider
 ) : AuthenticationLock<MastodonAuthenticator>() {
+  /** Whether an unlock has not been performed before. */
+  private var isOnFirstUnlock = true
+
   override suspend fun onUnlock(actor: Actor.Authenticated) {
-    notificationLock.requestUnlock()
+    if (isOnFirstUnlock) {
+      notificationLock.requestUnlock()
+      isOnFirstUnlock = false
+    }
   }
 
   override fun createFailedAuthenticationException(): FailedAuthenticationException {

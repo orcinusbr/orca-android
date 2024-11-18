@@ -17,12 +17,6 @@ package br.com.orcinus.orca.core.mastodon.notification
 
 import android.app.Notification
 import android.app.NotificationManager
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.ServiceConnection
-import android.os.Build
-import android.os.IBinder
 import android.service.notification.StatusBarNotification
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.getSystemService
@@ -35,7 +29,6 @@ import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authe
 import br.com.orcinus.orca.core.mastodon.notification.security.Locksmith
 import br.com.orcinus.orca.ext.uri.URIBuilder
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
-import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.`if`
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.injector.module.Module
 import com.google.firebase.Firebase
@@ -48,7 +41,6 @@ import com.google.firebase.messaging.RemoteMessage
 import io.ktor.client.statement.bodyAsText
 import io.ktor.util.StringValuesBuilder
 import java.net.URI
-import java.util.concurrent.atomic.AtomicReference
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -360,61 +352,10 @@ constructor(private val requester: Requester, private val locksmith: Locksmith) 
   }
 
   companion object {
-    /**
-     * Flags with which a connection to a [NotificationService] is bound.
-     *
-     * @see bind
-     * @see Context.BindServiceFlags
-     */
-    @JvmStatic
-    private val flags =
-      Context.BIND_AUTO_CREATE.`if`(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        or(@Suppress("InlinedApi") Context.BIND_NOT_PERCEPTIBLE)
-      }
-
-    /**
-     * [AtomicReference] to the [Context] in which a connection to a [NotificationService] is bound.
-     */
-    @JvmStatic private var bindingContextRef = AtomicReference<Context?>(null)
-
     /** [KSerializer] that serializes the response to a request for obtaining notifications. */
     @JvmStatic
     @VisibleForTesting
     val dtosSerializer = ListSerializer(MastodonNotification.serializer())
-
-    /**
-     * Connection bound to the (possibly) singly living instance of a [NotificationService]. The
-     * existing [NotificationService] is guaranteed to be the only running one if (and only if) a
-     * connection to it was bound by calling [bind] — the method by which this class is instantiated
-     * and such singularity is ensured. Ultimately, nullifies the binding [Context] when such
-     * connection is undone (i. e., upon a call to [Context.unbindService]).
-     *
-     * @property context [Context] to be set as the binding one.
-     * @see bindingContextRef
-     * @see AtomicReference.set
-     */
-    private class SingleConnection(private val context: Context) : ServiceConnection {
-      override fun onServiceConnected(name: ComponentName?, service: IBinder?) =
-        bindingContextRef.set(context)
-
-      override fun onServiceDisconnected(name: ComponentName) = bindingContextRef.set(null)
-    }
-
-    /**
-     * Binds a single connection to a [NotificationService].
-     *
-     * @param context [Context] in which the binding is performed.
-     */
-    @JvmStatic
-    fun bind(context: Context) {
-      val isNotBound = bindingContextRef.get() != context
-      if (isNotBound) {
-        val intent = Intent(context, NotificationService::class.java)
-        val connection = SingleConnection(context)
-        context.bindService(intent, connection, flags)
-        bindingContextRef.set(context)
-      }
-    }
   }
 }
 

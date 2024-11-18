@@ -17,10 +17,14 @@ package br.com.orcinus.orca.core.mastodon.notification
 
 import android.Manifest
 import android.app.Service
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.IBinder
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
@@ -35,24 +39,48 @@ import kotlin.time.Duration.Companion.milliseconds
 /**
  * [NotificationLock] whose elapsed time is provided by the system and that launches the [launcher]
  * with the notification permission upon an unlock. Implementation constructed by the public factory
- * method.
+ * method. This class _must_ be instantiated before the given [ComponentActivity] is started, since
+ * it registers a request to receive a result at the very moment it gets created.
  *
- * @param context [Context] in which the request is performed.
- * @param launcher [ActivityResultLauncher] by which permission to send notifications is requested
- *   to be granted by the user. Because asking for this specific one requires an API level of >= 33,
- *   when [requestUnlock] is called, it will be launched only in case such condition is met.
+ * @param activity [ComponentActivity] in which the request is performed.
  * @see ActivityResultLauncher.launch
  * @see Manifest.permission.POST_NOTIFICATIONS
  * @see requestUnlock
  */
-private class DefaultNotificationLock(
-  context: Context,
-  private val launcher: ActivityResultLauncher<String>
-) : NotificationLock(context) {
+private class DefaultNotificationLock(activity: ComponentActivity) : NotificationLock(activity) {
+  /**
+   * [ActivityResultLauncher] by which permission to send notifications is requested to be granted
+   * by the user. Because asking for this specific one requires an API level of >= 33, when
+   * [requestUnlock] is called, it will be launched only in case such condition is met.
+   */
+  private val launcher =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      activity.registerForActivityResult(RequestPermission()) { isGranted ->
+        if (isGranted) {
+          unlock()
+        }
+      }
+    } else {
+      null
+    }
+
   override fun getElapsedTime() = System.currentTimeMillis().milliseconds
 
   @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-  override fun requestPermission() = launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+  override fun requestPermission() {
+    launcher?.launch(Manifest.permission.POST_NOTIFICATIONS)
+  }
+
+  override fun onUnlock() = Unit
+}
+
+/** [ServiceConnection] bound to a [NotificationService] by a [NotificationLock]. */
+@VisibleForTesting
+@InternalNotificationApi
+internal object NoOpServiceConnection : ServiceConnection {
+  override fun onServiceConnected(name: ComponentName?, service: IBinder?) = Unit
+
+  override fun onServiceDisconnected(name: ComponentName?) = Unit
 }
 
 /**
@@ -95,6 +123,7 @@ private constructor(private val contextRef: WeakReference<Context>) {
    * @see Duration.INFINITE
    */
   private inline val permissionRequestInterval: Duration
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     get() {
       val elapsedTime = getElapsedTime()
       return if (elapsedTime.isFinite()) {
@@ -111,6 +140,7 @@ private constructor(private val contextRef: WeakReference<Context>) {
    * request has never been performed.
    */
   private inline var permissionRequestTime
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     get() =
       preferences
         ?.getLong(PERMISSION_REQUEST_TIME_PREFERENCE_KEY, NEVER)
@@ -145,26 +175,53 @@ private constructor(private val contextRef: WeakReference<Context>) {
    * current API level does not support requesting such permission, it is directly bound.
    */
   fun requestUnlock() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && isPermissionNotGranted) {
       if (
-        isPermissionNotGranted &&
-          (permissionRequestInterval.isInfinite() ||
-            permissionRequestInterval >= permissionRequestIntervalThreshold)
+        permissionRequestInterval.isInfinite() ||
+          permissionRequestInterval >= permissionRequestIntervalThreshold
       ) {
         requestPermission()
         permissionRequestTime = getElapsedTime()
       }
     } else {
       permissionRequestTime = null
-      onUnlock(context)
+      unlock()
     }
   }
 
   /** Obtains the amount of time that has elapsed until now. */
   protected abstract fun getElapsedTime(): Duration
 
+  /**
+   * Callback called whenever this [NotificationLock] is unlocked — that is, a request has been
+   * performed and permission either is granted or has been granted before by the user to send
+   * notifications.
+   *
+   * @see requestUnlock
+   */
+  protected abstract fun onUnlock()
+
   /** Requests to the user permission for sending notifications. */
   @RequiresApi(Build.VERSION_CODES.TIRAMISU) protected abstract fun requestPermission()
+
+  /**
+   * Called whenever either permission to send notifications is granted or the current API level
+   * does not support such request. Essentially, just acts a proxy for binding a no-op connection to
+   * a [NotificationService].
+   *
+   * @see NoOpServiceConnection
+   */
+  protected fun unlock() {
+    context?.let {
+      val intent = Intent(it, NotificationService::class.java)
+      var flags = Context.BIND_AUTO_CREATE
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        flags = flags or Context.BIND_NOT_PERCEPTIBLE
+      }
+      it.bindService(intent, NoOpServiceConnection, flags)
+      onUnlock()
+    }
+  }
 
   @InternalNotificationApi
   @VisibleForTesting
@@ -185,7 +242,9 @@ private constructor(private val contextRef: WeakReference<Context>) {
     private const val NEVER = -1L
 
     /** Minimum time space between one notification permission request and another. */
-    @JvmStatic val permissionRequestIntervalThreshold = 16.days
+    @JvmStatic
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    val permissionRequestIntervalThreshold = 16.days
   }
 }
 
@@ -201,23 +260,4 @@ private constructor(private val contextRef: WeakReference<Context>) {
  */
 @Throws(IllegalStateException::class)
 fun NotificationLock(activity: ComponentActivity): NotificationLock =
-  DefaultNotificationLock(
-    activity,
-    activity.registerForActivityResult(RequestPermission()) { isGranted ->
-      if (isGranted) {
-        onUnlock(activity)
-      }
-    }
-  )
-
-/**
- * Callback called whenever either permission to send notifications is granted or the current API
- * level does not support such request. Essentially, just acts a proxy for calling
- * [NotificationService.bind] with the given [context] passed in as the parameter.
- *
- * @param context [Context] in which a connection to a [NotificationService] is bound — if
- *   non-`null`.
- */
-private fun onUnlock(context: Context?) {
-  context?.let(NotificationService::bind)
-}
+  DefaultNotificationLock(activity)

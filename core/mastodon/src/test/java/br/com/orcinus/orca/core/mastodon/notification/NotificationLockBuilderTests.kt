@@ -15,7 +15,10 @@
 
 package br.com.orcinus.orca.core.mastodon.notification
 
+import android.Manifest
+import android.app.Application
 import android.os.Build
+import androidx.test.core.app.ApplicationProvider
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
@@ -24,6 +27,7 @@ import kotlin.test.Test
 import kotlin.time.Duration
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
 @Config(sdk = [Build.VERSION_CODES.TIRAMISU, Build.VERSION_CODES.UPSIDE_DOWN_CAKE])
@@ -58,5 +62,14 @@ internal class NotificationLockBuilderTests {
       .build(context)
       .requestUnlock()
     assertThat(isPermissionRequested).isTrue()
+  }
+
+  @Test
+  fun setsOnUnlock() {
+    var hasUnlocked = false
+    shadowOf(ApplicationProvider.getApplicationContext<Application>())
+      ?.grantPermissions(Manifest.permission.POST_NOTIFICATIONS)
+    NotificationLockBuilder().onUnlock { hasUnlocked = true }.build(context).requestUnlock()
+    assertThat(hasUnlocked).isTrue()
   }
 }

@@ -30,6 +30,9 @@ internal class NotificationLockBuilder {
   /** Lambda to be invoked whenever permission to send notifications is requested. */
   private var requestPermission = {}
 
+  /** Lambda to be invoked whenever an unlock is performed on the built [NotificationLock]. */
+  private var onUnlock = {}
+
   /**
    * [NotificationLock] built by this [NotificationLockBuilder].
    *
@@ -39,6 +42,8 @@ internal class NotificationLockBuilder {
     override fun getElapsedTime() = this@NotificationLockBuilder.getElapsedTime()
 
     override fun requestPermission() = this@NotificationLockBuilder.requestPermission()
+
+    override fun onUnlock() = this@NotificationLockBuilder.onUnlock()
   }
 
   /**
@@ -60,6 +65,14 @@ internal class NotificationLockBuilder {
   fun requestPermission(requestPermission: () -> Unit) = apply {
     this.requestPermission = requestPermission
   }
+
+  /**
+   * Defines the action to be performed when an unlock is performed.
+   *
+   * @param onUnlock Lambda invoked whenever its analogous method is called.
+   * @see NotificationLock.onUnlock
+   */
+  fun onUnlock(onUnlock: () -> Unit) = apply { this.onUnlock = onUnlock }
 
   /**
    * Builds a [NotificationLock] with the specified configuration.

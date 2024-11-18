@@ -20,8 +20,11 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Binder
+import androidx.test.rule.ServiceTestRule
 import assertk.assertFailure
+import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
+import assertk.assertions.isZero
 import br.com.orcinus.orca.ext.testing.assertThat
 import br.com.orcinus.orca.platform.testing.context
 import kotlin.test.Test
@@ -32,7 +35,7 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 internal class AssertExtensionsTests {
   private class AssertionService : Service() {
-    var binder: Binder? = null
+    private var binder: Binder? = null
 
     override fun onCreate() {
       super.onCreate()
@@ -54,16 +57,37 @@ internal class AssertExtensionsTests {
   }
 
   @Test
-  fun failsWhenAssertingThatUnboundServiceIsBound() {
-    assertFailure(assertThat<AssertionService>()::isBound).isInstanceOf<AssertionFailedError>()
+  fun failsWhenAssertingThatServiceBindingCountEqualsToOtherThanTheActualOne() {
+    val intent = Intent(context, AssertionService::class.java)
+    ServiceTestRule()
+      .apply { repeat(3) { bindService(intent) } }
+      .also {
+        assertFailure { assertThat<AssertionService>().bindingCount().isEqualTo(4) }
+          .isInstanceOf<AssertionFailedError>()
+      }
+      .shutdownService()
   }
 
   @Test
-  fun passesWhenAssertingThatBoundServiceIsBound() {
+  fun passesWhenAssertingThatServiceBindingCountIsZeroWhileItIsUnbound() {
+    assertThat<AssertionService>().bindingCount().isZero()
+  }
+
+  @Test
+  fun passesWhenAssertingThatServiceBindingCountIsOneWhileOneIsBound() {
+    ServiceTestRule()
+      .apply { bindService(Intent(context, AssertionService::class.java)) }
+      .also { assertThat<AssertionService>().bindingCount().isEqualTo(1) }
+      .unbindService()
+  }
+
+  @Test
+  fun passesWhenAssertingThatServiceBindingCountIsMoreThanOneWhileMultipleAreBound() {
     val intent = Intent(context, AssertionService::class.java)
-    context.startService(intent)
-    assertThat<AssertionService>().isBound()
-    context.stopService(intent)
+    ServiceTestRule()
+      .apply { repeat(2) { bindService(intent) } }
+      .also { assertThat<AssertionService>().bindingCount().isEqualTo(2) }
+      .shutdownService()
   }
 
   @Test

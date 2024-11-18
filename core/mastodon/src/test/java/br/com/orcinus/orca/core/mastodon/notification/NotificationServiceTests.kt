@@ -15,20 +15,16 @@
 
 package br.com.orcinus.orca.core.mastodon.notification
 
-import android.app.Application
 import android.app.Notification
 import android.app.NotificationManager
 import android.content.Intent
-import android.content.ServiceConnection
 import android.service.notification.StatusBarNotification
 import androidx.lifecycle.Lifecycle
-import androidx.test.core.app.ApplicationProvider
 import app.cash.turbine.test
 import assertk.all
 import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.each
-import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
@@ -43,7 +39,6 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus
 import br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvider
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.runAuthenticatedRequesterTest
-import br.com.orcinus.orca.ext.testing.assertThat
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import br.com.orcinus.orca.platform.testing.context
 import br.com.orcinus.orca.std.injector.Injector
@@ -69,9 +64,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.Shadows.shadowOf
 import org.robolectric.android.controller.ServiceController
-import org.robolectric.shadows.ShadowApplication
 
 @RunWith(RobolectricTestRunner::class)
 internal class NotificationServiceTests {
@@ -133,26 +126,6 @@ internal class NotificationServiceTests {
     }
     assertThat(isRetrieved).isTrue()
     Injector.clear()
-  }
-
-  @Test
-  fun binds() {
-    val shadowApplication: ShadowApplication =
-      shadowOf(ApplicationProvider.getApplicationContext<Application>())
-    NotificationService.bind(context)
-    assertThat<NotificationService>().isBound()
-    shadowApplication.clearStartedServices()
-  }
-
-  @Test
-  fun bindsOnce() {
-    val shadowApplication: ShadowApplication =
-      shadowOf(ApplicationProvider.getApplicationContext<Application>())
-    repeat(2) { NotificationService.bind(context) }
-    assertThat(shadowApplication)
-      .prop<_, List<ServiceConnection>, _>(ShadowApplication::getBoundServiceConnections)
-      .hasSize(1)
-    shadowApplication.clearStartedServices()
   }
 
   @Test
