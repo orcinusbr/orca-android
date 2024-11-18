@@ -146,9 +146,9 @@ private constructor(private val contextRef: WeakReference<Context>) {
         ?.getLong(PERMISSION_REQUEST_TIME_PREFERENCE_KEY, NEVER)
         ?.takeUnless(NEVER::equals)
         ?.milliseconds
-    set(lastPermissionRequestTime) {
+    set(permissionRequestTime) {
       preferences?.edit {
-        lastPermissionRequestTime?.let {
+        permissionRequestTime?.let {
           putLong(PERMISSION_REQUEST_TIME_PREFERENCE_KEY, it.inWholeMilliseconds)
         }
           ?: remove(PERMISSION_REQUEST_TIME_PREFERENCE_KEY)
