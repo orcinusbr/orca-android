@@ -23,7 +23,6 @@ import br.com.orcinus.orca.ext.testing.assertThat
 import br.com.orcinus.orca.platform.testing.context
 import kotlin.test.Test
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
@@ -45,20 +44,12 @@ internal class NotificationLockTests {
   @Test
   fun doesNotRequestPermissionAgainBeforeIntervalInAnApiLevelInWhichItIsSupported() {
     var permissionRequestCount = 0
-    var elapsedTime = Duration.ZERO
     NotificationLockBuilder()
-      .getElapsedTime { elapsedTime }
       .requestPermission { permissionRequestCount++ }
       .build(context)
       .apply {
-        requestUnlock()
-        for (index in
-          (NotificationLock.permissionRequestIntervalThreshold.inWholeMilliseconds until 1)) {
-          elapsedTime += NotificationLock.permissionRequestIntervalThreshold - index.milliseconds
-
-          requestUnlock()
-          assertThat(permissionRequestCount).isEqualTo(1)
-        }
+        repeat(2) { requestUnlock() }
+        assertThat(permissionRequestCount).isEqualTo(1)
       }
   }
 
