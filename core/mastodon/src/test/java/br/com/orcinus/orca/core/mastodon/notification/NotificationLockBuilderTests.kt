@@ -40,6 +40,7 @@ internal class NotificationLockBuilderTests {
       .requestPermission { permissionRequestCount++ }
       .build(context)
       .apply { repeat(2) { requestUnlock() } }
+      .shutServicesDown()
     assertThat(permissionRequestCount).isEqualTo(1)
   }
 
@@ -51,6 +52,7 @@ internal class NotificationLockBuilderTests {
       .requestPermission { permissionRequestCount++ }
       .build(context)
       .apply { repeat(2) { requestUnlock() } }
+      .shutServicesDown()
     assertThat(permissionRequestCount).isEqualTo(2)
   }
 
@@ -60,7 +62,8 @@ internal class NotificationLockBuilderTests {
     NotificationLockBuilder()
       .requestPermission { isPermissionRequested = true }
       .build(context)
-      .requestUnlock()
+      .apply(NotificationLock::requestUnlock)
+      .shutServicesDown()
     assertThat(isPermissionRequested).isTrue()
   }
 
@@ -69,7 +72,11 @@ internal class NotificationLockBuilderTests {
     var hasUnlocked = false
     shadowOf(ApplicationProvider.getApplicationContext<Application>())
       ?.grantPermissions(Manifest.permission.POST_NOTIFICATIONS)
-    NotificationLockBuilder().onUnlock { hasUnlocked = true }.build(context).requestUnlock()
+    NotificationLockBuilder()
+      .onUnlock { hasUnlocked = true }
+      .build(context)
+      .apply(NotificationLock::requestUnlock)
+      .shutServicesDown()
     assertThat(hasUnlocked).isTrue()
   }
 }

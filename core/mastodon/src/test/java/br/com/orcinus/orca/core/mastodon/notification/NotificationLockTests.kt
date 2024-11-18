@@ -36,7 +36,8 @@ internal class NotificationLockTests {
     NotificationLockBuilder()
       .requestPermission { permissionRequestCount++ }
       .build(context)
-      .requestUnlock()
+      .apply(NotificationLock::requestUnlock)
+      .shutServicesDown()
     assertThat(permissionRequestCount).isEqualTo(1)
   }
 
@@ -51,6 +52,7 @@ internal class NotificationLockTests {
         repeat(2) { requestUnlock() }
         assertThat(permissionRequestCount).isEqualTo(1)
       }
+      .shutServicesDown()
   }
 
   @Config(sdk = [Build.VERSION_CODES.TIRAMISU, Build.VERSION_CODES.UPSIDE_DOWN_CAKE])
@@ -67,6 +69,7 @@ internal class NotificationLockTests {
         elapsedTime = NotificationLock.permissionRequestIntervalThreshold
         requestUnlock()
       }
+      .shutServicesDown()
     assertThat(permissionRequestCount).isEqualTo(2)
   }
 

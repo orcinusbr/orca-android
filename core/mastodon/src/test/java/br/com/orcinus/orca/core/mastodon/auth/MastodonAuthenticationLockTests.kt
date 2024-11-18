@@ -36,30 +36,25 @@ internal class MastodonAuthenticationLockTests {
   @Test
   fun unlocksNotificationLock() {
     var hasUnlocked = false
+    val notificationLock = NotificationLockBuilder().onUnlock { hasUnlocked = true }.build(context)
     runTest {
-      MastodonAuthenticationLock(
-          context,
-          NotificationLockBuilder().onUnlock { hasUnlocked = true }.build(context),
-          authenticator,
-          actorProvider
-        )
+      MastodonAuthenticationLock(context, notificationLock, authenticator, actorProvider)
         .scheduleUnlock {}
     }
     assertThat(hasUnlocked).isTrue()
+    notificationLock.shutServicesDown()
   }
 
   @Test
   fun unlocksNotificationLockOnlyOnceAfterBeingUnlockedTwice() {
     var unlockCount = 0
+    val notificationLock = NotificationLockBuilder().onUnlock { unlockCount++ }.build(context)
     runTest {
-      MastodonAuthenticationLock(
-          context,
-          NotificationLockBuilder().onUnlock { unlockCount++ }.build(context),
-          authenticator,
-          actorProvider
-        )
-        .apply { repeat(2) { scheduleUnlock {} } }
+      MastodonAuthenticationLock(context, notificationLock, authenticator, actorProvider).apply {
+        repeat(2) { scheduleUnlock {} }
+      }
     }
     assertThat(unlockCount).isEqualTo(1)
+    notificationLock.shutServicesDown()
   }
 }
