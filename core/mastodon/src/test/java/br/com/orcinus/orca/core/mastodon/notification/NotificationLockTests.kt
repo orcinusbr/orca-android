@@ -16,7 +16,6 @@
 package br.com.orcinus.orca.core.mastodon.notification
 
 import android.os.Build
-import android.os.Looper
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isZero
@@ -27,7 +26,6 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
@@ -87,7 +85,6 @@ internal class NotificationLockTests {
       .build(context)
       .apply { repeat(2) { requestUnlock() } }
       .shutServicesDown()
-    shadowOf(Looper.getMainLooper())?.runToEndOfTasks()
     assertThat<NotificationService>().bindingCount().isZero()
   }
 }
