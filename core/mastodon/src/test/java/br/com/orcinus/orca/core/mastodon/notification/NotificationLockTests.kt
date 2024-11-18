@@ -16,14 +16,18 @@
 package br.com.orcinus.orca.core.mastodon.notification
 
 import android.os.Build
+import android.os.Looper
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isZero
+import br.com.orcinus.orca.ext.testing.assertThat
 import br.com.orcinus.orca.platform.testing.context
 import kotlin.test.Test
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
@@ -75,5 +79,15 @@ internal class NotificationLockTests {
         requestUnlock()
       }
     assertThat(permissionRequestCount).isEqualTo(2)
+  }
+
+  @Test
+  fun shutsServicesDown() {
+    NotificationLockBuilder()
+      .build(context)
+      .apply { repeat(2) { requestUnlock() } }
+      .shutServicesDown()
+    shadowOf(Looper.getMainLooper())?.runToEndOfTasks()
+    assertThat<NotificationService>().bindingCount().isZero()
   }
 }

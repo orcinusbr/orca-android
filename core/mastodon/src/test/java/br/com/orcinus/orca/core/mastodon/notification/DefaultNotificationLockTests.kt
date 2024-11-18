@@ -106,9 +106,10 @@ internal class DefaultNotificationLockTests {
     launchActivity<RequestActivity>()
       .moveToState(Lifecycle.State.CREATED)
       ?.onActivity {
-        NotificationLock(it).requestUnlock()
-        assertThat<NotificationService>().bindingCount().isEqualTo(1)
-        it.unbindService(NoOpServiceConnection)
+        NotificationLock(it)
+          .apply(NotificationLock::requestUnlock)
+          .also { assertThat<NotificationService>().bindingCount().isEqualTo(1) }
+          .shutServicesDown()
       }
       ?.close()
   }
@@ -131,9 +132,10 @@ internal class DefaultNotificationLockTests {
     launchActivity<RequestActivity>()
       .moveToState(Lifecycle.State.CREATED)
       ?.onActivity {
-        NotificationLock(it).apply { repeat(2) { requestUnlock() } }
-        assertThat<NotificationService>().bindingCount().isEqualTo(2)
-        it.unbindService(NoOpServiceConnection)
+        NotificationLock(it)
+          .apply { repeat(2) { requestUnlock() } }
+          .also { assertThat<NotificationService>().bindingCount().isEqualTo(2) }
+          .shutServicesDown()
       }
       ?.close()
   }

@@ -74,15 +74,6 @@ private class DefaultNotificationLock(activity: ComponentActivity) : Notificatio
   override fun onUnlock() = Unit
 }
 
-/** [ServiceConnection] bound to a [NotificationService] by a [NotificationLock]. */
-@VisibleForTesting
-@InternalNotificationApi
-internal object NoOpServiceConnection : ServiceConnection {
-  override fun onServiceConnected(name: ComponentName?, service: IBinder?) = Unit
-
-  override fun onServiceDisconnected(name: ComponentName?) = Unit
-}
-
 /**
  * Handles performance of timed-spaced permission requests for sending notifications in API levels
  * in which such request is supported or directly binding the [Service] by which updates are
@@ -110,6 +101,19 @@ private constructor(private val contextRef: WeakReference<Context>) {
   private val preferences by lazy {
     context?.getSharedPreferences(this::class.qualifiedName, Context.MODE_PRIVATE)
   }
+
+  /**
+   * Amount of [NotificationService]s to which a connection has been bound by this
+   * [NotificationLock].
+   */
+  private var boundServicesCount = 0
+
+  /**
+   * [Intent] which which a connection to a [NotificationService] is bound by this
+   * [NotificationLock] when it is unlocked.
+   */
+  private val serviceIntent
+    get() = Intent(context, NotificationService::class.java)
 
   /** [Context] referenced by the [contextRef]; `null` if garbage-collected. */
   private inline val context
@@ -167,6 +171,16 @@ private constructor(private val contextRef: WeakReference<Context>) {
         ?.equals(PackageManager.PERMISSION_DENIED)
         ?: true
 
+  /**
+   * [ServiceConnection] bound to a [NotificationService], which does nothing upon connection and
+   * disconnection.
+   */
+  private object NoOpServiceConnection : ServiceConnection {
+    override fun onServiceConnected(name: ComponentName?, service: IBinder?) = Unit
+
+    override fun onServiceDisconnected(name: ComponentName?) = Unit
+  }
+
   @InternalNotificationApi internal constructor(context: Context?) : this(WeakReference(context))
 
   /**
@@ -187,6 +201,16 @@ private constructor(private val contextRef: WeakReference<Context>) {
       permissionRequestTime = null
       unlock()
     }
+  }
+
+  /**
+   * Unbinds connections bound to [NotificationService]s by this [NotificationLock] and stops them.
+   */
+  @VisibleForTesting
+  internal fun shutServicesDown() {
+    context?.unbindService(NoOpServiceConnection)
+    repeat(boundServicesCount) { context?.stopService(serviceIntent) }
+    boundServicesCount = 0
   }
 
   /** Obtains the amount of time that has elapsed until now. */
@@ -213,12 +237,12 @@ private constructor(private val contextRef: WeakReference<Context>) {
    */
   protected fun unlock() {
     context?.let {
-      val intent = Intent(it, NotificationService::class.java)
       var flags = Context.BIND_AUTO_CREATE
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
         flags = flags or Context.BIND_NOT_PERCEPTIBLE
       }
-      it.bindService(intent, NoOpServiceConnection, flags)
+      it.bindService(serviceIntent, NoOpServiceConnection, flags)
+      boundServicesCount++
       onUnlock()
     }
   }

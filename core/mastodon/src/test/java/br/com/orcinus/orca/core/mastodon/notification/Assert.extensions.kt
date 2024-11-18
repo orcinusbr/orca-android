@@ -89,10 +89,18 @@ internal inline fun <reified T : BroadcastReceiver> Assert<KClass<T>>.isRegister
  */
 internal inline fun <reified T : Service> Assert<KClass<T>>.bindingCount(): Assert<Int> {
   return transform("${T::class.simpleName} binding count") { kClass ->
-    shadowOf(ApplicationProvider.getApplicationContext<Application>())
-      ?.allStartedServices
-      ?.filter { intent -> intent.component?.className == kClass.java.name }
-      ?.size
-      ?: 0
+    val application = ApplicationProvider.getApplicationContext<Application>()
+    val shadowApplication = shadowOf(application) ?: return@transform 0
+    val isStartableBy = { intent: Intent -> intent.component?.className == kClass.java.name }
+    var stoppingCount = 0
+    while (true) {
+      shadowApplication.nextStoppedService?.let {
+        if (isStartableBy(it)) {
+          stoppingCount++
+        }
+      }
+        ?: break
+    }
+    shadowApplication.allStartedServices?.count(isStartableBy)?.minus(stoppingCount) ?: 0
   }
 }
