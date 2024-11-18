@@ -50,8 +50,9 @@ internal class NotificationLockTests {
       .build(context)
       .apply {
         requestUnlock()
-        for (index in (NotificationLock.permissionRequestInterval.inWholeMilliseconds until 1)) {
-          elapsedTime += NotificationLock.permissionRequestInterval - index.milliseconds
+        for (index in
+          (NotificationLock.permissionRequestIntervalThreshold.inWholeMilliseconds until 1)) {
+          elapsedTime += NotificationLock.permissionRequestIntervalThreshold - index.milliseconds
 
           requestUnlock()
           assertThat(permissionRequestCount).isEqualTo(1)
@@ -70,7 +71,7 @@ internal class NotificationLockTests {
       .build(context)
       .apply {
         requestUnlock()
-        elapsedTime = NotificationLock.permissionRequestInterval
+        elapsedTime = NotificationLock.permissionRequestIntervalThreshold
         requestUnlock()
       }
     assertThat(permissionRequestCount).isEqualTo(2)

@@ -63,7 +63,7 @@ private class DefaultNotificationLock(
  * versions older than 33 (Tiramisu).
  *
  * @property contextRef [WeakReference] to the [Context] in which the request is performed.
- * @see permissionRequestInterval
+ * @see permissionRequestIntervalThreshold
  * @see Build.VERSION_CODES.TIRAMISU
  * @see ComponentActivity.registerForActivityResult
  * @see ActivityResultLauncher.launch
@@ -76,8 +76,8 @@ private constructor(private val contextRef: WeakReference<Context>) {
    * version of Orca whose absence may be confusing to the user (even if they have chosen to not
    * grant permission before), an interval of sixteen days between each request is arbitrarily set.
    *
-   * @see timeSinceLastPermissionRequest
    * @see permissionRequestInterval
+   * @see permissionRequestIntervalThreshold
    */
   private val preferences by lazy {
     context?.getSharedPreferences(this::class.qualifiedName, Context.MODE_PRIVATE)
@@ -88,21 +88,21 @@ private constructor(private val contextRef: WeakReference<Context>) {
     get() = contextRef.get()
 
   /**
-   * Interval between now and the last time a request for the user to grant permission to send
-   * notifications was performed. Infinite when either the [preferences] are unavailable (due to the
-   * [context] having been garbage-collected) or such a request has never been made.
+   * Time elapsed since the last request for the user to grant permission to send notifications was
+   * performed. Infinite when either the [preferences] are unavailable (due to the [context] having
+   * been garbage-collected) or such a request has never been made.
    *
    * @see Duration.INFINITE
    */
-  private inline val timeSinceLastPermissionRequest: Duration
+  private inline val permissionRequestInterval: Duration
     get() {
       val elapsedTime = getElapsedTime()
-      val lastPermissionRequestTime = lastPermissionRequestTime
-      return if (elapsedTime.isFinite() && lastPermissionRequestTime != null) {
-        elapsedTime - lastPermissionRequestTime
+      return if (elapsedTime.isFinite()) {
+        permissionRequestTime?.let(elapsedTime::minus)
       } else {
-        Duration.INFINITE
+        null
       }
+        ?: Duration.INFINITE
     }
 
   /**
@@ -110,18 +110,18 @@ private constructor(private val contextRef: WeakReference<Context>) {
    * [preferences] are unavailable (because the [context] has been garbage-collected) or such a
    * request has never been performed.
    */
-  private inline var lastPermissionRequestTime
+  private inline var permissionRequestTime
     get() =
       preferences
-        ?.getLong(LAST_PERMISSION_REQUEST_TIME_PREFERENCE_KEY, NEVER)
+        ?.getLong(PERMISSION_REQUEST_TIME_PREFERENCE_KEY, NEVER)
         ?.takeUnless(NEVER::equals)
         ?.milliseconds
     set(lastPermissionRequestTime) {
       preferences?.edit {
         lastPermissionRequestTime?.let {
-          putLong(LAST_PERMISSION_REQUEST_TIME_PREFERENCE_KEY, it.inWholeMilliseconds)
+          putLong(PERMISSION_REQUEST_TIME_PREFERENCE_KEY, it.inWholeMilliseconds)
         }
-          ?: remove(LAST_PERMISSION_REQUEST_TIME_PREFERENCE_KEY)
+          ?: remove(PERMISSION_REQUEST_TIME_PREFERENCE_KEY)
       }
     }
 
@@ -140,22 +140,22 @@ private constructor(private val contextRef: WeakReference<Context>) {
   @InternalNotificationApi internal constructor(context: Context?) : this(WeakReference(context))
 
   /**
-   * Requests, within the [permissionRequestInterval], the user for permission to send notifications
-   * and then invokes binds the notification [Service] in case it is granted. If the current API
-   * level does not support requesting such permission, it is directly bound.
+   * Requests, within the [permissionRequestIntervalThreshold], the user for permission to send
+   * notifications and then invokes binds the notification [Service] in case it is granted. If the
+   * current API level does not support requesting such permission, it is directly bound.
    */
   fun requestUnlock() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
       if (
         isPermissionNotGranted &&
-          (timeSinceLastPermissionRequest.isInfinite() ||
-            timeSinceLastPermissionRequest >= permissionRequestInterval)
+          (permissionRequestInterval.isInfinite() ||
+            permissionRequestInterval >= permissionRequestIntervalThreshold)
       ) {
         requestPermission()
-        lastPermissionRequestTime = getElapsedTime()
+        permissionRequestTime = getElapsedTime()
       }
     } else {
-      lastPermissionRequestTime = null
+      permissionRequestTime = null
       onUnlock(context)
     }
   }
@@ -173,19 +173,19 @@ private constructor(private val contextRef: WeakReference<Context>) {
      * Key that identifies the preference characterizing the Unix time at which permission to send
      * notifications was last requested to the user.
      */
-    private const val LAST_PERMISSION_REQUEST_TIME_PREFERENCE_KEY = "last-permission-request"
+    private const val PERMISSION_REQUEST_TIME_PREFERENCE_KEY = "permission-request-time"
 
     /**
      * Initial value of the last permission request time preference which denotes that such a
      * request has not been performed before.
      *
      * @see preferences
-     * @see LAST_PERMISSION_REQUEST_TIME_PREFERENCE_KEY
+     * @see PERMISSION_REQUEST_TIME_PREFERENCE_KEY
      */
     private const val NEVER = -1L
 
-    /** Interval in which permission to send notifications is requested to the user. */
-    @JvmStatic val permissionRequestInterval = 16.days
+    /** Minimum time space between one notification permission request and another. */
+    @JvmStatic val permissionRequestIntervalThreshold = 16.days
   }
 }
 
