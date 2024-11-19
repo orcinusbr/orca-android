@@ -94,7 +94,7 @@ private constructor(private val contextRef: WeakReference<Context>) {
    * [SharedPreferences] for storing the Unix moment in time at which the request was last
    * performed. Since notifications are not an integral, yet important functionality of the default
    * version of Orca whose absence may be confusing to the user (even if they have chosen to not
-   * grant permission before), an interval of sixteen days between each request is arbitrarily set.
+   * grant permission before), an interval of 16 days between each request is arbitrarily set.
    *
    * @see permissionRequestInterval
    * @see permissionRequestIntervalThreshold
@@ -188,9 +188,19 @@ private constructor(private val contextRef: WeakReference<Context>) {
   internal constructor(context: Context?) : this(WeakReference(context))
 
   /**
-   * Requests, within the [permissionRequestIntervalThreshold], the user for permission to send
-   * notifications and then invokes binds the notification [Service] in case it is granted. If the
-   * current API level does not support requesting such permission, it is directly bound.
+   * Requests an _unlock_ — the binding of a connection to a [Service] which listens to updates
+   * received from the Mastodon server and redirects them to the device as system notifications — by
+   * asking the user to grant permission for sending notifications if the API level supports
+   * [Manifest.permission.POST_NOTIFICATIONS].
+   *
+   * On API level >= 34, subsequent calls to this method are **not** guaranteed to prompt that
+   * request to the user, given that such behavior would drastically decline the quality of the
+   * experience of Orca; thus, the request will only be made if this method is called after at least
+   * 16 days have passed since the last one in case it was denied. After permission is granted, an
+   * unlock will performed for each future call of this method.
+   *
+   * On prior API levels, however, that time constraint does not apply, so repeated calls will also
+   * perform an unlock each time.
    */
   fun requestUnlock() {
     if (isPermissionNotGranted) {
