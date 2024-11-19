@@ -183,7 +183,9 @@ private constructor(private val contextRef: WeakReference<Context>) {
     override fun onServiceDisconnected(name: ComponentName?) = Unit
   }
 
-  @InternalNotificationApi internal constructor(context: Context?) : this(WeakReference(context))
+  @InternalNotificationApi
+  @VisibleForTesting
+  internal constructor(context: Context?) : this(WeakReference(context))
 
   /**
    * Requests, within the [permissionRequestIntervalThreshold], the user for permission to send
