@@ -199,8 +199,8 @@ private constructor(private val contextRef: WeakReference<Context>) {
    * 16 days have passed since the last one in case it was denied. After permission is granted, an
    * unlock will performed for each future call of this method.
    *
-   * On prior API levels, however, that time constraint does not apply, so repeated calls will also
-   * perform an unlock each time.
+   * On prior API levels, however, that time constraint does not apply, so both the first and
+   * repeated calls will each perform an unlock.
    */
   fun requestUnlock() {
     if (isPermissionNotGranted) {
