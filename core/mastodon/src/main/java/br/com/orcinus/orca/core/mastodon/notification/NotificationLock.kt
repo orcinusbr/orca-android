@@ -282,6 +282,7 @@ private constructor(private val contextRef: WeakReference<Context>) {
     /** Minimum time space between one notification permission request and another. */
     @JvmStatic
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    @VisibleForTesting
     val permissionRequestIntervalThreshold = 16.days
   }
 }
