@@ -131,18 +131,20 @@ private constructor(private val contextRef: WeakReference<Context>) {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     get() {
       val elapsedTime = getElapsedTime()
-      return if (elapsedTime.isFinite()) {
-        permissionRequestTime?.let(elapsedTime::minus)
+      val permissionRequestTime = permissionRequestTime
+      return if (elapsedTime.isFinite() && permissionRequestTime.isFinite()) {
+        elapsedTime - permissionRequestTime
       } else {
-        null
+        Duration.INFINITE
       }
-        ?: Duration.INFINITE
     }
 
   /**
-   * Moment at which permission for sending notifications was last requested. `null` when the
+   * Moment at which permission for sending notifications was last requested. Infinite when the
    * [preferences] are unavailable (because the [context] has been garbage-collected) or such a
    * request has never been performed.
+   *
+   * @see Duration.INFINITE
    */
   private inline var permissionRequestTime
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -151,12 +153,11 @@ private constructor(private val contextRef: WeakReference<Context>) {
         ?.getLong(PERMISSION_REQUEST_TIME_PREFERENCE_KEY, NEVER)
         ?.takeUnless(NEVER::equals)
         ?.milliseconds
+        ?: Duration.INFINITE
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     set(permissionRequestTime) {
       preferences?.edit {
-        permissionRequestTime?.let {
-          putLong(PERMISSION_REQUEST_TIME_PREFERENCE_KEY, it.inWholeMilliseconds)
-        }
-          ?: remove(PERMISSION_REQUEST_TIME_PREFERENCE_KEY)
+        putLong(PERMISSION_REQUEST_TIME_PREFERENCE_KEY, permissionRequestTime.inWholeMilliseconds)
       }
     }
 
@@ -213,7 +214,6 @@ private constructor(private val contextRef: WeakReference<Context>) {
         permissionRequestTime = getElapsedTime()
       }
     } else {
-      permissionRequestTime = null
       unlock()
     }
   }
