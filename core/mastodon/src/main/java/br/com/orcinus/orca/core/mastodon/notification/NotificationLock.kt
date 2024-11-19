@@ -28,6 +28,7 @@ import android.os.IBinder
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
+import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.annotation.RequiresApi
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
@@ -164,12 +165,13 @@ private constructor(private val contextRef: WeakReference<Context>) {
    * they disallowed it earlier or it was never requested before.
    */
   private inline val isPermissionNotGranted
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    @ChecksSdkIntAtLeast(Build.VERSION_CODES.TIRAMISU)
     get() =
-      context
-        ?.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
-        ?.equals(PackageManager.PERMISSION_DENIED)
-        ?: true
+      Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+        context
+          ?.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+          ?.equals(PackageManager.PERMISSION_DENIED)
+          ?: true
 
   /**
    * [ServiceConnection] bound to a [NotificationService], which does nothing upon connection and
@@ -189,7 +191,7 @@ private constructor(private val contextRef: WeakReference<Context>) {
    * current API level does not support requesting such permission, it is directly bound.
    */
   fun requestUnlock() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && isPermissionNotGranted) {
+    if (isPermissionNotGranted) {
       if (
         permissionRequestInterval.isInfinite() ||
           permissionRequestInterval >= permissionRequestIntervalThreshold
