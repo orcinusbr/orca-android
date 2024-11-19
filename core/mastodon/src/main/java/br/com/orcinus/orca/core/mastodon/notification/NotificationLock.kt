@@ -193,14 +193,15 @@ private constructor(private val contextRef: WeakReference<Context>) {
    * asking the user to grant permission for sending notifications if the API level supports
    * [Manifest.permission.POST_NOTIFICATIONS].
    *
-   * On API level >= 34, subsequent calls to this method are **not** guaranteed to prompt that
-   * request to the user, given that such behavior would drastically decline the quality of the
-   * experience of Orca; thus, the request will only be made if this method is called after at least
-   * 16 days have passed since the last one in case it was denied. After permission is granted, an
-   * unlock will performed for each future call of this method.
+   * On API level >= 34, subsequent calls to this method are **not** guaranteed to prompt the user
+   * for permission, as repeated requests could significantly diminish the quality of the user
+   * experience in Orca. Therefore, the request will only be made if at least 16 days have passed
+   * since the last request in case it was denied. After permission is granted, each future call to
+   * this method will perform an unlock as long as the permission remains granted; if revoked, it is
+   * requested again and the cycle repeats.
    *
-   * On prior API levels, however, that time constraint does not apply, so both the first and
-   * repeated calls will each perform an unlock.
+   * On earlier API levels, however, that time constraint does not apply: both the first and
+   * subsequent calls will perform an unlock.
    */
   fun requestUnlock() {
     if (isPermissionNotGranted) {
