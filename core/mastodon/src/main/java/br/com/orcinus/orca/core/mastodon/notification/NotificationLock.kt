@@ -113,7 +113,7 @@ private constructor(private val contextRef: WeakReference<Context>) {
    * [Intent] which which a connection to a [NotificationService] is bound by this
    * [NotificationLock] when it is unlocked.
    */
-  private val serviceIntent
+  private inline val serviceIntent
     get() = Intent(context, NotificationService::class.java)
 
   /** [Context] referenced by the [contextRef]; `null` if garbage-collected. */
