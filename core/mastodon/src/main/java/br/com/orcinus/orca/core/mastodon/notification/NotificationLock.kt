@@ -263,6 +263,7 @@ private constructor(private val contextRef: WeakReference<Context>) {
   }
 
   @InternalNotificationApi
+  @RequiresApi(Build.VERSION_CODES.TIRAMISU)
   @VisibleForTesting
   internal companion object {
     /**
@@ -281,10 +282,7 @@ private constructor(private val contextRef: WeakReference<Context>) {
     private const val NEVER = -1L
 
     /** Minimum time space between one notification permission request and another. */
-    @JvmStatic
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    @VisibleForTesting
-    val permissionRequestIntervalThreshold = 16.days
+    @JvmStatic val permissionRequestIntervalThreshold = 16.days
   }
 }
 
