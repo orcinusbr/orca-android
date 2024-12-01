@@ -19,6 +19,7 @@ import assertk.assertThat
 import assertk.assertions.first
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNotEqualTo
 import assertk.assertions.prop
 import br.com.orcinus.orca.core.mastodon.notification.WebPush
 import java.util.Base64
@@ -28,20 +29,21 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class WebPushTests {
+  private val webPush = WebPush()
   private val base64Decoder: Base64.Decoder = Base64.getUrlDecoder()
 
   @Test
-  fun publicKeyIs65BytesLong() {
-    assertThat(WebPush)
-      .prop("base64EncodedClientPublicKey") { it.base64EncodedClientPublicKey }
+  fun clientPublicKeyIs65BytesLong() {
+    assertThat(webPush)
+      .prop(WebPush::base64EncodedClientPublicKey)
       .transform("decoded", base64Decoder::decode)
       .hasSize(65)
   }
 
   @Test
-  fun publicKeyIsUncompressed() {
-    assertThat(WebPush)
-      .prop("base64EncodedClientPublicKey") { it.base64EncodedClientPublicKey }
+  fun clientPublicKeyIsUncompressed() {
+    assertThat(webPush)
+      .prop(WebPush::base64EncodedClientPublicKey)
       .transform("decoded", base64Decoder::decode)
       .prop(ByteArray::toSet)
       .first()
@@ -49,10 +51,24 @@ internal class WebPushTests {
   }
 
   @Test
+  fun clientPublicKeyIsRandom() {
+    assertThat(webPush)
+      .prop(WebPush::base64EncodedClientPublicKey)
+      .isNotEqualTo(WebPush().base64EncodedClientPublicKey)
+  }
+
+  @Test
   fun authenticationKeyIs16BytesLong() {
-    assertThat(WebPush)
-      .prop("base64EncodedAuthenticationKey") { it.base64EncodedAuthenticationKey }
+    assertThat(webPush)
+      .prop(WebPush::base64EncodedAuthenticationKey)
       .transform("decoded", base64Decoder::decode)
       .hasSize(16)
+  }
+
+  @Test
+  fun authenticationKeyIsRandom() {
+    assertThat(webPush)
+      .prop(WebPush::base64EncodedAuthenticationKey)
+      .isNotEqualTo(WebPush().base64EncodedAuthenticationKey)
   }
 }

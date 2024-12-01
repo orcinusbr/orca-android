@@ -39,57 +39,18 @@ import javax.crypto.spec.SecretKeySpec
  * (PSM) of the official Android app.
  */
 @InternalNotificationApi
-internal object WebPush {
-  /**
-   * Required amount of bytes in an affine coordinate of an uncompressed public key. As the PSM
-   * implementation, the least significant 32 bytes of the coordinates are encoded into the final
-   * [String], and left-zero-padded in case their sizes are lesser than this predefined one.
-   *
-   * @see BigInteger.toPsmEllipticCurveUncompressedPublicKeyAffineCoordinate
-   */
-  private const val UNCOMPRESSED_PUBLIC_KEY_AFFINE_COORDINATE_SIZE = 32
-
-  /**
-   * Length of a public key; includes the leading marker and both affine coordinates' sizes.
-   *
-   * @see UNCOMPRESSED_PUBLIC_KEY_AFFINE_COORDINATE_SIZE
-   * @see UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER
-   */
-  private const val UNCOMPRESSED_PUBLIC_KEY_SIZE =
-    (UNCOMPRESSED_PUBLIC_KEY_AFFINE_COORDINATE_SIZE * 2 + 1).toByte()
-
-  /** [Cipher] by which plaintext decryption is performed. */
-  @JvmStatic private val cipher: Cipher = Cipher.getInstance("AES/GCM/NoPadding")
-
-  /**
-   * SHA256 hash-based message authentication code (HMAC) generator for HKDFs.
-   *
-   * @see Hkdf
-   */
-  @JvmStatic private val mac: Mac = Mac.getInstance("HmacSHA256")
-
-  /**
-   * Standardized by ["SEC 1: Elliptic Curve Cryptography"](https://www.secg.org/sec1-v2.pdf), it is
-   * the leading byte of an elliptic curve key which denotes that it is uncompressed — that is, the
-   * two bytes that follow are both its x and y affine coordinates.
-   */
-  @VisibleForTesting const val UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER: Byte = 0x04
-
-  /** [KeyPairGenerator] by which the [clientKeyPair] is generated. */
-  @JvmStatic @VisibleForTesting val keyPairGenerator = EllipticCurve.secp256r1KeyPairGenerator
-
+internal class WebPush {
   /** Client-generated p256v1 (or secp256r1 — its alias) elliptic curve pair of keys. */
-  @JvmStatic private val clientKeyPair: KeyPair = keyPairGenerator.generateKeyPair()
+  private val clientKeyPair: KeyPair = keyPairGenerator.generateKeyPair()
 
   /** 16-bit random key for identifying a subscription request. */
-  @JvmStatic private val authenticationKey = ByteArray(size = 16).apply(SecureRandom()::nextBytes)
+  private val authenticationKey = ByteArray(size = 16).apply(SecureRandom()::nextBytes)
 
   /**
    * Client-generated public key of the [clientKeyPair].
    *
    * @see KeyPair.getPublic
    */
-  @JvmStatic
   private inline val clientPublicKey
     get() = clientKeyPair.public as ECPublicKey
 
@@ -99,7 +60,7 @@ internal object WebPush {
    * @see sharedSecret
    * @see generateSharedSecret
    */
-  @JvmStatic private lateinit var serverKey: ECPublicKey
+  private lateinit var serverKey: ECPublicKey
 
   /**
    * Shared secret that has already been generated from the private elliptic curve key and one
@@ -109,7 +70,7 @@ internal object WebPush {
    *
    * @see serverKey
    */
-  @JvmStatic private lateinit var sharedSecret: ByteArray
+  private lateinit var sharedSecret: ByteArray
 
   /**
    * Base64-encoded string consisting of three sequences of bytes: an uncompressed marker and the x
@@ -120,7 +81,7 @@ internal object WebPush {
    * @see ByteArray.encodeToBase64
    * @see UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER
    */
-  @JvmStatic val base64EncodedClientPublicKey = clientPublicKey.decompress().encodeToBase64()
+  val base64EncodedClientPublicKey = clientPublicKey.decompress().encodeToBase64()
 
   /**
    * Web Push Base64-encoded 16-bit-long authentication key containing pseudorandom bytes. Its
@@ -129,7 +90,7 @@ internal object WebPush {
    *
    * @see ByteArray.encodeToBase64
    */
-  @JvmStatic val base64EncodedAuthenticationKey = authenticationKey.encodeToBase64()
+  val base64EncodedAuthenticationKey = authenticationKey.encodeToBase64()
 
   /**
    * Base class of hash-based key derivation functions (HKDFs) for deriving either an AES/GCM
@@ -149,7 +110,7 @@ internal object WebPush {
    * @see intermediateSalt
    * @see invoke
    */
-  private sealed class Hkdf {
+  private abstract inner class Hkdf {
     /**
      * Information that serves as a parameter for HKDF and allows for secure reuse of B alongside a
      * salt. For 128-bit AES/GCM key and nonce HKDFs, consists of a Content-Encoding string
@@ -191,42 +152,6 @@ internal object WebPush {
      * @see invoke
      */
     protected abstract val maxSize: Int
-
-    /** Non-standard HKDF whose derived key is the [intermediateSalt] of a nonce. */
-    private data object Auth : Hkdf() {
-      override val info = "Content-Encoding: auth\u0000".toByteArray()
-      override val maxSize = 32
-      override val initialSalt = authenticationKey
-      override val intermediateSalt = sharedSecret
-    }
-
-    /**
-     * HKDF for deriving both a key with which decryption of a plaintext is to be performed and its
-     * respective salt. Is invoked after the one that derives the nonce (the key based on which the
-     * previous one is generated).
-     *
-     * @see invoke
-     * @see Nonce
-     */
-    class AesGcm128(override val initialSalt: ByteArray, override val intermediateSalt: ByteArray) :
-      Hkdf() {
-      override val info = generateKeyedInfo("aesgcm128")
-      override val maxSize = 16
-    }
-
-    /**
-     * HKDF for producing an AES/GCM nonce (a numeric value to be used only once), which prevents
-     * replay or reordering attacks by allowing for the provision of a distinct decryption key each
-     * time a derivation occurs.
-     *
-     * @param serverKeySalt Salt from which the [serverKey] was generated.
-     */
-    class Nonce(serverKeySalt: ByteArray) : Hkdf() {
-      override val info = generateKeyedInfo("nonce")
-      override val maxSize = 12
-      override val initialSalt = serverKeySalt
-      override val intermediateSalt = Auth()
-    }
 
     /** Performs key derivation. */
     operator fun invoke(): ByteArray {
@@ -270,19 +195,56 @@ internal object WebPush {
   }
 
   /**
+   * HKDF for deriving both a key with which decryption of a plaintext is to be performed and its
+   * respective salt. Is invoked after the one that derives the nonce (the key based on which the
+   * previous one is generated).
+   *
+   * @see invoke
+   * @see Nonce
+   */
+  private inner class AesGcm128(
+    override val initialSalt: ByteArray,
+    override val intermediateSalt: ByteArray
+  ) : Hkdf() {
+    override val info = generateKeyedInfo("aesgcm128")
+    override val maxSize = 16
+  }
+
+  /**
+   * HKDF for producing an AES/GCM nonce (a numeric value to be used only once), which prevents
+   * replay or reordering attacks by allowing for the provision of a distinct decryption key each
+   * time a derivation occurs.
+   *
+   * @param serverKeySalt Salt from which the [serverKey] was generated.
+   */
+  private inner class Nonce(serverKeySalt: ByteArray) : Hkdf() {
+    /** Non-standard HKDF whose derived key is the [intermediateSalt] of a nonce. */
+    private inner class Auth : Hkdf() {
+      override val info = "Content-Encoding: auth\u0000".toByteArray()
+      override val maxSize = 32
+      override val initialSalt = authenticationKey
+      override val intermediateSalt = sharedSecret
+    }
+
+    override val info = generateKeyedInfo("nonce")
+    override val maxSize = 12
+    override val initialSalt = serverKeySalt
+    override val intermediateSalt = Auth()()
+  }
+
+  /**
    * Decrypts an AES/GCM-encrypted plaintext.
    *
    * @param serverKey Key provided by the Mastodon server.
    * @param serverKeySalt Salt from which the [serverKey] was generated.
    * @param plaintext Content to be decrypted, received from the Mastodon server.
    */
-  @JvmStatic
   fun decrypt(serverKey: ECPublicKey, serverKeySalt: ByteArray, plaintext: ByteArray): String {
     val sharedSecret = generateSharedSecret(serverKey)
-    val decryptionKeyIntermediateSalt = Hkdf.AesGcm128(authenticationKey, sharedSecret)()
-    val decryptionKey = Hkdf.AesGcm128(serverKeySalt, decryptionKeyIntermediateSalt)()
+    val decryptionKeyIntermediateSalt = AesGcm128(authenticationKey, sharedSecret)()
+    val decryptionKey = AesGcm128(serverKeySalt, decryptionKeyIntermediateSalt)()
     val decryptionKeySpec = SecretKeySpec(decryptionKey, "AES")
-    val nonce = Hkdf.Nonce(serverKeySalt)()
+    val nonce = Nonce(serverKeySalt)()
     val nonceSpec = GCMParameterSpec(/* tLen = */ 128, nonce)
     return cipher
       .apply { init(Cipher.DECRYPT_MODE, decryptionKeySpec, nonceSpec) }
@@ -340,30 +302,70 @@ internal object WebPush {
       .generateSecret()
   }
 
-  /**
-   * Decompresses this key by creating an array of bytes with a marker and both affine coordinates'
-   * least significant 32 bits.
-   *
-   * @see UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER
-   * @see BigInteger.toPsmEllipticCurveUncompressedPublicKeyAffineCoordinate
-   */
-  @JvmStatic
-  private fun ECPublicKey.decompress() =
-    byteArrayOf(
-      UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER,
-      *(w?.affineX?.toPsmEllipticCurveUncompressedPublicKeyAffineCoordinate() ?: byteArrayOf()),
-      *(w?.affineY?.toPsmEllipticCurveUncompressedPublicKeyAffineCoordinate() ?: byteArrayOf())
-    )
+  companion object {
+    /**
+     * Required amount of bytes in an affine coordinate of an uncompressed public key. As the PSM
+     * implementation, the least significant 32 bytes of the coordinates are encoded into the final
+     * [String], and left-zero-padded in case their sizes are lesser than this predefined one.
+     *
+     * @see BigInteger.toPsmEllipticCurveUncompressedPublicKeyAffineCoordinate
+     */
+    private const val UNCOMPRESSED_PUBLIC_KEY_AFFINE_COORDINATE_SIZE = 32
 
-  /** Converts this [BigInteger] into a 32-bit uncompressed public key affine coordinate. */
-  @JvmStatic
-  private fun BigInteger.toPsmEllipticCurveUncompressedPublicKeyAffineCoordinate(): ByteArray {
-    val source = toByteArray()
-    val destination = ByteArray(UNCOMPRESSED_PUBLIC_KEY_AFFINE_COORDINATE_SIZE)
-    val sourceOffset = maxOf(0, source.size - destination.size)
-    val destinationOffset = maxOf(0, destination.size - source.size)
-    val size = minOf(destination.size, source.size)
-    System.arraycopy(source, sourceOffset, destination, destinationOffset, size)
-    return destination
+    /**
+     * Length of a public key; includes the leading marker and both affine coordinates' sizes.
+     *
+     * @see UNCOMPRESSED_PUBLIC_KEY_AFFINE_COORDINATE_SIZE
+     * @see UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER
+     */
+    private const val UNCOMPRESSED_PUBLIC_KEY_SIZE =
+      (UNCOMPRESSED_PUBLIC_KEY_AFFINE_COORDINATE_SIZE * 2 + 1).toByte()
+
+    /** [Cipher] by which plaintext decryption is performed. */
+    @JvmStatic private val cipher: Cipher = Cipher.getInstance("AES/GCM/NoPadding")
+
+    /**
+     * SHA256 hash-based message authentication code (HMAC) generator for HKDFs.
+     *
+     * @see Hkdf
+     */
+    @JvmStatic private val mac: Mac = Mac.getInstance("HmacSHA256")
+
+    /**
+     * Standardized by ["SEC 1: Elliptic Curve Cryptography"](https://www.secg.org/sec1-v2.pdf), it
+     * is the leading byte of an elliptic curve key which denotes that it is uncompressed — that is,
+     * the two bytes that follow are both its x and y affine coordinates.
+     */
+    @VisibleForTesting const val UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER: Byte = 0x04
+
+    /** [KeyPairGenerator] by which the [clientKeyPair] is generated. */
+    @JvmStatic @VisibleForTesting val keyPairGenerator = EllipticCurve.secp256r1KeyPairGenerator
+
+    /**
+     * Decompresses this key by creating an array of bytes with a marker and both affine
+     * coordinates' least significant 32 bits.
+     *
+     * @see UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER
+     * @see BigInteger.toPsmEllipticCurveUncompressedPublicKeyAffineCoordinate
+     */
+    @JvmStatic
+    private fun ECPublicKey.decompress() =
+      byteArrayOf(
+        UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER,
+        *(w?.affineX?.toPsmEllipticCurveUncompressedPublicKeyAffineCoordinate() ?: byteArrayOf()),
+        *(w?.affineY?.toPsmEllipticCurveUncompressedPublicKeyAffineCoordinate() ?: byteArrayOf())
+      )
+
+    /** Converts this [BigInteger] into a 32-bit uncompressed public key affine coordinate. */
+    @JvmStatic
+    private fun BigInteger.toPsmEllipticCurveUncompressedPublicKeyAffineCoordinate(): ByteArray {
+      val source = toByteArray()
+      val destination = ByteArray(UNCOMPRESSED_PUBLIC_KEY_AFFINE_COORDINATE_SIZE)
+      val sourceOffset = maxOf(0, source.size - destination.size)
+      val destinationOffset = maxOf(0, destination.size - source.size)
+      val size = minOf(destination.size, source.size)
+      System.arraycopy(source, sourceOffset, destination, destinationOffset, size)
+      return destination
+    }
   }
 }
