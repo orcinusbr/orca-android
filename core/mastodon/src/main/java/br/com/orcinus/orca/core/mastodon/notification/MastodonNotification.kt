@@ -19,6 +19,7 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import androidx.annotation.StringRes
 import androidx.annotation.VisibleForTesting
 import br.com.orcinus.orca.core.auth.AuthenticationLock
@@ -28,10 +29,17 @@ import br.com.orcinus.orca.core.mastodon.R
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus
 import br.com.orcinus.orca.core.mastodon.notification.MastodonNotification.Type
+import br.com.orcinus.orca.core.mastodon.notification.security.Locksmith
+import br.com.orcinus.orca.core.mastodon.notification.security.cryptography.EllipticCurve
+import br.com.orcinus.orca.core.mastodon.notification.security.encoding.decodeFromZ85
+import java.security.KeyFactory
+import java.security.interfaces.ECPublicKey
+import java.security.spec.X509EncodedKeySpec
 import java.time.Instant
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 
 /**
  * Structure returned by the API when the user is notified of an occurrence related to them.
@@ -341,5 +349,43 @@ internal data class MastodonNotification(
     @VisibleForTesting
     fun createdAt(zonedDateTime: ZonedDateTime): String =
       zonedDateTime.format(DateTimeFormatter.ISO_INSTANT)
+
+    /**
+     * Creates a [MastodonNotification] from an [Intent].
+     *
+     * @param locksmith Locksmith by which the secret shared between this client and the Mastodon
+     *   server is provided for decrypting the payload.
+     * @param intent Intent with the information based on which the DTO will be created. It is
+     *   required to contain the following extras: 1) `k`, the Z85-encoded server key; 2) `s`, the
+     *   Z85-encoded salt of `k`; and 3) `p`, the Z85-encoded AES/GCM-encrypted plaintext octet
+     *   string.
+     * @throws NoSuchElementException If one of the `k`, `s` and `p` extras are not present in the
+     *   [intent].
+     * @throws UnsatisfiedLinkError If the native library is unloaded.
+     * @see System.loadLibrary
+     */
+
+    /*
+     * k, s and p are the only extras required at the moment. PNR does, however, obtain an x extra
+     * containing the ID of the account to which the update is related; it will be useful in case
+     * Orca supports multiple sessions in the future.
+     *
+     * https://github.com/mastodon/mastodon-android/blob/9ed95cc0d34bcc7703a1948a2244eaf372221d87/mastodon/src/main/java/org/joinmastodon/android/PushNotificationReceiver.java#L63
+     */
+    @JvmStatic
+    @Throws(NoSuchElementException::class)
+    fun create(locksmith: Locksmith, intent: Intent): MastodonNotification {
+      val encryptedEncodedK = intent.getStringExtra("k") ?: throw NoSuchElementException("k")
+      val encryptedDecodedK = encryptedEncodedK.decodeFromZ85()
+      val encryptedDecodedKSpec = X509EncodedKeySpec(encryptedDecodedK)
+      val encryptedDecodedKFactory = KeyFactory.getInstance(EllipticCurve.NAME)
+      val decodedK = encryptedDecodedKFactory.generatePublic(encryptedDecodedKSpec) as ECPublicKey
+      val encodedS = intent.getStringExtra("s") ?: throw NoSuchElementException("s")
+      val decodedS = encodedS.decodeFromZ85()
+      val encryptedEncodedP = intent.getStringExtra("p") ?: throw NoSuchElementException("p")
+      val encryptedDecodedP = encryptedEncodedP.decodeFromZ85()
+      val decryptedDecodedP = locksmith.decrypt(decodedK, decodedS, encryptedDecodedP)
+      return Json.decodeFromString(decryptedDecodedP)
+    }
   }
 }

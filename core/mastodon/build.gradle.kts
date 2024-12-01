@@ -16,6 +16,7 @@
 plugins {
   alias(libs.plugins.android.library)
   alias(libs.plugins.android.maps.secrets)
+  alias(libs.plugins.buildconfig)
   alias(libs.plugins.kotlin.android)
   alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.kotlin.serialization)
@@ -32,6 +33,11 @@ android {
   buildFeatures {
     buildConfig = true
     compose = true
+  }
+
+  externalNativeBuild.cmake {
+    path = file("src/main/cpp/CMakeLists.txt")
+    version = "3.22.1"
   }
 
   secrets {

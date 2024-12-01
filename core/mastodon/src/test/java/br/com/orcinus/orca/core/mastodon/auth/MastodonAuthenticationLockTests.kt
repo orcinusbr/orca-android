@@ -42,7 +42,7 @@ internal class MastodonAuthenticationLockTests {
         .scheduleUnlock {}
     }
     assertThat(hasUnlocked).isTrue()
-    notificationLock.shutServicesDown()
+    notificationLock.close()
   }
 
   @Test
@@ -55,6 +55,6 @@ internal class MastodonAuthenticationLockTests {
       }
     }
     assertThat(unlockCount).isEqualTo(1)
-    notificationLock.shutServicesDown()
+    notificationLock.close()
   }
 }

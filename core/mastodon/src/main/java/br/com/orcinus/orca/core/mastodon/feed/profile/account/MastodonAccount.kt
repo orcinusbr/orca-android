@@ -59,7 +59,7 @@ import kotlinx.serialization.Serializable
  * @property followingCount Amount of other [Account]s that this one is following.
  */
 @Serializable
-internal data class MastodonAccount(
+data class MastodonAccount(
   private val id: String,
   private val username: String,
   val acct: String,
@@ -98,7 +98,7 @@ internal data class MastodonAccount(
    *   [MastodonPost]s will be provided.
    * @see Markdown.Companion.fromHtml
    */
-  suspend fun toProfile(
+  internal suspend fun toProfile(
     context: Context,
     requester: Requester,
     avatarLoaderProvider: SomeImageLoaderProvider<URI>,

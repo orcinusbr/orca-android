@@ -32,7 +32,7 @@ internal class LocksmithTests {
   private val base64Decoder: Base64.Decoder = Base64.getUrlDecoder()
 
   @Test
-  fun publicKeyIs65ByteLong() {
+  fun publicKeyIs65BytesLong() {
     assertThat(locksmith)
       .prop(Locksmith::publicKey)
       .transform("decoded", base64Decoder::decode)
@@ -55,7 +55,7 @@ internal class LocksmithTests {
   }
 
   @Test
-  fun authenticationKeyIs16ByteLong() {
+  fun authenticationKeyIs16BytesLong() {
     assertThat(locksmith)
       .prop(Locksmith::authenticationKey)
       .transform("decoded", base64Decoder::decode)

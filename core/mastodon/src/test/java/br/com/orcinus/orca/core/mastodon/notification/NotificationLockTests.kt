@@ -18,8 +18,6 @@ package br.com.orcinus.orca.core.mastodon.notification
 import android.os.Build
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import assertk.assertions.isZero
-import br.com.orcinus.orca.ext.testing.assertThat
 import br.com.orcinus.orca.platform.testing.context
 import kotlin.test.Test
 import kotlin.time.Duration
@@ -37,7 +35,7 @@ internal class NotificationLockTests {
       .requestPermission { permissionRequestCount++ }
       .build(context)
       .apply(NotificationLock::requestUnlock)
-      .shutServicesDown()
+      .close()
     assertThat(permissionRequestCount).isEqualTo(1)
   }
 
@@ -52,7 +50,7 @@ internal class NotificationLockTests {
         repeat(2) { requestUnlock() }
         assertThat(permissionRequestCount).isEqualTo(1)
       }
-      .shutServicesDown()
+      .close()
   }
 
   @Config(sdk = [Build.VERSION_CODES.TIRAMISU, Build.VERSION_CODES.UPSIDE_DOWN_CAKE])
@@ -69,16 +67,7 @@ internal class NotificationLockTests {
         elapsedTime = NotificationLock.permissionRequestIntervalThreshold
         requestUnlock()
       }
-      .shutServicesDown()
+      .close()
     assertThat(permissionRequestCount).isEqualTo(2)
-  }
-
-  @Test
-  fun shutsServicesDown() {
-    NotificationLockBuilder()
-      .build(context)
-      .apply { repeat(2) { requestUnlock() } }
-      .shutServicesDown()
-    assertThat<NotificationService>().bindingCount().isZero()
   }
 }

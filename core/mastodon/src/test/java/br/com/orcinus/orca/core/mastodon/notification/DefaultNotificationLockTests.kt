@@ -109,7 +109,7 @@ internal class DefaultNotificationLockTests {
         NotificationLock(it)
           .apply(NotificationLock::requestUnlock)
           .also { assertThat<NotificationService>().bindingCount().isEqualTo(1) }
-          .shutServicesDown()
+          .close()
       }
       ?.close()
   }
@@ -135,7 +135,7 @@ internal class DefaultNotificationLockTests {
         NotificationLock(it)
           .apply { repeat(2) { requestUnlock() } }
           .also { assertThat<NotificationService>().bindingCount().isEqualTo(2) }
-          .shutServicesDown()
+          .close()
       }
       ?.close()
   }

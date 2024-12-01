@@ -17,14 +17,12 @@ package br.com.orcinus.orca.core.mastodon.notification
 
 import android.Manifest
 import android.app.Service
-import android.content.ComponentName
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
-import android.os.IBinder
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
@@ -77,10 +75,10 @@ private class DefaultNotificationLock(activity: ComponentActivity) : Notificatio
 
 /**
  * Handles performance of timed-spaced permission requests for sending notifications in API levels
- * in which such request is supported or directly binding the [Service] by which updates are
- * listened to from the Mastodon server and forwarded to the device as system notifications; this
- * distinction is necessary because [Manifest.permission.POST_NOTIFICATIONS] is not available in OS
- * versions older than 33 (Tiramisu).
+ * in which such request is supported or directly registering the [BroadcastReceiver] by which
+ * updates are listened to from the Mastodon server and forwarded to the device as system
+ * notifications; this distinction is necessary because [Manifest.permission.POST_NOTIFICATIONS] is
+ * not available in OS versions older than 33 (Tiramisu).
  *
  * @property contextRef [WeakReference] to the [Context] in which the request is performed.
  * @see permissionRequestIntervalThreshold
@@ -89,7 +87,7 @@ private class DefaultNotificationLock(activity: ComponentActivity) : Notificatio
  * @see ActivityResultLauncher.launch
  */
 abstract class NotificationLock
-private constructor(private val contextRef: WeakReference<Context>) {
+private constructor(private val contextRef: WeakReference<Context>) : AutoCloseable {
   /**
    * [SharedPreferences] for storing the Unix moment in time at which the request was last
    * performed. Since notifications are not an integral, yet important functionality of the default
@@ -104,17 +102,14 @@ private constructor(private val contextRef: WeakReference<Context>) {
   }
 
   /**
-   * Amount of [NotificationService]s to which a connection has been bound by this
-   * [NotificationLock].
+   * [NotificationReceiver] by which the [Intent]s containing the updates to be forwarded as system
+   * notifications are listened to. Gets registered when an unlock occurs and unregistered when
+   * [close] is explicitly called.
+   *
+   * @see requestUnlock
+   * @see unlock
    */
-  private var boundServicesCount = 0
-
-  /**
-   * [Intent] which which a connection to a [NotificationService] is bound by this
-   * [NotificationLock] when it is unlocked.
-   */
-  private inline val serviceIntent
-    get() = Intent(context, NotificationService::class.java)
+  @InternalNotificationApi @VisibleForTesting internal val receiver = NotificationReceiver(context)
 
   /** [Context] referenced by the [contextRef]; `null` if garbage-collected. */
   private inline val context
@@ -174,25 +169,16 @@ private constructor(private val contextRef: WeakReference<Context>) {
           ?.equals(PackageManager.PERMISSION_DENIED)
           ?: true
 
-  /**
-   * [ServiceConnection] bound to a [NotificationService], which does nothing upon connection and
-   * disconnection.
-   */
-  private object NoOpServiceConnection : ServiceConnection {
-    override fun onServiceConnected(name: ComponentName?, service: IBinder?) = Unit
-
-    override fun onServiceDisconnected(name: ComponentName?) = Unit
-  }
-
   @InternalNotificationApi
   @VisibleForTesting
   internal constructor(context: Context?) : this(WeakReference(context))
 
   /**
-   * Requests an _unlock_ — the binding of a connection to a [Service] which listens to updates
-   * received from the Mastodon server and redirects them to the device as system notifications — by
-   * asking the user to grant permission for sending notifications if the API level supports
-   * [Manifest.permission.POST_NOTIFICATIONS].
+   * Requests an _unlock_ — the loading of the native library and registration of a
+   * [NotificationReceiver] responsible for, upon receipt of a push [Intent], binding a connection
+   * to a [Service] which listens to updates received from the Mastodon server and redirects them to
+   * the device as system notifications — by asking the user to grant permission for sending
+   * notifications if the API level supports [Manifest.permission.POST_NOTIFICATIONS].
    *
    * On API level >= 34, subsequent calls to this method are **not** guaranteed to prompt the user
    * for permission, as repeated requests could significantly diminish the quality of the user
@@ -219,13 +205,21 @@ private constructor(private val contextRef: WeakReference<Context>) {
   }
 
   /**
-   * Unbinds connections bound to [NotificationService]s by this [NotificationLock] and stops them.
+   * Closes the [receiver] and unregisters it from the [context]. As updates regarding the user will
+   * stop being listened to and their respective push notifications will cease being delivered,
+   * generally, this method should not be called in production.
+   *
+   * @see NotificationReceiver.close
+   * @see Context.unregisterReceiver
    */
   @VisibleForTesting
-  internal fun shutServicesDown() {
-    context?.unbindService(NoOpServiceConnection)
-    repeat(boundServicesCount) { context?.stopService(serviceIntent) }
-    boundServicesCount = 0
+  override fun close() {
+    receiver.close()
+
+    // Context.unregisterReceiver(BroadcastReceiver) throws if the receiver is unregistered.
+    try {
+      context?.unregisterReceiver(receiver)
+    } catch (_: IllegalArgumentException) {}
   }
 
   /** Obtains the amount of time that has elapsed until now. */
@@ -245,19 +239,13 @@ private constructor(private val contextRef: WeakReference<Context>) {
 
   /**
    * Called whenever either permission to send notifications is granted or the current API level
-   * does not support such request. Essentially, just acts a proxy for binding a no-op connection to
-   * a [NotificationService].
-   *
-   * @see NoOpServiceConnection
+   * does not support such request. Essentially, loads the native library and registers the
+   * [receiver] in the [context].
    */
   protected fun unlock() {
     context?.let {
-      var flags = Context.BIND_AUTO_CREATE
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        flags = flags or Context.BIND_NOT_PERCEPTIBLE
-      }
-      it.bindService(serviceIntent, NoOpServiceConnection, flags)
-      boundServicesCount++
+      System.loadLibrary("core-mastodon")
+      NotificationReceiver.register(it, receiver)
       onUnlock()
     }
   }
