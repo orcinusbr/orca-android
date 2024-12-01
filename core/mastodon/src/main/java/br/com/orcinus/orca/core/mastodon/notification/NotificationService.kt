@@ -217,8 +217,8 @@ constructor(private val requester: Requester, private val locksmith: Locksmith) 
           .build()
           .toString()
       )
-      append("subscription[keys][auth]", locksmith.authenticationKey)
-      append("subscription[keys][p256dh]", locksmith.publicKey)
+      append("subscription[keys][auth]", locksmith.base64EncodedAuthenticationKey)
+      append("subscription[keys][p256dh]", locksmith.base64EncodedClientPublicKey)
     }
   }
 

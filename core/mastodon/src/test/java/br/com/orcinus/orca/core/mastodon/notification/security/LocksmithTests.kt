@@ -34,7 +34,7 @@ internal class LocksmithTests {
   @Test
   fun publicKeyIs65BytesLong() {
     assertThat(locksmith)
-      .prop(Locksmith::publicKey)
+      .prop(Locksmith::base64EncodedClientPublicKey)
       .transform("decoded", base64Decoder::decode)
       .hasSize(65)
   }
@@ -42,7 +42,7 @@ internal class LocksmithTests {
   @Test
   fun publicKeyIsUncompressed() {
     assertThat(locksmith)
-      .prop(Locksmith::publicKey)
+      .prop(Locksmith::base64EncodedClientPublicKey)
       .transform("decoded", base64Decoder::decode)
       .prop(ByteArray::toSet)
       .first()
@@ -51,13 +51,15 @@ internal class LocksmithTests {
 
   @Test
   fun publicKeyIsRandom() {
-    assertThat(locksmith).prop(Locksmith::publicKey).isNotEqualTo(Locksmith().publicKey)
+    assertThat(locksmith)
+      .prop(Locksmith::base64EncodedClientPublicKey)
+      .isNotEqualTo(Locksmith().base64EncodedClientPublicKey)
   }
 
   @Test
   fun authenticationKeyIs16BytesLong() {
     assertThat(locksmith)
-      .prop(Locksmith::authenticationKey)
+      .prop(Locksmith::base64EncodedAuthenticationKey)
       .transform("decoded", base64Decoder::decode)
       .hasSize(16)
   }
@@ -65,7 +67,7 @@ internal class LocksmithTests {
   @Test
   fun authenticationKeyIsRandom() {
     assertThat(locksmith)
-      .prop(Locksmith::authenticationKey)
-      .isNotEqualTo(Locksmith().authenticationKey)
+      .prop(Locksmith::base64EncodedAuthenticationKey)
+      .isNotEqualTo(Locksmith().base64EncodedAuthenticationKey)
   }
 }

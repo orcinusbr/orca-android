@@ -41,19 +41,19 @@ import javax.crypto.spec.SecretKeySpec
  */
 @InternalNotificationApi
 internal class Locksmith {
-  /** Generated p256v1 (or secp256r1 — its alias) elliptic curve pair of keys. */
-  private val keyPair: KeyPair = keyPairGenerator.generateKeyPair()
+  /** Client-generated p256v1 (or secp256r1 — its alias) elliptic curve pair of keys. */
+  private val clientKeyPair: KeyPair = keyPairGenerator.generateKeyPair()
 
   /** Web Push 16-bit authentication key whose generation is based on the PSM implementation. */
-  private val _authenticationKey = ByteArray(size = 16).apply(SecureRandom()::nextBytes)
+  private val authenticationKey = ByteArray(size = 16).apply(SecureRandom()::nextBytes)
 
   /**
-   * Public key of the [keyPair].
+   * Client-generated public key of the [clientKeyPair].
    *
    * @see KeyPair.getPublic
    */
-  private inline val _publicKey
-    get() = keyPair.public as ECPublicKey
+  private inline val clientPublicKey
+    get() = clientKeyPair.public as ECPublicKey
 
   /**
    * Key provided by the Mastodon server the last time a shared secret was generated.
@@ -82,7 +82,7 @@ internal class Locksmith {
    * @see ByteArray.encodeToBase64
    * @see UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER
    */
-  val publicKey = _publicKey.decompress().encodeToBase64()
+  val base64EncodedClientPublicKey = clientPublicKey.decompress().encodeToBase64()
 
   /**
    * Web Push Base64-encoded 16-bit-long authentication key containing pseudorandom bytes. Its
@@ -91,7 +91,7 @@ internal class Locksmith {
    *
    * @see ByteArray.encodeToBase64
    */
-  val authenticationKey = _authenticationKey.encodeToBase64()
+  val base64EncodedAuthenticationKey = authenticationKey.encodeToBase64()
 
   /**
    * Base class of hash-based key derivation functions (HKDFs) for deriving either an AES/GCM
@@ -188,7 +188,7 @@ internal class Locksmith {
         0,
         0,
         UNCOMPRESSED_PUBLIC_KEY_SIZE,
-        *_publicKey.decompress(),
+        *clientPublicKey.decompress(),
         0,
         UNCOMPRESSED_PUBLIC_KEY_SIZE,
         *serverKey.decompress()
@@ -223,7 +223,7 @@ internal class Locksmith {
     private inner class Auth : Hkdf() {
       override val info = "Content-Encoding: auth\u0000".toByteArray()
       override val maxSize = 32
-      override val initialSalt = _authenticationKey
+      override val initialSalt = authenticationKey
       override val intermediateSalt = sharedSecret
     }
 
@@ -242,7 +242,7 @@ internal class Locksmith {
    */
   fun decrypt(serverKey: ECPublicKey, serverKeySalt: ByteArray, plaintext: ByteArray): String {
     val sharedSecret = generateSharedSecret(serverKey)
-    val decryptionKeyIntermediateSalt = AesGcm128(_authenticationKey, sharedSecret)()
+    val decryptionKeyIntermediateSalt = AesGcm128(authenticationKey, sharedSecret)()
     val decryptionKey = AesGcm128(serverKeySalt, decryptionKeyIntermediateSalt)()
     val decryptionKeySpec = SecretKeySpec(decryptionKey, "AES")
     val nonce = Nonce(serverKeySalt)()
@@ -296,7 +296,7 @@ internal class Locksmith {
    * @param serverKey Key provided by the Mastodon server.
    */
   private fun generateSharedSecretEagerly(serverKey: ECPublicKey): ByteArray {
-    return PKCS8EncodedKeySpec(keyPair.private.encoded)
+    return PKCS8EncodedKeySpec(clientKeyPair.private?.encoded)
       .let { KeyFactory.getInstance(EllipticCurve.NAME).generatePrivate(it) }
       .let { KeyAgreement.getInstance("ECDH").apply { init(it) } }
       .also { it.doPhase(serverKey, /* lastPhase = */ true) }
@@ -305,7 +305,7 @@ internal class Locksmith {
 
   companion object {
     /**
-     * Required amount of bytes in an affine coordinate of an uncompressed [_publicKey]. As the PSM
+     * Required amount of bytes in an affine coordinate of an uncompressed public key. As the PSM
      * implementation, the least significant 32 bytes of the coordinates are encoded into the final
      * [String], and left-zero-padded in case their sizes are lesser than this predefined one.
      *
@@ -314,7 +314,7 @@ internal class Locksmith {
     private const val UNCOMPRESSED_PUBLIC_KEY_AFFINE_COORDINATE_SIZE = 32
 
     /**
-     * Length of a [publicKey]; includes the leading marker and both affine coordinates' sizes.
+     * Length of a public key; includes the leading marker and both affine coordinates' sizes.
      *
      * @see UNCOMPRESSED_PUBLIC_KEY_AFFINE_COORDINATE_SIZE
      * @see UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER
@@ -339,7 +339,7 @@ internal class Locksmith {
      */
     @VisibleForTesting const val UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER: Byte = 0x04
 
-    /** [KeyPairGenerator] by which the [keyPair] is generated. */
+    /** [KeyPairGenerator] by which the [clientKeyPair] is generated. */
     @VisibleForTesting val keyPairGenerator = EllipticCurve.secp256r1KeyPairGenerator
 
     /**
@@ -357,7 +357,7 @@ internal class Locksmith {
         *(w?.affineY?.toPsmEllipticCurveUncompressedPublicKeyAffineCoordinate() ?: byteArrayOf())
       )
 
-    /** Converts this [BigInteger] into a 32-bit uncompressed [_publicKey] affine coordinate. */
+    /** Converts this [BigInteger] into a 32-bit uncompressed public key affine coordinate. */
     @JvmStatic
     private fun BigInteger.toPsmEllipticCurveUncompressedPublicKeyAffineCoordinate(): ByteArray {
       val source = toByteArray()
