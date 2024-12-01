@@ -26,7 +26,6 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.BuildConfig
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
-import br.com.orcinus.orca.core.mastodon.notification.security.Locksmith
 import br.com.orcinus.orca.ext.uri.URIBuilder
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import br.com.orcinus.orca.std.injector.Injector
@@ -61,15 +60,15 @@ import kotlinx.serialization.json.Json
  * their notifications are sent.
  *
  * @property requester [Requester] by which push subscriptions are performed.
- * @property locksmith [Locksmith] by which the keys for encryption and decryption of received
- *   updates are provided.
+ * @property webPush [WebPush] by which the keys for encryption and decryption of received updates
+ *   are provided.
  * @see MastodonNotification.Type
  * @see MastodonNotification.Type.toNotificationChannel
  */
 @InternalNotificationApi
 internal class NotificationService
 @VisibleForTesting
-constructor(private val requester: Requester, private val locksmith: Locksmith) :
+constructor(private val requester: Requester, private val webPush: WebPush) :
   FirebaseMessagingService() {
   /**
    * IDs of [Notification]s that have been sent and have not yet been cleared by this
@@ -139,7 +138,7 @@ constructor(private val requester: Requester, private val locksmith: Locksmith) 
     Injector.ModuleNotRegisteredException::class,
     Module.DependencyNotInjectedException::class
   )
-  constructor() : this(requester = Injector.get(), Locksmith()) {
+  constructor() : this(requester = Injector.get(), WebPush()) {
     setCoroutineContext(Dispatchers.IO)
   }
 
@@ -217,8 +216,8 @@ constructor(private val requester: Requester, private val locksmith: Locksmith) 
           .build()
           .toString()
       )
-      append("subscription[keys][auth]", locksmith.base64EncodedAuthenticationKey)
-      append("subscription[keys][p256dh]", locksmith.base64EncodedClientPublicKey)
+      append("subscription[keys][auth]", webPush.base64EncodedAuthenticationKey)
+      append("subscription[keys][p256dh]", webPush.base64EncodedClientPublicKey)
     }
   }
 

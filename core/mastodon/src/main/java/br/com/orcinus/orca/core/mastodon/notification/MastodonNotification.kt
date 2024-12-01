@@ -29,7 +29,6 @@ import br.com.orcinus.orca.core.mastodon.R
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus
 import br.com.orcinus.orca.core.mastodon.notification.MastodonNotification.Type
-import br.com.orcinus.orca.core.mastodon.notification.security.Locksmith
 import br.com.orcinus.orca.core.mastodon.notification.security.cryptography.EllipticCurve
 import br.com.orcinus.orca.core.mastodon.notification.security.encoding.decodeFromZ85
 import java.security.KeyFactory
@@ -353,8 +352,7 @@ internal data class MastodonNotification(
     /**
      * Creates a [MastodonNotification] from an [Intent].
      *
-     * @param locksmith Locksmith by which the secret shared between this client and the Mastodon
-     *   server is provided for decrypting the payload.
+     * @param webPush Decrypts the plaintext.
      * @param intent Intent with the information based on which the DTO will be created. It is
      *   required to contain the following extras: 1) `k`, the Z85-encoded server key; 2) `s`, the
      *   Z85-encoded salt of `k`; and 3) `p`, the Z85-encoded AES/GCM-encrypted plaintext octet
@@ -374,7 +372,7 @@ internal data class MastodonNotification(
      */
     @JvmStatic
     @Throws(NoSuchElementException::class)
-    fun create(locksmith: Locksmith, intent: Intent): MastodonNotification {
+    fun create(webPush: WebPush, intent: Intent): MastodonNotification {
       val encryptedEncodedK = intent.getStringExtra("k") ?: throw NoSuchElementException("k")
       val encryptedDecodedK = encryptedEncodedK.decodeFromZ85()
       val encryptedDecodedKSpec = X509EncodedKeySpec(encryptedDecodedK)
@@ -384,7 +382,7 @@ internal data class MastodonNotification(
       val decodedS = encodedS.decodeFromZ85()
       val encryptedEncodedP = intent.getStringExtra("p") ?: throw NoSuchElementException("p")
       val encryptedDecodedP = encryptedEncodedP.decodeFromZ85()
-      val decryptedDecodedP = locksmith.decrypt(decodedK, decodedS, encryptedDecodedP)
+      val decryptedDecodedP = webPush.decrypt(decodedK, decodedS, encryptedDecodedP)
       return Json.decodeFromString(decryptedDecodedP)
     }
   }

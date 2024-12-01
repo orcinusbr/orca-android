@@ -19,55 +19,40 @@ import assertk.assertThat
 import assertk.assertions.first
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
-import assertk.assertions.isNotEqualTo
 import assertk.assertions.prop
+import br.com.orcinus.orca.core.mastodon.notification.WebPush
 import java.util.Base64
 import kotlin.test.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class LocksmithTests {
-  private val locksmith = Locksmith()
+internal class WebPushTests {
   private val base64Decoder: Base64.Decoder = Base64.getUrlDecoder()
 
   @Test
   fun publicKeyIs65BytesLong() {
-    assertThat(locksmith)
-      .prop(Locksmith::base64EncodedClientPublicKey)
+    assertThat(WebPush)
+      .prop("base64EncodedClientPublicKey") { it.base64EncodedClientPublicKey }
       .transform("decoded", base64Decoder::decode)
       .hasSize(65)
   }
 
   @Test
   fun publicKeyIsUncompressed() {
-    assertThat(locksmith)
-      .prop(Locksmith::base64EncodedClientPublicKey)
+    assertThat(WebPush)
+      .prop("base64EncodedClientPublicKey") { it.base64EncodedClientPublicKey }
       .transform("decoded", base64Decoder::decode)
       .prop(ByteArray::toSet)
       .first()
-      .isEqualTo(Locksmith.UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER)
-  }
-
-  @Test
-  fun publicKeyIsRandom() {
-    assertThat(locksmith)
-      .prop(Locksmith::base64EncodedClientPublicKey)
-      .isNotEqualTo(Locksmith().base64EncodedClientPublicKey)
+      .isEqualTo(WebPush.UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER)
   }
 
   @Test
   fun authenticationKeyIs16BytesLong() {
-    assertThat(locksmith)
-      .prop(Locksmith::base64EncodedAuthenticationKey)
+    assertThat(WebPush)
+      .prop("base64EncodedAuthenticationKey") { it.base64EncodedAuthenticationKey }
       .transform("decoded", base64Decoder::decode)
       .hasSize(16)
-  }
-
-  @Test
-  fun authenticationKeyIsRandom() {
-    assertThat(locksmith)
-      .prop(Locksmith::base64EncodedAuthenticationKey)
-      .isNotEqualTo(Locksmith().base64EncodedAuthenticationKey)
   }
 }

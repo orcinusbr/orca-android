@@ -21,7 +21,6 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvider
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.AuthenticatedRequester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.runAuthenticatedRequesterTest
-import br.com.orcinus.orca.core.mastodon.notification.security.Locksmith
 import br.com.orcinus.orca.platform.testing.context
 import io.ktor.client.HttpClient
 import java.net.URI
@@ -47,7 +46,7 @@ private class NotificationServiceEnvironment(
 internal sealed class NotificationServiceTestScope : CoroutineScope {
   /** [ServiceController] by which the lifecycle of the [NotificationService] is managed. */
   private val controller by lazy {
-    NotificationService(requester, Locksmith())
+    NotificationService(requester, WebPush())
       .apply { setCoroutineContext(coroutineContext) }
       .let { ServiceController.of(it, Intent(context, it::class.java)) }
   }
