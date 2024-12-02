@@ -38,7 +38,7 @@ import java.lang.ref.WeakReference
  *
  * Based on the
  * [`PushNotificationReceiver`](https://github.com/mastodon/mastodon-android/blob/9ed95cc0d34bcc7703a1948a2244eaf372221d87/mastodon/src/main/java/org/joinmastodon/android/PushNotificationReceiver.java)
- * (PNR) of the official Mastodon Android app.
+ * (oPNR) of the official Mastodon Android app.
  *
  * @property contextRef Reference to the context in which registration is performed.
  */

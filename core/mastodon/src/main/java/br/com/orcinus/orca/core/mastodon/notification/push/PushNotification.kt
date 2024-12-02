@@ -365,7 +365,7 @@ internal data class PushNotification(
      */
 
     /*
-     * k, s and p are the only extras required at the moment. PNR does, however, obtain an x extra
+     * k, s and p are the only extras required at the moment. oPNR does, however, obtain an x extra
      * containing the ID of the account to which the update is related; it will be useful in case
      * Orca supports multiple sessions in the future.
      *
