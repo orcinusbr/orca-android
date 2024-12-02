@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification.push
+package br.com.orcinus.orca.core.mastodon.notification
 
 import android.os.Build
 import androidx.activity.ComponentActivity
@@ -24,7 +24,8 @@ import assertk.assertThat
 import assertk.assertions.each
 import assertk.assertions.isZero
 import assertk.assertions.support.expected
-import br.com.orcinus.orca.core.mastodon.notification.NotificationLock
+import br.com.orcinus.orca.core.mastodon.notification.push.PushNotificationService
+import br.com.orcinus.orca.core.mastodon.notification.push.bindingCount
 import br.com.orcinus.orca.ext.testing.assertThat
 import kotlin.test.Test
 import org.junit.runner.RunWith
