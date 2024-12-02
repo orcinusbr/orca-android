@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification
+package br.com.orcinus.orca.core.mastodon.notification.push
 
 import android.app.Notification
 import android.app.NotificationManager
@@ -67,30 +67,30 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.android.controller.ServiceController
 
 @RunWith(RobolectricTestRunner::class)
-internal class NotificationServiceTests {
+internal class PushNotificationServiceTests {
   private val message = RemoteMessage.Builder(MESSAGE_RECIPIENT).build()
-  private val dtoCreatedAt = MastodonNotification.createdAt(ZonedDateTime.now())
+  private val dtoCreatedAt = PushNotification.createdAt(ZonedDateTime.now())
 
   @Test
-  fun initialLifecycleStateIsInitializedOne() = runNotificationServiceTest {
+  fun initialLifecycleStateIsInitializedOne() = runPushNotificationServiceTest {
     assertThat(service)
-      .prop(NotificationService::lifecycleState)
+      .prop(PushNotificationService::lifecycleState)
       .isSameInstanceAs(Lifecycle.State.INITIALIZED)
   }
 
   @Test
-  fun postCreationLifecycleStateIsCreatedOne() = runNotificationServiceTest {
+  fun postCreationLifecycleStateIsCreatedOne() = runPushNotificationServiceTest {
     create()
     assertThat(service)
-      .prop(NotificationService::lifecycleState)
+      .prop(PushNotificationService::lifecycleState)
       .isSameInstanceAs(Lifecycle.State.CREATED)
   }
 
   @Test
-  fun postDestructionLifecycleStateIsDestroyedOne() = runNotificationServiceTest {
+  fun postDestructionLifecycleStateIsDestroyedOne() = runPushNotificationServiceTest {
     destroy()
     assertThat(service)
-      .prop(NotificationService::lifecycleState)
+      .prop(PushNotificationService::lifecycleState)
       .isSameInstanceAs(Lifecycle.State.DESTROYED)
   }
 
@@ -102,7 +102,7 @@ internal class NotificationServiceTests {
         isRetrieved = true
         requester
       }
-      NotificationService()
+      PushNotificationService()
     }
     assertThat(isRetrieved).isTrue()
     Injector.clear()
@@ -116,7 +116,7 @@ internal class NotificationServiceTests {
       context = @OptIn(ExperimentalCoroutinesApi::class) UnconfinedTestDispatcher()
     ) {
       Injector.injectImmediately<Requester>(requester)
-      NotificationService()
+      PushNotificationService()
         .let { ServiceController.of(it, Intent(context, it::class.java)) }
         ?.also {
           it.get()?.setCoroutineContext(coroutineContext)
@@ -129,50 +129,50 @@ internal class NotificationServiceTests {
   }
 
   @Test
-  fun coroutineScopeIsActiveByDefault() = runNotificationServiceTest {
+  fun coroutineScopeIsActiveByDefault() = runPushNotificationServiceTest {
     service.coroutineScope.ensureActive()
   }
 
   @Test
-  fun setsCoroutineContext() = runNotificationServiceTest {
+  fun setsCoroutineContext() = runPushNotificationServiceTest {
     service.setCoroutineContext(Dispatchers.IO)
     assertThat(service)
-      .prop(NotificationService::coroutineScope)
+      .prop(PushNotificationService::coroutineScope)
       .prop(CoroutineScope::coroutineContext)
       .transform("[${Dispatchers.IO.key}]") { it[Dispatchers.IO.key] }
       .isSameInstanceAs(Dispatchers.IO)
   }
 
   @Test
-  fun cancelsActiveJobsWhenSettingCoroutineContext() = runNotificationServiceTest {
+  fun cancelsActiveJobsWhenSettingCoroutineContext() = runPushNotificationServiceTest {
     val job = service.coroutineScope.launch { awaitCancellation() }
     service.setCoroutineContext(Dispatchers.IO)
     assertThat(job).prop(Job::isCancelled).isTrue()
   }
 
   @Test
-  fun defaultFirebaseApplicationIsObtainableWhenSdkIsRunning() = runNotificationServiceTest {
+  fun defaultFirebaseApplicationIsObtainableWhenSdkIsRunning() = runPushNotificationServiceTest {
     create()
-    assertThat(service).prop(NotificationService::isFirebaseSdkRunning).isTrue()
+    assertThat(service).prop(PushNotificationService::isFirebaseSdkRunning).isTrue()
     Firebase.app
   }
 
   @Test
   fun defaultFirebaseApplicationThrowsWhenObtainedWhileSdkIsNotRunning() =
-    runNotificationServiceTest {
+    runPushNotificationServiceTest {
       destroy()
-      assertThat(service).prop(NotificationService::isFirebaseSdkRunning).isFalse()
+      assertThat(service).prop(PushNotificationService::isFirebaseSdkRunning).isFalse()
       assertFailure { Firebase.app }.isInstanceOf<IllegalStateException>()
     }
 
   @Test
-  fun startsFirebaseSdkWhenCreated() = runNotificationServiceTest {
+  fun startsFirebaseSdkWhenCreated() = runPushNotificationServiceTest {
     create()
-    assertThat(service).prop(NotificationService::isFirebaseSdkRunning).isTrue()
+    assertThat(service).prop(PushNotificationService::isFirebaseSdkRunning).isTrue()
   }
 
   @Test
-  fun disablesFirebaseSdkAutomaticDataCollection() = runNotificationServiceTest {
+  fun disablesFirebaseSdkAutomaticDataCollection() = runPushNotificationServiceTest {
     create()
     assertThat(Firebase)
       .prop("app") { it.app }
@@ -183,7 +183,7 @@ internal class NotificationServiceTests {
   @Test
   fun subscribesWhenTokenIsReceived() {
     val requestURIFlow = MutableSharedFlow<URI>(replay = 1)
-    runNotificationServiceTest({
+    runPushNotificationServiceTest({
       val requestURI = it.url.toURI()
       requestURIFlow.emit(requestURI)
       respondOk()
@@ -201,7 +201,7 @@ internal class NotificationServiceTests {
   @Test
   fun subscriptionFormIsComplete() {
     val requestBodyFlow = MutableSharedFlow<FormDataContent>(replay = 1)
-    runNotificationServiceTest({
+    runPushNotificationServiceTest({
       requestBodyFlow.emit(it.body as FormDataContent)
       respondOk()
     }) {
@@ -225,28 +225,28 @@ internal class NotificationServiceTests {
 
   @Test
   fun sendsNotificationWhenMessageIsReceived() =
-    runNotificationServiceTest(
+    runPushNotificationServiceTest(
       coroutineContext = @OptIn(ExperimentalCoroutinesApi::class) UnconfinedTestDispatcher()
     ) {
-      assertThat(MastodonNotification.Type.entries).each { typeAssert ->
+      assertThat(PushNotification.Type.entries).each { typeAssert ->
         typeAssert.given { type ->
-          val dto =
-            MastodonNotification(
+          val pushNotification =
+            PushNotification(
               /* id = */ "${type.ordinal}",
               type,
               dtoCreatedAt,
               MastodonAccount.default,
               MastodonStatus.default
             )
-          clientResponseProvider.notification = dto
+          clientResponseProvider.notification = pushNotification
           service.onMessageReceived(message)
-          launch { service.awaitUntilSent(dto.generateSystemNotificationID()) }
+          launch { service.awaitUntilSent(pushNotification.generateSystemNotificationID()) }
           assertThat(service)
-            .prop(NotificationService::notificationManager)
+            .prop(PushNotificationService::notificationManager)
             .prop(NotificationManager::getActiveNotifications)
             .transform("of $type") { statusBarNotifications ->
               statusBarNotifications.find { statusBarNotification ->
-                statusBarNotification.id == dto.generateSystemNotificationID()
+                statusBarNotification.id == pushNotification.generateSystemNotificationID()
               }
             }
             .isNotNull()
@@ -255,7 +255,14 @@ internal class NotificationServiceTests {
               prop(Notification::getChannelId).isEqualTo(type.channelID)
               launch {
                 transform("title") { it.extras.getString(Notification.EXTRA_TITLE) }
-                  .isEqualTo(type.getContentTitle(context, requester.lock, dto.account, dto.status))
+                  .isEqualTo(
+                    type.getContentTitle(
+                      context,
+                      requester.lock,
+                      pushNotification.account,
+                      pushNotification.status
+                    )
+                  )
               }
             }
         }
@@ -265,45 +272,45 @@ internal class NotificationServiceTests {
   @Test
   fun cancelsSentNotificationsWhenDestroyed() {
     lateinit var baseURI: URI
-    runNotificationServiceTest(
+    runPushNotificationServiceTest(
       NotificationsClientResponseProvider({ baseURI }, ClientResponseProvider.ok),
       coroutineContext = @OptIn(ExperimentalCoroutinesApi::class) UnconfinedTestDispatcher()
     ) {
       baseURI = requester.baseURI
-      for (type in MastodonNotification.Type.entries) {
-        val dto =
-          MastodonNotification(
+      for (type in PushNotification.Type.entries) {
+        val pushNotification =
+          PushNotification(
             /* id = */ "${type.ordinal}",
             type,
             dtoCreatedAt,
             MastodonAccount.default,
             MastodonStatus.default
           )
-        clientResponseProvider.notification = dto
+        clientResponseProvider.notification = pushNotification
         service.onMessageReceived(message)
-        service.awaitUntilSent(dto.generateSystemNotificationID())
+        service.awaitUntilSent(pushNotification.generateSystemNotificationID())
       }
       destroy()
       assertThat(service)
-        .prop(NotificationService::notificationManager)
+        .prop(PushNotificationService::notificationManager)
         .prop(NotificationManager::getActiveNotifications)
         .isEmpty()
     }
   }
 
   @Test
-  fun cancelsCoroutineScopeWhenDestroyed() = runNotificationServiceTest {
+  fun cancelsCoroutineScopeWhenDestroyed() = runPushNotificationServiceTest {
     destroy()
     assertThat(service)
-      .prop(NotificationService::coroutineScope)
+      .prop(PushNotificationService::coroutineScope)
       .prop(CoroutineScope::isActive)
       .isFalse()
   }
 
   @Test
-  fun stopsFirebaseSdkWhenDestroyed() = runNotificationServiceTest {
+  fun stopsFirebaseSdkWhenDestroyed() = runPushNotificationServiceTest {
     destroy()
-    assertThat(service).prop(NotificationService::isFirebaseSdkRunning).isFalse()
+    assertThat(service).prop(PushNotificationService::isFirebaseSdkRunning).isFalse()
   }
 
   companion object {

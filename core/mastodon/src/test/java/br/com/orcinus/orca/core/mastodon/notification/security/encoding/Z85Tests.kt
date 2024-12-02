@@ -17,6 +17,8 @@ package br.com.orcinus.orca.core.mastodon.notification.security.encoding
 
 import assertk.assertFailure
 import assertk.assertions.isInstanceOf
+import br.com.orcinus.orca.core.mastodon.notification.push.security.encoding.decodeFromZ85
+import br.com.orcinus.orca.core.mastodon.notification.push.security.encoding.encodeToZ85
 import kotlin.test.Test
 
 internal class Z85Tests {

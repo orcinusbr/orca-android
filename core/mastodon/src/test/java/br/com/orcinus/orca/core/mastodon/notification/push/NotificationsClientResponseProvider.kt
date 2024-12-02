@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification
+package br.com.orcinus.orca.core.mastodon.notification.push
 
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus
@@ -44,10 +44,10 @@ internal class NotificationsClientResponseProvider(
 ) : ClientResponseProvider {
   /** Single DTO to be provided in response to a request for fetching notifications. */
   var notification =
-    MastodonNotification(
+    PushNotification(
       /* id = */ "0",
-      MastodonNotification.Type.POLL,
-      MastodonNotification.createdAt(ZonedDateTime.now()),
+      PushNotification.Type.POLL,
+      PushNotification.createdAt(ZonedDateTime.now()),
       MastodonAccount.default,
       MastodonStatus.default
     )

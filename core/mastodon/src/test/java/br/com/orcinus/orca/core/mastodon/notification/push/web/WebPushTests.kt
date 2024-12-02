@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification.webpush
+package br.com.orcinus.orca.core.mastodon.notification.push.web
 
 import assertk.assertThat
 import assertk.assertions.first

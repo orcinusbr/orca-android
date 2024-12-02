@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification
+package br.com.orcinus.orca.core.mastodon.notification.push
 
 import android.os.Build
 import androidx.activity.ComponentActivity
@@ -24,6 +24,7 @@ import assertk.assertThat
 import assertk.assertions.each
 import assertk.assertions.isZero
 import assertk.assertions.support.expected
+import br.com.orcinus.orca.core.mastodon.notification.NotificationLock
 import br.com.orcinus.orca.ext.testing.assertThat
 import kotlin.test.Test
 import org.junit.runner.RunWith
@@ -93,6 +94,6 @@ internal class DefaultNotificationLockTests {
       .moveToState(Lifecycle.State.CREATED)
       ?.onActivity { NotificationLock(it).apply { repeat(2) { _ -> requestUnlock() } } }
       ?.close()
-    assertThat<NotificationService>().bindingCount().isZero()
+    assertThat<PushNotificationService>().bindingCount().isZero()
   }
 }

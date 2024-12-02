@@ -13,10 +13,9 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification.webpush;
+package br.com.orcinus.orca.core.mastodon.notification.push.web;
 
 import androidx.annotation.NonNull;
-import br.com.orcinus.orca.core.mastodon.notification.security.cryptography.EllipticCurve;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -62,7 +61,7 @@ class ClientKeys {
 
   /** Generates authentication and public keys distinct from the current ones. */
   void generate() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException {
-    final KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(EllipticCurve.NAME);
+    final KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("EC");
     keyPairGenerator.initialize(new ECGenParameterSpec("secp256r1"));
     final KeyPair keyPair = keyPairGenerator.generateKeyPair();
     authentication = new byte[16];

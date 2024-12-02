@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification
+package br.com.orcinus.orca.core.mastodon.notification.push
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -28,10 +28,10 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.R
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus
-import br.com.orcinus.orca.core.mastodon.notification.MastodonNotification.Type
-import br.com.orcinus.orca.core.mastodon.notification.security.cryptography.EllipticCurve
-import br.com.orcinus.orca.core.mastodon.notification.security.encoding.decodeFromZ85
-import br.com.orcinus.orca.core.mastodon.notification.webpush.WebPush
+import br.com.orcinus.orca.core.mastodon.notification.InternalNotificationApi
+import br.com.orcinus.orca.core.mastodon.notification.push.PushNotification.Type
+import br.com.orcinus.orca.core.mastodon.notification.push.security.encoding.decodeFromZ85
+import br.com.orcinus.orca.core.mastodon.notification.push.web.WebPush
 import java.security.KeyFactory
 import java.security.interfaces.ECPublicKey
 import java.security.spec.X509EncodedKeySpec
@@ -45,24 +45,24 @@ import kotlinx.serialization.json.Json
  * Structure returned by the API when the user is notified of an occurrence related to them.
  *
  * @property id Unique identifier in the database.
- * @property type Determines what this [MastodonNotification] is about.
+ * @property type Determines what this [PushNotification] is about.
  * @property createdAt ISO-8601-formatted moment in time at which the notification was delivered.
  * @property account [MastodonAccount] responsible for the event that resulted in this
- *   [MastodonNotification] being sent.
- * @property status [MastodonStatus] to which this [MastodonNotification] is related. Only present
- *   when the [type] is [Type.FAVOURITE], [Type.MENTION], [Type.POLL], [Type.REBLOG], [Type.STATUS]
- *   or [Type.UPDATE].
+ *   [PushNotification] being sent.
+ * @property status [MastodonStatus] to which this [PushNotification] is related. Only present when
+ *   the [type] is [Type.FAVOURITE], [Type.MENTION], [Type.POLL], [Type.REBLOG], [Type.STATUS] or
+ *   [Type.UPDATE].
  */
 @InternalNotificationApi
 @Serializable
-internal data class MastodonNotification(
+internal data class PushNotification(
   val id: String,
   val type: Type,
   val createdAt: String,
   val account: MastodonAccount?,
   val status: MastodonStatus?
 ) {
-  /** Denotes the topic of a [MastodonNotification]. */
+  /** Denotes the topic of a [PushNotification]. */
   enum class Type {
     /** Someone has favorited a [MastodonStatus] authored by the user. */
     FAVOURITE {
@@ -291,9 +291,9 @@ internal data class MastodonNotification(
      * @param authenticationLock [AuthenticationLock] for checking whether the related
      *   [MastodonAccount] is owned by the current [Actor].
      * @param account [MastodonAccount] responsible for the event that resulted in the
-     *   [MastodonNotification] being sent.
-     * @param status [MastodonStatus] to which the [MastodonNotification] is related. Only present
-     *   when this is a [FAVOURITE], a [MENTION], a [POLL], a [REBLOG], a [STATUS] or an [UPDATE].
+     *   [PushNotification] being sent.
+     * @param status [MastodonStatus] to which the [PushNotification] is related. Only present when
+     *   this is a [FAVOURITE], a [MENTION], a [POLL], a [REBLOG], a [STATUS] or an [UPDATE].
      * @see toNotification
      * @see account
      * @see MastodonAccount.isOwned
@@ -322,7 +322,7 @@ internal data class MastodonNotification(
     }
 
   /**
-   * Converts this [MastodonNotification] into a [Notification].
+   * Converts this [PushNotification] into a [Notification].
    *
    * @param context [Context] with which the underlying [Notification.Builder] will be instantiated.
    * @param authenticationLock [AuthenticationLock] for checking whether the [account] is owned by
@@ -351,7 +351,7 @@ internal data class MastodonNotification(
       zonedDateTime.format(DateTimeFormatter.ISO_INSTANT)
 
     /**
-     * Creates a [MastodonNotification] from an [Intent].
+     * Creates a [PushNotification] from an [Intent].
      *
      * @param webPush Decrypts the plaintext.
      * @param intent Intent with the information based on which the DTO will be created. It is
@@ -373,11 +373,11 @@ internal data class MastodonNotification(
      */
     @JvmStatic
     @Throws(NoSuchElementException::class)
-    fun create(webPush: WebPush, intent: Intent): MastodonNotification {
+    fun create(webPush: WebPush, intent: Intent): PushNotification {
       val encryptedEncodedK = intent.getStringExtra("k") ?: throw NoSuchElementException("k")
       val encryptedDecodedK = encryptedEncodedK.decodeFromZ85()
       val encryptedDecodedKSpec = X509EncodedKeySpec(encryptedDecodedK)
-      val encryptedDecodedKFactory = KeyFactory.getInstance(EllipticCurve.NAME)
+      val encryptedDecodedKFactory = KeyFactory.getInstance("EC")
       val decodedK = encryptedDecodedKFactory.generatePublic(encryptedDecodedKSpec) as ECPublicKey
       val encodedS = intent.getStringExtra("s") ?: throw NoSuchElementException("s")
       val decodedS = encodedS.decodeFromZ85()

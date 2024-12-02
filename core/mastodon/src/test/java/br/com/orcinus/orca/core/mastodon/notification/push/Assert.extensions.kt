@@ -13,50 +13,23 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification
+package br.com.orcinus.orca.core.mastodon.notification.push
 
 import android.app.Application
 import android.app.Service
 import android.content.BroadcastReceiver
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
 import assertk.Assert
 import assertk.assertions.contains
 import assertk.assertions.extracting
-import assertk.assertions.isEqualTo
-import assertk.assertions.isNotNull
 import assertk.assertions.prop
 import com.google.common.collect.ImmutableList
 import kotlin.reflect.KClass
 import org.opentest4j.AssertionFailedError
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowApplication
-
-/**
- * Asserts that the [Service] was the last one to be stopped.
- *
- * @param T [Service] on which the assertion is being performed.
- * @throws AssertionFailedError If the [Service] was not the last one to be stopped (even when it
- *   has been and is, in fact, stopped).
- * @see Context.stopService
- */
-@Throws(AssertionFailedError::class)
-internal fun <T : Service> Assert<KClass<T>>.isLastlyStopped(): Assert<KClass<T>> {
-  given {
-    assertThat<ShadowApplication>(
-        shadowOf(ApplicationProvider.getApplicationContext<Application>())
-      )
-      .prop<_, Intent?, _>(ShadowApplication::getNextStoppedService)
-      .isNotNull()
-      .prop(Intent::getComponent)
-      .isNotNull()
-      .prop(ComponentName::getClassName)
-      .isEqualTo(it.java.name)
-  }
-  return this
-}
 
 /**
  * Asserts that the [BroadcastReceiver] is registered.

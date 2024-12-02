@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification
+package br.com.orcinus.orca.core.mastodon.notification.push
 
 import android.content.Context
 import android.content.Intent
@@ -28,35 +28,35 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class NotificationReceiverTests {
+internal class PushNotificationReceiverTests {
   @Test
   fun throwsWhenInstantiatedInAContextAndABroadcastIsReceivedInAnother() {
     assertFailure {
-        NotificationReceiver(context)
-          .onReceive(mockk<Context>(), Intent(NotificationReceiver.ACTION))
+        PushNotificationReceiver(context)
+          .onReceive(mockk<Context>(), Intent(PushNotificationReceiver.ACTION))
       }
       .isInstanceOf<IllegalStateException>()
   }
 
   @Test
   fun throwsWhenABroadcastWithoutAnActionIsReceived() {
-    assertFailure { NotificationReceiver(context).onReceive(context, Intent()) }
+    assertFailure { PushNotificationReceiver(context).onReceive(context, Intent()) }
       .isInstanceOf<IllegalStateException>()
   }
 
   @Test
   fun throwsWhenAnUnknownBroadcastIsReceived() {
     assertFailure {
-        NotificationReceiver(context).onReceive(context, Intent(Intent.ACTION_ALL_APPS))
+        PushNotificationReceiver(context).onReceive(context, Intent(Intent.ACTION_ALL_APPS))
       }
       .isInstanceOf<IllegalStateException>()
   }
 
   @Test
   fun bindsServiceWhenAKnownBroadcastIsReceived() {
-    val receiver = NotificationReceiver(context)
-    receiver.onReceive(context, Intent(NotificationReceiver.ACTION))
-    assertThat<NotificationService>().bindingCount().isEqualTo(1)
+    val receiver = PushNotificationReceiver(context)
+    receiver.onReceive(context, Intent(PushNotificationReceiver.ACTION))
+    assertThat<PushNotificationService>().bindingCount().isEqualTo(1)
     receiver.close()
   }
 }

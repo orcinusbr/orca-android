@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification
+package br.com.orcinus.orca.core.mastodon.notification.push
 
 import android.content.Context
 import android.content.Intent
@@ -21,7 +21,7 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvider
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.AuthenticatedRequester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.runAuthenticatedRequesterTest
-import br.com.orcinus.orca.core.mastodon.notification.webpush.WebPush
+import br.com.orcinus.orca.core.mastodon.notification.push.web.WebPush
 import br.com.orcinus.orca.platform.testing.context
 import io.ktor.client.HttpClient
 import java.net.URI
@@ -35,19 +35,21 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.TestScope
 import org.robolectric.android.controller.ServiceController
 
-/** Default implementation of a [NotificationServiceTestScope] which will be used in the tests. */
-private class NotificationServiceEnvironment(
+/**
+ * Default implementation of a [PushNotificationServiceTestScope] which will be used in the tests.
+ */
+private class PushNotificationServiceEnvironment(
   override val requester: AuthenticatedRequester,
   override val clientResponseProvider: NotificationsClientResponseProvider,
   override val context: Context,
   delegate: TestScope
-) : NotificationServiceTestScope(), CoroutineScope by delegate
+) : PushNotificationServiceTestScope(), CoroutineScope by delegate
 
-/** Scope in which a [NotificationService] test is run. */
-internal sealed class NotificationServiceTestScope : CoroutineScope {
-  /** [ServiceController] by which the lifecycle of the [NotificationService] is managed. */
+/** Scope in which a [PushNotificationService] test is run. */
+internal sealed class PushNotificationServiceTestScope : CoroutineScope {
+  /** [ServiceController] by which the lifecycle of the [PushNotificationService] is managed. */
   private val controller by lazy {
-    NotificationService(requester, WebPush())
+    PushNotificationService(requester, WebPush())
       .apply { setCoroutineContext(coroutineContext) }
       .let { ServiceController.of(it, Intent(context, it::class.java)) }
   }
@@ -61,14 +63,14 @@ internal sealed class NotificationServiceTestScope : CoroutineScope {
   /** [NotificationsClientResponseProvider] by which responses to requests are provided. */
   abstract val clientResponseProvider: NotificationsClientResponseProvider
 
-  /** [NotificationService] being tested. */
-  val service: NotificationService
+  /** [PushNotificationService] being tested. */
+  val service: PushNotificationService
     get() = controller.get()
 
   /**
    * Creates the [service].
    *
-   * @see NotificationService.onCreate
+   * @see PushNotificationService.onCreate
    */
   fun create() {
     controller.create()
@@ -77,7 +79,7 @@ internal sealed class NotificationServiceTestScope : CoroutineScope {
   /**
    * Destroys the [service].
    *
-   * @see NotificationService.onDestroy
+   * @see PushNotificationService.onDestroy
    */
   fun destroy() {
     controller.destroy()
@@ -85,19 +87,19 @@ internal sealed class NotificationServiceTestScope : CoroutineScope {
 }
 
 /**
- * Runs a [NotificationService]-focused test.
+ * Runs a [PushNotificationService]-focused test.
  *
  * @param clientResponseProvider Defines how the [HttpClient] will respond to requests.
  * @param onAuthentication Action run whenever the [Actor] is authenticated.
  * @param coroutineContext [CoroutineContext] in which [Job]s are launched by default.
- * @param body Testing to be performed on a [NotificationService].
+ * @param body Testing to be performed on a [PushNotificationService].
  */
 @OptIn(ExperimentalContracts::class)
-internal fun runNotificationServiceTest(
+internal fun runPushNotificationServiceTest(
   clientResponseProvider: ClientResponseProvider = ClientResponseProvider.ok,
   onAuthentication: () -> Unit = {},
   coroutineContext: CoroutineContext = EmptyCoroutineContext,
-  body: suspend NotificationServiceTestScope.() -> Unit
+  body: suspend PushNotificationServiceTestScope.() -> Unit
 ) {
   contract { callsInPlace(body, InvocationKind.EXACTLY_ONCE) }
   lateinit var baseURI: URI
@@ -112,7 +114,7 @@ internal fun runNotificationServiceTest(
 
   runAuthenticatedRequesterTest(defaultClientResponseProvider, onAuthentication, coroutineContext) {
     baseURI = requester.baseURI
-    NotificationServiceEnvironment(requester, defaultClientResponseProvider, context, delegate)
+    PushNotificationServiceEnvironment(requester, defaultClientResponseProvider, context, delegate)
       .run {
         try {
           body()

@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification
+package br.com.orcinus.orca.core.mastodon.notification.push
 
 import assertk.assertThat
 import assertk.assertions.containsExactly
@@ -46,10 +46,10 @@ internal class NotificationsClientResponseProviderTests {
   fun setsNotification() {
     lateinit var baseURI: URI
     val notification =
-      MastodonNotification(
+      PushNotification(
         /* id = */ "👥📚",
-        MastodonNotification.Type.POLL,
-        MastodonNotification.createdAt(ZonedDateTime.now()),
+        PushNotification.Type.POLL,
+        PushNotification.createdAt(ZonedDateTime.now()),
         MastodonAccount.default,
         MastodonStatus.default
       )
@@ -61,7 +61,7 @@ internal class NotificationsClientResponseProviderTests {
         .transform("get") { it.get(HostedURLBuilder::buildNotificationsRoute) }
         .transform { it.bodyAsText() }
         .transform("Json.decodeFromString") {
-          Json.decodeFromString(NotificationService.dtosSerializer, it)
+          Json.decodeFromString(PushNotificationService.dtosSerializer, it)
         }
         .containsExactly(notification)
     }

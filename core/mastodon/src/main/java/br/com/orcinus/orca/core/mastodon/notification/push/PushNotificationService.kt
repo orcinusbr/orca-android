@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification
+package br.com.orcinus.orca.core.mastodon.notification.push
 
 import android.app.Notification
 import android.app.NotificationManager
@@ -26,7 +26,8 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.BuildConfig
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
-import br.com.orcinus.orca.core.mastodon.notification.webpush.WebPush
+import br.com.orcinus.orca.core.mastodon.notification.InternalNotificationApi
+import br.com.orcinus.orca.core.mastodon.notification.push.web.WebPush
 import br.com.orcinus.orca.ext.uri.URIBuilder
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import br.com.orcinus.orca.std.injector.Injector
@@ -63,21 +64,21 @@ import kotlinx.serialization.json.Json
  * @property requester [Requester] by which push subscriptions are performed.
  * @property webPush [WebPush] by which the keys for encryption and decryption of received updates
  *   are provided.
- * @see MastodonNotification.Type
- * @see MastodonNotification.Type.toNotificationChannel
+ * @see PushNotification.Type
+ * @see PushNotification.Type.toNotificationChannel
  */
 @InternalNotificationApi
-internal class NotificationService
+internal class PushNotificationService
 @VisibleForTesting
 constructor(private val requester: Requester, private val webPush: WebPush) :
   FirebaseMessagingService() {
   /**
-   * IDs of [Notification]s that have been sent and have not yet been cleared by this
-   * [NotificationService].
+   * System notification IDs of push notifications that have been sent and have not yet been cleared
+   * by this [PushNotificationService].
    *
-   * @see StatusBarNotification.getId
+   * @see PushNotification.generateSystemNotificationID
    */
-  private val sentNotificationIds = mutableSetOf<Int>()
+  private val sentSystemPushNotificationIds = mutableSetOf<Int>()
 
   /**
    * [AuthenticationLock] for requiring an authenticated [Actor] when pushing a subscription and
@@ -87,11 +88,10 @@ constructor(private val requester: Requester, private val webPush: WebPush) :
     get() = requester.authenticated().lock
 
   /**
-   * [CoroutineScope] in which remotely received payloads are converted into [MastodonNotification]
-   * DTOs and requests to subscribe to the receipt of notifications from the Mastodon server are
-   * sent.
+   * [CoroutineScope] in which remotely received payloads are converted into [PushNotification] DTOs
+   * and requests to subscribe to the receipt of notifications from the Mastodon server are sent.
    *
-   * @see sendLastNotification
+   * @see sendLastPushNotification
    * @see subscribe
    */
   @VisibleForTesting
@@ -99,9 +99,9 @@ constructor(private val requester: Requester, private val webPush: WebPush) :
     private set
 
   /**
-   * Current [Lifecycle.State] in which this [NotificationService] is, constrained to representing
-   * only _initialized_, _created_ or _destroyed_ states. As of now, it has no actual use in
-   * production and exists only for testing purposes.
+   * Current [Lifecycle.State] in which this [PushNotificationService] is, constrained to
+   * representing only _initialized_, _created_ or _destroyed_ states. As of now, it has no actual
+   * use in production and exists only for testing purposes.
    *
    * @see Lifecycle.State.INITIALIZED
    * @see Lifecycle.State.CREATED
@@ -151,7 +151,7 @@ constructor(private val requester: Requester, private val webPush: WebPush) :
 
   override fun onMessageReceived(message: RemoteMessage) {
     super.onMessageReceived(message)
-    sendLastNotification()
+    sendLastPushNotification()
   }
 
   override fun onNewToken(token: String) {
@@ -285,20 +285,21 @@ constructor(private val requester: Requester, private val webPush: WebPush) :
    *
    * @see onMessageReceived
    */
-  private fun sendLastNotification() {
+  private fun sendLastPushNotification() {
     coroutineScope.launch {
-      val dto = getLastNotificationDto()
-      val channel = dto.type.toNotificationChannel(this@NotificationService)
-      val id = dto.generateSystemNotificationID()
-      val notification = dto.toNotification(this@NotificationService, authenticationLock)
+      val pushNotification = getLastPushNotification()
+      val channel = pushNotification.type.toNotificationChannel(this@PushNotificationService)
+      val id = pushNotification.generateSystemNotificationID()
+      val notification =
+        pushNotification.toNotification(this@PushNotificationService, authenticationLock)
       notificationManager.createNotificationChannel(channel)
       notificationManager.notify(id, notification)
-      sentNotificationIds += id
+      sentSystemPushNotificationIds += id
     }
   }
 
   /** Obtains the DTO of the notification received lastly from the Mastodon server. */
-  private suspend fun getLastNotificationDto() =
+  private suspend fun getLastPushNotification() =
     requester
       .authenticated()
       .get(HostedURLBuilder::buildNotificationsRoute)
@@ -332,12 +333,14 @@ constructor(private val requester: Requester, private val webPush: WebPush) :
     }
   }
 
-  /** Cancels all system notifications that have been sent by this [NotificationService]. */
+  /**
+   * Cancels all system push notifications that have been sent by this [PushNotificationService].
+   */
   private fun cancelSentNotifications() {
-    for (sentNotificationID in sentNotificationIds) {
+    for (sentNotificationID in sentSystemPushNotificationIds) {
       notificationManager.cancel(sentNotificationID)
     }
-    sentNotificationIds.clear()
+    sentSystemPushNotificationIds.clear()
   }
 
   /**
@@ -353,15 +356,13 @@ constructor(private val requester: Requester, private val webPush: WebPush) :
 
   companion object {
     /** [KSerializer] that serializes the response to a request for obtaining notifications. */
-    @JvmStatic
-    @VisibleForTesting
-    val dtosSerializer = ListSerializer(MastodonNotification.serializer())
+    @JvmStatic @VisibleForTesting val dtosSerializer = ListSerializer(PushNotification.serializer())
   }
 }
 
 /**
  * Builds a [URI] to which `POST` HTTP requests intended to push a subscription for receiving
- * [MastodonNotification]s are sent.
+ * [PushNotification]s are sent.
  */
 @InternalNotificationApi
 @VisibleForTesting

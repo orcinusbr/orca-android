@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification
+package br.com.orcinus.orca.core.mastodon.notification.push
 
 import android.app.Notification
 import assertk.all
@@ -38,62 +38,64 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class MastodonNotificationTests {
+internal class PushNotificationTests {
   private val authenticationLock = AuthenticationLock(ActorProvider.sample)
   private val createdAtAsZonedDateTime = ZonedDateTime.now()
-  private val createdAt = MastodonNotification.createdAt(createdAtAsZonedDateTime)
+  private val createdAt = PushNotification.createdAt(createdAtAsZonedDateTime)
 
   @Test
   fun convertsZonedDateTimeIntoCreatedAtString() =
-    assertThat(MastodonNotification.createdAt(createdAtAsZonedDateTime)).isEqualTo(createdAt)
+    assertThat(PushNotification)
+      .transform("createdAt") { it.createdAt(createdAtAsZonedDateTime) }
+      .isEqualTo(createdAt)
 
   @Test
   fun generatedSystemNotificationIDIsHashCodeOfOriginalOneWhenItIsNotDigitOnly() =
     assertThat(
-        MastodonNotification(
+        PushNotification(
           /* id = */ "🪫",
-          MastodonNotification.Type.FOLLOW,
+          PushNotification.Type.FOLLOW,
           /* createdAt = */ "",
           MastodonAccount.default,
           /* status = */ null
         )
       )
-      .prop(MastodonNotification::generateSystemNotificationID)
+      .prop(PushNotification::generateSystemNotificationID)
       .isEqualTo("🪫".hashCode())
 
   @Test
   fun generatedSystemNotificationIDIsHashCodeOfOriginalOneWhenItIsDigitOnlyButIsZeroPadded() =
     repeat(4) { index ->
       assertThat(
-          MastodonNotification(
+          PushNotification(
             /* id = */ "0".repeat(index.inc()) + "${index.inc()}",
-            MastodonNotification.Type.FOLLOW,
+            PushNotification.Type.FOLLOW,
             /* createdAt = */ "",
             MastodonAccount.default,
             /* status = */ null
           )
         )
-        .prop(MastodonNotification::generateSystemNotificationID)
+        .prop(PushNotification::generateSystemNotificationID)
         .all { given { systemNotificationID -> isEqualTo(systemNotificationID.hashCode()) } }
     }
 
   @Test
   fun generatedSystemNotificationIDIsOriginalOneConvertedIntoAnIntegerWhenItIsDigitOnly() =
     assertThat(
-        MastodonNotification(
+        PushNotification(
           /* id = */ "8102024",
-          MastodonNotification.Type.FOLLOW,
+          PushNotification.Type.FOLLOW,
           /* createdAt = */ "",
           MastodonAccount.default,
           /* status = */ null
         )
       )
-      .prop(MastodonNotification::generateSystemNotificationID)
+      .prop(PushNotification::generateSystemNotificationID)
       .isEqualTo(8102024)
 
   @Test
   fun getsContentTitle() =
-    assertThat(MastodonNotification.Type.entries).each { typeAssert ->
+    assertThat(PushNotification.Type.entries).each { typeAssert ->
       runTest {
         typeAssert.suspendCall("getContentTitle") { type ->
           type.getContentTitle(
@@ -108,11 +110,11 @@ internal class MastodonNotificationTests {
 
   @Test
   fun notificationChannelIsThatOfItsType() =
-    assertThat(MastodonNotification.Type.entries, "types").each { typeAssert ->
+    assertThat(PushNotification.Type.entries, "types").each { typeAssert ->
       typeAssert.given { type ->
         runTest {
           assertThat(
-              MastodonNotification(
+              PushNotification(
                 /* id = */ "",
                 type,
                 createdAt,
@@ -120,8 +122,8 @@ internal class MastodonNotificationTests {
                 MastodonStatus.default
               )
             )
-            .suspendCall("toNotification") { dto ->
-              dto.toNotification(context, authenticationLock)
+            .suspendCall("toNotification") { pushNotification ->
+              pushNotification.toNotification(context, authenticationLock)
             }
             .prop(Notification::getChannelId)
             .isSameInstanceAs(type.channelID)
@@ -131,11 +133,11 @@ internal class MastodonNotificationTests {
 
   @Test
   fun notificationIsCancelledAutomatically() =
-    assertThat(MastodonNotification.Type.entries, "types").each { typeAssert ->
+    assertThat(PushNotification.Type.entries, "types").each { typeAssert ->
       runTest {
         typeAssert.given { type ->
           assertThat(
-              MastodonNotification(
+              PushNotification(
                 /* id = */ "",
                 type,
                 createdAt,
@@ -143,8 +145,8 @@ internal class MastodonNotificationTests {
                 MastodonStatus.default
               )
             )
-            .suspendCall("toNotification") { dto ->
-              dto.toNotification(context, authenticationLock)
+            .suspendCall("toNotification") { pushNotification ->
+              pushNotification.toNotification(context, authenticationLock)
             }
             .prop(Notification::flags)
             .prop("isAutoCancelled", Notification.FLAG_AUTO_CANCEL::and)
@@ -155,10 +157,10 @@ internal class MastodonNotificationTests {
 
   @Test
   fun notificationTitleIsThatObtainableThroughItsType() =
-    assertThat(MastodonNotification.Type.entries, "types").each { typeAssert ->
+    assertThat(PushNotification.Type.entries, "types").each { typeAssert ->
       typeAssert.given { type ->
-        val dto =
-          MastodonNotification(
+        val pushNotification =
+          PushNotification(
             /* id = */ "",
             type,
             createdAt,
@@ -166,24 +168,31 @@ internal class MastodonNotificationTests {
             MastodonStatus.default
           )
         runTest {
-          assertThat(dto)
+          assertThat(pushNotification)
             .suspendCall("toNotification") { transformationDto ->
               transformationDto.toNotification(context, authenticationLock)
             }
             .prop(Notification::extras)
-            .prop("title") { it.getString(Notification.EXTRA_TITLE) }
-            .isEqualTo(type.getContentTitle(context, authenticationLock, dto.account, dto.status))
+            .prop("title") { notification -> notification.getString(Notification.EXTRA_TITLE) }
+            .isEqualTo(
+              type.getContentTitle(
+                context,
+                authenticationLock,
+                pushNotification.account,
+                pushNotification.status
+              )
+            )
         }
       }
     }
 
   @Test
   fun notificationIsTimestamped() =
-    assertThat(MastodonNotification.Type.entries, "types").each { typeAssert ->
+    assertThat(PushNotification.Type.entries, "types").each { typeAssert ->
       typeAssert.given { type ->
         runTest {
           assertThat(
-              MastodonNotification(
+              PushNotification(
                 /* id = */ "",
                 type,
                 createdAt,
@@ -191,8 +200,8 @@ internal class MastodonNotificationTests {
                 MastodonStatus.default
               )
             )
-            .suspendCall("toNotification") { dto ->
-              dto.toNotification(context, authenticationLock)
+            .suspendCall("toNotification") { pushNotification ->
+              pushNotification.toNotification(context, authenticationLock)
             }
             .all {
               prop(Notification::extras)

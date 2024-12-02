@@ -13,12 +13,11 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification.webpush
+package br.com.orcinus.orca.core.mastodon.notification.push.web
 
 import androidx.annotation.VisibleForTesting
 import br.com.orcinus.orca.core.mastodon.notification.InternalNotificationApi
-import br.com.orcinus.orca.core.mastodon.notification.security.cryptography.EllipticCurve
-import br.com.orcinus.orca.core.mastodon.notification.security.encoding.encodeToBase64
+import br.com.orcinus.orca.core.mastodon.notification.push.security.encoding.encodeToBase64
 import java.math.BigInteger
 import java.security.KeyFactory
 import java.security.interfaces.ECPublicKey
@@ -285,7 +284,7 @@ internal class WebPush {
    */
   private fun generateSharedSecretEagerly(serverKey: ECPublicKey): ByteArray {
     return PKCS8EncodedKeySpec(clientKeys.private.encoded)
-      .let { KeyFactory.getInstance(EllipticCurve.NAME).generatePrivate(it) }
+      .let { KeyFactory.getInstance("EC").generatePrivate(it) }
       .let { KeyAgreement.getInstance("ECDH").apply { init(it) } }
       .also { it.doPhase(serverKey, /* lastPhase = */ true) }
       .generateSecret()

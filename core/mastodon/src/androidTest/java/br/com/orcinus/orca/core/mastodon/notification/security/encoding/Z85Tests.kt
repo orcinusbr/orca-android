@@ -18,6 +18,8 @@ package br.com.orcinus.orca.core.mastodon.notification.security.encoding
 import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.prop
+import br.com.orcinus.orca.core.mastodon.notification.push.security.encoding.decodeFromZ85
+import br.com.orcinus.orca.core.mastodon.notification.push.security.encoding.encodeToZ85
 import kotlin.test.Test
 import org.junit.BeforeClass
 

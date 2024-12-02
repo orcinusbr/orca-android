@@ -13,14 +13,20 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification.security.cryptography
+package br.com.orcinus.orca.core.mastodon.notification.push.security.encoding
 
-/** Utilities for elliptic-curve-based cryptography. */
-internal object EllipticCurve {
-  /**
-   * Name of the algorithm as specified by the
-   * [Java Security Standard Algorithm Names](https://docs.oracle.com/en/java/javase/11/docs/specs/security/standard-names.html)
-   * document.
-   */
-  const val NAME = "EC"
-}
+/**
+ * Encode a [ByteArray] as a [String].
+ *
+ * @throws UnsatisfiedLinkError If the native library is unloaded.
+ * @see String.decodeFromZ85
+ */
+@Throws(UnsatisfiedLinkError::class) external fun ByteArray.encodeToZ85(): String
+
+/**
+ * Decode an encoded [String] into a [ByteArray]; size of array will be `this.length` * 4 / 5.
+ *
+ * @throws UnsatisfiedLinkError If the native library is unloaded.
+ * @see ByteArray.encodeToZ85
+ */
+@Throws(UnsatisfiedLinkError::class) external fun String.decodeFromZ85(): ByteArray

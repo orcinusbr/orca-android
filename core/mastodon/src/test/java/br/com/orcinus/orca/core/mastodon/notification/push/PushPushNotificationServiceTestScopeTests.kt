@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification
+package br.com.orcinus.orca.core.mastodon.notification.push
 
 import androidx.lifecycle.Lifecycle
 import assertk.assertThat
@@ -34,38 +34,38 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class NotificationServiceTestScopeTests {
+internal class PushPushNotificationServiceTestScopeTests {
   @Test
   fun runsBodyOnce() {
     var runCount = 0
-    runNotificationServiceTest { runCount++ }
+    runPushNotificationServiceTest { runCount++ }
     assertThat(runCount).isEqualTo(1)
   }
 
   @Test
   fun serviceIsInitializedByDefault() {
-    runNotificationServiceTest {
+    runPushNotificationServiceTest {
       assertThat(service)
-        .prop(NotificationService::lifecycleState)
+        .prop(PushNotificationService::lifecycleState)
         .isSameInstanceAs(Lifecycle.State.INITIALIZED)
     }
   }
 
   @Test
   fun createsService() {
-    runNotificationServiceTest {
+    runPushNotificationServiceTest {
       create()
       assertThat(service)
-        .prop(NotificationService::lifecycleState)
+        .prop(PushNotificationService::lifecycleState)
         .isSameInstanceAs(Lifecycle.State.CREATED)
     }
   }
 
   @Test
   fun setsServiceCoroutineContextToItsOwn() {
-    runNotificationServiceTest {
+    runPushNotificationServiceTest {
       assertThat(service)
-        .prop(NotificationService::coroutineScope)
+        .prop(PushNotificationService::coroutineScope)
         .prop(CoroutineScope::coroutineContext)
         .prop(CoroutineContext::job)
         .prop(Job::key)
@@ -75,19 +75,19 @@ internal class NotificationServiceTestScopeTests {
 
   @Test
   fun respondsToRequestForObtainingNotifications() {
-    runNotificationServiceTest {
+    runPushNotificationServiceTest {
       assertThat(requester)
         .transform("get") { it.get(HostedURLBuilder::buildNotificationsRoute) }
         .transform("bodyAsText") { it.bodyAsText() }
         .transform("Json.decodeFromString") {
-          Json.decodeFromString(NotificationService.dtosSerializer, it)
+          Json.decodeFromString(PushNotificationService.dtosSerializer, it)
         }
     }
   }
 
   @Test
   fun responseIsProvidedBySpecifiedProviderWhenRequestIsNotForObtainingNotifications() {
-    runNotificationServiceTest {
+    runPushNotificationServiceTest {
       assertThat(requester)
         .transform("get") { it.get(HostedURLBuilder::buildNotificationSubscriptionPushingRoute) }
         .transform("body") { it.body<String>() }
@@ -97,21 +97,21 @@ internal class NotificationServiceTestScopeTests {
 
   @Test
   fun destroysService() {
-    runNotificationServiceTest {
+    runPushNotificationServiceTest {
       create()
       destroy()
       assertThat(service)
-        .prop(NotificationService::lifecycleState)
+        .prop(PushNotificationService::lifecycleState)
         .isSameInstanceAs(Lifecycle.State.DESTROYED)
     }
   }
 
   @Test
   fun serviceIsDestroyedAfterTest() {
-    var service: NotificationService
-    runNotificationServiceTest { service = this.service }
+    var service: PushNotificationService
+    runPushNotificationServiceTest { service = this.service }
     assertThat(service)
-      .prop(NotificationService::lifecycleState)
+      .prop(PushNotificationService::lifecycleState)
       .isSameInstanceAs(Lifecycle.State.DESTROYED)
   }
 }

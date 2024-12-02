@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification
+package br.com.orcinus.orca.core.mastodon.notification.push
 
 import android.app.Service
 import android.content.BroadcastReceiver
@@ -88,20 +88,6 @@ internal class AssertExtensionsTests {
       .apply { repeat(2) { bindService(intent) } }
       .also { assertThat<AssertionService>().bindingCount().isEqualTo(2) }
       .shutdownService()
-  }
-
-  @Test
-  fun failsWhenAssertingThatNonLastlyStoppedServiceIsLastlyStopped() {
-    assertFailure(assertThat<AssertionService>()::isLastlyStopped)
-      .isInstanceOf<AssertionFailedError>()
-  }
-
-  @Test
-  fun passesWhenAssertingThatUnboundServiceIsUnbound() {
-    val intent = Intent(context, AssertionService::class.java)
-    context.startService(intent)
-    context.stopService(intent)
-    assertThat<AssertionService>().isLastlyStopped()
   }
 
   @Test

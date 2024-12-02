@@ -18,6 +18,7 @@ package br.com.orcinus.orca.core.mastodon.notification.security.encoding
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.prop
+import br.com.orcinus.orca.core.mastodon.notification.push.security.encoding.encodeToBase64
 import kotlin.test.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner

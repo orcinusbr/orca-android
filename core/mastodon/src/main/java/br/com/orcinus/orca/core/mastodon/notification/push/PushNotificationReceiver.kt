@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification
+package br.com.orcinus.orca.core.mastodon.notification.push
 
 import android.content.BroadcastReceiver
 import android.content.ComponentName
@@ -25,6 +25,7 @@ import android.os.Build
 import android.os.IBinder
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.ContextCompat
+import br.com.orcinus.orca.core.mastodon.notification.InternalNotificationApi
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.`if`
 import java.lang.ref.WeakReference
 
@@ -42,7 +43,7 @@ import java.lang.ref.WeakReference
  * @property contextRef Reference to the context in which registration is performed.
  */
 @InternalNotificationApi
-internal class NotificationReceiver
+internal class PushNotificationReceiver
 private constructor(private val contextRef: WeakReference<Context>) :
   BroadcastReceiver(), AutoCloseable {
   /**
@@ -67,7 +68,7 @@ private constructor(private val contextRef: WeakReference<Context>) :
    * @see contextRef
    */
   private inline val serviceIntent
-    get() = Intent(context, NotificationService::class.java)
+    get() = Intent(context, PushNotificationService::class.java)
 
   /** Context referenced by the [contextRef]; `null` if garbage-collected. */
   private inline val context
@@ -136,7 +137,7 @@ private constructor(private val contextRef: WeakReference<Context>) :
      */
     @InternalNotificationApi
     @JvmStatic
-    fun register(context: Context, receiver: NotificationReceiver) {
+    fun register(context: Context, receiver: PushNotificationReceiver) {
       ContextCompat.registerReceiver(
         context,
         receiver,

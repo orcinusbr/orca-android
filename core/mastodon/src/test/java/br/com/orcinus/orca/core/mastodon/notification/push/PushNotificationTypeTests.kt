@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification
+package br.com.orcinus.orca.core.mastodon.notification.push
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -29,10 +29,10 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class MastodonNotificationTypeTests {
+internal class PushNotificationTypeTests {
   @Test
   fun convertsIntoNotificationChannelWithTheDesignatedName() {
-    assertThat(MastodonNotification.Type.entries).each { typeAssert ->
+    assertThat(PushNotification.Type.entries).each { typeAssert ->
       typeAssert
         .transform("toNotificationChannel") { type -> type.toNotificationChannel(context) }
         .all {
@@ -45,7 +45,7 @@ internal class MastodonNotificationTypeTests {
 
   @Test
   fun convertsIntoNotificationChannelWithTheDesignatedDescription() {
-    assertThat(MastodonNotification.Type.entries).each { typeAssert ->
+    assertThat(PushNotification.Type.entries).each { typeAssert ->
       typeAssert
         .transform("toNotificationChannel") { type -> type.toNotificationChannel(context) }
         .all {
@@ -58,7 +58,7 @@ internal class MastodonNotificationTypeTests {
 
   @Test
   fun convertsIntoNotificationChannelWithTheDefaultImportance() {
-    assertThat(MastodonNotification.Type.entries).each { typeAssert ->
+    assertThat(PushNotification.Type.entries).each { typeAssert ->
       typeAssert
         .transform("toNotificationChannel") { type -> type.toNotificationChannel(context) }
         .all {

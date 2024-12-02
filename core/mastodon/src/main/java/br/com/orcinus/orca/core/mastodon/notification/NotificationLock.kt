@@ -30,6 +30,7 @@ import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.annotation.RequiresApi
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
+import br.com.orcinus.orca.core.mastodon.notification.push.PushNotificationReceiver
 import java.lang.ref.WeakReference
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
@@ -104,14 +105,16 @@ private constructor(private val contextRef: WeakReference<Context>) : AutoClosea
   }
 
   /**
-   * [NotificationReceiver] by which the [Intent]s containing the updates to be forwarded as system
-   * notifications are listened to. Gets registered when an unlock occurs and unregistered when
-   * [close] is explicitly called.
+   * [PushNotificationReceiver] by which the [Intent]s containing the updates to be forwarded as
+   * system notifications are listened to. Gets registered when an unlock occurs and unregistered
+   * when [close] is explicitly called.
    *
    * @see requestUnlock
    * @see unlock
    */
-  @InternalNotificationApi @VisibleForTesting internal val receiver = NotificationReceiver(context)
+  @InternalNotificationApi
+  @VisibleForTesting
+  internal val receiver = PushNotificationReceiver(context)
 
   /** [Context] referenced by the [contextRef]; `null` if garbage-collected. */
   private inline val context
@@ -176,7 +179,7 @@ private constructor(private val contextRef: WeakReference<Context>) : AutoClosea
   internal constructor(context: Context?) : this(WeakReference(context))
 
   /**
-   * Requests an _unlock_ — the registration of a [NotificationReceiver] responsible for, upon
+   * Requests an _unlock_ — the registration of a [PushNotificationReceiver] responsible for, upon
    * receipt of a push [Intent], binding a connection to a [Service] which listens to updates
    * received from the Mastodon server and redirects them to the device as system notifications — by
    * asking the user to grant permission for sending notifications if the API level supports
@@ -211,7 +214,7 @@ private constructor(private val contextRef: WeakReference<Context>) : AutoClosea
    * stop being listened to and their respective push notifications will cease being delivered,
    * generally, this method should not be called in production.
    *
-   * @see NotificationReceiver.close
+   * @see PushNotificationReceiver.close
    * @see Context.unregisterReceiver
    */
   @VisibleForTesting
@@ -246,7 +249,7 @@ private constructor(private val contextRef: WeakReference<Context>) : AutoClosea
    */
   protected fun unlock() {
     context?.let {
-      NotificationReceiver.register(it, receiver)
+      PushNotificationReceiver.register(it, receiver)
       onUnlock()
     }
   }
