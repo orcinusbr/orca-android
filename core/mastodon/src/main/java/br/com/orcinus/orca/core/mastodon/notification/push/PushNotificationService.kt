@@ -217,7 +217,7 @@ constructor(private val requester: Requester, private val webPush: WebPush) :
           .build()
           .toString()
       )
-      append("subscription[keys][auth]", webPush.base64EncodedAuthenticationKey)
+      append("subscription[keys][auth]", webPush.base64EncodedClientAuthenticationKey)
       append("subscription[keys][p256dh]", webPush.base64EncodedClientPublicKey)
     }
   }

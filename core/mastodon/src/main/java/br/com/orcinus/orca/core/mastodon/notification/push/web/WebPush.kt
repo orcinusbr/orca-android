@@ -76,7 +76,7 @@ internal class WebPush {
    *
    * @see ByteArray.encodeToBase64
    */
-  val base64EncodedAuthenticationKey
+  val base64EncodedClientAuthenticationKey
     get() = clientKeys.authentication.encodeToBase64()
 
   /**

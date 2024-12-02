@@ -59,7 +59,7 @@ internal class WebPushTests {
   @Test
   fun authenticationKeyIs16BytesLong() {
     assertThat(webPush)
-      .prop(WebPush::base64EncodedAuthenticationKey)
+      .prop(WebPush::base64EncodedClientAuthenticationKey)
       .transform("decoded", base64Decoder::decode)
       .hasSize(16)
   }
@@ -67,7 +67,7 @@ internal class WebPushTests {
   @Test
   fun authenticationKeyIsRandom() {
     assertThat(webPush)
-      .prop(WebPush::base64EncodedAuthenticationKey)
-      .isNotEqualTo(WebPush().base64EncodedAuthenticationKey)
+      .prop(WebPush::base64EncodedClientAuthenticationKey)
+      .isNotEqualTo(WebPush().base64EncodedClientAuthenticationKey)
   }
 }
