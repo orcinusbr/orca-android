@@ -29,14 +29,16 @@ import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
 /**
- * Generator of a public and an authentication keys and shared secrets with which sent push
- * subscriptions can be encrypted and received updates from the Mastodon server can be decrypted,
- * based on the implementation of the
- * [`PushSubscriptionManager`](https://github.com/mastodon/mastodon-android/blob/1ad2d08e2722dc812320708ddd43738209c12d5f/mastodon/src/main/java/org/joinmastodon/android/api/PushSubscriptionManager.java)
- * (PSM) of the official Android app.
+ * Manages the client side of Web Push, providing keys for subscribing to the receipt of push
+ * notifications and acting as a their decrypter. Such keys are regenerated each time decryption is
+ * performed.
+ *
+ * @see base64EncodedClientAuthenticationKey
+ * @see base64EncodedClientPublicKey
+ * @see decrypt
  */
 @InternalNotificationApi
-internal class WebPush {
+internal class WebPushClient {
   /** Client-generated keys. */
   private val clientKeys = ClientKeys()
 
@@ -91,7 +93,7 @@ internal class WebPush {
    *
    * @see AesGcm128
    * @see Nonce
-   * @see WebPush.decrypt
+   * @see WebPushClient.decrypt
    * @see Nonce.Auth
    * @see initialSalt
    * @see intermediateSalt

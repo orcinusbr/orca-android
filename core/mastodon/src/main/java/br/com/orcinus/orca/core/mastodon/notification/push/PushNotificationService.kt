@@ -27,7 +27,7 @@ import br.com.orcinus.orca.core.mastodon.BuildConfig
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 import br.com.orcinus.orca.core.mastodon.notification.InternalNotificationApi
-import br.com.orcinus.orca.core.mastodon.notification.push.web.WebPush
+import br.com.orcinus.orca.core.mastodon.notification.push.web.WebPushClient
 import br.com.orcinus.orca.ext.uri.URIBuilder
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import br.com.orcinus.orca.std.injector.Injector
@@ -62,15 +62,15 @@ import kotlinx.serialization.json.Json
  * their notifications are sent.
  *
  * @property requester [Requester] by which push subscriptions are performed.
- * @property webPush [WebPush] by which the keys for encryption and decryption of received updates
- *   are provided.
+ * @property webPushClient [WebPushClient] by which the keys for encryption and decryption of
+ *   received updates are provided.
  * @see PushNotification.Type
  * @see PushNotification.Type.toNotificationChannel
  */
 @InternalNotificationApi
 internal class PushNotificationService
 @VisibleForTesting
-constructor(private val requester: Requester, private val webPush: WebPush) :
+constructor(private val requester: Requester, private val webPushClient: WebPushClient) :
   FirebaseMessagingService() {
   /**
    * System notification IDs of push notifications that have been sent and have not yet been cleared
@@ -139,7 +139,7 @@ constructor(private val requester: Requester, private val webPush: WebPush) :
     Injector.ModuleNotRegisteredException::class,
     Module.DependencyNotInjectedException::class
   )
-  constructor() : this(requester = Injector.get(), WebPush()) {
+  constructor() : this(requester = Injector.get(), WebPushClient()) {
     setCoroutineContext(Dispatchers.IO)
   }
 
@@ -217,8 +217,8 @@ constructor(private val requester: Requester, private val webPush: WebPush) :
           .build()
           .toString()
       )
-      append("subscription[keys][auth]", webPush.base64EncodedClientAuthenticationKey)
-      append("subscription[keys][p256dh]", webPush.base64EncodedClientPublicKey)
+      append("subscription[keys][auth]", webPushClient.base64EncodedClientAuthenticationKey)
+      append("subscription[keys][p256dh]", webPushClient.base64EncodedClientPublicKey)
     }
   }
 

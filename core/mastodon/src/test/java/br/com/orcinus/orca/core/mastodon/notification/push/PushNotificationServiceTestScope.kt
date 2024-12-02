@@ -21,7 +21,7 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvider
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.AuthenticatedRequester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.runAuthenticatedRequesterTest
-import br.com.orcinus.orca.core.mastodon.notification.push.web.WebPush
+import br.com.orcinus.orca.core.mastodon.notification.push.web.WebPushClient
 import br.com.orcinus.orca.platform.testing.context
 import io.ktor.client.HttpClient
 import java.net.URI
@@ -49,7 +49,7 @@ private class PushNotificationServiceEnvironment(
 internal sealed class PushNotificationServiceTestScope : CoroutineScope {
   /** [ServiceController] by which the lifecycle of the [PushNotificationService] is managed. */
   private val controller by lazy {
-    PushNotificationService(requester, WebPush())
+    PushNotificationService(requester, WebPushClient())
       .apply { setCoroutineContext(coroutineContext) }
       .let { ServiceController.of(it, Intent(context, it::class.java)) }
   }

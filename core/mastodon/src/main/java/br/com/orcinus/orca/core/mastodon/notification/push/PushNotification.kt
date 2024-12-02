@@ -31,7 +31,7 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus
 import br.com.orcinus.orca.core.mastodon.notification.InternalNotificationApi
 import br.com.orcinus.orca.core.mastodon.notification.push.PushNotification.Type
 import br.com.orcinus.orca.core.mastodon.notification.push.security.encoding.decodeFromZ85
-import br.com.orcinus.orca.core.mastodon.notification.push.web.WebPush
+import br.com.orcinus.orca.core.mastodon.notification.push.web.WebPushClient
 import java.security.KeyFactory
 import java.security.interfaces.ECPublicKey
 import java.security.spec.X509EncodedKeySpec
@@ -353,7 +353,7 @@ internal data class PushNotification(
     /**
      * Creates a [PushNotification] from an [Intent].
      *
-     * @param webPush Decrypts the plaintext.
+     * @param webPushClient Decrypts the plaintext.
      * @param intent Intent with the information based on which the DTO will be created. It is
      *   required to contain the following extras: 1) `k`, the Z85-encoded server key; 2) `s`, the
      *   Z85-encoded salt of `k`; and 3) `p`, the Z85-encoded AES/GCM-encrypted plaintext octet
@@ -373,7 +373,7 @@ internal data class PushNotification(
      */
     @JvmStatic
     @Throws(NoSuchElementException::class)
-    fun create(webPush: WebPush, intent: Intent): PushNotification {
+    fun create(webPushClient: WebPushClient, intent: Intent): PushNotification {
       val encryptedEncodedK = intent.getStringExtra("k") ?: throw NoSuchElementException("k")
       val encryptedDecodedK = encryptedEncodedK.decodeFromZ85()
       val encryptedDecodedKSpec = X509EncodedKeySpec(encryptedDecodedK)
@@ -383,7 +383,7 @@ internal data class PushNotification(
       val decodedS = encodedS.decodeFromZ85()
       val encryptedEncodedP = intent.getStringExtra("p") ?: throw NoSuchElementException("p")
       val encryptedDecodedP = encryptedEncodedP.decodeFromZ85()
-      val decryptedDecodedP = webPush.decrypt(decodedK, decodedS, encryptedDecodedP)
+      val decryptedDecodedP = webPushClient.decrypt(decodedK, decodedS, encryptedDecodedP)
       return Json.decodeFromString(decryptedDecodedP)
     }
   }

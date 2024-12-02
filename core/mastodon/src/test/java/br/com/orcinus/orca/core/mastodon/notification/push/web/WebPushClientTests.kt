@@ -27,47 +27,47 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class WebPushTests {
-  private val webPush = WebPush()
+internal class WebPushClientTests {
+  private val webPushClient = WebPushClient()
   private val base64Decoder: Base64.Decoder = Base64.getUrlDecoder()
 
   @Test
   fun clientPublicKeyIs65BytesLong() {
-    assertThat(webPush)
-      .prop(WebPush::base64EncodedClientPublicKey)
+    assertThat(webPushClient)
+      .prop(WebPushClient::base64EncodedClientPublicKey)
       .transform("decoded", base64Decoder::decode)
       .hasSize(65)
   }
 
   @Test
   fun clientPublicKeyIsUncompressed() {
-    assertThat(webPush)
-      .prop(WebPush::base64EncodedClientPublicKey)
+    assertThat(webPushClient)
+      .prop(WebPushClient::base64EncodedClientPublicKey)
       .transform("decoded", base64Decoder::decode)
       .prop(ByteArray::toSet)
       .first()
-      .isEqualTo(WebPush.UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER)
+      .isEqualTo(WebPushClient.UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER)
   }
 
   @Test
   fun clientPublicKeyIsRandom() {
-    assertThat(webPush)
-      .prop(WebPush::base64EncodedClientPublicKey)
-      .isNotEqualTo(WebPush().base64EncodedClientPublicKey)
+    assertThat(webPushClient)
+      .prop(WebPushClient::base64EncodedClientPublicKey)
+      .isNotEqualTo(WebPushClient().base64EncodedClientPublicKey)
   }
 
   @Test
   fun authenticationKeyIs16BytesLong() {
-    assertThat(webPush)
-      .prop(WebPush::base64EncodedClientAuthenticationKey)
+    assertThat(webPushClient)
+      .prop(WebPushClient::base64EncodedClientAuthenticationKey)
       .transform("decoded", base64Decoder::decode)
       .hasSize(16)
   }
 
   @Test
   fun authenticationKeyIsRandom() {
-    assertThat(webPush)
-      .prop(WebPush::base64EncodedClientAuthenticationKey)
-      .isNotEqualTo(WebPush().base64EncodedClientAuthenticationKey)
+    assertThat(webPushClient)
+      .prop(WebPushClient::base64EncodedClientAuthenticationKey)
+      .isNotEqualTo(WebPushClient().base64EncodedClientAuthenticationKey)
   }
 }
