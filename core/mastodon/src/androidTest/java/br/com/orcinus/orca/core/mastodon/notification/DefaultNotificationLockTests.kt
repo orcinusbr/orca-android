@@ -15,15 +15,33 @@
 
 package br.com.orcinus.orca.core.mastodon.notification
 
+import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.launchActivity
+import androidx.test.filters.SdkSuppress
 import assertk.assertFailure
 import assertk.assertions.isInstanceOf
 import kotlin.test.Test
 
-internal class NotificationLockTests {
+internal class DefaultNotificationLockTests {
   class RequestActivity : ComponentActivity()
+
+  @SdkSuppress(maxSdkVersion = Build.VERSION_CODES.S_V2)
+  @Test
+  fun registersReceiverWhenUnlockingInAnApiLevelInWhichThePermissionIsUnsupported() {
+    launchActivity<RequestActivity>()
+      .moveToState(Lifecycle.State.CREATED)
+      ?.onActivity {
+        val lock = NotificationLock(it).apply(NotificationLock::requestUnlock)
+
+        // Context.unregisterReceiver(BroadcastReceiver) throws if the receiver is unregistered.
+        assertFailure { it.unregisterReceiver(lock.receiver) }.isInstanceOf<IllegalStateException>()
+
+        lock.close()
+      }
+      ?.close()
+  }
 
   @Test
   fun unregistersReceiver() {

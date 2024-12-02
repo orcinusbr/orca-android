@@ -37,13 +37,15 @@ import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * [NotificationLock] whose elapsed time is provided by the system and that launches the [launcher]
- * with the notification permission upon an unlock. Implementation constructed by the public factory
- * method. This class _must_ be instantiated before the given [ComponentActivity] is started, since
- * it registers a request to receive a result at the very moment it gets created.
+ * with the notification permission followed by a load of the native library upon an unlock.
+ * Implementation constructed by the public factory method. This class _must_ be instantiated before
+ * the given [ComponentActivity] is started, since it registers a request to receive a result at the
+ * very moment it gets created.
  *
  * @param activity [ComponentActivity] in which the request is performed.
  * @see ActivityResultLauncher.launch
  * @see Manifest.permission.POST_NOTIFICATIONS
+ * @see System.loadLibrary
  * @see requestUnlock
  */
 private class DefaultNotificationLock(activity: ComponentActivity) : NotificationLock(activity) {
@@ -70,7 +72,7 @@ private class DefaultNotificationLock(activity: ComponentActivity) : Notificatio
     launcher?.launch(Manifest.permission.POST_NOTIFICATIONS)
   }
 
-  override fun onUnlock() = Unit
+  override fun onUnlock() = System.loadLibrary("core-mastodon")
 }
 
 /**
@@ -174,11 +176,11 @@ private constructor(private val contextRef: WeakReference<Context>) : AutoClosea
   internal constructor(context: Context?) : this(WeakReference(context))
 
   /**
-   * Requests an _unlock_ — the loading of the native library and registration of a
-   * [NotificationReceiver] responsible for, upon receipt of a push [Intent], binding a connection
-   * to a [Service] which listens to updates received from the Mastodon server and redirects them to
-   * the device as system notifications — by asking the user to grant permission for sending
-   * notifications if the API level supports [Manifest.permission.POST_NOTIFICATIONS].
+   * Requests an _unlock_ — the registration of a [NotificationReceiver] responsible for, upon
+   * receipt of a push [Intent], binding a connection to a [Service] which listens to updates
+   * received from the Mastodon server and redirects them to the device as system notifications — by
+   * asking the user to grant permission for sending notifications if the API level supports
+   * [Manifest.permission.POST_NOTIFICATIONS].
    *
    * On API level >= 34, subsequent calls to this method are **not** guaranteed to prompt the user
    * for permission, as repeated requests could significantly diminish the quality of the user
@@ -239,12 +241,11 @@ private constructor(private val contextRef: WeakReference<Context>) : AutoClosea
 
   /**
    * Called whenever either permission to send notifications is granted or the current API level
-   * does not support such request. Essentially, loads the native library and registers the
-   * [receiver] in the [context].
+   * does not support such request. Essentially, registers the [receiver] and calls [onUnlock] if
+   * the [context] has not been garbage-collected.
    */
   protected fun unlock() {
     context?.let {
-      System.loadLibrary("core-mastodon")
       NotificationReceiver.register(it, receiver)
       onUnlock()
     }

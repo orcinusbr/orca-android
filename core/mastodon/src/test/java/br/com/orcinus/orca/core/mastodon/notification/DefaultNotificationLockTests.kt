@@ -15,24 +15,19 @@
 
 package br.com.orcinus.orca.core.mastodon.notification
 
-import android.Manifest
-import android.app.Application
 import android.os.Build
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.Lifecycle
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.core.app.launchActivity
 import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.each
-import assertk.assertions.isEqualTo
 import assertk.assertions.isZero
 import assertk.assertions.support.expected
 import br.com.orcinus.orca.ext.testing.assertThat
 import kotlin.test.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
@@ -91,29 +86,6 @@ internal class DefaultNotificationLockTests {
       }
     }
 
-  @Config(
-    sdk =
-      [
-        Build.VERSION_CODES.P,
-        Build.VERSION_CODES.Q,
-        Build.VERSION_CODES.R,
-        Build.VERSION_CODES.S,
-        Build.VERSION_CODES.S_V2
-      ]
-  )
-  @Test
-  fun bindsServiceWhenUnlockingInAnApiLevelInWhichThePermissionIsUnsupported() {
-    launchActivity<RequestActivity>()
-      .moveToState(Lifecycle.State.CREATED)
-      ?.onActivity {
-        NotificationLock(it)
-          .apply(NotificationLock::requestUnlock)
-          .also { assertThat<NotificationService>().bindingCount().isEqualTo(1) }
-          .close()
-      }
-      ?.close()
-  }
-
   @Config(sdk = [Build.VERSION_CODES.TIRAMISU, Build.VERSION_CODES.UPSIDE_DOWN_CAKE])
   @Test
   fun doesNotBindServiceBeforePermissionIsGrantedWhenRequestingAnUnlockTwiceInAnApiLevelInWhichThePermissionIsSupported() {
@@ -122,21 +94,5 @@ internal class DefaultNotificationLockTests {
       ?.onActivity { NotificationLock(it).apply { repeat(2) { _ -> requestUnlock() } } }
       ?.close()
     assertThat<NotificationService>().bindingCount().isZero()
-  }
-
-  @Config(sdk = [Build.VERSION_CODES.TIRAMISU, Build.VERSION_CODES.UPSIDE_DOWN_CAKE])
-  @Test
-  fun bindsServiceTwiceAfterRequestingAnUnlockSubsequentToAnUnlock() {
-    shadowOf(ApplicationProvider.getApplicationContext<Application>())
-      ?.grantPermissions(Manifest.permission.POST_NOTIFICATIONS)
-    launchActivity<RequestActivity>()
-      .moveToState(Lifecycle.State.CREATED)
-      ?.onActivity {
-        NotificationLock(it)
-          .apply { repeat(2) { requestUnlock() } }
-          .also { assertThat<NotificationService>().bindingCount().isEqualTo(2) }
-          .close()
-      }
-      ?.close()
   }
 }

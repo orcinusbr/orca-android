@@ -19,6 +19,6 @@
             android:name="br.com.orcinus.orca.core.mastodon.instance.registration.MastodonRegistrationActivity" />
 
         <activity
-            android:name="br.com.orcinus.orca.core.mastodon.notification.NotificationLockTests$RequestActivity" />
+            android:name="br.com.orcinus.orca.core.mastodon.notification.DefaultNotificationLockTests$RequestActivity" />
     </application>
 </manifest>
