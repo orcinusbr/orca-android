@@ -15,22 +15,25 @@
 
 package br.com.orcinus.orca.core.mastodon.notification
 
+import android.content.Context
 import android.content.Intent
-import androidx.test.platform.app.InstrumentationRegistry
 import assertk.assertFailure
+import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
+import br.com.orcinus.orca.ext.testing.assertThat
 import br.com.orcinus.orca.platform.testing.context
+import io.mockk.mockk
 import kotlin.test.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class NotificationReceiverTests {
   @Test
-  fun throwsWhenInstantiatedInAContextBroadcastIsReceivedInAnother() {
+  fun throwsWhenInstantiatedInAContextAndABroadcastIsReceivedInAnother() {
     assertFailure {
         NotificationReceiver(context)
-          .onReceive(
-            InstrumentationRegistry.getInstrumentation()?.targetContext,
-            Intent(NotificationReceiver.ACTION)
-          )
+          .onReceive(mockk<Context>(), Intent(NotificationReceiver.ACTION))
       }
       .isInstanceOf<IllegalStateException>()
   }
@@ -47,5 +50,13 @@ internal class NotificationReceiverTests {
         NotificationReceiver(context).onReceive(context, Intent(Intent.ACTION_ALL_APPS))
       }
       .isInstanceOf<IllegalStateException>()
+  }
+
+  @Test
+  fun bindsServiceWhenAKnownBroadcastIsReceived() {
+    val receiver = NotificationReceiver(context)
+    receiver.onReceive(context, Intent(NotificationReceiver.ACTION))
+    assertThat<NotificationService>().bindingCount().isEqualTo(1)
+    receiver.close()
   }
 }

@@ -84,7 +84,7 @@ private constructor(private val contextRef: WeakReference<Context>) :
 
   @Throws(IllegalStateException::class)
   override fun onReceive(context: Context?, intent: Intent?) {
-    if (context != null && intent != null && filter.hasAction(intent.action)) {
+    if (context != null && intent != null) {
       check(context == this.context) { "Instantiation and receipt contexts differ." }
       check(filter.hasAction(intent.action)) { "Received an unknown broadcast: $intent." }
       context.bindService(serviceIntent, NoOpServiceConnection, serviceBindingFlags)
