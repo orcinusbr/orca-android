@@ -31,6 +31,7 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus
 import br.com.orcinus.orca.core.mastodon.notification.MastodonNotification.Type
 import br.com.orcinus.orca.core.mastodon.notification.security.cryptography.EllipticCurve
 import br.com.orcinus.orca.core.mastodon.notification.security.encoding.decodeFromZ85
+import br.com.orcinus.orca.core.mastodon.notification.webpush.WebPush
 import java.security.KeyFactory
 import java.security.interfaces.ECPublicKey
 import java.security.spec.X509EncodedKeySpec

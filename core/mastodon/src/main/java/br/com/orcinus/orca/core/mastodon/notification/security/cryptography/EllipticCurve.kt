@@ -15,9 +15,6 @@
 
 package br.com.orcinus.orca.core.mastodon.notification.security.cryptography
 
-import java.security.KeyPairGenerator
-import java.security.spec.ECGenParameterSpec
-
 /** Utilities for elliptic-curve-based cryptography. */
 internal object EllipticCurve {
   /**
@@ -26,11 +23,4 @@ internal object EllipticCurve {
    * document.
    */
   const val NAME = "EC"
-
-  /** [KeyPairGenerator] that generates a pair of secp256r1 (P-256) keys. */
-  @JvmStatic
-  val secp256r1KeyPairGenerator =
-    KeyPairGenerator.getInstance(NAME).apply<KeyPairGenerator> {
-      initialize(ECGenParameterSpec("secp256r1"))
-    }
 }

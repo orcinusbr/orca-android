@@ -13,16 +13,14 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification
+package br.com.orcinus.orca.core.mastodon.notification.webpush
 
 import androidx.annotation.VisibleForTesting
+import br.com.orcinus.orca.core.mastodon.notification.InternalNotificationApi
 import br.com.orcinus.orca.core.mastodon.notification.security.cryptography.EllipticCurve
 import br.com.orcinus.orca.core.mastodon.notification.security.encoding.encodeToBase64
 import java.math.BigInteger
 import java.security.KeyFactory
-import java.security.KeyPair
-import java.security.KeyPairGenerator
-import java.security.SecureRandom
 import java.security.interfaces.ECPublicKey
 import java.security.spec.PKCS8EncodedKeySpec
 import javax.crypto.Cipher
@@ -40,19 +38,8 @@ import javax.crypto.spec.SecretKeySpec
  */
 @InternalNotificationApi
 internal class WebPush {
-  /** Client-generated p256v1 (or secp256r1 — its alias) elliptic curve pair of keys. */
-  private val clientKeyPair: KeyPair = keyPairGenerator.generateKeyPair()
-
-  /** 16-bit random key for identifying a subscription request. */
-  private val authenticationKey = ByteArray(size = 16).apply(SecureRandom()::nextBytes)
-
-  /**
-   * Client-generated public key of the [clientKeyPair].
-   *
-   * @see KeyPair.getPublic
-   */
-  private inline val clientPublicKey
-    get() = clientKeyPair.public as ECPublicKey
+  /** Client-generated keys. */
+  private val clientKeys = ClientKeys()
 
   /**
    * Key provided by the Mastodon server the last time a shared secret was generated.
@@ -81,16 +68,17 @@ internal class WebPush {
    * @see ByteArray.encodeToBase64
    * @see UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER
    */
-  val base64EncodedClientPublicKey = clientPublicKey.decompress().encodeToBase64()
+  val base64EncodedClientPublicKey
+    get() = clientKeys.public.decompress().encodeToBase64()
 
   /**
-   * Web Push Base64-encoded 16-bit-long authentication key containing pseudorandom bytes. Its
-   * generation is based on
+   * Base64-encoded 16-bit- authentication key containing random bytes. Its generation is based on
    * [that of the official Mastodon Android app](https://github.com/mastodon/mastodon-android/blob/1ad2d08e2722dc812320708ddd43738209c12d5f/mastodon/src/main/java/org/joinmastodon/android/api/PushSubscriptionManager.java#L135-L144).
    *
    * @see ByteArray.encodeToBase64
    */
-  val base64EncodedAuthenticationKey = authenticationKey.encodeToBase64()
+  val base64EncodedAuthenticationKey
+    get() = clientKeys.authentication.encodeToBase64()
 
   /**
    * Base class of hash-based key derivation functions (HKDFs) for deriving either an AES/GCM
@@ -187,7 +175,7 @@ internal class WebPush {
         0,
         0,
         UNCOMPRESSED_PUBLIC_KEY_SIZE,
-        *clientPublicKey.decompress(),
+        *clientKeys.public.decompress(),
         0,
         UNCOMPRESSED_PUBLIC_KEY_SIZE,
         *serverKey.decompress()
@@ -222,7 +210,7 @@ internal class WebPush {
     private inner class Auth : Hkdf() {
       override val info = "Content-Encoding: auth\u0000".toByteArray()
       override val maxSize = 32
-      override val initialSalt = authenticationKey
+      override val initialSalt = clientKeys.authentication
       override val intermediateSalt = sharedSecret
     }
 
@@ -241,15 +229,15 @@ internal class WebPush {
    */
   fun decrypt(serverKey: ECPublicKey, serverKeySalt: ByteArray, plaintext: ByteArray): String {
     val sharedSecret = generateSharedSecret(serverKey)
-    val decryptionKeyIntermediateSalt = AesGcm128(authenticationKey, sharedSecret)()
+    val decryptionKeyIntermediateSalt = AesGcm128(clientKeys.authentication, sharedSecret)()
     val decryptionKey = AesGcm128(serverKeySalt, decryptionKeyIntermediateSalt)()
     val decryptionKeySpec = SecretKeySpec(decryptionKey, "AES")
     val nonce = Nonce(serverKeySalt)()
     val nonceSpec = GCMParameterSpec(/* tLen = */ 128, nonce)
-    return cipher
-      .apply { init(Cipher.DECRYPT_MODE, decryptionKeySpec, nonceSpec) }
-      .doFinal(plaintext)
-      .let { String(plaintext, offset = 2, length = it.size - 2) }
+    cipher.init(Cipher.DECRYPT_MODE, decryptionKeySpec, nonceSpec)
+    val decryptedPlaintext = cipher.doFinal(plaintext)
+    clientKeys.generate()
+    return String(plaintext, offset = 2, length = decryptedPlaintext.size - 2)
   }
 
   /**
@@ -280,7 +268,8 @@ internal class WebPush {
    * @param serverKey Key provided by the Mastodon server.
    */
   private fun hasAlreadyGeneratedSharedSecretFor(serverKey: ECPublicKey): Boolean {
-    return ::sharedSecret.isInitialized && this.serverKey.encoded.contentEquals(serverKey.encoded)
+    return ::sharedSecret.isInitialized &&
+      this.serverKey.encoded?.contentEquals(serverKey.encoded) ?: false
   }
 
   /**
@@ -295,7 +284,7 @@ internal class WebPush {
    * @param serverKey Key provided by the Mastodon server.
    */
   private fun generateSharedSecretEagerly(serverKey: ECPublicKey): ByteArray {
-    return PKCS8EncodedKeySpec(clientKeyPair.private?.encoded)
+    return PKCS8EncodedKeySpec(clientKeys.private.encoded)
       .let { KeyFactory.getInstance(EllipticCurve.NAME).generatePrivate(it) }
       .let { KeyAgreement.getInstance("ECDH").apply { init(it) } }
       .also { it.doPhase(serverKey, /* lastPhase = */ true) }
@@ -337,9 +326,6 @@ internal class WebPush {
      * the two bytes that follow are both its x and y affine coordinates.
      */
     @VisibleForTesting const val UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER: Byte = 0x04
-
-    /** [KeyPairGenerator] by which the [clientKeyPair] is generated. */
-    @JvmStatic @VisibleForTesting val keyPairGenerator = EllipticCurve.secp256r1KeyPairGenerator
 
     /**
      * Decompresses this key by creating an array of bytes with a marker and both affine

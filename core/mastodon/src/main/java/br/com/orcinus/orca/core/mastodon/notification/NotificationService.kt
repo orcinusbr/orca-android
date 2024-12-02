@@ -26,6 +26,7 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.BuildConfig
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
+import br.com.orcinus.orca.core.mastodon.notification.webpush.WebPush
 import br.com.orcinus.orca.ext.uri.URIBuilder
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import br.com.orcinus.orca.std.injector.Injector
@@ -216,8 +217,8 @@ constructor(private val requester: Requester, private val webPush: WebPush) :
           .build()
           .toString()
       )
-      append("subscription[keys][auth]", webPush.base64EncodedAuthenticationKey)
-      append("subscription[keys][p256dh]", webPush.base64EncodedClientPublicKey)
+      webPush.base64EncodedAuthenticationKey?.let { append("subscription[keys][auth]", it) }
+      webPush.base64EncodedClientPublicKey?.let { append("subscription[keys][p256dh]", it) }
     }
   }
 

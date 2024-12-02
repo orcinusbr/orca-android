@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.notification.security
+package br.com.orcinus.orca.core.mastodon.notification.webpush
 
 import assertk.assertThat
 import assertk.assertions.first
@@ -21,7 +21,6 @@ import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEqualTo
 import assertk.assertions.prop
-import br.com.orcinus.orca.core.mastodon.notification.WebPush
 import java.util.Base64
 import kotlin.test.Test
 import org.junit.runner.RunWith
