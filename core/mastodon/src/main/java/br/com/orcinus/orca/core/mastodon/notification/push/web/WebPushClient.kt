@@ -298,7 +298,7 @@ internal class WebPushClient {
      * implementation, the least significant 32 bytes of the coordinates are encoded into the final
      * [String], and left-zero-padded in case their sizes are lesser than this predefined one.
      *
-     * @see BigInteger.toPsmEllipticCurveUncompressedPublicKeyAffineCoordinate
+     * @see BigInteger.toUncompressedPublicKeyAffineCoordinate
      */
     private const val UNCOMPRESSED_PUBLIC_KEY_AFFINE_COORDINATE_SIZE = 32
 
@@ -333,19 +333,19 @@ internal class WebPushClient {
      * coordinates' least significant 32 bits.
      *
      * @see UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER
-     * @see BigInteger.toPsmEllipticCurveUncompressedPublicKeyAffineCoordinate
+     * @see BigInteger.toUncompressedPublicKeyAffineCoordinate
      */
     @JvmStatic
     private fun ECPublicKey.decompress() =
       byteArrayOf(
         UNCOMPRESSED_ELLIPTIC_CURVE_KEY_MARKER,
-        *(w?.affineX?.toPsmEllipticCurveUncompressedPublicKeyAffineCoordinate() ?: byteArrayOf()),
-        *(w?.affineY?.toPsmEllipticCurveUncompressedPublicKeyAffineCoordinate() ?: byteArrayOf())
+        *(w?.affineX?.toUncompressedPublicKeyAffineCoordinate() ?: byteArrayOf()),
+        *(w?.affineY?.toUncompressedPublicKeyAffineCoordinate() ?: byteArrayOf())
       )
 
-    /** Converts this [BigInteger] into a 32-bit uncompressed public key affine coordinate. */
+    /** Converts this [BigInteger] into a 256-bit uncompressed public key affine coordinate. */
     @JvmStatic
-    private fun BigInteger.toPsmEllipticCurveUncompressedPublicKeyAffineCoordinate(): ByteArray {
+    private fun BigInteger.toUncompressedPublicKeyAffineCoordinate(): ByteArray {
       val source = toByteArray()
       val destination = ByteArray(UNCOMPRESSED_PUBLIC_KEY_AFFINE_COORDINATE_SIZE)
       val sourceOffset = maxOf(0, source.size - destination.size)
