@@ -87,7 +87,7 @@ private constructor(private val contextRef: WeakReference<Context>) :
     if (context != null && intent != null && filter.hasAction(intent.action)) {
       check(context == this.context) { "Instantiation and receipt contexts differ." }
       check(filter.hasAction(intent.action)) { "Received an unknown broadcast: $intent." }
-      context.bindService(intent, NoOpServiceConnection, serviceBindingFlags)
+      context.bindService(serviceIntent, NoOpServiceConnection, serviceBindingFlags)
       boundServicesCount++
     }
   }
