@@ -223,10 +223,7 @@ private constructor(private val contextRef: WeakReference<Context>) : AutoClosea
    */
   fun requestUnlock() {
     if (isPermissionNotGranted) {
-      if (
-        permissionRequestInterval.isInfinite() ||
-          permissionRequestInterval >= permissionRequestIntervalThreshold
-      ) {
+      if (permissionRequestInterval >= permissionRequestIntervalThreshold) {
         requestPermission()
         permissionRequestTime = getElapsedTime()
       }
