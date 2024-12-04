@@ -245,6 +245,7 @@ private constructor(private val contextRef: WeakReference<Context>) : AutoClosea
   override fun close() {
     val context = context ?: return
     val serviceIntent = serviceIntent ?: return
+    val preferences = preferences ?: return
 
     // Context.unbindService(ServiceConnection) throws if the service is unbound.
     try {
@@ -253,6 +254,7 @@ private constructor(private val contextRef: WeakReference<Context>) : AutoClosea
 
     repeat(boundServicesCount) { _ -> context.stopService(serviceIntent) }
     boundServicesCount = 0
+    preferences.edit(action = SharedPreferences.Editor::clear)
   }
 
   /** Obtains the amount of time that has elapsed until now. */
