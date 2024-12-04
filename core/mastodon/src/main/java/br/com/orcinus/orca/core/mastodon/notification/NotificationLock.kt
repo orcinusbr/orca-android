@@ -18,11 +18,14 @@ package br.com.orcinus.orca.core.mastodon.notification
 import android.Manifest
 import android.app.Service
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.IBinder
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
@@ -30,7 +33,8 @@ import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.annotation.RequiresApi
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
-import br.com.orcinus.orca.core.mastodon.notification.push.PushNotificationReceiver
+import br.com.orcinus.orca.core.mastodon.notification.push.PushNotificationService
+import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.`if`
 import java.lang.ref.WeakReference
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
@@ -105,16 +109,27 @@ private constructor(private val contextRef: WeakReference<Context>) : AutoClosea
   }
 
   /**
-   * [PushNotificationReceiver] by which the [Intent]s containing the updates to be forwarded as
-   * system notifications are listened to. Gets registered when an unlock occurs and unregistered
-   * when [close] is explicitly called.
-   *
-   * @see requestUnlock
-   * @see unlock
+   * Amount of services to which a connection has been and is currently bound by this
+   * [NotificationLock]. Such binding is performed upon the receipt of a push intent is not undone
+   * unless [close] is explicitly called.
    */
-  @InternalNotificationApi
-  @VisibleForTesting
-  internal val receiver = PushNotificationReceiver(context)
+  private var boundServicesCount = 0
+
+  /** Flags with which a connection is bound to a service by this [NotificationLock]. */
+  private val serviceBindingFlags =
+    Context.BIND_AUTO_CREATE.`if`(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      or(@Suppress("InlinedApi") Context.BIND_NOT_PERCEPTIBLE)
+    }
+
+  /**
+   * Intent with which a connection to a [PushNotificationService] is bound by this
+   * [NotificationLock] when it is unlocked. `null` in case the [context] has been
+   * garbage-collected.
+   *
+   * @see contextRef
+   */
+  private inline val serviceIntent
+    get() = context?.let { Intent(it, PushNotificationService::class.java) }
 
   /** [Context] referenced by the [contextRef]; `null` if garbage-collected. */
   private inline val context
@@ -174,13 +189,24 @@ private constructor(private val contextRef: WeakReference<Context>) : AutoClosea
           ?.equals(PackageManager.PERMISSION_DENIED)
           ?: true
 
+  /**
+   * Connection bound to a [PushNotificationService], which does nothing upon connection and
+   * disconnection.
+   */
+  @InternalNotificationApi
+  @VisibleForTesting
+  internal object NoOpServiceConnection : ServiceConnection {
+    override fun onServiceConnected(name: ComponentName?, service: IBinder?) = Unit
+
+    override fun onServiceDisconnected(name: ComponentName?) = Unit
+  }
+
   @InternalNotificationApi
   @VisibleForTesting
   internal constructor(context: Context?) : this(WeakReference(context))
 
   /**
-   * Requests an _unlock_ — the registration of a [PushNotificationReceiver] responsible for, upon
-   * receipt of a push [Intent], binding a connection to a [Service] which listens to updates
+   * Requests an _unlock_ — the binding a connection to a [Service] which listens to updates
    * received from the Mastodon server and redirects them to the device as system notifications — by
    * asking the user to grant permission for sending notifications if the API level supports
    * [Manifest.permission.POST_NOTIFICATIONS].
@@ -210,21 +236,23 @@ private constructor(private val contextRef: WeakReference<Context>) : AutoClosea
   }
 
   /**
-   * Closes the [receiver] and unregisters it from the [context]. As updates regarding the user will
-   * stop being listened to and their respective push notifications will cease being delivered,
-   * generally, this method should not be called in production.
-   *
-   * @see PushNotificationReceiver.close
-   * @see Context.unregisterReceiver
+   * Unbinds the connection bound to [PushNotificationService]s when an unlock was first performed
+   * and stops them. In general, this method should _not_ be called from production code, as it
+   * interrupts the listening to updates from the Mastodon server and, thus, their delivery to the
+   * user as push notifications.
    */
   @VisibleForTesting
   override fun close() {
-    receiver.close()
+    val context = context ?: return
+    val serviceIntent = serviceIntent ?: return
 
-    // Context.unregisterReceiver(BroadcastReceiver) throws if the receiver is unregistered.
+    // Context.unbindService(ServiceConnection) throws if the service is unbound.
     try {
-      context?.unregisterReceiver(receiver)
+      context.unbindService(NoOpServiceConnection)
     } catch (_: IllegalArgumentException) {}
+
+    repeat(boundServicesCount) { _ -> context.stopService(serviceIntent) }
+    boundServicesCount = 0
   }
 
   /** Obtains the amount of time that has elapsed until now. */
@@ -244,14 +272,15 @@ private constructor(private val contextRef: WeakReference<Context>) : AutoClosea
 
   /**
    * Called whenever either permission to send notifications is granted or the current API level
-   * does not support such request. Essentially, registers the [receiver] and calls [onUnlock] if
-   * the [context] has not been garbage-collected.
+   * does not support such request. Essentially, binds a [PushNotificationService] and calls
+   * [onUnlock] if the [context] has not been garbage-collected.
    */
   protected fun unlock() {
-    context?.let {
-      PushNotificationReceiver.register(it, receiver)
-      onUnlock()
-    }
+    val context = context ?: return
+    val serviceIntent = serviceIntent ?: return
+    context.bindService(serviceIntent, NoOpServiceConnection, serviceBindingFlags)
+    boundServicesCount++
+    onUnlock()
   }
 
   @InternalNotificationApi

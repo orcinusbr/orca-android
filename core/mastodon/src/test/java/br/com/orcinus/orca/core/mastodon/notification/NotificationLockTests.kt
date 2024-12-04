@@ -18,6 +18,10 @@ package br.com.orcinus.orca.core.mastodon.notification
 import android.os.Build
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isZero
+import br.com.orcinus.orca.core.mastodon.notification.push.PushNotificationService
+import br.com.orcinus.orca.core.mastodon.notification.push.bindingCount
+import br.com.orcinus.orca.ext.testing.assertThat
 import br.com.orcinus.orca.platform.testing.context
 import kotlin.test.Test
 import kotlin.time.Duration
@@ -69,5 +73,23 @@ internal class NotificationLockTests {
       }
       .close()
     assertThat(permissionRequestCount).isEqualTo(2)
+  }
+
+  @Test
+  fun bindsServiceWhenUnlocked() {
+    NotificationLockBuilder()
+      .build(context)
+      .apply(NotificationLock::requestUnlock)
+      .also { assertThat<PushNotificationService>().bindingCount().isEqualTo(1) }
+      .close()
+  }
+
+  @Test
+  fun unbindsServiceWhenClosed() {
+    NotificationLockBuilder().build(context).apply {
+      requestUnlock()
+      close()
+    }
+    assertThat<PushNotificationService>().bindingCount().isZero()
   }
 }

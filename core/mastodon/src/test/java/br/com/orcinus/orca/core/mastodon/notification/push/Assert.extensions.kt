@@ -17,42 +17,13 @@ package br.com.orcinus.orca.core.mastodon.notification.push
 
 import android.app.Application
 import android.app.Service
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
 import assertk.Assert
 import assertk.assertions.contains
-import assertk.assertions.extracting
-import assertk.assertions.prop
-import com.google.common.collect.ImmutableList
 import kotlin.reflect.KClass
-import org.opentest4j.AssertionFailedError
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.shadows.ShadowApplication
-
-/**
- * Asserts that the [BroadcastReceiver] is registered.
- *
- * @param T [BroadcastReceiver] on which the assertion is being performed.
- * @throws AssertionFailedError If the [BroadcastReceiver] is unregistered.
- * @see Context.registerReceiver
- */
-@Throws(AssertionFailedError::class)
-internal inline fun <reified T : BroadcastReceiver> Assert<KClass<T>>.isRegistered():
-  Assert<KClass<T>> {
-  given {
-    assertThat<ShadowApplication>(
-        shadowOf(ApplicationProvider.getApplicationContext<Application>())
-      )
-      .prop<_, ImmutableList<ShadowApplication.Wrapper>, _>(
-        ShadowApplication::getRegisteredReceivers
-      )
-      .extracting { (it.getBroadcastReceiver() as BroadcastReceiver)::class }
-      .contains(T::class)
-  }
-  return this
-}
 
 /**
  * Creates an [Assert] on the amount of connections bound to the [Service].

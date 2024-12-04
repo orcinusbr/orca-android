@@ -16,8 +16,6 @@
 package br.com.orcinus.orca.core.mastodon.notification.push
 
 import android.app.Service
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
 import android.os.Binder
 import androidx.test.rule.ServiceTestRule
@@ -52,10 +50,6 @@ internal class AssertExtensionsTests {
     }
   }
 
-  private class AssertionBroadcastReceiver : BroadcastReceiver() {
-    override fun onReceive(context: Context?, intent: Intent?) = Unit
-  }
-
   @Test
   fun failsWhenAssertingThatServiceBindingCountEqualsToOtherThanTheActualOne() {
     val intent = Intent(context, AssertionService::class.java)
@@ -88,22 +82,5 @@ internal class AssertExtensionsTests {
       .apply { repeat(2) { bindService(intent) } }
       .also { assertThat<AssertionService>().bindingCount().isEqualTo(2) }
       .shutdownService()
-  }
-
-  @Test
-  fun failsWhenAssertingThatUnregisteredBroadcastReceiverIsRegistered() {
-    assertFailure(assertThat<AssertionBroadcastReceiver>()::isRegistered)
-      .isInstanceOf<AssertionFailedError>()
-  }
-
-  @Test
-  fun passesWhenAssertingThatRegisteredBroadcastReceiverIsRegistered() {
-    context.registerReceiver(
-      AssertionBroadcastReceiver(),
-      /** filter = */
-      null,
-      Context.RECEIVER_NOT_EXPORTED
-    )
-    assertThat<AssertionBroadcastReceiver>().isRegistered()
   }
 }

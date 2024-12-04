@@ -29,35 +29,17 @@ internal class DefaultNotificationLockTests {
 
   @SdkSuppress(maxSdkVersion = Build.VERSION_CODES.S_V2)
   @Test
-  fun registersReceiverWhenUnlockingInAnApiLevelInWhichThePermissionIsUnsupported() {
+  fun bindsServiceWhenUnlockingInAnApiLevelInWhichThePermissionIsUnsupported() {
     launchActivity<RequestActivity>()
       .moveToState(Lifecycle.State.CREATED)
       ?.onActivity {
         val lock = NotificationLock(it).apply(NotificationLock::requestUnlock)
 
-        // Context.unregisterReceiver(BroadcastReceiver) throws if the receiver is unregistered.
-        assertFailure { it.unregisterReceiver(lock.receiver) }.isInstanceOf<IllegalStateException>()
+        // Context.unbindService(ServiceConnection) throws if the service is unbound.
+        assertFailure { it.unbindService(NotificationLock.NoOpServiceConnection) }
+          .isInstanceOf<IllegalStateException>()
 
         lock.close()
-      }
-      ?.close()
-  }
-
-  @Test
-  fun unregistersReceiver() {
-    launchActivity<RequestActivity>()
-      .moveToState(Lifecycle.State.CREATED)
-      .onActivity { activity ->
-        Thread.currentThread()
-        val lock =
-          NotificationLock(activity).apply {
-            requestUnlock()
-            close()
-          }
-
-        // Context.unregisterReceiver(BroadcastReceiver) throws if the receiver is unregistered.
-        assertFailure { activity.unregisterReceiver(lock.receiver) }
-          .isInstanceOf<IllegalArgumentException>()
       }
       ?.close()
   }
