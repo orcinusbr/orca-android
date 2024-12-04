@@ -99,7 +99,7 @@ Java_br_com_orcinus_orca_core_mastodon_notification_push_security_encoding_Z85Kt
   jsize size = (*env)->GetArrayLength(env, _receiver);
   jbyte *data = (*env)->GetByteArrayElements(env, _receiver, NULL);
 
-  // Accepts only byte arrays bounded to 4 bytes
+  // Accepts only byte arrays bounded to 4 bytes.
   if (size % 4) return NULL;
 
   jsize encoded_size = size * 5 / 4;
