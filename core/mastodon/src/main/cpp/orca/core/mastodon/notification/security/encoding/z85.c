@@ -91,7 +91,7 @@ static byte decoder[96] = {
 
 // Encode a byte array as a string.
 JNIEXPORT jstring JNICALL
-Java_br_com_orcinus_orca_core_mastodon_notification_security_encoding_Z85Kt_encodeToZ85(
+Java_br_com_orcinus_orca_core_mastodon_notification_push_security_encoding_Z85Kt_encodeToZ85(
   __attribute__((unused)) JNIEnv *env,
   __attribute__((unused)) jclass clazz,
   jbyteArray _receiver
@@ -128,7 +128,7 @@ Java_br_com_orcinus_orca_core_mastodon_notification_security_encoding_Z85Kt_enco
 
 // Decode an encoded string into a byte array; size of array will be strlen (string) * 4 / 5.
 JNIEXPORT jbyteArray JNICALL
-Java_br_com_orcinus_orca_core_mastodon_notification_security_encoding_Z85Kt_decodeFromZ85(
+Java_br_com_orcinus_orca_core_mastodon_notification_push_security_encoding_Z85Kt_decodeFromZ85(
   __attribute__((unused)) JNIEnv *env,
   __attribute__((unused)) jclass clazz,
   jstring _receiver
