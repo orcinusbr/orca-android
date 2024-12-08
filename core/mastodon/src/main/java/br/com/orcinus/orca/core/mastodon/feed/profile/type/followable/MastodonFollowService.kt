@@ -17,6 +17,8 @@ package br.com.orcinus.orca.core.mastodon.feed.profile.type.followable
 
 import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
 import br.com.orcinus.orca.core.feed.profile.type.followable.FollowService
+import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
+import br.com.orcinus.orca.core.mastodon.feed.profile.MastodonProfileProvider
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 
@@ -25,20 +27,24 @@ import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authe
  *
  * @property requester [Requester] by which the HTTP requests are sent.
  */
-class MastodonFollowService(private val requester: Requester) : FollowService() {
-  override suspend fun toggle(profileID: String, follow: Follow) {
+class MastodonFollowService(
+  private val requester: Requester,
+  override val profileProvider: MastodonProfileProvider
+) : FollowService() {
+  override suspend fun <T : Follow> setFollow(profile: FollowableProfile<T>, follow: T) {
     requester
       .authenticated()
       .post({
         path("api")
           .path("v1")
           .path("accounts")
-          .path(profileID)
+          .path(profile.id)
           .run {
-            when (follow.toggled()) {
-              Follow.Public.following(),
-              Follow.Private.requested(),
-              Follow.Private.following() -> path("follow")
+            when (follow) {
+              is Follow.Public.Following,
+              is Follow.Public.Subscribed,
+              is Follow.Private.Following,
+              is Follow.Private.Subscribed -> path("follow")
               else -> path("unfollow")
             }
           }

@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.core.mastodon.feed.profile.post.status
 
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import br.com.orcinus.orca.composite.timeline.text.annotated.fromHtml
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
@@ -36,6 +37,7 @@ import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.markdown.Markdown
+import br.com.orcinus.orca.std.markdown.style.`if`
 import java.net.URI
 import java.net.URL
 import java.time.ZonedDateTime
@@ -77,6 +79,15 @@ internal data class MastodonStatus(
   val favourited: Boolean?,
   val reblogged: Boolean?
 ) {
+  /** Variation of the [content] which can contain a maximum of only 12 [Char]s. */
+  val summarizedContent
+    get() =
+      content.substring(startIndex = 0, endIndex = minOf(11, content.length)).`if`({
+        length < content.length
+      }) {
+        plus('…')
+      }
+
   /**
    * Converts this [MastodonStatus] into a [Post].
    *
@@ -133,5 +144,30 @@ internal data class MastodonStatus(
         val reposter = this@MastodonStatus.account.toAuthor(imageLoaderProvider)
         Repost(this, reposter)
       }
+  }
+
+  companion object {
+    /**
+     * [MastodonStatus] whose fields are assigned default values (empty [String]s, zeroed [Number]s
+     * and `false` [Boolean]s).
+     */
+    @JvmStatic
+    @VisibleForTesting
+    val default =
+      MastodonStatus(
+        id = "0",
+        createdAt = "",
+        MastodonAccount.default,
+        reblogsCount = 0,
+        favouritesCount = 0,
+        repliesCount = 0,
+        uri = "",
+        reblog = null,
+        card = null,
+        content = "",
+        mediaAttachments = emptyList(),
+        favourited = false,
+        reblogged = false
+      )
   }
 }

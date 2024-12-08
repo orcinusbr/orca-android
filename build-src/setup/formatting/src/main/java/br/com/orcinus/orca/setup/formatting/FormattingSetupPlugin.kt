@@ -16,19 +16,52 @@
 package br.com.orcinus.orca.setup.formatting
 
 import com.diffplug.gradle.spotless.SpotlessExtension
+import java.nio.file.Files
+import java.nio.file.Paths
+import kotlin.io.path.name
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.internal.os.OperatingSystem
 
 class FormattingSetupPlugin : Plugin<Project> {
   override fun apply(target: Project) {
     target.extensions.getByType(SpotlessExtension::class.java).apply {
+      cpp { extension ->
+        extension
+          .clangFormat("19.0.0")
+          ?.pathToExe(
+            Paths.get(BuildConfig.ANDROID_SDK_PATH)
+              .resolve("ndk")
+              .resolve(BuildConfig.NDK_VERSION)
+              .resolve("toolchains")
+              .resolve("llvm")
+              .resolve("prebuilt")
+              .let(Files::newDirectoryStream)
+              .find { path -> path.name.startsWith(OperatingSystem.current().nativePrefix) }
+              ?.resolve("bin")
+              ?.resolve("clang-format")
+              ?.toString()
+          )
+          ?.style(
+            "file:" +
+              Paths.get(".")
+                .resolve("build-src")
+                .resolve("setup")
+                .resolve("formatting")
+                .resolve("src")
+                .resolve("main")
+                .resolve("resources")
+                .resolve(".clang-format")
+          )
+        extension.target("**\\/*.c")
+      }
       java {
-        it.target("**\\/*.java")
         it.googleJavaFormat()
+        it.target("**\\/*.java")
       }
       kotlin {
-        it.target("**\\/*.kt", "**\\/*.kts")
         it.ktfmt().googleStyle()
+        it.target("**\\/*.kt", "**\\/*.kts")
       }
     }
   }

@@ -59,7 +59,7 @@ internal class ProfileDetailsFragmentTests {
   fun unfollowsFollowedProfileWhenClickingActionButton() {
     val profile = instance.profileProvider.provideCurrent<SampleFollowableProfile<*>>()
     if (!profile.follow.isFollowingType) {
-      runTest { followService.toggle(profile.id, profile.follow) }
+      runTest { followService.toggle(profile.id) }
     }
     launchFragmentInNavigationContainer {
         ProfileDetailsFragment(

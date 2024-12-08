@@ -50,7 +50,7 @@ internal class FollowableProfileConverter(
         profile.uri,
         profile.follow.toStatus()
       ) {
-        coroutineScope.launch { followService.toggle(profile.id, profile.follow) }
+        coroutineScope.launch { followService.toggle(profile.id) }
       }
     } else {
       null

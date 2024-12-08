@@ -37,7 +37,10 @@ import java.net.URI
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 
@@ -80,12 +83,14 @@ internal inline fun retryCountOf(
  *
  * @param clientResponseProvider Defines how the [HttpClient] will respond to requests.
  * @param onAuthentication Action run whenever the [Actor] is authenticated.
+ * @param context [CoroutineContext] in which [Job]s are launched by default.
  * @param body Operation to be performed with the [Requester].
  */
 @OptIn(ExperimentalContracts::class)
 internal inline fun runRequesterTest(
   clientResponseProvider: ClientResponseProvider = ClientResponseProvider.ok,
   crossinline onAuthentication: () -> Unit = {},
+  context: CoroutineContext = EmptyCoroutineContext,
   crossinline body: suspend RequesterTestScope<Requester>.() -> Unit
 ) {
   contract {
@@ -109,7 +114,7 @@ internal inline fun runRequesterTest(
       lazyInjectionOf { SampleTermMuter() }
     )
   Injector.register<CoreModule>(module)
-  runTest {
+  runTest(context) {
     try {
       val baseURI = URIBuilder.url().scheme("https").host("orca.orcinus.com.br").path("app").build()
       val clientEngineFactory = createHttpClientEngineFactory(clientResponseProvider)

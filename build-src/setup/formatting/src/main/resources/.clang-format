@@ -1,0 +1,13 @@
+---
+AlignAfterOpenBracket: BlockIndent
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
+AlwaysBreakBeforeMultilineStrings: true
+BinPackParameters: false
+ColumnLimit: 100
+ContinuationIndentWidth: 2
+Cpp11BracedListStyle: false
+IndentWidth: 2
+SpacesInLineCommentPrefix:
+  Maximum: 1
+  Minimum: 1

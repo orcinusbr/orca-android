@@ -13,11 +13,22 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.app.demo.activity
+package br.com.orcinus.orca.core.auth
 
-import br.com.orcinus.orca.app.activity.OrcaActivity
+import br.com.orcinus.orca.core.InternalCoreApi
+import br.com.orcinus.orca.core.auth.actor.Actor
 
-/** [OrcaActivity] that does not deject dependencies when it gets destroyed. */
-internal class NonDependencyDejectingOrcaActivity : OrcaActivity() {
-  override val areDependenciesDejectedOnDestruction = false
+/**
+ * Listens to an unlock.
+ *
+ * @param R Value returned by [onUnlock].
+ */
+fun interface OnUnlockListener<R> {
+  /**
+   * Callback run when an unlock is performed.
+   *
+   * @param actor Authenticated [Actor] resulted from the authentication performed by the unlock to
+   *   which this listener listened or a previous one.
+   */
+  @InternalCoreApi suspend fun onUnlock(actor: Actor.Authenticated): R
 }

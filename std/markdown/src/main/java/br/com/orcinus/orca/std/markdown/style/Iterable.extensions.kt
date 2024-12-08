@@ -33,6 +33,7 @@ fun Iterable<Style>.merge(): List<Style> {
               ?.map(Style::indices)
               ?.filter { it.last == style.indices.first }
               ?.map { style.at(it.first..style.indices.last) }
+              ?.toSet()
               ?: setOf(style)))
       }
         ?: mapOf(style::class to setOf(style)))

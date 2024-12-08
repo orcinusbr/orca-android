@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,19 +13,23 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.app.activity
+package br.com.orcinus.orca.core.mastodon.notification.security.encoding
 
-import androidx.test.core.app.launchActivity
-import br.com.orcinus.orca.core.mastodon.auth.authorization.MastodonAuthorizationActivity
-import br.com.orcinus.orca.platform.intents.test.intendStartingOf
-import org.junit.Test
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import assertk.assertions.prop
+import br.com.orcinus.orca.core.mastodon.notification.push.security.encoding.encodeToBase64
+import kotlin.test.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class OrcaActivityTests {
+internal class Base64Tests {
   @Test
-  fun navigatesToAuthorization() {
-    intendStartingOf<MastodonAuthorizationActivity> { launchActivity<OrcaActivity>().close() }
+  fun encodes() {
+    @Suppress("SpellCheckingInspection")
+    assertThat("Hello, world\n?".toByteArray(Charsets.US_ASCII))
+      .prop(ByteArray::encodeToBase64)
+      .isEqualTo("SGVsbG8sIHdvcmxkCj8")
   }
 }

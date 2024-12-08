@@ -6,6 +6,7 @@ import assertk.assertions.isTrue
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.auth.actor.FixedActorProvider
+import br.com.orcinus.orca.core.sample.auth.SampleAuthenticator
 import br.com.orcinus.orca.core.sample.test.auth.actor.sample
 import br.com.orcinus.orca.core.test.auth.AuthenticationLock
 import br.com.orcinus.orca.core.test.auth.Authenticator
@@ -21,6 +22,50 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 
 internal class AuthenticationLockTests {
+  @Test
+  fun isNotifiedOfUnlock() {
+    var isNotified = false
+    runTest {
+      object : AuthenticationLock<Authenticator>() {
+          override val authenticator = SampleAuthenticator()
+          override val actorProvider = InMemoryActorProvider()
+
+          override suspend fun onUnlock(actor: Actor.Authenticated) {
+            isNotified = true
+          }
+
+          override fun createFailedAuthenticationException(): FailedAuthenticationException {
+            return FailedAuthenticationException(null)
+          }
+        }
+        .scheduleUnlock {}
+    }
+    assertThat(isNotified).isTrue()
+  }
+
+  @Test
+  fun isNotifiedOfSubsequentUnlock() {
+    var notificationCount = 0
+    val lock =
+      object : AuthenticationLock<Authenticator>() {
+        override val authenticator = SampleAuthenticator()
+        override val actorProvider = InMemoryActorProvider()
+
+        override suspend fun onUnlock(actor: Actor.Authenticated) {
+          notificationCount++
+        }
+
+        override fun createFailedAuthenticationException(): FailedAuthenticationException {
+          return FailedAuthenticationException(null)
+        }
+      }
+    runTest {
+      lock.scheduleUnlock {}
+      lock.scheduleUnlock {}
+    }
+    assertThat(notificationCount).isEqualTo(2)
+  }
+
   @Test
   fun authenticatesWhenUnlockingWithUnauthenticatedActor() {
     val actorProvider = InMemoryActorProvider()

@@ -24,6 +24,13 @@ import kotlin.reflect.full.declaredMemberProperties
 import org.opentest4j.AssertionFailedError
 
 /**
+ * Creates an [Assert] on the [KClass] of [T].
+ *
+ * @param T Object on whose [KClass] assertions are to be performed.
+ */
+inline fun <reified T : Any> assertThat() = assertk.assertThat(T::class)
+
+/**
  * Asserts that the value's properties have the same name and hold data equal to [other]'s. It will
  * not fail if it has ones that aren't present in [other], vice-versa or none at all, only if the
  * ones that are named equally have been assigned differently.

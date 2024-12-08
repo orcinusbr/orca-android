@@ -13,21 +13,19 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.mastodon.feed.profile.type.followable
+package br.com.orcinus.orca.app.activity
 
-import br.com.orcinus.orca.core.feed.profile.Profile
-import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
+import androidx.test.core.app.launchActivity
+import br.com.orcinus.orca.core.mastodon.auth.authorization.MastodonAuthorizationActivity
+import br.com.orcinus.orca.platform.intents.test.intendStartingOf
+import kotlin.test.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-/**
- * Gets the route to which a call would equate to this [Follow]'s [toggled][Follow.toggled] state.
- *
- * @param profile [Profile] to which this [Follow] is related.
- */
-internal fun Follow.getToggledRoute(profile: Profile): String {
-  return when (this) {
-    Follow.Public.following(),
-    Follow.Private.requested(),
-    Follow.Private.following() -> "/api/v1/accounts/${profile.id}/unfollow"
-    else -> "/api/v1/accounts/${profile.id}/follow"
+@RunWith(RobolectricTestRunner::class)
+internal class MainOrcaActivityTests {
+  @Test
+  fun navigatesToAuthorization() {
+    intendStartingOf<MastodonAuthorizationActivity> { launchActivity<MainOrcaActivity>().close() }
   }
 }

@@ -17,15 +17,14 @@ package br.com.orcinus.orca.core.sample.feed.profile.type.followable
 
 import br.com.orcinus.orca.core.feed.profile.type.followable.Follow
 import br.com.orcinus.orca.core.feed.profile.type.followable.FollowService
+import br.com.orcinus.orca.core.feed.profile.type.followable.FollowableProfile
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
 
 /** [FollowService] that toggles the [Follow] status of a [SampleFollowableProfile] in memory. */
-class SampleFollowService(private val profileProvider: SampleProfileProvider) : FollowService() {
-  @Throws(ClassCastException::class)
-  override suspend fun toggle(profileID: String, follow: Follow) {
-    profileProvider.update(profileID) {
-      @Suppress("UNCHECKED_CAST")
-      (this as SampleFollowableProfile<Follow>).withFollow(follow.toggled())
+class SampleFollowService(override val profileProvider: SampleProfileProvider) : FollowService() {
+  override suspend fun <T : Follow> setFollow(profile: FollowableProfile<T>, follow: T) {
+    profileProvider.update(profile.id) {
+      @Suppress("UNCHECKED_CAST") (this as SampleFollowableProfile<Follow>).withFollow(follow)
     }
   }
 }

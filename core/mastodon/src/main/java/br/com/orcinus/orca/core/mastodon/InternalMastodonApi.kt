@@ -13,18 +13,10 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.app.demo.activity
+package br.com.orcinus.orca.core.mastodon
 
-import androidx.test.core.app.launchActivity
-import br.com.orcinus.orca.std.injector.Injector
-import kotlin.test.Test
+import br.com.orcinus.orca.std.visibility.PackageProtected
 
-internal class NonDependencyDejectingOrcaActivityTests {
-  @Test
-  fun doesNotDejectDependenciesAfterBeingDestroyed() {
-    Injector.injectLazily { 0 }
-    launchActivity<NonDependencyDejectingOrcaActivity>().close()
-    Injector.get<Int>()
-    Injector.clear()
-  }
-}
+/** Denotes that a structure should only be referenced from the Mastodon core variant. */
+@PackageProtected("This structure is internal to the Mastodon core variant.")
+internal annotation class InternalMastodonApi

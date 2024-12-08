@@ -16,10 +16,13 @@
 package br.com.orcinus.orca.ext.testing
 
 import assertk.assertThat
+import assertk.assertions.isSameInstanceAs
 import kotlin.test.Test
 import org.opentest4j.AssertionFailedError
 
 internal class AssertExtensionsTests {
+  @Test fun createsAssertWithKClass() = assertThat<Any>().isSameInstanceAs(Any::class)
+
   @Test
   fun passesWhenAssertingThatAnObjectHasPropertiesEqualToThoseOfAnotherOneWhenItDoes() {
     assertThat(

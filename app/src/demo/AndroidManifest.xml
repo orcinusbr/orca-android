@@ -17,8 +17,15 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <application
-        android:name=".demo.DemoOrcaApplication"
-        tools:ignore="MissingApplicationIcon"
-        tools:replace="android:name" />
+    <application tools:ignore="MissingApplicationIcon">
+        <activity
+            android:exported="true"
+            android:name=".demo.activity.DemoOrcaActivity"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
 </manifest>

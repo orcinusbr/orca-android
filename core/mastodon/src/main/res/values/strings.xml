@@ -35,15 +35,61 @@
     </string>
     <string name="core_mastodon_nonexistent_profile_error">This profile doesn\'t exist.</string>
     <string name="core_mastodon_share">Share</string>
+    <string name="editing_notification_channel">Edits</string>
+    <string name="editing_notification_channel_description">
+        A post with which you interacted has been edited.
+    </string>
+    <string name="favoriting_notification_channel">Favoriting</string>
+    <string name="favoriting_notification_channel_description">
+        Others favorited your posts.
+    </string>
+    <string name="follow_requests_notification_channel">Follows requests</string>
+    <string name="follow_requests_notification_channel_description">
+        Others requested to follow you.
+    </string>
+    <string name="follows_notification_channel">Follows</string>
+    <string name="follows_notification_channel_description">Others started following you.</string>
+    <string name="mentions_notification_channel">Mentions</string>
+    <string name="mentions_notification_channel_description">
+        Others mentioned you in a post.
+    </string>
+    <string name="moderation_notification_channel">Moderation</string>
+    <string name="moderation_notification_channel_description">
+        You blocked domains or moderators of your instance suspended accounts whose profiles you
+        were following.
+    </string>
+    <string name="poll_created_by_you_has_ended">Your "%s" poll has ended.</string>
+    <string name="poll_created_by_someone_has_ended">%1s\'s "%2s" poll has ended.</string>
+    <string name="polling_notification_channel">Polling</string>
+    <string name="polling_notification_channel_description">
+        Polls created by you or in which you voted have ended.
+    </string>
     <string
         name="redirect_uri"
         translatable="false">
         %s://sign-in
     </string>
-
+    <string name="relationship_has_been_severed">
+        One of your relationships has been severed by either blockage or instance moderation.
+    </string>
+    <string name="reposting_notification_channel">Reposts</string>
+    <string name="reposting_notification_channel_description">
+        Others reposted your posts.
+    </string>
     <string
         name="scheme"
         translatable="false">
         orca
+    </string>
+    <string name="someone_has_edited">%s edited their "%s" post, with which you interacted.</string>
+    <string name="someone_has_favorited_your_post">%s has favorited your "%s" post.</string>
+    <string name="someone_has_followed_you">%s started following you.</string>
+    <string name="someone_has_mentioned_you">%s has mentioned you in their post: "%s"</string>
+    <string name="someone_has_published">%s published:\n\n%s</string>
+    <string name="someone_has_reposted_your_post">%s has reposted your "%s" post.</string>
+    <string name="someone_has_requested_to_follow_you">%s has requested to follow you.</string>
+    <string name="subscriptions_notification_channel">Subscriptions</string>
+    <string name="subscriptions_notification_channel_description">
+        Posts published by profiles to which you subscribed.
     </string>
 </resources>

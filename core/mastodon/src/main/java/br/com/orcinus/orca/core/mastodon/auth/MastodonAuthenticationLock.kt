@@ -17,9 +17,11 @@ package br.com.orcinus.orca.core.mastodon.auth
 
 import android.content.Context
 import br.com.orcinus.orca.core.auth.AuthenticationLock
+import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.mastodon.R
 import br.com.orcinus.orca.core.mastodon.auth.authentication.MastodonAuthenticator
+import br.com.orcinus.orca.core.mastodon.notification.NotificationLock
 import br.com.orcinus.orca.platform.autos.i18n.ReadableThrowable
 
 /**
@@ -27,12 +29,25 @@ import br.com.orcinus.orca.platform.autos.i18n.ReadableThrowable
  *
  * @property context [Context] by which default and localized messages for [Exception]s thrown when
  *   authentication fails to be performed are provided.
+ * @property notificationLock [NotificationLock] by which the permission to send notifications is
+ *   unlocked.
  */
 class MastodonAuthenticationLock(
   private val context: Context,
+  private val notificationLock: NotificationLock,
   override val authenticator: MastodonAuthenticator,
   override val actorProvider: ActorProvider
 ) : AuthenticationLock<MastodonAuthenticator>() {
+  /** Whether an unlock has not been performed before. */
+  private var isOnFirstUnlock = true
+
+  override suspend fun onUnlock(actor: Actor.Authenticated) {
+    if (isOnFirstUnlock) {
+      notificationLock.requestUnlock()
+      isOnFirstUnlock = false
+    }
+  }
+
   override fun createFailedAuthenticationException(): FailedAuthenticationException {
     return FailedAuthenticationException(
       cause = ReadableThrowable(context, R.string.core_mastodon_failed_authentication_error)

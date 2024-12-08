@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright © 2024 Orcinus
   ~
@@ -14,12 +13,9 @@
   ~ not, see https://www.gnu.org/licenses.
   -->
 
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
-    <application tools:ignore="MissingApplicationIcon">
-        <!--suppress AndroidDomInspection -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
         <activity
-            android:name="br.com.orcinus.orca.app.demo.activity.NonDependencyDejectingOrcaActivity" />
+            android:name="br.com.orcinus.orca.core.mastodon.notification.DefaultNotificationLockTests$RequestActivity" />
     </application>
 </manifest>

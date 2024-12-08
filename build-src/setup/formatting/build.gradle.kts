@@ -1,3 +1,5 @@
+import java.util.Properties
+
 /*
  * Copyright © 2023–2024 Orcinus
  *
@@ -14,9 +16,20 @@
  */
 
 plugins {
+  alias(libs.plugins.buildconfig)
   alias(libs.plugins.kotlin.jvm)
 
   `java-gradle-plugin`
+}
+
+buildConfig {
+  val androidSdk =
+    Properties()
+      .apply { load(rootProject.file("../local.properties").reader()) }
+      .getProperty("sdk.dir")
+  buildConfigField("String", "ANDROID_SDK_PATH", "\"$androidSdk\"")
+  buildConfigField("String", "NDK_VERSION", "\"${libs.versions.android.ndk.get()}\"")
+  packageName("br.com.orcinus.orca.setup.formatting")
 }
 
 dependencies { implementation(libs.spotless) }

@@ -35,4 +35,54 @@
     </string>
     <string name="core_mastodon_nonexistent_profile_error">Este perfil não existe.</string>
     <string name="core_mastodon_share">Compartilhar</string>
+    <string name="editing_notification_channel">Edições</string>
+    <string name="editing_notification_channel_description">
+        Uma publicação com a qual você interagiu foi editada.
+    </string>
+    <string name="favoriting_notification_channel">Marcações como "favorito"</string>
+    <string name="favoriting_notification_channel_description">
+        Outros favoritaram suas publicações.
+    </string>
+    <string name="follow_requests_notification_channel">Soliticitações para seguir</string>
+    <string name="follow_requests_notification_channel_description">
+        Outros pediram para segui-lo.
+    </string>
+    <string name="follows_notification_channel">Seguidas</string>
+    <string name="follows_notification_channel_description">Outros começaram a seguir você.</string>
+    <string name="mentions_notification_channel">Menções</string>
+    <string name="mentions_notification_channel_description">
+        Outros mencionaram você numa publicação.
+    </string>
+    <string name="moderation_notification_channel">Moderação</string>
+    <string name="moderation_notification_channel_description">
+        Você bloqueou domínios ou moderadores da sua instância suspenderam contas cujos perfis você
+        seguia.
+    </string>
+    <string name="poll_created_by_you_has_ended">Sua enquete "%s" terminou.</string>
+    <string name="poll_created_by_someone_has_ended">A enquete "%2s" de %1s terminou..</string>
+    <string name="polling_notification_channel">Enquetes</string>
+    <string name="polling_notification_channel_description">
+        Enquetes criadas por você ou nas quais você votou chegaram ao fim.
+    </string>
+    <string name="relationship_has_been_severed">
+        Um dos seus relacionamentos foi prejudicado devido a um bloqueio ou uma moderação feita pela
+        instância.
+    </string>
+    <string name="reposting_notification_channel">Republicações</string>
+    <string name="reposting_notification_channel_description">
+        Outros republicaram uma das suas publicações.
+    </string>
+    <string name="someone_has_edited">
+        %s editou a publicação "%s", com a qual você interagiu.
+    </string>
+    <string name="someone_has_favorited_your_post">%s favoritou a sua publicação "%s".</string>
+    <string name="someone_has_followed_you">%s começou a segui-lo.</string>
+    <string name="someone_has_mentioned_you">%s mencionou-o numa publicação: "%s"</string>
+    <string name="someone_has_published">%s publicou:\n\n%s</string>
+    <string name="someone_has_reposted_your_post">%s repostou a sua publicação "%s".</string>
+    <string name="someone_has_requested_to_follow_you">%s pediu para segui-lo.</string>
+    <string name="subscriptions_notification_channel">Inscrições</string>
+    <string name="subscriptions_notification_channel_description">
+        Publicações feitas por perfis nos quais você se inscreveu.
+    </string>
 </resources>

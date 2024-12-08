@@ -141,7 +141,7 @@ internal constructor(
          *
          * @param build Builds the parameters to be added.
          */
-        fun parameters(build: StringValuesBuilder.() -> Unit) {
+        inline fun parameters(build: StringValuesBuilder.() -> Unit) {
           parameters =
             Parameters.build {
               appendAll(parameters)

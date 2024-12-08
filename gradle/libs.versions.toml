@@ -46,7 +46,8 @@ android-test-espresso-core = { group = "androidx.test.espresso", name = "espress
 android-test-espresso-intents = { group = "androidx.test.espresso", name = "espresso-intents", version.ref = "android-test-espresso" }
 android-test-junit = { group = "androidx.test.ext", name = "junit-ktx", version = "1.1.5" }
 android-test-runner = { group = "androidx.test", name = "runner", version = "1.5.0" }
-assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version = "0.27.0" }
+assertk = { group = "com.willowtreeapps.assertk", name = "assertk", version.ref = "assertk" }
+assertk-coroutines = { group = "com.willowtreeapps.assertk", name = "assertk-coroutines", version.ref = "assertk" }
 autos = { group = "br.com.orcinus.orca.autos", name = "autos", version = "1.0.6" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version = "2.4.0" }
 junit = { group = "junit", name = "junit", version = "4.13.2" }
@@ -115,11 +116,13 @@ android-compose = "1.6.8"
 android-compose-compiler = "1.5.11"
 android-fragment = "1.7.0"
 android-lifecycle = "2.7.0"
+android-ndk = "28.0.12674087"
 android-plugin = "8.5.2"
 android-room = "2.6.1"
 android-sdk-min = "28"
 android-sdk-target = "34"
 android-test-espresso = "3.5.0"
+assertk = "0.28.1"
 java = "17"
 kotlin = "2.0.0"
 kotlin-coroutines = "1.8.0"

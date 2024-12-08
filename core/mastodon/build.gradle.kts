@@ -16,6 +16,7 @@
 plugins {
   alias(libs.plugins.android.library)
   alias(libs.plugins.android.maps.secrets)
+  alias(libs.plugins.buildconfig)
   alias(libs.plugins.kotlin.android)
   alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.kotlin.serialization)
@@ -25,6 +26,8 @@ plugins {
 android {
   buildFeatures.compose = true
   defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  packagingOptions.resources.excludes +=
+    arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
   testOptions.unitTests.isIncludeAndroidResources = true
 
   buildFeatures {
@@ -32,9 +35,14 @@ android {
     compose = true
   }
 
+  externalNativeBuild.cmake {
+    path = file("src/main/cpp/CMakeLists.txt")
+    version = "3.22.1"
+  }
+
   secrets {
     defaultPropertiesFileName = "public.properties"
-    ignoreList += "^(?!mastodon\\.clientSecret).*$"
+    ignoreList += "^(?!mastodon\\.)"
   }
 }
 
@@ -87,7 +95,7 @@ dependencies {
   testImplementation(project(":platform:intents-test"))
   testImplementation(project(":platform:testing"))
   testImplementation(project(":std:injector-test"))
-  testImplementation(libs.assertk)
+  testImplementation(libs.assertk.coroutines)
   testImplementation(libs.kotlin.coroutines.test)
   testImplementation(libs.kotlin.test)
   testImplementation(libs.ktor.client.mock)

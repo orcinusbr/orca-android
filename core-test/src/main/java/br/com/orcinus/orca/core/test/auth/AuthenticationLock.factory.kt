@@ -46,6 +46,8 @@ fun <T : Authenticator> AuthenticationLock(
     override val authenticator = authenticator
     override val actorProvider = actorProvider
 
+    override suspend fun onUnlock(actor: Actor.Authenticated) {}
+
     override fun createFailedAuthenticationException(): FailedAuthenticationException {
       return FailedAuthenticationException(cause = null)
     }

@@ -27,6 +27,8 @@ class SampleAuthenticationLock(
   override val authenticator: SampleAuthenticator,
   override val actorProvider: SampleActorProvider
 ) : AuthenticationLock<SampleAuthenticator>() {
+  override suspend fun onUnlock(actor: Actor.Authenticated) {}
+
   override fun createFailedAuthenticationException(): FailedAuthenticationException {
     return FailedAuthenticationException(cause = null)
   }
