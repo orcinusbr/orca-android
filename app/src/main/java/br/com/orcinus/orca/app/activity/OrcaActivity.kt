@@ -37,6 +37,7 @@ import br.com.orcinus.orca.app.module.feature.search.MainSearchModule
 import br.com.orcinus.orca.app.module.feature.settings.MainSettingsModule
 import br.com.orcinus.orca.app.module.feature.settings.termmuting.MainTermMutingModule
 import br.com.orcinus.orca.core.module.CoreModule
+import br.com.orcinus.orca.core.module.authenticationLock
 import br.com.orcinus.orca.feature.feed.FeedModule
 import br.com.orcinus.orca.feature.gallery.GalleryModule
 import br.com.orcinus.orca.feature.postdetails.PostDetailsModule
@@ -143,7 +144,12 @@ internal abstract class OrcaActivity : FragmentActivity() {
     val backStack = BackStack.named(itemTitle)
     val navigator = Navigator.create(this, backStack)
     lifecycleScope.launch {
-      BottomNavigationFragmentProvider.navigate(navigator, backStack, item.itemId)
+      BottomNavigationFragmentProvider.navigate(
+        navigator,
+        backStack,
+        coreModule.authenticationLock(),
+        item.itemId
+      )
     }
   }
 
