@@ -23,7 +23,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -62,7 +61,7 @@ fun Searchable(
   modifier: Modifier = Modifier,
   content: @Composable SearchableScope.() -> Unit
 ) {
-  BoxWithConstraints(modifier.testTag(ContentTag)) {
+  Box(modifier.testTag(ContentTag)) {
     val isReplaceableComposedState = remember { mutableStateOf(false) }
     val searchableScope =
       remember(content, fillerColor) { SearchableScope(isReplaceableComposedState, fillerColor) }
