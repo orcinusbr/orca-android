@@ -102,7 +102,7 @@ fun Scaffold(
     snackbarPresenter,
     bottom
   ) {
-    remember(::ScaffoldScope).content().value()
+    remember(::ScaffoldScope).content().Value()
   }
 }
 
