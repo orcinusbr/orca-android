@@ -30,7 +30,7 @@ abstract class Content internal constructor() {
   protected abstract val modifier: Modifier
 
   /** [Composable] to be shown. */
-  internal abstract val value: @Composable () -> Unit
+  protected abstract val value: @Composable () -> Unit
 
   /** [Content] that is displayed all by itself. */
   internal class Expanded(
@@ -43,4 +43,10 @@ abstract class Content internal constructor() {
     override val modifier: Modifier,
     override val value: @Composable () -> Unit
   ) : Content()
+
+  /** [value] with the [modifier] applied to it. */
+  @Composable
+  internal fun Value() {
+    Box(modifier) { value() }
+  }
 }
