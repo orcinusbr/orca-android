@@ -108,19 +108,15 @@ internal sealed class ResultSearchTextFieldDialog {
 
   /** [Modifier] applied to the [ResultSearchTextField]. */
   private var modifier by mutableStateOf<Modifier>(Modifier)
-    @JvmName("_setModifier") set
 
   /** Content being looked up in the [ResultSearchTextField]. */
   private var query by mutableStateOf("")
-    @JvmName("_setQuery") set
 
   /** Lambda invoked whenever the query changes in the [ResultSearchTextField]. */
   private var onQueryChange by mutableStateOf(noOpOnQueryChange)
-    @JvmName("_setOnQueryChange") set
 
   /** [Profile] results found by the [query] in the [ResultSearchTextField]. */
   private var resultsLoadable by mutableStateOf(emptyResultsLoadable)
-    @JvmName("_setResultsLoadable") set
 
   /**
    * Listener that gets notified after the [delegate] is dismissed.
