@@ -270,12 +270,10 @@ internal sealed class ResultSearchTextFieldDialog {
  * @property activity [ComponentActivity] that serves as the [Context] and the owner of both the
  *   lifecycle and the underlying [Dialog]. Its [View] tree ownership is configured before the
  *   dialog is shown, and reset whenever dismissed.
- * @throws IllegalStateException If the [activity] is not visual.
  */
 @VisibleForTesting
-internal class OwnedResultSearchTextFieldDialog
-@Throws(IllegalStateException::class)
-constructor(private val activity: ComponentActivity) : ResultSearchTextFieldDialog() {
+internal class OwnedResultSearchTextFieldDialog(private val activity: ComponentActivity) :
+  ResultSearchTextFieldDialog() {
   /**
    * [LifecycleOwner] of the [hostTreeView] prior to the appearance of this dialog.
    *
