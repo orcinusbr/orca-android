@@ -329,9 +329,11 @@ internal class OwnedResultSearchTextFieldDialog(private val activity: ComponentA
 }
 
 /**
- * Produces a remembered [ResultSearchTextFieldDialog] by which the results of a query can be
- * displayed on top of preexisting content. Changes to the parameters cause a recomposition of the
- * host [ComposeView]'s content.
+ * Produces a remembered [ResultSearchTextFieldDialog] by which the results of a query can be shown
+ * on top of preexisting content. In order for it to actually be displayed, its content should be
+ * invoked.
+ *
+ * @see ResultSearchTextFieldDialog.Content
  */
 @Composable
 internal fun rememberResultSearchTextFieldDialog(): ResultSearchTextFieldDialog {
