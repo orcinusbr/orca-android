@@ -271,13 +271,15 @@ internal class SearchableTests {
     composeRule
       .apply {
         setContent {
-          Searchable {
-            Replaceable()
+          AutosTheme {
+            Searchable {
+              Replaceable()
 
-            DisposableEffect(Unit) {
-              show()
-              dismiss()
-              onDispose {}
+              DisposableEffect(Unit) {
+                show()
+                dismiss()
+                onDispose {}
+              }
             }
           }
         }
@@ -403,7 +405,7 @@ internal class SearchableTests {
           Replaceable()
 
           DisposableEffect(Unit) {
-            assertThat(searchTextFieldLayoutHeight).isEqualTo(0.dp)
+            assertThat(resultSearchTextFieldHeight).isEqualTo(0.dp)
             onDispose {}
           }
         }
@@ -421,7 +423,7 @@ internal class SearchableTests {
           DisposableEffect(Unit) {
             show()
             dismiss()
-            onDispose { assertThat(searchTextFieldLayoutHeight).isEqualTo(0.dp) }
+            onDispose { assertThat(resultSearchTextFieldHeight).isEqualTo(0.dp) }
           }
         }
       }
@@ -444,7 +446,7 @@ internal class SearchableTests {
           DisposableEffect(Unit) {
             show()
             onDispose {
-              assertThat(searchTextFieldLayoutHeight)
+              assertThat(resultSearchTextFieldHeight)
                 .isGreaterThanOrEqualTo(fontSizeInDp + searchTextFieldSpacing * 4)
             }
           }

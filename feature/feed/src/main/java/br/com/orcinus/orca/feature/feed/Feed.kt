@@ -204,7 +204,7 @@ private fun Feed(
           onPostClick,
           onNext,
           Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-          contentPadding = PaddingValues(top = searchTextFieldLayoutHeight, bottom = 56.dp),
+          contentPadding = PaddingValues(top = resultSearchTextFieldHeight, bottom = 56.dp),
           refresh = Refresh(isTimelineRefreshing, onTimelineRefresh),
           snackbarPresenter = snackbarPresenter
         )
