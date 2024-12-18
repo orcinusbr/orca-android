@@ -21,7 +21,6 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onChild
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
-import androidx.lifecycle.lifecycleScope
 import androidx.test.espresso.Espresso.pressBack
 import assertk.assertThat
 import assertk.assertions.isEqualTo
@@ -29,7 +28,6 @@ import assertk.assertions.isTrue
 import br.com.orcinus.orca.composite.timeline.test.search.field.isResultSearchTextField
 import br.com.orcinus.orca.composite.timeline.test.search.field.onDismissButton
 import kotlin.test.Test
-import kotlinx.coroutines.launch
 import org.junit.Rule
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -80,7 +78,8 @@ internal class ResultSearchTextFieldDialogTests {
         doOnDidDismiss { hasNotified = true }
       }
       .dismiss()
-    composeRule.activity.lifecycleScope.launch { assertThat(hasNotified).isTrue() }
+    composeRule.waitForIdle()
+    assertThat(hasNotified).isTrue()
   }
 
   @Test
@@ -92,6 +91,7 @@ internal class ResultSearchTextFieldDialogTests {
         repeat(64) { doOnDidDismiss { notificationCount++ } }
       }
       .dismiss()
-    composeRule.activity.lifecycleScope.launch { assertThat(notificationCount).isEqualTo(64) }
+    composeRule.waitForIdle()
+    assertThat(notificationCount).isEqualTo(64)
   }
 }
