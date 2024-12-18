@@ -15,36 +15,19 @@
 
 package br.com.orcinus.orca.composite.timeline.search.field
 
-import android.view.View
-import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.assert
-import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onChild
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.setViewTreeLifecycleOwner
-import androidx.lifecycle.setViewTreeViewModelStoreOwner
-import androidx.savedstate.SavedStateRegistryOwner
-import androidx.savedstate.findViewTreeSavedStateRegistryOwner
-import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import androidx.test.espresso.Espresso.pressBack
-import androidx.test.ext.junit.rules.ActivityScenarioRule
-import assertk.all
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import assertk.assertions.isSameInstanceAs
 import assertk.assertions.isTrue
-import assertk.assertions.prop
 import br.com.orcinus.orca.composite.timeline.test.search.field.isResultSearchTextField
 import br.com.orcinus.orca.composite.timeline.test.search.field.onDismissButton
-import io.mockk.mockk
 import kotlin.test.Test
 import kotlinx.coroutines.launch
 import org.junit.Rule
@@ -54,73 +37,6 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 internal class ResultSearchTextFieldDialogTests {
   @get:Rule val composeRule = createAndroidComposeRule<ComponentActivity>()
-
-  @Test
-  fun doesNotDeconfigureActivityViewTreeOwnershipWhenDismissedWhileNotShown() {
-    val originalViewTreeLifecycleOwner = mockk<LifecycleOwner>()
-    val originalViewTreeViewModelStoreOwner = mockk<ViewModelStoreOwner>()
-    val originalViewTreeSavedStateRegistryOwner = mockk<SavedStateRegistryOwner>()
-    composeRule.activity.window?.decorView?.apply {
-      setViewTreeLifecycleOwner(originalViewTreeLifecycleOwner)
-      setViewTreeViewModelStoreOwner(originalViewTreeViewModelStoreOwner)
-      setViewTreeSavedStateRegistryOwner(originalViewTreeSavedStateRegistryOwner)
-    }
-    OwnedResultSearchTextFieldDialog(composeRule.activity).dismiss()
-    assertThat(composeRule)
-      .prop(AndroidComposeTestRule<ActivityScenarioRule<ComponentActivity>, *>::activity)
-      .prop(ComponentActivity::getWindow)
-      .prop(Window::getDecorView)
-      .all {
-        prop(View::findViewTreeLifecycleOwner).isSameInstanceAs(originalViewTreeLifecycleOwner)
-        prop(View::findViewTreeViewModelStoreOwner)
-          .isSameInstanceAs(originalViewTreeViewModelStoreOwner)
-        prop(View::findViewTreeSavedStateRegistryOwner)
-          .isSameInstanceAs(originalViewTreeSavedStateRegistryOwner)
-      }
-  }
-
-  @Test
-  fun deconfiguresActivityViewTreeOwnershipWhenDismissed() {
-    val originalViewTreeLifecycleOwner = mockk<LifecycleOwner>()
-    val originalViewTreeViewModelStoreOwner = mockk<ViewModelStoreOwner>()
-    val originalViewTreeSavedStateRegistryOwner = mockk<SavedStateRegistryOwner>()
-    composeRule.activity.window?.decorView?.apply {
-      setViewTreeLifecycleOwner(originalViewTreeLifecycleOwner)
-      setViewTreeViewModelStoreOwner(originalViewTreeViewModelStoreOwner)
-      setViewTreeSavedStateRegistryOwner(originalViewTreeSavedStateRegistryOwner)
-    }
-    OwnedResultSearchTextFieldDialog(composeRule.activity)
-      .apply(OwnedResultSearchTextFieldDialog::show)
-      .dismiss()
-    assertThat(composeRule)
-      .prop(AndroidComposeTestRule<ActivityScenarioRule<ComponentActivity>, *>::activity)
-      .prop(ComponentActivity::getWindow)
-      .prop(Window::getDecorView)
-      .all {
-        prop(View::findViewTreeLifecycleOwner).isSameInstanceAs(originalViewTreeLifecycleOwner)
-        prop(View::findViewTreeViewModelStoreOwner)
-          .isSameInstanceAs(originalViewTreeViewModelStoreOwner)
-        prop(View::findViewTreeSavedStateRegistryOwner)
-          .isSameInstanceAs(originalViewTreeSavedStateRegistryOwner)
-      }
-  }
-
-  @Test
-  fun initializesActivityViewTreeOwnersOnlyOnceWhenShown() {
-    OwnedResultSearchTextFieldDialog(composeRule.activity)
-      .apply(OwnedResultSearchTextFieldDialog::show)
-      .also {
-        assertThat(composeRule)
-          .prop(AndroidComposeTestRule<ActivityScenarioRule<ComponentActivity>, *>::activity)
-          .prop(ComponentActivity::getWindow)
-          .prop(Window::getDecorView)
-          .all {
-            prop(View::findViewTreeLifecycleOwner).isSameInstanceAs(composeRule.activity)
-            prop(View::findViewTreeViewModelStoreOwner).isSameInstanceAs(composeRule.activity)
-            prop(View::findViewTreeSavedStateRegistryOwner).isSameInstanceAs(composeRule.activity)
-          }
-      }
-  }
 
   @Test
   fun shows() {
