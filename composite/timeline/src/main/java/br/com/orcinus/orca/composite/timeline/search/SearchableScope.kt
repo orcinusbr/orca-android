@@ -96,6 +96,17 @@ internal constructor(
   /** Height of the [SearchTextField], or zeroed in case search isn't being performed. */
   val resultSearchTextFieldHeight by resultSearchTextFieldHeightAnimatable.asState()
 
+  /** Alias for [resultSearchTextFieldHeight]. */
+  @Deprecated(
+    "Renamed to \"resultSearchTextFieldHeight\".",
+    ReplaceWith(
+      "resultSearchTextFieldHeight",
+      imports = ["br.com.orcinus.orca.composite.timeline.search.SearchableScope"]
+    )
+  )
+  inline val searchTextFieldHeight
+    get() = resultSearchTextFieldHeight
+
   /**
    * [State] with the radius of the blur that should be applied to the content.
    *
