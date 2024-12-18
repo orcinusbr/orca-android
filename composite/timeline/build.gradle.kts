@@ -33,7 +33,6 @@ dependencies {
 
   implementation(project(":ext:reflection"))
   implementation(project(":platform:focus"))
-  implementation(project(":platform:navigation"))
   implementation(project(":std:visibility"))
   implementation(libs.android.constraintLayout.compose)
   implementation(libs.android.core)
