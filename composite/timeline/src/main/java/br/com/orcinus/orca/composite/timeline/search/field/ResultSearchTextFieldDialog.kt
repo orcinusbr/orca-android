@@ -298,6 +298,7 @@ internal class OwnedResultSearchTextFieldDialog(private val activity: ComponentA
  * @see LocalView
  */
 @Composable
+@Throws(IllegalStateException::class)
 internal fun rememberResultSearchTextFieldDialog(): ResultSearchTextFieldDialog {
   val context = LocalContext.current
   val viewTreeOwner = rememberViewTreeOwner()
