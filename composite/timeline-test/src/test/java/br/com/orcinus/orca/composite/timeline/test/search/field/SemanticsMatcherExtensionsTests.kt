@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.composite.timeline.test.search.field
 
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
@@ -25,8 +26,8 @@ import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.core.sample
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.serializableListOf
+import kotlin.test.Test
 import org.junit.Rule
-import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
@@ -39,6 +40,21 @@ internal class SemanticsMatcherExtensionsTests {
     composeRule
       .apply { setContent { AutosTheme { ResultSearchTextField() } } }
       .onNode(isDismissButton())
+      .assertIsDisplayed()
+  }
+
+  @Test
+  fun doesNotMatchNonResultSearchTextField() =
+    composeRule
+      .apply { setContent { CircularProgressIndicator() } }
+      .onNode(isResultSearchTextField())
+      .assertDoesNotExist()
+
+  @Test
+  fun matchesResultSearchTextField() {
+    composeRule
+      .apply { setContent { AutosTheme { ResultSearchTextField() } } }
+      .onNode(isResultSearchTextField())
       .assertIsDisplayed()
   }
 
