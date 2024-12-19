@@ -405,7 +405,7 @@ internal class SearchableTests {
           Replaceable()
 
           DisposableEffect(Unit) {
-            assertThat(searchTextFieldHeight).isEqualTo(0.dp)
+            assertThat(searchTextFieldLayoutHeight).isEqualTo(0.dp)
             onDispose {}
           }
         }
@@ -423,7 +423,7 @@ internal class SearchableTests {
           DisposableEffect(Unit) {
             show()
             dismiss()
-            onDispose { assertThat(searchTextFieldHeight).isEqualTo(0.dp) }
+            onDispose { assertThat(searchTextFieldLayoutHeight).isEqualTo(0.dp) }
           }
         }
       }
@@ -446,7 +446,7 @@ internal class SearchableTests {
           DisposableEffect(Unit) {
             show()
             onDispose {
-              assertThat(searchTextFieldHeight)
+              assertThat(searchTextFieldLayoutHeight)
                 .isGreaterThanOrEqualTo(fontSizeInDp + searchTextFieldSpacing * 4)
             }
           }

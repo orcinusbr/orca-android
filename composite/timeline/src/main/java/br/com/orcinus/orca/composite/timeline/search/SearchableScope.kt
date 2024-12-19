@@ -104,7 +104,7 @@ internal constructor(
       imports = ["br.com.orcinus.orca.composite.timeline.search.SearchableScope"]
     )
   )
-  inline val searchTextFieldHeight
+  inline val searchTextFieldLayoutHeight
     get() = resultSearchTextFieldHeight
 
   /**
