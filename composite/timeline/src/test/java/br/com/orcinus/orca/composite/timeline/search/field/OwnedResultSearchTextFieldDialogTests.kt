@@ -15,26 +15,12 @@
 
 package br.com.orcinus.orca.composite.timeline.search.field
 
-import android.view.View
-import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.findViewTreeViewModelStoreOwner
-import androidx.lifecycle.setViewTreeLifecycleOwner
-import androidx.lifecycle.setViewTreeViewModelStoreOwner
-import androidx.savedstate.SavedStateRegistryOwner
-import androidx.savedstate.findViewTreeSavedStateRegistryOwner
-import androidx.savedstate.setViewTreeSavedStateRegistryOwner
-import assertk.all
 import assertk.assertThat
+import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
-import assertk.assertions.isSameInstanceAs
-import assertk.assertions.prop
-import io.mockk.mockk
 import kotlin.test.Test
 import org.junit.Rule
 import org.junit.runner.RunWith
@@ -48,66 +34,20 @@ internal class OwnedResultSearchTextFieldDialogTests {
   @get:Rule val composeRule = createAndroidComposeRule<ComponentActivity>()
 
   @Test
-  fun doesNotDeconfigureActivityViewTreeOwnershipWhenDismissedWhileNotShown() {
-    val originalViewTreeLifecycleOwner = mockk<LifecycleOwner>()
-    val originalViewTreeViewModelStoreOwner = mockk<ViewModelStoreOwner>()
-    val originalViewTreeSavedStateRegistryOwner = mockk<SavedStateRegistryOwner>()
-    activity.window?.decorView?.apply {
-      setViewTreeLifecycleOwner(originalViewTreeLifecycleOwner)
-      setViewTreeViewModelStoreOwner(originalViewTreeViewModelStoreOwner)
-      setViewTreeSavedStateRegistryOwner(originalViewTreeSavedStateRegistryOwner)
-    }
-    OwnedResultSearchTextFieldDialog(activity).dismiss()
-    assertThat(activity).prop(ComponentActivity::getWindow).prop(Window::getDecorView).all {
-      prop(View::findViewTreeLifecycleOwner).isSameInstanceAs(originalViewTreeLifecycleOwner)
-      prop(View::findViewTreeViewModelStoreOwner)
-        .isSameInstanceAs(originalViewTreeViewModelStoreOwner)
-      prop(View::findViewTreeSavedStateRegistryOwner)
-        .isSameInstanceAs(originalViewTreeSavedStateRegistryOwner)
-    }
-  }
-
-  @Test
-  fun deconfiguresActivityViewTreeOwnershipWhenDismissed() {
-    val originalViewTreeLifecycleOwner = mockk<LifecycleOwner>()
-    val originalViewTreeViewModelStoreOwner = mockk<ViewModelStoreOwner>()
-    val originalViewTreeSavedStateRegistryOwner = mockk<SavedStateRegistryOwner>()
-    activity.window?.decorView?.apply {
-      setViewTreeLifecycleOwner(originalViewTreeLifecycleOwner)
-      setViewTreeViewModelStoreOwner(originalViewTreeViewModelStoreOwner)
-      setViewTreeSavedStateRegistryOwner(originalViewTreeSavedStateRegistryOwner)
-    }
-    OwnedResultSearchTextFieldDialog(activity)
-      .apply(OwnedResultSearchTextFieldDialog::show)
-      .dismiss()
-    assertThat(activity).prop(ComponentActivity::getWindow).prop(Window::getDecorView).all {
-      prop(View::findViewTreeLifecycleOwner).isSameInstanceAs(originalViewTreeLifecycleOwner)
-      prop(View::findViewTreeViewModelStoreOwner)
-        .isSameInstanceAs(originalViewTreeViewModelStoreOwner)
-      prop(View::findViewTreeSavedStateRegistryOwner)
-        .isSameInstanceAs(originalViewTreeSavedStateRegistryOwner)
-    }
-  }
-
-  @Test
   fun initializesActivityViewTreeOwnersOnlyOnceWhenShown() {
-    OwnedResultSearchTextFieldDialog(activity).apply(OwnedResultSearchTextFieldDialog::show).also {
-      assertThat(activity).prop(ComponentActivity::getWindow).prop(Window::getDecorView).all {
-        prop(View::findViewTreeLifecycleOwner).isSameInstanceAs(composeRule.activity)
-        prop(View::findViewTreeViewModelStoreOwner).isSameInstanceAs(composeRule.activity)
-        prop(View::findViewTreeSavedStateRegistryOwner).isSameInstanceAs(composeRule.activity)
-      }
-    }
+    OwnedResultSearchTextFieldDialog(activity).apply(OwnedResultSearchTextFieldDialog::show)
+    assertThat(ViewTreeOwner)
+      .transform("of") { activity.window?.decorView?.let(it::of) }
+      .isNotNull()
+      .isEqualTo(ViewTreeOwner.from(activity))
   }
 
   @Test
   fun configuresActivityViewTreeOwnershipWhenShown() {
     val dialog = OwnedResultSearchTextFieldDialog(activity)
     activity.setContent { dialog.Content() }
-    assertThat(activity).prop(ComponentActivity::getWindow).prop(Window::getDecorView).all {
-      prop(View::findViewTreeLifecycleOwner).isNotNull()
-      prop(View::findViewTreeViewModelStoreOwner).isNotNull()
-      prop(View::findViewTreeSavedStateRegistryOwner).isNotNull()
-    }
+    assertThat(ViewTreeOwner)
+      .transform("of") { activity.window?.decorView?.let(it::of) }
+      .isNotNull()
   }
 }

@@ -38,18 +38,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.window.Popup
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.findViewTreeViewModelStoreOwner
-import androidx.lifecycle.setViewTreeLifecycleOwner
-import androidx.lifecycle.setViewTreeViewModelStoreOwner
-import androidx.savedstate.SavedStateRegistryOwner
-import androidx.savedstate.findViewTreeSavedStateRegistryOwner
-import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.platform.autos.R
@@ -61,8 +51,7 @@ import com.jeanbarrossilva.loadable.list.ListLoadable
 /** Default implementation of [ResultSearchTextFieldDialog]. */
 private class DefaultResultSearchTextFieldDialog(
   override val context: Context,
-  override val lifecycleOwner: LifecycleOwner,
-  override val hostTreeView: View
+  override val hostViewTreeOwner: ViewTreeOwner
 ) : ResultSearchTextFieldDialog() {
   override fun onWillShow() = Unit
 }
@@ -140,11 +129,8 @@ internal sealed class ResultSearchTextFieldDialog {
   /** [Context] in which the [delegate] is to be displayed. */
   protected abstract val context: Context
 
-  /** [LifecycleOwner] that will be defined as that of the [hostView]. */
-  protected abstract val lifecycleOwner: LifecycleOwner
-
-  /** [View] whose tree owners are to be those of the [hostView]. */
-  protected abstract val hostTreeView: View
+  /** Owner by which the tree of the [hostView] is owned. */
+  protected abstract val hostViewTreeOwner: ViewTreeOwner
 
   /** [Dialog] by which a [ResultSearchTextField] is displayed. */
   protected val delegate by lazy {
@@ -244,9 +230,7 @@ internal sealed class ResultSearchTextFieldDialog {
   @VisibleForTesting
   fun show() {
     onWillShow()
-    hostView.setViewTreeLifecycleOwner(lifecycleOwner)
-    hostView.setViewTreeViewModelStoreOwner(hostTreeView.findViewTreeViewModelStoreOwner())
-    hostView.setViewTreeSavedStateRegistryOwner(hostTreeView.findViewTreeSavedStateRegistryOwner())
+    hostViewTreeOwner.own(hostView)
     delegate.setContentView(hostView)
     delegate.show()
   }
@@ -295,55 +279,10 @@ internal sealed class ResultSearchTextFieldDialog {
 @VisibleForTesting
 internal class OwnedResultSearchTextFieldDialog(private val activity: ComponentActivity) :
   ResultSearchTextFieldDialog() {
-  /**
-   * [LifecycleOwner] of the [hostTreeView] prior to the appearance of this dialog.
-   *
-   * @see View.findViewTreeLifecycleOwner
-   */
-  private var previousTreeViewTreeLifecycleOwner: LifecycleOwner? = null
-
-  /**
-   * [ViewModelStoreOwner] of the [hostTreeView] prior to the appearance of this dialog.
-   *
-   * @see View.findViewTreeViewModelStoreOwner
-   */
-  private var previousTreeViewTreeViewModelStoreOwner: ViewModelStoreOwner? = null
-
-  /**
-   * [SavedStateRegistryOwner] of the [hostTreeView] prior to the appearance of this dialog.
-   *
-   * @see View.findViewTreeSavedStateRegistryOwner
-   */
-  private var previousTreeViewTreeSavedRegistryOwner: SavedStateRegistryOwner? = null
-
   override val context = activity
-  override val lifecycleOwner = activity
-
-  /*
-   * Tree view gets instantiated only when this dialog is requested to be shown. Therefore, in case
-   * the activity is non-visual, the exception resulted from the check failure below will be thrown
-   * at that time.
-   */
-  override val hostTreeView by lazy {
-    checkNotNull(activity.window?.decorView) {
-      "The host tree view of an owned dialog is the activity's window's decor view; but, because " +
-        "$activity is not visual, it is windowless — and the host view displayed by the delegate " +
-        "dialog is required to have its tree owned."
-    }
-  }
-
-  init {
-    doOnDidDismiss {
-      hostTreeView.setViewTreeLifecycleOwner(previousTreeViewTreeLifecycleOwner)
-      hostTreeView.setViewTreeViewModelStoreOwner(previousTreeViewTreeViewModelStoreOwner)
-      hostTreeView.setViewTreeSavedStateRegistryOwner(previousTreeViewTreeSavedRegistryOwner)
-    }
-  }
+  override val hostViewTreeOwner = ViewTreeOwner.from(activity)
 
   override fun onWillShow() {
-    previousTreeViewTreeLifecycleOwner = hostTreeView.findViewTreeLifecycleOwner()
-    previousTreeViewTreeViewModelStoreOwner = hostTreeView.findViewTreeViewModelStoreOwner()
-    previousTreeViewTreeSavedRegistryOwner = hostTreeView.findViewTreeSavedStateRegistryOwner()
     activity.initializeViewTreeOwners()
     delegate.setOwnerActivity(activity)
   }
@@ -354,14 +293,18 @@ internal class OwnedResultSearchTextFieldDialog(private val activity: ComponentA
  * on top of preexisting content. In order for it to actually be displayed, its content should be
  * invoked.
  *
+ * @throws IllegalStateException If the tree of the local [View] is not owned.
  * @see ResultSearchTextFieldDialog.Content
+ * @see LocalView
  */
 @Composable
 internal fun rememberResultSearchTextFieldDialog(): ResultSearchTextFieldDialog {
   val context = LocalContext.current
-  val lifecycleOwner = LocalLifecycleOwner.current
-  val view = LocalView.current
-  return remember(context, lifecycleOwner, view) {
-    DefaultResultSearchTextFieldDialog(context, lifecycleOwner, view)
+  val viewTreeOwner = rememberViewTreeOwner()
+  return remember(context, viewTreeOwner) {
+    DefaultResultSearchTextFieldDialog(
+      context,
+      hostViewTreeOwner = checkNotNull(viewTreeOwner) { "Local view tree is unowned." }
+    )
   }
 }

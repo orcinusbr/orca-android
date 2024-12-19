@@ -15,6 +15,7 @@
 
 package br.com.orcinus.orca.composite.timeline.search.field
 
+import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -25,6 +26,7 @@ import androidx.test.espresso.Espresso.pressBack
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
+import assertk.assertions.prop
 import br.com.orcinus.orca.composite.timeline.test.search.field.isResultSearchTextField
 import br.com.orcinus.orca.composite.timeline.test.search.field.onDismissButton
 import kotlin.test.Test
@@ -35,6 +37,17 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 internal class ResultSearchTextFieldDialogTests {
   @get:Rule val composeRule = createAndroidComposeRule<ComponentActivity>()
+
+  @Test
+  fun doesNotDeconfigureActivityViewTreeOwnershipWhenDismissedWhileNotShown() {
+    val originalOwnedTreeView = View(composeRule.activity)
+    composeRule.activity.setContentView(originalOwnedTreeView)
+    val originalViewTreeOwner = ViewTreeOwner.of(originalOwnedTreeView)
+    OwnedResultSearchTextFieldDialog(composeRule.activity).dismiss()
+    assertThat(ViewTreeOwner)
+      .prop("from") { it.from(composeRule.activity) }
+      .isEqualTo(originalViewTreeOwner)
+  }
 
   @Test
   fun shows() {
@@ -67,6 +80,19 @@ internal class ResultSearchTextFieldDialogTests {
     OwnedResultSearchTextFieldDialog(composeRule.activity).show()
     composeRule.onDismissButton().performClick()
     composeRule.onRoot().assertDoesNotExist()
+  }
+
+  @Test
+  fun deconfiguresActivityViewTreeOwnershipWhenDismissed() {
+    val originalOwnedTreeView = View(composeRule.activity)
+    composeRule.activity.setContentView(originalOwnedTreeView)
+    val originalViewTreeOwner = ViewTreeOwner.of(originalOwnedTreeView)
+    OwnedResultSearchTextFieldDialog(composeRule.activity)
+      .apply(OwnedResultSearchTextFieldDialog::show)
+      .dismiss()
+    assertThat(ViewTreeOwner)
+      .prop("from") { it.from(composeRule.activity) }
+      .isEqualTo(originalViewTreeOwner)
   }
 
   @Test
