@@ -19,8 +19,10 @@ import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.view.Gravity
 import android.view.View
 import android.view.Window
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Box
@@ -90,7 +92,15 @@ internal sealed class ResultSearchTextFieldDialog {
             Modifier.padding(
               start = SearchTextFieldDefaults.spacing,
               top = SearchTextFieldDefaults.spacing,
-              end = SearchTextFieldDefaults.spacing
+              end = SearchTextFieldDefaults.spacing,
+
+              /*
+               * Dimensions of the shadow cast by the text field are disregarded by the view when it
+               * is measured; without the padding below, it gets clipped. Calling
+               * setClipChildren(false) is futile in this case, given that the text field itself is
+               * a composable rather than a child view.
+               */
+              bottom = SearchTextFieldDefaults.Elevation
             )
           ) {
             ResultSearchTextField(
@@ -139,6 +149,17 @@ internal sealed class ResultSearchTextFieldDialog {
   /** [Dialog] by which a [ResultSearchTextField] is displayed. */
   protected val delegate by lazy {
     Dialog(context, R.style.Theme_Autos).apply {
+      /*
+       * setCanceledOnTouchOutside(true) requires its window to wrap its content, since it initially
+       * matches its parent's — decor view's — size by default and, thus, no interactions are
+       * considered external to it by default.
+       */
+      window?.setLayout(
+        /* width = */ WindowManager.LayoutParams.MATCH_PARENT,
+        /* height = */ WindowManager.LayoutParams.WRAP_CONTENT
+      )
+
+      window?.attributes?.gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
       window?.setBackgroundDrawable(transparentDrawable)
       setCanceledOnTouchOutside(true)
       setOnDismissListener { onDidDismissListener?.invoke() }
