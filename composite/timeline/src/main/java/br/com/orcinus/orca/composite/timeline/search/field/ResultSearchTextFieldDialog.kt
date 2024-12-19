@@ -232,7 +232,7 @@ internal sealed class ResultSearchTextFieldDialog {
    * @param listener Listener to be notified of dismissals.
    * @see Dialog.dismiss
    */
-  fun doOnDidDismiss(listener: () -> Unit) {
+  inline fun doOnDidDismiss(crossinline listener: () -> Unit) {
     val previousListener = onDidDismissListener
     onDidDismissListener = {
       previousListener?.invoke()
