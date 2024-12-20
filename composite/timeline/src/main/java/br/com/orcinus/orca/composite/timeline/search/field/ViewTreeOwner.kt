@@ -34,7 +34,7 @@ import java.util.Objects
 
 /** Owner of the tree of a [View]. */
 internal abstract class ViewTreeOwner private constructor() :
-  LifecycleOwner, ViewModelStoreOwner, SavedStateRegistryOwner {
+  ViewModelStoreOwner, SavedStateRegistryOwner {
   override fun equals(other: Any?) =
     other is ViewTreeOwner &&
       lifecycle == other.lifecycle &&
@@ -62,13 +62,7 @@ internal abstract class ViewTreeOwner private constructor() :
      */
     fun from(activity: ComponentActivity): ViewTreeOwner =
       object :
-        ViewTreeOwner(),
-        LifecycleOwner by activity,
-        ViewModelStoreOwner by activity,
-        SavedStateRegistryOwner by activity {
-        override val lifecycle
-          get() = activity.lifecycle
-
+        ViewTreeOwner(), ViewModelStoreOwner by activity, SavedStateRegistryOwner by activity {
         override fun toString() = "ViewTreeOwner.from($activity)"
       }
 
