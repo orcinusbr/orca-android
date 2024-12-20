@@ -47,12 +47,19 @@ import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextFieldDefaults
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.focus.rememberImmediateFocusRequester
 import com.jeanbarrossilva.loadable.list.ListLoadable
+import java.lang.ref.WeakReference
 
 /** Default implementation of [ResultSearchTextFieldDialog]. */
-private class DefaultResultSearchTextFieldDialog(
-  override val context: Context,
+private class DefaultResultSearchTextFieldDialog
+private constructor(
+  override val contextRef: WeakReference<Context>,
   override val hostViewTreeOwner: ViewTreeOwner
-) : ResultSearchTextFieldDialog() {
+) : ResultSearchTextFieldDialog<Context>() {
+  constructor(
+    context: Context,
+    hostViewTreeOwner: ViewTreeOwner
+  ) : this(WeakReference(context), hostViewTreeOwner)
+
   override fun onWillShow() = Unit
 }
 
@@ -67,38 +74,41 @@ private class DefaultResultSearchTextFieldDialog(
  *
  * For displaying the dialog, invoke the [Content] composable.
  */
-internal sealed class ResultSearchTextFieldDialog {
+internal sealed class ResultSearchTextFieldDialog<C : Context> {
   /**
    * [ComposeView] by which a [ResultSearchTextField] is hosted, whose tree ownership is configured
    * upon a request to show the dialog and deconfigured whenever it is dismissed — both respectively
-   * triggered by calls to [show] and [dismiss].
+   * triggered by calls to [show] and [dismiss]. Is `null` in case it gets instantiated when the
+   * [context] has been garbage-collected.
    */
   private val hostView by lazy {
-    ComposeView(context).apply {
-      setContent {
-        AutosTheme {
-          Box(
-            Modifier.padding(
-              start = SearchTextFieldDefaults.spacing,
-              top = SearchTextFieldDefaults.spacing,
-              end = SearchTextFieldDefaults.spacing,
+    context?.let {
+      ComposeView(it).apply {
+        setContent {
+          AutosTheme {
+            Box(
+              Modifier.padding(
+                start = SearchTextFieldDefaults.spacing,
+                top = SearchTextFieldDefaults.spacing,
+                end = SearchTextFieldDefaults.spacing,
 
-              /*
-               * Dimensions of the shadow cast by the text field are disregarded by the view when it
-               * is measured; without the padding below, it gets clipped. Calling
-               * setClipChildren(false) is futile in this case, given that the text field itself is
-               * a composable rather than a child view.
-               */
-              bottom = SearchTextFieldDefaults.Elevation
-            )
-          ) {
-            ResultSearchTextField(
-              query,
-              onQueryChange,
-              onDismissal = ::dismiss,
-              resultsLoadable,
-              modifier.focusRequester(rememberImmediateFocusRequester()).fillMaxWidth()
-            )
+                /*
+                 * Dimensions of the shadow cast by the text field are disregarded by the view when
+                 * it is measured; without the padding below, it gets clipped. Calling
+                 * setClipChildren(false) is futile in this case, given that the text field itself
+                 * is a composable rather than a child view.
+                 */
+                bottom = SearchTextFieldDefaults.Elevation
+              )
+            ) {
+              ResultSearchTextField(
+                query,
+                onQueryChange,
+                onDismissal = ::dismiss,
+                resultsLoadable,
+                modifier.focusRequester(rememberImmediateFocusRequester()).fillMaxWidth()
+              )
+            }
           }
         }
       }
@@ -126,31 +136,40 @@ internal sealed class ResultSearchTextFieldDialog {
    */
   private var onDidDismissListener: (() -> Unit)? = null
 
-  /** [Context] in which the [delegate] is to be displayed. */
-  protected abstract val context: Context
+  /** [WeakReference] to the [Context] in which the [delegate] is to be displayed. */
+  protected abstract val contextRef: WeakReference<C>
 
   /** Owner by which the tree of the [hostView] is owned. */
-  protected abstract val hostViewTreeOwner: ViewTreeOwner
+  protected abstract val hostViewTreeOwner: ViewTreeOwner?
 
-  /** [Dialog] by which a [ResultSearchTextField] is displayed. */
+  /**
+   * [Dialog] by which a [ResultSearchTextField] is displayed; `null` if the [context] has been
+   * garbage-collected by the time it is instantiated.
+   */
   protected val delegate by lazy {
-    Dialog(context, R.style.Theme_Autos).apply {
-      /*
-       * setCanceledOnTouchOutside(true) requires its window to wrap its content, since it initially
-       * matches its parent's — decor view's — size by default and, thus, no interactions are
-       * considered external to it by default.
-       */
-      window?.setLayout(
-        /* width = */ WindowManager.LayoutParams.MATCH_PARENT,
-        /* height = */ WindowManager.LayoutParams.WRAP_CONTENT
-      )
+    context?.let {
+      Dialog(it, R.style.Theme_Autos).apply {
+        /*
+         * setCanceledOnTouchOutside(true) requires its window to wrap its content, since it
+         * initially matches its parent's — decor view's — size by default and, thus, no
+         * interactions are considered external to it by default.
+         */
+        window?.setLayout(
+          /* width = */ WindowManager.LayoutParams.MATCH_PARENT,
+          /* height = */ WindowManager.LayoutParams.WRAP_CONTENT
+        )
 
-      window?.attributes?.gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
-      window?.setBackgroundDrawable(transparentDrawable)
-      setCanceledOnTouchOutside(true)
-      setOnDismissListener { onDidDismissListener?.invoke() }
+        window?.attributes?.gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
+        window?.setBackgroundDrawable(transparentDrawable)
+        setCanceledOnTouchOutside(true)
+        setOnDismissListener { onDidDismissListener?.invoke() }
+      }
     }
   }
+
+  /** [Context] referenced by the [contextRef]. */
+  protected inline val context
+    get() = contextRef.get()
 
   /**
    * Shows this dialog when it enters composition and dismisses it when it is decomposed.
@@ -229,14 +248,22 @@ internal sealed class ResultSearchTextFieldDialog {
   /** Shows this dialog, by which the [ResultSearchTextField] is displayed. */
   @VisibleForTesting
   fun show() {
-    onWillShow()
-    hostViewTreeOwner.own(hostView)
-    delegate.setContentView(hostView)
-    delegate.show()
+    val delegate = delegate
+    val hostView = hostView
+    val hostViewTreeOwner = hostViewTreeOwner
+    if (delegate != null && hostView != null && hostViewTreeOwner != null) {
+      onWillShow()
+      hostViewTreeOwner.own(hostView)
+      delegate.setContentView(hostView)
+      delegate.show()
+    }
   }
 
   /** Dismisses this dialog, by which the [ResultSearchTextField] is displayed. */
-  @VisibleForTesting fun dismiss() = delegate.dismiss()
+  @VisibleForTesting
+  fun dismiss() {
+    delegate?.dismiss()
+  }
 
   /**
    * Callback called whenever this dialog is requested to be shown, before it is displayed.
@@ -270,21 +297,28 @@ internal sealed class ResultSearchTextFieldDialog {
 }
 
 /**
- * [ResultSearchTextFieldDialog] owned by the [activity].
+ * [ResultSearchTextFieldDialog] owned by a [ComponentActivity] which serves as the [Context] and
+ * the owner of both the [hostView] and the underlying [delegate]; whose [View] tree ownership is
+ * configured before this dialog is shown.
  *
- * @property activity [ComponentActivity] that serves as the [Context] and the owner of both the
- *   lifecycle and the underlying [Dialog]. Its [View] tree ownership is configured before the
- *   dialog is shown, and reset whenever dismissed.
+ * @see show
+ * @see dismiss
  */
 @VisibleForTesting
-internal class OwnedResultSearchTextFieldDialog(private val activity: ComponentActivity) :
-  ResultSearchTextFieldDialog() {
-  override val context = activity
-  override val hostViewTreeOwner = ViewTreeOwner.from(activity)
+internal class OwnedResultSearchTextFieldDialog
+private constructor(override val contextRef: WeakReference<ComponentActivity>) :
+  ResultSearchTextFieldDialog<ComponentActivity>() {
+  override val hostViewTreeOwner by lazy { context?.let(ViewTreeOwner::from) }
+
+  constructor(context: ComponentActivity) : this(WeakReference(context))
 
   override fun onWillShow() {
-    activity.initializeViewTreeOwners()
-    delegate.setOwnerActivity(activity)
+    val activity = context
+    val delegate = delegate
+    if (activity != null && delegate != null) {
+      activity.initializeViewTreeOwners()
+      delegate.setOwnerActivity(activity)
+    }
   }
 }
 
@@ -299,7 +333,7 @@ internal class OwnedResultSearchTextFieldDialog(private val activity: ComponentA
  */
 @Composable
 @Throws(IllegalStateException::class)
-internal fun rememberResultSearchTextFieldDialog(): ResultSearchTextFieldDialog {
+internal fun rememberResultSearchTextFieldDialog(): ResultSearchTextFieldDialog<Context> {
   val context = LocalContext.current
   val viewTreeOwner = rememberViewTreeOwner()
   return remember(context, viewTreeOwner) {
