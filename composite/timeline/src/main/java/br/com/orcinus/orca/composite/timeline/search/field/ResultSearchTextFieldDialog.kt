@@ -53,11 +53,11 @@ import java.lang.ref.WeakReference
 private class DefaultResultSearchTextFieldDialog
 private constructor(
   override val contextRef: WeakReference<Context>,
-  override val hostViewTreeOwner: ViewTreeOwner
+  override val hostViewTreeOwner: ViewTreeOwner?
 ) : ResultSearchTextFieldDialog<Context>() {
   constructor(
     context: Context,
-    hostViewTreeOwner: ViewTreeOwner
+    hostViewTreeOwner: ViewTreeOwner?
   ) : this(WeakReference(context), hostViewTreeOwner)
 
   override fun onWillShow() = Unit
@@ -75,46 +75,6 @@ private constructor(
  * For displaying the dialog, invoke the [Content] composable.
  */
 internal sealed class ResultSearchTextFieldDialog<C : Context> {
-  /**
-   * [ComposeView] by which a [ResultSearchTextField] is hosted, whose tree ownership is configured
-   * upon a request to show the dialog and deconfigured whenever it is dismissed — both respectively
-   * triggered by calls to [show] and [dismiss]. Is `null` in case it gets instantiated when the
-   * [context] has been garbage-collected.
-   */
-  private val hostView by lazy {
-    context?.let {
-      ComposeView(it).apply {
-        setContent {
-          AutosTheme {
-            Box(
-              Modifier.padding(
-                start = SearchTextFieldDefaults.spacing,
-                top = SearchTextFieldDefaults.spacing,
-                end = SearchTextFieldDefaults.spacing,
-
-                /*
-                 * Dimensions of the shadow cast by the text field are disregarded by the view when
-                 * it is measured; without the padding below, it gets clipped. Calling
-                 * setClipChildren(false) is futile in this case, given that the text field itself
-                 * is a composable rather than a child view.
-                 */
-                bottom = SearchTextFieldDefaults.Elevation
-              )
-            ) {
-              ResultSearchTextField(
-                query,
-                onQueryChange,
-                onDismissal = ::dismiss,
-                resultsLoadable,
-                modifier.focusRequester(rememberImmediateFocusRequester()).fillMaxWidth()
-              )
-            }
-          }
-        }
-      }
-    }
-  }
-
   /** [Modifier] applied to the [ResultSearchTextField]. */
   private var modifier by mutableStateOf<Modifier>(Modifier)
 
@@ -139,7 +99,11 @@ internal sealed class ResultSearchTextFieldDialog<C : Context> {
   /** [WeakReference] to the [Context] in which the [delegate] is to be displayed. */
   protected abstract val contextRef: WeakReference<C>
 
-  /** Owner by which the tree of the [hostView] is owned. */
+  /**
+   * Owner by which the tree of the host [View] is owned.
+   *
+   * @see createHostView
+   */
   protected abstract val hostViewTreeOwner: ViewTreeOwner?
 
   /**
@@ -249,7 +213,7 @@ internal sealed class ResultSearchTextFieldDialog<C : Context> {
   @VisibleForTesting
   fun show() {
     val delegate = delegate
-    val hostView = hostView
+    val hostView = createHostView()
     val hostViewTreeOwner = hostViewTreeOwner
     if (delegate != null && hostView != null && hostViewTreeOwner != null) {
       onWillShow()
@@ -271,6 +235,47 @@ internal sealed class ResultSearchTextFieldDialog<C : Context> {
    * @see show
    */
   protected abstract fun onWillShow()
+
+  /**
+   * Creates a [ComposeView] by which a [ResultSearchTextField] is hosted, whose tree ownership is
+   * configured upon a request to show this dialog and deconfigured whenever it is dismissed — both
+   * respectively triggered by calls to [show] and [dismiss].
+   *
+   * @return The host [View], or `null` in case this method gets called after the [context] has been
+   *   garbage-collected.
+   */
+  private fun createHostView() =
+    context?.let {
+      ComposeView(it).apply {
+        setContent {
+          AutosTheme {
+            Box(
+              Modifier.padding(
+                start = SearchTextFieldDefaults.spacing,
+                top = SearchTextFieldDefaults.spacing,
+                end = SearchTextFieldDefaults.spacing,
+
+                /*
+                 * Dimensions of the shadow cast by the text field are disregarded by the view when
+                 * it is measured; without the padding below, it gets clipped. Calling
+                 * setClipChildren(false) is futile in this case, given that the text field itself
+                 * is a composable rather than a child view.
+                 */
+                bottom = SearchTextFieldDefaults.Elevation
+              )
+            ) {
+              ResultSearchTextField(
+                query,
+                onQueryChange,
+                onDismissal = ::dismiss,
+                resultsLoadable,
+                modifier.focusRequester(rememberImmediateFocusRequester()).fillMaxWidth()
+              )
+            }
+          }
+        }
+      }
+    }
 
   private companion object {
     /**
@@ -298,11 +303,11 @@ internal sealed class ResultSearchTextFieldDialog<C : Context> {
 
 /**
  * [ResultSearchTextFieldDialog] owned by a [ComponentActivity] which serves as the [Context] and
- * the owner of both the [hostView] and the underlying [delegate]; whose [View] tree ownership is
+ * the owner of both the host [View] and the underlying [delegate]; whose [View] tree ownership is
  * configured before this dialog is shown.
  *
+ * @see createHostView
  * @see show
- * @see dismiss
  */
 @VisibleForTesting
 internal class OwnedResultSearchTextFieldDialog
@@ -327,19 +332,14 @@ private constructor(override val contextRef: WeakReference<ComponentActivity>) :
  * on top of preexisting content. In order for it to actually be displayed, its content should be
  * invoked.
  *
- * @throws IllegalStateException If the tree of the local [View] is not owned.
  * @see ResultSearchTextFieldDialog.Content
  * @see LocalView
  */
 @Composable
-@Throws(IllegalStateException::class)
 internal fun rememberResultSearchTextFieldDialog(): ResultSearchTextFieldDialog<Context> {
   val context = LocalContext.current
   val viewTreeOwner = rememberViewTreeOwner()
   return remember(context, viewTreeOwner) {
-    DefaultResultSearchTextFieldDialog(
-      context,
-      hostViewTreeOwner = checkNotNull(viewTreeOwner) { "Local view tree is unowned." }
-    )
+    DefaultResultSearchTextFieldDialog(context, hostViewTreeOwner = viewTreeOwner)
   }
 }
