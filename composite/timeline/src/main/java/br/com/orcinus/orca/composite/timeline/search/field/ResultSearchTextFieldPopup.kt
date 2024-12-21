@@ -51,6 +51,21 @@ import br.com.orcinus.orca.platform.focus.rememberImmediateFocusRequester
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import java.lang.ref.WeakReference
 
+/**
+ * Default lambda which is a no-op for when the query changes.
+ *
+ * @see ResultSearchTextFieldPopup.onQueryChange
+ */
+private val noOpOnQueryChange = { _: String -> }
+
+/**
+ * Default [ListLoadable] of query results; an empty one.
+ *
+ * @see ResultSearchTextFieldPopup.resultsLoadable
+ * @see ListLoadable.Empty
+ */
+private val emptyResultsLoadable: ListLoadable<ProfileSearchResult> = ListLoadable.Empty()
+
 /** Default implementation of [ResultSearchTextFieldPopup]. */
 private class DefaultResultSearchTextFieldPopup
 private constructor(
@@ -72,10 +87,11 @@ private constructor(
  * such as inability to have both focusability and dismissibility via an outside click, and negative
  * cursor- and select-handles-Y-offsetting.
  *
- * In order to produce an instance of this class, call [rememberResultSearchTextFieldPopup].
+ * In order to produce an instance of this class, call [rememberDefaultResultSearchTextFieldPopup].
  *
  * For displaying the dialog, invoke the [Content] composable.
  */
+@VisibleForTesting
 internal sealed class ResultSearchTextFieldPopup<C : Context> {
   /** [Modifier] applied to the [ResultSearchTextField]. */
   private var modifier by mutableStateOf<Modifier>(Modifier)
@@ -94,7 +110,7 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
    *
    * @see Dialog.dismiss
    * @see dismiss
-   * @see doOnDidDismiss
+   * @see setOnDidDismissListener
    */
   private var onDidDismissListener: (() -> Unit)? = null
 
@@ -140,7 +156,7 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
   /**
    * Shows this dialog when it enters composition and dismisses it when it is decomposed.
    *
-   * This overload is stateless by default and is for testing purposes only.
+   * This overload is stateless by default and for testing purposes only.
    *
    * @param query Content to be looked up.
    * @param onQueryChange Lambda invoked whenever the [query] changes.
@@ -188,20 +204,6 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
     AppearanceEffect()
   }
 
-  /**
-   * Schedules the execution of an action for after the dialog has been dismissed.
-   *
-   * @param listener Listener to be notified of dismissals.
-   * @see Dialog.dismiss
-   */
-  inline fun doOnDidDismiss(crossinline listener: () -> Unit) {
-    val previousListener = onDidDismissListener
-    onDidDismissListener = {
-      previousListener?.invoke()
-      listener()
-    }
-  }
-
   /** Shows this dialog, by which the [ResultSearchTextField] is displayed. */
   @VisibleForTesting
   fun show() {
@@ -214,6 +216,19 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
       delegate.setContentView(hostView)
       delegate.show()
     }
+  }
+
+  /**
+   * Schedules the execution of an action for after the dialog has been dismissed. Ultimately,
+   * allows the standalone composable to replace the current listener by another one upon a
+   * recomposition due to the previously set `onDismissal` lambda having changed, and remove it when
+   * it leaves composition.
+   *
+   * @param onDidDismissListener Listener to be notified of dismissals, or `null` for removing the
+   *   previously defined one.
+   */
+  fun setOnDidDismissListener(onDidDismissListener: (() -> Unit)?) {
+    delegate?.setOnDismissListener(onDidDismissListener?.let { { it() } })
   }
 
   /** Dismisses this dialog, by which the [ResultSearchTextField] is displayed. */
@@ -355,22 +370,6 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
      * [ColorDrawable] defined as the [delegate]'s [Window] background for making it transparent.
      */
     @JvmStatic private val transparentDrawable = ColorDrawable(Color.TRANSPARENT)
-
-    /**
-     * Default lambda which is a no-op for when the query changes.
-     *
-     * @see onQueryChange
-     */
-    @JvmStatic private val noOpOnQueryChange = { _: String -> }
-
-    /**
-     * Default [ListLoadable] of query results; an empty one.
-     *
-     * @see resultsLoadable
-     * @see ListLoadable.Empty
-     */
-    @JvmStatic
-    private val emptyResultsLoadable: ListLoadable<ProfileSearchResult> = ListLoadable.Empty()
   }
 }
 
@@ -401,15 +400,65 @@ private constructor(override val contextRef: WeakReference<ComponentActivity>) :
 }
 
 /**
- * Produces a remembered [ResultSearchTextFieldPopup] by which the results of a query can be shown
- * on top of preexisting content. In order for it to actually be displayed, its content should be
- * invoked.
+ * Popup by which a [ResultSearchTextField] is displayed.
  *
- * @see ResultSearchTextFieldPopup.Content
+ * This overload is stateless by default and for testing purposes only.
+ *
+ * @param modifier [Modifier] to be applied to the [ResultSearchTextField].
+ * @param query Content to be looked up.
+ * @param onQueryChange Lambda invoked whenever the [query] changes.
+ * @param resultsLoadable [Profile] results found by the [query].
+ * @param onDismissal Operation performed whenever this popup is dismissed.
+ */
+@Composable
+@NonRestartableComposable
+@VisibleForTesting
+fun ResultSearchTextFieldPopup(
+  modifier: Modifier = Modifier,
+  query: String = "",
+  onQueryChange: (query: String) -> Unit = noOpOnQueryChange,
+  resultsLoadable: ListLoadable<ProfileSearchResult> = emptyResultsLoadable,
+  onDismissal: () -> Unit
+) = ResultSearchTextFieldPopup(query, onQueryChange, resultsLoadable, onDismissal, modifier)
+
+/**
+ * Popup by which a [ResultSearchTextField] is displayed.
+ *
+ * @param query Content to be looked up.
+ * @param onQueryChange Lambda invoked whenever the [query] changes.
+ * @param resultsLoadable [Profile] results found by the [query].
+ * @param onDismissal Operation performed whenever this popup is dismissed.
+ * @param modifier [Modifier] to be applied to the [ResultSearchTextField].
+ */
+@Composable
+@NonRestartableComposable
+internal fun ResultSearchTextFieldPopup(
+  query: String,
+  onQueryChange: (query: String) -> Unit,
+  resultsLoadable: ListLoadable<ProfileSearchResult>,
+  onDismissal: () -> Unit,
+  modifier: Modifier = Modifier
+) {
+  val popup = rememberDefaultResultSearchTextFieldPopup()
+
+  DisposableEffect(onDismissal) {
+    popup.setOnDidDismissListener(onDismissal)
+    onDispose { popup.setOnDidDismissListener(null) }
+  }
+
+  popup.Content(query, onQueryChange, resultsLoadable, modifier)
+}
+
+/**
+ * Produces a remembered [DefaultResultSearchTextFieldPopup] by which the results of a query can be
+ * shown on top of preexisting content. In order for it to actually be displayed, its content should
+ * be invoked.
+ *
+ * @see DefaultResultSearchTextFieldPopup.Content
  * @see LocalView
  */
 @Composable
-internal fun rememberResultSearchTextFieldPopup(): ResultSearchTextFieldPopup<Context> {
+private fun rememberDefaultResultSearchTextFieldPopup(): DefaultResultSearchTextFieldPopup {
   val context = LocalContext.current
   val viewTreeOwner = rememberViewTreeOwner()
   return remember(context, viewTreeOwner) {

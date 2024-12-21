@@ -25,6 +25,7 @@ import androidx.test.espresso.Espresso.pressBack
 import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isTrue
 import assertk.assertions.prop
@@ -40,7 +41,7 @@ internal class ResultSearchTextFieldPopupTests {
   @get:Rule val composeRule = createAndroidComposeRule<ComponentActivity>()
 
   @Test
-  fun doesNotDeconfigureActivityViewTreeOwnershipWhenDismissedWhileNotShown() {
+  fun doesNotDeconfigureViewTreeOwnershipWhenDismissedWhileNotShown() {
     val originalOwnedTreeView = View(composeRule.activity)
     composeRule.activity.setContentView(originalOwnedTreeView)
     val originalViewTreeOwner = ViewTreeOwner.of(originalOwnedTreeView)
@@ -91,7 +92,7 @@ internal class ResultSearchTextFieldPopupTests {
   }
 
   @Test
-  fun deconfiguresActivityViewTreeOwnershipWhenDismissed() {
+  fun deconfiguresViewTreeOwnershipWhenDismissed() {
     val originalOwnedTreeView = View(composeRule.activity)
     composeRule.activity.setContentView(originalOwnedTreeView)
     val originalViewTreeOwner = ViewTreeOwner.of(originalOwnedTreeView)
@@ -104,28 +105,29 @@ internal class ResultSearchTextFieldPopupTests {
   }
 
   @Test
-  fun listensToDismissalOnce() {
+  fun setsOnDidDismissListener() {
     var hasNotified = false
     OwnedResultSearchTextFieldPopup(composeRule.activity)
       .apply {
         show()
-        doOnDidDismiss { hasNotified = true }
+        setOnDidDismissListener { hasNotified = true }
       }
       .dismiss()
     composeRule.waitForIdle()
-    assertThat(hasNotified).isTrue()
+    assertThat(hasNotified, "hasNotified").isTrue()
   }
 
   @Test
-  fun listensToDismissalMultipleTimes() {
-    var notificationCount = 0
+  fun removesOnDidDismissListener() {
+    var hasNotified = false
     OwnedResultSearchTextFieldPopup(composeRule.activity)
       .apply {
         show()
-        repeat(64) { doOnDidDismiss { notificationCount++ } }
+        setOnDidDismissListener { hasNotified = true }
+        setOnDidDismissListener(null)
       }
       .dismiss()
     composeRule.waitForIdle()
-    assertThat(notificationCount).isEqualTo(64)
+    assertThat(hasNotified, "hasNotified").isFalse()
   }
 }

@@ -55,7 +55,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
-import br.com.orcinus.orca.composite.timeline.search.field.rememberResultSearchTextFieldPopup
+import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextFieldPopup
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextField
@@ -145,23 +145,18 @@ internal constructor(
     content: @Composable () -> Unit
   ) {
     val coroutineScope = rememberCoroutineScope()
-    val resultSearchTextFieldDialog = rememberResultSearchTextFieldPopup()
 
     ReplaceableCompositionReporterEffect()
     SearchResultsEffect(resultsLoadable)
 
-    DisposableEffect(resultSearchTextFieldDialog) {
-      resultSearchTextFieldDialog.doOnDidDismiss(::dismiss)
-      onDispose {}
-    }
-
     Filler {
       Accordion { willSearch ->
         if (willSearch) {
-          resultSearchTextFieldDialog.Content(
+          ResultSearchTextFieldPopup(
             query,
             onQueryChange,
             resultsLoadable,
+            onDismissal = ::dismiss,
             modifier.resultSearchTextFieldHeightReporter(
               LocalDensity.current,
               coroutineScope,
