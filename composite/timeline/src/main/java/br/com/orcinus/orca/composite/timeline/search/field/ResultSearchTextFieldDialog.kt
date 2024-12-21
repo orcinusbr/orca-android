@@ -161,14 +161,28 @@ internal sealed class ResultSearchTextFieldDialog<C : Context> {
    * @param onQueryChange Lambda invoked whenever the [query] changes.
    * @param resultsLoadable [Profile] results found by the [query].
    * @param modifier [Modifier] to be applied to the [ResultSearchTextField].
+   * @throws IllegalStateException If it is already composed. Simultaneous compositions cannot occur
+   *   because the given parameters are observed, and changes to them trigger an update to their
+   *   single, equivalent internal values. Parallel [Content]s could introduce inconsistent
+   *   renderings and callback calls on both composables, given that their state would be shared.
    */
   @Composable
+  @Throws(IllegalStateException::class)
   fun Content(
     query: String,
     onQueryChange: (query: String) -> Unit,
     resultsLoadable: ListLoadable<ProfileSearchResult>,
     modifier: Modifier = Modifier
   ) {
+    DisposableEffect(this) {
+      delegate?.let {
+        check(!it.isShowing) {
+          "Cannot perform simultaneous compositions of a result search text field dialog!"
+        }
+      }
+      onDispose {}
+    }
+
     DisposableEffect(this, modifier) {
       this@ResultSearchTextFieldDialog.modifier = modifier
       onDispose { this@ResultSearchTextFieldDialog.modifier = Modifier }

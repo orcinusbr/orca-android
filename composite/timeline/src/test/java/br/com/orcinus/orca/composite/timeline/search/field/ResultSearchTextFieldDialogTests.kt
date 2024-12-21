@@ -22,8 +22,10 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso.pressBack
+import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isInstanceOf
 import assertk.assertions.isTrue
 import assertk.assertions.prop
 import br.com.orcinus.orca.composite.timeline.test.search.field.onDismissButton
@@ -54,6 +56,14 @@ internal class ResultSearchTextFieldDialogTests {
       .apply(OwnedResultSearchTextFieldDialog::show)
       .also { composeRule.onSearchTextField().assertIsDisplayed() }
       .dismiss()
+
+  @Test
+  fun throwsOnSimultaneousContents() {
+    val dialog = OwnedResultSearchTextFieldDialog(composeRule.activity)
+    assertFailure { composeRule.setContent { repeat(2) { dialog.Content() } } }
+      .isInstanceOf<IllegalStateException>()
+    dialog.dismiss()
+  }
 
   @Test
   fun dismisses() {
