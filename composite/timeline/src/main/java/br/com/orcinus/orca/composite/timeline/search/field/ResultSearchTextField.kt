@@ -92,9 +92,6 @@ private const val ResultAppearanceAnimationDurationInMilliseconds = 56
 private const val BottomRadiusAnimationDuration =
   ResultAppearanceAnimationDurationInMilliseconds / 2
 
-/** Tag that identifies a [ResultSearchTextField] for testing purposes. */
-@InternalTimelineApi const val ResultSearchTextFieldTag = "result-search-text-field"
-
 /** Tag that identifies a [ResultSearchTextField]'s [ResultCard] for testing purposes. */
 @InternalTimelineApi const val ResultCardTag = "result-search-text-field-result-card"
 
@@ -152,9 +149,9 @@ internal fun ResultSearchTextField(
     remember(containsResults) { derivedStateOf { if (containsResults) defaultElevation else 0.dp } }
 
   ConstraintLayout(
-    Modifier.shadow(layoutElevation, SearchTextFieldDefaults.shape)
-      .`if`(containsResults) { clip(SearchTextFieldDefaults.shape) }
-      .testTag(ResultSearchTextFieldTag)
+    Modifier.shadow(layoutElevation, SearchTextFieldDefaults.shape).`if`(containsResults) {
+      clip(SearchTextFieldDefaults.shape)
+    }
   ) {
     val density = LocalDensity.current
     val (searchTextFieldRef, resultsRef) = createRefs()

@@ -17,9 +17,8 @@ package br.com.orcinus.orca.composite.timeline.search.field
 
 import android.view.View
 import androidx.activity.ComponentActivity
-import androidx.compose.ui.test.assert
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onChild
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso.pressBack
@@ -27,8 +26,8 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
 import assertk.assertions.prop
-import br.com.orcinus.orca.composite.timeline.test.search.field.isResultSearchTextField
 import br.com.orcinus.orca.composite.timeline.test.search.field.onDismissButton
+import br.com.orcinus.orca.platform.autos.test.kit.input.text.onSearchTextField
 import kotlin.test.Test
 import org.junit.Rule
 import org.junit.runner.RunWith
@@ -50,12 +49,11 @@ internal class ResultSearchTextFieldDialogTests {
   }
 
   @Test
-  fun shows() {
+  fun shows() =
     OwnedResultSearchTextFieldDialog(composeRule.activity)
       .apply(OwnedResultSearchTextFieldDialog::show)
-      .also { composeRule.onRoot().onChild().assert(isResultSearchTextField()) }
+      .also { composeRule.onSearchTextField().assertIsDisplayed() }
       .dismiss()
-  }
 
   @Test
   fun dismisses() {

@@ -15,7 +15,6 @@
 
 package br.com.orcinus.orca.composite.timeline.test.search.field
 
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
@@ -40,21 +39,6 @@ internal class SemanticsMatcherExtensionsTests {
     composeRule
       .apply { setContent { AutosTheme { ResultSearchTextField() } } }
       .onNode(isDismissButton())
-      .assertIsDisplayed()
-  }
-
-  @Test
-  fun doesNotMatchNonResultSearchTextField() =
-    composeRule
-      .apply { setContent { CircularProgressIndicator() } }
-      .onNode(isResultSearchTextField())
-      .assertDoesNotExist()
-
-  @Test
-  fun matchesResultSearchTextField() {
-    composeRule
-      .apply { setContent { AutosTheme { ResultSearchTextField() } } }
-      .onNode(isResultSearchTextField())
       .assertIsDisplayed()
   }
 
