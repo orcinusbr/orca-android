@@ -170,7 +170,6 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
   @Composable
   @NonRestartableComposable
   @Throws(IllegalStateException::class)
-  @VisibleForTesting
   fun Content(
     modifier: Modifier = Modifier,
     query: String = "",
@@ -205,7 +204,6 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
   }
 
   /** Shows this dialog, by which the [ResultSearchTextField] is displayed. */
-  @VisibleForTesting
   fun show() {
     val delegate = delegate
     val hostView = createHostView()
@@ -232,7 +230,6 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
   }
 
   /** Dismisses this dialog, by which the [ResultSearchTextField] is displayed. */
-  @VisibleForTesting
   fun dismiss() {
     delegate?.dismiss()
   }
