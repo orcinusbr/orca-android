@@ -132,9 +132,9 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
     context?.let {
       Dialog(it, R.style.Theme_Autos).apply {
         /*
-         * setCanceledOnTouchOutside(true) requires its window to wrap its content, since it
-         * initially matches its parent's — decor view's — size by default and, thus, no
-         * interactions are considered external to it by default.
+         * setCanceledOnTouchOutside(true) requires this delegate's window to wrap its content,
+         * since it initially matches its parent's — decor view's — size by default and, thus, no
+         * interactions are considered external to it.
          */
         window?.setLayout(
           /* width = */ WindowManager.LayoutParams.MATCH_PARENT,
