@@ -87,7 +87,7 @@ private constructor(
  * such as inability to have both focusability and dismissibility via an outside click, and negative
  * cursor- and select-handles-Y-offsetting.
  *
- * In order to produce an instance of this class, call [rememberDefaultResultSearchTextFieldPopup].
+ * In order to produce an instance of this class, call [rememberResultSearchTextFieldPopup].
  *
  * For displaying the dialog, invoke the [Content] composable.
  */
@@ -436,7 +436,7 @@ internal fun ResultSearchTextFieldPopup(
   onDismissal: () -> Unit,
   modifier: Modifier = Modifier
 ) {
-  val popup = rememberDefaultResultSearchTextFieldPopup()
+  val popup = rememberResultSearchTextFieldPopup()
 
   DisposableEffect(onDismissal) {
     popup.setOnDidDismissListener(onDismissal)
@@ -447,15 +447,15 @@ internal fun ResultSearchTextFieldPopup(
 }
 
 /**
- * Produces a remembered [DefaultResultSearchTextFieldPopup] by which the results of a query can be
- * shown on top of preexisting content. In order for it to actually be displayed, its content should
- * be invoked.
+ * Produces a remembered [ResultSearchTextFieldPopup] by which the results of a query can be shown
+ * on top of preexisting content. In order for it to actually be displayed, its content should be
+ * invoked.
  *
- * @see DefaultResultSearchTextFieldPopup.Content
+ * @see ResultSearchTextFieldPopup.Content
  * @see LocalView
  */
 @Composable
-private fun rememberDefaultResultSearchTextFieldPopup(): DefaultResultSearchTextFieldPopup {
+private fun rememberResultSearchTextFieldPopup(): ResultSearchTextFieldPopup<Context> {
   val context = LocalContext.current
   val viewTreeOwner = rememberViewTreeOwner()
   return remember(context, viewTreeOwner) {
