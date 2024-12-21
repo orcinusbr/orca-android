@@ -23,14 +23,22 @@ import br.com.orcinus.orca.composite.timeline.search.field.DismissButtonTag
 import br.com.orcinus.orca.composite.timeline.search.field.ResultCardTag
 import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
 
-/** [SemanticsMatcher] that matches a [ResultSearchTextField]'s result [Card]. */
+/**
+ * [SemanticsMatcher] that matches a [ResultSearchTextField]'s result [Card].
+ *
+ * @see isResultSearchTextField
+ */
 fun isResultCard(): SemanticsMatcher {
   return SemanticsMatcher("is result card") {
     it.config.getOrNull(SemanticsProperties.TestTag) == ResultCardTag
   }
 }
 
-/** [SemanticsMatcher] that matches a [ResultSearchTextField]'s "dismiss" button. */
+/**
+ * [SemanticsMatcher] that matches a [ResultSearchTextField]'s "dismiss" button.
+ *
+ * @see isResultSearchTextField
+ */
 internal fun isDismissButton(): SemanticsMatcher {
   return SemanticsMatcher("is dismiss button") {
     it.config.getOrNull(SemanticsProperties.TestTag) == DismissButtonTag

@@ -27,18 +27,6 @@ android {
 }
 
 dependencies {
-  testImplementation(project(":composite:timeline-test"))
-  testImplementation(project(":core:sample-test"))
-  testImplementation(project(":platform:autos-test"))
-  testImplementation(project(":platform:testing"))
-  testImplementation(libs.android.compose.ui.test.manifest)
-  testImplementation(libs.android.test.core)
-  testImplementation(libs.assertk)
-  testImplementation(libs.kotlin.coroutines.test)
-  testImplementation(libs.mockk)
-  testImplementation(libs.robolectric)
-  testImplementation(libs.turbine)
-
   api(project(":platform:autos"))
   api(project(":platform:core"))
   api(libs.loadable.list)
@@ -53,11 +41,19 @@ dependencies {
   implementation(libs.loadable.placeholder.test)
   implementation(libs.time4j)
 
+  testImplementation(project(":core:sample-test"))
   testImplementation(project(":ext:uri"))
+  testImplementation(project(":platform:autos-test"))
+  testImplementation(project(":composite:timeline-test"))
+  testImplementation(project(":platform:testing"))
   testImplementation(project(":std:visibility"))
+  testImplementation(libs.android.activity.compose)
+  testImplementation(libs.android.compose.ui.test.manifest)
   testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.coroutines.test)
   testImplementation(libs.kotlin.test)
   testImplementation(libs.loadable.placeholder.test)
+  testImplementation(libs.mockk)
+  testImplementation(libs.robolectric)
+  testImplementation(libs.turbine)
 }
-
-kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
