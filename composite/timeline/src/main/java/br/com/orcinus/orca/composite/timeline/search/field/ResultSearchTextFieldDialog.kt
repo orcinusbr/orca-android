@@ -30,6 +30,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.NonRestartableComposable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -150,8 +152,9 @@ internal sealed class ResultSearchTextFieldDialog<C : Context> {
    *   renderings and callback calls on both composables, given that their state would be shared.
    */
   @Composable
-  @VisibleForTesting
+  @NonRestartableComposable
   @Throws(IllegalStateException::class)
+  @VisibleForTesting
   fun Content(
     modifier: Modifier = Modifier,
     query: String = "",
@@ -172,6 +175,7 @@ internal sealed class ResultSearchTextFieldDialog<C : Context> {
    *   renderings and callback calls on both composables, given that their state would be shared.
    */
   @Composable
+  @NonRestartableComposable
   @Throws(IllegalStateException::class)
   fun Content(
     query: String,
@@ -179,39 +183,9 @@ internal sealed class ResultSearchTextFieldDialog<C : Context> {
     resultsLoadable: ListLoadable<ProfileSearchResult>,
     modifier: Modifier = Modifier
   ) {
-    DisposableEffect(this) {
-      delegate?.let {
-        check(!it.isShowing) {
-          "Cannot perform simultaneous compositions of a result search text field dialog!"
-        }
-      }
-      onDispose {}
-    }
-
-    DisposableEffect(this, modifier) {
-      this@ResultSearchTextFieldDialog.modifier = modifier
-      onDispose { this@ResultSearchTextFieldDialog.modifier = Modifier }
-    }
-
-    DisposableEffect(this, query) {
-      this@ResultSearchTextFieldDialog.query = query
-      onDispose { this@ResultSearchTextFieldDialog.query = "" }
-    }
-
-    DisposableEffect(this, onQueryChange) {
-      this@ResultSearchTextFieldDialog.onQueryChange = onQueryChange
-      onDispose { this@ResultSearchTextFieldDialog.onQueryChange = noOpOnQueryChange }
-    }
-
-    DisposableEffect(this, resultsLoadable) {
-      this@ResultSearchTextFieldDialog.resultsLoadable = resultsLoadable
-      onDispose { this@ResultSearchTextFieldDialog.resultsLoadable = emptyResultsLoadable }
-    }
-
-    DisposableEffect(this) {
-      show()
-      onDispose(::dismiss)
-    }
+    SimultaneousCompositionProhibitionEffect()
+    HostViewRecompositionEffect(modifier, query, onQueryChange, resultsLoadable)
+    AppearanceEffect()
   }
 
   /**
@@ -294,6 +268,86 @@ internal sealed class ResultSearchTextFieldDialog<C : Context> {
           }
         }
       }
+    }
+
+  /**
+   * Effect that runs once upon a composition and ensures that this dialog is not already displayed;
+   * it being so implies there being parallel renderings of it, which outreaches its intended
+   * capacity of one appearance at a time (in order to prevent investing unnecessary effort into
+   * both managing various [delegate]s and developing multiple versions of each of the changing
+   * parameters and associating them to their respective [Dialog]).
+   *
+   * @throws IllegalStateException If this dialog is already composed.
+   */
+  @Composable
+  @NonRestartableComposable
+  @Throws(IllegalStateException::class)
+  private fun SimultaneousCompositionProhibitionEffect() =
+    DisposableEffect(Unit) {
+      delegate?.let {
+        check(!it.isShowing) {
+          "Cannot perform simultaneous compositions of a result search text field dialog!"
+        }
+      }
+      onDispose {}
+    }
+
+  /**
+   * Effect that triggers recompositions on a host [View] by assigning the given parameters to this
+   * dialog's [State]-based properties. Each of them is then reset upon a decomposition, with a
+   * default, empty value.
+   *
+   * @param modifier [Modifier] to be applied to the [ResultSearchTextField].
+   * @param query Content to be looked up.
+   * @param onQueryChange Lambda invoked whenever the [query] changes.
+   * @param resultsLoadable [Profile] results found by the [query].
+   * @see createHostView
+   * @see ResultSearchTextFieldDialog.modifier
+   * @see ResultSearchTextFieldDialog.query
+   * @see ResultSearchTextFieldDialog.onQueryChange
+   * @see ResultSearchTextFieldDialog.resultsLoadable
+   */
+  @Composable
+  @NonRestartableComposable
+  private fun HostViewRecompositionEffect(
+    modifier: Modifier,
+    query: String,
+    onQueryChange: (query: String) -> Unit,
+    resultsLoadable: ListLoadable<ProfileSearchResult>
+  ) {
+    DisposableEffect(modifier) {
+      this@ResultSearchTextFieldDialog.modifier = modifier
+      onDispose { this@ResultSearchTextFieldDialog.modifier = Modifier }
+    }
+
+    DisposableEffect(query) {
+      this@ResultSearchTextFieldDialog.query = query
+      onDispose { this@ResultSearchTextFieldDialog.query = "" }
+    }
+
+    DisposableEffect(onQueryChange) {
+      this@ResultSearchTextFieldDialog.onQueryChange = onQueryChange
+      onDispose { this@ResultSearchTextFieldDialog.onQueryChange = noOpOnQueryChange }
+    }
+
+    DisposableEffect(resultsLoadable) {
+      this@ResultSearchTextFieldDialog.resultsLoadable = resultsLoadable
+      onDispose { this@ResultSearchTextFieldDialog.resultsLoadable = emptyResultsLoadable }
+    }
+  }
+
+  /**
+   * Effect that shows and dismisses this dialog.
+   *
+   * @see show
+   * @see dismiss
+   */
+  @Composable
+  @NonRestartableComposable
+  private fun AppearanceEffect() =
+    DisposableEffect(Unit) {
+      show()
+      onDispose(::dismiss)
     }
 
   private companion object {
