@@ -55,7 +55,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
-import br.com.orcinus.orca.composite.timeline.search.field.rememberResultSearchTextFieldDialog
+import br.com.orcinus.orca.composite.timeline.search.field.rememberResultSearchTextFieldPopup
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextField
@@ -145,7 +145,7 @@ internal constructor(
     content: @Composable () -> Unit
   ) {
     val coroutineScope = rememberCoroutineScope()
-    val resultSearchTextFieldDialog = rememberResultSearchTextFieldDialog()
+    val resultSearchTextFieldDialog = rememberResultSearchTextFieldPopup()
 
     ReplaceableCompositionReporterEffect()
     SearchResultsEffect(resultsLoadable)

@@ -51,12 +51,12 @@ import br.com.orcinus.orca.platform.focus.rememberImmediateFocusRequester
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import java.lang.ref.WeakReference
 
-/** Default implementation of [ResultSearchTextFieldDialog]. */
-private class DefaultResultSearchTextFieldDialog
+/** Default implementation of [ResultSearchTextFieldPopup]. */
+private class DefaultResultSearchTextFieldPopup
 private constructor(
   override val contextRef: WeakReference<Context>,
   override val hostViewTreeOwner: ViewTreeOwner?
-) : ResultSearchTextFieldDialog<Context>() {
+) : ResultSearchTextFieldPopup<Context>() {
   constructor(
     context: Context,
     hostViewTreeOwner: ViewTreeOwner?
@@ -72,11 +72,11 @@ private constructor(
  * such as inability to have both focusability and dismissibility via an outside click, and negative
  * cursor- and select-handles-Y-offsetting.
  *
- * In order to produce an instance of this class, call [rememberResultSearchTextFieldDialog].
+ * In order to produce an instance of this class, call [rememberResultSearchTextFieldPopup].
  *
  * For displaying the dialog, invoke the [Content] composable.
  */
-internal sealed class ResultSearchTextFieldDialog<C : Context> {
+internal sealed class ResultSearchTextFieldPopup<C : Context> {
   /** [Modifier] applied to the [ResultSearchTextField]. */
   private var modifier by mutableStateOf<Modifier>(Modifier)
 
@@ -302,10 +302,10 @@ internal sealed class ResultSearchTextFieldDialog<C : Context> {
    * @param onQueryChange Lambda invoked whenever the [query] changes.
    * @param resultsLoadable [Profile] results found by the [query].
    * @see createHostView
-   * @see ResultSearchTextFieldDialog.modifier
-   * @see ResultSearchTextFieldDialog.query
-   * @see ResultSearchTextFieldDialog.onQueryChange
-   * @see ResultSearchTextFieldDialog.resultsLoadable
+   * @see ResultSearchTextFieldPopup.modifier
+   * @see ResultSearchTextFieldPopup.query
+   * @see ResultSearchTextFieldPopup.onQueryChange
+   * @see ResultSearchTextFieldPopup.resultsLoadable
    */
   @Composable
   @NonRestartableComposable
@@ -316,23 +316,23 @@ internal sealed class ResultSearchTextFieldDialog<C : Context> {
     resultsLoadable: ListLoadable<ProfileSearchResult>
   ) {
     DisposableEffect(modifier) {
-      this@ResultSearchTextFieldDialog.modifier = modifier
-      onDispose { this@ResultSearchTextFieldDialog.modifier = Modifier }
+      this@ResultSearchTextFieldPopup.modifier = modifier
+      onDispose { this@ResultSearchTextFieldPopup.modifier = Modifier }
     }
 
     DisposableEffect(query) {
-      this@ResultSearchTextFieldDialog.query = query
-      onDispose { this@ResultSearchTextFieldDialog.query = "" }
+      this@ResultSearchTextFieldPopup.query = query
+      onDispose { this@ResultSearchTextFieldPopup.query = "" }
     }
 
     DisposableEffect(onQueryChange) {
-      this@ResultSearchTextFieldDialog.onQueryChange = onQueryChange
-      onDispose { this@ResultSearchTextFieldDialog.onQueryChange = noOpOnQueryChange }
+      this@ResultSearchTextFieldPopup.onQueryChange = onQueryChange
+      onDispose { this@ResultSearchTextFieldPopup.onQueryChange = noOpOnQueryChange }
     }
 
     DisposableEffect(resultsLoadable) {
-      this@ResultSearchTextFieldDialog.resultsLoadable = resultsLoadable
-      onDispose { this@ResultSearchTextFieldDialog.resultsLoadable = emptyResultsLoadable }
+      this@ResultSearchTextFieldPopup.resultsLoadable = resultsLoadable
+      onDispose { this@ResultSearchTextFieldPopup.resultsLoadable = emptyResultsLoadable }
     }
   }
 
@@ -375,17 +375,17 @@ internal sealed class ResultSearchTextFieldDialog<C : Context> {
 }
 
 /**
- * [ResultSearchTextFieldDialog] owned by a [ComponentActivity] which serves as the [Context] and
- * the owner of both the host [View] and the underlying [delegate]; whose [View] tree ownership is
+ * [ResultSearchTextFieldPopup] owned by a [ComponentActivity] which serves as the [Context] and the
+ * owner of both the host [View] and the underlying [delegate]; whose [View] tree ownership is
  * configured before this dialog is shown.
  *
  * @see createHostView
  * @see show
  */
 @VisibleForTesting
-internal class OwnedResultSearchTextFieldDialog
+internal class OwnedResultSearchTextFieldPopup
 private constructor(override val contextRef: WeakReference<ComponentActivity>) :
-  ResultSearchTextFieldDialog<ComponentActivity>() {
+  ResultSearchTextFieldPopup<ComponentActivity>() {
   override val hostViewTreeOwner by lazy { context?.let(ViewTreeOwner::from) }
 
   constructor(context: ComponentActivity) : this(WeakReference(context))
@@ -401,18 +401,18 @@ private constructor(override val contextRef: WeakReference<ComponentActivity>) :
 }
 
 /**
- * Produces a remembered [ResultSearchTextFieldDialog] by which the results of a query can be shown
+ * Produces a remembered [ResultSearchTextFieldPopup] by which the results of a query can be shown
  * on top of preexisting content. In order for it to actually be displayed, its content should be
  * invoked.
  *
- * @see ResultSearchTextFieldDialog.Content
+ * @see ResultSearchTextFieldPopup.Content
  * @see LocalView
  */
 @Composable
-internal fun rememberResultSearchTextFieldDialog(): ResultSearchTextFieldDialog<Context> {
+internal fun rememberResultSearchTextFieldPopup(): ResultSearchTextFieldPopup<Context> {
   val context = LocalContext.current
   val viewTreeOwner = rememberViewTreeOwner()
   return remember(context, viewTreeOwner) {
-    DefaultResultSearchTextFieldDialog(context, hostViewTreeOwner = viewTreeOwner)
+    DefaultResultSearchTextFieldPopup(context, hostViewTreeOwner = viewTreeOwner)
   }
 }

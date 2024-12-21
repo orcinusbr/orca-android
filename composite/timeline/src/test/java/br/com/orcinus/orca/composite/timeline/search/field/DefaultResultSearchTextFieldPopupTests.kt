@@ -29,14 +29,14 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class DefaultResultSearchTextFieldDialogTests {
+internal class DefaultResultSearchTextFieldPopupTests {
   @get:Rule val composeRule = createComposeRule()
 
   @Test
   fun recomposesWhenQueryChanges() {
     composeRule.setContent {
       var query by remember { mutableStateOf("") }
-      rememberResultSearchTextFieldDialog().Content(query = query, onQueryChange = { query = it })
+      rememberResultSearchTextFieldPopup().Content(query = query, onQueryChange = { query = it })
     }
     composeRule.onSearchTextField().apply { performTextInput("❤️‍🩹") }.assertTextEquals("❤️‍🩹")
   }

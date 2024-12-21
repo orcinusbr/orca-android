@@ -27,7 +27,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class OwnedResultSearchTextFieldDialogTests {
+internal class OwnedResultSearchTextFieldPopupTests {
   private inline val activity
     get() = composeRule.activity
 
@@ -35,7 +35,7 @@ internal class OwnedResultSearchTextFieldDialogTests {
 
   @Test
   fun initializesActivityViewTreeOwnersOnlyOnceWhenShown() {
-    OwnedResultSearchTextFieldDialog(activity).apply(OwnedResultSearchTextFieldDialog::show)
+    OwnedResultSearchTextFieldPopup(activity).apply(OwnedResultSearchTextFieldPopup::show)
     assertThat(ViewTreeOwner)
       .transform("of") { activity.window?.decorView?.let(it::of) }
       .isNotNull()
@@ -44,8 +44,8 @@ internal class OwnedResultSearchTextFieldDialogTests {
 
   @Test
   fun configuresActivityViewTreeOwnershipWhenShown() {
-    val dialog = OwnedResultSearchTextFieldDialog(activity)
-    activity.setContent { dialog.Content() }
+    val popup = OwnedResultSearchTextFieldPopup(activity)
+    activity.setContent { popup.Content() }
     assertThat(ViewTreeOwner)
       .transform("of") { activity.window?.decorView?.let(it::of) }
       .isNotNull()

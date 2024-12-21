@@ -36,7 +36,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class ResultSearchTextFieldDialogTests {
+internal class ResultSearchTextFieldPopupTests {
   @get:Rule val composeRule = createAndroidComposeRule<ComponentActivity>()
 
   @Test
@@ -44,7 +44,7 @@ internal class ResultSearchTextFieldDialogTests {
     val originalOwnedTreeView = View(composeRule.activity)
     composeRule.activity.setContentView(originalOwnedTreeView)
     val originalViewTreeOwner = ViewTreeOwner.of(originalOwnedTreeView)
-    OwnedResultSearchTextFieldDialog(composeRule.activity).dismiss()
+    OwnedResultSearchTextFieldPopup(composeRule.activity).dismiss()
     assertThat(ViewTreeOwner)
       .prop("from") { it.from(composeRule.activity) }
       .isEqualTo(originalViewTreeOwner)
@@ -52,40 +52,40 @@ internal class ResultSearchTextFieldDialogTests {
 
   @Test
   fun shows() =
-    OwnedResultSearchTextFieldDialog(composeRule.activity)
-      .apply(OwnedResultSearchTextFieldDialog::show)
+    OwnedResultSearchTextFieldPopup(composeRule.activity)
+      .apply(OwnedResultSearchTextFieldPopup::show)
       .also { composeRule.onSearchTextField().assertIsDisplayed() }
       .dismiss()
 
   @Test
   fun throwsOnSimultaneousContents() {
-    val dialog = OwnedResultSearchTextFieldDialog(composeRule.activity)
-    assertFailure { composeRule.setContent { repeat(2) { dialog.Content() } } }
+    val popup = OwnedResultSearchTextFieldPopup(composeRule.activity)
+    assertFailure { composeRule.setContent { repeat(2) { popup.Content() } } }
       .isInstanceOf<IllegalStateException>()
-    dialog.dismiss()
+    popup.dismiss()
   }
 
   @Test
   fun dismisses() {
-    OwnedResultSearchTextFieldDialog(composeRule.activity)
-      .apply(OwnedResultSearchTextFieldDialog::show)
+    OwnedResultSearchTextFieldPopup(composeRule.activity)
+      .apply(OwnedResultSearchTextFieldPopup::show)
       .dismiss()
     composeRule.onRoot().assertDoesNotExist()
   }
 
   @Test
   fun dismissesWhenBackPressing() {
-    val dialog =
-      OwnedResultSearchTextFieldDialog(composeRule.activity)
-        .apply(OwnedResultSearchTextFieldDialog::show)
+    val popup =
+      OwnedResultSearchTextFieldPopup(composeRule.activity)
+        .apply(OwnedResultSearchTextFieldPopup::show)
     pressBack()
     composeRule.onRoot().assertDoesNotExist()
-    dialog.dismiss()
+    popup.dismiss()
   }
 
   @Test
   fun dismissesWhenClickingDismissalButton() {
-    OwnedResultSearchTextFieldDialog(composeRule.activity).show()
+    OwnedResultSearchTextFieldPopup(composeRule.activity).show()
     composeRule.onDismissButton().performClick()
     composeRule.onRoot().assertDoesNotExist()
   }
@@ -95,8 +95,8 @@ internal class ResultSearchTextFieldDialogTests {
     val originalOwnedTreeView = View(composeRule.activity)
     composeRule.activity.setContentView(originalOwnedTreeView)
     val originalViewTreeOwner = ViewTreeOwner.of(originalOwnedTreeView)
-    OwnedResultSearchTextFieldDialog(composeRule.activity)
-      .apply(OwnedResultSearchTextFieldDialog::show)
+    OwnedResultSearchTextFieldPopup(composeRule.activity)
+      .apply(OwnedResultSearchTextFieldPopup::show)
       .dismiss()
     assertThat(ViewTreeOwner)
       .prop("from") { it.from(composeRule.activity) }
@@ -106,7 +106,7 @@ internal class ResultSearchTextFieldDialogTests {
   @Test
   fun listensToDismissalOnce() {
     var hasNotified = false
-    OwnedResultSearchTextFieldDialog(composeRule.activity)
+    OwnedResultSearchTextFieldPopup(composeRule.activity)
       .apply {
         show()
         doOnDidDismiss { hasNotified = true }
@@ -119,7 +119,7 @@ internal class ResultSearchTextFieldDialogTests {
   @Test
   fun listensToDismissalMultipleTimes() {
     var notificationCount = 0
-    OwnedResultSearchTextFieldDialog(composeRule.activity)
+    OwnedResultSearchTextFieldPopup(composeRule.activity)
       .apply {
         show()
         repeat(64) { doOnDidDismiss { notificationCount++ } }
