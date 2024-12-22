@@ -36,7 +36,7 @@ internal class DefaultResultSearchTextFieldPopupTests {
   fun recomposesWhenQueryChanges() {
     composeRule.setContent {
       var query by remember { mutableStateOf("") }
-      ResultSearchTextFieldPopup(query = query, onQueryChange = { query = it }, onDismissal = {})
+      ResultSearchTextFieldPopup(query = query, onQueryChange = { query = it })
     }
     composeRule.onSearchTextField().apply { performTextInput("❤️‍🩹") }.assertTextEquals("❤️‍🩹")
   }

@@ -423,7 +423,7 @@ fun ResultSearchTextFieldPopup(
   query: String = "",
   onQueryChange: (query: String) -> Unit = noOpOnQueryChange,
   resultsLoadable: ListLoadable<ProfileSearchResult> = emptyResultsLoadable,
-  onDismissal: () -> Unit
+  onDismissal: () -> Unit = {}
 ) = ResultSearchTextFieldPopup(query, onQueryChange, resultsLoadable, onDismissal, modifier)
 
 /**
