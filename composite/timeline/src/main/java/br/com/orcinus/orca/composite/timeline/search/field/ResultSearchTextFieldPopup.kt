@@ -81,15 +81,23 @@ private constructor(
 }
 
 /**
- * Manages instantiation, configuration, display, deconfiguration and dismissal of a [Dialog] in
- * which a [ResultSearchTextField] is shown. Acts an alternative to showing a [Popup], since it was
- * the solution that was previously adopted by Orca in `androidx.compose.ui:ui` 1.6.8 and had issues
- * such as inability to have both focusability and dismissibility via an outside click, and negative
- * cursor- and select-handles-Y-offsetting.
+ * Overlay of a [ResultSearchTextField] which can be shown and dismissed. Acts an alternative to a
+ * [Popup], since it was the solution that had been previously adopted by Orca (prior to 0.3.2) and
+ * had issues such as inability to have both focusability and dismissibility via an outside click,
+ * and negative text-editing-decorators-Y-offsetting (see
+ * [#378](https://github.com/orcinusbr/orca-android/pull/378)).
  *
- * In order to produce an instance of this class, call [rememberResultSearchTextFieldPopup].
+ * This class **should not** be referenced by external APIs, given that its machinery is a mere
+ * implementation detail; it shall only be so by tests. To compose a popup, call the composable
+ * function whose name is the same as this class'.
  *
- * For displaying the dialog, invoke the [Content] composable.
+ * In order to produce an instance, construct the test-focused owned popup or invoke
+ * [rememberResultSearchTextFieldPopup] for a Compose-based one created from the [Context] and the
+ * [View] local to the calling composable.
+ *
+ * @see show
+ * @see dismiss
+ * @see OwnedResultSearchTextFieldPopup
  */
 @VisibleForTesting
 internal sealed class ResultSearchTextFieldPopup<C : Context> {
@@ -154,7 +162,7 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
     get() = contextRef.get()
 
   /**
-   * Shows this dialog when it enters composition and dismisses it when it is decomposed.
+   * Shows this popup when it enters composition and dismisses it when it is decomposed.
    *
    * This overload is stateless by default and for testing purposes only.
    *
@@ -178,7 +186,7 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
   ) = Content(query, onQueryChange, resultsLoadable, modifier)
 
   /**
-   * Shows this dialog when it enters composition and dismisses it when it is decomposed.
+   * Shows this popup when it enters composition and dismisses it when it is decomposed.
    *
    * @param query Content to be looked up.
    * @param onQueryChange Lambda invoked whenever the [query] changes.
@@ -203,7 +211,7 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
     AppearanceEffect()
   }
 
-  /** Shows this dialog, by which the [ResultSearchTextField] is displayed. */
+  /** Shows this popup, by which the [ResultSearchTextField] is displayed. */
   fun show() {
     val delegate = delegate
     val hostView = createHostView()
@@ -217,10 +225,10 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
   }
 
   /**
-   * Schedules the execution of an action for after the dialog has been dismissed. Ultimately,
-   * allows the standalone composable to replace the current listener by another one upon a
-   * recomposition due to the previously set `onDismissal` lambda having changed, and remove it when
-   * it leaves composition.
+   * Schedules the execution of an action for after the popup has been dismissed. Ultimately, allows
+   * the standalone composable to replace the current listener by another one upon a recomposition
+   * due to the previously set `onDismissal` lambda having changed, and remove it when it leaves
+   * composition.
    *
    * @param onDidDismissListener Listener to be notified of dismissals, or `null` for removing the
    *   previously defined one.
@@ -229,13 +237,13 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
     delegate?.setOnDismissListener(onDidDismissListener?.let { { it() } })
   }
 
-  /** Dismisses this dialog, by which the [ResultSearchTextField] is displayed. */
+  /** Dismisses this popup, by which the [ResultSearchTextField] is displayed. */
   fun dismiss() {
     delegate?.dismiss()
   }
 
   /**
-   * Callback called whenever this dialog is requested to be shown, before it is displayed.
+   * Callback called whenever this popup is requested to be shown, before it is displayed.
    *
    * @see show
    */
@@ -243,11 +251,12 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
 
   /**
    * Creates a [ComposeView] by which a [ResultSearchTextField] is hosted, whose tree ownership is
-   * configured upon a request to show this dialog and deconfigured whenever it is dismissed — both
+   * configured upon a request to show this popup and deconfigured whenever it is dismissed — both
    * respectively triggered by calls to [show] and [dismiss].
    *
    * @return The host [View], or `null` in case this method gets called after the [context] has been
    *   garbage-collected.
+   * @see hostViewTreeOwner
    */
   private fun createHostView() =
     context?.let {
@@ -283,13 +292,12 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
     }
 
   /**
-   * Effect that runs once upon a composition and ensures that this dialog is not already displayed;
-   * it being so implies there being parallel renderings of it, which outreaches its intended
-   * capacity of one appearance at a time (in order to prevent investing unnecessary effort into
-   * both managing various [delegate]s and developing multiple versions of each of the changing
-   * parameters and associating them to their respective [Dialog]).
+   * Effect that runs once upon a composition and ensures that this popup is not already displayed;
+   * it being so implies a request for a parallel rendering of it, which outreaches its intended
+   * capacity of one appearance at a time (given that it is represented by a single [Dialog]).
    *
-   * @throws IllegalStateException If this dialog is already composed.
+   * @throws IllegalStateException If this popup is already composed.
+   * @see delegate
    */
   @Composable
   @NonRestartableComposable
@@ -298,7 +306,7 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
     DisposableEffect(Unit) {
       delegate?.let {
         check(!it.isShowing) {
-          "Cannot perform simultaneous compositions of a result search text field dialog!"
+          "Cannot perform simultaneous compositions of a result search text field popup!"
         }
       }
       onDispose {}
@@ -306,7 +314,7 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
 
   /**
    * Effect that triggers recompositions on a host [View] by assigning the given parameters to this
-   * dialog's [State]-based properties. Each of them is then reset upon a decomposition, with a
+   * popup's [State]-based properties. Each of them is then reset upon a decomposition, with a
    * default, empty value.
    *
    * @param modifier [Modifier] to be applied to the [ResultSearchTextField].
@@ -349,7 +357,7 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
   }
 
   /**
-   * Effect that shows and dismisses this dialog.
+   * Effect that shows and dismisses this popup.
    *
    * @see show
    * @see dismiss
@@ -372,8 +380,8 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
 
 /**
  * [ResultSearchTextFieldPopup] owned by a [ComponentActivity] which serves as the [Context] and the
- * owner of both the host [View] and the underlying [delegate]; whose [View] tree ownership is
- * configured before this dialog is shown.
+ * owner of both the host [View] tree and the underlying [delegate]; whose [View] tree ownership is
+ * configured before this popup is shown.
  *
  * @see createHostView
  * @see show
