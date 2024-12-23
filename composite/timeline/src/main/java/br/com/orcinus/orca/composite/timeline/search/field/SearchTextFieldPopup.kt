@@ -407,9 +407,9 @@ fun SearchTextFieldPopup(
  *
  * @param query Content to be looked up.
  * @param onQueryChange Lambda invoked whenever the [query] changes.
- * @param resultsLoadable [Profile] results found for [query].
+ * @param resultsLoadable [Profile] results found for the [query].
  * @param onDismissal Operation performed whenever this popup is dismissed.
- * @param modifier [Modifier] to be applied to the [ResultSearchTextField].
+ * @param modifier [Modifier] to be applied to the [SearchTextField].
  */
 @Composable
 @NonRestartableComposable
