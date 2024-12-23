@@ -17,7 +17,7 @@ package br.com.orcinus.orca.composite.timeline.test.search.field
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import br.com.orcinus.orca.composite.timeline.search.field.SearchTextFieldPopup
+import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
 import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.core.sample.feed.profile.account.sample
@@ -37,7 +37,7 @@ internal class SemanticsMatcherExtensionsTests {
   @Test
   fun matchesDismissButton() {
     composeRule
-      .apply { setContent { AutosTheme { SearchTextFieldPopup() } } }
+      .apply { setContent { AutosTheme { ResultSearchTextField() } } }
       .onNode(isDismissButton())
       .assertIsDisplayed()
   }
@@ -48,7 +48,7 @@ internal class SemanticsMatcherExtensionsTests {
       .apply {
         setContent {
           AutosTheme {
-            SearchTextFieldPopup(
+            ResultSearchTextField(
               query = "${Account.sample}",
               resultsLoadable =
                 ListLoadable.Populated(serializableListOf(ProfileSearchResult.sample))

@@ -306,7 +306,7 @@ private class SearchTextFieldPopup(
     }
 
   /**
-   * Dark overlay for contrasting the [SearchTextField] with the content that is laid out behind it.
+   * Dark overlay for contrasting the [ResultSearchTextField] with the content laid out behind it.
    *
    * @param modifier [Modifier] to be applied to the underlying [Canvas].
    */
@@ -437,6 +437,29 @@ private class SearchTextFieldPopup(
 }
 
 /**
+ * Rather than a text field (as the name suggests), this function is an alias for the
+ * [SearchTextFieldPopup] composable which merely exists to signalize the deprecation of the public
+ * [SearchTextField] with results — such composable is to be composed only by that popup and is not
+ * available for external referencing.
+ */
+@Composable
+@Deprecated(
+  "ResultSearchTextField is a part of the internals of a SearchTextFieldPopup as of Orca 0.3.2. " +
+    "External consumers do not have access to it; thus, calling this composable displays such a " +
+    "popup instead of a SearchTextField containing results for a given query.",
+  ReplaceWith("SearchTextFieldPopup(query, onQueryChange, resultsLoadable, onDismissal, modifier)")
+)
+@InternalTimelineApi
+@VisibleForTesting
+fun ResultSearchTextField(
+  modifier: Modifier = Modifier,
+  query: String = "",
+  onQueryChange: (query: String) -> Unit = NoOpOnQueryChange,
+  resultsLoadable: ListLoadable<ProfileSearchResult> = EmptyResultsLoadable,
+  onDismissal: () -> Unit = NoOpOnDismissal
+) = SearchTextFieldPopup(modifier, query, onQueryChange, resultsLoadable, onDismissal)
+
+/**
  * Popup by which a [SearchTextField] that presents results for the [query] is displayed.
  *
  * This overload is stateless by default and for testing purposes only.
@@ -502,8 +525,7 @@ fun SearchTextFieldPopup(
  */
 @Composable
 @InternalTimelineApi
-@VisibleForTesting
-private fun ResultSearchTextField(
+private fun StatelessResultSearchTextField(
   modifier: Modifier = Modifier,
   query: String = "",
   onQueryChange: (query: String) -> Unit = NoOpOnQueryChange,
@@ -761,14 +783,14 @@ private fun ResultCard(
 @Composable
 @MultiThemePreview
 private fun ResultSearchTextFieldLoadingResultsPreview() {
-  AutosTheme { ResultSearchTextField(resultsLoadable = ListLoadable.Loading()) }
+  AutosTheme { StatelessResultSearchTextField(resultsLoadable = ListLoadable.Loading()) }
 }
 
 /** Preview of a [ResultSearchTextField] without results. */
 @Composable
 @MultiThemePreview
 private fun ResultSearchTextFieldWithoutResultsPreview() {
-  AutosTheme { ResultSearchTextField() }
+  AutosTheme { StatelessResultSearchTextField() }
 }
 
 /** Preview of a [ResultSearchTextField] with results. */
@@ -776,7 +798,7 @@ private fun ResultSearchTextFieldWithoutResultsPreview() {
 @MultiThemePreview
 private fun ResultSearchTextFieldWithResultsPreview() {
   AutosTheme {
-    ResultSearchTextField(
+    StatelessResultSearchTextField(
       query = "${Account.sample.username}",
       resultsLoadable = ListLoadable.Populated(serializableListOf(ProfileSearchResult.sample))
     )

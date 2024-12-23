@@ -19,10 +19,10 @@ import androidx.compose.material3.Card
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionCollection
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
-import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextField
+import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
 
 /**
- * [SemanticsNodeInteraction] of a result [SearchTextField]'s "dismiss" button.
+ * [SemanticsNodeInteraction] of a [ResultSearchTextField]'s "dismiss" button.
  *
  * @see isDismissButton
  */
@@ -31,7 +31,7 @@ fun SemanticsNodeInteractionsProvider.onDismissButton(): SemanticsNodeInteractio
 }
 
 /**
- * [SemanticsNodeInteraction] of a result [SearchTextField]'s result [Card].
+ * [SemanticsNodeInteraction] of a [ResultSearchTextField]'s result [Card].
  *
  * @see onResultCards
  * @see isResultCard
@@ -41,7 +41,7 @@ fun SemanticsNodeInteractionsProvider.onResultCard(): SemanticsNodeInteraction {
 }
 
 /**
- * [SemanticsNodeInteraction] of a result [SearchTextField]'s result [Card]s.
+ * [SemanticsNodeInteraction] of a [ResultSearchTextField]'s result [Card]s.
  *
  * @see onResultCard
  * @see isResultCard
