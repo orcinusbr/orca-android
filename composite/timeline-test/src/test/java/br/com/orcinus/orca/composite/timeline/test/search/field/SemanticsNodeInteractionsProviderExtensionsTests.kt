@@ -19,7 +19,6 @@ import androidx.compose.ui.test.assertAll
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
-import br.com.orcinus.orca.composite.timeline.search.field.SearchTextFieldPopup
 import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
@@ -45,7 +44,7 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @Test
   fun findsDismissButton() {
     composeRule
-      .apply { setContent { AutosTheme { SearchTextFieldPopup() } } }
+      .apply { setContent { AutosTheme { ResultSearchTextField() } } }
       .onDismissButton()
       .assertIsDisplayed()
   }
