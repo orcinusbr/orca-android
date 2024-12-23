@@ -239,7 +239,7 @@ private class SearchTextFieldPopup(
    *   previously defined one.
    */
   fun setOnDidDismissListener(onDidDismissListener: (() -> Unit)?) {
-    delegate?.setOnDismissListener(onDidDismissListener?.let { { it() } })
+    this.onDidDismissListener = onDidDismissListener
   }
 
   /**
