@@ -34,18 +34,22 @@ import assertk.assertions.isTrue
 import assertk.assertions.prop
 import br.com.orcinus.orca.composite.timeline.test.search.field.onDismissButton
 import br.com.orcinus.orca.platform.autos.test.kit.input.text.onSearchTextField
+import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import com.jeanbarrossilva.loadable.list.ListLoadable
+import com.jeanbarrossilva.loadable.placeholder.test.assertIsLoading
+import com.jeanbarrossilva.loadable.placeholder.test.assertIsNotLoading
 import kotlin.test.Test
 import org.junit.Rule
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-internal class ResultSearchTextFieldPopupTests {
+internal class SearchTextFieldPopupTests {
   @get:Rule val composeRule = createAndroidComposeRule<ComponentActivity>()
 
   @Test
   fun shows() {
-    composeRule.activity.setContent { ResultSearchTextFieldPopup() }
+    composeRule.activity.setContent { SearchTextFieldPopup() }
     composeRule.onSearchTextField().assertIsDisplayed()
   }
 
@@ -53,28 +57,46 @@ internal class ResultSearchTextFieldPopupTests {
   fun recomposesWhenQueryChanges() {
     composeRule.setContent {
       var query by remember { mutableStateOf("") }
-      ResultSearchTextFieldPopup(query = query, onQueryChange = { query = it })
+      SearchTextFieldPopup(query = query, onQueryChange = { query = it })
     }
     composeRule.onSearchTextField().apply { performTextInput("❤️‍🩹") }.assertTextEquals("❤️‍🩹")
   }
 
   @Test
+  fun isLoadingWhenResultsAreLoading() {
+    composeRule
+      .apply {
+        setContent { AutosTheme { SearchTextFieldPopup(resultsLoadable = ListLoadable.Loading()) } }
+      }
+      .onSearchTextField()
+      .assertIsLoading()
+  }
+
+  @Test
+  fun isLoadedWhenResultsAreLoaded() {
+    composeRule
+      .apply { setContent { AutosTheme { SearchTextFieldPopup() } } }
+      .onSearchTextField()
+      .assertIsNotLoading()
+  }
+
+  @Test
   fun dismisses() {
-    composeRule.activity.setContent { ResultSearchTextFieldPopup() }
+    composeRule.setContent { SearchTextFieldPopup() }
     composeRule.activity.setContent {}
     composeRule.onSearchTextField().assertDoesNotExist()
   }
 
   @Test
   fun dismissesWhenBackPressing() {
-    composeRule.activity.setContent { ResultSearchTextFieldPopup() }
+    composeRule.setContent { SearchTextFieldPopup() }
     pressBack()
     composeRule.onSearchTextField().assertDoesNotExist()
   }
 
   @Test
   fun dismissesWhenClickingDismissalButton() {
-    composeRule.activity.setContent { ResultSearchTextFieldPopup() }
+    composeRule.setContent { SearchTextFieldPopup() }
     composeRule.onDismissButton().performClick()
     composeRule.onSearchTextField().assertDoesNotExist()
   }
@@ -84,21 +106,19 @@ internal class ResultSearchTextFieldPopupTests {
     val originalOwnedTreeView = View(composeRule.activity)
     composeRule.activity.setContentView(originalOwnedTreeView)
     val originalViewTreeOwner = ViewTreeOwner.of(originalOwnedTreeView)
-    composeRule.activity.setContent { ResultSearchTextFieldPopup() }
+    composeRule.activity.setContent { SearchTextFieldPopup() }
     composeRule.onDismissButton().performClick()
     assertThat(ViewTreeOwner)
-      .prop("from") { it.from(composeRule.activity) }
+      .prop("from") { composeRule.activity.window?.decorView?.let(it::of) }
       .isEqualTo(originalViewTreeOwner)
   }
 
   @Test
   fun listensToDismissal() {
     var didDismiss = false
-    composeRule.activity.setContent {
-      ResultSearchTextFieldPopup(onDismissal = { didDismiss = true })
-    }
+    composeRule.activity.setContent { SearchTextFieldPopup(onDismissal = { didDismiss = true }) }
     composeRule.onDismissButton().performClick()
     composeRule.waitForIdle()
-    assertThat(didDismiss, "hasNotified").isTrue()
+    assertThat(didDismiss, "didDismiss").isTrue()
   }
 }

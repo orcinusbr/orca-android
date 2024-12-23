@@ -37,17 +37,6 @@ internal class ViewTreeOwnerTests {
   @get:Rule val composeRule = createAndroidComposeRule<ComponentActivity>()
 
   @Test
-  fun instantiatesFromActivity() =
-    assertThat(ViewTreeOwner)
-      .transform("from") { it.from(composeRule.activity) }
-      .all {
-        prop(ViewTreeOwner::lifecycle).isSameInstanceAs(composeRule.activity.lifecycle)
-        prop(ViewTreeOwner::viewModelStore).isSameInstanceAs(composeRule.activity.viewModelStore)
-        prop(ViewTreeOwner::savedStateRegistry)
-          .isSameInstanceAs(composeRule.activity.savedStateRegistry)
-      }
-
-  @Test
   fun instantiatesFromView() {
     val view = View(composeRule.activity)
     composeRule.activity.setContentView(view)
@@ -66,11 +55,10 @@ internal class ViewTreeOwnerTests {
 
   @Test
   fun owns() {
+    val ownerTreeView = View(composeRule.activity)
+    composeRule.activity.setContentView(ownerTreeView)
     val ownedTreeView = View(composeRule.activity)
-    val activityViewTreeOwner =
-      ViewTreeOwner.from(composeRule.activity).apply { own(ownedTreeView) }
-    assertThat(ViewTreeOwner)
-      .transform("of") { it.of(ownedTreeView) }
-      .isEqualTo(activityViewTreeOwner)
+    val ownerTreeViewOwner = ViewTreeOwner.of(ownerTreeView)?.apply { own(ownedTreeView) }
+    assertThat(ViewTreeOwner).transform("of") { it.of(ownedTreeView) }.isEqualTo(ownerTreeViewOwner)
   }
 }

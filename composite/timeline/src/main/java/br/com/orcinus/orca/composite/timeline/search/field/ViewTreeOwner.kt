@@ -16,10 +16,6 @@
 package br.com.orcinus.orca.composite.timeline.search.field
 
 import android.view.View
-import androidx.activity.ComponentActivity
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStoreOwner
@@ -56,21 +52,11 @@ internal abstract class ViewTreeOwner private constructor() :
 
   companion object {
     /**
-     * Creates a [ViewTreeOwner] from a [ComponentActivity].
-     *
-     * @param activity [ComponentActivity] based on which the [ViewTreeOwner] will be created.
-     */
-    fun from(activity: ComponentActivity): ViewTreeOwner =
-      object :
-        ViewTreeOwner(), ViewModelStoreOwner by activity, SavedStateRegistryOwner by activity {
-        override fun toString() = "ViewTreeOwner.from($activity)"
-      }
-
-    /**
      * Creates a [ViewTreeOwner] from that of a [View].
      *
      * @param view [View] whose tree owners will be combined into a single [ViewTreeOwner].
      */
+    @JvmStatic
     fun of(view: View): ViewTreeOwner? {
       val lifecycleOwner = view.findViewTreeLifecycleOwner()
       val viewModelStoreOwner = view.findViewTreeViewModelStoreOwner()
@@ -85,23 +71,10 @@ internal abstract class ViewTreeOwner private constructor() :
           SavedStateRegistryOwner by savedStateRegistryOwner {
           override val lifecycle: Lifecycle
             get() = lifecycleOwner.lifecycle
-
-          override fun toString() = "ViewTreeOwner.of($view)"
         }
       } else {
         null
       }
     }
   }
-}
-
-/**
- * Remembers the [ViewTreeOwner] of the local [View].
- *
- * @see LocalView
- */
-@Composable
-internal fun rememberViewTreeOwner(): ViewTreeOwner? {
-  val view = LocalView.current
-  return remember(view) { ViewTreeOwner.of(view) }
 }

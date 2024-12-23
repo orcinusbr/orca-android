@@ -21,24 +21,16 @@ import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsMatcher
 import br.com.orcinus.orca.composite.timeline.search.field.DismissButtonTag
 import br.com.orcinus.orca.composite.timeline.search.field.ResultCardTag
-import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
+import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextField
 
-/**
- * [SemanticsMatcher] that matches a [ResultSearchTextField]'s result [Card].
- *
- * @see isResultSearchTextField
- */
+/** [SemanticsMatcher] that matches a result [SearchTextField]'s result [Card]. */
 fun isResultCard(): SemanticsMatcher {
   return SemanticsMatcher("is result card") {
     it.config.getOrNull(SemanticsProperties.TestTag) == ResultCardTag
   }
 }
 
-/**
- * [SemanticsMatcher] that matches a [ResultSearchTextField]'s "dismiss" button.
- *
- * @see isResultSearchTextField
- */
+/** [SemanticsMatcher] that matches a result [SearchTextField]'s "dismiss" button. */
 internal fun isDismissButton(): SemanticsMatcher {
   return SemanticsMatcher("is dismiss button") {
     it.config.getOrNull(SemanticsProperties.TestTag) == DismissButtonTag

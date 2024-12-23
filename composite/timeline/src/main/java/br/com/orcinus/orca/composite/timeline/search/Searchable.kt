@@ -35,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextField
@@ -92,8 +91,7 @@ internal fun Searchable(
 }
 
 /**
- * Dark overlay for contrasting the [ResultSearchTextField] with the content that is laid out behind
- * it.
+ * Dark overlay for contrasting the [SearchTextField] with the content that is laid out behind it.
  *
  * @param searchableScope [SearchableScope] of the [Searchable].
  * @param modifier [Modifier] to be applied to the underlying [Canvas].

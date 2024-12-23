@@ -54,8 +54,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
-import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
-import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextFieldPopup
+import br.com.orcinus.orca.composite.timeline.search.field.SearchTextFieldPopup
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextField
@@ -81,11 +80,10 @@ internal constructor(
   /** Maximum [Size] that the [Filler] has had up until now. */
   private var fillerPeakSize = Size.Unspecified
 
-  /** [Animatable] by which the height of the [ResultSearchTextField] is held and animated. */
-  private val resultSearchTextFieldHeightAnimatable =
-    Animatable(initialValue = 0.dp, Dp.VectorConverter)
+  /** [Animatable] by which the height of the [SearchTextField] is held and animated. */
+  private val searchTextFieldHeightAnimatable = Animatable(initialValue = 0.dp, Dp.VectorConverter)
 
-  /** Whether the [ResultSearchTextField] is currently being shown. */
+  /** Whether the [SearchTextField] is currently being shown. */
   var isSearching by mutableStateOf(false)
     private set
 
@@ -94,18 +92,18 @@ internal constructor(
     private set
 
   /** Height of the [SearchTextField], or zeroed in case search isn't being performed. */
-  val resultSearchTextFieldHeight by resultSearchTextFieldHeightAnimatable.asState()
+  val searchTextFieldHeight by searchTextFieldHeightAnimatable.asState()
 
-  /** Alias for [resultSearchTextFieldHeight]. */
+  /** Alias for [searchTextFieldHeight]. */
   @Deprecated(
-    "Renamed to \"resultSearchTextFieldHeight\".",
+    "Renamed to \"searchTextFieldHeight\".",
     ReplaceWith(
-      "resultSearchTextFieldHeight",
+      "searchTextFieldHeight",
       imports = ["br.com.orcinus.orca.composite.timeline.search.SearchableScope"]
     )
   )
   inline val searchTextFieldLayoutHeight
-    get() = resultSearchTextFieldHeight
+    get() = searchTextFieldHeight
 
   /**
    * [State] with the radius of the blur that should be applied to the content.
@@ -152,7 +150,7 @@ internal constructor(
     Filler {
       Accordion { willSearch ->
         if (willSearch) {
-          ResultSearchTextFieldPopup(
+          SearchTextFieldPopup(
             query,
             onQueryChange,
             resultsLoadable,
@@ -177,16 +175,16 @@ internal constructor(
   }
 
   /**
-   * Displays either the [content] or the [ResultSearchTextField] that presents results for the
-   * query when it is requested to be shown.
+   * Displays either the [content] or the [SearchTextField] that presents results for the query when
+   * it is requested to be shown.
    *
    * This overload is stateless by default and is intended for previewing and testing purposes only.
    *
-   * @param modifier [Modifier] to be applied to the [ResultSearchTextField].
+   * @param modifier [Modifier] to be applied to the [SearchTextField].
    * @param query Content to be looked up.
    * @param onQueryChange Lambda invoked whenever the [query] changes.
    * @param resultsLoadable [Profile] results found by the [query].
-   * @param content Content that can be replaced by the [ResultSearchTextField].
+   * @param content Content that can be replaced by the [SearchTextField].
    * @throws IllegalStateException If a [Replaceable] is already currently composed.
    */
   @Composable
@@ -202,7 +200,7 @@ internal constructor(
     Replaceable(query, onQueryChange, resultsLoadable, modifier, content)
   }
 
-  /** Dismisses the [ResultSearchTextField]. */
+  /** Dismisses the [SearchTextField]. */
   internal fun dismiss() {
     isSearching = false
   }
@@ -278,14 +276,14 @@ internal constructor(
   }
 
   /**
-   * Considers the [Composable] to which this [Modifier] is applied a [ResultSearchTextField] and
-   * assigns its height to [resultSearchTextFieldHeight] at each change to it so that the overlaid
-   * content can be properly padded/spaced.
+   * Considers the [Composable] to which this [Modifier] is applied a [SearchTextField] and assigns
+   * its height to [searchTextFieldHeight] at each change to it so that the overlaid content can be
+   * properly padded/spaced.
    *
    * @param density [Density] with which the height in pixels of the layout is to be converted into
    *   [Dp].
-   * @param coroutineScope [CoroutineScope] in which [Job]s that animate the
-   *   [resultSearchTextFieldHeight] are launched.
+   * @param coroutineScope [CoroutineScope] in which [Job]s that animate the [searchTextFieldHeight]
+   *   are launched.
    * @param spacing Amount of [Dp] that spaces a [SearchTextField] by default, obtainable through
    *   [SearchTextFieldDefaults.spacing].
    */
@@ -294,10 +292,10 @@ internal constructor(
     coroutineScope: CoroutineScope,
     spacing: Dp
   ): Modifier {
-    return if (resultSearchTextFieldHeight == 0.dp) {
+    return if (searchTextFieldHeight == 0.dp) {
       onSizeChanged {
         coroutineScope.launch {
-          resultSearchTextFieldHeightAnimatable.animateTo(
+          searchTextFieldHeightAnimatable.animateTo(
             with(density) { it.height.toDp() } + spacing * 2
           )
         }
@@ -308,15 +306,15 @@ internal constructor(
   }
 
   /**
-   * Effect that zeroes the [resultSearchTextFieldHeight] once.
+   * Effect that zeroes the [searchTextFieldHeight] once.
    *
    * @param coroutineScope [CoroutineScope] in which the [Job] that resets the
-   *   [resultSearchTextFieldHeight] is launched.
+   *   [searchTextFieldHeight] is launched.
    */
   @Composable
   private fun ResultSearchTextFieldLayoutHeightResetEffect(coroutineScope: CoroutineScope) {
     DisposableEffect(Unit) {
-      coroutineScope.launch { resultSearchTextFieldHeightAnimatable.animateTo(0.dp) }
+      coroutineScope.launch { searchTextFieldHeightAnimatable.animateTo(0.dp) }
       onDispose {}
     }
   }

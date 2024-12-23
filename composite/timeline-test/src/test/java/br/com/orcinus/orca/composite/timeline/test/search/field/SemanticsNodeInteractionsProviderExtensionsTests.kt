@@ -18,7 +18,7 @@ package br.com.orcinus.orca.composite.timeline.test.search.field
 import androidx.compose.ui.test.assertAll
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
+import br.com.orcinus.orca.composite.timeline.search.field.SearchTextFieldPopup
 import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
@@ -44,7 +44,7 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
   @Test
   fun findsDismissButton() {
     composeRule
-      .apply { setContent { AutosTheme { ResultSearchTextField() } } }
+      .apply { setContent { AutosTheme { SearchTextFieldPopup() } } }
       .onDismissButton()
       .assertIsDisplayed()
   }
@@ -55,7 +55,7 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
       .apply {
         setContent {
           AutosTheme {
-            ResultSearchTextField(
+            SearchTextFieldPopup(
               query = "${Account.sample}",
               resultsLoadable =
                 ListLoadable.Populated(serializableListOf(ProfileSearchResult.sample))
@@ -73,7 +73,7 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
       .apply {
         setContent {
           AutosTheme {
-            ResultSearchTextField(
+            SearchTextFieldPopup(
               resultsLoadable =
                 ListLoadable.Populated(
                   Author.createSamples(ComposableImageLoader.Provider.sample)
