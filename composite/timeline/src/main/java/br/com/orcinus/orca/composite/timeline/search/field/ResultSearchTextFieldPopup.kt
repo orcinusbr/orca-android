@@ -81,10 +81,10 @@ private constructor(
 }
 
 /**
- * Overlay of a [ResultSearchTextField] which can be shown and dismissed. Acts an alternative to a
- * [Popup], since it was the solution that had been previously adopted by Orca (prior to 0.3.2) and
- * had issues such as inability to have both focusability and dismissibility via an outside click,
- * and negative text-editing-decorators-Y-offsetting (see
+ * Overlay of a [ResultSearchTextField] which can be shown and dismissed. Acts as an alternative to
+ * a [Popup], since it was the solution that had been previously adopted by Orca (prior to 0.3.2)
+ * and had issues such as inability to have both focusability and dismissibility via an outside
+ * click, and negative text-editing-decorators-Y-offsetting (see
  * [#378](https://github.com/orcinusbr/orca-android/pull/378)).
  *
  * This class **should not** be referenced by external APIs, given that its machinery is a mere
