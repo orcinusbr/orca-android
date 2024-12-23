@@ -16,34 +16,23 @@
 package br.com.orcinus.orca.composite.timeline.search
 
 import androidx.annotation.VisibleForTesting
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.util.lerp
-import androidx.core.graphics.ColorUtils
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextField
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
-import br.com.orcinus.orca.platform.ime.findActivity
 
 /** Tag that identifies a [Searchable]'s content for testing purposes. */
 @VisibleForTesting internal const val ContentTag = "searchable-content"
@@ -62,17 +51,11 @@ fun Searchable(
   modifier: Modifier = Modifier,
   content: @Composable SearchableScope.() -> Unit
 ) {
-  Box(modifier.testTag(ContentTag)) {
-    val isReplaceableComposedState = remember { mutableStateOf(false) }
-    val searchableScope =
-      remember(content, fillerColor) { SearchableScope(isReplaceableComposedState, fillerColor) }
-        .also { it.content() }
+  val isReplaceableComposedState = remember { mutableStateOf(false) }
 
-    Crossfade(searchableScope.containsSearchResults, label = "Scrim") { containsSearchResults ->
-      if (containsSearchResults) {
-        Scrim(searchableScope)
-      }
-    }
+  Box(modifier.testTag(ContentTag)) {
+    remember(content, fillerColor) { SearchableScope(isReplaceableComposedState, fillerColor) }
+      .content()
   }
 }
 
@@ -90,33 +73,6 @@ internal fun Searchable(
   content: @Composable SearchableScope.() -> Unit
 ) {
   Searchable(fillerColor = Color.Transparent, modifier, content)
-}
-
-/**
- * Dark overlay for contrasting the [SearchTextField] with the content that is laid out behind it.
- *
- * @param searchableScope [SearchableScope] of the [Searchable].
- * @param modifier [Modifier] to be applied to the underlying [Canvas].
- */
-@Composable
-private fun Scrim(searchableScope: SearchableScope, modifier: Modifier = Modifier) {
-  val window = LocalContext.current.findActivity()?.window
-  val statusBarColorInArgb = remember(window) { window?.statusBarColor }
-  val isSearching by remember(searchableScope) { derivedStateOf(searchableScope::isSearching) }
-  val alpha by animateFloatAsState(if (isSearching) .05f else 0f, label = "Scrim alpha")
-  val color = remember(alpha) { Color.Black.copy(alpha = alpha) }
-
-  DisposableEffect(window, statusBarColorInArgb, alpha) {
-    @Suppress("NAME_SHADOWING") val window = window ?: return@DisposableEffect onDispose {}
-
-    @Suppress("NAME_SHADOWING")
-    val statusBarColorInArgb = statusBarColorInArgb ?: return@DisposableEffect onDispose {}
-
-    window.statusBarColor = ColorUtils.setAlphaComponent(statusBarColorInArgb, lerp(0, 255, alpha))
-    onDispose { window.statusBarColor = statusBarColorInArgb }
-  }
-
-  Canvas(modifier.fillMaxSize()) { drawRect(color) }
 }
 
 /** Preview of a [Searchable]. */

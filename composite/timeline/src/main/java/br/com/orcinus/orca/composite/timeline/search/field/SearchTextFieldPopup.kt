@@ -17,18 +17,20 @@ package br.com.orcinus.orca.composite.timeline.search.field
 
 import android.app.Dialog
 import android.content.Context
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.Gravity
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import androidx.annotation.FloatRange
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -61,8 +63,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
@@ -70,15 +74,18 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import androidx.compose.ui.util.lerp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.ConstrainedLayoutReference
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintLayoutScope
 import androidx.constraintlayout.compose.Dimension
+import androidx.core.graphics.ColorUtils
 import br.com.orcinus.orca.composite.timeline.InternalTimelineApi
 import br.com.orcinus.orca.composite.timeline.R
 import br.com.orcinus.orca.composite.timeline.avatar.SmallAvatar
@@ -97,6 +104,7 @@ import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.platform.focus.rememberImmediateFocusRequester
+import br.com.orcinus.orca.platform.ime.findActivity
 import br.com.orcinus.orca.std.image.compose.SomeComposableImageLoader
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.serializableListOf
@@ -216,6 +224,7 @@ private class SearchTextFieldPopup(
     modifier: Modifier = Modifier
   ) {
     SimultaneousCompositionProhibitionEffect()
+    Scrim()
     HostViewRecompositionEffect(modifier, query, onQueryChange, resultsLoadable)
     AppearanceEffect()
   }
@@ -297,6 +306,56 @@ private class SearchTextFieldPopup(
     }
 
   /**
+   * Dark overlay for contrasting the [SearchTextField] with the content that is laid out behind it.
+   *
+   * @param modifier [Modifier] to be applied to the underlying [Canvas].
+   */
+  @Composable
+  private fun Scrim(modifier: Modifier = Modifier) {
+    val isVisible by remember { derivedStateOf { resultsLoadable is ListLoadable.Populated } }
+    val alpha by animateFloatAsState(if (isVisible) .05f else 0f, label = "Scrim alpha")
+    val color = remember(alpha) { Color.Black.copy(alpha = alpha) }
+
+    StatusBarColorAlphaToScrimParityEffect(alpha)
+
+    Canvas(
+      modifier.layout { measurable, constraints ->
+        layout(width = 0, height = 0) {
+          measurable
+            .measure(Constraints.fixed(constraints.maxWidth, constraints.maxHeight))
+            .place(x = 0, y = 0)
+        }
+      }
+    ) {
+      drawRect(color)
+    }
+  }
+
+  /**
+   * Effect that changes the status bar color, matching its alpha to that of the [Scrim].
+   *
+   * @param alpha Opacity of the [Scrim], with `0f` = invisible; and `1f`= opaque.
+   */
+  @Composable
+  private fun StatusBarColorAlphaToScrimParityEffect(
+    @FloatRange(from = .0, to = 1.0) alpha: Float
+  ) {
+    val window = LocalContext.current.findActivity()?.window
+    val statusBarColorInArgb = remember(window) { window?.statusBarColor }
+
+    DisposableEffect(window, statusBarColorInArgb, alpha) {
+      @Suppress("NAME_SHADOWING") val window = window ?: return@DisposableEffect onDispose {}
+
+      @Suppress("NAME_SHADOWING")
+      val statusBarColorInArgb = statusBarColorInArgb ?: return@DisposableEffect onDispose {}
+
+      window.statusBarColor =
+        ColorUtils.setAlphaComponent(statusBarColorInArgb, lerp(0, 255, alpha))
+      onDispose { window.statusBarColor = statusBarColorInArgb }
+    }
+  }
+
+  /**
    * Effect that triggers recompositions on a host [View] by assigning the given parameters to this
    * popup's [State]-based properties. Each of them is then reset upon a decomposition, with a
    * default, empty value.
@@ -373,7 +432,7 @@ private class SearchTextFieldPopup(
     /**
      * [ColorDrawable] defined as the [delegate]'s [Window] background for making it transparent.
      */
-    @JvmStatic private val transparentDrawable = ColorDrawable(Color.TRANSPARENT)
+    @JvmStatic private val transparentDrawable = ColorDrawable(android.graphics.Color.TRANSPARENT)
   }
 }
 
