@@ -20,7 +20,7 @@ import android.content.Context
 import android.content.ContextWrapper
 
 /** Finds the [Activity] to which this [Context] is related (might also be itself). */
-internal tailrec fun Context.findActivity(): Activity? {
+tailrec fun Context.findActivity(): Activity? {
   return when (this) {
     is Activity -> this
     is ContextWrapper -> baseContext?.findActivity()

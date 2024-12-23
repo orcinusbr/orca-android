@@ -13,7 +13,7 @@ Note that Orca isn't a fork of the official app. Its overall structure has been 
 ## Structure
 
 <div align="center">
-    <img src="https://github.com/user-attachments/assets/9b7e42a3-baca-44e2-b5bd-7da2e135d7f4" />
+    <img src="https://github.com/user-attachments/assets/5c997a7a-0b87-4d38-9529-9efb9d7ea625" />
 </div>
 
 Each module represents the context to which its underlying structures are related.
