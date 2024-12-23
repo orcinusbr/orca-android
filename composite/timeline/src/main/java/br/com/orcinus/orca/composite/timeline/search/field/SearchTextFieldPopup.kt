@@ -441,6 +441,12 @@ private class SearchTextFieldPopup(
  * [SearchTextFieldPopup] composable which merely exists to signalize the deprecation of the public
  * [SearchTextField] with results — such composable is to be composed only by that popup and is not
  * available for external referencing.
+ *
+ * @param modifier [Modifier] to be applied to the [SearchTextField].
+ * @param query Content to be looked up.
+ * @param onQueryChange Lambda invoked whenever the [query] changes.
+ * @param resultsLoadable [Profile] results found for [query].
+ * @param onDismissal Operation performed whenever this popup is dismissed.
  */
 @Composable
 @Deprecated(
@@ -464,7 +470,7 @@ fun ResultSearchTextField(
  *
  * This overload is stateless by default and for testing purposes only.
  *
- * @param modifier [Modifier] to be applied to the [ResultSearchTextField].
+ * @param modifier [Modifier] to be applied to the [SearchTextField].
  * @param query Content to be looked up.
  * @param onQueryChange Lambda invoked whenever the [query] changes.
  * @param resultsLoadable [Profile] results found for [query].
@@ -518,7 +524,7 @@ fun SearchTextFieldPopup(
  *
  * This composable is stateless by default and is intended for previewing only.
  *
- * @param modifier [Modifier] to be applied to the [SearchTextField].
+ * @param modifier [Modifier] to be applied to the [ResultSearchTextField].
  * @param query Content to be looked up.
  * @param onQueryChange Lambda invoked whenever the [query] changes.
  * @param onDismissal Callback called when dismissal is requested.
@@ -540,7 +546,7 @@ private fun StatelessResultSearchTextField(
  * @param onQueryChange Lambda invoked whenever the [query] changes.
  * @param onDismissal Callback called when dismissal is requested.
  * @param resultsLoadable [Profile] results found for [query].
- * @param modifier [Modifier] to be applied to the [SearchTextField].
+ * @param modifier [Modifier] to be applied to the [DismissibleSearchTextField].
  */
 @Composable
 private fun ResultSearchTextField(
