@@ -447,7 +447,7 @@ private class SearchTextFieldPopup(
   "ResultSearchTextField is a part of the internals of a SearchTextFieldPopup as of Orca 0.3.2. " +
     "External consumers do not have access to it; thus, calling this composable displays such a " +
     "popup instead of a SearchTextField containing results for a given query.",
-  ReplaceWith("SearchTextFieldPopup(query, onQueryChange, resultsLoadable, onDismissal, modifier)")
+  ReplaceWith("SearchTextFieldPopup(modifier, query, onQueryChange, resultsLoadable, onDismissal)")
 )
 @InternalTimelineApi
 @VisibleForTesting
@@ -471,6 +471,7 @@ fun ResultSearchTextField(
  * @param onDismissal Operation performed whenever this popup is dismissed.
  */
 @Composable
+@InternalTimelineApi
 @VisibleForTesting
 fun SearchTextFieldPopup(
   modifier: Modifier = Modifier,
@@ -513,9 +514,9 @@ fun SearchTextFieldPopup(
 }
 
 /**
- * [DismissibleSearchTextField] that presents results for the query.
+ * [DismissibleSearchTextField] that presents results for the [query].
  *
- * This overload is stateless by default and is intended for previewing only.
+ * This composable is stateless by default and is intended for previewing only.
  *
  * @param modifier [Modifier] to be applied to the [SearchTextField].
  * @param query Content to be looked up.
@@ -524,16 +525,13 @@ fun SearchTextFieldPopup(
  * @param resultsLoadable [Profile] results found for [query].
  */
 @Composable
-@InternalTimelineApi
 private fun StatelessResultSearchTextField(
   modifier: Modifier = Modifier,
   query: String = "",
   onQueryChange: (query: String) -> Unit = NoOpOnQueryChange,
   onDismissal: () -> Unit = NoOpOnDismissal,
   resultsLoadable: ListLoadable<ProfileSearchResult> = EmptyResultsLoadable
-) {
-  ResultSearchTextField(query, onQueryChange, onDismissal, resultsLoadable, modifier)
-}
+) = ResultSearchTextField(query, onQueryChange, onDismissal, resultsLoadable, modifier)
 
 /**
  * [DismissibleSearchTextField] that presents results for the [query].
