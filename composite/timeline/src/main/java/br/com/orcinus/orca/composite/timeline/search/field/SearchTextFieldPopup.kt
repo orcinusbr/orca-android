@@ -48,7 +48,6 @@ import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -207,7 +206,6 @@ private class SearchTextFieldPopup(
    *   renderings and callback calls on both composables, given that their state would be shared.
    */
   @Composable
-  @NonRestartableComposable
   @Throws(IllegalStateException::class)
   fun Content(
     query: String,
@@ -284,7 +282,6 @@ private class SearchTextFieldPopup(
    * @see delegate
    */
   @Composable
-  @NonRestartableComposable
   @Throws(IllegalStateException::class)
   private fun SimultaneousCompositionProhibitionEffect() =
     DisposableEffect(Unit) {
@@ -313,7 +310,6 @@ private class SearchTextFieldPopup(
    * @see SearchTextFieldPopup.resultsLoadable
    */
   @Composable
-  @NonRestartableComposable
   private fun HostViewRecompositionEffect(
     modifier: Modifier,
     query: String,
@@ -348,7 +344,6 @@ private class SearchTextFieldPopup(
    * @see dismiss
    */
   @Composable
-  @NonRestartableComposable
   private fun AppearanceEffect() =
     DisposableEffect(Unit) {
       show()
@@ -392,7 +387,6 @@ private class SearchTextFieldPopup(
  * @param onDismissal Operation performed whenever this popup is dismissed.
  */
 @Composable
-@NonRestartableComposable
 @VisibleForTesting
 fun SearchTextFieldPopup(
   modifier: Modifier = Modifier,
@@ -412,7 +406,6 @@ fun SearchTextFieldPopup(
  * @param modifier [Modifier] to be applied to the [SearchTextField].
  */
 @Composable
-@NonRestartableComposable
 fun SearchTextFieldPopup(
   query: String,
   onQueryChange: (query: String) -> Unit,
