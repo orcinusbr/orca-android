@@ -48,6 +48,7 @@ import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -139,6 +140,7 @@ private val NoOpOnDismissal = {}
  * @property hostViewTreeOwner Owner by which the tree of the [View] that hosts the
  *   [ResultSearchTextField] is owned.
  */
+@Stable
 private class SearchTextFieldPopup(
   private val contextRef: WeakReference<Context>,
   private val hostViewTreeOwner: ViewTreeOwner?
