@@ -37,7 +37,6 @@ dependencies {
   testImplementation(project(":platform:autos-test"))
   testImplementation(libs.android.compose.ui.test.manifest)
   testImplementation(libs.assertk)
-  testImplementation(libs.kotlin.test)
   testImplementation(libs.robolectric)
 
   implementation(project(":composite:timeline"))
