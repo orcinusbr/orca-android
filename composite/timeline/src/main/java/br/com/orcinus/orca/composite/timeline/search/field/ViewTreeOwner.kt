@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.composite.timeline.search.field
 
 import android.view.View
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStoreOwner
@@ -29,6 +30,7 @@ import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import java.util.Objects
 
 /** Owner of the tree of a [View]. */
+@Immutable
 internal abstract class ViewTreeOwner private constructor() :
   ViewModelStoreOwner, SavedStateRegistryOwner {
   override fun equals(other: Any?) =
