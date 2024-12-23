@@ -23,7 +23,6 @@ import android.view.Gravity
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import androidx.activity.ComponentActivity
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -66,20 +65,6 @@ private val noOpOnQueryChange = { _: String -> }
  */
 private val emptyResultsLoadable: ListLoadable<ProfileSearchResult> = ListLoadable.Empty()
 
-/** Default implementation of [ResultSearchTextFieldPopup]. */
-private class DefaultResultSearchTextFieldPopup
-private constructor(
-  override val contextRef: WeakReference<Context>,
-  override val hostViewTreeOwner: ViewTreeOwner?
-) : ResultSearchTextFieldPopup<Context>() {
-  constructor(
-    context: Context,
-    hostViewTreeOwner: ViewTreeOwner?
-  ) : this(WeakReference(context), hostViewTreeOwner)
-
-  override fun onWillShow() = Unit
-}
-
 /**
  * Overlay of a [ResultSearchTextField] which can be shown and dismissed. Acts as an alternative to
  * a [Popup], since it was the solution that had been previously adopted by Orca (prior to 0.3.2)
@@ -87,20 +72,20 @@ private constructor(
  * click, and negative text-editing-decorators-Y-offsetting (see
  * [#378](https://github.com/orcinusbr/orca-android/pull/378)).
  *
- * This class **should not** be referenced by external APIs, given that its machinery is a mere
- * implementation detail; it shall only be so by tests. To compose a popup, call the composable
- * function whose name is the same as this class'.
+ * An instance can be produced through [rememberResultSearchTextFieldPopup]. Alternatively, a popup
+ * can be composed via a call to the composable function whose name is the same as this class' by
+ * external consumers.
  *
- * In order to produce an instance, construct the test-focused owned popup or invoke
- * [rememberResultSearchTextFieldPopup] for a Compose-based one created from the [Context] and the
- * [View] local to the calling composable.
- *
+ * @property contextRef [WeakReference] to the [Context] in which the [delegate] is to be displayed.
+ * @property hostViewTreeOwner Owner by which the tree of the host [View] is owned.
  * @see show
  * @see dismiss
- * @see OwnedResultSearchTextFieldPopup
+ * @see createHostView
  */
-@VisibleForTesting
-internal sealed class ResultSearchTextFieldPopup<C : Context> {
+private class ResultSearchTextFieldPopup(
+  private val contextRef: WeakReference<Context>,
+  private val hostViewTreeOwner: ViewTreeOwner?
+) {
   /** [Modifier] applied to the [ResultSearchTextField]. */
   private var modifier by mutableStateOf<Modifier>(Modifier)
 
@@ -122,21 +107,11 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
    */
   private var onDidDismissListener: (() -> Unit)? = null
 
-  /** [WeakReference] to the [Context] in which the [delegate] is to be displayed. */
-  protected abstract val contextRef: WeakReference<C>
-
-  /**
-   * Owner by which the tree of the host [View] is owned.
-   *
-   * @see createHostView
-   */
-  protected abstract val hostViewTreeOwner: ViewTreeOwner?
-
   /**
    * [Dialog] by which a [ResultSearchTextField] is displayed; `null` if the [context] has been
    * garbage-collected by the time it is instantiated.
    */
-  protected val delegate by lazy {
+  private val delegate by lazy {
     context?.let {
       Dialog(it, R.style.Theme_Autos).apply {
         /*
@@ -158,32 +133,8 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
   }
 
   /** [Context] referenced by the [contextRef]. */
-  protected inline val context
+  private inline val context
     get() = contextRef.get()
-
-  /**
-   * Shows this popup when it enters composition and dismisses it when it is decomposed.
-   *
-   * This overload is stateless by default and for testing purposes only.
-   *
-   * @param query Content to be looked up.
-   * @param onQueryChange Lambda invoked whenever the [query] changes.
-   * @param resultsLoadable [Profile] results found by the [query].
-   * @param modifier [Modifier] to be applied to the [ResultSearchTextField].
-   * @throws IllegalStateException If it is already composed. Simultaneous compositions cannot occur
-   *   because the given parameters are observed, and changes to them trigger an update to their
-   *   single, equivalent internal values. Parallel [Content]s could introduce inconsistent
-   *   renderings and callback calls on both composables, given that their state would be shared.
-   */
-  @Composable
-  @NonRestartableComposable
-  @Throws(IllegalStateException::class)
-  fun Content(
-    modifier: Modifier = Modifier,
-    query: String = "",
-    onQueryChange: (query: String) -> Unit = noOpOnQueryChange,
-    resultsLoadable: ListLoadable<ProfileSearchResult> = emptyResultsLoadable
-  ) = Content(query, onQueryChange, resultsLoadable, modifier)
 
   /**
    * Shows this popup when it enters composition and dismisses it when it is decomposed.
@@ -211,19 +162,6 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
     AppearanceEffect()
   }
 
-  /** Shows this popup, by which the [ResultSearchTextField] is displayed. */
-  fun show() {
-    val delegate = delegate
-    val hostView = createHostView()
-    val hostViewTreeOwner = hostViewTreeOwner
-    if (delegate != null && hostView != null && hostViewTreeOwner != null) {
-      onWillShow()
-      hostViewTreeOwner.own(hostView)
-      delegate.setContentView(hostView)
-      delegate.show()
-    }
-  }
-
   /**
    * Schedules the execution of an action for after the popup has been dismissed. Ultimately, allows
    * the standalone composable to replace the current listener by another one upon a recomposition
@@ -236,18 +174,6 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
   fun setOnDidDismissListener(onDidDismissListener: (() -> Unit)?) {
     delegate?.setOnDismissListener(onDidDismissListener?.let { { it() } })
   }
-
-  /** Dismisses this popup, by which the [ResultSearchTextField] is displayed. */
-  fun dismiss() {
-    delegate?.dismiss()
-  }
-
-  /**
-   * Callback called whenever this popup is requested to be shown, before it is displayed.
-   *
-   * @see show
-   */
-  protected abstract fun onWillShow()
 
   /**
    * Creates a [ComposeView] by which a [ResultSearchTextField] is hosted, whose tree ownership is
@@ -370,37 +296,28 @@ internal sealed class ResultSearchTextFieldPopup<C : Context> {
       onDispose(::dismiss)
     }
 
+  /** Shows this popup, by which the [ResultSearchTextField] is displayed. */
+  private fun show() {
+    val delegate = delegate
+    val hostView = createHostView()
+    val hostViewTreeOwner = hostViewTreeOwner
+    if (delegate != null && hostView != null && hostViewTreeOwner != null) {
+      hostViewTreeOwner.own(hostView)
+      delegate.setContentView(hostView)
+      delegate.show()
+    }
+  }
+
+  /** Dismisses this popup, by which the [ResultSearchTextField] is displayed. */
+  private fun dismiss() {
+    delegate?.dismiss()
+  }
+
   private companion object {
     /**
      * [ColorDrawable] defined as the [delegate]'s [Window] background for making it transparent.
      */
     @JvmStatic private val transparentDrawable = ColorDrawable(Color.TRANSPARENT)
-  }
-}
-
-/**
- * [ResultSearchTextFieldPopup] owned by a [ComponentActivity] which serves as the [Context] and the
- * owner of both the host [View] tree and the underlying [delegate]; whose [View] tree ownership is
- * configured before this popup is shown.
- *
- * @see createHostView
- * @see show
- */
-@VisibleForTesting
-internal class OwnedResultSearchTextFieldPopup
-private constructor(override val contextRef: WeakReference<ComponentActivity>) :
-  ResultSearchTextFieldPopup<ComponentActivity>() {
-  override val hostViewTreeOwner by lazy { context?.let(ViewTreeOwner::from) }
-
-  constructor(context: ComponentActivity) : this(WeakReference(context))
-
-  override fun onWillShow() {
-    val activity = context
-    val delegate = delegate
-    if (activity != null && delegate != null) {
-      activity.initializeViewTreeOwners()
-      delegate.setOwnerActivity(activity)
-    }
   }
 }
 
@@ -418,7 +335,7 @@ private constructor(override val contextRef: WeakReference<ComponentActivity>) :
 @Composable
 @NonRestartableComposable
 @VisibleForTesting
-fun ResultSearchTextFieldPopup(
+internal fun ResultSearchTextFieldPopup(
   modifier: Modifier = Modifier,
   query: String = "",
   onQueryChange: (query: String) -> Unit = noOpOnQueryChange,
@@ -463,10 +380,10 @@ internal fun ResultSearchTextFieldPopup(
  * @see LocalView
  */
 @Composable
-private fun rememberResultSearchTextFieldPopup(): ResultSearchTextFieldPopup<Context> {
+private fun rememberResultSearchTextFieldPopup(): ResultSearchTextFieldPopup {
   val context = LocalContext.current
   val viewTreeOwner = rememberViewTreeOwner()
   return remember(context, viewTreeOwner) {
-    DefaultResultSearchTextFieldPopup(context, hostViewTreeOwner = viewTreeOwner)
+    ResultSearchTextFieldPopup(WeakReference(context), hostViewTreeOwner = viewTreeOwner)
   }
 }

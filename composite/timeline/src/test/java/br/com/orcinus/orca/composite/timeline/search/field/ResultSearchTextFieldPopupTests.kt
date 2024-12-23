@@ -17,16 +17,19 @@ package br.com.orcinus.orca.composite.timeline.search.field
 
 import android.view.View
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextInput
 import androidx.test.espresso.Espresso.pressBack
-import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import assertk.assertions.isFalse
-import assertk.assertions.isInstanceOf
 import assertk.assertions.isTrue
 import assertk.assertions.prop
 import br.com.orcinus.orca.composite.timeline.test.search.field.onDismissButton
@@ -41,54 +44,39 @@ internal class ResultSearchTextFieldPopupTests {
   @get:Rule val composeRule = createAndroidComposeRule<ComponentActivity>()
 
   @Test
-  fun doesNotDeconfigureViewTreeOwnershipWhenDismissedWhileNotShown() {
-    val originalOwnedTreeView = View(composeRule.activity)
-    composeRule.activity.setContentView(originalOwnedTreeView)
-    val originalViewTreeOwner = ViewTreeOwner.of(originalOwnedTreeView)
-    OwnedResultSearchTextFieldPopup(composeRule.activity).dismiss()
-    assertThat(ViewTreeOwner)
-      .prop("from") { it.from(composeRule.activity) }
-      .isEqualTo(originalViewTreeOwner)
+  fun shows() {
+    composeRule.activity.setContent { ResultSearchTextFieldPopup() }
+    composeRule.onSearchTextField().assertIsDisplayed()
   }
 
   @Test
-  fun shows() =
-    OwnedResultSearchTextFieldPopup(composeRule.activity)
-      .apply(OwnedResultSearchTextFieldPopup::show)
-      .also { composeRule.onSearchTextField().assertIsDisplayed() }
-      .dismiss()
-
-  @Test
-  fun throwsOnSimultaneousContents() {
-    val popup = OwnedResultSearchTextFieldPopup(composeRule.activity)
-    assertFailure { composeRule.setContent { repeat(2) { popup.Content() } } }
-      .isInstanceOf<IllegalStateException>()
-    popup.dismiss()
+  fun recomposesWhenQueryChanges() {
+    composeRule.setContent {
+      var query by remember { mutableStateOf("") }
+      ResultSearchTextFieldPopup(query = query, onQueryChange = { query = it })
+    }
+    composeRule.onSearchTextField().apply { performTextInput("❤️‍🩹") }.assertTextEquals("❤️‍🩹")
   }
 
   @Test
   fun dismisses() {
-    OwnedResultSearchTextFieldPopup(composeRule.activity)
-      .apply(OwnedResultSearchTextFieldPopup::show)
-      .dismiss()
-    composeRule.onRoot().assertDoesNotExist()
+    composeRule.activity.setContent { ResultSearchTextFieldPopup() }
+    composeRule.activity.setContent {}
+    composeRule.onSearchTextField().assertDoesNotExist()
   }
 
   @Test
   fun dismissesWhenBackPressing() {
-    val popup =
-      OwnedResultSearchTextFieldPopup(composeRule.activity)
-        .apply(OwnedResultSearchTextFieldPopup::show)
+    composeRule.activity.setContent { ResultSearchTextFieldPopup() }
     pressBack()
-    composeRule.onRoot().assertDoesNotExist()
-    popup.dismiss()
+    composeRule.onSearchTextField().assertDoesNotExist()
   }
 
   @Test
   fun dismissesWhenClickingDismissalButton() {
-    OwnedResultSearchTextFieldPopup(composeRule.activity).show()
+    composeRule.activity.setContent { ResultSearchTextFieldPopup() }
     composeRule.onDismissButton().performClick()
-    composeRule.onRoot().assertDoesNotExist()
+    composeRule.onSearchTextField().assertDoesNotExist()
   }
 
   @Test
@@ -96,38 +84,21 @@ internal class ResultSearchTextFieldPopupTests {
     val originalOwnedTreeView = View(composeRule.activity)
     composeRule.activity.setContentView(originalOwnedTreeView)
     val originalViewTreeOwner = ViewTreeOwner.of(originalOwnedTreeView)
-    OwnedResultSearchTextFieldPopup(composeRule.activity)
-      .apply(OwnedResultSearchTextFieldPopup::show)
-      .dismiss()
+    composeRule.activity.setContent { ResultSearchTextFieldPopup() }
+    composeRule.onDismissButton().performClick()
     assertThat(ViewTreeOwner)
       .prop("from") { it.from(composeRule.activity) }
       .isEqualTo(originalViewTreeOwner)
   }
 
   @Test
-  fun setsOnDidDismissListener() {
-    var hasNotified = false
-    OwnedResultSearchTextFieldPopup(composeRule.activity)
-      .apply {
-        show()
-        setOnDidDismissListener { hasNotified = true }
-      }
-      .dismiss()
+  fun listensToDismissal() {
+    var didDismiss = false
+    composeRule.activity.setContent {
+      ResultSearchTextFieldPopup(onDismissal = { didDismiss = true })
+    }
+    composeRule.onDismissButton().performClick()
     composeRule.waitForIdle()
-    assertThat(hasNotified, "hasNotified").isTrue()
-  }
-
-  @Test
-  fun removesOnDidDismissListener() {
-    var hasNotified = false
-    OwnedResultSearchTextFieldPopup(composeRule.activity)
-      .apply {
-        show()
-        setOnDidDismissListener { hasNotified = true }
-        setOnDidDismissListener(null)
-      }
-      .dismiss()
-    composeRule.waitForIdle()
-    assertThat(hasNotified, "hasNotified").isFalse()
+    assertThat(didDismiss, "hasNotified").isTrue()
   }
 }
