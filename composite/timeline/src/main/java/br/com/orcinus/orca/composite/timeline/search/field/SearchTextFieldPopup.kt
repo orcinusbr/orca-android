@@ -166,15 +166,6 @@ private class SearchTextFieldPopup(
   private var resultsLoadable by mutableStateOf(EmptyResultsLoadable)
 
   /**
-   * Listener that gets notified after the [delegate] is dismissed.
-   *
-   * @see Dialog.dismiss
-   * @see dismiss
-   * @see setOnDidDismissListener
-   */
-  private var onDidDismissListener: (() -> Unit)? = null
-
-  /**
    * [Dialog] by which a [ResultSearchTextField] is displayed; `null` if the [context] has been
    * garbage-collected by the time it is instantiated.
    */
@@ -194,7 +185,6 @@ private class SearchTextFieldPopup(
         window?.attributes?.gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
         window?.setBackgroundDrawable(transparentDrawable)
         setCanceledOnTouchOutside(true)
-        setOnDismissListener { onDidDismissListener?.invoke() }
       }
     }
   }
@@ -239,7 +229,7 @@ private class SearchTextFieldPopup(
    *   previously defined one.
    */
   fun setOnDidDismissListener(onDidDismissListener: (() -> Unit)?) {
-    this.onDidDismissListener = onDidDismissListener
+    delegate?.setOnDismissListener(onDidDismissListener?.let { { it() } })
   }
 
   /**
