@@ -139,7 +139,7 @@ private val NoOpOnDismissal = {}
 
 /**
  * Overlay of a [ResultSearchTextField] that can be composed. Acts as an alternative to a [Popup],
- * since it was the solution adopted by Orca prior to 0.3.2 and had issues such as inability to have
+ * since it was the solution adopted by Orca prior to 0.5.0 and had issues such as inability to have
  * both focusability and dismissibility via an outside click, and negative
  * text-editing-decorators-Y-offsetting (see
  * [#378](https://github.com/orcinusbr/orca-android/pull/378)).
@@ -440,7 +440,7 @@ private class SearchTextFieldPopup(
  */
 @Composable
 @Deprecated(
-  "ResultSearchTextField is a part of the internals of a SearchTextFieldPopup as of Orca 0.3.2. " +
+  "ResultSearchTextField is a part of the internals of a SearchTextFieldPopup as of Orca 0.5.0. " +
     "External consumers do not have access to it; thus, calling this composable displays such a " +
     "popup instead of a SearchTextField containing results for a given query.",
   ReplaceWith("SearchTextFieldPopup(modifier, query, onQueryChange, resultsLoadable, onDidDismiss)")
