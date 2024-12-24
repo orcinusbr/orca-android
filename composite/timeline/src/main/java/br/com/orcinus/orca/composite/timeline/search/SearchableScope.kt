@@ -154,7 +154,7 @@ internal constructor(
             query,
             onQueryChange,
             resultsLoadable,
-            onDismissal = ::dismiss,
+            onDidDismiss = ::dismiss,
             modifier.resultSearchTextFieldHeightReporter(
               LocalDensity.current,
               coroutineScope,

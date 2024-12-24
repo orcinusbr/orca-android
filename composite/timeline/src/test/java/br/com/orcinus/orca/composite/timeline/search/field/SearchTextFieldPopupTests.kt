@@ -116,7 +116,7 @@ internal class SearchTextFieldPopupTests {
   @Test
   fun listensToDismissal() {
     var didDismiss = false
-    composeRule.activity.setContent { SearchTextFieldPopup(onDismissal = { didDismiss = true }) }
+    composeRule.activity.setContent { SearchTextFieldPopup(onDidDismiss = { didDismiss = true }) }
     composeRule.onDismissButton().performClick()
     composeRule.waitForIdle()
     assertThat(didDismiss, "didDismiss").isTrue()

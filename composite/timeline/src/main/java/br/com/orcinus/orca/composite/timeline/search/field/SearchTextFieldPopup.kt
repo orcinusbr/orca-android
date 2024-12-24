@@ -222,7 +222,7 @@ private class SearchTextFieldPopup(
   /**
    * Schedules the execution of an action for after the popup has been dismissed. Ultimately, allows
    * the standalone composable to replace the current listener by another one upon a recomposition
-   * due to the previously set `onDismissal` lambda having changed, and remove it when it leaves
+   * due to the previously set `onDidDismiss` lambda having changed, and remove it when it leaves
    * composition.
    *
    * @param onDidDismissListener Listener to be notified of dismissals, or `null` for removing the
@@ -436,14 +436,14 @@ private class SearchTextFieldPopup(
  * @param query Content to be looked up.
  * @param onQueryChange Lambda invoked whenever the [query] changes.
  * @param resultsLoadable [Profile] results found for [query].
- * @param onDismissal Operation performed whenever this popup is dismissed.
+ * @param onDidDismiss Operation performed after this popup is dismissed.
  */
 @Composable
 @Deprecated(
   "ResultSearchTextField is a part of the internals of a SearchTextFieldPopup as of Orca 0.3.2. " +
     "External consumers do not have access to it; thus, calling this composable displays such a " +
     "popup instead of a SearchTextField containing results for a given query.",
-  ReplaceWith("SearchTextFieldPopup(modifier, query, onQueryChange, resultsLoadable, onDismissal)")
+  ReplaceWith("SearchTextFieldPopup(modifier, query, onQueryChange, resultsLoadable, onDidDismiss)")
 )
 @InternalTimelineApi
 @VisibleForTesting
@@ -452,8 +452,8 @@ fun ResultSearchTextField(
   query: String = "",
   onQueryChange: (query: String) -> Unit = NoOpOnQueryChange,
   resultsLoadable: ListLoadable<ProfileSearchResult> = EmptyResultsLoadable,
-  onDismissal: () -> Unit = NoOpOnDismissal
-) = SearchTextFieldPopup(modifier, query, onQueryChange, resultsLoadable, onDismissal)
+  onDidDismiss: () -> Unit = NoOpOnDismissal
+) = SearchTextFieldPopup(modifier, query, onQueryChange, resultsLoadable, onDidDismiss)
 
 /**
  * Popup by which a [SearchTextField] that presents results for the [query] is displayed.
@@ -464,7 +464,7 @@ fun ResultSearchTextField(
  * @param query Content to be looked up.
  * @param onQueryChange Lambda invoked whenever the [query] changes.
  * @param resultsLoadable [Profile] results found for [query].
- * @param onDismissal Operation performed whenever this popup is dismissed.
+ * @param onDidDismiss Operation performed after this popup is dismissed.
  */
 @Composable
 @InternalTimelineApi
@@ -474,8 +474,8 @@ fun SearchTextFieldPopup(
   query: String = "",
   onQueryChange: (query: String) -> Unit = NoOpOnQueryChange,
   resultsLoadable: ListLoadable<ProfileSearchResult> = EmptyResultsLoadable,
-  onDismissal: () -> Unit = NoOpOnDismissal
-) = SearchTextFieldPopup(query, onQueryChange, resultsLoadable, onDismissal, modifier)
+  onDidDismiss: () -> Unit = NoOpOnDismissal
+) = SearchTextFieldPopup(query, onQueryChange, resultsLoadable, onDidDismiss, modifier)
 
 /**
  * Popup by which a [SearchTextField] that presents results for the [query] is displayed.
@@ -483,7 +483,7 @@ fun SearchTextFieldPopup(
  * @param query Content to be looked up.
  * @param onQueryChange Lambda invoked whenever the [query] changes.
  * @param resultsLoadable [Profile] results found for the [query].
- * @param onDismissal Operation performed whenever this popup is dismissed.
+ * @param onDidDismiss Operation performed whenever this popup is dismissed.
  * @param modifier [Modifier] to be applied to the [SearchTextField].
  */
 @Composable
@@ -491,7 +491,7 @@ fun SearchTextFieldPopup(
   query: String,
   onQueryChange: (query: String) -> Unit,
   resultsLoadable: ListLoadable<ProfileSearchResult>,
-  onDismissal: () -> Unit,
+  onDidDismiss: () -> Unit,
   modifier: Modifier = Modifier
 ) {
   val context = LocalContext.current
@@ -501,8 +501,8 @@ fun SearchTextFieldPopup(
       SearchTextFieldPopup(WeakReference(context), hostViewTreeOwner = ViewTreeOwner.of(view))
     }
 
-  DisposableEffect(onDismissal) {
-    popup.setOnDidDismissListener(onDismissal)
+  DisposableEffect(onDidDismiss) {
+    popup.setOnDidDismissListener(onDidDismiss)
     onDispose { popup.setOnDidDismissListener(null) }
   }
 
