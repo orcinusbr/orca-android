@@ -42,8 +42,8 @@ internal fun layoutDirectionOf(view: View): LayoutDirection? =
  *
  * @param value Constant from which the Compose layout direction will be provided. Any integer other
  *   than _LTR_, _RTL_ or _locale_ results in this method returning `null`, given that a layout
- *   direction cannot be inherited in the case of a _inherit_ and other values are considered
- *   invalid. To be able to inherit, call the overload that accepts a [View].
+ *   direction cannot be inherited in the case of an _inherit_ and other values are considered
+ *   invalid.
  */
 private fun layoutDirectionOf(value: Int): LayoutDirection? =
   when (value) {
