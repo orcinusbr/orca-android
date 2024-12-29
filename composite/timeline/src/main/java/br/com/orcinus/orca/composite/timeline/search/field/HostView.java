@@ -52,7 +52,7 @@ abstract class HostView extends AbstractComposeView {
    * @param parentCompositionContext {@link CompositionContext} that is the parent of this {@link
    *     HostView}'s.
    */
-  public HostView(
+  HostView(
       @NonNull final Context context, @NonNull final CompositionContext parentCompositionContext) {
     super(context);
     setParentCompositionContext(parentCompositionContext);
