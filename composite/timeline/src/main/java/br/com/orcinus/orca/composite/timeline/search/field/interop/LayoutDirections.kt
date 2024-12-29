@@ -15,40 +15,22 @@
 
 package br.com.orcinus.orca.composite.timeline.search.field.interop
 
-import android.content.Context
-import android.util.LayoutDirection as AndroidLayoutDirection
 import android.view.View
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.core.text.layoutDirection
-import java.util.Locale
 
 /**
- * Obtains a Compose-based enum entry of the direction of the layout from a [View].
+ * Obtains a Compose-based direction of the layout from a [View].
  *
  * @param view [View] from which the Compose layout direction will be provided. Any integer other
  *   than [View.LAYOUT_DIRECTION_LTR] or [View.LAYOUT_DIRECTION_RTL] having been set to this
- *   [View]'s, or non-_LTR_, -_RTL_ or -_locale_ ones to its [Context]'s layout direction results in
- *   this method returning `null`, given that other values are considered invalid.
+ *   [View]'s layout direction results in this method returning `null`, given that other values are
+ *   considered invalid.
+ * @see View.getLayoutDirection
+ * @see View.setLayoutDirection
  */
 internal fun layoutDirectionOf(view: View): LayoutDirection? =
   when (view.layoutDirection) {
     View.LAYOUT_DIRECTION_LTR -> LayoutDirection.Ltr
     View.LAYOUT_DIRECTION_RTL -> LayoutDirection.Rtl
-    else -> view.context?.resources?.configuration?.layoutDirection?.let(::layoutDirectionOf)
-  }
-
-/**
- * Obtains a Compose-based enum entry of the direction of the layout from a [View]-based constant.
- *
- * @param value Constant from which the Compose layout direction will be provided. Any integer other
- *   than _LTR_, _RTL_ or _locale_ results in this method returning `null`, given that a layout
- *   direction cannot be inherited in the case of an _inherit_ and other values are considered
- *   invalid.
- */
-private fun layoutDirectionOf(value: Int): LayoutDirection? =
-  when (value) {
-    AndroidLayoutDirection.LOCALE -> layoutDirectionOf(Locale.getDefault().layoutDirection)
-    AndroidLayoutDirection.LTR -> LayoutDirection.Ltr
-    AndroidLayoutDirection.RTL -> LayoutDirection.Rtl
     else -> null
   }
