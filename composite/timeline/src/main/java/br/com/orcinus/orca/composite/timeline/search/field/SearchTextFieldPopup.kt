@@ -545,8 +545,15 @@ private class SearchTextFieldPopup(
 
   /**
    * Dark overlay for contrasting the [ResultSearchTextField] with the content laid out behind it.
+   * This is preferred over adding the dim-behind flag to the [Window] because, by doing so, the
+   * status bars' appearance would be irreversibly changed when this popup got shown and remain
+   * altered until it got dismissed.
    *
    * @param modifier [Modifier] to be applied to the underlying [Canvas].
+   * @see WindowManager.LayoutParams.FLAG_DIM_BEHIND
+   * @see show
+   * @see Dialog.dismiss
+   * @see dismiss
    */
   @Composable
   private fun Scrim(modifier: Modifier = Modifier) {
