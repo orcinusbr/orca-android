@@ -17,89 +17,96 @@ package br.com.orcinus.orca.composite.timeline.search.field
 
 import android.app.Dialog
 import android.content.Context
+import android.graphics.Color as AndroidColor
 import android.graphics.drawable.ColorDrawable
-import android.view.Gravity
+import android.graphics.drawable.InsetDrawable
+import android.util.Size
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewOutlineProvider
 import android.view.Window
 import android.view.WindowManager
 import androidx.annotation.FloatRange
+import androidx.annotation.IntRange
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionContext
+import androidx.compose.runtime.CompositionLocal
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCompositionContext
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layout
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.AbstractComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.util.lerp
 import androidx.compose.ui.window.Popup
-import androidx.compose.ui.zIndex
-import androidx.constraintlayout.compose.ConstrainedLayoutReference
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.ConstraintLayoutScope
-import androidx.constraintlayout.compose.Dimension
 import androidx.core.graphics.ColorUtils
 import br.com.orcinus.orca.composite.timeline.InternalTimelineApi
 import br.com.orcinus.orca.composite.timeline.R
 import br.com.orcinus.orca.composite.timeline.avatar.SmallAvatar
+import br.com.orcinus.orca.composite.timeline.search.field.interop.asGravity
+import br.com.orcinus.orca.composite.timeline.search.field.interop.layoutDirectionOf
+import br.com.orcinus.orca.composite.timeline.search.field.interop.setPadding
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.core.sample.feed.profile.account.sample
+import br.com.orcinus.orca.ext.coroutines.getValue
+import br.com.orcinus.orca.ext.coroutines.setValue
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.kit.action.button.icon.HoverableIconButton
-import br.com.orcinus.orca.platform.autos.kit.action.button.icon.HoverableIconButtonDefaults
 import br.com.orcinus.orca.platform.autos.kit.bottom
 import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextField
 import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextFieldDefaults
-import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.`if`
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 import br.com.orcinus.orca.platform.core.sample
@@ -108,16 +115,26 @@ import br.com.orcinus.orca.platform.ime.findActivity
 import br.com.orcinus.orca.std.image.compose.SomeComposableImageLoader
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.serializableListOf
+import com.jeanbarrossilva.loadable.list.toListLoadable
 import com.jeanbarrossilva.loadable.placeholder.MediumTextualPlaceholder
 import com.jeanbarrossilva.loadable.placeholder.SmallTextualPlaceholder
 import java.lang.ref.WeakReference
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+
+/** Default padding applied to a [SearchTextFieldPopup]: none. */
+private val Unpadded = PaddingValues()
 
 /** Duration in milliseconds of the appearance animation for results. */
 private const val ResultAppearanceAnimationDurationInMilliseconds = 56
-
-/** Duration in milliseconds of the animation of a [ResultSearchTextField]'s bottom corners. */
-private const val BottomRadiusAnimationDuration =
-  ResultAppearanceAnimationDurationInMilliseconds / 2
 
 /** Default lambda which is a no-op for when a [ResultSearchTextField] query changes. */
 private val NoOpOnQueryChange = { _: String -> }
@@ -144,15 +161,138 @@ private val NoOpOnDismissal = {}
  * text-editing-decorators-Y-offsetting (see
  * [#378](https://github.com/orcinusbr/orca-android/pull/378)).
  *
- * @property contextRef [WeakReference] to the [Context] in which the [delegate] is to be displayed.
- * @property hostViewTreeOwner Owner by which the tree of the [View] that hosts the
- *   [ResultSearchTextField] is owned.
+ * @property contextRef [WeakReference] to the [Context] in which this popup is to be displayed.
+ * @property hostViewTreeOwner Owner of the created [HostView].
+ * @property parentCompositionContext Provider of the [CompositionLocal]s to be "inherited".
+ * @property density [Density] for converting [Dp]s into absolute pixels when changing the offset.
+ * @property searchTextFieldDefaultShape [Shape] that clips a [SearchTextField] by default.
  */
 @Stable
 private class SearchTextFieldPopup(
   private val contextRef: WeakReference<Context>,
-  private val hostViewTreeOwner: ViewTreeOwner?
+  private val hostViewTreeOwner: ViewTreeOwner?,
+  private val parentCompositionContext: CompositionContext,
+  private val density: Density,
+  private val searchTextFieldDefaultShape: Shape
 ) {
+  /**
+   * [CoroutineScope] in which changes to the size of a [HostView] and the padding are observed,
+   * instantiated when this popup enters the composition and both cancelled and recreated when it
+   * exits it (which is whenever it gets dismissed).
+   *
+   * @see hostViewSizeFlow
+   * @see paddingFlow
+   * @see createCoroutineScope
+   * @see Dialog.dismiss
+   * @see dismiss
+   */
+  private var coroutineScope = createCoroutineScope()
+
+  /**
+   * [MutableStateFlow] containing the dimensions of the attached [HostView] in absolute pixels. Its
+   * value is initially `null`, instantiated and set each time this popup is shown, mutated upon
+   * measurement and nullified whenever it is detached (which is when this popup gets dismissed).
+   *
+   * @see createHostView
+   * @see MutableStateFlow.value
+   * @see show
+   * @see Dialog.dismiss
+   * @see dismiss
+   */
+  private val hostViewSizeFlow = MutableStateFlow<MutableSize?>(null)
+
+  /**
+   * Alias for `hostViewSizeFlow.value`.
+   *
+   * @see hostViewSizeFlow
+   */
+  private var hostViewSize by hostViewSizeFlow
+
+  /**
+   * Amount in both bi-dimensional axes by which this popup is offset in absolute pixels; (0, 0) by
+   * default. Stored only to undo the last offset when applying another one, hence its
+   * unobservability — characteristic that differs from that of the [hostViewSize] and the padding,
+   * both backed by a [MutableStateFlow].
+   *
+   * @see setOffset
+   * @see paddingFlow
+   */
+  private var offset = IntOffset.Zero
+
+  /**
+   * [MutableStateFlow] containing the amount of space in absolute pixels added to the edges of a
+   * [HostView] (which is zero by default). Its value is immutable — differing from the
+   * [hostViewSize] — because each reset should be observable for it to be applied.
+   *
+   * @see setPadding
+   * @see createHostView
+   */
+  private val paddingFlow = MutableStateFlow(Unpadded)
+
+  /**
+   * Listener that gets notified after the [delegate] is dismissed.
+   *
+   * @see Dialog.dismiss
+   * @see dismiss
+   * @see setOnDidDismissListener
+   */
+  private var onDidDismissListener: (() -> Unit)? = null
+
+  /**
+   * [Dialog] by which a [HostView] is displayed; `null` if the [context] has been garbage-collected
+   * by the time it is instantiated. Resets the [coroutineScope] and notifies the
+   * [onDidDismissListener] whenever it gets dismissed.
+   *
+   * @see createHostView
+   * @see Dialog.dismiss
+   */
+  private val delegate by lazy {
+    context?.let { context ->
+      Dialog(context, br.com.orcinus.orca.platform.autos.R.style.Theme_Autos).apply {
+        /*
+         * ResultSearchTextField's elevation is clipped by default because the decor view's
+         * descendants are outlined based on their bounds, clip their children and delimit them to
+         * their parent's padding — all of which prevents the cast shadow from being completely
+         * visible within the dialog.
+         *
+         * Orca's workaround differs slightly from that adopted by Compose Popup's PopupLayout (as
+         * of Compose 1.5.11): rather than allocating space for the shadow by instantiating a
+         * provider of an invisible outline, we disable the aforementioned clipping in all those
+         * views and define their background as an inset, transparent one, setting it as their
+         * outline provider.
+         */
+        val elevationInPx = with(density) { SearchTextFieldDefaults.Elevation.roundToPx() }
+        val elevationInsetBackground = InsetDrawable(transparentBackground, elevationInPx)
+        window?.decorView?.traverse { descendant ->
+          if (descendant is ViewGroup) {
+            descendant.clipToPadding = false
+            descendant.clipChildren = false
+            descendant.background = elevationInsetBackground
+            descendant.outlineProvider = ViewOutlineProvider.BACKGROUND
+          }
+        }
+
+        /*
+         * Dialog.setCanceledOnTouchOutside(Boolean) requires the dialog's window to wrap its
+         * content, since it initially matches its parent's — decor view's — size by default and,
+         * thus, no interactions are considered external to it.
+         */
+        window?.setLayout(
+          WindowManager.LayoutParams.WRAP_CONTENT,
+          WindowManager.LayoutParams.WRAP_CONTENT
+        )
+
+        window?.setBackgroundDrawable(transparentBackground)
+        setOnDismissListener {
+          coroutineScope.cancel("Popup was dismissed.")
+          coroutineScope = createCoroutineScope()
+          onDidDismissListener?.invoke()
+        }
+        setCanceledOnTouchOutside(true)
+      }
+    }
+  }
+
   /** [Modifier] applied to the [ResultSearchTextField]. */
   private var modifier by mutableStateOf<Modifier>(Modifier)
 
@@ -162,36 +302,71 @@ private class SearchTextFieldPopup(
   /** Lambda invoked whenever the query changes in the [ResultSearchTextField]. */
   private var onQueryChange by mutableStateOf(NoOpOnQueryChange)
 
-  /** [Profile] results found for the [query] in the [ResultSearchTextField]. */
-  private var resultsLoadable by mutableStateOf(EmptyResultsLoadable)
-
   /**
-   * [Dialog] by which a [ResultSearchTextField] is displayed; `null` if the [context] has been
-   * garbage-collected by the time it is instantiated.
+   * [MutableStateFlow] containing the [Profile] results found for the [query] in the
+   * [ResultSearchTextField].
    */
-  private val delegate by lazy {
-    context?.let {
-      Dialog(it, br.com.orcinus.orca.platform.autos.R.style.Theme_Autos).apply {
-        /*
-         * setCanceledOnTouchOutside(true) requires this delegate's window to wrap its content,
-         * since it initially matches its parent's — decor view's — size by default and, thus, no
-         * interactions are considered external to it.
-         */
-        window?.setLayout(
-          /* width = */ WindowManager.LayoutParams.MATCH_PARENT,
-          /* height = */ WindowManager.LayoutParams.WRAP_CONTENT
-        )
+  private var resultsLoadableFlow = MutableStateFlow(EmptyResultsLoadable)
 
-        window?.attributes?.gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
-        window?.setBackgroundDrawable(transparentDrawable)
-        setCanceledOnTouchOutside(true)
-      }
-    }
-  }
+  /** Observable value of [resultsLoadableFlow]. */
+  private inline val resultsLoadable
+    @Composable get() = resultsLoadableFlow.collectAsState().value
 
   /** [Context] referenced by the [contextRef]. */
   private inline val context
     get() = contextRef.get()
+
+  /**
+   * Horizontal and vertical dimensions in both bi-dimensional axes. Differs from Android's [Size]
+   * and Compose's [IntSize] in that its values are mutable, removing the need for allocation of a
+   * new instance each time they change.
+   *
+   * @see asIntSize
+   */
+  private class MutableSize private constructor() {
+    /**
+     * [IntSize] returned when this [MutableSize] is converted into such a class. `null` when a
+     * conversion has never occurred before or either the [width] or the [height] have been changed
+     * since it was last converted.
+     *
+     * @see asIntSize
+     */
+    private var intSize: IntSize? = null
+
+    constructor(@IntRange(from = 0) width: Int, @IntRange(from = 0) height: Int) : this() {
+      this.width = width
+      this.height = height
+    }
+
+    /** Amount of absolute pixels horizontally. */
+    @IntRange(from = 0)
+    var width = 0
+      set(width) {
+        if (field != width) {
+          field = width
+          intSize = null
+        }
+      }
+
+    /** Amount of absolute pixels vertically. */
+    @IntRange(from = 0)
+    var height = 0
+      set(height) {
+        if (field != height) {
+          field = height
+          intSize = null
+        }
+      }
+
+    /**
+     * Converts this into a Compose [IntSize].
+     *
+     * Note that an instance of that class is not necessarily created each time this method gets
+     * called; rather, it is instantiated only when either this [MutableSize]'s [width] or [height]
+     * have changed since the last conversion, or it has never been converted before.
+     */
+    fun asIntSize() = intSize ?: IntSize(width, height).also { intSize = it }
+  }
 
   /**
    * Shows this popup when it enters composition and dismisses it when it is decomposed.
@@ -213,10 +388,68 @@ private class SearchTextFieldPopup(
     resultsLoadable: ListLoadable<ProfileSearchResult>,
     modifier: Modifier = Modifier
   ) {
-    SimultaneousCompositionProhibitionEffect()
     Scrim()
+    SimultaneousCompositionProhibitionEffect()
     HostViewRecompositionEffect(modifier, query, onQueryChange, resultsLoadable)
     AppearanceEffect()
+  }
+
+  /**
+   * Changes the position of this popup relative to the window in which it is displayed.
+   *
+   * @param alignment [Alignment] from which the positioning is to be performed.
+   * @throws UnsupportedOperationException If the [alignment] is neither predefined nor
+   *   bi-dimensional.
+   */
+  @Throws(UnsupportedOperationException::class)
+  fun setAlignment(alignment: Alignment) {
+    coroutineScope.launch {
+      window { attributes ->
+        layoutDirectionOf(decorView)?.let { layoutDirection ->
+          val hostViewSize = hostViewSizeFlow.filterNotNull().first()
+          val space = IntSize(decorView.width, decorView.height)
+          attributes.gravity = alignment.asGravity(hostViewSize.asIntSize(), space, layoutDirection)
+        } != null
+      }
+    }
+  }
+
+  /**
+   * Changes the offset of this popup, which is (0, 0) by default. Ultimately, repositions it by
+   * removing the previously defined offset and adding the specified one to both bi-dimensional axes
+   * of the window.
+   *
+   * @param offset Amounts in [Dp] to offset by.
+   */
+  fun setOffset(offset: DpOffset) = window {
+    val previousOffset = this@SearchTextFieldPopup.offset
+    val nextOffsetX = with(density) { offset.x.roundToPx() }
+    val nextOffsetY = with(density) { offset.y.roundToPx() }
+    var didChangeAttributes = false
+    if (previousOffset.x != nextOffsetX) {
+      it.x += nextOffsetX - previousOffset.x
+      didChangeAttributes = true
+    }
+    if (previousOffset.y != nextOffsetY) {
+      it.y += nextOffsetY - previousOffset.y
+      didChangeAttributes = true
+    }
+    this@SearchTextFieldPopup.offset = IntOffset(nextOffsetX, nextOffsetY)
+    didChangeAttributes
+  }
+
+  /**
+   * Changes the amount of space surrounding this popup (none by default). Differs from an offset in
+   * that it influences the overall size upon measurement. Under the hood, sets the value of the
+   * [MutableStateFlow], which is collected upon display until shown, and applied to the created
+   * [HostView].
+   *
+   * @param padding Space to be added to the edges of this popup.
+   * @see setOffset
+   * @see MutableStateFlow.value
+   */
+  fun setPadding(padding: PaddingValues) {
+    paddingFlow.value = padding
   }
 
   /**
@@ -229,50 +462,11 @@ private class SearchTextFieldPopup(
    *   previously defined one.
    */
   fun setOnDidDismissListener(onDidDismissListener: (() -> Unit)?) {
-    delegate?.setOnDismissListener(onDidDismissListener?.let { { it() } })
+    this.onDidDismissListener = onDidDismissListener
   }
 
-  /**
-   * Creates a [ComposeView] by which a [ResultSearchTextField] is hosted, whose tree ownership is
-   * configured upon a request to show this popup and deconfigured whenever it is dismissed — both
-   * respectively triggered by calls to [show] and [dismiss].
-   *
-   * @return The host [View], or `null` in case this method gets called after the [context] has been
-   *   garbage-collected.
-   * @see hostViewTreeOwner
-   */
-  private fun createHostView() =
-    context?.let {
-      ComposeView(it).apply {
-        setContent {
-          AutosTheme {
-            Box(
-              Modifier.padding(
-                start = SearchTextFieldDefaults.spacing,
-                top = SearchTextFieldDefaults.spacing,
-                end = SearchTextFieldDefaults.spacing,
-
-                /*
-                 * Dimensions of the shadow cast by the text field are disregarded by the view when
-                 * it is measured; without the padding below, it gets clipped. Calling
-                 * setClipChildren(false) is futile in this case, given that the text field itself
-                 * is a composable rather than a child view.
-                 */
-                bottom = SearchTextFieldDefaults.Elevation
-              )
-            ) {
-              ResultSearchTextField(
-                query,
-                onQueryChange,
-                onDismissal = ::dismiss,
-                resultsLoadable,
-                modifier.focusRequester(rememberImmediateFocusRequester()).fillMaxWidth()
-              )
-            }
-          }
-        }
-      }
-    }
+  /** Creates a [coroutineScope] for this popup. */
+  private fun createCoroutineScope() = CoroutineScope(Dispatchers.Main.immediate)
 
   /**
    * Effect that runs once upon a composition and ensures that this popup is not already displayed;
@@ -288,67 +482,15 @@ private class SearchTextFieldPopup(
     DisposableEffect(Unit) {
       onDispose {
         delegate?.let {
-          check(!it.isShowing) {
-            "Cannot perform simultaneous compositions of a search text field popup!"
-          }
+          check(!it.isShowing) { "Cannot perform simultaneous compositions of a popup!" }
         }
       }
     }
 
   /**
-   * Dark overlay for contrasting the [ResultSearchTextField] with the content laid out behind it.
-   *
-   * @param modifier [Modifier] to be applied to the underlying [Canvas].
-   */
-  @Composable
-  private fun Scrim(modifier: Modifier = Modifier) {
-    val isVisible by remember { derivedStateOf { resultsLoadable is ListLoadable.Populated } }
-    val alpha by animateFloatAsState(if (isVisible) .05f else 0f, label = "Scrim alpha")
-    val color = remember(alpha) { Color.Black.copy(alpha = alpha) }
-
-    StatusBarColorAlphaToScrimParityEffect(alpha)
-
-    Canvas(
-      modifier.layout { measurable, constraints ->
-        layout(width = 0, height = 0) {
-          measurable
-            .measure(Constraints.fixed(constraints.maxWidth, constraints.maxHeight))
-            .place(x = 0, y = 0)
-        }
-      }
-    ) {
-      drawRect(color)
-    }
-  }
-
-  /**
-   * Effect that changes the status bar color, matching its alpha to that of the [Scrim].
-   *
-   * @param alpha Opacity of the [Scrim], with `0f` = invisible; and `1f`= opaque.
-   */
-  @Composable
-  private fun StatusBarColorAlphaToScrimParityEffect(
-    @FloatRange(from = .0, to = 1.0) alpha: Float
-  ) {
-    val window = LocalContext.current.findActivity()?.window
-    val statusBarColorInArgb = remember(window) { window?.statusBarColor }
-
-    DisposableEffect(window, statusBarColorInArgb, alpha) {
-      @Suppress("NAME_SHADOWING") val window = window ?: return@DisposableEffect onDispose {}
-
-      @Suppress("NAME_SHADOWING")
-      val statusBarColorInArgb = statusBarColorInArgb ?: return@DisposableEffect onDispose {}
-
-      window.statusBarColor =
-        ColorUtils.setAlphaComponent(statusBarColorInArgb, lerp(0, 255, alpha))
-      onDispose { window.statusBarColor = statusBarColorInArgb }
-    }
-  }
-
-  /**
-   * Effect that triggers recompositions on a host [View] by assigning the given parameters to this
-   * popup's [State]-based properties. Each of them is then reset upon a decomposition, with a
-   * default, empty value.
+   * Effect that triggers recompositions on a [HostView] by assigning the given parameters to this
+   * popup's [State]- and [MutableStateFlow]-based properties. Each of them is then reset upon a
+   * decomposition, with a default, empty value.
    *
    * @param modifier [Modifier] to be applied to the [ResultSearchTextField].
    * @param query Content to be looked up.
@@ -383,8 +525,8 @@ private class SearchTextFieldPopup(
     }
 
     DisposableEffect(resultsLoadable) {
-      this@SearchTextFieldPopup.resultsLoadable = resultsLoadable
-      onDispose { this@SearchTextFieldPopup.resultsLoadable = EmptyResultsLoadable }
+      resultsLoadableFlow.value = resultsLoadable
+      onDispose { resultsLoadableFlow.value = EmptyResultsLoadable }
     }
   }
 
@@ -401,28 +543,147 @@ private class SearchTextFieldPopup(
       onDispose(::dismiss)
     }
 
-  /** Shows this popup, by which the [ResultSearchTextField] is displayed. */
-  private fun show() {
-    val delegate = delegate
-    val hostView = createHostView()
-    val hostViewTreeOwner = hostViewTreeOwner
-    if (delegate != null && hostView != null && hostViewTreeOwner != null) {
-      hostViewTreeOwner.own(hostView)
-      delegate.setContentView(hostView)
-      delegate.show()
+  /**
+   * Dark overlay for contrasting the [ResultSearchTextField] with the content laid out behind it.
+   *
+   * @param modifier [Modifier] to be applied to the underlying [Canvas].
+   */
+  @Composable
+  private fun Scrim(modifier: Modifier = Modifier) {
+    val resultsLoadable = resultsLoadable
+    val isVisible = remember(resultsLoadable) { resultsLoadable is ListLoadable.Populated }
+    val alpha by animateFloatAsState(if (isVisible) .05f else 0f, label = "Scrim alpha")
+    val color = remember(alpha) { Color.Black.copy(alpha = alpha) }
+
+    StatusBarColorsAlphaToScrimParityEffect(alpha)
+
+    Canvas(
+      modifier.layout { measurable, constraints ->
+        layout(width = 0, height = 0) {
+          measurable
+            .measure(Constraints.fixed(constraints.maxWidth, constraints.maxHeight))
+            .place(x = 0, y = 0)
+        }
+      }
+    ) {
+      drawRect(color)
     }
   }
+
+  /**
+   * Effect that changes the status bars' color, matching its alpha to that of the [Scrim].
+   *
+   * @param alpha Opacity of the [Scrim], with `0f` = transparent; and `1f`= opaque.
+   */
+  @Composable
+  private fun StatusBarColorsAlphaToScrimParityEffect(
+    @FloatRange(from = .0, to = 1.0) alpha: Float
+  ) {
+    val window = LocalContext.current.findActivity()?.window
+    val statusBarsColorInArgb = remember(window) { window?.statusBarColor }
+
+    DisposableEffect(window, statusBarsColorInArgb, alpha) {
+      window ?: return@DisposableEffect onDispose {}
+      statusBarsColorInArgb ?: return@DisposableEffect onDispose {}
+
+      window.statusBarColor =
+        ColorUtils.setAlphaComponent(statusBarsColorInArgb, lerp(0, 255, alpha))
+      println(window.statusBarColor)
+      onDispose { window.statusBarColor = statusBarsColorInArgb }
+    }
+  }
+
+  /** Shows this popup, by which the [ResultSearchTextField] is displayed. */
+  private fun show() {
+    val delegate = delegate ?: return
+    val hostViewTreeOwner = hostViewTreeOwner ?: return
+    val hostView = createHostView() ?: return
+    hostViewTreeOwner.own(hostView)
+    delegate.setContentView(hostView)
+    delegate.show()
+  }
+
+  /**
+   * Creates an [AbstractComposeView] by which a [ResultSearchTextField] is hosted, whose tree
+   * ownership is configured upon a request to show this popup and deconfigured whenever it is
+   * dismissed. Each measurement is observed and propagated to [hostViewSize], and every set padding
+   * is applied.
+   *
+   * @return The [HostView], or `null` in case this method gets called after the [context] has been
+   *   garbage-collected.
+   * @see hostViewTreeOwner
+   * @see show
+   * @see Dialog.dismiss
+   * @see dismiss
+   * @see setPadding
+   */
+  private fun createHostView(): HostView? =
+    context?.let { context ->
+      object : HostView(context, parentCompositionContext) {
+        init {
+          coroutineScope.launch { paddingFlow.collect(::setPadding) }
+        }
+
+        @Composable
+        override fun Content() =
+          ResultSearchTextField(
+            query,
+            onQueryChange,
+            onDismissal = ::dismiss,
+            resultsLoadable,
+            Modifier.focusRequester(rememberImmediateFocusRequester()) then modifier
+          )
+
+        override fun onLaidOut(isChanged: Boolean) {
+          if (isChanged) {
+            val previousHostViewSize = hostViewSize
+            if (previousHostViewSize == null) {
+              hostViewSize = MutableSize(width, height)
+            } else {
+              previousHostViewSize.width = width
+              previousHostViewSize.height = height
+            }
+          }
+        }
+
+        override fun onDetachedFromWindow() {
+          super.onDetachedFromWindow()
+          hostViewSize = null
+        }
+      }
+    }
 
   /** Dismisses this popup, by which the [ResultSearchTextField] is displayed. */
   private fun dismiss() {
     delegate?.dismiss()
   }
 
+  /**
+   * Resets this popup's window attributes.
+   *
+   * @param attribute Lambda that receives both the [delegate]'s [Window] and its attributes,
+   *   returning whether changes have been performed to them — which, in turn, determines if they
+   *   will be reset. Is not invoked in case the [context] has been garbage-collected.
+   * @see Window.getAttributes
+   */
+  @OptIn(ExperimentalContracts::class)
+  private inline fun window(attribute: Window.(attributes: WindowManager.LayoutParams) -> Boolean) {
+    contract { callsInPlace(attribute, InvocationKind.EXACTLY_ONCE) }
+    val window = delegate?.window
+    val attributes = window?.attributes
+    if (window != null && attributes != null && window.attribute(attributes)) {
+      window.attributes = attributes
+    }
+  }
+
   private companion object {
     /**
-     * [ColorDrawable] defined as the [delegate]'s [Window] background for making it transparent.
+     * [delegate]'s [Window]'s and its decor [View]'s descendants' background.
+     *
+     * @see Window.getDecorView
+     * @see View.getBackground
      */
-    @JvmStatic private val transparentDrawable = ColorDrawable(android.graphics.Color.TRANSPARENT)
+    @JvmStatic private val transparentBackground = ColorDrawable(AndroidColor.TRANSPARENT)
   }
 }
 
@@ -437,23 +698,45 @@ private class SearchTextFieldPopup(
  * @param onQueryChange Lambda invoked whenever the [query] changes.
  * @param resultsLoadable [Profile] results found for [query].
  * @param onDidDismiss Operation performed after this popup is dismissed.
+ * @param alignment Positioning relative to the window.
+ * @param offset Amount in both axes by which this popup is offset.
+ * @param padding Space to surround the [SearchTextField] with.
+ * @throws UnsupportedOperationException If the [alignment] is neither predefined nor
+ *   bi-dimensional.
  */
 @Composable
 @Deprecated(
   "ResultSearchTextField is a part of the internals of a SearchTextFieldPopup as of Orca 0.5.0. " +
     "External consumers do not have access to it; thus, calling this composable displays such a " +
     "popup instead of a SearchTextField containing results for a given query.",
-  ReplaceWith("SearchTextFieldPopup(modifier, query, onQueryChange, resultsLoadable, onDidDismiss)")
+  ReplaceWith(
+    "SearchTextFieldPopup(modifier, query, onQueryChange, resultsLoadable, onDidDismiss, " +
+      "alignment, offset, padding)"
+  )
 )
 @InternalTimelineApi
+@Throws(UnsupportedOperationException::class)
 @VisibleForTesting
 fun ResultSearchTextField(
   modifier: Modifier = Modifier,
   query: String = "",
   onQueryChange: (query: String) -> Unit = NoOpOnQueryChange,
   resultsLoadable: ListLoadable<ProfileSearchResult> = EmptyResultsLoadable,
-  onDidDismiss: () -> Unit = NoOpOnDismissal
-) = SearchTextFieldPopup(modifier, query, onQueryChange, resultsLoadable, onDidDismiss)
+  onDidDismiss: () -> Unit = NoOpOnDismissal,
+  alignment: Alignment = Alignment.TopStart,
+  offset: DpOffset = DpOffset.Zero,
+  padding: PaddingValues = Unpadded
+) =
+  SearchTextFieldPopup(
+    modifier,
+    query,
+    onQueryChange,
+    resultsLoadable,
+    onDidDismiss,
+    alignment,
+    offset,
+    padding
+  )
 
 /**
  * Popup by which a [SearchTextField] that presents results for the [query] is displayed.
@@ -465,17 +748,36 @@ fun ResultSearchTextField(
  * @param onQueryChange Lambda invoked whenever the [query] changes.
  * @param resultsLoadable [Profile] results found for [query].
  * @param onDidDismiss Operation performed after this popup is dismissed.
+ * @param alignment Positioning relative to the window.
+ * @param offset Amount in both axes by which this popup is offset.
+ * @param padding Space to surround the [SearchTextField] with.
+ * @throws UnsupportedOperationException If the [alignment] is neither predefined nor
+ *   bi-dimensional.
  */
 @Composable
 @InternalTimelineApi
+@Throws(UnsupportedOperationException::class)
 @VisibleForTesting
 fun SearchTextFieldPopup(
   modifier: Modifier = Modifier,
   query: String = "",
   onQueryChange: (query: String) -> Unit = NoOpOnQueryChange,
   resultsLoadable: ListLoadable<ProfileSearchResult> = EmptyResultsLoadable,
-  onDidDismiss: () -> Unit = NoOpOnDismissal
-) = SearchTextFieldPopup(query, onQueryChange, resultsLoadable, onDidDismiss, modifier)
+  onDidDismiss: () -> Unit = NoOpOnDismissal,
+  alignment: Alignment = Alignment.TopStart,
+  offset: DpOffset = DpOffset.Zero,
+  padding: PaddingValues = Unpadded
+) =
+  SearchTextFieldPopup(
+    query,
+    onQueryChange,
+    resultsLoadable,
+    onDidDismiss,
+    modifier,
+    alignment,
+    offset,
+    padding
+  )
 
 /**
  * Popup by which a [SearchTextField] that presents results for the [query] is displayed.
@@ -485,21 +787,54 @@ fun SearchTextFieldPopup(
  * @param resultsLoadable [Profile] results found for the [query].
  * @param onDidDismiss Operation performed whenever this popup is dismissed.
  * @param modifier [Modifier] to be applied to the [SearchTextField].
+ * @param alignment Positioning relative to the window.
+ * @param offset Amount in both axes by which this popup is offset.
+ * @param padding Space to surround the [SearchTextField] with.
+ * @throws UnsupportedOperationException If the [alignment] is neither predefined nor
+ *   bi-dimensional.
  */
 @Composable
+@Throws(UnsupportedOperationException::class)
 fun SearchTextFieldPopup(
   query: String,
   onQueryChange: (query: String) -> Unit,
   resultsLoadable: ListLoadable<ProfileSearchResult>,
   onDidDismiss: () -> Unit,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
+  alignment: Alignment = Alignment.TopStart,
+  offset: DpOffset = DpOffset.Zero,
+  padding: PaddingValues = Unpadded
 ) {
   val context = LocalContext.current
+  val compositionContext = rememberCompositionContext()
+  val density = LocalDensity.current
   val view = LocalView.current
+  val searchTextFieldDefaultShape = SearchTextFieldDefaults.shape
   val popup =
-    remember(context, view) {
-      SearchTextFieldPopup(WeakReference(context), hostViewTreeOwner = ViewTreeOwner.of(view))
+    remember(context, compositionContext, density, view, searchTextFieldDefaultShape) {
+      SearchTextFieldPopup(
+        WeakReference(context),
+        hostViewTreeOwner = ViewTreeOwner.of(view),
+        parentCompositionContext = compositionContext,
+        density,
+        searchTextFieldDefaultShape
+      )
     }
+
+  DisposableEffect(alignment) {
+    popup.setAlignment(alignment)
+    onDispose { popup.setAlignment(Alignment.TopStart) }
+  }
+
+  DisposableEffect(offset) {
+    popup.setOffset(offset)
+    onDispose { popup.setOffset(DpOffset.Zero) }
+  }
+
+  DisposableEffect(padding) {
+    popup.setPadding(padding)
+    onDispose { popup.setPadding(Unpadded) }
+  }
 
   DisposableEffect(onDidDismiss) {
     popup.setOnDidDismissListener(onDidDismiss)
@@ -510,33 +845,13 @@ fun SearchTextFieldPopup(
 }
 
 /**
- * [DismissibleSearchTextField] that presents results for the [query].
- *
- * This composable is stateless by default and is intended for previewing only.
- *
- * @param modifier [Modifier] to be applied to the [ResultSearchTextField].
- * @param query Content to be looked up.
- * @param onQueryChange Lambda invoked whenever the [query] changes.
- * @param onDismissal Callback called when dismissal is requested.
- * @param resultsLoadable [Profile] results found for [query].
- */
-@Composable
-private fun StatelessResultSearchTextField(
-  modifier: Modifier = Modifier,
-  query: String = "",
-  onQueryChange: (query: String) -> Unit = NoOpOnQueryChange,
-  onDismissal: () -> Unit = NoOpOnDismissal,
-  resultsLoadable: ListLoadable<ProfileSearchResult> = EmptyResultsLoadable
-) = ResultSearchTextField(query, onQueryChange, onDismissal, resultsLoadable, modifier)
-
-/**
- * [DismissibleSearchTextField] that presents results for the [query].
+ * [SearchTextField] that presents results for the [query].
  *
  * @param query Content to be looked up.
  * @param onQueryChange Lambda invoked whenever the [query] changes.
  * @param onDismissal Callback called when dismissal is requested.
  * @param resultsLoadable [Profile] results found for [query].
- * @param modifier [Modifier] to be applied to the [DismissibleSearchTextField].
+ * @param modifier [Modifier] to be applied to the [SearchTextField].
  */
 @Composable
 private fun ResultSearchTextField(
@@ -546,140 +861,58 @@ private fun ResultSearchTextField(
   resultsLoadable: ListLoadable<ProfileSearchResult>,
   modifier: Modifier = Modifier
 ) {
-  val defaultElevation = SearchTextFieldDefaults.Elevation
-  val containsResults by
-    remember(resultsLoadable) { mutableStateOf(resultsLoadable is ListLoadable.Populated) }
-  val layoutElevation by
-    remember(containsResults) { derivedStateOf { if (containsResults) defaultElevation else 0.dp } }
+  val areResultsLoading = remember(resultsLoadable) { resultsLoadable is ListLoadable.Loading }
+  val containsResults = remember(resultsLoadable) { resultsLoadable is ListLoadable.Populated }
 
-  ConstraintLayout(
-    Modifier.shadow(layoutElevation, SearchTextFieldDefaults.shape).`if`(containsResults) {
-      clip(SearchTextFieldDefaults.shape)
-    }
-  ) {
-    val density = LocalDensity.current
-    val (searchTextFieldRef, resultsRef) = createRefs()
-    var searchTextFieldSize by remember { mutableStateOf(Size.Unspecified) }
-    val searchTextFieldBottomEndRadius by
-      animateDpAsState(
-        if (containsResults) {
-          0.dp
-        } else {
-          SearchTextFieldDefaults.shape.bottomEnd.toDp(searchTextFieldSize, density)
-        },
-        animationSpec = tween(BottomRadiusAnimationDuration),
-        label = "Bottom end radius"
-      )
-    val searchTextFieldBottomStartRadius by
-      animateDpAsState(
-        if (containsResults) {
-          0.dp
-        } else {
-          SearchTextFieldDefaults.shape.bottomStart.toDp(searchTextFieldSize, density)
-        },
-        animationSpec = tween(BottomRadiusAnimationDuration),
-        label = "Bottom start radius"
-      )
-    val searchTextFieldElevation by
-      remember(containsResults) {
-        derivedStateOf { if (containsResults) 0.dp else defaultElevation }
+  Layout(
+    {
+      SearchTextField(
+        query,
+        onQueryChange,
+        areResultsLoading,
+        modifier,
+        RectangleShape,
+        elevation = 0.dp
+      ) {
+        HoverableIconButton(
+          onClick = onDismissal,
+          Modifier.size(SearchTextFieldDefaults.IconSize).testTag(DismissButtonTag)
+        ) {
+          Icon(
+            AutosTheme.iconography.close.asImageVector,
+            contentDescription = stringResource(R.string.composite_timeline_dismiss)
+          )
+        }
       }
 
-    DismissibleSearchTextField(
-      searchTextFieldRef,
-      query,
-      onQueryChange,
-      SearchTextFieldDefaults.shape.copy(
-        bottomEnd = CornerSize(searchTextFieldBottomEndRadius),
-        bottomStart = CornerSize(searchTextFieldBottomStartRadius)
-      ),
-      searchTextFieldElevation,
-      resultsLoadable is ListLoadable.Loading,
-      onDismissal,
-      modifier
-        .onSizeChanged { searchTextFieldSize = it.toSize() }
-        .constrainAs(searchTextFieldRef) {}
-    )
-
-    AnimatedVisibility(
-      visible = containsResults,
-      Modifier.constrainAs(resultsRef) {
-          width = Dimension.fillToConstraints
-          centerHorizontallyTo(parent)
-          top.linkTo(searchTextFieldRef.bottom)
-        }
-        .zIndex(-1f),
-      enter = slideInVertically(tween(ResultAppearanceAnimationDurationInMilliseconds)),
-      exit = slideOutVertically()
-    ) {
-      HorizontalDivider(Modifier.testTag(DividerTag))
-
-      LazyColumn(
-        Modifier.constrainAs(createRef()) {
-          width = Dimension.fillToConstraints
-          centerHorizontallyTo(parent)
-          top.linkTo(resultsRef.bottom)
-        }
+      AnimatedVisibility(
+        visible = containsResults,
+        enter = slideInVertically(tween(ResultAppearanceAnimationDurationInMilliseconds)),
+        exit = slideOutVertically()
       ) {
-        resultsLoadable.ifPopulated {
-          itemsIndexed(this) { index, result ->
-            ResultCard(result, isLastOne = index == lastIndex, Modifier.fillMaxWidth())
+        LazyColumn {
+          item { HorizontalDivider(Modifier.testTag(DividerTag)) }
+          resultsLoadable.ifPopulated {
+            itemsIndexed(this) { index, result ->
+              ResultCard(result, isLastOne = index == lastIndex, Modifier.fillMaxWidth())
+            }
           }
         }
       }
+    },
+    Modifier.shadow(SearchTextFieldDefaults.Elevation, SearchTextFieldDefaults.shape)
+      .clip(SearchTextFieldDefaults.shape)
+      .wrapContentHeight()
+      .semantics(mergeDescendants = true) {}
+  ) { measurables, constraints ->
+    val searchTextFieldPlaceable = measurables.first().measure(constraints)
+    val width = searchTextFieldPlaceable.width
+    val resultCardsConstraints = constraints.copy(minWidth = width, maxWidth = width)
+    val resultCardsPlaceable = measurables.getOrNull(1)?.measure(resultCardsConstraints)
+    layout(width, height = searchTextFieldPlaceable.height + (resultCardsPlaceable?.height ?: 0)) {
+      resultCardsPlaceable?.place(x = 0, y = searchTextFieldPlaceable.height)
+      searchTextFieldPlaceable.place(x = 0, y = 0)
     }
-  }
-}
-
-/**
- * [SearchTextField] with a "dismiss" button.
- *
- * @param ref [ConstrainedLayoutReference] to the [SearchTextField].
- * @param query Content to be looked up.
- * @param onQueryChange Lambda invoked whenever the [query] changes.
- * @param shape [Shape] by which the [SearchTextField] is clipped.
- * @param elevation Amount in [Dp] by which it is elevated.
- * @param isLoading Whether it is to be put in a loading state. Ultimately, is reflected on the UI
- *   by having the "search" icon replaced by a [CircularProgressIndicator] that spins indefinitely.
- * @param onDismissal Callback called when dismissal is requested.
- * @param modifier [Modifier] to be applied to the [SearchTextField].
- */
-@Composable
-private fun ConstraintLayoutScope.DismissibleSearchTextField(
-  ref: ConstrainedLayoutReference,
-  query: String,
-  onQueryChange: (query: String) -> Unit,
-  shape: Shape,
-  elevation: Dp,
-  isLoading: Boolean,
-  onDismissal: () -> Unit,
-  modifier: Modifier = Modifier
-) {
-  SearchTextField(
-    query,
-    onQueryChange,
-    isLoading,
-    modifier.constrainAs(ref) {},
-    shape,
-    elevation,
-    contentPadding =
-      PaddingValues(
-        end = HoverableIconButtonDefaults.Size.width + SearchTextFieldDefaults.spacing * 2
-      )
-  )
-
-  HoverableIconButton(
-    onClick = onDismissal,
-    Modifier.constrainAs(createRef()) {
-        centerVerticallyTo(ref)
-        end.linkTo(ref.end)
-      }
-      .testTag(DismissButtonTag)
-  ) {
-    Icon(
-      AutosTheme.iconography.close.asImageVector,
-      contentDescription = stringResource(R.string.composite_timeline_dismiss)
-    )
   }
 }
 
@@ -773,28 +1006,24 @@ private fun ResultCard(
   }
 }
 
-/** Preview of a [ResultSearchTextField] with loading results. */
+/** Preview of a [SearchTextFieldPopup] with loading results. */
 @Composable
 @MultiThemePreview
-private fun ResultSearchTextFieldLoadingResultsPreview() {
-  AutosTheme { StatelessResultSearchTextField(resultsLoadable = ListLoadable.Loading()) }
+private fun SearchTextFieldPopupLoadingResultsPreview() = AutosTheme {
+  SearchTextFieldPopup(resultsLoadable = ListLoadable.Loading())
 }
 
-/** Preview of a [ResultSearchTextField] without results. */
+/** Preview of a [SearchTextFieldPopup] without results. */
 @Composable
 @MultiThemePreview
-private fun ResultSearchTextFieldWithoutResultsPreview() {
-  AutosTheme { StatelessResultSearchTextField() }
-}
+private fun SearchTextFieldPopupWithoutResultsPreview() = AutosTheme { SearchTextFieldPopup() }
 
-/** Preview of a [ResultSearchTextField] with results. */
+/** Preview of a [SearchTextFieldPopup] with results. */
 @Composable
 @MultiThemePreview
-private fun ResultSearchTextFieldWithResultsPreview() {
-  AutosTheme {
-    StatelessResultSearchTextField(
-      query = "${Account.sample.username}",
-      resultsLoadable = ListLoadable.Populated(serializableListOf(ProfileSearchResult.sample))
-    )
-  }
+private fun SearchTextFieldPopupWithResultsPreview() = AutosTheme {
+  SearchTextFieldPopup(
+    query = "${Account.sample.username}",
+    resultsLoadable = serializableListOf(ProfileSearchResult.sample).toListLoadable()
+  )
 }

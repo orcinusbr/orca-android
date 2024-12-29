@@ -49,7 +49,7 @@ internal class SearchTextFieldPopupTests {
 
   @Test
   fun shows() {
-    composeRule.activity.setContent { SearchTextFieldPopup() }
+    composeRule.activity.setContent { AutosTheme { SearchTextFieldPopup() } }
     composeRule.onSearchTextField().assertIsDisplayed()
   }
 
@@ -57,7 +57,7 @@ internal class SearchTextFieldPopupTests {
   fun recomposesWhenQueryChanges() {
     composeRule.setContent {
       var query by remember { mutableStateOf("") }
-      SearchTextFieldPopup(query = query, onQueryChange = { query = it })
+      AutosTheme { SearchTextFieldPopup(query = query, onQueryChange = { query = it }) }
     }
     composeRule.onSearchTextField().apply { performTextInput("❤️‍🩹") }.assertTextEquals("❤️‍🩹")
   }
@@ -82,21 +82,21 @@ internal class SearchTextFieldPopupTests {
 
   @Test
   fun dismisses() {
-    composeRule.setContent { SearchTextFieldPopup() }
+    composeRule.setContent { AutosTheme { SearchTextFieldPopup() } }
     composeRule.activity.setContent {}
     composeRule.onSearchTextField().assertDoesNotExist()
   }
 
   @Test
   fun dismissesWhenBackPressing() {
-    composeRule.setContent { SearchTextFieldPopup() }
+    composeRule.setContent { AutosTheme { SearchTextFieldPopup() } }
     pressBack()
     composeRule.onSearchTextField().assertDoesNotExist()
   }
 
   @Test
   fun dismissesWhenClickingDismissalButton() {
-    composeRule.setContent { SearchTextFieldPopup() }
+    composeRule.setContent { AutosTheme { SearchTextFieldPopup() } }
     composeRule.onDismissButton().performClick()
     composeRule.onSearchTextField().assertDoesNotExist()
   }
@@ -106,7 +106,7 @@ internal class SearchTextFieldPopupTests {
     val originalOwnedTreeView = View(composeRule.activity)
     composeRule.activity.setContentView(originalOwnedTreeView)
     val originalViewTreeOwner = ViewTreeOwner.of(originalOwnedTreeView)
-    composeRule.activity.setContent { SearchTextFieldPopup() }
+    composeRule.activity.setContent { AutosTheme { SearchTextFieldPopup() } }
     composeRule.onDismissButton().performClick()
     assertThat(ViewTreeOwner)
       .prop("from") { composeRule.activity.window?.decorView?.let(it::of) }
@@ -116,7 +116,9 @@ internal class SearchTextFieldPopupTests {
   @Test
   fun listensToDismissal() {
     var didDismiss = false
-    composeRule.activity.setContent { SearchTextFieldPopup(onDidDismiss = { didDismiss = true }) }
+    composeRule.activity.setContent {
+      AutosTheme { SearchTextFieldPopup(onDidDismiss = { didDismiss = true }) }
+    }
     composeRule.onDismissButton().performClick()
     composeRule.waitForIdle()
     assertThat(didDismiss, "didDismiss").isTrue()

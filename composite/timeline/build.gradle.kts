@@ -19,6 +19,8 @@ plugins {
   alias(libs.plugins.kotlin.compose)
 }
 
+kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
+
 android {
   buildFeatures.compose = true
   packagingOptions.resources.excludes +=
@@ -31,6 +33,7 @@ dependencies {
   api(project(":platform:core"))
   api(libs.loadable.list)
 
+  implementation(project(":ext:coroutines"))
   implementation(project(":ext:reflection"))
   implementation(project(":platform:focus"))
   implementation(project(":platform:ime"))

@@ -33,6 +33,10 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
@@ -41,16 +45,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
@@ -142,6 +149,7 @@ internal constructor(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
   ) {
+    val density = LocalDensity.current
     val coroutineScope = rememberCoroutineScope()
 
     ReplaceableCompositionReporterEffect()
@@ -155,11 +163,13 @@ internal constructor(
             onQueryChange,
             resultsLoadable,
             onDidDismiss = ::dismiss,
-            modifier.resultSearchTextFieldHeightReporter(
-              LocalDensity.current,
-              coroutineScope,
-              SearchTextFieldDefaults.spacing
-            )
+            modifier.resultSearchTextFieldHeightReporter(coroutineScope).fillMaxWidth(),
+            Alignment.TopCenter,
+            DpOffset(
+              x = 0.dp,
+              y = with(density) { WindowInsets.statusBars.height } + SearchTextFieldDefaults.spacing
+            ),
+            PaddingValues(horizontal = SearchTextFieldDefaults.spacing)
           )
         } else {
           ResultSearchTextFieldLayoutHeightResetEffect(coroutineScope)
@@ -280,24 +290,22 @@ internal constructor(
    * its height to [searchTextFieldHeight] at each change to it so that the overlaid content can be
    * properly padded/spaced.
    *
-   * @param density [Density] with which the height in pixels of the layout is to be converted into
-   *   [Dp].
    * @param coroutineScope [CoroutineScope] in which [Job]s that animate the [searchTextFieldHeight]
    *   are launched.
-   * @param spacing Amount of [Dp] that spaces a [SearchTextField] by default, obtainable through
-   *   [SearchTextFieldDefaults.spacing].
    */
   private fun Modifier.resultSearchTextFieldHeightReporter(
-    density: Density,
-    coroutineScope: CoroutineScope,
-    spacing: Dp
+    coroutineScope: CoroutineScope
   ): Modifier {
     return if (searchTextFieldHeight == 0.dp) {
-      onSizeChanged {
-        coroutineScope.launch {
-          searchTextFieldHeightAnimatable.animateTo(
-            with(density) { it.height.toDp() } + spacing * 2
-          )
+      composed {
+        val defaultSpacing = SearchTextFieldDefaults.spacing
+        layout { measurable, constraints ->
+          val placeable = measurable.measure(constraints)
+          val height = placeable.height
+          coroutineScope.launch {
+            searchTextFieldHeightAnimatable.animateTo(height.toDp() + defaultSpacing * 2)
+          }
+          layout(placeable.width, height) { placeable.place(x = 0, y = 0) }
         }
       }
     } else {

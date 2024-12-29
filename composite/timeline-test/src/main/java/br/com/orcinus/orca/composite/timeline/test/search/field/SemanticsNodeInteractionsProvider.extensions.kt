@@ -27,7 +27,7 @@ import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
  * @see isDismissButton
  */
 fun SemanticsNodeInteractionsProvider.onDismissButton(): SemanticsNodeInteraction {
-  return onNode(isDismissButton())
+  return onNode(isDismissButton(), useUnmergedTree = true)
 }
 
 /**

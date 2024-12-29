@@ -16,7 +16,9 @@
 package br.com.orcinus.orca.composite.timeline.search.field
 
 import android.view.View
+import android.view.ViewGroup
 import androidx.compose.runtime.Immutable
+import androidx.core.view.children
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStoreOwner
@@ -77,6 +79,23 @@ internal abstract class ViewTreeOwner private constructor() :
       } else {
         null
       }
+    }
+  }
+}
+
+/**
+ * Performs the given action on all this [View]'s descendants, be them direct (children of its own)
+ * or indirect (children of its children). Does so exclusively, meaning that the [View] on which
+ * this method is first called _will not_ be passed into the lambda.
+ *
+ * @param onTraversal Callback called on each descendant (this [View]'s children, their children,
+ *   their children's children, …, recursively).
+ */
+internal fun View.traverse(onTraversal: (descendant: View) -> Unit) {
+  if (this is ViewGroup) {
+    for (child in children) {
+      onTraversal(child)
+      child.traverse(onTraversal)
     }
   }
 }
