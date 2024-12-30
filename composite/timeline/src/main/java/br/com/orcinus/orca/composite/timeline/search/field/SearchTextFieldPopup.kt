@@ -562,7 +562,7 @@ private class SearchTextFieldPopup(
     val alpha by animateFloatAsState(if (isVisible) .05f else 0f, label = "Scrim alpha")
     val color = remember(alpha) { Color.Black.copy(alpha = alpha) }
 
-    StatusBarColorsAlphaToScrimParityEffect(alpha)
+    StatusBarsColorAlphaToScrimParityEffect(alpha)
 
     Canvas(
       modifier.layout { measurable, constraints ->
@@ -583,7 +583,7 @@ private class SearchTextFieldPopup(
    * @param alpha Opacity of the [Scrim], with `0f` = transparent; and `1f`= opaque.
    */
   @Composable
-  private fun StatusBarColorsAlphaToScrimParityEffect(
+  private fun StatusBarsColorAlphaToScrimParityEffect(
     @FloatRange(from = .0, to = 1.0) alpha: Float
   ) {
     val window = LocalContext.current.findActivity()?.window
@@ -595,7 +595,6 @@ private class SearchTextFieldPopup(
 
       window.statusBarColor =
         ColorUtils.setAlphaComponent(statusBarsColorInArgb, lerp(0, 255, alpha))
-      println(window.statusBarColor)
       onDispose { window.statusBarColor = statusBarsColorInArgb }
     }
   }
