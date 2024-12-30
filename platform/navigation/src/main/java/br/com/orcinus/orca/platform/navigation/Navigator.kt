@@ -222,7 +222,6 @@ private constructor(
   private fun navigateSynchronously(transition: Transition, provisioning: () -> Fragment) {
     fragmentManager.commit(allowStateLoss = true) {
       val fragment = provisioning()
-      println(backStack)
       addToBackStack(backStack.name)
       setTransition(transition.value)
       add(containerID, fragment, fragment.tag)
