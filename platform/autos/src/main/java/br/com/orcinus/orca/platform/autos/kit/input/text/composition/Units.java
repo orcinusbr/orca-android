@@ -20,7 +20,7 @@ import android.util.TypedValue;
 import androidx.annotation.NonNull;
 
 /** Utilities for performing operations with units. */
-class Units {
+public class Units {
   private Units() {}
 
   /**
@@ -29,7 +29,7 @@ class Units {
    * @param context {@link Context} through which the conversion will take place.
    * @param dp Amount in DPs to be converted into pixels.
    */
-  static int dp(@NonNull Context context, float dp) {
+  public static int dp(@NonNull Context context, float dp) {
     return (int)
         TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());

@@ -13,17 +13,20 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.ime
+package br.com.orcinus.orca.composite.timeline.search.field.interop
 
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
+import android.view.View
+import androidx.compose.ui.unit.LayoutDirection
+import assertk.assertThat
+import assertk.assertions.isSameInstanceAs
+import br.com.orcinus.orca.platform.testing.context
+import kotlin.test.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-/** Finds the [Activity] to which this [Context] is related (might also be itself). */
-tailrec fun Context.findActivity(): Activity? {
-  return when (this) {
-    is Activity -> this
-    is ContextWrapper -> baseContext?.findActivity()
-    else -> null
-  }
+@RunWith(RobolectricTestRunner::class)
+internal class LayoutDirectionsTests {
+  @Test
+  fun getsComposeLtrLayoutDirectionFromView() =
+    assertThat(layoutDirectionOf(View(context))).isSameInstanceAs(LayoutDirection.Ltr)
 }

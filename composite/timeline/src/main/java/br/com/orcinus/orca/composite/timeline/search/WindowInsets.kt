@@ -13,17 +13,18 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.ime
+package br.com.orcinus.orca.composite.timeline.search
 
-import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 
-/** Finds the [Activity] to which this [Context] is related (might also be itself). */
-tailrec fun Context.findActivity(): Activity? {
-  return when (this) {
-    is Activity -> this
-    is ContextWrapper -> baseContext?.findActivity()
-    else -> null
+/** Calculates the height of these [WindowInsets] in [Dp]s. */
+context(Density)
+
+internal inline val WindowInsets.height: Dp
+  get() {
+    val top = getTop(this@Density)
+    val bottom = getBottom(this@Density)
+    return (maxOf(top, bottom) - minOf(top, bottom)).toDp()
   }
-}

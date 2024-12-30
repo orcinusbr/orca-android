@@ -271,13 +271,15 @@ internal class SearchableTests {
     composeRule
       .apply {
         setContent {
-          Searchable {
-            Replaceable()
+          AutosTheme {
+            Searchable {
+              Replaceable()
 
-            DisposableEffect(Unit) {
-              show()
-              dismiss()
-              onDispose {}
+              DisposableEffect(Unit) {
+                show()
+                dismiss()
+                onDispose {}
+              }
             }
           }
         }

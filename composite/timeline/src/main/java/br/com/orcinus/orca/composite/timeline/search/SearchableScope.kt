@@ -33,40 +33,39 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
-import androidx.compose.ui.window.Popup
-import androidx.compose.ui.window.PopupProperties
-import br.com.orcinus.orca.composite.timeline.search.field.ResultSearchTextField
+import br.com.orcinus.orca.composite.timeline.search.field.SearchTextFieldPopup
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextField
 import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextFieldDefaults
-import br.com.orcinus.orca.platform.focus.rememberImmediateFocusRequester
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -88,11 +87,10 @@ internal constructor(
   /** Maximum [Size] that the [Filler] has had up until now. */
   private var fillerPeakSize = Size.Unspecified
 
-  /** [Animatable] by which the height of the [ResultSearchTextField] is held and animated. */
-  private val searchTextFieldLayoutHeightAnimatable =
-    Animatable(initialValue = 0.dp, Dp.VectorConverter)
+  /** [Animatable] by which the height of the [SearchTextField] is held and animated. */
+  private val searchTextFieldHeightAnimatable = Animatable(initialValue = 0.dp, Dp.VectorConverter)
 
-  /** Whether the [ResultSearchTextField] is currently being shown. */
+  /** Whether the [SearchTextField] is currently being shown. */
   var isSearching by mutableStateOf(false)
     private set
 
@@ -101,7 +99,18 @@ internal constructor(
     private set
 
   /** Height of the [SearchTextField], or zeroed in case search isn't being performed. */
-  val searchTextFieldLayoutHeight by searchTextFieldLayoutHeightAnimatable.asState()
+  val searchTextFieldHeight by searchTextFieldHeightAnimatable.asState()
+
+  /** Alias for [searchTextFieldHeight]. */
+  @Deprecated(
+    "Renamed to \"searchTextFieldHeight\".",
+    ReplaceWith(
+      "searchTextFieldHeight",
+      imports = ["br.com.orcinus.orca.composite.timeline.search.SearchableScope"]
+    )
+  )
+  inline val searchTextFieldLayoutHeight
+    get() = searchTextFieldHeight
 
   /**
    * [State] with the radius of the blur that should be applied to the content.
@@ -141,25 +150,29 @@ internal constructor(
     content: @Composable () -> Unit
   ) {
     val density = LocalDensity.current
+    val coroutineScope = rememberCoroutineScope()
 
     ReplaceableCompositionReporterEffect()
     SearchResultsEffect(resultsLoadable)
 
     Filler {
       Accordion { willSearch ->
-        val coroutineScope = rememberCoroutineScope()
-
         if (willSearch) {
           SearchTextFieldPopup(
-            density,
-            coroutineScope,
             query,
             onQueryChange,
             resultsLoadable,
-            modifier
+            onDidDismiss = ::dismiss,
+            modifier.resultSearchTextFieldHeightReporter(coroutineScope).fillMaxWidth(),
+            Alignment.TopCenter,
+            DpOffset(
+              x = 0.dp,
+              y = with(density) { WindowInsets.statusBars.height } + SearchTextFieldDefaults.spacing
+            ),
+            PaddingValues(horizontal = SearchTextFieldDefaults.spacing)
           )
         } else {
-          SearchTextFieldLayoutHeightResetEffect(coroutineScope)
+          ResultSearchTextFieldLayoutHeightResetEffect(coroutineScope)
           content()
         }
       }
@@ -172,16 +185,16 @@ internal constructor(
   }
 
   /**
-   * Displays either the [content] or the [ResultSearchTextField] that presents results for the
-   * query when it is requested to be shown.
+   * Displays either the [content] or the [SearchTextField] that presents results for the query when
+   * it is requested to be shown.
    *
    * This overload is stateless by default and is intended for previewing and testing purposes only.
    *
-   * @param modifier [Modifier] to be applied to the [ResultSearchTextField].
+   * @param modifier [Modifier] to be applied to the [SearchTextField].
    * @param query Content to be looked up.
    * @param onQueryChange Lambda invoked whenever the [query] changes.
    * @param resultsLoadable [Profile] results found by the [query].
-   * @param content Content that can be replaced by the [ResultSearchTextField].
+   * @param content Content that can be replaced by the [SearchTextField].
    * @throws IllegalStateException If a [Replaceable] is already currently composed.
    */
   @Composable
@@ -197,7 +210,7 @@ internal constructor(
     Replaceable(query, onQueryChange, resultsLoadable, modifier, content)
   }
 
-  /** Dismisses the [ResultSearchTextField]. */
+  /** Dismisses the [SearchTextField]. */
   internal fun dismiss() {
     isSearching = false
   }
@@ -273,76 +286,26 @@ internal constructor(
   }
 
   /**
-   * [Popup] by which a [ResultSearchTextField] is displayed, whose changes in height are observed
-   * and then propagated to [searchTextFieldLayoutHeight]. It is pre-offset and -padded based on the
-   * default spacing of a [SearchTextField].
+   * Considers the [Composable] to which this [Modifier] is applied a [SearchTextField] and assigns
+   * its height to [searchTextFieldHeight] at each change to it so that the overlaid content can be
+   * properly padded/spaced.
    *
-   * @param density [Density] for converting the spacing into pixels.
-   * @param coroutineScope [CoroutineScope] in which [Job]s that animate the
-   *   [searchTextFieldLayoutHeight] are launched.
-   * @param query Content to be looked up.
-   * @param onQueryChange Lambda invoked whenever the [query] changes.
-   * @param resultsLoadable [Profile] results found by the [query].
-   * @param modifier [Modifier] to be applied to the [ResultSearchTextField].
-   * @see SearchTextFieldDefaults.spacing
+   * @param coroutineScope [CoroutineScope] in which [Job]s that animate the [searchTextFieldHeight]
+   *   are launched.
    */
-  @Composable
-  private fun SearchTextFieldPopup(
-    density: Density,
-    coroutineScope: CoroutineScope,
-    query: String,
-    onQueryChange: (query: String) -> Unit,
-    resultsLoadable: ListLoadable<ProfileSearchResult>,
-    modifier: Modifier = Modifier
-  ) {
-    val searchTextFieldSpacing = SearchTextFieldDefaults.spacing
-    val searchTextFieldSpacingInPixels =
-      remember(density, searchTextFieldSpacing) {
-        with(density) { searchTextFieldSpacing.roundToPx() }
-      }
-
-    Popup(
-      offset = IntOffset(x = 0, y = searchTextFieldSpacingInPixels),
-      properties = PopupProperties(focusable = true)
-    ) {
-      Box(Modifier.padding(horizontal = searchTextFieldSpacing)) {
-        ResultSearchTextField(
-          query,
-          onQueryChange,
-          onDismissal = ::dismiss,
-          resultsLoadable,
-          modifier
-            .focusRequester(rememberImmediateFocusRequester())
-            .searchTextFieldLayout(density, coroutineScope, searchTextFieldSpacing)
-            .fillMaxWidth()
-        )
-      }
-    }
-  }
-
-  /**
-   * Considers the [Composable] on which this [Modifier] has been applied to be the layout of the
-   * [ResultSearchTextField]; ultimately, that implies in it having its height changes set as the
-   * value of [searchTextFieldLayoutHeight] so that the main content can be properly padded/spaced.
-   *
-   * @param density [Density] with which the height in pixels of the layout is to be converted into
-   *   [Dp].
-   * @param coroutineScope [CoroutineScope] in which [Job]s that animate the
-   *   [searchTextFieldLayoutHeight] are launched.
-   * @param spacing Amount of [Dp] that spaces a [SearchTextField] by default, obtainable through
-   *   [SearchTextFieldDefaults.spacing].
-   */
-  private fun Modifier.searchTextFieldLayout(
-    density: Density,
-    coroutineScope: CoroutineScope,
-    spacing: Dp
+  private fun Modifier.resultSearchTextFieldHeightReporter(
+    coroutineScope: CoroutineScope
   ): Modifier {
-    return if (searchTextFieldLayoutHeight == 0.dp) {
-      onSizeChanged {
-        coroutineScope.launch {
-          searchTextFieldLayoutHeightAnimatable.animateTo(
-            with(density) { it.height.toDp() } + spacing * 2
-          )
+    return if (searchTextFieldHeight == 0.dp) {
+      composed {
+        val defaultSpacing = SearchTextFieldDefaults.spacing
+        layout { measurable, constraints ->
+          val placeable = measurable.measure(constraints)
+          val height = placeable.height
+          coroutineScope.launch {
+            searchTextFieldHeightAnimatable.animateTo(height.toDp() + defaultSpacing * 2)
+          }
+          layout(placeable.width, height) { placeable.place(x = 0, y = 0) }
         }
       }
     } else {
@@ -351,15 +314,15 @@ internal constructor(
   }
 
   /**
-   * Effect that zeroes the [searchTextFieldLayoutHeight] once.
+   * Effect that zeroes the [searchTextFieldHeight] once.
    *
    * @param coroutineScope [CoroutineScope] in which the [Job] that resets the
-   *   [searchTextFieldLayoutHeight] is launched.
+   *   [searchTextFieldHeight] is launched.
    */
   @Composable
-  private fun SearchTextFieldLayoutHeightResetEffect(coroutineScope: CoroutineScope) {
+  private fun ResultSearchTextFieldLayoutHeightResetEffect(coroutineScope: CoroutineScope) {
     DisposableEffect(Unit) {
-      coroutineScope.launch { searchTextFieldLayoutHeightAnimatable.animateTo(0.dp) }
+      coroutineScope.launch { searchTextFieldHeightAnimatable.animateTo(0.dp) }
       onDispose {}
     }
   }

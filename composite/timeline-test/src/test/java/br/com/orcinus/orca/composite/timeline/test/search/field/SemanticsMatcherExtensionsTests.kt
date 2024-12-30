@@ -38,7 +38,7 @@ internal class SemanticsMatcherExtensionsTests {
   fun matchesDismissButton() {
     composeRule
       .apply { setContent { AutosTheme { ResultSearchTextField() } } }
-      .onNode(isDismissButton())
+      .onNode(isDismissButton(), useUnmergedTree = true)
       .assertIsDisplayed()
   }
 

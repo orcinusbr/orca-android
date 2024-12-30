@@ -20,8 +20,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -37,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsProperties
@@ -48,6 +51,7 @@ import br.com.orcinus.orca.platform.autos.R
 import br.com.orcinus.orca.platform.autos.colors.asColor
 import br.com.orcinus.orca.platform.autos.forms.asShape
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
+import br.com.orcinus.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 import com.jeanbarrossilva.loadable.placeholder.test.Loading
@@ -63,6 +67,9 @@ const val SearchTextFieldTag = "search-text-field"
 
 /** Default values used by a [SearchTextField]. */
 object SearchTextFieldDefaults {
+  /** Size of a [SearchTextField]'s leading icon and [CircularProgressIndicator] by default. */
+  val IconSize = 24.dp
+
   /** Amount in [Dp] by which a [SearchTextField] is elevated by default. */
   val Elevation = 2.dp
 
@@ -92,6 +99,7 @@ object SearchTextFieldDefaults {
  * @param shape [Shape] by which it is clipped.
  * @param elevation Amount in [Dp] by which it is elevated.
  * @param contentPadding [PaddingValues] by which the content of the decoration box is padded.
+ * @param trailing [Composable] to be displayed at the horizontal end.
  */
 @Composable
 @InternalPlatformAutosApi
@@ -103,10 +111,25 @@ fun SearchTextField(
   shape: Shape = SearchTextFieldDefaults.shape,
   elevation: Dp = SearchTextFieldDefaults.Elevation,
   isLoading: Boolean = false,
-  contentPadding: PaddingValues = PaddingValues()
-) {
-  SearchTextField(query, onQueryChange, isLoading, modifier, shape, elevation, contentPadding)
-}
+  contentPadding: PaddingValues = PaddingValues(),
+  trailing: @Composable () -> Unit = {
+    if (query.isNotEmpty()) {
+      HoverableIconButton(onClick = { onQueryChange("") }, Modifier.size(24.dp)) {
+        Icon(AutosTheme.iconography.close.asImageVector, contentDescription = "Clear")
+      }
+    }
+  }
+) =
+  SearchTextField(
+    query,
+    onQueryChange,
+    isLoading,
+    modifier,
+    shape,
+    elevation,
+    contentPadding,
+    trailing
+  )
 
 /**
  * Text field for searching content.
@@ -119,6 +142,7 @@ fun SearchTextField(
  * @param shape [Shape] by which it is clipped.
  * @param elevation Amount in [Dp] by which it is elevated.
  * @param contentPadding [PaddingValues] by which the content of the decoration box is padded.
+ * @param trailing [Composable] to be displayed at the horizontal end.
  */
 @Composable
 fun SearchTextField(
@@ -128,49 +152,67 @@ fun SearchTextField(
   modifier: Modifier = Modifier,
   shape: Shape = SearchTextFieldDefaults.shape,
   elevation: Dp = SearchTextFieldDefaults.Elevation,
-  contentPadding: PaddingValues = PaddingValues()
+  contentPadding: PaddingValues = PaddingValues(),
+  trailing: @Composable () -> Unit = {}
 ) {
   val style = LocalTextStyle.current
+  var width = remember(Dp::Unspecified)
   val cursorBrush = remember(style) { SolidColor(style.color) }
 
   BasicTextField(
     query,
     onQueryChange,
-    modifier.testTag(SearchTextFieldTag).semantics { set(SemanticsProperties.Loading, isLoading) },
+    modifier
+      .testTag(SearchTextFieldTag)
+      .semantics { set(SemanticsProperties.Loading, isLoading) }
+      .layout { measurable, constraints ->
+        val placeable = measurable.measure(constraints)
+        val widthInPixels = placeable.width
+        width = widthInPixels.toDp()
+        layout(widthInPixels, placeable.height) { placeable.place(x = 0, y = 0) }
+      },
     textStyle = style,
     cursorBrush = cursorBrush
   ) {
     Surface(shape = shape, shadowElevation = elevation) {
       Row(
-        Modifier.padding(contentPadding).padding(SearchTextFieldDefaults.spacing),
-        Arrangement.spacedBy(SearchTextFieldDefaults.spacing),
+        Modifier.padding(contentPadding).padding(SearchTextFieldDefaults.spacing).width(width),
+        Arrangement.SpaceBetween,
         Alignment.CenterVertically
       ) {
-        CompositionLocalProvider(LocalContentColor provides AutosTheme.colors.secondary.asColor) {
-          if (isLoading) {
-            CircularProgressIndicator(
-              Modifier.size(24.dp).testTag(LoadingIndicatorTag),
-              color = LocalContentColor.current
-            )
-          } else {
-            Icon(
-              AutosTheme.iconography.search.asImageVector,
-              stringResource(R.string.platform_autos_search_content_description),
-              Modifier.testTag(SearchIconTag)
-            )
+        Row(
+          horizontalArrangement = Arrangement.spacedBy(SearchTextFieldDefaults.spacing),
+          verticalAlignment = Alignment.CenterVertically
+        ) {
+          CompositionLocalProvider(LocalContentColor provides AutosTheme.colors.secondary.asColor) {
+            if (isLoading) {
+              CircularProgressIndicator(
+                Modifier.size(SearchTextFieldDefaults.IconSize).testTag(LoadingIndicatorTag),
+                color = LocalContentColor.current
+              )
+            } else {
+              Icon(
+                AutosTheme.iconography.search.asImageVector,
+                stringResource(R.string.platform_autos_search_content_description),
+                Modifier.testTag(SearchIconTag)
+              )
+            }
+          }
+
+          Box {
+            query.ifEmpty {
+              Text(
+                stringResource(R.string.platform_autos_search),
+                style = AutosTheme.typography.titleSmall
+              )
+            }
+
+            it()
           }
         }
 
-        Box {
-          query.ifEmpty {
-            Text(
-              stringResource(R.string.platform_autos_search),
-              style = AutosTheme.typography.titleSmall
-            )
-          }
-
-          it()
-        }
+        Spacer(Modifier.width(SearchTextFieldDefaults.spacing))
+        trailing()
       }
     }
   }
