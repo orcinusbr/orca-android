@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -69,7 +69,7 @@ constructor(
     setPadding(getSpacing(context))
     compoundDrawablePadding = getSpacing(context)
     gravity = Gravity.TOP
-    setTextAppearance(context, R.style.Theme_Orca_Typography_BodyMedium)
+    setTextAppearance(context, R.style.Theme_Autos_Default_Typography_BodyMedium)
   }
 
   override fun onDraw(canvas: Canvas) {

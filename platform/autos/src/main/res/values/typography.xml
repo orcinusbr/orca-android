@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright © 2023-2024 Orcinus
+  ~ Copyright © 2023–2025 Orcinus
   ~
   ~ This program is free software: you can redistribute it and/or modify it under the terms of the
   ~ GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -24,14 +24,14 @@
     <integer name="font_weight_black">900</integer>
 
     <style
-        name="Theme.Orca.Typography.HeadlineLarge"
+        name="Theme.Autos.Default.Typography.HeadlineLarge"
         parent="TextAppearance.Material3.HeadlineLarge">
         <item name="android:textColor">@color/backgroundContent</item>
         <item name="android:textFontWeight">@integer/font_weight_black</item>
     </style>
 
     <style
-        name="Theme.Orca.Typography.HeadlineMedium"
+        name="Theme.Autos.Default.Typography.HeadlineMedium"
         parent="TextAppearance.Material3.HeadlineMedium">
         <item name="android:textColor">@color/secondary</item>
         <item name="android:textFontWeight">@integer/font_weight_medium</item>
@@ -39,7 +39,7 @@
     </style>
 
     <style
-        name="Theme.Orca.Typography.HeadlineSmall"
+        name="Theme.Autos.Default.Typography.HeadlineSmall"
         parent="TextAppearance.Material3.HeadlineSmall">
         <item name="android:textColor">@color/secondary</item>
         <item name="android:textSize">18sp</item>
@@ -47,14 +47,14 @@
     </style>
 
     <style
-        name="Theme.Orca.Typography.TitleLarge"
+        name="Theme.Autos.Default.Typography.TitleLarge"
         parent="TextAppearance.Material3.TitleLarge">
         <item name="android:textSize">16sp</item>
         <item name="android:textFontWeight">@integer/font_weight_extra_bold</item>
     </style>
 
     <style
-        name="Theme.Orca.Typography.TitleSmall"
+        name="Theme.Autos.Default.Typography.TitleSmall"
         parent="TextAppearance.Material3.TitleSmall">
         <item name="android:textColor">@color/secondary</item>
         <item name="android:textSize">16sp</item>
@@ -62,32 +62,32 @@
     </style>
 
     <style
-        name="Theme.Orca.Typography.BodyLarge"
+        name="Theme.Autos.Default.Typography.BodyLarge"
         parent="TextAppearance.Material3.BodyLarge">
         <item name="android:textFontWeight">@integer/font_weight_bold</item>
     </style>
 
     <style
-        name="Theme.Orca.Typography.BodyMedium"
+        name="Theme.Autos.Default.Typography.BodyMedium"
         parent="TextAppearance.Material3.BodyMedium">
         <item name="android:textSize">14sp</item>
     </style>
 
     <style
-        name="Theme.Orca.Typography.BodySmall"
+        name="Theme.Autos.Default.Typography.BodySmall"
         parent="TextAppearance.Material3.BodySmall">
         <item name="android:textColor">@color/secondary</item>
         <item name="android:textFontWeight">@integer/font_weight_medium</item>
     </style>
 
     <style
-        name="Theme.Orca.Typography.LabelLarge"
+        name="Theme.Autos.Default.Typography.LabelLarge"
         parent="TextAppearance.Material3.LabelLarge">
         <item name="android:textFontWeight">@integer/font_weight_bold</item>
     </style>
 
     <style
-        name="Theme.Orca.Typography.LabelMedium"
+        name="Theme.Autos.Default.Typography.LabelMedium"
         parent="TextAppearance.Material3.LabelMedium">
         <item name="android:textSize">14sp</item>
     </style>

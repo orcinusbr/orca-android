@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -17,17 +17,21 @@ package br.com.orcinus.orca.composite.timeline.search.field
 
 import android.app.Dialog
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Color as AndroidColor
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.InsetDrawable
+import android.os.Build
 import android.util.Size
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
 import android.view.Window
 import android.view.WindowManager
+import androidx.annotation.DeprecatedSinceApi
 import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
+import androidx.annotation.RequiresApi
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -57,7 +61,7 @@ import androidx.compose.runtime.CompositionLocal
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -111,7 +115,6 @@ import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.platform.focus.rememberImmediateFocusRequester
-import br.com.orcinus.orca.platform.ime.findActivity
 import br.com.orcinus.orca.std.image.compose.SomeComposableImageLoader
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.serializableListOf
@@ -210,19 +213,18 @@ private class SearchTextFieldPopup(
 
   /**
    * Amount in both bi-dimensional axes by which this popup is offset in absolute pixels; (0, 0) by
-   * default. Stored only to undo the last offset when applying another one, hence its
-   * unobservability — characteristic that differs from that of the [hostViewSize] and the padding,
-   * both backed by a [MutableStateFlow].
+   * default. Its observability differs completely from [paddingFlow]'s and partially from
+   * [hostViewSizeFlow]'s in that its value is mutable _and_ is set to the same instance with the
+   * respective modifications when an offset is applied.
    *
    * @see setOffset
-   * @see paddingFlow
    */
-  private var offset = IntOffset.Zero
+  private var offset by mutableStateOf(MutableOffset(x = 0, y = 0))
 
   /**
    * [MutableStateFlow] containing the amount of space in absolute pixels added to the edges of a
    * [HostView] (which is zero by default). Its value is immutable — differing from the
-   * [hostViewSize] — because each reset should be observable for it to be applied.
+   * [hostViewSize] and the [offset] — because each reset should be observable for it to be applied.
    *
    * @see setPadding
    * @see createHostView
@@ -302,15 +304,8 @@ private class SearchTextFieldPopup(
   /** Lambda invoked whenever the query changes in the [ResultSearchTextField]. */
   private var onQueryChange by mutableStateOf(NoOpOnQueryChange)
 
-  /**
-   * [MutableStateFlow] containing the [Profile] results found for the [query] in the
-   * [ResultSearchTextField].
-   */
-  private var resultsLoadableFlow = MutableStateFlow(EmptyResultsLoadable)
-
-  /** Observable value of [resultsLoadableFlow]. */
-  private inline val resultsLoadable
-    @Composable get() = resultsLoadableFlow.collectAsState().value
+  /** [Profile] results found for the [query] in the [ResultSearchTextField]. */
+  private var resultsLoadable by mutableStateOf(EmptyResultsLoadable)
 
   /** [Context] referenced by the [contextRef]. */
   private inline val context
@@ -369,6 +364,18 @@ private class SearchTextFieldPopup(
   }
 
   /**
+   * Addition to a rendering position in both bi-dimensional axes. Differs from Compose's
+   * [IntOffset] in that its values are mutable, removing the need for allocation of a new instance
+   * each time they change.
+   *
+   * @property x Absolute pixels added to the X-axis.
+   * @property y Absolute pixels added to the Y-axis.
+   */
+  private class MutableOffset(var x: Int, var y: Int) {
+    override fun toString() = "($x, $y)"
+  }
+
+  /**
    * Shows this popup when it enters composition and dismisses it when it is decomposed.
    *
    * @param query Content to be looked up.
@@ -388,10 +395,10 @@ private class SearchTextFieldPopup(
     resultsLoadable: ListLoadable<ProfileSearchResult>,
     modifier: Modifier = Modifier
   ) {
-    Scrim()
     SimultaneousCompositionProhibitionEffect()
     HostViewRecompositionEffect(modifier, query, onQueryChange, resultsLoadable)
     AppearanceEffect()
+    Dimmer()
   }
 
   /**
@@ -429,12 +436,15 @@ private class SearchTextFieldPopup(
     if (previousOffset.x != nextOffsetX) {
       it.x += nextOffsetX - previousOffset.x
       didChangeAttributes = true
+      previousOffset.x = nextOffsetX
+      this@SearchTextFieldPopup.offset = previousOffset
     }
     if (previousOffset.y != nextOffsetY) {
       it.y += nextOffsetY - previousOffset.y
       didChangeAttributes = true
+      previousOffset.y = nextOffsetY
+      this@SearchTextFieldPopup.offset = previousOffset
     }
-    this@SearchTextFieldPopup.offset = IntOffset(nextOffsetX, nextOffsetY)
     didChangeAttributes
   }
 
@@ -525,8 +535,8 @@ private class SearchTextFieldPopup(
     }
 
     DisposableEffect(resultsLoadable) {
-      resultsLoadableFlow.value = resultsLoadable
-      onDispose { resultsLoadableFlow.value = EmptyResultsLoadable }
+      this@SearchTextFieldPopup.resultsLoadable = resultsLoadable
+      onDispose { this@SearchTextFieldPopup.resultsLoadable = EmptyResultsLoadable }
     }
   }
 
@@ -544,25 +554,74 @@ private class SearchTextFieldPopup(
     }
 
   /**
-   * Dark overlay for contrasting the [ResultSearchTextField] with the content laid out behind it.
-   * This is preferred over adding the dim-behind flag to the [Window] because, by doing so, the
-   * status bars' appearance would be irreversibly changed when this popup got shown and remain
-   * altered until it got dismissed.
+   * Effect that dims the background content either by changing the window's dim amount on API level
+   * equal to/greater than 35 (VanillaIceCream) or laying out a fullscreen dark shade on top of it
+   * on older OS versions. For the reasoning on such distinction and its implications, see
+   * [DimmingEffect].
    *
-   * @param modifier [Modifier] to be applied to the underlying [Canvas].
-   * @see WindowManager.LayoutParams.FLAG_DIM_BEHIND
-   * @see show
-   * @see Dialog.dismiss
-   * @see dismiss
+   * Whether the dimming occurs will depend on the found results: if there is at least one, then it
+   * does so; otherwise, it does not.
+   *
+   * @param modifier [Modifier] to (possibly) be applied to the underlying [Scrim].
+   * @see resultsLoadable
    */
   @Composable
-  private fun Scrim(modifier: Modifier = Modifier) {
-    val resultsLoadable = resultsLoadable
-    val isVisible = remember(resultsLoadable) { resultsLoadable is ListLoadable.Populated }
-    val alpha by animateFloatAsState(if (isVisible) .05f else 0f, label = "Scrim alpha")
-    val color = remember(alpha) { Color.Black.copy(alpha = alpha) }
+  private fun Dimmer(modifier: Modifier = Modifier) {
+    val shouldDim by remember { derivedStateOf { resultsLoadable is ListLoadable.Populated } }
+    val dimming by animateFloatAsState(if (shouldDim) .05f else 0f, label = "Dimming")
 
-    StatusBarsColorAlphaToScrimParityEffect(alpha)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+      DimmingEffect(dimming)
+    } else {
+      Scrim(alpha = dimming, modifier)
+    }
+  }
+
+  /**
+   * API level 35 (VanillaIceCream) deprecated and made no-ops requests for setting the color of the
+   * status bars, mean through which the popup makes itself look like a fullscreen one (changing the
+   * alpha to match [Scrim]'s) in older OS versions; such change is worked-around by adding the
+   * dim-behind flag. By doing so, however, their appearance is undocumentedly enforced to light
+   * _if_ the window is offset.
+   *
+   * This effect dims the content beneath this popup.
+   *
+   * @param dimming Background content dimming opacity, with `0f` = transparent; and `1f` = opaque.
+   * @see WindowManager.LayoutParams.FLAG_DIM_BEHIND
+   * @see setOffset
+   */
+  @Composable
+  @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
+  private fun DimmingEffect(@FloatRange(from = .0, to = 1.0) dimming: Float) {
+    val window = delegate?.window ?: return
+
+    DisposableEffect(window, dimming) {
+      if (dimming > 0f) {
+        window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+      }
+      window.setDimAmount(dimming)
+      onDispose { window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND) }
+    }
+  }
+
+  /**
+   * Dark shade for contrasting the [ResultSearchTextField] with the content laid out behind it.
+   *
+   * @param alpha Opacity, with `0f` = transparent; and `1f` = opaque.
+   * @param modifier [Modifier] to be applied to the underlying [Canvas].
+   */
+  @Composable
+  @DeprecatedSinceApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
+  @Suppress("DEPRECATION")
+  private fun Scrim(@FloatRange(from = .0, to = 1.0) alpha: Float, modifier: Modifier = Modifier) {
+    val window = delegate?.window ?: return
+    val statusBarsColorInArgb = remember(window, window::getStatusBarColor)
+
+    DisposableEffect(window, statusBarsColorInArgb, alpha) {
+      window.statusBarColor =
+        ColorUtils.setAlphaComponent(statusBarsColorInArgb, lerp(0, 255, alpha))
+      onDispose { window.statusBarColor = statusBarsColorInArgb }
+    }
 
     Canvas(
       modifier.layout { measurable, constraints ->
@@ -573,29 +632,7 @@ private class SearchTextFieldPopup(
         }
       }
     ) {
-      drawRect(color)
-    }
-  }
-
-  /**
-   * Effect that changes the status bars' color, matching its alpha to that of the [Scrim].
-   *
-   * @param alpha Opacity of the [Scrim], with `0f` = transparent; and `1f`= opaque.
-   */
-  @Composable
-  private fun StatusBarsColorAlphaToScrimParityEffect(
-    @FloatRange(from = .0, to = 1.0) alpha: Float
-  ) {
-    val window = LocalContext.current.findActivity()?.window
-    val statusBarsColorInArgb = remember(window) { window?.statusBarColor }
-
-    DisposableEffect(window, statusBarsColorInArgb, alpha) {
-      window ?: return@DisposableEffect onDispose {}
-      statusBarsColorInArgb ?: return@DisposableEffect onDispose {}
-
-      window.statusBarColor =
-        ColorUtils.setAlphaComponent(statusBarsColorInArgb, lerp(0, 255, alpha))
-      onDispose { window.statusBarColor = statusBarsColorInArgb }
+      drawRect(Color.Black.copy(alpha = alpha))
     }
   }
 
