@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,15 +16,10 @@
 package br.com.orcinus.orca.composite.timeline.search
 
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.ui.unit.Density
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 
-/** Calculates the height of these [WindowInsets] in [Dp]s. */
-context(Density)
-
-internal inline val WindowInsets.height: Dp
-  get() {
-    val top = getTop(this@Density)
-    val bottom = getBottom(this@Density)
-    return (maxOf(top, bottom) - minOf(top, bottom)).toDp()
-  }
+/** Obtains the top space of these [WindowInsets] in [Dp]s. */
+inline val WindowInsets.top
+  @Composable get() = with(LocalDensity.current) { getTop(this).toDp() }

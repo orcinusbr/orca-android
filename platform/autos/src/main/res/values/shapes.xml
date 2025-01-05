@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ Copyright © 2023–2024 Orcinus
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright © 2023–2025 Orcinus
   ~
   ~ This program is free software: you can redistribute it and/or modify it under the terms of the
   ~ GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -21,19 +20,19 @@
     <fraction name="smallShapeCornerSize">100%</fraction>
 
     <style
-        name="Theme.Orca.Shapes.Large"
+        name="Theme.Autos.Default.Shapes.Large"
         parent="ShapeAppearance.Material3.Corner.Small">
         <item name="cornerSize">@dimen/largeShapeCornerSize</item>
     </style>
 
     <style
-        name="Theme.Orca.Shapes.Medium"
+        name="Theme.Autos.Default.Shapes.Medium"
         parent="ShapeAppearance.Material3.Corner.Medium">
         <item name="cornerSize">@dimen/mediumShapeCornerSize</item>
     </style>
 
     <style
-        name="Theme.Orca.Shapes.Small"
+        name="Theme.Autos.Default.Shapes.Small"
         parent="ShapeAppearance.Material3.Corner.Large">
         <item name="cornerSize">@fraction/smallShapeCornerSize</item>
     </style>

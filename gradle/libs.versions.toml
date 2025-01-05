@@ -1,5 +1,5 @@
 #
-# Copyright © 2023–2024 Orcinus
+# Copyright © 2023–2025 Orcinus
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the
 # GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -80,7 +80,7 @@ mockito = { group = "org.mockito", name = "mockito-core", version = "5.12.0" }
 mockk = { group = "io.mockk", name = "mockk-android", version = "1.13.11" }
 openTest4J = { group = "org.opentest4j", name = "opentest4j", version = "1.3.0" }
 paginate = { group = "com.chrynan.paginate", name = "paginate-core", version = "0.3.0" }
-robolectric = { group = "org.robolectric", name = "robolectric", version = "4.13" }
+robolectric = { group = "org.robolectric", name = "robolectric", version = "4.14.1" }
 slf4j = { group = "org.slf4j", name = "slf4j-api", version = "2.0.7" }
 spotless = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
 time4j = { group = "net.time4j", name = "time4j-android", version = "4.8-2021a" }
@@ -120,7 +120,7 @@ android-ndk = "28.0.12674087"
 android-plugin = "8.7.3"
 android-room = "2.6.1"
 android-sdk-min = "28"
-android-sdk-target = "34"
+android-sdk-target = "35"
 android-test-espresso = "3.5.0"
 assertk = "0.28.1"
 java = "17"

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -17,6 +17,7 @@ package br.com.orcinus.orca.composite.timeline.search.field
 
 import android.app.Dialog
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Color as AndroidColor
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.InsetDrawable
@@ -26,7 +27,6 @@ import android.view.ViewGroup
 import android.view.ViewOutlineProvider
 import android.view.Window
 import android.view.WindowManager
-import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.AnimatedVisibility
@@ -57,7 +57,6 @@ import androidx.compose.runtime.CompositionLocal
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -87,9 +86,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.lerp
 import androidx.compose.ui.window.Popup
-import androidx.core.graphics.ColorUtils
 import br.com.orcinus.orca.composite.timeline.InternalTimelineApi
 import br.com.orcinus.orca.composite.timeline.R
 import br.com.orcinus.orca.composite.timeline.avatar.SmallAvatar
@@ -111,7 +108,6 @@ import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.platform.focus.rememberImmediateFocusRequester
-import br.com.orcinus.orca.platform.ime.findActivity
 import br.com.orcinus.orca.std.image.compose.SomeComposableImageLoader
 import com.jeanbarrossilva.loadable.list.ListLoadable
 import com.jeanbarrossilva.loadable.list.serializableListOf
@@ -130,9 +126,6 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-/** Default padding applied to a [SearchTextFieldPopup]: none. */
-private val Unpadded = PaddingValues()
-
 /** Duration in milliseconds of the appearance animation for results. */
 private const val ResultAppearanceAnimationDurationInMilliseconds = 56
 
@@ -144,6 +137,9 @@ private val EmptyResultsLoadable: ListLoadable<ProfileSearchResult> = ListLoadab
 
 /** Default lambda which is a no-op for when a [ResultSearchTextField] is dismissed. */
 private val NoOpOnDismissal = {}
+
+/** Default padding applied to a [SearchTextFieldPopup]: none. */
+internal val Unpadded = PaddingValues()
 
 /** Tag that identifies a [ResultSearchTextField]'s [ResultCard] for testing purposes. */
 @InternalTimelineApi const val ResultCardTag = "result-search-text-field-result-card"
@@ -210,19 +206,18 @@ private class SearchTextFieldPopup(
 
   /**
    * Amount in both bi-dimensional axes by which this popup is offset in absolute pixels; (0, 0) by
-   * default. Stored only to undo the last offset when applying another one, hence its
-   * unobservability — characteristic that differs from that of the [hostViewSize] and the padding,
-   * both backed by a [MutableStateFlow].
+   * default. Its observability differs completely from [paddingFlow]'s and partially from
+   * [hostViewSizeFlow]'s in that its value is mutable _and_ is set to the same instance with the
+   * respective modifications when an offset is applied.
    *
    * @see setOffset
-   * @see paddingFlow
    */
-  private var offset = IntOffset.Zero
+  private var offset by mutableStateOf(MutableOffset(x = 0, y = 0))
 
   /**
    * [MutableStateFlow] containing the amount of space in absolute pixels added to the edges of a
    * [HostView] (which is zero by default). Its value is immutable — differing from the
-   * [hostViewSize] — because each reset should be observable for it to be applied.
+   * [hostViewSize] and the [offset] — because each reset should be observable for it to be applied.
    *
    * @see setPadding
    * @see createHostView
@@ -302,15 +297,8 @@ private class SearchTextFieldPopup(
   /** Lambda invoked whenever the query changes in the [ResultSearchTextField]. */
   private var onQueryChange by mutableStateOf(NoOpOnQueryChange)
 
-  /**
-   * [MutableStateFlow] containing the [Profile] results found for the [query] in the
-   * [ResultSearchTextField].
-   */
-  private var resultsLoadableFlow = MutableStateFlow(EmptyResultsLoadable)
-
-  /** Observable value of [resultsLoadableFlow]. */
-  private inline val resultsLoadable
-    @Composable get() = resultsLoadableFlow.collectAsState().value
+  /** [Profile] results found for the [query] in the [ResultSearchTextField]. */
+  private var resultsLoadable by mutableStateOf(EmptyResultsLoadable)
 
   /** [Context] referenced by the [contextRef]. */
   private inline val context
@@ -366,6 +354,18 @@ private class SearchTextFieldPopup(
      * have changed since the last conversion, or it has never been converted before.
      */
     fun asIntSize() = intSize ?: IntSize(width, height).also { intSize = it }
+  }
+
+  /**
+   * Addition to a rendering position in both bi-dimensional axes. Differs from Compose's
+   * [IntOffset] in that its values are mutable, removing the need for allocation of a new instance
+   * each time they change.
+   *
+   * @property x Absolute pixels added to the X-axis.
+   * @property y Absolute pixels added to the Y-axis.
+   */
+  private class MutableOffset(var x: Int, var y: Int) {
+    override fun toString() = "($x, $y)"
   }
 
   /**
@@ -429,12 +429,15 @@ private class SearchTextFieldPopup(
     if (previousOffset.x != nextOffsetX) {
       it.x += nextOffsetX - previousOffset.x
       didChangeAttributes = true
+      previousOffset.x = nextOffsetX
+      this@SearchTextFieldPopup.offset = previousOffset
     }
     if (previousOffset.y != nextOffsetY) {
       it.y += nextOffsetY - previousOffset.y
       didChangeAttributes = true
+      previousOffset.y = nextOffsetY
+      this@SearchTextFieldPopup.offset = previousOffset
     }
-    this@SearchTextFieldPopup.offset = IntOffset(nextOffsetX, nextOffsetY)
     didChangeAttributes
   }
 
@@ -525,8 +528,8 @@ private class SearchTextFieldPopup(
     }
 
     DisposableEffect(resultsLoadable) {
-      resultsLoadableFlow.value = resultsLoadable
-      onDispose { resultsLoadableFlow.value = EmptyResultsLoadable }
+      this@SearchTextFieldPopup.resultsLoadable = resultsLoadable
+      onDispose { this@SearchTextFieldPopup.resultsLoadable = EmptyResultsLoadable }
     }
   }
 
@@ -557,12 +560,9 @@ private class SearchTextFieldPopup(
    */
   @Composable
   private fun Scrim(modifier: Modifier = Modifier) {
-    val resultsLoadable = resultsLoadable
     val isVisible = remember(resultsLoadable) { resultsLoadable is ListLoadable.Populated }
     val alpha by animateFloatAsState(if (isVisible) .05f else 0f, label = "Scrim alpha")
     val color = remember(alpha) { Color.Black.copy(alpha = alpha) }
-
-    StatusBarsColorAlphaToScrimParityEffect(alpha)
 
     Canvas(
       modifier.layout { measurable, constraints ->
@@ -574,28 +574,6 @@ private class SearchTextFieldPopup(
       }
     ) {
       drawRect(color)
-    }
-  }
-
-  /**
-   * Effect that changes the status bars' color, matching its alpha to that of the [Scrim].
-   *
-   * @param alpha Opacity of the [Scrim], with `0f` = transparent; and `1f`= opaque.
-   */
-  @Composable
-  private fun StatusBarsColorAlphaToScrimParityEffect(
-    @FloatRange(from = .0, to = 1.0) alpha: Float
-  ) {
-    val window = LocalContext.current.findActivity()?.window
-    val statusBarsColorInArgb = remember(window) { window?.statusBarColor }
-
-    DisposableEffect(window, statusBarsColorInArgb, alpha) {
-      window ?: return@DisposableEffect onDispose {}
-      statusBarsColorInArgb ?: return@DisposableEffect onDispose {}
-
-      window.statusBarColor =
-        ColorUtils.setAlphaComponent(statusBarsColorInArgb, lerp(0, 255, alpha))
-      onDispose { window.statusBarColor = statusBarsColorInArgb }
     }
   }
 
