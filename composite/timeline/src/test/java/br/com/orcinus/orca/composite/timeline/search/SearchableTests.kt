@@ -40,7 +40,6 @@ import br.com.orcinus.orca.composite.timeline.test.search.field.onResultCard
 import br.com.orcinus.orca.core.feed.profile.account.Account
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.core.sample.feed.profile.account.sample
-import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextFieldDefaults
 import br.com.orcinus.orca.platform.autos.test.kit.input.text.onSearchTextField
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.core.sample
@@ -439,16 +438,12 @@ internal class SearchableTests {
           val textStyle = LocalTextStyle.current
           val fontSizeInDp =
             remember(density, textStyle) { with(density) { textStyle.fontSize.toDp() } }
-          val searchTextFieldSpacing = SearchTextFieldDefaults.spacing
 
           Replaceable()
 
           DisposableEffect(Unit) {
             show()
-            onDispose {
-              assertThat(searchTextFieldLayoutHeight)
-                .isGreaterThanOrEqualTo(fontSizeInDp + searchTextFieldSpacing * 4)
-            }
+            onDispose { assertThat(searchTextFieldHeight).isGreaterThanOrEqualTo(fontSizeInDp) }
           }
         }
       }

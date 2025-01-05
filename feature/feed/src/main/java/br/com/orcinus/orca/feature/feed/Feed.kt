@@ -16,8 +16,10 @@
 package br.com.orcinus.orca.feature.feed
 
 import androidx.annotation.VisibleForTesting
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -33,18 +35,22 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import br.com.orcinus.orca.composite.timeline.Timeline
 import br.com.orcinus.orca.composite.timeline.post.PostPreview
 import br.com.orcinus.orca.composite.timeline.search.Searchable
+import br.com.orcinus.orca.composite.timeline.search.top
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.kit.action.button.icon.HoverableIconButton
+import br.com.orcinus.orca.platform.autos.kit.input.text.SearchTextFieldDefaults
 import br.com.orcinus.orca.platform.autos.kit.scaffold.Scaffold
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.snack.presenter.rememberSnackbarPresenter
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBar
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.TopAppBarDefaults
+import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.`if`
 import br.com.orcinus.orca.platform.autos.kit.scaffold.bar.top.text.AutoSizeText
 import br.com.orcinus.orca.platform.autos.overlays.refresh.Refresh
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
@@ -151,13 +157,26 @@ private fun Feed(
   onComposition: () -> Unit,
   modifier: Modifier = Modifier
 ) {
-  Searchable(TopAppBarDefaults.idleContainerColor, Modifier.statusBarsPadding()) {
+  Searchable(
+    TopAppBarDefaults.idleContainerColor,
+    modifier,
+    searchTextFieldOffset =
+      DpOffset(x = 0.dp, y = WindowInsets.systemBars.top + SearchTextFieldDefaults.spacing * 2),
+    searchTextFieldPadding = PaddingValues(horizontal = SearchTextFieldDefaults.spacing)
+  ) {
     val topAppBarScrollBehavior = TopAppBarDefaults.scrollBehavior
     val snackbarPresenter = rememberSnackbarPresenter()
     val contentBlurRadius by contentBlurRadiusAsState
+    val timelineTopContentPadding by
+      animateDpAsState(
+        (WindowInsets.systemBars.top + searchTextFieldHeight).`if`(isSearching) {
+          this + SearchTextFieldDefaults.spacing * 2
+        },
+        replacementAnimationSpec(),
+        label = "Timeline top content padding"
+      )
 
     Scaffold(
-      modifier,
       topAppBar = {
         Replaceable(searchQuery, onSearchQueryChange, searchResultsLoadable) {
           @OptIn(ExperimentalMaterial3Api::class)
@@ -204,7 +223,7 @@ private fun Feed(
           onPostClick,
           onNext,
           Modifier.nestedScroll(topAppBarScrollBehavior.nestedScrollConnection),
-          contentPadding = PaddingValues(top = searchTextFieldLayoutHeight, bottom = 56.dp),
+          contentPadding = PaddingValues(top = timelineTopContentPadding, bottom = 56.dp),
           refresh = Refresh(isTimelineRefreshing, onTimelineRefresh),
           snackbarPresenter = snackbarPresenter
         )

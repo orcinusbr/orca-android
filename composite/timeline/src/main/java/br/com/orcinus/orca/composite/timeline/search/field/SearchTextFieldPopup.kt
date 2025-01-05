@@ -21,17 +21,13 @@ import android.graphics.Canvas
 import android.graphics.Color as AndroidColor
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.InsetDrawable
-import android.os.Build
 import android.util.Size
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
 import android.view.Window
 import android.view.WindowManager
-import androidx.annotation.DeprecatedSinceApi
-import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
-import androidx.annotation.RequiresApi
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -61,7 +57,6 @@ import androidx.compose.runtime.CompositionLocal
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -91,9 +86,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.lerp
 import androidx.compose.ui.window.Popup
-import androidx.core.graphics.ColorUtils
 import br.com.orcinus.orca.composite.timeline.InternalTimelineApi
 import br.com.orcinus.orca.composite.timeline.R
 import br.com.orcinus.orca.composite.timeline.avatar.SmallAvatar
@@ -133,9 +126,6 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-/** Default padding applied to a [SearchTextFieldPopup]: none. */
-private val Unpadded = PaddingValues()
-
 /** Duration in milliseconds of the appearance animation for results. */
 private const val ResultAppearanceAnimationDurationInMilliseconds = 56
 
@@ -147,6 +137,9 @@ private val EmptyResultsLoadable: ListLoadable<ProfileSearchResult> = ListLoadab
 
 /** Default lambda which is a no-op for when a [ResultSearchTextField] is dismissed. */
 private val NoOpOnDismissal = {}
+
+/** Default padding applied to a [SearchTextFieldPopup]: none. */
+internal val Unpadded = PaddingValues()
 
 /** Tag that identifies a [ResultSearchTextField]'s [ResultCard] for testing purposes. */
 @InternalTimelineApi const val ResultCardTag = "result-search-text-field-result-card"
@@ -395,10 +388,10 @@ private class SearchTextFieldPopup(
     resultsLoadable: ListLoadable<ProfileSearchResult>,
     modifier: Modifier = Modifier
   ) {
+    Scrim()
     SimultaneousCompositionProhibitionEffect()
     HostViewRecompositionEffect(modifier, query, onQueryChange, resultsLoadable)
     AppearanceEffect()
-    Dimmer()
   }
 
   /**
@@ -554,74 +547,22 @@ private class SearchTextFieldPopup(
     }
 
   /**
-   * Effect that dims the background content either by changing the window's dim amount on API level
-   * equal to/greater than 35 (VanillaIceCream) or laying out a fullscreen dark shade on top of it
-   * on older OS versions. For the reasoning on such distinction and its implications, see
-   * [DimmingEffect].
+   * Dark overlay for contrasting the [ResultSearchTextField] with the content laid out behind it.
+   * This is preferred over adding the dim-behind flag to the [Window] because, by doing so, the
+   * status bars' appearance would be irreversibly changed when this popup got shown and remain
+   * altered until it got dismissed.
    *
-   * Whether the dimming occurs will depend on the found results: if there is at least one, then it
-   * does so; otherwise, it does not.
-   *
-   * @param modifier [Modifier] to (possibly) be applied to the underlying [Scrim].
-   * @see resultsLoadable
-   */
-  @Composable
-  private fun Dimmer(modifier: Modifier = Modifier) {
-    val shouldDim by remember { derivedStateOf { resultsLoadable is ListLoadable.Populated } }
-    val dimming by animateFloatAsState(if (shouldDim) .05f else 0f, label = "Dimming")
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-      DimmingEffect(dimming)
-    } else {
-      Scrim(alpha = dimming, modifier)
-    }
-  }
-
-  /**
-   * API level 35 (VanillaIceCream) deprecated and made no-ops requests for setting the color of the
-   * status bars, mean through which the popup makes itself look like a fullscreen one (changing the
-   * alpha to match [Scrim]'s) in older OS versions; such change is worked-around by adding the
-   * dim-behind flag. By doing so, however, their appearance is undocumentedly enforced to light
-   * _if_ the window is offset.
-   *
-   * This effect dims the content beneath this popup.
-   *
-   * @param dimming Background content dimming opacity, with `0f` = transparent; and `1f` = opaque.
-   * @see WindowManager.LayoutParams.FLAG_DIM_BEHIND
-   * @see setOffset
-   */
-  @Composable
-  @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
-  private fun DimmingEffect(@FloatRange(from = .0, to = 1.0) dimming: Float) {
-    val window = delegate?.window ?: return
-
-    DisposableEffect(window, dimming) {
-      if (dimming > 0f) {
-        window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-      }
-      window.setDimAmount(dimming)
-      onDispose { window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND) }
-    }
-  }
-
-  /**
-   * Dark shade for contrasting the [ResultSearchTextField] with the content laid out behind it.
-   *
-   * @param alpha Opacity, with `0f` = transparent; and `1f` = opaque.
    * @param modifier [Modifier] to be applied to the underlying [Canvas].
+   * @see WindowManager.LayoutParams.FLAG_DIM_BEHIND
+   * @see show
+   * @see Dialog.dismiss
+   * @see dismiss
    */
   @Composable
-  @DeprecatedSinceApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
-  @Suppress("DEPRECATION")
-  private fun Scrim(@FloatRange(from = .0, to = 1.0) alpha: Float, modifier: Modifier = Modifier) {
-    val window = delegate?.window ?: return
-    val statusBarsColorInArgb = remember(window, window::getStatusBarColor)
-
-    DisposableEffect(window, statusBarsColorInArgb, alpha) {
-      window.statusBarColor =
-        ColorUtils.setAlphaComponent(statusBarsColorInArgb, lerp(0, 255, alpha))
-      onDispose { window.statusBarColor = statusBarsColorInArgb }
-    }
+  private fun Scrim(modifier: Modifier = Modifier) {
+    val isVisible = remember(resultsLoadable) { resultsLoadable is ListLoadable.Populated }
+    val alpha by animateFloatAsState(if (isVisible) .05f else 0f, label = "Scrim alpha")
+    val color = remember(alpha) { Color.Black.copy(alpha = alpha) }
 
     Canvas(
       modifier.layout { measurable, constraints ->
@@ -632,7 +573,7 @@ private class SearchTextFieldPopup(
         }
       }
     ) {
-      drawRect(Color.Black.copy(alpha = alpha))
+      drawRect(color)
     }
   }
 
