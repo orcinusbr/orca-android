@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -169,8 +169,8 @@ private fun Feed(
     val contentBlurRadius by contentBlurRadiusAsState
     val timelineTopContentPadding by
       animateDpAsState(
-        (WindowInsets.systemBars.top + searchTextFieldHeight).`if`(isSearching) {
-          this + SearchTextFieldDefaults.spacing * 2
+        searchTextFieldHeight.`if`(isSearching) {
+          this + WindowInsets.systemBars.top + SearchTextFieldDefaults.spacing * 2
         },
         replacementAnimationSpec(),
         label = "Timeline top content padding"
