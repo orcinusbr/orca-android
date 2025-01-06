@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -18,6 +18,7 @@ package br.com.orcinus.orca.platform.autos.kit.input.text.composition;
 import android.content.Context;
 import android.util.TypedValue;
 import androidx.annotation.NonNull;
+import androidx.core.util.TypedValueCompat;
 
 /** Utilities for performing operations with units. */
 public class Units {
@@ -33,5 +34,16 @@ public class Units {
     return (int)
         TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
+  }
+
+  /**
+   * Converts the pixels into DPs.
+   *
+   * @param context {@link Context} through which the conversion will take place.
+   * @param px Amount in pixels to be converted into DPs.
+   */
+  public static float px(@NonNull Context context, int px) {
+    return TypedValueCompat.deriveDimension(
+        TypedValue.COMPLEX_UNIT_PX, px, context.getResources().getDisplayMetrics());
   }
 }

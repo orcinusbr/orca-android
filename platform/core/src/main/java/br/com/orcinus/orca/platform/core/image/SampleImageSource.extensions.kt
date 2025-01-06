@@ -22,7 +22,7 @@ import br.com.orcinus.orca.core.sample.image.SampleImageSource
 import br.com.orcinus.orca.platform.core.R
 
 /** Resource ID for this respective [SampleImageSource]. */
-internal val SampleImageSource.resourceID
+inline val SampleImageSource.resourceID
   @DrawableRes
   get() =
     when (this) {
