@@ -1,7 +1,5 @@
-import br.com.orcinus.orca.namespaceFor
-
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -14,6 +12,8 @@ import br.com.orcinus.orca.namespaceFor
  * You should have received a copy of the GNU General Public License along with this program. If
  * not, see https://www.gnu.org/licenses.
  */
+
+import br.com.orcinus.orca.namespaceFor
 
 plugins {
   alias(libs.plugins.android.library)
@@ -30,14 +30,17 @@ android {
 
 dependencies {
   androidTestImplementation(libs.android.compose.ui.test.manifest)
+  androidTestImplementation(libs.android.test.runner)
 
   api(libs.android.compose.ui.test.junit)
+
+  implementation(project(":composite:timeline"))
+  implementation(project(":platform:testing"))
 
   testImplementation(project(":core:sample"))
   testImplementation(project(":platform:autos-test"))
   testImplementation(libs.android.compose.ui.test.manifest)
   testImplementation(libs.assertk)
+  testImplementation(libs.kotlin.test)
   testImplementation(libs.robolectric)
-
-  implementation(project(":composite:timeline"))
 }

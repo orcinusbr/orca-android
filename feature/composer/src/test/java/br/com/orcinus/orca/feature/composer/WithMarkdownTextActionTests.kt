@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -20,11 +20,12 @@ import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.activity.ComponentActivity
+import androidx.test.core.app.launchActivity
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import br.com.orcinus.orca.platform.autos.test.kit.input.text.composition.interop.scope.runCompositionTextFieldTest
-import br.com.orcinus.orca.platform.navigation.test.activity.launchNavigationActivity
+import br.com.orcinus.orca.composite.timeline.test.composition.interop.scope.runCompositionTextFieldTest
 import br.com.orcinus.orca.platform.testing.activity.scenario.activity
 import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.buildMarkdown
@@ -37,7 +38,7 @@ import org.robolectric.RobolectricTestRunner
 internal class WithMarkdownTextActionTests {
   @Test(expected = AssertionError::class)
   fun doesNotMatchNonEditText() {
-    launchNavigationActivity().use {
+    launchActivity<ComponentActivity>().use {
       val nonEditTextView = TextView(it.activity).apply { text = "Hello, world!" }
       it.activity?.addContentView(
         nonEditTextView,

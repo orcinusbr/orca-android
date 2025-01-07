@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -23,7 +23,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
-import br.com.orcinus.orca.platform.autos.kit.input.text.composition.CompositionTextField
+import br.com.orcinus.orca.composite.timeline.composition.CompositionTextField
 import br.com.orcinus.orca.std.markdown.buildMarkdown
 import org.junit.Rule
 import org.junit.Test

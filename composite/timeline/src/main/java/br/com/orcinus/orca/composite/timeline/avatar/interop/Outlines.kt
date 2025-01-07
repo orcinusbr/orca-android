@@ -23,7 +23,7 @@ import android.os.Build
 import android.view.View
 import android.view.ViewOutlineProvider
 import br.com.orcinus.orca.autos.forms.Form
-import br.com.orcinus.orca.platform.autos.kit.input.text.composition.Units
+import br.com.orcinus.orca.composite.timeline.Units
 
 /**
  * Converts this [Form] into a provider of an [Outline] for a [View].

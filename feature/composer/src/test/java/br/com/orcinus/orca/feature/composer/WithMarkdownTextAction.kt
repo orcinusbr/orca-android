@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -17,7 +17,7 @@ package br.com.orcinus.orca.feature.composer
 
 import android.view.View
 import android.widget.EditText
-import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.toMarkdown
+import br.com.orcinus.orca.composite.timeline.composition.interop.spanned.toMarkdown
 import br.com.orcinus.orca.platform.testing.context
 import br.com.orcinus.orca.std.markdown.Markdown
 import org.hamcrest.Description

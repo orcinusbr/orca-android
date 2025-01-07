@@ -34,12 +34,12 @@ import androidx.core.content.ContextCompat
 import br.com.orcinus.orca.autos.forms.Form
 import br.com.orcinus.orca.autos.forms.Forms
 import br.com.orcinus.orca.composite.timeline.R
+import br.com.orcinus.orca.composite.timeline.Units
 import br.com.orcinus.orca.composite.timeline.avatar.interop.asViewOutlineProvider
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.sample.image.AuthorImageSource
 import br.com.orcinus.orca.platform.autos.forms.asShape
-import br.com.orcinus.orca.platform.autos.kit.input.text.composition.Units
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 import br.com.orcinus.orca.platform.core.image.createSample

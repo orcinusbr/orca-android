@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -33,8 +33,8 @@ dependencies {
   implementation(libs.android.compose.material.icons)
   implementation(libs.android.activity.ktx)
 
-  testImplementation(project(":platform:autos-test"))
-  testImplementation(project(":platform:navigation-test"))
+  testImplementation(project(":composite:timeline-test"))
   testImplementation(project(":platform:testing"))
+  testImplementation(libs.android.test.espresso.core)
   testImplementation(libs.robolectric)
 }
