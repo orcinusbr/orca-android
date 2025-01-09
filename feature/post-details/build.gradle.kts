@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -45,6 +45,7 @@ dependencies {
   implementation(libs.loadable.placeholder)
 
   testImplementation(project(":core:sample-test"))
+  testImplementation(project(":platform:testing"))
   testImplementation(libs.android.test.runner)
   testImplementation(libs.assertk)
   testImplementation(libs.kotlin.coroutines.test)

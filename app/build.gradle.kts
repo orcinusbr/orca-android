@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -118,7 +118,7 @@ dependencies {
   implementation(project(":platform:autos"))
   implementation(project(":platform:core"))
   implementation(project(":platform:intents"))
-  implementation(project(":std:image:compose"))
+  implementation(project(":std:image:android"))
   implementation(project(":std:injector"))
   implementation(libs.android.appcompat)
   implementation(libs.android.constraintLayout)

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,8 +13,10 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.std.image.compose.async
+package br.com.orcinus.orca.std.image.android.async
 
+import android.content.Context
+import android.graphics.drawable.Drawable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -38,36 +40,49 @@ import androidx.compose.ui.semantics.semantics
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.std.image.ImageLoader
-import br.com.orcinus.orca.std.image.compose.ComposableImage
-import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
-import br.com.orcinus.orca.std.image.compose.R
+import br.com.orcinus.orca.std.image.android.AndroidImage
+import br.com.orcinus.orca.std.image.android.AndroidImageLoader
+import br.com.orcinus.orca.std.image.android.R
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import com.jeanbarrossilva.loadable.placeholder.Placeholder
 import com.jeanbarrossilva.loadable.placeholder.PlaceholderDefaults
+import java.lang.ref.WeakReference
 import java.net.URI
 import java.util.Objects
 
-/** [ComposableImageLoader] that loads an image asynchronously. */
-class AsyncImageLoader private constructor(override val source: URI) :
-  ComposableImageLoader<URI>() {
-  /** [ImageLoader.Provider] that provides an [AsyncImageLoader]. */
-  object Provider : ImageLoader.Provider<URI, ComposableImage> {
+/**
+ * [AndroidImageLoader] that loads an image asynchronously.
+ *
+ * @property contextRef [WeakReference] to the [Context] from which the [Drawable] version of the
+ *   image is obtained.
+ */
+open class AsyncImageLoader
+internal constructor(private val contextRef: WeakReference<Context>, override val source: URI) :
+  AndroidImageLoader<URI>() {
+  /**
+   * [ImageLoader.Provider] that provides an [AsyncImageLoader].
+   *
+   * @property contextRef [WeakReference] to the [Context] from which the [Drawable] version of the
+   *   image is obtained.
+   */
+  class Provider(private val contextRef: WeakReference<Context>) :
+    ImageLoader.Provider<URI, AndroidImage> {
     override fun provide(source: URI): AsyncImageLoader {
-      return AsyncImageLoader(source)
+      return AsyncImageLoader(contextRef, source)
     }
   }
 
   override fun equals(other: Any?): Boolean {
-    return other is AsyncImageLoader && source == other.source
+    return other is AsyncImageLoader && contextRef == other.contextRef && source == other.source
   }
 
   override fun hashCode(): Int {
-    return Objects.hash(source)
+    return Objects.hash(contextRef, source)
   }
 
-  override fun load(): ComposableImage {
-    return { contentDescription, shape, contentScale, modifier ->
+  override fun load() =
+    createImage().asComposable { modifier, contentDescription, shape, contentScale ->
       var state by remember {
         mutableStateOf<AsyncImagePainter.State>(AsyncImagePainter.State.Loading(painter = null))
       }
@@ -104,5 +119,4 @@ class AsyncImageLoader private constructor(override val source: URI) :
         }
       }
     }
-  }
 }

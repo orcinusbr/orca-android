@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -39,7 +39,7 @@ internal class SemanticsMatcherExtensionsTests {
       .apply {
         setContent {
           Image(
-            painterResource(br.com.orcinus.orca.std.image.compose.R.drawable.image),
+            painterResource(br.com.orcinus.orca.std.image.android.R.drawable.image),
             contentDescription = "Image"
           )
         }

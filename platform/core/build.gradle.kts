@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -23,9 +23,8 @@ android.buildFeatures.compose = true
 
 dependencies {
   api(project(":core:sample"))
-  api(project(":std:image:compose"))
+  api(project(":std:image:android"))
 
   implementation(libs.android.compose.foundation)
+  implementation(libs.android.core)
 }
-
-kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
