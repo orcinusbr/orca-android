@@ -52,6 +52,8 @@ import br.com.orcinus.orca.std.image.ImageLoader
 import br.com.orcinus.orca.std.image.InternalImageApi
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
+import coil.imageLoader
+import coil.request.ImageRequest
 import com.jeanbarrossilva.loadable.placeholder.Placeholder
 import com.jeanbarrossilva.loadable.placeholder.PlaceholderDefaults
 import java.lang.ref.WeakReference
@@ -147,43 +149,49 @@ abstract class AsyncImageLoader @InternalImageApi constructor() : AndroidImageLo
   override fun hashCode() = Objects.hash(contextRef, source)
 
   final override fun load() =
-    createImage().asComposable { modifier, contentDescription, shape, contentScale ->
-      var state by remember {
-        mutableStateOf<AsyncImagePainter.State>(AsyncImagePainter.State.Loading(painter = null))
+    createImage()
+      .asDrawable {
+        contextRef.get()?.let {
+          it.imageLoader.execute(ImageRequest.Builder(it).data("$source").build()).drawable
+        }
       }
-
-      BoxWithConstraints {
-        Placeholder(
-          modifier.semantics {
-            this.contentDescription = contentDescription
-            role = Role.Image
-          },
-          state is AsyncImagePainter.State.Loading,
-          shape
-        ) {
-          AsyncImage(
-            "$source",
-            contentDescription,
-            Modifier.clip(shape).fillMaxSize().clearAndSetSemantics {},
-            onState = { state = it },
-            contentScale = contentScale
-          )
+      .asComposable { modifier, contentDescription, shape, contentScale ->
+        var state by remember {
+          mutableStateOf<AsyncImagePainter.State>(AsyncImagePainter.State.Loading(painter = null))
         }
 
-        if (state is AsyncImagePainter.State.Error) {
-          Box(Modifier.clip(shape).background(PlaceholderDefaults.color).matchParentSize()) {
-            Icon(
-              AutosTheme.iconography.unavailable.filled.asImageVector,
-              contentDescription =
-                stringResource(R.string.std_image_android_async_image_unavailable),
-              Modifier.align(Alignment.Center)
-                .height(this@BoxWithConstraints.maxHeight / 2)
-                .width(this@BoxWithConstraints.maxWidth / 2)
+        BoxWithConstraints {
+          Placeholder(
+            modifier.semantics {
+              this.contentDescription = contentDescription
+              role = Role.Image
+            },
+            state is AsyncImagePainter.State.Loading,
+            shape
+          ) {
+            AsyncImage(
+              "$source",
+              contentDescription,
+              Modifier.clip(shape).fillMaxSize().clearAndSetSemantics {},
+              onState = { state = it },
+              contentScale = contentScale
             )
+          }
+
+          if (state is AsyncImagePainter.State.Error) {
+            Box(Modifier.clip(shape).background(PlaceholderDefaults.color).matchParentSize()) {
+              Icon(
+                AutosTheme.iconography.unavailable.filled.asImageVector,
+                contentDescription =
+                  stringResource(R.string.std_image_android_async_image_unavailable),
+                Modifier.align(Alignment.Center)
+                  .height(this@BoxWithConstraints.maxHeight / 2)
+                  .width(this@BoxWithConstraints.maxWidth / 2)
+              )
+            }
           }
         }
       }
-    }
 }
 
 /**
