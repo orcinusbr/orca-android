@@ -13,7 +13,7 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.composite.timeline;
+package br.com.orcinus.orca.platform.autos;
 
 import android.content.Context;
 import android.util.TypedValue;

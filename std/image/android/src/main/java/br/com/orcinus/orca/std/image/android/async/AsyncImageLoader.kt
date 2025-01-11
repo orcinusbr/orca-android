@@ -40,7 +40,6 @@ import androidx.compose.ui.semantics.semantics
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.std.image.ImageLoader
-import br.com.orcinus.orca.std.image.android.AndroidImage
 import br.com.orcinus.orca.std.image.android.AndroidImageLoader
 import br.com.orcinus.orca.std.image.android.R
 import coil.compose.AsyncImage
@@ -67,7 +66,7 @@ internal constructor(private val contextRef: WeakReference<Context>, override va
    *   image is obtained.
    */
   class Provider(private val contextRef: WeakReference<Context>) :
-    ImageLoader.Provider<URI, AndroidImage> {
+    AndroidImageLoader.Provider<URI> {
     override fun provide(source: URI): AsyncImageLoader {
       return AsyncImageLoader(contextRef, source)
     }

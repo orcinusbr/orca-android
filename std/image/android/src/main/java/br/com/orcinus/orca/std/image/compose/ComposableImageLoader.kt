@@ -34,14 +34,6 @@ import java.net.URI
 )
 typealias SomeComposableImageLoader = AndroidImageLoader<*>
 
-/** Image provided by an [AndroidImageLoader]. */
-@Deprecated(
-  "As of Orca 0.5.0, the Android-specific image encompasses both UI frameworks (the View system " +
-    "and Jetpack Compose), being a drawable and a composable.",
-  ReplaceWith("AndroidImage", imports = ["br.com.orcinus.orca.std.image.android.AndroidImage"])
-)
-typealias ComposableImage = AndroidImage
-
 /**
  * [ImageLoader] that loads a [Composable] image.
  *

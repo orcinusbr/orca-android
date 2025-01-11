@@ -24,13 +24,15 @@ import br.com.orcinus.orca.core.mastodon.instance.MastodonInstanceProvider
 import br.com.orcinus.orca.core.mastodon.notification.NotificationLock
 import br.com.orcinus.orca.core.sharedpreferences.actor.SharedPreferencesActorProvider
 import br.com.orcinus.orca.core.sharedpreferences.feed.profile.post.content.SharedPreferencesTermMuter
-import br.com.orcinus.orca.std.image.compose.async.AsyncImageLoader
+import br.com.orcinus.orca.std.image.SomeImageLoaderProvider
 import br.com.orcinus.orca.std.injector.module.injection.immediateInjectionOf
 import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
+import java.net.URI
 
 internal fun MastodonCoreModule(
   context: Context,
-  notificationLock: NotificationLock
+  notificationLock: NotificationLock,
+  imageLoaderProvider: SomeImageLoaderProvider<URI>
 ): MastodonCoreModule {
   val actorProvider = SharedPreferencesActorProvider(context, MainImageLoaderProviderFactory)
   val authorizer = MastodonAuthorizer(context)
@@ -47,7 +49,7 @@ internal fun MastodonCoreModule(
         actorProvider,
         authenticationLock,
         termMuter,
-        AsyncImageLoader.Provider
+        imageLoaderProvider
       )
     },
     immediateInjectionOf(authenticationLock),

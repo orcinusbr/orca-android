@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2025 Orcinus
+ * Copyright © 2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,28 +15,19 @@
 
 package br.com.orcinus.orca.feature.composer
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
+import br.com.orcinus.orca.core.sample.image.AuthorImageSource
+import br.com.orcinus.orca.platform.core.image.createSample
+import br.com.orcinus.orca.platform.testing.context
 import br.com.orcinus.orca.std.image.android.AndroidImageLoader
-import br.com.orcinus.orca.std.markdown.Markdown
+import br.com.orcinus.orca.std.injector.module.injection.Injection
+import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.flow.MutableStateFlow
 
-internal class ComposerViewModel
-private constructor(val avatarLoaderDeferred: Deferred<AndroidImageLoader<*>>) : ViewModel() {
-  private val textFlow = MutableStateFlow(Markdown.empty)
-
-  fun setText(text: Markdown) {
-    textFlow.value = text
-  }
-
-  fun compose() {}
-
-  companion object {
-    @JvmStatic
-    fun createFactory(avatarLoaderDeferred: Deferred<AndroidImageLoader<*>>) = viewModelFactory {
-      initializer { ComposerViewModel(avatarLoaderDeferred) }
-    }
+internal object SampleComposerModule : ComposerModule() {
+  override val avatarLoaderDeferred: Injection<Deferred<AndroidImageLoader<*>>> = lazyInjectionOf {
+    CompletableDeferred(
+      AndroidImageLoader.Provider.createSample(context).provide(AuthorImageSource.Default)
+    )
   }
 }

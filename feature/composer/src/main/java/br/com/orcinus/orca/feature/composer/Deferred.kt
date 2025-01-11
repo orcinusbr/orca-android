@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024–2025 Orcinus
+ * Copyright © 2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,17 +13,12 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.auth.actor
+package br.com.orcinus.orca.feature.composer
 
-/**
- * [ActorProvider] that provides only the specified [actor].
- *
- * @param actor [Actor] to be provided unconditionally.
- */
-internal class FixedActorProvider(private val actor: Actor) : ActorProvider() {
-  override suspend fun onRemembrance(actor: Actor) {}
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.produceState
+import kotlinx.coroutines.Deferred
 
-  override suspend fun retrieve(): Actor {
-    return actor
-  }
-}
+@Composable
+internal fun <T> Deferred<T>.collectAsState(initialValue: T) =
+  produceState(initialValue, key1 = this) { value = await() }

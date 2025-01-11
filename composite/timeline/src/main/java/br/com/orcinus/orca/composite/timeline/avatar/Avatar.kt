@@ -16,37 +16,32 @@
 package br.com.orcinus.orca.composite.timeline.avatar
 
 import android.content.Context
-import android.util.AttributeSet
-import android.widget.ImageView
-import androidx.annotation.AttrRes
+import android.graphics.drawable.Drawable
 import androidx.annotation.VisibleForTesting
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.updateBounds
 import br.com.orcinus.orca.autos.forms.Form
 import br.com.orcinus.orca.autos.forms.Forms
 import br.com.orcinus.orca.composite.timeline.R
-import br.com.orcinus.orca.composite.timeline.Units
-import br.com.orcinus.orca.composite.timeline.avatar.interop.asViewOutlineProvider
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.sample.image.AuthorImageSource
+import br.com.orcinus.orca.platform.autos.Units
 import br.com.orcinus.orca.platform.autos.forms.asShape
+import br.com.orcinus.orca.platform.autos.forms.clip
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 import br.com.orcinus.orca.platform.core.image.createSample
-import br.com.orcinus.orca.platform.core.image.resourceID
-import br.com.orcinus.orca.std.image.compose.ComposableImage
-import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
-import br.com.orcinus.orca.std.image.compose.SomeComposableImageLoader
+import br.com.orcinus.orca.std.image.android.AndroidImageLoader
+import br.com.orcinus.orca.std.image.android.asComposable
 import com.jeanbarrossilva.loadable.placeholder.Placeholder
 
 /**
@@ -57,6 +52,20 @@ import com.jeanbarrossilva.loadable.placeholder.Placeholder
  */
 internal const val AvatarTag = "avatar"
 
+/** Default values used by an avatar. */
+private object AvatarDefaults {
+  /**
+   * Creates a description for an avatar whose owner's name is [name].
+   *
+   * @param name Name of the owner to which the avatar belongs.
+   */
+  @Composable
+  @JvmStatic
+  fun contentDescriptionFor(name: String): String {
+    return stringResource(R.string.composite_timeline_avatar, name)
+  }
+}
+
 /**
  * Properties and behaviors of the rendering of the picture of a [Profile] based on its size:
  * - [SMALL], for contexts in which it is not one of the most important parts of the UI (e. g.,
@@ -65,7 +74,7 @@ internal const val AvatarTag = "avatar"
  *   prominence (e. g., their own page).
  */
 @Immutable
-private enum class Avatar {
+enum class Avatar {
   /**
    * Avatar size-based rendering characteristics for contexts in which it is not one of the most
    * prominent UI components.
@@ -87,7 +96,7 @@ private enum class Avatar {
   /**
    * [Form] that defines how the avatar is clipped.
    *
-   * @see outline
+   * @see transform
    * @see shape
    */
   protected abstract val form: Form.PerCorner
@@ -96,98 +105,23 @@ private enum class Avatar {
    * Starting amount of density-dependent pixels that compose both the width and the height of the
    * avatar.
    */
-  abstract val sizeThreshold: Dp
+  internal abstract val sizeThreshold: Dp
 
   /** [Shape] of an avatar of this size. */
-  inline val shape: Shape
+  internal inline val shape: Shape
     get() = form.asShape
 
   /**
-   * Defines the outline of the [view] and clips it to it.
+   * Resizes and clips the [drawable] based on this specific avatar size.
    *
-   * @param view [AvatarView] to be outlined.
+   * @param context [Context] for converting density-independent pixels into absolute ones.
+   * @param drawable [Drawable] to be transformed.
    */
-  fun outline(view: AvatarView) {
-    view.outlineProvider = form.asViewOutlineProvider()
-    view.clipToOutline = true
-  }
-
-  companion object {
-    /**
-     * Returns the avatar size class that is most suitable for the given [size].
-     *
-     * @param size Width and height of the avatar in absolute pixels.
-     */
-    @JvmStatic
-    fun sized(size: Dp): Avatar {
-      return entries.first { size.coerceAtLeast(it.sizeThreshold) >= it.sizeThreshold }
+  fun transform(context: Context, drawable: Drawable): Drawable {
+    val sizeThresholdInPx = Units.dp(context, sizeThreshold.value)
+    return drawable.clip(context, form).apply {
+      updateBounds(right = bounds.left + sizeThresholdInPx, bottom = bounds.top + sizeThresholdInPx)
     }
-  }
-}
-
-/**
- * [ImageView] for the picture of a [Profile].
- *
- * @param context [Context] in which it will be added.
- * @param attributeSet Attributes specified in XML.
- * @param defaultStyleAttribute Attribute of the style to be applied by default.
- */
-class AvatarView
-@JvmOverloads
-constructor(
-  context: Context,
-  attributeSet: AttributeSet? = null,
-  @AttrRes defaultStyleAttribute: Int = 0
-) : AppCompatImageView(context, attributeSet, defaultStyleAttribute) {
-  /** Size class of the avatar based on which it is laid out. */
-  private var avatar = Avatar.SMALL
-    set(avatar) {
-      field = avatar
-      field.outline(this)
-    }
-
-  init {
-    if (isInEditMode) {
-      setImageDrawable(ContextCompat.getDrawable(context, AuthorImageSource.Default.resourceID))
-    }
-  }
-
-  override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-    val widthMode = MeasureSpec.getMode(widthMeasureSpec)
-    val heightMode = MeasureSpec.getMode(heightMeasureSpec)
-    val size =
-      when {
-        widthMode == MeasureSpec.UNSPECIFIED && heightMode == MeasureSpec.UNSPECIFIED ->
-          maxOf(
-            maxOf(suggestedMinimumWidth, suggestedMinimumHeight),
-            Units.dp(context, avatar.sizeThreshold.value)
-          )
-        widthMode == MeasureSpec.AT_MOST ||
-          widthMode == MeasureSpec.EXACTLY && heightMode == MeasureSpec.UNSPECIFIED ->
-          maxOf(suggestedMinimumWidth, MeasureSpec.getSize(widthMeasureSpec))
-        widthMode == MeasureSpec.UNSPECIFIED &&
-          (heightMode == MeasureSpec.AT_MOST || heightMode == MeasureSpec.EXACTLY) ->
-          maxOf(suggestedMinimumHeight, MeasureSpec.getSize(heightMeasureSpec))
-        else ->
-          maxOf(
-            maxOf(suggestedMinimumWidth, MeasureSpec.getSize(widthMeasureSpec)),
-            maxOf(suggestedMinimumHeight, MeasureSpec.getSize(heightMeasureSpec))
-          )
-      }
-    setMeasuredDimension(size, size)
-    avatar = Avatar.sized(Units.px(context, size).dp)
-  }
-
-  companion object {
-    /**
-     * Creates a content description appropriate for an [AvatarView].
-     *
-     * @param context [Context] by which the [String] resource will be obtained.
-     * @param name Name of the owner to which the avatar belongs.
-     */
-    @JvmStatic
-    fun createContentDescription(context: Context, name: String) =
-      context.getString(R.string.composite_timeline_avatar, name)
   }
 }
 
@@ -207,22 +141,19 @@ fun SmallAvatar(modifier: Modifier = Modifier) {
 /**
  * [Profile] picture at a small size.
  *
- * @param imageLoader [ComposableImageLoader] by which the avatar will be loaded.
+ * @param imageLoader [AndroidImageLoader] by which the avatar will be loaded.
  * @param name Name of the owner to which avatar belongs.
- * @param modifier [Modifier] to be applied to the underlying [ComposableImage].
+ * @param modifier [Modifier] to be applied to the image.
  */
 @Composable
-fun SmallAvatar(
-  imageLoader: SomeComposableImageLoader,
-  name: String,
-  modifier: Modifier = Modifier
-) {
-  imageLoader.load()(
-    AvatarView.createContentDescription(LocalContext.current, name),
-    Avatar.SMALL.shape,
-    ComposableImageLoader.DefaultContentScale,
-    modifier.requiredSize(Avatar.SMALL.sizeThreshold).testTag(AvatarTag)
-  )
+fun SmallAvatar(imageLoader: AndroidImageLoader<*>, name: String, modifier: Modifier = Modifier) {
+  imageLoader
+    .load()
+    .asComposable(
+      AvatarDefaults.contentDescriptionFor(name),
+      Avatar.SMALL.shape,
+      modifier.requiredSize(Avatar.SMALL.sizeThreshold).testTag(AvatarTag)
+    )
 }
 
 /**
@@ -241,22 +172,19 @@ fun LargeAvatar(modifier: Modifier = Modifier) {
 /**
  * [Profile] picture at a large size.
  *
- * @param imageLoader [ComposableImageLoader] by which the avatar will be loaded.
+ * @param imageLoader [AndroidImageLoader] by which the avatar will be loaded.
  * @param name Name of the owner to which avatar belongs.
- * @param modifier [Modifier] to be applied to the underlying [ComposableImage].
+ * @param modifier [Modifier] to be applied to the image.
  */
 @Composable
-fun LargeAvatar(
-  imageLoader: SomeComposableImageLoader,
-  name: String,
-  modifier: Modifier = Modifier
-) {
-  imageLoader.load()(
-    AvatarView.createContentDescription(LocalContext.current, name),
-    Avatar.LARGE.shape,
-    ComposableImageLoader.DefaultContentScale,
-    modifier.requiredSize(Avatar.LARGE.sizeThreshold).testTag(AvatarTag)
-  )
+fun LargeAvatar(imageLoader: AndroidImageLoader<*>, name: String, modifier: Modifier = Modifier) {
+  imageLoader
+    .load()
+    .asComposable(
+      AvatarDefaults.contentDescriptionFor(name),
+      Avatar.LARGE.shape,
+      modifier.requiredSize(Avatar.LARGE.sizeThreshold).testTag(AvatarTag)
+    )
 }
 
 /**
@@ -264,14 +192,14 @@ fun LargeAvatar(
  *
  * This avatar is intended for previewing and testing only.
  *
- * @param modifier [Modifier] to be applied to the underlying [ComposableImage].
+ * @param modifier [Modifier] to be applied to the image.
  * @see AuthorImageSource.Default
  */
 @Composable
 @VisibleForTesting
 internal fun SampleSmallAvatar(modifier: Modifier = Modifier) {
   SmallAvatar(
-    ComposableImageLoader.createSample(AuthorImageSource.Default),
+    AndroidImageLoader.createSample(AuthorImageSource.Default),
     Author.sample.name,
     modifier
   )
@@ -282,14 +210,14 @@ internal fun SampleSmallAvatar(modifier: Modifier = Modifier) {
  *
  * This avatar is intended for previewing and testing only.
  *
- * @param modifier [Modifier] to be applied to the underlying [ComposableImage].
+ * @param modifier [Modifier] to be applied to the image.
  * @see AuthorImageSource.Default
  */
 @Composable
 @VisibleForTesting
 internal fun SampleLargeAvatar(modifier: Modifier = Modifier) {
   LargeAvatar(
-    ComposableImageLoader.createSample(AuthorImageSource.Default),
+    AndroidImageLoader.createSample(AuthorImageSource.Default),
     Author.sample.name,
     modifier
   )

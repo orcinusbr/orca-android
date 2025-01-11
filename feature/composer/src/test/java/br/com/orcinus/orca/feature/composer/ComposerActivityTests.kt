@@ -24,15 +24,22 @@ import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import br.com.orcinus.orca.composite.timeline.composition.CompositionTextField
+import br.com.orcinus.orca.std.injector.test.InjectorTestRule
 import br.com.orcinus.orca.std.markdown.buildMarkdown
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.RuleChain
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class ComposerActivityTests {
-  @get:Rule val composeRule = createAndroidComposeRule<ComposerActivity>()
+  private val composeRule = createAndroidComposeRule<ComposerActivity>()
+
+  @get:Rule
+  val ruleChain: RuleChain? =
+    RuleChain.outerRule(InjectorTestRule { register<ComposerModule>(SampleComposerModule) })
+      .around(composeRule)
 
   @Test
   fun stylesSelectedComposition() {

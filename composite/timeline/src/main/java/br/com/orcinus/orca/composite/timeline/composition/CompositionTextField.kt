@@ -26,7 +26,6 @@ import androidx.annotation.Px
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.setPadding
 import br.com.orcinus.orca.autos.Spacings
-import br.com.orcinus.orca.composite.timeline.Units
 import br.com.orcinus.orca.composite.timeline.composition.interop.CompositionTextFieldValue
 import br.com.orcinus.orca.composite.timeline.composition.interop.orEmpty
 import br.com.orcinus.orca.composite.timeline.composition.interop.spanned.toEditable
@@ -36,6 +35,7 @@ import br.com.orcinus.orca.composite.timeline.composition.interop.spanned.toSpan
 import br.com.orcinus.orca.composite.timeline.composition.interop.toMarkdown
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.platform.autos.R
+import br.com.orcinus.orca.platform.autos.Units
 import br.com.orcinus.orca.std.markdown.Markdown
 
 /**

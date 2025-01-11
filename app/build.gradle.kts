@@ -30,6 +30,7 @@ android {
   flavorDimensions += Dimensions.VERSION
   lint.disable +=
     arrayOf(
+      "CoroutineCreationDuringComposition",
       "Instantiatable",
 
       /*

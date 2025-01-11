@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024–2025 Orcinus
+ * Copyright © 2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,17 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.auth.actor
+package br.com.orcinus.orca.platform.autos.forms
+
+import android.content.Context
+import android.graphics.drawable.Drawable
+import br.com.orcinus.orca.autos.forms.Form
 
 /**
- * [ActorProvider] that provides only the specified [actor].
+ * Creates another [Drawable] from this one, clipped by the given [form].
  *
- * @param actor [Actor] to be provided unconditionally.
+ * @param context [Context] for converting density-independent pixels into absolute ones.
+ * @param form [Form] by which this [Drawable] will be clipped.
  */
-internal class FixedActorProvider(private val actor: Actor) : ActorProvider() {
-  override suspend fun onRemembrance(actor: Actor) {}
-
-  override suspend fun retrieve(): Actor {
-    return actor
-  }
-}
+fun Drawable.clip(context: Context, form: Form.PerCorner): Drawable =
+  FormDrawable(context, form, this)

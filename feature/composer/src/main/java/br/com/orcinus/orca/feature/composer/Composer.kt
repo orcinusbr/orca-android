@@ -27,6 +27,7 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,11 +42,13 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import br.com.orcinus.orca.composite.timeline.avatar.Avatar
 import br.com.orcinus.orca.composite.timeline.avatar.SmallAvatar
 import br.com.orcinus.orca.composite.timeline.composition.CompositionTextField
 import br.com.orcinus.orca.composite.timeline.composition.interop.CompositionTextFieldValue
 import br.com.orcinus.orca.composite.timeline.composition.interop.drawableStateOf
 import br.com.orcinus.orca.composite.timeline.composition.interop.proxy
+import br.com.orcinus.orca.core.sample.image.AuthorImageSource
 import br.com.orcinus.orca.feature.composer.ui.Toolbar
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.kit.action.button.icon.HoverableIconButton
@@ -56,6 +59,8 @@ import br.com.orcinus.orca.platform.autos.kit.scaffold.plus
 import br.com.orcinus.orca.platform.autos.overlays.asPaddingValues
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
+import br.com.orcinus.orca.platform.core.image.createSample
+import br.com.orcinus.orca.std.image.android.AndroidImageLoader
 import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.style.Style
 
@@ -65,7 +70,10 @@ internal fun Composer(
   onBackwardsNavigation: () -> Unit,
   modifier: Modifier = Modifier
 ) {
+  val avatarLoader by viewModel.avatarLoaderDeferred.collectAsState(initialValue = null)
+
   Composer(
+    avatarLoader,
     onTextChange = viewModel::setText,
     onCompose = viewModel::compose,
     onBackwardsNavigation,
@@ -75,6 +83,7 @@ internal fun Composer(
 
 @Composable
 private fun Composer(
+  avatarLoader: AndroidImageLoader<*>?,
   onTextChange: (text: Markdown) -> Unit,
   onCompose: () -> Unit,
   onBackwardsNavigation: () -> Unit,
@@ -83,9 +92,10 @@ private fun Composer(
   val context = LocalContext.current
   val density = LocalDensity.current
   val layoutDirection = LocalLayoutDirection.current
+  val loadingAvatarDrawable by drawableStateOf { SmallAvatar() }
+  var avatarDrawable by remember { mutableStateOf(loadingAvatarDrawable) }
   val textField = remember(context) { CompositionTextField(context) }
   val textFieldSpacing = with(density) { CompositionTextField.getSpacing(context).toDp() }
-  val textFieldStartCompoundDrawable by drawableStateOf { SmallAvatar() }
   var textFieldValue by remember { mutableStateOf(CompositionTextFieldValue.Empty) }
   var toolbarPadding by remember {
     mutableStateOf(
@@ -96,6 +106,10 @@ private fun Composer(
         bottom = textFieldSpacing
       )
     )
+  }
+
+  LaunchedEffect(avatarLoader) {
+    avatarLoader?.load()?.asDrawable()?.let { avatarDrawable = Avatar.SMALL.transform(context, it) }
   }
 
   Scaffold(
@@ -162,14 +176,14 @@ private fun Composer(
                 it.setOnEditorActionListener(null)
                 it.setOnValueChangeListener(null)
               }
-            ) {
-              it.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                textFieldStartCompoundDrawable,
-                null,
-                null,
-                null
+            ) { compositionTextField ->
+              compositionTextField.setCompoundDrawablesRelative(
+                /* start = */ avatarDrawable,
+                /* top = */ null,
+                /* end = */ null,
+                /* bottom = */ null
               )
-              it.setValue(textFieldValue)
+              compositionTextField.setValue(textFieldValue)
             }
           }
         }
@@ -189,5 +203,12 @@ private fun Composer(
 @Composable
 @MultiThemePreview
 private fun ComposerPreview() {
-  AutosTheme { Composer(onTextChange = {}, onCompose = {}, onBackwardsNavigation = {}) }
+  AutosTheme {
+    Composer(
+      avatarLoader = AndroidImageLoader.createSample(AuthorImageSource.Default),
+      onTextChange = {},
+      onCompose = {},
+      onBackwardsNavigation = {}
+    )
+  }
 }
