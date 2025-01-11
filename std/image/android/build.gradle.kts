@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,18 +13,26 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.core.image
+import br.com.orcinus.orca.namespaceFor
 
-import br.com.orcinus.orca.core.sample.image.SampleImageSource
-import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
+plugins {
+  alias(libs.plugins.android.library)
+  alias(libs.plugins.kotlin.android)
+  alias(libs.plugins.kotlin.compose)
+}
 
-/**
- * Creates a sample [ComposableImageLoader].
- *
- * @param source [SampleImageSource] from which the image will be loaded.
- */
-fun ComposableImageLoader.Companion.createSample(
-  source: SampleImageSource
-): ComposableImageLoader<SampleImageSource> {
-  return SampleComposableImageLoader.Provider.provide(source)
+android {
+  buildFeatures.compose = true
+  namespace = namespaceFor("std.image.android")
+}
+
+dependencies {
+  api(project(":std:image"))
+  api(libs.android.compose.ui.tooling)
+
+  implementation(project(":core:sample"))
+  implementation(project(":platform:autos"))
+  implementation(libs.android.core)
+  implementation(libs.coil.compose)
+  implementation(libs.loadable.placeholder)
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -19,23 +19,11 @@ plugins {
   alias(libs.plugins.android.library)
   alias(libs.plugins.kotlin.android)
   alias(libs.plugins.kotlin.compose)
-
-  kotlin("plugin.serialization")
 }
+
+dependencies.api(project(":std:image:android"))
 
 android {
   buildFeatures.compose = true
-  kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
   namespace = namespaceFor("std.image.compose")
-}
-
-dependencies {
-  api(project(":std:image"))
-  api(libs.android.compose.ui.tooling)
-
-  implementation(project(":core:sample"))
-  implementation(project(":platform:autos"))
-  implementation(libs.android.core)
-  implementation(libs.coil.compose)
-  implementation(libs.loadable.placeholder)
 }

@@ -17,10 +17,12 @@ plugins {
   alias(libs.plugins.android.library)
   alias(libs.plugins.kotlin.android)
   alias(libs.plugins.kotlin.compose)
+  alias(libs.plugins.kotlin.symbolProcessor)
 }
 
 android {
   buildFeatures.compose = true
+  lint.disable += "ProduceStateDoesNotAssignValue"
   testOptions.unitTests.isIncludeAndroidResources = true
 }
 
@@ -33,8 +35,11 @@ dependencies {
   implementation(libs.android.compose.material.icons)
   implementation(libs.android.activity.ktx)
 
+  ksp(project(":std:injector-processor"))
+
   testImplementation(project(":platform:autos-test"))
   testImplementation(project(":platform:navigation-test"))
   testImplementation(project(":platform:testing"))
+  testImplementation(project(":std:injector-test"))
   testImplementation(libs.robolectric)
 }

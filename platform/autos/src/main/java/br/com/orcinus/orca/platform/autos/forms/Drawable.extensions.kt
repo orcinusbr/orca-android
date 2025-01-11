@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024–2025 Orcinus
+ * Copyright © 2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,18 +13,17 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-plugins {
-  alias(libs.plugins.android.library)
-  alias(libs.plugins.kotlin.android)
-  alias(libs.plugins.kotlin.compose)
-}
+package br.com.orcinus.orca.platform.autos.forms
 
-android.buildFeatures.compose = true
+import android.content.Context
+import android.graphics.drawable.Drawable
+import br.com.orcinus.orca.autos.forms.Form
 
-dependencies {
-  api(project(":core:sample"))
-  api(project(":std:image:compose"))
-
-  implementation(libs.android.compose.foundation)
-  implementation(libs.android.core)
-}
+/**
+ * Creates another [Drawable] from this one, clipped by the given [form].
+ *
+ * @param context [Context] for converting density-independent pixels into absolute ones.
+ * @param form [Form] by which this [Drawable] will be clipped.
+ */
+fun Drawable.clip(context: Context, form: Form.PerCorner): Drawable =
+  FormDrawable(context, form, this)

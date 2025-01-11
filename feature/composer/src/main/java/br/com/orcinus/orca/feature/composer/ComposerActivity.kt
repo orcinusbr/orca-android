@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -20,9 +20,12 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import br.com.orcinus.orca.composite.composable.ComposableActivity
 import br.com.orcinus.orca.platform.starter.on
+import br.com.orcinus.orca.std.injector.Injector
 
 class ComposerActivity internal constructor() : ComposableActivity() {
-  private val viewModel by viewModels<ComposerViewModel>()
+  private val module by lazy { Injector.from<ComposerModule>() }
+  private val viewModel by
+    viewModels<ComposerViewModel> { ComposerViewModel.createFactory(module.avatarLoaderDeferred()) }
 
   @Composable
   override fun Content() {

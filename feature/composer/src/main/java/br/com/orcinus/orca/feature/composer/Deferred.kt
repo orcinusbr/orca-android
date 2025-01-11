@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,12 +13,12 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.platform.core.image
+package br.com.orcinus.orca.feature.composer
 
-import br.com.orcinus.orca.core.sample.image.SampleImageSource
-import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.produceState
+import kotlinx.coroutines.Deferred
 
-/** Sample [ComposableImageLoader.Provider]. */
-val ComposableImageLoader.Provider.Companion.sample:
-  ComposableImageLoader.Provider<SampleImageSource>
-  get() = SampleComposableImageLoader.Provider
+@Composable
+internal fun <T> Deferred<T>.collectAsState(initialValue: T) =
+  produceState(initialValue, key1 = this) { value = await() }

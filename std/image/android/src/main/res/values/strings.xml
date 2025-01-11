@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright © 2023–2024 Orcinus
   ~
   ~ This program is free software: you can redistribute it and/or modify it under the terms of the
@@ -14,6 +13,6 @@
   ~ not, see https://www.gnu.org/licenses.
   -->
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <uses-permission android:name="android.permission.INTERNET" />
-</manifest>
+<resources>
+    <string name="std_image_android_async_image_unavailable">Unavailable image</string>
+</resources>

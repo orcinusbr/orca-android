@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,94 +15,42 @@
 
 package br.com.orcinus.orca.std.image.compose.async
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Icon
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
-import br.com.orcinus.orca.platform.autos.iconography.asImageVector
-import br.com.orcinus.orca.platform.autos.theme.AutosTheme
+import android.content.Context
 import br.com.orcinus.orca.std.image.ImageLoader
-import br.com.orcinus.orca.std.image.compose.ComposableImage
+import br.com.orcinus.orca.std.image.android.AndroidImage
 import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
-import br.com.orcinus.orca.std.image.compose.R
-import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
-import com.jeanbarrossilva.loadable.placeholder.Placeholder
-import com.jeanbarrossilva.loadable.placeholder.PlaceholderDefaults
+import java.lang.ref.WeakReference
 import java.net.URI
-import java.util.Objects
 
 /** [ComposableImageLoader] that loads an image asynchronously. */
+@Deprecated(
+  "Drawables of images loaded by this async loader are unobtainable because it is context-less.",
+  ReplaceWith(
+    "AsyncImageLoader",
+    imports = ["br.com.orcinus.orca.std.image.android.async.AsyncImageLoader"]
+  )
+)
 class AsyncImageLoader private constructor(override val source: URI) :
-  ComposableImageLoader<URI>() {
+  br.com.orcinus.orca.std.image.android.AsyncImageLoader() {
+  override val contextRef = clearedContextRef
+
   /** [ImageLoader.Provider] that provides an [AsyncImageLoader]. */
-  object Provider : ImageLoader.Provider<URI, ComposableImage> {
+  @Deprecated(
+    "Drawables of images loaded by async loaders provided by this provider are unobtainable " +
+      "because they are context-less.",
+    ReplaceWith(
+      "AsyncImageLoader.Provider",
+      imports = ["br.com.orcinus.orca.std.image.android.async.AsyncImageLoader"]
+    )
+  )
+  object Provider : ImageLoader.Provider<URI, AndroidImage> {
     override fun provide(source: URI): AsyncImageLoader {
       return AsyncImageLoader(source)
     }
   }
 
-  override fun equals(other: Any?): Boolean {
-    return other is AsyncImageLoader && source == other.source
-  }
-
-  override fun hashCode(): Int {
-    return Objects.hash(source)
-  }
-
-  override fun load(): ComposableImage {
-    return { contentDescription, shape, contentScale, modifier ->
-      var state by remember {
-        mutableStateOf<AsyncImagePainter.State>(AsyncImagePainter.State.Loading(painter = null))
-      }
-
-      BoxWithConstraints {
-        Placeholder(
-          modifier.semantics {
-            this.contentDescription = contentDescription
-            role = Role.Image
-          },
-          state is AsyncImagePainter.State.Loading,
-          shape
-        ) {
-          AsyncImage(
-            "$source",
-            contentDescription,
-            Modifier.clip(shape).fillMaxSize().clearAndSetSemantics {},
-            onState = { state = it },
-            contentScale = contentScale
-          )
-        }
-
-        if (state is AsyncImagePainter.State.Error) {
-          Box(Modifier.clip(shape).background(PlaceholderDefaults.color).matchParentSize()) {
-            Icon(
-              AutosTheme.iconography.unavailable.filled.asImageVector,
-              contentDescription =
-                stringResource(R.string.std_image_compose_async_image_unavailable),
-              Modifier.align(Alignment.Center)
-                .height(this@BoxWithConstraints.maxHeight / 2)
-                .width(this@BoxWithConstraints.maxWidth / 2)
-            )
-          }
-        }
-      }
-    }
+  companion object {
+    /** [WeakReference] to a cleared [Context]. */
+    @JvmField val clearedContextRef = WeakReference<Context>(null)
   }
 }

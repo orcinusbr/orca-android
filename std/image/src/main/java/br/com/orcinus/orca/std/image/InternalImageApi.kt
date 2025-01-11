@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024–2025 Orcinus
+ * Copyright © 2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,18 +13,12 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-plugins {
-  alias(libs.plugins.android.library)
-  alias(libs.plugins.kotlin.android)
-  alias(libs.plugins.kotlin.compose)
-}
+package br.com.orcinus.orca.std.image
 
-android.buildFeatures.compose = true
+import br.com.orcinus.orca.std.visibility.PackageProtected
 
-dependencies {
-  api(project(":core:sample"))
-  api(project(":std:image:compose"))
-
-  implementation(libs.android.compose.foundation)
-  implementation(libs.android.core)
-}
+/** Denotes that the annotated API is internal to the `:std:image` module. */
+@PackageProtected(
+  "This API targets the internals of `:std:image` and should not be referenced externally."
+)
+annotation class InternalImageApi

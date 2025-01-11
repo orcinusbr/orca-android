@@ -294,9 +294,45 @@ private constructor(
        * @param imageLoaderProvider Provides the [ImageLoader] by which images are to be loaded from
        *   a [SampleImageSource].
        */
+      @Deprecated(
+        "Creating a sample instance without specifying the actor to be provided implicitly " +
+          "defines such as one whose avatar is loaded by a no-op loader (which may even be " +
+          "different from that provided by the image provider passed in as a parameter to this " +
+          "method). Prefer calling the overload that receives an actor provider."
+      )
       fun create(imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>): Empty {
         val authenticator = SampleAuthenticator()
-        val actorProvider = SampleActorProvider()
+        @Suppress("DEPRECATION") val actorProvider = SampleActorProvider()
+        val authenticationLock = SampleAuthenticationLock(authenticator, actorProvider)
+        val profileProvider = SampleProfileProvider()
+        val profileSearcher = SampleProfileSearcher(profileProvider)
+        val postProvider = SamplePostProvider(profileProvider)
+        val termMuter = SampleTermMuter()
+        val feedProvider =
+          SampleFeedProvider(profileProvider, postProvider, termMuter, imageLoaderProvider)
+        return create(
+          authenticator,
+          authenticationLock,
+          feedProvider,
+          profileProvider,
+          profileSearcher,
+          postProvider,
+          imageLoaderProvider
+        )
+      }
+
+      /**
+       * Creates a [Builder].
+       *
+       * @param actorProvider [SampleActorProvider] by which an [Actor] are to be provided.
+       * @param imageLoaderProvider Provides the [ImageLoader] by which images are to be loaded from
+       *   a [SampleImageSource].
+       */
+      fun create(
+        actorProvider: SampleActorProvider,
+        imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
+      ): Empty {
+        val authenticator = SampleAuthenticator()
         val authenticationLock = SampleAuthenticationLock(authenticator, actorProvider)
         val profileProvider = SampleProfileProvider()
         val profileSearcher = SampleProfileSearcher(profileProvider)
