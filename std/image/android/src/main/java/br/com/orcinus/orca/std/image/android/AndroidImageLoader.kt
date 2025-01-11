@@ -114,7 +114,7 @@ abstract class AndroidImageLoader<T : Any> : ImageLoader<T, AndroidImage> {
   abstract class CompanionCompat @InternalImageApi constructor()
 
   /** Creates an empty [AndroidImage]. */
-  fun createImage() = AndroidImage.Builder()
+  protected fun createImage() = AndroidImage.Builder()
 
   companion object : CompanionCompat()
 }
