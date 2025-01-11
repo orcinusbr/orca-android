@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024–2025 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -19,20 +19,16 @@ plugins {
   alias(libs.plugins.kotlin.compose)
 }
 
+kotlin.compilerOptions.freeCompilerArgs.add("-Xcontext-receivers")
+
 android {
   buildFeatures.compose = true
-  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   packagingOptions.resources.excludes +=
     arrayOf("META-INF/LICENSE.md", "META-INF/LICENSE-notice.md")
   testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
-  androidTestImplementation(project(":composite:timeline-test"))
-  androidTestImplementation(libs.android.test.espresso.core)
-  androidTestImplementation(libs.assertk)
-  androidTestImplementation(libs.kotlin.test)
-
   api(project(":platform:autos"))
   api(project(":platform:core"))
   api(libs.loadable.list)
@@ -62,7 +58,6 @@ dependencies {
   testImplementation(libs.kotlin.test)
   testImplementation(libs.loadable.placeholder.test)
   testImplementation(libs.mockk)
-  testImplementation(libs.openTest4J)
   testImplementation(libs.robolectric)
   testImplementation(libs.turbine)
 }

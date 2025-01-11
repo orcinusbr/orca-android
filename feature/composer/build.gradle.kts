@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2025 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -37,9 +37,9 @@ dependencies {
 
   ksp(project(":std:injector-processor"))
 
-  testImplementation(project(":composite:timeline-test"))
+  testImplementation(project(":platform:autos-test"))
+  testImplementation(project(":platform:navigation-test"))
   testImplementation(project(":platform:testing"))
   testImplementation(project(":std:injector-test"))
-  testImplementation(libs.android.test.espresso.core)
   testImplementation(libs.robolectric)
 }

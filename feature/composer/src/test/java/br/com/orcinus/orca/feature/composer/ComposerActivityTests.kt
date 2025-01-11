@@ -23,7 +23,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
-import br.com.orcinus.orca.composite.timeline.composition.CompositionTextField
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.CompositionTextField
 import br.com.orcinus.orca.std.injector.test.InjectorTestRule
 import br.com.orcinus.orca.std.markdown.buildMarkdown
 import org.junit.Rule

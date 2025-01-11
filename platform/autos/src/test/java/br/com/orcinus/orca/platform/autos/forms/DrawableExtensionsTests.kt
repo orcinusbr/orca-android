@@ -24,7 +24,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.prop
 import br.com.orcinus.orca.autos.forms.Form
 import br.com.orcinus.orca.autos.forms.Forms
-import br.com.orcinus.orca.platform.autos.Units
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.Units
 import br.com.orcinus.orca.platform.testing.context
 import kotlin.test.Test
 import org.junit.runner.RunWith

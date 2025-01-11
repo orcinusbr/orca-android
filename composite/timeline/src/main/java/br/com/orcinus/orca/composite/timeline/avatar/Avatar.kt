@@ -34,9 +34,9 @@ import br.com.orcinus.orca.composite.timeline.R
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Author
 import br.com.orcinus.orca.core.sample.image.AuthorImageSource
-import br.com.orcinus.orca.platform.autos.Units
 import br.com.orcinus.orca.platform.autos.forms.asShape
 import br.com.orcinus.orca.platform.autos.forms.clip
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.Units
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 import br.com.orcinus.orca.platform.core.image.createSample

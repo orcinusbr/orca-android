@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2025 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -23,11 +23,15 @@ plugins {
 
 android {
   buildFeatures.compose = true
+  defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   namespace = namespaceFor("platform.autos.test")
   testOptions.unitTests.isIncludeAndroidResources = true
 }
 
 dependencies {
+  androidTestImplementation(libs.assertk)
+  androidTestImplementation(libs.kotlin.test)
+
   api(libs.android.compose.ui.test.junit)
   api(libs.android.test.espresso.core)
 
@@ -38,6 +42,7 @@ dependencies {
   implementation(project(":platform:testing"))
 
   testImplementation(libs.android.compose.ui.test.manifest)
+  testImplementation(libs.assertk)
   testImplementation(libs.kotlin.test)
   testImplementation(libs.robolectric)
 }

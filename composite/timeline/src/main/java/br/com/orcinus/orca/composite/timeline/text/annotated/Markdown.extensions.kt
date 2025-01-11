@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2025 Orcinus
+ * Copyright © 2023–2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -23,9 +23,9 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import br.com.orcinus.orca.autos.colors.Colors
-import br.com.orcinus.orca.composite.timeline.composition.interop.annotated.toSpanStyle
-import br.com.orcinus.orca.composite.timeline.composition.interop.spanned.toMarkdown
 import br.com.orcinus.orca.composite.timeline.text.pop
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.annotated.toSpanStyle
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.spanned.toMarkdown
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.std.markdown.Markdown
 import br.com.orcinus.orca.std.markdown.style.Style

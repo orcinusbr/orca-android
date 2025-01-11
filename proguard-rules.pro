@@ -1,5 +1,5 @@
 #
-# Copyright © 2023–2025 Orcinus
+# Copyright © 2023–2024 Orcinus
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the
 # GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -26,7 +26,7 @@
   public static final android.os.Parcelable$Creator CREATOR;
 }
 -keepclassmembers class br.com.orcinus.orca.core.mastodon.notification.** { *; }
--keepclassmembers final class br.com.orcinus.orca.composite.timeline.composition.ErrorDelegate {
+-keepclassmembers class br.com.orcinus.orca.platform.autos.kit.input.text.composition.ErrorDelegate {
   java.lang.CharSequence getError();
   void toggle(java.lang.CharSequence);
 }

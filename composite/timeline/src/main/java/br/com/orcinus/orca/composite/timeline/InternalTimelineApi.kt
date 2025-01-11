@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024–2025 Orcinus
+ * Copyright © 2024 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -19,4 +19,4 @@ import br.com.orcinus.orca.std.visibility.PackageProtected
 
 /** Denotes that an API is intended to be referenced only by [Timeline] and its internals. */
 @PackageProtected("This API is to be referenced only by `Timeline` and its internal structures.")
-annotation class InternalTimelineApi
+internal annotation class InternalTimelineApi
