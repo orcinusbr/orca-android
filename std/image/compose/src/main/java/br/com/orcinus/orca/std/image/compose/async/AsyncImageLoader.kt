@@ -24,15 +24,25 @@ import java.net.URI
 
 /** [ComposableImageLoader] that loads an image asynchronously. */
 @Deprecated(
-  "Drawables of images loaded by this loader are unobtainable because it is context-less.",
+  "Drawables of images loaded by this async loader are unobtainable because it is context-less.",
   ReplaceWith(
     "AsyncImageLoader",
     imports = ["br.com.orcinus.orca.std.image.android.async.AsyncImageLoader"]
   )
 )
-class AsyncImageLoader private constructor(source: URI) :
-  br.com.orcinus.orca.std.image.android.async.AsyncImageLoader(clearedContextRef, source) {
+class AsyncImageLoader private constructor(override val source: URI) :
+  br.com.orcinus.orca.std.image.android.AsyncImageLoader() {
+  override val contextRef = clearedContextRef
+
   /** [ImageLoader.Provider] that provides an [AsyncImageLoader]. */
+  @Deprecated(
+    "Drawables of images loaded by async loaders provided by this provider are unobtainable " +
+      "because they are context-less.",
+    ReplaceWith(
+      "AsyncImageLoader.Provider",
+      imports = ["br.com.orcinus.orca.std.image.android.async.AsyncImageLoader"]
+    )
+  )
   object Provider : ImageLoader.Provider<URI, AndroidImage> {
     override fun provide(source: URI): AsyncImageLoader {
       return AsyncImageLoader(source)

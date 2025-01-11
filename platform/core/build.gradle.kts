@@ -23,7 +23,7 @@ android.buildFeatures.compose = true
 
 dependencies {
   api(project(":core:sample"))
-  api(project(":std:image:android"))
+  api(project(":std:image:compose"))
 
   implementation(libs.android.compose.foundation)
   implementation(libs.android.core)

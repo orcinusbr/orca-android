@@ -21,18 +21,9 @@ plugins {
   alias(libs.plugins.kotlin.compose)
 }
 
+dependencies.api(project(":std:image:android"))
+
 android {
   buildFeatures.compose = true
-  namespace = namespaceFor("std.image.android")
-}
-
-dependencies {
-  api(project(":std:image"))
-  api(libs.android.compose.ui.tooling)
-
-  implementation(project(":core:sample"))
-  implementation(project(":platform:autos"))
-  implementation(libs.android.core)
-  implementation(libs.coil.compose)
-  implementation(libs.loadable.placeholder)
+  namespace = namespaceFor("std.image.compose")
 }

@@ -100,8 +100,6 @@ fun AndroidImageLoader.CompanionCompat.createSample(
  * Creates a sample [AndroidImageLoader.Provider].
  *
  * Alias for `createSample(WeakReference(null))`.
- *
- * @property context [Context] from which the [Drawable] version of the image is obtained.
  */
 @Discouraged(
   "Drawables of images are unobtainable when they are loaded by loaders provided by context-less " +

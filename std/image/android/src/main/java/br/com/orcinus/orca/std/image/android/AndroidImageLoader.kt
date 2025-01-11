@@ -15,21 +15,71 @@
 
 package br.com.orcinus.orca.std.image.android
 
+import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
+import androidx.core.content.ContextCompat
+import br.com.orcinus.orca.platform.autos.iconography.asImageVector
+import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.std.image.ImageLoader
-import br.com.orcinus.orca.std.image.android.async.AsyncImageLoader
-import br.com.orcinus.orca.std.image.android.local.LocalImageLoader
-import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
+import br.com.orcinus.orca.std.image.InternalImageApi
+import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import com.jeanbarrossilva.loadable.placeholder.Placeholder
+import com.jeanbarrossilva.loadable.placeholder.PlaceholderDefaults
 import java.lang.ref.WeakReference
 import java.net.URI
+import java.util.Objects
+
+/** [ImageLoader] that loads an image locally through its resource ID. */
+private abstract class LocalImageLoader : AndroidImageLoader<Int>() {
+  /**
+   * [WeakReference] to the [Context] from which the [Drawable] version of the image is obtained.
+   */
+  protected abstract val contextRef: WeakReference<Context>
+
+  abstract override val source: Int
+    @DrawableRes get
+
+  final override fun load() =
+    createImage()
+      .asDrawable { contextRef.get()?.let { ContextCompat.getDrawable(it, source) } }
+      .asComposable { modifier, contentDescription, shape, contentScale ->
+        Image(
+          painterResource(source),
+          contentDescription,
+          modifier.clip(shape),
+          contentScale = contentScale
+        )
+      }
+}
 
 /**
  * [ImageLoader] that loads an Android-specific image.
@@ -49,7 +99,7 @@ abstract class AndroidImageLoader<T : Any> : ImageLoader<T, AndroidImage> {
      * preventing them from _having_ to be updated (although adding them from now on is
      * discouraged).
      */
-    abstract class CompanionCompat internal constructor()
+    abstract class CompanionCompat @InternalImageApi constructor()
 
     override fun provide(source: T): AndroidImageLoader<T>
 
@@ -57,16 +107,83 @@ abstract class AndroidImageLoader<T : Any> : ImageLoader<T, AndroidImage> {
   }
 
   /**
-   * Class extended by [AndroidImageLoader] and [ComposableImageLoader] whose only purpose is to
+   * Class extended by [AndroidImageLoader] and `ComposableImageLoader` whose only purpose is to
    * allow for older references to the latter to remain existent, preventing them from _having_ to
    * be updated (although adding them from now on is discouraged).
    */
-  abstract class CompanionCompat internal constructor()
+  abstract class CompanionCompat @InternalImageApi constructor()
 
   /** Creates an empty [AndroidImage]. */
   fun createImage() = AndroidImage.Builder()
 
   companion object : CompanionCompat()
+}
+
+/** [AndroidImageLoader] that loads an image asynchronously. */
+abstract class AsyncImageLoader @InternalImageApi constructor() : AndroidImageLoader<URI>() {
+  /**
+   * [WeakReference] to the [Context] from which the [Drawable] version of the image is obtained.
+   */
+  protected abstract val contextRef: WeakReference<Context>
+
+  /**
+   * [ImageLoader.Provider] that provides an [AsyncImageLoader].
+   *
+   * @property contextRef [WeakReference] to the [Context] from which the [Drawable] version of the
+   *   image is obtained.
+   */
+  class Provider(private val contextRef: WeakReference<Context>) :
+    AndroidImageLoader.Provider<URI> {
+    override fun provide(source: URI) =
+      object : AsyncImageLoader() {
+        override val contextRef = this@Provider.contextRef
+        override val source = source
+      }
+  }
+
+  override fun equals(other: Any?) =
+    other is AsyncImageLoader && contextRef == other.contextRef && source == other.source
+
+  override fun hashCode() = Objects.hash(contextRef, source)
+
+  final override fun load() =
+    createImage().asComposable { modifier, contentDescription, shape, contentScale ->
+      var state by remember {
+        mutableStateOf<AsyncImagePainter.State>(AsyncImagePainter.State.Loading(painter = null))
+      }
+
+      BoxWithConstraints {
+        Placeholder(
+          modifier.semantics {
+            this.contentDescription = contentDescription
+            role = Role.Image
+          },
+          state is AsyncImagePainter.State.Loading,
+          shape
+        ) {
+          AsyncImage(
+            "$source",
+            contentDescription,
+            Modifier.clip(shape).fillMaxSize().clearAndSetSemantics {},
+            onState = { state = it },
+            contentScale = contentScale
+          )
+        }
+
+        if (state is AsyncImagePainter.State.Error) {
+          Box(Modifier.clip(shape).background(PlaceholderDefaults.color).matchParentSize()) {
+            Icon(
+              AutosTheme.iconography.unavailable.filled.asImageVector,
+              contentDescription =
+                stringResource(R.string.std_image_android_async_image_unavailable),
+              Modifier.align(Alignment.Center)
+                .height(this@BoxWithConstraints.maxHeight / 2)
+                .width(this@BoxWithConstraints.maxWidth / 2)
+            )
+          }
+        }
+      }
+    }
 }
 
 /**
@@ -198,7 +315,12 @@ fun AndroidImage.asComposable(
 @Composable
 fun rememberImageLoader(@DrawableRes source: Int): AndroidImageLoader<*> {
   val context = LocalContext.current
-  return remember(context, source) { LocalImageLoader(WeakReference(context), source) }
+  return remember(context, source) {
+    object : LocalImageLoader() {
+      override val contextRef = WeakReference(context)
+      override val source = source
+    }
+  }
 }
 
 /**

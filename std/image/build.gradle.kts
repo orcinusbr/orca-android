@@ -20,6 +20,7 @@ plugins {
 }
 
 dependencies {
+  implementation(project(":std:visibility"))
   implementation(libs.kotlin.coroutines.core)
 
   testImplementation(libs.assertk)

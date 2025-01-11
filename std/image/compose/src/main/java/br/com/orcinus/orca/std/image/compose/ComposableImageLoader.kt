@@ -34,6 +34,14 @@ import java.net.URI
 )
 typealias SomeComposableImageLoader = AndroidImageLoader<*>
 
+/** Image provided by an [AndroidImageLoader]. */
+@Deprecated(
+  "As of Orca 0.5.0, the Android-specific image encompasses both UI frameworks (the View system " +
+    "and Jetpack Compose), being a drawable and a composable.",
+  ReplaceWith("AndroidImage", "br.com.orcinus.orca.std.image.android.AndroidImage")
+)
+typealias ComposableImage = AndroidImage
+
 /**
  * [ImageLoader] that loads a [Composable] image.
  *
@@ -83,6 +91,14 @@ abstract class ComposableImageLoader<T : Any> : AndroidImageLoader<T>() {
  * @param source Resource ID from which the image will be obtained.
  */
 @Composable
+@Deprecated(
+  "Drawables of images loaded by the remembered loader are unobtainable because it is " +
+    "context-less.",
+  ReplaceWith(
+    "rememberImageLoader(source)",
+    imports = ["br.com.orcinus.orca.std.image.android.rememberImageLoader"]
+  )
+)
 fun rememberImageLoader(@DrawableRes source: Int) =
   br.com.orcinus.orca.std.image.android.rememberImageLoader(source)
 
@@ -92,5 +108,13 @@ fun rememberImageLoader(@DrawableRes source: Int) =
  * @param source [URI] from which the image will be obtained.
  */
 @Composable
+@Deprecated(
+  "Drawables of images loaded by the remembered loader are unobtainable because it is " +
+    "context-less.",
+  ReplaceWith(
+    "rememberImageLoader(source)",
+    imports = ["br.com.orcinus.orca.std.image.android.rememberImageLoader"]
+  )
+)
 fun rememberImageLoader(source: URI) =
   br.com.orcinus.orca.std.image.android.rememberImageLoader(source)

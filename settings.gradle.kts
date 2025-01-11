@@ -75,6 +75,7 @@ include(
   ":platform:testing:compose",
   ":std:image",
   ":std:image:android",
+  ":std:image:compose",
   ":std:image-test",
   ":std:injector",
   ":std:injector-processor",

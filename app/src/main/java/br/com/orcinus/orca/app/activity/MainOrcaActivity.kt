@@ -22,7 +22,7 @@ import br.com.orcinus.orca.core.mastodon.auth.authorization.viewmodel.MastodonAu
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.notification.NotificationLock
 import br.com.orcinus.orca.core.module.CoreModule
-import br.com.orcinus.orca.std.image.android.async.AsyncImageLoader
+import br.com.orcinus.orca.std.image.android.AsyncImageLoader
 import br.com.orcinus.orca.std.injector.Injector
 import java.lang.ref.WeakReference
 
