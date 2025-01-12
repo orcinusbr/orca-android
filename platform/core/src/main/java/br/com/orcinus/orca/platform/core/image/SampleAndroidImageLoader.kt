@@ -18,14 +18,11 @@ package br.com.orcinus.orca.platform.core.image
 import android.content.Context
 import android.graphics.drawable.Drawable
 import androidx.annotation.Discouraged
-import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.core.content.ContextCompat
 import br.com.orcinus.orca.core.sample.image.SampleImageSource
 import br.com.orcinus.orca.std.image.android.AndroidImageLoader
+import br.com.orcinus.orca.std.image.android.LocalImageLoader
 import br.com.orcinus.orca.std.image.compose.async.AsyncImageLoader
 import java.lang.ref.WeakReference
 import java.util.Objects
@@ -70,17 +67,7 @@ private constructor(
 
   override fun hashCode() = Objects.hash(contextRef, source)
 
-  override fun load() =
-    createImage()
-      .asDrawable { contextRef.get()?.let { ContextCompat.getDrawable(it, source.resourceID) } }
-      .asComposable { modifier, contentDescription, shape, contentScale ->
-        Image(
-          painterResource(source.resourceID),
-          contentDescription,
-          modifier.clip(shape),
-          contentScale = contentScale
-        )
-      }
+  override fun load() = LocalImageLoader.load(contextRef, source.resourceID)
 }
 
 /**
