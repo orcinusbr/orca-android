@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -17,8 +17,6 @@ package br.com.orcinus.orca.composite.timeline.search
 
 import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutLinearInEasing
@@ -32,8 +30,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
@@ -46,18 +42,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.geometry.isUnspecified
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.toSize
 import br.com.orcinus.orca.composite.timeline.search.field.SearchTextFieldPopup
 import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.search.ProfileSearchResult
@@ -74,19 +63,13 @@ import kotlinx.coroutines.launch
  * @param searchTextFieldPadding Space to surround the [SearchTextField] with.
  * @property isReplaceableComposedState [MutableState] whose [Boolean] determines whether the
  *   content to be replaced by the [SearchTextField] is currently composed.
- * @property fillerColor [Color] by which the container that fills the space previously occupied by
- *   the content replaced by the [SearchTextField] is colored.
  */
 class SearchableScope
 internal constructor(
   private val searchTextFieldOffset: DpOffset,
   private val searchTextFieldPadding: PaddingValues,
-  private val isReplaceableComposedState: MutableState<Boolean>,
-  private val fillerColor: Color
+  private val isReplaceableComposedState: MutableState<Boolean>
 ) {
-  /** Maximum [Size] that the [Filler] has had up until now. */
-  private var fillerPeakSize = Size.Unspecified
-
   /** [Animatable] by which the height of the [SearchTextField] is held and animated. */
   private val searchTextFieldHeightAnimatable = Animatable(initialValue = 0.dp, Dp.VectorConverter)
 
@@ -166,23 +149,21 @@ internal constructor(
     ReplaceableCompositionReporterEffect()
     SearchResultsEffect(resultsLoadable)
 
-    Filler {
-      Accordion { willSearch ->
-        if (willSearch) {
-          SearchTextFieldPopup(
-            query,
-            onQueryChange,
-            resultsLoadable,
-            onDidDismiss = ::dismiss,
-            modifier.resultSearchTextFieldHeightReporter(coroutineScope).fillMaxWidth(),
-            Alignment.TopCenter,
-            searchTextFieldOffset,
-            searchTextFieldPadding
-          )
-        } else {
-          ResultSearchTextFieldLayoutHeightResetEffect(coroutineScope)
-          content()
-        }
+    Accordion { willSearch ->
+      if (willSearch) {
+        SearchTextFieldPopup(
+          query,
+          onQueryChange,
+          resultsLoadable,
+          onDidDismiss = ::dismiss,
+          modifier.resultSearchTextFieldHeightReporter(coroutineScope).fillMaxWidth(),
+          Alignment.TopCenter,
+          searchTextFieldOffset,
+          searchTextFieldPadding
+        )
+      } else {
+        ResultSearchTextFieldLayoutHeightResetEffect(coroutineScope)
+        content()
       }
     }
   }
@@ -357,52 +338,6 @@ internal constructor(
     }
   }
 
-  /**
-   * Fills the maximum space occupied by the [content] with the [fillerColor].
-   *
-   * @param modifier [Modifier] to be applied to the underlying [Box].
-   * @param content Content whose size will be observed for the peak one to be defined as the
-   *   underlying container's to which the [fillerColor] will be applied.
-   */
-  @Composable
-  private fun Filler(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
-    Box(modifier.fillerPeakSizeReporter()) {
-      AnimatedVisibility(
-        visible = isSearching,
-        Modifier.testTag(FillerTag),
-        EnterTransition.None,
-        exit = fadeOut(replacementAnimationSpec()),
-        label = "Filler"
-      ) {
-        Canvas(Modifier) { drawRect(fillerColor, Offset.Zero, fillerPeakSize) }
-      }
-
-      content()
-    }
-  }
-
-  /**
-   * Observes changes in size and updates [SearchableScope.fillerPeakSizeReporter] when a dimension
-   * is greater than the previous composed one.
-   */
-  private fun Modifier.fillerPeakSizeReporter(): Modifier {
-    return onSizeChanged {
-      if (!isSearching) {
-        val changedSize = it.toSize()
-        if (fillerPeakSize.isUnspecified) {
-          fillerPeakSize = changedSize
-        } else {
-          if (fillerPeakSize.width.isNaN() || fillerPeakSize.width < changedSize.width) {
-            fillerPeakSize = fillerPeakSize.copy(width = changedSize.width)
-          }
-          if (fillerPeakSize.height.isNaN() || fillerPeakSize.height < changedSize.height) {
-            fillerPeakSize = fillerPeakSize.copy(height = changedSize.height)
-          }
-        }
-      }
-    }
-  }
-
   companion object {
     /**
      * Duration of an [Accordion]'s animation in milliseconds. Note that the delays aren't accounted
@@ -410,9 +345,6 @@ internal constructor(
      */
     @Suppress("ConstPropertyName")
     private const val AccordionBaselineAnimationDurationInMilliseconds = 64
-
-    /** Tag that identifies a [Searchable]'s [Filler] for testing purposes. */
-    @Suppress("ConstPropertyName") internal const val FillerTag = "searchable-filler"
 
     /** Radii of the blur that should be applied to the content. */
     internal val BlurRadii = 0.dp..16.dp

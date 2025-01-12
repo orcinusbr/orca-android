@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,7 +16,6 @@
 package br.com.orcinus.orca.composite.timeline.search
 
 import androidx.compose.material3.Text
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
@@ -35,26 +34,5 @@ internal class SemanticsNodeInteractionsProviderExtensionsTests {
       .apply { setContent { AutosTheme { Searchable { Text("🧊") } } } }
       .onContent()
       .assertIsDisplayed()
-  }
-
-  @Test
-  fun findsFiller() {
-    composeRule
-      .apply {
-        setContent {
-          AutosTheme {
-            Searchable {
-              Replaceable {
-                DisposableEffect(Unit) {
-                  show()
-                  onDispose {}
-                }
-              }
-            }
-          }
-        }
-      }
-      .onFiller()
-      .assertExists()
   }
 }

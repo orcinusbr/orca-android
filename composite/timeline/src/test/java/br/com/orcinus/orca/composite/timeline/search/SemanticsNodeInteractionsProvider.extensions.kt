@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -22,9 +22,4 @@ import androidx.compose.ui.test.onNodeWithTag
 /** [SemanticsNodeInteraction] of a [Searchable]'s content. */
 internal fun SemanticsNodeInteractionsProvider.onContent(): SemanticsNodeInteraction {
   return onNodeWithTag(ContentTag)
-}
-
-/** [SemanticsNodeInteraction] of a [Searchable]'s [SearchableScope.Filler]. */
-internal fun SemanticsNodeInteractionsProvider.onFiller(): SemanticsNodeInteraction {
-  return onNodeWithTag(SearchableScope.FillerTag)
 }
