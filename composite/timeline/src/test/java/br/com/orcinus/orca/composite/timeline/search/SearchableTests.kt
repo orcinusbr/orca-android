@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -242,49 +242,6 @@ internal class SearchableTests {
         }
       }
     }
-  }
-
-  @Test
-  fun showsFillerWhenSearchTextFieldIsShown() {
-    composeRule
-      .apply {
-        setContent {
-          AutosTheme {
-            Searchable {
-              Replaceable()
-
-              DisposableEffect(Unit) {
-                show()
-                onDispose {}
-              }
-            }
-          }
-        }
-      }
-      .onFiller()
-      .assertExists()
-  }
-
-  @Test
-  fun removesFillerWhenSearchTextFieldIsDismissed() {
-    composeRule
-      .apply {
-        setContent {
-          AutosTheme {
-            Searchable {
-              Replaceable()
-
-              DisposableEffect(Unit) {
-                show()
-                dismiss()
-                onDispose {}
-              }
-            }
-          }
-        }
-      }
-      .onFiller()
-      .assertDoesNotExist()
   }
 
   @Test

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -25,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
@@ -43,8 +42,6 @@ import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
 /**
  * Layout that can replace a slot by a [SearchTextField].
  *
- * @param fillerColor [Color] by which the container that fills the space previously occupied by the
- *   content replaced by the [SearchTextField] is colored.
  * @param modifier [Modifier] applied to the underlying [Box].
  * @param searchTextFieldOffset Amount in both axes by which the [SearchTextField] is offset.
  * @param searchTextFieldPadding Space to surround the [SearchTextField] with.
@@ -52,7 +49,6 @@ import br.com.orcinus.orca.platform.autos.theme.MultiThemePreview
  */
 @Composable
 fun Searchable(
-  fillerColor: Color,
   modifier: Modifier = Modifier,
   searchTextFieldOffset: DpOffset = DpOffset.Zero,
   searchTextFieldPadding: PaddingValues = Unpadded,
@@ -61,43 +57,11 @@ fun Searchable(
   val isReplaceableComposedState = remember { mutableStateOf(false) }
 
   Box(modifier.testTag(ContentTag)) {
-    remember(content, fillerColor) {
-        SearchableScope(
-          searchTextFieldOffset,
-          searchTextFieldPadding,
-          isReplaceableComposedState,
-          fillerColor
-        )
+    remember(content) {
+        SearchableScope(searchTextFieldOffset, searchTextFieldPadding, isReplaceableComposedState)
       }
       .content()
   }
-}
-
-/**
- * Layout that can replace a slot by a [SearchTextField].
- *
- * This overload is stateless by default and is intended for previewing and testing purposes only.
- *
- * @param modifier [Modifier] applied to the underlying [Box].
- * @param searchTextFieldOffset Amount in both axes by which the [SearchTextField] is offset.
- * @param searchTextFieldPadding Space to surround the [SearchTextField] with.
- * @param content Content to be shown.
- */
-@Composable
-@VisibleForTesting
-internal fun Searchable(
-  modifier: Modifier = Modifier,
-  searchTextFieldOffset: DpOffset = DpOffset.Zero,
-  searchTextFieldPadding: PaddingValues = Unpadded,
-  content: @Composable SearchableScope.() -> Unit
-) {
-  Searchable(
-    fillerColor = Color.Transparent,
-    modifier,
-    searchTextFieldOffset,
-    searchTextFieldPadding,
-    content
-  )
 }
 
 /** Preview of a [Searchable]. */

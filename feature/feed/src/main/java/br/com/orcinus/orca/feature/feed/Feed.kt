@@ -158,7 +158,6 @@ private fun Feed(
   modifier: Modifier = Modifier
 ) {
   Searchable(
-    TopAppBarDefaults.idleContainerColor,
     modifier,
     searchTextFieldOffset =
       DpOffset(x = 0.dp, y = WindowInsets.systemBars.top + SearchTextFieldDefaults.spacing * 2),
@@ -170,7 +169,7 @@ private fun Feed(
     val timelineTopContentPadding by
       animateDpAsState(
         searchTextFieldHeight.`if`(isSearching) {
-          this + WindowInsets.systemBars.top + SearchTextFieldDefaults.spacing * 2
+          this + WindowInsets.systemBars.top + SearchTextFieldDefaults.spacing
         },
         replacementAnimationSpec(),
         label = "Timeline top content padding"
