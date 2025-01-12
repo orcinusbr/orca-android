@@ -16,6 +16,8 @@
 package br.com.orcinus.orca.std.image.android
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.annotation.DrawableRes
@@ -45,7 +47,7 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
-import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toDrawable
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.theme.AutosTheme
 import br.com.orcinus.orca.std.image.ImageLoader
@@ -112,6 +114,13 @@ abstract class LocalImageLoader internal constructor() : AndroidImageLoader<Int>
 
   companion object {
     /**
+     * Options via which images' [Drawable]s' [Bitmap]s are sized.
+     *
+     * @see AndroidImage.asDrawable
+     */
+    @JvmStatic private val drawableBitmapOptions = BitmapFactory.Options()
+
+    /**
      * Loads a local Android-specific image.
      *
      * @param contextRef [WeakReference] to the [Context] from which the [Drawable] version of the
@@ -121,7 +130,25 @@ abstract class LocalImageLoader internal constructor() : AndroidImageLoader<Int>
     @JvmStatic
     fun load(contextRef: WeakReference<Context>, @DrawableRes source: Int) =
       AndroidImage.Builder()
-        .asDrawable { _, _ -> contextRef.get()?.let { ContextCompat.getDrawable(it, source) } }
+        .asDrawable { width, height ->
+          contextRef.get()?.resources?.let { resources ->
+            synchronized(this) {
+              BitmapFactory.decodeResource(resources, source, drawableBitmapOptions)
+              var inSampleSize = 1
+              val outWidth = drawableBitmapOptions.outWidth
+              val outHeight = drawableBitmapOptions.outHeight
+              if (outWidth > width || outHeight > height) {
+                while (
+                  outHeight / 2 / inSampleSize >= width && outHeight / 2 / inSampleSize >= outHeight
+                ) {
+                  inSampleSize *= 2
+                }
+              }
+              BitmapFactory.decodeResource(resources, source, drawableBitmapOptions)
+                .toDrawable(resources)
+            }
+          }
+        }
         .asComposable { modifier, contentDescription, shape, contentScale ->
           Image(
             painterResource(source),
@@ -162,6 +189,11 @@ abstract class AsyncImageLoader @InternalImageApi constructor() : AndroidImageLo
 
   final override fun load() =
     createImage()
+      .asDrawable { _, _ ->
+        contextRef.get()?.let {
+          it.imageLoader.execute(ImageRequest.Builder(it).data("$source").build()).drawable
+        }
+      }
       .asDrawable { width, height ->
         contextRef.get()?.let {
           it.imageLoader
