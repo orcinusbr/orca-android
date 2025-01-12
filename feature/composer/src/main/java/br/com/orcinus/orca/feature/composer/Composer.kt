@@ -49,6 +49,7 @@ import br.com.orcinus.orca.feature.composer.ui.Toolbar
 import br.com.orcinus.orca.platform.autos.iconography.asImageVector
 import br.com.orcinus.orca.platform.autos.kit.action.button.icon.HoverableIconButton
 import br.com.orcinus.orca.platform.autos.kit.input.text.composition.CompositionTextField
+import br.com.orcinus.orca.platform.autos.kit.input.text.composition.Units
 import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.CompositionTextFieldValue
 import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.drawableStateOf
 import br.com.orcinus.orca.platform.autos.kit.input.text.composition.interop.proxy
@@ -109,7 +110,9 @@ private fun Composer(
   }
 
   LaunchedEffect(avatarLoader) {
-    avatarLoader?.load()?.asDrawable()?.let { avatarDrawable = Avatar.SMALL.transform(context, it) }
+    avatarLoader?.load()?.asDrawable(Units.dp(context, Avatar.SMALL.sizeThreshold.value))?.let {
+      avatarDrawable = Avatar.SMALL.transform(context, it)
+    }
   }
 
   Scaffold(

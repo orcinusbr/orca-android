@@ -60,29 +60,6 @@ import java.lang.ref.WeakReference
 import java.net.URI
 import java.util.Objects
 
-/** [ImageLoader] that loads an image locally through its resource ID. */
-private abstract class LocalImageLoader : AndroidImageLoader<Int>() {
-  /**
-   * [WeakReference] to the [Context] from which the [Drawable] version of the image is obtained.
-   */
-  protected abstract val contextRef: WeakReference<Context>
-
-  abstract override val source: Int
-    @DrawableRes get
-
-  final override fun load() =
-    createImage()
-      .asDrawable { contextRef.get()?.let { ContextCompat.getDrawable(it, source) } }
-      .asComposable { modifier, contentDescription, shape, contentScale ->
-        Image(
-          painterResource(source),
-          contentDescription,
-          modifier.clip(shape),
-          contentScale = contentScale
-        )
-      }
-}
-
 /**
  * [ImageLoader] that loads an Android-specific image.
  *
@@ -96,7 +73,7 @@ abstract class AndroidImageLoader<T : Any> : ImageLoader<T, AndroidImage> {
    */
   interface Provider<T : Any> : ImageLoader.Provider<T, AndroidImage> {
     /**
-     * Class extended by the companion objects of [AndroidImageLoader] and [ComposableImageLoader]
+     * Class extended by the companion objects of [AndroidImageLoader] and `ComposableImageLoader`
      * whose only purpose is to allow for older references to the latter to remain existent,
      * preventing them from _having_ to be updated (although adding them from now on is
      * discouraged).
@@ -119,6 +96,41 @@ abstract class AndroidImageLoader<T : Any> : ImageLoader<T, AndroidImage> {
   protected fun createImage() = AndroidImage.Builder()
 
   companion object : CompanionCompat()
+}
+
+/** [ImageLoader] that loads an image locally through its resource ID. */
+abstract class LocalImageLoader internal constructor() : AndroidImageLoader<Int>() {
+  /**
+   * [WeakReference] to the [Context] from which the [Drawable] version of the image is obtained.
+   */
+  protected abstract val contextRef: WeakReference<Context>
+
+  abstract override val source: Int
+    @DrawableRes get
+
+  final override fun load() = load(contextRef, source)
+
+  companion object {
+    /**
+     * Loads a local Android-specific image.
+     *
+     * @param contextRef [WeakReference] to the [Context] from which the [Drawable] version of the
+     *   image is obtained.
+     * @param source Source from which the image will be loaded.
+     */
+    @JvmStatic
+    fun load(contextRef: WeakReference<Context>, @DrawableRes source: Int) =
+      AndroidImage.Builder()
+        .asDrawable { _, _ -> contextRef.get()?.let { ContextCompat.getDrawable(it, source) } }
+        .asComposable { modifier, contentDescription, shape, contentScale ->
+          Image(
+            painterResource(source),
+            contentDescription,
+            modifier.clip(shape),
+            contentScale = contentScale
+          )
+        }
+  }
 }
 
 /** [AndroidImageLoader] that loads an image asynchronously. */
@@ -150,9 +162,11 @@ abstract class AsyncImageLoader @InternalImageApi constructor() : AndroidImageLo
 
   final override fun load() =
     createImage()
-      .asDrawable {
+      .asDrawable { width, height ->
         contextRef.get()?.let {
-          it.imageLoader.execute(ImageRequest.Builder(it).data("$source").build()).drawable
+          it.imageLoader
+            .execute(ImageRequest.Builder(it).data("$source").size(width, height).build())
+            .drawable
         }
       }
       .asComposable { modifier, contentDescription, shape, contentScale ->
@@ -209,7 +223,7 @@ abstract class AndroidImage private constructor() {
    */
   class Builder internal constructor() : AndroidImage() {
     /** [AndroidImage.asDrawable] lambda. */
-    private var asDrawable: suspend () -> Drawable? = { null }
+    private var asDrawable: suspend (width: Int, height: Int) -> Drawable? = { _, _ -> null }
 
     /** [AndroidImage.asComposable] lambda. */
     private var asComposable:
@@ -218,14 +232,16 @@ abstract class AndroidImage private constructor() {
       { _, _, _, _ ->
       }
 
-    override suspend fun asDrawable() = asDrawable.invoke()
+    override suspend fun asDrawable(width: Int, height: Int) = asDrawable.invoke(width, height)
 
     /**
      * Defines the [Drawable] version of the image to be obtained.
      *
      * @param asDrawable Provider to be set.
      */
-    fun asDrawable(asDrawable: suspend () -> Drawable?) = apply { this.asDrawable = asDrawable }
+    fun asDrawable(asDrawable: suspend (width: Int, height: Int) -> Drawable?) = apply {
+      this.asDrawable = asDrawable
+    }
 
     @Composable
     override fun asComposable(
@@ -245,8 +261,20 @@ abstract class AndroidImage private constructor() {
     ) = apply { this.asComposable = asComposable }
   }
 
-  /** Obtains the [Drawable] version of this image. */
-  abstract suspend fun asDrawable(): Drawable?
+  /**
+   * Obtains the [Drawable] version of this image with the given size.
+   *
+   * @param size Width and height in absolute pixels.
+   */
+  suspend fun asDrawable(size: Int) = asDrawable(width = size, height = size)
+
+  /**
+   * Obtains the [Drawable] version of this image with the given size.
+   *
+   * @param width Amount of absolute pixels in the X-axis.
+   * @param height Amount of absolute pixels in the Y-axis.
+   */
+  abstract suspend fun asDrawable(width: Int, height: Int): Drawable?
 
   /**
    * Alias for `asComposable(modifier, contentDescription, shape, contentScale)`.

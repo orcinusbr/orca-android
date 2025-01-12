@@ -101,15 +101,15 @@ enum class Avatar {
    */
   protected abstract val form: Form.PerCorner
 
+  /** [Shape] of an avatar of this size. */
+  internal inline val shape: Shape
+    get() = form.asShape
+
   /**
    * Starting amount of density-dependent pixels that compose both the width and the height of the
    * avatar.
    */
-  internal abstract val sizeThreshold: Dp
-
-  /** [Shape] of an avatar of this size. */
-  internal inline val shape: Shape
-    get() = form.asShape
+  abstract val sizeThreshold: Dp
 
   /**
    * Resizes and clips the [drawable] based on this specific avatar size.
