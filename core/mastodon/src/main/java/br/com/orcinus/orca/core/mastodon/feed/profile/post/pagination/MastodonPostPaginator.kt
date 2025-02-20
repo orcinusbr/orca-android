@@ -64,9 +64,9 @@ internal inline val @Suppress("UnusedReceiverParameter") LinkHeader.Rel.Previous
 /**
  * Paginates through [Post]s.
  *
- * Mastodon API pagination starts from an initial router and is performed subsequently by sending a
- * `GET` HTTP request to one of the links that are included as headers of the previous
- * responseDeferred. For more information, refer to the
+ * Mastodon API pagination starts from an initial route and is performed subsequently by sending a
+ * `GET` HTTP request to one of the links that are included as headers of the previous response. For
+ * more information, refer to the
  * [official documentation](https://docs.joinmastodon.org/api/guidelines/#pagination).
  *
  * ##### Definition of page
@@ -146,7 +146,7 @@ internal abstract class MastodonPostPaginator<T : Any>(private val coroutineScop
   private val authenticatedRequester by lazy { requester.authenticated() }
 
   /**
-   * Workaround for the inability to reference the initial router builder method which is, at the
+   * Workaround for the inability to reference the initial route builder method which is, at the
    * same time, a member and an extension. Since it does not depend on the response to a previous
    * request, allows for the instantiation of a single router instead of one for each
    * [FlowCollector] of [postsFlow].
@@ -201,9 +201,9 @@ internal abstract class MastodonPostPaginator<T : Any>(private val coroutineScop
     @Page get() = if (currentPage == Pages.NONE) 0 else currentPage
 
   /**
-   * Denotes that no router was linked in the previous response to a request for obtaining posts in
-   * a given page. Allows, primarily, for distinguishing between whether the initial router should
-   * be returned or that nothing be done due to the absence of such linked router.
+   * Denotes that no route was linked in the previous response to a request for obtaining posts in a
+   * given page. Allows, primarily, for distinguishing between whether the initial route should be
+   * returned or that nothing be done due to the absence of such linked route.
    *
    * @see initialRouter
    * @see createSubsequentRouter
@@ -290,10 +290,10 @@ internal abstract class MastodonPostPaginator<T : Any>(private val coroutineScop
   @EmptySuper protected open suspend fun onWillPaginate(pagination: Pagination) = Unit
 
   /**
-   * Produces a router preceded by another one. The returned value might be [Unrouted], which would
-   * denote either that the start/final page has been reached or that the Mastodon API erroneously
-   * did not provide the previous/next router — with the first scenario being the most empirically
-   * common.
+   * Produces a router of a route of a page preceded by another one. The returned value might be
+   * [Unrouted], which would denote either that the final page has been reached or that the Mastodon
+   * API erroneously did not provide the previous/next route — with the first scenario being the
+   * most empirically common.
    *
    * @param previousPagination Determines, alongside the [currentPage], the router that will be
    *   returned for providing the [URI] (one of the linked ones, that of the previous response when
@@ -309,9 +309,9 @@ internal abstract class MastodonPostPaginator<T : Any>(private val coroutineScop
   ): Any {
     /**
      * Produces a router based on one of the [URI]s linked in the response to the previous request.
-     * May be [Unrouted], which would indicate that either the starting/final page has been reached
-     * or Mastodon has erroneously _not_ provided the previous/next router (although the latter
-     * seems empirically uncommon).
+     * May be [Unrouted], which would indicate that either the final page has been reached or
+     * Mastodon has erroneously _not_ provided the previous/next route (although the latter seems
+     * empirically uncommon).
      *
      * @param rel Description of the relationship between the current page and the one whose router
      *   will be obtained. According to the Mastodon API documentation as of v1, can be either
