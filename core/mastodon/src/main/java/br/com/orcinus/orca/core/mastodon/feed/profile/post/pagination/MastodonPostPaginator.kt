@@ -356,9 +356,9 @@ internal abstract class MastodonPostPaginator<T : Any>(private val coroutineScop
 
   /**
    * Returns the amount of pages included in the given range. Differs from the `countPagesOrThrow`
-   * methods in that no validations are performed: because [paginateTo] coerces both values, it is
-   * presupposed that the pages are natural [Int]s and, thus, no [Pages.InvalidException]s are
-   * thrown.
+   * methods in that no validations are performed: because [paginateTo] passes in an always-valid
+   * [initialPage] and validates the target one by itself, it is presupposed that the pages are
+   * natural [Int]s and, thus, no [Pages.InvalidException]s are thrown.
    *
    * @param initialPage Page from which pagination would start (inclusive).
    * @param targetPage Last page in the range (inclusive).
