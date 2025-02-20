@@ -53,6 +53,7 @@ coil-compose = { group = "io.coil-kt", name = "coil-compose", version = "2.4.0" 
 junit = { group = "junit", name = "junit", version = "4.13.2" }
 jsoup = { group = "org.jsoup", name = "jsoup", version = "1.16.2" }
 konsist = { group = "com.lemonappdev", name = "konsist", version = "0.16.0" }
+kotlin-atomicfu = { group = "org.jetbrains.kotlinx", name = "atomicfu", version.ref = "kotlin-atomicfu" }
 kotlin-compiler-embeddable = { group = "org.jetbrains.kotlin", name = "kotlin-compiler-embeddable", version.ref = "kotlin" }
 kotlin-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlin-coroutines" }
 kotlin-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlin-coroutines" }
@@ -84,7 +85,7 @@ robolectric = { group = "org.robolectric", name = "robolectric", version = "4.14
 slf4j = { group = "org.slf4j", name = "slf4j-api", version = "2.0.7" }
 spotless = { group = "com.diffplug.spotless", name = "spotless-plugin-gradle", version.ref = "spotless" }
 time4j = { group = "net.time4j", name = "time4j-android", version = "4.8-2021a" }
-turbine = { group = "app.cash.turbine", name = "turbine", version = "1.0.0" }
+turbine = { group = "app.cash.turbine", name = "turbine", version = "1.2.0" }
 zoomable = { group = "net.engawapg.lib", name = "zoomable", version = "1.6.0-beta2" }
 
 [plugins]
@@ -93,6 +94,7 @@ android-library = { id = "com.android.library", version.ref = "android-plugin" }
 android-maps-secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version = "2.0.1" }
 buildconfig = { id = "com.github.gmazzo.buildconfig", version = "3.1.0" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-atomicfu = { id = "org.jetbrains.kotlinx.atomicfu", version.ref = "kotlin-atomicfu" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-lombok = { id = "org.jetbrains.kotlin.plugin.lombok", version.ref = "kotlin" }
@@ -125,6 +127,7 @@ android-test-espresso = "3.5.0"
 assertk = "0.28.1"
 java = "17"
 kotlin = "2.0.0"
+kotlin-atomicfu = "0.27.0"
 kotlin-coroutines = "1.8.0"
 kotlin-symbolProcessor = "2.0.0-1.0.22"
 ktor = "2.3.2"

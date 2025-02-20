@@ -17,17 +17,12 @@
 
 -dontobfuscate
 -dontwarn androidx.compose.runtime.internal.ComposableFunction2
--keep public class br.com.orcinus.orca.** { *; }
+-keep class br.com.orcinus.orca.** { *; }
 -keep public final class lombok.Generated
 -keep public final class lombok.NonNull
 -keepclassmembers final class * implements android.os.Parcelable {
   #noinspection ShrinkerUnresolvedReference
 
   public static final android.os.Parcelable$Creator CREATOR;
-}
--keepclassmembers class br.com.orcinus.orca.core.mastodon.notification.** { *; }
--keepclassmembers class br.com.orcinus.orca.platform.autos.kit.input.text.composition.ErrorDelegate {
-  java.lang.CharSequence getError();
-  void toggle(java.lang.CharSequence);
 }
 -keepclassmembers public enum net.time4j.** { public static final **[] values(); }
