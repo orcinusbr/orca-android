@@ -225,19 +225,12 @@ internal sealed class MastodonPostPaginatorScope(
   /**
    * Creates a route that succeeds the initial one.
    *
-   * @param page Page for which the route to be created is.
-   * @throws Pages.InvalidException If the [page] is invalid.
+   * @param page Page for which the route to be created is. It is implied to be a valid one; thus,
+   *   it is not validated.
    * @see Pages.validate
    */
-  @Throws(Pages.InvalidException::class)
-  private fun createNextRouteAt(@Page page: Int): URI {
-    Pages.validate(page)
-    return HostedURLBuilder.from(requester.baseURI)
-      .path("next")
-      .query()
-      .parameter("page", "$page")
-      .build()
-  }
+  private fun createNextRouteAt(@Page page: Int) =
+    HostedURLBuilder.from(requester.baseURI).path("next").query().parameter("page", "$page").build()
 }
 
 /**
