@@ -164,28 +164,28 @@ internal abstract class MastodonPostPaginator<T : Any>(private val coroutineScop
    * the latest ones. This is an issue specifically for pagination in which pₙ ≠ p₀, since each page
    * in the range is sent immediately, one after another.
    */
-  private val currentPageChannel = Channel<Int>()
+  private val pageChannel = Channel<Int>()
 
   /** Page set upon pagination; essentially, p₀. */
   private var currentPage by atomic(Pages.NONE)
 
   /** [Flow] to which [Post]s obtained from pagination are emitted. */
   private val postsFlow =
-    currentPageChannel
+    pageChannel
       .receiveAsFlow()
       .onEach(Pages::validate)
       .catch { cause -> cause.takeUnless { it is Pages.InvalidException }?.let { throw it } }
-      .runningFold<_, Pagination?>(null) { previousPagination, currentPage ->
+      .runningFold<_, Pagination?>(null) { previousPagination, page ->
         @Suppress("UNCHECKED_CAST")
         val router =
           previousPagination
-            ?.let { createSubsequentRouter(previousPagination, currentPage) }
+            ?.let { createSubsequentRouter(previousPagination, page) }
             .`if`({ this === Unrouted }) {
               return@runningFold null
             } as (HostedURLBuilder.() -> URI)?
             ?: initialRouter
 
-        Pagination(currentPage, coroutineScope.async { authenticatedRequester.post(router) })
+        Pagination(page, coroutineScope.async { authenticatedRequester.post(router) })
       }
       .filterNotNull()
       .onEach(::onWillPaginate)
@@ -220,7 +220,7 @@ internal abstract class MastodonPostPaginator<T : Any>(private val coroutineScop
   init {
     @OptIn(InternalCoroutinesApi::class)
     coroutineScope.coroutineContext.job.invokeOnCompletion(onCancelling = true) {
-      currentPageChannel.close(it)
+      pageChannel.close(it)
       currentPage = Pages.NONE
     }
   }
@@ -343,14 +343,14 @@ internal abstract class MastodonPostPaginator<T : Any>(private val coroutineScop
   }
 
   /**
-   * Sets [page] as the current one by changing the atomic property and sending it to the [Channel].
+   * Sets [page] as the current one by sending it to the [Channel] and changing the atomic property.
    *
    * @param page Page to be set.
    * @see currentPage
-   * @see currentPageChannel
+   * @see pageChannel
    */
   private suspend fun setPage(@Page page: Int) {
-    currentPageChannel.send(page)
+    pageChannel.send(page)
     currentPage = page
   }
 
