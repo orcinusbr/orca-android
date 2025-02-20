@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -18,6 +18,7 @@ plugins {
   alias(libs.plugins.android.maps.secrets)
   alias(libs.plugins.buildconfig)
   alias(libs.plugins.kotlin.android)
+  alias(libs.plugins.kotlin.atomicfu)
   alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.kotlin.symbolProcessor)
@@ -73,6 +74,7 @@ dependencies {
   implementation(libs.android.constraintLayout.compose)
   implementation(libs.android.fragment.ktx)
   implementation(libs.android.room.ktx)
+  implementation(libs.kotlin.atomicfu)
   implementation(libs.kotlin.reflect)
   implementation(libs.ktor.client.cio)
   implementation(libs.ktor.client.core)

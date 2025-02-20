@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,148 +15,84 @@
 
 package br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination
 
+import app.cash.turbine.test
+import assertk.assertFailure
 import assertk.assertThat
+import assertk.assertions.cause
 import assertk.assertions.isEqualTo
-import br.com.orcinus.orca.core.feed.profile.post.Post
-import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.type.KTypeCreator
-import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.type.kTypeCreatorOf
-import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.runAuthenticatedRequesterTest
-import br.com.orcinus.orca.core.mastodon.instance.requester.runRequesterTest
-import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
-import io.ktor.client.engine.mock.respond
-import io.ktor.client.engine.mock.respondOk
-import io.ktor.http.HttpHeaders
-import io.ktor.http.LinkHeader
-import io.ktor.http.headersOf
-import io.ktor.http.toURI
+import assertk.assertions.isInstanceOf
+import assertk.assertions.isNotNull
+import assertk.assertions.prop
+import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.page.Pages
 import java.net.URI
 import kotlin.test.Test
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.CancellationException
 
 internal class MastodonPostPaginatorTests {
-  @Test(expected = IndexOutOfBoundsException::class)
-  fun throwsWhenPaginatingToANegativePage() {
-    runAuthenticatedRequesterTest {
-      object : MastodonPostPaginator<Unit>(), KTypeCreator<Unit> by kTypeCreatorOf() {
-          override val requester = this@runAuthenticatedRequesterTest.requester
+  @Test
+  fun throwsWhenCountingPagesFromInvalidPage() = runMastodonPostPaginatorTest {
+    assertFailure { countPagesOrThrow(Pages.NONE, 0) }.isInstanceOf<Pages.InvalidException>()
+  }
 
-          override fun HostedURLBuilder.buildInitialRoute(): URI {
-            return route()
-          }
+  @Test
+  fun throwsWhenCountingPagesToInvalidPage() = runMastodonPostPaginatorTest {
+    assertFailure { countPagesOrThrow(Pages.NONE) }.isInstanceOf<Pages.InvalidException>()
+  }
 
-          override fun Unit.toPosts(): List<Post> {
-            return emptyList()
-          }
-        }
-        .paginateTo(-1)
+  @Test
+  fun countsPages() = runMastodonPostPaginatorTest {
+    assertThat(this).transform("countPages") { it.countPagesOrThrow(2) }.isEqualTo(3)
+  }
+
+  @Test
+  fun throwsWhenPaginatingToInvalidPage() = runMastodonPostPaginatorTest {
+    assertFailure { paginateTo(Pages.NONE) }.isInstanceOf<Pages.InvalidException>()
+  }
+
+  @Test
+  fun paginatesToInitialRoute() {
+    lateinit var requestRoute: URI
+    runMastodonPostPaginatorTest({ _, route -> requestRoute = route }) {
+      paginateToAndAwait(0)
+      assertThat(::routes).prop(Routes::initial).transform("matches") { it matches requestRoute }
     }
   }
 
   @Test
-  fun firstRequestIsSentToInitialRoute() {
-    lateinit var requestURI: URI
-    runRequesterTest({
-      requestURI = it.url.toURI()
-      respondOk()
-    }) {
-      lateinit var baseURI: URI
-      object : MastodonPostPaginator<Unit>(), KTypeCreator<Unit> by kTypeCreatorOf() {
-          override val requester = this@runRequesterTest.requester
-
-          override fun HostedURLBuilder.buildInitialRoute(): URI {
-            baseURI = build()
-            return path("initial").build()
-          }
-
-          override fun Unit.toPosts(): List<Post> {
-            return emptyList()
-          }
-        }
-        .paginateTo(0)
-        .take(1)
-        .collect()
-      assertThat(requestURI).isEqualTo(baseURI.resolve("initial"))
-    }
+  fun refreshesInInitialRoute() = runMastodonPostPaginatorTest {
+    repeat(2) { paginateToAndAwait(0) }
+    assertThat(::routes).prop(Routes::initial).prop(RouteSpec::hitCount).isEqualTo(2)
   }
 
   @Test
-  fun refreshesInInitialRoute() {
-    lateinit var initialURI: URI
-    var initialRouteRequestCount = 0
-    runRequesterTest({
-      val requestURI = it.url.toURI()
-      if (requestURI == initialURI) {
-        initialRouteRequestCount++
+  fun refreshesInPreviousRoute() = runMastodonPostPaginatorTest {
+    paginateToAndAwait(1)
+    repeat(2) { paginateToAndAwait(0) }
+    assertThat(::routes).prop(Routes::current).isNotNull().prop(RouteSpec::hitCount).isEqualTo(3)
+  }
+
+  @Test
+  fun refreshesInNextRoute() = runMastodonPostPaginatorTest {
+    repeat(2) { paginateToAndAwait(1) }
+    assertThat(::routes).prop(Routes::current).isNotNull().prop(RouteSpec::hitCount).isEqualTo(2)
+  }
+
+  @Test
+  fun doesNotPaginateBackwardsWhenPreviousRouteIsNotLinked() =
+    runMastodonPostPaginatorTest(previous = { page -> if (page < 1) previous else null }) {
+      paginateToAndAwait(1)
+      paginateTo(0).test {
+        awaitItem()
+        assertFailure { awaitItem() }.cause().isNotNull().isInstanceOf<CancellationException>()
       }
-      respondOk()
-    }) {
-      object : MastodonPostPaginator<Unit>(), KTypeCreator<Unit> by kTypeCreatorOf() {
-          override val requester = this@runRequesterTest.requester
-
-          override fun HostedURLBuilder.buildInitialRoute(): URI {
-            initialURI = path("initial").build()
-            return initialURI
-          }
-
-          override fun Unit.toPosts(): List<Post> {
-            return emptyList()
-          }
-        }
-        .run { repeat(2) { paginateTo(0).take(1).collect() } }
-      assertThat(initialRouteRequestCount).isEqualTo(2)
     }
-  }
-
-  @Test(IllegalStateException::class)
-  fun throwsWhenPaginatingToNextRouteAndHeaderWithALinkToItIsNotIncludedInThePreviousResponse() {
-    runAuthenticatedRequesterTest {
-      object : MastodonPostPaginator<Unit>(), KTypeCreator<Unit> by kTypeCreatorOf() {
-          override val requester = this@runAuthenticatedRequesterTest.requester
-
-          override fun HostedURLBuilder.buildInitialRoute(): URI {
-            return route()
-          }
-
-          override fun Unit.toPosts(): List<Post> {
-            return emptyList()
-          }
-        }
-        .paginateTo(1)
-        .take(1)
-        .collect()
-    }
-  }
 
   @Test
-  fun refreshesInNextRoute() {
-    lateinit var initialURI: URI
-    var nextRouteRequestCount = 0
-    runRequesterTest({
-      val requestURI = it.url.toURI()
-      val nextURI = HostedURLBuilder.from(initialURI).path("next").build()
-      if (requestURI == nextURI) {
-        nextRouteRequestCount++
+  fun doesNotPaginateForwardsWhenNextRouteIsNotLinked() =
+    runMastodonPostPaginatorTest(next = { null }) {
+      paginateTo(1).test {
+        awaitItem()
+        assertFailure { awaitItem() }.cause().isNotNull().isInstanceOf<CancellationException>()
       }
-      respond(
-        content = "",
-        headers = headersOf(HttpHeaders.Link, "${LinkHeader("$nextURI", LinkHeader.Rel.Next)}")
-      )
-    }) {
-      object : MastodonPostPaginator<Unit>(), KTypeCreator<Unit> by kTypeCreatorOf() {
-          override val requester = this@runRequesterTest.requester
-
-          override fun HostedURLBuilder.buildInitialRoute(): URI {
-            initialURI = route()
-            return initialURI
-          }
-
-          override fun Unit.toPosts(): List<Post> {
-            return emptyList()
-          }
-        }
-        .run { repeat(2) { paginateTo(1).take(1).collect() } }
-      assertThat(nextRouteRequestCount).isEqualTo(2)
     }
-  }
 }
