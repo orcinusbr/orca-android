@@ -21,6 +21,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import assertk.assertions.isZero
 import assertk.assertions.prop
+import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.page.Pages
 import java.net.URI
 import kotlin.test.Test
 
@@ -49,32 +50,31 @@ internal class MastodonPostPaginatorScopeTests {
 
   @Test
   fun decreasesPageQueryParameterOnPreviousRouteByDefault() {
-    var remainingForwardsPageCount = 256
-    var remainingBackwardsPageCount = remainingForwardsPageCount
-    runMastodonPostPaginatorTest({ _, route ->
-      if (remainingForwardsPageCount == 0 && remainingBackwardsPageCount > 0) {
+    val targetPage = 256
+    var isPaginatingBackwards = false
+    var lastBackwardsPage = Pages.NONE
+    runMastodonPostPaginatorTest({ page, route ->
+      if (lastBackwardsPage != Pages.NONE && lastBackwardsPage != 1) {
         assertThat(route, name = "route")
           .prop(URI::getQuery)
           .isNotNull()
           .transform("split") { query -> query.split('=') }
           .prop(List<String>::last)
           .prop(String::toInt)
-          .isEqualTo(remainingBackwardsPageCount - 1)
+          .isEqualTo(lastBackwardsPage - 1)
+      }
+      if (isPaginatingBackwards) {
+        lastBackwardsPage = page
       }
     }) {
-      val unidirectionalPageCount = countPagesOrThrow(remainingForwardsPageCount)
-      paginateTo(remainingForwardsPageCount).test {
-        repeat(unidirectionalPageCount) {
-          awaitItemOrThrowCause()
-          remainingForwardsPageCount--
-        }
+      val pageCount = countPagesOrThrow(targetPage)
+      paginateTo(targetPage).test {
+        repeat(pageCount) { awaitItemOrThrowCause() }
         awaitComplete()
       }
       paginateTo(0).test {
-        repeat(unidirectionalPageCount) {
-          awaitItemOrThrowCause()
-          remainingBackwardsPageCount--
-        }
+        isPaginatingBackwards = true
+        repeat(pageCount) { awaitItemOrThrowCause() }
         awaitComplete()
       }
     }
