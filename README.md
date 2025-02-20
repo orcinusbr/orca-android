@@ -2,9 +2,26 @@
     <img src="https://github.com/the-orca-app/android/assets/38408390/adfd2748-5ca3-482a-9a65-650cdea4f8bb" />
 </div>
 
+<div align="center">
+    <img src="https://github.com/user-attachments/assets/f21c334a-462e-4bb5-9800-0a957cb1dbf6" width="199" />
+    <img src="https://github.com/user-attachments/assets/dce66113-f9a1-4bbf-b1de-b1dd4c64435c" width="199" />
+    <img src="https://github.com/user-attachments/assets/5d219c2d-534e-44d1-ba5a-7e607a489b57" width="199" />
+    <img src="https://github.com/user-attachments/assets/50012079-d038-430d-955a-2776fa925eb7" width="199" />
+    <img src="https://github.com/user-attachments/assets/13cb7cc2-0615-4f7e-a9c2-9ff73db54cbd" width="199" />
+</div>
+
+## Download
+
+1. Go to [Releases](https://github.com/orcinusbr/orca-android/releases);
+2. Find the version you wish to install (preferrably the latest one);
+3. Click on "Assets";
+4. Click on the `.aab` file;
+5. Wait for it to download;
+6. Open it. Voilà.
+
 ## About
 
-Orca is a beautifully designed, fully functional Mastodon client that offers you the best experience you could have.
+Orca is a beautifully designed Mastodon Android client that offers you the best experience you could have.
 
 As it's still in development, it currently supports searching for profiles, favoriting, reposting and sharing posts from the feed. The application is divided into modules that categorize each context, which often have submodules. Screens such as the feed and the profile details can be found within the [`:feature`](https://github.com/jeanbarrossilva/Orca/tree/main/feature) module, while core-level logic regarding authorization/authentication and read/write operations on profiles or posts are located at [`:core`](https://github.com/jeanbarrossilva/Orca/tree/main/core). As you will notice, [`:core`](https://github.com/jeanbarrossilva/Orca/tree/main/core) has lots of submodules, but the one in which calls to the actual API take place is [`:core:mastodon`](https://github.com/jeanbarrossilva/Orca/tree/main/core/mastodon).
 
