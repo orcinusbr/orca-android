@@ -206,7 +206,7 @@ private constructor(private val contextRef: WeakReference<Context>) : AutoClosea
   internal constructor(context: Context?) : this(WeakReference(context))
 
   /**
-   * Requests an _unlock_ — the binding a connection to a [Service] which listens to updates
+   * Requests an _unlock_ — the binding of a connection to a [Service] which listens to updates
    * received from the Mastodon server and redirects them to the device as system notifications — by
    * asking the user to grant permission for sending notifications if the API level supports
    * [Manifest.permission.POST_NOTIFICATIONS].
@@ -310,7 +310,7 @@ private constructor(private val contextRef: WeakReference<Context>) : AutoClosea
  * Creates a [NotificationLock].
  *
  * This factory method _must_ be called before the [activity] is started, since it registers a
- * request to receive a result — that of asking for the permission — right before the class instance
+ * request to receive a result — that of asking for the permission — right after the class instance
  * gets created; not doing so will result in an [IllegalStateException] being thrown.
  *
  * @param activity [ComponentActivity] in which the request is performed.
