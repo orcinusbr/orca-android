@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -69,8 +69,8 @@ import kotlinx.serialization.json.Json
 internal class ResumableRequester
 @InternalRequesterApi
 constructor(
-  private val elapsedTimeProvider: ElapsedTimeProvider,
-  private val requestDao: RequestDao,
+  @InternalRequesterApi val elapsedTimeProvider: ElapsedTimeProvider,
+  @InternalRequesterApi val requestDao: RequestDao,
   logger: Logger,
   baseURI: URI,
   clientEngineFactory: HttpClientEngineFactory<*>
@@ -313,58 +313,29 @@ constructor(
 }
 
 /**
- * Creates a [ResumableRequester] based on the receiver [Requester].
+ * Returns a [ResumableRequester] based on the receiver [Requester].
  *
- * @throws Module.DependencyNotInjectedException If a [Context] hasn't been globally injected.
+ * @throws Module.DependencyNotInjectedException If a [Context] has not been globally injected.
  */
 @Throws(Module.DependencyNotInjectedException::class)
 internal fun Requester.resumable(): ResumableRequester {
-  return toResumableRequester {
-    val context = Injector.get<Context>()
-    val requestDao = MastodonDatabase.getInstance(context).requestDao
-    ResumableRequester(
-      ResumableRequester.ElapsedTimeProvider.system,
-      requestDao,
-      logger,
-      baseURI,
-      clientEngineFactory
-    )
-  }
+  val context = Injector.get<Context>()
+  val requestDao = MastodonDatabase.getInstance(context).requestDao
+  return resumable(ResumableRequester.ElapsedTimeProvider.system, requestDao)
 }
 
 /**
- * Creates a [ResumableRequester] based on the receiver [Requester].
+ * Returns a [ResumableRequester] based on the receiver [Requester].
  *
  * @property elapsedTimeProvider [ResumableRequester.ElapsedTimeProvider] with which each request
  *   will be timestamped.
  * @property requestDao [RequestDao] for performing read and write operations on [Request]s.
  */
-@Throws(Module.DependencyNotInjectedException::class)
 internal fun Requester.resumable(
   elapsedTimeProvider: ResumableRequester.ElapsedTimeProvider,
   requestDao: RequestDao
-): ResumableRequester {
-  return toResumableRequester {
-    ResumableRequester(elapsedTimeProvider, requestDao, logger, baseURI, clientEngineFactory)
+) =
+  (this as? ResumableRequester)?.takeIf {
+    it.elapsedTimeProvider == elapsedTimeProvider && it.requestDao == requestDao
   }
-}
-
-/**
- * Converts this [Requester] into a [ResumableRequester].
- *
- * @param conversion Lambda that gets invoked in case the receiver [Requester] isn't a resumable
- *   one, which produces the [ResumableRequester] to be returned.
- * @return The [Requester] on which this method was called when it is a [ResumableRequester];
- *   otherwise, the result of invoking [conversion].
- */
-@OptIn(ExperimentalContracts::class)
-private inline fun Requester.toResumableRequester(
-  conversion: () -> ResumableRequester
-): ResumableRequester {
-  contract { callsInPlace(conversion, InvocationKind.AT_MOST_ONCE) }
-  return if (this is ResumableRequester) {
-    this
-  } else {
-    conversion()
-  }
-}
+    ?: ResumableRequester(elapsedTimeProvider, requestDao, logger, baseURI, clientEngineFactory)

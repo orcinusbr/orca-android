@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -17,9 +17,8 @@ package br.com.orcinus.orca.core.mastodon.notification.push
 
 import android.content.Context
 import android.content.Intent
-import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvider
-import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.AuthenticatedRequester
+import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.runAuthenticatedRequesterTest
 import br.com.orcinus.orca.core.mastodon.notification.push.web.WebPushClient
 import br.com.orcinus.orca.platform.testing.context
@@ -39,7 +38,7 @@ import org.robolectric.android.controller.ServiceController
  * Default implementation of a [PushNotificationServiceTestScope] which will be used in the tests.
  */
 private class PushNotificationServiceEnvironment(
-  override val requester: AuthenticatedRequester,
+  override val requester: Requester,
   override val clientResponseProvider: NotificationsClientResponseProvider,
   override val context: Context,
   delegate: TestScope
@@ -57,8 +56,8 @@ internal sealed class PushNotificationServiceTestScope : CoroutineScope {
   /** [Context] in which the [service] is instantiated. */
   protected abstract val context: Context
 
-  /** [AuthenticatedRequester] by which subscriptions are pushed. */
-  abstract val requester: AuthenticatedRequester
+  /** [Requester] by which subscriptions are pushed. */
+  abstract val requester: Requester
 
   /** [NotificationsClientResponseProvider] by which responses to requests are provided. */
   abstract val clientResponseProvider: NotificationsClientResponseProvider
@@ -90,14 +89,12 @@ internal sealed class PushNotificationServiceTestScope : CoroutineScope {
  * Runs a [PushNotificationService]-focused test.
  *
  * @param clientResponseProvider Defines how the [HttpClient] will respond to requests.
- * @param onAuthentication Action run whenever the [Actor] is authenticated.
  * @param coroutineContext [CoroutineContext] in which [Job]s are launched by default.
  * @param body Testing to be performed on a [PushNotificationService].
  */
 @OptIn(ExperimentalContracts::class)
 internal fun runPushNotificationServiceTest(
   clientResponseProvider: ClientResponseProvider = ClientResponseProvider.ok,
-  onAuthentication: () -> Unit = {},
   coroutineContext: CoroutineContext = EmptyCoroutineContext,
   body: suspend PushNotificationServiceTestScope.() -> Unit
 ) {
@@ -112,7 +109,7 @@ internal fun runPushNotificationServiceTest(
   val defaultClientResponseProvider =
     NotificationsClientResponseProvider({ baseURI }, next = clientResponseProvider)
 
-  runAuthenticatedRequesterTest(defaultClientResponseProvider, onAuthentication, coroutineContext) {
+  runAuthenticatedRequesterTest(defaultClientResponseProvider, coroutineContext) {
     baseURI = requester.baseURI
     PushNotificationServiceEnvironment(requester, defaultClientResponseProvider, context, delegate)
       .run {

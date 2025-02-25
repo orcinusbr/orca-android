@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -17,9 +17,9 @@ package br.com.orcinus.orca.core.mastodon.instance.requester.resumption
 
 import androidx.annotation.IntRange
 import br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvider
+import br.com.orcinus.orca.core.mastodon.instance.requester.CountingClientResponseProvider
 import br.com.orcinus.orca.core.mastodon.instance.requester.InternalRequesterApi
 import br.com.orcinus.orca.core.mastodon.instance.requester.RequesterTestScope
-import br.com.orcinus.orca.core.mastodon.instance.requester.resumption.request.memory.InMemoryRequestDao
 import br.com.orcinus.orca.core.mastodon.instance.requester.runRequesterTest
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.respondOk
@@ -34,7 +34,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.currentTime
 
 /**
  * Obtains the amount of times the [request] has been actually resumed after it's been interrupted.
@@ -50,11 +49,10 @@ internal inline fun resumptionCountOf(
 ): Int {
   contract { callsInPlace(request, InvocationKind.AT_LEAST_ONCE) }
   lateinit var testScheduler: TestCoroutineScheduler
-  val clientResponseProvider =
-    br.com.orcinus.orca.core.mastodon.instance.requester.CountingClientResponseProvider {
-      delay(ResumableRequester.timeToLive)
-      respondOk()
-    }
+  val clientResponseProvider = CountingClientResponseProvider {
+    delay(ResumableRequester.timeToLive)
+    respondOk()
+  }
   runResumableRequesterTest(clientResponseProvider) {
     testScheduler = delegate.testScheduler
 
@@ -84,10 +82,7 @@ internal inline fun responseCountOf(
   crossinline request: suspend RequesterTestScope<ResumableRequester>.() -> HttpResponse
 ): Int {
   contract { callsInPlace(request, InvocationKind.EXACTLY_ONCE) }
-  val clientResponseProvider =
-    br.com.orcinus.orca.core.mastodon.instance.requester.CountingClientResponseProvider(
-      ClientResponseProvider.ok
-    )
+  val clientResponseProvider = CountingClientResponseProvider(ClientResponseProvider.ok)
   runResumableRequesterTest(clientResponseProvider) { request() }
   return clientResponseProvider.count
 }
@@ -106,16 +101,12 @@ private inline fun runResumableRequesterTest(
 ) {
   contract { callsInPlace(body, InvocationKind.EXACTLY_ONCE) }
   runRequesterTest(clientResponseProvider) {
-    val requestDao = InMemoryRequestDao()
-    val requester =
-      requester.resumable(
-        { @OptIn(ExperimentalCoroutinesApi::class) delegate.currentTime.milliseconds },
-        requestDao
-      )
+    val requester = requester.resumable(delegate)
+    val requesterScope = RequesterTestScope(delegate, requester)
     try {
-      body(RequesterTestScope(delegate, requester, route))
+      requesterScope.body()
     } finally {
-      requestDao.clear()
+      requester.requestDao.clear()
       requester.interrupt()
     }
   }
