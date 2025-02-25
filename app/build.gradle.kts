@@ -69,7 +69,7 @@ android {
   }
 
   defaultConfig {
-    applicationId = "com.jeanbarrossilva.orca"
+    applicationId = "br.com.orcinus.orca"
     minSdk = libs.versions.android.sdk.min.get().toInt()
     targetSdk = libs.versions.android.sdk.target.get().toInt()
     versionCode = 8
