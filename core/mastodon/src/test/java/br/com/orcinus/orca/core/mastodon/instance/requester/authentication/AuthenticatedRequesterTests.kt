@@ -15,15 +15,49 @@
 
 package br.com.orcinus.orca.core.mastodon.instance.requester.authentication
 
+import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNotSameInstanceAs
+import assertk.assertions.isSameInstanceAs
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.runRequesterTest
+import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
+import br.com.orcinus.orca.core.test.auth.AuthenticationLock
 import br.com.orcinus.orca.platform.core.sample
 import br.com.orcinus.orca.std.injector.Injector
 import kotlin.test.Test
 
 internal class AuthenticatedRequesterTests {
+  private val actorProvider = SampleActorProvider(Actor.Unauthenticated)
+  private val lock = AuthenticationLock(actorProvider)
+
+  @Test
+  fun convertsARequesterIntoAnAuthenticatedOne() = runRequesterTest {
+    assertThat(requester)
+      .transform("authenticated") { it.authenticated(lock) }
+      .isNotSameInstanceAs(requester)
+  }
+
+  @Test
+  fun returnsTheSameRequesterWhenConvertedWhileAlreadyBeingAnAuthenticatedOneAndWithTheSameLock() =
+    runRequesterTest {
+      val authenticatedRequester = requester.authenticated(lock)
+      assertThat(authenticatedRequester)
+        .transform("authenticated") { it.authenticated(lock) }
+        .isSameInstanceAs(authenticatedRequester)
+    }
+
+  @Test
+  fun returnsADistinctRequesterWhenConvertedWhileAlreadyBeingAnAuthenticatedButWithAnotherLock() =
+    runRequesterTest {
+      val authenticatedRequester = requester.authenticated(lock)
+      val anotherLock = AuthenticationLock(actorProvider)
+      assertThat(authenticatedRequester)
+        .transform("authenticated") { it.authenticated(anotherLock) }
+        .isNotSameInstanceAs(authenticatedRequester)
+    }
+
   @Test(expected = Injector.ModuleNotRegisteredException::class)
   fun throwsWhenCreatingAnAuthenticatedRequesterWithoutHavingRegisteredACoreModule() {
     lateinit var requester: Requester

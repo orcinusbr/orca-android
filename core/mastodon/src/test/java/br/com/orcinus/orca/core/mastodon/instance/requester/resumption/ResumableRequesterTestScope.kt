@@ -20,7 +20,6 @@ import br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvid
 import br.com.orcinus.orca.core.mastodon.instance.requester.CountingClientResponseProvider
 import br.com.orcinus.orca.core.mastodon.instance.requester.InternalRequesterApi
 import br.com.orcinus.orca.core.mastodon.instance.requester.RequesterTestScope
-import br.com.orcinus.orca.core.mastodon.instance.requester.resumption.request.memory.InMemoryRequestDao
 import br.com.orcinus.orca.core.mastodon.instance.requester.runRequesterTest
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.respondOk
@@ -35,7 +34,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.currentTime
 
 /**
  * Obtains the amount of times the [request] has been actually resumed after it's been interrupted.
@@ -103,17 +101,12 @@ private inline fun runResumableRequesterTest(
 ) {
   contract { callsInPlace(body, InvocationKind.EXACTLY_ONCE) }
   runRequesterTest(clientResponseProvider) {
-    val requestDao = InMemoryRequestDao()
-    val requester =
-      requester.resumable(
-        { @OptIn(ExperimentalCoroutinesApi::class) delegate.currentTime.milliseconds },
-        requestDao
-      )
+    val requester = requester.resumable(delegate)
     val requesterScope = RequesterTestScope(delegate, requester)
     try {
       requesterScope.body()
     } finally {
-      requestDao.clear()
+      requester.requestDao.clear()
       requester.interrupt()
     }
   }

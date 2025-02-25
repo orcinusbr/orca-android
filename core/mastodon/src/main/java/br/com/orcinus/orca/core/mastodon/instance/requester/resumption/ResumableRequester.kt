@@ -69,8 +69,8 @@ import kotlinx.serialization.json.Json
 internal class ResumableRequester
 @InternalRequesterApi
 constructor(
-  private val elapsedTimeProvider: ElapsedTimeProvider,
-  private val requestDao: RequestDao,
+  @InternalRequesterApi val elapsedTimeProvider: ElapsedTimeProvider,
+  @InternalRequesterApi val requestDao: RequestDao,
   logger: Logger,
   baseURI: URI,
   clientEngineFactory: HttpClientEngineFactory<*>
@@ -313,32 +313,29 @@ constructor(
 }
 
 /**
- * Creates a [ResumableRequester] based on the receiver [Requester].
+ * Returns a [ResumableRequester] based on the receiver [Requester].
  *
- * @throws Module.DependencyNotInjectedException If a [Context] hasn't been globally injected.
+ * @throws Module.DependencyNotInjectedException If a [Context] has not been globally injected.
  */
 @Throws(Module.DependencyNotInjectedException::class)
 internal fun Requester.resumable(): ResumableRequester {
   val context = Injector.get<Context>()
   val requestDao = MastodonDatabase.getInstance(context).requestDao
-  return ResumableRequester(
-    ResumableRequester.ElapsedTimeProvider.system,
-    requestDao,
-    logger,
-    baseURI,
-    clientEngineFactory
-  )
+  return resumable(ResumableRequester.ElapsedTimeProvider.system, requestDao)
 }
 
 /**
- * Creates a [ResumableRequester] based on the receiver [Requester].
+ * Returns a [ResumableRequester] based on the receiver [Requester].
  *
  * @property elapsedTimeProvider [ResumableRequester.ElapsedTimeProvider] with which each request
  *   will be timestamped.
  * @property requestDao [RequestDao] for performing read and write operations on [Request]s.
  */
-@Throws(Module.DependencyNotInjectedException::class)
 internal fun Requester.resumable(
   elapsedTimeProvider: ResumableRequester.ElapsedTimeProvider,
   requestDao: RequestDao
-) = ResumableRequester(elapsedTimeProvider, requestDao, logger, baseURI, clientEngineFactory)
+) =
+  (this as? ResumableRequester)?.takeIf {
+    it.elapsedTimeProvider == elapsedTimeProvider && it.requestDao == requestDao
+  }
+    ?: ResumableRequester(elapsedTimeProvider, requestDao, logger, baseURI, clientEngineFactory)

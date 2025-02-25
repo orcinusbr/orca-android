@@ -47,7 +47,7 @@ constructor(
   logger: Logger,
   baseURI: URI,
   clientEngineFactory: HttpClientEngineFactory<*>,
-  private val lock: SomeAuthenticationLock
+  val lock: SomeAuthenticationLock
 ) : Requester(logger, baseURI, clientEngineFactory) {
   override suspend fun delete(
     config: Configuration,
@@ -126,26 +126,14 @@ constructor(
  * @throws Injector.ModuleNotRegisteredException If a [CoreModule] has not been registered.
  */
 @Throws(Injector.ModuleNotRegisteredException::class)
-internal fun Requester.authenticated(): Requester {
-  if (this is AuthenticatedRequester) {
-    return this
-  }
-  return AuthenticatedRequester(
-    logger,
-    baseURI,
-    clientEngineFactory,
-    Injector.from<CoreModule>().authenticationLock()
-  )
-}
+internal fun Requester.authenticated() =
+  authenticated(Injector.from<CoreModule>().authenticationLock())
 
 /**
  * Returns a [Requester] whose requests require authentication in order to be performed.
  *
  * @param lock [AuthenticationLock] for unlocking requests made by an unauthenticated [Actor].
  */
-internal fun Requester.authenticated(lock: SomeAuthenticationLock): Requester {
-  if (this is AuthenticatedRequester) {
-    return this
-  }
-  return AuthenticatedRequester(logger, baseURI, clientEngineFactory, lock)
-}
+internal fun Requester.authenticated(lock: SomeAuthenticationLock): Requester =
+  (this as? AuthenticatedRequester)?.takeIf { it.lock == lock }
+    ?: AuthenticatedRequester(logger, baseURI, clientEngineFactory, lock)

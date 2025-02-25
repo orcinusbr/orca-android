@@ -15,6 +15,8 @@
 
 package br.com.orcinus.orca.core.mastodon.instance.requester.authentication
 
+import br.com.orcinus.orca.core.auth.AuthenticationLock
+import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvider
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
@@ -44,7 +46,7 @@ import kotlinx.coroutines.Job
 internal inline fun runAuthenticatedRequesterTest(
   clientResponseProvider: ClientResponseProvider = ClientResponseProvider.ok,
   context: CoroutineContext = EmptyCoroutineContext,
-  crossinline body: suspend RequesterTestScope<Requester>.() -> Unit
+  crossinline body: suspend RequesterTestScope<Requester>.(lock: SomeAuthenticationLock) -> Unit
 ) {
   contract { callsInPlace(body, InvocationKind.EXACTLY_ONCE) }
   val avatarLoader = NoOpSampleImageLoader.Provider.provide(AuthorImageSource.Default)
@@ -52,6 +54,6 @@ internal inline fun runAuthenticatedRequesterTest(
   val actorProvider = SampleActorProvider(actor)
   val lock = AuthenticationLock(actorProvider)
   runRequesterTest(clientResponseProvider, context) {
-    RequesterTestScope(delegate, requester.authenticated(lock)).body()
+    RequesterTestScope(delegate, requester.authenticated(lock)).body(lock)
   }
 }

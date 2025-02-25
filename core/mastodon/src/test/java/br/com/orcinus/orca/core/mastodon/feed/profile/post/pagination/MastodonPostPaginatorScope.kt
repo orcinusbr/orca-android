@@ -16,6 +16,8 @@
 package br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination
 
 import app.cash.turbine.test
+import br.com.orcinus.orca.core.auth.AuthenticationLock
+import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.page.Page
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.page.Pages
@@ -81,9 +83,13 @@ private data class RoutesImpl(
  *
  * @param requesterScope [RequesterTestScope] in which the [Post]s of each page are shared. Also
  *   acts as a delegate of this class' [CoroutineScope]-like subclassed functionality.
+ * @param authenticationLock [AuthenticationLock] that authenticates the HTTP requests performed
+ *   upon pagination.
  */
-private class MastodonPostPaginatorScopeImpl(requesterScope: RequesterTestScope<Requester>) :
-  MastodonPostPaginatorScope(requesterScope)
+private class MastodonPostPaginatorScopeImpl(
+  requesterScope: RequesterTestScope<Requester>,
+  authenticationLock: SomeAuthenticationLock
+) : MastodonPostPaginatorScope(requesterScope, authenticationLock)
 
 /** Specification of a route. */
 internal sealed class RouteSpec {
@@ -128,14 +134,17 @@ internal sealed class Routes {
  * offers facilities for performing pagination, providing responses to HTTP requests and counting
  * those sent to a specific route, which allows for ensuring behavior correctness of such class.
  *
+ * @param authenticationLock [AuthenticationLock] that authenticates the HTTP requests performed
+ *   upon pagination.
  * @property requesterScope [RequesterTestScope] in which the [Post]s of each page are shared. Also
  *   acts as a delegate of this class' [CoroutineScope]-like subclassed functionality.
  * @see runMastodonPostPaginatorTest
  */
 internal sealed class MastodonPostPaginatorScope(
-  private val requesterScope: RequesterTestScope<Requester>
+  private val requesterScope: RequesterTestScope<Requester>,
+  authenticationLock: SomeAuthenticationLock
 ) :
-  MastodonPostPaginator<Any>(coroutineScope = requesterScope),
+  MastodonPostPaginator<Any>(authenticationLock, requesterScope),
   KTypeCreator<Any> by kTypeCreatorOf(),
   CoroutineScope by requesterScope,
   AutoCloseable {
@@ -268,8 +277,8 @@ internal fun runMastodonPostPaginatorTest(
             .forEach { (_, header) -> header?.let { append(HttpHeaders.Link, "$header") } }
         }
     )
-  }) {
-    paginatorScope = MastodonPostPaginatorScopeImpl(requesterScope = this)
-    paginatorScope.use { it.body() }
+  }) { lock ->
+    paginatorScope = MastodonPostPaginatorScopeImpl(requesterScope = this, lock)
+    paginatorScope.use { paginatorScope -> paginatorScope.body() }
   }
 }

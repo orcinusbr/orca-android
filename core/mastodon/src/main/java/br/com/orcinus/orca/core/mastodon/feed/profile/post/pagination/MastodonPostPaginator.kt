@@ -17,6 +17,8 @@ package br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination
 
 import androidx.annotation.EmptySuper
 import androidx.annotation.VisibleForTesting
+import br.com.orcinus.orca.core.auth.AuthenticationLock
+import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.page.Page
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.page.Pages
@@ -24,7 +26,10 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.type.KType
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.type.kTypeCreatorOf
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
+import br.com.orcinus.orca.core.module.CoreModule
+import br.com.orcinus.orca.core.module.authenticationLock
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
+import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.markdown.style.`if`
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.request
@@ -136,14 +141,18 @@ internal inline val @Suppress("UnusedReceiverParameter") LinkHeader.Rel.Previous
  * the [kTypeCreatorOf] factory method.
  *
  * @param T DTO that is returned by the API.
+ * @property authenticationLock [AuthenticationLock] that authenticates the HTTP requests performed
+ *   upon pagination.
  * @property coroutineScope [CoroutineScope] in which paginations are performed and their respective
  *   HTTP requests for fetching the [Post]s in the page are sent.
  * @see buildInitialRoute
  */
-internal abstract class MastodonPostPaginator<T : Any>(private val coroutineScope: CoroutineScope) :
-  KTypeCreator<T> {
+internal abstract class MastodonPostPaginator<T : Any>(
+  private val authenticationLock: SomeAuthenticationLock,
+  private val coroutineScope: CoroutineScope
+) : KTypeCreator<T> {
   /** [Requester] by which HTTP requests that require authentication can be performed. */
-  private val authenticatedRequester by lazy { requester.authenticated() }
+  private val authenticatedRequester by lazy { requester.authenticated(authenticationLock) }
 
   /**
    * Workaround for the inability to reference the initial route builder method which is, at the
@@ -210,12 +219,18 @@ internal abstract class MastodonPostPaginator<T : Any>(private val coroutineScop
    */
   @Suppress("RemoveEmptyClassBody") private object Unrouted {}
 
-  /** [MastodonPostPaginator] that shares [Post]s emitted upon pagination in the [GlobalScope]. */
+  /**
+   * [MastodonPostPaginator] that authenticates requests with the [AuthenticationLock] injected into
+   * the registered [CoreModule] and shares [Post]s emitted upon pagination in the [GlobalScope].
+   */
   @DelicateCoroutinesApi
   @Deprecated(
-    "Specify the coroutine scope in which the flow containing the paginated posts is shared."
+    "Specify the authentication lock with which each pagination request is authenticated and the " +
+      "coroutine scope in which the flow containing the paginated posts is shared. This " +
+      "constructor has an implicit dependency on the authentication lock injected into the core " +
+      "module that is expected to have been registered."
   )
-  constructor() : this(GlobalScope)
+  constructor() : this(Injector.from<CoreModule>().authenticationLock(), GlobalScope)
 
   init {
     @OptIn(InternalCoroutinesApi::class)
