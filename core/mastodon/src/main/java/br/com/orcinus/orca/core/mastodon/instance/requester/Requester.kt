@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -17,7 +17,6 @@ package br.com.orcinus.orca.core.mastodon.instance.requester
 
 import androidx.annotation.CallSuper
 import br.com.orcinus.orca.core.auth.actor.Actor
-import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.AuthenticatedRequester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.authenticated
 import br.com.orcinus.orca.core.mastodon.instance.requester.resumption.ResumableRequester
 import br.com.orcinus.orca.core.mastodon.instance.requester.resumption.resumable
@@ -54,8 +53,7 @@ import kotlinx.serialization.json.JsonNamingStrategy
  * which automatically retries in case they're abruptly interrupted and get resumed posteriorly.
  *
  * As for those that require an authenticated [Actor], [authenticated] can be called in order to
- * create an [AuthenticatedRequester] by which authentication will be required when performing any
- * request.
+ * create one by which authentication will be required when performing any request.
  *
  * @property logger [Logger] by which received [HttpResponse]s will be logged.
  * @property clientEngineFactory [HttpClientEngineFactory] that creates the [HttpClientEngine]

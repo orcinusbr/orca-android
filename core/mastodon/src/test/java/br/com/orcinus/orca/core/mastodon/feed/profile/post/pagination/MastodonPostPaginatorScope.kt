@@ -21,8 +21,8 @@ import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.page.Page
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.page.Pages
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.type.KTypeCreator
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.type.kTypeCreatorOf
+import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.RequesterTestScope
-import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.AuthenticatedRequester
 import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.runAuthenticatedRequesterTest
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import io.ktor.client.engine.mock.respond
@@ -82,9 +82,8 @@ private data class RoutesImpl(
  * @param requesterScope [RequesterTestScope] in which the [Post]s of each page are shared. Also
  *   acts as a delegate of this class' [CoroutineScope]-like subclassed functionality.
  */
-private class MastodonPostPaginatorScopeImpl(
-  requesterScope: RequesterTestScope<AuthenticatedRequester>
-) : MastodonPostPaginatorScope(requesterScope)
+private class MastodonPostPaginatorScopeImpl(requesterScope: RequesterTestScope<Requester>) :
+  MastodonPostPaginatorScope(requesterScope)
 
 /** Specification of a route. */
 internal sealed class RouteSpec {
@@ -134,7 +133,7 @@ internal sealed class Routes {
  * @see runMastodonPostPaginatorTest
  */
 internal sealed class MastodonPostPaginatorScope(
-  private val requesterScope: RequesterTestScope<AuthenticatedRequester>
+  private val requesterScope: RequesterTestScope<Requester>
 ) :
   MastodonPostPaginator<Any>(coroutineScope = requesterScope),
   KTypeCreator<Any> by kTypeCreatorOf(),

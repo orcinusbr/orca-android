@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -319,17 +319,15 @@ constructor(
  */
 @Throws(Module.DependencyNotInjectedException::class)
 internal fun Requester.resumable(): ResumableRequester {
-  return toResumableRequester {
-    val context = Injector.get<Context>()
-    val requestDao = MastodonDatabase.getInstance(context).requestDao
-    ResumableRequester(
-      ResumableRequester.ElapsedTimeProvider.system,
-      requestDao,
-      logger,
-      baseURI,
-      clientEngineFactory
-    )
-  }
+  val context = Injector.get<Context>()
+  val requestDao = MastodonDatabase.getInstance(context).requestDao
+  return ResumableRequester(
+    ResumableRequester.ElapsedTimeProvider.system,
+    requestDao,
+    logger,
+    baseURI,
+    clientEngineFactory
+  )
 }
 
 /**
@@ -343,28 +341,4 @@ internal fun Requester.resumable(): ResumableRequester {
 internal fun Requester.resumable(
   elapsedTimeProvider: ResumableRequester.ElapsedTimeProvider,
   requestDao: RequestDao
-): ResumableRequester {
-  return toResumableRequester {
-    ResumableRequester(elapsedTimeProvider, requestDao, logger, baseURI, clientEngineFactory)
-  }
-}
-
-/**
- * Converts this [Requester] into a [ResumableRequester].
- *
- * @param conversion Lambda that gets invoked in case the receiver [Requester] isn't a resumable
- *   one, which produces the [ResumableRequester] to be returned.
- * @return The [Requester] on which this method was called when it is a [ResumableRequester];
- *   otherwise, the result of invoking [conversion].
- */
-@OptIn(ExperimentalContracts::class)
-private inline fun Requester.toResumableRequester(
-  conversion: () -> ResumableRequester
-): ResumableRequester {
-  contract { callsInPlace(conversion, InvocationKind.AT_MOST_ONCE) }
-  return if (this is ResumableRequester) {
-    this
-  } else {
-    conversion()
-  }
-}
+) = ResumableRequester(elapsedTimeProvider, requestDao, logger, baseURI, clientEngineFactory)

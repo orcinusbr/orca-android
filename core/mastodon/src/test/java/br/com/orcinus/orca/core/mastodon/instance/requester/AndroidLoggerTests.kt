@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -38,15 +38,7 @@ internal class AndroidLoggerTests {
     mockkStatic(Log::class) {
       runTest {
         response =
-          HttpClient(
-              br.com.orcinus.orca.core.mastodon.instance.requester.createHttpClientEngineFactory(
-                br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvider {
-                  respondOk("😮")
-                }
-              )
-            ) {
-              Logger.Android.start(this)
-            }
+          HttpClient(httpClientEngineFactoryOf { respondOk("😮") }) { Logger.Android.start(this) }
             .get("/api/v1/resource")
       }
       coVerify { Log.i(Logger.Android.TAG, response.format()) }
@@ -60,11 +52,7 @@ internal class AndroidLoggerTests {
       runTest {
         response =
           HttpClient(
-              br.com.orcinus.orca.core.mastodon.instance.requester.createHttpClientEngineFactory(
-                br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvider {
-                  respondError(HttpStatusCode.NotImplemented, "😵")
-                }
-              )
+              httpClientEngineFactoryOf { respondError(HttpStatusCode.NotImplemented, "😵") }
             ) {
               Logger.Android.start(this)
             }

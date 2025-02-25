@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,21 +15,12 @@
 
 package br.com.orcinus.orca.core.mastodon.instance.requester
 
-import br.com.orcinus.orca.core.auth.actor.Actor
-import br.com.orcinus.orca.core.mastodon.MastodonCoreModule
-import br.com.orcinus.orca.core.mastodon.instance.SampleMastodonInstanceProvider
-import br.com.orcinus.orca.core.module.CoreModule
-import br.com.orcinus.orca.core.sample.feed.profile.post.content.SampleTermMuter
-import br.com.orcinus.orca.core.test.auth.AuthenticationLock
-import br.com.orcinus.orca.core.test.auth.Authenticator
-import br.com.orcinus.orca.core.test.auth.AuthorizerBuilder
-import br.com.orcinus.orca.core.test.auth.actor.InMemoryActorProvider
 import br.com.orcinus.orca.ext.uri.URIBuilder
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
-import br.com.orcinus.orca.platform.core.sample
-import br.com.orcinus.orca.std.injector.Injector
-import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.HttpClientEngineFactory
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.MockEngineConfig
 import io.ktor.client.engine.mock.respondError
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
@@ -45,20 +36,41 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 
 /**
+ * Engine factory whose response is delegated to a [ClientResponseProvider].
+ *
+ * @property delegate Defines the response to be provided to an HTTP request.
+ */
+private class DelegatorHttpClientEngineFactory(private val delegate: ClientResponseProvider) :
+  HttpClientEngineFactory<MockEngineConfig> {
+  override fun create(block: MockEngineConfig.() -> Unit) =
+    MockEngine { with(delegate) { provide(it) } }.apply { config.block() }
+
+  companion object {
+    /** Factory of an engine which responds to all requests with OK. */
+    val ok = DelegatorHttpClientEngineFactory(ClientResponseProvider.ok)
+  }
+}
+
+/**
  * [CoroutineScope] from which [Requester]-related structures can be referenced from tests.
  *
  * @param T [Requester] within this [CoroutineScope].
  * @property delegate [TestScope] to which [CoroutineScope]-like functionality will be delegated.
  * @property requester [Requester] that's been created.
- * @property route Produces a default route from the [requester]'s base [URI] to which the requests
- *   can be sent.
  */
 @InternalRequesterApi
-internal class RequesterTestScope<T : Requester>(
-  val delegate: TestScope,
-  val requester: T,
-  val route: HostedURLBuilder.() -> URI
-) : CoroutineScope by delegate
+internal class RequesterTestScope<T : Requester>(val delegate: TestScope, val requester: T) :
+  CoroutineScope by delegate {
+  /**
+   * Produces a default route from the [requester]'s base [URI] to which the requests can be sent.
+   */
+  val route: HostedURLBuilder.() -> URI = { path("api").path("v1").path("resource").build() }
+
+  companion object {
+    /** Default, fictional base URI of a [Requester] being tested. */
+    val baseURI = URIBuilder.url().scheme("https").host("orca.orcinus.com.br").path("app").build()
+  }
+}
 
 /**
  * Obtains the amount of times the [request] is retried.
@@ -82,46 +94,37 @@ internal inline fun retryCountOf(
  * Runs a [Requester]-focused test.
  *
  * @param clientResponseProvider Defines how the [HttpClient] will respond to requests.
- * @param onAuthentication Action run whenever the [Actor] is authenticated.
  * @param context [CoroutineContext] in which [Job]s are launched by default.
  * @param body Operation to be performed with the [Requester].
  */
 @OptIn(ExperimentalContracts::class)
 internal inline fun runRequesterTest(
   clientResponseProvider: ClientResponseProvider = ClientResponseProvider.ok,
-  crossinline onAuthentication: () -> Unit = {},
   context: CoroutineContext = EmptyCoroutineContext,
   crossinline body: suspend RequesterTestScope<Requester>.() -> Unit
 ) {
-  contract {
-    callsInPlace(onAuthentication, InvocationKind.AT_MOST_ONCE)
-    callsInPlace(body, InvocationKind.EXACTLY_ONCE)
-  }
-  val authorizer = AuthorizerBuilder().build()
-  val actorProvider = InMemoryActorProvider()
-  val authenticator =
-    Authenticator(actorProvider, authorizer) {
-      onAuthentication()
-      Actor.Authenticated.sample
-    }
-  val authenticationLock = AuthenticationLock(authenticator, actorProvider)
-  val instanceProvider =
-    SampleMastodonInstanceProvider(authorizer, authenticator, authenticationLock)
-  val module =
-    MastodonCoreModule(
-      lazyInjectionOf { instanceProvider },
-      lazyInjectionOf { authenticationLock },
-      lazyInjectionOf { SampleTermMuter() }
+  contract { callsInPlace(body, InvocationKind.EXACTLY_ONCE) }
+  val requester =
+    Requester(
+      NoOpLogger,
+      RequesterTestScope.baseURI,
+      httpClientEngineFactoryOf(clientResponseProvider)
     )
-  Injector.register<CoreModule>(module)
-  runTest(context) {
-    try {
-      val baseURI = URIBuilder.url().scheme("https").host("orca.orcinus.com.br").path("app").build()
-      val clientEngineFactory = createHttpClientEngineFactory(clientResponseProvider)
-      val requester = Requester(NoOpLogger, baseURI, clientEngineFactory)
-      RequesterTestScope(this, requester) { path("api").path("v1").path("resource").build() }.body()
-    } finally {
-      Injector.unregister<CoreModule>()
-    }
-  }
+  runTest(context) { RequesterTestScope(this, requester).body() }
 }
+
+/**
+ * Returns a factory that produces a mocked engine.
+ *
+ * @param responseProvider Defines the response to be provided to an HTTP request.
+ * @see HttpClientEngineFactory.create
+ */
+@InternalRequesterApi
+internal fun httpClientEngineFactoryOf(
+  responseProvider: ClientResponseProvider
+): HttpClientEngineFactory<MockEngineConfig> =
+  if (responseProvider === ClientResponseProvider.ok) {
+    DelegatorHttpClientEngineFactory.ok
+  } else {
+    DelegatorHttpClientEngineFactory(responseProvider)
+  }

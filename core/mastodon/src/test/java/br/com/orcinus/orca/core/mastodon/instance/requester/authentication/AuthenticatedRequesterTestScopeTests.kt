@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -23,7 +23,7 @@ import io.ktor.client.statement.bodyAsText
 import kotlin.test.Test
 import kotlinx.coroutines.test.StandardTestDispatcher
 
-internal class RequesterTestScopeExtensionsTests {
+internal class AuthenticatedRequesterTestScopeTests {
   @Test
   fun runsBodyOnce() {
     var runCount = 0

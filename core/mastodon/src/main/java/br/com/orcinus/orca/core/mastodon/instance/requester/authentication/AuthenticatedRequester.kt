@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,7 +15,6 @@
 
 package br.com.orcinus.orca.core.mastodon.instance.requester.authentication
 
-import androidx.annotation.VisibleForTesting
 import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.Actor
@@ -25,7 +24,6 @@ import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.authenticationLock
 import br.com.orcinus.orca.std.injector.Injector
-import br.com.orcinus.orca.std.injector.module.Module
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.request.HttpRequestBuilder
@@ -43,13 +41,13 @@ import java.net.URI
  * @property baseURI [URI] from which routes are constructed.
  * @property lock [AuthenticationLock] for unlocking requests made by an unauthenticated [Actor].
  */
-internal class AuthenticatedRequester
+private class AuthenticatedRequester
 @InternalRequesterApi
 constructor(
   logger: Logger,
   baseURI: URI,
   clientEngineFactory: HttpClientEngineFactory<*>,
-  @get:InternalRequesterApi @get:VisibleForTesting internal val lock: SomeAuthenticationLock
+  private val lock: SomeAuthenticationLock
 ) : Requester(logger, baseURI, clientEngineFactory) {
   override suspend fun delete(
     config: Configuration,
@@ -123,20 +121,31 @@ constructor(
 }
 
 /**
- * Creates an [AuthenticatedRequester] based on the receiver [Requester], with the
- * [AuthenticationLock] injected into the registered [CoreModule].
+ * Returns a [Requester] whose requests require authentication in order to be performed.
  *
- * @throws Injector.ModuleNotRegisteredException If a [CoreModule] hasn't been registered.
- * @throws Module.DependencyNotInjectedException If an [AuthenticationLock] hasn't been injected
- *   into the registered [CoreModule].
- * @see CoreModule.authenticationLock
+ * @throws Injector.ModuleNotRegisteredException If a [CoreModule] has not been registered.
  */
-@Throws(Injector.ModuleNotRegisteredException::class, Module.DependencyNotInjectedException::class)
-internal fun Requester.authenticated(): AuthenticatedRequester {
-  return if (this is AuthenticatedRequester) {
-    this
-  } else {
-    val lock = Injector.from<CoreModule>().authenticationLock()
-    AuthenticatedRequester(logger, baseURI, clientEngineFactory, lock)
+@Throws(Injector.ModuleNotRegisteredException::class)
+internal fun Requester.authenticated(): Requester {
+  if (this is AuthenticatedRequester) {
+    return this
   }
+  return AuthenticatedRequester(
+    logger,
+    baseURI,
+    clientEngineFactory,
+    Injector.from<CoreModule>().authenticationLock()
+  )
+}
+
+/**
+ * Returns a [Requester] whose requests require authentication in order to be performed.
+ *
+ * @param lock [AuthenticationLock] for unlocking requests made by an unauthenticated [Actor].
+ */
+internal fun Requester.authenticated(lock: SomeAuthenticationLock): Requester {
+  if (this is AuthenticatedRequester) {
+    return this
+  }
+  return AuthenticatedRequester(logger, baseURI, clientEngineFactory, lock)
 }

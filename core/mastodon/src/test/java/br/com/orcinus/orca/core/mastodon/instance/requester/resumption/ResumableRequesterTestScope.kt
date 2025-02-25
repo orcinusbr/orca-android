@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -17,6 +17,7 @@ package br.com.orcinus.orca.core.mastodon.instance.requester.resumption
 
 import androidx.annotation.IntRange
 import br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvider
+import br.com.orcinus.orca.core.mastodon.instance.requester.CountingClientResponseProvider
 import br.com.orcinus.orca.core.mastodon.instance.requester.InternalRequesterApi
 import br.com.orcinus.orca.core.mastodon.instance.requester.RequesterTestScope
 import br.com.orcinus.orca.core.mastodon.instance.requester.resumption.request.memory.InMemoryRequestDao
@@ -50,11 +51,10 @@ internal inline fun resumptionCountOf(
 ): Int {
   contract { callsInPlace(request, InvocationKind.AT_LEAST_ONCE) }
   lateinit var testScheduler: TestCoroutineScheduler
-  val clientResponseProvider =
-    br.com.orcinus.orca.core.mastodon.instance.requester.CountingClientResponseProvider {
-      delay(ResumableRequester.timeToLive)
-      respondOk()
-    }
+  val clientResponseProvider = CountingClientResponseProvider {
+    delay(ResumableRequester.timeToLive)
+    respondOk()
+  }
   runResumableRequesterTest(clientResponseProvider) {
     testScheduler = delegate.testScheduler
 
@@ -84,10 +84,7 @@ internal inline fun responseCountOf(
   crossinline request: suspend RequesterTestScope<ResumableRequester>.() -> HttpResponse
 ): Int {
   contract { callsInPlace(request, InvocationKind.EXACTLY_ONCE) }
-  val clientResponseProvider =
-    br.com.orcinus.orca.core.mastodon.instance.requester.CountingClientResponseProvider(
-      ClientResponseProvider.ok
-    )
+  val clientResponseProvider = CountingClientResponseProvider(ClientResponseProvider.ok)
   runResumableRequesterTest(clientResponseProvider) { request() }
   return clientResponseProvider.count
 }
@@ -112,8 +109,9 @@ private inline fun runResumableRequesterTest(
         { @OptIn(ExperimentalCoroutinesApi::class) delegate.currentTime.milliseconds },
         requestDao
       )
+    val requesterScope = RequesterTestScope(delegate, requester)
     try {
-      body(RequesterTestScope(delegate, requester, route))
+      requesterScope.body()
     } finally {
       requestDao.clear()
       requester.interrupt()
