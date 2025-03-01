@@ -194,7 +194,7 @@ internal abstract class MastodonPostPaginator<T : Any>(
             } as (HostedURLBuilder.() -> URI)?
             ?: initialRouter
 
-        Pagination(page, coroutineScope.async { authenticatedRequester.post(router) })
+        Pagination(page, coroutineScope.async { authenticatedRequester.get(router) })
       }
       .filterNotNull()
       .onEach(::onWillPaginate)
