@@ -23,10 +23,22 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
 import assertk.assertions.prop
+import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.page.Pages
+import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.type.KTypeCreator
+import br.com.orcinus.orca.core.mastodon.feed.profile.post.pagination.type.kTypeCreatorOf
+import br.com.orcinus.orca.core.mastodon.instance.requester.authentication.runAuthenticatedRequesterTest
+import br.com.orcinus.orca.core.module.CoreModule
+import br.com.orcinus.orca.core.sample.feed.profile.post.content.SampleTermMuter
+import br.com.orcinus.orca.core.sample.instance.SampleInstanceProvider
+import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
+import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
+import br.com.orcinus.orca.std.injector.Injector
+import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
 import java.net.URI
 import kotlin.test.Test
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.DelicateCoroutinesApi
 
 internal class MastodonPostPaginatorTests {
   @Test
@@ -95,4 +107,31 @@ internal class MastodonPostPaginatorTests {
         assertFailure { awaitItem() }.cause().isNotNull().isInstanceOf<CancellationException>()
       }
     }
+
+  @Test
+  fun canPaginateInTheGlobalScope() = runAuthenticatedRequesterTest {
+    Injector.register(
+      CoreModule(
+        lazyInjectionOf { SampleInstanceProvider(NoOpSampleImageLoader.Provider) },
+        lazyInjectionOf { it },
+        lazyInjectionOf { SampleTermMuter() }
+      )
+    )
+
+    @OptIn(DelicateCoroutinesApi::class) @Suppress("DEPRECATION")
+    object : MastodonPostPaginator<Any>(), KTypeCreator<Any> by kTypeCreatorOf() {
+        override val requester = this@runAuthenticatedRequesterTest.requester
+
+        override fun HostedURLBuilder.buildInitialRoute() = build()
+
+        override fun Any.toPosts() = emptyList<Post>()
+      }
+      .paginateTo(0)
+      .test {
+        awaitItem()
+        awaitComplete()
+      }
+
+    Injector.unregister<CoreModule>()
+  }
 }

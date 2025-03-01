@@ -230,7 +230,7 @@ internal abstract class MastodonPostPaginator<T : Any>(
       "constructor has an implicit dependency on the authentication lock injected into the core " +
       "module that is expected to have been registered."
   )
-  constructor() : this(Injector.from<CoreModule>().authenticationLock(), GlobalScope)
+  constructor() : this(Injector.from<CoreModule>().authenticationLock(), GlobalScope + Job())
 
   init {
     @OptIn(InternalCoroutinesApi::class)
