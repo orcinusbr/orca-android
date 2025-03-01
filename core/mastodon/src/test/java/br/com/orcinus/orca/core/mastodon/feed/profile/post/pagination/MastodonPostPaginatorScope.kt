@@ -31,6 +31,7 @@ import io.ktor.client.engine.mock.respond
 import io.ktor.client.statement.request
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
 import io.ktor.http.LinkHeader
 import io.ktor.http.toURI
 import java.net.URI
@@ -252,7 +253,7 @@ internal sealed class MastodonPostPaginatorScope(
  */
 @OptIn(ExperimentalContracts::class)
 internal fun runMastodonPostPaginatorTest(
-  onRequest: (page: Int, route: URI) -> Unit = { _, _ -> },
+  onRequest: (method: HttpMethod, page: Int, route: URI) -> Unit = { _, _, _ -> },
   previous: Routes.(page: Int) -> RouteSpec? = { this.previous },
   next: Routes.(page: Int) -> RouteSpec? = { this.next },
   body: suspend MastodonPostPaginatorScope.() -> Unit
@@ -262,7 +263,7 @@ internal fun runMastodonPostPaginatorTest(
   runAuthenticatedRequesterTest({ requestData ->
     val page = paginatorScope.initialPage
     val route = requestData.url.toURI()
-    onRequest(page, route)
+    onRequest(requestData.method, page, route)
     respond(
       content = "",
       headers =
