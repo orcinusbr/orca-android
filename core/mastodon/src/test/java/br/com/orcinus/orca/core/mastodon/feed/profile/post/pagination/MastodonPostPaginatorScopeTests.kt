@@ -42,7 +42,7 @@ internal class MastodonPostPaginatorScopeTests {
   @Test
   fun callsCallbackOnEachRequest() {
     var responseCount = 0
-    runMastodonPostPaginatorTest({ _, _ -> responseCount++ }) {
+    runMastodonPostPaginatorTest({ _, _, _ -> responseCount++ }) {
       paginateToAndAwait(256)
       assertThat(responseCount, name = "responseCount").isEqualTo(countPagesOrThrow(0, 256))
     }
@@ -53,7 +53,7 @@ internal class MastodonPostPaginatorScopeTests {
     val targetPage = 256
     var isPaginatingBackwards = false
     var lastBackwardsPage = Pages.NONE
-    runMastodonPostPaginatorTest({ page, route ->
+    runMastodonPostPaginatorTest({ _, page, route ->
       if (lastBackwardsPage != Pages.NONE && lastBackwardsPage != 1) {
         assertThat(route, name = "route")
           .prop(URI::getQuery)
@@ -82,7 +82,7 @@ internal class MastodonPostPaginatorScopeTests {
 
   @Test
   fun increasesPageQueryParameterOnNextRouteByDefault() {
-    runMastodonPostPaginatorTest({ page, route ->
+    runMastodonPostPaginatorTest({ _, page, route ->
       if (page > 0) {
         assertThat(route, name = "route")
           .prop(URI::getQuery)

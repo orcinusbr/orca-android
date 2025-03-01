@@ -35,6 +35,7 @@ import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
 import br.com.orcinus.orca.ext.uri.url.HostedURLBuilder
 import br.com.orcinus.orca.std.injector.Injector
 import br.com.orcinus.orca.std.injector.module.injection.lazyInjectionOf
+import io.ktor.http.HttpMethod
 import java.net.URI
 import kotlin.test.Test
 import kotlinx.coroutines.CancellationException
@@ -62,9 +63,15 @@ internal class MastodonPostPaginatorTests {
   }
 
   @Test
+  fun sendsAGetRequestUponPagination() =
+    runMastodonPostPaginatorTest({ method, _, _ -> assertThat(method).isEqualTo(HttpMethod.Get) }) {
+      paginateToAndAwait(0)
+    }
+
+  @Test
   fun paginatesToInitialRoute() {
     lateinit var requestRoute: URI
-    runMastodonPostPaginatorTest({ _, route -> requestRoute = route }) {
+    runMastodonPostPaginatorTest({ _, _, route -> requestRoute = route }) {
       paginateToAndAwait(0)
       assertThat(::routes).prop(Routes::initial).transform("matches") { it matches requestRoute }
     }
