@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -43,6 +43,12 @@ abstract class AuthenticationLock<T : Authenticator> @InternalCoreApi constructo
 
   /** [OnUnlockListener]s of unlocks that are awaiting the one being currently performed. */
   private val schedule = mutableListOf<OnUnlockListener<*>>()
+
+  /**
+   * [Authorizer] by which the [Actor] will be authorized and from whose resulting authentication
+   * code they are authenticated.
+   */
+  protected abstract val authorizer: Authorizer
 
   /** [Authenticator] through which the [Actor] will be requested to be authenticated. */
   protected abstract val authenticator: T
@@ -149,7 +155,9 @@ abstract class AuthenticationLock<T : Authenticator> @InternalCoreApi constructo
    */
   @Throws(FailedAuthenticationException::class)
   private suspend fun <T> authenticateAndUnlock(listener: OnUnlockListener<T>): Unlock<T> {
-    return when (val actor = authenticator.authenticate()) {
+    return when (
+      val actor = authenticator.authenticate(authorizationCode = authorizer.authorize())
+    ) {
       is Actor.Unauthenticated -> {
         actorFlow.value = null
         throw createFailedAuthenticationException()

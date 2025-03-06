@@ -20,6 +20,7 @@ import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.module.instanceProvider
 import br.com.orcinus.orca.core.sample.auth.SampleAuthenticationLock
 import br.com.orcinus.orca.core.sample.auth.SampleAuthenticator
+import br.com.orcinus.orca.core.sample.auth.SampleAuthorizer
 import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
 import br.com.orcinus.orca.core.sample.auth.actor.createSample
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
@@ -51,6 +52,7 @@ internal class SampleOrcaActivity : OrcaActivity<CoreModule>() {
       lazyInjectionOf { SampleInstanceProvider(imageLoaderProvider) },
       lazyInjectionOf {
         SampleAuthenticationLock(
+          SampleAuthorizer,
           SampleAuthenticator(),
           SampleActorProvider(
             Actor.Authenticated.createSample(

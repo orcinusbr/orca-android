@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -36,9 +36,9 @@ internal fun MastodonCoreModule(
 ): MastodonCoreModule {
   val actorProvider = SharedPreferencesActorProvider(context, MainImageLoaderProviderFactory)
   val authorizer = MastodonAuthorizer(context)
-  val authenticator = MastodonAuthenticator(context, authorizer, actorProvider)
+  val authenticator = MastodonAuthenticator(context, actorProvider)
   val authenticationLock =
-    MastodonAuthenticationLock(context, notificationLock, authenticator, actorProvider)
+    MastodonAuthenticationLock(context, notificationLock, authorizer, authenticator, actorProvider)
   val termMuter = SharedPreferencesTermMuter(context)
   return MastodonCoreModule(
     lazyInjectionOf {

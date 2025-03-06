@@ -15,13 +15,13 @@
 
 package br.com.orcinus.orca.core.mastodon.instance.requester.authentication
 
-import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.SomeAuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.instance.requester.ClientResponseProvider
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.RequesterTestScope
 import br.com.orcinus.orca.core.mastodon.instance.requester.runRequesterTest
+import br.com.orcinus.orca.core.sample.auth.SampleAuthorizer
 import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
 import br.com.orcinus.orca.core.sample.auth.actor.createSample
 import br.com.orcinus.orca.core.sample.image.AuthorImageSource
@@ -52,7 +52,7 @@ internal inline fun runAuthenticatedRequesterTest(
   val avatarLoader = NoOpSampleImageLoader.Provider.provide(AuthorImageSource.Default)
   val actor = Actor.Authenticated.createSample(avatarLoader)
   val actorProvider = SampleActorProvider(actor)
-  val lock = AuthenticationLock(actorProvider)
+  val lock = AuthenticationLock(SampleAuthorizer, actorProvider)
   runRequesterTest(clientResponseProvider, context) {
     RequesterTestScope(delegate, requester.authenticated(lock)).body(lock)
   }

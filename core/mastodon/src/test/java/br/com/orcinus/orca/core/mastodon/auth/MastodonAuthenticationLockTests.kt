@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -19,8 +19,8 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
 import br.com.orcinus.orca.core.mastodon.auth.authentication.MastodonAuthenticator
+import br.com.orcinus.orca.core.mastodon.auth.authorization.MastodonAuthorizer
 import br.com.orcinus.orca.core.mastodon.notification.NotificationLockBuilder
-import br.com.orcinus.orca.core.sample.auth.SampleAuthorizer
 import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
 import br.com.orcinus.orca.platform.testing.context
 import kotlin.test.Test
@@ -31,17 +31,24 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 internal class MastodonAuthenticationLockTests {
   private val actorProvider = SampleActorProvider()
-  private val authenticator = MastodonAuthenticator(context, SampleAuthorizer, actorProvider)
+  private val authorizer = MastodonAuthorizer(context)
+  private val authenticator = MastodonAuthenticator(context, actorProvider)
 
   @Test
   fun unlocksNotificationLock() {
     var hasUnlocked = false
     val notificationLock = NotificationLockBuilder().onUnlock { hasUnlocked = true }.build(context)
     runTest {
-      MastodonAuthenticationLock(context, notificationLock, authenticator, actorProvider)
+      MastodonAuthenticationLock(
+          context,
+          notificationLock,
+          authorizer,
+          authenticator,
+          actorProvider
+        )
         .scheduleUnlock {}
     }
-    assertThat(hasUnlocked).isTrue()
+    assertThat(hasUnlocked, name = "hasUnlocked").isTrue()
     notificationLock.close()
   }
 
@@ -50,11 +57,16 @@ internal class MastodonAuthenticationLockTests {
     var unlockCount = 0
     val notificationLock = NotificationLockBuilder().onUnlock { unlockCount++ }.build(context)
     runTest {
-      MastodonAuthenticationLock(context, notificationLock, authenticator, actorProvider).apply {
-        repeat(2) { scheduleUnlock {} }
-      }
+      MastodonAuthenticationLock(
+          context,
+          notificationLock,
+          authorizer,
+          authenticator,
+          actorProvider
+        )
+        .apply { repeat(2) { scheduleUnlock {} } }
     }
-    assertThat(unlockCount).isEqualTo(1)
+    assertThat(unlockCount, name = "unlockCount").isEqualTo(1)
     notificationLock.close()
   }
 }

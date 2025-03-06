@@ -22,6 +22,9 @@ import assertk.assertions.isSameInstanceAs
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.mastodon.instance.requester.Requester
 import br.com.orcinus.orca.core.mastodon.instance.requester.runRequesterTest
+import br.com.orcinus.orca.core.sample.auth.SampleAuthenticationLock
+import br.com.orcinus.orca.core.sample.auth.SampleAuthenticator
+import br.com.orcinus.orca.core.sample.auth.SampleAuthorizer
 import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
 import br.com.orcinus.orca.core.test.auth.AuthenticationLock
 import br.com.orcinus.orca.platform.core.sample
@@ -29,8 +32,9 @@ import br.com.orcinus.orca.std.injector.Injector
 import kotlin.test.Test
 
 internal class AuthenticatedRequesterTests {
+  private val authorizer = SampleAuthorizer
   private val actorProvider = SampleActorProvider(Actor.Unauthenticated)
-  private val lock = AuthenticationLock(actorProvider)
+  private val lock = SampleAuthenticationLock(authorizer, SampleAuthenticator(), actorProvider)
 
   @Test
   fun convertsARequesterIntoAnAuthenticatedOne() = runRequesterTest {
@@ -52,7 +56,7 @@ internal class AuthenticatedRequesterTests {
   fun returnsADistinctRequesterWhenConvertedWhileAlreadyBeingAnAuthenticatedButWithAnotherLock() =
     runRequesterTest {
       val authenticatedRequester = requester.authenticated(lock)
-      val anotherLock = AuthenticationLock(actorProvider)
+      val anotherLock = AuthenticationLock(authorizer, actorProvider)
       assertThat(authenticatedRequester)
         .transform("authenticated") { it.authenticated(anotherLock) }
         .isNotSameInstanceAs(authenticatedRequester)

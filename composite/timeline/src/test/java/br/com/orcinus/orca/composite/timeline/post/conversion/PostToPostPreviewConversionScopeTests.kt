@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -23,7 +23,10 @@ import br.com.orcinus.orca.core.feed.profile.Profile
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.feed.profile.post.stat.toggleable.ToggleableStat
 import kotlin.test.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 internal class PostToPostPreviewConversionScopeTests {
   @Test
   fun resetsAfterTest() {

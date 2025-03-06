@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -27,6 +27,7 @@ import br.com.orcinus.orca.core.mastodon.auth.authorization.viewmodel.MastodonAu
 import br.com.orcinus.orca.core.module.CoreModule
 import br.com.orcinus.orca.core.sample.auth.SampleAuthenticationLock
 import br.com.orcinus.orca.core.sample.auth.SampleAuthenticator
+import br.com.orcinus.orca.core.sample.auth.SampleAuthorizer
 import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.SampleTermMuter
 import br.com.orcinus.orca.core.sample.instance.SampleInstanceProvider
@@ -52,7 +53,9 @@ internal class MastodonAuthorizationActivityTests {
     register(
       CoreModule(
         lazyInjectionOf { SampleInstanceProvider(ComposableImageLoader.Provider.sample) },
-        lazyInjectionOf { SampleAuthenticationLock(SampleAuthenticator(), SampleActorProvider()) },
+        lazyInjectionOf {
+          SampleAuthenticationLock(SampleAuthorizer, SampleAuthenticator(), SampleActorProvider())
+        },
         lazyInjectionOf { SampleTermMuter() }
       )
     )

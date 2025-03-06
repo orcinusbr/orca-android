@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023-2024 Orcinus
+ * Copyright © 2023-2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.core.mastodon.auth.authorization
 
 import android.content.Context
+import br.com.orcinus.orca.core.auth.AuthorizationCode
 import br.com.orcinus.orca.core.auth.Authorizer
 import br.com.orcinus.orca.platform.starter.on
 import kotlin.coroutines.Continuation
@@ -31,9 +32,9 @@ import kotlin.coroutines.suspendCoroutine
  */
 class MastodonAuthorizer(private val context: Context) : Authorizer() {
   /** [Continuation] of the coroutine that's suspended on authorization. */
-  private var continuation: Continuation<String>? = null
+  private var continuation: Continuation<AuthorizationCode>? = null
 
-  override suspend fun onAuthorization(): String {
+  override suspend fun onAuthorization(): AuthorizationCode {
     return suspendCoroutine {
       continuation = it
       context.on<MastodonAuthorizationActivity>().asNewTask().start()
@@ -47,6 +48,7 @@ class MastodonAuthorizer(private val context: Context) : Authorizer() {
    * @param accessToken Access token to be received.
    */
   internal fun receive(accessToken: String) {
-    continuation?.resume(accessToken)
+    val authorizationCode = AuthorizationCode(accessToken)
+    continuation?.resume(authorizationCode)
   }
 }

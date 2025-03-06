@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -21,27 +21,30 @@ import br.com.orcinus.orca.core.auth.actor.ActorProvider
 
 /** Authenticates a user through [authenticate]. */
 abstract class Authenticator @InternalCoreApi constructor() {
-  /** [Authorizer] with which the user will be authorized. */
-  protected abstract val authorizer: Authorizer
-
   /**
    * [ActorProvider] to which the [authenticated][Actor.Authenticated] [Actor] will be sent to be
    * remembered when authentication occurs.
    */
   protected abstract val actorProvider: ActorProvider
 
-  /** Authorizes the user with the [authorizer] and then tries to authenticates them. */
-  suspend fun authenticate(): Actor {
-    val authorizationCode = authorizer.authorize()
-    val actor = onAuthentication(authorizationCode)
+  /**
+   * Authenticates the current [Actor].
+   *
+   * @param authorizationCode Code resulted from the authorization process performed by an
+   *   [Authorizer].
+   */
+  suspend fun authenticate(authorizationCode: AuthorizationCode): Actor {
+    val actor = onAuthentication(authorizationCode.value)
     actorProvider.remember(actor)
     return actor
   }
 
   /**
-   * Tries to authenticate the user.
+   * Callback called whenever the current [Actor] is unauthenticated and is requested to be
+   * authenticated.
    *
-   * @param authorizationCode Code that resulted from authorizing the user.
+   * @param authorizationCode Unwrapped code resulted from the authorization process performed by an
+   *   [Authorizer].
    */
   protected abstract suspend fun onAuthentication(authorizationCode: String): Actor
 }

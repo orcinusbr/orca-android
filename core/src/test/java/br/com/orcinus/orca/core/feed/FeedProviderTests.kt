@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -24,14 +24,17 @@ import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.sample.auth.SampleAuthenticationLock
 import br.com.orcinus.orca.core.sample.auth.SampleAuthenticator
 import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
+import br.com.orcinus.orca.core.sample.auth.actor.createSample
 import br.com.orcinus.orca.core.sample.feed.SampleFeedProvider
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
 import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.SampleTermMuter
 import br.com.orcinus.orca.core.sample.feed.profile.search.SampleProfileSearcher
+import br.com.orcinus.orca.core.sample.image.AuthorImageSource
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.core.sample.test.auth.actor.sample
 import br.com.orcinus.orca.core.sample.test.image.NoOpSampleImageLoader
+import br.com.orcinus.orca.core.test.auth.AuthorizerBuilder
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlinx.coroutines.flow.Flow
@@ -103,13 +106,16 @@ internal class FeedProviderTests {
   @Test
   fun `GIVEN some muted terms WHEN providing a feed THEN posts with these terms are filtered out`() {
     val authenticator = SampleAuthenticator()
-    val actorProvider = SampleActorProvider()
-    val authenticationLock = SampleAuthenticationLock(authenticator, actorProvider)
+    val imageLoaderProvider = NoOpSampleImageLoader.Provider
+    val actorAvatarLoader = imageLoaderProvider.provide(AuthorImageSource.Default)
+    val actor = Actor.Authenticated.createSample(actorAvatarLoader)
+    val actorProvider = SampleActorProvider(actor)
+    val authorizer = AuthorizerBuilder().build()
+    val authenticationLock = SampleAuthenticationLock(authorizer, authenticator, actorProvider)
     val profileProvider = SampleProfileProvider()
     val profileSearcher = SampleProfileSearcher(profileProvider)
     val postProvider = SamplePostProvider(profileProvider)
     val termMuter = SampleTermMuter()
-    val imageLoaderProvider = NoOpSampleImageLoader.Provider
     val feedProvider =
       SampleFeedProvider(profileProvider, postProvider, termMuter, imageLoaderProvider)
     SampleInstance.Builder.create(

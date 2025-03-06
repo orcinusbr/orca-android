@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,6 +16,7 @@
 package br.com.orcinus.orca.core.sample.auth
 
 import br.com.orcinus.orca.core.auth.AuthenticationLock
+import br.com.orcinus.orca.core.auth.Authorizer
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
 
@@ -24,6 +25,7 @@ import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
  * executed immediately with an already-authenticated [Actor].
  */
 class SampleAuthenticationLock(
+  override val authorizer: Authorizer,
   override val authenticator: SampleAuthenticator,
   override val actorProvider: SampleActorProvider
 ) : AuthenticationLock<SampleAuthenticator>() {

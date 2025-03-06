@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -17,7 +17,6 @@ package br.com.orcinus.orca.core.mastodon.auth.authentication
 
 import android.content.Context
 import br.com.orcinus.orca.core.auth.Authenticator
-import br.com.orcinus.orca.core.auth.Authorizer
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.mastodon.auth.authentication.activity.MastodonAuthenticationActivity
@@ -34,7 +33,6 @@ import kotlin.coroutines.suspendCoroutine
  */
 class MastodonAuthenticator(
   private val context: Context,
-  override val authorizer: Authorizer,
   override val actorProvider: ActorProvider
 ) : Authenticator() {
   /** [Continuation] of the coroutine that's suspended on authentication. */

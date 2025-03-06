@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,11 +15,14 @@
 
 package br.com.orcinus.orca.core.sample.auth
 
+import br.com.orcinus.orca.core.auth.AuthorizationCode
 import br.com.orcinus.orca.core.auth.Authorizer
+import java.util.UUID
 
-/** [Authorizer] that provides a sample authorization code. */
+/** [Authorizer] that provides a sample, UUID-based authorization code. */
 object SampleAuthorizer : Authorizer() {
-  override suspend fun onAuthorization(): String {
-    return "sample-authorization-code"
-  }
+  override suspend fun onAuthorization() = AuthorizationCode.uuid()
 }
+
+/** Creates a random UUID authorization code. */
+fun AuthorizationCode.Companion.uuid() = AuthorizationCode("${UUID.randomUUID()}")

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,11 +15,13 @@
 
 package br.com.orcinus.orca.core.test.auth
 
+import br.com.orcinus.orca.core.auth.AuthorizationCode
 import br.com.orcinus.orca.core.auth.Authorizer
 
 /**
  * Allows for building an [Authorizer] whose authorization code to be provided and its behavior
- * prior to that provisioning can be modified.
+ * prior to that provisioning can be modified. These are both an empty [String] and no-op by
+ * default.
  */
 class AuthorizerBuilder {
   /**
@@ -28,7 +30,7 @@ class AuthorizerBuilder {
   private var before: (suspend () -> Unit)? = null
 
   /** Code to be provided for an authorization. */
-  private var authorizationCode = DEFAULT_AUTHORIZATION_CODE
+  private var authorizationCode = emptyAuthorizationCode
 
   /**
    * Defines the authorization code that is provided upon an authorization request, after [before]
@@ -36,7 +38,7 @@ class AuthorizerBuilder {
    *
    * @param authorizationCode Authorization code to be set.
    */
-  fun authorizationCode(authorizationCode: String): AuthorizerBuilder {
+  fun authorizationCode(authorizationCode: AuthorizationCode): AuthorizerBuilder {
     this.authorizationCode = authorizationCode
     return this
   }
@@ -54,7 +56,7 @@ class AuthorizerBuilder {
   /** Builds the [Authorizer]. */
   fun build(): Authorizer {
     return object : Authorizer() {
-      public override suspend fun onAuthorization(): String {
+      public override suspend fun onAuthorization(): AuthorizationCode {
         before?.invoke()
         return authorizationCode
       }
@@ -62,7 +64,7 @@ class AuthorizerBuilder {
   }
 
   companion object {
-    /** Authorization code that is provided by a built [Authorizer] by default. */
-    const val DEFAULT_AUTHORIZATION_CODE = "authorization-code"
+    /** The default authorization code of a built [Authorizer] — an empty one. */
+    private val emptyAuthorizationCode = AuthorizationCode("")
   }
 }

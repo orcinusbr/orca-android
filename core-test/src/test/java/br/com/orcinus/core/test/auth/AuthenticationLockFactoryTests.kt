@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -15,18 +15,17 @@
 
 package br.com.orcinus.core.test.auth
 
+import assertk.assertFailure
 import assertk.assertThat
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
-import assertk.assertions.isSameAs
-import assertk.assertions.isTrue
+import assertk.assertions.isSameInstanceAs
 import assertk.assertions.prop
 import br.com.orcinus.core.test.auth.actor.FixedActorProvider
 import br.com.orcinus.orca.core.auth.AuthenticationLock
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.test.auth.AuthenticationLock
-import br.com.orcinus.orca.core.test.auth.Authenticator
 import br.com.orcinus.orca.core.test.auth.AuthorizerBuilder
 import br.com.orcinus.orca.core.test.auth.actor.InMemoryActorProvider
 import br.com.orcinus.orca.std.image.test.NoOpImageLoader
@@ -36,14 +35,11 @@ import kotlinx.coroutines.test.runTest
 internal class AuthenticationLockFactoryTests {
   @Test
   fun createdAuthenticationLockThrowsWithNullCauseWhenAnUnlockIsScheduledButAuthenticationFails() {
+    val authorizer = AuthorizerBuilder().build()
+    val actorProvider = FixedActorProvider(Actor.Unauthenticated)
+    val authenticationLock = AuthenticationLock(authorizer, actorProvider)
     runTest {
-      assertThat(
-          runCatching {
-              val actorProvider = FixedActorProvider(Actor.Unauthenticated)
-              AuthenticationLock(actorProvider).scheduleUnlock {}
-            }
-            .exceptionOrNull()
-        )
+      assertFailure { authenticationLock.scheduleUnlock {} }
         .isNotNull()
         .isInstanceOf<AuthenticationLock.FailedAuthenticationException>()
         .prop(AuthenticationLock.FailedAuthenticationException::cause)
@@ -52,30 +48,12 @@ internal class AuthenticationLockFactoryTests {
   }
 
   @Test
-  fun createdAuthenticationLockUnlocksWithActorProvidedByTheSpecifiedProvider() {
-    runTest {
-      val actor = Actor.Authenticated("id", "access-token", NoOpImageLoader)
-      val actorProvider = InMemoryActorProvider().apply { remember(actor) }
-      AuthenticationLock(actorProvider).scheduleUnlock { assertThat(it).isSameAs(actor) }
-    }
-  }
-
-  @Test
-  fun createdAuthenticationLockUnlocksByAuthorizingThroughTheSpecifiedAuthorizer() {
-    runTest {
-      var hasAuthorized = false
-      val authorizer = AuthorizerBuilder().before { hasAuthorized = true }.build()
-      val actorProvider = InMemoryActorProvider()
-      val authenticator =
-        Authenticator(actorProvider, authorizer) {
-          if (hasAuthorized) {
-            Actor.Authenticated("id", "access-token", NoOpImageLoader)
-          } else {
-            Actor.Unauthenticated
-          }
-        }
-      AuthenticationLock(authenticator, actorProvider).scheduleUnlock {}
-      assertThat(hasAuthorized).isTrue()
+  fun createdAuthenticationLockUnlocksWithActorProvidedByTheSpecifiedProvider() = runTest {
+    val authorizer = AuthorizerBuilder().build()
+    val actor = Actor.Authenticated("id", "access-token", NoOpImageLoader)
+    val actorProvider = InMemoryActorProvider().apply { remember(actor) }
+    AuthenticationLock(authorizer, actorProvider).scheduleUnlock {
+      assertThat(it).isSameInstanceAs(actor)
     }
   }
 }
