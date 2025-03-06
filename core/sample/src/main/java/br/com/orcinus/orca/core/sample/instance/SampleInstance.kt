@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -33,7 +33,9 @@ import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.instance.domain.Domain
 import br.com.orcinus.orca.core.sample.auth.SampleAuthenticationLock
 import br.com.orcinus.orca.core.sample.auth.SampleAuthenticator
+import br.com.orcinus.orca.core.sample.auth.SampleAuthorizer
 import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
+import br.com.orcinus.orca.core.sample.auth.actor.createSample
 import br.com.orcinus.orca.core.sample.auth.actor.sample
 import br.com.orcinus.orca.core.sample.feed.SampleFeedProvider
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
@@ -53,6 +55,7 @@ import br.com.orcinus.orca.core.sample.feed.profile.post.ramboSampleAuthorID
 import br.com.orcinus.orca.core.sample.feed.profile.search.SampleProfileSearcher
 import br.com.orcinus.orca.core.sample.feed.profile.type.editable.SampleEditableProfile
 import br.com.orcinus.orca.core.sample.feed.profile.type.followable.SampleFollowableProfile
+import br.com.orcinus.orca.core.sample.image.AuthorImageSource
 import br.com.orcinus.orca.core.sample.image.CoverImageSource
 import br.com.orcinus.orca.core.sample.image.SampleImageSource
 import br.com.orcinus.orca.core.sample.instance.domain.sample
@@ -294,16 +297,13 @@ private constructor(
        * @param imageLoaderProvider Provides the [ImageLoader] by which images are to be loaded from
        *   a [SampleImageSource].
        */
-      @Deprecated(
-        "Creating a sample instance without specifying the actor to be provided implicitly " +
-          "defines such as one whose avatar is loaded by a no-op loader (which may even be " +
-          "different from that provided by the image provider passed in as a parameter to this " +
-          "method). Prefer calling the overload that receives an actor provider."
-      )
       fun create(imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>): Empty {
         val authenticator = SampleAuthenticator()
-        @Suppress("DEPRECATION") val actorProvider = SampleActorProvider()
-        val authenticationLock = SampleAuthenticationLock(authenticator, actorProvider)
+        val actorAvatarLoader = imageLoaderProvider.provide(AuthorImageSource.Default)
+        val actor = Actor.Authenticated.createSample(actorAvatarLoader)
+        val actorProvider = SampleActorProvider(actor)
+        val authenticationLock =
+          SampleAuthenticationLock(SampleAuthorizer, authenticator, actorProvider)
         val profileProvider = SampleProfileProvider()
         val profileSearcher = SampleProfileSearcher(profileProvider)
         val postProvider = SamplePostProvider(profileProvider)
@@ -333,7 +333,8 @@ private constructor(
         imageLoaderProvider: SomeImageLoaderProvider<SampleImageSource>
       ): Empty {
         val authenticator = SampleAuthenticator()
-        val authenticationLock = SampleAuthenticationLock(authenticator, actorProvider)
+        val authenticationLock =
+          SampleAuthenticationLock(SampleAuthorizer, authenticator, actorProvider)
         val profileProvider = SampleProfileProvider()
         val profileSearcher = SampleProfileSearcher(profileProvider)
         val postProvider = SamplePostProvider(profileProvider)

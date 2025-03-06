@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -23,16 +23,20 @@ import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.feed.profile.post.Post
 import br.com.orcinus.orca.core.sample.auth.SampleAuthenticationLock
 import br.com.orcinus.orca.core.sample.auth.SampleAuthenticator
+import br.com.orcinus.orca.core.sample.auth.SampleAuthorizer
 import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
+import br.com.orcinus.orca.core.sample.auth.actor.createSample
 import br.com.orcinus.orca.core.sample.feed.SampleFeedProvider
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
 import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.SampleTermMuter
 import br.com.orcinus.orca.core.sample.feed.profile.search.SampleProfileSearcher
+import br.com.orcinus.orca.core.sample.image.AuthorImageSource
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
-import br.com.orcinus.orca.platform.core.image.sample
+import br.com.orcinus.orca.platform.core.image.createSample
+import br.com.orcinus.orca.platform.testing.context
 import br.com.orcinus.orca.std.image.ImageLoader
-import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
+import br.com.orcinus.orca.std.image.android.AndroidImageLoader
 import java.net.URI
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
@@ -52,8 +56,20 @@ constructor(delegate: TestScope) : CoroutineScope by delegate {
   /** [SampleAuthenticator] that authenticates the [Actor]. */
   private val authenticator = SampleAuthenticator()
 
+  /** [ImageLoader.Provider] that provides the [ImageLoader] by which images are to be loaded. */
+  private val imageLoaderProvider = AndroidImageLoader.Provider.createSample(context)
+
   /** [SampleAuthenticationLock] for requiring authentication. */
-  private val authenticationLock = SampleAuthenticationLock(authenticator, SampleActorProvider())
+  private val authenticationLock =
+    SampleAuthenticationLock(
+      SampleAuthorizer,
+      authenticator,
+      SampleActorProvider(
+        Actor.Authenticated.createSample(
+          avatarLoader = imageLoaderProvider.provide(AuthorImageSource.Default)
+        )
+      )
+    )
 
   /**
    * [SampleProfileProvider] to create the [SampleInstance] from which the [Post] is created with.
@@ -68,9 +84,6 @@ constructor(delegate: TestScope) : CoroutineScope by delegate {
    * @see createPost
    */
   private val profileSearcher = SampleProfileSearcher(profileProvider)
-
-  /** [ImageLoader.Provider] that provides the [ImageLoader] by which images are to be loaded. */
-  private val imageLoaderProvider = ComposableImageLoader.Provider.sample
 
   /** [SamplePostProvider] in which the [post] is added and by which it is provided. */
   val postProvider = SamplePostProvider(profileProvider)

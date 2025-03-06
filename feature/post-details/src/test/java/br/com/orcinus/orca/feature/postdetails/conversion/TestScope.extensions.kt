@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -35,21 +35,24 @@ import br.com.orcinus.orca.core.feed.profile.search.ProfileSearcher
 import br.com.orcinus.orca.core.instance.Instance
 import br.com.orcinus.orca.core.sample.auth.SampleAuthenticationLock
 import br.com.orcinus.orca.core.sample.auth.SampleAuthenticator
+import br.com.orcinus.orca.core.sample.auth.SampleAuthorizer
 import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
+import br.com.orcinus.orca.core.sample.auth.actor.createSample
 import br.com.orcinus.orca.core.sample.feed.SampleFeedProvider
 import br.com.orcinus.orca.core.sample.feed.profile.SampleProfileProvider
 import br.com.orcinus.orca.core.sample.feed.profile.post.SamplePostProvider
 import br.com.orcinus.orca.core.sample.feed.profile.post.content.SampleTermMuter
 import br.com.orcinus.orca.core.sample.feed.profile.search.SampleProfileSearcher
+import br.com.orcinus.orca.core.sample.image.AuthorImageSource
 import br.com.orcinus.orca.core.sample.image.SampleImageSource
 import br.com.orcinus.orca.core.sample.instance.SampleInstance
 import br.com.orcinus.orca.feature.postdetails.PostDetails
 import br.com.orcinus.orca.feature.postdetails.toPostDetails
 import br.com.orcinus.orca.feature.postdetails.toPostDetailsFlow
-import br.com.orcinus.orca.platform.core.image.sample
-import br.com.orcinus.orca.platform.core.sample
+import br.com.orcinus.orca.platform.core.image.createSample
+import br.com.orcinus.orca.platform.testing.context
 import br.com.orcinus.orca.std.image.ImageLoader
-import br.com.orcinus.orca.std.image.compose.ComposableImageLoader
+import br.com.orcinus.orca.std.image.android.AndroidImageLoader
 import java.net.URI
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -66,23 +69,35 @@ internal class PostDetailsConversionScope(delegate: TestScope) : CoroutineScope 
   /** [Instance]-specific [Authenticator] through which authentication can be done. */
   private val authenticator = SampleAuthenticator()
 
+  /** Provides the [ImageLoader] by which images are to be loaded from a [SampleImageSource]. */
+  private val imageLoaderProvider = AndroidImageLoader.Provider.createSample(context)
+
+  /**
+   * Authenticated [Actor] whose avatar [ImageLoader] will be used to load the image.
+   *
+   * @see Actor.Authenticated
+   * @see Actor.Authenticated.avatarLoader
+   */
+  val actor =
+    Actor.Authenticated.createSample(
+      avatarLoader = imageLoaderProvider.provide(AuthorImageSource.Default)
+    )
+
   /** [ActorProvider] whose provided [Actor] will be ensured to be authenticated. */
-  private val actorProvider = SampleActorProvider()
+  private val actorProvider = SampleActorProvider(actor)
 
   /**
    * [Instance]-specific [AuthenticationLock] by which features can be locked or unlocked
    * authentication "wall".
    */
-  private val authenticationLock = SampleAuthenticationLock(authenticator, actorProvider)
+  private val authenticationLock =
+    SampleAuthenticationLock(SampleAuthorizer, authenticator, actorProvider)
 
   /** [Instance]-specific [ProfileProvider] for providing [Profile]s. */
   private val profileProvider = SampleProfileProvider()
 
   /** [Instance]-specific [ProfileSearcher] by which search for [Profile]s can be made. */
   private val profileSearcher = SampleProfileSearcher(profileProvider)
-
-  /** Provides the [ImageLoader] by which images are to be loaded from a [SampleImageSource]. */
-  private val imageLoaderProvider = ComposableImageLoader.Provider.sample
 
   /** [TermMuter] by which [Post]s with muted terms will be filtered out. */
   private val termMuter = SampleTermMuter()
@@ -102,16 +117,8 @@ internal class PostDetailsConversionScope(delegate: TestScope) : CoroutineScope 
    *
    * @see comment
    */
-  private val comment
-    get() = postProvider.provideAllCurrent().first { it.author.id != Actor.Authenticated.sample.id }
-
-  /**
-   * Authenticated [Actor] whose avatar [ImageLoader] will be used to load the image.
-   *
-   * @see Actor.Authenticated
-   * @see Actor.Authenticated.avatarLoader
-   */
-  val actor = Actor.Authenticated.sample
+  private inline val comment
+    get() = postProvider.provideAllCurrent().first { it.author.id != actor.id }
 
   /** A sample [Post]. */
   val post

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,7 +16,6 @@
 package br.com.orcinus.orca.core.test.auth
 
 import br.com.orcinus.orca.core.auth.Authenticator
-import br.com.orcinus.orca.core.auth.Authorizer
 import br.com.orcinus.orca.core.auth.actor.Actor
 import br.com.orcinus.orca.core.auth.actor.ActorProvider
 
@@ -25,20 +24,16 @@ import br.com.orcinus.orca.core.auth.actor.ActorProvider
  *
  * @param actorProvider [ActorProvider] to which the authenticated [Actor] will be sent to be
  *   remembered when authentication occurs.
- * @param authorizer [Authorizer] with which the user will be authorized.
  * @param onAuthenticate Tries to authenticate the user.
  */
 fun Authenticator(
   actorProvider: ActorProvider,
-  authorizer: Authorizer = AuthorizerBuilder().build(),
   onAuthenticate: suspend (authorizationCode: String) -> Actor = { actorProvider.provide() }
-): Authenticator {
-  return object : Authenticator() {
-    override val authorizer = authorizer
+) =
+  object : Authenticator() {
     override val actorProvider = actorProvider
 
     override suspend fun onAuthentication(authorizationCode: String): Actor {
       return onAuthenticate(authorizationCode)
     }
   }
-}

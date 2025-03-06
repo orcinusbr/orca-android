@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -13,18 +13,18 @@
  * not, see https://www.gnu.org/licenses.
  */
 
-package br.com.orcinus.orca.core.sample.auth
+package br.com.orcinus.orca.core.auth
 
-import br.com.orcinus.orca.core.auth.Authorizer
+import br.com.orcinus.orca.core.InternalCoreApi
+import br.com.orcinus.orca.core.auth.actor.Actor
 
-/** [Authorizer] returned by [sample]. */
-private val sampleAuthorizer =
-  object : Authorizer() {
-    override suspend fun onAuthorization(): String {
-      return "sample-authorization-code"
-    }
-  }
-
-/** [Authorizer] that provides a sample authorization code. */
-val Authorizer.Companion.sample
-  get() = sampleAuthorizer
+/**
+ * Wrapper for the code resulted from having authorized an unauthorized [Actor].
+ *
+ * @property value The authorization code itself. No validation is ever performed on it; its content
+ *   can be anything and of any length (including zero, an empty [String]).
+ */
+@JvmInline
+value class AuthorizationCode @InternalCoreApi constructor(internal val value: String) {
+  companion object
+}

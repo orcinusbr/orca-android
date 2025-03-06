@@ -1,5 +1,5 @@
 /*
- * Copyright © 2024 Orcinus
+ * Copyright © 2024–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -25,11 +25,12 @@ import assertk.assertions.isSameInstanceAs
 import assertk.assertions.isTrue
 import assertk.assertions.prop
 import assertk.coroutines.assertions.suspendCall
-import br.com.orcinus.orca.core.auth.actor.ActorProvider
 import br.com.orcinus.orca.core.mastodon.feed.profile.account.MastodonAccount
 import br.com.orcinus.orca.core.mastodon.feed.profile.post.status.MastodonStatus
-import br.com.orcinus.orca.core.sample.auth.actor.sample
-import br.com.orcinus.orca.core.test.auth.AuthenticationLock
+import br.com.orcinus.orca.core.sample.auth.SampleAuthenticationLock
+import br.com.orcinus.orca.core.sample.auth.SampleAuthenticator
+import br.com.orcinus.orca.core.sample.auth.SampleAuthorizer
+import br.com.orcinus.orca.core.sample.auth.actor.SampleActorProvider
 import br.com.orcinus.orca.platform.testing.context
 import java.time.ZonedDateTime
 import kotlin.test.Test
@@ -39,7 +40,10 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 internal class PushNotificationTests {
-  private val authenticationLock = AuthenticationLock(ActorProvider.sample)
+  private val authenticator = SampleAuthenticator()
+  private val actorProvider = SampleActorProvider()
+  private val authenticationLock =
+    SampleAuthenticationLock(SampleAuthorizer, authenticator, actorProvider)
   private val createdAtAsZonedDateTime = ZonedDateTime.now()
   private val createdAt = PushNotification.createdAt(createdAtAsZonedDateTime)
 

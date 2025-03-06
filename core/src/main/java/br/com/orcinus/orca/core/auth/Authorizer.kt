@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023–2024 Orcinus
+ * Copyright © 2023–2025 Orcinus
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the
  * GNU General Public License as published by the Free Software Foundation, either version 3 of the
@@ -16,24 +16,23 @@
 package br.com.orcinus.orca.core.auth
 
 import br.com.orcinus.orca.core.InternalCoreApi
+import br.com.orcinus.orca.core.auth.actor.Actor
 
-/** Authorizes the user through [authorize]. */
+/** Authorizes the [Actor] through [authorize]. */
 abstract class Authorizer @InternalCoreApi constructor() {
   /**
-   * Authorizes the user, allowing the application to perform operations on their behalf.
+   * Authorizes the [Actor], allowing the application to perform operations on their behalf.
    *
    * @return Resulting authorization code.
    */
-  internal suspend fun authorize(): String {
-    return onAuthorization()
-  }
+  internal suspend fun authorize() = onAuthorization()
 
   /**
    * Callback called whenever authorization is requested to be performed.
    *
    * @return Resulting authorization code.
    */
-  protected abstract suspend fun onAuthorization(): String
+  protected abstract suspend fun onAuthorization(): AuthorizationCode
 
   companion object
 }
